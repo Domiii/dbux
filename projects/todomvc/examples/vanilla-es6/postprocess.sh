@@ -1,0 +1,1 @@
+echo "\n//# sourceMappingURL=/projects/todomvc/examples/vanilla-es6/dist/bundle.js.map" >> ./dist/bundle.js
