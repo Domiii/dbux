@@ -5,24 +5,32 @@
 {
 	"version": "0.2.0",
 	"configurations": [
+		// {
+		// 	"type": "node",
+		// 	"request": "launch",
+		// 	"name": "Debug",
+		// 	"program": "${workspaceFolder}/launch.sh",
+		// 	"args": [
+		// 	],
+		// 	"autoAttachChildProcesses": true,
+		// 	"stopOnEntry": true	
+		// }
+		// Enable Chrome debugging - https://github.com/Microsoft/vscode-chrome-debug
 		{
-			"name": "Run Extension",
-			"type": "extensionHost",
+			"type": "chrome",
 			"request": "launch",
-			"runtimeExecutable": "${execPath}",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}"
-			]
-		},
-		{
-			"name": "Extension Tests",
-			"type": "extensionHost",
-			"request": "launch",
-			"runtimeExecutable": "${execPath}",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--extensionTestsPath=${workspaceFolder}/test/suite/index"
-			]
+			// "trace": true,
+			"name": "Chrome",
+			"url": "http://localhost:3000",
+			"pathMapping": {
+				"/bundle.js": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/dist/bundle.js",
+				"/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/www",
+			},
+			"sourceMapPathOverrides": {
+				"webpack:///./~/*": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/node_modules/*",
+				"webpack:///./*": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/*"
+			},
+			"showAsyncStacks": true
 		}
 	]
 }

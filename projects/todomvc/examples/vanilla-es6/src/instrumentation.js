@@ -96,8 +96,19 @@ function* getAllEventClasses(obj) {
 
 export function install() {
   // instrument default event listeners
-  const eventListenerClasses = Array.from(getAllEventClasses(window));
-  eventListenerClasses.forEach(Clazz => instrumentAllEventHandlers(Clazz));
+  // const eventListenerClasses = Array.from(getAllEventClasses(window));
+  // eventListenerClasses.forEach(Clazz => instrumentAllEventHandlers(Clazz));
+
+  //  the basics...
+  const originalAddEventListener = window.HTMLElement.prototype.addEventListener;
+  window.HTMLElement.prototype.addEventListener = function __dbgs_addEventListener(eventName, origEventHandler, ...moreArgs) {
+    console.log('addEventListener', eventName);
+    const eventHandler = function(...eventArgs) {
+      console.log('event', eventName, ...eventArgs);
+      return origEventHandler.call(this, ...eventArgs);
+    };
+    return originalAddEventListener.call(this, eventName, eventHandler, ...moreArgs);
+  };
 
   // export some stuff to window for dev purposes
   Object.assign(window, {

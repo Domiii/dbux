@@ -19,7 +19,7 @@ module.exports = {
     aggregateTimeout: 5000,
     poll: 5000
   },
-  devServer,
+  // devServer,
   plugins,
   context: path.join(__dirname, './'),
   entry: './src/index.js',
