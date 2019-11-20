@@ -1,7 +1,7 @@
 import {ItemList} from './item';
 import {qs, $on, $delegate} from './helpers';
 import Template from './template';
-import { instrumentInstance, instrumentEventHandlersInstance } from './instrumentation';
+import { instrumentInstance, instrumentEventHandlersInstance } from './dbgs/instrumentation';
 
 const _itemId = element => parseInt(element.parentNode.dataset.id || element.parentNode.parentNode.dataset.id, 10);
 const ENTER_KEY = 13;
@@ -158,12 +158,6 @@ export default class View {
 	 * @param {Function} handler Function called on synthetic event.
 	 */
 	bindAddItem(handler) {
-		instrumentEventHandlersInstance(this.$newTodo, {
-			change(eventName, origCb, ...eventArgs) {
-				console.log('on change!');
-				return origCb(...eventArgs);
-			}
-		});
 		$on(this.$newTodo, 'change', ({target}) => {
 			const title = target.value.trim();
 			if (title) {

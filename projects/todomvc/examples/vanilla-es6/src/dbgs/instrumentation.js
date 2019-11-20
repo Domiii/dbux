@@ -1,3 +1,5 @@
+import { getDomPath, htmlElToString } from './util';
+
 export function instrument(Clazz, methodName, cb) {
   const f = Clazz.prototype[methodName];
   // console.log('instrumenting', Clazz.name);
@@ -74,6 +76,15 @@ export function instrumentEventHandlers(Clazz, eventCallbacks) {
   });
 }
 
+/**
+ * Example:
+		instrumentEventHandlersInstance(this.$newTodo, {
+			change(eventName, origCb, ...eventArgs) {
+				console.log('on change!');
+				return origCb(...eventArgs);
+			}
+		});
+ */
 export function instrumentEventHandlersInstance(obj, eventCallbacks) {
   return instrumentEventHandlers(obj.constructor, eventCallbacks);
 }
@@ -93,23 +104,66 @@ function* getAllEventClasses(obj) {
   }
 }
 
+function __Dbgs_Error(...args) {
+  throw new Error('[DBGS Internal Error] ' + args.join(' '));
+}
+
+// ###############################################################
+// addEventListener
+// ###############################################################
+
+var addEventListenerHooks = new Map();
+
+function hasAddEventListenerHook(el, eventName) {
+  return addEventListenerHooks.has(eventName);
+  // let events = addEventListenerHooks.get(el);
+  // return events && events.has(eventName);
+}
+
+function registerAddEventListenerHook(el, eventName, eventHandler) {
+  // if (!events) {
+  //   events = new Map();
+  // }
+  if (addEventListenerHooks.has(eventName)) {
+    __Dbgs_Error('Tried to register eventListener twice: ' + htmlElToString(el));
+  }
+  addEventListenerHooks.set(eventName, eventHandler);
+}
+
+export function instrumentAddEventListener() {
+  const originalAddEventListener = window.HTMLElement.prototype.addEventListener;
+  window.HTMLElement.prototype.addEventListener = function __dbgs_addEventListener(eventName, origEventHandler, ...moreArgs) {
+    let eventHandler;
+    if (!hasAddEventListenerHook(this, eventName)) {
+      // new event listener
+      console.log('[DOM]', '[addEventListener]', eventName, getDomPath(this).join(' > '));
+      eventHandler = function (...eventArgs) {
+        const [evt] = eventArgs;
+        const path = evt.composedPath().filter(el => el.tagName).map(p => p.tagName.toLowerCase()).join('<');
+        console.log('[DOM]', '[Event]', eventName, path); // ...eventArgs
+        return origEventHandler.call(this, ...eventArgs);
+      };
+      registerAddEventListenerHook(this, eventName, eventHandler);
+    }
+    else {
+      eventHandler = origEventHandler;
+    }
+    return originalAddEventListener.call(this, eventName, eventHandler, ...moreArgs);
+  };
+
+}
+
+
+// ###############################################################
+// install
+// ###############################################################
 
 export function install() {
   // instrument default event listeners
   // const eventListenerClasses = Array.from(getAllEventClasses(window));
   // eventListenerClasses.forEach(Clazz => instrumentAllEventHandlers(Clazz));
-
-  //  the basics...
-  const originalAddEventListener = window.HTMLElement.prototype.addEventListener;
-  window.HTMLElement.prototype.addEventListener = function __dbgs_addEventListener(eventName, origEventHandler, ...moreArgs) {
-    console.log('addEventListener', eventName);
-    const eventHandler = function(...eventArgs) {
-      console.log('event', eventName, ...eventArgs);
-      return origEventHandler.call(this, ...eventArgs);
-    };
-    return originalAddEventListener.call(this, eventName, eventHandler, ...moreArgs);
-  };
-
+  instrumentAddEventListener();
+  
   // export some stuff to window for dev purposes
   Object.assign(window, {
     // inst: eventListenerClasses;

@@ -4,13 +4,13 @@ import Template from './template';
 import Store from './store';
 import View from './view';
 
-import { install } from './instrumentation';
+import { install } from './dbgs/instrumentation';
 
 import 'todomvc-app-css/index.css';
 import 'todomvc-common/base.css';
 import 'todomvc-common/base.js';
 
-console.log('started');
+console.log('starteddd');
 
 (function main() {
   install();
