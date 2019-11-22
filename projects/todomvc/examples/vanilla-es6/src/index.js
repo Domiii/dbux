@@ -4,7 +4,7 @@ import Template from './template';
 import Store from './store';
 import View from './view';
 
-import { install } from './dbgs/instrumentation';
+import { install } from './dbgs';
 
 import 'todomvc-app-css/index.css';
 import 'todomvc-common/base.css';
