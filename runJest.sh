@@ -1,0 +1,1 @@
+cd projects/todomvc/examples/vanilla-es6/ && npm test

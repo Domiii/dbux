@@ -4,22 +4,12 @@
 // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
 	"version": "0.2.0",
-	"configurations": [
-		// {
-		// 	"type": "node",
-		// 	"request": "launch",
-		// 	"name": "Debug",
-		// 	"program": "${workspaceFolder}/launch.sh",
-		// 	"args": [
-		// 	],
-		// 	"autoAttachChildProcesses": true,
-		// 	"stopOnEntry": true	
-		// }
-		// Enable Chrome debugging - https://github.com/Microsoft/vscode-chrome-debug
+	"configurations": [		
 		{
+			// debugging of Chrome-bound code - https://github.com/Microsoft/vscode-chrome-debug
 			"type": "chrome",
 			"request": "launch",
-			// "trace": true,
+			"trace": true,
 			"name": "Chrome",
 			"url": "http://localhost:3000",
 			"pathMapping": {
@@ -31,6 +21,18 @@
 				"webpack:///./*": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/*"
 			},
 			"showAsyncStacks": true
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "vscode-jest-tests",
+			"program": "${workspaceRoot}/projects/todomvc/examples/vanilla-es6/node_modules/jest/bin/jest.js",
+			"cwd": "${workspaceRoot}/projects/todomvc/examples/vanilla-es6",
+			"args": [
+				"--i",
+				"--config",
+				"jest.config.js"
+			]
 		}
 	]
 }

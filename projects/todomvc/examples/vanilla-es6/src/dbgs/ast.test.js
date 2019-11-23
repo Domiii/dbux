@@ -26,11 +26,44 @@ describe('basic traversal', () => {
         stack.pop();
       }
     });
+    
     expect(foundZ).toBeTrue();
   });
 });
 
+
+
+
 describe('basic syntax sub-trees', () => {
+  test('FunctionDeclaration', () => {
+    expect(esprima.parseScript(`function f(a) {}`)).toMatchObject({
+      "type": "Program",
+      "body": [
+        {
+          "type": "FunctionDeclaration",
+          "id": {
+            "type": "Identifier",
+            "name": "f"
+          },
+          "params": [
+            {
+              "type": "Identifier",
+              "name": "a"
+            }
+          ],
+          "body": {
+            "type": "BlockStatement",
+            "body": []
+          },
+          "generator": false,
+          "expression": false,
+          "async": false
+        }
+      ],
+      "sourceType": "script"
+    });
+  });
+
   test('object properties', () => {
     expect(esprima.parseScript(`x.y.z = 3;`)).toMatchObject({
       "type": "Program",
