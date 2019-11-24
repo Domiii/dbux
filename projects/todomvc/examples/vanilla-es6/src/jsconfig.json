@@ -1,5 +1,8 @@
 {
-  "compilerOptions": {},
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "esnext"
+  },
   "typeAcquisition": {
     "include": [
     ]

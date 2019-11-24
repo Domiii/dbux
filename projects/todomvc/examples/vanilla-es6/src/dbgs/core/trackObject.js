@@ -15,8 +15,10 @@ class TrackedObject {
       this.id : 
       alias;
 
-    // TODO: handle children
+    // TODO: handle children?
   }
+
+
 }
 
 export function __dbgs_logObjectTrace(obj) {
@@ -24,19 +26,20 @@ export function __dbgs_logObjectTrace(obj) {
 
   if (tracked) {
     __dbgs_log('[T]', tracked.alias, __dbgs_getStackframe(3));
+    debugger;
   }
 
   return obj;
 }
 
 export function trackObject(obj, alias) {
-  // what counts as object? -> [{}, [], "s", new Map(), (new (function hi() {}))].map(x => x instanceof Object)
   if (!(obj instanceof Object)) {
+    // NOTE: what counts as object? -> [{}, [], "s", new Map(), (new (function hi() {}))].map(x => x instanceof Object)
     __dbgs_error("Invalid obj - Must be (but is not) reference type: " + JSON.stringify(obj));
   }
 
   const tracked = new TrackedObject(obj, alias);
   trackedObjects.set(obj, tracked);
 
-  // TODO
+  return tracked;
 }

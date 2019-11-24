@@ -1,5 +1,5 @@
-import { getDomPath, htmlElToString } from './util';
-import { __dbgs_error, __dbgs_log } from './dbgsUtil';
+import { getDomPath, htmlElToString } from './core/util';
+import { __dbgs_error, __dbgs_log } from './core/dbgsUtil';
 import { runEsTest } from './estests';
 
 export function instrument(Clazz, methodName, cb) {

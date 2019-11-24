@@ -1,8 +1,13 @@
 import * as esprima from 'esprima';
 import * as estraverse from 'estraverse';
 
+function matchCodeToAST(code, ast) {
+  return expect(esprima.parseScript(code)).toMatchObject(ast);
+}
+
+
 describe('basic traversal', () => {
-  test('object traversal', () => {
+  it('object traversal', () => {
     const stack = [];
     function getAncestor(i) {
       return stack[stack.length-i-1];
@@ -17,9 +22,9 @@ describe('basic traversal', () => {
         const { key } = ref;
         if (node.name === 'z') {
           foundZ = true;
-          expect(key).toEqual('property');
-          expect(getAncestor(1).key).toEqual('left');
-          expect(getAncestor(2).key).toEqual('expression');
+          expect(key).toStrictEqual('property');
+          expect(getAncestor(1).key).toStrictEqual('left');
+          expect(getAncestor(2).key).toStrictEqual('expression');
         }
       },
       leave: function(node, visitor) {
@@ -33,10 +38,73 @@ describe('basic traversal', () => {
 
 
 
-
+/**
+ * Generated using online demo parser.
+ * @see https://esprima.org/demo/parse.html
+ */
 describe('basic syntax sub-trees', () => {
-  test('FunctionDeclaration', () => {
-    expect(esprima.parseScript(`function f(a) {}`)).toMatchObject({
+  it('Assignment', () => {
+    matchCodeToAST(`var c = a;`, {
+      "type": "Program",
+      "body": [
+        {
+          "type": "VariableDeclaration",
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "id": {
+                "type": "Identifier",
+                "name": "c"
+              },
+              "init": {
+                "type": "Identifier",
+                "name": "a"
+              }
+            }
+          ],
+          "kind": "var"
+        }
+      ],
+      "sourceType": "script"
+    });
+  });
+
+  it('DotExpression', () => {
+    matchCodeToAST(`x.y.z`, {
+      "type": "Program",
+      "body": [
+        {
+          "type": "ExpressionStatement",
+          "expression": {
+            "type": "MemberExpression",
+            "computed": false,
+            "object": {
+              "type": "MemberExpression",
+              "computed": false,
+              "object": {
+                "type": "Identifier",
+                "name": "x"
+              },
+              "property": {
+                "type": "Identifier",
+                "name": "y"
+              }
+            },
+            "property": {
+              "type": "Identifier",
+              "name": "z"
+            }
+          }
+        }
+      ],
+      "sourceType": "script"
+    });
+  });
+
+
+
+  it('FunctionDeclaration', () => {
+    matchCodeToAST(`function f(a) {}`, {
       "type": "Program",
       "body": [
         {
@@ -64,7 +132,7 @@ describe('basic syntax sub-trees', () => {
     });
   });
 
-  test('object properties', () => {
+  it('object properties', () => {
     expect(esprima.parseScript(`x.y.z = 3;`)).toMatchObject({
       "type": "Program",
       "body": [

@@ -1,4 +1,10 @@
 {
-  "eslint.enable": false,
+  "eslint.enable": true,
+  "eslint.workingDirectories": [
+    {
+      "directory": "./projects/todomvc/examples/vanilla-es6",
+      "changeProcessCWD": true
+    }
+  ],
   "jest.pathToJest": "sh runJest.sh"
 }

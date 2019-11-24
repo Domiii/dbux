@@ -1,7 +1,7 @@
 import * as esprima from 'esprima';
 import * as estraverse from 'estraverse';
 import * as escodegen from 'escodegen';
-import { __dbgs_logObjectTrace, trackObject } from './trackObject';
+import { __dbgs_logObjectTrace, trackObject } from './core/trackObject';
 import { identifierIgnoredParents } from './estests';
 
 const { Identifier, CallExpression, Syntax } = esprima;
