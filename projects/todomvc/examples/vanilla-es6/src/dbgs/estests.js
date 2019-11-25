@@ -82,13 +82,13 @@ export function instrumentObjectTracker(source, sourceURL) {
   // convert sourcemap to data URL
   const mapBase64 = btoa(map.toString());
   // const sourceMappingURL = `data:application/json;base64,${mapBase64}`;
-  const sourceMappingURL = '/samples/test1.js.map';
+  const sourceMappingURL = 'http://localhost:3000/samples/test1.inst.js.map';
 
   // console.log('sourceMappingURL', sourceMappingURL)
   console.log('sourcemap', map.toString());
 
   // produce code
-  return `${code}\n\n//# sourceMappingURL=${sourceMappingURL}\n//# sourceURL=${sourceURL}`;
+  return `${code}\n\n//# sourceMappingURL=${sourceMappingURL}`;
 }
 
 function noop(...args) { }
@@ -100,11 +100,14 @@ export async function runEsTest() {
   window.noop = noop;
 
   // load code
-  const res = await fetch('samples/test1.js');
+  const res = await fetch('/samples/test1.inst.js');
   const sourceCode = await res.text();
 
   // instrument code
-  const code = instrumentObjectTracker(sourceCode, 'http://localhost:3000/samples/test1.js');
+  // const code = instrumentObjectTracker(sourceCode, 'http://localhost:3000/samples/test1.js');
+
+  const code = sourceCode;
+  console.log('code', code);
 
   // run code (while tracking object through code)
   eval(code);
