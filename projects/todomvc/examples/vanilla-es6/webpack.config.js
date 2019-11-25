@@ -3,11 +3,11 @@ const path = require('path');
 const outputFolder = 'dist/';
 const outFile = 'bundle.js';
 const buildMode = 'development';
+const configPath = path.resolve(__dirname, 'config/webpack');
 // const buildMode = 'production';
 
 const devServer = require('./config/webpack/webpack.dev-server')(outFile);
 const plugins = require('./config/webpack/plugins.js')();
-
 
 
 module.exports = {
@@ -41,7 +41,10 @@ module.exports = {
         loader: "eslint-loader",
         enforce: "pre",
         test: /\.jsx?$/,
-        exclude: /node_modules/,
+        exclude: [
+          /node_modules/,
+          /dbgs\/samples/
+        ],
         include: path.join(__dirname, 'src')
       },
       {
@@ -57,6 +60,13 @@ module.exports = {
           path.join(__dirname, 'node_modules')
         ],
         use: ['style-loader', 'css-loader']
+      },
+
+      // ignore source maps for some of the dbgs internals
+      // NOTE: last loader is applied first
+      {
+        test: /trackObject.js$/,
+        loader: path.resolve(configPath, 'no-sourcemaps.js')
       }
     ],
   },

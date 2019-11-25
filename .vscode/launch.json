@@ -13,6 +13,8 @@
 			"name": "Chrome",
 			"url": "http://localhost:3000",
 			"pathMapping": {
+				"samples": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/src/dbgs/samples/",
+				"test1.js": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/src/dbgs/samples/test1.js",
 				"/bundle.js": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/dist/bundle.js",
 				"/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/www",
 			},

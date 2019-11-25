@@ -4,7 +4,8 @@ const root = path.join(__dirname, '../..');
 
 module.exports = outFile => ({
   contentBase: [
-    path.join(root, 'www')
+    path.join(root, 'www'),
+    path.join(root, 'src/dbgs')
     // path.join(root, 'dist')
   ],
   host: '0.0.0.0',
@@ -17,6 +18,7 @@ module.exports = outFile => ({
     verbose: true,
     rewrites: [
       { from: /^\/dist\/bundle\.js$/, to: '/bundle.js' },
+      { from: /^test1.js$/, to: '/samples/test1.js' },
       // { from: /^\/tags[/?#].*$/, to: '/tags.html' },
       // {
       // https://github.com/bripkens/connect-history-api-fallback#rewrites
