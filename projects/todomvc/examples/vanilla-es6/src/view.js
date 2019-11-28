@@ -1,7 +1,7 @@
 import {ItemList} from './item';
 import {qs, $on, $delegate} from './helpers';
 import Template from './template';
-import { instrumentInstance, instrumentEventHandlersInstance } from './dbgs';
+import { instrumentInstance, instrumentEventHandlersInstance } from './dbux';
 
 const _itemId = element => parseInt(element.parentNode.dataset.id || element.parentNode.parentNode.dataset.id, 10);
 const ENTER_KEY = 13;

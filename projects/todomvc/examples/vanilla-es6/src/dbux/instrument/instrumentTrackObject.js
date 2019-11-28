@@ -1,19 +1,15 @@
-import * as esprima from 'esprima';
-import * as escodegen from 'escodegen';
-import { __dbgs_logObjectTrace, trackObject as __dbgs_trackObject } from './core/trackObject';
-import ESTraverser from './core/ESTraverser';
-
-const { Identifier, CallExpression, Syntax } = esprima;
+import { __dbux_logObjectTrace, trackObject as __dbux_trackObject } from '../core/trackObject';
+import ESTraverser from '../core/ESTraverser';
 
 
 // see: https://esprima.org/demo/parse.html
 // see: https://github.com/jquery/esprima/tree/master/src/syntax.ts
 
 function instrumentNode(origNode) {
-  // __dbgs_logObjectTrace(x);
+  // __dbux_logObjectTrace(x);
   // return x;
   const parseConfig = {};
-  const ast = esprima.parseScript('__dbgs_logObjectTrace(1)', parseConfig);
+  const ast = esprima.parseScript('__dbux_logObjectTrace(1)', parseConfig);
   const newNode = ast.body[0].expression;
 
   console.assert(newNode.type === 'CallExpression');
@@ -73,7 +69,7 @@ export function instrumentObjectTracker(source, sourceURL) {
     code,
     map
   } = escodegen.generate(ast, genConfig);
-  // code += `\n${__dbgs_logObjectTrace}`;
+  // code += `\n${__dbux_logObjectTrace}`;
 
   if (typeof window !== 'undefined') {
     window.document.body.innerHTML = `<pre>${code}</pre>`;
@@ -93,10 +89,10 @@ export function instrumentObjectTracker(source, sourceURL) {
 
 function noop(...args) { }
 
-export async function runEsTest() {
+export default async function instrumentTraackObject() {
   // setup some globals
-  window.__dbgs_logObjectTrace = __dbgs_logObjectTrace;
-  window.__dbgs_trackObject = __dbgs_trackObject;
+  window.__dbux_logObjectTrace = __dbux_logObjectTrace;
+  window.__dbux_trackObject = __dbux_trackObject;
   window.noop = noop;
 
   // load code

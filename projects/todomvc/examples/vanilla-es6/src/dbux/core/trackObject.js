@@ -1,4 +1,4 @@
-import { __dbgs_error, __dbgs_log, __dbgs_getStackframe } from './dbgsUtil';
+import { __dbux_error, __dbux_log, __dbux_getStackframe } from './dbuxUtil';
 
 // ###############################################################
 // trackObject
@@ -21,11 +21,11 @@ class TrackedObject {
 
 }
 
-export function __dbgs_logObjectTrace(obj) {
+export function __dbux_logObjectTrace(obj) {
   const tracked = trackedObjects.get(obj);
 
   if (tracked) {
-    __dbgs_log('[T]', tracked.alias, __dbgs_getStackframe(3));
+    __dbux_log('[T]', tracked.alias, __dbux_getStackframe(3));
     debugger;
   }
 
@@ -35,7 +35,7 @@ export function __dbgs_logObjectTrace(obj) {
 export function trackObject(obj, alias) {
   if (!(obj instanceof Object)) {
     // NOTE: what counts as object? -> [{}, [], "s", new Map(), (new (function hi() {}))].map(x => x instanceof Object)
-    __dbgs_error("Invalid obj - Must be (but is not) reference type: " + JSON.stringify(obj));
+    __dbux_error("Invalid obj - Must be (but is not) reference type: " + JSON.stringify(obj));
   }
 
   const tracked = new TrackedObject(obj, alias);

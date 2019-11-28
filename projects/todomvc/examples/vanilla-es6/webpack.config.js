@@ -43,7 +43,7 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: [
           /node_modules/,
-          /dbgs\/samples/
+          /dbux\/samples/
         ],
         include: path.join(__dirname, 'src')
       },
@@ -62,7 +62,7 @@ module.exports = {
         use: ['style-loader', 'css-loader']
       },
 
-      // ignore source maps for some of the dbgs internals
+      // ignore source maps for some of the dbux internals
       // NOTE: last loader is applied first
       {
         test: /trackObject.js$/,

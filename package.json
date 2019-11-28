@@ -1,7 +1,7 @@
 {
-	"name": "code-dbgs",
-	"displayName": "code-dbgs",
-	"description": "code-dbgs",
+	"name": "code-dbux",
+	"displayName": "code-dbux",
+	"description": "code-dbux",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.40.0"
@@ -10,14 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.startDbgs"
+		"onCommand:extension.startdbux"
 	],
 	"main": "./extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.startDbgs",
-				"title": "DBGS: Start"
+				"command": "extension.startdbux",
+				"title": "dbux: Start"
 			}
 		]
 	},

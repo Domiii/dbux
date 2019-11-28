@@ -5,7 +5,7 @@ const root = path.join(__dirname, '../..');
 module.exports = outFile => ({
   contentBase: [
     path.join(root, 'www'),
-    path.join(root, 'src/dbgs')
+    path.join(root, 'src/dbux')
     // path.join(root, 'dist')
   ],
   host: '0.0.0.0',

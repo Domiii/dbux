@@ -1,6 +1,6 @@
 import { getDomPath, htmlElToString } from './core/util';
-import { __dbgs_error, __dbgs_log } from './core/dbgsUtil';
-import { runEsTest } from './estests';
+import { __dbux_error, __dbux_log } from './core/dbuxUtil';
+import { runEsTest } from './_archive/estests';
 
 export function instrument(Clazz, methodName, cb) {
   const f = Clazz.prototype[methodName];
@@ -45,14 +45,14 @@ export function instrumentAllEventHandlers(Clazz) {
 function nestEventHandler(eventName, originalEventHandler, eventHandlerOverride) {
   if (eventHandlerOverride) {
     Object.defineProperty(eventHandlerOverride, 'name', {
-      value: `__dbgs_${eventHandlerOverride.name && eventHandlerOverride.name !== eventName && eventHandlerOverride.name || `on_${eventName}`}`
+      value: `__dbux_${eventHandlerOverride.name && eventHandlerOverride.name !== eventName && eventHandlerOverride.name || `on_${eventName}`}`
     });
     eventHandlerOverride = eventHandlerOverride.bind(this, eventName, originalEventHandler);
   }
   else {
     eventHandlerOverride = originalEventHandler;
   }
-  return function __dbgs_instrumendEventHandler(...evtArgs) {
+  return function __dbux_instrumendEventHandler(...evtArgs) {
     console.log(this, 'event', eventName);
     return eventHandlerOverride(...evtArgs);
   };
@@ -123,22 +123,22 @@ function registerAddEventListenerHook(el, eventName, eventHandler) {
   //   events = new Map();
   // }
   if (addEventListenerHooks.has(eventName)) {
-    __dbgs_error('Tried to register eventListener twice: ' + htmlElToString(el));
+    __dbux_error('Tried to register eventListener twice: ' + htmlElToString(el));
   }
   addEventListenerHooks.set(eventName, eventHandler);
 }
 
 export function instrumentAddEventListener() {
   const originalAddEventListener = window.HTMLElement.prototype.addEventListener;
-  window.HTMLElement.prototype.addEventListener = function __dbgs_addEventListener(eventName, origEventHandler, ...moreArgs) {
+  window.HTMLElement.prototype.addEventListener = function __dbux_addEventListener(eventName, origEventHandler, ...moreArgs) {
     let eventHandler;
     if (!hasAddEventListenerHook(this, eventName)) {
       // new event listener
-      __dbgs_log('[DOM]', '[addEventListener]', eventName, getDomPath(this).join(' > '));
+      __dbux_log('[DOM]', '[addEventListener]', eventName, getDomPath(this).join(' > '));
       eventHandler = function (...eventArgs) {
         const [evt] = eventArgs;
         const path = evt.composedPath().filter(el => el.tagName).map(p => p.tagName.toLowerCase()).join('<');
-        __dbgs_log('[DOM]', '[Event]', eventName, path); // ...eventArgs
+        __dbux_log('[DOM]', '[Event]', eventName, path); // ...eventArgs
         return origEventHandler.call(this, ...eventArgs);
       };
       registerAddEventListenerHook(this, eventName, eventHandler);

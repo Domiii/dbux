@@ -1,4 +1,4 @@
-# code-dbgs README
+# code-dbux README
 
 ## References + Future Work
 * [VSCode Extensions API](https://code.visualstudio.com/api)

@@ -5,7 +5,7 @@ function test1() {
   var a = { x: 1 };
 
   // track object
-  __dbgs_trackObject(a, 'a');
+  __dbux_trackObject(a, 'a');
   var c = a;
   var b = 3;
 
