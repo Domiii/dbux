@@ -2,15 +2,16 @@ module.exports = {
   "env": {
     "browser": true,
     "commonjs": true,
-    "es6": true,
-    // "jest/globals": true
+    "es6": true
   },
   "globals": {
-    "$": true,
-    "console": true,
-    "mixpanel": true
+    "$": true
   },
-  "extends": ["eslint:recommended", "plugin:jest/all"],
+  "extends": [
+    "../../../../eslintrc.js",
+    "eslint:recommended", 
+    "plugin:jest/all"
+  ],
   "parserOptions": {
     "ecmaVersion": 2019,
     "sourceType": "module"

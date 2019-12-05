@@ -6,5 +6,5 @@
       "changeProcessCWD": true
     }
   ],
-  "jest.pathToJest": "sh runJest.sh"
+  "jest.pathToJest": "sh scripts/runJest.sh"
 }

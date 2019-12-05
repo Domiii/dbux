@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dbux-babel-plugin 1. dbux-babel-plugin: 1. dbux-babel-plugin 1`] = `
+
+let foo = undefined;
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+"use strict";
+
+var foo = undefined;
+
+
+`;

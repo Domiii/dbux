@@ -1,5 +1,7 @@
 import { __dbux_logObjectTrace, trackObject as __dbux_trackObject } from '../core/trackObject';
-import ESTraverser from '../core/ESTraverser';
+
+import * as babylon from "babylon";
+import generate from "babel-generator";
 
 
 // see: https://esprima.org/demo/parse.html
@@ -9,7 +11,7 @@ function instrumentNode(origNode) {
   // __dbux_logObjectTrace(x);
   // return x;
   const parseConfig = {};
-  const ast = esprima.parseScript('__dbux_logObjectTrace(1)', parseConfig);
+  const ast = babylon.parse('__dbux_logObjectTrace(1)', parseConfig);
   const newNode = ast.body[0].expression;
 
   console.assert(newNode.type === 'CallExpression');
@@ -56,19 +58,27 @@ export function instrumentObjectTracker(source, sourceURL) {
     range: true,
     loc: true
   };
-  const ast = esprima.parseScript(source, parseConfig);
+  const ast = babylon.parse(source, parseConfig);
   new ObjectTrackerTraverser().replace(ast);
 
+  // see: https://babeljs.io/docs/en/next/babel-generator.html
   const genConfig = {
-    sourceMap: sourceURL,
-    sourceMapWithCode: true,
-    preserveBlankLines: true
+    retainLines: true,
+    compact: "auto",
+    concise: false,  // reduces whitespace
+    minified: false,
+    quotes: "single",
+    fileName: sourceURL, // used in warning messages
+
+    sourceMaps: true,
+    //sourceRoot: '',
+    sourceFileName: sourceURL
   };
 
   let {
     code,
     map
-  } = escodegen.generate(ast, genConfig);
+  } = generate(ast, genConfig, source);
   // code += `\n${__dbux_logObjectTrace}`;
 
   if (typeof window !== 'undefined') {

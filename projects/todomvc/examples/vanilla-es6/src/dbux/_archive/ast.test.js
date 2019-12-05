@@ -1,3 +1,4 @@
+it('noop', () => { });
 // import * as esprima from 'esprima';
 // import * as estraverse from 'estraverse';
 

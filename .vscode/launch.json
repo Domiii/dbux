@@ -5,6 +5,7 @@
 {
 	"version": "0.2.0",
 	"configurations": [		
+
 		{
 			// debugging of Chrome-bound code - https://github.com/Microsoft/vscode-chrome-debug
 			"type": "chrome",
@@ -33,6 +34,17 @@
 				"--i",
 				"--config",
 				"jest.config.js"
+			]
+		},{
+			"type": "node",
+			"request": "launch",
+			"protocol": "inspector",
+			"name": "ThisFile",
+			"program": "${file}",
+			"cwd": "${workspaceRoot}/projects/todomvc/examples/vanilla-es6",
+			"runtimeExecutable": "sh",
+			"runtimeArgs": [
+				"${workspaceRoot}/runThisFile.sh"
 			]
 		}
 	]

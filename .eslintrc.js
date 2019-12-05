@@ -1,9 +1,12 @@
-{
+module.exports = {
 	"env": {
-		"browser": false,
+		"browser": true,
 		"commonjs": true,
 		"es6": true,
 		"node": true
+	},
+	"globals": {
+		"console": true
 	},
 	"parserOptions": {
 		"ecmaFeatures": {
@@ -20,4 +23,4 @@
 		"constructor-super": "warn",
 		"valid-typeof": "warn"
 	}
-}
+};
