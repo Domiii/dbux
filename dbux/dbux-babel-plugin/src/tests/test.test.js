@@ -6,7 +6,9 @@ import path from 'path';
 import fs from 'fs';
 
 const codeFolder = path.join(__dirname, '__code__');
-const fpath = path.join(codeFolder, 'example/code.js');
+
+const fname = 'example1.js';
+const fpath = path.join(codeFolder, fname);
 
 let code;
 
@@ -23,9 +25,10 @@ pluginTester({
   babelOptions: {
     configFile: path.join(__dirname, '../../babel.config.js'),
   },
-  filename: __filename,
+  filename: fpath,
   tests: [
     {
+      title: fname,
       code,
       snapshot: true
     }

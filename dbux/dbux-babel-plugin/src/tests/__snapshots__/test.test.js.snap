@@ -1,14 +1,57 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`dbux-babel-plugin 1. dbux-babel-plugin: 1. dbux-babel-plugin 1`] = `
+exports[`dbux-babel-plugin example1.js: example1.js 1`] = `
 
-let foo = undefined;
+function f1(x,y) {
+}
+
+class A {
+  constructor() {
+  }
+
+  getX() {}
+}
+
+const f2 = (z,w) => {};
+
+/**
+\`\`\`
+ */
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 "use strict";
 
-var foo = undefined;
+function f1(x, y) {
+  "before";
+  "after";
+}
+
+var A =
+  /*#__PURE__*/
+  (function() {
+    function A() {
+      "before";
+      "after";
+    }
+
+    var _proto = A.prototype;
+
+    _proto.getX = function getX() {
+      "before";
+      "after";
+    };
+
+    return A;
+  })();
+
+var f2 = function f2(z, w) {
+  "before";
+  "after";
+};
+/**
+\`\`\`
+ */
 
 
 `;
