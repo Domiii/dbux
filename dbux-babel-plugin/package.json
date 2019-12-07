@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "devDependencies": {
     "@babel/cli": "^7.7.5",
+    "@babel/code-frame": "^7.5.5",
     "@babel/core": "^7.7.5",
     "@babel/generator": "^7.7.4",
     "@babel/node": "^7.7.4",
@@ -21,9 +22,11 @@
     "@babel/traverse": "^7.7.4",
     "@babel/types": "^7.7.4",
     "babel-plugin-tester": "^8.0.1",
+    "eslint": "^6.7.2",
     "jest": "^24.9.0",
     "jest-expect-message": "^1.0.2",
-    "jest-extended": "^0.11.2"
+    "jest-extended": "^0.11.2",
+    "lodash": "^4.17.15"
   },
   "scripts": {
     "build-sample": "npm run build && npx babel --plugins ./dist/index.js --config-file ./babel.config.js --out-dir ./dist.samples ./src/tests/__code__",

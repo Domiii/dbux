@@ -2,6 +2,7 @@
 // https://jestjs.io/docs/en/configuration.html
 
 module.exports = {
+  "testEnvironment": "node",
   "setupFilesAfterEnv": [
     "jest-extended",
     "jest-expect-message", // see https://github.com/mattphillips/jest-expect-message
@@ -91,7 +92,10 @@ module.exports = {
   // moduleNameMapper: {},
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
-  modulePathIgnorePatterns: ['__code__'],
+  modulePathIgnorePatterns: [
+    '__code__',
+    '__snapshots__'
+  ],
 
   // Activates notifications for test results
   // notify: false,

@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dbux-babel-plugin /Users/domi/code/dbux/dbux-babel-plugin/src/__tests__/astInjectAtRoot.js[0]: /Users/domi/code/dbux/dbux-babel-plugin/src/__tests__/astInjectAtRoot.js[0] 1`] = `
+"
+function f1() {
+  console.log('hi');
+}
+
+f1();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+function f1() {
+  console.log('hi');
+}
+
+f1();
+"
+`;
+
+exports[`dbux-babel-plugin /Users/domi/code/dbux/dbux-babel-plugin/src/__tests__/astInjectAtRoot.js[1]: /Users/domi/code/dbux/dbux-babel-plugin/src/__tests__/astInjectAtRoot.js[1] 1`] = `
+"
+function f2() {
+  AddMyImport();
+  AddMyImport();
+}
+f2();
+f2();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+var some = fance.code.here;
+
+function f2() {
+  AddMyImport();
+  AddMyImport();
+}
+
+f2();
+f2();
+"
+`;

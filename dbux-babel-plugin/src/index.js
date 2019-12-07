@@ -1,6 +1,12 @@
 import fsPath from 'path';
 
+(function() {
+  
+})();
+
 export default function ({ types: t }) {
+  
+
   const before = t.expressionStatement(t.stringLiteral('before'));
   const after = t.expressionStatement(t.stringLiteral('after'));
 

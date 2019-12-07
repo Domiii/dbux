@@ -2,6 +2,10 @@
   "eslint.enable": true,
   "eslint.workingDirectories": [
     {
+      "directory": "./dbux-babel-plugin",
+      "changeProcessCWD": true
+    },
+    {
       "directory": "./projects/todomvc/examples/vanilla-es6",
       "changeProcessCWD": true
     }

@@ -27,21 +27,31 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "vscode-jest-tests",
-			"program": "${workspaceRoot}/projects/todomvc/examples/vanilla-es6/node_modules/jest/bin/jest.js",
-			"cwd": "${workspaceRoot}/projects/todomvc/examples/vanilla-es6",
+			"name": "test-debug",
+			"program": "${workspaceFolder}/dbux-babel-plugin/node_modules/jest/bin/jest.js",
+			"cwd": "${workspaceFolder}/dbux-babel-plugin",
 			"args": [
-				"--i",
+				"-i",
+				"--runInBand",
 				"--config",
 				"jest.config.js"
-			]
-		},{
+			],
+
+			// see: https://github.com/microsoft/vscode/issues/5422
+			"restart": true,
+			"protocol": "inspector",
+			"trace": "all",
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+		},
+		{
 			"type": "node",
 			"request": "launch",
 			"protocol": "inspector",
 			"name": "ThisFile",
 			"program": "${file}",
-			"cwd": "${workspaceRoot}/projects/todomvc/examples/vanilla-es6",
+			"cwd": "${workspaceFolder}",
 			"runtimeExecutable": "sh",
 			"runtimeArgs": [
 				"${workspaceRoot}/runThisFile.sh"
