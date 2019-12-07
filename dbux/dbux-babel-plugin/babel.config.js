@@ -1,5 +1,3 @@
-// npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import
-
 module.exports = {
   "presets": [
     [
@@ -27,6 +25,7 @@ module.exports = {
     ],
     "@babel/plugin-proposal-function-bind",
     "@babel/plugin-syntax-export-default-from",
-    "@babel/plugin-syntax-dynamic-import"
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-transform-runtime"
   ]
 };

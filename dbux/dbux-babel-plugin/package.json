@@ -4,27 +4,34 @@
   "author": "Domi",
   "main": "dist/index.js",
   "devDependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
+    "@babel/generator": "^7.7.4",
+    "@babel/node": "^7.7.4",
+    "@babel/parser": "^7.7.5",
     "@babel/plugin-proposal-class-properties": "^7.7.4",
     "@babel/plugin-proposal-decorators": "^7.7.4",
     "@babel/plugin-proposal-function-bind": "^7.7.4",
-    "@babel/plugin-proposal-optional-chaining": "^7.7.4",
+    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
     "@babel/plugin-syntax-dynamic-import": "^7.7.4",
     "@babel/plugin-syntax-export-default-from": "^7.7.4",
-    "@babel/preset-env": "^7.7.4",
-    "babel-cli": "^6.4.5",
+    "@babel/plugin-transform-runtime": "^7.7.5",
+    "@babel/preset-env": "^7.7.5",
+    "@babel/template": "^7.7.4",
+    "@babel/traverse": "^7.7.4",
+    "@babel/types": "^7.7.4",
     "babel-plugin-tester": "^8.0.1",
-    "babel-preset-es2015": "^6.3.13",
-    "babel-preset-stage-0": "^6.3.13",
     "jest": "^24.9.0",
     "jest-expect-message": "^1.0.2",
     "jest-extended": "^0.11.2"
   },
   "scripts": {
-    "clean": "rm -rf dist",
-    "build": "babel src -d dist",
+    "build-sample": "npm run build && npx babel --plugins ./dist/index.js --config-file ./babel.config.js --out-dir ./dist.samples ./src/tests/__code__",
+    "clean": "rm -rf dist && rm -rf dist.samples",
+    "build": "npm run clean && npx babel src -d dist",
     "test": "jest",
     "test:watch": "npm run test -- --watch",
-    "prepublish": "npm run clean && npm run build"
+    "__prepublish": "npm run clean && npm run build"
   },
   "keywords": [
     "dbux",
@@ -36,6 +43,10 @@
     "babel-plugin"
   ],
   "dependencies": {
-    "core-js": "^3.4.7"
+    "@babel/polyfill": "^7.7.0",
+    "@babel/runtime": "^7.7.5",
+    "core-js": "^3.4.7",
+    "firebase-tools": "^7.9.0",
+    "g": "^2.0.1"
   }
 }

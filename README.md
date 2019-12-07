@@ -2,7 +2,7 @@
 
 ## Major Components
 * Babel
-   * `npm i -D babel-cli babel-node babel-core babylon babel-traverse babel-types babel-generator babel-template babel-plugin-transform-runtime jest babel-plugin-tester && npm i -S babel-runtime babel-polyfill`
+   * `npm i -D @babel/core @babel/cli @babel/node && npm i -D @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/plugin-transform-runtime && npm i -D jest jest-expect-message jest-extended babel-plugin-tester && npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime   && npm i -S core-js@3 @babel/runtime @babel/polyfill`
    * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/user-handbook.md
    * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md
    * [`bael-plugin-tester`](https://github.com/babel-utils/babel-plugin-tester#examples)
@@ -22,6 +22,7 @@
 ## References: babel + babel plugins
 
 * [babel parser docs](https://babeljs.io/docs/en/next/babel-parser.html)
+* [babel-parser AST explorer](https://astexplorer.net/)
 * [babel-types src (core)](https://github.com/babel/babel/blob/master/packages/babel-types/src/definitions/core.js)
 * [babel parser AST specs](https://github.com/babel/babel/blob/master/packages/babel-parser/ast/spec.md)
 * [babel traverse src](https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path)

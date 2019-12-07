@@ -1,13 +1,17 @@
+import fsPath from 'path';
+
 export default function ({ types: t }) {
   const before = t.expressionStatement(t.stringLiteral('before'));
   const after = t.expressionStatement(t.stringLiteral('after'));
 
   return {
     visitor: {
-      Program() {
-        console.log('[PLUGIN]', 'dbux');
+      Program(path, state) {
+        console.log('[FILE]', fsPath.relative(state.cwd, state.filename));
       },
-      Function(path) {
+      Function(path, state) {
+        // console.log('FUNCTION @', state.filename);
+
         const { node } = path;
         const line = node.loc?.start?.line;
 
