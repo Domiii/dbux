@@ -5,12 +5,17 @@
 import { parse } from '@babel/parser';
 import { codeFrameColumns } from "@babel/code-frame";
 import traverse from "@babel/traverse";
+import * as t from "@babel/types";
+
+export function buildTryFinally(tryNodes, finallyNodes) {
+  return t.tryStatement(t.blockStatement(tryNodes), null, t.blockStatement(finallyNodes))
+}
 
 /**
- * Generates AST from source through @babel/parser
+ * Build AST from source through @babel/parser
  * @param {*} source 
  */
-export function parseSource(source) {
+export function buildSource(source) {
   let ast;
   try {
     source = `${source}`;

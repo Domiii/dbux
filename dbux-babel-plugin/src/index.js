@@ -1,19 +1,14 @@
-import fsPath from 'path';
+// const fsPath = path;
+import { initDbux } from './runtime';
+import { instrumentFunction } from './instrumentation';
 
-(function() {
-  
-})();
 
 export default function ({ types: t }) {
-  
-
-  const before = t.expressionStatement(t.stringLiteral('before'));
-  const after = t.expressionStatement(t.stringLiteral('after'));
-
   return {
     visitor: {
       Program(path, state) {
-        console.log('[FILE]', fsPath.relative(state.cwd, state.filename));
+        // console.log('[FILE]', fsPath.relative(state.cwd, state.filename));
+        initDbux(path);
       },
       Function(path, state) {
         // console.log('FUNCTION @', state.filename);
@@ -25,8 +20,8 @@ export default function ({ types: t }) {
           // this node has been dynamically emitted; not part of the original source code
           return;
         }
-        path.get('body').unshiftContainer('body', before);
-        path.get('body').pushContainer('body', after);
+
+        instrumentFunction(path);
       }
     }
   };

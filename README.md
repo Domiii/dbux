@@ -28,8 +28,9 @@
 * [babel parser AST specs](https://github.com/babel/babel/blob/master/packages/babel-parser/ast/spec.md)
 * [babel traverse src](https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path)
    * [NodePath:modification](https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/modification.js)
-   * NOTE: babel/traverse 
-   * NOTE: babel/traverse is not properly documented
+   * At its core: [path.visit()](https://github.com/babel/babel/blob/f544753bb8c9c7a470d98e897b089fd31b83d1f6/packages/babel-traverse/src/path/context.js#L59) and [path._call()](https://github.com/babel/babel/blob/f544753bb8c9c7a470d98e897b089fd31b83d1f6/packages/babel-traverse/src/path/context.js#L31)
+   * [generateUidBasedOnNode](https://github.com/babel/babel/tree/master/packages/babel-traverse/src/scope/index.js#L268)
+   * NOTE: babel/traverse is not properly documented, so we go to the source
 * [Problem: babel plugin ordering](https://jamie.build/babel-plugin-ordering.html)
    * [SO: explanation + example](https://stackoverflow.com/questions/52870522/whats-the-difference-between-visitor-program-enter-and-pre-in-a-babel-p/59211068#59211068)
 * [babel-preset-env](https://github.com/babel/babel/blob/master/packages/babel-preset-env/src/index.js)

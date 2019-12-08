@@ -1,7 +1,262 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`dbux-babel-plugin example1.js: example1.js 1`] = `
+exports[`dbux-babel-plugin allFunctionTypes.es5.js: allFunctionTypes.es5.js 1`] = `
 "
+/* #################################################################################### */
+function f1() {
+
+}
+
+const f2 = function _f2() {
+
+};
+
+const f3 = () => {
+
+};
+
+const o = {
+  f4() {},
+  f5: () => {}
+};
+
+class C {
+  f6() {}
+  f7 = () => {};
+}
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+(function _____initDbux(dbuxId) {
+  var _global = function _getGlobal() {
+    if (typeof window !== 'undefined') {
+      _global = window;
+    } else if (typeof global !== 'undefined') {
+      _global = global;
+    } else {
+      _global = globalThis;
+    }
+  }();
+
+  _global[dbuxId] = {
+    thisIsDbux: true
+  };
+})(\\"_dbux\\");
+
+/* #################################################################################### */
+function f1() {
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {}
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
+}
+
+var f2 = function _f2() {
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {}
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
+};
+
+var f3 = function f3() {
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {}
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
+};
+
+var o = {
+  f4: function f4() {
+    try {
+      _dbux.es.push(\\"TODO\\");
+
+      {}
+    } finally {
+      _dbux.es.pop(\\"TODO\\");
+    }
+  },
+  f5: function f5() {
+    try {
+      _dbux.es.push(\\"TODO\\");
+
+      {}
+    } finally {
+      _dbux.es.pop(\\"TODO\\");
+    }
+  }
+};
+
+var C =
+/*#__PURE__*/
+function () {
+  function C() {
+    this.f7 = function () {
+      try {
+        _dbux.es.push(\\"TODO\\");
+
+        {}
+      } finally {
+        _dbux.es.pop(\\"TODO\\");
+      }
+    };
+  }
+
+  var _proto = C.prototype;
+
+  _proto.f6 = function f6() {
+    try {
+      _dbux.es.push(\\"TODO\\");
+
+      {}
+    } finally {
+      _dbux.es.pop(\\"TODO\\");
+    }
+  };
+
+  return C;
+}();
+"
+`;
+
+exports[`dbux-babel-plugin allFunctionTypes.esNext.js: allFunctionTypes.esNext.js 1`] = `
+"
+/* #################################################################################### */
+function f1() {
+
+}
+
+const f2 = function _f2() {
+
+};
+
+const f3 = () => {
+
+};
+
+const o = {
+  f4() {},
+  f5: () => {}
+};
+
+class C {
+  f6() {}
+  f7 = () => {};
+}
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+(function _____initDbux(dbuxId) {
+  var _global = function _getGlobal() {
+    if (typeof window !== 'undefined') {
+      _global = window;
+    } else if (typeof global !== 'undefined') {
+      _global = global;
+    } else {
+      _global = globalThis;
+    }
+  }();
+
+  _global[dbuxId] = {
+    thisIsDbux: true
+  };
+})(\\"_dbux\\");
+
+/* #################################################################################### */
+function f1() {
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {}
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
+}
+
+const f2 = function _f2() {
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {}
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
+};
+
+const f3 = () => {
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {}
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
+};
+
+const o = {
+  f4() {
+    try {
+      _dbux.es.push(\\"TODO\\");
+
+      {}
+    } finally {
+      _dbux.es.pop(\\"TODO\\");
+    }
+  },
+
+  f5: () => {
+    try {
+      _dbux.es.push(\\"TODO\\");
+
+      {}
+    } finally {
+      _dbux.es.pop(\\"TODO\\");
+    }
+  }
+};
+
+class C {
+  constructor() {
+    this.f7 = () => {
+      try {
+        _dbux.es.push(\\"TODO\\");
+
+        {}
+      } finally {
+        _dbux.es.pop(\\"TODO\\");
+      }
+    };
+  }
+
+  f6() {
+    try {
+      _dbux.es.push(\\"TODO\\");
+
+      {}
+    } finally {
+      _dbux.es.pop(\\"TODO\\");
+    }
+  }
+
+}
+"
+`;
+
+exports[`dbux-babel-plugin example1.es5.js: example1.es5.js 1`] = `
+"
+/* #################################################################################### */
 function f1(x,y) {
 }
 
@@ -42,26 +297,59 @@ exports.__esModule = true;
 exports.f1 = f1;
 exports.f2 = exports.A = void 0;
 
+(function _____initDbux(dbuxId) {
+  var _global = function _getGlobal() {
+    if (typeof window !== 'undefined') {
+      _global = window;
+    } else if (typeof global !== 'undefined') {
+      _global = global;
+    } else {
+      _global = globalThis;
+    }
+  }();
+
+  _global[dbuxId] = {
+    thisIsDbux: true
+  };
+})(\\"_dbux\\");
+
+/* #################################################################################### */
 function f1(x, y) {
-  \\"before\\";
-  \\"after\\";
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {}
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
 }
 
 var A =
 /*#__PURE__*/
 function () {
   function A() {
-    \\"before\\";
-    this.m = new Map();
-    this.s = new Set();
-    \\"after\\";
+    try {
+      _dbux.es.push(\\"TODO\\");
+
+      {
+        this.m = new Map();
+        this.s = new Set();
+      }
+    } finally {
+      _dbux.es.pop(\\"TODO\\");
+    }
   }
 
   var _proto = A.prototype;
 
   _proto.getX = function getX() {
-    \\"before\\";
-    \\"after\\";
+    try {
+      _dbux.es.push(\\"TODO\\");
+
+      {}
+    } finally {
+      _dbux.es.pop(\\"TODO\\");
+    }
   };
 
   return A;
@@ -70,10 +358,209 @@ function () {
 exports.A = A;
 
 var f2 = function f2(z, w) {
-  \\"before\\";
-  \\"after\\";
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {}
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
 };
 
 exports.f2 = f2;
+"
+`;
+
+exports[`dbux-babel-plugin example1.esNext.js: example1.esNext.js 1`] = `
+"
+/* #################################################################################### */
+function f1(x,y) {
+}
+
+class A {
+  constructor() {
+    this.m = new Map();
+    this.s = new Set();
+  }
+
+  getX() {}
+}
+
+const f2 = (z,w) => {};
+
+export {
+  f1,
+  A,
+  f2
+}
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+require(\\"core-js/modules/es.array.iterator.js\\");
+
+require(\\"core-js/modules/web.dom-collections.iterator.js\\");
+
+exports.__esModule = true;
+exports.f1 = f1;
+exports.f2 = exports.A = void 0;
+
+(function _____initDbux(dbuxId) {
+  var _global = function _getGlobal() {
+    if (typeof window !== 'undefined') {
+      _global = window;
+    } else if (typeof global !== 'undefined') {
+      _global = global;
+    } else {
+      _global = globalThis;
+    }
+  }();
+
+  _global[dbuxId] = {
+    thisIsDbux: true
+  };
+})(\\"_dbux\\");
+
+/* #################################################################################### */
+function f1(x, y) {
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {}
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
+}
+
+class A {
+  constructor() {
+    try {
+      _dbux.es.push(\\"TODO\\");
+
+      {
+        this.m = new Map();
+        this.s = new Set();
+      }
+    } finally {
+      _dbux.es.pop(\\"TODO\\");
+    }
+  }
+
+  getX() {
+    try {
+      _dbux.es.push(\\"TODO\\");
+
+      {}
+    } finally {
+      _dbux.es.pop(\\"TODO\\");
+    }
+  }
+
+}
+
+exports.A = A;
+
+const f2 = (z, w) => {
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {}
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
+};
+
+exports.f2 = f2;
+"
+`;
+
+exports[`dbux-babel-plugin example2.es5.js: example2.es5.js 1`] = `
+"
+/* #################################################################################### */
+import { A } from './example1';
+
+(function main() {
+  console.log(new A());
+})();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+var _example = require(\\"./example1\\");
+
+(function _____initDbux(dbuxId) {
+  var _global = function _getGlobal() {
+    if (typeof window !== 'undefined') {
+      _global = window;
+    } else if (typeof global !== 'undefined') {
+      _global = global;
+    } else {
+      _global = globalThis;
+    }
+  }();
+
+  _global[dbuxId] = {
+    thisIsDbux: true
+  };
+})(\\"_dbux\\");
+
+(function main() {
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {
+      console.log(new _example.A());
+    }
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
+})();
+"
+`;
+
+exports[`dbux-babel-plugin example2.esNext.js: example2.esNext.js 1`] = `
+"
+/* #################################################################################### */
+import { A } from './example1';
+
+(function main() {
+  console.log(new A());
+})();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+var _example = require(\\"./example1\\");
+
+(function _____initDbux(dbuxId) {
+  var _global = function _getGlobal() {
+    if (typeof window !== 'undefined') {
+      _global = window;
+    } else if (typeof global !== 'undefined') {
+      _global = global;
+    } else {
+      _global = globalThis;
+    }
+  }();
+
+  _global[dbuxId] = {
+    thisIsDbux: true
+  };
+})(\\"_dbux\\");
+
+(function main() {
+  try {
+    _dbux.es.push(\\"TODO\\");
+
+    {
+      console.log(new _example.A());
+    }
+  } finally {
+    _dbux.es.pop(\\"TODO\\");
+  }
+})();
 "
 `;

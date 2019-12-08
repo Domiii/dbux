@@ -1,7 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`dbux-babel-plugin /Users/domi/code/dbux/dbux-babel-plugin/src/__tests__/astInjectAtRoot.js[0]: /Users/domi/code/dbux/dbux-babel-plugin/src/__tests__/astInjectAtRoot.js[0] 1`] = `
+exports[`dbux-babel-plugin astInjectAtRoot.es5.js: astInjectAtRoot.es5.js 1`] = `
 "
+/* #################################################################################### */
+
+function f2() {
+  AddCustomCode();
+  AddCustomCode();
+}
+f2();
+f2();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+someFancyCodeHere();
+
+/* #################################################################################### */
+function f2() {
+  AddCustomCode();
+  AddCustomCode();
+}
+
+f2();
+f2();
+"
+`;
+
+exports[`dbux-babel-plugin astInjectAtRoot.es5.js: astInjectAtRoot.es5.js 2`] = `
+"
+/* #################################################################################### */
+
 function f1() {
   console.log('hi');
 }
@@ -12,6 +42,7 @@ f1();
 
 \\"use strict\\";
 
+/* #################################################################################### */
 function f1() {
   console.log('hi');
 }
@@ -20,11 +51,13 @@ f1();
 "
 `;
 
-exports[`dbux-babel-plugin /Users/domi/code/dbux/dbux-babel-plugin/src/__tests__/astInjectAtRoot.js[1]: /Users/domi/code/dbux/dbux-babel-plugin/src/__tests__/astInjectAtRoot.js[1] 1`] = `
+exports[`dbux-babel-plugin astInjectAtRoot.esNext.js: astInjectAtRoot.esNext.js 1`] = `
 "
+/* #################################################################################### */
+
 function f2() {
-  AddMyImport();
-  AddMyImport();
+  AddCustomCode();
+  AddCustomCode();
 }
 f2();
 f2();
@@ -33,14 +66,36 @@ f2();
 
 \\"use strict\\";
 
-var some = fance.code.here;
-
+/* #################################################################################### */
 function f2() {
-  AddMyImport();
-  AddMyImport();
+  AddCustomCode();
+  AddCustomCode();
 }
 
 f2();
 f2();
+"
+`;
+
+exports[`dbux-babel-plugin astInjectAtRoot.esNext.js: astInjectAtRoot.esNext.js 2`] = `
+"
+/* #################################################################################### */
+
+function f1() {
+  console.log('hi');
+}
+
+f1();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+/* #################################################################################### */
+function f1() {
+  console.log('hi');
+}
+
+f1();
 "
 `;

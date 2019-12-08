@@ -21,6 +21,10 @@ module.exports = {
 		"no-unreachable": "warn",
 		"no-unused-vars": "warn",
 		"constructor-super": "warn",
-		"valid-typeof": "warn"
+		"valid-typeof": "warn",
+		"no-empty-function":0,
+		"class-methods-use-this": "warn",
+		"import/prefer-default-export": 0,
+		"import/no-nodejs-modules": 0
 	}
 };
