@@ -1,12 +1,7 @@
 {
 	"folders": [
 		{
-			"name": "The Plugin",
-			"path": "dbux/dbux-babel-plugin"
-		},
-		{
-			"path": "projects/todomvc/examples/vanilla-es6"
+			"path": "."
 		}
-	],
-	"settings": {}
+	]
 }

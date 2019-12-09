@@ -2,15 +2,16 @@ import { buildTryFinally } from '../helpers/builders';
 import { buildEventStreamCall } from '../runtime/eventStreams';
 import * as t from "@babel/types";
 
-const visitedFunctions = new Set();
 
-export function instrumentFunctionEventStream(path) {
-  if (visitedFunctions.has(path)) {
-    // NOTE: each node might be visited more than once
-    return;
-  }
-  visitedFunctions.add(path);
+export function instrumentAwaitEventStream(bodyPath) {
+  // TODO: https://babeljs.io/docs/en/babel-types#forofstatement -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
+  //
+}
 
+/**
+ * Instrument all Functions and Program to keep track of all (possibly async) execution stacks.
+ */
+export function instrumentInstructionFlowEventStream(bodyPath) {
   // TODO: executionContext is necessary to work with async stacks
 
   const executionContext = '"TODO"';
@@ -18,7 +19,7 @@ export function instrumentFunctionEventStream(path) {
   const endCall = buildEventStreamCall(`pop(${executionContext});`);
 
   // wrap the function in a try/finally statement
-  const fnBody = [startCall, ...path.get('body').node];
+  const fnBody = [startCall, ...bodyPath.node];
   const finallyBody = [endCall];
-  path.get('body').replaceWith(t.blockStatement([buildTryFinally(fnBody, finallyBody)]));
+  bodyPath.replaceWith(t.blockStatement([buildTryFinally(fnBody, finallyBody)]));
 }

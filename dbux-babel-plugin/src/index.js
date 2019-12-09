@@ -21,8 +21,33 @@ export default function ({ types: t }) {
           return;
         }
 
+        if (path.node.generator) {
+          // TOOD: handle generator function
+        }
+
         instrumentFunction(path);
-      }
+      },
+
+      AwaitExpression(path) {
+        // TODO: instrumentAwait
+      },
+
+      /**
+       * explanation: "`for await (const x of y) { x }` is like a sugar of: `for (const x of y) { await x }` (but call y[Symbol.asyncIterator]() instead of y[Symbol.iterator]())"
+       * @see https://github.com/babel/babel/issues/4969)
+       */
+      ForOfStatement(path) {
+        // TODO: instrumentAwait
+      },
+
+
+      /*
+      TODO:
+      generator functions
+      instrumentTimingEvents(); // setTimeout + setInterval
+      instrumentThenables(); // TODO: then, catch, finally, etc.. // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+      //instrumentOtherCallbacks(); // e.g.: event handlers, non-promisified libraries
+      */
     }
   };
 }
