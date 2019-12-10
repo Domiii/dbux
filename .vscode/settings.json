@@ -6,6 +6,10 @@
       "changeProcessCWD": true
     },
     {
+      "directory": "./dbux-runtime",
+      "changeProcessCWD": true
+    },
+    {
       "directory": "./projects/todomvc/examples/vanilla-es6",
       "changeProcessCWD": true
     }

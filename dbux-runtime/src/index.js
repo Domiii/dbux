@@ -1,7 +1,7 @@
-import EventStreamReporter from './EventStreamReporter';
+import TraceMonitor from './TraceMonitor';
 
 const dbux = {
-  es: new EventStreamReporter()
+  trace: new TraceMonitor()
 };
 
 export default dbux;

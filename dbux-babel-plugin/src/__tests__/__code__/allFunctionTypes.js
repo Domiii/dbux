@@ -19,3 +19,9 @@ class C {
   f6() {}
   f7 = () => {};
 }
+
+// generator function
+function *f8() {
+  yield 1;
+  yield 2;
+}

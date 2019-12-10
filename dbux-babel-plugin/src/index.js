@@ -43,10 +43,13 @@ export default function ({ types: t }) {
 
       /*
       TODO:
-      generator functions
-      instrumentTimingEvents(); // setTimeout + setInterval
+      instrumentTimingEvents(); // setTimeout + setInterval + process.nextTick
       instrumentThenables(); // TODO: then, catch, finally, etc.. // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+      generator functions
+
+
       //instrumentOtherCallbacks(); // e.g.: event handlers, non-promisified libraries
+      // big problem => sending objects into blackboxed modules that will call methods on them
       */
     }
   };
