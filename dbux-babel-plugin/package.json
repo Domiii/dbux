@@ -3,6 +3,14 @@
   "description": "",
   "author": "Domi",
   "main": "dist/index.js",
+  "scripts": {
+    "build-sample": "npm run build && npx babel --plugins ./dist/index.js --config-file ./babel.config.js --out-dir ./dist.samples ./src/tests/__code__",
+    "clean": "rm -rf dist && rm -rf dist.samples",
+    "build": "npm run clean && npx babel src -d dist",
+    "test": "jest",
+    "test:watch": "npm run test -- --watch",
+    "__prepublish": "npm run clean && npm run build"
+  },
   "devDependencies": {
     "@babel/cli": "^7.7.5",
     "@babel/code-frame": "^7.5.5",
@@ -28,14 +36,6 @@
     "jest-expect-message": "^1.0.2",
     "jest-extended": "^0.11.2",
     "lodash": "^4.17.15"
-  },
-  "scripts": {
-    "build-sample": "npm run build && npx babel --plugins ./dist/index.js --config-file ./babel.config.js --out-dir ./dist.samples ./src/tests/__code__",
-    "clean": "rm -rf dist && rm -rf dist.samples",
-    "build": "npm run clean && npx babel src -d dist",
-    "test": "jest",
-    "test:watch": "npm run test -- --watch",
-    "__prepublish": "npm run clean && npm run build"
   },
   "keywords": [
     "dbux",

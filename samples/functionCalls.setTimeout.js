@@ -10,20 +10,20 @@ try {
 
     try {
       // f1 body
-      setTimeout(pushCallbackOneShot(id1, function f2() {
+      setTimeout(scheduleCallbackOneShot(id1, function f2() {
         const id2 = dbux.push(staticId2);
         try {
           // f2 body
-          setTimeout(pushCallbackOneShot(id2, f3));
+          setTimeout(scheduleCallbackOneShot(id2, f3));
         }
         finally {
-          pop(id2);
+          dbux.pop(id2);
         }
       }));
 
     }
     finally {
-      pop(id1);
+      dbux.pop(id1);
     }
   }
 
@@ -66,36 +66,38 @@ const callbackWrappersByCallback = new Map();
  * 3. Callback object identity must be ensured
  * 4. Callback object has custom properties that are needed
  */
-function wrapCallbackOneShot(senderContextId, cb) {
-  const wrapperCb = (...args) => {
+function wrapCallbackOneShot(scheduledContextId, cb) {
+  return (...args) => {
+    const cbContextId = pushCallbackStart(scheduledContextId);
+
     try {
       return cb(...args);
     }
     finally {
-      popCallbackOneShot(senderContextId, cb);
+      popCallbackOneShot(cbContextId);
     }
   };
-
-  const wrapperContext = {
-    cb,
-    wrapperCb,
-    senderContextId
-  };
-
-  callbackWrappersByCallback.set(cb, wrapperContext);
-
-  return wrapperContext;
 }
 
-function pushCallbackOneShot(senderContextId, cb) {
-  const context = wrapCallbackOneShot(cb);
-  push(context);
-  return context.wrapperCb;
+function scheduleCallbackOneShot(schedulerId, cb) {
+  // TODO: no staticContextId
+  const scheduledContextId = pushSchedule(staticContextId, schedulerId);
+  return wrapCallbackOneShot(scheduledContextId, cb);
 }
 
-function popCallbackOneShot(senderContextId, cb) {
+function pushCallbackStart(scheduledContextId) {
+  // TODO: how to handle this "tree branching"
+  // TODO: no staticContextId
+  const cbId = ...;
+  return cbId;
+}
+
+function popCallbackOneShot(cbContextId, cb) {
   
 }
+
+
+// TODO: setInterval + event listeners
 
 function pushCallbackRepeated(contextId, cb) {
 

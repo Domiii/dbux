@@ -1,16 +1,21 @@
 
 
 export default class ExecutionContext {
-  constructor(staticContextId, callerId, contextId) {
+  constructor(staticContextId, schedulerId, contextId, stack) {
     this._staticContextId = staticContextId;
-    this._callerId = callerId;
+    this._schedulerId = schedulerId;
     this._contextId = contextId;
+    this._stack = stack;
+  }
+
+  getStack() {
+    return this._stack;
   }
   
   /**
    * 
    */
-  isDynamicInvocation() {
-    return !!this._callerId;
+  isImmediateInvocation() {
+    return !this._schedulerId;
   }
 }

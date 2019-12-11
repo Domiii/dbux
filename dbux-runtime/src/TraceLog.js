@@ -4,10 +4,13 @@ export const LogEventType = new Enum({
 });
 
 export default class TraceLog {
+  static logInternalError(...args) {
+    console.error('[DBUX INTERNAL ERROR]', ...args);
+  }
+
   _log = [];
 
-  constructor(startId) {
-    this.startId = startId;
+  constructor() {
   }
 
   logPush(context) {
@@ -15,6 +18,10 @@ export default class TraceLog {
       type: LogEventType.Push,
       ...context
     });
+  }
+
+  logInternalError(...args) {
+    return TraceLog.logInternalError(...args);
   }
 
 }
