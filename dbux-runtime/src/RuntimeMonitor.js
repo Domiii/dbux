@@ -1,18 +1,14 @@
 import ExecutionStack from './ExecutionStack';
-import StaticTraceMonitor from './StaticTraceMonitor';
+import StaticContextManager from './StaticContextManager';
 import ExecutionContext from './ExecutionContext';
 import TraceLog from './TraceLog';
+import ProgramExecutionContex from './ProgramExecutionContext';
 
 /**
  * 
  */
-export default class RuntimeTraceMonitor {
+export default class RuntimeMonitor {
   _contexts = new Map();
-
-  /**
-   * The static trace monitors keep track of events related to the static code scaffold.
-   */
-  _staticTraceMonitors = new Map();
 
   /**
    * Set of all active/scheduled calls.
@@ -24,6 +20,8 @@ export default class RuntimeTraceMonitor {
    */
   _currentStack = null;
 
+  _programs = new Map();
+
   // ###########################################################################
   // Bookkeeping
   // ###########################################################################
@@ -31,6 +29,18 @@ export default class RuntimeTraceMonitor {
   // getContext(contextId) {
   //   return this._contexts;
   // }
+
+  addProgram(programData) {
+    this.programs.push(programData);
+
+    const { instrumentedSites } = programData;
+    // const offsetIdx = this.staticContexts.length;
+    // this.staticContexts.push(...instrumentedSites.map((site, i) => new StaticContext(i + offsetIdx, programData, site)));
+    const programStaticContext = StaticContextManager.instance.addProgram(programData);
+    const programExecutionContext = new ProgramExecutionContex(programStaticContext);
+    this._programs.set(programStaticContext.getProgramId(), programExecutionContext);
+    return programExecutionContext;
+  }
 
   getCurrentStack() {
     return this._currentStack;
@@ -58,23 +68,11 @@ export default class RuntimeTraceMonitor {
     return stack;
   }
 
-  genContextId(staticContextId, callerId) {
-    const staticTrace = this.getOrCreateStaticTraceMonitor(staticContextId);
-    return staticTrace.genContextId(callerId);
-  }
 
   createStack(contextId, parent) {
     const stack = new ExecutionStack(contextId, parent);
     this._activeStacks.set(contextId, stack);
     return stack;
-  }
-
-  getOrCreateStaticTraceMonitor(staticContextId) {
-    let traceMonitor = this._staticTraceMonitors.get(staticContextId);
-    if (!traceMonitor) {
-      this._staticTraceMonitors.set(staticContextId, traceMonitor = new StaticTraceMonitor(staticContextId));
-    }
-    return traceMonitor;
   }
 
   _notifyStackFinished(stack) {
@@ -91,7 +89,7 @@ export default class RuntimeTraceMonitor {
    * @param {*} schedulerId Set when `pushSchedule` is used instead of `push`
    */
   push(staticContextId, schedulerId = null) {
-    const contextId = this.genContextId(staticContextId, schedulerId);
+    const contextId = this._staticContextManager.genContextId(staticContextId, schedulerId);
     const stack = this.getOrCreateStackForInvocation(contextId, schedulerId);
     const context = new ExecutionContext(staticContextId, schedulerId, contextId, stack);
     this._contexts.set(contextId, context);
