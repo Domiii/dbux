@@ -21,8 +21,6 @@ export default class StaticContextManager {
   _programStaticContexts = new Map();
 
   addProgram(programData) {
-    // const offsetIdx = this.staticContexts.length;
-    // this.staticContexts.push(...instrumentedSites.map((site, i) => new StaticContext(i + offsetIdx, programData, site)));
     const programStaticContext = new ProgramStaticContext(programId, programData);
     this._programStaticContexts.set();
     return programStaticContext;

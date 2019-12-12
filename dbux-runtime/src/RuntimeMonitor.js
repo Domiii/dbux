@@ -2,7 +2,7 @@ import ExecutionStack from './ExecutionStack';
 import StaticContextManager from './StaticContextManager';
 import ExecutionContext from './ExecutionContext';
 import TraceLog from './TraceLog';
-import ProgramExecutionContex from './ProgramExecutionContext';
+import ProgramMonitor from './ProgramMonitor';
 
 /**
  * 
@@ -33,13 +33,13 @@ export default class RuntimeMonitor {
   addProgram(programData) {
     this.programs.push(programData);
 
-    const { instrumentedSites } = programData;
+    const { staticSites } = programData;
     // const offsetIdx = this.staticContexts.length;
-    // this.staticContexts.push(...instrumentedSites.map((site, i) => new StaticContext(i + offsetIdx, programData, site)));
+    // this.staticContexts.push(...staticSites.map((site, i) => new StaticContext(i + offsetIdx, programData, site)));
     const programStaticContext = StaticContextManager.instance.addProgram(programData);
-    const programExecutionContext = new ProgramExecutionContex(programStaticContext);
-    this._programs.set(programStaticContext.getProgramId(), programExecutionContext);
-    return programExecutionContext;
+    const programMonitor = new ProgramMonitor(programStaticContext);
+    this._programs.set(programStaticContext.getProgramId(), programMonitor);
+    return programMonitor;
   }
 
   getCurrentStack() {
@@ -89,6 +89,7 @@ export default class RuntimeMonitor {
    * @param {*} schedulerId Set when `pushSchedule` is used instead of `push`
    */
   push(staticContextId, schedulerId = null) {
+    // TODO: don't need a stack for scheduled contexts
     const contextId = this._staticContextManager.genContextId(staticContextId, schedulerId);
     const stack = this.getOrCreateStackForInvocation(contextId, schedulerId);
     const context = new ExecutionContext(staticContextId, schedulerId, contextId, stack);
@@ -104,6 +105,18 @@ export default class RuntimeMonitor {
    */
   pushSchedule(staticContextId, schedulerId) {
     return this.push(staticContextId, schedulerId);
+  }
+
+  pushCallbackLink(scheduledContextId) {
+    const linkedContext = this._contexts.get(scheduledContextId);
+    if (!linkedContext) {
+      TraceLog.logInternalError('pushCallbackLink\'s `scheduledContextId` does not exist:', scheduledContextId);
+      return;
+    }
+
+    // TODO: linking contexts/stacks
+    const linkId = ;
+    return linkId;
   }
 
   pop(contextId) {

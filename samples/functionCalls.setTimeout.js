@@ -1,39 +1,37 @@
 // Program
 
-const dbux0 = require('dbux-runtime');
-const dbux = _dbux_init1(dbux0);
-
-const id0 = dbux.push(staticId0);
+const _dbuxRuntime = require('dbux-runtime');
+const _dbux = _dbux_init(_dbuxRuntime);
 
 try {
   // Program body
 
   function f1(a, b) {
-    const id1 = dbux.push(staticId1, a, b);
+    const id1 = _dbux.push(staticId1, a, b);
 
     try {
       // f1 body
-      setTimeout(scheduleCallbackOneShot(staticId12, id1, function f2() {
-        const id2 = dbux.push(staticId2);
+      setTimeout(wrapCallback(staticId12, id1, function f2() {
+        const id2 = _dbux.push(staticId2);
         try {
           // f2 body
-          setTimeout(scheduleCallbackOneShot(staticId22, id2, f3));
+          setTimeout(wrapCallback(staticId22, id2, f3), 345);
         }
         finally {
-          dbux.pop(id2);
+          _dbux.pop(id2);
         }
       }));
 
     }
     finally {
-      dbux.pop(id1);
+      _dbux.pop(id1);
     }
   }
 
 
 
   function f3() {
-    const id3 = dbux.push(staticId3);
+    const id3 = _dbux.push(staticId3);
 
     try {
       // f3 body
@@ -46,13 +44,13 @@ try {
   f1(1, 84);
 }
 finally {
-  pop(id0);
+  _dbux.popProgram();
 }
 
-function _dbux_init1(dbuxRuntime) {
+function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     file: 'src/some/dir/myFile.js',
-    instrumentedSites: [
+    staticSites: [
       { /* staticId0 */
         type: 1,
         name: 'src/some/dir/myFile.js'
@@ -63,11 +61,23 @@ function _dbux_init1(dbuxRuntime) {
         parent: staticId0,
         line: l1
       },
+      { /* staticId12 */
+        type: 3,
+        name: 'f2',
+        parent: staticId1,
+        line: l12
+      },
       { /* staticId2 */
         type: 2,
         name: 'f2',
         parent: staticId1,
         line: l2
+      },
+      { /* staticId22 */
+        type: 3,
+        name: 'f3',
+        parent: staticId2,
+        line: l22
       },
       { /* staticId3 */
         type: 2,
@@ -99,33 +109,31 @@ const callbackWrappersByCallback = new Map();
  * 3. Callback object identity must be ensured
  * 4. Callback object has custom properties that are needed
  */
-function wrapCallbackOneShot(scheduledContextId, cb) {
+function makeCallbackWrapper(scheduledContextId, cb) {
   return (...args) => {
-    const cbContextId = pushCallbackStart(scheduledContextId);
+    // make sure, the scheduledContextId is on the stack before starting it
+    const cbContextId = pushCallbackLink(scheduledContextId);
 
     try {
       return cb(...args);
     }
     finally {
-      popCallbackOneShot(cbContextId);
+      popCallbackLink(cbContextId);
     }
   };
 }
 
-function scheduleCallbackOneShot(staticContextId, schedulerId, cb) {
-  // TODO: no staticContextId
+function wrapCallback(staticContextId, schedulerId, cb) {
   const scheduledContextId = pushSchedule(staticContextId, schedulerId);
-  return wrapCallbackOneShot(scheduledContextId, cb);
+  return makeCallbackWrapper(scheduledContextId, cb);
 }
 
-function pushCallbackStart(scheduledContextId) {
-  // TODO: how to handle this "tree branching"
-  // TODO: no staticContextId
+function pushCallbackLink(scheduledContextId) {
   const cbId = ...;
   return cbId;
 }
 
-function popCallbackOneShot(cbContextId, cb) {
+function popCallbackLink(cbContextId, cb) {
   
 }
 

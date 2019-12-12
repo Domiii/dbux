@@ -42,8 +42,12 @@ export default function ({ types: t }) {
 
 
       /*
-      TODO:
+      more TODO:
+      see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop
+      see: https://stackoverflow.com/questions/2734025/is-javascript-guaranteed-to-be-single-threaded/2734311#2734311
+
       instrumentTimingEvents(); // setTimeout + setInterval + process.nextTick
+      instrumentInterruptEvents(); // alert, confirm, prompt etc
       instrumentThenables(); // TODO: then, catch, finally, etc.. // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
       generator functions
 
