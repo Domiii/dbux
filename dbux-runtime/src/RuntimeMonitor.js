@@ -8,6 +8,15 @@ import ProgramMonitor from './ProgramMonitor';
  * 
  */
 export default class RuntimeMonitor {
+  static _instance;
+  /**
+   * Singleton
+   * @type {RuntimeMonitor}
+   */
+  static get instance() {
+    return this._instance || (this._instance = new RuntimeMonitor());
+  }
+
   _contexts = new Map();
 
   /**
@@ -46,20 +55,17 @@ export default class RuntimeMonitor {
     return this._currentStack;
   }
 
-  getOrCreateStackForInvocation(contextId, schedulerId) {
+  /**
+   * @return {ExecutionStack}
+   */
+  getOrCreateStackForContext(contextId, schedulerId) {
     const currentStack = this.getCurrentStack();
     let stack;
-    if (schedulerId) {
-      // this is not an immediate invocation, but scheduled for later; create new child stack for it
-      if (!currentStack) {
-        // there must be an active stack from where the scheduling happened
-        TraceLog.logInternalError('No activeStack when scheduling callback call from:', schedulerId);
-      }
-      stack = this.createStack(contextId, currentStack);
-    }
-    else if (!currentStack) {
+    if (!currentStack) {
       // no active stack -> this invocation has been called from some system or blackboxed scheduler
-      stack = this.createStack(contextId, null);
+      //    indicating a new start, and thus a new ExecutionStack (at least for as much as we can see)
+      stack = this.createStack(contextId, null, null);
+      TraceLog.instance().logRunStart(contextId, schedulerId);
     }
     else {
       // new invocation on current stack
@@ -68,9 +74,12 @@ export default class RuntimeMonitor {
     return stack;
   }
 
-
-  createStack(contextId, parent) {
-    const stack = new ExecutionStack(contextId, parent);
+  /**
+   * 
+   */
+  createStack(contextId, schedulerId, parent) {
+    // TODO: use Object pool for stack objects to avoid memory churn in performance-critical applications
+    const stack = new ExecutionStack(contextId, schedulerId, parent);
     this._activeStacks.set(contextId, stack);
     return stack;
   }
@@ -85,17 +94,15 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   /**
-   * @param {*} staticContextId 
-   * @param {*} schedulerId Set when `pushSchedule` is used instead of `push`
+   * @param {ExecutionContext} context
    */
-  push(staticContextId, schedulerId = null) {
-    // TODO: don't need a stack for scheduled contexts
-    const contextId = this._staticContextManager.genContextId(staticContextId, schedulerId);
-    const stack = this.getOrCreateStackForInvocation(contextId, schedulerId);
-    const context = new ExecutionContext(staticContextId, schedulerId, contextId, stack);
-    this._contexts.set(contextId, context);
-    stack.push(context);
-    stack._log.logPush(stack, context);
+  push(contextId, schedulerId) {
+    const stack = this.getOrCreateStackForContext(contextId, schedulerId);
+    // this._contexts.set(contextId, context);
+    if (!schedulerId) {
+      stack.push(contextId);
+    }
+    TraceLog.instance().logPush(contextId);
     return contextId;
   }
 
@@ -103,8 +110,13 @@ export default class RuntimeMonitor {
    * Push a new context for a scheduled callback for later execution.
    * Especially for: (1) await, (2) promise, (3) time event, (4) other callback scheduling
    */
-  pushSchedule(staticContextId, schedulerId) {
-    return this.push(staticContextId, schedulerId);
+  scheduleCallback(staticContextId, schedulerId) {
+    // this is not an immediate invocation, but scheduled for later
+    if (!this._currentStack) {
+      // there must be an active stack from where the scheduling happened
+      TraceLog.logInternalError('No activeStack when scheduling callback call from:', schedulerId);
+    }
+    TraceLog.instance().logSchedule(contextId, schedulerId);
   }
 
   pushCallbackLink(scheduledContextId) {
@@ -115,7 +127,7 @@ export default class RuntimeMonitor {
     }
 
     // TODO: linking contexts/stacks
-    const linkId = ;
+    // const linkId = ;
     return linkId;
   }
 
@@ -148,6 +160,6 @@ export default class RuntimeMonitor {
   }
 
   popSchedule() {
-    
+
   }
 }

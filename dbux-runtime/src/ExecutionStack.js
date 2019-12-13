@@ -1,16 +1,16 @@
 import TraceLog from './TraceLog';
-import ExecutionContext from './ExecutionContext';
+import ExecutionContextManager from './ExecutionContextManager';
 
 export default class ExecutionStack {
   /**
    * @type {ExecutionContext[]}
    */
   _contexts = [];
-  _activeCount = 0;
+  _ptr = 0;
 
-  constructor(rootContextId, parent) {
+  constructor(rootContextId, schedulerId, parent) {
     this._parent = parent;
-    this._log = new TraceLog();
+    this._schedulerId = schedulerId;
     this._rootContextId = rootContextId;
   }
 
@@ -31,17 +31,15 @@ export default class ExecutionStack {
   }
 
   getActiveCount() {
-    return this._activeCount;
+    return this._contexts.length;
   }
 
   /**
    * @param {ExecutionContext} context 
    */
-  push(context) {
-    this._contexts.push(context);
-    if (context.isImmediateInvocation()) {
-      ++this._activeCount;
-    }
+  push(contextId) {
+    this._contexts.push(contextId);
+    ++this._ptr;
   }
 
   /**
@@ -49,13 +47,11 @@ export default class ExecutionStack {
    */
   pop(context) {
     if (this.peek() !== context) {
-      this._log.logInternalError('Tried to pop context from stack that was not at its top:\n    ', context, 'from', this);
+      TraceLog.instance().logInternalError('Tried to pop context from stack that was not at its top:\n    ', context, 'from', this);
     }
     else {
-      if (context.isImmediateInvocation()) {
-        --this._activeCount;
-      }
-      this._contexts.pop();
+      // this._contexts.pop();
+      --this._ptr;
     }
   }
 }

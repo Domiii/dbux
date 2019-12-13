@@ -1,7 +1,7 @@
 import RuntimeMonitor from './RuntimeMonitor';
 
 const dbux = {
-  trace: new RuntimeMonitor(),
+  trace: RuntimeMonitor.instance,
 
   initProgram(staticProgramData) {
     return this.trace.addProgram(staticProgramData);

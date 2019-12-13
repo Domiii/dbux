@@ -1,3 +1,7 @@
+import StaticContextManager from './StaticContextManager';
+import RuntimeMonitor from './RuntimeMonitor';
+import ExecutionContext from './ExecutionContext';
+import ExecutionContextManager from './ExecutionContextManager';
 
 function getStaticContextId() {
   return 0;
@@ -21,19 +25,26 @@ export default class ProgramMonitor {
     return this._programStaticContext.getProgramId();
   }
 
-  push() {
-
+  push(staticContextId) {
+    const orderId = StaticContextManager.instance.genContextId(this.getProgramId(), staticContextId);
+    // const context = new ExecutionContext(staticContextId, schedulerId, orderId);
+    const contextId = ExecutionContextManager.instance().push(this.getProgramId(), staticContextId, orderId);
+    return RuntimeMonitor.instance.push(contextId);
   }
 
   pop() {
 
   }
 
-  pushCallback() {
-
+  scheduleCallback(staticContextId, schedulerId) {
+    const scheduledContextId = `TODO`;
   }
 
-  popCallback() {
+  pushCallbackLink(scheduledContextId) {
+    const callbackLinkId = `TODO`;
+  }
+
+  popCallbackLink(callbackLinkId) {
 
   }
 

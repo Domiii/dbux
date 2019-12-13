@@ -1,22 +1,55 @@
 export const LogEventType = new Enum({
-  Push: 1,
-  Pop: 2
+  RunStart: 1,
+  Push: 2,
+  Pop: 3,
+  Schedule: 4
 });
 
 export default class TraceLog {
+  /**
+   * @returns {TraceLog}
+   */
+  static instance() {
+    return this._instance || (this._instance = new TraceLog());
+  }
+
   static logInternalError(...args) {
     console.error('[DBUX INTERNAL ERROR]', ...args);
   }
 
-  _log = [];
+  _messages = [];
 
-  constructor() {
+  _log(message) {
+    this._messages.push(message);
+    console.log(`[DBUX]`, message);
   }
 
-  logPush(context) {
-    this._log.push({
+  logRunStart(contextId) {
+    this._log({
+      type: LogEventType.RunStart,
+      contextId
+    });
+  }
+
+  logPush(contextId) {
+    this._log({
       type: LogEventType.Push,
-      ...context
+      contextId
+    });
+  }
+
+  logPop(contextId) {
+    this._log({
+      type: LogEventType.Pop,
+      contextId
+    });
+  }
+
+  logSchedule(contextId, schedulerId) {
+    this._log({
+      type: LogEventType.Schedule,
+      schedulerId,
+      contextId
     });
   }
 

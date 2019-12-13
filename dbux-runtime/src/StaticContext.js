@@ -1,5 +1,5 @@
 export default class StaticContext {
-  lastDynamicId = 0;
+  lastOrderId = 0;
 
   constructor(staticContextId, programData, contextData) {
     this._staticContextId = staticContextId;
@@ -8,6 +8,6 @@ export default class StaticContext {
   }
 
   genContextId(schedulerId) {
-    return `${this._staticContextId}${schedulerId ? `_${schedulerId}` : ''}_${++this.lastDynamicId}`;
+    return ++this.lastOrderId;
   }
 }

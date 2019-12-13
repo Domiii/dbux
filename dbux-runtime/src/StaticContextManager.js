@@ -9,6 +9,7 @@ import ProgramStaticContext from './ProgramStaticContext';
 export default class StaticContextManager {
   static _instance;
   /**
+   * Singleton
    * @type {StaticContextManager}
    */
   static get instance() {
@@ -22,12 +23,12 @@ export default class StaticContextManager {
 
   addProgram(programData) {
     const programStaticContext = new ProgramStaticContext(programId, programData);
-    this._programStaticContexts.set();
+    this._programStaticContexts.set(programId, programStaticContext);
     return programStaticContext;
   }
 
   genContextId(staticContextId, schedulerId) {
-    const staticContext = this.programStaticContexts[staticContextId];
+    const staticContext = this._programStaticContexts[staticContextId];
     return staticContext.genContextId(schedulerId);
   }
 }

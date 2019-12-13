@@ -11,11 +11,11 @@ try {
 
     try {
       // f1 body
-      setTimeout(wrapCallback(staticId12, id1, function f2() {
+      setTimeout(scheduleCallback(staticId12, id1, function f2() {
         const id2 = _dbux.push(staticId2);
         try {
           // f2 body
-          setTimeout(wrapCallback(staticId22, id2, f3), 345);
+          setTimeout(scheduleCallback(staticId22, id2, f3), 345);
         }
         finally {
           _dbux.pop(id2);
@@ -123,7 +123,7 @@ function makeCallbackWrapper(scheduledContextId, cb) {
   };
 }
 
-function wrapCallback(staticContextId, schedulerId, cb) {
+function scheduleCallback(staticContextId, schedulerId, cb) {
   const scheduledContextId = pushSchedule(staticContextId, schedulerId);
   return makeCallbackWrapper(scheduledContextId, cb);
 }
