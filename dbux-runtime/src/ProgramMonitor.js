@@ -18,26 +18,32 @@ export default class ProgramMonitor {
    */
   constructor(programStaticContext) {
     this._programStaticContext = programStaticContext;
-    this.push(getStaticContextId());
+    this.pushImmediate(getStaticContextId());
   }
 
   getProgramId() {
     return this._programStaticContext.getProgramId();
   }
 
-  push(staticContextId) {
+  pushImmediate(staticContextId) {
     const orderId = StaticContextManager.instance.genContextId(this.getProgramId(), staticContextId);
-    // const context = new ExecutionContext(staticContextId, schedulerId, orderId);
-    const contextId = ExecutionContextManager.instance().push(this.getProgramId(), staticContextId, orderId);
-    return RuntimeMonitor.instance.push(contextId);
+    const contextId = ExecutionContextManager.instance.immediate(this.getProgramId(), staticContextId, orderId);
+    RuntimeMonitor.instance.pushImmediate(contextId);
+    return contextId;
   }
 
-  pop() {
+  popImmediate(contextId) {
 
   }
 
-  scheduleCallback(staticContextId, schedulerId) {
-    const scheduledContextId = `TODO`;
+
+  scheduleCallback(staticContextId, schedulerId, cb) {
+    const orderId = StaticContextManager.instance.genContextId(this.getProgramId(), staticContextId);
+    const scheduledContextId = ExecutionContextManager.instance.schedule(
+      this.getProgramId(), staticContextId, orderId, schedulerId, stack
+    );
+    RuntimeMonitor.instance.scheduleCallback(scheduledContextId);
+    return makeCallbackWrapper(this, scheduledContextId, cb);
   }
 
   pushCallbackLink(scheduledContextId) {
@@ -50,6 +56,6 @@ export default class ProgramMonitor {
 
   popProgram() {
     // finished initializing the program
-    return this.pop(getStaticContextId());
+    return this.popImmediate(getStaticContextId());
   }
 }

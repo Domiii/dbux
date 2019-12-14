@@ -1,44 +1,25 @@
-// const fsPath = path;
-import { initDbux } from './runtime';
-import { instrumentFunction } from './instrumentation';
+import programVisitor from './programVisitor';
+import functionVisitor from './functionVisitor';
 
 
-export default function ({ types: t }) {
+export default function () {
   return {
     visitor: {
-      Program(path, state) {
-        // console.log('[FILE]', fsPath.relative(state.cwd, state.filename));
-        initDbux(path);
-      },
-      Function(path, state) {
-        // console.log('FUNCTION @', state.filename);
+      Program: programVisitor(),
+      Function: functionVisitor(),
 
-        const { node } = path;
-        const line = node.loc?.start?.line;
+      // AwaitExpression(path) {
+      //   // TODO: instrumentAwait
+      // },
 
-        if (!line) {
-          // this node has been dynamically emitted; not part of the original source code
-          return;
-        }
-
-        if (path.node.generator) {
-          // TOOD: handle generator function
-        }
-
-        instrumentFunction(path);
-      },
-
-      AwaitExpression(path) {
-        // TODO: instrumentAwait
-      },
-
-      /**
-       * explanation: "`for await (const x of y) { x }` is like a sugar of: `for (const x of y) { await x }` (but call y[Symbol.asyncIterator]() instead of y[Symbol.iterator]())"
-       * @see https://github.com/babel/babel/issues/4969)
-       */
-      ForOfStatement(path) {
-        // TODO: instrumentAwait
-      },
+      // /**
+      //  * TODO: Handle `for await of`
+      //  * explanation: "`for await (const x of y) { x }` is like a sugar of: `for (const x of y) { await x }` (but call y[Symbol.asyncIterator]() instead of y[Symbol.iterator]())"
+      //  * @see https://github.com/babel/babel/issues/4969)
+      //  */
+      // ForOfStatement(path) {
+      //   // TODO: instrumentAwait
+      // },
 
 
       /*

@@ -5,12 +5,14 @@ export const LogEventType = new Enum({
   Schedule: 4
 });
 
+let _instance;
+
 export default class TraceLog {
   /**
    * @returns {TraceLog}
    */
-  static instance() {
-    return this._instance || (this._instance = new TraceLog());
+  static get instance() {
+    return _instance || (_instance = new TraceLog());
   }
 
   static logInternalError(...args) {

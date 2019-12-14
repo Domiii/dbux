@@ -30,8 +30,8 @@ export default class ExecutionStack {
     return this._contexts[this._contexts.length-1];
   }
 
-  getActiveCount() {
-    return this._contexts.length;
+  isEmpty() {
+    return !this._ptr;
   }
 
   /**
@@ -47,7 +47,7 @@ export default class ExecutionStack {
    */
   pop(context) {
     if (this.peek() !== context) {
-      TraceLog.instance().logInternalError('Tried to pop context from stack that was not at its top:\n    ', context, 'from', this);
+      TraceLog.instance.logInternalError('Tried to pop context from stack that was not at its top:\n    ', context, 'from', this);
     }
     else {
       // this._contexts.pop();

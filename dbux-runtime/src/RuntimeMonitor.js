@@ -17,8 +17,6 @@ export default class RuntimeMonitor {
     return this._instance || (this._instance = new RuntimeMonitor());
   }
 
-  _contexts = new Map();
-
   /**
    * Set of all active/scheduled calls.
    */
@@ -27,7 +25,7 @@ export default class RuntimeMonitor {
   /**
    * The currently executing stack.
    */
-  _currentStack = null;
+  _executingStack = null;
 
   _programs = new Map();
 
@@ -39,12 +37,13 @@ export default class RuntimeMonitor {
   //   return this._contexts;
   // }
 
+  /**
+   * @returns {ProgramMonitor}
+   */
   addProgram(programData) {
     this.programs.push(programData);
 
-    const { staticSites } = programData;
-    // const offsetIdx = this.staticContexts.length;
-    // this.staticContexts.push(...staticSites.map((site, i) => new StaticContext(i + offsetIdx, programData, site)));
+    const { filename, staticSites } = programData;
     const programStaticContext = StaticContextManager.instance.addProgram(programData);
     const programMonitor = new ProgramMonitor(programStaticContext);
     this._programs.set(programStaticContext.getProgramId(), programMonitor);
@@ -52,26 +51,7 @@ export default class RuntimeMonitor {
   }
 
   getCurrentStack() {
-    return this._currentStack;
-  }
-
-  /**
-   * @return {ExecutionStack}
-   */
-  getOrCreateStackForContext(contextId, schedulerId) {
-    const currentStack = this.getCurrentStack();
-    let stack;
-    if (!currentStack) {
-      // no active stack -> this invocation has been called from some system or blackboxed scheduler
-      //    indicating a new start, and thus a new ExecutionStack (at least for as much as we can see)
-      stack = this.createStack(contextId, null, null);
-      TraceLog.instance().logRunStart(contextId, schedulerId);
-    }
-    else {
-      // new invocation on current stack
-      stack = currentStack;
-    }
-    return stack;
+    return this._executingStack;
   }
 
   /**
@@ -85,7 +65,7 @@ export default class RuntimeMonitor {
   }
 
   _notifyStackFinished(stack) {
-    this._currentStack = null;
+    this._executingStack = null;
     this._activeStacks.delete(stack.getId());
   }
 
@@ -94,33 +74,38 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   /**
-   * @param {ExecutionContext} context
+   * 
    */
-  push(contextId, schedulerId) {
-    const stack = this.getOrCreateStackForContext(contextId, schedulerId);
-    // this._contexts.set(contextId, context);
-    if (!schedulerId) {
-      stack.push(contextId);
+  pushImmediate(contextId) {
+    if (!this._executingStack) {
+      // no executing stack -> this invocation has been called from some system or blackboxed scheduler,
+      //    indicating a new start, and thus a new ExecutionStack (at least for as much as we can see)
+      this._executingStack = this.createStack(contextId, null, null);
+      TraceLog.instance.logRunStart(contextId);
     }
-    TraceLog.instance().logPush(contextId);
-    return contextId;
+    else {
+      // new invocation on current stack
+    }
+
+    TraceLog.instance.logPush(contextId);
+    stack.push(contextId);
   }
 
   /**
    * Push a new context for a scheduled callback for later execution.
    * Especially for: (1) await, (2) promise, (3) time event, (4) other callback scheduling
    */
-  scheduleCallback(staticContextId, schedulerId) {
+  scheduleCallback() {
     // this is not an immediate invocation, but scheduled for later
-    if (!this._currentStack) {
+    if (!this._executingStack) {
       // there must be an active stack from where the scheduling happened
       TraceLog.logInternalError('No activeStack when scheduling callback call from:', schedulerId);
     }
-    TraceLog.instance().logSchedule(contextId, schedulerId);
+    TraceLog.instance.logSchedule(contextId, schedulerId);
   }
 
   pushCallbackLink(scheduledContextId) {
-    const linkedContext = this._contexts.get(scheduledContextId);
+    const linkedContext = ;
     if (!linkedContext) {
       TraceLog.logInternalError('pushCallbackLink\'s `scheduledContextId` does not exist:', scheduledContextId);
       return;
@@ -144,10 +129,10 @@ export default class RuntimeMonitor {
       const res = stack.pop(context);
 
       // make sure stack is currentStack
-      if (stack !== this._currentStack) {
-        TraceLog.logInternalError('Tried to pop from stack that is not activeStack:\n    ', stack, 'is not activeStack:', this._currentStack);
+      if (stack !== this._executingStack) {
+        TraceLog.logInternalError('Tried to pop from stack that is not activeStack:\n    ', stack, 'is not activeStack:', this._executingStack);
       }
-      if (!stack.getActiveCount()) {
+      if (stack.isEmpty()) {
         // end of this stack
         this._notifyStackFinished(stack);
       }
