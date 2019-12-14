@@ -1,12 +1,53 @@
 {
-  "name": "dbux-core",
+  "name": "dbux-common",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "module": "dist/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf dist && rm -rf dist.samples",
+    "_before-run": "npx link-module-alias",
+    "build": "npm run clean && npm run _before-run && webpack --config config/webpack.config.js",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/code-frame": "^7.5.5",
+    "@babel/core": "^7.7.5",
+    "@babel/generator": "^7.7.4",
+    "@babel/node": "^7.7.4",
+    "@babel/parser": "^7.7.5",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-proposal-decorators": "^7.7.4",
+    "@babel/plugin-proposal-function-bind": "^7.7.4",
+    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
+    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
+    "@babel/plugin-syntax-export-default-from": "^7.7.4",
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/template": "^7.7.4",
+    "@babel/traverse": "^7.7.4",
+    "@babel/types": "^7.7.4",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-tester": "^8.0.1",
+    "css-loader": "^3.3.2",
+    "eslint-loader": "^3.0.3",
+    "jest": "^24.9.0",
+    "jest-expect-message": "^1.0.2",
+    "jest-extended": "^0.11.2",
+    "link-module-alias": "^1.2.0",
+    "style-loader": "^1.0.1",
+    "webpack": "^4.41.2",
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.7.0",
+    "@babel/runtime": "^7.7.6",
+    "core-js": "^3.5.0"
+  },
+  "_moduleAliases": {}
 }

@@ -1,6 +1,6 @@
 import fsPath from 'path';
 import buildProgramVisitorState from './programVisitorState';
-import { addDbuxInitCall, addDbuxInitDeclaration, wrapProgramBody } from './instrumentation/program';
+import { addDbuxInitDeclaration, wrapProgramBody } from './instrumentation/program';
 
 
 // ########################################

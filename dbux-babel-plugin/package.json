@@ -2,14 +2,17 @@
   "version": "0.0.0",
   "description": "",
   "author": "Domi",
+  "module": "dist/index.js",
   "main": "dist/index.js",
   "scripts": {
-    "build-sample": "npm run build && npx babel --plugins ./dist/index.js --config-file ./babel.config.js --out-dir ./dist.samples ./src/tests/__code__",
     "clean": "rm -rf dist && rm -rf dist.samples",
-    "build": "npm run clean && npx babel src -d dist",
+    "_before-run": "npx link-module-alias",
+    "build": "npm run clean && npm run _before-run && webpack --config config/webpack.config.js",
     "test": "jest",
+    "build-sample": "npm run build && npx babel --plugins ./dist/index.js --config-file ./babel.config.js --out-dir ./dist.samples ./src/tests/__code__",
     "test:watch": "npm run test -- --watch",
-    "__prepublish": "npm run clean && npm run build"
+    "__archive_build": "npm run clean && npx babel src -d dist",
+    "__archive_prepublish": "npm run clean && npm run build"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.5",
@@ -29,13 +32,21 @@
     "@babel/template": "^7.7.4",
     "@babel/traverse": "^7.7.4",
     "@babel/types": "^7.7.4",
+    "babel-loader": "^8.0.6",
     "babel-plugin-tester": "^8.0.1",
+    "css-loader": "^3.3.2",
     "eslint": "^6.7.2",
     "eslint-config-esnext": "^4.0.0",
+    "eslint-loader": "^3.0.3",
     "jest": "^24.9.0",
     "jest-expect-message": "^1.0.2",
     "jest-extended": "^0.11.2",
-    "lodash": "^4.17.15"
+    "link-module-alias": "^1.2.0",
+    "lodash": "^4.17.15",
+    "style-loader": "^1.0.1",
+    "webpack": "^4.41.2",
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack-cli": "^3.3.10"
   },
   "keywords": [
     "dbux",
@@ -52,5 +63,8 @@
     "core-js": "^3.4.7",
     "firebase-tools": "^7.9.0",
     "g": "^2.0.1"
+  },
+  "_moduleAliases": {
+
   }
 }

@@ -2,15 +2,15 @@
   "eslint.enable": true,
   "eslint.workingDirectories": [
     {
-      "directory": "./dbux-babel-plugin",
+      "directory": "./dbux-babel-plugin/src",
       "changeProcessCWD": true
     },
     {
-      "directory": "./dbux-runtime",
+      "directory": "./dbux-runtime/src",
       "changeProcessCWD": true
     },
     {
-      "directory": "./projects/todomvc/examples/vanilla-es6",
+      "directory": "./projects/todomvc/examples/vanilla-es6/src",
       "changeProcessCWD": true
     }
   ],
