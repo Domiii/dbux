@@ -18,14 +18,14 @@ export default class StaticContextManager {
   }
 
   /**
-   * @type {StaticContext[]}
+   * @type {ProgramStaticContext[]}
    */
-  _programStaticContexts = new Map();
+  _programStaticContexts = [null];
 
   addProgram(programData) {
-    const programId = `TODO`;
+    const programId = this._programStaticContexts.length;
     const programStaticContext = new ProgramStaticContext(programId, programData);
-    this._programStaticContexts.set(programId, programStaticContext);
+    this._programStaticContexts.push(programStaticContext);
     return programStaticContext;
   }
 
@@ -33,7 +33,7 @@ export default class StaticContextManager {
    * Produces an incremental id, unique in the context of the given staticContextId.
    */
   genContextId(programId, staticContextId) {
-    const staticContext = this._programStaticContexts[programId];
-    return staticContext.genContextId();
+    const programStatic = this._programStaticContexts[programId];
+    return programStatic.getStaticContext(staticContextId).genContextId();
   }
 }

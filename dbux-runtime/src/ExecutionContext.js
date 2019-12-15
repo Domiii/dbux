@@ -1,12 +1,19 @@
 
 
 export default class ExecutionContext {
-  constructor(staticContextId, schedulerId, orderId, contextId) {
+  _init(contextType, contextId, programId, staticContextId, orderId, schedulerId) {
+    this._contextType = contextType;
+    this._programId = programId;
     this._staticContextId = staticContextId;
     this._schedulerId = schedulerId;
     this._orderId = orderId;
     this._contextId = contextId;
     this._createdAt = performance.now();
+    this._linkCount = 0;
+  }
+
+  getContextType() {
+    return this._contextType;
   }
 
   getStaticContextId() {
@@ -24,11 +31,4 @@ export default class ExecutionContext {
   // getStack() {
   //   return this._stack;
   // }
-  
-  /**
-   * 
-   */
-  isImmediateInvocation() {
-    return !this._schedulerId;
-  }
 }

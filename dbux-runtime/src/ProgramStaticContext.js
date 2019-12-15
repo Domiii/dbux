@@ -1,4 +1,12 @@
 import StaticContext from './StaticContext';
+import TraceLog from './TraceLog';
+
+function makeDefaultStaticContext(programId) {
+  const defaultSiteData = {
+    // nothing in here
+  };
+  return new StaticContext(programId, defaultSiteData);
+}
 
 export default class ProgramStaticContext {
   _programId;
@@ -6,12 +14,28 @@ export default class ProgramStaticContext {
   constructor(programId, { filename, staticSites }) {
     this._programId = programId;
     this._filename = filename;
-    this._staticContexts = staticSites.map(
-      (siteData) => new StaticContext(programId, siteData)
-    );
+
+    const maxId = Math.max(...staticSites.map(s => s.staticId));
+    this._staticContexts = new Array(maxId);
+    this._staticContexts[0] = makeDefaultStaticContext();
+    for (const siteData of staticSites) {
+      this._staticContexts[siteData.staticId] = new StaticContext(programId, siteData);
+    }
   }
 
   getProgramId() {
     return this._programId;
+  }
+
+  /**
+   * @return {StaticContext}
+   */
+  getStaticContext(staticId) {
+    const site = this._staticContexts[staticId];
+    if (!site) {
+      TraceLog.instance.logInternalError('ProgramStaticContext.getStaticContext could not find context:', staticId);
+      return this._staticContexts[0];
+    }
+    return site;
   }
 }

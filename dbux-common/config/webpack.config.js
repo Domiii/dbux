@@ -9,5 +9,5 @@ module.exports = defaultsDeep(
       Enum: './Enum.js'
     }
   },
-  require('./webpack.common')(rootPath)
+  require('../../dbux-common/config/webpack.common')(rootPath)
 );

@@ -25,7 +25,6 @@ function registerDbuxAsGlobal() {
     thisIsDbux: true
   };
 }
-
 registerDbuxAsGlobal();
 
 export default dbux;

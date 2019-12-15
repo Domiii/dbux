@@ -3,6 +3,7 @@ import StaticContextManager from './StaticContextManager';
 import ExecutionContext from './ExecutionContext';
 import TraceLog from './TraceLog';
 import ProgramMonitor from './ProgramMonitor';
+import ExecutionContextManager from './ExecutionContextManager';
 
 /**
  * 
@@ -27,7 +28,7 @@ export default class RuntimeMonitor {
    */
   _executingStack = null;
 
-  _programs = new Map();
+  _programMonitors = new Map();
 
   // ###########################################################################
   // Bookkeeping
@@ -41,12 +42,9 @@ export default class RuntimeMonitor {
    * @returns {ProgramMonitor}
    */
   addProgram(programData) {
-    this.programs.push(programData);
-
-    const { filename, staticSites } = programData;
     const programStaticContext = StaticContextManager.instance.addProgram(programData);
     const programMonitor = new ProgramMonitor(programStaticContext);
-    this._programs.set(programStaticContext.getProgramId(), programMonitor);
+    this._programMonitors.set(programStaticContext.getProgramId(), programMonitor);
     return programMonitor;
   }
 
@@ -76,7 +74,8 @@ export default class RuntimeMonitor {
   /**
    * 
    */
-  pushImmediate(contextId) {
+  pushImmediate(programId, staticContextId) {
+    const executionContext = ExecutionContextManager.instance.immediate(programId, staticContextId);
     if (!this._executingStack) {
       // no executing stack -> this invocation has been called from some system or blackboxed scheduler,
       //    indicating a new start, and thus a new ExecutionStack (at least for as much as we can see)
@@ -84,39 +83,15 @@ export default class RuntimeMonitor {
       TraceLog.instance.logRunStart(contextId);
     }
     else {
-      // new invocation on current stack
+      // invocation on current stack
     }
 
     TraceLog.instance.logPush(contextId);
     stack.push(contextId);
   }
 
-  /**
-   * Push a new context for a scheduled callback for later execution.
-   * Especially for: (1) await, (2) promise, (3) time event, (4) other callback scheduling
-   */
-  scheduleCallback() {
-    // this is not an immediate invocation, but scheduled for later
-    if (!this._executingStack) {
-      // there must be an active stack from where the scheduling happened
-      TraceLog.logInternalError('No activeStack when scheduling callback call from:', schedulerId);
-    }
-    TraceLog.instance.logSchedule(contextId, schedulerId);
-  }
 
-  pushCallbackLink(scheduledContextId) {
-    const linkedContext = ;
-    if (!linkedContext) {
-      TraceLog.logInternalError('pushCallbackLink\'s `scheduledContextId` does not exist:', scheduledContextId);
-      return;
-    }
-
-    // TODO: linking contexts/stacks
-    // const linkId = ;
-    return linkId;
-  }
-
-  pop(contextId) {
+  popImmediate(contextId) {
     const context = this._contexts.get(contextId);
     if (!context) {
       TraceLog.logInternalError('Tried to pop context that was not registered:', contextId);
@@ -144,7 +119,33 @@ export default class RuntimeMonitor {
     }
   }
 
-  popSchedule() {
 
-  }
+  // /**
+  //  * Push a new context for a scheduled callback for later execution.
+  //  * Especially for: (1) await, (2) promise, (3) time event, (4) other callback scheduling
+  //  */
+  // scheduleCallback() {
+  //   // this is not an immediate invocation, but scheduled for later
+  //   if (!this._executingStack) {
+  //     // there must be an active stack from where the scheduling happened
+  //     TraceLog.logInternalError('No activeStack when scheduling callback call from:', schedulerId);
+  //   }
+  //   TraceLog.instance.logSchedule(contextId, schedulerId);
+  // }
+
+  // pushCallbackLink(scheduledContextId) {
+  //   const linkedContext = ;
+  //   if (!linkedContext) {
+  //     TraceLog.logInternalError('pushCallbackLink\'s `scheduledContextId` does not exist:', scheduledContextId);
+  //     return;
+  //   }
+
+  //   // TODO: linking contexts/stacks
+  //   // const linkId = ;
+  //   return linkId;
+  // }
+
+  // popSchedule() {
+
+  // }
 }

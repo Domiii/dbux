@@ -6,5 +6,5 @@ module.exports = defaultsDeep(
   {
     // no customizations yet
   },
-  require('./webpack.common')(rootPath)
+  require('../../dbux-common/config/webpack.common')(rootPath)
 );

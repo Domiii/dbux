@@ -1,9 +1,8 @@
 import StaticContextManager from './StaticContextManager';
 import RuntimeMonitor from './RuntimeMonitor';
-import ExecutionContext from './ExecutionContext';
 import ExecutionContextManager from './ExecutionContextManager';
 
-function getStaticContextId() {
+function getProgramStaticContextId() {
   return 0;
 }
 
@@ -18,7 +17,7 @@ export default class ProgramMonitor {
    */
   constructor(programStaticContext) {
     this._programStaticContext = programStaticContext;
-    this.pushImmediate(getStaticContextId());
+    this.pushImmediate(getProgramStaticContextId());
   }
 
   getProgramId() {
@@ -26,14 +25,11 @@ export default class ProgramMonitor {
   }
 
   pushImmediate(staticContextId) {
-    const orderId = StaticContextManager.instance.genContextId(this.getProgramId(), staticContextId);
-    const contextId = ExecutionContextManager.instance.immediate(this.getProgramId(), staticContextId, orderId);
-    RuntimeMonitor.instance.pushImmediate(contextId);
-    return contextId;
+    return RuntimeMonitor.instance.pushImmediate(this.getProgramId(), staticContextId);
   }
 
   popImmediate(contextId) {
-
+    
   }
 
 
@@ -46,16 +42,16 @@ export default class ProgramMonitor {
     return makeCallbackWrapper(this, scheduledContextId, cb);
   }
 
-  pushCallbackLink(scheduledContextId) {
-    const callbackLinkId = `TODO`;
-  }
+  // pushCallbackLink(scheduledContextId) {
+  //   const callbackLinkId = `TODO`;
+  // }
 
-  popCallbackLink(callbackLinkId) {
+  // popCallbackLink(callbackLinkId) {
 
-  }
+  // }
 
   popProgram() {
     // finished initializing the program
-    return this.popImmediate(getStaticContextId());
+    return this.popImmediate(getProgramStaticContextId());
   }
 }

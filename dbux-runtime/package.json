@@ -9,6 +9,7 @@
     "_before-run": "npx link-module-alias",
     "build": "npm run clean && npm run _before-run && webpack --config config/webpack.config.js",
     "test": "jest",
+    "postinstall": "npm run add-links",
     "add-links": "npm unlink dbux-common && npm link ../dbux-common"
   },
   "devDependencies": {
@@ -56,7 +57,8 @@
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
     "@babel/runtime": "^7.7.5",
-    "core-js": "^3.4.7"
+    "core-js": "^3.4.7",
+    "dbux-common": "file:../dbux-common"
   },
   "_moduleAliases": {
     "-dbux-common": "dbux-common/dist"
