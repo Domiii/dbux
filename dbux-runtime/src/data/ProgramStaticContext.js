@@ -1,5 +1,5 @@
 import StaticContext from './StaticContext';
-import TraceLog from './TraceLog';
+import { logError } from '../log/logger';
 
 function makeDefaultStaticContext(programId) {
   const defaultSiteData = {
@@ -33,7 +33,7 @@ export default class ProgramStaticContext {
   getStaticContext(staticId) {
     const site = this._staticContexts[staticId];
     if (!site) {
-      TraceLog.instance.logInternalError('ProgramStaticContext.getStaticContext could not find context:', staticId);
+      logError('ProgramStaticContext.getStaticContext could not find context:', staticId);
       return this._staticContexts[0];
     }
     return site;

@@ -1,9 +1,9 @@
 import ExecutionStack from './ExecutionStack';
-import StaticContextManager from './StaticContextManager';
-import ExecutionContext from './ExecutionContext';
-import TraceLog from './TraceLog';
+import programStaticContextCollection from './data/collections/programStaticContextCollection';
+import TraceLog from './log/TraceLog';
 import ProgramMonitor from './ProgramMonitor';
-import ExecutionContextManager from './ExecutionContextManager';
+import { logError } from './log/logger';
+import executionContextCollection from './data/collections/executionContextCollection';
 
 /**
  * 
@@ -26,10 +26,11 @@ export default class RuntimeMonitor {
   /**
    * The currently executing stack.
    */
-  _executingStack = null;
+  _executingContextRoot = null;
 
   _programMonitors = new Map();
 
+  
   // ###########################################################################
   // Bookkeeping
   // ###########################################################################
@@ -42,14 +43,14 @@ export default class RuntimeMonitor {
    * @returns {ProgramMonitor}
    */
   addProgram(programData) {
-    const programStaticContext = StaticContextManager.instance.addProgram(programData);
+    const programStaticContext = programStaticContextCollection.addProgram(programData);
     const programMonitor = new ProgramMonitor(programStaticContext);
     this._programMonitors.set(programStaticContext.getProgramId(), programMonitor);
     return programMonitor;
   }
 
   getCurrentStack() {
-    return this._executingStack;
+    return this._executingContextRoot;
   }
 
   /**
@@ -63,9 +64,10 @@ export default class RuntimeMonitor {
   }
 
   _notifyStackFinished(stack) {
-    this._executingStack = null;
+    this._executingContextRoot = null;
     this._activeStacks.delete(stack.getId());
   }
+
 
   // ###########################################################################
   // public interface
@@ -75,48 +77,52 @@ export default class RuntimeMonitor {
    * 
    */
   pushImmediate(programId, staticContextId) {
-    const executionContext = ExecutionContextManager.instance.immediate(programId, staticContextId);
-    if (!this._executingStack) {
+    const executionContext = executionContextCollection.immediate(programId, staticContextId);
+    const contextId = executionContext.getContextId();
+    if (!this._executingContextRoot) {
       // no executing stack -> this invocation has been called from some system or blackboxed scheduler,
       //    indicating a new start, and thus a new ExecutionStack (at least for as much as we can see)
-      this._executingStack = this.createStack(contextId, null, null);
-      TraceLog.instance.logRunStart(contextId);
+      this._executingContextRoot = executionContext;
+      TraceLog.instance.logStackStart(contextId);
     }
     else {
       // invocation on current stack
+      executionContext.setRoot(this._executingContextRoot.contextId);
     }
 
+    // TODO: setStack will keep a reference that we need to clean up later
+    this._executingContextRoot.push(contextId);
     TraceLog.instance.logPush(contextId);
-    stack.push(contextId);
   }
 
 
   popImmediate(contextId) {
-    const context = this._contexts.get(contextId);
-    if (!context) {
-      TraceLog.logInternalError('Tried to pop context that was not registered:', contextId);
-    }
-    else {
-      const stack = context.getStack();
+    // TODO
+    // const context = this._contexts.get(contextId);
+    // if (!context) {
+    //   logError('Tried to pop context that was not registered:', contextId);
+    // }
+    // else {
+    //   const stack = context.getStack();
 
-      // pop context
-      this._contexts.delete(contextId);
-      const res = stack.pop(context);
+    //   // pop context
+    //   this._contexts.delete(contextId);
+    //   const res = stack.pop(context);
 
-      // make sure stack is currentStack
-      if (stack !== this._executingStack) {
-        TraceLog.logInternalError('Tried to pop from stack that is not activeStack:\n    ', stack, 'is not activeStack:', this._executingStack);
-      }
-      if (stack.isEmpty()) {
-        // end of this stack
-        this._notifyStackFinished(stack);
-      }
+    //   // make sure stack is currentStack
+    //   if (stack !== this._executingContextRoot) {
+    //     logError('Tried to pop from stack that is not activeStack:\n    ', stack, 'is not activeStack:', this._executingContextRoot);
+    //   }
+    //   if (stack.isEmpty()) {
+    //     // end of this stack
+    //     this._notifyStackFinished(stack);
+    //   }
 
-      // log
-      stack._log.logPop(stack, context);
+    //   // log
+    //   TraceLog.instance.logPop(stack, context);
 
-      return res;
-    }
+    //   return res;
+    // }
   }
 
 
@@ -128,7 +134,7 @@ export default class RuntimeMonitor {
   //   // this is not an immediate invocation, but scheduled for later
   //   if (!this._executingStack) {
   //     // there must be an active stack from where the scheduling happened
-  //     TraceLog.logInternalError('No activeStack when scheduling callback call from:', schedulerId);
+  //     logError('No activeStack when scheduling callback call from:', schedulerId);
   //   }
   //   TraceLog.instance.logSchedule(contextId, schedulerId);
   // }
@@ -136,7 +142,7 @@ export default class RuntimeMonitor {
   // pushCallbackLink(scheduledContextId) {
   //   const linkedContext = ;
   //   if (!linkedContext) {
-  //     TraceLog.logInternalError('pushCallbackLink\'s `scheduledContextId` does not exist:', scheduledContextId);
+  //     logError('pushCallbackLink\'s `scheduledContextId` does not exist:', scheduledContextId);
   //     return;
   //   }
 

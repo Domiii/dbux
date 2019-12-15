@@ -21,7 +21,7 @@ function registerDbuxAsGlobal() {
       _global = globalThis;
     }
   })();
-  _global._dbux = {
+  _global.__dbux = {
     thisIsDbux: true
   };
 }

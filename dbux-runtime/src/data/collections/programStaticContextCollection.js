@@ -1,5 +1,4 @@
-import StaticContext from './StaticContext';
-import ProgramStaticContext from './ProgramStaticContext';
+import ProgramStaticContext from '../ProgramStaticContext';
 
 let _instance;
 
@@ -8,13 +7,13 @@ let _instance;
  * and also manage dynamic ids for traces through their domain.
  * 
  */
-export default class StaticContextManager {
+export class ProgramStaticContextCollection {
   /**
    * Singleton
-   * @type {StaticContextManager}
+   * @type {ProgramStaticContextCollection}
    */
   static get instance() {
-    return _instance || (_instance = new StaticContextManager());
+    return _instance || (_instance = new ProgramStaticContextCollection());
   }
 
   /**
@@ -37,3 +36,6 @@ export default class StaticContextManager {
     return programStatic.getStaticContext(staticContextId).genContextId();
   }
 }
+
+const programStaticContextCollection = new ProgramStaticContextCollection();
+export default programStaticContextCollection;

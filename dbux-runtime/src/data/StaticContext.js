@@ -6,15 +6,15 @@ export default class StaticContext {
       staticId, type, name, line, parentId
     } = siteData;
 
-    this._programId = programId;
-    this._staticContextId = staticId;
-    this._type = type;
-    this._name = name;
-    this._line = line;
-    this._parentId = parentId;
+    this.programId = programId;
+    this.staticContextId = staticId;
+    this.type = type;
+    this.name = name;
+    this.line = line;
+    this.parentId = parentId;
   }
 
-  genContextId() {
+  genOrderId() {
     return ++this.lastOrderId;
   }
 }

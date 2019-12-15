@@ -5,8 +5,9 @@ const rootPath = path.resolve(__dirname + '/..');
 module.exports = defaultsDeep(
   {
     entry: {
-      // index: 'src/index.js',
-      Enum: './Enum.js'
+      // index: './index.js',
+      // util: './util',
+      'util/Enum': './util/Enum',
     }
   },
   require('../../dbux-common/config/webpack.common')(rootPath)
