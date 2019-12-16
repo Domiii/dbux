@@ -1,9 +1,10 @@
 import ExecutionStack from './ExecutionStack';
 import programStaticContextCollection from './data/collections/programStaticContextCollection';
-import TraceLog from './log/TraceLog';
 import ProgramMonitor from './ProgramMonitor';
 import { logError } from './log/logger';
 import executionContextCollection from './data/collections/executionContextCollection';
+import executionEventCollection from './data/collections/executionEventCollection';
+import ExecutionEventType from './data/ExecutionEventType';
 
 /**
  * 
@@ -27,10 +28,11 @@ export default class RuntimeMonitor {
    * The currently executing stack.
    */
   _executingContextRoot = null;
+  _executingDepth = 0;
 
   _programMonitors = new Map();
 
-  
+
   // ###########################################################################
   // Bookkeeping
   // ###########################################################################
@@ -77,31 +79,49 @@ export default class RuntimeMonitor {
    * 
    */
   pushImmediate(programId, staticContextId) {
-    const executionContext = executionContextCollection.immediate(programId, staticContextId);
-    const contextId = executionContext.getContextId();
+    const rootId = this._executingContextRoot?.contextId;
+
+    // register context
+    const context = executionContextCollection.addImmediate(programId, staticContextId, rootId);
     if (!this._executingContextRoot) {
       // no executing stack -> this invocation has been called from some system or blackboxed scheduler,
       //    indicating a new start, and thus a new ExecutionStack (at least for as much as we can see)
-      this._executingContextRoot = executionContext;
-      TraceLog.instance.logStackStart(contextId);
-    }
-    else {
-      // invocation on current stack
-      executionContext.setRoot(this._executingContextRoot.contextId);
+      this._executingContextRoot = context;
     }
 
-    // TODO: setStack will keep a reference that we need to clean up later
-    this._executingContextRoot.push(contextId);
-    TraceLog.instance.logPush(contextId);
+    // misc updates
+    ++this._executingDepth;
+
+    // log event
+    const { contextId } = context;
+    executionEventCollection.logPushImmediate(contextId, this._executingDepth);
   }
 
 
   popImmediate(contextId) {
+    // sanity checks
+    const context = executionContextCollection.get(contextId);
+    if (!context) {
+      logError('Tried to popImmediate context that was not registered:', contextId);
+      return;
+    }
+
+    const rootContextId = this._executingContextRoot?.rootContextId;
+    if (context.rootContextId !== rootContextId) {
+      logError('Tried to popImmediate context whose rootContextId does not match executingContextRoot - ', contextId, '!==', rootContextId);
+      return;
+    }
+
+    // misc updates
+    --this._executingDepth;
+    if (!this._executingDepth) {
+      // last on stack
+      this._executingContextRoot = null;
+    }
+
+    // log event
+    executionEventCollection.logPopImmediate(ExecutionEventType.PopImmediate, contextId, this._executingDepth);
     // TODO
-    // const context = this._contexts.get(contextId);
-    // if (!context) {
-    //   logError('Tried to pop context that was not registered:', contextId);
-    // }
     // else {
     //   const stack = context.getStack();
 

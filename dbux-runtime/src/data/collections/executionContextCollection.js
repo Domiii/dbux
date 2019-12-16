@@ -1,13 +1,13 @@
 import programStaticContextCollection from './programStaticContextCollection';
 // import Enum from '-dbux-common/Enum';
 import Enum from 'dbux-common/dist/util/Enum';
-import ExecutionContext from '../ExecutionContext';
+import ExecutionContext from './ExecutionContext';
 
 let _instance;
 
 export const ExecutionContextType = new Enum({
   Immediate: 1,
-  Scheduled: 2,
+  Schedule: 2,
   Pause: 3,
   Continue: 4
 });
@@ -21,7 +21,7 @@ export class ExecutionContextCollection {
   }
 
   _lastContextId = -1;
-  _contexts = [];
+  _contexts = [null];
 
   getContext(contextId) {
     return this._contexts[contextId];
@@ -30,20 +30,21 @@ export class ExecutionContextCollection {
   /**
    * @return {ExecutionContext}
    */
-  immediate(programId, staticContextId) {
+  addImmediate(programId, staticContextId, rootContextId) {
     const orderId = programStaticContextCollection.genContextId(programId, staticContextId);
-    const contextId = ++this._lastContextId;
-    this._contexts.push(ExecutionContext.allocate(ExecutionContextType.Immediate, contextId, programId, staticContextId, orderId));
+    const contextId = this._contexts.length;
+    rootContextId = rootContextId || contextId;
+    this._contexts.push(ExecutionContext.allocate(ExecutionContextType.Immediate, contextId, programId, staticContextId, orderId, rootContextId));
   }
 
-  /**
-   * @return {ExecutionContext}
-   */
-  schedule(programId, staticContextId, schedulerId) {
-    const orderId = programStaticContextCollection.genContextId(programId, staticContextId);
-    const contextId = ++this._lastContextId;
-    this._contexts.push(ExecutionContext.allocate(ExecutionContextType.Schedule, contextId, programId, staticContextId, orderId, schedulerId));
-  }
+  // /**
+  //  * @return {ExecutionContext}
+  //  */
+  // schedule(programId, staticContextId, schedulerId) {
+  //   const orderId = programStaticContextCollection.genContextId(programId, staticContextId);
+  //   const contextId = this._contexts.length;
+  //   this._contexts.push(ExecutionContext.allocate(ExecutionContextType.Schedule, contextId, programId, staticContextId, orderId, schedulerId));
+  // }
 
 
 

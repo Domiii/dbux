@@ -1,5 +1,5 @@
-import StaticContext from './StaticContext';
-import { logError } from '../log/logger';
+import StaticContext from '../StaticContext';
+import { logError } from '../../log/logger';
 
 function makeDefaultStaticContext(programId) {
   const defaultSiteData = {

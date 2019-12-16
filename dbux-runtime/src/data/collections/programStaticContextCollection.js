@@ -1,4 +1,4 @@
-import ProgramStaticContext from '../ProgramStaticContext';
+import ProgramStaticContext from './ProgramStaticContext';
 
 let _instance;
 
@@ -33,7 +33,7 @@ export class ProgramStaticContextCollection {
    */
   genContextId(programId, staticContextId) {
     const programStatic = this._programStaticContexts[programId];
-    return programStatic.getStaticContext(staticContextId).genContextId();
+    return programStatic.getStaticContext(staticContextId).genOrderId();
   }
 }
 

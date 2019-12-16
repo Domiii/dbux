@@ -1,4 +1,5 @@
-import ExecutionEventType from './ExecutionEventType';
+import ExecutionEventType from '../ExecutionEventType';
+import ExecutionEvent from './ExecutionEvent';
 
 export class ExecutionEventCollection {
 
@@ -8,7 +9,25 @@ export class ExecutionEventCollection {
    */
   _events;
 
-  logEvent(event) {
+  logPushImmediate(contextId, stackDepth) {
+    const event = ExecutionEvent.allocate();
+    event.eventType = ExecutionEventType.PushImmediate;
+    event.contextId = contextId;
+    event.stackDepth = stackDepth;
+
+    this._log(event);
+  }
+
+  logPopImmediate(contextId, stackDepth) {
+    const event = ExecutionEvent.allocate();
+    event.eventType = ExecutionEventType.PopImmediate;
+    event.contextId = contextId;
+    event.stackDepth = stackDepth;
+
+    this._log(event);
+  }
+
+  _log(event) {
     this._events.push(event);
     ExecutionEventCollection.prettyPrint(event);
   }
@@ -22,7 +41,7 @@ export class ExecutionEventCollection {
 
     const typeName = ExecutionEventType.nameFrom(type);
 
-    const message = `[${typeName}] `;
+    const message = `[${typeName}] ${contextId}`;
     console.log(`[DBUX]`, message);
   }
 
