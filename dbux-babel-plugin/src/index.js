@@ -2,7 +2,7 @@ import programVisitor from './programVisitor';
 import functionVisitor from './functionVisitor';
 
 
-export default function () {
+export default function dbuxBabelPlugin() {
   return {
     visitor: {
       Program: programVisitor(),

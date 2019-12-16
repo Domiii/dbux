@@ -1,10 +1,8 @@
-import ExecutionStack from './ExecutionStack';
 import programStaticContextCollection from './data/collections/programStaticContextCollection';
 import ProgramMonitor from './ProgramMonitor';
 import { logError } from './log/logger';
 import executionContextCollection from './data/collections/executionContextCollection';
 import executionEventCollection from './data/collections/executionEventCollection';
-import ExecutionEventType from './data/ExecutionEventType';
 
 /**
  * 
@@ -22,7 +20,7 @@ export default class RuntimeMonitor {
   /**
    * Set of all active/scheduled calls.
    */
-  _activeStacks = new Map();
+  _activeRoots = new Set();
 
   /**
    * The currently executing stack.
@@ -51,25 +49,6 @@ export default class RuntimeMonitor {
     return programMonitor;
   }
 
-  getCurrentStack() {
-    return this._executingContextRoot;
-  }
-
-  /**
-   * 
-   */
-  createStack(contextId, schedulerId, parent) {
-    // TODO: use Object pool for stack objects to avoid memory churn in performance-critical applications
-    const stack = new ExecutionStack(contextId, schedulerId, parent);
-    this._activeStacks.set(contextId, stack);
-    return stack;
-  }
-
-  _notifyStackFinished(stack) {
-    this._executingContextRoot = null;
-    this._activeStacks.delete(stack.getId());
-  }
-
 
   // ###########################################################################
   // public interface
@@ -83,17 +62,17 @@ export default class RuntimeMonitor {
 
     // register context
     const context = executionContextCollection.addImmediate(programId, staticContextId, rootId);
+    const { contextId } = context;
     if (!this._executingContextRoot) {
-      // no executing stack -> this invocation has been called from some system or blackboxed scheduler,
-      //    indicating a new start, and thus a new ExecutionStack (at least for as much as we can see)
+      // no executing stack -> this invocation has been called from some system or blackboxed scheduler
       this._executingContextRoot = context;
+      this._activeRoots.add(contextId);
     }
 
     // misc updates
     ++this._executingDepth;
 
     // log event
-    const { contextId } = context;
     executionEventCollection.logPushImmediate(contextId, this._executingDepth);
   }
 
@@ -106,9 +85,9 @@ export default class RuntimeMonitor {
       return;
     }
 
-    const rootContextId = this._executingContextRoot?.rootContextId;
-    if (context.rootContextId !== rootContextId) {
-      logError('Tried to popImmediate context whose rootContextId does not match executingContextRoot - ', contextId, '!==', rootContextId);
+    const executingRootContextId = this._executingContextRoot?.rootContextId;
+    if (context.rootContextId !== executingRootContextId) {
+      logError('Tried to popImmediate context whose rootContextId does not match executingContextRoot - ', context.rootContextId, '!==', executingRootContextId);
       return;
     }
 
@@ -116,33 +95,16 @@ export default class RuntimeMonitor {
     --this._executingDepth;
     if (!this._executingDepth) {
       // last on stack
+      if (contextId !== executingRootContextId) {
+        logError('Tried to popImmediate last context on stack but is not executingContextRoot - ', contextId, '!==', executingRootContextId);
+        return;
+      }
       this._executingContextRoot = null;
+      this._activeRoots.delete(executingRootContextId);
     }
 
     // log event
-    executionEventCollection.logPopImmediate(ExecutionEventType.PopImmediate, contextId, this._executingDepth);
-    // TODO
-    // else {
-    //   const stack = context.getStack();
-
-    //   // pop context
-    //   this._contexts.delete(contextId);
-    //   const res = stack.pop(context);
-
-    //   // make sure stack is currentStack
-    //   if (stack !== this._executingContextRoot) {
-    //     logError('Tried to pop from stack that is not activeStack:\n    ', stack, 'is not activeStack:', this._executingContextRoot);
-    //   }
-    //   if (stack.isEmpty()) {
-    //     // end of this stack
-    //     this._notifyStackFinished(stack);
-    //   }
-
-    //   // log
-    //   TraceLog.instance.logPop(stack, context);
-
-    //   return res;
-    // }
+    executionEventCollection.logPopImmediate(contextId, this._executingDepth);
   }
 
 

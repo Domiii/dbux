@@ -9,11 +9,12 @@
     "_before-run": "npx link-module-alias",
     "build": "npm run clean && npm run _before-run && webpack --config config/webpack.config.js",
     "test": "jest",
-    "build-sample": "npm run build && npx babel --plugins ./dist/index.js --config-file ./babel.config.js --out-dir ./dist.samples ./src/tests/__code__",
+    "build-sample": "npm run build && npx babel --plugins ./dist/index.js --config-file ./babel.config.js --out-dir ./dist.samples ./src/__tests__/__samplesInput__",
     "test:watch": "npm run test -- --watch",
     "__archive_build": "npm run clean && npx babel src -d dist",
     "__archive_prepublish": "npm run clean && npm run build",
-    "add-links": "npm unlink dbux-common && npm unlink dbux-runtime && npm link ../dbux-common && npm link ../dbux-runtime"
+    "postinstall": "npm run add-links",
+    "add-links": "npm i --ignore-scripts -S ../dbux-common ../dbux-runtime"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.5",
@@ -62,10 +63,10 @@
     "@babel/polyfill": "^7.7.0",
     "@babel/runtime": "^7.7.5",
     "core-js": "^3.4.7",
+    "dbux-common": "file:../dbux-common",
+    "dbux-runtime": "file:../dbux-runtime",
     "firebase-tools": "^7.9.0",
     "g": "^2.0.1"
   },
-  "_moduleAliases": {
-
-  }
+  "_moduleAliases": {}
 }

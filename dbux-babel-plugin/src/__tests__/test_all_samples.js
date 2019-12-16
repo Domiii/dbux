@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { runSnapshotTests } from '../testing/test-util';
 
-const codeFolder = path.join(__dirname, '__code__');
+const codeFolder = path.join(__dirname, '__samplesInput__');
 
 fs.readdirSync(codeFolder).forEach(fname => {
   //const fname = path.basename(fpath);
@@ -13,5 +13,5 @@ fs.readdirSync(codeFolder).forEach(fname => {
 
   expect(code).toBeString();
   
-  runSnapshotTests(code, fpath, fname);
+  runSnapshotTests(code, fpath, fname, {}, true);
 });

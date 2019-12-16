@@ -1,4 +1,5 @@
-import { buildSource, buildWrapTryFinally, buildBlock } from '../helpers/builders';
+import { buildSource, buildWrapTryFinally } from '../helpers/builders';
+import groupBy from 'lodash/groupBy';
 import * as t from '@babel/types';
 
 export function addDbuxInitDeclaration(path, state) {
@@ -42,6 +43,21 @@ function buildPopProgram(contextId, dbux) {
   return buildSource(`${dbux}.popProgram(${contextId});`);
 }
 
+/**
+ * For safety reasons, we always want to wrap all our code in
+ */
+function splitImports(nodes) {
+  return groupBy(nodes, node => {
+    if (t.isExportAllDeclaration(node) || t.isExportDeclaration(node)) {
+      return 'exportNodes';
+    }
+    else if (t.isImportDeclaration(node)) {
+      return 'importNodes';
+    }
+    return 'otherNodes';
+  });
+}
+
 export function wrapProgramBody(path, state) {
   const { ids: { dbux } } = state;
   const contextId = path.scope.generateUid('contextId');
@@ -50,11 +66,30 @@ export function wrapProgramBody(path, state) {
   
   const bodyPath = path.get('body');
   const bodyNodes = bodyPath.map(p => p.node);
+
+  /**
+   * Special magic: imports + exports cannot be inside of a try {} block.
+   * Our solution:
+   * 1. move all imports in front of the try {} block.
+   * 2. find the id of all exports, then:
+   * 2a. 
+   */
+  const {
+    importNodes,
+    otherNodes,
+    exportNodes
+  } = splitImports(bodyNodes);
+
+
   // console.log(!!bodyPath.replaceWith, bodyPath.length, bodyPath.toString());
 
   // console.log('Program.startCalls:', buildBlock(startCalls));
 
   const newProgramNode = t.cloneNode(path.node);
-  newProgramNode.body = buildWrapTryFinally(bodyNodes, startCalls, endCalls);
+  const wrappedBody = buildWrapTryFinally(otherNodes, startCalls, endCalls);
+  newProgramNode.body = [
+    ...importNodes,
+    ...wrappedBody
+  ];
   path.replaceWith(newProgramNode);
 }

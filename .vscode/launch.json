@@ -34,6 +34,10 @@
 				"-i",
 				"--runInBand",
 				"--config",
+				
+				// @see https: //code.visualstudio.com/docs/nodejs/nodejs-debugging#_common-questions
+				"--preserve-symlinks",
+				
 				"jest.config.js"
 			],
 
