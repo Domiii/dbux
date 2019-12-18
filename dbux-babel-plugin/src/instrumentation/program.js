@@ -1,6 +1,6 @@
 import { buildSource, buildWrapTryFinally } from '../helpers/builders';
-import groupBy from 'lodash/groupBy';
 import * as t from '@babel/types';
+import { extractTopLevelNodes } from '../helpers/astHelpers';
 
 export function addDbuxInitDeclaration(path, state) {
   path.pushContainer('body', buildProgramTail(path, state));
@@ -43,27 +43,13 @@ function buildPopProgram(contextId, dbux) {
   return buildSource(`${dbux}.popProgram(${contextId});`);
 }
 
-/**
- * For safety reasons, we always want to wrap all our code in
- */
-function splitImports(nodes) {
-  return groupBy(nodes, node => {
-    if (t.isExportAllDeclaration(node) || t.isExportDeclaration(node)) {
-      return 'exportNodes';
-    }
-    else if (t.isImportDeclaration(node)) {
-      return 'importNodes';
-    }
-    return 'otherNodes';
-  });
-}
 
 export function wrapProgramBody(path, state) {
   const { ids: { dbux } } = state;
   const contextId = path.scope.generateUid('contextId');
   const startCalls = buildProgramInit(path, state);
   const endCalls = buildPopProgram(contextId, dbux);
-  
+
   const bodyPath = path.get('body');
   const bodyNodes = bodyPath.map(p => p.node);
 
@@ -74,11 +60,11 @@ export function wrapProgramBody(path, state) {
    * 2. find the id of all exports, then:
    * 2a. 
    */
-  const {
+  const [
     importNodes,
     otherNodes,
     exportNodes
-  } = splitImports(bodyNodes);
+   ] = extractTopLevelNodes(bodyPath, bodyNodes);
 
 
   // console.log(!!bodyPath.replaceWith, bodyPath.length, bodyPath.toString());
@@ -88,8 +74,9 @@ export function wrapProgramBody(path, state) {
   const newProgramNode = t.cloneNode(path.node);
   const wrappedBody = buildWrapTryFinally(otherNodes, startCalls, endCalls);
   newProgramNode.body = [
-    ...importNodes,
-    ...wrappedBody
+    ...importNodes,   // imports first
+    ...wrappedBody,
+    ...exportNodes    // exports last
   ];
   path.replaceWith(newProgramNode);
 }

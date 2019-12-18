@@ -21,7 +21,6 @@ function fixTitle(title, version) {
 
 export function writeResultCodeToFile(inputCode, babelOptions) {
   // see: https://github.com/babel-utils/babel-plugin-tester/blob/master/src/plugin-tester.js#L314
-
   babelOptions = mergeWith(
     {},
     babelOptions,

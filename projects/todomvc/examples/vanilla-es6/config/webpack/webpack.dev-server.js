@@ -9,6 +9,7 @@ module.exports = outFile => ({
     // path.join(root, 'dist')
   ],
   host: '0.0.0.0',
+  https: true,
   hot: true,
   port: 3000,
   writeToDisk: true,
