@@ -1,6 +1,7 @@
-import { buildSource, buildWrapTryFinally } from '../helpers/builders';
+import { buildSource, buildWrapTryFinally, buildProgram } from '../helpers/builders';
 import * as t from '@babel/types';
 import { extractTopLevelNodes } from '../helpers/astHelpers';
+import { replaceProgramBody } from '../helpers/modification';
 
 export function addDbuxInitDeclaration(path, state) {
   path.pushContainer('body', buildProgramTail(path, state));
@@ -39,16 +40,16 @@ function ${dbuxInit}() {
 }`);
 }
 
-function buildPopProgram(contextId, dbux) {
-  return buildSource(`${dbux}.popProgram(${contextId});`);
+function buildPopProgram(dbux) {
+  return buildSource(`${dbux}.popProgram();`);
 }
 
 
-export function wrapProgramBody(path, state) {
+export function wrapProgram(path, state) {
   const { ids: { dbux } } = state;
-  const contextId = path.scope.generateUid('contextId');
+  //const contextId = path.scope.generateUid('contextId');
   const startCalls = buildProgramInit(path, state);
-  const endCalls = buildPopProgram(contextId, dbux);
+  const endCalls = buildPopProgram(dbux);
 
   const bodyPath = path.get('body');
   const bodyNodes = bodyPath.map(p => p.node);
@@ -71,12 +72,11 @@ export function wrapProgramBody(path, state) {
 
   // console.log('Program.startCalls:', buildBlock(startCalls));
 
-  const newProgramNode = t.cloneNode(path.node);
   const wrappedBody = buildWrapTryFinally(otherNodes, startCalls, endCalls);
-  newProgramNode.body = [
+  
+  replaceProgramBody(path, [
     ...importNodes,   // imports first
     ...wrappedBody,
     ...exportNodes    // exports last
-  ];
-  path.replaceWith(newProgramNode);
+  ]);
 }

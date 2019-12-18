@@ -1,5 +1,5 @@
 {
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "author": "Domi",
   "module": "dist/index.js",
@@ -13,7 +13,7 @@
     "test:watch": "npm run test -- --watch",
     "__archive_build": "npm run clean && npx babel src -d dist",
     "__archive_prepublish": "npm run clean && npm run build",
-    "postinstall": "npm run add-links",
+    "__postinstall": "npm run add-links",
     "add-links": "npm i --ignore-scripts -S ../dbux-common ../dbux-runtime"
   },
   "devDependencies": {
@@ -60,7 +60,6 @@
     "babel-plugin"
   ],
   "dependencies": {
-    "@babel/polyfill": "^7.7.0",
     "@babel/runtime": "^7.7.5",
     "core-js": "^3.4.7",
     "dbux-common": "file:../dbux-common",

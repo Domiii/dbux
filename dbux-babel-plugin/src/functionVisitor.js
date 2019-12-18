@@ -22,10 +22,15 @@ export default function functionVisitor() {
 
       // console.log('actualParent',  toSourceString(actualParent.node));
 
+      const { node } = path;
+      const name = node.key ? node.key.name : node.id?.name;
+
+      // TODO: parent.key, parent.id
+
       state.staticSites.push({
         staticId,
         type: 2,
-        name: path.node.id?.name,
+        name,
         line,
         parent: parentStaticId
       });

@@ -26,6 +26,7 @@ export function getAllIdsOfDeclaration(node) {
 /**
  * For safety reasons, we always want to wrap all our code in try/finally.
  * However, top-level nodes cannot be wrapped, so we need to extract them.
+`... export { a }` -> `var a; ... a = ... export { a }`
  * 
  * Export statement examples:
 ```

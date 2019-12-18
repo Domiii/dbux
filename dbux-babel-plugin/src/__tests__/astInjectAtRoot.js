@@ -1,4 +1,4 @@
-import { runSnapshotTests } from '../testing/test-util';
+import { runSnapshotTests, runAllSnapshotTests } from '../testing/test-util';
 import { buildSource } from '../helpers/builders';
 
 const codes = [
@@ -41,9 +41,5 @@ const plugin = function ({ types: t }) {
   };
 };
 
-codes.forEach((code, i) => {
-  const title = `[${i}]${__filename}`;
-  runSnapshotTests(code, __filename, title, {
-    plugin
-  });
-});
+
+runAllSnapshotTests(codes, __filename, plugin, false);

@@ -4,7 +4,7 @@
 export default class Enum {
   constructor(valuesByNames) {
     this.valuesByNames = Object.freeze(valuesByNames);
-    this.names = Object.keys(valuesByNames);
+    this.names = Object.keys(aluesByNames);
     this.values = Object.values(valuesByNames);
 
     // store reverse lookup

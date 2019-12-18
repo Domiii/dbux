@@ -6,6 +6,7 @@ import { babelConfigNext, babelConfigEs5 } from './babelConfigs';
 import path from 'path';
 import fs from 'fs';
 import { transformSync } from '@babel/core';
+import merge from 'lodash/merge';
 
 const { parse } = path;
 
@@ -19,13 +20,13 @@ function fixTitle(title, version) {
   return `${name}.${version}${ext}`;
 }
 
-export function writeResultCodeToFile(inputCode, babelOptions) {
+export function writeResultCodeToFile(inputCode, title, babelOptions, plugin) {
   // see: https://github.com/babel-utils/babel-plugin-tester/blob/master/src/plugin-tester.js#L314
   babelOptions = mergeWith(
     {},
     babelOptions,
     {
-      plugins: [dbuxBabelPlugin]
+      plugins: [plugin]
     },
     function customizer(dst, src) {
       if (Array.isArray(dst)) {
@@ -38,9 +39,18 @@ export function writeResultCodeToFile(inputCode, babelOptions) {
 
   const srcPath = __dirname + '/..';
   const samplesOutputPath = srcPath + '/__tests__/__samplesOutput__';
-  const filename = path.basename(babelOptions.filename);
+  const filename = title;
   fs.mkdirSync(samplesOutputPath, { recursive: true });
   fs.writeFileSync(samplesOutputPath + '/' + filename, outputCode);
+}
+
+export function runAllSnapshotTests(codes, filename, plugin, shouldWriteResultToFile) {
+  codes.forEach((code, i) => {
+    const title = `[${i}]${filename}`;
+    runSnapshotTests(code, filename, title, {
+      plugin
+    }, shouldWriteResultToFile);
+  });
 }
 
 /**
@@ -57,8 +67,8 @@ export function runSnapshotTests(code, filename, codeTitle, customTestConfig, sh
     }, babelConfig);
     const title = fixTitle(codeTitle, version);
     const defaultConfig = {
-      plugin: dbuxBabelPlugin,
-      pluginName: 'dbux-babel-plugin',
+      plugin: customTestConfig.plugin || dbuxBabelPlugin,
+      pluginName: customTestConfig.plugin?.name || 'dbux-babel-plugin',
       babelOptions,
       filename,
       tests: [
@@ -73,7 +83,7 @@ export function runSnapshotTests(code, filename, codeTitle, customTestConfig, sh
     pluginTester(testConfig);
 
     if (shouldWriteResultToFile) {
-      writeResultCodeToFile(code, babelOptions);
+      writeResultCodeToFile(code, title, babelOptions, testConfig.plugin);
     }
   }
 }

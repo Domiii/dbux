@@ -1,6 +1,6 @@
 import fsPath from 'path';
 import buildProgramVisitorState from './programVisitorState';
-import { addDbuxInitDeclaration, wrapProgramBody } from './instrumentation/program';
+import { addDbuxInitDeclaration, wrapProgram } from './instrumentation/program';
 
 
 // ########################################
@@ -53,7 +53,7 @@ function enter(path, state) {
   );
 
   // instrument Program itself
-  wrapProgramBody(path, state);
+  wrapProgram(path, state);
 }
 
 

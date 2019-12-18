@@ -7,43 +7,43 @@ const _dbux = _dbux_init(_dbuxRuntime);
 try {
   /* #################################################################################### */
   function f1() {
-    const _contextId2 = _dbux.pushImmediate(2);
+    const _contextId = _dbux.pushImmediate(2);
 
     try {} finally {
-      _dbux.popImmediate(_contextId2);
+      _dbux.popImmediate(_contextId);
     }
   }
 
   const f2 = function _f2() {
-    const _contextId3 = _dbux.pushImmediate(3);
+    const _contextId2 = _dbux.pushImmediate(3);
+
+    try {} finally {
+      _dbux.popImmediate(_contextId2);
+    }
+  };
+
+  const f3 = () => {
+    const _contextId3 = _dbux.pushImmediate(4);
 
     try {} finally {
       _dbux.popImmediate(_contextId3);
     }
   };
 
-  const f3 = () => {
-    const _contextId4 = _dbux.pushImmediate(4);
-
-    try {} finally {
-      _dbux.popImmediate(_contextId4);
-    }
-  };
-
   const o = {
     f4() {
-      const _contextId5 = _dbux.pushImmediate(5);
+      const _contextId4 = _dbux.pushImmediate(5);
 
       try {} finally {
-        _dbux.popImmediate(_contextId5);
+        _dbux.popImmediate(_contextId4);
       }
     },
 
     f5: () => {
-      const _contextId6 = _dbux.pushImmediate(6);
+      const _contextId5 = _dbux.pushImmediate(6);
 
       try {} finally {
-        _dbux.popImmediate(_contextId6);
+        _dbux.popImmediate(_contextId5);
       }
     }
   };
@@ -51,19 +51,19 @@ try {
   class C {
     constructor() {
       this.f7 = () => {
-        const _contextId7 = _dbux.pushImmediate(7);
+        const _contextId6 = _dbux.pushImmediate(7);
 
         try {} finally {
-          _dbux.popImmediate(_contextId7);
+          _dbux.popImmediate(_contextId6);
         }
       };
     }
 
     f6() {
-      const _contextId8 = _dbux.pushImmediate(8);
+      const _contextId7 = _dbux.pushImmediate(8);
 
       try {} finally {
-        _dbux.popImmediate(_contextId8);
+        _dbux.popImmediate(_contextId7);
       }
     }
 
@@ -74,16 +74,16 @@ try {
   // }
 
 } finally {
-  _dbux.popProgram(_contextId);
+  _dbux.popProgram();
 }
 
 function _dbux_init() {
   return _dbuxRuntime.initProgram({
-    "filename": "src/__tests__/__samplesInput__/allFunctionTypes.js",
+    "filename": "src\\__tests__\\__samplesInput__\\allFunctionTypes.js",
     "staticSites": [{
       "staticId": 1,
       "type": 1,
-      "name": "src/__tests__/__samplesInput__/allFunctionTypes.js"
+      "name": "src\\__tests__\\__samplesInput__\\allFunctionTypes.js"
     }, {
       "staticId": 2,
       "type": 2,
@@ -104,6 +104,7 @@ function _dbux_init() {
     }, {
       "staticId": 5,
       "type": 2,
+      "name": "f4",
       "line": 15,
       "parent": 1
     }, {
@@ -119,6 +120,7 @@ function _dbux_init() {
     }, {
       "staticId": 8,
       "type": 2,
+      "name": "f6",
       "line": 20,
       "parent": 1
     }]
