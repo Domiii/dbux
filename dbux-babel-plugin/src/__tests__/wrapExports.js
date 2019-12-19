@@ -15,6 +15,7 @@ export const c = 1;
 const d=3,x=4;
 export default d;
 //export c from 'x';
+export { x as exportedX };
 export * from 'file2';
 `
 ];
