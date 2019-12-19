@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plugin wrapExports.es5.js: wrapExports.es5.js 1`] = `
+"
+/* #################################################################################### */
+
+//export default class A {};
+const a=1,b=2,d=3,x=4;
+export { a, b };
+export class B {};
+export const c = 1;
+export default d;
+//export c from 'x';
+export * from 'hi';
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+exports.__esModule = true;
+var _exportNames = {
+  a: true,
+  b: true,
+  B: true
+};
+exports[\\"default\\"] = exports.B = exports.b = exports.a = void 0;
+
+var _hi = require(\\"hi\\");
+
+Object.keys(_hi).forEach(function (key) {
+  if (key === \\"default\\" || key === \\"__esModule\\") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  exports[key] = _hi[key];
+});
+
+var _a, _b, _B;
+
+exports.B = _B;
+exports.b = _b;
+exports.a = _a;
+
+try {
+  /* #################################################################################### */
+  //export default class A {};
+  var a = 1,
+      b = 2,
+      _d = 3,
+      x = 4;
+
+  var B = function B() {};
+
+  ;
+  exports.a = _a = a;
+  exports.b = _b = b;
+  exports.B = _B = B;
+} finally {}
+
+var _default = d; //export c from 'x';
+
+exports[\\"default\\"] = _default;
+"
+`;
+
+exports[`plugin wrapExports.esNext.js: wrapExports.esNext.js 1`] = `
+"
+/* #################################################################################### */
+
+//export default class A {};
+const a=1,b=2,d=3,x=4;
+export { a, b };
+export class B {};
+export const c = 1;
+export default d;
+//export c from 'x';
+export * from 'hi';
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+let _a, _b, _B;
+
+try {
+  /* #################################################################################### */
+  //export default class A {};
+  const a = 1,
+        b = 2,
+        d = 3,
+        x = 4;
+
+  class B {}
+
+  ;
+  _a = a;
+  _b = b;
+  _B = B;
+} finally {}
+
+export { _a as a, _b as b };
+export { _B as B };
+export default d; //export c from 'x';
+
+export * from 'hi';
+"
+`;

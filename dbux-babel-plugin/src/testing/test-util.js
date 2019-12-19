@@ -6,7 +6,6 @@ import { babelConfigNext, babelConfigEs5 } from './babelConfigs';
 import path from 'path';
 import fs from 'fs';
 import { transformSync } from '@babel/core';
-import merge from 'lodash/merge';
 
 const { parse } = path;
 
@@ -26,6 +25,8 @@ export function writeResultCodeToFile(inputCode, title, babelOptions, plugin) {
     {},
     babelOptions,
     {
+      babelrc: false,
+      configFile: false,
       plugins: [plugin]
     },
     function customizer(dst, src) {

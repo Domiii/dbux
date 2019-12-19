@@ -39,22 +39,22 @@ export const babelConfigEs5 = defaultsDeep({
 }, babelConfigEs6);
 
 /**
- * Transpile to es6.
+ * Transpile to esNext.
  */
 export const babelConfigNext = defaultsDeep({
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        targets: {
-          node: 'current',
-          //chrome: '58'
-        },
-        "loose": true,
-        "useBuiltIns": "usage",
-        "corejs": 3
-      }
-    ]
-  ]
+  // "presets": [
+  //   [
+  //     "@babel/preset-env",
+  //     {
+  //       targets: {
+  //         node: 'current',
+  //         //chrome: '58'
+  //       },
+  //       "loose": true,
+  //       "useBuiltIns": "usage",
+  //       "corejs": 3
+  //     }
+  //   ]
+  // ]
 }, 
   babelConfigEs6);
