@@ -10,17 +10,6 @@ const codes = [
   const b = 2;
   let c = 3;
 }
-`,
-`
-var a,b,d,x;
-
-//export default class A {};
-export { a, b };
-export class B {};
-export const c = 1;
-export default d;
-//export c from 'x';
-export * from 'hi';
 `
 ];
 
@@ -37,11 +26,11 @@ const plugin = function ({ types: t }) {
         const nodes = bodyPath[0].get('body').map(path => path.node);
         const ids = [];
         const inits = [];
-        for (let i = nodes.length-1; i >= 0; --i) {
+        for (let i = 0; i < nodes.length; ++i) {
           const node = nodes[i];
           const decls = node.declarations;
           if (decls) {
-            nodes.splice(i, 1);  // remove
+            nodes.splice(i--, 1);  // remove
             ids.push(...decls.map(n => n.id));
             inits.push(...decls.map(n => n.init));
           }

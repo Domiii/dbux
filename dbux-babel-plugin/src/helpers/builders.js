@@ -7,6 +7,10 @@ import { codeFrameColumns } from "@babel/code-frame";
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
 
+export function buildNamedExport(ids) {
+  return t.exportNamedDeclaration(null, ids.map(id => t.exportSpecifier(id, id)))
+}
+
 export function buildTryFinally(tryNodes, finallyNodes) {
   if (tryNodes.length === 1 && t.isBlockStatement(tryNodes[0])) {
     tryNodes = tryNodes[0];

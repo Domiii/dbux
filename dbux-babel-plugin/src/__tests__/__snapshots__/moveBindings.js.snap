@@ -14,11 +14,11 @@ exports[`plugin moveBindings.es5.js: moveBindings.es5.js 1`] = `
 
 \\"use strict\\";
 
-var c, b, a;
+var a, b, c;
 {
-  c = 3;
-  b = 2;
   a = 1;
+  b = 2;
+  c = 3;
 }
 "
 `;
@@ -37,11 +37,11 @@ exports[`plugin moveBindings.esNext.js: moveBindings.esNext.js 1`] = `
 
 \\"use strict\\";
 
-let c, b, a;
+let a, b, c;
 {
-  c = 3;
-  b = 2;
   a = 1;
+  b = 2;
+  c = 3;
 }
 "
 `;

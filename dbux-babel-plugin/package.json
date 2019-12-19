@@ -67,5 +67,6 @@
     "firebase-tools": "^7.9.0",
     "g": "^2.0.1"
   },
-  "_moduleAliases": {}
+  "_moduleAliases": {
+  }
 }
