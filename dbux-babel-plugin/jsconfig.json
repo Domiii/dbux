@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"module": "esnext",
 		"target": "esnext",
-		"checkJs": true,  /* Typecheck .js files. */
+		"checkJs": false,  /* Typecheck .js files. */
 		"lib": [
 			"es6"
 		]

@@ -43,13 +43,10 @@ export function buildVarAssignments(ids, values) {
 /**
  * Wrap a block with a try/finally pair
  */
-export function buildWrapTryFinally(tryNodes, startCalls, endCalls) {
+export function buildWrapTryFinally(tryNodes, endCalls) {
   tryNodes = Array.isArray(tryNodes) ? tryNodes : [tryNodes];
   const finallyBody = endCalls;
-  return [
-    ...startCalls,
-    buildTryFinally(tryNodes, finallyBody)
-  ];
+  return buildTryFinally(tryNodes, finallyBody);
 }
 
 export function buildProgram(origPathOrNode, bodyNodes) {

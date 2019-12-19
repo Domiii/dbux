@@ -2,6 +2,7 @@ import { buildSource, buildWrapTryFinally, buildProgram } from '../helpers/build
 import * as t from '@babel/types';
 import { extractTopLevelNodes } from '../helpers/astHelpers';
 import { replaceProgramBody } from '../helpers/modification';
+import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 
 export function addDbuxInitDeclaration(path, state) {
   path.pushContainer('body', buildProgramTail(path, state));
@@ -51,32 +52,19 @@ export function wrapProgram(path, state) {
   const startCalls = buildProgramInit(path, state);
   const endCalls = buildPopProgram(dbux);
 
-  const bodyPath = path.get('body');
-  const bodyNodes = bodyPath.map(p => p.node);
-
-  /**
-   * Special magic: imports + exports cannot be inside of a try {} block.
-   * Our solution:
-   * 1. move all imports in front of the try {} block.
-   * 2. find the id of all exports, then:
-   * 2a. 
-   */
   const [
     importNodes,
-    otherNodes,
+    initVarDecl,
+    bodyNodes,
     exportNodes
-   ] = extractTopLevelNodes(bodyPath, bodyNodes);
+  ] = extractTopLevelDeclarations(path);
 
-
-  // console.log(!!bodyPath.replaceWith, bodyPath.length, bodyPath.toString());
-
-  // console.log('Program.startCalls:', buildBlock(startCalls));
-
-  const wrappedBody = buildWrapTryFinally(otherNodes, startCalls, endCalls);
-  
-  replaceProgramBody(path, [
-    ...importNodes,   // imports first
-    ...wrappedBody,
-    ...exportNodes    // exports last
-  ]);
+  const programBody = [
+    ...importNodes,     // imports first
+    ...startCalls,
+    initVarDecl,
+    buildWrapTryFinally(bodyNodes, endCalls),
+    ...exportNodes      // exports last
+  ];
+  replaceProgramBody(path, programBody);
 }

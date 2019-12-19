@@ -25,5 +25,8 @@ export function wrapFunctionBody(bodyPath, staticId, { ids: { dbux } }) {
   const endCalls = buildPopImmediate(contextId, dbux);
 
   // wrap the function in a try/finally statement
-  bodyPath.replaceWith(buildBlock(buildWrapTryFinally(bodyPath.node, startCalls, endCalls)));
+  bodyPath.replaceWith(buildBlock([
+    ...startCalls,
+    buildWrapTryFinally(bodyPath.node, endCalls)
+  ]));
 }
