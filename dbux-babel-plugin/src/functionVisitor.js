@@ -6,12 +6,12 @@ export default function functionVisitor() {
   return {
     enter(path, state) {
       if (!state.onEnter(path)) return;
-      const line = getLine(path);
-
-      if (!line) {
+      const { loc } = path.node;
+      if (!loc) {
         // this node has been dynamically emitted; not part of the original source code
         return;
       }
+      const { start, end } = loc;
       const staticId = state.staticSites.length;
       path.setData('staticId', staticId);
 
@@ -31,7 +31,8 @@ export default function functionVisitor() {
         staticId,
         type: 2,
         name,
-        line,
+        start,
+        end,
         parent: parentStaticId
       });
 

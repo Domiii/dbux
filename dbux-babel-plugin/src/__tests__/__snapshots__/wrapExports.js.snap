@@ -2,8 +2,6 @@
 
 exports[`plugin wrapExports.es5.js: wrapExports.es5.js 1`] = `
 "
-/* #################################################################################### */
-
 //export default class A {};
 import asd from 'file1';
 const a=1,b=2;
@@ -43,7 +41,6 @@ Object.keys(_file2).forEach(function (key) {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { \\"default\\": obj }; }
 
-/* #################################################################################### */
 //export default class A {};
 var _a, _b, _B, _c, _d, _x;
 
@@ -78,8 +75,6 @@ exports[\\"default\\"] = _default;
 
 exports[`plugin wrapExports.esNext.js: wrapExports.esNext.js 1`] = `
 "
-/* #################################################################################### */
-
 //export default class A {};
 import asd from 'file1';
 const a=1,b=2;
@@ -95,7 +90,6 @@ export * from 'file2';
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-/* #################################################################################### */
 //export default class A {};
 import asd from 'file1';
 

@@ -2,8 +2,6 @@
 
 exports[`plugin moveBindings.es5.js: moveBindings.es5.js 1`] = `
 "
-/* #################################################################################### */
-
 {
   var a = 1;
   const b = 2;
@@ -25,8 +23,6 @@ var a, b, c;
 
 exports[`plugin moveBindings.esNext.js: moveBindings.esNext.js 1`] = `
 "
-/* #################################################################################### */
-
 {
   var a = 1;
   const b = 2;

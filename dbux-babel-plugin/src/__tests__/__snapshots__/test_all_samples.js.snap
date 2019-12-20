@@ -2,7 +2,6 @@
 
 exports[`dbux-babel-plugin allFunctionTypes.es5.js: allFunctionTypes.es5.js 1`] = `
 "
-/* #################################################################################### */
 function f1() {
 
 }
@@ -40,7 +39,6 @@ var _dbuxRuntime = require('dbux-runtime')[\\"default\\"];
 var _dbux = _dbux_init(_dbuxRuntime);
 
 try {
-  /* #################################################################################### */
   var f1 = function f1() {
     var _contextId = _dbux.pushImmediate(2);
 
@@ -127,41 +125,90 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
-      \\"line\\": 2,
+      \\"start\\": {
+        \\"line\\": 1,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 3,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 3,
       \\"type\\": 2,
       \\"name\\": \\"_f2\\",
-      \\"line\\": 6,
+      \\"start\\": {
+        \\"line\\": 5,
+        \\"column\\": 11
+      },
+      \\"end\\": {
+        \\"line\\": 7,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 4,
       \\"type\\": 2,
-      \\"line\\": 10,
+      \\"start\\": {
+        \\"line\\": 9,
+        \\"column\\": 11
+      },
+      \\"end\\": {
+        \\"line\\": 11,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 5,
       \\"type\\": 2,
       \\"name\\": \\"f4\\",
-      \\"line\\": 15,
+      \\"start\\": {
+        \\"line\\": 14,
+        \\"column\\": 2
+      },
+      \\"end\\": {
+        \\"line\\": 14,
+        \\"column\\": 9
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 6,
       \\"type\\": 2,
       \\"name\\": \\"f5\\",
-      \\"line\\": 16,
+      \\"start\\": {
+        \\"line\\": 15,
+        \\"column\\": 6
+      },
+      \\"end\\": {
+        \\"line\\": 15,
+        \\"column\\": 14
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 7,
       \\"type\\": 2,
-      \\"line\\": 21,
+      \\"start\\": {
+        \\"line\\": 20,
+        \\"column\\": 7
+      },
+      \\"end\\": {
+        \\"line\\": 20,
+        \\"column\\": 15
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 8,
       \\"type\\": 2,
       \\"name\\": \\"f6\\",
-      \\"line\\": 20,
+      \\"start\\": {
+        \\"line\\": 19,
+        \\"column\\": 2
+      },
+      \\"end\\": {
+        \\"line\\": 19,
+        \\"column\\": 9
+      },
       \\"parent\\": 1
     }]
   });
@@ -171,7 +218,6 @@ function _dbux_init() {
 
 exports[`dbux-babel-plugin allFunctionTypes.esNext.js: allFunctionTypes.esNext.js 1`] = `
 "
-/* #################################################################################### */
 function f1() {
 
 }
@@ -207,7 +253,6 @@ const _dbuxRuntime = require('dbux-runtime').default;
 const _dbux = _dbux_init(_dbuxRuntime);
 
 try {
-  /* #################################################################################### */
   function f1() {
     const _contextId = _dbux.pushImmediate(2);
 
@@ -291,40 +336,89 @@ function _dbux_init() {
       \\"staticId\\": 2,
       \\"type\\": 2,
       \\"name\\": \\"f1\\",
-      \\"line\\": 2,
+      \\"start\\": {
+        \\"line\\": 1,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 3,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 3,
       \\"type\\": 2,
       \\"name\\": \\"_f2\\",
-      \\"line\\": 6,
+      \\"start\\": {
+        \\"line\\": 5,
+        \\"column\\": 11
+      },
+      \\"end\\": {
+        \\"line\\": 7,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 4,
       \\"type\\": 2,
-      \\"line\\": 10,
+      \\"start\\": {
+        \\"line\\": 9,
+        \\"column\\": 11
+      },
+      \\"end\\": {
+        \\"line\\": 11,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 5,
       \\"type\\": 2,
       \\"name\\": \\"f4\\",
-      \\"line\\": 15,
+      \\"start\\": {
+        \\"line\\": 14,
+        \\"column\\": 2
+      },
+      \\"end\\": {
+        \\"line\\": 14,
+        \\"column\\": 9
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 6,
       \\"type\\": 2,
-      \\"line\\": 16,
+      \\"start\\": {
+        \\"line\\": 15,
+        \\"column\\": 6
+      },
+      \\"end\\": {
+        \\"line\\": 15,
+        \\"column\\": 14
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 7,
       \\"type\\": 2,
-      \\"line\\": 21,
+      \\"start\\": {
+        \\"line\\": 20,
+        \\"column\\": 7
+      },
+      \\"end\\": {
+        \\"line\\": 20,
+        \\"column\\": 15
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 8,
       \\"type\\": 2,
       \\"name\\": \\"f6\\",
-      \\"line\\": 20,
+      \\"start\\": {
+        \\"line\\": 19,
+        \\"column\\": 2
+      },
+      \\"end\\": {
+        \\"line\\": 19,
+        \\"column\\": 9
+      },
       \\"parent\\": 1
     }]
   });
@@ -334,7 +428,6 @@ function _dbux_init() {
 
 exports[`dbux-babel-plugin example1.es5.js: example1.es5.js 1`] = `
 "
-/* #################################################################################### */
 function f1(x,y) {
 }
 
@@ -385,7 +478,6 @@ exports.A = _A;
 exports.f1 = _f;
 
 try {
-  /* #################################################################################### */
   var f1 = function f1(x, y) {
     var _contextId = _dbux.pushImmediate(2);
 
@@ -447,24 +539,52 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
-      \\"line\\": 2,
+      \\"start\\": {
+        \\"line\\": 1,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 2,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 3,
       \\"type\\": 2,
       \\"name\\": \\"A\\",
-      \\"line\\": 6,
+      \\"start\\": {
+        \\"line\\": 5,
+        \\"column\\": 2
+      },
+      \\"end\\": {
+        \\"line\\": 8,
+        \\"column\\": 3
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 4,
       \\"type\\": 2,
       \\"name\\": \\"getX\\",
-      \\"line\\": 11,
+      \\"start\\": {
+        \\"line\\": 10,
+        \\"column\\": 2
+      },
+      \\"end\\": {
+        \\"line\\": 10,
+        \\"column\\": 11
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 5,
       \\"type\\": 2,
-      \\"line\\": 14,
+      \\"start\\": {
+        \\"line\\": 13,
+        \\"column\\": 11
+      },
+      \\"end\\": {
+        \\"line\\": 13,
+        \\"column\\": 22
+      },
       \\"parent\\": 1
     }]
   });
@@ -474,7 +594,6 @@ function _dbux_init() {
 
 exports[`dbux-babel-plugin example1.esNext.js: example1.esNext.js 1`] = `
 "
-/* #################################################################################### */
 function f1(x,y) {
 }
 
@@ -504,7 +623,6 @@ const _dbux = _dbux_init(_dbuxRuntime);
 let _f, _A, _f2;
 
 try {
-  /* #################################################################################### */
   function f1(x, y) {
     const _contextId = _dbux.pushImmediate(2);
 
@@ -564,24 +682,52 @@ function _dbux_init() {
       \\"staticId\\": 2,
       \\"type\\": 2,
       \\"name\\": \\"f1\\",
-      \\"line\\": 2,
+      \\"start\\": {
+        \\"line\\": 1,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 2,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 3,
       \\"type\\": 2,
       \\"name\\": \\"constructor\\",
-      \\"line\\": 6,
+      \\"start\\": {
+        \\"line\\": 5,
+        \\"column\\": 2
+      },
+      \\"end\\": {
+        \\"line\\": 8,
+        \\"column\\": 3
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 4,
       \\"type\\": 2,
       \\"name\\": \\"getX\\",
-      \\"line\\": 11,
+      \\"start\\": {
+        \\"line\\": 10,
+        \\"column\\": 2
+      },
+      \\"end\\": {
+        \\"line\\": 10,
+        \\"column\\": 11
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 5,
       \\"type\\": 2,
-      \\"line\\": 14,
+      \\"start\\": {
+        \\"line\\": 13,
+        \\"column\\": 11
+      },
+      \\"end\\": {
+        \\"line\\": 13,
+        \\"column\\": 22
+      },
       \\"parent\\": 1
     }]
   });
@@ -591,7 +737,6 @@ function _dbux_init() {
 
 exports[`dbux-babel-plugin example2.es5.js: example2.es5.js 1`] = `
 "
-/* #################################################################################### */
 import { A } from './example1';
 
 (function main() {
@@ -604,7 +749,6 @@ import { A } from './example1';
 
 var _example = require(\\"./example1\\");
 
-/* #################################################################################### */
 var _dbuxRuntime = require('dbux-runtime')[\\"default\\"];
 
 var _dbux = _dbux_init(_dbuxRuntime);
@@ -635,7 +779,14 @@ function _dbux_init() {
       \\"staticId\\": 2,
       \\"type\\": 2,
       \\"name\\": \\"main\\",
-      \\"line\\": 4,
+      \\"start\\": {
+        \\"line\\": 3,
+        \\"column\\": 1
+      },
+      \\"end\\": {
+        \\"line\\": 5,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }]
   });
@@ -645,7 +796,6 @@ function _dbux_init() {
 
 exports[`dbux-babel-plugin example2.esNext.js: example2.esNext.js 1`] = `
 "
-/* #################################################################################### */
 import { A } from './example1';
 
 (function main() {
@@ -654,7 +804,6 @@ import { A } from './example1';
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-/* #################################################################################### */
 import { A } from './example1';
 
 const _dbuxRuntime = require('dbux-runtime').default;
@@ -687,7 +836,14 @@ function _dbux_init() {
       \\"staticId\\": 2,
       \\"type\\": 2,
       \\"name\\": \\"main\\",
-      \\"line\\": 4,
+      \\"start\\": {
+        \\"line\\": 3,
+        \\"column\\": 1
+      },
+      \\"end\\": {
+        \\"line\\": 5,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }]
   });
@@ -697,7 +853,6 @@ function _dbux_init() {
 
 exports[`dbux-babel-plugin executionContextAsync.es5.js: executionContextAsync.es5.js 1`] = `
 "
-/* #################################################################################### */
 async function af1() {
   return Promise.resolve(1);
 }
@@ -754,7 +909,6 @@ var _dbuxRuntime = require('dbux-runtime')[\\"default\\"];
 var _dbux = _dbux_init(_dbuxRuntime);
 
 try {
-  /* #################################################################################### */
   var af1 = function af1() {
     var _contextId;
 
@@ -936,38 +1090,87 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
-      \\"line\\": 2,
+      \\"start\\": {
+        \\"line\\": 1,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 3,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 3,
       \\"type\\": 2,
-      \\"line\\": 6,
+      \\"start\\": {
+        \\"line\\": 5,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 10,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 4,
       \\"type\\": 2,
-      \\"line\\": 13,
+      \\"start\\": {
+        \\"line\\": 12,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 16,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 5,
       \\"type\\": 2,
-      \\"line\\": 14,
+      \\"start\\": {
+        \\"line\\": 13,
+        \\"column\\": 21
+      },
+      \\"end\\": {
+        \\"line\\": 15,
+        \\"column\\": 3
+      },
       \\"parent\\": 4
     }, {
       \\"staticId\\": 6,
       \\"type\\": 2,
-      \\"line\\": 14,
+      \\"start\\": {
+        \\"line\\": 13,
+        \\"column\\": 21
+      },
+      \\"end\\": {
+        \\"line\\": 15,
+        \\"column\\": 3
+      },
       \\"parent\\": 4
     }, {
       \\"staticId\\": 7,
       \\"type\\": 2,
-      \\"line\\": 19,
+      \\"start\\": {
+        \\"line\\": 18,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 23,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 8,
       \\"type\\": 2,
       \\"name\\": \\"main\\",
-      \\"line\\": 26,
+      \\"start\\": {
+        \\"line\\": 25,
+        \\"column\\": 1
+      },
+      \\"end\\": {
+        \\"line\\": 30,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }]
   });
@@ -977,7 +1180,6 @@ function _dbux_init() {
 
 exports[`dbux-babel-plugin executionContextAsync.esNext.js: executionContextAsync.esNext.js 1`] = `
 "
-/* #################################################################################### */
 async function af1() {
   return Promise.resolve(1);
 }
@@ -1016,7 +1218,6 @@ const _dbuxRuntime = require('dbux-runtime').default;
 const _dbux = _dbux_init(_dbuxRuntime);
 
 try {
-  /* #################################################################################### */
   async function af1() {
     const _contextId = _dbux.pushImmediate(2);
 
@@ -1094,36 +1295,78 @@ function _dbux_init() {
       \\"staticId\\": 2,
       \\"type\\": 2,
       \\"name\\": \\"af1\\",
-      \\"line\\": 2,
+      \\"start\\": {
+        \\"line\\": 1,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 3,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 3,
       \\"type\\": 2,
       \\"name\\": \\"af2\\",
-      \\"line\\": 6,
+      \\"start\\": {
+        \\"line\\": 5,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 10,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 4,
       \\"type\\": 2,
       \\"name\\": \\"af33\\",
-      \\"line\\": 13,
+      \\"start\\": {
+        \\"line\\": 12,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 16,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 5,
       \\"type\\": 2,
-      \\"line\\": 14,
+      \\"start\\": {
+        \\"line\\": 13,
+        \\"column\\": 21
+      },
+      \\"end\\": {
+        \\"line\\": 15,
+        \\"column\\": 3
+      },
       \\"parent\\": 4
     }, {
       \\"staticId\\": 6,
       \\"type\\": 2,
       \\"name\\": \\"af44\\",
-      \\"line\\": 19,
+      \\"start\\": {
+        \\"line\\": 18,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 23,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 7,
       \\"type\\": 2,
       \\"name\\": \\"main\\",
-      \\"line\\": 26,
+      \\"start\\": {
+        \\"line\\": 25,
+        \\"column\\": 1
+      },
+      \\"end\\": {
+        \\"line\\": 30,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }]
   });
@@ -1133,7 +1376,6 @@ function _dbux_init() {
 
 exports[`dbux-babel-plugin executionContextSimple.es5.js: executionContextSimple.es5.js 1`] = `
 "
-/* #################################################################################### */
 function f1() {
 
 }
@@ -1155,7 +1397,6 @@ var _dbuxRuntime = require('dbux-runtime')[\\"default\\"];
 var _dbux = _dbux_init(_dbuxRuntime);
 
 try {
-  /* #################################################################################### */
   var f1 = function f1() {
     var _contextId = _dbux.pushImmediate(2);
 
@@ -1191,12 +1432,26 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
-      \\"line\\": 2,
+      \\"start\\": {
+        \\"line\\": 1,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 3,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 3,
       \\"type\\": 2,
-      \\"line\\": 6,
+      \\"start\\": {
+        \\"line\\": 5,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 8,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }]
   });
@@ -1206,7 +1461,6 @@ function _dbux_init() {
 
 exports[`dbux-babel-plugin executionContextSimple.esNext.js: executionContextSimple.esNext.js 1`] = `
 "
-/* #################################################################################### */
 function f1() {
 
 }
@@ -1226,7 +1480,6 @@ const _dbuxRuntime = require('dbux-runtime').default;
 const _dbux = _dbux_init(_dbuxRuntime);
 
 try {
-  /* #################################################################################### */
   function f1() {
     const _contextId = _dbux.pushImmediate(2);
 
@@ -1263,13 +1516,27 @@ function _dbux_init() {
       \\"staticId\\": 2,
       \\"type\\": 2,
       \\"name\\": \\"f1\\",
-      \\"line\\": 2,
+      \\"start\\": {
+        \\"line\\": 1,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 3,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }, {
       \\"staticId\\": 3,
       \\"type\\": 2,
       \\"name\\": \\"f2\\",
-      \\"line\\": 6,
+      \\"start\\": {
+        \\"line\\": 5,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 8,
+        \\"column\\": 1
+      },
       \\"parent\\": 1
     }]
   });

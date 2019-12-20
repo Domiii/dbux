@@ -60,7 +60,7 @@ export function runAllSnapshotTests(codes, filename, plugin, shouldWriteResultTo
  * es-next and es5.
  */
 export function runSnapshotTests(code, filename, codeTitle, customTestConfig, shouldWriteResultToFile) {
-  code = '/* #################################################################################### */\n' + code;
+  // code = '/* #################################################################################### */\n' + code;
 
   for (const version in configs) {
     const babelConfig = configs[version];

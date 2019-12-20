@@ -2,8 +2,6 @@
 
 exports[`plugin astInjectAtRoot.es5.js: astInjectAtRoot.es5.js 1`] = `
 "
-/* #################################################################################### */
-
 function f2() {
   AddCustomCode();
   AddCustomCode();
@@ -17,7 +15,6 @@ f2();
 
 someFancyCodeHere();
 
-/* #################################################################################### */
 function f2() {
   AddCustomCode();
   AddCustomCode();
@@ -25,36 +22,11 @@ function f2() {
 
 f2();
 f2();
-"
-`;
-
-exports[`plugin astInjectAtRoot.es5.js: astInjectAtRoot.es5.js 2`] = `
-"
-/* #################################################################################### */
-
-function f1() {
-  console.log('hi');
-}
-
-f1();
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-\\"use strict\\";
-
-/* #################################################################################### */
-function f1() {
-  console.log('hi');
-}
-
-f1();
 "
 `;
 
 exports[`plugin astInjectAtRoot.esNext.js: astInjectAtRoot.esNext.js 1`] = `
 "
-/* #################################################################################### */
-
 function f2() {
   AddCustomCode();
   AddCustomCode();
@@ -64,7 +36,6 @@ f2();
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-/* #################################################################################### */
 function f2() {
   AddCustomCode();
   AddCustomCode();
@@ -72,26 +43,5 @@ function f2() {
 
 f2();
 f2();
-"
-`;
-
-exports[`plugin astInjectAtRoot.esNext.js: astInjectAtRoot.esNext.js 2`] = `
-"
-/* #################################################################################### */
-
-function f1() {
-  console.log('hi');
-}
-
-f1();
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-/* #################################################################################### */
-function f1() {
-  console.log('hi');
-}
-
-f1();
 "
 `;

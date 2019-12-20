@@ -9,14 +9,15 @@ function f2() {
 }
 f2();
 f2();
-`,
-  `
-function f1() {
-  console.log('hi');
-}
-
-f1();
 `
+// ,
+//   `
+// function f1() {
+//   console.log('hi');
+// }
+
+// f1();
+// `
 ];
 
 const plugin = function ({ types: t }) {

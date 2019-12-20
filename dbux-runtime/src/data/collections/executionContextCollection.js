@@ -28,6 +28,16 @@ export class ExecutionContextCollection {
   getContext(contextId) {
     return this._contexts[contextId];
   }
+
+
+  getStaticContext(contextId) {
+    const context = this.getContext(contextId);
+    const {
+      programId,
+      staticContextId
+    } = context;
+    return staticContextCollection.getContext(programId, staticContextId);
+  }
   
   _genOrderId(programId, staticContextId) {
     const programOrderIds = this._lastOrderIds[programId] || (this._lastOrderIds[programId] = []);

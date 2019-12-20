@@ -18,6 +18,9 @@ export class ExecutionEventCollection {
     event.contextId = contextId;
     event.stackDepth = stackDepth;
 
+    const staticContext = executionContextCollection.getStaticContext(contextId);
+    event.where = staticContext.start;
+
     this._log(event);
   }
 
@@ -26,6 +29,9 @@ export class ExecutionEventCollection {
     event.eventType = ExecutionEventType.Leave;
     event.contextId = contextId;
     event.stackDepth = stackDepth;
+
+    const staticContext = executionContextCollection.getStaticContext(contextId);
+    event.where = staticContext.end;
 
     this._log(event);
   }
@@ -39,7 +45,8 @@ export class ExecutionEventCollection {
   static prettyPrint(state) {
     const {
       eventType,
-      contextId
+      contextId,
+      where
     } = state;
 
     const typeName = ExecutionEventType.nameFrom(eventType);
@@ -54,14 +61,14 @@ export class ExecutionEventCollection {
     const staticContext = staticContextCollection.getContext(programId, staticContextId);
 
     const {
-      name,
-      line
+      name
     } = staticContext;
 
     const {
       fileName
     } = programStaticContext;
 
+    const line = where?.line;
     
     const lineSuffix = line ? `:${line}` : '';
     const message = `(${rootContextId}) [${typeName}] ${name} @${fileName}${lineSuffix}`;
