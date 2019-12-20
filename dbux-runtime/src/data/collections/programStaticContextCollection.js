@@ -23,17 +23,17 @@ export class ProgramStaticContextCollection {
 
   addProgram(programData) {
     const programId = this._programStaticContexts.length;
-    const programStaticContext = new ProgramStaticContext(programId, programData);
+    const { fileName, filePath } = programData;
+    const programStaticContext = new ProgramStaticContext(programId, {
+      fileName,
+      filePath
+    });
     this._programStaticContexts.push(programStaticContext);
     return programStaticContext;
   }
 
-  /**
-   * Produces an incremental id, unique in the context of the given staticContextId.
-   */
-  genContextId(programId, staticContextId) {
-    const programStatic = this._programStaticContexts[programId];
-    return programStatic.getStaticContext(staticContextId).genOrderId();
+  getProgramContext(programId) {
+    return this._programStaticContexts[programId];
   }
 }
 

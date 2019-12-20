@@ -1,41 +1,11 @@
-import StaticContext from '../StaticContext';
-import { logInternalError } from '../../log/logger';
-
-function makeDefaultStaticContext(programId) {
-  const defaultSiteData = {
-    // nothing in here
-  };
-  return new StaticContext(programId, defaultSiteData);
-}
 
 export default class ProgramStaticContext {
-  _programId;
+  programId;
+  filePath;
+  fileName;
 
-  constructor(programId, { filename, staticSites }) {
-    this._programId = programId;
-    this._filename = filename;
-
-    const maxId = Math.max(...staticSites.map(s => s.staticId));
-    this._staticContexts = new Array(maxId);
-    this._staticContexts[0] = makeDefaultStaticContext();
-    for (const siteData of staticSites) {
-      this._staticContexts[siteData.staticId] = new StaticContext(programId, siteData);
-    }
-  }
-
-  getProgramId() {
-    return this._programId;
-  }
-
-  /**
-   * @return {StaticContext}
-   */
-  getStaticContext(staticId) {
-    const site = this._staticContexts[staticId];
-    if (!site) {
-      logInternalError('ProgramStaticContext.getStaticContext could not find context:', staticId);
-      return this._staticContexts[0];
-    }
-    return site;
+  constructor(programId, programData) {
+    this.programId = programId;
+    Object.assign(this, programData);
   }
 }

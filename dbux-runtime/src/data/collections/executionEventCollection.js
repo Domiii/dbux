@@ -1,6 +1,8 @@
 import ExecutionEventType from '../ExecutionEventType';
 import ExecutionEvent from './ExecutionEvent';
 import executionContextCollection from './executionContextCollection';
+import staticContextCollection from './staticContextCollection';
+import programStaticContextCollection from './programStaticContextCollection';
 
 export class ExecutionEventCollection {
 
@@ -12,7 +14,7 @@ export class ExecutionEventCollection {
 
   logPushImmediate(contextId, stackDepth) {
     const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.PushImmediate;
+    event.eventType = ExecutionEventType.Enter;
     event.contextId = contextId;
     event.stackDepth = stackDepth;
 
@@ -21,7 +23,7 @@ export class ExecutionEventCollection {
 
   logPopImmediate(contextId, stackDepth) {
     const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.PopImmediate;
+    event.eventType = ExecutionEventType.Leave;
     event.contextId = contextId;
     event.stackDepth = stackDepth;
 
@@ -42,15 +44,27 @@ export class ExecutionEventCollection {
 
     const typeName = ExecutionEventType.nameFrom(eventType);
     const context = executionContextCollection.getContext(contextId);
-
+    
     const {
+      programId,
       staticContextId,
       rootContextId
     } = context;
+    const programStaticContext = programStaticContextCollection.getProgramContext(programId);
+    const staticContext = staticContextCollection.getContext(programId, staticContextId);
 
-    const staticContext = static
+    const {
+      name,
+      line
+    } = staticContext;
 
-    const message = `(${rootContextId}) [${typeName}] ${staticContextId}`;
+    const {
+      fileName
+    } = programStaticContext;
+
+    
+    const lineSuffix = line ? `:${line}` : '';
+    const message = `(${rootContextId}) [${typeName}] ${name} @${fileName}${lineSuffix}`;
     console.log(`[DBUX]`, message);
   }
 

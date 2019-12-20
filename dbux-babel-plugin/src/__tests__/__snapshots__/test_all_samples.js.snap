@@ -118,11 +118,12 @@ try {
 
 function _dbux_init() {
   return _dbuxRuntime.initProgram({
-    \\"filename\\": \\"samples/__samplesInput__/allFunctionTypes.js\\",
-    \\"staticSites\\": [{
+    \\"fileName\\": \\"allFunctionTypes.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/allFunctionTypes.js\\",
+    \\"staticSites\\": [null, {
       \\"staticId\\": 1,
       \\"type\\": 1,
-      \\"name\\": \\"samples/__samplesInput__/allFunctionTypes.js\\"
+      \\"name\\": \\"Program\\"
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
@@ -280,11 +281,12 @@ try {
 
 function _dbux_init() {
   return _dbuxRuntime.initProgram({
-    \\"filename\\": \\"samples/__samplesInput__/allFunctionTypes.js\\",
-    \\"staticSites\\": [{
+    \\"fileName\\": \\"allFunctionTypes.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/allFunctionTypes.js\\",
+    \\"staticSites\\": [null, {
       \\"staticId\\": 1,
       \\"type\\": 1,
-      \\"name\\": \\"samples/__samplesInput__/allFunctionTypes.js\\"
+      \\"name\\": \\"Program\\"
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
@@ -436,11 +438,12 @@ try {
 
 function _dbux_init() {
   return _dbuxRuntime.initProgram({
-    \\"filename\\": \\"samples/__samplesInput__/example1.js\\",
-    \\"staticSites\\": [{
+    \\"fileName\\": \\"example1.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/example1.js\\",
+    \\"staticSites\\": [null, {
       \\"staticId\\": 1,
       \\"type\\": 1,
-      \\"name\\": \\"samples/__samplesInput__/example1.js\\"
+      \\"name\\": \\"Program\\"
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
@@ -551,11 +554,12 @@ export { _f as f1, _A as A, _f2 as f2 };
 
 function _dbux_init() {
   return _dbuxRuntime.initProgram({
-    \\"filename\\": \\"samples/__samplesInput__/example1.js\\",
-    \\"staticSites\\": [{
+    \\"fileName\\": \\"example1.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/example1.js\\",
+    \\"staticSites\\": [null, {
       \\"staticId\\": 1,
       \\"type\\": 1,
-      \\"name\\": \\"samples/__samplesInput__/example1.js\\"
+      \\"name\\": \\"Program\\"
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
@@ -621,11 +625,12 @@ try {
 
 function _dbux_init() {
   return _dbuxRuntime.initProgram({
-    \\"filename\\": \\"samples/__samplesInput__/example2.js\\",
-    \\"staticSites\\": [{
+    \\"fileName\\": \\"example2.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/example2.js\\",
+    \\"staticSites\\": [null, {
       \\"staticId\\": 1,
       \\"type\\": 1,
-      \\"name\\": \\"samples/__samplesInput__/example2.js\\"
+      \\"name\\": \\"Program\\"
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
@@ -672,11 +677,12 @@ try {
 
 function _dbux_init() {
   return _dbuxRuntime.initProgram({
-    \\"filename\\": \\"samples/__samplesInput__/example2.js\\",
-    \\"staticSites\\": [{
+    \\"fileName\\": \\"example2.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/example2.js\\",
+    \\"staticSites\\": [null, {
       \\"staticId\\": 1,
       \\"type\\": 1,
-      \\"name\\": \\"samples/__samplesInput__/example2.js\\"
+      \\"name\\": \\"Program\\"
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
@@ -921,11 +927,12 @@ try {
 
 function _dbux_init() {
   return _dbuxRuntime.initProgram({
-    \\"filename\\": \\"samples/__samplesInput__/executionContextAsync.js\\",
-    \\"staticSites\\": [{
+    \\"fileName\\": \\"executionContextAsync.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/executionContextAsync.js\\",
+    \\"staticSites\\": [null, {
       \\"staticId\\": 1,
       \\"type\\": 1,
-      \\"name\\": \\"samples/__samplesInput__/executionContextAsync.js\\"
+      \\"name\\": \\"Program\\"
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
@@ -1077,11 +1084,12 @@ try {
 
 function _dbux_init() {
   return _dbuxRuntime.initProgram({
-    \\"filename\\": \\"samples/__samplesInput__/executionContextAsync.js\\",
-    \\"staticSites\\": [{
+    \\"fileName\\": \\"executionContextAsync.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/executionContextAsync.js\\",
+    \\"staticSites\\": [null, {
       \\"staticId\\": 1,
       \\"type\\": 1,
-      \\"name\\": \\"samples/__samplesInput__/executionContextAsync.js\\"
+      \\"name\\": \\"Program\\"
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
@@ -1174,11 +1182,12 @@ try {
 
 function _dbux_init() {
   return _dbuxRuntime.initProgram({
-    \\"filename\\": \\"samples/__samplesInput__/executionContextSimple.js\\",
-    \\"staticSites\\": [{
+    \\"fileName\\": \\"executionContextSimple.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/executionContextSimple.js\\",
+    \\"staticSites\\": [null, {
       \\"staticId\\": 1,
       \\"type\\": 1,
-      \\"name\\": \\"samples/__samplesInput__/executionContextSimple.js\\"
+      \\"name\\": \\"Program\\"
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
@@ -1244,11 +1253,12 @@ try {
 
 function _dbux_init() {
   return _dbuxRuntime.initProgram({
-    \\"filename\\": \\"samples/__samplesInput__/executionContextSimple.js\\",
-    \\"staticSites\\": [{
+    \\"fileName\\": \\"executionContextSimple.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/executionContextSimple.js\\",
+    \\"staticSites\\": [null, {
       \\"staticId\\": 1,
       \\"type\\": 1,
-      \\"name\\": \\"samples/__samplesInput__/executionContextSimple.js\\"
+      \\"name\\": \\"Program\\"
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,

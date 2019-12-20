@@ -9,14 +9,13 @@ export default class ProgramMonitor {
   /**
    * @param {ProgramStaticContext} programStaticContext
    */
-  constructor(programStaticContext) {
+  constructor(staticId, programStaticContext) {
     this._programStaticContext = programStaticContext;
-    const { staticId } = programStaticContext;
     this._programContextId = this.pushImmediate(staticId);
   }
 
   getProgramId() {
-    return this._programStaticContext.getProgramId();
+    return this._programStaticContext.programId;
   }
 
   pushImmediate(staticContextId) {

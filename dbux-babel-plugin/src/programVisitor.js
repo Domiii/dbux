@@ -7,7 +7,7 @@ import { addDbuxInitDeclaration, wrapProgram } from './instrumentation/program';
 // enter
 // ########################################
 
-function getFilename(state) {
+function getFilePath(state) {
   let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
   const cwd = fsPath.normalize(state.cwd);
   if (filename.startsWith(cwd)) {
@@ -19,11 +19,17 @@ function getFilename(state) {
 function enter(path, state) {
   if (state.onEnter) return; // make sure to not visit Program node more than once
 
-  const filename = getFilename(state);
+  const filePath = getFilePath(state);
+  const fileName = fsPath.basename(filePath);
 
   const { scope } = path;
 
   const staticId = 1;
+  const programStaticContext = {
+    staticId,
+    type: 1,
+    name: "Program"
+  };
   path.setData('staticId', staticId);
 
   // inject program-wide state
@@ -42,14 +48,11 @@ function enter(path, state) {
       // console.log('[Program]', state.filename);
 
       // static program data
-      filename,
+      filePath,
+      fileName,
       staticSites: [
         null,
-        {
-          staticId,
-          type: 1,
-          name: filename
-        }
+        programStaticContext
       ]
     }
   );

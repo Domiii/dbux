@@ -3,6 +3,7 @@ import ProgramMonitor from './ProgramMonitor';
 import { logInternalError } from './log/logger';
 import executionContextCollection from './data/collections/executionContextCollection';
 import executionEventCollection from './data/collections/executionEventCollection';
+import staticContextCollection from './data/collections/staticContextCollection';
 
 /**
  * 
@@ -43,9 +44,11 @@ export default class RuntimeMonitor {
    * @returns {ProgramMonitor}
    */
   addProgram(programData) {
+    const programStaticId = 1;
     const programStaticContext = programStaticContextCollection.addProgram(programData);
-    const programMonitor = new ProgramMonitor(programStaticContext);
-    this._programMonitors.set(programStaticContext.getProgramId(), programMonitor);
+    staticContextCollection.addContexts(programStaticContext.programId, programData.staticSites);
+    const programMonitor = new ProgramMonitor(programStaticId, programStaticContext);
+    this._programMonitors.set(programStaticContext.programId, programMonitor);
     return programMonitor;
   }
 

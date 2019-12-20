@@ -21,22 +21,23 @@ function buildProgramInit(path, { ids }) {
   `);
 }
 
-function buildProgramTail(path, { ids, filename, staticSites }) {
+function buildProgramTail(path, { ids, fileName, filePath, staticSites }) {
   const {
     dbuxInit,
     dbuxRuntime
   } = ids;
 
-  const config = {
-    filename,
+  const staticData = {
+    fileName, 
+    filePath,
     staticSites
   };
 
-  const configSource = JSON.stringify(config, null, 4);
+  const staticDataString = JSON.stringify(staticData, null, 4);
 
   return buildSource(`
 function ${dbuxInit}() {
-  return ${dbuxRuntime}.initProgram(${configSource});
+  return ${dbuxRuntime}.initProgram(${staticDataString});
 }`);
 }
 
