@@ -4,11 +4,14 @@
   "author": "Domi",
   "module": "dist/index.js",
   "main": "dist/index.js",
+  "bin": {
+    "dbux-instrument-file": "./bin/dbux-instrument-file.js"
+  },
   "scripts": {
     "clean": "rm -rf dist && rm -rf dist.samples",
     "_before-run": "npx link-module-alias",
     "build": "npm run clean && npm run _before-run && webpack --config config/webpack.config.js",
-    "test": "jest",
+    "test": "node --stack-trace-limit=1000 node_modules/.bin/jest",
     "build-sample": "npm run build && npx babel --plugins ./dist/index.js --config-file ./babel.config.js --out-dir ./dist.samples ./src/__tests__/__samplesInput__",
     "test:watch": "npm run test -- --watch",
     "__archive_build": "npm run clean && npx babel src -d dist",
@@ -21,7 +24,7 @@
     "@babel/code-frame": "^7.5.5",
     "@babel/core": "^7.7.5",
     "@babel/generator": "^7.7.4",
-    "@babel/node": "^7.7.4",
+    "@babel/node": "^7.7.7",
     "@babel/parser": "^7.7.5",
     "@babel/plugin-proposal-class-properties": "^7.7.4",
     "@babel/plugin-proposal-decorators": "^7.7.4",
@@ -48,7 +51,8 @@
     "style-loader": "^1.0.1",
     "webpack": "^4.41.2",
     "webpack-bundle-analyzer": "^3.6.0",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "yargs": "^15.0.2"
   },
   "keywords": [
     "dbux",
@@ -67,6 +71,5 @@
     "firebase-tools": "^7.9.0",
     "g": "^2.0.1"
   },
-  "_moduleAliases": {
-  }
+  "_moduleAliases": {}
 }

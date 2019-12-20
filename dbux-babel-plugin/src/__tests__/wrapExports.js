@@ -36,7 +36,7 @@ function programVisitor(path) {
 
   const newNodes = [
     ...importNodes,
-    initVarDecl,
+    ...initVarDecl,
     buildWrapTryFinally(bodyNodes, []),
     ...exportNodes
   ];

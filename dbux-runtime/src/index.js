@@ -12,13 +12,13 @@ function registerDbuxAsGlobal() {
   /* eslint-disable no-var */
   var _global = (function _getGlobal() {
     if (typeof window !== 'undefined') {
-      _global = window;
+      return window;
     }
     else if (typeof global !== 'undefined') {
-      _global = global;
+      return global;
     }
     else {
-      _global = globalThis;
+      return globalThis;
     }
   })();
   _global.__dbux = {

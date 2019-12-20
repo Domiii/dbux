@@ -9,6 +9,8 @@ module.exports = {
       }
     ]
   ],
+  "sourceMaps": "inline",
+  "retainLines": true,
   "plugins": [
     [
       "@babel/plugin-proposal-class-properties",

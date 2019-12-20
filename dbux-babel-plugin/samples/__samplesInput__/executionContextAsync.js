@@ -6,7 +6,7 @@ async function af2() {
   await af1();
   await af1();
 
-  return 2 + af1();
+  return 2 + await af1();
 }
 
 async function af33(delay) {

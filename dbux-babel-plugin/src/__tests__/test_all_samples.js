@@ -4,11 +4,12 @@ import path from 'path';
 import fs from 'fs';
 import { runSnapshotTests } from '../testing/test-util';
 
-const codeFolder = path.join(__dirname, '__samplesInput__');
+const rootFolder = path.join(__dirname, '../..');
+const inputFolder = path.join(rootFolder, 'samples/__samplesInput__');
 
-fs.readdirSync(codeFolder).forEach(fname => {
+fs.readdirSync(inputFolder).forEach(fname => {
   //const fname = path.basename(fpath);
-  const fpath = path.join(codeFolder, fname);
+  const fpath = path.join(inputFolder, fname);
   const code = fs.readFileSync(fpath, { encoding: 'utf8' });
 
   expect(code).toBeString();

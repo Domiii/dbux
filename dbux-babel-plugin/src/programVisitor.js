@@ -8,7 +8,7 @@ import { addDbuxInitDeclaration, wrapProgram } from './instrumentation/program';
 // ########################################
 
 function getFilename(state) {
-  let filename = fsPath.normalize(state.filename);
+  let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
   const cwd = fsPath.normalize(state.cwd);
   if (filename.startsWith(cwd)) {
     filename = fsPath.relative(state.cwd, filename);

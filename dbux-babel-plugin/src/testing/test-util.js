@@ -39,7 +39,8 @@ export function writeResultCodeToFile(inputCode, title, babelOptions, plugin) {
   const outputCode = transformSync(inputCode, babelOptions).code;
 
   const srcPath = __dirname + '/..';
-  const samplesOutputPath = srcPath + '/__tests__/__samplesOutput__';
+  const rootPath = srcPath + '/..';
+  const samplesOutputPath = rootPath + '/samples/__samplesOutput__';
   const filename = title;
   fs.mkdirSync(samplesOutputPath, { recursive: true });
   fs.writeFileSync(samplesOutputPath + '/' + filename, outputCode);

@@ -1,6 +1,5 @@
 import { buildSource, buildWrapTryFinally, buildProgram } from '../helpers/builders';
 import * as t from '@babel/types';
-import { extractTopLevelNodes } from '../helpers/astHelpers';
 import { replaceProgramBody } from '../helpers/modification';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 
@@ -17,7 +16,7 @@ function buildProgramInit(path, { ids }) {
   } = ids;
 
   return buildSource(`
-  const ${dbuxRuntime} = require('dbux-runtime');
+  const ${dbuxRuntime} = require('dbux-runtime').default;
   const ${dbux} = ${dbuxInit}(${dbuxRuntime});
   `);
 }
@@ -62,7 +61,7 @@ export function wrapProgram(path, state) {
   const programBody = [
     ...importNodes,     // imports first
     ...startCalls,
-    initVarDecl,
+    ...initVarDecl,
     buildWrapTryFinally(bodyNodes, endCalls),
     ...exportNodes      // exports last
   ];

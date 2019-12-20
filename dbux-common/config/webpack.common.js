@@ -28,7 +28,9 @@ module.exports = function(rootPath) {
     },
     plugins,
     context: srcPath,
-    entry: './index.js',
+    entry: {
+      index: './index.js'
+    },
     output: {
       library: 'dbux-babel-plugin',
       libraryTarget: 'umd',

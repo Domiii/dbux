@@ -139,7 +139,7 @@ export function extractTopLevelDeclarations(programPath) {
   // finally, wrap everything up
   return [
     importNodes,
-    buildVarDecl(newIds),
+    newIds.length && [buildVarDecl(newIds)] || [],
     bodyNodes,
     exportNodes
   ];
