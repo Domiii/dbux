@@ -1,5 +1,6 @@
 import ExecutionEventType from '../ExecutionEventType';
 import ExecutionEvent from './ExecutionEvent';
+import executionContextCollection from './executionContextCollection';
 
 export class ExecutionEventCollection {
 
@@ -7,7 +8,7 @@ export class ExecutionEventCollection {
    * @private
    * @type {ExecutionEvent[]}
    */
-  _events;
+  _events = [];
 
   logPushImmediate(contextId, stackDepth) {
     const event = ExecutionEvent.allocate();
@@ -35,13 +36,21 @@ export class ExecutionEventCollection {
 
   static prettyPrint(state) {
     const {
-      type,
+      eventType,
       contextId
     } = state;
 
-    const typeName = ExecutionEventType.nameFrom(type);
+    const typeName = ExecutionEventType.nameFrom(eventType);
+    const context = executionContextCollection.getContext(contextId);
 
-    const message = `[${typeName}] ${contextId}`;
+    const {
+      staticContextId,
+      rootContextId
+    } = context;
+
+    const staticContext = static
+
+    const message = `(${rootContextId}) [${typeName}] ${staticContextId}`;
     console.log(`[DBUX]`, message);
   }
 

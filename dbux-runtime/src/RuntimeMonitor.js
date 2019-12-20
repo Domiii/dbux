@@ -1,6 +1,6 @@
 import programStaticContextCollection from './data/collections/programStaticContextCollection';
 import ProgramMonitor from './ProgramMonitor';
-import { logError } from './log/logger';
+import { logInternalError } from './log/logger';
 import executionContextCollection from './data/collections/executionContextCollection';
 import executionEventCollection from './data/collections/executionEventCollection';
 
@@ -74,20 +74,22 @@ export default class RuntimeMonitor {
 
     // log event
     executionEventCollection.logPushImmediate(contextId, this._executingDepth);
+    
+    return contextId;
   }
 
 
   popImmediate(contextId) {
     // sanity checks
-    const context = executionContextCollection.get(contextId);
+    const context = executionContextCollection.getContext(contextId);
     if (!context) {
-      logError('Tried to popImmediate context that was not registered:', contextId);
+      logInternalError('Tried to popImmediate context that was not registered:', contextId);
       return;
     }
 
     const executingRootContextId = this._executingContextRoot?.rootContextId;
     if (context.rootContextId !== executingRootContextId) {
-      logError('Tried to popImmediate context whose rootContextId does not match executingContextRoot - ', context.rootContextId, '!==', executingRootContextId);
+      logInternalError('Tried to popImmediate context whose rootContextId does not match executingContextRoot - ', context.rootContextId, '!==', executingRootContextId);
       return;
     }
 
@@ -96,7 +98,7 @@ export default class RuntimeMonitor {
     if (!this._executingDepth) {
       // last on stack
       if (contextId !== executingRootContextId) {
-        logError('Tried to popImmediate last context on stack but is not executingContextRoot - ', contextId, '!==', executingRootContextId);
+        logInternalError('Tried to popImmediate last context on stack but is not executingContextRoot - ', contextId, '!==', executingRootContextId);
         return;
       }
       this._executingContextRoot = null;

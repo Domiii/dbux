@@ -34,7 +34,9 @@ export class ExecutionContextCollection {
     const orderId = programStaticContextCollection.genContextId(programId, staticContextId);
     const contextId = this._contexts.length;
     rootContextId = rootContextId || contextId;
-    this._contexts.push(ExecutionContext.allocate(ExecutionContextType.Immediate, contextId, programId, staticContextId, orderId, rootContextId));
+    const context = ExecutionContext.allocate(ExecutionContextType.Immediate, contextId, programId, staticContextId, orderId, rootContextId);
+    this._contexts.push(context);
+    return context;
   }
 
   // /**

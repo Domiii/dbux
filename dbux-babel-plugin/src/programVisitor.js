@@ -28,13 +28,12 @@ function enter(path, state) {
 
   // inject program-wide state
   Object.assign(state,
-    
+
     // some non-parameterized state
     buildProgramVisitorState(),
-    
+
     // program-dependent state
     {
-      lastStaticId: staticId,
       ids: {
         dbuxInit: scope.generateUid('dbux_init'),
         dbuxRuntime: scope.generateUid('dbuxRuntime'),
@@ -44,11 +43,14 @@ function enter(path, state) {
 
       // static program data
       filename,
-      staticSites: [{
-        staticId,
-        type: 1,
-        name: filename
-      }]
+      staticSites: [
+        null,
+        {
+          staticId,
+          type: 1,
+          name: filename
+        }
+      ]
     }
   );
 

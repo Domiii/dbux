@@ -1,9 +1,5 @@
 import RuntimeMonitor from './RuntimeMonitor';
 
-function getProgramStaticContextId() {
-  return 0;
-}
-
 export default class ProgramMonitor {
   /**
    * @type {ProgramStaticContext}
@@ -15,7 +11,8 @@ export default class ProgramMonitor {
    */
   constructor(programStaticContext) {
     this._programStaticContext = programStaticContext;
-    this.pushImmediate(getProgramStaticContextId());
+    const { staticId } = programStaticContext;
+    this._programContextId = this.pushImmediate(staticId);
   }
 
   getProgramId() {
@@ -50,6 +47,6 @@ export default class ProgramMonitor {
 
   popProgram() {
     // finished initializing the program
-    return this.popImmediate(getProgramStaticContextId());
+    return this.popImmediate(this._programContextId);
   }
 }

@@ -8,10 +8,10 @@
 
 		{
 			// debugging of Chrome-bound code - https://github.com/Microsoft/vscode-chrome-debug
+			"name": "chrome todomvc",
 			"type": "chrome",
 			"request": "launch",
 			"trace": true,
-			"name": "Chrome",
 			"url": "http://localhost:3000",
 			"pathMapping": {
 				"/samples/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/src/dbux/samples/",
@@ -25,9 +25,9 @@
 			"showAsyncStacks": true
 		},
 		{
+			"name": "test plugin",
 			"type": "node",
 			"request": "launch",
-			"name": "test-debug",
 			"program": "${workspaceFolder}/dbux-babel-plugin/node_modules/jest/bin/jest.js",
 			"cwd": "${workspaceFolder}/dbux-babel-plugin",
 			"args": [
@@ -47,22 +47,22 @@
 			"internalConsoleOptions": "neverOpen",
 		},
 		{
+			"name": "test file",
 			"type": "node",
 			"request": "launch",
-			"name": "file-test-debug",
 			"program": "${workspaceFolder}/dbux-babel-plugin/node_modules/jest/bin/jest.js",
+			"runtimeArgs": [
+				"--stack-trace-limit=1000",
+				"--preserve-symlinks"
+			],
 			"cwd": "${workspaceFolder}/dbux-babel-plugin",
 			"args": [
 				"-i",
 				"--runInBand",
-				"--config",
-				"jest.config.js",
-				"--testPathPattern",
-				"**",
+				"--config=jest.config.js",
+				// "--testPathPattern",
 				// @see https: //code.visualstudio.com/docs/nodejs/nodejs-debugging#_common-questions
-				"${file}",
-				"--stack-trace-limit=1000",
-				// "--preserve-symlinks"
+				"${file}"
 			],
 			// see: https://github.com/microsoft/vscode/issues/5422
 			"restart": true,
@@ -73,21 +73,20 @@
 			"internalConsoleOptions": "neverOpen",
 		},
 		{
+			"name": "instrument file",
 			"type": "node",
 			"request": "launch",
-			"name": "instrument-file",
 			"cwd": "${workspaceFolder}/dbux-babel-plugin",
 			"runtimeExecutable": "${workspaceFolder}/dbux-babel-plugin/node_modules/@babel/node/bin/babel-node.js",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
-				"--nolazy"
+				"--nolazy",
+				// "--preserve-symlinks"
 			],
 			"program": "${workspaceFolder}/dbux-babel-plugin/bin/dbux-instrument-file.js",
 			"args": [
 				"--file",
-				"samples/__samplesInput__/allFunctionTypes.js",
 				"${file}",
-				// "--preserve-symlinks"
 			],
 			// see: https://github.com/microsoft/vscode/issues/5422
 			"restart": true,
@@ -98,16 +97,22 @@
 			"internalConsoleOptions": "neverOpen"
 		},
 		{
+			"name": "debug file",
 			"type": "node",
 			"request": "launch",
-			"protocol": "inspector",
-			"name": "ThisFile",
-			"program": "${file}",
-			"cwd": "${workspaceFolder}",
-			"runtimeExecutable": "sh",
+			"cwd": "${workspaceFolder}/dbux-runtime",
+			"runtimeExecutable": "${workspaceFolder}/dbux-runtime/node_modules/@babel/node/bin/babel-node.js",
 			"runtimeArgs": [
-				"${workspaceRoot}/runThisFile.sh"
-			]
+				"--stack-trace-limit=1000",
+				"--nolazy"
+			],
+			"restart": true,
+			"program": "${file}",
+			"protocol": "inspector",
+			"trace": "all",
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
 		}
 	]
 }

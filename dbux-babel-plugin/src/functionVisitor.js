@@ -12,7 +12,7 @@ export default function functionVisitor() {
         // this node has been dynamically emitted; not part of the original source code
         return;
       }
-      const staticId = ++state.lastStaticId;
+      const staticId = state.staticSites.length;
       path.setData('staticId', staticId);
 
       // console.log('FUNCTION', path.get('id')?.name, '@', `${state.filename}:${line}`);

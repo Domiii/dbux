@@ -1,7 +1,7 @@
 
 const errors = [];
 
-export function logError(...args) {
+export function logInternalError(...args) {
   const err = ['[DBUX INTERNAL ERROR]', ...args];
   errors.push(err);
   console.error(...err);

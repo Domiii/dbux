@@ -1,24 +1,29 @@
-
+let _performance;
+if (typeof performance !== 'undefined') {
+  _performance = performance;
+}
+else {
+  _performance = require('perf_hooks').performance;
+}
 
 export default class ExecutionContext {
   /**
    * @return {ExecutionContext}
    */
-  static allocate(contextType, contextId, programId, staticContextId, orderId, schedulerId, rootContextId) {
+  static allocate(contextType, contextId, programId, staticContextId, orderId, rootContextId) {
     // TODO: use object pooling
     const context = new ExecutionContext();
-    context._init(contextType, contextId, programId, staticContextId, orderId, schedulerId, rootContextId);
+    context._init(contextType, contextId, programId, staticContextId, orderId, rootContextId);
     return context;
   }
 
-  _init(contextType, contextId, programId, staticContextId, orderId, schedulerId, rootContextId) {
+  _init(contextType, contextId, programId, staticContextId, orderId, rootContextId) {
     this.contextType = contextType;
     this.programId = programId;
     this.staticContextId = staticContextId;
-    this.schedulerId = schedulerId;
     this.orderId = orderId;
     this.contextId = contextId;
-    this.createdAt = performance.now();
+    this.createdAt = _performance.now();
     this.rootContextId = rootContextId;
     this.linkCount = 0;
   }
