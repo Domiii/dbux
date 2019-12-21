@@ -1,4 +1,4 @@
-import { __dbux_logObjectTrace, trackObject as __dbux_trackObject } from '../core/trackObject';
+import { __dbux_logObjectTrace, trackObject as __dbux_trackObject } from '../../../dbux-runtime/src/log/trackObject';
 
 import * as babylon from "babylon";
 import generate from "babel-generator";
