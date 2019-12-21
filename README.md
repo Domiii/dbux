@@ -47,3 +47,55 @@
 
 ## References: npm
 * [NPM links don't work quite right](https://medium.com/@UD_UD/finally-npm-install-and-npm-link-walks-hand-in-hand-79f7fb6fc258)
+
+
+## Reference: Istanbul + NYC
+Istanbul + NYC add require hooks to instrument any loaded file on the fly
+* NOTES: How does it work?
+   * They are using `require.extensions` (which are deprecated)
+   * More info here: [https://gist.github.com/jamestalmage/df922691475cff66c7e6](Breakdown of How Require Extensions Work)
+* References: Down the rabbit hole
+   * https://github.com/istanbuljs/nyc/blob/master/bin/nyc.js
+   * https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-hook/lib/hook.js
+   * https://github.com/istanbuljs/append-transform
+   * https://github.com/istanbuljs/append-transform/blob/master/index.js#L49
+* Sourcemaps don't work right with NYC if `@babel/register` is not used
+   * https://github.com/istanbuljs/nyc/issues/619
+      * "This issue is blocked by [evanw/node-source-map-support#239](https://github.com/evanw/node-source-map-support/issues/239). The issue is that nyc source-maps are inline but [node-source-map-support](https://github.com/evanw/node-source-map-support) does not look at inline source-maps by default."
+* Configuring Babel for NYC + Istanbul
+   * One way they use it is `@babel/register`: https://babeljs.io/docs/en/babel-register
+   * https://github.com/istanbuljs/istanbuljs/tree/master/packages/nyc-config-babel
+      * https://github.com/istanbuljs/istanbuljs/tree/master/packages/nyc-config-babel
+* More references
+   * https://github.com/tapjs/foreground-child#readme
+   * https://glebbahmutov.com/blog/preloading-node-module/
+      * https://glebbahmutov.com/blog/turning-code-coverage-into-live-stream/
+
+
+# Projects
+
+## TODOMVC
+
+### vanillajs
+
+```
+cd projects && \
+git clone https://github.com/tastejs/todomvc.git && \
+cd todomvc/examples/vanillajs && \
+npm install && \
+npm install serve && `# installing it first makes npx run instantly everytime` \
+npx serve
+```
+
+
+### vanilla-es6
+
+TODO: uses Google Closure Compiler
+
+```
+cd projects && \
+git clone https://github.com/tastejs/todomvc.git && \
+cd todomvc/examples/vanilla-es6 && \
+npm install && \
+npx serve
+```

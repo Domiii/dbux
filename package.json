@@ -2,5 +2,12 @@
 	"devDependencies": {
 		"eslint": "*",
 		"eslint-config-esnext": "*"
+	},
+	"scripts": {
+		"p-todomvc": "echo TODO",
+		"start": "echo TODO"
+	},
+	"dependencies": {
+		"express": "file:projects/express"
 	}
 }

@@ -4,7 +4,9 @@ import { transformSync } from '@babel/core';
 import fs from 'fs';
 
 // const mergeWith = require('lodash/mergeWith');
-const argv = require('yargs').demandOption(['file']).argv;
+const argv = require('yargs')
+  .demandOption(['file'])
+  .argv;
 const { file } = argv;
 const inputCode = fs.readFileSync(file, 'utf8');
 const plugin = require(__dirname + '/../src');
