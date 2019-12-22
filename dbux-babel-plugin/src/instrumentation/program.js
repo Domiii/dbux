@@ -1,4 +1,4 @@
-import { buildSource, buildWrapTryFinally, buildProgram } from '../helpers/builders';
+import { buildSource, buildWrapTryFinally } from '../helpers/builders';
 import * as t from '@babel/types';
 import { replaceProgramBody } from '../helpers/modification';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';

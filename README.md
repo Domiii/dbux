@@ -1,11 +1,14 @@
 # dbux README
 
 ## Major Components
-* Babel
+* Babel Plugins basics
    * `npm i -D @babel/core @babel/cli @babel/node && npm i -D @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame    && npm i -D jest jest-expect-message jest-extended babel-plugin-tester      && npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime          && npm i -S core-js@3 @babel/runtime`
    * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/user-handbook.md
    * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md
    * [`bael-plugin-tester`](https://github.com/babel-utils/babel-plugin-tester#examples)
+* Babel Config pain
+   * [how to use Babel 7 babel-register to compile files outside of working directory #8321](https://github.com/babel/babel/issues/8321)
+   * https://github.com/babel/babel/pull/5590
 
 ## Debugging Intermediate + Advanced
 * Getting the debugger to work when it just won't work!
@@ -54,14 +57,24 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 * NOTES: How does it work?
    * They are using `require.extensions` (which are deprecated)
    * More info here: [https://gist.github.com/jamestalmage/df922691475cff66c7e6](Breakdown of How Require Extensions Work)
-* References: Down the rabbit hole
+* References: Instrumentation
+   * https://github.com/istanbuljs/nyc/blob/master/lib/instrumenters/istanbul.js#L20
+   * https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/src/instrumenter.js#L50
+      * https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-instrument
+      * [API](https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/api.md)
+* References: `require` hook
    * https://github.com/istanbuljs/nyc/blob/master/bin/nyc.js
    * https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-hook/lib/hook.js
    * https://github.com/istanbuljs/append-transform
    * https://github.com/istanbuljs/append-transform/blob/master/index.js#L49
-* Sourcemaps don't work right with NYC if `@babel/register` is not used
-   * https://github.com/istanbuljs/nyc/issues/619
-      * "This issue is blocked by [evanw/node-source-map-support#239](https://github.com/evanw/node-source-map-support/issues/239). The issue is that nyc source-maps are inline but [node-source-map-support](https://github.com/evanw/node-source-map-support) does not look at inline source-maps by default."
+* Sourcemap problems
+   * sourcemaps don't work right with NYC if `@babel/register` is not used
+      * https://github.com/istanbuljs/nyc/issues/619
+         * "This issue is blocked by [evanw/node-source-map-support#239](https://github.com/evanw/node-source-map-support/issues/239). The issue is that nyc source-maps are inline but [node-source-map-support](https://github.com/evanw/node-source-map-support) does not look at inline source-maps by default."
+   * babel does not support proper sourcemap merging yet
+      * https://github.com/babel/babel/issues/5408
+      * https://github.com/facebook/metro/issues/104
+      * https://github.com/babel/babel/blob/fced5cea430cc00e916876b663a8d2a84a5dad1f/packages/babel-core/src/transformation/file/merge-map.js
 * Configuring Babel for NYC + Istanbul
    * One way they use it is `@babel/register`: https://babeljs.io/docs/en/babel-register
    * https://github.com/istanbuljs/istanbuljs/tree/master/packages/nyc-config-babel
@@ -78,7 +91,7 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 
 ### vanillajs
 
-```
+```sh
 cd projects && \
 git clone https://github.com/tastejs/todomvc.git && \
 cd todomvc/examples/vanillajs && \
@@ -90,12 +103,17 @@ npx serve
 
 ### vanilla-es6
 
-TODO: uses Google Closure Compiler
-
-```
+```sh
 cd projects && \
 git clone https://github.com/tastejs/todomvc.git && \
 cd todomvc/examples/vanilla-es6 && \
+rm -rf ../../.git `# remove git folder` \
 npm install && \
-npx serve
+\
+`# instrumentation here` \
+cp ../../../../assets/projects/todomvc-vanilla-es6/* . && \
+npm i -D babel-loader  @babel/node @babel/cli @babel/core @babel/preset-env webpack webpack-cli webpack-dev-server && \
+npm i -S core-js@3 @babel/runtime @babel/plugin-transform-runtime && \
+npm i -D ../../../../dbux-common ../../../../dbux-babel-plugin ../../../../dbux-runtime && \
+npm start
 ```

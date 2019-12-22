@@ -27,6 +27,7 @@ module.exports = {
 		"import/prefer-default-export": 0,
 		"import/no-nodejs-modules": 0,
 		"prefer-arrow-callback": 0,
-		"no-else-return": 0
+		"no-else-return": 0,
+		"no-debugger": 0
 	}
 };

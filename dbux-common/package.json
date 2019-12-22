@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "dbux-common",
   "version": "1.0.0",
   "description": "",
@@ -46,6 +47,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.6",
+    "colors": "^1.4.0",
     "core-js": "^3.5.0"
   },
   "_moduleAliases": {}

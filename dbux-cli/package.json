@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "dbux-cli",
   "version": "1.0.0",
   "description": "",

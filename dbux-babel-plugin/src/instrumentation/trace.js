@@ -24,9 +24,15 @@ export function wrapFunctionBody(bodyPath, staticId, { ids: { dbux } }) {
   const startCalls = buildPushImmediate(contextId, dbux, staticId);
   const endCalls = buildPopImmediate(contextId, dbux);
 
+  let body = bodyPath.node;
+  if (!Array.isArray(bodyPath.node) && !t.isStatement(bodyPath.node)) {
+    // simple lambda expression -> convert to block lambda expression with return statement
+    body = t.blockStatement([t.returnStatement(bodyPath.node)]);
+  }
+
   // wrap the function in a try/finally statement
   bodyPath.replaceWith(buildBlock([
     ...startCalls,
-    buildWrapTryFinally(bodyPath.node, endCalls)
+    buildWrapTryFinally(body, endCalls)
   ]));
 }
