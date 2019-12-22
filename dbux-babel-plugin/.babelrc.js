@@ -1,5 +1,6 @@
 module.exports = {
-  "sourceMaps": "inline",
+  ignore: ['node_modules'],
+  "sourceMaps": "both",
   "retainLines": true,
   "presets": [
     [

@@ -1,5 +1,5 @@
 let _performance;
-if (typeof performance !== 'undefined') {
+if (typeof window !== 'undefined') {
   _performance = performance;
 }
 else {
@@ -23,7 +23,7 @@ export default class ExecutionContext {
     this.staticContextId = staticContextId;
     this.orderId = orderId;
     this.contextId = contextId;
-    this.createdAt = _performance.now();
+    // this.createdAt = _performance.now();
     this.rootContextId = rootContextId;
     this.linkCount = 0;
   }

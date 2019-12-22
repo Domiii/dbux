@@ -1,12 +1,10 @@
 module.exports = {
+  ignore: ['node_modules/'],
+  "sourceMaps": "both",
+  "retainLines": true,
   "presets": [
     [
-      "@babel/preset-env",
-      {
-        "loose": true,
-        "useBuiltIns": "usage",
-        "corejs": 3
-      }
+      "@babel/preset-env"
     ]
   ],
   "plugins": [

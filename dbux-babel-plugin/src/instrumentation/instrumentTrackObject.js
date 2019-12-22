@@ -1,8 +1,5 @@
 import { __dbux_logObjectTrace, trackObject as __dbux_trackObject } from '../../../dbux-runtime/src/log/trackObject';
 
-import * as babylon from "babylon";
-import generate from "babel-generator";
-
 
 // see: https://esprima.org/demo/parse.html
 // see: https://github.com/jquery/esprima/tree/master/src/syntax.ts

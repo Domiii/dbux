@@ -36,8 +36,8 @@ function buildProgramTail(path, { ids, fileName, filePath, staticSites }) {
   const staticDataString = JSON.stringify(staticData, null, 4);
 
   return buildSource(`
-function ${dbuxInit}() {
-  return ${dbuxRuntime}.initProgram(${staticDataString});
+function ${dbuxInit}(dbuxRuntime) {
+  return dbuxRuntime.initProgram(${staticDataString});
 }`);
 }
 
