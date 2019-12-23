@@ -4,8 +4,7 @@
 // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
 	"version": "0.2.0",
-	"configurations": [		
-
+	"configurations": [
 		{
 			// debugging of Chrome-bound code - https://github.com/Microsoft/vscode-chrome-debug
 			"name": "chrome todomvc",
@@ -25,7 +24,7 @@
 			"showAsyncStacks": true
 		},
 		{
-			"name": "test plugin",
+			"name": "test plugin (dbux-babel-plugin)",
 			"type": "node",
 			"request": "launch",
 			"program": "${workspaceFolder}/dbux-babel-plugin/node_modules/jest/bin/jest.js",
@@ -99,13 +98,21 @@
 		{
 			"name": "debug file",
 			"type": "node",
+			"port": 9297,
+			"env": {
+				"debug": "module"
+			},
 			"request": "launch",
-			// "cwd": "${workspaceFolder}",
-			"cwd": "${fileDirname}",
-			// "runtimeExecutable": "${workspaceFolder}/dbux-runtime/node_modules/@babel/node/bin/babel-node.js",
+			"cwd": "${workspaceFolder}",
+			// "cwd": "${fileDirname}",
+			"runtimeExecutable": "${workspaceFolder}/dbux-runtime/node_modules/@babel/node/bin/babel-node.js",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
-				"--nolazy"
+				"--nolazy",
+				"--inspect-brk=9297",
+				"--config-file",
+				"./babel.config.js",
+				"--"
 			],
 			"sourceMaps": true,
 			"restart": true,

@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Instrument folder (test)",
+      "command": "${workspaceRoot}/dbux-cli/bin/dbux-instrument-files.sh",
+      "args": [
+        "${file}"
+      ],
+      "type": "shell",
+      "runOptions": {
+        "reevaluateOnRerun": false
+      },
+      "problemMatcher": []
+    }
+  ]
+}
