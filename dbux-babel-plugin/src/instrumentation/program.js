@@ -24,7 +24,7 @@ function buildProgramInit(path, { ids }) {
 function buildProgramTail(path, { ids, fileName, filePath, staticSites }) {
   const {
     dbuxInit,
-    dbuxRuntime
+    // dbuxRuntime
   } = ids;
 
   const staticData = {

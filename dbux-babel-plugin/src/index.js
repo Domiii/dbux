@@ -5,7 +5,7 @@ import 'dbux-common/src/util/betterLogs';
 // import { logInternalError } from './log/logger';
 
 /**
- * Proper error extraction from:
+ * Proper error extraction:
  * 1. show the source code that we failed to instrument
  * 2. show the relevant lines of code (exclude calls from within node_modules)
  */
