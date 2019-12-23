@@ -6,6 +6,8 @@ export default function functionVisitor() {
   return {
     enter(path, state) {
       if (!state.onEnter(path)) return;
+      // console.warn('F', path.toString());
+
       const { loc } = path.node;
       if (!loc) {
         // this node has been dynamically emitted; not part of the original source code

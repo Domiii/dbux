@@ -80,7 +80,6 @@
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
 				"--nolazy",
-				// "--preserve-symlinks"
 			],
 			"program": "${workspaceFolder}/dbux-babel-plugin/bin/dbux-instrument-file.js",
 			"args": [

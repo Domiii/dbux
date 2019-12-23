@@ -20,6 +20,7 @@ const o = {
 };
 
 class C {
+  constructor() {}
   f6() {}
   f7 = () => {};
 }
@@ -85,12 +86,18 @@ try {
   function () {
     function C() {
       this.f7 = function () {
-        var _contextId6 = _dbux.pushImmediate(7);
+        var _contextId8 = _dbux.pushImmediate(9);
 
         try {} finally {
-          _dbux.popImmediate(_contextId6);
+          _dbux.popImmediate(_contextId8);
         }
       };
+
+      var _contextId6 = _dbux.pushImmediate(7);
+
+      try {} finally {
+        _dbux.popImmediate(_contextId6);
+      }
     }
 
     var _proto = C.prototype;
@@ -114,218 +121,8 @@ try {
   _dbux.popProgram();
 }
 
-function _dbux_init() {
-  return _dbuxRuntime.initProgram({
-    \\"fileName\\": \\"allFunctionTypes.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/allFunctionTypes.js\\",
-    \\"staticSites\\": [null, {
-      \\"staticId\\": 1,
-      \\"type\\": 1,
-      \\"name\\": \\"Program\\"
-    }, {
-      \\"staticId\\": 2,
-      \\"type\\": 2,
-      \\"start\\": {
-        \\"line\\": 1,
-        \\"column\\": 0
-      },
-      \\"end\\": {
-        \\"line\\": 3,
-        \\"column\\": 1
-      },
-      \\"parent\\": 1
-    }, {
-      \\"staticId\\": 3,
-      \\"type\\": 2,
-      \\"name\\": \\"_f2\\",
-      \\"start\\": {
-        \\"line\\": 5,
-        \\"column\\": 11
-      },
-      \\"end\\": {
-        \\"line\\": 7,
-        \\"column\\": 1
-      },
-      \\"parent\\": 1
-    }, {
-      \\"staticId\\": 4,
-      \\"type\\": 2,
-      \\"start\\": {
-        \\"line\\": 9,
-        \\"column\\": 11
-      },
-      \\"end\\": {
-        \\"line\\": 11,
-        \\"column\\": 1
-      },
-      \\"parent\\": 1
-    }, {
-      \\"staticId\\": 5,
-      \\"type\\": 2,
-      \\"name\\": \\"f4\\",
-      \\"start\\": {
-        \\"line\\": 14,
-        \\"column\\": 2
-      },
-      \\"end\\": {
-        \\"line\\": 14,
-        \\"column\\": 9
-      },
-      \\"parent\\": 1
-    }, {
-      \\"staticId\\": 6,
-      \\"type\\": 2,
-      \\"name\\": \\"f5\\",
-      \\"start\\": {
-        \\"line\\": 15,
-        \\"column\\": 6
-      },
-      \\"end\\": {
-        \\"line\\": 15,
-        \\"column\\": 14
-      },
-      \\"parent\\": 1
-    }, {
-      \\"staticId\\": 7,
-      \\"type\\": 2,
-      \\"start\\": {
-        \\"line\\": 20,
-        \\"column\\": 7
-      },
-      \\"end\\": {
-        \\"line\\": 20,
-        \\"column\\": 15
-      },
-      \\"parent\\": 1
-    }, {
-      \\"staticId\\": 8,
-      \\"type\\": 2,
-      \\"name\\": \\"f6\\",
-      \\"start\\": {
-        \\"line\\": 19,
-        \\"column\\": 2
-      },
-      \\"end\\": {
-        \\"line\\": 19,
-        \\"column\\": 9
-      },
-      \\"parent\\": 1
-    }]
-  });
-}
-"
-`;
-
-exports[`dbux-babel-plugin allFunctionTypes.esNext.js: allFunctionTypes.esNext.js 1`] = `
-"
-function f1() {
-
-}
-
-const f2 = function _f2() {
-
-};
-
-const f3 = () => {
-
-};
-
-const o = {
-  f4() {},
-  f5: () => {}
-};
-
-class C {
-  f6() {}
-  f7 = () => {};
-}
-
-// // generator function
-// function *f8() {
-//   yield 1;
-//   yield 2;
-// }
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-const _dbuxRuntime = require('dbux-runtime').default;
-
-const _dbux = _dbux_init(_dbuxRuntime);
-
-try {
-  function f1() {
-    const _contextId = _dbux.pushImmediate(2);
-
-    try {} finally {
-      _dbux.popImmediate(_contextId);
-    }
-  }
-
-  const f2 = function _f2() {
-    const _contextId2 = _dbux.pushImmediate(3);
-
-    try {} finally {
-      _dbux.popImmediate(_contextId2);
-    }
-  };
-
-  const f3 = () => {
-    const _contextId3 = _dbux.pushImmediate(4);
-
-    try {} finally {
-      _dbux.popImmediate(_contextId3);
-    }
-  };
-
-  const o = {
-    f4() {
-      const _contextId4 = _dbux.pushImmediate(5);
-
-      try {} finally {
-        _dbux.popImmediate(_contextId4);
-      }
-    },
-
-    f5: () => {
-      const _contextId5 = _dbux.pushImmediate(6);
-
-      try {} finally {
-        _dbux.popImmediate(_contextId5);
-      }
-    }
-  };
-
-  class C {
-    constructor() {
-      this.f7 = () => {
-        const _contextId6 = _dbux.pushImmediate(7);
-
-        try {} finally {
-          _dbux.popImmediate(_contextId6);
-        }
-      };
-    }
-
-    f6() {
-      const _contextId7 = _dbux.pushImmediate(8);
-
-      try {} finally {
-        _dbux.popImmediate(_contextId7);
-      }
-    }
-
-  } // // generator function
-  // function *f8() {
-  //   yield 1;
-  //   yield 2;
-  // }
-
-} finally {
-  _dbux.popProgram();
-}
-
-function _dbux_init() {
-  return _dbuxRuntime.initProgram({
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
     \\"fileName\\": \\"allFunctionTypes.js\\",
     \\"filePath\\": \\"samples/__samplesInput__/allFunctionTypes.js\\",
     \\"staticSites\\": [null, {
@@ -398,13 +195,14 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 7,
       \\"type\\": 2,
+      \\"name\\": \\"constructor\\",
       \\"start\\": {
-        \\"line\\": 20,
-        \\"column\\": 7
+        \\"line\\": 19,
+        \\"column\\": 2
       },
       \\"end\\": {
-        \\"line\\": 20,
-        \\"column\\": 15
+        \\"line\\": 19,
+        \\"column\\": 18
       },
       \\"parent\\": 1
     }, {
@@ -412,12 +210,254 @@ function _dbux_init() {
       \\"type\\": 2,
       \\"name\\": \\"f6\\",
       \\"start\\": {
+        \\"line\\": 20,
+        \\"column\\": 2
+      },
+      \\"end\\": {
+        \\"line\\": 20,
+        \\"column\\": 9
+      },
+      \\"parent\\": 1
+    }, {
+      \\"staticId\\": 9,
+      \\"type\\": 2,
+      \\"start\\": {
+        \\"line\\": 21,
+        \\"column\\": 7
+      },
+      \\"end\\": {
+        \\"line\\": 21,
+        \\"column\\": 15
+      },
+      \\"parent\\": 1
+    }]
+  });
+}
+"
+`;
+
+exports[`dbux-babel-plugin allFunctionTypes.esNext.js: allFunctionTypes.esNext.js 1`] = `
+"
+function f1() {
+
+}
+
+const f2 = function _f2() {
+
+};
+
+const f3 = () => {
+
+};
+
+const o = {
+  f4() {},
+  f5: () => {}
+};
+
+class C {
+  constructor() {}
+  f6() {}
+  f7 = () => {};
+}
+
+// // generator function
+// function *f8() {
+//   yield 1;
+//   yield 2;
+// }
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const _dbuxRuntime = require('dbux-runtime').default;
+
+const _dbux = _dbux_init(_dbuxRuntime);
+
+try {
+  function f1() {
+    const _contextId = _dbux.pushImmediate(2);
+
+    try {} finally {
+      _dbux.popImmediate(_contextId);
+    }
+  }
+
+  const f2 = function _f2() {
+    const _contextId2 = _dbux.pushImmediate(3);
+
+    try {} finally {
+      _dbux.popImmediate(_contextId2);
+    }
+  };
+
+  const f3 = () => {
+    const _contextId3 = _dbux.pushImmediate(4);
+
+    try {} finally {
+      _dbux.popImmediate(_contextId3);
+    }
+  };
+
+  const o = {
+    f4() {
+      const _contextId4 = _dbux.pushImmediate(5);
+
+      try {} finally {
+        _dbux.popImmediate(_contextId4);
+      }
+    },
+
+    f5: () => {
+      const _contextId5 = _dbux.pushImmediate(6);
+
+      try {} finally {
+        _dbux.popImmediate(_contextId5);
+      }
+    }
+  };
+
+  class C {
+    constructor() {
+      this.f7 = () => {
+        const _contextId8 = _dbux.pushImmediate(9);
+
+        try {} finally {
+          _dbux.popImmediate(_contextId8);
+        }
+      };
+
+      const _contextId6 = _dbux.pushImmediate(7);
+
+      try {} finally {
+        _dbux.popImmediate(_contextId6);
+      }
+    }
+
+    f6() {
+      const _contextId7 = _dbux.pushImmediate(8);
+
+      try {} finally {
+        _dbux.popImmediate(_contextId7);
+      }
+    }
+
+  } // // generator function
+  // function *f8() {
+  //   yield 1;
+  //   yield 2;
+  // }
+
+} finally {
+  _dbux.popProgram();
+}
+
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
+    \\"fileName\\": \\"allFunctionTypes.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/allFunctionTypes.js\\",
+    \\"staticSites\\": [null, {
+      \\"staticId\\": 1,
+      \\"type\\": 1,
+      \\"name\\": \\"Program\\"
+    }, {
+      \\"staticId\\": 2,
+      \\"type\\": 2,
+      \\"name\\": \\"f1\\",
+      \\"start\\": {
+        \\"line\\": 1,
+        \\"column\\": 0
+      },
+      \\"end\\": {
+        \\"line\\": 3,
+        \\"column\\": 1
+      },
+      \\"parent\\": 1
+    }, {
+      \\"staticId\\": 3,
+      \\"type\\": 2,
+      \\"name\\": \\"_f2\\",
+      \\"start\\": {
+        \\"line\\": 5,
+        \\"column\\": 11
+      },
+      \\"end\\": {
+        \\"line\\": 7,
+        \\"column\\": 1
+      },
+      \\"parent\\": 1
+    }, {
+      \\"staticId\\": 4,
+      \\"type\\": 2,
+      \\"start\\": {
+        \\"line\\": 9,
+        \\"column\\": 11
+      },
+      \\"end\\": {
+        \\"line\\": 11,
+        \\"column\\": 1
+      },
+      \\"parent\\": 1
+    }, {
+      \\"staticId\\": 5,
+      \\"type\\": 2,
+      \\"name\\": \\"f4\\",
+      \\"start\\": {
+        \\"line\\": 14,
+        \\"column\\": 2
+      },
+      \\"end\\": {
+        \\"line\\": 14,
+        \\"column\\": 9
+      },
+      \\"parent\\": 1
+    }, {
+      \\"staticId\\": 6,
+      \\"type\\": 2,
+      \\"start\\": {
+        \\"line\\": 15,
+        \\"column\\": 6
+      },
+      \\"end\\": {
+        \\"line\\": 15,
+        \\"column\\": 14
+      },
+      \\"parent\\": 1
+    }, {
+      \\"staticId\\": 7,
+      \\"type\\": 2,
+      \\"name\\": \\"constructor\\",
+      \\"start\\": {
         \\"line\\": 19,
         \\"column\\": 2
       },
       \\"end\\": {
         \\"line\\": 19,
+        \\"column\\": 18
+      },
+      \\"parent\\": 1
+    }, {
+      \\"staticId\\": 8,
+      \\"type\\": 2,
+      \\"name\\": \\"f6\\",
+      \\"start\\": {
+        \\"line\\": 20,
+        \\"column\\": 2
+      },
+      \\"end\\": {
+        \\"line\\": 20,
         \\"column\\": 9
+      },
+      \\"parent\\": 1
+    }, {
+      \\"staticId\\": 9,
+      \\"type\\": 2,
+      \\"start\\": {
+        \\"line\\": 21,
+        \\"column\\": 7
+      },
+      \\"end\\": {
+        \\"line\\": 21,
+        \\"column\\": 15
       },
       \\"parent\\": 1
     }]
@@ -528,8 +568,8 @@ try {
   _dbux.popProgram();
 }
 
-function _dbux_init() {
-  return _dbuxRuntime.initProgram({
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example1.js\\",
     \\"filePath\\": \\"samples/__samplesInput__/example1.js\\",
     \\"staticSites\\": [null, {
@@ -539,6 +579,7 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
+      \\"name\\": \\"f1\\",
       \\"start\\": {
         \\"line\\": 1,
         \\"column\\": 0
@@ -551,7 +592,7 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 3,
       \\"type\\": 2,
-      \\"name\\": \\"A\\",
+      \\"name\\": \\"constructor\\",
       \\"start\\": {
         \\"line\\": 5,
         \\"column\\": 2
@@ -670,8 +711,8 @@ try {
 
 export { _f as f1, _A as A, _f2 as f2 };
 
-function _dbux_init() {
-  return _dbuxRuntime.initProgram({
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example1.js\\",
     \\"filePath\\": \\"samples/__samplesInput__/example1.js\\",
     \\"staticSites\\": [null, {
@@ -767,8 +808,8 @@ try {
   _dbux.popProgram();
 }
 
-function _dbux_init() {
-  return _dbuxRuntime.initProgram({
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example2.js\\",
     \\"filePath\\": \\"samples/__samplesInput__/example2.js\\",
     \\"staticSites\\": [null, {
@@ -824,8 +865,8 @@ try {
   _dbux.popProgram();
 }
 
-function _dbux_init() {
-  return _dbuxRuntime.initProgram({
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example2.js\\",
     \\"filePath\\": \\"samples/__samplesInput__/example2.js\\",
     \\"staticSites\\": [null, {
@@ -984,18 +1025,12 @@ try {
             _contextId3 = _dbux.pushImmediate(4);
             _context3.prev = 1;
             return _context3.abrupt(\\"return\\", new Promise(function (r) {
-              var _contextId5 = _dbux.pushImmediate(6);
+              var _contextId4 = _dbux.pushImmediate(5);
 
               try {
-                var _contextId4 = _dbux.pushImmediate(5);
-
-                try {
-                  setTimeout(r.bind(33), delay);
-                } finally {
-                  _dbux.popImmediate(_contextId4);
-                }
+                setTimeout(r.bind(33), delay);
               } finally {
-                _dbux.popImmediate(_contextId5);
+                _dbux.popImmediate(_contextId4);
               }
             }));
 
@@ -1015,30 +1050,30 @@ try {
   };
 
   var af44 = function af44() {
-    var _contextId6, _a, _b;
+    var _contextId5, a, b;
 
     return regeneratorRuntime.async(function af44$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            _contextId6 = _dbux.pushImmediate(7);
+            _contextId5 = _dbux.pushImmediate(6);
             _context4.prev = 1;
             _context4.next = 4;
             return regeneratorRuntime.awrap(af33(100));
 
           case 4:
-            _a = _context4.sent;
+            a = _context4.sent;
             _context4.next = 7;
             return regeneratorRuntime.awrap(af33(50));
 
           case 7:
-            _b = _context4.sent;
-            return _context4.abrupt(\\"return\\", _a + _b + af33(10));
+            b = _context4.sent;
+            return _context4.abrupt(\\"return\\", a + b + af33(10));
 
           case 9:
             _context4.prev = 9;
 
-            _dbux.popImmediate(_contextId6);
+            _dbux.popImmediate(_contextId5);
 
             return _context4.finish(9);
 
@@ -1051,20 +1086,20 @@ try {
   };
 
   (function main() {
-    var _contextId7;
+    var _contextId6;
 
     return regeneratorRuntime.async(function main$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
-            _contextId7 = _dbux.pushImmediate(8);
+            _contextId6 = _dbux.pushImmediate(7);
             _context5.prev = 1;
             return _context5.abrupt(\\"return\\", Promise.all([af2(), af44()]));
 
           case 3:
             _context5.prev = 3;
 
-            _dbux.popImmediate(_contextId7);
+            _dbux.popImmediate(_contextId6);
 
             return _context5.finish(3);
 
@@ -1079,8 +1114,8 @@ try {
   _dbux.popProgram();
 }
 
-function _dbux_init() {
-  return _dbuxRuntime.initProgram({
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
     \\"fileName\\": \\"executionContextAsync.js\\",
     \\"filePath\\": \\"samples/__samplesInput__/executionContextAsync.js\\",
     \\"staticSites\\": [null, {
@@ -1090,6 +1125,7 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
+      \\"name\\": \\"af1\\",
       \\"start\\": {
         \\"line\\": 1,
         \\"column\\": 0
@@ -1102,6 +1138,7 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 3,
       \\"type\\": 2,
+      \\"name\\": \\"af2\\",
       \\"start\\": {
         \\"line\\": 5,
         \\"column\\": 0
@@ -1114,6 +1151,7 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 4,
       \\"type\\": 2,
+      \\"name\\": \\"af33\\",
       \\"start\\": {
         \\"line\\": 12,
         \\"column\\": 0
@@ -1138,18 +1176,7 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 6,
       \\"type\\": 2,
-      \\"start\\": {
-        \\"line\\": 13,
-        \\"column\\": 21
-      },
-      \\"end\\": {
-        \\"line\\": 15,
-        \\"column\\": 3
-      },
-      \\"parent\\": 4
-    }, {
-      \\"staticId\\": 7,
-      \\"type\\": 2,
+      \\"name\\": \\"af44\\",
       \\"start\\": {
         \\"line\\": 18,
         \\"column\\": 0
@@ -1160,7 +1187,7 @@ function _dbux_init() {
       },
       \\"parent\\": 1
     }, {
-      \\"staticId\\": 8,
+      \\"staticId\\": 7,
       \\"type\\": 2,
       \\"name\\": \\"main\\",
       \\"start\\": {
@@ -1283,8 +1310,8 @@ try {
   _dbux.popProgram();
 }
 
-function _dbux_init() {
-  return _dbuxRuntime.initProgram({
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
     \\"fileName\\": \\"executionContextAsync.js\\",
     \\"filePath\\": \\"samples/__samplesInput__/executionContextAsync.js\\",
     \\"staticSites\\": [null, {
@@ -1421,8 +1448,8 @@ try {
   _dbux.popProgram();
 }
 
-function _dbux_init() {
-  return _dbuxRuntime.initProgram({
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
     \\"fileName\\": \\"executionContextSimple.js\\",
     \\"filePath\\": \\"samples/__samplesInput__/executionContextSimple.js\\",
     \\"staticSites\\": [null, {
@@ -1432,6 +1459,7 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 2,
       \\"type\\": 2,
+      \\"name\\": \\"f1\\",
       \\"start\\": {
         \\"line\\": 1,
         \\"column\\": 0
@@ -1444,6 +1472,7 @@ function _dbux_init() {
     }, {
       \\"staticId\\": 3,
       \\"type\\": 2,
+      \\"name\\": \\"f2\\",
       \\"start\\": {
         \\"line\\": 5,
         \\"column\\": 0
@@ -1504,8 +1533,8 @@ try {
   _dbux.popProgram();
 }
 
-function _dbux_init() {
-  return _dbuxRuntime.initProgram({
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
     \\"fileName\\": \\"executionContextSimple.js\\",
     \\"filePath\\": \\"samples/__samplesInput__/executionContextSimple.js\\",
     \\"staticSites\\": [null, {

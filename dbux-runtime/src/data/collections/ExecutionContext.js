@@ -1,9 +1,10 @@
 let _performance;
+
 if (typeof window !== 'undefined') {
   _performance = performance;
 }
 else {
-  _performance = require('perf_hooks').performance;
+  _performance = eval("require('perf_hooks').performance");
 }
 
 export default class ExecutionContext {

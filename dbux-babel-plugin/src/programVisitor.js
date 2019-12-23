@@ -1,6 +1,9 @@
 import fsPath from 'path';
 import buildProgramVisitorState from './programVisitorState';
 import { addDbuxInitDeclaration, wrapProgram } from './instrumentation/program';
+import errorWrapVisitor from './helpers/errorWrapVisitor';
+
+import functionVisitor from './functionVisitor';
 
 
 // ########################################
@@ -18,6 +21,8 @@ function getFilePath(state) {
 
 function enter(path, state) {
   if (state.onEnter) return; // make sure to not visit Program node more than once
+  // console.warn('P', path.toString());
+  // console.warn(state.file.code);
 
   const filePath = getFilePath(state);
   const fileName = fsPath.basename(filePath);
@@ -59,6 +64,10 @@ function enter(path, state) {
 
   // instrument Program itself
   wrapProgram(path, state);
+
+  // traverse program before most other plugins
+
+  path.traverse(buildNestedVisitor(), state);
 }
 
 
@@ -70,6 +79,46 @@ function exit(path, state) {
   if (!state.onExit(path)) return;
 
   addDbuxInitDeclaration(path, state);
+}
+
+
+// ########################################
+// Sub-traversal
+// ########################################
+
+function buildNestedVisitor() {
+  return errorWrapVisitor({
+    Function: functionVisitor(),
+
+    // AwaitExpression(path) {
+    //   // TODO: instrumentAwait
+    // },
+
+    // /**
+    //  * TODO: Handle `for await of`
+    //  * explanation: "`for await (const x of y) { x }` is like a sugar of: `for (const x of y) { await x }` (but call y[Symbol.asyncIterator]() instead of y[Symbol.iterator]())"
+    //  * @see https://github.com/babel/babel/issues/4969)
+    //  */
+    // ForOfStatement(path) {
+    //   // TODO: instrumentAwait
+    // },
+
+
+    /*
+    more TODO:
+    see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop
+    see: https://stackoverflow.com/questions/2734025/is-javascript-guaranteed-to-be-single-threaded/2734311#2734311
+ 
+    instrumentTimingEvents(); // setTimeout + setInterval + process.nextTick
+    instrumentInterruptEvents(); // alert, confirm, prompt etc
+    instrumentThenables(); // TODO: then, catch, finally, etc.. // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+    generator functions
+ 
+ 
+    //instrumentOtherCallbacks(); // e.g.: event handlers, non-promisified libraries
+    // big problem => sending objects into blackboxed modules that will call methods on them
+    */
+  });
 }
 
 

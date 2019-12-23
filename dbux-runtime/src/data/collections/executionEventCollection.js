@@ -4,6 +4,9 @@ import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
 import programStaticContextCollection from './programStaticContextCollection';
 
+
+let timer = null;
+
 export class ExecutionEventCollection {
 
   /**
@@ -73,6 +76,14 @@ export class ExecutionEventCollection {
     const lineSuffix = line ? `:${line}` : '';
     const message = `(${rootContextId}) [${typeName}] ${name} @${fileName}${lineSuffix}`;
     console.log(`[DBUX]`, message);
+
+    // hackfix: simulate end of (partial) stack
+    if (!timer) {
+      timer = setImmediate(() => {
+        console.log(`[DBUX]\n[DBUX] ---------\n[DBUX]`);
+        timer = null;
+      });
+    }
   }
 
 }

@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const toEs5 = true;
+
 import { transformSync } from '@babel/core';
 import fs from 'fs';
 
@@ -9,10 +11,13 @@ const argv = require('yargs')
   .argv;
 const { file } = argv;
 const inputCode = fs.readFileSync(file, 'utf8');
-const plugin = require(__dirname + '/../src');
+
+
+const plugin = require(__dirname + '/../src/babelInclude');
 
 
 const babelOptions = {
+  ignore: ['node_modules'],
   babelrc: false,
   configFile: false,
   filename: file,
@@ -37,6 +42,17 @@ const babelOptions = {
     plugin
   ]
 };
+
+if (toEs5) {
+  babelOptions.presets = [[
+    "@babel/preset-env",
+    {
+      "loose": true,
+      "useBuiltIns": "usage",
+      "corejs": 3
+    }
+  ]];
+}
 
 // console.warn(babelOptions.plugins.map(p => (typeof p === 'function' ? p.toString() : JSON.stringify(p)).split('\n')[0]).join(','));
 const outputCode = transformSync(inputCode, babelOptions).code;

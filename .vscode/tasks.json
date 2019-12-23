@@ -5,7 +5,7 @@
       "label": "Instrument folder (test)",
       "command": "${workspaceRoot}/dbux-cli/bin/dbux-instrument-files.sh",
       "args": [
-        "${file}"
+        "${fileDirname}"
       ],
       "type": "shell",
       "runOptions": {

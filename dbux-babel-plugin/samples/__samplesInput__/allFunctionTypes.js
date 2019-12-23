@@ -16,6 +16,7 @@ const o = {
 };
 
 class C {
+  constructor() {}
   f6() {}
   f7 = () => {};
 }
