@@ -101,19 +101,13 @@ npx serve
 ```
 
 
-### vanilla-es6
 
-```sh
-cd projects && \
-git clone https://github.com/tastejs/todomvc.git && \
-cd todomvc/examples/vanilla-es6 && \
-rm -rf ../../.git `# remove git folder` \
-npm install && \
-\
-`# instrumentation here` \
-cp ../../../../assets/projects/todomvc-vanilla-es6/* . && \
-npm i -D babel-loader  @babel/node @babel/cli @babel/core @babel/preset-env webpack webpack-cli webpack-dev-server && \
-npm i -S core-js@3 @babel/runtime @babel/plugin-transform-runtime && \
-npm i -D ../../../../dbux-common ../../../../dbux-babel-plugin ../../../../dbux-runtime && \
-npm start
-```
+
+# Known Issues
+
+* Windows only
+   * When running things in VSCode built-in terminal, it sometimes changes to lower-case drive letter
+      * Causing lower-case and upper-case drive letters to start appearing in `require` paths
+         * => which makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
+      * Official bug report: https://github.com/microsoft/vscode/issues/9448
+      * Solution: run command in external `cmd` or find a better behaving terminal

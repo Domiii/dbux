@@ -1,6 +1,6 @@
 import programStaticContextCollection from './programStaticContextCollection';
 // import Enum from '-dbux-common/Enum';
-import Enum from 'dbux-common/dist/util/Enum';
+import Enum from 'dbux-common/src/util/Enum';
 import ExecutionContext from './ExecutionContext';
 import staticContextCollection from './staticContextCollection';
 

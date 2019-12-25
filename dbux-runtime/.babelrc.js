@@ -1,5 +1,5 @@
 module.exports = {
-  ignore: ['node_modules/'],
+  ignore: ['node_modules'],
   "sourceMaps": "both",
   "retainLines": true,
   "presets": [

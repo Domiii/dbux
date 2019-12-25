@@ -1,4 +1,4 @@
-import Enum from 'dbux-common/dist/util/Enum';
+import Enum from 'dbux-common/src/util/Enum';
 
 const ExecutionEventType = new Enum({
   ProgramStart: 1,

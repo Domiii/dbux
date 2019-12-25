@@ -14,7 +14,15 @@ const babelRegisterOptions = {
       }
 
       // only dbux plugin + common
-      const prefix = path.join(dbuxRoot, 'dbux-') + '((common)|(babel))';
+      let prefix = path.join(dbuxRoot, 'dbux-') + '((common)|(babel))';
+
+      // fix: backslashes on windows
+      prefix = prefix.replace(/\\/g, '\\\\');
+
+      // fix: sometimes drive letters on windows are capitalized, sometimes not
+      prefix = prefix.toLowerCase();
+      fpath = fpath.toLowerCase();
+
       const shouldIgnore = !fpath.match(prefix);
       // console.warn(fpath, !shouldIgnore, prefix);
       return shouldIgnore;
@@ -37,9 +45,9 @@ const babelRegisterOptions = {
   //   }
   // ]],
   babelrcRoots: [
-    __dirname + '/..',
-    dbuxRoot + "/dbux-babel-plugin",
-    dbuxRoot + "/dbux-common"
+    path.join(__dirname, '..'),
+    path.join(dbuxRoot, "dbux-common"),
+    path.join(dbuxRoot, "dbux-runtime")
     // dbuxRoot + "/dbux-runtime"
   ]
 };

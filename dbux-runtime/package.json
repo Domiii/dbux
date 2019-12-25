@@ -62,6 +62,5 @@
     "dbux-common": "file:../dbux-common"
   },
   "_moduleAliases": {
-    "-dbux-common": "./node-modules/dbux-common/dist"
   }
 }

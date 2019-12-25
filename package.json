@@ -4,7 +4,8 @@
 		"eslint-config-esnext": "*"
 	},
 	"scripts": {
-		"p-todomvc": "echo TODO",
+		"setup": "sh scripts/setup-dbux.sh",
+		"p1": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
 		"start": "echo TODO"
 	},
 	"dependencies": {

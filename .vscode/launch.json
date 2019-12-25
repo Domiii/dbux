@@ -131,8 +131,8 @@
 			"cwd": "${fileDirname}",
 			"runtimeExecutable": "npm",
 			"runtimeArgs": [
-				"--stack-trace-limit=1000",
-				"--nolazy",
+				// "--stack-trace-limit=1000",
+				// "--nolazy",
 				"run",
 				"build-debug"
 			],

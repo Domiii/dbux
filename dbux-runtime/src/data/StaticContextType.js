@@ -1,4 +1,4 @@
-import Enum from 'dbux-common/dist/util/Enum';
+import Enum from 'dbux-common/src/util/Enum';
 
 const StaticContextType = new Enum({
   Program: 1,

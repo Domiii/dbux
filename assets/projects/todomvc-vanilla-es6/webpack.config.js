@@ -6,57 +6,10 @@ process.env.BABEL_DISABLE_CACHE = 1;
 
 const root = __dirname;
 const outputFolderName = 'dist';
-const dbuxRoot = path.resolve(__dirname + '/../../../..');
+const dbuxRoot = path.resolve(root + '/../../../..');
 //const dbuxPlugin = require(path.join(root, 'node_modules/dbux-babel-plugin'));
-const dbuxPlugin = dbuxRoot + '/dbux-babel-plugin';
+const dbuxPlugin = path.resolve(path.join(dbuxRoot, '/dbux-babel-plugin/src/babelInclude'));
 // const dbuxPlugin = path.join(root, 'node_modules/dbux-babel-plugin');
-
-
-// TODO: as usual, webpack sourcemaps are not working
-// TODO: only babel, no webpack, produce result files
-
-
-const babelRegisterOptions = {
-  ignore: [
-    // '**/node_modules/**',
-    function (fpath) {
-      // console.log('[babel-register]', fpath);
-      // return false;
-
-      // no node_modules
-      if (fpath.match(/node_modules/)) {
-        return true;
-      }
-
-      const isIgnored = !fpath.match(/[/]dbux-/);
-
-      // only dbux plugin + common
-      // console.warn(fpath, !isIgnored);
-      return isIgnored;
-    }
-  ],
-  sourceMaps: "both",
-  retainLines: true,
-  plugins: [
-    '@babel/plugin-transform-runtime'
-  ],
-  presets: [[
-    "@babel/preset-env",
-    {
-      "loose": true,
-      "useBuiltIns": "usage",
-      "corejs": 3
-    }
-  ]],
-  babelrcRoots: [
-    __dirname,
-    dbuxRoot + "/dbux-babel-plugin",
-    dbuxRoot + "/dbux-common",
-    dbuxRoot + "/dbux-runtime"
-  ]
-};
-const babelRegister = require('@babel/register');
-babelRegister(babelRegisterOptions);
 
 require(dbuxPlugin);
 
@@ -76,8 +29,8 @@ const babelOptions = {
   ]],
   babelrcRoots: [
     __dirname,
-    dbuxRoot + "/dbux-common",
-    dbuxRoot + "/dbux-runtime"
+    path.join(dbuxRoot, "dbux-common"),
+    path.join(dbuxRoot, "dbux-runtime")
   ]
 };
 
@@ -89,9 +42,11 @@ const devServer = {
   contentBase: [
     root
   ],
-  host: '0.0.0.0',
+  quiet: false,
+  //host: '0.0.0.0',
+  // host:
   hot: true,
-  port: 3000,
+  port: 3001,
   // publicPath: outputFolder,
   writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
   filename: outFile,
@@ -127,8 +82,8 @@ module.exports = {
       path.resolve(root + '/node_modules'),
 
       // see: https://github.com/webpack/webpack/issues/8824#issuecomment-475995296
-      dbuxRoot + "/dbux-common",
-      dbuxRoot + "/dbux-runtime"
+      path.join(dbuxRoot, "dbux-common"),
+      path.join(dbuxRoot, "dbux-runtime")
     ]
   },
   module: {
@@ -136,15 +91,15 @@ module.exports = {
       {
         loader: 'babel-loader',
         include: [
-          root + '/src/'
+          path.join(root, 'src')
         ],
         options: babelOptions
       },
       {
         loader: 'babel-loader',
         include: [
-          dbuxRoot + "/dbux-common/src",
-          dbuxRoot + "/dbux-runtime/src"
+          path.join(dbuxRoot, "dbux-common/src"),
+          path.join(dbuxRoot, "dbux-runtime/src")
         ],
         options: {
           sourceMaps: "both",
@@ -160,8 +115,8 @@ module.exports = {
             }
           ]],
           babelrcRoots: [
-            dbuxRoot + "/dbux-common",
-            dbuxRoot + "/dbux-runtime"
+            path.join(dbuxRoot, "dbux-common"),
+            path.join(dbuxRoot, "dbux-runtime")
           ]
         }
       }
