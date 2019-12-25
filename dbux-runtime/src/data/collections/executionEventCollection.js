@@ -64,7 +64,7 @@ export class ExecutionEventCollection {
     const staticContext = staticContextCollection.getContext(programId, staticContextId);
 
     const {
-      name
+      displayName
     } = staticContext;
 
     const {
@@ -74,7 +74,7 @@ export class ExecutionEventCollection {
     const line = where?.line;
     
     const lineSuffix = line ? `:${line}` : '';
-    const message = `(${rootContextId}) [${typeName}] ${name} @${fileName}${lineSuffix}`;
+    const message = `(${rootContextId}) [${typeName}] ${displayName} @${fileName}${lineSuffix}`;
     console.log(`[DBUX]`, message);
 
     // hackfix: simulate end of (partial) stack

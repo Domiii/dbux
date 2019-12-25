@@ -33,7 +33,8 @@ function enter(path, state) {
   const programStaticContext = {
     staticId,
     type: 1,
-    name: "Program"
+    name: 'Program',
+    displayName: 'Program'
   };
   path.setData('staticId', staticId);
 

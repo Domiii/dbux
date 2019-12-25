@@ -1,5 +1,6 @@
-import { getLine, toSourceString } from './helpers/misc';
 import { wrapFunctionBody } from './instrumentation/trace';
+import * as t from '@babel/types';
+import { getAllClassParents, guessFunctionName } from './helpers/astGetters';
 
 
 export default function functionVisitor() {
@@ -19,24 +20,31 @@ export default function functionVisitor() {
 
       // console.log('FUNCTION', path.get('id')?.name, '@', `${state.filename}:${line}`);
 
-      const actualParent = path.findParent(p => !!p.getData('staticId'));
-      const parentStaticId = actualParent.getData('staticId');
+      const staticContextParent = path.findParent(p => !!p.getData('staticId'));
+      const parentStaticId = staticContextParent.getData('staticId');
 
       // console.log('actualParent',  toSourceString(actualParent.node));
 
-      const { node } = path;
-      const name = node.key ? node.key.name : node.id?.name;
+      const name = guessFunctionName(path);
 
       // TODO: parent.key, parent.id
+      const classParents = getAllClassParents(path);
 
-      state.staticSites.push({
+      let displayName = name && name || '(unknown)';
+      if (classParents.length) {
+        displayName = classParents.map(p => p.node.id.name).join('.') + '.' + displayName;
+      }
+
+      const staticContextData = {
         staticId,
         type: 2,
         name,
+        displayName,
         start,
         end,
-        parent: parentStaticId
-      });
+        parent: parentStaticId,
+      };
+      state.staticSites.push(staticContextData);
 
       const bodyPath = path.get('body');
 

@@ -46,7 +46,7 @@ const devServer = {
   //host: '0.0.0.0',
   // host:
   hot: true,
-  port: 3001,
+  port: 3000,
   // publicPath: outputFolder,
   writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
   filename: outFile,

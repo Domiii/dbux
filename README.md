@@ -1,8 +1,12 @@
 # dbux README
 
+## Fancy ideas (Dev)
+* add extra-watch-webpack-plugin https://github.com/pigcan/extra-watch-webpack-plugin?
+
+
 ## Major Components
 * Babel Plugins basics
-   * `npm i -D @babel/core @babel/cli @babel/node && npm i -D @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame    && npm i -D jest jest-expect-message jest-extended babel-plugin-tester      && npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime          && npm i -S core-js@3 @babel/runtime`
+   * `npm i -D @babel/core @babel/cli @babel/node && npm i -D @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester    && npm i -D jest jest-expect-message jest-extended      && npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime          && npm i -S core-js@3 @babel/runtime`
    * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/user-handbook.md
    * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md
    * [`bael-plugin-tester`](https://github.com/babel-utils/babel-plugin-tester#examples)
