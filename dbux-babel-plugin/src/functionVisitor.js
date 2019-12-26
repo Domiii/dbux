@@ -1,6 +1,7 @@
 import { wrapFunctionBody } from './instrumentation/trace';
 import * as t from '@babel/types';
-import { getAllClassParents, guessFunctionName } from './helpers/astGetters';
+import { getAllClassParents } from './helpers/astGetters';
+import { guessFunctionName } from './helpers/functionHelpers';
 
 
 export default function functionVisitor() {
@@ -30,7 +31,7 @@ export default function functionVisitor() {
       // TODO: parent.key, parent.id
       const classParents = getAllClassParents(path);
 
-      let displayName = name && name || '(unknown)';
+      let displayName = name && name || '(anonymous)';
       if (classParents.length) {
         displayName = classParents.map(p => p.node.id.name).join('.') + '.' + displayName;
       }

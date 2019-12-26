@@ -38,32 +38,3 @@ export function getAllClassParents(path) {
   } while (classParent);
   return classParents;
 }
-
-/**
- * TODO: this.getLocalStorage = () => {
- */
-export function guessFunctionName(path) {
-  if (isDebug()) {
-    // basic sanity checks
-    if (!t.isFunction(path)) {
-      throw new Error('invalid path must be function: ' + path.node.type);
-    }
-  }
-  const { node } = path;
-  let name = node.key ? node.key.name : node.id?.name;
-  if (!name) {
-    /**
-     * handle (at least) three cases of anonymous functions:
-     * 1. `const f = () => {};`
-     * 2. `const o = { f: () => {} }`
-     * 3. `class A { f = () => {} }`
-     */
-    const p = path.parentPath.node;
-    name = p.id?.name || p.key?.name;
-
-    if (!name) {
-      debugger;
-    }
-  }
-  return name;
-}

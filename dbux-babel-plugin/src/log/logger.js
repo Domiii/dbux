@@ -7,6 +7,12 @@ export function logInternalError(...args) {
   console.error(...err);
 }
 
+export function logInternalWarning(...args) {
+  const err = ['[DBUX instrumentation warning]', ...args];
+  errors.push(err);
+  console.warn(...err);
+}
+
 export function getErrors() {
   return errors;
 }
