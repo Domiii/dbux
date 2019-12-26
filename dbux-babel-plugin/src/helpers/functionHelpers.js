@@ -1,26 +1,24 @@
 import * as t from '@babel/types';
 import { isDebug } from 'dbux-common/src/util/nodeUtil';
 import { logInternalWarning } from '../log/logger';
-
-// ###########################################################################
-// function calls
-// ###########################################################################
-
-export function getCallFunctionName(callPath) {
-  const { callee } = callPath;
-  
-  if (t.isMemberExpression(callee)) {
-    
-  }
-  else if (t.isIdentifier(callee)) {
-
-  }
-
-}
+import { getAllClassParents } from './astGetters';
 
 // ###########################################################################
 // function names
 // ###########################################################################
+
+export function getFunctionDisplayName(functionPath, functionName) {
+  if (!functionName) {
+    functionName = guessFunctionName(functionPath);
+  }
+  const classParents = getAllClassParents(functionPath);
+
+  let displayName = functionName && functionName || '(anonymous)';
+  if (classParents.length) {
+    displayName = classParents.map(p => p.node.id.name).join('.') + '.' + displayName;
+  }
+  return displayName;
+}
 
 /**
  * TODO: this.getLocalStorage = () => {

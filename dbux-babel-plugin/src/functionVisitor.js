@@ -1,8 +1,5 @@
 import { wrapFunctionBody } from './instrumentation/trace';
-import * as t from '@babel/types';
-import { getAllClassParents } from './helpers/astGetters';
-import { guessFunctionName } from './helpers/functionHelpers';
-
+import { guessFunctionName, getFunctionDisplayName } from './helpers/functionHelpers';
 
 export default function functionVisitor() {
   return {
@@ -27,14 +24,7 @@ export default function functionVisitor() {
       // console.log('actualParent',  toSourceString(actualParent.node));
 
       const name = guessFunctionName(path);
-
-      // TODO: parent.key, parent.id
-      const classParents = getAllClassParents(path);
-
-      let displayName = name && name || '(anonymous)';
-      if (classParents.length) {
-        displayName = classParents.map(p => p.node.id.name).join('.') + '.' + displayName;
-      }
+      const displayName = getFunctionDisplayName(path);
 
       const staticContextData = {
         staticId,
@@ -52,7 +42,7 @@ export default function functionVisitor() {
       wrapFunctionBody(bodyPath, staticId, state);
 
       if (path.node.generator) {
-        // TOOD: some special treatment for generator functions?
+        // TOOD: special treatment for generator functions
       }
     }
   }

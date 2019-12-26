@@ -93,7 +93,7 @@ function buildNestedVisitor() {
 
     AwaitExpression(path) {
       const arg = path.node.argument;
-      
+
     },
 
     /**
