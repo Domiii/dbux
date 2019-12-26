@@ -27,7 +27,7 @@ export default class RuntimeMonitor {
    * The currently executing stack.
    */
   _executingContextRoot = null;
-  _executingDepth = 0;
+  _immediateDepth = 0;
 
   _programMonitors = new Map();
 
@@ -73,10 +73,10 @@ export default class RuntimeMonitor {
     }
 
     // misc updates
-    ++this._executingDepth;
+    ++this._immediateDepth;
 
     // log event
-    executionEventCollection.logPushImmediate(contextId, this._executingDepth);
+    executionEventCollection.logPushImmediate(contextId, this._immediateDepth);
     
     return contextId;
   }
@@ -97,8 +97,8 @@ export default class RuntimeMonitor {
     }
 
     // misc updates
-    --this._executingDepth;
-    if (!this._executingDepth) {
+    --this._immediateDepth;
+    if (!this._immediateDepth) {
       // last on stack
       if (contextId !== executingRootContextId) {
         logInternalError('Tried to popImmediate last context on stack but is not executingContextRoot - ', contextId, '!==', executingRootContextId);
@@ -109,7 +109,11 @@ export default class RuntimeMonitor {
     }
 
     // log event
-    executionEventCollection.logPopImmediate(contextId, this._executingDepth);
+    executionEventCollection.logPopImmediate(contextId, this._immediateDepth);
+  }
+
+  scheduleCallback() {
+    
   }
 
 

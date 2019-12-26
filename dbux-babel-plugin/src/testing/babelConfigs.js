@@ -18,6 +18,7 @@ const babelConfigEs6 = {
     "@babel/plugin-proposal-function-bind",
     "@babel/plugin-syntax-export-default-from",
     "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-syntax-flow",
     //"@babel/plugin-transform-runtime"
   ]
 };

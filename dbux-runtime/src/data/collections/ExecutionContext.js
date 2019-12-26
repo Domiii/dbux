@@ -11,14 +11,14 @@ export default class ExecutionContext {
   /**
    * @return {ExecutionContext}
    */
-  static allocate(contextType, contextId, programId, staticContextId, orderId, rootContextId) {
+  static allocate(contextType, contextId, programId, staticContextId, orderId, rootContextId, schedulerId) {
     // TODO: use object pooling
     const context = new ExecutionContext();
-    context._init(contextType, contextId, programId, staticContextId, orderId, rootContextId);
+    context._init(contextType, contextId, programId, staticContextId, orderId, rootContextId, schedulerId);
     return context;
   }
 
-  _init(contextType, contextId, programId, staticContextId, orderId, rootContextId) {
+  _init(contextType, contextId, programId, staticContextId, orderId, rootContextId, schedulerId) {
     this.contextType = contextType;
     this.programId = programId;
     this.staticContextId = staticContextId;
@@ -26,6 +26,7 @@ export default class ExecutionContext {
     this.contextId = contextId;
     // this.createdAt = _performance.now();
     this.rootContextId = rootContextId;
-    this.linkCount = 0;
+    this.schedulerId = schedulerId;
+    this.scheduledChildren = null;
   }
 }

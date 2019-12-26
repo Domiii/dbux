@@ -59,12 +59,6 @@ function _dbux_init(dbuxRuntime) {
 // dbux runtime:
 // ################################################################################################
 
-function pushImmediate(contextId) {
-
-}
-
-const callbackWrappersByCallback = new Map();
-
 /**
  * Edge-cases:
  * 1. Repeated use of CB by same sender
@@ -100,11 +94,4 @@ function pushCallbackLink(scheduledContextId) {
 
 function popCallbackLink(cbContextId, cb) {
   
-}
-
-
-// TODO: setInterval + event listeners
-
-function pushCallbackRepeated(contextId, cb) {
-
 }

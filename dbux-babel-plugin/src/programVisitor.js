@@ -91,18 +91,24 @@ function buildNestedVisitor() {
   return errorWrapVisitor({
     Function: functionVisitor(),
 
-    // AwaitExpression(path) {
-    //   // TODO: instrumentAwait
-    // },
+    AwaitExpression(path) {
+      const arg = path.node.argument;
+      
+    },
 
-    // /**
-    //  * TODO: Handle `for await of`
-    //  * explanation: "`for await (const x of y) { x }` is like a sugar of: `for (const x of y) { await x }` (but call y[Symbol.asyncIterator]() instead of y[Symbol.iterator]())"
-    //  * @see https://github.com/babel/babel/issues/4969)
-    //  */
-    // ForOfStatement(path) {
-    //   // TODO: instrumentAwait
-    // },
+    /**
+     * TODO: Handle `for await of`
+     * explanation: 
+     *    `for await (const x of y) { x }` is like a sugar of:
+     *    `for (const x of y) { await x }`
+     *    (but call y[Symbol.asyncIterator]() instead of y[Symbol.iterator]())
+     * @see https://github.com/babel/babel/issues/4969
+     */
+    ForOfStatement(path) {
+      if (path.node.await) {
+        // TODO: instrumentAwait
+      }
+    },
 
 
     /*

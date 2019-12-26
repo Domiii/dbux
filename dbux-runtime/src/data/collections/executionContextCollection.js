@@ -53,19 +53,24 @@ export class ExecutionContextCollection {
     const orderId = this._genOrderId(programId, staticContextId);
     const contextId = this._contexts.length;
     rootContextId = rootContextId || contextId;
+
     const context = ExecutionContext.allocate(ExecutionContextType.Immediate, contextId, programId, staticContextId, orderId, rootContextId);
     this._contexts.push(context);
     return context;
   }
 
-  // /**
-  //  * @return {ExecutionContext}
-  //  */
-  // schedule(programId, staticContextId, schedulerId) {
-  //   const orderId = programStaticContextCollection.genContextId(programId, staticContextId);
-  //   const contextId = this._contexts.length;
-  //   this._contexts.push(ExecutionContext.allocate(ExecutionContextType.Schedule, contextId, programId, staticContextId, orderId, schedulerId));
-  // }
+  /**
+   * @return {ExecutionContext}
+   */
+  schedule(programId, staticContextId, rootContextId, schedulerId) {
+    const orderId = this._genOrderId(programId, staticContextId);
+    const contextId = this._contexts.length;
+    rootContextId = rootContextId || contextId;
+
+    const context = ExecutionContext.allocate(ExecutionContextType.Schedule, contextId, programId, staticContextId, orderId, rootContextId, schedulerId);
+    this._contexts.push(context);
+    return context;
+  }
 
 
 
