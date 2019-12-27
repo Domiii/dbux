@@ -1,5 +1,48 @@
-import { wrapFunctionBody } from './instrumentation/trace';
 import { guessFunctionName, getFunctionDisplayName } from './helpers/functionHelpers';
+import { buildWrapTryFinally, buildSource, buildBlock } from './helpers/builders';
+import * as t from "@babel/types";
+
+// ###########################################################################
+// Modification
+// ###########################################################################
+
+// export function instrumentAwaitEventStream(bodyPath) {
+//   // TODO: https://babeljs.io/docs/en/babel-types#forofstatement -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
+//   //
+// }
+
+function buildPushImmediate(contextId, dbux, staticId) {
+  return buildSource(`const ${contextId} = ${dbux}.pushImmediate(${staticId});`);
+}
+
+function buildPopImmediate(contextId, dbux) {
+  return buildSource(`${dbux}.popImmediate(${contextId});`);
+}
+
+/**
+ * Instrument all Functions and Program to keep track of all (possibly async) execution stacks.
+ */
+export function wrapFunctionBody(bodyPath, staticId, { ids: { dbux }, genContextIdName }) {
+  const contextIdName = genContextIdName(bodyPath);
+  const startCalls = buildPushImmediate(contextIdName, dbux, staticId);
+  const endCalls = buildPopImmediate(contextIdName, dbux);
+
+  let body = bodyPath.node;
+  if (!Array.isArray(bodyPath.node) && !t.isStatement(bodyPath.node)) {
+    // simple lambda expression -> convert to block lambda expression with return statement
+    body = t.blockStatement([t.returnStatement(bodyPath.node)]);
+  }
+
+  // wrap the function in a try/finally statement
+  bodyPath.replaceWith(buildBlock([
+    ...startCalls,
+    buildWrapTryFinally(body, endCalls)
+  ]));
+}
+
+// ###########################################################################
+// visitor
+// ###########################################################################
 
 export default function functionVisitor() {
   return {
@@ -7,36 +50,15 @@ export default function functionVisitor() {
       if (!state.onEnter(path)) return;
       // console.warn('F', path.toString());
 
-      const { loc } = path.node;
-      if (!loc) {
-        // this node has been dynamically emitted; not part of the original source code
-        return;
-      }
-      const { start, end } = loc;
-      const staticId = state.staticSites.length;
-      path.setData('staticId', staticId);
-
-      // console.log('FUNCTION', path.get('id')?.name, '@', `${state.filename}:${line}`);
-
-      const staticContextParent = path.findParent(p => !!p.getData('staticId'));
-      const parentStaticId = staticContextParent.getData('staticId');
-
-      // console.log('actualParent',  toSourceString(actualParent.node));
-
       const name = guessFunctionName(path);
       const displayName = getFunctionDisplayName(path);
 
       const staticContextData = {
-        staticId,
         type: 2,
         name,
-        displayName,
-        start,
-        end,
-        parent: parentStaticId,
+        displayName
       };
-      state.staticSites.push(staticContextData);
-
+      const staticId = state.addStaticContext(path, staticContextData);
       const bodyPath = path.get('body');
 
       wrapFunctionBody(bodyPath, staticId, state);

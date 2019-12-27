@@ -1,14 +1,95 @@
 import fsPath from 'path';
 import buildProgramVisitorState from './programVisitorState';
-import { addDbuxInitDeclaration, wrapProgram } from './instrumentation/program';
 import errorWrapVisitor from './helpers/errorWrapVisitor';
 
 import functionVisitor from './functionVisitor';
+import { buildSource, buildWrapTryFinally } from './helpers/builders';
+import * as t from '@babel/types';
+import { extractTopLevelDeclarations } from './helpers/topLevelHelpers';
+import { callExpressionVisitor } from './callExpressionVisitor';
 
+// ###########################################################################
+// Builders
+// ###########################################################################
 
-// ########################################
-// enter
-// ########################################
+function buildProgramInit(path, { ids, genContextIdName }) {
+  const {
+    dbuxInit,
+    dbuxRuntime,
+    dbux
+  } = ids;
+
+  const contextIdName = genContextIdName(path);
+
+  return buildSource(`
+  const ${dbuxRuntime} = require('dbux-runtime').default;
+  const ${dbux} = ${dbuxInit}(${dbuxRuntime});
+  const ${contextIdName} = ${dbux}.getProgramContextId();
+  `);
+}
+
+function buildProgramTail(path, { ids, fileName, filePath, staticSites }) {
+  const {
+    dbuxInit,
+    // dbuxRuntime
+  } = ids;
+
+  const staticData = {
+    fileName,
+    filePath,
+    staticSites
+  };
+
+  const staticDataString = JSON.stringify(staticData, null, 4);
+
+  return buildSource(`
+function ${dbuxInit}(dbuxRuntime) {
+  return dbuxRuntime.initProgram(${staticDataString});
+}`);
+}
+
+function buildPopProgram(dbux) {
+  return buildSource(`${dbux}.popProgram();`);
+}
+
+// ###########################################################################
+// modification
+// ###########################################################################
+
+function addDbuxInitDeclaration(path, state) {
+  path.pushContainer('body', buildProgramTail(path, state));
+}
+
+function wrapProgram(path, state) {
+  const { ids: { dbux } } = state;
+  const startCalls = buildProgramInit(path, state);
+  const endCalls = buildPopProgram(dbux);
+
+  const [
+    importNodes,
+    initVarDecl,
+    bodyNodes,
+    exportNodes
+  ] = extractTopLevelDeclarations(path);
+
+  const programBody = [
+    ...importNodes,     // imports first
+    ...startCalls,
+    ...initVarDecl,
+    buildWrapTryFinally(bodyNodes, endCalls),
+    ...exportNodes      // exports last
+  ];
+  replaceProgramBody(path, programBody);
+}
+
+function replaceProgramBody(programPath, newBody) {
+  const newProgramNode = buildProgram(programPath, newBody);
+  programPath.replaceWith(newProgramNode);
+}
+
+// ###########################################################################
+// visitor
+// ###########################################################################
 
 function getFilePath(state) {
   let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
@@ -83,18 +164,19 @@ function exit(path, state) {
 }
 
 
-// ########################################
+// ###########################################################################
 // Sub-traversal
-// ########################################
+// ###########################################################################
 
 function buildNestedVisitor() {
   return errorWrapVisitor({
     Function: functionVisitor(),
+    CallExpression: callExpressionVisitor(),
 
-    AwaitExpression(path) {
-      const arg = path.node.argument;
-
-    },
+    // AwaitExpression(path) {
+    //   const arg = path.node.argument;
+    //   // TODO
+    // },
 
     /**
      * TODO: Handle `for await of`

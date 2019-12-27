@@ -44,10 +44,9 @@ export default class RuntimeMonitor {
    * @returns {ProgramMonitor}
    */
   addProgram(programData) {
-    const programStaticId = 1;
     const programStaticContext = programStaticContextCollection.addProgram(programData);
     staticContextCollection.addContexts(programStaticContext.programId, programData.staticSites);
-    const programMonitor = new ProgramMonitor(programStaticId, programStaticContext);
+    const programMonitor = new ProgramMonitor(programStaticContext);
     this._programMonitors.set(programStaticContext.programId, programMonitor);
     return programMonitor;
   }

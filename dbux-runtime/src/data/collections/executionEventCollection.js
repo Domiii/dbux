@@ -22,7 +22,7 @@ export class ExecutionEventCollection {
     event.stackDepth = stackDepth;
 
     const staticContext = executionContextCollection.getStaticContext(contextId);
-    event.where = staticContext.start;
+    event.where = staticContext.loc?.start;
 
     this._log(event);
   }
