@@ -2,6 +2,7 @@ import * as t from '@babel/types';
 import { isDebug } from 'dbux-common/src/util/nodeUtil';
 import { logInternalWarning } from '../log/logger';
 import { getAllClassParents } from './astGetters';
+import { getPresentableString } from './misc';
 
 // ###########################################################################
 // function names
@@ -13,7 +14,7 @@ export function getFunctionDisplayName(functionPath, functionName) {
   }
   const classParents = getAllClassParents(functionPath);
 
-  let displayName = functionName && functionName || '(anonymous)';
+  let displayName = functionName && functionName || `(${getPresentableString(functionPath.toString(), 30)})`;
   if (classParents.length) {
     displayName = classParents.map(p => p.node.id.name).join('.') + '.' + displayName;
   }
@@ -44,7 +45,7 @@ export function guessFunctionName(functionPath) {
 
     if (!name) {
       // TODO: t.isCallExpression(p)
-      logInternalWarning('Could not guess name of function: ', p.toString());
+      // logInternalWarning('Could not guess name of function: ', functionPath.toString());
       // debugger;
     }
   }

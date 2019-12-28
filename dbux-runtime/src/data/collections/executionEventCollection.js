@@ -32,7 +32,7 @@ export class ExecutionEventCollection {
     event.contextId = contextId;
 
     const staticContext = executionContextCollection.getStaticContext(contextId);
-    event.where = staticContext.end;
+    event.where = staticContext.loc?.end;
 
     this._log(event);
   }
@@ -43,7 +43,7 @@ export class ExecutionEventCollection {
     event.contextId = scheduledContextId;
 
     const staticContext = executionContextCollection.getStaticContext(scheduledContextId);
-    event.where = staticContext.start;
+    event.where = staticContext.loc?.start;
 
     this._log(event);
   }
@@ -54,7 +54,7 @@ export class ExecutionEventCollection {
     event.contextId = callbackContextId;
 
     const staticContext = executionContextCollection.getStaticContext(callbackContextId);
-    event.where = staticContext.start;
+    event.where = staticContext.loc?.start;
 
     this._log(event);
   }
@@ -65,7 +65,7 @@ export class ExecutionEventCollection {
     event.contextId = callbackContextId;
 
     const staticContext = executionContextCollection.getStaticContext(callbackContextId);
-    event.where = staticContext.end;
+    event.where = staticContext.loc?.end;
 
     this._log(event);
   }
@@ -76,12 +76,12 @@ export class ExecutionEventCollection {
   }
 
 
-  static prettyPrint(state) {
+  static prettyPrint(event) {
     const {
       eventType,
       contextId,
       where
-    } = state;
+    } = event;
 
     const typeName = ExecutionEventType.nameFrom(eventType);
     const context = executionContextCollection.getContext(contextId);
@@ -89,7 +89,8 @@ export class ExecutionEventCollection {
     const {
       programId,
       staticContextId,
-      rootContextId
+      parentContextId,
+      stackDepth
     } = context;
     const programStaticContext = programStaticContextCollection.getProgramContext(programId);
     const staticContext = staticContextCollection.getContext(programId, staticContextId);
@@ -102,9 +103,11 @@ export class ExecutionEventCollection {
     } = programStaticContext;
     const line = where?.line;
     const lineSuffix = line ? `:${line}` : '';
-    let message = `(${rootContextId}) [${typeName}] ${displayName} @${fileName}${lineSuffix}`;
+    // const depthIndicator = `(${parentContextId})`;
+    const depthIndicator = `  `.repeat(stackDepth);
+    let message = `[DBUX] ${depthIndicator} ${displayName} [${typeName}] @${fileName}${lineSuffix}`;
 
-    if (!context.parentId) {
+    if (!parentContextId) {
       if (isPushEvent(eventType)) {
         message = '       ---------------\n' + message;
       }
@@ -112,7 +115,7 @@ export class ExecutionEventCollection {
         message = message + '\n       ---------------';
       }
     }
-    console.log(`[DBUX]`, message);
+    console.log(message);
 
     // hackfix: simulate end of (partial) stack
     // if (!timer) {

@@ -12,8 +12,8 @@ export default class ProgramMonitor {
    * @param {ProgramStaticContext} programStaticContext
    */
   constructor(programStaticContext) {
+    const staticId = 1;
     this._programStaticContext = programStaticContext;
-    const { staticId } = this._programStaticContext;
     this._programContextId = this.pushImmediate(staticId);
   }
 

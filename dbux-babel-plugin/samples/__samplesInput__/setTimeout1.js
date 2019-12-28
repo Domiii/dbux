@@ -5,6 +5,12 @@ function f1(a, b) {
 }
 
 function f3() {
+  f4(1, (...args) => console.log(...args), 2, () => {});
+}
+
+function f4(a, cb, b, cb2) {
+  cb(a, b);
+  cb2();
 }
 
 // go!

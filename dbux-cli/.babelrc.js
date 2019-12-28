@@ -4,12 +4,7 @@ module.exports = {
   "retainLines": true,
   "presets": [
     [
-      "@babel/preset-env",
-      {
-        "loose": true,
-        "useBuiltIns": "usage",
-        "corejs": 3
-      }
+      "@babel/preset-env"
     ]
   ],
   "plugins": [

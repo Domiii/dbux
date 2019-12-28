@@ -1,5 +1,5 @@
 import { runAllSnapshotTests } from '../testing/test-util';
-import { replaceProgramBody } from '../helpers/modification';
+import { replaceProgramBody } from '../helpers/program';
 import { buildWrapTryFinally } from '../helpers/builders';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 

@@ -3,10 +3,11 @@ import buildProgramVisitorState from './programVisitorState';
 import errorWrapVisitor from './helpers/errorWrapVisitor';
 
 import functionVisitor from './functionVisitor';
-import { buildSource, buildWrapTryFinally } from './helpers/builders';
+import { buildSource, buildWrapTryFinally, buildProgram } from './helpers/builders';
 import * as t from '@babel/types';
 import { extractTopLevelDeclarations } from './helpers/topLevelHelpers';
 import { callExpressionVisitor } from './callExpressionVisitor';
+import { replaceProgramBody } from './helpers/program';
 
 // ###########################################################################
 // Builders
@@ -28,7 +29,7 @@ function buildProgramInit(path, { ids, genContextIdName }) {
   `);
 }
 
-function buildProgramTail(path, { ids, fileName, filePath, staticSites }) {
+function buildProgramTail(path, { ids, fileName, filePath, staticContexts }) {
   const {
     dbuxInit,
     // dbuxRuntime
@@ -37,7 +38,7 @@ function buildProgramTail(path, { ids, fileName, filePath, staticSites }) {
   const staticData = {
     fileName,
     filePath,
-    staticSites
+    staticContexts
   };
 
   const staticDataString = JSON.stringify(staticData, null, 4);
@@ -82,11 +83,6 @@ function wrapProgram(path, state) {
   replaceProgramBody(path, programBody);
 }
 
-function replaceProgramBody(programPath, newBody) {
-  const newProgramNode = buildProgram(programPath, newBody);
-  programPath.replaceWith(newProgramNode);
-}
-
 // ###########################################################################
 // visitor
 // ###########################################################################
@@ -110,15 +106,6 @@ function enter(path, state) {
 
   const { scope } = path;
 
-  const staticId = 1;
-  const programStaticContext = {
-    staticId,
-    type: 1,
-    name: 'Program',
-    displayName: 'Program'
-  };
-  path.setData('staticId', staticId);
-
   // inject program-wide state
   Object.assign(state,
 
@@ -136,13 +123,17 @@ function enter(path, state) {
 
       // static program data
       filePath,
-      fileName,
-      staticSites: [
-        null,
-        programStaticContext
-      ]
+      fileName
     }
   );
+
+  // programStaticContext
+  const programStaticContext = {
+    type: 1,
+    name: 'Program',
+    displayName: 'Program'
+  };
+  state.addStaticContext(path, programStaticContext);
 
   // instrument Program itself
   wrapProgram(path, state);

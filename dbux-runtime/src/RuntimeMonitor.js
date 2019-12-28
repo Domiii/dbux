@@ -47,7 +47,7 @@ export default class RuntimeMonitor {
    */
   addProgram(programData) {
     const programStaticContext = programStaticContextCollection.addProgram(programData);
-    staticContextCollection.addContexts(programStaticContext.programId, programData.staticSites);
+    staticContextCollection.addContexts(programStaticContext.programId, programData.staticContexts);
     const programMonitor = new ProgramMonitor(programStaticContext);
     this._programMonitors.set(programStaticContext.programId, programMonitor);
     return programMonitor;
@@ -89,9 +89,10 @@ export default class RuntimeMonitor {
    */
   pushImmediate(programId, staticContextId) {
     const parentId = this._executingStack?.peek();
+    const stackDepth = this._executingStack?.getDepth() || 0;
 
     // register context
-    const context = executionContextCollection.executeImmediate(programId, staticContextId, parentId);
+    const context = executionContextCollection.executeImmediate(stackDepth, programId, staticContextId, parentId);
     const { contextId } = context;
     this._push(contextId);
 
@@ -126,9 +127,12 @@ export default class RuntimeMonitor {
    * Push a new context for a scheduled callback for later execution.
    */
   scheduleCallback(programId, staticContextId, schedulerId, cb) {
-    const rootId = this._executingContextRoot?.contextId;
-    const scheduledContextId = executionContextCollection.scheduleCallback(programId, 
-      staticContextId, rootId, schedulerId);
+    const parentId = this._executingStack?.peek();
+    const stackDepth = this._executingStack?.getDepth() || 0;
+
+    const scheduledContext = executionContextCollection.scheduleCallback(stackDepth,
+      programId, staticContextId, parentId, schedulerId);
+    const { contextId: scheduledContextId } = scheduledContext;
     const wrapper = this.makeCallbackWrapper(scheduledContextId, cb);
 
     // log event
@@ -159,10 +163,11 @@ export default class RuntimeMonitor {
    * We need it to establish the link with it's scheduling context.
    */
   pushCallback(scheduledContextId) {
-    const parentId = this._executingStack.peek();
+    const parentId = this._executingStack?.peek();
+    const stackDepth = this._executingStack?.getDepth() || 0;
 
     // register context
-    const context = executionContextCollection.executeCallback(scheduledContextId, parentId);
+    const context = executionContextCollection.executeCallback(stackDepth, scheduledContextId, parentId);
     const { contextId: callbackContextId } = context;
     this._push(callbackContextId);
 

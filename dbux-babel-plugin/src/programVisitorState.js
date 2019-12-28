@@ -4,9 +4,11 @@
 export default function buildProgramVisitorState() {
   const entered = new Set();
   const exited = new Set();
-  const staticContexts = [];
+  const staticContexts = [null]; // staticId = 0 is always null
 
   const state = {
+    staticContexts,
+
     /**
      * NOTE: each node might be visited more than once.
      * This function keeps track of that and returns whether this is the first time visit.
@@ -64,7 +66,7 @@ export default function buildProgramVisitorState() {
       const staticId = staticContexts.length;
       const parentStaticId = state.getClosestStaticId(path);
       // console.log('actualParent',  toSourceString(actualParent.node));
-      const { loc } = path;
+      const { loc } = path.node;
       data = {
         staticId,
         parent: parentStaticId,

@@ -13,7 +13,7 @@
 			"trace": true,
 			"url": "http://localhost:3000",
 			"pathMapping": {
-				"/samples/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/src/dbux/samples/",
+				// "/samples/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/src/dbux/samples/",
 				"/bundle.js": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/dist/bundle.js",
 				"/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/www",
 			},
@@ -102,9 +102,9 @@
 				"debug": "module"
 			},
 			"request": "launch",
-			"cwd": "${workspaceFolder}",
+			"cwd": "${workspaceFolder}/dbux-cli",
 			// "cwd": "${fileDirname}",
-			"runtimeExecutable": "${workspaceFolder}/dbux-runtime/node_modules/@babel/node/bin/babel-node.js",
+			"runtimeExecutable": "${workspaceFolder}/dbux-cli/node_modules/@babel/node/bin/babel-node.js",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
 				"--nolazy",
@@ -116,6 +116,7 @@
 			"sourceMaps": true,
 			"restart": true,
 			"program": "${file}",
+			// "program": "${cwd}/../${relativeFile}",
 			"protocol": "inspector",
 			"trace": true,
 			"disableOptimisticBPs": true,
@@ -135,6 +136,28 @@
 				// "--nolazy",
 				"run",
 				"build-debug"
+			],
+			"sourceMaps": true,
+			// "program": "${file}",
+			"protocol": "inspector",
+			"trace": true,
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+		},
+		{
+			"name": "npm run start-debug",
+			"type": "node",
+			"request": "launch",
+			"port": 9233,
+			// "cwd": "${workspaceFolder}",
+			"cwd": "${fileDirname}",
+			"runtimeExecutable": "npm",
+			"runtimeArgs": [
+				// "--stack-trace-limit=1000",
+				// "--nolazy",
+				"run",
+				"start-debug"
 			],
 			"sourceMaps": true,
 			// "program": "${file}",

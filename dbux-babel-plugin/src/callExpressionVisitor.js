@@ -8,36 +8,24 @@ import { isKnownCallbackSchedulingCall } from './helpers/callExpressionHelpers';
 // ###########################################################################
 
 /**
- * NOTE: We wrap recursively
- * 
- * E.g.:
- * 
- * const _f_arg0 = ;
- * const _f_arg1 = ;
- * // ...
- * cost _g_arg0 = f(
- *  _f_arg0 instanceof Function && wrap(_f_arg0) || _f_arg0,
- *  _f_arg1 instanceof Function && wrap(_f_arg1) || _f_arg1,
- * ...));
- * // ...
- * g(_g_arg0, ...);
+ * Aggressive mode: wrap all args; don't let any callback slip through our fingers.
  */
-function buildWrapMaybeScheduleCallback(callPath, state) {
+function buildWrapAllArgs(callPath, state) {
   // TODO: consider recursion problem
   // need to store stuff in state and resolve it at end of function call
   const assignmentExpressions = [];
 }
 
-function instrumentCallbackSchedulingMaybe() {
+function instrumentCallWrapAllArgs() {
   // TODO
   // buildWrapMaybeScheduleCallback()
 }
 
-function buildWrapScheduleCallbackArg(staticId, callPath, state, iArg) {
+function buildWrapScheduleCallbackArg(argPath, state) {
   const { ids: { dbux }, getClosestContextIdName } = state;
-  const schedulerIdName = getClosestContextIdName(callPath);
-  const args = callPath.node.arguments;
-  const cbArg = args[iArg];
+  const staticId = addStaticContext(argPath, state);
+  const schedulerIdName = getClosestContextIdName(argPath);
+  const cbArg = argPath.node;
   return t.expressionStatement(
     t.callExpression(
       t.memberExpression(t.identifier(dbux), t.identifier('scheduleCallback')),
@@ -50,20 +38,21 @@ function buildWrapScheduleCallbackArg(staticId, callPath, state, iArg) {
 // modification
 // ###########################################################################
 
-function instrumentCallbackSchedulingArg(staticId, callPath, state, iArg) {
-  const argPath = callPath.get('arguments.' + iArg);
-  const wrapped = buildWrapScheduleCallbackArg(staticId, callPath, state, iArg);
-  argPath.replaceWith(wrapped);
+function instrumentCallbackSchedulingArg(callPath, state, i) {
+  const argPath = callPath.get('arguments.' + i);
+  const argWrapped = buildWrapScheduleCallbackArg(argPath, state);
+  argPath.replaceWith(argWrapped);
 }
 
-function instrumentCallbackSchedulingFunctionArgs(staticId, callPath, state) {
+function instrumentCallbackSchedulingFunctionArgs(callPath, state) {
   const args = callPath.node.arguments;
+  const replacements = [];
   for (let i = 0; i < args.length; ++i) {
-    const arg = args[i];
-    if (t.isFunction(arg)) {
-      instrumentCallbackSchedulingArg(staticId, callPath, state, i);
+    if (t.isFunction(args[i])) {
+      replacements.push(() => instrumentCallbackSchedulingArg(callPath, state, i));
     }
   }
+  replacements.forEach(r => r());
 }
 
 // ###########################################################################
@@ -71,16 +60,18 @@ function instrumentCallbackSchedulingFunctionArgs(staticId, callPath, state) {
 // ###########################################################################
 
 function hasCallFunctionArgument(callPath) {
+  // TODO: if an arg contains a call to bind, we can be quite sure, it's a function
+  // TODO: check if bindings of args reveal any function declarations
   return !!callPath.node.arguments.find(arg => t.isFunction(arg));
 }
 
 function getCallDisplayName(path) {
-  const MaxLen = 40;
-  return getPresentableString(path, MaxLen);
+  const MaxLen = 30;
+  return `(${getPresentableString(path.toString(), MaxLen)})`;
 }
 
 function addStaticContext(path, state) {
-  return state.addStaticContext({
+  return state.addStaticContext(path, {
     type: 3,
     displayName: getCallDisplayName(path)
   });
@@ -95,20 +86,19 @@ function enter(path, state) {
 
   const { options } = state;
 
+  // console.log('[CALL]', path.toString());
+
   if (options?.instrumentAllFunctionCalls) {
-    // bubble-wrap everything
-    const staticId = addStaticContext(path, state);
-    instrumentCallbackSchedulingMaybe(staticId, path, state);
+    // ultra aggressive mode: bubble-wrap everything
+    instrumentCallWrapAllArgs(path, state);
   }
   else if (hasCallFunctionArgument(path)) {
     // e.g. `myFun(1, 2, () => { doSomething(); }, function() { doSomethingElse(); })`
-    const staticId = addStaticContext(path, state);
-    instrumentCallbackSchedulingFunctionArgs(staticId, path, state);
+    instrumentCallbackSchedulingFunctionArgs(path, state);
   }
   else if (isKnownCallbackSchedulingCall(path)) {
     // setTimeout, setInterval, then, process.next etc.
-    const staticId = addStaticContext(path, state);
-    instrumentCallbackSchedulingArg(staticId, path, state, 0);
+    instrumentCallbackSchedulingArg(path, state, 0);
   }
   // else if (isKnownBlockingCall(path)) {
   //   // alert, prompt etc.

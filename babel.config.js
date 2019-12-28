@@ -13,5 +13,5 @@
 //   ]
 // };
 
-//console.warn('BABEL CONFIG LOADED');
-throw new Error('BABEL CONFIG LOADED'); // might be a bad sign... want to handle this if necessary
+console.warn('BABEL CONFIG LOADED');
+// throw new Error('BABEL CONFIG LOADED'); // might be a bad sign... want to handle this if necessary

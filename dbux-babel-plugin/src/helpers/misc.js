@@ -17,7 +17,7 @@ export function getPresentableString(path, MaxLen) {
   MaxLen = MaxLen || 40;
   let presentableString = path.toString();
   if (presentableString.length > MaxLen) {
-    presentableString = presentableString.substring(0, MaxLen - 3) + '...';
+    presentableString = presentableString.substring(0, MaxLen - 3).trim() + '...';
   }
   presentableString = presentableString.replace(/[\r\n]/g, '');
   return presentableString;

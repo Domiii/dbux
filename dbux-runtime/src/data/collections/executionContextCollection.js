@@ -8,9 +8,10 @@ let _instance;
 
 export const ExecutionContextType = new Enum({
   Immediate: 1,
-  Schedule: 2,
-  Pause: 3,
-  Continue: 4
+  ScheduleCallback: 2,
+  ExecuteCallback: 3,
+  Pause: 4,
+  Continue: 5
 });
 
 export class ExecutionContextCollection {
@@ -38,7 +39,7 @@ export class ExecutionContextCollection {
     } = context;
     return staticContextCollection.getContext(programId, staticContextId);
   }
-  
+
   _genOrderId(programId, staticContextId) {
     const programOrderIds = this._lastOrderIds[programId] || (this._lastOrderIds[programId] = []);
     const orderId = programOrderIds[staticContextId] || (programOrderIds[staticContextId] = 1);
@@ -49,11 +50,11 @@ export class ExecutionContextCollection {
   /**
    * @return {ExecutionContext}
    */
-  executeImmediate(programId, staticContextId, parentContextId) {
+  executeImmediate(stackDepth, programId, staticContextId, parentContextId) {
     const orderId = this._genOrderId(programId, staticContextId);
     const contextId = this._contexts.length;
 
-    const context = ExecutionContext.allocate(ExecutionContextType.Immediate, contextId, programId, 
+    const context = ExecutionContext.allocate(ExecutionContextType.Immediate, stackDepth, contextId, programId,
       staticContextId, orderId, parentContextId);
     this._contexts.push(context);
     return context;
@@ -62,11 +63,11 @@ export class ExecutionContextCollection {
   /**
    * @return {ExecutionContext}
    */
-  scheduleCallback(programId, staticContextId, parentContextId, schedulerId) {
+  scheduleCallback(stackDepth, programId, staticContextId, parentContextId, schedulerId) {
     const orderId = this._genOrderId(programId, staticContextId);
     const contextId = this._contexts.length;
 
-    const context = ExecutionContext.allocate(ExecutionContextType.Schedule, contextId, programId, 
+    const context = ExecutionContext.allocate(ExecutionContextType.ScheduleCallback, stackDepth, contextId, programId,
       staticContextId, orderId, parentContextId, schedulerId);
     this._contexts.push(context);
     return context;
@@ -75,8 +76,16 @@ export class ExecutionContextCollection {
   /**
    * @return {ExecutionContext}
    */
-  executeCallback() {
-    
+  executeCallback(stackDepth, scheduledContextId, parentContextId) {
+    const schedulerContext = this.getContext(scheduledContextId);
+    const { programId, staticContextId } = schedulerContext;
+    const orderId = this._genOrderId(programId, staticContextId);
+    const contextId = this._contexts.length;
+
+    const context = ExecutionContext.allocate(ExecutionContextType.ExecuteCallback, stackDepth, contextId, programId,
+      staticContextId, orderId, parentContextId);
+    this._contexts.push(context);
+    return context;
   }
 
 

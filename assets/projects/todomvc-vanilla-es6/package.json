@@ -3,8 +3,8 @@
   "scripts": {
     "__compile": "java -jar node_modules/google-closure-compiler/compiler.jar --language_in=ES6_STRICT --new_type_inf --js_output_file='dist/bundle.js' 'src/**.js' -W VERBOSE",
     "__prepublish": "npm run compile",
-    "build": "node ./node_modules/webpack/bin/webpack --config webpack.config.js",
-    "build-debug": "node --inspect-brk=9233 ./node_modules/webpack/bin/webpack --config webpack.config.js",
+    "build": "node ./node_modules/webpack/bin/webpack",
+    "build-debug": "node --inspect-brk=9233 ./node_modules/webpack/bin/webpack",
     "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server",
     "start-debug": "node --inspect-brk=9233 ./node_modules/webpack-dev-server/bin/webpack-dev-server"
   },

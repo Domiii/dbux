@@ -40,6 +40,7 @@ const babelOptions = {
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-syntax-flow",
     //"@babel/plugin-transform-runtime"
+    
     plugin
   ]
 };
