@@ -1,4 +1,5 @@
 import RuntimeMonitor from './RuntimeMonitor';
+import staticContextCollection from './data/collections/staticContextCollection';
 
 
 export default class ProgramMonitor {
@@ -40,12 +41,7 @@ export default class ProgramMonitor {
 
 
   scheduleCallback(staticContextId, schedulerId, cb) {
-    const orderId = StaticContextManager.instance.genContextId(this.getProgramId(), staticContextId);
-    const scheduledContextId = ExecutionContextManager.instance.schedule(
-      this.getProgramId(), staticContextId, orderId, schedulerId, stack
-    );
-    RuntimeMonitor.instance.scheduleCallback(scheduledContextId);
-    return makeCallbackWrapper(this, scheduledContextId, cb);
+    return RuntimeMonitor.instance.scheduleCallback(this.getProgramId(), staticContextId, schedulerId, cb);
   }
 
   pushCallbackLink(scheduledContextId) {

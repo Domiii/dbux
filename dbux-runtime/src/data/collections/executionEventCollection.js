@@ -1,4 +1,4 @@
-import ExecutionEventType from '../ExecutionEventType';
+import ExecutionEventType, { isPushEvent, isPopEvent } from '../ExecutionEventType';
 import ExecutionEvent from './ExecutionEvent';
 import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
@@ -15,11 +15,10 @@ export class ExecutionEventCollection {
    */
   _events = [];
 
-  logPushImmediate(contextId, stackDepth) {
+  logPushImmediate(contextId) {
     const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.Enter;
+    event.eventType = ExecutionEventType.PushImmediate;
     event.contextId = contextId;
-    event.stackDepth = stackDepth;
 
     const staticContext = executionContextCollection.getStaticContext(contextId);
     event.where = staticContext.loc?.start;
@@ -27,13 +26,45 @@ export class ExecutionEventCollection {
     this._log(event);
   }
 
-  logPopImmediate(contextId, stackDepth) {
+  logPopImmediate(contextId) {
     const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.Leave;
+    event.eventType = ExecutionEventType.PopImmediate;
     event.contextId = contextId;
-    event.stackDepth = stackDepth;
 
     const staticContext = executionContextCollection.getStaticContext(contextId);
+    event.where = staticContext.end;
+
+    this._log(event);
+  }
+
+  logScheduleCallback(scheduledContextId) {
+    const event = ExecutionEvent.allocate();
+    event.eventType = ExecutionEventType.ScheduleCallback;
+    event.contextId = scheduledContextId;
+
+    const staticContext = executionContextCollection.getStaticContext(scheduledContextId);
+    event.where = staticContext.start;
+
+    this._log(event);
+  }
+
+  logPushCallback(callbackContextId) {
+    const event = ExecutionEvent.allocate();
+    event.eventType = ExecutionEventType.PushCallback;
+    event.contextId = callbackContextId;
+
+    const staticContext = executionContextCollection.getStaticContext(callbackContextId);
+    event.where = staticContext.start;
+
+    this._log(event);
+  }
+
+  logPopCallback(callbackContextId) {
+    const event = ExecutionEvent.allocate();
+    event.eventType = ExecutionEventType.PopCallback;
+    event.contextId = callbackContextId;
+
+    const staticContext = executionContextCollection.getStaticContext(callbackContextId);
     event.where = staticContext.end;
 
     this._log(event);
@@ -66,24 +97,30 @@ export class ExecutionEventCollection {
     const {
       displayName
     } = staticContext;
-
     const {
       fileName
     } = programStaticContext;
-
     const line = where?.line;
-    
     const lineSuffix = line ? `:${line}` : '';
-    const message = `(${rootContextId}) [${typeName}] ${displayName} @${fileName}${lineSuffix}`;
+    let message = `(${rootContextId}) [${typeName}] ${displayName} @${fileName}${lineSuffix}`;
+
+    if (!context.parentId) {
+      if (isPushEvent(eventType)) {
+        message = '       ---------------\n' + message;
+      }
+      else if (isPopEvent(eventType)) {
+        message = message + '\n       ---------------';
+      }
+    }
     console.log(`[DBUX]`, message);
 
     // hackfix: simulate end of (partial) stack
-    if (!timer) {
-      timer = setImmediate(() => {
-        console.log(`[DBUX]\n[DBUX] ---------\n[DBUX]`);
-        timer = null;
-      });
-    }
+    // if (!timer) {
+    //   timer = setImmediate(() => {
+    //     console.log(`[DBUX]\n[DBUX] ---------\n[DBUX]`);
+    //     timer = null;
+    //   });
+    // }
   }
 
 }

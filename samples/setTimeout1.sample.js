@@ -11,11 +11,11 @@ try {
 
     try {
       // f1 body
-      setTimeout(scheduleCallback(staticId12, id1, function f2() {
+      setTimeout(_dbux.scheduleCallback(staticId12, id1, function f2() {
         const id2 = _dbux.pushImmediate(staticId2);
         try {
           // f2 body
-          setTimeout(scheduleCallback(staticId22, id2, f3), 1500);
+          setTimeout(_dbux.scheduleCallback(staticId22, id2, f3), 1500);
         }
         finally {
           _dbux.popImmediate(id2);

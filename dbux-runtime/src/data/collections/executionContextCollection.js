@@ -49,12 +49,12 @@ export class ExecutionContextCollection {
   /**
    * @return {ExecutionContext}
    */
-  addImmediate(programId, staticContextId, rootContextId) {
+  executeImmediate(programId, staticContextId, parentContextId) {
     const orderId = this._genOrderId(programId, staticContextId);
     const contextId = this._contexts.length;
-    rootContextId = rootContextId || contextId;
 
-    const context = ExecutionContext.allocate(ExecutionContextType.Immediate, contextId, programId, staticContextId, orderId, rootContextId);
+    const context = ExecutionContext.allocate(ExecutionContextType.Immediate, contextId, programId, 
+      staticContextId, orderId, parentContextId);
     this._contexts.push(context);
     return context;
   }
@@ -62,16 +62,22 @@ export class ExecutionContextCollection {
   /**
    * @return {ExecutionContext}
    */
-  schedule(programId, staticContextId, rootContextId, schedulerId) {
+  scheduleCallback(programId, staticContextId, parentContextId, schedulerId) {
     const orderId = this._genOrderId(programId, staticContextId);
     const contextId = this._contexts.length;
-    rootContextId = rootContextId || contextId;
 
-    const context = ExecutionContext.allocate(ExecutionContextType.Schedule, contextId, programId, staticContextId, orderId, rootContextId, schedulerId);
+    const context = ExecutionContext.allocate(ExecutionContextType.Schedule, contextId, programId, 
+      staticContextId, orderId, parentContextId, schedulerId);
     this._contexts.push(context);
     return context;
   }
 
+  /**
+   * @return {ExecutionContext}
+   */
+  executeCallback() {
+    
+  }
 
 
   // getTextId(contextId) {

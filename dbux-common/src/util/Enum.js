@@ -24,6 +24,10 @@ export default class Enum {
     return this.valuesByNames;
   }
 
+  getCount() {
+    return this.names.length;
+  }
+
   getName = (value) => {
     return this.namesByValues[value];
   }

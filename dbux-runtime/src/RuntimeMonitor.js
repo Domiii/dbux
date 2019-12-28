@@ -4,6 +4,7 @@ import { logInternalError } from './log/logger';
 import executionContextCollection from './data/collections/executionContextCollection';
 import executionEventCollection from './data/collections/executionEventCollection';
 import staticContextCollection from './data/collections/staticContextCollection';
+import Stack from './Stack';
 
 /**
  * 
@@ -20,20 +21,21 @@ export default class RuntimeMonitor {
 
   /**
    * Set of all active/scheduled calls.
+   * @type {Set<Stack>}
    */
-  _activeRoots = new Set();
+  _activeStacks = new Set();
 
   /**
    * The currently executing stack.
+   * @type {Stack}
    */
-  _executingContextRoot = null;
-  _immediateDepth = 0;
+  _executingStack = null;
 
   _programMonitors = new Map();
 
 
   // ###########################################################################
-  // Bookkeeping
+  // Misc bookkeeping
   // ###########################################################################
 
   // getContext(contextId) {
@@ -51,31 +53,50 @@ export default class RuntimeMonitor {
     return programMonitor;
   }
 
+  _push(contextId) {
+    if (!this._executingStack) {
+      // no executing stack 
+      //    -> this invocation has been called from system scheduler (possibly traversing blackboxed code)
+      this._executingStack = new Stack();
+      this._activeStacks.add(this._executingStack);
+    }
+    this._executingStack.push(contextId);
+  }
+
+  _pop(contextId) {
+    const stackTopId = this._executingStack?.pop();
+    if (contextId !== stackTopId) {
+      logInternalError(
+        'Tried to popImmediate context whose contextId does not match contextId on stack - ',
+        contextId, '!==', stackTopId);
+      return;
+    }
+
+    if (!this._executingStack.getDepth()) {
+      // last on stack
+      this._activeStacks.delete(this._executingStack);
+      this._executingStack = null;
+    }
+  }
+
 
   // ###########################################################################
   // public interface
   // ###########################################################################
 
   /**
-   * 
+   * Very similar to `pushCallback`
    */
   pushImmediate(programId, staticContextId) {
-    const rootId = this._executingContextRoot?.contextId;
+    const parentId = this._executingStack?.peek();
 
     // register context
-    const context = executionContextCollection.addImmediate(programId, staticContextId, rootId);
+    const context = executionContextCollection.executeImmediate(programId, staticContextId, parentId);
     const { contextId } = context;
-    if (!this._executingContextRoot) {
-      // no executing stack -> this invocation has been called from some system or blackboxed scheduler
-      this._executingContextRoot = context;
-      this._activeRoots.add(contextId);
-    }
-
-    // misc updates
-    ++this._immediateDepth;
+    this._push(contextId);
 
     // log event
-    executionEventCollection.logPushImmediate(contextId, this._immediateDepth);
+    executionEventCollection.logPushImmediate(contextId);
     
     return contextId;
   }
@@ -85,63 +106,84 @@ export default class RuntimeMonitor {
     // sanity checks
     const context = executionContextCollection.getContext(contextId);
     if (!context) {
-      logInternalError('Tried to popImmediate context that was not registered:', contextId);
+      logInternalError('Tried to popImmediate, but context was not registered:', contextId);
       return;
     }
 
-    const executingRootContextId = this._executingContextRoot?.rootContextId;
-    if (context.rootContextId !== executingRootContextId) {
-      logInternalError('Tried to popImmediate context whose rootContextId does not match executingContextRoot - ', context.rootContextId, '!==', executingRootContextId);
-      return;
-    }
-
-    // misc updates
-    --this._immediateDepth;
-    if (!this._immediateDepth) {
-      // last on stack
-      if (contextId !== executingRootContextId) {
-        logInternalError('Tried to popImmediate last context on stack but is not executingContextRoot - ', contextId, '!==', executingRootContextId);
-        return;
-      }
-      this._executingContextRoot = null;
-      this._activeRoots.delete(executingRootContextId);
-    }
+    // pop from stack
+    this._pop(contextId);
 
     // log event
-    executionEventCollection.logPopImmediate(contextId, this._immediateDepth);
+    executionEventCollection.logPopImmediate(contextId);
   }
 
-  scheduleCallback() {
-    
+  
+  // ###########################################################################
+  // Schedule callbacks
+  // ###########################################################################
+
+  /**
+   * Push a new context for a scheduled callback for later execution.
+   */
+  scheduleCallback(programId, staticContextId, schedulerId, cb) {
+    const rootId = this._executingContextRoot?.contextId;
+    const scheduledContextId = executionContextCollection.scheduleCallback(programId, 
+      staticContextId, rootId, schedulerId);
+    const wrapper = this.makeCallbackWrapper(scheduledContextId, cb);
+
+    // log event
+    executionEventCollection.logScheduleCallback(scheduledContextId);
+
+    return wrapper;
+  }
+  
+  makeCallbackWrapper(scheduledContextId, cb) {
+    return (...args) => {
+      /**
+       * We need this so we can always make sure we can link things back to the scheduler,
+       * even if the callback declaration is not inline.
+       */
+      const callbackContextId = this.pushCallback(scheduledContextId);
+
+      try {
+        return cb(...args);
+      }
+      finally {
+        this.popCallback(callbackContextId);
+      }
+    };
   }
 
+  /**
+   * Very similar to `pushImmediate`.
+   * We need it to establish the link with it's scheduling context.
+   */
+  pushCallback(scheduledContextId) {
+    const parentId = this._executingStack.peek();
 
-  // /**
-  //  * Push a new context for a scheduled callback for later execution.
-  //  * Especially for: (1) await, (2) promise, (3) time event, (4) other callback scheduling
-  //  */
-  // scheduleCallback() {
-  //   // this is not an immediate invocation, but scheduled for later
-  //   if (!this._executingStack) {
-  //     // there must be an active stack from where the scheduling happened
-  //     logError('No activeStack when scheduling callback call from:', schedulerId);
-  //   }
-  //   TraceLog.instance.logSchedule(contextId, schedulerId);
-  // }
+    // register context
+    const context = executionContextCollection.executeCallback(scheduledContextId, parentId);
+    const { contextId: callbackContextId } = context;
+    this._push(callbackContextId);
 
-  // pushCallbackLink(scheduledContextId) {
-  //   const linkedContext = ;
-  //   if (!linkedContext) {
-  //     logError('pushCallbackLink\'s `scheduledContextId` does not exist:', scheduledContextId);
-  //     return;
-  //   }
+    // log event
+    executionEventCollection.logPushCallback(callbackContextId);
 
-  //   // TODO: linking contexts/stacks
-  //   // const linkId = ;
-  //   return linkId;
-  // }
+    return callbackContextId;
+  }
 
-  // popSchedule() {
+  popCallback(callbackContextId) {
+    // sanity checks
+    const context = executionContextCollection.getContext(callbackContextId);
+    if (!context) {
+      logInternalError('Tried to popCallback, but context was not registered:', callbackContextId);
+      return;
+    }
 
-  // }
+    // pop from stack
+    this._pop(callbackContextId);
+
+    // log event
+    executionEventCollection.logPopCallback(callbackContextId);
+  }
 }

@@ -13,7 +13,8 @@ npm install && \
 \
 `# instrumentation here` \
 cp ../../../../assets/projects/todomvc-vanilla-es6/* . && \
-npm i -D babel-loader  @babel/node @babel/cli @babel/core @babel/preset-env webpack webpack-cli webpack-dev-server && \
+npm i -D babel-loader  @babel/node @babel/cli @babel/core webpack webpack-cli webpack-dev-server && \
+npm i -D  @babel/preset-env && \
 npm i -S core-js@3 @babel/runtime @babel/plugin-transform-runtime && \
 npm i -D ../../../../dbux-common ../../../../dbux-babel-plugin ../../../../dbux-runtime && \
 npm start
