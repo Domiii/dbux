@@ -1,13 +1,13 @@
 import fsPath from 'path';
-import buildProgramVisitorState from './programVisitorState';
-import errorWrapVisitor from './helpers/errorWrapVisitor';
+import errorWrapVisitor from '../helpers/errorWrapVisitor';
 
 import functionVisitor from './functionVisitor';
-import { buildSource, buildWrapTryFinally, buildProgram } from './helpers/builders';
+import { buildSource, buildWrapTryFinally } from '../helpers/builders';
 import * as t from '@babel/types';
-import { extractTopLevelDeclarations } from './helpers/topLevelHelpers';
+import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 import { callExpressionVisitor } from './callExpressionVisitor';
-import { replaceProgramBody } from './helpers/program';
+import { replaceProgramBody } from '../helpers/program';
+import injectDbuxState from '../dbuxState';
 
 // ###########################################################################
 // Builders
@@ -87,49 +87,17 @@ function wrapProgram(path, state) {
 // visitor
 // ###########################################################################
 
-function getFilePath(state) {
-  let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
-  const cwd = fsPath.normalize(state.cwd);
-  if (filename.startsWith(cwd)) {
-    filename = fsPath.relative(state.cwd, filename);
-  }
-  return filename;
-}
-
 function enter(path, state) {
   if (state.onEnter) return; // make sure to not visit Program node more than once
   // console.warn('P', path.toString());
   // console.warn(state.file.code);
 
-  const filePath = getFilePath(state);
-  const fileName = fsPath.basename(filePath);
-
-  const { scope } = path;
-
-  // inject program-wide state
-  Object.assign(state,
-
-    // some non-parameterized state
-    buildProgramVisitorState(),
-
-    // program-dependent state
-    {
-      ids: {
-        dbuxInit: scope.generateUid('dbux_init'),
-        dbuxRuntime: scope.generateUid('dbuxRuntime'),
-        dbux: scope.generateUid('dbux')
-      },
-      // console.log('[Program]', state.filename);
-
-      // static program data
-      filePath,
-      fileName
-    }
-  );
+  // inject data + methods that we are going to use for instrumentation
+  injectDbuxState(path, state);
 
   // programStaticContext
   const programStaticContext = {
-    type: 1,
+    type: 1, // {StaticContextType}
     name: 'Program',
     displayName: 'Program'
   };
@@ -164,10 +132,10 @@ export function allOtherVisitors() {
     Function: functionVisitor(),
     CallExpression: callExpressionVisitor(),
 
-    // AwaitExpression(path) {
-    //   const arg = path.node.argument;
-    //   // TODO
-    // },
+    AwaitExpression(path) {
+      const arg = path.node.argument;
+      // TODO
+    },
 
     /**
      * TODO: Handle `for await of`
@@ -177,11 +145,11 @@ export function allOtherVisitors() {
      *    (but call y[Symbol.asyncIterator]() instead of y[Symbol.iterator]())
      * @see https://github.com/babel/babel/issues/4969
      */
-    ForOfStatement(path) {
-      if (path.node.await) {
-        // TODO: instrumentAwait
-      }
-    },
+    // ForOfStatement(path) {
+    //   if (path.node.await) {
+    //     // TODO: instrumentAwait
+    //   }
+    // },
 
 
     /*

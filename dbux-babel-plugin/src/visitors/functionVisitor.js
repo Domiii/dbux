@@ -1,5 +1,5 @@
-import { guessFunctionName, getFunctionDisplayName } from './helpers/functionHelpers';
-import { buildWrapTryFinally, buildSource, buildBlock } from './helpers/builders';
+import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
+import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import * as t from "@babel/types";
 
 // ###########################################################################
@@ -54,7 +54,7 @@ export default function functionVisitor() {
       const displayName = getFunctionDisplayName(path);
 
       const staticContextData = {
-        type: 2,
+        type: 2, // {StaticContextType}
         name,
         displayName
       };

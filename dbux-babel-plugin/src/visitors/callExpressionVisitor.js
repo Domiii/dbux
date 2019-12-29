@@ -1,6 +1,6 @@
 import * as t from '@babel/types';
-import { getPresentableString } from './helpers/misc';
-import { isKnownCallbackSchedulingCall } from './helpers/callExpressionHelpers';
+import { getPresentableString } from '../helpers/misc';
+import { isKnownCallbackSchedulingCall } from '../helpers/callExpressionHelpers';
 
 
 // ###########################################################################
@@ -72,7 +72,7 @@ function getCallDisplayName(path) {
 
 function addStaticContext(argPath, state) {
   return state.addStaticContext(argPath, {
-    type: 3,
+    type: 3, // {StaticContextType}
     displayName: getCallDisplayName(argPath)
   });
 }

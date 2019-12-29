@@ -44,12 +44,8 @@ export default class ProgramMonitor {
     return RuntimeMonitor.instance.scheduleCallback(this.getProgramId(), staticContextId, schedulerId, cb);
   }
 
-  pushCallbackLink(scheduledContextId) {
-    const callbackLinkId = `TODO`;
-  }
-
-  popCallbackLink(callbackLinkId) {
-
+  wrapAwait() {
+    
   }
 
   popProgram() {

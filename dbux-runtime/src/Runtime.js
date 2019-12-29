@@ -2,8 +2,11 @@ import Stack from './Stack';
 import { logInternalError } from './log/logger';
 
 function mergeStacks(dst, src) {
-  // TODO: our stacks don't keep track of their history. 
-  //  Instead, go into the collections and fix things there...?
+  if ((src?.getDepth() || 0) > 0) {
+    // TODO: our stacks don't keep track of their history.
+    //  Instead, go into the collections and fix things there...?
+    logInternalError('Trying to resume interrupted stack, but cannot currently merge stacks.');
+  }
 }
 
 /**

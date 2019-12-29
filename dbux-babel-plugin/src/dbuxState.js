@@ -1,13 +1,39 @@
+import fsPath from 'path';
+
+function getFilePath(state) {
+  let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
+  const cwd = fsPath.normalize(state.cwd);
+  if (filename.startsWith(cwd)) {
+    filename = fsPath.relative(state.cwd, filename);
+  }
+  return filename;
+}
+
 /**
  * Build the state shared throughout the entire AST visit.
  */
-export default function buildProgramVisitorState() {
+export default function injectDbuxState(programPath, programState) {
+  const filePath = getFilePath(programState);
+  const fileName = fsPath.basename(filePath);
+
+  const { scope } = programPath;
+  
   const entered = new Set();
   const exited = new Set();
   const staticContexts = [null]; // staticId = 0 is always null
 
-  const state = {
+  const dbuxState = {
+    // static program data
+    filePath,
+    fileName,
+
     staticContexts,
+    ids: {
+      dbuxInit: scope.generateUid('dbux_init'),
+      dbuxRuntime: scope.generateUid('dbuxRuntime'),
+      dbux: scope.generateUid('dbux')
+    },
+    // console.log('[Program]', state.filename);
 
     /**
      * NOTE: each node might be visited more than once.
@@ -44,11 +70,11 @@ export default function buildProgramVisitorState() {
     },
 
     getClosestStaticId(path) {
-      return state.getClosestAncestorData(path, 'staticId');
+      return programState.getClosestAncestorData(path, 'staticId');
     },
 
     getClosestContextIdName(path) {
-      return state.getClosestAncestorData(path, 'contextIdName');
+      return programState.getClosestAncestorData(path, 'contextIdName');
     },
 
     /**
@@ -64,7 +90,7 @@ export default function buildProgramVisitorState() {
     addStaticContext(path, data) {
       // console.log('STATIC', path.get('id')?.name, '@', `${state.filename}:${line}`);
       const staticId = staticContexts.length;
-      const parentStaticId = state.getClosestStaticId(path);
+      const parentStaticId = programState.getClosestStaticId(path);
       // console.log('actualParent',  toSourceString(actualParent.node));
       const { loc } = path.node;
       data = {
@@ -80,5 +106,7 @@ export default function buildProgramVisitorState() {
     }
   };
   
-  return state;
+  Object.assign(programState, dbuxState);
+  
+  return programState;
 }
