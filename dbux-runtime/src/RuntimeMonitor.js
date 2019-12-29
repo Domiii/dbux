@@ -159,4 +159,11 @@ export default class RuntimeMonitor {
     // log event
     executionEventCollection.logPopCallback(callbackContextId);
   }
+
+
+  // ###########################################################################
+  // Interrupts, await et al
+  // ###########################################################################
+
+  preAwait
 }
