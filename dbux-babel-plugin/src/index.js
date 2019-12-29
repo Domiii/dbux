@@ -1,4 +1,4 @@
-import programVisitor from './programVisitor';
+import programVisitor, { allOtherVisitors } from './programVisitor';
 import '../../dbux-common/src/util/prettyLogs';
 import errorWrapVisitor from './helpers/errorWrapVisitor';
 // import { logInternalError } from './log/logger';
@@ -6,7 +6,9 @@ import errorWrapVisitor from './helpers/errorWrapVisitor';
 export default function dbuxBabelPlugin() {
   return {
     visitor: errorWrapVisitor({
-      Program: programVisitor()
+      Program: programVisitor(),
+
+      // ...allOtherVisitors()
     })
   };
 }

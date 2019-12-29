@@ -29,6 +29,8 @@ module.exports = {
 		"prefer-arrow-callback": 0,
 		"no-else-return": 0,
 		"no-debugger": 0,
-		"operator-assignment": 0
+		"operator-assignment": 0,
+		"prefer-const": "warn",
+		"no-invalid-this": 0
 	}
 };

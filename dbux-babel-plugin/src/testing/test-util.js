@@ -23,11 +23,13 @@ export function writeResultCodeToFile(inputCode, title, babelOptions, plugin) {
   // see: https://github.com/babel-utils/babel-plugin-tester/blob/master/src/plugin-tester.js#L314
   babelOptions = mergeWith(
     {},
+    {
+      plugins: [plugin]
+    },
     babelOptions,
     {
       babelrc: false,
-      configFile: false,
-      plugins: [plugin]
+      configFile: false
     },
     function customizer(dst, src) {
       if (Array.isArray(dst)) {

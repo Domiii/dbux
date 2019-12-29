@@ -1,6 +1,14 @@
 
 
 export default class Stack {
+  /**
+   * @returns {Stack}
+   */
+  static allocate() {
+    // TODO: use pool
+    return new Stack();
+  }
+
   _stack = [];
 
 

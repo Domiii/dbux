@@ -20,7 +20,10 @@ const KnownCallbackSchedulingFunctionNames = new Set([
   'error',
 
   // node process
-  'next'
+  'next',
+
+  // browser-specific calls
+  'requestAnimationFrame'
 ]);
 
 export function getCalleeId(callPath) {

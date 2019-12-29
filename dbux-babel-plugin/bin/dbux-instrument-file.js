@@ -23,6 +23,8 @@ const babelOptions = {
   filename: file,
   plugins: [
     [
+      plugin,
+      
       "@babel/plugin-proposal-class-properties",
       {
         "loose": true
@@ -41,7 +43,6 @@ const babelOptions = {
     "@babel/plugin-syntax-flow",
     //"@babel/plugin-transform-runtime"
     
-    plugin
   ]
 };
 

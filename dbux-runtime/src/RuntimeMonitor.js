@@ -4,7 +4,7 @@ import { logInternalError } from './log/logger';
 import executionContextCollection from './data/collections/executionContextCollection';
 import executionEventCollection from './data/collections/executionEventCollection';
 import staticContextCollection from './data/collections/staticContextCollection';
-import Stack from './Stack';
+import Runtime from './Runtime';
 
 /**
  * 
@@ -19,23 +19,12 @@ export default class RuntimeMonitor {
     return this._instance || (this._instance = new RuntimeMonitor());
   }
 
-  /**
-   * Set of all active/scheduled calls.
-   * @type {Set<Stack>}
-   */
-  _activeStacks = new Set();
-
-  /**
-   * The currently executing stack.
-   * @type {Stack}
-   */
-  _executingStack = null;
-
   _programMonitors = new Map();
+  _runtime = new Runtime();
 
 
   // ###########################################################################
-  // Misc bookkeeping
+  // Program management
   // ###########################################################################
 
   // getContext(contextId) {
@@ -53,31 +42,6 @@ export default class RuntimeMonitor {
     return programMonitor;
   }
 
-  _push(contextId) {
-    if (!this._executingStack) {
-      // no executing stack 
-      //    -> this invocation has been called from system scheduler (possibly traversing blackboxed code)
-      this._executingStack = new Stack();
-      this._activeStacks.add(this._executingStack);
-    }
-    this._executingStack.push(contextId);
-  }
-
-  _pop(contextId) {
-    const stackTopId = this._executingStack?.pop();
-    if (contextId !== stackTopId) {
-      logInternalError(
-        'Tried to popImmediate context whose contextId does not match contextId on stack - ',
-        contextId, '!==', stackTopId);
-      return;
-    }
-
-    if (!this._executingStack.getDepth()) {
-      // last on stack
-      this._activeStacks.delete(this._executingStack);
-      this._executingStack = null;
-    }
-  }
 
 
   // ###########################################################################
@@ -88,17 +52,19 @@ export default class RuntimeMonitor {
    * Very similar to `pushCallback`
    */
   pushImmediate(programId, staticContextId) {
-    const parentId = this._executingStack?.peek();
-    const stackDepth = this._executingStack?.getDepth() || 0;
+    const parentContextId = this._runtime.peekStack();
+    const stackDepth = this._runtime.getStackDepth();
 
     // register context
-    const context = executionContextCollection.executeImmediate(stackDepth, programId, staticContextId, parentId);
+    const context = executionContextCollection.executeImmediate(
+      stackDepth, programId, staticContextId, parentContextId
+    );
     const { contextId } = context;
-    this._push(contextId);
+    this._runtime.push(contextId);
 
     // log event
     executionEventCollection.logPushImmediate(contextId);
-    
+
     return contextId;
   }
 
@@ -112,13 +78,13 @@ export default class RuntimeMonitor {
     }
 
     // pop from stack
-    this._pop(contextId);
+    this._runtime.pop(contextId);
 
     // log event
     executionEventCollection.logPopImmediate(contextId);
   }
 
-  
+
   // ###########################################################################
   // Schedule callbacks
   // ###########################################################################
@@ -127,11 +93,11 @@ export default class RuntimeMonitor {
    * Push a new context for a scheduled callback for later execution.
    */
   scheduleCallback(programId, staticContextId, schedulerId, cb) {
-    const parentId = this._executingStack?.peek();
-    const stackDepth = this._executingStack?.getDepth() || 0;
+    const parentContextId = this._runtime.peekStack();
+    const stackDepth = this._runtime.getStackDepth();
 
     const scheduledContext = executionContextCollection.scheduleCallback(stackDepth,
-      programId, staticContextId, parentId, schedulerId);
+      programId, staticContextId, parentContextId, schedulerId);
     const { contextId: scheduledContextId } = scheduledContext;
     const wrapper = this.makeCallbackWrapper(scheduledContextId, cb);
 
@@ -140,7 +106,7 @@ export default class RuntimeMonitor {
 
     return wrapper;
   }
-  
+
   makeCallbackWrapper(scheduledContextId, cb) {
     return (...args) => {
       /**
@@ -163,13 +129,15 @@ export default class RuntimeMonitor {
    * We need it to establish the link with it's scheduling context.
    */
   pushCallback(scheduledContextId) {
-    const parentId = this._executingStack?.peek();
-    const stackDepth = this._executingStack?.getDepth() || 0;
+    const parentContextId = this._runtime.peekStack();
+    const stackDepth = this._runtime.getStackDepth();
 
     // register context
-    const context = executionContextCollection.executeCallback(stackDepth, scheduledContextId, parentId);
+    const context = executionContextCollection.executeCallback(
+      stackDepth, scheduledContextId, parentContextId
+    );
     const { contextId: callbackContextId } = context;
-    this._push(callbackContextId);
+    this._runtime.push(callbackContextId);
 
     // log event
     executionEventCollection.logPushCallback(callbackContextId);
@@ -186,7 +154,7 @@ export default class RuntimeMonitor {
     }
 
     // pop from stack
-    this._pop(callbackContextId);
+    this._runtime.pop(callbackContextId);
 
     // log event
     executionEventCollection.logPopCallback(callbackContextId);

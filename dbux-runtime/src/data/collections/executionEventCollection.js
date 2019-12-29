@@ -89,7 +89,7 @@ export class ExecutionEventCollection {
     const {
       programId,
       staticContextId,
-      parentContextId,
+      parentScopeContextId,
       stackDepth
     } = context;
     const programStaticContext = programStaticContextCollection.getProgramContext(programId);
@@ -103,11 +103,11 @@ export class ExecutionEventCollection {
     } = programStaticContext;
     const line = where?.line;
     const lineSuffix = line ? `:${line}` : '';
-    // const depthIndicator = `(${parentContextId})`;
+    // const depthIndicator = `(${parentScopeContextId})`;
     const depthIndicator = `  `.repeat(stackDepth);
     let message = `[DBUX] ${depthIndicator} ${displayName} [${typeName}] @${fileName}${lineSuffix}`;
 
-    if (!parentContextId) {
+    if (!parentScopeContextId) {
       if (isPushEvent(eventType)) {
         message = '       ---------------\n' + message;
       }

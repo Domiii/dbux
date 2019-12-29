@@ -8,15 +8,24 @@ import { getPresentableString } from './misc';
 // function names
 // ###########################################################################
 
+export function functionNoName(functionPath) {
+  // return `(${getPresentableString(functionPath.toString(), 30)})`;
+  return '(anonymous)';
+}
+
 export function getFunctionDisplayName(functionPath, functionName) {
   if (!functionName) {
     functionName = guessFunctionName(functionPath);
   }
-  const classParents = getAllClassParents(functionPath);
 
-  let displayName = functionName && functionName || `(${getPresentableString(functionPath.toString(), 30)})`;
-  if (classParents.length) {
-    displayName = classParents.map(p => p.node.id.name).join('.') + '.' + displayName;
+  let displayName = functionName && functionName || functionNoName(functionPath);
+
+  // function methods
+  if (t.isClassMethod(functionPath) || t.isClassProperty(functionPath.parentPath)) {
+    const classParents = getAllClassParents(functionPath);
+    if (classParents.length) {
+      displayName = classParents.map(p => p.node.id.name).join('.') + '.' + displayName;
+    }
   }
   return displayName;
 }

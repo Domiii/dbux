@@ -1,12 +1,13 @@
 {
+	"private": true,
 	"devDependencies": {
 		"eslint": "*",
 		"eslint-config-esnext": "*"
 	},
 	"scripts": {
 		"setup": "sh scripts/setup-dbux.sh",
-		"p1": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
-		"start": "echo TODO"
+		"install-p1": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
+		"g-p1": "cd ./projects/todomvc/examples/vanilla-es6/"
 	},
 	"dependencies": {
 		"express": "file:projects/express"

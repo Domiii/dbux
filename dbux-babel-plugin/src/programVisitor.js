@@ -140,7 +140,7 @@ function enter(path, state) {
 
   // traverse program before most other plugins
 
-  path.traverse(buildNestedVisitor(), state);
+  path.traverse(errorWrapVisitor(allOtherVisitors()), state);
 }
 
 
@@ -159,8 +159,8 @@ function exit(path, state) {
 // Sub-traversal
 // ###########################################################################
 
-function buildNestedVisitor() {
-  return errorWrapVisitor({
+export function allOtherVisitors() {
+  return {
     Function: functionVisitor(),
     CallExpression: callExpressionVisitor(),
 
@@ -198,7 +198,7 @@ function buildNestedVisitor() {
     //instrumentOtherCallbacks(); // e.g.: event handlers, non-promisified libraries
     // big problem => sending objects into blackboxed modules that will call methods on them
     */
-  });
+  };
 }
 
 
@@ -208,7 +208,13 @@ function buildNestedVisitor() {
 
 export default function programVisitor() {
   return {
-    enter,
-    exit
+    // (1) Run this plugin before all other plugins
+    enter, exit
+
+    // (2) Run this plugin after all other plugins (possibly on es5)
+    // exit(...args) {
+    //   enter(...args);
+    //   exit(...args);
+    // }
   };
 }

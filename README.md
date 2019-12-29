@@ -104,7 +104,12 @@ npm install serve && `# installing it first makes npx run instantly everytime` \
 npx serve
 ```
 
-
+# Technical Points
+* Instrumentation
+   * try/finally
+   * top level extraction
+   * 
+* 
 
 
 # Known Issues
