@@ -10,7 +10,7 @@ function getFilePath(state) {
 }
 
 /**
- * Build the state shared throughout the entire AST visit.
+ * Build the state used by dbux-babel-plugin throughout the entire AST visit.
  */
 export default function injectDbuxState(programPath, programState) {
   const filePath = getFilePath(programState);

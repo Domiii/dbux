@@ -590,17 +590,11 @@ async function af44() {
 
 \\"use strict\\";
 
-require(\\"core-js/modules/es.array.iterator\\");
-
 require(\\"core-js/modules/es.function.bind\\");
 
 require(\\"core-js/modules/es.object.to-string\\");
 
 require(\\"core-js/modules/es.promise\\");
-
-require(\\"core-js/modules/es.string.iterator\\");
-
-require(\\"core-js/modules/web.dom-collections.iterator\\");
 
 require(\\"core-js/modules/web.timers\\");
 
@@ -648,148 +642,222 @@ try {
   };
 
   var af2 = function af2() {
-    var _contextId4;
+    var _contextId4, _awaitContextId, _awaitContextId2, _awaitContextId3;
 
-    return regeneratorRuntime.async(function af2$(_context2) {
+    return regeneratorRuntime.async(function af2$(_context5) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
             _contextId4 = _dbux.pushImmediate(4);
-            _context2.prev = 1;
-            _context2.next = 4;
-            return regeneratorRuntime.awrap(af1(1));
+            _context5.prev = 1;
 
-          case 4:
-            _context2.next = 6;
-            return regeneratorRuntime.awrap(af1(2));
+            _dbux.resume(5, _awaitContextId, function _callee() {
+              return regeneratorRuntime.async(function _callee$(_context2) {
+                while (1) {
+                  switch (_context2.prev = _context2.next) {
+                    case 0:
+                      _context2.next = 2;
+                      return regeneratorRuntime.awrap(_awaitContextId = _dbux.interrupt());
 
-          case 6:
-            _context2.next = 8;
-            return regeneratorRuntime.awrap(af1(3));
+                    case 2:
+                      return _context2.abrupt(\\"return\\", _context2.sent);
 
-          case 8:
-            _context2.t0 = _context2.sent;
-            _context2.t1 = 2 + _context2.t0;
-            return _context2.abrupt(\\"return\\", _context2.t1 - 3);
+                    case 3:
+                    case \\"end\\":
+                      return _context2.stop();
+                  }
+                }
+              });
+            }());
 
-          case 11:
-            _context2.prev = 11;
+            _dbux.resume(6, _awaitContextId2, function _callee2() {
+              return regeneratorRuntime.async(function _callee2$(_context3) {
+                while (1) {
+                  switch (_context3.prev = _context3.next) {
+                    case 0:
+                      _context3.next = 2;
+                      return regeneratorRuntime.awrap(_awaitContextId2 = _dbux.interrupt());
+
+                    case 2:
+                      return _context3.abrupt(\\"return\\", _context3.sent);
+
+                    case 3:
+                    case \\"end\\":
+                      return _context3.stop();
+                  }
+                }
+              });
+            }());
+
+            return _context5.abrupt(\\"return\\", 2 + _dbux.resume(7, _awaitContextId3, function _callee3() {
+              return regeneratorRuntime.async(function _callee3$(_context4) {
+                while (1) {
+                  switch (_context4.prev = _context4.next) {
+                    case 0:
+                      _context4.next = 2;
+                      return regeneratorRuntime.awrap(_awaitContextId3 = _dbux.interrupt());
+
+                    case 2:
+                      return _context4.abrupt(\\"return\\", _context4.sent);
+
+                    case 3:
+                    case \\"end\\":
+                      return _context4.stop();
+                  }
+                }
+              });
+            }()) - 3);
+
+          case 5:
+            _context5.prev = 5;
 
             _dbux.popImmediate(_contextId4);
 
-            return _context2.finish(11);
+            return _context5.finish(5);
 
-          case 14:
+          case 8:
           case \\"end\\":
-            return _context2.stop();
+            return _context5.stop();
         }
       }
-    }, null, null, [[1,, 11, 14]]);
+    }, null, null, [[1,, 5, 8]]);
   };
 
   var af33 = function af33(delay) {
     var _contextId5;
 
-    return regeneratorRuntime.async(function af33$(_context3) {
+    return regeneratorRuntime.async(function af33$(_context6) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
-            _contextId5 = _dbux.pushImmediate(5);
-            _context3.prev = 1;
-            return _context3.abrupt(\\"return\\", new Promise(function (r) {
-              var _contextId6 = _dbux.pushImmediate(6);
+            _contextId5 = _dbux.pushImmediate(8);
+            _context6.prev = 1;
+            return _context6.abrupt(\\"return\\", new Promise(function (r) {
+              var _contextId6 = _dbux.pushImmediate(9);
 
               try {
-                setTimeout(_dbux.scheduleCallback(7, _contextId6, r.bind(33)), delay);
+                setTimeout(_dbux.scheduleCallback(10, _contextId6, r.bind(33)), delay);
               } finally {
                 _dbux.popImmediate(_contextId6);
               }
             }));
 
           case 3:
-            _context3.prev = 3;
+            _context6.prev = 3;
 
             _dbux.popImmediate(_contextId5);
 
-            return _context3.finish(3);
+            return _context6.finish(3);
 
           case 6:
           case \\"end\\":
-            return _context3.stop();
+            return _context6.stop();
         }
       }
     }, null, null, [[1,, 3, 6]]);
   };
 
   var af44 = function af44() {
-    var _contextId7, a, b;
+    var _contextId7, _awaitContextId4, _awaitContextId5, a, b;
 
-    return regeneratorRuntime.async(function af44$(_context4) {
+    return regeneratorRuntime.async(function af44$(_context9) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context9.prev = _context9.next) {
           case 0:
-            _contextId7 = _dbux.pushImmediate(8);
-            _context4.prev = 1;
-            _context4.next = 4;
-            return regeneratorRuntime.awrap(af33(100));
+            _contextId7 = _dbux.pushImmediate(11);
+            _context9.prev = 1;
+            a = _dbux.resume(12, _awaitContextId4, function _callee4() {
+              return regeneratorRuntime.async(function _callee4$(_context7) {
+                while (1) {
+                  switch (_context7.prev = _context7.next) {
+                    case 0:
+                      _context7.next = 2;
+                      return regeneratorRuntime.awrap(_awaitContextId4 = _dbux.interrupt());
 
-          case 4:
-            a = _context4.sent;
-            _context4.next = 7;
-            return regeneratorRuntime.awrap(af33(50));
+                    case 2:
+                      return _context7.abrupt(\\"return\\", _context7.sent);
 
-          case 7:
-            b = _context4.sent;
-            return _context4.abrupt(\\"return\\", a + b + af33(10));
+                    case 3:
+                    case \\"end\\":
+                      return _context7.stop();
+                  }
+                }
+              });
+            }());
+            b = _dbux.resume(13, _awaitContextId5, function _callee5() {
+              return regeneratorRuntime.async(function _callee5$(_context8) {
+                while (1) {
+                  switch (_context8.prev = _context8.next) {
+                    case 0:
+                      _context8.next = 2;
+                      return regeneratorRuntime.awrap(_awaitContextId5 = _dbux.interrupt());
 
-          case 9:
-            _context4.prev = 9;
+                    case 2:
+                      return _context8.abrupt(\\"return\\", _context8.sent);
+
+                    case 3:
+                    case \\"end\\":
+                      return _context8.stop();
+                  }
+                }
+              });
+            }());
+            return _context9.abrupt(\\"return\\", a + b + af33(10));
+
+          case 5:
+            _context9.prev = 5;
 
             _dbux.popImmediate(_contextId7);
 
-            return _context4.finish(9);
+            return _context9.finish(5);
 
-          case 12:
+          case 8:
           case \\"end\\":
-            return _context4.stop();
+            return _context9.stop();
         }
       }
-    }, null, null, [[1,, 9, 12]]);
+    }, null, null, [[1,, 5, 8]]);
   };
 
   (function main() {
-    var _contextId8;
+    var _contextId8, _awaitContextId6;
 
-    return regeneratorRuntime.async(function main$(_context5) {
+    return regeneratorRuntime.async(function main$(_context11) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context11.prev = _context11.next) {
           case 0:
-            _contextId8 = _dbux.pushImmediate(9);
-            _context5.prev = 1;
-            _context5.t0 = console;
-            _context5.next = 5;
-            return regeneratorRuntime.awrap(Promise.all([af2(), af44()]));
+            _contextId8 = _dbux.pushImmediate(14);
 
-          case 5:
-            _context5.t1 = _context5.sent;
+            try {
+              console.log(_dbux.resume(15, _awaitContextId6, function _callee6() {
+                return regeneratorRuntime.async(function _callee6$(_context10) {
+                  while (1) {
+                    switch (_context10.prev = _context10.next) {
+                      case 0:
+                        _context10.next = 2;
+                        return regeneratorRuntime.awrap(_awaitContextId6 = _dbux.interrupt());
 
-            _context5.t0.log.call(_context5.t0, _context5.t1);
+                      case 2:
+                        return _context10.abrupt(\\"return\\", _context10.sent);
 
-            f0();
+                      case 3:
+                      case \\"end\\":
+                        return _context10.stop();
+                    }
+                  }
+                });
+              }()));
+              f0();
+            } finally {
+              _dbux.popImmediate(_contextId8);
+            }
 
-          case 8:
-            _context5.prev = 8;
-
-            _dbux.popImmediate(_contextId8);
-
-            return _context5.finish(8);
-
-          case 11:
+          case 2:
           case \\"end\\":
-            return _context5.stop();
+            return _context11.stop();
         }
       }
-    }, null, null, [[1,, 8, 11]]);
+    });
   })();
 } finally {
   _dbux.popProgram();
@@ -864,6 +932,51 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"af2\\"
     }, {
       \\"staticId\\": 5,
+      \\"parent\\": 4,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 14
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await af1(1))\\"
+    }, {
+      \\"staticId\\": 6,
+      \\"parent\\": 4,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 14
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await af1(2))\\"
+    }, {
+      \\"staticId\\": 7,
+      \\"parent\\": 4,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 12,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 12,
+          \\"column\\": 25
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await af1(3))\\"
+    }, {
+      \\"staticId\\": 8,
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
@@ -879,8 +992,8 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"af33\\",
       \\"displayName\\": \\"af33\\"
     }, {
-      \\"staticId\\": 6,
-      \\"parent\\": 5,
+      \\"staticId\\": 9,
+      \\"parent\\": 8,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 16,
@@ -892,10 +1005,10 @@ function _dbux_init(dbuxRuntime) {
         }
       },
       \\"type\\": 2,
-      \\"displayName\\": \\"(r => {  setTimeout(r.bind(...)\\"
+      \\"displayName\\": \\"(anonymous)\\"
     }, {
-      \\"staticId\\": 7,
-      \\"parent\\": 6,
+      \\"staticId\\": 10,
+      \\"parent\\": 9,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 17,
@@ -909,7 +1022,7 @@ function _dbux_init(dbuxRuntime) {
       \\"type\\": 3,
       \\"displayName\\": \\"(r.bind(33))\\"
     }, {
-      \\"staticId\\": 8,
+      \\"staticId\\": 11,
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
@@ -925,7 +1038,37 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"af44\\",
       \\"displayName\\": \\"af44\\"
     }, {
-      \\"staticId\\": 9,
+      \\"staticId\\": 12,
+      \\"parent\\": 11,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 22,
+          \\"column\\": 12
+        },
+        \\"end\\": {
+          \\"line\\": 22,
+          \\"column\\": 27
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await af33(100))\\"
+    }, {
+      \\"staticId\\": 13,
+      \\"parent\\": 11,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 23,
+          \\"column\\": 12
+        },
+        \\"end\\": {
+          \\"line\\": 23,
+          \\"column\\": 26
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await af33(50))\\"
+    }, {
+      \\"staticId\\": 14,
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
@@ -940,6 +1083,21 @@ function _dbux_init(dbuxRuntime) {
       \\"type\\": 2,
       \\"name\\": \\"main\\",
       \\"displayName\\": \\"main\\"
+    }, {
+      \\"staticId\\": 15,
+      \\"parent\\": 14,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 30,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 33,
+          \\"column\\": 6
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await Promise.all([af2(), a...)\\"
     }]
   });
 }
@@ -1017,23 +1175,27 @@ try {
     const _contextId4 = _dbux.pushImmediate(4);
 
     try {
-      await af1(1);
-      await af1(2);
-      return 2 + (await af1(3)) - 3;
+      var _awaitContextId, _awaitContextId2, _awaitContextId3;
+
+      _dbux.resume(5, _awaitContextId, (async () => await (_awaitContextId = _dbux.interrupt()))());
+
+      _dbux.resume(6, _awaitContextId2, (async () => await (_awaitContextId2 = _dbux.interrupt()))());
+
+      return 2 + _dbux.resume(7, _awaitContextId3, (async () => await (_awaitContextId3 = _dbux.interrupt()))()) - 3;
     } finally {
       _dbux.popImmediate(_contextId4);
     }
   }
 
   async function af33(delay) {
-    const _contextId5 = _dbux.pushImmediate(5);
+    const _contextId5 = _dbux.pushImmediate(8);
 
     try {
       return new Promise(r => {
-        const _contextId6 = _dbux.pushImmediate(6);
+        const _contextId6 = _dbux.pushImmediate(9);
 
         try {
-          setTimeout(_dbux.scheduleCallback(7, _contextId6, r.bind(33)), delay);
+          setTimeout(_dbux.scheduleCallback(10, _contextId6, r.bind(33)), delay);
         } finally {
           _dbux.popImmediate(_contextId6);
         }
@@ -1044,11 +1206,15 @@ try {
   }
 
   async function af44() {
-    const _contextId7 = _dbux.pushImmediate(8);
+    const _contextId7 = _dbux.pushImmediate(11);
 
     try {
-      const a = await af33(100);
-      const b = await af33(50);
+      var _awaitContextId4, _awaitContextId5;
+
+      const a = _dbux.resume(12, _awaitContextId4, (async () => await (_awaitContextId4 = _dbux.interrupt()))());
+
+      const b = _dbux.resume(13, _awaitContextId5, (async () => await (_awaitContextId5 = _dbux.interrupt()))());
+
       return a + b + af33(10);
     } finally {
       _dbux.popImmediate(_contextId7);
@@ -1056,10 +1222,12 @@ try {
   }
 
   (async function main() {
-    const _contextId8 = _dbux.pushImmediate(9);
+    const _contextId8 = _dbux.pushImmediate(14);
 
     try {
-      console.log((await Promise.all([af2(), af44()])));
+      var _awaitContextId6;
+
+      console.log(_dbux.resume(15, _awaitContextId6, (async () => await (_awaitContextId6 = _dbux.interrupt()))()));
       f0();
     } finally {
       _dbux.popImmediate(_contextId8);
@@ -1138,6 +1306,51 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"af2\\"
     }, {
       \\"staticId\\": 5,
+      \\"parent\\": 4,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 14
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await af1(1))\\"
+    }, {
+      \\"staticId\\": 6,
+      \\"parent\\": 4,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 14
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await af1(2))\\"
+    }, {
+      \\"staticId\\": 7,
+      \\"parent\\": 4,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 12,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 12,
+          \\"column\\": 25
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await af1(3))\\"
+    }, {
+      \\"staticId\\": 8,
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
@@ -1153,8 +1366,8 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"af33\\",
       \\"displayName\\": \\"af33\\"
     }, {
-      \\"staticId\\": 6,
-      \\"parent\\": 5,
+      \\"staticId\\": 9,
+      \\"parent\\": 8,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 16,
@@ -1166,10 +1379,10 @@ function _dbux_init(dbuxRuntime) {
         }
       },
       \\"type\\": 2,
-      \\"displayName\\": \\"(r => {  setTimeout(r.bind(...)\\"
+      \\"displayName\\": \\"(anonymous)\\"
     }, {
-      \\"staticId\\": 7,
-      \\"parent\\": 6,
+      \\"staticId\\": 10,
+      \\"parent\\": 9,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 17,
@@ -1183,7 +1396,7 @@ function _dbux_init(dbuxRuntime) {
       \\"type\\": 3,
       \\"displayName\\": \\"(r.bind(33))\\"
     }, {
-      \\"staticId\\": 8,
+      \\"staticId\\": 11,
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
@@ -1199,7 +1412,37 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"af44\\",
       \\"displayName\\": \\"af44\\"
     }, {
-      \\"staticId\\": 9,
+      \\"staticId\\": 12,
+      \\"parent\\": 11,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 22,
+          \\"column\\": 12
+        },
+        \\"end\\": {
+          \\"line\\": 22,
+          \\"column\\": 27
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await af33(100))\\"
+    }, {
+      \\"staticId\\": 13,
+      \\"parent\\": 11,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 23,
+          \\"column\\": 12
+        },
+        \\"end\\": {
+          \\"line\\": 23,
+          \\"column\\": 26
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await af33(50))\\"
+    }, {
+      \\"staticId\\": 14,
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
@@ -1214,6 +1457,864 @@ function _dbux_init(dbuxRuntime) {
       \\"type\\": 2,
       \\"name\\": \\"main\\",
       \\"displayName\\": \\"main\\"
+    }, {
+      \\"staticId\\": 15,
+      \\"parent\\": 14,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 30,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 33,
+          \\"column\\": 6
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await Promise.all([af2(), a...)\\"
+    }]
+  });
+}
+"
+`;
+
+exports[`dbux-babel-plugin await1.es5.js: await1.es5.js 1`] = `
+"
+async function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function f1() {
+  return sleep(50);
+}
+
+async function f2() {
+  await sleep(50);
+}
+
+async function f3() {
+  await sleep(200);
+}
+
+async function f4(...args) {
+  await Promise.all(...args);
+}
+
+(async function main() {
+  await f1();
+  await f4(f2, f3, sleep.bind(null, 400));
+})();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+require(\\"core-js/modules/es.object.to-string\\");
+
+require(\\"core-js/modules/es.promise\\");
+
+require(\\"core-js/modules/web.timers\\");
+
+require(\\"regenerator-runtime/runtime\\");
+
+var _dbuxRuntime = require('dbux-runtime')[\\"default\\"];
+
+var _dbux = _dbux_init(_dbuxRuntime);
+
+var _contextId = _dbux.getProgramContextId();
+
+try {
+  var sleep = function sleep(ms) {
+    var _contextId2;
+
+    return regeneratorRuntime.async(function sleep$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _contextId2 = _dbux.pushImmediate(2);
+            _context.prev = 1;
+            return _context.abrupt(\\"return\\", new Promise(function (r) {
+              var _contextId3 = _dbux.pushImmediate(3);
+
+              try {
+                return setTimeout(_dbux.scheduleCallback(4, _contextId3, r), ms);
+              } finally {
+                _dbux.popImmediate(_contextId3);
+              }
+            }));
+
+          case 3:
+            _context.prev = 3;
+
+            _dbux.popImmediate(_contextId2);
+
+            return _context.finish(3);
+
+          case 6:
+          case \\"end\\":
+            return _context.stop();
+        }
+      }
+    }, null, null, [[1,, 3, 6]]);
+  };
+
+  var f1 = function f1() {
+    var _contextId4 = _dbux.pushImmediate(5);
+
+    try {
+      return sleep(50);
+    } finally {
+      _dbux.popImmediate(_contextId4);
+    }
+  };
+
+  var f2 = function f2() {
+    var _contextId5, _awaitContextId;
+
+    return regeneratorRuntime.async(function f2$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _contextId5 = _dbux.pushImmediate(6);
+
+            try {
+              _dbux.resume(7, _awaitContextId, function _callee() {
+                return regeneratorRuntime.async(function _callee$(_context2) {
+                  while (1) {
+                    switch (_context2.prev = _context2.next) {
+                      case 0:
+                        _context2.next = 2;
+                        return regeneratorRuntime.awrap(_awaitContextId = _dbux.interrupt());
+
+                      case 2:
+                        return _context2.abrupt(\\"return\\", _context2.sent);
+
+                      case 3:
+                      case \\"end\\":
+                        return _context2.stop();
+                    }
+                  }
+                });
+              }());
+            } finally {
+              _dbux.popImmediate(_contextId5);
+            }
+
+          case 2:
+          case \\"end\\":
+            return _context3.stop();
+        }
+      }
+    });
+  };
+
+  var f3 = function f3() {
+    var _contextId6, _awaitContextId2;
+
+    return regeneratorRuntime.async(function f3$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _contextId6 = _dbux.pushImmediate(8);
+
+            try {
+              _dbux.resume(9, _awaitContextId2, function _callee2() {
+                return regeneratorRuntime.async(function _callee2$(_context4) {
+                  while (1) {
+                    switch (_context4.prev = _context4.next) {
+                      case 0:
+                        _context4.next = 2;
+                        return regeneratorRuntime.awrap(_awaitContextId2 = _dbux.interrupt());
+
+                      case 2:
+                        return _context4.abrupt(\\"return\\", _context4.sent);
+
+                      case 3:
+                      case \\"end\\":
+                        return _context4.stop();
+                    }
+                  }
+                });
+              }());
+            } finally {
+              _dbux.popImmediate(_contextId6);
+            }
+
+          case 2:
+          case \\"end\\":
+            return _context5.stop();
+        }
+      }
+    });
+  };
+
+  var f4 = function f4() {
+    var _contextId7, _awaitContextId3;
+
+    return regeneratorRuntime.async(function f4$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            _contextId7 = _dbux.pushImmediate(10);
+
+            try {
+              _dbux.resume(11, _awaitContextId3, function _callee3() {
+                return regeneratorRuntime.async(function _callee3$(_context6) {
+                  while (1) {
+                    switch (_context6.prev = _context6.next) {
+                      case 0:
+                        _context6.next = 2;
+                        return regeneratorRuntime.awrap(_awaitContextId3 = _dbux.interrupt());
+
+                      case 2:
+                        return _context6.abrupt(\\"return\\", _context6.sent);
+
+                      case 3:
+                      case \\"end\\":
+                        return _context6.stop();
+                    }
+                  }
+                });
+              }());
+            } finally {
+              _dbux.popImmediate(_contextId7);
+            }
+
+          case 2:
+          case \\"end\\":
+            return _context7.stop();
+        }
+      }
+    });
+  };
+
+  (function main() {
+    var _contextId8, _awaitContextId4, _awaitContextId5;
+
+    return regeneratorRuntime.async(function main$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            _contextId8 = _dbux.pushImmediate(12);
+
+            try {
+              _dbux.resume(13, _awaitContextId4, function _callee4() {
+                return regeneratorRuntime.async(function _callee4$(_context8) {
+                  while (1) {
+                    switch (_context8.prev = _context8.next) {
+                      case 0:
+                        _context8.next = 2;
+                        return regeneratorRuntime.awrap(_awaitContextId4 = _dbux.interrupt());
+
+                      case 2:
+                        return _context8.abrupt(\\"return\\", _context8.sent);
+
+                      case 3:
+                      case \\"end\\":
+                        return _context8.stop();
+                    }
+                  }
+                });
+              }());
+
+              _dbux.resume(14, _awaitContextId5, function _callee5() {
+                return regeneratorRuntime.async(function _callee5$(_context9) {
+                  while (1) {
+                    switch (_context9.prev = _context9.next) {
+                      case 0:
+                        _context9.next = 2;
+                        return regeneratorRuntime.awrap(_awaitContextId5 = _dbux.interrupt());
+
+                      case 2:
+                        return _context9.abrupt(\\"return\\", _context9.sent);
+
+                      case 3:
+                      case \\"end\\":
+                        return _context9.stop();
+                    }
+                  }
+                });
+              }());
+            } finally {
+              _dbux.popImmediate(_contextId8);
+            }
+
+          case 2:
+          case \\"end\\":
+            return _context10.stop();
+        }
+      }
+    });
+  })();
+} finally {
+  _dbux.popProgram();
+}
+
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
+    \\"fileName\\": \\"await1.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/await1.js\\",
+    \\"staticContexts\\": [null, {
+      \\"staticId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 5
+        }
+      },
+      \\"type\\": 1,
+      \\"name\\": \\"Program\\",
+      \\"displayName\\": \\"Program\\"
+    }, {
+      \\"staticId\\": 2,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"sleep\\",
+      \\"displayName\\": \\"sleep\\"
+    }, {
+      \\"staticId\\": 3,
+      \\"parent\\": 2,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 21
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 43
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"(anonymous)\\"
+    }, {
+      \\"staticId\\": 4,
+      \\"parent\\": 3,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 37
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 38
+        },
+        \\"identifierName\\": \\"r\\"
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(r)\\"
+    }, {
+      \\"staticId\\": 5,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 7,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f1\\",
+      \\"displayName\\": \\"f1\\"
+    }, {
+      \\"staticId\\": 6,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 11,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f2\\",
+      \\"displayName\\": \\"f2\\"
+    }, {
+      \\"staticId\\": 7,
+      \\"parent\\": 6,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 17
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await sleep(50))\\"
+    }, {
+      \\"staticId\\": 8,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 13,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 15,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f3\\",
+      \\"displayName\\": \\"f3\\"
+    }, {
+      \\"staticId\\": 9,
+      \\"parent\\": 8,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 14,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 14,
+          \\"column\\": 18
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await sleep(200))\\"
+    }, {
+      \\"staticId\\": 10,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 17,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f4\\",
+      \\"displayName\\": \\"f4\\"
+    }, {
+      \\"staticId\\": 11,
+      \\"parent\\": 10,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 18,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 28
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await Promise.all(...args))\\"
+    }, {
+      \\"staticId\\": 12,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 21,
+          \\"column\\": 1
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"main\\",
+      \\"displayName\\": \\"main\\"
+    }, {
+      \\"staticId\\": 13,
+      \\"parent\\": 12,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 22,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 22,
+          \\"column\\": 12
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await f1())\\"
+    }, {
+      \\"staticId\\": 14,
+      \\"parent\\": 12,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 23,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 23,
+          \\"column\\": 41
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await f4(f2, f3, sleep.bind...)\\"
+    }]
+  });
+}
+"
+`;
+
+exports[`dbux-babel-plugin await1.esNext.js: await1.esNext.js 1`] = `
+"
+async function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function f1() {
+  return sleep(50);
+}
+
+async function f2() {
+  await sleep(50);
+}
+
+async function f3() {
+  await sleep(200);
+}
+
+async function f4(...args) {
+  await Promise.all(...args);
+}
+
+(async function main() {
+  await f1();
+  await f4(f2, f3, sleep.bind(null, 400));
+})();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const _dbuxRuntime = require('dbux-runtime').default;
+
+const _dbux = _dbux_init(_dbuxRuntime);
+
+const _contextId = _dbux.getProgramContextId();
+
+try {
+  async function sleep(ms) {
+    const _contextId2 = _dbux.pushImmediate(2);
+
+    try {
+      return new Promise(r => {
+        const _contextId3 = _dbux.pushImmediate(3);
+
+        try {
+          return setTimeout(_dbux.scheduleCallback(4, _contextId3, r), ms);
+        } finally {
+          _dbux.popImmediate(_contextId3);
+        }
+      });
+    } finally {
+      _dbux.popImmediate(_contextId2);
+    }
+  }
+
+  function f1() {
+    const _contextId4 = _dbux.pushImmediate(5);
+
+    try {
+      return sleep(50);
+    } finally {
+      _dbux.popImmediate(_contextId4);
+    }
+  }
+
+  async function f2() {
+    const _contextId5 = _dbux.pushImmediate(6);
+
+    try {
+      var _awaitContextId;
+
+      _dbux.resume(7, _awaitContextId, (async () => await (_awaitContextId = _dbux.interrupt()))());
+    } finally {
+      _dbux.popImmediate(_contextId5);
+    }
+  }
+
+  async function f3() {
+    const _contextId6 = _dbux.pushImmediate(8);
+
+    try {
+      var _awaitContextId2;
+
+      _dbux.resume(9, _awaitContextId2, (async () => await (_awaitContextId2 = _dbux.interrupt()))());
+    } finally {
+      _dbux.popImmediate(_contextId6);
+    }
+  }
+
+  async function f4(...args) {
+    const _contextId7 = _dbux.pushImmediate(10);
+
+    try {
+      var _awaitContextId3;
+
+      _dbux.resume(11, _awaitContextId3, (async () => await (_awaitContextId3 = _dbux.interrupt()))());
+    } finally {
+      _dbux.popImmediate(_contextId7);
+    }
+  }
+
+  (async function main() {
+    const _contextId8 = _dbux.pushImmediate(12);
+
+    try {
+      var _awaitContextId4, _awaitContextId5;
+
+      _dbux.resume(13, _awaitContextId4, (async () => await (_awaitContextId4 = _dbux.interrupt()))());
+
+      _dbux.resume(14, _awaitContextId5, (async () => await (_awaitContextId5 = _dbux.interrupt()))());
+    } finally {
+      _dbux.popImmediate(_contextId8);
+    }
+  })();
+} finally {
+  _dbux.popProgram();
+}
+
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
+    \\"fileName\\": \\"await1.js\\",
+    \\"filePath\\": \\"samples/__samplesInput__/await1.js\\",
+    \\"staticContexts\\": [null, {
+      \\"staticId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 5
+        }
+      },
+      \\"type\\": 1,
+      \\"name\\": \\"Program\\",
+      \\"displayName\\": \\"Program\\"
+    }, {
+      \\"staticId\\": 2,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"sleep\\",
+      \\"displayName\\": \\"sleep\\"
+    }, {
+      \\"staticId\\": 3,
+      \\"parent\\": 2,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 21
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 43
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"(anonymous)\\"
+    }, {
+      \\"staticId\\": 4,
+      \\"parent\\": 3,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 37
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 38
+        },
+        \\"identifierName\\": \\"r\\"
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(r)\\"
+    }, {
+      \\"staticId\\": 5,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 7,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f1\\",
+      \\"displayName\\": \\"f1\\"
+    }, {
+      \\"staticId\\": 6,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 11,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f2\\",
+      \\"displayName\\": \\"f2\\"
+    }, {
+      \\"staticId\\": 7,
+      \\"parent\\": 6,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 17
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await sleep(50))\\"
+    }, {
+      \\"staticId\\": 8,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 13,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 15,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f3\\",
+      \\"displayName\\": \\"f3\\"
+    }, {
+      \\"staticId\\": 9,
+      \\"parent\\": 8,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 14,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 14,
+          \\"column\\": 18
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await sleep(200))\\"
+    }, {
+      \\"staticId\\": 10,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 17,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f4\\",
+      \\"displayName\\": \\"f4\\"
+    }, {
+      \\"staticId\\": 11,
+      \\"parent\\": 10,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 18,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 28
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await Promise.all(...args))\\"
+    }, {
+      \\"staticId\\": 12,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 21,
+          \\"column\\": 1
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"main\\",
+      \\"displayName\\": \\"main\\"
+    }, {
+      \\"staticId\\": 13,
+      \\"parent\\": 12,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 22,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 22,
+          \\"column\\": 12
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await f1())\\"
+    }, {
+      \\"staticId\\": 14,
+      \\"parent\\": 12,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 23,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 23,
+          \\"column\\": 41
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await f4(f2, f3, sleep.bind...)\\"
     }]
   });
 }
@@ -2178,7 +3279,7 @@ function _dbux_init(dbuxRuntime) {
         }
       },
       \\"type\\": 2,
-      \\"displayName\\": \\"((...args) => console.log(.....)\\"
+      \\"displayName\\": \\"(anonymous)\\"
     }, {
       \\"staticId\\": 10,
       \\"parent\\": 8,
@@ -2193,7 +3294,7 @@ function _dbux_init(dbuxRuntime) {
         }
       },
       \\"type\\": 2,
-      \\"displayName\\": \\"(() => {})\\"
+      \\"displayName\\": \\"(anonymous)\\"
     }, {
       \\"staticId\\": 11,
       \\"parent\\": 1,
@@ -2461,7 +3562,7 @@ function _dbux_init(dbuxRuntime) {
         }
       },
       \\"type\\": 2,
-      \\"displayName\\": \\"((...args) => console.log(.....)\\"
+      \\"displayName\\": \\"(anonymous)\\"
     }, {
       \\"staticId\\": 10,
       \\"parent\\": 8,
@@ -2476,7 +3577,7 @@ function _dbux_init(dbuxRuntime) {
         }
       },
       \\"type\\": 2,
-      \\"displayName\\": \\"(() => {})\\"
+      \\"displayName\\": \\"(anonymous)\\"
     }, {
       \\"staticId\\": 11,
       \\"parent\\": 1,

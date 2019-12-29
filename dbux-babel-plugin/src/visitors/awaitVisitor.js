@@ -12,9 +12,16 @@ var awaitContextId;
 _dbux.wrapAwait(awaitContextId, await (awaitContextId = _dbux.wrapAwaitExpression(previousContextId, someExpression())));
 ```
  */
-const wrapAwaitTemplate = template(`
-%%dbux%%.pushAwait(%%staticId%%, %%awaitContextId%%, await (%%awaitContextId%% = %%dbux%%.popAwait(%%previousContextId%%, %%expression%%)));
-`);
+const wrapAwaitTemplate = template(
+  // it's pretty stupid: but babel will not let us generate an `await` partial AST outside an async function
+`%%dbux%%.resume(
+  %%staticId%%, 
+  %%awaitContextId%%, 
+  (async () => await (
+    %%awaitContextId%% = %%dbux%%.interrupt(%%expression%%)
+  ))()
+)`
+);
 
 
 function getAwaitDisplayName(path) {
@@ -31,13 +38,13 @@ function buildWrapAwait(path, state) {
     displayName: getAwaitDisplayName(path)
   });
   // const schedulerIdName = getClosestContextIdName(argPath);
-  const awaitContextId = path.scope.generateDeclaredUidIdentifier('awaitContextId');
+  const awaitContextIdId = path.scope.generateDeclaredUidIdentifier('awaitContextId');
   const expression = path.get('expression').node;
 
   return wrapAwaitTemplate({
     dbux,
-    staticId,
-    awaitContextId,
+    staticId: t.numericLiteral(staticId),
+    awaitContextId: awaitContextIdId,
     expression,
   });
 }
@@ -54,7 +61,7 @@ function enter(path, state) {
   path.replaceWith(buildWrapAwait(path, state));
 }
 
-export function callExpressionVisitor() {
+export function awaitVisitor() {
   return {
     enter
   };

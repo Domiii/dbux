@@ -22,9 +22,8 @@ const babelOptions = {
   configFile: false,
   filename: file,
   plugins: [
-    [
-      plugin,
-      
+    plugin,
+    [ 
       "@babel/plugin-proposal-class-properties",
       {
         "loose": true

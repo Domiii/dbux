@@ -8,6 +8,7 @@ import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 import { callExpressionVisitor } from './callExpressionVisitor';
 import { replaceProgramBody } from '../helpers/program';
 import injectDbuxState from '../dbuxState';
+import { awaitVisitor } from './awaitVisitor';
 
 // ###########################################################################
 // Builders
@@ -131,11 +132,7 @@ export function allOtherVisitors() {
   return {
     Function: functionVisitor(),
     CallExpression: callExpressionVisitor(),
-
-    AwaitExpression(path) {
-      const arg = path.node.argument;
-      // TODO
-    },
+    AwaitExpression: awaitVisitor(),
 
     /**
      * TODO: Handle `for await of`
