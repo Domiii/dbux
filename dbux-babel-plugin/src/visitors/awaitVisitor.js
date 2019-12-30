@@ -21,7 +21,7 @@ const wrapAwaitTemplate = template(
 `);
 
 const wrapAwaitExpressionTemplate = template(`
-(%%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%, %%argument%%))
+(%%dbux%%.wrapAwait(%%awaitContextId%% = %%dbux%%.awaitId(%%staticId%%), %%argument%%))
 `);
 
 
@@ -45,7 +45,8 @@ function enter(path, state) {
     displayName: getAwaitDisplayName(path)
   });
   // const schedulerIdName = getClosestContextIdName(argPath);
-  const awaitContextId = path.scope.generateDeclaredUidIdentifier('awaitContextId');
+  const awaitContextId = path.scope.generateDeclaredUidIdentifier(
+    'contextId');
   const argumentPath = path.get('argument');
   const argument = argumentPath.node;
 
@@ -67,7 +68,7 @@ function enter(path, state) {
   const newAwaitPath = path.get('arguments.1');
   state.onEnter(newAwaitPath); // make sure, we don't revisit this
 
-  console.log('[AWAIT]', newAwaitPath.toString());
+  // console.log('[AWAIT]', newAwaitPath.toString());
 }
 
 export function awaitVisitor() {

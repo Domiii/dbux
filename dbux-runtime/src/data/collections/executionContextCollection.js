@@ -1,5 +1,3 @@
-import programStaticContextCollection from './programStaticContextCollection';
-// import Enum from '-dbux-common/Enum';
 import Enum from 'dbux-common/src/util/Enum';
 import ExecutionContext from './ExecutionContext';
 import staticContextCollection from './staticContextCollection';
@@ -10,8 +8,8 @@ export const ExecutionContextType = new Enum({
   Immediate: 1,
   ScheduleCallback: 2,
   ExecuteCallback: 3,
-  Pause: 4,
-  Continue: 5
+  Interrupt: 4,
+  Resume: 5
 });
 
 export class ExecutionContextCollection {
@@ -54,7 +52,8 @@ export class ExecutionContextCollection {
     const orderId = this._genOrderId(programId, staticContextId);
     const contextId = this._contexts.length;
 
-    const context = ExecutionContext.allocate(ExecutionContextType.Immediate, stackDepth, contextId, programId,
+    const context = ExecutionContext.allocate(
+      ExecutionContextType.Immediate, stackDepth, contextId, programId,
       staticContextId, orderId, parentScopeContextId);
     this._push(context);
     return context;
@@ -67,7 +66,8 @@ export class ExecutionContextCollection {
     const orderId = this._genOrderId(programId, staticContextId);
     const contextId = this._contexts.length;
 
-    const context = ExecutionContext.allocate(ExecutionContextType.ScheduleCallback, stackDepth, contextId, programId,
+    const context = ExecutionContext.allocate(
+      ExecutionContextType.ScheduleCallback, stackDepth, contextId, programId,
       staticContextId, orderId, parentScopeContextId, schedulerId);
     this._push(context);
     return context;
@@ -85,6 +85,17 @@ export class ExecutionContextCollection {
     const context = ExecutionContext.allocate(
       ExecutionContextType.ExecuteCallback, stackDepth, contextId, programId,
       staticContextId, orderId, parentScopeContextId, scheduledContextId);
+    this._push(context);
+    return context;
+  }
+
+  interrupt(stackDepth, programId, staticContextId, parentScopeContextId) {
+    const orderId = this._genOrderId(programId, staticContextId);
+    const contextId = this._contexts.length;
+
+    const context = ExecutionContext.allocate(
+      ExecutionContextType.Interrupt, stackDepth, contextId, programId,
+      staticContextId, orderId, parentScopeContextId);
     this._push(context);
     return context;
   }

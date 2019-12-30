@@ -73,7 +73,8 @@ export default class RuntimeMonitor {
     // sanity checks
     const context = executionContextCollection.getContext(contextId);
     if (!context) {
-      logInternalError('Tried to popImmediate, but context was not registered:', contextId);
+      logInternalError('Tried to popImmediate, but context was not registered:',
+        contextId);
       return;
     }
 
@@ -149,7 +150,8 @@ export default class RuntimeMonitor {
     // sanity checks
     const context = executionContextCollection.getContext(callbackContextId);
     if (!context) {
-      logInternalError('Tried to popCallback, but context was not registered:', callbackContextId);
+      logInternalError('Tried to popCallback, but context was not registered:', 
+        callbackContextId);
       return;
     }
 
@@ -165,5 +167,40 @@ export default class RuntimeMonitor {
   // Interrupts, await et al
   // ###########################################################################
 
-  preAwait
+  awaitId(programId, staticContextId) {
+    // TODO: flag stack for interruption
+    const parentContextId = this._runtime.peekStack();
+    const stackDepth = this._runtime.getStackDepth();
+
+    // register context
+    const context = executionContextCollection.interrupt(
+      stackDepth, programId, staticContextId, parentContextId
+    );
+    const { contextId } = context;
+    this._runtime.push(contextId);
+
+    // log event
+    executionEventCollection.logInterrupt(contextId);
+
+    return contextId;
+  }
+
+  /**
+   * Resume given stack
+   */
+  postAwait(awaitContextId) {
+    // sanity checks
+    const context = executionContextCollection.getContext(awaitContextId);
+    if (!context) {
+      logInternalError('Tried to postAwait, but context was not registered:', awaitContextId);
+      return;
+    }
+
+    if (!this._runtime._tryResumeStack(awaitContextId)) {
+      // something went wrong (and error has already been reported)
+      return;
+    }
+
+    executionEventCollection.logResume(awaitContextId);
+  }
 }

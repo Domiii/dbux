@@ -5,8 +5,6 @@ import staticContextCollection from './staticContextCollection';
 import programStaticContextCollection from './programStaticContextCollection';
 
 
-let timer = null;
-
 export class ExecutionEventCollection {
 
   /**
@@ -66,6 +64,30 @@ export class ExecutionEventCollection {
 
     const staticContext = executionContextCollection.getStaticContext(callbackContextId);
     event.where = staticContext.loc?.end;
+
+    this._log(event);
+  }
+
+  logInterrupt(contextId) {
+    const event = ExecutionEvent.allocate();
+    event.eventType = ExecutionEventType.Interrupt;
+    event.contextId = contextId;
+
+    const staticContext = executionContextCollection.getStaticContext(
+      contextId);
+    event.where = staticContext.loc?.start;
+
+    this._log(event);
+  }
+
+  logResume(contextId) {
+    const event = ExecutionEvent.allocate();
+    event.eventType = ExecutionEventType.Resume;
+    event.contextId = contextId;
+
+    const staticContext = executionContextCollection.getStaticContext(
+      contextId);
+    event.where = staticContext.loc?.start;
 
     this._log(event);
   }

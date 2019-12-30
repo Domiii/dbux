@@ -44,12 +44,17 @@ export default class ProgramMonitor {
     return RuntimeMonitor.instance.scheduleCallback(this.getProgramId(), staticContextId, schedulerId, cb);
   }
 
-  preAwait(staticContextId, awaitValue) {
-    return RuntimeMonitor.instance.preAwait(this.getProgramId(), staticContextId, awaitValue);
+  awaitId(staticContextId) {
+    return RuntimeMonitor.instance.awaitId(this.getProgramId(), staticContextId);
+  }
+
+  wrapAwait(awaitContextId, awaitValue) {
+    // nothing to do
+    return awaitValue;
   }
 
   postAwait(awaitContextId) {
-    return RuntimeMonitor.instance.postAwait(this.getProgramId(), awaitContextId);
+    return RuntimeMonitor.instance.postAwait(awaitContextId);
   }
 
   popProgram() {

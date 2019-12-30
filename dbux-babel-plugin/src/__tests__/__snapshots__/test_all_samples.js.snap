@@ -648,7 +648,7 @@ try {
   };
 
   var af2 = function af2() {
-    var _contextId4, _awaitContextId, _awaitContextId2, _awaitContextId3;
+    var _contextId4, _contextId5, _contextId6, _contextId7;
 
     return regeneratorRuntime.async(function af2$(_context2) {
       while (1) {
@@ -657,9 +657,9 @@ try {
             _contextId4 = _dbux.pushImmediate(4);
             _context2.prev = 1;
             _context2.t0 = _dbux;
-            _context2.t1 = _awaitContextId;
+            _context2.t1 = _contextId5;
             _context2.next = 6;
-            return regeneratorRuntime.awrap(_awaitContextId = _dbux.preAwait(5, af1(1)));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId5 = _dbux.awaitId(5), af1(1)));
 
           case 6:
             _context2.t2 = _context2.sent;
@@ -667,9 +667,9 @@ try {
             _context2.t0.postAwait.call(_context2.t0, _context2.t1, _context2.t2);
 
             _context2.t3 = _dbux;
-            _context2.t4 = _awaitContextId2;
+            _context2.t4 = _contextId6;
             _context2.next = 12;
-            return regeneratorRuntime.awrap(_awaitContextId2 = _dbux.preAwait(6, af1(2)));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId6 = _dbux.awaitId(6), af1(2)));
 
           case 12:
             _context2.t5 = _context2.sent;
@@ -677,9 +677,9 @@ try {
             _context2.t3.postAwait.call(_context2.t3, _context2.t4, _context2.t5);
 
             _context2.t6 = _dbux;
-            _context2.t7 = _awaitContextId3;
+            _context2.t7 = _contextId7;
             _context2.next = 18;
-            return regeneratorRuntime.awrap(_awaitContextId3 = _dbux.preAwait(7, af1(3)));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId7 = _dbux.awaitId(7), af1(3)));
 
           case 18:
             _context2.t8 = _context2.sent;
@@ -703,28 +703,28 @@ try {
   };
 
   var af33 = function af33(delay) {
-    var _contextId5;
+    var _contextId8;
 
     return regeneratorRuntime.async(function af33$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            _contextId5 = _dbux.pushImmediate(8);
+            _contextId8 = _dbux.pushImmediate(8);
             _context3.prev = 1;
             return _context3.abrupt(\\"return\\", new Promise(function (r) {
-              var _contextId6 = _dbux.pushImmediate(9);
+              var _contextId9 = _dbux.pushImmediate(9);
 
               try {
-                setTimeout(_dbux.scheduleCallback(10, _contextId6, r.bind(33)), delay);
+                setTimeout(_dbux.scheduleCallback(10, _contextId9, r.bind(33)), delay);
               } finally {
-                _dbux.popImmediate(_contextId6);
+                _dbux.popImmediate(_contextId9);
               }
             }));
 
           case 3:
             _context3.prev = 3;
 
-            _dbux.popImmediate(_contextId5);
+            _dbux.popImmediate(_contextId8);
 
             return _context3.finish(3);
 
@@ -737,26 +737,26 @@ try {
   };
 
   var af44 = function af44() {
-    var _contextId7, _awaitContextId4, _awaitContextId5, a, b;
+    var _contextId10, _contextId11, _contextId12, a, b;
 
     return regeneratorRuntime.async(function af44$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            _contextId7 = _dbux.pushImmediate(11);
+            _contextId10 = _dbux.pushImmediate(11);
             _context4.prev = 1;
             _context4.t0 = _dbux;
-            _context4.t1 = _awaitContextId4;
+            _context4.t1 = _contextId11;
             _context4.next = 6;
-            return regeneratorRuntime.awrap(_awaitContextId4 = _dbux.preAwait(12, af33(100)));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId11 = _dbux.awaitId(12), af33(100)));
 
           case 6:
             _context4.t2 = _context4.sent;
             a = _context4.t0.postAwait.call(_context4.t0, _context4.t1, _context4.t2);
             _context4.t3 = _dbux;
-            _context4.t4 = _awaitContextId5;
+            _context4.t4 = _contextId12;
             _context4.next = 12;
-            return regeneratorRuntime.awrap(_awaitContextId5 = _dbux.preAwait(13, af33(50)));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId12 = _dbux.awaitId(13), af33(50)));
 
           case 12:
             _context4.t5 = _context4.sent;
@@ -766,7 +766,7 @@ try {
           case 15:
             _context4.prev = 15;
 
-            _dbux.popImmediate(_contextId7);
+            _dbux.popImmediate(_contextId10);
 
             return _context4.finish(15);
 
@@ -779,19 +779,19 @@ try {
   };
 
   (function main() {
-    var _contextId8, _awaitContextId6;
+    var _contextId13, _contextId14;
 
     return regeneratorRuntime.async(function main$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
-            _contextId8 = _dbux.pushImmediate(14);
+            _contextId13 = _dbux.pushImmediate(14);
             _context5.prev = 1;
             _context5.t0 = console;
             _context5.t1 = _dbux;
-            _context5.t2 = _awaitContextId6;
+            _context5.t2 = _contextId14;
             _context5.next = 7;
-            return regeneratorRuntime.awrap(_awaitContextId6 = _dbux.preAwait(15, Promise.all([af2(), af44()])));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId14 = _dbux.awaitId(15), Promise.all([af2(), af44()])));
 
           case 7:
             _context5.t3 = _context5.sent;
@@ -804,7 +804,7 @@ try {
           case 11:
             _context5.prev = 11;
 
-            _dbux.popImmediate(_contextId8);
+            _dbux.popImmediate(_contextId13);
 
             return _context5.finish(11);
 
@@ -1131,62 +1131,62 @@ try {
     const _contextId4 = _dbux.pushImmediate(4);
 
     try {
-      var _awaitContextId, _awaitContextId2, _awaitContextId3;
+      var _contextId5, _contextId6, _contextId7;
 
-      _dbux.postAwait(_awaitContextId, (await (_awaitContextId = _dbux.preAwait(5, af1(1)))));
+      _dbux.postAwait(_contextId5, (await _dbux.wrapAwait(_contextId5 = _dbux.awaitId(5), af1(1))));
 
-      _dbux.postAwait(_awaitContextId2, (await (_awaitContextId2 = _dbux.preAwait(6, af1(2)))));
+      _dbux.postAwait(_contextId6, (await _dbux.wrapAwait(_contextId6 = _dbux.awaitId(6), af1(2))));
 
-      return 2 + _dbux.postAwait(_awaitContextId3, (await (_awaitContextId3 = _dbux.preAwait(7, af1(3))))) - 3;
+      return 2 + _dbux.postAwait(_contextId7, (await _dbux.wrapAwait(_contextId7 = _dbux.awaitId(7), af1(3)))) - 3;
     } finally {
       _dbux.popImmediate(_contextId4);
     }
   }
 
   async function af33(delay) {
-    const _contextId5 = _dbux.pushImmediate(8);
+    const _contextId8 = _dbux.pushImmediate(8);
 
     try {
       return new Promise(r => {
-        const _contextId6 = _dbux.pushImmediate(9);
+        const _contextId9 = _dbux.pushImmediate(9);
 
         try {
-          setTimeout(_dbux.scheduleCallback(10, _contextId6, r.bind(33)), delay);
+          setTimeout(_dbux.scheduleCallback(10, _contextId9, r.bind(33)), delay);
         } finally {
-          _dbux.popImmediate(_contextId6);
+          _dbux.popImmediate(_contextId9);
         }
       });
     } finally {
-      _dbux.popImmediate(_contextId5);
+      _dbux.popImmediate(_contextId8);
     }
   }
 
   async function af44() {
-    const _contextId7 = _dbux.pushImmediate(11);
+    const _contextId10 = _dbux.pushImmediate(11);
 
     try {
-      var _awaitContextId4, _awaitContextId5;
+      var _contextId11, _contextId12;
 
-      const a = _dbux.postAwait(_awaitContextId4, (await (_awaitContextId4 = _dbux.preAwait(12, af33(100)))));
+      const a = _dbux.postAwait(_contextId11, (await _dbux.wrapAwait(_contextId11 = _dbux.awaitId(12), af33(100))));
 
-      const b = _dbux.postAwait(_awaitContextId5, (await (_awaitContextId5 = _dbux.preAwait(13, af33(50)))));
+      const b = _dbux.postAwait(_contextId12, (await _dbux.wrapAwait(_contextId12 = _dbux.awaitId(13), af33(50))));
 
       return a + b + af33(10);
     } finally {
-      _dbux.popImmediate(_contextId7);
+      _dbux.popImmediate(_contextId10);
     }
   }
 
   (async function main() {
-    const _contextId8 = _dbux.pushImmediate(14);
+    const _contextId13 = _dbux.pushImmediate(14);
 
     try {
-      var _awaitContextId6;
+      var _contextId14;
 
-      console.log(_dbux.postAwait(_awaitContextId6, (await (_awaitContextId6 = _dbux.preAwait(15, Promise.all([af2(), af44()]))))));
+      console.log(_dbux.postAwait(_contextId14, (await _dbux.wrapAwait(_contextId14 = _dbux.awaitId(15), Promise.all([af2(), af44()])))));
       f0();
     } finally {
-      _dbux.popImmediate(_contextId8);
+      _dbux.popImmediate(_contextId13);
     }
   })();
 } finally {
@@ -1533,7 +1533,7 @@ try {
   };
 
   var f2 = function f2() {
-    var _contextId5, _awaitContextId;
+    var _contextId5, _contextId6;
 
     return regeneratorRuntime.async(function f2$(_context2) {
       while (1) {
@@ -1542,9 +1542,9 @@ try {
             _contextId5 = _dbux.pushImmediate(6);
             _context2.prev = 1;
             _context2.t0 = _dbux;
-            _context2.t1 = _awaitContextId;
+            _context2.t1 = _contextId6;
             _context2.next = 6;
-            return regeneratorRuntime.awrap(_awaitContextId = _dbux.preAwait(7, sleep(50)));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId6 = _dbux.awaitId(7), sleep(50)));
 
           case 6:
             _context2.t2 = _context2.sent;
@@ -1567,18 +1567,18 @@ try {
   };
 
   var f3 = function f3() {
-    var _contextId6, _awaitContextId2;
+    var _contextId7, _contextId8;
 
     return regeneratorRuntime.async(function f3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            _contextId6 = _dbux.pushImmediate(8);
+            _contextId7 = _dbux.pushImmediate(8);
             _context3.prev = 1;
             _context3.t0 = _dbux;
-            _context3.t1 = _awaitContextId2;
+            _context3.t1 = _contextId8;
             _context3.next = 6;
-            return regeneratorRuntime.awrap(_awaitContextId2 = _dbux.preAwait(9, sleep(200)));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId8 = _dbux.awaitId(9), sleep(200)));
 
           case 6:
             _context3.t2 = _context3.sent;
@@ -1588,7 +1588,7 @@ try {
           case 8:
             _context3.prev = 8;
 
-            _dbux.popImmediate(_contextId6);
+            _dbux.popImmediate(_contextId7);
 
             return _context3.finish(8);
 
@@ -1601,20 +1601,20 @@ try {
   };
 
   var f4 = function f4() {
-    var _contextId7,
-        _awaitContextId3,
+    var _contextId9,
+        _contextId10,
         _args4 = arguments;
 
     return regeneratorRuntime.async(function f4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            _contextId7 = _dbux.pushImmediate(10);
+            _contextId9 = _dbux.pushImmediate(10);
             _context4.prev = 1;
             _context4.t0 = _dbux;
-            _context4.t1 = _awaitContextId3;
+            _context4.t1 = _contextId10;
             _context4.next = 6;
-            return regeneratorRuntime.awrap(_awaitContextId3 = _dbux.preAwait(11, Promise.all.apply(Promise, _args4)));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId10 = _dbux.awaitId(11), Promise.all.apply(Promise, _args4)));
 
           case 6:
             _context4.t2 = _context4.sent;
@@ -1624,7 +1624,7 @@ try {
           case 8:
             _context4.prev = 8;
 
-            _dbux.popImmediate(_contextId7);
+            _dbux.popImmediate(_contextId9);
 
             return _context4.finish(8);
 
@@ -1637,18 +1637,18 @@ try {
   };
 
   (function main() {
-    var _contextId8, _awaitContextId4, _awaitContextId5;
+    var _contextId11, _contextId12, _contextId13;
 
     return regeneratorRuntime.async(function main$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
-            _contextId8 = _dbux.pushImmediate(12);
+            _contextId11 = _dbux.pushImmediate(12);
             _context5.prev = 1;
             _context5.t0 = _dbux;
-            _context5.t1 = _awaitContextId4;
+            _context5.t1 = _contextId12;
             _context5.next = 6;
-            return regeneratorRuntime.awrap(_awaitContextId4 = _dbux.preAwait(13, f1()));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId12 = _dbux.awaitId(13), f1()));
 
           case 6:
             _context5.t2 = _context5.sent;
@@ -1656,9 +1656,9 @@ try {
             _context5.t0.postAwait.call(_context5.t0, _context5.t1, _context5.t2);
 
             _context5.t3 = _dbux;
-            _context5.t4 = _awaitContextId5;
+            _context5.t4 = _contextId13;
             _context5.next = 12;
-            return regeneratorRuntime.awrap(_awaitContextId5 = _dbux.preAwait(14, f4(f2, f3, sleep.bind(null, 400))));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId13 = _dbux.awaitId(14), f4(f2, f3, sleep.bind(null, 400))));
 
           case 12:
             _context5.t5 = _context5.sent;
@@ -1668,7 +1668,7 @@ try {
           case 14:
             _context5.prev = 14;
 
-            _dbux.popImmediate(_contextId8);
+            _dbux.popImmediate(_contextId11);
 
             return _context5.finish(14);
 
@@ -1978,49 +1978,49 @@ try {
     const _contextId5 = _dbux.pushImmediate(6);
 
     try {
-      var _awaitContextId;
+      var _contextId6;
 
-      _dbux.postAwait(_awaitContextId, (await (_awaitContextId = _dbux.preAwait(7, sleep(50)))));
+      _dbux.postAwait(_contextId6, (await _dbux.wrapAwait(_contextId6 = _dbux.awaitId(7), sleep(50))));
     } finally {
       _dbux.popImmediate(_contextId5);
     }
   }
 
   async function f3() {
-    const _contextId6 = _dbux.pushImmediate(8);
+    const _contextId7 = _dbux.pushImmediate(8);
 
     try {
-      var _awaitContextId2;
+      var _contextId8;
 
-      _dbux.postAwait(_awaitContextId2, (await (_awaitContextId2 = _dbux.preAwait(9, sleep(200)))));
-    } finally {
-      _dbux.popImmediate(_contextId6);
-    }
-  }
-
-  async function f4(...args) {
-    const _contextId7 = _dbux.pushImmediate(10);
-
-    try {
-      var _awaitContextId3;
-
-      _dbux.postAwait(_awaitContextId3, (await (_awaitContextId3 = _dbux.preAwait(11, Promise.all(...args)))));
+      _dbux.postAwait(_contextId8, (await _dbux.wrapAwait(_contextId8 = _dbux.awaitId(9), sleep(200))));
     } finally {
       _dbux.popImmediate(_contextId7);
     }
   }
 
-  (async function main() {
-    const _contextId8 = _dbux.pushImmediate(12);
+  async function f4(...args) {
+    const _contextId9 = _dbux.pushImmediate(10);
 
     try {
-      var _awaitContextId4, _awaitContextId5;
+      var _contextId10;
 
-      _dbux.postAwait(_awaitContextId4, (await (_awaitContextId4 = _dbux.preAwait(13, f1()))));
-
-      _dbux.postAwait(_awaitContextId5, (await (_awaitContextId5 = _dbux.preAwait(14, f4(f2, f3, sleep.bind(null, 400))))));
+      _dbux.postAwait(_contextId10, (await _dbux.wrapAwait(_contextId10 = _dbux.awaitId(11), Promise.all(...args))));
     } finally {
-      _dbux.popImmediate(_contextId8);
+      _dbux.popImmediate(_contextId9);
+    }
+  }
+
+  (async function main() {
+    const _contextId11 = _dbux.pushImmediate(12);
+
+    try {
+      var _contextId12, _contextId13;
+
+      _dbux.postAwait(_contextId12, (await _dbux.wrapAwait(_contextId12 = _dbux.awaitId(13), f1())));
+
+      _dbux.postAwait(_contextId13, (await _dbux.wrapAwait(_contextId13 = _dbux.awaitId(14), f4(f2, f3, sleep.bind(null, 400)))));
+    } finally {
+      _dbux.popImmediate(_contextId11);
     }
   })();
 } finally {

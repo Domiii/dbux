@@ -80,32 +80,39 @@ export default class Runtime {
   _maybeResumeInterruptedStack(contextId) {
     const stackTop = this._executingStack?.peek();
     if (contextId !== stackTop) {
+      return this._tryResumeStack(contextId);
+    }
+    return true;
+  }
+
+  _tryResumeStack(contextId) {
+    const resumingStack = this._getInterruptedStack(contextId);
+    if (!resumingStack) {
+      // TODO: add more self-heal heuristics?
+      logInternalError(
+        'Tried to resumeInterruptedStack context whose contextId does not match contextId on stack - ',
+        contextId, '!==', this._executingStack?.peek()
+      );
+      return false;
+    }
+    else {
+      this._resumeInterruptedStack(resumingStack);
+      return true;
+    }
+  }
+
+  _getInterruptedStack(contextId) {
       // TODO: improve efficiency (e.g.: use a Map<contextId, Stack>, or prune stale stacks etc...)
       //    (NOTE: stacks might never go "stale", as some might be waiting for rare events)
       // NOTE: use traditional for loop over Array.find to reduce memory churn
-      let resumingStack;
-      for (let i = 0; i < this._interruptedStacks.length; ++i) {
-        const stack = this._interruptedStacks[i];
-        if (stack.peek() === contextId) {
-          // found it!
-          resumingStack = stack;
-          break;
-        }
-      }
-
-      if (!resumingStack) {
-        // TODO: add more self-heal heuristics?
-        logInternalError(
-          'Tried to popImmediate context whose contextId does not match contextId on stack - ',
-          contextId, '!==', this._executingStack?.peek()
-        );
-        return false;
-      }
-      else {
-        this._resumeInterruptedStack(resumingStack);
+    for (let i = 0; i < this._interruptedStacks.length; ++i) {
+      const stack = this._interruptedStacks[i];
+      if (stack.peek() === contextId) {
+        // found it!
+        return stack;
       }
     }
-    return true;
+    return null;
   }
 
   /**
