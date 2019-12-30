@@ -72,6 +72,7 @@ export class ExecutionEventCollection {
 
   _log(event) {
     this._events.push(event);
+    // TODO: send event to server
     ExecutionEventCollection.prettyPrint(event);
   }
 

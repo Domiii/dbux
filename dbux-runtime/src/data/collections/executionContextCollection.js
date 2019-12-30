@@ -56,7 +56,7 @@ export class ExecutionContextCollection {
 
     const context = ExecutionContext.allocate(ExecutionContextType.Immediate, stackDepth, contextId, programId,
       staticContextId, orderId, parentScopeContextId);
-    this._contexts.push(context);
+    this._push(context);
     return context;
   }
 
@@ -69,7 +69,7 @@ export class ExecutionContextCollection {
 
     const context = ExecutionContext.allocate(ExecutionContextType.ScheduleCallback, stackDepth, contextId, programId,
       staticContextId, orderId, parentScopeContextId, schedulerId);
-    this._contexts.push(context);
+    this._push(context);
     return context;
   }
 
@@ -85,8 +85,13 @@ export class ExecutionContextCollection {
     const context = ExecutionContext.allocate(
       ExecutionContextType.ExecuteCallback, stackDepth, contextId, programId,
       staticContextId, orderId, parentScopeContextId, scheduledContextId);
-    this._contexts.push(context);
+    this._push(context);
     return context;
+  }
+
+  _push(context) {
+    this._contexts.push(context);
+    // TODO: send to server
   }
 
 
