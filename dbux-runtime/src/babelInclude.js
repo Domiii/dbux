@@ -14,7 +14,7 @@ const babelRegisterOptions = {
       }
 
       // only dbux plugin + common
-      let prefix = path.join(dbuxRoot, 'dbux-') + '((common)|(babel))';
+      let prefix = path.join(dbuxRoot, 'dbux-') + '((common)|(runtime))';
 
       // fix: backslashes on windows
       prefix = prefix.replace(/\\/g, '\\\\');
@@ -30,12 +30,13 @@ const babelRegisterOptions = {
   ],
   sourceMaps: "both",
   retainLines: true,
+  babelrc: true,
   // plugins: [
   //   '@babel/plugin-transform-runtime'
   // ],
-  presets: [
-    "@babel/preset-env"
-  ],
+  // presets: [
+  //   "@babel/preset-env"
+  // ],
   // presets: [[
   //   "@babel/preset-env",
   //   {

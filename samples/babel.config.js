@@ -1,14 +1,20 @@
+// const resolveFrom = require('resolve-from');
+const path = require('path');
+const dbuxRoot = path.resolve(__dirname + '/..');
+
+console.warn('samples/babel.config.js loaded')
+
 module.exports = {
-  ignore: ['node_modules'],
+  ignore: ['**/node_modules/**'],
   "sourceMaps": "both",
   "retainLines": true,
   "presets": [
     [
       "@babel/preset-env",
       {
-        "targets": {
-          "esmodules": false
-        }
+        "loose": true,
+        "useBuiltIns": "usage",
+        "corejs": 3
       }
     ]
   ],
@@ -31,5 +37,9 @@ module.exports = {
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-syntax-flow",
     //"@babel/plugin-transform-runtime"
+  ],
+  babelrcRoots: [
+    path.join(dbuxRoot, "dbux-common"),
+    path.join(dbuxRoot, "dbux-runtime")
   ]
 };

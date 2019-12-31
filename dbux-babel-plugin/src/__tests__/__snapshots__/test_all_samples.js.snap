@@ -126,7 +126,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"allFunctionTypes.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/allFunctionTypes.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/allFunctionTypes.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -396,7 +396,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"allFunctionTypes.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/allFunctionTypes.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/allFunctionTypes.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -822,7 +822,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"async-example1.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/async-example1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/async-example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -1196,7 +1196,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"async-example1.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/async-example1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/async-example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -1453,7 +1453,7 @@ async function f3() {
 }
 
 async function f4(...args) {
-  await Promise.all(...args);
+  await Promise.all(args);
 }
 
 (async function main() {
@@ -1603,6 +1603,9 @@ try {
   var f4 = function f4() {
     var _contextId9,
         _contextId10,
+        _len,
+        args,
+        _key,
         _args4 = arguments;
 
     return regeneratorRuntime.async(function f4$(_context4) {
@@ -1611,29 +1614,34 @@ try {
           case 0:
             _contextId9 = _dbux.pushImmediate(10);
             _context4.prev = 1;
+
+            for (_len = _args4.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+              args[_key] = _args4[_key];
+            }
+
             _context4.t0 = _dbux;
             _context4.t1 = _contextId10;
-            _context4.next = 6;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId10 = _dbux.awaitId(11), Promise.all.apply(Promise, _args4)));
+            _context4.next = 7;
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId10 = _dbux.awaitId(11), Promise.all(args)));
 
-          case 6:
+          case 7:
             _context4.t2 = _context4.sent;
 
             _context4.t0.postAwait.call(_context4.t0, _context4.t1, _context4.t2);
 
-          case 8:
-            _context4.prev = 8;
+          case 9:
+            _context4.prev = 9;
 
             _dbux.popImmediate(_contextId9);
 
-            return _context4.finish(8);
+            return _context4.finish(9);
 
-          case 11:
+          case 12:
           case \\"end\\":
             return _context4.stop();
         }
       }
-    }, null, null, [[1,, 8, 11]]);
+    }, null, null, [[1,, 9, 12]]);
   };
 
   (function main() {
@@ -1686,7 +1694,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await1.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/await1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -1853,11 +1861,11 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 18,
-          \\"column\\": 28
+          \\"column\\": 25
         }
       },
       \\"type\\": 4,
-      \\"displayName\\": \\"(await Promise.all(...args))\\"
+      \\"displayName\\": \\"(await Promise.all(args))\\"
     }, {
       \\"staticId\\": 12,
       \\"parent\\": 1,
@@ -1929,7 +1937,7 @@ async function f3() {
 }
 
 async function f4(...args) {
-  await Promise.all(...args);
+  await Promise.all(args);
 }
 
 (async function main() {
@@ -2004,7 +2012,7 @@ try {
     try {
       var _contextId10;
 
-      _dbux.postAwait(_contextId10, (await _dbux.wrapAwait(_contextId10 = _dbux.awaitId(11), Promise.all(...args))));
+      _dbux.postAwait(_contextId10, (await _dbux.wrapAwait(_contextId10 = _dbux.awaitId(11), Promise.all(args))));
     } finally {
       _dbux.popImmediate(_contextId9);
     }
@@ -2030,7 +2038,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await1.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/await1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -2197,11 +2205,11 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 18,
-          \\"column\\": 28
+          \\"column\\": 25
         }
       },
       \\"type\\": 4,
-      \\"displayName\\": \\"(await Promise.all(...args))\\"
+      \\"displayName\\": \\"(await Promise.all(args))\\"
     }, {
       \\"staticId\\": 12,
       \\"parent\\": 1,
@@ -2361,7 +2369,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example1.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/example1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -2530,7 +2538,7 @@ export { _f as f1, _A as A, _f2 as f2 };
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example1.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/example1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -2653,7 +2661,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example2.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/example2.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example2.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -2726,7 +2734,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example2.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/example2.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example2.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -2816,7 +2824,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example3.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/example3.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example3.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -2920,7 +2928,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example3.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/example3.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example3.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -3073,7 +3081,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"setTimeout1.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/setTimeout1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/setTimeout1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -3356,7 +3364,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"setTimeout1.js\\",
-    \\"filePath\\": \\"samples/__samplesInput__/setTimeout1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/setTimeout1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {

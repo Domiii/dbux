@@ -15,7 +15,7 @@ async function f3() {
 }
 
 async function f4(...args) {
-  await Promise.all(...args);
+  await Promise.all(args);
 }
 
 (async function main() {

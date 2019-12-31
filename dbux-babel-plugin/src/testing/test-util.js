@@ -40,8 +40,9 @@ export function writeResultCodeToFile(inputCode, title, babelOptions, plugin) {
   // console.warn(babelOptions.plugins.map(p => (typeof p === 'function' ? p.toString() : JSON.stringify(p)).split('\n')[0]).join(','));
   const outputCode = transformSync(inputCode, babelOptions).code;
 
-  const srcPath = __dirname + '/..';
-  const rootPath = srcPath + '/..';
+  // const srcPath = __dirname + '/..';
+  // const rootPath = srcPath + '/..';
+  const rootPath = __dirname + '/../../..';
   const samplesOutputPath = rootPath + '/samples/__samplesOutput__';
   const filename = title;
   fs.mkdirSync(samplesOutputPath, { recursive: true });

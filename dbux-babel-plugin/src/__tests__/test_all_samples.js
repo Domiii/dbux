@@ -4,8 +4,9 @@ import path from 'path';
 import fs from 'fs';
 import { runSnapshotTests } from '../testing/test-util';
 
-const rootFolder = path.join(__dirname, '../..');
-const inputFolder = path.join(rootFolder, 'samples/__samplesInput__');
+const pluginRoot = path.join(__dirname, '../..');
+const dbuxRoot = path.join(pluginRoot, '..');
+const inputFolder = path.join(dbuxRoot, 'samples/__samplesInput__');
 
 fs.readdirSync(inputFolder).forEach(fname => {
   //const fname = path.basename(fpath);

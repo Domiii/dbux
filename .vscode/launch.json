@@ -95,28 +95,17 @@
 			"internalConsoleOptions": "neverOpen"
 		},
 		{
-			"name": "debug file",
+			"name": "debug sample",
 			"type": "node",
-			"port": 9297,
 			"env": {
 				"debug": "module"
 			},
 			"request": "launch",
-			"cwd": "${workspaceFolder}/dbux-cli",
+			"cwd": "${workspaceFolder}/samples",
 			// "cwd": "${fileDirname}",
-			"runtimeExecutable": "${workspaceFolder}/dbux-cli/node_modules/@babel/node/bin/babel-node.js",
-			"runtimeArgs": [
-				"--stack-trace-limit=1000",
-				"--nolazy",
-				"--inspect-brk=9297",
-				"--config-file",
-				"./babel.config.js",
-				"--"
-			],
 			"sourceMaps": true,
 			"restart": true,
 			"program": "${file}",
-			// "program": "${cwd}/../${relativeFile}",
 			"protocol": "inspector",
 			"trace": true,
 			"disableOptimisticBPs": true,

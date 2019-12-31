@@ -1,5 +1,8 @@
+const path = require('path');
+const thisRoot = path.resolve(__dirname);
+
 module.exports = {
-  ignore: ['node_modules'],
+  ignore: [path.join(thisRoot, 'node_modules')],
   "sourceMaps": "both",
   "retainLines": true,
   "presets": [
