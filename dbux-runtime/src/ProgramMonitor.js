@@ -50,7 +50,7 @@ export default class ProgramMonitor {
 
   wrapAwait(awaitContextId, awaitValue) {
     // nothing to do
-    return awaitValue;
+    return RuntimeMonitor.instance.wrapAwait(this.getProgramId(), awaitContextId, awaitValue);
   }
 
   postAwait(awaitContextId) {

@@ -42,9 +42,7 @@ export default class Runtime {
   _executeEmptyStackBarrier = () => {
     if (this._executingStack) {
       // we had an unhandled interruption (e.g. await, alert, prompt etc.)
-      this._interruptedStacks.add(this._executingStack);
-      this._executingStack = null;
-      this._previousPoppedContextId = null;
+      this.interrupt();
     }
   }
 
@@ -80,7 +78,13 @@ export default class Runtime {
   _maybeResumeInterruptedStack(contextId) {
     const stackTop = this._executingStack?.peek();
     if (contextId !== stackTop) {
-      return this._tryResumeStack(contextId);
+      if (!this._tryResumeStack(contextId)) {
+        logInternalError(
+          'Tried to resumeInterruptedStack context whose contextId does not match contextId on stack - ',
+          contextId, '!==', this._executingStack?.peek()
+        );
+        return false;
+      }
     }
     return true;
   }
@@ -89,10 +93,6 @@ export default class Runtime {
     const resumingStack = this._getInterruptedStack(contextId);
     if (!resumingStack) {
       // TODO: add more self-heal heuristics?
-      logInternalError(
-        'Tried to resumeInterruptedStack context whose contextId does not match contextId on stack - ',
-        contextId, '!==', this._executingStack?.peek()
-      );
       return false;
     }
     else {
@@ -138,6 +138,10 @@ export default class Runtime {
     return this._executingStack?.peek() || null;
   }
 
+  isExecuting() {
+    return !!this._executingStack;
+  }
+
   // ###########################################################################
   // Public methods
   // ###########################################################################
@@ -168,5 +172,15 @@ export default class Runtime {
       this._executingStack = null;
       this._previousPoppedContextId = null;
     }
+  }
+
+  interrupt() {
+    if (!this._executingStack) {
+      logInternalError('Tried to interrupt but there is no executing stack');
+      return;
+    }
+    this._interruptedStacks.add(this._executingStack);
+    this._executingStack = null;
+    this._previousPoppedContextId = null;
   }
 }

@@ -179,10 +179,19 @@ export default class RuntimeMonitor {
     const { contextId } = context;
     this._runtime.push(contextId);
 
-    // log event
-    executionEventCollection.logInterrupt(contextId);
-
+    
     return contextId;
+  }
+  
+  wrapAwait(programId, awaitContextId, awaitValue) {
+    if (this._runtime.isExecuting()) {
+      this._runtime.interrupt();
+    }
+    
+    // log event
+    executionEventCollection.logInterrupt(awaitContextId);
+
+    return awaitValue;
   }
 
   /**
@@ -196,10 +205,13 @@ export default class RuntimeMonitor {
       return;
     }
 
-    if (!this._runtime._tryResumeStack(awaitContextId)) {
-      // something went wrong (and error has already been reported)
-      return;
-    }
+    // pop it!
+    this._runtime.pop(awaitContextId);
+    // if (!this._runtime._tryResumeStack(awaitContextId)) {
+    //   // something went wrong
+    //   logInternalError('could not resume awaitContextId: ', awaitContextId);
+    //   return;
+    // }
 
     executionEventCollection.logResume(awaitContextId);
   }

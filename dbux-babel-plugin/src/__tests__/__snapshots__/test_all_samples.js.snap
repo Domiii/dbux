@@ -1434,6 +1434,552 @@ function _dbux_init(dbuxRuntime) {
 "
 `;
 
+exports[`dbux-babel-plugin await0.es5.js: await0.es5.js 1`] = `
+"
+async function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function f1() {
+  return sleep(50);
+}
+
+async function f2() {
+  await sleep(50);
+}
+
+(async function main() {
+  await Promise.all([
+    f1(),
+    f2()
+  ]);
+})();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+require(\\"core-js/modules/es.array.iterator\\");
+
+require(\\"core-js/modules/es.object.to-string\\");
+
+require(\\"core-js/modules/es.promise\\");
+
+require(\\"core-js/modules/es.string.iterator\\");
+
+require(\\"core-js/modules/web.dom-collections.iterator\\");
+
+require(\\"core-js/modules/web.timers\\");
+
+require(\\"regenerator-runtime/runtime\\");
+
+var _dbuxRuntime = require('dbux-runtime')[\\"default\\"];
+
+var _dbux = _dbux_init(_dbuxRuntime);
+
+var _contextId = _dbux.getProgramContextId();
+
+try {
+  var sleep = function sleep(ms) {
+    var _contextId2;
+
+    return regeneratorRuntime.async(function sleep$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _contextId2 = _dbux.pushImmediate(2);
+            _context.prev = 1;
+            return _context.abrupt(\\"return\\", new Promise(function (r) {
+              var _contextId3 = _dbux.pushImmediate(3);
+
+              try {
+                return setTimeout(_dbux.scheduleCallback(4, _contextId3, r), ms);
+              } finally {
+                _dbux.popImmediate(_contextId3);
+              }
+            }));
+
+          case 3:
+            _context.prev = 3;
+
+            _dbux.popImmediate(_contextId2);
+
+            return _context.finish(3);
+
+          case 6:
+          case \\"end\\":
+            return _context.stop();
+        }
+      }
+    }, null, null, [[1,, 3, 6]]);
+  };
+
+  var f1 = function f1() {
+    var _contextId4 = _dbux.pushImmediate(5);
+
+    try {
+      return sleep(50);
+    } finally {
+      _dbux.popImmediate(_contextId4);
+    }
+  };
+
+  var f2 = function f2() {
+    var _contextId5, _contextId6;
+
+    return regeneratorRuntime.async(function f2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _contextId5 = _dbux.pushImmediate(6);
+            _context2.prev = 1;
+            _context2.t0 = _dbux;
+            _context2.t1 = _contextId6;
+            _context2.next = 6;
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId6 = _dbux.awaitId(7), sleep(50)));
+
+          case 6:
+            _context2.t2 = _context2.sent;
+
+            _context2.t0.postAwait.call(_context2.t0, _context2.t1, _context2.t2);
+
+          case 8:
+            _context2.prev = 8;
+
+            _dbux.popImmediate(_contextId5);
+
+            return _context2.finish(8);
+
+          case 11:
+          case \\"end\\":
+            return _context2.stop();
+        }
+      }
+    }, null, null, [[1,, 8, 11]]);
+  };
+
+  (function main() {
+    var _contextId7, _contextId8;
+
+    return regeneratorRuntime.async(function main$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _contextId7 = _dbux.pushImmediate(8);
+            _context3.prev = 1;
+            _context3.t0 = _dbux;
+            _context3.t1 = _contextId8;
+            _context3.next = 6;
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId8 = _dbux.awaitId(9), Promise.all([f1(), f2()])));
+
+          case 6:
+            _context3.t2 = _context3.sent;
+
+            _context3.t0.postAwait.call(_context3.t0, _context3.t1, _context3.t2);
+
+          case 8:
+            _context3.prev = 8;
+
+            _dbux.popImmediate(_contextId7);
+
+            return _context3.finish(8);
+
+          case 11:
+          case \\"end\\":
+            return _context3.stop();
+        }
+      }
+    }, null, null, [[1,, 8, 11]]);
+  })();
+} finally {
+  _dbux.popProgram();
+}
+
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
+    \\"fileName\\": \\"await0.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await0.js\\",
+    \\"staticContexts\\": [null, {
+      \\"staticId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 5
+        }
+      },
+      \\"type\\": 1,
+      \\"name\\": \\"Program\\",
+      \\"displayName\\": \\"Program\\"
+    }, {
+      \\"staticId\\": 2,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"sleep\\",
+      \\"displayName\\": \\"sleep\\"
+    }, {
+      \\"staticId\\": 3,
+      \\"parent\\": 2,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 21
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 43
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"(anonymous)\\"
+    }, {
+      \\"staticId\\": 4,
+      \\"parent\\": 3,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 37
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 38
+        },
+        \\"identifierName\\": \\"r\\"
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(r)\\"
+    }, {
+      \\"staticId\\": 5,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 7,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f1\\",
+      \\"displayName\\": \\"f1\\"
+    }, {
+      \\"staticId\\": 6,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 11,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f2\\",
+      \\"displayName\\": \\"f2\\"
+    }, {
+      \\"staticId\\": 7,
+      \\"parent\\": 6,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 17
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await sleep(50))\\"
+    }, {
+      \\"staticId\\": 8,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 13,
+          \\"column\\": 1
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"main\\",
+      \\"displayName\\": \\"main\\"
+    }, {
+      \\"staticId\\": 9,
+      \\"parent\\": 8,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 14,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 17,
+          \\"column\\": 4
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await Promise.all([f1(), f2...)\\"
+    }]
+  });
+}
+"
+`;
+
+exports[`dbux-babel-plugin await0.esNext.js: await0.esNext.js 1`] = `
+"
+async function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function f1() {
+  return sleep(50);
+}
+
+async function f2() {
+  await sleep(50);
+}
+
+(async function main() {
+  await Promise.all([
+    f1(),
+    f2()
+  ]);
+})();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const _dbuxRuntime = require('dbux-runtime').default;
+
+const _dbux = _dbux_init(_dbuxRuntime);
+
+const _contextId = _dbux.getProgramContextId();
+
+try {
+  async function sleep(ms) {
+    const _contextId2 = _dbux.pushImmediate(2);
+
+    try {
+      return new Promise(r => {
+        const _contextId3 = _dbux.pushImmediate(3);
+
+        try {
+          return setTimeout(_dbux.scheduleCallback(4, _contextId3, r), ms);
+        } finally {
+          _dbux.popImmediate(_contextId3);
+        }
+      });
+    } finally {
+      _dbux.popImmediate(_contextId2);
+    }
+  }
+
+  function f1() {
+    const _contextId4 = _dbux.pushImmediate(5);
+
+    try {
+      return sleep(50);
+    } finally {
+      _dbux.popImmediate(_contextId4);
+    }
+  }
+
+  async function f2() {
+    const _contextId5 = _dbux.pushImmediate(6);
+
+    try {
+      var _contextId6;
+
+      _dbux.postAwait(_contextId6, (await _dbux.wrapAwait(_contextId6 = _dbux.awaitId(7), sleep(50))));
+    } finally {
+      _dbux.popImmediate(_contextId5);
+    }
+  }
+
+  (async function main() {
+    const _contextId7 = _dbux.pushImmediate(8);
+
+    try {
+      var _contextId8;
+
+      _dbux.postAwait(_contextId8, (await _dbux.wrapAwait(_contextId8 = _dbux.awaitId(9), Promise.all([f1(), f2()]))));
+    } finally {
+      _dbux.popImmediate(_contextId7);
+    }
+  })();
+} finally {
+  _dbux.popProgram();
+}
+
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
+    \\"fileName\\": \\"await0.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await0.js\\",
+    \\"staticContexts\\": [null, {
+      \\"staticId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 5
+        }
+      },
+      \\"type\\": 1,
+      \\"name\\": \\"Program\\",
+      \\"displayName\\": \\"Program\\"
+    }, {
+      \\"staticId\\": 2,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"sleep\\",
+      \\"displayName\\": \\"sleep\\"
+    }, {
+      \\"staticId\\": 3,
+      \\"parent\\": 2,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 21
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 43
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"(anonymous)\\"
+    }, {
+      \\"staticId\\": 4,
+      \\"parent\\": 3,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 37
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 38
+        },
+        \\"identifierName\\": \\"r\\"
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(r)\\"
+    }, {
+      \\"staticId\\": 5,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 7,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f1\\",
+      \\"displayName\\": \\"f1\\"
+    }, {
+      \\"staticId\\": 6,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 11,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f2\\",
+      \\"displayName\\": \\"f2\\"
+    }, {
+      \\"staticId\\": 7,
+      \\"parent\\": 6,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 17
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await sleep(50))\\"
+    }, {
+      \\"staticId\\": 8,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 13,
+          \\"column\\": 1
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"main\\",
+      \\"displayName\\": \\"main\\"
+    }, {
+      \\"staticId\\": 9,
+      \\"parent\\": 8,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 14,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 17,
+          \\"column\\": 4
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await Promise.all([f1(), f2...)\\"
+    }]
+  });
+}
+"
+`;
+
 exports[`dbux-babel-plugin await1.es5.js: await1.es5.js 1`] = `
 "
 async function sleep(ms) {
