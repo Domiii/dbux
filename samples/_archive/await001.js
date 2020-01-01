@@ -37,14 +37,14 @@
   async function f1() {
     log('[f1] push');
     let id;
-    wrapAwait(await wrapAwaitExpression(id = awaitId(), sleep(10)), log('[f1] wrapAwait arg2') && id);
+    wrapAwait(await wrapAwaitExpression(id = awaitId(), sleep(10)), id);
     log('[f1] pop', id);
   }
 
   (async function main() {
     log('[main] push');
     let id;
-    wrapAwait(await wrapAwaitExpression(id = awaitId(), f1()), log('[main] wrapAwait arg2') && id);
+    wrapAwait(await wrapAwaitExpression(id = awaitId(), f1()), id);
     log('[main] pop', id);
   })();
 

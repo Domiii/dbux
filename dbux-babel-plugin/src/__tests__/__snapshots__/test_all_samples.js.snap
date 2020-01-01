@@ -126,7 +126,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"allFunctionTypes.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/allFunctionTypes.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -396,7 +396,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"allFunctionTypes.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/allFunctionTypes.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -657,32 +657,32 @@ try {
             _contextId4 = _dbux.pushImmediate(4);
             _context2.prev = 1;
             _context2.t0 = _dbux;
-            _context2.t1 = _contextId5;
-            _context2.next = 6;
+            _context2.next = 5;
             return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId5 = _dbux.awaitId(5), af1(1)));
 
-          case 6:
-            _context2.t2 = _context2.sent;
+          case 5:
+            _context2.t1 = _context2.sent;
+            _context2.t2 = _contextId5;
 
             _context2.t0.postAwait.call(_context2.t0, _context2.t1, _context2.t2);
 
             _context2.t3 = _dbux;
-            _context2.t4 = _contextId6;
-            _context2.next = 12;
+            _context2.next = 11;
             return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId6 = _dbux.awaitId(6), af1(2)));
 
-          case 12:
-            _context2.t5 = _context2.sent;
+          case 11:
+            _context2.t4 = _context2.sent;
+            _context2.t5 = _contextId6;
 
             _context2.t3.postAwait.call(_context2.t3, _context2.t4, _context2.t5);
 
             _context2.t6 = _dbux;
-            _context2.t7 = _contextId7;
-            _context2.next = 18;
+            _context2.next = 17;
             return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId7 = _dbux.awaitId(7), af1(3)));
 
-          case 18:
-            _context2.t8 = _context2.sent;
+          case 17:
+            _context2.t7 = _context2.sent;
+            _context2.t8 = _contextId7;
             _context2.t9 = _context2.t6.postAwait.call(_context2.t6, _context2.t7, _context2.t8);
             _context2.t10 = 2 + _context2.t9;
             return _context2.abrupt(\\"return\\", _context2.t10 - 3);
@@ -746,20 +746,20 @@ try {
             _contextId10 = _dbux.pushImmediate(11);
             _context4.prev = 1;
             _context4.t0 = _dbux;
-            _context4.t1 = _contextId11;
-            _context4.next = 6;
+            _context4.next = 5;
             return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId11 = _dbux.awaitId(12), af33(100)));
 
-          case 6:
-            _context4.t2 = _context4.sent;
+          case 5:
+            _context4.t1 = _context4.sent;
+            _context4.t2 = _contextId11;
             a = _context4.t0.postAwait.call(_context4.t0, _context4.t1, _context4.t2);
             _context4.t3 = _dbux;
-            _context4.t4 = _contextId12;
-            _context4.next = 12;
+            _context4.next = 11;
             return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId12 = _dbux.awaitId(13), af33(50)));
 
-          case 12:
-            _context4.t5 = _context4.sent;
+          case 11:
+            _context4.t4 = _context4.sent;
+            _context4.t5 = _contextId12;
             b = _context4.t3.postAwait.call(_context4.t3, _context4.t4, _context4.t5);
             return _context4.abrupt(\\"return\\", a + b + af33(10));
 
@@ -789,12 +789,12 @@ try {
             _context5.prev = 1;
             _context5.t0 = console;
             _context5.t1 = _dbux;
-            _context5.t2 = _contextId14;
-            _context5.next = 7;
+            _context5.next = 6;
             return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId14 = _dbux.awaitId(15), Promise.all([af2(), af44()])));
 
-          case 7:
-            _context5.t3 = _context5.sent;
+          case 6:
+            _context5.t2 = _context5.sent;
+            _context5.t3 = _contextId14;
             _context5.t4 = _context5.t1.postAwait.call(_context5.t1, _context5.t2, _context5.t3);
 
             _context5.t0.log.call(_context5.t0, _context5.t4);
@@ -822,7 +822,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"async-example1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\async-example1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/async-example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -1133,11 +1133,11 @@ try {
     try {
       var _contextId5, _contextId6, _contextId7;
 
-      _dbux.postAwait(_contextId5, (await _dbux.wrapAwait(_contextId5 = _dbux.awaitId(5), af1(1))));
+      _dbux.postAwait((await _dbux.wrapAwait(_contextId5 = _dbux.awaitId(5), af1(1))), _contextId5);
 
-      _dbux.postAwait(_contextId6, (await _dbux.wrapAwait(_contextId6 = _dbux.awaitId(6), af1(2))));
+      _dbux.postAwait((await _dbux.wrapAwait(_contextId6 = _dbux.awaitId(6), af1(2))), _contextId6);
 
-      return 2 + _dbux.postAwait(_contextId7, (await _dbux.wrapAwait(_contextId7 = _dbux.awaitId(7), af1(3)))) - 3;
+      return 2 + _dbux.postAwait((await _dbux.wrapAwait(_contextId7 = _dbux.awaitId(7), af1(3))), _contextId7) - 3;
     } finally {
       _dbux.popImmediate(_contextId4);
     }
@@ -1167,9 +1167,9 @@ try {
     try {
       var _contextId11, _contextId12;
 
-      const a = _dbux.postAwait(_contextId11, (await _dbux.wrapAwait(_contextId11 = _dbux.awaitId(12), af33(100))));
+      const a = _dbux.postAwait((await _dbux.wrapAwait(_contextId11 = _dbux.awaitId(12), af33(100))), _contextId11);
 
-      const b = _dbux.postAwait(_contextId12, (await _dbux.wrapAwait(_contextId12 = _dbux.awaitId(13), af33(50))));
+      const b = _dbux.postAwait((await _dbux.wrapAwait(_contextId12 = _dbux.awaitId(13), af33(50))), _contextId12);
 
       return a + b + af33(10);
     } finally {
@@ -1183,7 +1183,7 @@ try {
     try {
       var _contextId14;
 
-      console.log(_dbux.postAwait(_contextId14, (await _dbux.wrapAwait(_contextId14 = _dbux.awaitId(15), Promise.all([af2(), af44()])))));
+      console.log(_dbux.postAwait((await _dbux.wrapAwait(_contextId14 = _dbux.awaitId(15), Promise.all([af2(), af44()]))), _contextId14));
       f0();
     } finally {
       _dbux.popImmediate(_contextId13);
@@ -1196,7 +1196,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"async-example1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\async-example1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/async-example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -1436,8 +1436,15 @@ function _dbux_init(dbuxRuntime) {
 
 exports[`dbux-babel-plugin await0.es5.js: await0.es5.js 1`] = `
 "
+let _ms;
+function f1(r) {
+  setTimeout(r, _ms)
+}
+
 async function sleep(ms) {
-  return new Promise(r => setTimeout(r, ms));
+  // return new Promise(r => setTimeout(r, ms));
+  _ms = ms;
+  return new Promise(f1);
 }
 
 (async function main() {
@@ -1463,39 +1470,45 @@ var _dbux = _dbux_init(_dbuxRuntime);
 var _contextId = _dbux.getProgramContextId();
 
 try {
+  var f1 = function f1(r) {
+    var _contextId2 = _dbux.pushImmediate(2);
+
+    try {
+      setTimeout(_dbux.scheduleCallback(3, _contextId2, r), _ms);
+    } finally {
+      _dbux.popImmediate(_contextId2);
+    }
+  };
+
   var sleep = function sleep(ms) {
-    var _contextId2;
+    var _contextId3;
 
     return regeneratorRuntime.async(function sleep$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _contextId2 = _dbux.pushImmediate(2);
+            _contextId3 = _dbux.pushImmediate(4);
             _context.prev = 1;
-            return _context.abrupt(\\"return\\", new Promise(function (r) {
-              var _contextId3 = _dbux.pushImmediate(3);
+            // return new Promise(r => setTimeout(r, ms));
+            _ms = ms;
+            return _context.abrupt(\\"return\\", new Promise(f1));
 
-              try {
-                return setTimeout(_dbux.scheduleCallback(4, _contextId3, r), ms);
-              } finally {
-                _dbux.popImmediate(_contextId3);
-              }
-            }));
+          case 4:
+            _context.prev = 4;
 
-          case 3:
-            _context.prev = 3;
+            _dbux.popImmediate(_contextId3);
 
-            _dbux.popImmediate(_contextId2);
+            return _context.finish(4);
 
-            return _context.finish(3);
-
-          case 6:
+          case 7:
           case \\"end\\":
             return _context.stop();
         }
       }
-    }, null, null, [[1,, 3, 6]]);
+    }, null, null, [[1,, 4, 7]]);
   };
+
+  var _ms;
 
   (function main() {
     var _contextId4, _contextId5;
@@ -1507,12 +1520,12 @@ try {
             _contextId4 = _dbux.pushImmediate(5);
             _context2.prev = 1;
             _context2.t0 = _dbux;
-            _context2.t1 = _contextId5;
-            _context2.next = 6;
+            _context2.next = 5;
             return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId5 = _dbux.awaitId(6), sleep(50)));
 
-          case 6:
-            _context2.t2 = _context2.sent;
+          case 5:
+            _context2.t1 = _context2.sent;
+            _context2.t2 = _contextId5;
 
             _context2.t0.postAwait.call(_context2.t0, _context2.t1, _context2.t2);
 
@@ -1537,7 +1550,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await0.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await0.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await0.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -1546,7 +1559,7 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 7,
+          \\"line\\": 14,
           \\"column\\": 5
         }
       },
@@ -1558,11 +1571,43 @@ function _dbux_init(dbuxRuntime) {
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 1,
+          \\"line\\": 2,
           \\"column\\": 0
         },
         \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f1\\",
+      \\"displayName\\": \\"f1\\"
+    }, {
+      \\"staticId\\": 3,
+      \\"parent\\": 2,
+      \\"loc\\": {
+        \\"start\\": {
           \\"line\\": 3,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 14
+        },
+        \\"identifierName\\": \\"r\\"
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(r)\\"
+    }, {
+      \\"staticId\\": 4,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 6,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 10,
           \\"column\\": 1
         }
       },
@@ -1570,46 +1615,15 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"sleep\\",
       \\"displayName\\": \\"sleep\\"
     }, {
-      \\"staticId\\": 3,
-      \\"parent\\": 2,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 2,
-          \\"column\\": 21
-        },
-        \\"end\\": {
-          \\"line\\": 2,
-          \\"column\\": 43
-        }
-      },
-      \\"type\\": 2,
-      \\"displayName\\": \\"(anonymous)\\"
-    }, {
-      \\"staticId\\": 4,
-      \\"parent\\": 3,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 2,
-          \\"column\\": 37
-        },
-        \\"end\\": {
-          \\"line\\": 2,
-          \\"column\\": 38
-        },
-        \\"identifierName\\": \\"r\\"
-      },
-      \\"type\\": 3,
-      \\"displayName\\": \\"(r)\\"
-    }, {
       \\"staticId\\": 5,
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 5,
+          \\"line\\": 12,
           \\"column\\": 1
         },
         \\"end\\": {
-          \\"line\\": 7,
+          \\"line\\": 14,
           \\"column\\": 1
         }
       },
@@ -1621,11 +1635,11 @@ function _dbux_init(dbuxRuntime) {
       \\"parent\\": 5,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 6,
+          \\"line\\": 13,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 6,
+          \\"line\\": 13,
           \\"column\\": 17
         }
       },
@@ -1639,8 +1653,15 @@ function _dbux_init(dbuxRuntime) {
 
 exports[`dbux-babel-plugin await0.esNext.js: await0.esNext.js 1`] = `
 "
+let _ms;
+function f1(r) {
+  setTimeout(r, _ms)
+}
+
 async function sleep(ms) {
-  return new Promise(r => setTimeout(r, ms));
+  // return new Promise(r => setTimeout(r, ms));
+  _ms = ms;
+  return new Promise(f1);
 }
 
 (async function main() {
@@ -1656,21 +1677,27 @@ const _dbux = _dbux_init(_dbuxRuntime);
 const _contextId = _dbux.getProgramContextId();
 
 try {
-  async function sleep(ms) {
+  let _ms;
+
+  function f1(r) {
     const _contextId2 = _dbux.pushImmediate(2);
 
     try {
-      return new Promise(r => {
-        const _contextId3 = _dbux.pushImmediate(3);
-
-        try {
-          return setTimeout(_dbux.scheduleCallback(4, _contextId3, r), ms);
-        } finally {
-          _dbux.popImmediate(_contextId3);
-        }
-      });
+      setTimeout(_dbux.scheduleCallback(3, _contextId2, r), _ms);
     } finally {
       _dbux.popImmediate(_contextId2);
+    }
+  }
+
+  async function sleep(ms) {
+    const _contextId3 = _dbux.pushImmediate(4);
+
+    try {
+      // return new Promise(r => setTimeout(r, ms));
+      _ms = ms;
+      return new Promise(f1);
+    } finally {
+      _dbux.popImmediate(_contextId3);
     }
   }
 
@@ -1680,7 +1707,7 @@ try {
     try {
       var _contextId5;
 
-      _dbux.postAwait(_contextId5, (await _dbux.wrapAwait(_contextId5 = _dbux.awaitId(6), sleep(50))));
+      _dbux.postAwait((await _dbux.wrapAwait(_contextId5 = _dbux.awaitId(6), sleep(50))), _contextId5);
     } finally {
       _dbux.popImmediate(_contextId4);
     }
@@ -1692,7 +1719,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await0.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await0.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await0.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -1701,7 +1728,7 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 7,
+          \\"line\\": 14,
           \\"column\\": 5
         }
       },
@@ -1713,11 +1740,43 @@ function _dbux_init(dbuxRuntime) {
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 1,
+          \\"line\\": 2,
           \\"column\\": 0
         },
         \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f1\\",
+      \\"displayName\\": \\"f1\\"
+    }, {
+      \\"staticId\\": 3,
+      \\"parent\\": 2,
+      \\"loc\\": {
+        \\"start\\": {
           \\"line\\": 3,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 14
+        },
+        \\"identifierName\\": \\"r\\"
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(r)\\"
+    }, {
+      \\"staticId\\": 4,
+      \\"parent\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 6,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 10,
           \\"column\\": 1
         }
       },
@@ -1725,46 +1784,15 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"sleep\\",
       \\"displayName\\": \\"sleep\\"
     }, {
-      \\"staticId\\": 3,
-      \\"parent\\": 2,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 2,
-          \\"column\\": 21
-        },
-        \\"end\\": {
-          \\"line\\": 2,
-          \\"column\\": 43
-        }
-      },
-      \\"type\\": 2,
-      \\"displayName\\": \\"(anonymous)\\"
-    }, {
-      \\"staticId\\": 4,
-      \\"parent\\": 3,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 2,
-          \\"column\\": 37
-        },
-        \\"end\\": {
-          \\"line\\": 2,
-          \\"column\\": 38
-        },
-        \\"identifierName\\": \\"r\\"
-      },
-      \\"type\\": 3,
-      \\"displayName\\": \\"(r)\\"
-    }, {
       \\"staticId\\": 5,
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 5,
+          \\"line\\": 12,
           \\"column\\": 1
         },
         \\"end\\": {
-          \\"line\\": 7,
+          \\"line\\": 14,
           \\"column\\": 1
         }
       },
@@ -1776,11 +1804,11 @@ function _dbux_init(dbuxRuntime) {
       \\"parent\\": 5,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 6,
+          \\"line\\": 13,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 6,
+          \\"line\\": 13,
           \\"column\\": 17
         }
       },
@@ -1799,11 +1827,11 @@ async function sleep(ms) {
 }
 
 function f1() {
-  return sleep(50);
+  return sleep(100);
 }
 
 async function f2() {
-  await sleep(50);
+  await sleep(100);
 }
 
 async function f3() {
@@ -1811,7 +1839,7 @@ async function f3() {
 }
 
 async function f4(...args) {
-  await Promise.all(args);
+  await Promise.all(args.map(f => f()));
 }
 
 (async function main() {
@@ -1824,6 +1852,8 @@ async function f4(...args) {
 \\"use strict\\";
 
 require(\\"core-js/modules/es.array.iterator\\");
+
+require(\\"core-js/modules/es.array.map\\");
 
 require(\\"core-js/modules/es.function.bind\\");
 
@@ -1884,7 +1914,7 @@ try {
     var _contextId4 = _dbux.pushImmediate(5);
 
     try {
-      return sleep(50);
+      return sleep(100);
     } finally {
       _dbux.popImmediate(_contextId4);
     }
@@ -1900,12 +1930,12 @@ try {
             _contextId5 = _dbux.pushImmediate(6);
             _context2.prev = 1;
             _context2.t0 = _dbux;
-            _context2.t1 = _contextId6;
-            _context2.next = 6;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId6 = _dbux.awaitId(7), sleep(50)));
+            _context2.next = 5;
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId6 = _dbux.awaitId(7), sleep(100)));
 
-          case 6:
-            _context2.t2 = _context2.sent;
+          case 5:
+            _context2.t1 = _context2.sent;
+            _context2.t2 = _contextId6;
 
             _context2.t0.postAwait.call(_context2.t0, _context2.t1, _context2.t2);
 
@@ -1934,12 +1964,12 @@ try {
             _contextId7 = _dbux.pushImmediate(8);
             _context3.prev = 1;
             _context3.t0 = _dbux;
-            _context3.t1 = _contextId8;
-            _context3.next = 6;
+            _context3.next = 5;
             return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId8 = _dbux.awaitId(9), sleep(200)));
 
-          case 6:
-            _context3.t2 = _context3.sent;
+          case 5:
+            _context3.t1 = _context3.sent;
+            _context3.t2 = _contextId8;
 
             _context3.t0.postAwait.call(_context3.t0, _context3.t1, _context3.t2);
 
@@ -1978,12 +2008,20 @@ try {
             }
 
             _context4.t0 = _dbux;
-            _context4.t1 = _contextId10;
-            _context4.next = 7;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId10 = _dbux.awaitId(11), Promise.all(args)));
+            _context4.next = 6;
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId10 = _dbux.awaitId(11), Promise.all(args.map(_dbux.scheduleCallback(12, _contextId9, function (f) {
+              var _contextId11 = _dbux.pushImmediate(13);
 
-          case 7:
-            _context4.t2 = _context4.sent;
+              try {
+                return f();
+              } finally {
+                _dbux.popImmediate(_contextId11);
+              }
+            })))));
+
+          case 6:
+            _context4.t1 = _context4.sent;
+            _context4.t2 = _contextId10;
 
             _context4.t0.postAwait.call(_context4.t0, _context4.t1, _context4.t2);
 
@@ -2003,38 +2041,38 @@ try {
   };
 
   (function main() {
-    var _contextId11, _contextId12, _contextId13;
+    var _contextId12, _contextId13, _contextId14;
 
     return regeneratorRuntime.async(function main$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
-            _contextId11 = _dbux.pushImmediate(12);
+            _contextId12 = _dbux.pushImmediate(14);
             _context5.prev = 1;
             _context5.t0 = _dbux;
-            _context5.t1 = _contextId12;
-            _context5.next = 6;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId12 = _dbux.awaitId(13), f1()));
+            _context5.next = 5;
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId13 = _dbux.awaitId(15), f1()));
 
-          case 6:
-            _context5.t2 = _context5.sent;
+          case 5:
+            _context5.t1 = _context5.sent;
+            _context5.t2 = _contextId13;
 
             _context5.t0.postAwait.call(_context5.t0, _context5.t1, _context5.t2);
 
             _context5.t3 = _dbux;
-            _context5.t4 = _contextId13;
-            _context5.next = 12;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId13 = _dbux.awaitId(14), f4(f2, f3, sleep.bind(null, 400))));
+            _context5.next = 11;
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId14 = _dbux.awaitId(16), f4(f2, f3, sleep.bind(null, 400))));
 
-          case 12:
-            _context5.t5 = _context5.sent;
+          case 11:
+            _context5.t4 = _context5.sent;
+            _context5.t5 = _contextId14;
 
             _context5.t3.postAwait.call(_context5.t3, _context5.t4, _context5.t5);
 
           case 14:
             _context5.prev = 14;
 
-            _dbux.popImmediate(_contextId11);
+            _dbux.popImmediate(_contextId12);
 
             return _context5.finish(14);
 
@@ -2052,7 +2090,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -2157,11 +2195,11 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 10,
-          \\"column\\": 17
+          \\"column\\": 18
         }
       },
       \\"type\\": 4,
-      \\"displayName\\": \\"(await sleep(50))\\"
+      \\"displayName\\": \\"(await sleep(100))\\"
     }, {
       \\"staticId\\": 8,
       \\"parent\\": 1,
@@ -2219,13 +2257,43 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 18,
-          \\"column\\": 25
+          \\"column\\": 39
         }
       },
       \\"type\\": 4,
-      \\"displayName\\": \\"(await Promise.all(args))\\"
+      \\"displayName\\": \\"(await Promise.all(args.map(...)\\"
     }, {
       \\"staticId\\": 12,
+      \\"parent\\": 11,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 18,
+          \\"column\\": 29
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 37
+        }
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(f => f())\\"
+    }, {
+      \\"staticId\\": 13,
+      \\"parent\\": 12,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 18,
+          \\"column\\": 29
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 37
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"(anonymous)\\"
+    }, {
+      \\"staticId\\": 14,
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
@@ -2241,8 +2309,8 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"main\\",
       \\"displayName\\": \\"main\\"
     }, {
-      \\"staticId\\": 13,
-      \\"parent\\": 12,
+      \\"staticId\\": 15,
+      \\"parent\\": 14,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 22,
@@ -2256,8 +2324,8 @@ function _dbux_init(dbuxRuntime) {
       \\"type\\": 4,
       \\"displayName\\": \\"(await f1())\\"
     }, {
-      \\"staticId\\": 14,
-      \\"parent\\": 12,
+      \\"staticId\\": 16,
+      \\"parent\\": 14,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -2283,11 +2351,11 @@ async function sleep(ms) {
 }
 
 function f1() {
-  return sleep(50);
+  return sleep(100);
 }
 
 async function f2() {
-  await sleep(50);
+  await sleep(100);
 }
 
 async function f3() {
@@ -2295,7 +2363,7 @@ async function f3() {
 }
 
 async function f4(...args) {
-  await Promise.all(args);
+  await Promise.all(args.map(f => f()));
 }
 
 (async function main() {
@@ -2334,7 +2402,7 @@ try {
     const _contextId4 = _dbux.pushImmediate(5);
 
     try {
-      return sleep(50);
+      return sleep(100);
     } finally {
       _dbux.popImmediate(_contextId4);
     }
@@ -2346,7 +2414,7 @@ try {
     try {
       var _contextId6;
 
-      _dbux.postAwait(_contextId6, (await _dbux.wrapAwait(_contextId6 = _dbux.awaitId(7), sleep(50))));
+      _dbux.postAwait((await _dbux.wrapAwait(_contextId6 = _dbux.awaitId(7), sleep(100))), _contextId6);
     } finally {
       _dbux.popImmediate(_contextId5);
     }
@@ -2358,7 +2426,7 @@ try {
     try {
       var _contextId8;
 
-      _dbux.postAwait(_contextId8, (await _dbux.wrapAwait(_contextId8 = _dbux.awaitId(9), sleep(200))));
+      _dbux.postAwait((await _dbux.wrapAwait(_contextId8 = _dbux.awaitId(9), sleep(200))), _contextId8);
     } finally {
       _dbux.popImmediate(_contextId7);
     }
@@ -2370,23 +2438,31 @@ try {
     try {
       var _contextId10;
 
-      _dbux.postAwait(_contextId10, (await _dbux.wrapAwait(_contextId10 = _dbux.awaitId(11), Promise.all(args))));
+      _dbux.postAwait((await _dbux.wrapAwait(_contextId10 = _dbux.awaitId(11), Promise.all(args.map(_dbux.scheduleCallback(12, _contextId9, f => {
+        const _contextId11 = _dbux.pushImmediate(13);
+
+        try {
+          return f();
+        } finally {
+          _dbux.popImmediate(_contextId11);
+        }
+      }))))), _contextId10);
     } finally {
       _dbux.popImmediate(_contextId9);
     }
   }
 
   (async function main() {
-    const _contextId11 = _dbux.pushImmediate(12);
+    const _contextId12 = _dbux.pushImmediate(14);
 
     try {
-      var _contextId12, _contextId13;
+      var _contextId13, _contextId14;
 
-      _dbux.postAwait(_contextId12, (await _dbux.wrapAwait(_contextId12 = _dbux.awaitId(13), f1())));
+      _dbux.postAwait((await _dbux.wrapAwait(_contextId13 = _dbux.awaitId(15), f1())), _contextId13);
 
-      _dbux.postAwait(_contextId13, (await _dbux.wrapAwait(_contextId13 = _dbux.awaitId(14), f4(f2, f3, sleep.bind(null, 400)))));
+      _dbux.postAwait((await _dbux.wrapAwait(_contextId14 = _dbux.awaitId(16), f4(f2, f3, sleep.bind(null, 400)))), _contextId14);
     } finally {
-      _dbux.popImmediate(_contextId11);
+      _dbux.popImmediate(_contextId12);
     }
   })();
 } finally {
@@ -2396,7 +2472,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -2501,11 +2577,11 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 10,
-          \\"column\\": 17
+          \\"column\\": 18
         }
       },
       \\"type\\": 4,
-      \\"displayName\\": \\"(await sleep(50))\\"
+      \\"displayName\\": \\"(await sleep(100))\\"
     }, {
       \\"staticId\\": 8,
       \\"parent\\": 1,
@@ -2563,13 +2639,43 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 18,
-          \\"column\\": 25
+          \\"column\\": 39
         }
       },
       \\"type\\": 4,
-      \\"displayName\\": \\"(await Promise.all(args))\\"
+      \\"displayName\\": \\"(await Promise.all(args.map(...)\\"
     }, {
       \\"staticId\\": 12,
+      \\"parent\\": 11,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 18,
+          \\"column\\": 29
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 37
+        }
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(f => f())\\"
+    }, {
+      \\"staticId\\": 13,
+      \\"parent\\": 12,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 18,
+          \\"column\\": 29
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 37
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"(anonymous)\\"
+    }, {
+      \\"staticId\\": 14,
       \\"parent\\": 1,
       \\"loc\\": {
         \\"start\\": {
@@ -2585,8 +2691,8 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"main\\",
       \\"displayName\\": \\"main\\"
     }, {
-      \\"staticId\\": 13,
-      \\"parent\\": 12,
+      \\"staticId\\": 15,
+      \\"parent\\": 14,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 22,
@@ -2600,8 +2706,8 @@ function _dbux_init(dbuxRuntime) {
       \\"type\\": 4,
       \\"displayName\\": \\"(await f1())\\"
     }, {
-      \\"staticId\\": 14,
-      \\"parent\\": 12,
+      \\"staticId\\": 16,
+      \\"parent\\": 14,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -2727,7 +2833,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -2896,7 +3002,7 @@ export { _f as f1, _A as A, _f2 as f2 };
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -3019,7 +3125,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example2.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example2.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -3092,7 +3198,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example2.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example2.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -3182,7 +3288,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example3.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example3.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -3286,7 +3392,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example3.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example3.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -3439,7 +3545,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"setTimeout1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/setTimeout1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -3722,7 +3828,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"setTimeout1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/setTimeout1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {

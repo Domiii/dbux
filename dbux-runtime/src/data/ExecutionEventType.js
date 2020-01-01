@@ -10,7 +10,7 @@ const ExecutionEventType = new Enum({
   PushCallback: 5,
   PopCallback: 6,
 
-  Interrupt: 7,
+  Await: 7,
   Resume: 8
 });
 

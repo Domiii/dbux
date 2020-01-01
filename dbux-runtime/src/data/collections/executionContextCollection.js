@@ -12,6 +12,10 @@ export const ExecutionContextType = new Enum({
   Resume: 5
 });
 
+export const ExecutionContextUpdateType = new Enum({
+  Push: 1
+});
+
 export class ExecutionContextCollection {
   /**
    * @return {ExecutionContextCollection}
@@ -89,20 +93,32 @@ export class ExecutionContextCollection {
     return context;
   }
 
-  interrupt(stackDepth, programId, staticContextId, parentScopeContextId) {
+  await(stackDepth, programId, staticContextId, parentScopeContextId) {
     const orderId = this._genOrderId(programId, staticContextId);
     const contextId = this._contexts.length;
 
     const context = ExecutionContext.allocate(
-      ExecutionContextType.Interrupt, stackDepth, contextId, programId,
+      ExecutionContextType.Await, stackDepth, contextId, programId,
       staticContextId, orderId, parentScopeContextId);
     this._push(context);
     return context;
   }
 
+  setContextPopped(contextId) {
+    const context = this.getContext(contextId);
+    context.isPopped = true;
+
+    this._sendToRemote(contextId, ExecutionContextUpdateType.Pop);
+  }
+
   _push(context) {
     this._contexts.push(context);
-    // TODO: send to server
+    
+    this._sendToRemote(context.contextId, ExecutionContextUpdateType.Push, context);
+  }
+
+  _sendToRemote(contextId, updateType, state) {
+    // TODO: send to remote
   }
 
 

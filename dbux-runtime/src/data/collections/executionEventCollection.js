@@ -5,6 +5,8 @@ import staticContextCollection from './staticContextCollection';
 import programStaticContextCollection from './programStaticContextCollection';
 
 
+let timer = null;
+
 export class ExecutionEventCollection {
 
   /**
@@ -68,9 +70,9 @@ export class ExecutionEventCollection {
     this._log(event);
   }
 
-  logInterrupt(contextId) {
+  logAwait(contextId) {
     const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.Interrupt;
+    event.eventType = ExecutionEventType.Await;
     event.contextId = contextId;
 
     const staticContext = executionContextCollection.getStaticContext(
@@ -130,23 +132,21 @@ export class ExecutionEventCollection {
     const depthIndicator = `  `.repeat(stackDepth);
     let message = `[DBUX] ${depthIndicator} ${displayName} [${typeName}] @${fileName}${lineSuffix}`;
 
-    if (!parentScopeContextId) {
-      if (isPushEvent(eventType)) {
-        message = '       ---------------\n' + message;
-      }
-      else if (isPopEvent(eventType)) {
-        message = message + '\n       ---------------';
-      }
+    if (!timer) {
+      message = '       ---------------\n' + message;
+      // else if (isPopEvent(eventType)) {
+      //   message = message + '\n       ---------------';
+      // }
     }
     console.log(message);
 
-    // hackfix: simulate end of (partial) stack
-    // if (!timer) {
-    //   timer = setImmediate(() => {
-    //     console.log(`[DBUX]\n[DBUX] ---------\n[DBUX]`);
-    //     timer = null;
-    //   });
-    // }
+    // (pretty accurate) hackfix: simulate end of (partial) stack
+    if (!timer) {
+      timer = setImmediate(() => {
+        console.log('       ---------------\n');
+        timer = null;
+      });
+    }
   }
 
 }

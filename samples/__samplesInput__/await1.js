@@ -3,11 +3,11 @@ async function sleep(ms) {
 }
 
 function f1() {
-  return sleep(50);
+  return sleep(100);
 }
 
 async function f2() {
-  await sleep(50);
+  await sleep(100);
 }
 
 async function f3() {
@@ -15,7 +15,7 @@ async function f3() {
 }
 
 async function f4(...args) {
-  await Promise.all(args);
+  await Promise.all(args.map(f => f()));
 }
 
 (async function main() {

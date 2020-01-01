@@ -24,9 +24,14 @@ export default class Runtime {
 
   /**
    * Set of all interrupted stacks.
-   * @type {Set<Stack>}
+   * @type {Map<int, Stack>}
    */
-  _interruptedStacks = new Set();
+  _waitingStacks = new Map();
+
+  /**
+   * Mysterious stuff...
+   */
+  _interruptedStacksOfUnknownCircumstances = [];
 
   /**
    * The currently executing stack.
@@ -46,74 +51,23 @@ export default class Runtime {
     }
   }
 
-  _resumeInterruptedStack(interruptedStack) {
-    this._interruptedStacks.delete(interruptedStack);
-    if (this._executingStack) {
-      mergeStacks(interruptedStack, this._executingStack);
-    }
-    this._executingStack = interruptedStack;
-  }
-
   /**
    * We currently have no good heuristics for checking whether we want to resume
    * an interrupted stack when pushing to an empty stack.
    * Instead, we need to rely on `_maybeResumeInterruptedStackOnPop` to try healing things
    * retroactively.
    */
-  _maybeResumeInterruptedStackOnPushEmpty() {
-    if (true) {
+  _maybeResumeInterruptedStackOnPushEmpty(contextId) {
+    if (this._waitingStacks.has(contextId)) {
+      // resume previous stack
+      this.resumeWaitingStack(contextId);
+    }
+    else {
       // new stack
       this._executingStack = Stack.allocate();
     }
-    else {
-      // resume previous stack
-      // this._interruptedStacks.delete(this._executingStack);
-    }
   }
 
-  /**
-   * Check if stack top matches given `contextId`;
-   * if not, it probably belongs to some interrupted stack that we want to find instead.
-   */
-  _maybeResumeInterruptedStack(contextId) {
-    const stackTop = this._executingStack?.peek();
-    if (contextId !== stackTop) {
-      if (!this._tryResumeStack(contextId)) {
-        logInternalError(
-          'Tried to resumeInterruptedStack context whose contextId does not match contextId on stack - ',
-          contextId, '!==', this._executingStack?.peek()
-        );
-        return false;
-      }
-    }
-    return true;
-  }
-
-  _tryResumeStack(contextId) {
-    const resumingStack = this._getInterruptedStack(contextId);
-    if (!resumingStack) {
-      // TODO: add more self-heal heuristics?
-      return false;
-    }
-    else {
-      this._resumeInterruptedStack(resumingStack);
-      return true;
-    }
-  }
-
-  _getInterruptedStack(contextId) {
-      // TODO: improve efficiency (e.g.: use a Map<contextId, Stack>, or prune stale stacks etc...)
-      //    (NOTE: stacks might never go "stale", as some might be waiting for rare events)
-      // NOTE: use traditional for loop over Array.find to reduce memory churn
-    for (let i = 0; i < this._interruptedStacks.length; ++i) {
-      const stack = this._interruptedStacks[i];
-      if (stack.peek() === contextId) {
-        // found it!
-        return stack;
-      }
-    }
-    return null;
-  }
 
   /**
    * Make sure to insert the "empty stack barrier" right after the current stack has fully unraveled.
@@ -146,41 +100,103 @@ export default class Runtime {
   // Public methods
   // ###########################################################################
 
+  registerAwait(awaitContextId) {
+    if (!this.isExecuting()) {
+      logInternalError('Encountered `await`, but there was no active stack ', awaitContextId);
+      return;
+    }
+
+    this._executingStack.markWaiting();
+    this._waitingStacks.set(awaitContextId, this._executingStack);
+
+    // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
+  }
+
+  resumeWaitingStack(contextId) {
+    const waitingStack = this._waitingStacks.get(contextId);
+
+    // TODO: resume from this._interruptedStacksOfUnknownCircumstances!!
+
+    if (!waitingStack) {
+      logInternalError('Could not resume waiting stack (is not registered):', contextId);
+      return null;
+    }
+
+    waitingStack.markResumed();
+    this._waitingStacks.delete(contextId);
+
+    if (this._executingStack) {
+      // ideally, this should not happen, since interrupts should always be resumed
+      //    by the system scheduler
+      mergeStacks(waitingStack, this._executingStack);
+    }
+
+    this._executingStack = waitingStack;
+    return waitingStack;
+  }
+
   push(contextId) {
     if (!this._executingStack) {
       // no executing stack 
       //    -> this invocation has been called from system scheduler (possibly traversing blackboxed code)
       this._ensureEmptyStackBarrier();
-      this._maybeResumeInterruptedStackOnPushEmpty();
+      this._maybeResumeInterruptedStackOnPushEmpty(contextId);
     }
-    this._previousPoppedContextId = null;
+    // this._previousPoppedContextId = null;
     this._executingStack.push(contextId);
+    // console.warn('->', contextId);
   }
 
   pop(contextId) {
-    if (!this._maybeResumeInterruptedStack(contextId)) {
-      // could not pop things
-      return;
+    // console.warn('<-', contextId);
+    let stack = this._executingStack;
+    let stackPos;
+
+    if (!stack) {
+      // we probably had an unhandled interrupt that is now resumed
+      stack = this.resumeWaitingStack(contextId);
+      stackPos = stack.popAnywhere(contextId);
+    }
+    else {
+      stackPos = stack.popAnywhere(contextId);
+      if (stackPos === -1) {
+        // it's not on this stack -> probably on a different stack?
+        stack = this.resumeWaitingStack(contextId);
+        if (!stack) {
+          logInternalError(`Could not pop stack for contextId`, contextId);
+          return -1;
+        }
+        stackPos = stack.popAnywhere(contextId);
+      }
     }
 
-    // actually pop
-    const stackTop = this._executingStack.pop();
-    this._previousPoppedContextId = stackTop;
-
-    if (!this._executingStack.getDepth()) {
-      // last on stack -> done with it!
-      this._executingStack = null;
-      this._previousPoppedContextId = null;
+    if (stackPos !== -1) {
+      // this._previousPoppedContextId = stackTop;
+      
+      if (stackPos === 0) {
+        // popped root off stack
+        if (stack.hasUnpoppedBusiness() && !stack.isWaiting()) {
+          // there is stuff left to do on this stack, but we don't know why and how
+          this._interruptedStacksOfUnknownCircumstances.push(stack);
+        }
+        // last on stack -> done with it! (for now...)
+        this._executingStack = null;
+        // this._previousPoppedContextId = null;
+      }
     }
+    return stackPos;
   }
 
+  /**
+   * Put current stack into "wait queue"
+   */
   interrupt() {
     if (!this._executingStack) {
       logInternalError('Tried to interrupt but there is no executing stack');
       return;
     }
-    this._interruptedStacks.add(this._executingStack);
+    this._interruptedStacksOfUnknownCircumstances.push(this._executingStack);
     this._executingStack = null;
-    this._previousPoppedContextId = null;
+    // this._previousPoppedContextId = null;
   }
 }

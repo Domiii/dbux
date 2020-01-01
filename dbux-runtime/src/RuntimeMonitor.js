@@ -79,10 +79,17 @@ export default class RuntimeMonitor {
     }
 
     // pop from stack
-    this._runtime.pop(contextId);
+    this._pop(contextId);
 
     // log event
     executionEventCollection.logPopImmediate(contextId);
+  }
+
+  _pop(contextId) {
+    executionContextCollection.setContextPopped(contextId);
+    return this._runtime.pop(contextId);
+
+    // TODO: keep popping all already popped contexts
   }
 
 
@@ -150,13 +157,13 @@ export default class RuntimeMonitor {
     // sanity checks
     const context = executionContextCollection.getContext(callbackContextId);
     if (!context) {
-      logInternalError('Tried to popCallback, but context was not registered:', 
+      logInternalError('Tried to popCallback, but context was not registered:',
         callbackContextId);
       return;
     }
 
     // pop from stack
-    this._runtime.pop(callbackContextId);
+    this._pop(callbackContextId);
 
     // log event
     executionEventCollection.logPopCallback(callbackContextId);
@@ -168,29 +175,26 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   awaitId(programId, staticContextId) {
-    // TODO: flag stack for interruption
     const parentContextId = this._runtime.peekStack();
     const stackDepth = this._runtime.getStackDepth();
 
     // register context
-    const context = executionContextCollection.interrupt(
+    const context = executionContextCollection.await(
       stackDepth, programId, staticContextId, parentContextId
     );
-    const { contextId } = context;
-    this._runtime.push(contextId);
+    const { contextId: awaitContextId } = context;
 
-    
-    return contextId;
-  }
-  
-  wrapAwait(programId, awaitContextId, awaitValue) {
-    if (this._runtime.isExecuting()) {
-      this._runtime.interrupt();
-    }
-    
+    this._runtime.push(awaitContextId);
+    this._runtime.registerAwait(awaitContextId);
+
     // log event
-    executionEventCollection.logInterrupt(awaitContextId);
+    executionEventCollection.logAwait(awaitContextId);
 
+    return awaitContextId;
+  }
+
+  wrapAwait(programId, awaitContextId, awaitValue) {
+    // nothing to do...
     return awaitValue;
   }
 
@@ -204,15 +208,20 @@ export default class RuntimeMonitor {
       logInternalError('Tried to postAwait, but context was not registered:', awaitContextId);
       return;
     }
+    if (this._runtime.isExecuting()) {
+      // logInternalError('Unexpected: `postAwait` received while already executing');
+      this._runtime.interrupt();
+    }
 
-    // pop it!
-    this._runtime.pop(awaitContextId);
-    // if (!this._runtime._tryResumeStack(awaitContextId)) {
-    //   // something went wrong
-    //   logInternalError('could not resume awaitContextId: ', awaitContextId);
-    //   return;
-    // }
+    // resume
+    this._runtime.resumeWaitingStack(awaitContextId);
 
+    // pop from stack
+    this._pop(awaitContextId);
+
+    // log event
     executionEventCollection.logResume(awaitContextId);
+
+    return awaitResult;
   }
 }

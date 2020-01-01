@@ -65,7 +65,7 @@ function enter(path, state) {
   });
   path.replaceWith(awaitReplacement);
 
-  const newAwaitPath = path.get('arguments.1');
+  const newAwaitPath = path.get('arguments.0');
   state.onEnter(newAwaitPath); // make sure, we don't revisit this
 
   // console.log('[AWAIT]', newAwaitPath.toString());
