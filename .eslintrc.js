@@ -9,6 +9,7 @@ module.exports = {
 		"console": true
 	},
 	"parserOptions": {
+		"ecmaVersion": "2018",
 		"ecmaFeatures": {
 			"jsx": true
 		},
