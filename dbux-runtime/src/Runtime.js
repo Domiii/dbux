@@ -85,7 +85,7 @@ export default class Runtime {
   // ###########################################################################
 
   getStackDepth() {
-    return this._executingStack?.getDepth() || 0;
+    return this._executingStack?.getImmediateDepth() || 0;
   }
 
   peekStack() {
@@ -94,6 +94,40 @@ export default class Runtime {
 
   isExecuting() {
     return !!this._executingStack;
+  }
+
+  /**
+   * We are now waiting for given context on current stack
+   */
+  _markWaiting(contextId) {
+    this._executingStack.markWaiting();
+    this._waitingStacks.set(contextId, this._executingStack);
+  }
+
+  _markResume(contextId) {
+    this._executingStack.markResumed();
+    this._waitingStacks.delete(contextId);
+  }
+
+  _popAnywhere(contextId) {
+    const stack = this._executingStack;
+    if (stack.peek() === contextId) {
+      return stack.pop();
+    }
+
+    // we are popping a context that is not at the top of the stack,
+    // meaning that all intermediate contexts are now in waiting
+    const stackPos = stack.popNotTop(contextId);
+    if (stackPos !== -1) {
+      // all contexts between the one that got popped, and the current top are now in waiting
+      for (let i = stack._stack.length - 1; i > stackPos; --i) {
+        const id = stack._stack[i];
+        // TODO: do some stack balancing
+        
+        // this._markWaiting(stack, id);
+      }
+    }
+    return stackPos;
   }
 
   // ###########################################################################
@@ -106,8 +140,7 @@ export default class Runtime {
       return;
     }
 
-    this._executingStack.markWaiting();
-    this._waitingStacks.set(awaitContextId, this._executingStack);
+    this._markWaiting(awaitContextId);
 
     // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
   }
@@ -115,23 +148,24 @@ export default class Runtime {
   resumeWaitingStack(contextId) {
     const waitingStack = this._waitingStacks.get(contextId);
 
-    // TODO: resume from this._interruptedStacksOfUnknownCircumstances!!
+    // TODO: try resume from this._interruptedStacksOfUnknownCircumstances!!
 
     if (!waitingStack) {
       logInternalError('Could not resume waiting stack (is not registered):', contextId);
       return null;
     }
 
-    waitingStack.markResumed();
-    this._waitingStacks.delete(contextId);
+    const oldStack = this._executingStack;
+    this._executingStack = waitingStack;
 
-    if (this._executingStack) {
+    this._markResume(contextId);
+
+    if (oldStack) {
       // ideally, this should not happen, since interrupts should always be resumed
       //    by the system scheduler
-      mergeStacks(waitingStack, this._executingStack);
+      mergeStacks(waitingStack, oldStack);
     }
 
-    this._executingStack = waitingStack;
     return waitingStack;
   }
 
@@ -155,34 +189,43 @@ export default class Runtime {
     if (!stack) {
       // we probably had an unhandled interrupt that is now resumed
       stack = this.resumeWaitingStack(contextId);
-      stackPos = stack.popAnywhere(contextId);
+      if (!stack) {
+        logInternalError(`Could not pop contextId off stack`, contextId);
+        return -1;
+      }
+      stackPos = this._popAnywhere(contextId);
     }
     else {
-      stackPos = stack.popAnywhere(contextId);
+      // first check, if its on this stack, then check for waiting stacks
+      stackPos = this._popAnywhere(contextId);
       if (stackPos === -1) {
         // it's not on this stack -> probably on a different stack?
         stack = this.resumeWaitingStack(contextId);
         if (!stack) {
-          logInternalError(`Could not pop stack for contextId`, contextId);
+          logInternalError(`Could not pop contextId off stack`, contextId);
           return -1;
         }
-        stackPos = stack.popAnywhere(contextId);
+        stackPos = this._popAnywhere(contextId);
       }
     }
 
-    if (stackPos !== -1) {
-      // this._previousPoppedContextId = stackTop;
-      
-      if (stackPos === 0) {
-        // popped root off stack
-        if (stack.hasUnpoppedBusiness() && !stack.isWaiting()) {
-          // there is stuff left to do on this stack, but we don't know why and how
-          this._interruptedStacksOfUnknownCircumstances.push(stack);
-        }
-        // last on stack -> done with it! (for now...)
-        this._executingStack = null;
-        // this._previousPoppedContextId = null;
+    if (stackPos === -1) {
+      logInternalError(`Could not pop contextId off stack`, contextId);
+      return -1;
+    }
+    // this._previousPoppedContextId = stackTop;
+
+    if (stackPos === 0) {
+      // popped root off stack
+      if (stack.hasUnpoppedBusiness() && !stack.isWaiting()) {
+        // there is stuff left to do on this stack, but we don't know why and how
+        this._interruptedStacksOfUnknownCircumstances.push(stack);
       }
+      // last on stack -> done with it! (for now...)
+      if (stack === this._executingStack) {
+        this._executingStack = null;
+      }
+      // this._previousPoppedContextId = null;
     }
     return stackPos;
   }
