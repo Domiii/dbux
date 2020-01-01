@@ -56,6 +56,8 @@ if (toEs5) {
   ]];
 }
 
+console.log('Instrumenting file', file, '...');
+
 // console.warn(babelOptions.plugins.map(p => (typeof p === 'function' ? p.toString() : JSON.stringify(p)).split('\n')[0]).join(','));
 const outputCode = transformSync(inputCode, babelOptions).code;
 console.log(outputCode);
