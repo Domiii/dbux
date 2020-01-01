@@ -13,10 +13,10 @@ _dbux.wrapAwait(awaitContextId, await (awaitContextId = _dbux.wrapAwaitExpressio
 ```
  */
 const wrapAwaitTemplate = template(
-  // it's pretty stupid: but babel will not let us generate an `await` partial AST outside an async function
+  // WARNING: id must be passed AFTER awaitNode, because else it will be undefined (because the value will be bound before `await` statement)
 `%%dbux%%.postAwait(
-  %%awaitContextId%%, 
-  %%awaitNode%%
+  %%awaitNode%%,
+  %%awaitContextId%%
 )
 `);
 

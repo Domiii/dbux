@@ -197,7 +197,7 @@ export default class RuntimeMonitor {
   /**
    * Resume given stack
    */
-  postAwait(awaitContextId) {
+  postAwait(awaitResult, awaitContextId) {
     // sanity checks
     const context = executionContextCollection.getContext(awaitContextId);
     if (!context) {

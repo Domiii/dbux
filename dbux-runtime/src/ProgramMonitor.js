@@ -53,8 +53,8 @@ export default class ProgramMonitor {
     return RuntimeMonitor.instance.wrapAwait(this.getProgramId(), awaitContextId, awaitValue);
   }
 
-  postAwait(awaitContextId) {
-    return RuntimeMonitor.instance.postAwait(awaitContextId);
+  postAwait(awaitResult, awaitContextId) {
+    return RuntimeMonitor.instance.postAwait(awaitResult, awaitContextId);
   }
 
   popProgram() {
