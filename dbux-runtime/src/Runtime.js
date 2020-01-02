@@ -1,5 +1,6 @@
 import Stack from './Stack';
 import { logInternalError } from './log/logger';
+import executionContextCollection from './data/collections/executionContextCollection';
 
 function mergeStacks(dst, src) {
   if ((src?.getDepth() || 0) > 0) {
@@ -62,7 +63,7 @@ export default class Runtime {
       // resume previous stack
       this.resumeWaitingStack(contextId);
     }
-    else {
+    else if (!this._executingStack) {
       // new stack
       this._executingStack = Stack.allocate();
     }
@@ -85,7 +86,14 @@ export default class Runtime {
   // ###########################################################################
 
   getStackDepth() {
-    return this._executingStack?.getImmediateDepth() || 0;
+    const parentContextId = this.peekStack();
+    if (parentContextId) {
+      const parent = executionContextCollection.getContext(parentContextId);
+      if (parent) {
+        return parent.stackDepth + 1;
+      }
+    }
+    return (this._executingStack?.getPeekIndex() + 1) || 0;
   }
 
   peekStack() {
@@ -100,39 +108,70 @@ export default class Runtime {
    * We are now waiting for given context on current stack
    */
   _markWaiting(contextId) {
-    this._executingStack.markWaiting();
-    this._waitingStacks.set(contextId, this._executingStack);
+    if (!this._waitingStacks.has(contextId)) {
+      this._executingStack.markWaiting();
+      this._waitingStacks.set(contextId, this._executingStack);
+    }
   }
 
   _markResume(contextId) {
     this._executingStack.markResumed();
     this._waitingStacks.delete(contextId);
+    // console.warn('<-', contextId);
   }
 
+  _onPop(contextId) {
+    if (this._waitingStacks.has(contextId)) {
+      this._markResume(contextId);
+    }
+  }
+
+  /**
+   * NOTE: in JS, we might pop a context that is not on top; intermediate contexts are in waiting
+   */
   _popAnywhere(contextId) {
     const stack = this._executingStack;
-    if (stack.peek() === contextId) {
-      return stack.pop();
+    if (stack.isAtTop(contextId)) {
+      this._onPop(contextId);
+      return stack.popTop();
+    }
+    if (stack.isAtPeek(contextId)) {
+      this._onPop(contextId);
+      return stack.popPeekNotTop();
     }
 
     // we are popping a context that is not at the top of the stack,
     // meaning that all intermediate contexts are now in waiting
-    const stackPos = stack.popNotTop(contextId);
+    const oldPeekIdx = stack.getPeekIndex();
+    const stackPos = stack.popOther(contextId);
     if (stackPos !== -1) {
-      // all contexts between the one that got popped, and the current top are now in waiting
-      for (let i = stack._stack.length - 1; i > stackPos; --i) {
-        const id = stack._stack[i];
-        // TODO: do some stack balancing
-        
-        // this._markWaiting(stack, id);
+      this._onPop(contextId);
+
+      // all contexts between the one that got popped, and the old peek are now considered "in waiting"
+      for (let i = stackPos; i < oldPeekIdx; ++i) {
+        const intermediateContextId = stack._stack[i];
+        if (!stack.isPoppedButStillAround(intermediateContextId)) {
+          // mark as waiting, if it wasn't already popped
+          this._markWaiting(intermediateContextId);
+        }
       }
     }
     return stackPos;
   }
 
+
   // ###########################################################################
   // Public methods
   // ###########################################################################
+
+  scheduleCallback(contextId) {
+    if (!this.isExecuting()) {
+      logInternalError('Trying to `scheduleCallback`, but there was no active stack ', contextId);
+      return;
+    }
+
+    this._markWaiting(contextId);
+  }
 
   registerAwait(awaitContextId) {
     if (!this.isExecuting()) {
@@ -147,35 +186,44 @@ export default class Runtime {
 
   resumeWaitingStack(contextId) {
     const waitingStack = this._waitingStacks.get(contextId);
-
-    // TODO: try resume from this._interruptedStacksOfUnknownCircumstances!!
-
     if (!waitingStack) {
+      // TODO: try resume from this._interruptedStacksOfUnknownCircumstances!!
       logInternalError('Could not resume waiting stack (is not registered):', contextId);
       return null;
     }
-
     const oldStack = this._executingStack;
-    this._executingStack = waitingStack;
 
-    this._markResume(contextId);
+    if (oldStack !== waitingStack) {
+      if (this.isExecuting()) {
+        // logInternalError('Unexpected: `postAwait` received while already executing');
+        this.interrupt();
+      }
+      this._executingStack = waitingStack;
 
-    if (oldStack) {
       // ideally, this should not happen, since interrupts should always be resumed
       //    by the system scheduler
       mergeStacks(waitingStack, oldStack);
     }
 
+    this._markResume(contextId);
+
     return waitingStack;
   }
 
-  push(contextId) {
-    if (!this._executingStack) {
-      // no executing stack 
-      //    -> this invocation has been called from system scheduler (possibly traversing blackboxed code)
-      this._ensureEmptyStackBarrier();
-      this._maybeResumeInterruptedStackOnPushEmpty(contextId);
+  beforePush(contextId) {
+    // if (!this._executingStack) {
+    // no executing stack 
+    //    -> this invocation has been called from system scheduler (possibly traversing blackboxed code)
+    this._ensureEmptyStackBarrier();
+    this._maybeResumeInterruptedStackOnPushEmpty(contextId);
+
+    if (contextId) {
+      this._executingStack.trySetPeek(contextId);
     }
+    // }
+  }
+
+  push(contextId) {
     // this._previousPoppedContextId = null;
     this._executingStack.push(contextId);
     // console.warn('->', contextId);
@@ -199,7 +247,7 @@ export default class Runtime {
       // first check, if its on this stack, then check for waiting stacks
       stackPos = this._popAnywhere(contextId);
       if (stackPos === -1) {
-        // it's not on this stack -> probably on a different stack?
+        // it's not on this stack -> probably coming back from an unhandled interrupt
         stack = this.resumeWaitingStack(contextId);
         if (!stack) {
           logInternalError(`Could not pop contextId off stack`, contextId);
@@ -213,21 +261,16 @@ export default class Runtime {
       logInternalError(`Could not pop contextId off stack`, contextId);
       return -1;
     }
-    // this._previousPoppedContextId = stackTop;
 
     if (stackPos === 0) {
       // popped root off stack
-      if (stack.hasUnpoppedBusiness() && !stack.isWaiting()) {
+      if (stack.getUnpoppedCount() && !stack.hasWaiting()) {
         // there is stuff left to do on this stack, but we don't know why and how
         this._interruptedStacksOfUnknownCircumstances.push(stack);
       }
       // last on stack -> done with it! (for now...)
-      if (stack === this._executingStack) {
-        this._executingStack = null;
-      }
-      // this._previousPoppedContextId = null;
+      this._executingStack = null;
     }
-    return stackPos;
   }
 
   /**

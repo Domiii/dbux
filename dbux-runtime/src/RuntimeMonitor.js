@@ -52,6 +52,8 @@ export default class RuntimeMonitor {
    * Very similar to `pushCallback`
    */
   pushImmediate(programId, staticContextId) {
+    this._runtime.beforePush(null);
+
     const parentContextId = this._runtime.peekStack();
     const stackDepth = this._runtime.getStackDepth();
 
@@ -87,7 +89,7 @@ export default class RuntimeMonitor {
 
   _pop(contextId) {
     executionContextCollection.setContextPopped(contextId);
-    return this._runtime.pop(contextId);
+    this._runtime.pop(contextId);
 
     // TODO: keep popping all already popped contexts
   }
@@ -101,6 +103,8 @@ export default class RuntimeMonitor {
    * Push a new context for a scheduled callback for later execution.
    */
   scheduleCallback(programId, staticContextId, schedulerId, cb) {
+    this._runtime.beforePush(schedulerId);
+
     const parentContextId = this._runtime.peekStack();
     const stackDepth = this._runtime.getStackDepth();
 
@@ -108,6 +112,9 @@ export default class RuntimeMonitor {
       programId, staticContextId, parentContextId, schedulerId);
     const { contextId: scheduledContextId } = scheduledContext;
     const wrapper = this.makeCallbackWrapper(scheduledContextId, cb);
+
+    this._runtime.push(scheduledContextId);
+    this._runtime.scheduleCallback(scheduledContextId);
 
     // log event
     executionEventCollection.logScheduleCallback(scheduledContextId);
@@ -137,8 +144,11 @@ export default class RuntimeMonitor {
    * We need it to establish the link with it's scheduling context.
    */
   pushCallback(scheduledContextId) {
+    this._runtime.beforePush(scheduledContextId);
+
     const parentContextId = this._runtime.peekStack();
     const stackDepth = this._runtime.getStackDepth();
+    // let stackDepth = this._runtime._executingStack.indexOf(scheduledContextId);
 
     // register context
     const context = executionContextCollection.executeCallback(
@@ -175,6 +185,8 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   awaitId(programId, staticContextId) {
+    this._runtime.beforePush(null);
+
     const parentContextId = this._runtime.peekStack();
     const stackDepth = this._runtime.getStackDepth();
 
@@ -207,10 +219,6 @@ export default class RuntimeMonitor {
     if (!context) {
       logInternalError('Tried to postAwait, but context was not registered:', awaitContextId);
       return;
-    }
-    if (this._runtime.isExecuting()) {
-      // logInternalError('Unexpected: `postAwait` received while already executing');
-      this._runtime.interrupt();
     }
 
     // resume

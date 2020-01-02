@@ -130,7 +130,7 @@ export class ExecutionEventCollection {
     const lineSuffix = line ? `:${line}` : '';
     // const depthIndicator = `(${parentScopeContextId})`;
     const depthIndicator = `  `.repeat(stackDepth);
-    let message = `[DBUX] ${depthIndicator} ${displayName} [${typeName}] @${fileName}${lineSuffix}`;
+    let message = `[DBUX] [${contextId.toString().padStart(3)}] ${depthIndicator} ${displayName} [${typeName}] @${fileName}${lineSuffix} (${stackDepth})`;
 
     if (!timer) {
       message = '       ---------------\n' + message;
