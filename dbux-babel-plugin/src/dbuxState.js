@@ -20,8 +20,6 @@ export default function injectDbuxState(programPath, programState) {
 
   const { scope } = programPath;
   
-  const entered = new Set();
-  const exited = new Set();
   const staticContexts = [null]; // staticId = 0 is always null
   const expressions = [null];
 
@@ -45,9 +43,12 @@ export default function injectDbuxState(programPath, programState) {
      * Will call `onEnterExpression` on expression nodes.
      */
     onEnter(path) {
-      if (entered.has(path)) {
+      if (path.getData('_dbux_entered')) {
         return false;
       }
+      // if (entered.has(path)) {
+      //   return false;
+      // }
       const { loc } = path.node;
       if (!loc) {
         // this node has been dynamically emitted; not part of the original source code -> not interested in it
@@ -55,7 +56,7 @@ export default function injectDbuxState(programPath, programState) {
       }
 
       // remember our visit
-      dbuxState.markVisited(path);
+      dbuxState.markEntered(path);
 
       // take good care of expressions
       enterExpression(path, dbuxState);
@@ -63,19 +64,29 @@ export default function injectDbuxState(programPath, programState) {
       return true;
     },
 
+    markEntered(path) {
+      // entered.add(path);
+      path.setData('_dbux_entered', true);
+    },
+
+    markExited(path) {
+      path.setData('_dbux_exited', true);
+    },
+
     markVisited(path) {
-      entered.add(path);
-    }
+      dbuxState.markEntered(path);
+      // dbuxState.markExited(path); // not necessary for now
+    },
 
     /**
      * NOTE: each node might be visited more than once.
      * This function keeps track of that and returns whether this is the first time visit.
      */
     onExit(path) {
-      if (exited.has(path)) {
+      if (path.getData('_dbux_exited')) {
         return false;
       }
-      exited.add(path);
+      path.setData('_dbux_exited', true);
       return true;
     },
 
@@ -128,7 +139,7 @@ export default function injectDbuxState(programPath, programState) {
       const parentStaticId = programState.getClosestStaticId(path);
       // console.log('actualParent',  toSourceString(actualParent.node));
       const { loc } = path.node;
-      staticContexts.push({
+      expressions.push({
         expressionId,
         parent: parentStaticId,
         loc

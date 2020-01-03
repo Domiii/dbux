@@ -97,13 +97,13 @@ function enter(path, state) {
   // inject data + methods that we are going to use for instrumentation
   injectDbuxState(path, state);
 
-  // programStaticContext
-  const programStaticContext = {
+  // staticProgramContext
+  const staticProgramContext = {
     type: 1, // {StaticContextType}
     name: 'Program',
     displayName: 'Program'
   };
-  state.addStaticContext(path, programStaticContext);
+  state.addStaticContext(path, staticProgramContext);
 
   // instrument Program itself
   wrapProgram(path, state);

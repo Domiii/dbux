@@ -60,8 +60,9 @@ function enter(path, state) {
   });
   path.replaceWith(awaitReplacement);
 
-  const newAwaitPath = path.get('arguments.0');
-  state.onEnter(newAwaitPath); // prevent infinite loop: make sure, we don't revisit this
+  // // prevent infinite loop
+  // const newAwaitPath = path.get('arguments.0');
+  // state.markVisited(newAwaitPath);
 
 }
 

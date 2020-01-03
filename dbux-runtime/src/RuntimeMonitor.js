@@ -1,4 +1,4 @@
-import programStaticContextCollection from './data/collections/programStaticContextCollection';
+import staticProgramContextCollection from './data/collections/staticProgramContextCollection';
 import ProgramMonitor from './ProgramMonitor';
 import { logInternalError } from './log/logger';
 import executionContextCollection from './data/collections/executionContextCollection';
@@ -35,10 +35,10 @@ export default class RuntimeMonitor {
    * @returns {ProgramMonitor}
    */
   addProgram(programData) {
-    const programStaticContext = programStaticContextCollection.addProgram(programData);
-    staticContextCollection.addContexts(programStaticContext.programId, programData.staticContexts);
-    const programMonitor = new ProgramMonitor(programStaticContext);
-    this._programMonitors.set(programStaticContext.programId, programMonitor);
+    const staticProgramContext = staticProgramContextCollection.addProgram(programData);
+    staticContextCollection.addContexts(staticProgramContext.programId, programData.staticContexts);
+    const programMonitor = new ProgramMonitor(staticProgramContext);
+    this._programMonitors.set(staticProgramContext.programId, programMonitor);
     return programMonitor;
   }
 
@@ -231,5 +231,14 @@ export default class RuntimeMonitor {
     executionEventCollection.logResume(awaitContextId);
 
     return awaitResult;
+  }
+  
+  // ###########################################################################
+  // expressions
+  // ###########################################################################
+
+  expression(value, expressionId) {
+    const contextId = this._runtime.getCurrentContextId();
+    
   }
 }

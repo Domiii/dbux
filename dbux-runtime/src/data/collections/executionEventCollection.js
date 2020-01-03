@@ -2,7 +2,7 @@ import ExecutionEventType, { isPushEvent, isPopEvent } from '../ExecutionEventTy
 import ExecutionEvent from './ExecutionEvent';
 import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
-import programStaticContextCollection from './programStaticContextCollection';
+import staticProgramContextCollection from './staticProgramContextCollection';
 
 
 let timer = null;
@@ -117,7 +117,7 @@ export class ExecutionEventCollection {
       parentScopeContextId,
       stackDepth
     } = context;
-    const programStaticContext = programStaticContextCollection.getProgramContext(programId);
+    const staticProgramContext = staticProgramContextCollection.getProgramContext(programId);
     const staticContext = staticContextCollection.getContext(programId, staticContextId);
 
     const {
@@ -125,7 +125,7 @@ export class ExecutionEventCollection {
     } = staticContext;
     const {
       fileName
-    } = programStaticContext;
+    } = staticProgramContext;
     const line = where?.line;
     const lineSuffix = line ? `:${line}` : '';
     // const depthIndicator = `(${parentScopeContextId})`;

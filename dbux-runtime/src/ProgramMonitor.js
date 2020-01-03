@@ -6,25 +6,25 @@ export default class ProgramMonitor {
   /**
    * @type {ProgramStaticContext}
    */
-  _programStaticContext;
+  _staticProgramContext;
 
   /**
-   * @param {ProgramStaticContext} programStaticContext
+   * @param {ProgramStaticContext} staticProgramContext
    */
-  constructor(programStaticContext) {
+  constructor(staticProgramContext) {
     const staticId = 1;
-    this._programStaticContext = programStaticContext;
+    this._staticProgramContext = staticProgramContext;
     this._programContextId = this.pushImmediate(staticId);
   }
 
   /**
    * NOTE - A program has 3 kinds of ids:
    * 1. staticId (assigned by instrumentation; currently always equal to 1; unique inside the same program)
-   * 2. programId (assigned by `programStaticContextCollection`; globally unique across programs)
+   * 2. programId (assigned by `staticProgramContextCollection`; globally unique across programs)
    * 3. contextId (assigned by `executionContextCollection`; globally unique across contexts)
    */
   getProgramId() {
-    return this._programStaticContext.programId;
+    return this._staticProgramContext.programId;
   }
 
   getProgramContextId() {
@@ -61,4 +61,16 @@ export default class ProgramMonitor {
     // finished initializing the program
     return this.popImmediate(this._programContextId);
   }
+
+  // ###########################################################################
+  // expressions
+  // ###########################################################################
+
+  /**
+   * `e` is short for `expression` (we have a lot of these, so we want to keep the name short)
+   */
+  e(value, expressionId) {
+    return RuntimeMonitor.instance.expression(value, expressionId);
+  }
+
 }

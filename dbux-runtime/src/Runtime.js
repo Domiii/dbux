@@ -80,30 +80,6 @@ export default class Runtime {
       this._emptyStackBarrier = setImmediate(this._executeEmptyStackBarrier);
     }
   }
-
-  // ###########################################################################
-  // Public getters
-  // ###########################################################################
-
-  getStackDepth() {
-    const parentContextId = this.peekStack();
-    if (parentContextId) {
-      const parent = executionContextCollection.getContext(parentContextId);
-      if (parent) {
-        return parent.stackDepth + 1;
-      }
-    }
-    return (this._executingStack?.getPeekIndex() + 1) || 0;
-  }
-
-  peekStack() {
-    return this._executingStack?.peek() || null;
-  }
-
-  isExecuting() {
-    return !!this._executingStack;
-  }
-
   /**
    * We are now waiting for given context on current stack
    */
@@ -159,56 +135,17 @@ export default class Runtime {
     return stackPos;
   }
 
+  // ###########################################################################
+  // Public getters
+  // ###########################################################################
+
+  getCurrentContextId() {
+    return this._executingStack?.peek() || null;
+  }
 
   // ###########################################################################
-  // Public methods
+  // Push + Pop basics
   // ###########################################################################
-
-  scheduleCallback(contextId) {
-    if (!this.isExecuting()) {
-      logInternalError('Trying to `scheduleCallback`, but there was no active stack ', contextId);
-      return;
-    }
-
-    this._markWaiting(contextId);
-  }
-
-  registerAwait(awaitContextId) {
-    if (!this.isExecuting()) {
-      logInternalError('Encountered `await`, but there was no active stack ', awaitContextId);
-      return;
-    }
-
-    this._markWaiting(awaitContextId);
-
-    // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
-  }
-
-  resumeWaitingStack(contextId) {
-    const waitingStack = this._waitingStacks.get(contextId);
-    if (!waitingStack) {
-      // TODO: try resume from this._interruptedStacksOfUnknownCircumstances!!
-      logInternalError('Could not resume waiting stack (is not registered):', contextId);
-      return null;
-    }
-    const oldStack = this._executingStack;
-
-    if (oldStack !== waitingStack) {
-      if (this.isExecuting()) {
-        // logInternalError('Unexpected: `postAwait` received while already executing');
-        this.interrupt();
-      }
-      this._executingStack = waitingStack;
-
-      // ideally, this should not happen, since interrupts should always be resumed
-      //    by the system scheduler
-      mergeStacks(waitingStack, oldStack);
-    }
-
-    this._markResume(contextId);
-
-    return waitingStack;
-  }
 
   beforePush(contextId) {
     // if (!this._executingStack) {
@@ -272,6 +209,57 @@ export default class Runtime {
       this._executingStack = null;
     }
   }
+
+  // ###########################################################################
+  // Complex scheduling
+  // ###########################################################################
+
+  scheduleCallback(contextId) {
+    if (!this.isExecuting()) {
+      logInternalError('Trying to `scheduleCallback`, but there was no active stack ', contextId);
+      return;
+    }
+
+    this._markWaiting(contextId);
+  }
+
+  registerAwait(awaitContextId) {
+    if (!this.isExecuting()) {
+      logInternalError('Encountered `await`, but there was no active stack ', awaitContextId);
+      return;
+    }
+
+    this._markWaiting(awaitContextId);
+
+    // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
+  }
+
+  resumeWaitingStack(contextId) {
+    const waitingStack = this._waitingStacks.get(contextId);
+    if (!waitingStack) {
+      // TODO: try resume from this._interruptedStacksOfUnknownCircumstances!!
+      logInternalError('Could not resume waiting stack (is not registered):', contextId);
+      return null;
+    }
+    const oldStack = this._executingStack;
+
+    if (oldStack !== waitingStack) {
+      if (this.isExecuting()) {
+        // logInternalError('Unexpected: `postAwait` received while already executing');
+        this.interrupt();
+      }
+      this._executingStack = waitingStack;
+
+      // ideally, this should not happen, since interrupts should always be resumed
+      //    by the system scheduler
+      mergeStacks(waitingStack, oldStack);
+    }
+
+    this._markResume(contextId);
+
+    return waitingStack;
+  }
+
 
   /**
    * Put current stack into "wait queue"

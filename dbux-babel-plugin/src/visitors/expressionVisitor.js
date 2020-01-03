@@ -1,11 +1,12 @@
 import * as t from '@babel/types';
+import template from '@babel/template';
 
 // ###########################################################################
 // templates + builders
 // ###########################################################################
 
 const wrapExpressionTemplate = template(`
-  %%dbux%%.e(%%expressionId%%, %%expression%%)
+  %%dbux%%.e(%%expression%%, %%expressionId%%)
 `);
 
 // ###########################################################################
@@ -20,18 +21,19 @@ export function enterExpression(path, state) {
     // expressionStatement, typeCastExpression, parenthesizedExpression
     return;
   }
-  if ('expression' in path.node) {
-    // this is just a wrapper around an actual expression (e.g. `await` or `@` (decorators))
-    return;
-  }
 
+  const expressionId = state.addExpression(path);
+  const { ids: { dbux } } = state;
   const wrapped = wrapExpressionTemplate({
-
+    dbux,
+    expression: path.node,
+    expressionId: t.numericLiteral(expressionId)
   });
   path.replaceWith(wrapped);
 
-  // once done, also flag the wrapped thingy-deal
-  state.markVisited(wrapped);
+  // // prevent infinite loop
+  // const newPath = path.get('arguments.0');
+  // state.markVisited(newPath);
 }
 
 function enter(path, state) {

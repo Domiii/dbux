@@ -1,5 +1,5 @@
 
-export default class ProgramStaticContext {
+export default class StaticProgramContext {
   programId;
   filePath;
   fileName;

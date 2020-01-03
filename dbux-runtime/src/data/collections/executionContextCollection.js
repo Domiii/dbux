@@ -17,13 +17,6 @@ export const ExecutionContextUpdateType = new Enum({
 });
 
 export class ExecutionContextCollection {
-  /**
-   * @return {ExecutionContextCollection}
-   */
-  static get instance() {
-    return _instance || (_instance = new ExecutionContextCollection());
-  }
-
   _lastContextId = -1;
   _contexts = [null];
   _lastOrderIds = [];

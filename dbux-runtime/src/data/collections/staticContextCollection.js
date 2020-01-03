@@ -3,30 +3,30 @@ import { logInternalError } from '../../log/logger';
 export class StaticContextCollection {
   _staticContexts = [null];
 
-  addContexts(programStaticId, list) {
+  addContexts(staticProgramId, list) {
     // make sure, array is pre-allocated
-    for (let i = this._staticContexts.length; i <= programStaticId; ++i) {
+    for (let i = this._staticContexts.length; i <= staticProgramId; ++i) {
       this._staticContexts.push(null);
     }
 
     // add program static contexts
-    this._staticContexts[programStaticId] = list;
+    this._staticContexts[staticProgramId] = list;
 
     for (let i = 1; i < list.length; ++i) {
       if (list[i].staticId !== i) {
-        logInternalError(programStaticId, 'Invalid staticId !== its own index:', list[i].staticId, '!==', i);
+        logInternalError(staticProgramId, 'Invalid staticId !== its own index:', list[i].staticId, '!==', i);
       }
     }
   }
 
-  getContexts(programStaticId) {
-    return this._staticContexts[programStaticId];
+  getContexts(staticProgramId) {
+    return this._staticContexts[staticProgramId];
   }
 
-  getContext(programStaticId, staticContextId) {
-    const contexts = this.getContexts(programStaticId);
+  getContext(staticProgramId, staticContextId) {
+    const contexts = this.getContexts(staticProgramId);
     if (!contexts) {
-      logInternalError("Invalid programStaticId has no registered static contexts:", programStaticId);
+      logInternalError("Invalid staticProgramId has no registered static contexts:", staticProgramId);
       return null;
     }
     return contexts[staticContextId];
