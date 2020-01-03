@@ -5,10 +5,11 @@ import functionVisitor from './functionVisitor';
 import { buildSource, buildWrapTryFinally } from '../helpers/builders';
 import * as t from '@babel/types';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
-import { callExpressionVisitor } from './callExpressionVisitor';
 import { replaceProgramBody } from '../helpers/program';
 import injectDbuxState from '../dbuxState';
-import { awaitVisitor } from './awaitVisitor';
+import callExpressionVisitor from './callExpressionVisitor';
+import awaitVisitor from './awaitVisitor';
+
 
 // ###########################################################################
 // Builders
@@ -107,9 +108,12 @@ function enter(path, state) {
   // instrument Program itself
   wrapProgram(path, state);
 
-  // traverse program before most other plugins
+  // traverse program before (most) other plugins
 
-  path.traverse(errorWrapVisitor(allOtherVisitors()), state);
+  path.traverse(
+    errorWrapVisitor(allOtherVisitors()), 
+    state
+  );
 }
 
 
@@ -125,7 +129,7 @@ function exit(path, state) {
 
 
 // ###########################################################################
-// Sub-traversal
+// Traversal of everything inside of Program
 // ###########################################################################
 
 export function allOtherVisitors() {
@@ -133,6 +137,8 @@ export function allOtherVisitors() {
     Function: functionVisitor(),
     CallExpression: callExpressionVisitor(),
     AwaitExpression: awaitVisitor(),
+    // Statement: statementVisitor(),
+    Expression: expressionVisitor()
 
     /**
      * TODO: Handle `for await of`

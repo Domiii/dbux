@@ -88,6 +88,9 @@ function enter(path, state) {
 
   // console.log('[CALL]', path.toString());
 
+  // keep track of callExpression calls
+  state.locs.add(path);
+
   if (options?.instrumentAllFunctionCalls) {
     // ultra aggressive mode: bubble-wrap everything
     instrumentCallWrapAllArgs(path, state);
@@ -106,7 +109,7 @@ function enter(path, state) {
   // }
 }
 
-export function callExpressionVisitor() {
+export default function callExpressionVisitor() {
   return {
     enter
   };

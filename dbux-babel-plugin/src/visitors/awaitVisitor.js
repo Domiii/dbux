@@ -6,14 +6,8 @@ import { getPresentableString } from '../helpers/misc';
 // builders
 // ###########################################################################
 
-/**
-```
-var awaitContextId;
-_dbux.wrapAwait(awaitContextId, await (awaitContextId = _dbux.wrapAwaitExpression(previousContextId, someExpression())));
-```
- */
 const wrapAwaitTemplate = template(
-  // WARNING: id must be passed AFTER awaitNode, because else it will be undefined (because the value will be bound before `await` statement)
+  // WARNING: id must be passed AFTER awaitNode, because else it will be undefined (the value will be bound before `await` statement and thus before `awaitId` was called)
 `%%dbux%%.postAwait(
   %%awaitNode%%,
   %%awaitContextId%%
@@ -37,6 +31,8 @@ function getAwaitDisplayName(path) {
 function enter(path, state) {
   if (!state.onEnter(path)) return;
 
+  // console.log('[AWAIT]', path.toString());
+
   const {
     ids: { dbux }
   } = state;
@@ -45,8 +41,7 @@ function enter(path, state) {
     displayName: getAwaitDisplayName(path)
   });
   // const schedulerIdName = getClosestContextIdName(argPath);
-  const awaitContextId = path.scope.generateDeclaredUidIdentifier(
-    'contextId');
+  const awaitContextId = path.scope.generateDeclaredUidIdentifier('contextId');
   const argumentPath = path.get('argument');
   const argument = argumentPath.node;
 
@@ -66,12 +61,11 @@ function enter(path, state) {
   path.replaceWith(awaitReplacement);
 
   const newAwaitPath = path.get('arguments.0');
-  state.onEnter(newAwaitPath); // make sure, we don't revisit this
+  state.onEnter(newAwaitPath); // prevent infinite loop: make sure, we don't revisit this
 
-  // console.log('[AWAIT]', newAwaitPath.toString());
 }
 
-export function awaitVisitor() {
+export default function awaitVisitor() {
   return {
     enter
   };

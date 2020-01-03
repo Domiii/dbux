@@ -20,12 +20,6 @@
 * Tell debugger to skip files
    * Chrome: [Blackboxing](https://developer.chrome.com/devtools/docs/blackboxing)
 
-## TODO
-* Figure out best ways for plugin global code injections
-   * running a plugin against multiple files?
-   * @babel/runtime?
-   * How does Istanbul do it? https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/src/instrumenter.js
-
 
 ## References: babel + babel plugins
 
@@ -65,7 +59,10 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
    * https://github.com/istanbuljs/nyc/blob/master/lib/instrumenters/istanbul.js#L20
    * https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/src/instrumenter.js#L50
       * https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-instrument
-      * [API](https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/api.md)
+      * [Istanbul visitor](https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/src/visitor.js#L488) (babel plugin)
+         * [counter statement generator](https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/src/visitor.js#L164) (e.g. `__cov().branches[123]++`)
+         * [visitor bookkeeping](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-instrument/src/source-coverage.js#L37)
+   * [API](https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/api.md)
 * References: `require` hook
    * https://github.com/istanbuljs/nyc/blob/master/bin/nyc.js
    * https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-hook/lib/hook.js
@@ -120,3 +117,4 @@ npx serve
          * => which makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
       * Official bug report: https://github.com/microsoft/vscode/issues/9448
       * Solution: run command in external `cmd` or find a better behaving terminal
+

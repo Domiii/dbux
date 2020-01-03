@@ -1,4 +1,6 @@
 import fsPath from 'path';
+import locs from './locs';
+import { enterExpression } from './visitors/expressionVisitor';
 
 function getFilePath(state) {
   let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
@@ -21,6 +23,7 @@ export default function injectDbuxState(programPath, programState) {
   const entered = new Set();
   const exited = new Set();
   const staticContexts = [null]; // staticId = 0 is always null
+  const expressions = [null];
 
   const dbuxState = {
     // static program data
@@ -28,6 +31,7 @@ export default function injectDbuxState(programPath, programState) {
     fileName,
 
     staticContexts,
+    expressions,
     ids: {
       dbuxInit: scope.generateUid('dbux_init'),
       dbuxRuntime: scope.generateUid('dbuxRuntime'),
@@ -38,6 +42,7 @@ export default function injectDbuxState(programPath, programState) {
     /**
      * NOTE: each node might be visited more than once.
      * This function keeps track of that and returns whether this is the first time visit.
+     * Will call `onEnterExpression` on expression nodes.
      */
     onEnter(path) {
       if (entered.has(path)) {
@@ -48,9 +53,19 @@ export default function injectDbuxState(programPath, programState) {
         // this node has been dynamically emitted; not part of the original source code -> not interested in it
         return false;
       }
-      entered.add(path);
+
+      // remember our visit
+      dbuxState.markVisited(path);
+
+      // take good care of expressions
+      enterExpression(path, dbuxState);
+
       return true;
     },
+
+    markVisited(path) {
+      entered.add(path);
+    }
 
     /**
      * NOTE: each node might be visited more than once.
@@ -87,22 +102,38 @@ export default function injectDbuxState(programPath, programState) {
       return contextId;
     },
 
+    /**
+     * Contexts are (currently) potential stackframes; that is `Program` and `Function` nodes.
+     */
     addStaticContext(path, data) {
       // console.log('STATIC', path.get('id')?.name, '@', `${state.filename}:${line}`);
       const staticId = staticContexts.length;
       const parentStaticId = programState.getClosestStaticId(path);
       // console.log('actualParent',  toSourceString(actualParent.node));
       const { loc } = path.node;
-      data = {
+      staticContexts.push({
         staticId,
         parent: parentStaticId,
         loc,
         ...data
-      };
-      staticContexts.push(data);
+      });
 
       path.setData('staticId', staticId);
       return staticId;
+    },
+
+    addExpression(path) {
+      // console.log('EXPR', '@', `${state.filename}:${line}`);
+      const expressionId = expressions.length;
+      const parentStaticId = programState.getClosestStaticId(path);
+      // console.log('actualParent',  toSourceString(actualParent.node));
+      const { loc } = path.node;
+      staticContexts.push({
+        expressionId,
+        parent: parentStaticId,
+        loc
+      });
+      return expressionId;
     }
   };
   
