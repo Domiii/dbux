@@ -3,43 +3,43 @@ import { logInternalError } from '../../log/logger';
 let _instance;
 
 /**
- * Keeps track of `StaticExpression` objects that contain static code information
+ * Keeps track of `StaticTrace` objects that contain static code information
  */
-class StaticExpressionCollection {
+class StaticTraceCollection {
   /**
    * @type {[]}
    */
-  _staticExpressions = [null];
+  _staticTraces = [null];
 
-  addExpressions(programId, list) {
+  addTraces(programId, list) {
     // make sure, array is pre-allocated
-    for (let i = this._staticExpressions.length; i <= programId; ++i) {
-      this._staticExpressions.push(null);
+    for (let i = this._staticTraces.length; i <= programId; ++i) {
+      this._staticTraces.push(null);
     }
 
-    // add program static expressions
-    this._staticExpressions[programId] = list;
+    // store static traces
+    this._staticTraces[programId] = list;
 
     for (let i = 1; i < list.length; ++i) {
-      if (list[i].expressionId !== i) {
-        logInternalError(programId, 'Invalid expressionId !== its own index:', list[i].expressionId, '!==', i);
+      if (list[i].traceId !== i) {
+        logInternalError(programId, 'Invalid traceId !== its own index:', list[i].traceId, '!==', i);
       }
     }
   }
 
-  getExpressions(programId) {
-    return this._staticExpressions[programId];
+  getTraces(programId) {
+    return this._staticTraces[programId];
   }
 
-  getExpression(programId, staticExpresssionId) {
-    const expressions = this.getExpressions(programId);
-    if (!expressions) {
-      logInternalError("Invalid programId has no registered static expressions:", programId);
+  getTrace(programId, staticId) {
+    const traces = this.getTraces(programId);
+    if (!traces) {
+      logInternalError("Invalid programId has no registered static traces:", programId);
       return null;
     }
-    return expressions[staticExpresssionId];
+    return traces[staticId];
   }
 }
 
-const staticProgramContextCollection = new StaticExpressionCollection();
-export default staticProgramContextCollection;
+const staticTraceCollection = new StaticTraceCollection();
+export default staticTraceCollection;

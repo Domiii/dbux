@@ -5,7 +5,7 @@ import executionContextCollection, { ExecutionContextType } from './data/collect
 import executionEventCollection from './data/collections/executionEventCollection';
 import staticContextCollection from './data/collections/staticContextCollection';
 import Runtime from './Runtime';
-import expressionCollection from './data/collections/expressionCollection';
+import traceCollection from './data/collections/traceCollection';
 
 /**
  * 
@@ -266,13 +266,11 @@ export default class RuntimeMonitor {
   }
 
   // ###########################################################################
-  // expressions
+  // traces
   // ###########################################################################
 
-  expression(value, expressionId) {
-    // TODO: fix contextId; when resuming (after await, yield, prompt etc.),
-    //    we want to attach expression to the context after resuming
+  trace(traceId, value) {
     const contextId = this._runtime.getCurrentContextId();
-    expressionCollection.recordExpression(contextId, value, expressionId);
+    traceCollection.recordTrace(contextId, traceId, value);
   }
 }

@@ -71,14 +71,14 @@ export default class ProgramMonitor {
   }
 
   // ###########################################################################
-  // expressions
+  // traces
   // ###########################################################################
 
   /**
-   * `e` is short for `expression` (we have a lot of these, so we want to keep the name short)
+   * `t` is short for `trace` (we have a lot of these, so we want to keep the name short)
    */
-  e(value, expressionId) {
-    return RuntimeMonitor.instance.expression(value, expressionId);
+  t(traceId, value) {
+    return RuntimeMonitor.instance.trace(traceId, value);
   }
 
 }

@@ -10,6 +10,8 @@ import injectDbuxState from '../dbuxState';
 import callExpressionVisitor from './callExpressionVisitor';
 import awaitVisitor from './awaitVisitor';
 import expressionVisitor from './expressionVisitor';
+import { buildAllTraceVisitors } from './traceVisitors';
+import { mergeVisitors } from '../helpers/visitorHelpers';
 
 
 // ###########################################################################
@@ -109,10 +111,15 @@ function enter(path, state) {
   // instrument Program itself
   wrapProgram(path, state);
 
-  // traverse program before (most) other plugins
+  // merge all visitors
+  const allVisitors = mergeVisitors(
+    traceVisitors(),
+    contextVisitors()
+  );
 
+  // traverse program before (most) other plugins
   path.traverse(
-    errorWrapVisitor(allOtherVisitors()), 
+    errorWrapVisitor(allVisitors), 
     state
   );
 }
@@ -133,7 +140,11 @@ function exit(path, state) {
 // Traversal of everything inside of Program
 // ###########################################################################
 
-export function allOtherVisitors() {
+function traceVisitors() {
+  return buildAllTraceVisitors();
+}
+
+function contextVisitors() {
   return {
     Function: functionVisitor(),
     CallExpression: callExpressionVisitor(),

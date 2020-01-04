@@ -76,14 +76,13 @@
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}/dbux-babel-plugin",
-			// "runtimeExecutable": "${workspaceFolder}/dbux-babel-plugin/node_modules/@babel/node/bin/babel-node.js",
-			// "runtimeArgs": [
-			// 	"--stack-trace-limit=1000",
-			// 	"--nolazy",
-			// ],
-			"program": "${workspaceFolder}/dbux-babel-plugin/node_modules/@babel/node/bin/babel-node.js",
+			"runtimeExecutable": "${workspaceFolder}/dbux-babel-plugin/node_modules/@babel/node/bin/babel-node.js",
+			"runtimeArgs": [
+				"--stack-trace-limit=1000",
+				"--nolazy",
+			],
+			"program": "${workspaceFolder}/dbux-babel-plugin/bin/dbux-instrument-file.js",
 			"args": [
-				"${workspaceFolder}/dbux-babel-plugin/bin/dbux-instrument-file.js",
 				"--file",
 				"${file}",
 			],

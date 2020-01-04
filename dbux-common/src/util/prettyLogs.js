@@ -20,7 +20,7 @@ function overrideLog(origLog, customColor) {
   };  
 }
 
-console.log = overrideLog(console.error, 'gray');
+console.log = overrideLog(console.error, 'white');
 console.error = overrideLog(console.error, 'red');
 console.warn = overrideLog(console.warn, 'yellow');
 console.debug = overrideLog(console.debug, 'gray');

@@ -1,6 +1,5 @@
 import fsPath from 'path';
-import locs from './locs';
-import { enterExpression } from './visitors/expressionVisitor';
+import { onEnterCheckExpression } from './visitors/expressionVisitor';
 
 function getFilePath(state) {
   let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
@@ -21,7 +20,7 @@ export default function injectDbuxState(programPath, programState) {
   const { scope } = programPath;
   
   const staticContexts = [null]; // staticId = 0 is always null
-  const expressions = [null];
+  const traces = [null];
 
   const dbuxState = {
     // static program data
@@ -29,7 +28,7 @@ export default function injectDbuxState(programPath, programState) {
     fileName,
 
     staticContexts,
-    expressions,
+    traces,
     ids: {
       dbuxInit: scope.generateUid('dbux_init'),
       dbuxRuntime: scope.generateUid('dbuxRuntime'),
@@ -40,7 +39,6 @@ export default function injectDbuxState(programPath, programState) {
     /**
      * NOTE: each node might be visited more than once.
      * This function keeps track of that and returns whether this is the first time visit.
-     * Will call `onEnterExpression` on expression nodes.
      */
     onEnter(path) {
       if (path.getData('_dbux_entered')) {
@@ -58,8 +56,7 @@ export default function injectDbuxState(programPath, programState) {
       // remember our visit
       dbuxState.markEntered(path);
 
-      // take good care of expressions
-      enterExpression(path, dbuxState);
+      onEnterCheckExpression(path, dbuxState);
 
       return true;
     },
@@ -154,18 +151,18 @@ export default function injectDbuxState(programPath, programState) {
       return staticId;
     },
 
-    addExpression(path) {
-      // console.log('EXPR', '@', `${state.filename}:${line}`);
-      const expressionId = expressions.length;
+    addTrace(path) {
+      // console.log('TRACE', '@', `${state.filename}:${line}`);
+      const traceId = traces.length;
       const parentStaticId = programState.getClosestStaticId(path);
       // console.log('actualParent',  toSourceString(actualParent.node));
       const { loc } = path.node;
-      expressions.push({
-        expressionId,
+      traces.push({
+        traceId,
         parent: parentStaticId,
         loc
       });
-      return expressionId;
+      return traceId;
     }
   };
   

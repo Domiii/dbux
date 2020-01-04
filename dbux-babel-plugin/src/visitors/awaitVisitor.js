@@ -75,9 +75,9 @@ function enter(path, state) {
   });
   path.replaceWith(awaitReplacement);
 
-  // // prevent infinite loop
-  // const newAwaitPath = path.get('arguments.0');
-  // state.markVisited(newAwaitPath);
+  // prevent infinite loop
+  const newAwaitPath = path.get('arguments.0');
+  state.markVisited(newAwaitPath);
 
 }
 
