@@ -1,6 +1,5 @@
 import Stack from './Stack';
 import { logInternalError } from './log/logger';
-import executionContextCollection from './data/collections/executionContextCollection';
 
 function mergeStacks(dst, src) {
   if ((src?.getDepth() || 0) > 0) {
@@ -11,7 +10,8 @@ function mergeStacks(dst, src) {
 }
 
 /**
- * Manages all actively running "runs" (represented by stacks).
+ * Manages the executing as well as all interrupted stacks.
+ * Does not interact with database.
  */
 export default class Runtime {
   static _instance;

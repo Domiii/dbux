@@ -43,9 +43,8 @@ export function buildVarAssignments(ids, values) {
 /**
  * Wrap a block with a try/finally pair
  */
-export function buildWrapTryFinally(tryNodes, endCalls) {
+export function buildWrapTryFinally(tryNodes, finallyBody) {
   tryNodes = Array.isArray(tryNodes) ? tryNodes : [tryNodes];
-  const finallyBody = endCalls;
   return buildTryFinally(tryNodes, finallyBody);
 }
 

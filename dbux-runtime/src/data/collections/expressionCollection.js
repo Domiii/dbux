@@ -1,6 +1,21 @@
+class Expression {
+  static allocate() {
+    // TODO: use object pooling
+    return new Expression();
+  }
+}
+
 class ExpressionCollection {
-  recordExpression(value, expressionId) {
-    
+  _expressions = [];
+
+  recordExpression(contextId, value, expressionId) {
+    const expr = Expression.allocate();
+    expr.contextId = contextId;
+    expr.value = value;
+    expr.expressionId = expressionId;
+
+    this._expressions.push(expr);
+    return expr;
   }
 }
 

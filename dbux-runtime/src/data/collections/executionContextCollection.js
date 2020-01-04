@@ -45,13 +45,13 @@ export class ExecutionContextCollection {
   /**
    * @return {ExecutionContext}
    */
-  executeImmediate(stackDepth, programId, staticContextId, parentScopeContextId) {
+  executeImmediate(stackDepth, programId, staticContextId, parentContextId) {
     const orderId = this._genOrderId(programId, staticContextId);
     const contextId = this._contexts.length;
 
     const context = ExecutionContext.allocate(
       ExecutionContextType.Immediate, stackDepth, contextId, programId,
-      staticContextId, orderId, parentScopeContextId);
+      staticContextId, orderId, parentContextId);
     this._push(context);
     return context;
   }
@@ -59,13 +59,13 @@ export class ExecutionContextCollection {
   /**
    * @return {ExecutionContext}
    */
-  scheduleCallback(stackDepth, programId, staticContextId, parentScopeContextId, lastPoppedContextId, schedulerId) {
+  scheduleCallback(stackDepth, programId, staticContextId, parentContextId, lastPoppedContextId, schedulerId) {
     const orderId = this._genOrderId(programId, staticContextId);
     const contextId = this._contexts.length;
 
     const context = ExecutionContext.allocate(
       ExecutionContextType.ScheduleCallback, stackDepth, contextId, programId,
-      staticContextId, orderId, parentScopeContextId, schedulerId);
+      staticContextId, orderId, parentContextId, schedulerId);
     this._push(context);
     return context;
   }
@@ -73,7 +73,7 @@ export class ExecutionContextCollection {
   /**
    * @return {ExecutionContext}
    */
-  executeCallback(stackDepth, scheduledContextId, parentScopeContextId) {
+  executeCallback(stackDepth, scheduledContextId, parentContextId) {
     const schedulerContext = this.getContext(scheduledContextId);
     const { programId, staticContextId } = schedulerContext;
     const orderId = this._genOrderId(programId, staticContextId);
@@ -81,37 +81,76 @@ export class ExecutionContextCollection {
 
     const context = ExecutionContext.allocate(
       ExecutionContextType.ExecuteCallback, stackDepth, contextId, programId,
-      staticContextId, orderId, parentScopeContextId, scheduledContextId);
+      staticContextId, orderId, parentContextId, scheduledContextId);
     this._push(context);
     return context;
   }
 
-  await(stackDepth, programId, staticContextId, parentScopeContextId) {
+  await(stackDepth, programId, staticContextId, parentContextId) {
     const orderId = this._genOrderId(programId, staticContextId);
     const contextId = this._contexts.length;
 
     const context = ExecutionContext.allocate(
       ExecutionContextType.Await, stackDepth, contextId, programId,
-      staticContextId, orderId, parentScopeContextId);
+      staticContextId, orderId, parentContextId);
     this._push(context);
     return context;
   }
 
-  setContextPopped(contextId) {
-    const context = this.getContext(contextId);
-    context.isPopped = true;
+  /**
+   * resumedChildren are used in interrupted functions.
+   * When coming back after an interruption, a "resume child context" is added.
+   * It will be popped: 
+   * (1) either when the function pops,
+   * (2) or when another interrupt occurs.
+   */
+  resume(parentContextId, staticContextId, schedulerId, stackDepth) {
+    const parentContext = this.getContext(parentContextId);
+    const { programId } = parentContext;
+    const orderId = this._genOrderId(programId, staticContextId);
+    const contextId = this._contexts.length;
 
-    this._sendToRemote(contextId, ExecutionContextUpdateType.Pop);
+    const context = ExecutionContext.allocate(
+      ExecutionContextType.Resume, stackDepth, contextId, programId,
+      staticContextId, orderId, parentContextId, schedulerId);
+
+    this._push(context);
+    this._addResumedChild(parentContextId, contextId);
+
+    return context;
+  }
+
+  // ###########################################################################
+  // Write functions
+  // These functions actually commit to collection/send to remote,
+  // using `ExecutionContextUpdateType` semantics.
+  // ###########################################################################
+
+  // setContextPopped(contextId) {
+  //   const context = this.getContext(contextId);
+  //   context.isPopped = true;
+
+  //   this._commitChange(contextId, ExecutionContextUpdateType.Pop);
+  // }
+
+  _addResumedChild(parentContextId, contextId) {
+
+    // TODO: this._sendToRemote();
   }
 
   _push(context) {
     this._contexts.push(context);
-    
-    this._sendToRemote(context.contextId, ExecutionContextUpdateType.Push, context);
+
+    this._commitChange(context.contextId, ExecutionContextUpdateType.Push, context);
   }
 
-  _sendToRemote(contextId, updateType, state) {
-    // TODO: send to remote
+
+  // ###########################################################################
+  // Remote
+  // ###########################################################################
+
+  _commitChange(contextId, updateType, state) {
+    // TODO: batch and then send to remote
   }
 
 

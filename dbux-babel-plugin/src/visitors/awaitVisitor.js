@@ -7,7 +7,9 @@ import { getPresentableString } from '../helpers/misc';
 // ###########################################################################
 
 const wrapAwaitTemplate = template(
-  // WARNING: id must be passed AFTER awaitNode, because else it will be undefined (the value will be bound before `await` statement and thus before `awaitId` was called)
+  // WARNING: id must be passed AFTER awaitNode, 
+  //    because else it will be undefined.
+  //    The value will be bound before `await` and thus before `preAwait` was called.
 `%%dbux%%.postAwait(
   %%awaitNode%%,
   %%awaitContextId%%
@@ -15,7 +17,7 @@ const wrapAwaitTemplate = template(
 `);
 
 const wrapAwaitExpressionTemplate = template(`
-(%%dbux%%.wrapAwait(%%awaitContextId%% = %%dbux%%.awaitId(%%staticId%%), %%argument%%))
+(%%dbux%%.wrapAwait(%%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%), %%argument%%))
 `);
 
 
@@ -28,6 +30,15 @@ function getAwaitDisplayName(path) {
 // visitor
 // ###########################################################################
 
+function addResumeContext(awaitPath, state) {
+  const parentStaticId = state.getClosestStaticId(awaitPath);
+  const { loc: awaitLoc } = awaitPath.node;
+  
+  // the "resume context" starts after the await statement
+  const locStart = awaitLoc.end;
+  return state.addResumeContext(parentStaticId, locStart);
+}
+
 function enter(path, state) {
   if (!state.onEnter(path)) return;
 
@@ -36,10 +47,14 @@ function enter(path, state) {
   const {
     ids: { dbux }
   } = state;
+
+  const resumeId = addResumeContext(path, state);
   const staticId = state.addStaticContext(path, {
-    type: 4, // {StaticContextType}
-    displayName: getAwaitDisplayName(path)
+    type: 4, // : StaticContextType
+    displayName: getAwaitDisplayName(path),
+    resumeId
   });
+
   // const schedulerIdName = getClosestContextIdName(argPath);
   const awaitContextId = path.scope.generateDeclaredUidIdentifier('contextId');
   const argumentPath = path.get('argument');

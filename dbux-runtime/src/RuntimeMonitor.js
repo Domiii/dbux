@@ -1,10 +1,11 @@
 import staticProgramContextCollection from './data/collections/staticProgramContextCollection';
 import ProgramMonitor from './ProgramMonitor';
 import { logInternalError } from './log/logger';
-import executionContextCollection from './data/collections/executionContextCollection';
+import executionContextCollection, { ExecutionContextType } from './data/collections/executionContextCollection';
 import executionEventCollection from './data/collections/executionEventCollection';
 import staticContextCollection from './data/collections/staticContextCollection';
 import Runtime from './Runtime';
+import expressionCollection from './data/collections/expressionCollection';
 
 /**
  * 
@@ -51,13 +52,9 @@ export default class RuntimeMonitor {
   /**
    * Very similar to `pushCallback`
    */
-  pushImmediate(programId, staticContextId) {
-    this._runtime.beforePush(null);
-
+  pushImmediate(programId, staticContextId, isInterruptable = 0) {
     const parentContextId = this._runtime.peekStack();
     const stackDepth = this._runtime.getStackDepth();
-
-    // register context
     const context = executionContextCollection.executeImmediate(
       stackDepth, programId, staticContextId, parentContextId
     );
@@ -75,10 +72,11 @@ export default class RuntimeMonitor {
     // sanity checks
     const context = executionContextCollection.getContext(contextId);
     if (!context) {
-      logInternalError('Tried to popImmediate, but context was not registered:',
-        contextId);
+      logInternalError('Tried to popImmediate, but context was not registered:', contextId);
       return;
     }
+
+
 
     // pop from stack
     this._pop(contextId);
@@ -88,10 +86,8 @@ export default class RuntimeMonitor {
   }
 
   _pop(contextId) {
-    executionContextCollection.setContextPopped(contextId);
+    // executionContextCollection.setContextPopped(contextId);
     this._runtime.pop(contextId);
-
-    // TODO: keep popping all already popped contexts
   }
 
 
@@ -184,20 +180,20 @@ export default class RuntimeMonitor {
   // Interrupts, await et al
   // ###########################################################################
 
-  awaitId(programId, staticContextId) {
-    this._runtime.beforePush(null);
+  preAwait(programId, staticContextId) {
+    // pop resume context
+    this.popResume();
 
+    // push await context
+    this._runtime.beforePush(null);
     const parentContextId = this._runtime.peekStack();
     const stackDepth = this._runtime.getStackDepth();
-
-    // register context
     const context = executionContextCollection.await(
       stackDepth, programId, staticContextId, parentContextId
     );
     const { contextId: awaitContextId } = context;
-
     this._runtime.push(awaitContextId);
-    this._runtime.registerAwait(awaitContextId);
+    this._runtime.registerAwait(awaitContextId);  // let run-time now that this is gonna be "waiting"
 
     // log event
     executionEventCollection.logAwait(awaitContextId);
@@ -221,24 +217,62 @@ export default class RuntimeMonitor {
       return;
     }
 
-    // resume
+    // bring back stack of awaiting context
     this._runtime.resumeWaitingStack(awaitContextId);
 
     // pop from stack
     this._pop(awaitContextId);
 
-    // log event
-    executionEventCollection.logResume(awaitContextId);
+    // resume: insert new [Resume] context and add as resumedChild
+    const { programId, staticContextId } = context;
+    const staticContext = staticContextCollection.getContext(programId, staticContextId);
+    const { resumeId: resumeStaticContextId } = staticContext;
+    this.pushResume(resumeStaticContextId, awaitContextId);
 
     return awaitResult;
   }
-  
+
+  /**
+   * The `schedulerId` of a `resume` can be two things:
+   * (1) the function itself (when pushing the initial "resume context" on function call)
+   * (2) an await context (when resuming after an await)
+   */
+  pushResume(resumeStaticContextId, schedulerId) {
+    const parentContextId = this._runtime.peekStack();
+    const stackDepth = this._runtime.getStackDepth();
+    const resumeContextId = executionContextCollection.resume(
+      parentContextId, resumeStaticContextId, schedulerId, stackDepth
+    );
+
+    // log event
+    executionEventCollection.logResume(resumeContextId);
+  }
+
+  popResume() {
+    const resumeContextId = this._runtime.peekStack();
+
+    // sanity checks
+    const context = executionContextCollection.getContext(resumeContextId);
+    if (!context) {
+      logInternalError('Tried to popResume, but context was not registered:', resumeContextId);
+      return;
+    }
+    if (context.contextType !== ExecutionContextType.Resume) {
+      logInternalError('Tried to popResume, but stack top is not of type `Resume`:', context);
+      return;
+    }
+
+    this._pop(resumeContextId);
+  }
+
   // ###########################################################################
   // expressions
   // ###########################################################################
 
   expression(value, expressionId) {
+    // TODO: fix contextId; when resuming (after await, yield, prompt etc.),
+    //    we want to attach expression to the context after resuming
     const contextId = this._runtime.getCurrentContextId();
-    
+    expressionCollection.recordExpression(contextId, value, expressionId);
   }
 }

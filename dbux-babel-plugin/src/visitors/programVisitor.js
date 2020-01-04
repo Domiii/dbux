@@ -9,6 +9,7 @@ import { replaceProgramBody } from '../helpers/program';
 import injectDbuxState from '../dbuxState';
 import callExpressionVisitor from './callExpressionVisitor';
 import awaitVisitor from './awaitVisitor';
+import expressionVisitor from './expressionVisitor';
 
 
 // ###########################################################################
@@ -138,19 +139,22 @@ export function allOtherVisitors() {
     CallExpression: callExpressionVisitor(),
     AwaitExpression: awaitVisitor(),
     // Statement: statementVisitor(),
-    Expression: expressionVisitor()
+    Expression: expressionVisitor(),
 
     /**
      * TODO: Handle `for await of`
      * explanation: 
-     *    `for await (const x of y) { x }` is like a sugar of:
-     *    `for (const x of y) { await x }`
-     *    (but call y[Symbol.asyncIterator]() instead of y[Symbol.iterator]())
+     *    `for await (const x of xs) { f(x); g(x); }` is like sugar of:
+     *    `for (const (x = await _x) of (async xs)) { f(x); g(x); }`
+     *    (it calls y[Symbol.asyncIterator]() instead of y[Symbol.iterator]())
+     * @see https://www.codementor.io/@tiagolopesferreira/asynchronous-iterators-in-javascript-jl1yg8la1
+     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
      * @see https://github.com/babel/babel/issues/4969
+     * @see https://babeljs.io/docs/en/babel-types#forofstatement
      */
     // ForOfStatement(path) {
     //   if (path.node.await) {
-    //     // TODO: instrumentAwait
+    //     // TODO....
     //   }
     // },
 
@@ -159,11 +163,8 @@ export function allOtherVisitors() {
     more TODO:
     see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop
     see: https://stackoverflow.com/questions/2734025/is-javascript-guaranteed-to-be-single-threaded/2734311#2734311
- 
-    instrumentTimingEvents(); // setTimeout + setInterval + process.nextTick
-    instrumentInterruptEvents(); // alert, confirm, prompt etc
-    instrumentThenables(); // TODO: then, catch, finally, etc.. // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
-    generator functions
+    
+    TODO: generator functions
  
  
     //instrumentOtherCallbacks(); // e.g.: event handlers, non-promisified libraries

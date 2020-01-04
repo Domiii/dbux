@@ -113,13 +113,17 @@ export default function injectDbuxState(programPath, programState) {
       return contextId;
     },
 
+    getStaticContext(staticId) {
+      return staticContexts[staticId];
+    },
+
     /**
      * Contexts are (currently) potential stackframes; that is `Program` and `Function` nodes.
      */
     addStaticContext(path, data) {
       // console.log('STATIC', path.get('id')?.name, '@', `${state.filename}:${line}`);
       const staticId = staticContexts.length;
-      const parentStaticId = programState.getClosestStaticId(path);
+      const parentStaticId = dbuxState.getClosestStaticId(path);
       // console.log('actualParent',  toSourceString(actualParent.node));
       const { loc } = path.node;
       staticContexts.push({
@@ -130,6 +134,23 @@ export default function injectDbuxState(programPath, programState) {
       });
 
       path.setData('staticId', staticId);
+      return staticId;
+    },
+
+    addResumeContext(parentStaticId, locStart) {
+      const parent = dbuxState.getStaticContext(parentStaticId);
+      const staticId = staticContexts.length;
+      const loc = {
+        start: locStart,
+        end: null     // we don't know where it ends yet (can only be determined at run-time)
+      };
+      staticContexts.push({
+        type: 5, // : StaticContextType
+        staticId,
+        parent: parentStaticId,
+        displayName: parent.displayName,
+        loc
+      });
       return staticId;
     },
 

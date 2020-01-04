@@ -114,7 +114,7 @@ export class ExecutionEventCollection {
     const {
       programId,
       staticContextId,
-      parentScopeContextId,
+      parentContextId,
       stackDepth
     } = context;
     const staticProgramContext = staticProgramContextCollection.getProgramContext(programId);
@@ -128,7 +128,7 @@ export class ExecutionEventCollection {
     } = staticProgramContext;
     const line = where?.line;
     const lineSuffix = line ? `:${line}` : '';
-    // const depthIndicator = `(${parentScopeContextId})`;
+    // const depthIndicator = `(${parentContextId})`;
     const depthIndicator = `  `.repeat(stackDepth);
     let message = `[DBUX] [${contextId.toString().padStart(3)}] ${depthIndicator} ${displayName} [${typeName}] @${fileName}${lineSuffix} (${stackDepth})`;
 

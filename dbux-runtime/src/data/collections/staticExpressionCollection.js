@@ -1,3 +1,5 @@
+import { logInternalError } from '../../log/logger';
+
 let _instance;
 
 /**
@@ -5,16 +7,37 @@ let _instance;
  */
 class StaticExpressionCollection {
   /**
-   * @type {StaticProgramContext[]}
+   * @type {[]}
    */
-  _expressions = [null];
+  _staticExpressions = [null];
 
-  addAll(programData) {
-    
+  addExpressions(programId, list) {
+    // make sure, array is pre-allocated
+    for (let i = this._staticExpressions.length; i <= programId; ++i) {
+      this._staticExpressions.push(null);
+    }
+
+    // add program static expressions
+    this._staticExpressions[programId] = list;
+
+    for (let i = 1; i < list.length; ++i) {
+      if (list[i].expressionId !== i) {
+        logInternalError(programId, 'Invalid expressionId !== its own index:', list[i].expressionId, '!==', i);
+      }
+    }
   }
 
-  getExpression(expressionId) {
-    return this._expressions[expressionId];
+  getExpressions(programId) {
+    return this._staticExpressions[programId];
+  }
+
+  getExpression(programId, staticExpresssionId) {
+    const expressions = this.getExpressions(programId);
+    if (!expressions) {
+      logInternalError("Invalid programId has no registered static expressions:", programId);
+      return null;
+    }
+    return expressions[staticExpresssionId];
   }
 }
 
