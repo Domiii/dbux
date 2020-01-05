@@ -1,126 +1,132 @@
+import template from '@babel/template';
+import Enum from 'dbux-common/src/util/Enum';
+import * as t from '@babel/types';
 // TODO: want to do some extra work to better trace loops
 
+const TraceTypes = new Enum({
+  NoTrace: 0,
+  ExpressionWithValue: 1,
+  ExpressionNoValue: 2,
+  Statement: 3,
+  Block: 4
+});
+
 const traceCfg = (() => {
-  const captureValue = true;
-  const dontTrace = true;
-  const statement = true;
-  const block = true;
-  const statementCfg = {
-    captureValue: false,
-    statement
-  };
-  const blockCfg = {
-    captureValue: false,
-    statement,
-    block
-  };
+  const {
+    NoTrace,
+    ExpressionWithValue,
+    ExpressionNoValue,
+    Statement,
+    Block
+  } = TraceTypes;
 
   return {
     // assignments
-    AssignmentExpression: {
-      dontTrace,
-      children: [['right', true]]
-    },
-    ClassPrivateProperty: {
-      dontTrace,
-      children: [['value', true]]
-    },
-    ClassProperty: {
-      dontTrace,
-      children: [['value', true]],
-    },
+    AssignmentExpression: [
+      NoTrace,
+      [['right', ExpressionWithValue]]
+    ],
+    ClassPrivateProperty: [
+      NoTrace,
+      [['value', ExpressionWithValue]]
+    ],
+    ClassProperty: [
+      NoTrace,
+      [['value', ExpressionWithValue]]
+    ],
+    VariableDeclarator: [
+      NoTrace,
+      [['init', ExpressionWithValue]]
+    ],
 
     // expressions
-    AwaitExpression: {
-      captureValue,
-      children: [['argument', false]]
-    },
-    ConditionalExpression: {
-      captureValue,
-      children: [['test', true], ['consequent', blockCfg], ['alternate', blockCfg]]
-    },
-    CallExpression: {
-      captureValue,
-      // children: [['arguments', true]] // TODO: must capture each individual argument
-    },
-    OptionalCallExpression: {
-      captureValue,
-      // children: [['arguments', true]] // TODO: must capture each individual argument
-    },
-    Super: false,
-    UpdateExpression: true,
-    YieldExpression: {
-      dontTrace,
-      children: [['argument', true]]
-    },
-
-    // variable declarations
-    VariableDeclarator: {
-      dontTrace,
-      children: [['init', true]]
-    },
+    AwaitExpression: [
+      ExpressionWithValue,
+      [['argument', ExpressionNoValue]]
+    ],
+    ConditionalExpression: [
+      ExpressionWithValue,
+      [['test', ExpressionWithValue], ['consequent', ExpressionWithValue], ['alternate', ExpressionWithValue]]
+    ],
+    CallExpression: [
+      ExpressionWithValue,
+      // [['arguments', true]] // TODO: must capture each individual argument
+    ],
+    OptionalCallExpression: [
+      ExpressionWithValue,
+      // [['arguments', true]] // TODO: must capture each individual argument
+    ],
+    Super: ExpressionNoValue,
+    UpdateExpression: ExpressionWithValue,
+    YieldExpression: [
+      NoTrace,
+      [['argument', ExpressionWithValue]]
+    ],
 
     // statements
-    BreakStatement: statementCfg,
-    ContinueStatement: statementCfg,
-    Decorator: {
-      dontTrace,
-      children: [['expression', false]]
-    },
-    Declaration: {
-      captureValue: false,
-      statement: true,
-      ignore: ['ImportDeclaration'] // cannot mess with imports
-    },
-    ReturnStatement: statementCfg,
-    ThrowStatement: statementCfg,
+    BreakStatement: Statement,
+    ContinueStatement: Statement,
+    Decorator: [
+      NoTrace,
+      [['expression', ExpressionNoValue]]
+    ],
+    Declaration: [
+      Statement,
+      null, // no children
+      {
+        ignore: ['ImportDeclaration'] // ignore: cannot mess with imports
+      }
+    ],
+    ReturnStatement: Statement,
+    ThrowStatement: Statement,
 
     // loops
-    DoWhileLoop: {
-      dontTrace,
-      children: [['test', true], ['body', blockCfg]]
-    },
-    ForInStatement: {
-      dontTrace,
-      children: [['body', blockCfg]]
-    },
-    ForOfStatement: {
-      dontTrace,
-      children: [['body', blockCfg]]
-    },
-    ForStatement: {
-      dontTrace,
-      children: [['test', true], ['update', true], ['body', blockCfg]]
-    },
-    WhileStatement: {
-      dontTrace,
-      children: [['test', true], ['body', blockCfg]]
-    },
+    DoWhileLoop: [
+      NoTrace,
+      [['test', ExpressionWithValue], ['body', Block]]
+    ],
+    ForInStatement: [
+      NoTrace,
+      [['body', Block]]
+    ],
+    ForOfStatement: [
+      NoTrace,
+      [['body', Block]]
+    ],
+    ForStatement: [
+      NoTrace,
+      [['test', ExpressionWithValue], ['update', ExpressionWithValue], ['body', Block]]
+    ],
+    WhileStatement: [
+      NoTrace,
+      [['test', ExpressionWithValue], ['body', Block]]
+    ],
 
     // if, else, switch
-    IfStatement: {
-      dontTrace,
-      children: [['test', true], ['consequent', blockCfg], ['alternate', blockCfg]],
-    },
-    SwitchStatement: {
-      dontTrace,
-      children: [['discriminant', true]]
-    },
-    // SwitchCase: {
-    // TODO: insert trace call into `consequent` array
-    //   dontTrace,
-    //   children: [['consequent']]
-    // },
+    IfStatement: [
+      NoTrace,
+      [['test', ExpressionWithValue], ['consequent', Block], ['alternate', Block]],
+    ],
+    SwitchStatement: [
+      NoTrace,
+      [['discriminant', ExpressionWithValue]]
+    ],
+    // SwitchCase: [
+    // TODO: insert trace call into `consequent` array.
+    //    NOTE: we cannot just block the `consequent` array as that will change the semantics (specifically: local variables cannot spill into subsequent cases anymore)
+    //   NoTrace,
+    //   [['consequent']]
+    // ],
 
     // try + catch
-    TryStatement: {
-      dontTrace,
-      children: [['block', blockCfg], ['finalizer', blockCfg]]
-    },
-    CatchClause: {
-      dontTrace,
-      children: [['body', blockCfg]]
-    },
+    TryStatement: [
+      NoTrace,
+      [['block', Block], ['finalizer', Block]]
+    ],
+    CatchClause: [
+      NoTrace,
+      [['body', Block]]
+    ],
 
     // ExpressionStatement: [['expression', true]], // already taken care of by everything else
 
@@ -128,13 +134,14 @@ const traceCfg = (() => {
 })();
 
 function err(message, obj) {
-  throw new Error(message + ' - ' + JSON.stringify(obj));
+  throw new Error(message + (obj && (' - ' + JSON.stringify(obj)) || ''));
 }
 
 function validateCfgNode(node) {
-  if (node.captureValue && (node.statement || node.block)) {
-    err('invalid config', node);
-  }
+  const [traceType, children, nodeCfg] = node;
+
+  // make sure, it has a valid type
+  TraceTypes.nameFromForce(traceType);
 }
 
 function validateCfg(cfg) {
@@ -151,71 +158,145 @@ function validateCfg(cfg) {
 function normalizeConfig() {
   for (const visitorName in traceCfg) {
     let nodeCfg = traceCfg[visitorName];
-    if (nodeCfg === true || nodeCfg === false) {
-      // only captureValue (boolean)
-      nodeCfg = {
-        captureValue: nodeCfg,
-        children: null,
-        dontTrace: false
-      };
-    }
-    else if (Array.isArray(nodeCfg)) {
-      const children = nodeCfg;
-      nodeCfg = {
-        captureValue: false,
-        children,
-        dontTrace: false
-      }
-    }
-    else if (typeof nodeCfg !== 'object') {
-      throw new Error('invalid traceCfg: ' + visitorName + ' - ' + JSON.stringify(nodeCfg));
+    if (!Array.isArray(nodeCfg)) {
+      // no children
+      nodeCfg = [nodeCfg];
     }
 
-    if (nodeCfg.children) {
-      for (let i = 0; i < nodeCfg.children.length; ++i) {
-        let child = nodeCfg.children[i];
-        if (child.constructor === String) {
-          child = {
-            name: child,
-            captureValue: false
-          };
-        }
-        else if (Array.isArray(child)) {
-          const [name, childCfgOrCaptureValue = false] = child;
-          if (typeof childCfgOrCaptureValue === 'object') {
-            child = {
-              name,
-              ...childCfgOrCaptureValue
-            };
-          }
-          else {
-            child = {
-              name,
-              captureValue: childCfgOrCaptureValue
-            };
-          }
-        }
-        else if (typeof child !== 'object') {
-          throw new Error('invalid traceCfg: ' + visitorName + ' - ' + JSON.stringify(nodeCfg));
-        }
-        nodeCfg.children[i] = child;
-      }
+    const [traceType, children, extraCfg] = nodeCfg;
+    if (extraCfg?.include) {
+      // convert to set
+      extraCfg.include = new Set(extraCfg.include);
     }
-
+    
     traceCfg[visitorName] = nodeCfg;
   }
+
   return traceCfg;
 }
 
-export function buildAllTraceVisitors() {
-  const visitors = {};
-  const traceCfg = normalizeConfig();
-  validateCfg(traceCfg);
+// ###########################################################################
+// templates + instrumentation recipes
+// ###########################################################################
 
-  for (const visitorName in traceCfg) {
-    // TODO
-    visitors[visitorName] = (path, state) => {
-      
+function replaceWithTemplate(templ, path, cfg) {
+  const newNode = templ(cfg);
+  path.replaceWith(newNode);
+}
+
+function buildRecipes(state) {
+  const { ids: { dbux } } = state;
+
+  const instrumentors = {
+
+    buildTraceNoValue: function(templ, path) {
+      const traceId = state.addTrace(path);
+      return templ({ dbux, traceId });
+    }.bind(state, template('%%dbux%%.t(%%traceId%%)')),
+
+    traceWrapExpression: function (templ, expressionPath) {
+      const traceId = state.addTrace(expressionPath);
+      replaceWithTemplate(templ, expressionPath, {
+        dbux,
+        traceId,
+        expression: expressionPath.node
+      });
+
+      // prevent infinite loop
+      state.markVisited(expressionPath.get('arguments.1'));
+    }.bind(state, template('%%dbux%%.t(%%traceId%%, %%expression%%)')),
+
+    traceBeforeExpression: function (templ, expressionPath) {
+      const trace = instrumentors.buildTraceNoValue(expressionPath);
+      replaceWithTemplate(templ, expressionPath, {
+        dbux,
+        trace,
+        expression: expressionPath.node
+      });
+
+      // prevent infinite loop
+      state.markVisited(expressionPath.get('arguments.1'));
+    }.bind(state, template('%%trace%%, %%expression%%'))
+
+  };
+
+  return instrumentors;
+}
+
+// ###########################################################################
+// instrumentation
+// ###########################################################################
+
+
+function buildInstrumentors(state) {
+  const recipes = buildRecipes(state);
+
+  return {
+    ExpressionWithValue(path) {
+      // future work: maybe we want to insert trace before expression as well
+      recipes.traceWrapExpression(path);
+    },
+    ExpressionNoValue(path) {
+      recipes.traceBeforeExpression(path);
+    },
+    Statement(path) {
+      const trace = recipes.buildTraceNoValue(path);
+      path.insertBefore(trace);
+    },
+    Block(path) {
+      const trace = recipes.buildTraceNoValue(path);
+      path.insertBefore(trace);
+      // if (!t.isBlockStatement(path)) {
+      //   // make a new block
+
+      // }
+      // else {
+      //   // insert at the top of existing block
+      // }
+    }
+  };
+}
+
+// ###########################################################################
+// visitors
+// ###########################################################################
+
+let instrumentors;
+
+function visit(state, path, cfg) {
+  if (!state.onTrace(path)) return;
+
+  const [traceType, children, extraCfg] = cfg;
+  if (extraCfg?.ignore?.has(path.node.type)) {
+    // ignored
+    return;
+  }
+
+  const traceTypeName = TraceTypes.nameFromForce(traceType);
+  instrumentors[traceTypeName](path);
+
+  if (!instrumentors[traceTypeName]) {
+    err('instrumentors are missing TraceType:', traceTypeName);
+  }
+
+  for (const child of children) {
+    const [childName, ...childCfg] = child;
+    const childPath = path.get(childName);
+    
+    visit(state, childPath, childCfg);
+  }
+}
+
+export function buildAllTraceVisitors(state) {
+  const visitors = {};
+  const cfg = normalizeConfig();
+  validateCfg(cfg);
+  
+  instrumentors = buildInstrumentors(state);
+
+  for (const visitorName in cfg) {
+    visitors[visitorName] = (path) => {
+      visit(state, path, cfg[visitorName]);
     };
   }
   return visitors;

@@ -27,12 +27,12 @@ export function onEnterCheckExpression(path, state) {
 
   console.log('EXPR', path.toString())
 
-  const expressionId = state.addExpression(path);
+  const traceId = state.addTrace(path);
   const { ids: { dbux } } = state;
   const wrapped = wrapExpressionTemplate({
     dbux,
     expression: path.node,
-    expressionId: t.numericLiteral(expressionId)
+    expressionId: t.numericLiteral(traceId)
   });
   path.replaceWith(wrapped);
 

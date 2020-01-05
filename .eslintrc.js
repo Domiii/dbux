@@ -32,6 +32,7 @@ module.exports = {
 		"no-debugger": 0,
 		"operator-assignment": 0,
 		"prefer-const": "warn",
-		"no-invalid-this": 0
+		"no-invalid-this": 0,
+		"no-unused-vars": 0
 	}
 };

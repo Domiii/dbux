@@ -149,8 +149,6 @@ function contextVisitors() {
     Function: functionVisitor(),
     CallExpression: callExpressionVisitor(),
     AwaitExpression: awaitVisitor(),
-    // Statement: statementVisitor(),
-    Expression: expressionVisitor(),
 
     /**
      * TODO: Handle `for await of`
