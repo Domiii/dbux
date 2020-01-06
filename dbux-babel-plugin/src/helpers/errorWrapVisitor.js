@@ -24,10 +24,14 @@ function _errorWrap(visitor) {
 }
 
 export default function errorWrapVisitor(visitor) {
-  for (const [_, actions] of Object.entries(visitor || {})) {
+  for (const [visitorName, actions] of Object.entries(visitor || {})) {
     for (const [actionName, f] of Object.entries(actions || {})) {
       actions[actionName] = _errorWrap(f);
     }
   }
+
+  // TODO: babel is unhappy with our DoWhileLoop visitor
+  delete visitor.DoWhileLoop;
+
   return visitor;
 }

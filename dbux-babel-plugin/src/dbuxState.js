@@ -35,6 +35,10 @@ export default function injectDbuxState(programPath, programState) {
     },
     // console.log('[Program]', state.filename);
 
+    onTrace(path) {
+      return dbuxState.onEnter(path, 'trace');
+    },
+
     /**
      * NOTE: each node might be visited more than once.
      * This function keeps track of that and returns whether this is the first time visit.
@@ -54,12 +58,15 @@ export default function injectDbuxState(programPath, programState) {
       }
 
       // remember our visit
-      dbuxState.markEntered(path);
+      dbuxState.markEntered(path, purpose);
 
       return true;
     },
 
     markEntered(path, purpose) {
+      if (!purpose) {
+        throw new Error('Could not mark path because no purpose was given:\n' + path.toString());
+      }
       const key = '_dbux_entered' + purpose;
       // entered.add(path);
       path.setData(key, true);
@@ -70,8 +77,8 @@ export default function injectDbuxState(programPath, programState) {
       path.setData(key, true);
     },
 
-    markVisited(path) {
-      dbuxState.markEntered(path);
+    markVisited(path, purpose) {
+      dbuxState.markEntered(path, purpose);
       // dbuxState.markExited(path); // not necessary for now
     },
 

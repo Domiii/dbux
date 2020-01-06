@@ -6,6 +6,7 @@ import executionEventCollection from './data/collections/executionEventCollectio
 import staticContextCollection from './data/collections/staticContextCollection';
 import Runtime from './Runtime';
 import traceCollection from './data/collections/traceCollection';
+import staticTraceCollection from './data/collections/staticTraceCollection';
 
 /**
  * 
@@ -37,9 +38,14 @@ export default class RuntimeMonitor {
    */
   addProgram(programData) {
     const staticProgramContext = staticProgramContextCollection.addProgram(programData);
-    staticContextCollection.addContexts(staticProgramContext.programId, programData.staticContexts);
+    const { programId } = staticProgramContext;
+    const { staticContexts, traces } = programData;
+    staticContextCollection.addContexts(programId, staticContexts);
+    staticTraceCollection.addTraces(programId, traces);
+
     const programMonitor = new ProgramMonitor(staticProgramContext);
-    this._programMonitors.set(staticProgramContext.programId, programMonitor);
+    this._programMonitors.set(programId, programMonitor);
+    
     return programMonitor;
   }
 

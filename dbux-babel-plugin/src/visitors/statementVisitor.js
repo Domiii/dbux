@@ -12,7 +12,7 @@ const x = template(`
 // ###########################################################################
 
 function enter(path, state) {
-  if (!state.onEnter(path)) return;
+  if (!state.onEnter(path, 'context')) return;
 
   // not doing anything for now
 }

@@ -82,14 +82,11 @@ function addStaticContext(argPath, state) {
 // ###########################################################################
 
 function enter(path, state) {
-  if (!state.onEnter(path)) return;
+  if (!state.onEnter(path, 'context')) return;
 
   const { options } = state;
 
   // console.log('[CALL]', path.toString());
-
-  // keep track of callExpression calls
-  state.locs.add(path);
 
   if (options?.instrumentAllFunctionCalls) {
     // ultra aggressive mode: bubble-wrap everything

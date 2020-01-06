@@ -146,35 +146,41 @@ function validateCfgNode(node) {
 
 function validateCfg(cfg) {
   for (const name in cfg) {
-    const node = cfg[name];
-    validateCfgNode(node);
-    const children = node.children || {};
-    for (const child of children) {
-      validateCfgNode(child);
-    }
+    const nodeCfg = cfg[name];
+    validateCfgNode(nodeCfg);
+    // const [traceType, children, extraCfg] = nodeCfg;
+    // for (const child of children) {
+    //   ...
+    // }
   }
 }
 
-function normalizeConfig() {
-  for (const visitorName in traceCfg) {
-    let nodeCfg = traceCfg[visitorName];
+function normalizeConfig(cfg) {
+  for (const visitorName in cfg) {
+    let nodeCfg = cfg[visitorName];
     if (!Array.isArray(nodeCfg)) {
       // no children
       nodeCfg = [nodeCfg];
     }
 
-    const [traceType, children, extraCfg] = nodeCfg;
+    let [traceType, children, extraCfg] = nodeCfg;
     if (extraCfg?.include) {
       // convert to set
       extraCfg.include = new Set(extraCfg.include);
     }
+    // if (children) {
+    //   children = Object.fromEntries(children.map(
+    //     ([childName, ...childCfg]) => ([childName, childCfg])
+    //   ));
+    // }
+    nodeCfg = [traceType, children, extraCfg];
 
-    traceCfg[visitorName] = nodeCfg;
+    cfg[visitorName] = nodeCfg;
   }
 
-  validateCfg(traceCfg);
+  validateCfg(cfg);
 
-  return traceCfg;
+  return cfg;
 }
 
 // ###########################################################################
@@ -189,7 +195,10 @@ function replaceWithTemplate(templ, path, cfg) {
 const buildTraceNoValue = function (templ, path, state) {
   const { ids: { dbux } } = state;
   const traceId = state.addTrace(path);
-  return templ({ dbux, traceId });
+  return templ({
+    dbux,
+    traceId: t.numericLiteral(traceId)
+  });
 }.bind(null, template('%%dbux%%.t(%%traceId%%)'));
 
 const traceWrapExpression = function (templ, expressionPath, state) {
@@ -197,17 +206,17 @@ const traceWrapExpression = function (templ, expressionPath, state) {
   const traceId = state.addTrace(expressionPath);
   replaceWithTemplate(templ, expressionPath, {
     dbux,
-    traceId,
+    traceId: t.numericLiteral(traceId),
     expression: expressionPath.node
   });
 
   // prevent infinite loop
-  state.markVisited(expressionPath.get('arguments.1'));
+  state.markVisited(expressionPath.get('arguments.1'), 'trace');
 }.bind(null, template('%%dbux%%.t(%%traceId%%, %%expression%%)'));
 
 const traceBeforeExpression = function (templ, expressionPath, state) {
   const { ids: { dbux } } = state;
-  const trace = buildTraceNoValue(expressionPath);
+  const trace = buildTraceNoValue(expressionPath, state);
   replaceWithTemplate(templ, expressionPath, {
     dbux,
     trace,
@@ -215,7 +224,7 @@ const traceBeforeExpression = function (templ, expressionPath, state) {
   });
 
   // prevent infinite loop
-  state.markVisited(expressionPath.get('arguments.1'));
+  state.markVisited(expressionPath.get('arguments.1'), 'trace');
 }.bind(null, template('%%trace%%, %%expression%%'))
 
 
@@ -252,27 +261,30 @@ const instrumentors = {
 // visitors
 // ###########################################################################
 
-function visit(path, state, cfg) {
+function enter(path, state, cfg) {
   if (!state.onTrace(path)) return;
 
   const [traceType, children, extraCfg] = cfg;
-  if (extraCfg?.ignore?.has(path.node.type)) {
+  if (extraCfg?.ignore?.includes(path.node.type)) {
     // ignored
     return;
   }
 
   const traceTypeName = TraceTypes.nameFromForce(traceType);
-  instrumentors[traceTypeName](path);
-
-  if (!instrumentors[traceTypeName]) {
-    err('instrumentors are missing TraceType:', traceTypeName);
+  if (traceType) {
+    if (!instrumentors[traceTypeName]) {
+      err('instrumentors are missing TraceType:', traceTypeName);
+    }
+    instrumentors[traceTypeName](path, state);
   }
 
-  for (const child of children) {
-    const [childName, ...childCfg] = child;
-    const childPath = path.get(childName);
+  if (children) {
+    for (const child of children) {
+      const [childName, ...childCfg] = child;
+      const childPath = path.get(childName);
 
-    visit(childPath, state, childCfg);
+      enter(childPath, state, childCfg);
+    }
   }
 }
 
@@ -280,11 +292,13 @@ let visitors;
 export function buildAllTraceVisitors() {
   if (!visitors) {
     visitors = {};
-    const cfg = normalizeConfig();
+    const cfg = normalizeConfig(traceCfg);
 
     for (const visitorName in cfg) {
-      visitors[visitorName] = (path, state) => {
-        visit(path, state, cfg[visitorName]);
+      visitors[visitorName] = {
+        enter(path, state) {
+          enter(path, state, cfg[visitorName]);
+        }
       };
     }
   }

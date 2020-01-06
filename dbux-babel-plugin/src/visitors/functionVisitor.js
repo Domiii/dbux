@@ -89,7 +89,7 @@ export function wrapFunctionBody(bodyPath, { ids: { dbux }, genContextIdName }, 
 export default function functionVisitor() {
   return {
     enter(path, state) {
-      if (!state.onEnter(path)) return;
+      if (!state.onEnter(path, 'context')) return;
       // console.warn('F', path.toString());
 
       const name = guessFunctionName(path);

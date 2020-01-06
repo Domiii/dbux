@@ -3,13 +3,11 @@ import errorWrapVisitor from '../helpers/errorWrapVisitor';
 
 import functionVisitor from './functionVisitor';
 import { buildSource, buildWrapTryFinally } from '../helpers/builders';
-import * as t from '@babel/types';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 import { replaceProgramBody } from '../helpers/program';
 import injectDbuxState from '../dbuxState';
 import callExpressionVisitor from './callExpressionVisitor';
 import awaitVisitor from './awaitVisitor';
-import expressionVisitor from './expressionVisitor';
 import { buildAllTraceVisitors } from './traceVisitors';
 import { mergeVisitors } from '../helpers/visitorHelpers';
 
@@ -34,7 +32,14 @@ function buildProgramInit(path, { ids, genContextIdName }) {
   `);
 }
 
-function buildProgramTail(path, { ids, fileName, filePath, staticContexts }) {
+function buildProgramTail(path, state) {
+  const {
+    ids,
+    fileName,
+    filePath,
+    staticContexts,
+    traces
+  } = state;
   const {
     dbuxInit,
     // dbuxRuntime
@@ -43,7 +48,8 @@ function buildProgramTail(path, { ids, fileName, filePath, staticContexts }) {
   const staticData = {
     fileName,
     filePath,
-    staticContexts
+    staticContexts,
+    traces
   };
 
   const staticDataString = JSON.stringify(staticData, null, 4);
@@ -118,10 +124,19 @@ function enter(path, state) {
   );
 
   // traverse program before (most) other plugins
-  path.traverse(
-    errorWrapVisitor(allVisitors), 
-    state
-  );
+  try {
+    path.traverse(
+      errorWrapVisitor(allVisitors),
+      state
+    );
+  }
+  catch (err) {
+    // hackfix: if we don't re-throw here, babel swallows the error for some reason
+    // console.error(err);
+    // throw new Error('traversal failed');
+    console.error('traversal failed', err);
+    throw err;
+  }
 }
 
 

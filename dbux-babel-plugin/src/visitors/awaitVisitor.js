@@ -40,7 +40,7 @@ function addResumeContext(awaitPath, state) {
 }
 
 function enter(path, state) {
-  if (!state.onEnter(path)) return;
+  if (!state.onEnter(path, 'context')) return;
 
   // console.log('[AWAIT]', path.toString());
 
@@ -77,7 +77,7 @@ function enter(path, state) {
 
   // prevent infinite loop
   const newAwaitPath = path.get('arguments.0');
-  state.markVisited(newAwaitPath);
+  state.markVisited(newAwaitPath, 'context');
 
 }
 
