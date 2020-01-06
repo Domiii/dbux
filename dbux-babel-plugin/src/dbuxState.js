@@ -1,5 +1,4 @@
 import fsPath from 'path';
-import { onEnterCheckExpression } from './visitors/expressionVisitor';
 
 function getFilePath(state) {
   let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
@@ -40,8 +39,9 @@ export default function injectDbuxState(programPath, programState) {
      * NOTE: each node might be visited more than once.
      * This function keeps track of that and returns whether this is the first time visit.
      */
-    onEnter(path) {
-      if (path.getData('_dbux_entered')) {
+    onEnter(path, purpose) {
+      const key = '_dbux_entered' + purpose;
+      if (path.getData(key)) {
         return false;
       }
       // if (entered.has(path)) {
@@ -56,18 +56,18 @@ export default function injectDbuxState(programPath, programState) {
       // remember our visit
       dbuxState.markEntered(path);
 
-      onEnterCheckExpression(path, dbuxState);
-
       return true;
     },
 
-    markEntered(path) {
+    markEntered(path, purpose) {
+      const key = '_dbux_entered' + purpose;
       // entered.add(path);
-      path.setData('_dbux_entered', true);
+      path.setData(key, true);
     },
 
-    markExited(path) {
-      path.setData('_dbux_exited', true);
+    markExited(path, purpose) {
+      const key = '_dbux_entered' + purpose;
+      path.setData(key, true);
     },
 
     markVisited(path) {

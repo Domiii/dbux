@@ -168,15 +168,17 @@ function normalizeConfig() {
       // convert to set
       extraCfg.include = new Set(extraCfg.include);
     }
-    
+
     traceCfg[visitorName] = nodeCfg;
   }
+
+  validateCfg(traceCfg);
 
   return traceCfg;
 }
 
 // ###########################################################################
-// templates + instrumentation recipes
+// templates + instrumentation
 // ###########################################################################
 
 function replaceWithTemplate(templ, path, cfg) {
@@ -184,86 +186,73 @@ function replaceWithTemplate(templ, path, cfg) {
   path.replaceWith(newNode);
 }
 
-function buildRecipes(state) {
+const buildTraceNoValue = function (templ, path, state) {
   const { ids: { dbux } } = state;
+  const traceId = state.addTrace(path);
+  return templ({ dbux, traceId });
+}.bind(null, template('%%dbux%%.t(%%traceId%%)'));
 
-  const instrumentors = {
+const traceWrapExpression = function (templ, expressionPath, state) {
+  const { ids: { dbux } } = state;
+  const traceId = state.addTrace(expressionPath);
+  replaceWithTemplate(templ, expressionPath, {
+    dbux,
+    traceId,
+    expression: expressionPath.node
+  });
 
-    buildTraceNoValue: function(templ, path) {
-      const traceId = state.addTrace(path);
-      return templ({ dbux, traceId });
-    }.bind(state, template('%%dbux%%.t(%%traceId%%)')),
+  // prevent infinite loop
+  state.markVisited(expressionPath.get('arguments.1'));
+}.bind(null, template('%%dbux%%.t(%%traceId%%, %%expression%%)'));
 
-    traceWrapExpression: function (templ, expressionPath) {
-      const traceId = state.addTrace(expressionPath);
-      replaceWithTemplate(templ, expressionPath, {
-        dbux,
-        traceId,
-        expression: expressionPath.node
-      });
+const traceBeforeExpression = function (templ, expressionPath, state) {
+  const { ids: { dbux } } = state;
+  const trace = buildTraceNoValue(expressionPath);
+  replaceWithTemplate(templ, expressionPath, {
+    dbux,
+    trace,
+    expression: expressionPath.node
+  });
 
-      // prevent infinite loop
-      state.markVisited(expressionPath.get('arguments.1'));
-    }.bind(state, template('%%dbux%%.t(%%traceId%%, %%expression%%)')),
+  // prevent infinite loop
+  state.markVisited(expressionPath.get('arguments.1'));
+}.bind(null, template('%%trace%%, %%expression%%'))
 
-    traceBeforeExpression: function (templ, expressionPath) {
-      const trace = instrumentors.buildTraceNoValue(expressionPath);
-      replaceWithTemplate(templ, expressionPath, {
-        dbux,
-        trace,
-        expression: expressionPath.node
-      });
-
-      // prevent infinite loop
-      state.markVisited(expressionPath.get('arguments.1'));
-    }.bind(state, template('%%trace%%, %%expression%%'))
-
-  };
-
-  return instrumentors;
-}
 
 // ###########################################################################
-// instrumentation
+// instrumentation recipes by node type
 // ###########################################################################
 
+const instrumentors = {
+  ExpressionWithValue(path, state) {
+    // future work: maybe we want to insert trace before expression as well
+    traceWrapExpression(path, state);
+  },
+  ExpressionNoValue(path, state) {
+    traceBeforeExpression(path, state);
+  },
+  Statement(path, state) {
+    const trace = buildTraceNoValue(path, state);
+    path.insertBefore(trace);
+  },
+  Block(path, state) {
+    const trace = buildTraceNoValue(path, state);
+    path.insertBefore(trace);
+    // if (!t.isBlockStatement(path)) {
+    //   // make a new block
 
-function buildInstrumentors(state) {
-  const recipes = buildRecipes(state);
-
-  return {
-    ExpressionWithValue(path) {
-      // future work: maybe we want to insert trace before expression as well
-      recipes.traceWrapExpression(path);
-    },
-    ExpressionNoValue(path) {
-      recipes.traceBeforeExpression(path);
-    },
-    Statement(path) {
-      const trace = recipes.buildTraceNoValue(path);
-      path.insertBefore(trace);
-    },
-    Block(path) {
-      const trace = recipes.buildTraceNoValue(path);
-      path.insertBefore(trace);
-      // if (!t.isBlockStatement(path)) {
-      //   // make a new block
-
-      // }
-      // else {
-      //   // insert at the top of existing block
-      // }
-    }
-  };
-}
+    // }
+    // else {
+    //   // insert at the top of existing block
+    // }
+  }
+};
 
 // ###########################################################################
 // visitors
 // ###########################################################################
 
-let instrumentors;
-
-function visit(state, path, cfg) {
+function visit(path, state, cfg) {
   if (!state.onTrace(path)) return;
 
   const [traceType, children, extraCfg] = cfg;
@@ -282,22 +271,22 @@ function visit(state, path, cfg) {
   for (const child of children) {
     const [childName, ...childCfg] = child;
     const childPath = path.get(childName);
-    
-    visit(state, childPath, childCfg);
+
+    visit(childPath, state, childCfg);
   }
 }
 
-export function buildAllTraceVisitors(state) {
-  const visitors = {};
-  const cfg = normalizeConfig();
-  validateCfg(cfg);
-  
-  instrumentors = buildInstrumentors(state);
+let visitors;
+export function buildAllTraceVisitors() {
+  if (!visitors) {
+    visitors = {};
+    const cfg = normalizeConfig();
 
-  for (const visitorName in cfg) {
-    visitors[visitorName] = (path) => {
-      visit(state, path, cfg[visitorName]);
-    };
+    for (const visitorName in cfg) {
+      visitors[visitorName] = (path, state) => {
+        visit(path, state, cfg[visitorName]);
+      };
+    }
   }
   return visitors;
 }

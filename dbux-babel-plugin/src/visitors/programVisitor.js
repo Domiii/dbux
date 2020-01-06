@@ -113,7 +113,7 @@ function enter(path, state) {
 
   // merge all visitors
   const allVisitors = mergeVisitors(
-    traceVisitors(),
+    buildAllTraceVisitors(),
     contextVisitors()
   );
 
@@ -139,10 +139,6 @@ function exit(path, state) {
 // ###########################################################################
 // Traversal of everything inside of Program
 // ###########################################################################
-
-function traceVisitors() {
-  return buildAllTraceVisitors();
-}
 
 function contextVisitors() {
   return {
