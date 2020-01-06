@@ -130,7 +130,9 @@ export class ExecutionEventCollection {
     const lineSuffix = line ? `:${line}` : '';
     // const depthIndicator = `(${parentContextId})`;
     const depthIndicator = `  `.repeat(stackDepth);
+    // const depthIndicator = ''; // we are using `console.group` for this for now
     let message = `[DBUX] [${contextId.toString().padStart(3)}] ${depthIndicator} ${displayName} [${typeName}] @${fileName}${lineSuffix} (${stackDepth})`;
+
 
     if (!timer) {
       message = '       ---------------\n' + message;
@@ -138,7 +140,14 @@ export class ExecutionEventCollection {
       //   message = message + '\n       ---------------';
       // }
     }
+
+    if (isPushEvent(eventType)) {
+      // console.group(contextId);
+    }
     console.log(message);
+    if (isPopEvent(eventType)){
+      // console.groupEnd();
+    }
 
     // (pretty accurate) hackfix: simulate end of (partial) stack
     if (!timer) {

@@ -46,7 +46,9 @@ export function writeResultCodeToFile(inputCode, title, babelOptions, plugin) {
   const samplesOutputPath = rootPath + '/samples/__samplesOutput__';
   const filename = title;
   fs.mkdirSync(samplesOutputPath, { recursive: true });
-  fs.writeFileSync(samplesOutputPath + '/' + filename, outputCode);
+  const fpath = path.resolve(samplesOutputPath + '/' + filename);
+  console.debug('Writing file', fpath);
+  fs.writeFileSync(fpath, outputCode);
 }
 
 export function runAllSnapshotTests(codes, filename, plugin, shouldWriteResultToFile) {

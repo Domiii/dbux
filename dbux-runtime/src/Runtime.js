@@ -139,7 +139,15 @@ export default class Runtime {
   // Public getters
   // ###########################################################################
 
-  getCurrentContextId() {
+  isExecuting() {
+    return !!this._executingStack;
+  }
+
+  getStackDepth() {
+    return this._executingStack?.getDepth() || 0;
+  }
+
+  peekCurrentContextId() {
     return this._executingStack?.peek() || null;
   }
 

@@ -1,4 +1,5 @@
 import fsPath from 'path';
+import { getPresentableString } from './helpers/misc';
 
 function getFilePath(state) {
   let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
@@ -51,8 +52,7 @@ export default function injectDbuxState(programPath, programState) {
       // if (entered.has(path)) {
       //   return false;
       // }
-      const { loc } = path.node;
-      if (!loc) {
+      if (!path.node?.loc) {
         // this node has been dynamically emitted; not part of the original source code -> not interested in it
         return false;
       }
@@ -78,8 +78,25 @@ export default function injectDbuxState(programPath, programState) {
     },
 
     markVisited(path, purpose) {
+      // TODO: when something is instrumented for multiple purposes (e.g. purposes A and B):
+      //  1. A creates a copy of the node (and thus will not be visited by A again)
+      //  2. then B creates a copy of the node (and thus will not be visited by B again)
+      //  3. since B created another copy of the node and that is marked as visited by A
       dbuxState.markEntered(path, purpose);
       // dbuxState.markExited(path); // not necessary for now
+    },
+
+    /**
+     * Problem: If paths are wrapped using `@babel/template`, their nodes get copied.
+     *    We thus will forget their previous status (and other context information).
+     * 
+     * This method helps us prevent data loss.
+     * 
+     * It also marks it as visited by purpose (if purpose is given).
+     */
+    onCopy(oldPath, newPath, purpose = null) {
+      newPath.data = oldPath.data;
+      purpose && this.markVisited(newPath, purpose);
     },
 
     /**
@@ -163,8 +180,10 @@ export default function injectDbuxState(programPath, programState) {
       const traceId = traces.length;
       const parentStaticId = programState.getClosestStaticId(path);
       // console.log('actualParent',  toSourceString(actualParent.node));
+      const displayName = getPresentableString(path.toString(), 30);
       const { loc } = path.node;
       traces.push({
+        displayName,
         traceId,
         parent: parentStaticId,
         loc

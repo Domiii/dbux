@@ -5,7 +5,7 @@ function f1(a, b) {
 }
 
 function f3() {
-  f4(1, (...args) => console.log(...args), 2, () => {});
+  f4(1, (...args) => console.log(...args), 2, () => {return 1;});
 }
 
 function f4(a, cb, b, cb2) {

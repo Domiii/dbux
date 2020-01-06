@@ -1,7 +1,7 @@
-import { runAllSnapshotTests } from '../testing/test-util';
-import { buildSource, buildVarDecl, buildVarAssignments } from '../helpers/builders';
+import { runAllSnapshotTests } from '../../testing/test-util';
+import { buildSource, buildVarDecl, buildVarAssignments } from '../../helpers/builders';
 import * as t from '@babel/types';
-import { replaceProgramBody } from '../helpers/program';
+import { replaceProgramBody } from '../../helpers/program';
 
 const codes = [
   `

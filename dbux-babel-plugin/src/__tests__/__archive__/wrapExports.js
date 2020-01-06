@@ -1,7 +1,7 @@
-import { runAllSnapshotTests } from '../testing/test-util';
-import { replaceProgramBody } from '../helpers/program';
-import { buildWrapTryFinally } from '../helpers/builders';
-import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
+import { runAllSnapshotTests } from '../../testing/test-util';
+import { replaceProgramBody } from '../../helpers/program';
+import { buildWrapTryFinally } from '../../helpers/builders';
+import { extractTopLevelDeclarations } from '../../helpers/topLevelHelpers';
 
 const codes = [
   `

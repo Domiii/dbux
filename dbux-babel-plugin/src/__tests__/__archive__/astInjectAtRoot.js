@@ -1,5 +1,5 @@
-import { runSnapshotTests, runAllSnapshotTests } from '../testing/test-util';
-import { buildSource } from '../helpers/builders';
+import { runSnapshotTests, runAllSnapshotTests } from '../../testing/test-util';
+import { buildSource } from '../../helpers/builders';
 
 const codes = [
   `

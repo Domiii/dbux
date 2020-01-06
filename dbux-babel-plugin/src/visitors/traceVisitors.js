@@ -201,6 +201,7 @@ const buildTraceNoValue = function (templ, path, state) {
   });
 }.bind(null, template('%%dbux%%.t(%%traceId%%)'));
 
+
 const traceWrapExpression = function (templ, expressionPath, state) {
   const { ids: { dbux } } = state;
   const traceId = state.addTrace(expressionPath);
@@ -211,21 +212,22 @@ const traceWrapExpression = function (templ, expressionPath, state) {
   });
 
   // prevent infinite loop
-  state.markVisited(expressionPath.get('arguments.1'), 'trace');
-}.bind(null, template('%%dbux%%.t(%%traceId%%, %%expression%%)'));
+  state.onCopy(expressionPath, expressionPath.get('expressions.1.arguments.1'), 'trace');
+}.bind(null, template('%%dbux%%.t(%%traceId%%), %%dbux%%.tv(%%traceId%%, %%expression%%)'));
+
 
 const traceBeforeExpression = function (templ, expressionPath, state) {
   const { ids: { dbux } } = state;
-  const trace = buildTraceNoValue(expressionPath, state);
+  const traceId = state.addTrace(expressionPath);
   replaceWithTemplate(templ, expressionPath, {
     dbux,
-    trace,
+    traceId: t.numericLiteral(traceId),
     expression: expressionPath.node
   });
 
   // prevent infinite loop
-  state.markVisited(expressionPath.get('arguments.1'), 'trace');
-}.bind(null, template('%%trace%%, %%expression%%'))
+  state.onCopy(expressionPath, expressionPath.get('expressions.1'), 'trace');
+}.bind(null, template('%%dbux%%.t(%%traceId%%), %%expression%%'))
 
 
 // ###########################################################################
@@ -234,7 +236,6 @@ const traceBeforeExpression = function (templ, expressionPath, state) {
 
 const instrumentors = {
   ExpressionWithValue(path, state) {
-    // future work: maybe we want to insert trace before expression as well
     traceWrapExpression(path, state);
   },
   ExpressionNoValue(path, state) {
@@ -288,19 +289,19 @@ function enter(path, state, cfg) {
   }
 }
 
-let visitors;
+let _cfg;
 export function buildAllTraceVisitors() {
-  if (!visitors) {
-    visitors = {};
-    const cfg = normalizeConfig(traceCfg);
+  const visitors = {};
+  if (!_cfg) {
+    _cfg = normalizeConfig(traceCfg);
+  }
 
-    for (const visitorName in cfg) {
-      visitors[visitorName] = {
-        enter(path, state) {
-          enter(path, state, cfg[visitorName]);
-        }
-      };
-    }
+  for (const visitorName in _cfg) {
+    visitors[visitorName] = {
+      enter(path, state) {
+        enter(path, state, _cfg[visitorName]);
+      }
+    };
   }
   return visitors;
 }

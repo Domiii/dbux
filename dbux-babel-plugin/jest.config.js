@@ -93,7 +93,8 @@ module.exports = {
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   modulePathIgnorePatterns: [
-    '__snapshots__'
+    '__snapshots__',
+    '__archive__'
   ],
 
   // Activates notifications for test results

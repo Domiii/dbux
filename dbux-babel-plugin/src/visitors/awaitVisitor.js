@@ -77,7 +77,7 @@ function enter(path, state) {
 
   // prevent infinite loop
   const newAwaitPath = path.get('arguments.0');
-  state.markVisited(newAwaitPath, 'context');
+  state.onCopy(path, newAwaitPath, 'context');
 
 }
 

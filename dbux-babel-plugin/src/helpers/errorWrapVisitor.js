@@ -6,9 +6,10 @@ import { codeFrameColumns } from '@babel/code-frame';
  * 2. show the relevant lines of code (exclude calls from within node_modules)
  */
 function _errorWrap(visitor) {
+  // console.warn('errorWrap', visitor.toString());
   return (...args) => {
     try {
-      return visitor(...args);
+      return visitor.apply(this, args);
     }
     catch (err) {
       const [path, { file: { code } }] = args;

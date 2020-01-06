@@ -1,4 +1,4 @@
-function mergeOne(...visitors) {
+function mergeOne(visitorName, ...visitors) {
   let actionKeys = visitors.map(v => Object.keys(v));
   actionKeys = new Set(actionKeys.flat());
   const result = {};
@@ -6,7 +6,7 @@ function mergeOne(...visitors) {
     const actions = visitors.map(v => v[actionKey]).filter(v => !!v);
     const f = function _mergedVisitor(actions, ...args) {
       for (const action of actions) {
-        action(...args);
+        action.apply(this, args);
       }
     }.bind(null, actions);
     result[actionKey] = f;
@@ -24,7 +24,7 @@ export function mergeVisitors(...visitorCollections) {
       const previousVisitor = result[visitorName];
       if (previousVisitor) {
         // merge
-        newVisitor = mergeOne(newVisitor, previousVisitor);
+        newVisitor = mergeOne(visitorName, newVisitor, previousVisitor);
       }
       result[visitorName] = newVisitor;
     }

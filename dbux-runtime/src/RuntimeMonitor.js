@@ -58,8 +58,10 @@ export default class RuntimeMonitor {
   /**
    * Very similar to `pushCallback`
    */
-  pushImmediate(programId, staticContextId, isInterruptable = 0) {
-    const parentContextId = this._runtime.peekStack();
+  pushImmediate(programId, staticContextId) {
+    this._runtime.beforePush(null);
+
+    const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
     const context = executionContextCollection.executeImmediate(
       stackDepth, programId, staticContextId, parentContextId
@@ -107,7 +109,7 @@ export default class RuntimeMonitor {
   scheduleCallback(programId, staticContextId, schedulerId, cb) {
     this._runtime.beforePush(schedulerId);
 
-    const parentContextId = this._runtime.peekStack();
+    const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
 
     const scheduledContext = executionContextCollection.scheduleCallback(stackDepth,
@@ -148,7 +150,7 @@ export default class RuntimeMonitor {
   pushCallback(scheduledContextId) {
     this._runtime.beforePush(scheduledContextId);
 
-    const parentContextId = this._runtime.peekStack();
+    const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
     // let stackDepth = this._runtime._executingStack.indexOf(scheduledContextId);
 
@@ -192,7 +194,7 @@ export default class RuntimeMonitor {
 
     // push await context
     this._runtime.beforePush(null);
-    const parentContextId = this._runtime.peekStack();
+    const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
     const context = executionContextCollection.await(
       stackDepth, programId, staticContextId, parentContextId
@@ -244,7 +246,7 @@ export default class RuntimeMonitor {
    * (2) an await context (when resuming after an await)
    */
   pushResume(resumeStaticContextId, schedulerId) {
-    const parentContextId = this._runtime.peekStack();
+    const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
     const resumeContextId = executionContextCollection.resume(
       parentContextId, resumeStaticContextId, schedulerId, stackDepth
@@ -255,7 +257,7 @@ export default class RuntimeMonitor {
   }
 
   popResume() {
-    const resumeContextId = this._runtime.peekStack();
+    const resumeContextId = this._runtime.peekCurrentContextId();
 
     // sanity checks
     const context = executionContextCollection.getContext(resumeContextId);
@@ -275,8 +277,14 @@ export default class RuntimeMonitor {
   // traces
   // ###########################################################################
 
-  trace(traceId, value) {
-    const contextId = this._runtime.getCurrentContextId();
-    traceCollection.recordTrace(contextId, traceId, value);
+  trace(traceId) {
+    const contextId = this._runtime.peekCurrentContextId();
+    traceCollection.recordTrace(contextId, traceId);
+  }
+
+  traceAndCaptureValue(traceId, value) {
+    const contextId = this._runtime.peekCurrentContextId();
+    traceCollection.recordTraceWithValue(contextId, traceId, value);
+    return value;
   }
 }

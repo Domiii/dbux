@@ -119,8 +119,8 @@ function enter(path, state) {
 
   // merge all visitors
   const allVisitors = mergeVisitors(
-    buildAllTraceVisitors(),
-    contextVisitors()
+    contextVisitors(),
+    buildAllTraceVisitors()
   );
 
   // traverse program before (most) other plugins

@@ -81,4 +81,11 @@ export default class ProgramMonitor {
     return RuntimeMonitor.instance.trace(traceId, value);
   }
 
+  /**
+   * `tv` is short for `traceAndCaptureValue` (we have a lot of these, so we want to keep the name short)
+   */
+  tv(traceId, value) {
+    return RuntimeMonitor.instance.traceAndCaptureValue(traceId, value);
+  }
+
 }
