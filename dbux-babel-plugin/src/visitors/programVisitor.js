@@ -134,7 +134,7 @@ function enter(path, state) {
     // hackfix: if we don't re-throw here, babel swallows the error for some reason
     // console.error(err);
     // throw new Error('traversal failed');
-    console.error('traversal failed', err);
+    console.error('traversal failed');
     throw err;
   }
 }

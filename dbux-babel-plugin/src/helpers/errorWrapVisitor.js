@@ -15,8 +15,8 @@ function _errorWrap(visitor) {
       const { node: { loc } } = path
       // const sourceWhere = `${fileName}${loc && `:${loc.start.line}` || ''}`;
       const info = loc && codeFrameColumns(code, loc) || path.toString();
-      const errorStack = err.stack.split('\n').splice(1);
-      const errorWhere = errorStack.filter(line => !line.match('/node_modules/'));
+      let errorWhere = err.stack.split('\n').splice(1);
+      // errorWhere = errorWhere.filter(line => !line.match('/node_modules/'));
       const newMessage = `${err.message} \n${info}\n---------\n${errorWhere.join('\n')}\n---------\n`;
       throw new Error(newMessage);
     }

@@ -35,7 +35,7 @@
 				"--config",
 				"jest.config.js",
 				// @see https: //code.visualstudio.com/docs/nodejs/nodejs-debugging#_common-questions
-				"--preserve-symlinks"
+				// "--preserve-symlinks"
 			],
 			// see: https://github.com/microsoft/vscode/issues/5422
 			"restart": true,
