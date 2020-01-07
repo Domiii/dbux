@@ -65,6 +65,7 @@ export default class Runtime {
     }
     else if (!this._executingStack) {
       // new stack
+      console.warn('new stack', this._waitingStacks.size + this._interruptedStacksOfUnknownCircumstances.length);
       this._executingStack = Stack.allocate();
     }
   }
@@ -156,15 +157,19 @@ export default class Runtime {
   // ###########################################################################
 
   beforePush(contextId) {
+
     // if (!this._executingStack) {
     // no executing stack 
     //    -> this invocation has been called from system scheduler (possibly traversing blackboxed code)
     this._ensureEmptyStackBarrier();
     this._maybeResumeInterruptedStackOnPushEmpty(contextId);
 
-    if (contextId) {
-      this._executingStack.trySetPeek(contextId);
-    }
+    // TODO: when unconditionally overriding current context, traces receive incorrect `contextId`
+      //  -> do we need to set peek to contextId? for what?
+
+    // if (contextId) {
+    //   this._executingStack.trySetPeek(contextId);
+    // }
     // }
   }
 

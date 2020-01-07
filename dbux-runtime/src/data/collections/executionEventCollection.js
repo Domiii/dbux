@@ -129,9 +129,9 @@ export class ExecutionEventCollection {
     const line = where?.line;
     const lineSuffix = line ? `:${line}` : '';
     // const depthIndicator = `(${parentContextId})`;
-    const depthIndicator = `  `.repeat(stackDepth);
+    const depthIndicator = ` `.repeat(stackDepth);
     // const depthIndicator = ''; // we are using `console.group` for this for now
-    let message = `[DBUX] [${contextId.toString().padStart(3)}] ${depthIndicator} ${displayName} [${typeName}] @${fileName}${lineSuffix} (${stackDepth})`;
+    let message = `${contextId} ${depthIndicator}${displayName} [${typeName}] @${fileName}${lineSuffix} [DBUX]`;
 
 
     if (!timer) {
@@ -144,7 +144,7 @@ export class ExecutionEventCollection {
     if (isPushEvent(eventType)) {
       // console.group(contextId);
     }
-    console.log(message);
+    console.debug(message);
     if (isPopEvent(eventType)){
       // console.groupEnd();
     }

@@ -49,11 +49,26 @@ function wrap(v, s) {
 function _prettyPrint(trace) {
   const { contextId, staticTraceId, v, value } = trace;
   const context = executionContextCollection.getContext(contextId);
-  const { programId } = context;
+  const { 
+    programId,
+    stackDepth
+   } = context;
   // const staticContext = staticContextCollection.getContext()
   const staticTrace = staticTraceCollection.getTrace(programId, staticTraceId);
-  const { displayName } = staticTrace;
-  console.log(` ${displayName}`, wrap(v, ' ('), wrap(v, value), wrap(v, ')'));
+  const { 
+    displayName,
+    capturesValue
+  } = staticTrace;
+  const depthIndicator = ` `.repeat(stackDepth+1);
+  // if (capturesValue && !v) {
+  //   console.group(displayName);
+  // }
+  // else {
+    console.log(`${contextId} ${depthIndicator}${displayName}`, wrap(v, ' ('), wrap(v, value), wrap(v, ') [DBUX]'));
+  // }
+  // if (capturesValue && v) {
+  //   console.groupEnd();
+  // }
 }
 
 const traceCollection = new TraceCollection();

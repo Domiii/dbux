@@ -175,7 +175,7 @@ export default function injectDbuxState(programPath, programState) {
       return staticId;
     },
 
-    addTrace(path) {
+    addTrace(path, capturesValue=false) {
       // console.log('TRACE', '@', `${state.filename}:${line}`);
       const traceId = traces.length;
       const parentStaticId = programState.getClosestStaticId(path);
@@ -186,6 +186,7 @@ export default function injectDbuxState(programPath, programState) {
         displayName,
         traceId,
         parent: parentStaticId,
+        capturesValue,
         loc
       });
       return traceId;

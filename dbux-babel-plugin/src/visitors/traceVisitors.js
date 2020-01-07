@@ -38,6 +38,9 @@ const traceCfg = (() => {
       NoTrace,
       [['init', ExpressionWithValue]]
     ],
+    // VariableDeclaration: [
+    //   NoTrace
+    // ],
 
     // expressions
     AwaitExpression: [
@@ -70,13 +73,13 @@ const traceCfg = (() => {
       NoTrace,
       [['expression', ExpressionNoValue]]
     ],
-    Declaration: [
-      Statement,
-      null, // no children
-      {
-        ignore: ['ImportDeclaration'] // ignore: cannot mess with imports
-      }
-    ],
+    // Declaration: [
+    //   Statement,
+    //   null, // no children
+    //   {
+    //     ignore: ['ImportDeclaration'] // ignore: cannot mess with imports
+    //   }
+    // ],
     ReturnStatement: Statement,
     ThrowStatement: Statement,
 
@@ -203,12 +206,17 @@ const buildTraceNoValue = function (templ, path, state) {
 
 
 const traceWrapExpression = function (templ, expressionPath, state) {
+  const {node} = expressionPath;
+  if (t.isLiteral(node)) {
+    // don't care about literals
+    return;
+  }
   const { ids: { dbux } } = state;
-  const traceId = state.addTrace(expressionPath);
+  const traceId = state.addTrace(expressionPath, true);
   replaceWithTemplate(templ, expressionPath, {
     dbux,
     traceId: t.numericLiteral(traceId),
-    expression: expressionPath.node
+    expression: node
   });
 
   // prevent infinite loop
@@ -284,7 +292,9 @@ function enter(path, state, cfg) {
       const [childName, ...childCfg] = child;
       const childPath = path.get(childName);
 
-      enter(childPath, state, childCfg);
+      if (childPath.node) {
+        enter(childPath, state, childCfg);
+      }
     }
   }
 }

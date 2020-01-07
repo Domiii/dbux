@@ -10,6 +10,7 @@ import callExpressionVisitor from './callExpressionVisitor';
 import awaitVisitor from './awaitVisitor';
 import { buildAllTraceVisitors } from './traceVisitors';
 import { mergeVisitors } from '../helpers/visitorHelpers';
+import { logInternalError } from '../log/logger';
 
 
 // ###########################################################################
@@ -134,7 +135,7 @@ function enter(path, state) {
     // hackfix: if we don't re-throw here, babel swallows the error for some reason
     // console.error(err);
     // throw new Error('traversal failed');
-    console.error('traversal failed');
+    logInternalError('traversal failed');
     throw err;
   }
 }
