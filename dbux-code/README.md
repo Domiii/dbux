@@ -1,10 +1,6 @@
-# code-dbux README
+# hi README
 
-## References + Future Work
-* [VSCode Extensions API](https://code.visualstudio.com/api)
-* Text decorations inside the editor
-   * https://github.com/microsoft/vscode-extension-samples/blob/master/decorator-sample/src/extension.ts
-
+This is the README for your extension "hi". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

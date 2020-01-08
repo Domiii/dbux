@@ -1,30 +1,114 @@
 {
-	"name": "code-dbux",
-	"displayName": "code-dbux",
-	"description": "code-dbux",
+	"name": "dbux_extension",
+	"displayName": "dbux extension",
+	"description": "",
 	"version": "0.0.1",
-	"type": "module",
 	"engines": {
-		"vscode": "^1.40.0"
+		"vscode": "^1.41.0"
 	},
 	"categories": [
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.startdbux"
+		"onView:dbuxEvents",
+		"onLanguage:javascript",
+		"onCommand:sample.reveal"
 	],
-	"main": "./src/index.js",
+	"main": "./extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.startdbux",
-				"title": "dbux: Start"
+				"command": "dbuxEvents.refreshEntry",
+				"title": "Refresh",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "dbuxEvents.addEntry",
+				"title": "Add"
+			},
+			{
+				"command": "dbuxEvents.editEntry",
+				"title": "Edit",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				}
+			},
+			{
+				"command": "dbuxEvents.testEntry",
+				"title": "MTest",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				}
+			},
+			{
+				"command": "dbuxEvents.deleteEntry",
+				"title": "Delete"
+			},
+			{
+				"command": "dbuxExtension.dbux_jump",
+				"title": "dbuxJump"
+			},
+			{
+				"command": "dbuxExtension.showMsg",
+				"title": "dbuxShowMsg"
+			}
+		],
+		"viewsContainers": {
+			"activitybar": [
+			  {
+				"id": "dbux-event-logger",
+				"title": "dbux Event Logger",
+				"icon": "media/dep.svg"
+			  }
+			]
+		},
+		"views": {
+			"dbux-event-logger": [
+				{
+					"id": "dbuxEvents",
+					"name": "dbux events"
+				}
+			]
+		}
+	},
+	"menus": {
+		"commandPalette": [
+			{
+				"command": "ftpExplorer.revealResource"
+			}
+		],
+		"view/title": [
+			{
+				"command": "dbuxEvents.refreshEntry",
+				"when": "view == dbuxEvents",
+				"group": "navigation"
+			},
+			{
+				"command": "dbuxEvents.addEntry",
+				"when": "view == dbuxEvents"
+			}
+		],
+		"view/item/context": [
+			{
+				"command": "dbuxEvents.editEntry",
+				"when": "view == dbuxEvents && viewItem == event",
+				"group": "inline"
+			},
+			{
+				"command": "dbuxEvents.testEntry",
+				"when": "view == dbuxEvents && viewItem == event",
+				"group": "inline"
+			},
+			{
+				"command": "dbuxEvents.deleteEntry",
+				"when": "view == dbuxEvents && viewItem == event"
 			}
 		]
-	},
-	"env": {
-		"node": true,
-		"es6": true
 	},
 	"scripts": {
 		"test": "node ./test/runTest.js"
@@ -33,11 +117,14 @@
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.11.7",
-		"@types/vscode": "^1.40.0",
+		"@types/vscode": "^1.41.0",
 		"eslint": "^6.6.0",
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
 		"typescript": "^3.6.4",
 		"vscode-test": "^1.2.2"
+	},
+	"dependencies": {
+		"socket.io": "^2.3.0"
 	}
 }
