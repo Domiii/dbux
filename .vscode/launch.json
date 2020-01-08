@@ -11,13 +11,14 @@
 			"type": "chrome",
 			"request": "launch",
 			"trace": true,
-			"url": "http://localhost:3000",
+			"url": "http://localhost:3110",
 			"pathMapping": {
 				// "/samples/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/src/dbux/samples/",
 				"/bundle.js": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/dist/bundle.js",
 				"/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/www",
 			},
 			"sourceMapPathOverrides": {
+				"webpack:///*": "*",
 				"webpack:///./~/*": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/node_modules/*",
 				"webpack:///./*": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/*"
 			},

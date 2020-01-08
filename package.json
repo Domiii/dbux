@@ -5,9 +5,10 @@
 		"eslint-config-esnext": "*"
 	},
 	"scripts": {
-		"setup": "sh scripts/dbux-install.sh",
+		"setup": "sh scripts/dbux-setup.sh",
 		"install-p1": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
-		"g-p1": "cd ./projects/todomvc/examples/vanilla-es6/"
+		"g-p1": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
+		"start-p1": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start"
 	},
 	"dependencies": {
 		"express": "file:projects/express"

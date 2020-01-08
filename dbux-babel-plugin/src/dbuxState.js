@@ -87,12 +87,9 @@ export default function injectDbuxState(programPath, programState) {
     },
 
     /**
-     * Problem: If paths are wrapped using `@babel/template`, their nodes get copied.
-     *    We thus will forget their previous status (and other context information).
-     * 
-     * This method helps us prevent data loss.
-     * 
-     * It also marks it as visited by purpose (if purpose is given).
+     * Problem: If paths are wrapped using `@babel/template`, only their nodes get copied, thus all associated `data` in path is lost.
+     * This method keeps track of that.
+     * It also marks it as visited by purpose (if purpose is given), to prevent infinitely revisiting the same path.
      */
     onCopy(oldPath, newPath, purpose = null) {
       newPath.data = oldPath.data;

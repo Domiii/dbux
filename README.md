@@ -118,3 +118,17 @@ npx serve
       * Official bug report: https://github.com/microsoft/vscode/issues/9448
       * Solution: run command in external `cmd` or find a better behaving terminal
 
+
+# VSCode: custom keybindings
+
+Terminal has no "clear" keybinding anymore, but its useful to have; here is how:
+
+1. CTRL+SHIFT+P -> "Open Keyboard Shortcuts (JSON)"
+1. add (for Windows):
+```js
+{ 
+   "key": "ctrl+k",
+   "command": "workbench.action.terminal.clear",
+   "when": "terminalFocus"
+},
+```

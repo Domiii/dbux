@@ -23,8 +23,8 @@ const traceCfg = (() => {
   return {
     // assignments
     AssignmentExpression: [
-      NoTrace,
-      [['right', ExpressionWithValue]]
+      ExpressionWithValue,
+      // [['right', ExpressionWithValue]]
     ],
     ClassPrivateProperty: [
       NoTrace,
@@ -34,13 +34,20 @@ const traceCfg = (() => {
       NoTrace,
       [['value', ExpressionWithValue]]
     ],
+    VariableDeclaration: [
+      Statement,
+      null,
+      {
+        filter(path, state) {
+          // ignore variable declarations in for loops inits
+          return !path.parentPath.isFor();
+        }
+      }
+    ],
     VariableDeclarator: [
       NoTrace,
       [['init', ExpressionWithValue]]
     ],
-    // VariableDeclaration: [
-    //   NoTrace
-    // ],
 
     // expressions
     AwaitExpression: [
@@ -220,8 +227,10 @@ const traceWrapExpression = function (templ, expressionPath, state) {
   });
 
   // prevent infinite loop
-  state.onCopy(expressionPath, expressionPath.get('expressions.1.arguments.1'), 'trace');
-}.bind(null, template('%%dbux%%.t(%%traceId%%), %%dbux%%.tv(%%traceId%%, %%expression%%)'));
+  state.onCopy(expressionPath, expressionPath.get('arguments.1'), 'trace');
+  // state.onCopy(expressionPath, expressionPath.get('expressions.1.arguments.1'), 'trace');
+// }.bind(null, template('%%dbux%%.t(%%traceId%%), %%dbux%%.tv(%%traceId%%, %%expression%%)'));
+}.bind(null, template('%%dbux%%.tv(%%traceId%%, %%expression%%)'));
 
 
 const traceBeforeExpression = function (templ, expressionPath, state) {
@@ -278,13 +287,16 @@ function enter(path, state, cfg) {
     // ignored
     return;
   }
+  if (extraCfg?.filter && !extraCfg.filter(path, state, cfg)) {
+    return;
+  }
 
   const traceTypeName = TraceTypes.nameFromForce(traceType);
   if (traceType) {
     if (!instrumentors[traceTypeName]) {
       err('instrumentors are missing TraceType:', traceTypeName);
     }
-    instrumentors[traceTypeName](path, state);
+    instrumentors[traceTypeName](path, state, extraCfg);
   }
 
   if (children) {

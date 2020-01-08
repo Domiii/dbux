@@ -23,6 +23,8 @@ export default class Runtime {
     return this._instance || (this._instance = new Runtime());
   }
 
+  _scheduledCallbacks = new Set();
+
   /**
    * Set of all interrupted stacks.
    * @type {Map<int, Stack>}
@@ -233,7 +235,7 @@ export default class Runtime {
       return;
     }
 
-    this._markWaiting(contextId);
+    this._scheduledCallbacks.add(contextId);
   }
 
   registerAwait(awaitContextId) {

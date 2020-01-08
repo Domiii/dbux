@@ -115,7 +115,8 @@ export class ExecutionEventCollection {
       programId,
       staticContextId,
       parentContextId,
-      stackDepth
+      stackDepth,
+      other
     } = context;
     const staticProgramContext = staticProgramContextCollection.getProgramContext(programId);
     const staticContext = staticContextCollection.getContext(programId, staticContextId);
@@ -128,10 +129,11 @@ export class ExecutionEventCollection {
     } = staticProgramContext;
     const line = where?.line;
     const lineSuffix = line ? `:${line}` : '';
+    const codeLocation = `@${fileName}${lineSuffix}`;
     // const depthIndicator = `(${parentContextId})`;
     const depthIndicator = ` `.repeat(stackDepth);
     // const depthIndicator = ''; // we are using `console.group` for this for now
-    let message = `${contextId} ${depthIndicator}${displayName} [${typeName}] @${fileName}${lineSuffix} [DBUX]`;
+    let message = `${contextId} ${depthIndicator}${displayName} [${typeName}] ${codeLocation} (${parentContextId}) [DBUX]`;
 
 
     if (!timer) {
@@ -144,7 +146,8 @@ export class ExecutionEventCollection {
     if (isPushEvent(eventType)) {
       // console.group(contextId);
     }
-    console.debug(message);
+    console.debug('%c' + message, 'color: lightgray');
+    // console.debug(message);
     if (isPopEvent(eventType)){
       // console.groupEnd();
     }

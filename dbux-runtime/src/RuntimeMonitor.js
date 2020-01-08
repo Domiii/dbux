@@ -107,7 +107,7 @@ export default class RuntimeMonitor {
    * Push a new context for a scheduled callback for later execution.
    */
   scheduleCallback(programId, staticContextId, schedulerId, cb) {
-    this._runtime.beforePush(schedulerId);
+    // this._runtime.beforePush(schedulerId);
 
     const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
@@ -117,7 +117,7 @@ export default class RuntimeMonitor {
     const { contextId: scheduledContextId } = scheduledContext;
     const wrapper = this.makeCallbackWrapper(scheduledContextId, cb);
 
-    this._runtime.push(scheduledContextId);
+    // this._runtime.push(scheduledContextId);
     this._runtime.scheduleCallback(scheduledContextId);
 
     // log event

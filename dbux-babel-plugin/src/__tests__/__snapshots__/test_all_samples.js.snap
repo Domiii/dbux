@@ -50,31 +50,21 @@ try {
     }
   };
 
-  _dbux.t(1);
-
-  _dbux.t(2);
-
-  var f2 = (_dbux.t(3), _dbux.tv(3, function _f2() {
+  var f2 = (_dbux.t(1), _dbux.tv(1, function _f2() {
     var _contextId3 = _dbux.pushImmediate(3);
 
     try {} finally {
       _dbux.popImmediate(_contextId3);
     }
   }));
-
-  _dbux.t(4);
-
-  var f3 = (_dbux.t(5), _dbux.tv(5, function () {
+  var f3 = (_dbux.t(2), _dbux.tv(2, function () {
     var _contextId4 = _dbux.pushImmediate(4);
 
     try {} finally {
       _dbux.popImmediate(_contextId4);
     }
   }));
-
-  _dbux.t(6);
-
-  var o = (_dbux.t(7), _dbux.tv(7, {
+  var o = (_dbux.t(3), _dbux.tv(3, {
     f4: function f4() {
       var _contextId5 = _dbux.pushImmediate(5);
 
@@ -91,13 +81,11 @@ try {
     }
   }));
 
-  _dbux.t(8);
-
   var C =
   /*#__PURE__*/
   function () {
     function C() {
-      this.f7 = (_dbux.t(9), _dbux.tv(9, function () {
+      this.f7 = (_dbux.t(4), _dbux.tv(4, function () {
         var _contextId9 = _dbux.pushImmediate(9);
 
         try {} finally {
@@ -136,7 +124,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"allFunctionTypes.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/allFunctionTypes.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -288,37 +276,10 @@ function _dbux_init(dbuxRuntime) {
       \\"isInterruptable\\": false
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"function f1() {  const _co...\\",
+      \\"displayName\\": \\"function _f2() {}\\",
       \\"traceId\\": 1,
       \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 3,
-          \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"const f2 = function _f2() {};\\",
-      \\"traceId\\": 2,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 5,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 7,
-          \\"column\\": 2
-        }
-      }
-    }, {
-      \\"displayName\\": \\"function _f2() {}\\",
-      \\"traceId\\": 3,
-      \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 5,
@@ -327,26 +288,13 @@ function _dbux_init(dbuxRuntime) {
         \\"end\\": {
           \\"line\\": 7,
           \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"const f3 = () => {};\\",
-      \\"traceId\\": 4,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 9,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 2
         }
       }
     }, {
       \\"displayName\\": \\"() => {}\\",
-      \\"traceId\\": 5,
+      \\"traceId\\": 2,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 9,
@@ -358,23 +306,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"const o = {  f4() {},  f...\\",
-      \\"traceId\\": 6,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 13,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 16,
-          \\"column\\": 2
-        }
-      }
-    }, {
       \\"displayName\\": \\"{  f4() {},  f5: () => {}}\\",
-      \\"traceId\\": 7,
+      \\"traceId\\": 3,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 13,
@@ -386,23 +321,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"class C {  constructor() {...\\",
-      \\"traceId\\": 8,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 18,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"() => {}\\",
-      \\"traceId\\": 9,
+      \\"traceId\\": 4,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 21,
@@ -459,8 +381,6 @@ const _dbux = _dbux_init(_dbuxRuntime);
 const _contextId = _dbux.getProgramContextId();
 
 try {
-  _dbux.t(1);
-
   function f1() {
     const _contextId2 = _dbux.pushImmediate(2);
 
@@ -469,29 +389,21 @@ try {
     }
   }
 
-  _dbux.t(2);
-
-  const f2 = (_dbux.t(3), _dbux.tv(3, function _f2() {
+  const f2 = (_dbux.t(1), _dbux.tv(1, function _f2() {
     const _contextId3 = _dbux.pushImmediate(3);
 
     try {} finally {
       _dbux.popImmediate(_contextId3);
     }
   }));
-
-  _dbux.t(4);
-
-  const f3 = (_dbux.t(5), _dbux.tv(5, () => {
+  const f3 = (_dbux.t(2), _dbux.tv(2, () => {
     const _contextId4 = _dbux.pushImmediate(4);
 
     try {} finally {
       _dbux.popImmediate(_contextId4);
     }
   }));
-
-  _dbux.t(6);
-
-  const o = (_dbux.t(7), _dbux.tv(7, {
+  const o = (_dbux.t(3), _dbux.tv(3, {
     f4() {
       const _contextId5 = _dbux.pushImmediate(5);
 
@@ -509,11 +421,9 @@ try {
     }
   }));
 
-  _dbux.t(8);
-
   class C {
     constructor() {
-      this.f7 = (_dbux.t(9), _dbux.tv(9, () => {
+      this.f7 = (_dbux.t(4), _dbux.tv(4, () => {
         const _contextId9 = _dbux.pushImmediate(9);
 
         try {} finally {
@@ -549,7 +459,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"allFunctionTypes.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/allFunctionTypes.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -701,37 +611,10 @@ function _dbux_init(dbuxRuntime) {
       \\"isInterruptable\\": false
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"function f1() {  const _co...\\",
+      \\"displayName\\": \\"function _f2() {}\\",
       \\"traceId\\": 1,
       \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 3,
-          \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"const f2 = function _f2() {};\\",
-      \\"traceId\\": 2,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 5,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 7,
-          \\"column\\": 2
-        }
-      }
-    }, {
-      \\"displayName\\": \\"function _f2() {}\\",
-      \\"traceId\\": 3,
-      \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 5,
@@ -740,26 +623,13 @@ function _dbux_init(dbuxRuntime) {
         \\"end\\": {
           \\"line\\": 7,
           \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"const f3 = () => {};\\",
-      \\"traceId\\": 4,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 9,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 2
         }
       }
     }, {
       \\"displayName\\": \\"() => {}\\",
-      \\"traceId\\": 5,
+      \\"traceId\\": 2,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 9,
@@ -771,23 +641,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"const o = {  f4() {},  f...\\",
-      \\"traceId\\": 6,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 13,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 16,
-          \\"column\\": 2
-        }
-      }
-    }, {
       \\"displayName\\": \\"{  f4() {},  f5: () => {}}\\",
-      \\"traceId\\": 7,
+      \\"traceId\\": 3,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 13,
@@ -799,23 +656,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"class C {  constructor() {...\\",
-      \\"traceId\\": 8,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 18,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"() => {}\\",
-      \\"traceId\\": 9,
+      \\"traceId\\": 4,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 21,
@@ -920,9 +764,9 @@ try {
 
             _context.prev = 2;
 
-            _dbux.t(3);
+            _dbux.t(1);
 
-            return _context.abrupt(\\"return\\", (_dbux.t(4), _dbux.tv(4, Promise.resolve(a))));
+            return _context.abrupt(\\"return\\", (_dbux.t(2), _dbux.tv(2, Promise.resolve(a))));
 
           case 5:
             _context.prev = 5;
@@ -954,48 +798,48 @@ try {
 
             _context2.prev = 2;
 
-            _dbux.t(6);
+            _dbux.t(3);
 
             _context2.t0 = _dbux;
             _context2.t1 = _dbux;
             _context2.next = 8;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId5 = _dbux.preAwait(8), (_dbux.t(7), _dbux.tv(7, af1(1)))));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId5 = _dbux.preAwait(8), (_dbux.t(4), _dbux.tv(4, af1(1)))));
 
           case 8:
             _context2.t2 = _context2.sent;
             _context2.t3 = _contextId5;
             _context2.t4 = _context2.t1.postAwait.call(_context2.t1, _context2.t2, _context2.t3);
 
-            _context2.t0.tv.call(_context2.t0, 6, _context2.t4);
+            _context2.t0.tv.call(_context2.t0, 3, _context2.t4);
 
-            _dbux.t(8);
+            _dbux.t(5);
 
             _context2.t5 = _dbux;
             _context2.t6 = _dbux;
             _context2.next = 17;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId6 = _dbux.preAwait(10), (_dbux.t(9), _dbux.tv(9, af1(2)))));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId6 = _dbux.preAwait(10), (_dbux.t(6), _dbux.tv(6, af1(2)))));
 
           case 17:
             _context2.t7 = _context2.sent;
             _context2.t8 = _contextId6;
             _context2.t9 = _context2.t6.postAwait.call(_context2.t6, _context2.t7, _context2.t8);
 
-            _context2.t5.tv.call(_context2.t5, 8, _context2.t9);
+            _context2.t5.tv.call(_context2.t5, 5, _context2.t9);
 
-            _dbux.t(10);
+            _dbux.t(7);
 
-            _dbux.t(11);
+            _dbux.t(8);
 
             _context2.t10 = _dbux;
             _context2.t11 = _dbux;
             _context2.next = 27;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId7 = _dbux.preAwait(12), (_dbux.t(12), _dbux.tv(12, af1(3)))));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId7 = _dbux.preAwait(12), (_dbux.t(9), _dbux.tv(9, af1(3)))));
 
           case 27:
             _context2.t12 = _context2.sent;
             _context2.t13 = _contextId7;
             _context2.t14 = _context2.t11.postAwait.call(_context2.t11, _context2.t12, _context2.t13);
-            _context2.t15 = _context2.t10.tv.call(_context2.t10, 11, _context2.t14);
+            _context2.t15 = _context2.t10.tv.call(_context2.t10, 8, _context2.t14);
             _context2.t16 = 2 + _context2.t15;
             return _context2.abrupt(\\"return\\", _context2.t16 - 3);
 
@@ -1029,13 +873,13 @@ try {
 
             _context3.prev = 2;
 
-            _dbux.t(14);
+            _dbux.t(10);
 
             return _context3.abrupt(\\"return\\", new Promise(function (r) {
               var _contextId9 = _dbux.pushImmediate(15);
 
               try {
-                _dbux.t(15), _dbux.tv(15, setTimeout(_dbux.scheduleCallback(16, _contextId9, (_dbux.t(16), _dbux.tv(16, r.bind(33)))), delay));
+                _dbux.t(11), _dbux.tv(11, setTimeout(_dbux.scheduleCallback(16, _contextId9, (_dbux.t(12), _dbux.tv(12, r.bind(33)))), delay));
               } finally {
                 _dbux.popImmediate(_contextId9);
               }
@@ -1071,68 +915,54 @@ try {
 
             _context4.prev = 2;
 
-            _dbux.t(18);
-
-            _dbux.t(19);
+            _dbux.t(13);
 
             _context4.t0 = _dbux;
             _context4.t1 = _dbux;
-            _context4.next = 9;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId11 = _dbux.preAwait(20), (_dbux.t(20), _dbux.tv(20, af33(100)))));
+            _context4.next = 8;
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId11 = _dbux.preAwait(20), (_dbux.t(14), _dbux.tv(14, af33(100)))));
 
-          case 9:
+          case 8:
             _context4.t2 = _context4.sent;
             _context4.t3 = _contextId11;
             _context4.t4 = _context4.t1.postAwait.call(_context4.t1, _context4.t2, _context4.t3);
-            a = _context4.t0.tv.call(_context4.t0, 19, _context4.t4);
+            a = _context4.t0.tv.call(_context4.t0, 13, _context4.t4);
 
-            _dbux.t(21);
-
-            _dbux.t(22);
+            _dbux.t(15);
 
             _context4.t5 = _dbux;
             _context4.t6 = _dbux;
-            _context4.next = 19;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId12 = _dbux.preAwait(22), (_dbux.t(23), _dbux.tv(23, af33(50)))));
+            _context4.next = 17;
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId12 = _dbux.preAwait(22), (_dbux.t(16), _dbux.tv(16, af33(50)))));
 
-          case 19:
+          case 17:
             _context4.t7 = _context4.sent;
             _context4.t8 = _contextId12;
             _context4.t9 = _context4.t6.postAwait.call(_context4.t6, _context4.t7, _context4.t8);
-            b = _context4.t5.tv.call(_context4.t5, 22, _context4.t9);
+            b = _context4.t5.tv.call(_context4.t5, 15, _context4.t9);
 
-            _dbux.t(24);
+            _dbux.t(17);
 
-            return _context4.abrupt(\\"return\\", a + b + (_dbux.t(25), _dbux.tv(25, af33(10))));
+            return _context4.abrupt(\\"return\\", a + b + (_dbux.t(18), _dbux.tv(18, af33(10))));
 
-          case 25:
-            _context4.prev = 25;
+          case 23:
+            _context4.prev = 23;
 
             _dbux.popResume();
 
             _dbux.popImmediate(_contextId10);
 
-            return _context4.finish(25);
+            return _context4.finish(23);
 
-          case 29:
+          case 27:
           case \\"end\\":
             return _context4.stop();
         }
       }
-    }, null, null, [[2,, 25, 29]]);
+    }, null, null, [[2,, 23, 27]]);
   };
 
-  _dbux.t(1);
-
-  _dbux.t(2);
-
-  _dbux.t(5);
-
-  _dbux.t(13);
-
-  _dbux.t(17);
-
-  _dbux.t(26), _dbux.tv(26, function main() {
+  _dbux.t(19), _dbux.tv(19, function main() {
     var _contextId13, _contextId14;
 
     return regeneratorRuntime.async(function main$(_context5) {
@@ -1145,28 +975,28 @@ try {
 
             _context5.prev = 2;
 
-            _dbux.t(27);
+            _dbux.t(20);
 
             _context5.t0 = _dbux;
             _context5.t1 = console;
 
-            _dbux.t(28);
+            _dbux.t(21);
 
             _context5.t2 = _dbux;
             _context5.t3 = _dbux;
             _context5.next = 11;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId14 = _dbux.preAwait(26), (_dbux.t(29), _dbux.tv(29, Promise.all([(_dbux.t(30), _dbux.tv(30, af2())), (_dbux.t(31), _dbux.tv(31, af44()))])))));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId14 = _dbux.preAwait(26), (_dbux.t(22), _dbux.tv(22, Promise.all([(_dbux.t(23), _dbux.tv(23, af2())), (_dbux.t(24), _dbux.tv(24, af44()))])))));
 
           case 11:
             _context5.t4 = _context5.sent;
             _context5.t5 = _contextId14;
             _context5.t6 = _context5.t3.postAwait.call(_context5.t3, _context5.t4, _context5.t5);
-            _context5.t7 = _context5.t2.tv.call(_context5.t2, 28, _context5.t6);
+            _context5.t7 = _context5.t2.tv.call(_context5.t2, 21, _context5.t6);
             _context5.t8 = _context5.t1.log.call(_context5.t1, _context5.t7);
 
-            _context5.t0.tv.call(_context5.t0, 27, _context5.t8);
+            _context5.t0.tv.call(_context5.t0, 20, _context5.t8);
 
-            _dbux.t(32), _dbux.tv(32, f0());
+            _dbux.t(25), _dbux.tv(25, f0());
 
           case 18:
             _context5.prev = 18;
@@ -1191,7 +1021,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"async-example1.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/async-example1.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\async-example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -1570,37 +1400,10 @@ function _dbux_init(dbuxRuntime) {
       \\"resumeId\\": 25
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"function f0() {  const _co...\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 2,
-          \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"async function af1(a) {  c...\\",
-      \\"traceId\\": 2,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 4,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 6,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"return Promise.resolve(a);\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 1,
       \\"parent\\": 3,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 5,
@@ -1613,8 +1416,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"Promise.resolve(a)\\",
-      \\"traceId\\": 4,
+      \\"traceId\\": 2,
       \\"parent\\": 3,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 5,
@@ -1626,23 +1430,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function af2() {  co...\\",
-      \\"traceId\\": 5,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 13,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"await af1(1)\\",
-      \\"traceId\\": 6,
+      \\"traceId\\": 3,
       \\"parent\\": 5,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 9,
@@ -1655,8 +1446,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af1(1)\\",
-      \\"traceId\\": 7,
+      \\"traceId\\": 4,
       \\"parent\\": 8,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 9,
@@ -1669,8 +1461,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await af1(2)\\",
-      \\"traceId\\": 8,
+      \\"traceId\\": 5,
       \\"parent\\": 5,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 10,
@@ -1683,8 +1476,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af1(2)\\",
-      \\"traceId\\": 9,
+      \\"traceId\\": 6,
       \\"parent\\": 10,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 10,
@@ -1697,8 +1491,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"return 2 + (await af1(3)) - 3;\\",
-      \\"traceId\\": 10,
+      \\"traceId\\": 7,
       \\"parent\\": 5,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 12,
@@ -1711,8 +1506,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await af1(3)\\",
-      \\"traceId\\": 11,
+      \\"traceId\\": 8,
       \\"parent\\": 5,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 12,
@@ -1725,8 +1521,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af1(3)\\",
-      \\"traceId\\": 12,
+      \\"traceId\\": 9,
       \\"parent\\": 12,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 12,
@@ -1738,23 +1535,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function af33(delay)...\\",
-      \\"traceId\\": 13,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 15,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 19,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"return new Promise(r => {...\\",
-      \\"traceId\\": 14,
+      \\"traceId\\": 10,
       \\"parent\\": 13,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 16,
@@ -1767,8 +1551,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"setTimeout(r.bind(33), delay)\\",
-      \\"traceId\\": 15,
+      \\"traceId\\": 11,
       \\"parent\\": 15,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 17,
@@ -1781,8 +1566,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"r.bind(33)\\",
-      \\"traceId\\": 16,
+      \\"traceId\\": 12,
       \\"parent\\": 16,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 17,
@@ -1794,37 +1580,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function af44() {  c...\\",
-      \\"traceId\\": 17,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 21,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 26,
-          \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"const a = await af33(100);\\",
-      \\"traceId\\": 18,
-      \\"parent\\": 17,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 28
-        }
-      }
-    }, {
       \\"displayName\\": \\"await af33(100)\\",
-      \\"traceId\\": 19,
+      \\"traceId\\": 13,
       \\"parent\\": 17,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 22,
@@ -1837,8 +1596,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af33(100)\\",
-      \\"traceId\\": 20,
+      \\"traceId\\": 14,
       \\"parent\\": 20,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 22,
@@ -1850,23 +1610,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"const b = await af33(50);\\",
-      \\"traceId\\": 21,
-      \\"parent\\": 17,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 23,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 23,
-          \\"column\\": 27
-        }
-      }
-    }, {
       \\"displayName\\": \\"await af33(50)\\",
-      \\"traceId\\": 22,
+      \\"traceId\\": 15,
       \\"parent\\": 17,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -1879,8 +1626,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af33(50)\\",
-      \\"traceId\\": 23,
+      \\"traceId\\": 16,
       \\"parent\\": 22,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -1893,8 +1641,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"return a + b + af33(10);\\",
-      \\"traceId\\": 24,
+      \\"traceId\\": 17,
       \\"parent\\": 17,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 25,
@@ -1907,8 +1656,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af33(10)\\",
-      \\"traceId\\": 25,
+      \\"traceId\\": 18,
       \\"parent\\": 17,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 25,
@@ -1921,8 +1671,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"async function main() {  c...\\",
-      \\"traceId\\": 26,
+      \\"traceId\\": 19,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 28,
@@ -1935,8 +1686,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"console.log((await Promise....\\",
-      \\"traceId\\": 27,
+      \\"traceId\\": 20,
       \\"parent\\": 23,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 29,
@@ -1949,8 +1701,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await Promise.all([af2(), a...\\",
-      \\"traceId\\": 28,
+      \\"traceId\\": 21,
       \\"parent\\": 23,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 30,
@@ -1963,8 +1716,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"Promise.all([af2(), af44()])\\",
-      \\"traceId\\": 29,
+      \\"traceId\\": 22,
       \\"parent\\": 26,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 30,
@@ -1977,8 +1731,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af2()\\",
-      \\"traceId\\": 30,
+      \\"traceId\\": 23,
       \\"parent\\": 26,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 31,
@@ -1991,8 +1746,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af44()\\",
-      \\"traceId\\": 31,
+      \\"traceId\\": 24,
       \\"parent\\": 26,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 32,
@@ -2005,8 +1761,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f0()\\",
-      \\"traceId\\": 32,
+      \\"traceId\\": 25,
       \\"parent\\": 23,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 36,
@@ -2072,8 +1829,6 @@ const _dbux = _dbux_init(_dbuxRuntime);
 const _contextId = _dbux.getProgramContextId();
 
 try {
-  _dbux.t(1);
-
   function f0() {
     const _contextId2 = _dbux.pushImmediate(2);
 
@@ -2082,25 +1837,21 @@ try {
     }
   }
 
-  _dbux.t(2);
-
   async function af1(a) {
     const _contextId3 = _dbux.pushImmediate(3);
 
     _dbux.pushResume(4, 3);
 
     try {
-      _dbux.t(3);
+      _dbux.t(1);
 
-      return _dbux.t(4), _dbux.tv(4, Promise.resolve(a));
+      return _dbux.t(2), _dbux.tv(2, Promise.resolve(a));
     } finally {
       _dbux.popResume();
 
       _dbux.popImmediate(_contextId3);
     }
   }
-
-  _dbux.t(5);
 
   async function af2() {
     const _contextId4 = _dbux.pushImmediate(5);
@@ -2110,12 +1861,12 @@ try {
     try {
       var _contextId5, _contextId6, _contextId7;
 
-      _dbux.t(6), _dbux.tv(6, _dbux.postAwait((await _dbux.wrapAwait(_contextId5 = _dbux.preAwait(8), (_dbux.t(7), _dbux.tv(7, af1(1))))), _contextId5));
-      _dbux.t(8), _dbux.tv(8, _dbux.postAwait((await _dbux.wrapAwait(_contextId6 = _dbux.preAwait(10), (_dbux.t(9), _dbux.tv(9, af1(2))))), _contextId6));
+      _dbux.t(3), _dbux.tv(3, _dbux.postAwait((await _dbux.wrapAwait(_contextId5 = _dbux.preAwait(8), (_dbux.t(4), _dbux.tv(4, af1(1))))), _contextId5));
+      _dbux.t(5), _dbux.tv(5, _dbux.postAwait((await _dbux.wrapAwait(_contextId6 = _dbux.preAwait(10), (_dbux.t(6), _dbux.tv(6, af1(2))))), _contextId6));
 
-      _dbux.t(10);
+      _dbux.t(7);
 
-      return 2 + (_dbux.t(11), _dbux.tv(11, _dbux.postAwait((await _dbux.wrapAwait(_contextId7 = _dbux.preAwait(12), (_dbux.t(12), _dbux.tv(12, af1(3))))), _contextId7))) - 3;
+      return 2 + (_dbux.t(8), _dbux.tv(8, _dbux.postAwait((await _dbux.wrapAwait(_contextId7 = _dbux.preAwait(12), (_dbux.t(9), _dbux.tv(9, af1(3))))), _contextId7))) - 3;
     } finally {
       _dbux.popResume();
 
@@ -2123,21 +1874,19 @@ try {
     }
   }
 
-  _dbux.t(13);
-
   async function af33(delay) {
     const _contextId8 = _dbux.pushImmediate(13);
 
     _dbux.pushResume(14, 13);
 
     try {
-      _dbux.t(14);
+      _dbux.t(10);
 
       return new Promise(r => {
         const _contextId9 = _dbux.pushImmediate(15);
 
         try {
-          _dbux.t(15), _dbux.tv(15, setTimeout(_dbux.scheduleCallback(16, _contextId9, (_dbux.t(16), _dbux.tv(16, r.bind(33)))), delay));
+          _dbux.t(11), _dbux.tv(11, setTimeout(_dbux.scheduleCallback(16, _contextId9, (_dbux.t(12), _dbux.tv(12, r.bind(33)))), delay));
         } finally {
           _dbux.popImmediate(_contextId9);
         }
@@ -2149,8 +1898,6 @@ try {
     }
   }
 
-  _dbux.t(17);
-
   async function af44() {
     const _contextId10 = _dbux.pushImmediate(17);
 
@@ -2159,17 +1906,12 @@ try {
     try {
       var _contextId11, _contextId12;
 
-      _dbux.t(18);
+      const a = (_dbux.t(13), _dbux.tv(13, _dbux.postAwait((await _dbux.wrapAwait(_contextId11 = _dbux.preAwait(20), (_dbux.t(14), _dbux.tv(14, af33(100))))), _contextId11)));
+      const b = (_dbux.t(15), _dbux.tv(15, _dbux.postAwait((await _dbux.wrapAwait(_contextId12 = _dbux.preAwait(22), (_dbux.t(16), _dbux.tv(16, af33(50))))), _contextId12)));
 
-      const a = (_dbux.t(19), _dbux.tv(19, _dbux.postAwait((await _dbux.wrapAwait(_contextId11 = _dbux.preAwait(20), (_dbux.t(20), _dbux.tv(20, af33(100))))), _contextId11)));
+      _dbux.t(17);
 
-      _dbux.t(21);
-
-      const b = (_dbux.t(22), _dbux.tv(22, _dbux.postAwait((await _dbux.wrapAwait(_contextId12 = _dbux.preAwait(22), (_dbux.t(23), _dbux.tv(23, af33(50))))), _contextId12)));
-
-      _dbux.t(24);
-
-      return a + b + (_dbux.t(25), _dbux.tv(25, af33(10)));
+      return a + b + (_dbux.t(18), _dbux.tv(18, af33(10)));
     } finally {
       _dbux.popResume();
 
@@ -2177,7 +1919,7 @@ try {
     }
   }
 
-  _dbux.t(26), _dbux.tv(26, async function main() {
+  _dbux.t(19), _dbux.tv(19, async function main() {
     const _contextId13 = _dbux.pushImmediate(23);
 
     _dbux.pushResume(24, 23);
@@ -2185,8 +1927,8 @@ try {
     try {
       var _contextId14;
 
-      _dbux.t(27), _dbux.tv(27, console.log((_dbux.t(28), _dbux.tv(28, _dbux.postAwait((await _dbux.wrapAwait(_contextId14 = _dbux.preAwait(26), (_dbux.t(29), _dbux.tv(29, Promise.all([(_dbux.t(30), _dbux.tv(30, af2())), (_dbux.t(31), _dbux.tv(31, af44()))]))))), _contextId14)))));
-      _dbux.t(32), _dbux.tv(32, f0());
+      _dbux.t(20), _dbux.tv(20, console.log((_dbux.t(21), _dbux.tv(21, _dbux.postAwait((await _dbux.wrapAwait(_contextId14 = _dbux.preAwait(26), (_dbux.t(22), _dbux.tv(22, Promise.all([(_dbux.t(23), _dbux.tv(23, af2())), (_dbux.t(24), _dbux.tv(24, af44()))]))))), _contextId14)))));
+      _dbux.t(25), _dbux.tv(25, f0());
     } finally {
       _dbux.popResume();
 
@@ -2200,7 +1942,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"async-example1.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/async-example1.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\async-example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -2579,37 +2321,10 @@ function _dbux_init(dbuxRuntime) {
       \\"resumeId\\": 25
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"function f0() {  const _co...\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 2,
-          \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"async function af1(a) {  c...\\",
-      \\"traceId\\": 2,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 4,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 6,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"return Promise.resolve(a);\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 1,
       \\"parent\\": 3,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 5,
@@ -2622,8 +2337,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"Promise.resolve(a)\\",
-      \\"traceId\\": 4,
+      \\"traceId\\": 2,
       \\"parent\\": 3,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 5,
@@ -2635,23 +2351,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function af2() {  co...\\",
-      \\"traceId\\": 5,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 13,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"await af1(1)\\",
-      \\"traceId\\": 6,
+      \\"traceId\\": 3,
       \\"parent\\": 5,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 9,
@@ -2664,8 +2367,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af1(1)\\",
-      \\"traceId\\": 7,
+      \\"traceId\\": 4,
       \\"parent\\": 8,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 9,
@@ -2678,8 +2382,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await af1(2)\\",
-      \\"traceId\\": 8,
+      \\"traceId\\": 5,
       \\"parent\\": 5,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 10,
@@ -2692,8 +2397,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af1(2)\\",
-      \\"traceId\\": 9,
+      \\"traceId\\": 6,
       \\"parent\\": 10,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 10,
@@ -2706,8 +2412,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"return 2 + (await af1(3)) - 3;\\",
-      \\"traceId\\": 10,
+      \\"traceId\\": 7,
       \\"parent\\": 5,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 12,
@@ -2720,8 +2427,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await af1(3)\\",
-      \\"traceId\\": 11,
+      \\"traceId\\": 8,
       \\"parent\\": 5,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 12,
@@ -2734,8 +2442,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af1(3)\\",
-      \\"traceId\\": 12,
+      \\"traceId\\": 9,
       \\"parent\\": 12,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 12,
@@ -2747,23 +2456,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function af33(delay)...\\",
-      \\"traceId\\": 13,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 15,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 19,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"return new Promise(r => {...\\",
-      \\"traceId\\": 14,
+      \\"traceId\\": 10,
       \\"parent\\": 13,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 16,
@@ -2776,8 +2472,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"setTimeout(r.bind(33), delay)\\",
-      \\"traceId\\": 15,
+      \\"traceId\\": 11,
       \\"parent\\": 15,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 17,
@@ -2790,8 +2487,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"r.bind(33)\\",
-      \\"traceId\\": 16,
+      \\"traceId\\": 12,
       \\"parent\\": 16,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 17,
@@ -2803,37 +2501,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function af44() {  c...\\",
-      \\"traceId\\": 17,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 21,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 26,
-          \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"const a = await af33(100);\\",
-      \\"traceId\\": 18,
-      \\"parent\\": 17,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 28
-        }
-      }
-    }, {
       \\"displayName\\": \\"await af33(100)\\",
-      \\"traceId\\": 19,
+      \\"traceId\\": 13,
       \\"parent\\": 17,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 22,
@@ -2846,8 +2517,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af33(100)\\",
-      \\"traceId\\": 20,
+      \\"traceId\\": 14,
       \\"parent\\": 20,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 22,
@@ -2859,23 +2531,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"const b = await af33(50);\\",
-      \\"traceId\\": 21,
-      \\"parent\\": 17,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 23,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 23,
-          \\"column\\": 27
-        }
-      }
-    }, {
       \\"displayName\\": \\"await af33(50)\\",
-      \\"traceId\\": 22,
+      \\"traceId\\": 15,
       \\"parent\\": 17,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -2888,8 +2547,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af33(50)\\",
-      \\"traceId\\": 23,
+      \\"traceId\\": 16,
       \\"parent\\": 22,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -2902,8 +2562,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"return a + b + af33(10);\\",
-      \\"traceId\\": 24,
+      \\"traceId\\": 17,
       \\"parent\\": 17,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 25,
@@ -2916,8 +2577,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af33(10)\\",
-      \\"traceId\\": 25,
+      \\"traceId\\": 18,
       \\"parent\\": 17,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 25,
@@ -2930,8 +2592,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"async function main() {  c...\\",
-      \\"traceId\\": 26,
+      \\"traceId\\": 19,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 28,
@@ -2944,8 +2607,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"console.log((await Promise....\\",
-      \\"traceId\\": 27,
+      \\"traceId\\": 20,
       \\"parent\\": 23,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 29,
@@ -2958,8 +2622,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await Promise.all([af2(), a...\\",
-      \\"traceId\\": 28,
+      \\"traceId\\": 21,
       \\"parent\\": 23,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 30,
@@ -2972,8 +2637,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"Promise.all([af2(), af44()])\\",
-      \\"traceId\\": 29,
+      \\"traceId\\": 22,
       \\"parent\\": 26,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 30,
@@ -2986,8 +2652,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af2()\\",
-      \\"traceId\\": 30,
+      \\"traceId\\": 23,
       \\"parent\\": 26,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 31,
@@ -3000,8 +2667,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"af44()\\",
-      \\"traceId\\": 31,
+      \\"traceId\\": 24,
       \\"parent\\": 26,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 32,
@@ -3014,8 +2682,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f0()\\",
-      \\"traceId\\": 32,
+      \\"traceId\\": 25,
       \\"parent\\": 23,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 36,
@@ -3072,7 +2741,7 @@ try {
     var _contextId2 = _dbux.pushImmediate(2);
 
     try {
-      _dbux.t(3), _dbux.tv(3, setTimeout(_dbux.scheduleCallback(3, _contextId2, r), _ms));
+      _dbux.t(1), _dbux.tv(1, setTimeout(_dbux.scheduleCallback(3, _contextId2, r), _ms));
     } finally {
       _dbux.popImmediate(_contextId2);
     }
@@ -3091,9 +2760,9 @@ try {
 
             _context.prev = 2;
             // return new Promise(r => setTimeout(r, ms));
-            _ms = (_dbux.t(5), _dbux.tv(5, ms));
+            _ms = (_dbux.t(2), _dbux.tv(2, ms));
 
-            _dbux.t(6);
+            _dbux.t(3);
 
             return _context.abrupt(\\"return\\", new Promise(f1));
 
@@ -3114,15 +2783,9 @@ try {
     }, null, null, [[2,, 6, 10]]);
   };
 
-  _dbux.t(1);
-
   var _ms;
 
-  _dbux.t(2);
-
-  _dbux.t(4);
-
-  _dbux.t(7), _dbux.tv(7, function main() {
+  _dbux.t(4), _dbux.tv(4, function main() {
     var _contextId4, _contextId5;
 
     return regeneratorRuntime.async(function main$(_context2) {
@@ -3135,19 +2798,19 @@ try {
 
             _context2.prev = 2;
 
-            _dbux.t(8);
+            _dbux.t(5);
 
             _context2.t0 = _dbux;
             _context2.t1 = _dbux;
             _context2.next = 8;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId5 = _dbux.preAwait(9), (_dbux.t(9), _dbux.tv(9, sleep(50)))));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId5 = _dbux.preAwait(9), (_dbux.t(6), _dbux.tv(6, sleep(50)))));
 
           case 8:
             _context2.t2 = _context2.sent;
             _context2.t3 = _contextId5;
             _context2.t4 = _context2.t1.postAwait.call(_context2.t1, _context2.t2, _context2.t3);
 
-            _context2.t0.tv.call(_context2.t0, 8, _context2.t4);
+            _context2.t0.tv.call(_context2.t0, 5, _context2.t4);
 
           case 12:
             _context2.prev = 12;
@@ -3172,7 +2835,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await0.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await0.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await0.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -3309,37 +2972,10 @@ function _dbux_init(dbuxRuntime) {
       \\"resumeId\\": 8
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"let _ms;\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 1,
-          \\"column\\": 8
-        }
-      }
-    }, {
-      \\"displayName\\": \\"function f1(r) {  const _c...\\",
-      \\"traceId\\": 2,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 2,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 4,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"setTimeout(r, _ms)\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 1,
       \\"parent\\": 2,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 3,
@@ -3351,23 +2987,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function sleep(ms) {...\\",
-      \\"traceId\\": 4,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 6,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 10,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"ms\\",
-      \\"traceId\\": 5,
+      \\"traceId\\": 2,
       \\"parent\\": 4,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 8,
@@ -3381,8 +3004,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"return new Promise(f1);\\",
-      \\"traceId\\": 6,
+      \\"traceId\\": 3,
       \\"parent\\": 4,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 9,
@@ -3395,8 +3019,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"async function main() {  a...\\",
-      \\"traceId\\": 7,
+      \\"traceId\\": 4,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 12,
@@ -3409,8 +3034,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await sleep(50)\\",
-      \\"traceId\\": 8,
+      \\"traceId\\": 5,
       \\"parent\\": 6,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 13,
@@ -3423,8 +3049,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"sleep(50)\\",
-      \\"traceId\\": 9,
+      \\"traceId\\": 6,
       \\"parent\\": 9,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 13,
@@ -3467,23 +3094,17 @@ const _dbux = _dbux_init(_dbuxRuntime);
 const _contextId = _dbux.getProgramContextId();
 
 try {
-  _dbux.t(1);
-
   let _ms;
-
-  _dbux.t(2);
 
   function f1(r) {
     const _contextId2 = _dbux.pushImmediate(2);
 
     try {
-      _dbux.t(3), _dbux.tv(3, setTimeout(_dbux.scheduleCallback(3, _contextId2, r), _ms));
+      _dbux.t(1), _dbux.tv(1, setTimeout(_dbux.scheduleCallback(3, _contextId2, r), _ms));
     } finally {
       _dbux.popImmediate(_contextId2);
     }
   }
-
-  _dbux.t(4);
 
   async function sleep(ms) {
     const _contextId3 = _dbux.pushImmediate(4);
@@ -3492,9 +3113,9 @@ try {
 
     try {
       // return new Promise(r => setTimeout(r, ms));
-      _ms = (_dbux.t(5), _dbux.tv(5, ms));
+      _ms = (_dbux.t(2), _dbux.tv(2, ms));
 
-      _dbux.t(6);
+      _dbux.t(3);
 
       return new Promise(f1);
     } finally {
@@ -3504,7 +3125,7 @@ try {
     }
   }
 
-  _dbux.t(7), _dbux.tv(7, async function main() {
+  _dbux.t(4), _dbux.tv(4, async function main() {
     const _contextId4 = _dbux.pushImmediate(6);
 
     _dbux.pushResume(7, 6);
@@ -3512,7 +3133,7 @@ try {
     try {
       var _contextId5;
 
-      _dbux.t(8), _dbux.tv(8, _dbux.postAwait((await _dbux.wrapAwait(_contextId5 = _dbux.preAwait(9), (_dbux.t(9), _dbux.tv(9, sleep(50))))), _contextId5));
+      _dbux.t(5), _dbux.tv(5, _dbux.postAwait((await _dbux.wrapAwait(_contextId5 = _dbux.preAwait(9), (_dbux.t(6), _dbux.tv(6, sleep(50))))), _contextId5));
     } finally {
       _dbux.popResume();
 
@@ -3526,7 +3147,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await0.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await0.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await0.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -3663,37 +3284,10 @@ function _dbux_init(dbuxRuntime) {
       \\"resumeId\\": 8
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"let _ms;\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 1,
-          \\"column\\": 8
-        }
-      }
-    }, {
-      \\"displayName\\": \\"function f1(r) {  const _c...\\",
-      \\"traceId\\": 2,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 2,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 4,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"setTimeout(r, _ms)\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 1,
       \\"parent\\": 2,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 3,
@@ -3705,23 +3299,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function sleep(ms) {...\\",
-      \\"traceId\\": 4,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 6,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 10,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"ms\\",
-      \\"traceId\\": 5,
+      \\"traceId\\": 2,
       \\"parent\\": 4,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 8,
@@ -3735,8 +3316,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"return new Promise(f1);\\",
-      \\"traceId\\": 6,
+      \\"traceId\\": 3,
       \\"parent\\": 4,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 9,
@@ -3749,8 +3331,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"async function main() {  a...\\",
-      \\"traceId\\": 7,
+      \\"traceId\\": 4,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 12,
@@ -3763,8 +3346,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await sleep(50)\\",
-      \\"traceId\\": 8,
+      \\"traceId\\": 5,
       \\"parent\\": 6,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 13,
@@ -3777,8 +3361,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"sleep(50)\\",
-      \\"traceId\\": 9,
+      \\"traceId\\": 6,
       \\"parent\\": 9,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 13,
@@ -3864,13 +3449,13 @@ try {
 
             _context.prev = 2;
 
-            _dbux.t(2);
+            _dbux.t(1);
 
             return _context.abrupt(\\"return\\", new Promise(function (r) {
               var _contextId3 = _dbux.pushImmediate(4);
 
               try {
-                return _dbux.t(3), _dbux.tv(3, setTimeout(_dbux.scheduleCallback(5, _contextId3, r), ms));
+                return _dbux.t(2), _dbux.tv(2, setTimeout(_dbux.scheduleCallback(5, _contextId3, r), ms));
               } finally {
                 _dbux.popImmediate(_contextId3);
               }
@@ -3897,9 +3482,9 @@ try {
     var _contextId4 = _dbux.pushImmediate(6);
 
     try {
-      _dbux.t(5);
+      _dbux.t(3);
 
-      return _dbux.t(6), _dbux.tv(6, sleep(100));
+      return _dbux.t(4), _dbux.tv(4, sleep(100));
     } finally {
       _dbux.popImmediate(_contextId4);
     }
@@ -3918,19 +3503,19 @@ try {
 
             _context2.prev = 2;
 
-            _dbux.t(8);
+            _dbux.t(5);
 
             _context2.t0 = _dbux;
             _context2.t1 = _dbux;
             _context2.next = 8;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId6 = _dbux.preAwait(10), (_dbux.t(9), _dbux.tv(9, sleep(100)))));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId6 = _dbux.preAwait(10), (_dbux.t(6), _dbux.tv(6, sleep(100)))));
 
           case 8:
             _context2.t2 = _context2.sent;
             _context2.t3 = _contextId6;
             _context2.t4 = _context2.t1.postAwait.call(_context2.t1, _context2.t2, _context2.t3);
 
-            _context2.t0.tv.call(_context2.t0, 8, _context2.t4);
+            _context2.t0.tv.call(_context2.t0, 5, _context2.t4);
 
           case 12:
             _context2.prev = 12;
@@ -3962,19 +3547,19 @@ try {
 
             _context3.prev = 2;
 
-            _dbux.t(11);
+            _dbux.t(7);
 
             _context3.t0 = _dbux;
             _context3.t1 = _dbux;
             _context3.next = 8;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId8 = _dbux.preAwait(14), (_dbux.t(12), _dbux.tv(12, sleep(200)))));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId8 = _dbux.preAwait(14), (_dbux.t(8), _dbux.tv(8, sleep(200)))));
 
           case 8:
             _context3.t2 = _context3.sent;
             _context3.t3 = _contextId8;
             _context3.t4 = _context3.t1.postAwait.call(_context3.t1, _context3.t2, _context3.t3);
 
-            _context3.t0.tv.call(_context3.t0, 11, _context3.t4);
+            _context3.t0.tv.call(_context3.t0, 7, _context3.t4);
 
           case 12:
             _context3.prev = 12;
@@ -4015,16 +3600,16 @@ try {
               args[_key] = _args4[_key];
             }
 
-            _dbux.t(14);
+            _dbux.t(9);
 
             _context4.t0 = _dbux;
             _context4.t1 = _dbux;
             _context4.next = 9;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId10 = _dbux.preAwait(18), (_dbux.t(15), _dbux.tv(15, Promise.all((_dbux.t(16), _dbux.tv(16, args.map(_dbux.scheduleCallback(19, _contextId9, function (f) {
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId10 = _dbux.preAwait(18), (_dbux.t(10), _dbux.tv(10, Promise.all((_dbux.t(11), _dbux.tv(11, args.map(_dbux.scheduleCallback(19, _contextId9, function (f) {
               var _contextId11 = _dbux.pushImmediate(20);
 
               try {
-                return _dbux.t(17), _dbux.tv(17, f());
+                return _dbux.t(12), _dbux.tv(12, f());
               } finally {
                 _dbux.popImmediate(_contextId11);
               }
@@ -4035,7 +3620,7 @@ try {
             _context4.t3 = _contextId10;
             _context4.t4 = _context4.t1.postAwait.call(_context4.t1, _context4.t2, _context4.t3);
 
-            _context4.t0.tv.call(_context4.t0, 14, _context4.t4);
+            _context4.t0.tv.call(_context4.t0, 9, _context4.t4);
 
           case 13:
             _context4.prev = 13;
@@ -4054,17 +3639,7 @@ try {
     }, null, null, [[2,, 13, 17]]);
   };
 
-  _dbux.t(1);
-
-  _dbux.t(4);
-
-  _dbux.t(7);
-
-  _dbux.t(10);
-
-  _dbux.t(13);
-
-  _dbux.t(18), _dbux.tv(18, function main() {
+  _dbux.t(13), _dbux.tv(13, function main() {
     var _contextId12, _contextId13, _contextId14;
 
     return regeneratorRuntime.async(function main$(_context5) {
@@ -4077,33 +3652,33 @@ try {
 
             _context5.prev = 2;
 
-            _dbux.t(19);
+            _dbux.t(14);
 
             _context5.t0 = _dbux;
             _context5.t1 = _dbux;
             _context5.next = 8;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId13 = _dbux.preAwait(24), (_dbux.t(20), _dbux.tv(20, f1()))));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId13 = _dbux.preAwait(24), (_dbux.t(15), _dbux.tv(15, f1()))));
 
           case 8:
             _context5.t2 = _context5.sent;
             _context5.t3 = _contextId13;
             _context5.t4 = _context5.t1.postAwait.call(_context5.t1, _context5.t2, _context5.t3);
 
-            _context5.t0.tv.call(_context5.t0, 19, _context5.t4);
+            _context5.t0.tv.call(_context5.t0, 14, _context5.t4);
 
-            _dbux.t(21);
+            _dbux.t(16);
 
             _context5.t5 = _dbux;
             _context5.t6 = _dbux;
             _context5.next = 17;
-            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId14 = _dbux.preAwait(26), (_dbux.t(22), _dbux.tv(22, f4(f2, f3, (_dbux.t(23), _dbux.tv(23, sleep.bind(null, 400))))))));
+            return regeneratorRuntime.awrap(_dbux.wrapAwait(_contextId14 = _dbux.preAwait(26), (_dbux.t(17), _dbux.tv(17, f4(f2, f3, (_dbux.t(18), _dbux.tv(18, sleep.bind(null, 400))))))));
 
           case 17:
             _context5.t7 = _context5.sent;
             _context5.t8 = _contextId14;
             _context5.t9 = _context5.t6.postAwait.call(_context5.t6, _context5.t7, _context5.t8);
 
-            _context5.t5.tv.call(_context5.t5, 21, _context5.t9);
+            _context5.t5.tv.call(_context5.t5, 16, _context5.t9);
 
           case 21:
             _context5.prev = 21;
@@ -4128,7 +3703,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await1.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await1.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -4511,23 +4086,10 @@ function _dbux_init(dbuxRuntime) {
       \\"resumeId\\": 25
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"async function sleep(ms) {...\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 3,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"return new Promise(r => set...\\",
-      \\"traceId\\": 2,
+      \\"traceId\\": 1,
       \\"parent\\": 2,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 2,
@@ -4540,8 +4102,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"setTimeout(r, ms)\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 2,
       \\"parent\\": 4,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 2,
@@ -4553,23 +4116,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"function f1() {  const _co...\\",
-      \\"traceId\\": 4,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 5,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 7,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"return sleep(100);\\",
-      \\"traceId\\": 5,
+      \\"traceId\\": 3,
       \\"parent\\": 6,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 6,
@@ -4582,8 +4132,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"sleep(100)\\",
-      \\"traceId\\": 6,
+      \\"traceId\\": 4,
       \\"parent\\": 6,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 6,
@@ -4595,23 +4146,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function f2() {  con...\\",
-      \\"traceId\\": 7,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 9,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"await sleep(100)\\",
-      \\"traceId\\": 8,
+      \\"traceId\\": 5,
       \\"parent\\": 7,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 10,
@@ -4624,8 +4162,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"sleep(100)\\",
-      \\"traceId\\": 9,
+      \\"traceId\\": 6,
       \\"parent\\": 10,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 10,
@@ -4637,23 +4176,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function f3() {  con...\\",
-      \\"traceId\\": 10,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 13,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 15,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"await sleep(200)\\",
-      \\"traceId\\": 11,
+      \\"traceId\\": 7,
       \\"parent\\": 11,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 14,
@@ -4666,8 +4192,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"sleep(200)\\",
-      \\"traceId\\": 12,
+      \\"traceId\\": 8,
       \\"parent\\": 14,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 14,
@@ -4679,23 +4206,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function f4(...args)...\\",
-      \\"traceId\\": 13,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 19,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"await Promise.all(args.map(...\\",
-      \\"traceId\\": 14,
+      \\"traceId\\": 9,
       \\"parent\\": 15,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 18,
@@ -4708,8 +4222,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"Promise.all(args.map(f => f...\\",
-      \\"traceId\\": 15,
+      \\"traceId\\": 10,
       \\"parent\\": 18,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 18,
@@ -4722,8 +4237,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"args.map(f => f())\\",
-      \\"traceId\\": 16,
+      \\"traceId\\": 11,
       \\"parent\\": 18,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 18,
@@ -4736,8 +4252,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f()\\",
-      \\"traceId\\": 17,
+      \\"traceId\\": 12,
       \\"parent\\": 20,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 18,
@@ -4750,8 +4267,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"async function main() {  a...\\",
-      \\"traceId\\": 18,
+      \\"traceId\\": 13,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 21,
@@ -4764,8 +4282,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await f1()\\",
-      \\"traceId\\": 19,
+      \\"traceId\\": 14,
       \\"parent\\": 21,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 22,
@@ -4778,8 +4297,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f1()\\",
-      \\"traceId\\": 20,
+      \\"traceId\\": 15,
       \\"parent\\": 24,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 22,
@@ -4792,8 +4312,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await f4(f2, f3, sleep.bind...\\",
-      \\"traceId\\": 21,
+      \\"traceId\\": 16,
       \\"parent\\": 21,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -4806,8 +4327,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f4(f2, f3, sleep.bind(null,...\\",
-      \\"traceId\\": 22,
+      \\"traceId\\": 17,
       \\"parent\\": 26,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -4820,8 +4342,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"sleep.bind(null, 400)\\",
-      \\"traceId\\": 23,
+      \\"traceId\\": 18,
       \\"parent\\": 26,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -4874,21 +4397,19 @@ const _dbux = _dbux_init(_dbuxRuntime);
 const _contextId = _dbux.getProgramContextId();
 
 try {
-  _dbux.t(1);
-
   async function sleep(ms) {
     const _contextId2 = _dbux.pushImmediate(2);
 
     _dbux.pushResume(3, 2);
 
     try {
-      _dbux.t(2);
+      _dbux.t(1);
 
       return new Promise(r => {
         const _contextId3 = _dbux.pushImmediate(4);
 
         try {
-          return _dbux.t(3), _dbux.tv(3, setTimeout(_dbux.scheduleCallback(5, _contextId3, r), ms));
+          return _dbux.t(2), _dbux.tv(2, setTimeout(_dbux.scheduleCallback(5, _contextId3, r), ms));
         } finally {
           _dbux.popImmediate(_contextId3);
         }
@@ -4900,21 +4421,17 @@ try {
     }
   }
 
-  _dbux.t(4);
-
   function f1() {
     const _contextId4 = _dbux.pushImmediate(6);
 
     try {
-      _dbux.t(5);
+      _dbux.t(3);
 
-      return _dbux.t(6), _dbux.tv(6, sleep(100));
+      return _dbux.t(4), _dbux.tv(4, sleep(100));
     } finally {
       _dbux.popImmediate(_contextId4);
     }
   }
-
-  _dbux.t(7);
 
   async function f2() {
     const _contextId5 = _dbux.pushImmediate(7);
@@ -4924,15 +4441,13 @@ try {
     try {
       var _contextId6;
 
-      _dbux.t(8), _dbux.tv(8, _dbux.postAwait((await _dbux.wrapAwait(_contextId6 = _dbux.preAwait(10), (_dbux.t(9), _dbux.tv(9, sleep(100))))), _contextId6));
+      _dbux.t(5), _dbux.tv(5, _dbux.postAwait((await _dbux.wrapAwait(_contextId6 = _dbux.preAwait(10), (_dbux.t(6), _dbux.tv(6, sleep(100))))), _contextId6));
     } finally {
       _dbux.popResume();
 
       _dbux.popImmediate(_contextId5);
     }
   }
-
-  _dbux.t(10);
 
   async function f3() {
     const _contextId7 = _dbux.pushImmediate(11);
@@ -4942,15 +4457,13 @@ try {
     try {
       var _contextId8;
 
-      _dbux.t(11), _dbux.tv(11, _dbux.postAwait((await _dbux.wrapAwait(_contextId8 = _dbux.preAwait(14), (_dbux.t(12), _dbux.tv(12, sleep(200))))), _contextId8));
+      _dbux.t(7), _dbux.tv(7, _dbux.postAwait((await _dbux.wrapAwait(_contextId8 = _dbux.preAwait(14), (_dbux.t(8), _dbux.tv(8, sleep(200))))), _contextId8));
     } finally {
       _dbux.popResume();
 
       _dbux.popImmediate(_contextId7);
     }
   }
-
-  _dbux.t(13);
 
   async function f4(...args) {
     const _contextId9 = _dbux.pushImmediate(15);
@@ -4960,11 +4473,11 @@ try {
     try {
       var _contextId10;
 
-      _dbux.t(14), _dbux.tv(14, _dbux.postAwait((await _dbux.wrapAwait(_contextId10 = _dbux.preAwait(18), (_dbux.t(15), _dbux.tv(15, Promise.all((_dbux.t(16), _dbux.tv(16, args.map(_dbux.scheduleCallback(19, _contextId9, f => {
+      _dbux.t(9), _dbux.tv(9, _dbux.postAwait((await _dbux.wrapAwait(_contextId10 = _dbux.preAwait(18), (_dbux.t(10), _dbux.tv(10, Promise.all((_dbux.t(11), _dbux.tv(11, args.map(_dbux.scheduleCallback(19, _contextId9, f => {
         const _contextId11 = _dbux.pushImmediate(20);
 
         try {
-          return _dbux.t(17), _dbux.tv(17, f());
+          return _dbux.t(12), _dbux.tv(12, f());
         } finally {
           _dbux.popImmediate(_contextId11);
         }
@@ -4976,7 +4489,7 @@ try {
     }
   }
 
-  _dbux.t(18), _dbux.tv(18, async function main() {
+  _dbux.t(13), _dbux.tv(13, async function main() {
     const _contextId12 = _dbux.pushImmediate(21);
 
     _dbux.pushResume(22, 21);
@@ -4984,8 +4497,8 @@ try {
     try {
       var _contextId13, _contextId14;
 
-      _dbux.t(19), _dbux.tv(19, _dbux.postAwait((await _dbux.wrapAwait(_contextId13 = _dbux.preAwait(24), (_dbux.t(20), _dbux.tv(20, f1())))), _contextId13));
-      _dbux.t(21), _dbux.tv(21, _dbux.postAwait((await _dbux.wrapAwait(_contextId14 = _dbux.preAwait(26), (_dbux.t(22), _dbux.tv(22, f4(f2, f3, (_dbux.t(23), _dbux.tv(23, sleep.bind(null, 400)))))))), _contextId14));
+      _dbux.t(14), _dbux.tv(14, _dbux.postAwait((await _dbux.wrapAwait(_contextId13 = _dbux.preAwait(24), (_dbux.t(15), _dbux.tv(15, f1())))), _contextId13));
+      _dbux.t(16), _dbux.tv(16, _dbux.postAwait((await _dbux.wrapAwait(_contextId14 = _dbux.preAwait(26), (_dbux.t(17), _dbux.tv(17, f4(f2, f3, (_dbux.t(18), _dbux.tv(18, sleep.bind(null, 400)))))))), _contextId14));
     } finally {
       _dbux.popResume();
 
@@ -4999,7 +4512,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await1.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/await1.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -5382,23 +4895,10 @@ function _dbux_init(dbuxRuntime) {
       \\"resumeId\\": 25
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"async function sleep(ms) {...\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 3,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"return new Promise(r => set...\\",
-      \\"traceId\\": 2,
+      \\"traceId\\": 1,
       \\"parent\\": 2,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 2,
@@ -5411,8 +4911,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"setTimeout(r, ms)\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 2,
       \\"parent\\": 4,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 2,
@@ -5424,23 +4925,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"function f1() {  const _co...\\",
-      \\"traceId\\": 4,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 5,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 7,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"return sleep(100);\\",
-      \\"traceId\\": 5,
+      \\"traceId\\": 3,
       \\"parent\\": 6,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 6,
@@ -5453,8 +4941,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"sleep(100)\\",
-      \\"traceId\\": 6,
+      \\"traceId\\": 4,
       \\"parent\\": 6,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 6,
@@ -5466,23 +4955,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function f2() {  con...\\",
-      \\"traceId\\": 7,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 9,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"await sleep(100)\\",
-      \\"traceId\\": 8,
+      \\"traceId\\": 5,
       \\"parent\\": 7,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 10,
@@ -5495,8 +4971,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"sleep(100)\\",
-      \\"traceId\\": 9,
+      \\"traceId\\": 6,
       \\"parent\\": 10,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 10,
@@ -5508,23 +4985,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function f3() {  con...\\",
-      \\"traceId\\": 10,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 13,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 15,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"await sleep(200)\\",
-      \\"traceId\\": 11,
+      \\"traceId\\": 7,
       \\"parent\\": 11,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 14,
@@ -5537,8 +5001,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"sleep(200)\\",
-      \\"traceId\\": 12,
+      \\"traceId\\": 8,
       \\"parent\\": 14,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 14,
@@ -5550,23 +5015,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"async function f4(...args)...\\",
-      \\"traceId\\": 13,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 19,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"await Promise.all(args.map(...\\",
-      \\"traceId\\": 14,
+      \\"traceId\\": 9,
       \\"parent\\": 15,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 18,
@@ -5579,8 +5031,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"Promise.all(args.map(f => f...\\",
-      \\"traceId\\": 15,
+      \\"traceId\\": 10,
       \\"parent\\": 18,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 18,
@@ -5593,8 +5046,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"args.map(f => f())\\",
-      \\"traceId\\": 16,
+      \\"traceId\\": 11,
       \\"parent\\": 18,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 18,
@@ -5607,8 +5061,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f()\\",
-      \\"traceId\\": 17,
+      \\"traceId\\": 12,
       \\"parent\\": 20,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 18,
@@ -5621,8 +5076,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"async function main() {  a...\\",
-      \\"traceId\\": 18,
+      \\"traceId\\": 13,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 21,
@@ -5635,8 +5091,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await f1()\\",
-      \\"traceId\\": 19,
+      \\"traceId\\": 14,
       \\"parent\\": 21,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 22,
@@ -5649,8 +5106,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f1()\\",
-      \\"traceId\\": 20,
+      \\"traceId\\": 15,
       \\"parent\\": 24,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 22,
@@ -5663,8 +5121,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"await f4(f2, f3, sleep.bind...\\",
-      \\"traceId\\": 21,
+      \\"traceId\\": 16,
       \\"parent\\": 21,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -5677,8 +5136,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f4(f2, f3, sleep.bind(null,...\\",
-      \\"traceId\\": 22,
+      \\"traceId\\": 17,
       \\"parent\\": 26,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -5691,8 +5151,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"sleep.bind(null, 400)\\",
-      \\"traceId\\": 23,
+      \\"traceId\\": 18,
       \\"parent\\": 26,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 23,
@@ -5771,10 +5232,6 @@ try {
     }
   };
 
-  _dbux.t(1);
-
-  _dbux.t(2);
-
   var A =
   /*#__PURE__*/
   function () {
@@ -5782,8 +5239,8 @@ try {
       var _contextId3 = _dbux.pushImmediate(3);
 
       try {
-        this.m = (_dbux.t(3), _dbux.tv(3, new Map()));
-        this.s = (_dbux.t(4), _dbux.tv(4, new Set()));
+        this.m = (_dbux.t(1), _dbux.tv(1, new Map()));
+        this.s = (_dbux.t(2), _dbux.tv(2, new Set()));
       } finally {
         _dbux.popImmediate(_contextId3);
       }
@@ -5802,9 +5259,7 @@ try {
     return A;
   }();
 
-  _dbux.t(5);
-
-  var f2 = (_dbux.t(6), _dbux.tv(6, function (z, w) {
+  var f2 = (_dbux.t(3), _dbux.tv(3, function (z, w) {
     var _contextId5 = _dbux.pushImmediate(5);
 
     try {} finally {
@@ -5821,7 +5276,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example1.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example1.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -5906,37 +5361,10 @@ function _dbux_init(dbuxRuntime) {
       \\"isInterruptable\\": false
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"function f1(x, y) {  const...\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 2,
-          \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"class A {  constructor() {...\\",
-      \\"traceId\\": 2,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 4,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"new Map()\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 1,
       \\"parent\\": 3,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 6,
@@ -5949,8 +5377,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"new Set()\\",
-      \\"traceId\\": 4,
+      \\"traceId\\": 2,
       \\"parent\\": 3,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
@@ -5962,23 +5391,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"const f2 = (z, w) => {};\\",
-      \\"traceId\\": 5,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 13,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 13,
-          \\"column\\": 23
-        }
-      }
-    }, {
       \\"displayName\\": \\"(z, w) => {}\\",
-      \\"traceId\\": 6,
+      \\"traceId\\": 3,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 13,
@@ -6028,8 +5444,6 @@ const _contextId = _dbux.getProgramContextId();
 let _f, _A, _f2;
 
 try {
-  _dbux.t(1);
-
   function f1(x, y) {
     const _contextId2 = _dbux.pushImmediate(2);
 
@@ -6038,15 +5452,13 @@ try {
     }
   }
 
-  _dbux.t(2);
-
   class A {
     constructor() {
       const _contextId3 = _dbux.pushImmediate(3);
 
       try {
-        this.m = (_dbux.t(3), _dbux.tv(3, new Map()));
-        this.s = (_dbux.t(4), _dbux.tv(4, new Set()));
+        this.m = (_dbux.t(1), _dbux.tv(1, new Map()));
+        this.s = (_dbux.t(2), _dbux.tv(2, new Set()));
       } finally {
         _dbux.popImmediate(_contextId3);
       }
@@ -6062,9 +5474,7 @@ try {
 
   }
 
-  _dbux.t(5);
-
-  const f2 = (_dbux.t(6), _dbux.tv(6, (z, w) => {
+  const f2 = (_dbux.t(3), _dbux.tv(3, (z, w) => {
     const _contextId5 = _dbux.pushImmediate(5);
 
     try {} finally {
@@ -6083,7 +5493,7 @@ export { _f as f1, _A as A, _f2 as f2 };
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example1.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example1.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -6168,37 +5578,10 @@ function _dbux_init(dbuxRuntime) {
       \\"isInterruptable\\": false
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"function f1(x, y) {  const...\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 2,
-          \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"class A {  constructor() {...\\",
-      \\"traceId\\": 2,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 4,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"new Map()\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 1,
       \\"parent\\": 3,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 6,
@@ -6211,8 +5594,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"new Set()\\",
-      \\"traceId\\": 4,
+      \\"traceId\\": 2,
       \\"parent\\": 3,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
@@ -6224,23 +5608,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"const f2 = (z, w) => {};\\",
-      \\"traceId\\": 5,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 13,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 13,
-          \\"column\\": 23
-        }
-      }
-    }, {
       \\"displayName\\": \\"(z, w) => {}\\",
-      \\"traceId\\": 6,
+      \\"traceId\\": 3,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 13,
@@ -6294,7 +5665,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example2.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example2.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -6332,6 +5703,7 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"function main() {  console...\\",
       \\"traceId\\": 1,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 3,
@@ -6346,6 +5718,7 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"console.log(new A())\\",
       \\"traceId\\": 2,
       \\"parent\\": 2,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 4,
@@ -6397,7 +5770,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example2.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example2.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -6435,6 +5808,7 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"function main() {  console...\\",
       \\"traceId\\": 1,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 3,
@@ -6449,6 +5823,7 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"console.log(new A())\\",
       \\"traceId\\": 2,
       \\"parent\\": 2,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 4,
@@ -6502,18 +5877,14 @@ try {
     var _contextId3 = _dbux.pushImmediate(3);
 
     try {
-      _dbux.t(3), _dbux.tv(3, f1());
-      _dbux.t(4), _dbux.tv(4, f1());
+      _dbux.t(1), _dbux.tv(1, f1());
+      _dbux.t(2), _dbux.tv(2, f1());
     } finally {
       _dbux.popImmediate(_contextId3);
     }
   };
 
-  _dbux.t(1);
-
-  _dbux.t(2);
-
-  _dbux.t(5), _dbux.tv(5, f2());
+  _dbux.t(3), _dbux.tv(3, f2());
 } finally {
   _dbux.popProgram();
 }
@@ -6521,7 +5892,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example3.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example3.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -6573,37 +5944,10 @@ function _dbux_init(dbuxRuntime) {
       \\"isInterruptable\\": false
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"function f1() {  const _co...\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 3,
-          \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"function f2() {  const _co...\\",
-      \\"traceId\\": 2,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 5,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"f1()\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 1,
       \\"parent\\": 3,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 6,
@@ -6616,8 +5960,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f1()\\",
-      \\"traceId\\": 4,
+      \\"traceId\\": 2,
       \\"parent\\": 3,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
@@ -6630,8 +5975,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f2()\\",
-      \\"traceId\\": 5,
+      \\"traceId\\": 3,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 11,
@@ -6671,8 +6017,6 @@ const _dbux = _dbux_init(_dbuxRuntime);
 const _contextId = _dbux.getProgramContextId();
 
 try {
-  _dbux.t(1);
-
   function f1() {
     const _contextId2 = _dbux.pushImmediate(2);
 
@@ -6681,20 +6025,18 @@ try {
     }
   }
 
-  _dbux.t(2);
-
   function f2() {
     const _contextId3 = _dbux.pushImmediate(3);
 
     try {
-      _dbux.t(3), _dbux.tv(3, f1());
-      _dbux.t(4), _dbux.tv(4, f1());
+      _dbux.t(1), _dbux.tv(1, f1());
+      _dbux.t(2), _dbux.tv(2, f1());
     } finally {
       _dbux.popImmediate(_contextId3);
     }
   }
 
-  _dbux.t(5), _dbux.tv(5, f2());
+  _dbux.t(3), _dbux.tv(3, f2());
 } finally {
   _dbux.popProgram();
 }
@@ -6702,7 +6044,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example3.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/example3.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -6754,37 +6096,10 @@ function _dbux_init(dbuxRuntime) {
       \\"isInterruptable\\": false
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"function f1() {  const _co...\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 3,
-          \\"column\\": 1
-        }
-      }
-    }, {
-      \\"displayName\\": \\"function f2() {  const _co...\\",
-      \\"traceId\\": 2,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 5,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"f1()\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 1,
       \\"parent\\": 3,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 6,
@@ -6797,8 +6112,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f1()\\",
-      \\"traceId\\": 4,
+      \\"traceId\\": 2,
       \\"parent\\": 3,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
@@ -6811,8 +6127,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f2()\\",
-      \\"traceId\\": 5,
+      \\"traceId\\": 3,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 11,
@@ -6821,6 +6138,274 @@ function _dbux_init(dbuxRuntime) {
         \\"end\\": {
           \\"line\\": 11,
           \\"column\\": 4
+        }
+      }
+    }]
+  });
+}
+"
+`;
+
+exports[`dbux-babel-plugin for1.es5.js: for1.es5.js 1`] = `
+"
+var sum = 0;
+for (let i = 0; i < 100; ++i) {
+  sum += i;
+  console.log(i);
+}
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+var _dbuxRuntime = require('dbux-runtime')[\\"default\\"];
+
+var _dbux = _dbux_init(_dbuxRuntime);
+
+var _contextId = _dbux.getProgramContextId();
+
+try {
+  var sum = 0;
+
+  for (var i = 0; _dbux.t(1), _dbux.tv(1, i < 100); _dbux.t(2), _dbux.tv(2, ++i)) {
+    _dbux.t(3);
+
+    {
+      sum += (_dbux.t(4), _dbux.tv(4, i));
+      _dbux.t(5), _dbux.tv(5, console.log(i));
+    }
+  }
+} finally {
+  _dbux.popProgram();
+}
+
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
+    \\"fileName\\": \\"for1.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for1.js\\",
+    \\"staticContexts\\": [null, {
+      \\"staticId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 1,
+      \\"name\\": \\"Program\\",
+      \\"displayName\\": \\"Program\\"
+    }],
+    \\"traces\\": [null, {
+      \\"displayName\\": \\"i < 100\\",
+      \\"traceId\\": 1,
+      \\"parent\\": 1,
+      \\"capturesValue\\": true,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 16
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 23
+        }
+      }
+    }, {
+      \\"displayName\\": \\"++i\\",
+      \\"traceId\\": 2,
+      \\"parent\\": 1,
+      \\"capturesValue\\": true,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 25
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 28
+        }
+      }
+    }, {
+      \\"displayName\\": \\"{  sum += i;  console.log...\\",
+      \\"traceId\\": 3,
+      \\"parent\\": 1,
+      \\"capturesValue\\": false,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 30
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 1
+        }
+      }
+    }, {
+      \\"displayName\\": \\"i\\",
+      \\"traceId\\": 4,
+      \\"parent\\": 1,
+      \\"capturesValue\\": true,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 3,
+          \\"column\\": 9
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 10
+        },
+        \\"identifierName\\": \\"i\\"
+      }
+    }, {
+      \\"displayName\\": \\"console.log(i)\\",
+      \\"traceId\\": 5,
+      \\"parent\\": 1,
+      \\"capturesValue\\": true,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 4,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 16
+        }
+      }
+    }]
+  });
+}
+"
+`;
+
+exports[`dbux-babel-plugin for1.esNext.js: for1.esNext.js 1`] = `
+"
+var sum = 0;
+for (let i = 0; i < 100; ++i) {
+  sum += i;
+  console.log(i);
+}
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const _dbuxRuntime = require('dbux-runtime').default;
+
+const _dbux = _dbux_init(_dbuxRuntime);
+
+const _contextId = _dbux.getProgramContextId();
+
+try {
+  var sum = 0;
+
+  for (let i = 0; _dbux.t(1), _dbux.tv(1, i < 100); _dbux.t(2), _dbux.tv(2, ++i)) {
+    _dbux.t(3);
+
+    {
+      sum += (_dbux.t(4), _dbux.tv(4, i));
+      _dbux.t(5), _dbux.tv(5, console.log(i));
+    }
+  }
+} finally {
+  _dbux.popProgram();
+}
+
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
+    \\"fileName\\": \\"for1.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for1.js\\",
+    \\"staticContexts\\": [null, {
+      \\"staticId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 1,
+      \\"name\\": \\"Program\\",
+      \\"displayName\\": \\"Program\\"
+    }],
+    \\"traces\\": [null, {
+      \\"displayName\\": \\"i < 100\\",
+      \\"traceId\\": 1,
+      \\"parent\\": 1,
+      \\"capturesValue\\": true,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 16
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 23
+        }
+      }
+    }, {
+      \\"displayName\\": \\"++i\\",
+      \\"traceId\\": 2,
+      \\"parent\\": 1,
+      \\"capturesValue\\": true,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 25
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 28
+        }
+      }
+    }, {
+      \\"displayName\\": \\"{  sum += i;  console.log...\\",
+      \\"traceId\\": 3,
+      \\"parent\\": 1,
+      \\"capturesValue\\": false,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 30
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 1
+        }
+      }
+    }, {
+      \\"displayName\\": \\"i\\",
+      \\"traceId\\": 4,
+      \\"parent\\": 1,
+      \\"capturesValue\\": true,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 3,
+          \\"column\\": 9
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 10
+        },
+        \\"identifierName\\": \\"i\\"
+      }
+    }, {
+      \\"displayName\\": \\"console.log(i)\\",
+      \\"traceId\\": 5,
+      \\"parent\\": 1,
+      \\"capturesValue\\": true,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 4,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 16
         }
       }
     }]
@@ -6868,11 +6453,11 @@ try {
     var _contextId2 = _dbux.pushImmediate(2);
 
     try {
-      _dbux.t(2), _dbux.tv(2, setTimeout(_dbux.scheduleCallback(3, _contextId2, function f2() {
+      _dbux.t(1), _dbux.tv(1, setTimeout(_dbux.scheduleCallback(3, _contextId2, function f2() {
         var _contextId3 = _dbux.pushImmediate(4);
 
         try {
-          _dbux.t(3), _dbux.tv(3, setTimeout(_dbux.scheduleCallback(5, _contextId3, f3), 300));
+          _dbux.t(2), _dbux.tv(2, setTimeout(_dbux.scheduleCallback(5, _contextId3, f3), 300));
         } finally {
           _dbux.popImmediate(_contextId3);
         }
@@ -6886,13 +6471,13 @@ try {
     var _contextId4 = _dbux.pushImmediate(6);
 
     try {
-      _dbux.t(5), _dbux.tv(5, f4(1, _dbux.scheduleCallback(7, _contextId4, function () {
+      _dbux.t(3), _dbux.tv(3, f4(1, _dbux.scheduleCallback(7, _contextId4, function () {
         var _contextId5 = _dbux.pushImmediate(9);
 
         try {
           var _console;
 
-          return _dbux.t(6), _dbux.tv(6, (_console = console).log.apply(_console, arguments));
+          return _dbux.t(4), _dbux.tv(4, (_console = console).log.apply(_console, arguments));
         } finally {
           _dbux.popImmediate(_contextId5);
         }
@@ -6900,7 +6485,7 @@ try {
         var _contextId6 = _dbux.pushImmediate(10);
 
         try {
-          _dbux.t(7);
+          _dbux.t(5);
 
           return 1;
         } finally {
@@ -6916,21 +6501,15 @@ try {
     var _contextId7 = _dbux.pushImmediate(11);
 
     try {
-      _dbux.t(9), _dbux.tv(9, cb(a, b));
-      _dbux.t(10), _dbux.tv(10, cb2());
+      _dbux.t(6), _dbux.tv(6, cb(a, b));
+      _dbux.t(7), _dbux.tv(7, cb2());
     } finally {
       _dbux.popImmediate(_contextId7);
     }
   }; // go!
 
 
-  _dbux.t(1);
-
-  _dbux.t(4);
-
-  _dbux.t(8);
-
-  _dbux.t(11), _dbux.tv(11, setTimeout(_dbux.scheduleCallback(12, _contextId, (_dbux.t(12), _dbux.tv(12, f1.bind(null, 83, 84))))));
+  _dbux.t(8), _dbux.tv(8, setTimeout(_dbux.scheduleCallback(12, _contextId, (_dbux.t(9), _dbux.tv(9, f1.bind(null, 83, 84))))));
 } finally {
   _dbux.popProgram();
 }
@@ -6938,7 +6517,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"setTimeout1.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/setTimeout1.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -7132,23 +6711,10 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"(f1.bind(null, 83, 84))\\"
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"function f1(a, b) {  const...\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 5,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"setTimeout(function f2() {...\\",
-      \\"traceId\\": 2,
+      \\"traceId\\": 1,
       \\"parent\\": 2,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 2,
@@ -7161,8 +6727,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"setTimeout(f3, 300)\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 2,
       \\"parent\\": 4,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 3,
@@ -7174,23 +6741,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"function f3() {  const _co...\\",
-      \\"traceId\\": 4,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 7,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 9,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"f4(1, (...args) => console....\\",
-      \\"traceId\\": 5,
+      \\"traceId\\": 3,
       \\"parent\\": 6,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 8,
@@ -7203,8 +6757,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"console.log(...args)\\",
-      \\"traceId\\": 6,
+      \\"traceId\\": 4,
       \\"parent\\": 9,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 8,
@@ -7217,8 +6772,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"return 1;\\",
-      \\"traceId\\": 7,
+      \\"traceId\\": 5,
       \\"parent\\": 10,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 8,
@@ -7230,23 +6786,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"function f4(a, cb, b, cb2)...\\",
-      \\"traceId\\": 8,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 14,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"cb(a, b)\\",
-      \\"traceId\\": 9,
+      \\"traceId\\": 6,
       \\"parent\\": 11,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 12,
@@ -7259,8 +6802,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"cb2()\\",
-      \\"traceId\\": 10,
+      \\"traceId\\": 7,
       \\"parent\\": 11,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 13,
@@ -7273,8 +6817,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"setTimeout(f1.bind(null, 83...\\",
-      \\"traceId\\": 11,
+      \\"traceId\\": 8,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 17,
@@ -7287,8 +6832,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f1.bind(null, 83, 84)\\",
-      \\"traceId\\": 12,
+      \\"traceId\\": 9,
       \\"parent\\": 12,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 17,
@@ -7334,17 +6880,15 @@ const _dbux = _dbux_init(_dbuxRuntime);
 const _contextId = _dbux.getProgramContextId();
 
 try {
-  _dbux.t(1);
-
   function f1(a, b) {
     const _contextId2 = _dbux.pushImmediate(2);
 
     try {
-      _dbux.t(2), _dbux.tv(2, setTimeout(_dbux.scheduleCallback(3, _contextId2, function f2() {
+      _dbux.t(1), _dbux.tv(1, setTimeout(_dbux.scheduleCallback(3, _contextId2, function f2() {
         const _contextId3 = _dbux.pushImmediate(4);
 
         try {
-          _dbux.t(3), _dbux.tv(3, setTimeout(_dbux.scheduleCallback(5, _contextId3, f3), 300));
+          _dbux.t(2), _dbux.tv(2, setTimeout(_dbux.scheduleCallback(5, _contextId3, f3), 300));
         } finally {
           _dbux.popImmediate(_contextId3);
         }
@@ -7354,17 +6898,15 @@ try {
     }
   }
 
-  _dbux.t(4);
-
   function f3() {
     const _contextId4 = _dbux.pushImmediate(6);
 
     try {
-      _dbux.t(5), _dbux.tv(5, f4(1, _dbux.scheduleCallback(7, _contextId4, (...args) => {
+      _dbux.t(3), _dbux.tv(3, f4(1, _dbux.scheduleCallback(7, _contextId4, (...args) => {
         const _contextId5 = _dbux.pushImmediate(9);
 
         try {
-          return _dbux.t(6), _dbux.tv(6, console.log(...args));
+          return _dbux.t(4), _dbux.tv(4, console.log(...args));
         } finally {
           _dbux.popImmediate(_contextId5);
         }
@@ -7372,7 +6914,7 @@ try {
         const _contextId6 = _dbux.pushImmediate(10);
 
         try {
-          _dbux.t(7);
+          _dbux.t(5);
 
           return 1;
         } finally {
@@ -7384,21 +6926,19 @@ try {
     }
   }
 
-  _dbux.t(8);
-
   function f4(a, cb, b, cb2) {
     const _contextId7 = _dbux.pushImmediate(11);
 
     try {
-      _dbux.t(9), _dbux.tv(9, cb(a, b));
-      _dbux.t(10), _dbux.tv(10, cb2());
+      _dbux.t(6), _dbux.tv(6, cb(a, b));
+      _dbux.t(7), _dbux.tv(7, cb2());
     } finally {
       _dbux.popImmediate(_contextId7);
     }
   } // go!
 
 
-  _dbux.t(11), _dbux.tv(11, setTimeout(_dbux.scheduleCallback(12, _contextId, (_dbux.t(12), _dbux.tv(12, f1.bind(null, 83, 84))))));
+  _dbux.t(8), _dbux.tv(8, setTimeout(_dbux.scheduleCallback(12, _contextId, (_dbux.t(9), _dbux.tv(9, f1.bind(null, 83, 84))))));
 } finally {
   _dbux.popProgram();
 }
@@ -7406,7 +6946,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"setTimeout1.js\\",
-    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/setTimeout1.js\\",
+    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\",
     \\"staticContexts\\": [null, {
       \\"staticId\\": 1,
       \\"loc\\": {
@@ -7600,23 +7140,10 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"(f1.bind(null, 83, 84))\\"
     }],
     \\"traces\\": [null, {
-      \\"displayName\\": \\"function f1(a, b) {  const...\\",
-      \\"traceId\\": 1,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 1,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 5,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"setTimeout(function f2() {...\\",
-      \\"traceId\\": 2,
+      \\"traceId\\": 1,
       \\"parent\\": 2,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 2,
@@ -7629,8 +7156,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"setTimeout(f3, 300)\\",
-      \\"traceId\\": 3,
+      \\"traceId\\": 2,
       \\"parent\\": 4,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 3,
@@ -7642,23 +7170,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"function f3() {  const _co...\\",
-      \\"traceId\\": 4,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 7,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 9,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"f4(1, (...args) => console....\\",
-      \\"traceId\\": 5,
+      \\"traceId\\": 3,
       \\"parent\\": 6,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 8,
@@ -7671,8 +7186,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"console.log(...args)\\",
-      \\"traceId\\": 6,
+      \\"traceId\\": 4,
       \\"parent\\": 9,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 8,
@@ -7685,8 +7201,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"return 1;\\",
-      \\"traceId\\": 7,
+      \\"traceId\\": 5,
       \\"parent\\": 10,
+      \\"capturesValue\\": false,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 8,
@@ -7698,23 +7215,10 @@ function _dbux_init(dbuxRuntime) {
         }
       }
     }, {
-      \\"displayName\\": \\"function f4(a, cb, b, cb2)...\\",
-      \\"traceId\\": 8,
-      \\"parent\\": 1,
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 0
-        },
-        \\"end\\": {
-          \\"line\\": 14,
-          \\"column\\": 1
-        }
-      }
-    }, {
       \\"displayName\\": \\"cb(a, b)\\",
-      \\"traceId\\": 9,
+      \\"traceId\\": 6,
       \\"parent\\": 11,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 12,
@@ -7727,8 +7231,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"cb2()\\",
-      \\"traceId\\": 10,
+      \\"traceId\\": 7,
       \\"parent\\": 11,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 13,
@@ -7741,8 +7246,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"setTimeout(f1.bind(null, 83...\\",
-      \\"traceId\\": 11,
+      \\"traceId\\": 8,
       \\"parent\\": 1,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 17,
@@ -7755,8 +7261,9 @@ function _dbux_init(dbuxRuntime) {
       }
     }, {
       \\"displayName\\": \\"f1.bind(null, 83, 84)\\",
-      \\"traceId\\": 12,
+      \\"traceId\\": 9,
       \\"parent\\": 12,
+      \\"capturesValue\\": true,
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 17,
