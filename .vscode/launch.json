@@ -158,13 +158,14 @@
 			"internalConsoleOptions": "neverOpen",
 		},
 		{
-			"name": "Extension:Run",
+			"name": "Launch Extension",
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}/dbux-vscode-extension"
-			]
+			"args": ["--extensionDevelopmentPath=${workspaceRoot}/dbux-code"],
+			"stopOnEntry": false,
+			"sourceMaps": true,
+			"outFiles": ["${workspaceRoot}/dbux-code/dist/**/*.js"]
 		},
 		{
 			"name": "Extension:Tests",
@@ -172,8 +173,8 @@
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}/dbux-vscode-extension",
-				"--extensionTestsPath=${workspaceFolder}/dbux-vscode-extension/test/suite/index"
+				"--extensionDevelopmentPath=${workspaceFolder}/dbux-code",
+				"--extensionTestsPath=${workspaceFolder}/dbux-code/test/suite/index"
 			]
 		}
 	]

@@ -7,6 +7,7 @@ rootDir="$thisDir/.."
 cd "$rootDir/dbux-common" && npm install
 cd "$rootDir/dbux-babel-plugin" && npm install
 cd "$rootDir/dbux-runtime" && npm install
+cd "$rootDir/dbux-code" && npm install
 cd "$rootDir/samples" && npm install
 
 # for dir in $rootDir/dbux-*
