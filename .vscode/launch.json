@@ -156,6 +156,25 @@
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
+		},
+		{
+			"name": "Extension:Run",
+			"type": "extensionHost",
+			"request": "launch",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceFolder}/dbux-vscode-extension"
+			]
+		},
+		{
+			"name": "Extension:Tests",
+			"type": "extensionHost",
+			"request": "launch",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceFolder}/dbux-vscode-extension",
+				"--extensionTestsPath=${workspaceFolder}/dbux-vscode-extension/test/suite/index"
+			]
 		}
 	]
 }
