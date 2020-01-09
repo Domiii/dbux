@@ -116,7 +116,7 @@ export class ExecutionEventCollection {
       parentContextId,
       stackDepth
     } = context;
-    const staticContext = staticContextCollection.getContext(staticContextId);
+    const staticContext = staticContextCollection.getById(staticContextId);
 
     const {
       displayName, 

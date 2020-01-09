@@ -59,6 +59,7 @@ export class ExecutionContextCollection {
       ExecutionContextType.ExecuteCallback, stackDepth, contextId,
       staticContextId, orderId, parentContextId, scheduledContextId);
     this._push(context);
+    return context;
   }
 
   await(stackDepth, programId, inProgramStaticId, parentContextId) {
@@ -102,6 +103,7 @@ export class ExecutionContextCollection {
     const context = ExecutionContext.allocate(
       type, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId);
     this._push(context);
+    return context;
   }
 
   // ###########################################################################

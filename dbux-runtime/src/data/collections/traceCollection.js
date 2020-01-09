@@ -13,11 +13,11 @@ class Trace {
 class TraceCollection {
   _traces = [null];
 
-  recordTrace(contextId, staticTraceId) {
+  recordTrace(contextId, inProgramStaticTraceId) {
     const trace = Trace.allocate();
     trace.traceId = this._traces.length;
     trace.contextId = contextId;
-    trace.staticTraceId = staticTraceId;
+    trace._staticTraceId = inProgramStaticTraceId;
 
     this._traces.push(trace);
 
@@ -26,11 +26,11 @@ class TraceCollection {
     return trace;
   }
 
-  recordTraceWithValue(contextId, staticTraceId, value) {
+  recordTraceWithValue(contextId, inProgramStaticTraceId, value) {
     const trace = Trace.allocate();
     trace.traceId = this._traces.length;
     trace.contextId = contextId;
-    trace.staticTraceId = staticTraceId;
+    trace._staticTraceId = inProgramStaticTraceId;
     trace.value = value;
     trace.v = true;
 
@@ -48,16 +48,17 @@ function wrap(v, output) {
 }
 
 function _prettyPrint(trace) {
-  const { contextId, staticTraceId, v, value } = trace;
-  const context = executionContextCollection.getContext(contextId);
+  const { contextId, _staticTraceId, v, value } = trace;
+  const context = executionContextCollection.getById(contextId);
   const {
-    programId,
     staticContextId,
     stackDepth
   } = context;
 
-  const staticProgramContext = staticProgramContextCollection.byId(programId);
-  const staticContext = staticContextCollection.getContext(programId, staticContextId);
+  const staticContext = staticContextCollection.getById(staticContextId);
+  const { programId } = staticContext;
+
+  const staticProgramContext = staticProgramContextCollection.getById(programId);
 
   const {
     fileName
@@ -65,7 +66,8 @@ function _prettyPrint(trace) {
   // const {
   // } = staticContext;
 
-  const staticTrace = staticTraceCollection.getTrace(programId, staticTraceId);
+  // const staticTrace = staticTraceCollection.getById(staticTraceId);
+  const staticTrace = staticTraceCollection.getTrace(programId, _staticTraceId);
   const {
     displayName,
     capturesValue
@@ -74,7 +76,7 @@ function _prettyPrint(trace) {
   const {
     loc
   } = staticTrace;
-  
+
   const where = v ? loc.end : loc.start;
   const codeLocation = `@${fileName}:${where.line}:${where.column}`;
 

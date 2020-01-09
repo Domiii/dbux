@@ -20,12 +20,13 @@ class StaticTraceCollection {
     this._staticTracesByProgram[programId] = list;
 
     for (let i = 1; i < list.length; ++i) {
-      if (list[i].traceId !== i) {
-        logInternalError(programId, 'Invalid traceId !== its own index:', list[i].traceId, '!==', i);
+      if (list[i]._traceId !== i) {
+        logInternalError(programId, 'Invalid traceId !== its own index:', list[i]._traceId, '!==', i);
       }
 
-      // global id over all programs
       list[i].id = this._all.length;
+      // global id over all programs
+      list[i].traceId = this._all.length;
       this._all.push(list[i]);
     }
   }
