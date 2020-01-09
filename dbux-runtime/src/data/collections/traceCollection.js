@@ -56,15 +56,14 @@ function _prettyPrint(trace) {
     stackDepth
   } = context;
 
-  const staticProgramContext = staticProgramContextCollection.getProgramContext(programId);
+  const staticProgramContext = staticProgramContextCollection.byId(programId);
   const staticContext = staticContextCollection.getContext(programId, staticContextId);
 
   const {
     fileName
   } = staticProgramContext;
-  const {
-    loc
-  } = staticContext;
+  // const {
+  // } = staticContext;
 
   const staticTrace = staticTraceCollection.getTrace(programId, staticTraceId);
   const {
@@ -72,15 +71,18 @@ function _prettyPrint(trace) {
     capturesValue
   } = staticTrace;
   const depthIndicator = ` `.repeat(stackDepth + 1);
+  const {
+    loc
+  } = staticTrace;
   
   const where = v ? loc.end : loc.start;
-  const codeLocation = `@${fileName}:${where.line}:${where.col}`;
+  const codeLocation = `@${fileName}:${where.line}:${where.column}`;
 
   // if (capturesValue && !v) {
   //   console.group(displayName);
   // }
   // else {
-  console.log(`${contextId} ${depthIndicator}${displayName}`, wrap(v, ' ('), wrap(v, value), wrap(v, ') [DBUX]'));
+  console.log(`${contextId} ${depthIndicator}${displayName}`, wrap(v, ' ('), wrap(v, value), wrap(v, ')'), ` ${codeLocation} [DBUX]`);
   // }
   // if (capturesValue && v) {
   //   console.groupEnd();

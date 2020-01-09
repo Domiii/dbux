@@ -52,7 +52,7 @@ module.exports = (projectRoot) => ({
     //host: '0.0.0.0',
     // host:
     hot: true,
-    port: 3110,
+    port: 3030,
     // publicPath: outputFolder,
     writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
     filename: outFile,

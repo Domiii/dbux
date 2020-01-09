@@ -8,21 +8,21 @@ export class StaticProgramContextCollection {
   /**
    * @type {StaticProgramContext[]}
    */
-  _contexts = [null];
+  _all = [null];
 
   addProgram(programData) {
-    const programId = this._contexts.length;
+    const programId = this._all.length;
     const { fileName, filePath } = programData;
     const staticProgramContext = new StaticProgramContext(programId, {
       fileName,
       filePath
     });
-    this._contexts.push(staticProgramContext);
+    this._all.push(staticProgramContext);
     return staticProgramContext;
   }
 
-  getProgramContext(programId) {
-    return this._contexts[programId];
+  getById(programId) {
+    return this._all[programId];
   }
 }
 

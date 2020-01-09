@@ -1,16 +1,8 @@
 import Enum from 'dbux-common/src/util/Enum';
+import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 import ExecutionContext from './ExecutionContext';
 import staticContextCollection from './staticContextCollection';
 
-let _instance;
-
-export const ExecutionContextType = new Enum({
-  Immediate: 1,
-  ScheduleCallback: 2,
-  ExecuteCallback: 3,
-  Interrupt: 4,
-  Resume: 5
-});
 
 export const ExecutionContextUpdateType = new Enum({
   Push: 1
@@ -25,49 +17,33 @@ export class ExecutionContextCollection {
     return this._contexts[contextId];
   }
 
+  getById(contextId) {
+    return this._contexts[contextId];
+  }
+
 
   getStaticContext(contextId) {
     const context = this.getContext(contextId);
     const {
-      programId,
       staticContextId
     } = context;
-    return staticContextCollection.getContext(programId, staticContextId);
-  }
-
-  _genOrderId(programId, staticContextId) {
-    const programOrderIds = this._lastOrderIds[programId] || (this._lastOrderIds[programId] = []);
-    const orderId = programOrderIds[staticContextId] || (programOrderIds[staticContextId] = 1);
-    ++programOrderIds[staticContextId];
-    return orderId;
+    return staticContextCollection.getById(staticContextId);
   }
 
   /**
    * @return {ExecutionContext}
    */
-  executeImmediate(stackDepth, programId, staticContextId, parentContextId) {
-    const orderId = this._genOrderId(programId, staticContextId);
-    const contextId = this._contexts.length;
-
-    const context = ExecutionContext.allocate(
-      ExecutionContextType.Immediate, stackDepth, contextId, programId,
-      staticContextId, orderId, parentContextId);
-    this._push(context);
-    return context;
+  executeImmediate(stackDepth, programId, inProgramStaticId, parentContextId) {
+    return this._create(ExecutionContextType.Immediate,
+      stackDepth, programId, inProgramStaticId, parentContextId);
   }
 
   /**
    * @return {ExecutionContext}
    */
-  scheduleCallback(stackDepth, programId, staticContextId, parentContextId, lastPoppedContextId, schedulerId) {
-    const orderId = this._genOrderId(programId, staticContextId);
-    const contextId = this._contexts.length;
-
-    const context = ExecutionContext.allocate(
-      ExecutionContextType.ScheduleCallback, stackDepth, contextId, programId,
-      staticContextId, orderId, parentContextId, schedulerId);
-    this._push(context);
-    return context;
+  scheduleCallback(stackDepth, programId, inProgramStaticId, parentContextId, lastPoppedContextId, schedulerId) {
+    return this._create(ExecutionContextType.ScheduleCallback,
+      stackDepth, programId, inProgramStaticId, parentContextId, schedulerId);
   }
 
   /**
@@ -75,26 +51,19 @@ export class ExecutionContextCollection {
    */
   executeCallback(stackDepth, scheduledContextId, parentContextId) {
     const schedulerContext = this.getContext(scheduledContextId);
-    const { programId, staticContextId } = schedulerContext;
-    const orderId = this._genOrderId(programId, staticContextId);
+    const { staticContextId } = schedulerContext;
+    const orderId = this._genOrderId(staticContextId);
     const contextId = this._contexts.length;
 
     const context = ExecutionContext.allocate(
-      ExecutionContextType.ExecuteCallback, stackDepth, contextId, programId,
+      ExecutionContextType.ExecuteCallback, stackDepth, contextId,
       staticContextId, orderId, parentContextId, scheduledContextId);
     this._push(context);
-    return context;
   }
 
-  await(stackDepth, programId, staticContextId, parentContextId) {
-    const orderId = this._genOrderId(programId, staticContextId);
-    const contextId = this._contexts.length;
-
-    const context = ExecutionContext.allocate(
-      ExecutionContextType.Await, stackDepth, contextId, programId,
-      staticContextId, orderId, parentContextId);
-    this._push(context);
-    return context;
+  await(stackDepth, programId, inProgramStaticId, parentContextId) {
+    return this._create(ExecutionContextType.Await,
+      stackDepth, programId, inProgramStaticId, parentContextId);
   }
 
   /**
@@ -104,20 +73,35 @@ export class ExecutionContextCollection {
    * (1) either when the function pops,
    * (2) or when another interrupt occurs.
    */
-  resume(parentContextId, staticContextId, schedulerId, stackDepth) {
+  resume(parentContextId, inProgramStaticId, schedulerId, stackDepth) {
     const parentContext = this.getContext(parentContextId);
-    const { programId } = parentContext;
-    const orderId = this._genOrderId(programId, staticContextId);
-    const contextId = this._contexts.length;
+    const { staticContextId: parenStaticContextId } = parentContext;
+    const { programId } = staticContextCollection.getById(parenStaticContextId);
+    const context = this._create(ExecutionContextType.Resume,
+      stackDepth, programId, inProgramStaticId, parentContextId, schedulerId);
 
-    const context = ExecutionContext.allocate(
-      ExecutionContextType.Resume, stackDepth, contextId, programId,
-      staticContextId, orderId, parentContextId, schedulerId);
-
-    this._push(context);
+    const { contextId } = context;
     this._addResumedChild(parentContextId, contextId);
 
     return context;
+  }
+
+  // ###########################################################################
+  // privat methods
+  // ###########################################################################
+
+  _genOrderId(staticId) {
+    return this._lastOrderIds[staticId] = (this._lastOrderIds[staticId] || 0) + 1;
+  }
+
+  _create(type, stackDepth, programId, inProgramStaticId, parentContextId, schedulerId = null) {
+    const { staticId: staticContextId } = staticContextCollection.getContext(programId, inProgramStaticId);
+    const orderId = this._genOrderId(staticContextId);
+    const contextId = this._contexts.length;
+
+    const context = ExecutionContext.allocate(
+      type, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId);
+    this._push(context);
   }
 
   // ###########################################################################
@@ -153,12 +137,6 @@ export class ExecutionContextCollection {
     // TODO: batch and then send to remote
   }
 
-
-  // getTextId(contextId) {
-  //   const context = this.getContext(contextId);
-  //   const { contextType, programId, staticContextId, orderId, schedulerId} = context;
-  //   return `${this._staticContextId}${schedulerId ? `_${schedulerId}` : ''}_${orderId}`;
-  // }
 }
 
 const executionContextCollection = new ExecutionContextCollection();

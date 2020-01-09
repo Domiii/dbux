@@ -31,8 +31,8 @@ export default class ProgramMonitor {
     return this._programContextId;
   }
 
-  pushImmediate(staticContextId, isInterruptable) {
-    return RuntimeMonitor.instance.pushImmediate(this.getProgramId(), staticContextId, isInterruptable);
+  pushImmediate(inProgramStaticId, isInterruptable) {
+    return RuntimeMonitor.instance.pushImmediate(this.getProgramId(), inProgramStaticId, isInterruptable);
   }
 
   popImmediate(contextId) {
@@ -40,12 +40,12 @@ export default class ProgramMonitor {
   }
 
 
-  scheduleCallback(staticContextId, schedulerId, cb) {
-    return RuntimeMonitor.instance.scheduleCallback(this.getProgramId(), staticContextId, schedulerId, cb);
+  scheduleCallback(inProgramStaticId, schedulerId, cb) {
+    return RuntimeMonitor.instance.scheduleCallback(this.getProgramId(), inProgramStaticId, schedulerId, cb);
   }
 
-  preAwait(staticContextId) {
-    return RuntimeMonitor.instance.preAwait(this.getProgramId(), staticContextId);
+  preAwait(inProgramStaticId) {
+    return RuntimeMonitor.instance.preAwait(this.getProgramId(), inProgramStaticId);
   }
 
   wrapAwait(awaitContextId, awaitValue) {
