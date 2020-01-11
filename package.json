@@ -8,7 +8,8 @@
 		"setup": "sh scripts/dbux-setup.sh",
 		"install-p1": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
 		"g-p1": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
-		"start-p1": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start"
+		"start-p1": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
+		"build-dbux-code": "cd ./dbux-code && npm start"
 	},
 	"dependencies": {
 		"express": "file:projects/express"

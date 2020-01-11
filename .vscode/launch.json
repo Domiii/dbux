@@ -158,14 +158,15 @@
 			"internalConsoleOptions": "neverOpen",
 		},
 		{
-			"name": "Launch Extension",
+			"name": "dbux-code",
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
 			"args": ["--extensionDevelopmentPath=${workspaceRoot}/dbux-code"],
 			"stopOnEntry": false,
 			"sourceMaps": true,
-			"outFiles": ["${workspaceRoot}/dbux-code/dist/**/*.js"]
+			"outFiles": ["${workspaceRoot}/dbux-code/dist/*.js"],
+			// "preLaunchTask": "npm: build-dbux-code"
 		},
 		{
 			"name": "Extension:Tests",

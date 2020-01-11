@@ -14,8 +14,8 @@ const webpackPlugins = [];
 const projectRoot = __dirname;
 
 module.exports = {
-  //watch: true,
   // https://github.com/webpack/webpack/issues/2145
+  mode: process.env.MODE || 'development',
   devtool: 'inline-module-source-map',
   // devtool: 'source-map',
   //devtool: 'inline-source-map',
