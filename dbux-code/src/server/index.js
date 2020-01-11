@@ -8,7 +8,6 @@ function onConnect(socket) {
   log('connect ' + socket.id);
 
   // handle events here
-  
 
   socket.on('disconnect', () => log('disconnect ' + socket.id));
 }
