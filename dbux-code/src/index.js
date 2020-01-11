@@ -1,61 +1,52 @@
 'use strict'
 
-const vscode = require('vscode');
-const { EventNodeProvider } = require('./treeData.js')
-
-// import * as vscode from 'vscode';
-// import { EventNodeProvider } from './treeData.js';
+import * as vscode from 'vscode';
+import { EventNodeProvider } from './treeData.js';
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
 
-	console.log('Congratulations, your extension "dbux_extension" is now active!');
+	console.log('Extension "dbux-code" activated!');
 
     const eventLogProvider = new EventNodeProvider([]);
     vscode.window.registerTreeDataProvider('dbuxEvents', eventLogProvider);
     vscode.commands.registerCommand('dbuxEvents.refreshEntry', () => eventLogProvider.refresh());
-    vscode.commands.registerCommand('dbuxEvents.addEntry', () => vscode.window.showInformationMessage(`Successfully called add entry.`));
-    vscode.commands.registerCommand('dbuxEvents.editEntry', (node) => console.log("Clicked on editEntry", node));
-    vscode.commands.registerCommand('dbuxEvents.deleteEntry', (node) => vscode.window.showInformationMessage(`Successfully called delete entry on ${node.label}.`));
+    vscode.commands.registerCommand('dbuxEvents.addEntry', () => vscode.window.showInformationMessage(`Clicked on add entry.`));
+    vscode.commands.registerCommand('dbuxEvents.editEntry', (node) => console.log(`Clicked on editEntry with node = ${node.label}`));
+    vscode.commands.registerCommand('dbuxEvents.deleteEntry', (node) => vscode.window.showInformationMessage(`Clicked on delete entry with node = ${node.label}.`));
+	console.log('Finish regist commands')
 
 	// dbux server
-	var app = require('http').createServer(handler);
-	var io = require('socket.io')(app);
+	// var app = require('http').createServer(handler);
+	// var io = require('socket.io')(app);
 
-	function handler(req, res){
-		res.end()
-	}
+	// function handler(req, res){
+	// 	res.end()
+	// }
 
-	app.listen(80);
+	// app.listen(80);
 
-	io.on('connection', function (socket) {
-		vscode.window.showInformationMessage(`Your program sucessfully connected to dbux extension.`);
-		socket.on('setTreeData', function (data) {
-			eventLogProvider.data = data
-		});
-	});
-	
-	let nextJumpLineTarget = 0;
+	// io.on('connection', function (socket) {
+	// 	vscode.window.showInformationMessage(`Your program sucessfully connected to dbux extension.`);
+	// 	socket.on('setTreeData', function (data) {
+	// 		eventLogProvider.data = data
+	// 	});
+	// });
 
-	function jumpToLine (){
-		let editor = vscode.window.activeTextEditor;
-		let range = editor.document.lineAt(nextJumpLineTarget).range;
+	function jumpToLine (lineNum = 0){
+		const editor = vscode.window.activeTextEditor;
+		const range = editor.document.lineAt(lineNum).range;
 		editor.selection =  new vscode.Selection(range.start, range.start);
+		new vscode.Selection()
 		editor.revealRange(range);
-		io.emit('jumpButtonClicked', {})
+		// io.emit('jumpButtonClicked', {})
 		// vscode.commands.executeCommand('cursorMove', { to: 'wrappedLineStart', value: position })
 	}
 
 	registCommand('dbuxExtension.dbux_jump', jumpToLine);
 
-	function funcWithParam(msg = "meow", ...args){
-		vscode.window.showInformationMessage(msg)
-		console.log(args)
-	}
-
-	registCommand('dbuxExtension.showMsg', funcWithParam)
 	// registCommand('extension.helloPusheen', () => vscode.window.showInformationMessage("Meow meow"))	
 
 	// function setJumpButtonInStatusBar (fileURI, position){
@@ -82,20 +73,19 @@ function activate(context) {
 			}
 		}
 
-		let newCommand = vscode.commands.registerCommand(commandID, _errWrap(f));
+		const newCommand = vscode.commands.registerCommand(commandID, _errWrap(f));
 		context.subscriptions.push(newCommand);
 
 		return newCommand
 	}
 }
-exports.activate = activate;
 
 // this method is called when your extension is deactivated
 function deactivate() {
 	vscode.window.showInformationMessage('Extension down');
 }
 
-module.exports = {
+export {
 	activate,
 	deactivate
 }

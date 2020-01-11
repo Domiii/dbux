@@ -1,38 +1,39 @@
+/* eslint-disable class-methods-use-this */
 'use strict'
 
-const vscode = require('vscode');
-const path = require('path');
-
-// import * as vscode from 'vscode';
-// import * as path from 'path';
-
-console.log(`Running treeData.js with __dirname ${__dirname}`)
+import * as vscode from 'vscode';
+import * as path from 'path';
 
 export class EventNodeProvider {
 
-    constructor(data) {
-        this.data = data;
-        this.treeData = this.parseData(data)
+    constructor(contextData) {
+        this.contextData = contextData;
+        this.treeData = this.parseData(contextData)
         this._onDidChangeTreeData = new vscode.EventEmitter();
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
     }
 
     parseData(arrData){
+        console.log('In parseData func')
         const collapsibleState = vscode.TreeItemCollapsibleState
-        let children = [
+        const children = [
             new Event('Push meow()', 'index.js', collapsibleState.None, 'dbuxExtension.showMsg', []),
             new Event('Pop meow()', 'index.js', collapsibleState.None, 'dbuxExtension.showMsg', []),
         ]
-        let rootEvent = new Event("Push index.js", "index.js", collapsibleState.Expanded, 'dbuxExtension.showMsg', children)
+        console.log('Finished constructing children')
+        const rootEvent = new Event("Push index.js", "index.js", collapsibleState.Expanded, 'dbuxExtension.showMsg', children)
+        console.log('Finished construction rootEvent')
         return [rootEvent]
     }
     refresh() { 
         this._onDidChangeTreeData.fire();
     }
     getTreeItem(element) {
+        console.log('Called getTreeItem.');
         return element;
     }
     getChildren(element) {
+        console.log('Called getChildren');
         if (element){
             return Promise.resolve(element.children)
         }

@@ -11,12 +11,28 @@
 	],
 	"activationEvents": [
 		"onView:dbuxEvents",
-		"onLanguage:javascript",
-		"onCommand:sample.reveal"
+		"onLanguage:javascript"
 	],
 	"__main": "./src/index.js",
 	"main": "./dist/bundle.js",
 	"contributes": {
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "dbux-event-logger",
+					"title": "dbux Event Logger",
+					"icon": "media/dep.svg"
+				}
+			]
+		},
+		"views": {
+			"dbux-event-logger": [
+				{
+					"id": "dbuxEvents",
+					"name": "dbux events"
+				}
+			]
+		},
 		"commands": [
 			{
 				"command": "dbuxEvents.refreshEntry",
@@ -53,36 +69,10 @@
 			{
 				"command": "dbuxExtension.dbux_jump",
 				"title": "dbuxJump"
-			},
-			{
-				"command": "dbuxExtension.showMsg",
-				"title": "dbuxShowMsg"
 			}
-		],
-		"viewsContainers": {
-			"activitybar": [
-			  {
-				"id": "dbux-event-logger",
-				"title": "dbux Event Logger",
-				"icon": "media/dep.svg"
-			  }
-			]
-		},
-		"views": {
-			"dbux-event-logger": [
-				{
-					"id": "dbuxEvents",
-					"name": "dbux events"
-				}
-			]
-		}
+		]
 	},
 	"menus": {
-		"commandPalette": [
-			{
-				"command": "ftpExplorer.revealResource"
-			}
-		],
 		"view/title": [
 			{
 				"command": "dbuxEvents.refreshEntry",
