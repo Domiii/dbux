@@ -57,10 +57,6 @@
 			{
 				"command": "dbuxEvents.deleteEntry",
 				"title": "Delete"
-			},
-			{
-				"command": "dbuxExtension.dbux_jump",
-				"title": "dbuxJump"
 			}
 		],
 		"menus": {
