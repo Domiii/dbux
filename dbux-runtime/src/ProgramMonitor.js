@@ -31,8 +31,8 @@ export default class ProgramMonitor {
     return this._programContextId;
   }
 
-  pushImmediate(staticContextId, isInterruptable) {
-    return RuntimeMonitor.instance.pushImmediate(this.getProgramId(), staticContextId, isInterruptable);
+  pushImmediate(inProgramStaticId, isInterruptable) {
+    return RuntimeMonitor.instance.pushImmediate(this.getProgramId(), inProgramStaticId, isInterruptable);
   }
 
   popImmediate(contextId) {
@@ -40,12 +40,12 @@ export default class ProgramMonitor {
   }
 
 
-  scheduleCallback(staticContextId, schedulerId, cb) {
-    return RuntimeMonitor.instance.scheduleCallback(this.getProgramId(), staticContextId, schedulerId, cb);
+  scheduleCallback(inProgramStaticId, schedulerId, cb) {
+    return RuntimeMonitor.instance.scheduleCallback(this.getProgramId(), inProgramStaticId, schedulerId, cb);
   }
 
-  preAwait(staticContextId) {
-    return RuntimeMonitor.instance.preAwait(this.getProgramId(), staticContextId);
+  preAwait(inProgramStaticId) {
+    return RuntimeMonitor.instance.preAwait(this.getProgramId(), inProgramStaticId);
   }
 
   wrapAwait(awaitContextId, awaitValue) {
@@ -77,15 +77,15 @@ export default class ProgramMonitor {
   /**
    * `t` is short for `trace` (we have a lot of these, so we want to keep the name short)
    */
-  t(traceId, value) {
-    return RuntimeMonitor.instance.trace(traceId, value);
+  t(inProgramStaticTraceId, value) {
+    return RuntimeMonitor.instance.trace(inProgramStaticTraceId, value);
   }
 
   /**
    * `tv` is short for `traceAndCaptureValue` (we have a lot of these, so we want to keep the name short)
    */
-  tv(traceId, value) {
-    return RuntimeMonitor.instance.traceAndCaptureValue(traceId, value);
+  tv(inProgramStaticTraceId, value) {
+    return RuntimeMonitor.instance.traceAndCaptureValue(inProgramStaticTraceId, value);
   }
 
 }

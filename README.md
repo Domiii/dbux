@@ -121,7 +121,9 @@ npx serve
 
 # VSCode: custom keybindings
 
-Terminal has no "clear" keybinding anymore, but its useful to have; here is how:
+## VSCode's Terminal has no "clear" keybinding anymore
+
+You can re-add it manually:
 
 1. CTRL+SHIFT+P -> "Open Keyboard Shortcuts (JSON)"
 1. add (for Windows):
@@ -132,3 +134,10 @@ Terminal has no "clear" keybinding anymore, but its useful to have; here is how:
    "when": "terminalFocus"
 },
 ```
+
+# Some problems that have been worked through
+
+* `Socket.IO` does not work anymore because it depends on a deprecated package
+   * see: https://github.com/socketio/engine.io/issues/575
+   * see: https://github.com/socketio/socket.io/issues/3342
+   * see: https://github.com/mmdevries/uws

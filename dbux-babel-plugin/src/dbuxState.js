@@ -145,8 +145,8 @@ export default function injectDbuxState(programPath, programState) {
       // console.log('actualParent',  toSourceString(actualParent.node));
       const { loc } = path.node;
       staticContexts.push({
-        staticId,
-        parent: parentStaticId,
+        _staticId: staticId,
+        _parentId: parentStaticId,
         loc,
         ...data
       });
@@ -181,8 +181,8 @@ export default function injectDbuxState(programPath, programState) {
       const { loc } = path.node;
       traces.push({
         displayName,
-        traceId,
-        parent: parentStaticId,
+        _traceId: traceId,
+        // _parentId: parentStaticId,
         capturesValue,
         loc
       });

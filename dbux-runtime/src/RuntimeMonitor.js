@@ -1,12 +1,13 @@
 import staticProgramContextCollection from './data/collections/staticProgramContextCollection';
 import ProgramMonitor from './ProgramMonitor';
 import { logInternalError } from './log/logger';
-import executionContextCollection, { ExecutionContextType } from './data/collections/executionContextCollection';
+import executionContextCollection from './data/collections/executionContextCollection';
 import executionEventCollection from './data/collections/executionEventCollection';
 import staticContextCollection from './data/collections/staticContextCollection';
 import Runtime from './Runtime';
 import traceCollection from './data/collections/traceCollection';
 import staticTraceCollection from './data/collections/staticTraceCollection';
+import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 
 /**
  * 
@@ -58,13 +59,13 @@ export default class RuntimeMonitor {
   /**
    * Very similar to `pushCallback`
    */
-  pushImmediate(programId, staticContextId) {
+  pushImmediate(programId, inProgramStaticId) {
     this._runtime.beforePush(null);
 
     const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
     const context = executionContextCollection.executeImmediate(
-      stackDepth, programId, staticContextId, parentContextId
+      stackDepth, programId, inProgramStaticId, parentContextId
     );
     const { contextId } = context;
     this._runtime.push(contextId);
@@ -106,14 +107,14 @@ export default class RuntimeMonitor {
   /**
    * Push a new context for a scheduled callback for later execution.
    */
-  scheduleCallback(programId, staticContextId, schedulerId, cb) {
+  scheduleCallback(programId, inProgramStaticId, schedulerId, cb) {
     // this._runtime.beforePush(schedulerId);
 
     const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
 
     const scheduledContext = executionContextCollection.scheduleCallback(stackDepth,
-      programId, staticContextId, parentContextId, schedulerId);
+      programId, inProgramStaticId, parentContextId, schedulerId);
     const { contextId: scheduledContextId } = scheduledContext;
     const wrapper = this.makeCallbackWrapper(scheduledContextId, cb);
 
@@ -188,7 +189,7 @@ export default class RuntimeMonitor {
   // Interrupts, await et al
   // ###########################################################################
 
-  preAwait(programId, staticContextId) {
+  preAwait(programId, inProgramStaticId) {
     // pop resume context
     this.popResume();
 
@@ -197,7 +198,7 @@ export default class RuntimeMonitor {
     const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
     const context = executionContextCollection.await(
-      stackDepth, programId, staticContextId, parentContextId
+      stackDepth, programId, inProgramStaticId, parentContextId
     );
     const { contextId: awaitContextId } = context;
     this._runtime.push(awaitContextId);
@@ -232,8 +233,8 @@ export default class RuntimeMonitor {
     this._pop(awaitContextId);
 
     // resume: insert new [Resume] context and add as resumedChild
-    const { programId, staticContextId } = context;
-    const staticContext = staticContextCollection.getContext(programId, staticContextId);
+    const { programId, inProgramStaticId } = context;
+    const staticContext = staticContextCollection.getContext(programId, inProgramStaticId);
     const { resumeId: resumeStaticContextId } = staticContext;
     this.pushResume(resumeStaticContextId, awaitContextId);
 

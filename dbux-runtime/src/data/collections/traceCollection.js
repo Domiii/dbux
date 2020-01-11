@@ -13,11 +13,11 @@ class Trace {
 class TraceCollection {
   _traces = [null];
 
-  recordTrace(contextId, staticTraceId) {
+  recordTrace(contextId, inProgramStaticTraceId) {
     const trace = Trace.allocate();
     trace.traceId = this._traces.length;
     trace.contextId = contextId;
-    trace.staticTraceId = staticTraceId;
+    trace._staticTraceId = inProgramStaticTraceId;
 
     this._traces.push(trace);
 
@@ -26,11 +26,11 @@ class TraceCollection {
     return trace;
   }
 
-  recordTraceWithValue(contextId, staticTraceId, value) {
+  recordTraceWithValue(contextId, inProgramStaticTraceId, value) {
     const trace = Trace.allocate();
     trace.traceId = this._traces.length;
     trace.contextId = contextId;
-    trace.staticTraceId = staticTraceId;
+    trace._staticTraceId = inProgramStaticTraceId;
     trace.value = value;
     trace.v = true;
 
@@ -48,39 +48,43 @@ function wrap(v, output) {
 }
 
 function _prettyPrint(trace) {
-  const { contextId, staticTraceId, v, value } = trace;
-  const context = executionContextCollection.getContext(contextId);
+  const { contextId, _staticTraceId, v, value } = trace;
+  const context = executionContextCollection.getById(contextId);
   const {
-    programId,
     staticContextId,
     stackDepth
   } = context;
 
-  const staticProgramContext = staticProgramContextCollection.getProgramContext(programId);
-  const staticContext = staticContextCollection.getContext(programId, staticContextId);
+  const staticContext = staticContextCollection.getById(staticContextId);
+  const { programId } = staticContext;
+
+  const staticProgramContext = staticProgramContextCollection.getById(programId);
 
   const {
     fileName
   } = staticProgramContext;
-  const {
-    loc
-  } = staticContext;
+  // const {
+  // } = staticContext;
 
-  const staticTrace = staticTraceCollection.getTrace(programId, staticTraceId);
+  // const staticTrace = staticTraceCollection.getById(staticTraceId);
+  const staticTrace = staticTraceCollection.getTrace(programId, _staticTraceId);
   const {
     displayName,
     capturesValue
   } = staticTrace;
   const depthIndicator = ` `.repeat(stackDepth + 1);
-  
+  const {
+    loc
+  } = staticTrace;
+
   const where = v ? loc.end : loc.start;
-  const codeLocation = `@${fileName}:${where.line}:${where.col}`;
+  const codeLocation = `@${fileName}:${where.line}:${where.column}`;
 
   // if (capturesValue && !v) {
   //   console.group(displayName);
   // }
   // else {
-  console.log(`${contextId} ${depthIndicator}${displayName}`, wrap(v, ' ('), wrap(v, value), wrap(v, ') [DBUX]'));
+  console.log(`${contextId} ${depthIndicator}${displayName}`, wrap(v, ' ('), wrap(v, value), wrap(v, ')'), ` ${codeLocation} [DBUX]`);
   // }
   // if (capturesValue && v) {
   //   console.groupEnd();

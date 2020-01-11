@@ -11,7 +11,7 @@
 			"type": "chrome",
 			"request": "launch",
 			"trace": true,
-			"url": "http://localhost:3110",
+			"url": "http://localhost:3030",
 			"pathMapping": {
 				// "/samples/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/src/dbux/samples/",
 				"/bundle.js": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/dist/bundle.js",
@@ -158,7 +158,7 @@
 			"internalConsoleOptions": "neverOpen",
 		},
 		{
-			"name": "Launch Extension",
+			"name": "dbux-code",
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
@@ -166,6 +166,8 @@
 			"stopOnEntry": false,
 			"sourceMaps": true,
 			"trace": true,
+			// "outFiles": ["${workspaceRoot}/dbux-code/dist/*.js"],
+			// "preLaunchTask": "npm: build-dbux-code"
 			"outFiles": ["${workspaceRoot}/dbux-code/dist/**/*.js"]
 		},
 		{

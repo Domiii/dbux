@@ -1,7 +1,5 @@
 import { logInternalError } from '../../log/logger';
 
-let _instance;
-
 /**
  * Keeps track of `StaticTrace` objects that contain static code information
  */
@@ -9,26 +7,32 @@ class StaticTraceCollection {
   /**
    * @type {[]}
    */
-  _staticTraces = [null];
+  _staticTracesByProgram = [null];
+  _all = [null];
 
   addTraces(programId, list) {
     // make sure, array is pre-allocated
-    for (let i = this._staticTraces.length; i <= programId; ++i) {
-      this._staticTraces.push(null);
+    for (let i = this._staticTracesByProgram.length; i <= programId; ++i) {
+      this._staticTracesByProgram.push(null);
     }
 
     // store static traces
-    this._staticTraces[programId] = list;
+    this._staticTracesByProgram[programId] = list;
 
     for (let i = 1; i < list.length; ++i) {
-      if (list[i].traceId !== i) {
-        logInternalError(programId, 'Invalid traceId !== its own index:', list[i].traceId, '!==', i);
+      if (list[i]._traceId !== i) {
+        logInternalError(programId, 'Invalid traceId !== its own index:', list[i]._traceId, '!==', i);
       }
+
+      list[i].id = this._all.length;
+      // global id over all programs
+      list[i].traceId = this._all.length;
+      this._all.push(list[i]);
     }
   }
 
   getTraces(programId) {
-    return this._staticTraces[programId];
+    return this._staticTracesByProgram[programId];
   }
 
   getTrace(programId, staticId) {
@@ -38,6 +42,14 @@ class StaticTraceCollection {
       return null;
     }
     return traces[staticId];
+  }
+
+  getAllRaw() {
+    return this._all;
+  }
+
+  getById(id) {
+    return this._all[id];
   }
 }
 

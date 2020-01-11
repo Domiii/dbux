@@ -90,11 +90,12 @@
 	},
 	"scripts": {
 		"test": "node ./test/runTest.js",
-		"vscode:prepublish": "webpack --mode production",
-		"start": "webpack --mode development --watch",
-		"build-prod": "webpack --mode production",
-		"build-dev": "webpack --mode development",
-		"analyze": "webpack --mode development --json | npx webpack-bundle-size-analyzer"
+		"vscode:prepublish": "npx webpack --mode production",
+		"start": "npx webpack --mode development --watch",
+		"start-debug": "node --inspect-brk=9233 ./node_modules/webpack/bin/webpack --mode development --watch",
+		"build-prod": "npx webpack --mode production",
+		"build-dev": "npx webpack --mode development",
+		"analyze": "npx webpack --mode development --json | npx webpack-bundle-size-analyzer"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.7.7",
@@ -126,6 +127,7 @@
 	"dependencies": {
 		"socket.io": "^2.3.0",
 		"@babel/runtime": "^7.7.7",
-		"core-js": "^3.6.2"
+		"core-js": "^3.6.2",
+		"uws": "github:mmdevries/uws#2.4.0"
 	}
 }

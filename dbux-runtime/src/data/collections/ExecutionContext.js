@@ -1,3 +1,5 @@
+import staticContextCollection from './staticContextCollection';
+
 // TODO: the following code won't work with webpack since webpack runs in node, gathering all dependencies; would need more configuration parameters
 // let _performance;
 // if (typeof performance !== 'undefined') {
@@ -13,18 +15,17 @@ export default class ExecutionContext {
   /**
    * @return {ExecutionContext}
    */
-  static allocate(contextType, stackDepth, contextId, programId, staticContextId, orderId, parentContextId, schedulerId) {
+  static allocate(contextType, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId) {
     // TODO: use object pooling
     const context = new ExecutionContext();
-    context._init(contextType, stackDepth, contextId, programId, staticContextId, orderId, parentContextId, schedulerId);
+    context._init(contextType, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId);
     return context;
   }
 
-  _init(contextType, stackDepth, contextId, programId, staticContextId, orderId, parentContextId, schedulerId) {
+  _init(contextType, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId) {
     this.contextType = contextType;
     this.stackDepth = stackDepth;
     this.contextId = contextId;
-    this.programId = programId;
     this.staticContextId = staticContextId;
     this.orderId = orderId;
     // this.createdAt = _performance.now();

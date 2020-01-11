@@ -14,10 +14,10 @@ const webpackPlugins = [];
 const projectRoot = __dirname;
 
 module.exports = {
-  //watch: true,
   // https://github.com/webpack/webpack/issues/2145
-  devtool: 'inline-module-source-map',
-  // devtool: 'source-map',
+  mode: process.env.MODE || 'development',
+  // devtool: 'inline-module-source-map',
+  devtool: 'source-map',
   //devtool: 'inline-source-map',
   target: 'node',
   plugins: webpackPlugins,
@@ -28,6 +28,7 @@ module.exports = {
     filename: outFile,
     publicPath: outputFolderName,
     libraryTarget: "commonjs2",
+    devtoolModuleFilenameTemplate: "../[resource-path]",
     // sourceMapFilename: outFile + ".map"
   },
   resolve: {

@@ -1,4 +1,8 @@
-'use strict'
+// The module 'vscode' contains the VS Code extensibility API
+// Import the module and reference it with the alias vscode in your code below
+import { initCommands } from './commands/index';
+import { initCodeControl } from './codeControl/index';
+import { initServer } from './server/index';
 
 import * as vscode from 'vscode';
 import { EventNodeProvider } from './treeData.js';
@@ -7,8 +11,9 @@ import { EventNodeProvider } from './treeData.js';
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-
-	console.log('Extension "dbux-code" activated!');
+  initCommands(context);
+  initCodeControl(context);
+  initServer(context);
 
     const eventLogProvider = new EventNodeProvider([]);
     vscode.window.registerTreeDataProvider('dbuxEvents', eventLogProvider);

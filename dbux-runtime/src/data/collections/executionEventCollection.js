@@ -1,4 +1,4 @@
-import ExecutionEventType, { isPushEvent, isPopEvent } from '../ExecutionEventType';
+import ExecutionEventType, { isPushEvent, isPopEvent } from 'dbux-common/src/core/constants/ExecutionEventType';
 import ExecutionEvent from './ExecutionEvent';
 import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
@@ -112,21 +112,22 @@ export class ExecutionEventCollection {
     const context = executionContextCollection.getContext(contextId);
     
     const {
-      programId,
       staticContextId,
       parentContextId,
-      stackDepth,
-      other
+      stackDepth
     } = context;
-    const staticProgramContext = staticProgramContextCollection.getProgramContext(programId);
-    const staticContext = staticContextCollection.getContext(programId, staticContextId);
+    const staticContext = staticContextCollection.getById(staticContextId);
 
     const {
-      displayName
+      displayName, 
+      programId
     } = staticContext;
+    const staticProgramContext = staticProgramContextCollection.getById(programId);
+
     const {
       fileName
     } = staticProgramContext;
+
     const line = where?.line;
     const lineSuffix = line ? `:${line}` : '';
     const codeLocation = `@${fileName}${lineSuffix}`;
@@ -146,8 +147,8 @@ export class ExecutionEventCollection {
     if (isPushEvent(eventType)) {
       // console.group(contextId);
     }
-    console.debug('%c' + message, 'color: lightgray');
-    // console.debug(message);
+    // console.debug('%c' + message, 'color: lightgray');
+    console.debug(message);
     if (isPopEvent(eventType)){
       // console.groupEnd();
     }
