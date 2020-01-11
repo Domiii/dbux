@@ -166,8 +166,9 @@
 			"stopOnEntry": false,
 			"sourceMaps": true,
 			"trace": true,
-			"outFiles": ["${workspaceRoot}/dbux-code/dist/*.js"],
+			// "outFiles": ["${workspaceRoot}/dbux-code/dist/*.js"],
 			// "preLaunchTask": "npm: build-dbux-code"
+			"outFiles": ["${workspaceRoot}/dbux-code/dist/**/*.js"]
 		},
 		{
 			"name": "Extension:Tests",

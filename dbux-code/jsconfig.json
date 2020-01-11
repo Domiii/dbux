@@ -1,9 +1,9 @@
 {
 	"compilerOptions": {
-		"module": "esnext",
-		"target": "esnext",
+		"module": "commonjs",
+		"target": "es6",
 		"checkJs": false,  /* Typecheck .js files. */
-			"lib": [
+		"lib": [
 			"es6"
 		]
 	},
