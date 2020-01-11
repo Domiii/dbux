@@ -165,6 +165,7 @@
 			"args": ["--extensionDevelopmentPath=${workspaceRoot}/dbux-code"],
 			"stopOnEntry": false,
 			"sourceMaps": true,
+			"trace": true,
 			"outFiles": ["${workspaceRoot}/dbux-code/dist/*.js"],
 			// "preLaunchTask": "npm: build-dbux-code"
 		},
