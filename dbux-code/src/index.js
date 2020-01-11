@@ -14,7 +14,7 @@ function activate(context) {
     vscode.window.registerTreeDataProvider('dbuxEvents', eventLogProvider);
     vscode.commands.registerCommand('dbuxEvents.refreshEntry', () => eventLogProvider.refresh());
     vscode.commands.registerCommand('dbuxEvents.addEntry', () => vscode.window.showInformationMessage(`Clicked on add entry.`));
-    vscode.commands.registerCommand('dbuxEvents.editEntry', (node) => console.log(`Clicked on editEntry with node = ${node.label}`));
+    vscode.commands.registerCommand('dbuxEvents.gotoEntry', (node) => jumpToLine(node.position.line));
     vscode.commands.registerCommand('dbuxEvents.deleteEntry', (node) => vscode.window.showInformationMessage(`Clicked on delete entry with node = ${node.label}.`));
 	console.log('Finish regist commands')
 
@@ -36,10 +36,10 @@ function activate(context) {
 	// });
 
 	function jumpToLine (lineNum = 0){
+		console.log(`Called jumpToLine(lineNum = ${lineNum})`)
 		const editor = vscode.window.activeTextEditor;
 		const range = editor.document.lineAt(lineNum).range;
 		editor.selection =  new vscode.Selection(range.start, range.start);
-		new vscode.Selection()
 		editor.revealRange(range);
 		// io.emit('jumpButtonClicked', {})
 		// vscode.commands.executeCommand('cursorMove', { to: 'wrappedLineStart', value: position })

@@ -17,11 +17,11 @@ export class EventNodeProvider {
         console.log('In parseData func')
         const collapsibleState = vscode.TreeItemCollapsibleState
         const children = [
-            new Event('Push meow()', 'index.js', collapsibleState.None, 'dbuxExtension.showMsg', []),
-            new Event('Pop meow()', 'index.js', collapsibleState.None, 'dbuxExtension.showMsg', []),
+            new Event('Push meow()', { 'fileName': 'index.js', 'line': 10 }, collapsibleState.None, 'dbuxExtension.showMsg', []),
+            new Event('Pop meow()', { 'fileName': 'index.js', 'line': 20 }, collapsibleState.None, 'dbuxExtension.showMsg', []),
         ]
         console.log('Finished constructing children')
-        const rootEvent = new Event("Push index.js", "index.js", collapsibleState.Expanded, 'dbuxExtension.showMsg', children)
+        const rootEvent = new Event("Push index.js", { 'fileName': 'index.js', 'line': 2 }, collapsibleState.Expanded, 'dbuxExtension.showMsg', children)
         console.log('Finished construction rootEvent')
         return [rootEvent]
     }
