@@ -4,6 +4,7 @@ const dbuxRoot = path.resolve(__dirname + '/../..');
 const folders = ['dbux-common', 'dbux-babel-plugin'];
 
 const foldersAbsolute = folders.map(f => path.join(dbuxRoot, f));
+console.warn(foldersAbsolute);
 let folderPrefix = path.join(dbuxRoot, `(${folders.map(f => `(${f})`).join('|')})`);
 
 // fix: backslashes on windows
@@ -24,7 +25,7 @@ const babelRegisterOptions = {
       fpath = fpath.toLowerCase();
 
       const shouldIgnore = !fpath.match(folderPrefix);
-      // console.warn(fpath, !shouldIgnore, folderPrefix);
+      console.warn(fpath, !shouldIgnore, folderPrefix);
       return shouldIgnore;
     }
   ],
