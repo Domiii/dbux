@@ -3,12 +3,13 @@ const path = require('path');
 const dbuxRoot = path.resolve(__dirname + '/../..');
 const folders = ['dbux-common', 'dbux-babel-plugin'];
 
-const foldersAbsolute = folders.map(f => path.join(dbuxRoot, f));
-console.warn(foldersAbsolute);
+let babelrcRoots = folders.map(f => path.join(dbuxRoot, f));
 let folderPrefix = path.join(dbuxRoot, `(${folders.map(f => `(${f})`).join('|')})`);
 
 // fix: backslashes on windows
 folderPrefix = folderPrefix.replace(/\\/g, '\\\\');
+babelrcRoots = babelrcRoots.map(root => root.replace(/\\/g, '\\\\'));
+// console.warn(babelrcRoots);
 
 // fix: sometimes drive letters on windows are capitalized, sometimes not
 folderPrefix = folderPrefix.toLowerCase();
@@ -25,10 +26,11 @@ const babelRegisterOptions = {
       fpath = fpath.toLowerCase();
 
       const shouldIgnore = !fpath.match(folderPrefix);
-      console.warn(fpath, !shouldIgnore, folderPrefix);
+      // console.warn(fpath, !shouldIgnore, folderPrefix);
       return shouldIgnore;
     }
   ],
+  babelrc: true,
   sourceMaps: "both",
   retainLines: true,
   // plugins: [
@@ -45,7 +47,7 @@ const babelRegisterOptions = {
   //     "corejs": 3
   //   }
   // ]],
-  babelrcRoots: foldersAbsolute
+  babelrcRoots
 };
 const babelRegister = require('@babel/register');
 babelRegister(babelRegisterOptions);

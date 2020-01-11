@@ -9,8 +9,8 @@ export const ExecutionContextUpdateType = new Enum({
 });
 
 export class ExecutionContextCollection {
-  _lastContextId = -1;
   _contexts = [null];
+  _lastContextId = -1;
   _lastOrderIds = [];
 
   getContext(contextId) {
@@ -29,6 +29,8 @@ export class ExecutionContextCollection {
     } = context;
     return staticContextCollection.getById(staticContextId);
   }
+
+  // Write operations
 
   /**
    * @return {ExecutionContext}

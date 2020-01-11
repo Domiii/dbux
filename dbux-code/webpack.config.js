@@ -11,7 +11,11 @@ const outFile = 'bundle.js';
 
 const webpackPlugins = [];
 
-const projectRoot = __dirname;
+const projectRoot = path.resolve(__dirname);
+
+const dbuxRoot = path.resolve(__dirname + '/../../..');
+const dbuxFolders = ["dbux-common", "dbux-data"];
+const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(dbuxRoot,f)));
 
 module.exports = {
   // https://github.com/webpack/webpack/issues/2145
@@ -38,8 +42,7 @@ module.exports = {
       path.resolve(projectRoot + '/src'),
       path.resolve(projectRoot + '/node_modules'),
 
-      // path.join(dbuxRoot, "dbux-common"),
-      // path.join(dbuxRoot, "dbux-runtime")
+      ...dbuxRoots
     ]
   },
   module: {
@@ -50,19 +53,13 @@ module.exports = {
           path.join(projectRoot, 'src')
         ]
       },
-      // {
-      //   loader: 'babel-loader',
-      //   include: [
-      //     path.join(dbuxRoot, "dbux-common/src"),
-      //     path.join(dbuxRoot, "dbux-runtime/src")
-      //   ],
-      //   options: {
-      //     babelrcRoots: [
-      //       path.join(dbuxRoot, "dbux-common"),
-      //       path.join(dbuxRoot, "dbux-runtime")
-      //     ]
-      //   }
-      // }
+      {
+        loader: 'babel-loader',
+        include: dbuxRoots.map(r => path.join(r, 'src')),
+        options: {
+          dbuxRoots
+        }
+      }
     ],
   },
   externals: {

@@ -12,6 +12,10 @@ const dbuxPlugin = path.resolve(path.join(dbuxRoot, '/dbux-babel-plugin/src/babe
 require(dbuxPlugin);
 
 
+const dbuxFolders = ["dbux-runtime", "dbux-common", "dbux-data"];
+const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(dbuxRoot,f)));
+
+
 const babelOptions = {
   sourceMaps: "both",
   retainLines: true,
@@ -74,8 +78,7 @@ module.exports = (projectRoot) => ({
       path.resolve(projectRoot + '/node_modules'),
 
       // see: https://github.com/webpack/webpack/issues/8824#issuecomment-475995296
-      path.join(dbuxRoot, "dbux-common"),
-      path.join(dbuxRoot, "dbux-runtime")
+      ...dbuxRoots
     ]
   },
   module: {
@@ -89,15 +92,9 @@ module.exports = (projectRoot) => ({
       },
       {
         loader: 'babel-loader',
-        include: [
-          path.join(dbuxRoot, "dbux-common/src"),
-          path.join(dbuxRoot, "dbux-runtime/src")
-        ],
+        include: dbuxRoots.map(r => path.join(r, 'src')),
         options: {
-          babelrcRoots: [
-            path.join(dbuxRoot, "dbux-common"),
-            path.join(dbuxRoot, "dbux-runtime")
-          ]
+          dbuxRoots
         }
       }
     ],

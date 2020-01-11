@@ -1,7 +1,7 @@
 const path = require('path');
 
 const dbuxRoot = path.resolve(__dirname + '/../..');
-const folders = ['dbux-common', 'dbux-runtime'];
+const folders = ['dbux-common', 'dbux-data', 'dbux-runtime'];
 
 const foldersAbsolute = folders.map(f => path.join(dbuxRoot, f));
 console.warn(foldersAbsolute);

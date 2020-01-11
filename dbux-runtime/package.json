@@ -61,7 +61,8 @@
   "dependencies": {
     "@babel/runtime": "^7.7.5",
     "core-js": "^3.4.7",
-    "dbux-common": "file:../dbux-common"
+    "dbux-common": "file:../dbux-common",
+    "dbux-data": "file:../dbux-data"
   },
   "_moduleAliases": {}
 }

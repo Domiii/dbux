@@ -2,11 +2,12 @@ import fsPath from 'path';
 import { getPresentableString } from './helpers/misc';
 
 function getFilePath(state) {
-  let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
-  const cwd = fsPath.normalize(state.cwd);
-  if (filename.startsWith(cwd)) {
-    filename = fsPath.relative(state.cwd, filename);
-  }
+  // let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
+  // const cwd = fsPath.normalize(state.cwd);
+  // if (filename.startsWith(cwd)) {
+  //   filename = fsPath.relative(state.cwd, filename);
+  // }
+  const filename = state.filename && fsPath.resolve(state.filename);
   return filename;
 }
 

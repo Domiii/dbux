@@ -109,7 +109,7 @@ export class ExecutionEventCollection {
     } = event;
 
     const typeName = ExecutionEventType.nameFrom(eventType);
-    const context = executionContextCollection.getContext(contextId);
+    const context = executionContextCollection.getById(contextId);
     
     const {
       staticContextId,
@@ -125,7 +125,8 @@ export class ExecutionEventCollection {
     const staticProgramContext = staticProgramContextCollection.getById(programId);
 
     const {
-      fileName
+      fileName,
+      // filePath
     } = staticProgramContext;
 
     const line = where?.line;
