@@ -13,7 +13,7 @@ class Trace {
 class TraceCollection {
   _traces = [null];
 
-  recordTrace(contextId, inProgramStaticTraceId) {
+  trace(contextId, inProgramStaticTraceId) {
     const trace = Trace.allocate();
     trace.traceId = this._traces.length;
     trace.contextId = contextId;
@@ -26,7 +26,7 @@ class TraceCollection {
     return trace;
   }
 
-  recordTraceWithValue(contextId, inProgramStaticTraceId, value) {
+  traceExpressionWithValue(contextId, inProgramStaticTraceId, value) {
     const trace = Trace.allocate();
     trace.traceId = this._traces.length;
     trace.contextId = contextId;

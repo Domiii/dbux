@@ -130,6 +130,7 @@
 		"@types/vscode": "^1.41.0",
 		"babel-loader": "^8.0.6",
 		"eslint": "^6.6.0",
+		"eslint-config-esnext": "^4.0.0",
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
 		"typescript": "^3.6.4",

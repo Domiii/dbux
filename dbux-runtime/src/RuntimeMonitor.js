@@ -71,7 +71,7 @@ export default class RuntimeMonitor {
     this._runtime.push(contextId);
 
     // log event
-    executionEventCollection.logPushImmediate(contextId);
+    executionEventCollection.tracePushImmediate(contextId);
 
     return contextId;
   }
@@ -91,7 +91,7 @@ export default class RuntimeMonitor {
     this._pop(contextId);
 
     // log event
-    executionEventCollection.logPopImmediate(contextId);
+    executionEventCollection.tracePopImmediate(contextId);
   }
 
   _pop(contextId) {
@@ -122,7 +122,7 @@ export default class RuntimeMonitor {
     this._runtime.scheduleCallback(scheduledContextId);
 
     // log event
-    executionEventCollection.logScheduleCallback(scheduledContextId);
+    executionEventCollection.traceScheduleCallback(scheduledContextId);
 
     return wrapper;
   }
@@ -159,13 +159,13 @@ export default class RuntimeMonitor {
     const context = executionContextCollection.executeCallback(
       stackDepth, scheduledContextId, parentContextId
     );
-    const { contextId: callbackContextId } = context;
-    this._runtime.push(callbackContextId);
+    const { contextId } = context;
+    this._runtime.push(contextId);
 
     // log event
-    executionEventCollection.logPushCallback(callbackContextId);
+    executionEventCollection.tracePushCallback(contextId);
 
-    return callbackContextId;
+    return contextId;
   }
 
   popCallback(callbackContextId) {
@@ -181,7 +181,7 @@ export default class RuntimeMonitor {
     this._pop(callbackContextId);
 
     // log event
-    executionEventCollection.logPopCallback(callbackContextId);
+    executionEventCollection.tracePopCallback(callbackContextId);
   }
 
 
@@ -205,7 +205,7 @@ export default class RuntimeMonitor {
     this._runtime.registerAwait(awaitContextId);  // let run-time now that this is gonna be "waiting"
 
     // log event
-    executionEventCollection.logAwait(awaitContextId);
+    executionEventCollection.traceAwait(awaitContextId);
 
     return awaitContextId;
   }
@@ -254,7 +254,7 @@ export default class RuntimeMonitor {
     );
 
     // log event
-    executionEventCollection.logResume(resumeContextId);
+    executionEventCollection.traceResume(resumeContextId);
   }
 
   popResume() {
@@ -280,12 +280,12 @@ export default class RuntimeMonitor {
 
   trace(traceId) {
     const contextId = this._runtime.peekCurrentContextId();
-    traceCollection.recordTrace(contextId, traceId);
+    traceCollection.trace(contextId, traceId);
   }
 
   traceAndCaptureValue(traceId, value) {
     const contextId = this._runtime.peekCurrentContextId();
-    traceCollection.recordTraceWithValue(contextId, traceId, value);
+    traceCollection.traceExpressionWithValue(contextId, traceId, value);
     return value;
   }
 }

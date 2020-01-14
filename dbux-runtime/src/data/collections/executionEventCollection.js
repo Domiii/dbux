@@ -15,18 +15,15 @@ export class ExecutionEventCollection {
    */
   _events = [];
 
-  logPushImmediate(contextId) {
+  tracePushImmediate(contextId) {
     const event = ExecutionEvent.allocate();
     event.eventType = ExecutionEventType.PushImmediate;
     event.contextId = contextId;
 
-    const staticContext = executionContextCollection.getStaticContext(contextId);
-    event.where = staticContext.loc?.start;
-
-    this._log(event);
+    this._trace(event);
   }
 
-  logPopImmediate(contextId) {
+  tracePopImmediate(contextId) {
     const event = ExecutionEvent.allocate();
     event.eventType = ExecutionEventType.PopImmediate;
     event.contextId = contextId;
@@ -34,10 +31,10 @@ export class ExecutionEventCollection {
     const staticContext = executionContextCollection.getStaticContext(contextId);
     event.where = staticContext.loc?.end;
 
-    this._log(event);
+    this._trace(event);
   }
 
-  logScheduleCallback(scheduledContextId) {
+  traceScheduleCallback(scheduledContextId) {
     const event = ExecutionEvent.allocate();
     event.eventType = ExecutionEventType.ScheduleCallback;
     event.contextId = scheduledContextId;
@@ -45,10 +42,10 @@ export class ExecutionEventCollection {
     const staticContext = executionContextCollection.getStaticContext(scheduledContextId);
     event.where = staticContext.loc?.start;
 
-    this._log(event);
+    this._trace(event);
   }
 
-  logPushCallback(callbackContextId) {
+  tracePushCallback(callbackContextId) {
     const event = ExecutionEvent.allocate();
     event.eventType = ExecutionEventType.PushCallback;
     event.contextId = callbackContextId;
@@ -56,10 +53,10 @@ export class ExecutionEventCollection {
     const staticContext = executionContextCollection.getStaticContext(callbackContextId);
     event.where = staticContext.loc?.start;
 
-    this._log(event);
+    this._trace(event);
   }
 
-  logPopCallback(callbackContextId) {
+  tracePopCallback(callbackContextId) {
     const event = ExecutionEvent.allocate();
     event.eventType = ExecutionEventType.PopCallback;
     event.contextId = callbackContextId;
@@ -67,10 +64,10 @@ export class ExecutionEventCollection {
     const staticContext = executionContextCollection.getStaticContext(callbackContextId);
     event.where = staticContext.loc?.end;
 
-    this._log(event);
+    this._trace(event);
   }
 
-  logAwait(contextId) {
+  traceAwait(contextId) {
     const event = ExecutionEvent.allocate();
     event.eventType = ExecutionEventType.Await;
     event.contextId = contextId;
@@ -79,10 +76,10 @@ export class ExecutionEventCollection {
       contextId);
     event.where = staticContext.loc?.start;
 
-    this._log(event);
+    this._trace(event);
   }
 
-  logResume(contextId) {
+  traceResume(contextId) {
     const event = ExecutionEvent.allocate();
     event.eventType = ExecutionEventType.Resume;
     event.contextId = contextId;
@@ -91,10 +88,10 @@ export class ExecutionEventCollection {
       contextId);
     event.where = staticContext.loc?.start;
 
-    this._log(event);
+    this._trace(event);
   }
 
-  _log(event) {
+  _trace(event) {
     this._events.push(event);
     // TODO: send event to server
     ExecutionEventCollection.prettyPrint(event);

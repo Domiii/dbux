@@ -1,5 +1,6 @@
 import fsPath from 'path';
 import { getPresentableString } from './helpers/misc';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 function getFilePath(state) {
   // let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
@@ -9,6 +10,34 @@ function getFilePath(state) {
   // }
   const filename = state.filename && fsPath.resolve(state.filename);
   return filename;
+}
+
+const traceCustomizationsByType = {
+  [TraceType.BlockStart]: (path, state, trace) => {
+    let { loc } = path.node;
+    loc = {
+      // for highlighting purposes, zero-length ranges are not the best choice
+      // instead, we ideally want to highlight something more meaningful (e.g. the "if" part of the "if" statement)
+      start: loc.start,
+      end: loc.start
+    };
+    return {
+      // _parentId: parentStaticId,
+      loc
+    };
+  }
+};
+
+function defaultTrace(path, state) {
+  // const parentStaticId = state.getClosestStaticId(path);
+  // console.log('actualParent',  toSourceString(actualParent.node));
+  const displayName = getPresentableString(path.toString(), 30);
+  const { loc } = path.node;
+  return {
+    displayName,
+    // _parentId: parentStaticId,
+    loc
+  };
 }
 
 /**
@@ -173,22 +202,25 @@ export default function injectDbuxState(programPath, programState) {
       return staticId;
     },
 
-    addTrace(path, capturesValue=false) {
+    /**
+     * Tracing a path in its entirety (usually means, the trace is recorded right before the given path).
+     */
+    addTrace(path, type) {
       // console.log('TRACE', '@', `${state.filename}:${line}`);
       const traceId = traces.length;
-      const parentStaticId = programState.getClosestStaticId(path);
-      // console.log('actualParent',  toSourceString(actualParent.node));
-      const displayName = getPresentableString(path.toString(), 30);
-      const { loc } = path.node;
-      traces.push({
-        displayName,
-        _traceId: traceId,
-        // _parentId: parentStaticId,
-        capturesValue,
-        loc
-      });
+      let trace;
+      if (traceCustomizationsByType[type]) {
+        trace = traceCustomizationsByType[type](path, dbuxState);
+      }
+      else {
+        trace = defaultTrace(path, dbuxState);
+      }
+      trace._traceId = traceId;
+      trace.type = type;
+
+      traces.push(trace);
       return traceId;
-    }
+    },
   };
   
   Object.assign(programState, dbuxState);

@@ -4,12 +4,13 @@ const dbuxRoot = path.resolve(__dirname + '/../..');
 const folders = ['dbux-common', 'dbux-babel-plugin'];
 
 let babelrcRoots = folders.map(f => path.join(dbuxRoot, f));
-let folderPrefix = path.join(dbuxRoot, `(${folders.map(f => `(${f})`).join('|')})`);
 
 // fix: backslashes on windows
-folderPrefix = folderPrefix.replace(/\\/g, '\\\\');
 babelrcRoots = babelrcRoots.map(root => root.replace(/\\/g, '\\\\'));
-// console.warn(babelrcRoots);
+
+let folderPrefix = path.join(dbuxRoot, `(${folders.map(f => `(${f})`).join('|')})`);
+folderPrefix = folderPrefix.replace(/\\/g, '\\\\');
+// console.warn('babelrcRoots', babelrcRoots);
 
 // fix: sometimes drive letters on windows are capitalized, sometimes not
 folderPrefix = folderPrefix.toLowerCase();
