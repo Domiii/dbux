@@ -1,7 +1,10 @@
 import Enum from '../../util/Enum';
 
+/**
+ * 
+ */
 const TraceType = new Enum({
-  ProgramStart: 1,
+  StartProgram: 1,
 
   PushImmediate: 2,
   PopImmediate: 3,
@@ -13,27 +16,26 @@ const TraceType = new Enum({
   Await: 7,
   Resume: 8,
 
-  // Assignment: 9,
-  BeforeExpression: 10,
-  ExpressionResult: 11,
-  Statement: 12,
-  BlockStart: 13
+  BeforeExpression: 9,
+  ExpressionResult: 10,
+  Statement: 11,
+  BlockStart: 12
 });
 
-const pushEvents = new Array(TraceType.getCount()).map(_ => false);
-pushEvents[TraceType.PushImmediate] = true;
-pushEvents[TraceType.PushCallback] = true;
+const pushTypes = new Array(TraceType.getCount()).map(_ => false);
+pushTypes[TraceType.PushImmediate] = true;
+pushTypes[TraceType.PushCallback] = true;
 
-const popEvents = new Array(TraceType.getCount()).map(_ => false);
-popEvents[TraceType.PopImmediate] = true;
-popEvents[TraceType.PopCallback] = true;
+const popTypes = new Array(TraceType.getCount()).map(_ => false);
+popTypes[TraceType.PopImmediate] = true;
+popTypes[TraceType.PopCallback] = true;
 
 export function isTracePush(traceType) {
-  return pushEvents[traceType];
+  return pushTypes[traceType];
 }
 
-export function isPopEvent(traceType) {
-  return popEvents[traceType];
+export function isTracePop(traceType) {
+  return popTypes[traceType];
 }
 
 export default TraceType;

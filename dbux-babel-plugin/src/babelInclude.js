@@ -4,11 +4,11 @@ const dbuxRoot = path.resolve(__dirname + '/../..');
 const folders = ['dbux-common', 'dbux-babel-plugin'];
 
 let babelrcRoots = folders.map(f => path.join(dbuxRoot, f));
-
 // fix: backslashes on windows
 babelrcRoots = babelrcRoots.map(root => root.replace(/\\/g, '\\\\'));
 
 let folderPrefix = path.join(dbuxRoot, `(${folders.map(f => `(${f})`).join('|')})`);
+// fix: backslashes on windows
 folderPrefix = folderPrefix.replace(/\\/g, '\\\\');
 // console.warn('babelrcRoots', babelrcRoots);
 
@@ -27,7 +27,7 @@ const babelRegisterOptions = {
       fpath = fpath.toLowerCase();
 
       const shouldIgnore = !fpath.match(folderPrefix);
-      // console.warn(fpath, !shouldIgnore, folderPrefix);
+      // console.warn('babelInclude', fpath, !shouldIgnore, folderPrefix);
       return shouldIgnore;
     }
   ],

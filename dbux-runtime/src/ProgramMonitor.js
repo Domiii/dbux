@@ -1,6 +1,14 @@
 import RuntimeMonitor from './RuntimeMonitor';
-import staticContextCollection from './data/collections/staticContextCollection';
 
+/**
+ * Comes from the order we execute things in programVisitor
+ */
+const ProgramStartTraceId = 1;
+
+/**
+ * Comes from the order we execute things in programVisitor
+ */
+const ProgramStopTraceId = 2;
 
 export default class ProgramMonitor {
   /**
@@ -14,7 +22,7 @@ export default class ProgramMonitor {
   constructor(staticProgramContext) {
     const staticId = 1;
     this._staticProgramContext = staticProgramContext;
-    this._programContextId = this.pushImmediate(staticId);
+    this._programContextId = this.pushImmediate(staticId, ProgramStartTraceId);
   }
 
   /**
@@ -31,21 +39,23 @@ export default class ProgramMonitor {
     return this._programContextId;
   }
 
-  pushImmediate(inProgramStaticId, isInterruptable) {
-    return RuntimeMonitor.instance.pushImmediate(this.getProgramId(), inProgramStaticId, isInterruptable);
+
+
+  pushImmediate(inProgramStaticId, traceId) {
+    return RuntimeMonitor.instance.pushImmediate(this.getProgramId(), inProgramStaticId, traceId);
   }
 
-  popImmediate(contextId) {
-    return RuntimeMonitor.instance.popImmediate(contextId);
+  popImmediate(contextId, traceId) {
+    return RuntimeMonitor.instance.popImmediate(contextId, traceId);
   }
 
 
-  scheduleCallback(inProgramStaticId, schedulerId, cb) {
-    return RuntimeMonitor.instance.scheduleCallback(this.getProgramId(), inProgramStaticId, schedulerId, cb);
+  scheduleCallback(inProgramStaticId, schedulerId, traceId, cb) {
+    return RuntimeMonitor.instance.scheduleCallback(this.getProgramId(), inProgramStaticId, schedulerId, traceId, cb);
   }
 
-  preAwait(inProgramStaticId) {
-    return RuntimeMonitor.instance.preAwait(this.getProgramId(), inProgramStaticId);
+  preAwait(inProgramStaticId, traceId) {
+    return RuntimeMonitor.instance.preAwait(this.getProgramId(), inProgramStaticId, traceId);
   }
 
   wrapAwait(awaitContextId, awaitValue) {
@@ -57,8 +67,8 @@ export default class ProgramMonitor {
     return RuntimeMonitor.instance.postAwait(awaitResult, awaitContextId);
   }
 
-  pushResume(resumeContextId, schedulerId) {
-    return RuntimeMonitor.instance.pushResume(resumeContextId, schedulerId);
+  pushResume(resumeContextId, traceId, schedulerId) {
+    return RuntimeMonitor.instance.pushResume(resumeContextId, traceId, schedulerId);
   }
 
   popResume() {
@@ -67,7 +77,7 @@ export default class ProgramMonitor {
 
   popProgram() {
     // finished initializing the program
-    return this.popImmediate(this._programContextId);
+    return this.popImmediate(this._programContextId, ProgramStopTraceId);
   }
 
   // ###########################################################################

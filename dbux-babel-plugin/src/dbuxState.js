@@ -12,23 +12,41 @@ function getFilePath(state) {
   return filename;
 }
 
+// ###########################################################################
+// trace stuff
+// ###########################################################################
+
 const traceCustomizationsByType = {
-  [TraceType.BlockStart]: (path, state, trace) => {
-    let { loc } = path.node;
-    loc = {
+  // [TraceType.StartProgram]: tracePathStart,
+  [TraceType.PushImmediate]: tracePathStart,
+  [TraceType.PopImmediate]: tracePathEnd,
+  [TraceType.BlockStart]: tracePathStart
+};
+
+function tracePathStart(path, state, trace) {
+  const { loc } = path.node;
+  return {
+    // _parentId: parentStaticId,
+    loc: {
       // for highlighting purposes, zero-length ranges are not the best choice
       // instead, we ideally want to highlight something more meaningful (e.g. the "if" part of the "if" statement)
       start: loc.start,
       end: loc.start
-    };
-    return {
-      // _parentId: parentStaticId,
-      loc
-    };
-  }
-};
+    }
+  };
+}
 
-function defaultTrace(path, state) {
+function tracePathEnd(path, state, trace) {
+  const { loc } = path.node;
+  return {
+    loc: {
+      start: loc.end,
+      end: loc.end
+    }
+  };
+}
+
+function traceDefault(path, state) {
   // const parentStaticId = state.getClosestStaticId(path);
   // console.log('actualParent',  toSourceString(actualParent.node));
   const displayName = getPresentableString(path.toString(), 30);
@@ -39,6 +57,10 @@ function defaultTrace(path, state) {
     loc
   };
 }
+
+// ###########################################################################
+// Build custom dbux state object
+// ###########################################################################
 
 /**
  * Build the state used by dbux-babel-plugin throughout the entire AST visit.
@@ -213,12 +235,13 @@ export default function injectDbuxState(programPath, programState) {
         trace = traceCustomizationsByType[type](path, dbuxState);
       }
       else {
-        trace = defaultTrace(path, dbuxState);
+        trace = traceDefault(path, dbuxState);
       }
+
       trace._traceId = traceId;
       trace.type = type;
-
       traces.push(trace);
+
       return traceId;
     },
   };

@@ -1,167 +1,106 @@
-import ExecutionEventType, { isPushEvent, isPopEvent } from 'dbux-common/src/core/constants/ExecutionEventType';
-import ExecutionEvent from './ExecutionEvent';
-import executionContextCollection from './executionContextCollection';
-import staticContextCollection from './staticContextCollection';
-import staticProgramContextCollection from './staticProgramContextCollection';
+// import ExecutionEventType, { isPushEvent, isPopEvent } from 'dbux-common/src/core/constants/ExecutionEventType';
+// import ExecutionEvent from './ExecutionEvent';
+// import executionContextCollection from './executionContextCollection';
+// import staticContextCollection from './staticContextCollection';
+// import staticProgramContextCollection from './staticProgramContextCollection';
 
 
-let timer = null;
+// let timer = null;
 
-export class ExecutionEventCollection {
+// export class ExecutionEventCollection {
 
-  /**
-   * @private
-   * @type {ExecutionEvent[]}
-   */
-  _events = [];
+//   /**
+//    * @private
+//    * @type {ExecutionEvent[]}
+//    */
+//   _events = [];
 
-  tracePushImmediate(contextId) {
-    const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.PushImmediate;
-    event.contextId = contextId;
+//   tracePushImmediate(contextId, traceId) {
+//     const event = ExecutionEvent.allocate();
+//     event.eventType = ExecutionEventType.PushImmediate;
+//     event.contextId = contextId;
 
-    this._trace(event);
-  }
+//     this._trace(event);
+//   }
 
-  tracePopImmediate(contextId) {
-    const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.PopImmediate;
-    event.contextId = contextId;
+//   tracePopImmediate(contextId) {
+//     const event = ExecutionEvent.allocate();
+//     event.eventType = ExecutionEventType.PopImmediate;
+//     event.contextId = contextId;
 
-    const staticContext = executionContextCollection.getStaticContext(contextId);
-    event.where = staticContext.loc?.end;
+//     const staticContext = executionContextCollection.getStaticContext(contextId);
+//     event.where = staticContext.loc?.end;
 
-    this._trace(event);
-  }
+//     this._trace(event);
+//   }
 
-  traceScheduleCallback(scheduledContextId) {
-    const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.ScheduleCallback;
-    event.contextId = scheduledContextId;
+//   traceScheduleCallback(scheduledContextId) {
+//     const event = ExecutionEvent.allocate();
+//     event.eventType = ExecutionEventType.ScheduleCallback;
+//     event.contextId = scheduledContextId;
 
-    const staticContext = executionContextCollection.getStaticContext(scheduledContextId);
-    event.where = staticContext.loc?.start;
+//     const staticContext = executionContextCollection.getStaticContext(scheduledContextId);
+//     event.where = staticContext.loc?.start;
 
-    this._trace(event);
-  }
+//     this._trace(event);
+//   }
 
-  tracePushCallback(callbackContextId) {
-    const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.PushCallback;
-    event.contextId = callbackContextId;
+//   tracePushCallback(callbackContextId) {
+//     const event = ExecutionEvent.allocate();
+//     event.eventType = ExecutionEventType.PushCallback;
+//     event.contextId = callbackContextId;
 
-    const staticContext = executionContextCollection.getStaticContext(callbackContextId);
-    event.where = staticContext.loc?.start;
+//     const staticContext = executionContextCollection.getStaticContext(callbackContextId);
+//     event.where = staticContext.loc?.start;
 
-    this._trace(event);
-  }
+//     this._trace(event);
+//   }
 
-  tracePopCallback(callbackContextId) {
-    const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.PopCallback;
-    event.contextId = callbackContextId;
+//   tracePopCallback(callbackContextId) {
+//     const event = ExecutionEvent.allocate();
+//     event.eventType = ExecutionEventType.PopCallback;
+//     event.contextId = callbackContextId;
 
-    const staticContext = executionContextCollection.getStaticContext(callbackContextId);
-    event.where = staticContext.loc?.end;
+//     const staticContext = executionContextCollection.getStaticContext(callbackContextId);
+//     event.where = staticContext.loc?.end;
 
-    this._trace(event);
-  }
+//     this._trace(event);
+//   }
 
-  traceAwait(contextId) {
-    const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.Await;
-    event.contextId = contextId;
+//   traceAwait(contextId) {
+//     const event = ExecutionEvent.allocate();
+//     event.eventType = ExecutionEventType.Await;
+//     event.contextId = contextId;
 
-    const staticContext = executionContextCollection.getStaticContext(
-      contextId);
-    event.where = staticContext.loc?.start;
+//     const staticContext = executionContextCollection.getStaticContext(
+//       contextId);
+//     event.where = staticContext.loc?.start;
 
-    this._trace(event);
-  }
+//     this._trace(event);
+//   }
 
-  traceResume(contextId) {
-    const event = ExecutionEvent.allocate();
-    event.eventType = ExecutionEventType.Resume;
-    event.contextId = contextId;
+//   traceResume(contextId) {
+//     const event = ExecutionEvent.allocate();
+//     event.eventType = ExecutionEventType.Resume;
+//     event.contextId = contextId;
 
-    const staticContext = executionContextCollection.getStaticContext(
-      contextId);
-    event.where = staticContext.loc?.start;
+//     const staticContext = executionContextCollection.getStaticContext(
+//       contextId);
+//     event.where = staticContext.loc?.start;
 
-    this._trace(event);
-  }
+//     this._trace(event);
+//   }
 
-  _trace(event) {
-    this._events.push(event);
-    // TODO: send event to server
-    ExecutionEventCollection.prettyPrint(event);
-  }
-
-
-  static prettyPrint(event) {
-    const {
-      eventType,
-      contextId,
-      where
-    } = event;
-
-    const typeName = ExecutionEventType.nameFrom(eventType);
-    const context = executionContextCollection.getById(contextId);
-    
-    const {
-      staticContextId,
-      parentContextId,
-      stackDepth
-    } = context;
-    const staticContext = staticContextCollection.getById(staticContextId);
-
-    const {
-      displayName, 
-      programId
-    } = staticContext;
-    const staticProgramContext = staticProgramContextCollection.getById(programId);
-
-    const {
-      fileName,
-      // filePath
-    } = staticProgramContext;
-
-    const line = where?.line;
-    const lineSuffix = line ? `:${line}` : '';
-    const codeLocation = `@${fileName}${lineSuffix}`;
-    // const depthIndicator = `(${parentContextId})`;
-    const depthIndicator = ` `.repeat(stackDepth);
-    // const depthIndicator = ''; // we are using `console.group` for this for now
-    let message = `${contextId} ${depthIndicator}${displayName} [${typeName}] ${codeLocation} (${parentContextId}) [DBUX]`;
+//   _trace(event) {
+//     this._events.push(event);
+//     // TODO: send event to server
+//     ExecutionEventCollection.prettyPrint(event);
+//   }
 
 
-    if (!timer) {
-      message = '       ---------------\n' + message;
-      // else if (isPopEvent(eventType)) {
-      //   message = message + '\n       ---------------';
-      // }
-    }
 
-    if (isPushEvent(eventType)) {
-      // console.group(contextId);
-    }
-    // console.debug('%c' + message, 'color: lightgray');
-    console.debug(message);
-    if (isPopEvent(eventType)){
-      // console.groupEnd();
-    }
+// }
 
-    // (pretty accurate) hackfix: simulate end of (partial) stack
-    if (!timer) {
-      timer = setImmediate(() => {
-        console.log('       ---------------\n');
-        timer = null;
-      });
-    }
-  }
+// const executionEventCollection = new ExecutionEventCollection();
 
-}
-
-const executionEventCollection = new ExecutionEventCollection();
-
-export default executionEventCollection;
+// export default executionEventCollection;

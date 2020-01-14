@@ -1,6 +1,7 @@
 import * as t from '@babel/types';
 import { getPresentableString } from '../helpers/misc';
 import { isKnownCallbackSchedulingCall } from '../helpers/callExpressionHelpers';
+import TraceType from '../../../dbux-common/src/core/constants/TraceType';
 
 
 // ###########################################################################
@@ -25,11 +26,19 @@ function buildWrapScheduleCallbackArg(argPath, state) {
   const { ids: { dbux }, getClosestContextIdName } = state;
   const staticId = addStaticContext(argPath, state);
   const schedulerIdName = getClosestContextIdName(argPath);
+  const traceId = state.addTrace(argPath, TraceType.ScheduleCallback);
   const cbArg = argPath.node;
+
+  const args = [
+    t.numericLiteral(staticId),
+    t.identifier(schedulerIdName),
+    t.numericLiteral(traceId),
+    cbArg
+  ];
   return t.expressionStatement(
     t.callExpression(
       t.memberExpression(t.identifier(dbux), t.identifier('scheduleCallback')),
-      [t.numericLiteral(staticId), t.identifier(schedulerIdName), cbArg]
+      args
     )
   );
 }
