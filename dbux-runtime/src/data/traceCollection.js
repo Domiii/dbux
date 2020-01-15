@@ -7,10 +7,10 @@ import { logInternalError } from 'dbux-common/src/log/logger';
 import { EmptyArray } from 'dbux-common/src/util/misc';
 import Collection from './Collection';
 
-
-function _inspect(...args) {
-  const f = typeof inspect !== 'undefined' ? inspect : require('util').inspect;
-  return f(...args);
+const inspectOptions = { depth: 0, colors: true };
+function _inspect(arg) {
+  const f = typeof window !== 'undefined' && window.inspect ? window.inspect : require('util').inspect;
+  return f(arg, inspectOptions);
 }
 
 class Trace {
@@ -119,7 +119,7 @@ function _prettyPrint(trace) {
   // }
   // else
   const v = type === TraceType.ExpressionResult;
-  const result = v ? ['(', _inspect(value), ')'] : EmptyArray;
+  const result = v ? ['(', value, ')'] : EmptyArray;
   console.log(
     `${contextId} ${depthIndicator}[${typeName}] ${displayName}`, 
     ...result, 

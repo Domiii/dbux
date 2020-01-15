@@ -13,7 +13,7 @@ require(dbuxPlugin);
 
 
 const dbuxFolders = ["dbux-runtime", "dbux-common", "dbux-data"];
-const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(dbuxRoot,f)));
+const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(dbuxRoot, f)));
 
 
 const babelOptions = {
@@ -40,65 +40,69 @@ const webpackPlugins = [];
 
 
 
-module.exports = (projectRoot) => ({
-  //watch: true,
-  mode: buildMode,
+module.exports = (projectRoot) => {
+  const allFolders = [projectRoot, ...dbuxRoots]
+    .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
+    .flat()
+    .map(f => path.resolve(f));
+    // console.log('webpack folders:', allFolders.join('\n'));
+  return {
+    //watch: true,
+    mode: buildMode,
 
-  // https://github.com/webpack/webpack/issues/2145
-  devtool: 'inline-module-source-map',
-  // devtool: 'source-map',
-  //devtool: 'inline-source-map',
-  devServer: {
-    contentBase: [
-      projectRoot
-    ],
-    quiet: false,
-    //host: '0.0.0.0',
-    // host:
-    hot: true,
-    port: 3030,
-    // publicPath: outputFolder,
-    writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
-    filename: outFile,
-  },
-  plugins: webpackPlugins,
-  context: path.join(projectRoot, '.'),
-  entry: projectRoot + '/src/app.js',
-  output: {
-    path: path.join(projectRoot, outputFolderName),
-    filename: outFile,
-    publicPath: outputFolderName,
-    // sourceMapFilename: outFile + ".map"
-  },
-  resolve: {
-    symlinks: true,
-    extensions: ['.js', '.jsx'],
-    modules: [
-      path.resolve(projectRoot + '/src'),
-      path.resolve(projectRoot + '/node_modules'),
-
-      // see: https://github.com/webpack/webpack/issues/8824#issuecomment-475995296
-      ...dbuxRoots
-    ]
-  },
-  module: {
-    rules: [
-      {
-        loader: 'babel-loader',
-        include: [
-          path.join(projectRoot, 'src')
-        ],
-        options: babelOptions
-      },
-      {
-        loader: 'babel-loader',
-        include: dbuxRoots.map(r => path.join(r, 'src')),
-        options: {
-          babelrcRoots: dbuxRoots
+    // https://github.com/webpack/webpack/issues/2145
+    devtool: 'inline-module-source-map',
+    // devtool: 'source-map',
+    //devtool: 'inline-source-map',
+    devServer: {
+      contentBase: [
+        projectRoot
+      ],
+      quiet: false,
+      //host: '0.0.0.0',
+      // host:
+      hot: true,
+      port: 3030,
+      // publicPath: outputFolder,
+      writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
+      filename: outFile,
+    },
+    plugins: webpackPlugins,
+    context: path.join(projectRoot, '.'),
+    entry: projectRoot + '/src/app.js',
+    output: {
+      path: path.join(projectRoot, outputFolderName),
+      filename: outFile,
+      publicPath: outputFolderName,
+      // sourceMapFilename: outFile + ".map"
+    },
+    resolve: {
+      symlinks: true,
+      // extensions: ['.js', '.jsx'],
+      modules: [
+        // see: https://github.com/webpack/webpack/issues/8824#issuecomment-475995296
+        ...allFolders
+      ]
+    },
+    module: {
+      rules: [
+        {
+          loader: 'babel-loader',
+          include: [
+            path.join(projectRoot, 'src')
+          ],
+          options: babelOptions
+        },
+        {
+          loader: 'babel-loader',
+          include: dbuxRoots.map(r => path.join(r, 'src')),
+          options: {
+            babelrcRoots: dbuxRoots
+          }
         }
-      }
-    ],
-  },
-});
+      ],
+    },
+  };
+};
 
-console.warn('webpack config loaded');
+// console.warn('webpack config loaded');

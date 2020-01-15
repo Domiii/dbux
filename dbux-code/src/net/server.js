@@ -1,6 +1,6 @@
 import http from 'http';
 // import * as SocketIO from ;
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger, logWarn } from 'dbux-common/src/log/logger';
 import { inspect } from 'util';
 import Client from './Client';
 
@@ -35,7 +35,7 @@ class Server {
 
     if (this._clients.length > 1) {
       // we don't currently handle more than one client at a time
-      logError(`cannot currently handle more than one client at the same time - ${inspect(this._clients.length)}`);
+      logWarn(`more than one client connected at the same time - but data is not properly organized by client - ${inspect(this._clients.length)}`);
     }
 
     // handle disconnects

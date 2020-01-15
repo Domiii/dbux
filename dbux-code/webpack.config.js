@@ -24,6 +24,11 @@ dbuxRoots.forEach(f => {
 });
 
 
+const allFolders = [projectRoot, ...dbuxRoots]
+  .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
+  .flat()
+  .map(f => path.resolve(f));
+
 module.exports = {
   // https://github.com/webpack/webpack/issues/2145
   mode: process.env.MODE || 'development',
@@ -46,10 +51,7 @@ module.exports = {
     symlinks: true,
     extensions: ['.js' ],
     modules: [
-      path.resolve(projectRoot + '/src'),
-      path.resolve(projectRoot + '/node_modules'),
-
-      ...dbuxRoots
+      ...allFolders
     ]
   },
   module: {

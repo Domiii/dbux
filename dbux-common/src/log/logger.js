@@ -1,3 +1,4 @@
+import { makePrettyLog } from '../util/prettyLogs';
 
 const errors = [];
 
@@ -27,8 +28,9 @@ export function loglog(ns, ...args) {
   console.log(`[${ns}]`, ...args);
 }
 
+const prettyDebug = makePrettyLog(console.debug, 'gray');
 export function logDebug(ns, ...args) {
-  console.debug(`[${ns}]`, ...args);
+  prettyDebug(`[${ns}]`, ...args);
 }
 
 export function logWarn(ns, ...args) {

@@ -25,7 +25,7 @@ export default class Client {
     // on reconnection, reset the transports option, as the Websocket
     // connection may have failed (caused by proxy, firewall, browser, ...)
     socket.on('reconnect_attempt', () => {
-      warn('reconnect');
+      warn('reconnecting...');
       socket.io.opts.transports = ['polling', 'websocket'];
     });
 
@@ -50,7 +50,7 @@ export default class Client {
   };
 
   _handleConnectFailed = () => {
-    debug('failed to connect (automatic reconnect enabled)')
+    debug('failed to connect')
   }
 
   _handleDisconnect = () => {
