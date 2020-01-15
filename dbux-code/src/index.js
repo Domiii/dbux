@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import { initCommands } from './commands/index';
 import { initCodeControl } from './codeControl/index';
-import { initServer } from './net/index';
+import { initServer } from './net/server';
 
 import * as vscode from 'vscode';
 import { EventNodeProvider } from './treeData.js';

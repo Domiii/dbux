@@ -1,14 +1,14 @@
 import StaticProgramContext from './StaticProgramContext';
+import Collection from './Collection';
 
 /**
  * Keeps track of `StaticProgramContext` objects that map file ids to path and code.
  * 
  */
-export class StaticProgramContextCollection {
-  /**
-   * @type {StaticProgramContext[]}
-   */
-  _all = [null];
+export class StaticProgramContextCollection extends Collection {
+  constructor() {
+    super('staticProgramContexts');
+  }
 
   addProgram(programData) {
     const programId = this._all.length;
@@ -17,12 +17,11 @@ export class StaticProgramContextCollection {
       fileName,
       filePath
     });
+    
     this._all.push(staticProgramContext);
-    return staticProgramContext;
-  }
+    this.send(staticProgramContext);
 
-  getById(programId) {
-    return this._all[programId];
+    return staticProgramContext;
   }
 }
 

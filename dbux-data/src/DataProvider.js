@@ -36,7 +36,7 @@ class TraceCollection extends Collection {
 
 export default class DataProvider {
   collections;
-  _dataEventListeners;
+  _dataEventListeners = {};
 
   constructor() {
     this.clear();
@@ -51,8 +51,6 @@ export default class DataProvider {
       executionContexts: new ExecutionContextCollection(this),
       traces: new TraceCollection(this)
     };
-
-    // this._dataEventListeners = [];
   }
 
   addData(allData) {
@@ -70,7 +68,7 @@ export default class DataProvider {
       }
 
       const data = allData[collectionName];
-      this.collection.add(data);
+      collection.add(data);
       this._notifyData(collectionName, data);
     }
   }

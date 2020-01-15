@@ -1,5 +1,5 @@
 import http from 'http';
-import * as SocketIO from 'socket.io';
+// import * as SocketIO from ;
 import { newLogger } from 'dbux-common/src/log/logger';
 import { inspect } from 'util';
 import Client from './Client';
@@ -17,9 +17,9 @@ class Server {
   _clientEventListeners = {};
 
   initServer() {
-    const io = SocketIO(httpServer, {
-      // const io = require('socket.io')(server, {
-      // serveClient: false,
+    // const io = SocketIO(httpServer, {
+    const io = require('socket.io')(httpServer, {
+      serveClient: false,
       // wsEngine: 'ws' // in case uws is not supported
     });
 
@@ -30,7 +30,7 @@ class Server {
    * New socket connected
    */
   _handleAccept = (socket) => {
-    const client = new Client(socket);
+    const client = new Client(this, socket);
     this._clients.push(client);
 
     if (this._clients.length > 1) {
@@ -39,9 +39,9 @@ class Server {
     }
 
     // handle disconnects
-    socket.on('disconnect', function () {
+    socket.on('disconnect', () => {
       client._handleDisconnect();
-      this.clients = this.clients.filter(c => c !== client);
+      this._clients = this._clients.filter(c => c !== client);
     });
 
     // attach event listeners
@@ -76,7 +76,7 @@ let server;
 
 export function initServer() {
   httpServer = http.createServer();
-  const port = process.env.PORT || DefaultPort;
+  const port = DefaultPort;
   httpServer.listen(port, () => {
     debug('server listening on port ' + port);
   });

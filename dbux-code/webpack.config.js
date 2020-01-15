@@ -1,11 +1,11 @@
 const path = require('path');
+const fs = require('fs');
 const process = require('process');
 process.env.BABEL_DISABLE_CACHE = 1;
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 
 const outputFolderName = 'dist';
-
 const outFile = 'bundle.js';
 
 
@@ -13,9 +13,16 @@ const webpackPlugins = [];
 
 const projectRoot = path.resolve(__dirname);
 
-const dbuxRoot = path.resolve(__dirname + '/../../..');
+const dbuxRoot = path.resolve(__dirname + '/..');
 const dbuxFolders = ["dbux-common", "dbux-data"];
 const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(dbuxRoot,f)));
+
+dbuxRoots.forEach(f => {
+  if (!fs.existsSync(f)) {
+    throw new Error('invalid dbuxFolder does not exist: ' + f);
+  }
+});
+
 
 module.exports = {
   // https://github.com/webpack/webpack/issues/2145

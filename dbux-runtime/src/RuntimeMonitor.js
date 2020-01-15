@@ -1,11 +1,11 @@
-import staticProgramContextCollection from './data/collections/staticProgramContextCollection';
+import staticProgramContextCollection from './data/staticProgramContextCollection';
 import ProgramMonitor from './ProgramMonitor';
 import { logInternalError } from 'dbux-common/src/log/logger';
-import executionContextCollection from './data/collections/executionContextCollection';
-import staticContextCollection from './data/collections/staticContextCollection';
+import executionContextCollection from './data/executionContextCollection';
+import staticContextCollection from './data/staticContextCollection';
 import Runtime from './Runtime';
-import traceCollection from './data/collections/traceCollection';
-import staticTraceCollection from './data/collections/staticTraceCollection';
+import traceCollection from './data/traceCollection';
+import staticTraceCollection from './data/staticTraceCollection';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 
@@ -79,7 +79,7 @@ export default class RuntimeMonitor {
 
   popImmediate(contextId, traceId) {
     // sanity checks
-    const context = executionContextCollection.getContext(contextId);
+    const context = executionContextCollection.getById(contextId);
     if (!context) {
       logInternalError('Tried to popImmediate, but context was not registered:', contextId);
       return;
@@ -167,7 +167,7 @@ export default class RuntimeMonitor {
 
   popCallback(callbackContextId, traceId) {
     // sanity checks
-    const context = executionContextCollection.getContext(callbackContextId);
+    const context = executionContextCollection.getById(callbackContextId);
     if (!context) {
       logInternalError('Tried to popCallback, but context was not registered:',
         callbackContextId);
@@ -217,7 +217,7 @@ export default class RuntimeMonitor {
    */
   postAwait(awaitResult, awaitContextId, resumeTraceId) {
     // sanity checks
-    const context = executionContextCollection.getContext(awaitContextId);
+    const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
       logInternalError('Tried to postAwait, but context was not registered:', awaitContextId);
       return;
@@ -258,7 +258,7 @@ export default class RuntimeMonitor {
     const resumeContextId = this._runtime.peekCurrentContextId();
 
     // sanity checks
-    const context = executionContextCollection.getContext(resumeContextId);
+    const context = executionContextCollection.getById(resumeContextId);
     if (!context) {
       logInternalError('Tried to popResume, but context was not registered:', resumeContextId);
       return;

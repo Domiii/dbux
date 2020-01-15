@@ -127,6 +127,10 @@ function enter(path, state) {
     buildAllTraceVisitors()
   );
 
+
+  // TODO: babel is unhappy with our DoWhileLoop visitor
+  delete allVisitors.DoWhileLoop;
+
   // traverse program before (most) other plugins
   try {
     path.traverse(

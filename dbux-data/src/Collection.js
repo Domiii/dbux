@@ -8,6 +8,10 @@ export default class Collection {
     this.dp = dp;
   }
 
+  add(entries) {
+    this._all.push(...entries);
+  }
+
   getAll() {
     return this._all;
   }

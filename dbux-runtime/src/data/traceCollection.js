@@ -5,7 +5,13 @@ import staticContextCollection from './staticContextCollection';
 import staticProgramContextCollection from './staticProgramContextCollection';
 import { logInternalError } from 'dbux-common/src/log/logger';
 import { EmptyArray } from 'dbux-common/src/util/misc';
+import Collection from './Collection';
 
+
+function _inspect(...args) {
+  const f = typeof inspect !== 'undefined' ? inspect : require('util').inspect;
+  return f(...args);
+}
 
 class Trace {
   static allocate() {
@@ -15,8 +21,10 @@ class Trace {
 }
 
 
-class TraceCollection {
-  _all = [null];
+class TraceCollection extends Collection {
+  constructor() {
+    super('traces');
+  }
 
   trace(contextId, inProgramStaticTraceId, type = null) {
     const trace = this._trace(contextId, inProgramStaticTraceId);
@@ -45,13 +53,19 @@ class TraceCollection {
     // trace._staticTraceId = inProgramStaticTraceId;
     const context = executionContextCollection.getById(contextId);
     const {
-      programId
+      staticContextId
     } = context;
+    const staticContext = staticContextCollection.getById(staticContextId);
+    const {
+      programId
+    } = staticContext;
     trace.staticTraceId = staticTraceCollection.getTraceId(programId, inProgramStaticTraceId);
 
     // generate new traceId and store
     trace.traceId = this._all.length;
+    
     this._all.push(trace);
+    this.send(trace);
 
     _prettyPrint(trace);
 

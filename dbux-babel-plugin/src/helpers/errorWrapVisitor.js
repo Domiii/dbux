@@ -11,6 +11,9 @@ function _errorWrap(visitor) {
     try {
       return visitor.apply(this, args);
     }
+    // finally {
+      
+    // }
     catch (err) {
       const [path, { file: { code } }] = args;
       const { node: { loc } } = path
@@ -30,9 +33,6 @@ export default function errorWrapVisitor(visitor) {
       actions[actionName] = _errorWrap(f);
     }
   }
-
-  // TODO: babel is unhappy with our DoWhileLoop visitor
-  delete visitor.DoWhileLoop;
 
   return visitor;
 }
