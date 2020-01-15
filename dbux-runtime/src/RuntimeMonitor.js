@@ -1,14 +1,13 @@
 import staticProgramContextCollection from './data/collections/staticProgramContextCollection';
 import ProgramMonitor from './ProgramMonitor';
-import { logInternalError } from './log/logger';
+import { logInternalError } from 'dbux-common/src/log/logger';
 import executionContextCollection from './data/collections/executionContextCollection';
-import executionEventCollection from './data/collections/executionEventCollection';
 import staticContextCollection from './data/collections/staticContextCollection';
 import Runtime from './Runtime';
 import traceCollection from './data/collections/traceCollection';
 import staticTraceCollection from './data/collections/staticTraceCollection';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
-import TraceType from '../../dbux-common/src/core/constants/TraceType';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 /**
  * 

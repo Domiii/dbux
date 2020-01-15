@@ -1,7 +1,8 @@
 # dbux README
 
 ## TODO
-* fix: trace's staticContextId is not enough to place it before or after push'es inside of the same context (consider getting rid of event!)
+* fix: trace `displayName` should not contain comments
+   * see: https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L156
 * fix: await0 sample doesn't run
 * fix babelrcroots in `babelInclude` - https://babeljs.io/docs/en/options#babelrcroots
    * -> https://github.com/babel/babel/blob/282f81bd676d09c1d8c48b08a7254b961eb41bed/packages/babel-core/src/config/config-chain.js#L256

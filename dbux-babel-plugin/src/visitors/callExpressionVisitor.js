@@ -1,7 +1,7 @@
 import * as t from '@babel/types';
 import { getPresentableString } from '../helpers/misc';
 import { isKnownCallbackSchedulingCall } from '../helpers/callExpressionHelpers';
-import TraceType from '../../../dbux-common/src/core/constants/TraceType';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 
 // ###########################################################################

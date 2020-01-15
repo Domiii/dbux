@@ -11,7 +11,7 @@ import awaitVisitor from './awaitVisitor';
 import { buildAllTraceVisitors } from './traceVisitors';
 import { mergeVisitors } from '../helpers/visitorHelpers';
 import { logInternalError } from '../log/logger';
-import TraceType from '../../../dbux-common/src/core/constants/TraceType';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 
 // ###########################################################################
@@ -130,7 +130,8 @@ function enter(path, state) {
   // traverse program before (most) other plugins
   try {
     path.traverse(
-      errorWrapVisitor(allVisitors),
+      // errorWrapVisitor(allVisitors),
+      allVisitors,
       state
     );
   }

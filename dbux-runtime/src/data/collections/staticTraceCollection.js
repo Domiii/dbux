@@ -1,4 +1,4 @@
-import { logInternalError } from '../../log/logger';
+import { logInternalError } from 'dbux-common/src/log/logger';
 
 /**
  * Keeps track of `StaticTrace` objects that contain static code information
@@ -26,7 +26,7 @@ class StaticTraceCollection {
 
       list[i].id = this._all.length;
       // global id over all programs
-      list[i].traceId = this._all.length;
+      list[i].staticTraceId = this._all.length;
       this._all.push(list[i]);
     }
   }
@@ -35,13 +35,18 @@ class StaticTraceCollection {
     return this._staticTracesByProgram[programId];
   }
 
-  getTrace(programId, staticId) {
+  getTrace(programId, inProgramStaticId) {
     const traces = this.getTraces(programId);
     if (!traces) {
       logInternalError("Invalid programId has no registered static traces:", programId);
       return null;
     }
-    return traces[staticId];
+    return traces[inProgramStaticId];
+  }
+
+  getTraceId(programId, inProgramStaticId) {
+    const staticTrace = this.getTrace(programId, inProgramStaticId);
+    return staticTrace.staticTraceId;
   }
 
   getAllRaw() {

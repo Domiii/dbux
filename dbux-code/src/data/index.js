@@ -1,4 +1,10 @@
-import DataProvider from "./DataProvider";
+import DataProvider from 'dbux-data/src/DataProvider';
 
-const defaultDataProvider = new DataProvider();
-export default defaultDataProvider;
+
+export function newDataProvider(dataSource) {
+  const dataProvider = new DataProvider();
+  dataSource.on('data', (source, data) => {
+    dataProvider.addData(data);
+  });
+  return dataProvider;
+}

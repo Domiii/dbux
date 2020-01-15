@@ -2,7 +2,7 @@ import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHe
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import template from '@babel/template';
 import * as t from "@babel/types";
-import TraceType from '../../../dbux-common/src/core/constants/TraceType';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 // ###########################################################################
 // helpers

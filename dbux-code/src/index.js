@@ -2,10 +2,11 @@
 // Import the module and reference it with the alias vscode in your code below
 import { initCommands } from './commands/index';
 import { initCodeControl } from './codeControl/index';
-import { initServer } from './server/index';
+import { initServer } from './net/index';
 
 import * as vscode from 'vscode';
 import { EventNodeProvider } from './treeData.js';
+import { newDataProvider } from './data/index';
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -13,7 +14,8 @@ import { EventNodeProvider } from './treeData.js';
 function activate(context) {
   initCommands(context);
   initCodeControl(context);
-  initServer(context);
+	const server = initServer(context);
+	const dataProvider = newDataProvider(server);
 
     const eventLogProvider = new EventNodeProvider([]);
     vscode.window.registerTreeDataProvider('dbuxEvents', eventLogProvider);

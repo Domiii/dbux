@@ -3,7 +3,8 @@ import staticTraceCollection from './staticTraceCollection';
 import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
 import staticProgramContextCollection from './staticProgramContextCollection';
-import { logInternalError } from '../../log/logger';
+import { logInternalError } from 'dbux-common/src/log/logger';
+import { EmptyArray } from 'dbux-common/src/util/misc';
 
 
 class Trace {
@@ -15,56 +16,55 @@ class Trace {
 
 
 class TraceCollection {
-  _traces = [null];
+  _all = [null];
 
   trace(contextId, inProgramStaticTraceId, type = null) {
-    if (!inProgramStaticTraceId) {
-      throw new Error('missing inProgramStaticTraceId');
-    }
-
-    const trace = Trace.allocate();
-    trace.traceId = this._traces.length;
-    trace.contextId = contextId;
+    const trace = this._trace(contextId, inProgramStaticTraceId);
     trace.type = type;
-    trace._staticTraceId = inProgramStaticTraceId;
-
-    this._traces.push(trace);
-
-    _prettyPrint(trace);
 
     return trace;
   }
 
   traceExpressionWithValue(contextId, inProgramStaticTraceId, value) {
-    if (!inProgramStaticTraceId) {
-      throw new Error('missing inProgramStaticTraceId');
-    }
-    
-    const trace = Trace.allocate();
-    trace.traceId = this._traces.length;
-    trace.contextId = contextId;
+    const trace = this._trace(contextId, inProgramStaticTraceId);
     trace.type = null; // available in static trace data
-    trace._staticTraceId = inProgramStaticTraceId;
     trace.value = value;
-
-    this._traces.push(trace);
-
-    _prettyPrint(trace);
 
     return trace;
   }
 
-}
+  _trace(contextId, inProgramStaticTraceId) {
+    if (!inProgramStaticTraceId) {
+      throw new Error('missing inProgramStaticTraceId');
+    }
 
-function wrapValueOnly(v, output) {
-  return v ? output : '';
+    const trace = Trace.allocate();
+    trace.contextId = contextId;
+
+    // look-up global trace id by in-program id
+    // trace._staticTraceId = inProgramStaticTraceId;
+    const context = executionContextCollection.getById(contextId);
+    const {
+      programId
+    } = context;
+    trace.staticTraceId = staticTraceCollection.getTraceId(programId, inProgramStaticTraceId);
+
+    // generate new traceId and store
+    trace.traceId = this._all.length;
+    this._all.push(trace);
+
+    _prettyPrint(trace);
+
+    return this.trace;
+  }
+
 }
 
 function _prettyPrint(trace) {
   const { 
     contextId, 
     type: dynamicType,
-    _staticTraceId, 
+    staticTraceId, 
     value 
   } = trace;
   const context = executionContextCollection.getById(contextId);
@@ -84,8 +84,7 @@ function _prettyPrint(trace) {
   // const {
   // } = staticContext;
 
-  // const staticTrace = staticTraceCollection.getById(staticTraceId);
-  const staticTrace = staticTraceCollection.getTrace(programId, _staticTraceId);
+  const staticTrace = staticTraceCollection.getById(staticTraceId);
   let {
     displayName,
     type: staticType,
@@ -94,7 +93,7 @@ function _prettyPrint(trace) {
 
   const type = dynamicType || staticType; // if `dynamicType` is given take that, else `staticType`
 
-  const depthIndicator = ` `.repeat(stackDepth + 1);
+  const depthIndicator = ` `.repeat(stackDepth * 2);
   const typeName = TraceType.nameFromForce(type);
   const where = loc.start;
   const codeLocation = `@${fileName}:${where.line}:${where.column}`;
@@ -106,7 +105,12 @@ function _prettyPrint(trace) {
   // }
   // else
   const v = type === TraceType.ExpressionResult;
-  console.log(`${contextId} ${depthIndicator}[${typeName}] ${displayName}`, wrapValueOnly(v, ' ('), wrapValueOnly(v, value), wrapValueOnly(v, ')'), ` ${codeLocation} [DBUX]`);
+  const result = v ? ['(', _inspect(value), ')'] : EmptyArray;
+  console.log(
+    `${contextId} ${depthIndicator}[${typeName}] ${displayName}`, 
+    ...result, 
+    ` ${codeLocation} [DBUX]`
+  );
   // }
   // if (capturesValue && v) {
   //   console.groupEnd();

@@ -1,4 +1,4 @@
-import { logInternalError } from '../../log/logger';
+import { logInternalError } from 'dbux-common/src/log/logger';
 
 export class StaticContextCollection {
   _staticContextsByProgram = [null];

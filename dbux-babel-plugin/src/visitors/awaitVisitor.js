@@ -1,7 +1,7 @@
 import template from "@babel/template";
 import * as t from "@babel/types";
 import { getPresentableString } from '../helpers/misc';
-import TraceType from '../../../dbux-common/src/core/constants/TraceType';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 // ###########################################################################
 // builders

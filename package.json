@@ -1,8 +1,8 @@
 {
 	"private": true,
 	"devDependencies": {
-		"eslint": "*",
-		"eslint-config-esnext": "*"
+		"eslint": "^6.8.0",
+		"eslint-config-esnext": "^4.0.0"
 	},
 	"scripts": {
 		"setup": "sh scripts/dbux-setup.sh",

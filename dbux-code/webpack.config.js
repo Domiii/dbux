@@ -57,7 +57,7 @@ module.exports = {
         loader: 'babel-loader',
         include: dbuxRoots.map(r => path.join(r, 'src')),
         options: {
-          dbuxRoots
+          babelrcRoots: dbuxRoots
         }
       }
     ],
