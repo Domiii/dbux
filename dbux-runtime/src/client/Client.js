@@ -75,9 +75,17 @@ export default class Client {
     this._sendQueue.sendAll(dataName, data);
   }
 
+  /**
+   * Send data to remote end.
+   * 
+   * NOTE: Uses engine.io's serialization engine.
+   * @see https://github.com/socketio/engine.io-parser/blob/master/lib/index.js#L55
+   */
   sendNow(data) {
-    if (this._socket) {
+    if (this.isConnected()) {
       this._socket.emit('data', data);
+      return true;
     }
+    return false;
   }
 }

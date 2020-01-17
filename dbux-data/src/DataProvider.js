@@ -1,7 +1,7 @@
 import { logInternalError, newLogger, logDebug } from 'dbux-common/src/log/logger';
 import Collection from './Collection';
 
-const { log, debug, warn, error: logError } = newLogger('DATA');
+const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
 class StaticProgramContextCollection extends Collection {
   constructor(dp) {
@@ -27,14 +27,31 @@ class ExecutionContextCollection extends Collection {
   }
 }
 
+/**
+ * The runtime `traceCollection` currently uses JSON for serializing (and copying) the value.
+ * Here we need to parse it back.
+ */
+function reconstructValue(value) {
+  return JSON.parse(value);
+}
+
 class TraceCollection extends Collection {
   constructor(dp) {
     super('traces', dp);
   }
+
+  add(entries) {
+    for (const entry of entries) {
+      if (entry.value !== null) {
+        entry.value = reconstructValue(entry.value);
+      }
+    }
+    super.add(entries);
+  }
 }
 
 
-export default class DataProvider {
+export class DataProvider {
   collections;
   _dataEventListeners = {};
 
@@ -84,4 +101,17 @@ export default class DataProvider {
       listeners.forEach((cb) => cb(data));
     }
   }
+}
+
+
+let defaultDataProvider : DataProvider;
+
+/**
+ * Returns the current default DataProvider.
+ */
+export function getDefaultDataProvider() {
+  if (!defaultDataProvider) {
+    defaultDataProvider = new DataProvider();
+  }
+  return defaultDataProvider;
 }

@@ -10,8 +10,5 @@
 		"g-p1": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
 		"start-p1": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
 		"build-dbux-code": "cd ./dbux-code && npm start"
-	},
-	"dependencies": {
-		"express": "file:projects/express"
 	}
 }

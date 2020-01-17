@@ -1,4 +1,4 @@
-import TraceType, { isTracePush, isTracePop } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, {  } from 'dbux-common/src/core/constants/TraceType';
 import staticTraceCollection from './staticTraceCollection';
 import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
@@ -20,6 +20,14 @@ class Trace {
   }
 }
 
+/**
+ * Recorded objects need careful handling:
+ * Since we might not send them out immediately, they can change over time, so we need to copy a snapshot
+ */
+function processValue(value) {
+  // serialize a copy of value
+  return JSON.stringify(value);
+}
 
 class TraceCollection extends Collection {
   constructor() {
@@ -27,27 +35,24 @@ class TraceCollection extends Collection {
   }
 
   trace(contextId, inProgramStaticTraceId, type = null) {
-    const trace = this._trace(contextId, inProgramStaticTraceId);
-    trace.type = type;
-
+    const trace = this._trace(contextId, inProgramStaticTraceId, type, null, null);
     return trace;
   }
 
   traceExpressionWithValue(contextId, inProgramStaticTraceId, value) {
-    const trace = this._trace(contextId, inProgramStaticTraceId);
-    trace.type = null; // available in static trace data
-    trace.value = value;
-
+    const trace = this._trace(contextId, inProgramStaticTraceId, null, value, processValue(value));
     return trace;
   }
 
-  _trace(contextId, inProgramStaticTraceId) {
+  _trace(contextId, inProgramStaticTraceId, type, value, processedValue) {
     if (!inProgramStaticTraceId) {
       throw new Error('missing inProgramStaticTraceId');
     }
 
     const trace = Trace.allocate();
     trace.contextId = contextId;
+    trace.type = type;
+    trace.value = processedValue;
 
     // look-up global trace id by in-program id
     // trace._staticTraceId = inProgramStaticTraceId;
@@ -67,19 +72,19 @@ class TraceCollection extends Collection {
     this._all.push(trace);
     this.send(trace);
 
-    _prettyPrint(trace);
+    _prettyPrint(trace, value);
 
-    return this.trace;
+    return trace;
   }
 
 }
 
-function _prettyPrint(trace) {
+function _prettyPrint(trace, value) {
   const { 
     contextId, 
     type: dynamicType,
     staticTraceId, 
-    value 
+    // value 
   } = trace;
   const context = executionContextCollection.getById(contextId);
   const {
@@ -131,7 +136,9 @@ function _prettyPrint(trace) {
   // }
 }
 
-
+/**
+ * @type {TraceCollection}
+ */
 const traceCollection = new TraceCollection();
 export default traceCollection;
 
