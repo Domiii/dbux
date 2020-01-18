@@ -42,7 +42,7 @@ class TraceCollection extends Collection {
 
   add(entries) {
     for (const entry of entries) {
-      if (entry.value !== null) {
+      if (entry.value) {
         entry.value = reconstructValue(entry.value);
       }
     }
@@ -104,7 +104,7 @@ export class DataProvider {
 }
 
 
-let defaultDataProvider : DataProvider;
+let defaultDataProvider// : DataProvider;
 
 /**
  * Returns the current default DataProvider.
