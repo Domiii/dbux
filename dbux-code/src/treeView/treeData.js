@@ -3,6 +3,7 @@
 
 import vscode from 'vscode';
 import path from 'path';
+import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 
 const log = (...args) => console.log('[dbux-code][treeData]', ...args)
 
@@ -16,43 +17,63 @@ export class EventNodeProvider {
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
     }
 
-    parseData(contextData){
+    parseData = (contextData) => {
         log('try parsing contextData', contextData)
-        for (element in contextData){
-            log(element.get())
+        log('executionContext =', this.dataProvider.collections.executionContexts.getAll())
+        let depth = 0;
+        for (let index = 1; index < contextData.length; index++){
+            
+            let element = contextData[index]
+            log('element =', element)
+            let { contextType, stackDepth, contextId, staticContextId } = element;
+            
+            let staticContext = this.dataProvider.collections.staticContexts.getById(staticContextId);
+            log('staticContext =', staticContext)
+            let { programId, name, displayName } = staticContext
+            
+            let programContext = this.dataProvider.collections.staticProgramContexts.getById(programId);
+            log('programContext =', programContext)
+            let { filePath } = programContext
+
+            let executionContextDetail = {
+                'contextType': ExecutionContextType.nameFrom(contextType),
+                stackDepth,
+                displayName,
+                filePath
+            }
         }
-        log('Start parsing data')
-        const collapsibleState = vscode.TreeItemCollapsibleState
+        log('Start parsing data');
+        const collapsibleState = vscode.TreeItemCollapsibleState;
         const rootEvent = new Event("Push index.js", {
             'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js',
             'line': 2,
             'character': 5
-        }, collapsibleState.Expanded, 'dbuxExtension.showMsg', null, [])
+        }, collapsibleState.Expanded, 'dbuxExtension.showMsg', null, []);
         const children = [
             new Event('Push meow()', { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 10, 'character': 5 }, collapsibleState.None, 'dbuxExtension.showMsg', rootEvent, []),
             new Event('Pop meow()', { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 20, 'character': 5 }, collapsibleState.None, 'dbuxExtension.showMsg', rootEvent, []),
-        ]
-        log('Sucessfully construct children')
+        ];
+        log('Sucessfully construct children');
         for (let child of children) {
-            log(child.get())
-            rootEvent.pushChild(child)
+            log(child.get());
+            rootEvent.pushChild(child);
         }
-        log('Sucessfully construct rootEvent')
+        log('Sucessfully construct rootEvent');
         return [rootEvent]
     }
-    refresh() {
+    refresh = () => {
         this._onDidChangeTreeData.fire();
     }
-    update(data) {
+    update = (data) => {
         this.contextData = this.dataProvider.collections.executionContexts.getAll()
         log('dataProvider called update function.')
-        this.treeData = this.parseData(this.contextData())
+        this.treeData = this.parseData(this.contextData)
         this.refresh()
     }
-    getTreeItem(element) {
+    getTreeItem = (element) => {
         return element;
     }
-    getChildren(element) {
+    getChildren = (element) => {
         if (element){
             log('called function getChildren with element, returning', element.children)
             return element.children
