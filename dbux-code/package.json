@@ -129,7 +129,7 @@
 		"core-js": "^3.6.2",
 		"dbux-common": "file:../dbux-common",
 		"dbux-data": "file:../dbux-data",
-		"socket.io": "^2.3.0",
-		"uws": "github:mmdevries/uws#2.4.0"
+		"uws": "github:mmdevries/uws#2.4.0",
+		"socket.io": "^2.3.0"
 	}
 }

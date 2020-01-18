@@ -16,26 +16,27 @@ export class EventNodeProvider {
     }
 
     parseData(arrData){
-        log('In parseData func')
+        log('Start parsing data')
         const collapsibleState = vscode.TreeItemCollapsibleState
         const children = [
-            new Event('Push meow()', { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 10 }, collapsibleState.None, 'dbuxExtension.showMsg', []),
-            new Event('Pop meow()', { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 20 }, collapsibleState.None, 'dbuxExtension.showMsg', []),
+            new Event('Push meow()', { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 10, 'character': 5 }, collapsibleState.None, 'dbuxExtension.showMsg', []),
+            new Event('Pop meow()', { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 20, 'character': 5 }, collapsibleState.None, 'dbuxExtension.showMsg', []),
         ]
         log('Finished constructing children')
-        const rootEvent = new Event("Push index.js", { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 2 }, collapsibleState.Expanded, 'dbuxExtension.showMsg', children)
+        const rootEvent = new Event("Push index.js", { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 2, 'character': 5 }, collapsibleState.Expanded, 'dbuxExtension.showMsg', children)
         log('Finished construction rootEvent')
         return [rootEvent]
     }
-    refresh() { 
+    update() {
+        
+    }
+    refresh() {
         this._onDidChangeTreeData.fire();
     }
     getTreeItem(element) {
-        log('Called getTreeItem.');
         return element;
     }
     getChildren(element) {
-        log('Called getChildren');
         if (element){
             return Promise.resolve(element.children)
         }

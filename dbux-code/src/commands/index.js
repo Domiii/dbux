@@ -1,5 +1,5 @@
 import vscode from 'vscode';
-import { eventLogProvider } from '../treeView';
+import { refreshTreeView } from '../treeView';
 import { navToCode } from '../codeControl';
 
 const log = (...args) => console.log('[dbux-code][commands]', ...args)
@@ -28,9 +28,9 @@ function registerCommand (context, commandID, func, pushToClient=false){
 
 export function initCommands(context) {
 
-  registerCommand(context, 'dbuxEvents.refreshEntry', () => eventLogProvider.refresh());
+  registerCommand(context, 'dbuxEvents.refreshEntry', () => refreshTreeView());
   registerCommand(context, 'dbuxEvents.addEntry', () => vscode.window.showInformationMessage(`Clicked on add entry.`));
-  registerCommand(context, 'dbuxEvents.gotoEntry', (node) => navToCode(vscode.Uri.file(node.position.filePath), node.position.line));
+  registerCommand(context, 'dbuxEvents.gotoEntry', ({ position }) => navToCode(vscode.Uri.file(position.filePath), vscode.Position(position.line, position.character)));
   registerCommand(context, 'dbuxEvents.deleteEntry', (node) => vscode.window.showInformationMessage(`Clicked on delete entry with node = ${node.label}.`));
 
   function jumpToLine (lineNum = 0){
