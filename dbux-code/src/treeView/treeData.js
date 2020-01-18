@@ -22,9 +22,9 @@ export class EventNodeProvider {
             new Event('Push meow()', { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 10, 'character': 5 }, collapsibleState.None, 'dbuxExtension.showMsg', []),
             new Event('Pop meow()', { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 20, 'character': 5 }, collapsibleState.None, 'dbuxExtension.showMsg', []),
         ]
-        log('Finished constructing children')
+        log('Sucessfully construct children')
         const rootEvent = new Event("Push index.js", { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 2, 'character': 5 }, collapsibleState.Expanded, 'dbuxExtension.showMsg', children)
-        log('Finished construction rootEvent')
+        log('Sucessfully construct rootEvent')
         return [rootEvent]
     }
     update() {
