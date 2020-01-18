@@ -1,6 +1,6 @@
 import { initCommands } from './commands';
 import { initCodeControl } from './codeControl';
-import { initServer } from './server';
+import { initServer } from './net/server';
 import { initTreeView } from './treeView';
 import { newDataProvider } from './data/index';
 

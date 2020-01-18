@@ -16,7 +16,7 @@ export class EventNodeProvider {
     }
 
     parseData(arrData){
-        log('In parseData func')
+        log('Start parsing data')
         const collapsibleState = vscode.TreeItemCollapsibleState
         const children = [
             new Event('Push meow()', { 'filePath': 'E:\\works\\dbux\\dbux\\dbux-code\\test\\runTest.js', 'line': 10, 'character': 5 }, collapsibleState.None, 'dbuxExtension.showMsg', []),
@@ -27,15 +27,16 @@ export class EventNodeProvider {
         log('Finished construction rootEvent')
         return [rootEvent]
     }
-    refresh() { 
+    update() {
+        
+    }
+    refresh() {
         this._onDidChangeTreeData.fire();
     }
     getTreeItem(element) {
-        log('Called getTreeItem.');
         return element;
     }
     getChildren(element) {
-        log('Called getChildren');
         if (element){
             return Promise.resolve(element.children)
         }
