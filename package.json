@@ -5,7 +5,7 @@
 		"eslint-config-esnext": "^4.0.0"
 	},
 	"scripts": {
-		"dbux-install": "sh scripts/dbux-dbux.sh",
+		"dbux-install": "sh scripts/dbux-install.sh",
 		"p1-install": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
 		"p1-g": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
 		"p1-start": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
