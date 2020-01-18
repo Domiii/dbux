@@ -13,12 +13,15 @@ const log = (...args) => console.log('[dbux-code]', ...args)
  */
 function activate(context) {
 
+	log('dbux-code activated!');
 
 	initCommands(context);
 	initCodeControl(context);
-	initTreeView(context);
 	const server = initServer(context);
 	const dataProvider = newDataProvider(server);
+	initTreeView(context, dataProvider);
+
+	log('Initialization finished.');
 	
 }
 
