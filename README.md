@@ -1,12 +1,29 @@
 # dbux README
 
+## TODO
+* fix: trace `displayName` should not contain comments
+   * see: https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L156
+* fix: await0 sample doesn't run
+* fix babelrcroots in `babelInclude` - https://babeljs.io/docs/en/options#babelrcroots
+   * -> https://github.com/babel/babel/blob/282f81bd676d09c1d8c48b08a7254b961eb41bed/packages/babel-core/src/config/config-chain.js#L256
+
 ## Fancy ideas (Dev)
 * add extra-watch-webpack-plugin https://github.com/pigcan/extra-watch-webpack-plugin?
 
+## Installing the good stuff
+
+```sh
+`# jest` npm i -D jest jest-expect-message jest-extended
+`# babel basics` npm i -D @babel/core @babel/cli @babel/node @babel/register 
+`# babel plugins` npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
+`# babel runtime` npm i -S core-js@3 @babel/runtime
+`# eslint` npm i -D eslint eslint-config-esnext
+`# flow` npm i -D flow-bin @babel/preset-flow eslint-plugin-flowtype && npx flow init && npx flow
+`# babel dev` npm i -D @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester && \
+```
 
 ## Major Components
-* Babel Plugins basics
-   * `npm i -D @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester    && npm i -D jest jest-expect-message jest-extended     && npm i -D @babel/core @babel/cli @babel/node @babel/register &&          npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime @babel/plugin-syntax-flow          && npm i -S core-js@3 @babel/runtime`
+* Babel plugins:
    * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/user-handbook.md
    * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md
    * [`bael-plugin-tester`](https://github.com/babel-utils/babel-plugin-tester#examples)

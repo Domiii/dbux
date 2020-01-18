@@ -1,14 +1,66 @@
 import fsPath from 'path';
 import { getPresentableString } from './helpers/misc';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 function getFilePath(state) {
-  let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
-  const cwd = fsPath.normalize(state.cwd);
-  if (filename.startsWith(cwd)) {
-    filename = fsPath.relative(state.cwd, filename);
-  }
+  // let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
+  // const cwd = fsPath.normalize(state.cwd);
+  // if (filename.startsWith(cwd)) {
+  //   filename = fsPath.relative(state.cwd, filename);
+  // }
+  const filename = state.filename && fsPath.resolve(state.filename);
   return filename;
 }
+
+// ###########################################################################
+// trace stuff
+// ###########################################################################
+
+const traceCustomizationsByType = {
+  // [TraceType.StartProgram]: tracePathStart,
+  [TraceType.PushImmediate]: tracePathStart,
+  [TraceType.PopImmediate]: tracePathEnd,
+  [TraceType.BlockStart]: tracePathStart
+};
+
+function tracePathStart(path, state, trace) {
+  const { loc } = path.node;
+  return {
+    // _parentId: parentStaticId,
+    loc: {
+      // for highlighting purposes, zero-length ranges are not the best choice
+      // instead, we ideally want to highlight something more meaningful (e.g. the "if" part of the "if" statement)
+      start: loc.start,
+      end: loc.start
+    }
+  };
+}
+
+function tracePathEnd(path, state, trace) {
+  const { loc } = path.node;
+  return {
+    loc: {
+      start: loc.end,
+      end: loc.end
+    }
+  };
+}
+
+function traceDefault(path, state) {
+  // const parentStaticId = state.getClosestStaticId(path);
+  // console.log('actualParent',  toSourceString(actualParent.node));
+  const displayName = getPresentableString(path.toString(), 30);
+  const { loc } = path.node;
+  return {
+    displayName,
+    // _parentId: parentStaticId,
+    loc
+  };
+}
+
+// ###########################################################################
+// Build custom dbux state object
+// ###########################################################################
 
 /**
  * Build the state used by dbux-babel-plugin throughout the entire AST visit.
@@ -172,22 +224,26 @@ export default function injectDbuxState(programPath, programState) {
       return staticId;
     },
 
-    addTrace(path, capturesValue=false) {
+    /**
+     * Tracing a path in its entirety (usually means, the trace is recorded right before the given path).
+     */
+    addTrace(path, type) {
       // console.log('TRACE', '@', `${state.filename}:${line}`);
       const traceId = traces.length;
-      const parentStaticId = programState.getClosestStaticId(path);
-      // console.log('actualParent',  toSourceString(actualParent.node));
-      const displayName = getPresentableString(path.toString(), 30);
-      const { loc } = path.node;
-      traces.push({
-        displayName,
-        _traceId: traceId,
-        // _parentId: parentStaticId,
-        capturesValue,
-        loc
-      });
+      let trace;
+      if (traceCustomizationsByType[type]) {
+        trace = traceCustomizationsByType[type](path, dbuxState);
+      }
+      else {
+        trace = traceDefault(path, dbuxState);
+      }
+
+      trace._traceId = traceId;
+      trace.type = type;
+      traces.push(trace);
+
       return traceId;
-    }
+    },
   };
   
   Object.assign(programState, dbuxState);

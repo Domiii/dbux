@@ -106,6 +106,7 @@
 		"@babel/plugin-syntax-flow": "^7.7.4",
 		"@babel/plugin-transform-runtime": "^7.7.6",
 		"@babel/preset-env": "^7.7.7",
+		"@babel/preset-flow": "^7.8.3",
 		"@babel/register": "^7.7.7",
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.7",
@@ -113,6 +114,9 @@
 		"@types/vscode": "^1.41.0",
 		"babel-loader": "^8.0.6",
 		"eslint": "^6.6.0",
+		"eslint-config-esnext": "^4.0.0",
+		"eslint-plugin-flowtype": "^4.6.0",
+		"flow-bin": "^0.116.1",
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
 		"typescript": "^3.6.4",
@@ -121,9 +125,11 @@
 		"webpack-cli": "^3.3.10"
 	},
 	"dependencies": {
-		"socket.io": "^2.3.0",
 		"@babel/runtime": "^7.7.7",
 		"core-js": "^3.6.2",
+		"dbux-common": "file:../dbux-common",
+		"dbux-data": "file:../dbux-data",
+		"socket.io": "^2.3.0",
 		"uws": "github:mmdevries/uws#2.4.0"
 	}
 }

@@ -1,14 +1,18 @@
-import { logInternalError } from '../../log/logger';
+import { logInternalError } from 'dbux-common/src/log/logger';
+import Collection from './Collection';
 
 /**
  * Keeps track of `StaticTrace` objects that contain static code information
  */
-class StaticTraceCollection {
+class StaticTraceCollection extends Collection {
   /**
    * @type {[]}
    */
   _staticTracesByProgram = [null];
-  _all = [null];
+
+  constructor() {
+    super('staticTraces');
+  }
 
   addTraces(programId, list) {
     // make sure, array is pre-allocated
@@ -20,14 +24,17 @@ class StaticTraceCollection {
     this._staticTracesByProgram[programId] = list;
 
     for (let i = 1; i < list.length; ++i) {
-      if (list[i]._traceId !== i) {
-        logInternalError(programId, 'Invalid traceId !== its own index:', list[i]._traceId, '!==', i);
+      const entry = list[i];
+      if (entry._traceId !== i) {
+        logInternalError(programId, 'Invalid traceId !== its own index:', entry._traceId, '!==', i);
       }
 
-      list[i].id = this._all.length;
+      entry.id = this._all.length;
       // global id over all programs
-      list[i].traceId = this._all.length;
-      this._all.push(list[i]);
+      entry.staticTraceId = this._all.length;
+      
+      this._all.push(entry);
+      this.send(entry);
     }
   }
 
@@ -35,21 +42,18 @@ class StaticTraceCollection {
     return this._staticTracesByProgram[programId];
   }
 
-  getTrace(programId, staticId) {
+  getTrace(programId, inProgramStaticId) {
     const traces = this.getTraces(programId);
     if (!traces) {
       logInternalError("Invalid programId has no registered static traces:", programId);
       return null;
     }
-    return traces[staticId];
+    return traces[inProgramStaticId];
   }
 
-  getAllRaw() {
-    return this._all;
-  }
-
-  getById(id) {
-    return this._all[id];
+  getTraceId(programId, inProgramStaticId) {
+    const staticTrace = this.getTrace(programId, inProgramStaticId);
+    return staticTrace.staticTraceId;
   }
 }
 

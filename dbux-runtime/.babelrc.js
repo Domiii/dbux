@@ -2,7 +2,7 @@ const path = require('path');
 const thisRoot = path.resolve(__dirname);
 
 module.exports = {
-  ignore: [path.join(thisRoot, 'node_modules')],
+  ignore: [],
   "sourceMaps": "both",
   "retainLines": true,
   "presets": [

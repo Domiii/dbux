@@ -1,13 +1,13 @@
-import staticProgramContextCollection from './data/collections/staticProgramContextCollection';
+import staticProgramContextCollection from './data/staticProgramContextCollection';
 import ProgramMonitor from './ProgramMonitor';
-import { logInternalError } from './log/logger';
-import executionContextCollection from './data/collections/executionContextCollection';
-import executionEventCollection from './data/collections/executionEventCollection';
-import staticContextCollection from './data/collections/staticContextCollection';
+import { logInternalError } from 'dbux-common/src/log/logger';
+import executionContextCollection from './data/executionContextCollection';
+import staticContextCollection from './data/staticContextCollection';
 import Runtime from './Runtime';
-import traceCollection from './data/collections/traceCollection';
-import staticTraceCollection from './data/collections/staticTraceCollection';
+import traceCollection from './data/traceCollection';
+import staticTraceCollection from './data/staticTraceCollection';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 /**
  * 
@@ -59,7 +59,7 @@ export default class RuntimeMonitor {
   /**
    * Very similar to `pushCallback`
    */
-  pushImmediate(programId, inProgramStaticId) {
+  pushImmediate(programId, inProgramStaticId, traceId) {
     this._runtime.beforePush(null);
 
     const parentContextId = this._runtime.peekCurrentContextId();
@@ -70,28 +70,26 @@ export default class RuntimeMonitor {
     const { contextId } = context;
     this._runtime.push(contextId);
 
-    // log event
-    executionEventCollection.logPushImmediate(contextId);
+    // trace
+    traceCollection.trace(contextId, traceId);
 
     return contextId;
   }
 
 
-  popImmediate(contextId) {
+  popImmediate(contextId, traceId) {
     // sanity checks
-    const context = executionContextCollection.getContext(contextId);
+    const context = executionContextCollection.getById(contextId);
     if (!context) {
       logInternalError('Tried to popImmediate, but context was not registered:', contextId);
       return;
     }
 
-
-
     // pop from stack
     this._pop(contextId);
 
-    // log event
-    executionEventCollection.logPopImmediate(contextId);
+    // trace
+    traceCollection.trace(contextId, traceId);
   }
 
   _pop(contextId) {
@@ -107,39 +105,38 @@ export default class RuntimeMonitor {
   /**
    * Push a new context for a scheduled callback for later execution.
    */
-  scheduleCallback(programId, inProgramStaticId, schedulerId, cb) {
+  scheduleCallback(programId, inProgramStaticId, schedulerId, traceId, cb) {
     // this._runtime.beforePush(schedulerId);
-
     const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
 
     const scheduledContext = executionContextCollection.scheduleCallback(stackDepth,
       programId, inProgramStaticId, parentContextId, schedulerId);
     const { contextId: scheduledContextId } = scheduledContext;
-    const wrapper = this.makeCallbackWrapper(scheduledContextId, cb);
+    const wrapper = this.makeCallbackWrapper(scheduledContextId, traceId, cb);
 
     // this._runtime.push(scheduledContextId);
     this._runtime.scheduleCallback(scheduledContextId);
 
-    // log event
-    executionEventCollection.logScheduleCallback(scheduledContextId);
+    // trace
+    traceCollection.trace(scheduledContextId, traceId);
 
     return wrapper;
   }
 
-  makeCallbackWrapper(scheduledContextId, cb) {
+  makeCallbackWrapper(scheduledContextId, traceId, cb) {
     return (...args) => {
       /**
        * We need this so we can always make sure we can link things back to the scheduler,
        * even if the callback declaration is not inline.
        */
-      const callbackContextId = this.pushCallback(scheduledContextId);
+      const callbackContextId = this.pushCallback(scheduledContextId, traceId);
 
       try {
         return cb(...args);
       }
       finally {
-        this.popCallback(callbackContextId);
+        this.popCallback(callbackContextId, traceId);
       }
     };
   }
@@ -148,7 +145,7 @@ export default class RuntimeMonitor {
    * Very similar to `pushImmediate`.
    * We need it to establish the link with it's scheduling context.
    */
-  pushCallback(scheduledContextId) {
+  pushCallback(scheduledContextId, traceId) {
     this._runtime.beforePush(scheduledContextId);
 
     const parentContextId = this._runtime.peekCurrentContextId();
@@ -159,18 +156,18 @@ export default class RuntimeMonitor {
     const context = executionContextCollection.executeCallback(
       stackDepth, scheduledContextId, parentContextId
     );
-    const { contextId: callbackContextId } = context;
-    this._runtime.push(callbackContextId);
+    const { contextId } = context;
+    this._runtime.push(contextId);
 
     // log event
-    executionEventCollection.logPushCallback(callbackContextId);
+    traceCollection.trace(scheduledContextId, traceId, TraceType.PushCallback);
 
-    return callbackContextId;
+    return contextId;
   }
 
-  popCallback(callbackContextId) {
+  popCallback(callbackContextId, traceId) {
     // sanity checks
-    const context = executionContextCollection.getContext(callbackContextId);
+    const context = executionContextCollection.getById(callbackContextId);
     if (!context) {
       logInternalError('Tried to popCallback, but context was not registered:',
         callbackContextId);
@@ -180,8 +177,8 @@ export default class RuntimeMonitor {
     // pop from stack
     this._pop(callbackContextId);
 
-    // log event
-    executionEventCollection.logPopCallback(callbackContextId);
+    // trace
+    traceCollection.trace(callbackContextId, traceId, TraceType.PopCallback);
   }
 
 
@@ -189,7 +186,7 @@ export default class RuntimeMonitor {
   // Interrupts, await et al
   // ###########################################################################
 
-  preAwait(programId, inProgramStaticId) {
+  preAwait(programId, inProgramStaticId, traceId) {
     // pop resume context
     this.popResume();
 
@@ -204,8 +201,8 @@ export default class RuntimeMonitor {
     this._runtime.push(awaitContextId);
     this._runtime.registerAwait(awaitContextId);  // let run-time now that this is gonna be "waiting"
 
-    // log event
-    executionEventCollection.logAwait(awaitContextId);
+    // trace
+    traceCollection.trace(awaitContextId, traceId);
 
     return awaitContextId;
   }
@@ -218,9 +215,9 @@ export default class RuntimeMonitor {
   /**
    * Resume given stack
    */
-  postAwait(awaitResult, awaitContextId) {
+  postAwait(awaitResult, awaitContextId, resumeTraceId) {
     // sanity checks
-    const context = executionContextCollection.getContext(awaitContextId);
+    const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
       logInternalError('Tried to postAwait, but context was not registered:', awaitContextId);
       return;
@@ -236,7 +233,7 @@ export default class RuntimeMonitor {
     const { programId, inProgramStaticId } = context;
     const staticContext = staticContextCollection.getContext(programId, inProgramStaticId);
     const { resumeId: resumeStaticContextId } = staticContext;
-    this.pushResume(resumeStaticContextId, awaitContextId);
+    this.pushResume(resumeStaticContextId, awaitContextId, resumeTraceId);
 
     return awaitResult;
   }
@@ -246,22 +243,22 @@ export default class RuntimeMonitor {
    * (1) the function itself (when pushing the initial "resume context" on function call)
    * (2) an await context (when resuming after an await)
    */
-  pushResume(resumeStaticContextId, schedulerId) {
+  pushResume(resumeStaticContextId, schedulerId, resumeTraceId) {
     const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
     const resumeContextId = executionContextCollection.resume(
       parentContextId, resumeStaticContextId, schedulerId, stackDepth
     );
 
-    // log event
-    executionEventCollection.logResume(resumeContextId);
+    // trace
+    traceCollection.trace(resumeContextId, resumeTraceId);
   }
 
   popResume() {
     const resumeContextId = this._runtime.peekCurrentContextId();
 
     // sanity checks
-    const context = executionContextCollection.getContext(resumeContextId);
+    const context = executionContextCollection.getById(resumeContextId);
     if (!context) {
       logInternalError('Tried to popResume, but context was not registered:', resumeContextId);
       return;
@@ -280,12 +277,12 @@ export default class RuntimeMonitor {
 
   trace(traceId) {
     const contextId = this._runtime.peekCurrentContextId();
-    traceCollection.recordTrace(contextId, traceId);
+    traceCollection.trace(contextId, traceId);
   }
 
   traceAndCaptureValue(traceId, value) {
     const contextId = this._runtime.peekCurrentContextId();
-    traceCollection.recordTraceWithValue(contextId, traceId, value);
+    traceCollection.traceExpressionWithValue(contextId, traceId, value);
     return value;
   }
 }

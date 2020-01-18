@@ -1,3 +1,6 @@
+export const EmptyArray = Object.freeze([]);
+export const EmptyObject = Object.freeze({});
+
 
 export function arraysEqual(a, b) {
   if (a === b) return true;

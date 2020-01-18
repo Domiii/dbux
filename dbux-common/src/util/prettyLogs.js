@@ -1,26 +1,35 @@
-import colors from 'colors/safe';
-import { inspect } from 'util';
+/**
+ * TODO: use something that works in browser as well as in Node (currently only works properly in Node)
+ */
 
-function doInspect(arg) {
-  return inspect(arg, { depth: 1, colors: true });
+import colors from 'colors/safe';
+
+
+const inspectOptions = { depth: 0, colors: true };
+function _inspect(arg) {
+  const f = typeof window !== 'undefined' && window.inspect ? window.inspect : require('util').inspect;
+  return f(arg, inspectOptions);
 }
 
 
 /**
  * @see https://gist.github.com/RReverser/0a7caa89b465d1ed0c96
  */
-function overrideLog(origLog, customColor) {
+export function makePrettyLog(origLog, customColor) {
   const colorize = colors[customColor];
   return function customLogger(...args) {
-    return origLog(...args.map(arg => (arg && arg.constructor === String) ? 
-        colorize(arg) : 
-        doInspect(arg)
+    return origLog(
+      ...args.map(
+        arg => (arg && arg.constructor === String) ? 
+          colorize(arg) : 
+          // _inspect(arg)
+          arg
       )
     );
   };  
 }
 
-console.log = overrideLog(console.error, 'white');
-console.error = overrideLog(console.error, 'red');
-console.warn = overrideLog(console.warn, 'yellow');
-console.debug = overrideLog(console.debug, 'gray');
+console.log = makePrettyLog(console.log, 'white');
+console.error = makePrettyLog(console.error, 'red');
+console.warn = makePrettyLog(console.warn, 'yellow');
+console.debug = makePrettyLog(console.debug, 'gray');

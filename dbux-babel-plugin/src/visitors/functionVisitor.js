@@ -2,6 +2,7 @@ import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHe
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import template from '@babel/template';
 import * as t from "@babel/types";
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 // ###########################################################################
 // helpers
@@ -19,22 +20,22 @@ function addResumeContext(bodyPath, state, staticId) {
 // builders + templates
 // ###########################################################################
 
-function buildPushImmediate(contextId, dbux, staticId) {
+function buildPushImmediate(contextId, dbux, staticId, traceId) {
   // TODO: use @babel/template instead
-  return buildSource(`const ${contextId} = ${dbux}.pushImmediate(${staticId});`);
+  return buildSource(`const ${contextId} = ${dbux}.pushImmediate(${staticId}, ${traceId});`);
 }
 
-function buildPopImmediate(contextId, dbux) {
+function buildPopImmediate(contextId, dbux, traceId) {
   // TODO: use @babel/template instead
-  return buildSource(`${dbux}.popImmediate(${contextId});`);
+  return buildSource(`${dbux}.popImmediate(${contextId}, ${traceId});`);
 }
 
 const pushResumeTemplate = template(`
-  %%dbux%%.pushResume(%%resumeStaticContextId%%, %%schedulerId%%);
+  %%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%, %%schedulerId%%);
 `);
 
 const popResumeTemplate = template(`
-  %%dbux%%.popResume();
+  %%dbux%%.popResume(%%traceId%%);
 `);
 
 // ###########################################################################
@@ -44,11 +45,12 @@ const popResumeTemplate = template(`
 /**
  * Instrument all Functions to keep track of all (possibly async) execution stacks.
  */
-export function wrapFunctionBody(bodyPath, { ids: { dbux }, genContextIdName }, staticId, staticResumeId=null) {
+function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId=null) {
+  const { ids: { dbux }, genContextIdName } = state;
   const contextIdVar = genContextIdName(bodyPath);
 
-  let startCalls = buildPushImmediate(contextIdVar, dbux, staticId);
-  let finallyBody = buildPopImmediate(contextIdVar, dbux);
+  let startCalls = buildPushImmediate(contextIdVar, dbux, staticId, pushTraceId);
+  let finallyBody = buildPopImmediate(contextIdVar, dbux, popTraceId);
   if (staticResumeId) {
     // this is an interruptable function -> push + pop "resume contexts"
     startCalls = [
@@ -56,13 +58,15 @@ export function wrapFunctionBody(bodyPath, { ids: { dbux }, genContextIdName }, 
       ...pushResumeTemplate({
         dbux,
         resumeStaticContextId: t.numericLiteral(staticResumeId),
+        traceId: t.numericLiteral(pushTraceId),
         schedulerId: t.numericLiteral(staticId)
       })
     ];
 
     finallyBody = [
       ...popResumeTemplate({
-        dbux
+        dbux,
+        traceId: t.numericLiteral(popTraceId)
         // contextId: contextIdVar
       }),
       ...finallyBody
@@ -106,12 +110,14 @@ export default function functionVisitor() {
         isInterruptable
       };
       const staticId = state.addStaticContext(path, staticContextData);
+      const pushTraceId = state.addTrace(bodyPath, TraceType.PushImmediate);
+      const popTraceId = state.addTrace(bodyPath, TraceType.PopImmediate);
       let staticResumeId;
       if (isInterruptable) {
         staticResumeId = addResumeContext(bodyPath, state, staticId);
       }
 
-      wrapFunctionBody(bodyPath, state, staticId, staticResumeId);
+      wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId);
 
     }
   }

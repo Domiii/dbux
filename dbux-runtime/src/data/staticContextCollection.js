@@ -1,8 +1,12 @@
-import { logInternalError } from '../../log/logger';
+import { logInternalError } from 'dbux-common/src/log/logger';
+import Collection from './Collection';
 
-export class StaticContextCollection {
+export class StaticContextCollection extends Collection {
   _staticContextsByProgram = [null];
-  _all = [null];
+  
+  constructor() {
+    super('staticContexts');
+  }
 
   addContexts(programId, list) {
     // make sure, array is pre-allocated
@@ -14,14 +18,17 @@ export class StaticContextCollection {
     this._staticContextsByProgram[programId] = list;
 
     for (let i = 1; i < list.length; ++i) {
-      if (list[i]._staticId !== i) {
-        logInternalError(programId, 'Invalid staticId !== its own index:', list[i]._staticId, '!==', i);
+      const entry = list[i];
+      if (entry._staticId !== i) {
+        logInternalError(programId, 'Invalid staticId !== its own index:', entry._staticId, '!==', i);
       }
 
-      list[i].programId = programId;
+      entry.programId = programId;
+
       // change to global id over all programs
-      list[i].staticId = this._all.length;
-      this._all.push(list[i]);
+      entry.staticId = this._all.length;
+      this._all.push(entry);
+      this.send(entry);
     }
   }
 
@@ -36,14 +43,6 @@ export class StaticContextCollection {
       return null;
     }
     return contexts[inProgramStaticId];
-  }
-
-  getAllRaw() {
-    return this._all;
-  }
-
-  getById(id) {
-    return this._all[id];
   }
 }
 

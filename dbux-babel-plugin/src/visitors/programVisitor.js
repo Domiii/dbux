@@ -11,6 +11,7 @@ import awaitVisitor from './awaitVisitor';
 import { buildAllTraceVisitors } from './traceVisitors';
 import { mergeVisitors } from '../helpers/visitorHelpers';
 import { logInternalError } from '../log/logger';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 
 // ###########################################################################
@@ -114,6 +115,8 @@ function enter(path, state) {
     displayName: 'Program'
   };
   state.addStaticContext(path, staticProgramContext);
+  state.addTrace(path, TraceType.PushImmediate);      // === 1
+  state.addTrace(path, TraceType.PopImmediate);       // === 2
 
   // instrument Program itself
   wrapProgram(path, state);
@@ -124,10 +127,15 @@ function enter(path, state) {
     buildAllTraceVisitors()
   );
 
+
+  // TODO: babel is unhappy with our DoWhileLoop visitor
+  delete allVisitors.DoWhileLoop;
+
   // traverse program before (most) other plugins
   try {
     path.traverse(
-      errorWrapVisitor(allVisitors),
+      // errorWrapVisitor(allVisitors),
+      allVisitors,
       state
     );
   }

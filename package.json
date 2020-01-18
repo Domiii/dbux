@@ -1,17 +1,14 @@
 {
 	"private": true,
 	"devDependencies": {
-		"eslint": "*",
-		"eslint-config-esnext": "*"
+		"eslint": "^6.8.0",
+		"eslint-config-esnext": "^4.0.0"
 	},
 	"scripts": {
-		"setup": "sh scripts/dbux-setup.sh",
-		"install-p1": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
-		"g-p1": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
-		"start-p1": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
-		"build-dbux-code": "cd ./dbux-code && npm start"
-	},
-	"dependencies": {
-		"express": "file:projects/express"
+		"dbux-install": "sh scripts/dbux-dbux.sh",
+		"p1-install": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
+		"p1-g": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
+		"p1-start": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
+		"dbux-code-start": "cd ./dbux-code && npm start"
 	}
 }
