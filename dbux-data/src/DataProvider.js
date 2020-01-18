@@ -52,13 +52,26 @@ class TraceCollection extends Collection {
 
 
 export class DataProvider {
+  /**
+   * Usage example: `dataProvider.collections.staticContexts.getById(id)`
+   * 
+   * @public
+   * @type {Collection[]}
+   */
   collections;
+
+  /**
+   * @private
+   */
   _dataEventListeners = {};
 
   constructor() {
     this.clear();
   }
 
+  /**
+   * Deletes all previously stored data.
+   */
   clear() {
     this.collections = {
       staticProgramContexts: new StaticProgramContextCollection(this),
@@ -70,6 +83,9 @@ export class DataProvider {
     };
   }
 
+  /**
+   * Add given data (of different collections) to this `DataProvier`
+   */
   addData(allData) {
     debug('received', allData);
 
@@ -90,6 +106,9 @@ export class DataProvider {
     }
   }
 
+  /**
+   * Add a data event listener to given collection.
+   */
   onData(collectionName, cb) {
     const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
     listeners.push(cb);
