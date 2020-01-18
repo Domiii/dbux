@@ -13,7 +13,10 @@ module.exports = {
 		"ecmaFeatures": {
 			"jsx": true
 		},
-		"sourceType": "module"
+		"sourceType": "module",
+		"extraFileExtensions": [
+			".ts"
+		]
 	},
 	"rules": {
 		"no-const-assign": "warn",

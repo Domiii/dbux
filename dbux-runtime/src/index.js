@@ -1,4 +1,5 @@
 import RuntimeMonitor from './RuntimeMonitor';
+import { initClient } from './client/index';
 
 const dbux = {
   trace: RuntimeMonitor.instance,
@@ -25,6 +26,10 @@ function registerDbuxAsGlobal() {
     thisIsDbux: true
   };
 }
-registerDbuxAsGlobal();
+
+(function main() {
+  registerDbuxAsGlobal();
+  initClient();
+})();
 
 export default dbux;

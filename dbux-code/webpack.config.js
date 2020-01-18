@@ -1,17 +1,33 @@
 const path = require('path');
+const fs = require('fs');
 const process = require('process');
 process.env.BABEL_DISABLE_CACHE = 1;
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 
 const outputFolderName = 'dist';
-
 const outFile = 'bundle.js';
 
 
 const webpackPlugins = [];
 
-const projectRoot = __dirname;
+const projectRoot = path.resolve(__dirname);
+
+const dbuxRoot = path.resolve(__dirname + '/..');
+const dbuxFolders = ["dbux-common", "dbux-data"];
+const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(dbuxRoot,f)));
+
+dbuxRoots.forEach(f => {
+  if (!fs.existsSync(f)) {
+    throw new Error('invalid dbuxFolder does not exist: ' + f);
+  }
+});
+
+
+const allFolders = [projectRoot, ...dbuxRoots]
+  .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
+  .flat()
+  .map(f => path.resolve(f));
 
 module.exports = {
   // https://github.com/webpack/webpack/issues/2145
@@ -35,11 +51,7 @@ module.exports = {
     symlinks: true,
     extensions: ['.js' ],
     modules: [
-      path.resolve(projectRoot + '/src'),
-      path.resolve(projectRoot + '/node_modules'),
-
-      // path.join(dbuxRoot, "dbux-common"),
-      // path.join(dbuxRoot, "dbux-runtime")
+      ...allFolders
     ]
   },
   module: {
@@ -50,19 +62,13 @@ module.exports = {
           path.join(projectRoot, 'src')
         ]
       },
-      // {
-      //   loader: 'babel-loader',
-      //   include: [
-      //     path.join(dbuxRoot, "dbux-common/src"),
-      //     path.join(dbuxRoot, "dbux-runtime/src")
-      //   ],
-      //   options: {
-      //     babelrcRoots: [
-      //       path.join(dbuxRoot, "dbux-common"),
-      //       path.join(dbuxRoot, "dbux-runtime")
-      //     ]
-      //   }
-      // }
+      {
+        loader: 'babel-loader',
+        include: dbuxRoots.map(r => path.join(r, 'src')),
+        options: {
+          babelrcRoots: dbuxRoots
+        }
+      }
     ],
   },
   externals: {

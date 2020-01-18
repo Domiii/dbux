@@ -1,6 +1,7 @@
 import template from "@babel/template";
 import * as t from "@babel/types";
 import { getPresentableString } from '../helpers/misc';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 // ###########################################################################
 // builders
@@ -12,12 +13,13 @@ const wrapAwaitTemplate = template(
   //    The value will be bound before `await` and thus before `preAwait` was called.
 `%%dbux%%.postAwait(
   %%awaitNode%%,
-  %%awaitContextId%%
+  %%awaitContextId%%,
+  %%postTraceId%%
 )
 `);
 
 const wrapAwaitExpressionTemplate = template(`
-(%%dbux%%.wrapAwait(%%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%), %%argument%%))
+(%%dbux%%.wrapAwait(%%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%, %%preTraceId%%), %%argument%%))
 `);
 
 
@@ -60,10 +62,14 @@ function enter(path, state) {
   const argumentPath = path.get('argument');
   const argument = argumentPath.node;
 
+  const preTraceId = state.addTrace(argumentPath, TraceType.Await);
+  const postTraceId = state.addTrace(path, TraceType.Resume);
+
   const expressionReplacement = wrapAwaitExpressionTemplate({
     dbux,
     staticId: t.numericLiteral(staticId),
     awaitContextId,
+    preTraceId: t.numericLiteral(preTraceId),
     argument
   });
   argumentPath.replaceWith(expressionReplacement);
@@ -71,7 +77,8 @@ function enter(path, state) {
   const awaitReplacement = wrapAwaitTemplate({
     dbux,
     awaitNode: path.node,
-    awaitContextId
+    awaitContextId,
+    postTraceId: t.numericLiteral(postTraceId)
   });
   path.replaceWith(awaitReplacement);
 

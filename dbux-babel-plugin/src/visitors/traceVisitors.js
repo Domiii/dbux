@@ -1,9 +1,10 @@
 import template from '@babel/template';
 import Enum from 'dbux-common/src/util/Enum';
 import * as t from '@babel/types';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 // TODO: want to do some extra work to better trace loops
 
-const TraceTypes = new Enum({
+const TraceInstrumentationType = new Enum({
   NoTrace: 0,
   ExpressionWithValue: 1,
   ExpressionNoValue: 2,
@@ -18,10 +19,12 @@ const traceCfg = (() => {
     ExpressionNoValue,
     Statement,
     Block
-  } = TraceTypes;
+  } = TraceInstrumentationType;
 
   return {
+    // ########################################
     // assignments
+    // ########################################
     AssignmentExpression: [
       ExpressionWithValue,
       // [['right', ExpressionWithValue]]
@@ -49,7 +52,10 @@ const traceCfg = (() => {
       [['init', ExpressionWithValue]]
     ],
 
+
+    // ########################################
     // expressions
+    // ########################################
     AwaitExpression: [
       ExpressionWithValue,
       [['argument', ExpressionNoValue]]
@@ -73,7 +79,10 @@ const traceCfg = (() => {
       [['argument', ExpressionWithValue]]
     ],
 
+    
+    // ########################################
     // statements
+    // ########################################
     BreakStatement: Statement,
     ContinueStatement: Statement,
     Decorator: [
@@ -90,7 +99,10 @@ const traceCfg = (() => {
     ReturnStatement: Statement,
     ThrowStatement: Statement,
 
+    
+    // ########################################
     // loops
+    // ########################################
     DoWhileLoop: [
       NoTrace,
       [['test', ExpressionWithValue], ['body', Block]]
@@ -112,7 +124,9 @@ const traceCfg = (() => {
       [['test', ExpressionWithValue], ['body', Block]]
     ],
 
-    // if, else, switch
+    // ########################################
+    // if, else, switch, case
+    // ########################################
     IfStatement: [
       NoTrace,
       [['test', ExpressionWithValue], ['consequent', Block], ['alternate', Block]],
@@ -128,7 +142,10 @@ const traceCfg = (() => {
     //   [['consequent']]
     // ],
 
+
+    // ########################################
     // try + catch
+    // ########################################
     TryStatement: [
       NoTrace,
       [['block', Block], ['finalizer', Block]]
@@ -151,7 +168,7 @@ function validateCfgNode(node) {
   const [traceType, children, nodeCfg] = node;
 
   // make sure, it has a valid type
-  TraceTypes.nameFromForce(traceType);
+  TraceInstrumentationType.nameFromForce(traceType);
 }
 
 function validateCfg(cfg) {
@@ -173,7 +190,7 @@ function normalizeConfig(cfg) {
       nodeCfg = [nodeCfg];
     }
 
-    let [traceType, children, extraCfg] = nodeCfg;
+    const [traceType, children, extraCfg] = nodeCfg;
     if (extraCfg?.include) {
       // convert to set
       extraCfg.include = new Set(extraCfg.include);
@@ -202,9 +219,9 @@ function replaceWithTemplate(templ, path, cfg) {
   path.replaceWith(newNode);
 }
 
-const buildTraceNoValue = function (templ, path, state) {
+const buildTraceNoValue = function (templ, path, state, traceType) {
   const { ids: { dbux } } = state;
-  const traceId = state.addTrace(path);
+  const traceId = state.addTrace(path, traceType);
   return templ({
     dbux,
     traceId: t.numericLiteral(traceId)
@@ -219,7 +236,7 @@ const traceWrapExpression = function (templ, expressionPath, state) {
     return;
   }
   const { ids: { dbux } } = state;
-  const traceId = state.addTrace(expressionPath, true);
+  const traceId = state.addTrace(expressionPath, TraceType.ExpressionResult);
   replaceWithTemplate(templ, expressionPath, {
     dbux,
     traceId: t.numericLiteral(traceId),
@@ -235,7 +252,7 @@ const traceWrapExpression = function (templ, expressionPath, state) {
 
 const traceBeforeExpression = function (templ, expressionPath, state) {
   const { ids: { dbux } } = state;
-  const traceId = state.addTrace(expressionPath);
+  const traceId = state.addTrace(expressionPath, TraceType.BeforeExpression);
   replaceWithTemplate(templ, expressionPath, {
     dbux,
     traceId: t.numericLiteral(traceId),
@@ -259,11 +276,11 @@ const instrumentors = {
     traceBeforeExpression(path, state);
   },
   Statement(path, state) {
-    const trace = buildTraceNoValue(path, state);
+    const trace = buildTraceNoValue(path, state, TraceType.Statement);
     path.insertBefore(trace);
   },
   Block(path, state) {
-    const trace = buildTraceNoValue(path, state);
+    const trace = buildTraceNoValue(path, state, TraceType.BlockStart);
     path.insertBefore(trace);
     // if (!t.isBlockStatement(path)) {
     //   // make a new block
@@ -291,7 +308,7 @@ function enter(path, state, cfg) {
     return;
   }
 
-  const traceTypeName = TraceTypes.nameFromForce(traceType);
+  const traceTypeName = TraceInstrumentationType.nameFromForce(traceType);
   if (traceType) {
     if (!instrumentors[traceTypeName]) {
       err('instrumentors are missing TraceType:', traceTypeName);

@@ -1,5 +1,5 @@
 import Stack from './Stack';
-import { logInternalError } from './log/logger';
+import { logInternalError } from 'dbux-common/src/log/logger';
 
 function mergeStacks(dst, src) {
   if ((src?.getDepth() || 0) > 0) {

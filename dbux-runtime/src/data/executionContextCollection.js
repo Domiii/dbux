@@ -2,33 +2,26 @@ import Enum from 'dbux-common/src/util/Enum';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 import ExecutionContext from './ExecutionContext';
 import staticContextCollection from './staticContextCollection';
+import Collection from './Collection';
 
 
-export const ExecutionContextUpdateType = new Enum({
-  Push: 1
-});
-
-export class ExecutionContextCollection {
+export class ExecutionContextCollection extends Collection {
   _lastContextId = -1;
-  _contexts = [null];
   _lastOrderIds = [];
 
-  getContext(contextId) {
-    return this._contexts[contextId];
+  constructor() {
+    super('executionContexts');
   }
-
-  getById(contextId) {
-    return this._contexts[contextId];
-  }
-
 
   getStaticContext(contextId) {
-    const context = this.getContext(contextId);
+    const context = this.getById(contextId);
     const {
       staticContextId
     } = context;
     return staticContextCollection.getById(staticContextId);
   }
+
+  // Write operations
 
   /**
    * @return {ExecutionContext}
@@ -50,10 +43,10 @@ export class ExecutionContextCollection {
    * @return {ExecutionContext}
    */
   executeCallback(stackDepth, scheduledContextId, parentContextId) {
-    const schedulerContext = this.getContext(scheduledContextId);
+    const schedulerContext = this.getById(scheduledContextId);
     const { staticContextId } = schedulerContext;
     const orderId = this._genOrderId(staticContextId);
-    const contextId = this._contexts.length;
+    const contextId = this._all.length;
 
     const context = ExecutionContext.allocate(
       ExecutionContextType.ExecuteCallback, stackDepth, contextId,
@@ -75,7 +68,7 @@ export class ExecutionContextCollection {
    * (2) or when another interrupt occurs.
    */
   resume(parentContextId, inProgramStaticId, schedulerId, stackDepth) {
-    const parentContext = this.getContext(parentContextId);
+    const parentContext = this.getById(parentContextId);
     const { staticContextId: parenStaticContextId } = parentContext;
     const { programId } = staticContextCollection.getById(parenStaticContextId);
     const context = this._create(ExecutionContextType.Resume,
@@ -98,7 +91,7 @@ export class ExecutionContextCollection {
   _create(type, stackDepth, programId, inProgramStaticId, parentContextId, schedulerId = null) {
     const { staticId: staticContextId } = staticContextCollection.getContext(programId, inProgramStaticId);
     const orderId = this._genOrderId(staticContextId);
-    const contextId = this._contexts.length;
+    const contextId = this._all.length;
 
     const context = ExecutionContext.allocate(
       type, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId);
@@ -125,18 +118,8 @@ export class ExecutionContextCollection {
   }
 
   _push(context) {
-    this._contexts.push(context);
-
-    this._commitChange(context.contextId, ExecutionContextUpdateType.Push, context);
-  }
-
-
-  // ###########################################################################
-  // Remote
-  // ###########################################################################
-
-  _commitChange(contextId, updateType, state) {
-    // TODO: batch and then send to remote
+    this._all.push(context);
+    this.send(context);
   }
 
 }
