@@ -52,13 +52,12 @@ class TraceCollection extends Collection {
 
 
 export class DataProvider {
-  /**
-   * Usage example: `dataProvider.collections.staticContexts.getById(id)`
-   * 
-   * @public
-   * @type {Collection[]}
-   */
-  collections;
+  // /**
+  //  * Usage example: `dataProvider.collections.staticContexts.getById(id)`
+  //  * 
+  //  * @public
+  //  */
+  // collections;
 
   /**
    * @private
@@ -93,15 +92,35 @@ export class DataProvider {
       logInternalError('invalid data must be (but is not) object -', allData);
     }
 
+    this._addData(allData);
+  }
+
+  _addData(allData) {
     for (const collectionName in allData) {
       const collection = this.collections[collectionName];
       if (!collection) {
         logInternalError('received data referencing invalid collection -', collectionName);
+        delete this.collections[collectionName];
         continue;
       }
 
       const data = allData[collectionName];
       collection.add(data);
+    }
+  }
+
+  _postAdd(allData) {
+    // process new data (most importantly: indexes)
+    for (const collectionName in allData) {
+      const collection = this.collections[collectionName];
+      const data = allData[collectionName];
+      collection.processNewEntries(data);
+    }
+
+    // fire event listeners
+    for (const collectionName in allData) {
+      const collection = this.collections[collectionName];
+      const data = allData[collectionName];
       this._notifyData(collectionName, data);
     }
   }
