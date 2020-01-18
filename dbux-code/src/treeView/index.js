@@ -3,19 +3,19 @@ import { EventNodeProvider } from './treeData.js';
 
 const log = (...args) => console.log('[dbux-code][treeView]', ...args)
 
-const eventLogProvider = new EventNodeProvider([]);
-vscode.window.registerTreeDataProvider('dbuxEvents', eventLogProvider);
-
-export function refreshTreeView(){
-  eventLogProvider.refresh()
-}
+let eventLogProvider
 
 export function initTreeView(context, dataProvider){
 
-  dataProvider.onData('executionContexts', function(data){
-    log('Get data from dataProvider', data)
-  })
+  eventLogProvider = new EventNodeProvider([], dataProvider);
+  vscode.window.registerTreeDataProvider('dbuxEvents', eventLogProvider);
+
+  dataProvider.onData('executionContexts', eventLogProvider.update)
 
   log('Sucessfully "initTreeView".')
   
 }
+
+// export function refreshTreeView(){
+//   eventLogProvider.refresh()
+// }
