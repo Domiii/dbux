@@ -1,6 +1,6 @@
 import { initCodeDeco } from './codeDeco';
 
 
-export function initCodeControl() {
-  initCodeDeco();
+export function initCodeControl(context) {
+  initCodeDeco(context);
 }
