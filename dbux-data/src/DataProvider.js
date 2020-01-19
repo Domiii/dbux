@@ -3,7 +3,9 @@ import Trace from 'dbux-common/src/core/data/Trace';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import DataEntry from 'dbux-common/src/core/data/DataEntry';
 import Collection from './Collection';
-import TracesByFileIndex from './indexes/TracesByFileIndex';
+import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
+import Queries from './queries/Queries';
+import Indexes from './indexes/Indexes';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
@@ -44,8 +46,6 @@ function deserializeValue(value) {
 class TraceCollection extends Collection<Trace> {
   constructor(dp) {
     super('traces', dp);
-
-    this.indexes.byFile = new TracesByFileIndex();
   }
 
   add(entries) {
@@ -71,9 +71,13 @@ export default class DataProvider {
    * @private
    */
   _dataEventListeners : DataCallback = {};
+  versions : number[] = [];
 
   constructor() {
     this.clear();
+
+    this.queries = new Queries();
+    this.indexes = new Indexes();
   }
 
   /**
@@ -107,12 +111,14 @@ export default class DataProvider {
     for (const collectionName in allData) {
       const collection = this.collections[collectionName];
       if (!collection) {
+        // should never happen
         logError('received data referencing invalid collection -', collectionName);
         delete this.collections[collectionName];
         continue;
       }
 
       const data = allData[collectionName];
+      ++this.versions[collection._id];    // update version
       collection.add(data);
     }
   }
@@ -120,9 +126,9 @@ export default class DataProvider {
   _postAdd(allData) {
     // process new data (most importantly: indexes)
     for (const collectionName in allData) {
-      const collection = this.collections[collectionName];
+      const index = this.indexes[collectionName];
       const data = allData[collectionName];
-      collection.processNewEntries(data);
+      index._processNewEntries(data);
     }
 
     // fire event listeners
@@ -147,18 +153,4 @@ export default class DataProvider {
       listeners.forEach((cb) => cb(data));
     }
   }
-}
-
-
-let defaultDataProvider : DataProvider;
-
-/**
- * Returns the current default DataProvider.
- */
-export function getDefaultDataProvider() : DataProvider {
-  if (!defaultDataProvider) {
-    defaultDataProvider = new DataProvider();
-  }
-
-  return defaultDataProvider;
 }

@@ -1,5 +1,4 @@
-import DataProvider from '../DataProvider';
-import Index from '../Index';
+import CollectionIndex from '../../indexes/CollectionIndex';
 
 import Trace from 'dbux-common/src/core/data/Trace';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
@@ -26,9 +25,9 @@ function makeKey(dp: DataProvider, trace: Trace) {
 }
 
 
-export default class TracesByFileIndex extends Index<Trace> {
+export default class TracesByFileIndex extends CollectionIndex<Trace> {
   constructor() {
-    super('byFile');
+    super('traces', 'byFile');
   }
 
   makeKey = makeKey

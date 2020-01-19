@@ -24,29 +24,37 @@ const renderDecorations = makeDebounce(function updateDecorations() {
 	}
 
 	const fpath = activeEditor.document.uri.fsPath;
-	const programId = dataProvider.queries.programIdFromFilePath(fpath);
+	const programId = dataProvider.queries.programIdByFilePath(fpath);
 	if (!programId) {
 		debug('Program not executed', fpath);
 		return;
 	}
-	const traces = dataProvider.collections.traces.indexes.byFile[programId];
+	const traces = dataProvider.indexes.traces.byFile.get(programId);
 	if (!traces) {
-		debug('No traces from file', fpath);
+		debug('No traces in file', fpath);
 		return;
 	}
 
 	const decorations = [];
-	
-	while (match = regEx.exec(text)) {
-		if (match[0].length < 3) {
-			const startPos = activeEditor.document.positionAt(match.index);
-			const endPos = activeEditor.document.positionAt(match.index + match[0].length);
-			const decoration = { 
-				range: new Range(startPos, endPos), 
-				hoverMessage: 'Number **' + match[0] + '**' 
-			};
-			decorations.push(decoration);
-		}
+
+	for (const trace of traces) {
+		const {
+			staticTraceId,
+			value
+		} = trace;
+		const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
+		const {
+			displayName,
+			loc: { start, end }
+		} = staticTrace;
+
+		const startPos = activeEditor.document.positionAt(start);
+		const endPos = activeEditor.document.positionAt(end);
+		const decoration = {
+			range: new Range(startPos, endPos),
+			hoverMessage: `Trace **${displayName}** (${value})`
+		};
+		decorations.push(decoration);
 	}
 
 	activeEditor.setDecorations(decorations, TraceDecorationType);

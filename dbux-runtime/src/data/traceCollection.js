@@ -59,6 +59,8 @@ class TraceCollection extends Collection {
     const {
       programId
     } = staticContext;
+
+    // globally unique staticTraceId
     trace.staticTraceId = staticTraceCollection.getTraceId(programId, inProgramStaticTraceId);
 
     // generate new traceId and store

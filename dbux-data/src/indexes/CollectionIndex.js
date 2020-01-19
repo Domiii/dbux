@@ -1,10 +1,11 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 
-export default class Index<T> {
+export default class CollectionIndex<T> {
   name;
   _byKey: T[][] = [];
 
-  constructor(name) {
+  constructor(collectionName, name) {
+    this.collectionName = collectionName;
     this.name = name;
     this.log = newLogger(`${name} (Index)`);
   }
@@ -33,7 +34,7 @@ export default class Index<T> {
     }
   }
 
-  getByKey(key : number) : T[] {
+  get(key : number) : T[] {
     return this._byKey[key] || null;
   }
 
