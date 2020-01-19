@@ -1,4 +1,4 @@
-import TraceType, {  } from 'dbux-common/src/core/constants/TraceType';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 import staticTraceCollection from './staticTraceCollection';
 import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
@@ -6,6 +6,7 @@ import staticProgramContextCollection from './staticProgramContextCollection';
 import { logInternalError } from 'dbux-common/src/log/logger';
 import { EmptyArray } from 'dbux-common/src/util/misc';
 import Collection from './Collection';
+import pools from './pools';
 
 const inspectOptions = { depth: 0, colors: true };
 function _inspect(arg) {
@@ -43,7 +44,7 @@ class TraceCollection extends Collection {
       throw new Error('missing inProgramStaticTraceId');
     }
 
-    const trace = Trace.allocate();
+    const trace = pools.traces.allocate();
     trace.contextId = contextId;
     trace.type = type;
     trace.value = processedValue;

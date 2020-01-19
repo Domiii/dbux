@@ -3,6 +3,7 @@ import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContex
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import staticContextCollection from './staticContextCollection';
 import Collection from './Collection';
+import pools from './pools';
 
 
 export class ExecutionContextCollection extends Collection {
@@ -48,7 +49,7 @@ export class ExecutionContextCollection extends Collection {
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 
-    const context = ExecutionContext.allocate(
+    const context = pools.executionContexts.allocate(
       ExecutionContextType.ExecuteCallback, stackDepth, contextId,
       staticContextId, orderId, parentContextId, scheduledContextId);
     this._push(context);
@@ -93,7 +94,7 @@ export class ExecutionContextCollection extends Collection {
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 
-    const context = ExecutionContext.allocate(
+    const context = pools.executionContexts.allocate(
       type, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId);
     this._push(context);
     return context;

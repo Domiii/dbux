@@ -1,8 +1,9 @@
-import { logInternalError, newLogger, logDebug } from 'dbux-common/src/log/logger';
+import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import DataEntry from 'dbux-common/src/core/data/DataEntry';
 import Collection from './Collection';
+import TracesByFileIndex from './indexes/TracesByFileIndex';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
@@ -36,19 +37,21 @@ class ExecutionContextCollection extends Collection<ExecutionContext> {
  * The runtime `traceCollection` currently uses JSON for serializing (and copying) the value.
  * Here we need to parse it back.
  */
-function reconstructValue(value) {
+function deserializeValue(value) {
   return JSON.parse(value);
 }
 
 class TraceCollection extends Collection<Trace> {
   constructor(dp) {
     super('traces', dp);
+
+    this.indexes.byFile = new TracesByFileIndex();
   }
 
   add(entries) {
     for (const entry of entries) {
       if (entry.value) {
-        entry.value = reconstructValue(entry.value);
+        entry.value = deserializeValue(entry.value);
       }
     }
     super.add(entries);
@@ -94,7 +97,7 @@ export default class DataProvider {
     debug('received', allData);
 
     if (!allData || allData.constructor.name !== 'Object') {
-      logInternalError('invalid data must be (but is not) object -', allData);
+      logError('invalid data must be (but is not) object -', allData);
     }
 
     this._addData(allData);
@@ -104,7 +107,7 @@ export default class DataProvider {
     for (const collectionName in allData) {
       const collection = this.collections[collectionName];
       if (!collection) {
-        logInternalError('received data referencing invalid collection -', collectionName);
+        logError('received data referencing invalid collection -', collectionName);
         delete this.collections[collectionName];
         continue;
       }

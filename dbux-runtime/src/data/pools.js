@@ -25,9 +25,12 @@ const pools = {
       return context;
     }
   },
+  
   traces: {
     allocate() {
       return new Trace();
     }
   }
 };
+
+export default pools;

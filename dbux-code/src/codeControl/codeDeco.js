@@ -8,27 +8,48 @@ import {
 	TextEditor
 } from 'vscode';
 
-import { DataProvider, getDefaultDataProvider } from 'dbux-data/src/DataProvider';
+import DataProvider, { getDefaultDataProvider } from 'dbux-data/src/DataProvider';
 import { makeDebounce } from 'dbux-common/src/util/scheduling'
+import { newLogger } from 'dbux-common/src/log/logger';
+
+const { log, debug, warn, error: logError } = newLogger('DBUX CodeDeco');
 
 let dataProvider: DataProvider;
 let activeEditor: TextEditor;
-
+let TraceDecorationType;
 
 const renderDecorations = makeDebounce(function updateDecorations() {
 	if (!activeEditor) {
 		return;
 	}
+
+	const fpath = activeEditor.document.uri.fsPath;
+	const programId = dataProvider.queries.programIdFromFilePath(fpath);
+	if (!programId) {
+		debug('Program not executed', fpath);
+		return;
+	}
+	const traces = dataProvider.collections.traces.indexes.byFile[programId];
+	if (!traces) {
+		debug('No traces from file', fpath);
+		return;
+	}
+
+	const decorations = [];
 	
 	while (match = regEx.exec(text)) {
 		if (match[0].length < 3) {
 			const startPos = activeEditor.document.positionAt(match.index);
 			const endPos = activeEditor.document.positionAt(match.index + match[0].length);
-			const decoration = { range: new Range(startPos, endPos), hoverMessage: 'Number **' + match[0] + '**' };
-			largeNumbers.push(decoration);
+			const decoration = { 
+				range: new Range(startPos, endPos), 
+				hoverMessage: 'Number **' + match[0] + '**' 
+			};
+			decorations.push(decoration);
 		}
 	}
-	activeEditor.setDecorations(traceDecorations, traceDecorations);
+
+	activeEditor.setDecorations(decorations, TraceDecorationType);
 });
 
 /**
@@ -40,51 +61,51 @@ const renderDecorations = makeDebounce(function updateDecorations() {
  * 
  */
 export function initCodeDeco(context) {
-	// dataProvider = getDefaultDataProvider();
-	// dataProvider.onData('traces', renderDecorations);
+	dataProvider = getDefaultDataProvider();
+	dataProvider.onData('traces', renderDecorations);
 
-	// // create a decorator type that we use to decorate small numbers
-	// const traceDecorationType = window.createTextEditorDecorationType({
-	// 	before: {
-	// 		textContent: '|',
-	// 		light: {
-	// 			color: 'darkred'
-	// 		},
-	// 		dark: {
-	// 			color: 'lightred'
-	// 		}
-	// 	},
-	// 	cursor: 'crosshair',
-	// 	// borderWidth: '1px',
-	// 	// borderStyle: 'solid',
-	// 	overviewRulerColor: 'blue',
-	// 	overviewRulerLane: OverviewRulerLane.Right,
-	// 	// light: {
-	// 	// 	// this color will be used in light color themes
-	// 	// 	borderColor: 'darkblue'
-	// 	// },
-	// 	// dark: {
-	// 	// 	// this color will be used in dark color themes
-	// 	// 	borderColor: 'lightblue'
-	// 	// }
-	// });
+	// create a decorator type that we use to decorate small numbers
+	TraceDecorationType = window.createTextEditorDecorationType({
+		before: {
+			textContent: '|',
+			light: {
+				color: 'darkred'
+			},
+			dark: {
+				color: 'lightred'
+			}
+		},
+		cursor: 'crosshair',
+		// borderWidth: '1px',
+		// borderStyle: 'solid',
+		overviewRulerColor: 'blue',
+		overviewRulerLane: OverviewRulerLane.Right,
+		// light: {
+		// 	// this color will be used in light color themes
+		// 	borderColor: 'darkblue'
+		// },
+		// dark: {
+		// 	// this color will be used in dark color themes
+		// 	borderColor: 'lightblue'
+		// }
+	});
 
-	// if (activeEditor) {
-	// 	renderDecorations();
-	// }
+	if (activeEditor) {
+		renderDecorations();
+	}
 
-	// window.onDidChangeActiveTextEditor(editor => {
-	// 	activeEditor = editor;
-	// 	if (editor) {
-	// 		renderDecorations();
-	// 	}
-	// }, null, context.subscriptions);
+	window.onDidChangeActiveTextEditor(editor => {
+		activeEditor = editor;
+		if (editor) {
+			renderDecorations();
+		}
+	}, null, context.subscriptions);
 
-	// workspace.onDidChangeTextDocument(event => {
-	// 	if (activeEditor && event.document === activeEditor.document) {
-	// 		renderDecorations();
-	// 	}
-	// }, null, context.subscriptions);
+	workspace.onDidChangeTextDocument(event => {
+		if (activeEditor && event.document === activeEditor.document) {
+			renderDecorations();
+		}
+	}, null, context.subscriptions);
 }
 
 
