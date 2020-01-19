@@ -3,7 +3,7 @@ import Enum from '../../util/Enum';
 /**
  * 
  */
-const TraceType = new Enum({
+let TraceType = {
   StartProgram: 1,
 
   PushImmediate: 2,
@@ -20,7 +20,9 @@ const TraceType = new Enum({
   ExpressionResult: 10,
   Statement: 11,
   BlockStart: 12
-});
+};
+
+TraceType = new Enum(TraceType);
 
 const pushTypes = new Array(TraceType.getCount()).map(_ => false);
 pushTypes[TraceType.PushImmediate] = true;

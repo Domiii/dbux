@@ -13,12 +13,6 @@ function _inspect(arg) {
   return f(arg, inspectOptions);
 }
 
-class Trace {
-  static allocate() {
-    // TODO: use object pooling
-    return new Trace();
-  }
-}
 
 /**
  * Recorded objects need careful handling:

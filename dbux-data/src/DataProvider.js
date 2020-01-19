@@ -1,7 +1,12 @@
 import { logInternalError, newLogger, logDebug } from 'dbux-common/src/log/logger';
+import Trace from 'dbux-common/src/core/data/Trace';
+import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import DataEntry from 'dbux-common/src/core/data/DataEntry';
 import Collection from './Collection';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
+
+export type DataCallback = (DataEntry[]) => void;
 
 class StaticProgramContextCollection extends Collection {
   constructor(dp) {
@@ -21,7 +26,7 @@ class StaticTraceCollection extends Collection {
   }
 }
 
-class ExecutionContextCollection extends Collection {
+class ExecutionContextCollection extends Collection<ExecutionContext> {
   constructor(dp) {
     super('executionContexts', dp);
   }
@@ -35,7 +40,7 @@ function reconstructValue(value) {
   return JSON.parse(value);
 }
 
-class TraceCollection extends Collection {
+class TraceCollection extends Collection<Trace> {
   constructor(dp) {
     super('traces', dp);
   }
@@ -51,7 +56,7 @@ class TraceCollection extends Collection {
 }
 
 
-export class DataProvider {
+export default class DataProvider {
   // /**
   //  * Usage example: `dataProvider.collections.staticContexts.getById(id)`
   //  * 
@@ -62,7 +67,7 @@ export class DataProvider {
   /**
    * @private
    */
-  _dataEventListeners = {};
+  _dataEventListeners : DataCallback = {};
 
   constructor() {
     this.clear();
@@ -85,7 +90,7 @@ export class DataProvider {
   /**
    * Add given data (of different collections) to this `DataProvier`
    */
-  addData(allData) {
+  addData(allData): { [string]: DataEntry[] } {
     debug('received', allData);
 
     if (!allData || allData.constructor.name !== 'Object') {
@@ -128,12 +133,12 @@ export class DataProvider {
   /**
    * Add a data event listener to given collection.
    */
-  onData(collectionName, cb) {
+  onData(collectionName : string, cb : DataCallback ) {
     const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
     listeners.push(cb);
   }
 
-  _notifyData(collectionName, data) {
+  _notifyData(collectionName : string, data : DataEntry[]) {
     const listeners = this._dataEventListeners[collectionName];
     if (listeners) {
       listeners.forEach((cb) => cb(data));
@@ -142,14 +147,15 @@ export class DataProvider {
 }
 
 
-let defaultDataProvider// : DataProvider;
+let defaultDataProvider : DataProvider;
 
 /**
  * Returns the current default DataProvider.
  */
-export function getDefaultDataProvider() {
+export function getDefaultDataProvider() : DataProvider {
   if (!defaultDataProvider) {
     defaultDataProvider = new DataProvider();
   }
+
   return defaultDataProvider;
 }

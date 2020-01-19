@@ -1,11 +1,15 @@
-export default class Index {
+export default class Index<T> {
   name;
-  keygen;
 
-  constructor(name, keygen) {
+  constructor(name) {
     this.name = name;
-    this.keygen = keygen;
   }
 
-  
+  /**
+   * Returns a unique key (number) for given entry.
+   */
+  makeKey(dp, entry : T) : number {
+    throw new Error(`abstract method not implemented: ${this.constructor.name}.makeKey`);
+  }
+
 }

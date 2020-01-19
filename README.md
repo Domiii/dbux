@@ -18,7 +18,7 @@
 `# babel plugins` npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
 `# babel runtime` npm i -S core-js@3 @babel/runtime
 `# eslint` npm i -D eslint eslint-config-esnext
-`# flow` npm i -D flow-bin @babel/preset-flow eslint-plugin-flowtype && npx flow init && npx flow
+`# flow` npm i -D flow-bin @babel/preset-flow eslint-plugin-flowtype && npx flow init #&& npx flow
 `# babel dev` npm i -D @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester && \
 ```
 
