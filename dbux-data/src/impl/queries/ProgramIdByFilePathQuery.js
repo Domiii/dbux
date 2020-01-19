@@ -3,8 +3,8 @@ import CachedQuery from '../../queries/CachedQuery';
 export default class ProgramIdByFilePathQuery extends CachedQuery {
   constructor() {
     super('programIdByFilePath', {
-      // adding new data does not affect already cached data
-      versionDependencies: []
+      // TODO: optimization (only need to flush `null` values on version update)
+      versionDependencies: ['staticProgramContexts']
     });
   }
 

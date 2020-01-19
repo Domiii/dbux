@@ -118,12 +118,30 @@ npm install serve && `# installing it first makes npx run instantly everytime` \
 npx serve
 ```
 
-# Technical Points
+# Implementation
+
+## dbux-babel-plugin
 * Instrumentation
    * try/finally
    * top level extraction
    * 
-* 
+
+## dbux-data
+* Indexes
+   * [shape] an index is a complete partitioning of all data of one particular collection
+   * [storage method] all new data is categorized into all matching indexes
+   * [storage invalidation] previously indexed data will generally never get evicted
+   * [key type] (currently) keys of indices can only be numbers
+      * TODO: add string keys as well, without reducing performance of number-based indices
+   * [storage type] objects in indexes are always entries of `Collection`s
+* Queries
+   * [shape] usually we want Queries to be `CachedQueries` (currently all are) which perform an expensive computation and then store the result thereof
+   * [storage method] only results of individual queries are cached when queried (not cached when data comes in)
+   * [storage invalidation] cache will be invalidated when new data comes in (unless `cfg.versionDependencies` is empty)
+   * [key type] the keys of cached query results are the input arguments ("`args`")
+      * that's why `args` should ideally be a single primitive data type or a flat array of primitive data types
+   * [storage type] queries can return and cache any data type
+
 
 
 # Known Issues
