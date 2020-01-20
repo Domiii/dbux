@@ -8,9 +8,11 @@ import {
 	TextEditor
 } from 'vscode';
 
-import DataProvider, { getDefaultDataProvider } from 'dbux-data/src/DataProvider';
+import DataProvider from 'dbux-data/src/DataProvider';
+import { getDefaultDataProvider } from 'dbux-data/src/dataProviderImpl';
 import { makeDebounce } from 'dbux-common/src/util/scheduling'
 import { newLogger } from 'dbux-common/src/log/logger';
+import { getCodeRangeFromLoc } from '../util/codeUtil';
 
 const { log, debug, warn, error: logError } = newLogger('DBUX CodeDeco');
 
@@ -45,19 +47,17 @@ const renderDecorations = makeDebounce(function updateDecorations() {
 		const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
 		const {
 			displayName,
-			loc: { start, end }
+			loc
 		} = staticTrace;
 
-		const startPos = activeEditor.document.positionAt(start);
-		const endPos = activeEditor.document.positionAt(end);
 		const decoration = {
-			range: new Range(startPos, endPos),
+			range: getCodeRangeFromLoc(loc),
 			hoverMessage: `Trace **${displayName}** (${value})`
 		};
 		decorations.push(decoration);
 	}
 
-	activeEditor.setDecorations(decorations, TraceDecorationType);
+	activeEditor.setDecorations(TraceDecorationType, decorations);
 });
 
 /**
@@ -70,22 +70,22 @@ const renderDecorations = makeDebounce(function updateDecorations() {
  */
 export function initCodeDeco(context) {
 	dataProvider = getDefaultDataProvider();
-	dataProvider.onData('traces', renderDecorations);
 
 	// create a decorator type that we use to decorate small numbers
 	TraceDecorationType = window.createTextEditorDecorationType({
 		before: {
-			textContent: '|',
-			light: {
-				color: 'darkred'
-			},
-			dark: {
-				color: 'lightred'
-			}
+			contentText: '|',
+			color: 'red',
+			// light: {
+			// 	color: 'darkred'
+			// },
+			// dark: {
+			// 	color: 'lightred'
+			// }
 		},
 		cursor: 'crosshair',
-		// borderWidth: '1px',
-		// borderStyle: 'solid',
+		borderWidth: '1px',
+		borderStyle: 'solid',
 		overviewRulerColor: 'blue',
 		overviewRulerLane: OverviewRulerLane.Right,
 		// light: {
@@ -98,10 +98,18 @@ export function initCodeDeco(context) {
 		// }
 	});
 
+	// hook up all events
+
+	activeEditor = window.activeTextEditor;
 	if (activeEditor) {
+		// initial render
 		renderDecorations();
 	}
 
+	// data changed
+	dataProvider.onData('traces', renderDecorations);
+
+	// active window changed
 	window.onDidChangeActiveTextEditor(editor => {
 		activeEditor = editor;
 		if (editor) {
@@ -109,11 +117,12 @@ export function initCodeDeco(context) {
 		}
 	}, null, context.subscriptions);
 
-	workspace.onDidChangeTextDocument(event => {
-		if (activeEditor && event.document === activeEditor.document) {
-			renderDecorations();
-		}
-	}, null, context.subscriptions);
+	// text content changed?
+	// workspace.onDidChangeTextDocument(event => {
+	// 	if (activeEditor && event.document === activeEditor.document) {
+	// 		renderDecorations();
+	// 	}
+	// }, null, context.subscriptions);
 }
 
 

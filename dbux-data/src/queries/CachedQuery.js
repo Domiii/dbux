@@ -14,8 +14,19 @@ class QueryCache {
   _cache = new Map();
   _lastVersions;
 
-  constructor(versionDependencies) {
+  constructor(versionDependencies, versions) {
     this._versionDependencies = versionDependencies;
+    
+    // copy `versions` array
+    this._lastVersions = new Array(versions.length); 
+    this._copyVersions(versions);
+  }
+
+  _copyVersions(newVersions) {
+    for (let i = 0; i < this._versionDependencies.length; ++i) {
+      const id = this._versionDependencies[i];
+      this._lastVersions[id] = newVersions[id];
+    }
   }
 
   _checkVersions(newVersions) {
@@ -23,7 +34,7 @@ class QueryCache {
       const id = this._versionDependencies[i];
       if (this._lastVersions[id] !== newVersions[id]) {
         // new version -> clear cache; (probably) need to do everything again
-        this._lastVersions = newVersions;
+        this._copyVersions(newVersions);
         this._cache.clear();
         break;
       }
@@ -86,7 +97,7 @@ export default class CachedQuery extends Query {
     // NOTE: sorting makes it more cache-efficient when looping over the version arrays
     versionDependencies.sort((b, a) => b - a);
     
-    this._cache = new QueryCache(versionDependencies);
+    this._cache = new QueryCache(versionDependencies, dp.versions);
   }
 
   executor = (dp, args) => this._cache.performQuery(dp, args, this);

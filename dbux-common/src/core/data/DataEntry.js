@@ -1,4 +1,4 @@
 
-type DataEntry = any;
+// type DataEntry = any;
 
-export default DataEntry;
+// export default DataEntry;

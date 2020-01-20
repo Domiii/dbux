@@ -1,5 +1,4 @@
 import ExecutionContextType from '../constants/ExecutionContextType';
-import DataEntry from './DataEntry';
 
 // TODO: the following code won't work with webpack since webpack runs in node, gathering all dependencies; would need more configuration parameters
 // let _performance;
@@ -12,7 +11,7 @@ import DataEntry from './DataEntry';
 //   _performance = require('perf_hooks').performance;
 // }
 
-export default class ExecutionContext implements DataEntry {
+export default class ExecutionContext {
   contextType : ExecutionContextType;
   stackDepth: number;
   contextId : number;

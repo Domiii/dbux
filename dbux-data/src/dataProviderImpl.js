@@ -14,10 +14,12 @@ export function newDataProvider() {
   const dataProvider = new DataProvider();
   
   // indexes
-  dataProvider.indexes._addIndex(new TracesByFileIndex());
+  dataProvider.addIndex(new TracesByFileIndex());
 
   // queries
-  dataProvider.queries._addQuery(new ProgramIdByFilePathQuery());
+  dataProvider.addQuery(new ProgramIdByFilePathQuery());
+
+  return dataProvider;
 }
 
 /**

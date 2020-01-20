@@ -10,27 +10,28 @@ export default class CollectionIndex<T> {
     this.log = newLogger(`${name} (Index)`);
   }
 
-  addEntries(entries : T[]) {
+  addEntries(dp, entries : T[]) {
     const { makeKey } = this;
     for (const entry of entries) {
-      const key = makeKey(this.dp, entry);
+      const key = makeKey(dp, entry);
       if (key === undefined) {
         this.log.warn(`makeKey returned undefined`);
       }
-      const byKey = (this._byKey[name] = this._byKey[name] || []);
 
-      const currentCount = byKey.length;
+      const currentCount = this._byKey.length;
       // for optimization reasons, we are currently only accepting simple number indexes
-      if (isNaN(key) || key < 0 || (key > 1e6 && key < byKey.length/2)) {
+      if (isNaN(key) || key < 0 || (key > 1e6 && key < this._byKey.length/2)) {
         this.log.error('invalid key for index (currently only dense number spaces are supported):', key);
         continue;
       }
       if (key >= currentCount) {
-        for (let i = byKey.length; i <= key; ++i) {
-          byKey[i] = null;
+        for (let i = this._byKey.length; i <= key; ++i) {
+          this._byKey[i] = null;
         }
       }
-      byKey[key] = entry;
+
+      const byKey = (this._byKey[key] = this._byKey[key] || []);
+      byKey.push(entry);
     }
   }
 

@@ -1,5 +1,4 @@
 import { newLogger } from 'dbux-common/src/log/logger';
-import DataEntry from 'dbux-common/src/core/data/DataEntry';
 import DataProvider from './DataProvider';
 
 export default class Collection<T> {
@@ -17,7 +16,7 @@ export default class Collection<T> {
     this.name = name;
     this.dp = dp;
 
-    this._id = dp.versions.length;
+    this._id = dp.versions.length; // dp.versions[_id] = 1
     dp.versions.push(1);
   }
 
@@ -32,6 +31,10 @@ export default class Collection<T> {
   // ###########################################################################
   // Reads
   // ###########################################################################
+  
+  get all() {
+    return this._all;
+  }
 
   getAll() : T[] {
     return this._all;

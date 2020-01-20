@@ -1,7 +1,6 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
-import DataEntry from 'dbux-common/src/core/data/DataEntry';
 import Collection from './Collection';
 import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
 import Queries from './queries/Queries';
@@ -9,7 +8,6 @@ import Indexes from './indexes/Indexes';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
-export type DataCallback = (DataEntry[]) => void;
 
 class StaticProgramContextCollection extends Collection {
   constructor(dp) {
@@ -70,7 +68,7 @@ export default class DataProvider {
   /**
    * @private
    */
-  _dataEventListeners : DataCallback = {};
+  _dataEventListeners : (any) => void = {};
   versions : number[] = [];
 
   constructor() {
@@ -78,6 +76,14 @@ export default class DataProvider {
 
     this.queries = new Queries();
     this.indexes = new Indexes();
+  }
+
+  /**
+   * Add a data event listener to given collection.
+   */
+  onData(collectionName : string, cb : ([]) => void ) {
+    const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
+    listeners.push(cb);
   }
 
   /**
@@ -97,7 +103,7 @@ export default class DataProvider {
   /**
    * Add given data (of different collections) to this `DataProvier`
    */
-  addData(allData): { [string]: DataEntry[] } {
+  addData(allData): { [string]: any[] } {
     debug('received', allData);
 
     if (!allData || allData.constructor.name !== 'Object') {
@@ -105,6 +111,7 @@ export default class DataProvider {
     }
 
     this._addData(allData);
+    this._postAdd(allData);
   }
 
   _addData(allData) {
@@ -121,14 +128,18 @@ export default class DataProvider {
       ++this.versions[collection._id];    // update version
       collection.add(data);
     }
-  }
+  } 
 
   _postAdd(allData) {
     // process new data (most importantly: indexes)
     for (const collectionName in allData) {
-      const index = this.indexes[collectionName];
-      const data = allData[collectionName];
-      index._processNewEntries(data);
+      const indexes = this.indexes[collectionName];
+      if (indexes) {
+        const data = allData[collectionName];
+        for (const name in indexes) {
+          indexes[name].addEntries(this, data);
+        }
+      }
     }
 
     // fire event listeners
@@ -139,18 +150,20 @@ export default class DataProvider {
     }
   }
 
-  /**
-   * Add a data event listener to given collection.
-   */
-  onData(collectionName : string, cb : DataCallback ) {
-    const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
-    listeners.push(cb);
-  }
-
-  _notifyData(collectionName : string, data : DataEntry[]) {
+  _notifyData(collectionName : string, data : []) {
     const listeners = this._dataEventListeners[collectionName];
     if (listeners) {
       listeners.forEach((cb) => cb(data));
     }
+  }
+
+
+
+  addQuery(newQuery) {
+    this.queries._addQuery(this, newQuery);
+  }
+
+  addIndex(newIndex) {
+    this.indexes._addIndex(newIndex);
   }
 }

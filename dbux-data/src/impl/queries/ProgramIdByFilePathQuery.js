@@ -1,4 +1,7 @@
 import CachedQuery from '../../queries/CachedQuery';
+import { arePathsIdenticalDontResolve } from 'dbux-common/src/util/fileUtil';
+import path from 'path';
+
 
 export default class ProgramIdByFilePathQuery extends CachedQuery {
   constructor() {
@@ -9,6 +12,8 @@ export default class ProgramIdByFilePathQuery extends CachedQuery {
   }
 
   execute(dp, fpath) {
-    return dp.collections.staticProgramContexts.all.find(e => e.filePath === fpath)?.programId;
+    return dp.collections.staticProgramContexts.find(e => 
+      arePathsIdenticalDontResolve(e.filePath, fpath)
+    )?.programId;
   }
 }
