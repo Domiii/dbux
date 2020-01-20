@@ -6,6 +6,23 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "dbux-run",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}/dbux-cli",
+			"sourceMaps": true,
+			"restart": true,
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux-run",
+			"args": [
+				"${file}"
+			],
+			"protocol": "inspector",
+			"trace": true,
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+		},
+		{
 			// debugging of Chrome-bound code - https://github.com/Microsoft/vscode-chrome-debug
 			"name": "chrome todomvc",
 			"type": "chrome",
@@ -73,7 +90,7 @@
 			"internalConsoleOptions": "neverOpen",
 		},
 		{
-			"name": "instrument file",
+			"name": "dbux-instrument",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}/dbux-babel-plugin",
@@ -94,24 +111,6 @@
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen"
-		},
-		{
-			"name": "debug sample",
-			"type": "node",
-			"env": {
-				"debug": "module"
-			},
-			"request": "launch",
-			"cwd": "${workspaceFolder}/samples",
-			// "cwd": "${fileDirname}",
-			"sourceMaps": true,
-			"restart": true,
-			"program": "${file}",
-			"protocol": "inspector",
-			"trace": true,
-			"disableOptimisticBPs": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
 		},
 		{
 			"name": "npm run build-debug",

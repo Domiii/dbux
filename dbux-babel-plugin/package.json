@@ -36,6 +36,7 @@
     "@babel/plugin-syntax-flow": "^7.7.4",
     "@babel/plugin-transform-runtime": "^7.7.5",
     "@babel/preset-env": "^7.7.5",
+    "@babel/preset-flow": "^7.8.3",
     "@babel/register": "^7.7.7",
     "@babel/template": "^7.7.4",
     "@babel/traverse": "^7.7.4",
@@ -67,8 +68,8 @@
     "babel-plugin"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.7.5",
-    "core-js": "^3.4.7",
+    "@babel/runtime": "^7.7.7",
+    "core-js": "^3.6.1",
     "dbux-common": "file:../dbux-common"
   },
   "_moduleAliases": {}

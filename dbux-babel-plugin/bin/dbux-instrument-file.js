@@ -13,7 +13,7 @@ const { file } = argv;
 const inputCode = fs.readFileSync(file, 'utf8');
 
 
-const plugin = require(__dirname + '/../src/babelInclude');
+const dbuxBabelPlugin = require(__dirname + '/../src/babelInclude');
 
 
 const babelOptions = {
@@ -22,7 +22,7 @@ const babelOptions = {
   configFile: false,
   filename: file,
   plugins: [
-    plugin,
+    dbuxBabelPlugin,
     [ 
       "@babel/plugin-proposal-class-properties",
       {

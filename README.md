@@ -143,6 +143,14 @@ npx serve
    * [storage type] queries can return and cache any data type
 
 
+# Projects
+* p1: todomvc (vanilla-es6)
+   * npm run p1-install
+   * npm run p1-start (starts web server)
+   * open in browser: http://localhost:3030
+      * (or: in VSCode go to debug menu and run "chrome todomvc" to enable debugging the runtime in VSCode)
+
+
 
 # Known Issues
 
