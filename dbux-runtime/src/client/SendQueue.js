@@ -38,8 +38,9 @@ class SendQueue {
   flush = () => {
     this.timer = null;
     if (this.client.isConnected()) {
-      this.client.sendNow(this.buffers);
-      this.clear();
+      if (this.client.sendNow(this.buffers)) {
+        this.clear();
+      }
     }
   }
 }

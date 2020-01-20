@@ -6,6 +6,11 @@
 	],
 	"settings": {
 		"codemetrics.basics.CodeLensHiddenUnder": 9,
-		"editor.tabSize": 2
+		"editor.tabSize": 2,
+		"javascript.validate.enable": false,
+		"workbench.colorCustomizations": {
+			"editorUnnecessaryCode.border": "#f0f",
+			"editorUnnecessaryCode.opacity": "#000f"
+		}
 	}
 }

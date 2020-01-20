@@ -47,59 +47,42 @@
 				"title": "Add"
 			},
 			{
-				"command": "dbuxEvents.editEntry",
-				"title": "Edit",
+				"command": "dbuxEvents.gotoEntry",
+				"title": "Goto",
 				"icon": {
-					"light": "resources/light/edit.svg",
-					"dark": "resources/dark/edit.svg"
-				}
-			},
-			{
-				"command": "dbuxEvents.testEntry",
-				"title": "MTest",
-				"icon": {
-					"light": "resources/light/edit.svg",
-					"dark": "resources/dark/edit.svg"
+					"light": "resources/light/boolean.svg",
+					"dark": "resources/dark/boolean.svg"
 				}
 			},
 			{
 				"command": "dbuxEvents.deleteEntry",
 				"title": "Delete"
-			},
-			{
-				"command": "dbuxExtension.dbux_jump",
-				"title": "dbuxJump"
-			}
-		]
-	},
-	"menus": {
-		"view/title": [
-			{
-				"command": "dbuxEvents.refreshEntry",
-				"when": "view == dbuxEvents",
-				"group": "navigation"
-			},
-			{
-				"command": "dbuxEvents.addEntry",
-				"when": "view == dbuxEvents"
 			}
 		],
-		"view/item/context": [
-			{
-				"command": "dbuxEvents.editEntry",
-				"when": "view == dbuxEvents && viewItem == event",
-				"group": "inline"
-			},
-			{
-				"command": "dbuxEvents.testEntry",
-				"when": "view == dbuxEvents && viewItem == event",
-				"group": "inline"
-			},
-			{
-				"command": "dbuxEvents.deleteEntry",
-				"when": "view == dbuxEvents && viewItem == event"
-			}
-		]
+		"menus": {
+			"view/title": [
+				{
+					"command": "dbuxEvents.refreshEntry",
+					"when": "view == dbuxEvents",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxEvents.addEntry",
+					"when": "view == dbuxEvents"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "dbuxEvents.gotoEntry",
+					"when": "view == dbuxEvents && viewItem == event",
+					"group": "inline"
+				},
+				{
+					"command": "dbuxEvents.deleteEntry",
+					"when": "view == dbuxEvents && viewItem == event"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"test": "node ./test/runTest.js",
@@ -123,6 +106,7 @@
 		"@babel/plugin-syntax-flow": "^7.7.4",
 		"@babel/plugin-transform-runtime": "^7.7.6",
 		"@babel/preset-env": "^7.7.7",
+		"@babel/preset-flow": "^7.8.3",
 		"@babel/register": "^7.7.7",
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.7",
@@ -131,6 +115,8 @@
 		"babel-loader": "^8.0.6",
 		"eslint": "^6.6.0",
 		"eslint-config-esnext": "^4.0.0",
+		"eslint-plugin-flowtype": "^4.6.0",
+		"flow-bin": "^0.116.1",
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
 		"typescript": "^3.6.4",
@@ -143,6 +129,7 @@
 		"core-js": "^3.6.2",
 		"dbux-common": "file:../dbux-common",
 		"dbux-data": "file:../dbux-data",
+		"lodash": "^4.17.15",
 		"socket.io": "^2.3.0",
 		"uws": "github:mmdevries/uws#2.4.0"
 	}

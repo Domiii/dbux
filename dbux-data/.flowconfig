@@ -1,0 +1,15 @@
+[ignore]
+\./dist/.*
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+
+[strict]
+
+[untyped]
+.*/node_modules/**/.*

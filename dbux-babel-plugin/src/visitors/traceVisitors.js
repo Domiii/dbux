@@ -22,7 +22,9 @@ const traceCfg = (() => {
   } = TraceInstrumentationType;
 
   return {
+    // ########################################
     // assignments
+    // ########################################
     AssignmentExpression: [
       ExpressionWithValue,
       // [['right', ExpressionWithValue]]
@@ -50,7 +52,10 @@ const traceCfg = (() => {
       [['init', ExpressionWithValue]]
     ],
 
+
+    // ########################################
     // expressions
+    // ########################################
     AwaitExpression: [
       ExpressionWithValue,
       [['argument', ExpressionNoValue]]
@@ -74,7 +79,10 @@ const traceCfg = (() => {
       [['argument', ExpressionWithValue]]
     ],
 
+    
+    // ########################################
     // statements
+    // ########################################
     BreakStatement: Statement,
     ContinueStatement: Statement,
     Decorator: [
@@ -91,7 +99,10 @@ const traceCfg = (() => {
     ReturnStatement: Statement,
     ThrowStatement: Statement,
 
+    
+    // ########################################
     // loops
+    // ########################################
     DoWhileLoop: [
       NoTrace,
       [['test', ExpressionWithValue], ['body', Block]]
@@ -113,7 +124,9 @@ const traceCfg = (() => {
       [['test', ExpressionWithValue], ['body', Block]]
     ],
 
-    // if, else, switch
+    // ########################################
+    // if, else, switch, case
+    // ########################################
     IfStatement: [
       NoTrace,
       [['test', ExpressionWithValue], ['consequent', Block], ['alternate', Block]],
@@ -129,7 +142,10 @@ const traceCfg = (() => {
     //   [['consequent']]
     // ],
 
+
+    // ########################################
     // try + catch
+    // ########################################
     TryStatement: [
       NoTrace,
       [['block', Block], ['finalizer', Block]]
@@ -174,7 +190,7 @@ function normalizeConfig(cfg) {
       nodeCfg = [nodeCfg];
     }
 
-    let [traceType, children, extraCfg] = nodeCfg;
+    const [traceType, children, extraCfg] = nodeCfg;
     if (extraCfg?.include) {
       // convert to set
       extraCfg.include = new Set(extraCfg.include);
