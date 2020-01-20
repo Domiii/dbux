@@ -47,59 +47,42 @@
 				"title": "Add"
 			},
 			{
-				"command": "dbuxEvents.editEntry",
-				"title": "Edit",
+				"command": "dbuxEvents.gotoEntry",
+				"title": "Goto",
 				"icon": {
-					"light": "resources/light/edit.svg",
-					"dark": "resources/dark/edit.svg"
-				}
-			},
-			{
-				"command": "dbuxEvents.testEntry",
-				"title": "MTest",
-				"icon": {
-					"light": "resources/light/edit.svg",
-					"dark": "resources/dark/edit.svg"
+					"light": "resources/light/boolean.svg",
+					"dark": "resources/dark/boolean.svg"
 				}
 			},
 			{
 				"command": "dbuxEvents.deleteEntry",
 				"title": "Delete"
-			},
-			{
-				"command": "dbuxExtension.dbux_jump",
-				"title": "dbuxJump"
-			}
-		]
-	},
-	"menus": {
-		"view/title": [
-			{
-				"command": "dbuxEvents.refreshEntry",
-				"when": "view == dbuxEvents",
-				"group": "navigation"
-			},
-			{
-				"command": "dbuxEvents.addEntry",
-				"when": "view == dbuxEvents"
 			}
 		],
-		"view/item/context": [
-			{
-				"command": "dbuxEvents.editEntry",
-				"when": "view == dbuxEvents && viewItem == event",
-				"group": "inline"
-			},
-			{
-				"command": "dbuxEvents.testEntry",
-				"when": "view == dbuxEvents && viewItem == event",
-				"group": "inline"
-			},
-			{
-				"command": "dbuxEvents.deleteEntry",
-				"when": "view == dbuxEvents && viewItem == event"
-			}
-		]
+		"menus": {
+			"view/title": [
+				{
+					"command": "dbuxEvents.refreshEntry",
+					"when": "view == dbuxEvents",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxEvents.addEntry",
+					"when": "view == dbuxEvents"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "dbuxEvents.gotoEntry",
+					"when": "view == dbuxEvents && viewItem == event",
+					"group": "inline"
+				},
+				{
+					"command": "dbuxEvents.deleteEntry",
+					"when": "view == dbuxEvents && viewItem == event"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"test": "node ./test/runTest.js",
