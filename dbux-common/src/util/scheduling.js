@@ -1,10 +1,15 @@
 /**
- * Use this to make sure, functions
+ * Make sure, function is not called more than once every `ms` milliseconds.
  */
-export function makeRescheduler(f, ms = 100) {
+export function makeDebounce(cb, ms = 300) {
   let timer;
+  function _wrapDebounce() {
+    timer = null;
+    cb();
+  }
   return () => {
-    clearTimeout(timer);
-    timer = setTimeout(f, ms);
+    if (!timer) {
+      timer = setTimeout(_wrapDebounce, ms);
+    }
   };
 }

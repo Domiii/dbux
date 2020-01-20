@@ -1,8 +1,9 @@
 import { initCommands } from './commands';
 import { initCodeControl } from './codeControl';
 import { initServer } from './net/server';
+
+import { newDataProvider } from './data';
 import { initTreeView } from './treeView';
-import { newDataProvider } from './data/index';
 
 import vscode from 'vscode';
 
@@ -12,19 +13,12 @@ const log = (...args) => console.log('[dbux-code]', ...args)
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-
-	try{
-
-		log('dbux-code activated!');
-
+	try {
 		initCommands(context);
 		initCodeControl(context);
 		const server = initServer(context);
 		const dataProvider = newDataProvider(server);
 		initTreeView(context, dataProvider);
-
-		log('Initialization finished.');
-
 	}
 	catch(e){
 		console.error(e)

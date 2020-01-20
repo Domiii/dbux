@@ -10,7 +10,8 @@ module.exports = {
         "useBuiltIns": "usage",
         "corejs": 3
       }
-    ]
+    ],
+    "@babel/flow"
   ],
   "plugins": [
     [
