@@ -3,8 +3,8 @@
   "name": "dbux-common",
   "version": "1.0.0",
   "description": "",
-  "module": "dist/index.js",
-  "main": "dist/index.js",
+  "module": "src/index.js",
+  "main": "src/index.js",
   "scripts": {
     "clean": "rm -rf dist && rm -rf dist.samples",
     "_before-run": "npx link-module-alias",
@@ -32,9 +32,9 @@
     "flow-bin": "^0.116.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.7.6",
+    "@babel/runtime": "^7.7.7",
     "colors": "^1.4.0",
-    "core-js": "^3.5.0"
+    "core-js": "^3.6.2"
   },
   "_moduleAliases": {}
 }

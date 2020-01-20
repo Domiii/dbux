@@ -3,8 +3,7 @@ module.exports = {
   "sourceMaps": "both",
   "retainLines": true,
   "presets": [
-    "@babel/preset-env",
-    "@babel/preset-flow"
+    "@babel/preset-env"
   ],
   "plugins": [
     [

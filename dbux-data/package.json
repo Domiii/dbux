@@ -2,7 +2,8 @@
   "name": "dbux-data",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "module": "src/index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,8 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@babel/runtime": "^7.8.3",
-    "core-js": "^3.6.4",
+    "@babel/runtime": "^7.7.7",
+    "core-js": "^3.6.1",
     "dbux-common": "file:../dbux-common",
     "lodash": "^4.17.15"
   },
