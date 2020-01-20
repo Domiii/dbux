@@ -1,15 +1,9 @@
 import { initCommands } from './commands';
 import { initCodeControl } from './codeControl';
 import { initServer } from './net/server';
-<<<<<<< HEAD
 
-import * as vscode from 'vscode';
-import { EventNodeProvider } from './treeData.js';
 import { newDataProvider } from './data';
-=======
 import { initTreeView } from './treeView';
-import { newDataProvider } from './data/index';
->>>>>>> 5fb114715d9b6310cdc913e2cdf44378a85ac69f
 
 import vscode from 'vscode';
 
