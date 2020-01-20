@@ -10,7 +10,7 @@ const log = (...args) => console.log('[dbux-code][codeNav]', ...args)
 
 /**
  * @param {vscode.Uri} URI (new vscode.Uri.file(FILEPATH))
- * @param {vscode.position} position (new vscode.Position(LINE, CHARACTER))
+ * @param {vscode.Position} position (new vscode.Position(LINE, CHARACTER))
  */
 export function navToCode(URI, position){
   log(`Called navToCode with params { URI = ${URI}, position = ${JSON.stringify(position)} }`)

@@ -13,9 +13,11 @@ export function initTreeView(context, dataProvider){
   dataProvider.onData('executionContexts', eventLogProvider.update)
 
   log('Sucessfully "initTreeView".')
+
+  return eventLogProvider
   
 }
 
-// export function refreshTreeView(){
-//   eventLogProvider.refresh()
-// }
+export function refreshTreeView(){
+  eventLogProvider.refresh()
+}
