@@ -42,6 +42,7 @@ const renderDecorations = makeDebounce(function updateDecorations() {
 	for (const trace of traces) {
 		const {
 			staticTraceId,
+			contextId,
 			value
 		} = trace;
 		const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
@@ -49,6 +50,9 @@ const renderDecorations = makeDebounce(function updateDecorations() {
 			displayName,
 			loc
 		} = staticTrace;
+
+		// const context = dataProvider.collections.executionContexts.getById(contextId);
+		// const childContexts = dataProvider.indexes.executionContexts.children.get(contextId);
 
 		const decoration = {
 			range: getCodeRangeFromLoc(loc),
