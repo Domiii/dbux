@@ -1,13 +1,9 @@
-const path = require('path');
-const thisRoot = path.resolve(__dirname);
-
 module.exports = {
-  ignore: [path.join(thisRoot, 'node_modules')],
+  ignore: ['node_modules'],
   "sourceMaps": "both",
   "retainLines": true,
   "presets": [
-    "@babel/preset-env",
-    "@babel/preset-flow"
+    "@babel/preset-env"
   ],
   "plugins": [
     [

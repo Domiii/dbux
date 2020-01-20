@@ -3,14 +3,8 @@ module.exports = {
   "sourceMaps": "both",
   "retainLines": true,
   "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "loose": true,
-        "useBuiltIns": "usage",
-        "corejs": 3
-      }
-    ]
+    "@babel/preset-env",
+    "@babel/preset-flow"
   ],
   "plugins": [
     [

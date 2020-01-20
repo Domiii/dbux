@@ -9,7 +9,7 @@ module.exports = {
     [
       "@babel/preset-env"
     ],
-    "@babel/flow"
+    "@babel/preset-flow"
   ],
   "plugins": [
     [

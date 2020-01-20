@@ -126,7 +126,7 @@
 	},
 	"dependencies": {
 		"@babel/runtime": "^7.7.7",
-		"core-js": "^3.6.2",
+		"core-js": "^3.6.1",
 		"dbux-common": "file:../dbux-common",
 		"dbux-data": "file:../dbux-data",
 		"lodash": "^4.17.15",
