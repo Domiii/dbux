@@ -11,7 +11,7 @@ module.exports = {
         "corejs": 3
       }
     ],
-    "@babel/flow"
+    "@babel/preset-flow"
   ],
   "plugins": [
     [

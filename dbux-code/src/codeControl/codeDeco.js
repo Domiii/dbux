@@ -20,7 +20,7 @@ let dataProvider: DataProvider;
 let activeEditor: TextEditor;
 let TraceDecorationType;
 
-const renderDecorations = makeDebounce(function updateDecorations() {
+const renderDecorations = makeDebounce(function renderDecorations() {
 	if (!activeEditor) {
 		return;
 	}
