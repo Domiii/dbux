@@ -2,10 +2,26 @@
 
 const toEs5 = true;
 
-const { transformSync } = require('@babel/core');
+const cliDir = __dirname + '/..';
+let dbuxRoot = cliDir + '/..';
+
+// const { transformSync } = require('@babel/core');
+const sharedDeps = [
+  '@babel/core',
+  '@babel/register',
+  '@babel/preset-env'
+];
+
 const fs = require('fs');
 const path = require('path');
+
 const importFrom = require('import-from');
+
+sharedDeps.forEach(dep => importFrom(__dirname + '/node_modules', dep));
+
+const { transformSync } = require('@babel/core');
+const babelRegister = require('@babel/register');
+
 
 // const mergeWith = require('lodash/mergeWith');
 const argv = require('yargs')
@@ -15,13 +31,13 @@ const argv = require('yargs')
 let { file } = argv;
 const inputCode = fs.readFileSync(file, 'utf8');
 
+
+dbuxRoot = path.resolve(dbuxRoot);
+
 const babelrcRoots = [
   `${file}/..`,
   `${file}/../..`
 ];
-
-const cliDir = path.resolve(__dirname + '/..');
-const dbuxRoot = path.resolve(cliDir + '/..');
 
 const dbuxBabelPlugin = require(dbuxRoot + '/dbux-babel-plugin/src/babelInclude').default;
 
@@ -58,7 +74,6 @@ const babelRegisterOptions = {
   ],
   babelrcRoots
 };
-const babelRegister = require('@babel/register');
 babelRegister(babelRegisterOptions);
 
 // go time!

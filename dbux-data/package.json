@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@babel/runtime": "^7.7.7",
+    "@babel/runtime": "^7.8.3",
     "core-js": "^3.6.1",
     "dbux-common": "file:../dbux-common",
     "lodash": "^4.17.15"
