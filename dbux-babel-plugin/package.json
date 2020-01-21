@@ -40,7 +40,6 @@
     "babel-plugin"
   ],
   "dependencies": {
-    "dbux-common": "file:../dbux-common"
   },
   "_moduleAliases": {}
 }

@@ -22,8 +22,8 @@
 		"jest-extended": "^0.11.2"
 	},
 	"scripts": {
-		"dbux-install": "sh scripts/dbux-run-all.sh \"yarn install\"",
-		"dbux-uninstall": "sh scripts/dbux-run-all.sh \"rm -r ./node_modules && rm ./package-lock.json\"",
+		"dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
+		"dbux-uninstall": "sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json\"",
 		"p1-install": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
 		"p1-g": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
 		"p1-start": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
@@ -32,6 +32,8 @@
 	"dependencies": {
 		"@babel/runtime": "^7.8.3",
 		"core-js": "^3.6.4",
+		"dbux-common": "./dbux-common",
+		"dbux-data": "./dbux-data",
 		"dbux-runtime": "./dbux-runtime",
 		"link-module-alias": "^1.2.0",
 		"lodash": "^4.17.15"
