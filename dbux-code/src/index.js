@@ -4,7 +4,7 @@ import { initCodeControl } from './codeControl';
 import { initServer } from './net/server';
 
 import { newDataProvider } from './data';
-import { initTreeView } from './treeView';
+import { initTreeView } from './treeView/treeViewController';
 
 import { window } from 'vscode';
 

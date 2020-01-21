@@ -1,7 +1,5 @@
 import { newLogger } from 'dbux-common/src/log/logger';
-import { refreshTreeView } from '../treeView';
-import { navToCode } from '../codeControl/codeNav';
-import { getCodePositionFromLoc } from '../util/codeUtil';
+import { refreshTreeView } from '../treeView/treeViewController';
 import {
   window,
   commands,
@@ -36,10 +34,11 @@ function registerCommand (context, commandID, func, pushToClient=false){
 
 export function initCommands(context) {
 
-  registerCommand(context, 'dbuxEvents.refreshEntry', () => refreshTreeView());
   registerCommand(context, 'dbuxEvents.addEntry', () => window.showInformationMessage(`Clicked on add entry.`));
-  registerCommand(context, 'dbuxEvents.gotoEntry', ({ filePath, location }) => navToCode(Uri.file(filePath), getCodePositionFromLoc(location.start)));
   registerCommand(context, 'dbuxEvents.deleteEntry', (node) => window.showInformationMessage(`Clicked on delete entry with node = ${node.label}.`));
+  registerCommand(context, 'dbuxEvents.refreshEntry', () => refreshTreeView());
+  registerCommand(context, 'dbuxEvents.gotoEntry', (node) => node.gotoCode());
+  registerCommand(context, 'dbuxEvents.itemClick', (node) => node.onClick());
 
   function jumpToLine (lineNum = 0){
     const editor = window.activeTextEditor;
