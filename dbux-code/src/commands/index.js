@@ -1,8 +1,16 @@
-import vscode from 'vscode';
+import { newLogger } from 'dbux-common/src/log/logger';
 import { refreshTreeView } from '../treeView';
-import { navToCode } from '../codeControl';
+import { navToCode } from '../codeControl/codeNav';
+import { getCodePositionFromLoc } from '../util/codeUtil';
+import {
+  window,
+  commands,
+  Uri,
+  Position,
+  Selection
+} from 'vscode';
 
-const log = (...args) => console.log('[dbux-code][commands]', ...args)
+const { log, debug, warn, error: logError } = newLogger('Commands');
 
 // command regist helper
 function registerCommand (context, commandID, func, pushToClient=false){
@@ -20,7 +28,7 @@ function registerCommand (context, commandID, func, pushToClient=false){
     }
   }
 
-  const newCommand = vscode.commands.registerCommand(commandID, _errWrap(func));
+  const newCommand = commands.registerCommand(commandID, _errWrap(func));
   if (pushToClient) context.subscriptions.push(newCommand);
 
   return newCommand
@@ -29,16 +37,15 @@ function registerCommand (context, commandID, func, pushToClient=false){
 export function initCommands(context) {
 
   registerCommand(context, 'dbuxEvents.refreshEntry', () => refreshTreeView());
-  registerCommand(context, 'dbuxEvents.addEntry', () => vscode.window.showInformationMessage(`Clicked on add entry.`));
-  registerCommand(context, 'dbuxEvents.gotoEntry', ({ position }) => navToCode(vscode.Uri.file(position.filePath), vscode.Position(position.line, position.character)));
-  registerCommand(context, 'dbuxEvents.deleteEntry', (node) => vscode.window.showInformationMessage(`Clicked on delete entry with node = ${node.label}.`));
+  registerCommand(context, 'dbuxEvents.addEntry', () => window.showInformationMessage(`Clicked on add entry.`));
+  registerCommand(context, 'dbuxEvents.gotoEntry', ({ filePath, location }) => navToCode(Uri.file(filePath), getCodePositionFromLoc(location.start)));
+  registerCommand(context, 'dbuxEvents.deleteEntry', (node) => window.showInformationMessage(`Clicked on delete entry with node = ${node.label}.`));
 
   function jumpToLine (lineNum = 0){
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
     const range = editor.document.lineAt(lineNum).range;
-    editor.selection =  new vscode.Selection(range.start, range.start);
+    editor.selection =  new Selection(range.start, range.start);
     editor.revealRange(range);
   }
 
-  log('Sucessfully "initCommands".');
 }

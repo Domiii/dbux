@@ -1,18 +1,18 @@
-import vscode from 'vscode';
+import { newLogger } from 'dbux-common/src/log/logger';
+import { window } from 'vscode';
 import { EventNodeProvider } from './treeData.js';
 
-const log = (...args) => console.log('[dbux-code][treeView]', ...args)
+
+const { log, debug, warn, error: logError } = newLogger('TreeView');
 
 let eventLogProvider
 
 export function initTreeView(context, dataProvider){
 
-  eventLogProvider = new EventNodeProvider([], dataProvider);
-  vscode.window.registerTreeDataProvider('dbuxEvents', eventLogProvider);
+  eventLogProvider = new EventNodeProvider(dataProvider);
+  window.registerTreeDataProvider('dbuxEvents', eventLogProvider);
 
   dataProvider.onData('executionContexts', eventLogProvider.update)
-
-  log('Sucessfully "initTreeView".')
 
   return eventLogProvider
   

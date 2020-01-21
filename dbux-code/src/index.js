@@ -1,3 +1,4 @@
+import { newLogger } from 'dbux-common/src/log/logger';
 import { initCommands } from './commands';
 import { initCodeControl } from './codeControl';
 import { initServer } from './net/server';
@@ -5,9 +6,10 @@ import { initServer } from './net/server';
 import { newDataProvider } from './data';
 import { initTreeView } from './treeView';
 
-import vscode from 'vscode';
+import { window } from 'vscode';
 
-const log = (...args) => console.log('[dbux-code]', ...args)
+
+const { log, debug, warn, error: logError } = newLogger('Main');
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -30,7 +32,7 @@ function activate(context) {
 
 // this method is called when your extension is deactivated
 function deactivate() {
-	vscode.window.showInformationMessage('Extension down');
+	window.showInformationMessage('Extension down');
 }
 
 export {

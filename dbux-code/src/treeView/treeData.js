@@ -1,141 +1,129 @@
-/* eslint-disable class-methods-use-this */
-'use strict'
-
-import vscode, { CommentThreadCollapsibleState } from 'vscode';
-import path from 'path';
+import { newLogger } from 'dbux-common/src/log/logger';
+import { getCodePositionFromLoc } from '../util/codeUtil';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
+import path from 'path';
+import { 
+    TreeItem,
+    EventEmitter,
+    TreeItemCollapsibleState as CollapsibleState 
+} from 'vscode';
 
-const log = (...args) => console.log('[dbux-code][treeData]', ...args)
+const { log, debug, warn, error: logError } = newLogger('TreeData');
 
 export class EventNodeProvider {
 
-    constructor(contextData, dataProvider) {
-        this.contextData = contextData;
+    constructor(dataProvider) {
         this.dataProvider = dataProvider;
-        this.treeData = this.parseData(this.contextData)
-        this._onDidChangeTreeData = new vscode.EventEmitter();
+        this.nodesByContext = [];
+        this.rootNodes = [];
+        this._onDidChangeTreeData = new EventEmitter();
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
     }
 
-    parseData = (contextData) => {
+    contextToNode = (context: ExecutionContext) => {
+        if (!context) return null;
 
-        log('try parsing contextData', contextData)
-        log('executionContext =', this.dataProvider.collections.executionContexts.getAll())
+        debug('Converting context', context)
+        const { contextType, stackDepth, contextId, staticContextId, parentContextId } = context;
         
-        let newRootEvent = new Event('root', new NodePosition(), '', -1);
-        let lastNode = newRootEvent;
+        const staticContext = this.dataProvider.collections.staticContexts.getById(staticContextId);
+        debug('staticContext =', staticContext)
+        const { programId, name, displayName, loc } = staticContext
+        
+        const programContext = this.dataProvider.collections.staticProgramContexts.getById(programId);
+        debug('programContext =', programContext)
+        const { filePath, fileName } = programContext
 
-        for (let index = 1; index < contextData.length; index++){
-            
-            let element = contextData[index]
-            log('element =', element)
-            let { contextType, stackDepth, contextId, staticContextId } = element;
-            
-            let staticContext = this.dataProvider.collections.staticContexts.getById(staticContextId);
-            log('staticContext =', staticContext)
-            let { programId, name, displayName, loc } = staticContext
-            
-            let programContext = this.dataProvider.collections.staticProgramContexts.getById(programId);
-            log('programContext =', programContext)
-            let { filePath, fileName } = programContext
+        const parentNode = (parentContextId)? this.nodesByContext[parentContextId] : null;
+        const typeName = ExecutionContextType.nameFrom(contextType);
 
-            let typeName = ExecutionContextType.nameFrom(contextType);
+        let newNode = new ContextNode(
+            displayName,
+            typeName,
+            fileName,
+            filePath,
+            loc,
+            stackDepth,
+            contextId,
+            parentContextId,
+            parentNode
+        );
 
-            let newNode = new Event(
-                `${displayName} [${typeName}]`,
-                new NodePosition(filePath, loc.start.line, loc.start.column),
-                fileName,
-                stackDepth
-            );
-
-            if (stackDepth > lastNode.depth){
-                newNode.parent = lastNode;
-            }
-            else if (stackDepth === lastNode.depth){
-                newNode.parent = lastNode.parent;
-            }
-            else if (stackDepth < lastNode.depth){
-                newNode.parent = lastNode.parent.parent;
-            }
-
-            newNode.parent.pushChild(newNode);
-            lastNode = newNode;
-        }
-
-        log('New parse result', newRootEvent.children)
-        return newRootEvent.children
+        return newNode;
 
     }
     refresh = () => {
-        this.treeData = this.parseData(this.contextData);
         this._onDidChangeTreeData.fire();
+        log(this.nodesByContext)
     }
-    update = (data) => {
-        log('Called update function.')
-        this.contextData = this.dataProvider.collections.executionContexts.getAll();
+    update = (newContextData) => {
+        debug('Called update function.');
+
+        for (let i = 0; i < newContextData.length; i++){
+            const context = newContextData[i];
+            const newNode = this.contextToNode(context);
+
+            while (this.nodesByContext.length <= newNode.contextId){
+                this.nodesByContext.push(null);
+            }
+            this.nodesByContext[newNode.contextId] = newNode;
+    
+            if (newNode.parentNode) newNode.parentNode.pushChild(newNode);
+            else this.rootNodes.push(newNode);
+
+        }
+
         this.refresh();
     }
-    getTreeItem = (element) => {
-        return element;
+    getTreeItem = (node) => {
+        return node;
     }
-    getChildren = (element) => {
-        if (element){
-            log('called function getChildren with element, returning', element.children)
-            return element.children
+    getChildren = (node) => {
+        if (node){
+            debug('called function getChildren with node, returning', node.children);
+            return node.children;
         }
         else {
-            log('called function getChildren without passing parameter, returning', this.treeData)
-            return this.treeData
+            debug('called function getChildren without passing parameter, returning', this.rootNodes);
+            return this.rootNodes;
         }
-        // if (!this.workspaceRoot) {
-        //     vscode.window.showInformationMessage('No event logged.');
-        //     return Promise.resolve([]);
-        // }
-        // if (element) {
-        //     return Promise.resolve(this.getDepsInPackageJson(path.join(this.workspaceRoot, 'node_modules', element.label, 'package.json')));
-        // }
-        // else {
-        //     const packageJsonPath = path.join(this.workspaceRoot, 'package.json');
-        //     if (this.pathExists(packageJsonPath)) {
-        //         return Promise.resolve(this.getDepsInPackageJson(packageJsonPath));
-        //     }
-        //     else {
-        //         vscode.window.showInformationMessage('Workspace has no package.json');
-        //         return Promise.resolve([]);
-        //     }
-        // }
+    }
+    getParent = (node: ContextNode) => {
+        return node.parentNode
     }
 }
 
-class NodePosition {
-    constructor(filePath = '', line = 0, character = 0){
-        this.filePath = filePath;
-        this.line = line;
-        this.character = character;
-    }
-}
-
-export class Event extends vscode.TreeItem {
+export class ContextNode extends TreeItem {
 
 	constructor(
-        label,
-        position,
+        displayName,
+        typeName,
         fileName,
-        depth = 0,
-        parent = null
+        filePath,
+        location,
+        depth,
+        contextId,
+        parentContextId = null,
+        parentNode = null
     ) {
-        super(label);
+        // set label
+        super(`${displayName} [${typeName}]`);
 
-        // parameter value
-        this.lable = label;
-        this.position = position;
-        this.description = `@${fileName}:${position.line}:${position.column}`;
+        // node data
+        this.displayName = displayName;
+        this.typeName = typeName;
+        this.fileName = fileName;
+        this.filePath = filePath;
+        this.location = location;
         this.depth = depth;
-        this.parent = parent;
+        this.contextId = contextId;
+        this.parentContextId = parentContextId;
+        this.parentNode = parentNode;
 
-        // default value
+        // treeItem data
         this.children = [];
-        this.collapsibleState = vscode.TreeItemCollapsibleState.None;
+        this.description = `@${fileName}:${location.start.line}:${location.start.column}`;
+        this.collapsibleState = CollapsibleState.None;
         this.command = 'dbuxExtension.showMsg';
         this.contextValue = 'event';
 		this.iconPath = {
@@ -146,7 +134,7 @@ export class Event extends vscode.TreeItem {
 
     pushChild(child){
         this.children.push(child);
-        this.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+        this.collapsibleState = CollapsibleState.Collapsed;
     }
 
     get(){
@@ -162,7 +150,7 @@ export class Event extends vscode.TreeItem {
     }
 
 	get tooltip() {
-		return `at ${this.position}(tooltip)`;
+		return `at ${this.fileName}(tooltip)`;
 	}
 
 }

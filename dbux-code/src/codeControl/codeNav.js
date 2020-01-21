@@ -1,12 +1,12 @@
-/**
- * Location (https://code.visualstudio.com/api/references/vscode-api#Location)
- * Selection
- * SelectionRange
- */
+import { newLogger } from 'dbux-common/src/log/logger';
 
-import vscode from 'vscode';
+import {
+  window,
+  Selection
+} from 'vscode';
 
-const log = (...args) => console.log('[dbux-code][codeNav]', ...args)
+
+const { log, debug, warn, error: logError } = newLogger('CodeNav');
 
 /**
  * @param {vscode.Uri} URI (new vscode.Uri.file(FILEPATH))
@@ -14,9 +14,9 @@ const log = (...args) => console.log('[dbux-code][codeNav]', ...args)
  */
 export function navToCode(URI, position){
   log(`Called navToCode with params { URI = ${URI}, position = ${JSON.stringify(position)} }`)
-  vscode.window.showTextDocument(URI).then( editor => {
+  window.showTextDocument(URI).then( editor => {
     const range = editor.document.lineAt(position._line).range;
-    editor.selection =  new vscode.Selection(range.start, range.end);
+    editor.selection =  new Selection(range.start, range.end);
     editor.revealRange(range);
   })
 }
