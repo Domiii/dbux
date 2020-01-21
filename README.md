@@ -184,3 +184,27 @@ You can re-add it manually:
    * see: https://github.com/socketio/engine.io/issues/575
    * see: https://github.com/socketio/socket.io/issues/3342
    * see: https://github.com/mmdevries/uws
+
+
+# Useful Snippets
+
+```
+	"Comment Barrier 1": {
+		"scope": "javascript, typescript",
+		"prefix": "comment-barrier1",
+		"body": [
+			"// ###########################################################################",
+			"// $1",
+			"// ###########################################################################$0"
+		]
+	},
+	"Comment Barrier 2": {
+		"scope": "javascript, typescript",
+		"prefix": "comment-barrier2",
+		"body": [
+			"// ########################################",
+			"// $1",
+			"// ########################################$0"
+		]
+	}
+```
