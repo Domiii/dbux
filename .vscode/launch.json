@@ -10,6 +10,27 @@
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}/dbux-cli",
+			"runtimeArgs": [
+				"--stack-trace-limit=1000",
+				"--nolazy",
+			],
+			"sourceMaps": true,
+			"restart": true,
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux-run",
+			"args": [
+				"${file}"
+			],
+			"protocol": "inspector",
+			"trace": true,
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+		},
+		{
+			"name": "dbux-run-old",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}/dbux-cli",
 			"sourceMaps": true,
 			"restart": true,
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux-run",
@@ -94,7 +115,7 @@
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}/dbux-babel-plugin",
-			"runtimeExecutable": "${workspaceFolder}/dbux-babel-plugin/node_modules/@babel/node/bin/babel-node.js",
+			"runtimeExecutable": "${workspaceFolder}/node_modules/@babel/node/bin/babel-node.js",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
 				"--nolazy",
