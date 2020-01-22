@@ -26,16 +26,13 @@ export class TreeNodeProvider {
     contextToNode = (context: ExecutionContext) => {
         if (!context) return null;
 
-        debug('Converting context', context)
         const { contextType, stackDepth, contextId, staticContextId, parentContextId } = context;
 
         const staticContext = this.dataProvider.collections.staticContexts.getById(staticContextId);
-        debug('staticContext =', staticContext)
-        const { programId, displayName, loc } = staticContext
+        const { programId, displayName, loc } = staticContext;
 
         const programContext = this.dataProvider.collections.staticProgramContexts.getById(programId);
-        debug('programContext =', programContext)
-        const { filePath, fileName } = programContext
+        const { filePath, fileName } = programContext;
 
         const parentNode = (parentContextId) ? this.nodesByContext[parentContextId] : null;
         const typeName = ExecutionContextType.nameFrom(contextType);
@@ -67,7 +64,6 @@ export class TreeNodeProvider {
         this.onChangeEventEmitter.fire();
     }
     update = (newContextData: Array<ExecutionContext>) => {
-        debug('Called update function.');
         for (let i = 0; i < newContextData.length; i++) {
 
             const context = newContextData[i];
@@ -88,11 +84,9 @@ export class TreeNodeProvider {
     }
     getChildren = (node) => {
         if (node) {
-            debug('called function getChildren with node, returning', node.children);
             return node.children;
         }
         else {
-            debug('called function getChildren without passing parameter, returning', this.rootNodes);
             return this.rootNodes;
         }
     }
