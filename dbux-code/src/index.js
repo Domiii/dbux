@@ -1,10 +1,11 @@
 import { newLogger } from 'dbux-common/src/log/logger';
-import { initCommands } from './commands';
 import { initCodeControl } from './codeControl';
 import { initServer } from './net/server';
 
 import { newDataProvider } from './data';
 import { initTreeView } from './treeView/treeViewController';
+import { initCommands } from './commands';
+import { initToolBar } from './toolbar';
 
 import { window } from 'vscode';
 
@@ -16,11 +17,12 @@ const { log, debug, warn, error: logError } = newLogger('Main');
  */
 function activate(context) {
 	try {
-		initCommands(context);
 		initCodeControl(context);
 		const server = initServer(context);
 		const dataProvider = newDataProvider(server);
 		initTreeView(context, dataProvider);
+		initCommands(context);
+		initToolBar();
 	}
 	catch(e){
 		console.error(e)

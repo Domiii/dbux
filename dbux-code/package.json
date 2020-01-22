@@ -20,7 +20,7 @@
 			"activitybar": [
 				{
 					"id": "dbux-event-logger",
-					"title": "dbux Event Logger",
+					"title": "",
 					"icon": "media/dep.svg"
 				}
 			]
@@ -29,17 +29,33 @@
 			"dbux-event-logger": [
 				{
 					"id": "dbuxEvents",
-					"name": "dbux events"
+					"name": ""
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "dbuxEvents.refreshEntry",
-				"title": "Refresh",
+				"command": "dbuxEvents.previous",
+				"title": "Previous",
 				"icon": {
-					"light": "resources/light/refresh.svg",
-					"dark": "resources/dark/refresh.svg"
+					"light": "resources/light/previous.svg",
+					"dark": "resources/dark/previous.svg"
+				}
+			},
+			{
+				"command": "dbuxEvents.next",
+				"title": "Next",
+				"icon": {
+					"light": "resources/light/next.svg",
+					"dark": "resources/dark/next.svg"
+				}
+			},
+			{
+				"command": "dbuxEvents.clear",
+				"title": "Clear",
+				"icon": {
+					"light": "resources/light/clear.svg",
+					"dark": "resources/dark/clear.svg"
 				}
 			},
 			{
@@ -66,9 +82,19 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "dbuxEvents.refreshEntry",
+					"command": "dbuxEvents.previous",
 					"when": "view == dbuxEvents",
-					"group": "navigation"
+					"group": "navigation@0"
+				},
+				{
+					"command": "dbuxEvents.next",
+					"when": "view == dbuxEvents",
+					"group": "navigation@1"
+				},
+				{
+					"command": "dbuxEvents.clear",
+					"when": "view == dbuxEvents",
+					"group": "navigation@2"
 				},
 				{
 					"command": "dbuxEvents.addEntry",

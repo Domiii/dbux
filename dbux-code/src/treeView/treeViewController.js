@@ -1,22 +1,72 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import { window, EventEmitter } from 'vscode';
-import { ContextNodeProvider } from './treeData.js';
+import { TreeNodeProvider } from './TreeNodeProvider.js';
+import ContextNode from './ContextNode.js';
 
 const { log, debug, warn, error: logError } = newLogger('TreeView');
 
-let eventLogProvider;
+let eventLogProvider, treeViewController: TreeViewController;
 
 export function initTreeView(context, dataProvider){
 
-  let onChangeTreeData = new EventEmitter();
-  eventLogProvider = new ContextNodeProvider(dataProvider, onChangeTreeData);
-  window.registerTreeDataProvider('dbuxEvents', eventLogProvider);
-  
-  // May use this instead of registerTreeDataProvider
-  // let treeView = window.createTreeView('dbuxEvents', { treeDataProvider: registedProvider });
+  let onChangeEventEmitter = new EventEmitter();
+  eventLogProvider = new TreeNodeProvider(dataProvider, onChangeEventEmitter);
+  treeViewController = new TreeViewController('dbuxEvents', eventLogProvider, onChangeEventEmitter, {
+    canSelectMany: false,
+    showCollapseAll: true
+  });
   
 }
 
-export function refreshTreeView(){
-  eventLogProvider.refresh();
+export function getOrCreateTreeViewController(){
+  return treeViewController;
+}
+
+export class TreeViewController {
+  constructor(viewId, treeDataProvider: TreeNodeProvider, onChangeEventEmitter, options){
+    this.treeView = window.createTreeView(viewId, { treeDataProvider: treeDataProvider, ...options});
+    this.treeDataProvider = treeDataProvider;
+    this.onChangeEventEmitter = onChangeEventEmitter;
+  }
+
+  refresh = () => {
+    this.onChangeEventEmitter.fire();
+  }
+
+  getNextNode = () => {
+    const lastNode = this.treeView.selection[0] || this.lastSelectedNode;
+    if (!lastNode) return this.treeDataProvider.rootNodes[0] || null;
+    let id = lastNode.contextId;
+    if (id !== this.treeDataProvider.nodesByContext.length) id += 1;
+    return this.treeDataProvider.nodesByContext[id];
+  }
+
+  getPreviousNode = () => {
+    const lastNode = this.treeView.selection[0] || this.lastSelectedNode;
+    if (!lastNode) return this.treeDataProvider.rootNodes[0] || null;
+    let id = lastNode.contextId;
+    if (id !== 1) id -= 1;
+    return this.treeDataProvider.nodesByContext[id];
+  }
+
+  next = () => {
+    const node = this.getNextNode();
+    if (!node) return;
+    node.gotoCode();
+    this.treeView.reveal(node);
+  }
+
+  previous = () => {
+    const node = this.getPreviousNode();
+    if (!node) return;
+    node.gotoCode();
+    this.treeView.reveal(node);
+  }
+
+  nodeOnClick = (node: ContextNode) => {
+    this.lastSelectedNode = node;
+    node.gotoCode();
+    if (node.children.length) this.treeView.reveal(node, { expand: true })
+  }
+
 }

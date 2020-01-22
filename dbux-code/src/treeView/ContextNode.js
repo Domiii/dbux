@@ -55,16 +55,21 @@ export default class ContextNode extends TreeItem {
     navToCode(Uri.file(this.filePath), getCodePositionFromLoc(this.location.start));
   }
 
-  onClick = () => {
-    this.gotoCode()
-  }
-
   pushChild = (child) => {
     this.children.push(child);
     this.collapsibleState = CollapsibleState.Collapsed;
   }
+
+  expand = () => {
+    this.collapsibleState = CollapsibleState.Expanded;
+  }
+
+  collapse = () => {
+    this.collapsibleState = CollapsibleState.Collapsed;
+  }
+
 	get tooltip() {
-		return `at ${this.fileName}(tooltip)`;
+		return `#${this.contextId} at ${this.fileName}(tooltip)`;
 	}
 
 }
