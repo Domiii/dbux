@@ -10,7 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:dbuxEvents",
+		"onView:dbuxView",
 		"onLanguage:javascript"
 	],
 	"__main": "./src/index.js",
@@ -19,23 +19,23 @@
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "dbux-event-logger",
+					"id": "dbux-view-container",
 					"title": "",
 					"icon": "media/dep.svg"
 				}
 			]
 		},
 		"views": {
-			"dbux-event-logger": [
+			"dbux-view-container": [
 				{
-					"id": "dbuxEvents",
+					"id": "dbuxView",
 					"name": ""
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "dbuxEvents.previous",
+				"command": "dbuxView.previous",
 				"title": "Previous",
 				"icon": {
 					"light": "resources/light/previous.svg",
@@ -43,7 +43,7 @@
 				}
 			},
 			{
-				"command": "dbuxEvents.next",
+				"command": "dbuxView.next",
 				"title": "Next",
 				"icon": {
 					"light": "resources/light/next.svg",
@@ -51,7 +51,7 @@
 				}
 			},
 			{
-				"command": "dbuxEvents.clear",
+				"command": "dbuxView.clear",
 				"title": "Clear",
 				"icon": {
 					"light": "resources/light/clear.svg",
@@ -59,11 +59,11 @@
 				}
 			},
 			{
-				"command": "dbuxEvents.addEntry",
+				"command": "dbuxView.addEntry",
 				"title": "Add"
 			},
 			{
-				"command": "dbuxEvents.gotoEntry",
+				"command": "dbuxView.gotoEntry",
 				"title": "Goto",
 				"icon": {
 					"light": "resources/light/boolean.svg",
@@ -71,45 +71,45 @@
 				}
 			},
 			{
-				"command": "dbuxEvents.deleteEntry",
+				"command": "dbuxView.deleteEntry",
 				"title": "Delete"
 			},
 			{
-				"command": "dbuxEvents.itemClick",
+				"command": "dbuxView.itemClick",
 				"title": "Clicked"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
-					"command": "dbuxEvents.previous",
-					"when": "view == dbuxEvents",
+					"command": "dbuxView.previous",
+					"when": "view == dbuxView",
 					"group": "navigation@0"
 				},
 				{
-					"command": "dbuxEvents.next",
-					"when": "view == dbuxEvents",
+					"command": "dbuxView.next",
+					"when": "view == dbuxView",
 					"group": "navigation@1"
 				},
 				{
-					"command": "dbuxEvents.clear",
-					"when": "view == dbuxEvents",
+					"command": "dbuxView.clear",
+					"when": "view == dbuxView",
 					"group": "navigation@2"
 				},
 				{
-					"command": "dbuxEvents.addEntry",
-					"when": "view == dbuxEvents"
+					"command": "dbuxView.addEntry",
+					"when": "view == dbuxView"
 				}
 			],
 			"view/item/context": [
 				{
-					"command": "dbuxEvents.gotoEntry",
-					"when": "view == dbuxEvents && viewItem == event",
+					"command": "dbuxView.gotoEntry",
+					"when": "view == dbuxView && viewItem == event",
 					"group": "inline"
 				},
 				{
-					"command": "dbuxEvents.deleteEntry",
-					"when": "view == dbuxEvents && viewItem == event"
+					"command": "dbuxView.deleteEntry",
+					"when": "view == dbuxView && viewItem == event"
 				}
 			]
 		}

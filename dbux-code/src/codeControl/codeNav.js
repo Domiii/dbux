@@ -13,7 +13,6 @@ const { log, debug, warn, error: logError } = newLogger('CodeNav');
  * @param {vscode.Position} position (new vscode.Position(LINE, CHARACTER))
  */
 export function navToCode(URI: Uri, position: Position){
-  debug(`Called navToCode with params { URI = ${URI}, position = ${JSON.stringify(position)} }`)
   window.showTextDocument(URI).then( editor => {
     const range = editor.document.lineAt(position._line).range;
     editor.selection =  new Selection(range.start, range.end);

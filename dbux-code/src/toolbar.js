@@ -9,22 +9,22 @@ export function initToolBar(context){
   const treeViewController = getOrCreateTreeViewController();
 
   registerCommand(context,
-    'dbuxEvents.addEntry',
+    'dbuxView.addEntry',
     (...args) => log('Clicked on add entry, parameter', ...args)
   );
 
   registerCommand(context,
-    'dbuxEvents.next',
+    'dbuxView.next',
     () => treeViewController.next()
   );
 
   registerCommand(context,
-    'dbuxEvents.previous',
+    'dbuxView.previous',
     () => treeViewController.previous()
   );
 
   registerCommand(context,
-    'dbuxEvents.clear',
+    'dbuxView.clear',
     () => {
       // treeViewController.treeDataProvider.dataProvider.clear();
       treeViewController.treeDataProvider.clear();

@@ -14,17 +14,17 @@ export function initTreeViewCommands(context){
   const treeViewController = getOrCreateTreeViewController();
   
   registerCommand(context,
-    'dbuxEvents.deleteEntry',
+    'dbuxView.deleteEntry',
     (node) => window.showInformationMessage(`Clicked on delete entry with node = ${node.label}.`)
   );
 
   registerCommand(context,
-    'dbuxEvents.gotoEntry',
+    'dbuxView.gotoEntry',
     (node: ContextNode) => node.gotoCode()
   );
 
   registerCommand(context,
-    'dbuxEvents.itemClick',
+    'dbuxView.itemClick',
     (node: ContextNode) => treeViewController.nodeOnClick(node)
   );
 

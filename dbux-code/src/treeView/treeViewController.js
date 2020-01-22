@@ -11,7 +11,7 @@ export function initTreeView(context, dataProvider){
 
   let onChangeEventEmitter = new EventEmitter();
   eventLogProvider = new TreeNodeProvider(dataProvider, onChangeEventEmitter);
-  treeViewController = new TreeViewController('dbuxEvents', eventLogProvider, onChangeEventEmitter, {
+  treeViewController = new TreeViewController('dbuxView', eventLogProvider, onChangeEventEmitter, {
     canSelectMany: false,
     showCollapseAll: true
   });
