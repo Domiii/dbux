@@ -1,23 +1,27 @@
 #!/usr/bin/env node
 
-const toEs5 = true;
+const fs = require('fs');
+const path = require('path');
+const moduleAlias = require('module-alias');
 
-const cliDir = __dirname + '/..';
-let dbuxRoot = cliDir + '/..';
+const dbuxAliases = [
+  'dbux-babel-plugin',
+  'dbux-runtime'
+];
 
-// const { transformSync } = require('@babel/core');
 const sharedDeps = [
   '@babel/core',
   '@babel/register',
   '@babel/preset-env'
 ];
 
-const fs = require('fs');
-const path = require('path');
+const cliDir = __dirname + '/..';
+const dbuxRoot = path.resolve(cliDir + '/..');
+const dbuxDistDir = path.resolve(dbuxRoot + '/dist');
 
-const importFrom = require('import-from');
-
-sharedDeps.forEach(dep => importFrom(__dirname + '/node_modules', dep));
+// add aliases (since these libraries are not locally available)
+dbuxAliases.forEach(alias => moduleAlias.addAlias(alias, path.join(dbuxRoot, alias)));
+sharedDeps.forEach(dep => moduleAlias.addAlias(dep, path.join(dbuxRoot, 'node_modules', dep)));
 
 const { transformSync } = require('@babel/core');
 const babelRegister = require('@babel/register');
@@ -32,20 +36,16 @@ let { file } = argv;
 const inputCode = fs.readFileSync(file, 'utf8');
 
 
-dbuxRoot = path.resolve(dbuxRoot);
-
 const babelrcRoots = [
   `${file}/..`,
   `${file}/../..`
 ];
 
-const dbuxBabelPlugin = require(dbuxRoot + '/dbux-babel-plugin/src/babelInclude').default;
+const dbuxBabelPlugin = require('dbux-babel-plugin');
 
-// make sure, everything is ready and in place
-console.log(dbuxRoot);
-importFrom(cliDir, 'dbux-common');
-importFrom(cliDir, 'dbux-data');
-importFrom(cliDir, 'dbux-runtime');
+// make sure, this is loaded before starting instrumentation
+require('dbux-runtime');
+
 
 
 // setup babel-register
@@ -54,18 +54,18 @@ const babelRegisterOptions = {
     // '**/node_modules/**',
     function (fpath) {
       // no node_modules
-      if (fpath.match('node_modules')) {
+      if (fpath.match('(node_modules)|(dist)')) {
         return true;
       }
 
       fpath = fpath.toLowerCase();
 
       const shouldIgnore = false;
-      console.warn('babel', fpath, !shouldIgnore);
+      console.warn('dbux-run babel', fpath, !shouldIgnore);
       return shouldIgnore;
     }
   ],
-  sourceMaps: true,
+  sourceMaps: 'inline',
   plugins: [
     dbuxBabelPlugin
   ],

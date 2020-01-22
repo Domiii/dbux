@@ -13,7 +13,7 @@
   "dependencies": {
     "dbux-common": "file:../dbux-common",
     "dbux-data": "file:../dbux-data",
-    "import-from": "^3.0.0",
+    "module-alias": "^2.2.2",
     "yargs": "^15.1.0"
   }
 }

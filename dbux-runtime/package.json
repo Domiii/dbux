@@ -3,8 +3,8 @@
   "name": "dbux-runtime",
   "version": "1.0.0",
   "description": "",
-  "module": "src/index.js",
-  "main": "src/babelInclude.js",
+  "module": "dist/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "clean": "rm -rf dist && rm -rf dist.samples",
     "_before-run": "npx link-module-alias",

@@ -18,6 +18,8 @@ export default class Client {
 
   constructor() {
     const socket = this._socket = io(url, {
+      // jsonp: false,
+      forceNode: true,
       transports: ['websocket']
     });
     this._sendQueue = new SendQueue(this);
@@ -26,7 +28,7 @@ export default class Client {
     // connection may have failed (caused by proxy, firewall, browser, ...)
     socket.on('reconnect_attempt', () => {
       warn('reconnecting...');
-      socket.io.opts.transports = ['polling', 'websocket'];
+      socket.io.opts.transports = ['websocket'];
     });
 
     socket.on('connect', this._handleConnect);

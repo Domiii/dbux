@@ -4,8 +4,8 @@
   "version": "0.0.1",
   "description": "",
   "author": "Domi",
-  "module": "src/index.js",
-  "main": "src/index.js",
+  "module": "dist/index.js",
+  "main": "dist/index.js",
   "bin": {
     "dbux-instrument-file": "./bin/dbux-instrument-file.js"
   },

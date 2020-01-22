@@ -1,20 +1,44 @@
 #!/usr/bin/env node
 
-const toEs5 = true;
+const fs = require('fs');
+const path = require('path');
+const moduleAlias = require('module-alias');
 
-import { transformSync } from '@babel/core';
-import fs from 'fs';
+const dbuxAliases = [
+  'dbux-babel-plugin'
+];
+
+const sharedDeps = [
+  '@babel/core',
+  '@babel/preset-env'
+];
+
+const cliDir = __dirname + '/..';
+const dbuxRoot = path.resolve(cliDir + '/..');
+const dbuxDistDir = path.resolve(dbuxRoot + '/dist');
+
+// add aliases (since these libraries are not locally available)
+dbuxAliases.forEach(alias => moduleAlias.addAlias(alias, path.join(dbuxRoot, alias, 'dist/bundle.js')));
+sharedDeps.forEach(dep => moduleAlias.addAlias(dep, path.join(dbuxRoot, 'node_modules', dep)));
+
+const { transformSync } = require('@babel/core');
+
 
 // const mergeWith = require('lodash/mergeWith');
 const argv = require('yargs')
-  .demandOption(['file'])
+  .command('$0 <file>')
+  // .positional('file')
   .argv;
-const { file } = argv;
+let { file } = argv;
 const inputCode = fs.readFileSync(file, 'utf8');
 
 
-const dbuxBabelPlugin = require(__dirname + '/../src/babelInclude');
+const babelrcRoots = [
+  `${file}/..`,
+  `${file}/../..`
+];
 
+const dbuxBabelPlugin = require('dbux-babel-plugin');
 
 const babelOptions = {
   ignore: ['node_modules'],
@@ -45,19 +69,20 @@ const babelOptions = {
   ]
 };
 
-if (toEs5) {
-  babelOptions.presets = [[
-    "@babel/preset-env",
-    {
-      "loose": true,
-      "useBuiltIns": "usage",
-      "corejs": 3
-    }
-  ]];
-}
+// if (toEs5) {
+//   babelOptions.presets = [[
+//     "@babel/preset-env",
+//     {
+//       "loose": true,
+//       "useBuiltIns": "usage",
+//       "corejs": 3
+//     }
+//   ]];
+// }
 
 console.log('Instrumenting file', file, '...');
 
 // console.warn(babelOptions.plugins.map(p => (typeof p === 'function' ? p.toString() : JSON.stringify(p)).split('\n')[0]).join(','));
 const outputCode = transformSync(inputCode, babelOptions).code;
+
 console.log(outputCode);

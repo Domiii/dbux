@@ -15,3 +15,4 @@ function identity(x) {
 
 
 console.log(main());
+console.debug("6asdas7dasds7ad7");

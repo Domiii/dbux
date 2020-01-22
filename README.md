@@ -1,6 +1,7 @@
 # dbux README
 
 ## TODO
+* fix: DataProvider.clear will cause errors when new incoming traces reference old, cleared contexts
 * fix: trace `displayName` should not contain comments
    * see: https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L156
 * fix: await0 sample doesn't run

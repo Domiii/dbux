@@ -15,13 +15,18 @@
 		"@babel/preset-env": "^7.8.3",
 		"@babel/preset-flow": "^7.8.3",
 		"@babel/register": "^7.8.3",
+		"babel-loader": "^8.0.6",
 		"eslint": "^6.8.0",
 		"eslint-config-esnext": "^4.0.0",
 		"jest": "^24.9.0",
 		"jest-expect-message": "^1.0.2",
-		"jest-extended": "^0.11.2"
+		"jest-extended": "^0.11.2",
+		"nodemon": "^2.0.2",
+		"webpack": "^4.41.5",
+		"webpack-cli": "^3.3.10"
 	},
 	"scripts": {
+		"start": "npx nodemon --exec \"npx webpack --mode development\"",
 		"dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
 		"dbux-uninstall": "sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json\"",
 		"p1-install": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
@@ -32,9 +37,6 @@
 	"dependencies": {
 		"@babel/runtime": "^7.8.3",
 		"core-js": "^3.6.4",
-		"dbux-common": "./dbux-common",
-		"dbux-data": "./dbux-data",
-		"dbux-runtime": "./dbux-runtime",
 		"link-module-alias": "^1.2.0",
 		"lodash": "^4.17.15"
 	}
