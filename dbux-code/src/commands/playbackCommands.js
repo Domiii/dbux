@@ -11,8 +11,6 @@ const { log, debug, warn, error: logError } = newLogger('PlaybackCommands');
 
 export function initPlaybackCommands(context, playbackController: PlaybackController){
 
-  log('playbackController', playbackController);
-
   registerCommand(context,
     'dbuxPlayback.previousTrace',
     () => playbackController.previousTrace()

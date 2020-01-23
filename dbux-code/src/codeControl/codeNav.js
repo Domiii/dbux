@@ -18,7 +18,6 @@ const { log, debug, warn, error: logError } = newLogger('CodeNav');
  * @param {vscode.Position} position (new vscode.Position(LINE, CHARACTER))
  */
 export function navToCode(URI: Uri, location: Loc){
-  log('Called navToCode with URI', URI, 'location', location);
   window.showTextDocument(URI).then( editor => {
     const range = getCodeRangeFromLoc(location)
     editor.selection =  new Selection(range.start, range.end);

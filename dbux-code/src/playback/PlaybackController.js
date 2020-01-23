@@ -46,24 +46,18 @@ export default class PlaybackController {
     this.revealTraceInTreeViewById(this.frameId);
   }
 
-  nextTraceInContext = () => {
+  previousTraceInContext = () => {
     const collectionSize = this.getCollectionSize();
     if (!collectionSize) return;
-    const { contextId } = this.dataProvider.collections.traces.getById(this.frameId);
-    for (; this.frameId < collectionSize; this.frameId++){
-      if (contextId === this.dataProvider.collections.traces.getById(this.frameId).contextId) break;
-    }
+    this.frameId = this.dataProvider.util.getPreviousTraceInContext(this.frameId).traceId;
     this.gotoTraceById(this.frameId);
     this.revealTraceInTreeViewById(this.frameId);
   }
 
-  previousTraceInContext = () => {
+  nextTraceInContext = () => {
     const collectionSize = this.getCollectionSize();
     if (!collectionSize) return;
-    const { contextId } = this.dataProvider.collections.traces.getById(this.frameId);
-    for (; this.frameId < collectionSize; this.frameId++){
-      if (contextId === this.dataProvider.collections.traces.getById(this.frameId).contextId) break;
-    }
+    this.frameId = this.dataProvider.util.getNextTraceInContext(this.frameId).traceId;
     this.gotoTraceById(this.frameId);
     this.revealTraceInTreeViewById(this.frameId);
   }
@@ -77,7 +71,7 @@ export default class PlaybackController {
 
   revealTraceInTreeViewById = (traceId: number) => {
     const { contextId } = this.dataProvider.collections.traces.getById(traceId);
-    this.treeViewController.revealContextById(contextId);
+    this.treeViewController.revealContextById(contextId, true);
   }
 
   getCollectionSize = () => {

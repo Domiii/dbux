@@ -29,7 +29,9 @@ export function newDataProvider() {
   
   // hackfix: add utilities
   const utilNames = Object.keys(dataProviderUtil);
-  dataProvider.util = Object.fromEntries(utilNames.map(name => dataProviderUtil[name].bind(dp)));
+  dataProvider.util = Object.fromEntries(
+    utilNames.map(name => [name, dataProviderUtil[name].bind(null, dataProvider)])
+  );
 
   return dataProvider;
 }
