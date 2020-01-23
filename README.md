@@ -3,6 +3,7 @@
 ## TODO (dbux-code + dbux-data only)
 * rename `dbuxWindow` to `dbuxContextView` (since it is a vertical tab containing only the context `treeView`)
 * add a search bar to `ContextTreeView` (search by name)
+   * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
    * when entering search terms, only display matching nodes
    * keep all necessary parent nodes
       * gray out any parent node that does not match the search (semi-transparent?)
