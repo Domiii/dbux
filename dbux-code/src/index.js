@@ -4,10 +4,12 @@ import { initServer } from './net/server';
 
 import { newDataProvider } from './data';
 import { initTreeView } from './treeView/treeViewController';
-import { initCommands } from './commands';
+import { initCommands } from './commands/index';
 import { initToolBar } from './toolbar';
+import { initPlayback } from './playback/index';
 
 import { window } from 'vscode';
+import PlaybackController from './playback/PlaybackController';
 
 
 const { log, debug, warn, error: logError } = newLogger('Main');
@@ -20,9 +22,10 @@ function activate(context) {
 		initCodeControl(context);
 		const server = initServer(context);
 		const dataProvider = newDataProvider(server);
-		initTreeView(context, dataProvider);
-		initCommands(context);
-		initToolBar();
+		const treeViewController =  initTreeView(context, dataProvider);
+		const playbackController = initPlayback(dataProvider, treeViewController);
+		initCommands(context, treeViewController, playbackController);
+		initToolBar(context, treeViewController);
 	}
 	catch(e){
 		console.error(e)

@@ -32,6 +32,10 @@ export default class Collection<T> {
   // Reads
   // ###########################################################################
   
+  get size() : number {
+    return this._all.length - 1;
+  }
+
   get all() {
     return this._all;
   }
@@ -40,7 +44,7 @@ export default class Collection<T> {
     return this._all;
   }
 
-  getById(id : number) {
+  getById(id : number) : T {
     return this._all[id];
   }
 

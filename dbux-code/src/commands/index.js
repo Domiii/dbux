@@ -1,6 +1,7 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { initTreeViewCommands } from './treeViewCommands';
+import { initPlaybackCommands } from './playbackCommands';
 
 import {
   window,
@@ -12,6 +13,7 @@ import {
 
 const { log, debug, warn, error: logError } = newLogger('Commands');
 
-export function initCommands(context) {
-  initTreeViewCommands(context);
+export function initCommands(context, treeViewController, playbackController) {
+  initTreeViewCommands(context, treeViewController);
+  initPlaybackCommands(context, playbackController);
 }

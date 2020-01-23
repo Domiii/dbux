@@ -15,11 +15,9 @@ export function initTreeView(context, dataProvider){
     canSelectMany: false,
     showCollapseAll: true
   });
-  
-}
 
-export function getOrCreateTreeViewController(){
   return treeViewController;
+  
 }
 
 export class TreeViewController {
@@ -33,14 +31,6 @@ export class TreeViewController {
     this.onChangeEventEmitter.fire();
   }
 
-  getNextNode = () => {
-    const lastNode = this.treeView.selection[0] || this.lastSelectedNode;
-    if (!lastNode) return this.treeDataProvider.rootNodes[0] || null;
-    let id = lastNode.contextId;
-    if (id !== this.treeDataProvider.nodesByContext.length) id += 1;
-    return this.treeDataProvider.nodesByContext[id];
-  }
-
   getPreviousNode = () => {
     const lastNode = this.treeView.selection[0] || this.lastSelectedNode;
     if (!lastNode) return this.treeDataProvider.rootNodes[0] || null;
@@ -49,24 +39,43 @@ export class TreeViewController {
     return this.treeDataProvider.nodesByContext[id];
   }
 
-  next = () => {
-    const node = this.getNextNode();
-    if (!node) return;
-    node.gotoCode();
-    this.treeView.reveal(node);
+  getNextNode = () => {
+    const lastNode = this.treeView.selection[0] || this.lastSelectedNode;
+    if (!lastNode) return this.treeDataProvider.rootNodes[0] || null;
+    let id = lastNode.contextId;
+    if (id !== this.treeDataProvider.nodesByContext.length) id += 1;
+    return this.treeDataProvider.nodesByContext[id];
   }
 
   previous = () => {
     const node = this.getPreviousNode();
     if (!node) return;
+    this.lastSelectedNode = node;
     node.gotoCode();
-    this.treeView.reveal(node);
+    this.revealContext(node);
+  }
+  
+  next = () => {
+    const node = this.getNextNode();
+    if (!node) return;
+    this.lastSelectedNode = node;
+    node.gotoCode();
+    this.revealContext(node);
   }
 
   nodeOnClick = (node: ContextNode) => {
     this.lastSelectedNode = node;
     node.gotoCode();
-    if (node.children.length) this.treeView.reveal(node, { expand: true })
+    if (node.children.length) this.revealContext(node, true);
+  }
+
+  revealContextById = (contextId: number, expand = false) => {
+    const node = this.treeDataProvider.nodesByContext[contextId];
+    this.revealContext(node, expand);
+  }
+
+  revealContext = (node: ContextNode, expand = false) => {
+    this.treeView.reveal(node, { expand });
   }
 
 }

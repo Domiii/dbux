@@ -1,6 +1,6 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import { registerCommand } from './commandUtil';
-import { getOrCreateTreeViewController } from '../treeView/treeViewController';
+import { TreeViewController } from '../treeView/treeViewController';
 import ContextNode from '../treeView/ContextNode';
 
 import {
@@ -9,13 +9,11 @@ import {
 
 const { log, debug, warn, error: logError } = newLogger('Commands');
 
-export function initTreeViewCommands(context){
-
-  const treeViewController = getOrCreateTreeViewController();
+export function initTreeViewCommands(context, treeViewController: TreeViewController){
   
   registerCommand(context,
     'dbuxView.deleteEntry',
-    (node) => window.showInformationMessage(`Clicked on delete entry with node = ${node.label}.`)
+    (node: ContextNode) => window.showInformationMessage(`Clicked on delete entry with node = ${node.label}.`)
   );
 
   registerCommand(context,
