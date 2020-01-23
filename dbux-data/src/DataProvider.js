@@ -13,6 +13,16 @@ class StaticProgramContextCollection extends Collection {
   constructor(dp) {
     super('staticProgramContexts', dp);
   }
+
+  add(entries) {
+    for (const entry of entries) {
+      if (entry.fileName) {
+        // TODO: make sure, fileName is equal to basename(filePath), and filePath is absolute???
+        entry.filePath = entry.fileName;
+      }
+    }
+    super.add(entries);
+  }
 }
 
 class StaticContextCollection extends Collection {

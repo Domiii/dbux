@@ -4,8 +4,10 @@ import SendQueue from './SendQueue';
 
 const { log, debug, warn, error: logError } = newLogger('CLIENT');
 
-const DefaultPort = 3373;
-const url = 'http://localhost:' + DefaultPort;
+const DefaultPort = 3374;
+// const Remote = 'localhost';
+// const Remote = '127.0.0.1';
+const Remote = `ws://localhost:${DefaultPort}`;
 
 
 export default class Client {
@@ -17,9 +19,10 @@ export default class Client {
   _connected = false;
 
   constructor() {
-    const socket = this._socket = io(url, {
+    const socket = this._socket = io.connect(Remote, {
       // jsonp: false,
-      forceNode: true,
+      // forceNode: true,
+      port: DefaultPort,
       transports: ['websocket']
     });
     this._sendQueue = new SendQueue(this);
@@ -28,7 +31,7 @@ export default class Client {
     // connection may have failed (caused by proxy, firewall, browser, ...)
     socket.on('reconnect_attempt', () => {
       warn('reconnecting...');
-      socket.io.opts.transports = ['websocket'];
+      // socket.io.opts.transports = ['websocket'];
     });
 
     socket.on('connect', this._handleConnect);

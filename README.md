@@ -1,7 +1,8 @@
 # dbux README
 
 ## TODO
-* fix: DataProvider.clear will cause errors when new incoming traces reference old, cleared contexts
+* fix: in `dbuxState.add{Resume,Static}Context`, we set `_parentId` and `parent` but do not properly lookup global id later
+* fix: `DataProvider.clear` will cause problems down the line, when new incoming traces reference old (removed) contexts
 * fix: trace `displayName` should not contain comments
    * see: https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L156
 * fix: await0 sample doesn't run

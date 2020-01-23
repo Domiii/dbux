@@ -4,13 +4,17 @@
 
 const path = require('path');
 const process = require('process');
+const nodeExternals = require('webpack-node-externals');
+
 process.env.BABEL_DISABLE_CACHE = 1;
 
 const outputFolderName = 'dist';
 const root = path.resolve(__dirname);
 
 const targets = [
-  "dbux-common", "dbux-data", 
+  "dbux-common", 
+  "dbux-data", 
+  
   "dbux-babel-plugin", 
   "dbux-runtime", 
   // "dbux-cli"
@@ -36,8 +40,18 @@ const allFolders = [
 // const entry = Object.fromEntries(targets.map(target => [target, path.join('..', target, 'src/index.js').substring(1)]));  // hackfix: path.join('.', dir) removes the leading period
 const entry = Object.fromEntries(targets.map(target => [target, path.resolve(path.join(target, 'src/index.js'))])); 
 // const target = 'dbux-babel-plugin';
-const alias = Object.fromEntries(targets.map(target => [target, path.resolve(path.join(root, target))]));
+
+// aliases allow resolving libraries that we are building here
+const alias = {
+  ...Object.fromEntries(targets.map(target => [target, path.resolve(path.join(root, target))])),
+  // 'socket.io-client': path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ))
+  'ws': path.resolve(path.join(root, 'dbux-runtime/node_modules', 'ws', 'index.js' )) // fix for https://github.com/websockets/ws/issues/1538
+};
+console.log(alias);
+
+// `context` is the path from which any relative paths are resolved
 const context = root;
+
 // const context = path.join(root, target);
 // const entry = {
 //   bundle: './src/index.js'
@@ -52,7 +66,10 @@ const output = {
 // console.warn('webpack folders:\n  ', allFolders.join('\n  '));
 // console.warn('webpack entries:', entry);
 
+const dbuxCode = require('./dbux-code/webpack.config');
+
 module.exports = [
+  // dbuxCode,
   {
     watch: true,
     mode: buildMode,
@@ -81,6 +98,9 @@ module.exports = [
     resolve: {
       symlinks: true,
       alias,
+
+      mainFields: ['main'],  // fix for https://github.com/websockets/ws/issues/1538
+
       modules: [
         // see: https://github.com/webpack/webpack/issues/8824#issuecomment-475995296
         ...allFolders
@@ -104,6 +124,10 @@ module.exports = [
     //     chunks: 'all',
     //   },
     // },
+    externals: [
+      nodeExternals()
+      // 'fs', 'net'   // debug library complains about these
+    ]
   }
 
   // NOTE: you can have multiple configs per file (see https://stackoverflow.com/a/46825869)

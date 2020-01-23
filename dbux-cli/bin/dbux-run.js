@@ -3,6 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 const moduleAlias = require('module-alias');
+const process = require('process');
+process.env.BABEL_DISABLE_CACHE = 1;
 
 const dbuxAliases = [
   'dbux-babel-plugin',

@@ -1,16 +1,6 @@
-import fsPath from 'path';
 import { getPresentableString } from './helpers/misc';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 
-function getFilePath(state) {
-  // let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
-  // const cwd = fsPath.normalize(state.cwd);
-  // if (filename.startsWith(cwd)) {
-  //   filename = fsPath.relative(state.cwd, filename);
-  // }
-  const filename = state.filename && fsPath.resolve(state.filename);
-  return filename;
-}
 
 // ###########################################################################
 // trace stuff
@@ -66,17 +56,18 @@ function traceDefault(path, state) {
  * Build the state used by dbux-babel-plugin throughout the entire AST visit.
  */
 export default function injectDbuxState(programPath, programState) {
-  const filePath = getFilePath(programState);
-  const fileName = fsPath.basename(filePath);
+  // const filePath = programState.filename;
+  // const fileName = fsPath.basename(programState.filename);
+  const fileName = programState.filename;
 
   const { scope } = programPath;
-  
+
   const staticContexts = [null]; // staticId = 0 is always null
   const traces = [null];
 
   const dbuxState = {
     // static program data
-    filePath,
+    // filePath,
     fileName,
 
     staticContexts,
@@ -245,8 +236,8 @@ export default function injectDbuxState(programPath, programState) {
       return traceId;
     },
   };
-  
+
   Object.assign(programState, dbuxState);
-  
+
   return programState;
 }

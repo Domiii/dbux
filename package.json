@@ -38,6 +38,7 @@
 		"@babel/runtime": "^7.8.3",
 		"core-js": "^3.6.4",
 		"link-module-alias": "^1.2.0",
-		"lodash": "^4.17.15"
+		"lodash": "^4.17.15",
+		"webpack-node-externals": "^1.7.2"
 	}
 }
