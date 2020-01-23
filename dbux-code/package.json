@@ -10,7 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:dbuxEvents",
+		"onView:dbuxView",
 		"onLanguage:javascript"
 	],
 	"__main": "./src/index.js",
@@ -19,35 +19,83 @@
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "dbux-event-logger",
-					"title": "dbux Event Logger",
+					"id": "dbux-view-container",
+					"title": "",
 					"icon": "media/dep.svg"
 				}
 			]
 		},
 		"views": {
-			"dbux-event-logger": [
+			"dbux-view-container": [
 				{
-					"id": "dbuxEvents",
-					"name": "dbux events"
+					"id": "dbuxView",
+					"name": ""
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "dbuxEvents.refreshEntry",
-				"title": "Refresh",
+				"command": "dbuxPlayback.previousTrace",
+				"title": "Previous Trace",
 				"icon": {
-					"light": "resources/light/refresh.svg",
-					"dark": "resources/dark/refresh.svg"
+					"light": "resources/light/previousTrace.svg",
+					"dark": "resources/dark/previousTrace.svg"
 				}
 			},
 			{
-				"command": "dbuxEvents.addEntry",
+				"command": "dbuxPlayback.nextTrace",
+				"title": "Next Trace",
+				"icon": {
+					"light": "resources/light/nextTrace.svg",
+					"dark": "resources/dark/nextTrace.svg"
+				}
+			},
+			{
+				"command": "dbuxPlayback.previousTraceInContext",
+				"title": "Step Over",
+				"icon": {
+					"light": "resources/light/previousTraceInContext.svg",
+					"dark": "resources/dark/previousTraceInContext.svg"
+				}
+			},
+			{
+				"command": "dbuxPlayback.nextTraceInContext",
+				"title": "Step Back",
+				"icon": {
+					"light": "resources/light/nextTraceInContext.svg",
+					"dark": "resources/dark/nextTraceInContext.svg"
+				}
+			},
+			{
+				"command": "dbuxView.previous",
+				"title": "Previous",
+				"icon": {
+					"light": "resources/light/previous.svg",
+					"dark": "resources/dark/previous.svg"
+				}
+			},
+			{
+				"command": "dbuxView.next",
+				"title": "Next",
+				"icon": {
+					"light": "resources/light/next.svg",
+					"dark": "resources/dark/next.svg"
+				}
+			},
+			{
+				"command": "dbuxView.clear",
+				"title": "Clear",
+				"icon": {
+					"light": "resources/light/clear.svg",
+					"dark": "resources/dark/clear.svg"
+				}
+			},
+			{
+				"command": "dbuxView.addEntry",
 				"title": "Add"
 			},
 			{
-				"command": "dbuxEvents.gotoEntry",
+				"command": "dbuxView.gotoEntry",
 				"title": "Goto",
 				"icon": {
 					"light": "resources/light/boolean.svg",
@@ -55,31 +103,63 @@
 				}
 			},
 			{
-				"command": "dbuxEvents.deleteEntry",
+				"command": "dbuxView.deleteEntry",
 				"title": "Delete"
+			},
+			{
+				"command": "dbuxView.itemClick",
+				"title": "Clicked"
 			}
 		],
 		"menus": {
-			"view/title": [
+			"editor/title": [
 				{
-					"command": "dbuxEvents.refreshEntry",
-					"when": "view == dbuxEvents",
-					"group": "navigation"
+					"command": "dbuxPlayback.previousTrace",
+					"group": "navigation@0"
 				},
 				{
-					"command": "dbuxEvents.addEntry",
-					"when": "view == dbuxEvents"
+					"command": "dbuxPlayback.nextTrace",
+					"group": "navigation@1"
+				},
+				{
+					"command": "dbuxPlayback.previousTraceInContext",
+					"group": "navigation@2"
+				},
+				{
+					"command": "dbuxPlayback.nextTraceInContext",
+					"group": "navigation@3"
+				}
+			],
+			"view/title": [
+				{
+					"command": "dbuxView.previous",
+					"when": "view == dbuxView",
+					"group": "navigation@0"
+				},
+				{
+					"command": "dbuxView.next",
+					"when": "view == dbuxView",
+					"group": "navigation@1"
+				},
+				{
+					"command": "dbuxView.clear",
+					"when": "view == dbuxView",
+					"group": "navigation@2"
+				},
+				{
+					"command": "dbuxView.addEntry",
+					"when": "view == dbuxView"
 				}
 			],
 			"view/item/context": [
 				{
-					"command": "dbuxEvents.gotoEntry",
-					"when": "view == dbuxEvents && viewItem == event",
+					"command": "dbuxView.gotoEntry",
+					"when": "view == dbuxView && viewItem == event",
 					"group": "inline"
 				},
 				{
-					"command": "dbuxEvents.deleteEntry",
-					"when": "view == dbuxEvents && viewItem == event"
+					"command": "dbuxView.deleteEntry",
+					"when": "view == dbuxView && viewItem == event"
 				}
 			]
 		}

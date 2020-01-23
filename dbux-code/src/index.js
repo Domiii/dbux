@@ -1,24 +1,31 @@
-import { initCommands } from './commands';
+import { newLogger } from 'dbux-common/src/log/logger';
 import { initCodeControl } from './codeControl';
 import { initServer } from './net/server';
 
 import { newDataProvider } from './data';
-import { initTreeView } from './treeView';
+import { initTreeView } from './treeView/treeViewController';
+import { initCommands } from './commands/index';
+import { initToolBar } from './toolbar';
+import { initPlayback } from './playback/index';
 
-import vscode from 'vscode';
+import { window } from 'vscode';
+import PlaybackController from './playback/PlaybackController';
 
-const log = (...args) => console.log('[dbux-code]', ...args)
+
+const { log, debug, warn, error: logError } = newLogger('Main');
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
 	try {
-		initCommands(context);
 		initCodeControl(context);
 		const server = initServer(context);
 		const dataProvider = newDataProvider(server);
-		initTreeView(context, dataProvider);
+		const treeViewController =  initTreeView(context, dataProvider);
+		const playbackController = initPlayback(dataProvider, treeViewController);
+		initCommands(context, treeViewController, playbackController);
+		initToolBar(context, treeViewController);
 	}
 	catch(e){
 		console.error(e)
@@ -30,7 +37,7 @@ function activate(context) {
 
 // this method is called when your extension is deactivated
 function deactivate() {
-	vscode.window.showInformationMessage('Extension down');
+	window.showInformationMessage('Extension down');
 }
 
 export {

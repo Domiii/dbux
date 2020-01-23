@@ -1,6 +1,9 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext';
+import StaticContext from 'dbux-common/src/core/data/StaticContext';
+import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import Collection from './Collection';
 import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
 import Queries from './queries/Queries';
@@ -9,19 +12,19 @@ import Indexes from './indexes/Indexes';
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
 
-class StaticProgramContextCollection extends Collection {
+class StaticProgramContextCollection extends Collection<StaticProgramContext> {
   constructor(dp) {
     super('staticProgramContexts', dp);
   }
 }
 
-class StaticContextCollection extends Collection {
+class StaticContextCollection extends Collection<StaticContext> {
   constructor(dp) {
     super('staticContexts', dp);
   }
 }
 
-class StaticTraceCollection extends Collection {
+class StaticTraceCollection extends Collection<StaticTrace> {
   constructor(dp) {
     super('staticTraceContexts', dp);
   }
