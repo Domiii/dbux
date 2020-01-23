@@ -1,3 +1,4 @@
+import path from 'path';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
@@ -18,6 +19,9 @@ class StaticProgramContextCollection extends Collection {
     for (const entry of entries) {
       if (entry.fileName) {
         // TODO: make sure, fileName is equal to basename(filePath), and filePath is absolute???
+        if (!path.isAbsolute(entry.fileName)) {
+          logError('invalid `staticProgramContext.filePath` is not absolute - don\'t know how to resolve', entry.fileName);
+        }
         entry.filePath = entry.fileName;
       }
     }
