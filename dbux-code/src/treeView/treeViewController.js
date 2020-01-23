@@ -25,6 +25,7 @@ export class TreeViewController {
     this.treeView = window.createTreeView(viewId, { treeDataProvider: treeDataProvider, ...options});
     this.treeDataProvider = treeDataProvider;
     this.onChangeEventEmitter = onChangeEventEmitter;
+    this.onClickCallback = [];
   }
 
   refresh = () => {
@@ -67,6 +68,7 @@ export class TreeViewController {
     this.lastSelectedNode = node;
     node.gotoCode();
     if (node.children.length) this.revealContext(node, true);
+    for (let cb of this.onClickCallback) cb(node);
   }
 
   revealContextById = (contextId: number, expand = false) => {
@@ -76,6 +78,10 @@ export class TreeViewController {
 
   revealContext = (node: ContextNode, expand = false) => {
     this.treeView.reveal(node, { expand });
+  }
+
+  onItemClick = (cb) => {
+    this.onClickCallback.push(cb);
   }
 
 }

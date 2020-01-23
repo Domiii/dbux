@@ -4,6 +4,7 @@ import { getCodePositionFromLoc } from '../util/codeUtil';
 
 import DataProvider from 'dbux-data/src/DataProvider';
 import { TreeViewController } from '../treeView/treeViewController';
+import ContextNode from '../treeView/ContextNode';
 
 import { Uri } from 'vscode';
 
@@ -20,6 +21,8 @@ export default class PlaybackController {
     this.dataProvider = dataProvider;
     this.treeViewController = treeViewController
     this.frameId = 1;
+
+    this.treeViewController.onItemClick(this.onTreeItemClick)
   }
 
   play = () => {
@@ -76,6 +79,11 @@ export default class PlaybackController {
 
   getCollectionSize = () => {
     return this.dataProvider.collections.traces.size;
+  }
+
+  onTreeItemClick = (node: ContextNode) => {
+    const { traceId } = this.dataProvider.util.getFirstTraceOfContext(node.contextId);
+    this.frameId = traceId;
   }
 
 }

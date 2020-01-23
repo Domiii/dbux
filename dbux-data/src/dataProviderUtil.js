@@ -1,6 +1,13 @@
 import DataProvider from "./DataProvider";
 
 export default {
+  getFirstTraceOfContext(dp: DataProvider, contextId) {
+    const traces = dp.indexes.traces.byContext.get(contextId);
+    if (!traces?.length) {
+      return null;
+    }
+    return traces[0];
+  },
   getLastTraceOfContext(dp: DataProvider, contextId) {
     const traces = dp.indexes.traces.byContext.get(contextId);
     if (!traces?.length) {
