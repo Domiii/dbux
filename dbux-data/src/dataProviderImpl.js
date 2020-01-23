@@ -2,6 +2,7 @@ import DataProvider from './DataProvider';
 import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
+import dataProviderUtil from './dataProviderUtil';
 
 /**
  * This file handles the default settings, implementations and setup of `DataProvider`.
@@ -21,6 +22,10 @@ export function newDataProvider() {
 
   // queries
   dataProvider.addQuery(new ProgramIdByFilePathQuery());
+  
+  // hackfix: add utilities
+  const utilNames = Object.keys(dataProviderUtil);
+  dataProvider.util = Object.fromEntries(utilNames.map(name => dataProviderUtil[name].bind(dp)));
 
   return dataProvider;
 }
