@@ -13,7 +13,7 @@ const webpackPlugins = [];
 
 const projectRoot = path.resolve(__dirname);
 const root = path.resolve(__dirname + '/..');
-const dbuxDepNames = ["dbux-common", "dbux-data"];
+const dbuxDepNames = ["dbux-common", "dbux-data", "dbux-code"];
 const dbuxDepsAbsolute = dbuxDepNames.map(f => path.resolve(path.join(root,f)));
 
 dbuxDepsAbsolute.forEach(f => {
@@ -26,7 +26,7 @@ dbuxDepsAbsolute.forEach(f => {
 
 const allFolders = [
   path.join(root, '/node_modules'),
-  ...[projectRoot, ...dbuxDepsAbsolute]
+  ...[...dbuxDepsAbsolute]
     .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
     .flat()
     .map(f => path.resolve(f))
@@ -62,12 +62,12 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        loader: 'babel-loader',
-        include: [
-          path.join(projectRoot, 'src')
-        ]
-      },
+      // {
+      //   loader: 'babel-loader',
+      //   include: [
+      //     path.join(projectRoot, 'src')
+      //   ]
+      // },
       {
         loader: 'babel-loader',
         include: dbuxDepsAbsolute.map(r => path.join(r, 'src')),
@@ -78,6 +78,7 @@ module.exports = {
     ],
   },
   externals: {
+    uws: "uws",
     vscode: "commonjs vscode"
   }
 };

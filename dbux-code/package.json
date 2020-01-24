@@ -111,7 +111,6 @@
 		"webpack-cli": "^3.3.10"
 	},
 	"dependencies": {
-		"socket.io": "^2.3.0",
-		"uws": "github:mmdevries/uws#2.4.0"
+		"socket.io": "^2.3.0"
 	}
 }

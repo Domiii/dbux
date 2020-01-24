@@ -47,7 +47,7 @@ const alias = {
   // 'socket.io-client': path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ))
   'ws': path.resolve(path.join(root, 'dbux-runtime/node_modules', 'ws', 'index.js' )) // fix for https://github.com/websockets/ws/issues/1538
 };
-console.log(alias);
+// console.log(alias);
 
 // `context` is the path from which any relative paths are resolved
 const context = root;
@@ -68,8 +68,10 @@ const output = {
 
 const dbuxCode = require('./dbux-code/webpack.config');
 
+// TODO: add dbux-code to babelRoots
+
 module.exports = [
-  // dbuxCode,
+  dbuxCode,
   {
     watch: true,
     mode: buildMode,

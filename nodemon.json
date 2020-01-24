@@ -5,7 +5,8 @@
     "node_modules/**"
   ],
   "watch": [
-    "./webpack.config.js"
+    "./webpack.config.js",
+    "./dbux-code/webpack.config.js"
   ],
   "ext": "js",
   "events": {
