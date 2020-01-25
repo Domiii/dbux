@@ -50,7 +50,6 @@
       * also requires making significant changes to `dbux-data`'s `DataProvider` and `indexes`
 * instrumentation
    * fix: trace `displayName` should not contain comments
-      * see: https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L156
 
 * more instrumentation
    * better name/typify `trace` entries

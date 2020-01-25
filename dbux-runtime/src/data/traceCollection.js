@@ -123,7 +123,7 @@ function _prettyPrint(trace, value) {
   // else
   const v = type === TraceType.ExpressionResult;
   const result = v ? ['(', value, ')'] : EmptyArray;
-  console.log(
+  console.debug(
     `${contextId} ${depthIndicator}[${typeName}] ${displayName}`, 
     ...result, 
     ` ${codeLocation} [DBUX]`
