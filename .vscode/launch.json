@@ -10,6 +10,10 @@
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}/dbux-cli",
+			"runtimeArgs": [
+				"--stack-trace-limit=1000",
+				"--nolazy",
+			],
 			"sourceMaps": true,
 			"restart": true,
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux-run",
@@ -21,6 +25,10 @@
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
+			"outFiles": [
+				"${workspaceRoot}/dbux-babel-plugin/dist/**/*.js",
+				"${workspaceRoot}/dbux-runtime/dist/**/*.js"
+			]
 		},
 		{
 			// debugging of Chrome-bound code - https://github.com/Microsoft/vscode-chrome-debug
@@ -93,15 +101,13 @@
 			"name": "dbux-instrument",
 			"type": "node",
 			"request": "launch",
-			"cwd": "${workspaceFolder}/dbux-babel-plugin",
-			"runtimeExecutable": "${workspaceFolder}/dbux-babel-plugin/node_modules/@babel/node/bin/babel-node.js",
+			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
 				"--nolazy",
 			],
-			"program": "${workspaceFolder}/dbux-babel-plugin/bin/dbux-instrument-file.js",
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux-instrument-file.js",
 			"args": [
-				"--file",
 				"${file}",
 			],
 			// see: https://github.com/microsoft/vscode/issues/5422
@@ -110,7 +116,10 @@
 			"trace": "all",
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen"
+			"internalConsoleOptions": "neverOpen",
+			"outFiles": [
+				"${workspaceRoot}/dbux-babel-plugin/dist/**/*.js"
+			]
 		},
 		{
 			"name": "npm run build-debug",

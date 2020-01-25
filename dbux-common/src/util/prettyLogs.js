@@ -17,6 +17,7 @@ function _inspect(arg) {
  */
 export function makePrettyLog(origLog, customColor) {
   const colorize = colors[customColor];
+  origLog = origLog.bind(console);
   return function customLogger(...args) {
     return origLog(
       ...args.map(

@@ -1,6 +1,6 @@
 {
-	"name": "dbux_extension",
-	"displayName": "dbux extension",
+	"name": "dbux-code",
+	"displayName": "dbux-code",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
@@ -174,20 +174,6 @@
 		"analyze": "npx webpack --mode development --json | npx webpack-bundle-size-analyzer"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.7.7",
-		"@babel/core": "^7.7.7",
-		"@babel/node": "^7.7.7",
-		"@babel/plugin-proposal-class-properties": "^7.7.4",
-		"@babel/plugin-proposal-decorators": "^7.7.4",
-		"@babel/plugin-proposal-function-bind": "^7.7.4",
-		"@babel/plugin-proposal-optional-chaining": "^7.7.5",
-		"@babel/plugin-syntax-dynamic-import": "^7.7.4",
-		"@babel/plugin-syntax-export-default-from": "^7.7.4",
-		"@babel/plugin-syntax-flow": "^7.7.4",
-		"@babel/plugin-transform-runtime": "^7.7.6",
-		"@babel/preset-env": "^7.7.7",
-		"@babel/preset-flow": "^7.8.3",
-		"@babel/register": "^7.7.7",
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.11.7",
@@ -205,12 +191,6 @@
 		"webpack-cli": "^3.3.10"
 	},
 	"dependencies": {
-		"@babel/runtime": "^7.7.7",
-		"core-js": "^3.6.1",
-		"dbux-common": "file:../dbux-common",
-		"dbux-data": "file:../dbux-data",
-		"lodash": "^4.17.15",
-		"socket.io": "^2.3.0",
-		"uws": "github:mmdevries/uws#2.4.0"
+		"socket.io": "^2.3.0"
 	}
 }

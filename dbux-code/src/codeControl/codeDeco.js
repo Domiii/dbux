@@ -77,7 +77,7 @@ export function initCodeDeco(context) {
 
 	// create a decorator type that we use to decorate small numbers
 	TraceDecorationType = window.createTextEditorDecorationType({
-		before: {
+		after: {
 			contentText: '|',
 			color: 'red',
 			// light: {

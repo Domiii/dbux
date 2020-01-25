@@ -1,0 +1,16 @@
+{
+  "ignore": [
+    ".git",
+    "dist/**",
+    "node_modules/**"
+  ],
+  "watch": [
+    "./webpack.config.js",
+    "./dbux-code/webpack.config.js"
+  ],
+  "ext": "js",
+  "events": {
+    "restart": "echo 'display notification \"App restarted due to:\n'$FILENAME'\" with title \"nodemon\"'"
+  },
+  "delay": "500"
+}

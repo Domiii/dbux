@@ -1,3 +1,4 @@
+import path from 'path';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
@@ -15,6 +16,15 @@ const { log, debug, warn, error: logError } = newLogger('DataProvider');
 class StaticProgramContextCollection extends Collection<StaticProgramContext> {
   constructor(dp) {
     super('staticProgramContexts', dp);
+  }
+
+  add(entries) {
+    for (const entry of entries) {
+      if (!entry.filePath || !path.isAbsolute(entry.filePath)) {
+        logError('invalid `staticProgramContext.filePath` is not absolute - don\'t know how to resolve', entry.fileName);
+      }
+    }
+    super.add(entries);
   }
 }
 
@@ -71,8 +81,8 @@ export default class DataProvider {
   /**
    * @private
    */
-  _dataEventListeners : (any) => void = {};
-  versions : number[] = [];
+  _dataEventListeners: (any) => void = {};
+  versions: number[] = [];
 
   constructor() {
     this.clear();
@@ -84,7 +94,7 @@ export default class DataProvider {
   /**
    * Add a data event listener to given collection.
    */
-  onData(collectionName : string, cb : ([]) => void ) {
+  onData(collectionName: string, cb: ([]) => void) {
     const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
     listeners.push(cb);
   }
@@ -131,7 +141,7 @@ export default class DataProvider {
       ++this.versions[collection._id];    // update version
       collection.add(data);
     }
-  } 
+  }
 
   _postAdd(allData) {
     // process new data (most importantly: indexes)
@@ -153,7 +163,7 @@ export default class DataProvider {
     }
   }
 
-  _notifyData(collectionName : string, data : []) {
+  _notifyData(collectionName: string, data: []) {
     const listeners = this._dataEventListeners[collectionName];
     if (listeners) {
       listeners.forEach((cb) => cb(data));

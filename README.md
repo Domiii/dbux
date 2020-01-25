@@ -1,35 +1,99 @@
 # dbux README
 
-## TODO
-* fix: trace `displayName` should not contain comments
-   * see: https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L156
-* fix: await0 sample doesn't run
-* fix babelrcroots in `babelInclude` - https://babeljs.io/docs/en/options#babelrcroots
-   * -> https://github.com/babel/babel/blob/282f81bd676d09c1d8c48b08a7254b961eb41bed/packages/babel-core/src/config/config-chain.js#L256
+## TODO (dbux-code + dbux-data only)
+* rename `dbuxWindow` to `dbuxContextView` (since it is a vertical tab containing only the context `treeView`)
+* add a search bar to `ContextTreeView` (search by name)
+   * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
+   * when entering search terms, only display matching nodes
+   * keep all necessary parent nodes
+      * gray out any parent node that does not match the search (semi-transparent?)
+   * (when clearing search, stay on selected node)
+   * clear search on `Esc` key press
+* add a button to toggle (show/hide) all intrusive features to the top of our `dbux window`
+   * includes: `codeDeco`, `playback` buttons
+   * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+X CTRL+C` (need every single key))
+* add new index: `TracesByProgramContext`
+   * NOTE: this index groups by `Context`, not by `StaticContext`!
+   * group traces by most recent program context
+   * these traces are grouped by `contextId` of an **ancestor** `Context` that is the **most recent** context of type `Program`
+   * NOTE: when the same program is executed a second time, traces will be put into a different group
+* in `ContextTreeView`, make text of all nodes that do not belong to the current `Program` semi-transparent
+   * NOTE: use `TracesByProgramContext` index
+* show a warning at the top of a file if it has been edited after the time of it's most recent `Program` `Context`
+   * (if that's possible?)
+   * (also in `codeDeco`)
+* add a WebView below the `dbuxContextView` (name: `dbuxWebView` 之類的)
+   * experiment: add an HTML `<button>` to the WebView that can execute a `command`
+* add a `TracesByStaticTraceIndex`
+* [codeDeco] identify any `trace` at position `i` of `context` `c1` is followed by `trace` at `i+1` who belongs to `context` `c2` and `c2` is a child of `c1`, give it a special `marker` (currently our markers are `|`)
+   * for the marker icon, maybe some kind of arrow indicating "it goes a level deeper" would be good
+   * since this is fast to lookup, we can just use a `util` function to determine the circumstance
+   * however, we probably want a `ContextsByParentContextIndex` for this (which gives us all children of a given context)
+   * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
+* [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`:
+   * display the `value` in `codeDeco` behind the expression
+   * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
+* [treeView] add `Application` nodes to `treeView`
+   * add `ContextsByApplicationIndex`
+   * if more than one `Application` available:
+      * all root nodes correspond to all `Application` entries
+      * order: newest first
+   * if only one `Application` available:
+      * don't make it a root node (as that takes up unnecessary space)
+
+
+## TODO (other)
+* fix `dbux-data` and `dbux-runtime` to not bug out when multiple `Applications` send (possibly conflicting) data
+   * (or the same applicaiton was restarted etc...)
+   * add a new collection type `applications` that allows us to track which code belongs to which
+      * possibly identify by directory + start time?
+      * also requires making significant changes to `dbux-data`'s `DataProvider` and `indexes`
+* instrumentation
+   * fix: trace `displayName` should not contain comments
+      * see: https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L156
+
+* more instrumentation
+   * better name/typify `trace` entries
+      * e.g. identify `catch` blocks (and more strategies)
+* fix: in `dbuxState.add{Resume,Static}Context`, we set `_parentId` and `parent` but do not properly lookup global id later
+* fix: `await0` sample doesn't work?
+* fix: `DataProvider.clear` will cause problems down the line, when new incoming traces reference old (removed) contexts
+
+
+## Implemented Features
+
+*
+
 
 ## Fancy ideas (Dev)
 * add extra-watch-webpack-plugin https://github.com/pigcan/extra-watch-webpack-plugin?
 
-## Installing the good stuff
+# Installing the good stuff
+
+## Basics
 
 ```sh
-`# jest` npm i -D jest jest-expect-message jest-extended
-`# babel basics` npm i -D @babel/core @babel/cli @babel/node @babel/register 
-`# babel plugins` npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
-`# babel runtime` npm i -S core-js@3 @babel/runtime
-`# eslint` npm i -D eslint eslint-config-esnext
-`# flow` npm i -D flow-bin @babel/preset-flow eslint-plugin-flowtype && npx flow init #&& npx flow
-`# babel dev` npm i -D @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester && \
+`# jest` yarn add --dev jest jest-expect-message jest-extended
+`# babel basics` yarn add --dev @babel/core @babel/cli @babel/node @babel/register 
+`# babel plugins` yarn add --dev @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
+`# babel runtime` yarn add core-js@3 @babel/runtime
+`# eslint` yarn add --dev eslint eslint-config-esnext
+`# flow` yarn add --dev flow-bin @babel/preset-flow eslint-plugin-flowtype && npx flow init #&& npx flow
+`# babel dev` yarn add --dev @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester && \
 ```
 
-## Major Components
-* Babel plugins:
-   * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/user-handbook.md
-   * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md
-   * [`bael-plugin-tester`](https://github.com/babel-utils/babel-plugin-tester#examples)
-* Babel Config pain
-   * [how to use Babel 7 babel-register to compile files outside of working directory #8321](https://github.com/babel/babel/issues/8321)
-   * https://github.com/babel/babel/pull/5590
+## Upgrading Packages
+```sh
+`# babel` npm run dbux-install --force --save @babel/cli@latest @babel/core@latest @babel/node@latest @babel/plugin-proposal-class-properties@latest @babel/plugin-proposal-decorators@latest @babel/plugin-proposal-function-bind@latest @babel/plugin-proposal-optional-chaining@latest @babel/plugin-syntax-dynamic-import@latest @babel/plugin-syntax-export-default-from@latest @babel/plugin-syntax-flow@latest @babel/plugin-transform-runtime@latest @babel/preset-env@latest @babel/preset-flow@latest @babel/register@latest
+
+`# babel instrumentation` @babel/code-frame@latest @babel/template@latest
+```
+
+## package.json magic
+* replace: `"([^"]+)": "([^"]+)",\n\s*` w/ `$1@latest`
+
+
+# References
 
 ## Debugging Intermediate + Advanced
 * Getting the debugger to work when it just won't work!
@@ -105,18 +169,12 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 
 # Projects
 
-## TODOMVC
+## todomvc (vanilla-es6)
 
-### vanillajs
-
-```sh
-cd projects && \
-git clone https://github.com/tastejs/todomvc.git && \
-cd todomvc/examples/vanillajs && \
-npm install && \
-npm install serve && `# installing it first makes npx run instantly everytime` \
-npx serve
-```
+* `npm run p1-install`
+* `npm run p1-start (starts web server)`
+* (open in browser: http://localhost:3030)
+   * (or: in VSCode go to debug menu and run "chrome todomvc" to enable debugging the runtime in VSCode)
 
 # Implementation
 
@@ -124,7 +182,13 @@ npx serve
 * Instrumentation
    * try/finally
    * top level extraction
-   * 
+* Babel plugins:
+   * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/user-handbook.md
+   * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md
+   * [`bael-plugin-tester`](https://github.com/babel-utils/babel-plugin-tester#examples)
+* Babel Config pain
+   * [how to use Babel 7 babel-register to compile files outside of working directory #8321](https://github.com/babel/babel/issues/8321)
+   * https://github.com/babel/babel/pull/5590
 
 ## dbux-data
 * Indexes
@@ -144,11 +208,6 @@ npx serve
 
 
 # Projects
-* p1: todomvc (vanilla-es6)
-   * npm run p1-install
-   * npm run p1-start (starts web server)
-   * open in browser: http://localhost:3030
-      * (or: in VSCode go to debug menu and run "chrome todomvc" to enable debugging the runtime in VSCode)
 
 
 
@@ -184,3 +243,27 @@ You can re-add it manually:
    * see: https://github.com/socketio/engine.io/issues/575
    * see: https://github.com/socketio/socket.io/issues/3342
    * see: https://github.com/mmdevries/uws
+
+
+# Useful Snippets
+
+```
+	"Comment Barrier 1": {
+		"scope": "javascript, typescript",
+		"prefix": "comment-barrier1",
+		"body": [
+			"// ###########################################################################",
+			"// $1",
+			"// ###########################################################################$0"
+		]
+	},
+	"Comment Barrier 2": {
+		"scope": "javascript, typescript",
+		"prefix": "comment-barrier2",
+		"body": [
+			"// ########################################",
+			"// $1",
+			"// ########################################$0"
+		]
+	}
+```

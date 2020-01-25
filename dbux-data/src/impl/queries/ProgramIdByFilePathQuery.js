@@ -12,8 +12,8 @@ export default class ProgramIdByFilePathQuery extends CachedQuery {
   }
 
   execute(dp, fpath) {
-    return dp.collections.staticProgramContexts.find(e => 
-      arePathsIdenticalDontResolve(e.filePath, fpath)
+    return dp.collections.staticProgramContexts.find(programContext => 
+      arePathsIdenticalDontResolve(programContext.filePath, fpath)
     )?.programId;
   }
 }

@@ -1,29 +1,38 @@
 import http from 'http';
-// import * as SocketIO from ;
+import * as SocketIOServer from 'socket.io';
 import { newLogger, logWarn } from 'dbux-common/src/log/logger';
 import { inspect } from 'util';
 import Client from './Client';
 
-const DefaultPort = 3373;
+const DefaultPort = 3374;
 
 const { log, debug, warn, error: logError } = newLogger('SERVER');
 
-// warn('server/index.js');
-
-let httpServer;
-
+/**
+ * NOTE: We can connect to this server at ws://localhost:3374/socket.io/?transport=websocket
+ */
 class Server {
+  _socket;
   _clients = [];
   _clientEventListeners = {};
 
-  initServer() {
-    // const io = SocketIO(httpServer, {
-    const io = require('socket.io')(httpServer, {
+  initServer(httpServer) {
+    // see: https://socket.io/docs/server-api/
+    const server = this._socket = SocketIOServer(httpServer, {
+    // const server = this._socket = require('socket.io')(httpServer, {
       serveClient: false,
-      // wsEngine: 'ws' // in case uws is not supported
+
+      // see: https://github.com/socketio/engine.io/blob/6a16ea119280a02029618544d44eb515f7f2d076/lib/server.js#L107
+      wsEngine: 'ws' // in case uws is not supported
     });
 
-    io.on('connect', this._handleAccept);
+    server.on('connect', this._handleAccept);
+    server.on('error', err => {
+      console.error('dbux server failed', err);
+    });
+    httpServer.on('error', err => {
+      console.error('dbux server failed', err);
+    });
   }
 
   /**
@@ -75,14 +84,21 @@ class Server {
 let server;
 
 export function initServer() {
-  httpServer = http.createServer();
+  const httpServer = http.createServer();
   const port = DefaultPort;
+  // const address = '0.0.0.0';
+  const address = '';
   httpServer.listen(port, () => {
-    debug('server listening on port ' + port);
+    debug(`server listening on port ${address}:${port}...`);
+  });
+  httpServer.on('request', (req, res) => {
+    debug('HTTP request', req);
+    res.writeHead(404);
+    res.end();
   });
 
   server = new Server();
-  server.initServer();
+  server.initServer(httpServer);
 
   return server;
 }
