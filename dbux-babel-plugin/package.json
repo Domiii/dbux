@@ -13,12 +13,11 @@
     "clean": "rm -rf dist && rm -rf dist.samples",
     "_before-run": "npx link-module-alias",
     "build": "npm run clean && npm run _before-run && webpack --config config/webpack.config.js",
-    "test": "node --stack-trace-limit=1000 node_modules/jest/bin/jest.js --runInBand",
+    "test": "npm run _before-run && node --stack-trace-limit=1000 node_modules/jest/bin/jest.js --runInBand",
     "test:watch": "npm run test -- --watch",
     "__archive_build": "npm run clean && npx babel src -d dist",
     "__archive_prepublish": "npm run clean && npm run build",
-    "__postinstall": "npm run add-links",
-    "add-links": "npm i --ignore-scripts -S ../dbux-common ../dbux-runtime"
+    "__postinstall": "npm run add-links"
   },
   "devDependencies": {
     "@babel/code-frame": "^7.8.3",
@@ -28,7 +27,10 @@
     "@babel/traverse": "^7.8.3",
     "@babel/types": "^7.8.3",
     "babel-loader": "^8.0.6",
-    "babel-plugin-tester": "^8.0.1"
+    "babel-plugin-tester": "^8.0.1",
+    "jest": "^25.1.0",
+    "jest-expect-message": "^1.0.2",
+    "jest-extended": "^0.11.4"
   },
   "keywords": [
     "dbux",
@@ -39,7 +41,8 @@
     "tracing",
     "babel-plugin"
   ],
-  "dependencies": {
-  },
-  "_moduleAliases": {}
+  "dependencies": {},
+  "_moduleAliases": {
+    "dbux-common": "../dbux-common"
+  }
 }
