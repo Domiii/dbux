@@ -31,21 +31,21 @@ export function getBasename(path: string) {
   return path.substring(start+1, end+1);
 }
 
-// tests
-console.table([
-  ['a/b/c', 'c'],
-  ['a/b/c//', 'c'],
-  ['a\\b\\c', 'c'],
-  ['a\\b\\c\\', 'c'],
-  ['a\\b\\c/', 'c'],
-  ['a/b/c\\', 'c'],
-  ['c', 'c']
-].map(([input, expected]) => {
-  const result = getBasename(input);
-  return {
-    input, 
-    result,
-    expected,
-    good: result === expected ? '✅' : '❌'
-  };
-}));
+// // tests
+// console.table([
+//   ['a/b/c', 'c'],
+//   ['a/b/c//', 'c'],
+//   ['a\\b\\c', 'c'],
+//   ['a\\b\\c\\', 'c'],
+//   ['a\\b\\c/', 'c'],
+//   ['a/b/c\\', 'c'],
+//   ['c', 'c']
+// ].map(([input, expected]) => {
+//   const result = getBasename(input);
+//   return {
+//     input, 
+//     result,
+//     expected,
+//     good: result === expected ? '✅' : '❌'
+//   };
+// }));

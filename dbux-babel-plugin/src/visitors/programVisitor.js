@@ -38,6 +38,7 @@ function buildProgramTail(path, state) {
   const {
     ids,
     fileName,
+    filePath,
     staticContexts,
     traces
   } = state;
@@ -48,6 +49,7 @@ function buildProgramTail(path, state) {
 
   const staticData = {
     fileName,
+    filePath,
     staticContexts,
     traces
   };
