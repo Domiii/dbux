@@ -77,7 +77,7 @@ export default class Client {
   /**
    * Send data to remote end.
    * 
-   * NOTE: Uses engine.io's serialization engine.
+   * NOTE: This uses `engine.io`'s serialization, followed by processing in `ws`.
    * @see https://github.com/socketio/engine.io-parser/blob/master/lib/index.js#L55
    */
   sendNow(data) {

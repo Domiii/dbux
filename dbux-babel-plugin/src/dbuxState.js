@@ -1,5 +1,6 @@
 import { getPresentableString } from './helpers/misc';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import { getBasename } from 'dbux-common/src/util/pathUtil';
 
 
 // ###########################################################################
@@ -15,6 +16,7 @@ const traceCustomizationsByType = {
 
 function tracePathStart(path, state, trace) {
   const { loc } = path.node;
+  
   return {
     // _parentId: parentStaticId,
     loc: {
@@ -56,9 +58,8 @@ function traceDefault(path, state) {
  * Build the state used by dbux-babel-plugin throughout the entire AST visit.
  */
 export default function injectDbuxState(programPath, programState) {
-  // const filePath = programState.filename;
-  // const fileName = fsPath.basename(programState.filename);
-  const fileName = programState.filename;
+  const filePath = programState.filename;
+  const fileName = getBasename(filePath)
 
   const { scope } = programPath;
 
@@ -67,7 +68,7 @@ export default function injectDbuxState(programPath, programState) {
 
   const dbuxState = {
     // static program data
-    // filePath,
+    filePath,
     fileName,
 
     staticContexts,

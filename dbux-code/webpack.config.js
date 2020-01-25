@@ -38,6 +38,7 @@ const alias = Object.fromEntries(dbuxDepNames.map(target => [target, path.resolv
 module.exports = {
   // https://github.com/webpack/webpack/issues/2145
   mode: process.env.MODE || 'development',
+  watch: true,
   // devtool: 'inline-module-source-map',
   devtool: 'source-map',
   //devtool: 'inline-source-map',
@@ -83,4 +84,4 @@ module.exports = {
   }
 };
 
-console.warn('webpack config loaded');
+// console.warn('[dbux-code] webpack config loaded');

@@ -45,10 +45,10 @@
 ## TODO (other)
 * fix `dbux-data` and `dbux-runtime` to not bug out when multiple `Applications` send (possibly conflicting) data
    * (or the same applicaiton was restarted etc...)
-* instrumentation
-   * add a new data type `Application` that allows us to track which code belongs to which
+   * add a new collection type `applications` that allows us to track which code belongs to which
       * possibly identify by directory + start time?
       * also requires making significant changes to `dbux-data`'s `DataProvider` and `indexes`
+* instrumentation
    * fix: trace `displayName` should not contain comments
       * see: https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L156
 

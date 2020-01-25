@@ -30,7 +30,7 @@ const webpackPlugins = [];
 
 
 const allFolders = [
-  path.join(root, '/node_modules'),
+  path.join(root, 'node_modules'),
   ...targetsAbsolute
     .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
     .flat()
@@ -71,15 +71,18 @@ const dbuxCode = require('./dbux-code/webpack.config');
 // TODO: add dbux-code to babelRoots
 
 module.exports = [
-  dbuxCode,
   {
-    watch: true,
+    watch: true,  // NOTE: webpack 4 ignores `watch` attribute on any config but the first
+    watchOptions: {
+      poll: true,
+      ignored: /node_modules/
+    },
     mode: buildMode,
 
     // https://github.com/webpack/webpack/issues/2145
     // devtool: 'inline-module-source-map',
-    devtool: 'source-map',
-    // devtool: 'inline-source-map',
+    // devtool: 'source-map',
+    devtool: 'inline-source-map',
     plugins: webpackPlugins,
     context,
     entry,
@@ -130,9 +133,13 @@ module.exports = [
       nodeExternals()
       // 'fs', 'net'   // debug library complains about these
     ]
-  }
+  },
+
+  dbuxCode
 
   // NOTE: you can have multiple configs per file (see https://stackoverflow.com/a/46825869)
 ];
 
-// console.warn('webpack config loaded');
+console.warn('[dbux] webpack config loaded', 
+// targetsAbsolute
+);

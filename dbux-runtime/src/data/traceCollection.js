@@ -84,6 +84,7 @@ function _prettyPrint(trace, value) {
     // value 
   } = trace;
   const context = executionContextCollection.getById(contextId);
+  
   const {
     staticContextId,
     stackDepth

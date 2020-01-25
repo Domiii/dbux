@@ -26,11 +26,11 @@
 		"webpack-cli": "^3.3.10"
 	},
 	"scripts": {
-		"start": "npx nodemon --exec \"npx webpack --mode development\"",
+		"start": "npx nodemon --exec \"npx webpack --watch --mode development\"",
 		"dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
 		"dbux-uninstall": "sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json\"",
-		"p1-install": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
-		"p1-g": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
+		"p1-install": "sh ./assets/projects/todomvc-vanilla-es6/install.sh",
+		"p1-go": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
 		"p1-start": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
 		"dbux-code-start": "cd ./dbux-code && npm start"
 	},

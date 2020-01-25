@@ -20,12 +20,10 @@ class StaticProgramContextCollection extends Collection<StaticProgramContext> {
 
   add(entries) {
     for (const entry of entries) {
-      if (entry.fileName) {
-        // TODO: make sure, fileName is equal to basename(filePath), and filePath is absolute???
-        if (!path.isAbsolute(entry.fileName)) {
+      if (entry.filePath) {
+        if (!path.isAbsolute(entry.filePath)) {
           logError('invalid `staticProgramContext.filePath` is not absolute - don\'t know how to resolve', entry.fileName);
         }
-        entry.filePath = entry.fileName;
       }
     }
     super.add(entries);
