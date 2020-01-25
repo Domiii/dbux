@@ -45,19 +45,17 @@ module.exports = (projectRoot) => {
   // const ExtraWatchWebpackPlugin = require(projectRoot + '/node_modules/extra-watch-webpack-plugin');
 
   const webpackPlugins = [
-    // useful during dev
     // new ExtraWatchWebpackPlugin({
-    //   files: ...
     //   dirs: [
-    //     
+    //     path.join(dbuxPluginPath, 'dist')
     //   ]
     // })
   ];
 
-  const allFolders = [projectRoot, ...dbuxRoots]
-    .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
-    .flat()
-    .map(f => path.resolve(f));
+  // const allFolders = [projectRoot, ...dbuxRoots]
+  //   .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
+  //   .flat()
+  //   .map(f => path.resolve(f));
     // console.log('webpack folders:', allFolders.join('\n'));
   return {
     //watch: true,
@@ -94,9 +92,10 @@ module.exports = (projectRoot) => {
       // extensions: ['.js', '.jsx'],
       modules: [
         root,
+        // dbuxRoots.map(f => path.join(f, 'dist')),
         path.join(projectRoot, 'src'),
         path.join(projectRoot, 'node_modules')
-      ]
+      ].flat()
     },
     module: {
       rules: [

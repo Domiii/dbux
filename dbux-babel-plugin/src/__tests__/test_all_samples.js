@@ -15,5 +15,5 @@ fs.readdirSync(inputFolder).forEach(fname => {
 
   expect(code).toBeString();
   
-  runSnapshotTests(code, fpath, fname, {}, true);
+  runSnapshotTests(code, fpath, fname, true, {});
 });
