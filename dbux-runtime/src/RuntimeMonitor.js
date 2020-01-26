@@ -246,9 +246,13 @@ export default class RuntimeMonitor {
   pushResume(resumeStaticContextId, schedulerId, resumeTraceId) {
     const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
-    const resumeContextId = executionContextCollection.resume(
+    const resumeContext = executionContextCollection.resume(
       parentContextId, resumeStaticContextId, schedulerId, stackDepth
     );
+
+    const {
+      contextId: resumeContextId
+    } = resumeContext;
 
     // trace
     traceCollection.trace(resumeContextId, resumeTraceId);

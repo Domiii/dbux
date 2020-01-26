@@ -43,25 +43,20 @@
 
 
 ## TODO (other)
-* fix `dbux-data` and `dbux-runtime` to not bug out when multiple `Applications` send (possibly conflicting) data
-   * (or the same applicaiton was restarted etc...)
+* fix: `await0` sample doesn't work
+* fix: `DataProvider.clear` will cause problems down the line, when new incoming traces reference old (removed) contexts
+* fix `dbux-data` and `dbux-runtime` to not bug out when multiple `Applications` (or the same application started multiple times etc...) send conflicting data (at least they will send conflicting ids)
    * add a new collection type `applications` that allows us to track which code belongs to which
       * possibly identify by directory + start time?
       * also requires making significant changes to `dbux-data`'s `DataProvider` and `indexes`
-* instrumentation
-   * fix: trace `displayName` should not contain comments
-
+* add `ValueCollection` to help better deal with very large reference type objects
+   * also don't use `JSON.stringify` as that cannot deal with circular objects well
+* add test setup to all libs
 * more instrumentation
    * better name/typify `trace` entries
       * e.g. identify `catch` blocks (and more strategies)
 * fix: in `dbuxState.add{Resume,Static}Context`, we set `_parentId` and `parent` but do not properly lookup global id later
-* fix: `await0` sample doesn't work?
-* fix: `DataProvider.clear` will cause problems down the line, when new incoming traces reference old (removed) contexts
 
-
-## Implemented Features
-
-*
 
 
 ## Fancy ideas (Dev)
