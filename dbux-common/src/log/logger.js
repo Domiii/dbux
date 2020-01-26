@@ -43,8 +43,8 @@ export function logError(ns, ...args) {
 
 export function logInternalError(...args) {
   const err = ['[DBUX INTERNAL ERROR]', ...args];
-  errors.push(err);
   console.error(...err);
+  errors.push(err);
 }
 
 export function getErrors() {

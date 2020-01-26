@@ -43,6 +43,7 @@
 
 
 ## TODO (other)
+* add testing for serialization + deserialization (since it can easily cause a ton of pain)
 * fix: `await0` sample doesn't work
 * fix: `DataProvider.clear` will cause problems down the line, when new incoming traces reference old (removed) contexts
 * fix `dbux-data` and `dbux-runtime` to not bug out when multiple `Applications` (or the same application started multiple times etc...) send conflicting data (at least they will send conflicting ids)

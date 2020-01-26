@@ -30,6 +30,7 @@ export function determineValueRefType(value) {
   if (isArray(value)) {
     return ValueRefType.Array;
   }
+  return ValueRefType.Primitive;
 }
 
 export default ValueRefType;

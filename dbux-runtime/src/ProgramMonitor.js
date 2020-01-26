@@ -63,12 +63,12 @@ export default class ProgramMonitor {
     return RuntimeMonitor.instance.wrapAwait(this.getProgramId(), awaitContextId, awaitValue);
   }
 
-  postAwait(awaitResult, awaitContextId) {
-    return RuntimeMonitor.instance.postAwait(awaitResult, awaitContextId);
+  postAwait(awaitResult, awaitContextId, resumeTraceId) {
+    return RuntimeMonitor.instance.postAwait(awaitResult, awaitContextId, resumeTraceId);
   }
 
   pushResume(resumeContextId, traceId, schedulerId) {
-    return RuntimeMonitor.instance.pushResume(resumeContextId, traceId, schedulerId);
+    return RuntimeMonitor.instance.pushResume(resumeContextId, traceId, schedulerId, true);
   }
 
   popResume() {

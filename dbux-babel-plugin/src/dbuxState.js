@@ -212,8 +212,8 @@ export default function injectDbuxState(programPath, programState) {
       };
       staticContexts.push({
         type: 5, // : StaticContextType
-        staticId,
-        parent: parentStaticId,
+        _staticId: staticId,
+        _parentId: parentStaticId,
         displayName: parent.displayName,
         loc
       });

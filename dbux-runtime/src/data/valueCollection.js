@@ -53,7 +53,7 @@ class ValueCollection extends Collection {
    * Keep track of all refs of a value.
    */
   _trackValue(value, valueRef) {
-    const tracked = this.trackedValues.get(value);
+    let tracked = this.trackedValues.get(value);
     if (!tracked) {
       this.trackedValues.set(value, tracked = new TrackedValue(value));
     }
