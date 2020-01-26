@@ -13,7 +13,7 @@ export default {
     if (!traces?.length) {
       return null;
     }
-    return traces[traces.length-1];
+    return traces[traces.length - 1];
   },
   getPreviousTraceInContext(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
@@ -22,7 +22,7 @@ export default {
       return null;
     }
     const index = traces.indexOf(trace);
-    if (index === 0){
+    if (index === 0) {
       if (traceId !== 1) traceId--;
       return dp.collections.traces.getById(traceId);
     }
@@ -35,10 +35,24 @@ export default {
       return null;
     }
     const index = traces.indexOf(trace);
-    if (index === traces.length - 1){
+    if (index === traces.length - 1) {
       if (traceId !== dp.collections.traces.size) traceId++;
       return dp.collections.traces.getById(traceId);
     }
     else return traces[index + 1];
+  },
+
+  getValueByTrace(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+
+    const { valueId } = trace;
+    if (valueId) {
+      // value is reference type
+      const ref = dp.collections.values.getById(valueId);
+      return ref.value;
+    }
+
+    // value is primitive type (or trace has no value)
+    return trace.value;
   }
 };

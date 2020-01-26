@@ -120,7 +120,7 @@ export class ExecutionContextCollection extends Collection {
 
   _push(context) {
     this._all.push(context);
-    this.send(context);
+    this._send(context);
   }
 
 }

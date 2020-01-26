@@ -1,12 +1,12 @@
 import path from 'path';
 import { newLogger } from 'dbux-common/src/log/logger';
-import Trace from 'dbux-common/src/core/data/Trace';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import Trace from 'dbux-common/src/core/data/Trace';
+import ValueRef from 'dbux-common/src/core/data/ValueRef';
 import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext';
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import Collection from './Collection';
-import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
 
@@ -46,24 +46,21 @@ class ExecutionContextCollection extends Collection<ExecutionContext> {
   }
 }
 
-/**
- * The runtime `traceCollection` currently uses JSON for serializing (and copying) the value.
- * Here we need to parse it back.
- */
-function deserializeValue(value) {
-  return JSON.parse(value);
-}
 
 class TraceCollection extends Collection<Trace> {
   constructor(dp) {
     super('traces', dp);
   }
+}
+
+class ValueCollection extends Collection<ValueRef> {
+  constructor(dp) {
+    super('values', dp);
+  }
 
   add(entries) {
     for (const entry of entries) {
-      if (entry.value) {
-        entry.value = deserializeValue(entry.value);
-      }
+      entry.value = deserialize(entry.serialized);
     }
     super.add(entries);
   }
@@ -109,7 +106,8 @@ export default class DataProvider {
       staticTraces: new StaticTraceCollection(this),
 
       executionContexts: new ExecutionContextCollection(this),
-      traces: new TraceCollection(this)
+      traces: new TraceCollection(this),
+      values: new ValueCollection(this)
     };
   }
 

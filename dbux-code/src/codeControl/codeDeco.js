@@ -42,14 +42,15 @@ const renderDecorations = makeDebounce(function renderDecorations() {
 	for (const trace of traces) {
 		const {
 			staticTraceId,
-			contextId,
-			value
+			contextId
 		} = trace;
 		const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
 		const {
 			displayName,
 			loc
 		} = staticTrace;
+
+		const value = dataProvider.util.getValueByTrace(traceId);
 
 		// const context = dataProvider.collections.executionContexts.getById(contextId);
 		// const childContexts = dataProvider.indexes.executionContexts.children.get(contextId);

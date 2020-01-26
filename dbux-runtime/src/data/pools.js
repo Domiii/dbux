@@ -1,5 +1,6 @@
-import Trace from 'dbux-common/src/core/data/Trace';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import Trace from 'dbux-common/src/core/data/Trace';
+import ValueRef from 'dbux-common/src/core/data/ValueRef';
 
 /**
  * TODO: proper object pooling
@@ -25,10 +26,16 @@ const pools = {
       return context;
     }
   },
-  
+
   traces: {
     allocate() {
       return new Trace();
+    }
+  },
+
+  values: {
+    allocate() {
+      return new ValueRef();
     }
   }
 };
