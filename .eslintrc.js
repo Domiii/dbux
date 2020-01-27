@@ -39,10 +39,19 @@ module.exports = {
 		"prefer-arrow-callback": 0,
 		"no-else-return": 0,
 		"no-debugger": 0,
+		"no-console": "error",
 		"operator-assignment": 0,
 		"prefer-const": "warn",
 		"no-invalid-this": 0,
 		"no-unused-vars": 0,
-		"no-useless-constructor": 0
+		"no-useless-constructor": 0,
+		"eol-last": 0,
+		"no-underscore-dangle": 0,
+		"no-restricted-syntax": 0,
+		"arrow-parens": 0,
+		"lines-between-class-members": 0,
+		"no-multi-assign": 0,
+		"comma-dangle": 0,
+		"object-curly-newline": 0
 	}
 };
