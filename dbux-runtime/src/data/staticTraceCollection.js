@@ -34,7 +34,7 @@ class StaticTraceCollection extends Collection {
       entry.staticTraceId = this._all.length;
       
       this._all.push(entry);
-      this.send(entry);
+      this._send(entry);
     }
   }
 

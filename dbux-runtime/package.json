@@ -27,5 +27,11 @@
   "dependencies": {
     "socket.io-client": "^2.3.0"
   },
-  "_moduleAliases": {}
+  "peerDependencies": {
+    "dbux-common": "../dbux-common",
+    "lodash": "*"
+  },
+  "_moduleAliases": {
+    "dbux-common": "../dbux-common"
+  }
 }

@@ -7,6 +7,7 @@ import { logInternalError } from 'dbux-common/src/log/logger';
 import { EmptyArray } from 'dbux-common/src/util/misc';
 import Collection from './Collection';
 import pools from './pools';
+import valueCollection from './valueCollection';
 
 const inspectOptions = { depth: 0, colors: true };
 function _inspect(arg) {
@@ -30,16 +31,16 @@ class TraceCollection extends Collection {
   }
 
   trace(contextId, inProgramStaticTraceId, type = null) {
-    const trace = this._trace(contextId, inProgramStaticTraceId, type, null, null);
+    const trace = this._trace(contextId, inProgramStaticTraceId, type, false, undefined);
     return trace;
   }
 
   traceExpressionWithValue(contextId, inProgramStaticTraceId, value) {
-    const trace = this._trace(contextId, inProgramStaticTraceId, null, value, processValue(value));
+    const trace = this._trace(contextId, inProgramStaticTraceId, null, true, value);
     return trace;
   }
 
-  _trace(contextId, inProgramStaticTraceId, type, value, processedValue) {
+  _trace(contextId, inProgramStaticTraceId, type, hasValue, value) {
     if (!inProgramStaticTraceId) {
       throw new Error('missing inProgramStaticTraceId');
     }
@@ -47,7 +48,9 @@ class TraceCollection extends Collection {
     const trace = pools.traces.allocate();
     trace.contextId = contextId;
     trace.type = type;
-    trace.value = processedValue;
+
+    // value
+    valueCollection.processValue(hasValue, value, trace);
 
     // look-up global trace id by in-program id
     // trace._staticTraceId = inProgramStaticTraceId;
@@ -67,7 +70,7 @@ class TraceCollection extends Collection {
     trace.traceId = this._all.length;
     
     this._all.push(trace);
-    this.send(trace);
+    this._send(trace);
 
     _prettyPrint(trace, value);
 
@@ -123,7 +126,7 @@ function _prettyPrint(trace, value) {
   // else
   const v = type === TraceType.ExpressionResult;
   const result = v ? ['(', value, ')'] : EmptyArray;
-  console.log(
+  console.debug(
     `${contextId} ${depthIndicator}[${typeName}] ${displayName}`, 
     ...result, 
     ` ${codeLocation} [DBUX]`

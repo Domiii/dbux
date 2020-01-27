@@ -1,67 +1,72 @@
 import {
-	Disposable,
-	workspace,
-	window,
-	OverviewRulerLane,
-	DecorationOptions,
-	Range,
-	TextEditor
+  Disposable,
+  workspace,
+  window,
+  OverviewRulerLane,
+  DecorationOptions,
+  Range,
+  TextEditor
 } from 'vscode';
 
-import DataProvider from 'dbux-data/src/DataProvider';
-import { getDefaultDataProvider } from 'dbux-data/src/dataProviderImpl';
-import { makeDebounce } from 'dbux-common/src/util/scheduling'
+import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { getCodeRangeFromLoc } from '../util/codeUtil';
+import applicationCollection from '../../../dbux-data/src/applicationCollection';
 
-const { log, debug, warn, error: logError } = newLogger('DBUX CodeDeco');
+const { log, debug, warn, error: logError } = newLogger('code-deco');
 
-let dataProvider: DataProvider;
 let activeEditor: TextEditor;
 let TraceDecorationType;
+let unsubscribeFromSelectedApplication;
 
 const renderDecorations = makeDebounce(function renderDecorations() {
-	if (!activeEditor) {
-		return;
-	}
+  if (!activeEditor) {
+    return;
+  }
 
-	const fpath = activeEditor.document.uri.fsPath;
-	const programId = dataProvider.queries.programIdByFilePath(fpath);
-	if (!programId) {
-		debug('Program not executed', fpath);
-		return;
-	}
-	const traces = dataProvider.indexes.traces.byFile.get(programId);
-	if (!traces) {
-		debug('No traces in file', fpath);
-		return;
-	}
+  const fpath = activeEditor.document.uri.fsPath;
+  const dataProvider = applicationCollection.getSelectedApplication()?.dataProvider;
+  if (!dataProvider) {
+    return;
+  }
 
-	const decorations = [];
+  const programId = dataProvider.queries.programIdByFilePath(fpath);
+  if (!programId) {
+    debug('Program not executed', fpath);
+    return;
+  }
+  const traces = dataProvider.indexes.traces.byFile.get(programId);
+  if (!traces) {
+    debug('No traces in file', fpath);
+    return;
+  }
 
-	for (const trace of traces) {
-		const {
-			staticTraceId,
-			contextId,
-			value
-		} = trace;
-		const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
-		const {
-			displayName,
-			loc
-		} = staticTrace;
+  const decorations = [];
 
-		// const context = dataProvider.collections.executionContexts.getById(contextId);
-		// const childContexts = dataProvider.indexes.executionContexts.children.get(contextId);
+  for (const trace of traces) {
+    const {
+      staticTraceId,
+      traceId
+    } = trace;
+    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
+    const {
+      displayName,
+      loc
+    } = staticTrace;
 
-		const decoration = {
-			range: getCodeRangeFromLoc(loc),
-			hoverMessage: `Trace **${displayName}** (${value})`
-		};
-		decorations.push(decoration);
-	}
+    const value = dataProvider.util.getValueByTrace(traceId);
 
-	activeEditor.setDecorations(TraceDecorationType, decorations);
+    // const context = dataProvider.collections.executionContexts.getById(contextId);
+    // const childContexts = dataProvider.indexes.executionContexts.children.get(contextId);
+
+    const decoration = {
+      range: getCodeRangeFromLoc(loc),
+      hoverMessage: `Trace **${displayName}** (${value})`
+    };
+    decorations.push(decoration);
+  }
+
+  activeEditor.setDecorations(TraceDecorationType, decorations);
 });
 
 /**
@@ -73,79 +78,70 @@ const renderDecorations = makeDebounce(function renderDecorations() {
  * 
  */
 export function initCodeDeco(context) {
-	dataProvider = getDefaultDataProvider();
+  // create a decorator type that we use to decorate small numbers
+  TraceDecorationType = window.createTextEditorDecorationType({
+    after: {
+      contentText: '|',
+      color: 'red',
+      // light: {
+      //   color: 'darkred'
+      // },
+      // dark: {
+      //   color: 'lightred'
+      // }
+    },
+    cursor: 'crosshair',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    overviewRulerColor: 'blue',
+    overviewRulerLane: OverviewRulerLane.Right,
+    // light: {
+    //   // this color will be used in light color themes
+    //   borderColor: 'darkblue'
+    // },
+    // dark: {
+    //   // this color will be used in dark color themes
+    //   borderColor: 'lightblue'
+    // }
+  });
 
-	// create a decorator type that we use to decorate small numbers
-	TraceDecorationType = window.createTextEditorDecorationType({
-		after: {
-			contentText: '|',
-			color: 'red',
-			// light: {
-			// 	color: 'darkred'
-			// },
-			// dark: {
-			// 	color: 'lightred'
-			// }
-		},
-		cursor: 'crosshair',
-		borderWidth: '1px',
-		borderStyle: 'solid',
-		overviewRulerColor: 'blue',
-		overviewRulerLane: OverviewRulerLane.Right,
-		// light: {
-		// 	// this color will be used in light color themes
-		// 	borderColor: 'darkblue'
-		// },
-		// dark: {
-		// 	// this color will be used in dark color themes
-		// 	borderColor: 'lightblue'
-		// }
-	});
+  activeEditor = window.activeTextEditor;
 
-	// hook up all events
+  const selectedApplication = applicationCollection.getSelectedApplication();
+  if (selectedApplication && activeEditor) {
+    // initial render
+    renderDecorations();
+  }
 
-	activeEditor = window.activeTextEditor;
-	if (activeEditor) {
-		// initial render
-		renderDecorations();
-	}
+  // ########################################
+  // register event listeners
+  // ########################################
 
-	// data changed
-	dataProvider.onData('traces', renderDecorations);
+  // data changed
+  applicationCollection.onSelectionChanged((app) => {
+    unsubscribeFromSelectedApplication && unsubscribeFromSelectedApplication();
+    if (app) {
+      unsubscribeFromSelectedApplication = app.dataProvider.onData('traces', renderDecorations);
+    }
+  });
 
-	// active window changed
-	window.onDidChangeActiveTextEditor(editor => {
-		activeEditor = editor;
-		if (editor) {
-			renderDecorations();
-		}
-	}, null, context.subscriptions);
+  // active window changed
+  window.onDidChangeActiveTextEditor(editor => {
+    activeEditor = editor;
+    if (editor) {
+      renderDecorations();
+    }
+  }, null, context.subscriptions);
 
-	// text content changed?
-	// workspace.onDidChangeTextDocument(event => {
-	// 	if (activeEditor && event.document === activeEditor.document) {
-	// 		renderDecorations();
-	// 	}
-	// }, null, context.subscriptions);
+  // text content changed?
+  // workspace.onDidChangeTextDocument(event => {
+  //   if (activeEditor && event.document === activeEditor.document) {
+  //     renderDecorations();
+  //   }
+  // }, null, context.subscriptions);
 }
 
 
-
-
 // function buildDecorations() {
-
-// }
-
-
-// function renderDecorations() {
-//   const editor = window.activeTextEditor;
-
-//   if (!editor || !editor.document) {
-//     return;
-//   }
-//   const { document } = editor;
-//   const currentLanguage = document.languageId;
-
-//   const isLanguageEnabled = !!this.metricsUtil.selector.find(s => s.language === currentLanguage);
 
 // }

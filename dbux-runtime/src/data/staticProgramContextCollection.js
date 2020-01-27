@@ -19,7 +19,7 @@ export class StaticProgramContextCollection extends Collection {
     });
     
     this._all.push(staticProgramContext);
-    this.send(staticProgramContext);
+    this._send(staticProgramContext);
 
     return staticProgramContext;
   }

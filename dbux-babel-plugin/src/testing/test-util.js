@@ -9,7 +9,7 @@ import { transformSync } from '@babel/core';
 
 const { parse } = path;
 
-const configs = {
+const AllConfigs = {
   es5: babelConfigEs5,
   esNext: babelConfigNext
 };
@@ -51,12 +51,13 @@ export function writeResultCodeToFile(inputCode, title, babelOptions, plugin) {
   fs.writeFileSync(fpath, outputCode);
 }
 
-export function runAllSnapshotTests(codes, filename, plugin, shouldWriteResultToFile) {
+export function runAllSnapshotTests(codes, filename, plugin, shouldWriteResultToFile = false, customTestConfig = null) {
   codes.forEach((code, i) => {
     const title = `[${i}]${filename}`;
-    runSnapshotTests(code, filename, title, {
-      plugin
-    }, shouldWriteResultToFile);
+    runSnapshotTests(code, filename, title, shouldWriteResultToFile, {
+      plugin,
+      ...customTestConfig
+    });
   });
 }
 
@@ -64,8 +65,17 @@ export function runAllSnapshotTests(codes, filename, plugin, shouldWriteResultTo
  * Snapshot-tests the given code (in given filename and w/ given title and optional config) using
  * es-next and es5.
  */
-export function runSnapshotTests(code, filename, codeTitle, customTestConfig, shouldWriteResultToFile) {
+export function runSnapshotTests(code, filename, codeTitle, shouldWriteResultToFile, customTestConfig, versions = null) {
   // code = '/* #################################################################################### */\n' + code;
+
+  const configs = versions ?
+    Object.fromEntries(versions.map(v => [v, AllConfigs[v]])) :
+    AllConfigs;
+
+  const configArr = Object.values(configs);
+  if (!configArr.length || configArr.some(cfg => !cfg)) {
+    throw new Error('invalid `versions` parameter (empty or invalid versions provided - see `AllConfigs` for valid set) - ' + versions);
+  }
 
   for (const version in configs) {
     const babelConfig = configs[version];
@@ -88,6 +98,15 @@ export function runSnapshotTests(code, filename, codeTitle, customTestConfig, sh
     };
     const testConfig = defaultsDeep({}, customTestConfig, defaultConfig);
     pluginTester(testConfig);
+
+    for (const test of testConfig.tests) {
+      expect(test.output || test.snapshot,
+        'In `babel-plugin-tester`\'s each `tests` config needs either `output` or `snapshot` to be set; ' +
+        'else it will assume that the plugin does not modify the code. If your code does not modify the code, set `tests: [{ output: code, snapshot: false}]` explicitely. ' +
+        '(NOTE: The problem with plugin-tester\'s default assumption is that babel might still modify the code even if the plugin does not - ' +
+        'e.g. when targeting `es5`, babel will prefix the code with a `"use strict";` causing the test to fail.)'
+      ).toBeTruthy();
+    }
 
     if (shouldWriteResultToFile) {
       writeResultCodeToFile(code, title, babelOptions, testConfig.plugin);

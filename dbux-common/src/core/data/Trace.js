@@ -6,5 +6,7 @@ export default class Trace {
   staticTraceId: number;
   
   type: TraceType;
+  
   value: any;
+  valueId: number;
 }

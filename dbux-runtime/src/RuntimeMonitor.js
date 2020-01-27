@@ -46,7 +46,7 @@ export default class RuntimeMonitor {
 
     const programMonitor = new ProgramMonitor(staticProgramContext);
     this._programMonitors.set(programId, programMonitor);
-    
+
     return programMonitor;
   }
 
@@ -72,6 +72,13 @@ export default class RuntimeMonitor {
 
     // trace
     traceCollection.trace(contextId, traceId);
+
+    // const staticContext = staticContextCollection.getContext(programId, inProgramStaticId);
+    // const { isInterruptable } = staticContext;
+    // if (isInterruptable) {
+    //   // start with a resume context
+    //   this.pushResume(inProgramStaticId, null, traceId);
+    // }
 
     return contextId;
   }
@@ -230,8 +237,8 @@ export default class RuntimeMonitor {
     this._pop(awaitContextId);
 
     // resume: insert new [Resume] context and add as resumedChild
-    const { programId, inProgramStaticId } = context;
-    const staticContext = staticContextCollection.getContext(programId, inProgramStaticId);
+    const { staticContextId } = context;
+    const staticContext = staticContextCollection.getById(staticContextId);
     const { resumeId: resumeStaticContextId } = staticContext;
     this.pushResume(resumeStaticContextId, awaitContextId, resumeTraceId);
 
@@ -243,15 +250,22 @@ export default class RuntimeMonitor {
    * (1) the function itself (when pushing the initial "resume context" on function call)
    * (2) an await context (when resuming after an await)
    */
-  pushResume(resumeStaticContextId, schedulerId, resumeTraceId) {
+  pushResume(resumeStaticContextId, schedulerId, resumeTraceId, dontTrace = false) {
     const parentContextId = this._runtime.peekCurrentContextId();
     const stackDepth = this._runtime.getStackDepth();
-    const resumeContextId = executionContextCollection.resume(
+    const resumeContext = executionContextCollection.resume(
       parentContextId, resumeStaticContextId, schedulerId, stackDepth
     );
 
-    // trace
-    traceCollection.trace(resumeContextId, resumeTraceId);
+    const {
+      contextId: resumeContextId
+    } = resumeContext;
+    this._runtime.push(resumeContextId);
+
+    if (!dontTrace) { // NOTE: We don't want to trace when pushing the default Resume context of an interruptable function
+      // trace
+      traceCollection.trace(resumeContextId, resumeTraceId, TraceType.Resume);
+    }
   }
 
   popResume() {

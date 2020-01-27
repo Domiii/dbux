@@ -1,8 +1,52 @@
 # dbux README
 
+# Development + Contributing: Getting Started
+
+## Prerequisites
+
+* node
+* vscode
+* yarn
+
+## Setup
+
+```sh
+git clone https://github.com/Domiii/dbux.git
+cd dbux
+code .
+
+# if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
+
+npm run dbux-install
+```
+
+## Start development
+
+```sh
+npm start # start webpack build of all projects in watch mode
+```
+
+## Usage
+
+1. open project in vscode
+1. go to your debug tab, select `dbux-code` and press F5 (runs the vscode extension in debug mode)
+1. Inside of the new window, you can:
+   * `dbux-run # instruments + executes currently opened file`
+   * test on one of the pre-configured projects
+   * use `dbux-cli` to setup + run your own project
+
+
+# TODO
+
 ## TODO (dbux-code + dbux-data only)
-* rename `dbuxWindow` to `dbuxContextView` (since it is a vertical tab containing only the context `treeView`)
-* add a search bar to `ContextTreeView` (search by name)
+* rename `dbuxWindow` to `dbuxContextView`
+* fix `dbuxContextView`'s `DataProvider`
+   * get it via `applicationCollection.getSelectedApplication().dataProvider`
+   * subscribe to all `applicationCollection` events
+* [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
+   * shows all applications in `applicationCollection`
+   * lets you switch between them by clicking on them (can use `applicationCollection.setSelectedApplication`)
+* add a search bar to `dbuxContextView` (search by name)
    * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
    * when entering search terms, only display matching nodes
    * keep all necessary parent nodes
@@ -12,18 +56,13 @@
 * add a button to toggle (show/hide) all intrusive features to the top of our `dbux window`
    * includes: `codeDeco`, `playback` buttons
    * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+X CTRL+C` (need every single key))
-* add new index: `TracesByProgramContext`
-   * NOTE: this index groups by `Context`, not by `StaticContext`!
-   * group traces by most recent program context
-   * these traces are grouped by `contextId` of an **ancestor** `Context` that is the **most recent** context of type `Program`
-   * NOTE: when the same program is executed a second time, traces will be put into a different group
+* add new index: `TracesByProgramIndex`
+   * key = `programId`
 * in `ContextTreeView`, make text of all nodes that do not belong to the current `Program` semi-transparent
-   * NOTE: use `TracesByProgramContext` index
+   * hint: might want to use `TracesByProgramIndex`
 * show a warning at the top of a file if it has been edited after the time of it's most recent `Program` `Context`
    * (if that's possible?)
    * (also in `codeDeco`)
-* add a WebView below the `dbuxContextView` (name: `dbuxWebView` 之類的)
-   * experiment: add an HTML `<button>` to the WebView that can execute a `command`
 * add a `TracesByStaticTraceIndex`
 * [codeDeco] identify any `trace` at position `i` of `context` `c1` is followed by `trace` at `i+1` who belongs to `context` `c2` and `c2` is a child of `c1`, give it a special `marker` (currently our markers are `|`)
    * for the marker icon, maybe some kind of arrow indicating "it goes a level deeper" would be good
@@ -33,36 +72,18 @@
 * [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`:
    * display the `value` in `codeDeco` behind the expression
    * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
-* [treeView] add `Application` nodes to `treeView`
-   * add `ContextsByApplicationIndex`
-   * if more than one `Application` available:
-      * all root nodes correspond to all `Application` entries
-      * order: newest first
-   * if only one `Application` available:
-      * don't make it a root node (as that takes up unnecessary space)
 
 
 ## TODO (other)
-* fix `dbux-data` and `dbux-runtime` to not bug out when multiple `Applications` send (possibly conflicting) data
-   * (or the same applicaiton was restarted etc...)
-   * add a new collection type `applications` that allows us to track which code belongs to which
-      * possibly identify by directory + start time?
-      * also requires making significant changes to `dbux-data`'s `DataProvider` and `indexes`
-* instrumentation
-   * fix: trace `displayName` should not contain comments
-      * see: https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L156
-
+* fix `dbux-code/src/net/Client` to allow for reconnecting Applications
+   * will need `dbux-runtime` to send`init` message
+* add test setup to all libs
+* add testing for serialization + deserialization (since it can easily cause a ton of pain)
 * more instrumentation
    * better name/typify `trace` entries
       * e.g. identify `catch` blocks (and more strategies)
 * fix: in `dbuxState.add{Resume,Static}Context`, we set `_parentId` and `parent` but do not properly lookup global id later
-* fix: `await0` sample doesn't work?
-* fix: `DataProvider.clear` will cause problems down the line, when new incoming traces reference old (removed) contexts
 
-
-## Implemented Features
-
-*
 
 
 ## Fancy ideas (Dev)
@@ -166,6 +187,14 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
    * https://glebbahmutov.com/blog/preloading-node-module/
       * https://glebbahmutov.com/blog/turning-code-coverage-into-live-stream/
 
+## References: VSCode extensions
+* how to let WebView control VSCode `window` and vice versa:
+   * [send message from webview](https://github.com/microsoft/vscode-extension-samples/blob/master/webview-sample/media/main.js#22)
+   * [receive message in vscode](https://github.com/microsoft/vscode-extension-samples/blob/master/webview-sample/src/extension.ts#L106)
+* idea to navigate between or control traces in code: [Jumpy](https://marketplace.visualstudio.com/items?itemName=wmaurer.vscode-jumpy)?
+* idea to provide inline context menus: [`registerCompletionItemProvider`](https://code.visualstudio.com/api/references/vscode-api#2612)?
+   * e.g.: https://marketplace.visualstudio.com/items?itemName=AndersEAndersen.html-class-suggestions
+      * https://github.com/andersea/HTMLClassSuggestionsVSCode/blob/master/src/extension.ts
 
 # Projects
 

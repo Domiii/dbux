@@ -7,9 +7,7 @@ module.exports = {
     "jest-extended",
     "jest-expect-message", // see https://github.com/mattphillips/jest-expect-message
   ],
-  "setupFiles": [
-    "<rootDir>/scripts/pre-test.js"
-  ],
+  // "globalSetup": "<rootDir>/scripts/pre-test.js",
 
 
   // All imported modules in your tests should be mocked automatically

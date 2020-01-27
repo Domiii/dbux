@@ -40,8 +40,12 @@ function tracePathEnd(path, state, trace) {
 
 function traceDefault(path, state) {
   // const parentStaticId = state.getClosestStaticId(path);
-  // console.log('actualParent',  toSourceString(actualParent.node));
-  const displayName = getPresentableString(path.toString(), 30);
+
+  // TODO: if we really need the `displayName`, improve performance
+  // const str = toSourceStringWithoutComments(path);
+  // const displayName = getPresentableString(str, 30);
+  const displayName = '';
+  
   const { loc } = path.node;
   return {
     displayName,
@@ -208,8 +212,8 @@ export default function injectDbuxState(programPath, programState) {
       };
       staticContexts.push({
         type: 5, // : StaticContextType
-        staticId,
-        parent: parentStaticId,
+        _staticId: staticId,
+        _parentId: parentStaticId,
         displayName: parent.displayName,
         loc
       });
