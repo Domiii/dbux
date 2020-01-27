@@ -62,6 +62,7 @@ class ValueCollection extends Collection<ValueRef> {
   add(entries) {
     for (const entry of entries) {
       entry.value = deserialize(entry.serialized);
+      entry.serialized = null; // don't need this, so don't keep it around
     }
     super.add(entries);
   }
@@ -76,7 +77,6 @@ export default class DataProvider {
   //  */
   // collections;
 
-  _invalid = false;
   /**
    * @private
    */
@@ -96,10 +96,6 @@ export default class DataProvider {
   // ###########################################################################
   // Public methods
   // ###########################################################################
-
-  isInvalid() {
-    return this._invalid;
-  }
 
   /**
    * Add a data event listener to given collection.
@@ -129,10 +125,6 @@ export default class DataProvider {
    */
   addData(allData): { [string]: any[] } {
     // sanity checks
-    if (this._invalid) {
-      return;
-    }
-
     if (!allData || allData.constructor.name !== 'Object') {
       logError('invalid data must be (but is not) object -', allData);
     }
