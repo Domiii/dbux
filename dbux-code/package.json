@@ -165,6 +165,8 @@
 		}
 	},
 	"scripts": {
+		"_before-run": "npx link-module-alias",
+		"postinstall": "npx link-module-alias",
 		"test": "node ./test/runTest.js",
 		"vscode:prepublish": "npx webpack --mode production",
 		"start": "npx webpack --mode development --watch",
@@ -186,5 +188,13 @@
 	},
 	"dependencies": {
 		"socket.io": "^2.3.0"
+	},
+	"peerDependencies": {
+		"dbux-common": "../dbux-common",
+		"dbux-data": "../dbux-data"
+	},
+  "_moduleAliases": {
+		"dbux-common": "../dbux-common",
+		"dbux-data": "../dbux-data"
 	}
 }

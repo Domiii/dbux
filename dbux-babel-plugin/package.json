@@ -42,6 +42,9 @@
     "babel-plugin"
   ],
   "dependencies": {},
+  "peerDependencies": {
+    "dbux-common": "../dbux-common"
+  },
   "_moduleAliases": {
     "dbux-common": "../dbux-common"
   }

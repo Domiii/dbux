@@ -52,6 +52,7 @@ module.exports = {
 		"lines-between-class-members": 0,
 		"no-multi-assign": 0,
 		"comma-dangle": 0,
-		"object-curly-newline": 0
+		"object-curly-newline": 0,
+		"no-trailing-spaces": 0
 	}
 };
