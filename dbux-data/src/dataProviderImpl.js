@@ -14,8 +14,8 @@ import dataProviderUtil from './dataProviderUtil';
 
 let defaultDataProvider: DataProvider;
 
-export function newDataProvider() {
-  const dataProvider = new DataProvider();
+export function newDataProvider(entryPointPath) {
+  const dataProvider = new DataProvider(entryPointPath);
   
   // indexes
   dataProvider.addIndex(new ContextChildrenIndex());
@@ -34,15 +34,4 @@ export function newDataProvider() {
   );
 
   return dataProvider;
-}
-
-/**
- * Returns the current default DataProvider.
- */
-export function getDefaultDataProvider(): DataProvider {
-  if (!defaultDataProvider) {
-    defaultDataProvider = newDataProvider();
-  }
-
-  return defaultDataProvider;
 }

@@ -6,6 +6,7 @@ import ValueRef from 'dbux-common/src/core/data/ValueRef';
 import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext';
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
+import deserialize from 'dbux-common/src/serialization/deserialize';
 import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
@@ -75,17 +76,29 @@ export default class DataProvider {
   //  */
   // collections;
 
+  _invalid = false;
   /**
    * @private
    */
   _dataEventListeners: (any) => void = {};
   versions: number[] = [];
+  entryPointPath: StaticProgramContext;
 
-  constructor() {
+  constructor(entryPointPath) {
+    this.entryPointPath = entryPointPath;
+    
     this.clear();
 
     this.queries = new Queries();
     this.indexes = new Indexes();
+  }
+
+  // ###########################################################################
+  // Public methods
+  // ###########################################################################
+
+  isInvalid() {
+    return this._invalid;
   }
 
   /**
@@ -115,15 +128,33 @@ export default class DataProvider {
    * Add given data (of different collections) to this `DataProvier`
    */
   addData(allData): { [string]: any[] } {
-    debug('received', allData);
+    // sanity checks
+    if (this._invalid) {
+      return;
+    }
 
     if (!allData || allData.constructor.name !== 'Object') {
       logError('invalid data must be (but is not) object -', allData);
     }
 
+    debug('received', allData);
+
     this._addData(allData);
     this._postAdd(allData);
   }
+
+  addQuery(newQuery) {
+    this.queries._addQuery(this, newQuery);
+  }
+
+  addIndex(newIndex) {
+    this.indexes._addIndex(newIndex);
+  }
+
+
+  // ###########################################################################
+  // Private methods
+  // ###########################################################################
 
   _addData(allData) {
     for (const collectionName in allData) {
@@ -136,7 +167,7 @@ export default class DataProvider {
       }
 
       const data = allData[collectionName];
-      ++this.versions[collection._id];    // update version
+      ++this.versions[collection._id]; // update version
       collection.add(data);
     }
   }
@@ -155,7 +186,7 @@ export default class DataProvider {
 
     // fire event listeners
     for (const collectionName in allData) {
-      const collection = this.collections[collectionName];
+      // const collection = this.collections[collectionName];
       const data = allData[collectionName];
       this._notifyData(collectionName, data);
     }
@@ -166,15 +197,5 @@ export default class DataProvider {
     if (listeners) {
       listeners.forEach((cb) => cb(data));
     }
-  }
-
-
-
-  addQuery(newQuery) {
-    this.queries._addQuery(this, newQuery);
-  }
-
-  addIndex(newIndex) {
-    this.indexes._addIndex(newIndex);
   }
 }

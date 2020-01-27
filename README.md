@@ -1,7 +1,51 @@
 # dbux README
 
+# Development + Contributing: Getting Started
+
+## Prerequisites
+
+* node
+* vscode
+* yarn
+
+## Setup
+
+```sh
+git clone https://github.com/Domiii/dbux.git
+cd dbux
+code .
+
+# if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
+
+npm run dbux-install
+```
+
+## Start development
+
+```sh
+npm start # start webpack build of all projects in watch mode
+```
+
+## Usage
+
+1. open project in vscode
+1. go to your debug tab, select `dbux-code` and press F5 (runs the vscode extension in debug mode)
+1. Inside of the new window, you can:
+   * `dbux-run # instruments + executes currently opened file`
+   * test on one of the pre-configured projects
+   * use `dbux-cli` to setup + run your own project
+
+
+# TODO
+
 ## TODO (dbux-code + dbux-data only)
 * rename `dbuxWindow` to `dbuxContextView`
+* fix `dbuxContextView`'s `DataProvider`
+   * get it via `applicationCollection.getSelectedApplication().dataProvider`
+   * subscribe to all `applicationCollection` events
+* [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
+   * shows all applications in `applicationCollection`
+   * lets you switch between them by clicking on them (can use `applicationCollection.setSelectedApplication`)
 * add a search bar to `dbuxContextView` (search by name)
    * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
    * when entering search terms, only display matching nodes
@@ -28,17 +72,16 @@
 * [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`:
    * display the `value` in `codeDeco` behind the expression
    * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
-* [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
-   * shows all registered DataProviders (one DataProvider corresponds to one Application)
-   * lets you switch between
 
 
 ## TODO (other)
 * add testing for serialization + deserialization (since it can easily cause a ton of pain)
-* fix: `await0` sample doesn't work
 * fix: `DataProvider.clear` will cause problems down the line, when new incoming traces reference old (removed) contexts
    * change it s.t. one DataProvider corresponds to one Application
-   * by default identify Application by the path of entry point `Program` (i.e. `staticProgramContextId.staticId === 1`)
+   * by default: identify Application by the path of entry point `Program` (i.e. `staticProgramContextId.staticId === 1`)
+* fix: missing data in `DataProvider`
+   * Scenario: when application runs and `dbux-code` received some packets already, then `dbux-code` restarts (does not have previous packets anymore) and then receives more packets
+   * Solution: mark `DataProvider` as `invalid`, do not use it, and warn user to restart that application
 * fix `dbux-data` and `dbux-runtime` to not bug out when multiple `Applications` (or the same application started multiple times etc...) send conflicting data (at least they will send conflicting ids)
    * add a new collection type `applications` that allows us to track which code belongs to which
       * possibly identify by directory + start time?

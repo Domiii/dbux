@@ -191,7 +191,8 @@
 	},
 	"peerDependencies": {
 		"dbux-common": "../dbux-common",
-		"dbux-data": "../dbux-data"
+		"dbux-data": "../dbux-data",
+		"lodash": "*"
 	},
   "_moduleAliases": {
 		"dbux-common": "../dbux-common",

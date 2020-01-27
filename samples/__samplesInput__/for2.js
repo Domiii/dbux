@@ -8,7 +8,6 @@ function main() {
   return Math.max(...b);
 }
 
-
 function identity(x) {
   return x;
 }

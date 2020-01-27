@@ -31,6 +31,24 @@
 			]
 		},
 		{
+			"name": "dbux-code",
+			"type": "extensionHost",
+			"request": "launch",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceRoot}/dbux-code",
+				"--disable-extensions=1"
+			],
+			"stopOnEntry": false,
+			"sourceMaps": true,
+			"trace": true,
+			// "outFiles": ["${workspaceRoot}/dbux-code/dist/*.js"],
+			// "preLaunchTask": "npm: build-dbux-code"
+			"outFiles": [
+				"${workspaceRoot}/dbux-code/dist/**/*.js"
+			]
+		},
+		{
 			// debugging of Chrome-bound code - https://github.com/Microsoft/vscode-chrome-debug
 			"name": "chrome todomvc",
 			"type": "chrome",
@@ -164,19 +182,6 @@
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
-		},
-		{
-			"name": "dbux-code",
-			"type": "extensionHost",
-			"request": "launch",
-			"runtimeExecutable": "${execPath}",
-			"args": ["--extensionDevelopmentPath=${workspaceRoot}/dbux-code"],
-			"stopOnEntry": false,
-			"sourceMaps": true,
-			"trace": true,
-			// "outFiles": ["${workspaceRoot}/dbux-code/dist/*.js"],
-			// "preLaunchTask": "npm: build-dbux-code"
-			"outFiles": ["${workspaceRoot}/dbux-code/dist/**/*.js"]
 		},
 		{
 			"name": "Extension:Tests",
