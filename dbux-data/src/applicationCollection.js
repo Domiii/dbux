@@ -61,7 +61,7 @@ class ApplicationCollection {
     if (!entryPointPath) {
       return null;
     }
-    const application = this._createApplication(entryPointPath);
+    const application = this._addApplication(entryPointPath);
     return application;
   }
 
@@ -70,6 +70,10 @@ class ApplicationCollection {
   }
 
   setSelectedApplication(application) {
+    if (this._selectedApplication === application) {
+      return;
+    }
+
     this._selectedApplication = application;
     this._emitter.emit('selectionChanged', application);
   }
@@ -78,14 +82,23 @@ class ApplicationCollection {
     const application = this.getApplication(applicationOrId);
 
     if (!application) {
-      throw new Error('invalid applicationOrId: ' + applicationOrId);
+      throw new Error('invalid applicationOrId in `removeApplication`: ' + applicationOrId);
     }
 
+    // deselect (will also trigger event)
+    if (this._selectedApplication === application) {
+      this.setSelectedApplication(null);
+    }
+
+    // remove
     const { applicationid, entryPointPath } = application;
     this._all[applicationid] = null;
     if (this.getActiveApplicationByEntryPoint(entryPointPath) === application) {
       this._activeApplications.delete(entryPointPath);
     }
+
+    // `removed` event
+    this._emitter.emit('removed', application);
   }
 
   clear() {
@@ -105,7 +118,7 @@ class ApplicationCollection {
     throw new Error('NYI');
   }
 
-  _createApplication(entryPointPath) {
+  _addApplication(entryPointPath) {
     const applicationId = this._all.length;
     const application = new Application(applicationId, entryPointPath, this);
     const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);

@@ -75,20 +75,10 @@ npm start # start webpack build of all projects in watch mode
 
 
 ## TODO (other)
-* add testing for serialization + deserialization (since it can easily cause a ton of pain)
-* fix: `DataProvider.clear` will cause problems down the line, when new incoming traces reference old (removed) contexts
-   * change it s.t. one DataProvider corresponds to one Application
-   * by default: identify Application by the path of entry point `Program` (i.e. `staticProgramContextId.staticId === 1`)
-* fix: missing data in `DataProvider`
-   * Scenario: when application runs and `dbux-code` received some packets already, then `dbux-code` restarts (does not have previous packets anymore) and then receives more packets
-   * Solution: mark `DataProvider` as `invalid`, do not use it, and warn user to restart that application
-* fix `dbux-data` and `dbux-runtime` to not bug out when multiple `Applications` (or the same application started multiple times etc...) send conflicting data (at least they will send conflicting ids)
-   * add a new collection type `applications` that allows us to track which code belongs to which
-      * possibly identify by directory + start time?
-      * also requires making significant changes to `dbux-data`'s `DataProvider` and `indexes`
-* add `ValueCollection` to help better deal with very large reference type objects
-   * also don't use `JSON.stringify` as that cannot deal with circular objects well
+* fix `dbux-code/src/net/Client` to allow for reconnecting Applications
+   * will need `dbux-runtime` to send`init` message
 * add test setup to all libs
+* add testing for serialization + deserialization (since it can easily cause a ton of pain)
 * more instrumentation
    * better name/typify `trace` entries
       * e.g. identify `catch` blocks (and more strategies)
