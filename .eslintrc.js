@@ -1,4 +1,7 @@
 module.exports = {
+	"extends": [
+		"airbnb-base"
+	],
 	"env": {
 		"browser": true,
 		"commonjs": true,
@@ -8,16 +11,17 @@ module.exports = {
 	"globals": {
 		"console": true
 	},
-	"parserOptions": {
-		"ecmaVersion": "2018",
-		"ecmaFeatures": {
-			"jsx": true
-		},
-		"sourceType": "module",
-		"extraFileExtensions": [
-			".ts"
-		]
-	},
+	"parser": "babel-eslint",
+	// "parserOptions": {
+	// 	"ecmaVersion": "2018",
+	// 	"ecmaFeatures": {
+	// 		"jsx": true
+	// 	},
+	// 	"sourceType": "module",
+	// 	"extraFileExtensions": [
+	// 		".ts"
+	// 	]
+	// },
 	"rules": {
 		"no-const-assign": "warn",
 		"no-this-before-super": "warn",
@@ -39,5 +43,6 @@ module.exports = {
 		"prefer-const": "warn",
 		"no-invalid-this": 0,
 		"no-unused-vars": 0,
+		"no-useless-constructor": 0
 	}
 };
