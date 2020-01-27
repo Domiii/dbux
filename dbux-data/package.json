@@ -15,7 +15,8 @@
   "devDependencies": {},
   "peerDependencies": {
     "dbux-common": "../dbux-common",
-    "nanoevents": "*"
+    "nanoevents": "*",
+    "lodash": "*"
   },
   "_moduleAliases": {
     "dbux-common": "../dbux-common"

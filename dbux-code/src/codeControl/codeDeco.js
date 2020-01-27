@@ -84,10 +84,10 @@ export function initCodeDeco(context) {
       contentText: '|',
       color: 'red',
       // light: {
-      // 	color: 'darkred'
+      //   color: 'darkred'
       // },
       // dark: {
-      // 	color: 'lightred'
+      //   color: 'lightred'
       // }
     },
     cursor: 'crosshair',
@@ -96,35 +96,34 @@ export function initCodeDeco(context) {
     overviewRulerColor: 'blue',
     overviewRulerLane: OverviewRulerLane.Right,
     // light: {
-    // 	// this color will be used in light color themes
-    // 	borderColor: 'darkblue'
+    //   // this color will be used in light color themes
+    //   borderColor: 'darkblue'
     // },
     // dark: {
-    // 	// this color will be used in dark color themes
-    // 	borderColor: 'lightblue'
+    //   // this color will be used in dark color themes
+    //   borderColor: 'lightblue'
     // }
   });
 
   activeEditor = window.activeTextEditor;
 
-  // register event listeners
-
-  function registerApplicationDataEvent(app) {
-    unsubscribeFromSelectedApplication && unsubscribeFromSelectedApplication();
-    if (app) {
-      unsubscribeFromSelectedApplication = app.dataProvider.onData('traces', renderDecorations);
-    }
-  }
-
   const selectedApplication = applicationCollection.getSelectedApplication();
-  registerApplicationDataEvent(selectedApplication);
   if (selectedApplication && activeEditor) {
     // initial render
     renderDecorations();
   }
 
+  // ########################################
+  // register event listeners
+  // ########################################
+
   // data changed
-  applicationCollection.onSelectionChanged(registerApplicationDataEvent);
+  applicationCollection.onSelectionChanged((app) => {
+    unsubscribeFromSelectedApplication && unsubscribeFromSelectedApplication();
+    if (app) {
+      unsubscribeFromSelectedApplication = app.dataProvider.onData('traces', renderDecorations);
+    }
+  });
 
   // active window changed
   window.onDidChangeActiveTextEditor(editor => {
@@ -136,9 +135,9 @@ export function initCodeDeco(context) {
 
   // text content changed?
   // workspace.onDidChangeTextDocument(event => {
-  // 	if (activeEditor && event.document === activeEditor.document) {
-  // 		renderDecorations();
-  // 	}
+  //   if (activeEditor && event.document === activeEditor.document) {
+  //     renderDecorations();
+  //   }
   // }, null, context.subscriptions);
 }
 

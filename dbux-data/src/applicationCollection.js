@@ -133,12 +133,12 @@ class ApplicationCollection {
   // event listeners
   // ###########################################################################
 
-  onSelectedApplicationData(cb) {
-    return this._emitter.on('selectedApplicationData', cb);
-  }
-
   onSelectionChanged(cb) {
-    return this._emitter.on('selectionChanged', cb);
+    const unsubscribe = this._emitter.on('selectionChanged', cb);
+    if (this._selectedApplication) {
+      cb(this._selectedApplication);
+    }
+    return unsubscribe;
   }
 
 

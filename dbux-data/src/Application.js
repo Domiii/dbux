@@ -47,8 +47,8 @@ export default class Application {
     // this.updatedAt = libs.performance.now();
     this.updatedAt = Date.now();
 
-    if (this.applicationCollection.getSelectedApplication() === this) {
-      this.applicationCollection._emitter.emit('selectedApplicationData', this);
-    }
+    // if (this.applicationCollection.getSelectedApplication() === this) {
+    //   this.applicationCollection._emitter.emit('selectedApplicationData', this);
+    // }
   }
 }
