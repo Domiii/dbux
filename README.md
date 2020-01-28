@@ -42,7 +42,7 @@ npm start # start webpack build of all projects in watch mode
 * (rename `dbuxWindow` to `dbuxContextView`?)
 * fix `dbuxContextView`: we don't just have a single `DataProvider` anymore, work against `Application`s instead
    * see `codeDeco` for reference (`applicationCollection.onSelectionChanged`)
-* finish a very basic version of the `playback` feature
+* [playback] finish first version of playback feature (v0.1)
 * add multiple "step-through" modes (`StepMode = new Enum(...)`) to `playback` feature:
    1. `StepMode.All`
       * the first version of it
@@ -59,7 +59,8 @@ npm start # start webpack build of all projects in watch mode
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `applicationCollection`
    * lets you switch between them by clicking on them (can use `applicationCollection.setSelectedApplication`)
-* [playback] add awesome keyboard controls!
+* [playback] `context` elevator: buttons to step between child/parent context
+* [playback] add awesome keyboard controls~
    * when "in playback mode" use arrow keys (and maybe a few other keys) to jump around very quickly
    * can we do it like [`jumpy`](https://marketplace.visualstudio.com/items?itemName=wmaurer.vscode-jumpy) ([source](https://github.com/krnik/vscode-jumpy))?
 * [codeDeco] add an `BlurBackgroundMode` `Enum`
@@ -67,16 +68,16 @@ npm start # start webpack build of all projects in watch mode
    * more future modes:
       * `CurrentStack` - gray out all code that is not on current `stack`
          * also need to modify `dbux-babel-plugin` to store `rootContextId`
-   * more future work:
-      * "gray out" with higher granularity; gray out everything except all traces that were executed
-* add a search bar to `dbuxContextView` (search by name)
+   * more future work (not yet):
+      * e.g. "gray out" with higher granularity; gray out everything except all traces that were executed
+* add a search bar to `dbuxContextView` (search by `displayName` and `filePath`)
    * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
    * when entering search terms, only display matching nodes
    * keep all necessary parent nodes
       * gray out any parent node that does not match the search (semi-transparent?)
    * (when clearing search, stay on selected node)
    * clear search on `Esc` key press
-* add a button to toggle (show/hide) all intrusive features to the top of our `dbux window`
+* add a button at the top of our `dbux window` to toggle (show/hide) all intrusive features
    * includes: `codeDeco`, `playback` buttons
    * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+X CTRL+C` (need every single key))
 * `playback` + `step` be able to use keyboard   
@@ -84,18 +85,23 @@ npm start # start webpack build of all projects in watch mode
    * key = `programId`
 * show a warning at the top of a file if it has been edited after the time of it's most recent `Program` `Context`
    * (if that's possible?)
-   * (also in `codeDeco`)
 * design a proper extension config API; make the following configurable:
    * `codeDeco.blurBackgroundMode`
-* add a `TracesByStaticTraceIndex`
 
 ## TODO (other)
+* add a `TracesByStaticTraceIndex`
 * [codeDeco] markers for context switches
    * identify any `trace` at position `i` of `context` `c1` is followed by `trace` at `i+1` who belongs to `context` `c2` and `c2` is a child of `c1`, give it two markers, one down, one up
    * for the marker icon, maybe some kind of arrow indicating "it goes a level deeper" would be good
    * since this is fast to lookup, we can just use a `util` function to determine the circumstance
    * however, we probably want a `ContextsByParentContextIndex` for this (which gives us all children of a given context)
    * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
+* [codeDeco] add complex in-line widgets to let user interact with traces and contexts
+   * [`gitlens`](https://github.com/eamodio/vscode-gitlens/tree/master/src) has the feature in its inline `blame` decorations
+   * display `staticTrace` information
+      * NOTE: use `TracesByStaticTraceIndex`
+      * if of all its traces there is more than one followed/preceeded trace with a different `staticTrace`, show them
+      * if any of its traces is followed/preceeded by traces of different `contextId`, show them
 * [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`:
    * display the `value` in `codeDeco` behind the expression
    * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
