@@ -11,6 +11,7 @@
 		"workbench.colorCustomizations": {
 			"editorUnnecessaryCode.border": "#f0f",
 			"editorUnnecessaryCode.opacity": "#000f"
-		}
+		},
+		"gitlens.codeLens.enabled": false
 	}
 }

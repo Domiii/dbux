@@ -39,13 +39,36 @@ npm start # start webpack build of all projects in watch mode
 # TODO
 
 ## TODO (dbux-code + dbux-data only)
-* rename `dbuxWindow` to `dbuxContextView`
-* fix `dbuxContextView`'s `DataProvider`
-   * get it via `applicationCollection.getSelectedApplication().dataProvider`
-   * subscribe to all `applicationCollection` events
+* (rename `dbuxWindow` to `dbuxContextView`?)
+* fix `dbuxContextView`: we don't just have a single `DataProvider` anymore, work against `Application`s instead
+   * see `codeDeco` for reference (`applicationCollection.onSelectionChanged`)
+* finish a very basic version of the `playback` feature
+* add multiple "step-through" modes (`StepMode = new Enum(...)`) to `playback` feature:
+   1. `StepMode.All`
+      * the first version of it
+   1. `StepMode.ContextOnly` (default)
+      * skip all traces that are following `currentTrace` (in `traces._all`) and have the same `contextId`
+      * step to the last trace in context
+      * we can possibly create `TracesForContextOnlyIndex` for this?
+         * identifying any pair of two neighboring traces `t1` and `t2` where `t1.contextId` !== `t2.contextId`, plus first and last trace
+         * `makeKey` can just return `true` or `false` to act as a binary filter
+            * NOTE: When `makeKey` returns `false` the `entry` is filtered out, will not participate in `Index`
+            * NOTE: `true` gets implicitely cast to `1`
+* switch between `StepMode`s via button or command
+* can we hide multiple buttons behind a `ContextMenu`?
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `applicationCollection`
    * lets you switch between them by clicking on them (can use `applicationCollection.setSelectedApplication`)
+* [playback] add awesome keyboard controls!
+   * when "in playback mode" use arrow keys (and maybe a few other keys) to jump around very quickly
+   * can we do it like [`jumpy`](https://marketplace.visualstudio.com/items?itemName=wmaurer.vscode-jumpy) ([source](https://github.com/krnik/vscode-jumpy))?
+* [codeDeco] add an `BlurBackgroundMode` `Enum`
+   * `BlurBackgroundMode.Application` - "gray out" all code that is not in any executed `context`
+   * more future modes:
+      * `CurrentStack` - gray out all code that is not on current `stack`
+         * also need to modify `dbux-babel-plugin` to store `rootContextId`
+   * more future work:
+      * "gray out" with higher granularity; gray out everything except all traces that were executed
 * add a search bar to `dbuxContextView` (search by name)
    * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
    * when entering search terms, only display matching nodes
@@ -56,15 +79,19 @@ npm start # start webpack build of all projects in watch mode
 * add a button to toggle (show/hide) all intrusive features to the top of our `dbux window`
    * includes: `codeDeco`, `playback` buttons
    * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+X CTRL+C` (need every single key))
+* `playback` + `step` be able to use keyboard   
 * add new index: `TracesByProgramIndex`
    * key = `programId`
-* in `ContextTreeView`, make text of all nodes that do not belong to the current `Program` semi-transparent
-   * hint: might want to use `TracesByProgramIndex`
 * show a warning at the top of a file if it has been edited after the time of it's most recent `Program` `Context`
    * (if that's possible?)
    * (also in `codeDeco`)
+* design a proper extension config API; make the following configurable:
+   * `codeDeco.blurBackgroundMode`
 * add a `TracesByStaticTraceIndex`
-* [codeDeco] identify any `trace` at position `i` of `context` `c1` is followed by `trace` at `i+1` who belongs to `context` `c2` and `c2` is a child of `c1`, give it a special `marker` (currently our markers are `|`)
+
+## TODO (other)
+* [codeDeco] markers for context switches
+   * identify any `trace` at position `i` of `context` `c1` is followed by `trace` at `i+1` who belongs to `context` `c2` and `c2` is a child of `c1`, give it two markers, one down, one up
    * for the marker icon, maybe some kind of arrow indicating "it goes a level deeper" would be good
    * since this is fast to lookup, we can just use a `util` function to determine the circumstance
    * however, we probably want a `ContextsByParentContextIndex` for this (which gives us all children of a given context)
@@ -72,18 +99,26 @@ npm start # start webpack build of all projects in watch mode
 * [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`:
    * display the `value` in `codeDeco` behind the expression
    * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
-
-
-## TODO (other)
+   * TODO: don't waste space if value has a long string representation
+* [instrumentation] if we see a function call for which we have no context, find out where it goes
+   * (i.e. dependency name or runtime-internal?)
+   * then allow for easily add it to our config and re-run so we can get it next time
+* [instrumentation] proper `cli`
+* [instrumentation] allow to easily instrument any referenced modules (not just our own code)
+   * ... and optionally any of its references?
 * fix `dbux-code/src/net/Client` to allow for reconnecting Applications
    * will need `dbux-runtime` to send`init` message
 * add test setup to all libs
 * add testing for serialization + deserialization (since it can easily cause a ton of pain)
+* improve serialization to skip objects that are too big
 * more instrumentation
    * better name/typify `trace` entries
       * e.g. identify `catch` blocks (and more strategies)
 * fix: in `dbuxState.add{Resume,Static}Context`, we set `_parentId` and `parent` but do not properly lookup global id later
 
+## Possible future work
+* in `ContextTreeView`, make text of all nodes that do not belong to the current `Program` semi-transparent
+   * can use `TracesByProgramIndex` for this
 
 
 ## Fancy ideas (Dev)
@@ -191,6 +226,7 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
       * https://glebbahmutov.com/blog/turning-code-coverage-into-live-stream/
 
 ## References: VSCode extensions
+* [Gitlens](https://github.com/eamodio/vscode-gitlens/tree/master/src) provides custom widgets with clickable buttons that pop up on hover
 * adding custom queries/filters to treeview through configuration
    * https://github.com/microsoft/vscode-pull-request-github
 * how to let WebView control VSCode `window` and vice versa:
@@ -255,14 +291,24 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
       * Solution: run command in external `cmd` or find a better behaving terminal
 
 
-# VSCode: custom keybindings
+# VSCode: Advanced usage
 
-## VSCode's Terminal has no "clear" keybinding anymore
+## General Tips&Tricks
+* https://vscodecandothat.com/
+* https://medium.com/club-devbytes/how-to-use-v-s-code-like-a-pro-fb030dfc9a72
 
+
+## Use VSCode as git diff tool
+
+* [see here](https://stackoverflow.com/a/47569315)
+
+## Keyboard shortcuts
+
+NOTE: VSCode's Terminal has no "Clear" keybinding anymore
 You can re-add it manually:
 
 1. CTRL+SHIFT+P -> "Open Keyboard Shortcuts (JSON)"
-1. add (for Windows):
+1. add (for Windows use `ctrl`; for MAC use `cmd`):
 ```js
 { 
    "key": "ctrl+k",
