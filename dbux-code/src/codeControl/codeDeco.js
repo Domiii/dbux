@@ -19,6 +19,10 @@ let activeEditor: TextEditor;
 let TraceDecorationType;
 let unsubscribeFromSelectedApplication;
 
+// ###########################################################################
+// render
+// ###########################################################################
+
 const renderDecorations = makeDebounce(function renderDecorations() {
   if (!activeEditor) {
     return;
@@ -69,20 +73,17 @@ const renderDecorations = makeDebounce(function renderDecorations() {
   activeEditor.setDecorations(TraceDecorationType, decorations);
 });
 
-/**
- * Relevant VSCode API (https://code.visualstudio.com/api/references/vscode-api):
- *  DecorationRenderOptions
- *  DocumentHighlight
- *  DocumentLinkProvider
- *  DocumentRangeFormattingEditProvider
- * 
- */
-export function initCodeDeco(context) {
+
+// ###########################################################################
+// DecorationTypes
+// ###########################################################################
+
+function buildDecorationTypes() {
   // create a decorator type that we use to decorate small numbers
   TraceDecorationType = window.createTextEditorDecorationType({
     after: {
-      contentText: '|',
-      color: 'red',
+      contentText: '🔵',
+      // color: 'red',
       // light: {
       //   color: 'darkred'
       // },
@@ -104,7 +105,23 @@ export function initCodeDeco(context) {
     //   borderColor: 'lightblue'
     // }
   });
+}
 
+
+// ###########################################################################
+// init
+// ###########################################################################
+
+/**
+ * Relevant VSCode API (https://code.visualstudio.com/api/references/vscode-api):
+ *  DecorationRenderOptions
+ *  DocumentHighlight
+ *  DocumentLinkProvider
+ *  DocumentRangeFormattingEditProvider
+ * 
+ */
+export function initCodeDeco(context) {
+  buildDecorationTypes();
   activeEditor = window.activeTextEditor;
 
   const selectedApplication = applicationCollection.getSelectedApplication();
@@ -140,8 +157,3 @@ export function initCodeDeco(context) {
   //   }
   // }, null, context.subscriptions);
 }
-
-
-// function buildDecorations() {
-
-// }
