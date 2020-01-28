@@ -10,14 +10,30 @@ import {
 
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { newLogger } from 'dbux-common/src/log/logger';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
+import applicationCollection from 'dbux-data/src/applicationCollection';
 import { getCodeRangeFromLoc } from '../util/codeUtil';
-import applicationCollection from '../../../dbux-data/src/applicationCollection';
+// import DataProvider from 'dbux-data/src/DataProvider';
+// import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 
 const { log, debug, warn, error: logError } = newLogger('code-deco');
 
 let activeEditor: TextEditor;
 let TraceDecorationType;
 let unsubscribeFromSelectedApplication;
+
+// ###########################################################################
+// trace filters
+// ###########################################################################
+
+// const filters = {
+//   noProgram(dp : DataProvider, trace) {
+//     const contextType = dp.util.getTraceContextType(trace.traceId);
+//     return contextType !== StaticContextType.Program;
+//   }
+// };
+
+// const defaultFilter = filters.noProgram;
 
 // ###########################################################################
 // render
@@ -50,18 +66,26 @@ const renderDecorations = makeDebounce(function renderDecorations() {
   for (const trace of traces) {
     const {
       staticTraceId,
-      traceId
+      traceId,
+      type: dynamicType
     } = trace;
     const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
-    const {
+    let {
       displayName,
-      loc
+      loc,
+      type: staticType
     } = staticTrace;
 
-    const value = dataProvider.util.getValueByTrace(traceId);
+    const value = dataProvider.util.getTraceValue(traceId);
 
     // const context = dataProvider.collections.executionContexts.getById(contextId);
     // const childContexts = dataProvider.indexes.executionContexts.children.get(contextId);
+
+    if (!displayName) {
+      const type = dynamicType || staticType; // if `dynamicType` is given take that, else `staticType`
+      const typeName = TraceType.nameFromForce(type);
+      displayName = `[${typeName}]`;
+    }
 
     const decoration = {
       range: getCodeRangeFromLoc(loc),
@@ -82,8 +106,10 @@ function buildDecorationTypes() {
   // create a decorator type that we use to decorate small numbers
   TraceDecorationType = window.createTextEditorDecorationType({
     after: {
-      contentText: '🔵',
-      // color: 'red',
+      // see: https://coolsymbol.com/circle-symbols.html
+      contentText: '◉',
+      
+      color: 'red',
       // light: {
       //   color: 'darkred'
       // },

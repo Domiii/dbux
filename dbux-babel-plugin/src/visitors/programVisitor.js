@@ -115,8 +115,8 @@ function enter(path, state) {
     displayName: 'Program'
   };
   state.addStaticContext(path, staticProgramContext);
-  state.addTrace(path, TraceType.PushImmediate);      // === 1
-  state.addTrace(path, TraceType.PopImmediate);       // === 2
+  state.addTrace(path, TraceType.PushImmediate, true);      // === 1
+  state.addTrace(path, TraceType.PopImmediate, true);       // === 2
 
   // instrument Program itself
   wrapProgram(path, state);

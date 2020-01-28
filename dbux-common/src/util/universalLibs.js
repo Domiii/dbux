@@ -27,4 +27,11 @@ export default {
       return performanceNode;
     });
   }
+
+
+// const inspectOptions = { depth: 0, colors: true };
+//   function _inspect(arg) {
+//   const f = typeof window !== 'undefined' && window.inspect ? window.inspect : require('util').inspect;
+//   return f(arg, inspectOptions);
+// }
 };

@@ -79,7 +79,7 @@ const traceCfg = (() => {
       [['argument', ExpressionWithValue]]
     ],
 
-    
+
     // ########################################
     // statements
     // ########################################
@@ -99,7 +99,7 @@ const traceCfg = (() => {
     ReturnStatement: Statement,
     ThrowStatement: Statement,
 
-    
+
     // ########################################
     // loops
     // ########################################
@@ -230,7 +230,7 @@ const buildTraceNoValue = function (templ, path, state, traceType) {
 
 
 const traceWrapExpression = function (templ, expressionPath, state) {
-  const {node} = expressionPath;
+  const { node } = expressionPath;
   if (t.isLiteral(node)) {
     // don't care about literals
     return;
@@ -246,11 +246,11 @@ const traceWrapExpression = function (templ, expressionPath, state) {
   // prevent infinite loop
   state.onCopy(expressionPath, expressionPath.get('arguments.1'), 'trace');
   // state.onCopy(expressionPath, expressionPath.get('expressions.1.arguments.1'), 'trace');
-// }.bind(null, template('%%dbux%%.t(%%traceId%%), %%dbux%%.tv(%%traceId%%, %%expression%%)'));
+  // }.bind(null, template('%%dbux%%.t(%%traceId%%), %%dbux%%.tv(%%traceId%%, %%expression%%)'));
 }.bind(null, template('%%dbux%%.tv(%%traceId%%, %%expression%%)'));
 
 
-const traceBeforeExpression = function (templ, expressionPath, state) {
+const traceBeforeExpression = function traceBeforeExpression(templ, expressionPath, state) {
   const { ids: { dbux } } = state;
   const traceId = state.addTrace(expressionPath, TraceType.BeforeExpression);
   replaceWithTemplate(templ, expressionPath, {
@@ -261,7 +261,7 @@ const traceBeforeExpression = function (templ, expressionPath, state) {
 
   // prevent infinite loop
   state.onCopy(expressionPath, expressionPath.get('expressions.1'), 'trace');
-}.bind(null, template('%%dbux%%.t(%%traceId%%), %%expression%%'))
+}.bind(null, template('%%dbux%%.t(%%traceId%%), %%expression%%'));
 
 
 // ###########################################################################
@@ -276,12 +276,14 @@ const instrumentors = {
     traceBeforeExpression(path, state);
   },
   Statement(path, state) {
-    const trace = buildTraceNoValue(path, state, TraceType.Statement);
-    path.insertBefore(trace);
+    const traceStart = buildTraceNoValue(path, state, TraceType.Statement);
+    path.insertBefore(traceStart);
   },
   Block(path, state) {
     const trace = buildTraceNoValue(path, state, TraceType.BlockStart);
+    const traceEnd = buildTraceNoValue(path, state, TraceType.BlockEnd);
     path.insertBefore(trace);
+    path.insertAfter(traceEnd);
     // if (!t.isBlockStatement(path)) {
     //   // make a new block
 

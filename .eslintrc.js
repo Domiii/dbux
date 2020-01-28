@@ -48,8 +48,10 @@ module.exports = {
 		"no-continue": 0,
 		"no-plusplus": 0,
 		"no-unused-expressions": 0,
+		"no-return-assign": 0,
+		"no-param-reassign": 0,
 		"operator-assignment": 0,
-		"prefer-const": "warn",
+		"prefer-const": 0,
 		"prefer-arrow-callback": 0,
 		"prefer-template": 0, // string templates
 		"eol-last": 0,
@@ -61,6 +63,8 @@ module.exports = {
 		"brace-style": 0,
 		"max-classes-per-file": 0,
 		"guard-for-in": 0,
-		"wrap-iife": ["warn", "inside"]
+		"func-names": 0,
+		"wrap-iife": ["warn", "inside"],
+		"no-use-before-define": "nofunc"
 	}
 };

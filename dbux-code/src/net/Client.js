@@ -11,7 +11,7 @@ export default class Client {
   _connected;
 
   constructor(server, socket) {
-    debug('client connected', socket.id);
+    debug('connected', socket.id);
 
     this.server = server;
     this.socket = socket;
@@ -46,7 +46,7 @@ export default class Client {
    * Called by Server as it helps track connection state.
    */
   _handleDisconnect = () => {
-    debug('client disconnected', this.socket.id);
+    debug('disconnected', this.socket.id);
     this._connected = false;
   }
 

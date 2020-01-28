@@ -1,4 +1,4 @@
-import { getPresentableString } from './helpers/misc';
+import { getPresentableString, toSourceStringWithoutComments } from './helpers/misc';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { getBasename } from 'dbux-common/src/util/pathUtil';
 
@@ -11,29 +11,33 @@ const traceCustomizationsByType = {
   // [TraceType.StartProgram]: tracePathStart,
   [TraceType.PushImmediate]: tracePathStart,
   [TraceType.PopImmediate]: tracePathEnd,
-  [TraceType.BlockStart]: tracePathStart
+  [TraceType.BlockStart]: tracePathStart,
+  [TraceType.BlockEnd]: tracePathEnd
 };
 
-function tracePathStart(path, state, trace) {
-  const { loc } = path.node;
-  
+
+function tracePathStart(path, state, thin) {
+  const { loc: { start } } = path.node;
+  const end = { ...start };
+  end.column += !thin;
+
   return {
-    // _parentId: parentStaticId,
     loc: {
-      // for highlighting purposes, zero-length ranges are not the best choice
-      // instead, we ideally want to highlight something more meaningful (e.g. the "if" part of the "if" statement)
-      start: loc.start,
-      end: loc.start
+      start,
+      end
     }
   };
 }
 
-function tracePathEnd(path, state, trace) {
-  const { loc } = path.node;
+function tracePathEnd(path, state, thin) {
+  const { loc: { end } } = path.node;
+  const start = { ...end };
+  start.column -= !thin;
+
   return {
     loc: {
-      start: loc.end,
-      end: loc.end
+      start,
+      end
     }
   };
 }
@@ -42,10 +46,10 @@ function traceDefault(path, state) {
   // const parentStaticId = state.getClosestStaticId(path);
 
   // TODO: if we really need the `displayName`, improve performance
-  // const str = toSourceStringWithoutComments(path);
-  // const displayName = getPresentableString(str, 30);
-  const displayName = '';
-  
+  const str = toSourceStringWithoutComments(path.node);
+  const displayName = getPresentableString(str, 30);
+  // const displayName = '';
+
   const { loc } = path.node;
   return {
     displayName,
@@ -223,15 +227,15 @@ export default function injectDbuxState(programPath, programState) {
     /**
      * Tracing a path in its entirety (usually means, the trace is recorded right before the given path).
      */
-    addTrace(path, type) {
+    addTrace(path, type, customArg) {
       // console.log('TRACE', '@', `${state.filename}:${line}`);
       const traceId = traces.length;
       let trace;
       if (traceCustomizationsByType[type]) {
-        trace = traceCustomizationsByType[type](path, dbuxState);
+        trace = traceCustomizationsByType[type](path, dbuxState, customArg);
       }
       else {
-        trace = traceDefault(path, dbuxState);
+        trace = traceDefault(path, dbuxState, customArg);
       }
 
       trace._traceId = traceId;

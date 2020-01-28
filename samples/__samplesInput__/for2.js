@@ -3,7 +3,6 @@ function main() {
   var b = [];
   for (let i = 1; i < a.length; ++i) {
     b.push(a[i - 1] * a[i]);
-    identity(b);
   }
   return Math.max(...b);
 }
@@ -14,4 +13,3 @@ function identity(x) {
 
 
 console.log(main());
-console.debug("6asdas7dasds7ad7");

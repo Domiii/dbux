@@ -83,6 +83,7 @@ export default class DataProvider {
   _dataEventListeners: (any) => void = {};
   versions: number[] = [];
   entryPointPath: StaticProgramContext;
+  util: any;
 
   constructor(entryPointPath) {
     this.entryPointPath = entryPointPath;
@@ -129,7 +130,7 @@ export default class DataProvider {
       logError('invalid data must be (but is not) object -', allData);
     }
 
-    debug('received', allData);
+    // debug('received', allData);
 
     this._addData(allData);
     this._postAdd(allData);

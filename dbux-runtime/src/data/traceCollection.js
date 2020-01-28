@@ -9,21 +9,6 @@ import Collection from './Collection';
 import pools from './pools';
 import valueCollection from './valueCollection';
 
-const inspectOptions = { depth: 0, colors: true };
-function _inspect(arg) {
-  const f = typeof window !== 'undefined' && window.inspect ? window.inspect : require('util').inspect;
-  return f(arg, inspectOptions);
-}
-
-
-/**
- * Recorded objects need careful handling:
- * Since we might not send them out immediately, they can change over time, so we need to copy a snapshot
- */
-function processValue(value) {
-  // serialize a copy of value
-  return JSON.stringify(value);
-}
 
 class TraceCollection extends Collection {
   constructor() {
@@ -112,9 +97,9 @@ function _prettyPrint(trace, value) {
   } = staticTrace;
 
   const type = dynamicType || staticType; // if `dynamicType` is given take that, else `staticType`
+  const typeName = TraceType.nameFromForce(type);
 
   const depthIndicator = ` `.repeat(stackDepth * 2);
-  const typeName = TraceType.nameFromForce(type);
   const where = loc.start;
   const codeLocation = `@${fileName}:${where.line}:${where.column}`;
 

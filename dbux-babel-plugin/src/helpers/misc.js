@@ -9,10 +9,6 @@ export function getLine(path) {
   return loc?.start?.line;
 }
 
-export function toSourceString(node) {
-  return toSourceStringWithoutComments(node);
-}
-
 /**
  * NOTE: See link to understand how babel's `NodePath.toString` generates its code (utterly unoptimized)
  * @see https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L156
@@ -20,8 +16,16 @@ export function toSourceString(node) {
 export function toSourceStringWithoutComments(node) {
   // NYI: don't generate code; rather use it's location to get the string from the input source
   // TODO: Still have to generate code in case its an instrumented node
-  throw new Error('[DBUX] this is currently utterly unoptimized. Improve before use.');
-  // return generate(node, { /* options */ }).code;
+  // throw new Error('[DBUX] this is currently utterly unoptimized. Improve before use.');
+
+  const options = {
+    comments: false
+  };
+  return generate(node, options).code;
+}
+
+export function toSourceString(node) {
+  return toSourceStringWithoutComments(node);
 }
 
 export function getPresentableString(path, MaxLen) {

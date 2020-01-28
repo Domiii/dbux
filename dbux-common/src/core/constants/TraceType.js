@@ -19,7 +19,8 @@ let TraceType = {
   BeforeExpression: 9,
   ExpressionResult: 10,
   Statement: 11,
-  BlockStart: 12
+  BlockStart: 12,
+  BlockEnd: 13
 };
 
 TraceType = new Enum(TraceType);

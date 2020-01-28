@@ -42,10 +42,10 @@ export default {
     else return traces[index + 1];
   },
 
-  getValueByTrace(dp: DataProvider, traceId) {
+  getTraceValue(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-
     const { valueId } = trace;
+
     if (valueId) {
       // value is reference type
       const ref = dp.collections.values.getById(valueId);
@@ -54,5 +54,26 @@ export default {
 
     // value is primitive type (or trace has no value)
     return trace.value;
+  },
+
+  getTraceContext(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const {
+      contextId
+    } = trace;
+    return dp.collections.executionContexts.getById(contextId);
+  },
+
+  getTraceStaticContext(dp: DataProvider, traceId) {
+    const context = dp.util.getTraceContext(traceId);
+    const {
+      staticContextId
+    } = context;
+    return dp.collections.staticContexts.getById(staticContextId);
+  },
+
+  getTraceContextType(dp: DataProvider, traceId) {
+    const staticContext = dp.util.getTraceStaticContext(traceId);
+    return staticContext.type;
   }
 };

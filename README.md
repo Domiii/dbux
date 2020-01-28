@@ -122,6 +122,9 @@ npm start # start webpack build of all projects in watch mode
 * Tell debugger to skip files
    * Chrome: [Blackboxing](https://developer.chrome.com/devtools/docs/blackboxing)
 
+## References: AI-supported coding
+* [VS Intellicode](https://github.com/MicrosoftDocs/intellicode/blob/master/docs/intellicode-visual-studio-code.md)
+* https://livablesoftware.com/smart-intelligent-ide-programming/
 
 ## References: babel + babel plugins
 
@@ -188,6 +191,8 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
       * https://glebbahmutov.com/blog/turning-code-coverage-into-live-stream/
 
 ## References: VSCode extensions
+* adding custom queries/filters to treeview through configuration
+   * https://github.com/microsoft/vscode-pull-request-github
 * how to let WebView control VSCode `window` and vice versa:
    * [send message from webview](https://github.com/microsoft/vscode-extension-samples/blob/master/webview-sample/media/main.js#22)
    * [receive message in vscode](https://github.com/microsoft/vscode-extension-samples/blob/master/webview-sample/src/extension.ts#L106)
