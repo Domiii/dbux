@@ -102,7 +102,16 @@ npm start # start webpack build of all projects in watch mode
    * TODO: don't waste space if value has a long string representation
 * [instrumentation] if we see a function call for which we have no context, find out where it goes
    * (i.e. dependency name or runtime-internal?)
-   * then allow for easily add it to our config and re-run so we can get it next time
+      * -> then allow to easily add it to our config and re-run so we can get it next time
+   * Currently: seems almost impossible
+   * Option 1: [Access `[[FunctionLocation]]` programmatically](https://stackoverflow.com/questions/41146373/access-function-location-programmatically)
+      * https://github.com/rwjblue/get-function-location
+      * SAD: would only work on `Node` or as a browser plugin...
+      * not sure yet if its possible at all in the browser [[*](https://stackoverflow.com/questions/56066523/javascript-retrieve-file-and-line-location-of-function-during-runtime)]
+   * Option 2: when using `webpack` et al, instrument all functions of all required `node_modules`?
+      * PROBLEM: instrumenting source-mapped files requires source-map merging which can be iffy and bug-prone
+   * Option 3: while debugging, integrate with debugger API to guide user to step into function, then retrospectively retrieve data from call-site
+      * most straight-forward, but UX is worse
 * [instrumentation] proper `cli`
 * [instrumentation] allow to easily instrument any referenced modules (not just our own code)
    * ... and optionally any of its references?
@@ -110,15 +119,17 @@ npm start # start webpack build of all projects in watch mode
    * will need `dbux-runtime` to send`init` message
 * add test setup to all libs
 * add testing for serialization + deserialization (since it can easily cause a ton of pain)
-* improve serialization to skip objects that are too big
-* more instrumentation
-   * better name/typify `trace` entries
-      * e.g. identify `catch` blocks (and more strategies)
-* fix: in `dbuxState.add{Resume,Static}Context`, we set `_parentId` and `parent` but do not properly lookup global id later
+* improve value serialization to skip objects that are too big
+
+
 
 ## Possible future work
+* integrate `dbux` with at least one testing methodology
+   * case-studies
 * in `ContextTreeView`, make text of all nodes that do not belong to the current `Program` semi-transparent
    * can use `TracesByProgramIndex` for this
+* serialize/deserialize all data, survive VSCode restart/reload
+* fix: in `dbuxState.add{Resume,Static}Context`, we set `_parentId` and `parent` but do not properly lookup global id later
 
 
 ## Fancy ideas (Dev)
