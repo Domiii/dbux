@@ -1,13 +1,13 @@
-import staticProgramContextCollection from './data/staticProgramContextCollection';
-import ProgramMonitor from './ProgramMonitor';
 import { logInternalError } from 'dbux-common/src/log/logger';
-import executionContextCollection from './data/executionContextCollection';
-import staticContextCollection from './data/staticContextCollection';
-import Runtime from './Runtime';
-import traceCollection from './data/traceCollection';
-import staticTraceCollection from './data/staticTraceCollection';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import staticProgramContextCollection from './data/staticProgramContextCollection';
+import executionContextCollection from './data/executionContextCollection';
+import staticContextCollection from './data/staticContextCollection';
+import traceCollection from './data/traceCollection';
+import staticTraceCollection from './data/staticTraceCollection';
+import Runtime from './Runtime';
+import ProgramMonitor from './ProgramMonitor';
 
 /**
  * 
@@ -42,9 +42,21 @@ export default class RuntimeMonitor {
     const { programId } = staticProgramContext;
     const { staticContexts, traces } = programData;
     staticContextCollection.addContexts(programId, staticContexts);
+
+    // change program-local _staticContextId to globally unique staticContextId
+    for (const trace of traces) {
+      let staticContext = staticContexts[trace._staticContextId];
+      if (!staticContext?.staticId) {
+        // set to random default, to avoid more errors down the line?
+        [staticContext] = staticContexts;
+        logInternalError('trace had invalid `_staticContextId`', trace);
+      }
+      delete trace._staticContextId;
+      trace.staticContextId = staticContext.staticId;
+    }
     staticTraceCollection.addTraces(programId, traces);
 
-    const programMonitor = new ProgramMonitor(staticProgramContext);
+    const programMonitor = new ProgramMonitor(this, staticProgramContext);
     this._programMonitors.set(programId, programMonitor);
 
     return programMonitor;
@@ -289,14 +301,14 @@ export default class RuntimeMonitor {
   // traces
   // ###########################################################################
 
-  trace(traceId) {
+  trace(inProgramStaticTraceId) {
     const contextId = this._runtime.peekCurrentContextId();
-    traceCollection.trace(contextId, traceId);
+    traceCollection.trace(contextId, inProgramStaticTraceId);
   }
 
-  traceAndCaptureValue(traceId, value) {
+  traceAndCaptureValue(inProgramStaticTraceId, value) {
     const contextId = this._runtime.peekCurrentContextId();
-    traceCollection.traceExpressionWithValue(contextId, traceId, value);
+    traceCollection.traceExpressionResult(contextId, inProgramStaticTraceId, value);
     return value;
   }
 }

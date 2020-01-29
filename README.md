@@ -42,6 +42,7 @@ npm start # start webpack build of all projects in watch mode
 * (rename `dbuxWindow` to `dbuxContextView`?)
 * fix `dbuxContextView`: we don't just have a single `DataProvider` anymore, work against `Application`s instead
    * see `codeDeco` for reference (`applicationCollection.onSelectionChanged`)
+* replace `ProgramFilePathByTraceIdQuery` with a `util` function instead (no need to cache)
 * [playback] finish first version of playback feature (v0.1)
 * add multiple "step-through" modes (`StepMode = new Enum(...)`) to `playback` feature:
    1. `StepMode.All`
@@ -77,8 +78,8 @@ npm start # start webpack build of all projects in watch mode
       * gray out any parent node that does not match the search (semi-transparent?)
    * (when clearing search, stay on selected node)
    * clear search on `Esc` key press
-* add a button at the top of our `dbux window` to toggle (show/hide) all intrusive features
-   * includes: `codeDeco`, `playback` buttons
+* add a button to the top right to toggle (show/hide) all intrusive features
+   * includes: `codeDeco`, and all kinds of extra buttons (such as `playback`)
    * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+X CTRL+C` (need every single key))
 * `playback` + `step` be able to use keyboard   
 * add new index: `TracesByProgramIndex`
@@ -89,7 +90,8 @@ npm start # start webpack build of all projects in watch mode
    * `codeDeco.blurBackgroundMode`
 
 ## TODO (other)
-* add a `TracesByStaticTraceIndex`
+* [codeDeco] use `StaticTrace` to display `codeDeco`
+   * use `TracesByStaticTraceIndex` to find all relevant traces and determined more detailed render options
 * [codeDeco] markers for context switches
    * identify any `trace` at position `i` of `context` `c1` is followed by `trace` at `i+1` who belongs to `context` `c2` and `c2` is a child of `c1`, give it two markers, one down, one up
    * for the marker icon, maybe some kind of arrow indicating "it goes a level deeper" would be good
@@ -308,11 +310,12 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
       * Solution: run command in external `cmd` or find a better behaving terminal
 
 
-# VSCode: Advanced usage
+# VSCode: Advanced Usage
 
 ## General Tips&Tricks
 * https://vscodecandothat.com/
 * https://medium.com/club-devbytes/how-to-use-v-s-code-like-a-pro-fb030dfc9a72
+* 
 
 
 ## Use VSCode as git diff tool

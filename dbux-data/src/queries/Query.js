@@ -1,7 +1,7 @@
 export default class Query {
   constructor(name, cfg) {
     this.name = name;
-    this.cfg = cfg;
+    this.cfg = cfg || {};
   }
 
   _init(dp) {}

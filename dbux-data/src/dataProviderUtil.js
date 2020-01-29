@@ -75,5 +75,25 @@ export default {
   getTraceContextType(dp: DataProvider, traceId) {
     const staticContext = dp.util.getTraceStaticContext(traceId);
     return staticContext.type;
+  },
+
+  getStaticTraceProgramId(dp: DataProvider, staticTraceId) {
+    const staticTrace = dp.collections.staticContexts.getById(staticTraceId);
+    const {
+      staticContextId
+    } = staticTrace;
+
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    const { programId } = staticContext;
+    return programId;
+  },
+
+  getTraceProgramId(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const {
+      staticTraceId,
+    } = trace;
+
+    return dp.util.getStaticTraceProgramId(staticTraceId);
   }
 };

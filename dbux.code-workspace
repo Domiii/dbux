@@ -12,6 +12,11 @@
 			"editorUnnecessaryCode.border": "#f0f",
 			"editorUnnecessaryCode.opacity": "#000f"
 		},
-		"gitlens.codeLens.enabled": false
+		"gitlens.codeLens.enabled": false,
+		"gitlens.currentLine.enabled": false,
+		"gitlens.hovers.currentLine.over": "line",
+		"files.associations": {
+			"*.js": "typescriptreact"
+		}
 	}
 }

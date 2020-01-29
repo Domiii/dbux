@@ -44,6 +44,11 @@ export class StaticContextCollection extends Collection {
     }
     return contexts[inProgramStaticId];
   }
+
+  getStaticContextId(programId, inProgramStaticId) {
+    const staticContext = this.getContext(programId, inProgramStaticId);
+    return staticContext.staticId;
+  }
 }
 
 const staticContextCollection = new StaticContextCollection();

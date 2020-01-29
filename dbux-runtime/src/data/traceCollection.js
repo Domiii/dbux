@@ -20,8 +20,8 @@ class TraceCollection extends Collection {
     return trace;
   }
 
-  traceExpressionWithValue(contextId, inProgramStaticTraceId, value) {
-    const trace = this._trace(contextId, inProgramStaticTraceId, null, true, value);
+  traceExpressionResult(contextId, inProgramStaticTraceId, value) {
+    const trace = this._trace(contextId, inProgramStaticTraceId, TraceType.ExpressionResult, true, value);
     return trace;
   }
 
@@ -49,7 +49,7 @@ class TraceCollection extends Collection {
     } = staticContext;
 
     // globally unique staticTraceId
-    trace.staticTraceId = staticTraceCollection.getTraceId(programId, inProgramStaticTraceId);
+    trace.staticTraceId = staticTraceCollection.getStaticTraceId(programId, inProgramStaticTraceId);
 
     // generate new traceId and store
     trace.traceId = this._all.length;

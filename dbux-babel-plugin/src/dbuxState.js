@@ -1,7 +1,8 @@
-import { getPresentableString, toSourceStringWithoutComments } from './helpers/misc';
+import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { getBasename } from 'dbux-common/src/util/pathUtil';
 
+import { getPresentableString, toSourceStringWithoutComments } from './helpers/misc';
 
 // ###########################################################################
 // trace stuff
@@ -43,7 +44,7 @@ function tracePathEnd(path, state, thin) {
 }
 
 function traceDefault(path, state) {
-  // const parentStaticId = state.getClosestStaticId(path);
+  // const parentStaticId = state.getCurrentStaticContextId(path);
 
   // TODO: if we really need the `displayName`, improve performance
   const str = toSourceStringWithoutComments(path.node);
@@ -165,7 +166,7 @@ export default function injectDbuxState(programPath, programState) {
       return staticContextParent?.getData(dataName);
     },
 
-    getClosestStaticId(path) {
+    getCurrentStaticContextId(path) {
       return programState.getClosestAncestorData(path, 'staticId');
     },
 
@@ -192,36 +193,36 @@ export default function injectDbuxState(programPath, programState) {
      */
     addStaticContext(path, data) {
       // console.log('STATIC', path.get('id')?.name, '@', `${state.filename}:${line}`);
-      const staticId = staticContexts.length;
-      const parentStaticId = dbuxState.getClosestStaticId(path);
+      const _staticId = staticContexts.length;
+      const _parentId = dbuxState.getCurrentStaticContextId(path);
       // console.log('actualParent',  toSourceString(actualParent.node));
       const { loc } = path.node;
       staticContexts.push({
-        _staticId: staticId,
-        _parentId: parentStaticId,
+        _staticId,
+        _parentId,
         loc,
         ...data
       });
 
-      path.setData('staticId', staticId);
-      return staticId;
+      path.setData('staticId', _staticId);
+      return _staticId;
     },
 
-    addResumeContext(parentStaticId, locStart) {
-      const parent = dbuxState.getStaticContext(parentStaticId);
-      const staticId = staticContexts.length;
+    addResumeContext(awaitPath, locStart) {
+      const _staticId = staticContexts.length;
+      const _parentId = dbuxState.getCurrentStaticContextId(awaitPath);
       const loc = {
         start: locStart,
         end: null     // we don't know where it ends yet (can only be determined at run-time)
       };
       staticContexts.push({
-        type: 5, // : StaticContextType
-        _staticId: staticId,
-        _parentId: parentStaticId,
-        displayName: parent.displayName,
+        type: StaticContextType.Resume,
+        _staticId,
+        _parentId,
+        // displayName: parent.displayName,
         loc
       });
-      return staticId;
+      return _staticId;
     },
 
     /**
@@ -239,6 +240,7 @@ export default function injectDbuxState(programPath, programState) {
       }
 
       trace._traceId = traceId;
+      trace._staticContextId = dbuxState.getCurrentStaticContextId(path);
       trace.type = type;
       traces.push(trace);
 

@@ -1,6 +1,8 @@
 import { newLogger } from 'dbux-common/src/log/logger';
+import DataProvider from '../DataProvider';
 
 export default class CollectionIndex<T> {
+  dp: DataProvider;
   name;
   _byKey: T[][] = [];
 
@@ -10,32 +12,42 @@ export default class CollectionIndex<T> {
     this.log = newLogger(`${indexName} (Index)`);
   }
 
-  addEntries(dp, entries : T[]) {
-    for (const entry of entries) {
-      const key = this.makeKey(dp, entry);
-      if (key === undefined) {
-        this.log.error(`makeKey returned undefined`);
-        continue;
-      }
-      if (key === false) {
-        // entry is filtered out; not part of this index
-        continue;
-      }
 
-      // for optimization reasons, we are currently only accepting simple number indexes
-      const currentCount = this._byKey.length;
-      if (isNaN(key) || key < 0 || (key > 1e6 && key < currentCount/2)) {
-        this.log.error('invalid key for index (currently only dense number spaces are supported):', key);
-        continue;
-      }
+  get(key: number): T[] {
+    return this._byKey[key];
+  }
+
+  addEntries(entries : T[]) {
+    for (const entry of entries) {
       
-      const ofKey = (this._byKey[key] = this._byKey[key] || []);
-      ofKey.push(entry);
     }
   }
 
-  get(key : number) : T[] {
-    return this._byKey[key] || null;
+  addEntry(entry : T) {
+    const key = this.makeKey(this.dp, entry);
+    if (key === undefined) {
+      this.log.error(`makeKey returned undefined`);
+      continue;
+    }
+    if (key === false) {
+      // entry is filtered out; not part of this index
+      continue;
+    }
+
+    // for optimization reasons, we are currently only accepting simple number indexes
+    const currentCount = this._byKey.length;
+    if (isNaN(key) || key < 0 || (key > 1e6 && key < currentCount / 2)) {
+      this.log.error('invalid key for index (currently only dense number spaces are supported):', key);
+      continue;
+    }
+
+    const ofKey = (this._byKey[key] = this._byKey[key] || []);
+    ofKey.push(entry);
+  }
+
+  addEntryById(id) {
+    const entry = this.dp.collections[this.collectionName].get(id);
+    this.addEntry(entry);
   }
 
   /**

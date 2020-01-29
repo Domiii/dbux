@@ -33,12 +33,11 @@ function getAwaitDisplayName(path) {
 // ###########################################################################
 
 function addResumeContext(awaitPath, state) {
-  const parentStaticId = state.getClosestStaticId(awaitPath);
   const { loc: awaitLoc } = awaitPath.node;
   
   // the "resume context" starts after the await statement
   const locStart = awaitLoc.end;
-  return state.addResumeContext(parentStaticId, locStart);
+  return state.addResumeContext(awaitPath, locStart);
 }
 
 function enter(path, state) {

@@ -7,12 +7,13 @@ import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import deserialize from 'dbux-common/src/serialization/deserialize';
+import { EmptyObject } from 'dbux-common/src/util/misc';
+
 import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
-
 
 class StaticProgramContextCollection extends Collection<StaticProgramContext> {
   constructor(dp) {
@@ -78,16 +79,26 @@ export default class DataProvider {
   // collections;
 
   /**
+   * Internal event listeners.
+   * 
    * @private
    */
-  _dataEventListeners: (any) => void = {};
+  _dataEventListeners0;
+
+  /**
+   * Outside event listeners.
+   * 
+   * @private
+   */
+  _dataEventListeners;
+
   versions: number[] = [];
   entryPointPath: StaticProgramContext;
   util: any;
 
   constructor(entryPointPath) {
     this.entryPointPath = entryPointPath;
-    
+
     this.clear();
 
     this.queries = new Queries();
@@ -105,6 +116,13 @@ export default class DataProvider {
     const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
     listeners.push(cb);
   }
+
+  // TODO: bundled listener for any data in `DataProvider`?
+  // onData(cfg) {
+  //   for (const collectionName in cfg.collections || EmptyObject) {
+
+  //   }
+  // }
 
   /**
    * Deletes all previously stored data.
@@ -142,6 +160,19 @@ export default class DataProvider {
 
   addIndex(newIndex) {
     this.indexes._addIndex(newIndex);
+    newIndex.dp = this;
+
+    // add event listeners
+    const collectionListeners = newIndex.dependencies?.collections;
+    if (collectionListeners) {
+      for (const collectionName in collectionListeners) {
+        const listeners = this._dataEventListeners0[collectionName] = (this._dataEventListeners0[collectionName] || []);
+        const cb = collectionListeners[collectionName].added;
+        if (cb) {
+          listeners.push(cb);
+        }
+      }
+    }
   }
 
 
@@ -177,16 +208,24 @@ export default class DataProvider {
       }
     }
 
+    // fire internal event listeners
+    for (const collectionName in allData) {
+      // const collection = this.collections[collectionName];
+      const data = allData[collectionName];
+      this._notifyData(collectionName, data, this._dataEventListeners0);
+    }
+
+
     // fire event listeners
     for (const collectionName in allData) {
       // const collection = this.collections[collectionName];
       const data = allData[collectionName];
-      this._notifyData(collectionName, data);
+      this._notifyData(collectionName, data, this._dataEventListeners);
     }
   }
 
-  _notifyData(collectionName: string, data: []) {
-    const listeners = this._dataEventListeners[collectionName];
+  _notifyData(collectionName: string, data: [], allListeners) {
+    const listeners = allListeners[collectionName];
     if (listeners) {
       listeners.forEach((cb) => cb(data));
     }
