@@ -104,10 +104,18 @@ npm start # start webpack build of all projects in watch mode
       * NOTE: use `TracesByStaticTraceIndex`
       * if of all its traces there is more than one followed/preceeded trace with a different `staticTrace`, show them
       * if any of its traces is followed/preceeded by traces of different `contextId`, show them
-* [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`:
-   * display the `value` in `codeDeco` behind the expression
+* [selectionContextView]
+  * show all info relevant to the position where the cursor currently is
+  * TODO: what about in-line contexts? (contexts that are part of )
+* [callstackView]
+  * allow to search for path between any two contexts
+  * actually: slice of call graph?
+* [applications]
+   * add `Application` as root context for an application
+   * allow for selecting (merging `DataProvider` of) multiple applications (e.g. backend + frontend)
+* [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`: display the `value` in `codeDeco` behind the expression?
    * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
-   * TODO: don't waste space if value has a long string representation
+   * TODO: don't waste space if value has a long string representation?
 * [instrumentation] if we see a function call for which we have no context, find out where it goes
    * (i.e. dependency name or runtime-internal?)
       * -> then allow to easily add it to our config and re-run so we can get it next time
@@ -152,9 +160,19 @@ npm start # start webpack build of all projects in watch mode
 `# babel basics` yarn add --dev @babel/core @babel/cli @babel/node @babel/register 
 `# babel plugins` yarn add --dev @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
 `# babel runtime` yarn add core-js@3 @babel/runtime
-`# eslint` yarn add --dev eslint eslint-config-esnext
+`# eslint` yarn add --dev eslint eslint-config-airbnb-base
+`# webpack` yarn add --dev webpack webpack-cli webpack-dev-server nodemon
 `# flow` yarn add --dev flow-bin @babel/preset-flow eslint-plugin-flowtype && npx flow init #&& npx flow
-`# babel dev` yarn add --dev @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester && \
+`# babel dev` yarn add --dev @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester
+```
+
+or with npm:
+```sh
+`# jest` npm i -D jest jest-expect-message jest-extended
+`# babel basics` npm i -D @babel/core @babel/cli @babel/node @babel/register 
+`# babel plugins` npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
+`# babel runtime` npm i -S core-js@3 @babel/runtime
+`# eslint` npm i -D eslint eslint-config-airbnb-base
 ```
 
 ## Upgrading Packages
