@@ -25,15 +25,15 @@ class QueryCache {
   }
 
   _copyVersions(newVersions) {
-    for (let i = 0; i < this.cfg._versionDependencies.length; ++i) {
-      const id = this.cfg._versionDependencies[i];
+    for (let i = 0; i < this.cfg.versionDependencies.length; ++i) {
+      const id = this.cfg.versionDependencies[i];
       this._lastVersions[id] = newVersions[id];
     }
   }
 
   _checkVersions(newVersions) {
-    for (let i = 0; i < this.cfg._versionDependencies.length; ++i) {
-      const id = this.cfg._versionDependencies[i];
+    for (let i = 0; i < this.cfg.versionDependencies.length; ++i) {
+      const id = this.cfg.versionDependencies[i];
       if (this._lastVersions[id] !== newVersions[id]) {
         // new version -> clear cache; (probably) need to do everything again
         this._copyVersions(newVersions);

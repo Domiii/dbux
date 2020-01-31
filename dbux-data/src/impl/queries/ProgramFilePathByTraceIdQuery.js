@@ -3,7 +3,7 @@ import path from 'path';
 import DataProvider from '../../DataProvider';
 
 
-export default class ProgramFilePathByTraceId extends CachedQuery {
+export default class ProgramFilePathByTraceIdQuery extends CachedQuery {
   constructor() {
     super('programFilePathByTraceId', {
       versionDependencies: ['traces']

@@ -11,13 +11,11 @@ const cliDir = __dirname + '/..';
 const dbuxRoot = path.resolve(cliDir + '/..');
 
 const dbuxAliases = [
-  'dbux-babel-plugin',
   'dbux-runtime'
 ];
 
 const sharedDeps = [
   '@babel/core',
-  '@babel/register',
   '@babel/preset-env'
 ];
 
@@ -41,7 +39,6 @@ const babelrcRoots = [
 ];
 
 const babelRegister = require('@babel/register');
-const dbuxBabelPlugin = require('dbux-babel-plugin');
 
 // make sure, this is loaded before starting instrumentation
 require('dbux-runtime');
@@ -66,9 +63,6 @@ const babelRegisterOptions = {
     }
   ],
   sourceMaps: 'inline',
-  plugins: [
-    dbuxBabelPlugin
-  ],
   presets: [
     "@babel/preset-env"
   ],

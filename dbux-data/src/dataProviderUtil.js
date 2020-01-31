@@ -78,7 +78,7 @@ export default {
   },
 
   getStaticTraceProgramId(dp: DataProvider, staticTraceId) {
-    const staticTrace = dp.collections.staticContexts.getById(staticTraceId);
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const {
       staticContextId
     } = staticTrace;

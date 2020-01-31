@@ -8,6 +8,10 @@ import {
   TextEditor
 } from 'vscode';
 
+import countBy from 'lodash/countBy';
+import sortBy from 'lodash/sortBy';
+import map from 'lodash/map';
+
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { newLogger } from 'dbux-common/src/log/logger';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
@@ -55,47 +59,83 @@ const renderDecorations = makeDebounce(function renderDecorations() {
     debug('Program not executed', fpath);
     return;
   }
-  const traces = dataProvider.indexes.traces.byFile.get(programId);
-  if (!traces) {
+
+  const staticTraces = dataProvider.indexes.staticTraces.visitedByFile.get(programId);
+  // const traces = dataProvider.indexes.traces.byFile.get(programId);
+  if (!staticTraces) {
     debug('No traces in file', fpath);
     return;
   }
 
   const decorations = [];
 
-  for (const trace of traces) {
-    const {
-      staticTraceId,
-      traceId,
-      type: dynamicType
-    } = trace;
-    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
-    let {
-      displayName,
-      loc,
-      type: staticType
-    } = staticTrace;
-
-    const value = dataProvider.util.getTraceValue(traceId);
-
-    // const context = dataProvider.collections.executionContexts.getById(contextId);
-    // const childContexts = dataProvider.indexes.executionContexts.children.get(contextId);
-
-    if (!displayName) {
-      const type = dynamicType || staticType; // if `dynamicType` is given take that, else `staticType`
-      const typeName = TraceType.nameFromForce(type);
-      displayName = `[${typeName}]`;
-    }
-
-    const decoration = {
-      range: getCodeRangeFromLoc(loc),
-      hoverMessage: `Trace **${displayName}** (${value})`
-    };
+  for (const staticTrace of staticTraces) {
+    const decoration = renderStaticTraceDecoration(staticTrace);
     decorations.push(decoration);
   }
 
   activeEditor.setDecorations(TraceDecorationType, decorations);
 });
+
+
+/**
+ * Get counts of array of numbers, then sort it.
+ * @returns {{ type, count }[]}
+ */
+function countAndSort(a) {
+  const counts = map(
+    countBy(a),
+    (count, type) => ({ type, count }) // map single object to array of small objects
+  );
+
+  return sortBy(counts, o => -o.count);
+}
+
+function renderStaticTraceDecoration(staticTrace) {
+  const dataProvider = applicationCollection.getSelectedApplication().dataProvider;
+  const {
+    staticTraceId,
+    loc,
+    type: staticType
+  } = staticTrace;
+
+  let { displayName } = staticTrace;
+
+  // const context = dataProvider.collections.executionContexts.getById(contextId);
+  // const childContexts = dataProvider.indexes.executionContexts.children.get(contextId);
+
+  const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+  const values = [];
+  const types = [];
+  for (const trace of traces) {
+    const {
+      traceId,
+      type: dynamicType
+    } = trace;
+
+    const value = dataProvider.util.getTraceValue(traceId);
+    value !== undefined && values.push(value);
+    types.push(dynamicType || staticType); // if `dynamicType` is not given its `staticType`
+  }
+
+  const valueString = values.length && `\n ${values.join('\n ')}\n` || '';
+  const countedTypes = countAndSort(types);
+  const typeStrings = countedTypes.map(({ type, count }) => 
+    `${TraceType.nameFromForce(type)}${count > 1 && ` x${count}` || ''}`
+  );
+
+  let typeString = `[${typeStrings.join(', ')}]`;
+
+  if (!displayName) {
+    displayName = typeString;
+    typeString = '';
+  }
+
+  return {
+    range: getCodeRangeFromLoc(loc),
+    hoverMessage: `**${displayName}** ${valueString}${typeString}`
+  };
+}
 
 
 // ###########################################################################
@@ -108,7 +148,7 @@ function buildDecorationTypes() {
     after: {
       // see: https://coolsymbol.com/circle-symbols.html
       contentText: '◉',
-      
+
       color: 'red',
       // light: {
       //   color: 'darkred'
@@ -164,7 +204,12 @@ export function initCodeDeco(context) {
   applicationCollection.onSelectionChanged((app) => {
     unsubscribeFromSelectedApplication && unsubscribeFromSelectedApplication();
     if (app) {
-      unsubscribeFromSelectedApplication = app.dataProvider.onData('traces', renderDecorations);
+      unsubscribeFromSelectedApplication = app.dataProvider.onData({
+        collections: {
+          traces: renderDecorations,
+          staticTraces: renderDecorations
+        }
+      });
     }
   });
 

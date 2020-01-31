@@ -2,10 +2,12 @@ import DataProvider from './DataProvider';
 import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
 import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
 import TracesByContextIndex from './impl/indexes/TracesByContextIndex';
+import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
+
 import VisitedStaticTracesByFileIndex from './impl/indexes/VisitedStaticTracesByFileIndex';
 
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
-import ProgramFilePathByTraceId from './impl/queries/ProgramFilePathByTraceIdQuery';
+import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
 import dataProviderUtil from './dataProviderUtil';
 
 /**
@@ -34,7 +36,7 @@ export function newDataProvider(entryPointPath) {
 
   // queries
   dataProvider.addQuery(new ProgramIdByFilePathQuery());
-  dataProvider.addQuery(new ProgramFilePathByTraceId());
+  dataProvider.addQuery(new ProgramFilePathByTraceIdQuery());
   
 
   // hackfix: add utilities

@@ -20,11 +20,13 @@ export default class VisitedStaticTracesByFileIndex extends CollectionIndex<Stat
 
     collections: {
       traces: {
-        added: (trace: Trace) => {
-          const { staticTraceId } = trace;
-          if (!this.visited[staticTraceId]) {
-            // a new trace has been executed
-            this.addEntryById(staticTraceId);
+        added: (traces: Trace[]) => {
+          for (const trace of traces) {
+            const { staticTraceId } = trace;
+            if (!this.visited[staticTraceId]) {
+              // a new trace has been executed
+              this.addEntryById(staticTraceId);
+            }
           }
         }
       }
@@ -37,7 +39,7 @@ export default class VisitedStaticTracesByFileIndex extends CollectionIndex<Stat
   }
 
   makeKeyId(dp: DataProvider, staticTraceId: number) {
-    const traces = dp.indexes.tracesByStaticTrace.get(staticTraceId);
+    const traces = dp.indexes.traces.byStaticTrace.get(staticTraceId);
     if (traces) {
       // filter out
       return false;

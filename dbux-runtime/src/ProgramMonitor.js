@@ -34,6 +34,10 @@ export default class ProgramMonitor {
     return this._staticProgramContext.programId;
   }
 
+  getProgramContextId() {
+    return this._programContextId;
+  }
+
 
   pushImmediate(inProgramStaticId, traceId) {
     return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticId, traceId);

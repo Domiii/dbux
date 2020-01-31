@@ -44,11 +44,12 @@ export default class RuntimeMonitor {
     staticContextCollection.addContexts(programId, staticContexts);
 
     // change program-local _staticContextId to globally unique staticContextId
-    for (const trace of traces) {
+    for (let i = 1; i < traces.length; ++i) {
+      const trace = traces[i];
       let staticContext = staticContexts[trace._staticContextId];
       if (!staticContext?.staticId) {
         // set to random default, to avoid more errors down the line?
-        [staticContext] = staticContexts;
+        staticContext = staticContexts[1];
         logInternalError('trace had invalid `_staticContextId`', trace);
       }
       delete trace._staticContextId;
@@ -301,12 +302,12 @@ export default class RuntimeMonitor {
   // traces
   // ###########################################################################
 
-  trace(inProgramStaticTraceId) {
+  trace(programId, inProgramStaticTraceId) {
     const contextId = this._runtime.peekCurrentContextId();
     traceCollection.trace(contextId, inProgramStaticTraceId);
   }
 
-  traceAndCaptureValue(inProgramStaticTraceId, value) {
+  traceAndCaptureValue(programId, inProgramStaticTraceId, value) {
     const contextId = this._runtime.peekCurrentContextId();
     traceCollection.traceExpressionResult(contextId, inProgramStaticTraceId, value);
     return value;

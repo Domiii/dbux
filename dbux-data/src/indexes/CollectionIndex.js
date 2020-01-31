@@ -12,6 +12,9 @@ export default class CollectionIndex<T> {
     this.log = newLogger(`${indexName} (Index)`);
   }
 
+  _init(dp) {
+    this.dp = dp;
+  }
 
   get(key: number): T[] {
     return this._byKey[key];
@@ -19,7 +22,7 @@ export default class CollectionIndex<T> {
 
   addEntries(entries : T[]) {
     for (const entry of entries) {
-      
+      this.addEntry(entry);
     }
   }
 
@@ -27,18 +30,18 @@ export default class CollectionIndex<T> {
     const key = this.makeKey(this.dp, entry);
     if (key === undefined) {
       this.log.error(`makeKey returned undefined`);
-      continue;
+      return;
     }
     if (key === false) {
       // entry is filtered out; not part of this index
-      continue;
+      return;
     }
 
     // for optimization reasons, we are currently only accepting simple number indexes
     const currentCount = this._byKey.length;
     if (isNaN(key) || key < 0 || (key > 1e6 && key < currentCount / 2)) {
       this.log.error('invalid key for index (currently only dense number spaces are supported):', key);
-      continue;
+      return;
     }
 
     const ofKey = (this._byKey[key] = this._byKey[key] || []);
@@ -46,14 +49,14 @@ export default class CollectionIndex<T> {
   }
 
   addEntryById(id) {
-    const entry = this.dp.collections[this.collectionName].get(id);
+    const entry = this.dp.collections[this.collectionName].getById(id);
     this.addEntry(entry);
   }
 
   /**
    * Returns a unique key (number) for given entry.
    */
-  makeKey(dp, entry : T) : number {
+  makeKey(dp, entry : T) : number | bool {
     throw new Error(`abstract method not implemented: ${this.constructor.name}.makeKey`);
   }
 

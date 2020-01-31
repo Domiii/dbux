@@ -81,8 +81,8 @@ module.exports = [
 
     // https://github.com/webpack/webpack/issues/2145
     // devtool: 'inline-module-source-map',
-    // devtool: 'source-map',
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
+    // devtool: 'inline-source-map',
     plugins: webpackPlugins,
     context,
     entry,

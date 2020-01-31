@@ -83,14 +83,14 @@ export default class DataProvider {
    * 
    * @private
    */
-  _dataEventListeners0;
+  _dataEventListeners0 = [];
 
   /**
    * Outside event listeners.
    * 
    * @private
    */
-  _dataEventListeners;
+  _dataEventListeners = [];
 
   versions: number[] = [];
   entryPointPath: StaticProgramContext;
@@ -99,7 +99,15 @@ export default class DataProvider {
   constructor(entryPointPath) {
     this.entryPointPath = entryPointPath;
 
-    this.clear();
+    this.collections = {
+      staticProgramContexts: new StaticProgramContextCollection(this),
+      staticContexts: new StaticContextCollection(this),
+      staticTraces: new StaticTraceCollection(this),
+
+      executionContexts: new ExecutionContextCollection(this),
+      traces: new TraceCollection(this),
+      values: new ValueCollection(this)
+    };
 
     this.queries = new Queries();
     this.indexes = new Indexes();
@@ -111,32 +119,40 @@ export default class DataProvider {
 
   /**
    * Add a data event listener to given collection.
+   * @deprecated
    */
-  onData(collectionName: string, cb: ([]) => void) {
+  __old_onData(collectionName: string, cb: ([]) => void) {
     const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
     listeners.push(cb);
   }
 
-  // TODO: bundled listener for any data in `DataProvider`?
-  // onData(cfg) {
-  //   for (const collectionName in cfg.collections || EmptyObject) {
+  /**
+   * Bundled data listener.
+   * 
+   * @returns {function} Unsubscribe function. Execute to cancel this listener.
+   */
+  onData(cfg) {
+    for (const collectionName in cfg.collections) {
+      const cb = cfg.collections[collectionName];
+      const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
+      listeners.push(cb);
+    }
 
-  //   }
-  // }
+    const unsubscribe = ((cfg) => {
+      for (const collectionName in cfg.collections) {
+        const cb = cfg.collections[collectionName];
+        this._dataEventListeners[collectionName] =
+          this._dataEventListeners[collectionName].filter(l => l !== cb);
+      }
+    }).bind(this, cfg);
+    return unsubscribe;
+  }
 
   /**
    * Deletes all previously stored data.
    */
   clear() {
-    this.collections = {
-      staticProgramContexts: new StaticProgramContextCollection(this),
-      staticContexts: new StaticContextCollection(this),
-      staticTraces: new StaticTraceCollection(this),
-
-      executionContexts: new ExecutionContextCollection(this),
-      traces: new TraceCollection(this),
-      values: new ValueCollection(this)
-    };
+    throw new Error('NYI - we are not properly reseting (i) indexes and (ii) queries yet');
   }
 
   /**
@@ -160,7 +176,7 @@ export default class DataProvider {
 
   addIndex(newIndex) {
     this.indexes._addIndex(newIndex);
-    newIndex.dp = this;
+    newIndex._init(this);
 
     // add event listeners
     const collectionListeners = newIndex.dependencies?.collections;
@@ -203,7 +219,7 @@ export default class DataProvider {
       if (indexes) {
         const data = allData[collectionName];
         for (const name in indexes) {
-          indexes[name].addEntries(this, data);
+          indexes[name].addEntries(data);
         }
       }
     }

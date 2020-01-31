@@ -44,7 +44,7 @@ function tracePathEnd(path, state, thin) {
 }
 
 function traceDefault(path, state) {
-  // const parentStaticId = state.getCurrentStaticContextId(path);
+  // const parentStaticId = state.getParentStaticContextId(path);
 
   // TODO: if we really need the `displayName`, improve performance
   const str = toSourceStringWithoutComments(path.node);
@@ -68,7 +68,7 @@ function traceDefault(path, state) {
  */
 export default function injectDbuxState(programPath, programState) {
   const filePath = programState.filename;
-  const fileName = getBasename(filePath)
+  const fileName = filePath && getBasename(filePath)
 
   const { scope } = programPath;
 
@@ -166,8 +166,12 @@ export default function injectDbuxState(programPath, programState) {
       return staticContextParent?.getData(dataName);
     },
 
-    getCurrentStaticContextId(path) {
+    getParentStaticContextId(path) {
       return programState.getClosestAncestorData(path, 'staticId');
+    },
+
+    getCurrentStaticContextId(path) {
+      return path.getData('staticId') || programState.getClosestAncestorData(path, 'staticId');
     },
 
     getClosestContextIdName(path) {
@@ -194,7 +198,7 @@ export default function injectDbuxState(programPath, programState) {
     addStaticContext(path, data) {
       // console.log('STATIC', path.get('id')?.name, '@', `${state.filename}:${line}`);
       const _staticId = staticContexts.length;
-      const _parentId = dbuxState.getCurrentStaticContextId(path);
+      const _parentId = dbuxState.getParentStaticContextId(path);
       // console.log('actualParent',  toSourceString(actualParent.node));
       const { loc } = path.node;
       staticContexts.push({
