@@ -1,4 +1,6 @@
 import DataProvider from "./DataProvider";
+import TraceType, { hasDynamicTypes } from 'dbux-common/src/core/constants/TraceType';
+import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
 
 export default {
   getFirstTraceOfContext(dp: DataProvider, contextId) {
@@ -40,6 +42,18 @@ export default {
       return dp.collections.traces.getById(traceId);
     }
     else return traces[index + 1];
+  },
+
+  doesTraceHaveValue(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const { staticTraceId } = trace;
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    return staticTrace.type === TraceType.ExpressionResult;
+  },
+
+  doesStaticTraceHaveValue(dp: DataProvider, staticTraceId) {
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    return staticTrace.type === TraceType.ExpressionResult;
   },
 
   getTraceValue(dp: DataProvider, traceId) {
@@ -95,5 +109,44 @@ export default {
     } = trace;
 
     return dp.util.getStaticTraceProgramId(staticTraceId);
+  },
+
+  /**
+   * TODO: improve performance, use index instead
+   */
+  groupTracesByType(dp: DataProvider, staticTraces: StaticTrace[]) {
+    const groups = [];
+    for (const staticTrace of staticTraces) {
+      const {
+        type: staticType,
+        staticTraceId
+      } = staticTrace;
+
+      const traces = dp.indexes.traces.byStaticTrace.get(staticTraceId);
+      if (!traces) {
+        continue;
+      }
+
+      if (!hasDynamicTypes(staticType)) {
+        // one group of traces
+        pushArrayOfArray(groups, staticType, [staticTrace, traces]);
+      }
+      else {
+        // multiple groups of traces for this `staticTrace`
+        const traceGroups = [];
+        for (const trace of traces) {
+          const { type: dynamicType } = trace;
+          pushArrayOfArray(traceGroups, dynamicType, trace);
+        }
+
+        for (const type = 0; type < traceGroups.length; ++type) {
+          const traces = traceGroups[type];
+          if (traces) {
+            pushArrayOfArray(groups, dynamicType, [staticTrace, traces]);
+          }
+        }
+      }
+    }
+    return groups;
   }
 };

@@ -50,20 +50,31 @@ npm start # start webpack build of all projects in watch mode
    1. `StepMode.ContextOnly` (default)
       * skip all traces that are following `currentTrace` (in `traces._all`) and have the same `contextId`
       * step to the last trace in context
-      * we can possibly create `TracesForContextOnlyIndex` for this?
+      * create `TracesContextSwitchOnlyIndex` for this?
+         * NOTE: For `StepMode.All` we work against the array of all traces; for this `StepMode`, we want to create a smaller array of traces. This `Index` represents that array by filtering out all non-matching traces.
          * identifying any pair of two neighboring traces `t1` and `t2` where `t1.contextId` !== `t2.contextId`, plus first and last trace
          * `makeKey` can just return `true` or `false` to act as a binary filter
             * NOTE: When `makeKey` returns `false` the `entry` is filtered out, will not participate in `Index`
             * NOTE: `true` gets implicitely cast to `1`
+* [playback] when stepping through, render the value of `TraceType.ExpressionResult` inline
 * switch between `StepMode`s via button or command
-* can we hide multiple buttons behind a `ContextMenu`?
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `applicationCollection`
    * lets you switch between them by clicking on them (can use `applicationCollection.setSelectedApplication`)
-* [playback] `context` elevator: buttons to step between child/parent context
+* [selectionContextView]
+  * show all info relevant to the position where the cursor currently is
+  * "`contextElevator`": buttons to step between child/parent context
+  * TODO: what about in-line contexts?
+* [callstackView]
+  * actually: a callstack is actually a single slice of a complex call graph over time
+  * allow to search for path between any two contexts
 * [playback] add awesome keyboard controls~
    * when "in playback mode" use arrow keys (and maybe a few other keys) to jump around very quickly
    * can we do it like [`jumpy`](https://marketplace.visualstudio.com/items?itemName=wmaurer.vscode-jumpy) ([source](https://github.com/krnik/vscode-jumpy))?
+      * Type pseudo "event handler" - https://github.com/wmaurer/vscode-jumpy/blob/master/src/extension.ts#L130
+   * Problem: `vscode` has some issue handling the `type` command and it's friends
+      * [Stacking of type event handlers + onDidType event](https://github.com/Microsoft/vscode/issues/13441)
+      * https://github.com/microsoft/vscode/issues/65876
 * [codeDeco] add an `BlurBackgroundMode` `Enum`
    * `BlurBackgroundMode.Application` - "gray out" all code that is not in any executed `context`
    * more future modes:
@@ -84,32 +95,20 @@ npm start # start webpack build of all projects in watch mode
 * `playback` + `step` be able to use keyboard   
 * add new index: `TracesByProgramIndex`
    * key = `programId`
-* show a warning at the top of a file if it has been edited after the time of it's most recent `Program` `Context`
-   * (if that's possible?)
+* display a warning at the top of EditorWindow:
+   * if it has been edited after the time of it's most recent `Program` `Context`
+   * if it is very large and thus will slow things down (e.g. > x traces?)
+      * potentially ask user for confirmation first? (remember decision until restart or config option override?)
+   * (is that possible?)
 * design a proper extension config API; make the following configurable:
    * `codeDeco.blurBackgroundMode`
 
 ## TODO (other)
-* [codeDeco] use `StaticTrace` to display `codeDeco`
-   * use `TracesByStaticTraceIndex` to find all relevant traces and determined more detailed render options
-* [codeDeco] markers for context switches
-   * identify any `trace` at position `i` of `context` `c1` is followed by `trace` at `i+1` who belongs to `context` `c2` and `c2` is a child of `c1`, give it two markers, one down, one up
-   * for the marker icon, maybe some kind of arrow indicating "it goes a level deeper" would be good
-   * since this is fast to lookup, we can just use a `util` function to determine the circumstance
-   * however, we probably want a `ContextsByParentContextIndex` for this (which gives us all children of a given context)
-   * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
-* [codeDeco] add complex in-line widgets to let user interact with traces and contexts
-   * [`gitlens`](https://github.com/eamodio/vscode-gitlens/tree/master/src) has the feature in its inline `blame` decorations
-   * display `staticTrace` information
-      * NOTE: use `TracesByStaticTraceIndex`
-      * if of all its traces there is more than one followed/preceeded trace with a different `staticTrace`, show them
-      * if any of its traces is followed/preceeded by traces of different `contextId`, show them
-* [selectionContextView]
-  * show all info relevant to the position where the cursor currently is
-  * TODO: what about in-line contexts? (contexts that are part of )
-* [callstackView]
-  * allow to search for path between any two contexts
-  * actually: slice of call graph?
+* [codeDeco] better deco
+   * for function calls: render context targets (if known)
+   * capture function calls arguments
+   * capture function parameters
+   * allow to jump to caller callee upon context switches
 * [applications]
    * add `Application` as root context for an application
    * allow for selecting (merging `DataProvider` of) multiple applications (e.g. backend + frontend)
@@ -140,6 +139,9 @@ npm start # start webpack build of all projects in watch mode
 
 
 ## Possible future work
+* [codeDeco] add complex in-line widgets to let user interact with traces and contexts?
+   * probably not necessary, as we are using `selectionContextView` instead (for now)
+   * [`gitlens`](https://github.com/eamodio/vscode-gitlens/tree/master/src) has the feature in its inline `blame` decorations
 * integrate `dbux` with at least one testing methodology
    * case-studies
 * in `ContextTreeView`, make text of all nodes that do not belong to the current `Program` semi-transparent

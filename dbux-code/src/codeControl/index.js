@@ -1,5 +1,5 @@
 import { newLogger } from 'dbux-common/src/log/logger';
-import { initCodeDeco } from './codeDeco';
+import { initCodeDeco } from '../codeDeco';
 
 const { log, debug, warn, error: logError } = newLogger('CodeControl');
 

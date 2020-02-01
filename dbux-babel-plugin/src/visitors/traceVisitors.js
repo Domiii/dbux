@@ -38,13 +38,13 @@ const traceCfg = (() => {
       [['value', ExpressionWithValue]]
     ],
     VariableDeclaration: [
-      Statement,
+      NoTrace,
       null,
       {
-        filter(path, state) {
-          // ignore variable declarations in for loops inits
-          return !path.parentPath.isFor();
-        }
+        // filter(path, state) {
+        //   // ignore variable declarations in for loops inits
+        //   return !path.parentPath.isFor();
+        // }
       }
     ],
     VariableDeclarator: [
@@ -96,28 +96,34 @@ const traceCfg = (() => {
     //     ignore: ['ImportDeclaration'] // ignore: cannot mess with imports
     //   }
     // ],
-    ReturnStatement: Statement,
+    ReturnStatement: [
+      NoTrace,
+      [['argument', ExpressionWithValue]]
+    ],
     ThrowStatement: Statement,
 
 
     // ########################################
     // loops
     // ########################################
-    DoWhileLoop: [
+    ForStatement: [
       NoTrace,
-      [['test', ExpressionWithValue], ['body', Block]]
+      [['test', ExpressionWithValue], ['update', ExpressionWithValue], ['body', Block]]
     ],
     ForInStatement: [
+      // TODO: trace `left` value
       NoTrace,
       [['body', Block]]
     ],
     ForOfStatement: [
+      // TODO: trace `left` value
       NoTrace,
       [['body', Block]]
     ],
-    ForStatement: [
+    DoWhileLoop: [
+      // TODO: currently disabled because babel doesn't like it; probably a babel bug?
       NoTrace,
-      [['test', ExpressionWithValue], ['update', ExpressionWithValue], ['body', Block]]
+      [['test', ExpressionWithValue], ['body', Block]]
     ],
     WhileStatement: [
       NoTrace,
@@ -231,10 +237,10 @@ const buildTraceNoValue = function (templ, path, state, traceType) {
 
 const traceWrapExpression = function (templ, expressionPath, state) {
   const { node } = expressionPath;
-  if (t.isLiteral(node)) {
-    // don't care about literals
-    return;
-  }
+  // if (t.isLiteral(node)) {
+  //   // don't care about literals
+  //   return;
+  // }
   const { ids: { dbux } } = state;
   const traceId = state.addTrace(expressionPath, TraceType.ExpressionResult);
   replaceWithTemplate(templ, expressionPath, {
@@ -303,10 +309,11 @@ function enter(path, state, cfg) {
 
   const [traceType, children, extraCfg] = cfg;
   if (extraCfg?.ignore?.includes(path.node.type)) {
-    // ignored
+    // ignore (array of type name)
     return;
   }
   if (extraCfg?.filter && !extraCfg.filter(path, state, cfg)) {
+    // filter (custom function)
     return;
   }
 

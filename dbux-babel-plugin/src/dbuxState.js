@@ -9,9 +9,10 @@ import { getPresentableString, toSourceStringWithoutComments } from './helpers/m
 // ###########################################################################
 
 const traceCustomizationsByType = {
-  // [TraceType.StartProgram]: tracePathStart,
   [TraceType.PushImmediate]: tracePathStart,
   [TraceType.PopImmediate]: tracePathEnd,
+  [TraceType.Await]: tracePathStart,
+  [TraceType.Resume]: tracePathEnd,
   [TraceType.BlockStart]: tracePathStart,
   [TraceType.BlockEnd]: tracePathEnd
 };

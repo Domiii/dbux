@@ -7,7 +7,7 @@ import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import deserialize from 'dbux-common/src/serialization/deserialize';
-import { EmptyObject } from 'dbux-common/src/util/misc';
+import { EmptyObject } from '../../dbux-common/src/util/arrayUtil';
 
 import Collection from './Collection';
 import Queries from './queries/Queries';
@@ -83,14 +83,14 @@ export default class DataProvider {
    * 
    * @private
    */
-  _dataEventListeners0 = [];
+  _dataEventListeners0 = {};
 
   /**
    * Outside event listeners.
    * 
    * @private
    */
-  _dataEventListeners = [];
+  _dataEventListeners = {};
 
   versions: number[] = [];
   entryPointPath: StaticProgramContext;

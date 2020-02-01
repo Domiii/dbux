@@ -4,7 +4,7 @@ import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
 import staticProgramContextCollection from './staticProgramContextCollection';
 import { logInternalError } from 'dbux-common/src/log/logger';
-import { EmptyArray } from 'dbux-common/src/util/misc';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import Collection from './Collection';
 import pools from './pools';
 import valueCollection from './valueCollection';
@@ -109,6 +109,8 @@ function _prettyPrint(trace, value) {
   //   console.group(displayName);
   // }
   // else
+
+  // TODO: if we want to keep using this; fix to use `ValueCollection` instead
   const v = type === TraceType.ExpressionResult;
   const result = v ? ['(', value, ')'] : EmptyArray;
   console.debug(

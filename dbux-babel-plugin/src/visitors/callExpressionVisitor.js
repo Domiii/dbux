@@ -35,6 +35,7 @@ function buildWrapScheduleCallbackArg(argPath, state) {
     t.numericLiteral(traceId),
     cbArg
   ];
+
   return t.expressionStatement(
     t.callExpression(
       t.memberExpression(t.identifier(dbux), t.identifier('scheduleCallback')),
@@ -64,6 +65,7 @@ function instrumentCallbackSchedulingFunctionArgs(callPath, state) {
   replacements.forEach(r => r());
 }
 
+
 // ###########################################################################
 // misc utilities
 // ###########################################################################
@@ -85,6 +87,7 @@ function addStaticContext(argPath, state) {
     displayName: getCallDisplayName(argPath)
   });
 }
+
 
 // ###########################################################################
 // visitor
