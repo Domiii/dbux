@@ -169,6 +169,7 @@ function contextVisitors() {
   return {
     Function: functionVisitor(),
     CallExpression: callExpressionVisitor(),
+    NewExpression: callExpressionVisitor(),
     AwaitExpression: awaitVisitor(),
 
     /**
