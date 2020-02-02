@@ -91,10 +91,14 @@ export default class ProgramMonitor {
   }
 
   /**
-   * `tv` is short for `traceAndCaptureValue` (we have a lot of these, so we want to keep the name short)
+   * 
    */
-  tv(inProgramStaticTraceId, value) {
-    return this._runtimeMonitor.traceAndCaptureValue(this.getProgramId(), inProgramStaticTraceId, value);
+  traceExpr(inProgramStaticTraceId, value) {
+    return this._runtimeMonitor.traceExpression(this.getProgramId(), inProgramStaticTraceId, value);
+  }
+
+  traceArg(inProgramStaticTraceId, value) {
+    return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
 }

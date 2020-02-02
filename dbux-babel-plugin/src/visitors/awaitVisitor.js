@@ -2,6 +2,7 @@ import template from "@babel/template";
 import * as t from "@babel/types";
 import { getPresentableString } from '../helpers/misc';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import StaticContextType from '../../../dbux-common/src/core/constants/StaticContextType';
 
 // ###########################################################################
 // builders
@@ -51,7 +52,7 @@ function enter(path, state) {
 
   const resumeId = addResumeContext(path, state);
   const staticId = state.addStaticContext(path, {
-    type: 4, // : StaticContextType
+    type: StaticContextType.AwaitExpression,
     displayName: getAwaitDisplayName(path),
     resumeId
   });

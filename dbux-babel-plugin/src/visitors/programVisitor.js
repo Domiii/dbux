@@ -1,6 +1,3 @@
-import fsPath from 'path';
-import errorWrapVisitor from '../helpers/errorWrapVisitor';
-
 import functionVisitor from './functionVisitor';
 import { buildSource, buildWrapTryFinally } from '../helpers/builders';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
@@ -12,6 +9,7 @@ import { buildAllTraceVisitors } from './traceVisitors';
 import { mergeVisitors } from '../helpers/visitorHelpers';
 import { logInternalError } from '../log/logger';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import errorWrapVisitor from '../helpers/errorWrapVisitor';
 
 
 // ###########################################################################
@@ -122,7 +120,7 @@ function enter(path, state) {
   wrapProgram(path, state);
 
   // merge all visitors
-  const allVisitors = mergeVisitors(
+  let allVisitors = mergeVisitors(
     contextVisitors(),
     buildAllTraceVisitors()
   );
@@ -130,6 +128,9 @@ function enter(path, state) {
 
   // TODO: babel is unhappy with our DoWhileLoop visitor
   delete allVisitors.DoWhileLoop;
+
+  // error wrap!
+  allVisitors = errorWrapVisitor(allVisitors);
 
   // traverse program before (most) other plugins
   try {

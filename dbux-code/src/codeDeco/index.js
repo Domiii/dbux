@@ -41,7 +41,7 @@ const renderDecorations = makeDebounce(function renderDecorations() {
 
   const programId = dataProvider.queries.programIdByFilePath(fpath);
   if (!programId) {
-    debug('Program not executed', fpath);
+    // debug('Program not executed', fpath);
     return;
   }
 

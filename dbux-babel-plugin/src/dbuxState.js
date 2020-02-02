@@ -1,8 +1,16 @@
 import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { getBasename } from 'dbux-common/src/util/pathUtil';
+import * as t from '@babel/types';
 
 import { getPresentableString, toSourceStringWithoutComments } from './helpers/misc';
+
+function checkPath(path) {
+  if (!path.node.loc) {
+    const msg = 'trying to instrument an already instrumented node: ' + path;
+    throw new Error(msg);
+  }
+}
 
 // ###########################################################################
 // trace stuff
@@ -11,7 +19,12 @@ import { getPresentableString, toSourceStringWithoutComments } from './helpers/m
 const traceCustomizationsByType = {
   [TraceType.PushImmediate]: tracePathStart,
   [TraceType.PopImmediate]: tracePathEnd,
-  [TraceType.Await]: tracePathStart,
+
+  // NOTE: PushCallback + PopCallback are sharing the StaticTrace of `ScheduleCallback`, so they won't pass through here
+  // [TraceType.PushCallback]: tracePathStart,
+  // [TraceType.PopCallback]: tracePathEnd,
+
+  [TraceType.Await]: tracePathEnd,
   [TraceType.Resume]: tracePathEnd,
   [TraceType.BlockStart]: tracePathStart,
   [TraceType.BlockEnd]: tracePathEnd
@@ -19,9 +32,15 @@ const traceCustomizationsByType = {
 
 
 function tracePathStart(path, state, thin) {
-  const { loc: { start } } = path.node;
+  const { node } = path;
+  const { loc: { start } } = node;
   const end = { ...start };
-  end.column += !thin;
+  if (!thin) {
+    // for blocks, move *into* the block (curly braces)
+    if (t.isBlock(node)) {
+      end.column += 1;
+    }
+  }
 
   return {
     loc: {
@@ -32,9 +51,15 @@ function tracePathStart(path, state, thin) {
 }
 
 function tracePathEnd(path, state, thin) {
-  const { loc: { end } } = path.node;
+  const { node } = path;
+  const { loc: { end } } = node;
   const start = { ...end };
-  start.column -= !thin;
+  if (!thin) {
+    // for blocks, move *into* the block (curly braces)
+    if (t.isBlock(node)) {
+      end.column -= 1;
+    }
+  }
 
   return {
     loc: {
@@ -197,6 +222,8 @@ export default function injectDbuxState(programPath, programState) {
      * Contexts are (currently) potential stackframes; that is `Program` and `Function` nodes.
      */
     addStaticContext(path, data) {
+      checkPath(path);
+
       // console.log('STATIC', path.get('id')?.name, '@', `${state.filename}:${line}`);
       const _staticId = staticContexts.length;
       const _parentId = dbuxState.getParentStaticContextId(path);
@@ -214,6 +241,8 @@ export default function injectDbuxState(programPath, programState) {
     },
 
     addResumeContext(awaitPath, locStart) {
+      checkPath(awaitPath);
+
       const _staticId = staticContexts.length;
       const _parentId = dbuxState.getCurrentStaticContextId(awaitPath);
       const loc = {
@@ -234,8 +263,10 @@ export default function injectDbuxState(programPath, programState) {
      * Tracing a path in its entirety (usually means, the trace is recorded right before the given path).
      */
     addTrace(path, type, customArg) {
+      checkPath(path);
+
       // console.log('TRACE', '@', `${state.filename}:${line}`);
-      const traceId = traces.length;
+      const _traceId = traces.length;
       let trace;
       if (traceCustomizationsByType[type]) {
         trace = traceCustomizationsByType[type](path, dbuxState, customArg);
@@ -244,12 +275,12 @@ export default function injectDbuxState(programPath, programState) {
         trace = traceDefault(path, dbuxState, customArg);
       }
 
-      trace._traceId = traceId;
+      trace._traceId = _traceId;
       trace._staticContextId = dbuxState.getCurrentStaticContextId(path);
       trace.type = type;
       traces.push(trace);
 
-      return traceId;
+      return _traceId;
     },
   };
 

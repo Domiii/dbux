@@ -1,5 +1,5 @@
 import DataProvider from "./DataProvider";
-import TraceType, { hasDynamicTypes } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { hasDynamicTypes, hasValue } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
 
 export default {
@@ -47,13 +47,12 @@ export default {
   doesTraceHaveValue(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
-    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    return staticTrace.type === TraceType.ExpressionResult;
+    return dp.util.doesStaticTraceHaveValue(staticTraceId);
   },
 
   doesStaticTraceHaveValue(dp: DataProvider, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    return staticTrace.type === TraceType.ExpressionResult;
+    return hasValue(staticTrace.type);
   },
 
   getTraceValue(dp: DataProvider, traceId) {
@@ -136,13 +135,13 @@ export default {
         const traceGroups = [];
         for (const trace of traces) {
           const { type: dynamicType } = trace;
-          pushArrayOfArray(traceGroups, dynamicType, trace);
+          pushArrayOfArray(traceGroups, dynamicType || staticType, trace);
         }
 
-        for (const type = 0; type < traceGroups.length; ++type) {
+        for (let type = 0; type < traceGroups.length; ++type) {
           const traces = traceGroups[type];
           if (traces) {
-            pushArrayOfArray(groups, dynamicType, [staticTrace, traces]);
+            pushArrayOfArray(groups, type, [staticTrace, traces]);
           }
         }
       }

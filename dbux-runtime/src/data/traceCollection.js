@@ -21,7 +21,7 @@ class TraceCollection extends Collection {
   }
 
   traceExpressionResult(contextId, inProgramStaticTraceId, value) {
-    const trace = this._trace(contextId, inProgramStaticTraceId, TraceType.ExpressionResult, true, value);
+    const trace = this._trace(contextId, inProgramStaticTraceId, null, true, value);
     return trace;
   }
 

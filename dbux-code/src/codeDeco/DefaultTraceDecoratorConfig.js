@@ -24,10 +24,10 @@ const DefaultTraceDecoratorConfig = {
 
   ScheduleCallback: {
     styling: {
-      before: {
+      after: {
         // see https://www.alt-codes.net/hourglass-symbols
         contentText: '⧖',
-        color: 'red',
+        color: 'orange',
       }
     }
   },
@@ -36,24 +36,24 @@ const DefaultTraceDecoratorConfig = {
     styling: {
       after: {
         contentText: '↳',
-        color: 'red',
+        color: 'orange',
       }
     }
   },
   PopCallback: {
     styling: {
-      before: {
+      after: {
         contentText: '⤴',
-        color: 'red',
+        color: 'orange',
       }
     }
   },
 
   Await: {
     styling: {
-      before: {
+      after: {
         contentText: '⧖',
-        color: 'red',
+        color: 'orange',
       }
     }
   },
@@ -82,6 +82,15 @@ const DefaultTraceDecoratorConfig = {
       },
     }
   },
+  CallArgument: {
+    styling: {
+      after: {
+        contentText: '✦',
+        color: 'red',
+      },
+    }
+  },
+
   Statement: {
     styling: {
       after: {

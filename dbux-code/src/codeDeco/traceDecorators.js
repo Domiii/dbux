@@ -11,6 +11,9 @@ let configsByType;
 // render
 // ###########################################################################
 
+/**
+ * TODO: the order of decorations is currently dictacted by the order of their decoration types (VSCode limitation)
+ */
 export function renderTraceDecorations(dataProvider, editor, programId, fpath) {
   const staticTraces = dataProvider.indexes.staticTraces.visitedByFile.get(programId);
   // const traces = dataProvider.indexes.traces.byFile.get(programId);
@@ -31,7 +34,7 @@ export function renderTraceDecorations(dataProvider, editor, programId, fpath) {
     const groups = traceGroupsByType[type];
     if (groups) {
       if (!config?.editorDecorationtype) {
-        logError('found TraceType in trace that is not configured', type);
+        logError('found TraceType in trace that is not configured', type, TraceType.nameFrom(type));
         continue;
       }
 
@@ -78,11 +81,14 @@ function renderTraceGroup(dataProvider, traceType, staticTrace, traces) {
     typeString = '';
   }
 
+  // status + repitition count
+  const statusString = traces.length > 1 ? ` x${traces.length}` : '';
+
   // return decoration object required by vscode API
   // see https://code.visualstudio.com/api/references/vscode-api#DecorationOptions
   return {
     range: getCodeRangeFromLoc(loc),
-    hoverMessage: `**${displayName}**${typeString} ${valueString}`
+    hoverMessage: `**${displayName}**${typeString}${statusString} ${valueString}`
   };
 }
 

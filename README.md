@@ -35,6 +35,12 @@ npm start # start webpack build of all projects in watch mode
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
 
+## Architectural Notes
+
+This is a multi-project monorepo.
+
+Why is it not using LERNA? Because I did not know about LERNA when I started; but it's working quite well nevertheless :)
+
 
 # TODO
 

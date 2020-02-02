@@ -2,6 +2,7 @@ import template from '@babel/template';
 import Enum from 'dbux-common/src/util/Enum';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue } from '../helpers/traceHelpers';
 // TODO: want to do some extra work to better trace loops
 
 const TraceInstrumentationType = new Enum({
@@ -57,8 +58,8 @@ const traceCfg = (() => {
     // expressions
     // ########################################
     AwaitExpression: [
-      ExpressionWithValue,
-      [['argument', ExpressionNoValue]]
+      ExpressionWithValue
+      // [['argument', ExpressionNoValue]]
     ],
     ConditionalExpression: [
       ExpressionWithValue,
@@ -217,60 +218,6 @@ function normalizeConfig(cfg) {
 }
 
 // ###########################################################################
-// templates + instrumentation
-// ###########################################################################
-
-function replaceWithTemplate(templ, path, cfg) {
-  const newNode = templ(cfg);
-  path.replaceWith(newNode);
-}
-
-const buildTraceNoValue = function (templ, path, state, traceType) {
-  const { ids: { dbux } } = state;
-  const traceId = state.addTrace(path, traceType);
-  return templ({
-    dbux,
-    traceId: t.numericLiteral(traceId)
-  });
-}.bind(null, template('%%dbux%%.t(%%traceId%%)'));
-
-
-const traceWrapExpression = function (templ, expressionPath, state) {
-  const { node } = expressionPath;
-  // if (t.isLiteral(node)) {
-  //   // don't care about literals
-  //   return;
-  // }
-  const { ids: { dbux } } = state;
-  const traceId = state.addTrace(expressionPath, TraceType.ExpressionResult);
-  replaceWithTemplate(templ, expressionPath, {
-    dbux,
-    traceId: t.numericLiteral(traceId),
-    expression: node
-  });
-
-  // prevent infinite loop
-  state.onCopy(expressionPath, expressionPath.get('arguments.1'), 'trace');
-  // state.onCopy(expressionPath, expressionPath.get('expressions.1.arguments.1'), 'trace');
-  // }.bind(null, template('%%dbux%%.t(%%traceId%%), %%dbux%%.tv(%%traceId%%, %%expression%%)'));
-}.bind(null, template('%%dbux%%.tv(%%traceId%%, %%expression%%)'));
-
-
-const traceBeforeExpression = function traceBeforeExpression(templ, expressionPath, state) {
-  const { ids: { dbux } } = state;
-  const traceId = state.addTrace(expressionPath, TraceType.BeforeExpression);
-  replaceWithTemplate(templ, expressionPath, {
-    dbux,
-    traceId: t.numericLiteral(traceId),
-    expression: expressionPath.node
-  });
-
-  // prevent infinite loop
-  state.onCopy(expressionPath, expressionPath.get('expressions.1'), 'trace');
-}.bind(null, template('%%dbux%%.t(%%traceId%%), %%expression%%'));
-
-
-// ###########################################################################
 // instrumentation recipes by node type
 // ###########################################################################
 
@@ -286,8 +233,11 @@ const instrumentors = {
     path.insertBefore(traceStart);
   },
   Block(path, state) {
+    // NOTE: don't change order of statements here. We first MUST build all new nodes
+    //    before instrumenting the path (because instrumentation causes the path to lose information)
     const trace = buildTraceNoValue(path, state, TraceType.BlockStart);
     const traceEnd = buildTraceNoValue(path, state, TraceType.BlockEnd);
+
     path.insertBefore(trace);
     path.insertAfter(traceEnd);
     // if (!t.isBlockStatement(path)) {
