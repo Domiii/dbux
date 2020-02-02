@@ -1,7 +1,8 @@
 import SerializationMethod from './SerializationMethod';
+import isObject from 'lodash/isObject';
 
 function getBestMethod(value) {
-  if ('toJSON' in value) {
+  if (isObject(value) && 'toJSON' in value) {
     return SerializationMethod.JSON;
   }
   return SerializationMethod.ToString;
