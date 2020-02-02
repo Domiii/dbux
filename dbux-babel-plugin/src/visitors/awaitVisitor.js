@@ -2,6 +2,7 @@ import template from "@babel/template";
 import * as t from "@babel/types";
 import { getPresentableString } from '../helpers/misc';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import StaticContextType from '../../../dbux-common/src/core/constants/StaticContextType';
 
 // ###########################################################################
 // builders
@@ -33,12 +34,11 @@ function getAwaitDisplayName(path) {
 // ###########################################################################
 
 function addResumeContext(awaitPath, state) {
-  const parentStaticId = state.getClosestStaticId(awaitPath);
   const { loc: awaitLoc } = awaitPath.node;
   
   // the "resume context" starts after the await statement
   const locStart = awaitLoc.end;
-  return state.addResumeContext(parentStaticId, locStart);
+  return state.addResumeContext(awaitPath, locStart);
 }
 
 function enter(path, state) {
@@ -52,7 +52,7 @@ function enter(path, state) {
 
   const resumeId = addResumeContext(path, state);
   const staticId = state.addStaticContext(path, {
-    type: 4, // : StaticContextType
+    type: StaticContextType.AwaitExpression,
     displayName: getAwaitDisplayName(path),
     resumeId
   });
@@ -62,8 +62,8 @@ function enter(path, state) {
   const argumentPath = path.get('argument');
   const argument = argumentPath.node;
 
-  const preTraceId = state.addTrace(argumentPath, TraceType.Await);
-  const postTraceId = state.addTrace(path, TraceType.Resume);
+  const preTraceId = state.addTrace(argumentPath, TraceType.Await, true);
+  const postTraceId = state.addTrace(path, TraceType.Resume, true);
 
   const expressionReplacement = wrapAwaitExpressionTemplate({
     dbux,

@@ -4,13 +4,13 @@
 import {
   Position, Range
 } from 'vscode';
-import Loc from 'dbux-common/src/core/data/loc';
+import Loc from 'dbux-common/src/core/data/Loc';
 
 
 /**
  * Convert babel-style `loc` definitions to VSCode `position`
  */
-export function getCodePositionFromLoc(loc: Loc) : Position {
+export function getCodePositionFromLoc(loc: Loc): Position {
   if (loc._pos) {
     // converted this before
     return loc._pos;
@@ -21,10 +21,10 @@ export function getCodePositionFromLoc(loc: Loc) : Position {
     line,
     column: character
   } = loc;
-  return loc._pos = new Position(line-1, character);
+  return loc._pos = new Position(line - 1, character);
 }
 
-export function getCodeRangeFromLoc(loc: Loc) : Range {
+export function getCodeRangeFromLoc(loc: Loc): Range {
   if (loc._range) {
     // converted this before
     return loc._range;
@@ -34,7 +34,7 @@ export function getCodeRangeFromLoc(loc: Loc) : Range {
   const {
     start,
     end
-  } = loc
+  } = loc;
 
   const startPos = getCodePositionFromLoc(start);
   const endPos = getCodePositionFromLoc(end);

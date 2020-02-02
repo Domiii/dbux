@@ -13,7 +13,7 @@ function addResumeContext(bodyPath, state, staticId) {
 
   // the "resume context" starts with the function (function is in "Resumed" state initially)
   const locStart = bodyLoc.start;
-  return state.addResumeContext(staticId, locStart);
+  return state.addResumeContext(bodyPath, locStart);
 }
 
 // ###########################################################################

@@ -5,7 +5,7 @@ import errorWrapVisitor from './helpers/errorWrapVisitor';
 
 export default function dbuxBabelPlugin() {
   return {
-    visitor: errorWrapVisitor({
+    visitor: ({
       Program: programVisitor()
     })
   };

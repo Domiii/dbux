@@ -1,4 +1,4 @@
-import Loc from "./loc";
+import Loc from "./Loc";
 
 export default class StaticProgramContext {
   programId: number;

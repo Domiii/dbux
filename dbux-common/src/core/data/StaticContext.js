@@ -1,10 +1,10 @@
-import Loc from "./loc";
+import Loc from "./Loc";
 
 export default class StaticContext {
   type: number; // {StaticContextType}
   name: string;
   displayName: string;
-  isInterruptable;
+  isInterruptable: boolean;
   staticId: number;
   programId: number;
   loc: Loc;

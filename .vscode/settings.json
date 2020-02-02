@@ -5,5 +5,6 @@
       "mode": "auto"
     }
   ],
+  "editor.snippetSuggestions": "top",
   "jest.pathToJest": "sh scripts/runJest.sh"
 }

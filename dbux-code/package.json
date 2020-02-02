@@ -169,7 +169,7 @@
 		"postinstall": "npx link-module-alias",
 		"test": "node ./test/runTest.js",
 		"vscode:prepublish": "npx webpack --mode production",
-		"start": "npx webpack --mode development --watch",
+		"start": "npm run _before-run && npx webpack --mode development --watch",
 		"start-debug": "node --inspect-brk=9233 ./node_modules/webpack/bin/webpack --mode development --watch",
 		"build-prod": "npx webpack --mode production",
 		"build-dev": "npx webpack --mode development",

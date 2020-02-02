@@ -1,5 +1,4 @@
-export default class Loc{
-
+export default class Loc {
   start: {
     line: number,
     column: number,
@@ -9,5 +8,4 @@ export default class Loc{
     line: number,
     column: number
   };
-
 }

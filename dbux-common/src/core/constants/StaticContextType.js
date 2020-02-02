@@ -5,7 +5,7 @@ let StaticContextType = {
   Function: 2,
   CallExpressionArgument: 3,
   AwaitExpression: 4,
-  ResumeAfterInterrupt: 5
+  Resume: 5
 };
 StaticContextType = new Enum(StaticContextType);
 

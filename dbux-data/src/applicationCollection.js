@@ -26,11 +26,11 @@ class ApplicationCollection {
   constructor() {
   }
 
-  getById(applicationId : Application) {
+  getById(applicationId: Application) {
     return this._all[applicationId];
   }
 
-  getApplication(applicationOrIdOrEntryPointPath : number | string | Application): Application {
+  getApplication(applicationOrIdOrEntryPointPath: number | string | Application): Application {
     let application;
     if (applicationOrIdOrEntryPointPath instanceof Application) {
       // application
@@ -56,7 +56,7 @@ class ApplicationCollection {
     return application && !!this.getActiveApplicationByEntryPoint(application.entryPointPath);
   }
 
-  getOrCreateApplication(initialData) : Application {
+  getOrCreateApplication(initialData): Application {
     const entryPointPath = extractFilePathFromInitialData(initialData);
     if (!entryPointPath) {
       return null;
@@ -128,17 +128,19 @@ class ApplicationCollection {
 
     if (previousApplication) {
       this._emitter.emit('restarted', application, previousApplication);
-      debug('Application RESTART @', entryPointPath);
+      debug('restarted', entryPointPath);
     }
     else {
       this._emitter.emit('added', application);
-      debug('Application ADD @', entryPointPath);
+      debug('added', entryPointPath);
     }
 
-    if (!this._selectedApplication || previousApplication === this._selectedApplication) {
-      // first application -> automatically select it
-      this.setSelectedApplication(application);
-    }
+    // if (!this._selectedApplication || previousApplication === this._selectedApplication) {
+    //   // first application -> automatically select it
+    //   this.setSelectedApplication(application);
+    // }
+    // always auto select newest application (for now)
+    this.setSelectedApplication(application);
     return application;
   }
 

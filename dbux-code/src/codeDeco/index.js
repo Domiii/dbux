@@ -8,16 +8,25 @@ import {
   TextEditor
 } from 'vscode';
 
+
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { newLogger } from 'dbux-common/src/log/logger';
+import TraceType, { dynamicTypeTypes } from 'dbux-common/src/core/constants/TraceType';
+import applicationCollection from 'dbux-data/src/applicationCollection';
 import { getCodeRangeFromLoc } from '../util/codeUtil';
-import applicationCollection from '../../../dbux-data/src/applicationCollection';
+import { initTraceDecorators, renderTraceDecorations } from './traceDecorators';
+// import DataProvider from 'dbux-data/src/DataProvider';
+// import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 
 const { log, debug, warn, error: logError } = newLogger('code-deco');
 
 let activeEditor: TextEditor;
-let TraceDecorationType;
 let unsubscribeFromSelectedApplication;
+
+
+// ###########################################################################
+// render
+// ###########################################################################
 
 const renderDecorations = makeDebounce(function renderDecorations() {
   if (!activeEditor) {
@@ -32,42 +41,18 @@ const renderDecorations = makeDebounce(function renderDecorations() {
 
   const programId = dataProvider.queries.programIdByFilePath(fpath);
   if (!programId) {
-    debug('Program not executed', fpath);
-    return;
-  }
-  const traces = dataProvider.indexes.traces.byFile.get(programId);
-  if (!traces) {
-    debug('No traces in file', fpath);
+    // debug('Program not executed', fpath);
     return;
   }
 
-  const decorations = [];
-
-  for (const trace of traces) {
-    const {
-      staticTraceId,
-      traceId
-    } = trace;
-    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
-    const {
-      displayName,
-      loc
-    } = staticTrace;
-
-    const value = dataProvider.util.getValueByTrace(traceId);
-
-    // const context = dataProvider.collections.executionContexts.getById(contextId);
-    // const childContexts = dataProvider.indexes.executionContexts.children.get(contextId);
-
-    const decoration = {
-      range: getCodeRangeFromLoc(loc),
-      hoverMessage: `Trace **${displayName}** (${value})`
-    };
-    decorations.push(decoration);
-  }
-
-  activeEditor.setDecorations(TraceDecorationType, decorations);
+  // render traces
+  renderTraceDecorations(dataProvider, activeEditor, programId, fpath);
 });
+
+
+// ###########################################################################
+// init
+// ###########################################################################
 
 /**
  * Relevant VSCode API (https://code.visualstudio.com/api/references/vscode-api):
@@ -78,33 +63,10 @@ const renderDecorations = makeDebounce(function renderDecorations() {
  * 
  */
 export function initCodeDeco(context) {
-  // create a decorator type that we use to decorate small numbers
-  TraceDecorationType = window.createTextEditorDecorationType({
-    after: {
-      contentText: '|',
-      color: 'red',
-      // light: {
-      //   color: 'darkred'
-      // },
-      // dark: {
-      //   color: 'lightred'
-      // }
-    },
-    cursor: 'crosshair',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    overviewRulerColor: 'blue',
-    overviewRulerLane: OverviewRulerLane.Right,
-    // light: {
-    //   // this color will be used in light color themes
-    //   borderColor: 'darkblue'
-    // },
-    // dark: {
-    //   // this color will be used in dark color themes
-    //   borderColor: 'lightblue'
-    // }
-  });
+  // init traces
+  initTraceDecorators();
 
+  // start rendering
   activeEditor = window.activeTextEditor;
 
   const selectedApplication = applicationCollection.getSelectedApplication();
@@ -121,7 +83,12 @@ export function initCodeDeco(context) {
   applicationCollection.onSelectionChanged((app) => {
     unsubscribeFromSelectedApplication && unsubscribeFromSelectedApplication();
     if (app) {
-      unsubscribeFromSelectedApplication = app.dataProvider.onData('traces', renderDecorations);
+      unsubscribeFromSelectedApplication = app.dataProvider.onData({
+        collections: {
+          traces: renderDecorations,
+          staticTraces: renderDecorations
+        }
+      });
     }
   });
 
@@ -140,8 +107,3 @@ export function initCodeDeco(context) {
   //   }
   // }, null, context.subscriptions);
 }
-
-
-// function buildDecorations() {
-
-// }

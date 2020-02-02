@@ -4,16 +4,16 @@ import DataProvider from '../../DataProvider';
 
 function makeKey(dp: DataProvider, trace: Trace) {
   const {
-    contextId
+    staticTraceId
   } = trace;
 
-  return contextId;
+  return staticTraceId;
 }
 
 
-export default class TracesByContextIndex extends CollectionIndex<Trace> {
+export default class TracesByStaticTraceIndex extends CollectionIndex<Trace> {
   constructor() {
-    super('traces', 'byContext');
+    super('traces', 'byStaticTrace');
   }
 
   makeKey = makeKey

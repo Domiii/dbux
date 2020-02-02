@@ -4,26 +4,11 @@ import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
 import staticProgramContextCollection from './staticProgramContextCollection';
 import { logInternalError } from 'dbux-common/src/log/logger';
-import { EmptyArray } from 'dbux-common/src/util/misc';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import Collection from './Collection';
 import pools from './pools';
 import valueCollection from './valueCollection';
 
-const inspectOptions = { depth: 0, colors: true };
-function _inspect(arg) {
-  const f = typeof window !== 'undefined' && window.inspect ? window.inspect : require('util').inspect;
-  return f(arg, inspectOptions);
-}
-
-
-/**
- * Recorded objects need careful handling:
- * Since we might not send them out immediately, they can change over time, so we need to copy a snapshot
- */
-function processValue(value) {
-  // serialize a copy of value
-  return JSON.stringify(value);
-}
 
 class TraceCollection extends Collection {
   constructor() {
@@ -35,7 +20,7 @@ class TraceCollection extends Collection {
     return trace;
   }
 
-  traceExpressionWithValue(contextId, inProgramStaticTraceId, value) {
+  traceExpressionResult(contextId, inProgramStaticTraceId, value) {
     const trace = this._trace(contextId, inProgramStaticTraceId, null, true, value);
     return trace;
   }
@@ -64,7 +49,7 @@ class TraceCollection extends Collection {
     } = staticContext;
 
     // globally unique staticTraceId
-    trace.staticTraceId = staticTraceCollection.getTraceId(programId, inProgramStaticTraceId);
+    trace.staticTraceId = staticTraceCollection.getStaticTraceId(programId, inProgramStaticTraceId);
 
     // generate new traceId and store
     trace.traceId = this._all.length;
@@ -112,9 +97,9 @@ function _prettyPrint(trace, value) {
   } = staticTrace;
 
   const type = dynamicType || staticType; // if `dynamicType` is given take that, else `staticType`
+  const typeName = TraceType.nameFromForce(type);
 
   const depthIndicator = ` `.repeat(stackDepth * 2);
-  const typeName = TraceType.nameFromForce(type);
   const where = loc.start;
   const codeLocation = `@${fileName}:${where.line}:${where.column}`;
 
@@ -124,6 +109,8 @@ function _prettyPrint(trace, value) {
   //   console.group(displayName);
   // }
   // else
+
+  // TODO: if we want to keep using this; fix to use `ValueCollection` instead
   const v = type === TraceType.ExpressionResult;
   const result = v ? ['(', value, ')'] : EmptyArray;
   console.debug(

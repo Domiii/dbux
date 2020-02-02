@@ -30,12 +30,6 @@ module.exports = {
     "@babel/plugin-syntax-export-default-from",
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-syntax-flow",
-    [
-      "@babel/plugin-transform-runtime",
-      {
-        // "corejs": 3,
-        // "regenerator": true
-      }
-    ]
+    "@babel/plugin-transform-runtime"
   ]
 };
