@@ -185,10 +185,10 @@ class ApplicationCollection {
       debug('added', entryPointPath);
     }
 
-    // if (!this.hasSelectedApplications() || previousApplication === this._selectedApplication) {
-    //   // first application, or selected application restarted -> automatically select it
-    // 
-    // }
+    if (previousApplication && this.isApplicationSelected(previousApplication)) {
+      // application restarted -> automatically deselect previous instance
+      this.deselectApplication(previousApplication);
+    }
     
     // always add new application to set of selected applications
     this.selectApplication(application);

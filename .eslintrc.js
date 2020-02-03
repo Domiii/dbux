@@ -53,6 +53,7 @@ module.exports = {
 		"import/no-nodejs-modules": 0,
 		"import/no-mutable-exports": 0,
 		"operator-assignment": 0,
+		"operator-linebreak": 0,
 		"prefer-const": 0,
 		"prefer-arrow-callback": 0,
 		"prefer-template": 0, // string templates

@@ -46,8 +46,10 @@ export default {
 
   doesTraceHaveValue(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    const { staticTraceId } = trace;
-    return dp.util.doesStaticTraceHaveValue(staticTraceId);
+    const { staticTraceId, type: dynamicType } = trace;
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    const { type: staticType } = staticTrace;
+    return hasValue(dynamicType || staticType);
   },
 
   doesStaticTraceHaveValue(dp: DataProvider, staticTraceId) {

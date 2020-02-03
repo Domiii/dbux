@@ -6,7 +6,9 @@ function f1() { return sleep(2000); }
 
 async function f2() { await sleep(2000); }
 
-async function f3() { await sleep(2000); }
+async function f3() {
+  await sleep(2000);
+}
 
 async function f4(...fs) {
   for (const f of fs) {
@@ -15,9 +17,15 @@ async function f4(...fs) {
   }
 }
 
+// TODO: *VSCode bug* here - does not display `traceDecorations` correctly 
+//    behind last argument of function call, if there is nothing following it on the same line
 async function main() {
   await f1();
-  await f4(f2, f3, sleep.bind(null, 1000));
+  await f4(
+    f2,
+    f3,
+    sleep.bind(null, 1000)
+  );
 }
 
 main();

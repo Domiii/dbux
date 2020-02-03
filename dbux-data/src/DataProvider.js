@@ -26,6 +26,9 @@ class StaticProgramContextCollection extends Collection<StaticProgramContext> {
       if (!entry.filePath || !path.isAbsolute(entry.filePath)) {
         logError('invalid `staticProgramContext.filePath` is not absolute - don\'t know how to resolve', entry.fileName);
       }
+
+      // set applicationId, so we can trace any data point back to it's application
+      entry.applicationId = this.dp.application.applicationId;
     }
     super.add(entries);
   }
@@ -94,11 +97,11 @@ export default class DataProvider {
   _dataEventListeners = {};
 
   versions: number[] = [];
-  entryPointPath: StaticProgramContext;
+  application: StaticProgramContext;
   util: any;
 
-  constructor(entryPointPath) {
-    this.entryPointPath = entryPointPath;
+  constructor(application) {
+    this.application = application;
 
     this.collections = {
       staticProgramContexts: new StaticProgramContextCollection(this),
@@ -123,8 +126,14 @@ export default class DataProvider {
    * @deprecated
    */
   onData(collectionName: string, cb: ([]) => void) {
-    const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
+    const listeners = this._dataEventListeners[collectionName] = 
+      (this._dataEventListeners[collectionName] || []);
     listeners.push(cb);
+
+    const unsubscribe = (() => {
+      pull(this._dataEventListeners[collectionName], cb);
+    });
+    return unsubscribe;
   }
 
   /**
@@ -132,7 +141,7 @@ export default class DataProvider {
    * 
    * @returns {function} Unsubscribe function. Execute to cancel this listener.
    */
-  onAnyData(cfg) {
+  onDataAll(cfg) {
     for (const collectionName in cfg.collections) {
       const cb = cfg.collections[collectionName];
       const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);

@@ -10,16 +10,9 @@ import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
 import dataProviderUtil from './dataProviderUtil';
 
-/**
- * This file handles the default settings, implementations and setup of `DataProvider`.
- * 
- * @file
- */
 
-let defaultDataProvider: DataProvider;
-
-export function newDataProvider(entryPointPath) {
-  const dataProvider = new DataProvider(entryPointPath);
+export function newDataProvider(application) {
+  const dataProvider = new DataProvider(application);
   
   // indexes
   dataProvider.addIndex(new ContextChildrenIndex());
