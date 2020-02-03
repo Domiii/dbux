@@ -10,10 +10,9 @@ import {
 
 
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
+import EventHandlerList from 'dbux-common/src/util/EventHandlerList';
 import { newLogger } from 'dbux-common/src/log/logger';
-import TraceType, { dynamicTypeTypes } from 'dbux-common/src/core/constants/TraceType';
 import applicationCollection from 'dbux-data/src/applicationCollection';
-import { getCodeRangeFromLoc } from '../util/codeUtil';
 import { initTraceDecorators, renderTraceDecorations } from './traceDecorators';
 // import DataProvider from 'dbux-data/src/DataProvider';
 // import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
@@ -21,7 +20,7 @@ import { initTraceDecorators, renderTraceDecorations } from './traceDecorators';
 const { log, debug, warn, error: logError } = newLogger('code-deco');
 
 let activeEditor: TextEditor;
-let unsubscribeFromSelectedApplication;
+const appEventHandlers = new EventHandlerList();
 
 
 // ###########################################################################
@@ -34,19 +33,9 @@ const renderDecorations = makeDebounce(function renderDecorations() {
   }
 
   const fpath = activeEditor.document.uri.fsPath;
-  const dataProvider = applicationCollection.getSelectedApplication()?.dataProvider;
-  if (!dataProvider) {
-    return;
-  }
-
-  const programId = dataProvider.queries.programIdByFilePath(fpath);
-  if (!programId) {
-    // debug('Program not executed', fpath);
-    return;
-  }
 
   // render traces
-  renderTraceDecorations(dataProvider, activeEditor, programId, fpath);
+  renderTraceDecorations(activeEditor, fpath);
 });
 
 
@@ -69,8 +58,7 @@ export function initCodeDeco(context) {
   // start rendering
   activeEditor = window.activeTextEditor;
 
-  const selectedApplication = applicationCollection.getSelectedApplication();
-  if (selectedApplication && activeEditor) {
+  if (applicationCollection.hasSelectedApplications() && activeEditor) {
     // initial render
     renderDecorations();
   }
@@ -80,15 +68,13 @@ export function initCodeDeco(context) {
   // ########################################
 
   // data changed
-  applicationCollection.onSelectionChanged((app) => {
-    unsubscribeFromSelectedApplication && unsubscribeFromSelectedApplication();
-    if (app) {
-      unsubscribeFromSelectedApplication = app.dataProvider.onData({
-        collections: {
-          traces: renderDecorations,
-          staticTraces: renderDecorations
-        }
-      });
+  applicationCollection.onSelectionChanged((selectedApps) => {
+    appEventHandlers.unsubscribe();
+    for (const app of selectedApps) {
+      appEventHandlers.subscribe(
+        app.dataProvider.onData('traces', renderDecorations),
+        app.dataProvider.onData('staticTraces', renderDecorations)
+      );
     }
   });
 

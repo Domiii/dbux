@@ -3,6 +3,8 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import DefaultTraceDecoratorConfig from './DefaultTraceDecoratorConfig';
 import { getCodeRangeFromLoc } from '../util/codeUtil';
+import applicationCollection from 'dbux-data/src/applicationCollection';
+import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
 const { log, debug, warn, error: logError } = newLogger('deco-trace');
 let configsByType;
@@ -14,46 +16,60 @@ let configsByType;
 /**
  * TODO: the order of decorations is currently dictacted by the order of their decoration types (VSCode limitation)
  */
-export function renderTraceDecorations(dataProvider, editor, programId, fpath) {
-  const staticTraces = dataProvider.indexes.staticTraces.visitedByFile.get(programId);
-  // const traces = dataProvider.indexes.traces.byFile.get(programId);
-  if (!staticTraces) {
-    debug('No traces in file', fpath);
-    return;
-  }
+export function renderTraceDecorations(editor, fpath) {
+  const allDecorations = [];
 
-  const traceGroupsByType = dataProvider.util.groupTracesByType(staticTraces);
+  // prepare decorations
+  applicationCollection.mapSelectedApplicationsOfFilePath(fpath, (application, programId) => {
+    const { dataProvider } = application;
+    const staticTraces = dataProvider.indexes.staticTraces.visitedByFile.get(programId);
+    // const traces = dataProvider.indexes.traces.byFile.get(programId);
+    if (!staticTraces) {
+      // debug(`No traces in file "${fpath}" for application with entry point ${application.entryPointPath}`);
+      return;
+    }
 
-  for (let type = 1; type < configsByType.length; ++type) {
-    // TextEditorDecorationType
-    // see: https://code.visualstudio.com/api/references/vscode-api#TextEditorDecorationType
-    const config = configsByType[type];
+    // group by TraceType
+    const traceGroupsByType = dataProvider.util.groupTracesByType(staticTraces);
 
-    // produce decorations
-    const decorations = [];
-    const groups = traceGroupsByType[type];
-    if (groups) {
-      if (!config?.editorDecorationtype) {
-        logError('found TraceType in trace that is not configured', type, TraceType.nameFrom(type));
-        continue;
-      }
-
-      for (const group of groups) {
-        const [staticTrace, traces] = group;
-        const decoration = renderTraceGroup(dataProvider, type, staticTrace, traces);
-        decorations.push(decoration);
+    for (let traceType = 1; traceType < traceGroupsByType.length; ++traceType) {
+      // add all decorations for group
+      const groups = traceGroupsByType[traceType];
+      if (groups) {
+        for (const group of groups) {
+          const [staticTrace, traces] = group;
+          const decoration = createTraceGroupDecoration(dataProvider, traceType, staticTrace, traces);
+          pushArrayOfArray(allDecorations, traceType, decoration);
+        }
       }
     }
-    else if (!config?.editorDecorationtype) {
+  });
+
+  // render decorations
+  for (let traceType = 1; traceType < configsByType.length; ++traceType) {
+    // TextEditorDecorationType
+    // see: https://code.visualstudio.com/api/references/vscode-api#TextEditorDecorationType
+    const config = configsByType[traceType];
+    const decorations = allDecorations[traceType];
+
+    if (!config?.editorDecorationtype) {
+      if (decorations) {
+        logError('found TraceType in trace that is not configured', traceType, TraceType.nameFrom(traceType));
+      }
       continue;
     }
 
-    // setDecorations
-    editor.setDecorations(config.editorDecorationtype, decorations);
+    if (decorations) {
+      editor.setDecorations(config.editorDecorationtype, decorations);
+    }
+    else {
+      // removes previous decorations of given DecorationType
+      editor.setDecorations(config.editorDecorationtype, EmptyArray);
+    }
   }
 }
 
-function renderTraceGroup(dataProvider, traceType, staticTrace, traces) {
+function createTraceGroupDecoration(dataProvider, traceType, staticTrace, traces) {
   const {
     staticTraceId,
     loc
@@ -65,11 +81,12 @@ function renderTraceGroup(dataProvider, traceType, staticTrace, traces) {
   let valueString;
   const hasValue = dataProvider.util.doesStaticTraceHaveValue(staticTraceId);
   if (hasValue) {
+    // TODO: check individual traces for values instead, as *Callback trace types often come from a `CallArgument` trace
     const values = traces.map(trace => dataProvider.util.getTraceValue(trace.traceId));
     valueString = `\n* ${values.map(v => v === undefined ? 'undefined' : v).join('\n* ')}\n\n`;
   }
   else {
-    valueString = '';
+    valueString = ' ';
   }
 
   // traceType

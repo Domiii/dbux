@@ -347,7 +347,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -390,7 +390,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -433,7 +433,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -560,7 +560,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -936,7 +936,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -979,7 +979,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -1022,7 +1022,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -1149,7 +1149,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2005,7 +2005,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"a\\",
       \\"loc\\": {
@@ -2021,7 +2021,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 3,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2064,7 +2064,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2078,7 +2078,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 12,
       \\"_staticContextId\\": 8,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2092,7 +2092,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 13,
       \\"_staticContextId\\": 8,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"af1(1)\\",
       \\"loc\\": {
@@ -2107,7 +2107,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 14,
       \\"_staticContextId\\": 8,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"1\\",
       \\"loc\\": {
@@ -2122,7 +2122,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 8,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"await af1(2)\\",
       \\"loc\\": {
@@ -2137,7 +2137,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 16,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2151,7 +2151,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 17,
       \\"_staticContextId\\": 10,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2165,7 +2165,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 10,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"af1(2)\\",
       \\"loc\\": {
@@ -2180,7 +2180,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 19,
       \\"_staticContextId\\": 10,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"2\\",
       \\"loc\\": {
@@ -2195,7 +2195,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 10,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"2 + (await af1(3)) - 3\\",
       \\"loc\\": {
@@ -2210,7 +2210,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 21,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"await af1(3)\\",
       \\"loc\\": {
@@ -2225,7 +2225,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 22,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2239,7 +2239,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 23,
       \\"_staticContextId\\": 12,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2253,7 +2253,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 24,
       \\"_staticContextId\\": 12,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"af1(3)\\",
       \\"loc\\": {
@@ -2268,7 +2268,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 25,
       \\"_staticContextId\\": 12,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"3\\",
       \\"loc\\": {
@@ -2283,7 +2283,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 26,
       \\"_staticContextId\\": 12,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2326,7 +2326,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 29,
       \\"_staticContextId\\": 13,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2369,7 +2369,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 32,
       \\"_staticContextId\\": 15,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"r.bind(33)\\",
       \\"loc\\": {
@@ -2384,7 +2384,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 33,
       \\"_staticContextId\\": 15,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"delay\\",
       \\"loc\\": {
@@ -2400,7 +2400,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 34,
       \\"_staticContextId\\": 15,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"33\\",
       \\"loc\\": {
@@ -2415,7 +2415,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 35,
       \\"_staticContextId\\": 15,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2458,7 +2458,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 38,
       \\"_staticContextId\\": 16,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2472,7 +2472,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 39,
       \\"_staticContextId\\": 19,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2486,7 +2486,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 40,
       \\"_staticContextId\\": 19,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"af33(100)\\",
       \\"loc\\": {
@@ -2501,7 +2501,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 41,
       \\"_staticContextId\\": 19,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"100\\",
       \\"loc\\": {
@@ -2516,7 +2516,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 42,
       \\"_staticContextId\\": 19,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"await af33(50)\\",
       \\"loc\\": {
@@ -2531,7 +2531,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 43,
       \\"_staticContextId\\": 16,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2545,7 +2545,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 44,
       \\"_staticContextId\\": 21,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2559,7 +2559,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 45,
       \\"_staticContextId\\": 21,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"af33(50)\\",
       \\"loc\\": {
@@ -2574,7 +2574,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 46,
       \\"_staticContextId\\": 21,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"50\\",
       \\"loc\\": {
@@ -2589,7 +2589,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 47,
       \\"_staticContextId\\": 21,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"a + b + af33(10)\\",
       \\"loc\\": {
@@ -2604,7 +2604,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 48,
       \\"_staticContextId\\": 16,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"af33(10)\\",
       \\"loc\\": {
@@ -2619,7 +2619,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 49,
       \\"_staticContextId\\": 16,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"10\\",
       \\"loc\\": {
@@ -2634,7 +2634,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 50,
       \\"_staticContextId\\": 16,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"async function main() {  c...\\",
       \\"loc\\": {
@@ -2649,7 +2649,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 51,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2692,7 +2692,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 54,
       \\"_staticContextId\\": 22,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"await Promise.all([af2(), a...\\",
       \\"loc\\": {
@@ -2707,7 +2707,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 55,
       \\"_staticContextId\\": 22,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2721,7 +2721,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 56,
       \\"_staticContextId\\": 25,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -2735,7 +2735,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 57,
       \\"_staticContextId\\": 25,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"Promise.all([af2(), af44()])\\",
       \\"loc\\": {
@@ -2750,7 +2750,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 58,
       \\"_staticContextId\\": 25,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"[af2(), af44()]\\",
       \\"loc\\": {
@@ -2765,7 +2765,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 59,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"af2()\\",
       \\"loc\\": {
@@ -2780,7 +2780,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 60,
       \\"_staticContextId\\": 25,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"af44()\\",
       \\"loc\\": {
@@ -2795,7 +2795,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 61,
       \\"_staticContextId\\": 25,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f0()\\",
       \\"loc\\": {
@@ -2810,7 +2810,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 62,
       \\"_staticContextId\\": 22,
-      \\"type\\": 10
+      \\"type\\": 8
     }]
   });
 }
@@ -3424,7 +3424,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"a\\",
       \\"loc\\": {
@@ -3440,7 +3440,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 3,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3483,7 +3483,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3497,7 +3497,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 12,
       \\"_staticContextId\\": 8,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3511,7 +3511,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 13,
       \\"_staticContextId\\": 8,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"af1(1)\\",
       \\"loc\\": {
@@ -3526,7 +3526,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 14,
       \\"_staticContextId\\": 8,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"1\\",
       \\"loc\\": {
@@ -3541,7 +3541,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 8,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"await af1(2)\\",
       \\"loc\\": {
@@ -3556,7 +3556,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 16,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3570,7 +3570,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 17,
       \\"_staticContextId\\": 10,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3584,7 +3584,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 10,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"af1(2)\\",
       \\"loc\\": {
@@ -3599,7 +3599,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 19,
       \\"_staticContextId\\": 10,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"2\\",
       \\"loc\\": {
@@ -3614,7 +3614,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 10,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"2 + (await af1(3)) - 3\\",
       \\"loc\\": {
@@ -3629,7 +3629,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 21,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"await af1(3)\\",
       \\"loc\\": {
@@ -3644,7 +3644,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 22,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3658,7 +3658,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 23,
       \\"_staticContextId\\": 12,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3672,7 +3672,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 24,
       \\"_staticContextId\\": 12,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"af1(3)\\",
       \\"loc\\": {
@@ -3687,7 +3687,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 25,
       \\"_staticContextId\\": 12,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"3\\",
       \\"loc\\": {
@@ -3702,7 +3702,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 26,
       \\"_staticContextId\\": 12,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3745,7 +3745,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 29,
       \\"_staticContextId\\": 13,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3788,7 +3788,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 32,
       \\"_staticContextId\\": 15,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"r.bind(33)\\",
       \\"loc\\": {
@@ -3803,7 +3803,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 33,
       \\"_staticContextId\\": 15,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"delay\\",
       \\"loc\\": {
@@ -3819,7 +3819,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 34,
       \\"_staticContextId\\": 15,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"33\\",
       \\"loc\\": {
@@ -3834,7 +3834,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 35,
       \\"_staticContextId\\": 15,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3877,7 +3877,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 38,
       \\"_staticContextId\\": 16,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3891,7 +3891,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 39,
       \\"_staticContextId\\": 19,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3905,7 +3905,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 40,
       \\"_staticContextId\\": 19,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"af33(100)\\",
       \\"loc\\": {
@@ -3920,7 +3920,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 41,
       \\"_staticContextId\\": 19,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"100\\",
       \\"loc\\": {
@@ -3935,7 +3935,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 42,
       \\"_staticContextId\\": 19,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"await af33(50)\\",
       \\"loc\\": {
@@ -3950,7 +3950,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 43,
       \\"_staticContextId\\": 16,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3964,7 +3964,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 44,
       \\"_staticContextId\\": 21,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -3978,7 +3978,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 45,
       \\"_staticContextId\\": 21,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"af33(50)\\",
       \\"loc\\": {
@@ -3993,7 +3993,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 46,
       \\"_staticContextId\\": 21,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"50\\",
       \\"loc\\": {
@@ -4008,7 +4008,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 47,
       \\"_staticContextId\\": 21,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"a + b + af33(10)\\",
       \\"loc\\": {
@@ -4023,7 +4023,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 48,
       \\"_staticContextId\\": 16,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"af33(10)\\",
       \\"loc\\": {
@@ -4038,7 +4038,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 49,
       \\"_staticContextId\\": 16,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"10\\",
       \\"loc\\": {
@@ -4053,7 +4053,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 50,
       \\"_staticContextId\\": 16,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"async function main() {  c...\\",
       \\"loc\\": {
@@ -4068,7 +4068,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 51,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -4111,7 +4111,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 54,
       \\"_staticContextId\\": 22,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"await Promise.all([af2(), a...\\",
       \\"loc\\": {
@@ -4126,7 +4126,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 55,
       \\"_staticContextId\\": 22,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -4140,7 +4140,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 56,
       \\"_staticContextId\\": 25,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -4154,7 +4154,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 57,
       \\"_staticContextId\\": 25,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"Promise.all([af2(), af44()])\\",
       \\"loc\\": {
@@ -4169,7 +4169,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 58,
       \\"_staticContextId\\": 25,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"[af2(), af44()]\\",
       \\"loc\\": {
@@ -4184,7 +4184,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 59,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"af2()\\",
       \\"loc\\": {
@@ -4199,7 +4199,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 60,
       \\"_staticContextId\\": 25,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"af44()\\",
       \\"loc\\": {
@@ -4214,7 +4214,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 61,
       \\"_staticContextId\\": 25,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f0()\\",
       \\"loc\\": {
@@ -4229,7 +4229,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 62,
       \\"_staticContextId\\": 22,
-      \\"type\\": 10
+      \\"type\\": 8
     }]
   });
 }
@@ -4244,8 +4244,10 @@ async function sleep(ms) {
 
 (async function main() {
   console.log(1);
-  await sleep(50);
+  await sleep(1500);
   console.log(2);
+  await sleep(1500);
+  console.log(3);
 })();
 
       ↓ ↓ ↓ ↓ ↓ ↓
@@ -4324,7 +4326,7 @@ try {
     var _main = _asyncToGenerator(
     /*#__PURE__*/
     regeneratorRuntime.mark(function _callee2() {
-      var _contextId4, _contextId5;
+      var _contextId4, _contextId5, _contextId6;
 
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
@@ -4341,7 +4343,7 @@ try {
               _context2.t0 = _dbux;
               _context2.t1 = _dbux;
               _context2.next = 8;
-              return _dbux.wrapAwait(_contextId5 = _dbux.preAwait(8, 17), _dbux.traceExpr(19, sleep(_dbux.traceArg(20, 50))));
+              return _dbux.wrapAwait(_contextId5 = _dbux.preAwait(8, 17), _dbux.traceExpr(19, sleep(_dbux.traceArg(20, 1500))));
 
             case 8:
               _context2.t2 = _context2.sent;
@@ -4352,21 +4354,35 @@ try {
 
               _dbux.traceExpr(21, console.log(_dbux.traceArg(22, 2)));
 
-            case 13:
-              _context2.prev = 13;
+              _context2.t5 = _dbux;
+              _context2.t6 = _dbux;
+              _context2.next = 17;
+              return _dbux.wrapAwait(_contextId6 = _dbux.preAwait(10, 24), _dbux.traceExpr(26, sleep(_dbux.traceArg(27, 1500))));
+
+            case 17:
+              _context2.t7 = _context2.sent;
+              _context2.t8 = _contextId6;
+              _context2.t9 = _context2.t6.postAwait.call(_context2.t6, _context2.t7, _context2.t8, 25);
+
+              _context2.t5.traceExpr.call(_context2.t5, 23, _context2.t9);
+
+              _dbux.traceExpr(28, console.log(_dbux.traceArg(29, 3)));
+
+            case 22:
+              _context2.prev = 22;
 
               _dbux.popResume(13);
 
               _dbux.popImmediate(_contextId4, 13);
 
-              return _context2.finish(13);
+              return _context2.finish(22);
 
-            case 17:
+            case 26:
             case \\"end\\":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[2,, 13, 17]]);
+      }, _callee2, null, [[2,, 22, 26]]);
     }));
 
     function main() {
@@ -4391,7 +4407,7 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 5
         }
       },
@@ -4451,7 +4467,7 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 1
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 0
         }
       },
@@ -4477,7 +4493,7 @@ function _dbux_init(dbuxRuntime) {
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         },
         \\"end\\": null
       }
@@ -4491,12 +4507,39 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         }
       },
       \\"type\\": 4,
-      \\"displayName\\": \\"(await sleep(50))\\",
+      \\"displayName\\": \\"(await sleep(1500))\\",
       \\"resumeId\\": 7
+    }, {
+      \\"type\\": 5,
+      \\"_staticId\\": 9,
+      \\"_parentId\\": 5,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        },
+        \\"end\\": null
+      }
+    }, {
+      \\"_staticId\\": 10,
+      \\"_parentId\\": 5,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await sleep(1500))\\",
+      \\"resumeId\\": 9
     }],
     \\"traces\\": [null, {
       \\"loc\\": {
@@ -4515,11 +4558,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 5
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 5
         }
       },
@@ -4568,7 +4611,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -4611,7 +4654,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 4,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"r\\",
       \\"loc\\": {
@@ -4627,7 +4670,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"ms\\",
       \\"loc\\": {
@@ -4643,7 +4686,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 10,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"async function main() {  c...\\",
       \\"loc\\": {
@@ -4652,13 +4695,13 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 4
         }
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -4676,11 +4719,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 1
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 0
         }
       },
@@ -4701,7 +4744,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 14,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"1\\",
       \\"loc\\": {
@@ -4716,9 +4759,9 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 5,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
-      \\"displayName\\": \\"await sleep(50)\\",
+      \\"displayName\\": \\"await sleep(1500)\\",
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
@@ -4726,42 +4769,42 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         }
       },
       \\"_traceId\\": 16,
       \\"_staticContextId\\": 5,
+      \\"type\\": 8
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 7,
+          \\"column\\": 19
+        },
+        \\"end\\": {
+          \\"line\\": 7,
+          \\"column\\": 19
+        }
+      },
+      \\"_traceId\\": 17,
+      \\"_staticContextId\\": 8,
       \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         },
         \\"end\\": {
           \\"line\\": 7,
-          \\"column\\": 17
-        }
-      },
-      \\"_traceId\\": 17,
-      \\"_staticContextId\\": 8,
-      \\"type\\": 7
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 7,
-          \\"column\\": 17
-        },
-        \\"end\\": {
-          \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         }
       },
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 8,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
-      \\"displayName\\": \\"sleep(50)\\",
+      \\"displayName\\": \\"sleep(1500)\\",
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
@@ -4769,14 +4812,14 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         }
       },
       \\"_traceId\\": 19,
       \\"_staticContextId\\": 8,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
-      \\"displayName\\": \\"50\\",
+      \\"displayName\\": \\"1500\\",
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
@@ -4784,12 +4827,12 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 7,
-          \\"column\\": 16
+          \\"column\\": 18
         }
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 8,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"console.log(2)\\",
       \\"loc\\": {
@@ -4804,7 +4847,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 21,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"2\\",
       \\"loc\\": {
@@ -4819,7 +4862,110 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 22,
       \\"_staticContextId\\": 5,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"await sleep(1500)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        }
+      },
+      \\"_traceId\\": 23,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 8
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        }
+      },
+      \\"_traceId\\": 24,
+      \\"_staticContextId\\": 10,
+      \\"type\\": 10
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        }
+      },
+      \\"_traceId\\": 25,
+      \\"_staticContextId\\": 10,
       \\"type\\": 11
+    }, {
+      \\"displayName\\": \\"sleep(1500)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 8
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        }
+      },
+      \\"_traceId\\": 26,
+      \\"_staticContextId\\": 10,
+      \\"type\\": 8
+    }, {
+      \\"displayName\\": \\"1500\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 14
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 18
+        }
+      },
+      \\"_traceId\\": 27,
+      \\"_staticContextId\\": 10,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"console.log(3)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 16
+        }
+      },
+      \\"_traceId\\": 28,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 8
+    }, {
+      \\"displayName\\": \\"3\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 14
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 15
+        }
+      },
+      \\"_traceId\\": 29,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 9
     }]
   });
 }
@@ -4834,8 +4980,10 @@ async function sleep(ms) {
 
 (async function main() {
   console.log(1);
-  await sleep(50);
+  await sleep(1500);
   console.log(2);
+  await sleep(1500);
+  console.log(3);
 })();
 
       ↓ ↓ ↓ ↓ ↓ ↓
@@ -4875,13 +5023,17 @@ try {
     _dbux.pushResume(6, 12, 5);
 
     try {
-      var _contextId5;
+      var _contextId5, _contextId6;
 
       _dbux.traceExpr(14, console.log(_dbux.traceArg(15, 1)));
 
-      _dbux.traceExpr(16, _dbux.postAwait((await _dbux.wrapAwait(_contextId5 = _dbux.preAwait(8, 17), _dbux.traceExpr(19, sleep(_dbux.traceArg(20, 50))))), _contextId5, 18));
+      _dbux.traceExpr(16, _dbux.postAwait((await _dbux.wrapAwait(_contextId5 = _dbux.preAwait(8, 17), _dbux.traceExpr(19, sleep(_dbux.traceArg(20, 1500))))), _contextId5, 18));
 
       _dbux.traceExpr(21, console.log(_dbux.traceArg(22, 2)));
+
+      _dbux.traceExpr(23, _dbux.postAwait((await _dbux.wrapAwait(_contextId6 = _dbux.preAwait(10, 24), _dbux.traceExpr(26, sleep(_dbux.traceArg(27, 1500))))), _contextId6, 25));
+
+      _dbux.traceExpr(28, console.log(_dbux.traceArg(29, 3)));
     } finally {
       _dbux.popResume(13);
 
@@ -4904,7 +5056,7 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 5
         }
       },
@@ -4964,7 +5116,7 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 1
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 0
         }
       },
@@ -4990,7 +5142,7 @@ function _dbux_init(dbuxRuntime) {
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         },
         \\"end\\": null
       }
@@ -5004,12 +5156,39 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         }
       },
       \\"type\\": 4,
-      \\"displayName\\": \\"(await sleep(50))\\",
+      \\"displayName\\": \\"(await sleep(1500))\\",
       \\"resumeId\\": 7
+    }, {
+      \\"type\\": 5,
+      \\"_staticId\\": 9,
+      \\"_parentId\\": 5,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        },
+        \\"end\\": null
+      }
+    }, {
+      \\"_staticId\\": 10,
+      \\"_parentId\\": 5,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        }
+      },
+      \\"type\\": 4,
+      \\"displayName\\": \\"(await sleep(1500))\\",
+      \\"resumeId\\": 9
     }],
     \\"traces\\": [null, {
       \\"loc\\": {
@@ -5028,11 +5207,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 5
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 5
         }
       },
@@ -5081,7 +5260,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -5124,7 +5303,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 4,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"r\\",
       \\"loc\\": {
@@ -5140,7 +5319,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"ms\\",
       \\"loc\\": {
@@ -5156,7 +5335,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 10,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"async function main() {  c...\\",
       \\"loc\\": {
@@ -5165,13 +5344,13 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 4
         }
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -5189,11 +5368,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 1
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 11,
           \\"column\\": 0
         }
       },
@@ -5214,7 +5393,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 14,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"1\\",
       \\"loc\\": {
@@ -5229,9 +5408,9 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 5,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
-      \\"displayName\\": \\"await sleep(50)\\",
+      \\"displayName\\": \\"await sleep(1500)\\",
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
@@ -5239,42 +5418,42 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         }
       },
       \\"_traceId\\": 16,
       \\"_staticContextId\\": 5,
+      \\"type\\": 8
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 7,
+          \\"column\\": 19
+        },
+        \\"end\\": {
+          \\"line\\": 7,
+          \\"column\\": 19
+        }
+      },
+      \\"_traceId\\": 17,
+      \\"_staticContextId\\": 8,
       \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         },
         \\"end\\": {
           \\"line\\": 7,
-          \\"column\\": 17
-        }
-      },
-      \\"_traceId\\": 17,
-      \\"_staticContextId\\": 8,
-      \\"type\\": 7
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 7,
-          \\"column\\": 17
-        },
-        \\"end\\": {
-          \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         }
       },
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 8,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
-      \\"displayName\\": \\"sleep(50)\\",
+      \\"displayName\\": \\"sleep(1500)\\",
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
@@ -5282,14 +5461,14 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 7,
-          \\"column\\": 17
+          \\"column\\": 19
         }
       },
       \\"_traceId\\": 19,
       \\"_staticContextId\\": 8,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
-      \\"displayName\\": \\"50\\",
+      \\"displayName\\": \\"1500\\",
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 7,
@@ -5297,12 +5476,12 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 7,
-          \\"column\\": 16
+          \\"column\\": 18
         }
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 8,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"console.log(2)\\",
       \\"loc\\": {
@@ -5317,7 +5496,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 21,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"2\\",
       \\"loc\\": {
@@ -5332,7 +5511,110 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 22,
       \\"_staticContextId\\": 5,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"await sleep(1500)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        }
+      },
+      \\"_traceId\\": 23,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 8
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        }
+      },
+      \\"_traceId\\": 24,
+      \\"_staticContextId\\": 10,
+      \\"type\\": 10
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        }
+      },
+      \\"_traceId\\": 25,
+      \\"_staticContextId\\": 10,
       \\"type\\": 11
+    }, {
+      \\"displayName\\": \\"sleep(1500)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 8
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 19
+        }
+      },
+      \\"_traceId\\": 26,
+      \\"_staticContextId\\": 10,
+      \\"type\\": 8
+    }, {
+      \\"displayName\\": \\"1500\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 14
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 18
+        }
+      },
+      \\"_traceId\\": 27,
+      \\"_staticContextId\\": 10,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"console.log(3)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 16
+        }
+      },
+      \\"_traceId\\": 28,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 8
+    }, {
+      \\"displayName\\": \\"3\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 14
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 15
+        }
+      },
+      \\"_traceId\\": 29,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 9
     }]
   });
 }
@@ -6124,7 +6406,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6167,7 +6449,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 4,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"r\\",
       \\"loc\\": {
@@ -6183,7 +6465,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"ms\\",
       \\"loc\\": {
@@ -6199,7 +6481,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 10,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6242,7 +6524,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 13,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"100\\",
       \\"loc\\": {
@@ -6257,7 +6539,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 14,
       \\"_staticContextId\\": 5,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6300,7 +6582,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 17,
       \\"_staticContextId\\": 6,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6314,7 +6596,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 9,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6328,7 +6610,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 19,
       \\"_staticContextId\\": 9,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"sleep(100)\\",
       \\"loc\\": {
@@ -6343,7 +6625,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 9,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"100\\",
       \\"loc\\": {
@@ -6358,7 +6640,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 21,
       \\"_staticContextId\\": 9,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6401,7 +6683,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 24,
       \\"_staticContextId\\": 10,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6415,7 +6697,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 25,
       \\"_staticContextId\\": 13,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6429,7 +6711,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 26,
       \\"_staticContextId\\": 13,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"sleep(200)\\",
       \\"loc\\": {
@@ -6444,7 +6726,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 27,
       \\"_staticContextId\\": 13,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"200\\",
       \\"loc\\": {
@@ -6459,7 +6741,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 28,
       \\"_staticContextId\\": 13,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6502,7 +6784,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 31,
       \\"_staticContextId\\": 14,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6516,7 +6798,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 32,
       \\"_staticContextId\\": 17,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6530,7 +6812,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 33,
       \\"_staticContextId\\": 17,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"Promise.all(args.map(f => f...\\",
       \\"loc\\": {
@@ -6545,7 +6827,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 34,
       \\"_staticContextId\\": 17,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"args.map(f => f())\\",
       \\"loc\\": {
@@ -6560,7 +6842,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 35,
       \\"_staticContextId\\": 17,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"f => f()\\",
       \\"loc\\": {
@@ -6618,7 +6900,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 39,
       \\"_staticContextId\\": 19,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"async function main() {  a...\\",
       \\"loc\\": {
@@ -6633,7 +6915,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 40,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6676,7 +6958,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 43,
       \\"_staticContextId\\": 20,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6690,7 +6972,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 44,
       \\"_staticContextId\\": 23,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6704,7 +6986,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 45,
       \\"_staticContextId\\": 23,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"f1()\\",
       \\"loc\\": {
@@ -6719,7 +7001,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 46,
       \\"_staticContextId\\": 23,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"await f4(f2, f3, sleep.bind...\\",
       \\"loc\\": {
@@ -6734,7 +7016,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 47,
       \\"_staticContextId\\": 20,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6748,7 +7030,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 48,
       \\"_staticContextId\\": 25,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -6762,7 +7044,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 49,
       \\"_staticContextId\\": 25,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"f4(f2, f3, sleep.bind(null,...\\",
       \\"loc\\": {
@@ -6777,7 +7059,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 50,
       \\"_staticContextId\\": 25,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f2\\",
       \\"loc\\": {
@@ -6793,7 +7075,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 51,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"f3\\",
       \\"loc\\": {
@@ -6809,7 +7091,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 52,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"sleep.bind(null, 400)\\",
       \\"loc\\": {
@@ -6824,7 +7106,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 53,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"null\\",
       \\"loc\\": {
@@ -6839,7 +7121,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 54,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"400\\",
       \\"loc\\": {
@@ -6854,7 +7136,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 55,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }]
   });
 }
@@ -7435,7 +7717,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7478,7 +7760,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 4,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"r\\",
       \\"loc\\": {
@@ -7494,7 +7776,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"ms\\",
       \\"loc\\": {
@@ -7510,7 +7792,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 10,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7553,7 +7835,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 13,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"100\\",
       \\"loc\\": {
@@ -7568,7 +7850,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 14,
       \\"_staticContextId\\": 5,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7611,7 +7893,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 17,
       \\"_staticContextId\\": 6,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7625,7 +7907,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 9,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7639,7 +7921,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 19,
       \\"_staticContextId\\": 9,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"sleep(100)\\",
       \\"loc\\": {
@@ -7654,7 +7936,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 9,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"100\\",
       \\"loc\\": {
@@ -7669,7 +7951,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 21,
       \\"_staticContextId\\": 9,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7712,7 +7994,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 24,
       \\"_staticContextId\\": 10,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7726,7 +8008,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 25,
       \\"_staticContextId\\": 13,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7740,7 +8022,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 26,
       \\"_staticContextId\\": 13,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"sleep(200)\\",
       \\"loc\\": {
@@ -7755,7 +8037,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 27,
       \\"_staticContextId\\": 13,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"200\\",
       \\"loc\\": {
@@ -7770,7 +8052,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 28,
       \\"_staticContextId\\": 13,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7813,7 +8095,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 31,
       \\"_staticContextId\\": 14,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7827,7 +8109,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 32,
       \\"_staticContextId\\": 17,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7841,7 +8123,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 33,
       \\"_staticContextId\\": 17,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"Promise.all(args.map(f => f...\\",
       \\"loc\\": {
@@ -7856,7 +8138,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 34,
       \\"_staticContextId\\": 17,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"args.map(f => f())\\",
       \\"loc\\": {
@@ -7871,7 +8153,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 35,
       \\"_staticContextId\\": 17,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"f => f()\\",
       \\"loc\\": {
@@ -7929,7 +8211,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 39,
       \\"_staticContextId\\": 19,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"async function main() {  a...\\",
       \\"loc\\": {
@@ -7944,7 +8226,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 40,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -7987,7 +8269,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 43,
       \\"_staticContextId\\": 20,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -8001,7 +8283,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 44,
       \\"_staticContextId\\": 23,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -8015,7 +8297,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 45,
       \\"_staticContextId\\": 23,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"f1()\\",
       \\"loc\\": {
@@ -8030,7 +8312,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 46,
       \\"_staticContextId\\": 23,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"await f4(f2, f3, sleep.bind...\\",
       \\"loc\\": {
@@ -8045,7 +8327,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 47,
       \\"_staticContextId\\": 20,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -8059,7 +8341,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 48,
       \\"_staticContextId\\": 25,
-      \\"type\\": 7
+      \\"type\\": 10
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -8073,7 +8355,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 49,
       \\"_staticContextId\\": 25,
-      \\"type\\": 8
+      \\"type\\": 11
     }, {
       \\"displayName\\": \\"f4(f2, f3, sleep.bind(null,...\\",
       \\"loc\\": {
@@ -8088,7 +8370,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 50,
       \\"_staticContextId\\": 25,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f2\\",
       \\"loc\\": {
@@ -8104,7 +8386,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 51,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"f3\\",
       \\"loc\\": {
@@ -8120,7 +8402,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 52,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"sleep.bind(null, 400)\\",
       \\"loc\\": {
@@ -8135,7 +8417,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 53,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"null\\",
       \\"loc\\": {
@@ -8150,7 +8432,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 54,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"400\\",
       \\"loc\\": {
@@ -8165,7 +8447,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 55,
       \\"_staticContextId\\": 25,
-      \\"type\\": 11
+      \\"type\\": 9
     }]
   });
 }
@@ -8462,7 +8744,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"this.s = new Set()\\",
       \\"loc\\": {
@@ -8477,7 +8759,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -8520,7 +8802,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -8821,7 +9103,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"this.s = new Set()\\",
       \\"loc\\": {
@@ -8836,7 +9118,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -8879,7 +9161,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -9027,7 +9309,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 3,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -9070,7 +9352,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 6,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"new A()\\",
       \\"loc\\": {
@@ -9085,7 +9367,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 2,
-      \\"type\\": 11
+      \\"type\\": 9
     }]
   });
 }
@@ -9203,7 +9485,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 3,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -9246,7 +9528,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 6,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"new A()\\",
       \\"loc\\": {
@@ -9261,7 +9543,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 2,
-      \\"type\\": 11
+      \\"type\\": 9
     }]
   });
 }
@@ -9470,7 +9752,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f1()\\",
       \\"loc\\": {
@@ -9485,7 +9767,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f2()\\",
       \\"loc\\": {
@@ -9500,7 +9782,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }]
   });
 }
@@ -9707,7 +9989,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f1()\\",
       \\"loc\\": {
@@ -9722,7 +10004,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f2()\\",
       \\"loc\\": {
@@ -9737,7 +10019,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }]
   });
 }
@@ -9891,7 +10173,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 3,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"i < 8\\",
       \\"loc\\": {
@@ -9906,7 +10188,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 4,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"i += 2\\",
       \\"loc\\": {
@@ -9921,7 +10203,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -9964,7 +10246,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"sum += i * i\\",
       \\"loc\\": {
@@ -9979,7 +10261,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"console.log(sum)\\",
       \\"loc\\": {
@@ -9994,7 +10276,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 10,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"sum\\",
       \\"loc\\": {
@@ -10010,7 +10292,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"i < 4\\",
       \\"loc\\": {
@@ -10025,7 +10307,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 12,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -10068,7 +10350,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"sum\\",
       \\"loc\\": {
@@ -10084,7 +10366,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 16,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -10128,7 +10410,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 19,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }]
   });
 }
@@ -10280,7 +10562,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 3,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"i < 8\\",
       \\"loc\\": {
@@ -10295,7 +10577,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 4,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"i += 2\\",
       \\"loc\\": {
@@ -10310,7 +10592,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -10353,7 +10635,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"sum += i * i\\",
       \\"loc\\": {
@@ -10368,7 +10650,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"console.log(sum)\\",
       \\"loc\\": {
@@ -10383,7 +10665,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 10,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"sum\\",
       \\"loc\\": {
@@ -10399,7 +10681,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"i < 4\\",
       \\"loc\\": {
@@ -10414,7 +10696,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 12,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -10457,7 +10739,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"sum\\",
       \\"loc\\": {
@@ -10473,7 +10755,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 16,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -10517,7 +10799,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 19,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }]
   });
 }
@@ -10718,7 +11000,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"[]\\",
       \\"loc\\": {
@@ -10733,7 +11015,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 6,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"i < a.length\\",
       \\"loc\\": {
@@ -10748,7 +11030,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"++i\\",
       \\"loc\\": {
@@ -10763,7 +11045,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -10806,7 +11088,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"b.push(identity(a[i - 1] *...\\",
       \\"loc\\": {
@@ -10821,7 +11103,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 12,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"identity(a[i - 1] * a[i])\\",
       \\"loc\\": {
@@ -10836,7 +11118,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 13,
       \\"_staticContextId\\": 2,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"a[i - 1] * a[i]\\",
       \\"loc\\": {
@@ -10851,7 +11133,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 14,
       \\"_staticContextId\\": 2,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"Math.max(...identity(b))\\",
       \\"loc\\": {
@@ -10866,7 +11148,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"identity(b)\\",
       \\"loc\\": {
@@ -10881,7 +11163,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 16,
       \\"_staticContextId\\": 2,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"b\\",
       \\"loc\\": {
@@ -10897,7 +11179,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 17,
       \\"_staticContextId\\": 2,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -10941,7 +11223,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"console.log(main())\\",
       \\"loc\\": {
@@ -10956,7 +11238,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 21,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"main()\\",
       \\"loc\\": {
@@ -10971,7 +11253,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 22,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }]
   });
 }
@@ -11170,7 +11452,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"[]\\",
       \\"loc\\": {
@@ -11185,7 +11467,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 6,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"i < a.length\\",
       \\"loc\\": {
@@ -11200,7 +11482,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"++i\\",
       \\"loc\\": {
@@ -11215,7 +11497,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -11258,7 +11540,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"b.push(identity(a[i - 1] *...\\",
       \\"loc\\": {
@@ -11273,7 +11555,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 12,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"identity(a[i - 1] * a[i])\\",
       \\"loc\\": {
@@ -11288,7 +11570,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 13,
       \\"_staticContextId\\": 2,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"a[i - 1] * a[i]\\",
       \\"loc\\": {
@@ -11303,7 +11585,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 14,
       \\"_staticContextId\\": 2,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"Math.max(...identity(b))\\",
       \\"loc\\": {
@@ -11318,7 +11600,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"identity(b)\\",
       \\"loc\\": {
@@ -11333,7 +11615,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 16,
       \\"_staticContextId\\": 2,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"b\\",
       \\"loc\\": {
@@ -11349,7 +11631,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 17,
       \\"_staticContextId\\": 2,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -11393,7 +11675,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"console.log(main())\\",
       \\"loc\\": {
@@ -11408,7 +11690,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 21,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"main()\\",
       \\"loc\\": {
@@ -11423,7 +11705,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 22,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }]
   });
 }
@@ -11650,7 +11932,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 3,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"[-1, 0]\\",
       \\"loc\\": {
@@ -11665,7 +11947,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 4,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"identity\\",
       \\"loc\\": {
@@ -11681,7 +11963,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"identity\\",
       \\"loc\\": {
@@ -11697,7 +11979,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 6,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f()\\",
       \\"loc\\": {
@@ -11712,7 +11994,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"g(1, 2)\\",
       \\"loc\\": {
@@ -11727,7 +12009,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"1\\",
       \\"loc\\": {
@@ -11742,7 +12024,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"2\\",
       \\"loc\\": {
@@ -11757,7 +12039,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 10,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"call(() => console.log(3))\\",
       \\"loc\\": {
@@ -11772,7 +12054,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"() => console.log(3)\\",
       \\"loc\\": {
@@ -11830,7 +12112,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"3\\",
       \\"loc\\": {
@@ -11845,7 +12127,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 16,
       \\"_staticContextId\\": 3,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"call(f.bind(null, 4), 5)\\",
       \\"loc\\": {
@@ -11860,7 +12142,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 17,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f.bind(null, 4)\\",
       \\"loc\\": {
@@ -11875,7 +12157,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"5\\",
       \\"loc\\": {
@@ -11890,7 +12172,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 19,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"null\\",
       \\"loc\\": {
@@ -11905,7 +12187,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"4\\",
       \\"loc\\": {
@@ -11920,7 +12202,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 21,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -11963,7 +12245,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 24,
       \\"_staticContextId\\": 4,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
@@ -11979,7 +12261,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 25,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
@@ -11995,7 +12277,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 26,
       \\"_staticContextId\\": 4,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -12038,7 +12320,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 29,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"console.log(x)\\",
       \\"loc\\": {
@@ -12053,7 +12335,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 30,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
@@ -12069,7 +12351,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 31,
       \\"_staticContextId\\": 5,
-      \\"type\\": 11
+      \\"type\\": 9
     }]
   });
 }
@@ -12282,7 +12564,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 3,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"[-1, 0]\\",
       \\"loc\\": {
@@ -12297,7 +12579,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 4,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"identity\\",
       \\"loc\\": {
@@ -12313,7 +12595,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"identity\\",
       \\"loc\\": {
@@ -12329,7 +12611,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 6,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f()\\",
       \\"loc\\": {
@@ -12344,7 +12626,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"g(1, 2)\\",
       \\"loc\\": {
@@ -12359,7 +12641,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 8,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"1\\",
       \\"loc\\": {
@@ -12374,7 +12656,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"2\\",
       \\"loc\\": {
@@ -12389,7 +12671,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 10,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"call(() => console.log(3))\\",
       \\"loc\\": {
@@ -12404,7 +12686,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"() => console.log(3)\\",
       \\"loc\\": {
@@ -12462,7 +12744,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 3,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"3\\",
       \\"loc\\": {
@@ -12477,7 +12759,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 16,
       \\"_staticContextId\\": 3,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"call(f.bind(null, 4), 5)\\",
       \\"loc\\": {
@@ -12492,7 +12774,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 17,
       \\"_staticContextId\\": 1,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f.bind(null, 4)\\",
       \\"loc\\": {
@@ -12507,7 +12789,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"5\\",
       \\"loc\\": {
@@ -12522,7 +12804,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 19,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"null\\",
       \\"loc\\": {
@@ -12537,7 +12819,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 20,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"4\\",
       \\"loc\\": {
@@ -12552,7 +12834,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 21,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -12595,7 +12877,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 24,
       \\"_staticContextId\\": 4,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
@@ -12611,7 +12893,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 25,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
@@ -12627,7 +12909,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 26,
       \\"_staticContextId\\": 4,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -12670,7 +12952,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 29,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"console.log(x)\\",
       \\"loc\\": {
@@ -12685,7 +12967,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 30,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
@@ -12701,38 +12983,31 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 31,
       \\"_staticContextId\\": 5,
-      \\"type\\": 11
+      \\"type\\": 9
     }]
   });
 }
 "
 `;
 
-exports[`dbux-babel-plugin setTimeout1.es5.js: setTimeout1.es5.js 1`] = `
+exports[`dbux-babel-plugin setTimeout0.es5.js: setTimeout0.es5.js 1`] = `
 "
-function f1(a, b) {
-  setTimeout(function f2() {
-    setTimeout(f3, 300);
-  });
-}
+setTimeout(
+  () => { return 1; }, 1
+);
 
-function f3() {
-  f4(1, (...args) => console.log(...args), 2, () => {return 1;});
-}
+// function f1() {
+//   console.log('done');
+// }
 
-function f4(a, cb, b, cb2) {
-  cb(a, b);
-  cb2();
-}
-
-// go!
-setTimeout(f1.bind(null, 83, 84));
+// setTimeout(
+//   () => { f1(1500); },
+//   1500
+// );
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 \\"use strict\\";
-
-require(\\"core-js/modules/es.function.bind\\");
 
 require(\\"core-js/modules/web.timers\\");
 
@@ -12743,7 +13018,459 @@ var _dbux = _dbux_init(_dbuxRuntime);
 var _contextId = _dbux.getProgramContextId();
 
 try {
-  var f1 = function f1(a, b) {
+  _dbux.traceExpr(3, setTimeout(_dbux.scheduleCallback(2, _contextId, 4, function () {
+    var _contextId2 = _dbux.pushImmediate(3, 6);
+
+    try {
+      return _dbux.traceExpr(8, 1);
+    } finally {
+      _dbux.popImmediate(_contextId2, 7);
+    }
+  }), _dbux.traceArg(5, 1))); // function f1() {
+  //   console.log('done');
+  // }
+  // setTimeout(
+  //   () => { f1(1500); },
+  //   1500
+  // );
+
+} finally {
+  _dbux.popProgram();
+}
+
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
+    \\"fileName\\": \\"setTimeout0.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/setTimeout0.js\\",
+    \\"staticContexts\\": [null, {
+      \\"_staticId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 12,
+          \\"column\\": 5
+        }
+      },
+      \\"type\\": 1,
+      \\"name\\": \\"Program\\",
+      \\"displayName\\": \\"Program\\"
+    }, {
+      \\"_staticId\\": 2,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 20
+        }
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(() => {  return 1;})\\"
+    }, {
+      \\"_staticId\\": 3,
+      \\"_parentId\\": 2,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 20
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"(anonymous)\\",
+      \\"isInterruptable\\": false
+    }],
+    \\"traces\\": [null, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        }
+      },
+      \\"_traceId\\": 1,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 12,
+          \\"column\\": 5
+        },
+        \\"end\\": {
+          \\"line\\": 12,
+          \\"column\\": 5
+        }
+      },
+      \\"_traceId\\": 2,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 3
+    }, {
+      \\"displayName\\": \\"setTimeout(() => {  return...\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 1
+        }
+      },
+      \\"_traceId\\": 3,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 8
+    }, {
+      \\"displayName\\": \\"() => {  return 1;}\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 20
+        }
+      },
+      \\"_traceId\\": 4,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 4
+    }, {
+      \\"displayName\\": \\"1\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 23
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 24
+        }
+      },
+      \\"_traceId\\": 5,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 9
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 8
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 9
+        }
+      },
+      \\"_traceId\\": 6,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 21
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 20
+        }
+      },
+      \\"_traceId\\": 7,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 3
+    }, {
+      \\"displayName\\": \\"1\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 17
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 18
+        }
+      },
+      \\"_traceId\\": 8,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 8
+    }]
+  });
+}
+"
+`;
+
+exports[`dbux-babel-plugin setTimeout0.esNext.js: setTimeout0.esNext.js 1`] = `
+"
+setTimeout(
+  () => { return 1; }, 1
+);
+
+// function f1() {
+//   console.log('done');
+// }
+
+// setTimeout(
+//   () => { f1(1500); },
+//   1500
+// );
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const _dbuxRuntime = require('dbux-runtime');
+
+const _dbux = _dbux_init(_dbuxRuntime);
+
+const _contextId = _dbux.getProgramContextId();
+
+try {
+  _dbux.traceExpr(3, setTimeout(_dbux.scheduleCallback(2, _contextId, 4, () => {
+    const _contextId2 = _dbux.pushImmediate(3, 6);
+
+    try {
+      return _dbux.traceExpr(8, 1);
+    } finally {
+      _dbux.popImmediate(_contextId2, 7);
+    }
+  }), _dbux.traceArg(5, 1))); // function f1() {
+  //   console.log('done');
+  // }
+  // setTimeout(
+  //   () => { f1(1500); },
+  //   1500
+  // );
+
+} finally {
+  _dbux.popProgram();
+}
+
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
+    \\"fileName\\": \\"setTimeout0.js\\",
+    \\"filePath\\": \\"/Users/domi/code/dbux/samples/__samplesInput__/setTimeout0.js\\",
+    \\"staticContexts\\": [null, {
+      \\"_staticId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 12,
+          \\"column\\": 5
+        }
+      },
+      \\"type\\": 1,
+      \\"name\\": \\"Program\\",
+      \\"displayName\\": \\"Program\\"
+    }, {
+      \\"_staticId\\": 2,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 20
+        }
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(() => {  return 1;})\\"
+    }, {
+      \\"_staticId\\": 3,
+      \\"_parentId\\": 2,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 20
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"(anonymous)\\",
+      \\"isInterruptable\\": false
+    }],
+    \\"traces\\": [null, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        }
+      },
+      \\"_traceId\\": 1,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 12,
+          \\"column\\": 5
+        },
+        \\"end\\": {
+          \\"line\\": 12,
+          \\"column\\": 5
+        }
+      },
+      \\"_traceId\\": 2,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 3
+    }, {
+      \\"displayName\\": \\"setTimeout(() => {  return...\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 1
+        }
+      },
+      \\"_traceId\\": 3,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 8
+    }, {
+      \\"displayName\\": \\"() => {  return 1;}\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 20
+        }
+      },
+      \\"_traceId\\": 4,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 4
+    }, {
+      \\"displayName\\": \\"1\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 23
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 24
+        }
+      },
+      \\"_traceId\\": 5,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 9
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 8
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 9
+        }
+      },
+      \\"_traceId\\": 6,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 21
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 20
+        }
+      },
+      \\"_traceId\\": 7,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 3
+    }, {
+      \\"displayName\\": \\"1\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 17
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 18
+        }
+      },
+      \\"_traceId\\": 8,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 8
+    }]
+  });
+}
+"
+`;
+
+exports[`dbux-babel-plugin setTimeout1.es5.js: setTimeout1.es5.js 1`] = `
+"
+function f1(ms) {
+  setTimeout(function f2() {
+    setTimeout(f3, ms);
+  });
+}
+
+function f3() {
+  f4(
+    1,
+    (...args) => console.log(...args),
+    2,
+    () => { return 1; },
+    3
+  );
+}
+
+function f4(a, cb, b, cb2) {
+  cb(a, b);
+  cb2();
+}
+
+// go!
+setTimeout(
+  () => { f1(1500); },
+  1500
+);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+require(\\"core-js/modules/web.timers\\");
+
+var _dbuxRuntime = require('dbux-runtime');
+
+var _dbux = _dbux_init(_dbuxRuntime);
+
+var _contextId = _dbux.getProgramContextId();
+
+try {
+  var f1 = function f1(ms) {
     var _contextId2 = _dbux.pushImmediate(2, 3);
 
     try {
@@ -12751,7 +13478,7 @@ try {
         var _contextId3 = _dbux.pushImmediate(4, 7);
 
         try {
-          _dbux.traceExpr(9, setTimeout(_dbux.traceArg(10, f3), _dbux.traceArg(11, 300)));
+          _dbux.traceExpr(9, setTimeout(_dbux.traceArg(10, f3), _dbux.traceArg(11, ms)));
         } finally {
           _dbux.popImmediate(_contextId3, 8);
         }
@@ -12766,7 +13493,7 @@ try {
 
     try {
       _dbux.traceExpr(14, f4(_dbux.traceArg(15, 1), _dbux.scheduleCallback(6, _contextId4, 16, function () {
-        var _contextId5 = _dbux.pushImmediate(8, 19);
+        var _contextId5 = _dbux.pushImmediate(8, 20);
 
         try {
           var _console;
@@ -12775,38 +13502,46 @@ try {
             args[_key] = arguments[_key];
           }
 
-          return _dbux.traceExpr(21, (_console = console).log.apply(_console, _dbux.traceArg(22, args)));
+          return _dbux.traceExpr(22, (_console = console).log.apply(_console, _dbux.traceArg(23, args)));
         } finally {
-          _dbux.popImmediate(_contextId5, 20);
+          _dbux.popImmediate(_contextId5, 21);
         }
       }), _dbux.traceArg(17, 2), _dbux.scheduleCallback(7, _contextId4, 18, function () {
-        var _contextId6 = _dbux.pushImmediate(9, 23);
+        var _contextId6 = _dbux.pushImmediate(9, 24);
 
         try {
-          return _dbux.traceExpr(25, 1);
+          return _dbux.traceExpr(26, 1);
         } finally {
-          _dbux.popImmediate(_contextId6, 24);
+          _dbux.popImmediate(_contextId6, 25);
         }
-      })));
+      }), _dbux.traceArg(19, 3)));
     } finally {
       _dbux.popImmediate(_contextId4, 13);
     }
   };
 
   var f4 = function f4(a, cb, b, cb2) {
-    var _contextId7 = _dbux.pushImmediate(10, 26);
+    var _contextId7 = _dbux.pushImmediate(10, 27);
 
     try {
-      _dbux.traceExpr(28, cb(_dbux.traceArg(29, a), _dbux.traceArg(30, b)));
+      _dbux.traceExpr(29, cb(_dbux.traceArg(30, a), _dbux.traceArg(31, b)));
 
-      _dbux.traceExpr(31, cb2());
+      _dbux.traceExpr(32, cb2());
     } finally {
-      _dbux.popImmediate(_contextId7, 27);
+      _dbux.popImmediate(_contextId7, 28);
     }
   }; // go!
 
 
-  _dbux.traceExpr(32, setTimeout(_dbux.traceArg(33, f1.bind(_dbux.traceArg(34, null), _dbux.traceArg(35, 83), _dbux.traceArg(36, 84)))));
+  _dbux.traceExpr(33, setTimeout(_dbux.scheduleCallback(11, _contextId, 34, function () {
+    var _contextId8 = _dbux.pushImmediate(12, 36);
+
+    try {
+      _dbux.traceExpr(38, f1(_dbux.traceArg(39, 1500)));
+    } finally {
+      _dbux.popImmediate(_contextId8, 37);
+    }
+  }), _dbux.traceArg(35, 1500)));
 } finally {
   _dbux.popProgram();
 }
@@ -12823,8 +13558,8 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 34
+          \\"line\\": 26,
+          \\"column\\": 2
         }
       },
       \\"type\\": 1,
@@ -12888,7 +13623,7 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 15,
           \\"column\\": 0
         }
       },
@@ -12901,12 +13636,12 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 5,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 8
+          \\"line\\": 10,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         }
       },
       \\"type\\": 3,
@@ -12916,12 +13651,12 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 5,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 46
+          \\"line\\": 12,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 62
+          \\"line\\": 12,
+          \\"column\\": 22
         }
       },
       \\"type\\": 3,
@@ -12931,12 +13666,12 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 6,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 8
+          \\"line\\": 10,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         }
       },
       \\"type\\": 2,
@@ -12947,12 +13682,12 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 7,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 46
+          \\"line\\": 12,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 62
+          \\"line\\": 12,
+          \\"column\\": 22
         }
       },
       \\"type\\": 2,
@@ -12963,17 +13698,48 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
+          \\"line\\": 17,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 14,
+          \\"line\\": 20,
           \\"column\\": 0
         }
       },
       \\"type\\": 2,
       \\"name\\": \\"f4\\",
       \\"displayName\\": \\"f4\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 11,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 20
+        }
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(() => {  f1(1500);})\\"
+    }, {
+      \\"_staticId\\": 12,
+      \\"_parentId\\": 11,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 20
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"(anonymous)\\",
       \\"isInterruptable\\": false
     }],
     \\"traces\\": [null, {
@@ -12993,12 +13759,12 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 34
+          \\"line\\": 26,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 34
+          \\"line\\": 26,
+          \\"column\\": 2
         }
       },
       \\"_traceId\\": 2,
@@ -13008,11 +13774,11 @@ function _dbux_init(dbuxRuntime) {
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 1,
-          \\"column\\": 18
+          \\"column\\": 16
         },
         \\"end\\": {
           \\"line\\": 1,
-          \\"column\\": 19
+          \\"column\\": 17
         }
       },
       \\"_traceId\\": 3,
@@ -13046,7 +13812,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"function f2() {  setTimeou...\\",
       \\"loc\\": {
@@ -13091,7 +13857,7 @@ function _dbux_init(dbuxRuntime) {
       \\"_staticContextId\\": 4,
       \\"type\\": 3
     }, {
-      \\"displayName\\": \\"setTimeout(f3, 300)\\",
+      \\"displayName\\": \\"setTimeout(f3, ms)\\",
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 3,
@@ -13099,12 +13865,12 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 3,
-          \\"column\\": 23
+          \\"column\\": 22
         }
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 4,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f3\\",
       \\"loc\\": {
@@ -13120,9 +13886,9 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 10,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
-      \\"displayName\\": \\"300\\",
+      \\"displayName\\": \\"ms\\",
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 3,
@@ -13130,12 +13896,13 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 3,
-          \\"column\\": 22
-        }
+          \\"column\\": 21
+        },
+        \\"identifierName\\": \\"ms\\"
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -13153,11 +13920,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 9,
+          \\"line\\": 15,
           \\"column\\": 1
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 15,
           \\"column\\": 0
         }
       },
@@ -13172,38 +13939,38 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 64
+          \\"line\\": 14,
+          \\"column\\": 3
         }
       },
       \\"_traceId\\": 14,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"1\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 5
+          \\"line\\": 9,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 6
+          \\"line\\": 9,
+          \\"column\\": 5
         }
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 5,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"(...args) => console.log(.....\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 8
+          \\"line\\": 10,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         }
       },
       \\"_traceId\\": 16,
@@ -13213,299 +13980,342 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"2\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 43
+          \\"line\\": 11,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 44
+          \\"line\\": 11,
+          \\"column\\": 5
         }
       },
       \\"_traceId\\": 17,
       \\"_staticContextId\\": 5,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"() => {  return 1;}\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 46
+          \\"line\\": 12,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 62
+          \\"line\\": 12,
+          \\"column\\": 22
         }
       },
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 7,
       \\"type\\": 4
     }, {
+      \\"displayName\\": \\"3\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 21
+          \\"line\\": 13,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 21
+          \\"line\\": 13,
+          \\"column\\": 5
         }
       },
       \\"_traceId\\": 19,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 9
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 17
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 17
+        }
+      },
+      \\"_traceId\\": 20,
       \\"_staticContextId\\": 8,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         }
       },
-      \\"_traceId\\": 20,
+      \\"_traceId\\": 21,
       \\"_staticContextId\\": 8,
       \\"type\\": 3
     }, {
       \\"displayName\\": \\"console.log(...args)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 21
+          \\"line\\": 10,
+          \\"column\\": 17
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         }
       },
-      \\"_traceId\\": 21,
+      \\"_traceId\\": 22,
       \\"_staticContextId\\": 8,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"args\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 36
+          \\"line\\": 10,
+          \\"column\\": 32
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 40
+          \\"line\\": 10,
+          \\"column\\": 36
         },
         \\"identifierName\\": \\"args\\"
       },
-      \\"_traceId\\": 22,
+      \\"_traceId\\": 23,
       \\"_staticContextId\\": 8,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 52
+          \\"line\\": 12,
+          \\"column\\": 10
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 53
+          \\"line\\": 12,
+          \\"column\\": 11
         }
       },
-      \\"_traceId\\": 23,
+      \\"_traceId\\": 24,
       \\"_staticContextId\\": 9,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 63
+          \\"line\\": 12,
+          \\"column\\": 23
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 62
+          \\"line\\": 12,
+          \\"column\\": 22
         }
       },
-      \\"_traceId\\": 24,
+      \\"_traceId\\": 25,
       \\"_staticContextId\\": 9,
       \\"type\\": 3
     }, {
       \\"displayName\\": \\"1\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 60
+          \\"line\\": 12,
+          \\"column\\": 19
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 61
-        }
-      },
-      \\"_traceId\\": 25,
-      \\"_staticContextId\\": 9,
-      \\"type\\": 10
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 27
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 28
+          \\"line\\": 12,
+          \\"column\\": 20
         }
       },
       \\"_traceId\\": 26,
+      \\"_staticContextId\\": 9,
+      \\"type\\": 8
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 17,
+          \\"column\\": 27
+        },
+        \\"end\\": {
+          \\"line\\": 17,
+          \\"column\\": 28
+        }
+      },
+      \\"_traceId\\": 27,
       \\"_staticContextId\\": 10,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 14,
+          \\"line\\": 20,
           \\"column\\": 1
         },
         \\"end\\": {
-          \\"line\\": 14,
+          \\"line\\": 20,
           \\"column\\": 0
         }
       },
-      \\"_traceId\\": 27,
+      \\"_traceId\\": 28,
       \\"_staticContextId\\": 10,
       \\"type\\": 3
     }, {
       \\"displayName\\": \\"cb(a, b)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 10
         }
       },
-      \\"_traceId\\": 28,
+      \\"_traceId\\": 29,
       \\"_staticContextId\\": 10,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"a\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 5
         },
         \\"end\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 6
         },
         \\"identifierName\\": \\"a\\"
       },
-      \\"_traceId\\": 29,
+      \\"_traceId\\": 30,
       \\"_staticContextId\\": 10,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"b\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 9
         },
         \\"identifierName\\": \\"b\\"
       },
-      \\"_traceId\\": 30,
+      \\"_traceId\\": 31,
       \\"_staticContextId\\": 10,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"cb2()\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 13,
+          \\"line\\": 19,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 13,
+          \\"line\\": 19,
           \\"column\\": 7
         }
       },
-      \\"_traceId\\": 31,
+      \\"_traceId\\": 32,
       \\"_staticContextId\\": 10,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
-      \\"displayName\\": \\"setTimeout(f1.bind(null, 83...\\",
+      \\"displayName\\": \\"setTimeout(() => {  f1(150...\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 17,
+          \\"line\\": 23,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 33
-        }
-      },
-      \\"_traceId\\": 32,
-      \\"_staticContextId\\": 1,
-      \\"type\\": 10
-    }, {
-      \\"displayName\\": \\"f1.bind(null, 83, 84)\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 11
-        },
-        \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 32
+          \\"line\\": 26,
+          \\"column\\": 1
         }
       },
       \\"_traceId\\": 33,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 8
     }, {
-      \\"displayName\\": \\"null\\",
+      \\"displayName\\": \\"() => {  f1(1500);}\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 19
+          \\"line\\": 24,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 23
+          \\"line\\": 24,
+          \\"column\\": 20
         }
       },
       \\"_traceId\\": 34,
-      \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"_staticContextId\\": 11,
+      \\"type\\": 4
     }, {
-      \\"displayName\\": \\"83\\",
+      \\"displayName\\": \\"1500\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 25
+          \\"line\\": 25,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 27
+          \\"line\\": 25,
+          \\"column\\": 6
         }
       },
       \\"_traceId\\": 35,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
-      \\"displayName\\": \\"84\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 29
+          \\"line\\": 24,
+          \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 31
+          \\"line\\": 24,
+          \\"column\\": 9
         }
       },
       \\"_traceId\\": 36,
-      \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"_staticContextId\\": 12,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
+          \\"column\\": 21
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 20
+        }
+      },
+      \\"_traceId\\": 37,
+      \\"_staticContextId\\": 12,
+      \\"type\\": 3
+    }, {
+      \\"displayName\\": \\"f1(1500)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
+          \\"column\\": 10
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 18
+        }
+      },
+      \\"_traceId\\": 38,
+      \\"_staticContextId\\": 12,
+      \\"type\\": 8
+    }, {
+      \\"displayName\\": \\"1500\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 17
+        }
+      },
+      \\"_traceId\\": 39,
+      \\"_staticContextId\\": 12,
+      \\"type\\": 9
     }]
   });
 }
@@ -13514,14 +14324,20 @@ function _dbux_init(dbuxRuntime) {
 
 exports[`dbux-babel-plugin setTimeout1.esNext.js: setTimeout1.esNext.js 1`] = `
 "
-function f1(a, b) {
+function f1(ms) {
   setTimeout(function f2() {
-    setTimeout(f3, 300);
+    setTimeout(f3, ms);
   });
 }
 
 function f3() {
-  f4(1, (...args) => console.log(...args), 2, () => {return 1;});
+  f4(
+    1,
+    (...args) => console.log(...args),
+    2,
+    () => { return 1; },
+    3
+  );
 }
 
 function f4(a, cb, b, cb2) {
@@ -13530,7 +14346,10 @@ function f4(a, cb, b, cb2) {
 }
 
 // go!
-setTimeout(f1.bind(null, 83, 84));
+setTimeout(
+  () => { f1(1500); },
+  1500
+);
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
@@ -13541,7 +14360,7 @@ const _dbux = _dbux_init(_dbuxRuntime);
 const _contextId = _dbux.getProgramContextId();
 
 try {
-  function f1(a, b) {
+  function f1(ms) {
     const _contextId2 = _dbux.pushImmediate(2, 3);
 
     try {
@@ -13549,7 +14368,7 @@ try {
         const _contextId3 = _dbux.pushImmediate(4, 7);
 
         try {
-          _dbux.traceExpr(9, setTimeout(_dbux.traceArg(10, f3), _dbux.traceArg(11, 300)));
+          _dbux.traceExpr(9, setTimeout(_dbux.traceArg(10, f3), _dbux.traceArg(11, ms)));
         } finally {
           _dbux.popImmediate(_contextId3, 8);
         }
@@ -13564,41 +14383,49 @@ try {
 
     try {
       _dbux.traceExpr(14, f4(_dbux.traceArg(15, 1), _dbux.scheduleCallback(6, _contextId4, 16, (...args) => {
-        const _contextId5 = _dbux.pushImmediate(8, 19);
+        const _contextId5 = _dbux.pushImmediate(8, 20);
 
         try {
-          return _dbux.traceExpr(21, console.log(..._dbux.traceArg(22, args)));
+          return _dbux.traceExpr(22, console.log(..._dbux.traceArg(23, args)));
         } finally {
-          _dbux.popImmediate(_contextId5, 20);
+          _dbux.popImmediate(_contextId5, 21);
         }
       }), _dbux.traceArg(17, 2), _dbux.scheduleCallback(7, _contextId4, 18, () => {
-        const _contextId6 = _dbux.pushImmediate(9, 23);
+        const _contextId6 = _dbux.pushImmediate(9, 24);
 
         try {
-          return _dbux.traceExpr(25, 1);
+          return _dbux.traceExpr(26, 1);
         } finally {
-          _dbux.popImmediate(_contextId6, 24);
+          _dbux.popImmediate(_contextId6, 25);
         }
-      })));
+      }), _dbux.traceArg(19, 3)));
     } finally {
       _dbux.popImmediate(_contextId4, 13);
     }
   }
 
   function f4(a, cb, b, cb2) {
-    const _contextId7 = _dbux.pushImmediate(10, 26);
+    const _contextId7 = _dbux.pushImmediate(10, 27);
 
     try {
-      _dbux.traceExpr(28, cb(_dbux.traceArg(29, a), _dbux.traceArg(30, b)));
+      _dbux.traceExpr(29, cb(_dbux.traceArg(30, a), _dbux.traceArg(31, b)));
 
-      _dbux.traceExpr(31, cb2());
+      _dbux.traceExpr(32, cb2());
     } finally {
-      _dbux.popImmediate(_contextId7, 27);
+      _dbux.popImmediate(_contextId7, 28);
     }
   } // go!
 
 
-  _dbux.traceExpr(32, setTimeout(_dbux.traceArg(33, f1.bind(_dbux.traceArg(34, null), _dbux.traceArg(35, 83), _dbux.traceArg(36, 84)))));
+  _dbux.traceExpr(33, setTimeout(_dbux.scheduleCallback(11, _contextId, 34, () => {
+    const _contextId8 = _dbux.pushImmediate(12, 36);
+
+    try {
+      _dbux.traceExpr(38, f1(_dbux.traceArg(39, 1500)));
+    } finally {
+      _dbux.popImmediate(_contextId8, 37);
+    }
+  }), _dbux.traceArg(35, 1500)));
 } finally {
   _dbux.popProgram();
 }
@@ -13615,8 +14442,8 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 34
+          \\"line\\": 26,
+          \\"column\\": 2
         }
       },
       \\"type\\": 1,
@@ -13680,7 +14507,7 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 15,
           \\"column\\": 0
         }
       },
@@ -13693,12 +14520,12 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 5,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 8
+          \\"line\\": 10,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         }
       },
       \\"type\\": 3,
@@ -13708,12 +14535,12 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 5,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 46
+          \\"line\\": 12,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 62
+          \\"line\\": 12,
+          \\"column\\": 22
         }
       },
       \\"type\\": 3,
@@ -13723,12 +14550,12 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 6,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 8
+          \\"line\\": 10,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         }
       },
       \\"type\\": 2,
@@ -13739,12 +14566,12 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 7,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 46
+          \\"line\\": 12,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 62
+          \\"line\\": 12,
+          \\"column\\": 22
         }
       },
       \\"type\\": 2,
@@ -13755,17 +14582,48 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
+          \\"line\\": 17,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 14,
+          \\"line\\": 20,
           \\"column\\": 0
         }
       },
       \\"type\\": 2,
       \\"name\\": \\"f4\\",
       \\"displayName\\": \\"f4\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 11,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 20
+        }
+      },
+      \\"type\\": 3,
+      \\"displayName\\": \\"(() => {  f1(1500);})\\"
+    }, {
+      \\"_staticId\\": 12,
+      \\"_parentId\\": 11,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 20
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"(anonymous)\\",
       \\"isInterruptable\\": false
     }],
     \\"traces\\": [null, {
@@ -13785,12 +14643,12 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 34
+          \\"line\\": 26,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 34
+          \\"line\\": 26,
+          \\"column\\": 2
         }
       },
       \\"_traceId\\": 2,
@@ -13800,11 +14658,11 @@ function _dbux_init(dbuxRuntime) {
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 1,
-          \\"column\\": 18
+          \\"column\\": 16
         },
         \\"end\\": {
           \\"line\\": 1,
-          \\"column\\": 19
+          \\"column\\": 17
         }
       },
       \\"_traceId\\": 3,
@@ -13838,7 +14696,7 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 5,
       \\"_staticContextId\\": 2,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"function f2() {  setTimeou...\\",
       \\"loc\\": {
@@ -13883,7 +14741,7 @@ function _dbux_init(dbuxRuntime) {
       \\"_staticContextId\\": 4,
       \\"type\\": 3
     }, {
-      \\"displayName\\": \\"setTimeout(f3, 300)\\",
+      \\"displayName\\": \\"setTimeout(f3, ms)\\",
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 3,
@@ -13891,12 +14749,12 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 3,
-          \\"column\\": 23
+          \\"column\\": 22
         }
       },
       \\"_traceId\\": 9,
       \\"_staticContextId\\": 4,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"f3\\",
       \\"loc\\": {
@@ -13912,9 +14770,9 @@ function _dbux_init(dbuxRuntime) {
       },
       \\"_traceId\\": 10,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
-      \\"displayName\\": \\"300\\",
+      \\"displayName\\": \\"ms\\",
       \\"loc\\": {
         \\"start\\": {
           \\"line\\": 3,
@@ -13922,12 +14780,13 @@ function _dbux_init(dbuxRuntime) {
         },
         \\"end\\": {
           \\"line\\": 3,
-          \\"column\\": 22
-        }
+          \\"column\\": 21
+        },
+        \\"identifierName\\": \\"ms\\"
       },
       \\"_traceId\\": 11,
       \\"_staticContextId\\": 4,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
@@ -13945,11 +14804,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 9,
+          \\"line\\": 15,
           \\"column\\": 1
         },
         \\"end\\": {
-          \\"line\\": 9,
+          \\"line\\": 15,
           \\"column\\": 0
         }
       },
@@ -13964,38 +14823,38 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 64
+          \\"line\\": 14,
+          \\"column\\": 3
         }
       },
       \\"_traceId\\": 14,
       \\"_staticContextId\\": 5,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"1\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 5
+          \\"line\\": 9,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 6
+          \\"line\\": 9,
+          \\"column\\": 5
         }
       },
       \\"_traceId\\": 15,
       \\"_staticContextId\\": 5,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"(...args) => console.log(.....\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 8
+          \\"line\\": 10,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         }
       },
       \\"_traceId\\": 16,
@@ -14005,299 +14864,342 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"2\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 43
+          \\"line\\": 11,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 44
+          \\"line\\": 11,
+          \\"column\\": 5
         }
       },
       \\"_traceId\\": 17,
       \\"_staticContextId\\": 5,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"() => {  return 1;}\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 46
+          \\"line\\": 12,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 62
+          \\"line\\": 12,
+          \\"column\\": 22
         }
       },
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 7,
       \\"type\\": 4
     }, {
+      \\"displayName\\": \\"3\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 21
+          \\"line\\": 13,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 21
+          \\"line\\": 13,
+          \\"column\\": 5
         }
       },
       \\"_traceId\\": 19,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 9
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 17
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 17
+        }
+      },
+      \\"_traceId\\": 20,
       \\"_staticContextId\\": 8,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         }
       },
-      \\"_traceId\\": 20,
+      \\"_traceId\\": 21,
       \\"_staticContextId\\": 8,
       \\"type\\": 3
     }, {
       \\"displayName\\": \\"console.log(...args)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 21
+          \\"line\\": 10,
+          \\"column\\": 17
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 41
+          \\"line\\": 10,
+          \\"column\\": 37
         }
       },
-      \\"_traceId\\": 21,
+      \\"_traceId\\": 22,
       \\"_staticContextId\\": 8,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"args\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 36
+          \\"line\\": 10,
+          \\"column\\": 32
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 40
+          \\"line\\": 10,
+          \\"column\\": 36
         },
         \\"identifierName\\": \\"args\\"
       },
-      \\"_traceId\\": 22,
+      \\"_traceId\\": 23,
       \\"_staticContextId\\": 8,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 52
+          \\"line\\": 12,
+          \\"column\\": 10
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 53
+          \\"line\\": 12,
+          \\"column\\": 11
         }
       },
-      \\"_traceId\\": 23,
+      \\"_traceId\\": 24,
       \\"_staticContextId\\": 9,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 63
+          \\"line\\": 12,
+          \\"column\\": 23
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 62
+          \\"line\\": 12,
+          \\"column\\": 22
         }
       },
-      \\"_traceId\\": 24,
+      \\"_traceId\\": 25,
       \\"_staticContextId\\": 9,
       \\"type\\": 3
     }, {
       \\"displayName\\": \\"1\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 8,
-          \\"column\\": 60
+          \\"line\\": 12,
+          \\"column\\": 19
         },
         \\"end\\": {
-          \\"line\\": 8,
-          \\"column\\": 61
-        }
-      },
-      \\"_traceId\\": 25,
-      \\"_staticContextId\\": 9,
-      \\"type\\": 10
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 27
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 28
+          \\"line\\": 12,
+          \\"column\\": 20
         }
       },
       \\"_traceId\\": 26,
+      \\"_staticContextId\\": 9,
+      \\"type\\": 8
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 17,
+          \\"column\\": 27
+        },
+        \\"end\\": {
+          \\"line\\": 17,
+          \\"column\\": 28
+        }
+      },
+      \\"_traceId\\": 27,
       \\"_staticContextId\\": 10,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 14,
+          \\"line\\": 20,
           \\"column\\": 1
         },
         \\"end\\": {
-          \\"line\\": 14,
+          \\"line\\": 20,
           \\"column\\": 0
         }
       },
-      \\"_traceId\\": 27,
+      \\"_traceId\\": 28,
       \\"_staticContextId\\": 10,
       \\"type\\": 3
     }, {
       \\"displayName\\": \\"cb(a, b)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 10
         }
       },
-      \\"_traceId\\": 28,
+      \\"_traceId\\": 29,
       \\"_staticContextId\\": 10,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
       \\"displayName\\": \\"a\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 5
         },
         \\"end\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 6
         },
         \\"identifierName\\": \\"a\\"
       },
-      \\"_traceId\\": 29,
+      \\"_traceId\\": 30,
       \\"_staticContextId\\": 10,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"b\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 12,
+          \\"line\\": 18,
           \\"column\\": 9
         },
         \\"identifierName\\": \\"b\\"
       },
-      \\"_traceId\\": 30,
+      \\"_traceId\\": 31,
       \\"_staticContextId\\": 10,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
       \\"displayName\\": \\"cb2()\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 13,
+          \\"line\\": 19,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 13,
+          \\"line\\": 19,
           \\"column\\": 7
         }
       },
-      \\"_traceId\\": 31,
+      \\"_traceId\\": 32,
       \\"_staticContextId\\": 10,
-      \\"type\\": 10
+      \\"type\\": 8
     }, {
-      \\"displayName\\": \\"setTimeout(f1.bind(null, 83...\\",
+      \\"displayName\\": \\"setTimeout(() => {  f1(150...\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 17,
+          \\"line\\": 23,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 33
-        }
-      },
-      \\"_traceId\\": 32,
-      \\"_staticContextId\\": 1,
-      \\"type\\": 10
-    }, {
-      \\"displayName\\": \\"f1.bind(null, 83, 84)\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 11
-        },
-        \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 32
+          \\"line\\": 26,
+          \\"column\\": 1
         }
       },
       \\"_traceId\\": 33,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 8
     }, {
-      \\"displayName\\": \\"null\\",
+      \\"displayName\\": \\"() => {  f1(1500);}\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 19
+          \\"line\\": 24,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 23
+          \\"line\\": 24,
+          \\"column\\": 20
         }
       },
       \\"_traceId\\": 34,
-      \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"_staticContextId\\": 11,
+      \\"type\\": 4
     }, {
-      \\"displayName\\": \\"83\\",
+      \\"displayName\\": \\"1500\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 25
+          \\"line\\": 25,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 27
+          \\"line\\": 25,
+          \\"column\\": 6
         }
       },
       \\"_traceId\\": 35,
       \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"type\\": 9
     }, {
-      \\"displayName\\": \\"84\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 17,
-          \\"column\\": 29
+          \\"line\\": 24,
+          \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 17,
-          \\"column\\": 31
+          \\"line\\": 24,
+          \\"column\\": 9
         }
       },
       \\"_traceId\\": 36,
-      \\"_staticContextId\\": 1,
-      \\"type\\": 11
+      \\"_staticContextId\\": 12,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
+          \\"column\\": 21
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 20
+        }
+      },
+      \\"_traceId\\": 37,
+      \\"_staticContextId\\": 12,
+      \\"type\\": 3
+    }, {
+      \\"displayName\\": \\"f1(1500)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
+          \\"column\\": 10
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 18
+        }
+      },
+      \\"_traceId\\": 38,
+      \\"_staticContextId\\": 12,
+      \\"type\\": 8
+    }, {
+      \\"displayName\\": \\"1500\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 24,
+          \\"column\\": 17
+        }
+      },
+      \\"_traceId\\": 39,
+      \\"_staticContextId\\": 12,
+      \\"type\\": 9
     }]
   });
 }

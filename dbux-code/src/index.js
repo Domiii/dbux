@@ -1,5 +1,4 @@
 import { newLogger } from 'dbux-common/src/log/logger';
-import { newDataProvider } from 'dbux-data/src/dataProviderImpl';
 import { window } from 'vscode';
 
 import { initCodeControl } from './codeControl';
@@ -28,11 +27,11 @@ function activate(context) {
     initCodeControl(context);
 
     // TODO: we don't have a single DataProvider anymore - manage Applications instead
-    const dataProvider = newDataProvider('not/an/application');
-    const treeViewController = initTreeView(context, dataProvider);
-    const playbackController = initPlayback(dataProvider, treeViewController);
-    initCommands(context, treeViewController, playbackController);
-    initToolBar(context, treeViewController);
+    // TODO: see codeDeco for reference
+    // const treeViewController = initTreeView(context, dataProvider);
+    // const playbackController = initPlayback(dataProvider, treeViewController);
+    // initCommands(context, treeViewController, playbackController);
+    // initToolBar(context, treeViewController);
   } catch (e) {
     logError('could not activate', e);
     throw e;

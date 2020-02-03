@@ -37,7 +37,7 @@ export default class Application {
     this.applicationId = applicationId;
     this.entryPointPath = entryPointPath;
     this.applicationCollection = applicationCollection;
-    this.dataProvider = newDataProvider(entryPointPath);
+    this.dataProvider = newDataProvider(this);
     // this.createdAt = this.updatedAt = libs.performance.now();
     this.createdAt = this.updatedAt = Date.now();
   }

@@ -57,7 +57,7 @@ function tracePathEnd(path, state, thin) {
   if (!thin) {
     // for blocks, move *into* the block (curly braces)
     if (t.isBlock(node)) {
-      end.column -= 1;
+      start.column -= 1;
     }
   }
 

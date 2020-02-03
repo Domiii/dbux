@@ -35,16 +35,16 @@ const DefaultTraceDecoratorConfig = {
   PushCallback: {
     styling: {
       after: {
-        contentText: '↳',
-        color: 'orange',
+        contentText: '↴',
+        color: 'red',
       }
     }
   },
   PopCallback: {
     styling: {
       after: {
-        contentText: '⤴',
-        color: 'orange',
+        contentText: '↱',
+        color: 'red',
       }
     }
   },
@@ -60,7 +60,7 @@ const DefaultTraceDecoratorConfig = {
   Resume: {
     styling: {
       after: {
-        contentText: '↳',
+        contentText: '↱',
         color: 'red',
       }
     }
@@ -103,7 +103,7 @@ const DefaultTraceDecoratorConfig = {
     styling: {
       after: {
         contentText: '↳',
-        color: 'lightred',
+        color: 'gray',
       }
     }
   },
@@ -111,7 +111,7 @@ const DefaultTraceDecoratorConfig = {
     styling: {
       before: {
         contentText: '⤴',
-        color: 'lightred',
+        color: 'gray',
       }
     }
   }

@@ -1,25 +1,20 @@
 import countBy from 'lodash/countBy';
 import sortBy from 'lodash/sortBy';
 import map from 'lodash/map';
+import xor from 'lodash/xor';
 
 export const EmptyArray = Object.freeze([]);
 export const EmptyObject = Object.freeze({});
 
-
-export function arraysEqual(a, b) {
+/**
+ * @see https://stackoverflow.com/questions/29951293/using-lodash-to-compare-arrays-items-existence-without-order
+ */
+export function areArraysEqual(a, b) {
   if (a === b) return true;
   if (a == null || b == null) return false;
   if (a.length != b.length) return false;
-
-  // If you don't care about the order of the elements inside
-  // the array, you should sort both arrays here.
-  // Please note that calling sort on an array will modify that array.
-  // you might want to clone your array first.
-
-  for (var i = 0; i < a.length; ++i) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
+  
+  return xor(a, b).length === 0;
 }
 
 
