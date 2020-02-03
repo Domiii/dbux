@@ -1,4 +1,5 @@
 import path from 'path';
+import pull from 'lodash/pull';
 import { newLogger } from 'dbux-common/src/log/logger';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import Trace from 'dbux-common/src/core/data/Trace';
@@ -121,7 +122,7 @@ export default class DataProvider {
    * Add a data event listener to given collection.
    * @deprecated
    */
-  __old_onData(collectionName: string, cb: ([]) => void) {
+  onData(collectionName: string, cb: ([]) => void) {
     const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
     listeners.push(cb);
   }
@@ -131,7 +132,7 @@ export default class DataProvider {
    * 
    * @returns {function} Unsubscribe function. Execute to cancel this listener.
    */
-  onData(cfg) {
+  onAnyData(cfg) {
     for (const collectionName in cfg.collections) {
       const cb = cfg.collections[collectionName];
       const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
@@ -141,8 +142,7 @@ export default class DataProvider {
     const unsubscribe = ((cfg) => {
       for (const collectionName in cfg.collections) {
         const cb = cfg.collections[collectionName];
-        this._dataEventListeners[collectionName] =
-          this._dataEventListeners[collectionName].filter(l => l !== cb);
+        pull(this._dataEventListeners[collectionName], cb);
       }
     }).bind(this, cfg);
     return unsubscribe;

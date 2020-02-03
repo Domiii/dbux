@@ -3,6 +3,8 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import DefaultTraceDecoratorConfig from './DefaultTraceDecoratorConfig';
 import { getCodeRangeFromLoc } from '../util/codeUtil';
+import applicationCollection from 'dbux-data/src/applicationCollection';
+import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
 const { log, debug, warn, error: logError } = newLogger('deco-trace');
 let configsByType;
@@ -14,41 +16,48 @@ let configsByType;
 /**
  * TODO: the order of decorations is currently dictacted by the order of their decoration types (VSCode limitation)
  */
-export function renderTraceDecorations(dataProvider, editor, programId, fpath) {
-  const staticTraces = dataProvider.indexes.staticTraces.visitedByFile.get(programId);
-  // const traces = dataProvider.indexes.traces.byFile.get(programId);
-  if (!staticTraces) {
-    debug('No traces in file', fpath);
-    return;
-  }
+export function renderTraceDecorations(editor, fpath) {
+  const allDecorations = [];
 
-  const traceGroupsByType = dataProvider.util.groupTracesByType(staticTraces);
-
-  for (let type = 1; type < configsByType.length; ++type) {
-    // TextEditorDecorationType
-    // see: https://code.visualstudio.com/api/references/vscode-api#TextEditorDecorationType
-    const config = configsByType[type];
-
-    // produce decorations
-    const decorations = [];
-    const groups = traceGroupsByType[type];
-    if (groups) {
-      if (!config?.editorDecorationtype) {
-        logError('found TraceType in trace that is not configured', type, TraceType.nameFrom(type));
-        continue;
-      }
-
-      for (const group of groups) {
-        const [staticTrace, traces] = group;
-        const decoration = renderTraceGroup(dataProvider, type, staticTrace, traces);
-        decorations.push(decoration);
-      }
-    }
-    else if (!config?.editorDecorationtype) {
-      continue;
+  applicationCollection.mapSelectedApplicationsOfFilePath(fpath, (application, programId) => {
+    const { dataProvider } = application;
+    const staticTraces = dataProvider.indexes.staticTraces.visitedByFile.get(programId);
+    // const traces = dataProvider.indexes.traces.byFile.get(programId);
+    if (!staticTraces) {
+      // 
+      debug(`No traces in file "${fpath}" for application with entry point ${application.entryp}`);
+      return;
     }
 
-    // setDecorations
+    // group by TraceType
+    const traceGroupsByType = dataProvider.util.groupTracesByType(staticTraces);
+
+    for (let traceType = 1; traceType < traceGroupsByType.length; ++traceType) {
+      // TextEditorDecorationType
+      // see: https://code.visualstudio.com/api/references/vscode-api#TextEditorDecorationType
+      const config = configsByType[traceType];
+
+      // add all decorations for group
+      const groups = traceGroupsByType[traceType];
+      if (groups) {
+        if (!config?.editorDecorationtype) {
+          logError('found TraceType in trace that is not configured', traceType, TraceType.nameFrom(traceType));
+          continue;
+        }
+
+        for (const group of groups) {
+          const [staticTrace, traces] = group;
+          const decoration = renderTraceGroup(dataProvider, traceType, staticTrace, traces);
+          pushArrayOfArray(allDecorations, traceType, decoration);
+        }
+      }
+    }
+  });
+
+  // setDecorations
+  for (let traceType = 1; traceType < configsByType.length; ++traceType) {
+    const config = configsByType[traceType];
+    const decorations = allDecorations[traceType] || EmptyArray;
     editor.setDecorations(config.editorDecorationtype, decorations);
   }
 }

@@ -1,8 +1,11 @@
 import NanoEvents from 'nanoevents';
-import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
+import { newLogger } from 'dbux-common/src/log/logger';
 import isString from 'lodash/isString';
+import pull from 'lodash/pull';
+
 
 import Application from './Application';
+import { areArraysEqual } from '../../dbux-common/src/util/arrayUtil';
 
 const { log, debug, warn, error: logError } = newLogger('applications');
 
@@ -15,8 +18,20 @@ function extractFilePathFromInitialData(initialData) {
   return null;
 }
 
+/**
+ * This callback type is called `requestCallback` and is displayed as a global symbol.
+ *
+ * @callback fileSelectedApplicationCallback
+ * @param {Application} application
+ * @param {number} programId
+ */
+
+/**
+ * ApplicationCollection manages all application throughout the life-time of the dbux-data module.
+ */
 class ApplicationCollection {
-  _selectedApplication;
+  _selectedApplicationIds = new Set();
+  _selectedApplications = [];
   _all = [null];
   _activeApplications = new Map();
 
@@ -31,6 +46,14 @@ class ApplicationCollection {
   }
 
   getApplication(applicationOrIdOrEntryPointPath: number | string | Application): Application {
+    const application = this.tryGetApplication(applicationOrIdOrEntryPointPath);
+    if (!application) {
+      throw new Error('invalid applicationOrIdOrEntryPointPath: ' + applicationOrIdOrEntryPointPath);
+    }
+    return application;
+  }
+
+  tryGetApplication(applicationOrIdOrEntryPointPath: number | string | Application): Application {
     let application;
     if (applicationOrIdOrEntryPointPath instanceof Application) {
       // application
@@ -57,6 +80,7 @@ class ApplicationCollection {
   }
 
   getOrCreateApplication(initialData): Application {
+    // TODO: fix this to support reconnects
     const entryPointPath = extractFilePathFromInitialData(initialData);
     if (!entryPointPath) {
       return null;
@@ -65,59 +89,85 @@ class ApplicationCollection {
     return application;
   }
 
-  getSelectedApplication() {
-    return this._selectedApplication;
+  // ###########################################################################
+  // Manage selected applications
+  // ###########################################################################
+  
+  getSelectedApplications() {
+    return this._selectedApplications;
   }
 
-  setSelectedApplication(application) {
-    if (this._selectedApplication === application) {
+  hasSelectedApplications() {
+    return !!this._selectedApplications.length;
+  }
+  
+  isApplicationSelected(applicationOrIdOrEntryPointPath) {
+    const application = this.getApplication(applicationOrIdOrEntryPointPath);
+    return this._selectedApplicationIds.has(application.applicationId);
+  }
+
+  selectApplication(applicationOrIdOrEntryPointPath) {
+    if (this.isApplicationSelected(applicationOrIdOrEntryPointPath)) {
+      return;
+    }
+    const application = this.getApplication(applicationOrIdOrEntryPointPath);
+
+    this._selectedApplicationIds.add(application.applicationId);
+    this._selectedApplications.push(application);
+    this._emitter.emit('selectionChanged', this._selectedApplications);
+  }
+
+  deselectApplication(applicationOrIdOrEntryPointPath) {
+    if (!this.isApplicationSelected(applicationOrIdOrEntryPointPath)) {
+      return;
+    }
+    const application = this.getApplication(applicationOrIdOrEntryPointPath);
+
+    this._selectedApplicationIds.delete(application.applicationId);
+    pull(this._selectedApplications, application);
+    this._emitter.emit('selectionChanged', this._selectedApplications);
+  }
+
+  deselectAllApplications() {
+    return this._selectedApplications();
+  }
+
+  _setSelectedApplications(...applications) {
+    if (areArraysEqual(this._selectedApplications, applications)) {
       return;
     }
 
-    this._selectedApplication = application;
-    this._emitter.emit('selectionChanged', application);
-  }
-
-  removeApplication(applicationOrId) {
-    const application = this.getApplication(applicationOrId);
-
-    if (!application) {
-      throw new Error('invalid applicationOrId in `removeApplication`: ' + applicationOrId);
-    }
-
-    // deselect (will also trigger event)
-    if (this._selectedApplication === application) {
-      this.setSelectedApplication(null);
-    }
-
-    // remove
-    const { applicationid, entryPointPath } = application;
-    this._all[applicationid] = null;
-    if (this.getActiveApplicationByEntryPoint(entryPointPath) === application) {
-      this._activeApplications.delete(entryPointPath);
-    }
-
-    // `removed` event
-    this._emitter.emit('removed', application);
-  }
-
-  clear() {
-    this._all = [null];
-    this._activeApplications = new Map();
-
-    this.setSelectedApplication(null);
-
-    this._emitter.emit('clear');
+    this._selectedApplicationIds = new Set(applications.map(app => app.applicationId));
+    this._selectedApplications = applications;
+    this._emitter.emit('selectionChanged', this._selectedApplications);
   }
 
   /**
-   * Clears all applications that have already been restarted.
+   * @param {fileSelectedApplicationCallback} cb
    */
-  clearRestarted() {
-    // TODO: clear all applications that are in  `_all` but not in `activeApplications`
-    throw new Error('NYI');
+  mapSelectedApplicationsOfFilePath(fpath, cb) {
+    const applications = this._selectedApplications;
+
+    for (const application of applications) {
+      const { dataProvider } = application;
+
+      const programId = dataProvider.queries.programIdByFilePath(fpath);
+      if (!programId) {
+        // program did not execute for this application
+        continue;
+      }
+
+      cb(application, programId);
+    }
   }
 
+  // ###########################################################################
+  // add + remove applications
+  // ###########################################################################
+
+  /**
+   * @private
+   */
   _addApplication(entryPointPath) {
     const applicationId = this._all.length;
     const application = new Application(applicationId, entryPointPath, this);
@@ -135,13 +185,55 @@ class ApplicationCollection {
       debug('added', entryPointPath);
     }
 
-    // if (!this._selectedApplication || previousApplication === this._selectedApplication) {
-    //   // first application -> automatically select it
-    //   this.setSelectedApplication(application);
+    // if (!this.hasSelectedApplications() || previousApplication === this._selectedApplication) {
+    //   // first application, or selected application restarted -> automatically select it
+    // 
     // }
-    // always auto select newest application (for now)
-    this.setSelectedApplication(application);
+    
+    // always add new application to set of selected applications
+    this.selectApplication(application);
+
     return application;
+  }
+
+  removeApplication(applicationOrId) {
+    const application = this.getApplication(applicationOrId);
+
+    if (!application) {
+      throw new Error('invalid applicationOrId in `removeApplication`: ' + applicationOrId);
+    }
+
+    // deselect (will also trigger event)
+    if (this._selectedApplications === application) {
+      this.deselectApplication(application.applicationId);
+    }
+
+    // remove
+    const { applicationid, entryPointPath } = application;
+    this._all[applicationid] = null;
+    if (this.getActiveApplicationByEntryPoint(entryPointPath) === application) {
+      this._activeApplications.delete(entryPointPath);
+    }
+
+    // `removed` event
+    this._emitter.emit('removed', application);
+  }
+
+  clear() {
+    this._all = [null];
+    this._activeApplications = new Map();
+
+    this._setSelectedApplications(null);
+
+    this._emitter.emit('clear');
+  }
+
+  /**
+   * Clears all applications that have already been restarted.
+   */
+  clearRestarted() {
+    // TODO: clear all applications that are in  `_all` but not in `activeApplications`
+    throw new Error('NYI');
   }
 
   // ###########################################################################
@@ -150,12 +242,11 @@ class ApplicationCollection {
 
   onSelectionChanged(cb) {
     const unsubscribe = this._emitter.on('selectionChanged', cb);
-    if (this._selectedApplication) {
-      cb(this._selectedApplication);
+    if (this._selectedApplications) {
+      cb(this._selectedApplications);
     }
     return unsubscribe;
   }
-
 
   onAdded(cb) {
     return this._emitter.on('added', cb);

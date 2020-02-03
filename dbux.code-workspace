@@ -15,8 +15,8 @@
 		"gitlens.codeLens.enabled": false,
 		"gitlens.currentLine.enabled": false,
 		"gitlens.hovers.currentLine.over": "line",
-		"files.associations": {
-			"*.js": "typescriptreact"
-		}
+		// "files.associations": {
+		// 	"*.js": "typescriptreact"
+		// }
 	}
 }

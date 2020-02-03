@@ -28,7 +28,7 @@ function activate(context) {
     initCodeControl(context);
 
     // TODO: we don't have a single DataProvider anymore - manage Applications instead
-    const dataProvider = newDataProvider('not/an/application');
+    const dataProvider = selectedApp.dataProvider;
     const treeViewController = initTreeView(context, dataProvider);
     const playbackController = initPlayback(dataProvider, treeViewController);
     initCommands(context, treeViewController, playbackController);
