@@ -2,7 +2,7 @@ async function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-function f1() { return sleep(2000); }
+function f1(g) { g(); return sleep(2000); }
 
 async function f2() { await sleep(2000); }
 
@@ -17,14 +17,16 @@ async function f4(...fs) {
   }
 }
 
-// TODO: *VSCode bug* here - does not display `traceDecorations` correctly 
+// TODO: *VSCode bug* here - only displays one (not multiple) `traceDecoration` 
 //    behind last argument of function call, if there is nothing following it on the same line
 async function main() {
-  await f1();
+  await f1(
+    f2
+  );
   await f4(
     f2,
-    f3,
-    sleep.bind(null, 1000)
+    sleep.bind(null, 1000),
+    f3
   );
 }
 
