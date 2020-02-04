@@ -6,7 +6,7 @@ import DataProvider from 'dbux-data/src/DataProvider';
 import { TreeViewController } from '../treeView/treeViewController';
 import ContextNode from '../treeView/ContextNode';
 
-import { Uri } from 'vscode';
+import { Uri, commands } from 'vscode';
 
 
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
@@ -21,15 +21,24 @@ export default class PlaybackController {
     this.dataProvider = dataProvider;
     this.treeViewController = treeViewController
     this.frameId = 1;
+    this.lastFrameId = 1;
 
     this.treeViewController.onItemClick(this.onTreeItemClick)
   }
 
   play = () => {
-    this.intervalId = setInterval(this.next, 1000);
+    commands.executeCommand('setContext', 'dbuxPlaybackPlaying', true);
+    this.intervalId = setInterval(this._onPlay, 1000);
   }
 
-  stop = () => {
+  _onPlay = () => {
+    this.lastFrameId = this.frameId;
+    this.nextTrace();
+    if (this.frameId == this.lastFrameId) this.pause();
+  }
+
+  pause = () => {
+    commands.executeCommand('setContext', 'dbuxPlaybackPlaying', false);
     clearInterval(this.intervalId);
   }
 
@@ -87,3 +96,8 @@ export default class PlaybackController {
   }
 
 }
+
+
+// auto playback
+// select by button(?)
+// decorate unplayed/played traces

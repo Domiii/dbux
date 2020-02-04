@@ -35,6 +35,22 @@
 		},
 		"commands": [
 			{
+				"command": "dbuxPlayback.play",
+				"title": "Start",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				}
+			},
+			{
+				"command": "dbuxPlayback.pause",
+				"title": "Pause",
+				"icon": {
+					"light": "resources/light/folder.svg",
+					"dark": "resources/dark/folder.svg"
+				}
+			},
+			{
 				"command": "dbuxPlayback.previousTrace",
 				"title": "Previous Trace",
 				"icon": {
@@ -118,16 +134,26 @@
 					"group": "navigation@0"
 				},
 				{
-					"command": "dbuxPlayback.nextTrace",
+					"command": "dbuxPlayback.play",
+					"when": "dbuxPlaybackPlaying == false",
 					"group": "navigation@1"
 				},
 				{
-					"command": "dbuxPlayback.previousTraceInContext",
+					"command": "dbuxPlayback.pause",
+					"when": "dbuxPlaybackPlaying == true",
 					"group": "navigation@2"
 				},
 				{
-					"command": "dbuxPlayback.nextTraceInContext",
+					"command": "dbuxPlayback.nextTrace",
 					"group": "navigation@3"
+				},
+				{
+					"command": "dbuxPlayback.previousTraceInContext",
+					"group": "navigation@4"
+				},
+				{
+					"command": "dbuxPlayback.nextTraceInContext",
+					"group": "navigation@5"
 				}
 			],
 			"view/title": [

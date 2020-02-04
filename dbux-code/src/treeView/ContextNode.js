@@ -9,7 +9,7 @@ import {
 
 export default class ContextNode extends TreeItem {
 
-	constructor(
+  constructor(
     displayName,
     typeName,
     fileName,
