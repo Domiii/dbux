@@ -30,6 +30,10 @@
 				{
 					"id": "dbuxView",
 					"name": ""
+				},
+				{
+					"id": "dbuxTraceDetailsView",
+					"name": ""
 				}
 			]
 		},
@@ -108,6 +112,10 @@
 			},
 			{
 				"command": "dbuxView.itemClick",
+				"title": "Clicked"
+			},
+			{
+				"command": "dbuxTraceDetailsView.itemClick",
 				"title": "Clicked"
 			}
 		],

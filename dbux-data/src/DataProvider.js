@@ -50,6 +50,16 @@ class ExecutionContextCollection extends Collection<ExecutionContext> {
   constructor(dp) {
     super('executionContexts', dp);
   }
+  
+  add(entries) {
+    for (const entry of entries) {
+      if (!entry.parentContextId) {
+        // set applicationId, so we can trace any data point back to it's application
+        entry.applicationId = this.dp.application.applicationId;
+      }
+    }
+    super.add(entries);
+  }
 }
 
 
