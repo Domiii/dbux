@@ -28,7 +28,7 @@ export class StaticContextCollection extends Collection {
       // change to global id over all programs
       entry.staticId = this._all.length;
       this._all.push(entry);
-      this.send(entry);
+      this._send(entry);
     }
   }
 
@@ -43,6 +43,11 @@ export class StaticContextCollection extends Collection {
       return null;
     }
     return contexts[inProgramStaticId];
+  }
+
+  getStaticContextId(programId, inProgramStaticId) {
+    const staticContext = this.getContext(programId, inProgramStaticId);
+    return staticContext.staticId;
   }
 }
 

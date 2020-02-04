@@ -1,4 +1,4 @@
-const { spawnSync } = require('child_process');
+// const { spawnSync } = require('child_process');
 
 
-spawnSync('npx', ['link-module-alias']);
+// spawnSync('npx', ['link-module-alias']);

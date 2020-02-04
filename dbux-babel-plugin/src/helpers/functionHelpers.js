@@ -31,7 +31,7 @@ export function getFunctionDisplayName(functionPath, functionName) {
 }
 
 /**
- * TODO: this.getLocalStorage = () => {
+ * 
  */
 export function guessFunctionName(functionPath) {
   if (isDebug()) {
@@ -45,15 +45,16 @@ export function guessFunctionName(functionPath) {
   if (!name) {
     /**
      * handle (at least) three cases of anonymous functions:
-     * 1. Variable `const f = () => {};`
-     * 2. Object property `({ f: () => {} })`
-     * 3. Class member `class A { f = () => {} }`
+     * 1. Variable: `const f = () => {}`
+     * 2. Object property: `({ f: () => {} })`
+     * 3. Class member: `class A { f = () => {} }`
      */
     const p = functionPath.parentPath.node;
     name = p.id?.name || p.key?.name;
 
     if (!name) {
-      // TODO: t.isCallExpression(p)
+      // TODO: callback arguments - f(() => {}) - `t.isCallExpression(p)`
+      // TODO: chained expressions this.f = () => {
       // logInternalWarning('Could not guess name of function: ', functionPath.toString());
       // debugger;
     }

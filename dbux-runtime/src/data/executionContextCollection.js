@@ -95,7 +95,8 @@ export class ExecutionContextCollection extends Collection {
     const contextId = this._all.length;
 
     const context = pools.executionContexts.allocate(
-      type, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId);
+      type, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId
+    );
     this._push(context);
     return context;
   }
@@ -120,7 +121,7 @@ export class ExecutionContextCollection extends Collection {
 
   _push(context) {
     this._all.push(context);
-    this.send(context);
+    this._send(context);
   }
 
 }

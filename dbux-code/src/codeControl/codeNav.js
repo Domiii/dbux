@@ -1,6 +1,6 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import { getCodeRangeFromLoc } from '../util/codeUtil';
-import Loc from 'dbux-common/src/core/data/loc';
+import Loc from 'dbux-common/src/core/data/Loc';
 
 import {
   window,

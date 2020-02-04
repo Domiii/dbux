@@ -1,19 +1,22 @@
 const path = require('path');
 const process = require('process');
+
 process.env.BABEL_DISABLE_CACHE = 1;
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 
 const outputFolderName = 'dist';
-const dbuxRoot = path.resolve(__dirname + '/../../..');
+const root = path.resolve(__dirname + '/../../..');
 //const dbuxPlugin = require(path.join(root, 'node_modules/dbux-babel-plugin'));
-const dbuxPlugin = path.resolve(path.join(dbuxRoot, '/dbux-babel-plugin/src/babelInclude'));
+const dbuxPluginPath = path.join(root, '/dbux-babel-plugin');
+const dbuxPlugin = path.resolve(dbuxPluginPath);
 
 require(dbuxPlugin);
 
 
-const dbuxFolders = ["dbux-runtime", "dbux-common", "dbux-data"];
-const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(dbuxRoot, f)));
+// const dbuxFolders = ["dbux-runtime", "dbux-common", "dbux-data"];
+const dbuxFolders = ["dbux-runtime"];
+const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(root, f)));
 
 
 const babelOptions = {
@@ -36,15 +39,23 @@ const buildMode = 'development';
 //const buildMode = 'production';
 
 
-const webpackPlugins = [];
-
 
 
 module.exports = (projectRoot) => {
-  const allFolders = [projectRoot, ...dbuxRoots]
-    .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
-    .flat()
-    .map(f => path.resolve(f));
+  // const ExtraWatchWebpackPlugin = require(projectRoot + '/node_modules/extra-watch-webpack-plugin');
+
+  const webpackPlugins = [
+    // new ExtraWatchWebpackPlugin({
+    //   dirs: [
+    //     path.join(dbuxPluginPath, 'dist')
+    //   ]
+    // })
+  ];
+
+  // const allFolders = [projectRoot, ...dbuxRoots]
+  //   .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
+  //   .flat()
+  //   .map(f => path.resolve(f));
     // console.log('webpack folders:', allFolders.join('\n'));
   return {
     //watch: true,
@@ -80,9 +91,11 @@ module.exports = (projectRoot) => {
       symlinks: true,
       // extensions: ['.js', '.jsx'],
       modules: [
-        // see: https://github.com/webpack/webpack/issues/8824#issuecomment-475995296
-        ...allFolders
-      ]
+        root,
+        // dbuxRoots.map(f => path.join(f, 'dist')),
+        path.join(projectRoot, 'src'),
+        path.join(projectRoot, 'node_modules')
+      ].flat()
     },
     module: {
       rules: [
@@ -92,13 +105,6 @@ module.exports = (projectRoot) => {
             path.join(projectRoot, 'src')
           ],
           options: babelOptions
-        },
-        {
-          loader: 'babel-loader',
-          include: dbuxRoots.map(r => path.join(r, 'src')),
-          options: {
-            babelrcRoots: dbuxRoots
-          }
         }
       ],
     },

@@ -4,7 +4,10 @@ export default class Trace {
   contextId: number;
   traceId: number;
   staticTraceId: number;
+  staticContextId: number;
   
   type: TraceType;
+  
   value: any;
+  valueId: number;
 }

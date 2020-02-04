@@ -1,35 +1,200 @@
 # dbux README
 
-## TODO
-* fix: trace `displayName` should not contain comments
-   * see: https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L156
-* fix: await0 sample doesn't run
-* fix babelrcroots in `babelInclude` - https://babeljs.io/docs/en/options#babelrcroots
-   * -> https://github.com/babel/babel/blob/282f81bd676d09c1d8c48b08a7254b961eb41bed/packages/babel-core/src/config/config-chain.js#L256
+# Development + Contributing: Getting Started
+
+## Prerequisites
+
+* node
+* vscode
+* yarn
+
+## Setup
+
+```sh
+git clone https://github.com/Domiii/dbux.git
+cd dbux
+code .
+
+# if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
+
+npm run dbux-install
+```
+
+## Start development
+
+```sh
+npm start # start webpack build of all projects in watch mode
+```
+
+## Usage
+
+1. open project in vscode
+1. go to your debug tab, select `dbux-code` and press F5 (runs the vscode extension in debug mode)
+1. Inside of the new window, you can:
+   * `dbux-run # instruments + executes currently opened file`
+   * test on one of the pre-configured projects
+   * use `dbux-cli` to setup + run your own project
+
+## Architectural Notes
+
+This is a multi-project monorepo.
+
+Why is it not using LERNA? Because I did not know about LERNA when I started; but it's working quite well nevertheless :)
+
+
+# TODO
+
+## TODO (dbux-code + dbux-data only)
+* (rename `dbuxWindow` to `dbuxContextView`?)
+* fix `dbuxContextView`: we don't just have a single `DataProvider` anymore, work against `Application`s instead
+   * see `codeDeco` for reference (`applicationCollection.onSelectionChanged`)
+* replace `ProgramFilePathByTraceIdQuery` with a `util` function instead (no need to cache)
+* [playback] finish first version of playback feature (v0.1)
+* add multiple "step-through" modes (`StepMode = new Enum(...)`) to `playback` feature:
+   1. `StepMode.All`
+      * the first version of it
+   1. `StepMode.ContextOnly` (default)
+      * skip all traces that are following `currentTrace` (in `traces._all`) and have the same `contextId`
+      * step to the last trace in context
+      * create `TracesContextSwitchOnlyIndex` for this?
+         * NOTE: For `StepMode.All` we work against the array of all traces; for this `StepMode`, we want to create a smaller array of traces. This `Index` represents that array by filtering out all non-matching traces.
+         * identifying any pair of two neighboring traces `t1` and `t2` where `t1.contextId` !== `t2.contextId`, plus first and last trace
+         * `makeKey` can just return `true` or `false` to act as a binary filter
+            * NOTE: When `makeKey` returns `false` the `entry` is filtered out, will not participate in `Index`
+            * NOTE: `true` gets implicitely cast to `1`
+* [playback] when stepping through, render the value of `TraceType.ExpressionResult` inline
+* switch between `StepMode`s via button or command
+* [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
+   * shows all applications in `applicationCollection`
+   * lets you switch between them by clicking on them (can use `applicationCollection.setSelectedApplication`)
+* [selectionContextView]
+  * show all info relevant to the position where the cursor currently is
+  * "`contextElevator`": buttons to step between child/parent context
+  * TODO: what about in-line contexts?
+* [callstackView]
+  * actually: a callstack is actually a single slice of a complex call graph over time
+  * allow to search for path between any two contexts
+* [playback] add awesome keyboard controls~
+   * when "in playback mode" use arrow keys (and maybe a few other keys) to jump around very quickly
+   * can we do it like [`jumpy`](https://marketplace.visualstudio.com/items?itemName=wmaurer.vscode-jumpy) ([source](https://github.com/krnik/vscode-jumpy))?
+      * Type pseudo "event handler" - https://github.com/wmaurer/vscode-jumpy/blob/master/src/extension.ts#L130
+   * Problem: `vscode` has some issue handling the `type` command and it's friends
+      * [Stacking of type event handlers + onDidType event](https://github.com/Microsoft/vscode/issues/13441)
+      * https://github.com/microsoft/vscode/issues/65876
+* [codeDeco] add an `BlurBackgroundMode` `Enum`
+   * `BlurBackgroundMode.Application` - "gray out" all code that is not in any executed `context`
+   * more future modes:
+      * `CurrentStack` - gray out all code that is not on current `stack`
+         * also need to modify `dbux-babel-plugin` to store `rootContextId`
+   * more future work (not yet):
+      * e.g. "gray out" with higher granularity; gray out everything except all traces that were executed
+* add a search bar to `dbuxContextView` (search by `displayName` and `filePath`)
+   * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
+   * when entering search terms, only display matching nodes
+   * keep all necessary parent nodes
+      * gray out any parent node that does not match the search (semi-transparent?)
+   * (when clearing search, stay on selected node)
+   * clear search on `Esc` key press
+* add a button to the top right to toggle (show/hide) all intrusive features
+   * includes: `codeDeco`, and all kinds of extra buttons (such as `playback`)
+   * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+X CTRL+C` (need every single key))
+* `playback` + `step` be able to use keyboard   
+* add new index: `TracesByProgramIndex`
+   * key = `programId`
+* display a warning at the top of EditorWindow:
+   * if it has been edited after the time of it's most recent `Program` `Context`
+   * if it is very large and thus will slow things down (e.g. > x traces?)
+      * potentially ask user for confirmation first? (remember decision until restart or config option override?)
+   * (is that possible?)
+* design a proper extension config API; make the following configurable:
+   * `codeDeco.blurBackgroundMode`
+
+## TODO (other)
+* [codeDeco] better deco
+   * for function calls: render context targets (if known)
+   * capture function calls arguments
+   * capture function parameters
+   * allow to jump to caller callee upon context switches
+* [applications]
+   * add `Application` as root context for an application
+   * allow for selecting (merging `DataProvider` of) multiple applications (e.g. backend + frontend)
+* [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`: display the `value` in `codeDeco` behind the expression?
+   * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
+   * TODO: don't waste space if value has a long string representation?
+* [instrumentation] if we see a function call for which we have no context, find out where it goes
+   * (i.e. dependency name or runtime-internal?)
+      * -> then allow to easily add it to our config and re-run so we can get it next time
+   * Currently: seems almost impossible
+   * Option 1: [Access `[[FunctionLocation]]` programmatically](https://stackoverflow.com/questions/41146373/access-function-location-programmatically)
+      * https://github.com/rwjblue/get-function-location
+      * SAD: would only work on `Node` or as a browser plugin...
+      * not sure yet if its possible at all in the browser [[*](https://stackoverflow.com/questions/56066523/javascript-retrieve-file-and-line-location-of-function-during-runtime)]
+   * Option 2: when using `webpack` et al, instrument all functions of all required `node_modules`?
+      * PROBLEM: instrumenting source-mapped files requires source-map merging which can be iffy and bug-prone
+   * Option 3: while debugging, integrate with debugger API to guide user to step into function, then retrospectively retrieve data from call-site
+      * most straight-forward, but UX is worse
+* [instrumentation] proper `cli`
+* [instrumentation] allow to easily instrument any referenced modules (not just our own code)
+   * ... and optionally any of its references?
+* fix `dbux-code/src/net/Client` to allow for reconnecting Applications
+   * will need `dbux-runtime` to send`init` message
+* add test setup to all libs
+* add testing for serialization + deserialization (since it can easily cause a ton of pain)
+* improve value serialization to skip objects that are too big
+
+
+
+## Possible future work
+* [codeDeco] add complex in-line widgets to let user interact with traces and contexts?
+   * probably not necessary, as we are using `selectionContextView` instead (for now)
+   * [`gitlens`](https://github.com/eamodio/vscode-gitlens/tree/master/src) has the feature in its inline `blame` decorations
+* integrate `dbux` with at least one testing methodology
+   * case-studies
+* in `ContextTreeView`, make text of all nodes that do not belong to the current `Program` semi-transparent
+   * can use `TracesByProgramIndex` for this
+* serialize/deserialize all data, survive VSCode restart/reload
+* fix: in `dbuxState.add{Resume,Static}Context`, we set `_parentId` and `parent` but do not properly lookup global id later
+
 
 ## Fancy ideas (Dev)
 * add extra-watch-webpack-plugin https://github.com/pigcan/extra-watch-webpack-plugin?
 
-## Installing the good stuff
+# Installing the good stuff
 
+## Basics
+
+```sh
+`# jest` yarn add --dev jest jest-expect-message jest-extended
+`# babel basics` yarn add --dev @babel/core @babel/cli @babel/node @babel/register 
+`# babel plugins` yarn add --dev @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
+`# babel runtime` yarn add core-js@3 @babel/runtime
+`# eslint` yarn add --dev eslint eslint-config-airbnb-base
+`# webpack` yarn add --dev webpack webpack-cli webpack-dev-server nodemon
+`# flow` yarn add --dev flow-bin @babel/preset-flow eslint-plugin-flowtype && npx flow init #&& npx flow
+`# babel dev` yarn add --dev @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester
+```
+
+or with npm:
 ```sh
 `# jest` npm i -D jest jest-expect-message jest-extended
 `# babel basics` npm i -D @babel/core @babel/cli @babel/node @babel/register 
 `# babel plugins` npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
 `# babel runtime` npm i -S core-js@3 @babel/runtime
-`# eslint` npm i -D eslint eslint-config-esnext
-`# flow` npm i -D flow-bin @babel/preset-flow eslint-plugin-flowtype && npx flow init #&& npx flow
-`# babel dev` npm i -D @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester && \
+`# eslint` npm i -D eslint eslint-config-airbnb-base
 ```
 
-## Major Components
-* Babel plugins:
-   * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/user-handbook.md
-   * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md
-   * [`bael-plugin-tester`](https://github.com/babel-utils/babel-plugin-tester#examples)
-* Babel Config pain
-   * [how to use Babel 7 babel-register to compile files outside of working directory #8321](https://github.com/babel/babel/issues/8321)
-   * https://github.com/babel/babel/pull/5590
+## Upgrading Packages
+```sh
+`# babel` npm run dbux-install --force --save @babel/cli@latest @babel/core@latest @babel/node@latest @babel/plugin-proposal-class-properties@latest @babel/plugin-proposal-decorators@latest @babel/plugin-proposal-function-bind@latest @babel/plugin-proposal-optional-chaining@latest @babel/plugin-syntax-dynamic-import@latest @babel/plugin-syntax-export-default-from@latest @babel/plugin-syntax-flow@latest @babel/plugin-transform-runtime@latest @babel/preset-env@latest @babel/preset-flow@latest @babel/register@latest
+
+`# babel instrumentation` @babel/code-frame@latest @babel/template@latest
+```
+
+## package.json magic
+* replace: `"([^"]+)": "([^"]+)",\n\s*` w/ `$1@latest`
+
+
+# References
 
 ## Debugging Intermediate + Advanced
 * Getting the debugger to work when it just won't work!
@@ -37,6 +202,9 @@
 * Tell debugger to skip files
    * Chrome: [Blackboxing](https://developer.chrome.com/devtools/docs/blackboxing)
 
+## References: AI-supported coding
+* [VS Intellicode](https://github.com/MicrosoftDocs/intellicode/blob/master/docs/intellicode-visual-studio-code.md)
+* https://livablesoftware.com/smart-intelligent-ide-programming/
 
 ## References: babel + babel plugins
 
@@ -102,21 +270,26 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
    * https://glebbahmutov.com/blog/preloading-node-module/
       * https://glebbahmutov.com/blog/turning-code-coverage-into-live-stream/
 
+## References: VSCode extensions
+* [Gitlens](https://github.com/eamodio/vscode-gitlens/tree/master/src) provides custom widgets with clickable buttons that pop up on hover
+* adding custom queries/filters to treeview through configuration
+   * https://github.com/microsoft/vscode-pull-request-github
+* how to let WebView control VSCode `window` and vice versa:
+   * [send message from webview](https://github.com/microsoft/vscode-extension-samples/blob/master/webview-sample/media/main.js#22)
+   * [receive message in vscode](https://github.com/microsoft/vscode-extension-samples/blob/master/webview-sample/src/extension.ts#L106)
+* idea to navigate between or control traces in code: [Jumpy](https://marketplace.visualstudio.com/items?itemName=wmaurer.vscode-jumpy)?
+* idea to provide inline context menus: [`registerCompletionItemProvider`](https://code.visualstudio.com/api/references/vscode-api#2612)?
+   * e.g.: https://marketplace.visualstudio.com/items?itemName=AndersEAndersen.html-class-suggestions
+      * https://github.com/andersea/HTMLClassSuggestionsVSCode/blob/master/src/extension.ts
 
 # Projects
 
-## TODOMVC
+## todomvc (vanilla-es6)
 
-### vanillajs
-
-```sh
-cd projects && \
-git clone https://github.com/tastejs/todomvc.git && \
-cd todomvc/examples/vanillajs && \
-npm install && \
-npm install serve && `# installing it first makes npx run instantly everytime` \
-npx serve
-```
+* `npm run p1-install`
+* `npm run p1-start (starts web server)`
+* (open in browser: http://localhost:3030)
+   * (or: in VSCode go to debug menu and run "chrome todomvc" to enable debugging the runtime in VSCode)
 
 # Implementation
 
@@ -124,7 +297,13 @@ npx serve
 * Instrumentation
    * try/finally
    * top level extraction
-   * 
+* Babel plugins:
+   * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/user-handbook.md
+   * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md
+   * [`bael-plugin-tester`](https://github.com/babel-utils/babel-plugin-tester#examples)
+* Babel Config pain
+   * [how to use Babel 7 babel-register to compile files outside of working directory #8321](https://github.com/babel/babel/issues/8321)
+   * https://github.com/babel/babel/pull/5590
 
 ## dbux-data
 * Indexes
@@ -144,11 +323,6 @@ npx serve
 
 
 # Projects
-* p1: todomvc (vanilla-es6)
-   * npm run p1-install
-   * npm run p1-start (starts web server)
-   * open in browser: http://localhost:3030
-      * (or: in VSCode go to debug menu and run "chrome todomvc" to enable debugging the runtime in VSCode)
 
 
 
@@ -162,14 +336,25 @@ npx serve
       * Solution: run command in external `cmd` or find a better behaving terminal
 
 
-# VSCode: custom keybindings
+# VSCode: Advanced Usage
 
-## VSCode's Terminal has no "clear" keybinding anymore
+## General Tips&Tricks
+* https://vscodecandothat.com/
+* https://medium.com/club-devbytes/how-to-use-v-s-code-like-a-pro-fb030dfc9a72
+* 
 
+
+## Use VSCode as git diff tool
+
+* [see here](https://stackoverflow.com/a/47569315)
+
+## Keyboard shortcuts
+
+NOTE: VSCode's Terminal has no "Clear" keybinding anymore
 You can re-add it manually:
 
 1. CTRL+SHIFT+P -> "Open Keyboard Shortcuts (JSON)"
-1. add (for Windows):
+1. add (for Windows use `ctrl`; for MAC use `cmd`):
 ```js
 { 
    "key": "ctrl+k",
@@ -184,3 +369,27 @@ You can re-add it manually:
    * see: https://github.com/socketio/engine.io/issues/575
    * see: https://github.com/socketio/socket.io/issues/3342
    * see: https://github.com/mmdevries/uws
+
+
+# Useful Snippets
+
+```
+	"Comment Barrier 1": {
+		"scope": "javascript, typescript",
+		"prefix": "comment-barrier1",
+		"body": [
+			"// ###########################################################################",
+			"// $1",
+			"// ###########################################################################$0"
+		]
+	},
+	"Comment Barrier 2": {
+		"scope": "javascript, typescript",
+		"prefix": "comment-barrier2",
+		"body": [
+			"// ########################################",
+			"// $1",
+			"// ########################################$0"
+		]
+	}
+```

@@ -1,15 +1,15 @@
-import fsPath from 'path';
-import { getPresentableString } from './helpers/misc';
+import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import { getBasename } from 'dbux-common/src/util/pathUtil';
+import * as t from '@babel/types';
 
-function getFilePath(state) {
-  // let filename = state.filename && fsPath.normalize(state.filename) || 'unknown_file.js';
-  // const cwd = fsPath.normalize(state.cwd);
-  // if (filename.startsWith(cwd)) {
-  //   filename = fsPath.relative(state.cwd, filename);
-  // }
-  const filename = state.filename && fsPath.resolve(state.filename);
-  return filename;
+import { getPresentableString, toSourceStringWithoutComments } from './helpers/misc';
+
+function checkPath(path) {
+  if (!path.node.loc) {
+    const msg = 'trying to instrument an already instrumented node: ' + path;
+    throw new Error(msg);
+  }
 }
 
 // ###########################################################################
@@ -17,39 +17,66 @@ function getFilePath(state) {
 // ###########################################################################
 
 const traceCustomizationsByType = {
-  // [TraceType.StartProgram]: tracePathStart,
   [TraceType.PushImmediate]: tracePathStart,
   [TraceType.PopImmediate]: tracePathEnd,
-  [TraceType.BlockStart]: tracePathStart
+
+  // NOTE: PushCallback + PopCallback are sharing the StaticTrace of `ScheduleCallback`, so they won't pass through here
+  // [TraceType.PushCallback]: tracePathStart,
+  // [TraceType.PopCallback]: tracePathEnd,
+
+  [TraceType.Await]: tracePathEnd,
+  [TraceType.Resume]: tracePathEnd,
+  [TraceType.BlockStart]: tracePathStart,
+  [TraceType.BlockEnd]: tracePathEnd
 };
 
-function tracePathStart(path, state, trace) {
-  const { loc } = path.node;
+
+function tracePathStart(path, state, thin) {
+  const { node } = path;
+  const { loc: { start } } = node;
+  const end = { ...start };
+  if (!thin) {
+    // for blocks, move *into* the block (curly braces)
+    if (t.isBlock(node)) {
+      end.column += 1;
+    }
+  }
+
   return {
-    // _parentId: parentStaticId,
     loc: {
-      // for highlighting purposes, zero-length ranges are not the best choice
-      // instead, we ideally want to highlight something more meaningful (e.g. the "if" part of the "if" statement)
-      start: loc.start,
-      end: loc.start
+      start,
+      end
     }
   };
 }
 
-function tracePathEnd(path, state, trace) {
-  const { loc } = path.node;
+function tracePathEnd(path, state, thin) {
+  const { node } = path;
+  const { loc: { end } } = node;
+  const start = { ...end };
+  if (!thin) {
+    // for blocks, move *into* the block (curly braces)
+    if (t.isBlock(node)) {
+      start.column -= 1;
+    }
+  }
+
   return {
     loc: {
-      start: loc.end,
-      end: loc.end
+      start,
+      end
     }
   };
 }
 
 function traceDefault(path, state) {
-  // const parentStaticId = state.getClosestStaticId(path);
-  // console.log('actualParent',  toSourceString(actualParent.node));
-  const displayName = getPresentableString(path.toString(), 30);
+  // const parentStaticId = state.getParentStaticContextId(path);
+
+  // TODO: if we really need the `displayName`, improve performance
+  const str = toSourceStringWithoutComments(path.node);
+  const displayName = getPresentableString(str, 30);
+  // const displayName = '';
+
   const { loc } = path.node;
   return {
     displayName,
@@ -66,11 +93,11 @@ function traceDefault(path, state) {
  * Build the state used by dbux-babel-plugin throughout the entire AST visit.
  */
 export default function injectDbuxState(programPath, programState) {
-  const filePath = getFilePath(programState);
-  const fileName = fsPath.basename(filePath);
+  const filePath = programState.filename;
+  const fileName = filePath && getBasename(filePath)
 
   const { scope } = programPath;
-  
+
   const staticContexts = [null]; // staticId = 0 is always null
   const traces = [null];
 
@@ -165,8 +192,12 @@ export default function injectDbuxState(programPath, programState) {
       return staticContextParent?.getData(dataName);
     },
 
-    getClosestStaticId(path) {
+    getParentStaticContextId(path) {
       return programState.getClosestAncestorData(path, 'staticId');
+    },
+
+    getCurrentStaticContextId(path) {
+      return path.getData('staticId') || programState.getClosestAncestorData(path, 'staticId');
     },
 
     getClosestContextIdName(path) {
@@ -191,62 +222,69 @@ export default function injectDbuxState(programPath, programState) {
      * Contexts are (currently) potential stackframes; that is `Program` and `Function` nodes.
      */
     addStaticContext(path, data) {
+      checkPath(path);
+
       // console.log('STATIC', path.get('id')?.name, '@', `${state.filename}:${line}`);
-      const staticId = staticContexts.length;
-      const parentStaticId = dbuxState.getClosestStaticId(path);
+      const _staticId = staticContexts.length;
+      const _parentId = dbuxState.getParentStaticContextId(path);
       // console.log('actualParent',  toSourceString(actualParent.node));
       const { loc } = path.node;
       staticContexts.push({
-        _staticId: staticId,
-        _parentId: parentStaticId,
+        _staticId,
+        _parentId,
         loc,
         ...data
       });
 
-      path.setData('staticId', staticId);
-      return staticId;
+      path.setData('staticId', _staticId);
+      return _staticId;
     },
 
-    addResumeContext(parentStaticId, locStart) {
-      const parent = dbuxState.getStaticContext(parentStaticId);
-      const staticId = staticContexts.length;
+    addResumeContext(awaitPath, locStart) {
+      checkPath(awaitPath);
+
+      const _staticId = staticContexts.length;
+      const _parentId = dbuxState.getCurrentStaticContextId(awaitPath);
       const loc = {
         start: locStart,
         end: null     // we don't know where it ends yet (can only be determined at run-time)
       };
       staticContexts.push({
-        type: 5, // : StaticContextType
-        staticId,
-        parent: parentStaticId,
-        displayName: parent.displayName,
+        type: StaticContextType.Resume,
+        _staticId,
+        _parentId,
+        // displayName: parent.displayName,
         loc
       });
-      return staticId;
+      return _staticId;
     },
 
     /**
      * Tracing a path in its entirety (usually means, the trace is recorded right before the given path).
      */
-    addTrace(path, type) {
+    addTrace(path, type, customArg) {
+      checkPath(path);
+
       // console.log('TRACE', '@', `${state.filename}:${line}`);
-      const traceId = traces.length;
+      const _traceId = traces.length;
       let trace;
       if (traceCustomizationsByType[type]) {
-        trace = traceCustomizationsByType[type](path, dbuxState);
+        trace = traceCustomizationsByType[type](path, dbuxState, customArg);
       }
       else {
-        trace = traceDefault(path, dbuxState);
+        trace = traceDefault(path, dbuxState, customArg);
       }
 
-      trace._traceId = traceId;
+      trace._traceId = _traceId;
+      trace._staticContextId = dbuxState.getCurrentStaticContextId(path);
       trace.type = type;
       traces.push(trace);
 
-      return traceId;
+      return _traceId;
     },
   };
-  
+
   Object.assign(programState, dbuxState);
-  
+
   return programState;
 }

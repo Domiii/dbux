@@ -1,14 +1,11 @@
-let _ms;
-function f1(r) {
-  setTimeout(r, _ms)
-}
-
 async function sleep(ms) {
-  // return new Promise(r => setTimeout(r, ms));
-  _ms = ms;
-  return new Promise(f1);
+  return new Promise(r => setTimeout(r, ms));
 }
 
 (async function main() {
-  await sleep(50);
+  console.log(1);
+  await sleep(1500);
+  console.log(2);
+  await sleep(1500);
+  console.log(3);
 })();

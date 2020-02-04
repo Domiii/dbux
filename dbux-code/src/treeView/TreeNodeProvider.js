@@ -20,7 +20,7 @@ export class TreeNodeProvider {
         this.onChangeEventEmitter = onChangeEventEmitter;
         this.onDidChangeTreeData = onChangeEventEmitter.event;
 
-        this.dataProvider.onData('executionContexts', this.update);
+        this.dataProvider.__old_onData('executionContexts', this.update);
     }
 
     contextToNode = (context: ExecutionContext) => {
