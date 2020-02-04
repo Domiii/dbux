@@ -7,22 +7,22 @@ const { log, debug, warn, error: logError } = newLogger('TreeView');
 
 let eventLogProvider, treeViewController: TreeViewController;
 
-export function initTreeView(context, dataProvider){
+export function initTreeView() {
 
   let onChangeEventEmitter = new EventEmitter();
-  eventLogProvider = new TreeNodeProvider(dataProvider, onChangeEventEmitter);
+  eventLogProvider = new TreeNodeProvider(onChangeEventEmitter);
   treeViewController = new TreeViewController('dbuxView', eventLogProvider, onChangeEventEmitter, {
     canSelectMany: false,
     showCollapseAll: true
   });
 
   return treeViewController;
-  
+
 }
 
 export class TreeViewController {
-  constructor(viewId, treeDataProvider: TreeNodeProvider, onChangeEventEmitter, options){
-    this.treeView = window.createTreeView(viewId, { treeDataProvider: treeDataProvider, ...options});
+  constructor(viewId, treeDataProvider: TreeNodeProvider, onChangeEventEmitter, options) {
+    this.treeView = window.createTreeView(viewId, { treeDataProvider, ...options });
     this.treeDataProvider = treeDataProvider;
     this.onChangeEventEmitter = onChangeEventEmitter;
     this.onClickCallback = [];
@@ -37,15 +37,15 @@ export class TreeViewController {
     if (!lastNode) return this.treeDataProvider.rootNodes[0] || null;
     let id = lastNode.contextId;
     if (id !== 1) id -= 1;
-    return this.treeDataProvider.nodesByContext[id];
+    return this.treeDataProvider.nodesByApp[id];
   }
 
   getNextNode = () => {
     const lastNode = this.treeView.selection[0] || this.lastSelectedNode;
     if (!lastNode) return this.treeDataProvider.rootNodes[0] || null;
     let id = lastNode.contextId;
-    if (id !== this.treeDataProvider.nodesByContext.length) id += 1;
-    return this.treeDataProvider.nodesByContext[id];
+    if (id !== this.treeDataProvider.nodesByApp.length) id += 1;
+    return this.treeDataProvider.nodesByApp[id];
   }
 
   previous = () => {
@@ -55,7 +55,7 @@ export class TreeViewController {
     node.gotoCode();
     this.revealContext(node);
   }
-  
+
   next = () => {
     const node = this.getNextNode();
     if (!node) return;
@@ -72,7 +72,7 @@ export class TreeViewController {
   }
 
   revealContextById = (contextId: number, expand = false) => {
-    const node = this.treeDataProvider.nodesByContext[contextId];
+    const node = this.treeDataProvider.nodesByApp[contextId];
     this.revealContext(node, expand);
   }
 

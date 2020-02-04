@@ -1,10 +1,10 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import { registerCommand } from './commands/commandUtil';
-import { TreeViewController } from './treeView/treeViewController'
+import { TreeViewController } from './treeView/treeViewController';
 
 const { log, debug, warn, error: logError } = newLogger('Commands');
 
-export function initToolBar(context, treeViewController: TreeViewController){
+export function initToolBar(context, treeViewController: TreeViewController) {
 
   registerCommand(context,
     'dbuxView.addEntry',
@@ -26,6 +26,7 @@ export function initToolBar(context, treeViewController: TreeViewController){
     () => {
       // treeViewController.treeDataProvider.dataProvider.clear();
       treeViewController.treeDataProvider.clear();
+      treeViewController.treeDataProvider.refresh();
     }
   );
 

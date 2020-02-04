@@ -1,14 +1,12 @@
-import { navToCode } from '../codeControl/codeNav';
-import { getCodePositionFromLoc } from '../util/codeUtil';
-import path from 'path';
 import {
   Uri,
-  TreeItem, 
-  TreeItemCollapsibleState as CollapsibleState 
+  TreeItem,
+  TreeItemCollapsibleState as CollapsibleState
 } from 'vscode';
+import path from 'path';
+import { navToCode } from '../codeControl/codeNav';
 
 export default class ContextNode extends TreeItem {
-
   constructor(
     displayName,
     typeName,
@@ -19,7 +17,7 @@ export default class ContextNode extends TreeItem {
     contextId,
     parentContextId = null,
     parentNode = null,
-    nodeProvider
+    treeNodeProvider
   ) {
     // set label
     super(`${displayName} [${typeName}]`);
@@ -34,7 +32,7 @@ export default class ContextNode extends TreeItem {
     this.contextId = contextId;
     this.parentContextId = parentContextId;
     this.parentNode = parentNode;
-    this.nodeProvider = nodeProvider;
+    this.treeNodeProvider = treeNodeProvider;
 
     // treeItem data
     this.children = [];
@@ -68,8 +66,7 @@ export default class ContextNode extends TreeItem {
     this.collapsibleState = CollapsibleState.Collapsed;
   }
 
-	get tooltip() {
-		return `#${this.contextId} at ${this.fileName}(tooltip)`;
-	}
-
+  get tooltip() {
+    return `#${this.contextId} at ${this.fileName}(tooltip)`;
+  }
 }

@@ -68,6 +68,7 @@ module.exports = {
 		"func-names": 0,
 		"wrap-iife": ["warn", "inside"],
 		"implicit-arrow-linebreak": 0,
-		"function-paren-newline": 0
+		"function-paren-newline": 0,
+		"linebreak-style": 0
 	}
 };

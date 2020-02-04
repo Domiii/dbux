@@ -112,6 +112,10 @@ export default {
     return dp.util.getStaticTraceProgramId(staticTraceId);
   },
 
+  getAllRootContexts(dp: DataProvider) {
+    return dp.indexes.executionContexts.roots.get(1);
+  },
+
   /**
    * TODO: improve performance, use index instead
    */

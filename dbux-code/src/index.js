@@ -26,10 +26,8 @@ function activate(context) {
     server = initServer(context);
     initCodeControl(context);
 
-    // TODO: we don't have a single DataProvider anymore - manage Applications instead
-    // TODO: see codeDeco for reference
-    // const treeViewController = initTreeView(context, dataProvider);
-    // const playbackController = initPlayback(dataProvider, treeViewController);
+    // const treeViewController = initTreeView();
+    // const playbackController = initPlayback(treeViewController);
     // initCommands(context, treeViewController, playbackController);
     // initToolBar(context, treeViewController);
   } catch (e) {

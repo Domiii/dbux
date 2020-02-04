@@ -1,29 +1,36 @@
+import { Uri, commands } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
+import applicationCollection from 'dbux-data/src/applicationCollection';
+import EventHandlerList from 'dbux-common/src/util/EventHandlerList';
 import { navToCode } from '../codeControl/codeNav';
-import { getCodePositionFromLoc } from '../util/codeUtil';
-
-import DataProvider from 'dbux-data/src/DataProvider';
 import { TreeViewController } from '../treeView/treeViewController';
 import ContextNode from '../treeView/ContextNode';
 
-import { Uri, commands } from 'vscode';
 
 
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 
 export default class PlaybackController {
-  
-  dataProvider: DataProvider;
   intervalId: number;
   frameId: number;
 
-  constructor(dataProvider: DataProvider, treeViewController: TreeViewController){
-    this.dataProvider = dataProvider;
-    this.treeViewController = treeViewController
+  constructor(treeViewController: TreeViewController) {
+    this.treeViewController = treeViewController;
     this.frameId = 1;
     this.lastFrameId = 1;
+    this.treeViewController.onItemClick(this.onTreeItemClick);
+    this.appEventHandlers = new EventHandlerList();
 
-    this.treeViewController.onItemClick(this.onTreeItemClick)
+    applicationCollection.onSelectionChanged((selectedApps) => {
+      // this.appEventHandlers.unsubscribe();
+      // this.clear();
+      // for (const app of selectedApps) {
+      //   this.update(app, app.dataProvider.collections.executionContexts.getAll());
+      //   this.appEventHandlers.subscribe(
+      //     app.dataProvider.onData('executionContexts', this.update.bind(this, app))
+      //   );
+      // }
+    });
   }
 
   play = () => {
