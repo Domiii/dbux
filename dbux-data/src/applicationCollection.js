@@ -6,6 +6,8 @@ import pull from 'lodash/pull';
 
 import Application from './Application';
 import { areArraysEqual } from '../../dbux-common/src/util/arrayUtil';
+import ApplicationSelection from './ApplicationSelection';
+import ApplicationSelectionData from './ApplicationSelectionData';
 
 const { log, debug, warn, error: logError } = newLogger('applications');
 
@@ -19,26 +21,26 @@ function extractFilePathFromInitialData(initialData) {
 }
 
 /**
- * This callback type is called `requestCallback` and is displayed as a global symbol.
- *
  * @callback fileSelectedApplicationCallback
  * @param {Application} application
  * @param {number} programId
+ */
+/**
+ * @callback selectionChangedCallback
+ * @param {Application[]} applications
  */
 
 /**
  * ApplicationCollection manages all application throughout the life-time of the dbux-data module.
  */
-class ApplicationCollection {
-  _selectedApplicationIds = new Set();
-  _selectedApplications = [];
+export class ApplicationCollection {
   _all = [null];
   _activeApplications = new Map();
-
 
   _emitter = new NanoEvents();
 
   constructor() {
+    this._applicationSelection = new ApplicationSelection(this);
   }
 
   getById(applicationId: Application) {
@@ -90,78 +92,6 @@ class ApplicationCollection {
   }
 
   // ###########################################################################
-  // Manage selected applications
-  // ###########################################################################
-  
-  getSelectedApplications() {
-    return this._selectedApplications;
-  }
-
-  hasSelectedApplications() {
-    return !!this._selectedApplications.length;
-  }
-  
-  isApplicationSelected(applicationOrIdOrEntryPointPath) {
-    const application = this.getApplication(applicationOrIdOrEntryPointPath);
-    return this._selectedApplicationIds.has(application.applicationId);
-  }
-
-  selectApplication(applicationOrIdOrEntryPointPath) {
-    if (this.isApplicationSelected(applicationOrIdOrEntryPointPath)) {
-      return;
-    }
-    const application = this.getApplication(applicationOrIdOrEntryPointPath);
-
-    this._selectedApplicationIds.add(application.applicationId);
-    this._selectedApplications.push(application);
-    this._emitter.emit('selectionChanged', this._selectedApplications);
-  }
-
-  deselectApplication(applicationOrIdOrEntryPointPath) {
-    if (!this.isApplicationSelected(applicationOrIdOrEntryPointPath)) {
-      return;
-    }
-    const application = this.getApplication(applicationOrIdOrEntryPointPath);
-
-    this._selectedApplicationIds.delete(application.applicationId);
-    pull(this._selectedApplications, application);
-    this._emitter.emit('selectionChanged', this._selectedApplications);
-  }
-
-  deselectAllApplications() {
-    return this._selectedApplications();
-  }
-
-  _setSelectedApplications(...applications) {
-    if (areArraysEqual(this._selectedApplications, applications)) {
-      return;
-    }
-
-    this._selectedApplicationIds = new Set(applications.map(app => app.applicationId));
-    this._selectedApplications = applications;
-    this._emitter.emit('selectionChanged', this._selectedApplications);
-  }
-
-  /**
-   * @param {fileSelectedApplicationCallback} cb
-   */
-  mapSelectedApplicationsOfFilePath(fpath, cb) {
-    const applications = this._selectedApplications;
-
-    for (const application of applications) {
-      const { dataProvider } = application;
-
-      const programId = dataProvider.queries.programIdByFilePath(fpath);
-      if (!programId) {
-        // program did not execute for this application
-        continue;
-      }
-
-      cb(application, programId);
-    }
-  }
-
-  // ###########################################################################
   // add + remove applications
   // ###########################################################################
 
@@ -187,11 +117,11 @@ class ApplicationCollection {
 
     if (previousApplication && this.isApplicationSelected(previousApplication)) {
       // application restarted -> automatically deselect previous instance
-      this.deselectApplication(previousApplication);
+      this._applicationSelection.deselectApplication(previousApplication);
     }
     
     // always add new application to set of selected applications
-    this.selectApplication(application);
+    this._applicationSelection.selectApplication(application);
 
     return application;
   }
@@ -205,7 +135,7 @@ class ApplicationCollection {
 
     // deselect (will also trigger event)
     if (this._selectedApplications === application) {
-      this.deselectApplication(application.applicationId);
+      this._applicationSelection.deselectApplication(application.applicationId);
     }
 
     // remove
@@ -223,7 +153,7 @@ class ApplicationCollection {
     this._all = [null];
     this._activeApplications = new Map();
 
-    this._setSelectedApplications(null);
+    this._applicationSelection._setSelectedApplications(null);
 
     this._emitter.emit('clear');
   }
@@ -236,17 +166,13 @@ class ApplicationCollection {
     throw new Error('NYI');
   }
 
+  get applicationSelection() {
+    return this._applicationSelection;
+  }
+
   // ###########################################################################
   // event listeners
   // ###########################################################################
-
-  onSelectionChanged(cb) {
-    const unsubscribe = this._emitter.on('selectionChanged', cb);
-    if (this._selectedApplications) {
-      cb(this._selectedApplications);
-    }
-    return unsubscribe;
-  }
 
   onAdded(cb) {
     return this._emitter.on('added', cb);
@@ -265,6 +191,16 @@ class ApplicationCollection {
   }
 }
 
-const applicationCollection = new ApplicationCollection();
+/**
+ * @type {ApplicationCollection}
+ */
+let applicationCollection
+try {
+  applicationCollection = new ApplicationCollection();
+}
+catch (err) {
+  logError(err);
+  debugger;
+}
 
 export default applicationCollection;

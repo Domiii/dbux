@@ -12,7 +12,7 @@ import {
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import EventHandlerList from 'dbux-common/src/util/EventHandlerList';
 import { newLogger } from 'dbux-common/src/log/logger';
-import applicationCollection from 'dbux-data/src/applicationCollection';
+import applicationCollection, { ApplicationCollection } from 'dbux-data/src/applicationCollection';
 import { initTraceDecorators, renderTraceDecorations } from './traceDecorators';
 // import DataProvider from 'dbux-data/src/DataProvider';
 // import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
@@ -20,7 +20,6 @@ import { initTraceDecorators, renderTraceDecorations } from './traceDecorators';
 const { log, debug, warn, error: logError } = newLogger('code-deco');
 
 let activeEditor: TextEditor;
-const appEventHandlers = new EventHandlerList();
 
 
 // ###########################################################################
@@ -58,7 +57,7 @@ export function initCodeDeco(context) {
   // start rendering
   activeEditor = window.activeTextEditor;
 
-  if (applicationCollection.hasSelectedApplications() && activeEditor) {
+  if (applicationCollection.applicationSelection.hasSelectedApplications() && activeEditor) {
     // initial render
     renderDecorations();
   }
@@ -68,10 +67,10 @@ export function initCodeDeco(context) {
   // ########################################
 
   // data changed
-  applicationCollection.onSelectionChanged((selectedApps) => {
-    appEventHandlers.unsubscribe();
+  applicationCollection.applicationSelection.onSelectionChanged((selectedApps) => {
+    applicationCollection.applicationSelection.unsubscribeAll();
     for (const app of selectedApps) {
-      appEventHandlers.subscribe(
+      applicationCollection.applicationSelection.subscribe(
         app.dataProvider.onData('traces', renderDecorations),
         app.dataProvider.onData('staticTraces', renderDecorations)
       );

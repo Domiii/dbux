@@ -20,7 +20,7 @@ export function renderTraceDecorations(editor, fpath) {
   const allDecorations = [];
 
   // prepare decorations
-  applicationCollection.mapSelectedApplicationsOfFilePath(fpath, (application, programId) => {
+  applicationCollection.applicationSelection.mapSelectedApplicationsOfFilePath(fpath, (application, programId) => {
     const { dataProvider } = application;
     const staticTraces = dataProvider.indexes.staticTraces.visitedByFile.get(programId);
     // const traces = dataProvider.indexes.traces.byFile.get(programId);
