@@ -6,5 +6,6 @@
     }
   ],
   "editor.snippetSuggestions": "top",
+  "javascript.preferences.quoteStyle":"single",
   "jest.pathToJest": "sh scripts/runJest.sh"
 }

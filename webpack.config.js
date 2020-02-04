@@ -12,11 +12,11 @@ const outputFolderName = 'dist';
 const root = path.resolve(__dirname);
 
 const targets = [
-  "dbux-common", 
-  "dbux-data", 
-  
-  "dbux-babel-plugin", 
-  "dbux-runtime", 
+  "dbux-common",
+  "dbux-data",
+
+  "dbux-babel-plugin",
+  "dbux-runtime",
   // "dbux-cli"
 ];
 const targetsAbsolute = targets.map(f => path.resolve(path.join(root, f)));
@@ -38,14 +38,14 @@ const allFolders = [
 ];
 
 // const entry = Object.fromEntries(targets.map(target => [target, path.join('..', target, 'src/index.js').substring(1)]));  // hackfix: path.join('.', dir) removes the leading period
-const entry = Object.fromEntries(targets.map(target => [target, path.resolve(path.join(target, 'src/index.js'))])); 
+const entry = Object.fromEntries(targets.map(target => [target, path.resolve(path.join(target, 'src/index.js'))]));
 // const target = 'dbux-babel-plugin';
 
 // aliases allow resolving libraries that we are building here
 const alias = {
   ...Object.fromEntries(targets.map(target => [target, path.resolve(path.join(root, target))])),
   // 'socket.io-client': path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ))
-  'ws': path.resolve(path.join(root, 'dbux-runtime/node_modules', 'ws', 'index.js' )) // fix for https://github.com/websockets/ws/issues/1538
+  ws: path.resolve(path.join(root, 'dbux-runtime', 'node_modules', 'ws', 'index.js')) // fix for https://github.com/websockets/ws/issues/1538
 };
 // console.log(alias);
 
@@ -140,6 +140,6 @@ module.exports = [
   // NOTE: you can have multiple configs per file (see https://stackoverflow.com/a/46825869)
 ];
 
-console.warn('[dbux] webpack config loaded', 
-// targetsAbsolute
+console.warn('[dbux] webpack config loaded',
+  // targetsAbsolute
 );

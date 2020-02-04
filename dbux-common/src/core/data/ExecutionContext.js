@@ -19,6 +19,7 @@ export default class ExecutionContext {
   orderId : number;
   parentContextId : number;
   schedulerId : number;
+  createdAt: number;
 
   /**
    * This is probably not necessary.

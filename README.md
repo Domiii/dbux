@@ -67,10 +67,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `applicationCollection`
    * lets you switch between them by clicking on them (can use `applicationCollection.setSelectedApplication`)
-* [selectionContextView]
-  * show all info relevant to the position where the cursor currently is
-  * "`contextElevator`": buttons to step between child/parent context
-  * TODO: what about in-line contexts?
 * [callstackView]
   * actually: a callstack is actually a single slice of a complex call graph over time
   * allow to search for path between any two contexts
@@ -112,12 +108,12 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 ## TODO (other)
 * [codeDeco] better deco
    * for function calls: render context targets (if known)
-   * capture function calls arguments
    * capture function parameters
-   * allow to jump to caller callee upon context switches
-* [applications]
-   * add `Application` as root context for an application
-   * allow for selecting (merging `DataProvider` of) multiple applications (e.g. backend + frontend)
+* `dbuxTraceDetailsView`
+   * show all info relevant to the position where the cursor currently is
+   * allow to jump to caller/callee upon context switches
+   * "`contextElevator`": buttons to step between child/parent context
+   * TODO: what about in-line contexts?
 * [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`: display the `value` in `codeDeco` behind the expression?
    * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
    * TODO: don't waste space if value has a long string representation?
@@ -322,8 +318,6 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
    * [storage type] queries can return and cache any data type
 
 
-# Projects
-
 
 
 # Known Issues
@@ -365,10 +359,13 @@ You can re-add it manually:
 
 # Some problems that have been worked through
 
-* `Socket.IO` does not work anymore because it depends on a deprecated package
+* `Socket.IO` depends on `uws` which is deprecated
+   * fix: tell webpack to ignore it, since by default its not being used
    * see: https://github.com/socketio/engine.io/issues/575
    * see: https://github.com/socketio/socket.io/issues/3342
    * see: https://github.com/mmdevries/uws
+* `socket.io-client` bugs out because `ws` is bundled as targeting browser
+   * `code-insiders .\dbux-runtime\node_modules\engine.io-client\lib\transports\websocket.js`
 
 
 # Useful Snippets

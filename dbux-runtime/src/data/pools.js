@@ -20,7 +20,7 @@ const pools = {
       context.orderId = orderId;
       context.parentContextId = parentContextId;
       context.schedulerId = schedulerId;
-      // this.createdAt = _performance.now();
+      context.createdAt = Date.now();
       // context.resumedChildren = null;
 
       return context;
