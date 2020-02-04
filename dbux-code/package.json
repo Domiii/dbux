@@ -38,16 +38,16 @@
 				"command": "dbuxPlayback.play",
 				"title": "Start",
 				"icon": {
-					"light": "resources/light/edit.svg",
-					"dark": "resources/dark/edit.svg"
+					"light": "resources/light/play.svg",
+					"dark": "resources/dark/play.svg"
 				}
 			},
 			{
 				"command": "dbuxPlayback.pause",
 				"title": "Pause",
 				"icon": {
-					"light": "resources/light/folder.svg",
-					"dark": "resources/dark/folder.svg"
+					"light": "resources/light/pause.svg",
+					"dark": "resources/dark/pause.svg"
 				}
 			},
 			{
