@@ -21,11 +21,6 @@ function extractFilePathFromInitialData(initialData) {
 }
 
 /**
- * @callback fileSelectedApplicationCallback
- * @param {Application} application
- * @param {number} programId
- */
-/**
  * @callback selectionChangedCallback
  * @param {Application[]} applications
  */
@@ -166,7 +161,7 @@ export class ApplicationCollection {
     throw new Error('NYI');
   }
 
-  get applicationSelection() {
+  get selection() {
     return this._applicationSelection;
   }
 

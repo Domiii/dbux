@@ -10,10 +10,9 @@ import {
 
 
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
-import EventHandlerList from 'dbux-common/src/util/EventHandlerList';
 import { newLogger } from 'dbux-common/src/log/logger';
-import applicationCollection, { ApplicationCollection } from 'dbux-data/src/applicationCollection';
-import { initTraceDecorators, renderTraceDecorations } from './traceDecorators';
+import applicationCollection from 'dbux-data/src/applicationCollection';
+import { initTraceDecorators, renderTraceDecorations } from './traceDecorator';
 // import DataProvider from 'dbux-data/src/DataProvider';
 // import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 
@@ -68,7 +67,6 @@ export function initCodeDeco(context) {
 
   // data changed
   applicationCollection.applicationSelection.onSelectionChanged((selectedApps) => {
-    applicationCollection.applicationSelection.unsubscribeAll();
     for (const app of selectedApps) {
       applicationCollection.applicationSelection.subscribe(
         app.dataProvider.onData('traces', renderDecorations),

@@ -113,7 +113,7 @@ export default {
   },
 
   /**
-   * TODO: improve performance, use index instead
+   * TODO: improve performance, use MultiKeyIndex instead
    */
   groupTracesByType(dp: DataProvider, staticTraces: StaticTrace[]) {
     const groups = [];

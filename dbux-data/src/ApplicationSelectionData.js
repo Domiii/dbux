@@ -85,8 +85,16 @@ class RootContextsInOrder {
 // ###########################################################################
 
 /**
+ * @callback fileSelectedApplicationCallback
+ * @param {Application} application
+ * @param {number} programId
+ */
+
+/**
  * Encapsulates all data that is related to the set of selected applications;
  * specifically, any data that changes when selected applications change.
+ * 
+ * Also provides muliti-casted utility methods that work with the dataProviders of all selected applications.
  */
 export default class ApplicationSelectionData {
   constructor(applicationSelection) {
@@ -96,7 +104,41 @@ export default class ApplicationSelectionData {
     this._applicationSelection._emitter.on('_selectionChanged0', this._handleSelectionChanged);
   }
 
+  get selection() {
+    return this._applicationSelection;
+  }
+
   _handleSelectionChanged(selectedApplications) {
     this.rootContextsInOrder = new RootContextsInOrder(this);
+  }
+
+  /**
+   * Return amount of applications that have executed given file.
+   */
+  getApplicationCountAtPath(fpath) {
+    const applications = this.selection._selectedApplications;
+    return applications.reduce((sum, { dataProvider }) => {
+      const programId = dataProvider.queries.programIdByFilePath(fpath);
+      return sum + !!programId;
+    }, 0);
+  }
+
+  /**
+   * @param {fileSelectedApplicationCallback} cb
+   */
+  mapApplicationsOfFilePath(fpath, cb) {
+    const applications = this.selection._selectedApplications;
+
+    for (const application of applications) {
+      const { dataProvider } = application;
+
+      const programId = dataProvider.queries.programIdByFilePath(fpath);
+      if (!programId) {
+        // program did not execute for this application
+        continue;
+      }
+
+      cb(application, programId);
+    }
   }
 }

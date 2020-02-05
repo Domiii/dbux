@@ -1,5 +1,5 @@
-import { navToCode } from '../codeControl/codeNav';
-import { getCodePositionFromLoc } from '../util/codeUtil';
+import { navToCode } from '../codeNav';
+import { babelLocToCodePosition } from '../helpers/locHelper';
 import path from 'path';
 import {
   Uri,

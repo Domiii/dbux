@@ -1,6 +1,6 @@
 import { newLogger } from 'dbux-common/src/log/logger';
-import { navToCode } from '../codeControl/codeNav';
-import { getCodePositionFromLoc } from '../util/codeUtil';
+import { navToCode } from '../codeNav';
+import { babelLocToCodePosition } from '../helpers/locHelper';
 
 import DataProvider from 'dbux-data/src/DataProvider';
 import { TreeViewController } from '../treeView/treeViewController';

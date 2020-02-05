@@ -1,8 +1,8 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import { window } from 'vscode';
 
-import { initCodeControl } from './codeControl';
 import { initServer } from './net/server';
+import { initCodeDeco } from './codeDeco';
 
 import { initTreeView } from './treeView/treeViewController';
 import { initCommands } from './commands/index';
@@ -24,7 +24,7 @@ let server;
 function activate(context) {
   try {
     server = initServer(context);
-    initCodeControl(context);
+    initCodeDeco(context);
 
     // TODO: we don't have a single DataProvider anymore - manage Applications instead
     // TODO: see codeDeco for reference

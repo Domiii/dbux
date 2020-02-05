@@ -117,6 +117,11 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`: display the `value` in `codeDeco` behind the expression?
    * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
    * TODO: don't waste space if value has a long string representation?
+* [MultiKeyIndex] allow for storing data by multiple keys
+   * e.g. `dataProvider.util.groupTracesByType`
+   * e.g. `dataProvider.util.getVisitedStaticTracesAtLine`
+* [project: SimpleExpressFullstackApp]
+   * purpose: test multi-application code
 * [instrumentation] if we see a function call for which we have no context, find out where it goes
    * (i.e. dependency name or runtime-internal?)
       * -> then allow to easily add it to our config and re-run so we can get it next time
