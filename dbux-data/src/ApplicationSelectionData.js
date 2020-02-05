@@ -25,13 +25,21 @@ class RootContextsInOrder {
   }
 
   _mergeAll() {
+    // is this for initialize?
     this._rootContextsArray = [];
+    const applications = this.applicationSelectionData._applicationSelection.getSelectedApplications();
+    let allRootContexts = applications.map((app) => app.dataProvider.util.getAllRootContexts());
+    let indexPointers = Array(applications.length).fill(0);
+    let contextCount = allRootContexts.reduce((sum, arr) => sum + arr.length, 0);
 
-    // TODO: merge by date~~~
-    // for (const app of applications) {
-    //   const rootContexts = app.dataProvider.util.getRootContexts();
-    //   rootContexts.forEach(this._addOne)
-    // }
+    for (let i = 0; i < contextCount; i++) {
+      let earliestContext = allRootContexts[0][indexPointers[0]];
+      const context = allRootContexts[j][indexPointers[j]];
+      for (let j = 1; j < applications.length; j++) {  
+        if (context.createdAt < earliestContext) earliestContext = context;
+      }
+      this._addOne(context)
+    }
   }
 
   _addExecutionContexts(app, contexts) {

@@ -50,6 +50,7 @@ export class TreeNodeProvider {
 
     const parentNode = (parentContextId) ? this.contextNodesByApp[app.applicationId][parentContextId] : null;
     const typeName = ExecutionContextType.nameFrom(contextType);
+    const { applicationId } = app;
 
     let newNode = new ContextNode(
       displayName,
@@ -58,6 +59,7 @@ export class TreeNodeProvider {
       filePath,
       loc,
       stackDepth,
+      applicationId,
       contextId,
       parentContextId,
       parentNode,

@@ -14,6 +14,7 @@ export default class ContextNode extends TreeItem {
     filePath,
     location,
     depth,
+    applicationId,
     contextId,
     parentContextId = null,
     parentNode = null,
@@ -29,6 +30,7 @@ export default class ContextNode extends TreeItem {
     this.filePath = filePath;
     this.location = location;
     this.depth = depth;
+    this.applicationId = applicationId;
     this.contextId = contextId;
     this.parentContextId = parentContextId;
     this.parentNode = parentNode;

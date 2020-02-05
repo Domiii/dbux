@@ -1,17 +1,14 @@
-import { newLogger } from 'dbux-common/src/log/logger';
 import { window, EventEmitter } from 'vscode';
+import { newLogger } from 'dbux-common/src/log/logger';
 import { TreeNodeProvider } from './TreeNodeProvider.js';
 import ContextNode from './ContextNode.js';
 
 const { log, debug, warn, error: logError } = newLogger('TreeView');
 
-let eventLogProvider, treeViewController: TreeViewController;
+let treeViewController: TreeViewController;
 
 export function initTreeView() {
-
-  let onChangeEventEmitter = new EventEmitter();
-  eventLogProvider = new TreeNodeProvider(onChangeEventEmitter);
-  treeViewController = new TreeViewController('dbuxView', eventLogProvider, onChangeEventEmitter, {
+  treeViewController = new TreeViewController('dbuxView', {
     canSelectMany: false,
     showCollapseAll: true
   });
@@ -21,10 +18,13 @@ export function initTreeView() {
 }
 
 export class TreeViewController {
-  constructor(viewId, treeDataProvider: TreeNodeProvider, onChangeEventEmitter, options) {
-    this.treeView = window.createTreeView(viewId, { treeDataProvider, ...options });
-    this.treeDataProvider = treeDataProvider;
-    this.onChangeEventEmitter = onChangeEventEmitter;
+  constructor(viewId, options) {
+    this.onChangeEventEmitter = new EventEmitter();
+    this.treeDataProvider = new TreeNodeProvider(this.onChangeEventEmitter);
+    this.treeView = window.createTreeView(viewId, { 
+      treeDataProvider: this.treeDataProvider,
+      ...options
+    });
     this.onClickCallback = [];
   }
 

@@ -116,6 +116,16 @@ export default {
     return dp.indexes.executionContexts.roots.get(1);
   },
 
+  getRootContextByContextId(dp: DataProvider, contextId) {
+    const { executionContexts } = dp.collections;
+    let lastContextId = contextId;
+    let parentContextId;
+    while (true) {
+      parentContextId = executionContexts.getById(lastContextId).parentContextId;
+      if (!parentContextId) return lastContextId;
+    }
+  },
+
   /**
    * TODO: improve performance, use index instead
    */

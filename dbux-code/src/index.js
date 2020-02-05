@@ -12,9 +12,7 @@ import { initPlayback } from './playback/index';
 import PlaybackController from './playback/PlaybackController';
 
 
-const {
-  log, debug, warn, error: logError,
-} = newLogger('dbux-code');
+const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 let server;
 
