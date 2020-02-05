@@ -106,6 +106,9 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * `codeDeco.blurBackgroundMode`
 
 ## TODO (other)
+* [instrumentation] fix up stack + roots for contexts
+   * clearly define "root contexts"
+   * why does `await0` sample have 2 "roots"?
 * [codeDeco] better deco
    * for function calls: render context targets (if known)
    * capture function parameters

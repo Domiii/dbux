@@ -6,22 +6,24 @@ export class TraceDetailsNode extends TreeItem {
   parent;
   children = null;
 
-  constructor(label) {
+  constructor(label, application, parent) {
     super(label);
-  }
-
-  init(application, parent) {
+    
     this.application = application;
     this.parent = parent;
+  }
+
+  get nodeType() {
+    return this.constructor.nodeType;
   }
 }
 
 export class TraceDetailsApplicationNode extends TraceDetailsNode {
-  constructor(application) {
-    super(TraceDetailsApplicationNode.makeLabel(application));
+  init(application) {
+    this.application = application;
   }
   
-  get nodeType() {
+  static get nodeType() {
     return TraceDetailsNodeType.StaticTrace;
   }
   
@@ -31,12 +33,11 @@ export class TraceDetailsApplicationNode extends TraceDetailsNode {
 }
 
 export class TraceDetailsStaticTraceNode extends TraceDetailsNode {
-  constructor(staticTrace) {
-    super(TraceDetailsStaticTraceNode.makeLabel(staticTrace));
+  init(staticTrace) {
     this.staticTrace = staticTrace;
   }
-  
-  get nodeType() {
+
+  static get nodeType() {
     return TraceDetailsNodeType.StaticTrace;
   }
   
@@ -46,18 +47,22 @@ export class TraceDetailsStaticTraceNode extends TraceDetailsNode {
 }
 
 export class TraceDetailsTraceNode extends TraceDetailsNode {
-  constructor(trace) {
-    super();
+  init(trace) {
     this.trace = trace;
   }
 
-  get nodeType() {
+  static get nodeType() {
     return TraceDetailsNodeType.Trace;
+  }
+  
+  static makeLabel(trace, application, parent) {
+    
   }
 }
 
 export function makeTraceDetailsNode(NodeClass, entry, application, parent) {
-  const node = new NodeClass(entry);
-  node.init(application, parent);
+  const label = NodeClass.makeLabel(entry, application, parent);
+  const node = new NodeClass(label, application, parent);
+  node.init(entry);
   return node;
 }
