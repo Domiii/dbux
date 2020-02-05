@@ -67,6 +67,13 @@ class TraceCollection extends Collection<Trace> {
   constructor(dp) {
     super('traces', dp);
   }
+
+  add(entries) {
+    for (const entry of entries) {
+      entry.applicationId = this.dp.application.applicationId;
+    }
+    super.add(entries);
+  }
 }
 
 class ValueCollection extends Collection<ValueRef> {
