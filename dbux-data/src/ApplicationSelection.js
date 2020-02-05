@@ -11,10 +11,17 @@ export default class ApplicationSelection {
   _emitter = new NanoEvents();
 
   constructor(applicationCollection) {
-    this._applicationCollection = applicationCollection;
-    this._applicationSelectionData = new ApplicationSelectionData(this);
+    this.applicationCollection = applicationCollection;
+    this.applicationSelectionData = new ApplicationSelectionData(this);
   }
   
+  get data() {
+    return this.applicationSelectionData;
+  }
+
+  get collection() {
+    return this.applicationCollection;
+  }
   
   // ###########################################################################
   // Manage selected applications
@@ -32,7 +39,7 @@ export default class ApplicationSelection {
   }
   
   isApplicationSelected(applicationOrIdOrEntryPointPath) {
-    const application = this._applicationCollection.getApplication(applicationOrIdOrEntryPointPath);
+    const application = this.applicationCollection.getApplication(applicationOrIdOrEntryPointPath);
     return this._selectedApplicationIds.has(application.applicationId);
   }
 
@@ -40,18 +47,18 @@ export default class ApplicationSelection {
     if (this.isApplicationSelected(applicationOrIdOrEntryPointPath)) {
       return;
     }
-    const application = this._applicationCollection.getApplication(applicationOrIdOrEntryPointPath);
+    const application = this.applicationCollection.getApplication(applicationOrIdOrEntryPointPath);
 
     this._selectedApplicationIds.add(application.applicationId);
     this._selectedApplications.push(application);
-    this._emitter.emit('selectionChanged', this._selectedApplications);
+    this._notifySelectionChanged();
   }
 
   deselectApplication(applicationOrIdOrEntryPointPath) {
     if (!this.isApplicationSelected(applicationOrIdOrEntryPointPath)) {
       return;
     }
-    const application = this._applicationCollection.getApplication(applicationOrIdOrEntryPointPath);
+    const application = this.applicationCollection.getApplication(applicationOrIdOrEntryPointPath);
 
     this._selectedApplicationIds.delete(application.applicationId);
     pull(this._selectedApplications, application);

@@ -1,5 +1,5 @@
-import { newLogger } from 'dbux-common/src/log/logger';
 import { window } from 'vscode';
+import { newLogger } from 'dbux-common/src/log/logger';
 
 import { initCodeControl } from './codeControl';
 import { initServer } from './net/server';
@@ -24,10 +24,10 @@ function activate(context) {
     server = initServer(context);
     initCodeControl(context);
 
-    // const treeViewController = initTreeView();
-    // const playbackController = initPlayback(treeViewController);
-    // initCommands(context, treeViewController, playbackController);
-    // initToolBar(context, treeViewController);
+    const treeViewController = initTreeView();
+    const playbackController = initPlayback(treeViewController);
+    initCommands(context, treeViewController, playbackController);
+    initToolBar(context, treeViewController);
   } catch (e) {
     logError('could not activate', e);
     debugger;

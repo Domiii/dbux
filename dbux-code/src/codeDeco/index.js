@@ -68,7 +68,6 @@ export function initCodeDeco(context) {
 
   // data changed
   applicationCollection.applicationSelection.onSelectionChanged((selectedApps) => {
-    applicationCollection.applicationSelection.unsubscribeAll();
     for (const app of selectedApps) {
       applicationCollection.applicationSelection.subscribe(
         app.dataProvider.onData('traces', renderDecorations),

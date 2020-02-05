@@ -41,7 +41,7 @@ export default class ContextNode extends TreeItem {
     this.description = `@${fileName}:${location.start.line}:${location.start.column}`;
     this.collapsibleState = CollapsibleState.None;
     this.command = {
-      command: 'dbuxView.itemClick',
+      command: 'dbuxContextView.itemClick',
       arguments: [this]
     };
     this.contextValue = 'event';

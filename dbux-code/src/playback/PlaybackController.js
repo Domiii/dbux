@@ -1,27 +1,31 @@
 import { Uri, commands } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
 import applicationCollection from 'dbux-data/src/applicationCollection';
 import EventHandlerList from 'dbux-common/src/util/EventHandlerList';
+import { newLogger } from 'dbux-common/src/log/logger';
+import TracePlayback, { TraceStep } from 'dbux-data/src/playback/TracePlayback';
 import { navToCode } from '../codeControl/codeNav';
 import { TreeViewController } from '../treeView/treeViewController';
 import ContextNode from '../treeView/ContextNode';
-
-
 
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 
 export default class PlaybackController {
   intervalId: number;
   frameId: number;
+  frame: TraceStep;
+  lastFrame: TraceStep;
+  tracePlayback: TracePlayback;
 
   constructor(treeViewController: TreeViewController) {
     this.treeViewController = treeViewController;
-    this.frameId = 1;
-    this.lastFrameId = 1;
+    this.frame = { applicationId: 1, traceId: 1 };
+    this.lastFrame = { applicationId: 1, traceId: 1 };
     this.treeViewController.onItemClick(this.onTreeItemClick);
     this.appEventHandlers = new EventHandlerList();
 
-    applicationCollection.onSelectionChanged((selectedApps) => {
+    this.tracePlayback = applicationCollection.selection.data.tracePlayback;
+
+    applicationCollection.selection.onSelectionChanged((selectedApps) => {
       // this.appEventHandlers.unsubscribe();
       // this.clear();
       // for (const app of selectedApps) {
@@ -50,47 +54,53 @@ export default class PlaybackController {
   }
 
   nextTrace = () => {
-    const collectionSize = this.getCollectionSize();
-    if (!collectionSize) return;
-    if (this.frameId < collectionSize) this.frameId += 1;
-    this.gotoTraceById(this.frameId);
-    this.revealTraceInTreeViewById(this.frameId);
+    this.tracePlayback.stepNextTraceInOrder(this.frame);
+    this.showTraceByFrame(this.frame);
+    this.revealTraceInTreeViewByFrame(this.frame);
   }
 
   previousTrace = () => {
     const collectionSize = this.getCollectionSize();
     if (!collectionSize) return;
     if (this.frameId > 1) this.frameId -= 1;
-    this.gotoTraceById(this.frameId);
-    this.revealTraceInTreeViewById(this.frameId);
+    this.showTraceByFrame(this.frameId);
+    this.revealTraceInTreeViewByFrame(this.frameId);
   }
 
   previousTraceInContext = () => {
     const collectionSize = this.getCollectionSize();
     if (!collectionSize) return;
     this.frameId = this.dataProvider.util.getPreviousTraceInContext(this.frameId).traceId;
-    this.gotoTraceById(this.frameId);
-    this.revealTraceInTreeViewById(this.frameId);
+    this.showTraceByFrame(this.frameId);
+    this.revealTraceInTreeViewByFrame(this.frameId);
   }
 
   nextTraceInContext = () => {
     const collectionSize = this.getCollectionSize();
     if (!collectionSize) return;
     this.frameId = this.dataProvider.util.getNextTraceInContext(this.frameId).traceId;
-    this.gotoTraceById(this.frameId);
-    this.revealTraceInTreeViewById(this.frameId);
+    this.showTraceByFrame(this.frameId);
+    this.revealTraceInTreeViewByFrame(this.frameId);
   }
 
-  gotoTraceById = (traceId: number) => {
-    const { staticTraceId } = this.dataProvider.collections.traces.getById(traceId);
-    const { loc } = this.dataProvider.collections.staticTraces.getById(staticTraceId);
-    const filePath = this.dataProvider.queries.programFilePathByTraceId(this.frameId);
+  /**
+   * @param {TraceStep} frame
+   */
+  showTraceByFrame = (frame) => {
+    const dp = applicationCollection.getApplication(frame.applicationId).dataProvider;
+    const { staticTraceId } = dp.collections.traces.getById(frame.traceId);
+    const { loc } = dp.collections.staticTraces.getById(staticTraceId);
+    const filePath = dp.queries.programFilePathByTraceId(frame.traceId);
     navToCode(Uri.file(filePath), loc);
   }
 
-  revealTraceInTreeViewById = (traceId: number) => {
-    const { contextId } = this.dataProvider.collections.traces.getById(traceId);
-    this.treeViewController.revealContextById(contextId, true);
+  /**
+   * @param {TraceStep} frame
+   */
+  revealTraceInTreeViewByFrame = (frame) => {
+    const dp = applicationCollection.getApplication(frame.applicationId).dataProvider;
+    const { contextId } = dp.collections.traces.getById(frame.traceId);
+    this.treeViewController.revealContextById(frame.applicationId, contextId, true);
   }
 
   getCollectionSize = () => {
@@ -98,7 +108,8 @@ export default class PlaybackController {
   }
 
   onTreeItemClick = (node: ContextNode) => {
-    const { traceId } = this.dataProvider.util.getFirstTraceOfContext(node.contextId);
+    const { dataProvider } = applicationCollection.getApplication(node.applicationId);
+    const { traceId } = dataProvider.util.getFirstTraceOfContext(node.contextId);
     this.frameId = traceId;
   }
 

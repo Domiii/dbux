@@ -8,13 +8,12 @@ const { log, debug, warn, error: logError } = newLogger('TreeView');
 let treeViewController: TreeViewController;
 
 export function initTreeView() {
-  treeViewController = new TreeViewController('dbuxView', {
+  treeViewController = new TreeViewController('dbuxContextView', {
     canSelectMany: false,
     showCollapseAll: true
   });
 
   return treeViewController;
-
 }
 
 export class TreeViewController {
@@ -25,7 +24,7 @@ export class TreeViewController {
       treeDataProvider: this.treeDataProvider,
       ...options
     });
-    this.onClickCallback = [];
+    this.onItemClickCallback = [];
   }
 
   refresh = () => {
@@ -68,20 +67,26 @@ export class TreeViewController {
     this.lastSelectedNode = node;
     node.gotoCode();
     if (node.children.length) this.revealContext(node, true);
-    for (let cb of this.onClickCallback) cb(node);
+    for (let cb of this.onItemClickCallback) cb(node);
   }
 
-  revealContextById = (contextId: number, expand = false) => {
-    const node = this.treeDataProvider.nodesByApp[contextId];
+  /**
+   * @param {number} applicationId
+   * @param {number} contextId
+   */
+  revealContextById = (applicationId, contextId, expand = false) => {
+    const node = this.treeDataProvider.contextNodesByApp[applicationId][contextId];
     this.revealContext(node, expand);
   }
 
-  revealContext = (node: ContextNode, expand = false) => {
+  /**
+   * @param {ContextNode} node
+   */
+  revealContext = (node, expand = false) => {
     this.treeView.reveal(node, { expand });
   }
 
   onItemClick = (cb) => {
-    this.onClickCallback.push(cb);
+    this.onItemClickCallback.push(cb);
   }
-
 }

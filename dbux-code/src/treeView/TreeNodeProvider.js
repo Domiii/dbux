@@ -24,33 +24,33 @@ export class TreeNodeProvider {
     this.selectedApps = [];
     this.appEventHandlers = new EventHandlerList();
 
-    applicationCollection.onSelectionChanged((selectedApps) => {
+    applicationCollection.selection.onSelectionChanged((selectedApps) => {
       this.appEventHandlers.unsubscribe();
       this.clear();
       for (const app of selectedApps) {
-        this.update(app, app.dataProvider.collections.executionContexts.getAll());
+        const executionContexts = app.dataProvider.collections.executionContexts.getAll();
+        this.update(app, executionContexts);
         this.appEventHandlers.subscribe(
           app.dataProvider.onData('executionContexts', this.update.bind(this, app))
         );
       }
     });
-
   }
 
-  contextToNode = (app: Application, context: ExecutionContext) => {
+  contextToNode = (applicationId: number, context: ExecutionContext) => {
     if (!context) return null;
 
+    const { dataProvider } = applicationCollection.getApplication(applicationId);
     const { contextType, stackDepth, contextId, staticContextId, parentContextId } = context;
 
-    const staticContext = app.dataProvider.collections.staticContexts.getById(staticContextId);
+    const staticContext = dataProvider.collections.staticContexts.getById(staticContextId);
     const { programId, displayName, loc } = staticContext;
 
-    const programContext = app.dataProvider.collections.staticProgramContexts.getById(programId);
+    const programContext = dataProvider.collections.staticProgramContexts.getById(programId);
     const { filePath, fileName } = programContext;
 
-    const parentNode = (parentContextId) ? this.contextNodesByApp[app.applicationId][parentContextId] : null;
+    const parentNode = (parentContextId) ? this.contextNodesByApp[applicationId][parentContextId] : null;
     const typeName = ExecutionContextType.nameFrom(contextType);
-    const { applicationId } = app;
 
     let newNode = new ContextNode(
       displayName,
@@ -77,13 +77,14 @@ export class TreeNodeProvider {
   refresh = () => {
     this.onChangeEventEmitter.fire();
   }
-  update = (app: Application, newContextData: Array<ExecutionContext>) => {
-    if (!this.contextsByApp[app.applicationId]) this.contextsByApp[app.applicationId] = [];
-    if (!this.contextNodesByApp[app.applicationId]) this.contextNodesByApp[app.applicationId] = [];
+  update = (applicationId: number, newContextData: Array<ExecutionContext>) => {
+    if (!this.contextsByApp[applicationId]) this.contextsByApp[applicationId] = [];
+    if (!this.contextNodesByApp[applicationId]) this.contextNodesByApp[applicationId] = [];
 
     for (const context of newContextData) {
-      const newNode = this.contextToNode(context);
-      this.contextsByApp[app.applicationId][context.contextId] = context;
+      if (!context) continue;
+      const newNode = this.contextToNode(applicationId, context);
+      this.contextsByApp[applicationId][context.contextId] = context;
       this.contextNodesByApp[context.contextId] = newNode;
 
       if (newNode.parentNode) newNode.parentNode.pushChild(newNode);

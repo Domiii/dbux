@@ -7,22 +7,22 @@ const { log, debug, warn, error: logError } = newLogger('Commands');
 export function initToolBar(context, treeViewController: TreeViewController) {
 
   registerCommand(context,
-    'dbuxView.addEntry',
+    'dbuxContextView.addEntry',
     (...args) => log('Clicked on add entry, parameter', ...args)
   );
 
   registerCommand(context,
-    'dbuxView.next',
+    'dbuxContextView.next',
     () => treeViewController.next()
   );
 
   registerCommand(context,
-    'dbuxView.previous',
+    'dbuxContextView.previous',
     () => treeViewController.previous()
   );
 
   registerCommand(context,
-    'dbuxView.clear',
+    'dbuxContextView.clear',
     () => {
       // treeViewController.treeDataProvider.dataProvider.clear();
       treeViewController.treeDataProvider.clear();
