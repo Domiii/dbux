@@ -1,8 +1,9 @@
 import TraceType from '../constants/TraceType';
 
 export default class Trace {
-  contextId: number;
   traceId: number;
+  applicationId: number;
+  contextId: number;
   staticTraceId: number;
   staticContextId: number;
   
