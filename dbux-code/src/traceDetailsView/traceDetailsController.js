@@ -41,8 +41,21 @@ class TraceDetailsController {
 // init
 // ###########################################################################
 
+export function getTraceDetailsController() {
+  return traceDetailsController;
+}
+
 export function initTraceDetailsController(context: ExtensionContext) {
   traceDetailsController = new TraceDetailsController();
+
+  // ########################################
+  // hook up event handlers
+  // ########################################
+
+  // TODO: onData -> refresh
+  // TODO: codeDeco for selected traces?
+
+  // text selection
   context.subscriptions.push(
     window.onDidChangeTextEditorSelection(traceDetailsController.handleSelectionChanged)
   );

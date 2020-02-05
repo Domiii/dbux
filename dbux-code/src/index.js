@@ -10,21 +10,24 @@ import { initToolBar } from './toolbar';
 import { initPlayback } from './playback/index';
 
 import PlaybackController from './playback/PlaybackController';
+import { initCodeApplications } from './CodeApplication';
+import { initTraceDetailsController } from './traceDetailsView/traceDetailsController';
 
 
 const {
   log, debug, warn, error: logError,
 } = newLogger('dbux-code');
 
-let server;
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
   try {
-    server = initServer(context);
+    initServer(context);
+    initCodeApplications(context);
     initCodeDeco(context);
+    initTraceDetailsController(context);
 
     // TODO: we don't have a single DataProvider anymore - manage Applications instead
     // TODO: see codeDeco for reference
@@ -34,7 +37,7 @@ function activate(context) {
     // initToolBar(context, treeViewController);
   } catch (e) {
     logError('could not activate', e);
-    debugger;
+    // debugger;
     throw e;
   }
 }

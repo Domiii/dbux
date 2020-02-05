@@ -56,7 +56,7 @@ export function initCodeDeco(context) {
   // start rendering
   activeEditor = window.activeTextEditor;
 
-  if (applicationCollection.applicationSelection.hasSelectedApplications() && activeEditor) {
+  if (applicationCollection.selection.hasSelectedApplications() && activeEditor) {
     // initial render
     renderDecorations();
   }
@@ -66,9 +66,9 @@ export function initCodeDeco(context) {
   // ########################################
 
   // data changed
-  applicationCollection.applicationSelection.onSelectionChanged((selectedApps) => {
+  applicationCollection.selection.onSelectionChanged((selectedApps) => {
     for (const app of selectedApps) {
-      applicationCollection.applicationSelection.subscribe(
+      applicationCollection.selection.subscribe(
         app.dataProvider.onData('traces', renderDecorations),
         app.dataProvider.onData('staticTraces', renderDecorations)
       );

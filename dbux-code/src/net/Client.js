@@ -18,6 +18,7 @@ export default class Client {
     this._connected = true;
 
     socket.on('error', this._handleError);
+    socket.on('init', this._handleInit);
     socket.on('data', this._handleData);
   }
 
@@ -27,6 +28,10 @@ export default class Client {
 
   isReady() {
     return !!this.application;
+  }
+
+  _handleInit(initData) {
+    // TODO: handle `init` to allow for applications to reconnect
   }
 
   _handleData = (data) => {

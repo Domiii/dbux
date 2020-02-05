@@ -53,4 +53,9 @@ export default class Application {
     //   this.applicationCollection._emitter.emit('selectedApplicationData', this);
     // }
   }
+
+  getRelativeFolder() {
+    // Needs external help to do it; e.g. in VSCode, can use workspace-relative path.
+    return this.entryPointPath;
+  }
 }

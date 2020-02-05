@@ -128,6 +128,7 @@ export default class ApplicationSelectionData {
    */
   mapApplicationsOfFilePath(fpath, cb) {
     const applications = this.selection._selectedApplications;
+    const results = [];
 
     for (const application of applications) {
       const { dataProvider } = application;
@@ -138,7 +139,15 @@ export default class ApplicationSelectionData {
         continue;
       }
 
-      cb(application, programId);
+      const result = cb(application, programId);
+      if (Array.isArray(result)) {
+        results.push(...result);
+      }
+      else {
+        results.push(result);
+      }
     }
+
+    return results;
   }
 }

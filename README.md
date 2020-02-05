@@ -106,20 +106,25 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * `codeDeco.blurBackgroundMode`
 
 ## TODO (other)
+* [webpack] package the `resources/` folder with webpack 
+   * https://www.google.com/search?q=bundling+image+files+with+webpack
 * [instrumentation] fix up stack + roots for contexts
    * clearly define "root contexts"
    * why does `await0` sample have 2 "roots"?
-* [codeDeco] better deco
-   * for function calls: render context targets (if known)
-   * capture function parameters
-* `dbuxTraceDetailsView`
+* [dbuxTraceDetailsView]
    * show all info relevant to the position where the cursor currently is
    * allow to jump to caller/callee upon context switches
    * "`contextElevator`": buttons to step between child/parent context
    * TODO: what about in-line contexts?
+* [codeDeco] better deco
+   * for function calls: render context targets (if known)
+   * capture function parameters
 * [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`: display the `value` in `codeDeco` behind the expression?
    * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
    * TODO: don't waste space if value has a long string representation?
+* [dbuxTraceDetailsView] data interactions
+   * make it possible to interact with the captured values
+   * possibly retrieve more data from the app if app is still running?
 * [MultiKeyIndex] allow for storing data by multiple keys
    * e.g. `dataProvider.util.groupTracesByType`
    * e.g. `dataProvider.util.getVisitedStaticTracesAtLine`
