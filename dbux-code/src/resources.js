@@ -1,7 +1,10 @@
 import path from 'path';
+import {ExtensionContext} from 'vscode';
+
+let context: ExtensionContext;
 
 export function getResourcePath(...relativePathSegments) {
-  return path.resolve(__dirname, '../resources/', ...relativePathSegments);
+  return context.asAbsolutePath(path.join('resources', ...relativePathSegments));
 }
 
 export function getThemeResourcePath(...relativePathSegments) {
@@ -9,4 +12,8 @@ export function getThemeResourcePath(...relativePathSegments) {
     light: getResourcePath('light', ...relativePathSegments),
     dark: getResourcePath('dark', ...relativePathSegments)
   };
+}
+
+export function initResources(_context : ExtensionContext) {
+  context = _context;
 }

@@ -12,6 +12,7 @@ import { initPlayback } from './playback/index';
 import PlaybackController from './playback/PlaybackController';
 import { initCodeApplications } from './CodeApplication';
 import { initTraceDetailsController } from './traceDetailsView/traceDetailsController';
+import { initResources } from './resources';
 
 
 const {
@@ -24,6 +25,7 @@ const {
  */
 function activate(context) {
   try {
+    initResources(context);
     initServer(context);
     initCodeApplications(context);
     initCodeDeco(context);

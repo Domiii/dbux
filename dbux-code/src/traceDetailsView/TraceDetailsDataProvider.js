@@ -1,7 +1,7 @@
 import { EventEmitter, Position } from "vscode";
 import applicationCollection from 'dbux-data/src/applicationCollection';
 import { codeLineToBabelLine } from '../helpers/locHelper';
-import { getVisitedStaticTracesAt } from '../data/codeRange';
+import { getVisitedStaticTracesAt, getVisitedTracesAt } from '../data/codeRange';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { ApplicationNode, StaticTraceNode, createTraceDetailsNode, EmptyNode, TraceNode } from './TraceDetailsNode';
 
@@ -9,6 +9,7 @@ export default class TraceDetailsDataProvider {
   _onDidChangeTreeData = new EventEmitter();
   onDidChangeTreeData = this._onDidChangeTreeData.event;
   rootNodes;
+  _lastId = 0;
 
   constructor() {
   }
@@ -39,39 +40,42 @@ export default class TraceDetailsDataProvider {
       (application, programId) => {
         let applicationNode;
         if (addApplicationNodes) {
-          // add application nodes
+          // add application node
           applicationNode = createTraceDetailsNode(ApplicationNode, application, application, null);
         }
         else {
-          // don't add application nodes
+          // don't add application node
           applicationNode = null;
         }
         
-        const staticTraceNodes = this._buildStaticTraceNodes(programId, pos, application, applicationNode);
-        return addApplicationNodes ? applicationNode : staticTraceNodes;
+        const traceNodes = this._buildTraceNodes(programId, pos, application, applicationNode);
+        return applicationNode || traceNodes;
       }
     );
 
-    // add empty node
+    // TODO: sort by time executed
+
     if (!this.rootNodes.length) {
+      // add empty node
       this.rootNodes.push(EmptyNode.instance);
     }
 
     this._onDidChangeTreeData.fire();
-  }, 10)
+  }, 1)
 
-  _buildStaticTraceNodes(programId, pos, application, parent) {
-    const staticTraces = getVisitedStaticTracesAt(application, programId, pos);
-    return staticTraces.map(staticTrace => {
-      const node = createTraceDetailsNode(StaticTraceNode, staticTrace, application, parent);
-      node.children = this._buildTraceNodes(staticTrace, application, node);
-      return node;
-    });
-  }
+  // _buildStaticTraceNodes(programId, pos, application, parent) {
+  //   const staticTraces = getVisitedStaticTracesAt(application, programId, pos);
+  //   return staticTraces.map(staticTrace => {
+  //     const node = createTraceDetailsNode(StaticTraceNode, staticTrace, application, parent);
+  //     node.children = this._buildTraceNodes(staticTrace, application, node);
+  //     return node;
+  //   });
+  // }
 
-  _buildTraceNodes(staticTrace, application, parent) {
-    const { staticTraceId } = staticTrace;
-    const traces = application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+  _buildTraceNodes(programId, pos, application, parent) {
+    // const { staticTraceId } = staticTrace;
+    // const traces = application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+    const traces = getVisitedTracesAt(application, programId, pos);
     if (!traces) {
       // should never happen
       return null;

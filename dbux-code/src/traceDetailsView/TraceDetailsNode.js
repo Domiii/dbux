@@ -1,5 +1,4 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
-import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import Application from 'dbux-data/src/Application';
 import Trace from 'dbux-common/src/core/data/Trace';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
@@ -12,13 +11,12 @@ export class BaseNode extends TreeItem {
   parent;
   children = null;
 
-  constructor(label, iconPath, application, parent, moreProps) {
+  constructor(label, iconPath, application, parent, id, moreProps) {
     super(label);
-
-    Object.assign(this, moreProps);
 
     this.application = application;
     this.parent = parent;
+    this.id = id;
 
     // treeItem data
     this.contextValue = 'event';
@@ -28,6 +26,9 @@ export class BaseNode extends TreeItem {
     };
 
     this.iconPath = iconPath;
+
+    // more custom props for this node
+    Object.assign(this, moreProps);
   }
 
   get nodeType() {
@@ -37,7 +38,7 @@ export class BaseNode extends TreeItem {
 
 export class EmptyNode extends BaseNode {
   constructor() {
-    super('No trace at cursor');
+    super('(no trace at cursor)');
 
     this.collapsibleState = TreeItemCollapsibleState.None;
   }
@@ -71,29 +72,29 @@ export class ApplicationNode extends BaseNode {
   }
 }
 
-export class StaticTraceNode extends BaseNode {
-  init(staticTrace) {
-    this.staticTrace = staticTrace;
-    this.collapsibleState = TreeItemCollapsibleState.Expanded;
-  }
+// export class StaticTraceNode extends BaseNode {
+//   init(staticTrace) {
+//     this.staticTrace = staticTrace;
+//     this.collapsibleState = TreeItemCollapsibleState.Expanded;
+//   }
 
-  static get nodeType() {
-    return TraceDetailsNodeType.StaticTrace;
-  }
+//   static get nodeType() {
+//     return TraceDetailsNodeType.StaticTrace;
+//   }
 
-  static makeLabel(staticTrace: StaticTrace) {
-    // TODO: fix this up a bit for trace that don't have a name
-    return staticTrace.displayName || TraceType.nameFrom(staticTrace.type);
-  }
+//   static makeLabel(staticTrace: StaticTrace) {
+//     // TODO: fix this up a bit for trace that don't have a name
+//     return staticTrace.displayName || TraceType.nameFrom(staticTrace.type);
+//   }
 
-  static makeIconPath(staticTrace: StaticTrace) {
-    // return 'string.svg';
-  }
+//   static makeIconPath(staticTrace: StaticTrace) {
+//     return 'string.svg';
+//   }
 
-  static makeTreeItemProps() {
-    return {};
-  }
-}
+//   static makeTreeItemProps() {
+//     return {};
+//   }
+// }
 
 export class TraceNode extends BaseNode {
   init(trace) {
@@ -105,14 +106,16 @@ export class TraceNode extends BaseNode {
     return TraceDetailsNodeType.Trace;
   }
 
-  static makeLabel(trace: Trace, application, parent: StaticTraceNode) {
-    const { staticTrace: {
-      displayName,
-      type: staticType,
-    } } = parent;
+  static makeLabel(trace: Trace, application) {
     const {
+      staticTraceId,
       type: dynamicType
     } = trace;
+    const staticTrace = application.dataProvider.collections.staticTraces.getById(staticTraceId);
+    const {
+      displayName,
+      type: staticType,
+    } = staticTrace;
     const traceType = dynamicType || staticType;
     const typeName = TraceType.nameFrom(traceType);
     const title = displayName || `[${typeName}]`;
@@ -120,7 +123,7 @@ export class TraceNode extends BaseNode {
   }
 
   static makeIconPath(trace: Trace) {
-    // return 'string.svg';
+    return 'string.svg';
   }
 
   static makeTreeItemProps(trace: Trace, application: Application) {
@@ -165,12 +168,15 @@ export class TraceDetailNode extends BaseNode {
   }
 }
 
+let _lastId = 0;
+
 export function createTraceDetailsNode(NodeClass, entry, application, parent): BaseNode {
   const label = NodeClass.makeLabel(entry, application, parent);
   const relativeIconPath = NodeClass.makeIconPath(entry, application, parent);
   const treeItemProps = NodeClass.makeTreeItemProps(entry, application, parent) || EmptyObject;
   const iconPath = relativeIconPath && getThemeResourcePath(relativeIconPath) || null;
-  const node = new NodeClass(label, iconPath, application, parent, treeItemProps);
+  const id = (++_lastId) + '';
+  const node = new NodeClass(label, iconPath, application, parent, id, treeItemProps);
   node.init(entry);
   return node;
 }
