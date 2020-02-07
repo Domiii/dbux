@@ -19,21 +19,24 @@ class RootContextsInOrder {
   }
 
   _mergeAll() {
-    // is this for initialize?
     this._rootContextsArray = [];
-    const applications = this.applicationSelectionData.applicationSelection.getSelectedApplications();
+    const applications = this.applicationSelectionData.selection.getSelectedApplications();
     let allRootContexts = applications.map((app) => app.dataProvider.util.getAllRootContexts() || EmptyArray);
     let indexPointers = Array(applications.length).fill(0);
     let contextCount = allRootContexts.reduce((sum, arr) => sum + arr.length, 0);
 
     for (let i = 0; i < contextCount; i++) {
       let earliestContext = allRootContexts[0][indexPointers[0]];
-      const context = allRootContexts[0][indexPointers[0]];
+      let earliestApplicationIndex = 0;
       for (let j = 1; j < applications.length; j++) {
-        context = allRootContexts[j][indexPointers[j]];
-        if (context.createdAt < earliestContext) earliestContext = context;
+        const context = allRootContexts[j][indexPointers[j]];
+        if (context.createdAt < earliestContext) {
+          earliestContext = context;
+          earliestApplicationIndex = j;
+        }
       }
-      this._addOne(context);
+      indexPointers[earliestApplicationIndex] += 1;
+      this._addOne(earliestContext);
     }
   }
 
@@ -70,6 +73,10 @@ class RootContextsInOrder {
   // getters
   // ###########################################################################
 
+  get size() {
+    return this._rootContextsArray.length;
+  }
+
   getAll() {
     return this._rootContextsArray;
   }
@@ -83,12 +90,16 @@ class RootContextsInOrder {
     return index;
   }
 
+  getFirstRootContext() {
+    return this._rootContextsArray[0] || null;
+  }
+
   getNextRootContext(rootContext: ExecutionContext) {
     const order = this.getIndex(rootContext);
     return this._rootContextsArray[order + 1] || null;
   }
 
-  getPreviousRootContext(rootContext) {
+  getPreviousRootContext(rootContext: ExecutionContext) {
     const order = this.getIndex(rootContext);
     return this._rootContextsArray[order - 1] || null;
   }

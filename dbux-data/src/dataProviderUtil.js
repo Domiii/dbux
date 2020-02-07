@@ -23,6 +23,7 @@ export default {
     if (!traces?.length) {
       return null;
     }
+    // TODO: don't use array.indexOf
     const index = traces.indexOf(trace);
     if (index === 0) {
       if (traceId !== 1) traceId--;
@@ -36,6 +37,7 @@ export default {
     if (!traces?.length) {
       return null;
     }
+    // TODO: don't use array.indexOf
     const index = traces.indexOf(trace);
     if (index === traces.length - 1) {
       if (traceId !== dp.collections.traces.size) traceId++;

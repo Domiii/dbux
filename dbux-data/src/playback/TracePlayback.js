@@ -1,3 +1,5 @@
+import Trace from 'dbux-common/src/core/data/Trace';
+import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 // ###########################################################################
 // TraceOrder
 // ###########################################################################
@@ -6,7 +8,6 @@ export class TraceStep {
   applicationId;
   traceId;
 }
-
 
 export default class TracePlayback {
   /**
@@ -18,54 +19,136 @@ export default class TracePlayback {
     this.applicationCollection = this.applicationSelection.collection;
   }
 
-  getPreviousTraceInOrder(traceStep) {
+  // ###########################################################################
+  // Play functions
+  // ###########################################################################
 
-  }
-
-  stepNextTraceInOrder(traceStep) {
-    const { applicationId, traceId } = traceStep;
-    const application = this.applicationCollection.getApplication(applicationId);
-    const { dataProvider } = application;
-    const lastTraceId = traceId;
-    const nextTraceId = lastTraceId + 1;
-    const lastTrace = dataProvider.collections.traces.getById(lastTraceId);
-    const nextTrace = dataProvider.collections.traces.getById(nextTraceId);
-    if (!nextTrace) {
+  /**
+   * @param {Trace} trace 
+   */
+  getPreviousTraceInOrder(trace) {
+    const prevTrace = this.getPreviousTrace(trace);
+    if (!prevTrace) {
       // if it is the last trace in application, find next rootContext
-      // here we assume lastTrace belongs to a rootContext
-      const { rootContextsInOrder } = this.applicationSelectionData;
-      const newContext = rootContextsInOrder.getNextRootContext(lastTrace.contextId);
-      const newApplicationId = newContext.applicationId;
-      const newApplication = this.applicationCollection.getApplication(newApplicationId);
-      const newDataProvider = newApplication.dataProvider;
-      const newTraceId = newDataProvider.util.getFirstTraceOfContext(newContext.contextId).traceId;
-
-      traceStep.applicationId = newApplicationId;
-      traceStep.traceId = newTraceId;
-
-      return;
+      const newTrace = this.getLastTraceInPreviousRootContext(trace);
+      return newTrace;
     }
-    else if (nextTrace.contextId !== lastTrace.contextId) {
+    else if (prevTrace.contextId !== trace.contextId) {
       // check if root context changed, and if so, find the correct next rootContext
-      const lastRootContextId = dataProvider.util.getRootContextIdByContextId(lastTrace.contextId);
-      const nextRootContextId = dataProvider.util.getRootContextIdByContextId(nextTrace.contextId);
-      if (lastRootContextId !== nextRootContextId) {
-        const lastContext = dataProvider.collections.executionContexts.getById(lastRootContextId);
-        const { rootContextsInOrder } = this.applicationSelectionData;
-        const newContext = rootContextsInOrder.getNextRootContext(lastContext);
-        if (!newContext) return;
-        const newApplicationId = newContext.applicationId;
-        const newApplication = this.applicationCollection.getApplication(newApplicationId);
-        const newDataProvider = newApplication.dataProvider;
-        const newTrace = newDataProvider.util.getFirstTraceOfContext(newContext.contextId)
-        const newTraceId = newTrace.traceId;
-
-        traceStep.applicationId = newApplicationId;
-        traceStep.traceId = newTraceId;
-
-        return;
+      const dataProvider = this.getDataProviderOfTrace(trace);
+      const rootContextId = dataProvider.util.getRootContextIdByContextId(trace.contextId);
+      const prevRootContextId = dataProvider.util.getRootContextIdByContextId(prevTrace.contextId);
+      if (prevRootContextId !== rootContextId) {
+        const newTrace = this.getLastTraceInPreviousRootContext(trace);
+        return newTrace;
       }
     }
-    traceStep.traceId = nextTraceId;
+    return prevTrace;
+  }
+
+  /**
+   * @param {Trace} trace 
+   */
+  getNextTraceInOrder(trace) {
+    const nextTrace = this.getNextTrace(trace);
+    if (!nextTrace) {
+      // if it is the last trace in application, find next rootContext
+      const newTrace = this.getFirstTraceInNextRootContext(trace);
+      return newTrace;
+    }
+    else if (nextTrace.contextId !== trace.contextId) {
+      // check if root context changed, and if so, find the correct next rootContext
+      const dataProvider = this.getDataProviderOfTrace(trace);
+      const rootContextId = dataProvider.util.getRootContextIdByContextId(trace.contextId);
+      const nextRootContextId = dataProvider.util.getRootContextIdByContextId(nextTrace.contextId);
+      if (rootContextId !== nextRootContextId) {
+        const newTrace = this.getFirstTraceInNextRootContext(trace);
+        return newTrace;
+      }
+    }
+    return nextTrace;
+  }
+
+  // ###########################################################################
+  // Util
+  // ###########################################################################
+
+  getFirstTraceInOrder() {
+    const { rootContextsInOrder } = this.applicationCollection.selection.data;
+    if (!rootContextsInOrder.getAll().length) return null;
+    const firstRootContext = rootContextsInOrder.getFirstRootContext();
+    const dataProvider = this.getDataProviderOfRootContext(firstRootContext);
+    return dataProvider.util.getFirstTraceOfContext(firstRootContext.contextId);
+  }
+
+  /**
+   * @param {Trace} trace 
+   */
+  getNextTrace(trace) {
+    const { applicationId, traceId } = trace;
+    const application = this.applicationCollection.getApplication(applicationId);
+    const nextTrace = application.dataProvider.collections.traces.getById(traceId + 1);
+    return nextTrace;
+  }
+
+  /**
+   * @param {Trace} trace 
+   */
+  getPreviousTrace(trace) {
+    const { applicationId, traceId } = trace;
+    const application = this.applicationCollection.getApplication(applicationId);
+    const nextTrace = application.dataProvider.collections.traces.getById(traceId - 1);
+    return nextTrace;
+  }
+
+  /**
+   * @param {Trace} trace 
+   */
+  getDataProviderOfTrace(trace) {
+    const application = this.applicationCollection.getApplication(trace.applicationId);
+    return application.dataProvider;
+  }
+
+  /**
+   * @param {ExecutionContext} rootContext
+   */
+  getDataProviderOfRootContext(rootContext) {
+    const application = this.applicationCollection.getApplication(rootContext.applicationId);
+    return application.dataProvider;
+  }
+
+  /**
+   * @param {Trace} trace 
+   */
+  getFirstTraceInNextRootContext(trace) {
+    const rootContext = this.getRootContextOfTrace(trace);
+    const { rootContextsInOrder } = this.applicationSelectionData;
+    const nextRootContext = rootContextsInOrder.getNextRootContext(rootContext);
+    if (!nextRootContext) return null;
+    const nextDataProvider = this.getDataProviderOfRootContext(nextRootContext);
+    const newTrace = nextDataProvider.util.getFirstTraceOfContext(nextRootContext.contextId);
+    return newTrace;
+  }
+
+  /**
+   * @param {Trace} trace 
+   */
+  getLastTraceInPreviousRootContext(trace) {
+    const rootContext = this.getRootContextOfTrace(trace);
+    const { rootContextsInOrder } = this.applicationSelectionData;
+    const prevRootContext = rootContextsInOrder.getPreviousRootContext(rootContext);
+    if (!prevRootContext) return null;
+    const prevDataProvider = this.getDataProviderOfRootContext(prevRootContext);
+    const newTrace = prevDataProvider.util.getLastTraceOfContext(prevRootContext.contextId);
+    return newTrace;
+  }
+
+  /**
+   * @param {Trace} trace 
+   */
+  getRootContextOfTrace(trace) {
+    const dataProvider = this.getDataProviderOfTrace(trace);
+    const rootContextId = dataProvider.util.getRootContextIdByContextId(trace.contextId);
+    return dataProvider.collections.executionContexts.getById(rootContextId);
   }
 }

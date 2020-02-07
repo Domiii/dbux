@@ -25,7 +25,6 @@ export class TreeNodeProvider {
     this.appEventHandlers = new EventHandlerList();
 
     applicationCollection.selection.onSelectionChanged((selectedApps) => {
-      this.appEventHandlers.unsubscribe();
       this.clear();
       for (const app of selectedApps) {
         const executionContexts = app.dataProvider.collections.executionContexts.getAll();
