@@ -65,3 +65,7 @@ export function initServer() {
 
   return server;
 }
+
+export function getServer() {
+  return server;
+}

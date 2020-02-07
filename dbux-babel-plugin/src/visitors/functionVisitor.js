@@ -31,7 +31,7 @@ function buildPopImmediate(contextId, dbux, traceId) {
 }
 
 const pushResumeTemplate = template(`
-  %%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%, %%schedulerId%%);
+  %%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%);
 `);
 
 const popResumeTemplate = template(`
@@ -58,8 +58,7 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
       pushResumeTemplate({
         dbux,
         resumeStaticContextId: t.numericLiteral(staticResumeId),
-        traceId: t.numericLiteral(pushTraceId),
-        schedulerId: t.numericLiteral(staticId)
+        traceId: t.numericLiteral(pushTraceId)
       })
     ];
 

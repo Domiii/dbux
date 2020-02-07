@@ -3,7 +3,8 @@ import applicationCollection from 'dbux-data/src/applicationCollection';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import TracePlayback from 'dbux-data/src/playback/TracePlayback';
-import { navToCode } from '../codeControl/codeNav';
+import { navToCode } from '../codeNav';
+
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 
 export default class PlaybackController {

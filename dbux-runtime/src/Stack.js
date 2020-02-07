@@ -11,7 +11,7 @@ export default class Stack {
   }
 
   /**
-   * @type {int[]}
+   * @type {number[]}
    */
   _stack = [];
   /**
@@ -33,7 +33,7 @@ export default class Stack {
   hasWaiting() {
     return !!this._waitCount;
   }
-  
+
   getDepth() {
     return this._stack.length;
   }
@@ -52,7 +52,7 @@ export default class Stack {
   }
 
   top() {
-    return this._stack[this._stack.length-1] || null;
+    return this._stack[this._stack.length - 1] || null;
   }
 
   peek() {
@@ -62,7 +62,7 @@ export default class Stack {
   isPeekTop() {
     return this._peekIdx === this._stack.length;
   }
-  
+
   indexOf(contextId) {
     return this._stack.indexOf(contextId);
   }
@@ -75,7 +75,7 @@ export default class Stack {
   popTop() {
     const contextId = this.top();
     this._stack.pop();
-    this._peekIdx = this._stack.length-1;
+    this._peekIdx = this._stack.length - 1;
 
     if (this._poppedButStillAround) {
       this._poppedButStillAround.delete(contextId);
@@ -98,7 +98,7 @@ export default class Stack {
       this._poppedButStillAround = new Set();
     }
     this._poppedButStillAround.add(peekContextId);
-    return this._peekIdx+1;
+    return this._peekIdx + 1;
   }
 
   /**

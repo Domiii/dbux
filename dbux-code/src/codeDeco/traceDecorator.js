@@ -2,11 +2,12 @@ import { window } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import DefaultTraceDecoratorConfig from './DefaultTraceDecoratorConfig';
-import { getCodeRangeFromLoc } from '../util/codeUtil';
+import { babelLocToCodeRange } from '../helpers/locHelper';
 import applicationCollection from 'dbux-data/src/applicationCollection';
 import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
-const { log, debug, warn, error: logError } = newLogger('deco-trace');
+const { log, debug, warn, error: logError } = newLogger('traceDecorator');
+
 let configsByType;
 
 // ###########################################################################
@@ -20,7 +21,7 @@ export function renderTraceDecorations(editor, fpath) {
   const allDecorations = [];
 
   // prepare decorations
-  applicationCollection.applicationSelection.mapSelectedApplicationsOfFilePath(fpath, (application, programId) => {
+  applicationCollection.selection.data.mapApplicationsOfFilePath(fpath, (application, programId) => {
     const { dataProvider } = application;
     const staticTraces = dataProvider.indexes.staticTraces.visitedByFile.get(programId);
     // const traces = dataProvider.indexes.traces.byFile.get(programId);
@@ -104,7 +105,7 @@ function createTraceGroupDecoration(dataProvider, traceType, staticTrace, traces
   // return decoration object required by vscode API
   // see https://code.visualstudio.com/api/references/vscode-api#DecorationOptions
   return {
-    range: getCodeRangeFromLoc(loc),
+    range: babelLocToCodeRange(loc),
     hoverMessage: `**${displayName}**${typeString}${statusString} ${valueString}`
   };
 }

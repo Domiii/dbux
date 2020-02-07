@@ -81,25 +81,6 @@ export default class ApplicationSelection {
     this._notifySelectionChanged();
   }
 
-  /**
-   * @param {fileSelectedApplicationCallback} cb
-   */
-  mapSelectedApplicationsOfFilePath(fpath, cb) {
-    const applications = this._selectedApplications;
-
-    for (const application of applications) {
-      const { dataProvider } = application;
-
-      const programId = dataProvider.queries.programIdByFilePath(fpath);
-      if (!programId) {
-        // program did not execute for this application
-        continue;
-      }
-
-      cb(application, programId);
-    }
-  }
-
   // ###########################################################################
   // event listeners
   // ###########################################################################

@@ -1,4 +1,5 @@
-import libs from '../../dbux-common/src/util/universalLibs';
+import path from 'path';
+import process from 'process';
 import DataProvider from './DataProvider';
 import { newDataProvider } from './dataProviderImpl';
 
@@ -36,6 +37,7 @@ export default class Application {
   constructor(applicationId, entryPointPath, applicationCollection) {
     this.applicationId = applicationId;
     this.entryPointPath = entryPointPath;
+    // this.relativeEntryPointPath = path.relative(entryPointPath, process.cwd()); // path relative to cwd
     this.applicationCollection = applicationCollection;
     this.dataProvider = newDataProvider(this);
     // this.createdAt = this.updatedAt = libs.performance.now();
@@ -50,5 +52,10 @@ export default class Application {
     // if (this.applicationCollection.getSelectedApplication() === this) {
     //   this.applicationCollection._emitter.emit('selectedApplicationData', this);
     // }
+  }
+
+  getRelativeFolder() {
+    // Needs external help to do it; e.g. in VSCode, can use workspace-relative path.
+    return this.entryPointPath;
   }
 }

@@ -4,7 +4,7 @@ import {
   TreeItemCollapsibleState as CollapsibleState
 } from 'vscode';
 import path from 'path';
-import { navToCode } from '../codeControl/codeNav';
+import { navToCode } from '../codeNav';
 
 export default class ContextNode extends TreeItem {
   constructor(

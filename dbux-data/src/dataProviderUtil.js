@@ -49,9 +49,10 @@ export default {
   doesTraceHaveValue(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId, type: dynamicType } = trace;
-    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    const { type: staticType } = staticTrace;
-    return hasValue(dynamicType || staticType);
+    if (dynamicType) {
+      return hasValue(dynamicType);
+    }
+    return dp.util.doesStaticTraceHaveValue(staticTraceId);
   },
 
   doesStaticTraceHaveValue(dp: DataProvider, staticTraceId) {
@@ -130,7 +131,7 @@ export default {
   },
 
   /**
-   * TODO: improve performance, use index instead
+   * TODO: improve performance, use MultiKeyIndex instead
    */
   groupTracesByType(dp: DataProvider, staticTraces: StaticTrace[]) {
     const groups = [];

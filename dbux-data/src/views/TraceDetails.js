@@ -1,4 +1,3 @@
 export default class TraceDetails {
-  traceId : number;
-  
+  traceId : number; 
 }

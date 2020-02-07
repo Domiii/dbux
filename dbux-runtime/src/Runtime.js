@@ -1,13 +1,15 @@
-import Stack from './Stack';
 import { logInternalError } from 'dbux-common/src/log/logger';
+import Stack from './Stack';
+import executionContextCollection from './data/executionContextCollection';
+import staticContextCollection from './data/staticContextCollection';
+import ExecutionContextType from '../../dbux-common/src/core/constants/ExecutionContextType';
 
-function mergeStacks(dst, src) {
-  if ((src?.getDepth() || 0) > 0) {
-    // TODO: our stacks don't keep track of their history.
-    //  Instead, go into the collections and fix things there...?
-    logInternalError('Trying to resume interrupted stack, but cannot currently merge stacks.');
-  }
-}
+// function mergeStacks(dst, src) {
+//   if ((src?.getDepth() || 0) > 0) {
+//     // this should actually never be necessary
+//     logInternalError('Trying to resume interrupted stack, but there was already .');
+//   }
+// }
 
 /**
  * Manages the executing as well as all interrupted stacks.
@@ -23,8 +25,6 @@ export default class Runtime {
     return this._instance || (this._instance = new Runtime());
   }
 
-  _scheduledCallbacks = new Set();
-
   /**
    * Set of all interrupted stacks.
    * @type {Map<int, Stack>}
@@ -33,6 +33,7 @@ export default class Runtime {
 
   /**
    * Mysterious stuff...
+   * @type {Stack[]}
    */
   _interruptedStacksOfUnknownCircumstances = [];
 
@@ -42,16 +43,30 @@ export default class Runtime {
    */
   _executingStack = null;
 
+  /**
+   * Used for root management
+   */
+  _currentRunId = 0;
+
 
   // ###########################################################################
   // Stack management
   // ###########################################################################
 
+  /**
+   * The amount of stacks that are waiting or were interrupt and are still kicking around
+   */
+  getLingeringStackCount() {
+    return this._waitingStacks.size + this._interruptedStacksOfUnknownCircumstances.length;
+  }
+
   _executeEmptyStackBarrier = () => {
     if (this._executingStack) {
-      // we had an unhandled interruption (e.g. await, alert, prompt etc.)
+      // we had an unhandled interrupt (should never happen?)
+      console.warn('interrupt');
       this.interrupt();
     }
+    this._emptyStackBarrier = null;
   }
 
   /**
@@ -65,10 +80,15 @@ export default class Runtime {
       // resume previous stack
       this.resumeWaitingStack(contextId);
     }
-    else if (!this._executingStack) {
-      // new stack
-      console.warn('new stack', this._waitingStacks.size + this._interruptedStacksOfUnknownCircumstances.length);
-      this._executingStack = Stack.allocate();
+    else {
+      const mysteriousStack = this._interruptedStacksOfUnknownCircumstances.find(stack => stack._stack.includes(contextId));
+      if (mysteriousStack) {
+        console.warn('found mysterious stack for contextId:', contextId);
+        this._runStart(mysteriousStack);
+      }
+      else if (!this._executingStack) {
+        this.newStack();
+      }
     }
   }
 
@@ -119,7 +139,7 @@ export default class Runtime {
       return stack.popPeekNotTop();
     }
 
-    // we are popping a context that is not at the top of the stack,
+    // we are popping a context that is not at the top nor peek of the stack,
     // meaning that all intermediate contexts are now in waiting
     const oldPeekIdx = stack.getPeekIndex();
     const stackPos = stack.popOther(contextId);
@@ -150,6 +170,10 @@ export default class Runtime {
     return this._executingStack?.getDepth() || 0;
   }
 
+  getCurrentRunId() {
+    return this._currentRunId;
+  }
+
   peekCurrentContextId() {
     return this._executingStack?.peek() || null;
   }
@@ -159,15 +183,11 @@ export default class Runtime {
   // ###########################################################################
 
   beforePush(contextId) {
-
-    // if (!this._executingStack) {
-    // no executing stack 
-    //    -> this invocation has been called from system scheduler (possibly traversing blackboxed code)
     this._ensureEmptyStackBarrier();
     this._maybeResumeInterruptedStackOnPushEmpty(contextId);
 
     // TODO: when unconditionally overriding current context, traces receive incorrect `contextId`
-      //  -> do we need to set peek to contextId? for what?
+    //  -> do we need to set peek to contextId? for what?
 
     // if (contextId) {
     //   this._executingStack.trySetPeek(contextId);
@@ -178,11 +198,21 @@ export default class Runtime {
   push(contextId) {
     // this._previousPoppedContextId = null;
     this._executingStack.push(contextId);
-    // console.warn('->', contextId);
+
+    const context = executionContextCollection.getById(contextId);
+    const staticContext = staticContextCollection.getById(context.staticContextId);
+    const name = staticContext.displayName || '';
+    const typeName = ExecutionContextType.nameFromForce(context.contextType);
+    console.debug('->', context.runId, contextId, `[${typeName}] ${name}`);
   }
 
   pop(contextId) {
-    // console.warn('<-', contextId);
+    const context = executionContextCollection.getById(contextId);
+    const staticContext = staticContextCollection.getById(context.staticContextId);
+    const name = staticContext.displayName || '';
+    const typeName = ExecutionContextType.nameFromForce(context.contextType);
+    console.debug('<-', context.runId, contextId, `[${typeName}] ${name}`);
+
     let stack = this._executingStack;
     let stackPos;
 
@@ -199,7 +229,7 @@ export default class Runtime {
       // first check, if its on this stack, then check for waiting stacks
       stackPos = this._popAnywhere(contextId);
       if (stackPos === -1) {
-        // it's not on this stack -> probably coming back from an unhandled interrupt
+        // it's not on this stack -> probably coming back from an unhandled interrupt (probably should never happen?)
         stack = this.resumeWaitingStack(contextId);
         if (!stack) {
           logInternalError(`Could not pop contextId off stack`, contextId);
@@ -220,23 +250,16 @@ export default class Runtime {
         // there is stuff left to do on this stack, but we don't know why and how
         this._interruptedStacksOfUnknownCircumstances.push(stack);
       }
+
       // last on stack -> done with it! (for now...)
-      this._executingStack = null;
+      this._runFinished();
     }
+    return stackPos;
   }
 
   // ###########################################################################
   // Complex scheduling
   // ###########################################################################
-
-  scheduleCallback(contextId) {
-    if (!this.isExecuting()) {
-      logInternalError('Trying to `scheduleCallback`, but there was no active stack ', contextId);
-      return;
-    }
-
-    this._scheduledCallbacks.add(contextId);
-  }
 
   registerAwait(awaitContextId) {
     if (!this.isExecuting()) {
@@ -249,10 +272,19 @@ export default class Runtime {
     // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
   }
 
+  /**
+   * no previous executing stack to resume
+   *  -> this invocation has been called from system scheduler (possibly traversing blackboxed code)
+   */
+  newStack() {
+    // if (!this._executingStack) {
+    const newStack = Stack.allocate();
+    this._runStart(newStack);
+  }
+
   resumeWaitingStack(contextId) {
     const waitingStack = this._waitingStacks.get(contextId);
     if (!waitingStack) {
-      // TODO: try resume from this._interruptedStacksOfUnknownCircumstances!!
       logInternalError('Could not resume waiting stack (is not registered):', contextId);
       return null;
     }
@@ -260,14 +292,11 @@ export default class Runtime {
 
     if (oldStack !== waitingStack) {
       if (this.isExecuting()) {
-        // logInternalError('Unexpected: `postAwait` received while already executing');
+        logInternalError('Unexpected: `resume` received while already executing. Discarding executing stack.');
         this.interrupt();
       }
-      this._executingStack = waitingStack;
 
-      // ideally, this should not happen, since interrupts should always be resumed
-      //    by the system scheduler
-      mergeStacks(waitingStack, oldStack);
+      this._runStart(waitingStack);
     }
 
     this._markResume(contextId);
@@ -285,7 +314,25 @@ export default class Runtime {
       return;
     }
     this._interruptedStacksOfUnknownCircumstances.push(this._executingStack);
-    this._executingStack = null;
+
+    this._runFinished();
     // this._previousPoppedContextId = null;
+  }
+
+  // ###########################################################################
+  // Manage "execution roots"
+  // ###########################################################################
+
+  _runStart(stack) {
+    ++this._currentRunId;
+    this._executingStack = stack;
+    console.warn('[RunStart] ' + this._currentRunId); //, this.getLingeringStackCount());
+    console.time('[RunEnd] ' + this._currentRunId);
+  }
+
+  _runFinished() {
+    this._executingStack = null;
+    // console.warn('[RootEnd]', this._currentRootId, this.getLingeringStackCount());
+    console.timeEnd('[RunEnd] ' + this._currentRunId);
   }
 }

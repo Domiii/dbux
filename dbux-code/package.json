@@ -20,7 +20,7 @@
 			"activitybar": [
 				{
 					"id": "dbux-view-container",
-					"title": "",
+					"title": "Dbux",
 					"icon": "media/dep.svg"
 				}
 			]
@@ -33,7 +33,7 @@
 				},
 				{
 					"id": "dbuxTraceDetailsView",
-					"name": ""
+					"name": "Trace Details"
 				}
 			]
 		},

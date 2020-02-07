@@ -88,7 +88,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
    * when entering search terms, only display matching nodes
    * keep all necessary parent nodes
-      * gray out any parent node that does not match the search (semi-transparent?)
+      * NOTE: Cannot currently change VSCode `TreeItem` text color
+      * (gray out any parent node that does not match the search (semi-transparent?))
    * (when clearing search, stay on selected node)
    * clear search on `Esc` key press
 * add a button to the top right to toggle (show/hide) all intrusive features
@@ -98,6 +99,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * add new index: `TracesByProgramIndex`
    * key = `programId`
 * display a warning at the top of EditorWindow:
+   * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
    * if it has been edited after the time of it's most recent `Program` `Context`
    * if it is very large and thus will slow things down (e.g. > x traces?)
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
@@ -106,17 +108,28 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * `codeDeco.blurBackgroundMode`
 
 ## TODO (other)
-* [codeDeco] better deco
-   * for function calls: render context targets (if known)
-   * capture function parameters
-* `dbuxTraceDetailsView`
+* [instrumentation] fix up stack + "temporal roots" for contexts
+   * define new context grouping "by immediate stack"
+   * why does `await0` sample have 2 "roots"?
+* [dbuxTraceDetailsView]
    * show all info relevant to the position where the cursor currently is
    * allow to jump to caller/callee upon context switches
    * "`contextElevator`": buttons to step between child/parent context
    * TODO: what about in-line contexts?
+* [codeDeco] better deco
+   * for function calls: render context targets (if known)
+   * capture function parameters
 * [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`: display the `value` in `codeDeco` behind the expression?
    * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
    * TODO: don't waste space if value has a long string representation?
+* [dbuxTraceDetailsView] data interactions
+   * make it possible to interact with the captured values
+   * possibly retrieve more data from the app if app is still running?
+* [MultiKeyIndex] allow for storing data by multiple keys
+   * e.g. `dataProvider.util.groupTracesByType`
+   * e.g. `dataProvider.util.getVisitedStaticTracesAtLine`
+* [project: SimpleExpressFullstackApp]
+   * purpose: test multi-application code
 * [instrumentation] if we see a function call for which we have no context, find out where it goes
    * (i.e. dependency name or runtime-internal?)
       * -> then allow to easily add it to our config and re-run so we can get it next time
@@ -277,6 +290,9 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 * idea to provide inline context menus: [`registerCompletionItemProvider`](https://code.visualstudio.com/api/references/vscode-api#2612)?
    * e.g.: https://marketplace.visualstudio.com/items?itemName=AndersEAndersen.html-class-suggestions
       * https://github.com/andersea/HTMLClassSuggestionsVSCode/blob/master/src/extension.ts
+* cannot currently set `TreeItem` text color
+   * Limited capability for some file names: https://github.com/microsoft/vscode/issues/47502#issuecomment-407394409
+   * Suggested API discussion: https://github.com/microsoft/vscode/issues/54938
 
 # Projects
 

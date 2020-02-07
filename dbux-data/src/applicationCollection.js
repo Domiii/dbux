@@ -21,11 +21,6 @@ function extractFilePathFromInitialData(initialData) {
 }
 
 /**
- * @callback fileSelectedApplicationCallback
- * @param {Application} application
- * @param {number} programId
- */
-/**
  * @callback selectionChangedCallback
  * @param {Application[]} applications
  */
@@ -34,6 +29,8 @@ function extractFilePathFromInitialData(initialData) {
  * ApplicationCollection manages all application throughout the life-time of the dbux-data module.
  */
 export class ApplicationCollection {
+  DefaultApplicationClass = Application;
+
   _all = [null];
   _activeApplications = new Map();
 
@@ -100,7 +97,7 @@ export class ApplicationCollection {
    */
   _addApplication(entryPointPath) {
     const applicationId = this._all.length;
-    const application = new Application(applicationId, entryPointPath, this);
+    const application = new this.DefaultApplicationClass(applicationId, entryPointPath, this);
     const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);
 
     this._activeApplications.set(entryPointPath, application);

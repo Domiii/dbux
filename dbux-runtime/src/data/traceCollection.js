@@ -11,29 +11,30 @@ class TraceCollection extends Collection {
     super('traces');
   }
 
-  trace(contextId, inProgramStaticTraceId, type = null) {
-    const trace = this._trace(contextId, inProgramStaticTraceId, type, false, undefined);
+  trace(contextId, runId, inProgramStaticTraceId, type = null) {
+    const trace = this._trace(contextId, runId, inProgramStaticTraceId, type, false, undefined);
     return trace;
   }
 
-  traceExpressionResult(contextId, inProgramStaticTraceId, value) {
-    const trace = this._trace(contextId, inProgramStaticTraceId, null, true, value);
+  traceExpressionResult(contextId, runId, inProgramStaticTraceId, value) {
+    const trace = this._trace(contextId, runId, inProgramStaticTraceId, null, true, value);
     return trace;
   }
 
-  _trace(contextId, inProgramStaticTraceId, type, hasValue, value) {
+  _trace(contextId, runId, inProgramStaticTraceId, type, hasValue, value) {
     if (!inProgramStaticTraceId) {
       throw new Error('missing inProgramStaticTraceId');
     }
 
     const trace = pools.traces.allocate();
     trace.contextId = contextId;
+    trace.runId = runId;
     trace.type = type;
 
     // value
     valueCollection.processValue(hasValue, value, trace);
 
-    // look-up global trace id by in-program id
+    // look-up globally unique staticTraceId
     // trace._staticTraceId = inProgramStaticTraceId;
     const context = executionContextCollection.getById(contextId);
     const {
@@ -43,8 +44,6 @@ class TraceCollection extends Collection {
     const {
       programId
     } = staticContext;
-
-    // globally unique staticTraceId
     trace.staticTraceId = staticTraceCollection.getStaticTraceId(programId, inProgramStaticTraceId);
 
     // generate new traceId and store

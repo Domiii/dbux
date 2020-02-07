@@ -48,10 +48,10 @@ export default class ProgramMonitor {
   }
 
 
-  scheduleCallback(inProgramStaticId, schedulerId, traceId, cb) {
-    return this._runtimeMonitor.scheduleCallback(this.getProgramId(), 
-      inProgramStaticId, schedulerId, traceId, cb);
-  }
+  // scheduleCallback(inProgramStaticId, schedulerId, traceId, cb) {
+  //   return this._runtimeMonitor.scheduleCallback(this.getProgramId(), 
+  //     inProgramStaticId, schedulerId, traceId, cb);
+  // }
 
   preAwait(inProgramStaticId, traceId) {
     return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticId, traceId);
@@ -66,8 +66,8 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.postAwait(awaitResult, awaitContextId, resumeTraceId);
   }
 
-  pushResume(resumeContextId, traceId, schedulerId) {
-    return this._runtimeMonitor.pushResume(resumeContextId, traceId, schedulerId, true);
+  pushResume(resumeContextId, inProgramStaticTraceId) {
+    return this._runtimeMonitor.pushResume(resumeContextId, inProgramStaticTraceId, true);
   }
 
   popResume() {

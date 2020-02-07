@@ -15,12 +15,12 @@ const wrapAwaitTemplate = template(
 `%%dbux%%.postAwait(
   %%awaitNode%%,
   %%awaitContextId%%,
-  %%postTraceId%%
+  %%resumeTraceId%%
 )
 `);
 
 const wrapAwaitExpressionTemplate = template(`
-(%%dbux%%.wrapAwait(%%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%, %%preTraceId%%), %%argument%%))
+(%%dbux%%.wrapAwait(%%argument%%, %%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%, %%preTraceId%%)))
 `);
 
 
@@ -57,13 +57,12 @@ function enter(path, state) {
     resumeId
   });
 
-  // const schedulerIdName = getClosestContextIdName(argPath);
   const awaitContextId = path.scope.generateDeclaredUidIdentifier('contextId');
   const argumentPath = path.get('argument');
   const argument = argumentPath.node;
 
   const preTraceId = state.addTrace(argumentPath, TraceType.Await, true);
-  const postTraceId = state.addTrace(path, TraceType.Resume, true);
+  const resumeTraceId = state.addTrace(path, TraceType.Resume, true);
 
   const expressionReplacement = wrapAwaitExpressionTemplate({
     dbux,
@@ -78,7 +77,7 @@ function enter(path, state) {
     dbux,
     awaitNode: path.node,
     awaitContextId,
-    postTraceId: t.numericLiteral(postTraceId)
+    resumeTraceId: t.numericLiteral(resumeTraceId)
   });
   path.replaceWith(awaitReplacement);
 
