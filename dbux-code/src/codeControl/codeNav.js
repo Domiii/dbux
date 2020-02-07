@@ -9,18 +9,16 @@ import {
   Selection
 } from 'vscode';
 
-
-
 const { log, debug, warn, error: logError } = newLogger('CodeNav');
 
 /**
  * @param {vscode.Uri} URI (new vscode.Uri.file(FILEPATH))
  * @param {vscode.Position} position (new vscode.Position(LINE, CHARACTER))
  */
-export function navToCode(URI: Uri, location: Loc){
-  window.showTextDocument(URI).then( editor => {
+export function navToCode(URI: Uri, location: Loc) {
+  window.showTextDocument(URI).then(editor => {
     const range = getCodeRangeFromLoc(location)
-    editor.selection =  new Selection(range.start, range.end);
+    editor.selection = new Selection(range.start, range.end);
     editor.revealRange(range);
   })
 }
