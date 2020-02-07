@@ -14,10 +14,11 @@ import ExecutionContextType from '../constants/ExecutionContextType';
 export default class ExecutionContext {
   contextType : ExecutionContextType;
   stackDepth: number;
+  runId: number;
+  parentContextId : number;
   contextId : number;
   staticContextId : number;
   orderId : number;
-  parentContextId : number;
   schedulerId : number;
   createdAt: number;
 

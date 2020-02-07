@@ -10,6 +10,7 @@ import VisitedStaticTracesByFileIndex from './impl/indexes/VisitedStaticTracesBy
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
 import dataProviderUtil from './dataProviderUtil';
+import TracesByRunIdIndex from './impl/indexes/TracesByRunIdIndex';
 
 
 export function newDataProvider(application) {
@@ -22,6 +23,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new TracesByFileIndex());
   dataProvider.addIndex(new TracesByContextIndex());
   dataProvider.addIndex(new TracesByStaticTraceIndex());
+  dataProvider.addIndex(new TracesByRunIdIndex());
 
 
   // complex indexes
