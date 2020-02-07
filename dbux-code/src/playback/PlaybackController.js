@@ -20,13 +20,13 @@ export default class PlaybackController {
 
     this.tracePlayback = new TracePlayback(applicationCollection.selection.data);
 
-    // TODO: add event emitter to tell playing state
+    // TODO: add event emitter to tell playing state changed
 
     applicationCollection.selection.onSelectionChanged((selectedApps) => {
-      this.updateTrace();
+      this.handleApplicationDataChange();
       for (const app of selectedApps) {
         applicationCollection.selection.subscribe(
-          app.dataProvider.onData('traces', this.updateTrace)
+          app.dataProvider.onData('traces', this.handleApplicationDataChange)
         );
       }
     });
@@ -89,16 +89,7 @@ export default class PlaybackController {
 
   getCollectionSize = () => this.dataProvider.collections.traces.size;
 
-  /**
-   * @param {ContextNode} node
-   */
-  handleTreeItemClick = (node) => {
-    const { dataProvider } = applicationCollection.getApplication(node.applicationId);
-    const { traceId } = dataProvider.util.getFirstTraceOfContext(node.contextId);
-    this.traceId = traceId;
-  }
-
-  updateTrace = () => {
+  handleApplicationDataChange = () => {
     if (this.trace) {
       // see if original trace is in selected apps
       if (!applicationCollection.selection.isApplicationSelected(this.trace.applicationId)) {
