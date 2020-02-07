@@ -20,7 +20,7 @@ export default class PlaybackController {
     this.treeViewController = treeViewController;
     this.trace = null;
     this.lastTrace = null;
-    this.treeViewController.onItemClick(this.onTreeItemClick);
+    this.treeViewController.onItemClick(this.handleTreeItemClick);
     this.appEventHandlers = new EventHandlerList();
 
     this.tracePlayback = applicationCollection.selection.data.tracePlayback;
@@ -29,7 +29,7 @@ export default class PlaybackController {
       this.updateTrace();
       for (const app of selectedApps) {
         this.appEventHandlers.subscribe(
-          app.dataProvider.onData('traces', this.updateTrace.bind(this))
+          app.dataProvider.onData('traces', this.updateTrace)
         );
       }
     });
@@ -103,28 +103,18 @@ export default class PlaybackController {
 
   getCollectionSize = () => this.dataProvider.collections.traces.size;
 
-  onTreeItemClick = (node: ContextNode) => {
+  handleTreeItemClick = (node: ContextNode) => {
     const { dataProvider } = applicationCollection.getApplication(node.applicationId);
     const { traceId } = dataProvider.util.getFirstTraceOfContext(node.contextId);
     this.traceId = traceId;
   }
 
   updateTrace = () => {
-    log('In updateTraces');
-    log('this =', this);
-    log('this.trace =', this.trace);
     if (this.trace) {
       // see if original trace is in selected apps
       if (applicationCollection.selection.isApplicationSelected(this.trace.applicationId)) return;
     }
     // try to get first trace in selection
     this.trace = this.tracePlayback.getFirstTraceInOrder();
-    log('rootContextsInOrder =', applicationCollection.selection.data.rootContextsInOrder.getAll());
-    log('After trying to find first trace, this.trace =', this.trace);
   }
 }
-
-
-// auto playback
-// select by button(?)
-// decorate unplayed/played traces
