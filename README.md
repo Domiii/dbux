@@ -45,9 +45,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 # TODO
 
 ## TODO (dbux-code + dbux-data only)
-* (rename `dbuxWindow` to `dbuxContextView`?)
-* fix `dbuxContextView`: we don't just have a single `DataProvider` anymore, work against `Application`s instead
-   * see `codeDeco` for reference (`applicationSelection.onSelectionChanged`)
 * replace `ProgramFilePathByTraceIdQuery` with a `util` function instead (no need to cache)
 * [playback] finish first version of playback feature (v0.1)
 * add multiple "step-through" modes (`StepMode = new Enum(...)`) to `playback` feature:
@@ -108,9 +105,9 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * `codeDeco.blurBackgroundMode`
 
 ## TODO (other)
-* [instrumentation] fix up stack + "temporal roots" for contexts
-   * define new context grouping "by immediate stack"
-   * why does `await0` sample have 2 "roots"?
+* [bug] `indexes.traces.byStaticTrace` contains some `undefined` entries
+* fix `dbux-code/src/net/Client` to allow for reconnecting Applications
+   * will need `dbux-runtime` to send`init` message
 * [dbuxTraceDetailsView]
    * show all info relevant to the position where the cursor currently is
    * allow to jump to caller/callee upon context switches
@@ -145,8 +142,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [instrumentation] proper `cli`
 * [instrumentation] allow to easily instrument any referenced modules (not just our own code)
    * ... and optionally any of its references?
-* fix `dbux-code/src/net/Client` to allow for reconnecting Applications
-   * will need `dbux-runtime` to send`init` message
 * add test setup to all libs
 * add testing for serialization + deserialization (since it can easily cause a ton of pain)
 * improve value serialization to skip objects that are too big
