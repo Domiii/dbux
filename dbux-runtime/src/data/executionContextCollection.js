@@ -35,23 +35,15 @@ export class ExecutionContextCollection extends Collection {
   /**
    * @return {ExecutionContext}
    */
-  scheduleCallback(stackDepth, programId, inProgramStaticId, parentContextId, lastPoppedContextId, schedulerId) {
-    return this._create(ExecutionContextType.ScheduleCallback,
-      stackDepth, programId, inProgramStaticId, parentContextId, schedulerId);
-  }
-
-  /**
-   * @return {ExecutionContext}
-   */
-  executeCallback(stackDepth, scheduledContextId, parentContextId) {
-    const schedulerContext = this.getById(scheduledContextId);
+  executeCallback(stackDepth, schedulerContextId, schedulerTraceId, parentContextId) {
+    const schedulerContext = this.getById(schedulerContextId);
     const { staticContextId } = schedulerContext;
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 
     const context = pools.executionContexts.allocate(
       ExecutionContextType.ExecuteCallback, stackDepth, contextId,
-      staticContextId, orderId, parentContextId, scheduledContextId);
+      staticContextId, orderId, parentContextId, schedulerTraceId);
     this._push(context);
     return context;
   }
@@ -68,12 +60,12 @@ export class ExecutionContextCollection extends Collection {
    * (1) either when the function pops,
    * (2) or when another interrupt occurs.
    */
-  resume(parentContextId, inProgramStaticId, schedulerId, stackDepth) {
+  resume(stackDepth, parentContextId, inProgramStaticId, schedulerTraceId) {
     const parentContext = this.getById(parentContextId);
     const { staticContextId: parenStaticContextId } = parentContext;
     const { programId } = staticContextCollection.getById(parenStaticContextId);
     const context = this._create(ExecutionContextType.Resume,
-      stackDepth, programId, inProgramStaticId, parentContextId, schedulerId);
+      stackDepth, programId, inProgramStaticId, parentContextId, schedulerTraceId);
 
     const { contextId } = context;
     this._addResumedChild(parentContextId, contextId);
@@ -89,13 +81,13 @@ export class ExecutionContextCollection extends Collection {
     return this._lastOrderIds[staticId] = (this._lastOrderIds[staticId] || 0) + 1;
   }
 
-  _create(type, stackDepth, programId, inProgramStaticId, parentContextId, schedulerId = null) {
+  _create(type, stackDepth, programId, inProgramStaticId, parentContextId, schedulerTraceId = null) {
     const { staticId: staticContextId } = staticContextCollection.getContext(programId, inProgramStaticId);
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 
     const context = pools.executionContexts.allocate(
-      type, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId
+      type, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerTraceId
     );
     this._push(context);
     return context;

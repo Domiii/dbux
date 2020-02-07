@@ -10,7 +10,7 @@ const pools = {
     /**
      * @return {ExecutionContext}
      */
-    allocate(contextType, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId) {
+    allocate(contextType, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerTraceId) {
       // TODO: use object pooling
       const context = new ExecutionContext();
       context.contextType = contextType;
@@ -19,7 +19,7 @@ const pools = {
       context.staticContextId = staticContextId;
       context.orderId = orderId;
       context.parentContextId = parentContextId;
-      context.schedulerId = schedulerId;
+      context.schedulerTraceId = schedulerTraceId;
       context.createdAt = Date.now();
       // context.resumedChildren = null;
 

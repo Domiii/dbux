@@ -112,7 +112,7 @@ export class ApplicationCollection {
       debug('added', entryPointPath);
     }
 
-    if (previousApplication && this.isApplicationSelected(previousApplication)) {
+    if (previousApplication && this.selection.isApplicationSelected(previousApplication)) {
       // application restarted -> automatically deselect previous instance
       this._applicationSelection.deselectApplication(previousApplication);
     }
