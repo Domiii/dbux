@@ -25,7 +25,7 @@ function activate(context) {
     initCodeControl(context);
 
     const treeViewController = initTreeView();
-    const playbackController = initPlayback(treeViewController);
+    const playbackController = initPlayback();
     initCommands(context, treeViewController, playbackController);
     initToolBar(context, treeViewController);
   } catch (e) {

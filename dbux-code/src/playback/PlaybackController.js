@@ -1,13 +1,9 @@
 import { Uri, commands } from 'vscode';
 import applicationCollection from 'dbux-data/src/applicationCollection';
-import EventHandlerList from 'dbux-common/src/util/EventHandlerList';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import TracePlayback from 'dbux-data/src/playback/TracePlayback';
 import { navToCode } from '../codeControl/codeNav';
-import { TreeViewController } from '../treeView/treeViewController';
-import ContextNode from '../treeView/ContextNode';
-
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 
 export default class PlaybackController {
@@ -16,19 +12,20 @@ export default class PlaybackController {
   lastTrace: Trace;
   tracePlayback: TracePlayback;
 
-  constructor(treeViewController: TreeViewController) {
-    this.treeViewController = treeViewController;
+  // TODO: move play functions to tracePlayback
+
+  constructor() {
     this.trace = null;
     this.lastTrace = null;
-    this.treeViewController.onItemClick(this.handleTreeItemClick);
-    this.appEventHandlers = new EventHandlerList();
 
-    this.tracePlayback = applicationCollection.selection.data.tracePlayback;
+    this.tracePlayback = new TracePlayback(applicationCollection.selection.data);
+
+    // TODO: add event emitter to tell playing state
 
     applicationCollection.selection.onSelectionChanged((selectedApps) => {
       this.updateTrace();
       for (const app of selectedApps) {
-        this.appEventHandlers.subscribe(
+        applicationCollection.selection.subscribe(
           app.dataProvider.onData('traces', this.updateTrace)
         );
       }
@@ -52,17 +49,17 @@ export default class PlaybackController {
   }
 
   previousTrace = () => {
+    if (!this.trace) this.trace = this.tracePlayback.getFirstTraceInOrder();
     if (!this.trace) return;
     this.trace = this.tracePlayback.getPreviousTraceInOrder(this.trace) || this.trace;
     this.showTrace(this.trace);
-    this.revealTraceInTreeView(this.trace);
   }
 
   nextTrace = () => {
+    if (!this.trace) this.trace = this.tracePlayback.getFirstTraceInOrder();
     if (!this.trace) return;
     this.trace = this.tracePlayback.getNextTraceInOrder(this.trace) || this.trace;
     this.showTrace(this.trace);
-    this.revealTraceInTreeView(this.trace);
   }
 
   previousTraceInContext = () => {
@@ -70,7 +67,6 @@ export default class PlaybackController {
     if (!collectionSize) return;
     this.traceId = this.dataProvider.util.getPreviousTraceInContext(this.traceId).traceId;
     this.showTrace(this.traceId);
-    this.revealTraceInTreeView(this.traceId);
   }
 
   nextTraceInContext = () => {
@@ -78,7 +74,6 @@ export default class PlaybackController {
     if (!collectionSize) return;
     this.traceId = this.dataProvider.util.getNextTraceInContext(this.traceId).traceId;
     this.showTrace(this.traceId);
-    this.revealTraceInTreeView(this.traceId);
   }
 
   /**
@@ -92,18 +87,12 @@ export default class PlaybackController {
     navToCode(Uri.file(filePath), loc);
   }
 
-  /**
-   * @param {Trace} trace
-   */
-  revealTraceInTreeView = (trace) => {
-    const dp = applicationCollection.getApplication(trace.applicationId).dataProvider;
-    const { contextId } = dp.collections.traces.getById(trace.traceId);
-    this.treeViewController.revealContextById(trace.applicationId, contextId, true);
-  }
-
   getCollectionSize = () => this.dataProvider.collections.traces.size;
 
-  handleTreeItemClick = (node: ContextNode) => {
+  /**
+   * @param {ContextNode} node
+   */
+  handleTreeItemClick = (node) => {
     const { dataProvider } = applicationCollection.getApplication(node.applicationId);
     const { traceId } = dataProvider.util.getFirstTraceOfContext(node.contextId);
     this.traceId = traceId;
@@ -112,9 +101,9 @@ export default class PlaybackController {
   updateTrace = () => {
     if (this.trace) {
       // see if original trace is in selected apps
-      if (applicationCollection.selection.isApplicationSelected(this.trace.applicationId)) return;
+      if (!applicationCollection.selection.isApplicationSelected(this.trace.applicationId)) {
+        this.trace = null;
+      }
     }
-    // try to get first trace in selection
-    this.trace = this.tracePlayback.getFirstTraceInOrder();
   }
 }

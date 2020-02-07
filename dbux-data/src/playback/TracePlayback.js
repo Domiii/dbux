@@ -27,7 +27,7 @@ export default class TracePlayback {
    * @param {Trace} trace 
    */
   getPreviousTraceInOrder(trace) {
-    const prevTrace = this.getPreviousTrace(trace);
+    const prevTrace = this.getPreviousTraceInApplication(trace);
     if (!prevTrace) {
       // if it is the last trace in application, find next rootContext
       const newTrace = this.getLastTraceInPreviousRootContext(trace);
@@ -50,7 +50,7 @@ export default class TracePlayback {
    * @param {Trace} trace 
    */
   getNextTraceInOrder(trace) {
-    const nextTrace = this.getNextTrace(trace);
+    const nextTrace = this.getNextTraceInApplication(trace);
     if (!nextTrace) {
       // if it is the last trace in application, find next rootContext
       const newTrace = this.getFirstTraceInNextRootContext(trace);
@@ -75,8 +75,8 @@ export default class TracePlayback {
 
   getFirstTraceInOrder() {
     const { rootContextsInOrder } = this.applicationCollection.selection.data;
-    if (!rootContextsInOrder.getAll().length) return null;
     const firstRootContext = rootContextsInOrder.getFirstRootContext();
+    if (!firstRootContext) return null;
     const dataProvider = this.getDataProviderOfRootContext(firstRootContext);
     return dataProvider.util.getFirstTraceOfContext(firstRootContext.contextId);
   }
@@ -84,7 +84,7 @@ export default class TracePlayback {
   /**
    * @param {Trace} trace 
    */
-  getNextTrace(trace) {
+  getNextTraceInApplication(trace) {
     const { applicationId, traceId } = trace;
     const application = this.applicationCollection.getApplication(applicationId);
     const nextTrace = application.dataProvider.collections.traces.getById(traceId + 1);
@@ -94,7 +94,7 @@ export default class TracePlayback {
   /**
    * @param {Trace} trace 
    */
-  getPreviousTrace(trace) {
+  getPreviousTraceInApplication(trace) {
     const { applicationId, traceId } = trace;
     const application = this.applicationCollection.getApplication(applicationId);
     const nextTrace = application.dataProvider.collections.traces.getById(traceId - 1);

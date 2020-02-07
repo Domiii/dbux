@@ -73,10 +73,6 @@ class RootContextsInOrder {
   // getters
   // ###########################################################################
 
-  get size() {
-    return this._rootContextsArray.length;
-  }
-
   getAll() {
     return this._rootContextsArray;
   }
