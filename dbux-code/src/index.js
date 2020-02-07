@@ -1,5 +1,5 @@
-import { newLogger } from 'dbux-common/src/log/logger';
 import { window } from 'vscode';
+import { newLogger } from 'dbux-common/src/log/logger';
 
 import { initServer } from './net/server';
 import { initCodeDeco } from './codeDeco';
@@ -15,9 +15,7 @@ import { initTraceDetailsController } from './traceDetailsView/traceDetailsContr
 import { initResources } from './resources';
 
 
-const {
-  log, debug, warn, error: logError,
-} = newLogger('dbux-code');
+const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 
 /**
@@ -31,12 +29,10 @@ function activate(context) {
     initCodeDeco(context);
     initTraceDetailsController(context);
 
-    // TODO: we don't have a single DataProvider anymore - manage Applications instead
-    // TODO: see codeDeco for reference
-    // const treeViewController = initTreeView(context, dataProvider);
-    // const playbackController = initPlayback(dataProvider, treeViewController);
-    // initCommands(context, treeViewController, playbackController);
-    // initToolBar(context, treeViewController);
+    const treeViewController = initTreeView();
+    const playbackController = initPlayback();
+    initCommands(context, treeViewController, playbackController);
+    initToolBar(context, treeViewController);
   } catch (e) {
     logError('could not activate', e);
     // debugger;

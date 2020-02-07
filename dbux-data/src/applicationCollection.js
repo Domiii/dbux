@@ -37,7 +37,7 @@ export class ApplicationCollection {
   _emitter = new NanoEvents();
 
   constructor() {
-    this._applicationSelection = new ApplicationSelection(this);
+    this.applicationSelection = new ApplicationSelection(this);
   }
 
   getById(applicationId: Application) {
@@ -114,11 +114,11 @@ export class ApplicationCollection {
 
     if (previousApplication && this.selection.isApplicationSelected(previousApplication)) {
       // application restarted -> automatically deselect previous instance
-      this._applicationSelection.deselectApplication(previousApplication);
+      this.applicationSelection.deselectApplication(previousApplication);
     }
     
     // always add new application to set of selected applications
-    this._applicationSelection.selectApplication(application);
+    this.applicationSelection.selectApplication(application);
 
     return application;
   }
@@ -132,7 +132,7 @@ export class ApplicationCollection {
 
     // deselect (will also trigger event)
     if (this._selectedApplications === application) {
-      this._applicationSelection.deselectApplication(application.applicationId);
+      this.applicationSelection.deselectApplication(application.applicationId);
     }
 
     // remove
@@ -150,7 +150,7 @@ export class ApplicationCollection {
     this._all = [null];
     this._activeApplications = new Map();
 
-    this._applicationSelection._setSelectedApplications(null);
+    this.applicationSelection._setSelectedApplications(null);
 
     this._emitter.emit('clear');
   }
@@ -164,7 +164,7 @@ export class ApplicationCollection {
   }
 
   get selection() {
-    return this._applicationSelection;
+    return this.applicationSelection;
   }
 
   // ###########################################################################

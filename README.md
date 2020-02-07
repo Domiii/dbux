@@ -47,7 +47,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 ## TODO (dbux-code + dbux-data only)
 * (rename `dbuxWindow` to `dbuxContextView`?)
 * fix `dbuxContextView`: we don't just have a single `DataProvider` anymore, work against `Application`s instead
-   * see `codeDeco` for reference (`applicationCollection.onSelectionChanged`)
+   * see `codeDeco` for reference (`applicationSelection.onSelectionChanged`)
 * replace `ProgramFilePathByTraceIdQuery` with a `util` function instead (no need to cache)
 * [playback] finish first version of playback feature (v0.1)
 * add multiple "step-through" modes (`StepMode = new Enum(...)`) to `playback` feature:

@@ -10,7 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:dbuxView",
+		"onView:dbuxContextView",
 		"onLanguage:javascript"
 	],
 	"__main": "./src/index.js",
@@ -28,7 +28,7 @@
 		"views": {
 			"dbux-view-container": [
 				{
-					"id": "dbuxView",
+					"id": "dbuxContextView",
 					"name": ""
 				},
 				{
@@ -38,6 +38,22 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "dbuxPlayback.play",
+				"title": "Start",
+				"icon": {
+					"light": "resources/light/play.svg",
+					"dark": "resources/dark/play.svg"
+				}
+			},
+			{
+				"command": "dbuxPlayback.pause",
+				"title": "Pause",
+				"icon": {
+					"light": "resources/light/pause.svg",
+					"dark": "resources/dark/pause.svg"
+				}
+			},
 			{
 				"command": "dbuxPlayback.previousTrace",
 				"title": "Previous Trace",
@@ -71,7 +87,7 @@
 				}
 			},
 			{
-				"command": "dbuxView.previous",
+				"command": "dbuxContextView.previous",
 				"title": "Previous",
 				"icon": {
 					"light": "resources/light/previous.svg",
@@ -79,7 +95,7 @@
 				}
 			},
 			{
-				"command": "dbuxView.next",
+				"command": "dbuxContextView.next",
 				"title": "Next",
 				"icon": {
 					"light": "resources/light/next.svg",
@@ -87,7 +103,7 @@
 				}
 			},
 			{
-				"command": "dbuxView.clear",
+				"command": "dbuxContextView.clear",
 				"title": "Clear",
 				"icon": {
 					"light": "resources/light/clear.svg",
@@ -95,11 +111,11 @@
 				}
 			},
 			{
-				"command": "dbuxView.addEntry",
+				"command": "dbuxContextView.addEntry",
 				"title": "Add"
 			},
 			{
-				"command": "dbuxView.gotoEntry",
+				"command": "dbuxContextView.gotoEntry",
 				"title": "Goto",
 				"icon": {
 					"light": "resources/light/boolean.svg",
@@ -107,11 +123,11 @@
 				}
 			},
 			{
-				"command": "dbuxView.deleteEntry",
+				"command": "dbuxContextView.deleteEntry",
 				"title": "Delete"
 			},
 			{
-				"command": "dbuxView.itemClick",
+				"command": "dbuxContextView.itemClick",
 				"title": "Clicked"
 			},
 			{
@@ -126,48 +142,58 @@
 					"group": "navigation@0"
 				},
 				{
-					"command": "dbuxPlayback.nextTrace",
+					"command": "dbuxPlayback.play",
+					"when": "dbuxPlaybackPlaying == false",
 					"group": "navigation@1"
 				},
 				{
-					"command": "dbuxPlayback.previousTraceInContext",
+					"command": "dbuxPlayback.pause",
+					"when": "dbuxPlaybackPlaying == true",
 					"group": "navigation@2"
 				},
 				{
-					"command": "dbuxPlayback.nextTraceInContext",
+					"command": "dbuxPlayback.nextTrace",
 					"group": "navigation@3"
+				},
+				{
+					"command": "dbuxPlayback.previousTraceInContext",
+					"group": "navigation@4"
+				},
+				{
+					"command": "dbuxPlayback.nextTraceInContext",
+					"group": "navigation@5"
 				}
 			],
 			"view/title": [
 				{
-					"command": "dbuxView.previous",
-					"when": "view == dbuxView",
+					"command": "dbuxContextView.previous",
+					"when": "view == dbuxContextView",
 					"group": "navigation@0"
 				},
 				{
-					"command": "dbuxView.next",
-					"when": "view == dbuxView",
+					"command": "dbuxContextView.next",
+					"when": "view == dbuxContextView",
 					"group": "navigation@1"
 				},
 				{
-					"command": "dbuxView.clear",
-					"when": "view == dbuxView",
+					"command": "dbuxContextView.clear",
+					"when": "view == dbuxContextView",
 					"group": "navigation@2"
 				},
 				{
-					"command": "dbuxView.addEntry",
-					"when": "view == dbuxView"
+					"command": "dbuxContextView.addEntry",
+					"when": "view == dbuxContextView"
 				}
 			],
 			"view/item/context": [
 				{
-					"command": "dbuxView.gotoEntry",
-					"when": "view == dbuxView && viewItem == event",
+					"command": "dbuxContextView.gotoEntry",
+					"when": "view == dbuxContextView && viewItem == event",
 					"group": "inline"
 				},
 				{
-					"command": "dbuxView.deleteEntry",
-					"when": "view == dbuxView && viewItem == event"
+					"command": "dbuxContextView.deleteEntry",
+					"when": "view == dbuxContextView && viewItem == event"
 				}
 			]
 		}

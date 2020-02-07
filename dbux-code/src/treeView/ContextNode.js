@@ -1,25 +1,24 @@
-import { navToCode } from '../codeNav';
-import { babelLocToCodePosition } from '../helpers/locHelper';
-import path from 'path';
 import {
   Uri,
-  TreeItem, 
-  TreeItemCollapsibleState as CollapsibleState 
+  TreeItem,
+  TreeItemCollapsibleState as CollapsibleState
 } from 'vscode';
+import path from 'path';
+import { navToCode } from '../codeNav';
 
 export default class ContextNode extends TreeItem {
-
-	constructor(
+  constructor(
     displayName,
     typeName,
     fileName,
     filePath,
     location,
     depth,
+    applicationId,
     contextId,
     parentContextId = null,
     parentNode = null,
-    nodeProvider
+    treeNodeProvider
   ) {
     // set label
     super(`${displayName} [${typeName}]`);
@@ -31,17 +30,18 @@ export default class ContextNode extends TreeItem {
     this.filePath = filePath;
     this.location = location;
     this.depth = depth;
+    this.applicationId = applicationId;
     this.contextId = contextId;
     this.parentContextId = parentContextId;
     this.parentNode = parentNode;
-    this.nodeProvider = nodeProvider;
+    this.treeNodeProvider = treeNodeProvider;
 
     // treeItem data
     this.children = [];
     this.description = `@${fileName}:${location.start.line}:${location.start.column}`;
     this.collapsibleState = CollapsibleState.None;
     this.command = {
-      command: 'dbuxView.itemClick',
+      command: 'dbuxContextView.itemClick',
       arguments: [this]
     };
     this.contextValue = 'event';
@@ -68,8 +68,7 @@ export default class ContextNode extends TreeItem {
     this.collapsibleState = CollapsibleState.Collapsed;
   }
 
-	get tooltip() {
-		return `#${this.contextId} at ${this.fileName}(tooltip)`;
-	}
-
+  get tooltip() {
+    return `#${this.contextId} at ${this.fileName}(tooltip)`;
+  }
 }

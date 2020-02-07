@@ -23,6 +23,7 @@ export default {
     if (!traces?.length) {
       return null;
     }
+    // TODO: don't use array.indexOf
     const index = traces.indexOf(trace);
     if (index === 0) {
       if (traceId !== 1) traceId--;
@@ -36,6 +37,7 @@ export default {
     if (!traces?.length) {
       return null;
     }
+    // TODO: don't use array.indexOf
     const index = traces.indexOf(trace);
     if (index === traces.length - 1) {
       if (traceId !== dp.collections.traces.size) traceId++;
@@ -111,6 +113,21 @@ export default {
     } = trace;
 
     return dp.util.getStaticTraceProgramId(staticTraceId);
+  },
+
+  getAllRootContexts(dp: DataProvider) {
+    return dp.indexes.executionContexts.roots.get(1);
+  },
+
+  getRootContextIdByContextId(dp: DataProvider, contextId) {
+    const { executionContexts } = dp.collections;
+    let lastContextId = contextId;
+    let parentContextId;
+    while (true) {
+      parentContextId = executionContexts.getById(lastContextId).parentContextId;
+      if (!parentContextId) return lastContextId;
+      else lastContextId = parentContextId;
+    }
   },
 
   /**

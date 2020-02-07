@@ -1,3 +1,7 @@
+import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import TracePlayback from './playback/TracePlayback';
+
 // ###########################################################################
 // RootContextsInOrder
 // ###########################################################################
@@ -11,27 +15,41 @@ class RootContextsInOrder {
    */
   constructor(applicationSelectionData) {
     this.applicationSelectionData = applicationSelectionData;
-
-    const applicationSelection = this.applicationSelectionData._applicationSelection;
-    const selectedApplications = applicationSelection.getSelectedApplications();
     this._rootContextsArray = [];
-
-    for (const app of selectedApplications) {
-      applicationSelection.subscibe(app.dataProvider.onData('executionContexts', this._addExecutionContexts.bind(this, app)));
-    }
-
-    // merge all initially
-    this._mergeAll();
   }
 
   _mergeAll() {
     this._rootContextsArray = [];
+    const applications = this.applicationSelectionData.selection.getSelectedApplications();
+    let allRootContexts = applications.map((app) => app.dataProvider.util.getAllRootContexts() || EmptyArray);
+    let indexPointers = Array(applications.length).fill(0);
+    let contextCount = allRootContexts.reduce((sum, arr) => sum + arr.length, 0);
 
-    // TODO: merge by date~~~
-    // for (const app of applications) {
-    //   const rootContexts = app.dataProvider.util.getRootContexts();
-    //   rootContexts.forEach(this._addOne)
-    // }
+    for (let i = 0; i < contextCount; i++) {
+      let earliestContext = allRootContexts[0][indexPointers[0]];
+      let earliestApplicationIndex = 0;
+      for (let j = 1; j < applications.length; j++) {
+        const context = allRootContexts[j][indexPointers[j]];
+        if (context.createdAt < earliestContext) {
+          earliestContext = context;
+          earliestApplicationIndex = j;
+        }
+      }
+      indexPointers[earliestApplicationIndex] += 1;
+      this._addOne(earliestContext);
+    }
+  }
+
+  
+  _handleSelectionChanged = () => {
+    const { applicationSelection } = this.applicationSelectionData;
+    const selectedApplications = applicationSelection.getSelectedApplications();
+  
+    for (const app of selectedApplications) {
+      applicationSelection.subscribe(
+        app.dataProvider.onData('executionContexts', this._addExecutionContexts.bind(this, app))
+      );
+    }
   }
 
   _addExecutionContexts(app, contexts) {
@@ -68,12 +86,16 @@ class RootContextsInOrder {
     return index;
   }
 
-  getNextRootContext(rootContext) {
+  getFirstRootContext() {
+    return this._rootContextsArray[0] || null;
+  }
+
+  getNextRootContext(rootContext: ExecutionContext) {
     const order = this.getIndex(rootContext);
     return this._rootContextsArray[order + 1] || null;
   }
 
-  getPreviousRootContext(rootContext) {
+  getPreviousRootContext(rootContext: ExecutionContext) {
     const order = this.getIndex(rootContext);
     return this._rootContextsArray[order - 1] || null;
   }
@@ -98,18 +120,19 @@ class RootContextsInOrder {
  */
 export default class ApplicationSelectionData {
   constructor(applicationSelection) {
-    this._applicationSelection = applicationSelection;
+    this.applicationSelection = applicationSelection;
     this.rootContextsInOrder = new RootContextsInOrder(this);
+    this.tracePlayback = new TracePlayback(this);
 
-    this._applicationSelection._emitter.on('_selectionChanged0', this._handleSelectionChanged);
+    this.applicationSelection._emitter.on('_selectionChanged0', this._handleSelectionChanged);
   }
 
   get selection() {
-    return this._applicationSelection;
+    return this.applicationSelection;
   }
 
-  _handleSelectionChanged(selectedApplications) {
-    this.rootContextsInOrder = new RootContextsInOrder(this);
+  _handleSelectionChanged = () => {
+    this.rootContextsInOrder._handleSelectionChanged();
   }
 
   /**
