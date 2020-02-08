@@ -4,14 +4,30 @@ import SendQueue from './SendQueue';
 
 const { log, debug, warn, error: logError } = newLogger('CLIENT');
 
-// ########################################
+// ###########################################################################
 // config
-// ########################################
+// ###########################################################################
 
-const InactivityDelay = 5000;
+const InactivityDelay = 1000;
 const DefaultPort = 3374;
 const Remote = `ws://localhost:${DefaultPort}`;
 
+// ###########################################################################
+// utilities
+// ###########################################################################
+
+function extractEntryPointPathFromInitialData(initialData) {
+  const { staticProgramContexts } = initialData;
+  const entryPoint = staticProgramContexts && staticProgramContexts[0];
+  if (entryPoint && entryPoint.programId === 1) {
+    return entryPoint.filePath;
+  }
+  return '';
+}
+
+// ###########################################################################
+// Client
+// ###########################################################################
 
 export default class Client {
   /**
@@ -41,15 +57,15 @@ export default class Client {
     debug('connected');
     this._connected = true;
 
-    // send out anything that was already buffered
-    this._sendQueue._flushLater();
+    // start initial handshake
+    this._sendInit();
 
     // kill socket after configured period of inactivity
     this._refreshInactivityTimer();
   };
 
   _handleConnectFailed = () => {
-    debug('failed to connect')
+    debug('failed to connect');
   }
 
   _handleDisconnect = () => {
@@ -64,6 +80,38 @@ export default class Client {
   // ###########################################################################
   // sending data
   // ###########################################################################
+
+  /**
+   * Start initial handshake
+   */
+  _sendInit() {
+    let entryPointPath;
+    if (!this._applicationId) {
+      // NOTE: we don't start using the client, 
+      //    unless some code has already executed, so `initialData` should be there
+      const initialData = this._sendQueue.buffers;
+      entryPointPath = extractEntryPointPathFromInitialData(initialData);
+
+      if (!entryPointPath) {
+        logError('No `entryPointPath` found in initial data', initialData);
+      }
+    }
+
+    // send init to server
+    this._socket.emit('init', {
+      applicationId: this._applicationId,
+      entryPointPath
+    });
+
+    // wait for ack to come back from server
+    this._socket.once('init_ack', applicationId => {
+      // then: remember applicationId
+      this._applicationId = applicationId;
+
+      // finally: send out anything that was already buffered
+      this._sendQueue._flushLater();
+    });
+  }
 
   send(dataName, data) {
     // TODO: in case of "immediate sync mode", use sendNow instead
@@ -84,7 +132,7 @@ export default class Client {
     if (!this._socket) {
       this._connect();
     }
-    if (this.isConnected()) {
+    else if (this.isConnected()) {
       this._socket.emit('data', data);
       this._refreshInactivityTimer();
       return true;
@@ -95,7 +143,7 @@ export default class Client {
   // ###########################################################################
   // connect
   // ###########################################################################
-  
+
   _connect() {
     const socket = this._socket = io.connect(Remote, {
       // jsonp: false,

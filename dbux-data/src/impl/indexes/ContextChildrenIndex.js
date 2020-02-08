@@ -4,7 +4,7 @@ import DataProvider from '../../DataProvider';
 
 
 function makeKey(dp: DataProvider, context: ExecutionContext) {
-  return context.parentContextId;
+  return context.parentContextId || 0;
 }
 
 

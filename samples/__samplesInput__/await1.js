@@ -25,7 +25,7 @@ async function main() {
   );
   await f4(
     f2,
-    sleep.bind(null, 1000),
+    sleep.bind(null, 2000),
     f3
   );
 }

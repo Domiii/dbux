@@ -77,15 +77,18 @@ export default class TraceDetailsDataProvider {
     // const traces = application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
     const traces = getVisitedTracesAt(application, programId, pos);
     if (!traces) {
-      // should never happen
       return null;
     }
     
     return traces.map(trace => {
+      if (!trace) {
+        // should not happen
+        return null;
+      }
       const node = createTraceDetailsNode(TraceNode, trace, application, parent);
       node.children = this._buildTraceDetailNodes();
       return node;
-    });
+    }).filter(trace => !!trace);
   }
 
   _buildTraceDetailNodes() {

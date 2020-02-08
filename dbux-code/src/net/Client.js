@@ -1,4 +1,4 @@
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import applicationCollection from 'dbux-data/src/applicationCollection';
 import Application from 'dbux-data/src/Application';
 
@@ -7,11 +7,11 @@ const { log, debug, warn, error: logError } = newLogger('net-client');
 export default class Client {
   server;
   socket;
-  application : Application;
+  application: Application;
   _connected;
 
   constructor(server, socket) {
-    debug('connected', socket.id);
+    debug('connected');
 
     this.server = server;
     this.socket = socket;
@@ -30,20 +30,39 @@ export default class Client {
     return !!this.application;
   }
 
-  _handleInit(initData) {
-    // TODO: handle `init` to allow for applications to reconnect
+  _getOrCreateApplication(initialData): Application {
+    const { applicationId, entryPointPath } = initialData;
+    let application;
+    const firstTime = !applicationId;
+    if (firstTime) {
+      // first time
+      application = applicationCollection.addApplication(entryPointPath);
+    }
+    else {
+      // reconnect
+      application = applicationCollection.getById(applicationId);
+    }
+
+    log('init', firstTime ? '(new)' : '(reconnect)', application?.entryPointPath);
+    return application;
   }
 
-  _handleData = (data) => {
-    if (!this.isReady()) {
-      // first bit of data received
-      this.application = applicationCollection.getOrCreateApplication(data);
+  _handleInit = (initialData) => {
+    if (this.isReady()) {
+      logError('received init from client twice. Please restart application -', initialData?.entryPointPath);
+    }
+    else {
+      this.application = this._getOrCreateApplication(initialData);
       if (!this.application) {
-        logError('Invalid data received: cannot application because it has no entry point. Please restart application.');
-        return;
+        logError('application reconnected but `applicationId` not found. Please restart application -', initialData?.entryPointPath);
+        return null;
       }
     }
 
+    this.socket.emit('init_ack', this.application.applicationId);
+  }
+
+  _handleData = (data) => {
     this.application.addData(data);
   }
 
@@ -51,7 +70,7 @@ export default class Client {
    * Called by Server as it helps track connection state.
    */
   _handleDisconnect = () => {
-    debug('disconnected', this.socket.id);
+    debug('disconnected', this.application?.entryPointPath);
     this._connected = false;
   }
 

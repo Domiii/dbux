@@ -11,14 +11,6 @@ import ApplicationSelectionData from './ApplicationSelectionData';
 
 const { log, debug, warn, error: logError } = newLogger('applications');
 
-function extractFilePathFromInitialData(initialData) {
-  const staticProgramContexts = initialData?.staticProgramContexts;
-  const entryPoint = staticProgramContexts && staticProgramContexts[0];
-  if (entryPoint && entryPoint.programId === 1) {
-    return entryPoint.filePath;
-  }
-  return null;
-}
 
 /**
  * @callback selectionChangedCallback
@@ -78,16 +70,6 @@ export class ApplicationCollection {
     return application && !!this.getActiveApplicationByEntryPoint(application.entryPointPath);
   }
 
-  getOrCreateApplication(initialData): Application {
-    // TODO: fix this to support reconnects
-    const entryPointPath = extractFilePathFromInitialData(initialData);
-    if (!entryPointPath) {
-      return null;
-    }
-    const application = this._addApplication(entryPointPath);
-    return application;
-  }
-
   // ###########################################################################
   // add + remove applications
   // ###########################################################################
@@ -95,7 +77,7 @@ export class ApplicationCollection {
   /**
    * @private
    */
-  _addApplication(entryPointPath) {
+  addApplication(entryPointPath) {
     const applicationId = this._all.length;
     const application = new this.DefaultApplicationClass(applicationId, entryPointPath, this);
     const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);

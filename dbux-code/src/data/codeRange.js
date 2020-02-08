@@ -22,8 +22,11 @@ export function getVisitedStaticTracesAt(application, programId, pos) {
 export function getVisitedTracesAt(application, programId, pos) {
   const staticTraces = getVisitedStaticTracesAt(application, programId, pos);
   // const traces = application.dataProvider.indexes.traces.visitedByFile.get(programId);
-  return (staticTraces || EmptyArray).map(staticTrace => {
+  const traces = (staticTraces || EmptyArray).map(staticTrace => {
     const { staticTraceId } = staticTrace;
     return application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
-  }).flat();
+  }).filter(tracesOfStaticTrace => !!tracesOfStaticTrace).flat();
+
+
+  return traces;
 }

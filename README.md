@@ -107,12 +107,14 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 ## TODO (other)
 * [bug] `indexes.traces.byStaticTrace` contains some `undefined` entries
 * fix `dbux-code/src/net/Client` to allow for reconnecting Applications
-   * will need `dbux-runtime` to send`init` message
+   * will need `dbux-runtime` to send `init` message
 * [dbuxTraceDetailsView]
    * show all info relevant to the position where the cursor currently is
    * allow to jump to caller/callee upon context switches
    * "`contextElevator`": buttons to step between child/parent context
    * TODO: what about in-line contexts?
+   * example: we want to get into `showItems` here <3
+      * `this.store.find({...}[route], this.view.showItems.bind(this.view))`
 * [codeDeco] better deco
    * for function calls: render context targets (if known)
    * capture function parameters

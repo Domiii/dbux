@@ -29,7 +29,7 @@ export default class CollectionIndex<T> {
   addEntry(entry : T) {
     const key = this.makeKey(this.dp, entry);
     if (key === undefined) {
-      this.log.error(`makeKey returned undefined`);
+      this.log.error('makeKey returned undefined');
       return;
     }
     if (key === false) {
@@ -39,13 +39,16 @@ export default class CollectionIndex<T> {
 
     // for optimization reasons, we are currently only accepting simple number indexes
     const currentCount = this._byKey.length;
-    if (isNaN(key) || key < 0 || (key > 1e6 && key < currentCount / 2)) {
+    if (!Number.isInteger(key) || key < 0 || (key > 1e6 && key < currentCount / 2)) {
       this.log.error('invalid key for index (currently only dense number spaces are supported):', key);
-      return;
     }
-
-    const ofKey = (this._byKey[key] = this._byKey[key] || []);
-    ofKey.push(entry);
+    else {
+      const ofKey = (this._byKey[key] = this._byKey[key] || []);
+      ofKey.push(entry);
+      if (ofKey.includes(undefined)) {
+        this.log.error('Index contains undefined values', key, entry, ofKey);
+      }
+    }
   }
 
   addEntryById(id) {

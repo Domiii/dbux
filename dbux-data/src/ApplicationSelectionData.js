@@ -22,22 +22,26 @@ class RootContextsInOrder {
     this._rootContextsArray = [];
     const applications = this.applicationSelectionData.selection.getSelectedApplications();
     let allRootContexts = applications.map((app) => app.dataProvider.util.getAllRootContexts() || EmptyArray);
-    let indexPointers = Array(applications.length).fill(0);
-    let contextCount = allRootContexts.reduce((sum, arr) => sum + arr.length, 0);
 
-    for (let i = 0; i < contextCount; i++) {
-      let earliestContext = allRootContexts[0][indexPointers[0]];
-      let earliestApplicationIndex = 0;
-      for (let j = 1; j < applications.length; j++) {
-        const context = allRootContexts[j][indexPointers[j]];
-        if (context.createdAt < earliestContext) {
-          earliestContext = context;
-          earliestApplicationIndex = j;
-        }
-      }
-      indexPointers[earliestApplicationIndex] += 1;
-      this._addOne(earliestContext);
-    }
+    // add all root contexts, unsorted
+    // allRootContexts.flat().forEach(this._addOne);
+
+    // let indexPointers = Array(applications.length).fill(0);
+    // let contextCount = allRootContexts.reduce((sum, arr) => sum + arr.length, 0);
+
+    // for (let i = 0; i < contextCount; i++) {
+    //   let earliestContext = allRootContexts[0][indexPointers[0]];
+    //   let earliestApplicationIndex = 0;
+    //   for (let j = 1; j < applications.length; j++) {
+    //     const context = allRootContexts[j][indexPointers[j]];
+    //     if (context.createdAt < earliestContext) {
+    //       earliestContext = context;
+    //       earliestApplicationIndex = j;
+    //     }
+    //   }
+    //   indexPointers[earliestApplicationIndex] += 1;
+    //   this._addOne(earliestContext);
+    // }
   }
 
   
