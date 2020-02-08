@@ -22,9 +22,10 @@ class RootContextsInOrder {
     this._rootContextsArray = [];
     const applications = this.applicationSelectionData.selection.getSelectedApplications();
     let allRootContexts = applications.map((app) => app.dataProvider.util.getAllRootContexts() || EmptyArray);
+    console.log(JSON.stringify(allRootContexts, null, 2));
 
     // add all root contexts, unsorted
-    // allRootContexts.flat().forEach(this._addOne);
+    allRootContexts.flat().forEach(this._addOne);
 
     // let indexPointers = Array(applications.length).fill(0);
     // let contextCount = allRootContexts.reduce((sum, arr) => sum + arr.length, 0);
