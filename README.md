@@ -105,9 +105,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * `codeDeco.blurBackgroundMode`
 
 ## TODO (other)
-* [bug] `indexes.traces.byStaticTrace` contains some `undefined` entries
-* fix `dbux-code/src/net/Client` to allow for reconnecting Applications
-   * will need `dbux-runtime` to send `init` message
 * [dbuxTraceDetailsView]
    * show all info relevant to the position where the cursor currently is
    * allow to jump to caller/callee upon context switches
