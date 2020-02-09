@@ -2,8 +2,9 @@ import { EventEmitter, Position } from "vscode";
 import applicationCollection from 'dbux-data/src/applicationCollection';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { codeLineToBabelLine } from '../helpers/locHelper';
-import { getVisitedStaticTracesAt, getVisitedTracesAt } from '../data/codeRange';
-import { ApplicationNode, StaticTraceNode, createTraceDetailsNode, EmptyNode, TraceNode } from './TraceDetailsNode';
+import { getVisitedTracesAt } from '../data/codeRange';
+import { ApplicationNode, createTraceDetailsNode, EmptyNode, TraceNode, tryCreateTraceDetailNode } from './nodes/TraceDetailsNode';
+import { PreviousContextTraceTDNode, NextContextTraceTDNode, TypeTDNode } from './nodes/traceDetailNodes';
 
 export default class TraceDetailsDataProvider {
   _onDidChangeTreeData = new EventEmitter();
@@ -63,15 +64,6 @@ export default class TraceDetailsDataProvider {
     this._onDidChangeTreeData.fire();
   }, 1)
 
-  // _buildStaticTraceNodes(programId, pos, application, parent) {
-  //   const staticTraces = getVisitedStaticTracesAt(application, programId, pos);
-  //   return staticTraces.map(staticTrace => {
-  //     const node = createTraceDetailsNode(StaticTraceNode, staticTrace, application, parent);
-  //     node.children = this._buildTraceNodes(staticTrace, application, node);
-  //     return node;
-  //   });
-  // }
-
   _buildTraceNodes(programId, pos, application, parent) {
     // const { staticTraceId } = staticTrace;
     // const traces = application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
@@ -86,13 +78,19 @@ export default class TraceDetailsDataProvider {
         return null;
       }
       const node = createTraceDetailsNode(TraceNode, trace, application, parent);
-      node.children = this._buildTraceDetailNodes();
+      node.children = this._buildTraceDetailNodes(trace, application, node);
       return node;
     }).filter(trace => !!trace);
   }
 
-  _buildTraceDetailNodes() {
-    return null;
+  _buildTraceDetailNodes(trace, application, parent) {
+    const nodes = [
+      tryCreateTraceDetailNode(TypeTDNode, trace, application, parent),
+      tryCreateTraceDetailNode(NextContextTraceTDNode, trace, application, parent),
+      tryCreateTraceDetailNode(PreviousContextTraceTDNode, trace, application, parent),
+    ].filter(node => !!node);
+
+    return nodes;
   }
 
   // ###########################################################################

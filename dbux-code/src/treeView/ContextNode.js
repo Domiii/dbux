@@ -4,7 +4,7 @@ import {
   TreeItemCollapsibleState as CollapsibleState
 } from 'vscode';
 import path from 'path';
-import { navToCode } from '../codeNav';
+import { goToCodeLoc } from '../codeNav';
 
 export default class ContextNode extends TreeItem {
   constructor(
@@ -52,7 +52,7 @@ export default class ContextNode extends TreeItem {
   }
 
   gotoCode = () => {
-    navToCode(Uri.file(this.filePath), this.location);
+    goToCodeLoc(Uri.file(this.filePath), this.location);
   }
 
   pushChild = (child) => {

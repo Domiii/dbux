@@ -40,22 +40,22 @@ export default class RuntimeMonitor {
   addProgram(programData) {
     const staticProgramContext = staticProgramContextCollection.addProgram(programData);
     const { programId } = staticProgramContext;
-    const { staticContexts, traces } = programData;
+    const { staticContexts, traces: staticTraces } = programData;
     staticContextCollection.addContexts(programId, staticContexts);
 
     // change program-local _staticContextId to globally unique staticContextId
-    for (let i = 1; i < traces.length; ++i) {
-      const trace = traces[i];
-      let staticContext = staticContexts[trace._staticContextId];
+    for (let i = 1; i < staticTraces.length; ++i) {
+      const staticTrace = staticTraces[i];
+      let staticContext = staticContexts[staticTrace._staticContextId];
       if (!staticContext?.staticId) {
         // set to random default, to avoid more errors down the line?
         staticContext = staticContexts[1];
-        logInternalError('trace had invalid `_staticContextId`', trace);
+        logInternalError('trace had invalid `_staticContextId`', staticTrace);
       }
-      delete trace._staticContextId;
-      trace.staticContextId = staticContext.staticId;
+      delete staticTrace._staticContextId;
+      staticTrace.staticContextId = staticContext.staticId;
     }
-    staticTraceCollection.addTraces(programId, traces);
+    staticTraceCollection.addTraces(programId, staticTraces);
 
     const programMonitor = new ProgramMonitor(this, staticProgramContext);
     this._programMonitors.set(programId, programMonitor);

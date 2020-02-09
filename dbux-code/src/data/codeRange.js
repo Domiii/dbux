@@ -1,5 +1,6 @@
+import findLast from 'lodash/findLast';
 import { babelLocToCodeRange } from '../helpers/locHelper';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import StaticContext from 'dbux-common/src/core/data/StaticContext';
 
 /**
  * This file provides data/query utilities for all kinds of data that 
@@ -8,42 +9,45 @@ import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
  * @file
  */
 
+// export function getVisitedStaticTracesAt(application, programId, pos) {
+//   const staticTraces = application.dataProvider.indexes.staticTraces.visitedByFile.get(programId);
+//   return staticTraces.filter(staticTrace => {
+//     const range = babelLocToCodeRange(staticTrace.loc);
+//     return range.contains(pos);
+//   });
+// }
+
 /**
- * TODO: improve performance, use MultiKeyIndex instead
+ * TODO: improve performance, don't search through all `staticContexts` each time
  */
-export function getVisitedStaticTracesAt(application, programId, pos) {
-  const staticTraces = application.dataProvider.indexes.staticTraces.visitedByFile.get(programId);
-  return staticTraces.filter(staticTrace => {
-    const range = babelLocToCodeRange(staticTrace.loc);
+export function getStaticContextAt(application, programId, pos): StaticContext {
+  const staticContexts = application.dataProvider.indexes.staticContexts.byFile.get(programId);
+  return findLast(staticContexts, staticContext => {
+    const range = babelLocToCodeRange(staticContext.loc);
     return range.contains(pos);
   });
 }
 
 
-function filterTracesOfLastStaticContext(application, traces) {
-  const lastStaticContextId = traces.reduce((first, trace) => {
-    const staticContextId = application.dataProvider.util.getTraceStaticContextId(trace.traceId);
-    return Math.max(first, staticContextId);
-  }, 0);
-
-  return traces.filter(trace => {
-    const staticContextId = application.dataProvider.util.getTraceStaticContextId(trace.traceId);
-    return staticContextId === lastStaticContextId;
-  });
-}
-
 export function getVisitedTracesAt(application, programId, pos) {
-  const staticTraces = getVisitedStaticTracesAt(application, programId, pos);
-  // const traces = application.dataProvider.indexes.traces.visitedByFile.get(programId);
-  const traceGroups = (staticTraces || EmptyArray).map(staticTrace => {
-    const { staticTraceId } = staticTrace;
-    return application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
-  });
-  
-  const traces = traceGroups
-    .filter(tracesOfStaticTrace => !!tracesOfStaticTrace)
-    .flat();
+  // find staticContext (function or Program) at position
+  const staticContext = getStaticContextAt(application, programId, pos);
+  if (!staticContext) {
+    return null;
+  }
 
-  // return traces;
-  return filterTracesOfLastStaticContext(application, traces);
+  // find all traces in context
+  const { staticId: staticContextId } = staticContext;
+  const traces = application.dataProvider.indexes.traces.byStaticContext.get(staticContextId);
+  if (!traces) {
+    return null;
+  }
+
+  // only return traces at cursor
+  return traces.filter(trace => {
+    const { staticTraceId } = trace;
+    const staticTrace = application.dataProvider.collections.staticTraces.getById(staticTraceId);
+    const range = babelLocToCodeRange(staticTrace.loc);
+    return range.contains(pos);
+  });
 }

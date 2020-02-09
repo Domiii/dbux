@@ -2,6 +2,7 @@ import { window, ExtensionContext, TextEditorSelectionChangeEvent } from 'vscode
 import { newLogger } from 'dbux-common/src/log/logger';
 import applicationCollection from 'dbux-data/src/applicationCollection';
 import TraceDetailsDataProvider from './TraceDetailsDataProvider';
+import { initTraceDetailsCommands } from './commands';
 
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
 
@@ -51,6 +52,8 @@ export function getTraceDetailsController() {
 }
 
 export function initTraceDetailsController(context: ExtensionContext) {
+  initTraceDetailsCommands(context);
+
   traceDetailsController = new TraceDetailsController();
 
   // update initialy

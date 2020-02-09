@@ -106,7 +106,9 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 ## TODO (other)
 * [dbuxTraceDetailsView]
-   * filter: when in function, don't show function declaration traces
+   * group {Push,Pop}Callback{Argument,} into one
+      * show status: executed x times
+      * if executed: go to callback definition
    * trace description
       * relative execution time
    * trace categorization:

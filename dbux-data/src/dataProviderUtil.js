@@ -1,8 +1,29 @@
-import DataProvider from "./DataProvider";
 import TraceType, { hasDynamicTypes, hasValue } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
+import DataProvider from './DataProvider';
 
 export default {
+  getTraceType(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const {
+      staticTraceId,
+      type: dynamicType
+    } = trace;
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    const {
+      type: staticType,
+    } = staticTrace;
+    return dynamicType || staticType;
+  },
+
+  getNextTrace(dp: DataProvider, traceId) {
+    const { traces } = dp.collections;
+    return traces.getById(traceId + 1) || null;
+  },
+  getPreviousTrace(dp: DataProvider, traceId) {
+    const { traces } = dp.collections;
+    return traces.getById(traceId - 1) || null;
+  },
   getFirstTraceOfContext(dp: DataProvider, contextId) {
     const traces = dp.indexes.traces.byContext.get(contextId);
     if (!traces?.length) {
@@ -114,7 +135,7 @@ export default {
 
     return dp.util.getStaticTraceProgramId(staticTraceId);
   },
-  
+
   getTraceStaticContextId(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;

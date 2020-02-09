@@ -3,11 +3,12 @@ import Application from 'dbux-data/src/Application';
 import Trace from 'dbux-common/src/core/data/Trace';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { EmptyObject } from 'dbux-common/src/util/arrayUtil';
-import TraceDetailsNodeType from './TraceDetailsNodeType';
-import { getThemeResourcePath } from '../resources';
+import TraceDetailsNodeType from '../TraceDetailsNodeType';
+import { getThemeResourcePath } from '../../resources';
+import { goToTrace } from '../../codeNav';
 
 export class BaseNode extends TreeItem {
-  application;
+  application : Application;
   parent;
   children = null;
 
@@ -29,6 +30,10 @@ export class BaseNode extends TreeItem {
 
     // more custom props for this node
     Object.assign(this, moreProps);
+  }
+
+  _handleClick() {
+    // by default: do nothing
   }
 
   get nodeType() {
@@ -55,6 +60,11 @@ export class ApplicationNode extends BaseNode {
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
   }
 
+  _handleClick() {
+    // TODO: go to Application's first trace
+    // goToTrace(firstTrace);
+  }
+
   static get nodeType() {
     return TraceDetailsNodeType.StaticTrace;
   }
@@ -65,10 +75,6 @@ export class ApplicationNode extends BaseNode {
 
   static makeIconPath(application: Application) {
     return 'string.svg';
-  }
-
-  static makeTreeItemProps() {
-    return {};
   }
 }
 
@@ -90,33 +96,41 @@ export class ApplicationNode extends BaseNode {
 //   static makeIconPath(staticTrace: StaticTrace) {
 //     return 'string.svg';
 //   }
-
-//   static makeTreeItemProps() {
-//     return {};
-//   }
 // }
 
 export class TraceNode extends BaseNode {
   init(trace) {
     this.trace = trace;
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
+
+    // description
+    let description;
+    const { dataProvider } = this.application;
+    const { traceId } = trace;
+    const hasValue = dataProvider.util.doesTraceHaveValue(traceId);
+    if (hasValue) {
+      const value = dataProvider.util.getTraceValue(traceId);
+      // NOTE: description MUST be a string or it won't be properly displayed
+      description = value + '';
+    }
+
+    this.description = description;
+  }
+
+  _handleClick() {
+    goToTrace(this.trace);
   }
 
   static get nodeType() {
     return TraceDetailsNodeType.Trace;
   }
 
-  static makeLabel(trace: Trace, application) {
+  static makeLabel(trace: Trace, application : Application) {
     const {
-      staticTraceId,
-      type: dynamicType
+      traceId,
+      displayName
     } = trace;
-    const staticTrace = application.dataProvider.collections.staticTraces.getById(staticTraceId);
-    const {
-      displayName,
-      type: staticType,
-    } = staticTrace;
-    const traceType = dynamicType || staticType;
+    const traceType = application.dataProvider.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
     const title = displayName || `[${typeName}]`;
     return `${title}`;
@@ -125,58 +139,30 @@ export class TraceNode extends BaseNode {
   static makeIconPath(trace: Trace) {
     return 'string.svg';
   }
-
-  static makeTreeItemProps(trace: Trace, application: Application) {
-    // description
-    let description;
-    const { dataProvider } = application;
-    const { traceId } = trace;
-    const hasValue = dataProvider.util.doesTraceHaveValue(traceId);
-    if (hasValue) {
-      const value = dataProvider.util.getTraceValue(traceId);
-      // NOTE: description MUST be a string or it won't be properly displayed
-      description = value + '';
-    }
-    
-    return {
-      description
-    };
-  }
 }
 
-
-export class TraceDetailNode extends BaseNode {
-  init(traceDetail) {
-    this.traceDetail = traceDetail;
-    this.collapsibleState = TreeItemCollapsibleState.None;
-  }
-
-  static get nodeType() {
-    return TraceDetailsNodeType.Trace;
-  }
-
-  static makeLabel(traceDetail: TraceDetail) {
-    return traceDetail.toString();
-  }
-
-  static makeIconPath(traceDetail: TraceDetail) {
-    return 'string.svg';
-  }
-
-  static makeTreeItemProps() {
-    return {};
-  }
-}
 
 let _lastId = 0;
 
-export function createTraceDetailsNode(NodeClass, entry, application, parent): BaseNode {
+export function createTraceDetailsNode(
+  NodeClass, entry, application, parent, treeItemProps = EmptyObject): BaseNode {
   const label = NodeClass.makeLabel(entry, application, parent);
   const relativeIconPath = NodeClass.makeIconPath(entry, application, parent);
-  const treeItemProps = NodeClass.makeTreeItemProps(entry, application, parent) || EmptyObject;
   const iconPath = relativeIconPath && getThemeResourcePath(relativeIconPath) || null;
   const id = (++_lastId) + '';
   const node = new NodeClass(label, iconPath, application, parent, id, treeItemProps);
   node.init(entry);
   return node;
+}
+
+
+export function tryCreateTraceDetailNode(NodeClass, trace, application, parent) {
+  const detail = NodeClass.makeTraceDetail(trace, application, parent);
+  if (!detail) {
+    return null;
+  }
+  const treeItemProps = {
+    trace
+  };
+  return createTraceDetailsNode(NodeClass, detail, application, parent, treeItemProps);
 }
