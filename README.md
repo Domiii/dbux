@@ -122,7 +122,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
             * previous
          * `if next trace is in different context` (includes `isTracePop(type)`)
             * next
-         * `ScheduleCallback`
+         * `CallbackArgument`
             * scheduled
          * `hasValue(type)`
             * value

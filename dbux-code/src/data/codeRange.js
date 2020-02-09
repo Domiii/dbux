@@ -19,14 +19,31 @@ export function getVisitedStaticTracesAt(application, programId, pos) {
   });
 }
 
+
+function filterTracesOfLastStaticContext(application, traces) {
+  const lastStaticContextId = traces.reduce((first, trace) => {
+    const staticContextId = application.dataProvider.util.getTraceStaticContextId(trace.traceId);
+    return Math.max(first, staticContextId);
+  }, 0);
+
+  return traces.filter(trace => {
+    const staticContextId = application.dataProvider.util.getTraceStaticContextId(trace.traceId);
+    return staticContextId === lastStaticContextId;
+  });
+}
+
 export function getVisitedTracesAt(application, programId, pos) {
   const staticTraces = getVisitedStaticTracesAt(application, programId, pos);
   // const traces = application.dataProvider.indexes.traces.visitedByFile.get(programId);
-  const traces = (staticTraces || EmptyArray).map(staticTrace => {
+  const traceGroups = (staticTraces || EmptyArray).map(staticTrace => {
     const { staticTraceId } = staticTrace;
     return application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
-  }).filter(tracesOfStaticTrace => !!tracesOfStaticTrace).flat();
+  });
+  
+  const traces = traceGroups
+    .filter(tracesOfStaticTrace => !!tracesOfStaticTrace)
+    .flat();
 
-
-  return traces;
+  // return traces;
+  return filterTracesOfLastStaticContext(application, traces);
 }

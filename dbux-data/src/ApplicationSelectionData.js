@@ -22,7 +22,7 @@ class RootContextsInOrder {
     this._rootContextsArray = [];
     const applications = this.applicationSelectionData.selection.getSelectedApplications();
     let allRootContexts = applications.map((app) => app.dataProvider.util.getAllRootContexts() || EmptyArray);
-    console.log(JSON.stringify(allRootContexts, null, 2));
+    // console.log(JSON.stringify(allRootContexts, null, 2));
 
     // add all root contexts, unsorted
     allRootContexts.flat().forEach(this._addOne);

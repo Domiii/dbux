@@ -114,6 +114,14 @@ export default {
 
     return dp.util.getStaticTraceProgramId(staticTraceId);
   },
+  
+  getTraceStaticContextId(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const { staticTraceId } = trace;
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    const { staticContextId } = staticTrace;
+    return staticContextId;
+  },
 
   getAllRootContexts(dp: DataProvider) {
     return dp.indexes.executionContexts.roots.get(1);
@@ -159,9 +167,9 @@ export default {
         }
 
         for (let type = 0; type < traceGroups.length; ++type) {
-          const traces = traceGroups[type];
-          if (traces) {
-            pushArrayOfArray(groups, type, [staticTrace, traces]);
+          const tracesOfGroup = traceGroups[type];
+          if (tracesOfGroup) {
+            pushArrayOfArray(groups, type, [staticTrace, tracesOfGroup]);
           }
         }
       }

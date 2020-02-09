@@ -310,7 +310,7 @@ export default class RuntimeMonitor {
     if (value instanceof Function) {
       // scheduled callback
       const cb = value;
-      return this.traceScheduleCallback(programId, inProgramStaticTraceId, cb);
+      return this.traceCallbackArgument(programId, inProgramStaticTraceId, cb);
     }
     else {
       // just a normal expression
@@ -322,11 +322,11 @@ export default class RuntimeMonitor {
   /**
    * Push a new context for a scheduled callback for later execution.
    */
-  traceScheduleCallback(programId, inProgramStaticTraceId, cb) {
+  traceCallbackArgument(programId, inProgramStaticTraceId, cb) {
     // trace
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
-    const trace = traceCollection.trace(contextId, runId, inProgramStaticTraceId, TraceType.ScheduleCallback);
+    const trace = traceCollection.trace(contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument);
     const { traceId: schedulerTraceId } = trace;
 
     const wrapper = this.makeCallbackWrapper(contextId, schedulerTraceId, inProgramStaticTraceId, cb);
