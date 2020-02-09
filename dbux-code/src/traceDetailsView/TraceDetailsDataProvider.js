@@ -1,8 +1,8 @@
 import { EventEmitter, Position } from "vscode";
 import applicationCollection from 'dbux-data/src/applicationCollection';
+import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { codeLineToBabelLine } from '../helpers/locHelper';
 import { getVisitedStaticTracesAt, getVisitedTracesAt } from '../data/codeRange';
-import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { ApplicationNode, StaticTraceNode, createTraceDetailsNode, EmptyNode, TraceNode } from './TraceDetailsNode';
 
 export default class TraceDetailsDataProvider {

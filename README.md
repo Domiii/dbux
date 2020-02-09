@@ -106,11 +106,28 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 ## TODO (other)
 * [dbuxTraceDetailsView]
-   * show all info relevant to the position where the cursor currently is
-   * allow to jump to caller/callee upon context switches
-   * "`contextElevator`": buttons to step between child/parent context
-   * TODO: what about in-line contexts?
-   * example: we want to get into `showItems` here <3
+   * filter: when in function, don't show function declaration traces
+   * trace description
+      * relative execution time
+   * trace categorization:
+      * all
+      * by-type
+         * (all details of one type aggregated into one node?)
+      * by-context
+   * trace details
+      * (if multiple applications exist: getRelativeWorkspacePath(`application.entryPointPath`))
+      * TraceType
+      * (by-type)
+         * `if previous trace is in different context` (includes `isTracePush(type)`)
+            * previous
+         * `if next trace is in different context` (includes `isTracePop(type)`)
+            * next
+         * `ScheduleCallback`
+            * scheduled
+         * `hasValue(type)`
+            * value
+   * long list tool
+   * also: we want to get into `showItems` here <3
       * `this.store.find({...}[route], this.view.showItems.bind(this.view))`
 * [codeDeco] better deco
    * for function calls: render context targets (if known)
