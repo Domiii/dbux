@@ -106,13 +106,29 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 ## TODO (other)
 * [dbuxTraceDetailsView]
-   * better basic value rendering (e.g. empty string, basic arrays, objects)
+   * render correct description
+   * instead of showing all traces, only show the inner most trace, and add the outer ones as children
    * flip trace order (newest first)
-   * highlight selected trace(s) in editor
+   * highlight selected trace in editor
    * group {Push,Pop}Callback{Argument,} into one
       * show status: executed x times
       * if executed: go to callback definition
-   * * instead of showing all traces, only show the inner most trace, and add the outer ones as children
+   * better value rendering (e.g. empty string, basic arrays, objects)
+      * properly serialize and send object data
+         * consider using a native `structuredClone` implementation (or some of its hackarounds)
+            * https://stackoverflow.com/a/10916838
+         * performance optimization
+            * when object too big, send later
+               * feature: object query interface?
+            * observe performance and long-running processes
+               * cut things short
+               * split bigger objects into chunks
+               * warnings when things get out of hand
+      * also track `this` + function parameters
+   * object tracking: list all traces that an object participated in
+      * track everything?
+         * NOTE: when `TrackEverything` is enabled, we can track callbacks 100% as well
+            * (if their declarations were instrumented)
    * label: make it more readable
    * basic callstack rendering
       * at least render `previous`, `current` `next` in callstack
