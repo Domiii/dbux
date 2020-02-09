@@ -3,6 +3,30 @@ import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
 import DataProvider from './DataProvider';
 
 export default {
+  // ###########################################################################
+  // root contexts
+  // ###########################################################################
+
+  getAllRootContexts(dp: DataProvider) {
+    return dp.indexes.executionContexts.roots.get(1);
+  },
+
+  getRootContextIdByContextId(dp: DataProvider, contextId) {
+    const { executionContexts } = dp.collections;
+    let lastContextId = contextId;
+    let parentContextId;
+    while (true) {
+      parentContextId = executionContexts.getById(lastContextId).parentContextId;
+      if (!parentContextId) return lastContextId;
+      else lastContextId = parentContextId;
+    }
+  },
+
+  
+  // ###########################################################################
+  // traces
+  // ###########################################################################
+
   getTraceType(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const {
@@ -142,21 +166,6 @@ export default {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { staticContextId } = staticTrace;
     return staticContextId;
-  },
-
-  getAllRootContexts(dp: DataProvider) {
-    return dp.indexes.executionContexts.roots.get(1);
-  },
-
-  getRootContextIdByContextId(dp: DataProvider, contextId) {
-    const { executionContexts } = dp.collections;
-    let lastContextId = contextId;
-    let parentContextId;
-    while (true) {
-      parentContextId = executionContexts.getById(lastContextId).parentContextId;
-      if (!parentContextId) return lastContextId;
-      else lastContextId = parentContextId;
-    }
   },
 
   /**

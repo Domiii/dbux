@@ -106,19 +106,24 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 ## TODO (other)
 * [dbuxTraceDetailsView]
+   * better basic value rendering (e.g. empty string, basic arrays, objects)
+   * flip trace order (newest first)
+   * highlight selected trace(s) in editor
    * group {Push,Pop}Callback{Argument,} into one
       * show status: executed x times
       * if executed: go to callback definition
+   * * instead of showing all traces, only show the inner most trace, and add the outer ones as children
+   * label: make it more readable
+   * basic callstack rendering
+      * at least render `previous`, `current` `next` in callstack
+   * mark a trace as `theSelectedTrace`
+      * also select it for Playback
+      * allow going back + forth between previously selected traces
    * trace description
       * relative execution time
-   * trace categorization:
-      * all
-      * by-type
-         * (all details of one type aggregated into one node?)
-      * by-context
    * trace details
-      * (if multiple applications exist: getRelativeWorkspacePath(`application.entryPointPath`))
-      * TraceType
+      * (if multiple applications exist) `ApplicationNode` 
+         * `getRelativeWorkspacePath(application.entryPointPath)`
       * (by-type)
          * `if previous trace is in different context` (includes `isTracePush(type)`)
             * previous
@@ -128,9 +133,17 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
             * scheduled
          * `hasValue(type)`
             * value
+   * trace categorization:
+      * all
+      * by-type
+         * (all details of one type aggregated into one node?)
+      * by-context
    * long list tool
-   * also: we want to get into `showItems` here <3
-      * `this.store.find({...}[route], this.view.showItems.bind(this.view))`
+   * improve performance of `getVisitedTracesAt`
+      * first find `staticTraces`
+      * `iterateTracesFront`
+      * `iterateTracesBack`
+      * `getTraceCount`
 * [codeDeco] better deco
    * for function calls: render context targets (if known)
    * capture function parameters

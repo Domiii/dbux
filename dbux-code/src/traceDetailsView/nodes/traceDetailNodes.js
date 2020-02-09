@@ -16,6 +16,31 @@ export class TraceDetailNode extends BaseNode {
   }
 }
 
+export class TypeTDNode extends TraceDetailNode {
+  init(trace) {
+    this.trace = trace;
+    this.collapsibleState = TreeItemCollapsibleState.None;
+  }
+
+  static get nodeType() {
+    return TraceDetailsNodeType.NextContextTraceDetail;
+  }
+
+  static makeTraceDetail(trace, application: Application, parent) {
+    return trace;
+  }
+
+  static makeLabel(trace, application: Application, parent) {
+    const traceType = application.dataProvider.util.getTraceType(trace.traceId);
+    const typeName = TraceType.nameFrom(traceType);
+    return `Type: ${typeName}`;
+  }
+
+  // static makeIconPath(traceDetail) {
+  //   return 'string.svg';
+  // }
+}
+
 export class PreviousContextTraceTDNode extends TraceDetailNode {
   init(previousTrace) {
     this.previousTrace = previousTrace;
@@ -58,11 +83,11 @@ export class PreviousContextTraceTDNode extends TraceDetailNode {
 
     return `${previous} ${displayName}`;
   }
-  
 
-  static makeIconPath(traceDetail) {
-    return 'string.svg';
-  }
+
+  // static makeIconPath(traceDetail) {
+  //   return 'string.svg';
+  // }
 }
 
 export class NextContextTraceTDNode extends TraceDetailNode {
@@ -94,32 +119,37 @@ export class NextContextTraceTDNode extends TraceDetailNode {
     return `↓ ${displayName}`;
   }
 
-  static makeIconPath(traceDetail) {
-    return 'string.svg';
-  }
+  // static makeIconPath(traceDetail) {
+  //   return 'string.svg';
+  // }
 }
 
-export class TypeTDNode extends TraceDetailNode {
+
+export class ValueTDNode extends TraceDetailNode {
   init(trace) {
     this.trace = trace;
     this.collapsibleState = TreeItemCollapsibleState.None;
   }
 
   static get nodeType() {
-    return TraceDetailsNodeType.NextContextTraceDetail;
+    return TraceDetailsNodeType.Value;
   }
 
   static makeTraceDetail(trace, application: Application, parent) {
-    return trace;
+    const { traceId } = trace;
+    const { dataProvider } = application;
+    const hasValue = dataProvider.util.doesTraceHaveValue(traceId);
+    return hasValue ? trace : null;
   }
 
   static makeLabel(trace, application: Application, parent) {
-    const traceType = application.dataProvider.util.getTraceType(trace.traceId);
-    const typeName = TraceType.nameFrom(traceType);
-    return `Type: ${typeName}`;
+    const { traceId } = trace;
+    const { dataProvider } = application;
+    const value = dataProvider.util.getTraceValue(traceId);
+    return `Value: ${value}`;
   }
 
-  static makeIconPath(traceDetail) {
-    return 'string.svg';
-  }
+  // static makeIconPath(traceDetail) {
+  //   return 'string.svg';
+  // }
 }

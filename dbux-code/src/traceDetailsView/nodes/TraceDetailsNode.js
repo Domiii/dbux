@@ -8,7 +8,7 @@ import { getThemeResourcePath } from '../../resources';
 import { goToTrace } from '../../codeNav';
 
 export class BaseNode extends TreeItem {
-  application : Application;
+  application: Application;
   parent;
   children = null;
 
@@ -73,9 +73,9 @@ export class ApplicationNode extends BaseNode {
     return application.getRelativeFolder();
   }
 
-  static makeIconPath(application: Application) {
-    return 'string.svg';
-  }
+  // static makeIconPath(application: Application) {
+  //   return 'string.svg';
+  // }
 }
 
 // export class StaticTraceNode extends BaseNode {
@@ -104,16 +104,8 @@ export class TraceNode extends BaseNode {
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
 
     // description
-    let description;
-    const { dataProvider } = this.application;
-    const { traceId } = trace;
-    const hasValue = dataProvider.util.doesTraceHaveValue(traceId);
-    if (hasValue) {
-      const value = dataProvider.util.getTraceValue(traceId);
-      // NOTE: description MUST be a string or it won't be properly displayed
-      description = value + '';
-    }
-
+    // NOTE: description MUST be a string or it won't be properly displayed
+    const description = '1'; // set to relative time of context.createdAt
     this.description = description;
   }
 
@@ -125,11 +117,15 @@ export class TraceNode extends BaseNode {
     return TraceDetailsNodeType.Trace;
   }
 
-  static makeLabel(trace: Trace, application : Application) {
+  static makeLabel(trace: Trace, application: Application) {
     const {
       traceId,
-      displayName
+      staticTraceId
     } = trace;
+    const staticTrace = application.dataProvider.collections.staticTraces.getById(staticTraceId);
+    const {
+      displayName 
+    } = staticTrace;
     const traceType = application.dataProvider.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);
     const title = displayName || `[${typeName}]`;
@@ -147,7 +143,7 @@ let _lastId = 0;
 export function createTraceDetailsNode(
   NodeClass, entry, application, parent, treeItemProps = EmptyObject): BaseNode {
   const label = NodeClass.makeLabel(entry, application, parent);
-  const relativeIconPath = NodeClass.makeIconPath(entry, application, parent);
+  const relativeIconPath = NodeClass.makeIconPath && NodeClass.makeIconPath(entry, application, parent);
   const iconPath = relativeIconPath && getThemeResourcePath(relativeIconPath) || null;
   const id = (++_lastId) + '';
   const node = new NodeClass(label, iconPath, application, parent, id, treeItemProps);

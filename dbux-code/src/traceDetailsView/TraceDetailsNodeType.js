@@ -6,8 +6,10 @@ let TraceDetailsNodeType = {
   StaticContext: 3,
   ExecutionContext: 4,
 
-  PreviousContextTraceDetail: 5,
-  NextContextTraceDetail: 6,
+  TypeTraceDetail: 5,
+  PreviousContextTraceDetail: 6,
+  NextContextTraceDetail: 7,
+  ValueTraceDetail: 8
 
 }; TraceDetailsNodeType = new Enum(TraceDetailsNodeType);
 

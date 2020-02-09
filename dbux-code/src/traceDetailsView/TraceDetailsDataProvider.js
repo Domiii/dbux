@@ -4,7 +4,7 @@ import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { codeLineToBabelLine } from '../helpers/locHelper';
 import { getVisitedTracesAt } from '../data/codeRange';
 import { ApplicationNode, createTraceDetailsNode, EmptyNode, TraceNode, tryCreateTraceDetailNode } from './nodes/TraceDetailsNode';
-import { PreviousContextTraceTDNode, NextContextTraceTDNode, TypeTDNode } from './nodes/traceDetailNodes';
+import { PreviousContextTraceTDNode, NextContextTraceTDNode, TypeTDNode, ValueTDNode } from './nodes/traceDetailNodes';
 
 export default class TraceDetailsDataProvider {
   _onDidChangeTreeData = new EventEmitter();
@@ -86,8 +86,9 @@ export default class TraceDetailsDataProvider {
   _buildTraceDetailNodes(trace, application, parent) {
     const nodes = [
       tryCreateTraceDetailNode(TypeTDNode, trace, application, parent),
-      tryCreateTraceDetailNode(NextContextTraceTDNode, trace, application, parent),
       tryCreateTraceDetailNode(PreviousContextTraceTDNode, trace, application, parent),
+      tryCreateTraceDetailNode(NextContextTraceTDNode, trace, application, parent),
+      tryCreateTraceDetailNode(ValueTDNode, trace, application, parent),
     ].filter(node => !!node);
 
     return nodes;

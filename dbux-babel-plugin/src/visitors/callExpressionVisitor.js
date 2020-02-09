@@ -54,12 +54,12 @@ function getCallDisplayName(path) {
   return `(${getPresentableString(path.toString(), MaxLen)})`;
 }
 
-function addStaticContext(argPath, state) {
-  return state.addStaticContext(argPath, {
-    type: 3, // {StaticContextType}
-    displayName: getCallDisplayName(argPath)
-  });
-}
+// function addStaticContext(argPath, state) {
+//   return state.addStaticContext(argPath, {
+//     type: 3, // {StaticContextType}
+//     displayName: getCallDisplayName(argPath)
+//   });
+// }
 
 
 // ###########################################################################
