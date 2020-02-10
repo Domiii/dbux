@@ -53,7 +53,7 @@ export function renderTraceDecorations(editor, fpath) {
     const config = configsByType[traceType];
     const decorations = allDecorations[traceType];
 
-    if (!config?.editorDecorationtype) {
+    if (!config?.editorDecorationType) {
       if (decorations) {
         logError('found TraceType in trace that is not configured', traceType, TraceType.nameFrom(traceType));
       }
@@ -61,11 +61,11 @@ export function renderTraceDecorations(editor, fpath) {
     }
 
     if (decorations) {
-      editor.setDecorations(config.editorDecorationtype, decorations);
+      editor.setDecorations(config.editorDecorationType, decorations);
     }
     else {
       // removes previous decorations of given DecorationType
-      editor.setDecorations(config.editorDecorationtype, EmptyArray);
+      editor.setDecorations(config.editorDecorationType, EmptyArray);
     }
   }
 }
@@ -123,7 +123,7 @@ function initConfig(allConfigs) {
       continue;
     }
     const type = TraceType.valueFromForce(typeName);
-    config.editorDecorationtype = window.createTextEditorDecorationType(config.styling);
+    config.editorDecorationType = window.createTextEditorDecorationType(config.styling);
     configsByType[type] = config;
   }
 }

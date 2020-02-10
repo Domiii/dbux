@@ -105,8 +105,22 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * `codeDeco.blurBackgroundMode`
 
 ## TODO (other)
+* highlight selected trace in editor
+   * come up with a more complete concept of "selected trace"
+   * when jumping between traces, need a history stack to allow us to go forth and back
+      * forth/back buttons in `TraceDetailView`?
+   * integrate with `Playback`
+* basic callstack rendering
+   * render callstack of "selected trace"
+   * at least render `previous`, `current` `next` in callstack
 * [dbuxTraceDetailsView]
-   * highlight selected trace in editor
+   * fix: `ExpressionResult`'s `next` is disappointing
+      * currently jumps to `last` in `next` (because it's actually `previous`)
+   * fix: in `store.setLocalStorage`, we can currently NOT jump directly to `setItem`
+      * it's an `ExpressionResult`
+   * automatically "select" top trace node
+   * when cursor is already in view, `goto*` should not necessarily move it
+      * `goto*IfNotVisible`
    * group {Push,Pop}Callback{Argument,} into one
       * show status: executed x times
       * if executed: go to callback definition
@@ -127,8 +141,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * NOTE: when `TrackEverything` is enabled, we can track callbacks 100% as well
             * (if their declarations were instrumented)
    * label: make it more readable
-   * basic callstack rendering
-      * at least render `previous`, `current` `next` in callstack
    * mark a trace as `theSelectedTrace`
       * also select it for Playback
       * allow going back + forth between previously selected traces

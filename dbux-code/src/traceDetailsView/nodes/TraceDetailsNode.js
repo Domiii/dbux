@@ -20,7 +20,7 @@ export class BaseNode extends TreeItem {
     this.id = id;
 
     // treeItem data
-    this.contextValue = 'event';
+    this.contextValue = 'detailsBaseNode';
     this.command = {
       command: 'dbuxTraceDetailsView.itemClick',
       arguments: [this]

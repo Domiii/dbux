@@ -6,6 +6,7 @@ import { codeLineToBabelLine } from '../helpers/locHelper';
 import { getVisitedTracesAt } from '../data/codeRange';
 import { ApplicationNode, createTraceDetailsNode, EmptyNode, TraceNode, tryCreateTraceDetailNode } from './nodes/TraceDetailsNode';
 import { PreviousContextTraceTDNode, NextContextTraceTDNode, TypeTDNode, ValueTDNode } from './nodes/traceDetailNodes';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
 export default class TraceDetailsDataProvider {
   _onDidChangeTreeData = new EventEmitter();
@@ -38,7 +39,7 @@ export default class TraceDetailsDataProvider {
     // add nodes for Applications, iff we have more than one
     const addApplicationNodes = applicationCollection.selection.data.getApplicationCountAtPath(fpath) > 1;
 
-    this.rootNodes = applicationCollection.selection.data.mapApplicationsOfFilePath(fpath,
+    const rootNodes = this.rootNodes = applicationCollection.selection.data.mapApplicationsOfFilePath(fpath,
       (application, programId) => {
         let applicationNode;
         if (addApplicationNodes) {
@@ -51,7 +52,7 @@ export default class TraceDetailsDataProvider {
         }
 
         const traceNodes = this._buildTraceNodes(programId, pos, application, applicationNode);
-        return applicationNode || traceNodes;
+        return applicationNode || traceNodes || EmptyArray;
       }
     );
 
@@ -75,20 +76,19 @@ export default class TraceDetailsDataProvider {
     }
 
     // group by context, then sort by `contextId` (most recent first)
-    const tracesByContext = Object.values(
+    const traceGroups = Object.values(
       groupBy(traces, 'contextId')
     )
       .sort((a, b) => b[0].contextId - a[0].contextId);
 
-    return tracesByContext.map(traceGroup => {
-      // start with inner-most (latest) trace
-      const trace = traceGroup[traceGroup.length - 1];
+    return traceGroups.map(traceGroup => {
+      // start with inner-most (oldest) trace
+      const trace = traceGroup[0];
       const node = this._buildTraceNode(trace, application, parent);
 
       // add other traces as children (before details)
       const otherTraces = traceGroup.slice(1);
       const otherNodes = otherTraces
-        .reverse()
         .map(other => {
           const child = this._buildTraceNode(other, application, node);
           child.collapsibleState = TreeItemCollapsibleState.Collapsed;
