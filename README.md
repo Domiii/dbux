@@ -106,9 +106,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 ## TODO (other)
 * [dbuxTraceDetailsView]
-   * render correct description
-   * instead of showing all traces, only show the inner most trace, and add the outer ones as children
-   * flip trace order (newest first)
    * highlight selected trace in editor
    * group {Push,Pop}Callback{Argument,} into one
       * show status: executed x times

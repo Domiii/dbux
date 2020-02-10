@@ -22,7 +22,7 @@ export default {
     }
   },
 
-  
+
   // ###########################################################################
   // traces
   // ###########################################################################
@@ -121,9 +121,7 @@ export default {
 
   getTraceContext(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    const {
-      contextId
-    } = trace;
+    const { contextId } = trace;
     return dp.collections.executionContexts.getById(contextId);
   },
 

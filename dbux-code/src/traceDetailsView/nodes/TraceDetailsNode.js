@@ -10,7 +10,7 @@ import { goToTrace } from '../../codeNav';
 export class BaseNode extends TreeItem {
   application: Application;
   parent;
-  children = null;
+  children: BaseNode[] = null;
 
   constructor(label, iconPath, application, parent, id, moreProps) {
     super(label);
@@ -104,8 +104,11 @@ export class TraceNode extends BaseNode {
     this.collapsibleState = TreeItemCollapsibleState.Expanded;
 
     // description
+    const { createdAt, dataProvider } = this.application;
+    const context = dataProvider.util.getTraceContext(trace.traceId);
+    const dt = (context.createdAt - createdAt) / 1000;
     // NOTE: description MUST be a string or it won't be properly displayed
-    const description = '1'; // set to relative time of context.createdAt
+    const description = dt + '';
     this.description = description;
   }
 
@@ -124,7 +127,7 @@ export class TraceNode extends BaseNode {
     } = trace;
     const staticTrace = application.dataProvider.collections.staticTraces.getById(staticTraceId);
     const {
-      displayName 
+      displayName
     } = staticTrace;
     const traceType = application.dataProvider.util.getTraceType(traceId);
     const typeName = TraceType.nameFrom(traceType);

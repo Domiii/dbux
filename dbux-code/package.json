@@ -221,6 +221,7 @@
 		"vscode-test": "^1.2.2"
 	},
 	"dependencies": {
+		"moment": "^2.24.0",
 		"socket.io": "^2.3.0"
 	},
 	"peerDependencies": {
@@ -228,7 +229,7 @@
 		"dbux-data": "../dbux-data",
 		"lodash": "*"
 	},
-  "_moduleAliases": {
+	"_moduleAliases": {
 		"dbux-common": "../dbux-common",
 		"dbux-data": "../dbux-data"
 	}

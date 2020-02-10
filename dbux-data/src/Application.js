@@ -34,14 +34,14 @@ export default class Application {
    */
   updatedAt: number;
 
-  constructor(applicationId, entryPointPath, applicationCollection) {
+  constructor(applicationId, entryPointPath, createdAt, applicationCollection) {
     this.applicationId = applicationId;
     this.entryPointPath = entryPointPath;
     // this.relativeEntryPointPath = path.relative(entryPointPath, process.cwd()); // path relative to cwd
     this.applicationCollection = applicationCollection;
     this.dataProvider = newDataProvider(this);
     // this.createdAt = this.updatedAt = libs.performance.now();
-    this.createdAt = this.updatedAt = Date.now();
+    this.createdAt = this.updatedAt = createdAt || Date.now();
   }
 
   addData(allData) {

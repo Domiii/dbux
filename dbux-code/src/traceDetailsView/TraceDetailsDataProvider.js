@@ -1,6 +1,7 @@
-import { EventEmitter, Position } from "vscode";
+import { EventEmitter, Position, TreeItemCollapsibleState } from "vscode";
 import applicationCollection from 'dbux-data/src/applicationCollection';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
+import groupBy from 'lodash/groupBy';
 import { codeLineToBabelLine } from '../helpers/locHelper';
 import { getVisitedTracesAt } from '../data/codeRange';
 import { ApplicationNode, createTraceDetailsNode, EmptyNode, TraceNode, tryCreateTraceDetailNode } from './nodes/TraceDetailsNode';
@@ -48,7 +49,7 @@ export default class TraceDetailsDataProvider {
           // don't add application node
           applicationNode = null;
         }
-        
+
         const traceNodes = this._buildTraceNodes(programId, pos, application, applicationNode);
         return applicationNode || traceNodes;
       }
@@ -67,20 +68,42 @@ export default class TraceDetailsDataProvider {
   _buildTraceNodes(programId, pos, application, parent) {
     // const { staticTraceId } = staticTrace;
     // const traces = application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+
     const traces = getVisitedTracesAt(application, programId, pos);
-    if (!traces) {
+    if (!traces?.length) {
       return null;
     }
-    
-    return traces.map(trace => {
-      if (!trace) {
-        // should not happen
-        return null;
-      }
-      const node = createTraceDetailsNode(TraceNode, trace, application, parent);
-      node.children = this._buildTraceDetailNodes(trace, application, node);
+
+    // group by context, then sort by `contextId` (most recent first)
+    const tracesByContext = Object.values(
+      groupBy(traces, 'contextId')
+    )
+      .sort((a, b) => b[0].contextId - a[0].contextId);
+
+    return tracesByContext.map(traceGroup => {
+      // start with inner-most (latest) trace
+      const trace = traceGroup[traceGroup.length - 1];
+      const node = this._buildTraceNode(trace, application, parent);
+
+      // add other traces as children (before details)
+      const otherTraces = traceGroup.slice(1);
+      const otherNodes = otherTraces
+        .reverse()
+        .map(other => {
+          const child = this._buildTraceNode(other, application, node);
+          child.collapsibleState = TreeItemCollapsibleState.Collapsed;
+          return child;
+        });
+      node.children.unshift(...otherNodes);
+
       return node;
-    }).filter(trace => !!trace);
+    });
+  }
+
+  _buildTraceNode(trace, application, parent) {
+    const node = createTraceDetailsNode(TraceNode, trace, application, parent);
+    node.children = this._buildTraceDetailNodes(trace, application, node);
+    return node;
   }
 
   _buildTraceDetailNodes(trace, application, parent) {

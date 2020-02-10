@@ -20,6 +20,9 @@ function universalLib(globalName, fallbackCb) {
 }
 
 export default {
+  /**
+   * usage: `universalLibs.performance.now()`
+   */
   get performance() {
     return universalLib('performance', () => {
       // hope for node or node-like environment

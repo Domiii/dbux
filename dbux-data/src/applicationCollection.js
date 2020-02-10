@@ -24,7 +24,7 @@ export class ApplicationCollection {
   DefaultApplicationClass = Application;
 
   _all = [null];
-  _activeApplications = new Map();
+  _activeApplicationsByPath = new Map();
 
   _emitter = new NanoEvents();
 
@@ -62,7 +62,7 @@ export class ApplicationCollection {
   }
 
   getActiveApplicationByEntryPoint(entryPointPath) {
-    return this._activeApplications.get(entryPointPath);
+    return this._activeApplicationsByPath.get(entryPointPath);
   }
 
   isApplicationActive(applicationOrIdOrEntryPointPath) {
@@ -77,12 +77,17 @@ export class ApplicationCollection {
   /**
    * @private
    */
-  addApplication(entryPointPath) {
+  addApplication(initialData) {
+    const {
+      entryPointPath,
+      createdAt
+    } = initialData;
+
     const applicationId = this._all.length;
-    const application = new this.DefaultApplicationClass(applicationId, entryPointPath, this);
+    const application = new this.DefaultApplicationClass(applicationId, entryPointPath, createdAt, this);
     const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);
 
-    this._activeApplications.set(entryPointPath, application);
+    this._activeApplicationsByPath.set(entryPointPath, application);
     this._all[applicationId] = application;
 
     if (previousApplication) {
@@ -121,7 +126,7 @@ export class ApplicationCollection {
     const { applicationid, entryPointPath } = application;
     this._all[applicationid] = null;
     if (this.getActiveApplicationByEntryPoint(entryPointPath) === application) {
-      this._activeApplications.delete(entryPointPath);
+      this._activeApplicationsByPath.delete(entryPointPath);
     }
 
     // `removed` event
@@ -130,7 +135,7 @@ export class ApplicationCollection {
 
   clear() {
     this._all = [null];
-    this._activeApplications = new Map();
+    this._activeApplicationsByPath = new Map();
 
     this.applicationSelection._setSelectedApplications(null);
 

@@ -1,6 +1,7 @@
 import findLast from 'lodash/findLast';
 import { babelLocToCodeRange } from '../helpers/locHelper';
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
+import Trace from 'dbux-common/src/core/data/Trace';
 
 /**
  * This file provides data/query utilities for all kinds of data that 
@@ -29,7 +30,7 @@ export function getStaticContextAt(application, programId, pos): StaticContext {
 }
 
 
-export function getVisitedTracesAt(application, programId, pos) {
+export function getVisitedTracesAt(application, programId, pos) : Trace[] {
   // find staticContext (function or Program) at position
   const staticContext = getStaticContextAt(application, programId, pos);
   if (!staticContext) {

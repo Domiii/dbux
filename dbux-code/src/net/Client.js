@@ -31,12 +31,14 @@ export default class Client {
   }
 
   _getOrCreateApplication(initialData): Application {
-    const { applicationId, entryPointPath } = initialData;
+    const { applicationId } = initialData;
     let application;
     const firstTime = !applicationId;
     if (firstTime) {
       // first time
-      application = applicationCollection.addApplication(entryPointPath);
+      application = applicationCollection.addApplication(
+        initialData
+      );
     }
     else {
       // reconnect

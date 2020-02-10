@@ -1,5 +1,6 @@
 import io, { Socket } from 'socket.io-client';
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
+import universalLibs from 'dbux-common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
 const { log, debug, warn, error: logError } = newLogger('CLIENT');
@@ -85,23 +86,30 @@ export default class Client {
    * Start initial handshake
    */
   _sendInit() {
-    let entryPointPath;
-    if (!this._applicationId) {
+    let initPacket;
+    if (this._applicationId) {
+      initPacket = { applicationId: this._applicationId };
+    }
+    else {
       // NOTE: we don't start using the client, 
       //    unless some code has already executed, so `initialData` should be there
       const initialData = this._sendQueue.buffers;
-      entryPointPath = extractEntryPointPathFromInitialData(initialData);
+      const entryPointPath = extractEntryPointPathFromInitialData(initialData);
 
       if (!entryPointPath) {
         logError('No `entryPointPath` found in initial data', initialData);
       }
+
+      // get time origin - see https://developer.mozilla.org/en-US/docs/Web/API/DOMHighResTimeStamp#The_time_origin
+      const createdAt = Math.round(Date.now() - universalLibs.performance.now());
+      initPacket = {
+        entryPointPath,
+        createdAt
+      };
     }
 
     // send init to server
-    this._socket.emit('init', {
-      applicationId: this._applicationId,
-      entryPointPath
-    });
+    this._socket.emit('init', initPacket);
 
     // wait for ack to come back from server
     this._socket.once('init_ack', applicationId => {
