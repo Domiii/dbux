@@ -5,7 +5,7 @@ import groupBy from 'lodash/groupBy';
 import { codeLineToBabelLine } from '../helpers/locHelper';
 import { getVisitedTracesAt } from '../data/codeRange';
 import { ApplicationNode, createTraceDetailsNode, EmptyNode, TraceNode, tryCreateTraceDetailNode } from './nodes/TraceDetailsNode';
-import { PreviousContextTraceTDNode, NextContextTraceTDNode, TypeTDNode, ValueTDNode } from './nodes/traceDetailNodes';
+import { PreviousTraceTDNode, NextTraceTDNode, TypeTDNode, ValueTDNode } from './nodes/traceDetailNodes';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
 export default class TraceDetailsDataProvider {
@@ -94,7 +94,8 @@ export default class TraceDetailsDataProvider {
           child.collapsibleState = TreeItemCollapsibleState.Collapsed;
           return child;
         });
-      node.children.unshift(...otherNodes);
+      // node.children.unshift(...otherNodes);  // add before
+      node.children.push(...otherNodes);    // add behind
 
       return node;
     });
@@ -108,9 +109,9 @@ export default class TraceDetailsDataProvider {
 
   _buildTraceDetailNodes(trace, application, parent) {
     const nodes = [
+      tryCreateTraceDetailNode(PreviousTraceTDNode, trace, application, parent),
+      tryCreateTraceDetailNode(NextTraceTDNode, trace, application, parent),
       tryCreateTraceDetailNode(TypeTDNode, trace, application, parent),
-      tryCreateTraceDetailNode(PreviousContextTraceTDNode, trace, application, parent),
-      tryCreateTraceDetailNode(NextContextTraceTDNode, trace, application, parent),
       tryCreateTraceDetailNode(ValueTDNode, trace, application, parent),
     ].filter(node => !!node);
 

@@ -50,6 +50,10 @@ export default class Client {
     return this._connected;
   }
 
+  isReady() {
+    return this._ready;
+  }
+
   // ###########################################################################
   // event handling
   // ###########################################################################
@@ -72,10 +76,13 @@ export default class Client {
   _handleDisconnect = () => {
     debug('disconnected');
     this._connected = false;
+    this._ready = false;
+    this._socket = null;
   }
 
   _handleError = (err) => {
     logError(err);
+    this._disconnect();
   };
 
   // ###########################################################################
@@ -116,6 +123,9 @@ export default class Client {
       // then: remember applicationId
       this._applicationId = applicationId;
 
+      // ready!
+      this._ready = true;
+
       // finally: send out anything that was already buffered
       this._sendQueue._flushLater();
     });
@@ -140,7 +150,7 @@ export default class Client {
     if (!this._socket) {
       this._connect();
     }
-    else if (this.isConnected()) {
+    else if (this.isReady()) {
       this._socket.emit('data', data);
       this._refreshInactivityTimer();
       return true;
@@ -189,5 +199,7 @@ export default class Client {
       this._socket.disconnect();
       this._socket = null;
     }
+    this._connected = false;
+    this._ready = false;
   }
 }

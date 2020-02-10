@@ -105,22 +105,46 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * `codeDeco.blurBackgroundMode`
 
 ## TODO (other)
-* highlight selected trace in editor
-   * come up with a more complete concept of "selected trace"
+* [instrumentation]
+   * deduce function name from assignments `this.getLocalStorage = () => ...`
+   * insert trace before function call (so we can step to function call before going down)
+   * support longer names
+      * (and then hide them in tree view; show long version as tooltip)
+* [traceSelection]
+   * in `dbux-data`: `traceSelection` + `TraceSelectionHistory`
+   * fix: code highlighting of selected trace doesn't work yet
+      * probably because `activeEditor` is not set immediately?
    * when jumping between traces, need a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
+   * when user textEditor selection changes, select trace at cursor
    * integrate with `Playback`
-* basic callstack rendering
-   * render callstack of "selected trace"
-   * at least render `previous`, `current` `next` in callstack
+* [callstack]
+   * render callstack (`executionContext`s to root) of "selected trace"
+   * top: context of selected trace
+   * when clicking a node: select first trace in context
 * [dbuxTraceDetailsView]
-   * fix: `ExpressionResult`'s `next` is disappointing
-      * currently jumps to `last` in `next` (because it's actually `previous`)
+   * on refresh: render `selectedTrace` at top (and other nodes at cursor)
+      * the heuristics to determine the trace at cursor are not accurate enough
+   * automatically "select" top trace node
+      * highlight using special icon
+      * highlight in code (without moving cursor)
+   * don't render any details except for "selected node"
+      * because else, stuff moves around when trying to move through the callstack
+      * also: it's too cluttered
+   * `neighboring traces` (partial callstack)
+      * render all 6 directions
+         * previous before leaving context (top left)
+         * previous in context (left)
+         * previous before going to child context (bottom left)
+         * next before leaving context (top right)
+         * next in context (right)
+         * next before going to child context (bottom right)
    * fix: in `store.setLocalStorage`, we can currently NOT jump directly to `setItem`
       * it's an `ExpressionResult`
-   * automatically "select" top trace node
-   * when cursor is already in view, `goto*` should not necessarily move it
-      * `goto*IfNotVisible`
+      * Q: how to reliably find the first node in callee context from an `ExpressionResult`?
+   * better loop support:
+      * distinguish repeated calls of a trace from other traces at selection
+      * allow to better understand and work through the repetitions
    * group {Push,Pop}Callback{Argument,} into one
       * show status: executed x times
       * if executed: go to callback definition

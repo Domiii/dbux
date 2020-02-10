@@ -27,7 +27,7 @@ export function goToCodeLoc(URI: Uri, loc: Loc) {
 
 // TODO: clean up `selectedTrace*` stuff and integrate with playback feature
 const selectedTraceDecoType = {
-  border: '1px solid red'
+  border: '1px solid blue'
 };
 let selectedTraceRegistration: CodeDecoRegistration;
 function _selectTrace(loc) {

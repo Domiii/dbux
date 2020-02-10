@@ -1,9 +1,47 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import Application from 'dbux-data/src/Application';
 import TraceDetailsNodeType from '../TraceDetailsNodeType';
 import { BaseNode } from './TraceDetailsNode';
 import { goToTrace } from '../../codeNav';
-import Application from 'dbux-data/src/Application';
+
+// →↓←↑
+
+function renderNextTraceArrow(trace, nextTrace) {
+  const { contextId: context } = trace;
+  const { contextId: nextContext } = nextTrace;
+
+  if (nextContext < context) {
+    // next context is a parent -> step out
+    return '↑';
+  }
+  else if (nextContext > context) {
+    // next context is a child -> step into
+    return '↓';
+  }
+  else {
+    // same context
+    return '→';
+  }
+}
+
+function renderPreviousTraceArrow(trace, previousTrace) {
+  const { contextId: context } = trace;
+  const { contextId: previousContext } = previousTrace;
+
+  if (previousContext < context) {
+    // previous context is a parent -> step out
+    return '↑';
+  }
+  else if (previousContext > context) {
+    // previous context is a child -> step into
+    return '↓';
+  }
+  else {
+    // same context
+    return '←';
+  }
+}
 
 export class TraceDetailNode extends BaseNode {
   init(traceDetail) {
@@ -41,7 +79,7 @@ export class TypeTDNode extends TraceDetailNode {
   // }
 }
 
-export class PreviousContextTraceTDNode extends TraceDetailNode {
+export class PreviousTraceTDNode extends TraceDetailNode {
   init(previousTrace) {
     this.previousTrace = previousTrace;
     this.collapsibleState = TreeItemCollapsibleState.None;
@@ -58,39 +96,39 @@ export class PreviousContextTraceTDNode extends TraceDetailNode {
   static makeTraceDetail(trace, application: Application, parent) {
     const { traceId, contextId } = trace;
     const previousTrace = application.dataProvider.util.getPreviousTrace(traceId);
-    if (!previousTrace || previousTrace.contextId === contextId) {
+    if (!previousTrace) { // || previousTrace.contextId === contextId) {
       return null;
     }
     return previousTrace;
   }
 
   static makeLabel(previousTrace, application: Application, parent) {
-    const currentTrace = parent.trace;
-    const currentTraceType = application.dataProvider.util.getTraceType(currentTrace.traceId);
-    let previous;
-    if (currentTraceType === TraceType.ExpressionResult) {
-      // previous = '→';
-      previous = '↓'; // go into function call
-    }
-    else {
-      // previous = '←';
-      previous = '↑';
-    }
+    // const currentTrace = parent.trace;
+    // const currentTraceType = application.dataProvider.util.getTraceType(currentTrace.traceId);
+    // let previous;
+    // if (currentTraceType === TraceType.ExpressionResult) {
+    //   // previous = '→';
+    //   previous = '↓'; // go into function call
+    // }
+    // else {
+    //   // previous = '←';
+    //   previous = '↑';
+    // }
 
     // get displayName of previous context
     const staticContext = application.dataProvider.util.getTraceStaticContext(previousTrace.traceId);
     const { displayName } = staticContext;
 
-    return `${previous} ${displayName}`;
+    const arrow = renderPreviousTraceArrow(parent.trace, previousTrace);
+    return `${arrow} ${displayName}`;
   }
-
 
   // static makeIconPath(traceDetail) {
   //   return 'string.svg';
   // }
 }
 
-export class NextContextTraceTDNode extends TraceDetailNode {
+export class NextTraceTDNode extends TraceDetailNode {
   init(nextTrace) {
     this.nextTrace = nextTrace;
     this.collapsibleState = TreeItemCollapsibleState.None;
@@ -107,7 +145,7 @@ export class NextContextTraceTDNode extends TraceDetailNode {
   static makeTraceDetail(trace, application: Application, parent) {
     const { traceId, contextId } = trace;
     const nextTrace = application.dataProvider.util.getNextTrace(traceId);
-    if (!nextTrace || nextTrace.contextId === contextId) {
+    if (!nextTrace) { // || nextTrace.contextId === contextId) {
       return null;
     }
     return nextTrace;
@@ -116,7 +154,8 @@ export class NextContextTraceTDNode extends TraceDetailNode {
   static makeLabel(nextTrace, application: Application, parent) {
     const staticContext = application.dataProvider.util.getTraceStaticContext(nextTrace.traceId);
     const { displayName } = staticContext;
-    return `↓ ${displayName}`;
+    const arrow = renderNextTraceArrow(parent.trace, nextTrace);
+    return `${arrow} ${displayName}`;
   }
 
   // static makeIconPath(traceDetail) {
