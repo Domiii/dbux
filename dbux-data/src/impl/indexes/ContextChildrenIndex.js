@@ -1,13 +1,10 @@
-import CollectionIndex from '../../indexes/CollectionIndex';
-
-import Trace from 'dbux-common/src/core/data/Trace';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
-
-import DataProvider from '../../DataProvider';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import CollectionIndex from '../../indexes/CollectionIndex';
+import DataProvider from '../../DataProvider';
+
 
 function makeKey(dp: DataProvider, context: ExecutionContext) {
-  return context.parentContextId;
+  return context.parentContextId || 0;
 }
 
 

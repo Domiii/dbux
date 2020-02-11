@@ -19,7 +19,22 @@ export default class Collection {
     return this._all[id];
   }
 
-  send(newEntry) {
+  /**
+   * @private
+   * 
+   * @returns {number} The id of the new entry
+   */
+  _add(newEntry) {
+    this._all.push(newEntry);
+    this._send(newEntry);
+
+    return this._all.length-1;
+  }
+
+  /**
+   * @private
+   */
+  _send(newEntry) {
     const client = getDefaultClient();
     client.send(this._name, newEntry);
   }

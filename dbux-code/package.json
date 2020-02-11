@@ -1,6 +1,6 @@
 {
-	"name": "dbux_extension",
-	"displayName": "dbux extension",
+	"name": "dbux-code",
+	"displayName": "dbux-code",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
@@ -10,7 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:dbuxEvents",
+		"onView:dbuxContextView",
 		"onLanguage:javascript"
 	],
 	"__main": "./src/index.js",
@@ -19,35 +19,103 @@
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "dbux-event-logger",
-					"title": "dbux Event Logger",
+					"id": "dbux-view-container",
+					"title": "Dbux",
 					"icon": "media/dep.svg"
 				}
 			]
 		},
 		"views": {
-			"dbux-event-logger": [
+			"dbux-view-container": [
 				{
-					"id": "dbuxEvents",
-					"name": "dbux events"
+					"id": "dbuxContextView",
+					"name": ""
+				},
+				{
+					"id": "dbuxTraceDetailsView",
+					"name": "Trace Details"
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "dbuxEvents.refreshEntry",
-				"title": "Refresh",
+				"command": "dbuxPlayback.play",
+				"title": "Start",
 				"icon": {
-					"light": "resources/light/refresh.svg",
-					"dark": "resources/dark/refresh.svg"
+					"light": "resources/light/play.svg",
+					"dark": "resources/dark/play.svg"
 				}
 			},
 			{
-				"command": "dbuxEvents.addEntry",
+				"command": "dbuxPlayback.pause",
+				"title": "Pause",
+				"icon": {
+					"light": "resources/light/pause.svg",
+					"dark": "resources/dark/pause.svg"
+				}
+			},
+			{
+				"command": "dbuxPlayback.previousTrace",
+				"title": "Previous Trace",
+				"icon": {
+					"light": "resources/light/previousTrace.svg",
+					"dark": "resources/dark/previousTrace.svg"
+				}
+			},
+			{
+				"command": "dbuxPlayback.nextTrace",
+				"title": "Next Trace",
+				"icon": {
+					"light": "resources/light/nextTrace.svg",
+					"dark": "resources/dark/nextTrace.svg"
+				}
+			},
+			{
+				"command": "dbuxPlayback.previousTraceInContext",
+				"title": "Step Over",
+				"icon": {
+					"light": "resources/light/previousTraceInContext.svg",
+					"dark": "resources/dark/previousTraceInContext.svg"
+				}
+			},
+			{
+				"command": "dbuxPlayback.nextTraceInContext",
+				"title": "Step Back",
+				"icon": {
+					"light": "resources/light/nextTraceInContext.svg",
+					"dark": "resources/dark/nextTraceInContext.svg"
+				}
+			},
+			{
+				"command": "dbuxContextView.previous",
+				"title": "Previous",
+				"icon": {
+					"light": "resources/light/previous.svg",
+					"dark": "resources/dark/previous.svg"
+				}
+			},
+			{
+				"command": "dbuxContextView.next",
+				"title": "Next",
+				"icon": {
+					"light": "resources/light/next.svg",
+					"dark": "resources/dark/next.svg"
+				}
+			},
+			{
+				"command": "dbuxContextView.clear",
+				"title": "Clear",
+				"icon": {
+					"light": "resources/light/clear.svg",
+					"dark": "resources/dark/clear.svg"
+				}
+			},
+			{
+				"command": "dbuxContextView.addEntry",
 				"title": "Add"
 			},
 			{
-				"command": "dbuxEvents.gotoEntry",
+				"command": "dbuxContextView.gotoEntry",
 				"title": "Goto",
 				"icon": {
 					"light": "resources/light/boolean.svg",
@@ -55,82 +123,114 @@
 				}
 			},
 			{
-				"command": "dbuxEvents.deleteEntry",
+				"command": "dbuxContextView.deleteEntry",
 				"title": "Delete"
+			},
+			{
+				"command": "dbuxContextView.itemClick",
+				"title": "Clicked"
+			},
+			{
+				"command": "dbuxTraceDetailsView.itemClick",
+				"title": "Clicked"
 			}
 		],
 		"menus": {
-			"view/title": [
+			"editor/title": [
 				{
-					"command": "dbuxEvents.refreshEntry",
-					"when": "view == dbuxEvents",
-					"group": "navigation"
+					"command": "dbuxPlayback.previousTrace",
+					"group": "navigation@0"
 				},
 				{
-					"command": "dbuxEvents.addEntry",
-					"when": "view == dbuxEvents"
+					"command": "dbuxPlayback.play",
+					"when": "dbuxPlaybackPlaying == false",
+					"group": "navigation@1"
+				},
+				{
+					"command": "dbuxPlayback.pause",
+					"when": "dbuxPlaybackPlaying == true",
+					"group": "navigation@2"
+				},
+				{
+					"command": "dbuxPlayback.nextTrace",
+					"group": "navigation@3"
+				},
+				{
+					"command": "dbuxPlayback.previousTraceInContext",
+					"group": "navigation@4"
+				},
+				{
+					"command": "dbuxPlayback.nextTraceInContext",
+					"group": "navigation@5"
+				}
+			],
+			"view/title": [
+				{
+					"command": "dbuxContextView.previous",
+					"when": "view == dbuxContextView",
+					"group": "navigation@0"
+				},
+				{
+					"command": "dbuxContextView.next",
+					"when": "view == dbuxContextView",
+					"group": "navigation@1"
+				},
+				{
+					"command": "dbuxContextView.clear",
+					"when": "view == dbuxContextView",
+					"group": "navigation@2"
+				},
+				{
+					"command": "dbuxContextView.addEntry",
+					"when": "view == dbuxContextView"
 				}
 			],
 			"view/item/context": [
 				{
-					"command": "dbuxEvents.gotoEntry",
-					"when": "view == dbuxEvents && viewItem == event",
+					"command": "dbuxContextView.gotoEntry",
+					"when": "view == dbuxContextView && viewItem == event",
 					"group": "inline"
 				},
 				{
-					"command": "dbuxEvents.deleteEntry",
-					"when": "view == dbuxEvents && viewItem == event"
+					"command": "dbuxContextView.deleteEntry",
+					"when": "view == dbuxContextView && viewItem == event"
 				}
 			]
 		}
 	},
 	"scripts": {
+		"_before-run": "npx link-module-alias",
+		"postinstall": "npx link-module-alias",
 		"test": "node ./test/runTest.js",
 		"vscode:prepublish": "npx webpack --mode production",
-		"start": "npx webpack --mode development --watch",
+		"start": "npm run _before-run && npx webpack --mode development --watch",
 		"start-debug": "node --inspect-brk=9233 ./node_modules/webpack/bin/webpack --mode development --watch",
 		"build-prod": "npx webpack --mode production",
 		"build-dev": "npx webpack --mode development",
 		"analyze": "npx webpack --mode development --json | npx webpack-bundle-size-analyzer"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.7.7",
-		"@babel/core": "^7.7.7",
-		"@babel/node": "^7.7.7",
-		"@babel/plugin-proposal-class-properties": "^7.7.4",
-		"@babel/plugin-proposal-decorators": "^7.7.4",
-		"@babel/plugin-proposal-function-bind": "^7.7.4",
-		"@babel/plugin-proposal-optional-chaining": "^7.7.5",
-		"@babel/plugin-syntax-dynamic-import": "^7.7.4",
-		"@babel/plugin-syntax-export-default-from": "^7.7.4",
-		"@babel/plugin-syntax-flow": "^7.7.4",
-		"@babel/plugin-transform-runtime": "^7.7.6",
-		"@babel/preset-env": "^7.7.7",
-		"@babel/preset-flow": "^7.8.3",
-		"@babel/register": "^7.7.7",
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.41.0",
-		"babel-loader": "^8.0.6",
-		"eslint": "^6.6.0",
-		"eslint-config-esnext": "^4.0.0",
-		"eslint-plugin-flowtype": "^4.6.0",
 		"flow-bin": "^0.116.1",
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
 		"typescript": "^3.6.4",
-		"vscode-test": "^1.2.2",
-		"webpack": "^4.41.5",
-		"webpack-cli": "^3.3.10"
+		"vscode-test": "^1.2.2"
 	},
 	"dependencies": {
-		"@babel/runtime": "^7.7.7",
-		"core-js": "^3.6.1",
-		"dbux-common": "file:../dbux-common",
-		"dbux-data": "file:../dbux-data",
-		"lodash": "^4.17.15",
-		"socket.io": "^2.3.0",
-		"uws": "github:mmdevries/uws#2.4.0"
+		"moment": "^2.24.0",
+		"socket.io": "^2.3.0"
+	},
+	"peerDependencies": {
+		"dbux-common": "../dbux-common",
+		"dbux-data": "../dbux-data",
+		"lodash": "*"
+	},
+	"_moduleAliases": {
+		"dbux-common": "../dbux-common",
+		"dbux-data": "../dbux-data"
 	}
 }

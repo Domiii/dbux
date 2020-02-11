@@ -34,7 +34,7 @@ class StaticTraceCollection extends Collection {
       entry.staticTraceId = this._all.length;
       
       this._all.push(entry);
-      this.send(entry);
+      this._send(entry);
     }
   }
 
@@ -51,7 +51,7 @@ class StaticTraceCollection extends Collection {
     return traces[inProgramStaticId];
   }
 
-  getTraceId(programId, inProgramStaticId) {
+  getStaticTraceId(programId, inProgramStaticId) {
     const staticTrace = this.getTrace(programId, inProgramStaticId);
     return staticTrace.staticTraceId;
   }

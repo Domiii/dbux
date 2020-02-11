@@ -13,7 +13,7 @@ function addResumeContext(bodyPath, state, staticId) {
 
   // the "resume context" starts with the function (function is in "Resumed" state initially)
   const locStart = bodyLoc.start;
-  return state.addResumeContext(staticId, locStart);
+  return state.addResumeContext(bodyPath, locStart);
 }
 
 // ###########################################################################
@@ -31,7 +31,7 @@ function buildPopImmediate(contextId, dbux, traceId) {
 }
 
 const pushResumeTemplate = template(`
-  %%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%, %%schedulerId%%);
+  %%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%);
 `);
 
 const popResumeTemplate = template(`
@@ -55,16 +55,15 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
     // this is an interruptable function -> push + pop "resume contexts"
     startCalls = [
       ...startCalls,
-      ...pushResumeTemplate({
+      pushResumeTemplate({
         dbux,
         resumeStaticContextId: t.numericLiteral(staticResumeId),
-        traceId: t.numericLiteral(pushTraceId),
-        schedulerId: t.numericLiteral(staticId)
+        traceId: t.numericLiteral(pushTraceId)
       })
     ];
 
     finallyBody = [
-      ...popResumeTemplate({
+      popResumeTemplate({
         dbux,
         traceId: t.numericLiteral(popTraceId)
         // contextId: contextIdVar
@@ -97,7 +96,7 @@ export default function functionVisitor() {
       // console.warn('F', path.toString());
 
       const name = guessFunctionName(path);
-      const displayName = getFunctionDisplayName(path);
+      const displayName = getFunctionDisplayName(path, name);
       const isGenerator = path.node.generator;
       const isAsync = path.node.async;
       const isInterruptable = isGenerator || isAsync;
@@ -118,7 +117,6 @@ export default function functionVisitor() {
       }
 
       wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId);
-
     }
-  }
+  };
 }

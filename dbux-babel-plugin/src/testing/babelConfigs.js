@@ -1,25 +1,25 @@
 import defaultsDeep from 'lodash/defaultsDeep';
 
 const babelConfigEs6 = {
-  "plugins": [
+  plugins: [
     [
-      "@babel/plugin-proposal-class-properties",
+      '@babel/plugin-proposal-class-properties',
       {
-        "loose": true
+        loose: true
       }
     ],
-    "@babel/plugin-proposal-optional-chaining",
+    '@babel/plugin-proposal-optional-chaining',
     [
-      "@babel/plugin-proposal-decorators",
+      '@babel/plugin-proposal-decorators',
       {
-        "legacy": true
+        legacy: true
       }
     ],
-    "@babel/plugin-proposal-function-bind",
-    "@babel/plugin-syntax-export-default-from",
-    "@babel/plugin-syntax-dynamic-import",
-    "@babel/plugin-syntax-flow",
-    //"@babel/plugin-transform-runtime"
+    '@babel/plugin-proposal-function-bind',
+    '@babel/plugin-syntax-export-default-from',
+    '@babel/plugin-syntax-dynamic-import',
+    '@babel/plugin-syntax-flow',
+    // "@babel/plugin-transform-runtime"
   ]
 };
 
@@ -27,13 +27,13 @@ const babelConfigEs6 = {
  * Transpile to ES5
  */
 export const babelConfigEs5 = defaultsDeep({
-  "presets": [
+  presets: [
     [
-      "@babel/preset-env",
+      '@babel/preset-env',
       {
-        "loose": true,
-        "useBuiltIns": "usage",
-        "corejs": 3
+        loose: true,
+        useBuiltIns: 'usage',
+        corejs: 3
       }
     ]
   ]
@@ -58,4 +58,4 @@ export const babelConfigNext = defaultsDeep({
   //   ]
   // ]
 }, 
-  babelConfigEs6);
+babelConfigEs6);

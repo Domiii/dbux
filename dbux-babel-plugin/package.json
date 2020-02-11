@@ -4,59 +4,33 @@
   "version": "0.0.1",
   "description": "",
   "author": "Domi",
-  "module": "src/index.js",
-  "main": "src/index.js",
+  "module": "dist/index.js",
+  "main": "dist/index.js",
   "bin": {
     "dbux-instrument-file": "./bin/dbux-instrument-file.js"
   },
   "scripts": {
     "clean": "rm -rf dist && rm -rf dist.samples",
+    "postinstall": "npx link-module-alias",
     "_before-run": "npx link-module-alias",
     "build": "npm run clean && npm run _before-run && webpack --config config/webpack.config.js",
-    "test": "node --stack-trace-limit=1000 node_modules/jest/bin/jest.js --runInBand",
+    "test": "npm run _before-run && node --stack-trace-limit=1000 node_modules/jest/bin/jest.js --runInBand",
     "test:watch": "npm run test -- --watch",
     "__archive_build": "npm run clean && npx babel src -d dist",
-    "__archive_prepublish": "npm run clean && npm run build",
-    "__postinstall": "npm run add-links",
-    "add-links": "npm i --ignore-scripts -S ../dbux-common ../dbux-runtime"
+    "__archive_prepublish": "npm run clean && npm run build"
   },
   "devDependencies": {
-    "@babel/cli": "^7.7.5",
-    "@babel/code-frame": "^7.5.5",
-    "@babel/core": "^7.7.5",
-    "@babel/generator": "^7.7.4",
-    "@babel/node": "^7.7.7",
-    "@babel/parser": "^7.7.5",
-    "@babel/plugin-proposal-class-properties": "^7.7.4",
-    "@babel/plugin-proposal-decorators": "^7.7.4",
-    "@babel/plugin-proposal-function-bind": "^7.7.4",
-    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
-    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
-    "@babel/plugin-syntax-export-default-from": "^7.7.4",
-    "@babel/plugin-syntax-flow": "^7.7.4",
-    "@babel/plugin-transform-runtime": "^7.7.5",
-    "@babel/preset-env": "^7.7.5",
-    "@babel/preset-flow": "^7.8.3",
-    "@babel/register": "^7.7.7",
-    "@babel/template": "^7.7.4",
-    "@babel/traverse": "^7.7.4",
-    "@babel/types": "^7.7.4",
+    "@babel/code-frame": "^7.8.3",
+    "@babel/generator": "^7.8.3",
+    "@babel/parser": "7.8.3",
+    "@babel/template": "^7.8.3",
+    "@babel/traverse": "^7.8.3",
+    "@babel/types": "^7.8.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-tester": "^8.0.1",
-    "css-loader": "^3.3.2",
-    "eslint": "^6.7.2",
-    "eslint-config-esnext": "^4.0.0",
-    "eslint-loader": "^3.0.3",
-    "jest": "^24.9.0",
+    "jest": "^25.1.0",
     "jest-expect-message": "^1.0.2",
-    "jest-extended": "^0.11.2",
-    "link-module-alias": "^1.2.0",
-    "lodash": "^4.17.15",
-    "style-loader": "^1.0.1",
-    "webpack": "^4.41.2",
-    "webpack-bundle-analyzer": "^3.6.0",
-    "webpack-cli": "^3.3.10",
-    "yargs": "^15.0.2"
+    "jest-extended": "^0.11.4"
   },
   "keywords": [
     "dbux",
@@ -67,10 +41,12 @@
     "tracing",
     "babel-plugin"
   ],
-  "dependencies": {
-    "@babel/runtime": "^7.7.7",
-    "core-js": "^3.6.1",
-    "dbux-common": "file:../dbux-common"
+  "dependencies": {},
+  "peerDependencies": {
+    "dbux-common": "../dbux-common",
+    "lodash": "*"
   },
-  "_moduleAliases": {}
+  "_moduleAliases": {
+    "dbux-common": "../dbux-common"
+  }
 }

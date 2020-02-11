@@ -1,5 +1,3 @@
-import RuntimeMonitor from './RuntimeMonitor';
-
 /**
  * Comes from the order we execute things in programVisitor
  */
@@ -19,17 +17,18 @@ export default class ProgramMonitor {
   /**
    * @param {ProgramStaticContext} staticProgramContext
    */
-  constructor(staticProgramContext) {
-    const staticId = 1;
+  constructor(runtimeMonitor, staticProgramContext) {
+    const inProgramStaticId = 1;
+    this._runtimeMonitor = runtimeMonitor;
     this._staticProgramContext = staticProgramContext;
-    this._programContextId = this.pushImmediate(staticId, ProgramStartTraceId);
+    this._programContextId = this.pushImmediate(inProgramStaticId, ProgramStartTraceId);
   }
 
   /**
    * NOTE - A program has 3 kinds of ids:
-   * 1. staticId (assigned by instrumentation; currently always equal to 1; unique inside the same program)
-   * 2. programId (assigned by `staticProgramContextCollection`; globally unique across programs)
-   * 3. contextId (assigned by `executionContextCollection`; globally unique across contexts)
+   * 1. programId (assigned by `staticProgramContextCollection`; you usually want to use this one)
+   * 2. inProgramStaticId (assigned by instrumentation; currently always equal to 1)
+   * 3. programContextId (assigned by `executionContextCollection`; globally unique across contexts)
    */
   getProgramId() {
     return this._staticProgramContext.programId;
@@ -40,39 +39,39 @@ export default class ProgramMonitor {
   }
 
 
-
   pushImmediate(inProgramStaticId, traceId) {
-    return RuntimeMonitor.instance.pushImmediate(this.getProgramId(), inProgramStaticId, traceId);
+    return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticId, traceId);
   }
 
   popImmediate(contextId, traceId) {
-    return RuntimeMonitor.instance.popImmediate(contextId, traceId);
+    return this._runtimeMonitor.popImmediate(contextId, traceId);
   }
 
 
-  scheduleCallback(inProgramStaticId, schedulerId, traceId, cb) {
-    return RuntimeMonitor.instance.scheduleCallback(this.getProgramId(), inProgramStaticId, schedulerId, traceId, cb);
-  }
+  // CallbackArgument(inProgramStaticId, schedulerId, traceId, cb) {
+  //   return this._runtimeMonitor.CallbackArgument(this.getProgramId(), 
+  //     inProgramStaticId, schedulerId, traceId, cb);
+  // }
 
   preAwait(inProgramStaticId, traceId) {
-    return RuntimeMonitor.instance.preAwait(this.getProgramId(), inProgramStaticId, traceId);
+    return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticId, traceId);
   }
 
   wrapAwait(awaitContextId, awaitValue) {
     // nothing to do
-    return RuntimeMonitor.instance.wrapAwait(this.getProgramId(), awaitContextId, awaitValue);
+    return this._runtimeMonitor.wrapAwait(this.getProgramId(), awaitContextId, awaitValue);
   }
 
-  postAwait(awaitResult, awaitContextId) {
-    return RuntimeMonitor.instance.postAwait(awaitResult, awaitContextId);
+  postAwait(awaitResult, awaitContextId, resumeTraceId) {
+    return this._runtimeMonitor.postAwait(awaitResult, awaitContextId, resumeTraceId);
   }
 
-  pushResume(resumeContextId, traceId, schedulerId) {
-    return RuntimeMonitor.instance.pushResume(resumeContextId, traceId, schedulerId);
+  pushResume(resumeContextId, inProgramStaticTraceId) {
+    return this._runtimeMonitor.pushResume(resumeContextId, inProgramStaticTraceId, true);
   }
 
   popResume() {
-    return RuntimeMonitor.instance.popResume();
+    return this._runtimeMonitor.popResume();
   }
 
   popProgram() {
@@ -87,15 +86,19 @@ export default class ProgramMonitor {
   /**
    * `t` is short for `trace` (we have a lot of these, so we want to keep the name short)
    */
-  t(inProgramStaticTraceId, value) {
-    return RuntimeMonitor.instance.trace(inProgramStaticTraceId, value);
+  t(inProgramStaticTraceId) {
+    return this._runtimeMonitor.trace(this.getProgramId(), inProgramStaticTraceId);
   }
 
   /**
-   * `tv` is short for `traceAndCaptureValue` (we have a lot of these, so we want to keep the name short)
+   * 
    */
-  tv(inProgramStaticTraceId, value) {
-    return RuntimeMonitor.instance.traceAndCaptureValue(inProgramStaticTraceId, value);
+  traceExpr(inProgramStaticTraceId, value) {
+    return this._runtimeMonitor.traceExpression(this.getProgramId(), inProgramStaticTraceId, value);
+  }
+
+  traceArg(inProgramStaticTraceId, value) {
+    return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
 }

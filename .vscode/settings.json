@@ -2,35 +2,10 @@
   "eslint.enable": true,
   "eslint.workingDirectories": [
     {
-      "directory": "./dbux-babel-plugin/src",
-      "changeProcessCWD": true
-    },
-    {
-      "directory": "./dbux-runtime/src",
-      "changeProcessCWD": true
-    },
-    {
-      "directory": "./projects/todomvc/examples/vanilla-es6/src",
-      "changeProcessCWD": true
+      "mode": "auto"
     }
   ],
-  "eslint.validate":[  
-    {  
-        "language":"vue",
-        "autoFix":true
-    },
-    {  
-        "language":"html",
-        "autoFix":true
-    },
-    {  
-        "language":"javascript",
-        "autoFix":true
-    },
-    {  
-        "language":"typescript",
-        "autoFix":true
-    }
-],
+  "editor.snippetSuggestions": "top",
+  "javascript.preferences.quoteStyle":"single",
   "jest.pathToJest": "sh scripts/runJest.sh"
 }

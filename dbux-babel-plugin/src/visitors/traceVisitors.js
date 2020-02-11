@@ -2,19 +2,23 @@ import template from '@babel/template';
 import Enum from 'dbux-common/src/util/Enum';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg } from '../helpers/traceHelpers';
+import { isPathInstrumented } from '../helpers/instrumentationHelper';
 // TODO: want to do some extra work to better trace loops
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
-  ExpressionWithValue: 1,
-  ExpressionNoValue: 2,
-  Statement: 3,
-  Block: 4
+  CallExpression: 1,
+  ExpressionWithValue: 2,
+  ExpressionNoValue: 3,
+  Statement: 4,
+  Block: 5
 });
 
 const traceCfg = (() => {
   const {
     NoTrace,
+    CallExpression,
     ExpressionWithValue,
     ExpressionNoValue,
     Statement,
@@ -38,13 +42,13 @@ const traceCfg = (() => {
       [['value', ExpressionWithValue]]
     ],
     VariableDeclaration: [
-      Statement,
+      NoTrace,
       null,
       {
-        filter(path, state) {
-          // ignore variable declarations in for loops inits
-          return !path.parentPath.isFor();
-        }
+        // filter(path, state) {
+        //   // ignore variable declarations in for loops inits
+        //   return !path.parentPath.isFor();
+        // }
       }
     ],
     VariableDeclarator: [
@@ -56,21 +60,22 @@ const traceCfg = (() => {
     // ########################################
     // expressions
     // ########################################
+    CallExpression: [
+      CallExpression
+    ],
+    OptionalCallExpression: [
+      CallExpression
+    ],
+    NewExpression: [
+      CallExpression
+    ],
     AwaitExpression: [
-      ExpressionWithValue,
-      [['argument', ExpressionNoValue]]
+      ExpressionWithValue
+      // [['argument', ExpressionNoValue]]
     ],
     ConditionalExpression: [
       ExpressionWithValue,
       [['test', ExpressionWithValue], ['consequent', ExpressionWithValue], ['alternate', ExpressionWithValue]]
-    ],
-    CallExpression: [
-      ExpressionWithValue,
-      // [['arguments', true]] // TODO: must capture each individual argument
-    ],
-    OptionalCallExpression: [
-      ExpressionWithValue,
-      // [['arguments', true]] // TODO: must capture each individual argument
     ],
     Super: ExpressionNoValue,
     UpdateExpression: ExpressionWithValue,
@@ -79,7 +84,7 @@ const traceCfg = (() => {
       [['argument', ExpressionWithValue]]
     ],
 
-    
+
     // ########################################
     // statements
     // ########################################
@@ -96,28 +101,34 @@ const traceCfg = (() => {
     //     ignore: ['ImportDeclaration'] // ignore: cannot mess with imports
     //   }
     // ],
-    ReturnStatement: Statement,
+    ReturnStatement: [
+      NoTrace,
+      [['argument', ExpressionWithValue]]
+    ],
     ThrowStatement: Statement,
 
-    
+
     // ########################################
     // loops
     // ########################################
-    DoWhileLoop: [
+    ForStatement: [
       NoTrace,
-      [['test', ExpressionWithValue], ['body', Block]]
+      [['test', ExpressionWithValue], ['update', ExpressionWithValue], ['body', Block]]
     ],
     ForInStatement: [
+      // TODO: trace `left` value
       NoTrace,
       [['body', Block]]
     ],
     ForOfStatement: [
+      // TODO: trace `left` value
       NoTrace,
       [['body', Block]]
     ],
-    ForStatement: [
+    DoWhileLoop: [
+      // TODO: currently disabled because babel doesn't like it; probably a babel bug?
       NoTrace,
-      [['test', ExpressionWithValue], ['update', ExpressionWithValue], ['body', Block]]
+      [['test', ExpressionWithValue], ['body', Block]]
     ],
     WhileStatement: [
       NoTrace,
@@ -211,64 +222,40 @@ function normalizeConfig(cfg) {
 }
 
 // ###########################################################################
-// templates + instrumentation
-// ###########################################################################
-
-function replaceWithTemplate(templ, path, cfg) {
-  const newNode = templ(cfg);
-  path.replaceWith(newNode);
-}
-
-const buildTraceNoValue = function (templ, path, state, traceType) {
-  const { ids: { dbux } } = state;
-  const traceId = state.addTrace(path, traceType);
-  return templ({
-    dbux,
-    traceId: t.numericLiteral(traceId)
-  });
-}.bind(null, template('%%dbux%%.t(%%traceId%%)'));
-
-
-const traceWrapExpression = function (templ, expressionPath, state) {
-  const {node} = expressionPath;
-  if (t.isLiteral(node)) {
-    // don't care about literals
-    return;
-  }
-  const { ids: { dbux } } = state;
-  const traceId = state.addTrace(expressionPath, TraceType.ExpressionResult);
-  replaceWithTemplate(templ, expressionPath, {
-    dbux,
-    traceId: t.numericLiteral(traceId),
-    expression: node
-  });
-
-  // prevent infinite loop
-  state.onCopy(expressionPath, expressionPath.get('arguments.1'), 'trace');
-  // state.onCopy(expressionPath, expressionPath.get('expressions.1.arguments.1'), 'trace');
-// }.bind(null, template('%%dbux%%.t(%%traceId%%), %%dbux%%.tv(%%traceId%%, %%expression%%)'));
-}.bind(null, template('%%dbux%%.tv(%%traceId%%, %%expression%%)'));
-
-
-const traceBeforeExpression = function (templ, expressionPath, state) {
-  const { ids: { dbux } } = state;
-  const traceId = state.addTrace(expressionPath, TraceType.BeforeExpression);
-  replaceWithTemplate(templ, expressionPath, {
-    dbux,
-    traceId: t.numericLiteral(traceId),
-    expression: expressionPath.node
-  });
-
-  // prevent infinite loop
-  state.onCopy(expressionPath, expressionPath.get('expressions.1'), 'trace');
-}.bind(null, template('%%dbux%%.t(%%traceId%%), %%expression%%'))
-
-
-// ###########################################################################
 // instrumentation recipes by node type
 // ###########################################################################
 
+
+function instrumentArgs(callPath, state) {
+  const args = callPath.node.arguments;
+  const replacements = [];
+  for (let i = 0; i < args.length; ++i) {
+    // if (t.isFunction(args[i])) {
+    //   replacements.push(() => instrumentCallbackSchedulingArg(callPath, state, i));
+    // }
+    // else {
+    const argPath = callPath.get('arguments.' + i);
+    if (!isPathInstrumented(argPath)) {
+      /**
+       * Only instrument if not already instrumented.
+       * Affected Example: `f(await g())` (`await g()` is already instrumented by `awaitVisitor`)
+       */
+      replacements.push(() => traceWrapArg(argPath, state));
+    }
+    // }
+  }
+
+  // TODO: I forgot why I deferred all calls to here? 
+  //    Probably had the order flipped before or did nested replacements;
+  //    might not need to defer anymore.
+  replacements.forEach(r => r());
+}
+
 const instrumentors = {
+  CallExpression(path, state) {
+    instrumentArgs(path, state);
+    traceWrapExpression(path, state);
+  },
   ExpressionWithValue(path, state) {
     traceWrapExpression(path, state);
   },
@@ -276,12 +263,17 @@ const instrumentors = {
     traceBeforeExpression(path, state);
   },
   Statement(path, state) {
-    const trace = buildTraceNoValue(path, state, TraceType.Statement);
-    path.insertBefore(trace);
+    const traceStart = buildTraceNoValue(path, state, TraceType.Statement);
+    path.insertBefore(traceStart);
   },
   Block(path, state) {
+    // NOTE: don't change order of statements here. We first MUST build all new nodes
+    //    before instrumenting the path (because instrumentation causes the path to lose information)
     const trace = buildTraceNoValue(path, state, TraceType.BlockStart);
+    const traceEnd = buildTraceNoValue(path, state, TraceType.BlockEnd);
+
     path.insertBefore(trace);
+    path.insertAfter(traceEnd);
     // if (!t.isBlockStatement(path)) {
     //   // make a new block
 
@@ -301,10 +293,11 @@ function enter(path, state, cfg) {
 
   const [traceType, children, extraCfg] = cfg;
   if (extraCfg?.ignore?.includes(path.node.type)) {
-    // ignored
+    // ignore (array of type name)
     return;
   }
   if (extraCfg?.filter && !extraCfg.filter(path, state, cfg)) {
+    // filter (custom function)
     return;
   }
 

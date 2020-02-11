@@ -27,38 +27,30 @@ export class ExecutionContextCollection extends Collection {
   /**
    * @return {ExecutionContext}
    */
-  executeImmediate(stackDepth, programId, inProgramStaticId, parentContextId) {
+  executeImmediate(stackDepth, runId, parentContextId, programId, inProgramStaticId) {
     return this._create(ExecutionContextType.Immediate,
-      stackDepth, programId, inProgramStaticId, parentContextId);
+      stackDepth, runId, parentContextId, programId, inProgramStaticId);
   }
 
   /**
    * @return {ExecutionContext}
    */
-  scheduleCallback(stackDepth, programId, inProgramStaticId, parentContextId, lastPoppedContextId, schedulerId) {
-    return this._create(ExecutionContextType.ScheduleCallback,
-      stackDepth, programId, inProgramStaticId, parentContextId, schedulerId);
-  }
-
-  /**
-   * @return {ExecutionContext}
-   */
-  executeCallback(stackDepth, scheduledContextId, parentContextId) {
-    const schedulerContext = this.getById(scheduledContextId);
+  executeCallback(stackDepth, runId, parentContextId, schedulerContextId, schedulerTraceId) {
+    const schedulerContext = this.getById(schedulerContextId);
     const { staticContextId } = schedulerContext;
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 
     const context = pools.executionContexts.allocate(
-      ExecutionContextType.ExecuteCallback, stackDepth, contextId,
-      staticContextId, orderId, parentContextId, scheduledContextId);
+      ExecutionContextType.ExecuteCallback, stackDepth, runId, parentContextId, contextId,
+      staticContextId, orderId, schedulerTraceId);
     this._push(context);
     return context;
   }
 
-  await(stackDepth, programId, inProgramStaticId, parentContextId) {
+  await(stackDepth, runId, parentContextId, programId, inProgramStaticId) {
     return this._create(ExecutionContextType.Await,
-      stackDepth, programId, inProgramStaticId, parentContextId);
+      stackDepth, runId, parentContextId, programId, inProgramStaticId);
   }
 
   /**
@@ -68,15 +60,15 @@ export class ExecutionContextCollection extends Collection {
    * (1) either when the function pops,
    * (2) or when another interrupt occurs.
    */
-  resume(parentContextId, inProgramStaticId, schedulerId, stackDepth) {
+  resume(stackDepth, runId, parentContextId, inProgramStaticId, schedulerTraceId) {
     const parentContext = this.getById(parentContextId);
     const { staticContextId: parenStaticContextId } = parentContext;
     const { programId } = staticContextCollection.getById(parenStaticContextId);
     const context = this._create(ExecutionContextType.Resume,
-      stackDepth, programId, inProgramStaticId, parentContextId, schedulerId);
+      stackDepth, runId, parentContextId, programId, inProgramStaticId, schedulerTraceId);
 
-    const { contextId } = context;
-    this._addResumedChild(parentContextId, contextId);
+    // const { contextId } = context;
+    // this._addResumedChild(parentContextId, contextId);
 
     return context;
   }
@@ -89,13 +81,14 @@ export class ExecutionContextCollection extends Collection {
     return this._lastOrderIds[staticId] = (this._lastOrderIds[staticId] || 0) + 1;
   }
 
-  _create(type, stackDepth, programId, inProgramStaticId, parentContextId, schedulerId = null) {
+  _create(type, stackDepth, runId, parentContextId, programId, inProgramStaticId, schedulerTraceId = null) {
     const { staticId: staticContextId } = staticContextCollection.getContext(programId, inProgramStaticId);
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 
     const context = pools.executionContexts.allocate(
-      type, stackDepth, contextId, staticContextId, orderId, parentContextId, schedulerId);
+      type, stackDepth, runId, parentContextId, contextId, staticContextId, orderId, schedulerTraceId
+    );
     this._push(context);
     return context;
   }
@@ -113,14 +106,14 @@ export class ExecutionContextCollection extends Collection {
   //   this._commitChange(contextId, ExecutionContextUpdateType.Pop);
   // }
 
-  _addResumedChild(parentContextId, contextId) {
+  // _addResumedChild(parentContextId, contextId) {
 
-    // TODO: this._sendToRemote();
-  }
+  //   // TODO: this._sendToRemote();
+  // }
 
   _push(context) {
     this._all.push(context);
-    this.send(context);
+    this._send(context);
   }
 
 }

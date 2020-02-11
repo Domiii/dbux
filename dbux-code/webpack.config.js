@@ -12,26 +12,33 @@ const outFile = 'bundle.js';
 const webpackPlugins = [];
 
 const projectRoot = path.resolve(__dirname);
+const root = path.resolve(__dirname + '/..');
+const dbuxDepNames = ["dbux-common", "dbux-data", "dbux-code"];
+const dbuxDepsAbsolute = dbuxDepNames.map(f => path.resolve(path.join(root,f)));
 
-const dbuxRoot = path.resolve(__dirname + '/..');
-const dbuxFolders = ["dbux-common", "dbux-data"];
-const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(dbuxRoot,f)));
-
-dbuxRoots.forEach(f => {
+dbuxDepsAbsolute.forEach(f => {
   if (!fs.existsSync(f)) {
-    throw new Error('invalid dbuxFolder does not exist: ' + f);
+    throw new Error('invalid dbux dependency does not exist: ' + f);
   }
 });
 
 
-const allFolders = [projectRoot, ...dbuxRoots]
-  .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
-  .flat()
-  .map(f => path.resolve(f));
+
+const allFolders = [
+  path.join(root, '/node_modules'),
+  ...[...dbuxDepsAbsolute]
+    .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
+    .flat()
+    .map(f => path.resolve(f))
+];
+
+// aliases allow resolving libraries that we are building here
+const alias = Object.fromEntries(dbuxDepNames.map(target => [target, path.resolve(path.join(root, target))]));
 
 module.exports = {
   // https://github.com/webpack/webpack/issues/2145
   mode: process.env.MODE || 'development',
+  watch: true,
   // devtool: 'inline-module-source-map',
   devtool: 'source-map',
   //devtool: 'inline-source-map',
@@ -49,31 +56,32 @@ module.exports = {
   },
   resolve: {
     symlinks: true,
-    extensions: ['.js' ],
+    alias,
     modules: [
       ...allFolders
     ]
   },
   module: {
     rules: [
+      // {
+      //   loader: 'babel-loader',
+      //   include: [
+      //     path.join(projectRoot, 'src')
+      //   ]
+      // },
       {
         loader: 'babel-loader',
-        include: [
-          path.join(projectRoot, 'src')
-        ]
-      },
-      {
-        loader: 'babel-loader',
-        include: dbuxRoots.map(r => path.join(r, 'src')),
+        include: dbuxDepsAbsolute.map(r => path.join(r, 'src')),
         options: {
-          babelrcRoots: dbuxRoots
+          babelrcRoots: dbuxDepsAbsolute
         }
       }
     ],
   },
   externals: {
+    uws: "uws",
     vscode: "commonjs vscode"
   }
 };
 
-console.warn('webpack config loaded');
+// console.warn('[dbux-code] webpack config loaded');

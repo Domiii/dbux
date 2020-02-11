@@ -1,14 +1,54 @@
 {
 	"private": true,
 	"devDependencies": {
+		"@babel/cli": "^7.8.3",
+		"@babel/core": "^7.8.3",
+		"@babel/node": "^7.5.5",
+		"@babel/plugin-proposal-class-properties": "^7.8.3",
+		"@babel/plugin-proposal-decorators": "^7.8.3",
+		"@babel/plugin-proposal-function-bind": "^7.8.3",
+		"@babel/plugin-proposal-optional-chaining": "^7.8.3",
+		"@babel/plugin-syntax-dynamic-import": "^7.8.3",
+		"@babel/plugin-syntax-export-default-from": "^7.8.3",
+		"@babel/plugin-syntax-flow": "^7.8.3",
+		"@babel/plugin-transform-runtime": "^7.8.3",
+		"@babel/preset-env": "^7.8.3",
+		"@babel/preset-flow": "^7.8.3",
+		"@babel/register": "^7.8.3",
+		"babel-eslint": "^10.0.3",
+		"babel-loader": "^8.0.6",
+		"cloc": "^2.5.1",
 		"eslint": "^6.8.0",
-		"eslint-config-esnext": "^4.0.0"
+		"eslint-config-airbnb-base": "^14.0.0",
+		"eslint-plugin-import": "^2.18.2",
+		"jest": "^24.9.0",
+		"jest-expect-message": "^1.0.2",
+		"jest-extended": "^0.11.2",
+		"nodemon": "^2.0.2",
+		"webpack": "^4.41.5",
+		"webpack-cli": "^3.3.10"
 	},
 	"scripts": {
-		"dbux-install": "sh scripts/dbux-install.sh",
-		"p1-install": "sh ./assets/projects/todomvc-vanilla-es6/setup.sh",
-		"p1-g": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
+		"start": "npx nodemon --exec \"npx webpack --watch --mode development\"",
+		"dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
+		"dbux-all": "sh scripts/dbux-run-all.sh",
+		"dbux-uninstall": "rm -rf ./node_modules && rm -f ./package-lock.json && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json\"",
+		"p1-install": "sh ./assets/projects/todomvc-vanilla-es6/install.sh",
+		"p1-go": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
 		"p1-start": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
-		"dbux-code-start": "cd ./dbux-code && npm start"
+		"dbux-code-start": "cd ./dbux-code && npm start",
+		"cloc": "npx cloc --match-f='.*\\.js$' --fullpath --match-d='(dbux-[^/]+|samples/__samplesInput__)' --not-match-d='(node_modules|dist)$'  --by-file ."
+	},
+	"dependencies": {
+		"@babel/runtime": "^7.8.3",
+		"core-js": "^3.6.4",
+		"link-module-alias": "^1.2.0",
+		"lodash": "^4.17.15",
+		"nanoevents": "^2.0.0",
+		"webpack-node-externals": "^1.7.2"
+	},
+	"optionalDependencies": {
+		"bufferutil": "^4.0.1",
+		"utf-8-validate": "^5.0.2"
 	}
 }

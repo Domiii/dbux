@@ -1,55 +1,40 @@
-import TraceType from 'dbux-common/src/core/constants/TraceType';
 import staticTraceCollection from './staticTraceCollection';
 import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
-import staticProgramContextCollection from './staticProgramContextCollection';
-import { logInternalError } from 'dbux-common/src/log/logger';
-import { EmptyArray } from 'dbux-common/src/util/misc';
 import Collection from './Collection';
 import pools from './pools';
+import valueCollection from './valueCollection';
 
-const inspectOptions = { depth: 0, colors: true };
-function _inspect(arg) {
-  const f = typeof window !== 'undefined' && window.inspect ? window.inspect : require('util').inspect;
-  return f(arg, inspectOptions);
-}
-
-
-/**
- * Recorded objects need careful handling:
- * Since we might not send them out immediately, they can change over time, so we need to copy a snapshot
- */
-function processValue(value) {
-  // serialize a copy of value
-  return JSON.stringify(value);
-}
 
 class TraceCollection extends Collection {
   constructor() {
     super('traces');
   }
 
-  trace(contextId, inProgramStaticTraceId, type = null) {
-    const trace = this._trace(contextId, inProgramStaticTraceId, type, null, null);
+  trace(contextId, runId, inProgramStaticTraceId, type = null) {
+    const trace = this._trace(contextId, runId, inProgramStaticTraceId, type, false, undefined);
     return trace;
   }
 
-  traceExpressionWithValue(contextId, inProgramStaticTraceId, value) {
-    const trace = this._trace(contextId, inProgramStaticTraceId, null, value, processValue(value));
+  traceExpressionResult(contextId, runId, inProgramStaticTraceId, value) {
+    const trace = this._trace(contextId, runId, inProgramStaticTraceId, null, true, value);
     return trace;
   }
 
-  _trace(contextId, inProgramStaticTraceId, type, value, processedValue) {
+  _trace(contextId, runId, inProgramStaticTraceId, type, hasValue, value) {
     if (!inProgramStaticTraceId) {
       throw new Error('missing inProgramStaticTraceId');
     }
 
     const trace = pools.traces.allocate();
     trace.contextId = contextId;
+    trace.runId = runId;
     trace.type = type;
-    trace.value = processedValue;
 
-    // look-up global trace id by in-program id
+    // value
+    valueCollection.processValue(hasValue, value, trace);
+
+    // look-up globally unique staticTraceId
     // trace._staticTraceId = inProgramStaticTraceId;
     const context = executionContextCollection.getById(contextId);
     const {
@@ -59,87 +44,85 @@ class TraceCollection extends Collection {
     const {
       programId
     } = staticContext;
-
-    // globally unique staticTraceId
-    trace.staticTraceId = staticTraceCollection.getTraceId(programId, inProgramStaticTraceId);
+    trace.staticTraceId = staticTraceCollection.getStaticTraceId(programId, inProgramStaticTraceId);
 
     // generate new traceId and store
     trace.traceId = this._all.length;
     
     this._all.push(trace);
-    this.send(trace);
+    this._send(trace);
 
-    _prettyPrint(trace, value);
+    // _prettyPrint(trace, value);
 
     return trace;
   }
-
 }
 
-function _prettyPrint(trace, value) {
-  const { 
-    contextId, 
-    type: dynamicType,
-    staticTraceId, 
-    // value 
-  } = trace;
-  const context = executionContextCollection.getById(contextId);
-  const {
-    staticContextId,
-    stackDepth
-  } = context;
+// function _prettyPrint(trace, value) {
+//   const { 
+//     contextId, 
+//     type: dynamicType,
+//     staticTraceId, 
+//     // value 
+//   } = trace;
+//   const context = executionContextCollection.getById(contextId);
+  
+//   const {
+//     staticContextId,
+//     stackDepth
+//   } = context;
 
-  const staticContext = staticContextCollection.getById(staticContextId);
-  const { programId } = staticContext;
+//   const staticContext = staticContextCollection.getById(staticContextId);
+//   const { programId } = staticContext;
 
-  const staticProgramContext = staticProgramContextCollection.getById(programId);
+//   const staticProgramContext = staticProgramContextCollection.getById(programId);
 
-  const {
-    fileName
-  } = staticProgramContext;
-  // const {
-  // } = staticContext;
+//   const {
+//     fileName
+//   } = staticProgramContext;
+//   // const {
+//   // } = staticContext;
 
-  const staticTrace = staticTraceCollection.getById(staticTraceId);
-  let {
-    displayName,
-    type: staticType,
-    loc
-  } = staticTrace;
+//   const staticTrace = staticTraceCollection.getById(staticTraceId);
+//   let {
+//     displayName,
+//     type: staticType,
+//     loc
+//   } = staticTrace;
 
-  const type = dynamicType || staticType; // if `dynamicType` is given take that, else `staticType`
+//   const type = dynamicType || staticType; // if `dynamicType` is given take that, else `staticType`
+//   const typeName = TraceType.nameFromForce(type);
 
-  const depthIndicator = ` `.repeat(stackDepth * 2);
-  const typeName = TraceType.nameFromForce(type);
-  const where = loc.start;
-  const codeLocation = `@${fileName}:${where.line}:${where.column}`;
+//   const depthIndicator = ` `.repeat(stackDepth * 2);
+//   const where = loc.start;
+//   const codeLocation = `@${fileName}:${where.line}:${where.column}`;
 
-  displayName = displayName || '';
+//   displayName = displayName || '';
 
-  // if (capturesValue && !v) {
-  //   console.group(displayName);
-  // }
-  // else
-  const v = type === TraceType.ExpressionResult;
-  const result = v ? ['(', value, ')'] : EmptyArray;
-  console.log(
-    `${contextId} ${depthIndicator}[${typeName}] ${displayName}`, 
-    ...result, 
-    ` ${codeLocation} [DBUX]`
-  );
-  // }
-  // if (capturesValue && v) {
-  //   console.groupEnd();
-  // }
-}
+//   // if (capturesValue && !v) {
+//   //   console.group(displayName);
+//   // }
+//   // else
+
+//   // TODO: if we want to keep using this; fix to use `ValueCollection` instead
+//   const v = type === TraceType.ExpressionResult;
+//   const result = v ? ['(', value, ')'] : EmptyArray;
+//   console.debug(
+//     `${contextId} ${depthIndicator}[${typeName}] ${displayName}`, 
+//     ...result, 
+//     ` ${codeLocation} [DBUX]`
+//   );
+//   // }
+//   // if (capturesValue && v) {
+//   //   console.groupEnd();
+//   // }
+// }
 
 /**
  * @type {TraceCollection}
  */
 const traceCollection = new TraceCollection();
 export default traceCollection;
-
-
 
 
 // static prettyPrintEvent(event) {
@@ -177,7 +160,6 @@ export default traceCollection;
 //   const depthIndicator = ` `.repeat(stackDepth);
 //   // const depthIndicator = ''; // we are using `console.group` for this for now
 //   let message = `${contextId} ${depthIndicator}${displayName} [${typeName}] ${codeLocation} (${parentContextId}) [DBUX]`;
-
 
 //   if (!timer) {
 //     message = '       ---------------\n' + message;
