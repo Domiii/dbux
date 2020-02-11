@@ -4,14 +4,14 @@ export default class TraceSelectionHistory {
   _index = 0;
 
   push(trace) {
-
+    // TODO
   }
 
   goBack() {
-
+    // TODO
   }
 
   goForward() {
-    
+    // TODO
   }
 }

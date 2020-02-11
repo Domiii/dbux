@@ -1,6 +1,7 @@
 import { window, ExtensionContext, TextEditorSelectionChangeEvent } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
+import traceSelection from 'dbux-data/src/traceSelection';
 import TraceDetailsDataProvider from './TraceDetailsDataProvider';
 import { initTraceDetailsCommands } from './commands';
 
@@ -14,32 +15,6 @@ class TraceDetailsController {
     this.treeView = window.createTreeView('dbuxTraceDetailsView', {
       treeDataProvider: this.treeDataProvider
     });
-  }
-
-  /**
-   * @param {TextEditorSelectionChangeEvent} evt
-   */
-  handleEditorSelectionChanged = () => {
-    const textEditor = window.activeTextEditor;
-    if (!textEditor) {
-      this.treeDataProvider.setSelected(null);
-    }
-    else {
-      const { selection } = textEditor;// see https://code.visualstudio.com/api/references/vscode-api#Selection
-      if (!selection) {
-        this.treeDataProvider.setSelected(null);
-      }
-      else {
-        const fpath = textEditor.document.uri.fsPath;
-        const { active } = selection;
-
-        const where = {
-          fpath,
-          pos: active
-        };
-        this.treeDataProvider.setSelected(where);
-      }
-    }
   }
 }
 
@@ -56,8 +31,8 @@ export function initTraceDetailsController(context: ExtensionContext) {
 
   traceDetailsController = new TraceDetailsController();
 
-  // update initialy
-  traceDetailsController.handleEditorSelectionChanged();
+  // refresh right away
+  traceDetailsController.treeDataProvider.refresh();
 
   // ########################################
   // hook up event handlers
@@ -72,10 +47,15 @@ export function initTraceDetailsController(context: ExtensionContext) {
     }
   });
 
-  // TODO: when selecting node, select as "current trace" in playback
+  // add traceSelection event handler
+  traceSelection.onTraceSelectionChanged(selectedTrace => {
+    traceDetailsController.treeDataProvider.refresh();
+  });
 
-  // text selection
+  // TODO: get rid of this
   context.subscriptions.push(
-    window.onDidChangeTextEditorSelection(traceDetailsController.handleEditorSelectionChanged)
+    window.onDidChangeTextEditorSelection(() => {
+      traceDetailsController.treeDataProvider.refresh();
+    })
   );
 }

@@ -4,6 +4,9 @@ import {
 } from 'vscode';
 import pull from 'lodash/pull';
 
+// ###########################################################################
+// EditorDecorations
+// ###########################################################################
 
 export class EditorDecorations {
   editorDecorationType: TextEditorDecorationType;
@@ -34,21 +37,9 @@ export class EditorDecorations {
   }
 }
 
-export class CodeDecoRegistration {
-  unsubscribe;
-
-  constructor(editorDecorationType) {
-    this.editorDecorationType = editorDecorationType;
-  }
-
-  setDeco(editor, deco) {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
-    this.unsubscribe = codeDecorations.addDeco(editor, this.editorDecorationType, deco);
-  }
-}
-
+// ###########################################################################
+// CodeDecorations
+// ###########################################################################
 
 class CodeDecorations {
   decorations = new Map();
@@ -95,4 +86,26 @@ class CodeDecorations {
 }
 
 const codeDecorations = new CodeDecorations();
+
+// ###########################################################################
+// CodeDecoRegistration
+// ###########################################################################
+
+export class CodeDecoRegistration {
+  unsubscribe;
+
+  constructor(editorDecorationType) {
+    this.editorDecorationType = editorDecorationType;
+  }
+
+  setDeco(editor, deco) {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+    if (deco) {
+      this.unsubscribe = codeDecorations.addDeco(editor, this.editorDecorationType, deco);
+    }
+  }
+}
+
 export default codeDecorations;

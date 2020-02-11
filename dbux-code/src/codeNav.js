@@ -7,8 +7,8 @@ import {
 import { newLogger } from 'dbux-common/src/log/logger';
 import Loc from 'dbux-common/src/core/data/Loc';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { babelLocToCodeRange } from '../helpers/locHelper';
-import codeDecorations from '../codeDeco/codeDecorations';
+import { babelLocToCodeRange } from './helpers/locHelper';
+import codeDecorations from './codeDeco/codeDecorations';
 
 
 const { log, debug, warn, error: logError } = newLogger('CodeNav');
@@ -25,20 +25,6 @@ export function goToCodeLoc(URI: Uri, loc: Loc) {
   });
 }
 
-// TODO: clean up `selectedTrace*` stuff and integrate with playback feature
-const selectedTraceDecoType = {
-  border: '1px solid blue'
-};
-let selectedTraceRegistration: CodeDecoRegistration;
-function _selectTrace(loc) {
-  if (!selectedTraceRegistration) {
-    selectedTraceRegistration = codeDecorations.registerDeco(selectedTraceDecoType);
-  }
-  selectedTraceRegistration.setDeco(window.activeTextEditor, {
-    range: babelLocToCodeRange(loc)
-  });
-}
-
 
 export function goToTrace(trace) {
   const dp = allApplications.getApplication(trace.applicationId).dataProvider;
@@ -47,6 +33,22 @@ export function goToTrace(trace) {
   const filePath = dp.queries.programFilePathByTraceId(trace.traceId);
 
   goToCodeLoc(Uri.file(filePath), loc);
+}
 
-  _selectTrace(loc);
+export function getCursorLocation() {
+  const textEditor = window.activeTextEditor;
+  if (textEditor) {
+    const { selection } = textEditor;// see https://code.visualstudio.com/api/references/vscode-api#Selection
+    if (selection) {
+      const fpath = textEditor.document.uri.fsPath;
+      const { active } = selection;
+
+      const where = {
+        fpath,
+        pos: active
+      };
+      return where;
+    }
+  }
+  return null;
 }

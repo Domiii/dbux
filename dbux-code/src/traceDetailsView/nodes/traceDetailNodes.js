@@ -1,6 +1,8 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import Application from 'dbux-data/src/applications/Application';
+import traceSelection from 'dbux-data/src/traceSelection';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import TraceDetailsNodeType from '../TraceDetailsNodeType';
 import { BaseNode } from './TraceDetailsNode';
 import { goToTrace } from '../../codeNav';
@@ -54,6 +56,34 @@ export class TraceDetailNode extends BaseNode {
   }
 }
 
+export class ApplicationTDNode extends TraceDetailNode {
+  init(application) {
+    this.application = application;
+    this.collapsibleState = TreeItemCollapsibleState.Expanded;
+  }
+
+  _handleClick() {
+    // TODO: go to Application's first trace
+    // goToTrace(firstTrace);
+  }
+
+  static makeTraceDetail(trace, application) {
+    const fpath = application.dataProvider.util.getTraceFilePath(trace.traceId);
+    if (allApplications.selection.data.getApplicationCountAtPath(fpath) < 2) {
+      return null;
+    }
+    return application;
+  }
+
+  static makeLabel(application: Application) {
+    return application.getRelativeFolder();
+  }
+
+  // static makeIconPath(application: Application) {
+  //   return 'string.svg';
+  // }
+}
+
 export class TypeTDNode extends TraceDetailNode {
   init(trace) {
     this.trace = trace;
@@ -86,7 +116,7 @@ export class PreviousTraceTDNode extends TraceDetailNode {
   }
 
   _handleClick() {
-    goToTrace(this.previousTrace);
+    traceSelection.selectTrace(this.previousTrace);
   }
 
   static get nodeType() {
@@ -135,7 +165,7 @@ export class NextTraceTDNode extends TraceDetailNode {
   }
 
   _handleClick() {
-    goToTrace(this.nextTrace);
+    traceSelection.selectTrace(this.nextTrace);
   }
 
   static get nodeType() {

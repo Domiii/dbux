@@ -3,9 +3,9 @@ import Application from 'dbux-data/src/applications/Application';
 import Trace from 'dbux-common/src/core/data/Trace';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { EmptyObject } from 'dbux-common/src/util/arrayUtil';
+import traceSelection from 'dbux-data/src/traceSelection';
 import TraceDetailsNodeType from '../TraceDetailsNodeType';
 import { getThemeResourcePath } from '../../resources';
-import { goToTrace } from '../../codeNav';
 
 export class BaseNode extends TreeItem {
   application: Application;
@@ -54,30 +54,6 @@ export class EmptyNode extends BaseNode {
   }
 }
 
-export class ApplicationNode extends BaseNode {
-  init(application) {
-    this.application = application;
-    this.collapsibleState = TreeItemCollapsibleState.Expanded;
-  }
-
-  _handleClick() {
-    // TODO: go to Application's first trace
-    // goToTrace(firstTrace);
-  }
-
-  static get nodeType() {
-    return TraceDetailsNodeType.StaticTrace;
-  }
-
-  static makeLabel(application: Application) {
-    return application.getRelativeFolder();
-  }
-
-  // static makeIconPath(application: Application) {
-  //   return 'string.svg';
-  // }
-}
-
 // export class StaticTraceNode extends BaseNode {
 //   init(staticTrace) {
 //     this.staticTrace = staticTrace;
@@ -113,7 +89,7 @@ export class TraceNode extends BaseNode {
   }
 
   _handleClick() {
-    goToTrace(this.trace);
+    traceSelection.selectTrace(this.trace);
   }
 
   static get nodeType() {

@@ -1,12 +1,12 @@
-import { EventEmitter, Position, TreeItemCollapsibleState } from "vscode";
+import { EventEmitter, TreeItemCollapsibleState } from "vscode";
+import groupBy from 'lodash/groupBy';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
-import groupBy from 'lodash/groupBy';
-import { codeLineToBabelLine } from '../helpers/locHelper';
-import { getVisitedTracesAt } from '../data/codeRange';
-import { ApplicationNode, createTraceDetailsNode, EmptyNode, TraceNode, tryCreateTraceDetailNode } from './nodes/TraceDetailsNode';
-import { PreviousTraceTDNode, NextTraceTDNode, TypeTDNode, ValueTDNode } from './nodes/traceDetailNodes';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import { getVisitedTracesAt } from '../data/codeRange';
+import { createTraceDetailsNode, EmptyNode, TraceNode, tryCreateTraceDetailNode } from './nodes/TraceDetailsNode';
+import { PreviousTraceTDNode, NextTraceTDNode, TypeTDNode, ValueTDNode, ApplicationTDNode } from './nodes/traceDetailNodes';
+import { getCursorLocation } from '../codeNav';
 
 export default class TraceDetailsDataProvider {
   _onDidChangeTreeData = new EventEmitter();
@@ -18,10 +18,11 @@ export default class TraceDetailsDataProvider {
   }
 
   /**
+   * 
    * @param {*} where.fpath
    * @param {*} where.pos
    */
-  setSelected(where) {
+  setEditorSelection(where) {
     this.where = where;
 
     this.refresh();
@@ -32,28 +33,18 @@ export default class TraceDetailsDataProvider {
   // ###########################################################################
 
   refresh = makeDebounce(() => {
+    this.where = getCursorLocation();
     const {
       fpath,
       pos
     } = this.where;
 
-    // add nodes for Applications, iff we have more than one
-    const addApplicationNodes = allApplications.selection.data.getApplicationCountAtPath(fpath) > 1;
+    // TODO: incorporate `traceSelection` here
 
-    const rootNodes = this.rootNodes = allApplications.selection.data.mapApplicationsOfFilePath(fpath,
-      (application, programId) => {
-        let applicationNode;
-        if (addApplicationNodes) {
-          // add application node
-          applicationNode = createTraceDetailsNode(ApplicationNode, application, application, null);
-        }
-        else {
-          // don't add application node
-          applicationNode = null;
-        }
-
-        const traceNodes = this._buildTraceNodes(programId, pos, application, applicationNode);
-        return applicationNode || traceNodes || EmptyArray;
+    const rootNodes = this.rootNodes = allApplications.selection.data.mapApplicationsOfFilePath(
+      fpath, (application, programId) => {
+        const traceNodes = this._buildTraceNodes(programId, pos, application, null);
+        return traceNodes || EmptyArray;
       }
     );
 
@@ -70,6 +61,8 @@ export default class TraceDetailsDataProvider {
   _buildTraceNodes(programId, pos, application, parent) {
     // const { staticTraceId } = staticTrace;
     // const traces = application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+
+    // TODO: let `codeTraceSelection` decide which trace(s) to show
 
     const traces = getVisitedTracesAt(application, programId, pos);
     if (!traces?.length) {
@@ -110,6 +103,7 @@ export default class TraceDetailsDataProvider {
 
   _buildTraceDetailNodes(trace, application, parent) {
     const nodes = [
+      tryCreateTraceDetailNode(ApplicationTDNode, trace, application, parent),
       tryCreateTraceDetailNode(PreviousTraceTDNode, trace, application, parent),
       tryCreateTraceDetailNode(NextTraceTDNode, trace, application, parent),
       tryCreateTraceDetailNode(TypeTDNode, trace, application, parent),

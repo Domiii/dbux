@@ -158,6 +158,15 @@ export default {
     return dp.util.getStaticTraceProgramId(staticTraceId);
   },
 
+  getTraceFilePath(dp: DataProvider, traceId) {
+    const programId = dp.util.getTraceProgramId(traceId);
+    return programId && dp.util.getFilePathFromProgramId(programId) || null;
+  },
+
+  getFilePathFromProgramId(dp: DataProvider, programId) {
+    return dp.collections.staticProgramContexts.getById(programId)?.filePath || null;
+  },
+
   getTraceStaticContextId(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
