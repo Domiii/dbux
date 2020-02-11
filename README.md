@@ -110,6 +110,9 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [traceSelection]
    * in `dbux-data`: `traceSelection` + `TraceSelectionHistory`
    * when user textEditor selection changes, select trace at cursor
+      * need to design heuristic:
+         * if a trace was previously selected, select the one "closest" to that
+         * minimum effort: try to select one in the same run (if existing)
    * fix: code highlighting of selected trace doesn't work when changing files
       * probably because `activeEditor` is not set immediately
    * when jumping between traces, need a history stack to allow us to go forth and back
