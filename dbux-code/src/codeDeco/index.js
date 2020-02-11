@@ -11,7 +11,7 @@ import {
 
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { newLogger } from 'dbux-common/src/log/logger';
-import applicationCollection from 'dbux-data/src/applicationCollection';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import { initTraceDecorators, renderTraceDecorations } from './traceDecorator';
 // import DataProvider from 'dbux-data/src/DataProvider';
 // import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
@@ -64,7 +64,7 @@ export function initCodeDeco(context) {
   // start rendering
   activeEditor = window.activeTextEditor;
 
-  if (applicationCollection.selection.hasSelectedApplications() && activeEditor) {
+  if (!allApplications.selection.isEmpty() && activeEditor) {
     // initial render
     renderDecorations();
   }
@@ -74,9 +74,9 @@ export function initCodeDeco(context) {
   // ########################################
 
   // data changed
-  applicationCollection.selection.onSelectionChanged((selectedApps) => {
+  allApplications.selection.onApplicationsChanged((selectedApps) => {
     for (const app of selectedApps) {
-      applicationCollection.selection.subscribe(
+      allApplications.selection.subscribe(
         app.dataProvider.onData('traces', renderDecorations),
         app.dataProvider.onData('staticTraces', renderDecorations)
       );

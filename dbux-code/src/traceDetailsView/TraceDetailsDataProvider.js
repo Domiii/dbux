@@ -1,5 +1,5 @@
 import { EventEmitter, Position, TreeItemCollapsibleState } from "vscode";
-import applicationCollection from 'dbux-data/src/applicationCollection';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import groupBy from 'lodash/groupBy';
 import { codeLineToBabelLine } from '../helpers/locHelper';
@@ -18,7 +18,8 @@ export default class TraceDetailsDataProvider {
   }
 
   /**
-   * @param {Position} pos 
+   * @param {*} where.fpath
+   * @param {*} where.pos
    */
   setSelected(where) {
     this.where = where;
@@ -37,9 +38,9 @@ export default class TraceDetailsDataProvider {
     } = this.where;
 
     // add nodes for Applications, iff we have more than one
-    const addApplicationNodes = applicationCollection.selection.data.getApplicationCountAtPath(fpath) > 1;
+    const addApplicationNodes = allApplications.selection.data.getApplicationCountAtPath(fpath) > 1;
 
-    const rootNodes = this.rootNodes = applicationCollection.selection.data.mapApplicationsOfFilePath(fpath,
+    const rootNodes = this.rootNodes = allApplications.selection.data.mapApplicationsOfFilePath(fpath,
       (application, programId) => {
         let applicationNode;
         if (addApplicationNodes) {

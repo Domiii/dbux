@@ -1,5 +1,5 @@
 import { Uri, commands } from 'vscode';
-import applicationCollection from 'dbux-data/src/applicationCollection';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import TracePlayback from 'dbux-data/src/playback/TracePlayback';
@@ -19,14 +19,14 @@ export default class PlaybackController {
     this.trace = null;
     this.lastTrace = null;
 
-    this.tracePlayback = new TracePlayback(applicationCollection.selection.data);
+    this.tracePlayback = new TracePlayback(allApplications.selection.data);
 
     // TODO: add event emitter to tell playing state changed
 
-    applicationCollection.selection.onSelectionChanged((selectedApps) => {
+    allApplications.selection.onApplicationsChanged((selectedApps) => {
       this.handleApplicationDataChange();
       for (const app of selectedApps) {
-        applicationCollection.selection.subscribe(
+        allApplications.selection.subscribe(
           app.dataProvider.onData('traces', this.handleApplicationDataChange)
         );
       }
@@ -84,7 +84,7 @@ export default class PlaybackController {
   handleApplicationDataChange = () => {
     if (this.trace) {
       // see if original trace is in selected apps
-      if (!applicationCollection.selection.isApplicationSelected(this.trace.applicationId)) {
+      if (!allApplications.selection.containsApplication(this.trace.applicationId)) {
         this.trace = null;
       }
     }

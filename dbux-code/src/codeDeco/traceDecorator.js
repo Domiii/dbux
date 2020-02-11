@@ -3,7 +3,7 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import DefaultTraceDecoratorConfig from './DefaultTraceDecoratorConfig';
 import { babelLocToCodeRange } from '../helpers/locHelper';
-import applicationCollection from 'dbux-data/src/applicationCollection';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
 const { log, debug, warn, error: logError } = newLogger('traceDecorator');
@@ -21,7 +21,7 @@ export function renderTraceDecorations(editor, fpath) {
   const allDecorations = [];
 
   // prepare decorations
-  applicationCollection.selection.data.mapApplicationsOfFilePath(fpath, (application, programId) => {
+  allApplications.selection.data.mapApplicationsOfFilePath(fpath, (application, programId) => {
     const { dataProvider } = application;
     const staticTraces = dataProvider.indexes.staticTraces.visitedByFile.get(programId);
     // const traces = dataProvider.indexes.traces.byFile.get(programId);

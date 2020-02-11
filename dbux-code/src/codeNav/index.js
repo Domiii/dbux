@@ -6,7 +6,7 @@ import {
 } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Loc from 'dbux-common/src/core/data/Loc';
-import applicationCollection from 'dbux-data/src/applicationCollection';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import { babelLocToCodeRange } from '../helpers/locHelper';
 import codeDecorations from '../codeDeco/codeDecorations';
 
@@ -41,7 +41,7 @@ function _selectTrace(loc) {
 
 
 export function goToTrace(trace) {
-  const dp = applicationCollection.getApplication(trace.applicationId).dataProvider;
+  const dp = allApplications.getApplication(trace.applicationId).dataProvider;
   const { staticTraceId } = dp.collections.traces.getById(trace.traceId);
   const { loc } = dp.collections.staticTraces.getById(staticTraceId);
   const filePath = dp.queries.programFilePathByTraceId(trace.traceId);

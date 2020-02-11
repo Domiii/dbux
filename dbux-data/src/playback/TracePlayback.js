@@ -1,5 +1,7 @@
 import Trace from 'dbux-common/src/core/data/Trace';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import allApplications from '../applications/allApplications';
+
 // ###########################################################################
 // TraceOrder
 // ###########################################################################
@@ -16,7 +18,6 @@ export default class TracePlayback {
   constructor(applicationSelectionData) {
     this.applicationSelectionData = applicationSelectionData;
     this.applicationSelection = this.applicationSelectionData.selection;
-    this.applicationCollection = this.applicationSelection.collection;
   }
 
   // ###########################################################################
@@ -74,7 +75,7 @@ export default class TracePlayback {
   // ###########################################################################
 
   getFirstTraceInOrder() {
-    const { rootContextsInOrder } = this.applicationCollection.selection.data;
+    const { rootContextsInOrder } = allApplications.selection.data;
     const firstRootContext = rootContextsInOrder.getFirstRootContext();
     if (!firstRootContext) return null;
     const dataProvider = this.getDataProviderOfRootContext(firstRootContext);
@@ -86,7 +87,7 @@ export default class TracePlayback {
    */
   getNextTraceInApplication(trace) {
     const { applicationId, traceId } = trace;
-    const application = this.applicationCollection.getApplication(applicationId);
+    const application = allApplications.getApplication(applicationId);
     const nextTrace = application.dataProvider.collections.traces.getById(traceId + 1);
     return nextTrace;
   }
@@ -96,7 +97,7 @@ export default class TracePlayback {
    */
   getPreviousTraceInApplication(trace) {
     const { applicationId, traceId } = trace;
-    const application = this.applicationCollection.getApplication(applicationId);
+    const application = allApplications.getApplication(applicationId);
     const nextTrace = application.dataProvider.collections.traces.getById(traceId - 1);
     return nextTrace;
   }
@@ -105,7 +106,7 @@ export default class TracePlayback {
    * @param {Trace} trace 
    */
   getDataProviderOfTrace(trace) {
-    const application = this.applicationCollection.getApplication(trace.applicationId);
+    const application = allApplications.getApplication(trace.applicationId);
     return application.dataProvider;
   }
 
@@ -113,7 +114,7 @@ export default class TracePlayback {
    * @param {ExecutionContext} rootContext
    */
   getDataProviderOfRootContext(rootContext) {
-    const application = this.applicationCollection.getApplication(rootContext.applicationId);
+    const application = allApplications.getApplication(rootContext.applicationId);
     return application.dataProvider;
   }
 

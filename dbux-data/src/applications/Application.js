@@ -1,7 +1,7 @@
 import path from 'path';
 import process from 'process';
-import DataProvider from './DataProvider';
-import { newDataProvider } from './dataProviderImpl';
+import DataProvider from '../DataProvider';
+import { newDataProvider } from '../dataProviderImpl';
 
 
 /**
@@ -20,7 +20,7 @@ export default class Application {
   /**
    * @readonly
    */
-  applicationCollection;
+  allApplications;
   /**
    * @readonly
    */
@@ -34,11 +34,11 @@ export default class Application {
    */
   updatedAt: number;
 
-  constructor(applicationId, entryPointPath, createdAt, applicationCollection) {
+  constructor(applicationId, entryPointPath, createdAt, allApplications) {
     this.applicationId = applicationId;
     this.entryPointPath = entryPointPath;
     // this.relativeEntryPointPath = path.relative(entryPointPath, process.cwd()); // path relative to cwd
-    this.applicationCollection = applicationCollection;
+    this.allApplications = allApplications;
     this.dataProvider = newDataProvider(this);
     // this.createdAt = this.updatedAt = libs.performance.now();
     this.createdAt = this.updatedAt = createdAt || Date.now();
@@ -49,8 +49,8 @@ export default class Application {
     // this.updatedAt = libs.performance.now();
     this.updatedAt = Date.now();
 
-    // if (this.applicationCollection.getSelectedApplication() === this) {
-    //   this.applicationCollection._emitter.emit('selectedApplicationData', this);
+    // if (this.allApplications.getSelectedApplication() === this) {
+    //   this.allApplications._emitter.emit('selectedApplicationData', this);
     // }
   }
 

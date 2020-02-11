@@ -1,6 +1,6 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
-import Application from 'dbux-data/src/Application';
+import Application from 'dbux-data/src/applications/Application';
 import TraceDetailsNodeType from '../TraceDetailsNodeType';
 import { BaseNode } from './TraceDetailsNode';
 import { goToTrace } from '../../codeNav';

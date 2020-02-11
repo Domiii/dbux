@@ -1,6 +1,6 @@
 import { window, ExtensionContext, TextEditorSelectionChangeEvent } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
-import applicationCollection from 'dbux-data/src/applicationCollection';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import TraceDetailsDataProvider from './TraceDetailsDataProvider';
 import { initTraceDetailsCommands } from './commands';
 
@@ -19,7 +19,7 @@ class TraceDetailsController {
   /**
    * @param {TextEditorSelectionChangeEvent} evt
    */
-  handleSelectionChanged = () => {
+  handleEditorSelectionChanged = () => {
     const textEditor = window.activeTextEditor;
     if (!textEditor) {
       this.treeDataProvider.setSelected(null);
@@ -57,16 +57,16 @@ export function initTraceDetailsController(context: ExtensionContext) {
   traceDetailsController = new TraceDetailsController();
 
   // update initialy
-  traceDetailsController.handleSelectionChanged();
+  traceDetailsController.handleEditorSelectionChanged();
 
   // ########################################
   // hook up event handlers
   // ########################################
 
   // data changed
-  applicationCollection.selection.onSelectionChanged((selectedApps) => {
+  allApplications.selection.onApplicationsChanged((selectedApps) => {
     for (const app of selectedApps) {
-      applicationCollection.selection.subscribe(
+      allApplications.selection.subscribe(
         app.dataProvider.onData('traces', traceDetailsController.treeDataProvider.refresh)
       );
     }
@@ -76,6 +76,6 @@ export function initTraceDetailsController(context: ExtensionContext) {
 
   // text selection
   context.subscriptions.push(
-    window.onDidChangeTextEditorSelection(traceDetailsController.handleSelectionChanged)
+    window.onDidChangeTextEditorSelection(traceDetailsController.handleEditorSelectionChanged)
   );
 }

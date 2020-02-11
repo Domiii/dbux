@@ -62,8 +62,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [playback] when stepping through, render the value of `TraceType.ExpressionResult` inline
 * switch between `StepMode`s via button or command
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
-   * shows all applications in `applicationCollection`
-   * lets you switch between them by clicking on them (can use `applicationCollection.setSelectedApplication`)
+   * shows all applications in `allApplications`
+   * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
 * [callstackView]
   * actually: a callstack is actually a single slice of a complex call graph over time
   * allow to search for path between any two contexts
@@ -107,15 +107,13 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 ## TODO (other)
 * [instrumentation]
    * insert trace before function call (so we can step to function call before going down)
-   * support longer names
-      * (and then hide them in tree view; show long version as tooltip)
 * [traceSelection]
    * in `dbux-data`: `traceSelection` + `TraceSelectionHistory`
-   * fix: code highlighting of selected trace doesn't work yet
-      * probably because `activeEditor` is not set immediately?
+   * when user textEditor selection changes, select trace at cursor
+   * fix: code highlighting of selected trace doesn't work when changing files
+      * probably because `activeEditor` is not set immediately
    * when jumping between traces, need a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
-   * when user textEditor selection changes, select trace at cursor
    * integrate with `Playback`
 * [callstack]
    * render callstack of "context of `traceSelection.selected`" all the way to its root
@@ -136,6 +134,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * because else, stuff moves around when trying to move through the callstack
       * also: it's too cluttered
    * `neighboring traces` (partial callstack)
+      * render full trace label
+      * description: file@loc (if file is different)
       * render all 6 directions
          * previous before leaving context (top left)
          * previous in context (left)
@@ -143,9 +143,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * next before leaving context (top right)
          * next in context (right)
          * next before going to child context (bottom right)
-   * fix: in `store.setLocalStorage`, we can currently NOT jump directly to `setItem`
-      * it's an `ExpressionResult`
-      * Q: how to reliably find the first node in callee context from an `ExpressionResult`?
    * better loop support:
       * distinguish repeated calls of a trace from other traces at selection
       * allow to better understand and work through the repetitions
@@ -197,15 +194,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * `iterateTracesFront`
       * `iterateTracesBack`
       * `getTraceCount`
-* [codeDeco] better deco
-   * for function calls: render context targets (if known)
-   * capture function parameters
-* [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`: display the `value` in `codeDeco` behind the expression?
-   * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
-   * TODO: don't waste space if value has a long string representation?
-* [dbuxTraceDetailsView] data interactions
-   * make it possible to interact with the captured values
-   * possibly retrieve more data from the app if app is still running?
+* [instrumentation] support longer names
+   * (and then hide them in tree view; show long version as tooltip)
 * [MultiKeyIndex] allow for storing data by multiple keys
    * e.g. `dataProvider.util.groupTracesByType`
    * e.g. `dataProvider.util.getVisitedStaticTracesAtLine`

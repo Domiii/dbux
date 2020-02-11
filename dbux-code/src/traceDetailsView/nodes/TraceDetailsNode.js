@@ -1,5 +1,5 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
-import Application from 'dbux-data/src/Application';
+import Application from 'dbux-data/src/applications/Application';
 import Trace from 'dbux-common/src/core/data/Trace';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { EmptyObject } from 'dbux-common/src/util/arrayUtil';
