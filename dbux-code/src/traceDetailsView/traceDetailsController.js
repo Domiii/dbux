@@ -1,7 +1,9 @@
 import { window, ExtensionContext, TextEditorSelectionChangeEvent } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
-import applicationCollection from 'dbux-data/src/applicationCollection';
+import allApplications from 'dbux-data/src/applications/allApplications';
+import traceSelection from 'dbux-data/src/traceSelection';
 import TraceDetailsDataProvider from './TraceDetailsDataProvider';
+import { initTraceDetailsCommands } from './commands';
 
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
 
@@ -14,32 +16,6 @@ class TraceDetailsController {
       treeDataProvider: this.treeDataProvider
     });
   }
-
-  /**
-   * @param {TextEditorSelectionChangeEvent} evt
-   */
-  handleSelectionChanged = () => {
-    const textEditor = window.activeTextEditor;
-    if (!textEditor) {
-      this.treeDataProvider.setSelected(null);
-    }
-    else {
-      const { selection } = textEditor;// see https://code.visualstudio.com/api/references/vscode-api#Selection
-      if (!selection) {
-        this.treeDataProvider.setSelected(null);
-      }
-      else {
-        const fpath = textEditor.document.uri.fsPath;
-        const { active } = selection;
-
-        const where = {
-          fpath,
-          pos: active
-        };
-        this.treeDataProvider.setSelected(where);
-      }
-    }
-  }
 }
 
 // ###########################################################################
@@ -51,28 +27,35 @@ export function getTraceDetailsController() {
 }
 
 export function initTraceDetailsController(context: ExtensionContext) {
+  initTraceDetailsCommands(context);
+
   traceDetailsController = new TraceDetailsController();
 
-  // update initialy
-  traceDetailsController.handleSelectionChanged();
+  // refresh right away
+  traceDetailsController.treeDataProvider.refresh();
 
   // ########################################
   // hook up event handlers
   // ########################################
 
   // data changed
-  applicationCollection.selection.onSelectionChanged((selectedApps) => {
+  allApplications.selection.onApplicationsChanged((selectedApps) => {
     for (const app of selectedApps) {
-      applicationCollection.selection.subscribe(
+      allApplications.selection.subscribe(
         app.dataProvider.onData('traces', traceDetailsController.treeDataProvider.refresh)
       );
     }
   });
 
-  // TODO: when selecting node, select as "current trace" in playback
+  // add traceSelection event handler
+  traceSelection.onTraceSelectionChanged(selectedTrace => {
+    traceDetailsController.treeDataProvider.refresh();
+  });
 
-  // text selection
+  // TODO: get rid of this
   context.subscriptions.push(
-    window.onDidChangeTextEditorSelection(traceDetailsController.handleSelectionChanged)
+    window.onDidChangeTextEditorSelection(() => {
+      traceDetailsController.treeDataProvider.refresh();
+    })
   );
 }

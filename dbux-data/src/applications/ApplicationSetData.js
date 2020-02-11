@@ -1,6 +1,5 @@
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
-import TracePlayback from './playback/TracePlayback';
 
 // ###########################################################################
 // RootContextsInOrder
@@ -11,18 +10,18 @@ class RootContextsInOrder {
   _rootContextIndexById = new Map();
 
   /**
-   * @param {ApplicationSelectionData} applicationSelectionData 
+   * @param {ApplicationSetData} applicationSetData 
    */
-  constructor(applicationSelectionData) {
-    this.applicationSelectionData = applicationSelectionData;
+  constructor(applicationSetData) {
+    this.applicationSetData = applicationSetData;
     this._rootContextsArray = [];
   }
 
   _mergeAll() {
     this._rootContextsArray = [];
-    const applications = this.applicationSelectionData.selection.getSelectedApplications();
+    const applications = this.applicationSetData.set.getAll();
     let allRootContexts = applications.map((app) => app.dataProvider.util.getAllRootContexts() || EmptyArray);
-    console.log(JSON.stringify(allRootContexts, null, 2));
+    // console.log(JSON.stringify(allRootContexts, null, 2));
 
     // add all root contexts, unsorted
     allRootContexts.flat().forEach(this._addOne);
@@ -46,12 +45,12 @@ class RootContextsInOrder {
   }
 
   
-  _handleSelectionChanged = () => {
-    const { applicationSelection } = this.applicationSelectionData;
-    const selectedApplications = applicationSelection.getSelectedApplications();
+  _handleApplicationsChanged = () => {
+    const { applicationSet } = this.applicationSetData;
+    const applications = applicationSet.getAll();
   
-    for (const app of selectedApplications) {
-      applicationSelection.subscribe(
+    for (const app of applications) {
+      applicationSet.subscribe(
         app.dataProvider.onData('executionContexts', this._addExecutionContexts.bind(this, app))
       );
     }
@@ -108,7 +107,7 @@ class RootContextsInOrder {
 
 
 // ###########################################################################
-// ApplicationSelectionData
+// ApplicationSetData
 // ###########################################################################
 
 /**
@@ -123,28 +122,27 @@ class RootContextsInOrder {
  * 
  * Also provides muliti-casted utility methods that work with the dataProviders of all selected applications.
  */
-export default class ApplicationSelectionData {
-  constructor(applicationSelection) {
-    this.applicationSelection = applicationSelection;
+export default class ApplicationSetData {
+  constructor(applicationSet) {
+    this.applicationSet = applicationSet;
     this.rootContextsInOrder = new RootContextsInOrder(this);
-    this.tracePlayback = new TracePlayback(this);
 
-    this.applicationSelection._emitter.on('_selectionChanged0', this._handleSelectionChanged);
+    this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
   }
 
-  get selection() {
-    return this.applicationSelection;
+  get set() {
+    return this.applicationSet;
   }
 
-  _handleSelectionChanged = () => {
-    this.rootContextsInOrder._handleSelectionChanged();
+  _handleApplicationsChanged = () => {
+    this.rootContextsInOrder._handleApplicationsChanged();
   }
 
   /**
    * Return amount of applications that have executed given file.
    */
   getApplicationCountAtPath(fpath) {
-    const applications = this.selection._selectedApplications;
+    const applications = this.set.getAll();
     return applications.reduce((sum, { dataProvider }) => {
       const programId = dataProvider.queries.programIdByFilePath(fpath);
       return sum + !!programId;
@@ -155,7 +153,7 @@ export default class ApplicationSelectionData {
    * @param {fileSelectedApplicationCallback} cb
    */
   mapApplicationsOfFilePath(fpath, cb) {
-    const applications = this.selection._selectedApplications;
+    const applications = this.set.getAll();
     const results = [];
 
     for (const application of applications) {

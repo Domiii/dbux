@@ -117,7 +117,6 @@ export default function functionVisitor() {
       }
 
       wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId);
-
     }
-  }
+  };
 }

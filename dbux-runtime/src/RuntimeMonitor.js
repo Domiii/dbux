@@ -40,22 +40,22 @@ export default class RuntimeMonitor {
   addProgram(programData) {
     const staticProgramContext = staticProgramContextCollection.addProgram(programData);
     const { programId } = staticProgramContext;
-    const { staticContexts, traces } = programData;
+    const { staticContexts, traces: staticTraces } = programData;
     staticContextCollection.addContexts(programId, staticContexts);
 
     // change program-local _staticContextId to globally unique staticContextId
-    for (let i = 1; i < traces.length; ++i) {
-      const trace = traces[i];
-      let staticContext = staticContexts[trace._staticContextId];
+    for (let i = 1; i < staticTraces.length; ++i) {
+      const staticTrace = staticTraces[i];
+      let staticContext = staticContexts[staticTrace._staticContextId];
       if (!staticContext?.staticId) {
         // set to random default, to avoid more errors down the line?
         staticContext = staticContexts[1];
-        logInternalError('trace had invalid `_staticContextId`', trace);
+        logInternalError('trace had invalid `_staticContextId`', staticTrace);
       }
-      delete trace._staticContextId;
-      trace.staticContextId = staticContext.staticId;
+      delete staticTrace._staticContextId;
+      staticTrace.staticContextId = staticContext.staticId;
     }
-    staticTraceCollection.addTraces(programId, traces);
+    staticTraceCollection.addTraces(programId, staticTraces);
 
     const programMonitor = new ProgramMonitor(this, staticProgramContext);
     this._programMonitors.set(programId, programMonitor);
@@ -310,7 +310,7 @@ export default class RuntimeMonitor {
     if (value instanceof Function) {
       // scheduled callback
       const cb = value;
-      return this.traceScheduleCallback(programId, inProgramStaticTraceId, cb);
+      return this.traceCallbackArgument(programId, inProgramStaticTraceId, cb);
     }
     else {
       // just a normal expression
@@ -322,11 +322,11 @@ export default class RuntimeMonitor {
   /**
    * Push a new context for a scheduled callback for later execution.
    */
-  traceScheduleCallback(programId, inProgramStaticTraceId, cb) {
+  traceCallbackArgument(programId, inProgramStaticTraceId, cb) {
     // trace
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
-    const trace = traceCollection.trace(contextId, runId, inProgramStaticTraceId, TraceType.ScheduleCallback);
+    const trace = traceCollection.trace(contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument);
     const { traceId: schedulerTraceId } = trace;
 
     const wrapper = this.makeCallbackWrapper(contextId, schedulerTraceId, inProgramStaticTraceId, cb);

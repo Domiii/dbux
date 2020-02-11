@@ -60,6 +60,7 @@ module.exports = {
 		"prefer-template": 0, // string templates
 		"eol-last": 0,
 		"arrow-parens": 0,
+		"arrow-body-style": 0,
 		"lines-between-class-members": 0,
 		"comma-dangle": 0,
 		"object-curly-newline": 0,

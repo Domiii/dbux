@@ -20,7 +20,7 @@ const traceCustomizationsByType = {
   [TraceType.PushImmediate]: tracePathStart,
   [TraceType.PopImmediate]: tracePathEnd,
 
-  // NOTE: PushCallback + PopCallback are sharing the StaticTrace of `ScheduleCallback` which pegs on `CallArgument` (so they won't pass through here)
+  // NOTE: PushCallback + PopCallback are sharing the StaticTrace of `CallbackArgument` which pegs on `CallArgument` (so they won't pass through here)
   // [TraceType.PushCallback]: tracePathStart,
   // [TraceType.PopCallback]: tracePathEnd,
 

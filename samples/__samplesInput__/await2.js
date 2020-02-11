@@ -1,4 +1,4 @@
-function f0() {  
+function f0() {
 }
 
 async function af1(a) {
@@ -22,7 +22,7 @@ async function af44() {
   const a = await af33(100);
   const b = await af33(50);
 
-  return a+b + af33(10);
+  return a + b + af33(10);
 }
 
 (async function main() {

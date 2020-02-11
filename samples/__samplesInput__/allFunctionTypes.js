@@ -1,25 +1,28 @@
 function f1() {
-
 }
 
 const f2 = function _f2() {
-
 };
 
 const f3 = () => {
-
 };
 
 const o = {
+  a: {},
   f4() {},
   f5: () => {}
 };
+o.a.f6 = () => {};
 
 class C {
-  constructor() {}
-  f6() {}
-  f7 = () => {};
+  constructor() {
+    this.f7 = () => {};
+  }
+  f8() {}
+  f9 = () => {};
 }
+
+callF(() => {} /* f10 */);
 
 // // generator function
 // function *f8() {

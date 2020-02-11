@@ -1,5 +1,6 @@
 import io, { Socket } from 'socket.io-client';
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
+import universalLibs from 'dbux-common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
 const { log, debug, warn, error: logError } = newLogger('CLIENT');
@@ -49,6 +50,10 @@ export default class Client {
     return this._connected;
   }
 
+  isReady() {
+    return this._ready;
+  }
+
   // ###########################################################################
   // event handling
   // ###########################################################################
@@ -71,10 +76,13 @@ export default class Client {
   _handleDisconnect = () => {
     debug('disconnected');
     this._connected = false;
+    this._ready = false;
+    this._socket = null;
   }
 
   _handleError = (err) => {
     logError(err);
+    this._disconnect();
   };
 
   // ###########################################################################
@@ -85,28 +93,38 @@ export default class Client {
    * Start initial handshake
    */
   _sendInit() {
-    let entryPointPath;
-    if (!this._applicationId) {
+    let initPacket;
+    if (this._applicationId) {
+      initPacket = { applicationId: this._applicationId };
+    }
+    else {
       // NOTE: we don't start using the client, 
       //    unless some code has already executed, so `initialData` should be there
       const initialData = this._sendQueue.buffers;
-      entryPointPath = extractEntryPointPathFromInitialData(initialData);
+      const entryPointPath = extractEntryPointPathFromInitialData(initialData);
 
       if (!entryPointPath) {
         logError('No `entryPointPath` found in initial data', initialData);
       }
+
+      // get time origin - see https://developer.mozilla.org/en-US/docs/Web/API/DOMHighResTimeStamp#The_time_origin
+      const createdAt = Math.round(Date.now() - universalLibs.performance.now());
+      initPacket = {
+        entryPointPath,
+        createdAt
+      };
     }
 
     // send init to server
-    this._socket.emit('init', {
-      applicationId: this._applicationId,
-      entryPointPath
-    });
+    this._socket.emit('init', initPacket);
 
     // wait for ack to come back from server
     this._socket.once('init_ack', applicationId => {
       // then: remember applicationId
       this._applicationId = applicationId;
+
+      // ready!
+      this._ready = true;
 
       // finally: send out anything that was already buffered
       this._sendQueue._flushLater();
@@ -132,7 +150,7 @@ export default class Client {
     if (!this._socket) {
       this._connect();
     }
-    else if (this.isConnected()) {
+    else if (this.isReady()) {
       this._socket.emit('data', data);
       this._refreshInactivityTimer();
       return true;
@@ -181,5 +199,7 @@ export default class Client {
       this._socket.disconnect();
       this._socket = null;
     }
+    this._connected = false;
+    this._ready = false;
   }
 }

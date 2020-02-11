@@ -1,9 +1,9 @@
 import { Uri, commands } from 'vscode';
-import applicationCollection from 'dbux-data/src/applicationCollection';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import TracePlayback from 'dbux-data/src/playback/TracePlayback';
-import { navToCode } from '../codeNav';
+import { goToCodeLoc, goToTrace } from '../codeNav';
 
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 
@@ -19,14 +19,14 @@ export default class PlaybackController {
     this.trace = null;
     this.lastTrace = null;
 
-    this.tracePlayback = new TracePlayback(applicationCollection.selection.data);
+    this.tracePlayback = new TracePlayback(allApplications.selection.data);
 
     // TODO: add event emitter to tell playing state changed
 
-    applicationCollection.selection.onSelectionChanged((selectedApps) => {
+    allApplications.selection.onApplicationsChanged((selectedApps) => {
       this.handleApplicationDataChange();
       for (const app of selectedApps) {
-        applicationCollection.selection.subscribe(
+        allApplications.selection.subscribe(
           app.dataProvider.onData('traces', this.handleApplicationDataChange)
         );
       }
@@ -53,39 +53,30 @@ export default class PlaybackController {
     if (!this.trace) this.trace = this.tracePlayback.getFirstTraceInOrder();
     if (!this.trace) return;
     this.trace = this.tracePlayback.getPreviousTraceInOrder(this.trace) || this.trace;
-    this.showTrace(this.trace);
+    goToTrace(this.trace);
   }
 
   nextTrace = () => {
     if (!this.trace) this.trace = this.tracePlayback.getFirstTraceInOrder();
     if (!this.trace) return;
     this.trace = this.tracePlayback.getNextTraceInOrder(this.trace) || this.trace;
-    this.showTrace(this.trace);
+    goToTrace(this.trace);
   }
 
   previousTraceInContext = () => {
     const collectionSize = this.getCollectionSize();
     if (!collectionSize) return;
-    this.traceId = this.dataProvider.util.getPreviousTraceInContext(this.traceId).traceId;
-    this.showTrace(this.traceId);
+    this.trace = this.dataProvider.util.getPreviousTraceInContext(this.traceId);
+    this.traceId = this.trace.traceId;
+    goToTrace(this.trace);
   }
 
   nextTraceInContext = () => {
     const collectionSize = this.getCollectionSize();
     if (!collectionSize) return;
-    this.traceId = this.dataProvider.util.getNextTraceInContext(this.traceId).traceId;
-    this.showTrace(this.traceId);
-  }
-
-  /**
-   * @param {Trace} trace
-   */
-  showTrace = (trace) => {
-    const dp = applicationCollection.getApplication(trace.applicationId).dataProvider;
-    const { staticTraceId } = dp.collections.traces.getById(trace.traceId);
-    const { loc } = dp.collections.staticTraces.getById(staticTraceId);
-    const filePath = dp.queries.programFilePathByTraceId(trace.traceId);
-    navToCode(Uri.file(filePath), loc);
+    this.trace = this.dataProvider.util.getPreviousTraceInContext(this.traceId);
+    this.traceId = this.trace.traceId;
+    goToTrace(this.trace);
   }
 
   getCollectionSize = () => this.dataProvider.collections.traces.size;
@@ -93,7 +84,7 @@ export default class PlaybackController {
   handleApplicationDataChange = () => {
     if (this.trace) {
       // see if original trace is in selected apps
-      if (!applicationCollection.selection.isApplicationSelected(this.trace.applicationId)) {
+      if (!allApplications.selection.containsApplication(this.trace.applicationId)) {
         this.trace = null;
       }
     }

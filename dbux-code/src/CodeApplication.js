@@ -1,9 +1,12 @@
-import Application from 'dbux-data/src/Application';
-import { workspace } from 'vscode';
-import applicationCollection from 'dbux-data/src/applicationCollection';
+import {
+  workspace,
+  ExtensionContext
+} from 'vscode';
+import Application from 'dbux-data/src/applications/Application';
+import allApplications from 'dbux-data/src/applications/allApplications';
 
 /**
- * Add some cool stuff to `dbux-data/src/Application`s for 
+ * Add some cool stuff to `dbux-data/src/applications/Application`s for
  * its lifetime inside of VSCode.
  */
 export class CodeApplication extends Application {
@@ -17,6 +20,6 @@ export class CodeApplication extends Application {
   }
 }
 
-export function initCodeApplications(context) {
-  applicationCollection.DefaultApplicationClass = CodeApplication;
+export function initCodeApplications(context: ExtensionContext) {
+  allApplications.DefaultApplicationClass = CodeApplication;
 }
