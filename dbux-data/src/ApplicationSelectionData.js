@@ -1,48 +1,48 @@
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import Trace from 'dbux-common/src/core/data/Trace';
 import TracePlayback from './playback/TracePlayback';
 
 // ###########################################################################
-// RootContextsInOrder
+// RootTracesInOrder
 // ###########################################################################
 
-class RootContextsInOrder {
-  _rootContextsArray;
-  _rootContextIndexById = new Map();
+class RootTracesInOrder {
+  _rootTracesArray;
+  _rootTraceIndexById = new Map();
 
   /**
    * @param {ApplicationSelectionData} applicationSelectionData 
    */
   constructor(applicationSelectionData) {
     this.applicationSelectionData = applicationSelectionData;
-    this._rootContextsArray = [];
+    this._rootTracesArray = [];
   }
 
   _mergeAll() {
-    this._rootContextsArray = [];
+    this._rootTracesArray = [];
     const applications = this.applicationSelectionData.selection.getSelectedApplications();
-    let allRootContexts = applications.map((app) => app.dataProvider.util.getAllRootContexts() || EmptyArray);
-    console.log(JSON.stringify(allRootContexts, null, 2));
+    const allFirstContexts = applications.map((app) => app.dataProvider.util.getFirstContextsInRuns() || EmptyArray);
 
-    // add all root contexts, unsorted
-    allRootContexts.flat().forEach(this._addOne);
+    const indexPointers = Array(applications.length).fill(0);
+    const contextsCount = allFirstContexts.reduce((sum, arr) => sum + arr.length, 0);
 
-    // let indexPointers = Array(applications.length).fill(0);
-    // let contextCount = allRootContexts.reduce((sum, arr) => sum + arr.length, 0);
-
-    // for (let i = 0; i < contextCount; i++) {
-    //   let earliestContext = allRootContexts[0][indexPointers[0]];
-    //   let earliestApplicationIndex = 0;
-    //   for (let j = 1; j < applications.length; j++) {
-    //     const context = allRootContexts[j][indexPointers[j]];
-    //     if (context.createdAt < earliestContext) {
-    //       earliestContext = context;
-    //       earliestApplicationIndex = j;
-    //     }
-    //   }
-    //   indexPointers[earliestApplicationIndex] += 1;
-    //   this._addOne(earliestContext);
-    // }
+    for (let i = 0; i < contextsCount; i++) {
+      let earliestContext = allFirstContexts[0][indexPointers[0]];
+      let earliestApplicationIndex = 0;
+      for (let j = 1; j < applications.length; j++) {
+        const context = allFirstContexts[j][indexPointers[j]];
+        if (!context) continue;
+        if (context.createdAt < earliestContext.createdAt) {
+          earliestContext = context;
+          earliestApplicationIndex = j;
+        }
+      }
+      indexPointers[earliestApplicationIndex] += 1;
+      const dp = applications[earliestApplicationIndex].dataProvider;
+      const trace = dp.indexes.traces.byContext.get(earliestContext.contextId)[0];
+      this._addOne(trace);
+    }
   }
 
   
@@ -62,16 +62,16 @@ class RootContextsInOrder {
     this._mergeAll();
   }
 
-  _makeKey(rootContext) {
-    const { applicationId } = rootContext;
-    return `${applicationId}_${rootContext.contextId}`;
+  _makeKey(rootTrace) {
+    const { applicationId } = rootTrace;
+    return `${applicationId}_${rootTrace.traceId}`;
   }
 
-  _addOne = (rootContext) => {
-    this._rootContextsArray.push(rootContext);
+  _addOne = (rootTrace) => {
+    this._rootTracesArray.push(rootTrace);
 
-    const key = this._makeKey(rootContext);
-    this._rootContextIndexById.set(key, this._rootContextsArray.length - 1);
+    const key = this._makeKey(rootTrace);
+    this._rootTraceIndexById.set(key, this._rootTracesArray.length - 1);
   }
 
   // ###########################################################################
@@ -79,30 +79,30 @@ class RootContextsInOrder {
   // ###########################################################################
 
   getAll() {
-    return this._rootContextsArray;
+    return this._rootTracesArray;
   }
 
-  getIndex(rootContext) {
-    const key = this._makeKey(rootContext);
-    const index = this._rootContextIndexById.get(key);
+  getIndex(rootTrace) {
+    const key = this._makeKey(rootTrace);
+    const index = this._rootTraceIndexById.get(key);
     if (index === undefined) {
-      throw new Error('invalid query - context is not a root context', rootContext);
+      throw new Error('invalid query - context is not a root trace', rootTrace);
     }
     return index;
   }
 
-  getFirstRootContext() {
-    return this._rootContextsArray[0] || null;
+  getFirstRootTrace() {
+    return this._rootTracesArray[0] || null;
   }
 
-  getNextRootContext(rootContext: ExecutionContext) {
-    const order = this.getIndex(rootContext);
-    return this._rootContextsArray[order + 1] || null;
+  getNextRootTrace(rootTrace: Trace) {
+    const order = this.getIndex(rootTrace);
+    return this._rootTracesArray[order + 1] || null;
   }
 
-  getPreviousRootContext(rootContext: ExecutionContext) {
-    const order = this.getIndex(rootContext);
-    return this._rootContextsArray[order - 1] || null;
+  getPreviousRootTrace(rootTrace: Trace) {
+    const order = this.getIndex(rootTrace);
+    return this._rootTracesArray[order - 1] || null;
   }
 }
 
@@ -126,7 +126,7 @@ class RootContextsInOrder {
 export default class ApplicationSelectionData {
   constructor(applicationSelection) {
     this.applicationSelection = applicationSelection;
-    this.rootContextsInOrder = new RootContextsInOrder(this);
+    this.rootTracesInOrder = new RootTracesInOrder(this);
     this.tracePlayback = new TracePlayback(this);
 
     this.applicationSelection._emitter.on('_selectionChanged0', this._handleSelectionChanged);
@@ -137,7 +137,7 @@ export default class ApplicationSelectionData {
   }
 
   _handleSelectionChanged = () => {
-    this.rootContextsInOrder._handleSelectionChanged();
+    this.rootTracesInOrder._handleSelectionChanged();
   }
 
   /**

@@ -48,7 +48,7 @@ export class TreeNodeProvider {
     const programContext = dataProvider.collections.staticProgramContexts.getById(programId);
     const { filePath, fileName } = programContext;
 
-    const parentNode = (parentContextId) ? this.contextNodesByApp[applicationId][parentContextId] : null;
+    const parentNode = this.contextNodesByApp[applicationId][parentContextId] || null;
     const typeName = ExecutionContextType.nameFrom(contextType);
 
     let newNode = new ContextNode(

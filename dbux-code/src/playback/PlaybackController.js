@@ -51,16 +51,39 @@ export default class PlaybackController {
 
   previousTrace = () => {
     if (!this.trace) this.trace = this.tracePlayback.getFirstTraceInOrder();
-    if (!this.trace) return;
-    this.trace = this.tracePlayback.getPreviousTraceInOrder(this.trace) || this.trace;
+    else this.trace = this.tracePlayback.getPreviousTraceInOrder(this.trace) || this.trace;
     this.showTrace(this.trace);
   }
 
   nextTrace = () => {
     if (!this.trace) this.trace = this.tracePlayback.getFirstTraceInOrder();
-    if (!this.trace) return;
-    this.trace = this.tracePlayback.getNextTraceInOrder(this.trace) || this.trace;
+    else this.trace = this.tracePlayback.getNextTraceInOrder(this.trace) || this.trace;
     this.showTrace(this.trace);
+  }
+
+  printTracesInfo = () => {
+    const apps = applicationCollection.selection.getSelectedApplications();
+    for (let app of apps) {
+      log(`== Application ${app.applicationId} ==`);
+      let traces = app.dataProvider.collections.traces.getAll();
+      for (let trace of traces) {
+        if (!trace) continue;
+        const context = app.dataProvider.collections.executionContexts.getById(trace.contextId);
+        log(trace.runId, trace.contextId, trace.traceId, context.createdAt);
+      }
+    }
+  }
+
+  printContextsInfo = () => {
+    const apps = applicationCollection.selection.getSelectedApplications();
+    for (let app of apps) {
+      log(`== Application ${app.applicationId} ==`);
+      let contexts = app.dataProvider.collections.executionContexts.getAll();
+      for (let context of contexts) {
+        if (!context) continue;
+        log(context.contextId, context.runId, context.createdAt);
+      }
+    }
   }
 
   previousTraceInContext = () => {
@@ -81,6 +104,7 @@ export default class PlaybackController {
    * @param {Trace} trace
    */
   showTrace = (trace) => {
+    if (!trace) return;
     const dp = applicationCollection.getApplication(trace.applicationId).dataProvider;
     const { staticTraceId } = dp.collections.traces.getById(trace.traceId);
     const { loc } = dp.collections.staticTraces.getById(staticTraceId);

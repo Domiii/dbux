@@ -17,6 +17,20 @@ export default {
     }
     return traces[traces.length - 1];
   },
+  getFirstTraceOfRun(dp: DataProvider, runId) {
+    const traces = dp.indexes.traces.byRunId.get(runId);
+    if (!traces?.length) {
+      return null;
+    }
+    return traces[0];
+  },
+  getLastTraceOfRun(dp: DataProvider, runId) {
+    const traces = dp.indexes.traces.byRunId.get(runId);
+    if (!traces?.length) {
+      return null;
+    }
+    return traces[traces.length - 1];
+  },
   getPreviousTraceInContext(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const traces = dp.indexes.traces.byContext.get(trace.contextId);
@@ -117,6 +131,14 @@ export default {
 
   getAllRootContexts(dp: DataProvider) {
     return dp.indexes.executionContexts.roots.get(1);
+  },
+
+  getAllRootTraces(dp: DataProvider) {
+    return dp.indexes.traces.roots.get(1);
+  },
+
+  getFirstContextsInRuns(dp: DataProvider) {
+    return dp.indexes.executionContexts.firstInRuns.get(1);
   },
 
   getRootContextIdByContextId(dp: DataProvider, contextId) {
