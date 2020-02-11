@@ -26,8 +26,8 @@ export default {
   get performance() {
     return universalLib('performance', () => {
       // hope for node or node-like environment
-      const { performance: performanceNode } = import('perf_hooks');
-      return performanceNode;
+      const { performance: performanceNodeJs } = eval("import('perf_hooks')");
+      return performanceNodeJs;
     });
   }
 

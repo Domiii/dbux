@@ -106,7 +106,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 ## TODO (other)
 * [instrumentation]
-   * deduce function name from assignments `this.getLocalStorage = () => ...`
    * insert trace before function call (so we can step to function call before going down)
    * support longer names
       * (and then hide them in tree view; show long version as tooltip)
@@ -119,9 +118,14 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * when user textEditor selection changes, select trace at cursor
    * integrate with `Playback`
 * [callstack]
-   * render callstack (`executionContext`s to root) of "selected trace"
-   * top: context of selected trace
-   * when clicking a node: select first trace in context
+   * render callstack of "context of `traceSelection.selected`" all the way to its root
+      * if no parent, see if it has a `schedulerTrace` and pick that one
+      * different icon for 
+   * top: context of selected trace (sort all contexts by )
+   * children: no children for now
+   * label: `context.displayName`
+   * description: loc.start@where
+   * when clicking a node: select the trace of the call of the next guy in context
 * [dbuxTraceDetailsView]
    * on refresh: render `selectedTrace` at top (and other nodes at cursor)
       * the heuristics to determine the trace at cursor are not accurate enough
