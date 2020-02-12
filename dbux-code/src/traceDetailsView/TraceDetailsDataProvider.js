@@ -44,6 +44,7 @@ export default class TraceDetailsDataProvider {
     this.rootNodes = [];
 
     if (traceSelection.selected) {
+      // show selected trace first
       const trace = traceSelection.selected;
       const application = allApplications.getById(trace.applicationId);
       const traceNode = this._buildTraceNode(trace, application, null, true);

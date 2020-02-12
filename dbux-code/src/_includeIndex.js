@@ -1,6 +1,8 @@
-
 try {
-  require('index.js');
+  const mods = require('./index');
+  module.exports = {
+    ...mods
+  };
 }
 catch (err) {
   debugger;
