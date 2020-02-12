@@ -29,6 +29,9 @@ function registerDbuxAsGlobal() {
 
 (function main() {
   registerDbuxAsGlobal();
+
+  // NOTE: make sure to `initClient` right at the start, or else:
+  // make sure that the client's `createdAt` will be smaller than any other `createdAt` in data set!
   initClient();
 })();
 

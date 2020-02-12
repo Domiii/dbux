@@ -57,7 +57,7 @@ export default class Client {
       this.application = this._getOrCreateApplication(initialData);
       if (!this.application) {
         logError('application reconnected but `applicationId` not found. Please restart application -', initialData?.entryPointPath);
-        return null;
+        return;
       }
     }
 
