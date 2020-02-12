@@ -1,56 +1,56 @@
-import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import Trace from 'dbux-common/src/core/data/Trace';
 
 // ###########################################################################
-// RootContextsInOrder
+// FirstTracesInOrder
 // ###########################################################################
 
-class RootContextsInOrder {
-  _rootContextsArray;
-  _rootContextIndexById = new Map();
+class FirstTracesInOrder {
+  _firstTracesArray;
+  _firstTraceIndexById = new Map();
 
   /**
    * @param {ApplicationSetData} applicationSetData 
    */
   constructor(applicationSetData) {
     this.applicationSetData = applicationSetData;
-    this._rootContextsArray = [];
+    this.applicationSet = applicationSetData.set;
+    this._firstTracesArray = [];
   }
 
   _mergeAll() {
-    this._rootContextsArray = [];
+    this._firstTracesArray = [];
     const applications = this.applicationSetData.set.getAll();
-    let allRootContexts = applications.map((app) => app.dataProvider.util.getAllRootContexts() || EmptyArray);
-    // console.log(JSON.stringify(allRootContexts, null, 2));
+    const allFirstContexts = applications.map((app) => app.dataProvider.util.getFirstContextsInRuns() || EmptyArray);
 
-    // add all root contexts, unsorted
-    allRootContexts.flat().forEach(this._addOne);
+    const indexPointers = Array(applications.length).fill(0);
+    const contextsCount = allFirstContexts.reduce((sum, arr) => sum + arr.length, 0);
 
-    // let indexPointers = Array(applications.length).fill(0);
-    // let contextCount = allRootContexts.reduce((sum, arr) => sum + arr.length, 0);
-
-    // for (let i = 0; i < contextCount; i++) {
-    //   let earliestContext = allRootContexts[0][indexPointers[0]];
-    //   let earliestApplicationIndex = 0;
-    //   for (let j = 1; j < applications.length; j++) {
-    //     const context = allRootContexts[j][indexPointers[j]];
-    //     if (context.createdAt < earliestContext) {
-    //       earliestContext = context;
-    //       earliestApplicationIndex = j;
-    //     }
-    //   }
-    //   indexPointers[earliestApplicationIndex] += 1;
-    //   this._addOne(earliestContext);
-    // }
+    for (let i = 0; i < contextsCount; i++) {
+      let earliestContext = null;
+      let earliestApplicationIndex = null;
+      for (let j = 0; j < applications.length; j++) {
+        const context = allFirstContexts[j][indexPointers[j]];
+        if (!context) continue;
+        if (!earliestContext || context.createdAt < earliestContext.createdAt) {
+          earliestContext = context;
+          earliestApplicationIndex = j;
+        }
+      }
+      indexPointers[earliestApplicationIndex] += 1;
+      const dp = applications[earliestApplicationIndex].dataProvider;
+      const trace = dp.indexes.traces.byContext.get(earliestContext.contextId)[0];
+      this._addOne(trace);
+    }
   }
 
   
   _handleApplicationsChanged = () => {
-    const { applicationSet } = this.applicationSetData;
-    const applications = applicationSet.getAll();
-  
+    const applications = this.applicationSet.getAll();
+    this._mergeAll();
+
     for (const app of applications) {
-      applicationSet.subscribe(
+      this.applicationSet.subscribe(
         app.dataProvider.onData('executionContexts', this._addExecutionContexts.bind(this, app))
       );
     }
@@ -61,16 +61,16 @@ class RootContextsInOrder {
     this._mergeAll();
   }
 
-  _makeKey(rootContext) {
-    const { applicationId } = rootContext;
-    return `${applicationId}_${rootContext.contextId}`;
+  _makeKey(firstTrace) {
+    const { applicationId } = firstTrace;
+    return `${applicationId}_${firstTrace.traceId}`;
   }
 
-  _addOne = (rootContext) => {
-    this._rootContextsArray.push(rootContext);
+  _addOne = (firstTrace) => {
+    this._firstTracesArray.push(firstTrace);
 
-    const key = this._makeKey(rootContext);
-    this._rootContextIndexById.set(key, this._rootContextsArray.length - 1);
+    const key = this._makeKey(firstTrace);
+    this._firstTraceIndexById.set(key, this._firstTracesArray.length - 1);
   }
 
   // ###########################################################################
@@ -78,30 +78,30 @@ class RootContextsInOrder {
   // ###########################################################################
 
   getAll() {
-    return this._rootContextsArray;
+    return this._firstTracesArray;
   }
 
-  getIndex(rootContext) {
-    const key = this._makeKey(rootContext);
-    const index = this._rootContextIndexById.get(key);
+  getIndex(firstTrace) {
+    const key = this._makeKey(firstTrace);
+    const index = this._firstTraceIndexById.get(key);
     if (index === undefined) {
-      throw new Error('invalid query - context is not a root context', rootContext);
+      throw new Error('invalid query - context is not a root trace', firstTrace);
     }
     return index;
   }
 
-  getFirstRootContext() {
-    return this._rootContextsArray[0] || null;
+  getFirstTraceInOrder() {
+    return this._firstTracesArray[0] || null;
   }
 
-  getNextRootContext(rootContext: ExecutionContext) {
-    const order = this.getIndex(rootContext);
-    return this._rootContextsArray[order + 1] || null;
+  getNextFirstTrace(firstTrace: Trace) {
+    const order = this.getIndex(firstTrace);
+    return this._firstTracesArray[order + 1] || null;
   }
 
-  getPreviousRootContext(rootContext: ExecutionContext) {
-    const order = this.getIndex(rootContext);
-    return this._rootContextsArray[order - 1] || null;
+  getPreviousFirstTrace(firstTrace: Trace) {
+    const order = this.getIndex(firstTrace);
+    return this._firstTracesArray[order - 1] || null;
   }
 }
 
@@ -125,9 +125,10 @@ class RootContextsInOrder {
 export default class ApplicationSetData {
   constructor(applicationSet) {
     this.applicationSet = applicationSet;
-    this.rootContextsInOrder = new RootContextsInOrder(this);
+    this.firstTracesInOrder = new FirstTracesInOrder(this);
 
-    this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
+    // this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
+    this.applicationSet.onApplicationsChanged(this._handleApplicationsChanged);
   }
 
   get set() {
@@ -135,7 +136,7 @@ export default class ApplicationSetData {
   }
 
   _handleApplicationsChanged = () => {
-    this.rootContextsInOrder._handleApplicationsChanged();
+    this.firstTracesInOrder._handleApplicationsChanged();
   }
 
   /**

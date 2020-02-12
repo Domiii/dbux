@@ -54,10 +54,12 @@ export default {
     const { traces } = dp.collections;
     return traces.getById(traceId + 1) || null;
   },
+
   getPreviousTrace(dp: DataProvider, traceId) {
     const { traces } = dp.collections;
     return traces.getById(traceId - 1) || null;
   },
+
   getFirstTraceOfContext(dp: DataProvider, contextId) {
     const traces = dp.indexes.traces.byContext.get(contextId);
     if (!traces?.length) {
@@ -65,6 +67,7 @@ export default {
     }
     return traces[0];
   },
+
   getLastTraceOfContext(dp: DataProvider, contextId) {
     const traces = dp.indexes.traces.byContext.get(contextId);
     if (!traces?.length) {
@@ -72,6 +75,23 @@ export default {
     }
     return traces[traces.length - 1];
   },
+
+  getFirstTraceOfRun(dp: DataProvider, runId) {
+    const traces = dp.indexes.traces.byRunId.get(runId);
+    if (!traces?.length) {
+      return null;
+    }
+    return traces[0];
+  },
+
+  getLastTraceOfRun(dp: DataProvider, runId) {
+    const traces = dp.indexes.traces.byRunId.get(runId);
+    if (!traces?.length) {
+      return null;
+    }
+    return traces[traces.length - 1];
+  },
+
   getPreviousTraceInContext(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const traces = dp.indexes.traces.byContext.get(trace.contextId);
@@ -86,6 +106,7 @@ export default {
     }
     else return traces[index - 1];
   },
+
   getNextTraceInContext(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const traces = dp.indexes.traces.byContext.get(trace.contextId);
@@ -99,6 +120,10 @@ export default {
       return dp.collections.traces.getById(traceId);
     }
     else return traces[index + 1];
+  },
+
+  getFirstContextsInRuns(dp: DataProvider) {
+    return dp.indexes.executionContexts.firstInRuns.get(1);
   },
 
   doesTraceHaveValue(dp: DataProvider, traceId) {
