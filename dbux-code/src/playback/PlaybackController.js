@@ -1,91 +1,101 @@
-import { Uri, commands } from 'vscode';
+import { commands } from 'vscode';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
-import TracePlayback from 'dbux-data/src/playback/TracePlayback';
-import { goToCodeLoc, goToTrace } from '../codeNav';
+import tracePlayback from 'dbux-data/src/playback/tracePlayback';
+import { goToTrace } from '../codeNav';
 
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 
 export default class PlaybackController {
-  intervalId: number;
-  trace: Trace;
-  lastTrace: Trace;
-  tracePlayback: TracePlayback;
-
-  // TODO: move play functions to tracePlayback
 
   constructor() {
-    this.trace = null;
-    this.lastTrace = null;
-
-    this.tracePlayback = new TracePlayback(allApplications.selection.data);
-
-    // TODO: add event emitter to tell playing state changed
-
-    allApplications.selection.onApplicationsChanged((selectedApps) => {
-      this.handleApplicationDataChange();
-      for (const app of selectedApps) {
-        allApplications.selection.subscribe(
-          app.dataProvider.onData('traces', this.handleApplicationDataChange)
-        );
-      }
-    });
+    // Listen on trace changed event
+    tracePlayback.onTraceChanged(this.handleTraceChanged);
+    tracePlayback.onPause(this.handlePause);
   }
+
+  // ###########################################################################
+  // Play functions
+  // ###########################################################################
 
   play = () => {
     commands.executeCommand('setContext', 'dbuxPlaybackPlaying', true);
-    this.intervalId = setInterval(this._onPlay, 1000);
-  }
-
-  _onPlay = () => {
-    this.lastTrace = this.trace;
-    this.nextTrace();
-    if (this.trace === this.lastTrace) this.pause();
+    tracePlayback.play();
+    this.printTracesInfo();
   }
 
   pause = () => {
     commands.executeCommand('setContext', 'dbuxPlaybackPlaying', false);
-    clearInterval(this.intervalId);
+    tracePlayback.pause();
   }
 
   previousTrace = () => {
-    if (!this.trace) this.trace = this.tracePlayback.getFirstTraceInOrder();
-    if (!this.trace) return;
-    this.trace = this.tracePlayback.getPreviousTraceInOrder(this.trace) || this.trace;
-    goToTrace(this.trace);
+    tracePlayback.previousTrace();
   }
 
   nextTrace = () => {
-    if (!this.trace) this.trace = this.tracePlayback.getFirstTraceInOrder();
-    if (!this.trace) return;
-    this.trace = this.tracePlayback.getNextTraceInOrder(this.trace) || this.trace;
-    goToTrace(this.trace);
+    tracePlayback.nextTrace();
   }
 
+  // broken
   previousTraceInContext = () => {
     const collectionSize = this.getCollectionSize();
     if (!collectionSize) return;
-    this.trace = this.dataProvider.util.getPreviousTraceInContext(this.traceId);
-    this.traceId = this.trace.traceId;
-    goToTrace(this.trace);
+    this.currentTrace = this.dataProvider.util.getPreviousTraceInContext(this.traceId);
+    this.traceId = this.currentTrace.traceId;
+    goToTrace(this.currentTrace);
   }
 
+  // broken
   nextTraceInContext = () => {
     const collectionSize = this.getCollectionSize();
     if (!collectionSize) return;
-    this.trace = this.dataProvider.util.getPreviousTraceInContext(this.traceId);
-    this.traceId = this.trace.traceId;
-    goToTrace(this.trace);
+    this.currentTrace = this.dataProvider.util.getPreviousTraceInContext(this.traceId);
+    this.traceId = this.currentTrace.traceId;
+    goToTrace(this.currentTrace);
   }
 
-  getCollectionSize = () => this.dataProvider.collections.traces.size;
+  // ###########################################################################
+  // Events
+  // ###########################################################################
 
-  handleApplicationDataChange = () => {
-    if (this.trace) {
-      // see if original trace is in selected apps
-      if (!allApplications.selection.containsApplication(this.trace.applicationId)) {
-        this.trace = null;
+  /**
+   * @param {Trace} trace 
+   */
+  handleTraceChanged(trace) {
+    // if (trace) goToTrace(trace);
+  }
+
+  handlePause() {
+    commands.executeCommand('setContext', 'dbuxPlaybackPlaying', false);
+  }
+
+  // ###########################################################################
+  // Data printer
+  // ###########################################################################
+
+  printTracesInfo = () => {
+    const apps = allApplications.selection.getAll();
+    for (let app of apps) {
+      log(`== Application ${app.applicationId} ==`);
+      let traces = app.dataProvider.collections.traces.getAll();
+      for (let trace of traces) {
+        if (!trace) continue;
+        const context = app.dataProvider.collections.executionContexts.getById(trace.contextId);
+        log(trace.runId, trace.contextId, trace.traceId, context.createdAt);
+      }
+    }
+  }
+
+  printContextsInfo = () => {
+    const apps = allApplications.selection.getAll();
+    for (let app of apps) {
+      log(`== Application ${app.applicationId} ==`);
+      let contexts = app.dataProvider.collections.executionContexts.getAll();
+      for (let context of contexts) {
+        if (!context) continue;
+        log(context.contextId, context.runId, context.createdAt);
       }
     }
   }

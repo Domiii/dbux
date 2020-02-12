@@ -5,7 +5,7 @@ import DataProvider from '../../DataProvider';
 
 export default class TracesByRunIdIndex extends CollectionIndex<Trace> {
   constructor() {
-    super('traces', 'byFile');
+    super('traces', 'byRunId');
   }
 
   makeKey(dp: DataProvider, trace: Trace) {
