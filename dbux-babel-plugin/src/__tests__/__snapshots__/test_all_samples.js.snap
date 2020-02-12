@@ -1706,7 +1706,7 @@ try {
             case 4:
               _context.prev = 4;
 
-              _dbux.popResume(4);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId2, 4);
 
@@ -1772,7 +1772,7 @@ try {
             case 18:
               _context2.prev = 18;
 
-              _dbux.popResume(8);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId4, 8);
 
@@ -2396,7 +2396,7 @@ try {
         }
       }));
     } finally {
-      _dbux.popResume(4);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId2, 4);
     }
@@ -2420,7 +2420,7 @@ try {
 
       _dbux.traceExpr(26, console.log(_dbux.traceArg(25, 3)));
     } finally {
-      _dbux.popResume(8);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId4, 8);
     }
@@ -3083,7 +3083,7 @@ try {
             case 4:
               _context.prev = 4;
 
-              _dbux.popResume(4);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId2, 4);
 
@@ -3144,7 +3144,7 @@ try {
             case 9:
               _context2.prev = 9;
 
-              _dbux.popResume(10);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId5, 10);
 
@@ -3193,7 +3193,7 @@ try {
             case 9:
               _context3.prev = 9;
 
-              _dbux.popResume(14);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId7, 14);
 
@@ -3276,7 +3276,7 @@ try {
             case 19:
               _context4.prev = 19;
 
-              _dbux.popResume(18);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId9, 18);
 
@@ -3337,7 +3337,7 @@ try {
             case 15:
               _context5.prev = 15;
 
-              _dbux.popResume(22);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId11, 22);
 
@@ -4498,7 +4498,7 @@ try {
         }
       }));
     } finally {
-      _dbux.popResume(4);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId2, 4);
     }
@@ -4526,7 +4526,7 @@ try {
 
       _dbux.postAwait((await _dbux.wrapAwait(_dbux.traceExpr(34, sleep(_dbux.traceArg(33, 2000))), _contextId6 = _dbux.preAwait(9, 11))), _contextId6, 12);
     } finally {
-      _dbux.popResume(10);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId5, 10);
     }
@@ -4542,7 +4542,7 @@ try {
 
       _dbux.postAwait((await _dbux.wrapAwait(_dbux.traceExpr(36, sleep(_dbux.traceArg(35, 2000))), _contextId8 = _dbux.preAwait(13, 15))), _contextId8, 16);
     } finally {
-      _dbux.popResume(14);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId7, 14);
     }
@@ -4570,7 +4570,7 @@ try {
         _dbux.t(38);
       }
     } finally {
-      _dbux.popResume(18);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId9, 18);
     }
@@ -4590,7 +4590,7 @@ try {
 
       _dbux.postAwait((await _dbux.wrapAwait(_dbux.traceExpr(48, f4(_dbux.traceArg(45, f2), _dbux.traceArg(46, sleep.bind(null, 2000)), _dbux.traceArg(47, f3))), _contextId13 = _dbux.preAwait(23, 25))), _contextId13, 26);
     } finally {
-      _dbux.popResume(22);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId11, 22);
     }
@@ -5778,7 +5778,7 @@ try {
             case 4:
               _context.prev = 4;
 
-              _dbux.popResume(6);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId3, 6);
 
@@ -5850,7 +5850,7 @@ try {
             case 25:
               _context2.prev = 25;
 
-              _dbux.popResume(8);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId4, 8);
 
@@ -5899,7 +5899,7 @@ try {
             case 4:
               _context3.prev = 4;
 
-              _dbux.popResume(16);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId8, 16);
 
@@ -5956,7 +5956,7 @@ try {
             case 16:
               _context4.prev = 16;
 
-              _dbux.popResume(20);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId10, 20);
 
@@ -6009,7 +6009,7 @@ try {
             case 14:
               _context5.prev = 14;
 
-              _dbux.popResume(26);
+              _dbux.popResume();
 
               _dbux.popImmediate(_contextId13, 26);
 
@@ -7275,7 +7275,7 @@ try {
     try {
       return _dbux.traceExpr(29, Promise.resolve(a));
     } finally {
-      _dbux.popResume(6);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId3, 6);
     }
@@ -7295,7 +7295,7 @@ try {
 
       return _dbux.traceExpr(34, 2 + _dbux.postAwait((await _dbux.wrapAwait(_dbux.traceExpr(36, af1(_dbux.traceArg(35, 3))), _contextId7 = _dbux.preAwait(12, 13))), _contextId7, 14) - 3);
     } finally {
-      _dbux.popResume(8);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId4, 8);
     }
@@ -7317,7 +7317,7 @@ try {
         }
       }));
     } finally {
-      _dbux.popResume(16);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId8, 16);
     }
@@ -7337,7 +7337,7 @@ try {
 
       return _dbux.traceExpr(45, a + b + _dbux.traceExpr(47, af33(_dbux.traceArg(46, 10))));
     } finally {
-      _dbux.popResume(20);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId10, 20);
     }
@@ -7355,7 +7355,7 @@ try {
 
       _dbux.traceExpr(54, f0());
     } finally {
-      _dbux.popResume(26);
+      _dbux.popResume();
 
       _dbux.popImmediate(_contextId13, 26);
     }

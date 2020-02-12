@@ -8,7 +8,6 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import Loc from 'dbux-common/src/core/data/Loc';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { babelLocToCodeRange } from './helpers/locHelper';
-import codeDecorations from './codeDeco/codeDecorations';
 
 
 const { log, debug, warn, error: logError } = newLogger('CodeNav');
@@ -19,20 +18,29 @@ const { log, debug, warn, error: logError } = newLogger('CodeNav');
  */
 export function goToCodeLoc(URI: Uri, loc: Loc) {
   window.showTextDocument(URI).then(editor => {
-    const range = babelLocToCodeRange(loc);
-    editor.selection = new Selection(range.start, range.end);
-    editor.revealRange(range);
+    selectLocInEditor(editor, loc)
   });
 }
 
+export function selectLocInEditor(editor, loc) {
+  const range = babelLocToCodeRange(loc);
+  editor.selection = new Selection(range.start, range.end);
+  editor.revealRange(range);
+}
 
-export function goToTrace(trace) {
+export async function getOrOpenTraceEditor(trace) {
+  const dp = allApplications.getApplication(trace.applicationId).dataProvider;
+  const filePath = dp.queries.programFilePathByTraceId(trace.traceId);
+  return window.showTextDocument(Uri.file(filePath));
+}
+
+export async function goToTrace(trace) {
   const dp = allApplications.getApplication(trace.applicationId).dataProvider;
   const { staticTraceId } = dp.collections.traces.getById(trace.traceId);
   const { loc } = dp.collections.staticTraces.getById(staticTraceId);
-  const filePath = dp.queries.programFilePathByTraceId(trace.traceId);
 
-  goToCodeLoc(Uri.file(filePath), loc);
+  const editor = await getOrOpenTraceEditor(trace);
+  selectLocInEditor(editor, loc);
 }
 
 export function getCursorLocation() {

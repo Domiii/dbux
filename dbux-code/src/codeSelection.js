@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import traceSelection from 'dbux-data/src/traceSelection';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { goToTrace, getCursorLocation } from './codeNav';
+import { goToTrace, getCursorLocation, getOrOpenTraceEditor } from './codeNav';
 import codeDecorations, { CodeDecoRegistration } from './codeDeco/codeDecorations';
 import { babelLocToCodeRange } from './helpers/locHelper';
 
@@ -17,7 +17,7 @@ const selectedTraceDecoType = {
 };
 let selectedTraceRegistration: CodeDecoRegistration;
 
-function selectTraceInEditor(trace) {
+async function highlightTraceInEditor(trace) {
   let deco;
   if (!trace) {
     // deselect trace
@@ -35,8 +35,9 @@ function selectTraceInEditor(trace) {
       range: babelLocToCodeRange(loc)
     };
   }
-
-  selectedTraceRegistration.setDeco(window.activeTextEditor, deco);
+  
+  const editor = await getOrOpenTraceEditor(trace);
+  selectedTraceRegistration.setDeco(editor, deco);
 }
 
 // ###########################################################################
@@ -65,7 +66,7 @@ export function initTraceSelection(context) {
   // show + goto trace if selected
   traceSelection.onTraceSelectionChanged((selectedTrace) => {
     selectedTrace && goToTrace(selectedTrace);
-    selectTraceInEditor(selectedTrace);
+    highlightTraceInEditor(selectedTrace);
   });
 
   // select trace when moving cursor in TextEditor

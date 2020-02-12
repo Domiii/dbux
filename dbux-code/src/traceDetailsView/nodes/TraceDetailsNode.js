@@ -2,10 +2,8 @@ import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import Application from 'dbux-data/src/applications/Application';
 import Trace from 'dbux-common/src/core/data/Trace';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
-import { EmptyObject } from 'dbux-common/src/util/arrayUtil';
 import traceSelection from 'dbux-data/src/traceSelection';
-import TraceDetailsNodeType from '../TraceDetailsNodeType';
-import { getThemeResourcePath } from '../../resources';
+
 
 export class BaseNode extends TreeItem {
   application: Application;
@@ -124,34 +122,8 @@ export class SelectedTraceNode extends TraceNode {
 
     return `${label}`;
   }
-  
+
   static makeIconPath(trace: Trace) {
     return 'play.svg';
   }
-}
-
-
-let _lastId = 0;
-
-export function createNode(
-  NodeClass, entry, application, parent, treeItemProps = EmptyObject): BaseNode {
-  const label = NodeClass.makeLabel(entry, application, parent);
-  const relativeIconPath = NodeClass.makeIconPath && NodeClass.makeIconPath(entry, application, parent);
-  const iconPath = relativeIconPath && getThemeResourcePath(relativeIconPath) || null;
-  const id = (++_lastId) + '';
-  const node = new NodeClass(label, iconPath, application, parent, id, treeItemProps);
-  node.init(entry);
-  return node;
-}
-
-
-export function tryCreateTraceDetailNode(NodeClass, trace, application, parent) {
-  const detail = NodeClass.makeTraceDetail(trace, application, parent);
-  if (!detail) {
-    return null;
-  }
-  const treeItemProps = {
-    trace
-  };
-  return createNode(NodeClass, detail, application, parent, treeItemProps);
 }
