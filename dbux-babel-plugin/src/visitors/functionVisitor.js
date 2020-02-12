@@ -35,7 +35,7 @@ const pushResumeTemplate = template(`
 `);
 
 const popResumeTemplate = template(`
-  %%dbux%%.popResume(%%traceId%%);
+  %%dbux%%.popResume();
 `);
 
 // ###########################################################################
@@ -65,7 +65,7 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
     finallyBody = [
       popResumeTemplate({
         dbux,
-        traceId: t.numericLiteral(popTraceId)
+        // traceId: t.numericLiteral(popTraceId)
         // contextId: contextIdVar
       }),
       ...finallyBody

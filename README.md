@@ -76,29 +76,29 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
+* [codeSelection] does not add deco when switching between editors (v)
+* [codeRangeQueries] does not work with overlapping Resume contexts
+* [dbuxTraceDetailsView]
+   * when clicking too fast, nothing happens because data hasn't updated yet
+      * solution -> queue commands
+   * fix await: overlapping Resume contexts cause "current trace" to not be found correctly
+   * start using playback controller
 * [instrumentation]
    * insert trace before function call (so we can step to function call before going down)
 * [traceSelection]
+   * fix: code highlighting of selected trace: doesn't work when changing files
+      * probably because `activeEditor` is not set immediately
    * when user textEditor selection changes, select "best" trace at cursor
+      * deselect previous trace
       * need to design heuristic:
          * if a trace was previously selected, select the one "closest" to that
          * minimum effort: try to select one in the same run (if existing)
-   * fix: code highlighting of selected trace: doesn't work when changing files
-      * probably because `activeEditor` is not set immediately
-   * when jumping between traces, need a history stack to allow us to go forth and back
+   * when jumping between traces, keep a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
    * integrate with `Playback`
 * [cli] allow to easily run multiple applications at once
    * (for proper multi-application testing)
 * [dbuxTraceDetailsView]
-   * on refresh: render `selectedTrace` at top (and other nodes at cursor)
-      * the heuristics to determine the trace at cursor are not accurate enough
-   * automatically "select" top trace node
-      * highlight using special icon
-      * highlight in code (without moving cursor)
-   * don't render any details except for "selected node"
-      * because else, stuff moves around when trying to move through the callstack
-      * also: it's too cluttered
    * `neighboring traces` (partial callstack)
       * render full trace label
       * description: file@loc (if file is different)

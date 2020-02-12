@@ -1,5 +1,8 @@
 import Enum from "../../util/Enum";
 
+/**
+ * TODO: merge with ExecutionContextType. No need for the two to be different.
+ */
 let StaticContextType = {
   Program: 1,
   Function: 2,

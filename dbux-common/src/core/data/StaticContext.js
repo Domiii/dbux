@@ -6,6 +6,7 @@ export default class StaticContext {
   displayName: string;
   isInterruptable: boolean;
   staticId: number;
+  parentId: number;
   programId: number;
   loc: Loc;
 }
