@@ -3,9 +3,10 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import Application from 'dbux-data/src/applications/Application';
 import traceSelection from 'dbux-data/src/traceSelection';
 import allApplications from 'dbux-data/src/applications/allApplications';
+import tracePlayback from 'dbux-data/src/playback/tracePlayback';
 import TraceDetailsNodeType from '../TraceDetailsNodeType';
 import { BaseNode } from './TraceDetailsNode';
-import { goToTrace } from '../../codeNav';
+
 
 // →↓←↑
 
@@ -56,6 +57,10 @@ export class TraceDetailNode extends BaseNode {
   }
 }
 
+// ###########################################################################
+// Application
+// ###########################################################################
+
 export class ApplicationTDNode extends TraceDetailNode {
   init(application) {
     this.application = application;
@@ -84,6 +89,10 @@ export class ApplicationTDNode extends TraceDetailNode {
   // }
 }
 
+// ###########################################################################
+// Type
+// ###########################################################################
+
 export class TypeTDNode extends TraceDetailNode {
   init(trace) {
     this.trace = trace;
@@ -109,54 +118,119 @@ export class TypeTDNode extends TraceDetailNode {
   // }
 }
 
-export class PreviousTraceTDNode extends TraceDetailNode {
-  init(previousTrace) {
-    this.previousTrace = previousTrace;
+// ###########################################################################
+// Value
+// ###########################################################################
+
+export class ValueTDNode extends TraceDetailNode {
+  init(trace) {
+    this.trace = trace;
     this.collapsibleState = TreeItemCollapsibleState.None;
   }
 
-  _handleClick() {
-    traceSelection.selectTrace(this.previousTrace);
-  }
-
   static get nodeType() {
-    return TraceDetailsNodeType.PreviousContextTraceDetail;
+    return TraceDetailsNodeType.Value;
   }
 
   static makeTraceDetail(trace, application: Application, parent) {
-    const { traceId, contextId } = trace;
-    const previousTrace = application.dataProvider.util.getPreviousTrace(traceId);
-    if (!previousTrace) { // || previousTrace.contextId === contextId) {
-      return null;
-    }
-    return previousTrace;
+    const { traceId } = trace;
+    const { dataProvider } = application;
+    const hasValue = dataProvider.util.doesTraceHaveValue(traceId);
+    return hasValue ? trace : null;
   }
 
-  static makeLabel(previousTrace, application: Application, parent) {
-    // const currentTrace = parent.trace;
-    // const currentTraceType = application.dataProvider.util.getTraceType(currentTrace.traceId);
-    // let previous;
-    // if (currentTraceType === TraceType.ExpressionResult) {
-    //   // previous = '→';
-    //   previous = '↓'; // go into function call
-    // }
-    // else {
-    //   // previous = '←';
-    //   previous = '↑';
-    // }
-
-    // get displayName of previous context
-    const staticContext = application.dataProvider.util.getTraceStaticContext(previousTrace.traceId);
-    const { displayName } = staticContext;
-
-    const arrow = renderPreviousTraceArrow(parent.trace, previousTrace);
-    return `${arrow} ${displayName}`;
+  static makeLabel(trace, application: Application, parent) {
+    const { traceId } = trace;
+    const { dataProvider } = application;
+    const value = dataProvider.util.getTraceValue(traceId);
+    return `Value: ${value}`;
   }
 
   // static makeIconPath(traceDetail) {
   //   return 'string.svg';
   // }
 }
+
+// ###########################################################################
+// Navigation nodes
+// ###########################################################################
+
+export class NavigationTDNode extends TraceDetailNode {
+  init() {
+    this.collapsibleState = TreeItemCollapsibleState.None;
+  }
+
+  static getTargetTrace(controlName) {
+    return tracePlayback[`get${controlName}`] && tracePlayback[`get${controlName}`]();
+  }
+
+  _handleClick() {
+    tracePlayback[`goto${this.constructor.controlName}`] && tracePlayback[`goto${this.constructor.controlName}`]();
+  }
+}
+
+export const NavigationNodeClasses = [
+  class NextInContext extends NavigationTDNode {
+    static get controlName() {
+      return 'NextInContext';
+    }
+
+    static makeArrow() {
+      return '→';
+    }
+  },
+  
+  class NextChildContext extends NavigationTDNode {
+    static get controlName() {
+      return 'NextChildContext';
+    }
+
+    static makeArrow() {
+      return '↘';
+    }
+  },
+  
+  class PreviousChildContext extends NavigationTDNode {
+    static get controlName() {
+      return 'PreviousChildContext';
+    }
+
+    static makeArrow() {
+      return '↙';
+    }
+  },
+  
+  class PreviousInContext extends NavigationTDNode {
+    static get controlName() {
+      return 'PreviousInContext';
+    }
+
+    static makeArrow() {
+      return '←';
+    }
+  },
+  
+  class PreviousParentContext extends NavigationTDNode {
+    static get controlName() {
+      return 'PreviousParentContext';
+    }
+
+    static makeArrow() {
+      return '↖';
+    }
+  },
+  
+  class NextParentContext extends NavigationTDNode {
+    static get controlName() {
+      return 'NextParentContext';
+    }
+
+    static makeArrow() {
+      return '↗';
+    }
+  }
+];
+
 
 export class NextTraceTDNode extends TraceDetailNode {
   init(nextTrace) {
@@ -186,36 +260,6 @@ export class NextTraceTDNode extends TraceDetailNode {
     const { displayName } = staticContext;
     const arrow = renderNextTraceArrow(parent.trace, nextTrace);
     return `${arrow} ${displayName}`;
-  }
-
-  // static makeIconPath(traceDetail) {
-  //   return 'string.svg';
-  // }
-}
-
-
-export class ValueTDNode extends TraceDetailNode {
-  init(trace) {
-    this.trace = trace;
-    this.collapsibleState = TreeItemCollapsibleState.None;
-  }
-
-  static get nodeType() {
-    return TraceDetailsNodeType.Value;
-  }
-
-  static makeTraceDetail(trace, application: Application, parent) {
-    const { traceId } = trace;
-    const { dataProvider } = application;
-    const hasValue = dataProvider.util.doesTraceHaveValue(traceId);
-    return hasValue ? trace : null;
-  }
-
-  static makeLabel(trace, application: Application, parent) {
-    const { traceId } = trace;
-    const { dataProvider } = application;
-    const value = dataProvider.util.getTraceValue(traceId);
-    return `Value: ${value}`;
   }
 
   // static makeIconPath(traceDetail) {
