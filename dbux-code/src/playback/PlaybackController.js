@@ -10,8 +10,6 @@ const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 export default class PlaybackController {
 
   constructor() {
-    // Listen on trace changed event
-    tracePlayback.onTraceChanged(this.handleTraceChanged);
     tracePlayback.onPause(this.handlePause);
   }
 
@@ -31,41 +29,24 @@ export default class PlaybackController {
   }
 
   previousTrace = () => {
-    tracePlayback.previousTrace();
+    tracePlayback.gotoPreviousTrace();
   }
 
   nextTrace = () => {
-    tracePlayback.nextTrace();
+    tracePlayback.gotoNextTrace();
   }
 
-  // broken
   previousTraceInContext = () => {
-    const collectionSize = this.getCollectionSize();
-    if (!collectionSize) return;
-    this.currentTrace = this.dataProvider.util.getPreviousTraceInContext(this.traceId);
-    this.traceId = this.currentTrace.traceId;
-    goToTrace(this.currentTrace);
+    tracePlayback.gotoPreviousParentContext();
   }
 
-  // broken
   nextTraceInContext = () => {
-    const collectionSize = this.getCollectionSize();
-    if (!collectionSize) return;
-    this.currentTrace = this.dataProvider.util.getPreviousTraceInContext(this.traceId);
-    this.traceId = this.currentTrace.traceId;
-    goToTrace(this.currentTrace);
+    tracePlayback.gotoNextParentContext();
   }
 
   // ###########################################################################
   // Events
   // ###########################################################################
-
-  /**
-   * @param {Trace} trace 
-   */
-  handleTraceChanged(trace) {
-    // if (trace) goToTrace(trace);
-  }
 
   handlePause() {
     commands.executeCommand('setContext', 'dbuxPlaybackPlaying', false);

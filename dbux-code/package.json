@@ -72,7 +72,7 @@
 			},
 			{
 				"command": "dbuxPlayback.previousTraceInContext",
-				"title": "Step Over",
+				"title": "Step Back",
 				"icon": {
 					"light": "resources/light/previousTraceInContext.svg",
 					"dark": "resources/dark/previousTraceInContext.svg"
@@ -80,7 +80,7 @@
 			},
 			{
 				"command": "dbuxPlayback.nextTraceInContext",
-				"title": "Step Back",
+				"title": "Step Over",
 				"icon": {
 					"light": "resources/light/nextTraceInContext.svg",
 					"dark": "resources/dark/nextTraceInContext.svg"

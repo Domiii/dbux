@@ -27,78 +27,128 @@ export class TracePlayback {
   }
 
   // ###########################################################################
-  // Main play functions
+  // Main play functions (Go-to)
   // ###########################################################################
 
   play() {
+    if (this._isPlaying) return;
     this.timer = setInterval(this._onPlay, this.timerInterval);
     this._isPlaying = true;
   }
 
   pause() {
+    if (!this._isPlaying) return;
     clearInterval(this.timer);
     this._isPlaying = false;
     this._emitPause();
   }
 
-  previousTrace() {
-    if (!this.currentTrace) return this._setTrace(this._getFirstTraceInOrder());
-    else return this._setTrace(this._getPreviousTraceInOrder(this.currentTrace));
+  gotoPreviousTrace() {
+    if (!this.currentTrace) return;
+    this._setTrace(this.getPreviousTrace());
   }
 
-  nextTrace() {
-    if (!this.currentTrace) return this._setTrace(this._getFirstTraceInOrder());
-    else return this._setTrace(this._getNextTraceInOrder(this.currentTrace));
+  gotoNextTrace() {
+    if (!this.currentTrace) return;
+    this._setTrace(this.getNextTrace());
   }
 
-  // left
-  previousTraceInContext() {
-    if (!this.currentTrace) return this._setTrace(this._getFirstTraceInOrder());
-    else return this._setTrace(this._getPreviousTraceInContext(this.currentTrace));
+  gotoPreviousInContext() {
+    if (!this.currentTrace) return;
+    this._setTrace(this.getPreviousInContext());
   }
 
-  // right
-  nextTraceInContext() {
-
+  gotoNextInContext() {
+    if (!this.currentTrace) return;
+    this._setTrace(this.getNextInContext());
   }
 
-  // top left
-  previousParentContext() {
-
+  gotoPreviousParentContext() {
+    if (!this.currentTrace) return;
+    this._setTrace(this.getPreviousParentContext());
   }
 
-  // top right
-  nextParentContext() {
-    
+  gotoNextParentContext() {
+    if (!this.currentTrace) return;
+    this._setTrace(this.getNextParentContext());
   }
 
-  // bottom left
-  previousChildContext() {
-    
+  gotoPreviousChildContext() {
+    if (!this.currentTrace) return;
+    this._setTrace(this.getPreviousChildContext());
   }
 
-  // bottom right
-  nextChildContext() {
-
+  gotoNextChildContext() {
+    if (!this.currentTrace) return;
+    this._setTrace(this.getNextChildContext());
   }
 
   // ###########################################################################
-  // Play helpers (Should handle trace not found)
+  // Main play functions (Getter)
+  // ###########################################################################
+
+  getPreviousTrace() {
+    const prevTrace = this._getPreviousTraceInApplication(this.currentTrace);
+    if (prevTrace?.runId !== this.currentTrace.runId) {
+      // if it is the first trace in application, find the previous run
+      return this._getLastTraceInPreviousRun(this.currentTrace) || this.currentTrace;
+    }
+    else return prevTrace || this.currentTrace;
+  }
+
+  getNextTrace() {
+    const nextTrace = this._getNextTraceInApplication(this.currentTrace);
+    if (nextTrace?.runId !== this.currentTrace.runId) {
+      // if it is the last trace in application, find the next run
+      return this._getFirstTraceInNextRun(this.currentTrace) || this.currentTrace;
+    }
+    else return nextTrace || this.currentTrace;
+  }
+
+  getPreviousInContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getPreviousTraceInContext(this.currentTrace);
+  }
+
+  getNextInContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getNextTraceInContext(this.currentTrace);
+  }
+
+  getPreviousParentContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getPreviousTraceInParentContext(this.currentTrace);
+  }
+
+  getNextParentContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getNextTraceInParentContext(this.currentTrace);
+  }
+
+  getPreviousChildContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getPreviousTraceInChildContext(this.currentTrace);
+  }
+
+  getNextChildContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getNextTraceInChildContext(this.currentTrace);
+  }
+
+  // ###########################################################################
+  // Play helpers
   // ###########################################################################
 
   _onPlay = () => {
-    if (!this.nextTrace()) this.pause();
+    const { currentTrace } = this;
+    this.gotoNextTrace();
+    if (currentTrace === this.currentTrace) this.pause();
   }
 
-  _setTrace(trace, isFromTraceSelection = false) {
-    // if trace didnt changed, return false
-    if (this.currentTrace === trace) return false;
-    else {
-      // if trace changed, return the result(may be null)
-      if (!isFromTraceSelection) traceSelection.selectTrace(trace);
-      this.currentTrace = trace;
-      this._emitTraceChanged();
-      return trace;
+  _setTrace(trace) {
+    if (!trace) return;
+    if (this.currentTrace !== trace) {
+      traceSelection.selectTrace(trace);
     }
   }
 
@@ -108,37 +158,6 @@ export class TracePlayback {
       clearInterval(this.timer);
       this.play();
     }
-  }
-
-  /**
-   * @param {Trace} trace 
-   */
-  _getPreviousTraceInOrder(trace) {
-    const prevTrace = this._getPreviousTraceInApplication(trace);
-    if (prevTrace?.runId !== trace.runId) {
-      // if it is the first trace in application, find the previous run
-      return this._getLastTraceInPreviousRun(trace) || trace;
-    }
-    else return prevTrace || trace;
-  }
-
-  /**
-   * @param {Trace} trace 
-   */
-  _getNextTraceInOrder(trace) {
-    const nextTrace = this._getNextTraceInApplication(trace);
-    if (nextTrace?.runId !== trace.runId) {
-      // if it is the last trace in application, find the next run
-      return this._getFirstTraceInNextRun(trace) || trace;
-    }
-    else return nextTrace || trace;
-  }
-
-  /**
-   * @param {Trace} trace 
-   */
-  _getPreviousTraceInContext(trace) {
-
   }
 
   // ###########################################################################
@@ -224,14 +243,6 @@ export class TracePlayback {
   // Events
   // ###########################################################################
 
-  onTraceChanged(cb) {
-    this._emitter.on('traceChanged', cb);
-  }
-
-  _emitTraceChanged() {
-    this._emitter.emit('traceChanged', this.currentTrace);
-  }
-
   onPause(cb) {
     this._emitter.on('pause', cb);
   }
@@ -248,7 +259,7 @@ export class TracePlayback {
   }
 
   _handleTraceSelectionChanged = (trace) => {
-    this._setTrace(trace, true);
+    this.currentTrace = trace;
   }
 
   // ###########################################################################
