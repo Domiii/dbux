@@ -1,11 +1,13 @@
 import findLast from 'lodash/findLast';
-import { babelLocToCodeRange } from '../helpers/locHelper';
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import Trace from 'dbux-common/src/core/data/Trace';
+import { babelLocToCodeRange } from '../helpers/locHelper';
+import Application from 'dbux-data/src/applications/Application';
+import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 
 /**
  * This file provides data/query utilities for all kinds of data that 
- * revolve around or require VSCode features Range + Position.
+ * use VSCode Range + Position features to find matching data entries at given positions and ranges.
  * 
  * @file
  */
@@ -19,7 +21,7 @@ import Trace from 'dbux-common/src/core/data/Trace';
 // }
 
 /**
- * TODO: improve performance, don't search through all `staticContexts` each time
+ * NOTE: this will omit `Resume` staticContexts, since those have an unknown execution range
  */
 export function getStaticContextAt(application, programId, pos): StaticContext {
   const staticContexts = application.dataProvider.indexes.staticContexts.byFile.get(programId);
@@ -29,8 +31,7 @@ export function getStaticContextAt(application, programId, pos): StaticContext {
   });
 }
 
-
-export function getVisitedTracesAt(application, programId, pos) : Trace[] {
+export function getTracesAt(application : Application, programId, pos) : Trace[] {
   // find staticContext (function or Program) at position
   const staticContext = getStaticContextAt(application, programId, pos);
   if (!staticContext) {

@@ -38,7 +38,7 @@ function activate(context) {
     initToolBar(context, treeViewController);
   } catch (e) {
     logError('could not activate', e);
-    // debugger;
+    debugger;
     throw e;
   }
 }

@@ -8,7 +8,7 @@ import StaticContextType from '../../../dbux-common/src/core/constants/StaticCon
 // builders
 // ###########################################################################
 
-const wrapAwaitTemplate = template(
+const postAwaitTemplate = template(
   // WARNING: id must be passed AFTER awaitNode, 
   //    because else it will be undefined.
   //    The value will be bound before `await` and thus before `preAwait` was called.
@@ -73,7 +73,7 @@ function enter(path, state) {
   });
   argumentPath.replaceWith(expressionReplacement);
 
-  const awaitReplacement = wrapAwaitTemplate({
+  const awaitReplacement = postAwaitTemplate({
     dbux,
     awaitNode: path.node,
     awaitContextId,

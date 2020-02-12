@@ -70,7 +70,8 @@ const traceCfg = (() => {
       CallExpression
     ],
     AwaitExpression: [
-      ExpressionWithValue
+      NoTrace // WARNING: don't change this - will cause await to bug out, due to a conflict with `awaitVisitor`'s instrumentation
+      // ExpressionWithValue
       // [['argument', ExpressionNoValue]]
     ],
     ConditionalExpression: [
@@ -238,7 +239,7 @@ function instrumentArgs(callPath, state) {
     if (!isPathInstrumented(argPath)) {
       /**
        * Only instrument if not already instrumented.
-       * Affected Example: `f(await g())` (`await g()` is already instrumented by `awaitVisitor`)
+       * Affected Example: `f(await g())` because `await g()` is already instrumented by `awaitVisitor`
        */
       replacements.push(() => traceWrapArg(argPath, state));
     }
