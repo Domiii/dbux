@@ -7,6 +7,7 @@ import { getTracesAt } from '../data/codeRangeQueries';
 import { createNode, EmptyNode, TraceNode, tryCreateTraceDetailNode, SelectedTraceNode } from './nodes/TraceDetailsNode';
 import { PreviousTraceTDNode, NextTraceTDNode, TypeTDNode, ValueTDNode, ApplicationTDNode } from './nodes/traceDetailNodes';
 import { getCursorLocation } from '../codeNav';
+import traceSelection from 'dbux-data/src/traceSelection';
 
 export default class TraceDetailsDataProvider {
   _onDidChangeTreeData = new EventEmitter();
@@ -38,15 +39,23 @@ export default class TraceDetailsDataProvider {
       fpath,
       pos
     } = this.where;
+    
+    
+    this.rootNodes = [];
 
-    // TODO: incorporate `traceSelection` here
+    if (traceSelection.selected) {
+      const trace = traceSelection.selected;
+      const application = allApplications.getById(trace.applicationId);
+      const traceNode = this._buildTraceNode(trace, application, null, true);
+      this.rootNodes.push(traceNode);
+    }
 
-    const rootNodes = this.rootNodes = allApplications.selection.data.mapApplicationsOfFilePath(
+    this.rootNodes.push(...allApplications.selection.data.mapApplicationsOfFilePath(
       fpath, (application, programId) => {
         const traceNodes = this._buildTraceNodes(programId, pos, application, null);
         return traceNodes || EmptyArray;
       }
-    );
+    ));
 
     // TODO: sort by time executed
 

@@ -52,7 +52,7 @@ export function initTraceDetailsController(context: ExtensionContext) {
     traceDetailsController.treeDataProvider.refresh();
   });
 
-  // TODO: get rid of this
+  // TODO: get rid of this?
   context.subscriptions.push(
     window.onDidChangeTextEditorSelection(() => {
       traceDetailsController.treeDataProvider.refresh();
