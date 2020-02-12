@@ -1,123 +1,238 @@
+import NanoEvents from 'nanoevents';
 import Trace from 'dbux-common/src/core/data/Trace';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from '../applications/allApplications';
+import traceSelection from '../traceSelection';
 
-// ###########################################################################
-// TraceOrder
-// ###########################################################################
+const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 
-export default class TracePlayback {
+export class TracePlayback {
+  timer = null;
+  timerInterval = 1000;
+  currentTrace: Trace = null;
+  _isPlaying = false;
+  _emitter = new NanoEvents();
+
   /**
-   * @param {ApplicationSelectionData} applicationSelectionData 
+   * @param {ApplicationSetData} applicationSetData 
    */
-  constructor(applicationSelectionData) {
-    this.applicationSelectionData = applicationSelectionData;
-    this.applicationSelection = this.applicationSelectionData.selection;
+  constructor(applicationSetData) {
+    this.applicationSetData = applicationSetData;
+    this.applicationSet = applicationSetData.set;
+    this.firstTracesInOrder = applicationSetData.firstTracesInOrder;
+
+    this.applicationSet.onApplicationsChanged(this._handleApplicationsChanged);
+    traceSelection.onTraceSelectionChanged(this._handleTraceSelectionChanged);
   }
 
   // ###########################################################################
-  // Play functions
+  // Main play functions
   // ###########################################################################
+
+  play() {
+    this.timer = setInterval(this._onPlay, this.timerInterval);
+    this._isPlaying = true;
+  }
+
+  pause() {
+    clearInterval(this.timer);
+    this._isPlaying = false;
+  }
+
+  previousTrace() {
+    if (!this.currentTrace) return this._setTrace(this._getFirstTraceInOrder());
+    else return this._setTrace(this._getPreviousTraceInOrder(this.currentTrace));
+  }
+
+  nextTrace() {
+    if (!this.currentTrace) return this._setTrace(this._getFirstTraceInOrder());
+    else return this._setTrace(this._getNextTraceInOrder(this.currentTrace));
+  }
+
+  previousTraceInContext() {
+
+  }
+
+  nextTraceInContext() {
+
+  }
+
+  // ###########################################################################
+  // Play helpers (Should handle trace not found)
+  // ###########################################################################
+
+  _onPlay = () => {
+    if (!this.nextTrace()) this.pause();
+  }
+
+  _setTrace(trace, isFromTraceSelection = false) {
+    // if trace didnt changed, return false
+    if (this.currentTrace === trace) return false;
+    else {
+      // if trace changed, return the result(may be null)
+      if (!isFromTraceSelection) traceSelection.selectTrace(trace);
+      this.currentTrace = trace;
+      this._emitTraceChanged();
+      return trace;
+    }
+  }
+
+  _setTimerInterval(interval) {
+    this.timerInterval = interval;
+    if (this._isPlaying) {
+      clearInterval(this.timer);
+      this.play();
+    }
+  }
 
   /**
    * @param {Trace} trace 
    */
-  getPreviousTraceInOrder(trace) {
-    const prevTrace = this.getPreviousTraceInApplication(trace);
+  _getPreviousTraceInOrder(trace) {
+    const prevTrace = this._getPreviousTraceInApplication(trace);
     if (prevTrace?.runId !== trace.runId) {
-      const newTrace = this.getLastTraceInPreviousRun(trace);
-      return newTrace;
+      // if it is the first trace in application, find the previous run
+      return this._getLastTraceInPreviousRun(trace) || trace;
     }
-    else return prevTrace;
+    else return prevTrace || trace;
   }
 
   /**
    * @param {Trace} trace 
    */
-  getNextTraceInOrder(trace) {
-    const nextTrace = this.getNextTraceInApplication(trace);
+  _getNextTraceInOrder(trace) {
+    const nextTrace = this._getNextTraceInApplication(trace);
     if (nextTrace?.runId !== trace.runId) {
-      // if it is the last trace in application, find next run
-      const newTrace = this.getFirstTraceInNextRun(trace);
-      return newTrace;
+      // if it is the last trace in application, find the next run
+      return this._getFirstTraceInNextRun(trace) || trace;
     }
-    else return nextTrace;
+    else return nextTrace || trace;
   }
 
   // ###########################################################################
   // Util
   // ###########################################################################
 
-  getFirstTraceInOrder() {
-    const { rootTracesInOrder } = allApplications.selection.data;
-    return rootTracesInOrder.getFirstRootTrace();
+  // ########################################
+  //  Traces (Returning null if not found)
+  // ########################################
+
+  _getFirstTraceInOrder() {
+    return this.firstTracesInOrder.getFirstTraceInOrder();
   }
 
   /**
    * @param {Trace} trace 
    */
-  getNextTraceInApplication(trace) {
-    const { applicationId, traceId } = trace;
-    const application = allApplications.getApplication(applicationId);
-    const nextTrace = application.dataProvider.collections.traces.getById(traceId + 1);
+  _getLastTraceInPreviousRun(trace) {
+    const firstTrace = this._getFirstTraceInSameRun(trace);
+    const prevFirstTrace = this.firstTracesInOrder.getPreviousFirstTrace(firstTrace);
+    if (!prevFirstTrace) return null;
+    const prevDataProvider = this._getDataProviderOfTrace(prevFirstTrace);
+    return prevDataProvider.util.getLastTraceOfRun(prevFirstTrace.runId);
+  }
+
+  /**
+   * @param {Trace} trace 
+   */
+  _getFirstTraceInNextRun(trace) {
+    const firstTrace = this._getFirstTraceInSameRun(trace);
+    const nextFirstTrace = this.firstTracesInOrder.getNextFirstTrace(firstTrace);
+    return nextFirstTrace;
+  }
+
+  /**
+   * @param {Trace} trace 
+   */
+  _getPreviousTraceInApplication(trace) {
+    const dataProvider = this._getDataProviderOfTrace(trace);
+    const nextTrace = dataProvider.collections.traces.getById(trace.traceId - 1);
     return nextTrace;
   }
 
   /**
    * @param {Trace} trace 
    */
-  getPreviousTraceInApplication(trace) {
-    const { applicationId, traceId } = trace;
-    const application = allApplications.getApplication(applicationId);
-    const nextTrace = application.dataProvider.collections.traces.getById(traceId - 1);
+  _getNextTraceInApplication(trace) {
+    const dataProvider = this._getDataProviderOfTrace(trace);
+    const nextTrace = dataProvider.collections.traces.getById(trace.traceId + 1);
     return nextTrace;
   }
 
   /**
    * @param {Trace} trace 
    */
-  getDataProviderOfTrace(trace) {
-    const application = allApplications.getApplication(trace.applicationId);
-    return application.dataProvider;
+  _getFirstTraceInSameRun(trace) {
+    const dataProvider = this._getDataProviderOfTrace(trace);
+    const firstTrace = dataProvider.util.getFirstTraceOfRun(trace.runId);
+    return firstTrace;
+  }
+
+  // ########################################
+  //  DataProvider
+  // ########################################
+
+  /**
+   * @param {Trace} trace 
+   */
+  _getDataProviderOfTrace(trace) {
+    const { dataProvider } = allApplications.getApplication(trace.applicationId);
+    return dataProvider;
   }
 
   /**
    * @param {ExecutionContext} rootContext
    */
-  getDataProviderOfRootContext(rootContext) {
-    const application = allApplications.getApplication(rootContext.applicationId);
-    return application.dataProvider;
+  _getDataProviderOfRootContext(rootContext) {
+    const { dataProvider } = allApplications.getApplication(rootContext.applicationId);
+    return dataProvider;
+  }
+
+  // ###########################################################################
+  // Events
+  // ###########################################################################
+
+  onTraceChanged(cb) {
+    this._emitter.on('traceChanged', cb);
+  }
+
+  _emitTraceChanged() {
+    this._emitter.emit('traceChanged', this.currentTrace);
+    log('Emitted traceChanged event with trace', this.currentTrace);
+  }
+
+  _handleApplicationsChanged = () => {
+    if (!this.currentTrace) return;
+    if (!this.applicationSet.containsApplication(this.currentTrace.applicationId)) {
+      this._setTrace(null);
+    }
+  }
+
+  _handleTraceSelectionChanged = (trace) => {
+    this._setTrace(trace, true);
+  }
+
+  // ###########################################################################
+  // Getter / Setter
+  // ###########################################################################
+
+  get trace() {
+    return this.currentTrace;
+  }
+
+  set trace(trace) {
+    this._setTrace(trace);
   }
 
   /**
-   * @param {Trace} trace 
+   * @param {number} interval
    */
-  getFirstTraceInNextRun(trace) {
-    const rootTrace = this.getRootTraceOfTrace(trace);
-    const { rootTracesInOrder } = this.applicationSelectionData;
-    const nextRootTrace = rootTracesInOrder.getNextRootTrace(rootTrace);
-    return nextRootTrace;
-  }
-
-  /**
-   * @param {Trace} trace 
-   */
-  getLastTraceInPreviousRun(trace) {
-    const rootTrace = this.getRootTraceOfTrace(trace);
-    const { rootTracesInOrder } = this.applicationSelectionData;
-    const prevRootTrace = rootTracesInOrder.getPreviousRootTrace(rootTrace);
-    if (!prevRootTrace) return null;
-    const prevDataProvider = this.getDataProviderOfTrace(prevRootTrace);
-    const newTrace = prevDataProvider.util.getLastTraceOfRun(prevRootTrace.runId);
-    return newTrace;
-  }
-
-  /**
-   * @param {Trace} trace 
-   */
-  getRootTraceOfTrace(trace) {
-    const dataProvider = this.getDataProviderOfTrace(trace);
-    const rootTrace = dataProvider.indexes.traces.byRunId.get(trace.runId)[0] || null;
-    return rootTrace;
+  set interval(interval) {
+    this._setTimerInterval(interval);
   }
 }
+
+let tracePlayback = new TracePlayback();
+
+export default tracePlayback;

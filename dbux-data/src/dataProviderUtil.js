@@ -22,7 +22,6 @@ export default {
     }
   },
 
-
   // ###########################################################################
   // traces
   // ###########################################################################
@@ -110,10 +109,6 @@ export default {
       return dp.collections.traces.getById(traceId);
     }
     else return traces[index + 1];
-  },
-
-  getAllRootTraces(dp: DataProvider) {
-    return dp.indexes.traces.roots.get(1);
   },
 
   getFirstContextsInRuns(dp: DataProvider) {

@@ -10,9 +10,9 @@ function makeKey(dp: DataProvider, trace: Trace) {
 }
 
 
-export default class RootTracesIndex extends CollectionIndex<Trace> {
+export default class FirstTracesIndex extends CollectionIndex<Trace> {
   constructor() {
-    super('traces', 'roots');
+    super('traces', 'firsts');
   }
 
   makeKey = makeKey

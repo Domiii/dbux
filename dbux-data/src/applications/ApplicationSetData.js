@@ -1,39 +1,38 @@
-import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import Trace from 'dbux-common/src/core/data/Trace';
-import TracePlayback from './playback/TracePlayback';
 
 // ###########################################################################
-// RootTracesInOrder
+// FirstTracesInOrder
 // ###########################################################################
 
-class RootTracesInOrder {
-  _rootTracesArray;
-  _rootTraceIndexById = new Map();
+class FirstTracesInOrder {
+  _firstTracesArray;
+  _firstTraceIndexById = new Map();
 
   /**
    * @param {ApplicationSetData} applicationSetData 
    */
-  constructor(applicationSelectionData) {
-    this.applicationSelectionData = applicationSelectionData;
-    this._rootTracesArray = [];
+  constructor(applicationSetData) {
+    this.applicationSetData = applicationSetData;
+    this.applicationSet = applicationSetData.set;
+    this._firstTracesArray = [];
   }
 
   _mergeAll() {
-    this._rootTracesArray = [];
-    const applications = this.applicationSelectionData.selection.getSelectedApplications();
+    this._firstTracesArray = [];
+    const applications = this.applicationSetData.set.getAll();
     const allFirstContexts = applications.map((app) => app.dataProvider.util.getFirstContextsInRuns() || EmptyArray);
 
     const indexPointers = Array(applications.length).fill(0);
     const contextsCount = allFirstContexts.reduce((sum, arr) => sum + arr.length, 0);
 
     for (let i = 0; i < contextsCount; i++) {
-      let earliestContext = allFirstContexts[0][indexPointers[0]];
-      let earliestApplicationIndex = 0;
-      for (let j = 1; j < applications.length; j++) {
+      let earliestContext = null;
+      let earliestApplicationIndex = null;
+      for (let j = 0; j < applications.length; j++) {
         const context = allFirstContexts[j][indexPointers[j]];
         if (!context) continue;
-        if (context.createdAt < earliestContext.createdAt) {
+        if (!earliestContext || context.createdAt < earliestContext.createdAt) {
           earliestContext = context;
           earliestApplicationIndex = j;
         }
@@ -47,11 +46,11 @@ class RootTracesInOrder {
 
   
   _handleApplicationsChanged = () => {
-    const { applicationSet } = this.applicationSetData;
-    const applications = applicationSet.getAll();
-  
+    const applications = this.applicationSet.getAll();
+    this._mergeAll();
+
     for (const app of applications) {
-      applicationSet.subscribe(
+      this.applicationSet.subscribe(
         app.dataProvider.onData('executionContexts', this._addExecutionContexts.bind(this, app))
       );
     }
@@ -62,16 +61,16 @@ class RootTracesInOrder {
     this._mergeAll();
   }
 
-  _makeKey(rootTrace) {
-    const { applicationId } = rootTrace;
-    return `${applicationId}_${rootTrace.traceId}`;
+  _makeKey(firstTrace) {
+    const { applicationId } = firstTrace;
+    return `${applicationId}_${firstTrace.traceId}`;
   }
 
-  _addOne = (rootTrace) => {
-    this._rootTracesArray.push(rootTrace);
+  _addOne = (firstTrace) => {
+    this._firstTracesArray.push(firstTrace);
 
-    const key = this._makeKey(rootTrace);
-    this._rootTraceIndexById.set(key, this._rootTracesArray.length - 1);
+    const key = this._makeKey(firstTrace);
+    this._firstTraceIndexById.set(key, this._firstTracesArray.length - 1);
   }
 
   // ###########################################################################
@@ -79,30 +78,30 @@ class RootTracesInOrder {
   // ###########################################################################
 
   getAll() {
-    return this._rootTracesArray;
+    return this._firstTracesArray;
   }
 
-  getIndex(rootTrace) {
-    const key = this._makeKey(rootTrace);
-    const index = this._rootTraceIndexById.get(key);
+  getIndex(firstTrace) {
+    const key = this._makeKey(firstTrace);
+    const index = this._firstTraceIndexById.get(key);
     if (index === undefined) {
-      throw new Error('invalid query - context is not a root trace', rootTrace);
+      throw new Error('invalid query - context is not a root trace', firstTrace);
     }
     return index;
   }
 
-  getFirstRootTrace() {
-    return this._rootTracesArray[0] || null;
+  getFirstTraceInOrder() {
+    return this._firstTracesArray[0] || null;
   }
 
-  getNextRootTrace(rootTrace: Trace) {
-    const order = this.getIndex(rootTrace);
-    return this._rootTracesArray[order + 1] || null;
+  getNextFirstTrace(firstTrace: Trace) {
+    const order = this.getIndex(firstTrace);
+    return this._firstTracesArray[order + 1] || null;
   }
 
-  getPreviousRootTrace(rootTrace: Trace) {
-    const order = this.getIndex(rootTrace);
-    return this._rootTracesArray[order - 1] || null;
+  getPreviousFirstTrace(firstTrace: Trace) {
+    const order = this.getIndex(firstTrace);
+    return this._firstTracesArray[order - 1] || null;
   }
 }
 
@@ -123,21 +122,21 @@ class RootTracesInOrder {
  * 
  * Also provides muliti-casted utility methods that work with the dataProviders of all selected applications.
  */
-export default class ApplicationSelectionData {
+export default class ApplicationSetData {
   constructor(applicationSet) {
     this.applicationSet = applicationSet;
-    this.rootContextsInOrder = new RootContextsInOrder(this);
-    this.tracePlayback = new TracePlayback(this);
+    this.firstTracesInOrder = new FirstTracesInOrder(this);
 
-    this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
+    // this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
+    this.applicationSet.onApplicationsChanged(this._handleApplicationsChanged);
   }
 
   get set() {
     return this.applicationSet;
   }
 
-  _handleSelectionChanged = () => {
-    this.rootTracesInOrder._handleApplicationsChanged();
+  _handleApplicationsChanged = () => {
+    this.firstTracesInOrder._handleApplicationsChanged();
   }
 
   /**
