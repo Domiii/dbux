@@ -2,18 +2,17 @@ import { commands } from 'vscode';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
-import tracePlayback from 'dbux-data/src/playback/TracePlayback';
+import tracePlayback from 'dbux-data/src/playback/tracePlayback';
 import { goToTrace } from '../codeNav';
 
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 
 export default class PlaybackController {
-  tracePlayback = tracePlayback;
 
   constructor() {
     // Listen on trace changed event
-    this.tracePlayback.onTraceChanged(this.handleTraceChanged);
-    this.tracePlayback.onPause(this.handlePause);
+    tracePlayback.onTraceChanged(this.handleTraceChanged);
+    tracePlayback.onPause(this.handlePause);
   }
 
   // ###########################################################################
@@ -22,21 +21,21 @@ export default class PlaybackController {
 
   play = () => {
     commands.executeCommand('setContext', 'dbuxPlaybackPlaying', true);
-    this.tracePlayback.play();
+    tracePlayback.play();
     this.printTracesInfo();
   }
 
   pause = () => {
     commands.executeCommand('setContext', 'dbuxPlaybackPlaying', false);
-    this.tracePlayback.pause();
+    tracePlayback.pause();
   }
 
   previousTrace = () => {
-    this.tracePlayback.previousTrace();
+    tracePlayback.previousTrace();
   }
 
   nextTrace = () => {
-    this.tracePlayback.nextTrace();
+    tracePlayback.nextTrace();
   }
 
   // broken
