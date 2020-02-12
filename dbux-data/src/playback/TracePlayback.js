@@ -50,11 +50,34 @@ export class TracePlayback {
     else return this._setTrace(this._getNextTraceInOrder(this.currentTrace));
   }
 
+  // left
   previousTraceInContext() {
+    if (!this.currentTrace) return this._setTrace(this._getFirstTraceInOrder());
+    else return this._setTrace(this._getPreviousTraceInContext(this.currentTrace));
+  }
+
+  // right
+  nextTraceInContext() {
 
   }
 
-  nextTraceInContext() {
+  // top left
+  previousParentContext() {
+
+  }
+
+  // top right
+  nextParentContext() {
+    
+  }
+
+  // bottom left
+  previousChildContext() {
+    
+  }
+
+  // bottom right
+  nextChildContext() {
 
   }
 
@@ -108,6 +131,13 @@ export class TracePlayback {
       return this._getFirstTraceInNextRun(trace) || trace;
     }
     else return nextTrace || trace;
+  }
+
+  /**
+   * @param {Trace} trace 
+   */
+  _getPreviousTraceInContext(trace) {
+
   }
 
   // ###########################################################################
