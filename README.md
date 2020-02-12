@@ -62,8 +62,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [playback] when stepping through, render the value of `TraceType.ExpressionResult` inline
 * switch between `StepMode`s via button or command
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
-   * shows all applications in `applicationCollection`
-   * lets you switch between them by clicking on them (can use `applicationCollection.setSelectedApplication`)
+   * shows all applications in `allApplications`
+   * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
 * [callstackView]
   * actually: a callstack is actually a single slice of a complex call graph over time
   * allow to search for path between any two contexts
@@ -105,22 +105,100 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * `codeDeco.blurBackgroundMode`
 
 ## TODO (other)
+* [instrumentation]
+   * insert trace before function call (so we can step to function call before going down)
+* [traceSelection]
+   * in `dbux-data`: `traceSelection` + `TraceSelectionHistory`
+   * when user textEditor selection changes, select trace at cursor
+      * need to design heuristic:
+         * if a trace was previously selected, select the one "closest" to that
+         * minimum effort: try to select one in the same run (if existing)
+   * fix: code highlighting of selected trace doesn't work when changing files
+      * probably because `activeEditor` is not set immediately
+   * when jumping between traces, need a history stack to allow us to go forth and back
+      * forth/back buttons in `TraceDetailView`?
+   * integrate with `Playback`
+* [callstack]
+   * render callstack of "context of `traceSelection.selected`" all the way to its root
+      * if no parent, see if it has a `schedulerTrace` and pick that one
+      * different icon for 
+   * top: context of selected trace (sort all contexts by )
+   * children: no children for now
+   * label: `context.displayName`
+   * description: loc.start@where
+   * when clicking a node: select the trace of the call of the next guy in context
 * [dbuxTraceDetailsView]
-   * show all info relevant to the position where the cursor currently is
-   * allow to jump to caller/callee upon context switches
-   * "`contextElevator`": buttons to step between child/parent context
-   * TODO: what about in-line contexts?
-   * example: we want to get into `showItems` here <3
-      * `this.store.find({...}[route], this.view.showItems.bind(this.view))`
-* [codeDeco] better deco
-   * for function calls: render context targets (if known)
-   * capture function parameters
-* [codeDeco] if a `trace` is of type `ExpressionResult` and `value !== undefined`: display the `value` in `codeDeco` behind the expression?
-   * if multiple `traces` are logged for the same `staticTrace`, only show the most recent one
-   * TODO: don't waste space if value has a long string representation?
-* [dbuxTraceDetailsView] data interactions
-   * make it possible to interact with the captured values
-   * possibly retrieve more data from the app if app is still running?
+   * on refresh: render `selectedTrace` at top (and other nodes at cursor)
+      * the heuristics to determine the trace at cursor are not accurate enough
+   * automatically "select" top trace node
+      * highlight using special icon
+      * highlight in code (without moving cursor)
+   * don't render any details except for "selected node"
+      * because else, stuff moves around when trying to move through the callstack
+      * also: it's too cluttered
+   * `neighboring traces` (partial callstack)
+      * render full trace label
+      * description: file@loc (if file is different)
+      * render all 6 directions
+         * previous before leaving context (top left)
+         * previous in context (left)
+         * previous before going to child context (bottom left)
+         * next before leaving context (top right)
+         * next in context (right)
+         * next before going to child context (bottom right)
+   * better loop support:
+      * distinguish repeated calls of a trace from other traces at selection
+      * allow to better understand and work through the repetitions
+   * group {Push,Pop}Callback{Argument,} into one
+      * show status: executed x times
+      * if executed: go to callback definition
+   * better value rendering (e.g. empty string, basic arrays, objects)
+      * properly serialize and send object data
+         * consider using a native `structuredClone` implementation (or some of its hackarounds)
+            * https://stackoverflow.com/a/10916838
+         * performance optimization
+            * when object too big, send later
+               * feature: object query interface?
+            * observe performance and long-running processes
+               * cut things short
+               * split bigger objects into chunks
+               * warnings when things get out of hand
+      * also track `this` + function parameters
+   * object tracking: list all traces that an object participated in
+      * track everything?
+         * NOTE: when `TrackEverything` is enabled, we can track callbacks 100% as well
+            * (if their declarations were instrumented)
+   * label: make it more readable
+   * mark a trace as `theSelectedTrace`
+      * also select it for Playback
+      * allow going back + forth between previously selected traces
+   * trace description
+      * relative execution time
+   * trace details
+      * (if multiple applications exist) `ApplicationNode` 
+         * `getRelativeWorkspacePath(application.entryPointPath)`
+      * (by-type)
+         * `if previous trace is in different context` (includes `isTracePush(type)`)
+            * previous
+         * `if next trace is in different context` (includes `isTracePop(type)`)
+            * next
+         * `CallbackArgument`
+            * scheduled
+         * `hasValue(type)`
+            * value
+   * trace categorization:
+      * all
+      * by-type
+         * (all details of one type aggregated into one node?)
+      * by-context
+   * long list tool
+   * improve performance of `getVisitedTracesAt`
+      * first find `staticTraces`
+      * `iterateTracesFront`
+      * `iterateTracesBack`
+      * `getTraceCount`
+* [instrumentation] support longer names
+   * (and then hide them in tree view; show long version as tooltip)
 * [MultiKeyIndex] allow for storing data by multiple keys
    * e.g. `dataProvider.util.groupTracesByType`
    * e.g. `dataProvider.util.getVisitedStaticTracesAtLine`

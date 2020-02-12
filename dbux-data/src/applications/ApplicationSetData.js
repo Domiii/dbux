@@ -12,7 +12,7 @@ class RootTracesInOrder {
   _rootTraceIndexById = new Map();
 
   /**
-   * @param {ApplicationSelectionData} applicationSelectionData 
+   * @param {ApplicationSetData} applicationSetData 
    */
   constructor(applicationSelectionData) {
     this.applicationSelectionData = applicationSelectionData;
@@ -46,12 +46,12 @@ class RootTracesInOrder {
   }
 
   
-  _handleSelectionChanged = () => {
-    const { applicationSelection } = this.applicationSelectionData;
-    const selectedApplications = applicationSelection.getSelectedApplications();
+  _handleApplicationsChanged = () => {
+    const { applicationSet } = this.applicationSetData;
+    const applications = applicationSet.getAll();
   
-    for (const app of selectedApplications) {
-      applicationSelection.subscribe(
+    for (const app of applications) {
+      applicationSet.subscribe(
         app.dataProvider.onData('executionContexts', this._addExecutionContexts.bind(this, app))
       );
     }
@@ -108,7 +108,7 @@ class RootTracesInOrder {
 
 
 // ###########################################################################
-// ApplicationSelectionData
+// ApplicationSetData
 // ###########################################################################
 
 /**
@@ -124,27 +124,27 @@ class RootTracesInOrder {
  * Also provides muliti-casted utility methods that work with the dataProviders of all selected applications.
  */
 export default class ApplicationSelectionData {
-  constructor(applicationSelection) {
-    this.applicationSelection = applicationSelection;
-    this.rootTracesInOrder = new RootTracesInOrder(this);
+  constructor(applicationSet) {
+    this.applicationSet = applicationSet;
+    this.rootContextsInOrder = new RootContextsInOrder(this);
     this.tracePlayback = new TracePlayback(this);
 
-    this.applicationSelection._emitter.on('_selectionChanged0', this._handleSelectionChanged);
+    this.applicationSet._emitter.on('_applicationsChanged0', this._handleApplicationsChanged);
   }
 
-  get selection() {
-    return this.applicationSelection;
+  get set() {
+    return this.applicationSet;
   }
 
   _handleSelectionChanged = () => {
-    this.rootTracesInOrder._handleSelectionChanged();
+    this.rootTracesInOrder._handleApplicationsChanged();
   }
 
   /**
    * Return amount of applications that have executed given file.
    */
   getApplicationCountAtPath(fpath) {
-    const applications = this.selection._selectedApplications;
+    const applications = this.set.getAll();
     return applications.reduce((sum, { dataProvider }) => {
       const programId = dataProvider.queries.programIdByFilePath(fpath);
       return sum + !!programId;
@@ -155,7 +155,7 @@ export default class ApplicationSelectionData {
    * @param {fileSelectedApplicationCallback} cb
    */
   mapApplicationsOfFilePath(fpath, cb) {
-    const applications = this.selection._selectedApplications;
+    const applications = this.set.getAll();
     const results = [];
 
     for (const application of applications) {

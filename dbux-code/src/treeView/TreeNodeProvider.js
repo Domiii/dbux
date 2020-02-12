@@ -2,8 +2,7 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
-import applicationCollection from 'dbux-data/src/applicationCollection';
-import Application from 'dbux-data/src/Application';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import EventHandlerList from 'dbux-common/src/util/EventHandlerList';
 import ContextNode from './ContextNode';
 
@@ -24,7 +23,7 @@ export class TreeNodeProvider {
     this.selectedApps = [];
     this.appEventHandlers = new EventHandlerList();
 
-    applicationCollection.selection.onSelectionChanged((selectedApps) => {
+    allApplications.selection.onApplicationsChanged((selectedApps) => {
       this.clear();
       for (const app of selectedApps) {
         const executionContexts = app.dataProvider.collections.executionContexts.getAll();
@@ -39,7 +38,7 @@ export class TreeNodeProvider {
   contextToNode = (applicationId: number, context: ExecutionContext) => {
     if (!context) return null;
 
-    const { dataProvider } = applicationCollection.getApplication(applicationId);
+    const { dataProvider } = allApplications.getApplication(applicationId);
     const { contextType, stackDepth, contextId, staticContextId, parentContextId } = context;
 
     const staticContext = dataProvider.collections.staticContexts.getById(staticContextId);

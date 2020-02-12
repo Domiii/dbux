@@ -130,7 +130,9 @@ module.exports = [
     //   },
     // },
     externals: [
-      nodeExternals()
+      nodeExternals({
+        whitelist: ['perf_hooks']
+      }),
       // 'fs', 'net'   // debug library complains about these
     ]
   },

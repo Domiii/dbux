@@ -1,35 +1,31 @@
 import NanoEvents from 'nanoevents';
-import { newLogger } from 'dbux-common/src/log/logger';
 import isString from 'lodash/isString';
-import pull from 'lodash/pull';
-
+import { newLogger } from 'dbux-common/src/log/logger';
 
 import Application from './Application';
-import { areArraysEqual } from '../../dbux-common/src/util/arrayUtil';
-import ApplicationSelection from './ApplicationSelection';
-import ApplicationSelectionData from './ApplicationSelectionData';
+import ApplicationSet from './ApplicationSet';
 
 const { log, debug, warn, error: logError } = newLogger('applications');
 
 
 /**
- * @callback selectionChangedCallback
+ * @callback applicationsChangedCallback
  * @param {Application[]} applications
  */
 
 /**
  * ApplicationCollection manages all application throughout the life-time of the dbux-data module.
  */
-export class ApplicationCollection {
+export class AllApplications {
   DefaultApplicationClass = Application;
 
   _all = [null];
-  _activeApplications = new Map();
+  _activeApplicationsByPath = new Map();
 
   _emitter = new NanoEvents();
 
   constructor() {
-    this.applicationSelection = new ApplicationSelection(this);
+    this.applicationSelection = new ApplicationSet(this);
   }
 
   getById(applicationId: Application) {
@@ -62,7 +58,7 @@ export class ApplicationCollection {
   }
 
   getActiveApplicationByEntryPoint(entryPointPath) {
-    return this._activeApplications.get(entryPointPath);
+    return this._activeApplicationsByPath.get(entryPointPath);
   }
 
   isApplicationActive(applicationOrIdOrEntryPointPath) {
@@ -77,12 +73,17 @@ export class ApplicationCollection {
   /**
    * @private
    */
-  addApplication(entryPointPath) {
+  addApplication(initialData) {
+    const {
+      entryPointPath,
+      createdAt
+    } = initialData;
+
     const applicationId = this._all.length;
-    const application = new this.DefaultApplicationClass(applicationId, entryPointPath, this);
+    const application = new this.DefaultApplicationClass(applicationId, entryPointPath, createdAt, this);
     const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);
 
-    this._activeApplications.set(entryPointPath, application);
+    this._activeApplicationsByPath.set(entryPointPath, application);
     this._all[applicationId] = application;
 
     if (previousApplication) {
@@ -94,13 +95,13 @@ export class ApplicationCollection {
       debug('added', entryPointPath);
     }
 
-    if (previousApplication && this.selection.isApplicationSelected(previousApplication)) {
+    if (previousApplication && this.selection.containsApplication(previousApplication)) {
       // application restarted -> automatically deselect previous instance
-      this.applicationSelection.deselectApplication(previousApplication);
+      this.applicationSelection.removeApplication(previousApplication);
     }
     
     // always add new application to set of selected applications
-    this.applicationSelection.selectApplication(application);
+    this.applicationSelection.addApplication(application);
 
     return application;
   }
@@ -113,15 +114,13 @@ export class ApplicationCollection {
     }
 
     // deselect (will also trigger event)
-    if (this._selectedApplications === application) {
-      this.applicationSelection.deselectApplication(application.applicationId);
-    }
+    this.selection.removeApplication(application);
 
     // remove
     const { applicationid, entryPointPath } = application;
     this._all[applicationid] = null;
     if (this.getActiveApplicationByEntryPoint(entryPointPath) === application) {
-      this._activeApplications.delete(entryPointPath);
+      this._activeApplicationsByPath.delete(entryPointPath);
     }
 
     // `removed` event
@@ -130,9 +129,9 @@ export class ApplicationCollection {
 
   clear() {
     this._all = [null];
-    this._activeApplications = new Map();
+    this._activeApplicationsByPath = new Map();
 
-    this.applicationSelection._setSelectedApplications(null);
+    this.applicationSelection.clear();
 
     this._emitter.emit('clear');
   }
@@ -171,15 +170,15 @@ export class ApplicationCollection {
 }
 
 /**
- * @type {ApplicationCollection}
+ * @type {AllApplications}
  */
-let applicationCollection
+let allApplications;
 try {
-  applicationCollection = new ApplicationCollection();
+  allApplications = new AllApplications();
 }
 catch (err) {
   logError(err);
   debugger;
 }
 
-export default applicationCollection;
+export default allApplications;

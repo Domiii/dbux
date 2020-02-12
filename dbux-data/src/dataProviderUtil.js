@@ -1,8 +1,55 @@
-import DataProvider from "./DataProvider";
 import TraceType, { hasDynamicTypes, hasValue } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
+import DataProvider from './DataProvider';
 
 export default {
+  // ###########################################################################
+  // root contexts
+  // ###########################################################################
+
+  getAllRootContexts(dp: DataProvider) {
+    return dp.indexes.executionContexts.roots.get(1);
+  },
+
+  getRootContextIdByContextId(dp: DataProvider, contextId) {
+    const { executionContexts } = dp.collections;
+    let lastContextId = contextId;
+    let parentContextId;
+    while (true) {
+      parentContextId = executionContexts.getById(lastContextId).parentContextId;
+      if (!parentContextId) return lastContextId;
+      else lastContextId = parentContextId;
+    }
+  },
+
+
+  // ###########################################################################
+  // traces
+  // ###########################################################################
+
+  getTraceType(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const {
+      staticTraceId,
+      type: dynamicType
+    } = trace;
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    const {
+      type: staticType,
+    } = staticTrace;
+    return dynamicType || staticType;
+  },
+
+  getNextTrace(dp: DataProvider, traceId) {
+    const { traces } = dp.collections;
+    return traces.getById(traceId + 1) || null;
+  },
+
+  getPreviousTrace(dp: DataProvider, traceId) {
+    const { traces } = dp.collections;
+    return traces.getById(traceId - 1) || null;
+  },
+
   getFirstTraceOfContext(dp: DataProvider, contextId) {
     const traces = dp.indexes.traces.byContext.get(contextId);
     if (!traces?.length) {
@@ -10,6 +57,7 @@ export default {
     }
     return traces[0];
   },
+
   getLastTraceOfContext(dp: DataProvider, contextId) {
     const traces = dp.indexes.traces.byContext.get(contextId);
     if (!traces?.length) {
@@ -17,6 +65,7 @@ export default {
     }
     return traces[traces.length - 1];
   },
+
   getFirstTraceOfRun(dp: DataProvider, runId) {
     const traces = dp.indexes.traces.byRunId.get(runId);
     if (!traces?.length) {
@@ -24,6 +73,7 @@ export default {
     }
     return traces[0];
   },
+
   getLastTraceOfRun(dp: DataProvider, runId) {
     const traces = dp.indexes.traces.byRunId.get(runId);
     if (!traces?.length) {
@@ -31,6 +81,7 @@ export default {
     }
     return traces[traces.length - 1];
   },
+
   getPreviousTraceInContext(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const traces = dp.indexes.traces.byContext.get(trace.contextId);
@@ -45,6 +96,7 @@ export default {
     }
     else return traces[index - 1];
   },
+
   getNextTraceInContext(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const traces = dp.indexes.traces.byContext.get(trace.contextId);
@@ -58,6 +110,14 @@ export default {
       return dp.collections.traces.getById(traceId);
     }
     else return traces[index + 1];
+  },
+
+  getAllRootTraces(dp: DataProvider) {
+    return dp.indexes.traces.roots.get(1);
+  },
+
+  getFirstContextsInRuns(dp: DataProvider) {
+    return dp.indexes.executionContexts.firstInRuns.get(1);
   },
 
   doesTraceHaveValue(dp: DataProvider, traceId) {
@@ -90,9 +150,7 @@ export default {
 
   getTraceContext(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    const {
-      contextId
-    } = trace;
+    const { contextId } = trace;
     return dp.collections.executionContexts.getById(contextId);
   },
 
@@ -129,27 +187,21 @@ export default {
     return dp.util.getStaticTraceProgramId(staticTraceId);
   },
 
-  getAllRootContexts(dp: DataProvider) {
-    return dp.indexes.executionContexts.roots.get(1);
+  getTraceFilePath(dp: DataProvider, traceId) {
+    const programId = dp.util.getTraceProgramId(traceId);
+    return programId && dp.util.getFilePathFromProgramId(programId) || null;
   },
 
-  getAllRootTraces(dp: DataProvider) {
-    return dp.indexes.traces.roots.get(1);
+  getFilePathFromProgramId(dp: DataProvider, programId) {
+    return dp.collections.staticProgramContexts.getById(programId)?.filePath || null;
   },
 
-  getFirstContextsInRuns(dp: DataProvider) {
-    return dp.indexes.executionContexts.firstInRuns.get(1);
-  },
-
-  getRootContextIdByContextId(dp: DataProvider, contextId) {
-    const { executionContexts } = dp.collections;
-    let lastContextId = contextId;
-    let parentContextId;
-    while (true) {
-      parentContextId = executionContexts.getById(lastContextId).parentContextId;
-      if (!parentContextId) return lastContextId;
-      else lastContextId = parentContextId;
-    }
+  getTraceStaticContextId(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const { staticTraceId } = trace;
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    const { staticContextId } = staticTrace;
+    return staticContextId;
   },
 
   /**
@@ -181,9 +233,9 @@ export default {
         }
 
         for (let type = 0; type < traceGroups.length; ++type) {
-          const traces = traceGroups[type];
-          if (traces) {
-            pushArrayOfArray(groups, type, [staticTrace, traces]);
+          const tracesOfGroup = traceGroups[type];
+          if (tracesOfGroup) {
+            pushArrayOfArray(groups, type, [staticTrace, tracesOfGroup]);
           }
         }
       }

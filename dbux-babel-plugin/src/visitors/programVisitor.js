@@ -3,9 +3,8 @@ import { buildSource, buildWrapTryFinally } from '../helpers/builders';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 import { replaceProgramBody } from '../helpers/program';
 import injectDbuxState from '../dbuxState';
-import callExpressionVisitor from './callExpressionVisitor';
 import awaitVisitor from './awaitVisitor';
-import { buildAllTraceVisitors } from './traceVisitors';
+import { buildAllTraceVisitors as traceVisitors } from './traceVisitors';
 import { mergeVisitors } from '../helpers/visitorHelpers';
 import { logInternalError } from '../log/logger';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
@@ -119,24 +118,28 @@ function enter(path, state) {
   // instrument Program itself
   wrapProgram(path, state);
 
-  // merge all visitors
-  let allVisitors = mergeVisitors(
-    contextVisitors(),
-    buildAllTraceVisitors()
-  );
+  visitInOrder(path, state, contextVisitors());
+  visitInOrder(path, state, traceVisitors());
 
+  // // merge all visitors
+  // let allVisitors = mergeVisitors(
+  //   buildAllTraceVisitors(),
+  //   contextVisitors(),
+  // );
+}
 
-  // TODO: babel is unhappy with our DoWhileLoop visitor
-  delete allVisitors.DoWhileLoop;
+function visitInOrder(path, state, visitors) {
+  // TODO: babel is unhappy with any DoWhileLoop visitor
+  delete visitors.DoWhileLoop;
 
   // error wrap!
-  allVisitors = errorWrapVisitor(allVisitors);
+  visitors = errorWrapVisitor(visitors);
 
   // traverse program before (most) other plugins
   try {
     path.traverse(
       // errorWrapVisitor(allVisitors),
-      allVisitors,
+      visitors,
       state
     );
   }
@@ -168,8 +171,6 @@ function exit(path, state) {
 function contextVisitors() {
   return {
     Function: functionVisitor(),
-    CallExpression: callExpressionVisitor(),
-    NewExpression: callExpressionVisitor(),
     AwaitExpression: awaitVisitor(),
 
     /**

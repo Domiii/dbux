@@ -48,8 +48,8 @@ export default class ProgramMonitor {
   }
 
 
-  // scheduleCallback(inProgramStaticId, schedulerId, traceId, cb) {
-  //   return this._runtimeMonitor.scheduleCallback(this.getProgramId(), 
+  // CallbackArgument(inProgramStaticId, schedulerId, traceId, cb) {
+  //   return this._runtimeMonitor.CallbackArgument(this.getProgramId(), 
   //     inProgramStaticId, schedulerId, traceId, cb);
   // }
 

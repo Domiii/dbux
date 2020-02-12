@@ -2,20 +2,23 @@ import template from '@babel/template';
 import Enum from 'dbux-common/src/util/Enum';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
-import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue } from '../helpers/traceHelpers';
+import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg } from '../helpers/traceHelpers';
+import { isPathInstrumented } from '../helpers/instrumentationHelper';
 // TODO: want to do some extra work to better trace loops
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
-  ExpressionWithValue: 1,
-  ExpressionNoValue: 2,
-  Statement: 3,
-  Block: 4
+  CallExpression: 1,
+  ExpressionWithValue: 2,
+  ExpressionNoValue: 3,
+  Statement: 4,
+  Block: 5
 });
 
 const traceCfg = (() => {
   const {
     NoTrace,
+    CallExpression,
     ExpressionWithValue,
     ExpressionNoValue,
     Statement,
@@ -57,6 +60,15 @@ const traceCfg = (() => {
     // ########################################
     // expressions
     // ########################################
+    CallExpression: [
+      CallExpression
+    ],
+    OptionalCallExpression: [
+      CallExpression
+    ],
+    NewExpression: [
+      CallExpression
+    ],
     AwaitExpression: [
       ExpressionWithValue
       // [['argument', ExpressionNoValue]]
@@ -64,14 +76,6 @@ const traceCfg = (() => {
     ConditionalExpression: [
       ExpressionWithValue,
       [['test', ExpressionWithValue], ['consequent', ExpressionWithValue], ['alternate', ExpressionWithValue]]
-    ],
-    CallExpression: [
-      ExpressionWithValue,
-      // [['arguments', true]] // TODO: must capture each individual argument
-    ],
-    OptionalCallExpression: [
-      ExpressionWithValue,
-      // [['arguments', true]] // TODO: must capture each individual argument
     ],
     Super: ExpressionNoValue,
     UpdateExpression: ExpressionWithValue,
@@ -221,7 +225,37 @@ function normalizeConfig(cfg) {
 // instrumentation recipes by node type
 // ###########################################################################
 
+
+function instrumentArgs(callPath, state) {
+  const args = callPath.node.arguments;
+  const replacements = [];
+  for (let i = 0; i < args.length; ++i) {
+    // if (t.isFunction(args[i])) {
+    //   replacements.push(() => instrumentCallbackSchedulingArg(callPath, state, i));
+    // }
+    // else {
+    const argPath = callPath.get('arguments.' + i);
+    if (!isPathInstrumented(argPath)) {
+      /**
+       * Only instrument if not already instrumented.
+       * Affected Example: `f(await g())` (`await g()` is already instrumented by `awaitVisitor`)
+       */
+      replacements.push(() => traceWrapArg(argPath, state));
+    }
+    // }
+  }
+
+  // TODO: I forgot why I deferred all calls to here? 
+  //    Probably had the order flipped before or did nested replacements;
+  //    might not need to defer anymore.
+  replacements.forEach(r => r());
+}
+
 const instrumentors = {
+  CallExpression(path, state) {
+    instrumentArgs(path, state);
+    traceWrapExpression(path, state);
+  },
   ExpressionWithValue(path, state) {
     traceWrapExpression(path, state);
   },

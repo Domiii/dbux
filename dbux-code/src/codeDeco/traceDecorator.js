@@ -3,7 +3,7 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import DefaultTraceDecoratorConfig from './DefaultTraceDecoratorConfig';
 import { babelLocToCodeRange } from '../helpers/locHelper';
-import applicationCollection from 'dbux-data/src/applicationCollection';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
 const { log, debug, warn, error: logError } = newLogger('traceDecorator');
@@ -21,7 +21,7 @@ export function renderTraceDecorations(editor, fpath) {
   const allDecorations = [];
 
   // prepare decorations
-  applicationCollection.selection.data.mapApplicationsOfFilePath(fpath, (application, programId) => {
+  allApplications.selection.data.mapApplicationsOfFilePath(fpath, (application, programId) => {
     const { dataProvider } = application;
     const staticTraces = dataProvider.indexes.staticTraces.visitedByFile.get(programId);
     // const traces = dataProvider.indexes.traces.byFile.get(programId);
@@ -53,7 +53,7 @@ export function renderTraceDecorations(editor, fpath) {
     const config = configsByType[traceType];
     const decorations = allDecorations[traceType];
 
-    if (!config?.editorDecorationtype) {
+    if (!config?.editorDecorationType) {
       if (decorations) {
         logError('found TraceType in trace that is not configured', traceType, TraceType.nameFrom(traceType));
       }
@@ -61,11 +61,11 @@ export function renderTraceDecorations(editor, fpath) {
     }
 
     if (decorations) {
-      editor.setDecorations(config.editorDecorationtype, decorations);
+      editor.setDecorations(config.editorDecorationType, decorations);
     }
     else {
       // removes previous decorations of given DecorationType
-      editor.setDecorations(config.editorDecorationtype, EmptyArray);
+      editor.setDecorations(config.editorDecorationType, EmptyArray);
     }
   }
 }
@@ -123,7 +123,7 @@ function initConfig(allConfigs) {
       continue;
     }
     const type = TraceType.valueFromForce(typeName);
-    config.editorDecorationtype = window.createTextEditorDecorationType(config.styling);
+    config.editorDecorationType = window.createTextEditorDecorationType(config.styling);
     configsByType[type] = config;
   }
 }

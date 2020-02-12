@@ -13,12 +13,16 @@ import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
 import dataProviderUtil from './dataProviderUtil';
 import TracesByRunIdIndex from './impl/indexes/TracesByRunIdIndex';
+import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextIndex';
+import StaticContextsByFileIndex from './impl/indexes/StaticContextsByFileIndex';
 
 
 export function newDataProvider(application) {
   const dataProvider = new DataProvider(application);
   
   // indexes
+  dataProvider.addIndex(new StaticContextsByFileIndex());
+
   dataProvider.addIndex(new ContextChildrenIndex());
   dataProvider.addIndex(new RootContextsIndex());
   dataProvider.addIndex(new RootTracesIndex());
@@ -27,6 +31,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new TracesByFileIndex());
   dataProvider.addIndex(new TracesByContextIndex());
   dataProvider.addIndex(new TracesByStaticTraceIndex());
+  dataProvider.addIndex(new TracesByStaticContextIndex());
   dataProvider.addIndex(new TracesByRunIdIndex());
 
 

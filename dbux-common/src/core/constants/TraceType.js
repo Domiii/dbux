@@ -7,7 +7,7 @@ let TraceType = {
   PushImmediate: 2,
   PopImmediate: 3,
 
-  ScheduleCallback: 4,
+  CallbackArgument: 4,
   PushCallback: 5,
   PopCallback: 6,
 
@@ -41,8 +41,8 @@ popTypes[TraceType.PopCallback] = true;
 const dynamicTypeTypes = new Array(TraceType.getCount()).map(_ => false);
 
 // shared w/ PushCallback + PopCallback
-dynamicTypeTypes[TraceType.ScheduleCallback] = true;  
-// might be shared w/ ScheduleCallback, PushCallback + PopCallback
+dynamicTypeTypes[TraceType.CallbackArgument] = true;  
+// might be shared w/ CallbackArgument, PushCallback + PopCallback
 dynamicTypeTypes[TraceType.CallArgument] = true;
 
 

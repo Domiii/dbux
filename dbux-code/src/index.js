@@ -13,6 +13,7 @@ import PlaybackController from './playback/PlaybackController';
 import { initCodeApplications } from './CodeApplication';
 import { initTraceDetailsController } from './traceDetailsView/traceDetailsController';
 import { initResources } from './resources';
+import { initTraceSelection } from './codeSelection';
 
 
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -27,6 +28,8 @@ function activate(context) {
     initServer(context);
     initCodeApplications(context);
     initCodeDeco(context);
+    
+    initTraceSelection(context);
     initTraceDetailsController(context);
 
     const treeViewController = initTreeView();

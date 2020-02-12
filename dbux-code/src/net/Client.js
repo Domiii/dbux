@@ -1,6 +1,6 @@
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
-import applicationCollection from 'dbux-data/src/applicationCollection';
-import Application from 'dbux-data/src/Application';
+import allApplications from 'dbux-data/src/applications/allApplications';
+import Application from 'dbux-data/src/applications/Application';
 
 const { log, debug, warn, error: logError } = newLogger('net-client');
 
@@ -31,16 +31,18 @@ export default class Client {
   }
 
   _getOrCreateApplication(initialData): Application {
-    const { applicationId, entryPointPath } = initialData;
+    const { applicationId } = initialData;
     let application;
     const firstTime = !applicationId;
     if (firstTime) {
       // first time
-      application = applicationCollection.addApplication(entryPointPath);
+      application = allApplications.addApplication(
+        initialData
+      );
     }
     else {
       // reconnect
-      application = applicationCollection.getById(applicationId);
+      application = allApplications.getById(applicationId);
     }
 
     log('init', firstTime ? '(new)' : '(reconnect)', application?.entryPointPath);

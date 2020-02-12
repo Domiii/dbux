@@ -22,11 +22,11 @@ const DefaultTraceDecoratorConfig = {
     }
   },
 
-  ScheduleCallback: {
+  CallbackArgument: {
     styling: {
       after: {
         // see https://www.alt-codes.net/hourglass-symbols
-        contentText: '⧖',
+        contentText: 'ƒ',
         color: 'orange',
       }
     }

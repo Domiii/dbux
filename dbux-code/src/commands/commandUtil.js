@@ -4,9 +4,8 @@ import {
 } from 'vscode';
 
 // command regist helper
-export function registerCommand (context, commandID, func, pushToClient=false){
-
-  function _errWrap (f){
+export function registerCommand(context, commandName, func, pushToClient = false) {
+  function _errWrap(f) {
     return (...args) => {
       try {
         return f(...args);
@@ -16,10 +15,10 @@ export function registerCommand (context, commandID, func, pushToClient=false){
         debugger;
         throw err;
       }
-    }
+    };
   }
 
-  const newCommand = commands.registerCommand(commandID, _errWrap(func));
+  const newCommand = commands.registerCommand(commandName, _errWrap(func));
   if (pushToClient) context.subscriptions.push(newCommand);
 
   return newCommand;
