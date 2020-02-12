@@ -76,8 +76,13 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
+* [codeSelection] does not add deco when switching between editors (v)
+* [codeRangeQueries] does not work with overlapping Resume contexts
 * [dbuxTraceDetailsView]
-   * fix await (Resume contexts are broken)
+   * when clicking too fast, nothing happens because data hasn't updated yet
+      * solution -> queue commands
+   * fix await: overlapping Resume contexts cause "current trace" to not be found correctly
+   * start using playback controller
 * [instrumentation]
    * insert trace before function call (so we can step to function call before going down)
 * [traceSelection]

@@ -6,7 +6,6 @@ export default class Trace {
   runId: Number;
   contextId: number;
   staticTraceId: number;
-  staticContextId: number;
   
   type: TraceType;
   

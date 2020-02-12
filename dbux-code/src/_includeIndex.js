@@ -1,10 +1,10 @@
 try {
   const mods = require('./index');
-  module.exports = {
-    ...mods
-  };
+  const { activate, deactivate } = mods;
+  module.exports = { activate, deactivate };
 }
 catch (err) {
+  console.error(err);
   debugger;
   throw err;
 }

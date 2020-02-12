@@ -35,30 +35,31 @@ export default class TraceDetailsDataProvider {
 
   refresh = makeDebounce(() => {
     this.where = getCursorLocation();
-    const {
-      fpath,
-      pos
-    } = this.where;
-    
     
     this.rootNodes = [];
 
     if (traceSelection.selected) {
-      // show selected trace first
+      // 1. selected trace
       const trace = traceSelection.selected;
       const application = allApplications.getById(trace.applicationId);
       const traceNode = this._buildTraceNode(trace, application, null, true);
       this.rootNodes.push(traceNode);
     }
+    
+    if (this.where) {
+      // 2. all traces available at cursor in editor
+      const {
+        fpath,
+        pos
+      } = this.where;
 
-    this.rootNodes.push(...allApplications.selection.data.mapApplicationsOfFilePath(
-      fpath, (application, programId) => {
-        const traceNodes = this._buildTraceNodes(programId, pos, application, null);
-        return traceNodes || EmptyArray;
-      }
-    ));
-
-    // TODO: sort by time executed
+      this.rootNodes.push(...allApplications.selection.data.mapApplicationsOfFilePath(
+        fpath, (application, programId) => {
+          const traceNodes = this._buildTraceNodes(programId, pos, application, null);
+          return traceNodes || EmptyArray;
+        }
+      ));
+    }
 
     if (!this.rootNodes.length) {
       // add empty node
