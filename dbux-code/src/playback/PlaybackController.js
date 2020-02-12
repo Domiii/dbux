@@ -3,6 +3,7 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
+import traceSelection from 'dbux-data/src/traceSelection';
 import { goToTrace } from '../codeNav';
 
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
@@ -10,8 +11,6 @@ const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 export default class PlaybackController {
 
   constructor() {
-    // Listen on trace changed event
-    tracePlayback.onTraceChanged(this.handleTraceChanged);
     tracePlayback.onPause(this.handlePause);
   }
 
@@ -59,13 +58,6 @@ export default class PlaybackController {
   // ###########################################################################
   // Events
   // ###########################################################################
-
-  /**
-   * @param {Trace} trace 
-   */
-  handleTraceChanged(trace) {
-    // if (trace) goToTrace(trace);
-  }
 
   handlePause() {
     commands.executeCommand('setContext', 'dbuxPlaybackPlaying', false);

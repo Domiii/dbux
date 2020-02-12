@@ -31,30 +31,32 @@ export class TracePlayback {
   // ###########################################################################
 
   play() {
+    if (this._isPlaying) return;
     this.timer = setInterval(this._onPlay, this.timerInterval);
     this._isPlaying = true;
   }
 
   pause() {
+    if (!this._isPlaying) return;
     clearInterval(this.timer);
     this._isPlaying = false;
     this._emitPause();
   }
 
   previousTrace() {
-    if (!this.currentTrace) return this._setTrace(this._getFirstTraceInOrder());
-    else return this._setTrace(this._getPreviousTraceInOrder(this.currentTrace));
+    if (!this.currentTrace) this._setTrace(this._getFirstTraceInOrder());
+    else this._setTrace(this._getPreviousTraceInOrder(this.currentTrace));
   }
 
   nextTrace() {
-    if (!this.currentTrace) return this._setTrace(this._getFirstTraceInOrder());
-    else return this._setTrace(this._getNextTraceInOrder(this.currentTrace));
+    if (!this.currentTrace) this._setTrace(this._getFirstTraceInOrder());
+    else this._setTrace(this._getNextTraceInOrder(this.currentTrace));
   }
 
   // left
   previousTraceInContext() {
-    if (!this.currentTrace) return this._setTrace(this._getFirstTraceInOrder());
-    else return this._setTrace(this._getPreviousTraceInContext(this.currentTrace));
+    if (!this.currentTrace) this._setTrace(this._getFirstTraceInOrder());
+    else this._setTrace(this._getPreviousTraceInContext(this.currentTrace));
   }
 
   // right
@@ -87,18 +89,14 @@ export class TracePlayback {
   // ###########################################################################
 
   _onPlay = () => {
-    if (!this.nextTrace()) this.pause();
+    const currentTrace = this.currentTrace;
+    this.nextTrace();
+    if (currentTrace === this.currentTrace) this.pause();
   }
 
-  _setTrace(trace, isFromTraceSelection = false) {
-    // if trace didnt changed, return false
-    if (this.currentTrace === trace) return false;
-    else {
-      // if trace changed, return the result(may be null)
-      if (!isFromTraceSelection) traceSelection.selectTrace(trace);
-      this.currentTrace = trace;
-      this._emitTraceChanged();
-      return trace;
+  _setTrace(trace) {
+    if (this.currentTrace !== trace) {
+      traceSelection.selectTrace(trace);
     }
   }
 
@@ -224,14 +222,6 @@ export class TracePlayback {
   // Events
   // ###########################################################################
 
-  onTraceChanged(cb) {
-    this._emitter.on('traceChanged', cb);
-  }
-
-  _emitTraceChanged() {
-    this._emitter.emit('traceChanged', this.currentTrace);
-  }
-
   onPause(cb) {
     this._emitter.on('pause', cb);
   }
@@ -248,7 +238,7 @@ export class TracePlayback {
   }
 
   _handleTraceSelectionChanged = (trace) => {
-    this._setTrace(trace, true);
+    this.currentTrace = trace;
   }
 
   // ###########################################################################
