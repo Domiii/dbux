@@ -40,13 +40,11 @@ export default class Application {
     // this.relativeEntryPointPath = path.relative(entryPointPath, process.cwd()); // path relative to cwd
     this.allApplications = allApplications;
     this.dataProvider = newDataProvider(this);
-    // this.createdAt = this.updatedAt = libs.performance.now();
     this.createdAt = this.updatedAt = createdAt || Date.now();
   }
 
   addData(allData) {
     this.dataProvider.addData(allData);
-    // this.updatedAt = libs.performance.now();
     this.updatedAt = Date.now();
 
     // if (this.allApplications.getSelectedApplication() === this) {

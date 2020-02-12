@@ -124,7 +124,7 @@ export default function injectDbuxState(programPath, programState) {
      * This function keeps track of that and returns whether this is the first time visit.
      */
     onEnter(path, purpose) {
-      const key = '_dbux_entered' + purpose;
+      const key = 'enter_' + purpose;
       if (path.getData(key)) {
         return false;
       }
@@ -146,13 +146,13 @@ export default function injectDbuxState(programPath, programState) {
       if (!purpose) {
         throw new Error('Could not mark path because no purpose was given:\n' + path.toString());
       }
-      const key = '_dbux_entered' + purpose;
+      const key = 'enter_' + purpose;
       // entered.add(path);
       path.setData(key, true);
     },
 
     markExited(path, purpose) {
-      const key = '_dbux_entered' + purpose;
+      const key = 'enter_' + purpose;
       path.setData(key, true);
     },
 
@@ -240,15 +240,18 @@ export default function injectDbuxState(programPath, programState) {
       return _staticId;
     },
 
-    addResumeContext(awaitPath, locStart) {
-      checkPath(awaitPath);
+    addResumeContext(bodyOrAwaitPath, locStart) {
+      checkPath(bodyOrAwaitPath);
 
-      const _staticId = staticContexts.length;
-      const _parentId = dbuxState.getCurrentStaticContextId(awaitPath);
+      const _parentId = dbuxState.getCurrentStaticContextId(bodyOrAwaitPath);
+      const bodyParent = staticContexts[_parentId];
+      const { end } = bodyParent.loc;     // we don't know where it ends yet (can only be determined at run-time)
       const loc = {
         start: locStart,
-        end: null     // we don't know where it ends yet (can only be determined at run-time)
+        end
       };
+
+      const _staticId = staticContexts.length;
       staticContexts.push({
         type: StaticContextType.Resume,
         _staticId,

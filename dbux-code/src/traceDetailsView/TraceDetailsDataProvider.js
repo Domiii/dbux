@@ -3,10 +3,11 @@ import groupBy from 'lodash/groupBy';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
-import { getVisitedTracesAt } from '../data/codeRange';
-import { createTraceDetailsNode, EmptyNode, TraceNode, tryCreateTraceDetailNode } from './nodes/TraceDetailsNode';
+import { getTracesAt } from '../data/codeRangeQueries';
+import { createNode, EmptyNode, TraceNode, tryCreateTraceDetailNode, SelectedTraceNode } from './nodes/TraceDetailsNode';
 import { PreviousTraceTDNode, NextTraceTDNode, TypeTDNode, ValueTDNode, ApplicationTDNode } from './nodes/traceDetailNodes';
 import { getCursorLocation } from '../codeNav';
+import traceSelection from 'dbux-data/src/traceSelection';
 
 export default class TraceDetailsDataProvider {
   _onDidChangeTreeData = new EventEmitter();
@@ -38,15 +39,23 @@ export default class TraceDetailsDataProvider {
       fpath,
       pos
     } = this.where;
+    
+    
+    this.rootNodes = [];
 
-    // TODO: incorporate `traceSelection` here
+    if (traceSelection.selected) {
+      const trace = traceSelection.selected;
+      const application = allApplications.getById(trace.applicationId);
+      const traceNode = this._buildTraceNode(trace, application, null, true);
+      this.rootNodes.push(traceNode);
+    }
 
-    const rootNodes = this.rootNodes = allApplications.selection.data.mapApplicationsOfFilePath(
+    this.rootNodes.push(...allApplications.selection.data.mapApplicationsOfFilePath(
       fpath, (application, programId) => {
         const traceNodes = this._buildTraceNodes(programId, pos, application, null);
         return traceNodes || EmptyArray;
       }
-    );
+    ));
 
     // TODO: sort by time executed
 
@@ -62,9 +71,7 @@ export default class TraceDetailsDataProvider {
     // const { staticTraceId } = staticTrace;
     // const traces = application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
 
-    // TODO: let `codeTraceSelection` decide which trace(s) to show
-
-    const traces = getVisitedTracesAt(application, programId, pos);
+    const traces = getTracesAt(application, programId, pos);
     if (!traces?.length) {
       return null;
     }
@@ -85,19 +92,25 @@ export default class TraceDetailsDataProvider {
       const otherNodes = otherTraces
         .map(other => {
           const child = this._buildTraceNode(other, application, node);
-          child.collapsibleState = TreeItemCollapsibleState.Collapsed;
+          // child.collapsibleState = TreeItemCollapsibleState.Collapsed;
           return child;
         });
       // node.children.unshift(...otherNodes);  // add before
       node.children.push(...otherNodes);    // add behind
+      node.collapsibleState = TreeItemCollapsibleState.Expanded;
 
       return node;
     });
   }
 
-  _buildTraceNode(trace, application, parent) {
-    const node = createTraceDetailsNode(TraceNode, trace, application, parent);
-    node.children = this._buildTraceDetailNodes(trace, application, node);
+  _buildTraceNode(trace, application, parent, isSelected = false) {
+    const node = createNode(isSelected ? SelectedTraceNode : TraceNode, trace, application, parent);
+    if (isSelected) {
+      node.children = this._buildTraceDetailNodes(trace, application, node);
+    }
+    else {
+      node.children = [];
+    }
     return node;
   }
 

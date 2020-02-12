@@ -23,6 +23,17 @@ export default {
   },
 
   // ###########################################################################
+  // static contexts
+  // ###########################################################################
+
+  getStaticContextParent(dp: DataProvider, staticContextId) {
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    const { parentId } = staticContext;
+    return dp.collections.staticContexts.getById(parentId);
+  },
+
+
+  // ###########################################################################
   // traces
   // ###########################################################################
 
