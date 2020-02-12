@@ -131,7 +131,7 @@ export default class TraceDetailsDataProvider {
       ...this.createNavigationNodes(trace, application, parent),
 
       // other detail nodes
-      this.tryCreateTraceDetailNode(NextTraceTDNode, trace, application, parent),
+      // this.tryCreateTraceDetailNode(NextTraceTDNode, trace, application, parent),
       this.tryCreateTraceDetailNode(ApplicationTDNode, trace, application, parent),
       this.tryCreateTraceDetailNode(TypeTDNode, trace, application, parent),
       this.tryCreateTraceDetailNode(ValueTDNode, trace, application, parent),
