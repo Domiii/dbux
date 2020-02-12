@@ -13,6 +13,7 @@ export default class PlaybackController {
   constructor() {
     // Listen on trace changed event
     this.tracePlayback.onTraceChanged(this.handleTraceChanged);
+    this.tracePlayback.onPause(this.handlePause);
   }
 
   // ###########################################################################
@@ -65,6 +66,10 @@ export default class PlaybackController {
    */
   handleTraceChanged(trace) {
     // if (trace) goToTrace(trace);
+  }
+
+  handlePause() {
+    commands.executeCommand('setContext', 'dbuxPlaybackPlaying', false);
   }
 
   // ###########################################################################

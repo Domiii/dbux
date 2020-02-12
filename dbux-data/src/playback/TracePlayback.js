@@ -38,6 +38,7 @@ export class TracePlayback {
   pause() {
     clearInterval(this.timer);
     this._isPlaying = false;
+    this._emitPause();
   }
 
   previousTrace() {
@@ -229,7 +230,14 @@ export class TracePlayback {
 
   _emitTraceChanged() {
     this._emitter.emit('traceChanged', this.currentTrace);
-    log('Emitted traceChanged event with trace', this.currentTrace);
+  }
+
+  onPause(cb) {
+    this._emitter.on('pause', cb);
+  }
+
+  _emitPause() {
+    this._emitter.emit('pause');
   }
 
   _handleApplicationsChanged = () => {
@@ -263,6 +271,6 @@ export class TracePlayback {
   }
 }
 
-let tracePlayback = new TracePlayback();
+let tracePlayback = new TracePlayback(allApplications.selection.data);
 
 export default tracePlayback;
