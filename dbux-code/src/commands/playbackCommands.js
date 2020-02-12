@@ -1,16 +1,15 @@
+import { window } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
-import { registerCommand } from './commandUtil';
-
 import PlaybackController from '../playback/PlaybackController';
-
-import {
-  window
-} from 'vscode';
+import { registerCommand } from './commandUtil';
 
 const { log, debug, warn, error: logError } = newLogger('PlaybackCommands');
 
-export function initPlaybackCommands(context, playbackController: PlaybackController){
-
+/**
+ * @param {vscode.ExtensionContext} context 
+ * @param {PlaybackController} playbackController 
+ */
+export function initPlaybackCommands(context, playbackController) {
   registerCommand(context,
     'dbuxPlayback.play',
     () => playbackController.play()
@@ -40,5 +39,4 @@ export function initPlaybackCommands(context, playbackController: PlaybackContro
     'dbuxPlayback.nextTraceInContext',
     () => playbackController.nextTraceInContext()
   );
-
 }

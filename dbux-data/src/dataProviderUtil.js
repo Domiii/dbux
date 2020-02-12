@@ -1,5 +1,6 @@
-import TraceType, { hasDynamicTypes, hasValue } from 'dbux-common/src/core/constants/TraceType';
+import { hasDynamicTypes, hasValue } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
+import Trace from 'dbux-common/src/core/data/Trace';
 import DataProvider from './DataProvider';
 
 export default {
@@ -37,6 +38,92 @@ export default {
   // traces
   // ###########################################################################
 
+  // ########################################
+  // main playback functions
+  // ########################################
+
+  getNextTrace(dp: DataProvider, traceId) {
+    const { traces } = dp.collections;
+    return traces.getById(traceId + 1) || null;
+  },
+
+  getPreviousTrace(dp: DataProvider, traceId) {
+    const { traces } = dp.collections;
+    return traces.getById(traceId - 1) || null;
+  },
+
+  /**
+   * @param {DataProvider} dp 
+   * @param {Trace} trace 
+   */
+  getPreviousTraceInContext(dp, trace) {
+    const traces = dp.indexes.traces.byContext.get(trace.contextId);
+    if (!traces?.length) return null;
+
+    const binarySearch = (left, right) => {
+      const middle = Math.floor((left + right) / 2);
+      if (trace === traces[middle]) return middle;
+      if (left + 1 === right) return (traces[left] === trace) ? left : right;
+      if (traces[middle].traceId < trace.traceId) return binarySearch(middle, right);
+      if (trace.traceId < traces[middle].traceId) return binarySearch(left, middle);
+      throw Error('No return value in binarySearch.');
+    };
+
+    const indexInTracesInTraces = binarySearch(0, traces.length - 1);
+    if (indexInTracesInTraces === 0) return trace;
+    else return traces[indexInTracesInTraces - 1];
+  },
+
+  /**
+   * @param {DataProvider} dp 
+   * @param {Trace} trace 
+   */
+  getNextTraceInContext(dp, trace) {
+    const traces = dp.indexes.traces.byContext.get(trace.contextId);
+    if (!traces?.length) return null;
+
+    const binarySearch = (left, right) => {
+      const middle = Math.floor((left + right) / 2);
+      if (trace === traces[middle]) return middle;
+      if (left + 1 === right) return (traces[left] === trace) ? left : right;
+      if (traces[middle].traceId < trace.traceId) return binarySearch(middle, right);
+      if (trace.traceId < traces[middle].traceId) return binarySearch(left, middle);
+      throw Error('No return value in binarySearch.');
+    };
+
+    const indexInTracesInTraces = binarySearch(0, traces.length - 1);
+    if (indexInTracesInTraces === traces.length - 1) return trace;
+    else return traces[indexInTracesInTraces + 1];
+  },
+
+  /**
+   * @param {DataProvider} dp 
+   * @param {Trace} trace 
+   */
+  getPreviousTraceInParentContext(dp, trace) {
+    const traces = dp.indexes.traces.byContext.get(trace.contextId);
+    if (trace === traces[0]) {
+      return dp.collections.traces.getById(trace.traceId - 1) || trace;
+    }
+    else return traces[0];
+  },
+
+  /**
+   * @param {DataProvider} dp 
+   * @param {Trace} trace 
+   */
+  getNextTraceInParentContext(dp, trace) {
+    const traces = dp.indexes.traces.byContext.get(trace.contextId);
+    if (trace === traces[traces.length - 1]) {
+      return dp.collections.traces.getById(trace.traceId + 1) || trace;
+    }
+    else return traces[traces.length - 1];
+  },
+
+  // ########################################
+  // others
+  // ########################################
+
   getTraceType(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const {
@@ -48,16 +135,6 @@ export default {
       type: staticType,
     } = staticTrace;
     return dynamicType || staticType;
-  },
-
-  getNextTrace(dp: DataProvider, traceId) {
-    const { traces } = dp.collections;
-    return traces.getById(traceId + 1) || null;
-  },
-
-  getPreviousTrace(dp: DataProvider, traceId) {
-    const { traces } = dp.collections;
-    return traces.getById(traceId - 1) || null;
   },
 
   getFirstTraceOfContext(dp: DataProvider, contextId) {
@@ -90,36 +167,6 @@ export default {
       return null;
     }
     return traces[traces.length - 1];
-  },
-
-  getPreviousTraceInContext(dp: DataProvider, traceId) {
-    const trace = dp.collections.traces.getById(traceId);
-    const traces = dp.indexes.traces.byContext.get(trace.contextId);
-    if (!traces?.length) {
-      return null;
-    }
-    // TODO: don't use array.indexOf
-    const index = traces.indexOf(trace);
-    if (index === 0) {
-      if (traceId !== 1) traceId--;
-      return dp.collections.traces.getById(traceId);
-    }
-    else return traces[index - 1];
-  },
-
-  getNextTraceInContext(dp: DataProvider, traceId) {
-    const trace = dp.collections.traces.getById(traceId);
-    const traces = dp.indexes.traces.byContext.get(trace.contextId);
-    if (!traces?.length) {
-      return null;
-    }
-    // TODO: don't use array.indexOf
-    const index = traces.indexOf(trace);
-    if (index === traces.length - 1) {
-      if (traceId !== dp.collections.traces.size) traceId++;
-      return dp.collections.traces.getById(traceId);
-    }
-    else return traces[index + 1];
   },
 
   getFirstContextsInRuns(dp: DataProvider) {

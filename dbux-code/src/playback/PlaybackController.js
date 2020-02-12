@@ -3,7 +3,6 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
-import traceSelection from 'dbux-data/src/traceSelection';
 import { goToTrace } from '../codeNav';
 
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
@@ -30,29 +29,19 @@ export default class PlaybackController {
   }
 
   previousTrace = () => {
-    tracePlayback.previousTrace();
+    tracePlayback.gotoPreviousTrace();
   }
 
   nextTrace = () => {
-    tracePlayback.nextTrace();
+    tracePlayback.gotoNextTrace();
   }
 
-  // broken
   previousTraceInContext = () => {
-    const collectionSize = this.getCollectionSize();
-    if (!collectionSize) return;
-    this.currentTrace = this.dataProvider.util.getPreviousTraceInContext(this.traceId);
-    this.traceId = this.currentTrace.traceId;
-    goToTrace(this.currentTrace);
+    tracePlayback.gotoPreviousParentContext();
   }
 
-  // broken
   nextTraceInContext = () => {
-    const collectionSize = this.getCollectionSize();
-    if (!collectionSize) return;
-    this.currentTrace = this.dataProvider.util.getPreviousTraceInContext(this.traceId);
-    this.traceId = this.currentTrace.traceId;
-    goToTrace(this.currentTrace);
+    tracePlayback.gotoNextParentContext();
   }
 
   // ###########################################################################
