@@ -19,10 +19,6 @@ export class BaseNode extends TreeItem {
 
     // treeItem data
     this.contextValue = 'detailsBaseNode';
-    this.command = {
-      command: 'dbuxTraceDetailsView.itemClick',
-      arguments: [this]
-    };
 
     this.iconPath = iconPath;
 
