@@ -45,7 +45,7 @@ module.exports = {
   target: 'node',
   plugins: webpackPlugins,
   context: path.join(projectRoot, '.'),
-  entry: projectRoot + '/src/index.js',
+  entry: projectRoot + '/src/_includeIndex.js',
   output: {
     path: path.join(projectRoot, outputFolderName),
     filename: outFile,
