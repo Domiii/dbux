@@ -14,6 +14,12 @@ const DefaultPort = 3374;
 const Remote = `ws://localhost:${DefaultPort}`;
 
 // ###########################################################################
+// time management
+// ###########################################################################
+
+const createdAt = Date.now();
+
+// ###########################################################################
 // utilities
 // ###########################################################################
 
@@ -108,7 +114,7 @@ export default class Client {
       }
 
       // get time origin - see https://developer.mozilla.org/en-US/docs/Web/API/DOMHighResTimeStamp#The_time_origin
-      const createdAt = Math.round(Date.now() - universalLibs.performance.now());
+      // const createdAt = Math.round(Date.now() - universalLibs.performance.now());
       initPacket = {
         entryPointPath,
         createdAt
