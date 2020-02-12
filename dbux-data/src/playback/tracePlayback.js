@@ -45,101 +45,94 @@ export class TracePlayback {
 
   gotoPreviousTrace() {
     if (!this.currentTrace) return;
-    this._setTrace(this.getPreviousTrace(this.currentTrace));
+    this._setTrace(this.getPreviousTrace());
   }
 
   gotoNextTrace() {
-    // if (!this.currentTrace) return;
-    if (!this.currentTrace) this._setTrace(this.firstTracesInOrder.getFirstTraceInOrder());
-    this._setTrace(this.getNextTrace(this.currentTrace));
+    if (!this.currentTrace) return;
+    this._setTrace(this.getNextTrace());
   }
 
   gotoPreviousInContext() {
     if (!this.currentTrace) return;
-    this._setTrace(this.getPreviousInContext(this.currentTrace));
+    this._setTrace(this.getPreviousInContext());
   }
 
   gotoNextInContext() {
     if (!this.currentTrace) return;
-    this._setTrace(this.getNextInContext(this.currentTrace));
+    this._setTrace(this.getNextInContext());
   }
 
   gotoPreviousParentContext() {
     if (!this.currentTrace) return;
-    this._setTrace(this.getPreviousParentContext(this.currentTrace));
+    this._setTrace(this.getPreviousParentContext());
   }
 
   gotoNextParentContext() {
     if (!this.currentTrace) return;
-    this._setTrace(this.getNextParentContext(this.currentTrace));
+    this._setTrace(this.getNextParentContext());
   }
 
   gotoPreviousChildContext() {
-
+    if (!this.currentTrace) return;
+    this._setTrace(this.getPreviousChildContext());
   }
 
   gotoNextChildContext() {
-
+    if (!this.currentTrace) return;
+    this._setTrace(this.getNextChildContext());
   }
 
   // ###########################################################################
   // Main play functions (Getter)
   // ###########################################################################
 
-  /**
-   * @param {Trace} trace 
-   */
-  getPreviousTrace(trace) {
-    const prevTrace = this._getPreviousTraceInApplication(trace);
-    if (prevTrace?.runId !== trace.runId) {
+  getPreviousTrace() {
+    const prevTrace = this._getPreviousTraceInApplication(this.currentTrace);
+    if (prevTrace?.runId !== this.currentTrace.runId) {
       // if it is the first trace in application, find the previous run
-      return this._getLastTraceInPreviousRun(trace) || trace;
+      return this._getLastTraceInPreviousRun(this.currentTrace) || this.currentTrace;
     }
-    else return prevTrace || trace;
+    else return prevTrace || this.currentTrace;
   }
 
-  /**
-   * @param {Trace} trace 
-   */
-  getNextTrace(trace) {
-    const nextTrace = this._getNextTraceInApplication(trace);
-    if (nextTrace?.runId !== trace.runId) {
+  getNextTrace() {
+    const nextTrace = this._getNextTraceInApplication(this.currentTrace);
+    if (nextTrace?.runId !== this.currentTrace.runId) {
       // if it is the last trace in application, find the next run
-      return this._getFirstTraceInNextRun(trace) || trace;
+      return this._getFirstTraceInNextRun(this.currentTrace) || this.currentTrace;
     }
-    else return nextTrace || trace;
+    else return nextTrace || this.currentTrace;
   }
 
-  /**
-   * @param {Trace} trace 
-   */
-  getPreviousInContext(trace) {
-    const dp = this._getDataProviderOfTrace(trace);
-    return dp.util.getPreviousTraceInContext(trace);
+  getPreviousInContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getPreviousTraceInContext(this.currentTrace);
   }
 
-  /**
-   * @param {Trace} trace 
-   */
-  getNextInContext(trace) {
-    const dp = this._getDataProviderOfTrace(trace);
-    return dp.util.getNextTraceInContext(trace);
+  getNextInContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getNextTraceInContext(this.currentTrace);
   }
 
-  /**
-   * @param {Trace} trace 
-   */
-  getPreviousParentContext(trace) {
-    const dp = this._getDataProviderOfTrace(trace);
-    return dp.util.getPreviousTraceInParentContext(trace);
+  getPreviousParentContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getPreviousTraceInParentContext(this.currentTrace);
   }
 
-  /**
-   * @param {Trace} trace 
-   */
-  getNextParentContext(trace) {
-    const dp = this._getDataProviderOfTrace(trace);
-    return dp.util.getNextTraceInParentContext(trace);
+  getNextParentContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getNextTraceInParentContext(this.currentTrace);
+  }
+
+  getPreviousChildContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getPreviousTraceInChildContext(this.currentTrace);
+  }
+
+  getNextChildContext() {
+    const dp = this._getDataProviderOfTrace(this.currentTrace);
+    return dp.util.getNextTraceInChildContext(this.currentTrace);
   }
 
   // ###########################################################################

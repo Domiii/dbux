@@ -42,16 +42,6 @@ export default {
   // main playback functions
   // ########################################
 
-  getNextTrace(dp: DataProvider, traceId) {
-    const { traces } = dp.collections;
-    return traces.getById(traceId + 1) || null;
-  },
-
-  getPreviousTrace(dp: DataProvider, traceId) {
-    const { traces } = dp.collections;
-    return traces.getById(traceId - 1) || null;
-  },
-
   /**
    * @param {DataProvider} dp 
    * @param {Trace} trace 
@@ -70,7 +60,7 @@ export default {
     };
 
     const indexInTracesInTraces = binarySearch(0, traces.length - 1);
-    if (indexInTracesInTraces === 0) return trace;
+    if (indexInTracesInTraces === 0) return null;
     else return traces[indexInTracesInTraces - 1];
   },
 
@@ -84,15 +74,15 @@ export default {
 
     const binarySearch = (left, right) => {
       const middle = Math.floor((left + right) / 2);
-      if (trace === traces[middle]) return middle;
       if (left + 1 === right) return (traces[left] === trace) ? left : right;
+      if (traces[middle].traceId === trace.traceId) return middle;
       if (traces[middle].traceId < trace.traceId) return binarySearch(middle, right);
-      if (trace.traceId < traces[middle].traceId) return binarySearch(left, middle);
+      if (traces[middle].traceId > trace.traceId) return binarySearch(left, middle);
       throw Error('No return value in binarySearch.');
     };
 
     const indexInTracesInTraces = binarySearch(0, traces.length - 1);
-    if (indexInTracesInTraces === traces.length - 1) return trace;
+    if (indexInTracesInTraces === traces.length - 1) return null;
     else return traces[indexInTracesInTraces + 1];
   },
 
@@ -103,7 +93,7 @@ export default {
   getPreviousTraceInParentContext(dp, trace) {
     const traces = dp.indexes.traces.byContext.get(trace.contextId);
     if (trace === traces[0]) {
-      return dp.collections.traces.getById(trace.traceId - 1) || trace;
+      return dp.collections.traces.getById(trace.traceId - 1) || null;
     }
     else return traces[0];
   },
@@ -115,9 +105,55 @@ export default {
   getNextTraceInParentContext(dp, trace) {
     const traces = dp.indexes.traces.byContext.get(trace.contextId);
     if (trace === traces[traces.length - 1]) {
-      return dp.collections.traces.getById(trace.traceId + 1) || trace;
+      return dp.collections.traces.getById(trace.traceId + 1) || null;
     }
     else return traces[traces.length - 1];
+  },
+
+  /**
+   * @param {DataProvider} dp 
+   * @param {Trace} trace 
+   */
+  getPreviousTraceInChildContext(dp, trace) {
+    let { traceId } = trace;
+    let prevTrace = trace;
+    let currentTrace;
+    do {
+      currentTrace = prevTrace;
+      prevTrace = dp.collections.traces.getById(traceId - 1);
+      traceId--;
+      if (!prevTrace) return null;
+    }
+    while (currentTrace.contextId === prevTrace.contextId);
+
+    if (currentTrace.contextId > prevTrace.contextId) return null;
+    if (currentTrace.contextId < prevTrace.contextId) {
+      if (trace === currentTrace) return prevTrace;
+      else return currentTrace;
+    }
+  },
+
+  /**
+   * @param {DataProvider} dp 
+   * @param {Trace} trace 
+   */
+  getNextTraceInChildContext(dp, trace) {
+    let { traceId } = trace;
+    let nextTrace = trace;
+    let currentTrace;
+    do {
+      currentTrace = nextTrace;
+      nextTrace = dp.collections.traces.getById(traceId + 1);
+      traceId++;
+      if (!nextTrace) return null;
+    }
+    while (currentTrace.contextId === nextTrace.contextId);
+
+    if (currentTrace.contextId > nextTrace.contextId) return null;
+    if (currentTrace.contextId < nextTrace.contextId) {
+      if (trace === currentTrace) return nextTrace;
+      else return currentTrace;
+    }
   },
 
   // ########################################
