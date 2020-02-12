@@ -30,6 +30,17 @@ export class StaticContextCollection extends Collection {
       this._all.push(entry);
       this._send(entry);
     }
+
+    // fix-up parentId:
+    for (let i = 1; i < list.length; ++i) {
+      const entry = list[i];
+      if (!entry._parentId) {
+        continue;
+      }
+      const parent = this.getContext(programId, entry._parentId);
+      entry.parentId = parent.staticId;
+      delete entry._parentId;
+    }
   }
 
   getContexts(programId) {

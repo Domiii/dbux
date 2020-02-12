@@ -4,6 +4,9 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
+/**
+ * NOTE: this index will omit `Resume` staticContexts, since those have an unknown execution range
+ */
 export default class StaticContextsByFileIndex extends CollectionIndex<StaticContext> {
   constructor() {
     super('staticContexts', 'byFile');

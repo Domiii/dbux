@@ -6,7 +6,12 @@ import codeDecorations, { CodeDecoRegistration } from './codeDeco/codeDecoration
 import { babelLocToCodeRange } from './helpers/locHelper';
 
 
+// ###########################################################################
+// selected trace deco
+// ###########################################################################
+
 // TODO: clean up `selectedTrace*` stuff and integrate with playback feature
+
 const selectedTraceDecoType = {
   border: '1px solid blue'
 };
@@ -34,13 +39,27 @@ function selectTraceInEditor(trace) {
   selectedTraceRegistration.setDeco(window.activeTextEditor, deco);
 }
 
+// ###########################################################################
+// utilities
+// ###########################################################################
+
+// no utilities yet
+
+// ###########################################################################
+// event handlers
+// ###########################################################################
+
 /**
  * @param {TextEditorSelectionChangeEvent} evt
  */
 function handleCursorChanged(evt) {
   const where = getCursorLocation();
-  // TODO: select at location
+  // TODO: if already selected a trace, find closest traces to that at `where`
 }
+
+// ###########################################################################
+// init
+// ###########################################################################
 
 export function initTraceSelection(context) {
   // show + goto trace if selected

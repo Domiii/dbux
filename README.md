@@ -45,42 +45,19 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 # TODO
 
 ## TODO (dbux-code + dbux-data only)
-* replace `ProgramFilePathByTraceIdQuery` with a `util` function instead (no need to cache)
 * [playback] finish first version of playback feature (v0.1)
-* add multiple "step-through" modes (`StepMode = new Enum(...)`) to `playback` feature:
-   1. `StepMode.All`
-      * the first version of it
-   1. `StepMode.ContextOnly` (default)
-      * skip all traces that are following `currentTrace` (in `traces._all`) and have the same `contextId`
-      * step to the last trace in context
-      * create `TracesContextSwitchOnlyIndex` for this?
-         * NOTE: For `StepMode.All` we work against the array of all traces; for this `StepMode`, we want to create a smaller array of traces. This `Index` represents that array by filtering out all non-matching traces.
-         * identifying any pair of two neighboring traces `t1` and `t2` where `t1.contextId` !== `t2.contextId`, plus first and last trace
-         * `makeKey` can just return `true` or `false` to act as a binary filter
-            * NOTE: When `makeKey` returns `false` the `entry` is filtered out, will not participate in `Index`
-            * NOTE: `true` gets implicitely cast to `1`
-* [playback] when stepping through, render the value of `TraceType.ExpressionResult` inline
-* switch between `StepMode`s via button or command
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `allApplications`
    * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
 * [callstackView]
-  * actually: a callstack is actually a single slice of a complex call graph over time
-  * allow to search for path between any two contexts
-* [playback] add awesome keyboard controls~
-   * when "in playback mode" use arrow keys (and maybe a few other keys) to jump around very quickly
-   * can we do it like [`jumpy`](https://marketplace.visualstudio.com/items?itemName=wmaurer.vscode-jumpy) ([source](https://github.com/krnik/vscode-jumpy))?
-      * Type pseudo "event handler" - https://github.com/wmaurer/vscode-jumpy/blob/master/src/extension.ts#L130
-   * Problem: `vscode` has some issue handling the `type` command and it's friends
-      * [Stacking of type event handlers + onDidType event](https://github.com/Microsoft/vscode/issues/13441)
-      * https://github.com/microsoft/vscode/issues/65876
-* [codeDeco] add an `BlurBackgroundMode` `Enum`
-   * `BlurBackgroundMode.Application` - "gray out" all code that is not in any executed `context`
-   * more future modes:
-      * `CurrentStack` - gray out all code that is not on current `stack`
-         * also need to modify `dbux-babel-plugin` to store `rootContextId`
-   * more future work (not yet):
-      * e.g. "gray out" with higher granularity; gray out everything except all traces that were executed
+   * NOTE: a callstack is actually a single slice of a complex call graph over time
+   * render callstack of "context of `traceSelection.selected`" all the way to its root
+   * top: context of selected trace
+   * if no parent, see if it has a `schedulerTrace` and keep going from there
+   * if context has both `parentId` and `schedulerTrace`, add callstack from `schedulerTrace` to its root as first child
+   * label: `context.displayName`
+   * description: loc.start@where
+   * when clicking a node: select the trace of the call of the next guy in context
 * add a search bar to `dbuxContextView` (search by `displayName` and `filePath`)
    * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
    * when entering search terms, only display matching nodes
@@ -92,17 +69,11 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * add a button to the top right to toggle (show/hide) all intrusive features
    * includes: `codeDeco`, and all kinds of extra buttons (such as `playback`)
    * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+X CTRL+C` (need every single key))
-* `playback` + `step` be able to use keyboard   
-* add new index: `TracesByProgramIndex`
-   * key = `programId`
 * display a warning at the top of EditorWindow:
-   * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
    * if it has been edited after the time of it's most recent `Program` `Context`
+   * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
    * if it is very large and thus will slow things down (e.g. > x traces?)
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
-   * (is that possible?)
-* design a proper extension config API; make the following configurable:
-   * `codeDeco.blurBackgroundMode`
 
 ## TODO (other)
 * [instrumentation]
@@ -118,15 +89,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * when jumping between traces, need a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
    * integrate with `Playback`
-* [callstack]
-   * render callstack of "context of `traceSelection.selected`" all the way to its root
-      * if no parent, see if it has a `schedulerTrace` and pick that one
-      * different icon for 
-   * top: context of selected trace (sort all contexts by )
-   * children: no children for now
-   * label: `context.displayName`
-   * description: loc.start@where
-   * when clicking a node: select the trace of the call of the next guy in context
+* [cli] allow to easily run multiple applications at once
+   * (for proper multi-application testing)
 * [dbuxTraceDetailsView]
    * on refresh: render `selectedTrace` at top (and other nodes at cursor)
       * the heuristics to determine the trace at cursor are not accurate enough
@@ -192,8 +156,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * (all details of one type aggregated into one node?)
       * by-context
    * long list tool
-   * improve performance of `getVisitedTracesAt`
-      * first find `staticTraces`
+   * [performance] allow `getTracesAt` to deal with long iterations
+      * first find `staticTraces`?
       * `iterateTracesFront`
       * `iterateTracesBack`
       * `getTraceCount`
@@ -226,15 +190,25 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 
 ## Possible future work
-* [codeDeco] add complex in-line widgets to let user interact with traces and contexts?
-   * probably not necessary, as we are using `selectionContextView` instead (for now)
-   * [`gitlens`](https://github.com/eamodio/vscode-gitlens/tree/master/src) has the feature in its inline `blame` decorations
+* [playback] add awesome keyboard controls~
+   * when "in playback mode" use arrow keys (and maybe a few other keys) to jump around very quickly
+   * can we do it like [`jumpy`](https://marketplace.visualstudio.com/items?itemName=wmaurer.vscode-jumpy) ([source](https://github.com/krnik/vscode-jumpy))?
+      * Type pseudo "event handler" - https://github.com/wmaurer/vscode-jumpy/blob/master/src/extension.ts#L130
+   * Problem: `vscode` has some issue handling the `type` command and it's friends
+      * [Stacking of type event handlers + onDidType event](https://github.com/Microsoft/vscode/issues/13441)
+      * https://github.com/microsoft/vscode/issues/65876
+* [codeDeco] add an `BlurBackgroundMode` `Enum`
+   * `BlurBackgroundMode.Application` - "gray out" all code that is not in any executed `context`
+   * more future modes:
+      * `CurrentStack` - gray out all code that is not on current `stack`
+         * also need to modify `dbux-babel-plugin` to store `rootContextId`
+   * more future work (not yet):
+      * e.g. "gray out" with higher granularity; gray out everything except all traces that were executed
 * integrate `dbux` with at least one testing methodology
    * case-studies
 * in `ContextTreeView`, make text of all nodes that do not belong to the current `Program` semi-transparent
    * can use `TracesByProgramIndex` for this
 * serialize/deserialize all data, survive VSCode restart/reload
-* fix: in `dbuxState.add{Resume,Static}Context`, we set `_parentId` and `parent` but do not properly lookup global id later
 
 
 ## Fancy ideas (Dev)

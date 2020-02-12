@@ -77,7 +77,7 @@ export class EmptyNode extends BaseNode {
 export class TraceNode extends BaseNode {
   init(trace) {
     this.trace = trace;
-    this.collapsibleState = TreeItemCollapsibleState.Expanded;
+    this.collapsibleState = TreeItemCollapsibleState.None;
 
     // description
     const { createdAt, dataProvider } = this.application;
@@ -90,10 +90,6 @@ export class TraceNode extends BaseNode {
 
   _handleClick() {
     traceSelection.selectTrace(this.trace);
-  }
-
-  static get nodeType() {
-    return TraceDetailsNodeType.Trace;
   }
 
   static makeLabel(trace: Trace, application: Application) {
@@ -116,10 +112,28 @@ export class TraceNode extends BaseNode {
   }
 }
 
+export class SelectedTraceNode extends TraceNode {
+  init(trace) {
+    super.init(trace);
+
+    this.collapsibleState = TreeItemCollapsibleState.Expanded;
+  }
+
+  static makeLabel(trace: Trace, application: Application) {
+    const label = TraceNode.makeLabel(trace, application);
+
+    return `${label}`;
+  }
+  
+  static makeIconPath(trace: Trace) {
+    return 'play.svg';
+  }
+}
+
 
 let _lastId = 0;
 
-export function createTraceDetailsNode(
+export function createNode(
   NodeClass, entry, application, parent, treeItemProps = EmptyObject): BaseNode {
   const label = NodeClass.makeLabel(entry, application, parent);
   const relativeIconPath = NodeClass.makeIconPath && NodeClass.makeIconPath(entry, application, parent);
@@ -139,5 +153,5 @@ export function tryCreateTraceDetailNode(NodeClass, trace, application, parent) 
   const treeItemProps = {
     trace
   };
-  return createTraceDetailsNode(NodeClass, detail, application, parent, treeItemProps);
+  return createNode(NodeClass, detail, application, parent, treeItemProps);
 }

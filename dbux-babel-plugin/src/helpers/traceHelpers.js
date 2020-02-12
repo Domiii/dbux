@@ -26,8 +26,8 @@ export const buildTraceNoValue = function buildTraceNoValue(templ, path, state, 
  * it sometimes generates `ExpressionStatement` instead of `CallExpression`.
  * (specifically, when trying to wrap a `spreadArgument`)
  */
-function buildTraceExpr(expressionPath, state, methodName, traceType) {
-  const traceId = state.addTrace(expressionPath, traceType);
+function buildTraceExpr(expressionPath, state, methodName, traceType, originalPath) {
+  const traceId = state.addTrace(originalPath || expressionPath, traceType);
   const { ids: { dbux } } = state;
 
   return t.callExpression(
@@ -49,18 +49,19 @@ export const traceWrapExpression = _traceWrapExpression.bind(
 );
 
 export function traceWrapArg(argPath, state) {
+  const originalPath = argPath;
   if (argPath.isSpreadElement()) {
     argPath = argPath.get('argument');
   }
-  _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state);
+  _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, originalPath);
 }
 
-function _traceWrapExpression(methodName, traceType, expressionPath, state) {
+function _traceWrapExpression(methodName, traceType, expressionPath, state, originalPath = null) {
   // if (t.isLiteral(node)) {
   //   // don't care about literals
   //   return;
   // }
-  const newNode = buildTraceExpr(expressionPath, state, methodName, traceType);
+  const newNode = buildTraceExpr(expressionPath, state, methodName, traceType, originalPath);
   expressionPath.replaceWith(newNode);
 
   state.onCopy(expressionPath, expressionPath.get('arguments.1'), 'trace');

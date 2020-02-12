@@ -27,6 +27,9 @@ sharedDeps.forEach(dep => moduleAlias.addAlias(dep, path.join(dbuxRoot, 'node_mo
 const dbuxBabelPlugin = require('dbux-babel-plugin');
 const cliBabelOptions = require(path.join(cliDir, 'babel.config.js'));
 
+// preset-env by default converts to es5 -> so we delete it (for now)
+delete cliBabelOptions.presets;
+
 cliBabelOptions.plugins.push(dbuxBabelPlugin);
 cliBabelOptions.sourceMaps = false;
 
