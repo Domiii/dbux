@@ -15,7 +15,7 @@ export function functionNoName(functionPath) {
   return '(anonymous)';
 }
 
-export function getCallbackDisplayName(functionPath) {
+function getCallbackDisplayName(functionPath) {
   const { parentPath } = functionPath;
   const calleePath = parentPath.get('callee') || parentPath.parentPath?.get('callee');
   if (calleePath) {

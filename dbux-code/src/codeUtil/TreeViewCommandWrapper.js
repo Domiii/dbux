@@ -64,19 +64,20 @@ export default class TreeViewCommandWrapper {
   }
 
   _handleClick = (node) => {
-    if (!this._clickedBeforeRefresh) {
-      this._doClick(node);
-    }
-    else {
-      // queue one
-      console.debug('click queue', this._queue.length, node.constructor.name);
-      this._queue.push(this.getPath(node));
-    }
+    // NOTE: queueing is experimental and currently disabled
+    // if (!this._clickedBeforeRefresh) {
+    this._doClick(node);
+    // }
+    // else {
+    //   // queue one
+    //   console.debug('click queue', this._queue.length, node.constructor.name);
+    //   this._queue.push(this.getPath(node));
+    // }
   }
 
   notifyRefresh = () => {
     // dequeue one
-    console.debug('refresh', this._queue.length);
+    // console.debug('refresh', this._queue.length);
     this._clickedBeforeRefresh = false;
     this._processQueue();
   }

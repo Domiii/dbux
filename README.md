@@ -78,14 +78,14 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
-* [instrumentation] insert trace before function call
-   * (Goal: we can step to function call before going down)
-   * PROBLEM: cannot easily get "last trace before function call" 
-      * either: before function call
-      * or: last argument
-         (however last argument might already have been instrumented)
+* [instrumentation]
+   * `ExecuteCallback` labels appear in the wrong order because of chain rule
+      * SLN: unwrap wrapped callbacks before re-wrapping them
+* trace/context labeling
+   * `ExecuteCallback` trace captures last trace in parent context, instead of the `CallArg` trace?
+      * e.g.: `$on`'s callback shows `app.js` as previous trace
 * [dataView]
-   * a more complete approach to understanding values in the current circumstance
+   * a more complete approach to understanding values in current context
    * need to properly destruct
       * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
 * [instrumentation] traces are not correctly added to their `Resume` context
@@ -192,6 +192,15 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * add testing for serialization + deserialization (since it can easily cause a ton of pain)
 * improve value serialization to skip objects that are too big
 
+
+## Recently done
+* [instrumentation] insert trace before function call
+   * (Goal: we can step to function call before going down)
+   * PROBLEM: cannot easily get "last trace before function call" 
+      * either: before function call
+      * or: last argument
+         (however last argument might already have been instrumented)
+   * SLN: Only add a trace in front, if it has no arguments
 
 
 ## Possible future work

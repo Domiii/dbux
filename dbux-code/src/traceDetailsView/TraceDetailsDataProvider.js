@@ -1,12 +1,12 @@
 import { EventEmitter, TreeItemCollapsibleState } from "vscode";
 import groupBy from 'lodash/groupBy';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { makeDebounce } from 'dbux-common/src/util/scheduling';
-import { EmptyArray, EmptyObject } from 'dbux-common/src/util/arrayUtil';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { getTracesAt } from '../data/codeRangeQueries';
 import { EmptyNode, TraceNode, SelectedTraceNode } from './nodes/TraceDetailsNode';
-import { NavigationTDNode, NavigationNodeClasses, TypeTDNode, ValueTDNode, ApplicationTDNode, NextTraceTDNode } from './nodes/traceDetailNodes';
+import { NavigationTDNode, NavigationNodeClasses, TypeTDNode, ValueTDNode, ApplicationTDNode, NextTraceTDNode, ContextTDNode, DetailNodeClasses } from './nodes/traceDetailNodes';
 import { getCursorLocation } from '../codeNav';
 import { getThemeResourcePath } from '../resources';
 import TreeViewCommandWrapper from '../codeUtil/TreeViewCommandWrapper';
@@ -45,7 +45,7 @@ export default class TraceDetailsDataProvider {
     if (traceSelection.selected) {
       // 1. selected trace
       const trace = traceSelection.selected;
-      console.debug('refreshed trace', trace.traceId);
+      // console.debug('refreshed trace', trace.traceId);
       const application = allApplications.getById(trace.applicationId);
       const traceNode = this._buildTraceNode(trace, application, null, true);
       this.rootNodes.push(traceNode);
@@ -131,10 +131,7 @@ export default class TraceDetailsDataProvider {
       ...this.createNavigationNodes(trace, application, parent),
 
       // other detail nodes
-      // this.tryCreateTraceDetailNode(NextTraceTDNode, trace, application, parent),
-      this.tryCreateTraceDetailNode(ApplicationTDNode, trace, application, parent),
-      this.tryCreateTraceDetailNode(TypeTDNode, trace, application, parent),
-      this.tryCreateTraceDetailNode(ValueTDNode, trace, application, parent),
+      ...this.createDetailNodes(trace, application, parent)
     ].filter(node => !!node);
 
     return nodes;
@@ -193,6 +190,13 @@ export default class TraceDetailsDataProvider {
     return node;
   }
 
+  // ###########################################################################
+  // Detail nodes
+  // ###########################################################################
+
+  createDetailNodes(trace, application, parent) {
+    return DetailNodeClasses.map(NodeClass => this.tryCreateTraceDetailNode(NodeClass, trace, application, parent));
+  }
 
   tryCreateTraceDetailNode(NodeClass, trace, application, parent) {
     const detail = NodeClass.makeTraceDetail(trace, application, parent);
@@ -204,13 +208,23 @@ export default class TraceDetailsDataProvider {
     };
     return this.createNode(NodeClass, detail, application, parent, treeItemProps);
   }
+  
+  // ###########################################################################
+  // Navigation nodes
+  // ###########################################################################
+
+  createNavigationNodes(trace, application, parent) : NavigationTDNode[] {
+    return NavigationNodeClasses.map(NodeClass => {
+      return this.createNavigationNode(NodeClass, trace, application, parent);
+    });
+  }
 
   createNavigationNode(NodeClass, trace, application, parent) : NavigationTDNode {
-    const arrow = NodeClass.makeArrow(trace, application, parent);
     const { controlName } = NodeClass;
     const targetTrace = NodeClass.getTargetTrace(controlName);
     let label;
     if (targetTrace) {
+      const arrow = NodeClass.makeArrow(trace, targetTrace, application, parent);
       label = `${arrow} ${TraceNode.makeLabel(targetTrace, application, parent)}`;
     }
     else {
@@ -228,12 +242,6 @@ export default class TraceDetailsDataProvider {
     node.init();
     this._onNewNode(node);
     return node;
-  }
-
-  createNavigationNodes(trace, application, parent) : NavigationTDNode[] {
-    return NavigationNodeClasses.map(NodeClass => {
-      return this.createNavigationNode(NodeClass, trace, application, parent);
-    });
   }
 }
 

@@ -4,6 +4,7 @@ import { getBasename } from 'dbux-common/src/util/pathUtil';
 import * as t from '@babel/types';
 
 import { getPresentableString, toSourceStringWithoutComments } from './helpers/misc';
+import { getFunctionDisplayName } from './helpers/functionHelpers';
 
 function checkPath(path) {
   if (!path.node.loc) {
@@ -23,6 +24,7 @@ const traceCustomizationsByType = {
   // NOTE: PushCallback + PopCallback are sharing the StaticTrace of `CallbackArgument` which pegs on `CallArgument` (so they won't pass through here)
   // [TraceType.PushCallback]: tracePathStart,
   // [TraceType.PopCallback]: tracePathEnd,
+  [TraceType.BeforeExpression]: traceBeforeExpression,
 
   [TraceType.Await]: tracePathEnd,
   [TraceType.Resume]: tracePathEnd,
@@ -69,12 +71,29 @@ function tracePathEnd(path, state, thin) {
   };
 }
 
+function getTraceDisplayName(path, state) {
+  let displayName;
+  if (path.isFunction()) {
+    displayName = getFunctionDisplayName(path);
+  }
+  else {
+    const str = toSourceStringWithoutComments(path.node);
+    displayName = getPresentableString(str, 30);
+  }
+  return displayName;
+}
+
+function traceBeforeExpression(path, state) {
+  return {
+    ...tracePathStart(path, state),
+    displayName: getTraceDisplayName(path, state)
+  };
+}
+
 function traceDefault(path, state) {
   // const parentStaticId = state.getParentStaticContextId(path);
 
-  // TODO: if we really need the `displayName`, improve performance
-  const str = toSourceStringWithoutComments(path.node);
-  const displayName = getPresentableString(str, 30);
+  let displayName = getTraceDisplayName(path, state);
   // const displayName = '';
 
   const { loc } = path.node;

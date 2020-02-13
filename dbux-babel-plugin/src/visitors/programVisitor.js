@@ -105,11 +105,18 @@ function enter(path, state) {
   // inject data + methods that we are going to use for instrumentation
   injectDbuxState(path, state);
 
+  const {
+    fileName,
+    filePath,
+  } = state;
+
   // staticProgramContext
   const staticProgramContext = {
     type: 1, // {StaticContextType}
-    name: 'Program',
-    displayName: 'Program'
+    name: fileName,
+    displayName: fileName,
+    fileName,
+    filePath,
   };
   state.addStaticContext(path, staticProgramContext);
   state.addTrace(path, TraceType.PushImmediate, true);      // === 1

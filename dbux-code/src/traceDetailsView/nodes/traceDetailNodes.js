@@ -1,48 +1,27 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import Application from 'dbux-data/src/applications/Application';
-import traceSelection from 'dbux-data/src/traceSelection';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
 import TraceDetailsNodeType from '../TraceDetailsNodeType';
 import { BaseNode } from './TraceDetailsNode';
+import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
 
 
-// →↓←↑
+function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
+  const { contextId } = trace;
+  const { contextId: targetContextId } = targetTrace;
 
-function renderNextTraceArrow(trace, nextTrace) {
-  const { contextId: context } = trace;
-  const { contextId: nextContext } = nextTrace;
-
-  if (nextContext < context) {
+  if (targetContextId < contextId) {
     // next context is a parent -> step out
     return '↑';
   }
-  else if (nextContext > context) {
+  else if (targetContextId > contextId) {
     // next context is a child -> step into
     return '↓';
   }
   else {
-    // same context
-    return '→';
-  }
-}
-
-function renderPreviousTraceArrow(trace, previousTrace) {
-  const { contextId: context } = trace;
-  const { contextId: previousContext } = previousTrace;
-
-  if (previousContext < context) {
-    // previous context is a parent -> step out
-    return '↑';
-  }
-  else if (previousContext > context) {
-    // previous context is a child -> step into
-    return '↓';
-  }
-  else {
-    // same context
-    return '←';
+    return originalArrow;
   }
 }
 
@@ -64,7 +43,7 @@ export class TraceDetailNode extends BaseNode {
 export class ApplicationTDNode extends TraceDetailNode {
   init(application) {
     this.application = application;
-    this.collapsibleState = TreeItemCollapsibleState.Expanded;
+    this.collapsibleState = TreeItemCollapsibleState.None;
   }
 
   _handleClick() {
@@ -82,6 +61,29 @@ export class ApplicationTDNode extends TraceDetailNode {
 
   static makeLabel(application: Application) {
     return application.getRelativeFolder();
+  }
+
+  // static makeIconPath(application: Application) {
+  //   return 'string.svg';
+  // }
+}
+
+// ###########################################################################
+// Context
+// ###########################################################################
+
+export class ContextTDNode extends TraceDetailNode {
+  init(context) {
+    this.context = context;
+    this.collapsibleState = TreeItemCollapsibleState.None;
+  }
+
+  static makeTraceDetail(trace, application) {
+    return application.dataProvider.util.getTraceContext(trace.traceId);
+  }
+
+  static makeLabel(context, application: Application) {
+    return makeContextLabel(context, application);
   }
 
   // static makeIconPath(application: Application) {
@@ -151,6 +153,13 @@ export class ValueTDNode extends TraceDetailNode {
   // }
 }
 
+export const DetailNodeClasses = [
+  ApplicationTDNode,
+  ContextTDNode,
+  TypeTDNode,
+  ValueTDNode
+];
+
 // ###########################################################################
 // Navigation nodes
 // ###########################################################################
@@ -175,8 +184,8 @@ export const NavigationNodeClasses = [
       return 'NextParentContext';
     }
 
-    static makeArrow() {
-      return '↗';
+    static makeArrow(trace, targetTrace) {
+      return renderTargetTraceArrow(trace, targetTrace, '↗');
     }
   },
 
@@ -189,27 +198,27 @@ export const NavigationNodeClasses = [
       return '→';
     }
   },
-  
+
   class NextChildContext extends NavigationTDNode {
     static get controlName() {
       return 'NextChildContext';
     }
 
-    static makeArrow() {
-      return '↘';
+    static makeArrow(trace, targetTrace) {
+      return renderTargetTraceArrow(trace, targetTrace, '↘');
     }
   },
-  
+
   class PreviousChildContext extends NavigationTDNode {
     static get controlName() {
       return 'PreviousChildContext';
     }
 
-    static makeArrow() {
-      return '↙';
+    static makeArrow(trace, targetTrace) {
+      return renderTargetTraceArrow(trace, targetTrace, '↙');
     }
   },
-  
+
   class PreviousInContext extends NavigationTDNode {
     static get controlName() {
       return 'PreviousInContext';
@@ -219,50 +228,14 @@ export const NavigationNodeClasses = [
       return '←';
     }
   },
-  
+
   class PreviousParentContext extends NavigationTDNode {
     static get controlName() {
       return 'PreviousParentContext';
     }
 
-    static makeArrow() {
-      return '↖';
+    static makeArrow(trace, targetTrace) {
+      return renderTargetTraceArrow(trace, targetTrace, '↖');
     }
   }
 ];
-
-
-export class NextTraceTDNode extends TraceDetailNode {
-  init(nextTrace) {
-    this.nextTrace = nextTrace;
-    this.collapsibleState = TreeItemCollapsibleState.None;
-  }
-
-  _handleClick() {
-    traceSelection.selectTrace(this.nextTrace);
-  }
-
-  static get nodeType() {
-    return TraceDetailsNodeType.NextContextTraceDetail;
-  }
-
-  static makeTraceDetail(trace, application: Application, parent) {
-    const { traceId, contextId } = trace;
-    const nextTrace = application.dataProvider.util.getNextTrace(traceId);
-    if (!nextTrace) { // || nextTrace.contextId === contextId) {
-      return null;
-    }
-    return nextTrace;
-  }
-
-  static makeLabel(nextTrace, application: Application, parent) {
-    const staticContext = application.dataProvider.util.getTraceStaticContext(nextTrace.traceId);
-    const { displayName } = staticContext;
-    const arrow = renderNextTraceArrow(parent.trace, nextTrace);
-    return `${arrow} ${displayName}`;
-  }
-
-  // static makeIconPath(traceDetail) {
-  //   return 'string.svg';
-  // }
-}

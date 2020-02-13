@@ -113,7 +113,9 @@ function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg)
   const newNode = buildTraceExpr(expressionPath, state, methodName, traceType, cfg);
   expressionPath.replaceWith(newNode);
 
-  state.onCopy(expressionPath, expressionPath.get('arguments.1'), 'trace');
+  const orig = expressionPath.get('arguments.1');
+  state.onCopy(expressionPath, orig, 'trace');
+  return orig;
 }
 
 
@@ -127,5 +129,7 @@ export const traceBeforeExpression = function traceBeforeExpression(templ, expre
   });
 
   // prevent infinite loop
-  state.onCopy(expressionPath, expressionPath.get('expressions.1'), 'trace');
+  const originalPath = expressionPath.get('expressions.1');
+  state.onCopy(expressionPath, originalPath, 'trace');
+  return originalPath;
 }.bind(null, template('%%dbux%%.t(%%traceId%%), %%expression%%'));

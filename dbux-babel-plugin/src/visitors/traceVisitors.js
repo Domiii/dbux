@@ -230,20 +230,26 @@ function normalizeConfig(cfg) {
 function instrumentArgs(callPath, state) {
   const args = callPath.node.arguments;
   const replacements = [];
-  for (let i = 0; i < args.length; ++i) {
-    // if (t.isFunction(args[i])) {
-    //   replacements.push(() => instrumentCallbackSchedulingArg(callPath, state, i));
-    // }
-    // else {
-    const argPath = callPath.get('arguments.' + i);
-    if (!isPathInstrumented(argPath)) {
-      /**
-       * Only instrument if not already instrumented.
-       * Affected Example: `f(await g())` because `await g()` is already instrumented by `awaitVisitor`
-       */
-      replacements.push(() => traceWrapArg(argPath, state));
+
+  if (!args.length) {
+    traceBeforeExpression(callPath, state);
+  }
+  else {
+    for (let i = 0; i < args.length; ++i) {
+      // if (t.isFunction(args[i])) {
+      //   replacements.push(() => instrumentCallbackSchedulingArg(callPath, state, i));
+      // }
+      // else {
+      const argPath = callPath.get('arguments.' + i);
+      if (!isPathInstrumented(argPath)) {
+        /**
+         * Only instrument if not already instrumented.
+         * Affected Example: `f(await g())` because `await g()` is already instrumented by `awaitVisitor`
+         */
+        replacements.push(() => traceWrapArg(argPath, state));
+      }
+      // }
     }
-    // }
   }
 
   // TODO: I forgot why I deferred all calls to here? 
@@ -254,8 +260,8 @@ function instrumentArgs(callPath, state) {
 
 const instrumentors = {
   CallExpression(path, state) {
-    instrumentArgs(path, state);
-    traceCallExpression(path, state);
+    const origCallPath = traceCallExpression(path, state);
+    instrumentArgs(origCallPath, state);
   },
   ExpressionWithValue(path, state, cfg) {
     const originalIsParent = cfg?.originalIsParent;
