@@ -1,14 +1,12 @@
 import { newLogger } from 'dbux-common/src/log/logger';
-import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
-
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import EventHandlerList from 'dbux-common/src/util/EventHandlerList';
 import ContextNode from './ContextNode';
 
 const { log, debug, warn, error: logError } = newLogger('TreeData');
 
-export class TreeNodeProvider {
+// deprecated, used to find the complete context tree
+export class ContextNodeProvider {
   contextsByApp: Array<Array<ExecutionContext>>;
   contextNodesByApp: Array<Array<ContextNode>>;
   rootNodes: Array<ContextNode>;
@@ -21,14 +19,11 @@ export class TreeNodeProvider {
     this.onChangeEventEmitter = onChangeEventEmitter;
     this.onDidChangeTreeData = onChangeEventEmitter.event;
     this.selectedApps = [];
-    this.appEventHandlers = new EventHandlerList();
 
     allApplications.selection.onApplicationsChanged((selectedApps) => {
-      this.clear();
       for (const app of selectedApps) {
         const executionContexts = app.dataProvider.collections.executionContexts.getAll();
-        this.update(app, executionContexts);
-        this.appEventHandlers.subscribe(
+        allApplications.selection.subscribe(
           app.dataProvider.onData('executionContexts', this.update.bind(this, app))
         );
       }
@@ -39,7 +34,7 @@ export class TreeNodeProvider {
     if (!context) return null;
 
     const { dataProvider } = allApplications.getApplication(applicationId);
-    const { contextType, stackDepth, contextId, staticContextId, parentContextId } = context;
+    const { stackDepth, contextId, staticContextId, parentContextId } = context;
 
     const staticContext = dataProvider.collections.staticContexts.getById(staticContextId);
     const { programId, displayName, loc } = staticContext;
@@ -48,11 +43,9 @@ export class TreeNodeProvider {
     const { filePath, fileName } = programContext;
 
     const parentNode = this.contextNodesByApp[applicationId][parentContextId] || null;
-    const typeName = ExecutionContextType.nameFrom(contextType);
 
     let newNode = new ContextNode(
       displayName,
-      typeName,
       fileName,
       filePath,
       loc,

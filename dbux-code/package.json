@@ -29,7 +29,7 @@
 			"dbux-view-container": [
 				{
 					"id": "dbuxContextView",
-					"name": ""
+					"name": "Run Contexts"
 				},
 				{
 					"id": "dbuxTraceDetailsView",
@@ -140,12 +140,12 @@
 			"view/item/context": [
 				{
 					"command": "dbuxContextView.gotoEntry",
-					"when": "view == dbuxContextView && viewItem == event",
+					"when": "view == dbuxContextView && viewItem == contextNode",
 					"group": "inline"
 				},
 				{
 					"command": "dbuxContextView.deleteEntry",
-					"when": "view == dbuxContextView && viewItem == event"
+					"when": "view == dbuxContextView && viewItem == contextNode"
 				}
 			]
 		}

@@ -1,10 +1,10 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import { registerCommand } from './commands/commandUtil';
-import { TreeViewController } from './treeView/treeViewController';
+import { ContextViewController } from './contextView/contextViewController';
 
 const { log, debug, warn, error: logError } = newLogger('Commands');
 
-export function initToolBar(context, treeViewController: TreeViewController) {
+export function initToolBar(context, contextViewController: ContextViewController) {
 
   registerCommand(context,
     'dbuxContextView.addEntry',
@@ -13,20 +13,19 @@ export function initToolBar(context, treeViewController: TreeViewController) {
 
   registerCommand(context,
     'dbuxContextView.next',
-    () => treeViewController.next()
+    () => contextViewController.gotoNextContext()
   );
 
   registerCommand(context,
     'dbuxContextView.previous',
-    () => treeViewController.previous()
+    () => contextViewController.gotoPreviousContext()
   );
 
   registerCommand(context,
     'dbuxContextView.clear',
     () => {
-      // treeViewController.treeDataProvider.dataProvider.clear();
-      treeViewController.treeDataProvider.clear();
-      treeViewController.treeDataProvider.refresh();
+      contextViewController.contextNodeProvider.clear();
+      contextViewController.contextNodeProvider.refreshView();
     }
   );
 

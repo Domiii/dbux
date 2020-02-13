@@ -32,6 +32,7 @@ export class TracePlayback {
 
   play() {
     if (this._isPlaying) return;
+    if (!this.currentTrace) this.currentTrace = this._getFirstTraceInOrder();
     this.timer = setInterval(this._onPlay, this.timerInterval);
     this._isPlaying = true;
   }
@@ -87,6 +88,8 @@ export class TracePlayback {
   // Main play functions (Getter)
   // ###########################################################################
 
+  // TODO: fix 'Neighboring traces having non-neighboring contexts.' error
+
   getPreviousTrace() {
     const prevTrace = this._getPreviousTraceInApplication(this.currentTrace);
     if (prevTrace?.runId !== this.currentTrace.runId) {
@@ -105,34 +108,177 @@ export class TracePlayback {
     else return nextTrace || this.currentTrace;
   }
 
-  getPreviousInContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getPreviousTraceInContext(this.currentTrace);
+  getPreviousInContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    const traces = dp.indexes.traces.byContext.get(trace.contextId);
+    if (!traces?.length) return null;
+
+    const binarySearch = (left, right) => {
+      const middle = Math.floor((left + right) / 2);
+      if (trace === traces[middle]) return middle;
+      if (left + 1 === right) return (traces[left] === trace) ? left : right;
+      if (traces[middle].traceId < trace.traceId) return binarySearch(middle, right);
+      if (trace.traceId < traces[middle].traceId) return binarySearch(left, middle);
+      throw Error('No return value in binarySearch.');
+    };
+
+    const indexInTracesInTraces = binarySearch(0, traces.length - 1);
+    if (indexInTracesInTraces === 0) return null;
+    else return traces[indexInTracesInTraces - 1];
   }
 
-  getNextInContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getNextTraceInContext(this.currentTrace);
+  getNextInContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    const traces = dp.indexes.traces.byContext.get(trace.contextId);
+    if (!traces?.length) return null;
+
+    const binarySearch = (left, right) => {
+      const middle = Math.floor((left + right) / 2);
+      if (left + 1 === right) return (traces[left] === trace) ? left : right;
+      if (traces[middle].traceId === trace.traceId) return middle;
+      if (traces[middle].traceId < trace.traceId) return binarySearch(middle, right);
+      if (traces[middle].traceId > trace.traceId) return binarySearch(left, middle);
+      throw Error('No return value in binarySearch.');
+    };
+
+    const indexInTracesInTraces = binarySearch(0, traces.length - 1);
+    if (indexInTracesInTraces === traces.length - 1) return null;
+    else return traces[indexInTracesInTraces + 1];
   }
 
-  getPreviousParentContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getPreviousTraceInParentContext(this.currentTrace);
+  getPreviousParentContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    const traces = dp.indexes.traces.byContext.get(trace.contextId);
+    if (trace !== traces[0]) {
+      return traces[0];
+    }
+    else {
+      // already the first trace in context
+      const prevTrace = dp.collections.traces.getById(trace.traceId - 1);
+      if (!prevTrace) return this._getLastTraceInPreviousRun(trace);
+      const context = dp.collections.executionContexts.getById(trace.contextId);
+      const prevContext = dp.collections.executionContexts.getById(prevTrace.contextId);
+      if (context.parentContextId === prevContext.contextId) {
+        // found parent context
+        return prevTrace;
+      }
+      else if (context.parentContextId === prevContext.parentContextId) {
+        // no matching parent found (prev trace is sibling, should be different run)
+        if (trace.runId !== prevTrace.runId) {
+          return this._getLastTraceInPreviousRun(trace);
+        }
+        else {
+          logError('Neighboring traces with neighboring contexts have same runId.');
+          return null;
+        }
+      }
+      else {
+        logError('Neighboring traces having non-neighboring contexts.');
+        return null;
+      }
+    }
   }
 
-  getNextParentContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getNextTraceInParentContext(this.currentTrace);
+  getNextParentContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    const traces = dp.indexes.traces.byContext.get(trace.contextId);
+    if (trace !== traces[traces.length - 1]) {
+      return traces[traces.length - 1];
+    }
+    else {
+      // already the last trace in context
+      const nextTrace = dp.collections.traces.getById(trace.traceId + 1);
+      if (!nextTrace) return this._getFirstTraceInNextRun(trace);
+      const context = dp.collections.executionContexts.getById(trace.contextId);
+      const nextContext = dp.collections.executionContexts.getById(nextTrace.contextId);
+      if (context.parentContextId === nextContext.contextId) {
+        // found parent context
+        return nextTrace;
+      }
+      else if (context.parentContextId === nextContext.parentContextId) {
+        // no matching parent found (prev trace is sibling, should be different run)
+        if (trace.runId !== nextTrace.runId) {
+          return this._getFirstTraceInNextRun(trace);
+        }
+        else {
+          logError('Neighboring traces with neighboring contexts have same runId.');
+          return null;
+        }
+      }
+      else {
+        logError('Neighboring traces having non-neighboring contexts.');
+        return null;
+      }
+    }
   }
 
-  getPreviousChildContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getPreviousTraceInChildContext(this.currentTrace);
+  getPreviousChildContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    let { traceId } = trace;
+    let prevTrace = trace;
+    let currentTrace;
+    do {
+      currentTrace = prevTrace;
+      prevTrace = dp.collections.traces.getById(traceId - 1);
+      traceId--;
+      if (!prevTrace) return null;
+    }
+    while (currentTrace.contextId === prevTrace.contextId);   // skip all traces in context
+
+    const currentContext = dp.collections.executionContexts.getById(currentTrace.contextId);
+    const prevContext = dp.collections.executionContexts.getById(prevTrace.contextId);
+
+    if (currentContext.contextId === prevContext.parentContextId) {
+      // found child context
+      return prevTrace;
+    }
+    else if (currentContext.parentContextId === prevContext.contextId) {
+      // no matching child found (prev trace goes up)
+      return null;
+    }
+    else if (currentContext.parentContextId === prevContext.parentContextId) {
+      // no matching child found (prev trace is sibling)
+      return null;
+    }
+    else {
+      logError('Neighboring traces having non-neighboring contexts.');
+      return null;
+    }
   }
 
-  getNextChildContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getNextTraceInChildContext(this.currentTrace);
+  getNextChildContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    let { traceId } = trace;
+    let nextTrace = trace;
+    let currentTrace;
+
+    do {
+      currentTrace = nextTrace;
+      nextTrace = dp.collections.traces.getById(traceId + 1);
+      traceId++;
+      if (!nextTrace) return null;
+    }
+    while (currentTrace.contextId === nextTrace.contextId);   // skip all traces in context
+    
+    const currentContext = dp.collections.executionContexts.getById(currentTrace.contextId);
+    const nextContext = dp.collections.executionContexts.getById(nextTrace.contextId);
+
+    if (currentContext.contextId === nextContext.parentContextId) {
+      // found child context
+      return nextTrace;
+    }
+    else if (currentContext.parentContextId === nextContext.contextId) {
+      // no matching child found (next trace goes up)
+      return null;
+    }
+    else if (currentContext.parentContextId === nextContext.parentContextId) {
+      // no matching child found (next trace is sibling)
+      return null;
+    }
+    else {
+      logError('Neighboring traces having non-neighboring contexts.');
+      return null;
+    }
   }
 
   // ###########################################################################
