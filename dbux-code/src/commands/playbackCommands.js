@@ -20,23 +20,4 @@ export function initPlaybackCommands(context, playbackController) {
     () => playbackController.pause()
   );
 
-  registerCommand(context,
-    'dbuxPlayback.previousTrace',
-    () => playbackController.previousTrace()
-  );
-
-  registerCommand(context,
-    'dbuxPlayback.nextTrace',
-    () => playbackController.nextTrace()
-  );
-
-  registerCommand(context,
-    'dbuxPlayback.previousTraceInContext',
-    () => playbackController.previousTraceInContext()
-  );
-
-  registerCommand(context,
-    'dbuxPlayback.nextTraceInContext',
-    () => playbackController.nextTraceInContext()
-  );
 }

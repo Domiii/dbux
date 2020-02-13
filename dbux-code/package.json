@@ -55,38 +55,6 @@
 				}
 			},
 			{
-				"command": "dbuxPlayback.previousTrace",
-				"title": "Previous Trace",
-				"icon": {
-					"light": "resources/light/previousTrace.svg",
-					"dark": "resources/dark/previousTrace.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.nextTrace",
-				"title": "Next Trace",
-				"icon": {
-					"light": "resources/light/nextTrace.svg",
-					"dark": "resources/dark/nextTrace.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.previousTraceInContext",
-				"title": "Step Back",
-				"icon": {
-					"light": "resources/light/previousTraceInContext.svg",
-					"dark": "resources/dark/previousTraceInContext.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.nextTraceInContext",
-				"title": "Step Over",
-				"icon": {
-					"light": "resources/light/nextTraceInContext.svg",
-					"dark": "resources/dark/nextTraceInContext.svg"
-				}
-			},
-			{
 				"command": "dbuxContextView.previous",
 				"title": "Previous",
 				"icon": {
@@ -138,30 +106,14 @@
 		"menus": {
 			"editor/title": [
 				{
-					"command": "dbuxPlayback.previousTrace",
-					"group": "navigation@0"
-				},
-				{
 					"command": "dbuxPlayback.play",
 					"when": "dbuxPlaybackPlaying == false",
-					"group": "navigation@1"
+					"group": "navigation"
 				},
 				{
 					"command": "dbuxPlayback.pause",
 					"when": "dbuxPlaybackPlaying == true",
-					"group": "navigation@2"
-				},
-				{
-					"command": "dbuxPlayback.nextTrace",
-					"group": "navigation@3"
-				},
-				{
-					"command": "dbuxPlayback.previousTraceInContext",
-					"group": "navigation@4"
-				},
-				{
-					"command": "dbuxPlayback.nextTraceInContext",
-					"group": "navigation@5"
+					"group": "navigation"
 				}
 			],
 			"view/title": [
