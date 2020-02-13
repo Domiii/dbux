@@ -78,13 +78,21 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
+* [instrumentation] insert trace before function call
+   * (Goal: we can step to function call before going down)
+   * PROBLEM: cannot easily get "last trace before function call" 
+      * either: before function call
+      * or: last argument
+         (however last argument might already have been instrumented)
+* [dataView]
+   * a more complete approach to understanding values in the current circumstance
+   * need to properly destruct
+      * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
 * [instrumentation] traces are not correctly added to their `Resume` context
 * [dbuxTraceDetailsView]
    * when displaying trace in `Resume` context, it shows name as `undefined`
    * when clicking too fast, nothing happens because data hasn't updated yet
       * solution -> queue commands
-* [instrumentation]
-   * insert trace before function call (so we can step to function call before going down)
 * [traceSelection]
    * when user textEditor selection changes, select "best" trace at cursor
       * deselect previous trace

@@ -170,6 +170,16 @@ export class NavigationTDNode extends TraceDetailNode {
 }
 
 export const NavigationNodeClasses = [
+  class NextParentContext extends NavigationTDNode {
+    static get controlName() {
+      return 'NextParentContext';
+    }
+
+    static makeArrow() {
+      return '↗';
+    }
+  },
+
   class NextInContext extends NavigationTDNode {
     static get controlName() {
       return 'NextInContext';
@@ -217,16 +227,6 @@ export const NavigationNodeClasses = [
 
     static makeArrow() {
       return '↖';
-    }
-  },
-  
-  class NextParentContext extends NavigationTDNode {
-    static get controlName() {
-      return 'NextParentContext';
-    }
-
-    static makeArrow() {
-      return '↗';
     }
   }
 ];

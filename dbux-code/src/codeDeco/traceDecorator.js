@@ -76,37 +76,36 @@ function createTraceGroupDecoration(dataProvider, traceType, staticTrace, traces
     loc
   } = staticTrace;
 
-  let { displayName } = staticTrace;
+  // let { displayName } = staticTrace;
 
-  // values
-  let valueString;
-  const hasValue = dataProvider.util.doesStaticTraceHaveValue(staticTraceId);
-  if (hasValue) {
-    // TODO: check individual traces for values instead, as *Callback trace types often come from a `CallArgument` trace
-    const values = traces.map(trace => dataProvider.util.getTraceValue(trace.traceId));
-    valueString = `\n* ${values.map(v => v === undefined ? 'undefined' : v).join('\n* ')}\n\n`;
-  }
-  else {
-    valueString = ' ';
-  }
+  // // values
+  // let valueString;
+  // const hasValue = dataProvider.util.doesStaticTraceHaveValue(staticTraceId);
+  // if (hasValue) {
+  //   // TODO: check individual traces for values instead, as *Callback trace types often come from a `CallArgument` trace
+  //   const values = traces.map(trace => dataProvider.util.getTraceValue(trace.traceId));
+  //   valueString = `\n* ${values.map(v => v === undefined ? 'undefined' : v).join('\n* ')}\n\n`;
+  // }
+  // else {
+  //   valueString = ' ';
+  // }
 
-  // traceType
-  let typeString = ` [${TraceType.nameFromForce(traceType)}]`;
+  // // traceType
+  // let typeString = ` [${TraceType.nameFromForce(traceType)}]`;
 
-  // displayName
-  if (!displayName) {
-    displayName = typeString;
-    typeString = '';
-  }
+  // // displayName
+  // if (!displayName) {
+  //   displayName = typeString;
+  //   typeString = '';
+  // }
 
-  // status + repitition count
-  const statusString = traces.length > 1 ? ` x${traces.length}` : '';
+  // // status + repitition count
+  // const statusString = traces.length > 1 ? ` x${traces.length}` : '';
 
   // return decoration object required by vscode API
   // see https://code.visualstudio.com/api/references/vscode-api#DecorationOptions
   return {
-    range: babelLocToCodeRange(loc),
-    hoverMessage: `**${displayName}**${typeString}${statusString} ${valueString}`
+    range: babelLocToCodeRange(loc)
   };
 }
 

@@ -65,7 +65,6 @@ export default class TreeViewCommandWrapper {
 
   _handleClick = (node) => {
     if (!this._clickedBeforeRefresh) {
-      console.debug('click', node.trace?.traceId, this._queue.length, node.constructor.name);
       this._doClick(node);
     }
     else {
@@ -90,8 +89,6 @@ export default class TreeViewCommandWrapper {
     const path = this._queue.shift();
     const node = this.getNodeAtPath(path);
 
-    console.debug('click dequeue', this._queue.length, node.constructor.name);
-
     if (node) {
       this._doClick(node);
     }
@@ -102,6 +99,7 @@ export default class TreeViewCommandWrapper {
   }
 
   _doClick(node) {
+    console.debug('doClick', node.trace?.traceId, this._queue.length, node.constructor.name);
     this._clickedBeforeRefresh = true;
     node._handleClick();
   }
