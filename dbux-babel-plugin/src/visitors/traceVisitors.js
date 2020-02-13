@@ -2,7 +2,7 @@ import template from '@babel/template';
 import Enum from 'dbux-common/src/util/Enum';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
-import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg } from '../helpers/traceHelpers';
+import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg, traceCallExpression } from '../helpers/traceHelpers';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 // TODO: want to do some extra work to better trace loops
 
@@ -53,7 +53,7 @@ const traceCfg = (() => {
     ],
     VariableDeclarator: [
       NoTrace,
-      [['init', ExpressionWithValue]]
+      [['init', ExpressionWithValue, null, { originalIsParent: true }]]
     ],
 
 
@@ -230,20 +230,26 @@ function normalizeConfig(cfg) {
 function instrumentArgs(callPath, state) {
   const args = callPath.node.arguments;
   const replacements = [];
-  for (let i = 0; i < args.length; ++i) {
-    // if (t.isFunction(args[i])) {
-    //   replacements.push(() => instrumentCallbackSchedulingArg(callPath, state, i));
-    // }
-    // else {
-    const argPath = callPath.get('arguments.' + i);
-    if (!isPathInstrumented(argPath)) {
-      /**
-       * Only instrument if not already instrumented.
-       * Affected Example: `f(await g())` because `await g()` is already instrumented by `awaitVisitor`
-       */
-      replacements.push(() => traceWrapArg(argPath, state));
+
+  if (!args.length) {
+    traceBeforeExpression(callPath, state);
+  }
+  else {
+    for (let i = 0; i < args.length; ++i) {
+      // if (t.isFunction(args[i])) {
+      //   replacements.push(() => instrumentCallbackSchedulingArg(callPath, state, i));
+      // }
+      // else {
+      const argPath = callPath.get('arguments.' + i);
+      if (!isPathInstrumented(argPath)) {
+        /**
+         * Only instrument if not already instrumented.
+         * Affected Example: `f(await g())` because `await g()` is already instrumented by `awaitVisitor`
+         */
+        replacements.push(() => traceWrapArg(argPath, state));
+      }
+      // }
     }
-    // }
   }
 
   // TODO: I forgot why I deferred all calls to here? 
@@ -254,11 +260,17 @@ function instrumentArgs(callPath, state) {
 
 const instrumentors = {
   CallExpression(path, state) {
-    instrumentArgs(path, state);
-    traceWrapExpression(path, state);
+    const origCallPath = traceCallExpression(path, state);
+    instrumentArgs(origCallPath, state);
   },
-  ExpressionWithValue(path, state) {
-    traceWrapExpression(path, state);
+  ExpressionWithValue(path, state, cfg) {
+    const originalIsParent = cfg?.originalIsParent;
+    const traceExprCfg = !originalIsParent ? null : {
+      // we want to highlight the parentPath, instead of just the value path
+      originalPath: path.parentPath
+    };
+
+    traceWrapExpression(path, state, traceExprCfg);
   },
   ExpressionNoValue(path, state) {
     traceBeforeExpression(path, state);

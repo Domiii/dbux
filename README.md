@@ -49,6 +49,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `allApplications`
    * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
+* [dbuxContextView] display root contexts of all runs
+   * when clicked, go to first trace in context
 * [callstackView]
    * NOTE: a callstack is actually a single slice of a complex call graph over time
    * render callstack of "context of `traceSelection.selected`" all the way to its root
@@ -76,18 +78,22 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
-* [codeSelection] does not add deco when switching between editors (v)
-* [codeRangeQueries] does not work with overlapping Resume contexts
+* [instrumentation]
+   * `ExecuteCallback` labels appear in the wrong order because of chain rule
+      * SLN: unwrap wrapped callbacks before re-wrapping them
+* trace/context labeling
+   * `ExecuteCallback` trace captures last trace in parent context, instead of the `CallArg` trace?
+      * e.g.: `$on`'s callback shows `app.js` as previous trace
+* [dataView]
+   * a more complete approach to understanding values in current context
+   * need to properly destruct
+      * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
+* [instrumentation] traces are not correctly added to their `Resume` context
 * [dbuxTraceDetailsView]
+   * when displaying trace in `Resume` context, it shows name as `undefined`
    * when clicking too fast, nothing happens because data hasn't updated yet
       * solution -> queue commands
-   * fix await: overlapping Resume contexts cause "current trace" to not be found correctly
-   * start using playback controller
-* [instrumentation]
-   * insert trace before function call (so we can step to function call before going down)
 * [traceSelection]
-   * fix: code highlighting of selected trace: doesn't work when changing files
-      * probably because `activeEditor` is not set immediately
    * when user textEditor selection changes, select "best" trace at cursor
       * deselect previous trace
       * need to design heuristic:
@@ -186,6 +192,15 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * add testing for serialization + deserialization (since it can easily cause a ton of pain)
 * improve value serialization to skip objects that are too big
 
+
+## Recently done
+* [instrumentation] insert trace before function call
+   * (Goal: we can step to function call before going down)
+   * PROBLEM: cannot easily get "last trace before function call" 
+      * either: before function call
+      * or: last argument
+         (however last argument might already have been instrumented)
+   * SLN: Only add a trace in front, if it has no arguments
 
 
 ## Possible future work

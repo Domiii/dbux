@@ -4,7 +4,6 @@ import map from 'lodash/map';
 import xor from 'lodash/xor';
 
 export const EmptyArray = Object.freeze([]);
-export const EmptyObject = Object.freeze({});
 
 /**
  * @see https://stackoverflow.com/questions/29951293/using-lodash-to-compare-arrays-items-existence-without-order

@@ -129,10 +129,6 @@
 			{
 				"command": "dbuxContextView.itemClick",
 				"title": "Clicked"
-			},
-			{
-				"command": "dbuxTraceDetailsView.itemClick",
-				"title": "Clicked"
 			}
 		],
 		"menus": {

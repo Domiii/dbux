@@ -1,6 +1,11 @@
 import SerializationMethod from './SerializationMethod';
 
 const deserializers = {
+  [SerializationMethod.Function](x) {
+    // NOTE: there is no meaningful way of serializing functions
+    return x;
+  },
+
   [SerializationMethod.JSON](x) {
     return JSON.parse(x);
   },

@@ -68,9 +68,9 @@ const DefaultTraceDecoratorConfig = {
 
   BeforeExpression: {
     styling: {
-      after: {
+      before: {
         contentText: '✧',
-        color: 'lightred',
+        color: 'gray',
       },
     }
   },

@@ -31,6 +31,9 @@ export function initTraceDetailsController(context: ExtensionContext) {
 
   traceDetailsController = new TraceDetailsController();
 
+  // update command wrapper
+  traceDetailsController.treeDataProvider.commandWrapper.init(context, 'traceDetailsClick');
+
   // refresh right away
   traceDetailsController.treeDataProvider.refresh();
 

@@ -12,7 +12,6 @@ let TraceType = {
   PopCallback: 6,
 
   BeforeExpression: 7,
-
   ExpressionResult: 8,
   CallArgument: 9,
 
