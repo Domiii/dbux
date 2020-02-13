@@ -88,7 +88,7 @@ export class TracePlayback {
   // Main play functions (Getter)
   // ###########################################################################
 
-  // TODO: fix 'Neighboring traces having non-neighboring contexts.' error
+  // TODO: fix 'Neighboring traces having non-neighboring contexts.' error  
 
   getPreviousTrace() {
     const prevTrace = this._getPreviousTraceInApplication(this.currentTrace);
