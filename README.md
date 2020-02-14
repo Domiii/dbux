@@ -14,10 +14,9 @@
 git clone https://github.com/Domiii/dbux.git
 cd dbux
 code .
+npm run dbux-install
 
 # if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
-
-npm run dbux-install
 ```
 
 ## Start development
