@@ -1,9 +1,11 @@
+import { window } from 'vscode';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 // TODO: use proper theming
 
 const lightred = 'rgba(1, 0, 0, 0.5)';
 
-const DefaultTraceDecoratorConfig = {
+const TraceDecoratorConfig = {
   PushImmediate: {
     styling: {
       after: {
@@ -117,4 +119,35 @@ const DefaultTraceDecoratorConfig = {
   }
 };
 
-export default DefaultTraceDecoratorConfig;
+
+let configsByType;
+
+// ###########################################################################
+// init
+// ###########################################################################
+
+
+function initConfig(decoConfig) {
+  configsByType = [];
+  for (const typeName in decoConfig) {
+    const cfg = decoConfig[typeName];
+    if (!cfg) {
+      continue;
+    }
+    const type = TraceType.valueFromForce(typeName);
+    cfg.editorDecorationType = window.createTextEditorDecorationType(cfg.styling);
+    configsByType[type] = cfg;
+  }
+}
+
+export function initTraceDecorators() {
+  initConfig(TraceDecoratorConfig);
+}
+
+export function getDecoName(trace) {
+
+}
+
+export function getAllConfigsByName() {
+  
+}
