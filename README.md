@@ -38,11 +38,10 @@ npm start # start webpack build of all projects in watch mode
 
 1. After you opened a new VSCode window with `dbux-code` enabled (see steps above), in that window you can run + trace all kinds of code.
 1. Dbux currently has one frontend project pre-configured for testing purposes, that is [todomvc](http://todomvc.com/)'s `es6` version.
-1. Start webpack and open in browser, then check results in that window:
+   * install it first: `npm run p1-install`
+1. Run it: `npm run p1-start` (starts webpack + webpack-dev-server)
+1. Open in browser (http://localhost:3030), then check results of the run in the extension test window
 
-```sh
-npm run p1-start
-```
 
 ## Architectural Notes
 
@@ -88,22 +87,25 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 ## TODO (other)
 * [instrumentation]
-   * `ExecuteCallback` labels appear in the wrong order because of chain rule
-      * SLN: unwrap wrapped callbacks before re-wrapping them
+   * trace parameters
    * traces are not correctly added to their `Resume` context
 * [codeDeco]
    * highlight executed funtion calls in code
 * trace/context labeling
    * `ExecuteCallback` trace captures last trace in parent context, instead of the `CallArg` trace?
       * e.g.: `$on`'s callback shows `app.js` as previous trace
-* [dataView]
-   * a more complete approach to understanding values in current context
-   * need to properly destruct
-      * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
 * [dbuxTraceDetailsView]
+   * details:
+      * [CallArg/CallbackArg] display `CallExpression`'s name
+      * [CallbackArg] show it's `Push/PopCallback` nodes
+      * [Push/PopCallback] show it's CallbackArg node
+      * highlight last+first in run
+         * also: for runs originating from callbacks, make it more obvious?
    * when displaying trace in `Resume` context, it shows name as `undefined`
-   * somehow fix the "call problem" -> can we somehow show the call itself in the navigation nodes?
-* [traceSelection]
+   * add more helpful hover tooltips to each node
+* [cursorTracesView] + [traceDetailsView]
+   * separate traces at cursor from `traceDetailsView`
+* [cursorTracesView] + [traceSelection]
    * when user textEditor selection changes, select "best" trace at cursor
       * deselect previous trace
       * need to design heuristic:
@@ -111,6 +113,10 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * minimum effort: try to select one in the same run (if existing)
    * when jumping between traces, keep a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
+* [dataView]
+   * a more complete approach to understanding values in current context
+   * need to properly destruct
+      * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
 * [cli] allow to easily run multiple applications at once
    * (for proper multi-application testing)
 * [dbuxTraceDetailsView]
@@ -475,3 +481,14 @@ You can re-add it manually:
 		]
 	}
 ```
+
+
+
+# More References
+* http://latentflip.com/loupe/
+   * (tagline: Visualizing the javascript runtime at runtime)
+   * https://github.com/latentflip/loupe
+* NOTE: the web is missing practical exercises on
+   * debugging
+   * callbacks
+      * see https://www.quora.com/What-is-the-best-tutorial-or-course-for-understanding-JavaScript-callback-functions

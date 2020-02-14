@@ -3,7 +3,7 @@ import Enum from 'dbux-common/src/util/Enum';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg, traceCallExpression } from '../helpers/traceHelpers';
-import { isPathInstrumented } from '../helpers/instrumentationHelper';
+import { isPathInstrumented, getPathTraceId } from '../helpers/instrumentationHelper';
 // TODO: want to do some extra work to better trace loops
 
 const TraceInstrumentationType = new Enum({
@@ -231,26 +231,37 @@ function instrumentArgs(callPath, state) {
   const args = callPath.node.arguments;
   const replacements = [];
 
-  if (!args.length) {
-    traceBeforeExpression(callPath, state);
-  }
-  else {
-    for (let i = 0; i < args.length; ++i) {
-      // if (t.isFunction(args[i])) {
-      //   replacements.push(() => instrumentCallbackSchedulingArg(callPath, state, i));
-      // }
-      // else {
-      const argPath = callPath.get('arguments.' + i);
-      if (!isPathInstrumented(argPath)) {
-        /**
-         * Only instrument if not already instrumented.
-         * Affected Example: `f(await g())` because `await g()` is already instrumented by `awaitVisitor`
-         */
-        replacements.push(() => traceWrapArg(argPath, state));
-      }
-      // }
+  // if (!args.length) {
+  const callee = callPath.get('callee');
+  traceWrapExpression(callee, state, {
+    traceType: TraceType.Callee
+  });
+  const calleeTraceId = getPathTraceId(callee);
+
+  // }
+  // else {
+
+  for (let i = 0; i < args.length; ++i) {
+    // if (t.isFunction(args[i])) {
+    //   replacements.push(() => instrumentCallbackSchedulingArg(callPath, state, i));
+    // }
+    // else {
+    const argPath = callPath.get('arguments.' + i);
+    const argTraceId = getPathTraceId(argPath);
+    if (!argTraceId) {
+      replacements.push(() => traceWrapArg(argPath, state, {
+        calleeId: calleeTraceId
+      }));
     }
+    else {
+      // this argument has already been wrapped -> just set it's calleeId
+      // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
+      const argTrace = state.getTrace(argTraceId);
+      argTrace.calleeId = calleeTraceId;
+    }
+    // }
   }
+  // }
 
   // TODO: I forgot why I deferred all calls to here? 
   //    Probably had the order flipped before or did nested replacements;
@@ -267,7 +278,7 @@ const instrumentors = {
     const originalIsParent = cfg?.originalIsParent;
     const traceExprCfg = !originalIsParent ? null : {
       // we want to highlight the parentPath, instead of just the value path
-      originalPath: path.parentPath
+      tracePath: path.parentPath
     };
 
     traceWrapExpression(path, state, traceExprCfg);

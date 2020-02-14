@@ -61,8 +61,8 @@ export const buildTraceNoValue = function buildTraceNoValue(templ, path, state, 
  * (specifically, when trying to wrap a `spreadArgument`)
  */
 function buildTraceExpr(expressionPath, state, methodName, traceType, cfg) {
-  const originalPath = cfg?.originalPath;
-  const traceId = state.addTrace(originalPath || expressionPath, traceType);
+  const tracePath = cfg?.tracePath;
+  const traceId = state.addTrace(tracePath || expressionPath, traceType, null, cfg);
   const { ids: { dbux } } = state;
 
   return t.callExpression(
@@ -95,13 +95,13 @@ export function traceCallExpression(expressionPath, state) {
 
 
 export function traceWrapArg(argPath, state, cfg) {
-  const originalPath = argPath;
+  const tracePath = argPath;
   if (argPath.isSpreadElement()) {
     argPath = argPath.get('argument');
   }
-  _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, {
+  return _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, {
     ...cfg || EmptyObject,
-    originalPath
+    tracePath
   });
 }
 
@@ -110,6 +110,7 @@ function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg)
   //   // don't care about literals
   //   return;
   // }
+  traceType = cfg?.traceType || traceType;
   const newNode = buildTraceExpr(expressionPath, state, methodName, traceType, cfg);
   expressionPath.replaceWith(newNode);
 
@@ -119,9 +120,9 @@ function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg)
 }
 
 
-export const traceBeforeExpression = function traceBeforeExpression(templ, expressionPath, state) {
+export const traceBeforeExpression = function traceBeforeExpression(templ, expressionPath, state, traceType, cfg) {
   const { ids: { dbux } } = state;
-  const traceId = state.addTrace(expressionPath, TraceType.BeforeExpression);
+  const traceId = state.addTrace(expressionPath, traceType || TraceType.BeforeExpression);
   replaceWithTemplate(templ, expressionPath, {
     dbux,
     traceId: t.numericLiteral(traceId),
