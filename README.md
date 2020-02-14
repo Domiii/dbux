@@ -23,17 +23,27 @@ npm run dbux-install
 ## Start development
 
 ```sh
+code . # open project in vscode
 npm start # start webpack build of all projects in watch mode
 ```
 
 ## Usage
 
-1. open project in vscode
 1. go to your debug tab, select `dbux-code` and press F5 (runs the vscode extension in debug mode)
 1. Inside of the new window, you can:
    * `dbux-run # instruments + executes currently opened file`
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
+   
+## Test: Project 1
+
+1. After you opened a new VSCode window with `dbux-code` enabled (see steps above), in that window you can run + trace all kinds of code.
+1. Dbux currently has one frontend project pre-configured for testing purposes, that is [todomvc](http://todomvc.com/)'s `es6` version.
+1. Start webpack and open in browser, then check results in that window:
+
+```sh
+npm run p1-start
+```
 
 ## Architectural Notes
 
