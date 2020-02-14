@@ -85,7 +85,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * `ExecuteCallback` trace captures last trace in parent context, instead of the `CallArg` trace?
       * e.g.: `$on`'s callback shows `app.js` as previous trace
 * [dataView]
-   * a more complete approach to understanding values in current context
+   * a more complete approach to understanding all values in current context
    * need to properly destruct
       * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
 * [instrumentation] traces are not correctly added to their `Resume` context
