@@ -21,6 +21,7 @@ export default class PlaybackController {
     commands.executeCommand('setContext', 'dbuxPlaybackPlaying', true);
     tracePlayback.play();
     this.printTracesInfo();
+    this.printContextsInfo();
   }
 
   pause = () => {
@@ -43,25 +44,31 @@ export default class PlaybackController {
   printTracesInfo = () => {
     const apps = allApplications.selection.getAll();
     for (let app of apps) {
+      const info = [];
       log(`== Application ${app.applicationId} ==`);
       let traces = app.dataProvider.collections.traces.getAll();
       for (let trace of traces) {
         if (!trace) continue;
         const context = app.dataProvider.collections.executionContexts.getById(trace.contextId);
-        log(trace.runId, trace.contextId, trace.traceId, context.createdAt);
+        const { runId, contextId, traceId } = trace;
+        info.push({ runId, contextId, traceId });
       }
+      console.table(info);
     }
   }
 
   printContextsInfo = () => {
     const apps = allApplications.selection.getAll();
     for (let app of apps) {
+      const info = [];
       log(`== Application ${app.applicationId} ==`);
       let contexts = app.dataProvider.collections.executionContexts.getAll();
       for (let context of contexts) {
         if (!context) continue;
-        log(context.contextId, context.runId, context.createdAt);
+        const { runId, contextId, parentContextId, createdAt } = context;
+        info.push({ runId, contextId, parentContextId, createdAt });
       }
+      console.table(info);
     }
   }
 }

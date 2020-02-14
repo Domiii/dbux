@@ -168,12 +168,12 @@ export class TracePlayback {
           return this._getLastTraceInPreviousRun(trace);
         }
         else {
-          logError('Neighboring traces with neighboring contexts have same runId.');
+          logError('[PrevParent] Neighboring traces with neighboring contexts have same runId.');
           return null;
         }
       }
       else {
-        logError('Neighboring traces having non-neighboring contexts.');
+        logError('[PrevParent] Neighboring traces having non-neighboring contexts.');
         return null;
       }
     }
@@ -196,17 +196,17 @@ export class TracePlayback {
         return nextTrace;
       }
       else if (context.parentContextId === nextContext.parentContextId) {
-        // no matching parent found (prev trace is sibling, should be different run)
+        // no matching parent found (next trace is sibling, should be different run)
         if (trace.runId !== nextTrace.runId) {
           return this._getFirstTraceInNextRun(trace);
         }
         else {
-          logError('Neighboring traces with neighboring contexts have same runId.');
+          logError('[NextParent] Neighboring traces with neighboring contexts have same runId.');
           return null;
         }
       }
       else {
-        logError('Neighboring traces having non-neighboring contexts.');
+        logError('[NextParent] Neighboring traces having non-neighboring contexts.');
         return null;
       }
     }
@@ -241,7 +241,7 @@ export class TracePlayback {
       return null;
     }
     else {
-      logError('Neighboring traces having non-neighboring contexts.');
+      logError('[PrevChild] Neighboring traces having non-neighboring contexts.');
       return null;
     }
   }
@@ -276,7 +276,7 @@ export class TracePlayback {
       return null;
     }
     else {
-      logError('Neighboring traces having non-neighboring contexts.');
+      logError('[NextChild] Neighboring traces having non-neighboring contexts.');
       return null;
     }
   }
