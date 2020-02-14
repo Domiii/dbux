@@ -6,6 +6,8 @@ const path = require('path');
 const process = require('process');
 const nodeExternals = require('webpack-node-externals');
 
+const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
+
 process.env.BABEL_DISABLE_CACHE = 1;
 
 const outputFolderName = 'dist';
@@ -37,13 +39,13 @@ const allFolders = [
     .map(f => path.resolve(f))
 ];
 
-// const entry = Object.fromEntries(targets.map(target => [target, path.join('..', target, 'src/index.js').substring(1)]));  // hackfix: path.join('.', dir) removes the leading period
-const entry = Object.fromEntries(targets.map(target => [target, path.resolve(path.join(target, 'src/index.js'))]));
+// const entry = fromEntries(targets.map(target => [target, path.join('..', target, 'src/index.js').substring(1)]));  // hackfix: path.join('.', dir) removes the leading period
+const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, 'src/index.js'))]));
 // const target = 'dbux-babel-plugin';
 
 // aliases allow resolving libraries that we are building here
 const alias = {
-  ...Object.fromEntries(targets.map(target => [target, path.resolve(path.join(root, target))])),
+  ...fromEntries(targets.map(target => [target, path.resolve(path.join(root, target))])),
   // 'socket.io-client': path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ))
   ws: path.resolve(path.join(root, 'dbux-runtime', 'node_modules', 'ws', 'index.js')) // fix for https://github.com/websockets/ws/issues/1538
 };
