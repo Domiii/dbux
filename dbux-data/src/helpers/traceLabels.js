@@ -1,9 +1,23 @@
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { makeContextLabel } from './contextLabels';
 
-function makeTraceTraceContextLabel(trace, application) {
+function makeTraceContextLabel(trace, application) {
   const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
   return makeContextLabel(context, application);
+}
+
+function makeTypeNameLabel(traceId, application) {
+  const traceType = application.dataProvider.util.getTraceType(traceId);
+  const typeName = TraceType.nameFrom(traceType);
+  return `[${typeName}]`;
+}
+
+function makeCalleeTraceLabel(trace, application) {
+  const calleeTrace = application.dataProvider.util.getCalleeStaticTrace(trace.traceId);
+  if (calleeTrace) {
+    return ` (arg of ${calleeTrace.displayName})`;
+  }
+  return '';
 }
 
 function makeDefaultTraceLabel(trace, application) {
@@ -16,34 +30,16 @@ function makeDefaultTraceLabel(trace, application) {
   const {
     displayName
   } = staticTrace;
-  const traceType = application.dataProvider.util.getTraceType(traceId);
-  const typeName = TraceType.nameFrom(traceType);
-  const title = displayName || `[${typeName}]`;
-  return `${title}`;
+  const title = displayName || makeTypeNameLabel(traceId, application);
+  return `${title}${makeCalleeTraceLabel(trace, application)}`;
 }
 
 const byType = {
   [TraceType.PushImmediate](trace, application) {
-    return `↳ ${makeTraceTraceContextLabel(trace, application)}`;
+    return `↳ ${makeTraceContextLabel(trace, application)}`;
   },
   [TraceType.PopImmediate](trace, application) {
-    return `⤴ ${makeTraceTraceContextLabel(trace, application)}`;
-  },
-  [TraceType.CallbackArgument](trace, application) {
-    // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
-    return `ƒ ${makeDefaultTraceLabel(trace, application)}`;
-  },
-  [TraceType.PushCallback](trace, application) {
-    // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
-    // NOTE: nextTrace is inside callee
-    const nextTrace = application.dataProvider.collections.traces.getById(trace.traceId + 1);
-    return `↴ (callback) ${makeTraceTraceContextLabel(nextTrace, application)}`;
-  },
-  [TraceType.PopCallback](trace, application) {
-    // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
-    // NOTE: previousTrace is inside callee
-    const previousTrace = application.dataProvider.collections.traces.getById(trace.traceId - 1);
-    return `↱ (callback) ${makeTraceTraceContextLabel(previousTrace, application)}`;
+    return `⤴ ${makeTraceContextLabel(trace, application)}`;
   },
   [TraceType.BeforeExpression](trace, application) {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
@@ -53,9 +49,26 @@ const byType = {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
     return `${makeDefaultTraceLabel(trace, application)} ✦`;
   },
+  [TraceType.CallArgument](trace, application) {
+    // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
+    return `${makeDefaultTraceLabel(trace, application)}`;
+  },
   [TraceType.CallbackArgument](trace, application) {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
-    return `${makeDefaultTraceLabel(trace, application)} ✦`;
+    return `ƒ ${makeDefaultTraceLabel(trace, application)}`;
+  },
+  [TraceType.PushCallback](trace, application) {
+    // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
+    // NOTE: nextTrace is inside callee
+    // const nextTrace = application.dataProvider.collections.traces.getById(trace.traceId + 1);
+    // return `↴ (callback) ${makeTraceContextLabel(nextTrace, application)}`;
+    return `↴ƒ ${makeDefaultTraceLabel(trace, application)}`;
+  },
+  [TraceType.PopCallback](trace, application) {
+    // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
+    // NOTE: previousTrace is inside callee
+    // const previousTrace = application.dataProvider.collections.traces.getById(trace.traceId - 1);
+    return `↱ƒ ${makeDefaultTraceLabel(trace, application)}`;
   },
   [TraceType.BlockStart](trace, application) {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);

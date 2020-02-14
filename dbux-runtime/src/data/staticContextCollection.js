@@ -25,8 +25,10 @@ export class StaticContextCollection extends Collection {
 
       entry.programId = programId;
 
-      // change to global id over all programs
+      // global id over all programs
       entry.staticId = this._all.length;
+      delete entry._staticId;
+      
       this._all.push(entry);
       this._send(entry);
     }

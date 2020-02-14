@@ -2,7 +2,7 @@ import { window } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import DefaultTraceDecoratorConfig from './DefaultTraceDecoratorConfig';
-import { babelLocToCodeRange } from '../helpers/locHelper';
+import { babelLocToCodeRange } from '../helpers/locHelpers';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
 

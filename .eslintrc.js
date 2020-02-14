@@ -46,6 +46,7 @@ module.exports = {
 		"no-mixed-operators": 0,
 		"no-use-before-define": ["error", { "functions": false, "classes": true }],
 		"no-confusing-arrow": 0,
+		"no-cond-assign": ["error", "except-parens"],
 		"constructor-super": "warn",
 		"valid-typeof": "warn",
 		// "class-methods-use-this": "warn",
