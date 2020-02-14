@@ -14,26 +14,35 @@
 git clone https://github.com/Domiii/dbux.git
 cd dbux
 code .
+npm run dbux-install
 
 # if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
-
-npm run dbux-install
 ```
 
 ## Start development
 
 ```sh
+code . # open project in vscode
 npm start # start webpack build of all projects in watch mode
 ```
 
 ## Usage
 
-1. open project in vscode
 1. go to your debug tab, select `dbux-code` and press F5 (runs the vscode extension in debug mode)
 1. Inside of the new window, you can:
    * `dbux-run # instruments + executes currently opened file`
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
+   
+## Test: Project 1
+
+1. After you opened a new VSCode window with `dbux-code` enabled (see steps above), in that window you can run + trace all kinds of code.
+1. Dbux currently has one frontend project pre-configured for testing purposes, that is [todomvc](http://todomvc.com/)'s `es6` version.
+1. Start webpack and open in browser, then check results in that window:
+
+```sh
+npm run p1-start
+```
 
 ## Architectural Notes
 
@@ -81,6 +90,9 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [instrumentation]
    * `ExecuteCallback` labels appear in the wrong order because of chain rule
       * SLN: unwrap wrapped callbacks before re-wrapping them
+   * traces are not correctly added to their `Resume` context
+* [codeDeco]
+   * highlight executed funtion calls in code
 * trace/context labeling
    * `ExecuteCallback` trace captures last trace in parent context, instead of the `CallArg` trace?
       * e.g.: `$on`'s callback shows `app.js` as previous trace
@@ -88,11 +100,9 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * a more complete approach to understanding values in current context
    * need to properly destruct
       * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
-* [instrumentation] traces are not correctly added to their `Resume` context
 * [dbuxTraceDetailsView]
    * when displaying trace in `Resume` context, it shows name as `undefined`
-   * when clicking too fast, nothing happens because data hasn't updated yet
-      * solution -> queue commands
+   * somehow fix the "call problem" -> can we somehow show the call itself in the navigation nodes?
 * [traceSelection]
    * when user textEditor selection changes, select "best" trace at cursor
       * deselect previous trace
@@ -101,7 +111,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * minimum effort: try to select one in the same run (if existing)
    * when jumping between traces, keep a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
-   * integrate with `Playback`
 * [cli] allow to easily run multiple applications at once
    * (for proper multi-application testing)
 * [dbuxTraceDetailsView]
