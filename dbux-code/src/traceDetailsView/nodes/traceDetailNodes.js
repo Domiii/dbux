@@ -1,11 +1,12 @@
-import { TreeItemCollapsibleState } from 'vscode';
+import { TreeItemCollapsibleState, TreeItem } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import Application from 'dbux-data/src/applications/Application';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
+import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
 import TraceDetailsNodeType from '../TraceDetailsNodeType';
 import { BaseNode } from './TraceDetailsNode';
-import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
+import { makeTreeItem, makeTreeItems } from '../../helpers/treeViewHelpers';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
@@ -153,11 +154,62 @@ export class ValueTDNode extends TraceDetailNode {
   // }
 }
 
+// ###########################################################################
+// Debug
+// ###########################################################################
+
+export class DebugTDNode extends TraceDetailNode {
+  init(trace) {
+    this.trace = trace;
+    this.collapsibleState = TreeItemCollapsibleState.Expanded;
+    this.description = `id: ${trace.traceId}`;
+
+    const { dataProvider } = this.application;
+
+    const {
+      staticTraceId,
+      runId
+    } = trace;
+
+    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
+    const {
+      staticContextId
+    } = staticTrace;
+
+    this.children = makeTreeItems(
+      `runId: ${runId}`,
+      `staticTraceId: ${staticTraceId}`,
+      `staticContextId: ${staticContextId}`
+    );
+  }
+
+  static get nodeType() {
+    return TraceDetailsNodeType.Value;
+  }
+
+  static makeTraceDetail(trace, application: Application, parent) {
+    return trace;
+  }
+
+  static makeLabel(trace, application: Application, parent) {
+    return 'Debug';
+  }
+
+  // static makeIconPath(traceDetail) {
+  //   return 'string.svg';
+  // }
+}
+
+// ###########################################################################
+// DetailNodeClasses
+// ###########################################################################
+
 export const DetailNodeClasses = [
   ApplicationTDNode,
   ContextTDNode,
   TypeTDNode,
-  ValueTDNode
+  ValueTDNode,
+  DebugTDNode
 ];
 
 // ###########################################################################

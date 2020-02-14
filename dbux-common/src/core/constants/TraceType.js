@@ -7,20 +7,22 @@ let TraceType = {
   PushImmediate: 2,
   PopImmediate: 3,
 
-  CallbackArgument: 4,
-  PushCallback: 5,
-  PopCallback: 6,
+  BeforeExpression: 4,
+  Callee: 5,
+  ExpressionResult: 6,
 
-  BeforeExpression: 7,
-  ExpressionResult: 8,
-  CallArgument: 9,
+  CallArgument: 7,
+  CallbackArgument: 8,
 
-  Await: 10,
-  Resume: 11,
+  PushCallback: 9,
+  PopCallback: 10,
 
-  Statement: 12,
-  BlockStart: 13,
-  BlockEnd: 14
+  Await: 11,
+  Resume: 12,
+
+  Statement: 13,
+  BlockStart: 14,
+  BlockEnd: 15
 };
 
 TraceType = new Enum(TraceType);

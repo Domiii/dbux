@@ -14,26 +14,34 @@
 git clone https://github.com/Domiii/dbux.git
 cd dbux
 code .
+npm run dbux-install
 
 # if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
-
-npm run dbux-install
 ```
 
 ## Start development
 
 ```sh
+code . # open project in vscode
 npm start # start webpack build of all projects in watch mode
 ```
 
 ## Usage
 
-1. open project in vscode
 1. go to your debug tab, select `dbux-code` and press F5 (runs the vscode extension in debug mode)
 1. Inside of the new window, you can:
    * `dbux-run # instruments + executes currently opened file`
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
+   
+## Test: Project 1
+
+1. After you opened a new VSCode window with `dbux-code` enabled (see steps above), in that window you can run + trace all kinds of code.
+1. Dbux currently has one frontend project pre-configured for testing purposes, that is [todomvc](http://todomvc.com/)'s `es6` version.
+   * install it first: `npm run p1-install`
+1. Run it: `npm run p1-start` (starts webpack + webpack-dev-server)
+1. Open in browser (http://localhost:3030), then check results of the run in the extension test window
+
 
 ## Architectural Notes
 
@@ -79,21 +87,25 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 ## TODO (other)
 * [instrumentation]
-   * `ExecuteCallback` labels appear in the wrong order because of chain rule
-      * SLN: unwrap wrapped callbacks before re-wrapping them
+   * trace parameters
+   * traces are not correctly added to their `Resume` context
+* [codeDeco]
+   * highlight executed funtion calls in code
 * trace/context labeling
    * `ExecuteCallback` trace captures last trace in parent context, instead of the `CallArg` trace?
       * e.g.: `$on`'s callback shows `app.js` as previous trace
-* [dataView]
-   * a more complete approach to understanding all values in current context
-   * need to properly destruct
-      * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
-* [instrumentation] traces are not correctly added to their `Resume` context
 * [dbuxTraceDetailsView]
+   * details:
+      * [CallArg/CallbackArg] display `CallExpression`'s name
+      * [CallbackArg] show it's `Push/PopCallback` nodes
+      * [Push/PopCallback] show it's CallbackArg node
+      * highlight last+first in run
+         * also: for runs originating from callbacks, make it more obvious?
    * when displaying trace in `Resume` context, it shows name as `undefined`
-   * when clicking too fast, nothing happens because data hasn't updated yet
-      * solution -> queue commands
-* [traceSelection]
+   * add more helpful hover tooltips to each node
+* [cursorTracesView] + [traceDetailsView]
+   * separate traces at cursor from `traceDetailsView`
+* [cursorTracesView] + [traceSelection]
    * when user textEditor selection changes, select "best" trace at cursor
       * deselect previous trace
       * need to design heuristic:
@@ -101,7 +113,10 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * minimum effort: try to select one in the same run (if existing)
    * when jumping between traces, keep a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
-   * integrate with `Playback`
+* [dataView]
+   * a more complete approach to understanding values in current context
+   * need to properly destruct
+      * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
 * [cli] allow to easily run multiple applications at once
    * (for proper multi-application testing)
 * [dbuxTraceDetailsView]
@@ -466,3 +481,14 @@ You can re-add it manually:
 		]
 	}
 ```
+
+
+
+# More References
+* http://latentflip.com/loupe/
+   * (tagline: Visualizing the javascript runtime at runtime)
+   * https://github.com/latentflip/loupe
+* NOTE: the web is missing practical exercises on
+   * debugging
+   * callbacks
+      * see https://www.quora.com/What-is-the-best-tutorial-or-course-for-understanding-JavaScript-callback-functions

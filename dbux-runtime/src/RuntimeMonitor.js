@@ -148,12 +148,13 @@ export default class RuntimeMonitor {
    */
   pushCallback(schedulerContextId, schedulerTraceId, inProgramStaticTraceId) {
     this._runtime.beforePush(null);
-    
+
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const parentContextId = this._runtime.peekCurrentContextId();
 
     // register context
+    // console.debug('pushCallback', { parentContextId, schedulerContextId, schedulerTraceId });
     const context = executionContextCollection.executeCallback(
       stackDepth, runId, parentContextId, schedulerContextId, schedulerTraceId
     );
@@ -174,7 +175,7 @@ export default class RuntimeMonitor {
         callbackContextId);
       return;
     }
-    
+
     const runId = this._runtime.getCurrentRunId(); // get runId before pop
 
     // pop from stack

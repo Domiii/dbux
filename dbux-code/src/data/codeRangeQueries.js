@@ -3,7 +3,7 @@ import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import Trace from 'dbux-common/src/core/data/Trace';
 import Application from 'dbux-data/src/applications/Application';
 import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
-import { babelLocToCodeRange } from '../helpers/locHelper';
+import { babelLocToCodeRange } from '../helpers/locHelpers';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
 /**

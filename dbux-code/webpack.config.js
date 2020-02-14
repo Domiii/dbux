@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 const process = require('process');
+const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
+
 process.env.BABEL_DISABLE_CACHE = 1;
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
@@ -33,7 +35,7 @@ const allFolders = [
 ];
 
 // aliases allow resolving libraries that we are building here
-const alias = Object.fromEntries(dbuxDepNames.map(target => [target, path.resolve(path.join(root, target))]));
+const alias = fromEntries(dbuxDepNames.map(target => [target, path.resolve(path.join(root, target))]));
 
 module.exports = {
   // https://github.com/webpack/webpack/issues/2145

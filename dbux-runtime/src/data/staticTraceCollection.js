@@ -29,12 +29,22 @@ class StaticTraceCollection extends Collection {
         logInternalError(programId, 'Invalid traceId !== its own index:', entry._traceId, '!==', i);
       }
 
-      entry.id = this._all.length;
       // global id over all programs
       entry.staticTraceId = this._all.length;
+      delete entry._traceId;
       
       this._all.push(entry);
       this._send(entry);
+    }
+
+    // fix up calleeId
+    for (let i = 1; i < list.length; ++i) {
+      const entry = list[i];
+      if (entry._calleeId) {
+        const calleeTrace = this.getTrace(programId, entry._calleeId);
+        entry.calleeId = calleeTrace.staticTraceId;
+        delete entry._calleeId;
+      }
     }
   }
 

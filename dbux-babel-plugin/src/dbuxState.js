@@ -134,6 +134,10 @@ export default function injectDbuxState(programPath, programState) {
     },
     // console.log('[Program]', state.filename);
 
+    getTrace(_traceId) {
+      return traces[_traceId];
+    },
+
     onTrace(path) {
       return dbuxState.onEnter(path, 'trace');
     },
@@ -284,10 +288,11 @@ export default function injectDbuxState(programPath, programState) {
     /**
      * Tracing a path in its entirety (usually means, the trace is recorded right before the given path).
      */
-    addTrace(path, type, customArg) {
+    addTrace(path, type, customArg, cfg) {
       checkPath(path);
 
       // console.log('TRACE', '@', `${state.filename}:${line}`);
+      // per-type data
       const _traceId = traces.length;
       let trace;
       if (traceCustomizationsByType[type]) {
@@ -297,10 +302,18 @@ export default function injectDbuxState(programPath, programState) {
         trace = traceDefault(path, dbuxState, customArg);
       }
 
+      // context-sensitive data
+      trace._calleeId = cfg?.calleeId;
+
+      // misc data
       trace._traceId = _traceId;
       trace._staticContextId = dbuxState.getCurrentStaticContextId(path);
       trace.type = type;
+
+      // push
       traces.push(trace);
+
+      path.setData('_traceId', _traceId);
 
       return _traceId;
     },
