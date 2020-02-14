@@ -161,7 +161,7 @@ export class ValueTDNode extends TraceDetailNode {
 export class DebugTDNode extends TraceDetailNode {
   init(trace) {
     this.trace = trace;
-    this.collapsibleState = TreeItemCollapsibleState.Collapsed;
+    this.collapsibleState = TreeItemCollapsibleState.Expanded;
     this.description = `id: ${trace.traceId}`;
 
     const { dataProvider } = this.application;
