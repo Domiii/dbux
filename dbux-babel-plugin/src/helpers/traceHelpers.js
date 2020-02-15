@@ -83,8 +83,10 @@ export const traceWrapExpression = _traceWrapExpression.bind(
   TraceType.ExpressionResult
 );
 
-export function traceCallExpression(expressionPath, state) {
-  return traceWrapExpression(expressionPath, state);
+export function traceCallExpression(callPath, state, calleeTraceId) {
+  return _traceWrapExpression('traceExpr', TraceType.CallExpression, callPath, state, {
+    calleeId: calleeTraceId
+  });
 
   // NOTE: trace "before" an expression is not right before it actually executes the call.
   //    The last code ran before a function is executed is the evaluation of the last argument.
@@ -94,13 +96,14 @@ export function traceCallExpression(expressionPath, state) {
 }
 
 
-export function traceWrapArg(argPath, state, cfg) {
+export function traceWrapArg(argPath, state, calleeTraceId) {
   const tracePath = argPath;
   if (argPath.isSpreadElement()) {
     argPath = argPath.get('argument');
   }
   return _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, {
     ...cfg || EmptyObject,
+    calleeId: calleeTraceId,
     tracePath
   });
 }

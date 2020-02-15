@@ -227,52 +227,42 @@ function normalizeConfig(cfg) {
 // ###########################################################################
 
 
-function instrumentArgs(callPath, state) {
+function instrumentArgs(callPath, state, calleeTraceId) {
   const args = callPath.node.arguments;
   const replacements = [];
 
-  // if (!args.length) {
-  const callee = callPath.get('callee');
-  traceWrapExpression(callee, state, {
-    traceType: TraceType.Callee
-  });
-  const calleeTraceId = getPathTraceId(callee);
-
-  // }
-  // else {
-
   for (let i = 0; i < args.length; ++i) {
     // if (t.isFunction(args[i])) {
-    //   replacements.push(() => instrumentCallbackSchedulingArg(callPath, state, i));
+    //   instrumentCallbackSchedulingArg(callPath, state, i);
     // }
     // else {
     const argPath = callPath.get('arguments.' + i);
     const argTraceId = getPathTraceId(argPath);
     if (!argTraceId) {
-      replacements.push(() => traceWrapArg(argPath, state, {
-        calleeId: calleeTraceId
-      }));
+      replacements.push(() => traceWrapArg(argPath, state, calleeTraceId));
     }
     else {
-      // this argument has already been wrapped -> just set it's calleeId
+      // this argument has already been instrumented -> just set it's calleeId
       // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
       const argTrace = state.getTrace(argTraceId);
       argTrace.calleeId = calleeTraceId;
     }
-    // }
   }
-  // }
 
-  // TODO: I forgot why I deferred all calls to here? 
-  //    Probably had the order flipped before or did nested replacements;
-  //    might not need to defer anymore.
+  // TODO: I deferred to here because I felt it was safer this way,
+  //    but might not need to defer at all.
   replacements.forEach(r => r());
 }
 
 const instrumentors = {
-  CallExpression(path, state) {
-    const origCallPath = traceCallExpression(path, state);
-    instrumentArgs(origCallPath, state);
+  CallExpression(callPath, state) {
+    const calleePath = callPath.get('callee');
+    traceWrapExpression(calleePath, state, {
+      traceType: TraceType.Callee
+    });
+    const calleeTraceId = getPathTraceId(calleePath);
+    const origCallPath = traceCallExpression(callPath, state, calleeTraceId);
+    instrumentArgs(origCallPath, state, calleeTraceId);
   },
   ExpressionWithValue(path, state, cfg) {
     const originalIsParent = cfg?.originalIsParent;

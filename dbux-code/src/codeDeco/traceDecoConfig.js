@@ -5,7 +5,7 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 const lightred = 'rgba(1, 0, 0, 0.5)';
 
-const TraceDecoratorConfig = {
+const StylingsByName = {
   PushImmediate: {
     styling: {
       after: {
@@ -116,11 +116,40 @@ const TraceDecoratorConfig = {
         color: 'gray',
       }
     }
+  },
+
+  // ########################################
+  // CallExpression decos
+  // ########################################
+  CallExpressionStep: {
+    styling: {
+      after: {
+        contentText: '⤴',
+        color: 'red',
+      },
+    }
+  },
+  CallExpressionNoStep: {
+    styling: {
+      after: {
+        contentText: '⤴',
+        color: 'gray',
+      },
+    }
   }
 };
 
+const decoNamesByType = {
+  CallExpression(dataProvider, staticTrace, trace) {
+    const previousTrace = dataProvider.collections.traces.getById(trace.traceId - 1);
+    if (previousTrace.contextId > trace.contextId) {
+      return 'CallExpressionStep';
+    }
+    return 'CallExpressionNoStep';
+  }
+};
 
-let configsByType;
+let configsByName;
 
 // ###########################################################################
 // init
@@ -128,26 +157,35 @@ let configsByType;
 
 
 function initConfig(decoConfig) {
-  configsByType = [];
-  for (const typeName in decoConfig) {
-    const cfg = decoConfig[typeName];
+  configsByName = {};
+  for (const decoName in decoConfig) {
+    const cfg = decoConfig[decoName];
     if (!cfg) {
       continue;
     }
-    const type = TraceType.valueFromForce(typeName);
+    // const type = TraceType.valueFromForce(typeName);
     cfg.editorDecorationType = window.createTextEditorDecorationType(cfg.styling);
-    configsByType[type] = cfg;
+    configsByName[decoName] = cfg;
   }
 }
 
 export function initTraceDecorators() {
-  initConfig(TraceDecoratorConfig);
+  initConfig(StylingsByName);
 }
 
-export function getDecoName(trace) {
-
+export function getTraceDecoName(dataProvider, staticTrace, trace) {
+  const traceType = dataProvider.util.getTraceType(trace);
+  const typeName = TraceType.nameFrom(traceType);
+  const f = decoNamesByType[typeName];
+  if (f) {
+    const name = f(dataProvider, staticTrace, trace);
+    if (name) {
+      return name;
+    }
+  }
+  return typeName;
 }
 
-export function getAllConfigsByName() {
-  
+export function getDecoConfigByName(decoName) {
+  return configsByName[decoName];
 }

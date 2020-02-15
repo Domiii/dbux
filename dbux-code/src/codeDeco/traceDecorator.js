@@ -2,8 +2,9 @@ import { window } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
-import TraceDecoratorConfig, { getDecoName } from './traceDecoConfig';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import groupBy from 'lodash/groupBy';
+import { getTraceDecoName, getDecoConfigByName } from './traceDecoConfig';
 import { babelLocToCodeRange } from '../helpers/locHelpers';
 
 const { log, debug, warn, error: logError } = newLogger('traceDecorator');
@@ -13,31 +14,32 @@ const { log, debug, warn, error: logError } = newLogger('traceDecorator');
 // render
 // ###########################################################################
 
-function groupTracesByDecoName(staticTraces, allDecosByName) {
-  const groupsByType = dataProvider.util.groupTracesByType(staticTraces);
+/**
+ * Groups traces by decoName, as well as staticTraceId.
+ * 
+ * TODO: improve performance to work in long loops
+ */
+function groupTracesByDecoNameAndStaticTrace(application, 
+  staticTraces: StaticTrace[], allDecosByName) {
+  const { dataProvider } = application;
+  for (const staticTrace of staticTraces) {
+    const {
+      staticTraceId
+    } = staticTrace;
 
-  const groupsByDecoName = {};
-  for (const type in groupsByType) {
-    const group = groupsByType[type];
-    if (!group) {
+    const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+    if (!traces) {
       continue;
     }
 
-    const [staticTrace, traces] = group;
-    for (const trace of traces) {
-      const groupName = getDecoName(trace);
-    }
-  }
+    // group by decoName
+    const byDecoName = groupBy(traces, trace => getTraceDecoName(dataProvider, staticTrace, trace));
 
-  for (let traceType = 1; traceType < traceGroupsByType.length; ++traceType) {
-    // add all decorations for group
-    const groups = traceGroupsByType[traceType];
-    if (groups) {
-      for (const group of groups) {
-        const [staticTrace, traces] = group;
-        const decoration = createTraceGroupDecoration(dataProvider, traceType, staticTrace, traces);
-        pushArrayOfArray(allDecosByName, decoName, decoration);
-      }
+    // put all groups together
+    for (const decoName in byDecoName) {
+      const tracesOfDecoName = byDecoName[decoName];
+      const bag = allDecosByName[decoName] || (allDecosByName[decoName] = []);
+      bag.push([staticTrace, tracesOfDecoName]);
     }
   }
 }
@@ -46,7 +48,7 @@ function groupTracesByDecoName(staticTraces, allDecosByName) {
  * TODO: the order of decorations is currently dictacted by the order of their decoration types (VSCode limitation)
  */
 export function renderTraceDecorations(editor, fpath) {
-  const allDecosByName = [];
+  const decosByName = {};
 
   // prepare decorations
   allApplications.selection.data.mapApplicationsOfFilePath(fpath, (application, programId) => {
@@ -58,24 +60,30 @@ export function renderTraceDecorations(editor, fpath) {
       return;
     }
 
-    // group by TraceType
-
     // group by decoName
-    const traceGroupsByDecoName = groupTracesByDecoName(staticTraces, allDecosByName);
+    const decoGroupsByName = {};
+    groupTracesByDecoNameAndStaticTrace(application, staticTraces, decoGroupsByName);
 
-    // TODO: 
+    // create decorations for group
+    for (const decoName in decoGroupsByName) {
+      const [staticTrace, traces] = decoGroupsByName[decoName];
+      const decoration = createTraceGroupDecoration(dataProvider, decoName, staticTrace, traces);
+
+      const bag = decosByName[decoName] || (decosByName[decoName] = []);
+      bag.push(decoration);
+    }
   });
 
   // render decorations
-  for (let traceType = 1; traceType < configsByType.length; ++traceType) {
+  for (const decoName in decosByName) {
     // TextEditorDecorationType
     // see: https://code.visualstudio.com/api/references/vscode-api#TextEditorDecorationType
-    const config = configsByType[traceType];
-    const decorations = allDecosByName[traceType];
+    const decorations = decosByName[decoName];
+    const config = getDecoConfigByName(decoName);
 
     if (!config?.editorDecorationType) {
       if (decorations) {
-        logError('found TraceType in trace that is not configured', traceType, TraceType.nameFrom(traceType));
+        logError('found decoName for trace that is not configured', decoName);
       }
       continue;
     }
@@ -90,7 +98,7 @@ export function renderTraceDecorations(editor, fpath) {
   }
 }
 
-function createTraceGroupDecoration(dataProvider, traceType, staticTrace, traces) {
+function createTraceGroupDecoration(dataProvider, decoName, staticTrace, traces) {
   const {
     staticTraceId,
     loc
