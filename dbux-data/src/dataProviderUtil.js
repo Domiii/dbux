@@ -328,6 +328,8 @@ export default {
   },
 
   /**
+   * Groups traces by TraceType, as well as staticTraceId.
+   * 
    * TODO: improve performance, use MultiKeyIndex instead
    */
   groupTracesByType(dp: DataProvider, staticTraces: StaticTrace[]) {
