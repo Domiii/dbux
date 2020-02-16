@@ -10,11 +10,12 @@ export function getLine(path) {
 }
 
 export function getPresentableString(path, MaxLen) {
-  MaxLen = MaxLen || 40;
   let presentableString = path.toString();
-  if (presentableString.length > MaxLen) {
+  if (MaxLen && presentableString.length > MaxLen) {
     presentableString = presentableString.substring(0, MaxLen - 3).trim() + '...';
   }
-  presentableString = presentableString.replace(/[\r\n]/g, '');
+  presentableString = presentableString
+    // .replace(/[\r\n]/g, '')
+    .replace(/\s+/g, ' ');      // replace any amount and type of whitespace with a single space
   return presentableString;
 }

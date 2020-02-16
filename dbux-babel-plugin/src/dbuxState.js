@@ -80,7 +80,7 @@ function getTraceDisplayName(path, state) {
   }
   else {
     const str = extractSourceStringWithoutComments(path.node, state);
-    displayName = getPresentableString(str, 30);
+    displayName = getPresentableString(str);
   }
   return displayName;
 }
