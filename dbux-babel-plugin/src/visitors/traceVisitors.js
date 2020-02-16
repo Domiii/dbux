@@ -8,8 +8,8 @@ import { isPathInstrumented, getPathTraceId } from '../helpers/instrumentationHe
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
-  CallExpression: 1,
-  ExpressionWithValue: 2,
+  // CallExpression: 1,
+  ExpressionResult: 2,
   ExpressionNoValue: 3,
   Statement: 4,
   Block: 5
@@ -18,8 +18,8 @@ const TraceInstrumentationType = new Enum({
 const traceCfg = (() => {
   const {
     NoTrace,
-    CallExpression,
-    ExpressionWithValue,
+    // CallExpression,
+    ExpressionResult,
     ExpressionNoValue,
     Statement,
     Block
@@ -30,16 +30,16 @@ const traceCfg = (() => {
     // assignments
     // ########################################
     AssignmentExpression: [
-      ExpressionWithValue,
-      // [['right', ExpressionWithValue]]
+      ExpressionResult,
+      // [['right', ExpressionResult]]
     ],
     ClassPrivateProperty: [
       NoTrace,
-      [['value', ExpressionWithValue]]
+      [['value', ExpressionResult]]
     ],
     ClassProperty: [
       NoTrace,
-      [['value', ExpressionWithValue]]
+      [['value', ExpressionResult]]
     ],
     VariableDeclaration: [
       NoTrace,
@@ -53,7 +53,7 @@ const traceCfg = (() => {
     ],
     VariableDeclarator: [
       NoTrace,
-      [['init', ExpressionWithValue, null, { originalIsParent: true }]]
+      [['init', ExpressionResult, null, { originalIsParent: true }]]
     ],
 
 
@@ -61,28 +61,28 @@ const traceCfg = (() => {
     // expressions
     // ########################################
     CallExpression: [
-      CallExpression
+      ExpressionResult
     ],
     OptionalCallExpression: [
-      CallExpression
+      ExpressionResult
     ],
     NewExpression: [
-      CallExpression
+      ExpressionResult
     ],
     AwaitExpression: [
       NoTrace // WARNING: don't change this - will cause await to bug out, due to a conflict with `awaitVisitor`'s instrumentation
-      // ExpressionWithValue
+      // ExpressionResult
       // [['argument', ExpressionNoValue]]
     ],
     ConditionalExpression: [
-      ExpressionWithValue,
-      [['test', ExpressionWithValue], ['consequent', ExpressionWithValue], ['alternate', ExpressionWithValue]]
+      ExpressionResult,
+      [['test', ExpressionResult], ['consequent', ExpressionResult], ['alternate', ExpressionResult]]
     ],
     Super: ExpressionNoValue,
-    UpdateExpression: ExpressionWithValue,
+    UpdateExpression: ExpressionResult,
     YieldExpression: [
       NoTrace,
-      [['argument', ExpressionWithValue]]
+      [['argument', ExpressionResult]]
     ],
 
 
@@ -104,7 +104,7 @@ const traceCfg = (() => {
     // ],
     ReturnStatement: [
       NoTrace,
-      [['argument', ExpressionWithValue]]
+      [['argument', ExpressionResult]]
     ],
     ThrowStatement: Statement,
 
@@ -114,7 +114,7 @@ const traceCfg = (() => {
     // ########################################
     ForStatement: [
       NoTrace,
-      [['test', ExpressionWithValue], ['update', ExpressionWithValue], ['body', Block]]
+      [['test', ExpressionResult], ['update', ExpressionResult], ['body', Block]]
     ],
     ForInStatement: [
       // TODO: trace `left` value
@@ -129,11 +129,11 @@ const traceCfg = (() => {
     DoWhileLoop: [
       // TODO: currently disabled because babel doesn't like it; probably a babel bug?
       NoTrace,
-      [['test', ExpressionWithValue], ['body', Block]]
+      [['test', ExpressionResult], ['body', Block]]
     ],
     WhileStatement: [
       NoTrace,
-      [['test', ExpressionWithValue], ['body', Block]]
+      [['test', ExpressionResult], ['body', Block]]
     ],
 
     // ########################################
@@ -141,11 +141,11 @@ const traceCfg = (() => {
     // ########################################
     IfStatement: [
       NoTrace,
-      [['test', ExpressionWithValue], ['consequent', Block], ['alternate', Block]],
+      [['test', ExpressionResult], ['consequent', Block], ['alternate', Block]],
     ],
     SwitchStatement: [
       NoTrace,
-      [['discriminant', ExpressionWithValue]]
+      [['discriminant', ExpressionResult]]
     ],
     // SwitchCase: [
     // TODO: insert trace call into `consequent` array.
@@ -238,14 +238,16 @@ function instrumentArgs(callPath, state, calleeTraceId) {
     // else {
     const argPath = callPath.get('arguments.' + i);
     const argTraceId = getPathTraceId(argPath);
+    // const argContextId = !argTraceId && getPathContextId(argPath) || null;
     if (!argTraceId) {
+      // not instrumented yet -> add trace
       replacements.push(() => traceWrapArg(argPath, state, calleeTraceId));
     }
-    else {
-      // this argument has already been instrumented -> just set it's calleeId
+    else { // if (argTraceId) {
+      // has been instrumented and has a trace -> just set it's calleeId
       // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
       const argTrace = state.getTrace(argTraceId);
-      argTrace.calleeId = calleeTraceId;
+      argTrace._calleeId = calleeTraceId;
     }
   }
 
@@ -254,23 +256,27 @@ function instrumentArgs(callPath, state, calleeTraceId) {
   replacements.forEach(r => r());
 }
 
-const instrumentors = {
-  CallExpression(callPath, state) {
-    const calleePath = callPath.get('callee');
-    traceWrapExpression(TraceType.Callee, calleePath, state);
-    const calleeTraceId = getPathTraceId(calleePath);
-    const origCallPath = traceCallExpression(callPath, state, calleeTraceId);
-    instrumentArgs(origCallPath, state, calleeTraceId);
-  },
-  ExpressionWithValue(path, state, cfg) {
-    const originalIsParent = cfg?.originalIsParent;
-    let tracePath;
-    if (originalIsParent) {
-      // we want to highlight the parentPath, instead of just the value path
-      tracePath = path.parentPath
+const enterInstrumentors = {
+  ExpressionResult(path, state, cfg) {
+    if (path.isCallExpression()) {
+      // CallExpression
+      // add staticTrace for callee, but don't actually trace it
+      //  NOTE: tracing a callee complicates things a bit; let's keep it easy for now
+      const calleePath = path.get('callee');
+      state.addTrace(calleePath, TraceType.Callee, null);
+      // traceWrapExpression(TraceType.Callee, calleePath, state);
     }
+    else {
+      // any other expression with a result
+      const originalIsParent = cfg?.originalIsParent;
+      let tracePath;
+      if (originalIsParent) {
+        // we want to highlight the parentPath, instead of just the value path
+        tracePath = path.parentPath;
+      }
 
-    traceWrapExpression(TraceType.ExpressionResult, path, state, tracePath);
+      traceWrapExpression(TraceType.ExpressionResult, path, state, tracePath);
+    }
   },
   ExpressionNoValue(path, state) {
     traceBeforeExpression(path, state);
@@ -297,12 +303,25 @@ const instrumentors = {
   }
 };
 
+const exitInstrumentors = {
+  ExpressionResult(path, state) {
+    if (path.isCallExpression()) {
+      // CallExpression
+      // instrument args after everything else has already been done
+      const calleePath = path.get('callee');
+      const calleeTraceId = getPathTraceId(calleePath);
+      const origCallPath = traceCallExpression(path, state, calleeTraceId);
+      instrumentArgs(origCallPath, state, calleeTraceId);
+    }
+  }
+};
+
 // ###########################################################################
 // visitors
 // ###########################################################################
 
-function enter(path, state, cfg) {
-  if (!state.onTrace(path)) return;
+function visit(onTrace, instrumentors, path, state, cfg) {
+  if (!onTrace(path)) return;
 
   const [traceType, children, extraCfg] = cfg;
   if (extraCfg?.ignore?.includes(path.node.type)) {
@@ -316,10 +335,12 @@ function enter(path, state, cfg) {
 
   const traceTypeName = TraceInstrumentationType.nameFromForce(traceType);
   if (traceType) {
-    if (!instrumentors[traceTypeName]) {
-      err('instrumentors are missing TraceType:', traceTypeName);
+    // if (!instrumentors[traceTypeName]) {
+    //   err('instrumentors are missing TraceType:', traceTypeName);
+    // }
+    if (instrumentors[traceTypeName]) {
+      instrumentors[traceTypeName](path, state, extraCfg);
     }
-    instrumentors[traceTypeName](path, state, extraCfg);
   }
 
   if (children) {
@@ -328,7 +349,7 @@ function enter(path, state, cfg) {
       const childPath = path.get(childName);
 
       if (childPath.node) {
-        enter(childPath, state, childCfg);
+        visit(onTrace, instrumentors, childPath, state, childCfg);
       }
     }
   }
@@ -342,9 +363,14 @@ export function buildAllTraceVisitors() {
   }
 
   for (const visitorName in _cfg) {
+    const visitorCfg = _cfg[visitorName];
     visitors[visitorName] = {
       enter(path, state) {
-        enter(path, state, _cfg[visitorName]);
+        visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
+      },
+
+      exit(path, state) {
+        visit(state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
       }
     };
   }

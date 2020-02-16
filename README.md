@@ -88,6 +88,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 ## TODO (other)
 * [codeDeco] highlight executed funtion calls in code
 * [instrumentation]
+   * don't instrument `super` calls
+      * `_dbux.traceExpr(16, (_dbux.t(15), super)(_dbux.traceArg(17, 'staticTraces')));`
    * fix `await`: traces are not correctly added to their `Resume` context
       * [traceDetailsView] when displaying trace in `Resume` context, it shows name as `undefined`
 * [traceDetailsView]

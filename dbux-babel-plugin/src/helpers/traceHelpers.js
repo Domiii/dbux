@@ -87,11 +87,11 @@ export function traceWrapExpression(traceType, path, state, tracePath) {
       tracePath
     }
   );
-};
+}
 
 export function traceCallExpression(callPath, state, calleeTraceId) {
   return _traceWrapExpression('traceExpr', TraceType.CallExpressionResult, callPath, state, {
-    calleeId: calleeTraceId
+    resultCalleeId: calleeTraceId
   });
 
   // NOTE: trace "before" an expression is not right before it actually executes the call.
