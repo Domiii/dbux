@@ -88,8 +88,10 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 ## TODO (other)
 * [codeDeco] highlight executed funtion calls in code
 * [instrumentation]
-   * don't instrument `super` calls
-      * `_dbux.traceExpr(16, (_dbux.t(15), super)(_dbux.traceArg(17, 'staticTraces')));`
+   * start preparing for more accurate callstacks
+      * add actual callee trace (displayName = entire expression)
+      * add something for setters as well
+      * future work: call stacks for getters will be problematic either way :(
    * fix `await`: traces are not correctly added to their `Resume` context
       * [traceDetailsView] when displaying trace in `Resume` context, it shows name as `undefined`
 * [traceDetailsView]
@@ -400,10 +402,19 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 
 # Known Issues
 
-* Windows only
-   * When running things in VSCode built-in terminal, it sometimes changes to lower-case drive letter
-      * Causing lower-case and upper-case drive letters to start appearing in `require` paths
-         * => which makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
+* What applications work so well with DBUX?
+   * TODO: we are still exploring that
+* What applications **won't** work so well with DBUX?
+   * Proxies and custom object getters with side effects
+      * For serialization `dbux-runtime` iterates (or will in the future iterate) over object properties
+      * Thus possibly causing side effects with proxy and getter functions
+      * At least it will leave unwanted traces (while attempting to "observe") - Damn you, [Observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics))!!! :(
+      * TODO: at least flag traces caused by `dbux-runtime` by setting some `trace-triggered-from-dbux-builtin-call` flag while running built-in functions
+         * NOTE: This will still mess with proxy and getter functions that themselves have side effects, such as caching functions, tracers and more.
+* Issues under Windows
+   * **sometimes**, when running things in VSCode built-in terminal, it changes to lower-case drive letter
+      * This causes a mixture of lower-case and upper-case drive letters to start appearing in `require` paths
+         * => this makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
       * Official bug report: https://github.com/microsoft/vscode/issues/9448
       * Solution: run command in external `cmd` or find a better behaving terminal
 
@@ -468,8 +479,6 @@ You can re-add it manually:
 		]
 	}
 ```
-<<<<<<< HEAD
-
 
 
 # More References
@@ -480,5 +489,3 @@ You can re-add it manually:
    * debugging
    * callbacks
       * see https://www.quora.com/What-is-the-best-tutorial-or-course-for-understanding-JavaScript-callback-functions
-=======
->>>>>>> 1b9bb6844474b430b8f10ee94649e2fc6e3b420a
