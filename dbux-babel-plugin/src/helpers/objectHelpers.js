@@ -1,7 +1,7 @@
 import * as t from '@babel/types';
 import { NodePath } from '@babel/core';
 import { getClassAncestryString } from './astHelpers';
-import { toSourceStringWithoutComments } from './misc';
+import { extractSourceStringWithoutComments } from './sourceHelpers';
 
 
 // export function getLeftMostIdOfMember(memberPath) {
@@ -13,11 +13,11 @@ export function getRightMostIdOfMember(memberPath) {
 }
 
 
-export function getMemberExpressionName(path, includeAncestry = true) {
+export function getMemberExpressionName(path, state, includeAncestry = true) {
   const objPath: NodePath = path.get('object');
   let name;
   if (objPath.isThisExpression()) {
-    const innerName = toSourceStringWithoutComments(path.node.property);
+    const innerName = extractSourceStringWithoutComments(path.node.property, state);
     if (includeAncestry) {
       name = getClassAncestryString(objPath);
       name = [
@@ -30,7 +30,7 @@ export function getMemberExpressionName(path, includeAncestry = true) {
     }
   }
   else {
-    name = toSourceStringWithoutComments(path.node);
+    name = extractSourceStringWithoutComments(path.node, state);
   }
   return name;
 }

@@ -3,8 +3,9 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { getBasename } from 'dbux-common/src/util/pathUtil';
 import * as t from '@babel/types';
 
-import { getPresentableString, toSourceStringWithoutComments } from './helpers/misc';
+import { getPresentableString } from './helpers/misc';
 import { getFunctionDisplayName } from './helpers/functionHelpers';
+import { extractSourceStringWithoutComments } from './helpers/sourceHelpers';
 
 function checkPath(path) {
   if (!path.node.loc) {
@@ -74,10 +75,10 @@ function tracePathEnd(path, state, thin) {
 function getTraceDisplayName(path, state) {
   let displayName;
   if (path.isFunction()) {
-    displayName = getFunctionDisplayName(path);
+    displayName = getFunctionDisplayName(path, state);
   }
   else {
-    const str = toSourceStringWithoutComments(path.node);
+    const str = extractSourceStringWithoutComments(path.node, state);
     displayName = getPresentableString(str, 30);
   }
   return displayName;
@@ -116,12 +117,14 @@ export default function injectDbuxState(programPath, programState) {
   const fileName = filePath && getBasename(filePath)
 
   const { scope } = programPath;
+  const { file: programFile } = programState;
 
   const staticContexts = [null]; // staticId = 0 is always null
   const traces = [null];
 
   const dbuxState = {
     // static program data
+    programFile,
     filePath,
     fileName,
 

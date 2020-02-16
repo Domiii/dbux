@@ -9,7 +9,7 @@ let TraceType = {
 
   BeforeExpression: 4,
   Callee: 5,
-  CallExpression: 6,
+  CallExpressionResult: 6,
   ExpressionResult: 7,
 
   CallArgument: 8,

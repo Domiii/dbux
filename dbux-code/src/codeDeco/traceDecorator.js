@@ -19,7 +19,7 @@ const { log, debug, warn, error: logError } = newLogger('traceDecorator');
  * 
  * TODO: improve performance to work in long loops
  */
-function groupTracesByDecoNameAndStaticTrace(application, 
+function groupTracesByDecoNameAndStaticTrace(application,
   staticTraces: StaticTrace[], allDecosByName) {
   const { dataProvider } = application;
   for (const staticTrace of staticTraces) {
@@ -39,7 +39,10 @@ function groupTracesByDecoNameAndStaticTrace(application,
     for (const decoName in byDecoName) {
       const tracesOfDecoName = byDecoName[decoName];
       const bag = allDecosByName[decoName] || (allDecosByName[decoName] = []);
-      bag.push([staticTrace, tracesOfDecoName]);
+      // bag.push([staticTrace, tracesOfDecoName]);
+      const decoration = createTraceGroupDecoration(dataProvider, 
+        decoName, staticTrace, tracesOfDecoName);
+      bag.push(decoration);
     }
   }
 }
@@ -61,17 +64,8 @@ export function renderTraceDecorations(editor, fpath) {
     }
 
     // group by decoName
-    const decoGroupsByName = {};
-    groupTracesByDecoNameAndStaticTrace(application, staticTraces, decoGroupsByName);
-
-    // create decorations for group
-    for (const decoName in decoGroupsByName) {
-      const [staticTrace, traces] = decoGroupsByName[decoName];
-      const decoration = createTraceGroupDecoration(dataProvider, decoName, staticTrace, traces);
-
-      const bag = decosByName[decoName] || (decosByName[decoName] = []);
-      bag.push(decoration);
-    }
+    // const decoGroupsByName = {};
+    groupTracesByDecoNameAndStaticTrace(application, staticTraces, decosByName);
   });
 
   // render decorations
@@ -82,7 +76,7 @@ export function renderTraceDecorations(editor, fpath) {
     const config = getDecoConfigByName(decoName);
 
     if (!config?.editorDecorationType) {
-      if (decorations) {
+      if (decorations && config !== false) {
         logError('found decoName for trace that is not configured', decoName);
       }
       continue;

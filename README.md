@@ -90,7 +90,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [instrumentation]
    * fix `await`: traces are not correctly added to their `Resume` context
       * [traceDetailsView] when displaying trace in `Resume` context, it shows name as `undefined`
-   * trace parameters
 * [traceDetailsView]
    * details:
       * [CallArg/CallbackArg] display `CallExpression`'s name
@@ -161,6 +160,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
             * split bigger objects into chunks
             * warnings when things get out of hand
    * object tracking: list all traces that an object participated in
+      * track functions
       * track everything?
          * NOTE: when `TrackEverything` is enabled, we can track callbacks 100% as well
             * (if their declarations were instrumented)

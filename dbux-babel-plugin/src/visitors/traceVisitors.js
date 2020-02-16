@@ -257,21 +257,20 @@ function instrumentArgs(callPath, state, calleeTraceId) {
 const instrumentors = {
   CallExpression(callPath, state) {
     const calleePath = callPath.get('callee');
-    traceWrapExpression(calleePath, state, {
-      traceType: TraceType.Callee
-    });
+    traceWrapExpression(TraceType.Callee, calleePath, state);
     const calleeTraceId = getPathTraceId(calleePath);
     const origCallPath = traceCallExpression(callPath, state, calleeTraceId);
     instrumentArgs(origCallPath, state, calleeTraceId);
   },
   ExpressionWithValue(path, state, cfg) {
     const originalIsParent = cfg?.originalIsParent;
-    const traceExprCfg = !originalIsParent ? null : {
+    let tracePath;
+    if (originalIsParent) {
       // we want to highlight the parentPath, instead of just the value path
-      tracePath: path.parentPath
-    };
+      tracePath = path.parentPath
+    }
 
-    traceWrapExpression(path, state, traceExprCfg);
+    traceWrapExpression(TraceType.ExpressionResult, path, state, tracePath);
   },
   ExpressionNoValue(path, state) {
     traceBeforeExpression(path, state);

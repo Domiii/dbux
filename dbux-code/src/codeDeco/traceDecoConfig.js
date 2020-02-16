@@ -84,6 +84,7 @@ const StylingsByName = {
       },
     }
   },
+  Callee: false, // don't render at all
   CallArgument: {
     styling: {
       after: {
@@ -124,7 +125,7 @@ const StylingsByName = {
   CallExpressionStep: {
     styling: {
       after: {
-        contentText: '⤴',
+        contentText: '↱',
         color: 'red',
       },
     }
@@ -132,7 +133,7 @@ const StylingsByName = {
   CallExpressionNoStep: {
     styling: {
       after: {
-        contentText: '⤴',
+        contentText: '↱',
         color: 'gray',
       },
     }
@@ -140,7 +141,7 @@ const StylingsByName = {
 };
 
 const decoNamesByType = {
-  CallExpression(dataProvider, staticTrace, trace) {
+  CallExpressionResult(dataProvider, staticTrace, trace) {
     const previousTrace = dataProvider.collections.traces.getById(trace.traceId - 1);
     if (previousTrace.contextId > trace.contextId) {
       return 'CallExpressionStep';
@@ -160,11 +161,10 @@ function initConfig(decoConfig) {
   configsByName = {};
   for (const decoName in decoConfig) {
     const cfg = decoConfig[decoName];
-    if (!cfg) {
-      continue;
+    if (cfg) {
+      // const type = TraceType.valueFromForce(typeName);
+      cfg.editorDecorationType = window.createTextEditorDecorationType(cfg.styling);
     }
-    // const type = TraceType.valueFromForce(typeName);
-    cfg.editorDecorationType = window.createTextEditorDecorationType(cfg.styling);
     configsByName[decoName] = cfg;
   }
 }
@@ -174,7 +174,7 @@ export function initTraceDecorators() {
 }
 
 export function getTraceDecoName(dataProvider, staticTrace, trace) {
-  const traceType = dataProvider.util.getTraceType(trace);
+  const traceType = dataProvider.util.getTraceType(trace.traceId);
   const typeName = TraceType.nameFrom(traceType);
   const f = decoNamesByType[typeName];
   if (f) {
