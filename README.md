@@ -468,6 +468,7 @@ You can re-add it manually:
 		]
 	}
 ```
+<<<<<<< HEAD
 
 
 
@@ -479,3 +480,5 @@ You can re-add it manually:
    * debugging
    * callbacks
       * see https://www.quora.com/What-is-the-best-tutorial-or-course-for-understanding-JavaScript-callback-functions
+=======
+>>>>>>> 1b9bb6844474b430b8f10ee94649e2fc6e3b420a
