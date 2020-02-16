@@ -45,7 +45,7 @@ function extractLoc(srcLines, loc) {
     // multiple lines
     result = [
       srcLines[line0].substring(col0),
-      ...srcLines.slice(line0 + 1, line1 - 1),
+      ...srcLines.slice(line0 + 1, line1),
       srcLines[line1].substring(0, col1)
     ].join('\n');
   }

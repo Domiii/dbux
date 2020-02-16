@@ -25,8 +25,7 @@ const wrapAwaitExpressionTemplate = template(`
 
 
 function getAwaitDisplayName(path) {
-  const MaxLen = 30;
-  return `(${getPresentableString(path.toString(), MaxLen)})`;
+  return `(${getPresentableString(path.toString())})`;
 }
 
 // ###########################################################################

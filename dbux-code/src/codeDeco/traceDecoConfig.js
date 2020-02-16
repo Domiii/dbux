@@ -106,7 +106,7 @@ const StylingsByName = {
     styling: {
       after: {
         contentText: '↳',
-        color: 'gray',
+        color: 'orange',
       }
     }
   },
@@ -114,7 +114,7 @@ const StylingsByName = {
     styling: {
       before: {
         contentText: '⤴',
-        color: 'gray',
+        color: 'orange',
       }
     }
   },
