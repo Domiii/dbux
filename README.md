@@ -88,8 +88,11 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 ## TODO (other)
 * [instrumentation]
    * fix `await`:
-      * after pushing `Await`, traces in non-async functions on stack will end up in it
-         * need to redo this
+      * fix `Await` + `Resume`
+         * async function's push + pop?
+         * when resuming, we might come back from a callback etc.
+            * Need to push `Resume` on demand?
+         * whn resuming, parent is not set
    * start preparing for more accurate callstacks
       * add actual callee trace (displayName = entire expression)
       * setters?
