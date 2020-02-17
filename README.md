@@ -86,14 +86,14 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
-* [codeDeco] highlight executed funtion calls in code
 * [instrumentation]
+   * fix `await`:
+      * after pushing `Await`, traces in non-async functions on stack will end up in it
+         * need to redo this
    * start preparing for more accurate callstacks
       * add actual callee trace (displayName = entire expression)
-      * add something for setters as well
+      * setters?
       * future work: call stacks for getters will be problematic either way :(
-   * fix `await`: traces are not correctly added to their `Resume` context
-      * [traceDetailsView] when displaying trace in `Resume` context, it shows name as `undefined`
 * [traceDetailsView]
    * details:
       * [CallArg/CallbackArg] display `CallExpression`'s name
