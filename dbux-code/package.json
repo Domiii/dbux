@@ -39,6 +39,22 @@
 		},
 		"commands": [
 			{
+				"command": "dbuxPlayback.previousTrace",
+				"title": "Start",
+				"icon": {
+					"light": "resources/light/previousTrace.svg",
+					"dark": "resources/dark/previousTrace.svg"
+				}
+			},
+			{
+				"command": "dbuxPlayback.nextTrace",
+				"title": "Pause",
+				"icon": {
+					"light": "resources/light/nextTrace.svg",
+					"dark": "resources/dark/nextTrace.svg"
+				}
+			},
+			{
 				"command": "dbuxPlayback.play",
 				"title": "Start",
 				"icon": {
@@ -102,14 +118,22 @@
 		"menus": {
 			"editor/title": [
 				{
+					"command": "dbuxPlayback.previousTrace",
+					"group": "navigation@0"
+				},
+				{
+					"command": "dbuxPlayback.nextTrace",
+					"group": "navigation@3"
+				},
+				{
 					"command": "dbuxPlayback.play",
 					"when": "dbuxPlaybackPlaying == false",
-					"group": "navigation"
+					"group": "navigation@1"
 				},
 				{
 					"command": "dbuxPlayback.pause",
 					"when": "dbuxPlaybackPlaying == true",
-					"group": "navigation"
+					"group": "navigation@2"
 				}
 			],
 			"view/title": [

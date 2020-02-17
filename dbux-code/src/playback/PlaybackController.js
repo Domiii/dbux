@@ -29,6 +29,14 @@ export default class PlaybackController {
     tracePlayback.pause();
   }
 
+  previousTrace = () => {
+    tracePlayback.gotoPreviousTrace();
+  }
+
+  nextTrace = () => {
+    tracePlayback.gotoNextTrace();
+  }
+
   // ###########################################################################
   // Events
   // ###########################################################################
