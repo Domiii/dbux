@@ -25,8 +25,7 @@ const wrapAwaitExpressionTemplate = template(`
 
 
 function getAwaitDisplayName(path) {
-  const MaxLen = 30;
-  return `(${getPresentableString(path.toString(), MaxLen)})`;
+  return `(${getPresentableString(path.toString())})`;
 }
 
 // ###########################################################################
@@ -52,7 +51,7 @@ function enter(path, state) {
 
   const resumeId = addResumeContext(path, state);
   const staticId = state.addStaticContext(path, {
-    type: StaticContextType.AwaitExpression,
+    type: StaticContextType.Await,
     displayName: getAwaitDisplayName(path),
     resumeId
   });

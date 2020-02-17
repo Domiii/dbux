@@ -1,8 +1,8 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import Application from 'dbux-data/src/applications/Application';
 import Trace from 'dbux-common/src/core/data/Trace';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
 import traceSelection from 'dbux-data/src/traceSelection';
+import { makeTraceLabel } from 'dbux-data/src/helpers/traceLabels';
 
 
 export class BaseNode extends TreeItem {
@@ -19,10 +19,6 @@ export class BaseNode extends TreeItem {
 
     // treeItem data
     this.contextValue = 'detailsBaseNode';
-    this.command = {
-      command: 'dbuxTraceDetailsView.itemClick',
-      arguments: [this]
-    };
 
     this.iconPath = iconPath;
 
@@ -91,18 +87,7 @@ export class TraceNode extends BaseNode {
   }
 
   static makeLabel(trace: Trace, application: Application) {
-    const {
-      traceId,
-      staticTraceId
-    } = trace;
-    const staticTrace = application.dataProvider.collections.staticTraces.getById(staticTraceId);
-    const {
-      displayName
-    } = staticTrace;
-    const traceType = application.dataProvider.util.getTraceType(traceId);
-    const typeName = TraceType.nameFrom(traceType);
-    const title = displayName || `[${typeName}]`;
-    return `${title}`;
+    return makeTraceLabel(trace, application);
   }
 
   static makeIconPath(trace: Trace) {

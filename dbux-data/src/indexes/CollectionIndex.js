@@ -1,5 +1,4 @@
 import { newLogger } from 'dbux-common/src/log/logger';
-import DataProvider from '../DataProvider';
 
 export default class CollectionIndex<T> {
   dp: DataProvider;

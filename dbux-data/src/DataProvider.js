@@ -8,7 +8,6 @@ import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import deserialize from 'dbux-common/src/serialization/deserialize';
-import { EmptyObject } from '../../dbux-common/src/util/arrayUtil';
 
 import Collection from './Collection';
 import Queries from './queries/Queries';

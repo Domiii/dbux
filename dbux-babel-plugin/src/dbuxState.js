@@ -3,7 +3,10 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { getBasename } from 'dbux-common/src/util/pathUtil';
 import * as t from '@babel/types';
 
-import { getPresentableString, toSourceStringWithoutComments } from './helpers/misc';
+import { getPresentableString } from './helpers/misc';
+import { getFunctionDisplayName } from './helpers/functionHelpers';
+import { extractSourceStringWithoutComments } from './helpers/sourceHelpers';
+import { getPathTraceId } from './helpers/instrumentationHelper';
 
 function checkPath(path) {
   if (!path.node.loc) {
@@ -23,6 +26,7 @@ const traceCustomizationsByType = {
   // NOTE: PushCallback + PopCallback are sharing the StaticTrace of `CallbackArgument` which pegs on `CallArgument` (so they won't pass through here)
   // [TraceType.PushCallback]: tracePathStart,
   // [TraceType.PopCallback]: tracePathEnd,
+  [TraceType.BeforeExpression]: traceBeforeExpression,
 
   [TraceType.Await]: tracePathEnd,
   [TraceType.Resume]: tracePathEnd,
@@ -69,12 +73,29 @@ function tracePathEnd(path, state, thin) {
   };
 }
 
+function getTraceDisplayName(path, state) {
+  let displayName;
+  if (path.isFunction()) {
+    displayName = getFunctionDisplayName(path, state);
+  }
+  else {
+    const str = extractSourceStringWithoutComments(path.node, state);
+    displayName = getPresentableString(str);
+  }
+  return displayName;
+}
+
+function traceBeforeExpression(path, state) {
+  return {
+    ...tracePathStart(path, state),
+    displayName: getTraceDisplayName(path, state)
+  };
+}
+
 function traceDefault(path, state) {
   // const parentStaticId = state.getParentStaticContextId(path);
 
-  // TODO: if we really need the `displayName`, improve performance
-  const str = toSourceStringWithoutComments(path.node);
-  const displayName = getPresentableString(str, 30);
+  let displayName = getTraceDisplayName(path, state);
   // const displayName = '';
 
   const { loc } = path.node;
@@ -97,12 +118,14 @@ export default function injectDbuxState(programPath, programState) {
   const fileName = filePath && getBasename(filePath)
 
   const { scope } = programPath;
+  const { file: programFile } = programState;
 
   const staticContexts = [null]; // staticId = 0 is always null
   const traces = [null];
 
   const dbuxState = {
     // static program data
+    programFile,
     filePath,
     fileName,
 
@@ -115,8 +138,21 @@ export default function injectDbuxState(programPath, programState) {
     },
     // console.log('[Program]', state.filename);
 
+    getTraceOfPath(path) {
+      const traceId = getPathTraceId(path);
+      return traceId && this.getTrace(traceId) || null;
+    },
+
+    getTrace(traceId) {
+      return traces[traceId];
+    },
+
     onTrace(path) {
       return dbuxState.onEnter(path, 'trace');
+    },
+
+    onTraceExit(path) {
+      return dbuxState.onExit(path, 'trace');
     },
 
     /**
@@ -142,6 +178,29 @@ export default function injectDbuxState(programPath, programState) {
       return true;
     },
 
+    /**
+     * NOTE: each node might be visited more than once.
+     * This function keeps track of that and returns whether this is the first time visit.
+     */
+    onExit(path, purpose) {
+      const key = 'exit_' + purpose;
+      if (path.getData(key)) {
+        return false;
+      }
+      // if (entered.has(path)) {
+      //   return false;
+      // }
+      if (!path.node?.loc) {
+        // this node has been dynamically emitted; not part of the original source code -> not interested in it
+        return false;
+      }
+
+      // remember our visit
+      dbuxState.markExited(path, purpose);
+
+      return true;
+    },
+
     markEntered(path, purpose) {
       if (!purpose) {
         throw new Error('Could not mark path because no purpose was given:\n' + path.toString());
@@ -151,13 +210,18 @@ export default function injectDbuxState(programPath, programState) {
       path.setData(key, true);
     },
 
+
     markExited(path, purpose) {
-      const key = 'enter_' + purpose;
+      if (!purpose) {
+        throw new Error('Could not mark path because no purpose was given:\n' + path.toString());
+      }
+      const key = 'exit_' + purpose;
+      // entered.add(path);
       path.setData(key, true);
     },
 
     markVisited(path, purpose) {
-      // TODO: when something is instrumented for multiple purposes (e.g. purposes A and B):
+      // WARNING: when something is instrumented for multiple purposes (e.g. purposes A and B):
       //  1. A creates a copy of the node (and thus will not be visited by A again)
       //  2. then B creates a copy of the node (and thus will not be visited by B again)
       //  3. since B created another copy of the node and that is marked as visited by A
@@ -173,18 +237,6 @@ export default function injectDbuxState(programPath, programState) {
     onCopy(oldPath, newPath, purpose = null) {
       newPath.data = oldPath.data;
       purpose && this.markVisited(newPath, purpose);
-    },
-
-    /**
-     * NOTE: each node might be visited more than once.
-     * This function keeps track of that and returns whether this is the first time visit.
-     */
-    onExit(path) {
-      if (path.getData('_dbux_exited')) {
-        return false;
-      }
-      path.setData('_dbux_exited', true);
-      return true;
     },
 
     getClosestAncestorData(path, dataName) {
@@ -265,10 +317,11 @@ export default function injectDbuxState(programPath, programState) {
     /**
      * Tracing a path in its entirety (usually means, the trace is recorded right before the given path).
      */
-    addTrace(path, type, customArg) {
+    addTrace(path, type, customArg, cfg) {
       checkPath(path);
 
       // console.log('TRACE', '@', `${state.filename}:${line}`);
+      // per-type data
       const _traceId = traces.length;
       let trace;
       if (traceCustomizationsByType[type]) {
@@ -278,10 +331,19 @@ export default function injectDbuxState(programPath, programState) {
         trace = traceDefault(path, dbuxState, customArg);
       }
 
+      // context-sensitive data
+      trace._calleeId = cfg?.calleeId;
+      trace._resultCalleeId = cfg?.resultCalleeId;
+
+      // misc data
       trace._traceId = _traceId;
       trace._staticContextId = dbuxState.getCurrentStaticContextId(path);
       trace.type = type;
+
+      // push
       traces.push(trace);
+
+      path.setData('_traceId', _traceId);
 
       return _traceId;
     },

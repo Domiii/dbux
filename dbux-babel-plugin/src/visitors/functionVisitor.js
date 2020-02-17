@@ -95,8 +95,8 @@ export default function functionVisitor() {
       if (!state.onEnter(path, 'context')) return;
       // console.warn('F', path.toString());
 
-      const name = guessFunctionName(path);
-      const displayName = getFunctionDisplayName(path, name);
+      const name = guessFunctionName(path, state);
+      const displayName = getFunctionDisplayName(path, state, name);
       const isGenerator = path.node.generator;
       const isAsync = path.node.async;
       const isInterruptable = isGenerator || isAsync;

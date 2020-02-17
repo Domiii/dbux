@@ -4,8 +4,9 @@ import Enum from '../util/Enum';
  * 
  */
 let SerializationMethod = {
-  ToString: 1,
-  JSON: 2
+  Function: 1,
+  ToString: 2,
+  JSON: 3
 };
 
 SerializationMethod = new Enum(SerializationMethod);

@@ -12,7 +12,8 @@ import {
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { initTraceDecorators, renderTraceDecorations } from './traceDecorator';
+import { renderTraceDecorations } from './traceDecorator';
+import { initTraceDecorators } from './traceDecoConfig';
 // import DataProvider from 'dbux-data/src/DataProvider';
 // import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 

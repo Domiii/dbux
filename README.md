@@ -14,26 +14,34 @@
 git clone https://github.com/Domiii/dbux.git
 cd dbux
 code .
+npm run dbux-install
 
 # if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
-
-npm run dbux-install
 ```
 
 ## Start development
 
 ```sh
+code . # open project in vscode
 npm start # start webpack build of all projects in watch mode
 ```
 
 ## Usage
 
-1. open project in vscode
 1. go to your debug tab, select `dbux-code` and press F5 (runs the vscode extension in debug mode)
 1. Inside of the new window, you can:
    * `dbux-run # instruments + executes currently opened file`
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
+   
+## Test: Project 1
+
+1. After you opened a new VSCode window with `dbux-code` enabled (see steps above), in that window you can run + trace all kinds of code.
+1. Dbux currently has one frontend project pre-configured for testing purposes, that is [todomvc](http://todomvc.com/)'s `es6` version.
+   * install it first: `npm run p1-install`
+1. Run it: `npm run p1-start` (starts webpack + webpack-dev-server)
+1. Open in browser (http://localhost:3030), then check results of the run in the extension test window
+
 
 ## Architectural Notes
 
@@ -49,6 +57,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `allApplications`
    * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
+* [dbuxContextView] display root contexts of all runs
+   * when clicked, go to first trace in context
 * [callstackView]
    * NOTE: a callstack is actually a single slice of a complex call graph over time
    * render callstack of "context of `traceSelection.selected`" all the way to its root
@@ -76,18 +86,62 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
-* [codeSelection] does not add deco when switching between editors (v)
-* [codeRangeQueries] does not work with overlapping Resume contexts
-* [dbuxTraceDetailsView]
-   * when clicking too fast, nothing happens because data hasn't updated yet
-      * solution -> queue commands
-   * fix await: overlapping Resume contexts cause "current trace" to not be found correctly
-   * start using playback controller
+* [codeDeco] highlight executed funtion calls in code
 * [instrumentation]
-   * insert trace before function call (so we can step to function call before going down)
-* [traceSelection]
-   * fix: code highlighting of selected trace: doesn't work when changing files
-      * probably because `activeEditor` is not set immediately
+   * don't instrument `super` calls
+      * `_dbux.traceExpr(16, (_dbux.t(15), super)(_dbux.traceArg(17, 'staticTraces')));`
+   * fix `await`: traces are not correctly added to their `Resume` context
+      * [traceDetailsView] when displaying trace in `Resume` context, it shows name as `undefined`
+* [traceDetailsView]
+   * details:
+      * [CallArg/CallbackArg] display `CallExpression`'s name
+      * [CallbackArg] show it's `Push/PopCallback` nodes
+      * [Push/PopCallback] `schedulerTrace`
+      * highlight last+first in run
+         * also: for runs originating from callbacks, make it more obvious?
+   * add more helpful hover tooltips to each node
+* [cursorTracesView]
+   * separate `cursorTracesView` from `traceDetailsView`
+   * only show traces of inner most `staticTrace`
+   * [loops] sort by `contextId`, if any `staticTrace` is repeated more than once in any context
+   * of each trace, display information relevant to the `TraceType` (instead of it's `displayName`)
+      * add "selected" icon, if trace is selected
+      * (by-type)
+         * `PushImmediate` -> previous context (partial callstack)
+         * `PopImmediate` -> next context (partial callstack)
+         * `Push/PopCallback` -> schedulerTrace
+         * `hasValue(type)` -> value
+         * `CallExpression` -> call-site
+            * how to render call-site + value in one line?
+               * maybe add a button to toggle single-line/multi-line display of multiple details?
+            * maybe only if they are different call-sites between calls?
+            * use case: polymorphism/callbacks of different origins
+      * other?
+   * list "other traces at cursor" in a separate node at the bottom
+      * sort those by `staticTrace`
+      * only build when opened
+   * better loop support:
+      * distinguish repeated calls of a trace from other traces at selection
+      * allow to better understand and work through the repetitions
+   * group {Push,Pop}Callback{Argument,} into one
+      * show status: executed x times
+      * if executed: go to callback definition
+   * better value rendering (e.g. empty string (currently not shown at all); small arrays + objects)
+      * function parameters
+         * need to properly destruct
+            * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
+      * also track `this`
+   * trace details
+      * (if multiple applications exist) `ApplicationNode` 
+         * `getRelativeWorkspacePath(application.entryPointPath)`
+   * [performance] allow `getTracesAt` to deal with long iterations
+      * long node lists
+         * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead of prepping them all at once
+         * also applies to `dataView`
+      * `iterateTracesFront`
+      * `iterateTracesBack`
+      * `getTraceCount`
+* [cursorTracesView] + [traceSelection]
    * when user textEditor selection changes, select "best" trace at cursor
       * deselect previous trace
       * need to design heuristic:
@@ -95,71 +149,25 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * minimum effort: try to select one in the same run (if existing)
    * when jumping between traces, keep a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
-   * integrate with `Playback`
-* [cli] allow to easily run multiple applications at once
-   * (for proper multi-application testing)
-* [dbuxTraceDetailsView]
-   * `neighboring traces` (partial callstack)
-      * render full trace label
-      * description: file@loc (if file is different)
-      * render all 6 directions
-         * previous before leaving context (top left)
-         * previous in context (left)
-         * previous before going to child context (bottom left)
-         * next before leaving context (top right)
-         * next in context (right)
-         * next before going to child context (bottom right)
-   * better loop support:
-      * distinguish repeated calls of a trace from other traces at selection
-      * allow to better understand and work through the repetitions
-   * group {Push,Pop}Callback{Argument,} into one
-      * show status: executed x times
-      * if executed: go to callback definition
-   * better value rendering (e.g. empty string, basic arrays, objects)
-      * properly serialize and send object data
-         * consider using a native `structuredClone` implementation (or some of its hackarounds)
-            * https://stackoverflow.com/a/10916838
-         * performance optimization
-            * when object too big, send later
-               * feature: object query interface?
-            * observe performance and long-running processes
-               * cut things short
-               * split bigger objects into chunks
-               * warnings when things get out of hand
-      * also track `this` + function parameters
+* [dataView]
+   * a more complete approach to understanding values in current context
+   * properly serialize and send object data
+      * consider using a native `structuredClone` implementation (or some of its hackarounds)
+         * https://stackoverflow.com/a/10916838
+      * performance optimization
+         * when object too big, send later
+            * feature: object query interface?
+         * observe performance and long-running processes
+            * cut things short
+            * split bigger objects into chunks
+            * warnings when things get out of hand
    * object tracking: list all traces that an object participated in
+      * track functions
       * track everything?
          * NOTE: when `TrackEverything` is enabled, we can track callbacks 100% as well
             * (if their declarations were instrumented)
-   * label: make it more readable
-   * mark a trace as `theSelectedTrace`
-      * also select it for Playback
-      * allow going back + forth between previously selected traces
-   * trace description
-      * relative execution time
-   * trace details
-      * (if multiple applications exist) `ApplicationNode` 
-         * `getRelativeWorkspacePath(application.entryPointPath)`
-      * (by-type)
-         * `if previous trace is in different context` (includes `isTracePush(type)`)
-            * previous
-         * `if next trace is in different context` (includes `isTracePop(type)`)
-            * next
-         * `CallbackArgument`
-            * scheduled
-         * `hasValue(type)`
-            * value
-   * trace categorization:
-      * all
-      * by-type
-         * (all details of one type aggregated into one node?)
-      * by-context
-   * long list tool
-   * [performance] allow `getTracesAt` to deal with long iterations
-      * first find `staticTraces`?
-      * `iterateTracesFront`
-      * `iterateTracesBack`
-      * `getTraceCount`
+* [cli] allow to easily run multiple applications at once
+   * (for proper multi-application testing)
 * [instrumentation] support longer names
    * (and then hide them in tree view; show long version as tooltip)
 * [MultiKeyIndex] allow for storing data by multiple keys
@@ -186,6 +194,15 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * add testing for serialization + deserialization (since it can easily cause a ton of pain)
 * improve value serialization to skip objects that are too big
 
+
+## Recently done
+* [instrumentation] insert trace before function call
+   * (Goal: we can step to function call before going down)
+   * PROBLEM: cannot easily get "last trace before function call" 
+      * either: before function call
+      * or: last argument
+         (however last argument might already have been instrumented)
+   * SLN: Only add a trace in front, if it has no arguments
 
 
 ## Possible future work
@@ -451,3 +468,14 @@ You can re-add it manually:
 		]
 	}
 ```
+
+
+
+# More References
+* http://latentflip.com/loupe/
+   * (tagline: Visualizing the javascript runtime at runtime)
+   * https://github.com/latentflip/loupe
+* NOTE: the web is missing practical exercises on
+   * debugging
+   * callbacks
+      * see https://www.quora.com/What-is-the-best-tutorial-or-course-for-understanding-JavaScript-callback-functions

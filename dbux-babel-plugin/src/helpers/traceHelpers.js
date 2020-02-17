@@ -1,10 +1,15 @@
 import template from '@babel/template';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import EmptyObject from 'dbux-common/src/util/EmptyObject';
 
 
 // ###########################################################################
-// templates + instrumentation
+// templates
+// ###########################################################################
+
+// ###########################################################################
+// instrumentation
 // ###########################################################################
 
 function replaceWithTemplate(templ, path, cfg) {
@@ -21,56 +26,110 @@ export const buildTraceNoValue = function buildTraceNoValue(templ, path, state, 
   });
 }.bind(null, template('%%dbux%%.t(%%traceId%%)'));
 
+
+// function buildTraceExprBeforeAndAfter(expressionPath, state) {
+//   const traceIdBefore = state.addTrace(expressionPath, TraceType.BeforeExpression);
+//   const traceIdAfter = state.addTrace(expressionPath, TraceType.ExpressionResult);
+//   const { ids: { dbux } } = state;
+
+//   return t.sequenceExpression([
+//     t.callExpression(
+//       t.memberExpression(
+//         t.identifier(dbux),
+//         t.identifier('t')
+//       ),
+//       [
+//         t.numericLiteral(traceIdBefore)
+//       ]
+//     ),
+//     t.callExpression(
+//       t.memberExpression(
+//         t.identifier(dbux),
+//         t.identifier('traceExpr')
+//       ),
+//       [
+//         t.numericLiteral(traceIdAfter),
+//         expressionPath.node
+//       ]
+//     )
+//   ]);
+// }
+
 /**
  * We cannot reliably use templates for this, because 
  * it sometimes generates `ExpressionStatement` instead of `CallExpression`.
  * (specifically, when trying to wrap a `spreadArgument`)
  */
-function buildTraceExpr(expressionPath, state, methodName, traceType, originalPath) {
-  const traceId = state.addTrace(originalPath || expressionPath, traceType);
+function buildTraceExpr(expressionPath, state, methodName, traceType, cfg) {
+  const tracePath = cfg?.tracePath;
+  const traceId = state.addTrace(tracePath || expressionPath, traceType, null, cfg);
   const { ids: { dbux } } = state;
 
   return t.callExpression(
     t.memberExpression(
       t.identifier(dbux),
       t.identifier(methodName)
-    ), [
+    ),
+    [
       t.numericLiteral(traceId),
       expressionPath.node
     ]
   );
 }
 
+export function traceWrapExpression(traceType, path, state, tracePath) {
+  return _traceWrapExpression(
+    'traceExpr',
+    traceType,
+    path, 
+    state,
+    {
+      tracePath
+    }
+  );
+}
 
-export const traceWrapExpression = _traceWrapExpression.bind(
-  null,
-  'traceExpr',
-  TraceType.ExpressionResult
-);
+export function traceCallExpression(callPath, state, calleeTraceId) {
+  return _traceWrapExpression('traceExpr', TraceType.CallExpressionResult, callPath, state, {
+    resultCalleeId: calleeTraceId
+  });
 
-export function traceWrapArg(argPath, state) {
-  const originalPath = argPath;
+  // NOTE: trace "before" an expression is not right before it actually executes the call.
+  //    The last code ran before a function is executed is the evaluation of the last argument.
+  //   const newNode = buildTraceExprBeforeAndAfter(expressionPath, state);
+  //   expressionPath.replaceWith(newNode);
+  //   state.onCopy(expressionPath, expressionPath.get('expressions.1.arguments.1'), 'trace');
+}
+
+
+export function traceWrapArg(argPath, state, calleeTraceId) {
+  const tracePath = argPath;
   if (argPath.isSpreadElement()) {
     argPath = argPath.get('argument');
   }
-  _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, originalPath);
+  return _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, {
+    calleeId: calleeTraceId,
+    tracePath
+  });
 }
 
-function _traceWrapExpression(methodName, traceType, expressionPath, state, originalPath = null) {
+function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg) {
   // if (t.isLiteral(node)) {
   //   // don't care about literals
   //   return;
   // }
-  const newNode = buildTraceExpr(expressionPath, state, methodName, traceType, originalPath);
+  const newNode = buildTraceExpr(expressionPath, state, methodName, traceType, cfg);
   expressionPath.replaceWith(newNode);
 
-  state.onCopy(expressionPath, expressionPath.get('arguments.1'), 'trace');
+  const orig = expressionPath.get('arguments.1');
+  state.onCopy(expressionPath, orig, 'trace');
+  return orig;
 }
 
 
-export const traceBeforeExpression = function traceBeforeExpression(templ, expressionPath, state) {
+export const traceBeforeExpression = function traceBeforeExpression(templ, expressionPath, state, traceType, cfg) {
   const { ids: { dbux } } = state;
-  const traceId = state.addTrace(expressionPath, TraceType.BeforeExpression);
+  const traceId = state.addTrace(expressionPath, traceType || TraceType.BeforeExpression);
   replaceWithTemplate(templ, expressionPath, {
     dbux,
     traceId: t.numericLiteral(traceId),
@@ -78,5 +137,7 @@ export const traceBeforeExpression = function traceBeforeExpression(templ, expre
   });
 
   // prevent infinite loop
-  state.onCopy(expressionPath, expressionPath.get('expressions.1'), 'trace');
+  const originalPath = expressionPath.get('expressions.1');
+  state.onCopy(expressionPath, originalPath, 'trace');
+  return originalPath;
 }.bind(null, template('%%dbux%%.t(%%traceId%%), %%expression%%'));

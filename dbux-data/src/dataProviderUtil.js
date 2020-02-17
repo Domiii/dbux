@@ -7,6 +7,15 @@ import { newLogger } from 'dbux-common/src/log/logger';
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 
 export default {
+
+  // ###########################################################################
+  // Program utils
+  // ###########################################################################
+
+  getFilePathFromProgramId(dp: DataProvider, programId) {
+    return dp.collections.staticProgramContexts.getById(programId)?.filePath || null;
+  },
+
   // ###########################################################################
   // root contexts
   // ###########################################################################
@@ -25,6 +34,11 @@ export default {
       else lastContextId = parentContextId;
     }
   },
+
+  getFirstContextsInRuns(dp: DataProvider) {
+    return dp.indexes.executionContexts.firstInRuns.get(1);
+  },
+
 
   // ###########################################################################
   // static contexts
@@ -84,10 +98,6 @@ export default {
       return null;
     }
     return traces[traces.length - 1];
-  },
-
-  getFirstContextsInRuns(dp: DataProvider) {
-    return dp.indexes.executionContexts.firstInRuns.get(1);
   },
 
   doesTraceHaveValue(dp: DataProvider, traceId) {
@@ -162,10 +172,6 @@ export default {
     return programId && dp.util.getFilePathFromProgramId(programId) || null;
   },
 
-  getFilePathFromProgramId(dp: DataProvider, programId) {
-    return dp.collections.staticProgramContexts.getById(programId)?.filePath || null;
-  },
-
   getTraceStaticContextId(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
@@ -174,7 +180,37 @@ export default {
     return staticContextId;
   },
 
+  getCalleeTrace(dp: DataProvider, traceId) {
+    const argTrace = dp.collections.traces.getById(traceId);
+    const { staticTraceId } = argTrace;
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    const { calleeId: calleeStaticId } = staticTrace;
+
+    // const calleeStaticTrace = dp.collections.staticTraces.getById(calleeStaticId);
+    if (calleeStaticId) {
+      // iterate over all previous arguments until we found callee
+      let trace;
+      for (; traceId > 0 && (trace = dp.collections.traces.getById(traceId)); --traceId) {
+        if (trace.staticTraceId === calleeStaticId) {
+          return trace;
+        }
+      }
+    }
+    return null;
+  },
+
+  getCalleeStaticTrace(dp: DataProvider, traceId) {
+    const argTrace = dp.collections.traces.getById(traceId);
+    const { staticTraceId } = argTrace;
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    const { calleeId: calleeStaticId } = staticTrace;
+
+    return calleeStaticId && dp.collections.staticTraces.getById(calleeStaticId) || null;
+  },
+
   /**
+   * Groups traces by TraceType, as well as staticTraceId.
+   * 
    * TODO: improve performance, use MultiKeyIndex instead
    */
   groupTracesByType(dp: DataProvider, staticTraces: StaticTrace[]) {
