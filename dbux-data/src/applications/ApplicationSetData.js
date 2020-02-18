@@ -6,7 +6,7 @@ import Trace from 'dbux-common/src/core/data/Trace';
 // ###########################################################################
 
 class FirstTracesInOrder {
-  _firstTracesArray;
+  _firstTracesArray: Array<Trace>;
   _firstTraceIndexById = new Map();
 
   /**

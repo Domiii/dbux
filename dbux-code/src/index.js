@@ -4,7 +4,7 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import { initServer } from './net/server';
 import { initCodeDeco } from './codeDeco';
 
-import { initTreeView } from './treeView/treeViewController';
+import { initContextView } from './contextView/contextViewController';
 import { initCommands } from './commands/index';
 import { initToolBar } from './toolbar';
 import { initPlayback } from './playback/index';
@@ -32,10 +32,10 @@ function activate(context) {
     initTraceSelection(context);
     initTraceDetailsController(context);
 
-    const treeViewController = initTreeView();
+    const contextViewController = initContextView();
     const playbackController = initPlayback();
-    initCommands(context, treeViewController, playbackController);
-    initToolBar(context, treeViewController);
+    initCommands(context, contextViewController, playbackController);
+    initToolBar(context, contextViewController);
   } catch (e) {
     logError('could not activate', e);
     debugger;
@@ -45,7 +45,7 @@ function activate(context) {
 
 // this method is called when your extension is deactivated
 function deactivate() {
-  window.showInformationMessage('Extension down');
+  window.showInformationMessage('Dbux deactviated.');
 }
 
 export {
