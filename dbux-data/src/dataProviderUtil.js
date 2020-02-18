@@ -208,6 +208,11 @@ export default {
     return calleeStaticId && dp.collections.staticTraces.getById(calleeStaticId) || null;
   },
 
+
+  // ###########################################################################
+  // trace grouping
+  // ###########################################################################
+
   /**
    * Groups traces by TraceType, as well as staticTraceId.
    * 

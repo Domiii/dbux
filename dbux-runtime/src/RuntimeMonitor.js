@@ -191,25 +191,27 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   preAwait(programId, inProgramStaticId, inProgramStaticTraceId) {
-    // pop resume context
-    this.popResume();
-
     // push await context
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
-    const parentContextId = this._runtime.peekCurrentContextId();
+    const resumeContextId = this._runtime.peekCurrentContextId();
+
+    // trace
+    traceCollection.trace(resumeContextId, runId, inProgramStaticTraceId);
 
     const context = executionContextCollection.await(
-      stackDepth, runId, parentContextId, programId, inProgramStaticId
+      stackDepth, runId, resumeContextId, programId, inProgramStaticId
     );
     const { contextId: awaitContextId } = context;
 
-    // push await
-    this._runtime.push(awaitContextId);
+    // NOTE: no need to push onto the stack; since its a virtual context: its not on the stack
+    // this._runtime.push(awaitContextId);
+
     this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
 
-    // trace
-    traceCollection.trace(awaitContextId, runId, inProgramStaticTraceId);
+
+    // pop resume context
+    this.popResume();
 
 
     return awaitContextId;
@@ -223,7 +225,7 @@ export default class RuntimeMonitor {
   /**
    * Resume given stack
    */
-  postAwait(awaitResult, awaitContextId, resumeInProgramStaticTraceId) {
+  postAwait(programId, awaitResult, awaitContextId, resumeInProgramStaticTraceId) {
     // sanity checks
     const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
@@ -233,14 +235,14 @@ export default class RuntimeMonitor {
       // resume after await
       this._runtime.resumeWaitingStack(awaitContextId);
 
-      // pop from stack
-      this._pop(awaitContextId);
+      // NOTE: no need to pop from stack; since its a virtual context: its not on the stack
+      // this._pop(awaitContextId);
 
       // resume: push new Resume context
       const { staticContextId } = context;
       const staticContext = staticContextCollection.getById(staticContextId);
       const { resumeId: resumeStaticContextId } = staticContext;
-      this.pushResume(resumeStaticContextId, resumeInProgramStaticTraceId);
+      this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
     }
 
     return awaitResult;
@@ -251,7 +253,7 @@ export default class RuntimeMonitor {
    * (1) the function itself (when pushing the initial "resume context" on function call)
    * (2) an await context (when resuming after an await)
    */
-  pushResume(resumeStaticContextId, inProgramStaticTraceId, dontTrace = false) {
+  pushResume(programId, resumeStaticContextId, inProgramStaticTraceId, dontTrace = false) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -261,7 +263,7 @@ export default class RuntimeMonitor {
     // NOTE: we don't really need a `schedulerTraceId`, since the parent context is always the calling function
     const schedulerTraceId = null;
     const resumeContext = executionContextCollection.resume(
-      stackDepth, runId, parentContextId, resumeStaticContextId, schedulerTraceId
+      stackDepth, runId, parentContextId, programId, resumeStaticContextId, schedulerTraceId
     );
 
     const { contextId: resumeContextId } = resumeContext;

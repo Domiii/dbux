@@ -15,7 +15,7 @@ function makeTypeNameLabel(traceId, application) {
 function makeCalleeTraceLabel(trace, application) {
   const calleeTrace = application.dataProvider.util.getCalleeStaticTrace(trace.traceId);
   if (calleeTrace) {
-    return ` (arg of ${calleeTrace.displayName})`;
+    return `   (arg of ${calleeTrace.displayName})`;
   }
   return '';
 }
@@ -93,4 +93,16 @@ export function makeTraceLabel(trace, application) {
 
   // default trace label
   return makeDefaultTraceLabel(trace, application);
+}
+
+
+/**
+ * Returns time, relative to some time origin.
+ *  TODO: get time relative to global time origin, not per-application time origin
+ *      ideally: starting time of first application in set.
+ */
+export function getTraceCreatedAt(traceId, application) {
+  const { createdAt, dataProvider } = application;
+  const context = dataProvider.util.getTraceContext(traceId);
+  return (context.createdAt - createdAt) / 1000;
 }
