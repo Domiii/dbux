@@ -6,9 +6,10 @@ export default class BaseNode extends TreeItem {
   parent;
   children: BaseNode[] = null;
 
-  constructor(label, iconPath, application, parent, id, moreProps) {
+  constructor(treeDataProvider, label, iconPath, application, parent, id, moreProps) {
     super(label);
 
+    this.treeDataProvider = treeDataProvider;
     this.application = application;
     this.parent = parent;
     this.id = id;
@@ -24,9 +25,5 @@ export default class BaseNode extends TreeItem {
 
   _handleClick() {
     // by default: do nothing
-  }
-
-  get nodeType() {
-    return this.constructor.nodeType;
   }
 }

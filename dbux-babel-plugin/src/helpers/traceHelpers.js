@@ -2,6 +2,7 @@ import template from '@babel/template';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import EmptyObject from 'dbux-common/src/util/EmptyObject';
+import { getPathTraceId } from './instrumentationHelper';
 
 
 // ###########################################################################
@@ -81,7 +82,7 @@ export function traceWrapExpression(traceType, path, state, tracePath) {
   return _traceWrapExpression(
     'traceExpr',
     traceType,
-    path, 
+    path,
     state,
     {
       tracePath
@@ -89,10 +90,43 @@ export function traceWrapExpression(traceType, path, state, tracePath) {
   );
 }
 
-export function traceCallExpression(callPath, state, calleeTraceId) {
-  return _traceWrapExpression('traceExpr', TraceType.CallExpressionResult, callPath, state, {
-    resultCalleeId: calleeTraceId
+
+
+function instrumentArgs(callPath, state, beforeCallTraceId) {
+  const args = callPath.node.arguments;
+  const replacements = [];
+
+  for (let i = 0; i < args.length; ++i) {
+    // if (t.isFunction(args[i])) {
+    //   instrumentCallbackSchedulingArg(callPath, state, i);
+    // }
+    // else {
+    const argPath = callPath.get('arguments.' + i);
+    const argTraceId = getPathTraceId(argPath);
+    // const argContextId = !argTraceId && getPathContextId(argPath) || null;
+    if (!argTraceId) {
+      // not instrumented yet -> add trace
+      replacements.push(() => traceWrapArg(argPath, state, beforeCallTraceId));
+    }
+    else { // if (argTraceId) {
+      // has been instrumented and has a trace -> just set it's callId
+      // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
+      const argTrace = state.getTrace(argTraceId);
+      argTrace._callId = beforeCallTraceId;
+    }
+  }
+
+  // TODO: I deferred to here because I felt it was safer this way,
+  //    but might not need to defer at all.
+  replacements.forEach(r => r());
+}
+
+export function traceCallExpression(callPath, state, beforeCallTraceId) {
+  const originalCallPath = _traceWrapExpression('traceExpr', TraceType.CallExpressionResult, callPath, state, {
+    resultCallId: beforeCallTraceId
   });
+
+  instrumentArgs(originalCallPath, state, beforeCallTraceId);
 
   // NOTE: trace "before" an expression is not right before it actually executes the call.
   //    The last code ran before a function is executed is the evaluation of the last argument.
@@ -102,13 +136,13 @@ export function traceCallExpression(callPath, state, calleeTraceId) {
 }
 
 
-export function traceWrapArg(argPath, state, calleeTraceId) {
+export function traceWrapArg(argPath, state, beforeCallTraceId) {
   const tracePath = argPath;
   if (argPath.isSpreadElement()) {
     argPath = argPath.get('argument');
   }
   return _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, {
-    calleeId: calleeTraceId,
+    callId: beforeCallTraceId,
     tracePath
   });
 }
@@ -127,9 +161,9 @@ function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg)
 }
 
 
-export const traceBeforeExpression = function traceBeforeExpression(templ, expressionPath, state, traceType, cfg) {
+export const traceBeforeExpression = function traceBeforeExpression(templ, expressionPath, state, traceType, tracePath) {
   const { ids: { dbux } } = state;
-  const traceId = state.addTrace(expressionPath, traceType || TraceType.BeforeExpression);
+  const traceId = state.addTrace(tracePath || expressionPath, traceType || TraceType.BeforeExpression);
   replaceWithTemplate(templ, expressionPath, {
     dbux,
     traceId: t.numericLiteral(traceId),

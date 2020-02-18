@@ -53,12 +53,9 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 # TODO
 
 ## TODO (dbux-code + dbux-data only)
-* [playback] finish first version of playback feature (v0.1)
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `allApplications`
    * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
-* [dbuxContextView] display root contexts of all runs
-   * when clicked, go to first trace in context
 * [callstackView]
    * NOTE: a callstack is actually a single slice of a complex call graph over time
    * render callstack of "context of `traceSelection.selected`" all the way to its root
@@ -87,20 +84,24 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 ## TODO (other)
 * [instrumentation]
-   * fix `await`:
-      * fix `Await` + `Resume`
-         * async function's push + pop?
-         * when resuming, we might come back from a callback etc.
-            * Need to push `Resume` on demand?
-         * whn resuming, parent is not set
+   * fix `Await` + `Resume`
+      * async function's push + pop?
+      * when resuming, we might come back from a callback etc.
+         * Need to push `Resume` on demand?
+      * when resuming, parent is not set
    * start preparing for more accurate callstacks
-      * add actual callee trace (displayName = entire expression)
-      * setters?
-      * future work: call stacks for getters will be problematic either way :(
+      * find correct trace of setter in callstack
+      * find correct trace of getter in callstack
+         * NOTE: HARD :(
+* better understanding loops
+   * probably want to capture all variables and variable expressions everywhere
 * [traceDetailsView]
+   * remember expanded/collapsed state of previous nodes of type
+      * TODO: What about children of debug node?
+         * use relative path to remember state
    * details:
-      * [CallArg/CallbackArg] display `CallExpression`'s name
-      * [CallbackArg] show it's `Push/PopCallback` nodes
+      * Push/Pop (of any kind) show next previous trace/context?
+      * [CallbackArg] show `Push/PopCallback` nodes
       * [Push/PopCallback] `schedulerTrace`
       * highlight last+first in run
          * also: for runs originating from callbacks, make it more obvious?

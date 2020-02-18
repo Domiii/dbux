@@ -226,45 +226,16 @@ function normalizeConfig(cfg) {
 // instrumentation recipes by node type
 // ###########################################################################
 
-
-function instrumentArgs(callPath, state, calleeTraceId) {
-  const args = callPath.node.arguments;
-  const replacements = [];
-
-  for (let i = 0; i < args.length; ++i) {
-    // if (t.isFunction(args[i])) {
-    //   instrumentCallbackSchedulingArg(callPath, state, i);
-    // }
-    // else {
-    const argPath = callPath.get('arguments.' + i);
-    const argTraceId = getPathTraceId(argPath);
-    // const argContextId = !argTraceId && getPathContextId(argPath) || null;
-    if (!argTraceId) {
-      // not instrumented yet -> add trace
-      replacements.push(() => traceWrapArg(argPath, state, calleeTraceId));
-    }
-    else { // if (argTraceId) {
-      // has been instrumented and has a trace -> just set it's calleeId
-      // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
-      const argTrace = state.getTrace(argTraceId);
-      argTrace._calleeId = calleeTraceId;
-    }
-  }
-
-  // TODO: I deferred to here because I felt it was safer this way,
-  //    but might not need to defer at all.
-  replacements.forEach(r => r());
-}
-
 const enterInstrumentors = {
   ExpressionResult(path, state, cfg) {
     if (path.isCallExpression()) {
       // CallExpression
       // add staticTrace for callee, but don't actually trace it
       //  NOTE: tracing a callee complicates things a bit; let's keep it easy for now
-      const calleePath = path.get('callee');
-      state.addTrace(calleePath, TraceType.Callee, null);
+      // const calleePath = path.get('callee');
+      // state.addTrace(calleePath, TraceType.Callee, null);
       // traceWrapExpression(TraceType.Callee, calleePath, state);
+      traceBeforeExpression(path, state, TraceType.BeforeCallExpression);
     }
     else {
       // any other expression with a result
@@ -308,10 +279,11 @@ const exitInstrumentors = {
     if (path.isCallExpression()) {
       // CallExpression
       // instrument args after everything else has already been done
-      const calleePath = path.get('callee');
-      const calleeTraceId = getPathTraceId(calleePath);
-      const origCallPath = traceCallExpression(path, state, calleeTraceId);
-      instrumentArgs(origCallPath, state, calleeTraceId);
+      // const calleePath = path.get('callee');
+      // const beforeCallTraceId = getPathTraceId(calleePath);
+      // traceCallExpression(path, state, beforeCallTraceId);
+      const beforeCallTraceId = getPathTraceId(path);
+      traceCallExpression(path, state, beforeCallTraceId);
     }
   }
 };

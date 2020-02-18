@@ -26,7 +26,7 @@ const KnownCallbackSchedulingFunctionNames = new Set([
   'requestAnimationFrame'
 ]);
 
-export function getCalleeId(callPath) {
+export function getCallId(callPath) {
   const { callee } = callPath.node;
   let id;
   if (t.isIdentifier(callee)) {
@@ -39,7 +39,7 @@ export function getCalleeId(callPath) {
 }
 
 export function isKnownCallbackSchedulingCall(callPath) {
-  const id = getCalleeId(callPath);
+  const id = getCallId(callPath);
   if (id) {
     return KnownCallbackSchedulingFunctionNames.has(id.name);
   }
