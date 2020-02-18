@@ -86,8 +86,8 @@ export class TraceNode extends BaseNode {
     traceSelection.selectTrace(this.trace);
   }
 
-  static makeLabel(trace: Trace, application: Application) {
-    return makeTraceLabel(trace, application);
+  static makeLabel(trace: Trace) {
+    return makeTraceLabel(trace);
   }
 
   static makeIconPath(trace: Trace) {

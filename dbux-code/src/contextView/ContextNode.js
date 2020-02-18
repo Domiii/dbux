@@ -24,7 +24,7 @@ export default class ContextNode {
     this.label = displayName;
     this.parentNode = null;
     this.children = EmptyArray;
-    this.description = `Click to jump to trace#${traceId}`;
+    this.description = `Trace#${applicationId}:${traceId}`;
     this.collapsibleState = CollapsibleState.None;
     this.command = {
       command: 'dbuxContextView.itemClick',

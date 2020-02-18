@@ -1,5 +1,6 @@
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { makeContextLabel } from './contextLabels';
+import allApplications from '../applications/allApplications';
 
 function makeTraceContextLabel(trace, application) {
   const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
@@ -80,10 +81,12 @@ const byType = {
   }
 };
 
-export function makeTraceLabel(trace, application) {
+export function makeTraceLabel(trace) {
   const {
     traceId
   } = trace;
+
+  const application = allApplications.getById(trace.applicationId);
 
   // custom by-type label
   const traceType = application.dataProvider.util.getTraceType(traceId);

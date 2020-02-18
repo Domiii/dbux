@@ -2,10 +2,11 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import Trace from 'dbux-common/src/core/data/Trace';
 import allApplications from 'dbux-data/src/applications/allApplications';
+import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
 import ContextNode, { EmptyNode } from './ContextNode';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 
-const { log, debug, warn, error: logError } = newLogger('TreeData');
+const { log, debug, warn, error: logError } = newLogger('ContextNodeProvider');
 
 export class ContextNodeProvider {
   _rootNodes: Array<ContextNode>;
@@ -32,7 +33,7 @@ export class ContextNodeProvider {
   _updateAll = () => {
     const allFisrtTraces = allApplications.selection.data.firstTracesInOrder.getAll();
     const allContextNode = allFisrtTraces.map(this.getContextNodeByTrace);
-    this._rootNodes = allContextNode;
+    this._rootNodes = allContextNode.reverse();
     this.refreshView();
   }
 
@@ -61,11 +62,12 @@ export class ContextNodeProvider {
     // build node if not exist
     if (!this._contextNodesByApp[applicationId][runId]) {
       const context = this.getContextByTrace(trace);
-      const { contextId, displayName, contextType } = context;
+      const app = allApplications.getById(applicationId);
+      const displayName = makeContextLabel(context, app);
+      const { contextId } = context;
 
-      // TODO: find context.displayName
-      let newNode = new ContextNode(
-        displayName || ExecutionContextType.getName(contextType),
+      const newNode = new ContextNode(
+        displayName,
         applicationId,
         runId,
         contextId,

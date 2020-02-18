@@ -8,11 +8,6 @@ const { log, debug, warn, error: logError } = newLogger('Commands');
 
 export function initContextViewCommands(context, contextViewController: ContextViewController) {
   registerCommand(context,
-    'dbuxContextView.deleteEntry',
-    (node: ContextNode) => window.showInformationMessage(`Clicked on delete entry with node = ${node.label}.`)
-  );
-
-  registerCommand(context,
     'dbuxContextView.gotoEntry',
     (node: ContextNode) => contextViewController.handleItemClick(node)
   );
