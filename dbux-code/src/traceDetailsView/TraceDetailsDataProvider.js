@@ -228,13 +228,15 @@ export default class TraceDetailsDataProvider {
     });
   }
 
-  createNavigationNode(NodeClass, trace, application, parent): NavigationTDNode {
+  createNavigationNode(NodeClass, trace, traceApplication, parent): NavigationTDNode {
     const { controlName } = NodeClass;
     const targetTrace = NodeClass.getTargetTrace(controlName);
+    let targetTraceApplication;
     let label;
     if (targetTrace) {
-      const arrow = NodeClass.makeArrow(trace, targetTrace, application, parent);
-      label = `${arrow} ${TraceNode.makeLabel(targetTrace, application, parent)}`;
+      targetTraceApplication = allApplications.getById(targetTrace.applicationId);
+      const arrow = NodeClass.makeArrow(trace, targetTrace, targetTraceApplication, parent);
+      label = `${arrow} ${TraceNode.makeLabel(targetTrace, targetTraceApplication, parent)}`;
     }
     else {
       label = ' ';
@@ -243,11 +245,12 @@ export default class TraceDetailsDataProvider {
     // const iconPath = relativeIconPath && getThemeResourcePath(relativeIconPath) || null;
     const iconPath = null;
     const id = (++_lastNodeId) + '';
+
     const treeItemProps = {
       trace,
       targetTrace
     };
-    const node = new NodeClass(label, iconPath, application, parent, id, treeItemProps);
+    const node = new NodeClass(label, iconPath, targetTraceApplication || traceApplication, parent, id, treeItemProps);
     node.init();
     this._onNewNode(node);
     return node;
