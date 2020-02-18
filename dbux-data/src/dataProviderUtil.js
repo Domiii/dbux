@@ -327,6 +327,11 @@ export default {
     return calleeStaticId && dp.collections.staticTraces.getById(calleeStaticId) || null;
   },
 
+
+  // ###########################################################################
+  // trace grouping
+  // ###########################################################################
+
   /**
    * TODO: improve performance, use MultiKeyIndex instead
    */

@@ -4,12 +4,15 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import traceSelection from 'dbux-data/src/traceSelection';
-import { getTracesAt } from '../data/codeRangeQueries';
-import { EmptyNode, TraceNode, SelectedTraceNode } from './nodes/TraceDetailsNode';
-import { NavigationTDNode, NavigationNodeClasses, TypeTDNode, ValueTDNode, ApplicationTDNode, NextTraceTDNode, ContextTDNode, DetailNodeClasses } from './nodes/traceDetailNodes';
+import { getTracesAt } from '../helpers/codeRangeQueries';
+import { NavigationTDNode, NavigationNodeClasses, DetailNodeClasses } from './nodes/traceDetailNodes';
 import { getCursorLocation } from '../codeNav';
 import { getThemeResourcePath } from '../resources';
 import TreeViewCommandWrapper from '../codeUtil/TreeViewCommandWrapper';
+import SelectedTraceNode from './nodes/SelectedTraceNode';
+import TraceNode from './nodes/TraceNode';
+import BaseNode from './nodes/BaseNode';
+import EmptyNode from './nodes/EmptyNode';
 
 export default class TraceDetailsDataProvider {
   _onDidChangeTreeData = new EventEmitter();
@@ -37,45 +40,51 @@ export default class TraceDetailsDataProvider {
   // ###########################################################################
 
   refresh = () => { //makeDebounce(() => {
-    // console.warn('details refresh');
-    this.where = getCursorLocation();
-    
-    this.rootNodes = [];
+    try {
+      // console.warn('details refresh');
+      this.where = getCursorLocation();
 
-    if (traceSelection.selected) {
-      // 1. selected trace
-      const trace = traceSelection.selected;
-      // console.debug('refreshed trace', trace.traceId);
-      const application = allApplications.getById(trace.applicationId);
-      const traceNode = this._buildTraceNode(trace, application, null, true);
-      this.rootNodes.push(traceNode);
+      this.rootNodes = [];
+
+      if (traceSelection.selected) {
+        // 1. selected trace
+        const trace = traceSelection.selected;
+        // console.debug('refreshed trace', trace.traceId);
+        const application = allApplications.getById(trace.applicationId);
+        const traceNode = this._buildTraceNode(trace, application, null, true);
+        this.rootNodes.push(traceNode);
+      }
+
+      if (this.where) {
+        // 2. all traces available at cursor in editor
+        const {
+          fpath,
+          pos
+        } = this.where;
+
+        this.rootNodes.push(...allApplications.selection.data.mapApplicationsOfFilePath(
+          fpath, (application, programId) => {
+            const traceNodes = this._buildTraceNodes(programId, pos, application, null);
+            return traceNodes || EmptyArray;
+          }
+        ));
+      }
+
+      if (!this.rootNodes.length) {
+        // add empty node
+        this.rootNodes.push(EmptyNode.instance);
+      }
+
+      // NOTE: if we only want to update subtree, pass root of subtree to `fire`
+      this._onDidChangeTreeData.fire();
+
+      this.commandWrapper.notifyRefresh();
     }
-    
-    if (this.where) {
-      // 2. all traces available at cursor in editor
-      const {
-        fpath,
-        pos
-      } = this.where;
-
-      this.rootNodes.push(...allApplications.selection.data.mapApplicationsOfFilePath(
-        fpath, (application, programId) => {
-          const traceNodes = this._buildTraceNodes(programId, pos, application, null);
-          return traceNodes || EmptyArray;
-        }
-      ));
+    catch (err) {
+      console.error(err);
+      debugger;
     }
-
-    if (!this.rootNodes.length) {
-      // add empty node
-      this.rootNodes.push(EmptyNode.instance);
-    }
-
-    // NOTE: if we only want to update subtree, pass root of subtree to `fire`
-    this._onDidChangeTreeData.fire();
-    
-    this.commandWrapper.notifyRefresh();
-  // }, 1)
+    // }, 1)
   }
 
   _buildTraceNodes(programId, pos, application, parent) {
@@ -173,11 +182,11 @@ export default class TraceDetailsDataProvider {
     // };
     this.commandWrapper.setCommand(node);
   }
-  
+
   // _handleClick(node) {
   //   node._handleClick();
   // }
-  
+
   createNode(
     NodeClass, entry, application, parent, treeItemProps = EmptyObject): BaseNode {
     const label = NodeClass.makeLabel(entry, application, parent);
@@ -208,18 +217,18 @@ export default class TraceDetailsDataProvider {
     };
     return this.createNode(NodeClass, detail, application, parent, treeItemProps);
   }
-  
+
   // ###########################################################################
   // Navigation nodes
   // ###########################################################################
 
-  createNavigationNodes(trace, application, parent) : NavigationTDNode[] {
+  createNavigationNodes(trace, application, parent): NavigationTDNode[] {
     return NavigationNodeClasses.map(NodeClass => {
       return this.createNavigationNode(NodeClass, trace, application, parent);
     });
   }
 
-  createNavigationNode(NodeClass, trace, application, parent) : NavigationTDNode {
+  createNavigationNode(NodeClass, trace, application, parent): NavigationTDNode {
     const { controlName } = NodeClass;
     const targetTrace = NodeClass.getTargetTrace(controlName);
     let label;
@@ -232,13 +241,13 @@ export default class TraceDetailsDataProvider {
     }
     // const relativeIconPath = NodeClass.makeIconPath && NodeClass.makeIconPath(trace, application, parent);
     // const iconPath = relativeIconPath && getThemeResourcePath(relativeIconPath) || null;
+    const iconPath = null;
     const id = (++_lastNodeId) + '';
-    
     const treeItemProps = {
       trace,
       targetTrace
     };
-    const node = new NodeClass(label, null, application, parent, id, treeItemProps);
+    const node = new NodeClass(label, iconPath, application, parent, id, treeItemProps);
     node.init();
     this._onNewNode(node);
     return node;
