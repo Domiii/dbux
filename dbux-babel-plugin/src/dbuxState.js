@@ -29,7 +29,7 @@ const traceCustomizationsByType = {
   [TraceType.BeforeExpression]: traceBeforeExpression,
 
   [TraceType.Await]: tracePathEnd,
-  [TraceType.Resume]: tracePathEnd,
+  // [TraceType.Resume]: tracePathEnd,
   [TraceType.BlockStart]: tracePathStart,
   [TraceType.BlockEnd]: tracePathEnd
 };

@@ -63,11 +63,11 @@ export default class ProgramMonitor {
   }
 
   postAwait(awaitResult, awaitContextId, resumeTraceId) {
-    return this._runtimeMonitor.postAwait(awaitResult, awaitContextId, resumeTraceId);
+    return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitContextId, resumeTraceId);
   }
 
   pushResume(resumeContextId, inProgramStaticTraceId) {
-    return this._runtimeMonitor.pushResume(resumeContextId, inProgramStaticTraceId, true);
+    return this._runtimeMonitor.pushResume(this.getProgramId(), resumeContextId, inProgramStaticTraceId, true);
   }
 
   popResume() {

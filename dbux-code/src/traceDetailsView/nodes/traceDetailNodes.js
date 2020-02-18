@@ -5,9 +5,10 @@ import Application from 'dbux-data/src/applications/Application';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
 import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
+import { getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
 import TraceDetailsNodeType from '../TraceDetailsNodeType';
-import { BaseNode } from './TraceDetailsNode';
-import { makeTreeItems, makeObjectTreeItem } from '../../helpers/treeViewHelpers';
+import { makeTreeItem, makeTreeItems } from '../../helpers/treeViewHelpers';
+import BaseNode from './BaseNode';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
@@ -221,6 +222,12 @@ export const DetailNodeClasses = [
 export class NavigationTDNode extends TraceDetailNode {
   init() {
     this.collapsibleState = TreeItemCollapsibleState.None;
+
+    if (this.targetTrace) {
+      // NOTE: description MUST be a string or it won't be properly displayed
+      const dt = getTraceCreatedAt(this.targetTrace.traceId, this.application);
+      this.description = dt + '';
+    }
   }
 
   static getTargetTrace(controlName) {
