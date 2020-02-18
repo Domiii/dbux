@@ -1,19 +1,14 @@
-import { newLogger } from 'dbux-common/src/log/logger';
-import { registerCommand } from './commandUtil';
 import { initContextViewCommands } from './contextViewCommands';
+import { initCallStackViewCommands } from './callStackViewCommands';
 import { initPlaybackCommands } from './playbackCommands';
 
-import {
-  window,
-  commands,
-  Uri,
-  Position,
-  Selection
-} from 'vscode';
-
-const { log, debug, warn, error: logError } = newLogger('Commands');
-
-export function initCommands(context, contextViewController, playbackController) {
+export function initCommands(
+  context,
+  contextViewController,
+  callStackViewController,
+  playbackController
+) {
   initContextViewCommands(context, contextViewController);
+  initCallStackViewCommands(context, callStackViewController);
   initPlaybackCommands(context, playbackController);
 }

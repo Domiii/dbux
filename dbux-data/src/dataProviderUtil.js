@@ -172,6 +172,11 @@ export default {
     return programId && dp.util.getFilePathFromProgramId(programId) || null;
   },
 
+  getTraceFileName(dp: DataProvider, traceId) {
+    const programId = dp.util.getTraceProgramId(traceId);
+    return programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
+  },
+
   getTraceStaticContextId(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;

@@ -11,7 +11,7 @@ export function makeContextLabel(context, application) {
     type
   } = staticContext;
 
-  const prefix = type === StaticContextType.Function ? 'ƒ ' : '';
+  // const prefix = type === StaticContextType.Function ? 'ƒ ' : '';
 
-  return `${prefix}${staticContext.displayName}`;
+  return `${staticContext.displayName}`;
 }

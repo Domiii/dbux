@@ -19,17 +19,21 @@
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "dbux-view-container",
+					"id": "dbuxViewContainer",
 					"title": "Dbux",
 					"icon": "media/dep.svg"
 				}
 			]
 		},
 		"views": {
-			"dbux-view-container": [
+			"dbuxViewContainer": [
 				{
 					"id": "dbuxContextView",
 					"name": "Run Contexts"
+				},
+				{
+					"id": "dbuxCallStackView",
+					"name": "Call Stack"
 				},
 				{
 					"id": "dbuxTraceDetailsView",
@@ -38,6 +42,30 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "dbuxContextView.gotoEntry",
+				"title": "Goto",
+				"icon": {
+					"light": "resources/light/boolean.svg",
+					"dark": "resources/dark/boolean.svg"
+				}
+			},
+			{
+				"command": "dbuxContextView.itemClick",
+				"title": "Click"
+			},
+			{
+				"command": "dbuxCallStackView.gotoEntry",
+				"title": "Goto",
+				"icon": {
+					"light": "resources/light/boolean.svg",
+					"dark": "resources/dark/boolean.svg"
+				}
+			},
+			{
+				"command": "dbuxCallStackView.itemClick",
+				"title": "Click"
+			},
 			{
 				"command": "dbuxPlayback.previousTrace",
 				"title": "Start",
@@ -69,50 +97,6 @@
 					"light": "resources/light/pause.svg",
 					"dark": "resources/dark/pause.svg"
 				}
-			},
-			{
-				"command": "dbuxContextView.previous",
-				"title": "Previous",
-				"icon": {
-					"light": "resources/light/previous.svg",
-					"dark": "resources/dark/previous.svg"
-				}
-			},
-			{
-				"command": "dbuxContextView.next",
-				"title": "Next",
-				"icon": {
-					"light": "resources/light/next.svg",
-					"dark": "resources/dark/next.svg"
-				}
-			},
-			{
-				"command": "dbuxContextView.clear",
-				"title": "Clear",
-				"icon": {
-					"light": "resources/light/clear.svg",
-					"dark": "resources/dark/clear.svg"
-				}
-			},
-			{
-				"command": "dbuxContextView.addEntry",
-				"title": "Add"
-			},
-			{
-				"command": "dbuxContextView.gotoEntry",
-				"title": "Goto",
-				"icon": {
-					"light": "resources/light/boolean.svg",
-					"dark": "resources/dark/boolean.svg"
-				}
-			},
-			{
-				"command": "dbuxContextView.deleteEntry",
-				"title": "Delete"
-			},
-			{
-				"command": "dbuxContextView.itemClick",
-				"title": "Clicked"
 			}
 		],
 		"menus": {
@@ -136,27 +120,6 @@
 					"group": "navigation@2"
 				}
 			],
-			"view/title": [
-				{
-					"command": "dbuxContextView.previous",
-					"when": "view == dbuxContextView",
-					"group": "navigation@0"
-				},
-				{
-					"command": "dbuxContextView.next",
-					"when": "view == dbuxContextView",
-					"group": "navigation@1"
-				},
-				{
-					"command": "dbuxContextView.clear",
-					"when": "view == dbuxContextView",
-					"group": "navigation@2"
-				},
-				{
-					"command": "dbuxContextView.addEntry",
-					"when": "view == dbuxContextView"
-				}
-			],
 			"view/item/context": [
 				{
 					"command": "dbuxContextView.gotoEntry",
@@ -164,8 +127,9 @@
 					"group": "inline"
 				},
 				{
-					"command": "dbuxContextView.deleteEntry",
-					"when": "view == dbuxContextView && viewItem == contextNode"
+					"command": "dbuxCallStackView.gotoEntry",
+					"when": "view == dbuxCallStackView && viewItem == callStackNode",
+					"group": "inline"
 				}
 			]
 		}
