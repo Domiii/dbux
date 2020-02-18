@@ -1,24 +1,57 @@
 import { window } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
-import DefaultTraceDecoratorConfig from './DefaultTraceDecoratorConfig';
-import { babelLocToCodeRange } from '../helpers/locHelpers';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import groupBy from 'lodash/groupBy';
+import { getTraceDecoName, getDecoConfigByName } from './traceDecoConfig';
+import { babelLocToCodeRange } from '../helpers/locHelpers';
 
 const { log, debug, warn, error: logError } = newLogger('traceDecorator');
 
-let configsByType;
 
 // ###########################################################################
 // render
 // ###########################################################################
 
 /**
+ * Groups traces by decoName, as well as staticTraceId.
+ * 
+ * TODO: improve performance to work in long loops
+ */
+function groupTracesByDecoNameAndStaticTrace(application,
+  staticTraces: StaticTrace[], allDecosByName) {
+  const { dataProvider } = application;
+  for (const staticTrace of staticTraces) {
+    const {
+      staticTraceId
+    } = staticTrace;
+
+    const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+    if (!traces) {
+      continue;
+    }
+
+    // group by decoName
+    const byDecoName = groupBy(traces, trace => getTraceDecoName(dataProvider, staticTrace, trace));
+
+    // put all groups together
+    for (const decoName in byDecoName) {
+      const tracesOfDecoName = byDecoName[decoName];
+      const bag = allDecosByName[decoName] || (allDecosByName[decoName] = []);
+      // bag.push([staticTrace, tracesOfDecoName]);
+      const decoration = createTraceGroupDecoration(dataProvider, 
+        decoName, staticTrace, tracesOfDecoName);
+      bag.push(decoration);
+    }
+  }
+}
+
+/**
  * TODO: the order of decorations is currently dictacted by the order of their decoration types (VSCode limitation)
  */
 export function renderTraceDecorations(editor, fpath) {
-  const allDecorations = [];
+  const decosByName = {};
 
   // prepare decorations
   allApplications.selection.data.mapApplicationsOfFilePath(fpath, (application, programId) => {
@@ -30,32 +63,21 @@ export function renderTraceDecorations(editor, fpath) {
       return;
     }
 
-    // group by TraceType
-    const traceGroupsByType = dataProvider.util.groupTracesByType(staticTraces);
-
-    for (let traceType = 1; traceType < traceGroupsByType.length; ++traceType) {
-      // add all decorations for group
-      const groups = traceGroupsByType[traceType];
-      if (groups) {
-        for (const group of groups) {
-          const [staticTrace, traces] = group;
-          const decoration = createTraceGroupDecoration(dataProvider, traceType, staticTrace, traces);
-          pushArrayOfArray(allDecorations, traceType, decoration);
-        }
-      }
-    }
+    // group by decoName
+    // const decoGroupsByName = {};
+    groupTracesByDecoNameAndStaticTrace(application, staticTraces, decosByName);
   });
 
   // render decorations
-  for (let traceType = 1; traceType < configsByType.length; ++traceType) {
+  for (const decoName in decosByName) {
     // TextEditorDecorationType
     // see: https://code.visualstudio.com/api/references/vscode-api#TextEditorDecorationType
-    const config = configsByType[traceType];
-    const decorations = allDecorations[traceType];
+    const decorations = decosByName[decoName];
+    const config = getDecoConfigByName(decoName);
 
     if (!config?.editorDecorationType) {
-      if (decorations) {
-        logError('found TraceType in trace that is not configured', traceType, TraceType.nameFrom(traceType));
+      if (decorations && config !== false) {
+        logError('found decoName for trace that is not configured', decoName);
       }
       continue;
     }
@@ -70,7 +92,7 @@ export function renderTraceDecorations(editor, fpath) {
   }
 }
 
-function createTraceGroupDecoration(dataProvider, traceType, staticTrace, traces) {
+function createTraceGroupDecoration(dataProvider, decoName, staticTrace, traces) {
   const {
     staticTraceId,
     loc
@@ -107,26 +129,4 @@ function createTraceGroupDecoration(dataProvider, traceType, staticTrace, traces
   return {
     range: babelLocToCodeRange(loc)
   };
-}
-
-// ###########################################################################
-// init
-// ###########################################################################
-
-
-function initConfig(allConfigs) {
-  configsByType = [];
-  for (const typeName in allConfigs) {
-    const config = allConfigs[typeName];
-    if (!config) {
-      continue;
-    }
-    const type = TraceType.valueFromForce(typeName);
-    config.editorDecorationType = window.createTextEditorDecorationType(config.styling);
-    configsByType[type] = config;
-  }
-}
-
-export function initTraceDecorators() {
-  initConfig(DefaultTraceDecoratorConfig);
 }

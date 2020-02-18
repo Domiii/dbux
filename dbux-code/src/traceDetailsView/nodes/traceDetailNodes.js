@@ -1,13 +1,14 @@
 import { TreeItemCollapsibleState, TreeItem } from 'vscode';
+import omit from 'lodash/omit';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import Application from 'dbux-data/src/applications/Application';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
 import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
+import { getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
 import TraceDetailsNodeType from '../TraceDetailsNodeType';
 import { makeTreeItem, makeTreeItems } from '../../helpers/treeViewHelpers';
 import BaseNode from './BaseNode';
-import { getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
@@ -168,19 +169,20 @@ export class DebugTDNode extends TraceDetailNode {
     const { dataProvider } = this.application;
 
     const {
+      contextId,
       staticTraceId,
       runId
     } = trace;
 
+    const context = dataProvider.collections.executionContexts.getById(contextId);
     const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
-    const {
-      staticContextId
-    } = staticTrace;
+    const { staticContextId } = staticTrace;
+    const staticContext = dataProvider.collections.staticContexts.getById(staticContextId);
 
     this.children = makeTreeItems(
-      `runId: ${runId}`,
-      `staticTraceId: ${staticTraceId}`,
-      `staticContextId: ${staticContextId}`
+      [`context`, context],
+      ['staticTrace', omit(staticTrace, 'loc')],
+      ['staticContext', omit(staticContext, 'loc')]
     );
   }
 

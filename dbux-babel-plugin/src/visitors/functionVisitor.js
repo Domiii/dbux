@@ -49,26 +49,26 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
   const { ids: { dbux }, genContextIdName } = state;
   const contextIdVar = genContextIdName(bodyPath);
 
-  let startCalls = buildPushImmediate(contextIdVar, dbux, staticId, pushTraceId);
-  let finallyBody = buildPopImmediate(contextIdVar, dbux, popTraceId);
+  let pushImmediate = buildPushImmediate(contextIdVar, dbux, staticId, pushTraceId);
+  let popImmediate = buildPopImmediate(contextIdVar, dbux, popTraceId);
   if (staticResumeId) {
     // this is an interruptable function -> push + pop "resume contexts"
-    startCalls = [
-      ...startCalls,
+    pushImmediate = [
       pushResumeTemplate({
         dbux,
         resumeStaticContextId: t.numericLiteral(staticResumeId),
         traceId: t.numericLiteral(pushTraceId)
-      })
+      }),
+      ...pushImmediate
     ];
 
-    finallyBody = [
+    popImmediate = [
+      ...popImmediate,
       popResumeTemplate({
         dbux,
         // traceId: t.numericLiteral(popTraceId)
         // contextId: contextIdVar
-      }),
-      ...finallyBody
+      })
     ];
   }
 
@@ -80,8 +80,8 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
 
   // wrap the function in a try/finally statement
   bodyPath.replaceWith(buildBlock([
-    ...startCalls,
-    buildWrapTryFinally(body, finallyBody)
+    ...pushImmediate,
+    buildWrapTryFinally(body, popImmediate)
   ]));
 }
 
@@ -95,8 +95,8 @@ export default function functionVisitor() {
       if (!state.onEnter(path, 'context')) return;
       // console.warn('F', path.toString());
 
-      const name = guessFunctionName(path);
-      const displayName = getFunctionDisplayName(path, name);
+      const name = guessFunctionName(path, state);
+      const displayName = getFunctionDisplayName(path, state, name);
       const isGenerator = path.node.generator;
       const isAsync = path.node.async;
       const isInterruptable = isGenerator || isAsync;

@@ -16,8 +16,8 @@ const visited = new Set();
 const plugin = function ({ types: t }) {
   return {
     visitor: {
-      Function(path) {
-        const name = guessFunctionName(path);
+      Function(path, state) {
+        const name = guessFunctionName(path, state);
         expect(name).toBe('f');
       }
     }

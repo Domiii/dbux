@@ -165,7 +165,7 @@ function visitInOrder(path, state, visitors) {
 // ########################################
 
 function exit(path, state) {
-  if (!state.onExit(path)) return;
+  if (!state.onExit(path, 'program')) return;
 
   addDbuxInitDeclaration(path, state);
 }

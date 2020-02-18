@@ -72,6 +72,7 @@ module.exports = {
 		"wrap-iife": ["warn", "inside"],
 		"implicit-arrow-linebreak": 0,
 		"function-paren-newline": 0,
-		"linebreak-style": 0
+		"linebreak-style": 0,
+		"quotes": 0
 	}
 };

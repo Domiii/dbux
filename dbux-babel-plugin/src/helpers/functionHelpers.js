@@ -1,10 +1,11 @@
 import * as t from '@babel/types';
 import { NodePath } from '@babel/core';
 import { isDebug } from 'dbux-common/src/util/nodeUtil';
-import { logInternalWarning } from '../log/logger';
+import { logInternalWarning, logInternalError } from '../log/logger';
 import { getAllClassParents, getClassAncestryString } from './astHelpers';
-import { getPresentableString, toSourceStringWithoutComments } from './misc';
 import { getMemberExpressionName } from './objectHelpers';
+import { extractSourceStringWithoutComments } from './sourceHelpers';
+import { getPathTraceId } from './instrumentationHelper';
 
 // ###########################################################################
 // function names
@@ -15,26 +16,42 @@ export function functionNoName(functionPath) {
   return '(anonymous)';
 }
 
-function getCallbackDisplayName(functionPath) {
+function getCallbackDisplayName(functionPath, state) {
   const { parentPath } = functionPath;
   const calleePath = parentPath.get('callee') || parentPath.parentPath?.get('callee');
+
   if (calleePath) {
     /**
      * 9. anonymous callback argument - f(() => {}) - `t.isCallExpression(p)`
      */
     // const callName = getMemberExpressionName(calleePath);
-    const callName = toSourceStringWithoutComments(calleePath.node);
+    let callName;
+    if (calleePath.node.loc) {
+      // not instrumented before -> we can extract source code
+      callName = extractSourceStringWithoutComments(calleePath.node, state);
+    }
+    else {
+      // callee has already been instrumented -> get name from trace (if possible)
+      const trace = state.getTraceOfPath(calleePath);
+      if (trace) {
+        callName = trace.displayName;
+      }
+      else {
+        callName = 'unknown';
+        logInternalError('could not extract name of callback\'s callee:', functionPath.toString());
+      }
+    }
     return `[cb] ${callName}`;
   }
   return null;
 }
 
-export function getFunctionDisplayName(functionPath, functionName) {
+export function getFunctionDisplayName(functionPath, state, functionName) {
   if (!functionName) {
-    functionName = guessFunctionName(functionPath);
+    functionName = guessFunctionName(functionPath, state);
     if (!functionName) {
       // anonymous callback arguments get special treatment
-      const callbackName = getCallbackDisplayName(functionPath);
+      const callbackName = getCallbackDisplayName(functionPath, state);
       if (callbackName) {
         return callbackName;
       }
@@ -56,7 +73,7 @@ export function getFunctionDisplayName(functionPath, functionName) {
 /**
  * 
  */
-export function guessFunctionName(functionPath: NodePath) {
+export function guessFunctionName(functionPath: NodePath, state) {
   if (isDebug()) {
     // basic sanity checks
     if (!t.isFunction(functionPath)) {
@@ -102,7 +119,7 @@ export function guessFunctionName(functionPath: NodePath) {
         /**
          * 8. this assignment: `this.f = () => {}`
          */
-        name = getMemberExpressionName(leftPath, false);
+        name = getMemberExpressionName(leftPath, state, false);
       }
     }
   }

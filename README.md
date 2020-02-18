@@ -87,24 +87,65 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 ## TODO (other)
 * [instrumentation]
-   * trace parameters
-   * traces are not correctly added to their `Resume` context
-* [codeDeco]
-   * highlight executed funtion calls in code
-* trace/context labeling
-   * `ExecuteCallback` trace captures last trace in parent context, instead of the `CallArg` trace?
-      * e.g.: `$on`'s callback shows `app.js` as previous trace
-* [dbuxTraceDetailsView]
+   * fix `await`:
+      * fix `Await` + `Resume`
+         * async function's push + pop?
+         * when resuming, we might come back from a callback etc.
+            * Need to push `Resume` on demand?
+         * whn resuming, parent is not set
+   * start preparing for more accurate callstacks
+      * add actual callee trace (displayName = entire expression)
+      * setters?
+      * future work: call stacks for getters will be problematic either way :(
+* [traceDetailsView]
    * details:
       * [CallArg/CallbackArg] display `CallExpression`'s name
       * [CallbackArg] show it's `Push/PopCallback` nodes
-      * [Push/PopCallback] show it's CallbackArg node
+      * [Push/PopCallback] `schedulerTrace`
       * highlight last+first in run
          * also: for runs originating from callbacks, make it more obvious?
-   * when displaying trace in `Resume` context, it shows name as `undefined`
    * add more helpful hover tooltips to each node
-* [cursorTracesView] + [traceDetailsView]
-   * separate traces at cursor from `traceDetailsView`
+* [cursorTracesView]
+   * separate `cursorTracesView` from `traceDetailsView`
+   * only show traces of inner most `staticTrace`
+   * [loops] sort by `contextId`, if any `staticTrace` is repeated more than once in any context
+   * of each trace, display information relevant to the `TraceType` (instead of it's `displayName`)
+      * add "selected" icon, if trace is selected
+      * (by-type)
+         * `PushImmediate` -> previous context (partial callstack)
+         * `PopImmediate` -> next context (partial callstack)
+         * `Push/PopCallback` -> schedulerTrace
+         * `hasValue(type)` -> value
+         * `CallExpression` -> call-site
+            * how to render call-site + value in one line?
+               * maybe add a button to toggle single-line/multi-line display of multiple details?
+            * maybe only if they are different call-sites between calls?
+            * use case: polymorphism/callbacks of different origins
+      * other?
+   * list "other traces at cursor" in a separate node at the bottom
+      * sort those by `staticTrace`
+      * only build when opened
+   * better loop support:
+      * distinguish repeated calls of a trace from other traces at selection
+      * allow to better understand and work through the repetitions
+   * group {Push,Pop}Callback{Argument,} into one
+      * show status: executed x times
+      * if executed: go to callback definition
+   * better value rendering (e.g. empty string (currently not shown at all); small arrays + objects)
+      * function parameters
+         * need to properly destruct
+            * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
+      * also track `this`
+   * trace details
+      * (if multiple applications exist) `ApplicationNode` 
+         * `getRelativeWorkspacePath(application.entryPointPath)`
+   * [performance] allow `getTracesAt` to deal with long iterations
+      * long node lists
+         * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead of prepping them all at once
+         * also applies to `dataView`
+      * `iterateTracesFront`
+      * `iterateTracesBack`
+      * `getTraceCount`
 * [cursorTracesView] + [traceSelection]
    * when user textEditor selection changes, select "best" trace at cursor
       * deselect previous trace
@@ -115,72 +156,23 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * forth/back buttons in `TraceDetailView`?
 * [dataView]
    * a more complete approach to understanding values in current context
-   * need to properly destruct
-      * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
-* [cli] allow to easily run multiple applications at once
-   * (for proper multi-application testing)
-* [dbuxTraceDetailsView]
-   * `neighboring traces` (partial callstack)
-      * render full trace label
-      * description: file@loc (if file is different)
-      * render all 6 directions
-         * previous before leaving context (top left)
-         * previous in context (left)
-         * previous before going to child context (bottom left)
-         * next before leaving context (top right)
-         * next in context (right)
-         * next before going to child context (bottom right)
-   * better loop support:
-      * distinguish repeated calls of a trace from other traces at selection
-      * allow to better understand and work through the repetitions
-   * group {Push,Pop}Callback{Argument,} into one
-      * show status: executed x times
-      * if executed: go to callback definition
-   * better value rendering (e.g. empty string, basic arrays, objects)
-      * properly serialize and send object data
-         * consider using a native `structuredClone` implementation (or some of its hackarounds)
-            * https://stackoverflow.com/a/10916838
-         * performance optimization
-            * when object too big, send later
-               * feature: object query interface?
-            * observe performance and long-running processes
-               * cut things short
-               * split bigger objects into chunks
-               * warnings when things get out of hand
-      * also track `this` + function parameters
+   * properly serialize and send object data
+      * consider using a native `structuredClone` implementation (or some of its hackarounds)
+         * https://stackoverflow.com/a/10916838
+      * performance optimization
+         * when object too big, send later
+            * feature: object query interface?
+         * observe performance and long-running processes
+            * cut things short
+            * split bigger objects into chunks
+            * warnings when things get out of hand
    * object tracking: list all traces that an object participated in
+      * track functions
       * track everything?
          * NOTE: when `TrackEverything` is enabled, we can track callbacks 100% as well
             * (if their declarations were instrumented)
-   * label: make it more readable
-   * mark a trace as `theSelectedTrace`
-      * also select it for Playback
-      * allow going back + forth between previously selected traces
-   * trace description
-      * relative execution time
-   * trace details
-      * (if multiple applications exist) `ApplicationNode` 
-         * `getRelativeWorkspacePath(application.entryPointPath)`
-      * (by-type)
-         * `if previous trace is in different context` (includes `isTracePush(type)`)
-            * previous
-         * `if next trace is in different context` (includes `isTracePop(type)`)
-            * next
-         * `CallbackArgument`
-            * scheduled
-         * `hasValue(type)`
-            * value
-   * trace categorization:
-      * all
-      * by-type
-         * (all details of one type aggregated into one node?)
-      * by-context
-   * long list tool
-   * [performance] allow `getTracesAt` to deal with long iterations
-      * first find `staticTraces`?
-      * `iterateTracesFront`
-      * `iterateTracesBack`
-      * `getTraceCount`
+* [cli] allow to easily run multiple applications at once
+   * (for proper multi-application testing)
 * [instrumentation] support longer names
    * (and then hide them in tree view; show long version as tooltip)
 * [MultiKeyIndex] allow for storing data by multiple keys
@@ -413,10 +405,19 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 
 # Known Issues
 
-* Windows only
-   * When running things in VSCode built-in terminal, it sometimes changes to lower-case drive letter
-      * Causing lower-case and upper-case drive letters to start appearing in `require` paths
-         * => which makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
+* What applications work so well with DBUX?
+   * TODO: we are still exploring that
+* What applications **won't** work so well with DBUX?
+   * Proxies and custom object getters with side effects
+      * For serialization `dbux-runtime` iterates (or will in the future iterate) over object properties
+      * Thus possibly causing side effects with proxy and getter functions
+      * At least it will leave unwanted traces (while attempting to "observe") - Damn you, [Observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics))!!! :(
+      * TODO: at least flag traces caused by `dbux-runtime` by setting some `trace-triggered-from-dbux-builtin-call` flag while running built-in functions
+         * NOTE: This will still mess with proxy and getter functions that themselves have side effects, such as caching functions, tracers and more.
+* Issues under Windows
+   * **sometimes**, when running things in VSCode built-in terminal, it changes to lower-case drive letter
+      * This causes a mixture of lower-case and upper-case drive letters to start appearing in `require` paths
+         * => this makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
       * Official bug report: https://github.com/microsoft/vscode/issues/9448
       * Solution: run command in external `cmd` or find a better behaving terminal
 
@@ -481,7 +482,6 @@ You can re-add it manually:
 		]
 	}
 ```
-
 
 
 # More References
