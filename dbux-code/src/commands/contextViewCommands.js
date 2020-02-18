@@ -1,12 +1,12 @@
 import { window } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { registerCommand } from './commandUtil';
-import { TreeViewController } from '../treeView/treeViewController';
-import ContextNode from '../treeView/ContextNode';
+import { ContextViewController } from '../contextView/contextViewController';
+import ContextNode from '../contextView/ContextNode';
 
 const { log, debug, warn, error: logError } = newLogger('Commands');
 
-export function initTreeViewCommands(context, treeViewController: TreeViewController) {
+export function initContextViewCommands(context, contextViewController: ContextViewController) {
   registerCommand(context,
     'dbuxContextView.deleteEntry',
     (node: ContextNode) => window.showInformationMessage(`Clicked on delete entry with node = ${node.label}.`)
@@ -14,11 +14,11 @@ export function initTreeViewCommands(context, treeViewController: TreeViewContro
 
   registerCommand(context,
     'dbuxContextView.gotoEntry',
-    (node: ContextNode) => node.gotoCode()
+    (node: ContextNode) => contextViewController.handleItemClick(node)
   );
 
   registerCommand(context,
     'dbuxContextView.itemClick',
-    (node: ContextNode) => treeViewController.nodeOnClick(node)
+    (node: ContextNode) => contextViewController.handleItemClick(node)
   );
 }
