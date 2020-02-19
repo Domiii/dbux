@@ -52,14 +52,9 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 # TODO
 
-## TODO (dbux-code + dbux-data only)
+## TODO (dbux-code + dbux-data; high priority)
 * [dbuxContextView]
    * group by `schedulerTraceId` (if any)
-* [cursorTracesView]
-   * separate `cursorTracesView` from `traceDetailsView`
-* [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
-   * shows all applications in `allApplications`
-   * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
 * [callstackView]
    * NOTE: a callstack is a single slice through the call graph at a given point in time
    * if context has both `parentId` and `schedulerTrace`:
@@ -74,6 +69,11 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * all child `loop`s + `context`s in order
       * group child `contexts` into a new intermediate node, if they all originate from the same `trace` (e.g. `find`, `map`, `forEach`, `reduce` and many more)
       * also add one node for current trace to show where it is between the other calls
+* [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
+   * shows all applications in `allApplications`
+   * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
+
+## TODO (dbux-code + dbux-data; lower priority)
 * add a search bar to `dbuxContextView` (search by `displayName` or `filePath`)
    * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
    * when entering search terms, only display matching nodes
@@ -103,6 +103,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * remember expanded/collapsed state of previous nodes of type
       * TODO: What about children of debug node?
          * use relative path to remember state?
+* [cursorTracesView]
+   * separate `cursorTracesView` from `traceDetailsView`
 * [instrumentation]
    * fix `Await` + `Resume`
       * async function's push + pop?
