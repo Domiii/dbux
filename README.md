@@ -57,21 +57,36 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * group by `schedulerTraceId` (if any)
 * [callstackView]
    * NOTE: a callstack is a single slice through the call graph at a given point in time
+   * when clicking a node:
+      * select node with `{ focus: true }`
+      * select it `traceSelection.setSelectedTrace`
+      * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
+   * do not change selected trace in `callstackView`
+      * only update selected trace in `callstackView`, if triggered from anywhere but here
    * if context has both `parentId` and `schedulerTrace`:
       * pick `scheduler` by default
       * add a button to the node to allow switching between `parent` and `scheduler`
-         * problem: might move the node down because there are more parents, thus making it hard to compare
-         * need a good solution here
+         * select node with `{ focus: true }`
    * label: `context.displayName`
    * description: `loc.start`@`where`
    * when clicking a node: select the first trace of run
-   * children:
+* [selectedContextView]
+   * NOTE: a treeView that lets you better understand the executionContext of the selected trace
+   * Nodes:
       * all child `loop`s + `context`s in order
-      * group child `contexts` into a new intermediate node, if they all originate from the same `trace` (e.g. `find`, `map`, `forEach`, `reduce` and many more)
+      * group child `contexts` into a new intermediate node, if they all originate from the same `trace`
+         * (e.g. `find`, `map`, `forEach`, `reduce` and many more)
       * also add one node for current trace to show where it is between the other calls
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `allApplications`
    * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
+   * allows you to remove applications...
+      * individually
+      * "all old versions" (applications that have already been executed again)
+      * "all selected"
+   * add a checkbox (button) to select "automatically discard older application when executing again"
+* [UI_design]
+   * good icons + symbols in all tree nodes
 
 ## TODO (dbux-code + dbux-data; lower priority)
 * add a search bar to `dbuxContextView` (search by `displayName` or `filePath`)
@@ -106,17 +121,17 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [cursorTracesView]
    * separate `cursorTracesView` from `traceDetailsView`
 * [instrumentation]
-   * fix `Await` + `Resume`
-      * async function's push + pop?
-      * when resuming, we might come back from a callback etc.
-         * Need to push `Resume` on demand?
-      * when resuming, parent is not set
    * [loops]
       * new data types: `loop` + `staticLoop`
          * `firstTraceId` + `lastTraceId`
          * `nCount`
       * add `loopTraceId` to all traces in loop
       * fix `DoWhileLoop` :(
+   * fix `Await` + `Resume`
+      * async function's push + pop?
+      * when resuming, we might come back from a callback etc.
+         * Need to push `Resume` on demand?
+      * when resuming, parent is not set
    * add one trace for each function parameter
    * [promises] keep track of `schedulerTraceId`
 * [traceDetailsView]
