@@ -134,12 +134,24 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * when resuming, parent is not set
    * add one trace for each function parameter
    * [promises] keep track of `schedulerTraceId`
+* [codeDeco]
+   * show `x {times_executed}` after line, but only if n is different from the previous line
+      * show multiple, if there are different numbers for multiple traces of line?
+   * capture *all* variables (e.g. outer-most `object` of `MemberExpression`) *after* expression has executed
+      * NOTE: when debugging functions, Chrome shows value of all variables appearing in any line, after line has executed
+      * NOTE: add traces for all variable access
+      * NOTE: result of `i++` is not what we want
+      * trace strategies
+         * VariableAssignment + VariableDeclaration
+            * just capture rhs (already done; but need to associate result with variable)
+         * ....
+      * idea: just record all variables after line, so rendering is less convoluted?
 * [traceDetailsView]
    * `StaticTraceTDNode` -> what to display if we don't have a value?
       * categorize by run/context/loop/difference-in-callstack????
    * [values]
       * proper string representation of all kinds of values
-      * display types
+      * record types as well?
    * `navigationNodes`
       * display better symbols in `previousParent` + `nextParent` if in separate run
    * [loops] categorize by `loopId` -> `contextId`
