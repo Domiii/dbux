@@ -53,6 +53,20 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
+* [BaseNodeProvider]
+   * BaseNode
+      * static makeLabel
+      * buildChildren
+   * BaseNodeProvider
+      * Map<id, CollapsibleState> nodeStates;
+      * buildRoots
+      * buildNode
+         * generate id (parent.id + node.constructor.name + i)
+         * collapsibleState = existingIds.get(id)
+         * makeLabel()
+         * if (expanded) {
+            buildChildren()
+         }
 * [callstackView]
    * when clicking a node:
       * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
@@ -111,6 +125,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [cursorTracesView]
    * separate `cursorTracesView` from `traceDetailsView`
 * [instrumentation]
+   * CallExpressions as arguments are not recognized as callbacks (e.g. `bind(...)`)
    * [loops]
       * new data types: `loop` + `staticLoop`
          * `firstTraceId` + `lastTraceId`
