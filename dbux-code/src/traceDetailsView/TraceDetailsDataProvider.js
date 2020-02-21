@@ -149,7 +149,7 @@ export default class TraceDetailsDataProvider {
   }
 
   // ###########################################################################
-  // misc bookkeeping
+  // overriding TreeDataProvider
   // ###########################################################################
 
   clear() {
@@ -197,7 +197,7 @@ export default class TraceDetailsDataProvider {
     const node = new NodeClass(this, label, iconPath, application, parent, id, treeItemProps);
     node.init(entry);
 
-    node.children = node.makeChildren?.(this);
+    node.children = node.makeChildren?.();
     node.collapsibleState = node.children?.length ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None;
 
     this._onNewNode(node);

@@ -53,30 +53,34 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* [dbuxContextView]
-   * group by `schedulerTraceId` (if any)
+* [BaseNodeProvider]
+   * BaseNode
+      * static makeLabel
+      * buildChildren
+   * BaseNodeProvider
+      * Map<id, CollapsibleState> nodeStates;
+      * buildRoots
+      * buildNode
+         * generate id (parent.id + node.constructor.name + i)
+         * collapsibleState = existingIds.get(id)
+         * makeLabel()
+         * if (expanded) {
+            buildChildren()
+         }
 * [callstackView]
-   * NOTE: a callstack is a single slice through the call graph at a given point in time
    * when clicking a node:
-      * select node with `{ focus: true }`
-      * select it `traceSelection.setSelectedTrace`
       * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
    * do not change selected trace in `callstackView`
       * only update selected trace in `callstackView`, if triggered from anywhere but here
    * if context has both `parentId` and `schedulerTrace`:
-      * pick `scheduler` by default
       * add a button to the node to allow switching between `parent` and `scheduler`
-         * select node with `{ focus: true }`
-   * label: `context.displayName`
-   * description: `loc.start`@`where`
-   * when clicking a node: select the first trace of run
 * [selectedContextView]
-   * NOTE: a treeView that lets you better understand the executionContext of the selected trace
+   * NOTE: a treeView that lets you better understand a partial `execution tree` in the context of the selected trace
    * Nodes:
       * all child `loop`s + `context`s in order
+      * add one node for current trace to show where it is between the other calls
       * group child `contexts` into a new intermediate node, if they all originate from the same `trace`
          * (e.g. `find`, `map`, `forEach`, `reduce` and many more)
-      * also add one node for current trace to show where it is between the other calls
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `allApplications`
    * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
@@ -121,6 +125,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [cursorTracesView]
    * separate `cursorTracesView` from `traceDetailsView`
 * [instrumentation]
+   * CallExpressions as arguments are not recognized as callbacks (e.g. `bind(...)`)
    * [loops]
       * new data types: `loop` + `staticLoop`
          * `firstTraceId` + `lastTraceId`
