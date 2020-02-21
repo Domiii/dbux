@@ -7,7 +7,7 @@ import { getCursorLocation } from '../codeNav';
 import TraceNode from './nodes/TraceNode';
 import EmptyNode from './nodes/EmptyNode';
 
-export default class EditorTracesDataProvider extends BaseTreeViewNodeProvider {
+export default class EditorTracesNodeProvider extends BaseTreeViewNodeProvider {
   constructor() {
     super('dbuxEditorTracesView');
   }

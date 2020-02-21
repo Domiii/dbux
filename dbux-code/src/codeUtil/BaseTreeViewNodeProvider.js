@@ -2,6 +2,7 @@ import { TreeItemCollapsibleState, EventEmitter, window, CommentThreadCollapsibl
 import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { getThemeResourcePath } from '../resources';
+import { registerCommand } from '../commands/commandUtil';
 
 const { log, debug, warn, error: logError } = newLogger('editorTracesController');
 
@@ -13,6 +14,7 @@ export default class BaseTreeViewNodeProvider {
   idsCollapsibleState = new Map();
 
   constructor(viewName) {
+    this.viewName = viewName;
     // NOTE: view creation inside the data provider is not ideal, 
     //      but it makes things a lot easier for now
     this.treeView = window.createTreeView(viewName, {
@@ -21,6 +23,13 @@ export default class BaseTreeViewNodeProvider {
 
     this.treeView.onDidCollapseElement(this.handleCollapsibleStateChanged);
     this.treeView.onDidExpandElement(this.handleCollapsibleStateChanged);
+  }
+  
+  initDefaultClickCommand(context) {
+    registerCommand(context,
+      this.clickCommandName = `${this.viewName}.click`,
+      (provider, node) => provider.handleClick(node)
+    );
   }
 
   // ###########################################################################
@@ -138,8 +147,11 @@ export default class BaseTreeViewNodeProvider {
     }
     node.collapsibleState = collapsibleState;
 
+    // click handler
+    this._setNodeCommand(node);
+
     if (node.children) {
-      // this node has built in children
+      // this node has built-in children
       this._decorateNodes(node.children);
     }
 
@@ -151,6 +163,17 @@ export default class BaseTreeViewNodeProvider {
     node.init?.();
 
     return node;
+  }
+
+  _setNodeCommand(node) {
+    if (!this.clickCommandName) {
+      return;
+    }
+    
+    node.command = {
+      command: this.clickCommandName,
+      arguments: [this, node]
+    };
   }
 
 

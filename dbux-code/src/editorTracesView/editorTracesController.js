@@ -4,7 +4,7 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { registerCommand } from '../commands/commandUtil';
-import EditorTracesDataProvider from './EditorTracesDataProvider';
+import EditorTracesNodeProvider from './EditorTracesNodeProvider';
 
 const { log, debug, warn, error: logError } = newLogger('editorTracesController');
 
@@ -12,7 +12,7 @@ let controller;
 
 class EditorTracesController {
   constructor() {
-    this.treeDataProvider = new EditorTracesDataProvider();
+    this.treeDataProvider = new EditorTracesNodeProvider();
     this.treeView = this.treeDataProvider.treeView;
   }
 
@@ -26,10 +26,13 @@ class EditorTracesController {
   }, 20);
 
 
-  initEventListeners(context) {
+  initOnActivate(context) {
     // ########################################
     // hook up event handlers
     // ########################################
+    
+    // click event listener
+    this.treeDataProvider.initDefaultClickCommand(context);
 
     // data changed
     allApplications.selection.onApplicationsChanged((selectedApps) => {
@@ -42,7 +45,7 @@ class EditorTracesController {
     });
 
     // traceSelection changed
-    traceSelection.onTraceSelectionChanged(selectedTrace => {
+    traceSelection.onTraceSelectionChanged(() => {
       controller.treeDataProvider.refresh();
     });
 
@@ -60,22 +63,13 @@ class EditorTracesController {
 // ###########################################################################
 
 
-export function initTraceDetailsCommands(context) {
-  registerCommand(context,
-    'dbuxEditorTracesView.itemClick',
-    (treeDetailsDataProvider, node) => treeDetailsDataProvider.handleClick(node)
-  );
-}
-
 export function getTraceDetailsController() {
   return controller;
 }
 
 export function initEditorTracesController(context: ExtensionContext) {
-  initTraceDetailsCommands(context);
-
   controller = new EditorTracesController();
-  controller.initEventListeners(context);
+  controller.initOnActivate(context);
 
   // refresh right away
   controller.treeDataProvider.refresh();
