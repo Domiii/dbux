@@ -1,4 +1,4 @@
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { hasValue } from 'dbux-common/src/core/constants/TraceType';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import staticTraceCollection from './staticTraceCollection';
 import executionContextCollection from './executionContextCollection';
@@ -109,7 +109,7 @@ function _prettyPrint(trace, value) {
   // else
 
   // TODO: if we want to keep using this; fix to use `ValueCollection` instead
-  const v = type === TraceType.ExpressionResult;
+  const v = hasValue(type);
   const result = v ? ['(', value, ')'] : EmptyArray;
   console.debug('', traceId, contextId,
     `${depthIndicator}[${typeName}] ${displayName}`,

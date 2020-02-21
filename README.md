@@ -52,23 +52,44 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 # TODO
 
-## TODO (dbux-code + dbux-data only)
-* [playback] finish first version of playback feature (v0.1)
+## TODO (dbux-code + dbux-data; high priority)
+* [dbuxContextView]
+   * group by `schedulerTraceId` (if any)
+* [callstackView]
+   * NOTE: a callstack is a single slice through the call graph at a given point in time
+   * when clicking a node:
+      * select node with `{ focus: true }`
+      * select it `traceSelection.setSelectedTrace`
+      * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
+   * do not change selected trace in `callstackView`
+      * only update selected trace in `callstackView`, if triggered from anywhere but here
+   * if context has both `parentId` and `schedulerTrace`:
+      * pick `scheduler` by default
+      * add a button to the node to allow switching between `parent` and `scheduler`
+         * select node with `{ focus: true }`
+   * label: `context.displayName`
+   * description: `loc.start`@`where`
+   * when clicking a node: select the first trace of run
+* [selectedContextView]
+   * NOTE: a treeView that lets you better understand the executionContext of the selected trace
+   * Nodes:
+      * all child `loop`s + `context`s in order
+      * group child `contexts` into a new intermediate node, if they all originate from the same `trace`
+         * (e.g. `find`, `map`, `forEach`, `reduce` and many more)
+      * also add one node for current trace to show where it is between the other calls
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `allApplications`
    * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
-* [dbuxContextView] display root contexts of all runs
-   * when clicked, go to first trace in context
-* [callstackView]
-   * NOTE: a callstack is actually a single slice of a complex call graph over time
-   * render callstack of "context of `traceSelection.selected`" all the way to its root
-   * top: context of selected trace
-   * if no parent, see if it has a `schedulerTrace` and keep going from there
-   * if context has both `parentId` and `schedulerTrace`, add callstack from `schedulerTrace` to its root as first child
-   * label: `context.displayName`
-   * description: loc.start@where
-   * when clicking a node: select the trace of the call of the next guy in context
-* add a search bar to `dbuxContextView` (search by `displayName` and `filePath`)
+   * allows you to remove applications...
+      * individually
+      * "all old versions" (applications that have already been executed again)
+      * "all selected"
+   * add a checkbox (button) to select "automatically discard older application when executing again"
+* [UI_design]
+   * good icons + symbols in all tree nodes
+
+## TODO (dbux-code + dbux-data; lower priority)
+* add a search bar to `dbuxContextView` (search by `displayName` or `filePath`)
    * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
    * when entering search terms, only display matching nodes
    * keep all necessary parent nodes
@@ -77,38 +98,63 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * (when clearing search, stay on selected node)
    * clear search on `Esc` key press
 * add a button to the top right to toggle (show/hide) all intrusive features
-   * includes: `codeDeco`, and all kinds of extra buttons (such as `playback`)
-   * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+X CTRL+C` (need every single key))
+   * includes:
+      * hide `codeDeco`
+      * hide any extra buttons (currently: playback buttons) in the top right
+   * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+B CTRL+X` (need every single key))
 * display a warning at the top of EditorWindow:
    * if it has been edited after the time of it's most recent `Program` `Context`
-   * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
+      * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
+      * offer buttons to...:
+         * not show warning again for this file (before restart)
+         * remove the application from `allApplications`
    * if it is very large and thus will slow things down (e.g. > x traces?)
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
-* [instrumentation]
-   * fix `await`:
-      * fix `Await` + `Resume`
-         * async function's push + pop?
-         * when resuming, we might come back from a callback etc.
-            * Need to push `Resume` on demand?
-         * whn resuming, parent is not set
-   * start preparing for more accurate callstacks
-      * add actual callee trace (displayName = entire expression)
-      * setters?
-      * future work: call stacks for getters will be problematic either way :(
-* [traceDetailsView]
-   * details:
-      * [CallArg/CallbackArg] display `CallExpression`'s name
-      * [CallbackArg] show it's `Push/PopCallback` nodes
-      * [Push/PopCallback] `schedulerTrace`
-      * highlight last+first in run
-         * also: for runs originating from callbacks, make it more obvious?
-   * add more helpful hover tooltips to each node
+* [CodeTreeWrapper]
+   * don't build children if a node is collapsed
+      * automatically build children when node is extended
+   * remember expanded/collapsed state of previous nodes of type
+      * TODO: What about children of debug node?
+         * use relative path to remember state?
 * [cursorTracesView]
    * separate `cursorTracesView` from `traceDetailsView`
-   * only show traces of inner most `staticTrace`
-   * [loops] sort by `contextId`, if any `staticTrace` is repeated more than once in any context
+* [instrumentation]
+   * [loops]
+      * new data types: `loop` + `staticLoop`
+         * `firstTraceId` + `lastTraceId`
+         * `nCount`
+      * add `loopTraceId` to all traces in loop
+      * fix `DoWhileLoop` :(
+   * fix `Await` + `Resume`
+      * async function's push + pop?
+      * when resuming, we might come back from a callback etc.
+         * Need to push `Resume` on demand?
+      * when resuming, parent is not set
+   * add one trace for each function parameter
+   * [promises] keep track of `schedulerTraceId`
+* [codeDeco]
+   * show `x {times_executed}` after line, but only if n is different from the previous line
+      * show multiple, if there are different numbers for multiple traces of line?
+   * capture *all* variables (e.g. outer-most `object` of `MemberExpression`) *after* expression has executed
+      * NOTE: when debugging functions, Chrome shows value of all variables appearing in any line, after line has executed
+      * NOTE: add traces for all variable access
+      * NOTE: result of `i++` is not what we want
+      * trace strategies
+         * VariableAssignment + VariableDeclaration
+            * just capture rhs (already done; but need to associate result with variable)
+         * ....
+      * idea: just record all variables after line, so rendering is less convoluted?
+* [traceDetailsView]
+   * `StaticTraceTDNode` -> what to display if we don't have a value?
+      * categorize by run/context/loop/difference-in-callstack????
+   * [values]
+      * proper string representation of all kinds of values
+      * record types as well?
+   * `navigationNodes`
+      * display better symbols in `previousParent` + `nextParent` if in separate run
+   * [loops] categorize by `loopId` -> `contextId`
    * of each trace, display information relevant to the `TraceType` (instead of it's `displayName`)
       * add "selected" icon, if trace is selected
       * (by-type)
@@ -122,15 +168,11 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
             * maybe only if they are different call-sites between calls?
             * use case: polymorphism/callbacks of different origins
       * other?
-   * list "other traces at cursor" in a separate node at the bottom
       * sort those by `staticTrace`
       * only build when opened
    * better loop support:
       * distinguish repeated calls of a trace from other traces at selection
       * allow to better understand and work through the repetitions
-   * group {Push,Pop}Callback{Argument,} into one
-      * show status: executed x times
-      * if executed: go to callback definition
    * better value rendering (e.g. empty string (currently not shown at all); small arrays + objects)
       * function parameters
          * need to properly destruct
@@ -139,9 +181,24 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * trace details
       * (if multiple applications exist) `ApplicationNode` 
          * `getRelativeWorkspacePath(application.entryPointPath)`
-   * [performance] allow `getTracesAt` to deal with long iterations
-      * long node lists
-         * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead of prepping them all at once
+   * details:
+      * Push/Pop (of any kind) show next previous trace/context?
+      * [CallbackArg] show `Push/PopCallback` nodes
+      * [Push/PopCallback] `schedulerTrace`
+      * highlight last+first in run
+         * also: for runs originating from callbacks, make it more obvious?
+   * add more helpful hover tooltips to each node
+* [cursorTracesView]
+   * list `staticTraces` of inner-most context at cursor
+      * better display names to distinguish between `BeforeCallExpression` + `CallExpressionResult`
+   * group {Push,Pop}Callback{Argument,} into one
+      * show status: executed x times
+      * if executed: go to callback definition
+* [CodeTreeWrapper]
+   * long node lists
+      * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead 
+* [cursorTracesView]
+   * [performance] allow `getTracesAt` to deal with long iterationsof prepping them all at once
          * also applies to `dataView`
       * `iterateTracesFront`
       * `iterateTracesBack`
@@ -154,6 +211,13 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * minimum effort: try to select one in the same run (if existing)
    * when jumping between traces, keep a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
+* [instrumentation]
+   * more accurate callstacks
+      * find correct trace of setter in callstack
+      * find correct trace of getter in callstack
+      * NOTE: this is tedious :(
+* [online_mode]
+   * when clicking a value (and when in "online mode"), send command back to application to `console(inspect(value))`
 * [dataView]
    * a more complete approach to understanding values in current context
    * properly serialize and send object data

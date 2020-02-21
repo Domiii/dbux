@@ -189,14 +189,14 @@ export default {
     const argTrace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = argTrace;
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    const { calleeId: calleeStaticId } = staticTrace;
+    const { callId: callStaticId } = staticTrace;
 
-    // const calleeStaticTrace = dp.collections.staticTraces.getById(calleeStaticId);
-    if (calleeStaticId) {
+    // const calleeStaticTrace = dp.collections.staticTraces.getById(callStaticId);
+    if (callStaticId) {
       // iterate over all previous arguments until we found callee
       let trace;
       for (; traceId > 0 && (trace = dp.collections.traces.getById(traceId)); --traceId) {
-        if (trace.staticTraceId === calleeStaticId) {
+        if (trace.staticTraceId === callStaticId) {
           return trace;
         }
       }
@@ -208,9 +208,9 @@ export default {
     const argTrace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = argTrace;
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    const { calleeId: calleeStaticId } = staticTrace;
+    const { callId: callStaticId } = staticTrace;
 
-    return calleeStaticId && dp.collections.staticTraces.getById(calleeStaticId) || null;
+    return callStaticId && dp.collections.staticTraces.getById(callStaticId) || null;
   },
 
 

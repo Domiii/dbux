@@ -6,6 +6,10 @@ export class TraceSelection {
   selected = null;
   history = new TraceSelectionHistory();
 
+  isSelected(trace) {
+    return this.selected === trace;
+  }
+
   selectTrace(selected) {
     this.selected = selected;
 

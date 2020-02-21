@@ -25,6 +25,6 @@ export default class TraceNode extends BaseNode {
   }
 
   static makeIconPath(trace: Trace) {
-    return 'string.svg';
+    return traceSelection.isSelected(trace) ? 'play.svg' : ' ';
   }
 }

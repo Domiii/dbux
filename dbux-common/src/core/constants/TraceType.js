@@ -8,22 +8,23 @@ let TraceType = {
   PopImmediate: 3,
 
   BeforeExpression: 4,
-  Callee: 5,
-  CallExpressionResult: 6,
-  ExpressionResult: 7,
+  BeforeCallExpression: 5,
+  Callee: 6,
+  CallExpressionResult: 7,
+  ExpressionResult: 8,
 
-  CallArgument: 8,
-  CallbackArgument: 9,
+  CallArgument: 9,
+  CallbackArgument: 10,
 
-  PushCallback: 10,
-  PopCallback: 11,
+  PushCallback: 11,
+  PopCallback: 12,
 
-  Await: 12,
-  Resume: 13,
+  Await: 13,
+  Resume: 14,
 
-  Statement: 14,
-  BlockStart: 15,
-  BlockEnd: 16
+  Statement: 15,
+  BlockStart: 16,
+  BlockEnd: 17
 };
 
 TraceType = new Enum(TraceType);
@@ -51,6 +52,7 @@ dynamicTypeTypes[TraceType.CallArgument] = true;
 const valueTypes = new Array(TraceType.getCount()).map(_ => false);
 valueTypes[TraceType.ExpressionResult] = true;
 valueTypes[TraceType.CallArgument] = true;
+valueTypes[TraceType.CallExpressionResult] = true;
 
 export function isTracePush(traceType) {
   return pushTypes[traceType];

@@ -1,7 +1,6 @@
-import { TreeItemCollapsibleState } from 'vscode';
-import BaseNode from './BaseNode';
+import { TreeItemCollapsibleState, TreeItem } from 'vscode';
 
-export default class EmptyNode extends BaseNode {
+export default class EmptyNode extends TreeItem {
   constructor() {
     super('(no trace at cursor)');
 

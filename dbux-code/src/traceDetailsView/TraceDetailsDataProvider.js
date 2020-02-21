@@ -51,7 +51,7 @@ export default class TraceDetailsDataProvider {
         const trace = traceSelection.selected;
         // console.debug('refreshed trace', trace.traceId);
         const application = allApplications.getById(trace.applicationId);
-        const traceNode = this._buildTraceNode(trace, application, null, true);
+        const traceNode = this.buildSelectedTraceNode(trace, application, null);
         this.rootNodes.push(traceNode);
       }
 
@@ -64,7 +64,7 @@ export default class TraceDetailsDataProvider {
 
         this.rootNodes.push(...allApplications.selection.data.mapApplicationsOfFilePath(
           fpath, (application, programId) => {
-            const traceNodes = this._buildTraceNodes(programId, pos, application, null);
+            const traceNodes = this.buildTraceNodes(programId, pos, application, null);
             return traceNodes || EmptyArray;
           }
         ));
@@ -87,7 +87,7 @@ export default class TraceDetailsDataProvider {
     // }, 1)
   }
 
-  _buildTraceNodes(programId, pos, application, parent) {
+  buildTraceNodes(programId, pos, application, parent) {
     // const { staticTraceId } = staticTrace;
     // const traces = application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
 
@@ -105,13 +105,13 @@ export default class TraceDetailsDataProvider {
     return traceGroups.map(traceGroup => {
       // start with inner-most (oldest) trace
       const trace = traceGroup[0];
-      const node = this._buildTraceNode(trace, application, parent);
+      const node = this.buildTraceNode(trace, application, parent);
 
       // add other traces as children (before details)
       const otherTraces = traceGroup.slice(1);
       const otherNodes = otherTraces
         .map(other => {
-          const child = this._buildTraceNode(other, application, node);
+          const child = this.buildTraceNode(other, application, node);
           // child.collapsibleState = TreeItemCollapsibleState.Collapsed;
           return child;
         });
@@ -123,21 +123,23 @@ export default class TraceDetailsDataProvider {
     });
   }
 
-  _buildTraceNode(trace, application, parent, isSelected = false) {
-    const node = this.createNode(isSelected ? SelectedTraceNode : TraceNode, trace, application, parent);
-    if (isSelected) {
-      node.children = this._buildTraceDetailNodes(trace, application, node);
-    }
-    else {
-      node.children = [];
-    }
+  buildSelectedTraceNode(trace, application, parent) {
+    const node = this.createNode(SelectedTraceNode, trace, application, parent);
+    node.collapsibleState = TreeItemCollapsibleState.Expanded;
+    node.children = this._buildTraceDetailNodes(trace, application, node);
+    return node;
+  }
+
+  buildTraceNode(trace, application, parent) {
+    const node = this.createNode(TraceNode, trace, application, parent);
+    node.children = [];
     return node;
   }
 
   _buildTraceDetailNodes(trace, application, parent) {
     const nodes = [
       // navigation nodes
-      ...this.createNavigationNodes(trace, application, parent),
+      ...this.buildNavigationNodes(trace, application, parent),
 
       // other detail nodes
       ...this.createDetailNodes(trace, application, parent)
@@ -187,14 +189,17 @@ export default class TraceDetailsDataProvider {
   //   node._handleClick();
   // }
 
-  createNode(
-    NodeClass, entry, application, parent, treeItemProps = EmptyObject): BaseNode {
-    const label = NodeClass.makeLabel(entry, application, parent);
+  createNode(NodeClass, entry, application, parent, treeItemProps = EmptyObject, label): BaseNode {
+    label = label || NodeClass.makeLabel(entry, application, parent);
     const relativeIconPath = NodeClass.makeIconPath && NodeClass.makeIconPath(entry, application, parent);
     const iconPath = relativeIconPath && getThemeResourcePath(relativeIconPath) || null;
     const id = (++_lastNodeId) + '';
-    const node = new NodeClass(label, iconPath, application, parent, id, treeItemProps);
+    const node = new NodeClass(this, label, iconPath, application, parent, id, treeItemProps);
     node.init(entry);
+
+    node.children = node.makeChildren?.(this);
+    node.collapsibleState = node.children?.length ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None;
+
     this._onNewNode(node);
     return node;
   }
@@ -222,13 +227,13 @@ export default class TraceDetailsDataProvider {
   // Navigation nodes
   // ###########################################################################
 
-  createNavigationNodes(trace, application, parent): NavigationTDNode[] {
+  buildNavigationNodes(trace, application, parent): NavigationTDNode[] {
     return NavigationNodeClasses.map(NodeClass => {
-      return this.createNavigationNode(NodeClass, trace, application, parent);
+      return this.buildNavigationNode(NodeClass, trace, application, parent);
     });
   }
 
-  createNavigationNode(NodeClass, trace, traceApplication, parent): NavigationTDNode {
+  buildNavigationNode(NodeClass, trace, traceApplication, parent): NavigationTDNode {
     const { controlName } = NodeClass;
     const targetTrace = NodeClass.getTargetTrace(controlName);
     let targetTraceApplication;
@@ -250,7 +255,7 @@ export default class TraceDetailsDataProvider {
       trace,
       targetTrace
     };
-    const node = new NodeClass(label, iconPath, targetTraceApplication || traceApplication, parent, id, treeItemProps);
+    const node = new NodeClass(this, label, iconPath, targetTraceApplication || traceApplication, parent, id, treeItemProps);
     node.init();
     this._onNewNode(node);
     return node;

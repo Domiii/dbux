@@ -1,14 +1,14 @@
 import { TreeItemCollapsibleState, TreeItem } from 'vscode';
 import omit from 'lodash/omit';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { hasValue } from 'dbux-common/src/core/constants/TraceType';
 import Application from 'dbux-data/src/applications/Application';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
 import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
 import { getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
-import TraceDetailsNodeType from '../TraceDetailsNodeType';
-import { makeTreeItem, makeTreeItems } from '../../helpers/treeViewHelpers';
+import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import BaseNode from './BaseNode';
+import TraceNode from './TraceNode';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
@@ -32,10 +32,6 @@ export class TraceDetailNode extends BaseNode {
   init(traceDetail) {
     this.traceDetail = traceDetail;
     this.collapsibleState = TreeItemCollapsibleState.None;
-  }
-
-  static get nodeType() {
-    return TraceDetailsNodeType.TraceDetail;
   }
 }
 
@@ -104,10 +100,6 @@ export class TypeTDNode extends TraceDetailNode {
     this.collapsibleState = TreeItemCollapsibleState.None;
   }
 
-  static get nodeType() {
-    return TraceDetailsNodeType.NextContextTraceDetail;
-  }
-
   static makeTraceDetail(trace, application: Application, parent) {
     return trace;
   }
@@ -131,10 +123,6 @@ export class ValueTDNode extends TraceDetailNode {
   init(trace) {
     this.trace = trace;
     this.collapsibleState = TreeItemCollapsibleState.None;
-  }
-
-  static get nodeType() {
-    return TraceDetailsNodeType.Value;
   }
 
   static makeTraceDetail(trace, application: Application, parent) {
@@ -163,31 +151,7 @@ export class ValueTDNode extends TraceDetailNode {
 export class DebugTDNode extends TraceDetailNode {
   init(trace) {
     this.trace = trace;
-    this.collapsibleState = TreeItemCollapsibleState.Expanded;
     this.description = `id: ${trace.traceId}`;
-
-    const { dataProvider } = this.application;
-
-    const {
-      contextId,
-      staticTraceId,
-      runId
-    } = trace;
-
-    const context = dataProvider.collections.executionContexts.getById(contextId);
-    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
-    const { staticContextId } = staticTrace;
-    const staticContext = dataProvider.collections.staticContexts.getById(staticContextId);
-
-    this.children = makeTreeItems(
-      [`context`, context],
-      ['staticTrace', omit(staticTrace, 'loc')],
-      ['staticContext', omit(staticContext, 'loc')]
-    );
-  }
-
-  static get nodeType() {
-    return TraceDetailsNodeType.Value;
   }
 
   static makeTraceDetail(trace, application: Application, parent) {
@@ -201,7 +165,74 @@ export class DebugTDNode extends TraceDetailNode {
   // static makeIconPath(traceDetail) {
   //   return 'string.svg';
   // }
+
+  makeChildren() {
+    const { trace, application } = this;
+    const { dataProvider } = application;
+
+    const {
+      contextId,
+      staticTraceId,
+      ...otherTraceProps
+    } = trace;
+
+    const context = dataProvider.collections.executionContexts.getById(contextId);
+    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
+    const { staticContextId } = staticTrace;
+    const staticContext = dataProvider.collections.staticContexts.getById(staticContextId);
+
+    return makeTreeItems(
+      ['trace', otherTraceProps],
+      [`context`, context],
+      ['staticTrace', omit(staticTrace, 'loc')],
+      ['staticContext', omit(staticContext, 'loc')]
+    );
+  }
 }
+
+// ###########################################################################
+// StaticTrace
+// ###########################################################################
+
+export class StaticTraceTDNode extends TraceDetailNode {
+  static makeTraceDetail(trace, application: Application, parent) {
+    return trace;
+    // const { staticTraceId } = trace;
+    // const { dataProvider } = application;
+    // return dataProvider.collections.staticTraces.getById(staticTraceId);
+  }
+
+  static makeLabel(trace, application: Application, parent) {
+    const { staticTraceId } = trace;
+    const { dataProvider } = application;
+    const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+    return `Executed: ${traces.length}x`;
+  }
+  
+  makeChildren() {
+    const { treeDataProvider, trace } = this;
+    const { staticTraceId } = trace;
+
+    const application = allApplications.getById(trace.applicationId);
+    const { dataProvider } = application;
+    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
+    const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+
+    // TODO: value nodes
+    // TODO: Push/Pop traces?
+    // TODO: callback args?
+    // TODO: loop start nodes?
+
+    if (hasValue(staticTrace.type)) {
+      return traces?.map(otherTrace => {
+        const label = dataProvider.util.getTraceValue(otherTrace.traceId) + ' ';
+        return treeDataProvider.createNode(TraceNode, otherTrace, application, this, null, label);
+      }) || null;
+    }
+    return null;
+  }
+}
+
 
 // ###########################################################################
 // DetailNodeClasses
@@ -211,7 +242,8 @@ export const DetailNodeClasses = [
   ApplicationTDNode,
   ContextTDNode,
   TypeTDNode,
-  ValueTDNode,
+  StaticTraceTDNode,
+  // ValueTDNode,
   DebugTDNode
 ];
 

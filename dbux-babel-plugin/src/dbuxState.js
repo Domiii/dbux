@@ -332,8 +332,8 @@ export default function injectDbuxState(programPath, programState) {
       }
 
       // context-sensitive data
-      trace._calleeId = cfg?.calleeId;
-      trace._resultCalleeId = cfg?.resultCalleeId;
+      trace._callId = cfg?.callId;
+      trace._resultCallId = cfg?.resultCallId;
 
       // misc data
       trace._traceId = _traceId;
