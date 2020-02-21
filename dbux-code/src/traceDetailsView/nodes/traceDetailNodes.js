@@ -16,11 +16,11 @@ function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
   const { contextId: targetContextId } = targetTrace;
 
   if (targetContextId < contextId) {
-    // next context is a parent -> step out
+    // target context is a parent -> step out
     return '↑';
   }
   else if (targetContextId > contextId) {
-    // next context is a child -> step into
+    // target context is a child -> step into
     return '↓';
   }
   else {

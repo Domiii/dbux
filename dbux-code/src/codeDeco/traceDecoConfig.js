@@ -142,6 +142,10 @@ const StylingsByName = {
 
 const decoNamesByType = {
   CallExpressionResult(dataProvider, staticTrace, trace) {
+    if (dataProvider.util.getTraceValue(trace.traceId)) {
+      return 'CallbackArgument';
+    }
+    
     const previousTrace = dataProvider.collections.traces.getById(trace.traceId - 1);
     if (previousTrace.contextId > trace.contextId) {
       return 'CallExpressionStep';
