@@ -303,22 +303,22 @@ export default class RuntimeMonitor {
   }
 
   traceExpression(programId, inProgramStaticTraceId, value) {
-    const contextId = this._runtime.peekCurrentContextId();
-    const runId = this._runtime.getCurrentRunId();
-    traceCollection.traceExpressionResult(contextId, runId, inProgramStaticTraceId, value);
-    return value;
-  }
-
-  traceArg(programId, inProgramStaticTraceId, value) {
     if (value instanceof Function) {
       // scheduled callback
       const cb = value;
       return this.traceCallbackArgument(programId, inProgramStaticTraceId, cb);
     }
     else {
-      // just a normal expression
-      return this.traceExpression(programId, inProgramStaticTraceId, value);
+      const contextId = this._runtime.peekCurrentContextId();
+      const runId = this._runtime.getCurrentRunId();
+      traceCollection.traceExpressionResult(contextId, runId, inProgramStaticTraceId, value);
+      return value;
     }
+  }
+
+  traceArg(programId, inProgramStaticTraceId, value) {
+    // currently behaves exactly the same as traceExpression
+    return this.traceExpression(programId, inProgramStaticTraceId, value);
   }
 
 
