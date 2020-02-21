@@ -1,30 +1,27 @@
-import { window, ExtensionContext, TextEditorSelectionChangeEvent } from 'vscode';
+import { window, ExtensionContext } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import traceSelection from 'dbux-data/src/traceSelection';
-import TraceDetailsDataProvider from './TraceDetailsDataProvider';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { registerCommand } from '../commands/commandUtil';
 import EditorTracesDataProvider from './EditorTracesDataProvider';
 
-const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
+const { log, debug, warn, error: logError } = newLogger('editorTracesController');
 
-let traceDetailsController;
+let controller;
 
-class EditorTracesControllers {
+class EditorTracesController {
   constructor() {
     this.treeDataProvider = new EditorTracesDataProvider();
-    this.treeView = window.createTreeView('dbuxEditorTracesView', {
-      treeDataProvider: this.treeDataProvider
-    });
+    this.treeView = this.treeDataProvider.treeView;
   }
 
   refreshOnData = makeDebounce(() => {
-    traceDetailsController.treeDataProvider.refresh();
+    controller.treeDataProvider.refresh();
     if (this.applicationsChanged) {
       this.applicationsChanged = false;
-      const firstNode = traceDetailsController.treeDataProvider.rootNodes?.[0];
-      traceDetailsController.treeView.reveal(firstNode, { focus: true });
+      const firstNode = controller.treeDataProvider.rootNodes?.[0];
+      controller.treeView.reveal(firstNode, { focus: true });
     }
   }, 20);
 
@@ -46,13 +43,13 @@ class EditorTracesControllers {
 
     // traceSelection changed
     traceSelection.onTraceSelectionChanged(selectedTrace => {
-      traceDetailsController.treeDataProvider.refresh();
+      controller.treeDataProvider.refresh();
     });
 
     // cursor moved in text editor
     context.subscriptions.push(
       window.onDidChangeTextEditorSelection(() => {
-        traceDetailsController.treeDataProvider.refresh();
+        controller.treeDataProvider.refresh();
       })
     );
   }
@@ -66,20 +63,20 @@ class EditorTracesControllers {
 export function initTraceDetailsCommands(context) {
   registerCommand(context,
     'dbuxEditorTracesView.itemClick',
-    (treeDetailsDataProvider, node) => treeDetailsDataProvider._handleClick(node)
+    (treeDetailsDataProvider, node) => treeDetailsDataProvider.handleClick(node)
   );
 }
 
 export function getTraceDetailsController() {
-  return traceDetailsController;
+  return controller;
 }
 
-export function initTraceDetailsController(context: ExtensionContext) {
+export function initEditorTracesController(context: ExtensionContext) {
   initTraceDetailsCommands(context);
 
-  traceDetailsController = new EditorTracesControllers();
-  traceDetailsController.initEventListeners(context);
+  controller = new EditorTracesController();
+  controller.initEventListeners(context);
 
   // refresh right away
-  traceDetailsController.treeDataProvider.refresh();
+  controller.treeDataProvider.refresh();
 }

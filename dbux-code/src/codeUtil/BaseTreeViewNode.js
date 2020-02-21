@@ -20,11 +20,19 @@ export default class BaseTreeViewNode extends TreeItem {
     Object.assign(this, moreProps);
   }
 
-  makeIconPath() {
-
+  /**
+   * @virtual
+   * @return true if it has a `buildChildren` method
+   */
+  canHaveChildren() {
+    return !!this.children || !!this.buildChildren;
   }
 
-  _handleClick() {
+  makeIconPath() {
+    return '';
+  }
+
+  handleClick() {
     // by default: do nothing
   }
 }

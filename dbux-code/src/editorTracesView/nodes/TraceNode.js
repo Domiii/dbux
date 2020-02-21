@@ -12,7 +12,11 @@ export default class TraceNode extends BaseTreeViewNode {
     this.description = dt + '';
   }
 
-  _handleClick() {
+  canHaveChildren() {
+    return !!this.children?.length;
+  }
+
+  handleClick() {
     traceSelection.selectTrace(this.trace);
   }
 

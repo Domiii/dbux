@@ -8,6 +8,10 @@ import TraceNode from './nodes/TraceNode';
 import EmptyNode from './nodes/EmptyNode';
 
 export default class EditorTracesDataProvider extends BaseTreeViewNodeProvider {
+  constructor() {
+    super('dbuxEditorTracesView');
+  }
+
   // ###########################################################################
   // tree building
   // ###########################################################################
@@ -16,7 +20,7 @@ export default class EditorTracesDataProvider extends BaseTreeViewNodeProvider {
     // console.warn('details refresh');
     this.where = getCursorLocation();
 
-    const roots = [];
+    let roots;
 
     if (this.where) {
       // all traces available at cursor in editor
@@ -25,14 +29,17 @@ export default class EditorTracesDataProvider extends BaseTreeViewNodeProvider {
         pos
       } = this.where;
 
-      this.rootNodes.push(...allApplications.selection.data.mapApplicationsOfFilePath(
-        fpath, (application, programId) => {
-          const traceNodes = this.buildTraceNodes(programId, pos, application, null);
-          return traceNodes || EmptyArray;
-        }
-      ));
+      roots = [
+        ...allApplications.selection.data.mapApplicationsOfFilePath(
+          fpath, (application, programId) => {
+            const traceNodes = this.buildTraceNodes(programId, pos, application, null);
+            return traceNodes || EmptyArray;
+          }
+        )
+      ];
     }
-    else {
+
+    if (!roots.length) {
       // empty node
       roots.push(EmptyNode.instance);
     }
@@ -62,14 +69,8 @@ export default class EditorTracesDataProvider extends BaseTreeViewNodeProvider {
 
       // add other traces as children (before details) 
       const otherTraces = traceGroup.slice(1);
-      const otherNodes = otherTraces
-        .map(other => {
-          const child = this.buildTraceNode(other, application, node);
-          // child.collapsibleState = TreeItemCollapsibleState.Collapsed;
-          return child;
-        });
-      // node.children.unshift(...otherNodes);  // add before
-      node.children.push(...otherNodes);    // add behind
+      node.children = otherTraces
+        .map(other => this.buildTraceNode(other, application, node));
 
       return node;
     });

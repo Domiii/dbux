@@ -1,6 +1,9 @@
-import { TreeItemCollapsibleState, EventEmitter } from 'vscode';
+import { TreeItemCollapsibleState, EventEmitter, window, CommentThreadCollapsibleState } from 'vscode';
 import EmptyObject from 'dbux-common/src/util/EmptyObject';
+import { newLogger } from 'dbux-common/src/log/logger';
 import { getThemeResourcePath } from '../resources';
+
+const { log, debug, warn, error: logError } = newLogger('editorTracesController');
 
 export default class BaseTreeViewNodeProvider {
   _onDidChangeTreeData = new EventEmitter();
@@ -9,17 +12,64 @@ export default class BaseTreeViewNodeProvider {
   rootNodes;
   idsCollapsibleState = new Map();
 
+  constructor(viewName) {
+    // NOTE: view creation inside the data provider is not ideal, 
+    //      but it makes things a lot easier for now
+    this.treeView = window.createTreeView(viewName, {
+      treeDataProvider: this
+    });
+
+    this.treeView.onDidCollapseElement(this.handleCollapsibleStateChanged);
+    this.treeView.onDidExpandElement(this.handleCollapsibleStateChanged);
+  }
+
+  // ###########################################################################
+  // basic event handling
+  // ###########################################################################
+
+  /**
+   * Re-generate (only starting from root for now)
+   * 
+   * TODO: allow refreshing sub tree only
+   */
   refresh = () => {
     try {
       this.rootNodes = this.buildRoots();
+      this._decorateNodes(null, this.rootNodes);
+
+      this.handleRefresh();
 
       // NOTE: if we only want to update subtree, pass root of subtree to `fire`
       this._onDidChangeTreeData.fire();
     }
     catch (err) {
-      console.error(err);
+      logError(err);
       debugger;
     }
+  }
+
+  handleCollapsibleStateChanged = evt => {
+    // the event does not actually tell us or modify the state; we have to keep track manually
+    const node = evt.element;
+    switch (node.collapsibleState) {
+      case TreeItemCollapsibleState.Collapsed:
+        node.collapsibleState = TreeItemCollapsibleState.Expanded;
+        break;
+      case TreeItemCollapsibleState.Expanded:
+        node.collapsibleState = TreeItemCollapsibleState.Collapsed;
+        break;
+      default:
+        logError('invalid node collapsibleState on state change: ', node.collapsibleState, node);
+        break;
+    }
+    this.idsCollapsibleState.set(node.id, node.collapsibleState);
+  }
+
+  handleRefresh() {
+  }
+
+  handleClick = (node) => {
+    node.handleClick?.();
   }
 
   // ###########################################################################
@@ -37,7 +87,7 @@ export default class BaseTreeViewNodeProvider {
 
   buildChildren(parent) {
     parent.children = parent.buildChildren();
-    this._decorateChildren(parent);
+    this._decorateNodes(parent, parent.children);
     return parent.children;
   }
 
@@ -54,8 +104,7 @@ export default class BaseTreeViewNodeProvider {
     return relativeIconPath && getThemeResourcePath(relativeIconPath) || null;
   }
 
-  _decorateChildren(parent) {
-    const { children } = parent;
+  _decorateNodes(parent, children) {
     const childIndexes = new Map();
 
     // assign ids
@@ -79,13 +128,19 @@ export default class BaseTreeViewNodeProvider {
     // collapsibleState
     let collapsibleState = this.idsCollapsibleState.get(id);
     if (collapsibleState === undefined) {
-      collapsibleState = node.canHaveChildren?.() ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.None;
+      if (node.canHaveChildren?.()) {
+        collapsibleState = TreeItemCollapsibleState.Collapsed;
+        // this.idsCollapsibleState.set(id, collapsibleState);
+      }
+      else {
+        collapsibleState = TreeItemCollapsibleState.None;
+      }
     }
     node.collapsibleState = collapsibleState;
 
     if (node.children) {
       // this node has built in children
-      this._decorateChildren(node.children);
+      this._decorateNodes(node.children);
     }
 
     // if (node.collapsibleState === TreeItemCollapsibleState.Expanded) {
