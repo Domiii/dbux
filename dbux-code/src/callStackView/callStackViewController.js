@@ -10,9 +10,9 @@ const { log, debug, warn, error: logError } = newLogger('ContextViewController')
 export class CallStackViewController {
   constructor(viewId, options) {
     this.onChangeEventEmitter = new EventEmitter();
-    this.contextNodeProvider = new CallStackNodeProvider(this.onChangeEventEmitter);
+    this.callStackNodeProvider = new CallStackNodeProvider(this);
     this.contextView = window.createTreeView(viewId, { 
-      treeDataProvider: this.contextNodeProvider,
+      treeDataProvider: this.callStackNodeProvider,
       ...options
     });
   }
@@ -29,9 +29,15 @@ export class CallStackViewController {
    * @param {ContextNode} node
    */
   handleItemClick = (node) => {
-    // const dp = allApplications.getApplication(node.applicationId).dataProvider;
-    // const trace = dp.collections.traces.getById(node.traceId);
-    // traceSelection.selectTrace(trace);
+    traceSelection.selectTrace(node.trace, 'callStackViewController');
+  }
+
+  showParent = (node) => {
+    this.callStackNodeProvider.showParent(node);
+  }
+
+  showScheduler = (node) => {
+    this.callStackNodeProvider.showScheduler(node);
   }
 
   // ###########################################################################

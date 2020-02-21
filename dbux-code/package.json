@@ -55,11 +55,19 @@
 				"title": "Click"
 			},
 			{
-				"command": "dbuxCallStackView.gotoEntry",
-				"title": "Goto",
+				"command": "dbuxCallStackView.showParent",
+				"title": "Switch to Parent",
 				"icon": {
 					"light": "resources/light/boolean.svg",
 					"dark": "resources/dark/boolean.svg"
+				}
+			},
+			{
+				"command": "dbuxCallStackView.showScheduler",
+				"title": "Switch to Scheduler",
+				"icon": {
+					"light": "resources/light/string.svg",
+					"dark": "resources/dark/string.svg"
 				}
 			},
 			{
@@ -127,8 +135,13 @@
 					"group": "inline"
 				},
 				{
-					"command": "dbuxCallStackView.gotoEntry",
-					"when": "view == dbuxCallStackView && viewItem == callStackNode",
+					"command": "dbuxCallStackView.showParent",
+					"when": "view == dbuxCallStackView && viewItem == callStackNode.both.scheduler",
+					"group": "inline"
+				},
+				{
+					"command": "dbuxCallStackView.showScheduler",
+					"when": "view == dbuxCallStackView && viewItem == callStackNode.both.parent",
 					"group": "inline"
 				}
 			]

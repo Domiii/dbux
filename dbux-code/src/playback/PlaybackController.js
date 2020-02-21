@@ -57,7 +57,6 @@ export default class PlaybackController {
       let traces = app.dataProvider.collections.traces.getAll();
       for (let trace of traces) {
         if (!trace) continue;
-        const context = app.dataProvider.collections.executionContexts.getById(trace.contextId);
         const { runId, contextId, traceId } = trace;
         info.push({ runId, contextId, traceId });
       }
@@ -73,8 +72,8 @@ export default class PlaybackController {
       let contexts = app.dataProvider.collections.executionContexts.getAll();
       for (let context of contexts) {
         if (!context) continue;
-        const { runId, contextId, parentContextId, createdAt } = context;
-        info.push({ runId, contextId, parentContextId, createdAt });
+        const { runId, contextId, parentContextId, schedulerTraceId, createdAt } = context;
+        info.push({ runId, contextId, parentContextId, schedulerTraceId, createdAt });
       }
       console.table(info);
     }

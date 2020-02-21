@@ -12,9 +12,9 @@ const { log, debug, warn, error: logError } = newLogger('CallStackNodeProvider')
 export class CallStackNodeProvider {
   _allNodes: Array<CallStackNode>;
 
-  constructor(onChangeEventEmitter) {
-    this.onChangeEventEmitter = onChangeEventEmitter;
-    this.onDidChangeTreeData = onChangeEventEmitter.event;
+  constructor(callStackViewController) {
+    this.view = callStackViewController;
+    this.onDidChangeTreeData = callStackViewController.onChangeEventEmitter.event;
     this._allNodes = [];
 
     traceSelection.onTraceSelectionChanged(this.update);
@@ -24,53 +24,71 @@ export class CallStackNodeProvider {
   // Public methods
   // ########################################
 
-  /**
-   * @param {Trace} trace
-   */
-  update = (trace) => {
-    let currentTrace: Trace;
-    let parentTraceId: number;
-    let parentTrace: Trace = trace;
-    const dp = allApplications.getApplication(trace.applicationId).dataProvider;
-    this._allNodes = [];
-    let lastRunId = null;
-    while (parentTrace) {
-      currentTrace = parentTrace;
-      if (lastRunId && parentTrace.runId !== lastRunId) {
-        this._allNodes.push(BarrierNode);
-        lastRunId = parentTrace.runId;
-      }
-      this._allNodes.push(this._createNodeByTrace(dp, currentTrace));
-
-      parentTraceId = this._getParentOrSchedulerTraceId(dp, currentTrace);
-      parentTrace = dp.collections.traces.getById(parentTraceId);
+  update = (trace, sender) => {
+    if (sender === 'callStackViewController') return;
+    if (!trace) {
+      trace = traceSelection.selected;
     }
+    this._allNodes = this._getCallStackOfTrace(trace);
+    this.refresh();
+  }
+
+  showParent = (node) => {
+    this._changeSearchModeOfNode(node, 'parent');
+    this.refresh();
+  }
+
+  showScheduler = (node) => {
+    this._changeSearchModeOfNode(node, 'scheduler');
     this.refresh();
   }
 
   refresh = () => {
-    this.onChangeEventEmitter.fire();
+    this.view.refresh();
   }
 
   // ########################################
   // Private methods
   // ########################################
 
-  /**
-   * @param {Trace} trace 
-   */
-  _getParentOrSchedulerTraceId(dp, trace) {
-    // TODO: algorithm for await
-    const { contextId } = trace;
-    const context = dp.collections.executionContexts.getById(contextId);
-    const { parentContextId, schedulerTraceId } = context;
-    if (parentContextId) {
-      return dp.util.getFirstTraceOfContext(contextId).traceId - 1;
+  _changeSearchModeOfNode(node, searchMode) {
+    let callStack = [];
+    for (let i = 0; this._allNodes[i] !== node; i++) {
+      callStack.push(this._allNodes[i]);
     }
-    else if (schedulerTraceId) {
-      return schedulerTraceId;
-    }
+    node.searchMode = searchMode;
+    const nextNode = this._getNextNode(node);
+    const newNodes = this._getCallStackOfTrace(nextNode.trace);
+    this._allNodes = [...callStack, node, ...newNodes];
+  }
+
+  _getNextNode(node) {
+    const { trace, searchMode } = node;
+    const nextTraceId = this._findNextTraceId(trace, searchMode);
+    const dp = allApplications.getById(trace.applicationId).dataProvider;
+    const nextTrace = dp.collections.traces.getById(nextTraceId);
+    if (nextTrace) return this._createNodeByTrace(nextTrace);
     else return null;
+  }
+
+  _getCallStackOfTrace(trace) {
+    let currentNode: CallStackNode;
+    let nextNode: CallStackNode;
+    let callStack = [];
+    let lastRunId = null;
+    nextNode = this._createNodeByTrace(trace);
+
+    while (nextNode) {
+      currentNode = nextNode;
+      if (lastRunId && nextNode.trace.runId !== lastRunId) {
+        callStack.push(BarrierNode);
+      }
+      lastRunId = nextNode.trace.runId;
+      callStack.push(currentNode);
+
+      nextNode = this._getNextNode(currentNode);
+    }
+    return callStack;
   }
 
   // ########################################
@@ -78,11 +96,12 @@ export class CallStackNodeProvider {
   // ########################################
 
   /**
-   * @param {DataProvider} dp
+   * Only specify the searchMode while it's available.
    * @param {Trace} trace
    */
-  _createNodeByTrace = (dp, trace) => {
+  _createNodeByTrace = (trace, specifiedSearchMode = null) => {
     const { traceId, staticTraceId, applicationId } = trace;
+    const dp = allApplications.getById(applicationId).dataProvider;
     const label = makeTraceLabel(trace);
 
     const context = this._getContextByTrace(trace);
@@ -92,16 +111,60 @@ export class CallStackNodeProvider {
     const { loc } = dp.collections.staticTraces.getById(staticTraceId);
     const { line, column } = loc.start;
     const description = `${contextLabel} @${fileName}:${line}:${column}`;
+    const parentStatus = this._getParentStatus(trace);
+    
+    let searchMode;
+    if (specifiedSearchMode) {
+      searchMode = specifiedSearchMode;
+    }
+    else if (parentStatus === 'schedulerOnly') {
+      searchMode = 'scheduler';
+    }
+    else {
+      searchMode = 'parent';
+    }
 
     const newNode = new CallStackNode(
       label,
       description,
       applicationId,
-      traceId,
+      trace,
+      searchMode,
+      parentStatus,
       this
     );
 
     return newNode;
+  }
+
+  /**
+   * @param {Trace} trace 
+   */
+  _findNextTraceId(trace, searchMode) {
+    const dp = allApplications.getById(trace.applicationId).dataProvider;
+    const { contextId } = trace;
+    if (searchMode === 'parent') {
+      return dp.util.getFirstTraceOfContext(contextId).traceId - 1;
+    }
+    if (searchMode === 'scheduler') {
+      const context = dp.collections.executionContexts.getById(contextId);
+      const { schedulerTraceId } = context;
+      return schedulerTraceId;
+    }
+    logError('searchMode must be \'parent\' or \'scheduler\'');
+    return null;
+  }
+
+  _getParentStatus(trace) {
+    const { parentContextId, schedulerTraceId } = this._getContextByTrace(trace);
+    if (parentContextId) {
+      if (schedulerTraceId) return 'both';
+      return 'parentOnly';
+    }
+    else {
+      if (schedulerTraceId) return 'schedulerOnly';
+      return 'none';
+    }
   }
 
   /**

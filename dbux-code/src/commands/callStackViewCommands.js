@@ -6,12 +6,15 @@ import CallStackNode from '../callStackView/CallStackNode';
  */
 export function initCallStackViewCommands(context, callStackViewController) {
   registerCommand(context,
-    'dbuxCallStackView.gotoEntry',
-    (node: CallStackNode) => callStackViewController.handleItemClick(node)
-  );
-
-  registerCommand(context,
     'dbuxCallStackView.itemClick',
     (node: CallStackNode) => callStackViewController.handleItemClick(node)
+  );
+  registerCommand(context,
+    'dbuxCallStackView.showParent',
+    (node: CallStackNode) => callStackViewController.showParent(node)
+  );
+  registerCommand(context,
+    'dbuxCallStackView.showScheduler',
+    (node: CallStackNode) => callStackViewController.showScheduler(node)
   );
 }
