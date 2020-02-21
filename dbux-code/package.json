@@ -38,6 +38,10 @@
 				{
 					"id": "dbuxTraceDetailsView",
 					"name": "Trace Details"
+				},
+				{
+					"id": "dbuxEditorTracesView",
+					"name": "Traces at Cursor"
 				}
 			]
 		},

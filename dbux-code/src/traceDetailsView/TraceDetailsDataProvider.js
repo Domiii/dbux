@@ -24,53 +24,22 @@ export default class TraceDetailsDataProvider {
     this.commandWrapper = new TreeViewCommandWrapper(this);
   }
 
-  /**
-   * 
-   * @param {*} where.fpath
-   * @param {*} where.pos
-   */
-  setEditorSelection(where) {
-    this.where = where;
-
-    this.refresh();
-  }
-
   // ###########################################################################
   // tree building
   // ###########################################################################
 
   refresh = () => { //makeDebounce(() => {
     try {
-      // console.warn('details refresh');
-      this.where = getCursorLocation();
-
       this.rootNodes = [];
 
       if (traceSelection.selected) {
-        // 1. selected trace
         const trace = traceSelection.selected;
         // console.debug('refreshed trace', trace.traceId);
         const application = allApplications.getById(trace.applicationId);
         const traceNode = this.buildSelectedTraceNode(trace, application, null);
         this.rootNodes.push(traceNode);
       }
-
-      if (this.where) {
-        // 2. all traces available at cursor in editor
-        const {
-          fpath,
-          pos
-        } = this.where;
-
-        this.rootNodes.push(...allApplications.selection.data.mapApplicationsOfFilePath(
-          fpath, (application, programId) => {
-            const traceNodes = this.buildTraceNodes(programId, pos, application, null);
-            return traceNodes || EmptyArray;
-          }
-        ));
-      }
-
-      if (!this.rootNodes.length) {
+      else {
         // add empty node
         this.rootNodes.push(EmptyNode.instance);
       }
@@ -85,42 +54,6 @@ export default class TraceDetailsDataProvider {
       debugger;
     }
     // }, 1)
-  }
-
-  buildTraceNodes(programId, pos, application, parent) {
-    // const { staticTraceId } = staticTrace;
-    // const traces = application.dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
-
-    const traces = getTracesAt(application, programId, pos);
-    if (!traces?.length) {
-      return null;
-    }
-
-    // group by context, then sort by `contextId` (most recent first)
-    const traceGroups = Object.values(
-      groupBy(traces, 'contextId')
-    )
-      .sort((a, b) => b[0].contextId - a[0].contextId);
-
-    return traceGroups.map(traceGroup => {
-      // start with inner-most (oldest) trace
-      const trace = traceGroup[0];
-      const node = this.buildTraceNode(trace, application, parent);
-
-      // add other traces as children (before details)
-      const otherTraces = traceGroup.slice(1);
-      const otherNodes = otherTraces
-        .map(other => {
-          const child = this.buildTraceNode(other, application, node);
-          // child.collapsibleState = TreeItemCollapsibleState.Collapsed;
-          return child;
-        });
-      // node.children.unshift(...otherNodes);  // add before
-      node.children.push(...otherNodes);    // add behind
-      node.collapsibleState = TreeItemCollapsibleState.Expanded;
-
-      return node;
-    });
   }
 
   buildSelectedTraceNode(trace, application, parent) {

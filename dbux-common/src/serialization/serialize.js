@@ -1,6 +1,7 @@
 import SerializationMethod from './SerializationMethod';
 import isObject from 'lodash/isObject';
 
+
 function getBestMethod(value) {
   if (value instanceof Function) {
     return SerializationMethod.Function;

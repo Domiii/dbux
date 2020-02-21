@@ -3,17 +3,18 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import traceSelection from 'dbux-data/src/traceSelection';
 import TraceDetailsDataProvider from './TraceDetailsDataProvider';
-import { initTraceDetailsCommands } from './commands';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
+import { registerCommand } from '../commands/commandUtil';
+import EditorTracesDataProvider from './EditorTracesDataProvider';
 
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
 
 let traceDetailsController;
 
-class TraceDetailsController {
+class EditorTracesControllers {
   constructor() {
-    this.treeDataProvider = new TraceDetailsDataProvider();
-    this.treeView = window.createTreeView('dbuxTraceDetailsView', {
+    this.treeDataProvider = new EditorTracesDataProvider();
+    this.treeView = window.createTreeView('dbuxEditorTracesView', {
       treeDataProvider: this.treeDataProvider
     });
   }
@@ -26,6 +27,7 @@ class TraceDetailsController {
       traceDetailsController.treeView.reveal(firstNode, { focus: true });
     }
   }, 20);
+
 
   initEventListeners(context) {
     // ########################################
@@ -42,16 +44,31 @@ class TraceDetailsController {
       }
     });
 
-    // add traceSelection event handler
+    // traceSelection changed
     traceSelection.onTraceSelectionChanged(selectedTrace => {
       traceDetailsController.treeDataProvider.refresh();
     });
+
+    // cursor moved in text editor
+    context.subscriptions.push(
+      window.onDidChangeTextEditorSelection(() => {
+        traceDetailsController.treeDataProvider.refresh();
+      })
+    );
   }
 }
 
 // ###########################################################################
 // init
 // ###########################################################################
+
+
+export function initTraceDetailsCommands(context) {
+  registerCommand(context,
+    'dbuxEditorTracesView.itemClick',
+    (treeDetailsDataProvider, node) => treeDetailsDataProvider._handleClick(node)
+  );
+}
 
 export function getTraceDetailsController() {
   return traceDetailsController;
@@ -60,12 +77,8 @@ export function getTraceDetailsController() {
 export function initTraceDetailsController(context: ExtensionContext) {
   initTraceDetailsCommands(context);
 
-  traceDetailsController = new TraceDetailsController();
+  traceDetailsController = new EditorTracesControllers();
   traceDetailsController.initEventListeners(context);
-
-  // update command wrapper
-  // TODO: to get rid of the `commandWrapper` again; it is not needed after all
-  traceDetailsController.treeDataProvider.commandWrapper.init(context, 'traceDetailsClick');
 
   // refresh right away
   traceDetailsController.treeDataProvider.refresh();

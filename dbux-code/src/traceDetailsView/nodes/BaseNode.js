@@ -15,7 +15,7 @@ export default class BaseNode extends TreeItem {
     this.id = id;
 
     // treeItem data
-    this.contextValue = 'detailsBaseNode';
+    // this.contextValue = 'detailsBaseNode';
 
     this.iconPath = iconPath;
 
