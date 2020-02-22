@@ -156,7 +156,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * `PushImmediate` -> previous context (partial callstack)
          * `PopImmediate` -> next context (partial callstack)
          * `Push/PopCallback` -> schedulerTrace
-         * `hasValue(type)` -> value
+         * `hasTraceTypeValue(type)` -> value
          * `CallExpression` -> call-site
             * how to render call-site + value in one line?
                * maybe add a button to toggle single-line/multi-line display of multiple details?

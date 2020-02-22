@@ -1,30 +1,29 @@
-import BaseNode from './BaseNode';
-import { TreeItemCollapsibleState } from 'vscode';
 import Trace from 'dbux-common/src/core/data/Trace';
-import Application from 'dbux-data/src/applications/Application';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { makeTraceLabel, getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
+import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
-export default class TraceNode extends BaseNode {
-  init(trace) {
-    this.trace = trace;
-    this.collapsibleState = TreeItemCollapsibleState.None;
+export default class TraceNode extends BaseTreeViewNode {
+  static makeLabel(trace: Trace) {
+    return makeTraceLabel(trace);
+  }
 
+  get trace() {
+    return this.entry;
+  }
+
+  makeIconPath(trace: Trace) {
+    return traceSelection.isSelected(trace) ? 'play.svg' : ' ';
+  }
+
+  init() {
     // description
     // NOTE: description MUST be a string or it won't be properly displayed
-    const dt = getTraceCreatedAt(trace.traceId, this.application);
+    const dt = getTraceCreatedAt(this.trace);
     this.description = dt + '';
   }
 
-  _handleClick() {
+  handleClick() {
     traceSelection.selectTrace(this.trace);
-  }
-
-  static makeLabel(trace: Trace, application: Application) {
-    return makeTraceLabel(trace, application);
-  }
-
-  static makeIconPath(trace: Trace) {
-    return traceSelection.isSelected(trace) ? 'play.svg' : ' ';
   }
 }

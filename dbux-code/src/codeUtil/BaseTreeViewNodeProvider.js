@@ -24,11 +24,11 @@ export default class BaseTreeViewNodeProvider {
     this.treeView.onDidCollapseElement(this.handleCollapsibleStateChanged);
     this.treeView.onDidExpandElement(this.handleCollapsibleStateChanged);
   }
-  
+
   initDefaultClickCommand(context) {
     registerCommand(context,
       this.clickCommandName = `${this.viewName}.click`,
-      (provider, node) => provider.handleClick(node)
+      (node) => this.handleClick(node)
     );
   }
 
@@ -52,8 +52,9 @@ export default class BaseTreeViewNodeProvider {
       this._onDidChangeTreeData.fire();
     }
     catch (err) {
-      logError(err);
+      logError(`${this.constructor.name}.refresh() failed`, err);
       debugger;
+      throw err;
     }
   }
 
@@ -89,9 +90,9 @@ export default class BaseTreeViewNodeProvider {
     throw new Error('abstract method not implemented');
   }
 
-  buildNode(NodeClass, entry, application, parent, moreProps = EmptyObject) {
-    const label = NodeClass.makeLabel(entry, application, parent);
-    return new NodeClass(this, label, entry, application, parent, moreProps);
+  buildNode(NodeClass, entry, parent, moreProps = EmptyObject) {
+    const label = NodeClass.makeLabel(entry, parent);
+    return new NodeClass(this, label, entry, parent, moreProps);
   }
 
   buildChildren(parent) {
@@ -118,11 +119,13 @@ export default class BaseTreeViewNodeProvider {
 
     // assign ids
     children?.forEach((child) => {
-      // generate id
+      // generate id (based on node type and position in tree)
       const lastIdx = childIndexes.get(child.constructor) || 0;
       const index = lastIdx + 1;
       childIndexes.set(child.constructor, index);
       const id = this.makeNodeId(child.constructor.name, parent, index);
+
+      // decorate based on id
       this._decorateNewNode(child, id);
     });
   }
@@ -135,17 +138,14 @@ export default class BaseTreeViewNodeProvider {
     node.iconPath = this.makeNodeIconPath(node);
 
     // collapsibleState
-    let collapsibleState = this.idsCollapsibleState.get(id);
-    if (collapsibleState === undefined) {
-      if (node.canHaveChildren?.()) {
-        collapsibleState = TreeItemCollapsibleState.Collapsed;
+    if (node.canHaveChildren?.()) {
+      let collapsibleState = this.idsCollapsibleState.get(id);
+      if (collapsibleState === undefined) {
+        collapsibleState = node.defaultCollapsibleState || TreeItemCollapsibleState.Collapsed;
         // this.idsCollapsibleState.set(id, collapsibleState);
       }
-      else {
-        collapsibleState = TreeItemCollapsibleState.None;
-      }
+      node.collapsibleState = collapsibleState;
     }
-    node.collapsibleState = collapsibleState;
 
     // click handler
     this._setNodeCommand(node);
@@ -169,10 +169,10 @@ export default class BaseTreeViewNodeProvider {
     if (!this.clickCommandName) {
       return;
     }
-    
+
     node.command = {
       command: this.clickCommandName,
-      arguments: [this, node]
+      arguments: [node]
     };
   }
 
@@ -186,21 +186,28 @@ export default class BaseTreeViewNodeProvider {
   }
 
   getChildren = (node) => {
-    if (node) {
-      if (node.children) {
-        return node.children;
+    try {
+      if (node) {
+        if (node.children) {
+          return node.children;
+        }
+        if (node.canHaveChildren()) {
+          return this.buildChildren(node);
+        }
+        return null;
       }
-      if (node.canHaveChildren()) {
-        return this.buildChildren(node);
+      else {
+        return this.rootNodes;
       }
-      return null;
     }
-    else {
-      return this.rootNodes;
+    catch (err) {
+      logError(`${this.constructor.name}.getChildren() failed`, err);
+      debugger;
+      throw err;
     }
   }
 
   getParent = (node) => {
-    return node.parent;
+    return node?.parent;
   }
 }

@@ -65,18 +65,14 @@ export default class EditorTracesNodeProvider extends BaseTreeViewNodeProvider {
     return traceGroups.map(traceGroup => {
       // start with inner-most (oldest) trace
       const trace = traceGroup[0];
-      const node = this.buildTraceNode(trace, application, parent);
-
-      // add other traces as children (before details) 
-      const otherTraces = traceGroup.slice(1);
-      node.children = otherTraces
-        .map(other => this.buildTraceNode(other, application, node));
-
-      return node;
+      const childTraces = traceGroup.slice(1);
+      return this.buildTraceNode(trace, parent, {
+        childTraces
+      });
     });
   }
 
-  buildTraceNode(trace, application, parent) {
-    return this.buildNode(TraceNode, trace, application, parent);
+  buildTraceNode(trace, parent, moreProps) {
+    return this.buildNode(TraceNode, trace, parent, moreProps);
   }
 }

@@ -21,7 +21,7 @@ class EditorTracesController {
     if (this.applicationsChanged) {
       this.applicationsChanged = false;
       const firstNode = controller.treeDataProvider.rootNodes?.[0];
-      controller.treeView.reveal(firstNode, { focus: true });
+      firstNode && controller.treeView.reveal(firstNode, { focus: true });
     }
   }, 20);
 
@@ -62,10 +62,6 @@ class EditorTracesController {
 // init
 // ###########################################################################
 
-
-export function getTraceDetailsController() {
-  return controller;
-}
 
 export function initEditorTracesController(context: ExtensionContext) {
   controller = new EditorTracesController();

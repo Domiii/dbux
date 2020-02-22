@@ -104,8 +104,9 @@ export function makeTraceLabel(trace) {
  *  TODO: get time relative to global time origin, not per-application time origin
  *      ideally: starting time of first application in set.
  */
-export function getTraceCreatedAt(traceId, application) {
+export function getTraceCreatedAt(trace) {
+  const application = allApplications.getById(trace.applicationId);
   const { createdAt, dataProvider } = application;
-  const context = dataProvider.util.getTraceContext(traceId);
+  const context = dataProvider.util.getTraceContext(trace.traceId);
   return (context.createdAt - createdAt) / 1000;
 }

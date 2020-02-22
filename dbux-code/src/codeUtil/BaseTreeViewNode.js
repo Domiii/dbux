@@ -1,16 +1,14 @@
 import { TreeItem } from 'vscode';
 
 export default class BaseTreeViewNode extends TreeItem {
-  application: Application;
   parent;
   children: BaseNode[] = null;
 
-  constructor(treeDataProvider, label, entry, application, parent, moreProps) {
+  constructor(treeNodeProvider, label, entry, parent, moreProps) {
     super(label);
 
     this.entry = entry;
-    this.treeDataProvider = treeDataProvider;
-    this.application = application;
+    this.treeNodeProvider = treeNodeProvider;
     this.parent = parent;
 
     // treeItem data
