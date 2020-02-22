@@ -14,6 +14,7 @@ import { initCodeApplications } from './CodeApplication';
 import { initTraceDetailsController } from './traceDetailsView/traceDetailsController';
 import { initResources } from './resources';
 import { initTraceSelection } from './codeSelection';
+import { initEditorTracesController } from './editorTracesView/editorTracesController';
 
 
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -31,6 +32,7 @@ function activate(context) {
     
     initTraceSelection(context);
     initTraceDetailsController(context);
+    initEditorTracesController(context);
 
     const contextViewController = initContextView();
     const callStackViewController = initCallStackView();

@@ -1,6 +1,5 @@
-import Trace from 'dbux-common/src/core/data/Trace';
+import { getTraceCreatedAt, makeTraceLabel } from 'dbux-data/src/helpers/traceLabels';
 import traceSelection from 'dbux-data/src/traceSelection';
-import { makeTraceLabel, getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 export default class TraceNode extends BaseTreeViewNode {
@@ -17,13 +16,25 @@ export default class TraceNode extends BaseTreeViewNode {
   }
 
   init() {
+    const { trace } = this;
+
     // description
     // NOTE: description MUST be a string or it won't be properly displayed
-    const dt = getTraceCreatedAt(this.trace);
+    const dt = getTraceCreatedAt(trace);
     this.description = dt + '';
+  }
+
+  canHaveChildren() {
+    return !!this.childTraces?.length;
   }
 
   handleClick() {
     traceSelection.selectTrace(this.trace);
+  }
+
+  buildChildren() {
+    // add other traces as children (before details) 
+    return this.childTraces?.map(
+      other => this.treeNodeProvider.buildTraceNode(other, this));
   }
 }

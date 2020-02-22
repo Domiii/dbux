@@ -31,19 +31,21 @@ export class CallStackNodeProvider {
     let currentTrace: Trace;
     let parentTraceId: number;
     let parentTrace: Trace = trace;
-    const dp = allApplications.getApplication(trace.applicationId).dataProvider;
     this._allNodes = [];
-    let lastRunId = null;
-    while (parentTrace) {
-      currentTrace = parentTrace;
-      if (lastRunId && parentTrace.runId !== lastRunId) {
-        this._allNodes.push(BarrierNode);
-        lastRunId = parentTrace.runId;
-      }
-      this._allNodes.push(this._createNodeByTrace(dp, currentTrace));
+    if (trace) {
+      const dp = allApplications.getApplication(trace.applicationId).dataProvider;
+      let lastRunId = null;
+      while (parentTrace) {
+        currentTrace = parentTrace;
+        if (lastRunId && parentTrace.runId !== lastRunId) {
+          this._allNodes.push(BarrierNode);
+          lastRunId = parentTrace.runId;
+        }
+        this._allNodes.push(this._createNodeByTrace(dp, currentTrace));
 
-      parentTraceId = this._getParentOrSchedulerTraceId(dp, currentTrace);
-      parentTrace = dp.collections.traces.getById(parentTraceId);
+        parentTraceId = this._getParentOrSchedulerTraceId(dp, currentTrace);
+        parentTrace = dp.collections.traces.getById(parentTraceId);
+      }
     }
     this.refresh();
   }

@@ -1,6 +1,5 @@
-import { hasDynamicTypes, hasValue } from 'dbux-common/src/core/constants/TraceType';
+import { hasDynamicTypes, hasTraceTypeValue } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
-import Trace from 'dbux-common/src/core/data/Trace';
 import DataProvider from './DataProvider';
 import { newLogger } from 'dbux-common/src/log/logger';
 
@@ -104,14 +103,14 @@ export default {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId, type: dynamicType } = trace;
     if (dynamicType) {
-      return hasValue(dynamicType);
+      return hasTraceTypeValue(dynamicType);
     }
     return dp.util.doesStaticTraceHaveValue(staticTraceId);
   },
 
   doesStaticTraceHaveValue(dp: DataProvider, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    return hasValue(staticTrace.type);
+    return hasTraceTypeValue(staticTrace.type);
   },
 
   getTraceValue(dp: DataProvider, traceId) {
@@ -126,6 +125,20 @@ export default {
 
     // value is primitive type (or trace has no value)
     return trace.value;
+  },
+
+  getTraceValueRef(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const { valueId } = trace;
+
+    if (valueId) {
+      // value is reference type
+      const ref = dp.collections.values.getById(valueId);
+      return ref;
+    }
+
+    // value is primitive type (or trace has no value)
+    return null;
   },
 
   getTraceContext(dp: DataProvider, traceId) {
@@ -209,14 +222,14 @@ export default {
     const { staticTraceId } = argTrace;
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { callId: callStaticId } = staticTrace;
-
+hasTraceTypeValue
     return callStaticId && dp.collections.staticTraces.getById(callStaticId) || null;
   },
 
 
   // ###########################################################################
   // trace grouping
-  // ###########################################################################
+  // ######hasTraceTypeValue#############################################################
 
   /**
    * Groups traces by TraceType, as well as staticTraceId.

@@ -66,7 +66,7 @@ export function hasDynamicTypes(traceType) {
   return dynamicTypeTypes[traceType];
 }
 
-export function hasValue(traceType) {
+export function hasTraceTypeValue(traceType) {
   return valueTypes[traceType];
 }
 

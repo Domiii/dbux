@@ -3,32 +3,40 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
-import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
+import { registerCommand } from '../commands/commandUtil';
+import EditorTracesNodeProvider from './EditorTracesNodeProvider';
 
-const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
+const { log, debug, warn, error: logError } = newLogger('editorTracesController');
 
 let controller;
 
-class TraceDetailsController {
+class EditorTracesController {
   constructor() {
-    this.treeDataProvider = new TraceDetailsDataProvider();
+    this.treeDataProvider = new EditorTracesNodeProvider();
     this.treeView = this.treeDataProvider.treeView;
   }
 
   refreshOnData = makeDebounce(() => {
     controller.treeDataProvider.refresh();
+    if (this.applicationsChanged) {
+      this.applicationsChanged = false;
+      const firstNode = controller.treeDataProvider.rootNodes?.[0];
+      firstNode && controller.treeView.reveal(firstNode, { focus: true });
+    }
   }, 20);
+
 
   initOnActivate(context) {
     // ########################################
     // hook up event handlers
     // ########################################
-
+    
     // click event listener
     this.treeDataProvider.initDefaultClickCommand(context);
 
     // data changed
     allApplications.selection.onApplicationsChanged((selectedApps) => {
+      this.applicationsChanged = true;
       for (const app of selectedApps) {
         allApplications.selection.subscribe(
           app.dataProvider.onData('traces', this.refreshOnData)
@@ -36,10 +44,17 @@ class TraceDetailsController {
       }
     });
 
-    // add traceSelection event handler
+    // traceSelection changed
     traceSelection.onTraceSelectionChanged(() => {
       controller.treeDataProvider.refresh();
     });
+
+    // cursor moved in text editor
+    context.subscriptions.push(
+      window.onDidChangeTextEditorSelection(() => {
+        controller.treeDataProvider.refresh();
+      })
+    );
   }
 }
 
@@ -47,8 +62,9 @@ class TraceDetailsController {
 // init
 // ###########################################################################
 
-export function initTraceDetailsController(context: ExtensionContext) {
-  controller = new TraceDetailsController();
+
+export function initEditorTracesController(context: ExtensionContext) {
+  controller = new EditorTracesController();
   controller.initOnActivate(context);
 
   // refresh right away

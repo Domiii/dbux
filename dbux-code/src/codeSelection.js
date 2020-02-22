@@ -37,7 +37,12 @@ async function highlightTraceInEditor(trace) {
   }
   
   const editor = await getOrOpenTraceEditor(trace);
-  selectedTraceRegistration.setDeco(editor, deco);
+  if (trace) {
+    selectedTraceRegistration.setDeco(editor, deco);
+  }
+  else {
+    selectedTraceRegistration.unsetDeco();
+  }
 }
 
 // ###########################################################################

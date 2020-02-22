@@ -28,16 +28,20 @@
 		"views": {
 			"dbuxViewContainer": [
 				{
-					"id": "dbuxContextView",
-					"name": "Run Contexts"
-				},
-				{
 					"id": "dbuxCallStackView",
 					"name": "Call Stack"
 				},
 				{
 					"id": "dbuxTraceDetailsView",
 					"name": "Trace Details"
+				},
+				{
+					"id": "dbuxContextView",
+					"name": "Run Contexts"
+				},
+				{
+					"id": "dbuxEditorTracesView",
+					"name": "Traces at Cursor"
 				}
 			]
 		},

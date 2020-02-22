@@ -102,16 +102,18 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
+* [cursorTracesView]
+   * separate `cursorTracesView` from `traceDetailsView`
+* [UI_problems]
+   * Value of Push/PopCallback is shown as `undefined`
+   * no easy way to see the value of variables
 * [CodeTreeWrapper]
    * don't build children if a node is collapsed
       * automatically build children when node is extended
    * remember expanded/collapsed state of previous nodes of type
       * TODO: What about children of debug node?
          * use relative path to remember state?
-* [cursorTracesView]
-   * separate `cursorTracesView` from `traceDetailsView`
 * [instrumentation]
-   * CallExpressions as arguments are not recognized as callbacks (e.g. `bind(...)`)
    * [loops]
       * new data types: `loop` + `staticLoop`
          * `firstTraceId` + `lastTraceId`
@@ -126,9 +128,9 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * add one trace for each function parameter
    * [promises] keep track of `schedulerTraceId`
 * [codeDeco]
-   * show `x {times_executed}` after line, but only if n is different from the previous line
-      * show multiple, if there are different numbers for multiple traces of line?
    * capture *all* variables (e.g. outer-most `object` of `MemberExpression`) *after* expression has executed
+      * Problem: multiple contexts (e.g. when looking at a callback and wanting to see scheduler scope variables)
+         * need to access (currently selected) callStack for this
       * NOTE: when debugging functions, Chrome shows value of all variables appearing in any line, after line has executed
       * NOTE: add traces for all variable access
       * NOTE: result of `i++` is not what we want
@@ -137,6 +139,8 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
             * just capture rhs (already done; but need to associate result with variable)
          * ....
       * idea: just record all variables after line, so rendering is less convoluted?
+   * show `x {n_times_executed}` after line, but only if n is different from the previous line
+      * show multiple, if there are different numbers for multiple traces of line?
 * [traceDetailsView]
    * `StaticTraceTDNode` -> what to display if we don't have a value?
       * categorize by run/context/loop/difference-in-callstack????
@@ -152,7 +156,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * `PushImmediate` -> previous context (partial callstack)
          * `PopImmediate` -> next context (partial callstack)
          * `Push/PopCallback` -> schedulerTrace
-         * `hasValue(type)` -> value
+         * `hasTraceTypeValue(type)` -> value
          * `CallExpression` -> call-site
             * how to render call-site + value in one line?
                * maybe add a button to toggle single-line/multi-line display of multiple details?
