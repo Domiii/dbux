@@ -46,7 +46,7 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
       ...this.buildNavigationNodes(trace, parent),
 
       // other detail nodes
-      ...this.buildDetailNodes(trace, parent)
+      ...this.buildDetailNodes(trace, parent, DetailNodeClasses)
     ].filter(node => !!node);
 
     return nodes;
@@ -56,9 +56,10 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
   // Detail nodes
   // ###########################################################################
 
-  buildDetailNodes(trace, parent) {
-    return DetailNodeClasses.map(NodeClass => 
-      this.maybeBuildTraceDetailNode(NodeClass, trace, parent));
+  buildDetailNodes(trace, parent, NodeClasses) {
+    return NodeClasses
+      .map(NodeClass => this.maybeBuildTraceDetailNode(NodeClass, trace, parent))
+      .filter(node => !!node);
   }
 
   maybeBuildTraceDetailNode(NodeClass, trace, parent) {

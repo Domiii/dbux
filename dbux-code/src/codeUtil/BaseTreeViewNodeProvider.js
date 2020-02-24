@@ -76,6 +76,7 @@ export default class BaseTreeViewNodeProvider {
   }
 
   handleRefresh() {
+    // does nothing by default
   }
 
   handleClick = (node) => {

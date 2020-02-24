@@ -60,13 +60,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * only update selected trace in `callstackView`, if triggered from anywhere but here
    * if context has both `parentId` and `schedulerTrace`:
       * add a button to the node to allow switching between `parent` and `scheduler`
-* [selectedContextView]
-   * NOTE: a treeView that lets you better understand a partial `execution tree` in the context of the selected trace
-   * Nodes:
-      * all child `loop`s + `context`s in order
-      * add one node for current trace to show where it is between the other calls
-      * group child `contexts` into a new intermediate node, if they all originate from the same `trace`
-         * (e.g. `find`, `map`, `forEach`, `reduce` and many more)
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `allApplications`
    * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
@@ -75,6 +68,15 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * "all old versions" (applications that have already been executed again)
       * "all selected"
    * add a checkbox (button) to select "automatically discard older application when executing again"
+* [selectedContextView]
+   * NOTE: a treeView that lets you better understand a partial `execution tree` in the context of the selected trace
+   * Nodes:
+      * all child `loop`s + `context`s in order
+      * add one node for current trace to show where it is between the other calls
+      * group child `contexts` into a new intermediate node, if they all originate from the same `trace`
+         * (e.g. `find`, `map`, `forEach`, `reduce` and many more)
+* [configuration + settings]
+   * automatically store `BaseTreeViewNodeProvider.idsCollapsibleState` so it won't reset when re-opening
 * [UI_design]
    * good icons + symbols in all tree nodes
 
@@ -102,11 +104,20 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
-* [cursorTracesView]
-   * separate `cursorTracesView` from `traceDetailsView`
+* [error_handling]
+   * add error examples
+   * make sure, data is sent, even if error occurs?
+   * if error occured, expression result might not be available
+      * show `TraceType.BeforeExpression`, if result is not available
 * [UI_problems]
-   * Value of Push/PopCallback is shown as `undefined`
-   * no easy way to see the value of variables
+   * improve trace label
+      * if it has expression trace children, replace AST nodes with result values
+      * allow to easily get all `args` of `CallExpression` traces
+         * group by `callId` (i.e. `beforeCallTraceId`)
+   * Executed x:
+      * Value of Push/PopCallback is shown as `undefined`
+      * get bindings of any variables in vicinity and display them
+         * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
 * [CodeTreeWrapper]
    * don't build children if a node is collapsed
       * automatically build children when node is extended
@@ -115,10 +126,19 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * use relative path to remember state?
 * [instrumentation]
    * [loops]
-      * new data types: `loop` + `staticLoop`
-         * `firstTraceId` + `lastTraceId`
-         * `nCount`
-      * add `loopTraceId` to all traces in loop
+      * new data types:
+         * `staticLoop`
+         * `loop`
+            * `firstTraceId` + `lastTraceId`
+         * `loopRepition`
+            * `i`
+            * `headerVars`
+      * add `loopRepititionId` to all traces in loop
+         * add `loopRepitition`:
+            * before `init`, and after `condition` has evaluated to `true`?
+      * in loop's `BlockStart`:
+         * evaluate + store `headerVars`
+            * all variables that have bindings in loop header
       * fix `DoWhileLoop` :(
    * fix `Await` + `Resume`
       * async function's push + pop?

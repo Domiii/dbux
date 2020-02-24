@@ -12,8 +12,8 @@ export default class TraceNode extends BaseTreeViewNode {
     return this.entry;
   }
 
-  makeIconPath(trace: Trace) {
-    return traceSelection.isSelected(trace) ? 'play.svg' : ' ';
+  makeIconPath() {
+    return traceSelection.isSelected(this.trace) ? 'play.svg' : ' ';
   }
 
   init() {

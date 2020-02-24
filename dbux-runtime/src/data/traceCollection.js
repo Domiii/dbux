@@ -55,7 +55,7 @@ class TraceCollection extends Collection {
     this._all.push(trace);
     this._send(trace);
 
-    _prettyPrint(trace, value);
+    // _prettyPrint(trace, value);
 
     return trace;
   }
