@@ -9,6 +9,7 @@ import { getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import TraceNode from './TraceNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
@@ -78,6 +79,10 @@ export class StaticTraceTDNode extends TraceDetailNode {
     return `Executed: ${traces.length}x`;
   }
 
+  get defaultCollapsibleState() {
+    return TreeItemCollapsibleState.Expanded;
+  }
+
   buildChildren() {
     const { treeNodeProvider, trace } = this;
     const { staticTraceId } = trace;
@@ -92,9 +97,22 @@ export class StaticTraceTDNode extends TraceDetailNode {
     // TODO: callback args?
     // TODO: loop start nodes?
 
-    if (hasTraceTypeValue(staticTrace.type)) {
+    const staticType = staticTrace.type;
+    if (hasTraceTypeValue(staticType)) {
       return traces?.map(otherTrace => {
-        const label = dataProvider.util.getTraceValue(otherTrace.traceId) + ' ';
+        const valueString = dataProvider.util.getTraceValue(otherTrace.traceId) + ' ';
+        let label;
+        if (staticType === TraceType.CallExpressionResult) {
+          const anchorId = otherTrace.resultCallId;
+          const args = dataProvider.indexes.traces.callArgsByCall.get(anchorId);
+          const argValues = args?.
+            map(argTrace => dataProvider.util.getTraceValue(argTrace.traceId)) || 
+            EmptyArray;
+          label = `(${argValues.join(', ')}) -> ${valueString}`;
+        }
+        else {
+          label = valueString;
+        }
         return new TraceNode(treeNodeProvider, label, otherTrace, this);
       }) || null;
     }

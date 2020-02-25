@@ -118,12 +118,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * Value of Push/PopCallback is shown as `undefined`
       * get bindings of any variables in vicinity and display them
          * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
-* [CodeTreeWrapper]
-   * don't build children if a node is collapsed
-      * automatically build children when node is extended
-   * remember expanded/collapsed state of previous nodes of type
-      * TODO: What about children of debug node?
-         * use relative path to remember state?
 * [instrumentation]
    * [loops]
       * new data types:
@@ -162,8 +156,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * show `x {n_times_executed}` after line, but only if n is different from the previous line
       * show multiple, if there are different numbers for multiple traces of line?
 * [traceDetailsView]
-   * `StaticTraceTDNode` -> what to display if we don't have a value?
-      * categorize by run/context/loop/difference-in-callstack????
    * [values]
       * proper string representation of all kinds of values
       * record types as well?
@@ -185,17 +177,11 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * other?
       * sort those by `staticTrace`
       * only build when opened
-   * better loop support:
-      * distinguish repeated calls of a trace from other traces at selection
-      * allow to better understand and work through the repetitions
    * better value rendering (e.g. empty string (currently not shown at all); small arrays + objects)
       * function parameters
          * need to properly destruct
             * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
       * also track `this`
-   * trace details
-      * (if multiple applications exist) `ApplicationNode` 
-         * `getRelativeWorkspacePath(application.entryPointPath)`
    * details:
       * Push/Pop (of any kind) show next previous trace/context?
       * [CallbackArg] show `Push/PopCallback` nodes
@@ -203,12 +189,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * highlight last+first in run
          * also: for runs originating from callbacks, make it more obvious?
    * add more helpful hover tooltips to each node
-* [cursorTracesView]
-   * list `staticTraces` of inner-most context at cursor
-      * better display names to distinguish between `BeforeCallExpression` + `CallExpressionResult`
-   * group {Push,Pop}Callback{Argument,} into one
-      * show status: executed x times
-      * if executed: go to callback definition
 * [CodeTreeWrapper]
    * long node lists
       * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead 
@@ -231,7 +211,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * find correct trace of setter in callstack
       * find correct trace of getter in callstack
       * NOTE: this is tedious :(
-* [online_mode]
+* [interactive_mode]
    * when clicking a value (and when in "online mode"), send command back to application to `console(inspect(value))`
 * [dataView]
    * a more complete approach to understanding values in current context
@@ -304,10 +284,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * also need to modify `dbux-babel-plugin` to store `rootContextId`
    * more future work (not yet):
       * e.g. "gray out" with higher granularity; gray out everything except all traces that were executed
-* integrate `dbux` with at least one testing methodology
-   * case-studies
-* in `ContextTreeView`, make text of all nodes that do not belong to the current `Program` semi-transparent
-   * can use `TracesByProgramIndex` for this
 * serialize/deserialize all data, survive VSCode restart/reload
 
 

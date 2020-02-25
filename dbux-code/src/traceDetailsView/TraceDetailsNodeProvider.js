@@ -21,8 +21,10 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
       const trace = traceSelection.selected;
       // console.debug('refreshed trace', trace.traceId);
       // const application = allApplications.getById(trace.applicationId);
-      const traceNode = this.buildSelectedTraceNode(trace);
-      roots.push(traceNode);
+      roots.push(
+        this.buildSelectedTraceNode(trace),
+        ...this.buildTraceDetailNodes(trace, null)
+      );
     }
     else {
       // add empty node

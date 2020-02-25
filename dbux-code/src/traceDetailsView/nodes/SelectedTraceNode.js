@@ -21,8 +21,4 @@ export default class SelectedTraceNode extends TraceNode {
   makeIconPath() {
     return 'play.svg';
   }
-
-  buildChildren() {
-    return this.treeNodeProvider.buildTraceDetailNodes(this.trace, this);
-  }
 }
