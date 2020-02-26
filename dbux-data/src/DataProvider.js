@@ -13,6 +13,7 @@ import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
 import TraceType, { isTracePop } from '../../dbux-common/src/core/constants/TraceType';
+import CallGraph from './CallGraph';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
@@ -168,6 +169,9 @@ export default class DataProvider {
 
     this.queries = new Queries();
     this.indexes = new Indexes();
+
+    // call graph
+    this.callgraph = new CallGraph(this);
   }
 
   // ###########################################################################
@@ -245,14 +249,18 @@ export default class DataProvider {
     const collectionListeners = newIndex.dependencies?.collections;
     if (collectionListeners) {
       for (const collectionName in collectionListeners) {
-        const listeners = this._dataEventListenersInternal[collectionName] = (
-          this._dataEventListenersInternal[collectionName] || []
-        );
         const cb = collectionListeners[collectionName].added;
-        if (cb) {
-          listeners.push(cb);
-        }
+        this._onDataInternal(collectionName, cb);
       }
+    }
+  }
+
+  _onDataInternal(collectionName, cb) {
+    const listeners = this._dataEventListenersInternal[collectionName] = (
+      this._dataEventListenersInternal[collectionName] || []
+    );
+    if (cb) {
+      listeners.push(cb);
     }
   }
 

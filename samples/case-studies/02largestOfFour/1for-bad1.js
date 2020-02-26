@@ -1,12 +1,13 @@
 import eq from 'lodash/eq';
 
 /**
+ * Find array that contains largest number in array-of-arrays `a`
  * @see https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/basic-algorithm-scripting/return-largest-numbers-in-arrays
  */
-function largestOfFour(arr) {
-  let largest = arr[0];
-  for (const four of arr) {
-    if (Math.max(...largest) < Math.max(four)) {
+function largestOfFour(a) {
+  let largest = a[0];
+  for (const four of a) {
+    if (Math.max(largest) < Math.max(...four)) {
       largest = four;
     }
   }
