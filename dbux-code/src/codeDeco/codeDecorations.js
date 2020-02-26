@@ -98,13 +98,18 @@ export class CodeDecoRegistration {
     this.editorDecorationType = editorDecorationType;
   }
 
+  unsetDeco() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  }
+
   setDeco(editor, deco) {
     if (this.unsubscribe) {
       this.unsubscribe();
     }
-    if (deco) {
-      this.unsubscribe = codeDecorations.addDeco(editor, this.editorDecorationType, deco);
-    }
+
+    this.unsubscribe = codeDecorations.addDeco(editor, this.editorDecorationType, deco);
   }
 }
 

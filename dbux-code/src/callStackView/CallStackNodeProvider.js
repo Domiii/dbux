@@ -95,6 +95,7 @@ export class CallStackNodeProvider {
   // Util
   // ########################################
 
+  // TODO: Move Node building logic to CallStackNode
   /**
    * Only specify the searchMode while it's available.
    * @param {Trace} trace

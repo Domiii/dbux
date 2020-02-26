@@ -2,7 +2,7 @@ import { TreeItemCollapsibleState, TreeItem } from 'vscode';
 
 export default class EmptyNode extends TreeItem {
   constructor() {
-    super('(no trace selected)');
+    super('(no trace at cursor)');
 
     this.collapsibleState = TreeItemCollapsibleState.None;
   }

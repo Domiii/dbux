@@ -10,7 +10,15 @@ export default class SelectedTraceNode extends TraceNode {
     return `${label}`;
   }
 
-  static makeIconPath(trace: Trace) {
+  get trace() {
+    return this.entry;
+  }
+
+  get defaultCollapsibleState() {
+    return TreeItemCollapsibleState.Expanded;
+  }
+
+  makeIconPath() {
     return 'play.svg';
   }
 }

@@ -5,6 +5,7 @@ import Application from 'dbux-data/src/applications/Application';
 import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 import { babelLocToCodeRange } from './locHelpers';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 /**
  * This file provides data/query utilities for all kinds of data that 
@@ -58,6 +59,8 @@ export function getStaticContextsAt(application, programId, pos): StaticContext 
  * TODO: *vastly* improve performance
  */
 export function getTracesAt(application: Application, programId, pos): Trace[] {
+  const dp = application.dataProvider;
+
   // find staticContext (function or Program) at position
   const staticContexts = getStaticContextsAt(application, programId, pos);
   if (!staticContexts) {
@@ -67,8 +70,10 @@ export function getTracesAt(application: Application, programId, pos): Trace[] {
   // find all traces in context
   const traces = staticContexts.map(staticContext => {
     const { staticId: staticContextId } = staticContext;
-    return application.dataProvider.indexes.traces.byStaticContext.get(staticContextId) || EmptyArray;
-  }).flat();
+    return dp.indexes.traces.byStaticContext.get(staticContextId) || EmptyArray;
+  })
+    .flat()
+    .filter(trace => dp.util.getTraceType(trace.traceId) !== TraceType.BeforeCallExpression);
   if (!traces) {
     return null;
   }

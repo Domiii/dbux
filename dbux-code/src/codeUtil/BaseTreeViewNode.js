@@ -1,31 +1,36 @@
 import { TreeItem } from 'vscode';
 
-export default class BaseNode extends TreeItem {
-  application: Application;
+export default class BaseTreeViewNode extends TreeItem {
   parent;
   children: BaseNode[] = null;
 
-  constructor(treeDataProvider, label, entry, application, parent, id, moreProps) {
+  constructor(treeNodeProvider, label, entry, parent, moreProps) {
     super(label);
 
     this.entry = entry;
-    this.treeDataProvider = treeDataProvider;
-    this.application = application;
+    this.treeNodeProvider = treeNodeProvider;
     this.parent = parent;
-    this.id = id;
 
     // treeItem data
-    this.contextValue = 'detailsBaseNode';
+    // this.contextValue = this.constructor.name;
 
     // more custom props for this node
     Object.assign(this, moreProps);
   }
 
-  makeIconPath() {
-
+  /**
+   * @virtual
+   * @return true if it has a `buildChildren` method
+   */
+  canHaveChildren() {
+    return !!this.children || !!this.buildChildren;
   }
 
-  _handleClick() {
+  makeIconPath() {
+    return '';
+  }
+
+  handleClick() {
     // by default: do nothing
   }
 }

@@ -88,14 +88,19 @@ export function makeTraceLabel(trace) {
 
   const application = allApplications.getById(trace.applicationId);
 
+  let label;
+
   // custom by-type label
   const traceType = application.dataProvider.util.getTraceType(traceId);
   if (byType[traceType]) {
-    return byType[traceType](trace, application);
+    label = byType[traceType](trace, application);
+  }
+  else {
+    // default trace label
+    label = makeDefaultTraceLabel(trace, application);
   }
 
-  // default trace label
-  return makeDefaultTraceLabel(trace, application);
+  return label.trim();
 }
 
 
@@ -104,8 +109,9 @@ export function makeTraceLabel(trace) {
  *  TODO: get time relative to global time origin, not per-application time origin
  *      ideally: starting time of first application in set.
  */
-export function getTraceCreatedAt(traceId, application) {
+export function getTraceCreatedAt(trace) {
+  const application = allApplications.getById(trace.applicationId);
   const { createdAt, dataProvider } = application;
-  const context = dataProvider.util.getTraceContext(traceId);
+  const context = dataProvider.util.getTraceContext(trace.traceId);
   return (context.createdAt - createdAt) / 1000;
 }

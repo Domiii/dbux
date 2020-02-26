@@ -1,4 +1,4 @@
-import TraceType, { hasValue } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { hasTraceTypeValue } from 'dbux-common/src/core/constants/TraceType';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import staticTraceCollection from './staticTraceCollection';
 import executionContextCollection from './executionContextCollection';
@@ -55,7 +55,7 @@ class TraceCollection extends Collection {
     this._all.push(trace);
     this._send(trace);
 
-    _prettyPrint(trace, value);
+    // _prettyPrint(trace, value);
 
     return trace;
   }
@@ -109,7 +109,7 @@ function _prettyPrint(trace, value) {
   // else
 
   // TODO: if we want to keep using this; fix to use `ValueCollection` instead
-  const v = hasValue(type);
+  const v = hasTraceTypeValue(type);
   const result = v ? ['(', value, ')'] : EmptyArray;
   console.debug('', traceId, contextId,
     `${depthIndicator}[${typeName}] ${displayName}`,

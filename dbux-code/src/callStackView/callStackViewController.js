@@ -1,7 +1,6 @@
 import { window, EventEmitter } from 'vscode';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { newLogger } from 'dbux-common/src/log/logger';
-import allApplications from 'dbux-data/src/applications/allApplications';
 import { CallStackNodeProvider } from './CallStackNodeProvider';
 import CallStackNode from './CallStackNode';
 

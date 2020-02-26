@@ -1,6 +1,6 @@
 import { logInternalError } from 'dbux-common/src/log/logger';
 import Collection from './Collection';
-import ValueRefType, { determineValueRefType } from 'dbux-common/src/core/constants/ValueRefType';
+import ValueRefCategory, { determineValueRefCategory } from '../../../dbux-common/src/core/constants/ValueRefCategory';
 import pools from './pools';
 import serialize from 'dbux-common/src/serialization/serialize';
 
@@ -36,13 +36,13 @@ class ValueCollection extends Collection {
       result.value = undefined;
     }
     else {
-      const type = determineValueRefType(value);
-      if (type === ValueRefType.Primitive) {
+      const category = determineValueRefCategory(value);
+      if (category === ValueRefCategory.Primitive) {
         result.valueId = 0;
         result.value = value;
       }
       else {
-        const valueId = this._addValue(type, value);
+        const valueId = this._addValue(category, value);
         result.valueId = valueId;
         result.value = undefined;
       }
@@ -62,7 +62,7 @@ class ValueCollection extends Collection {
     return tracked;
   }
 
-  _addValue(type, value) {
+  _addValue(category, value) {
     // create new ref
     const valueRef = new pools.values.allocate();
     
@@ -72,7 +72,7 @@ class ValueCollection extends Collection {
     const valueId = this._all.length;
     valueRef.valueId = valueId;
     valueRef.trackId = tracked.trackId;
-    valueRef.type = type;
+    valueRef.category = category;
     valueRef.serialized = serialize(value);
 
     // add + send
