@@ -1,4 +1,4 @@
-import eq from 'lodash/eq';
+import isEqual from 'lodash/isEqual';
 
 /**
  * find the first duplicate number for which the second occurrence has the minimal index
@@ -11,7 +11,7 @@ function firstDuplicate(a) {
 }
 
 
-console.assert(eq(
+console.assert(isEqual(
     firstDuplicate([2, 1, 3, 5, 3, 2]),
     3
   ));

@@ -77,6 +77,11 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
             * allow cycling through levels of depth (parent -> grandparent etc)
          * descendant context
             * allow cycling through levels of depth (child -> grandchild etc)
+         * [for callbacks only]
+            * show trace only if callback has a PushCallback
+            * label = combination of call (with arguments filled in) + time of callback execution?
+            * maybe even sort by `createdAt` in reverse order
+            * very useful e.g. in `$on` function inside `todomvc`!
       * optional GroupMode
          * no grouping (default)
          * by runId
@@ -113,8 +118,20 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
-* bug: `resolveCallIds` is broken in `todomvc`
-* function 可以從 argument trace 的到 call trace（以後再問他）
+* clear button for currently selected trace
+* bugs:
+   * dbux bugs out when no editor is open
+   * `resolveCallIds` is broken in setTimeout1 as well as todomvc
+      * seems to be related to callbacks
+   * traces at cursor does not work for any callbacks in `todomvc`'s `view`
+   * removing items doesn't work in `todomvc`
+   * navigation is not intuitive enough yet
+      * its a bit weird that we always have to step "backward" into functions from calls -> fix it
+         * test w/ `view.bindToggleItem`
+      * also improve "fast navigation" in general
+         * more intuitive controls
+         * better guiding for the different possible choices of children, parents and other relevant traces?
+* prepare a function that allows 從 argumentTrace 得到 callTrace
 * [callbacks]
    * Problem: we cannot wrap callbacks, as it will break the function's (or possible class's) identity.
       * Solution: Use a separate map to track callbacks and their points of passage instead
