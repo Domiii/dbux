@@ -60,13 +60,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * only update selected trace in `callstackView`, if triggered from anywhere but here
    * if context has both `parentId` and `schedulerTrace`:
       * add a button to the node to allow switching between `parent` and `scheduler`
-* [selectedContextView]
-   * NOTE: a treeView that lets you better understand a partial `execution tree` in the context of the selected trace
-   * Nodes:
-      * all child `loop`s + `context`s in order
-      * add one node for current trace to show where it is between the other calls
-      * group child `contexts` into a new intermediate node, if they all originate from the same `trace`
-         * (e.g. `find`, `map`, `forEach`, `reduce` and many more)
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `allApplications`
    * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
@@ -75,6 +68,15 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * "all old versions" (applications that have already been executed again)
       * "all selected"
    * add a checkbox (button) to select "automatically discard older application when executing again"
+* [selectedContextView]
+   * NOTE: a treeView that lets you better understand a partial `execution tree` in the context of the selected trace
+   * Nodes:
+      * all child `loop`s + `context`s in order
+      * add one node for current trace to show where it is between the other calls
+      * group child `contexts` into a new intermediate node, if they all originate from the same `trace`
+         * (e.g. `find`, `map`, `forEach`, `reduce` and many more)
+* [configuration + settings]
+   * automatically store `BaseTreeViewNodeProvider.idsCollapsibleState` so it won't reset when re-opening
 * [UI_design]
    * good icons + symbols in all tree nodes
 
@@ -102,23 +104,35 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
-* [cursorTracesView]
-   * separate `cursorTracesView` from `traceDetailsView`
+* [error_handling]
+   * add error examples
+   * make sure, data is sent, even if error occurs?
+   * if error occured, expression result might not be available
+      * show `TraceType.BeforeExpression`, if result is not available
 * [UI_problems]
-   * Value of Push/PopCallback is shown as `undefined`
-   * no easy way to see the value of variables
-* [CodeTreeWrapper]
-   * don't build children if a node is collapsed
-      * automatically build children when node is extended
-   * remember expanded/collapsed state of previous nodes of type
-      * TODO: What about children of debug node?
-         * use relative path to remember state?
+   * improve trace label
+      * if it has expression trace children, replace AST nodes with result values
+      * allow to easily get all `args` of `CallExpression` traces
+         * group by `callId` (i.e. `beforeCallTraceId`)
+   * Executed x:
+      * Value of Push/PopCallback is shown as `undefined`
+      * get bindings of any variables in vicinity and display them
+         * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
 * [instrumentation]
    * [loops]
-      * new data types: `loop` + `staticLoop`
-         * `firstTraceId` + `lastTraceId`
-         * `nCount`
-      * add `loopTraceId` to all traces in loop
+      * new data types:
+         * `staticLoop`
+         * `loop`
+            * `firstTraceId` + `lastTraceId`
+         * `loopRepition`
+            * `i`
+            * `headerVars`
+      * add `loopRepititionId` to all traces in loop
+         * add `loopRepitition`:
+            * before `init`, and after `condition` has evaluated to `true`?
+      * in loop's `BlockStart`:
+         * evaluate + store `headerVars`
+            * all variables that have bindings in loop header
       * fix `DoWhileLoop` :(
    * fix `Await` + `Resume`
       * async function's push + pop?
@@ -142,8 +156,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * show `x {n_times_executed}` after line, but only if n is different from the previous line
       * show multiple, if there are different numbers for multiple traces of line?
 * [traceDetailsView]
-   * `StaticTraceTDNode` -> what to display if we don't have a value?
-      * categorize by run/context/loop/difference-in-callstack????
    * [values]
       * proper string representation of all kinds of values
       * record types as well?
@@ -165,17 +177,11 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * other?
       * sort those by `staticTrace`
       * only build when opened
-   * better loop support:
-      * distinguish repeated calls of a trace from other traces at selection
-      * allow to better understand and work through the repetitions
    * better value rendering (e.g. empty string (currently not shown at all); small arrays + objects)
       * function parameters
          * need to properly destruct
             * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
       * also track `this`
-   * trace details
-      * (if multiple applications exist) `ApplicationNode` 
-         * `getRelativeWorkspacePath(application.entryPointPath)`
    * details:
       * Push/Pop (of any kind) show next previous trace/context?
       * [CallbackArg] show `Push/PopCallback` nodes
@@ -183,12 +189,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * highlight last+first in run
          * also: for runs originating from callbacks, make it more obvious?
    * add more helpful hover tooltips to each node
-* [cursorTracesView]
-   * list `staticTraces` of inner-most context at cursor
-      * better display names to distinguish between `BeforeCallExpression` + `CallExpressionResult`
-   * group {Push,Pop}Callback{Argument,} into one
-      * show status: executed x times
-      * if executed: go to callback definition
 * [CodeTreeWrapper]
    * long node lists
       * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead 
@@ -211,7 +211,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * find correct trace of setter in callstack
       * find correct trace of getter in callstack
       * NOTE: this is tedious :(
-* [online_mode]
+* [interactive_mode]
    * when clicking a value (and when in "online mode"), send command back to application to `console(inspect(value))`
 * [dataView]
    * a more complete approach to understanding values in current context
@@ -284,10 +284,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * also need to modify `dbux-babel-plugin` to store `rootContextId`
    * more future work (not yet):
       * e.g. "gray out" with higher granularity; gray out everything except all traces that were executed
-* integrate `dbux` with at least one testing methodology
-   * case-studies
-* in `ContextTreeView`, make text of all nodes that do not belong to the current `Program` semi-transparent
-   * can use `TracesByProgramIndex` for this
 * serialize/deserialize all data, survive VSCode restart/reload
 
 

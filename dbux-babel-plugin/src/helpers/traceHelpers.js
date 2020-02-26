@@ -6,11 +6,7 @@ import { getPathTraceId } from './instrumentationHelper';
 
 
 // ###########################################################################
-// templates
-// ###########################################################################
-
-// ###########################################################################
-// instrumentation
+// builders + utilities
 // ###########################################################################
 
 function replaceWithTemplate(templ, path, cfg) {
@@ -28,36 +24,8 @@ export const buildTraceNoValue = function buildTraceNoValue(templ, path, state, 
 }.bind(null, template('%%dbux%%.t(%%traceId%%)'));
 
 
-// function buildTraceExprBeforeAndAfter(expressionPath, state) {
-//   const traceIdBefore = state.addTrace(expressionPath, TraceType.BeforeExpression);
-//   const traceIdAfter = state.addTrace(expressionPath, TraceType.ExpressionResult);
-//   const { ids: { dbux } } = state;
-
-//   return t.sequenceExpression([
-//     t.callExpression(
-//       t.memberExpression(
-//         t.identifier(dbux),
-//         t.identifier('t')
-//       ),
-//       [
-//         t.numericLiteral(traceIdBefore)
-//       ]
-//     ),
-//     t.callExpression(
-//       t.memberExpression(
-//         t.identifier(dbux),
-//         t.identifier('traceExpr')
-//       ),
-//       [
-//         t.numericLiteral(traceIdAfter),
-//         expressionPath.node
-//       ]
-//     )
-//   ]);
-// }
-
 /**
- * We cannot reliably use templates for this, because 
+ * NOTE: We cannot reliably use templates for this, because 
  * it sometimes generates `ExpressionStatement` instead of `CallExpression`.
  * (specifically, when trying to wrap a `spreadArgument`)
  */
@@ -78,6 +46,11 @@ function buildTraceExpr(expressionPath, state, methodName, traceType, cfg) {
   );
 }
 
+
+// ###########################################################################
+// traces
+// ###########################################################################
+
 export function traceWrapExpression(traceType, path, state, tracePath) {
   return _traceWrapExpression(
     'traceExpr',
@@ -89,7 +62,6 @@ export function traceWrapExpression(traceType, path, state, tracePath) {
     }
   );
 }
-
 
 
 function instrumentArgs(callPath, state, beforeCallTraceId) {

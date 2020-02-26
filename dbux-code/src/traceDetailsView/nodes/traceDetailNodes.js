@@ -9,6 +9,7 @@ import { getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import TraceNode from './TraceNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
@@ -29,79 +30,6 @@ function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
 }
 
 export class TraceDetailNode extends BaseTreeViewNode {
-}
-
-// ###########################################################################
-// Application
-// ###########################################################################
-
-export class ApplicationTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace) {
-    const application = allApplications.getApplication(trace.applicationId);
-    const fpath = application.dataProvider.util.getTraceFilePath(trace.traceId);
-    if (allApplications.selection.data.getApplicationCountAtPath(fpath) < 2) {
-      return null;
-    }
-    return application;
-  }
-
-  static makeLabel(application: Application) {
-    return application.getRelativeFolder();
-  }
-
-  init(application) {
-    this.application = application;
-  }
-
-  handleClick() {
-    // TODO: go to Application's first trace
-    // goToTrace(firstTrace);
-  }
-
-  // makeIconPath() {
-  //   return 'string.svg';
-  // }
-}
-
-// ###########################################################################
-// Context
-// ###########################################################################
-
-export class ContextTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace) {
-    const application = allApplications.getApplication(trace.applicationId);
-    return application.dataProvider.util.getTraceContext(trace.traceId);
-  }
-
-  static makeLabel(context, parent) {
-    const application = allApplications.getApplication(parent.trace.applicationId);
-    return makeContextLabel(context, application);
-  }
-
-  // makeIconPath(application: Application) {
-  //   return 'string.svg';
-  // }
-}
-
-// ###########################################################################
-// Type
-// ###########################################################################
-
-export class TypeTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace, parent) {
-    return trace;
-  }
-
-  static makeLabel(trace, parent) {
-    const application = allApplications.getApplication(trace.applicationId);
-    const traceType = application.dataProvider.util.getTraceType(trace.traceId);
-    const typeName = TraceType.nameFrom(traceType);
-    return `Type: ${typeName}`;
-  }
-
-  // makeIconPath(traceDetail) {
-  //   return 'string.svg';
-  // }
 }
 
 // ###########################################################################
@@ -128,6 +56,164 @@ export class ValueTDNode extends TraceDetailNode {
   // makeIconPath(traceDetail) {
   //   return 'string.svg';
   // }
+}
+
+// ###########################################################################
+// StaticTrace
+// ###########################################################################
+
+export class StaticTraceTDNode extends TraceDetailNode {
+  static makeTraceDetail(trace, parent) {
+    return trace;
+    // const { staticTraceId } = trace;
+    // const { dataProvider } = application;
+    // return dataProvider.collections.staticTraces.getById(staticTraceId);
+  }
+
+  static makeLabel(trace, parent) {
+    const { staticTraceId } = trace;
+
+    const application = allApplications.getApplication(trace.applicationId);
+    const { dataProvider } = application;
+    const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+    return `Executed: ${traces.length}x`;
+  }
+
+  get defaultCollapsibleState() {
+    return TreeItemCollapsibleState.Expanded;
+  }
+
+  buildChildren() {
+    const { treeNodeProvider, trace } = this;
+    const { staticTraceId } = trace;
+
+    const application = allApplications.getById(trace.applicationId);
+    const { dataProvider } = application;
+    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
+    const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+
+    // TODO: value nodes
+    // TODO: Push/Pop traces?
+    // TODO: callback args?
+    // TODO: loop start nodes?
+
+    const staticType = staticTrace.type;
+    if (hasTraceTypeValue(staticType)) {
+      return traces?.map(otherTrace => {
+        const valueString = dataProvider.util.getTraceValue(otherTrace.traceId) + ' ';
+        let label;
+        if (staticType === TraceType.CallExpressionResult) {
+          const anchorId = otherTrace.resultCallId;
+          const args = dataProvider.indexes.traces.callArgsByCall.get(anchorId);
+          const argValues = args?.
+            map(argTrace => dataProvider.util.getTraceValue(argTrace.traceId)) || 
+            EmptyArray;
+          label = `(${argValues.join(', ')}) -> ${valueString}`;
+        }
+        else {
+          label = valueString;
+        }
+        return new TraceNode(treeNodeProvider, label, otherTrace, this);
+      }) || null;
+    }
+    return null;
+  }
+}
+
+// ###########################################################################
+// Info: Application
+// ###########################################################################
+
+export class ApplicationTDNode extends TraceDetailNode {
+  static makeTraceDetail(trace) {
+    const application = allApplications.getApplication(trace.applicationId);
+    const fpath = application.dataProvider.util.getTraceFilePath(trace.traceId);
+    if (allApplications.selection.data.getApplicationCountAtPath(fpath) < 2) {
+      return null;
+    }
+    return application;
+  }
+
+  static makeLabel(application: Application) {
+    return `${application.getRelativeFolder()} [Application]`;
+  }
+
+  get application() {
+    return this.entry;
+  }
+
+  handleClick() {
+    // TODO: go to Application's first trace
+    // goToTrace(firstTrace);
+  }
+
+  // makeIconPath() {
+  //   return 'string.svg';
+  // }
+}
+
+// ###########################################################################
+// Info: Context
+// ###########################################################################
+
+export class ContextTDNode extends TraceDetailNode {
+  static makeTraceDetail(trace) {
+    const application = allApplications.getApplication(trace.applicationId);
+    return application.dataProvider.util.getTraceContext(trace.traceId);
+  }
+
+  static makeLabel(context, parent) {
+    const application = allApplications.getApplication(parent.trace.applicationId);
+    return `${makeContextLabel(context, application)} [Context]`;
+  }
+
+  // makeIconPath(application: Application) {
+  //   return 'string.svg';
+  // }
+}
+
+// ###########################################################################
+// Info: TraceType
+// ###########################################################################
+
+export class TraceTypeTDNode extends TraceDetailNode {
+  static makeTraceDetail(trace, parent) {
+    return trace;
+  }
+
+  static makeLabel(trace, parent) {
+    const application = allApplications.getApplication(trace.applicationId);
+    const traceType = application.dataProvider.util.getTraceType(trace.traceId);
+    const typeName = TraceType.nameFrom(traceType);
+    return `${typeName} [TraceType]`;
+  }
+
+  // makeIconPath(traceDetail) {
+  //   return 'string.svg';
+  // }
+}
+
+
+// ###########################################################################
+// Info
+// ###########################################################################
+
+export class InfoTDNode extends TraceDetailNode {
+  static makeTraceDetail(trace, parent) {
+    return trace;
+  }
+
+  static makeLabel() {
+    return 'Info';
+  }
+
+  buildChildren() {
+    return this.treeNodeProvider.buildDetailNodes(this.trace, this, [
+      ApplicationTDNode,
+      ContextTDNode,
+      TraceTypeTDNode,
+    ]);
+  }
 }
 
 // ###########################################################################
@@ -180,60 +266,12 @@ export class DebugTDNode extends TraceDetailNode {
 }
 
 // ###########################################################################
-// StaticTrace
-// ###########################################################################
-
-export class StaticTraceTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace, parent) {
-    return trace;
-    // const { staticTraceId } = trace;
-    // const { dataProvider } = application;
-    // return dataProvider.collections.staticTraces.getById(staticTraceId);
-  }
-
-  static makeLabel(trace, parent) {
-    const { staticTraceId } = trace;
-
-    const application = allApplications.getApplication(trace.applicationId);
-    const { dataProvider } = application;
-    const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
-    return `Executed: ${traces.length}x`;
-  }
-  
-  buildChildren() {
-    const { treeNodeProvider, trace } = this;
-    const { staticTraceId } = trace;
-
-    const application = allApplications.getById(trace.applicationId);
-    const { dataProvider } = application;
-    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
-    const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
-
-    // TODO: value nodes
-    // TODO: Push/Pop traces?
-    // TODO: callback args?
-    // TODO: loop start nodes?
-
-    if (hasTraceTypeValue(staticTrace.type)) {
-      return traces?.map(otherTrace => {
-        const label = dataProvider.util.getTraceValue(otherTrace.traceId) + ' ';
-        return new TraceNode(treeNodeProvider, label, otherTrace, this);
-      }) || null;
-    }
-    return null;
-  }
-}
-
-
-// ###########################################################################
 // DetailNodeClasses
 // ###########################################################################
 
 export const DetailNodeClasses = [
-  ApplicationTDNode,
-  ContextTDNode,
-  TypeTDNode,
   StaticTraceTDNode,
+  InfoTDNode,
   // ValueTDNode,
   DebugTDNode
 ];
@@ -246,7 +284,7 @@ export class NavigationTDNode extends TraceDetailNode {
   static getTargetTrace(controlName) {
     return tracePlayback[`get${controlName}`] && tracePlayback[`get${controlName}`]();
   }
-  
+
   init() {
     if (this.targetTrace) {
       // NOTE: description MUST be a string or it won't be properly displayed

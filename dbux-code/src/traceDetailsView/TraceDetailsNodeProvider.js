@@ -21,8 +21,10 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
       const trace = traceSelection.selected;
       // console.debug('refreshed trace', trace.traceId);
       // const application = allApplications.getById(trace.applicationId);
-      const traceNode = this.buildSelectedTraceNode(trace);
-      roots.push(traceNode);
+      roots.push(
+        this.buildSelectedTraceNode(trace),
+        ...this.buildTraceDetailNodes(trace, null)
+      );
     }
     else {
       // add empty node
@@ -46,7 +48,7 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
       ...this.buildNavigationNodes(trace, parent),
 
       // other detail nodes
-      ...this.buildDetailNodes(trace, parent)
+      ...this.buildDetailNodes(trace, parent, DetailNodeClasses)
     ].filter(node => !!node);
 
     return nodes;
@@ -56,9 +58,10 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
   // Detail nodes
   // ###########################################################################
 
-  buildDetailNodes(trace, parent) {
-    return DetailNodeClasses.map(NodeClass => 
-      this.maybeBuildTraceDetailNode(NodeClass, trace, parent));
+  buildDetailNodes(trace, parent, NodeClasses) {
+    return NodeClasses
+      .map(NodeClass => this.maybeBuildTraceDetailNode(NodeClass, trace, parent))
+      .filter(node => !!node);
   }
 
   maybeBuildTraceDetailNode(NodeClass, trace, parent) {

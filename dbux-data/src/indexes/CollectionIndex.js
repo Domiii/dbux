@@ -38,16 +38,17 @@ export default class CollectionIndex<T> {
     }
 
     // for optimization reasons, we are currently only accepting simple number indexes
-    const currentCount = this._byKey.length;
-    if (!Number.isInteger(key) || key < 0 || (key > 1e6 && key < currentCount / 2)) {
-      this.log.error('invalid key for index (currently only dense number spaces are supported):', key);
+    if (!Number.isInteger(key)) {
+      this.log.error('invalid key for index (currently only numbers are supported):', key);
     }
     else {
       const ofKey = (this._byKey[key] = this._byKey[key] || []);
       ofKey.push(entry);
-      if (ofKey.includes(undefined)) {
-        this.log.error('Index contains undefined values', key, entry, ofKey);
-      }
+
+      // sanity check
+      // if (ofKey.includes(undefined)) {
+      //   this.log.error('Index contains undefined values', key, entry, ofKey);
+      // }
     }
   }
 
@@ -62,5 +63,4 @@ export default class CollectionIndex<T> {
   makeKey(dp, entry : T) : number | bool {
     throw new Error(`abstract method not implemented: ${this.constructor.name}.makeKey`);
   }
-
 }

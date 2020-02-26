@@ -88,14 +88,19 @@ export function makeTraceLabel(trace) {
 
   const application = allApplications.getById(trace.applicationId);
 
+  let label;
+
   // custom by-type label
   const traceType = application.dataProvider.util.getTraceType(traceId);
   if (byType[traceType]) {
-    return byType[traceType](trace, application);
+    label = byType[traceType](trace, application);
+  }
+  else {
+    // default trace label
+    label = makeDefaultTraceLabel(trace, application);
   }
 
-  // default trace label
-  return makeDefaultTraceLabel(trace, application);
+  return label.trim();
 }
 
 
