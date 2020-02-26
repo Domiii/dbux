@@ -2,6 +2,7 @@ import { commands } from 'vscode';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
 import { goToTrace } from '../codeNav';
 
@@ -57,8 +58,10 @@ export default class PlaybackController {
       let traces = app.dataProvider.collections.traces.getAll();
       for (let trace of traces) {
         if (!trace) continue;
-        const { runId, contextId, traceId } = trace;
-        info.push({ runId, contextId, traceId });
+        const { runId, contextId, traceId, staticTraceId } = trace;
+        const type = app.dataProvider.util.getTraceType(traceId);
+        const typeName = TraceType.getName(type);
+        info.push({ runId, contextId, traceId, typeName });
       }
       console.table(info);
     }
