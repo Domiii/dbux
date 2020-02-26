@@ -68,10 +68,27 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * "all old versions" (applications that have already been executed again)
       * "all selected"
    * add a checkbox (button) to select "automatically discard older application when executing again"
-* [selectedContextView]
-   * NOTE: a treeView that lets you better understand a partial `execution tree` in the context of the selected trace
+* [traceDetailsView]
+   * [loops] categorize by `loopId` -> `contextId`
+   * [StaticTraceTDNode] of each trace: display more relevant information
+      * be able to cycle through different modes:
+         * value
+         * ancestor context
+            * allow cycling through levels of depth (parent -> grandparent etc)
+         * descendant context
+            * allow cycling through levels of depth (child -> grandchild etc)
+      * optional GroupMode
+         * no grouping (default)
+         * by runId
+         * by contextId
+         * by loopId
+* new button: "Select trace by `traceId`"
+   * NOTE: probably use QuickInput to ask user for id
+   * used for debugging specific traces uses all available visualization tools
+* [contextChildrenView]
+   * treeview that shows partial `execution tree` in the context of the selected trace
    * Nodes:
-      * all child `loop`s + `context`s in order
+      * all child `loop`s + `context`s of current context in order
       * add one node for current trace to show where it is between the other calls
       * group child `contexts` into a new intermediate node, if they all originate from the same `trace`
          * (e.g. `find`, `map`, `forEach`, `reduce` and many more)
@@ -81,14 +98,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * good icons + symbols in all tree nodes
 
 ## TODO (dbux-code + dbux-data; lower priority)
-* add a search bar to `dbuxContextView` (search by `displayName` or `filePath`)
-   * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
-   * when entering search terms, only display matching nodes
-   * keep all necessary parent nodes
-      * NOTE: Cannot currently change VSCode `TreeItem` text color
-      * (gray out any parent node that does not match the search (semi-transparent?))
-   * (when clearing search, stay on selected node)
-   * clear search on `Esc` key press
 * add a button to the top right to toggle (show/hide) all intrusive features
    * includes:
       * hide `codeDeco`
@@ -104,6 +113,15 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
+* bug: `resolveCallIds` is broken in `todomvc`
+* function 可以從 argument trace 的到 call trace（以後再問他）
+* [callbacks]
+   * Problem: we cannot wrap callbacks, as it will break the function's (or possible class's) identity.
+      * Solution: Use a separate map to track callbacks and their points of passage instead
+   * `StaticTraceTDNode` displays Schedule/Push/Pop as separate executions
+* [dbux-cli -> dbux run]
+   * breakpoints in run file don't work anymore unless a debugger statement is added
+* static t
 * [error_handling]
    * add error examples
    * make sure, data is sent, even if error occurs?
@@ -155,40 +173,17 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * idea: just record all variables after line, so rendering is less convoluted?
    * show `x {n_times_executed}` after line, but only if n is different from the previous line
       * show multiple, if there are different numbers for multiple traces of line?
-* [traceDetailsView]
    * [values]
-      * proper string representation of all kinds of values
-      * record types as well?
-   * `navigationNodes`
-      * display better symbols in `previousParent` + `nextParent` if in separate run
-   * [loops] categorize by `loopId` -> `contextId`
-   * of each trace, display information relevant to the `TraceType` (instead of it's `displayName`)
-      * add "selected" icon, if trace is selected
-      * (by-type)
-         * `PushImmediate` -> previous context (partial callstack)
-         * `PopImmediate` -> next context (partial callstack)
-         * `Push/PopCallback` -> schedulerTrace
-         * `hasTraceTypeValue(type)` -> value
-         * `CallExpression` -> call-site
-            * how to render call-site + value in one line?
-               * maybe add a button to toggle single-line/multi-line display of multiple details?
-            * maybe only if they are different call-sites between calls?
-            * use case: polymorphism/callbacks of different origins
-      * other?
-      * sort those by `staticTrace`
-      * only build when opened
-   * better value rendering (e.g. empty string (currently not shown at all); small arrays + objects)
-      * function parameters
-         * need to properly destruct
-            * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
-      * also track `this`
-   * details:
+      * better overall value rendering
+      * track function parameters
+      * track `this`
+   * [InfoTDNode]
       * Push/Pop (of any kind) show next previous trace/context?
-      * [CallbackArg] show `Push/PopCallback` nodes
+      * [CallbackArg] show its `Push/PopCallback` nodes
       * [Push/PopCallback] `schedulerTrace`
       * highlight last+first in run
          * also: for runs originating from callbacks, make it more obvious?
-   * add more helpful hover tooltips to each node
+      * add more helpful hover tooltips to each node
 * [CodeTreeWrapper]
    * long node lists
       * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead 

@@ -8,7 +8,7 @@ function largestOfFour(a) {
   let largest = a[0];
   for (const four of a) {
     if (Math.max(largest) < Math.max(...four)) {
-      largest = four;
+      largest = four; // this line was never called!
     }
   }
   return largest;

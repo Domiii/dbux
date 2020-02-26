@@ -6,25 +6,26 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
 import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
 import { getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import TraceNode from './TraceNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
-  const { contextId } = trace;
-  const { contextId: targetContextId } = targetTrace;
+  // const { contextId } = trace;
+  // const { contextId: targetContextId } = targetTrace;
 
-  if (targetContextId < contextId) {
-    // target context is a parent -> step out
-    return '↑';
-  }
-  else if (targetContextId > contextId) {
-    // target context is a child -> step into
-    return '↓';
-  }
-  else {
+  // if (targetContextId < contextId) {
+  //   // target context is a parent -> step out
+  //   return '↑';
+  // }
+  // else if (targetContextId > contextId) {
+  //   // target context is a child -> step into
+  //   return '↓';
+  // }
+  // else 
+  {
     return originalArrow;
   }
 }
@@ -302,16 +303,6 @@ export class NavigationTDNode extends TraceDetailNode {
 }
 
 export const NavigationNodeClasses = [
-  class NextParentContext extends NavigationTDNode {
-    static get controlName() {
-      return 'NextParentContext';
-    }
-
-    static makeArrow(trace, targetTrace) {
-      return renderTargetTraceArrow(trace, targetTrace, '↗');
-    }
-  },
-
   class NextInContext extends NavigationTDNode {
     static get controlName() {
       return 'NextInContext';
@@ -332,13 +323,13 @@ export const NavigationNodeClasses = [
     }
   },
 
-  class PreviousChildContext extends NavigationTDNode {
+  class NextParentContext extends NavigationTDNode {
     static get controlName() {
-      return 'PreviousChildContext';
+      return 'NextParentContext';
     }
 
     static makeArrow(trace, targetTrace) {
-      return renderTargetTraceArrow(trace, targetTrace, '↙');
+      return renderTargetTraceArrow(trace, targetTrace, '↗');
     }
   },
 
@@ -349,6 +340,16 @@ export const NavigationNodeClasses = [
 
     static makeArrow() {
       return '←';
+    }
+  },
+
+  class PreviousChildContext extends NavigationTDNode {
+    static get controlName() {
+      return 'PreviousChildContext';
+    }
+
+    static makeArrow(trace, targetTrace) {
+      return renderTargetTraceArrow(trace, targetTrace, '↙');
     }
   },
 

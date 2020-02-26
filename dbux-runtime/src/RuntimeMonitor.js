@@ -9,6 +9,14 @@ import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 
+function _inheritsLoose(subClass, superClass) { 
+  if (superClass.prototype) {
+    subClass.prototype = Object.create(superClass.prototype); 
+    subClass.prototype.constructor = subClass;
+    subClass.__proto__ = superClass;
+  }
+}
+
 /**
  * 
  */
@@ -62,8 +70,6 @@ export default class RuntimeMonitor {
 
     return programMonitor;
   }
-
-
 
   // ###########################################################################
   // public interface
@@ -126,7 +132,8 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   makeCallbackWrapper(schedulerContextId, schedulerTraceId, inProgramStaticTraceId, cb) {
-    return (...args) => {
+    // return WrappedClazz;
+    const wrappedCb = (...args) => {
       /**
        * We need this so we can always make sure we can link things back to the scheduler,
        * even if the callback declaration is not inline.
@@ -134,12 +141,14 @@ export default class RuntimeMonitor {
       const callbackContextId = this.pushCallback(schedulerContextId, schedulerTraceId, inProgramStaticTraceId);
 
       try {
-        return cb(...args);
+        return cb(...args) || this;
       }
       finally {
         this.popCallback(callbackContextId, inProgramStaticTraceId);
       }
     };
+    _inheritsLoose(wrappedCb, cb);
+    return wrappedCb;
   }
 
   /**
@@ -303,6 +312,7 @@ export default class RuntimeMonitor {
   }
 
   traceExpression(programId, inProgramStaticTraceId, value) {
+    // if (value instanceof Function && !isClass(value)) {
     if (value instanceof Function) {
       // scheduled callback
       const cb = value;
@@ -329,7 +339,7 @@ export default class RuntimeMonitor {
     // trace
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
-    const trace = traceCollection.trace(contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument);
+    const trace = traceCollection.traceExpressionResult(contextId, runId, inProgramStaticTraceId, cb, TraceType.CallbackArgument);
     const { traceId: schedulerTraceId } = trace;
 
     const wrapper = this.makeCallbackWrapper(contextId, schedulerTraceId, inProgramStaticTraceId, cb);
