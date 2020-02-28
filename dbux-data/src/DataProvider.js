@@ -12,7 +12,7 @@ import deserialize from 'dbux-common/src/serialization/deserialize';
 import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
-import TraceType, { isTraceExpression } from '../../dbux-common/src/core/constants/TraceType';
+import TraceType, { hasTraceValue } from '../../dbux-common/src/core/constants/TraceType';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
@@ -97,8 +97,8 @@ class TraceCollection extends Collection<Trace> {
         beforeCalls.push(trace);
         // console.log(' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
       }
-      else if (isTraceExpression(traceType)) {
-        // NOTE: `isTraceExpression` to filter out Push/PopCallback
+      else if (hasTraceValue(traceType)) {
+        // NOTE: `hasTraceValue` to filter out Push/PopCallback
         if (staticTrace.resultCallId) {
           // call results: reference their call by `resultCallId` and vice versa by `resultId`
           // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument

@@ -124,8 +124,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 
 ## TODO (other)
 * bugs:
-   * resolveCallIds is bugged in `todomvc`
-   * removing items doesn't work in `todomvc`
    * navigation is not intuitive enough yet
       * its a bit weird that we always have to step "backward" into functions from calls -> fix it
          * test w/ `view.bindToggleItem`
