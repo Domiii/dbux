@@ -6,6 +6,7 @@ import { makeTraceLabel } from 'dbux-data/src/helpers/traceLabels';
 import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import CallStackNode, { EmptyNode, BarrierNode } from './CallStackNode';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 const { log, debug, warn, error: logError } = newLogger('CallStackNodeProvider');
 
@@ -27,9 +28,9 @@ export class CallStackNodeProvider {
   update = (trace, sender) => {
     if (sender === 'callStackViewController') return;
     if (!trace) {
-      trace = traceSelection.selected;
+      this._allNodes = [];
     }
-    this._allNodes = this._getCallStackOfTrace(trace);
+    else this._allNodes = this._getCallStackOfTrace(trace);
     this.refresh();
   }
 
@@ -145,7 +146,27 @@ export class CallStackNodeProvider {
     const dp = allApplications.getById(trace.applicationId).dataProvider;
     const { contextId } = trace;
     if (searchMode === 'parent') {
-      return dp.util.getFirstTraceOfContext(contextId).traceId - 1;
+      const nextTrace = dp.callGraph.getPreviousParentContext(trace.traceId);
+      if (!nextTrace) {
+        return null;
+      }
+      return nextTrace.callId || nextTrace.traceId;
+
+      // if (trace.type === TraceType.PushCallback || trace.type === TraceType.PopCallback) {
+      //   // temporarily solve callstack of callback
+      //   // TODO: fit new callback structure
+      //   const nextTrace = dp.callGraph.getPreviousParentContext(trace.traceId);
+      //   if (trace.parnetContextId === nextTrace.parentContextId) {
+      //     return dp.callGraph.getPreviousParentContext(nextTrace.traceId).traceId;
+      //   }
+      //   else return nextTrace.traceId;
+      // }
+      // else {
+      //   const nextTraceId = dp.util.getFirstTraceOfContext(contextId).traceId - 1;
+      //   const nextTrace = dp.collections.traces.getById(nextTraceId);
+      //   if (!nextTrace) return null;
+      //   return nextTrace.callId || nextTraceId;
+      // }
     }
     if (searchMode === 'scheduler') {
       const context = dp.collections.executionContexts.getById(contextId);

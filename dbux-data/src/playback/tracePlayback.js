@@ -110,32 +110,32 @@ export class TracePlayback {
 
   getPreviousInContext(trace = this.currentTrace) {
     const dp = this._getDataProviderOfTrace(trace);
-    return dp.callgraph.getPreviousInContext(trace.traceId);
+    return dp.callGraph.getPreviousInContext(trace.traceId);
   }
 
   getNextInContext(trace = this.currentTrace) {
     const dp = this._getDataProviderOfTrace(trace);
-    return dp.callgraph.getNextInContext(trace.traceId);
+    return dp.callGraph.getNextInContext(trace.traceId);
   }
 
   getPreviousParentContext(trace = this.currentTrace) {
     const dp = this._getDataProviderOfTrace(trace);
-    return dp.callgraph.getPreviousParentContext(trace.traceId);
+    return dp.callGraph.getPreviousParentContext(trace.traceId);
   }
 
   getNextParentContext(trace = this.currentTrace) {
     const dp = this._getDataProviderOfTrace(trace);
-    return dp.callgraph.getNextParentContext(trace.traceId);
+    return dp.callGraph.getNextParentContext(trace.traceId);
   }
 
   getPreviousChildContext(trace = this.currentTrace) {
     const dp = this._getDataProviderOfTrace(trace);
-    return dp.callgraph.getPreviousChildContext(trace.traceId);
+    return dp.callGraph.getPreviousChildContext(trace.traceId);
   }
 
   getNextChildContext(trace = this.currentTrace) {
     const dp = this._getDataProviderOfTrace(trace);
-    return dp.callgraph.getNextChildContext(trace.traceId);
+    return dp.callGraph.getNextChildContext(trace.traceId);
   }
 
   // ###########################################################################

@@ -2,7 +2,7 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import Trace from 'dbux-common/src/core/data/Trace';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
+import { makeTraceLabel } from 'dbux-data/src/helpers/traceLabels';
 import ContextNode, { EmptyNode } from './ContextNode';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 
@@ -61,13 +61,12 @@ export class ContextNodeProvider {
 
     // build node if not exist
     if (!this._contextNodesByApp[applicationId][runId]) {
-      const context = this.getContextByTrace(trace);
+      const { contextId } = this.getContextByTrace(trace);
       const app = allApplications.getById(applicationId);
-      const displayName = makeContextLabel(context, app);
-      const { contextId } = context;
+      const label = makeTraceLabel(trace, app);
 
       const newNode = new ContextNode(
-        displayName,
+        label,
         applicationId,
         runId,
         contextId,

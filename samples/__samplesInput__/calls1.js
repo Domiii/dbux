@@ -1,7 +1,7 @@
 function main() {
   const c = add(1, 2);
   const d = mul(
-    add(c, 3),
+    add(c, mul(2, 3)),
     add(5, mul(6, [7, 8].reduce((a, x) => a + x)))
   );
   console.log(
@@ -18,5 +18,4 @@ function mul(a, b) {
   return a * b;
 }
 
-debugger
 main();
