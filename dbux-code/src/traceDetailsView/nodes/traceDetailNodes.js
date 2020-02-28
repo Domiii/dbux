@@ -1,6 +1,6 @@
 import { TreeItemCollapsibleState, TreeItem } from 'vscode';
 import omit from 'lodash/omit';
-import TraceType, { hasTraceTypeValue } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { isTraceExpression } from 'dbux-common/src/core/constants/TraceType';
 import Application from 'dbux-data/src/applications/Application';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
@@ -99,7 +99,8 @@ export class StaticTraceTDNode extends TraceDetailNode {
     // TODO: loop start nodes?
 
     const staticType = staticTrace.type;
-    if (hasTraceTypeValue(staticType)) {
+    if (isTraceExpression(staticType)) {
+      // expressions have return values
       return traces?.map(otherTrace => {
         const valueString = dataProvider.util.getTraceValue(otherTrace.traceId) + ' ';
         let label;

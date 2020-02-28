@@ -12,7 +12,7 @@ import deserialize from 'dbux-common/src/serialization/deserialize';
 import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
-import TraceType, { hasTraceTypeValue } from '../../dbux-common/src/core/constants/TraceType';
+import TraceType, { isTraceExpression } from '../../dbux-common/src/core/constants/TraceType';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
@@ -95,25 +95,29 @@ class TraceCollection extends Collection<Trace> {
       const traceType = this.dp.util.getTraceType(traceId);
       if (traceType === TraceType.BeforeCallExpression) {
         beforeCalls.push(trace);
+        // console.log(' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
       }
-      else {
+      else if (isTraceExpression(traceType)) {
+        // NOTE: `isTraceExpression` to filter out Push/PopCallback
         if (staticTrace.resultCallId) {
           // call results: reference their call by `resultCallId` and vice versa by `resultId`
           // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
           const beforeCall = beforeCalls.pop();
+          // console.log(' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
-            logError('staticTrace.resultCallId !== beforeCall.staticTraceId', staticTrace, beforeCall);
+            logError('for resultCallId', 'staticTrace.resultCallId !== beforeCall.staticTraceId -', staticTrace.displayName, trace, beforeCall);
+            beforeCalls.push(beforeCall);   // something is wrong -> push it back
           }
-
-          beforeCall.resultId = traceId;
-          trace.resultCallId = beforeCall.traceId;
+          else {
+            beforeCall.resultId = traceId;
+            trace.resultCallId = beforeCall.traceId;
+          }
         }
-        if (staticTrace.callId && hasTraceTypeValue(traceType)) {
-          // NOTE: `hasTraceTypeValue` has filtered out Push/PopCallback
+        if (staticTrace.callId) {
           // call args: reference their call by `callId`
-          const beforeCall = beforeCalls[beforeCalls.length - 1];          
+          const beforeCall = beforeCalls[beforeCalls.length - 1];
           if (staticTrace.callId !== beforeCall.staticTraceId) {
-            logError('staticTrace.callId !== beforeCall.staticTraceId', staticTrace, beforeCall);
+            logError('for callId', 'staticTrace.callId !== beforeCall.staticTraceId', staticTrace, beforeCall);
           }
           trace.callId = beforeCall.traceId;
         }
@@ -138,6 +142,11 @@ class ValueCollection extends Collection<ValueRef> {
 
 
 export default class DataProvider {
+  /**
+   * Used for serialization
+   */
+  version = 1;
+
   // /**
   //  * Usage example: `dataProvider.collections.staticContexts.getById(id)`
   //  * 
@@ -331,5 +340,38 @@ export default class DataProvider {
     if (listeners) {
       listeners.forEach((cb) => cb(data));
     }
+  }
+
+  /**
+   * Serialize all raw data into a simple JS object.
+   * Usage: `JSON.stringify(dataProvider.serialize())`.
+   */
+  serialize() {
+    const collections = Object.values(this.collections);
+    return {
+      version: this.version,
+      collections: Object.fromEntries(collections.map(collection => {
+        const {
+          name,
+          _all: entries
+        } = collection;
+
+        return [
+          name,
+          entries
+        ];
+      }))
+    };
+  }
+
+  /**
+   * Use: `dataProvider.deserialize(JSON.parse(stringFromFile))`
+   */
+  deserialize(data) {
+    const { version, collections } = data;
+    if (version !== this.version) {
+      throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
+    }
+    this.addData(collections);
   }
 }

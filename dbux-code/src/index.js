@@ -15,6 +15,7 @@ import { initTraceDetailsController } from './traceDetailsView/traceDetailsContr
 import { initResources } from './resources';
 import { initTraceSelection } from './codeSelection';
 import { initEditorTracesController } from './editorTracesView/editorTracesController';
+import { initUserCommands } from './userCommands';
 
 
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -29,6 +30,7 @@ function activate(context) {
     initServer(context);
     initCodeApplications(context);
     initCodeDeco(context);
+    initUserCommands(context);
     
     initTraceSelection(context);
     initTraceDetailsController(context);
