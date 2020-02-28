@@ -47,6 +47,10 @@
 		},
 		"commands": [
 			{
+				"command": "dbux.export",
+				"title": "Export Dbux Data"
+			},
+			{
 				"command": "dbuxContextView.gotoEntry",
 				"title": "Goto",
 				"icon": {

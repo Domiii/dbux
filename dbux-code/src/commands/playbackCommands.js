@@ -9,7 +9,7 @@ const { log, debug, warn, error: logError } = newLogger('PlaybackCommands');
  * @param {vscode.ExtensionContext} context 
  * @param {PlaybackController} playbackController 
  */
-export function initPlaybackCommands(context, playbackController) {
+export default function initPlaybackCommands(context, playbackController) {
   registerCommand(context,
     'dbuxPlayback.previousTrace',
     () => playbackController.previousTrace()
