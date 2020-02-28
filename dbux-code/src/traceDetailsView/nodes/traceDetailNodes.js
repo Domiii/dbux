@@ -13,18 +13,18 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
-  // const { contextId } = trace;
-  // const { contextId: targetContextId } = targetTrace;
+  const { contextId } = trace;
+  const { contextId: targetContextId } = targetTrace;
 
-  // if (targetContextId < contextId) {
-  //   // target context is a parent -> step out
-  //   return '↑';
-  // }
-  // else if (targetContextId > contextId) {
-  //   // target context is a child -> step into
-  //   return '↓';
-  // }
-  // else 
+  if (targetContextId < contextId) {
+    // target context is a parent -> step out
+    return '↑';
+  }
+  else if (targetContextId > contextId) {
+    // target context is a child -> step into
+    return '↓';
+  }
+  else 
   {
     return originalArrow;
   }
