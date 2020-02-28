@@ -37,7 +37,7 @@
 				},
 				{
 					"id": "dbuxContextView",
-					"name": "Run Contexts"
+					"name": "Call Graph Roots"
 				},
 				{
 					"id": "dbuxEditorTracesView",

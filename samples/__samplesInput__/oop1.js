@@ -2,6 +2,8 @@ function renderMessage(msg) {
   console.log(msg);
 }
 
+debugger;
+
 class Animal {
   speak() {
   }
@@ -38,8 +40,9 @@ function pickRandom(arr) {
 
 function main() {
   const animals = Array(20).fill(0).map(i => {
-    const AnimalClass = pickRandom(AnimalClasses);
-    return new AnimalClass();
+    // const AnimalClass = pickRandom(AnimalClasses);
+    // return new pickRandom(AnimalClasses)();
+    return new AnimalClasses[Math.floor(Math.random() * AnimalClasses.length)]();
   });
 
   for (const animal of animals) {

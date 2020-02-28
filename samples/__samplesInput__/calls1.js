@@ -1,5 +1,3 @@
-// console.log('start');
-
 function main() {
   const c = add(1, 2);
   const d = mul(
@@ -20,4 +18,5 @@ function mul(a, b) {
   return a * b;
 }
 
+debugger
 main();

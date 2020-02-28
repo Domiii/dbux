@@ -12,8 +12,7 @@ import deserialize from 'dbux-common/src/serialization/deserialize';
 import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
-import TraceType, { isTracePop } from '../../dbux-common/src/core/constants/TraceType';
-import CallGraph from './callGraph/CallGraph';
+import TraceType, { hasTraceTypeValue } from '../../dbux-common/src/core/constants/TraceType';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
@@ -79,8 +78,13 @@ class TraceCollection extends Collection<Trace> {
   }
 
   postAdd(traces: Trace[]) {
-    // build dynamic call expression tree
-    // this.resolveCallIds(traces);
+    try {
+      // build dynamic call expression tree
+      this.resolveCallIds(traces);
+    }
+    catch (err) {
+      logError('resolveCallIds failed', traces, err);
+    }
   }
 
   resolveCallIds(traces: Trace[]) {
@@ -97,15 +101,20 @@ class TraceCollection extends Collection<Trace> {
           // call results: reference their call by `resultCallId` and vice versa by `resultId`
           // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
           const beforeCall = beforeCalls.pop();
-          console.assert(staticTrace.resultCallId === beforeCall.staticTraceId);
+          if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
+            logError('staticTrace.resultCallId !== beforeCall.staticTraceId', staticTrace, beforeCall);
+          }
 
           beforeCall.resultId = traceId;
           trace.resultCallId = beforeCall.traceId;
         }
-        if (staticTrace.callId) {
+        if (staticTrace.callId && hasTraceTypeValue(traceType)) {
+          // NOTE: `hasTraceTypeValue` has filtered out Push/PopCallback
           // call args: reference their call by `callId`
-          const beforeCall = beforeCalls[beforeCalls.length - 1];
-          console.assert(staticTrace.callId === beforeCall.staticTraceId);
+          const beforeCall = beforeCalls[beforeCalls.length - 1];          
+          if (staticTrace.callId !== beforeCall.staticTraceId) {
+            logError('staticTrace.callId !== beforeCall.staticTraceId', staticTrace, beforeCall);
+          }
           trace.callId = beforeCall.traceId;
         }
       }
@@ -169,9 +178,6 @@ export default class DataProvider {
 
     this.queries = new Queries();
     this.indexes = new Indexes();
-
-    // call graph
-    this.callgraph = new CallGraph(this);
   }
 
   // ###########################################################################

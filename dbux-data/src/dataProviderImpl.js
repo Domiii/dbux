@@ -1,4 +1,7 @@
 import DataProvider from './DataProvider';
+
+import CallGraph from './callGraph/CallGraph';
+
 import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
 import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
 import RootContextsIndex from './impl/indexes/RootContextsIndex';
@@ -21,6 +24,9 @@ import CallArgsByCallIndex from './impl/indexes/CallArgsByCallIndex';
 
 export function newDataProvider(application) {
   const dataProvider = new DataProvider(application);
+
+  // call graph
+  dataProvider.callgraph = new CallGraph(dataProvider);
   
   // indexes
   dataProvider.addIndex(new StaticContextsByFileIndex());

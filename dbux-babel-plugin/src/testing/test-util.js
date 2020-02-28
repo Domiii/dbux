@@ -1,11 +1,11 @@
-import pluginTester from 'babel-plugin-tester/dist/plugin-tester';
-import dbuxBabelPlugin from '..';
-import defaultsDeep from 'lodash/defaultsDeep';
-import mergeWith from 'lodash/mergeWith';
-import { babelConfigNext, babelConfigEs5 } from './babelConfigs';
 import path from 'path';
 import fs from 'fs';
+import pluginTester from 'babel-plugin-tester/dist/plugin-tester';
+import defaultsDeep from 'lodash/defaultsDeep';
+import mergeWith from 'lodash/mergeWith';
 import { transformSync } from '@babel/core';
+import { babelConfigNext, babelConfigEs5 } from './babelConfigs';
+import dbuxBabelPlugin from '..';
 
 const { parse } = path;
 
