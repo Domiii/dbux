@@ -74,7 +74,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 * [traceDetailsView]
    * [loops] categorize by `loopId` -> `contextId`
    * [StaticTraceTDNode] of each trace: display more relevant information
-      * be able to cycle through different modes:
+      * offer multiple `TraceDisplayMode`s:
          * value
          * ancestor context
             * allow cycling through levels of depth (parent -> grandparent etc)
@@ -85,11 +85,13 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
             * label = combination of call (with arguments filled in) + time of callback execution?
             * maybe even sort by `createdAt` in reverse order
             * very useful e.g. in `$on` function inside `todomvc`!
+         * get bindings of relevant variables in vicinity and display those?
+            * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
       * optional GroupMode
          * no grouping (default)
          * by runId
-         * by contextId
-         * by loopId
+         * by contextId + loopId
+         * by parentContextId (e.g. for `reduce` etc.)?
 * new button: "Select trace by `traceId`"
    * NOTE: probably use QuickInput to ask user for id
    * used for debugging specific traces uses all available visualization tools
@@ -121,9 +123,7 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
-* clear button for currently selected trace
 * bugs:
-   * dbux bugs out when no editor is open
    * `resolveCallIds` is broken in setTimeout1 as well as todomvc
       * seems to be related to callbacks
    * traces at cursor does not work for any callbacks in `todomvc`'s `view`
@@ -147,15 +147,12 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * make sure, data is sent, even if error occurs?
    * if error occured, expression result might not be available
       * show `TraceType.BeforeExpression`, if result is not available
-* [UI_problems]
+* [UI]
    * improve trace label
       * if it has expression trace children, replace AST nodes with result values
       * allow to easily get all `args` of `CallExpression` traces
          * group by `callId` (i.e. `beforeCallTraceId`)
-   * Executed x:
-      * Value of Push/PopCallback is shown as `undefined`
-      * get bindings of any variables in vicinity and display them
-         * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
+   * clear button for currently selected trace
 * [instrumentation]
    * [loops]
       * new data types:
