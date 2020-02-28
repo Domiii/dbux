@@ -12,8 +12,7 @@ import deserialize from 'dbux-common/src/serialization/deserialize';
 import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
-import TraceType, { isTracePop, hasTraceTypeValue } from '../../dbux-common/src/core/constants/TraceType';
-import CallGraph from './CallGraph';
+import TraceType, { hasTraceTypeValue } from '../../dbux-common/src/core/constants/TraceType';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
@@ -179,9 +178,6 @@ export default class DataProvider {
 
     this.queries = new Queries();
     this.indexes = new Indexes();
-
-    // call graph
-    this.callgraph = new CallGraph(this);
   }
 
   // ###########################################################################

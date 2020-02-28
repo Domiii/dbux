@@ -99,6 +99,12 @@ export default {
     return traces[traces.length - 1];
   },
 
+  isFirstTraceOfRun(dp: DataProvider, traceId) {
+    const { runId } = dp.collections.traces.getById(traceId);
+    const firstTraceId = dp.util.getFirstTraceOfRun(runId).traceId;
+    return firstTraceId === traceId;
+  },
+
   doesTraceHaveValue(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId, type: dynamicType } = trace;
@@ -210,7 +216,7 @@ export default {
     const { staticTraceId } = argTrace;
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { callId: callStaticId } = staticTrace;
-    
+
     return callStaticId && dp.collections.staticTraces.getById(callStaticId) || null;
   },
 
