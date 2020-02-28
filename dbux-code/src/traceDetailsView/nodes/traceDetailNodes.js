@@ -10,6 +10,7 @@ import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import TraceNode from './TraceNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import { InfoTDNode } from './traceInfoNodes';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
@@ -123,102 +124,6 @@ export class StaticTraceTDNode extends TraceDetailNode {
 }
 
 // ###########################################################################
-// Info: Application
-// ###########################################################################
-
-export class ApplicationTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace) {
-    const application = allApplications.getApplication(trace.applicationId);
-    const fpath = application.dataProvider.util.getTraceFilePath(trace.traceId);
-    if (allApplications.selection.data.getApplicationCountAtPath(fpath) < 2) {
-      return null;
-    }
-    return application;
-  }
-
-  static makeLabel(application: Application) {
-    return `${application.getRelativeFolder()} [Application]`;
-  }
-
-  get application() {
-    return this.entry;
-  }
-
-  handleClick() {
-    // TODO: go to Application's first trace
-    // goToTrace(firstTrace);
-  }
-
-  // makeIconPath() {
-  //   return 'string.svg';
-  // }
-}
-
-// ###########################################################################
-// Info: Context
-// ###########################################################################
-
-export class ContextTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace) {
-    const application = allApplications.getApplication(trace.applicationId);
-    return application.dataProvider.util.getTraceContext(trace.traceId);
-  }
-
-  static makeLabel(context, parent) {
-    const application = allApplications.getApplication(parent.trace.applicationId);
-    return `${makeContextLabel(context, application)} [Context]`;
-  }
-
-  // makeIconPath(application: Application) {
-  //   return 'string.svg';
-  // }
-}
-
-// ###########################################################################
-// Info: TraceType
-// ###########################################################################
-
-export class TraceTypeTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace, parent) {
-    return trace;
-  }
-
-  static makeLabel(trace, parent) {
-    const application = allApplications.getApplication(trace.applicationId);
-    const traceType = application.dataProvider.util.getTraceType(trace.traceId);
-    const typeName = TraceType.nameFrom(traceType);
-    return `${typeName} [TraceType]`;
-  }
-
-  // makeIconPath(traceDetail) {
-  //   return 'string.svg';
-  // }
-}
-
-
-// ###########################################################################
-// Info
-// ###########################################################################
-
-export class InfoTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace, parent) {
-    return trace;
-  }
-
-  static makeLabel() {
-    return 'Info';
-  }
-
-  buildChildren() {
-    return this.treeNodeProvider.buildDetailNodes(this.trace, this, [
-      ApplicationTDNode,
-      ContextTDNode,
-      TraceTypeTDNode,
-    ]);
-  }
-}
-
-// ###########################################################################
 // Debug
 // ###########################################################################
 
@@ -267,16 +172,6 @@ export class DebugTDNode extends TraceDetailNode {
   }
 }
 
-// ###########################################################################
-// DetailNodeClasses
-// ###########################################################################
-
-export const DetailNodeClasses = [
-  StaticTraceTDNode,
-  InfoTDNode,
-  // ValueTDNode,
-  DebugTDNode
-];
 
 // ###########################################################################
 // Navigation nodes
@@ -363,4 +258,17 @@ export const NavigationNodeClasses = [
       return renderTargetTraceArrow(trace, targetTrace, '↖');
     }
   }
+];
+
+
+
+// ###########################################################################
+// DetailNodeClasses
+// ###########################################################################
+
+export const DetailNodeClasses = [
+  StaticTraceTDNode,
+  InfoTDNode,
+  // ValueTDNode,
+  DebugTDNode
 ];

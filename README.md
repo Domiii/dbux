@@ -72,7 +72,6 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * "all selected"
    * add a checkbox (button) to select "automatically discard older application when executing again"
 * [traceDetailsView]
-   * [loops] categorize by `loopId` -> `contextId`
    * [StaticTraceTDNode] of each trace: display more relevant information
       * offer multiple `TraceDisplayMode`s:
          * value
@@ -80,21 +79,19 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
             * allow cycling through levels of depth (parent -> grandparent etc)
          * descendant context
             * allow cycling through levels of depth (child -> grandchild etc)
-         * [for callbacks only]
-            * show trace only if callback has a PushCallback
+         * [for callbacks only] "Callback mode"
+            * show any trace only if callback has a PushCallback
             * label = combination of call (with arguments filled in) + time of callback execution?
             * maybe even sort by `createdAt` in reverse order
             * very useful e.g. in `$on` function inside `todomvc`!
-         * get bindings of relevant variables in vicinity and display those?
+         * related info: get bindings of relevant nearby variables and display those?
             * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
       * optional GroupMode
          * no grouping (default)
          * by runId
          * by contextId + loopId
          * by parentContextId (e.g. for `reduce` etc.)?
-* new button: "Select trace by `traceId`"
-   * NOTE: probably use QuickInput to ask user for id
-   * used for debugging specific traces uses all available visualization tools
+         * combination of the above
 * [contextChildrenView]
    * treeview that shows partial `execution tree` in the context of the selected trace
    * Nodes:
@@ -104,10 +101,15 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
          * (e.g. `find`, `map`, `forEach`, `reduce` and many more)
 * [configuration + settings]
    * automatically store `BaseTreeViewNodeProvider.idsCollapsibleState` so it won't reset when re-opening
-* [UI_design]
-   * good icons + symbols in all tree nodes
+* [UI]
+   * add a button to `selectedTraceView`: clear currently selected trace
+   * add a button to `selectedTraceView`: "Select trace by `traceId`"
+      * NOTE: probably use QuickInput to ask user for id
+      * used for debugging specific traces uses all available visualization tools
 
 ## TODO (dbux-code + dbux-data; lower priority)
+* [UI design]
+   * good icons + symbols in all tree nodes
 * add a button to the top right to toggle (show/hide) all intrusive features
    * includes:
       * hide `codeDeco`
@@ -123,32 +125,13 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
-* bugs:
-   * navigation is not intuitive enough yet
-      * its a bit weird that we always have to step "backward" into functions from calls -> fix it
-         * test w/ `view.bindToggleItem`
-      * also improve "fast navigation" in general
-         * more intuitive controls
-         * better guiding for the different possible choices of children, parents and other relevant traces?
-* prepare a function that allows 從 argumentTrace 得到 callTrace
+* keep testing navigation in todomvc (especially: getting from event handler to store methods)
 * [callbacks]
    * Problem: we cannot wrap callbacks, as it will break the function's (or possible class's) identity.
       * Solution: Use a separate map to track callbacks and their points of passage instead
    * `StaticTraceTDNode` displays Schedule/Push/Pop as separate executions
 * [dbux-cli -> dbux run]
    * breakpoints in run file don't work anymore unless a debugger statement is added
-* static t
-* [error_handling]
-   * add error examples
-   * make sure, data is sent, even if error occurs?
-   * if error occured, expression result might not be available
-      * show `TraceType.BeforeExpression`, if result is not available
-* [UI]
-   * improve trace label
-      * if it has expression trace children, replace AST nodes with result values
-      * allow to easily get all `args` of `CallExpression` traces
-         * group by `callId` (i.e. `beforeCallTraceId`)
-   * clear button for currently selected trace
 * [instrumentation]
    * [loops]
       * new data types:
@@ -172,6 +155,21 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * when resuming, parent is not set
    * add one trace for each function parameter
    * [promises] keep track of `schedulerTraceId`
+* [values]
+   * better overall value rendering
+   * track function parameters
+   * track `this`
+* [InfoTDNode]
+   * Push/Pop (of any kind) show next previous trace/context?
+   * [CallbackArg] -> show `Push/PopCallback` nodes
+   * [Push/PopCallback] -> `schedulerTrace`
+   * [hasValue()] -> value
+   * [hasArguments()] -> args
+* [error_handling]
+   * add error examples
+   * make sure, data is sent, even if error occurs?
+   * if error occured, expression result might not be available
+      * show `TraceType.BeforeExpression`, if result is not available
 * [codeDeco]
    * capture *all* variables (e.g. outer-most `object` of `MemberExpression`) *after* expression has executed
       * Problem: multiple contexts (e.g. when looking at a callback and wanting to see scheduler scope variables)
@@ -186,22 +184,11 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * idea: just record all variables after line, so rendering is less convoluted?
    * show `x {n_times_executed}` after line, but only if n is different from the previous line
       * show multiple, if there are different numbers for multiple traces of line?
-   * [values]
-      * better overall value rendering
-      * track function parameters
-      * track `this`
-   * [InfoTDNode]
-      * Push/Pop (of any kind) show next previous trace/context?
-      * [CallbackArg] show its `Push/PopCallback` nodes
-      * [Push/PopCallback] `schedulerTrace`
-      * highlight last+first in run
-         * also: for runs originating from callbacks, make it more obvious?
-      * add more helpful hover tooltips to each node
 * [CodeTreeWrapper]
    * long node lists
       * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead 
 * [cursorTracesView]
-   * [performance] allow `getTracesAt` to deal with long iterationsof prepping them all at once
+   * [performance] allow `getTracesAt` to deal with long iterations; not loading them all at once
          * also applies to `dataView`
       * `iterateTracesFront`
       * `iterateTracesBack`
