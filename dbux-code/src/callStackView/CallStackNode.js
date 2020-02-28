@@ -1,18 +1,23 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import path from 'path';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import traceSelection from 'dbux-data/src/traceSelection';
 
 export default class CallStackNode {
   constructor(
     label,
     description,
     applicationId,
-    traceId,
+    trace,
+    searchMode,
+    parentStatus,
     callStackNodeProvider
   ) {
     // node data
     this.applicationId = applicationId;
-    this.traceId = traceId;
+    this.trace = trace;
+    this.searchMode = searchMode;
+    this.parentStatus = parentStatus;
     this.callStackNodeProvider = callStackNodeProvider;
 
     // treeItem data
@@ -24,18 +29,26 @@ export default class CallStackNode {
     this.command = {
       command: 'dbuxCallStackView.itemClick',
       arguments: [this]
-    };
-    this.contextValue = 'callStackNode';
+    };    
 
     // TODO: fix icon path
-    this.iconPath = {
-      light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-      dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
-    };
+    if (traceSelection.isSelected(trace)) {
+      this.iconPath = {
+        light: path.join(__dirname, '..', '..', '..', 'resources', 'light', 'dependency.svg'),
+        dark: path.join(__dirname, '..', '..', '..', 'resources', 'dark', 'dependency.svg')
+      };
+    }
+    else {
+      this.iconPath = ' ';
+    }
+  }
+
+  get contextValue() {
+    return `callStackNode.${this.parentStatus}.${this.searchMode}`;
   }
 
   get tooltip() {
-    return `Trace#${this.applicationId}:${this.traceId}`;
+    return `Trace#${this.applicationId}:${this.trace.traceId}`;
   }
 }
 

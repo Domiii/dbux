@@ -30,7 +30,6 @@ let TraceType = {
 TraceType = new Enum(TraceType);
 
 const pushTypes = new Array(TraceType.getCount()).map(_ => false);
-pushTypes[TraceType.StartProgram] = true;
 pushTypes[TraceType.PushImmediate] = true;
 pushTypes[TraceType.PushCallback] = true;
 pushTypes[TraceType.Resume] = true;

@@ -13,7 +13,7 @@ import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
 import TraceType, { isTracePop } from '../../dbux-common/src/core/constants/TraceType';
-import CallGraph from './CallGraph';
+import CallGraph from './callGraph/CallGraph';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
@@ -80,7 +80,7 @@ class TraceCollection extends Collection<Trace> {
 
   postAdd(traces: Trace[]) {
     // build dynamic call expression tree
-    this.resolveCallIds(traces);
+    // this.resolveCallIds(traces);
   }
 
   resolveCallIds(traces: Trace[]) {

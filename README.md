@@ -53,6 +53,9 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
+* [applicationDisplayName]
+   * find unique key of 'entryPointPath' of all selectedApplications
+      * do while selectedApplicationChanged (in _notifyChanged)
 * [callstackView]
    * when clicking a node:
       * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
