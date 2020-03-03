@@ -1,11 +1,12 @@
 # application
 /projects
-.DS_Store
 __samplesOutput__
 _testOut
+_data.json
 
 
-
+# OS
+.DS_Store
 
 # Logs
 logs

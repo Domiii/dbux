@@ -64,8 +64,9 @@ valueTypes[TraceType.ExpressionResult] = true;
 valueTypes[TraceType.CallArgument] = true;
 valueTypes[TraceType.CallbackArgument] = true;
 valueTypes[TraceType.CallExpressionResult] = true;
+valueTypes[TraceType.PopCallback] = true;
 
-export function hasTraceTypeValue(traceType) {
+export function hasTraceValue(traceType) {
   return valueTypes[traceType];
 }
 

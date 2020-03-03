@@ -25,6 +25,12 @@ import CallArgsByCallIndex from './impl/indexes/CallArgsByCallIndex';
 
 export function newDataProvider(application) {
   const dataProvider = new DataProvider(application);
+  
+  // util
+  const utilNames = Object.keys(dataProviderUtil);
+  dataProvider.util = Object.fromEntries(
+    utilNames.map(name => [name, dataProviderUtil[name].bind(null, dataProvider)])
+  );
 
   // call graph
   dataProvider.callGraph = new CallGraph(dataProvider);
@@ -55,13 +61,6 @@ export function newDataProvider(application) {
   // queries
   dataProvider.addQuery(new ProgramIdByFilePathQuery());
   dataProvider.addQuery(new ProgramFilePathByTraceIdQuery());
-  
-
-  // hackfix: add utilities
-  const utilNames = Object.keys(dataProviderUtil);
-  dataProvider.util = Object.fromEntries(
-    utilNames.map(name => [name, dataProviderUtil[name].bind(null, dataProvider)])
-  );
 
   return dataProvider;
 }

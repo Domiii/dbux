@@ -113,6 +113,10 @@
 					"light": "resources/light/pause.svg",
 					"dark": "resources/dark/pause.svg"
 				}
+			},
+			{
+				"command": "dbux.exportApplicationData",
+				"title": "Dbux: Export application data"
 			}
 		],
 		"menus": {

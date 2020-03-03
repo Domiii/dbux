@@ -61,6 +61,10 @@ export function runAllSnapshotTests(codes, filename, plugin, shouldWriteResultTo
   });
 }
 
+function formatNoWhitespace(code) {
+  return code.replace(/\s+/g, ' ');
+}
+
 /**
  * Snapshot-tests the given code (in given filename and w/ given title and optional config) using
  * es-next and es5.
@@ -68,13 +72,14 @@ export function runAllSnapshotTests(codes, filename, plugin, shouldWriteResultTo
 export function runSnapshotTests(code, filename, codeTitle, shouldWriteResultToFile, customTestConfig, versions = null) {
   // code = '/* #################################################################################### */\n' + code;
 
-  const configs = versions ?
+  let configs = versions ?
     Object.fromEntries(versions.map(v => [v, AllConfigs[v]])) :
     AllConfigs;
 
-  const configArr = Object.values(configs);
-  if (!configArr.length || configArr.some(cfg => !cfg)) {
-    throw new Error('invalid `versions` parameter (empty or invalid versions provided - see `AllConfigs` for valid set) - ' + versions);
+  const configArr = configs && Object.values(configs);
+  if (!configArr?.length || configArr.some(cfg => !cfg)) {
+    configs = { default: {} };  // no configuration
+    // throw new Error('invalid `versions` parameter (empty or invalid versions provided - see `AllConfigs` for valid set) - ' + versions);
   }
 
   for (const version in configs) {
@@ -82,6 +87,7 @@ export function runSnapshotTests(code, filename, codeTitle, shouldWriteResultToF
     const babelOptions = Object.assign({
       filename
     }, babelConfig);
+
     const title = fixTitle(codeTitle, version);
     const defaultConfig = {
       plugin: customTestConfig.plugin || dbuxBabelPlugin,
@@ -100,12 +106,17 @@ export function runSnapshotTests(code, filename, codeTitle, shouldWriteResultToF
     pluginTester(testConfig);
 
     for (const test of testConfig.tests) {
-      expect(test.output || test.snapshot,
-        'In `babel-plugin-tester`\'s each `tests` config needs either `output` or `snapshot` to be set; ' +
-        'else it will assume that the plugin does not modify the code. If your code does not modify the code, set `tests: [{ output: code, snapshot: false}]` explicitely. ' +
-        '(NOTE: The problem with plugin-tester\'s default assumption is that babel might still modify the code even if the plugin does not - ' +
-        'e.g. when targeting `es5`, babel will prefix the code with a `"use strict";` causing the test to fail.)'
-      ).toBeTruthy();
+      if (!test.snapshot) {
+        console.warn(`'babel-plugin-tester' is not good in dealing with plugins that are not supposed to change their output.\
+        Consider using 'justRunMyPlugin' instead.`);
+        test.formatResult = test.formatResult || formatNoWhitespace;
+      }
+      // expect(test.output || test.snapshot,
+      //   'In `babel-plugin-tester`\'s each `tests` config needs either `output` or `snapshot` to be set; ' +
+      //   'else it will assume that the plugin does not modify the code. If your code does not modify the code, set `tests: [{ output: code, snapshot: false}]` explicitely. ' +
+      //   '(NOTE: The problem with plugin-tester\'s default assumption is that babel might still modify the code even if the plugin does not - ' +
+      //   'e.g. when targeting `es5`, babel will prefix the code with a `"use strict";` causing the test to fail.)'
+      // ).toBeTruthy();
     }
 
     if (shouldWriteResultToFile) {

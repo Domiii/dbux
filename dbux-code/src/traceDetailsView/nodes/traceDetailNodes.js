@@ -1,6 +1,6 @@
 import { TreeItemCollapsibleState, TreeItem } from 'vscode';
 import omit from 'lodash/omit';
-import TraceType, { hasTraceTypeValue } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
 import Application from 'dbux-data/src/applications/Application';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
@@ -10,6 +10,7 @@ import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import TraceNode from './TraceNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import { InfoTDNode } from './traceInfoNodes';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
@@ -99,7 +100,8 @@ export class StaticTraceTDNode extends TraceDetailNode {
     // TODO: loop start nodes?
 
     const staticType = staticTrace.type;
-    if (hasTraceTypeValue(staticType)) {
+    if (hasTraceValue(staticType)) {
+      // expressions have return values
       return traces?.map(otherTrace => {
         const valueString = dataProvider.util.getTraceValue(otherTrace.traceId) + ' ';
         let label;
@@ -118,102 +120,6 @@ export class StaticTraceTDNode extends TraceDetailNode {
       }) || null;
     }
     return null;
-  }
-}
-
-// ###########################################################################
-// Info: Application
-// ###########################################################################
-
-export class ApplicationTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace) {
-    const application = allApplications.getApplication(trace.applicationId);
-    const fpath = application.dataProvider.util.getTraceFilePath(trace.traceId);
-    if (allApplications.selection.data.getApplicationCountAtPath(fpath) < 2) {
-      return null;
-    }
-    return application;
-  }
-
-  static makeLabel(application: Application) {
-    return `${application.getRelativeFolder()} [Application]`;
-  }
-
-  get application() {
-    return this.entry;
-  }
-
-  handleClick() {
-    // TODO: go to Application's first trace
-    // goToTrace(firstTrace);
-  }
-
-  // makeIconPath() {
-  //   return 'string.svg';
-  // }
-}
-
-// ###########################################################################
-// Info: Context
-// ###########################################################################
-
-export class ContextTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace) {
-    const application = allApplications.getApplication(trace.applicationId);
-    return application.dataProvider.util.getTraceContext(trace.traceId);
-  }
-
-  static makeLabel(context, parent) {
-    const application = allApplications.getApplication(parent.trace.applicationId);
-    return `${makeContextLabel(context, application)} [Context]`;
-  }
-
-  // makeIconPath(application: Application) {
-  //   return 'string.svg';
-  // }
-}
-
-// ###########################################################################
-// Info: TraceType
-// ###########################################################################
-
-export class TraceTypeTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace, parent) {
-    return trace;
-  }
-
-  static makeLabel(trace, parent) {
-    const application = allApplications.getApplication(trace.applicationId);
-    const traceType = application.dataProvider.util.getTraceType(trace.traceId);
-    const typeName = TraceType.nameFrom(traceType);
-    return `${typeName} [TraceType]`;
-  }
-
-  // makeIconPath(traceDetail) {
-  //   return 'string.svg';
-  // }
-}
-
-
-// ###########################################################################
-// Info
-// ###########################################################################
-
-export class InfoTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace, parent) {
-    return trace;
-  }
-
-  static makeLabel() {
-    return 'Info';
-  }
-
-  buildChildren() {
-    return this.treeNodeProvider.buildDetailNodes(this.trace, this, [
-      ApplicationTDNode,
-      ContextTDNode,
-      TraceTypeTDNode,
-    ]);
   }
 }
 
@@ -266,16 +172,6 @@ export class DebugTDNode extends TraceDetailNode {
   }
 }
 
-// ###########################################################################
-// DetailNodeClasses
-// ###########################################################################
-
-export const DetailNodeClasses = [
-  StaticTraceTDNode,
-  InfoTDNode,
-  // ValueTDNode,
-  DebugTDNode
-];
 
 // ###########################################################################
 // Navigation nodes
@@ -362,4 +258,17 @@ export const NavigationNodeClasses = [
       return renderTargetTraceArrow(trace, targetTrace, '↖');
     }
   }
+];
+
+
+
+// ###########################################################################
+// DetailNodeClasses
+// ###########################################################################
+
+export const DetailNodeClasses = [
+  StaticTraceTDNode,
+  InfoTDNode,
+  // ValueTDNode,
+  DebugTDNode
 ];

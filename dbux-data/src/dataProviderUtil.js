@@ -1,4 +1,4 @@
-import { hasDynamicTypes, hasTraceTypeValue } from 'dbux-common/src/core/constants/TraceType';
+import { hasDynamicTypes, hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
 import DataProvider from './DataProvider';
 import { newLogger } from 'dbux-common/src/log/logger';
@@ -109,14 +109,14 @@ export default {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId, type: dynamicType } = trace;
     if (dynamicType) {
-      return hasTraceTypeValue(dynamicType);
+      return hasTraceValue(dynamicType);
     }
     return dp.util.doesStaticTraceHaveValue(staticTraceId);
   },
 
   doesStaticTraceHaveValue(dp: DataProvider, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    return hasTraceTypeValue(staticTrace.type);
+    return hasTraceValue(staticTrace.type);
   },
 
   getTraceValue(dp: DataProvider, traceId) {
@@ -223,7 +223,7 @@ export default {
 
   // ###########################################################################
   // trace grouping
-  // ######hasTraceTypeValue#############################################################
+  // ###########################################################################
 
   /**
    * Groups traces by TraceType, as well as staticTraceId.

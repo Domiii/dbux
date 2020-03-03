@@ -12,7 +12,9 @@ const TraceInstrumentationType = new Enum({
   ExpressionResult: 2,
   ExpressionNoValue: 3,
   Statement: 4,
-  Block: 5
+  Block: 5,
+  Loop: 6,
+  LoopBlock: 7
 });
 
 const traceCfg = (() => {
@@ -22,7 +24,9 @@ const traceCfg = (() => {
     ExpressionResult,
     ExpressionNoValue,
     Statement,
-    Block
+    Block,
+    Loop,
+    LoopBlock
   } = TraceInstrumentationType;
 
   return {
@@ -113,27 +117,25 @@ const traceCfg = (() => {
     // loops
     // ########################################
     ForStatement: [
-      NoTrace,
-      [['test', ExpressionResult], ['update', ExpressionResult], ['body', Block]]
+      Loop,
+      [['test', ExpressionResult], ['update', ExpressionResult], ['body', LoopBlock]]
     ],
     ForInStatement: [
-      // TODO: trace `left` value
-      NoTrace,
-      [['body', Block]]
+      Loop,
+      [['body', LoopBlock]]
     ],
     ForOfStatement: [
-      // TODO: trace `left` value
-      NoTrace,
-      [['body', Block]]
+      Loop,
+      [['body', LoopBlock]]
     ],
     DoWhileLoop: [
       // TODO: currently disabled because babel doesn't like it; probably a babel bug?
-      NoTrace,
-      [['test', ExpressionResult], ['body', Block]]
+      Loop,
+      [['test', ExpressionResult], ['body', LoopBlock]]
     ],
     WhileStatement: [
-      NoTrace,
-      [['test', ExpressionResult], ['body', Block]]
+      Loop,
+      [['test', ExpressionResult], ['body', LoopBlock]]
     ],
 
     // ########################################
@@ -271,6 +273,12 @@ const enterInstrumentors = {
     // else {
     //   // insert at the top of existing block
     // }
+  },
+  Loop(path, state) {
+    
+  },
+  LoopBlock(path, state) {
+
   }
 };
 

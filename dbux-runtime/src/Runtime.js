@@ -195,15 +195,20 @@ export default class Runtime {
     // }
   }
 
-  push(contextId) {
+  push(contextId, isInterruptable = false) {
     // this._previousPoppedContextId = null;
     this._executingStack.push(contextId);
+
+    if (isInterruptable) {
+      // start with a resume context
+      this._markWaiting(contextId);
+    }
 
     const context = executionContextCollection.getById(contextId);
     const staticContext = staticContextCollection.getById(context.staticContextId);
     const name = staticContext.displayName || '';
     const typeName = ExecutionContextType.nameFromForce(context.contextType);
-    // console.debug('->', context.runId, contextId, `[${typeName}] ${name}`);
+    console.debug('->', context.runId, contextId, `[${typeName}] ${name}`);
   }
 
   pop(contextId) {
@@ -211,7 +216,7 @@ export default class Runtime {
     const staticContext = staticContextCollection.getById(context.staticContextId);
     const name = staticContext.displayName || '';
     const typeName = ExecutionContextType.nameFromForce(context.contextType);
-    // console.debug('<-', context.runId, contextId, `[${typeName}] ${name}`);
+    console.debug('<-', context.runId, contextId, `[${typeName}] ${name}`);
 
     let stack = this._executingStack;
     let stackPos;

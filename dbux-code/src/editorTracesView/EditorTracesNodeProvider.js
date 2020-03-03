@@ -20,7 +20,7 @@ export default class EditorTracesNodeProvider extends BaseTreeViewNodeProvider {
     // console.warn('details refresh');
     this.where = getCursorLocation();
 
-    let roots;
+    let roots = [];
 
     if (this.where) {
       // all traces available at cursor in editor
@@ -29,14 +29,14 @@ export default class EditorTracesNodeProvider extends BaseTreeViewNodeProvider {
         pos
       } = this.where;
 
-      roots = [
+      roots.push(
         ...allApplications.selection.data.mapApplicationsOfFilePath(
           fpath, (application, programId) => {
             const traceNodes = this.buildTraceNodes(programId, pos, application, null);
             return traceNodes || EmptyArray;
           }
         )
-      ];
+      );
     }
 
     if (!roots.length) {

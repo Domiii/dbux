@@ -21,7 +21,7 @@ export default class ProgramMonitor {
     const inProgramStaticId = 1;
     this._runtimeMonitor = runtimeMonitor;
     this._staticProgramContext = staticProgramContext;
-    this._programContextId = this.pushImmediate(inProgramStaticId, ProgramStartTraceId);
+    this._programContextId = this.pushImmediate(inProgramStaticId, ProgramStartTraceId, false);
   }
 
   /**
@@ -39,8 +39,8 @@ export default class ProgramMonitor {
   }
 
 
-  pushImmediate(inProgramStaticId, traceId) {
-    return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticId, traceId);
+  pushImmediate(inProgramStaticId, traceId, isInterruptable) {
+    return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticId, traceId, isInterruptable);
   }
 
   popImmediate(contextId, traceId) {

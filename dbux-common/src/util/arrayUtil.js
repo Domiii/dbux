@@ -2,6 +2,7 @@ import countBy from 'lodash/countBy';
 import sortBy from 'lodash/sortBy';
 import map from 'lodash/map';
 import xor from 'lodash/xor';
+import mergeWith from 'lodash/mergeWith';
 
 export const EmptyArray = Object.freeze([]);
 
@@ -37,4 +38,15 @@ export function getOrCreateArrayOfArray(arr, index) {
 export function pushArrayOfArray(arr, index, ...items) {
   const nestedArr = getOrCreateArrayOfArray(arr, index);
   nestedArr.push(...items);
+}
+
+export function mergeConcatArray(...inputs) {
+  return mergeWith(...inputs,
+    function customizer(dst, src) {
+      if (Array.isArray(dst)) {
+        return dst.concat(src);
+      }
+      return undefined;
+    }
+  );
 }
