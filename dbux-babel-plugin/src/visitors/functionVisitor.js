@@ -20,9 +20,9 @@ function addResumeContext(bodyPath, state, staticId) {
 // builders + templates
 // ###########################################################################
 
-function buildPushImmediate(contextId, dbux, staticId, traceId) {
+function buildPushImmediate(contextId, dbux, staticId, traceId, isInterruptable) {
   // TODO: use @babel/template instead
-  return buildSource(`const ${contextId} = ${dbux}.pushImmediate(${staticId}, ${traceId});`);
+  return buildSource(`const ${contextId} = ${dbux}.pushImmediate(${staticId}, ${traceId}, ${isInterruptable});`);
 }
 
 function buildPopImmediate(contextId, dbux, traceId) {
@@ -49,26 +49,26 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
   const { ids: { dbux }, genContextIdName } = state;
   const contextIdVar = genContextIdName(bodyPath);
 
-  let pushImmediate = buildPushImmediate(contextIdVar, dbux, staticId, pushTraceId);
-  let popImmediate = buildPopImmediate(contextIdVar, dbux, popTraceId);
+  let pushes = buildPushImmediate(contextIdVar, dbux, staticId, pushTraceId, !!staticResumeId);
+  let pops = buildPopImmediate(contextIdVar, dbux, popTraceId);
   if (staticResumeId) {
     // this is an interruptable function -> push + pop "resume contexts"
-    pushImmediate = [
+    pushes = [
+      ...pushes,
       pushResumeTemplate({
         dbux,
         resumeStaticContextId: t.numericLiteral(staticResumeId),
         traceId: t.numericLiteral(pushTraceId)
-      }),
-      ...pushImmediate
+      })
     ];
 
-    popImmediate = [
-      ...popImmediate,
+    pops = [
       popResumeTemplate({
         dbux,
         // traceId: t.numericLiteral(popTraceId)
         // contextId: contextIdVar
-      })
+      }),
+      ...pops
     ];
   }
 
@@ -80,8 +80,8 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
 
   // wrap the function in a try/finally statement
   bodyPath.replaceWith(buildBlock([
-    ...pushImmediate,
-    buildWrapTryFinally(body, popImmediate)
+    ...pushes,
+    buildWrapTryFinally(body, pops)
   ]));
 }
 
