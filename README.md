@@ -131,9 +131,10 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
       * Solution: Use a separate map to track callbacks and their points of passage instead
    * `StaticTraceTDNode` displays Schedule/Push/Pop as separate executions
 * [dbux-cli -> dbux run]
-   * breakpoints in run file don't work anymore unless a debugger statement is added
+   * breakpoints in dbux-run don't work anymore unless at least one debugger statement is added
 * [instrumentation]
    * [loops]
+      * capture loop variables in BlockStart
       * new data types:
          * `staticLoop`
          * `loop`
@@ -156,9 +157,9 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
    * add one trace for each function parameter
    * [promises] keep track of `schedulerTraceId`
 * [values]
-   * better overall value rendering
    * track function parameters
    * track `this`
+   * better overall value rendering
 * [InfoTDNode]
    * Push/Pop (of any kind) show next previous trace/context?
    * [CallbackArg] -> show `Push/PopCallback` nodes
