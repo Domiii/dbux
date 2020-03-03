@@ -8,6 +8,7 @@ import RootContextsIndex from './impl/indexes/RootContextsIndex';
 import FirstTracesIndex from './impl/indexes/FirstTracesIndex';
 import FirstContextsInRunsIndex from './impl/indexes/FirstContextsInRunsIndex';
 import TracesByContextIndex from './impl/indexes/TracesByContextIndex';
+import TracesByParentContextIndex from './impl/indexes/TracesByParentContextIndex';
 import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
 
 import VisitedStaticTracesByFileIndex from './impl/indexes/VisitedStaticTracesByFileIndex';
@@ -32,7 +33,7 @@ export function newDataProvider(application) {
   );
 
   // call graph
-  dataProvider.callgraph = new CallGraph(dataProvider);
+  dataProvider.callGraph = new CallGraph(dataProvider);
   
   // indexes
   dataProvider.addIndex(new StaticContextsByFileIndex());
@@ -45,6 +46,7 @@ export function newDataProvider(application) {
 
   dataProvider.addIndex(new TracesByFileIndex());
   dataProvider.addIndex(new TracesByContextIndex());
+  dataProvider.addIndex(new TracesByParentContextIndex());
   dataProvider.addIndex(new TracesByStaticTraceIndex());
   dataProvider.addIndex(new TracesByStaticContextIndex());
   dataProvider.addIndex(new TracesByRunIdIndex());
