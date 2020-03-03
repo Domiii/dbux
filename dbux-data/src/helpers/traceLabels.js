@@ -1,5 +1,6 @@
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { makeContextLabel } from './contextLabels';
+import allApplications from '../applications/allApplications';
 
 function makeTraceContextLabel(trace, application) {
   const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
@@ -15,7 +16,7 @@ function makeTypeNameLabel(traceId, application) {
 function makeCalleeTraceLabel(trace, application) {
   const calleeTrace = application.dataProvider.util.getCalleeStaticTrace(trace.traceId);
   if (calleeTrace) {
-    return ` (arg of ${calleeTrace.displayName})`;
+    return `   (arg of ${calleeTrace.displayName})`;
   }
   return '';
 }
@@ -80,17 +81,37 @@ const byType = {
   }
 };
 
-export function makeTraceLabel(trace, application) {
+export function makeTraceLabel(trace) {
   const {
     traceId
   } = trace;
 
+  const application = allApplications.getById(trace.applicationId);
+
+  let label;
+
   // custom by-type label
   const traceType = application.dataProvider.util.getTraceType(traceId);
   if (byType[traceType]) {
-    return byType[traceType](trace, application);
+    label = byType[traceType](trace, application);
+  }
+  else {
+    // default trace label
+    label = makeDefaultTraceLabel(trace, application);
   }
 
-  // default trace label
-  return makeDefaultTraceLabel(trace, application);
+  return label.trim();
+}
+
+
+/**
+ * Returns time, relative to some time origin.
+ *  TODO: get time relative to global time origin, not per-application time origin
+ *      ideally: starting time of first application in set.
+ */
+export function getTraceCreatedAt(trace) {
+  const application = allApplications.getById(trace.applicationId);
+  const { createdAt, dataProvider } = application;
+  const context = dataProvider.util.getTraceContext(trace.traceId);
+  return (context.createdAt - createdAt) / 1000;
 }

@@ -6,10 +6,14 @@ export class TraceSelection {
   selected = null;
   history = new TraceSelectionHistory();
 
-  selectTrace(selected) {
+  isSelected(trace) {
+    return this.selected === trace;
+  }
+
+  selectTrace(selected, sender = null, args) {
     this.selected = selected;
 
-    this._emitter.emit('selectionChanged', selected);
+    this._emitter.emit('selectionChanged', selected, sender, args);
   }
 
   onTraceSelectionChanged(cb) {

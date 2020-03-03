@@ -29,7 +29,7 @@ const traceCustomizationsByType = {
   [TraceType.BeforeExpression]: traceBeforeExpression,
 
   [TraceType.Await]: tracePathEnd,
-  [TraceType.Resume]: tracePathEnd,
+  // [TraceType.Resume]: tracePathEnd,
   [TraceType.BlockStart]: tracePathStart,
   [TraceType.BlockEnd]: tracePathEnd
 };
@@ -80,7 +80,7 @@ function getTraceDisplayName(path, state) {
   }
   else {
     const str = extractSourceStringWithoutComments(path.node, state);
-    displayName = getPresentableString(str, 30);
+    displayName = getPresentableString(str);
   }
   return displayName;
 }
@@ -332,8 +332,8 @@ export default function injectDbuxState(programPath, programState) {
       }
 
       // context-sensitive data
-      trace._calleeId = cfg?.calleeId;
-      trace._resultCalleeId = cfg?.resultCalleeId;
+      trace._callId = cfg?.callId;
+      trace._resultCallId = cfg?.resultCallId;
 
       // misc data
       trace._traceId = _traceId;

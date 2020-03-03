@@ -9,6 +9,14 @@ import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 
+function _inheritsLoose(subClass, superClass) { 
+  if (superClass.prototype) {
+    subClass.prototype = Object.create(superClass.prototype); 
+    subClass.prototype.constructor = subClass;
+    subClass.__proto__ = superClass;
+  }
+}
+
 /**
  * 
  */
@@ -63,8 +71,6 @@ export default class RuntimeMonitor {
     return programMonitor;
   }
 
-
-
   // ###########################################################################
   // public interface
   // ###########################################################################
@@ -72,7 +78,7 @@ export default class RuntimeMonitor {
   /**
    * Very similar to `pushCallback`
    */
-  pushImmediate(programId, inProgramStaticId, traceId) {
+  pushImmediate(programId, inProgramStaticId, traceId, isInterruptable) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -83,17 +89,10 @@ export default class RuntimeMonitor {
       stackDepth, runId, parentContextId, programId, inProgramStaticId
     );
     const { contextId } = context;
-    this._runtime.push(contextId);
+    this._runtime.push(contextId, isInterruptable);
 
     // trace
     traceCollection.trace(contextId, runId, traceId);
-
-    // const staticContext = staticContextCollection.getContext(programId, inProgramStaticId);
-    // const { isInterruptable } = staticContext;
-    // if (isInterruptable) {
-    //   // start with a resume context
-    //   this.pushResume(inProgramStaticId, null, traceId);
-    // }
 
     return contextId;
   }
@@ -126,20 +125,30 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   makeCallbackWrapper(schedulerContextId, schedulerTraceId, inProgramStaticTraceId, cb) {
-    return (...args) => {
+    // return WrappedClazz;
+    const _this = this;
+    const wrappedCb = function wrappedCb(...args) {
       /**
        * We need this so we can always make sure we can link things back to the scheduler,
        * even if the callback declaration is not inline.
        */
-      const callbackContextId = this.pushCallback(schedulerContextId, schedulerTraceId, inProgramStaticTraceId);
+      const callbackContextId = _this.pushCallback(schedulerContextId, schedulerTraceId, inProgramStaticTraceId);
 
+      let resultValue;
       try {
-        return cb(...args);
+        resultValue = cb(...args);
+        if (this && resultValue === undefined) {
+          // not quite sure why - that's what babel preset-env does
+          return this;
+        }
+        return resultValue;
       }
       finally {
-        this.popCallback(callbackContextId, inProgramStaticTraceId);
+        _this.popCallback(callbackContextId, inProgramStaticTraceId, resultValue);
       }
     };
+    _inheritsLoose(wrappedCb, cb);
+    return wrappedCb;
   }
 
   /**
@@ -167,7 +176,7 @@ export default class RuntimeMonitor {
     return contextId;
   }
 
-  popCallback(callbackContextId, inProgramTraceId) {
+  popCallback(callbackContextId, inProgramTraceId, resultValue) {
     // sanity checks
     const context = executionContextCollection.getById(callbackContextId);
     if (!context) {
@@ -182,7 +191,7 @@ export default class RuntimeMonitor {
     this._pop(callbackContextId);
 
     // trace
-    traceCollection.trace(callbackContextId, runId, inProgramTraceId, TraceType.PopCallback);
+    traceCollection.traceWithResultValue(callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue);
   }
 
 
@@ -191,25 +200,27 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   preAwait(programId, inProgramStaticId, inProgramStaticTraceId) {
-    // pop resume context
-    this.popResume();
-
     // push await context
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
-    const parentContextId = this._runtime.peekCurrentContextId();
+    const resumeContextId = this._runtime.peekCurrentContextId();
+
+    // trace
+    traceCollection.trace(resumeContextId, runId, inProgramStaticTraceId);
 
     const context = executionContextCollection.await(
-      stackDepth, runId, parentContextId, programId, inProgramStaticId
+      stackDepth, runId, resumeContextId, programId, inProgramStaticId
     );
     const { contextId: awaitContextId } = context;
 
-    // push await
-    this._runtime.push(awaitContextId);
+    // NOTE: no need to push onto the stack; since its a virtual context: its not on the stack
+    // this._runtime.push(awaitContextId);
+
     this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
 
-    // trace
-    traceCollection.trace(awaitContextId, runId, inProgramStaticTraceId);
+
+    // pop resume context
+    this.popResume();
 
 
     return awaitContextId;
@@ -223,7 +234,7 @@ export default class RuntimeMonitor {
   /**
    * Resume given stack
    */
-  postAwait(awaitResult, awaitContextId, resumeInProgramStaticTraceId) {
+  postAwait(programId, awaitResult, awaitContextId, resumeInProgramStaticTraceId) {
     // sanity checks
     const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
@@ -233,14 +244,14 @@ export default class RuntimeMonitor {
       // resume after await
       this._runtime.resumeWaitingStack(awaitContextId);
 
-      // pop from stack
-      this._pop(awaitContextId);
+      // NOTE: no need to pop from stack; since its a virtual context: its not on the stack
+      // this._pop(awaitContextId);
 
       // resume: push new Resume context
       const { staticContextId } = context;
       const staticContext = staticContextCollection.getById(staticContextId);
       const { resumeId: resumeStaticContextId } = staticContext;
-      this.pushResume(resumeStaticContextId, resumeInProgramStaticTraceId);
+      this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
     }
 
     return awaitResult;
@@ -251,7 +262,7 @@ export default class RuntimeMonitor {
    * (1) the function itself (when pushing the initial "resume context" on function call)
    * (2) an await context (when resuming after an await)
    */
-  pushResume(resumeStaticContextId, inProgramStaticTraceId, dontTrace = false) {
+  pushResume(programId, resumeStaticContextId, inProgramStaticTraceId, dontTrace = false) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -261,16 +272,16 @@ export default class RuntimeMonitor {
     // NOTE: we don't really need a `schedulerTraceId`, since the parent context is always the calling function
     const schedulerTraceId = null;
     const resumeContext = executionContextCollection.resume(
-      stackDepth, runId, parentContextId, resumeStaticContextId, schedulerTraceId
+      stackDepth, runId, parentContextId, programId, resumeStaticContextId, schedulerTraceId
     );
 
     const { contextId: resumeContextId } = resumeContext;
     this._runtime.push(resumeContextId);
 
-    if (!dontTrace) { // NOTE: We don't want to trace when pushing the default Resume context of an interruptable function
+    // if (!dontTrace) { // NOTE: We don't want to trace when pushing the default Resume context of an interruptable function
       // trace
-      traceCollection.trace(resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
-    }
+    traceCollection.trace(resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
+    // }
   }
 
   popResume() {
@@ -301,22 +312,23 @@ export default class RuntimeMonitor {
   }
 
   traceExpression(programId, inProgramStaticTraceId, value) {
-    const contextId = this._runtime.peekCurrentContextId();
-    const runId = this._runtime.getCurrentRunId();
-    traceCollection.traceExpressionResult(contextId, runId, inProgramStaticTraceId, value);
-    return value;
-  }
-
-  traceArg(programId, inProgramStaticTraceId, value) {
+    // if (value instanceof Function && !isClass(value)) {
     if (value instanceof Function) {
       // scheduled callback
       const cb = value;
       return this.traceCallbackArgument(programId, inProgramStaticTraceId, cb);
     }
     else {
-      // just a normal expression
-      return this.traceExpression(programId, inProgramStaticTraceId, value);
+      const contextId = this._runtime.peekCurrentContextId();
+      const runId = this._runtime.getCurrentRunId();
+      traceCollection.traceWithResultValue(contextId, runId, inProgramStaticTraceId, null, value);
+      return value;
     }
+  }
+
+  traceArg(programId, inProgramStaticTraceId, value) {
+    // currently behaves exactly the same as traceExpression
+    return this.traceExpression(programId, inProgramStaticTraceId, value);
   }
 
 
@@ -327,7 +339,7 @@ export default class RuntimeMonitor {
     // trace
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
-    const trace = traceCollection.trace(contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument);
+    const trace = traceCollection.traceWithResultValue(contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument, cb);
     const { traceId: schedulerTraceId } = trace;
 
     const wrapper = this.makeCallbackWrapper(contextId, schedulerTraceId, inProgramStaticTraceId, cb);

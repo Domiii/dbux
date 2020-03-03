@@ -1,5 +1,6 @@
 import { window } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import ValueRefCategory from 'dbux-common/src/core/constants/ValueRefCategory';
 
 // TODO: use proper theming
 
@@ -76,6 +77,9 @@ const StylingsByName = {
       },
     }
   },
+
+  BeforeCallExpression: false,    // don't display
+
   ExpressionResult: {
     styling: {
       after: {
@@ -106,7 +110,7 @@ const StylingsByName = {
     styling: {
       after: {
         contentText: '↳',
-        color: 'gray',
+        color: 'orange',
       }
     }
   },
@@ -114,7 +118,7 @@ const StylingsByName = {
     styling: {
       before: {
         contentText: '⤴',
-        color: 'gray',
+        color: 'orange',
       }
     }
   },
@@ -142,6 +146,11 @@ const StylingsByName = {
 
 const decoNamesByType = {
   CallExpressionResult(dataProvider, staticTrace, trace) {
+    const valueRef = dataProvider.util.getTraceValueRef(trace.traceId);
+    if (valueRef?.category === ValueRefCategory.Function) {
+      return 'CallbackArgument';
+    }
+    
     const previousTrace = dataProvider.collections.traces.getById(trace.traceId - 1);
     if (previousTrace.contextId > trace.contextId) {
       return 'CallExpressionStep';

@@ -195,9 +195,14 @@ export default class Runtime {
     // }
   }
 
-  push(contextId) {
+  push(contextId, isInterruptable = false) {
     // this._previousPoppedContextId = null;
     this._executingStack.push(contextId);
+
+    if (isInterruptable) {
+      // start with a resume context
+      this._markWaiting(contextId);
+    }
 
     const context = executionContextCollection.getById(contextId);
     const staticContext = staticContextCollection.getById(context.staticContextId);

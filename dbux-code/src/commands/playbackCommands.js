@@ -9,7 +9,17 @@ const { log, debug, warn, error: logError } = newLogger('PlaybackCommands');
  * @param {vscode.ExtensionContext} context 
  * @param {PlaybackController} playbackController 
  */
-export function initPlaybackCommands(context, playbackController) {
+export default function initPlaybackCommands(context, playbackController) {
+  registerCommand(context,
+    'dbuxPlayback.previousTrace',
+    () => playbackController.previousTrace()
+  );
+  
+  registerCommand(context,
+    'dbuxPlayback.nextTrace',
+    () => playbackController.nextTrace()
+  );
+  
   registerCommand(context,
     'dbuxPlayback.play',
     () => playbackController.play()
@@ -20,23 +30,4 @@ export function initPlaybackCommands(context, playbackController) {
     () => playbackController.pause()
   );
 
-  registerCommand(context,
-    'dbuxPlayback.previousTrace',
-    () => playbackController.previousTrace()
-  );
-
-  registerCommand(context,
-    'dbuxPlayback.nextTrace',
-    () => playbackController.nextTrace()
-  );
-
-  registerCommand(context,
-    'dbuxPlayback.previousTraceInContext',
-    () => playbackController.previousTraceInContext()
-  );
-
-  registerCommand(context,
-    'dbuxPlayback.nextTraceInContext',
-    () => playbackController.nextTraceInContext()
-  );
 }

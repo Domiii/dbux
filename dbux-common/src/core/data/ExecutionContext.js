@@ -19,7 +19,7 @@ export default class ExecutionContext {
   contextId : number;
   staticContextId : number;
   orderId : number;
-  schedulerId : number;
+  schedulerTraceId : number;
   createdAt: number;
 
   /**

@@ -19,25 +19,85 @@
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "dbux-view-container",
+					"id": "dbuxViewContainer",
 					"title": "Dbux",
 					"icon": "media/dep.svg"
 				}
 			]
 		},
 		"views": {
-			"dbux-view-container": [
+			"dbuxViewContainer": [
 				{
-					"id": "dbuxContextView",
-					"name": ""
+					"id": "dbuxCallStackView",
+					"name": "Call Stack"
 				},
 				{
 					"id": "dbuxTraceDetailsView",
 					"name": "Trace Details"
+				},
+				{
+					"id": "dbuxContextView",
+					"name": "Call Graph Roots"
+				},
+				{
+					"id": "dbuxEditorTracesView",
+					"name": "Traces at Cursor"
 				}
 			]
 		},
 		"commands": [
+			{
+				"command": "dbux.export",
+				"title": "Export Dbux Data"
+			},
+			{
+				"command": "dbuxContextView.gotoEntry",
+				"title": "Goto",
+				"icon": {
+					"light": "resources/light/boolean.svg",
+					"dark": "resources/dark/boolean.svg"
+				}
+			},
+			{
+				"command": "dbuxContextView.itemClick",
+				"title": "Click"
+			},
+			{
+				"command": "dbuxCallStackView.showParent",
+				"title": "Switch to Parent",
+				"icon": {
+					"light": "resources/light/boolean.svg",
+					"dark": "resources/dark/boolean.svg"
+				}
+			},
+			{
+				"command": "dbuxCallStackView.showScheduler",
+				"title": "Switch to Scheduler",
+				"icon": {
+					"light": "resources/light/string.svg",
+					"dark": "resources/dark/string.svg"
+				}
+			},
+			{
+				"command": "dbuxCallStackView.itemClick",
+				"title": "Click"
+			},
+			{
+				"command": "dbuxPlayback.previousTrace",
+				"title": "Start",
+				"icon": {
+					"light": "resources/light/previousTrace.svg",
+					"dark": "resources/dark/previousTrace.svg"
+				}
+			},
+			{
+				"command": "dbuxPlayback.nextTrace",
+				"title": "Pause",
+				"icon": {
+					"light": "resources/light/nextTrace.svg",
+					"dark": "resources/dark/nextTrace.svg"
+				}
+			},
 			{
 				"command": "dbuxPlayback.play",
 				"title": "Start",
@@ -55,80 +115,8 @@
 				}
 			},
 			{
-				"command": "dbuxPlayback.previousTrace",
-				"title": "Previous Trace",
-				"icon": {
-					"light": "resources/light/previousTrace.svg",
-					"dark": "resources/dark/previousTrace.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.nextTrace",
-				"title": "Next Trace",
-				"icon": {
-					"light": "resources/light/nextTrace.svg",
-					"dark": "resources/dark/nextTrace.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.previousTraceInContext",
-				"title": "Step Back",
-				"icon": {
-					"light": "resources/light/previousTraceInContext.svg",
-					"dark": "resources/dark/previousTraceInContext.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.nextTraceInContext",
-				"title": "Step Over",
-				"icon": {
-					"light": "resources/light/nextTraceInContext.svg",
-					"dark": "resources/dark/nextTraceInContext.svg"
-				}
-			},
-			{
-				"command": "dbuxContextView.previous",
-				"title": "Previous",
-				"icon": {
-					"light": "resources/light/previous.svg",
-					"dark": "resources/dark/previous.svg"
-				}
-			},
-			{
-				"command": "dbuxContextView.next",
-				"title": "Next",
-				"icon": {
-					"light": "resources/light/next.svg",
-					"dark": "resources/dark/next.svg"
-				}
-			},
-			{
-				"command": "dbuxContextView.clear",
-				"title": "Clear",
-				"icon": {
-					"light": "resources/light/clear.svg",
-					"dark": "resources/dark/clear.svg"
-				}
-			},
-			{
-				"command": "dbuxContextView.addEntry",
-				"title": "Add"
-			},
-			{
-				"command": "dbuxContextView.gotoEntry",
-				"title": "Goto",
-				"icon": {
-					"light": "resources/light/boolean.svg",
-					"dark": "resources/dark/boolean.svg"
-				}
-			},
-			{
-				"command": "dbuxContextView.deleteEntry",
-				"title": "Delete"
-			},
-			{
-				"command": "dbuxContextView.itemClick",
-				"title": "Clicked"
+				"command": "dbux.exportApplicationData",
+				"title": "Dbux: Export application data"
 			}
 		],
 		"menus": {
@@ -136,6 +124,10 @@
 				{
 					"command": "dbuxPlayback.previousTrace",
 					"group": "navigation@0"
+				},
+				{
+					"command": "dbuxPlayback.nextTrace",
+					"group": "navigation@3"
 				},
 				{
 					"command": "dbuxPlayback.play",
@@ -146,50 +138,23 @@
 					"command": "dbuxPlayback.pause",
 					"when": "dbuxPlaybackPlaying == true",
 					"group": "navigation@2"
-				},
-				{
-					"command": "dbuxPlayback.nextTrace",
-					"group": "navigation@3"
-				},
-				{
-					"command": "dbuxPlayback.previousTraceInContext",
-					"group": "navigation@4"
-				},
-				{
-					"command": "dbuxPlayback.nextTraceInContext",
-					"group": "navigation@5"
-				}
-			],
-			"view/title": [
-				{
-					"command": "dbuxContextView.previous",
-					"when": "view == dbuxContextView",
-					"group": "navigation@0"
-				},
-				{
-					"command": "dbuxContextView.next",
-					"when": "view == dbuxContextView",
-					"group": "navigation@1"
-				},
-				{
-					"command": "dbuxContextView.clear",
-					"when": "view == dbuxContextView",
-					"group": "navigation@2"
-				},
-				{
-					"command": "dbuxContextView.addEntry",
-					"when": "view == dbuxContextView"
 				}
 			],
 			"view/item/context": [
 				{
 					"command": "dbuxContextView.gotoEntry",
-					"when": "view == dbuxContextView && viewItem == event",
+					"when": "view == dbuxContextView && viewItem == contextNode",
 					"group": "inline"
 				},
 				{
-					"command": "dbuxContextView.deleteEntry",
-					"when": "view == dbuxContextView && viewItem == event"
+					"command": "dbuxCallStackView.showParent",
+					"when": "view == dbuxCallStackView && viewItem == callStackNode.both.scheduler",
+					"group": "inline"
+				},
+				{
+					"command": "dbuxCallStackView.showScheduler",
+					"when": "view == dbuxCallStackView && viewItem == callStackNode.both.parent",
+					"group": "inline"
 				}
 			]
 		}

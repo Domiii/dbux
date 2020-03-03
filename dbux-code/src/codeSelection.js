@@ -22,6 +22,7 @@ async function highlightTraceInEditor(trace) {
   if (!trace) {
     // deselect trace
     deco = null;
+    selectedTraceRegistration.unsetDeco();
   }
   else {
     // select new trace
@@ -34,10 +35,10 @@ async function highlightTraceInEditor(trace) {
     deco = {
       range: babelLocToCodeRange(loc)
     };
+
+    const editor = await getOrOpenTraceEditor(trace);
+    selectedTraceRegistration.setDeco(editor, deco);
   }
-  
-  const editor = await getOrOpenTraceEditor(trace);
-  selectedTraceRegistration.setDeco(editor, deco);
 }
 
 // ###########################################################################
@@ -63,6 +64,21 @@ function handleCursorChanged(evt) {
 // ###########################################################################
 
 export function initTraceSelection(context) {
+  // unselect trace if its not in a selected application anymore
+  allApplications.selection.onApplicationsChanged((selectedApps) => {
+    for (const app of selectedApps) {
+      allApplications.selection.subscribe(
+        app.dataProvider.onData('traces', () => {
+          if (traceSelection.selected &&
+            !allApplications.selection.containsApplication(traceSelection.selected.applicationId)) {
+            // deselect
+            traceSelection.selectTrace(null);
+          }
+        })
+      );
+    }
+  });
+
   // show + goto trace if selected
   traceSelection.onTraceSelectionChanged((selectedTrace) => {
     selectedTrace && goToTrace(selectedTrace);
@@ -70,7 +86,7 @@ export function initTraceSelection(context) {
   });
 
   // select trace when moving cursor in TextEditor
-  context.subscriptions.push(
-    window.onDidChangeTextEditorSelection(handleCursorChanged)
-  );
+  // context.subscriptions.push(
+  //   window.onDidChangeTextEditorSelection(handleCursorChanged)
+  // );
 }

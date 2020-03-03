@@ -1,7 +1,9 @@
-import { hasDynamicTypes, hasValue } from 'dbux-common/src/core/constants/TraceType';
+import { hasDynamicTypes, hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
-import Trace from 'dbux-common/src/core/data/Trace';
 import DataProvider from './DataProvider';
+import { newLogger } from 'dbux-common/src/log/logger';
+
+const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 
 export default {
 
@@ -52,128 +54,6 @@ export default {
   // traces
   // ###########################################################################
 
-  // ########################################
-  // main playback functions
-  // ########################################
-
-  /**
-   * @param {DataProvider} dp 
-   * @param {Trace} trace 
-   */
-  getPreviousTraceInContext(dp, trace) {
-    const traces = dp.indexes.traces.byContext.get(trace.contextId);
-    if (!traces?.length) return null;
-
-    const binarySearch = (left, right) => {
-      const middle = Math.floor((left + right) / 2);
-      if (trace === traces[middle]) return middle;
-      if (left + 1 === right) return (traces[left] === trace) ? left : right;
-      if (traces[middle].traceId < trace.traceId) return binarySearch(middle, right);
-      if (trace.traceId < traces[middle].traceId) return binarySearch(left, middle);
-      throw Error('No return value in binarySearch.');
-    };
-
-    const indexInTracesInTraces = binarySearch(0, traces.length - 1);
-    if (indexInTracesInTraces === 0) return null;
-    else return traces[indexInTracesInTraces - 1];
-  },
-
-  /**
-   * @param {DataProvider} dp 
-   * @param {Trace} trace 
-   */
-  getNextTraceInContext(dp, trace) {
-    const traces = dp.indexes.traces.byContext.get(trace.contextId);
-    if (!traces?.length) return null;
-
-    const binarySearch = (left, right) => {
-      const middle = Math.floor((left + right) / 2);
-      if (left + 1 === right) return (traces[left] === trace) ? left : right;
-      if (traces[middle].traceId === trace.traceId) return middle;
-      if (traces[middle].traceId < trace.traceId) return binarySearch(middle, right);
-      if (traces[middle].traceId > trace.traceId) return binarySearch(left, middle);
-      throw Error('No return value in binarySearch.');
-    };
-
-    const indexInTracesInTraces = binarySearch(0, traces.length - 1);
-    if (indexInTracesInTraces === traces.length - 1) return null;
-    else return traces[indexInTracesInTraces + 1];
-  },
-
-  /**
-   * @param {DataProvider} dp 
-   * @param {Trace} trace 
-   */
-  getPreviousTraceInParentContext(dp, trace) {
-    const traces = dp.indexes.traces.byContext.get(trace.contextId);
-    if (trace === traces[0]) {
-      return dp.collections.traces.getById(trace.traceId - 1) || null;
-    }
-    else return traces[0];
-  },
-
-  /**
-   * @param {DataProvider} dp 
-   * @param {Trace} trace 
-   */
-  getNextTraceInParentContext(dp, trace) {
-    const traces = dp.indexes.traces.byContext.get(trace.contextId);
-    if (trace === traces[traces.length - 1]) {
-      return dp.collections.traces.getById(trace.traceId + 1) || null;
-    }
-    else return traces[traces.length - 1];
-  },
-
-  /**
-   * @param {DataProvider} dp 
-   * @param {Trace} trace 
-   */
-  getPreviousTraceInChildContext(dp, trace) {
-    let { traceId } = trace;
-    let prevTrace = trace;
-    let currentTrace;
-    do {
-      currentTrace = prevTrace;
-      prevTrace = dp.collections.traces.getById(traceId - 1);
-      traceId--;
-      if (!prevTrace) return null;
-    }
-    while (currentTrace.contextId === prevTrace.contextId);
-
-    if (currentTrace.contextId > prevTrace.contextId) return null;
-    if (currentTrace.contextId < prevTrace.contextId) {
-      if (trace === currentTrace) return prevTrace;
-      else return currentTrace;
-    }
-  },
-
-  /**
-   * @param {DataProvider} dp 
-   * @param {Trace} trace 
-   */
-  getNextTraceInChildContext(dp, trace) {
-    let { traceId } = trace;
-    let nextTrace = trace;
-    let currentTrace;
-    do {
-      currentTrace = nextTrace;
-      nextTrace = dp.collections.traces.getById(traceId + 1);
-      traceId++;
-      if (!nextTrace) return null;
-    }
-    while (currentTrace.contextId === nextTrace.contextId);
-
-    if (currentTrace.contextId > nextTrace.contextId) return null;
-    if (currentTrace.contextId < nextTrace.contextId) {
-      if (trace === currentTrace) return nextTrace;
-      else return currentTrace;
-    }
-  },
-
-  // ########################################
-  // more trace utils
-  // ########################################
-
   getTraceType(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const {
@@ -219,18 +99,24 @@ export default {
     return traces[traces.length - 1];
   },
 
+  isFirstTraceOfRun(dp: DataProvider, traceId) {
+    const { runId } = dp.collections.traces.getById(traceId);
+    const firstTraceId = dp.util.getFirstTraceOfRun(runId).traceId;
+    return firstTraceId === traceId;
+  },
+
   doesTraceHaveValue(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId, type: dynamicType } = trace;
     if (dynamicType) {
-      return hasValue(dynamicType);
+      return hasTraceValue(dynamicType);
     }
     return dp.util.doesStaticTraceHaveValue(staticTraceId);
   },
 
   doesStaticTraceHaveValue(dp: DataProvider, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    return hasValue(staticTrace.type);
+    return hasTraceValue(staticTrace.type);
   },
 
   getTraceValue(dp: DataProvider, traceId) {
@@ -245,6 +131,20 @@ export default {
 
     // value is primitive type (or trace has no value)
     return trace.value;
+  },
+
+  getTraceValueRef(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const { valueId } = trace;
+
+    if (valueId) {
+      // value is reference type
+      const ref = dp.collections.values.getById(valueId);
+      return ref;
+    }
+
+    // value is primitive type (or trace has no value)
+    return null;
   },
 
   getTraceContext(dp: DataProvider, traceId) {
@@ -291,6 +191,11 @@ export default {
     return programId && dp.util.getFilePathFromProgramId(programId) || null;
   },
 
+  getTraceFileName(dp: DataProvider, traceId) {
+    const programId = dp.util.getTraceProgramId(traceId);
+    return programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
+  },
+
   getTraceStaticContextId(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
@@ -299,33 +204,26 @@ export default {
     return staticContextId;
   },
 
-  getCalleeTrace(dp: DataProvider, traceId) {
+  getCalleeTraceOfArg(dp: DataProvider, traceId) {
     const argTrace = dp.collections.traces.getById(traceId);
-    const { staticTraceId } = argTrace;
-    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    const { calleeId: calleeStaticId } = staticTrace;
+    const { callId } = argTrace;
 
-    // const calleeStaticTrace = dp.collections.staticTraces.getById(calleeStaticId);
-    if (calleeStaticId) {
-      // iterate over all previous arguments until we found callee
-      let trace;
-      for (; traceId > 0 && (trace = dp.collections.traces.getById(traceId)); --traceId) {
-        if (trace.staticTraceId === calleeStaticId) {
-          return trace;
-        }
-      }
-    }
-    return null;
+    return callId && dp.collections.traces.getById(callId) || null;
   },
 
   getCalleeStaticTrace(dp: DataProvider, traceId) {
     const argTrace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = argTrace;
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    const { calleeId: calleeStaticId } = staticTrace;
+    const { callId: callStaticId } = staticTrace;
 
-    return calleeStaticId && dp.collections.staticTraces.getById(calleeStaticId) || null;
+    return callStaticId && dp.collections.staticTraces.getById(callStaticId) || null;
   },
+
+
+  // ###########################################################################
+  // trace grouping
+  // ###########################################################################
 
   /**
    * Groups traces by TraceType, as well as staticTraceId.

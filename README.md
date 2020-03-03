@@ -1,4 +1,15 @@
-# dbux README
+# Introduction
+
+This is a pre-alpha project, aiming at making the JS runtime and its dynamic call graph visual and interactive through a combination of instrumentation (using Babel) + a VSCode extension, effectively (ultimately) making it an amazing tool for (i) program comprehension + (ii) debugging.
+
+The `master` branch is not quite active yet. Check out the `dev` branch instead.
+
+Here is a (very very early, read: crude) 1min demo video of just a small subset of the features:
+
+<a href="https://www.youtube.com/watch?v=VAFcj75-vSs" target="_blank" alt="video">
+   <img src="http://img.youtube.com/vi/VAFcj75-vSs/0.jpg">
+</a>
+
 
 # Development + Contributing: Getting Started
 
@@ -50,187 +61,7 @@ This is a multi-project monorepo.
 Why is it not using LERNA? Because I did not know about LERNA when I started; but it's working quite well nevertheless :)
 
 
-# TODO
-
-## TODO (dbux-code + dbux-data only)
-* [playback] finish first version of playback feature (v0.1)
-* [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
-   * shows all applications in `allApplications`
-   * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
-* [dbuxContextView] display root contexts of all runs
-   * when clicked, go to first trace in context
-* [callstackView]
-   * NOTE: a callstack is actually a single slice of a complex call graph over time
-   * render callstack of "context of `traceSelection.selected`" all the way to its root
-   * top: context of selected trace
-   * if no parent, see if it has a `schedulerTrace` and keep going from there
-   * if context has both `parentId` and `schedulerTrace`, add callstack from `schedulerTrace` to its root as first child
-   * label: `context.displayName`
-   * description: loc.start@where
-   * when clicking a node: select the trace of the call of the next guy in context
-* add a search bar to `dbuxContextView` (search by `displayName` and `filePath`)
-   * if we cannot add a text `input` box, we can add a `button` + [`QuickInput`](https://code.visualstudio.com/api/references/vscode-api#InputBox)
-   * when entering search terms, only display matching nodes
-   * keep all necessary parent nodes
-      * NOTE: Cannot currently change VSCode `TreeItem` text color
-      * (gray out any parent node that does not match the search (semi-transparent?))
-   * (when clearing search, stay on selected node)
-   * clear search on `Esc` key press
-* add a button to the top right to toggle (show/hide) all intrusive features
-   * includes: `codeDeco`, and all kinds of extra buttons (such as `playback`)
-   * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+X CTRL+C` (need every single key))
-* display a warning at the top of EditorWindow:
-   * if it has been edited after the time of it's most recent `Program` `Context`
-   * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
-   * if it is very large and thus will slow things down (e.g. > x traces?)
-      * potentially ask user for confirmation first? (remember decision until restart or config option override?)
-
-## TODO (other)
-* [codeDeco] highlight executed funtion calls in code
-* [instrumentation]
-   * don't instrument `super` calls
-      * `_dbux.traceExpr(16, (_dbux.t(15), super)(_dbux.traceArg(17, 'staticTraces')));`
-   * fix `await`: traces are not correctly added to their `Resume` context
-      * [traceDetailsView] when displaying trace in `Resume` context, it shows name as `undefined`
-* [traceDetailsView]
-   * details:
-      * [CallArg/CallbackArg] display `CallExpression`'s name
-      * [CallbackArg] show it's `Push/PopCallback` nodes
-      * [Push/PopCallback] `schedulerTrace`
-      * highlight last+first in run
-         * also: for runs originating from callbacks, make it more obvious?
-   * add more helpful hover tooltips to each node
-* [cursorTracesView]
-   * separate `cursorTracesView` from `traceDetailsView`
-   * only show traces of inner most `staticTrace`
-   * [loops] sort by `contextId`, if any `staticTrace` is repeated more than once in any context
-   * of each trace, display information relevant to the `TraceType` (instead of it's `displayName`)
-      * add "selected" icon, if trace is selected
-      * (by-type)
-         * `PushImmediate` -> previous context (partial callstack)
-         * `PopImmediate` -> next context (partial callstack)
-         * `Push/PopCallback` -> schedulerTrace
-         * `hasValue(type)` -> value
-         * `CallExpression` -> call-site
-            * how to render call-site + value in one line?
-               * maybe add a button to toggle single-line/multi-line display of multiple details?
-            * maybe only if they are different call-sites between calls?
-            * use case: polymorphism/callbacks of different origins
-      * other?
-   * list "other traces at cursor" in a separate node at the bottom
-      * sort those by `staticTrace`
-      * only build when opened
-   * better loop support:
-      * distinguish repeated calls of a trace from other traces at selection
-      * allow to better understand and work through the repetitions
-   * group {Push,Pop}Callback{Argument,} into one
-      * show status: executed x times
-      * if executed: go to callback definition
-   * better value rendering (e.g. empty string (currently not shown at all); small arrays + objects)
-      * function parameters
-         * need to properly destruct
-            * Reference: https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-destructuring/src/index.js
-      * also track `this`
-   * trace details
-      * (if multiple applications exist) `ApplicationNode` 
-         * `getRelativeWorkspacePath(application.entryPointPath)`
-   * [performance] allow `getTracesAt` to deal with long iterations
-      * long node lists
-         * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead of prepping them all at once
-         * also applies to `dataView`
-      * `iterateTracesFront`
-      * `iterateTracesBack`
-      * `getTraceCount`
-* [cursorTracesView] + [traceSelection]
-   * when user textEditor selection changes, select "best" trace at cursor
-      * deselect previous trace
-      * need to design heuristic:
-         * if a trace was previously selected, select the one "closest" to that
-         * minimum effort: try to select one in the same run (if existing)
-   * when jumping between traces, keep a history stack to allow us to go forth and back
-      * forth/back buttons in `TraceDetailView`?
-* [dataView]
-   * a more complete approach to understanding values in current context
-   * properly serialize and send object data
-      * consider using a native `structuredClone` implementation (or some of its hackarounds)
-         * https://stackoverflow.com/a/10916838
-      * performance optimization
-         * when object too big, send later
-            * feature: object query interface?
-         * observe performance and long-running processes
-            * cut things short
-            * split bigger objects into chunks
-            * warnings when things get out of hand
-   * object tracking: list all traces that an object participated in
-      * track functions
-      * track everything?
-         * NOTE: when `TrackEverything` is enabled, we can track callbacks 100% as well
-            * (if their declarations were instrumented)
-* [cli] allow to easily run multiple applications at once
-   * (for proper multi-application testing)
-* [instrumentation] support longer names
-   * (and then hide them in tree view; show long version as tooltip)
-* [MultiKeyIndex] allow for storing data by multiple keys
-   * e.g. `dataProvider.util.groupTracesByType`
-   * e.g. `dataProvider.util.getVisitedStaticTracesAtLine`
-* [project: SimpleExpressFullstackApp]
-   * purpose: test multi-application code
-* [instrumentation] if we see a function call for which we have no context, find out where it goes
-   * (i.e. dependency name or runtime-internal?)
-      * -> then allow to easily add it to our config and re-run so we can get it next time
-   * Currently: seems almost impossible
-   * Option 1: [Access `[[FunctionLocation]]` programmatically](https://stackoverflow.com/questions/41146373/access-function-location-programmatically)
-      * https://github.com/rwjblue/get-function-location
-      * SAD: would only work on `Node` or as a browser plugin...
-      * not sure yet if its possible at all in the browser [[*](https://stackoverflow.com/questions/56066523/javascript-retrieve-file-and-line-location-of-function-during-runtime)]
-   * Option 2: when using `webpack` et al, instrument all functions of all required `node_modules`?
-      * PROBLEM: instrumenting source-mapped files requires source-map merging which can be iffy and bug-prone
-   * Option 3: while debugging, integrate with debugger API to guide user to step into function, then retrospectively retrieve data from call-site
-      * most straight-forward, but UX is worse
-* [instrumentation] proper `cli`
-* [instrumentation] allow to easily instrument any referenced modules (not just our own code)
-   * ... and optionally any of its references?
-* add test setup to all libs
-* add testing for serialization + deserialization (since it can easily cause a ton of pain)
-* improve value serialization to skip objects that are too big
-
-
-## Recently done
-* [instrumentation] insert trace before function call
-   * (Goal: we can step to function call before going down)
-   * PROBLEM: cannot easily get "last trace before function call" 
-      * either: before function call
-      * or: last argument
-         (however last argument might already have been instrumented)
-   * SLN: Only add a trace in front, if it has no arguments
-
-
-## Possible future work
-* [playback] add awesome keyboard controls~
-   * when "in playback mode" use arrow keys (and maybe a few other keys) to jump around very quickly
-   * can we do it like [`jumpy`](https://marketplace.visualstudio.com/items?itemName=wmaurer.vscode-jumpy) ([source](https://github.com/krnik/vscode-jumpy))?
-      * Type pseudo "event handler" - https://github.com/wmaurer/vscode-jumpy/blob/master/src/extension.ts#L130
-   * Problem: `vscode` has some issue handling the `type` command and it's friends
-      * [Stacking of type event handlers + onDidType event](https://github.com/Microsoft/vscode/issues/13441)
-      * https://github.com/microsoft/vscode/issues/65876
-* [codeDeco] add an `BlurBackgroundMode` `Enum`
-   * `BlurBackgroundMode.Application` - "gray out" all code that is not in any executed `context`
-   * more future modes:
-      * `CurrentStack` - gray out all code that is not on current `stack`
-         * also need to modify `dbux-babel-plugin` to store `rootContextId`
-   * more future work (not yet):
-      * e.g. "gray out" with higher granularity; gray out everything except all traces that were executed
-* integrate `dbux` with at least one testing methodology
-   * case-studies
-* in `ContextTreeView`, make text of all nodes that do not belong to the current `Program` semi-transparent
-   * can use `TracesByProgramIndex` for this
-* serialize/deserialize all data, survive VSCode restart/reload
-
-
-## Fancy ideas (Dev)
-* add extra-watch-webpack-plugin https://github.com/pigcan/extra-watch-webpack-plugin?
-
-# Installing the good stuff
+# Some dependencies
 
 ## Basics
 
@@ -356,28 +187,9 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
    * Limited capability for some file names: https://github.com/microsoft/vscode/issues/47502#issuecomment-407394409
    * Suggested API discussion: https://github.com/microsoft/vscode/issues/54938
 
-# Projects
+# Some Notes on Implementation
 
-## todomvc (vanilla-es6)
-
-* `npm run p1-install`
-* `npm run p1-start (starts web server)`
-* (open in browser: http://localhost:3030)
-   * (or: in VSCode go to debug menu and run "chrome todomvc" to enable debugging the runtime in VSCode)
-
-# Implementation
-
-## dbux-babel-plugin
-* Instrumentation
-   * try/finally
-   * top level extraction
-* Babel plugins:
-   * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/user-handbook.md
-   * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md
-   * [`bael-plugin-tester`](https://github.com/babel-utils/babel-plugin-tester#examples)
-* Babel Config pain
-   * [how to use Babel 7 babel-register to compile files outside of working directory #8321](https://github.com/babel/babel/issues/8321)
-   * https://github.com/babel/babel/pull/5590
+(only very few of the features are explained here, a lot more to come in the future...)
 
 ## dbux-data
 * Indexes
@@ -400,10 +212,19 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 
 # Known Issues
 
-* Windows only
-   * When running things in VSCode built-in terminal, it sometimes changes to lower-case drive letter
-      * Causing lower-case and upper-case drive letters to start appearing in `require` paths
-         * => which makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
+* What applications work so well with DBUX?
+   * TODO: we are still exploring that
+* What applications **won't** work so well with DBUX?
+   * Proxies and custom object getters with side effects
+      * For serialization `dbux-runtime` iterates (or will in the future iterate) over object properties
+      * Thus possibly causing side effects with proxy and getter functions
+      * At least it will leave unwanted traces (while attempting to "observe") - Damn you, [Observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics))!!! :(
+      * TODO: at least flag traces caused by `dbux-runtime` by setting some `trace-triggered-from-dbux-builtin-call` flag while running built-in functions
+         * NOTE: This will still mess with proxy and getter functions that themselves have side effects, such as caching functions, tracers and more.
+* Issues under Windows
+   * **sometimes**, when running things in VSCode built-in terminal, it changes to lower-case drive letter
+      * This causes a mixture of lower-case and upper-case drive letters to start appearing in `require` paths
+         * => this makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
       * Official bug report: https://github.com/microsoft/vscode/issues/9448
       * Solution: run command in external `cmd` or find a better behaving terminal
 
@@ -414,7 +235,6 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 * https://vscodecandothat.com/
 * https://medium.com/club-devbytes/how-to-use-v-s-code-like-a-pro-fb030dfc9a72
 * 
-
 
 ## Use VSCode as git diff tool
 
@@ -435,7 +255,7 @@ You can re-add it manually:
 },
 ```
 
-# Some problems that have been worked through
+# Some of the more annoying problems that have already been resolved
 
 * `Socket.IO` depends on `uws` which is deprecated
    * fix: tell webpack to ignore it, since by default its not being used
@@ -444,6 +264,9 @@ You can re-add it manually:
    * see: https://github.com/mmdevries/uws
 * `socket.io-client` bugs out because `ws` is bundled as targeting browser
    * `code-insiders .\dbux-runtime\node_modules\engine.io-client\lib\transports\websocket.js`
+* Babel Config pain
+   * [how to use Babel 7 babel-register to compile files outside of working directory #8321](https://github.com/babel/babel/issues/8321)
+   * https://github.com/babel/babel/pull/5590
 
 
 # Useful Snippets
@@ -468,17 +291,3 @@ You can re-add it manually:
 		]
 	}
 ```
-<<<<<<< HEAD
-
-
-
-# More References
-* http://latentflip.com/loupe/
-   * (tagline: Visualizing the javascript runtime at runtime)
-   * https://github.com/latentflip/loupe
-* NOTE: the web is missing practical exercises on
-   * debugging
-   * callbacks
-      * see https://www.quora.com/What-is-the-best-tutorial-or-course-for-understanding-JavaScript-callback-functions
-=======
->>>>>>> 1b9bb6844474b430b8f10ee94649e2fc6e3b420a

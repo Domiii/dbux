@@ -9,7 +9,6 @@ import { goToCodeLoc } from '../codeNav';
 export default class ContextNode extends TreeItem {
   constructor(
     displayName,
-    typeName,
     fileName,
     filePath,
     location,
@@ -25,7 +24,6 @@ export default class ContextNode extends TreeItem {
 
     // node data
     this.displayName = displayName;
-    this.typeName = typeName;
     this.fileName = fileName;
     this.filePath = filePath;
     this.location = location;

@@ -1,11 +1,11 @@
 import { commands } from 'vscode';
-import { TreeViewController } from '../treeView/treeViewController';
+import { ContextViewController } from '../contextView/contextViewController';
 import PlaybackController from './PlaybackController';
 
 let playbackController: PlaybackController;
 
-export function initPlayback(treeViewController: TreeViewController) {
+export function initPlayback() {
   commands.executeCommand('setContext', 'dbuxPlaybackPlaying', false);
-  playbackController = new PlaybackController(treeViewController);
+  playbackController = new PlaybackController();
   return playbackController;
 }

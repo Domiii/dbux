@@ -1,4 +1,4 @@
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import staticTraceCollection from './staticTraceCollection';
 import executionContextCollection from './executionContextCollection';
@@ -19,8 +19,11 @@ class TraceCollection extends Collection {
     return trace;
   }
 
-  traceExpressionResult(contextId, runId, inProgramStaticTraceId, value) {
-    const trace = this._trace(contextId, runId, inProgramStaticTraceId, null, true, value);
+  /**
+   * Expression + pop traces have results
+   */
+  traceWithResultValue(contextId, runId, inProgramStaticTraceId, type, value) {
+    const trace = this._trace(contextId, runId, inProgramStaticTraceId, type, true, value);
     return trace;
   }
 
@@ -55,7 +58,7 @@ class TraceCollection extends Collection {
     this._all.push(trace);
     this._send(trace);
 
-    _prettyPrint(trace, value);
+    // _prettyPrint(trace, value);
 
     return trace;
   }
@@ -109,7 +112,7 @@ function _prettyPrint(trace, value) {
   // else
 
   // TODO: if we want to keep using this; fix to use `ValueCollection` instead
-  const v = type === TraceType.ExpressionResult;
+  const v = hasTraceValue(type);
   const result = v ? ['(', value, ')'] : EmptyArray;
   console.debug('', traceId, contextId,
     `${depthIndicator}[${typeName}] ${displayName}`,

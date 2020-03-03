@@ -47,12 +47,12 @@ export class ExecutionContextCollection extends Collection {
     this._push(context);
     return context;
   }
-
+  
   await(stackDepth, runId, parentContextId, programId, inProgramStaticId) {
     return this._create(ExecutionContextType.Await,
       stackDepth, runId, parentContextId, programId, inProgramStaticId);
   }
-
+  
   /**
    * resumedChildren are used in interrupted functions.
    * When coming back after an interruption, a "resume child context" is added.
@@ -60,10 +60,10 @@ export class ExecutionContextCollection extends Collection {
    * (1) either when the function pops,
    * (2) or when another interrupt occurs.
    */
-  resume(stackDepth, runId, parentContextId, inProgramStaticId, schedulerTraceId) {
-    const parentContext = this.getById(parentContextId);
-    const { staticContextId: parenStaticContextId } = parentContext;
-    const { programId } = staticContextCollection.getById(parenStaticContextId);
+  resume(stackDepth, runId, parentContextId, programId, inProgramStaticId, schedulerTraceId) {
+    // const parentContext = this.getById(parentContextId);
+    // const { staticContextId: parenStaticContextId } = parentContext;
+    // const { programId } = staticContextCollection.getById(inProgramStaticId);
     const context = this._create(ExecutionContextType.Resume,
       stackDepth, runId, parentContextId, programId, inProgramStaticId, schedulerTraceId);
 
@@ -82,7 +82,8 @@ export class ExecutionContextCollection extends Collection {
   }
 
   _create(type, stackDepth, runId, parentContextId, programId, inProgramStaticId, schedulerTraceId = null) {
-    const { staticId: staticContextId } = staticContextCollection.getContext(programId, inProgramStaticId);
+    const staticContext = staticContextCollection.getContext(programId, inProgramStaticId);
+    const { staticId: staticContextId } = staticContext;
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 

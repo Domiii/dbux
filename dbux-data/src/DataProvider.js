@@ -12,6 +12,7 @@ import deserialize from 'dbux-common/src/serialization/deserialize';
 import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
+import TraceType, { hasTraceValue } from '../../dbux-common/src/core/constants/TraceType';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
@@ -49,7 +50,7 @@ class ExecutionContextCollection extends Collection<ExecutionContext> {
   constructor(dp) {
     super('executionContexts', dp);
   }
-  
+
   add(entries) {
     for (const entry of entries) {
       if (!entry.parentContextId) {
@@ -67,11 +68,61 @@ class TraceCollection extends Collection<Trace> {
     super('traces', dp);
   }
 
-  add(entries) {
-    for (const entry of entries) {
-      entry.applicationId = this.dp.application.applicationId;
+  add(traces) {
+    // set applicationId
+    for (const trace of traces) {
+      trace.applicationId = this.dp.application.applicationId;
     }
-    super.add(entries);
+
+    super.add(traces);
+  }
+
+  postAdd(traces: Trace[]) {
+    try {
+      // build dynamic call expression tree
+      this.resolveCallIds(traces);
+    }
+    catch (err) {
+      logError('resolveCallIds failed', traces, err);
+    }
+  }
+
+  resolveCallIds(traces: Trace[]) {
+    const beforeCalls = [];
+    for (const trace of traces) {
+      const { traceId, staticTraceId } = trace;
+      const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
+      const traceType = this.dp.util.getTraceType(traceId);
+      if (traceType === TraceType.BeforeCallExpression) {
+        beforeCalls.push(trace);
+        // console.log(' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
+      }
+      else if (hasTraceValue(traceType)) {
+        // NOTE: `hasTraceValue` to filter out Push/PopCallback
+        if (staticTrace.resultCallId) {
+          // call results: reference their call by `resultCallId` and vice versa by `resultId`
+          // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
+          const beforeCall = beforeCalls.pop();
+          // console.log(' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
+          if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
+            logError('for resultCallId', 'staticTrace.resultCallId !== beforeCall.staticTraceId -', staticTrace.displayName, trace, beforeCall);
+            beforeCalls.push(beforeCall);   // something is wrong -> push it back
+          }
+          else {
+            beforeCall.resultId = traceId;
+            trace.resultCallId = beforeCall.traceId;
+          }
+        }
+        if (staticTrace.callId) {
+          // call args: reference their call by `callId`
+          const beforeCall = beforeCalls[beforeCalls.length - 1];
+          if (staticTrace.callId !== beforeCall.staticTraceId) {
+            logError('for callId', 'staticTrace.callId !== beforeCall.staticTraceId', staticTrace, beforeCall);
+          }
+          trace.callId = beforeCall.traceId;
+        }
+      }
+    }
   }
 }
 
@@ -91,6 +142,11 @@ class ValueCollection extends Collection<ValueRef> {
 
 
 export default class DataProvider {
+  /**
+   * Used for serialization
+   */
+  version = 1;
+
   // /**
   //  * Usage example: `dataProvider.collections.staticContexts.getById(id)`
   //  * 
@@ -103,7 +159,7 @@ export default class DataProvider {
    * 
    * @private
    */
-  _dataEventListeners0 = {};
+  _dataEventListenersInternal = {};
 
   /**
    * Outside event listeners.
@@ -139,10 +195,11 @@ export default class DataProvider {
 
   /**
    * Add a data event listener to given collection.
-   * @deprecated
+   * 
+   * @returns {function} Unsubscribe function - Execute to cancel this listener.
    */
   onData(collectionName: string, cb: ([]) => void) {
-    const listeners = this._dataEventListeners[collectionName] = 
+    const listeners = this._dataEventListeners[collectionName] =
       (this._dataEventListeners[collectionName] || []);
     listeners.push(cb);
 
@@ -155,7 +212,7 @@ export default class DataProvider {
   /**
    * Bundled data listener.
    * 
-   * @returns {function} Unsubscribe function. Execute to cancel this listener.
+   * @returns {function} Unsubscribe function - Execute to cancel this listener.
    */
   onDataAll(cfg) {
     for (const collectionName in cfg.collections) {
@@ -203,16 +260,22 @@ export default class DataProvider {
     this.indexes._addIndex(newIndex);
     newIndex._init(this);
 
-    // add event listeners
+    // add event listeners on collections that this index depends on
     const collectionListeners = newIndex.dependencies?.collections;
     if (collectionListeners) {
       for (const collectionName in collectionListeners) {
-        const listeners = this._dataEventListeners0[collectionName] = (this._dataEventListeners0[collectionName] || []);
         const cb = collectionListeners[collectionName].added;
-        if (cb) {
-          listeners.push(cb);
-        }
+        this._onDataInternal(collectionName, cb);
       }
+    }
+  }
+
+  _onDataInternal(collectionName, cb) {
+    const listeners = this._dataEventListenersInternal[collectionName] = (
+      this._dataEventListenersInternal[collectionName] || []
+    );
+    if (cb) {
+      listeners.push(cb);
     }
   }
 
@@ -231,14 +294,21 @@ export default class DataProvider {
         continue;
       }
 
-      const data = allData[collectionName];
+      const entries = allData[collectionName];
       ++this.versions[collection._id]; // update version
-      collection.add(data);
+      collection.add(entries);
     }
   }
 
   _postAdd(allData) {
-    // process new data (most importantly: indexes)
+    // notify collections that adding has finished
+    for (const collectionName in allData) {
+      const collection = this.collections[collectionName];
+      const entries = allData[collectionName];
+      collection.postAdd(entries);
+    }
+
+    // indexes
     for (const collectionName in allData) {
       const indexes = this.indexes[collectionName];
       if (indexes) {
@@ -253,11 +323,11 @@ export default class DataProvider {
     for (const collectionName in allData) {
       // const collection = this.collections[collectionName];
       const data = allData[collectionName];
-      this._notifyData(collectionName, data, this._dataEventListeners0);
+      this._notifyData(collectionName, data, this._dataEventListenersInternal);
     }
 
 
-    // fire event listeners
+    // fire public event listeners
     for (const collectionName in allData) {
       // const collection = this.collections[collectionName];
       const data = allData[collectionName];
@@ -270,5 +340,38 @@ export default class DataProvider {
     if (listeners) {
       listeners.forEach((cb) => cb(data));
     }
+  }
+
+  /**
+   * Serialize all raw data into a simple JS object.
+   * Usage: `JSON.stringify(dataProvider.serialize())`.
+   */
+  serialize() {
+    const collections = Object.values(this.collections);
+    return {
+      version: this.version,
+      collections: Object.fromEntries(collections.map(collection => {
+        const {
+          name,
+          _all: entries
+        } = collection;
+
+        return [
+          name,
+          entries
+        ];
+      }))
+    };
+  }
+
+  /**
+   * Use: `dataProvider.deserialize(JSON.parse(stringFromFile))`
+   */
+  deserialize(data) {
+    const { version, collections } = data;
+    if (version !== this.version) {
+      throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
+    }
+    this.addData(collections);
   }
 }

@@ -2,6 +2,7 @@ import { commands } from 'vscode';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
 import { goToTrace } from '../codeNav';
 
@@ -21,6 +22,7 @@ export default class PlaybackController {
     commands.executeCommand('setContext', 'dbuxPlaybackPlaying', true);
     tracePlayback.play();
     this.printTracesInfo();
+    this.printContextsInfo();
   }
 
   pause = () => {
@@ -34,14 +36,6 @@ export default class PlaybackController {
 
   nextTrace = () => {
     tracePlayback.gotoNextTrace();
-  }
-
-  previousTraceInContext = () => {
-    tracePlayback.gotoPreviousParentContext();
-  }
-
-  nextTraceInContext = () => {
-    tracePlayback.gotoNextParentContext();
   }
 
   // ###########################################################################
@@ -59,25 +53,32 @@ export default class PlaybackController {
   printTracesInfo = () => {
     const apps = allApplications.selection.getAll();
     for (let app of apps) {
+      const info = [];
       log(`== Application ${app.applicationId} ==`);
       let traces = app.dataProvider.collections.traces.getAll();
       for (let trace of traces) {
         if (!trace) continue;
-        const context = app.dataProvider.collections.executionContexts.getById(trace.contextId);
-        log(trace.runId, trace.contextId, trace.traceId, context.createdAt);
+        const { runId, contextId, traceId, staticTraceId } = trace;
+        const type = app.dataProvider.util.getTraceType(traceId);
+        const typeName = TraceType.getName(type);
+        info.push({ runId, contextId, traceId, typeName });
       }
+      console.table(info);
     }
   }
 
   printContextsInfo = () => {
     const apps = allApplications.selection.getAll();
     for (let app of apps) {
+      const info = [];
       log(`== Application ${app.applicationId} ==`);
       let contexts = app.dataProvider.collections.executionContexts.getAll();
       for (let context of contexts) {
         if (!context) continue;
-        log(context.contextId, context.runId, context.createdAt);
+        const { runId, contextId, parentContextId, schedulerTraceId, createdAt } = context;
+        info.push({ runId, contextId, parentContextId, schedulerTraceId, createdAt });
       }
+      console.table(info);
     }
   }
 }

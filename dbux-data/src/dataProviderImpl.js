@@ -1,10 +1,14 @@
 import DataProvider from './DataProvider';
+
+import CallGraph from './callGraph/CallGraph';
+
 import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
 import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
 import RootContextsIndex from './impl/indexes/RootContextsIndex';
 import FirstTracesIndex from './impl/indexes/FirstTracesIndex';
 import FirstContextsInRunsIndex from './impl/indexes/FirstContextsInRunsIndex';
 import TracesByContextIndex from './impl/indexes/TracesByContextIndex';
+import TracesByParentContextIndex from './impl/indexes/TracesByParentContextIndex';
 import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
 
 import VisitedStaticTracesByFileIndex from './impl/indexes/VisitedStaticTracesByFileIndex';
@@ -16,10 +20,20 @@ import TracesByRunIdIndex from './impl/indexes/TracesByRunIdIndex';
 import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextIndex';
 import StaticContextsByFileIndex from './impl/indexes/StaticContextsByFileIndex';
 import StaticContextsByParentIndex from './impl/indexes/StaticContextsByParentIndex';
+import CallArgsByCallIndex from './impl/indexes/CallArgsByCallIndex';
 
 
 export function newDataProvider(application) {
   const dataProvider = new DataProvider(application);
+  
+  // util
+  const utilNames = Object.keys(dataProviderUtil);
+  dataProvider.util = Object.fromEntries(
+    utilNames.map(name => [name, dataProviderUtil[name].bind(null, dataProvider)])
+  );
+
+  // call graph
+  dataProvider.callGraph = new CallGraph(dataProvider);
   
   // indexes
   dataProvider.addIndex(new StaticContextsByFileIndex());
@@ -32,9 +46,11 @@ export function newDataProvider(application) {
 
   dataProvider.addIndex(new TracesByFileIndex());
   dataProvider.addIndex(new TracesByContextIndex());
+  dataProvider.addIndex(new TracesByParentContextIndex());
   dataProvider.addIndex(new TracesByStaticTraceIndex());
   dataProvider.addIndex(new TracesByStaticContextIndex());
   dataProvider.addIndex(new TracesByRunIdIndex());
+  dataProvider.addIndex(new CallArgsByCallIndex());
 
 
   // complex indexes
@@ -45,13 +61,6 @@ export function newDataProvider(application) {
   // queries
   dataProvider.addQuery(new ProgramIdByFilePathQuery());
   dataProvider.addQuery(new ProgramFilePathByTraceIdQuery());
-  
-
-  // hackfix: add utilities
-  const utilNames = Object.keys(dataProviderUtil);
-  dataProvider.util = Object.fromEntries(
-    utilNames.map(name => [name, dataProviderUtil[name].bind(null, dataProvider)])
-  );
 
   return dataProvider;
 }

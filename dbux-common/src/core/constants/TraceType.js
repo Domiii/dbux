@@ -8,63 +8,65 @@ let TraceType = {
   PopImmediate: 3,
 
   BeforeExpression: 4,
-  Callee: 5,
-  CallExpressionResult: 6,
-  ExpressionResult: 7,
+  BeforeCallExpression: 5,
+  Callee: 6,
+  CallExpressionResult: 7,
+  ExpressionResult: 8,
 
-  CallArgument: 8,
-  CallbackArgument: 9,
+  CallArgument: 9,
+  CallbackArgument: 10,
 
-  PushCallback: 10,
-  PopCallback: 11,
+  PushCallback: 11,
+  PopCallback: 12,
 
-  Await: 12,
-  Resume: 13,
+  Await: 13,
+  Resume: 14,
 
-  Statement: 14,
-  BlockStart: 15,
-  BlockEnd: 16
+  Statement: 15,
+  BlockStart: 16,
+  BlockEnd: 17
 };
 
 TraceType = new Enum(TraceType);
 
 const pushTypes = new Array(TraceType.getCount()).map(_ => false);
-pushTypes[TraceType.StartProgram] = true;
 pushTypes[TraceType.PushImmediate] = true;
 pushTypes[TraceType.PushCallback] = true;
 pushTypes[TraceType.Resume] = true;
+
+export function isTracePush(traceType) {
+  return pushTypes[traceType];
+}
 
 
 const popTypes = new Array(TraceType.getCount()).map(_ => false);
 popTypes[TraceType.PopImmediate] = true;
 popTypes[TraceType.PopCallback] = true;
 
+export function isTracePop(traceType) {
+  return popTypes[traceType];
+}
+
 
 const dynamicTypeTypes = new Array(TraceType.getCount()).map(_ => false);
-
 // shared w/ PushCallback + PopCallback
 dynamicTypeTypes[TraceType.CallbackArgument] = true;  
 // might be shared w/ CallbackArgument, PushCallback + PopCallback
 dynamicTypeTypes[TraceType.CallArgument] = true;
 
-
-const valueTypes = new Array(TraceType.getCount()).map(_ => false);
-valueTypes[TraceType.ExpressionResult] = true;
-valueTypes[TraceType.CallArgument] = true;
-
-export function isTracePush(traceType) {
-  return pushTypes[traceType];
-}
-
-export function isTracePop(traceType) {
-  return popTypes[traceType];
-}
-
 export function hasDynamicTypes(traceType) {
   return dynamicTypeTypes[traceType];
 }
 
-export function hasValue(traceType) {
+
+const valueTypes = new Array(TraceType.getCount()).map(_ => false);
+valueTypes[TraceType.ExpressionResult] = true;
+valueTypes[TraceType.CallArgument] = true;
+valueTypes[TraceType.CallbackArgument] = true;
+valueTypes[TraceType.CallExpressionResult] = true;
+valueTypes[TraceType.PopCallback] = true;
+
+export function hasTraceValue(traceType) {
   return valueTypes[traceType];
 }
 

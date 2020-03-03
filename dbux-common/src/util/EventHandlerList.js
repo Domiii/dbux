@@ -1,5 +1,4 @@
 
-
 export default class EventHandlerList {
   _unsubscribeCallbacks = [];
 

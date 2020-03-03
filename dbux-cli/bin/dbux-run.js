@@ -61,7 +61,7 @@ const babelRegisterOptions = {
       fpath = fpath.toLowerCase();
 
       const shouldIgnore = false;
-      console.warn('dbux-run babel', fpath, !shouldIgnore);
+      console.warn('dbux-run [babel]', fpath, !shouldIgnore);
       return shouldIgnore;
     }
   ],

@@ -19,7 +19,7 @@ const { log, debug, warn, error: logError } = newLogger('applications');
 export class AllApplications {
   DefaultApplicationClass = Application;
 
-  _all = [null];
+  _all: Array<Application> = [null];
   _activeApplicationsByPath = new Map();
 
   _emitter = new NanoEvents();
@@ -28,7 +28,10 @@ export class AllApplications {
     this.applicationSelection = new ApplicationSet(this);
   }
 
-  getById(applicationId: Application) {
+  /**
+   * @param {number} applicationId
+   */
+  getById(applicationId) {
     return this._all[applicationId];
   }
 

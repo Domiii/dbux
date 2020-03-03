@@ -32,6 +32,7 @@ export class TracePlayback {
 
   play() {
     if (this._isPlaying) return;
+    if (!this.currentTrace) this.currentTrace = this._getFirstTraceInOrder();
     this.timer = setInterval(this._onPlay, this.timerInterval);
     this._isPlaying = true;
   }
@@ -87,6 +88,8 @@ export class TracePlayback {
   // Main play functions (Getter)
   // ###########################################################################
 
+  // TODO: NEED MORE TEST - fix 'Neighboring traces having non-neighboring contexts.' error.
+
   getPreviousTrace() {
     const prevTrace = this._getPreviousTraceInApplication(this.currentTrace);
     if (prevTrace?.runId !== this.currentTrace.runId) {
@@ -105,34 +108,34 @@ export class TracePlayback {
     else return nextTrace || this.currentTrace;
   }
 
-  getPreviousInContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getPreviousTraceInContext(this.currentTrace);
+  getPreviousInContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    return dp.callGraph.getPreviousInContext(trace.traceId);
   }
 
-  getNextInContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getNextTraceInContext(this.currentTrace);
+  getNextInContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    return dp.callGraph.getNextInContext(trace.traceId);
   }
 
-  getPreviousParentContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getPreviousTraceInParentContext(this.currentTrace);
+  getPreviousParentContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    return dp.callGraph.getPreviousParentContext(trace.traceId);
   }
 
-  getNextParentContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getNextTraceInParentContext(this.currentTrace);
+  getNextParentContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    return dp.callGraph.getNextParentContext(trace.traceId);
   }
 
-  getPreviousChildContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getPreviousTraceInChildContext(this.currentTrace);
+  getPreviousChildContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    return dp.callGraph.getPreviousChildContext(trace.traceId);
   }
 
-  getNextChildContext() {
-    const dp = this._getDataProviderOfTrace(this.currentTrace);
-    return dp.util.getNextTraceInChildContext(this.currentTrace);
+  getNextChildContext(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    return dp.callGraph.getNextChildContext(trace.traceId);
   }
 
   // ###########################################################################
