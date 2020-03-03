@@ -275,10 +275,11 @@ const enterInstrumentors = {
     // }
   },
   Loop(path, state) {
-    
+    // TODO: track loop in its own data structure
   },
   LoopBlock(path, state) {
-
+    // TODO: track of loop head variables
+    // TODO: track loop repitions in its own data structure
   }
 };
 
