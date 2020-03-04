@@ -1,9 +1,18 @@
+/**
+ * @file
+ * 
+ * NOTE: This file was originally designed to handle traces only.
+ *  Later on we encountered some real issues from trying to separate trace and context instrumentation, and did not 
+ *  have the time yet to properly separate them again. That is why there is also some context instrumentation in this file
+ */
+
 import template from '@babel/template';
 import Enum from 'dbux-common/src/util/Enum';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg, traceCallExpression } from '../helpers/traceHelpers';
 import { isPathInstrumented, getPathTraceId } from '../helpers/instrumentationHelper';
+import { instrumentLoop } from './loopVisitors';
 // TODO: want to do some extra work to better trace loops
 
 const TraceInstrumentationType = new Enum({
@@ -275,11 +284,9 @@ const enterInstrumentors = {
     // }
   },
   Loop(path, state) {
-    // TODO: track loop in its own data structure
+    instrumentLoop(path, state);
   },
   LoopBlock(path, state) {
-    // TODO: track of loop head variables
-    // TODO: track loop repitions in its own data structure
   }
 };
 

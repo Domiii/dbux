@@ -74,13 +74,12 @@
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 ## TODO (other)
-* keep testing navigation in todomvc (especially: getting from event handler to store methods)
+* keep testing navigation in todomvc (especially: moving from event handler to store methods)
 * [callbacks]
-   * Problem: we cannot wrap callbacks, as it will break the function's (or possible class's) identity.
-      * Solution: Use a separate map to track callbacks and their points of passage instead
-   * `StaticTraceTDNode` displays Schedule/Push/Pop as separate executions
-* [dbux-cli -> dbux run]
-   * breakpoints in dbux-run don't work anymore unless at least one debugger statement is added
+   * `StaticTraceTDNode` counts Schedule/Push/Pop each as one execution
+   * Problem: we cannot wrap callbacks, as it will break the function's (or class's) identity.
+      * NOTE: This breaks identity-mapping functions, caching, triggers a babel assertion when targeting esnext and trying to instantiate a wrapped class, and `instanceof`, to name a few
+      * Solution: Use a separate map to track callbacks and their points of passage instead?
 * [instrumentation]
    * [loops]
       * capture loop variables in BlockStart
@@ -202,6 +201,8 @@
 * add test setup to all libs
 * add testing for serialization + deserialization (since it can easily cause a ton of pain)
 * improve value serialization to skip objects that are too big
+* [dbux-cli -> dbux run]
+   * breakpoints in dbux-run don't work anymore unless at least one debugger statement is added?
 
 
 ## Possible future work

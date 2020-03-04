@@ -216,11 +216,13 @@ export default class RuntimeMonitor {
     // NOTE: no need to push onto the stack; since its a virtual context: its not on the stack
     // this._runtime.push(awaitContextId);
 
-    this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
 
+    traceCollection.trace(resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
 
     // pop resume context
     this.popResume();
+
+    this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
 
 
     return awaitContextId;
@@ -243,6 +245,8 @@ export default class RuntimeMonitor {
     else {
       // resume after await
       this._runtime.resumeWaitingStack(awaitContextId);
+
+      //traceCollection.trace(awaitContextId, runId, inProgramStaticTraceId, TraceType.Await);
 
       // NOTE: no need to pop from stack; since its a virtual context: its not on the stack
       // this._pop(awaitContextId);
@@ -305,18 +309,33 @@ export default class RuntimeMonitor {
   // traces
   // ###########################################################################
 
+  _ensureExecuting() {
+    if (!this._runtime._executingStack) {
+      console.error('Encountered trace when stack is empty');
+      return false;
+    }
+    return true;
+  }
+
   trace(programId, inProgramStaticTraceId) {
+    if (!this._ensureExecuting()) {
+      return;
+    }
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
     traceCollection.trace(contextId, runId, inProgramStaticTraceId);
   }
 
   traceExpression(programId, inProgramStaticTraceId, value) {
+    if (!this._ensureExecuting()) {
+      return;
+    }
+
     // if (value instanceof Function && !isClass(value)) {
     if (value instanceof Function) {
       // scheduled callback
       const cb = value;
-      return this.traceCallbackArgument(programId, inProgramStaticTraceId, cb);
+      return this._traceCallbackArgument(programId, inProgramStaticTraceId, cb);
     }
     else {
       const contextId = this._runtime.peekCurrentContextId();
@@ -335,7 +354,7 @@ export default class RuntimeMonitor {
   /**
    * Push a new context for a scheduled callback for later execution.
    */
-  traceCallbackArgument(programId, inProgramStaticTraceId, cb) {
+  _traceCallbackArgument(programId, inProgramStaticTraceId, cb) {
     // trace
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();

@@ -1,6 +1,4 @@
-async function sleep(ms) {
-  return new Promise(r => setTimeout(r, ms));
-}
+async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 async function main() {
   console.log(1);

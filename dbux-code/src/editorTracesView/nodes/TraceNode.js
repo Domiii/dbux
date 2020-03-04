@@ -3,6 +3,9 @@ import traceSelection from 'dbux-data/src/traceSelection';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 export default class TraceNode extends BaseTreeViewNode {
+  /**
+   * @override
+   */
   static makeLabel(trace: Trace) {
     return makeTraceLabel(trace);
   }
@@ -11,10 +14,16 @@ export default class TraceNode extends BaseTreeViewNode {
     return this.entry;
   }
 
+  /**
+   * @override
+   */
   makeIconPath() {
     return traceSelection.isSelected(this.trace) ? 'play.svg' : ' ';
   }
 
+  /**
+   * @override
+   */
   init() {
     const { trace } = this;
 
@@ -24,14 +33,23 @@ export default class TraceNode extends BaseTreeViewNode {
     this.description = dt + '';
   }
 
+  /**
+   * @override
+   */
   canHaveChildren() {
     return !!this.childTraces?.length;
   }
 
+  /**
+   * @override
+   */
   handleClick() {
     traceSelection.selectTrace(this.trace);
   }
 
+  /**
+   * @override
+   */
   buildChildren() {
     // add other traces as children (before details) 
     return this.childTraces?.map(

@@ -70,4 +70,14 @@ export function hasTraceValue(traceType) {
   return valueTypes[traceType];
 }
 
+const expressionTypes = new Array(TraceType.getCount()).map(_ => false);
+expressionTypes[TraceType.ExpressionResult] = true;
+expressionTypes[TraceType.CallArgument] = true;
+expressionTypes[TraceType.CallbackArgument] = true;
+expressionTypes[TraceType.CallExpressionResult] = true;
+
+export function isTraceExpression(traceType) {
+  return expressionTypes[traceType];
+}
+
 export default TraceType;
