@@ -4,6 +4,10 @@ export default class BaseTreeViewNode extends TreeItem {
   parent;
   children: BaseNode[] = null;
 
+  static makeLabel(entry) {
+    return '(unnamed node)';
+  }
+
   constructor(treeNodeProvider, label, entry, parent, moreProps) {
     super(label);
 
@@ -20,17 +24,37 @@ export default class BaseTreeViewNode extends TreeItem {
 
   /**
    * @virtual
-   * @return true if it has a `buildChildren` method
+   */
+  init() {
+  }
+
+  /**
+   * @virtual
+   * @return true if it has `children` or a `buildChildren` method
    */
   canHaveChildren() {
     return !!this.children || !!this.buildChildren;
   }
 
+  /**
+   * @virtual
+   */
   makeIconPath() {
+    // default: no icon
     return '';
   }
 
+  /**
+   * @virtual
+   */
   handleClick() {
-    // by default: do nothing
+    // default: do nothing
   }
+
+  // /**
+  //  * @virtual
+  //  */
+  // buildChildren() {
+  //   // default: no children
+  // }
 }
