@@ -225,7 +225,7 @@ export default class Runtime {
       // we probably had an unhandled interrupt that is now resumed
       stack = this.resumeWaitingStack(contextId);
       if (!stack) {
-        logInternalError(`Could not pop contextId off stack`, contextId);
+        logInternalError(`Could not pop contextId off stack because there is stack active, and no waiting stack registered with this contextId`, contextId);
         return -1;
       }
       stackPos = this._popAnywhere(contextId);
@@ -272,7 +272,8 @@ export default class Runtime {
       return;
     }
 
-    this._markWaiting(awaitContextId);
+    this.push(awaitContextId, true);
+    // this._markWaiting(awaitContextId);
 
     // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
   }
@@ -293,6 +294,8 @@ export default class Runtime {
       logInternalError('Could not resume waiting stack (is not registered):', contextId);
       return null;
     }
+
+    // waitingStack.resumeFrom(contextId);
     const oldStack = this._executingStack;
 
     if (oldStack !== waitingStack) {
@@ -305,6 +308,9 @@ export default class Runtime {
     }
 
     this._markResume(contextId);
+
+    // pop the await/yield context
+    this.pop(contextId);
 
     return waitingStack;
   }

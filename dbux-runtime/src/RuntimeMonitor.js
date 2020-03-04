@@ -216,11 +216,13 @@ export default class RuntimeMonitor {
     // NOTE: no need to push onto the stack; since its a virtual context: its not on the stack
     // this._runtime.push(awaitContextId);
 
-    this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
 
+    traceCollection.trace(resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
 
     // pop resume context
     this.popResume();
+
+    this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
 
 
     return awaitContextId;
@@ -243,6 +245,8 @@ export default class RuntimeMonitor {
     else {
       // resume after await
       this._runtime.resumeWaitingStack(awaitContextId);
+
+      //traceCollection.trace(awaitContextId, runId, inProgramStaticTraceId, TraceType.Await);
 
       // NOTE: no need to pop from stack; since its a virtual context: its not on the stack
       // this._pop(awaitContextId);
