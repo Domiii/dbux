@@ -8,11 +8,11 @@ import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import deserialize from 'dbux-common/src/serialization/deserialize';
+import TraceType, { isTraceExpression } from 'dbux-common/src/core/constants/TraceType';
 
 import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
-import TraceType, { isTraceExpression } from '../../dbux-common/src/core/constants/TraceType';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
