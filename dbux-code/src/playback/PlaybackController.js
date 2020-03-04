@@ -58,7 +58,7 @@ export default class PlaybackController {
       let traces = app.dataProvider.collections.traces.getAll();
       for (let trace of traces) {
         if (!trace) continue;
-        const { runId, contextId, traceId, staticTraceId } = trace;
+        const { runId, contextId, traceId } = trace;
         const type = app.dataProvider.util.getTraceType(traceId);
         const typeName = TraceType.getName(type);
         info.push({ runId, contextId, traceId, typeName });
