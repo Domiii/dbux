@@ -12,7 +12,7 @@ import deserialize from 'dbux-common/src/serialization/deserialize';
 import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
-import TraceType, { hasTraceValue } from '../../dbux-common/src/core/constants/TraceType';
+import TraceType, { isTraceExpression } from '../../dbux-common/src/core/constants/TraceType';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
@@ -97,7 +97,7 @@ class TraceCollection extends Collection<Trace> {
         beforeCalls.push(trace);
         // console.log(' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
       }
-      else if (hasTraceValue(traceType)) {
+      else if (isTraceExpression(traceType)) {
         // NOTE: `hasTraceValue` to filter out Push/PopCallback
         if (staticTrace.resultCallId) {
           // call results: reference their call by `resultCallId` and vice versa by `resultId`
@@ -105,7 +105,7 @@ class TraceCollection extends Collection<Trace> {
           const beforeCall = beforeCalls.pop();
           // console.log(' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
-            logError('for resultCallId', 'staticTrace.resultCallId !== beforeCall.staticTraceId -', staticTrace.displayName, trace, beforeCall);
+            logError('[resultCallId]', 'staticTrace.resultCallId !== beforeCall.staticTraceId - is trace result of a CallExpression-tree? -', staticTrace.displayName, trace, beforeCall);
             beforeCalls.push(beforeCall);   // something is wrong -> push it back
           }
           else {
@@ -116,8 +116,8 @@ class TraceCollection extends Collection<Trace> {
         if (staticTrace.callId) {
           // call args: reference their call by `callId`
           const beforeCall = beforeCalls[beforeCalls.length - 1];
-          if (staticTrace.callId !== beforeCall.staticTraceId) {
-            logError('for callId', 'staticTrace.callId !== beforeCall.staticTraceId', staticTrace, beforeCall);
+          if (staticTrace.callId !== beforeCall?.staticTraceId) {
+            logError('[callId]', 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? -', trace, staticTrace, beforeCall);
           }
           trace.callId = beforeCall.traceId;
         }
