@@ -73,7 +73,21 @@
    * if it is very large and thus will slow things down (e.g. > x traces?)
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
+
+
+
+
+
+
+
+
+
+
+
+
 ## TODO (other)
+* fix call graph root + call stack labels:
+   * if its a callback or other argument, display call (callId -> callResultId) with actual arguments
 * keep testing navigation in todomvc (especially: moving from event handler to store methods)
 * [callbacks]
    * `StaticTraceTDNode` counts Schedule/Push/Pop each as one execution
@@ -225,3 +239,21 @@
 
 ## Fancy ideas (Dev)
 * add extra-watch-webpack-plugin https://github.com/pigcan/extra-watch-webpack-plugin?
+
+
+
+# Tools for Call Graph Analysis
+
+## Call Graph Roots
+* (mostly done)
+
+## Call Graph Paths
+* Given two traces, find shortest path (or path that is most likely to be the actual path?)
+   * TODO: Somehow visualize and allow interactions with that path
+      * -> Possibly like a car navigation system -> listing all the twists and turns
+* Given some trace, find trace (and path) that has shortest path of all traces at given staticTrace (selected at cursor)
+* 
+
+### Future work
+* Given some un-traced code, find potential path to that trace?
+   * TODO: Requires Ai + static analysis
