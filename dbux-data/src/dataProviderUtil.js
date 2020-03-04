@@ -38,6 +38,9 @@ export default {
     return dp.indexes.executionContexts.firstInRuns.get(1);
   },
 
+  getFirstTracesInRuns(dp: DataProvider) {
+    return dp.indexes.traces.firsts.get(1);
+  },
 
   // ###########################################################################
   // static contexts
