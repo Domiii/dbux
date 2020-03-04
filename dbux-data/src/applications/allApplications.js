@@ -43,6 +43,14 @@ export class AllApplications {
     return application;
   }
 
+  getAllActive() {
+    return Array.from(this._activeApplicationsByPath.values());
+  }
+
+  getAll() {
+    return this._all.filter(app => !!app);
+  }
+
   tryGetApplication(applicationOrIdOrEntryPointPath: number | string | Application): Application {
     let application;
     if (applicationOrIdOrEntryPointPath instanceof Application) {
@@ -66,7 +74,7 @@ export class AllApplications {
 
   isApplicationActive(applicationOrIdOrEntryPointPath) {
     const application = this.getApplication(applicationOrIdOrEntryPointPath);
-    return application && !!this.getActiveApplicationByEntryPoint(application.entryPointPath);
+    return application && (application === this.getActiveApplicationByEntryPoint(application.entryPointPath));
   }
 
   // ###########################################################################

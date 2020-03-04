@@ -65,6 +65,22 @@ export default class CallGraph {
    * @param {Array<Trace>} newTraces 
    */
   _postAddTraces = (newTraces) => {
+    const tracesByRun = [];
+    for (const trace of newTraces) {
+      const { traceId } = trace;
+      if (!tracesByRun[traceId]) tracesByRun[traceId] = [];
+      tracesByRun[traceId].push(trace);
+    }
+
+    for (const traces of tracesByRun) {
+      if (traces) this._postAddTracesByRun(traces);
+    }
+  }
+
+  /**
+   * @param {Array<Trace>} newTraces 
+   */
+  _postAddTracesByRun = (newTraces) => {
     let stack: Array<Array<Trace>> = [];
     let lastTrace = null;
     let lastContext = null;
@@ -158,7 +174,7 @@ export default class CallGraph {
     }
     this._prevChildContext[firstTrace.traceId] = prevChild;
   }
-  
+
   /**
    * @param {Array<Trace>} traces
    * @param {Trace} nextChild
