@@ -58,7 +58,7 @@ function extractSourceAtLoc(srcLines, loc) {
  * @see https://github.com/hulkish/babel/blob/master/packages/babel-code-frame/src/index.js
  */
 export function extractSourceStringWithoutComments(node, state) {
-  return extractSourceAtLoc(node.loc, state);
+  return extractSourceStringWithoutCommentsAtLoc(node.loc, state);
 }
 
 export function extractSourceStringWithoutCommentsAtLoc(loc, state) {

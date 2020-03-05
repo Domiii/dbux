@@ -45,10 +45,7 @@ function instrumentForAwaitOfLoop(path, state) {
 
 function getLoopHeadLoc(path, bodyPath) {
   bodyPath = Array.isArray(bodyPath) ? bodyPath[0] : bodyPath;
-  const bodyLoc = bodyPath?.loc;
-  if (!bodyLoc) {
-    return path.loc;
-  }
+  const bodyLoc = bodyPath?.node.loc || path.node.loc;
 
   const { start } = path.node.loc;
   const end = bodyLoc.start;

@@ -287,7 +287,7 @@ export default function injectDbuxState(programPath, programState) {
      */
     genContextIdName(path) {
       const contextId = path.scope.generateUid('contextId');
-      path.setData('contextIdName', contextId);
+      // path.setData('contextIdName', contextId);
       return contextId;
     },
 

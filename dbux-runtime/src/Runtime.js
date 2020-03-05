@@ -48,6 +48,8 @@ export default class Runtime {
    */
   _currentRunId = 0;
 
+  _lastTraceByContextId = [];
+
 
   // ###########################################################################
   // Stack management
@@ -156,6 +158,18 @@ export default class Runtime {
       }
     }
     return stackPos;
+  }
+
+  // ###########################################################################
+  // Traces
+  // ###########################################################################
+  
+  setContextTrace(contextId, traceId) {
+    this._lastTraceByContextId[contextId] = traceId;
+  }
+
+  getContextTraceId(contextId) {
+    return this._lastTraceByContextId[contextId];
   }
 
   // ###########################################################################
@@ -300,7 +314,7 @@ export default class Runtime {
 
     if (oldStack !== waitingStack) {
       if (this.isExecuting()) {
-        logInternalError('Unexpected: `resume` received while already executing. Discarding executing stack.');
+        logInternalError('`resume` received while already executing not handled properly yet. Discarding executing stack.');
         this.interrupt();
       }
 

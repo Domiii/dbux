@@ -16,6 +16,7 @@ import { initResources } from './resources';
 import { initTraceSelection } from './codeSelection';
 import { initEditorTracesController } from './editorTracesView/editorTracesController';
 import { initUserCommands } from './userCommands';
+import { initLogging } from './logging';
 
 
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -26,6 +27,7 @@ const { log, debug, warn, error: logError } = newLogger('dbux-code');
  */
 function activate(context) {
   try {
+    initLogging();
     initResources(context);
     initServer(context);
     initCodeApplications(context);

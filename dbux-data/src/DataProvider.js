@@ -338,7 +338,14 @@ export default class DataProvider {
   _notifyData(collectionName: string, data: [], allListeners) {
     const listeners = allListeners[collectionName];
     if (listeners) {
-      listeners.forEach((cb) => cb(data));
+      listeners.forEach((cb) => {
+        try {
+          cb(data);
+        }
+        catch (err) {
+          logError('Data event listener failed', err);
+        }
+      });
     }
   }
 
