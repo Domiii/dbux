@@ -205,11 +205,11 @@ export default class RuntimeMonitor {
   preAwait(programId, inProgramStaticId, inProgramStaticTraceId) {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
-    const parentContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
-    const parentTraceId = this._runtime.getContextTraceId(parentContextId);
+    const resumeContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
+    const parentTraceId = this._runtime.getContextTraceId(resumeContextId);
 
     const context = executionContextCollection.await(
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId
+      stackDepth, runId, resumeContextId, parentTraceId, programId, inProgramStaticId
     );
     const { contextId: awaitContextId } = context;
 
@@ -217,10 +217,10 @@ export default class RuntimeMonitor {
     this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
     
     // trace Await
-    this._trace(parentContextId, runId, inProgramStaticTraceId);
+    this._trace(resumeContextId, runId, inProgramStaticTraceId);
 
     // pop resume context
-    this.popResume(parentContextId);
+    this.popResume(resumeContextId);
 
     return awaitContextId;
   }
@@ -244,7 +244,7 @@ export default class RuntimeMonitor {
       this._runtime.resumeWaitingStack(awaitContextId);
 
       // traceCollection.trace(awaitContextId, runId, inProgramStaticTraceId, TraceType.Await);
-      this._pop(awaitContextId);
+      // this._pop(awaitContextId);
 
       // resume: push new Resume context
       const { staticContextId } = context;
@@ -282,6 +282,8 @@ export default class RuntimeMonitor {
     // trace
     this._trace(resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
     // }
+
+    return resumeContextId;
   }
 
   popResume(resumeContextId) {

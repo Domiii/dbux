@@ -22,7 +22,7 @@ function addResumeContext(bodyPath, state, staticId) {
 
 function buildPushImmediate(contextId, dbux, staticId, traceId, isInterruptable) {
   // TODO: use @babel/template instead
-  return buildSource(`const ${contextId} = ${dbux}.pushImmediate(${staticId}, ${traceId}, ${isInterruptable});`);
+  return buildSource(`var ${contextId} = ${dbux}.pushImmediate(${staticId}, ${traceId}, ${isInterruptable});`);
 }
 
 function buildPopImmediate(contextId, dbux, traceId) {
@@ -31,7 +31,7 @@ function buildPopImmediate(contextId, dbux, traceId) {
 }
 
 const pushResumeTemplate = template(`
-  const %%resumeContextId%% = %%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%);
+  var %%resumeContextId%% = %%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%);
 `);
 
 const popResumeTemplate = template(`
@@ -53,7 +53,7 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
   let pops = buildPopImmediate(contextIdVar, dbux, popTraceId);
   if (staticResumeId) {
     // this is an interruptable function -> push + pop "resume contexts"
-    const resumeContextId = path.scope.generateUid('resumeContextId');
+    const resumeContextId = bodyPath.scope.generateUid('resumeContextId');
     pushes = [
       ...pushes,
       pushResumeTemplate({
