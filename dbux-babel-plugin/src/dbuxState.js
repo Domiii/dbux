@@ -122,6 +122,7 @@ export default function injectDbuxState(programPath, programState) {
 
   const staticContexts = [null]; // staticId = 0 is always null
   const traces = [null];
+  const loops = [null];
 
   const dbuxState = {
     // static program data
@@ -131,12 +132,18 @@ export default function injectDbuxState(programPath, programState) {
 
     staticContexts,
     traces,
+    loops,
+
     ids: {
       dbuxInit: scope.generateUid('dbux_init'),
       dbuxRuntime: scope.generateUid('dbuxRuntime'),
       dbux: scope.generateUid('dbux')
     },
     // console.log('[Program]', state.filename);
+
+    // ###########################################################################
+    // getters
+    // ###########################################################################
 
     getTraceOfPath(path) {
       const traceId = getPathTraceId(path);
@@ -146,6 +153,33 @@ export default function injectDbuxState(programPath, programState) {
     getTrace(traceId) {
       return traces[traceId];
     },
+    
+
+    getClosestAncestorData(path, dataName) {
+      const staticContextParent = path.findParent(p => !!p.getData(dataName));
+      return staticContextParent?.getData(dataName);
+    },
+
+    getParentStaticContextId(path) {
+      return programState.getClosestAncestorData(path, 'staticId');
+    },
+
+    getCurrentStaticContextId(path) {
+      return path.getData('staticId') || programState.getClosestAncestorData(path, 'staticId');
+    },
+
+    getClosestContextIdName(path) {
+      return programState.getClosestAncestorData(path, 'contextIdName');
+    },
+
+    getStaticContext(staticId) {
+      return staticContexts[staticId];
+    },
+
+    
+    // ###########################################################################
+    // visitor check-ins
+    // ###########################################################################
 
     onTrace(path) {
       return dbuxState.onEnter(path, 'trace');
@@ -229,6 +263,10 @@ export default function injectDbuxState(programPath, programState) {
       // dbuxState.markExited(path); // not necessary for now
     },
 
+    // ###########################################################################
+    // utilities
+    // ###########################################################################
+
     /**
      * Problem: If paths are wrapped using `@babel/template`, only their nodes get copied, thus all associated `data` in path is lost.
      * This method keeps track of that.
@@ -239,22 +277,9 @@ export default function injectDbuxState(programPath, programState) {
       purpose && this.markVisited(newPath, purpose);
     },
 
-    getClosestAncestorData(path, dataName) {
-      const staticContextParent = path.findParent(p => !!p.getData(dataName));
-      return staticContextParent?.getData(dataName);
-    },
-
-    getParentStaticContextId(path) {
-      return programState.getClosestAncestorData(path, 'staticId');
-    },
-
-    getCurrentStaticContextId(path) {
-      return path.getData('staticId') || programState.getClosestAncestorData(path, 'staticId');
-    },
-
-    getClosestContextIdName(path) {
-      return programState.getClosestAncestorData(path, 'contextIdName');
-    },
+    // ###########################################################################
+    // add contexts
+    // ###########################################################################
 
     /**
      * Generate a new variable identifier to store `contextId` for given path.
@@ -262,12 +287,8 @@ export default function injectDbuxState(programPath, programState) {
      */
     genContextIdName(path) {
       const contextId = path.scope.generateUid('contextId');
-      path.setData('contextIdName', contextId);
+      // path.setData('contextIdName', contextId);
       return contextId;
-    },
-
-    getStaticContext(staticId) {
-      return staticContexts[staticId];
     },
 
     /**
@@ -314,6 +335,10 @@ export default function injectDbuxState(programPath, programState) {
       return _staticId;
     },
 
+    // ###########################################################################
+    // add traces
+    // ###########################################################################
+
     /**
      * Tracing a path in its entirety (usually means, the trace is recorded right before the given path).
      */
@@ -347,6 +372,28 @@ export default function injectDbuxState(programPath, programState) {
 
       return _traceId;
     },
+
+    // ###########################################################################
+    // add loops
+    // ###########################################################################
+
+    addLoop(path, type, loopHeadLoc, displayName, vars) {
+      checkPath(path);
+
+      const loop = {
+        _loopId: loops.length,
+        _staticContextId: dbuxState.getCurrentStaticContextId(path),
+
+        type,
+        loopHeadLoc,
+        displayName,
+        vars
+      };
+
+      loops.push(loop);
+      
+      return loop._loopId;
+    }
   };
 
   Object.assign(programState, dbuxState);

@@ -3,6 +3,7 @@ import Application from 'dbux-data/src/applications/Application';
 import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 
 
 // ###########################################################################
@@ -49,7 +50,9 @@ export class ContextTDNode extends BaseTreeViewNode {
 
   static makeLabel(context, parent) {
     const application = allApplications.getApplication(parent.trace.applicationId);
-    return `Context: ${makeContextLabel(context, application)}`;
+    const { contextType } = context;
+    const typeName = ExecutionContextType.nameFrom(contextType);
+    return `Context: ${makeContextLabel(context, application)} [${typeName}]`;
   }
 
   // makeIconPath(application: Application) {

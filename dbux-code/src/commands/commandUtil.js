@@ -2,6 +2,7 @@ import {
   window,
   commands
 } from 'vscode';
+import { logError } from 'dbux-common/src/log/logger';
 
 // command regist helper
 export function registerCommand(context, commandName, func, pushToClient = false) {
@@ -11,8 +12,7 @@ export function registerCommand(context, commandName, func, pushToClient = false
         return f(...args);
       }
       catch (err) {
-        console.error(err);
-        debugger;
+        logError(commandName, 'command failed', err);
         throw err;
       }
     };
