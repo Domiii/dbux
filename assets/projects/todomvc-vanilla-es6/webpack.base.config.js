@@ -94,7 +94,8 @@ module.exports = (projectRoot) => {
         root,
         // dbuxRoots.map(f => path.join(f, 'dist')),
         path.join(projectRoot, 'src'),
-        path.join(projectRoot, 'node_modules')
+        path.join(projectRoot, 'node_modules'),
+        path.join(root, 'node_modules')
       ].flat()
     },
     module: {

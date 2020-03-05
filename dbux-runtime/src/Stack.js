@@ -119,6 +119,10 @@ export default class Stack {
     return i;
   }
 
+  skipPopAtPeek() {
+    
+  }
+
   trySetPeek(contextId) {
     if (this.peek() === contextId) {
       return;

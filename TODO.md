@@ -86,6 +86,8 @@
 
 
 ## TODO (other)
+* [await instrumentation]
+   * test: when error thrown, pop the right resume context, and also await context if necessary?
 * `tracesAtCursor`
    * remove this view, replace with button at the top left
    * select most relevant trace only
