@@ -95,8 +95,14 @@
 * keep testing navigation in todomvc (especially: moving from event handler to store methods)
 * [callbacks]
    * Problem: we cannot wrap callbacks, as it will break the function's (or class's) identity.
-      * NOTE: This breaks identity-mapping functions, caching, triggers a babel assertion when targeting esnext and trying to instantiate a wrapped class, and `instanceof`, to name a few
-      * Solution: Use a separate map to track callbacks and their points of passage instead?
+      * This breaks...
+         * `instanceof` on any class variable that is not the actual declaration of the class (i.e. when returning a class, storing them in other variables, passing as argument etc...)
+         * triggers a babel assertion when targeting esnext and using es6 classes in anything but `new` statements
+         * identity-mapping of callbacks (e.g. `reselect`, React's `useCallback` and more)
+            * usually only causes performance to deteriorate which is ok, but it might sometimes affect functionality as well...
+      * partial solution: Use a separate map to track callbacks and their points of passage instead?
+         * => Won't work as comprehensively at all, issues with aliased functions, `bind`, `call` etc...
+         * => We cannot capture all possibilities using instrumentation, since some of that might happen in black-boxed modules
 * [loops]
    * capture loop variables in BlockStart
    * new data types:
