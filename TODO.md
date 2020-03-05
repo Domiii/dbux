@@ -86,8 +86,6 @@
 
 
 ## TODO (other)
-* [await instrumentation]
-   * test: when error thrown, pop the right resume context, and also await context if necessary?
 * `tracesAtCursor`
    * remove this view, replace with button at the top left
    * select most relevant trace only
@@ -99,30 +97,31 @@
    * Problem: we cannot wrap callbacks, as it will break the function's (or class's) identity.
       * NOTE: This breaks identity-mapping functions, caching, triggers a babel assertion when targeting esnext and trying to instantiate a wrapped class, and `instanceof`, to name a few
       * Solution: Use a separate map to track callbacks and their points of passage instead?
-* [instrumentation]
-   * [loops]
-      * capture loop variables in BlockStart
-      * new data types:
-         * `staticLoop`
-         * `loop`
-            * `firstTraceId` + `lastTraceId`
-         * `loopRepition`
-            * `i`
-            * `headerVars`
-      * add `loopRepititionId` to all traces in loop
-         * add `loopRepitition`:
-            * before `init`, and after `condition` has evaluated to `true`?
-      * in loop's `BlockStart`:
-         * evaluate + store `headerVars`
-            * all variables that have bindings in loop header
-      * fix `DoWhileLoop` :(
-   * fix `Await` + `Resume`
-      * async function's push + pop?
-      * when resuming, we might come back from a callback etc.
-         * Need to push `Resume` on demand?
-      * when resuming, parent is not set
-   * add one trace for each function parameter
-   * [promises] keep track of `schedulerTraceId`
+* [loops]
+   * capture loop variables in BlockStart
+   * new data types:
+      * `staticLoop`
+      * `loop`
+         * `firstTraceId` + `lastTraceId`
+      * `loopRepition`
+         * `i`
+         * `headerVars`
+   * add `loopRepititionId` to all traces in loop
+      * add `loopRepitition`:
+         * before `init`, and after `condition` has evaluated to `true`?
+   * in loop's `BlockStart`:
+      * evaluate + store `headerVars`
+         * all variables that have bindings in loop header
+   * fix `DoWhileLoop` :(
+* [promises] keep track of `schedulerTraceId`
+* [error_handling]
+   * if we have an error, try to trace "skipped contexts"
+      * note: probably have to `catch`/re-`throw` on each level for it to be accurate
+   * make error tracing configurable and/or add proper explanations when errors are reported
+      * NOTE: `catch` clauses added by instrumentation temper with the breakpoints at which errors are reported (but does NOT temper with stacktrace per se);
+         * -> so it is safe but needs some explanation
+   * [errors_and_await]
+      * test: when error thrown, do we pop the correct resume and await contexts?
 * [values]
    * track function parameters
    * track `this`

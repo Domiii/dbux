@@ -6,10 +6,17 @@ import { parse } from '@babel/parser';
 import { codeFrameColumns } from "@babel/code-frame";
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
+import { template } from '@babel/core';
 
 export function buildNamedExport(ids) {
   return t.exportNamedDeclaration(null, ids.map(id => t.exportSpecifier(id, id)))
 }
+
+
+const errHandlerTemplate = template(`
+console.error(err);
+throw err;
+`);
 
 export function buildTryFinally(tryNodes, finallyNodes) {
   if (tryNodes.length === 1 && t.isBlockStatement(tryNodes[0])) {
@@ -18,7 +25,14 @@ export function buildTryFinally(tryNodes, finallyNodes) {
   else {
     tryNodes = t.blockStatement(tryNodes);
   }
-  return t.tryStatement(tryNodes, null, t.blockStatement(finallyNodes))
+
+  const catchClause = null;
+  // const catchClause = t.catchClause(
+  //   t.identifier('err'),
+  //   t.blockStatement(errHandlerTemplate({
+  //   }))
+  // );
+  return t.tryStatement(tryNodes, catchClause, t.blockStatement(finallyNodes));
 }
 
 export function buildBlock(statements) {
