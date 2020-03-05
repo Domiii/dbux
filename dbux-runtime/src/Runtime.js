@@ -293,10 +293,14 @@ export default class Runtime {
   }
 
   /**
-   * 
+   * Manually climb up the stack.
+   * NOTE: We are waiting now, and see on the stack:
+   *    1. Await (top)
+   *    2. async function (top-1)
+   * -> However, next trace will be outside of the function, so we want to skip both.
    */
   skipPopPostAwait() {
-    --this._executingStack._peekIdx;
+    this._executingStack._peekIdx -= 2;
   }
 
   /**
