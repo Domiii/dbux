@@ -1,4 +1,5 @@
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { isCallbackRelatedTrace } from 'dbux-common/src/core/constants/TraceType';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { makeContextLabel } from './contextLabels';
 import allApplications from '../applications/allApplications';
 
@@ -114,4 +115,45 @@ export function getTraceCreatedAt(trace) {
   const { createdAt, dataProvider } = application;
   const context = dataProvider.util.getTraceContext(trace.traceId);
   return (context.createdAt - createdAt) / 1000;
+}
+
+export function makeRootTraceLabel(trace) {
+  const { traceId, applicationId } = trace;
+  const dp = allApplications.getById(applicationId).dataProvider;
+  const traceType = dp.util.getTraceType(traceId);
+  let label;
+  if (isCallbackRelatedTrace(traceType)) {
+    label = makeCallTraceLabel(trace);
+  }
+  else {
+    makeTraceLabel(trace);
+  }
+  return label;
+}
+
+export function makeCallTraceLabel(trace) {
+  const { traceId, applicationId } = trace;
+  const dp = allApplications.getById(applicationId).dataProvider;
+  const traceType = dp.util.getTraceType(traceId);
+  let label;
+  if (traceType === TraceType.PushCallback) {
+    const schedulerTrace = dp.collections.trace.getById(trace.schedulerTraceId);
+    label = makeCallTraceLabel(schedulerTrace);
+  }
+  else if (traceType === TraceType.PopCallback) {
+    const schedulerTrace = dp.collections.trace.getById(trace.schedulerTraceId);
+    label = makeCallTraceLabel(schedulerTrace);
+  }
+  else if (traceType === TraceType.CallArgument) {
+    const { callId } = trace;
+
+    const args = dp.indexes.traces.callArgsByCall.get(callId);
+    const argValues = args?.
+      map(argTrace => dp.util.getTraceValue(argTrace.traceId)) ||
+      EmptyArray;
+    
+    const valueString = dp.util.getTraceValue(traceId) + ' ';
+    label = `(${argValues.join(', ')}) -> ${valueString}`;
+  }
+  return label;
 }
