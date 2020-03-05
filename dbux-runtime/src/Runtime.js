@@ -293,6 +293,13 @@ export default class Runtime {
   }
 
   /**
+   * 
+   */
+  skipPopPostAwait() {
+    --this._executingStack._peekIdx;
+  }
+
+  /**
    * no previous executing stack to resume
    *  -> this invocation has been called from system scheduler (possibly traversing blackboxed code)
    */

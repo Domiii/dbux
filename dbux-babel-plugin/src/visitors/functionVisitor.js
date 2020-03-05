@@ -30,13 +30,14 @@ function buildPopImmediate(contextId, dbux, traceId) {
   return buildSource(`${dbux}.popImmediate(${contextId}, ${traceId});`);
 }
 
-const pushResumeTemplate = template(`
-  var %%resumeContextId%% = %%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%);
-`);
+const pushResumeTemplate = template(
+  /*var %%resumeContextId%% =*/
+  `%%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%);`);
 
-const popResumeTemplate = template(`
-  %%dbux%%.popResume(%%resumeContextId%%);
-`);
+const popResumeTemplate = template(
+  // `%%dbux%%.popResume(%%resumeContextId%%);`
+  `%%dbux%%.popResume();`
+);
 
 // ###########################################################################
 // modification
@@ -53,12 +54,12 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
   let pops = buildPopImmediate(contextIdVar, dbux, popTraceId);
   if (staticResumeId) {
     // this is an interruptable function -> push + pop "resume contexts"
-    const resumeContextId = bodyPath.scope.generateUid('resumeContextId');
+    // const resumeContextId = bodyPath.scope.generateUid('resumeContextId');
     pushes = [
       ...pushes,
       pushResumeTemplate({
         dbux,
-        resumeContextId,
+        // resumeContextId,
         resumeStaticContextId: t.numericLiteral(staticResumeId),
         traceId: t.numericLiteral(pushTraceId)
       })
@@ -67,7 +68,7 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
     pops = [
       popResumeTemplate({
         dbux,
-        resumeContextId,
+        // resumeContextId,
         // traceId: t.numericLiteral(popTraceId)
         // contextId: contextIdVar
       }),

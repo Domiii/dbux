@@ -222,6 +222,9 @@ export default class RuntimeMonitor {
     // pop resume context
     this.popResume(resumeContextId);
 
+    // we are waiting now, and async function is stack peek -> skip the function for now
+    this._runtime.skipPopPostAwait();
+
     return awaitContextId;
   }
 
@@ -286,8 +289,8 @@ export default class RuntimeMonitor {
     return resumeContextId;
   }
 
-  popResume(resumeContextId) {
-    // const resumeContextId = this._runtime.peekCurrentContextId();
+  popResume(resumeContextId = null) {
+    resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
 
     // sanity checks
     const context = executionContextCollection.getById(resumeContextId);
