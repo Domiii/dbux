@@ -8,37 +8,60 @@ import justRunMyPlugin from '../testing/justRunMyPlugin';
 /**
  * @see https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
  */
-const code = `
-function f(x, { a, b: [c] }) { 
-  let k = 3;
-  console.log(a, c, x, k);
-}
-`;
 
+function run(code) {
+  const output = {};
 
-test('', () => {
-  const visited = new Set();
-
-  let path;
-
-  const plugin = function ({ types: t }) {
+  function plugin() {
     return {
       visitor: {
-        Function(_path, state) {
-          path = _path;
+        Function(path, state) {
+          output.functionPath = path;
+        },
+        ForOfStatement(path, state) {
+          output.forOfPath = path;
         }
       }
     };
-  };
+  }
 
   justRunMyPlugin(code, plugin, {
     filename: __filename
   });
 
-  const block = path.get('body');
-  const params = path.get('params');
+  return output;
+}
+
+
+test('function bindings', () => {
+  const { functionPath } = run(`
+function f(x, { a, b: [c] }) { 
+  let k = 3;
+  console.log(a, c, x, k);
+}
+`);
+  const block = functionPath.get('body');
+  const params = functionPath.get('params');
   const { bindings } = block.scope;
-  console.log('body', Object.keys(bindings));
+  
+  expect(bindings).toIncludeSameMembers(['x', 'a', 'c', 'k']);
+  console.log('function bindings', Object.keys(bindings));
+});
+
+test('for-of bindings', () => {
+  const { forOfPath } = run(`
+for (const x of [1,2]) {
+  console.log(x);
+}
+`);
+
+  const block = forOfPath.get('body');
+  const params = forOfPath.get('params');
+  const { bindings } = block.scope;
+
+  expect(bindings).toIncludeSameMembers(['x']);
+  console.log('for of bindings', Object.keys(bindings));
+
   // console.log('params', Object.keys(params.scope.bindings));
   // expect(name).toBe('f');
 });

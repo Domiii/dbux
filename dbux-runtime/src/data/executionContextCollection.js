@@ -27,30 +27,30 @@ export class ExecutionContextCollection extends Collection {
   /**
    * @return {ExecutionContext}
    */
-  executeImmediate(stackDepth, runId, parentContextId, programId, inProgramStaticId) {
+  executeImmediate(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId) {
     return this._create(ExecutionContextType.Immediate,
-      stackDepth, runId, parentContextId, programId, inProgramStaticId);
+      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId);
   }
 
   /**
    * @return {ExecutionContext}
    */
-  executeCallback(stackDepth, runId, parentContextId, schedulerContextId, schedulerTraceId) {
+  executeCallback(stackDepth, runId, parentContextId, parentTraceId, schedulerContextId, schedulerTraceId) {
     const schedulerContext = this.getById(schedulerContextId);
     const { staticContextId } = schedulerContext;
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 
     const context = pools.executionContexts.allocate(
-      ExecutionContextType.ExecuteCallback, stackDepth, runId, parentContextId, contextId,
+      ExecutionContextType.ExecuteCallback, stackDepth, runId, parentContextId, parentTraceId, contextId,
       staticContextId, orderId, schedulerTraceId);
     this._push(context);
     return context;
   }
   
-  await(stackDepth, runId, parentContextId, programId, inProgramStaticId) {
+  await(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId) {
     return this._create(ExecutionContextType.Await,
-      stackDepth, runId, parentContextId, programId, inProgramStaticId);
+      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId);
   }
   
   /**
@@ -60,15 +60,12 @@ export class ExecutionContextCollection extends Collection {
    * (1) either when the function pops,
    * (2) or when another interrupt occurs.
    */
-  resume(stackDepth, runId, parentContextId, programId, inProgramStaticId, schedulerTraceId) {
+  resume(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId, schedulerTraceId) {
     // const parentContext = this.getById(parentContextId);
     // const { staticContextId: parenStaticContextId } = parentContext;
     // const { programId } = staticContextCollection.getById(inProgramStaticId);
     const context = this._create(ExecutionContextType.Resume,
-      stackDepth, runId, parentContextId, programId, inProgramStaticId, schedulerTraceId);
-
-    // const { contextId } = context;
-    // this._addResumedChild(parentContextId, contextId);
+      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId, schedulerTraceId);
 
     return context;
   }
@@ -81,14 +78,14 @@ export class ExecutionContextCollection extends Collection {
     return this._lastOrderIds[staticId] = (this._lastOrderIds[staticId] || 0) + 1;
   }
 
-  _create(type, stackDepth, runId, parentContextId, programId, inProgramStaticId, schedulerTraceId = null) {
+  _create(type, stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId, schedulerTraceId = null) {
     const staticContext = staticContextCollection.getContext(programId, inProgramStaticId);
     const { staticId: staticContextId } = staticContext;
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 
     const context = pools.executionContexts.allocate(
-      type, stackDepth, runId, parentContextId, contextId, staticContextId, orderId, schedulerTraceId
+      type, stackDepth, runId, parentContextId, parentTraceId, contextId, staticContextId, orderId, schedulerTraceId
     );
     this._push(context);
     return context;
@@ -105,11 +102,6 @@ export class ExecutionContextCollection extends Collection {
   //   context.isPopped = true;
 
   //   this._commitChange(contextId, ExecutionContextUpdateType.Pop);
-  // }
-
-  // _addResumedChild(parentContextId, contextId) {
-
-  //   // TODO: this._sendToRemote();
   // }
 
   _push(context) {

@@ -22,25 +22,25 @@
    * add a checkbox (button) to select "automatically discard older application when executing again"
 * [traceDetailsView]
    * [StaticTraceTDNode] of each trace: display more relevant information
+      * `GroupMode` (button to toggle in the node)
+         * no grouping (default)
+         * by contextId
+         * by runId -> contextId
+         * by `parentContextTraceId` (e.g. for `reduce` etc.)?
+         * [for callbacks only] "Callback mode"
+            * add one group per `call` trace (e.g. `target.addEventListener(type, callback, !!capture);`)
+               * add all `PushCallbacks` of any `callback` in that call as child
+            * sort by `createdAt` in descending order
+            * very useful e.g. in `$on` function inside `todomvc`!
+         * combination of the above
       * offer multiple `TraceDisplayMode`s:
          * value
          * ancestor context
             * allow cycling through levels of depth (parent -> grandparent etc)
          * descendant context
             * allow cycling through levels of depth (child -> grandchild etc)
-         * [for callbacks only] "Callback mode"
-            * show any trace only if callback has a PushCallback
-            * label = combination of call (with arguments filled in) + time of callback execution?
-            * maybe even sort by `createdAt` in reverse order
-            * very useful e.g. in `$on` function inside `todomvc`!
          * related info: get bindings of relevant nearby variables and display those?
             * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
-      * optional GroupMode
-         * no grouping (default)
-         * by runId
-         * by contextId + loopId
-         * by parentContextId (e.g. for `reduce` etc.)?
-         * combination of the above
 * [contextChildrenView]
    * treeview that shows partial `execution tree` in the context of the selected trace
    * Nodes:
@@ -73,14 +73,30 @@
    * if it is very large and thus will slow things down (e.g. > x traces?)
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
+
+
+
+
+
+
+
+
+
+
+
+
 ## TODO (other)
-* keep testing navigation in todomvc (especially: getting from event handler to store methods)
+* `tracesAtCursor`
+   * remove this view, replace with button at the top left
+   * select most relevant trace only
+   * difficult
+      * e.g. in async functions -> latest trace is `Resume` trace, not necessarily inner most (e.g. argument) trace
+      * select "closest trace"
+* keep testing navigation in todomvc (especially: moving from event handler to store methods)
 * [callbacks]
-   * Problem: we cannot wrap callbacks, as it will break the function's (or possible class's) identity.
-      * Solution: Use a separate map to track callbacks and their points of passage instead
-   * `StaticTraceTDNode` displays Schedule/Push/Pop as separate executions
-* [dbux-cli -> dbux run]
-   * breakpoints in dbux-run don't work anymore unless at least one debugger statement is added
+   * Problem: we cannot wrap callbacks, as it will break the function's (or class's) identity.
+      * NOTE: This breaks identity-mapping functions, caching, triggers a babel assertion when targeting esnext and trying to instantiate a wrapped class, and `instanceof`, to name a few
+      * Solution: Use a separate map to track callbacks and their points of passage instead?
 * [instrumentation]
    * [loops]
       * capture loop variables in BlockStart
@@ -202,6 +218,8 @@
 * add test setup to all libs
 * add testing for serialization + deserialization (since it can easily cause a ton of pain)
 * improve value serialization to skip objects that are too big
+* [dbux-cli -> dbux run]
+   * breakpoints in dbux-run don't work anymore unless at least one debugger statement is added?
 
 
 ## Possible future work
@@ -224,3 +242,21 @@
 
 ## Fancy ideas (Dev)
 * add extra-watch-webpack-plugin https://github.com/pigcan/extra-watch-webpack-plugin?
+
+
+
+# Tools for Call Graph Analysis
+
+## Call Graph Roots
+* (mostly done)
+
+## Call Graph Paths
+* Given two traces, find shortest path (or path that is most likely to be the actual path?)
+   * TODO: Somehow visualize and allow interactions with that path
+      * -> Possibly like a car navigation system -> listing all the twists and turns
+* Given some trace, find trace (and path) that has shortest path of all traces at given staticTrace (selected at cursor)
+* 
+
+### Future work
+* Given some un-traced code, find potential path to that trace?
+   * TODO: Requires Ai + static analysis

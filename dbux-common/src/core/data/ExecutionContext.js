@@ -16,6 +16,7 @@ export default class ExecutionContext {
   stackDepth: number;
   runId: number;
   parentContextId : number;
+  parentTraceId: number;
   contextId : number;
   staticContextId : number;
   orderId : number;

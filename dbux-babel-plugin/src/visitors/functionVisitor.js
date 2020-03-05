@@ -31,11 +31,11 @@ function buildPopImmediate(contextId, dbux, traceId) {
 }
 
 const pushResumeTemplate = template(`
-  %%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%);
+  const %%resumeContextId%% = %%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%);
 `);
 
 const popResumeTemplate = template(`
-  %%dbux%%.popResume();
+  %%dbux%%.popResume(%%resumeContextId%%);
 `);
 
 // ###########################################################################
@@ -53,10 +53,12 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
   let pops = buildPopImmediate(contextIdVar, dbux, popTraceId);
   if (staticResumeId) {
     // this is an interruptable function -> push + pop "resume contexts"
+    const resumeContextId = path.scope.generateUid('resumeContextId');
     pushes = [
       ...pushes,
       pushResumeTemplate({
         dbux,
+        resumeContextId,
         resumeStaticContextId: t.numericLiteral(staticResumeId),
         traceId: t.numericLiteral(pushTraceId)
       })
@@ -65,6 +67,7 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
     pops = [
       popResumeTemplate({
         dbux,
+        resumeContextId,
         // traceId: t.numericLiteral(popTraceId)
         // contextId: contextIdVar
       }),

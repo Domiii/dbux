@@ -80,4 +80,13 @@ export function isTraceExpression(traceType) {
   return expressionTypes[traceType];
 }
 
+const callbackTypes = new Array(TraceType.getCount()).map(_ => false);
+callbackTypes[TraceType.CallbackArgument] = true;
+callbackTypes[TraceType.PushCallback] = true;
+callbackTypes[TraceType.PopCallback] = true;
+
+export function isCallbackRelatedTrace(traceType) {
+  return callbackTypes[traceType];
+}
+
 export default TraceType;
