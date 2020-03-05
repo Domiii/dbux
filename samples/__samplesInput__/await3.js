@@ -1,24 +1,37 @@
-async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-async function f() {
-  console.log('f1');
-  await g();
-  console.log('f2');
-  await g();
-  console.log('f3');
+function f0() {
 }
 
-async function g() {
-  console.log('g1');
-  h();
-  h();
-  console.log('g2');
+async function af1(a) {
+  return Promise.resolve(a);
 }
 
-async function h() {
-  console.log('h1');
-  await sleep(100);
-  console.log('h2');
+async function af2() {
+  await af1(1);
+  await af1(2);
+
+  return 2 + await af1(3) - 3;
 }
 
-f();
+async function af33(delay) {
+  return new Promise(r => {
+    setTimeout(r.bind(33), delay);
+  });
+}
+
+async function af44() {
+  const a = await af33(100);
+  const b = await af33(50);
+
+  return a + b + af33(10);
+}
+
+(async function main() {
+  console.log(
+    await Promise.all([
+      af2(),
+      af44()
+    ])
+  );
+
+  f0();
+})();
