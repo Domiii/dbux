@@ -27,17 +27,6 @@ function getLoopType(isForAwaitOf, nodeTypeName) {
   return loopType;
 }
 
-// ###########################################################################
-// actual instrumentation
-// ###########################################################################
-
-function instrumentForAwaitOfLoop(path, state) {
-  // TODO: for-await-of is not handled yet. Specifically:
-  //  1. `node.right` is a `Symbol.asyncIterator`. We want to wrap that.
-  //  2. when `next()` generates a new value, `preAwait`, and
-  //  3. in `path.body`: start with a `postAwait`
-}
-
 
 // ###########################################################################
 // helpers
@@ -71,6 +60,48 @@ function getLoopStaticVars(path, state) {
 }
 
 // ###########################################################################
+// actual instrumentation
+// ###########################################################################
+
+async function* wrapAsyncIterator(it) {
+  for (const promise of it) {
+    // TODO: wrap await
+
+    let awaitContextId;
+    const result = dbux.postAwait(
+      await dbux.wrapAwait(promise, awaitContextId = dbux.preAwait(staticId, preTraceId)),
+      awaitContextId,
+      resumeTraceId
+    );
+
+    // TODO: register loop iteration here
+    const vars = [result];
+
+    yield result;
+  }
+}
+
+/**
+ * Instrumentation of `for-await-of` loops:
+ * 
+ * `for await (const left of dbux.wrapAsyncIterator(right)) { ... }`
+ */
+function instrumentForAwaitOfLoop(path, state) {
+  // TODO: instrument this
+
+  // `for await (const left of dbux.wrapAsyncIterator(right)) { ... }`
+}
+
+
+export function instrumentLoopBodyDefault(bodyPath, state, staticVars) {
+  const varsArrayNode = t.arrayExpression(staticVars.map(staticVar => t.identifier(staticVar.name)));
+
+  // TODO: on body start, add a new LoopIteration
+
+}
+
+
+// ###########################################################################
 // core
 // ###########################################################################
 
@@ -91,12 +122,6 @@ export function instrumentLoop(path, state) {
     instrumentForAwaitOfLoop(path, state);
   }
   else {
-    instrumentLoopBody(bodyPath, state, vars);
+    instrumentLoopBodyDefault(bodyPath, state, vars);
   }
-}
-
-
-export function instrumentLoopBody(bodyPath, state, staticVars) {
-  const varsArrayNode = t.arrayExpression(staticVars.map(staticVar => t.identifier(staticVar.name)));
-  // TODO: on body start, add a new LoopIteration; capture all variables as well
 }

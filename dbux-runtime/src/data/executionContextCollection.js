@@ -41,7 +41,7 @@ export class ExecutionContextCollection extends Collection {
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 
-    const context = pools.executionContexts.allocate(
+    const context = this._allocate(
       ExecutionContextType.ExecuteCallback, stackDepth, runId, parentContextId, parentTraceId, contextId,
       staticContextId, orderId, schedulerTraceId);
     this._push(context);
@@ -84,10 +84,27 @@ export class ExecutionContextCollection extends Collection {
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 
-    const context = pools.executionContexts.allocate(
+    const context = this._allocate(
       type, stackDepth, runId, parentContextId, parentTraceId, contextId, staticContextId, orderId, schedulerTraceId
     );
     this._push(context);
+    return context;
+  }
+
+  _allocate(contextType, stackDepth, runId, parentContextId, parentTraceId, contextId, staticContextId, orderId, schedulerTraceId) {
+    // TODO: use object pooling
+    const context = pools.executionContexts.allocate();
+    context.contextType = contextType;
+    // context.stackDepth = stackDepth;  // not quite necessary, so we don't store it, for now
+    context.runId = runId;
+    context.parentContextId = parentContextId;
+    context.parentTraceId = parentTraceId;
+    context.contextId = contextId;
+    context.staticContextId = staticContextId;
+    context.orderId = orderId;
+    context.schedulerTraceId = schedulerTraceId;
+    context.createdAt = Date.now();  // { createdAt }
+    
     return context;
   }
 

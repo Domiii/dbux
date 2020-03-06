@@ -16,7 +16,7 @@ function checkPath(path) {
 }
 
 // ###########################################################################
-// trace stuff
+// trace state management utilities
 // ###########################################################################
 
 const traceCustomizationsByType = {
@@ -336,7 +336,7 @@ export default function injectDbuxState(programPath, programState) {
     },
 
     // ###########################################################################
-    // add traces
+    // traces
     // ###########################################################################
 
     /**
@@ -374,7 +374,7 @@ export default function injectDbuxState(programPath, programState) {
     },
 
     // ###########################################################################
-    // add loops
+    // loops
     // ###########################################################################
 
     addLoop(path, type, loopHeadLoc, displayName, vars) {

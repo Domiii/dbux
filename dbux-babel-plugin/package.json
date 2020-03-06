@@ -28,9 +28,6 @@
     "@babel/types": "^7.8.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-tester": "^8.0.1",
-    "jest": "^25.1.0",
-    "jest-expect-message": "^1.0.2",
-    "jest-extended": "^0.11.4"
   },
   "keywords": [
     "dbux",

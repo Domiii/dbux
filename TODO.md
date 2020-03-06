@@ -3,8 +3,13 @@
 
 ## TODO (dbux-code + dbux-data; high priority)
 * [applicationDisplayName]
-   * find unique key of 'entryPointPath' of all selectedApplications
-      * do while selectedApplicationChanged (in _notifyChanged)
+   * find shortest unique part of 'entryPointPath' of all `selectedApplications`
+      * use a loop in `_notifyChanged`
+* UI: add new "bullseye" button to top left
+   * icon = `red` bullseye
+      * e.g.: https://www.google.com/search?q=bullseye+icon&tbm=isch
+   * select `getMostRelevantTraceAtCursor()`
+   * if it returns `null`, change button color to gray
 * [callstackView]
    * when clicking a node:
       * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
@@ -86,9 +91,15 @@
 
 
 ## TODO (other)
+* [testing]
+   * add `dbux-cli` and `samples` to the `webpack` setup
+   * finish setting up basic testing in `samples`
+      * move a basic `server` implementation from `dbux-code` to `dbux-data`
+      * then: let sample tests easily run their own server to operate on the data level
+      * make sure the `test file` `launch.json` entry work withs `samples/__tests__`
 * `tracesAtCursor`
    * remove this view, replace with button at the top left
-   * select most relevant trace only
+   * select most relevant trace only -> write some `getMostRelevantTraceAtCursor()` function for this
    * difficult
       * e.g. in async functions -> latest trace is `Resume` trace, not necessarily inner most (e.g. argument) trace
       * select "closest trace"
@@ -98,13 +109,15 @@
       * This breaks...
          * `instanceof` on any class variable that is not the actual declaration of the class (i.e. when returning a class, storing them in other variables, passing as argument etc...)
          * triggers a babel assertion when targeting esnext and using es6 classes in anything but `new` statements
-         * identity-mapping of callbacks (e.g. `reselect`, React's `useCallback` and more)
+         * identity-mapping of callbacks (e.g. `reselect`, React's `useCallback` and probably many more)
             * usually only causes performance to deteriorate which is ok, but it might sometimes affect functionality as well...
       * partial solution: Use a separate map to track callbacks and their points of passage instead?
-         * => Won't work as comprehensively at all, issues with aliased functions, `bind`, `call` etc...
-         * => We cannot capture all possibilities using instrumentation, since some of that might happen in black-boxed modules
+         * => Won't work as comprehensively at all
+         * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities
+         * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
+            * => Same issue as with passing callbacks in React
+         * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * [loops]
-   * capture loop variables in BlockStart
    * new data types:
       * `staticLoop`
       * `loop`
@@ -116,8 +129,7 @@
       * add `loopRepitition`:
          * before `init`, and after `condition` has evaluated to `true`?
    * in loop's `BlockStart`:
-      * evaluate + store `headerVars`
-         * all variables that have bindings in loop header
+      * evaluate + store `headerVars` (all variables that have bindings in loop header)
    * fix `DoWhileLoop` :(
 * [promises] keep track of `schedulerTraceId`
 * [error_handling]

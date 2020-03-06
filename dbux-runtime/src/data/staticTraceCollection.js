@@ -25,9 +25,7 @@ class StaticTraceCollection extends Collection {
 
     for (let i = 1; i < list.length; ++i) {
       const entry = list[i];
-      if (entry._traceId !== i) {
-        logInternalError(programId, 'Invalid traceId !== its own index:', entry._traceId, '!==', i);
-      }
+      console.assert(entry._traceId === i);
 
       // global id over all programs
       entry.staticTraceId = this._all.length;
