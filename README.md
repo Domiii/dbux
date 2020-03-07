@@ -269,25 +269,23 @@ You can re-add it manually:
    * https://github.com/babel/babel/pull/5590
 
 
-# Useful Snippets
+# Questions we can already answer
 
-```
-	"Comment Barrier 1": {
-		"scope": "javascript, typescript",
-		"prefix": "comment-barrier1",
-		"body": [
-			"// ###########################################################################",
-			"// $1",
-			"// ###########################################################################$0"
-		]
-	},
-	"Comment Barrier 2": {
-		"scope": "javascript, typescript",
-		"prefix": "comment-barrier2",
-		"body": [
-			"// ########################################",
-			"// $1",
-			"// ########################################$0"
-		]
-	}
-```
+* Which parts of my code executed?
+* How often did this code execute?
+* What did these expressions evaluate to during each execution?
+* What were the arguments passed to this function call?
+* Where did the execution go from here? Where did it come from?
+* Which events were triggered and how did its handlers execute?
+* 
+
+
+## TODO (questions we cannot answer yet, but want to)
+
+* What is "interesting" about the call graph?
+   * Show me all data relevant to this trace
+   * What is the critical path in this sub-graph, in terms of depth?
+      * NOTE: we don't aim to do performance analysis, so we can't find the actual critical path
+   * Which paths passed through this function/through this trace?
+   * Where are all the loops?
+   * Show me all the places (and paths) that referenced this object

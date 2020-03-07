@@ -5,6 +5,9 @@
 * [applicationDisplayName]
    * find shortest unique part of 'entryPointPath' of all `selectedApplications`
       * use a loop in `_notifyChanged`
+* [UI]
+   * add a new option `showHideIfEmpty` to `BaseTreeViewNode`:
+      * if `true`: render new button in node that toggles the `hideIfEmpty` behavior
 * UI: add new "bullseye" button to top left
    * icon = `red` bullseye
       * e.g.: https://www.google.com/search?q=bullseye+icon&tbm=isch
@@ -91,18 +94,25 @@
 
 
 ## TODO (other)
-* [testing]
-   * add `dbux-cli` and `samples` to the `webpack` setup
-   * finish setting up basic testing in `samples`
-      * move a basic `server` implementation from `dbux-code` to `dbux-data`
-      * then: let sample tests easily run their own server to operate on the data level
-      * make sure the `test file` `launch.json` entry work withs `samples/__tests__`
+* [object_tracking]
+   * add trace: object callers on method calls
+   * add trace: `this` upon any function call
+      * add to `PushImmediate` trace
+   * add trace: one for each function parameter
+      * add to `PushImmediate` trace
+   * list all traces referecing the same `valueId` in `traceDetailsView`
 * `tracesAtCursor`
    * remove this view, replace with button at the top left
    * select most relevant trace only -> write some `getMostRelevantTraceAtCursor()` function for this
    * difficult
       * e.g. in async functions -> latest trace is `Resume` trace, not necessarily inner most (e.g. argument) trace
       * select "closest trace"
+* [testing]
+   * add `dbux-cli` and `samples` to the `webpack` setup
+   * finish setting up basic testing in `samples`
+      * move a basic `server` implementation from `dbux-code` to `dbux-data`
+      * then: let sample tests easily run their own server to operate on the data level
+      * make sure the `test file` `launch.json` entry work withs `samples/__tests__`
 * keep testing navigation in todomvc (especially: moving from event handler to store methods)
 * [callbacks]
    * Problem: we cannot wrap callbacks, as it will break the function's (or class's) identity.
@@ -141,8 +151,6 @@
    * [errors_and_await]
       * test: when error thrown, do we pop the correct resume and await contexts?
 * [values]
-   * track function parameters
-   * track `this`
    * better overall value rendering
 * [InfoTDNode]
    * Push/Pop (of any kind) show next previous trace/context?
