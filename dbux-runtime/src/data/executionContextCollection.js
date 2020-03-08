@@ -125,7 +125,6 @@ export class ExecutionContextCollection extends Collection {
     this._all.push(context);
     this._send(context);
   }
-
 }
 
 const executionContextCollection = new ExecutionContextCollection();

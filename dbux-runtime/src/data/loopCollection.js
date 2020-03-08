@@ -11,32 +11,15 @@ class LoopCollection extends Collection {
     super('loops');
   }
 
-  loop(contextId, runId, inProgramStaticLoopId, type = null) {
-    const loop = this._loop(contextId, runId, inProgramStaticLoopId, type, false, undefined);
-    return loop;
-  }
-
-  /**
-   * Expression + pop loops have results
-   */
-  loopWithResultValue(contextId, runId, inProgramStaticLoopId, type, value) {
-    const loop = this._loop(contextId, runId, inProgramStaticLoopId, type, true, value);
-    return loop;
-  }
-
-  _loop(contextId, runId, inProgramStaticLoopId, type, hasValue, value) {
+  loop(contextId, startRunId, inProgramStaticLoopId) {
     if (!inProgramStaticLoopId) {
       throw new Error('missing inProgramStaticLoopId');
     }
 
     const loop = pools.loops.allocate();
     loop.contextId = contextId;
-    loop.runId = runId;
-    loop.type = type;
-    loop.createdAt = Date.now();  // { createdAt }
-
-    // value
-    valueCollection.processValue(hasValue, value, loop);
+    loop.startRunId = startRunId;
+    loop.createdAt = Date.now();  // { createdAt
 
     // look-up globally unique staticLoopId
     // loop._staticLoopId = inProgramStaticLoopId;
@@ -50,7 +33,7 @@ class LoopCollection extends Collection {
     } = staticContext;
     loop.staticLoopId = staticLoopCollection.getStaticLoopId(programId, inProgramStaticLoopId);
 
-    // generate new loopId and store
+    // store unique `loopId`
     loop.loopId = this._all.length;
 
     this._all.push(loop);

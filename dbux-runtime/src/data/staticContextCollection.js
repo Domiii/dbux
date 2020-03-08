@@ -8,12 +8,7 @@ export class StaticContextCollection extends Collection {
     super('staticContexts');
   }
 
-  addContexts(programId, list) {
-    // make sure, array is pre-allocated
-    for (let i = this._staticContextsByProgram.length; i <= programId; ++i) {
-      this._staticContextsByProgram.push(null);
-    }
-
+  addEntries(programId, list) {
     // add program static contexts
     this._staticContextsByProgram[programId] = list;
 
@@ -30,7 +25,6 @@ export class StaticContextCollection extends Collection {
       delete entry._staticId;
       
       this._all.push(entry);
-      this._send(entry);
     }
 
     // fix-up parentId:
@@ -43,6 +37,9 @@ export class StaticContextCollection extends Collection {
       entry.parentId = parent.staticId;
       delete entry._parentId;
     }
+
+    // send out
+    this._sendAll(list);
   }
 
   getContexts(programId) {

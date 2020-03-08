@@ -38,4 +38,12 @@ export default class Collection {
     const client = getDefaultClient();
     client.send(this._name, newEntry);
   }
+
+  /**
+   * @private
+   */
+  _sendAll(newEntry) {
+    const client = getDefaultClient();
+    client.sendAll(this._name, newEntry);
+  }
 }

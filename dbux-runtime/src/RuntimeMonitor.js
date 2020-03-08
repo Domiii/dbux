@@ -8,6 +8,7 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
+import staticVarAccessCollection from './data/staticVarAccessCollection';
 
 function _inheritsLoose(subClass, superClass) {
   if (superClass.prototype) {
@@ -49,7 +50,7 @@ export default class RuntimeMonitor {
     const staticProgramContext = staticProgramContextCollection.addProgram(programData);
     const { programId } = staticProgramContext;
     const { staticContexts, traces: staticTraces } = programData;
-    staticContextCollection.addContexts(programId, staticContexts);
+    staticContextCollection.addEntries(programId, staticContexts);
 
     // change program-local _staticContextId to globally unique staticContextId
     for (let i = 1; i < staticTraces.length; ++i) {
@@ -63,7 +64,7 @@ export default class RuntimeMonitor {
       delete staticTrace._staticContextId;
       staticTrace.staticContextId = staticContext.staticId;
     }
-    staticTraceCollection.addTraces(programId, staticTraces);
+    staticTraceCollection.addEntries(programId, staticTraces);
 
     const programMonitor = new ProgramMonitor(this, staticProgramContext);
     this._programMonitors.set(programId, programMonitor);
@@ -382,4 +383,21 @@ export default class RuntimeMonitor {
   _onTrace(contextId, traceId) {
     this._runtime.setContextTrace(contextId, traceId);
   }
+
+  // ###########################################################################
+  // values
+  // ###########################################################################
+
+  addVar(programId, inProgramStaticVarAccessId, value) {
+    const staticVar = staticVarAccessCollection.getVar(programId, inProgramStaticVarAccessId);
+    const { staticVarId } = staticVar;
+
+    // const loopIterationId = ...;
+    // const varAccess = varAccessCollection.addVar(staticVarId, value);
+  }
+
+  // ###########################################################################
+  // loops
+  // ###########################################################################
+
 }

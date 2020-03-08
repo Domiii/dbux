@@ -292,7 +292,9 @@ export default function injectDbuxState(programPath, programState) {
     },
 
     /**
-     * Contexts are (currently) potential stackframes; that is `Program` and `Function` nodes.
+     * Contexts are (mostly) potential stackframes; that is `Program` and `Function` nodes.
+     * 
+     * TODO: move this legacy code (use StaticCollection instead)
      */
     addStaticContext(path, data) {
       checkPath(path);
@@ -341,6 +343,8 @@ export default function injectDbuxState(programPath, programState) {
 
     /**
      * Tracing a path in its entirety (usually means, the trace is recorded right before the given path).
+     * 
+     * TODO: move this legacy code (use StaticCollection instead)
      */
     addTrace(path, type, customArg, cfg) {
       checkPath(path);
@@ -377,6 +381,7 @@ export default function injectDbuxState(programPath, programState) {
     // loops
     // ###########################################################################
 
+    // TODO: move to new StaticLoopCollection class
     addLoop(path, type, loopHeadLoc, displayName, vars) {
       checkPath(path);
 

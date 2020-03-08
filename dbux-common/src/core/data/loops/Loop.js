@@ -1,8 +1,27 @@
 import Var from '../Var';
 
 export default class Loop {
-  loopId: number;
-  staticLoopId: number;
-  applicationId: number;
-  contextId: number;
+  /** @type {number} */
+  loopId;
+  /**
+   * @type {number}
+   */
+  staticLoopId;
+  /**
+   * @type {number}
+   */
+  applicationId;
+  /**
+   * @type {number}
+   */
+  contextId;
+  /**
+   * @type {number}
+   */
+  startRunId;
+
+  /**
+   * @type {Var[]}
+   */
+  vars;
 }

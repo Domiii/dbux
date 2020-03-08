@@ -15,11 +15,6 @@ class StaticLoopCollection extends Collection {
   }
 
   addLoops(programId, list) {
-    // make sure, array is pre-allocated
-    for (let i = this._staticLoopsByProgram.length; i <= programId; ++i) {
-      this._staticLoopsByProgram.push(null);
-    }
-
     // store static loops
     this._staticLoopsByProgram[programId] = list;
 
@@ -32,10 +27,10 @@ class StaticLoopCollection extends Collection {
       delete entry._loopId;
 
       this._all.push(entry);
-
-      // -> send out
-      this._send(entry);
     }
+
+    // -> send out
+    this._sendAll(list);
   }
 
   getLoops(programId) {

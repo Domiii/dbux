@@ -49,6 +49,16 @@
             * allow cycling through levels of depth (child -> grandchild etc)
          * related info: get bindings of relevant nearby variables and display those?
             * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
+* [tracesAtCursor]
+   * remove this view, replace with button at the top left
+   * select most relevant trace only -> write some `getMostRelevantTraceAtCursor()` function for this
+   * heuristics for `getMostRelevantTraceAtCursor()`, relative to `selectedTrace`:
+      * prefer traces of same `contextId` (or, if `Resume`, of same `parentContextId`)
+      * prefer traces of minimum `runId` distance
+      * prefer traces of minimum `traceId` distance
+   * heuristics for `getMostRelevantTraceAtCursor()`, if there is no `selectedTrace`:
+      * same order as `tracesAtCursor` uses currently
+      * but, remove `Resume` traces
 * [contextChildrenView]
    * treeview that shows partial `execution tree` in the context of the selected trace
    * Nodes:
@@ -94,6 +104,19 @@
 
 
 ## TODO (other)
+* [loops]
+   * new data types:
+      * `staticLoop`
+      * `loop`
+         * `firstTraceId` + `lastTraceId`
+      * `loopRepition`
+         * `i`
+         * `headerVars`
+   * add `loopRepititionId` to all traces in loop
+      * add `loopRepitition`:
+         * before `init`, and after `condition` has evaluated to `true`?
+   * in loop's `BlockStart`:
+      * evaluate + store `headerVars` (all variables that have bindings in loop header)
 * [object_tracking]
    * add trace: object callers on method calls
    * add trace: `this` upon any function call
@@ -101,12 +124,6 @@
    * add trace: one for each function parameter
       * add to `PushImmediate` trace
    * list all traces referecing the same `valueId` in `traceDetailsView`
-* `tracesAtCursor`
-   * remove this view, replace with button at the top left
-   * select most relevant trace only -> write some `getMostRelevantTraceAtCursor()` function for this
-   * difficult
-      * e.g. in async functions -> latest trace is `Resume` trace, not necessarily inner most (e.g. argument) trace
-      * select "closest trace"
 * [testing]
    * add `dbux-cli` and `samples` to the `webpack` setup
    * finish setting up basic testing in `samples`
@@ -128,18 +145,6 @@
             * => Same issue as with passing callbacks in React
          * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * [loops]
-   * new data types:
-      * `staticLoop`
-      * `loop`
-         * `firstTraceId` + `lastTraceId`
-      * `loopRepition`
-         * `i`
-         * `headerVars`
-   * add `loopRepititionId` to all traces in loop
-      * add `loopRepitition`:
-         * before `init`, and after `condition` has evaluated to `true`?
-   * in loop's `BlockStart`:
-      * evaluate + store `headerVars` (all variables that have bindings in loop header)
    * fix `DoWhileLoop` :(
 * [promises] keep track of `schedulerTraceId`
 * [error_handling]

@@ -14,12 +14,7 @@ class StaticTraceCollection extends Collection {
     super('staticTraces');
   }
 
-  addTraces(programId, list) {
-    // make sure, array is pre-allocated
-    for (let i = this._staticTracesByProgram.length; i <= programId; ++i) {
-      this._staticTracesByProgram.push(null);
-    }
-
+  addEntries(programId, list) {
     // store static traces
     this._staticTracesByProgram[programId] = list;
 
@@ -47,10 +42,10 @@ class StaticTraceCollection extends Collection {
         entry2.resultCallId = calleeTrace.staticTraceId;
         delete entry2._resultCallId;
       }
-
-      // finally -> send out
-      this._send(entry2);
     }
+
+    // -> send out
+    this._sendAll(list);
   }
 
   getTraces(programId) {

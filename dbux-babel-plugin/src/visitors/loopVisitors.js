@@ -2,6 +2,7 @@ import * as t from '@babel/types';
 import LoopType from 'dbux-common/src/core/constants/LoopType';
 import { logInternalError } from '../log/logger';
 import { extractSourceStringWithoutCommentsAtLoc } from '../helpers/sourceHelpers';
+import { callDbuxMethod } from '../helpers/callHelpers';
 
 // ###########################################################################
 // Loop types
@@ -94,7 +95,17 @@ function instrumentForAwaitOfLoop(path, state) {
 
 
 export function instrumentLoopBodyDefault(bodyPath, state, staticVars) {
-  const varsArrayNode = t.arrayExpression(staticVars.map(staticVar => t.identifier(staticVar.name)));
+  // const varsArrayNode = t.arrayExpression(
+  const varRegisterBlock = t.blockStatement(
+    staticVars.map(
+      staticVar => t.expressionStatement(
+        callDbuxMethod(state, 'addVarAccess',
+          t.numericLiteral(staticVar._staticId),
+          t.identifier(staticVar.name)
+        )
+      )
+    )
+  );
 
   // TODO: on body start, add a new LoopIteration
 
@@ -112,9 +123,9 @@ export function instrumentLoop(path, state) {
   const loopType = getLoopType(isForAwaitOf, path.node.type);
   const loopHeadLoc = getLoopHeadLoc(path, bodyPath);
   const displayName = getLoopDisplayName(loopHeadLoc, state);
-  const vars = getLoopStaticVars(path, state);
+  const staticVars = getLoopStaticVars(path, state);
 
-  const loopId = state.addLoop(path, loopType, loopHeadLoc, displayName, vars);
+  const loopId = state.addLoop(path, loopType, loopHeadLoc, displayName, staticVars);
 
   // TODO: wrap entire loop in try/finally and push/pop loop
 
@@ -122,6 +133,6 @@ export function instrumentLoop(path, state) {
     instrumentForAwaitOfLoop(path, state);
   }
   else {
-    instrumentLoopBodyDefault(bodyPath, state, vars);
+    instrumentLoopBodyDefault(bodyPath, state, staticVars);
   }
 }

@@ -1,3 +1,5 @@
+import valueCollection from './data/valueCollection';
+
 /**
  * Comes from the order we execute things in programVisitor
  */
@@ -100,5 +102,18 @@ export default class ProgramMonitor {
   traceArg(inProgramStaticTraceId, value) {
     return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
   }
+
+  // ###########################################################################
+  // values
+  // ###########################################################################
+
+  addVarAccess(inProgramStaticVarAccessId, value) {
+    return this._runtimeMonitor.addVarAccess(this.getProgramId(), inProgramStaticVarAccessId, value);
+  }
+
+  // ###########################################################################
+  // loops
+  // ###########################################################################
+
 
 }
