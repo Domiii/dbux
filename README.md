@@ -277,15 +277,18 @@ You can re-add it manually:
 * What were the arguments passed to this function call?
 * Where did the execution go from here? Where did it come from?
 * Which events were triggered and how did its handlers execute?
-* 
-
 
 ## TODO (questions we cannot answer yet, but want to)
 
-* What is "interesting" about the call graph?
-   * Show me all data relevant to this trace
-   * What is the critical path in this sub-graph, in terms of depth?
-      * NOTE: we don't aim to do performance analysis, so we can't find the actual critical path
-   * Which paths passed through this function/through this trace?
-   * Where are all the loops?
-   * Show me all the places (and paths) that referenced this object
+* Sub-graph filtering
+   * All traces/contexts/runs that referenced some object (ValueRef)
+   * All runs that passed through some subset of functions/traces
+* Multiple filter modes
+   * hide vs. grayed out
+* What is the critical path in this sub-graph, in terms of call-stack depth?
+   * NOTE: we don't aim to do performance analysis, so we can't find the *actual* critical path
+* Interactive visualized call graph
+   * zoom- and pan-able
+   * multi-resolution
+   * features and filters can be enabled and disabled
+   * multiple coloring schemes (e.g. one each for color per file/context/feature type and more)11

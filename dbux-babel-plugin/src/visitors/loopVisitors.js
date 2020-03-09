@@ -128,7 +128,7 @@ export function instrumentLoopBodyDefault(bodyPath, state, staticVars) {
   );
 
   
-  // TODO: on body start, add a new LoopIteration
+  // TODO: push + pop Loops; then add LoopIterations
 
 }
 
