@@ -244,7 +244,7 @@ const enterInstrumentors = {
       // add staticTrace for callee, but don't actually trace it
       //  NOTE: tracing a callee complicates things a bit; let's keep it easy for now
       // const calleePath = path.get('callee');
-      // state.addTrace(calleePath, TraceType.Callee, null);
+      // state.traces.addTrace(calleePath, TraceType.Callee, null);
       // traceWrapExpression(TraceType.Callee, calleePath, state);
       traceBeforeExpression(path, state, TraceType.BeforeCallExpression);
     }

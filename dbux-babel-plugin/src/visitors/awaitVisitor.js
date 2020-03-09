@@ -60,8 +60,8 @@ function enter(path, state) {
   const argumentPath = path.get('argument');
   const argument = argumentPath.node;
 
-  const preTraceId = state.addTrace(argumentPath, TraceType.Await, true);
-  const resumeTraceId = state.addTrace(path, TraceType.Resume, true);
+  const preTraceId = state.traces.addTrace(argumentPath, TraceType.Await, true);
+  const resumeTraceId = state.traces.addTrace(path, TraceType.Resume, true);
 
   const expressionReplacement = wrapAwaitExpressionTemplate({
     dbux,

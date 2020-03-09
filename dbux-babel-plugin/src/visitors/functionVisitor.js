@@ -113,8 +113,8 @@ export default function functionVisitor() {
         isInterruptable
       };
       const staticId = state.addStaticContext(path, staticContextData);
-      const pushTraceId = state.addTrace(bodyPath, TraceType.PushImmediate);
-      const popTraceId = state.addTrace(bodyPath, TraceType.PopImmediate);
+      const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
+      const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
       let staticResumeId;
       if (isInterruptable) {
         staticResumeId = addResumeContext(bodyPath, state, staticId);

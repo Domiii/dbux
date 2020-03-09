@@ -119,8 +119,8 @@ function enter(path, state) {
     filePath,
   };
   state.addStaticContext(path, staticProgramContext);
-  state.addTrace(path, TraceType.PushImmediate, true);      // === 1
-  state.addTrace(path, TraceType.PopImmediate, true);       // === 2
+  state.traces.addTrace(path, TraceType.PushImmediate, true);      // === 1
+  state.traces.addTrace(path, TraceType.PopImmediate, true);       // === 2
 
   // instrument Program itself
   wrapProgram(path, state);

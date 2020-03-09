@@ -1,110 +1,11 @@
 import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { getBasename } from 'dbux-common/src/util/pathUtil';
-import * as t from '@babel/types';
 
-import { getPresentableString } from './helpers/misc';
-import { getFunctionDisplayName } from './helpers/functionHelpers';
-import { extractSourceStringWithoutComments } from './helpers/sourceHelpers';
 import { getPathTraceId } from './helpers/instrumentationHelper';
+import StaticLoopCollection from './data/StaticLoopCollection';
+import StaticTraceCollection from './data/StaticTraceCollection';
+import StaticLoopVarRefCollection from './data/StaticLoopVarRefCollection';
 
-function checkPath(path) {
-  if (!path.node.loc) {
-    const msg = 'trying to instrument an already instrumented node: ' + path;
-    throw new Error(msg);
-  }
-}
-
-// ###########################################################################
-// trace state management utilities
-// ###########################################################################
-
-const traceCustomizationsByType = {
-  [TraceType.PushImmediate]: tracePathStart,
-  [TraceType.PopImmediate]: tracePathEnd,
-
-  // NOTE: PushCallback + PopCallback are sharing the StaticTrace of `CallbackArgument` which pegs on `CallArgument` (so they won't pass through here)
-  // [TraceType.PushCallback]: tracePathStart,
-  // [TraceType.PopCallback]: tracePathEnd,
-  [TraceType.BeforeExpression]: traceBeforeExpression,
-
-  [TraceType.Await]: tracePathEnd,
-  // [TraceType.Resume]: tracePathEnd,
-  [TraceType.BlockStart]: tracePathStart,
-  [TraceType.BlockEnd]: tracePathEnd
-};
-
-
-function tracePathStart(path, state, thin) {
-  const { node } = path;
-  const { loc: { start } } = node;
-  const end = { ...start };
-  if (!thin) {
-    // for blocks, move *into* the block (curly braces)
-    if (t.isBlock(node)) {
-      end.column += 1;
-    }
-  }
-
-  return {
-    loc: {
-      start,
-      end
-    }
-  };
-}
-
-function tracePathEnd(path, state, thin) {
-  const { node } = path;
-  const { loc: { end } } = node;
-  const start = { ...end };
-  if (!thin) {
-    // for blocks, move *into* the block (curly braces)
-    if (t.isBlock(node)) {
-      start.column -= 1;
-    }
-  }
-
-  return {
-    loc: {
-      start,
-      end
-    }
-  };
-}
-
-function getTraceDisplayName(path, state) {
-  let displayName;
-  if (path.isFunction()) {
-    displayName = getFunctionDisplayName(path, state);
-  }
-  else {
-    const str = extractSourceStringWithoutComments(path.node, state);
-    displayName = getPresentableString(str);
-  }
-  return displayName;
-}
-
-function traceBeforeExpression(path, state) {
-  return {
-    ...tracePathStart(path, state),
-    displayName: getTraceDisplayName(path, state)
-  };
-}
-
-function traceDefault(path, state) {
-  // const parentStaticId = state.getParentStaticContextId(path);
-
-  let displayName = getTraceDisplayName(path, state);
-  // const displayName = '';
-
-  const { loc } = path.node;
-  return {
-    displayName,
-    // _parentId: parentStaticId,
-    loc
-  };
-}
 
 // ###########################################################################
 // Build custom dbux state object
@@ -121,8 +22,9 @@ export default function injectDbuxState(programPath, programState) {
   const { file: programFile } = programState;
 
   const staticContexts = [null]; // staticId = 0 is always null
-  const traces = [null];
-  const loops = [null];
+  const traces = new StaticTraceCollection(this);
+  const loops = new StaticLoopCollection(this);
+  const loopVars = new StaticLoopVarRefCollection(this);
 
   const dbuxState = {
     // static program data
@@ -133,6 +35,7 @@ export default function injectDbuxState(programPath, programState) {
     staticContexts,
     traces,
     loops,
+    loopVars,
 
     ids: {
       dbuxInit: scope.generateUid('dbux_init'),
@@ -335,69 +238,6 @@ export default function injectDbuxState(programPath, programState) {
         loc
       });
       return _staticId;
-    },
-
-    // ###########################################################################
-    // traces
-    // ###########################################################################
-
-    /**
-     * Tracing a path in its entirety (usually means, the trace is recorded right before the given path).
-     * 
-     * TODO: move this legacy code (use StaticCollection instead)
-     */
-    addTrace(path, type, customArg, cfg) {
-      checkPath(path);
-
-      // console.log('TRACE', '@', `${state.filename}:${line}`);
-      // per-type data
-      const _traceId = traces.length;
-      let trace;
-      if (traceCustomizationsByType[type]) {
-        trace = traceCustomizationsByType[type](path, dbuxState, customArg);
-      }
-      else {
-        trace = traceDefault(path, dbuxState, customArg);
-      }
-
-      // context-sensitive data
-      trace._callId = cfg?.callId;
-      trace._resultCallId = cfg?.resultCallId;
-
-      // misc data
-      trace._traceId = _traceId;
-      trace._staticContextId = dbuxState.getCurrentStaticContextId(path);
-      trace.type = type;
-
-      // push
-      traces.push(trace);
-
-      path.setData('_traceId', _traceId);
-
-      return _traceId;
-    },
-
-    // ###########################################################################
-    // loops
-    // ###########################################################################
-
-    // TODO: move to new StaticLoopCollection class
-    addLoop(path, type, loopHeadLoc, displayName, vars) {
-      checkPath(path);
-
-      const loop = {
-        _loopId: loops.length,
-        _staticContextId: dbuxState.getCurrentStaticContextId(path),
-
-        type,
-        loopHeadLoc,
-        displayName,
-        vars
-      };
-
-      loops.push(loop);
-      
-      return loop._loopId;
     }
   };
 
