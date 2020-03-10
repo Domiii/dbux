@@ -1,5 +1,6 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
+import { makeRootTraceLabel } from 'dbux-data/src/helpers/traceLabels';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import TraceType, { hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
@@ -20,7 +21,7 @@ let groupByMode = {
     const groupNodes = nodesByRunId
       .map((childrenByRunId, runId) => {
         const firstTraceOfRun = app.dataProvider.util.getFirstTraceOfRun(runId);
-        const label = makeGraph;
+        const label = makeRootTraceLabel(firstTraceOfRun);
         return buildGroupNode(treeNP, label, null, parent, childrenByRunId);
       });
     return groupNodes.filter(node => !!node);
@@ -89,7 +90,7 @@ export class StaticTraceTDNode extends BaseTreeViewNode {
     if (hasTraceValue(staticType)) {
       // expressions have return values
       const childNodes = traces?.map(otherTrace => {
-        const valueString = dataProvider.util.getTraceValue(otherTrace.traceId) + ' ';
+        const valueString = dataProvider.util.getTraceValue(otherTrace.traceId) || '(no returning value)';
         let label;
         if (staticType === TraceType.CallExpressionResult) {
           const anchorId = otherTrace.resultCallId;

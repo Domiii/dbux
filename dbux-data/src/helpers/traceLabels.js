@@ -126,18 +126,19 @@ export function makeRootTraceLabel(trace) {
     label = makeCallTraceLabel(trace);
   }
   else {
-    makeTraceLabel(trace);
+    label = makeTraceLabel(trace);
   }
   return label;
 }
 
 export function makeCallTraceLabel(trace) {
-  const { traceId, applicationId } = trace;
+  const { traceId, applicationId, contextId } = trace;
   const dp = allApplications.getById(applicationId).dataProvider;
   const traceType = dp.util.getTraceType(traceId);
   let label;
   if (traceType === TraceType.PushCallback) {
-    const schedulerTrace = dp.collections.trace.getById(trace.schedulerTraceId);
+    const context = dp.collections.executionContexts.getById(contextId);
+    const schedulerTrace = dp.collections.traces.getById(context.schedulerTraceId);
     label = makeCallTraceLabel(schedulerTrace);
   }
   else if (traceType === TraceType.PopCallback) {
@@ -154,6 +155,10 @@ export function makeCallTraceLabel(trace) {
     
     const valueString = dp.util.getTraceValue(traceId) + ' ';
     label = `(${argValues.join(', ')}) -> ${valueString}`;
+  }
+  else {
+    // not a callRelatedTrace
+    label = makeTraceLabel(trace);
   }
   return label;
 }
