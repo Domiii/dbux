@@ -213,14 +213,18 @@ export default class RuntimeMonitor {
     );
     const { contextId: awaitContextId } = context;
 
-    // NOTE: register + push await context, then mark as waiting
-    this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
-    
-    // trace Await
-    this._trace(resumeContextId, runId, inProgramStaticTraceId);
-
     // pop resume context
     this.popResume(resumeContextId);
+
+    // trace Await
+    const parentContextId = this._runtime.peekCurrentContextId();
+    this._trace(parentContextId, runId, inProgramStaticTraceId);
+
+    // NOTE: register + push await context, then mark as waiting
+    this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
+
+    // manually climb up the stack
+    this._runtime.skipPopPostAwait();
 
     return awaitContextId;
   }
@@ -286,8 +290,8 @@ export default class RuntimeMonitor {
     return resumeContextId;
   }
 
-  popResume(resumeContextId) {
-    // const resumeContextId = this._runtime.peekCurrentContextId();
+  popResume(resumeContextId = null) {
+    resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
 
     // sanity checks
     const context = executionContextCollection.getById(resumeContextId);
