@@ -75,8 +75,8 @@ export default class PlaybackController {
       let contexts = app.dataProvider.collections.executionContexts.getAll();
       for (let context of contexts) {
         if (!context) continue;
-        const { runId, contextId, parentContextId, schedulerTraceId, createdAt } = context;
-        info.push({ runId, contextId, parentContextId, schedulerTraceId, createdAt });
+        const { runId, contextId, parentContextId, schedulerTraceId, parentTraceId} = context;
+        info.push({ runId, contextId, parentContextId, schedulerTraceId, parentTraceId });
       }
       console.table(info);
     }

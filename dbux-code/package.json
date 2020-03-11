@@ -87,6 +87,14 @@
 				"title": "Click"
 			},
 			{
+				"command": "dbuxTraceDetailsView.switchGroupingMode",
+				"title": "SwitchMode",
+				"icon": {
+					"light": "resources/light/string.svg",
+					"dark": "resources/dark/string.svg"
+				}
+			},
+			{
 				"command": "dbuxPlayback.previousTrace",
 				"title": "Start",
 				"icon": {
@@ -154,6 +162,11 @@
 				{
 					"command": "dbuxCallStackView.showScheduler",
 					"when": "view == dbuxCallStackView && viewItem == callStackNode.both.parent",
+					"group": "inline"
+				},
+				{
+					"command": "dbuxTraceDetailsView.switchGroupingMode",
+					"when": "view == dbuxTraceDetailsView && viewItem == dbuxTraceDetailsView.staticTraceTDNodeRoot",
 					"group": "inline"
 				}
 			]

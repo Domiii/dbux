@@ -4,6 +4,7 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
+import { modeChangedEvent } from './nodes/StaticTraceTDNodes';
 
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
 
@@ -40,6 +41,9 @@ class TraceDetailsController {
     traceSelection.onTraceSelectionChanged(() => {
       controller.treeDataProvider.refresh();
     });
+
+    // on staticTraceTDNode grouping mode changed
+    modeChangedEvent.on('changed', this.treeDataProvider.refresh);
   }
 }
 
