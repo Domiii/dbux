@@ -44,10 +44,33 @@ class FirstTracesInOrder {
     }
   }
 
+  _mergeAll0() {
+    this._firstTracesArray = [];
+    const applications = this.applicationSetData.set.getAll();
+    const allFirstTraces = applications.map((app) => app.dataProvider.util.getFirstTracesInRuns() || EmptyArray);
+
+    const indexPointers = Array(applications.length).fill(0);
+    const tracesCount = allFirstTraces.reduce((sum, arr) => sum + arr.length, 0);
+
+    for (let i = 0; i < tracesCount; i++) {
+      let earliestTrace = null;
+      let earliestApplicationIndex = null;
+      for (let j = 0; j < applications.length; j++) {
+        const trace = allFirstTraces[j][indexPointers[j]];
+        if (!trace) continue;
+        if (!earliestTrace || trace.createdAt < earliestTrace.createdAt) {
+          earliestTrace = trace;
+          earliestApplicationIndex = j;
+        }
+      }
+      indexPointers[earliestApplicationIndex] += 1;
+      this._addOne(earliestTrace);
+    }
+  }
   
   _handleApplicationsChanged = () => {
     const applications = this.applicationSet.getAll();
-    this._mergeAll();
+    this._mergeAll0();
 
     for (const app of applications) {
       this.applicationSet.subscribe(
@@ -58,7 +81,7 @@ class FirstTracesInOrder {
 
   _addExecutionContexts(app, contexts) {
     // TODO: [performance] can we incrementally add new contexts only?
-    this._mergeAll();
+    this._mergeAll0();
   }
 
   _makeKey(firstTrace) {

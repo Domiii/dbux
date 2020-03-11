@@ -10,6 +10,7 @@ import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import TraceNode from './TraceNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import { StaticTraceTDNode } from './StaticTraceTDNodes';
 import { InfoTDNode } from './traceInfoNodes';
 
 
@@ -58,69 +59,6 @@ export class ValueTDNode extends TraceDetailNode {
   // makeIconPath(traceDetail) {
   //   return 'string.svg';
   // }
-}
-
-// ###########################################################################
-// StaticTrace
-// ###########################################################################
-
-export class StaticTraceTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace, parent) {
-    return trace;
-    // const { staticTraceId } = trace;
-    // const { dataProvider } = application;
-    // return dataProvider.collections.staticTraces.getById(staticTraceId);
-  }
-
-  static makeLabel(trace, parent) {
-    const { staticTraceId } = trace;
-
-    const application = allApplications.getApplication(trace.applicationId);
-    const { dataProvider } = application;
-    const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
-    return `Executed: ${traces.length}x`;
-  }
-
-  get defaultCollapsibleState() {
-    return TreeItemCollapsibleState.Expanded;
-  }
-
-  buildChildren() {
-    const { treeNodeProvider, trace } = this;
-    const { staticTraceId } = trace;
-
-    const application = allApplications.getById(trace.applicationId);
-    const { dataProvider } = application;
-    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
-    const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
-
-    // TODO: value nodes
-    // TODO: Push/Pop traces?
-    // TODO: callback args?
-    // TODO: loop start nodes?
-
-    const staticType = staticTrace.type;
-    if (hasTraceValue(staticType)) {
-      // expressions have return values
-      return traces?.map(otherTrace => {
-        const valueString = dataProvider.util.getTraceValue(otherTrace.traceId) + ' ';
-        let label;
-        if (staticType === TraceType.CallExpressionResult) {
-          const anchorId = otherTrace.resultCallId;
-          const args = dataProvider.indexes.traces.callArgsByCall.get(anchorId);
-          const argValues = args?.
-            map(argTrace => dataProvider.util.getTraceValue(argTrace.traceId)) || 
-            EmptyArray;
-          label = `(${argValues.join(', ')}) -> ${valueString}`;
-        }
-        else {
-          label = valueString;
-        }
-        return new TraceNode(treeNodeProvider, label, otherTrace, this);
-      }) || null;
-    }
-    return null;
-  }
 }
 
 // ###########################################################################

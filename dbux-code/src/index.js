@@ -15,6 +15,7 @@ import { initTraceDetailsController } from './traceDetailsView/traceDetailsContr
 import { initResources } from './resources';
 import { initTraceSelection } from './codeSelection';
 import { initEditorTracesController } from './editorTracesView/editorTracesController';
+import { initApplicationsViewController } from './applicationsView/applicationsViewController';
 import { initUserCommands } from './userCommands';
 import { initLogging } from './logging';
 
@@ -37,6 +38,7 @@ function activate(context) {
     initTraceSelection(context);
     initTraceDetailsController(context);
     initEditorTracesController(context);
+    initApplicationsViewController(context);
 
     const contextViewController = initContextView();
     const callStackViewController = initCallStackView();

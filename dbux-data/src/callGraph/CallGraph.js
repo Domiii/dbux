@@ -23,7 +23,7 @@ export default class CallGraph {
     this.dp = dp;
 
     dp._onDataInternal('contexts', this._postAddContexts);
-    dp._onDataInternal('traces', this._postAddTraces);
+    dp._onDataInternal('traces', this._postAddAllTraces);
   }
 
   // ###########################################################################
@@ -64,11 +64,37 @@ export default class CallGraph {
   /**
    * @param {Array<Trace>} newTraces 
    */
-  _postAddTraces = (newTraces) => {
+  _postAddSplitTraces = (newTraces) => {
+    const tracesByRun = [];
+    for (const trace of newTraces) {
+      const { traceId } = trace;
+      if (!tracesByRun[traceId]) tracesByRun[traceId] = [];
+      tracesByRun[traceId].push(trace);
+    }
+
+    for (const traces of tracesByRun) {
+      if (traces) this._postAddTraces(traces);
+    }
+  }
+
+  _postAddAllTraces = () => {
+    this._prevParentContext = [];
+    this._prevInContext = [];
+    this._prevChildContext = [];
+    this._nextParentContext = [];
+    this._nextInContext = [];
+    this._nextChildContext = [];
+    this._postAddTraces(this.dp.collections.traces.getAll().slice(1));
+  }
+
+  /**
+   * @param {Array<Trace>} traces 
+   */
+  _postAddTraces = (traces) => {
     let stack: Array<Array<Trace>> = [];
     let lastTrace = null;
     let lastContext = null;
-    for (let trace of newTraces) {
+    for (let trace of traces) {
       if (!stack.length) {
         stack.push([trace]);
         lastTrace = trace;
@@ -96,18 +122,26 @@ export default class CallGraph {
         last(stack).push(trace);
       }
       else if (context.parentContextId === lastContext.parentContextId) {
-        // is sibling context (should be pop and push callback)
-        if (lastTrace.type !== TraceType.PopCallback) {
-          logError('First of \'sibling context of neighboring traces\' is not popCallback');
+        if (context.parentContextId === null) {
+          // is a new root, push it
+          this._processUnassignedTraces(last(stack), trace);
+          stack.push([trace]);
         }
-        if (trace.type !== TraceType.PushCallback) {
-          logError('Second of \'sibling context of neighboring traces\' is not pushCallback');
-        }
+        else {
+          // is sibling context (should be pop and push callback)
+          if (lastTrace.type !== TraceType.PopCallback) {
+            logError('First of \'sibling context of neighboring traces\' is not popCallback');
+          }
+          if (trace.type !== TraceType.PushCallback) {
+            logError('Second of \'sibling context of neighboring traces\' is not pushCallback');
+          }
 
-        this._assignInContextRelation(last(last(stack)), trace);
-        last(stack).push(trace);
+          this._assignInContextRelation(last(last(stack)), trace);
+          last(stack).push(trace);
+        }
       }
       else {
+        // TODO: Some context pop before parent pop(async), need to pop correctly
         logError('Neighboring traces having unexpected context relation');
       }
       lastTrace = trace;
@@ -158,7 +192,7 @@ export default class CallGraph {
     }
     this._prevChildContext[firstTrace.traceId] = prevChild;
   }
-  
+
   /**
    * @param {Array<Trace>} traces
    * @param {Trace} nextChild
