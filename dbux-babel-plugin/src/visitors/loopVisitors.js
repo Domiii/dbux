@@ -138,6 +138,7 @@ export function instrumentLoopBodyDefault(bodyPath, state, staticVars) {
 // ###########################################################################
 
 export function instrumentLoop(path, state) {
+  return
   const bodyPath = path.get('body');
 
   const isForAwaitOf = path.isForOfStatement() && path.node.await;

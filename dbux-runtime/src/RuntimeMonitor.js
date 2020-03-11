@@ -49,11 +49,11 @@ export default class RuntimeMonitor {
   addProgram(programData) {
     const staticProgramContext = staticProgramContextCollection.addProgram(programData);
     const { programId } = staticProgramContext;
-    const { staticContexts, traces: staticTraces } = programData;
+    const { contexts: staticContexts, traces: staticTraces } = programData;
     staticContextCollection.addEntries(programId, staticContexts);
 
     // change program-local _staticContextId to globally unique staticContextId
-    for (let i = 1; i < staticTraces.length; ++i) {
+    for (let i = 0; i < staticTraces.length; ++i) {
       const staticTrace = staticTraces[i];
       let staticContext = staticContexts[staticTrace._staticContextId];
       if (!staticContext?.staticId) {

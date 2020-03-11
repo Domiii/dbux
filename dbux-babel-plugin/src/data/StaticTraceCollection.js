@@ -1,3 +1,11 @@
+import TraceType from 'dbux-common/src/core/constants/TraceType';
+import * as t from '@babel/types';
+import StaticCollection from './StaticCollection';
+
+import { extractSourceStringWithoutComments } from '../helpers/sourceHelpers';
+import { getPresentableString } from '../helpers/misc';
+import { getFunctionDisplayName } from '../helpers/functionHelpers';
+
 
 // ###########################################################################
 // trace state management utilities
@@ -77,7 +85,7 @@ function traceBeforeExpression(path, state) {
 }
 
 function traceDefault(path, state) {
-  // const parentStaticId = state.getParentStaticContextId(path);
+  // const parentStaticId = state.contexts.getParentStaticContextId(path);
 
   let displayName = getTraceDisplayName(path, state);
   // const displayName = '';
@@ -107,7 +115,7 @@ export default class StaticTraceCollection extends StaticCollection {
 
     // console.log('TRACE', '@', `${state.filename}:${line}`);
     // per-type data
-    const _traceId = traces.length;
+    const _traceId = this._getNextId();
     let trace;
     if (traceCustomizationsByType[type]) {
       trace = traceCustomizationsByType[type](path, state, customArg);
@@ -122,11 +130,11 @@ export default class StaticTraceCollection extends StaticCollection {
 
     // misc data
     trace._traceId = _traceId;
-    trace._staticContextId = state.getCurrentStaticContextId(path);
+    trace._staticContextId = state.contexts.getCurrentStaticContextId(path);
     trace.type = type;
 
     // push
-    traces.push(trace);
+    this._push(trace);
 
     // path.setData('_traceId', _traceId);
 

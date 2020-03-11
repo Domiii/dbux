@@ -1,5 +1,5 @@
 
-export function dbuxRunFile(fpath) {
+module.exports = function dbuxRunFile(fpath) {
   const path = require('path');
   const moduleAlias = require('module-alias');
   const process = require('process');

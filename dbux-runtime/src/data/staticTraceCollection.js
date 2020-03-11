@@ -18,9 +18,9 @@ class StaticTraceCollection extends Collection {
     // store static traces
     this._staticTracesByProgram[programId] = list;
 
-    for (let i = 1; i < list.length; ++i) {
+    for (let i = 0; i < list.length; ++i) {
       const entry = list[i];
-      console.assert(entry._traceId === i);
+      console.assert(entry._traceId === i + 1);
 
       // global id over all programs
       entry.staticTraceId = this._all.length;
@@ -30,7 +30,7 @@ class StaticTraceCollection extends Collection {
     }
 
     // fix up callId + resultCallId, then send out
-    for (let i2 = 1; i2 < list.length; ++i2) {
+    for (let i2 = 0; i2 < list.length; ++i2) {
       const entry2 = list[i2];
       if (entry2._callId) {
         const calleeTrace = this.getTrace(programId, entry2._callId);
@@ -48,17 +48,17 @@ class StaticTraceCollection extends Collection {
     this._sendAll(list);
   }
 
-  getTraces(programId) {
+  _getTraces(programId) {
     return this._staticTracesByProgram[programId];
   }
 
   getTrace(programId, inProgramStaticId) {
-    const traces = this.getTraces(programId);
+    const traces = this._getTraces(programId);
     if (!traces) {
       logInternalError("Invalid programId has no registered static traces:", programId);
       return null;
     }
-    return traces[inProgramStaticId];
+    return traces[inProgramStaticId - 1];  // ids start at 1, array starts at 0
   }
 
   getStaticTraceId(programId, inProgramStaticId) {

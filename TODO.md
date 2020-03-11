@@ -2,17 +2,27 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* [applicationDisplayName]
-   * find shortest unique part of 'entryPointPath' of all `selectedApplications`
-      * use a loop in `_notifyChanged`
 * [UI]
    * add a new option `showHideIfEmpty` to `BaseTreeViewNode`:
       * if `true`: render new button in node that toggles the `hideIfEmpty` behavior
-* UI: add new "bullseye" button to top left
-   * icon = `red` bullseye
-      * e.g.: https://www.google.com/search?q=bullseye+icon&tbm=isch
-   * select `getMostRelevantTraceAtCursor()`
-   * if it returns `null`, change button color to gray
+      * button icon:  (???) https://www.google.com/search?q=empty+icon&tbm=isch
+* [tracesAtCursor]
+   * remove this view, replace with button at the top left
+      * icon = crosshair (⌖)
+         * e.g.: https://www.google.com/search?q=crosshair+icon&tbm=isch
+      * select `getMostRelevantTraceAtCursor()` (see below)
+      * if it returns `null`, change button color to gray, else red
+   * `getMostRelevantTraceAtCursor()` function
+      * Notes
+         * can use generator function for this
+         * `onData`: reset
+      * if `selectedTrace` exists:
+         * only select traces of same `staticContextId` (or, if `Resume` or `Await`, of same `staticContextId` of `parentContext`)
+         * prefer traces of minimum `contextId` (or, if `Resume` or `Await`, `parentContextId`) distance
+         * prefer traces of minimum `runId` distance
+         * prefer traces of minimum `traceId` distance
+      * if there is no `selectedTrace`:
+         * same order as `getTracesAt(application, programId, pos)`
 * [callstackView]
    * when clicking a node:
       * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
@@ -49,16 +59,11 @@
             * allow cycling through levels of depth (child -> grandchild etc)
          * related info: get bindings of relevant nearby variables and display those?
             * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
-* [tracesAtCursor]
-   * remove this view, replace with button at the top left
-   * select most relevant trace only -> write some `getMostRelevantTraceAtCursor()` function for this
-   * heuristics for `getMostRelevantTraceAtCursor()`, relative to `selectedTrace`:
-      * prefer traces of same `contextId` (or, if `Resume`, of same `parentContextId`)
-      * prefer traces of minimum `runId` distance
-      * prefer traces of minimum `traceId` distance
-   * heuristics for `getMostRelevantTraceAtCursor()`, if there is no `selectedTrace`:
-      * same order as `tracesAtCursor` uses currently
-      * but, remove `Resume` traces
+
+* [applicationDisplayName]
+   * find shortest unique part of 'entryPointPath' of all `selectedApplications`
+      * use a loop in `_notifyChanged`
+
 * [contextChildrenView]
    * treeview that shows partial `execution tree` in the context of the selected trace
    * Nodes:
@@ -104,6 +109,8 @@
 
 
 ## TODO (other)
+* fix `tracesAtCursor`
+
 * [loops]
    * new data types:
       * `staticLoop`

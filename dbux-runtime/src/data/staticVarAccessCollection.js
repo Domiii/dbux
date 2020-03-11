@@ -18,11 +18,9 @@ class StaticVarAccessCollection extends Collection {
     // add program static varAccesss
     this._staticVarAccesssByProgram[programId] = list;
 
-    for (let i = 1; i < list.length; ++i) {
+    for (let i = 0; i < list.length; ++i) {
       const entry = list[i];
-      if (entry._staticId !== i) {
-        logInternalError(programId, 'Invalid staticId !== its own index:', entry._staticId, '!==', i);
-      }
+      console.assert(entry._staticId === i + 1);
 
       entry.programId = programId;
 
@@ -47,7 +45,7 @@ class StaticVarAccessCollection extends Collection {
       logInternalError("Invalid programId has no registered static varAccesss:", programId);
       return null;
     }
-    return varAccesss[inProgramStaticId];
+    return varAccesss[inProgramStaticId - 1];   // ids start at 1, array starts at 0
   }
 
   getStaticVarAccessId(programId, inProgramStaticId) {

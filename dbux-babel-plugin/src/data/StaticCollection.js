@@ -1,8 +1,12 @@
 export default class StaticCollection {
-  _all = [null];
+  _all = [];
 
   constructor(state) {
     this.state = state;
+  }
+
+  getById(id) {
+    return this._all[id - 1];
   }
 
   checkPath(path) {
@@ -11,9 +15,9 @@ export default class StaticCollection {
       throw new Error(msg);
     }
   }
-  
-  getNextId() {
-    return this._all.length;
+
+  _getNextId() {
+    return this._all.length + 1;
   }
 
   _push(entry) {

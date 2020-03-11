@@ -18,9 +18,9 @@ class StaticLoopCollection extends Collection {
     // store static loops
     this._staticLoopsByProgram[programId] = list;
 
-    for (let i = 1; i < list.length; ++i) {
+    for (let i = 0; i < list.length; ++i) {
       const entry = list[i];
-      console.assert(entry._loopId === i);
+      console.assert(entry._loopId === i + 1);
 
       // global id over all programs
       entry.staticLoopId = this._all.length;
@@ -43,7 +43,7 @@ class StaticLoopCollection extends Collection {
       logInternalError("Invalid programId has no registered static loops:", programId);
       return null;
     }
-    return loops[inProgramStaticId];
+    return loops[inProgramStaticId - 1];   // ids start at 1, array starts at 0
   }
 
   getStaticLoopId(programId, inProgramStaticId) {

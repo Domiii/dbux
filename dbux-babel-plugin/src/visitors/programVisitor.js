@@ -15,7 +15,7 @@ import errorWrapVisitor from '../helpers/errorWrapVisitor';
 // Builders
 // ###########################################################################
 
-function buildProgramInit(path, { ids, genContextIdName }) {
+function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
   const {
     dbuxInit,
     dbuxRuntime,
@@ -36,7 +36,7 @@ function buildProgramTail(path, state) {
     ids,
     fileName,
     filePath,
-    staticContexts,
+    contexts,
     traces
   } = state;
   const {
@@ -47,8 +47,8 @@ function buildProgramTail(path, state) {
   const staticData = {
     fileName,
     filePath,
-    staticContexts,
-    traces
+    contexts: contexts._all,
+    traces: traces._all
   };
 
   const staticDataString = JSON.stringify(staticData, null, 4);
@@ -118,7 +118,7 @@ function enter(path, state) {
     fileName,
     filePath,
   };
-  state.addStaticContext(path, staticProgramContext);
+  state.contexts.addStaticContext(path, staticProgramContext);
   state.traces.addTrace(path, TraceType.PushImmediate, true);      // === 1
   state.traces.addTrace(path, TraceType.PopImmediate, true);       // === 2
 

@@ -27,7 +27,7 @@
     "@babel/traverse": "^7.8.3",
     "@babel/types": "^7.8.3",
     "babel-loader": "^8.0.6",
-    "babel-plugin-tester": "^8.0.1",
+    "babel-plugin-tester": "^8.0.1"
   },
   "keywords": [
     "dbux",
@@ -38,7 +38,6 @@
     "tracing",
     "babel-plugin"
   ],
-  "dependencies": {},
   "peerDependencies": {
     "dbux-common": "../dbux-common",
     "lodash": "*"

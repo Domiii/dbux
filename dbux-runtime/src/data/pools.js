@@ -1,7 +1,7 @@
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import Trace from 'dbux-common/src/core/data/Trace';
 import ValueRef from 'dbux-common/src/core/data/ValueRef';
-import Loop from 'dbux-common/src/core/data/Loop';
+import Loop from 'dbux-common/src/core/data/loops/Loop';
 
 /**
  * TODO: proper object pooling

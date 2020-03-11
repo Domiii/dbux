@@ -5,7 +5,7 @@ export default class StaticLoopVarRefCollection extends StaticCollection {
   addVarRef(path, name, loopId) {
     const { loc } = path;
     const varRef = {
-      _varId: this.getNextId(),
+      _varId: this._getNextId(),
       _loopId: loopId,
       
       loc, 

@@ -1,9 +1,9 @@
-import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 import { getBasename } from 'dbux-common/src/util/pathUtil';
-
 import { getPathTraceId } from './helpers/instrumentationHelper';
-import StaticLoopCollection from './data/StaticLoopCollection';
+
+import StaticContextCollection from './data/StaticContextCollection';
 import StaticTraceCollection from './data/StaticTraceCollection';
+import StaticLoopCollection from './data/StaticLoopCollection';
 import StaticLoopVarRefCollection from './data/StaticLoopVarRefCollection';
 
 
@@ -21,10 +21,10 @@ export default function injectDbuxState(programPath, programState) {
   const { scope } = programPath;
   const { file: programFile } = programState;
 
-  const staticContexts = [null]; // staticId = 0 is always null
-  const traces = new StaticTraceCollection(this);
-  const loops = new StaticLoopCollection(this);
-  const loopVars = new StaticLoopVarRefCollection(this);
+  const contexts = new StaticContextCollection(programState);
+  const traces = new StaticTraceCollection(programState);
+  const loops = new StaticLoopCollection(programState);
+  const loopVars = new StaticLoopVarRefCollection(programState);
 
   const dbuxState = {
     // static program data
@@ -32,7 +32,7 @@ export default function injectDbuxState(programPath, programState) {
     filePath,
     fileName,
 
-    staticContexts,
+    contexts,
     traces,
     loops,
     loopVars,
@@ -61,22 +61,6 @@ export default function injectDbuxState(programPath, programState) {
     getClosestAncestorData(path, dataName) {
       const staticContextParent = path.findParent(p => !!p.getData(dataName));
       return staticContextParent?.getData(dataName);
-    },
-
-    getParentStaticContextId(path) {
-      return programState.getClosestAncestorData(path, 'staticId');
-    },
-
-    getCurrentStaticContextId(path) {
-      return path.getData('staticId') || programState.getClosestAncestorData(path, 'staticId');
-    },
-
-    getClosestContextIdName(path) {
-      return programState.getClosestAncestorData(path, 'contextIdName');
-    },
-
-    getStaticContext(staticId) {
-      return staticContexts[staticId];
     },
 
     
@@ -178,66 +162,6 @@ export default function injectDbuxState(programPath, programState) {
     onCopy(oldPath, newPath, purpose = null) {
       newPath.data = oldPath.data;
       purpose && this.markVisited(newPath, purpose);
-    },
-
-    // ###########################################################################
-    // add contexts
-    // ###########################################################################
-
-    /**
-     * Generate a new variable identifier to store `contextId` for given path.
-     * NOTE: This does NOT generate the contextId itself, nor put it anywhere into the program.
-     */
-    genContextIdName(path) {
-      const contextId = path.scope.generateUid('contextId');
-      // path.setData('contextIdName', contextId);
-      return contextId;
-    },
-
-    /**
-     * Contexts are (mostly) potential stackframes; that is `Program` and `Function` nodes.
-     * 
-     * TODO: move this legacy code (use StaticCollection instead)
-     */
-    addStaticContext(path, data) {
-      checkPath(path);
-
-      // console.log('STATIC', path.get('id')?.name, '@', `${state.filename}:${line}`);
-      const _staticId = staticContexts.length;
-      const _parentId = dbuxState.getParentStaticContextId(path);
-      // console.log('actualParent',  toSourceString(actualParent.node));
-      const { loc } = path.node;
-      staticContexts.push({
-        _staticId,
-        _parentId,
-        loc,
-        ...data
-      });
-
-      path.setData('staticId', _staticId);
-      return _staticId;
-    },
-
-    addResumeContext(bodyOrAwaitPath, locStart) {
-      checkPath(bodyOrAwaitPath);
-
-      const _parentId = dbuxState.getCurrentStaticContextId(bodyOrAwaitPath);
-      const bodyParent = staticContexts[_parentId];
-      const { end } = bodyParent.loc;     // we don't know where it ends yet (can only be determined at run-time)
-      const loc = {
-        start: locStart,
-        end
-      };
-
-      const _staticId = staticContexts.length;
-      staticContexts.push({
-        type: StaticContextType.Resume,
-        _staticId,
-        _parentId,
-        // displayName: parent.displayName,
-        loc
-      });
-      return _staticId;
     }
   };
 

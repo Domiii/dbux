@@ -37,7 +37,7 @@ function addResumeContext(awaitPath, state) {
   
   // the "resume context" starts after the await statement
   const locStart = awaitLoc.end;
-  return state.addResumeContext(awaitPath, locStart);
+  return state.contexts.addResumeContext(awaitPath, locStart);
 }
 
 function enter(path, state) {
@@ -50,7 +50,7 @@ function enter(path, state) {
   } = state;
 
   const resumeId = addResumeContext(path, state);
-  const staticId = state.addStaticContext(path, {
+  const staticId = state.contexts.addStaticContext(path, {
     type: StaticContextType.Await,
     displayName: getAwaitDisplayName(path),
     resumeId

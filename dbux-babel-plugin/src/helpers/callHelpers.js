@@ -1,4 +1,4 @@
-import * as t from 'babel-types';
+import * as t from '@babel/types';
 
 export function callDbuxMethod(state, methodName, ...args) {
   const {
