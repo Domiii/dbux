@@ -5,7 +5,6 @@ import { logInternalWarning, logInternalError } from '../log/logger';
 import { getAllClassParents, getClassAncestryString } from './astHelpers';
 import { getMemberExpressionName } from './objectHelpers';
 import { extractSourceStringWithoutComments } from './sourceHelpers';
-import { getPathTraceId } from './instrumentationHelper';
 
 // ###########################################################################
 // function names
@@ -32,7 +31,7 @@ function getCallbackDisplayName(functionPath, state) {
     }
     else {
       // callee has already been instrumented -> get name from trace (if possible)
-      const trace = state.getTraceOfPath(calleePath);
+      const trace = state.traces.getTraceOfPath(calleePath);
       if (trace) {
         callName = trace.displayName;
       }

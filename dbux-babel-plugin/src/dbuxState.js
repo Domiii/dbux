@@ -1,5 +1,4 @@
 import { getBasename } from 'dbux-common/src/util/pathUtil';
-import { getPathTraceId } from './helpers/instrumentationHelper';
 
 import StaticContextCollection from './data/StaticContextCollection';
 import StaticTraceCollection from './data/StaticTraceCollection';
@@ -47,16 +46,6 @@ export default function injectDbuxState(programPath, programState) {
     // ###########################################################################
     // getters
     // ###########################################################################
-
-    getTraceOfPath(path) {
-      const traceId = getPathTraceId(path);
-      return traceId && this.getTrace(traceId) || null;
-    },
-
-    getTrace(traceId) {
-      return traces[traceId];
-    },
-    
 
     getClosestAncestorData(path, dataName) {
       const staticContextParent = path.findParent(p => !!p.getData(dataName));

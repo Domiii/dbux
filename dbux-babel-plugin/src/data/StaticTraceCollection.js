@@ -103,6 +103,10 @@ function traceDefault(path, state) {
 // ###########################################################################
 
 export default class StaticTraceCollection extends StaticCollection {
+  getTraceOfPath(path) {
+    const traceId = getPathTraceId(path);
+    return traceId && this.getById(traceId) || null;
+  }
 
   /**
    * Tracing a path in its entirety
@@ -136,8 +140,12 @@ export default class StaticTraceCollection extends StaticCollection {
     // push
     this._push(trace);
 
-    // path.setData('_traceId', _traceId);
+    path.setData('_traceId', _traceId);
 
     return _traceId;
   }
+}
+
+export function getPathTraceId(path) {
+  return path.getData('_traceId');
 }

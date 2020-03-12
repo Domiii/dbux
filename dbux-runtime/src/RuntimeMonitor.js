@@ -55,10 +55,10 @@ export default class RuntimeMonitor {
     // change program-local _staticContextId to globally unique staticContextId
     for (let i = 0; i < staticTraces.length; ++i) {
       const staticTrace = staticTraces[i];
-      let staticContext = staticContexts[staticTrace._staticContextId];
+      let staticContext = staticContextCollection.getContext(programId, staticTrace._staticContextId);
       if (!staticContext?.staticId) {
         // set to random default, to avoid more errors down the line?
-        staticContext = staticContexts[1];
+        staticContext = staticContextCollection.getContext(programId, 1);
         logInternalError('trace had invalid `_staticContextId`', staticTrace);
       }
       delete staticTrace._staticContextId;

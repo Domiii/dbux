@@ -1,8 +1,7 @@
 import template from '@babel/template';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
-import { getPathTraceId } from './instrumentationHelper';
+import { getPathTraceId } from '../data/StaticTraceCollection';
 
 
 // ###########################################################################
@@ -83,7 +82,7 @@ function instrumentArgs(callPath, state, beforeCallTraceId) {
     else { // if (argTraceId) {
       // has been instrumented and has a trace -> just set it's callId
       // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
-      const argTrace = state.getTrace(argTraceId);
+      const argTrace = state.traces.getById(argTraceId);
       argTrace._callId = beforeCallTraceId;
     }
   }

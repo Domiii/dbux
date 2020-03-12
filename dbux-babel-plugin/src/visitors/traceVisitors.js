@@ -11,8 +11,8 @@ import Enum from 'dbux-common/src/util/Enum';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg, traceCallExpression } from '../helpers/traceHelpers';
-import { isPathInstrumented, getPathTraceId } from '../helpers/instrumentationHelper';
 import { instrumentLoop } from './loopVisitors';
+import { getPathTraceId } from '../data/StaticTraceCollection';
 // TODO: want to do some extra work to better trace loops
 
 const TraceInstrumentationType = new Enum({

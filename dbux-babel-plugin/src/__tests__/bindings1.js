@@ -38,8 +38,10 @@ function f(x, { a, b: [c] }) {
   const block = functionPath.get('body');
   const params = functionPath.get('params');
   const { bindings } = block.scope;
+
+  const varNames = bindings.map(binding => binding.identifier.name);
   
-  expect(bindings).toIncludeSameMembers(['x', 'a', 'c', 'k']);
+  expect(varNames).toIncludeSameMembers(['x', 'a', 'c', 'k']);
   console.log('function bindings', Object.keys(bindings));
 });
 
