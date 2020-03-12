@@ -95,7 +95,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"01findLongestWordLength-a.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-a.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-a.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -112,7 +112,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"01findLongestWordLength-a.js\\",
       \\"displayName\\": \\"01findLongestWordLength-a.js\\",
       \\"fileName\\": \\"01findLongestWordLength-a.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-a.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-a.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -435,7 +435,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"01findLongestWordLength-a.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-a.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-a.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -452,7 +452,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"01findLongestWordLength-a.js\\",
       \\"displayName\\": \\"01findLongestWordLength-a.js\\",
       \\"fileName\\": \\"01findLongestWordLength-a.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-a.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-a.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -768,7 +768,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"01findLongestWordLength-b.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-b.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-b.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -785,7 +785,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"01findLongestWordLength-b.js\\",
       \\"displayName\\": \\"01findLongestWordLength-b.js\\",
       \\"fileName\\": \\"01findLongestWordLength-b.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-b.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-b.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -1176,7 +1176,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"01findLongestWordLength-b.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-b.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-b.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -1193,7 +1193,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"01findLongestWordLength-b.js\\",
       \\"displayName\\": \\"01findLongestWordLength-b.js\\",
       \\"fileName\\": \\"01findLongestWordLength-b.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-b.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\01findLongestWordLength-b.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -1694,7 +1694,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"allFunctionTypes.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -1711,7 +1711,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"allFunctionTypes.js\\",
       \\"displayName\\": \\"allFunctionTypes.js\\",
       \\"fileName\\": \\"allFunctionTypes.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -2528,7 +2528,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"allFunctionTypes.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -2545,7 +2545,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"allFunctionTypes.js\\",
       \\"displayName\\": \\"allFunctionTypes.js\\",
       \\"fileName\\": \\"allFunctionTypes.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\allFunctionTypes.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -6739,7 +6739,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -6756,7 +6756,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"await1.js\\",
       \\"displayName\\": \\"await1.js\\",
       \\"fileName\\": \\"await1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await1.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -9831,7 +9831,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"await2.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await2.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\await2.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -14413,6 +14413,1513 @@ function _dbux_init(dbuxRuntime) {
 "
 `;
 
+exports[`dbux-babel-plugin callbacks1.es5.js: callbacks1.es5.js 1`] = `
+"
+function main() {
+  const c = add(1, 2);
+  const d = mul(
+    add(c, mul(2, 3)),
+    add(5, mul(6, [7, 8].reduce((a, x) => a + x)))
+  );
+  console.log(
+    add(d, - 100),
+    [100, 20, 33, 4, 5, 6, 7].reduce((a, x) => Math.min(a, x))
+  );
+}
+
+function g(cb) {
+  console.log('g');
+  cb();
+}
+
+function h() {
+  console.log('h');
+}
+
+main();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+require(\\"core-js/modules/web.timers\\");
+
+var _dbuxRuntime = require('dbux-runtime');
+
+var _dbux = _dbux_init(_dbuxRuntime);
+
+var _contextId = _dbux.getProgramContextId();
+
+try {
+  var main = function main() {
+    var _contextId2 = _dbux.pushImmediate(2, 3, false);
+
+    try {
+      var c = (_dbux.t(13), _dbux.traceExpr(14, add(_dbux.traceArg(15, 1), _dbux.traceArg(16, 2))));
+      var d = (_dbux.t(17), _dbux.traceExpr(34, mul((_dbux.t(18), _dbux.traceExpr(23, add(_dbux.traceArg(24, c), (_dbux.t(19), _dbux.traceExpr(20, mul(_dbux.traceArg(21, 2), _dbux.traceArg(22, 3))))))), (_dbux.t(25), _dbux.traceExpr(32, add(_dbux.traceArg(33, 5), (_dbux.t(26), _dbux.traceExpr(30, mul(_dbux.traceArg(31, 6), (_dbux.t(27), _dbux.traceExpr(28, [7, 8].reduce(_dbux.traceArg(29, function (a, x) {
+        var _contextId3 = _dbux.pushImmediate(3, 5, false);
+
+        try {
+          _dbux.t(14), _dbux.traceExpr(15, cb1(_dbux.traceArg(16, cb2)));
+        } finally {
+          _dbux.popImmediate(_contextId3, 6);
+        }
+      })))))))))))));
+      _dbux.t(35), _dbux.traceExpr(47, console.log((_dbux.t(36), _dbux.traceExpr(37, add(_dbux.traceArg(38, d), _dbux.traceArg(39, -100)))), (_dbux.t(40), _dbux.traceExpr(45, [100, 20, 33, 4, 5, 6, 7].reduce(_dbux.traceArg(46, function (a, x) {
+        var _contextId4 = _dbux.pushImmediate(4, 7, false);
+
+        try {
+          return _dbux.t(41), _dbux.traceExpr(42, Math.min(_dbux.traceArg(43, a), _dbux.traceArg(44, x)));
+        } finally {
+          _dbux.popImmediate(_contextId4, 8);
+        }
+      }))))));
+    } finally {
+      _dbux.popImmediate(_contextId2, 4);
+    }
+  };
+
+  var add = function add(a, b) {
+    var _contextId5 = _dbux.pushImmediate(5, 9, false);
+
+    try {
+      return _dbux.traceExpr(48, a + b);
+    } finally {
+      _dbux.popImmediate(_contextId4, 8);
+    }
+  };
+
+  var mul = function mul(a, b) {
+    var _contextId6 = _dbux.pushImmediate(6, 11, false);
+
+    try {
+      return _dbux.traceExpr(49, a * b);
+    } finally {
+      _dbux.popImmediate(_contextId5, 10);
+    }
+  };
+
+  var i = function i() {
+    var _contextId6 = _dbux.pushImmediate(6, 11, false);
+
+    try {} finally {
+      _dbux.popImmediate(_contextId6, 12);
+    }
+  };
+
+  _dbux.t(50), _dbux.traceExpr(51, main());
+} finally {
+  _dbux.popProgram();
+}
+
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
+    \\"fileName\\": \\"callbacks1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\callbacks1.js\\",
+    \\"staticContexts\\": [null, {
+      \\"_staticId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 21,
+          \\"column\\": 7
+        }
+      },
+      \\"type\\": 1,
+      \\"name\\": \\"callbacks1.js\\",
+      \\"displayName\\": \\"callbacks1.js\\",
+      \\"fileName\\": \\"callbacks1.js\\",
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\callbacks1.js\\"
+    }, {
+      \\"_staticId\\": 2,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 6,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f\\",
+      \\"displayName\\": \\"f\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 3,
+      \\"_parentId\\": 2,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 3
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"[cb] setTimeout\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 4,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 8,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 11,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"g\\",
+      \\"displayName\\": \\"g\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 5,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 13,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 15,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"h\\",
+      \\"displayName\\": \\"h\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 6,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 17,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 17,
+          \\"column\\": 16
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"i\\",
+      \\"displayName\\": \\"i\\",
+      \\"isInterruptable\\": false
+    }],
+    \\"traces\\": [null, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        }
+      },
+      \\"_traceId\\": 1,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 50
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 50
+        }
+      },
+      \\"_traceId\\": 2,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 3
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 24
+        },
+        \\"end\\": {
+          \\"line\\": 1,
+          \\"column\\": 25
+        }
+      },
+      \\"_traceId\\": 3,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 6,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 6,
+          \\"column\\": 1
+        }
+      },
+      \\"_traceId\\": 4,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 3
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 19
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 20
+        }
+      },
+      \\"_traceId\\": 5,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 4,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 3
+        }
+      },
+      \\"_traceId\\": 6,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 3
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 8,
+          \\"column\\": 15
+        },
+        \\"end\\": {
+          \\"line\\": 8,
+          \\"column\\": 16
+        }
+      },
+      \\"_traceId\\": 7,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 11,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 11,
+          \\"column\\": 1
+        }
+      },
+      \\"_traceId\\": 8,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 3
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 13,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 13,
+          \\"column\\": 14
+        }
+      },
+      \\"_traceId\\": 9,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 15,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 15,
+          \\"column\\": 1
+        }
+      },
+      \\"_traceId\\": 10,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 3
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 17,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 17,
+          \\"column\\": 14
+        }
+      },
+      \\"_traceId\\": 11,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 17,
+          \\"column\\": 15
+        },
+        \\"end\\": {
+          \\"line\\": 17,
+          \\"column\\": 16
+        }
+      },
+      \\"_traceId\\": 12,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 3
+    }, {
+      \\"displayName\\": \\"setTimeout(() => { cb1(cb2); })\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 4
+        }
+      },
+      \\"_traceId\\": 13,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"cb1(cb2)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 3,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 12
+        }
+      },
+      \\"_traceId\\": 14,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"cb1(cb2)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 3,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 12
+        }
+      },
+      \\"_resultCallId\\": 14,
+      \\"_traceId\\": 15,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"cb2\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 3,
+          \\"column\\": 8
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 11
+        },
+        \\"identifierName\\": \\"cb2\\"
+      },
+      \\"_callId\\": 14,
+      \\"_traceId\\": 16,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"setTimeout(() => { cb1(cb2); })\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 4
+        }
+      },
+      \\"_resultCallId\\": 13,
+      \\"_traceId\\": 17,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"[cb] setTimeout\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": 13,
+      \\"_traceId\\": 18,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"console.log('f', x)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 21
+        }
+      },
+      \\"_traceId\\": 19,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"console.log('f', x)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 21
+        }
+      },
+      \\"_resultCallId\\": 19,
+      \\"_traceId\\": 20,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"'f'\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 14
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 17
+        }
+      },
+      \\"_callId\\": 19,
+      \\"_traceId\\": 21,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"x\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 19
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 20
+        },
+        \\"identifierName\\": \\"x\\"
+      },
+      \\"_callId\\": 19,
+      \\"_traceId\\": 22,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"console.log('g')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 18
+        }
+      },
+      \\"_traceId\\": 23,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"console.log('g')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 18
+        }
+      },
+      \\"_resultCallId\\": 23,
+      \\"_traceId\\": 24,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"'g'\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 14
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 17
+        }
+      },
+      \\"_callId\\": 23,
+      \\"_traceId\\": 25,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"cb()\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 6
+        }
+      },
+      \\"_traceId\\": 26,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"cb()\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 6
+        }
+      },
+      \\"_resultCallId\\": 26,
+      \\"_traceId\\": 27,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"console.log('h')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 14,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 14,
+          \\"column\\": 18
+        }
+      },
+      \\"_traceId\\": 28,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"console.log('h')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 14,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 14,
+          \\"column\\": 18
+        }
+      },
+      \\"_resultCallId\\": 28,
+      \\"_traceId\\": 29,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"'h'\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 14,
+          \\"column\\": 14
+        },
+        \\"end\\": {
+          \\"line\\": 14,
+          \\"column\\": 17
+        }
+      },
+      \\"_callId\\": 28,
+      \\"_traceId\\": 30,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"f(3, g, h, i)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 13
+        }
+      },
+      \\"_traceId\\": 31,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"f(3, g, h, i)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 13
+        }
+      },
+      \\"_resultCallId\\": 31,
+      \\"_traceId\\": 32,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"3\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": 31,
+      \\"_traceId\\": 33,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"g\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 5
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 6
+        },
+        \\"identifierName\\": \\"g\\"
+      },
+      \\"_callId\\": 31,
+      \\"_traceId\\": 34,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"h\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 8
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 9
+        },
+        \\"identifierName\\": \\"h\\"
+      },
+      \\"_callId\\": 31,
+      \\"_traceId\\": 35,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"i\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 11
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 12
+        },
+        \\"identifierName\\": \\"i\\"
+      },
+      \\"_callId\\": 31,
+      \\"_traceId\\": 36,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 9
+    }]
+  });
+}
+"
+`;
+
+exports[`dbux-babel-plugin callbacks1.esNext.js: callbacks1.esNext.js 1`] = `
+"
+function f(x, cb1, cb2) {
+  setTimeout(() => {
+    cb1(cb2);
+  });
+  console.log('f', x);
+}
+
+function g(cb) {
+  console.log('g');
+  cb();
+}
+
+function h() {
+  console.log('h');
+}
+
+function i() { }
+
+f(3, g, h, i); // i is a cb that was never called!
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const _dbuxRuntime = require('dbux-runtime');
+
+const _dbux = _dbux_init(_dbuxRuntime);
+
+const _contextId = _dbux.getProgramContextId();
+
+try {
+  function f(x, cb1, cb2) {
+    const _contextId2 = _dbux.pushImmediate(2, 3, false);
+
+    try {
+      _dbux.t(13), _dbux.traceExpr(17, setTimeout(_dbux.traceArg(18, () => {
+        const _contextId3 = _dbux.pushImmediate(3, 5, false);
+
+        try {
+          _dbux.t(14), _dbux.traceExpr(15, cb1(_dbux.traceArg(16, cb2)));
+        } finally {
+          _dbux.popImmediate(_contextId3, 6);
+        }
+      })));
+      _dbux.t(19), _dbux.traceExpr(20, console.log(_dbux.traceArg(21, 'f'), _dbux.traceArg(22, x)));
+    } finally {
+      _dbux.popImmediate(_contextId2, 4);
+    }
+  }
+
+  function g(cb) {
+    const _contextId4 = _dbux.pushImmediate(4, 7, false);
+
+    try {
+      _dbux.t(23), _dbux.traceExpr(24, console.log(_dbux.traceArg(25, 'g')));
+      _dbux.t(26), _dbux.traceExpr(27, cb());
+    } finally {
+      _dbux.popImmediate(_contextId4, 8);
+    }
+  }
+
+  function h() {
+    const _contextId5 = _dbux.pushImmediate(5, 9, false);
+
+    try {
+      _dbux.t(28), _dbux.traceExpr(29, console.log(_dbux.traceArg(30, 'h')));
+    } finally {
+      _dbux.popImmediate(_contextId5, 10);
+    }
+  }
+
+  function i() {
+    const _contextId6 = _dbux.pushImmediate(6, 11, false);
+
+    try {} finally {
+      _dbux.popImmediate(_contextId6, 12);
+    }
+  }
+
+  _dbux.t(31), _dbux.traceExpr(32, f(_dbux.traceArg(33, 3), _dbux.traceArg(34, g), _dbux.traceArg(35, h), _dbux.traceArg(36, i))); // i is a cb that was never called!
+} finally {
+  _dbux.popProgram();
+}
+
+function _dbux_init(dbuxRuntime) {
+  return dbuxRuntime.initProgram({
+    \\"fileName\\": \\"callbacks1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\callbacks1.js\\",
+    \\"staticContexts\\": [null, {
+      \\"_staticId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 50
+        }
+      },
+      \\"type\\": 1,
+      \\"name\\": \\"callbacks1.js\\",
+      \\"displayName\\": \\"callbacks1.js\\",
+      \\"fileName\\": \\"callbacks1.js\\",
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\callbacks1.js\\"
+    }, {
+      \\"_staticId\\": 2,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 6,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f\\",
+      \\"displayName\\": \\"f\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 3,
+      \\"_parentId\\": 2,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 3
+        }
+      },
+      \\"type\\": 2,
+      \\"displayName\\": \\"[cb] setTimeout\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 4,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 8,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 11,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"g\\",
+      \\"displayName\\": \\"g\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 5,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 13,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 15,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"h\\",
+      \\"displayName\\": \\"h\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 6,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 17,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 17,
+          \\"column\\": 16
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"i\\",
+      \\"displayName\\": \\"i\\",
+      \\"isInterruptable\\": false
+    }],
+    \\"traces\\": [null, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 1,
+          \\"column\\": 0
+        }
+      },
+      \\"_traceId\\": 1,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 50
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 50
+        }
+      },
+      \\"_traceId\\": 2,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 3
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 1,
+          \\"column\\": 24
+        },
+        \\"end\\": {
+          \\"line\\": 1,
+          \\"column\\": 25
+        }
+      },
+      \\"_traceId\\": 3,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 6,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 6,
+          \\"column\\": 1
+        }
+      },
+      \\"_traceId\\": 4,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 3
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 19
+        },
+        \\"end\\": {
+          \\"line\\": 2,
+          \\"column\\": 20
+        }
+      },
+      \\"_traceId\\": 5,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 4,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 3
+        }
+      },
+      \\"_traceId\\": 6,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 3
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 8,
+          \\"column\\": 15
+        },
+        \\"end\\": {
+          \\"line\\": 8,
+          \\"column\\": 16
+        }
+      },
+      \\"_traceId\\": 7,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 11,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 11,
+          \\"column\\": 1
+        }
+      },
+      \\"_traceId\\": 8,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 3
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 13,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 13,
+          \\"column\\": 14
+        }
+      },
+      \\"_traceId\\": 9,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 15,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 15,
+          \\"column\\": 1
+        }
+      },
+      \\"_traceId\\": 10,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 3
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 17,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 17,
+          \\"column\\": 14
+        }
+      },
+      \\"_traceId\\": 11,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 17,
+          \\"column\\": 15
+        },
+        \\"end\\": {
+          \\"line\\": 17,
+          \\"column\\": 16
+        }
+      },
+      \\"_traceId\\": 12,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 3
+    }, {
+      \\"displayName\\": \\"setTimeout(() => { cb1(cb2); })\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 4
+        }
+      },
+      \\"_traceId\\": 13,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"cb1(cb2)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 3,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 12
+        }
+      },
+      \\"_traceId\\": 14,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"cb1(cb2)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 3,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 12
+        }
+      },
+      \\"_resultCallId\\": 14,
+      \\"_traceId\\": 15,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"cb2\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 3,
+          \\"column\\": 8
+        },
+        \\"end\\": {
+          \\"line\\": 3,
+          \\"column\\": 11
+        },
+        \\"identifierName\\": \\"cb2\\"
+      },
+      \\"_callId\\": 14,
+      \\"_traceId\\": 16,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"setTimeout(() => { cb1(cb2); })\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 4
+        }
+      },
+      \\"_resultCallId\\": 13,
+      \\"_traceId\\": 17,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"[cb] setTimeout\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 2,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 4,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": 13,
+      \\"_traceId\\": 18,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"console.log('f', x)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 21
+        }
+      },
+      \\"_traceId\\": 19,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"console.log('f', x)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 21
+        }
+      },
+      \\"_resultCallId\\": 19,
+      \\"_traceId\\": 20,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"'f'\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 14
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 17
+        }
+      },
+      \\"_callId\\": 19,
+      \\"_traceId\\": 21,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"x\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 19
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 20
+        },
+        \\"identifierName\\": \\"x\\"
+      },
+      \\"_callId\\": 19,
+      \\"_traceId\\": 22,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"console.log('g')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 18
+        }
+      },
+      \\"_traceId\\": 23,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"console.log('g')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 18
+        }
+      },
+      \\"_resultCallId\\": 23,
+      \\"_traceId\\": 24,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"'g'\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 9,
+          \\"column\\": 14
+        },
+        \\"end\\": {
+          \\"line\\": 9,
+          \\"column\\": 17
+        }
+      },
+      \\"_callId\\": 23,
+      \\"_traceId\\": 25,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"cb()\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 6
+        }
+      },
+      \\"_traceId\\": 26,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"cb()\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 10,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 10,
+          \\"column\\": 6
+        }
+      },
+      \\"_resultCallId\\": 26,
+      \\"_traceId\\": 27,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"console.log('h')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 14,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 14,
+          \\"column\\": 18
+        }
+      },
+      \\"_traceId\\": 28,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"console.log('h')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 14,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 14,
+          \\"column\\": 18
+        }
+      },
+      \\"_resultCallId\\": 28,
+      \\"_traceId\\": 29,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"'h'\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 14,
+          \\"column\\": 14
+        },
+        \\"end\\": {
+          \\"line\\": 14,
+          \\"column\\": 17
+        }
+      },
+      \\"_callId\\": 28,
+      \\"_traceId\\": 30,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"f(3, g, h, i)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 13
+        }
+      },
+      \\"_traceId\\": 31,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 5
+    }, {
+      \\"displayName\\": \\"f(3, g, h, i)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 13
+        }
+      },
+      \\"_resultCallId\\": 31,
+      \\"_traceId\\": 32,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"3\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": 31,
+      \\"_traceId\\": 33,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"g\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 5
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 6
+        },
+        \\"identifierName\\": \\"g\\"
+      },
+      \\"_callId\\": 31,
+      \\"_traceId\\": 34,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"h\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 8
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 9
+        },
+        \\"identifierName\\": \\"h\\"
+      },
+      \\"_callId\\": 31,
+      \\"_traceId\\": 35,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"i\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 19,
+          \\"column\\": 11
+        },
+        \\"end\\": {
+          \\"line\\": 19,
+          \\"column\\": 12
+        },
+        \\"identifierName\\": \\"i\\"
+      },
+      \\"_callId\\": 31,
+      \\"_traceId\\": 36,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 9
+    }]
+  });
+}
+"
+`;
+
 exports[`dbux-babel-plugin calls1.es5.js: calls1.es5.js 1`] = `
 "
 function main() {
@@ -14506,7 +16013,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"calls1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -14523,7 +16030,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"calls1.js\\",
       \\"displayName\\": \\"calls1.js\\",
       \\"fileName\\": \\"calls1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls1.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -15492,7 +16999,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"calls1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -15509,7 +17016,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"calls1.js\\",
       \\"displayName\\": \\"calls1.js\\",
       \\"fileName\\": \\"calls1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls1.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -16480,7 +17987,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"calls2.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls2.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls2.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -16497,7 +18004,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"calls2.js\\",
       \\"displayName\\": \\"calls2.js\\",
       \\"fileName\\": \\"calls2.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls2.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls2.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -17262,7 +18769,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"calls2.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls2.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls2.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -17279,7 +18786,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"calls2.js\\",
       \\"displayName\\": \\"calls2.js\\",
       \\"fileName\\": \\"calls2.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls2.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\calls2.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -18021,7 +19528,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"destructuring1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\destructuring1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\destructuring1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -18038,7 +19545,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"destructuring1.js\\",
       \\"displayName\\": \\"destructuring1.js\\",
       \\"fileName\\": \\"destructuring1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\destructuring1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\destructuring1.js\\"
     }],
     \\"traces\\": [null, {
       \\"loc\\": {
@@ -18225,7 +19732,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"destructuring1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\destructuring1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\destructuring1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -18242,7 +19749,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"destructuring1.js\\",
       \\"displayName\\": \\"destructuring1.js\\",
       \\"fileName\\": \\"destructuring1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\destructuring1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\destructuring1.js\\"
     }],
     \\"traces\\": [null, {
       \\"loc\\": {
@@ -18481,7 +19988,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -18498,7 +20005,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"example1.js\\",
       \\"displayName\\": \\"example1.js\\",
       \\"fileName\\": \\"example1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -18873,7 +20380,7 @@ export { _f as f1, _A as A, _f2 as f2 };
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -18890,7 +20397,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"example1.js\\",
       \\"displayName\\": \\"example1.js\\",
       \\"fileName\\": \\"example1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example1.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -19218,7 +20725,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example2.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -19235,7 +20742,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"example2.js\\",
       \\"displayName\\": \\"example2.js\\",
       \\"fileName\\": \\"example2.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -19429,7 +20936,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example2.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -19446,7 +20953,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"example2.js\\",
       \\"displayName\\": \\"example2.js\\",
       \\"fileName\\": \\"example2.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example2.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -19657,7 +21164,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example3.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -19674,7 +21181,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"example3.js\\",
       \\"displayName\\": \\"example3.js\\",
       \\"fileName\\": \\"example3.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -19943,7 +21450,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"example3.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -19960,7 +21467,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"example3.js\\",
       \\"displayName\\": \\"example3.js\\",
       \\"fileName\\": \\"example3.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\example3.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -20245,7 +21752,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"for1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -20262,7 +21769,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"for1.js\\",
       \\"displayName\\": \\"for1.js\\",
       \\"fileName\\": \\"for1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for1.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -20668,7 +22175,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"for1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -20685,7 +22192,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"for1.js\\",
       \\"displayName\\": \\"for1.js\\",
       \\"fileName\\": \\"for1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for1.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -21087,7 +22594,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"for2.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for2.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for2.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -21104,7 +22611,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"for2.js\\",
       \\"displayName\\": \\"for2.js\\",
       \\"fileName\\": \\"for2.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for2.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for2.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -21475,7 +22982,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"for2.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for2.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for2.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -21492,7 +22999,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"for2.js\\",
       \\"displayName\\": \\"for2.js\\",
       \\"fileName\\": \\"for2.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for2.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\for2.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -22061,7 +23568,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"mergeAll.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\mergeAll.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\mergeAll.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -22078,7 +23585,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"mergeAll.js\\",
       \\"displayName\\": \\"mergeAll.js\\",
       \\"fileName\\": \\"mergeAll.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\mergeAll.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\mergeAll.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -23007,7 +24514,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"mergeAll.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\mergeAll.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\mergeAll.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -23024,7 +24531,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"mergeAll.js\\",
       \\"displayName\\": \\"mergeAll.js\\",
       \\"fileName\\": \\"mergeAll.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\mergeAll.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\mergeAll.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -23952,7 +25459,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"oop1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\oop1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\oop1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -23969,7 +25476,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"oop1.js\\",
       \\"displayName\\": \\"oop1.js\\",
       \\"fileName\\": \\"oop1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\oop1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\oop1.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -25128,7 +26635,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"oop1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\oop1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\oop1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -25145,7 +26652,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"oop1.js\\",
       \\"displayName\\": \\"oop1.js\\",
       \\"fileName\\": \\"oop1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\oop1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\oop1.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -26218,7 +27725,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"setTimeout0.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout0.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout0.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -26235,7 +27742,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"setTimeout0.js\\",
       \\"displayName\\": \\"setTimeout0.js\\",
       \\"fileName\\": \\"setTimeout0.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout0.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout0.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -26740,7 +28247,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"setTimeout0.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout0.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout0.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -26757,7 +28264,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"setTimeout0.js\\",
       \\"displayName\\": \\"setTimeout0.js\\",
       \\"fileName\\": \\"setTimeout0.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout0.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout0.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -27309,7 +28816,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"setTimeout1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -27326,7 +28833,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"setTimeout1.js\\",
       \\"displayName\\": \\"setTimeout1.js\\",
       \\"fileName\\": \\"setTimeout1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
@@ -28390,7 +29897,7 @@ try {
 function _dbux_init(dbuxRuntime) {
   return dbuxRuntime.initProgram({
     \\"fileName\\": \\"setTimeout1.js\\",
-    \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\",
+    \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\",
     \\"staticContexts\\": [null, {
       \\"_staticId\\": 1,
       \\"loc\\": {
@@ -28407,7 +29914,7 @@ function _dbux_init(dbuxRuntime) {
       \\"name\\": \\"setTimeout1.js\\",
       \\"displayName\\": \\"setTimeout1.js\\",
       \\"fileName\\": \\"setTimeout1.js\\",
-      \\"filePath\\": \\"D:\\\\\\\\code\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\"
+      \\"filePath\\": \\"E:\\\\\\\\works\\\\\\\\dbux\\\\\\\\dbux\\\\\\\\samples\\\\\\\\__samplesInput__\\\\\\\\setTimeout1.js\\"
     }, {
       \\"_staticId\\": 2,
       \\"_parentId\\": 1,
