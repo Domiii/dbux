@@ -8,11 +8,12 @@ export function initCommands(
   context,
   contextViewController,
   callStackViewController,
-  playbackController
+  playbackController,
+  traceDetailsController
 ) {
   initUtilCommands(context);
-  initTraceDetailsViewCommands()
   initContextViewCommands(context, contextViewController);
   initCallStackViewCommands(context, callStackViewController);
   initPlaybackCommands(context, playbackController);
+  initTraceDetailsViewCommands(context, traceDetailsController);
 }

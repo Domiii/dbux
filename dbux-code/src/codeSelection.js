@@ -80,9 +80,11 @@ export function initTraceSelection(context) {
   });
 
   // show + goto trace if selected
-  traceSelection.onTraceSelectionChanged((selectedTrace) => {
-    selectedTrace && goToTrace(selectedTrace);
+  traceSelection.onTraceSelectionChanged((selectedTrace, sender) => {
     highlightTraceInEditor(selectedTrace);
+    // only highlight but not nav if user is using 'selectTraceAtCursor'
+    if (sender === 'selectTraceAtCursor') return;
+    selectedTrace && goToTrace(selectedTrace);
   });
 
   // select trace when moving cursor in TextEditor

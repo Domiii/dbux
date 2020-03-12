@@ -5,9 +5,19 @@ import { switchMode } from '../traceDetailsView/nodes/StaticTraceTDNodes';
 
 const { log, debug, warn, error: logError } = newLogger('Commands');
 
-export default function initTraceDetailsViewCommands(context) {
+export default function initTraceDetailsViewCommands(context, traceDetailsViewController) {
   registerCommand(context,
     'dbuxTraceDetailsView.switchGroupingMode',
     (node) => switchMode()
+  );
+
+  registerCommand(context,
+    'dbuxTraceDetailsView.selectTraceAtCursor',
+    traceDetailsViewController.selectTraceAtCursor
+  );
+
+  registerCommand(context,
+    'dbuxTraceDetailsView.selectTraceAtCursor.empty',
+    () => window.showInformationMessage('No traces at cursor.')
   );
 }
