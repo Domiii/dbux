@@ -3,7 +3,7 @@ import LoopType from 'dbux-common/src/core/constants/LoopType';
 import { logInternalError } from '../log/logger';
 import { extractSourceStringWithoutCommentsAtLoc } from '../helpers/sourceHelpers';
 import { callDbuxMethod } from '../helpers/callHelpers';
-import { EmptyArray } from '../../../dbux-common/src/util/arrayUtil';
+import { EmptyObject } from '../../../dbux-common/src/util/EmptyObject';
 
 // ###########################################################################
 // Loop types
@@ -70,17 +70,19 @@ function getClosestScopedPath(path) {
 /**
  * Get string representation of loop head.
  */
-function getLoopDisplayName(loopHeadLoc, state) {
+function getLoopDisplayName(state, loopHeadLoc, loopType) {
   const displayName = (extractSourceStringWithoutCommentsAtLoc(loopHeadLoc, state) || `${LoopType.nameFrom(loopType)}-loop`).trim();
   return displayName;
 }
 
 function addLoopStaticVars(path, state, loopId, loopHeadLoc) {
   const scopedPath = getClosestScopedPath(path);
-  const bindings = scopedPath?.scope?.bindings || EmptyArray;
+  const bindings = scopedPath?.scope?.bindings || EmptyObject;
+  const varNames = Object.keys(bindings);
 
   // see: https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
-  for (const binding of bindings) {
+  for (const varName of varNames) {
+    const binding = bindings[varName];
     const {
       referencePaths,
       identifier,
@@ -116,8 +118,8 @@ function instrumentForAwaitOfLoop(path, state) {
 
 export function instrumentLoopBodyDefault(bodyPath, state, staticVars) {
   //t.expressionStatement(
-    // TODO: figure out how to store loop vars
-  const varRegisterCall = callDbuxMethod(state, 'setLoopVars',
+  // TODO: figure out how to store loop vars
+  const varRegisterCall = callDbuxMethod(state, 'pushLoop',
     loopId,
     staticVars.map(
       staticVar => ([
@@ -127,7 +129,7 @@ export function instrumentLoopBodyDefault(bodyPath, state, staticVars) {
     )
   );
 
-  
+
   // TODO: push + pop Loops; then add LoopIterations
 
 }
@@ -138,19 +140,18 @@ export function instrumentLoopBodyDefault(bodyPath, state, staticVars) {
 // ###########################################################################
 
 export function instrumentLoop(path, state) {
-  return
   const bodyPath = path.get('body');
 
   const isForAwaitOf = path.isForOfStatement() && path.node.await;
   const loopType = getLoopType(isForAwaitOf, path.node.type);
   const loopHeadLoc = getLoopHeadLoc(path, bodyPath);
-  const displayName = getLoopDisplayName(loopHeadLoc, state);
+  const displayName = getLoopDisplayName(state, loopHeadLoc, loopType);
 
   // add loop
-  const loopId = state.addLoop(path, loopType, loopHeadLoc, displayName);
+  const staticLoopId = state.addLoop(path, loopType, loopHeadLoc, displayName);
 
   // add loop vars
-  addLoopStaticVars(path, state, loopId, loopHeadLoc);
+  addLoopStaticVars(path, state, staticLoopId, loopHeadLoc);
 
   // TODO: wrap entire loop in try/finally and push/pop loop
 

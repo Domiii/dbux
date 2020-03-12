@@ -84,11 +84,13 @@
 			"cwd": "${workspaceFolder}/dbux-babel-plugin",
 			"args": [
 				"-i",
-				"--runInBand",
 				"--config=jest.config.js",
-				// "--testPathPattern",
+				"--runTestsByPath",
+				// "--",
 				// @see https: //code.visualstudio.com/docs/nodejs/nodejs-debugging#_common-questions
-				"${file}"
+
+				// hackfix: see https://github.com/microsoft/vscode-recipes/issues/205
+				"../${relativeFile}"
 			],
 			// see: https://github.com/microsoft/vscode/issues/5422
 			"restart": true,

@@ -123,7 +123,7 @@ export default class RuntimeMonitor {
 
 
   // ###########################################################################
-  // Schedule callbacks
+  // Callbacks
   // ###########################################################################
 
   makeCallbackWrapper(schedulerContextId, schedulerTraceId, inProgramStaticTraceId, cb) {
@@ -388,16 +388,44 @@ export default class RuntimeMonitor {
   // values
   // ###########################################################################
 
-  addVar(programId, inProgramStaticVarAccessId, value) {
-    const staticVar = staticVarAccessCollection.getVar(programId, inProgramStaticVarAccessId);
-    const { staticVarId } = staticVar;
+  // addVar(programId, inProgramStaticVarAccessId, value) {
+  //   const staticVar = staticVarAccessCollection.getVar(programId, inProgramStaticVarAccessId);
+  //   const { staticVarId } = staticVar;
 
-    // const loopIterationId = ...;
-    // const varAccess = varAccessCollection.addVar(staticVarId, value);
-  }
+  //   // const loopIterationId = ...;
+  //   // const varAccess = varAccessCollection.addVar(staticVarId, value);
+  // }
 
   // ###########################################################################
   // loops
   // ###########################################################################
+  
+  async* wrapAsyncIterator(it) {
+    for (const promise of it) {
+      // wrap await
+      let awaitContextId;
+      const result = this.postAwait(
+        await this.wrapAwait(promise, awaitContextId = this.preAwait(staticId, preTraceId)),
+        awaitContextId,
+        resumeTraceId
+      );
 
+      // TODO: register loop iteration here
+      const vars = [result];
+
+      yield result;
+    }
+  }
+
+  beforeLoopStart() {
+
+  }
+
+  pushLoop() {
+
+  }
+
+  popLoop() {
+
+  }
 }

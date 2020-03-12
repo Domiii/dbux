@@ -20,21 +20,16 @@ export default function injectDbuxState(programPath, programState) {
   const { scope } = programPath;
   const { file: programFile } = programState;
 
-  const contexts = new StaticContextCollection(programState);
-  const traces = new StaticTraceCollection(programState);
-  const loops = new StaticLoopCollection(programState);
-  const loopVars = new StaticLoopVarRefCollection(programState);
-
   const dbuxState = {
     // static program data
     programFile,
     filePath,
     fileName,
 
-    contexts,
-    traces,
-    loops,
-    loopVars,
+    contexts: new StaticContextCollection(programState),
+    traces: new StaticTraceCollection(programState),
+    loops: new StaticLoopCollection(programState),
+    loopVars: new StaticLoopVarRefCollection(programState),
 
     ids: {
       dbuxInit: scope.generateUid('dbux_init'),

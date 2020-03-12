@@ -1,64 +1,66 @@
 import justRunMyPlugin from '../testing/justRunMyPlugin';
+import { getRealVariableNames } from '../helpers/bindingsHelper';
+
+function expectPathBindingNames(path, names) {
+  const varNames = getRealVariableNames(path);
+  expect(varNames).toIncludeSameMembers(names);
+}
 
 /**
  * @see https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
  */
 
-function run(code) {
-  const output = {};
-
+function run(code, visitor) {
   function plugin() {
     return {
-      visitor: {
-        Function(path, state) {
-          output.functionPath = path;
-        },
-        ForOfStatement(path, state) {
-          output.forOfPath = path;
-        }
-      }
+      visitor
     };
   }
 
   justRunMyPlugin(code, plugin, {
     filename: __filename
   });
-
-  return output;
 }
 
-
 test('function bindings', () => {
-  const { functionPath } = run(`
+  run(`
 function f(x, { a, b: [c] }) { 
   let k = 3;
   console.log(a, c, x, k);
 }
-`);
-  const block = functionPath.get('body');
-  const params = functionPath.get('params');
-  const { bindings } = block.scope;
+`, {
+    Function(path, state) {
+      const body = path.get('body');
+      const params = path.get('params');
 
-  const varNames = bindings.map(binding => binding.identifier.name);
-  
-  expect(varNames).toIncludeSameMembers(['x', 'a', 'c', 'k']);
-  console.log('function bindings', Object.keys(bindings));
+      // TODO: need to extract bindings only inside the params
+
+      expectPathBindingNames(body, ['x', 'a', 'c', 'k']);
+      expectPathBindingNames(params, ['x', 'a', 'c']);
+    }
+  });
 });
 
 test('for-of bindings', () => {
-  const { forOfPath } = run(`
+  run(`
 for (const x of [1,2]) {
   console.log(x);
 }
-`);
+`, {
+    CallExpression(path, state) {
+      const firstArg = path.get('arguments')[0];
+      expectPathBindingNames(firstArg, ['x']);
+    },
 
-  const block = forOfPath.get('body');
-  const params = forOfPath.get('params');
-  const { bindings } = block.scope;
+    ForOfStatement(path, state) {
+      const body = path.get('body');
+      const left = path.get('left');
+      
+      expectPathBindingNames(body, []);     // empty
+      expectPathBindingNames(left, ['x']);
 
-  expect(bindings).toIncludeSameMembers(['x']);
-  console.log('for of bindings', Object.keys(bindings));
-
-  // console.log('params', Object.keys(params.scope.bindings));
-  // expect(name).toBe('f');
+      // console.log('params', Object.keys(params.scope.bindings));
+      // expect(name).toBe('f');
+    }
+  });
 });

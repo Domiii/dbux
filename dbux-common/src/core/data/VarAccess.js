@@ -1,6 +1,7 @@
 import Loc from "./Loc";
+import VarOwnerType from '../constants/VarOwnerType';
 
-export default class StaticVarAccess {
+export default class VarAccess {
   /**
    * @type {number}
    */
@@ -9,10 +10,16 @@ export default class StaticVarAccess {
    * @type {number}
    */
   staticVarId;
+  
   /**
    * @type {number}
    */
-  staticLoopId;
+  staticOwnerId;
+
+  /**
+   * @type {VarOwnerType}
+   */
+  ownerType;
 
   loc: Loc;
   name: string;
