@@ -2,9 +2,27 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* [applicationDisplayName]
-   * find unique key of 'entryPointPath' of all selectedApplications
-      * do while selectedApplicationChanged (in _notifyChanged)
+* [UI]
+   * add a new option `showHideIfEmpty` to `BaseTreeViewNode`:
+      * if `true`: render new button in node that toggles the `hideIfEmpty` behavior
+      * button icon:  (???) https://www.google.com/search?q=empty+icon&tbm=isch
+* [tracesAtCursor]
+   * remove this view, replace with button at the top left
+      * icon = crosshair (⌖)
+         * e.g.: https://www.google.com/search?q=crosshair+icon&tbm=isch
+      * select `getMostRelevantTraceAtCursor()` (see below)
+      * if it returns `null`, change button color to gray, else red
+   * `getMostRelevantTraceAtCursor()` function
+      * Notes
+         * can use generator function for this
+         * `onData`: reset
+      * if `selectedTrace` exists:
+         * only select traces of same `staticContextId` (or, if `Resume` or `Await`, of same `staticContextId` of `parentContext`)
+         * prefer traces of minimum `contextId` (or, if `Resume` or `Await`, `parentContextId`) distance
+         * prefer traces of minimum `runId` distance
+         * prefer traces of minimum `traceId` distance
+      * if there is no `selectedTrace`:
+         * same order as `getTracesAt(application, programId, pos)`
 * [callstackView]
    * when clicking a node:
       * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
@@ -41,6 +59,11 @@
             * allow cycling through levels of depth (child -> grandchild etc)
          * related info: get bindings of relevant nearby variables and display those?
             * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
+
+* [applicationDisplayName]
+   * find shortest unique part of 'entryPointPath' of all `selectedApplications`
+      * use a loop in `_notifyChanged`
+
 * [contextChildrenView]
    * treeview that shows partial `execution tree` in the context of the selected trace
    * Nodes:
@@ -86,46 +109,60 @@
 
 
 ## TODO (other)
-* [await instrumentation]
-   * test: when error thrown, pop the right resume context, and also await context if necessary?
-* `tracesAtCursor`
-   * remove this view, replace with button at the top left
-   * select most relevant trace only
-   * difficult
-      * e.g. in async functions -> latest trace is `Resume` trace, not necessarily inner most (e.g. argument) trace
-      * select "closest trace"
+* fix `tracesAtCursor`
+
+* [loops]
+   * new data types:
+      * `staticLoop`
+      * `loop`
+         * `firstTraceId` + `lastTraceId`
+      * `loopRepition`
+         * `i`
+         * `headerVars`
+   * add `loopRepititionId` to all traces in loop
+      * add `loopRepitition`:
+         * before `init`, and after `condition` has evaluated to `true`?
+   * in loop's `BlockStart`:
+      * evaluate + store `headerVars` (all variables that have bindings in loop header)
+* [object_tracking]
+   * add trace: object callers on method calls
+   * add trace: `this` upon any function call
+      * add to `PushImmediate` trace
+   * add trace: one for each function parameter
+      * add to `PushImmediate` trace
+   * list all traces referecing the same `valueId` in `traceDetailsView`
+* [testing]
+   * add `dbux-cli` and `samples` to the `webpack` setup
+   * finish setting up basic testing in `samples`
+      * move a basic `server` implementation from `dbux-code` to `dbux-data`
+      * then: let sample tests easily run their own server to operate on the data level
+      * make sure the `test file` `launch.json` entry work withs `samples/__tests__`
 * keep testing navigation in todomvc (especially: moving from event handler to store methods)
 * [callbacks]
    * Problem: we cannot wrap callbacks, as it will break the function's (or class's) identity.
-      * NOTE: This breaks identity-mapping functions, caching, triggers a babel assertion when targeting esnext and trying to instantiate a wrapped class, and `instanceof`, to name a few
-      * Solution: Use a separate map to track callbacks and their points of passage instead?
-* [instrumentation]
-   * [loops]
-      * capture loop variables in BlockStart
-      * new data types:
-         * `staticLoop`
-         * `loop`
-            * `firstTraceId` + `lastTraceId`
-         * `loopRepition`
-            * `i`
-            * `headerVars`
-      * add `loopRepititionId` to all traces in loop
-         * add `loopRepitition`:
-            * before `init`, and after `condition` has evaluated to `true`?
-      * in loop's `BlockStart`:
-         * evaluate + store `headerVars`
-            * all variables that have bindings in loop header
-      * fix `DoWhileLoop` :(
-   * fix `Await` + `Resume`
-      * async function's push + pop?
-      * when resuming, we might come back from a callback etc.
-         * Need to push `Resume` on demand?
-      * when resuming, parent is not set
-   * add one trace for each function parameter
-   * [promises] keep track of `schedulerTraceId`
+      * This breaks...
+         * `instanceof` on any class variable that is not the actual declaration of the class (i.e. when returning a class, storing them in other variables, passing as argument etc...)
+         * triggers a babel assertion when targeting esnext and using es6 classes in anything but `new` statements
+         * identity-mapping of callbacks (e.g. `reselect`, React's `useCallback` and probably many more)
+            * usually only causes performance to deteriorate which is ok, but it might sometimes affect functionality as well...
+      * partial solution: Use a separate map to track callbacks and their points of passage instead?
+         * => Won't work as comprehensively at all
+         * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities
+         * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
+            * => Same issue as with passing callbacks in React
+         * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
+* [loops]
+   * fix `DoWhileLoop` :(
+* [promises] keep track of `schedulerTraceId`
+* [error_handling]
+   * if we have an error, try to trace "skipped contexts"
+      * note: probably have to `catch`/re-`throw` on each level for it to be accurate
+   * make error tracing configurable and/or add proper explanations when errors are reported
+      * NOTE: `catch` clauses added by instrumentation temper with the breakpoints at which errors are reported (but does NOT temper with stacktrace per se);
+         * -> so it is safe but needs some explanation
+   * [errors_and_await]
+      * test: when error thrown, do we pop the correct resume and await contexts?
 * [values]
-   * track function parameters
-   * track `this`
    * better overall value rendering
 * [InfoTDNode]
    * Push/Pop (of any kind) show next previous trace/context?

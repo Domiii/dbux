@@ -31,5 +31,55 @@
 			"// $1",
 			"// ########################################$0"
 		]
+	},
+	"JSDoc: @type": {
+		"prefix": "@type",
+		"body": [
+			"/**",
+			" * @type {$1}",
+			" */"
+		]
+	},
+	"JSDoc: @type {number}": {
+		"prefix": "@type_number",
+		"body": [
+			"/**",
+			" * @type {number}",
+			" */"
+		]
+	},
+	// "JSDoc: single-line @type {number}": {
+	// 	"prefix": "@type_single_line_number",
+	// 	"body": [
+	// 		"/** @type {number} */"
+	// 	]
+	// },
+	"JSDoc: @param": {
+		"prefix": "@param",
+		"body": [
+			"/**",
+			" * @param {$1} $2",
+			" */"
+		]
+	},
+	"JSDoc: additional @param": {
+		"prefix": "@param_add",
+		"body": [
+			"@param {$1} $2"
+		]
+	},
+	"JSDoc: @return": {
+		"prefix": "@return",
+		"body": [
+			"/**",
+			" * @return {$1}",
+			" */"
+		]
+	},
+	"JSDoc: add @return": {
+		"prefix": "@return_add",
+		"body": [
+			"@return {$1}"
+		]
 	}
 }

@@ -1,3 +1,5 @@
+import valueCollection from './data/valueCollection';
+
 /**
  * Comes from the order we execute things in programVisitor
  */
@@ -101,4 +103,32 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
+  // ###########################################################################
+  // values
+  // ###########################################################################
+
+  addVarAccess(inProgramStaticVarAccessId, value) {
+    return this._runtimeMonitor.addVarAccess(this.getProgramId(), inProgramStaticVarAccessId, value);
+  }
+
+  // ###########################################################################
+  // loops
+  // ###########################################################################
+
+  async* wrapAsyncIterator(it) {
+    for (const promise of it) {
+      // wrap await
+      let awaitContextId;
+      const result = this.postAwait(
+        await this.wrapAwait(promise, awaitContextId = this.preAwait(staticId, preTraceId)),
+        awaitContextId,
+        resumeTraceId
+      );
+
+      // TODO: register loop iteration here
+      const vars = [result];
+
+      yield result;
+    }
+  }
 }

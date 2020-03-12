@@ -1,8 +1,7 @@
 import template from '@babel/template';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
-import { getPathTraceId } from './instrumentationHelper';
+import { getPathTraceId } from '../data/StaticTraceCollection';
 
 
 // ###########################################################################
@@ -16,7 +15,7 @@ function replaceWithTemplate(templ, path, cfg) {
 
 export const buildTraceNoValue = function buildTraceNoValue(templ, path, state, traceType) {
   const { ids: { dbux } } = state;
-  const traceId = state.addTrace(path, traceType);
+  const traceId = state.traces.addTrace(path, traceType);
   return templ({
     dbux,
     traceId: t.numericLiteral(traceId)
@@ -31,7 +30,7 @@ export const buildTraceNoValue = function buildTraceNoValue(templ, path, state, 
  */
 function buildTraceExpr(expressionPath, state, methodName, traceType, cfg) {
   const tracePath = cfg?.tracePath;
-  const traceId = state.addTrace(tracePath || expressionPath, traceType, null, cfg);
+  const traceId = state.traces.addTrace(tracePath || expressionPath, traceType, null, cfg);
   const { ids: { dbux } } = state;
 
   return t.callExpression(
@@ -83,7 +82,7 @@ function instrumentArgs(callPath, state, beforeCallTraceId) {
     else { // if (argTraceId) {
       // has been instrumented and has a trace -> just set it's callId
       // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
-      const argTrace = state.getTrace(argTraceId);
+      const argTrace = state.traces.getById(argTraceId);
       argTrace._callId = beforeCallTraceId;
     }
   }
@@ -135,7 +134,7 @@ function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg)
 
 export const traceBeforeExpression = function traceBeforeExpression(templ, expressionPath, state, traceType, tracePath) {
   const { ids: { dbux } } = state;
-  const traceId = state.addTrace(tracePath || expressionPath, traceType || TraceType.BeforeExpression);
+  const traceId = state.traces.addTrace(tracePath || expressionPath, traceType || TraceType.BeforeExpression);
   replaceWithTemplate(templ, expressionPath, {
     dbux,
     traceId: t.numericLiteral(traceId),

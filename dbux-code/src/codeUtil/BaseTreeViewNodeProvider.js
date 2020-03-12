@@ -151,17 +151,17 @@ export default class BaseTreeViewNodeProvider {
     // click handler
     this._setNodeCommand(node);
 
-    if (node.children) {
-      // this node has built-in children
-      this._decorateNodes(node.children);
-    }
-
     // if (node.collapsibleState === TreeItemCollapsibleState.Expanded) {
     //   // generate children right away?
     // }
 
     // init
     node.init?.();
+    
+    if (node.children) {
+      // this node has built-in children
+      this._decorateNodes(node, node.children);
+    }
 
     return node;
   }

@@ -13,7 +13,7 @@ function addResumeContext(bodyPath, state, staticId) {
 
   // the "resume context" starts with the function (function is in "Resumed" state initially)
   const locStart = bodyLoc.start;
-  return state.addResumeContext(bodyPath, locStart);
+  return state.contexts.addResumeContext(bodyPath, locStart);
 }
 
 // ###########################################################################
@@ -46,8 +46,8 @@ const popResumeTemplate = template(
 /**
  * Instrument all Functions to keep track of all (possibly async) execution stacks.
  */
-function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId=null) {
-  const { ids: { dbux }, genContextIdName } = state;
+function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId = null) {
+  const { ids: { dbux }, contexts: { genContextIdName } } = state;
   const contextIdVar = genContextIdName(bodyPath);
 
   let pushes = buildPushImmediate(contextIdVar, dbux, staticId, pushTraceId, !!staticResumeId);
@@ -112,9 +112,9 @@ export default function functionVisitor() {
         displayName,
         isInterruptable
       };
-      const staticId = state.addStaticContext(path, staticContextData);
-      const pushTraceId = state.addTrace(bodyPath, TraceType.PushImmediate);
-      const popTraceId = state.addTrace(bodyPath, TraceType.PopImmediate);
+      const staticId = state.contexts.addStaticContext(path, staticContextData);
+      const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
+      const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
       let staticResumeId;
       if (isInterruptable) {
         staticResumeId = addResumeContext(bodyPath, state, staticId);

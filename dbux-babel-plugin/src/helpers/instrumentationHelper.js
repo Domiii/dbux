@@ -5,7 +5,3 @@ export function isPathInstrumented(path) {
 export function getPathContextId(path) {
   return path.getData('staticId');
 }
-
-export function getPathTraceId(path) {
-  return path.getData('_traceId');
-}

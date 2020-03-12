@@ -73,7 +73,9 @@ export function getTracesAt(application: Application, programId, pos): Trace[] {
     return dp.indexes.traces.byStaticContext.get(staticContextId) || EmptyArray;
   })
     .flat()
-    .filter(trace => dp.util.getTraceType(trace.traceId) !== TraceType.BeforeCallExpression);
+    .filter(trace => 
+      dp.util.getTraceType(trace.traceId) !== TraceType.BeforeCallExpression
+    );
   if (!traces) {
     return null;
   }

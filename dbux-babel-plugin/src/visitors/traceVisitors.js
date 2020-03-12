@@ -11,8 +11,8 @@ import Enum from 'dbux-common/src/util/Enum';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg, traceCallExpression } from '../helpers/traceHelpers';
-import { isPathInstrumented, getPathTraceId } from '../helpers/instrumentationHelper';
 import { instrumentLoop } from './loopVisitors';
+import { getPathTraceId } from '../data/StaticTraceCollection';
 // TODO: want to do some extra work to better trace loops
 
 const TraceInstrumentationType = new Enum({
@@ -244,7 +244,7 @@ const enterInstrumentors = {
       // add staticTrace for callee, but don't actually trace it
       //  NOTE: tracing a callee complicates things a bit; let's keep it easy for now
       // const calleePath = path.get('callee');
-      // state.addTrace(calleePath, TraceType.Callee, null);
+      // state.traces.addTrace(calleePath, TraceType.Callee, null);
       // traceWrapExpression(TraceType.Callee, calleePath, state);
       traceBeforeExpression(path, state, TraceType.BeforeCallExpression);
     }

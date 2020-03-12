@@ -11,9 +11,10 @@ const inputFolder = path.join(dbuxRoot, 'samples/__samplesInput__');
 fs.readdirSync(inputFolder).forEach(fname => {
   //const fname = path.basename(fpath);
   const fpath = path.join(inputFolder, fname);
-  const code = fs.readFileSync(fpath, { encoding: 'utf8' });
+  if (fs.lstatSync(fpath).isFile()) {
+    const code = fs.readFileSync(fpath, { encoding: 'utf8' });
+    expect(code).toBeString();
 
-  expect(code).toBeString();
-  
-  runSnapshotTests(code, fpath, fname, true, {});
+    runSnapshotTests(code, fpath, fname, true, {});
+  }
 });

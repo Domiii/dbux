@@ -18,7 +18,7 @@ const { log, debug, warn, error: logError } = newLogger('CodeNav');
  */
 export function goToCodeLoc(URI: Uri, loc: Loc) {
   window.showTextDocument(URI).then(editor => {
-    selectLocInEditor(editor, loc)
+    selectLocInEditor(editor, loc);
   });
 }
 

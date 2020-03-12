@@ -63,7 +63,7 @@ export default class EditorTracesNodeProvider extends BaseTreeViewNodeProvider {
       .sort((a, b) => b[0].contextId - a[0].contextId);
 
     return traceGroups.map(traceGroup => {
-      // start with inner-most (oldest) trace
+      // start with inner-most (oldest) trace (biggest contextId)
       const trace = traceGroup[0];
       const childTraces = traceGroup.slice(1);
       return this.buildTraceNode(trace, parent, {

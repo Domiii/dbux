@@ -2,6 +2,8 @@ import * as t from '@babel/types';
 import LoopType from 'dbux-common/src/core/constants/LoopType';
 import { logInternalError } from '../log/logger';
 import { extractSourceStringWithoutCommentsAtLoc } from '../helpers/sourceHelpers';
+import { callDbuxMethod } from '../helpers/callHelpers';
+import { EmptyArray } from '../../../dbux-common/src/util/arrayUtil';
 
 // ###########################################################################
 // Loop types
@@ -27,17 +29,6 @@ function getLoopType(isForAwaitOf, nodeTypeName) {
   return loopType;
 }
 
-// ###########################################################################
-// actual instrumentation
-// ###########################################################################
-
-function instrumentForAwaitOfLoop(path, state) {
-  // TODO: for-await-of is not handled yet. Specifically:
-  //  1. `node.right` is a `Symbol.asyncIterator`. We want to wrap that.
-  //  2. when `next()` generates a new value, `preAwait`, and
-  //  3. in `path.body`: start with a `postAwait`
-}
-
 
 // ###########################################################################
 // helpers
@@ -55,6 +46,27 @@ function getLoopHeadLoc(path, bodyPath) {
   };
 }
 
+function isInLoc(inner, outer) {
+
+}
+
+function getClosestScopedPath(path) {
+  if (path.node.body) {
+    path = path.get('body');
+  }
+
+  let current = path;
+  do {
+    if (current.scope) {
+      return current;
+    }
+    current = path.parentPath;
+  }
+  while (current);
+
+  return null;
+}
+
 /**
  * Get string representation of loop head.
  */
@@ -63,27 +75,82 @@ function getLoopDisplayName(loopHeadLoc, state) {
   return displayName;
 }
 
-function getLoopStaticVars(path, state) {
-  const bindings = path.scope?.bindings;
+function addLoopStaticVars(path, state, loopId, loopHeadLoc) {
+  const scopedPath = getClosestScopedPath(path);
+  const bindings = scopedPath?.scope?.bindings || EmptyArray;
 
-  // TODO
-  return [];
+  // see: https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
+  for (const binding of bindings) {
+    const {
+      referencePaths,
+      identifier,
+      constantViolations
+    } = binding;
+
+    for (const varPath of referencePaths) {
+      const { loc } = varPath;
+      if (isInLoc(loc, loopHeadLoc)) {
+        // add var access
+        const isWrite = !constantViolations.includes(varPath);
+        state.loopVars.addVarRef(varPath, identifier.name, isWrite, loopId);
+      }
+    }
+  }
 }
+
+// ###########################################################################
+// actual instrumentation
+// ###########################################################################
+
+/**
+ * Instrumentation of `for-await-of` loops:
+ * 
+ * `for await (const left of dbux.wrapAsyncIterator(right)) { ... }`
+ */
+function instrumentForAwaitOfLoop(path, state) {
+  // TODO: instrument this
+
+  // `for await (const left of dbux.wrapAsyncIterator(right)) { ... }`
+}
+
+
+export function instrumentLoopBodyDefault(bodyPath, state, staticVars) {
+  //t.expressionStatement(
+    // TODO: figure out how to store loop vars
+  const varRegisterCall = callDbuxMethod(state, 'setLoopVars',
+    loopId,
+    staticVars.map(
+      staticVar => ([
+        t.numericLiteral(staticVar._staticId),
+        t.identifier(staticVar.name)
+      ])
+    )
+  );
+
+  
+  // TODO: push + pop Loops; then add LoopIterations
+
+}
+
 
 // ###########################################################################
 // core
 // ###########################################################################
 
 export function instrumentLoop(path, state) {
+  return
   const bodyPath = path.get('body');
 
   const isForAwaitOf = path.isForOfStatement() && path.node.await;
   const loopType = getLoopType(isForAwaitOf, path.node.type);
   const loopHeadLoc = getLoopHeadLoc(path, bodyPath);
   const displayName = getLoopDisplayName(loopHeadLoc, state);
-  const vars = getLoopStaticVars(path, state);
 
-  const loopId = state.addLoop(path, loopType, loopHeadLoc, displayName, vars);
+  // add loop
+  const loopId = state.addLoop(path, loopType, loopHeadLoc, displayName);
+
+  // add loop vars
+  addLoopStaticVars(path, state, loopId, loopHeadLoc);
 
   // TODO: wrap entire loop in try/finally and push/pop loop
 
@@ -91,12 +158,6 @@ export function instrumentLoop(path, state) {
     instrumentForAwaitOfLoop(path, state);
   }
   else {
-    instrumentLoopBody(bodyPath, state, vars);
+    instrumentLoopBodyDefault(bodyPath, state, staticVars);
   }
-}
-
-
-export function instrumentLoopBody(bodyPath, state, staticVars) {
-  const varsArrayNode = t.arrayExpression(staticVars.map(staticVar => t.identifier(staticVar.name)));
-  // TODO: on body start, add a new LoopIteration; capture all variables as well
 }

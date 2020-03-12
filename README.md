@@ -269,25 +269,26 @@ You can re-add it manually:
    * https://github.com/babel/babel/pull/5590
 
 
-# Useful Snippets
+# Questions we can already answer
 
-```
-	"Comment Barrier 1": {
-		"scope": "javascript, typescript",
-		"prefix": "comment-barrier1",
-		"body": [
-			"// ###########################################################################",
-			"// $1",
-			"// ###########################################################################$0"
-		]
-	},
-	"Comment Barrier 2": {
-		"scope": "javascript, typescript",
-		"prefix": "comment-barrier2",
-		"body": [
-			"// ########################################",
-			"// $1",
-			"// ########################################$0"
-		]
-	}
-```
+* Which parts of my code executed?
+* How often did this code execute?
+* What did these expressions evaluate to during each execution?
+* What were the arguments passed to this function call?
+* Where did the execution go from here? Where did it come from?
+* Which events were triggered and how did its handlers execute?
+
+## TODO (questions we cannot answer yet, but want to)
+
+* Sub-graph filtering
+   * All traces/contexts/runs that referenced some object (ValueRef)
+   * All runs that passed through some subset of functions/traces
+* Multiple filter modes
+   * hide vs. grayed out
+* What is the critical path in this sub-graph, in terms of call-stack depth?
+   * NOTE: we don't aim to do performance analysis, so we can't find the *actual* critical path
+* Interactive visualized call graph
+   * zoom- and pan-able
+   * multi-resolution
+   * features and filters can be enabled and disabled
+   * multiple coloring schemes (e.g. one each for color per file/context/feature type and more)11

@@ -8,6 +8,7 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
+import staticVarAccessCollection from './data/staticVarAccessCollection';
 
 function _inheritsLoose(subClass, superClass) {
   if (superClass.prototype) {
@@ -48,22 +49,22 @@ export default class RuntimeMonitor {
   addProgram(programData) {
     const staticProgramContext = staticProgramContextCollection.addProgram(programData);
     const { programId } = staticProgramContext;
-    const { staticContexts, traces: staticTraces } = programData;
-    staticContextCollection.addContexts(programId, staticContexts);
+    const { contexts: staticContexts, traces: staticTraces } = programData;
+    staticContextCollection.addEntries(programId, staticContexts);
 
     // change program-local _staticContextId to globally unique staticContextId
-    for (let i = 1; i < staticTraces.length; ++i) {
+    for (let i = 0; i < staticTraces.length; ++i) {
       const staticTrace = staticTraces[i];
-      let staticContext = staticContexts[staticTrace._staticContextId];
+      let staticContext = staticContextCollection.getContext(programId, staticTrace._staticContextId);
       if (!staticContext?.staticId) {
         // set to random default, to avoid more errors down the line?
-        staticContext = staticContexts[1];
+        staticContext = staticContextCollection.getContext(programId, 1);
         logInternalError('trace had invalid `_staticContextId`', staticTrace);
       }
       delete staticTrace._staticContextId;
       staticTrace.staticContextId = staticContext.staticId;
     }
-    staticTraceCollection.addTraces(programId, staticTraces);
+    staticTraceCollection.addEntries(programId, staticTraces);
 
     const programMonitor = new ProgramMonitor(this, staticProgramContext);
     this._programMonitors.set(programId, programMonitor);
@@ -382,4 +383,21 @@ export default class RuntimeMonitor {
   _onTrace(contextId, traceId) {
     this._runtime.setContextTrace(contextId, traceId);
   }
+
+  // ###########################################################################
+  // values
+  // ###########################################################################
+
+  addVar(programId, inProgramStaticVarAccessId, value) {
+    const staticVar = staticVarAccessCollection.getVar(programId, inProgramStaticVarAccessId);
+    const { staticVarId } = staticVar;
+
+    // const loopIterationId = ...;
+    // const varAccess = varAccessCollection.addVar(staticVarId, value);
+  }
+
+  // ###########################################################################
+  // loops
+  // ###########################################################################
+
 }
