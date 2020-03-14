@@ -269,7 +269,9 @@ You can re-add it manually:
    * https://github.com/babel/babel/pull/5590
 
 
-# Questions we can already answer
+# Higher Order Questions
+
+## Questions that we can already answer
 
 * Which parts of my code executed?
 * How often did this code execute?
@@ -278,15 +280,22 @@ You can re-add it manually:
 * Where did the execution go from here? Where did it come from?
 * Which events were triggered and how did its handlers execute?
 
-## TODO (questions we cannot answer yet, but want to)
+## TODO: Questions we want to work on next
 
 * Sub-graph filtering
+   * Search sub graph contexts by keyword (QuickInput)
    * All traces/contexts/runs that referenced some object (ValueRef)
-   * All runs that passed through some subset of functions/traces
-* Multiple filter modes
-   * hide vs. grayed out
+
+## Future Work (even more cool questions)
+
+* Sub-graph filtering
+   * Multiple filter UI modes
+      * hide vs. grayed out?
 * What is the critical path in this sub-graph, in terms of call-stack depth?
    * NOTE: we don't aim to do performance analysis, so we can't find the *actual* critical path
+* Given two traces, find shortest path (or path that is most likely to be the actual path?)
+   * TODO: Somehow visualize and allow interactions with that path
+      * -> Possibly like a car navigation system -> listing all the twists and turns in a list
 * Interactive visualized call graph
    * zoom- and pan-able
    * multi-resolution

@@ -2,10 +2,19 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* [UI]
-   * add a new option `showHideIfEmpty` to `BaseTreeViewNode`:
-      * if `true`: render new button in node that toggles the `hideIfEmpty` behavior
-      * button icon:  (???) https://www.google.com/search?q=empty+icon&tbm=isch
+* async/await testing:
+   * does call graph navigation work properly?
+   * does `callStackView` work properly?
+* [callGraphView]
+   * when opening a CallGraph root, show all contexts of that run in a linear list
+   * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a wildcard searchTerm
+      * all roots with contexts containing searchTerm are expanded, all others are collapsed
+      * filter contexts by searchTerm
+   * add a "clear filter" button
+   * add a new "async view" mode to "Context Roots": switches between "runs" and "async runs"
+      * define a new "async run" concept
+      * TODO
+      * attach `Resume` and `Await` nodes under their actual `parentContexts`, thus hiding roots from Resumes
 * [tracesAtCursor]
    * remove this view, replace with button at the top left
       * icon = crosshair (⌖)
@@ -23,6 +32,14 @@
          * prefer traces of minimum `traceId` distance
       * if there is no `selectedTrace`:
          * same order as `getTracesAt(application, programId, pos)`
+* [SubGraph_Filtering]
+   * add two new buttons (for filtering) to each `callGraphView` root node: include/exclude
+   * when filter active:
+      * only show those runs + contexts in `callGraphView`
+      * only show those traceDecos
+   * add a new "clear filters" button at the top of the `callGraphView`
+   * add a new "only this trace" filter button to `callGraphView`
+      * only runs that passed through this trace
 * [callstackView]
    * when clicking a node:
       * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
@@ -60,6 +77,10 @@
          * related info: get bindings of relevant nearby variables and display those?
             * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
 
+* [UI]
+   * add a new option `showHideIfEmpty` to `BaseTreeViewNode`:
+      * if `true`: render new button in node that toggles the `hideIfEmpty` behavior
+      * button icon:  (???) https://www.google.com/search?q=empty+icon&tbm=isch
 * [applicationDisplayName]
    * find shortest unique part of 'entryPointPath' of all `selectedApplications`
       * use a loop in `_notifyChanged`
@@ -79,9 +100,15 @@
       * NOTE: probably use QuickInput to ask user for id
       * used for debugging specific traces uses all available visualization tools
 
+
+
+
+
+
+
 ## TODO (dbux-code + dbux-data; lower priority)
 * [UI design]
-   * good icons + symbols in all tree nodes
+   * proper icons + symbols for all tree nodes?
 * add a button to the top right to toggle (show/hide) all intrusive features
    * includes:
       * hide `codeDeco`
@@ -109,8 +136,15 @@
 
 
 ## TODO (other)
-* fix `tracesAtCursor`
-
+* fixing "async runs"
+   * TODO: what to do with callbacks that preceded and then triggered a `Resume`?
+* [object_tracking]
+   * add trace: object callers on method calls
+   * add trace: `this` upon any function call
+      * add to `PushImmediate` trace
+   * add trace: function parameters
+      * add to `PushImmediate` trace
+   * list all traces referencing the same `valueId` in `traceDetailsView`
 * [loops]
    * new data types:
       * `staticLoop`
@@ -124,13 +158,6 @@
          * before `init`, and after `condition` has evaluated to `true`?
    * in loop's `BlockStart`:
       * evaluate + store `headerVars` (all variables that have bindings in loop header)
-* [object_tracking]
-   * add trace: object callers on method calls
-   * add trace: `this` upon any function call
-      * add to `PushImmediate` trace
-   * add trace: one for each function parameter
-      * add to `PushImmediate` trace
-   * list all traces referecing the same `valueId` in `traceDetailsView`
 * [testing]
    * add `dbux-cli` and `samples` to the `webpack` setup
    * finish setting up basic testing in `samples`
@@ -261,6 +288,31 @@
    * breakpoints in dbux-run don't work anymore unless at least one debugger statement is added?
 
 
+
+
+
+
+
+## TODO: Testing + Case studies
+* [Goal: Make sure dbux runs on hundreds of popualr JS projects] - Use CLI to automatically check out and test github repos
+   1. git clone X
+   1. {npm,yarn} install
+      * (custom install steps here?)
+   1. npm test
+   1. dbux-npm test
+      * run `npm test` but with dbux instrumentations in place
+* "Interactive Open Source Case Studies"
+   * https://github.com/search?utf8=%E2%9C%93&q=language%3Ajavascript+stars%3A%3E1000&type=Repositories
+
+
+
+
+
+
+
+
+
+
 ## Possible future work
 * [playback] add awesome keyboard controls~
    * when "in playback mode" use arrow keys (and maybe a few other keys) to jump around very quickly
@@ -282,20 +334,3 @@
 ## Fancy ideas (Dev)
 * add extra-watch-webpack-plugin https://github.com/pigcan/extra-watch-webpack-plugin?
 
-
-
-# Tools for Call Graph Analysis
-
-## Call Graph Roots
-* (mostly done)
-
-## Call Graph Paths
-* Given two traces, find shortest path (or path that is most likely to be the actual path?)
-   * TODO: Somehow visualize and allow interactions with that path
-      * -> Possibly like a car navigation system -> listing all the twists and turns
-* Given some trace, find trace (and path) that has shortest path of all traces at given staticTrace (selected at cursor)
-* 
-
-### Future work
-* Given some un-traced code, find potential path to that trace?
-   * TODO: Requires Ai + static analysis
