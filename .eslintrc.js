@@ -75,6 +75,7 @@ module.exports = {
 		"function-paren-newline": 0,
 		"linebreak-style": 0,
 		"quotes": 0,
+		"spaced-comment": 0,
 		"max-len": ["warn", { "code": 120 }]
 	}
 };

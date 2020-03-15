@@ -3,9 +3,9 @@ import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import Trace from 'dbux-common/src/core/data/Trace';
 import Application from 'dbux-data/src/applications/Application';
 import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
-import { babelLocToCodeRange } from './locHelpers';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import { babelLocToCodeRange } from './codeLocHelpers';
 
 /**
  * This file provides data/query utilities for all kinds of data that 

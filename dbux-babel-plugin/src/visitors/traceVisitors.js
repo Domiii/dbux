@@ -10,9 +10,10 @@ import template from '@babel/template';
 import Enum from 'dbux-common/src/util/Enum';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
-import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg, traceCallExpression } from '../helpers/traceHelpers';
+import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg, traceCallExpression, traceValueBeforeExpression } from '../helpers/traceHelpers';
 import { instrumentLoop } from './loopVisitors';
 import { getPathTraceId } from '../data/StaticTraceCollection';
+import { getAllButRightMostPath } from '../helpers/objectHelpers';
 // TODO: want to do some extra work to better trace loops
 
 const TraceInstrumentationType = new Enum({
@@ -31,7 +32,7 @@ const traceCfg = (() => {
     NoTrace,
     // CallExpression,
     ExpressionResult,
-    ExpressionNoValue,
+    // ExpressionNoValue,
     Statement,
     Block,
     Loop,
@@ -91,7 +92,7 @@ const traceCfg = (() => {
       ExpressionResult,
       [['test', ExpressionResult], ['consequent', ExpressionResult], ['alternate', ExpressionResult]]
     ],
-    Super: ExpressionNoValue,
+    Super: NoTrace,
     UpdateExpression: ExpressionResult,
     YieldExpression: [
       NoTrace,
@@ -106,7 +107,7 @@ const traceCfg = (() => {
     ContinueStatement: Statement,
     Decorator: [
       NoTrace,
-      [['expression', ExpressionNoValue]]
+      // [['expression', ExpressionNoValue]]
     ],
     // Declaration: [
     //   Statement,
@@ -241,12 +242,24 @@ const enterInstrumentors = {
   ExpressionResult(path, state, cfg) {
     if (path.isCallExpression()) {
       // CallExpression
-      // add staticTrace for callee, but don't actually trace it
-      //  NOTE: tracing a callee complicates things a bit; let's keep it easy for now
-      // const calleePath = path.get('callee');
-      // state.traces.addTrace(calleePath, TraceType.Callee, null);
-      // traceWrapExpression(TraceType.Callee, calleePath, state);
-      traceBeforeExpression(path, state, TraceType.BeforeCallExpression);
+
+      // object method calls
+      const calleePath = path.get('callee');
+      if (calleePath.isMemberExpression()) {
+        // trace object of method call
+        const objPath = calleePath.get('object');
+        if (objPath.isSuper()) {
+          // cannot wrap `super` -> trace `this` before expression instead (NOTE: returns original path)
+          path = traceValueBeforeExpression(path, state, TraceType.ExpressionResult, objPath, 'this');
+        }
+        else {
+          // wrap object as-is
+          traceWrapExpression(TraceType.CalleeObject, objPath, state);
+        }
+      }
+
+      // trace before call (returns original path)
+      path = traceBeforeExpression(path, state, TraceType.BeforeCallExpression, null);
     }
     else {
       // any other expression with a result
@@ -260,9 +273,9 @@ const enterInstrumentors = {
       traceWrapExpression(TraceType.ExpressionResult, path, state, tracePath);
     }
   },
-  ExpressionNoValue(path, state) {
-    traceBeforeExpression(path, state);
-  },
+  // ExpressionNoValue(path, state) {
+  //   traceBeforeExpression(path, state);
+  // },
   Statement(path, state) {
     const traceStart = buildTraceNoValue(path, state, TraceType.Statement);
     path.insertBefore(traceStart);

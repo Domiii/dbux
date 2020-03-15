@@ -1,6 +1,6 @@
 import * as t from '@babel/types';
 import { NodePath } from '@babel/core';
-import { getClassAncestryString } from './astHelpers';
+import { getClassAncestryString } from './traversalHelpers';
 import { extractSourceStringWithoutComments } from './sourceHelpers';
 
 
@@ -12,6 +12,9 @@ export function getRightMostIdOfMember(memberPath) {
   return memberPath.property;
 }
 
+export function getAllButRightMostPath(memberPath) {
+  return memberPath.get('object');
+}
 
 export function getMemberExpressionName(path, state, includeAncestry = true) {
   const objPath: NodePath = path.get('object');

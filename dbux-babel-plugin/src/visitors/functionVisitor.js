@@ -1,8 +1,11 @@
 import template from '@babel/template';
 import * as t from "@babel/types";
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import VarOwnerType from 'dbux-common/src/core/constants/VarOwnerType';
 import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
+import { getPreBodyLoc1D } from '../helpers/locHelpers';
+import { iterateVarAccessInLoc1D } from '../helpers/bindingsHelper';
 
 // ###########################################################################
 // helpers
@@ -116,9 +119,17 @@ export default function functionVisitor() {
       const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
       const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
 
-      // TODO
-      // addVarAccess(path, ownerId, ownerType, 'this', isWrite)
-      // addStaticVars(path, state, ownerId, ownerType, containingLoc)
+      // add varAccess
+      const ownerId = staticId;
+      
+      // TODO: this?
+      // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
+
+      const signatureLoc1D = getPreBodyLoc1D(path);
+      iterateVarAccessInLoc1D(path, signatureLoc1D, 
+        (varName, varPath, isWrite) => state.varAccess.addVarAccess(
+          varName, varPath, isWrite, ownerId, VarOwnerType.Trace)
+      );
 
       let staticResumeId;
       if (isInterruptable) {

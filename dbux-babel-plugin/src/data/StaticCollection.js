@@ -1,3 +1,5 @@
+import { isNodeInstrumented } from '../helpers/instrumentationHelper';
+
 export default class StaticCollection {
   _all = [];
 
@@ -10,7 +12,7 @@ export default class StaticCollection {
   }
 
   checkPath(path) {
-    if (!path.node.loc) {
+    if (isNodeInstrumented(path.node)) {
       const msg = 'trying to instrument an already instrumented node: ' + path;
       throw new Error(msg);
     }

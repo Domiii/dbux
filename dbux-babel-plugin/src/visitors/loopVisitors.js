@@ -4,7 +4,6 @@ import { EmptyObject } from 'dbux-common/src/util/EmptyObject';
 import { logInternalError } from '../log/logger';
 import { extractSourceStringWithoutCommentsAtLoc } from '../helpers/sourceHelpers';
 import { callDbuxMethod } from '../helpers/callHelpers';
-import { addStaticVars } from '../helpers/varHelpers';
 
 // ###########################################################################
 // Loop types
@@ -35,17 +34,6 @@ function getLoopType(isForAwaitOf, nodeTypeName) {
 // helpers
 // ###########################################################################
 
-function getLoopHeadLoc(path, bodyPath) {
-  bodyPath = Array.isArray(bodyPath) ? bodyPath[0] : bodyPath;
-  const bodyLoc = bodyPath?.node.loc || path.node.loc;
-
-  const { start } = path.node.loc;
-  const end = bodyLoc.start;
-  return {
-    start,
-    end
-  };
-}
 
 /**
  * Get string representation of loop head.
@@ -104,7 +92,7 @@ export function instrumentLoop(path, state) {
 
   // const isForAwaitOf = path.isForOfStatement() && path.node.await;
   // const loopType = getLoopType(isForAwaitOf, path.node.type);
-  // const loopHeadLoc = getLoopHeadLoc(path, bodyPath);
+  // const loopHeadLoc = getPreBodyLoc(path);
   // const displayName = getLoopDisplayName(state, loopHeadLoc, loopType);
 
   // // add loop

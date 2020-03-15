@@ -32,6 +32,9 @@
          * prefer traces of minimum `traceId` distance
       * if there is no `selectedTrace`:
          * same order as `getTracesAt(application, programId, pos)`
+* [object_tracking]
+   * list all traces referencing the same `valueId` in `traceDetailsView`
+      * add new "Track Object" node to `traceDetailsView`, if it trace has a `valueId`
 * [SubGraph_Filtering]
    * add two new buttons (for filtering) to each `callGraphView` root node: include/exclude
    * when filter active:
@@ -139,12 +142,12 @@
 * fixing "execution order" of "async runs"
    * TODO: what to do with callbacks that preceded and then triggered a `Resume`?
 * [object_tracking]
-   * add trace: `this` upon any function call
-      * add to `PushImmediate` trace
-   * add trace: function parameters
-      * add to `PushImmediate` trace
-   * add trace: object callers on method calls
-   * list all traces referencing the same `valueId` in `traceDetailsView`
+   * Consider: trace any variable access?
+      * alternatively...
+         * add trace: `this` upon any function call
+            * add to `PushImmediate` trace
+         * add trace: function parameters
+            * add to `PushImmediate` trace
 * [loops]
    * new data types:
       * `staticLoop`
@@ -183,7 +186,8 @@
 * [promises] keep track of `schedulerTraceId`
 * [error_handling]
    * if we have an error, try to trace "skipped contexts"
-      * note: probably have to `catch`/re-`throw` on each level for it to be accurate
+      * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.
+      * if things got skipped, capture last trace executed in context to find error
    * make error tracing configurable and/or add proper explanations when errors are reported
       * NOTE: `catch` clauses added by instrumentation temper with the breakpoints at which errors are reported (but does NOT temper with stacktrace per se);
          * -> so it is safe but needs some explanation

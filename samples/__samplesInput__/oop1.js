@@ -5,25 +5,26 @@ function renderMessage(msg) {
 debugger;
 
 class Animal {
-  speak() {
+  speak(msg) {
+    renderMessage(`${this.constructor.name} says: ${msg}`);
   }
 }
 
 class Duck extends Animal {
   speak() {
-    renderMessage('quack quack');
+    super.speak('quack quack');
   }
 }
 
 class Cow extends Animal {
   speak() {
-    renderMessage('mooo');
+    super.speak('mooo');
   }
 }
 
 class Dog extends Animal {
   speak() {
-    renderMessage('旺旺');
+    super.speak('旺旺');
   }
 }
 

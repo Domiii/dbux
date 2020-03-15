@@ -44,3 +44,12 @@ export function getClassAncestryString(path) {
   }
   return '';
 }
+
+
+function isContextPath(path) {
+  return path.isFunction() || path.isProgram();
+}
+
+export function getContextPath(path) {
+  return isContextPath(path) ? path : getContextPath(path.parentPath);
+}

@@ -5,7 +5,7 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import groupBy from 'lodash/groupBy';
 import { getTraceDecoName, getDecoConfigByName } from './traceDecoConfig';
-import { babelLocToCodeRange } from '../helpers/locHelpers';
+import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
 const { log, debug, warn, error: logError } = newLogger('traceDecorator');
 

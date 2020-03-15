@@ -18,14 +18,14 @@ const NEWLINE = /\r\n|[\n\r\u2028\u2029]/;
 const linesByProgram = new Map();
 
 function getSourceCodeLines(state) {
-  const { programFile } = state;
-  let lines = linesByProgram.get(programFile);
+  const { file } = state;
+  let lines = linesByProgram.get(file);
   if (!lines) {
     const {
       code
-    } = programFile;
-    lines = code.split(NEWLINE)
-    linesByProgram.set(programFile, lines);
+    } = file;
+    lines = code.split(NEWLINE);
+    linesByProgram.set(file, lines);
   }
   return lines;
 }
