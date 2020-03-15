@@ -136,14 +136,14 @@
 
 
 ## TODO (other)
-* fixing "async runs"
+* fixing "execution order" of "async runs"
    * TODO: what to do with callbacks that preceded and then triggered a `Resume`?
 * [object_tracking]
-   * add trace: object callers on method calls
    * add trace: `this` upon any function call
       * add to `PushImmediate` trace
    * add trace: function parameters
       * add to `PushImmediate` trace
+   * add trace: object callers on method calls
    * list all traces referencing the same `valueId` in `traceDetailsView`
 * [loops]
    * new data types:

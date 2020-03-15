@@ -1,8 +1,8 @@
-import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
-import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import template from '@babel/template';
 import * as t from "@babel/types";
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
+import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 
 // ###########################################################################
 // helpers
@@ -115,6 +115,11 @@ export default function functionVisitor() {
       const staticId = state.contexts.addStaticContext(path, staticContextData);
       const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
       const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
+
+      // TODO
+      // addVarAccess(path, ownerId, ownerType, 'this', isWrite)
+      // addStaticVars(path, state, ownerId, ownerType, containingLoc)
+
       let staticResumeId;
       if (isInterruptable) {
         staticResumeId = addResumeContext(bodyPath, state, staticId);

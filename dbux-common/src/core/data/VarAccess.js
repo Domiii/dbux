@@ -1,26 +1,18 @@
-import Loc from "./Loc";
-import VarOwnerType from '../constants/VarOwnerType';
+import HasValue from './HasValue';
 
-export default class VarAccess {
+export default class VarAccess extends HasValue {
   /**
    * @type {number}
    */
-  programId;
+  varAccessId;
+
   /**
    * @type {number}
    */
-  staticVarId;
-  
+  staticVarAccessId;
+
   /**
    * @type {number}
    */
-  staticOwnerId;
-
-  /**
-   * @type {VarOwnerType}
-   */
-  ownerType;
-
-  loc: Loc;
-  name: string;
+  ownerId;
 }

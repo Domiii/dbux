@@ -74,6 +74,7 @@ module.exports = {
 		"implicit-arrow-linebreak": 0,
 		"function-paren-newline": 0,
 		"linebreak-style": 0,
-		"quotes": 0
+		"quotes": 0,
+		"max-len": ["warn", { "code": 120 }]
 	}
 };

@@ -1,7 +1,8 @@
 import Enum from "../../util/Enum";
 
 let VarOwnerType = {
-  Loop: 1
+  Function: 1,
+  Loop: 2
 };
 VarOwnerType = new Enum(VarOwnerType);
 

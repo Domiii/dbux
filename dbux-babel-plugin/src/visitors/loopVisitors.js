@@ -1,9 +1,10 @@
 import * as t from '@babel/types';
 import LoopType from 'dbux-common/src/core/constants/LoopType';
+import { EmptyObject } from 'dbux-common/src/util/EmptyObject';
 import { logInternalError } from '../log/logger';
 import { extractSourceStringWithoutCommentsAtLoc } from '../helpers/sourceHelpers';
 import { callDbuxMethod } from '../helpers/callHelpers';
-import { EmptyObject } from '../../../dbux-common/src/util/EmptyObject';
+import { addStaticVars } from '../helpers/varHelpers';
 
 // ###########################################################################
 // Loop types
@@ -46,27 +47,6 @@ function getLoopHeadLoc(path, bodyPath) {
   };
 }
 
-function isInLoc(inner, outer) {
-
-}
-
-function getClosestScopedPath(path) {
-  if (path.node.body) {
-    path = path.get('body');
-  }
-
-  let current = path;
-  do {
-    if (current.scope) {
-      return current;
-    }
-    current = path.parentPath;
-  }
-  while (current);
-
-  return null;
-}
-
 /**
  * Get string representation of loop head.
  */
@@ -76,28 +56,8 @@ function getLoopDisplayName(state, loopHeadLoc, loopType) {
 }
 
 function addLoopStaticVars(path, state, loopId, loopHeadLoc) {
-  const scopedPath = getClosestScopedPath(path);
-  const bindings = scopedPath?.scope?.bindings || EmptyObject;
-  const varNames = Object.keys(bindings);
-
-  // see: https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
-  for (const varName of varNames) {
-    const binding = bindings[varName];
-    const {
-      referencePaths,
-      identifier,
-      constantViolations
-    } = binding;
-
-    for (const varPath of referencePaths) {
-      const { loc } = varPath;
-      if (isInLoc(loc, loopHeadLoc)) {
-        // add var access
-        const isWrite = !constantViolations.includes(varPath);
-        state.loopVars.addVarRef(varPath, identifier.name, isWrite, loopId);
-      }
-    }
-  }
+  // TODO
+  // return addStaticVars();
 }
 
 // ###########################################################################
@@ -140,25 +100,25 @@ export function instrumentLoopBodyDefault(bodyPath, state, staticVars) {
 // ###########################################################################
 
 export function instrumentLoop(path, state) {
-  const bodyPath = path.get('body');
+  // const bodyPath = path.get('body');
 
-  const isForAwaitOf = path.isForOfStatement() && path.node.await;
-  const loopType = getLoopType(isForAwaitOf, path.node.type);
-  const loopHeadLoc = getLoopHeadLoc(path, bodyPath);
-  const displayName = getLoopDisplayName(state, loopHeadLoc, loopType);
+  // const isForAwaitOf = path.isForOfStatement() && path.node.await;
+  // const loopType = getLoopType(isForAwaitOf, path.node.type);
+  // const loopHeadLoc = getLoopHeadLoc(path, bodyPath);
+  // const displayName = getLoopDisplayName(state, loopHeadLoc, loopType);
 
-  // add loop
-  const staticLoopId = state.addLoop(path, loopType, loopHeadLoc, displayName);
+  // // add loop
+  // const staticLoopId = state.addLoop(path, loopType, loopHeadLoc, displayName);
 
-  // add loop vars
-  addLoopStaticVars(path, state, staticLoopId, loopHeadLoc);
+  // // add loop vars
+  // addLoopStaticVars(path, state, staticLoopId, loopHeadLoc);
 
-  // TODO: wrap entire loop in try/finally and push/pop loop
+  // // TODO: wrap entire loop in try/finally and push/pop loop
 
-  if (isForAwaitOf) {
-    instrumentForAwaitOfLoop(path, state);
-  }
-  else {
-    instrumentLoopBodyDefault(bodyPath, state, staticVars);
-  }
+  // if (isForAwaitOf) {
+  //   instrumentForAwaitOfLoop(path, state);
+  // }
+  // else {
+  //   instrumentLoopBodyDefault(bodyPath, state, staticVars);
+  // }
 }
