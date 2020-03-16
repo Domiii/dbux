@@ -124,7 +124,7 @@ export default function functionVisitor() {
       // TODO: this?
       // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
 
-      // const signatureLoc1D = getPreBodyLoc1D(path);
+      // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
       const params = path.get('params');
       const paramIds = params.map(param => 
         Object.values(param.getBindingIdentifierPaths())

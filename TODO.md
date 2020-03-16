@@ -141,23 +141,19 @@
 
 ## TODO (other)
 * fix "execution order" of "async runs"
-   * TODO: what to do with callbacks that preceded and then triggered a `Resume`?
+   * what to do with callbacks that preceded and then triggered a `Resume`?
+   * link up promise chains
+   * make sure that we don't accidentally use/cause evil promise semantics [[1](https://stackoverflow.com/questions/46889290/waiting-for-more-than-one-concurrent-await-operation)] [[2](https://stackoverflow.com/questions/58288256/with-a-promise-why-do-browsers-return-a-reject-twice-but-not-a-resolve-twice/58288370#58288370)]
+   * double check against the [Promise/A+ spec](https://promisesaplus.com/#notes), especially semantics of promise rejections and their execution order
+      * rejections might be triggered from "platform code"
+* [variable_tracking]
+   * Nodes
+      * `templateLiteral.expressions`
+      * `memberExpression`
+      * `optionalChaining`
 * [object_tracking]
-   * Consider: trace all variable access
-      * Tools
-         * `getBindingIdentifierPaths`
-      * Nodes
-         * virtual node types
-            * see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
-            * `BindingIdentifier`
-         * `templateLiteral.expressions`
-         * `memberExpression`
-         * `optionalChaining`
-      * alternatively...
-         * add trace: `this` upon any function call
-            * add to `PushImmediate` trace
-         * add trace: function parameters
-            * add to `PushImmediate` trace
+   * add trace/valueRef for `varAccess` of `params`
+      * Consider: replace `varAccess` with single traces for `params`
 * [loops]
    * new data types:
       * `staticLoop`
