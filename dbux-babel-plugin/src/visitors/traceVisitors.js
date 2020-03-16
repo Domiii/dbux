@@ -240,17 +240,20 @@ function normalizeConfig(cfg) {
 
 const enterInstrumentors = {
   ExpressionResult(path, state, cfg) {
-    if (path.isCallExpression()) {
+    if (path.isCallExpression() || path.isOptionalCallExpression()) {
       // CallExpression
 
       // object method calls
       const calleePath = path.get('callee');
+      
+      // TODO: optional chaining
+
       if (calleePath.isMemberExpression()) {
         // trace object of method call
         const objPath = calleePath.get('object');
         if (objPath.isSuper()) {
           // cannot wrap `super` -> trace `this` before expression instead (NOTE: returns original path)
-          path = traceValueBeforeExpression(path, state, TraceType.ExpressionResult, objPath, 'this');
+          path = traceValueBeforeExpression(path, state, TraceType.CalleeObject, objPath, 'this');
         }
         else {
           // wrap object as-is
@@ -305,7 +308,7 @@ const enterInstrumentors = {
 
 const exitInstrumentors = {
   ExpressionResult(path, state) {
-    if (path.isCallExpression()) {
+    if (path.isCallExpression() || path.isOptionalCallExpression()) {
       // CallExpression
       // instrument args after everything else has already been done
       // const calleePath = path.get('callee');

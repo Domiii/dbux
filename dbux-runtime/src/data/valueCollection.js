@@ -12,7 +12,7 @@ class TrackedValue {
 
   constructor(value) {
     this.value = value;
-    this.trackedId = ++TrackedValue._lastId;
+    this.trackId = ++TrackedValue._lastId;
   }
 
   addRef(ref) {

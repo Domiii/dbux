@@ -33,8 +33,9 @@
       * if there is no `selectedTrace`:
          * same order as `getTracesAt(application, programId, pos)`
 * [object_tracking]
-   * list all traces referencing the same `valueId` in `traceDetailsView`
+   * list all traces of same `valueRef.trackId` in `traceDetailsView`
       * add new "Track Object" node to `traceDetailsView`, if it trace has a `valueId`
+   * test using `oop2.js`
 * [SubGraph_Filtering]
    * add two new buttons (for filtering) to each `callGraphView` root node: include/exclude
    * when filter active:
@@ -139,10 +140,19 @@
 
 
 ## TODO (other)
-* fixing "execution order" of "async runs"
+* fix "execution order" of "async runs"
    * TODO: what to do with callbacks that preceded and then triggered a `Resume`?
 * [object_tracking]
-   * Consider: trace any variable access?
+   * Consider: trace all variable access
+      * Tools
+         * `getBindingIdentifierPaths`
+      * Nodes
+         * virtual node types
+            * see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
+            * `BindingIdentifier`
+         * `templateLiteral.expressions`
+         * `memberExpression`
+         * `optionalChaining`
       * alternatively...
          * add trace: `this` upon any function call
             * add to `PushImmediate` trace

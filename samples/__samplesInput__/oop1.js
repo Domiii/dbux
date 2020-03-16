@@ -2,8 +2,6 @@ function renderMessage(msg) {
   console.log(msg);
 }
 
-debugger;
-
 class Animal {
   speak(msg) {
     renderMessage(`${this.constructor.name} says: ${msg}`);

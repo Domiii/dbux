@@ -1,13 +1,13 @@
 import justRunMyPlugin from '../testing/justRunMyPlugin';
-import { getRealVariableNames, getRealVariableNamesInLoc1D } from '../helpers/bindingsHelper';
+import { getAllBoundVariableNames, getRealVariableNamesInLoc1D } from '../helpers/bindingsHelper';
 import { getPreBodyLoc1D } from '../helpers/locHelpers';
 import { getContextPath } from '../helpers/traversalHelpers';
 import { getCalleeName } from '../helpers/callHelpers';
 import { isNodeInstrumented } from '../helpers/instrumentationHelper';
 
 function expectPathBindingNames(path, names) {
-  const varNames = getRealVariableNames(path);
-  expect(varNames).toIncludeSameMembers(names);
+  const ids = path.getBindingIdentifierPaths();
+  expect(ids.map(id => id.name)).toIncludeSameMembers(names);
 }
 
 function expectPathBindingNamesInLoc1D(path, loc1D, names) {
@@ -45,6 +45,8 @@ test('function bindings', () => {
 
       // get all bindings in function
       expectPathBindingNames(path, ['x', 'a', 'c', 'k']);
+      
+      const ids = path.getBindingIdentifiers();
 
       // get all bindings in body
       expectPathBindingNamesInLoc1D(path, path.get('body').node, ['a', 'k', 'k']);
@@ -79,11 +81,10 @@ test('for-of bindings', () => {
       console.log(x, x2, v1);
     }
   `, {
-    Program(path, state) {
-      expect(path.scope.bindings.y.referencePaths.length).toBe(0);  // this should be 1, not 0
-      expect(path.scope.bindings.y.constantViolations[0].isForOfStatement()).toBeTruthy();  // should be `Identifier`, not `ForOfStatement`, no?
-    },
     ForOfStatement(path, state) {
+      // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
+      const ids = path.get('left').getBindingIdentifierPaths();
+
       expectPathBindingNames(path, []);  // no variable is declared in the loop signature
       expectPathBindingNames(path.get('left'), []); // no variable is declared in `left`
       expectPathBindingNames(path.get('body'), ['x2']);  // only `x2` is declared in the loop body

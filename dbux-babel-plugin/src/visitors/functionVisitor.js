@@ -5,7 +5,6 @@ import VarOwnerType from 'dbux-common/src/core/constants/VarOwnerType';
 import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import { getPreBodyLoc1D } from '../helpers/locHelpers';
-import { iterateVarAccessInLoc1D } from '../helpers/bindingsHelper';
 
 // ###########################################################################
 // helpers
@@ -125,10 +124,15 @@ export default function functionVisitor() {
       // TODO: this?
       // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
 
-      const signatureLoc1D = getPreBodyLoc1D(path);
-      iterateVarAccessInLoc1D(path, signatureLoc1D, 
-        (varName, varPath, isWrite) => state.varAccess.addVarAccess(
-          varName, varPath, isWrite, ownerId, VarOwnerType.Trace)
+      // const signatureLoc1D = getPreBodyLoc1D(path);
+      const params = path.get('params');
+      const paramIds = params.map(param => 
+        Object.values(param.getBindingIdentifierPaths())
+      ).flat();
+      paramIds.forEach(paramPath => 
+        state.varAccess.addVarAccess(
+          paramPath.name, paramPath, ownerId, VarOwnerType.Trace
+        )
       );
 
       let staticResumeId;
