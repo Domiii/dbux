@@ -142,10 +142,11 @@ export function makeCallTraceLabel(trace) {
     label = makeCallTraceLabel(schedulerTrace);
   }
   else if (traceType === TraceType.PopCallback) {
-    const schedulerTrace = dp.collections.trace.getById(trace.schedulerTraceId);
+    const context = dp.collections.executionContexts.getById(contextId);
+    const schedulerTrace = dp.collections.traces.getById(context.schedulerTraceId);
     label = makeCallTraceLabel(schedulerTrace);
   }
-  else if (traceType === TraceType.CallArgument) {
+  else if (traceType === TraceType.CallbackArgument) {
     const { callId } = trace;
 
     const args = dp.indexes.traces.callArgsByCall.get(callId);
@@ -153,7 +154,16 @@ export function makeCallTraceLabel(trace) {
       map(argTrace => dp.util.getTraceValue(argTrace.traceId)) ||
       EmptyArray;
     
-    const valueString = dp.util.getTraceValue(traceId) + ' ';
+    const valueString = dp.util.getTraceValue(traceId) + '';
+    label = `(${argValues.join(', ')}) -> ${valueString}`;
+  }
+  else if (traceType === TraceType.BeforeCallExpression) {
+    const args = dp.indexes.traces.callArgsByCall.get(traceId);
+    const argValues = args?.
+      map(argTrace => dp.util.getTraceValue(argTrace.traceId)) ||
+      EmptyArray;
+    
+    const valueString = dp.util.getTraceValue(traceId) + '';
     label = `(${argValues.join(', ')}) -> ${valueString}`;
   }
   else {

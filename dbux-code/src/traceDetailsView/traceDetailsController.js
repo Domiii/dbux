@@ -4,6 +4,8 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
+import { modeChangedEvent } from './nodes/StaticTraceTDNodes';
+import TracesAtCursor from './TracesAtCursor';
 
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
 
@@ -13,13 +15,24 @@ class TraceDetailsController {
   constructor() {
     this.treeDataProvider = new TraceDetailsDataProvider();
     this.treeView = this.treeDataProvider.treeView;
+    this.tracesAtCursor = null; // assign on init
   }
 
   refreshOnData = makeDebounce(() => {
     controller.treeDataProvider.refresh();
   }, 20);
 
+  // TODO: only go to most relevent one at first time, then goes in order
+  selectTraceAtCursor = () => {
+    window.showInformationMessage('Called \'selectTraceAtCursor\'.');
+    const nextTrace = this.tracesAtCursor.getNext();
+    if (nextTrace) traceSelection.selectTrace(nextTrace, 'selectTraceAtCursor');
+    debug('Next relevent trace is', nextTrace);
+  }
+
   initOnActivate(context) {
+    this.tracesAtCursor = new TracesAtCursor(context);
+
     // ########################################
     // hook up event handlers
     // ########################################
@@ -40,6 +53,9 @@ class TraceDetailsController {
     traceSelection.onTraceSelectionChanged(() => {
       controller.treeDataProvider.refresh();
     });
+
+    // on staticTraceTDNode grouping mode changed
+    modeChangedEvent.on('changed', this.treeDataProvider.refresh);
   }
 }
 
@@ -53,4 +69,6 @@ export function initTraceDetailsController(context: ExtensionContext) {
 
   // refresh right away
   controller.treeDataProvider.refresh();
+
+  return controller;
 }

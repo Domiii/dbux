@@ -92,7 +92,7 @@ export default class BaseTreeViewNodeProvider {
   }
 
   buildNode(NodeClass, entry, parent, moreProps = EmptyObject) {
-    const label = NodeClass.makeLabel(entry, parent);
+    const label = NodeClass.makeLabel(entry, parent, moreProps);
     return new NodeClass(this, label, entry, parent, moreProps);
   }
 
@@ -158,6 +158,11 @@ export default class BaseTreeViewNodeProvider {
     // init
     node.init?.();
     
+    if (node.children) {
+      // this node has built-in children
+      this._decorateNodes(node, node.children);
+    }
+
     if (node.children) {
       // this node has built-in children
       this._decorateNodes(node, node.children);

@@ -87,6 +87,30 @@
 				"title": "Click"
 			},
 			{
+				"command": "dbuxTraceDetailsView.switchGroupingMode",
+				"title": "SwitchMode",
+				"icon": {
+					"light": "resources/light/string.svg",
+					"dark": "resources/dark/string.svg"
+				}
+			},
+			{
+				"command": "dbuxTraceDetailsView.selectTraceAtCursor",
+				"title": "Select Trace At Cursor",
+				"icon": {
+					"light": "resources/light/nextTrace.svg",
+					"dark": "resources/dark/nextTrace.svg"
+				}
+			},
+			{
+				"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+				"title": "No traces at cursor",
+				"icon": {
+					"light": "resources/light/dependency.svg",
+					"dark": "resources/dark/dependency.svg"
+				}
+			},
+			{
 				"command": "dbuxPlayback.previousTrace",
 				"title": "Start",
 				"icon": {
@@ -131,12 +155,12 @@
 				},
 				{
 					"command": "dbuxPlayback.play",
-					"when": "dbuxPlaybackPlaying == false",
+					"when": "dbuxPlayback.context.Playing == false",
 					"group": "navigation@1"
 				},
 				{
 					"command": "dbuxPlayback.pause",
-					"when": "dbuxPlaybackPlaying == true",
+					"when": "dbuxPlayback.context.Playing == true",
 					"group": "navigation@2"
 				}
 			],
@@ -155,6 +179,23 @@
 					"command": "dbuxCallStackView.showScheduler",
 					"when": "view == dbuxCallStackView && viewItem == callStackNode.both.parent",
 					"group": "inline"
+				},
+				{
+					"command": "dbuxTraceDetailsView.switchGroupingMode",
+					"when": "view == dbuxTraceDetailsView && viewItem == dbuxTraceDetailsView.staticTraceTDNodeRoot",
+					"group": "inline"
+				}
+			],
+			"view/title": [
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
+					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
+					"group": "navigation"
 				}
 			]
 		}
