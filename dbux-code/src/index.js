@@ -36,14 +36,22 @@ function activate(context) {
     initUserCommands(context);
     
     initTraceSelection(context);
-    initTraceDetailsController(context);
     initEditorTracesController(context);
     initApplicationsViewController(context);
-
+    
     const contextViewController = initContextView();
     const callStackViewController = initCallStackView();
     const playbackController = initPlayback();
-    initCommands(context, contextViewController, callStackViewController, playbackController);
+    const traceDetailsController = initTraceDetailsController(context);
+
+    initCommands(
+      context,
+      contextViewController,
+      callStackViewController,
+      playbackController,
+      traceDetailsController
+    );
+    
     initToolBar(context, contextViewController);
   } catch (e) {
     logError('could not activate', e);

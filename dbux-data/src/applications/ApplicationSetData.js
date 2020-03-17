@@ -17,34 +17,8 @@ class FirstTracesInOrder {
     this.applicationSet = applicationSetData.set;
     this._firstTracesArray = [];
   }
-
+  
   _mergeAll() {
-    this._firstTracesArray = [];
-    const applications = this.applicationSetData.set.getAll();
-    const allFirstContexts = applications.map((app) => app.dataProvider.util.getFirstContextsInRuns() || EmptyArray);
-
-    const indexPointers = Array(applications.length).fill(0);
-    const contextsCount = allFirstContexts.reduce((sum, arr) => sum + arr.length, 0);
-
-    for (let i = 0; i < contextsCount; i++) {
-      let earliestContext = null;
-      let earliestApplicationIndex = null;
-      for (let j = 0; j < applications.length; j++) {
-        const context = allFirstContexts[j][indexPointers[j]];
-        if (!context) continue;
-        if (!earliestContext || context.createdAt < earliestContext.createdAt) {
-          earliestContext = context;
-          earliestApplicationIndex = j;
-        }
-      }
-      indexPointers[earliestApplicationIndex] += 1;
-      const dp = applications[earliestApplicationIndex].dataProvider;
-      const trace = dp.indexes.traces.byContext.get(earliestContext.contextId)[0];
-      this._addOne(trace);
-    }
-  }
-
-  _mergeAll0() {
     this._firstTracesArray = [];
     const applications = this.applicationSetData.set.getAll();
     const allFirstTraces = applications.map((app) => app.dataProvider.util.getFirstTracesInRuns() || EmptyArray);
@@ -70,7 +44,7 @@ class FirstTracesInOrder {
   
   _handleApplicationsChanged = () => {
     const applications = this.applicationSet.getAll();
-    this._mergeAll0();
+    this._mergeAll();
 
     for (const app of applications) {
       this.applicationSet.subscribe(
@@ -81,7 +55,7 @@ class FirstTracesInOrder {
 
   _addExecutionContexts(app, contexts) {
     // TODO: [performance] can we incrementally add new contexts only?
-    this._mergeAll0();
+    this._mergeAll();
   }
 
   _makeKey(firstTrace) {
