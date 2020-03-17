@@ -143,14 +143,6 @@
 * test
    * group modes (see `StaticTraceTDNodes.js`)
    * new trace select button (see `relevantTraces.js`)
-* fix "execution order" of "async runs"
-   * what to do with callbacks that preceded and then triggered a `Resume`?
-   * link up promise chains
-   * make sure that we don't accidentally use/cause evil promise semantics [[1](https://stackoverflow.com/questions/46889290/waiting-for-more-than-one-concurrent-await-operation)] [[2](https://stackoverflow.com/questions/58288256/with-a-promise-why-do-browsers-return-a-reject-twice-but-not-a-resolve-twice/58288370#58288370)]
-   * double check against the [Promise/A+ spec](https://promisesaplus.com/#notes), especially semantics of promise rejections and their execution order
-      * rejections might be triggered from "platform code"
-      * https://stackoverflow.com/questions/42118900/when-is-the-body-of-a-promise-executed
-      * http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor
 * [variable_tracking]
    * Nodes
       * `templateLiteral.expressions`
@@ -194,7 +186,6 @@
          * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * [loops]
    * fix `DoWhileLoop` :(
-* [promises] keep track of `schedulerTraceId`
 * [error_handling]
    * if we have an error, try to trace "skipped contexts"
       * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.
@@ -231,7 +222,16 @@
       * idea: just record all variables after line, so rendering is less convoluted?
    * show `x {n_times_executed}` after line, but only if n is different from the previous line
       * show multiple, if there are different numbers for multiple traces of line?
-* [CodeTreeWrapper]
+* fix "execution order" of "async runs"
+   * what to do with callbacks that preceded and then triggered a `Resume`?
+   * link up promise chains
+   * make sure that we don't accidentally use/cause evil promise semantics [[1](https://stackoverflow.com/questions/46889290/waiting-for-more-than-one-concurrent-await-operation)] [[2](https://stackoverflow.com/questions/58288256/with-a-promise-why-do-browsers-return-a-reject-twice-but-not-a-resolve-twice/58288370#58288370)]
+   * double check against the [Promise/A+ spec](https://promisesaplus.com/#notes), especially semantics of promise rejections and their execution order
+      * rejections might be triggered from "platform code"
+      * https://stackoverflow.com/questions/42118900/when-is-the-body-of-a-promise-executed
+      * http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor
+* [promises] keep track of `schedulerTraceId`
+* [BaseTreeViewNodeProvider]
    * long node lists
       * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead 
 * [cursorTracesView]
