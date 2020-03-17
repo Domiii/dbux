@@ -2,9 +2,10 @@ import * as t from '@babel/types';
 import { NodePath } from '@babel/core';
 import { isDebug } from 'dbux-common/src/util/nodeUtil';
 import { logInternalWarning, logInternalError } from '../log/logger';
-import { getAllClassParents, getClassAncestryString } from './astHelpers';
+import { getAllClassParents, getClassAncestryString } from './traversalHelpers';
 import { getMemberExpressionName } from './objectHelpers';
 import { extractSourceStringWithoutComments } from './sourceHelpers';
+import { isNodeInstrumented } from './instrumentationHelper';
 
 // ###########################################################################
 // function names
@@ -25,7 +26,7 @@ function getCallbackDisplayName(functionPath, state) {
      */
     // const callName = getMemberExpressionName(calleePath);
     let callName;
-    if (calleePath.node.loc) {
+    if (!isNodeInstrumented(calleePath.node)) {
       // not instrumented before -> we can extract source code
       callName = extractSourceStringWithoutComments(calleePath.node, state);
     }

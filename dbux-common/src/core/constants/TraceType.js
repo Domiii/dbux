@@ -9,7 +9,11 @@ let TraceType = {
 
   BeforeExpression: 4,
   BeforeCallExpression: 5,
-  Callee: 6,
+  /**
+   * E.g. `a.b.c` for `a.b.c.f()` method call.
+   * Not traced for `f()` (no object involved).
+   */
+  CalleeObject: 6,
   CallExpressionResult: 7,
   ExpressionResult: 8,
 

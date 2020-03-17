@@ -7,7 +7,7 @@ import {
 import { newLogger } from 'dbux-common/src/log/logger';
 import Loc from 'dbux-common/src/core/data/Loc';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { babelLocToCodeRange } from './helpers/locHelpers';
+import { babelLocToCodeRange } from './helpers/codeLocHelpers';
 
 
 const { log, debug, warn, error: logError } = newLogger('CodeNav');

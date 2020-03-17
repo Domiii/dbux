@@ -89,8 +89,10 @@ export class DebugTDNode extends TraceDetailNode {
     const { dataProvider } = application;
 
     const {
+      traceId,
       contextId,
       staticTraceId,
+      valueId,
       ...otherTraceProps
     } = trace;
 
@@ -99,11 +101,21 @@ export class DebugTDNode extends TraceDetailNode {
     const { staticContextId } = staticTrace;
     const staticContext = dataProvider.collections.staticContexts.getById(staticContextId);
 
+    const valueRef = valueId && dataProvider.collections.values.getById(valueId);
+    const valueNode = [
+      'valueRef', 
+      valueRef,
+      { 
+        description: (valueRef?.valueId + '') || 0
+      }
+    ];
+
     const children = makeTreeItems(
       ['trace', otherTraceProps],
       [`context`, context],
       ['staticTrace', omit(staticTrace, 'loc')],
-      ['staticContext', omit(staticContext, 'loc')]
+      ['staticContext', omit(staticContext, 'loc')],
+      valueNode
     );
 
     return children;

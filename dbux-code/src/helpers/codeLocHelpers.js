@@ -9,8 +9,7 @@
 import {
   Position, Range
 } from 'vscode';
-import Loc from 'dbux-common/src/core/data/Loc';
-import LocPos from 'dbux-common/src/core/data/LocPos';
+import Loc, { LocPos } from 'dbux-common/src/core/data/Loc';
 
 
 /**
@@ -26,7 +25,7 @@ export function babelLineToCodeLine(babelLine) {
 }
 
 
-export function codePositionToBabelPosition(pos: Position) : LocPos {
+export function codePositionToBabelPosition(pos: Position): LocPos {
   const { line, character } = pos;
   return {
     line: codeLineToBabelLine(line),
@@ -37,7 +36,7 @@ export function codePositionToBabelPosition(pos: Position) : LocPos {
 /**
  * Convert babel-style `loc` position definitions to VSCode `position`
  */
-export function babelLocToCodePosition(loc : LocPos): Position {
+export function babelLocToCodePosition(loc: LocPos): Position {
   if (loc._pos) {
     // converted this before
     return loc._pos;

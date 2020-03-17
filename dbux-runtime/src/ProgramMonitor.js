@@ -115,20 +115,7 @@ export default class ProgramMonitor {
   // loops
   // ###########################################################################
 
-  async* wrapAsyncIterator(it) {
-    for (const promise of it) {
-      // wrap await
-      let awaitContextId;
-      const result = this.postAwait(
-        await this.wrapAwait(promise, awaitContextId = this.preAwait(staticId, preTraceId)),
-        awaitContextId,
-        resumeTraceId
-      );
+  pushLoop() {
 
-      // TODO: register loop iteration here
-      const vars = [result];
-
-      yield result;
-    }
   }
 }

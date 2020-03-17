@@ -9,6 +9,7 @@ import { mergeVisitors } from '../helpers/visitorHelpers';
 import { logInternalError } from '../log/logger';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
+import { buildDbuxInit } from '../data/staticData';
 
 
 // ###########################################################################
@@ -31,34 +32,6 @@ function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
   `);
 }
 
-function buildProgramTail(path, state) {
-  const {
-    ids,
-    fileName,
-    filePath,
-    contexts,
-    traces
-  } = state;
-  const {
-    dbuxInit,
-    // dbuxRuntime
-  } = ids;
-
-  const staticData = {
-    fileName,
-    filePath,
-    contexts: contexts._all,
-    traces: traces._all
-  };
-
-  const staticDataString = JSON.stringify(staticData, null, 4);
-
-  return buildSource(`
-function ${dbuxInit}(dbuxRuntime) {
-  return dbuxRuntime.initProgram(${staticDataString});
-}`);
-}
-
 function buildPopProgram(dbux) {
   return buildSource(`${dbux}.popProgram();`);
 }
@@ -68,7 +41,7 @@ function buildPopProgram(dbux) {
 // ###########################################################################
 
 function addDbuxInitDeclaration(path, state) {
-  path.pushContainer('body', buildProgramTail(path, state));
+  path.pushContainer('body', buildDbuxInit(state));
 }
 
 function wrapProgram(path, state) {

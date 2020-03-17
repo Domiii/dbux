@@ -1,8 +1,10 @@
-import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
-import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import template from '@babel/template';
 import * as t from "@babel/types";
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import VarOwnerType from 'dbux-common/src/core/constants/VarOwnerType';
+import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
+import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
+import { getPreBodyLoc1D } from '../helpers/locHelpers';
 
 // ###########################################################################
 // helpers
@@ -115,6 +117,24 @@ export default function functionVisitor() {
       const staticId = state.contexts.addStaticContext(path, staticContextData);
       const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
       const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
+
+      // add varAccess
+      const ownerId = staticId;
+      
+      // TODO: this?
+      // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
+
+      // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
+      const params = path.get('params');
+      const paramIds = params.map(param => 
+        Object.values(param.getBindingIdentifierPaths())
+      ).flat();
+      paramIds.forEach(paramPath => 
+        state.varAccess.addVarAccess(
+          paramPath.name, paramPath, ownerId, VarOwnerType.Trace
+        )
+      );
+
       let staticResumeId;
       if (isInterruptable) {
         staticResumeId = addResumeContext(bodyPath, state, staticId);

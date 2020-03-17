@@ -11,4 +11,12 @@ let ExecutionContextType = {
 // NOTE: we cannot use `const` in a single assignment here, because that way, type members would not be recognized.
 ExecutionContextType = new Enum(ExecutionContextType);
 
+const interruptableChildTypes = new Array(ExecutionContextType.getCount()).map(_ => false);
+interruptableChildTypes[ExecutionContextType.Await] = true;
+interruptableChildTypes[ExecutionContextType.Resume] = true;
+
+export function isInterruptableChildContext(contextType) {
+  return interruptableChildTypes[contextType];
+}
+
 export default ExecutionContextType;

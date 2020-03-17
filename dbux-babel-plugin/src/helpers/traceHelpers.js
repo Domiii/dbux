@@ -131,10 +131,11 @@ function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg)
   return orig;
 }
 
-
-export const traceBeforeExpression = function traceBeforeExpression(templ, expressionPath, state, traceType, tracePath) {
+export const traceBeforeExpression = function traceBeforeExpression(
+  templ, expressionPath, state, traceType, tracePath) {
   const { ids: { dbux } } = state;
   const traceId = state.traces.addTrace(tracePath || expressionPath, traceType || TraceType.BeforeExpression);
+
   replaceWithTemplate(templ, expressionPath, {
     dbux,
     traceId: t.numericLiteral(traceId),
@@ -146,3 +147,22 @@ export const traceBeforeExpression = function traceBeforeExpression(templ, expre
   state.onCopy(expressionPath, originalPath, 'trace');
   return originalPath;
 }.bind(null, template('%%dbux%%.t(%%traceId%%), %%expression%%'));
+
+
+export const traceValueBeforeExpression = function traceValueBeforeExpression(
+  templ, expressionPath, state, traceType, valuePath, actualValueIdName) {
+  const { ids: { dbux } } = state;
+  const traceId = state.traces.addTrace(valuePath, traceType);
+
+  replaceWithTemplate(templ, expressionPath, {
+    dbux,
+    traceId: t.numericLiteral(traceId),
+    expression: expressionPath.node,
+    value: t.identifier(actualValueIdName)
+  });
+
+  // prevent infinite loop
+  const originalPath = expressionPath.get('expressions.1');
+  state.onCopy(expressionPath, originalPath, 'trace');
+  return originalPath;
+}.bind(null, template('%%dbux%%.traceExpr(%%traceId%%, %%value%%), %%expression%%'));

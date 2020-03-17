@@ -3,7 +3,7 @@ import traceSelection from 'dbux-data/src/traceSelection';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { goToTrace, getCursorLocation, getOrOpenTraceEditor } from './codeNav';
 import codeDecorations, { CodeDecoRegistration } from './codeDeco/codeDecorations';
-import { babelLocToCodeRange } from './helpers/locHelpers';
+import { babelLocToCodeRange } from './helpers/codeLocHelpers';
 
 
 // ###########################################################################

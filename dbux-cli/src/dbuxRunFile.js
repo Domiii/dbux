@@ -67,5 +67,11 @@ module.exports = function dbuxRunFile(fpath) {
   if (!path.isAbsolute(fpath)) {
     fpath = path.join(cliDir, fpath);
   }
-  require(fpath);
-}
+
+  try {
+    require(fpath);
+  }
+  catch (err) {
+    console.error('ERROR when running instrumented code: ' + err && err.stack || err);
+  }
+};

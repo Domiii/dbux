@@ -3,7 +3,8 @@ import { getBasename } from 'dbux-common/src/util/pathUtil';
 import StaticContextCollection from './data/StaticContextCollection';
 import StaticTraceCollection from './data/StaticTraceCollection';
 import StaticLoopCollection from './data/StaticLoopCollection';
-import StaticLoopVarRefCollection from './data/StaticLoopVarRefCollection';
+import StaticVarAccessCollection from './data/StaticVarAccessCollection';
+import { isNodeInstrumented } from './helpers/instrumentationHelper';
 
 
 // ###########################################################################
@@ -20,21 +21,16 @@ export default function injectDbuxState(programPath, programState) {
   const { scope } = programPath;
   const { file: programFile } = programState;
 
-  const contexts = new StaticContextCollection(programState);
-  const traces = new StaticTraceCollection(programState);
-  const loops = new StaticLoopCollection(programState);
-  const loopVars = new StaticLoopVarRefCollection(programState);
-
   const dbuxState = {
     // static program data
     programFile,
     filePath,
     fileName,
 
-    contexts,
-    traces,
-    loops,
-    loopVars,
+    contexts: new StaticContextCollection(programState),
+    traces: new StaticTraceCollection(programState),
+    varAccess: new StaticVarAccessCollection(programState),
+    loops: new StaticLoopCollection(programState),
 
     ids: {
       dbuxInit: scope.generateUid('dbux_init'),
@@ -77,7 +73,7 @@ export default function injectDbuxState(programPath, programState) {
       // if (entered.has(path)) {
       //   return false;
       // }
-      if (!path.node?.loc) {
+      if (!path.node || isNodeInstrumented(path.node)) {
         // this node has been dynamically emitted; not part of the original source code -> not interested in it
         return false;
       }
@@ -100,7 +96,7 @@ export default function injectDbuxState(programPath, programState) {
       // if (entered.has(path)) {
       //   return false;
       // }
-      if (!path.node?.loc) {
+      if (!path.node || isNodeInstrumented(path.node)) {
         // this node has been dynamically emitted; not part of the original source code -> not interested in it
         return false;
       }

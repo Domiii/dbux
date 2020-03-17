@@ -79,7 +79,7 @@ export function buildSource(source) {
     source = `${source}`;
     ast = parse(source);
   } catch (err) {
-    const loc = err.loc;
+    const { loc } = err;
     if (loc) {
       err.message +=
         "\n" +
