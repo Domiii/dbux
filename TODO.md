@@ -140,6 +140,9 @@
 
 
 ## TODO (other)
+* test
+   * group modes (see `StaticTraceTDNodes.js`)
+   * new trace select button (see `relevantTraces.js`)
 * fix "execution order" of "async runs"
    * what to do with callbacks that preceded and then triggered a `Resume`?
    * link up promise chains
