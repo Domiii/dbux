@@ -16,19 +16,20 @@ let TraceType = {
   CalleeObject: 6,
   CallExpressionResult: 7,
   ExpressionResult: 8,
+  ExpressionValue: 9,
 
-  CallArgument: 9,
-  CallbackArgument: 10,
+  CallArgument: 10,
+  CallbackArgument: 11,
 
-  PushCallback: 11,
-  PopCallback: 12,
+  PushCallback: 12,
+  PopCallback: 13,
 
-  Await: 13,
-  Resume: 14,
+  Await: 14,
+  Resume: 15,
 
-  Statement: 15,
-  BlockStart: 16,
-  BlockEnd: 17
+  Statement: 16,
+  BlockStart: 17,
+  BlockEnd: 18
 };
 
 TraceType = new Enum(TraceType);
@@ -74,6 +75,7 @@ export function hasTraceValue(traceType) {
   return valueTypes[traceType];
 }
 
+
 const expressionTypes = new Array(TraceType.getCount()).map(_ => false);
 expressionTypes[TraceType.ExpressionResult] = true;
 expressionTypes[TraceType.CallArgument] = true;
@@ -84,6 +86,7 @@ export function isTraceExpression(traceType) {
   return expressionTypes[traceType];
 }
 
+
 const callbackTypes = new Array(TraceType.getCount()).map(_ => false);
 callbackTypes[TraceType.CallbackArgument] = true;
 callbackTypes[TraceType.PushCallback] = true;
@@ -91,6 +94,14 @@ callbackTypes[TraceType.PopCallback] = true;
 
 export function isCallbackRelatedTrace(traceType) {
   return callbackTypes[traceType];
+}
+
+
+const dataTraceTypes = new Array(TraceType.getCount()).map(_ => false);
+dataTraceTypes[TraceType.CallArgument] = true;
+dataTraceTypes[TraceType.ExpressionValue] = true;
+export function isDataTraceType(traceType) {
+  return dataTraceTypes[traceType];
 }
 
 export default TraceType;

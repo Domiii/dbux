@@ -5,12 +5,16 @@
 * async/await testing:
    * does call graph navigation work properly?
    * does `callStackView` work properly?
-* [callGraphView]
-   * when opening a CallGraph root, show all contexts of that run in a linear list
+* [object_tracking]
+   * list all traces of same `valueRef.trackId` in `traceDetailsView`
+      * add new "Track Object" node `TrackObjectTDNode` to `traceDetailsView`, if it trace has a `valueId`
+   * test using `oop2.js`
+* [callGraphView/contextView]
+   * add new button: "hide all previous roots / show all"
+   * when expanding a CallGraph root, show all context names of that `runId` as children of that root node
    * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a wildcard searchTerm
-      * all roots with contexts containing searchTerm are expanded, all others are collapsed
-      * filter contexts by searchTerm
-   * add a "clear filter" button
+      * all roots with contexts whose name contains searchTerm are expanded, all others are `Collapsed` or `None`
+      * filter contexts by searchTerm (match `name`; as well as `filePath` of its `Program`)
    * add a new "async view" mode to "Context Roots": switches between "runs" and "async runs"
       * define a new "async run" concept
       * TODO
@@ -32,10 +36,6 @@
          * prefer traces of minimum `traceId` distance
       * if there is no `selectedTrace`:
          * same order as `getTracesAt(application, programId, pos)`
-* [object_tracking]
-   * list all traces of same `valueRef.trackId` in `traceDetailsView`
-      * add new "Track Object" node to `traceDetailsView`, if it trace has a `valueId`
-   * test using `oop2.js`
 * [SubGraph_Filtering]
    * add two new buttons (for filtering) to each `callGraphView` root node: include/exclude
    * when filter active:
@@ -145,9 +145,7 @@
    * new trace select button (see `relevantTraces.js`)
 * [variable_tracking]
    * Nodes
-      * `templateLiteral.expressions`
-      * `memberExpression`
-      * `optionalChaining`
+      * any expressions: https://github.com/babel/babel/tree/master/packages/babel-types/src/validators/generated/index.js#L3446
 * [object_tracking]
    * add trace/valueRef for `varAccess` of `params`
       * Consider: replace `varAccess` with single traces for `params`
