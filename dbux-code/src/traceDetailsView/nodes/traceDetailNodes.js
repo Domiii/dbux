@@ -12,6 +12,7 @@ import TraceNode from './TraceNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { StaticTraceTDNode } from './StaticTraceTDNodes';
 import { InfoTDNode } from './traceInfoNodes';
+import { TrackObjectTDNode } from './TrackObjectTDNodes';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
@@ -218,6 +219,7 @@ export const NavigationNodeClasses = [
 
 export const DetailNodeClasses = [
   StaticTraceTDNode,
+  TrackObjectTDNode,
   InfoTDNode,
   // ValueTDNode,
   DebugTDNode

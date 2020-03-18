@@ -18,6 +18,7 @@ import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTrace
 import dataProviderUtil from './dataProviderUtil';
 import TracesByRunIdIndex from './impl/indexes/TracesByRunIdIndex';
 import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextIndex';
+import TracesByTrackIdIndex from './impl/indexes/TracesByTrackIdIndex';
 import StaticContextsByFileIndex from './impl/indexes/StaticContextsByFileIndex';
 import StaticContextsByParentIndex from './impl/indexes/StaticContextsByParentIndex';
 import CallArgsByCallIndex from './impl/indexes/CallArgsByCallIndex';
@@ -50,6 +51,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new TracesByStaticTraceIndex());
   dataProvider.addIndex(new TracesByStaticContextIndex());
   dataProvider.addIndex(new TracesByRunIdIndex());
+  dataProvider.addIndex(new TracesByTrackIdIndex());
   dataProvider.addIndex(new CallArgsByCallIndex());
 
 
