@@ -188,6 +188,25 @@ export default class Runtime {
     return this._currentRunId;
   }
 
+  // /**
+  //  * Looks up the stack until it finds a context that is Immediate.
+  //  */
+  // getRealParentContextId() {
+  //   if (!this._executingStack) {
+  //     return null;
+  //   }
+
+  //   for (const i = this._executingStack.getPeekIndex(); --i; i >= 0) {
+  //     const contextId = this._executingStack._stack[i];
+  //     const context = ;
+  //     if (contextId) {
+
+  //     }
+  //   }
+
+  //   return null;
+  // }
+
   peekCurrentContextId() {
     return this._executingStack?.peek() || null;
   }

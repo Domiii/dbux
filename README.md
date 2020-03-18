@@ -301,3 +301,33 @@ You can re-add it manually:
    * multi-resolution
    * features and filters can be enabled and disabled
    * multiple coloring schemes (e.g. one each for color per file/context/feature type and more)11
+
+
+# Features
+
+## Call Graph Navigation
+
+TODO: rewrite `TracesByContextIndex` and `TracesByParentContextIndex` rules and generalize in one
+
+
+* {Previous,Next}InContext
+   * [Not Async]
+      * -> Go to next/previous by `TracesByContextIndex`, ignore any trace which `isDataTraceType`
+   * [Async] (use `isInterruptableChildType`)
+      * -> Go to next/previous by `TracesByParentContextIndex`, ignore any trace which `isDataTraceType`
+   * [no_trace]
+      * [Previous && current trace is Push && previous trace is Pop]
+         * -> go
+      * [Next && current trace is Pop && next trace is Push]
+         * -> go
+* PreviousParent
+   * -> First trace in current context --> context's `parentTraceId`
+* NextParent
+   * -> Same as `PreviousParent`, but get "next in context" of `parentTraceId`
+* PreviousChild
+   * [Not Async]
+      * -> Go to next/previous trace which is any `parentTraceId` by `TracesByContextIndex`
+   * [Async] (use `isInterruptableChildType`)
+      * -> Go to next/previous trace which is any `parentTraceId` by `TracesByParentContextIndex`
+* NextChild
+   * Same as `PreviousChild`, but use "next in context"

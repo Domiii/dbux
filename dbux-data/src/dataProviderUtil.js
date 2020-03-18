@@ -203,8 +203,8 @@ export default {
   getTraceStaticContextId(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
-    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    const { staticContextId } = staticTrace;
+    const context = dp.collections.contexts.getById(staticTraceId);
+    const { staticContextId } = context;
     return staticContextId;
   },
 
@@ -242,8 +242,9 @@ export default {
 
     let traces;
     if (isInterruptableChildType(staticContextType)) {
+      // Get all traces of the actual function, not it's virtual children (such as `Await`, `Resume` et al)
       // NOTE: `Await` and `Yield` contexts do not contain traces, only `Resume` contexts contain traces for interruptable functions
-      traces = dp.util.getTracesOfInterruptableContext(staticContextId);
+      traces = dp.util.getTracesOfParentStaticContext(staticContextId);
     }
     else {
       // find all traces belonging to that staticContext
@@ -255,8 +256,11 @@ export default {
   /**
    * @param {DataProvider} dp 
    */
-  getTracesOfInterruptableContext(dp, staticContextId) {
-    return EmptyArray;
+  getTracesOfParentStaticContext(dp, staticContextId) {
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    const parentStaticContextId = staticContext.parentId;
+    // const parentStaticContext = dp.collections.staticContexts.getById(parentStaticContextId);
+    return dp.indexes.traces.byParentStaticContext.get(parentStaticContextId) || EmptyArray;
   },
 
 

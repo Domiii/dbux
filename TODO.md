@@ -2,6 +2,10 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
+* DataProviderUtil
+   * `getTracesOfRealContext`
+      * use `TracesByContextIndex` and `TracesByParentContextIndex`, depending on if context `isInterruptableChildType` or not
+   * `getParentTracesOfRealContext` (maybe use index)
 * async/await testing:
    * does call graph navigation work properly?
    * does `callStackView` work properly?
