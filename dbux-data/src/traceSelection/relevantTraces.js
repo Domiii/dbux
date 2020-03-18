@@ -11,18 +11,7 @@ export function getSortedReleventTraces(traces) {
   const selectedTrace = traceSelection.selected;
 
   if (selectedTrace) {
-    /**
-      * 1. prefer traces of minimum `contextId` (or, if `Resume` or `Await`, `parentContextId`) distance
-      * 2. prefer traces of minimum `runId` distance
-      * 3. prefer traces of minimum `traceId` distance
-     */
-    // TODO: In 2., sort by 'firstTracesInOrder' instead of 'runId'
-    const sortedTraces = traces.slice().sort((t1, t2) => {
-      return compareByContextId(t1, t2) ||
-        compareByRunId(t1, t2) ||
-        compareByTraceId(t1, t2);
-    });
-
+    const sortedTraces = traces.slice().sort(compareTraces);
     return sortedTraces;
   }
   else {
@@ -33,6 +22,25 @@ export function getSortedReleventTraces(traces) {
 // ###########################################################################
 //  Compare Util
 // ###########################################################################
+
+/**
+ * Compare the importance of two traces, return 1 if t1 < t2, return -1 if t1 > t2.
+ * @param {Trace} t1 
+ * @param {Trace} t2 
+ */
+export function compareTraces(t1, t2) {
+  /**
+   * Sort rules:
+   *  1. prefer traces of minimum `contextId` (or, if `Resume` or `Await`, `parentContextId`) distance
+   *  2. prefer traces of minimum `runId` distance
+   *  3. prefer traces of minimum `traceId` distance
+   */
+  // TODO: In 2., sort by 'firstTracesInOrder' instead of 'runId'
+  // TODO: Consider the application difference
+  return compareByContextId(t1, t2) ||
+    compareByRunId(t1, t2) ||
+    compareByTraceId(t1, t2);
+}
 
 /**
  * @param {Trace} t1 
@@ -94,7 +102,7 @@ function areBothResumeAwait(t1, t2) {
       return true;
     }
   }
-  return false
+  return false;
 }
 
 /**

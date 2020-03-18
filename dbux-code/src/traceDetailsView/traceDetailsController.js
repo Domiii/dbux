@@ -20,14 +20,13 @@ class TraceDetailsController {
 
   refreshOnData = makeDebounce(() => {
     controller.treeDataProvider.refresh();
+    this.tracesAtCursor.needRefresh = true;
+    this.tracesAtCursor.updateSelectTraceAtCursorButton();
   }, 20);
 
-  // TODO: only go to most relevent one at first time, then goes in order
   selectTraceAtCursor = () => {
-    window.showInformationMessage('Called \'selectTraceAtCursor\'.');
     const nextTrace = this.tracesAtCursor.getNext();
     if (nextTrace) traceSelection.selectTrace(nextTrace, 'selectTraceAtCursor');
-    debug('Next relevent trace is', nextTrace);
   }
 
   initOnActivate(context) {
