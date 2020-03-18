@@ -21,6 +21,7 @@ import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextInde
 import StaticContextsByFileIndex from './impl/indexes/StaticContextsByFileIndex';
 import StaticContextsByParentIndex from './impl/indexes/StaticContextsByParentIndex';
 import CallArgsByCallIndex from './impl/indexes/CallArgsByCallIndex';
+import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
 
 
 export function newDataProvider(application) {
@@ -39,11 +40,12 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new StaticContextsByFileIndex());
   dataProvider.addIndex(new StaticContextsByParentIndex());
 
+  dataProvider.addIndex(new ContextsByStaticContextIndex());
   dataProvider.addIndex(new ContextChildrenIndex());
   dataProvider.addIndex(new RootContextsIndex());
-  dataProvider.addIndex(new FirstTracesIndex());
   dataProvider.addIndex(new FirstContextsInRunsIndex());
-
+  
+  dataProvider.addIndex(new FirstTracesIndex());
   dataProvider.addIndex(new TracesByFileIndex());
   dataProvider.addIndex(new TracesByContextIndex());
   dataProvider.addIndex(new TracesByParentContextIndex());

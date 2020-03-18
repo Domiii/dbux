@@ -1,7 +1,8 @@
 import Enum from "../../util/Enum";
 
 /**
- * TODO: merge with ExecutionContextType. No need for the two to be different.
+ * TODO: this and ExecutionContextType are different but don't need to.
+ * Consider handling this like we do with `TraceType`: optional dynamic type in `ExecutionContext`
  */
 let StaticContextType = {
   Program: 1,
@@ -10,5 +11,13 @@ let StaticContextType = {
   Resume: 4
 };
 StaticContextType = new Enum(StaticContextType);
+
+
+const interruptableChildTypes = new Array(StaticContextType.getCount()).map(_ => false);
+interruptableChildTypes[StaticContextType.Await] = true;
+interruptableChildTypes[StaticContextType.Resume] = true;
+export function isInterruptableChildType(staticContextType) {
+  return interruptableChildTypes[staticContextType];
+}
 
 export default StaticContextType;
