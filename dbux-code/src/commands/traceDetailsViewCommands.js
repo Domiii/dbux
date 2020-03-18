@@ -5,7 +5,7 @@ import { switchMode } from '../traceDetailsView/nodes/StaticTraceTDNodes';
 
 const { log, debug, warn, error: logError } = newLogger('Commands');
 
-export default function initTraceDetailsViewCommands(context, traceDetailsViewController) {
+export function initTraceDetailsViewCommands(context, traceDetailsViewController) {
   registerCommand(context,
     'dbuxTraceDetailsView.switchGroupingMode',
     (node) => switchMode()

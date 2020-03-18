@@ -10,7 +10,7 @@ const { log, debug, warn, error: logError } = newLogger('Commands');
  * 
  * @param {ContextViewController} contextViewController 
  */
-export default function initContextViewCommands(context, contextViewController) {
+export function initContextViewCommands(context, contextViewController) {
   registerCommand(context,
     'dbuxContextView.gotoEntry',
     (node: ContextNode) => contextViewController.handleItemClick(node)

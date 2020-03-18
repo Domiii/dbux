@@ -20,7 +20,7 @@ function writeDbuxData() {
   writeStringToFile(fileName, outputString);
 }
 
-export default function initUtilCommands(context) {
+export function initUtilCommands(context) {
   registerCommand(context,
     'dbux.export',
     writeDbuxData,

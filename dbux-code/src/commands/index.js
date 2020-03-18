@@ -1,8 +1,8 @@
-import initUtilCommands from './utilCommand';
-import initTraceDetailsViewCommands from './traceDetailsViewCommands';
-import initContextViewCommands from './contextViewCommands';
-import initCallStackViewCommands from './callStackViewCommands';
-import initPlaybackCommands from './playbackCommands';
+import { initUtilCommands } from './utilCommand';
+import { initTraceDetailsViewCommands } from './traceDetailsViewCommands';
+import { initContextViewCommands } from './contextViewCommands';
+import { initCallStackViewCommands } from './callStackViewCommands';
+import { initPlaybackCommands } from './playbackCommands';
 
 export function initCommands(
   context,
