@@ -164,7 +164,7 @@ const decoNamesByType = {
   }
 };
 
-let configsByName;
+let configsByName, decoNames;
 
 // ###########################################################################
 // init
@@ -181,6 +181,7 @@ function initConfig(decoConfig) {
     }
     configsByName[decoName] = cfg;
   }
+  decoNames = Object.keys(configsByName);
 }
 
 export function initTraceDecorators() {
@@ -202,4 +203,8 @@ export function getTraceDecoName(dataProvider, staticTrace, trace) {
 
 export function getDecoConfigByName(decoName) {
   return configsByName[decoName];
+}
+
+export function getAllTraceDecoNames() {
+  return decoNames;
 }

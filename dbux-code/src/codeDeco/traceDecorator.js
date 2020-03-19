@@ -4,7 +4,7 @@ import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import groupBy from 'lodash/groupBy';
-import { getTraceDecoName, getDecoConfigByName } from './traceDecoConfig';
+import { getTraceDecoName, getDecoConfigByName, getAllTraceDecoNames } from './traceDecoConfig';
 import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
 const { log, debug, warn, error: logError } = newLogger('traceDecorator');
@@ -51,7 +51,8 @@ function groupTracesByDecoNameAndStaticTrace(application,
  * TODO: the order of decorations is currently dictacted by the order of their decoration types (VSCode limitation)
  */
 export function renderTraceDecorations(editor, fpath) {
-  const decosByName = {};
+  // create empty deco set (to make sure, it will reset/remove decos after use)
+  const decosByName = Object.fromEntries(getAllTraceDecoNames().map(name => [name, []]));
 
   // prepare decorations
   allApplications.selection.data.mapApplicationsOfFilePath(fpath, (application, programId) => {
