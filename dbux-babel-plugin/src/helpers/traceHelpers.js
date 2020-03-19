@@ -50,7 +50,7 @@ function buildTraceExpr(expressionPath, state, methodName, traceType, cfg) {
 // traces
 // ###########################################################################
 
-export function traceWrapExpression(traceType, path, state, tracePath) {
+export function traceWrapExpression(traceType, path, state, tracePath, markVisited = true) {
   return _traceWrapExpression(
     'traceExpr',
     traceType,
@@ -58,7 +58,8 @@ export function traceWrapExpression(traceType, path, state, tracePath) {
     state,
     {
       tracePath
-    }
+    },
+    markVisited
   );
 }
 
@@ -118,7 +119,7 @@ export function traceWrapArg(argPath, state, beforeCallTraceId) {
   });
 }
 
-function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg) {
+function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg, markVisited = true) {
   // if (t.isLiteral(node)) {
   //   // don't care about literals
   //   return;
@@ -127,7 +128,9 @@ function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg)
   expressionPath.replaceWith(newNode);
 
   const orig = expressionPath.get('arguments.1');
-  state.onCopy(expressionPath, orig, 'trace');
+  if (markVisited) {
+    state.onCopy(expressionPath, orig, 'trace');
+  }
   return orig;
 }
 
@@ -144,25 +147,45 @@ export const traceBeforeExpression = function traceBeforeExpression(
 
   // prevent infinite loop
   const originalPath = expressionPath.get('expressions.1');
+  // prevent instrumenting `originalPath` again
   state.onCopy(expressionPath, originalPath, 'trace');
   return originalPath;
 }.bind(null, template('%%dbux%%.t(%%traceId%%), %%expression%%'));
 
 
-export const traceValueBeforeExpression = function traceValueBeforeExpression(
-  templ, expressionPath, state, traceType, valuePath, actualValueIdName) {
+export const traceValueBeforeExpression = function traceValueBeforePath(
+  templ, targetPath, state, traceType, valuePath, actualValueIdName, markVisited = true) {
   const { ids: { dbux } } = state;
   const traceId = state.traces.addTrace(valuePath, traceType);
 
-  replaceWithTemplate(templ, expressionPath, {
+  replaceWithTemplate(templ, targetPath, {
     dbux,
     traceId: t.numericLiteral(traceId),
-    expression: expressionPath.node,
+    expression: targetPath.node,
     value: t.identifier(actualValueIdName)
   });
 
-  // prevent infinite loop
-  const originalPath = expressionPath.get('expressions.1');
-  state.onCopy(expressionPath, originalPath, 'trace');
-  return originalPath;
+  const originalTargetPath = targetPath.get('expressions.1');
+  if (markVisited) {
+    // prevent instrumenting `originalTargetPath` again
+    state.onCopy(targetPath, originalTargetPath, 'trace');
+  }
+  return originalTargetPath;
 }.bind(null, template('%%dbux%%.traceExpr(%%traceId%%, %%value%%), %%expression%%'));
+
+let thisPath;
+
+export function traceSuper(path, state) {
+  // find the first ancestor that is a statement
+  const statementPath = path.findParent(ancestor => ancestor.isStatement());
+
+  // build `this` path
+  if (!thisPath) {
+    thisPath = { node: t.thisExpression() };
+  }
+
+  // cannot wrap `super` -> trace `this` *before* the current statement instead
+  // NOTE: we don't want to flag the `statementPath` as visited/instrumented
+  const newNode = buildTraceExpr(thisPath, state, 'traceExpr', TraceType.ExpressionValue, { tracePath: path });
+  statementPath.insertBefore(t.expressionStatement(newNode));
+}

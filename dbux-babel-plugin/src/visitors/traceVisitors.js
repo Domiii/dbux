@@ -6,19 +6,15 @@
  *  have the time yet to properly separate them again. That is why there is also some context instrumentation in this file
  */
 
-import template from '@babel/template';
 import Enum from 'dbux-common/src/util/Enum';
-import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
-import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg, traceCallExpression, traceValueBeforeExpression } from '../helpers/traceHelpers';
+import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceSuper } from '../helpers/traceHelpers';
 import { instrumentLoop } from './loopVisitors';
 import { getPathTraceId } from '../data/StaticTraceCollection';
-import { getAllButRightMostPath } from '../helpers/objectHelpers';
-// TODO: want to do some extra work to better trace loops
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
-  // CallExpression: 1,
+  CallExpression: 1,
   /**
    * Result of a computation
    */
@@ -27,27 +23,29 @@ const TraceInstrumentationType = new Enum({
    * Only keeping track of data
    */
   ExpressionValue: 3,
-  ExpressionNoValue: 3,
+  // ExpressionNoValue: 3,
   Statement: 4,
   Block: 5,
   Loop: 6,
   LoopBlock: 7,
 
-  MemberExpression: 8
+  MemberExpression: 8,
+  Super: 9
 });
 
 const traceCfg = (() => {
   const {
     NoTrace,
-    // CallExpression,
-    ExpressionValue,
+    CallExpression,
     ExpressionResult,
+    ExpressionValue,
     // ExpressionNoValue,
     Statement,
     Block,
     Loop,
     LoopBlock,
-    MemberExpression
+    MemberExpression,
+    Super
   } = TraceInstrumentationType;
 
   return {
@@ -86,12 +84,13 @@ const traceCfg = (() => {
     // expressions
     // ########################################
     CallExpression: [
-      ExpressionResult
+      CallExpression
     ],
     OptionalCallExpression: [
-      ExpressionResult
+      CallExpression
     ],
     NewExpression: [
+      // TODO: fix this
       ExpressionResult
     ],
     AwaitExpression: [
@@ -124,26 +123,21 @@ const traceCfg = (() => {
 
     LogicalExpression: [
       NoTrace,
-      [['left', ExpressionResult], ['right', ExpressionResult]]
+      [['left', ExpressionValue], ['right', ExpressionValue]]
     ],
 
     MemberExpression: [
-      // TODO: if `computed`, also need to trace property
-      MemberExpression,
-      [['object', ExpressionValue]]
+      MemberExpression
     ],
 
     OptionalMemberExpression: [
-      MemberExpression,
-      [['object', ExpressionValue]]
+      MemberExpression
     ],
 
     SequenceExpression: [
       NoTrace,
       [['expressions', ExpressionValue]]
     ],
-
-    Super: NoTrace,   // NOTE: is handled separately, in `CallExpression` and `MemberExpression`
 
     TemplateLiteral: [
       NoTrace,
@@ -153,6 +147,10 @@ const traceCfg = (() => {
     UnaryExpression: [
       NoTrace,
       [['argument', ExpressionValue]]
+    ],
+
+    Super: [
+      Super
     ],
 
     // TODO: ParenthesizedExpression - https://github.com/babel/babel/blob/master/packages/babel-generator/src/generators/expressions.js#L27
@@ -299,49 +297,39 @@ function normalizeConfig(cfg) {
 // instrumentation recipes by node type
 // ###########################################################################
 
+
 const enterInstrumentors = {
+  CallExpression(path, state, cfg) {
+    // CallExpression
+    const calleePath = path.get('callee');
+    if (calleePath.isSuper()) {
+      // super needs special treatment
+      traceSuper(calleePath, state);
+    }
+
+    // trace BeforeCallExpression (returns original path)
+    path = traceBeforeExpression(path, state, TraceType.BeforeCallExpression, null);
+  },
   ExpressionResult(path, state, cfg) {
-    if (path.isCallExpression() || path.isOptionalCallExpression()) {
-      // CallExpression
+    // any other expression with a result
+    const originalIsParent = cfg?.originalIsParent;
+    let tracePath;
+    if (originalIsParent) {
+      // we want to highlight the parentPath, instead of just the value path
+      tracePath = path.parentPath;
+    }
 
-      // object method calls
-      const calleePath = path.get('callee');
-      
-      // TODO: optional chaining
-
-      if (calleePath.isSuper()) {
-        // TODO
+    return traceWrapExpression(TraceType.ExpressionResult, path, state, tracePath);
+  },
+  ExpressionValue(pathOrPaths, state) {
+    if (Array.isArray(pathOrPaths)) {
+      for (const path of pathOrPaths) {
+        traceWrapExpression(TraceType.ExpressionValue, path, state);
       }
-      else if (calleePath.isMemberExpression()) {
-        // trace object of method call
-        const objPath = calleePath.get('object');
-        if (objPath.isSuper()) {
-          // cannot wrap `super` -> trace `this` before expression instead (NOTE: returns original path)
-          path = traceValueBeforeExpression(path, state, TraceType.CalleeObject, objPath, 'this');
-        }
-        else {
-          // wrap object as-is
-          traceWrapExpression(TraceType.CalleeObject, objPath, state);
-        }
-      }
-
-      // trace before call (returns original path)
-      path = traceBeforeExpression(path, state, TraceType.BeforeCallExpression, null);
     }
     else {
-      // any other expression with a result
-      const originalIsParent = cfg?.originalIsParent;
-      let tracePath;
-      if (originalIsParent) {
-        // we want to highlight the parentPath, instead of just the value path
-        tracePath = path.parentPath;
-      }
-
-      traceWrapExpression(TraceType.ExpressionResult, path, state, tracePath);
+      return traceWrapExpression(TraceType.ExpressionValue, pathOrPaths, state);
     }
-  },
-  ExpressionValue(path, state) {
-    // TODO
   },
   // ExpressionNoValue(path, state) {
   //   traceBeforeExpression(path, state);
@@ -372,21 +360,37 @@ const enterInstrumentors = {
   LoopBlock(path, state) {
   },
   MemberExpression(path, state) {
-    // TODO
+    // trace object of method call
+    if (path.node.computed) {
+      // if `computed`, also trace property independently
+      const propertyPath = path.get('property');
+      traceWrapExpression(TraceType.ExpressionValue, propertyPath, state);
+    }
+
+    const objPath = path.get('object');
+    if (objPath.isSuper()) {
+      // super needs special treatment
+      traceSuper(objPath, state);
+    }
+    else {
+      // trace object (e.g. `x` in `x.y`) as-is
+      return traceWrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
+    }
+  },
+  Super(path, state) {
+    // NOTE: for some reason, this visitor does not get picked up by Babel
   }
 };
 
 const exitInstrumentors = {
-  ExpressionResult(path, state) {
-    if (path.isCallExpression() || path.isOptionalCallExpression()) {
-      // CallExpression
-      // instrument args after everything else has already been done
-      // const calleePath = path.get('callee');
-      // const beforeCallTraceId = getPathTraceId(calleePath);
-      // traceCallExpression(path, state, beforeCallTraceId);
-      const beforeCallTraceId = getPathTraceId(path);
-      traceCallExpression(path, state, beforeCallTraceId);
-    }
+  CallExpression(path, state) {
+    // CallExpression
+    // instrument args after everything else has already been done
+    // const calleePath = path.get('callee');
+    // const beforeCallTraceId = getPathTraceId(calleePath);
+    // traceCallExpression(path, state, beforeCallTraceId);
+    const beforeCallTraceId = getPathTraceId(path);
+    return traceCallExpression(path, state, beforeCallTraceId);
   }
 };
 
@@ -413,7 +417,10 @@ function visit(onTrace, instrumentors, path, state, cfg) {
     //   err('instrumentors are missing TraceType:', traceTypeName);
     // }
     if (instrumentors[traceTypeName]) {
-      instrumentors[traceTypeName](path, state, extraCfg);
+      const originalPath = instrumentors[traceTypeName](path, state, extraCfg);
+      if (originalPath) {
+        path = originalPath;
+      }
     }
   }
 

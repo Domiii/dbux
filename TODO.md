@@ -154,8 +154,11 @@
 
 
 ## TODO (other)
-* fix: `window.showTextDocument` errors out when debugging todomvc
+* fix: trace order for `super` instrumentation is incorrect
+   * try to find `SequenceExpression` ancestor first, and isntrument that instead
+* fix: `callId` linkage does not work in `oop1.js`
 * fix: `StaticTrace.staticContextId`
+* fix: `NewExpression` is not properly instrumented?
 * fix: Call Graph Roots -> name does not include actual function name
    * -> add `calleeName` to `staticTrace`?
    * -> `traceLabels`
