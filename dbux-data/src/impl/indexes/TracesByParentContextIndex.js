@@ -7,7 +7,7 @@ function makeKey(dp: DataProvider, trace: Trace) {
     parentContextId
   } = dp.collections.executionContexts.getById(trace.contextId);
 
-  return parentContextId || false;
+  return parentContextId || 0;
 }
 
 

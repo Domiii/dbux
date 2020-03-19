@@ -4,7 +4,8 @@ module.exports = {
 	],
 	"env": {
 		"commonjs": true,
-		"es6": true
+		"es6": true,
+		"jest": true
 	},
 	"globals": {
 		"console": true,

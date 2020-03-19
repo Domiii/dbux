@@ -10,8 +10,11 @@ class Object {
   }
 }
 
+const x = 3;
+
 const o1 = new Object();
 const o2 = new Object();
+
 
 o1.remember();
 o2.remember();

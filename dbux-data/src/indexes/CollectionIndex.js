@@ -5,10 +5,11 @@ export default class CollectionIndex<T> {
   name;
   _byKey: T[][] = [];
 
-  constructor(collectionName, indexName) {
+  constructor(collectionName, indexName, addOnNewData = true) {
     this.collectionName = collectionName;
     this.name = indexName;
     this.log = newLogger(`${indexName} (Index)`);
+    this.addOnNewData = addOnNewData;
   }
 
   _init(dp) {

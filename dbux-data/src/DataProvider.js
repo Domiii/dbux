@@ -314,7 +314,10 @@ export default class DataProvider {
       if (indexes) {
         const data = allData[collectionName];
         for (const name in indexes) {
-          indexes[name].addEntries(data);
+          const index = indexes[name];
+          if (index.addOnNewData) {
+            indexes[name].addEntries(data);
+          }
         }
       }
     }

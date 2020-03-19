@@ -1,7 +1,8 @@
 import { hasDynamicTypes, hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
-import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
-import DataProvider from './DataProvider';
+import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { newLogger } from 'dbux-common/src/log/logger';
+import StaticContextType, { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
+import DataProvider from './DataProvider';
 
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 
@@ -202,8 +203,8 @@ export default {
   getTraceStaticContextId(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
-    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    const { staticContextId } = staticTrace;
+    const context = dp.collections.contexts.getById(staticTraceId);
+    const { staticContextId } = context;
     return staticContextId;
   },
 
@@ -221,6 +222,45 @@ export default {
     const { callId: callStaticId } = staticTrace;
 
     return callStaticId && dp.collections.staticTraces.getById(callStaticId) || null;
+  },
+
+  // ###########################################################################
+  // traces of interruptable functions
+  // ###########################################################################
+  /**
+   * @param {DataProvider} dp 
+   */
+  getAllTracesOfStaticContext(dp, staticContextId) {
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    if (!staticContext) {
+      return null;
+    }
+    
+    const {
+      type: staticContextType
+    } = staticContext;
+
+    let traces;
+    if (isVirtualContextType(staticContextType)) {
+      // Get all traces of the actual function, not it's virtual children (such as `Await`, `Resume` et al)
+      // NOTE: `Await` and `Yield` contexts do not contain traces, only `Resume` contexts contain traces for interruptable functions
+      traces = dp.util.getTracesOfParentStaticContext(staticContextId);
+    }
+    else {
+      // find all traces belonging to that staticContext
+      traces = dp.indexes.traces.byStaticContext.get(staticContextId) || EmptyArray;
+    }
+    return traces;
+  },
+
+  /**
+   * @param {DataProvider} dp 
+   */
+  getTracesOfParentStaticContext(dp, staticContextId) {
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    const parentStaticContextId = staticContext.parentId;
+    // const parentStaticContext = dp.collections.staticContexts.getById(parentStaticContextId);
+    return dp.indexes.traces.byParentStaticContext.get(parentStaticContextId) || EmptyArray;
   },
 
 

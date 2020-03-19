@@ -8,7 +8,7 @@ export default class VisitedStaticTracesByFileIndex extends CollectionIndex<Stat
   visited: boolean[] = [];
 
   constructor() {
-    super('staticTraces', 'visitedByFile');
+    super('staticTraces', 'visitedByFile', false);
   }
 
   dependencies = {
@@ -35,15 +35,11 @@ export default class VisitedStaticTracesByFileIndex extends CollectionIndex<Stat
 
   makeKey(dp: DataProvider, staticTrace: StaticTrace) {
     const { staticTraceId } = staticTrace;
-    return this.makeKeyId(dp, staticTraceId);
-  }
-
-  makeKeyId(dp: DataProvider, staticTraceId: number) {
-    const traces = dp.indexes.traces.byStaticTrace.get(staticTraceId);
-    if (traces) {
-      // filter out
-      return false;
-    }
+    // const traces = dp.indexes.traces.byStaticTrace.get(staticTraceId);
+    // if (traces) {
+    //   // filter out
+    //   return false;
+    // }
 
     this.visited[staticTraceId] = true;
     return dp.util.getStaticTraceProgramId(staticTraceId);
