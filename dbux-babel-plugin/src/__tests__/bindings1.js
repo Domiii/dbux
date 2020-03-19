@@ -109,4 +109,3 @@ test('for-of bindings', () => {
     // }
   });
 });
-
