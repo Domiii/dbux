@@ -49,14 +49,14 @@ const groupByMode = {
     for (const trace of traces) {
       const { contextId } = trace;
       const context = app.dataProvider.collections.executionContexts.getById(contextId);
-      const { parentTraceId } = context;
+      const parentTraceId = context.parentTraceId || 0;
       if (!tracesByParent[parentTraceId]) tracesByParent[parentTraceId] = [];
       tracesByParent[parentTraceId].push(trace);
     }
     const groups = tracesByParent
       .map((children, parentTraceId) => {
         const trace = app.dataProvider.collections.traces.getById(parentTraceId);
-        const label = makeTraceLabel(trace) || 'No parent';
+        const label = trace ? makeTraceLabel(trace) : 'No Parent';
         const description = `Parent: ${parentTraceId}`;
         return { label, children, description };
       });
@@ -69,14 +69,15 @@ const groupByMode = {
       const { contextId } = trace;
       const context = dp.collections.executionContexts.getById(contextId);
       const { schedulerTraceId } = context;
-      const { callId } = dp.collections.traces.getById(schedulerTraceId) || trace;
+      let { callId } = dp.collections.traces.getById(schedulerTraceId) || trace;
+      callId = callId || 0;
       if (!tracesByCall[callId]) tracesByCall[callId] = [];
       tracesByCall[callId].push(trace);
     }
     const groups = tracesByCall
       .map((children, callId) => {
         const trace = dp.collections.traces.getById(callId);
-        const label = makeCallTraceLabel(trace) || 'No Caller';
+        const label = trace ? makeCallTraceLabel(trace) : 'No Caller';
         const description = `Call: ${callId}`;
         children = children.filter(({ traceId }) => dp.util.getTraceType(traceId) === TraceType.PushCallback);
         return { label, children, description };
@@ -135,14 +136,8 @@ export class StaticTraceTDNode extends BaseTreeViewNode {
     const { dataProvider } = application;
     const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
     const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
-    const staticType = staticTrace.type;
-    let groupedTraces = EmptyArray;
-
-    if (hasTraceValue(staticType)) {
-      // expressions have return values
-      const mode = modeType.getName(groupingMode);
-      groupedTraces = groupByMode[mode](application, traces);
-    }
+    const mode = modeType.getName(groupingMode);
+    let groupedTraces = groupByMode[mode](application, traces);
     let modeLabel = modeTypeToLabel.get(groupingMode);
     const label = `Executed: ${traces.length}x (${groupedTraces.length} groups ${modeLabel})`;
 

@@ -98,16 +98,16 @@
 				"command": "dbuxTraceDetailsView.selectTraceAtCursor",
 				"title": "Select Trace At Cursor",
 				"icon": {
-					"light": "resources/light/nextTrace.svg",
-					"dark": "resources/dark/nextTrace.svg"
+					"light": "resources/light/crosshair.svg",
+					"dark": "resources/dark/crosshair.svg"
 				}
 			},
 			{
 				"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
 				"title": "No traces at cursor",
 				"icon": {
-					"light": "resources/light/dependency.svg",
-					"dark": "resources/dark/dependency.svg"
+					"light": "resources/light/crosshair_disabled.svg",
+					"dark": "resources/dark/crosshair_disabled.svg"
 				}
 			},
 			{
@@ -147,21 +147,31 @@
 			"editor/title": [
 				{
 					"command": "dbuxPlayback.previousTrace",
-					"group": "navigation@0"
+					"group": "navigation@5"
 				},
 				{
 					"command": "dbuxPlayback.nextTrace",
-					"group": "navigation@3"
+					"group": "navigation@8"
 				},
 				{
 					"command": "dbuxPlayback.play",
 					"when": "dbuxPlayback.context.Playing == false",
-					"group": "navigation@1"
+					"group": "navigation@6"
 				},
 				{
 					"command": "dbuxPlayback.pause",
 					"when": "dbuxPlayback.context.Playing == true",
-					"group": "navigation@2"
+					"group": "navigation@7"
+				},
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
+					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == true",
+					"group": "navigation@3"
+				},
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == false",
+					"group": "navigation@4"
 				}
 			],
 			"view/item/context": [
@@ -184,18 +194,6 @@
 					"command": "dbuxTraceDetailsView.switchGroupingMode",
 					"when": "view == dbuxTraceDetailsView && viewItem == dbuxTraceDetailsView.staticTraceTDNodeRoot",
 					"group": "inline"
-				}
-			],
-			"view/title": [
-				{
-					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
-					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
-					"group": "navigation"
-				},
-				{
-					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
-					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
-					"group": "navigation"
 				}
 			]
 		}

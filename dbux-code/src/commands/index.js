@@ -1,8 +1,8 @@
-import initUtilCommands from './utilCommand';
-import initTraceDetailsViewCommands from './traceDetailsViewCommands';
-import initContextViewCommands from './contextViewCommands';
-import initCallStackViewCommands from './callStackViewCommands';
-import initPlaybackCommands from './playbackCommands';
+import { initTraceDetailsViewCommands } from './traceDetailsViewCommands';
+import { initContextViewCommands } from './contextViewCommands';
+import { initCallStackViewCommands } from './callStackViewCommands';
+import { initPlaybackCommands } from './playbackCommands';
+import { initUserCommands } from './userCommands';
 
 export function initCommands(
   context,
@@ -11,7 +11,7 @@ export function initCommands(
   playbackController,
   traceDetailsController
 ) {
-  initUtilCommands(context);
+  initUserCommands(context);
   initContextViewCommands(context, contextViewController);
   initCallStackViewCommands(context, callStackViewController);
   initPlaybackCommands(context, playbackController);

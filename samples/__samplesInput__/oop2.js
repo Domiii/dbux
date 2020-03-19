@@ -1,8 +1,8 @@
 const allObjects = [];
 
 class Object {
-  remember(o) {
-    allObjects.push(o);
+  remember() {
+    allObjects.push(this);
   }
 
   saySomething() {
