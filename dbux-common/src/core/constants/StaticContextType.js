@@ -16,8 +16,12 @@ StaticContextType = new Enum(StaticContextType);
 const interruptableChildTypes = new Array(StaticContextType.getCount()).map(_ => false);
 interruptableChildTypes[StaticContextType.Await] = true;
 interruptableChildTypes[StaticContextType.Resume] = true;
-export function isInterruptableChildType(staticContextType) {
+export function isVirtualContextType(staticContextType) {
   return interruptableChildTypes[staticContextType];
+}
+
+export function isRealContext(staticContextType) {
+  return !isVirtualContextType(staticContextType);
 }
 
 export default StaticContextType;

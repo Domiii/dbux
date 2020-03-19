@@ -2,10 +2,12 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* DataProviderUtil
-   * `getTracesOfRealContext`
-      * use `TracesByContextIndex` and `TracesByParentContextIndex`, depending on if context `isInterruptableChildType` or not
-   * `getParentTracesOfRealContext` (maybe use index)
+* DataProviderUtil + Indexes
+   * write `getRealContextId` (use `isRealContextType`)
+   * write `getTracesOfRealContext`
+      * use `TracesByContextIndex` and `TracesByParentContextIndex`, depending on if context `isRealContext` or not
+   * add `ParentTracesInRealContextIndex`
+      * all traces that themselves are the `parentTraceId` of some context
 * async/await testing:
    * does call graph navigation work properly?
    * does `callStackView` work properly?
@@ -144,6 +146,7 @@
 
 
 ## TODO (other)
+* fix: `StaticTrace.staticContextId`
 * test
    * group modes (see `StaticTraceTDNodes.js`)
    * new trace select button (see `relevantTraces.js`)

@@ -1,7 +1,7 @@
 import { hasDynamicTypes, hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { newLogger } from 'dbux-common/src/log/logger';
-import StaticContextType, { isInterruptableChildType } from 'dbux-common/src/core/constants/StaticContextType';
+import StaticContextType, { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
 import DataProvider from './DataProvider';
 
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
@@ -241,7 +241,7 @@ export default {
     } = staticContext;
 
     let traces;
-    if (isInterruptableChildType(staticContextType)) {
+    if (isVirtualContextType(staticContextType)) {
       // Get all traces of the actual function, not it's virtual children (such as `Await`, `Resume` et al)
       // NOTE: `Await` and `Yield` contexts do not contain traces, only `Resume` contexts contain traces for interruptable functions
       traces = dp.util.getTracesOfParentStaticContext(staticContextId);

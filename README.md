@@ -19,6 +19,7 @@ Here is a (very very early, read: crude) 1min demo video of just a small subset 
 * vscode
 * yarn
 
+
 ## Setup
 
 ```sh
@@ -29,6 +30,7 @@ npm run dbux-install
 
 # if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
 ```
+
 
 ## Start development
 
@@ -44,7 +46,8 @@ npm start # start webpack build of all projects in watch mode
    * `dbux-run # instruments + executes currently opened file`
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
-   
+
+
 ## Test: Project 1
 
 1. After you opened a new VSCode window with `dbux-code` enabled (see steps above), in that window you can run + trace all kinds of code.
@@ -307,27 +310,18 @@ You can re-add it manually:
 
 ## Call Graph Navigation
 
-TODO: rewrite `TracesByContextIndex` and `TracesByParentContextIndex` rules and generalize in one
-
-
 * {Previous,Next}InContext
-   * [Not Async]
-      * -> Go to next/previous by `TracesByContextIndex`, ignore any trace which `isDataTraceType`
-   * [Async] (use `isInterruptableChildType`)
-      * -> Go to next/previous by `TracesByParentContextIndex`, ignore any trace which `isDataTraceType`
+   * Use `getTracesOfRealContext`
    * [no_trace]
       * [Previous && current trace is Push && previous trace is Pop]
          * -> go
       * [Next && current trace is Pop && next trace is Push]
          * -> go
 * PreviousParent
-   * -> First trace in current context --> context's `parentTraceId`
+   * First trace in current context --> context's `parentTraceId`
 * NextParent
-   * -> Same as `PreviousParent`, but get "next in context" of `parentTraceId`
+   * Same as `PreviousParent`, but get "next in context" of `parentTrace`
 * PreviousChild
-   * [Not Async]
-      * -> Go to next/previous trace which is any `parentTraceId` by `TracesByContextIndex`
-   * [Async] (use `isInterruptableChildType`)
-      * -> Go to next/previous trace which is any `parentTraceId` by `TracesByParentContextIndex`
+   * Use `ParentTracesInRealContextIndex`
 * NextChild
-   * Same as `PreviousChild`, but use "next in context"
+   * Same as `PreviousChild`, but use "next in context" of `parentTrace`
