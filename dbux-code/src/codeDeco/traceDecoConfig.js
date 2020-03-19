@@ -141,7 +141,12 @@ const StylingsByName = {
         color: 'gray',
       },
     }
-  }
+  },
+
+  // ########################################
+  // Data-only
+  // ########################################
+  CalleeObject: false
 };
 
 const decoNamesByType = {

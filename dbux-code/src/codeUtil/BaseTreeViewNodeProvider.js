@@ -147,6 +147,9 @@ export default class BaseTreeViewNodeProvider {
       }
       node.collapsibleState = collapsibleState;
     }
+    else {
+      node.collapsibleState = node.defaultCollapsibleState || TreeItemCollapsibleState.None;
+    }
 
     // click handler
     this._setNodeCommand(node);

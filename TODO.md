@@ -11,6 +11,14 @@
 * async/await testing:
    * does call graph navigation work properly?
    * does `callStackView` work properly?
+* `Call Graph Roots`
+   * ordering should always be descending by id (newest first)
+      * also apply that order to children within groups
+* [applicationView]
+   * add a button that allows us to jump straight to the entry point
+   * nest applications of same entry point under same node
+      * most recent Application is parent, all others are children
+      * make sure, `children` is `null` if it has no children (so `CollapsibleState` will be `None`)
 * [object_tracking]
    * list all traces of same `valueRef.trackId` in `traceDetailsView`
       * add new "Track Object" node `TrackObjectTDNode` to `traceDetailsView`, if it trace has a `valueId`
@@ -146,10 +154,18 @@
 
 
 ## TODO (other)
+* fix: `window.showTextDocument` errors out when debugging todomvc
 * fix: `StaticTrace.staticContextId`
+* fix: Call Graph Roots -> name does not include actual function name
+   * -> add `calleeName` to `staticTrace`?
+   * -> `traceLabels`
+   * `groups by Parent` seems buggy:
+      * it shows `!!capture`
+   * use `TraceNode` for group nodes when grouping by `parent` (so we can click to go there)?
 * test
    * group modes (see `StaticTraceTDNodes.js`)
    * new trace select button (see `relevantTraces.js`)
+* re-design `Call Graph Roots` to work with new group+merge strategy
 * [variable_tracking]
    * Nodes
       * any expressions: https://github.com/babel/babel/tree/master/packages/babel-types/src/validators/generated/index.js#L3446

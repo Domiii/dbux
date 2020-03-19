@@ -77,7 +77,7 @@ export function renderTraceDecorations(editor, fpath) {
 
     if (!config?.editorDecorationType) {
       if (decorations && config !== false) {
-        logError('found decoName for trace that is not configured', decoName);
+        logError('found decoName for trace that is not configured (suggestion: set to `false` to avoid displaying it)', decoName);
       }
       continue;
     }
