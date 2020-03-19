@@ -1,51 +1,60 @@
 import { window, ExtensionContext, commands } from 'vscode';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { getSortedReleventTraces } from 'dbux-data/src/traceSelection/relevantTraces';
+import { compareTraces } from 'dbux-data/src/traceSelection/relevantTraces';
+import traceSelection from 'dbux-data/src/traceSelection';
 import Trace from 'dbux-common/src/core/data/Trace';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { getCursorLocation } from '../codeNav';
 import { getTracesAt } from '../helpers/codeRangeQueries';
 
 export default class TracesAtCursor {
-  sortedTraces: Array<Trace>;
+  allTraces: Array<Trace>;
   /**
    * @param {ExtensionContext} context 
    */
   constructor(context) {
-    this.sortedTraces = [];
-    this.isCursorMoved = true;
+    this.allTraces = [];
+    this.needRefresh = true;
     this.index = 0;
 
     // subscript cursorMode event
     context.subscriptions.push(
       window.onDidChangeTextEditorSelection(() => {
-        this.isCursorMoved = true;
+        this.needRefresh = true;
         this.updateSelectTraceAtCursorButton();
       })
     );
   }
 
   refresh = () => {
-    if (!this.isCursorMoved) return;
-    window.showInformationMessage('TracesAtCursor.refresh()');
+    if (!this.needRefresh) return;
     this.index = 0;
-    // TODO: Sort traces of applications individually.
     const allTraces = this.getAllTracesAtCursor();
-    const sortedTraces = getSortedReleventTraces(allTraces);
-    this.sortedTraces = sortedTraces;
-    this.isCursorMoved = false;
+    if (traceSelection.selected) {
+      allTraces.reduce((t1, t2, id) => {
+        if (compareTraces(t1, t2) > 0) {
+          this.index = id;
+          return t2;
+        }
+        else {
+          return t1;
+        }
+      });
+    }
+    this.allTraces = allTraces;
+    this.needRefresh = false;
   }
 
   getNext = () => {
     // need to refresh if this.sortedTraces is expired
-    if (this.isCursorMoved) {
+    if (this.needRefresh) {
       this.refresh();
     }
 
-    const nextTrace = this.sortedTraces[this.index];
+    const nextTrace = this.allTraces[this.index];
     this.index++;
     // set to zero if reach the end of sortedTraces
-    if (this.index >= this.sortedTraces.length) this.index = 0;
+    if (this.index >= this.allTraces.length) this.index = 0;
 
     return nextTrace || null;
   }
@@ -63,6 +72,7 @@ export default class TracesAtCursor {
    * Show botton of different color depends on whether there is (no) traces at cursor
    */
   updateSelectTraceAtCursorButton = () => {
+    // TODO: [performance] dont query all trace every time 
     if (this.getAllTracesAtCursor().length) {
       commands.executeCommand('setContext', 'dbuxTraceDetailsView.context.hasTracesAtCursor', true);
     }
