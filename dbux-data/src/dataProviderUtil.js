@@ -1,8 +1,9 @@
 import { hasDynamicTypes, hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { newLogger } from 'dbux-common/src/log/logger';
-import StaticContextType, { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
+import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
 import DataProvider from './DataProvider';
+import { isRealContextType } from '../../dbux-common/src/core/constants/ExecutionContextType';
 
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 
@@ -28,6 +29,7 @@ export default {
     const { executionContexts } = dp.collections;
     let lastContextId = contextId;
     let parentContextId;
+    // TODO: avoid using while(true)
     while (true) {
       parentContextId = executionContexts.getById(lastContextId).parentContextId;
       if (!parentContextId) return lastContextId;
@@ -157,6 +159,43 @@ export default {
     return dp.collections.executionContexts.getById(contextId);
   },
 
+  isTraceInRealContext(dp: DataProvider, traceId) {
+    const { contextId } = dp.collections.traces.getById(traceId);
+    const { contextType } = dp.collections.executionContexts.getById(contextId);
+
+    return isRealContextType(contextType);
+  },
+
+  getRealContextId(dp: DataProvider, traceId) {
+    const { contextId } = dp.collections.traces.getById(traceId);
+    const context = dp.collections.executionContexts.getById(contextId);
+    const { contextType, parentContextId } = context;
+
+    if (isRealContextType(contextType)) return contextId;
+    else {
+      const parentContext = dp.collections.executionContexts.getById(parentContextId);
+      const { contextType: parentContextType } = parentContext;
+      if (parentContext && isRealContextType(parentContextType)) return parentContextId;
+      else {
+        logError('Could not find realContext.');
+        debugger;
+        return null;
+      }
+    }
+  },
+
+  getTracesOfRealContext(dp: DataProvider, traceId) {
+    const { contextId } = dp.collections.traces.getById(traceId);
+    if (dp.util.isTraceInRealContext(traceId)) {
+      return dp.indexes.traces.byContext.get(contextId);
+    }
+    else {
+      const context = dp.collections.context.getById(contextId);
+      const { parentContextId } = context;
+      return dp.indexes.traces.byParentContext.get(parentContextId);
+    }
+  },
+
   getTraceStaticContext(dp: DataProvider, traceId) {
     const context = dp.util.getTraceContext(traceId);
     const {
@@ -235,7 +274,7 @@ export default {
     if (!staticContext) {
       return null;
     }
-    
+
     const {
       type: staticContextType
     } = staticContext;

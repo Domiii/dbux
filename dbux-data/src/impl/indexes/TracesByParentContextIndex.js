@@ -4,10 +4,10 @@ import DataProvider from '../../DataProvider';
 
 function makeKey(dp: DataProvider, trace: Trace) {
   const {
-    parentContextId
+    parentContextId = 0
   } = dp.collections.executionContexts.getById(trace.contextId);
 
-  return parentContextId || 0;
+  return parentContextId;
 }
 
 

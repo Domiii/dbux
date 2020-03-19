@@ -15,12 +15,12 @@ ExecutionContextType = new Enum(ExecutionContextType);
 const interruptableChildTypes = new Array(ExecutionContextType.getCount()).map(_ => false);
 interruptableChildTypes[ExecutionContextType.Await] = true;
 interruptableChildTypes[ExecutionContextType.Resume] = true;
-export function isVirtualContextType(staticContextType) {
-  return interruptableChildTypes[staticContextType];
+export function isVirtualContextType(executionContextType) {
+  return interruptableChildTypes[executionContextType];
 }
 
-export function isRealContext(staticContextType) {
-  return !isVirtualContextType(staticContextType);
+export function isRealContextType(executionContextType) {
+  return !isVirtualContextType(executionContextType);
 }
 
 export default ExecutionContextType;

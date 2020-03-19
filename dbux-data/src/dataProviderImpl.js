@@ -12,6 +12,7 @@ import TracesByParentContextIndex from './impl/indexes/TracesByParentContextInde
 import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
 
 import VisitedStaticTracesByFileIndex from './impl/indexes/VisitedStaticTracesByFileIndex';
+import ParentTracesInRealContextIndex from './impl/indexes/ParentTracesInRealContextIndex';
 
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
@@ -62,6 +63,7 @@ export function newDataProvider(application) {
   // complex indexes
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
   dataProvider.addIndex(new VisitedStaticTracesByFileIndex());
+  dataProvider.addIndex(new ParentTracesInRealContextIndex());
 
 
   // queries

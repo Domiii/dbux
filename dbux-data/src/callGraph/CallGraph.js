@@ -1,8 +1,8 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 import last from 'lodash/last';
 import DataProvider from '../DataProvider';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
 
 const { log, debug, warn, error: logError } = newLogger('CallGraph');
 
