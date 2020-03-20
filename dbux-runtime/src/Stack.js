@@ -72,6 +72,10 @@ export default class Stack {
     this._stack.splice(++this._peekIdx, 0, x);
   }
 
+  resumeFrom(contextId) {
+    this._peekIdx = this._stack.indexOf(contextId);
+  }
+
   popTop() {
     const contextId = this.top();
     this._stack.pop();
@@ -113,6 +117,10 @@ export default class Stack {
       this.popPeekNotTop();
     }
     return i;
+  }
+
+  skipPopAtPeek() {
+    
   }
 
   trySetPeek(contextId) {

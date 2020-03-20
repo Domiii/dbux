@@ -17,20 +17,20 @@ function generateSourceWithoutComments(node) {
 const NEWLINE = /\r\n|[\n\r\u2028\u2029]/;
 const linesByProgram = new Map();
 
-function getLines(state) {
-  const { programFile } = state;
-  let lines = linesByProgram.get(programFile);
+function getSourceCodeLines(state) {
+  const { file } = state;
+  let lines = linesByProgram.get(file);
   if (!lines) {
     const {
       code
-    } = programFile;
-    lines = code.split(NEWLINE)
-    linesByProgram.set(programFile, lines);
+    } = file;
+    lines = code.split(NEWLINE);
+    linesByProgram.set(file, lines);
   }
   return lines;
 }
 
-function extractLoc(srcLines, loc) {
+function extractSourceAtLoc(srcLines, loc) {
   let line0 = loc.start.line - 1;
   const col0 = loc.start.column;
   let line1 = loc.end.line - 1;
@@ -58,8 +58,12 @@ function extractLoc(srcLines, loc) {
  * @see https://github.com/hulkish/babel/blob/master/packages/babel-code-frame/src/index.js
  */
 export function extractSourceStringWithoutComments(node, state) {
-  const lines = getLines(state);
-  return extractLoc(lines, node.loc);
+  return extractSourceStringWithoutCommentsAtLoc(node.loc, state);
+}
+
+export function extractSourceStringWithoutCommentsAtLoc(loc, state) {
+  const srcLines = getSourceCodeLines(state);
+  return extractSourceAtLoc(srcLines, loc);
 }
 
 // export function extractSourceString(node, state) {

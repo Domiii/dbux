@@ -19,14 +19,14 @@ export default class PlaybackController {
   // ###########################################################################
 
   play = () => {
-    commands.executeCommand('setContext', 'dbuxPlaybackPlaying', true);
+    commands.executeCommand('setContext', 'dbuxPlayback.context.Playing', true);
     tracePlayback.play();
     this.printTracesInfo();
     this.printContextsInfo();
   }
 
   pause = () => {
-    commands.executeCommand('setContext', 'dbuxPlaybackPlaying', false);
+    commands.executeCommand('setContext', 'dbuxPlayback.context.Playing', false);
     tracePlayback.pause();
   }
 
@@ -43,7 +43,7 @@ export default class PlaybackController {
   // ###########################################################################
 
   handlePause() {
-    commands.executeCommand('setContext', 'dbuxPlaybackPlaying', false);
+    commands.executeCommand('setContext', 'dbuxPlayback.context.Playing', false);
   }
 
   // ###########################################################################
@@ -58,7 +58,7 @@ export default class PlaybackController {
       let traces = app.dataProvider.collections.traces.getAll();
       for (let trace of traces) {
         if (!trace) continue;
-        const { runId, contextId, traceId, staticTraceId } = trace;
+        const { runId, contextId, traceId } = trace;
         const type = app.dataProvider.util.getTraceType(traceId);
         const typeName = TraceType.getName(type);
         info.push({ runId, contextId, traceId, typeName });
@@ -75,8 +75,8 @@ export default class PlaybackController {
       let contexts = app.dataProvider.collections.executionContexts.getAll();
       for (let context of contexts) {
         if (!context) continue;
-        const { runId, contextId, parentContextId, schedulerTraceId, createdAt } = context;
-        info.push({ runId, contextId, parentContextId, schedulerTraceId, createdAt });
+        const { runId, contextId, parentContextId, schedulerTraceId, parentTraceId} = context;
+        info.push({ runId, contextId, parentContextId, schedulerTraceId, parentTraceId });
       }
       console.table(info);
     }

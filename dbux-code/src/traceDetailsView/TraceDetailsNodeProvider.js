@@ -1,4 +1,5 @@
 import traceSelection from 'dbux-data/src/traceSelection';
+import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import { NavigationTDNode, NavigationNodeClasses, DetailNodeClasses } from './nodes/traceDetailNodes';
 import SelectedTraceNode from './nodes/SelectedTraceNode';
 import TraceNode from './nodes/TraceNode';
@@ -66,11 +67,13 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
 
   maybeBuildTraceDetailNode(NodeClass, trace, parent) {
     const detail = NodeClass.makeTraceDetail(trace, parent);
+    const props = NodeClass.makeProperties?.(trace, parent, detail) || EmptyObject;
     if (!detail) {
       return null;
     }
     const treeItemProps = {
-      trace
+      trace,
+      ...props
     };
     return this.buildNode(NodeClass, detail, parent, treeItemProps);
   }

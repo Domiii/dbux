@@ -4,7 +4,7 @@ import CallStackNode from '../callStackView/CallStackNode';
 /**
  * @param {CallStackNode} callStackViewController 
  */
-export default function initCallStackViewCommands(context, callStackViewController) {
+export function initCallStackViewCommands(context, callStackViewController) {
   registerCommand(context,
     'dbuxCallStackView.itemClick',
     (node: CallStackNode) => callStackViewController.handleItemClick(node)

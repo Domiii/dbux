@@ -1,7 +1,7 @@
 import Loc from "./Loc";
 
 export default class StaticContext {
-  type: number; // {StaticContextType}
+  staticContextType: number; // {StaticContextType}
   name: string;
   displayName: string;
   isInterruptable: boolean;

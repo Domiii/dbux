@@ -4,6 +4,8 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
+import { modeChangedEvent } from './nodes/StaticTraceTDNodes';
+import TracesAtCursor from './TracesAtCursor';
 
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
 
@@ -13,13 +15,23 @@ class TraceDetailsController {
   constructor() {
     this.treeDataProvider = new TraceDetailsDataProvider();
     this.treeView = this.treeDataProvider.treeView;
+    this.tracesAtCursor = null; // assign on init
   }
 
   refreshOnData = makeDebounce(() => {
     controller.treeDataProvider.refresh();
+    this.tracesAtCursor.needRefresh = true;
+    this.tracesAtCursor.updateSelectTraceAtCursorButton();
   }, 20);
 
+  selectTraceAtCursor = () => {
+    const nextTrace = this.tracesAtCursor.getNext();
+    if (nextTrace) traceSelection.selectTrace(nextTrace, 'selectTraceAtCursor');
+  }
+
   initOnActivate(context) {
+    this.tracesAtCursor = new TracesAtCursor(context);
+
     // ########################################
     // hook up event handlers
     // ########################################
@@ -40,6 +52,9 @@ class TraceDetailsController {
     traceSelection.onTraceSelectionChanged(() => {
       controller.treeDataProvider.refresh();
     });
+
+    // on staticTraceTDNode grouping mode changed
+    modeChangedEvent.on('changed', this.treeDataProvider.refresh);
   }
 }
 
@@ -53,4 +68,6 @@ export function initTraceDetailsController(context: ExtensionContext) {
 
   // refresh right away
   controller.treeDataProvider.refresh();
+
+  return controller;
 }

@@ -1,8 +1,8 @@
 import { logInternalError } from 'dbux-common/src/log/logger';
+import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 import Stack from './Stack';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
-import ExecutionContextType from '../../dbux-common/src/core/constants/ExecutionContextType';
 
 // function mergeStacks(dst, src) {
 //   if ((src?.getDepth() || 0) > 0) {
@@ -47,6 +47,8 @@ export default class Runtime {
    * Used for root management
    */
   _currentRunId = 0;
+
+  _lastTraceByContextId = [];
 
 
   // ###########################################################################
@@ -159,6 +161,18 @@ export default class Runtime {
   }
 
   // ###########################################################################
+  // Traces
+  // ###########################################################################
+  
+  setContextTrace(contextId, traceId) {
+    this._lastTraceByContextId[contextId] = traceId;
+  }
+
+  getContextTraceId(contextId) {
+    return this._lastTraceByContextId[contextId];
+  }
+
+  // ###########################################################################
   // Public getters
   // ###########################################################################
 
@@ -173,6 +187,25 @@ export default class Runtime {
   getCurrentRunId() {
     return this._currentRunId;
   }
+
+  // /**
+  //  * Looks up the stack until it finds a context that is Immediate.
+  //  */
+  // getRealParentContextId() {
+  //   if (!this._executingStack) {
+  //     return null;
+  //   }
+
+  //   for (const i = this._executingStack.getPeekIndex(); --i; i >= 0) {
+  //     const contextId = this._executingStack._stack[i];
+  //     const context = ;
+  //     if (contextId) {
+
+  //     }
+  //   }
+
+  //   return null;
+  // }
 
   peekCurrentContextId() {
     return this._executingStack?.peek() || null;
@@ -225,7 +258,7 @@ export default class Runtime {
       // we probably had an unhandled interrupt that is now resumed
       stack = this.resumeWaitingStack(contextId);
       if (!stack) {
-        logInternalError(`Could not pop contextId off stack`, contextId);
+        logInternalError(`Could not pop contextId off stack because there is stack active, and no waiting stack registered with this contextId`, contextId);
         return -1;
       }
       stackPos = this._popAnywhere(contextId);
@@ -272,9 +305,21 @@ export default class Runtime {
       return;
     }
 
-    this._markWaiting(awaitContextId);
+    this.push(awaitContextId, true);
+    // this._markWaiting(awaitContextId);
 
     // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
+  }
+
+  /**
+   * Manually climb up the stack.
+   * NOTE: We are waiting now, and see on the stack:
+   *    1. Await (top)
+   *    2. async function (top-1)
+   * -> However, next trace will be outside of the function, so we want to skip both.
+   */
+  skipPopPostAwait() {
+    this._executingStack._peekIdx -= 2;
   }
 
   /**
@@ -293,11 +338,13 @@ export default class Runtime {
       logInternalError('Could not resume waiting stack (is not registered):', contextId);
       return null;
     }
+
+    // waitingStack.resumeFrom(contextId);
     const oldStack = this._executingStack;
 
     if (oldStack !== waitingStack) {
       if (this.isExecuting()) {
-        logInternalError('Unexpected: `resume` received while already executing. Discarding executing stack.');
+        logInternalError('`resume` received while already executing not handled properly yet. Discarding executing stack.');
         this.interrupt();
       }
 
@@ -305,6 +352,9 @@ export default class Runtime {
     }
 
     this._markResume(contextId);
+
+    // pop the await/yield context
+    this.pop(contextId);
 
     return waitingStack;
   }

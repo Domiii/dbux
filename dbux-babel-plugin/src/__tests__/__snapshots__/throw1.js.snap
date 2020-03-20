@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plugin throw1.es5.js: throw1.es5.js 1`] = `
+"
+function f() {
+  console.log(1);
+  throw new Error('errrrrror');
+  console.log(2);
+}
+
+f();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+function f() {
+  try {
+    console.log(1);
+    throw new Error('errrrrror');
+    console.log(2);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+f();
+"
+`;
+
+exports[`plugin throw1.esNext.js: throw1.esNext.js 1`] = `
+"
+function f() {
+  console.log(1);
+  throw new Error('errrrrror');
+  console.log(2);
+}
+
+f();
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+function f() {
+  try {
+    console.log(1);
+    throw new Error('errrrrror');
+    console.log(2);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+f();
+"
+`;

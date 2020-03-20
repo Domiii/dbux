@@ -3,38 +3,30 @@ import Collection from './Collection';
 
 export class StaticContextCollection extends Collection {
   _staticContextsByProgram = [null];
-  
+
   constructor() {
     super('staticContexts');
   }
 
-  addContexts(programId, list) {
-    // make sure, array is pre-allocated
-    for (let i = this._staticContextsByProgram.length; i <= programId; ++i) {
-      this._staticContextsByProgram.push(null);
-    }
-
+  addEntries(programId, list) {
     // add program static contexts
     this._staticContextsByProgram[programId] = list;
 
-    for (let i = 1; i < list.length; ++i) {
+    for (let i = 0; i < list.length; ++i) {
       const entry = list[i];
-      if (entry._staticId !== i) {
-        logInternalError(programId, 'Invalid staticId !== its own index:', entry._staticId, '!==', i);
-      }
+      console.assert(entry._staticId === i + 1);
 
       entry.programId = programId;
 
       // global id over all programs
       entry.staticId = this._all.length;
       delete entry._staticId;
-      
+
       this._all.push(entry);
-      this._send(entry);
     }
 
     // fix-up parentId:
-    for (let i = 1; i < list.length; ++i) {
+    for (let i = 0; i < list.length; ++i) {
       const entry = list[i];
       if (!entry._parentId) {
         continue;
@@ -43,6 +35,9 @@ export class StaticContextCollection extends Collection {
       entry.parentId = parent.staticId;
       delete entry._parentId;
     }
+
+    // send out
+    this._sendAll(list);
   }
 
   getContexts(programId) {
@@ -55,7 +50,7 @@ export class StaticContextCollection extends Collection {
       logInternalError("Invalid programId has no registered static contexts:", programId);
       return null;
     }
-    return contexts[inProgramStaticId];
+    return contexts[inProgramStaticId - 1];  // ids start at 1, array starts at 0
   }
 
   getStaticContextId(programId, inProgramStaticId) {

@@ -5,7 +5,7 @@ export default class Collection<T> {
    * NOTE: collection ids can be 0
    */
   _id : number;
-  _all : T[] = [null];
+  _all : T[] = [];
 
   name : string;
   dp : DataProvider;
@@ -24,6 +24,10 @@ export default class Collection<T> {
   // ###########################################################################
 
   add(entries : T[]) {
+    if (!this._all.length && entries[0] !== null) {
+      // pad with a `null`, if necessary
+      this._all.push(null);
+    }
     this._all.push(...entries);
   }
 

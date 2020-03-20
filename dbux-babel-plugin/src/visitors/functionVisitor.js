@@ -1,8 +1,10 @@
-import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
-import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import template from '@babel/template';
 import * as t from "@babel/types";
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import VarOwnerType from 'dbux-common/src/core/constants/VarOwnerType';
+import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
+import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
+import { getPreBodyLoc1D } from '../helpers/locHelpers';
 
 // ###########################################################################
 // helpers
@@ -13,7 +15,7 @@ function addResumeContext(bodyPath, state, staticId) {
 
   // the "resume context" starts with the function (function is in "Resumed" state initially)
   const locStart = bodyLoc.start;
-  return state.addResumeContext(bodyPath, locStart);
+  return state.contexts.addResumeContext(bodyPath, locStart);
 }
 
 // ###########################################################################
@@ -22,7 +24,7 @@ function addResumeContext(bodyPath, state, staticId) {
 
 function buildPushImmediate(contextId, dbux, staticId, traceId, isInterruptable) {
   // TODO: use @babel/template instead
-  return buildSource(`const ${contextId} = ${dbux}.pushImmediate(${staticId}, ${traceId}, ${isInterruptable});`);
+  return buildSource(`var ${contextId} = ${dbux}.pushImmediate(${staticId}, ${traceId}, ${isInterruptable});`);
 }
 
 function buildPopImmediate(contextId, dbux, traceId) {
@@ -30,13 +32,14 @@ function buildPopImmediate(contextId, dbux, traceId) {
   return buildSource(`${dbux}.popImmediate(${contextId}, ${traceId});`);
 }
 
-const pushResumeTemplate = template(`
-  %%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%);
-`);
+const pushResumeTemplate = template(
+  /*var %%resumeContextId%% =*/
+  `%%dbux%%.pushResume(%%resumeStaticContextId%%, %%traceId%%);`);
 
-const popResumeTemplate = template(`
-  %%dbux%%.popResume();
-`);
+const popResumeTemplate = template(
+  // `%%dbux%%.popResume(%%resumeContextId%%);`
+  `%%dbux%%.popResume();`
+);
 
 // ###########################################################################
 // modification
@@ -45,18 +48,20 @@ const popResumeTemplate = template(`
 /**
  * Instrument all Functions to keep track of all (possibly async) execution stacks.
  */
-function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId=null) {
-  const { ids: { dbux }, genContextIdName } = state;
+function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId = null) {
+  const { ids: { dbux }, contexts: { genContextIdName } } = state;
   const contextIdVar = genContextIdName(bodyPath);
 
   let pushes = buildPushImmediate(contextIdVar, dbux, staticId, pushTraceId, !!staticResumeId);
   let pops = buildPopImmediate(contextIdVar, dbux, popTraceId);
   if (staticResumeId) {
     // this is an interruptable function -> push + pop "resume contexts"
+    // const resumeContextId = bodyPath.scope.generateUid('resumeContextId');
     pushes = [
       ...pushes,
       pushResumeTemplate({
         dbux,
+        // resumeContextId,
         resumeStaticContextId: t.numericLiteral(staticResumeId),
         traceId: t.numericLiteral(pushTraceId)
       })
@@ -65,6 +70,7 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
     pops = [
       popResumeTemplate({
         dbux,
+        // resumeContextId,
         // traceId: t.numericLiteral(popTraceId)
         // contextId: contextIdVar
       }),
@@ -108,9 +114,27 @@ export default function functionVisitor() {
         displayName,
         isInterruptable
       };
-      const staticId = state.addStaticContext(path, staticContextData);
-      const pushTraceId = state.addTrace(bodyPath, TraceType.PushImmediate);
-      const popTraceId = state.addTrace(bodyPath, TraceType.PopImmediate);
+      const staticId = state.contexts.addStaticContext(path, staticContextData);
+      const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
+      const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
+
+      // add varAccess
+      const ownerId = staticId;
+      
+      // TODO: this?
+      // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
+
+      // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
+      const params = path.get('params');
+      const paramIds = params.map(param => 
+        Object.values(param.getBindingIdentifierPaths())
+      ).flat();
+      paramIds.forEach(paramPath => 
+        state.varAccess.addVarAccess(
+          paramPath.name, paramPath, ownerId, VarOwnerType.Trace
+        )
+      );
+
       let staticResumeId;
       if (isInterruptable) {
         staticResumeId = addResumeContext(bodyPath, state, staticId);

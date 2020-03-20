@@ -1,32 +1,53 @@
+/**
+ * @file
+ * 
+ * NOTE: This file was originally designed to handle traces only.
+ *  Later on we encountered some real issues from trying to separate trace and context instrumentation, and did not 
+ *  have the time yet to properly separate them again. That is why there is also some context instrumentation in this file
+ */
+
 import template from '@babel/template';
 import Enum from 'dbux-common/src/util/Enum';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
-import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg, traceCallExpression } from '../helpers/traceHelpers';
-import { isPathInstrumented, getPathTraceId } from '../helpers/instrumentationHelper';
+import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceWrapArg, traceCallExpression, traceValueBeforeExpression } from '../helpers/traceHelpers';
+import { instrumentLoop } from './loopVisitors';
+import { getPathTraceId } from '../data/StaticTraceCollection';
+import { getAllButRightMostPath } from '../helpers/objectHelpers';
 // TODO: want to do some extra work to better trace loops
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
   // CallExpression: 1,
+  /**
+   * Result of a computation
+   */
   ExpressionResult: 2,
+  /**
+   * Only keeping track of data
+   */
+  ExpressionValue: 3,
   ExpressionNoValue: 3,
   Statement: 4,
   Block: 5,
   Loop: 6,
-  LoopBlock: 7
+  LoopBlock: 7,
+
+  MemberExpression: 8
 });
 
 const traceCfg = (() => {
   const {
     NoTrace,
     // CallExpression,
+    ExpressionValue,
     ExpressionResult,
-    ExpressionNoValue,
+    // ExpressionNoValue,
     Statement,
     Block,
     Loop,
-    LoopBlock
+    LoopBlock,
+    MemberExpression
   } = TraceInstrumentationType;
 
   return {
@@ -78,16 +99,66 @@ const traceCfg = (() => {
       // ExpressionResult
       // [['argument', ExpressionNoValue]]
     ],
+    /**
+     * Ternary operator
+     */
     ConditionalExpression: [
       ExpressionResult,
       [['test', ExpressionResult], ['consequent', ExpressionResult], ['alternate', ExpressionResult]]
     ],
-    Super: ExpressionNoValue,
     UpdateExpression: ExpressionResult,
     YieldExpression: [
       NoTrace,
       [['argument', ExpressionResult]]
     ],
+
+
+    // ########################################
+    // Data read expressions
+    // ########################################
+
+    BinaryExpression: [
+      NoTrace,
+      [['left', ExpressionValue], ['right', ExpressionValue]]
+    ],
+
+    LogicalExpression: [
+      NoTrace,
+      [['left', ExpressionResult], ['right', ExpressionResult]]
+    ],
+
+    MemberExpression: [
+      // TODO: if `computed`, also need to trace property
+      MemberExpression,
+      [['object', ExpressionValue]]
+    ],
+
+    OptionalMemberExpression: [
+      MemberExpression,
+      [['object', ExpressionValue]]
+    ],
+
+    SequenceExpression: [
+      NoTrace,
+      [['expressions', ExpressionValue]]
+    ],
+
+    Super: NoTrace,   // NOTE: is handled separately, in `CallExpression` and `MemberExpression`
+
+    TemplateLiteral: [
+      NoTrace,
+      [['expressions', ExpressionValue]]
+    ],
+
+    UnaryExpression: [
+      NoTrace,
+      [['argument', ExpressionValue]]
+    ],
+
+    // TODO: ParenthesizedExpression - https://github.com/babel/babel/blob/master/packages/babel-generator/src/generators/expressions.js#L27
+    // TODO: BindExpression - https://github.com/babel/babel/blob/master/packages/babel-generator/src/generators/expressions.js#L224
+    // TODO: TypeCastExpression
+    // TODO: TupleExpression - https://github.com/babel/babel/blob/f6c7bf36cec81baaba8c37e572985bb59ca334b1/packages/babel-generator/src/generators/types.js#L139
 
 
     // ########################################
@@ -97,7 +168,7 @@ const traceCfg = (() => {
     ContinueStatement: Statement,
     Decorator: [
       NoTrace,
-      [['expression', ExpressionNoValue]]
+      // [['expression', ExpressionNoValue]]
     ],
     // Declaration: [
     //   Statement,
@@ -230,14 +301,32 @@ function normalizeConfig(cfg) {
 
 const enterInstrumentors = {
   ExpressionResult(path, state, cfg) {
-    if (path.isCallExpression()) {
+    if (path.isCallExpression() || path.isOptionalCallExpression()) {
       // CallExpression
-      // add staticTrace for callee, but don't actually trace it
-      //  NOTE: tracing a callee complicates things a bit; let's keep it easy for now
-      // const calleePath = path.get('callee');
-      // state.addTrace(calleePath, TraceType.Callee, null);
-      // traceWrapExpression(TraceType.Callee, calleePath, state);
-      traceBeforeExpression(path, state, TraceType.BeforeCallExpression);
+
+      // object method calls
+      const calleePath = path.get('callee');
+      
+      // TODO: optional chaining
+
+      if (calleePath.isSuper()) {
+        // TODO
+      }
+      else if (calleePath.isMemberExpression()) {
+        // trace object of method call
+        const objPath = calleePath.get('object');
+        if (objPath.isSuper()) {
+          // cannot wrap `super` -> trace `this` before expression instead (NOTE: returns original path)
+          path = traceValueBeforeExpression(path, state, TraceType.CalleeObject, objPath, 'this');
+        }
+        else {
+          // wrap object as-is
+          traceWrapExpression(TraceType.CalleeObject, objPath, state);
+        }
+      }
+
+      // trace before call (returns original path)
+      path = traceBeforeExpression(path, state, TraceType.BeforeCallExpression, null);
     }
     else {
       // any other expression with a result
@@ -251,9 +340,12 @@ const enterInstrumentors = {
       traceWrapExpression(TraceType.ExpressionResult, path, state, tracePath);
     }
   },
-  ExpressionNoValue(path, state) {
-    traceBeforeExpression(path, state);
+  ExpressionValue(path, state) {
+    // TODO
   },
+  // ExpressionNoValue(path, state) {
+  //   traceBeforeExpression(path, state);
+  // },
   Statement(path, state) {
     const traceStart = buildTraceNoValue(path, state, TraceType.Statement);
     path.insertBefore(traceStart);
@@ -275,16 +367,18 @@ const enterInstrumentors = {
     // }
   },
   Loop(path, state) {
-    
+    instrumentLoop(path, state);
   },
   LoopBlock(path, state) {
-
+  },
+  MemberExpression(path, state) {
+    // TODO
   }
 };
 
 const exitInstrumentors = {
   ExpressionResult(path, state) {
-    if (path.isCallExpression()) {
+    if (path.isCallExpression() || path.isOptionalCallExpression()) {
       // CallExpression
       // instrument args after everything else has already been done
       // const calleePath = path.get('callee');

@@ -36,9 +36,10 @@ class TraceCollection extends Collection {
     trace.contextId = contextId;
     trace.runId = runId;
     trace.type = type;
+    trace.createdAt = Date.now();  // { createdAt }
 
     // value
-    valueCollection.processValue(hasValue, value, trace);
+    valueCollection.registerValueMaybe(hasValue, value, trace);
 
     // look-up globally unique staticTraceId
     // trace._staticTraceId = inProgramStaticTraceId;

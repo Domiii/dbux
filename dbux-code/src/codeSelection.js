@@ -3,7 +3,7 @@ import traceSelection from 'dbux-data/src/traceSelection';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { goToTrace, getCursorLocation, getOrOpenTraceEditor } from './codeNav';
 import codeDecorations, { CodeDecoRegistration } from './codeDeco/codeDecorations';
-import { babelLocToCodeRange } from './helpers/locHelpers';
+import { babelLocToCodeRange } from './helpers/codeLocHelpers';
 
 
 // ###########################################################################
@@ -80,9 +80,11 @@ export function initTraceSelection(context) {
   });
 
   // show + goto trace if selected
-  traceSelection.onTraceSelectionChanged((selectedTrace) => {
-    selectedTrace && goToTrace(selectedTrace);
+  traceSelection.onTraceSelectionChanged((selectedTrace, sender) => {
     highlightTraceInEditor(selectedTrace);
+    // only highlight but not nav if user is using 'selectTraceAtCursor'
+    if (sender === 'selectTraceAtCursor') return;
+    selectedTrace && goToTrace(selectedTrace);
   });
 
   // select trace when moving cursor in TextEditor

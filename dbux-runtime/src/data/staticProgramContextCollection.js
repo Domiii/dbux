@@ -1,4 +1,3 @@
-import StaticProgramContext from './StaticProgramContext';
 import Collection from './Collection';
 
 /**
@@ -13,10 +12,11 @@ export class StaticProgramContextCollection extends Collection {
   addProgram(programData) {
     const programId = this._all.length;
     const { fileName, filePath } = programData;
-    const staticProgramContext = new StaticProgramContext(programId, {
+    const staticProgramContext = {
+      programId,
       fileName,
       filePath
-    });
+    };
     
     this._all.push(staticProgramContext);
     this._send(staticProgramContext);

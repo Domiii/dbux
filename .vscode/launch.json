@@ -34,7 +34,7 @@
 			],
 			"sourceMaps": true,
 			"restart": true,
-			"program": "${workspaceFolder}/dbux-cli/bin/dbux-run",
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux-run-file",
 			"args": [
 				"${file}"
 			],
@@ -71,6 +71,34 @@
 			"outFiles": [
 				"${workspaceRoot}/dbux-babel-plugin/dist/**/*.js"
 			]
+		},
+		{
+			"name": "test file",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/dbux-babel-plugin/node_modules/jest/bin/jest.js",
+			"runtimeArgs": [
+				"--stack-trace-limit=1000",
+				"--preserve-symlinks"
+			],
+			"cwd": "${workspaceFolder}/dbux-babel-plugin",
+			"args": [
+				"-i",
+				"--config=jest.config.js",
+				"--runTestsByPath",
+				// "--",
+				// @see https: //code.visualstudio.com/docs/nodejs/nodejs-debugging#_common-questions
+
+				// hackfix: see https://github.com/microsoft/vscode-recipes/issues/205
+				"../${relativeFile}"
+			],
+			// see: https://github.com/microsoft/vscode/issues/5422
+			"restart": true,
+			"protocol": "inspector",
+			"trace": "all",
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
 		},
 		{
 			"name": "run js",
@@ -128,32 +156,6 @@
 				"jest.config.js",
 				// @see https: //code.visualstudio.com/docs/nodejs/nodejs-debugging#_common-questions
 				// "--preserve-symlinks"
-			],
-			// see: https://github.com/microsoft/vscode/issues/5422
-			"restart": true,
-			"protocol": "inspector",
-			"trace": "all",
-			"disableOptimisticBPs": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-		},
-		{
-			"name": "test file",
-			"type": "node",
-			"request": "launch",
-			"program": "${workspaceFolder}/dbux-babel-plugin/node_modules/jest/bin/jest.js",
-			"runtimeArgs": [
-				"--stack-trace-limit=1000",
-				"--preserve-symlinks"
-			],
-			"cwd": "${workspaceFolder}/dbux-babel-plugin",
-			"args": [
-				"-i",
-				"--runInBand",
-				"--config=jest.config.js",
-				// "--testPathPattern",
-				// @see https: //code.visualstudio.com/docs/nodejs/nodejs-debugging#_common-questions
-				"${file}"
 			],
 			// see: https://github.com/microsoft/vscode/issues/5422
 			"restart": true,

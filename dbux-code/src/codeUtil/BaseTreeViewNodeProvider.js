@@ -92,7 +92,7 @@ export default class BaseTreeViewNodeProvider {
   }
 
   buildNode(NodeClass, entry, parent, moreProps = EmptyObject) {
-    const label = NodeClass.makeLabel(entry, parent);
+    const label = NodeClass.makeLabel(entry, parent, moreProps);
     return new NodeClass(this, label, entry, parent, moreProps);
   }
 
@@ -151,17 +151,22 @@ export default class BaseTreeViewNodeProvider {
     // click handler
     this._setNodeCommand(node);
 
-    if (node.children) {
-      // this node has built-in children
-      this._decorateNodes(node.children);
-    }
-
     // if (node.collapsibleState === TreeItemCollapsibleState.Expanded) {
     //   // generate children right away?
     // }
 
     // init
     node.init?.();
+    
+    if (node.children) {
+      // this node has built-in children
+      this._decorateNodes(node, node.children);
+    }
+
+    if (node.children) {
+      // this node has built-in children
+      this._decorateNodes(node, node.children);
+    }
 
     return node;
   }

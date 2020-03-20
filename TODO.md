@@ -2,9 +2,54 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* [applicationDisplayName]
-   * find unique key of 'entryPointPath' of all selectedApplications
-      * do while selectedApplicationChanged (in _notifyChanged)
+* DataProviderUtil + Indexes
+   * write `getRealContextId` (use `isRealContextType`)
+   * write `getTracesOfRealContext`
+      * use `TracesByContextIndex` and `TracesByParentContextIndex`, depending on if context `isRealContext` or not
+   * add `ParentTracesInRealContextIndex`
+      * all traces that themselves are the `parentTraceId` of some context
+* async/await testing:
+   * does call graph navigation work properly?
+   * does `callStackView` work properly?
+* [object_tracking]
+   * list all traces of same `valueRef.trackId` in `traceDetailsView`
+      * add new "Track Object" node `TrackObjectTDNode` to `traceDetailsView`, if it trace has a `valueId`
+   * test using `oop2.js`
+* [callGraphView/contextView]
+   * add new button: "hide all previous roots / show all"
+   * when expanding a CallGraph root, show all context names of that `runId` as children of that root node
+   * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a wildcard searchTerm
+      * all roots with contexts whose name contains searchTerm are expanded, all others are `Collapsed` or `None`
+      * filter contexts by searchTerm (match `name`; as well as `filePath` of its `Program`)
+   * add a new "async view" mode to "Context Roots": switches between "runs" and "async runs"
+      * define a new "async run" concept
+      * TODO
+      * attach `Resume` and `Await` nodes under their actual `parentContexts`, thus hiding roots from Resumes
+* [tracesAtCursor]
+   * remove this view, replace with button at the top left
+      * icon = crosshair (⌖)
+         * e.g.: https://www.google.com/search?q=crosshair+icon&tbm=isch
+      * select `getMostRelevantTraceAtCursor()` (see below)
+      * if it returns `null`, change button color to gray, else red
+   * `getMostRelevantTraceAtCursor()` function
+      * Notes
+         * can use generator function for this
+         * `onData`: reset
+      * if `selectedTrace` exists:
+         * only select traces of same `staticContextId` (or, if `Resume` or `Await`, of same `staticContextId` of `parentContext`)
+         * prefer traces of minimum `contextId` (or, if `Resume` or `Await`, `parentContextId`) distance
+         * prefer traces of minimum `runId` distance
+         * prefer traces of minimum `traceId` distance
+      * if there is no `selectedTrace`:
+         * same order as `getTracesAt(application, programId, pos)`
+* [SubGraph_Filtering]
+   * add two new buttons (for filtering) to each `callGraphView` root node: include/exclude
+   * when filter active:
+      * only show those runs + contexts in `callGraphView`
+      * only show those traceDecos
+   * add a new "clear filters" button at the top of the `callGraphView`
+   * add a new "only this trace" filter button to `callGraphView`
+      * only runs that passed through this trace
 * [callstackView]
    * when clicking a node:
       * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
@@ -22,25 +67,34 @@
    * add a checkbox (button) to select "automatically discard older application when executing again"
 * [traceDetailsView]
    * [StaticTraceTDNode] of each trace: display more relevant information
+      * `GroupMode` (button to toggle in the node)
+         * no grouping (default)
+         * by contextId
+         * by runId -> contextId
+         * by `parentContextTraceId` (e.g. for `reduce` etc.)?
+         * [for callbacks only] "Callback mode"
+            * add one group per `call` trace (e.g. `target.addEventListener(type, callback, !!capture);`)
+               * add all `PushCallbacks` of any `callback` in that call as child
+            * sort by `createdAt` in descending order
+            * very useful e.g. in `$on` function inside `todomvc`!
+         * combination of the above
       * offer multiple `TraceDisplayMode`s:
          * value
          * ancestor context
             * allow cycling through levels of depth (parent -> grandparent etc)
          * descendant context
             * allow cycling through levels of depth (child -> grandchild etc)
-         * [for callbacks only] "Callback mode"
-            * show any trace only if callback has a PushCallback
-            * label = combination of call (with arguments filled in) + time of callback execution?
-            * maybe even sort by `createdAt` in reverse order
-            * very useful e.g. in `$on` function inside `todomvc`!
          * related info: get bindings of relevant nearby variables and display those?
             * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
-      * optional GroupMode
-         * no grouping (default)
-         * by runId
-         * by contextId + loopId
-         * by parentContextId (e.g. for `reduce` etc.)?
-         * combination of the above
+
+* [UI]
+   * add a new option `showHideIfEmpty` to `BaseTreeViewNode`:
+      * if `true`: render new button in node that toggles the `hideIfEmpty` behavior
+      * button icon:  (???) https://www.google.com/search?q=empty+icon&tbm=isch
+* [applicationDisplayName]
+   * find shortest unique part of 'entryPointPath' of all `selectedApplications`
+      * use a loop in `_notifyChanged`
+
 * [contextChildrenView]
    * treeview that shows partial `execution tree` in the context of the selected trace
    * Nodes:
@@ -56,9 +110,15 @@
       * NOTE: probably use QuickInput to ask user for id
       * used for debugging specific traces uses all available visualization tools
 
+
+
+
+
+
+
 ## TODO (dbux-code + dbux-data; lower priority)
 * [UI design]
-   * good icons + symbols in all tree nodes
+   * proper icons + symbols for all tree nodes?
 * add a button to the top right to toggle (show/hide) all intrusive features
    * includes:
       * hide `codeDeco`
@@ -73,41 +133,74 @@
    * if it is very large and thus will slow things down (e.g. > x traces?)
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
+
+
+
+
+
+
+
+
+
+
+
+
 ## TODO (other)
-* keep testing navigation in todomvc (especially: getting from event handler to store methods)
+* fix: `StaticTrace.staticContextId`
+* test
+   * group modes (see `StaticTraceTDNodes.js`)
+   * new trace select button (see `relevantTraces.js`)
+* [variable_tracking]
+   * Nodes
+      * any expressions: https://github.com/babel/babel/tree/master/packages/babel-types/src/validators/generated/index.js#L3446
+* [object_tracking]
+   * add trace/valueRef for `varAccess` of `params`
+      * Consider: replace `varAccess` with single traces for `params`
+* [loops]
+   * new data types:
+      * `staticLoop`
+      * `loop`
+         * `firstTraceId` + `lastTraceId`
+      * `loopRepition`
+         * `i`
+         * `headerVars`
+   * add `loopRepititionId` to all traces in loop
+      * add `loopRepitition`:
+         * before `init`, and after `condition` has evaluated to `true`?
+   * in loop's `BlockStart`:
+      * evaluate + store `headerVars` (all variables that have bindings in loop header)
+* [testing]
+   * add `dbux-cli` and `samples` to the `webpack` setup
+   * finish setting up basic testing in `samples`
+      * move a basic `server` implementation from `dbux-code` to `dbux-data`
+      * then: let sample tests easily run their own server to operate on the data level
+      * make sure the `test file` `launch.json` entry work withs `samples/__tests__`
+* keep testing navigation in todomvc (especially: moving from event handler to store methods)
 * [callbacks]
-   * Problem: we cannot wrap callbacks, as it will break the function's (or possible class's) identity.
-      * Solution: Use a separate map to track callbacks and their points of passage instead
-   * `StaticTraceTDNode` displays Schedule/Push/Pop as separate executions
-* [dbux-cli -> dbux run]
-   * breakpoints in dbux-run don't work anymore unless at least one debugger statement is added
-* [instrumentation]
-   * [loops]
-      * capture loop variables in BlockStart
-      * new data types:
-         * `staticLoop`
-         * `loop`
-            * `firstTraceId` + `lastTraceId`
-         * `loopRepition`
-            * `i`
-            * `headerVars`
-      * add `loopRepititionId` to all traces in loop
-         * add `loopRepitition`:
-            * before `init`, and after `condition` has evaluated to `true`?
-      * in loop's `BlockStart`:
-         * evaluate + store `headerVars`
-            * all variables that have bindings in loop header
-      * fix `DoWhileLoop` :(
-   * fix `Await` + `Resume`
-      * async function's push + pop?
-      * when resuming, we might come back from a callback etc.
-         * Need to push `Resume` on demand?
-      * when resuming, parent is not set
-   * add one trace for each function parameter
-   * [promises] keep track of `schedulerTraceId`
+   * Problem: we cannot wrap callbacks, as it will break the function's (or class's) identity.
+      * This breaks...
+         * `instanceof` on any class variable that is not the actual declaration of the class (i.e. when returning a class, storing them in other variables, passing as argument etc...)
+         * triggers a babel assertion when targeting esnext and using es6 classes in anything but `new` statements
+         * identity-mapping of callbacks (e.g. `reselect`, React's `useCallback` and probably many more)
+            * usually only causes performance to deteriorate which is ok, but it might sometimes affect functionality as well...
+      * partial solution: Use a separate map to track callbacks and their points of passage instead?
+         * => Won't work as comprehensively at all
+         * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities
+         * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
+            * => Same issue as with passing callbacks in React
+         * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
+* [loops]
+   * fix `DoWhileLoop` :(
+* [error_handling]
+   * if we have an error, try to trace "skipped contexts"
+      * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.
+      * if things got skipped, capture last trace executed in context to find error
+   * make error tracing configurable and/or add proper explanations when errors are reported
+      * NOTE: `catch` clauses added by instrumentation temper with the breakpoints at which errors are reported (but does NOT temper with stacktrace per se);
+         * -> so it is safe but needs some explanation
+   * [errors_and_await]
+      * test: when error thrown, do we pop the correct resume and await contexts?
 * [values]
-   * track function parameters
-   * track `this`
    * better overall value rendering
 * [InfoTDNode]
    * Push/Pop (of any kind) show next previous trace/context?
@@ -134,7 +227,16 @@
       * idea: just record all variables after line, so rendering is less convoluted?
    * show `x {n_times_executed}` after line, but only if n is different from the previous line
       * show multiple, if there are different numbers for multiple traces of line?
-* [CodeTreeWrapper]
+* fix "execution order" of "async runs"
+   * what to do with callbacks that preceded and then triggered a `Resume`?
+   * link up promise chains
+   * make sure that we don't accidentally use/cause evil promise semantics [[1](https://stackoverflow.com/questions/46889290/waiting-for-more-than-one-concurrent-await-operation)] [[2](https://stackoverflow.com/questions/58288256/with-a-promise-why-do-browsers-return-a-reject-twice-but-not-a-resolve-twice/58288370#58288370)]
+   * double check against the [Promise/A+ spec](https://promisesaplus.com/#notes), especially semantics of promise rejections and their execution order
+      * rejections might be triggered from "platform code"
+      * https://stackoverflow.com/questions/42118900/when-is-the-body-of-a-promise-executed
+      * http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor
+* [promises] keep track of `schedulerTraceId`
+* [BaseTreeViewNodeProvider]
    * long node lists
       * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead 
 * [cursorTracesView]
@@ -202,6 +304,33 @@
 * add test setup to all libs
 * add testing for serialization + deserialization (since it can easily cause a ton of pain)
 * improve value serialization to skip objects that are too big
+* [dbux-cli -> dbux run]
+   * breakpoints in dbux-run don't work anymore unless at least one debugger statement is added?
+
+
+
+
+
+
+
+## TODO: Testing + Case studies
+* [Goal: Make sure dbux runs on hundreds of popualr JS projects] - Use CLI to automatically check out and test github repos
+   1. git clone X
+   1. {npm,yarn} install
+      * (custom install steps here?)
+   1. npm test
+   1. dbux-npm test
+      * run `npm test` but with dbux instrumentations in place
+* "Interactive Open Source Case Studies"
+   * https://github.com/search?utf8=%E2%9C%93&q=language%3Ajavascript+stars%3A%3E1000&type=Repositories
+
+
+
+
+
+
+
+
 
 
 ## Possible future work
@@ -224,3 +353,4 @@
 
 ## Fancy ideas (Dev)
 * add extra-watch-webpack-plugin https://github.com/pigcan/extra-watch-webpack-plugin?
+

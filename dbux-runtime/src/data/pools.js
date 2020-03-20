@@ -1,6 +1,7 @@
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import Trace from 'dbux-common/src/core/data/Trace';
 import ValueRef from 'dbux-common/src/core/data/ValueRef';
+import Loop from 'dbux-common/src/core/data/loops/Loop';
 
 /**
  * TODO: proper object pooling
@@ -10,21 +11,8 @@ const pools = {
     /**
      * @return {ExecutionContext}
      */
-    allocate(contextType, stackDepth, runId, parentContextId, contextId, staticContextId, orderId, schedulerTraceId) {
-      // TODO: use object pooling
-      const context = new ExecutionContext();
-      context.contextType = contextType;
-      // context.stackDepth = stackDepth;  // not quite necessary, so we don't store it, for now
-      context.runId = runId;
-      context.parentContextId = parentContextId;
-      context.contextId = contextId;
-      context.staticContextId = staticContextId;
-      context.orderId = orderId;
-      context.schedulerTraceId = schedulerTraceId;
-      context.createdAt = Date.now();
-      // context.resumedChildren = null;
-
-      return context;
+    allocate() {
+      return new ExecutionContext();
     }
   },
 
@@ -37,6 +25,12 @@ const pools = {
   values: {
     allocate() {
       return new ValueRef();
+    }
+  },
+
+  loops: {
+    allocate() {
+      return new Loop();
     }
   }
 };

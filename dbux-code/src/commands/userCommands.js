@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import traceSelection from 'dbux-data/src/traceSelection';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { registerCommand } from './commands/commandUtil';
+import { registerCommand } from './commandUtil';
 
 function getRootFolder(fpath) {
   const spl = fpath.split(/[\\/]/, 2);
@@ -15,6 +15,7 @@ export function initUserCommands(context) {
   registerCommand(context, 'dbux.exportApplicationData', () => {
     if (!traceSelection.selected) {
       window.showWarningMessage('Could not export dbux application data - no trace selected');
+      return;
     }
 
     const application = allApplications.getById(traceSelection.selected.applicationId);

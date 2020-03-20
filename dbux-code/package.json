@@ -42,13 +42,17 @@
 				{
 					"id": "dbuxEditorTracesView",
 					"name": "Traces at Cursor"
+				},
+				{
+					"id": "dbuxApplicationsView",
+					"name": "Applications"
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "dbux.export",
-				"title": "Export Dbux Data"
+				"command": "dbux.exportApplicationData",
+				"title": "Dbux: Export application data"
 			},
 			{
 				"command": "dbuxContextView.gotoEntry",
@@ -83,6 +87,30 @@
 				"title": "Click"
 			},
 			{
+				"command": "dbuxTraceDetailsView.switchGroupingMode",
+				"title": "SwitchMode",
+				"icon": {
+					"light": "resources/light/string.svg",
+					"dark": "resources/dark/string.svg"
+				}
+			},
+			{
+				"command": "dbuxTraceDetailsView.selectTraceAtCursor",
+				"title": "Select Trace At Cursor",
+				"icon": {
+					"light": "resources/light/crosshair.svg",
+					"dark": "resources/dark/crosshair.svg"
+				}
+			},
+			{
+				"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+				"title": "No traces at cursor",
+				"icon": {
+					"light": "resources/light/crosshair_disabled.svg",
+					"dark": "resources/dark/crosshair_disabled.svg"
+				}
+			},
+			{
 				"command": "dbuxPlayback.previousTrace",
 				"title": "Start",
 				"icon": {
@@ -113,31 +141,37 @@
 					"light": "resources/light/pause.svg",
 					"dark": "resources/dark/pause.svg"
 				}
-			},
-			{
-				"command": "dbux.exportApplicationData",
-				"title": "Dbux: Export application data"
 			}
 		],
 		"menus": {
 			"editor/title": [
 				{
 					"command": "dbuxPlayback.previousTrace",
-					"group": "navigation@0"
+					"group": "navigation@5"
 				},
 				{
 					"command": "dbuxPlayback.nextTrace",
-					"group": "navigation@3"
+					"group": "navigation@8"
 				},
 				{
 					"command": "dbuxPlayback.play",
-					"when": "dbuxPlaybackPlaying == false",
-					"group": "navigation@1"
+					"when": "dbuxPlayback.context.Playing == false",
+					"group": "navigation@6"
 				},
 				{
 					"command": "dbuxPlayback.pause",
-					"when": "dbuxPlaybackPlaying == true",
-					"group": "navigation@2"
+					"when": "dbuxPlayback.context.Playing == true",
+					"group": "navigation@7"
+				},
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
+					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == true",
+					"group": "navigation@3"
+				},
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == false",
+					"group": "navigation@4"
 				}
 			],
 			"view/item/context": [
@@ -154,6 +188,11 @@
 				{
 					"command": "dbuxCallStackView.showScheduler",
 					"when": "view == dbuxCallStackView && viewItem == callStackNode.both.parent",
+					"group": "inline"
+				},
+				{
+					"command": "dbuxTraceDetailsView.switchGroupingMode",
+					"when": "view == dbuxTraceDetailsView && viewItem == dbuxTraceDetailsView.staticTraceTDNodeRoot",
 					"group": "inline"
 				}
 			]

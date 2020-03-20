@@ -17,33 +17,30 @@ class FirstTracesInOrder {
     this.applicationSet = applicationSetData.set;
     this._firstTracesArray = [];
   }
-
+  
   _mergeAll() {
     this._firstTracesArray = [];
     const applications = this.applicationSetData.set.getAll();
-    const allFirstContexts = applications.map((app) => app.dataProvider.util.getFirstContextsInRuns() || EmptyArray);
+    const allFirstTraces = applications.map((app) => app.dataProvider.util.getFirstTracesInRuns() || EmptyArray);
 
     const indexPointers = Array(applications.length).fill(0);
-    const contextsCount = allFirstContexts.reduce((sum, arr) => sum + arr.length, 0);
+    const tracesCount = allFirstTraces.reduce((sum, arr) => sum + arr.length, 0);
 
-    for (let i = 0; i < contextsCount; i++) {
-      let earliestContext = null;
+    for (let i = 0; i < tracesCount; i++) {
+      let earliestTrace = null;
       let earliestApplicationIndex = null;
       for (let j = 0; j < applications.length; j++) {
-        const context = allFirstContexts[j][indexPointers[j]];
-        if (!context) continue;
-        if (!earliestContext || context.createdAt < earliestContext.createdAt) {
-          earliestContext = context;
+        const trace = allFirstTraces[j][indexPointers[j]];
+        if (!trace) continue;
+        if (!earliestTrace || trace.createdAt < earliestTrace.createdAt) {
+          earliestTrace = trace;
           earliestApplicationIndex = j;
         }
       }
       indexPointers[earliestApplicationIndex] += 1;
-      const dp = applications[earliestApplicationIndex].dataProvider;
-      const trace = dp.indexes.traces.byContext.get(earliestContext.contextId)[0];
-      this._addOne(trace);
+      this._addOne(earliestTrace);
     }
   }
-
   
   _handleApplicationsChanged = () => {
     const applications = this.applicationSet.getAll();

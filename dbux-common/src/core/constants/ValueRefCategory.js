@@ -10,7 +10,7 @@ import Enum from '../../util/Enum';
  */
 let ValueRefCategory = {
   /**
-   * Primitives have a small, fixed size
+   * Primitives have a small, fixed size, primarily: number, bool
    */
   Primitive: 1,
 

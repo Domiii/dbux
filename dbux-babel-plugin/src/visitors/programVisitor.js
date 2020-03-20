@@ -9,13 +9,14 @@ import { mergeVisitors } from '../helpers/visitorHelpers';
 import { logInternalError } from '../log/logger';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
+import { buildDbuxInit } from '../data/staticData';
 
 
 // ###########################################################################
 // Builders
 // ###########################################################################
 
-function buildProgramInit(path, { ids, genContextIdName }) {
+function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
   const {
     dbuxInit,
     dbuxRuntime,
@@ -31,34 +32,6 @@ function buildProgramInit(path, { ids, genContextIdName }) {
   `);
 }
 
-function buildProgramTail(path, state) {
-  const {
-    ids,
-    fileName,
-    filePath,
-    staticContexts,
-    traces
-  } = state;
-  const {
-    dbuxInit,
-    // dbuxRuntime
-  } = ids;
-
-  const staticData = {
-    fileName,
-    filePath,
-    staticContexts,
-    traces
-  };
-
-  const staticDataString = JSON.stringify(staticData, null, 4);
-
-  return buildSource(`
-function ${dbuxInit}(dbuxRuntime) {
-  return dbuxRuntime.initProgram(${staticDataString});
-}`);
-}
-
 function buildPopProgram(dbux) {
   return buildSource(`${dbux}.popProgram();`);
 }
@@ -68,7 +41,7 @@ function buildPopProgram(dbux) {
 // ###########################################################################
 
 function addDbuxInitDeclaration(path, state) {
-  path.pushContainer('body', buildProgramTail(path, state));
+  path.pushContainer('body', buildDbuxInit(state));
 }
 
 function wrapProgram(path, state) {
@@ -118,9 +91,9 @@ function enter(path, state) {
     fileName,
     filePath,
   };
-  state.addStaticContext(path, staticProgramContext);
-  state.addTrace(path, TraceType.PushImmediate, true);      // === 1
-  state.addTrace(path, TraceType.PopImmediate, true);       // === 2
+  state.contexts.addStaticContext(path, staticProgramContext);
+  state.traces.addTrace(path, TraceType.PushImmediate, true);      // === 1
+  state.traces.addTrace(path, TraceType.PopImmediate, true);       // === 2
 
   // instrument Program itself
   wrapProgram(path, state);

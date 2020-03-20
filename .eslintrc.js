@@ -4,7 +4,8 @@ module.exports = {
 	],
 	"env": {
 		"commonjs": true,
-		"es6": true
+		"es6": true,
+		"jest": true
 	},
 	"globals": {
 		"console": true,
@@ -47,6 +48,7 @@ module.exports = {
 		"no-use-before-define": ["error", { "functions": false, "classes": true }],
 		"no-confusing-arrow": 0,
 		"no-cond-assign": ["error", "except-parens"],
+		"no-await-in-loop": 0,
 		"constructor-super": "warn",
 		"valid-typeof": "warn",
 		// "class-methods-use-this": "warn",
@@ -73,6 +75,8 @@ module.exports = {
 		"implicit-arrow-linebreak": 0,
 		"function-paren-newline": 0,
 		"linebreak-style": 0,
-		"quotes": 0
+		"quotes": 0,
+		"spaced-comment": 0,
+		"max-len": ["warn", { "code": 120 }]
 	}
 };

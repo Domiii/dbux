@@ -1,3 +1,5 @@
+import valueCollection from './data/valueCollection';
+
 /**
  * Comes from the order we execute things in programVisitor
  */
@@ -66,12 +68,12 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.postAwait(this.getProgramId(), awaitResult, awaitContextId, resumeTraceId);
   }
 
-  pushResume(resumeContextId, inProgramStaticTraceId) {
-    return this._runtimeMonitor.pushResume(this.getProgramId(), resumeContextId, inProgramStaticTraceId, true);
+  pushResume(resumeStaticContextId, inProgramStaticTraceId) {
+    return this._runtimeMonitor.pushResume(this.getProgramId(), resumeStaticContextId, inProgramStaticTraceId, true);
   }
 
-  popResume() {
-    return this._runtimeMonitor.popResume();
+  popResume(resumeContextId) {
+    return this._runtimeMonitor.popResume(resumeContextId);
   }
 
   popProgram() {
@@ -101,4 +103,19 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
+  // ###########################################################################
+  // values
+  // ###########################################################################
+
+  addVarAccess(inProgramStaticVarAccessId, value) {
+    return this._runtimeMonitor.addVarAccess(this.getProgramId(), inProgramStaticVarAccessId, value);
+  }
+
+  // ###########################################################################
+  // loops
+  // ###########################################################################
+
+  pushLoop() {
+
+  }
 }

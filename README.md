@@ -19,6 +19,7 @@ Here is a (very very early, read: crude) 1min demo video of just a small subset 
 * vscode
 * yarn
 
+
 ## Setup
 
 ```sh
@@ -29,6 +30,7 @@ npm run dbux-install
 
 # if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
 ```
+
 
 ## Start development
 
@@ -44,7 +46,8 @@ npm start # start webpack build of all projects in watch mode
    * `dbux-run # instruments + executes currently opened file`
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
-   
+
+
 ## Test: Project 1
 
 1. After you opened a new VSCode window with `dbux-code` enabled (see steps above), in that window you can run + trace all kinds of code.
@@ -269,25 +272,56 @@ You can re-add it manually:
    * https://github.com/babel/babel/pull/5590
 
 
-# Useful Snippets
+# Higher Order Questions
 
-```
-	"Comment Barrier 1": {
-		"scope": "javascript, typescript",
-		"prefix": "comment-barrier1",
-		"body": [
-			"// ###########################################################################",
-			"// $1",
-			"// ###########################################################################$0"
-		]
-	},
-	"Comment Barrier 2": {
-		"scope": "javascript, typescript",
-		"prefix": "comment-barrier2",
-		"body": [
-			"// ########################################",
-			"// $1",
-			"// ########################################$0"
-		]
-	}
-```
+## Questions that we can already answer
+
+* Which parts of my code executed?
+* How often did this code execute?
+* What did these expressions evaluate to during each execution?
+* What were the arguments passed to this function call?
+* Where did the execution go from here? Where did it come from?
+* Which events were triggered and how did its handlers execute?
+
+## TODO: Questions we want to work on next
+
+* Sub-graph filtering
+   * Search sub graph contexts by keyword (QuickInput)
+   * All traces/contexts/runs that referenced some object (ValueRef)
+
+## Future Work (even more cool questions)
+
+* Sub-graph filtering
+   * Multiple filter UI modes
+      * hide vs. grayed out?
+* What is the critical path in this sub-graph, in terms of call-stack depth?
+   * NOTE: we don't aim to do performance analysis, so we can't find the *actual* critical path
+* Given two traces, find shortest path (or path that is most likely to be the actual path?)
+   * TODO: Somehow visualize and allow interactions with that path
+      * -> Possibly like a car navigation system -> listing all the twists and turns in a list
+* Interactive visualized call graph
+   * zoom- and pan-able
+   * multi-resolution
+   * features and filters can be enabled and disabled
+   * multiple coloring schemes (e.g. one each for color per file/context/feature type and more)11
+
+
+# Features
+
+## Call Graph Navigation
+
+* {Previous,Next}InContext
+   * Use `getTracesOfRealContext`
+   * [no_trace]
+      * [Previous && current trace is Push && previous trace is Pop]
+         * -> go
+      * [Next && current trace is Pop && next trace is Push]
+         * -> go
+* PreviousParent
+   * First trace in current context --> context's `parentTraceId`
+* NextParent
+   * Same as `PreviousParent`, but get "next in context" of `parentTrace`
+* PreviousChild
+   * Use `ParentTracesInRealContextIndex`
+* NextChild
+   * Same as `PreviousChild`, but use "next in context" of `parentTrace`

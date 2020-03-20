@@ -1,8 +1,8 @@
 import { logInternalError } from 'dbux-common/src/log/logger';
-import Collection from './Collection';
-import ValueRefCategory, { determineValueRefCategory } from '../../../dbux-common/src/core/constants/ValueRefCategory';
-import pools from './pools';
+import ValueRefCategory, { determineValueRefCategory } from 'dbux-common/src/core/constants/ValueRefCategory';
 import serialize from 'dbux-common/src/serialization/serialize';
+import Collection from './Collection';
+import pools from './pools';
 
 class TrackedValue {
   static _lastId = 0;
@@ -12,7 +12,7 @@ class TrackedValue {
 
   constructor(value) {
     this.value = value;
-    this.trackedId = ++TrackedValue._lastId;
+    this.trackId = ++TrackedValue._lastId;
   }
 
   addRef(ref) {
@@ -30,23 +30,31 @@ class ValueCollection extends Collection {
     super('values');
   }
 
-  processValue(hasValue, value, result) {
+  registerValueMaybe(hasValue, value, valueHolder) {
     if (!hasValue) {
-      result.valueId = 0;
-      result.value = undefined;
+      valueHolder.valueId = 0;
+      valueHolder.value = undefined;
     }
     else {
-      const category = determineValueRefCategory(value);
-      if (category === ValueRefCategory.Primitive) {
-        result.valueId = 0;
-        result.value = value;
-      }
-      else {
-        const valueId = this._addValue(category, value);
-        result.valueId = valueId;
-        result.value = undefined;
-      }
+      this.registerValue(value, valueHolder);
     }
+  }
+
+  registerValue(value, valueHolder) {
+    const category = determineValueRefCategory(value);
+    if (category === ValueRefCategory.Primitive) {
+      valueHolder.valueId = 0;
+      valueHolder.value = value;
+    }
+    else {
+      const valueId = this._addValue(category, value);
+      valueHolder.valueId = valueId;
+      valueHolder.value = undefined;
+    }
+  }
+
+  addValue(value) {
+
   }
 
   /**

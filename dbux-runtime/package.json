@@ -13,8 +13,7 @@
     "__postinstall": "npm run add-links",
     "add-links": "npm i --ignore-scripts -S ../dbux-common"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "keywords": [
     "dbux",
     "interactive",
@@ -29,7 +28,8 @@
   },
   "peerDependencies": {
     "dbux-common": "../dbux-common",
-    "lodash": "*"
+    "lodash": "*",
+    "nanoevents": "*"
   },
   "_moduleAliases": {
     "dbux-common": "../dbux-common"

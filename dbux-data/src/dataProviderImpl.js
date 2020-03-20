@@ -18,9 +18,12 @@ import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTrace
 import dataProviderUtil from './dataProviderUtil';
 import TracesByRunIdIndex from './impl/indexes/TracesByRunIdIndex';
 import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextIndex';
+import TracesByTrackIdIndex from './impl/indexes/TracesByTrackIdIndex';
 import StaticContextsByFileIndex from './impl/indexes/StaticContextsByFileIndex';
 import StaticContextsByParentIndex from './impl/indexes/StaticContextsByParentIndex';
 import CallArgsByCallIndex from './impl/indexes/CallArgsByCallIndex';
+import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
+import TracesByParentStaticContextIndex from './impl/indexes/TracesByParentStaticContextIndex';
 
 
 export function newDataProvider(application) {
@@ -39,17 +42,20 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new StaticContextsByFileIndex());
   dataProvider.addIndex(new StaticContextsByParentIndex());
 
+  dataProvider.addIndex(new ContextsByStaticContextIndex());
   dataProvider.addIndex(new ContextChildrenIndex());
   dataProvider.addIndex(new RootContextsIndex());
-  dataProvider.addIndex(new FirstTracesIndex());
   dataProvider.addIndex(new FirstContextsInRunsIndex());
-
+  
+  dataProvider.addIndex(new FirstTracesIndex());
   dataProvider.addIndex(new TracesByFileIndex());
   dataProvider.addIndex(new TracesByContextIndex());
   dataProvider.addIndex(new TracesByParentContextIndex());
   dataProvider.addIndex(new TracesByStaticTraceIndex());
   dataProvider.addIndex(new TracesByStaticContextIndex());
+  dataProvider.addIndex(new TracesByParentStaticContextIndex());
   dataProvider.addIndex(new TracesByRunIdIndex());
+  dataProvider.addIndex(new TracesByTrackIdIndex());
   dataProvider.addIndex(new CallArgsByCallIndex());
 
 

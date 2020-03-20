@@ -2,10 +2,9 @@ import findLast from 'lodash/findLast';
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import Trace from 'dbux-common/src/core/data/Trace';
 import Application from 'dbux-data/src/applications/Application';
-import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
-import { babelLocToCodeRange } from './locHelpers';
 import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import { babelLocToCodeRange } from './codeLocHelpers';
 
 /**
  * This file provides data/query utilities for all kinds of data that 
@@ -26,7 +25,7 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
  * If not interruptable, returns array with static context of function.
  * If interruptable returns all Resume contexts.
  */
-export function getStaticContextsAt(application, programId, pos): StaticContext {
+export function getStaticContextAt(application, programId, pos): StaticContext {
   const { dataProvider } = application;
   const staticContexts = dataProvider.indexes.staticContexts.byFile.get(programId);
   const staticContext: StaticContext = findLast(staticContexts, staticContext => {
@@ -39,20 +38,20 @@ export function getStaticContextsAt(application, programId, pos): StaticContext 
   }
 
 
-  if (staticContext.type !== StaticContextType.Resume) {
-    // just a normal function
-    return [staticContext];
-  }
-  else {
-    // interruptable function => return parent (the function itself), as well as all children of parent
-    const { parentId } = staticContext;
-    const parentContext = dataProvider.collections.staticContexts.getById(parentId);
-    const children = dataProvider.indexes.staticContexts.byParent.get(parentId);
-    return [
-      parentContext,
-      ...(children || EmptyArray)
-    ];
-  }
+  // if (!staticContext.isInterruptable) {
+  // just a normal function
+  return staticContext;
+  // }
+  // else {
+  //   // interruptable function => return parent (the function itself), as well as all children of parent
+  //   const { parentId } = staticContext;
+  //   const parentContext = dataProvider.collections.staticContexts.getById(parentId);
+  //   const children = dataProvider.indexes.staticContexts.byParent.get(parentId);
+  //   return [
+  //     parentContext,
+  //     ...(children || EmptyArray)
+  //   ];
+  // }
 }
 
 /**
@@ -61,22 +60,20 @@ export function getStaticContextsAt(application, programId, pos): StaticContext 
 export function getTracesAt(application: Application, programId, pos): Trace[] {
   const dp = application.dataProvider;
 
-  // find staticContext (function or Program) at position
-  const staticContexts = getStaticContextsAt(application, programId, pos);
-  if (!staticContexts) {
+  // find inner most staticContext (function or Program) at position
+  const staticContext = getStaticContextAt(application, programId, pos);
+  if (!staticContext) {
     return null;
   }
+  
+  const { 
+    staticId: staticContextId
+  } = staticContext;
 
-  // find all traces in context
-  const traces = staticContexts.map(staticContext => {
-    const { staticId: staticContextId } = staticContext;
-    return dp.indexes.traces.byStaticContext.get(staticContextId) || EmptyArray;
-  })
-    .flat()
-    .filter(trace => dp.util.getTraceType(trace.traceId) !== TraceType.BeforeCallExpression);
-  if (!traces) {
-    return null;
-  }
+  const traces = dp.util.getAllTracesOfStaticContext(staticContextId)
+    .filter(trace =>
+      dp.util.getTraceType(trace.traceId) !== TraceType.BeforeCallExpression
+    );
 
   // only return traces at cursor
   return traces.filter(trace => {
