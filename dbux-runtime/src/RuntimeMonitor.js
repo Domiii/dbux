@@ -149,6 +149,7 @@ export default class RuntimeMonitor {
         _this.popCallback(callbackContextId, inProgramStaticTraceId, resultValue);
       }
     };
+    Object.defineProperty(wrappedCb, 'name', { value: cb.name });
     _inheritsLoose(wrappedCb, cb);
     return wrappedCb;
   }

@@ -237,19 +237,19 @@ export default class Runtime {
       this._markWaiting(contextId);
     }
 
-    const context = executionContextCollection.getById(contextId);
-    const staticContext = staticContextCollection.getById(context.staticContextId);
-    const name = staticContext.displayName || '';
-    const typeName = ExecutionContextType.nameFromForce(context.contextType);
-    console.debug('->', context.runId, contextId, `[${typeName}] ${name}`);
+    // const context = executionContextCollection.getById(contextId);
+    // const staticContext = staticContextCollection.getById(context.staticContextId);
+    // const name = staticContext.displayName || '';
+    // const typeName = ExecutionContextType.nameFromForce(context.contextType);
+    // console.debug('->', context.runId, contextId, `[${typeName}] ${name}`);
   }
 
   pop(contextId) {
-    const context = executionContextCollection.getById(contextId);
-    const staticContext = staticContextCollection.getById(context.staticContextId);
-    const name = staticContext.displayName || '';
-    const typeName = ExecutionContextType.nameFromForce(context.contextType);
-    console.debug('<-', context.runId, contextId, `[${typeName}] ${name}`);
+    // const context = executionContextCollection.getById(contextId);
+    // const staticContext = staticContextCollection.getById(context.staticContextId);
+    // const name = staticContext.displayName || '';
+    // const typeName = ExecutionContextType.nameFromForce(context.contextType);
+    // console.debug('<-', context.runId, contextId, `[${typeName}] ${name}`);
 
     let stack = this._executingStack;
     let stackPos;

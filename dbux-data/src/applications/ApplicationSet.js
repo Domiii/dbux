@@ -30,6 +30,13 @@ export default class ApplicationSet {
     return this._applications;
   }
 
+  // /**
+  //  * Guess name of application s.t. it is short but also unique between all application in this set.
+  //  */
+  // guessUniqueName(application) {
+  //   throw new Error('Not Yet Implemented');
+  // }
+
   isEmpty() {
     return !this._applications.length;
   }

@@ -105,7 +105,7 @@ class TraceCollection extends Collection<Trace> {
           const beforeCall = beforeCalls.pop();
           // console.log(' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
-            logError('[resultCallId]', 'staticTrace.resultCallId !== beforeCall.staticTraceId - is trace result of a CallExpression-tree? -', staticTrace.displayName, trace, beforeCall);
+            logError('[resultCallId]', 'staticTrace.resultCallId !== beforeCall.staticTraceId - is trace result of a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
             beforeCalls.push(beforeCall);   // something is wrong -> push it back
           }
           else {
@@ -117,7 +117,7 @@ class TraceCollection extends Collection<Trace> {
           // call args: reference their call by `callId`
           const beforeCall = beforeCalls[beforeCalls.length - 1];
           if (staticTrace.callId !== beforeCall?.staticTraceId) {
-            logError('[callId]', 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? -', trace, staticTrace, beforeCall);
+            logError('[callId]', 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
           }
           trace.callId = beforeCall.traceId;
         }

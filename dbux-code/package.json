@@ -221,6 +221,7 @@
 		"vscode-test": "^1.2.2"
 	},
 	"dependencies": {
+		"comment-json": "^3.0.2",
 		"moment": "^2.24.0",
 		"socket.io": "^2.3.0"
 	},

@@ -144,6 +144,6 @@ module.exports = [
   // NOTE: you can have multiple configs per file (see https://stackoverflow.com/a/46825869)
 ];
 
-console.warn('[dbux] webpack config loaded',
+console.debug('[dbux] webpack.config loaded',
   // targetsAbsolute
 );

@@ -2,7 +2,7 @@
 /projects
 __samplesOutput__
 _testOut
-_data.json
+*_data.json
 
 
 # OS

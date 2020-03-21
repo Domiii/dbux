@@ -1,4 +1,5 @@
 {
+	"name": "dbux-root",
 	"private": true,
 	"devDependencies": {
 		"@babel/cli": "^7.8.3",
@@ -43,6 +44,7 @@
 	"dependencies": {
 		"@babel/runtime": "^7.8.3",
 		"core-js": "^3.6.4",
+		"find-package-json": "^1.2.0",
 		"link-module-alias": "^1.2.0",
 		"lodash": "^4.17.15",
 		"nanoevents": "^2.0.0",

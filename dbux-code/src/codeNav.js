@@ -4,13 +4,13 @@ import {
   Position,
   Selection
 } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newFileLogger } from 'dbux-common/src/log/logger';
 import Loc from 'dbux-common/src/core/data/Loc';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { babelLocToCodeRange } from './helpers/codeLocHelpers';
 
 
-const { log, debug, warn, error: logError } = newLogger('CodeNav');
+const { log, debug, warn, error: logError } = newFileLogger(__filename);
 
 /**
  * @param {Uri} URI (new vscode.Uri.file(FILEPATH))
@@ -36,7 +36,7 @@ let lastRequestedDocumentFpath;
  * It rejects all in-flight promises, if you query it too fast; so we need to slow things down.
  * @see https://github.com/microsoft/vscode/issues/93003
  */
-async function showTextDocument(fpath) {
+export async function showTextDocument(fpath) {
   // see https://code.visualstudio.com/api/references/vscode-api#Uri
   // console.log(window.activeTextEditor.document.uri.path);
   if (lastRequestedDocumentFpath === fpath) {

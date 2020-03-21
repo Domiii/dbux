@@ -15,7 +15,7 @@
    * ordering should always be descending by id (newest first)
       * also apply that order to children within groups
 * [applicationView]
-   * add a button that allows us to jump straight to the entry point
+   * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
    * nest applications of same entry point under same node
       * most recent Application is parent, all others are children
       * make sure, `children` is `null` if it has no children (so `CollapsibleState` will be `None`)
@@ -154,6 +154,8 @@
 
 
 ## TODO (other)
+* fix: [Performance] recently deteriorated 
+   * probably related to `sourceHelpers.js`?
 * fix: trace order for `super` instrumentation is incorrect
    * try to find `SequenceExpression` ancestor first, and isntrument that instead
 * fix: `callId` linkage does not work in `oop1.js`

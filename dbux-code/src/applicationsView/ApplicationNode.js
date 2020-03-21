@@ -4,8 +4,9 @@ import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
 export default class TraceNode extends BaseTreeViewNode {
   static makeLabel(app: Application) {
-    const prefix = allApplications.selection.containsApplication(app)? '☑' : '☐';
-    const label = app.getRelativeFolder();
+    const prefix = allApplications.selection.containsApplication(app) ? '☑' : '☐';
+    // const label = app.getRelativeFolder();
+    const label = app.guessName();
     return `${prefix} ${label}`;
   }
 

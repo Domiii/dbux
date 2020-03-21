@@ -1,3 +1,4 @@
+import generate from '@babel/generator';
 
 
 /**
@@ -6,7 +7,8 @@
  */
 function generateSourceWithoutComments(node) {
   const options = {
-    comments: false
+    comments: false,
+    
   };
   return generate(node, options).code;
 }
@@ -21,15 +23,19 @@ function getSourceCodeLines(state) {
   const { file } = state;
   let lines = linesByProgram.get(file);
   if (!lines) {
-    const {
-      code
-    } = file;
+    let { code } = file;
+    
     lines = code.split(NEWLINE);
     linesByProgram.set(file, lines);
   }
   return lines;
 }
 
+
+/**
+ * Based on `@babel/code-frame`, but more optimized
+ * @see https://github.com/hulkish/babel/blob/master/packages/babel-code-frame/src/index.js
+ */
 function extractSourceAtLoc(srcLines, loc) {
   let line0 = loc.start.line - 1;
   const col0 = loc.start.column;
@@ -53,12 +59,9 @@ function extractSourceAtLoc(srcLines, loc) {
   return result;
 }
 
-/**
- * Based on `@babel/code-frame`, but more optimized
- * @see https://github.com/hulkish/babel/blob/master/packages/babel-code-frame/src/index.js
- */
 export function extractSourceStringWithoutComments(node, state) {
-  return extractSourceStringWithoutCommentsAtLoc(node.loc, state);
+  return generateSourceWithoutComments(node);
+  // return extractSourceStringWithoutCommentsAtLoc(node.loc, state);
 }
 
 export function extractSourceStringWithoutCommentsAtLoc(loc, state) {
