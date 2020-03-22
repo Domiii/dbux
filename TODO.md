@@ -154,8 +154,7 @@
 
 
 ## TODO (other)
-* fix: [Performance] recently deteriorated 
-   * probably related to `sourceHelpers.js`?
+* setup data analysis framework
 * fix: trace order for `super` instrumentation is incorrect
    * try to find `SequenceExpression` ancestor first, and isntrument that instead
 * fix: `callId` linkage does not work in `oop1.js`
@@ -355,6 +354,9 @@
 
 
 ## Possible future work
+* [Performance]
+   * Weird bug: when we run w/ debugger attached in extension-host VSCode window, code runs 20x slower
+   * NOTE: Bug w/ latest VSCode only?
 * [playback] add awesome keyboard controls~
    * when "in playback mode" use arrow keys (and maybe a few other keys) to jump around very quickly
    * can we do it like [`jumpy`](https://marketplace.visualstudio.com/items?itemName=wmaurer.vscode-jumpy) ([source](https://github.com/krnik/vscode-jumpy))?

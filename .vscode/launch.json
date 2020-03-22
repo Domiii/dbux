@@ -101,7 +101,7 @@
 			"internalConsoleOptions": "neverOpen",
 		},
 		{
-			"name": "run js",
+			"name": "run js (babel)",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}/dbux-cli",
@@ -114,6 +114,29 @@
 				"${file}",
 			],
 			// see: https://github.com/microsoft/vscode/issues/5422
+			"restart": true,
+			"protocol": "inspector",
+			"trace": "all",
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"outFiles": [
+				"${workspaceRoot}/dbux-runtime/dist/**/*.js"
+			]
+		},
+		{
+			"name": "run js (no babel)",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}/dbux-cli",
+			"runtimeArgs": [
+				"--stack-trace-limit=1000",
+				"--nolazy",
+			],
+			"program": "${workspaceFolder}/dbux-cli/bin/run-js-unbabel.js",
+			"args": [
+				"${file}",
+			],
 			"restart": true,
 			"protocol": "inspector",
 			"trace": "all",
