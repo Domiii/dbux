@@ -154,7 +154,9 @@
 
 
 ## TODO (other)
-* setup data analysis framework
+* fix: `callId` + `resultCallId` linkage is broken (test w/ `oop1` + `calls1` samples)
+* fix: `sourceHelper` must use original code, but exclude comments
+* fix: `__filename` + `__dirname` do not work w/ webpack
 * fix: trace order for `super` instrumentation is incorrect
    * try to find `SequenceExpression` ancestor first, and isntrument that instead
 * fix: `callId` linkage does not work in `oop1.js`

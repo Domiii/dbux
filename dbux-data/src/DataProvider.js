@@ -42,7 +42,7 @@ class StaticContextCollection extends Collection<StaticContext> {
 
 class StaticTraceCollection extends Collection<StaticTrace> {
   constructor(dp) {
-    super('staticTraceContexts', dp);
+    super('staticTraces', dp);
   }
 }
 
@@ -175,15 +175,20 @@ export default class DataProvider {
   constructor(application) {
     this.application = application;
 
-    this.collections = {
-      staticProgramContexts: new StaticProgramContextCollection(this),
-      staticContexts: new StaticContextCollection(this),
-      staticTraces: new StaticTraceCollection(this),
+    const collectionClasses = [
+      StaticProgramContextCollection,
+      StaticContextCollection,
+      StaticTraceCollection,
 
-      executionContexts: new ExecutionContextCollection(this),
-      traces: new TraceCollection(this),
-      values: new ValueCollection(this)
-    };
+      ExecutionContextCollection,
+      TraceCollection,
+      ValueCollection
+    ];
+
+    this.collections = Object.fromEntries(collectionClasses.map(Col => {
+      const col = new Col(this);
+      return [col.name, col];
+    }));
 
     this.queries = new Queries();
     this.indexes = new Indexes();

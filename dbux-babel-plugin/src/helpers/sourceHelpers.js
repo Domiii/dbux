@@ -60,8 +60,8 @@ function extractSourceAtLoc(srcLines, loc) {
 }
 
 export function extractSourceStringWithoutComments(node, state) {
-  return generateSourceWithoutComments(node);
-  // return extractSourceStringWithoutCommentsAtLoc(node.loc, state);
+  // return generateSourceWithoutComments(node);
+  return extractSourceStringWithoutCommentsAtLoc(node.loc, state);
 }
 
 export function extractSourceStringWithoutCommentsAtLoc(loc, state) {

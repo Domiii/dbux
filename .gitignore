@@ -2,8 +2,14 @@
 /projects
 __samplesOutput__
 _testOut
-*_data.json
+*js_data.json
 
+
+# python
+__pycache__
+
+# clinic.js reports
+.clinic
 
 # OS
 .DS_Store
@@ -15,8 +21,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-# clinic.js reports
-.clinic
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

@@ -2,7 +2,6 @@ import { window, workspace } from 'vscode';
 import path from 'path';
 import fs from 'fs';
 // import { stringify as jsonStringify } from 'comment-json';
-import traceSelection from 'dbux-data/src/traceSelection';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { newFileLogger } from 'dbux-common/src/log/logger';
 import { registerCommand } from './commandUtil';
@@ -10,15 +9,21 @@ import { showTextDocument } from '../codeNav';
 
 const { log, debug, warn, error: logError } = newFileLogger(__filename);
 
+console.log('filename:', __filename);
+
 function serialize(data) {
   // return jsonStringify(data);
 
-  return JSON.stringify(data);
+  return JSON.stringify(data, null, 2);
 }
 
 export function initUserCommands(context) {
-  // dbux.exportApplicationData
+  // ###########################################################################
+  // exportApplicationData
+  // ###########################################################################
   registerCommand(context, 'dbux.exportApplicationData', async () => {
+    const exportFolder = path.join(__dirname, '../../analysis/__data__/');
+
     // if (!traceSelection.selected) {
     //   window.showWarningMessage('Could not export dbux application data - no trace selected');
     //   return;
@@ -41,9 +46,9 @@ export function initUserCommands(context) {
     // get first application
     const application = allApplications.selection.getAll()[0];
     const name = application.guessSafeFileName();
-    const folder = path.dirname(application.entryPointPath);
+    // const folder = path.dirname(application.entryPointPath);
     // const fpath = path.join(folder, '_data.json');
-    const fpath = path.join(folder, `${name || '(unknown)'}_data.json`);
+    const fpath = path.join(exportFolder, `${name || '(unknown)'}_data.json`);
     const data = application.dataProvider.serialize();
     fs.writeFileSync(fpath, serialize(data));
 
