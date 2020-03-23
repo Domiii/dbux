@@ -35,31 +35,33 @@ export function initUserCommands(context) {
     }
 
     if (allApplications.selection.isEmpty()) {
-      window.showWarningMessage('Could not export data - no application selected');
+      window.showWarningMessage('Could not export dbux data - no application selected');
       return;
     }
 
-    // const fpath = window.activeTextEditor.document.uri.fsPath;
+    const openFilePath = window.activeTextEditor?.document.uri.fsPath;
     // allApplications.selection.data.mapApplicationsOfFilePath(fpath, (application, programId) => {
     // });
 
-    // get first application
-    const application = allApplications.selection.getAll()[0];
-    const name = application.guessSafeFileName();
+    // get first matching application of currently open file
+    //    or, if no file is open, just the first application
+    const application = allApplications.selection.getAll().find(app => {
+      return !openFilePath ||
+        !!app.dataProvider.queries.programIdByFilePath(openFilePath);
+    });
+    const applicationName = await application.guessSafeFileName();
     // const folder = path.dirname(application.entryPointPath);
     // const fpath = path.join(folder, '_data.json');
-    const fpath = path.join(exportFolder, `${name || '(unknown)'}_data.json`);
+    const exportFpath = path.join(exportFolder, `${applicationName || '(unknown)'}_data.json`);
     const data = application.dataProvider.serialize();
-    fs.writeFileSync(fpath, serialize(data));
-
-    // TODO: convert to array-of-object for data analysis tools to work here
+    fs.writeFileSync(exportFpath, serialize(data));
 
     const btns = {
       Open: async () => {
-        await showTextDocument(fpath);
+        await showTextDocument(exportFpath);
       }
     };
-    const msg = `File saved successfully: ${fpath}`;
+    const msg = `File saved successfully: ${exportFpath}`;
     debug(msg);
     const clicked = await window.showInformationMessage(msg, 
       ...Object.keys(btns));

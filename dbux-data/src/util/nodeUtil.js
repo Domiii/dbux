@@ -22,7 +22,29 @@ export function findPackageJson(fpath) {
   return res?.filename;
 }
 
-export async function getPackageJson(fpath) {
+export async function getClosestPackageJsonNameOrPath(fpath) {
+  let packagePath = null;
+  try {
+    packagePath = findPackageJson(fpath);
+    if (!packagePath) {
+      return null;
+    }
+
+    const raw = await fs.readFile(packagePath);
+    const pkg = raw && JSON.parse(raw);
+    if (pkg?.name) {
+      return pkg?.name;
+    }
+  }
+  catch (err) {
+    logError('could not find or open package.json at', packagePath, ' -\n', err);
+  }
+
+  // get dirname of package path instead
+  return path.basename(path.dirname(packagePath || ''));
+}
+
+export async function getClosestPackageJson(fpath) {
   let packagePath;
   try {
     packagePath = findPackageJson(fpath);
@@ -40,6 +62,6 @@ export async function getPackageJson(fpath) {
 }
 
 export function getFileName(fpath) {
-  // return path.parse(fpath).name;
-  return path.basename(fpath);
+  return path.parse(fpath).name;
+  // return path.basename(fpath);
 }

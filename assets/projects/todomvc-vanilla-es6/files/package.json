@@ -1,4 +1,5 @@
 {
+  "name": "todomvc-es6",
   "private": true,
   "scripts": {
     "__orig_compile": "java -jar node_modules/google-closure-compiler/compiler.jar --language_in=ES6_STRICT --new_type_inf --js_output_file='dist/bundle.js' 'src/**.js' -W VERBOSE",

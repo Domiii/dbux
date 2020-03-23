@@ -1,6 +1,6 @@
 import DataProvider from '../DataProvider';
 import { newDataProvider } from '../dataProviderImpl';
-import { getFileName, getPackageJson } from '../util/nodeUtil';
+import { getFileName, getPackageJson, getClosestPackageJsonNameOrPath } from '../util/nodeUtil';
 
 
 /**
@@ -59,7 +59,7 @@ export default class Application {
   /**
    * TODO: make this cross-platform (might run this where we don't have Node)
    */
-  guessName() {
+  async guessName() {
     const { staticProgramContexts } = this.dataProvider.collections;
     const fileCount = staticProgramContexts.size;
     if (!fileCount) {
@@ -69,18 +69,14 @@ export default class Application {
     const file = staticProgramContexts.getById(1)?.filePath;
     if (fileCount > 1) {
       // multiple files -> look for package.json
-      const pkg = getPackageJson(file);
-      const name = pkg?.name;
-      if (name) {
-        return name;
-      }
+      return getClosestPackageJsonNameOrPath(file);
     }
 
     // just a single file -> return file name
     return getFileName(file);
   }
 
-  guessSafeFileName() {
-    return this.guessName()?.replace(/[:\\/]/, '-');
+  async guessSafeFileName() {
+    return (await this.guessName())?.replace(/[:\\/]/, '-');
   }
 }

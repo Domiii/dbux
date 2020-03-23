@@ -154,6 +154,8 @@
 
 
 ## TODO (other)
+* fix: `Application.guessName` should be the runtime's responsibility
+   * should not be async function, nor should it check local directories
 * fix: `callId` + `resultCallId` linkage is broken (test w/ `oop1` + `calls1` samples)
 * fix: `sourceHelper` must use original code, but exclude comments
 * fix: `__filename` + `__dirname` do not work w/ webpack

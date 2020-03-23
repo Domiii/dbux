@@ -105,7 +105,7 @@ class TraceCollection extends Collection<Trace> {
           const beforeCall = beforeCalls.pop();
           // console.log(' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
-            logError('[resultCallId]', 'staticTrace.resultCallId !== beforeCall.staticTraceId - is trace result of a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
+            logError('[resultCallId]', beforeCall.staticTraceId, staticTrace.staticTraceId, 'staticTrace.resultCallId !== beforeCall.staticTraceId - is trace result of a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
             beforeCalls.push(beforeCall);   // something is wrong -> push it back
           }
           else {
@@ -117,7 +117,7 @@ class TraceCollection extends Collection<Trace> {
           // call args: reference their call by `callId`
           const beforeCall = beforeCalls[beforeCalls.length - 1];
           if (staticTrace.callId !== beforeCall?.staticTraceId) {
-            logError('[callId]', 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
+            logError('[callId]', beforeCall.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
           }
           trace.callId = beforeCall.traceId;
         }
@@ -175,20 +175,30 @@ export default class DataProvider {
   constructor(application) {
     this.application = application;
 
-    const collectionClasses = [
-      StaticProgramContextCollection,
-      StaticContextCollection,
-      StaticTraceCollection,
+    // NOTE: we have to hardcode these so we get Intellisense
+    this.collections = {
+      staticProgramContexts: new StaticProgramContextCollection(this),
+      staticContexts: new StaticContextCollection(this),
+      staticTraces: new StaticTraceCollection(this),
 
-      ExecutionContextCollection,
-      TraceCollection,
-      ValueCollection
-    ];
+      executionContexts: new ExecutionContextCollection(this),
+      traces: new TraceCollection(this),
+      values: new ValueCollection(this)
+    };
 
-    this.collections = Object.fromEntries(collectionClasses.map(Col => {
-      const col = new Col(this);
-      return [col.name, col];
-    }));
+    // const collectionClasses = [
+    //   StaticProgramContextCollection,
+    //   StaticContextCollection,
+    //   StaticTraceCollection,
+
+    //   ExecutionContextCollection,
+    //   TraceCollection,
+    //   ValueCollection
+    // ];
+    // this.collections = Object.fromEntries(collectionClasses.map(Col => {
+    //   const col = new Col(this);
+    //   return [col.name, col];
+    // }));
 
     this.queries = new Queries();
     this.indexes = new Indexes();
