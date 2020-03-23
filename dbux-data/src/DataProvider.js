@@ -95,7 +95,7 @@ class TraceCollection extends Collection<Trace> {
       const traceType = this.dp.util.getTraceType(traceId);
       if (traceType === TraceType.BeforeCallExpression) {
         beforeCalls.push(trace);
-        // console.log(' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
+        console.log(' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
       }
       else if (isTraceExpression(traceType)) {
         // NOTE: `hasTraceValue` to filter out Push/PopCallback
@@ -103,7 +103,7 @@ class TraceCollection extends Collection<Trace> {
           // call results: reference their call by `resultCallId` and vice versa by `resultId`
           // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
           const beforeCall = beforeCalls.pop();
-          // console.log(' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
+          console.log(' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
             logError('[resultCallId]', beforeCall.staticTraceId, staticTrace.staticTraceId, 'staticTrace.resultCallId !== beforeCall.staticTraceId - is trace result of a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
             beforeCalls.push(beforeCall);   // something is wrong -> push it back

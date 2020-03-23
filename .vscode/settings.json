@@ -9,7 +9,6 @@
   "javascript.preferences.quoteStyle":"single",
   "jest.pathToJest": "sh scripts/runJest.sh",
   // "python.pythonPath": "/usr/local/anaconda3/bin/python",
-  "python.dataScience.textOutputLimit": 0,
   "python.autoComplete.extraPaths": [
     "analysis/src"
   ],

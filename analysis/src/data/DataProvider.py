@@ -9,6 +9,10 @@ class Collections:
     self.staticTraces = collectionDf(rawData, 'staticTraces')
     self.contexts = collectionDf(rawData, 'executionContexts')
     self.traces = collectionDf(rawData, 'traces')
+  
+  def getUniqueColumnValues(self, collectionName, columnName):
+    collection = getattr(self, collectionName)
+    return collection[columnName].unique().flatten().tolist()
 
 
 class DataProvider:
@@ -19,20 +23,31 @@ class DataProvider:
 
     # for some reason, some columns were loaded as `float` -> convert to `int`
     staticTraces = self.collections.staticTraces
-    staticTraces['callId'] = staticTraces['callId'].astype(int) 
-    staticTraces['resultCallId'] = staticTraces['resultCallId'].astype(int)
 
     # get all function names in program
     staticContexts = self.collections.staticContexts
     allFunctionNames = staticContexts[['displayName']].to_numpy().flatten().tolist()
 
-  def displayCallTrees(self):
+
+  def getCollection(self, collectionName):
+    return getattr(self.collections, collectionName)
+    
+
+  def getUniqueStaticCallIds(self):
+    s = set((
+      *self.collections.getUniqueColumnValues('staticTraces', 'callId'),
+      *self.collections.getUniqueColumnValues('staticTraces', 'resultCallId')
+    ))
+    s.remove(0)       # remove 0
+    return sorted(list(s))
+
+
+  def getStaticCallTrees(self):
+    callIds = self.getUniqueStaticCallIds()
     staticTraces = self.collections.staticTraces
-    # TODO: get unique callId + resultCallId, and group that way (will not be a `groupby` operation because of overlap)
-    groups = staticTraces.groupby(lambda i: staticTraces.iloc[i]['callId'])
-    for callId, item in groups:
-      if callId > 0:
-        grp = groups.get_group(callId)
-        names = grp[['displayName']].to_numpy().flatten().tolist()
-        result = staticTraces[staticTraces['resultCallId'] == callId].iloc[0]
-        print(callId, names, result['displayName'])
+    for callId in callIds:
+      # grp = staticTraces.query(f'callId == {callId} or resultCallId == {callId}')
+      grp = staticTraces.query(f'callId == {callId}')
+      result = staticTraces.query(f'resultCallId == {callId}').iloc[0]
+      names = grp[['displayName']].to_numpy().flatten().tolist()
+      yield (callId, names, result)

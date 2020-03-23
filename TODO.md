@@ -156,7 +156,11 @@
 ## TODO (other)
 * fix: `Application.guessName` should be the runtime's responsibility
    * should not be async function, nor should it check local directories
-* fix: `callId` + `resultCallId` linkage is broken (test w/ `oop1` + `calls1` samples)
+* fix: `callId` + `resultCallId` linkage is broken
+   * in `oop1`: `staticTraceId` 67, 68, 69 
+   * problem: `Math.floor(Math.random() * AnimalClasses.length)`
+      * missing BCE `StaticTrace` (`type` == 5) 
+      * NOTE: calls that are only part of an argument?
 * fix: `sourceHelper` must use original code, but exclude comments
 * fix: `__filename` + `__dirname` do not work w/ webpack
 * fix: trace order for `super` instrumentation is incorrect
@@ -201,12 +205,14 @@
       * make sure the `test file` `launch.json` entry work withs `samples/__tests__`
 * keep testing navigation in todomvc (especially: moving from event handler to store methods)
 * [callbacks]
+   * add function mapping + also map to all their callbacks
    * Problem: we cannot wrap callbacks, as it will break the function's (or class's) identity.
       * This breaks...
          * `instanceof` on any class variable that is not the actual declaration of the class (i.e. when returning a class, storing them in other variables, passing as argument etc...)
          * triggers a babel assertion when targeting esnext and using es6 classes in anything but `new` statements
-         * identity-mapping of callbacks (e.g. `reselect`, React's `useCallback` and probably many more)
-            * usually only causes performance to deteriorate which is ok, but it might sometimes affect functionality as well...
+         * identity-mapping of callbacks
+            * `removeEventListener` etc.
+            * `reselect`, React's `useCallback` and probably many more caching functionality (does not break things)
       * partial solution: Use a separate map to track callbacks and their points of passage instead?
          * => Won't work as comprehensively at all
          * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities

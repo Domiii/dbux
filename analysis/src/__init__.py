@@ -3,6 +3,10 @@
 import os
 from os import path
 import sys
+import warnings
+
 sys.path.insert(0, os.getcwd())
 sys.path.insert(0, '..')
 sys.path.insert(0, path.join(path.dirname(__file__)))
+
+warnings.filterwarnings(action='once')
