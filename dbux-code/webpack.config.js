@@ -83,6 +83,10 @@ module.exports = {
   externals: {
     uws: "uws",
     vscode: "commonjs vscode"
+  },
+  node: {
+    __dirname: false,
+    __filename: false,
   }
 };
 

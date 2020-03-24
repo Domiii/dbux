@@ -4,22 +4,21 @@ import {
   Position,
   Selection
 } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newFileLogger } from 'dbux-common/src/log/logger';
 import Loc from 'dbux-common/src/core/data/Loc';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { babelLocToCodeRange } from './helpers/codeLocHelpers';
 
 
-const { log, debug, warn, error: logError } = newLogger('CodeNav');
+const { log, debug, warn, error: logError } = newFileLogger(__filename);
 
 /**
  * @param {Uri} URI (new vscode.Uri.file(FILEPATH))
  * @param {Position} position (new vscode.Position(LINE, CHARACTER))
  */
-export function goToCodeLoc(URI: Uri, loc: Loc) {
-  window.showTextDocument(URI).then(editor => {
-    selectLocInEditor(editor, loc);
-  });
+export async function goToCodeLoc(fpath, loc: Loc) {
+  const editor = await showTextDocument(fpath);
+  selectLocInEditor(editor, loc);
 }
 
 export function selectLocInEditor(editor, loc) {
@@ -28,10 +27,46 @@ export function selectLocInEditor(editor, loc) {
   editor.revealRange(range);
 }
 
+
+let editorOpenPromise;
+let lastRequestedDocumentFpath;
+
+/**
+ * Hackfix for buggy `showTextDocument`.
+ * It rejects all in-flight promises, if you query it too fast; so we need to slow things down.
+ * @see https://github.com/microsoft/vscode/issues/93003
+ */
+export async function showTextDocument(fpath) {
+  // see https://code.visualstudio.com/api/references/vscode-api#Uri
+  // console.log(window.activeTextEditor.document.uri.path);
+  if (lastRequestedDocumentFpath === fpath) {
+    return editorOpenPromise;
+  }
+  // await editorOpenPromise; // this will actually cause the bug again! (not sure why...)
+  lastRequestedDocumentFpath = fpath;
+
+  const uri = Uri.file(fpath);
+  try {
+    editorOpenPromise = window.showTextDocument(uri);
+    const editor = await editorOpenPromise;
+    return editor;
+  }
+  catch (err) {
+    logError('window.showTextDocument failed:', fpath, ' - ', err);
+  }
+  finally {
+    // reset everything
+    lastRequestedDocumentFpath = null;
+    editorOpenPromise = null;
+  }
+  return null;
+}
+
 export async function getOrOpenTraceEditor(trace) {
   const dp = allApplications.getApplication(trace.applicationId).dataProvider;
   const filePath = dp.queries.programFilePathByTraceId(trace.traceId);
-  return window.showTextDocument(Uri.file(filePath));
+
+  return showTextDocument(filePath);
 }
 
 export async function goToTrace(trace) {

@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const moduleAlias = require('module-alias');
 const process = require('process');
+const prettier = require("prettier");
 process.env.BABEL_DISABLE_CACHE = 1;
 
 
@@ -32,6 +33,7 @@ delete cliBabelOptions.presets;
 
 cliBabelOptions.plugins.push(dbuxBabelPlugin);
 cliBabelOptions.sourceMaps = false;
+cliBabelOptions.retainLines = true;
 
 const { transformSync } = require('@babel/core');
 
@@ -49,4 +51,7 @@ console.log('Instrumenting file', file, '...');
 // console.warn(babelOptions.plugins.map(p => (typeof p === 'function' ? p.toString() : JSON.stringify(p)).split('\n')[0]).join(','));
 const outputCode = transformSync(inputCode, cliBabelOptions).code;
 
-console.log(outputCode);
+
+console.log(
+  prettier.format(outputCode)
+);

@@ -7,5 +7,9 @@
   ],
   "editor.snippetSuggestions": "top",
   "javascript.preferences.quoteStyle":"single",
-  "jest.pathToJest": "sh scripts/runJest.sh"
+  "jest.pathToJest": "sh scripts/runJest.sh",
+  // "python.pythonPath": "/usr/local/anaconda3/bin/python",
+  "python.autoComplete.extraPaths": [
+    "analysis/src"
+  ],
 }

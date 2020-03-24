@@ -5,7 +5,7 @@ function main() {
     add(5, mul(6, [7, 8].reduce((a, x) => a + x)))
   );
   console.log(
-    add(d, - 100),
+    add(d, -100),
     [100, 20, 33, 4, 5, 6, 7].reduce((a, x) => Math.min(a, x))
   );
 }
