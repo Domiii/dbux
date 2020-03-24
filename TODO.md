@@ -154,6 +154,17 @@
 
 
 ## TODO (other)
+* [error_handling]
+   * if we have an error, try to trace "skipped contexts"
+      * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.
+      * if things got skipped, trace executed in (real) context has caused the error
+   * [errors_and_await]
+      * test: when error thrown, do we pop the correct resume and await contexts?
+   * How does it work?
+      * We mark possible `lastTraces` for all functions: i. any `ReturnStatement` and ii. at the end of the function
+      * Once a function has finished (we wrap all functions in `try`/`finally`), we insert a check:
+         * If `context.lastTraceId` is in `lastTraces`, there was no error
+         * else, `context.lastTraceId` caused an error
 * fix: Call Graph Roots -> name does not include actual function name
    * -> add `calleeName` to `staticTrace`?
    * -> `traceLabels`
@@ -180,12 +191,6 @@
          * before `init`, and after `condition` has evaluated to `true`?
    * in loop's `BlockStart`:
       * evaluate + store `headerVars` (all variables that have bindings in loop header)
-* [error_handling]
-   * if we have an error, try to trace "skipped contexts"
-      * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.
-      * if things got skipped, trace executed in (real) context has caused the error
-   * [errors_and_await]
-      * test: when error thrown, do we pop the correct resume and await contexts?
 * [values]
    * better overall value rendering
 * [testing]
