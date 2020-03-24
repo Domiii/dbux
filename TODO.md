@@ -154,20 +154,6 @@
 
 
 ## TODO (other)
-* fix: `Application.guessName` should be the runtime's responsibility
-   * should not be async function, nor should it check local directories
-* fix: `callId` + `resultCallId` linkage is broken
-   * in `oop1`: `staticTraceId` 67, 68, 69 
-   * problem: `Math.floor(Math.random() * AnimalClasses.length)`
-      * missing BCE `StaticTrace` (`type` == 5) 
-      * NOTE: calls that are only part of an argument?
-* fix: `sourceHelper` must use original code, but exclude comments
-* fix: `__filename` + `__dirname` do not work w/ webpack
-* fix: trace order for `super` instrumentation is incorrect
-   * try to find `SequenceExpression` ancestor first, and isntrument that instead
-* fix: `callId` linkage does not work in `oop1.js`
-* fix: `StaticTrace.staticContextId`
-* fix: `NewExpression` is not properly instrumented?
 * fix: Call Graph Roots -> name does not include actual function name
    * -> add `calleeName` to `staticTrace`?
    * -> `traceLabels`
@@ -181,9 +167,6 @@
 * [variable_tracking]
    * Nodes
       * any expressions: https://github.com/babel/babel/tree/master/packages/babel-types/src/validators/generated/index.js#L3446
-* [object_tracking]
-   * add trace/valueRef for `varAccess` of `params`
-      * Consider: replace `varAccess` with single traces for `params`
 * [loops]
    * new data types:
       * `staticLoop`
@@ -197,13 +180,20 @@
          * before `init`, and after `condition` has evaluated to `true`?
    * in loop's `BlockStart`:
       * evaluate + store `headerVars` (all variables that have bindings in loop header)
+* [error_handling]
+   * if we have an error, try to trace "skipped contexts"
+      * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.
+      * if things got skipped, trace executed in (real) context has caused the error
+   * [errors_and_await]
+      * test: when error thrown, do we pop the correct resume and await contexts?
+* [values]
+   * better overall value rendering
 * [testing]
    * add `dbux-cli` and `samples` to the `webpack` setup
    * finish setting up basic testing in `samples`
       * move a basic `server` implementation from `dbux-code` to `dbux-data`
       * then: let sample tests easily run their own server to operate on the data level
       * make sure the `test file` `launch.json` entry work withs `samples/__tests__`
-* keep testing navigation in todomvc (especially: moving from event handler to store methods)
 * [callbacks]
    * add function mapping + also map to all their callbacks
    * Problem: we cannot wrap callbacks, as it will break the function's (or class's) identity.
@@ -221,17 +211,14 @@
          * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * [loops]
    * fix `DoWhileLoop` :(
-* [error_handling]
-   * if we have an error, try to trace "skipped contexts"
-      * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.
-      * if things got skipped, capture last trace executed in context to find error
-   * make error tracing configurable and/or add proper explanations when errors are reported
-      * NOTE: `catch` clauses added by instrumentation temper with the breakpoints at which errors are reported (but does NOT temper with stacktrace per se);
-         * -> so it is safe but needs some explanation
-   * [errors_and_await]
-      * test: when error thrown, do we pop the correct resume and await contexts?
-* [values]
-   * better overall value rendering
+* fix: `sourceHelper` must use original code, but exclude comments
+* fix: trace order for `super` instrumentation is incorrect
+   * try to find `SequenceExpression` ancestor first, and isntrument that instead
+* fix: `StaticTrace.staticContextId`
+   * generally less accurate than `trace.context.staticContextId`
+   * cannot work correctly with interruptable functions
+   * -> repurpose as `realStaticContextId`?
+* fix: `NewExpression` is not properly instrumented?
 * [InfoTDNode]
    * Push/Pop (of any kind) show next previous trace/context?
    * [CallbackArg] -> show `Push/PopCallback` nodes
@@ -266,6 +253,9 @@
       * https://stackoverflow.com/questions/42118900/when-is-the-body-of-a-promise-executed
       * http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor
 * [promises] keep track of `schedulerTraceId`
+* [params]
+   * add trace/valueRef for `varAccess` of function `params`
+      * Consider: replace `varAccess` with single traces for `params`?
 * [BaseTreeViewNodeProvider]
    * long node lists
       * when there are many nodes, add "show first 10", "show last 10", "show 25 more" buttons, instead 
@@ -309,6 +299,8 @@
             * (if their declarations were instrumented)
 * [cli] allow to easily run multiple applications at once
    * (for proper multi-application testing)
+   * be careful:
+      * `__filename` + `__dirname` do not work w/ webpack when not targeting node
 * [instrumentation] support longer names
    * (and then hide them in tree view; show long version as tooltip)
 * [MultiKeyIndex] allow for storing data by multiple keys

@@ -17,13 +17,34 @@ function serialize(data) {
   return JSON.stringify(data, null, 2);
 }
 
+async function doExport(application) {
+  const exportFolder = path.join(__dirname, '../../analysis/__data__/');
+  const applicationName = application.getSafeFileName();
+  // const folder = path.dirname(application.entryPointPath);
+  // const fpath = path.join(folder, '_data.json');
+  const exportFpath = path.join(exportFolder, `${applicationName || '(unknown)'}_data.json`);
+  const data = application.dataProvider.serialize();
+  fs.writeFileSync(exportFpath, serialize(data));
+
+  const btns = {
+    Open: async () => {
+      await showTextDocument(exportFpath);
+    }
+  };
+  const msg = `File saved successfully: ${exportFpath}`;
+  debug(msg);
+  const clicked = await window.showInformationMessage(msg,
+    ...Object.keys(btns));
+  if (clicked) {
+    btns[clicked]();
+  }
+}
+
 export function initUserCommands(context) {
   // ###########################################################################
   // exportApplicationData
   // ###########################################################################
   registerCommand(context, 'dbux.exportApplicationData', async () => {
-    const exportFolder = path.join(__dirname, '../../analysis/__data__/');
-
     // if (!traceSelection.selected) {
     //   window.showWarningMessage('Could not export dbux application data - no trace selected');
     //   return;
@@ -49,24 +70,23 @@ export function initUserCommands(context) {
       return !openFilePath ||
         !!app.dataProvider.queries.programIdByFilePath(openFilePath);
     });
-    const applicationName = await application.guessSafeFileName();
-    // const folder = path.dirname(application.entryPointPath);
-    // const fpath = path.join(folder, '_data.json');
-    const exportFpath = path.join(exportFolder, `${applicationName || '(unknown)'}_data.json`);
-    const data = application.dataProvider.serialize();
-    fs.writeFileSync(exportFpath, serialize(data));
 
-    const btns = {
-      Open: async () => {
-        await showTextDocument(exportFpath);
-      }
-    };
-    const msg = `File saved successfully: ${exportFpath}`;
-    debug(msg);
-    const clicked = await window.showInformationMessage(msg, 
-      ...Object.keys(btns));
-    if (clicked) {
-      btns[clicked]();
+    if (!application) {
+      const firstApp = allApplications.selection.getAll()[0];
+      const btns = {
+        [`Go to ${firstApp.getFileName()}`]: async () => {
+          return showTextDocument(firstApp.entryPointPath);
+        },
+        [`Export ${firstApp.getFileName()}`]: async () => {
+          return doExport(firstApp);
+        }
+      };
+      const result = await window.showWarningMessage('Could not export dbux data - no application running in file. Make sure to open a file with an application that ran before!',
+        ...Object.keys(btns));
+      await result && btns[result]?.();
+      return;
     }
+
+    await doExport(application);
   });
 }

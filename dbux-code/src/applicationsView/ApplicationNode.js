@@ -6,7 +6,7 @@ export default class TraceNode extends BaseTreeViewNode {
   static makeLabel(app: Application) {
     const prefix = allApplications.selection.containsApplication(app) ? '☑' : '☐';
     // const label = app.getRelativeFolder();
-    const label = app.guessName();
+    const label = app.getFileName();
     return `${prefix} ${label}`;
   }
 

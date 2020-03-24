@@ -59,7 +59,7 @@ export default class Application {
   /**
    * TODO: make this cross-platform (might run this where we don't have Node)
    */
-  async guessName() {
+  getFileName() {
     const { staticProgramContexts } = this.dataProvider.collections;
     const fileCount = staticProgramContexts.size;
     if (!fileCount) {
@@ -67,16 +67,17 @@ export default class Application {
     }
     
     const file = staticProgramContexts.getById(1)?.filePath;
-    if (fileCount > 1) {
-      // multiple files -> look for package.json
-      return getClosestPackageJsonNameOrPath(file);
-    }
+    // if (fileCount > 1) {
+    //  NOTE: Cannot really do this, since the files might not be available at all.
+    //   // multiple files -> look for package.json
+    //   return getClosestPackageJsonNameOrPath(file);
+    // }
 
     // just a single file -> return file name
     return getFileName(file);
   }
 
-  async guessSafeFileName() {
-    return (await this.guessName())?.replace(/[:\\/]/, '-');
+  getSafeFileName() {
+    return (this.getFileName())?.replace(/[:\\/]/, '-');
   }
 }

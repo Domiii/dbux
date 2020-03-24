@@ -11,6 +11,7 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceSuper } from '../helpers/traceHelpers';
 import { instrumentLoop } from './loopVisitors';
 import { getPathTraceId } from '../data/StaticTraceCollection';
+import { isCallPath } from '../helpers/functionHelpers';
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
@@ -297,38 +298,54 @@ function normalizeConfig(cfg) {
 // instrumentation recipes by node type
 // ###########################################################################
 
+function doTraceWrapExpression(traceType, path, state, cfg) {
+  if (isCallPath(path)) {
+    // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be call expressions
+    // return wrapCallExpression(path, state, cfg);
+    // do not instrument -> it will be taken care of later
+    return null;
+  }
+
+  // any other expression with a result
+  const originalIsParent = cfg?.originalIsParent;
+  let tracePath;
+  if (originalIsParent) {
+    // we want to highlight the parentPath, instead of just the value path
+    tracePath = path.parentPath;
+  }
+
+  return traceWrapExpression(traceType, path, state, tracePath);
+}
+
+function wrapCallExpression(path, state, cfg) {
+  // CallExpression
+  const calleePath = path.get('callee');
+  if (calleePath.isSuper()) {
+    // super needs special treatment
+    traceSuper(calleePath, state);
+  }
+
+  // trace BeforeCallExpression (returns original path)
+  return traceBeforeExpression(path, state, TraceType.BeforeCallExpression, null);
+}
 
 const enterInstrumentors = {
   CallExpression(path, state, cfg) {
-    // CallExpression
-    const calleePath = path.get('callee');
-    if (calleePath.isSuper()) {
-      // super needs special treatment
-      traceSuper(calleePath, state);
-    }
-
-    // trace BeforeCallExpression (returns original path)
-    path = traceBeforeExpression(path, state, TraceType.BeforeCallExpression, null);
+    return wrapCallExpression(path, state, cfg);
   },
   ExpressionResult(path, state, cfg) {
-    // any other expression with a result
-    const originalIsParent = cfg?.originalIsParent;
-    let tracePath;
-    if (originalIsParent) {
-      // we want to highlight the parentPath, instead of just the value path
-      tracePath = path.parentPath;
-    }
-
-    return traceWrapExpression(TraceType.ExpressionResult, path, state, tracePath);
+    return doTraceWrapExpression(TraceType.ExpressionResult, path, state, cfg);
   },
-  ExpressionValue(pathOrPaths, state) {
+  ExpressionValue(pathOrPaths, state, cfg) {
     if (Array.isArray(pathOrPaths)) {
+      // e.g. `SequenceExpression`
       for (const path of pathOrPaths) {
-        traceWrapExpression(TraceType.ExpressionValue, path, state);
+        doTraceWrapExpression(TraceType.ExpressionValue, path, state, cfg);
       }
+      return null;  // get originalPaths is currently meanignless since `path.get` would not work on it
     }
     else {
-      return traceWrapExpression(TraceType.ExpressionValue, pathOrPaths, state);
+      return doTraceWrapExpression(TraceType.ExpressionValue, pathOrPaths, state, cfg);
     }
   },
   // ExpressionNoValue(path, state) {
@@ -364,17 +381,17 @@ const enterInstrumentors = {
     if (path.node.computed) {
       // if `computed`, also trace property independently
       const propertyPath = path.get('property');
-      traceWrapExpression(TraceType.ExpressionValue, propertyPath, state);
+      doTraceWrapExpression(TraceType.ExpressionValue, propertyPath, state);
     }
 
     const objPath = path.get('object');
     if (objPath.isSuper()) {
       // super needs special treatment
-      traceSuper(objPath, state);
+      return traceSuper(objPath, state);
     }
     else {
       // trace object (e.g. `x` in `x.y`) as-is
-      return traceWrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
+      return doTraceWrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
     }
   },
   Super(path, state) {

@@ -78,8 +78,6 @@ const StylingsByName = {
     }
   },
 
-  BeforeCallExpression: false,    // don't display
-
   ExpressionResult: {
     styling: {
       after: {
@@ -144,9 +142,11 @@ const StylingsByName = {
   },
 
   // ########################################
-  // Data-only
+  // don't display
   // ########################################
-  CalleeObject: false
+  BeforeCallExpression: false,    // probably want to show this instead of ExpressionResult?
+  CalleeObject: false,
+  ExpressionValue: false,
 };
 
 const decoNamesByType = {
