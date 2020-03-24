@@ -4,9 +4,9 @@ class Object {
   remember() {
     allObjects.push(this);
   }
-
+  
   saySomething() {
-    console.log(this, 'say something');
+    console.log(this.constructor.name, 'say something');
   }
 }
 

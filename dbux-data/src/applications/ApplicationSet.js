@@ -2,6 +2,7 @@ import pull from 'lodash/pull';
 import { areArraysEqual } from 'dbux-common/src/util/arrayUtil';
 import NanoEvents from 'nanoevents';
 import ApplicationSetData from './ApplicationSetData';
+import Application from './Application';
 
 export default class ApplicationSet {
   _unsubscribeCallbacks = [];
@@ -24,11 +25,18 @@ export default class ApplicationSet {
   // ###########################################################################
   
   /**
-   * 
+   * @return {Application[]}
    */
   getAll() {
     return this._applications;
   }
+
+  // /**
+  //  * Guess name of application s.t. it is short but also unique between all application in this set.
+  //  */
+  // guessUniqueName(application) {
+  //   throw new Error('Not Yet Implemented');
+  // }
 
   isEmpty() {
     return !this._applications.length;

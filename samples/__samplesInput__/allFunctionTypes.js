@@ -22,7 +22,6 @@ class C {
   f9 = () => {};
 }
 
-callF(() => {} /* f10 */);
 
 // // generator function
 // function *f8() {

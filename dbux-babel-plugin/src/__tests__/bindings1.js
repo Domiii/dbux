@@ -6,7 +6,7 @@ import { getCalleeName } from '../helpers/callHelpers';
 import { isNodeInstrumented } from '../helpers/instrumentationHelper';
 
 function expectPathBindingNames(path, names) {
-  const ids = path.getBindingIdentifierPaths();
+  const ids = Object.values(path.getBindingIdentifierPaths());
   expect(ids.map(id => id.name)).toIncludeSameMembers(names);
 }
 

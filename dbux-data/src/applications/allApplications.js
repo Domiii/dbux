@@ -28,6 +28,10 @@ export class AllApplications {
     this.applicationSelection = new ApplicationSet(this);
   }
 
+  getAllCount() {
+    return this._activeApplicationsByPath.size;
+  }
+
   /**
    * @param {number} applicationId
    */

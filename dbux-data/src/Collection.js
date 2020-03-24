@@ -38,9 +38,16 @@ export default class Collection<T> {
   // ###########################################################################
   // Reads
   // ###########################################################################
+
+  * [Symbol.iterator]() {
+    for (let i = 1; i < this._all.length; ++i) {
+      yield this._all[i];
+    }
+  }
   
   get size() : number {
-    return this._all.length - 1;
+    // TODO: make this more consistent (currently, we are padding null only after first add)
+    return this._all.length > 0 ? this._all.length - 1 : 0;
   }
 
   get all() {
