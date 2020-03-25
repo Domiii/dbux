@@ -10,7 +10,6 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:dbuxContextView",
 		"onLanguage:javascript"
 	],
 	"__main": "./src/index.js",
@@ -36,7 +35,7 @@
 					"name": "Trace Details"
 				},
 				{
-					"id": "dbuxContextView",
+					"id": "dbuxCallGraphView",
 					"name": "Call Graph Roots"
 				},
 				{
@@ -55,7 +54,7 @@
 				"title": "Dbux: Export application data"
 			},
 			{
-				"command": "dbuxContextView.gotoEntry",
+				"command": "dbuxCallGraphView.gotoEntry",
 				"title": "Goto",
 				"icon": {
 					"light": "resources/light/boolean.svg",
@@ -63,7 +62,7 @@
 				}
 			},
 			{
-				"command": "dbuxContextView.itemClick",
+				"command": "dbuxCallGraphView.itemClick",
 				"title": "Click"
 			},
 			{
@@ -176,8 +175,8 @@
 			],
 			"view/item/context": [
 				{
-					"command": "dbuxContextView.gotoEntry",
-					"when": "view == dbuxContextView && viewItem == contextNode",
+					"command": "dbuxCallGraphView.gotoEntry",
+					"when": "view == dbuxCallGraphView && viewItem == callRootNode",
 					"group": "inline"
 				},
 				{

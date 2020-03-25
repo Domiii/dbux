@@ -23,7 +23,7 @@
    * list all traces of same `valueRef.trackId` in `traceDetailsView`
       * add new "Track Object" node `TrackObjectTDNode` to `traceDetailsView`, if it trace has a `valueId`
    * test using `oop2.js`
-* [callGraphView/contextView]
+* [callGraphView]
    * add new button: "hide all previous roots / show all"
    * when expanding a CallGraph root, show all context names of that `runId` as children of that root node
    * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a wildcard searchTerm

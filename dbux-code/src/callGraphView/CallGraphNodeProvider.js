@@ -1,22 +1,21 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
-import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 import Trace from 'dbux-common/src/core/data/Trace';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { makeRootTraceLabel } from 'dbux-data/src/helpers/traceLabels';
-import ContextNode, { EmptyNode } from './ContextNode';
+import CallRootNode, { EmptyNode } from './CallRootNode';
 
-const { log, debug, warn, error: logError } = newLogger('ContextNodeProvider');
+const { log, debug, warn, error: logError } = newLogger('CallGraphNodeProvider');
 
-export class ContextNodeProvider {
-  _rootNodes: Array<ContextNode>;
-  _contextNodesByApp: Array<Array<ContextNodes>>
+export class CallGraphNodeProvider {
+  _rootNodes: Array<CallRootNode>;
+  _rootNodesByApp: Array<Array<CallRootNode>>
 
   constructor(onChangeEventEmitter) {
     this.onChangeEventEmitter = onChangeEventEmitter;
     this.onDidChangeTreeData = onChangeEventEmitter.event;
     this._rootNodes = [];
-    this._contextNodesByApp = [];
+    this._rootNodesByApp = [];
 
     allApplications.selection.onApplicationsChanged(this._handleApplicationsChanged);
   }
@@ -32,8 +31,8 @@ export class ContextNodeProvider {
 
   _updateAll = () => {
     const allFisrtTraces = allApplications.selection.data.firstTracesInOrder.getAll();
-    const allContextNode = allFisrtTraces.map(this.getContextNodeByTrace);
-    this._rootNodes = allContextNode.reverse();
+    const allRootNode = allFisrtTraces.map(this.getRootNodeByTrace);
+    this._rootNodes = allRootNode.reverse();
     this.refreshView();
   }
 
@@ -53,19 +52,19 @@ export class ContextNodeProvider {
   /**
    * @param {Trace} trace
    */
-  getContextNodeByTrace = (trace) => {
+  getRootNodeByTrace = (trace) => {
     const { applicationId, runId, traceId } = trace;
-    if (!this._contextNodesByApp[applicationId]) {
-      this._contextNodesByApp[applicationId] = [];
+    if (!this._rootNodesByApp[applicationId]) {
+      this._rootNodesByApp[applicationId] = [];
     }
 
     // build node if not exist
-    if (!this._contextNodesByApp[applicationId][runId]) {
+    if (!this._rootNodesByApp[applicationId][runId]) {
       const { contextId } = this.getContextByTrace(trace);
       const app = allApplications.getById(applicationId);
       const label = makeRootTraceLabel(trace, app);
 
-      const newNode = new ContextNode(
+      const newNode = new CallRootNode(
         label,
         applicationId,
         runId,
@@ -74,9 +73,9 @@ export class ContextNodeProvider {
         this
       );
 
-      this._contextNodesByApp[applicationId][runId] = newNode;
+      this._rootNodesByApp[applicationId][runId] = newNode;
     }
-    return this._contextNodesByApp[applicationId][runId]
+    return this._rootNodesByApp[applicationId][runId];
   }
 
   /**
@@ -92,14 +91,14 @@ export class ContextNodeProvider {
   // ########################################
 
   /**
-   * @param {ContextNode} node
+   * @param {CallRootNode} node
    */
   getTreeItem = (node) => {
     return node;
   }
 
   /**
-   * @param {ContextNode} node
+   * @param {CallRootNode} node
    */
   getChildren = (node) => {
     if (node) {
@@ -112,7 +111,7 @@ export class ContextNodeProvider {
   }
 
   /**
-   * @param {ContextNode} node
+   * @param {CallRootNode} node
    */
   getParent = (node) => {
     return node.parentNode;
