@@ -1,7 +1,8 @@
+import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
 import Trace from 'dbux-common/src/core/data/Trace';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
-import ExecutionContext from '../../../../dbux-common/src/core/data/ExecutionContext';
 
 
 export default class ParentTracesInRealContextIndex extends CollectionIndex<Trace> {
@@ -22,7 +23,8 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex<Trac
       executionContexts: {
         added: (contexts: ExecutionContext[]) => {
           for (const context of contexts) {
-            const { parentTraceId } = context;
+            const { parentTraceId, contextType } = context;
+            if (contextType === ExecutionContextType.Await) continue;
             if (parentTraceId && !this.added.has(parentTraceId)) {
               this.addEntryById(parentTraceId);
               this.added.add(parentTraceId);

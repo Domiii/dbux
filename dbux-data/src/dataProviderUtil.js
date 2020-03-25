@@ -190,7 +190,7 @@ export default {
       return dp.indexes.traces.byContext.get(contextId);
     }
     else {
-      const context = dp.collections.context.getById(contextId);
+      const context = dp.collections.executionContexts.getById(contextId);
       const { parentContextId } = context;
       return dp.indexes.traces.byParentContext.get(parentContextId);
     }
@@ -261,6 +261,16 @@ export default {
     const { callId: callStaticId } = staticTrace;
 
     return callStaticId && dp.collections.staticTraces.getById(callStaticId) || null;
+  },
+
+  getCallResultTrace(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    if (trace.resultId) return trace;
+    if (trace.callId) return dp.util.getCallResultTrace(trace.callId);
+    if (trace.schedulerTraceId) return dp.util.getCallResultTrace(trace.schedulerTraceId);
+
+    // Not a call related trace or is already a result trace
+    return null;
   },
 
   // ###########################################################################
