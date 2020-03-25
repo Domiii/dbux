@@ -35,7 +35,7 @@ const root = path.resolve(path.join(__dirname, '/..'));
 // };
 
 const outputFolderName = 'dist';
-const outFile = 'graph.js';
+const outFile = 'bundle.js';
 const buildMode = 'development';
 //const buildMode = 'production';
 
@@ -75,21 +75,32 @@ function buildConfig(projectRoot) {
     // https://github.com/webpack/webpack/issues/2145
     devtool: 'inline-module-source-map',
     // devtool: 'source-map',
-    //devtool: 'inline-source-map',
-    // devServer: {
-    //   contentBase: [
-    //     outputFolder,
-    //     path.join(projectRoot, 'public')
-    //   ],
-    //   quiet: false,
-    //   //host: '0.0.0.0',
-    //   // host:
-    //   hot: true,
-    //   port: 3040,
-    //   // publicPath: outputFolder,
-    //   writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
-    //   filename: outFile,
-    // },
+    // devtool: 'inline-source-map',
+    devServer: {
+      contentBase: [
+        path.join(projectRoot, 'public'),
+        path.join(projectRoot, 'dist'),
+        path.resolve(__dirname, '..', 'analysis', '__data__')
+      ],
+      quiet: false,
+      //host: '0.0.0.0',
+      // host:
+      hot: true,
+      port: 3040,
+      publicPath: '/',
+      writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
+      filename: outFile,
+      historyApiFallback: {
+        rewrites: [
+          {
+            from: /^\/data\/.*$/,
+            to(context) {
+              return `${context.parsedUrl.pathname.toLowerCase().substring(5)}`;
+            }
+          },
+        ]
+      }
+    },
     plugins: webpackPlugins,
     context: path.join(projectRoot, '.'),
     entry: path.join(src, 'app.js'),

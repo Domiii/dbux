@@ -1,8 +1,7 @@
 {
   "watch": [
     "./webpack.config.js",
-    "./dbux-code/webpack.config.js",
-    "./dbux-graph/webpack.config.js"
+    "./dbux-code/webpack.config.js"
   ],
   "ext": "js",
   "delay": "500"

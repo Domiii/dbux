@@ -27,14 +27,17 @@
 		"jest-expect-message": "^1.0.2",
 		"jest-extended": "^0.11.5",
 		"nodemon": "^2.0.2",
+		"npm-run-all": "^4.1.5",
 		"object.fromentries": "^2.0.2",
 		"open-cli": "^6.0.0",
 		"webpack": "^4.41.5",
-		"webpack-cli": "^3.3.10"
+		"webpack-cli": "^3.3.10",
+		"webpack-dev-server": "^3.10.3"
 	},
 	"scripts": {
-		"start": "npx nodemon --exec \"npx webpack --watch --mode development\"",
-		"graph": "cd dbux-graph && npx open-cli http://localhost:3040 && node server.js",
+		"start": "npx npm-run-all -p build:watch graph",
+		"build:watch": "npx nodemon --exec \"npx webpack --watch --mode development\"",
+		"graph": "cd dbux-graph && npm start",
 		"dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
 		"dbux-all": "sh scripts/dbux-run-all.sh",
 		"dbux-uninstall": "rm -rf ./node_modules && rm -f ./package-lock.json && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json\"",

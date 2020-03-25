@@ -3,12 +3,18 @@ async function getData(path) {
   return res.json();
 }
 
-async function loadData(path) {
-  const data = await getData(path);
-  const preEl = document.createElement('pre');
-  preEl.textContent = JSON.stringify(data, null, 2);
-  document.body.appendChild(preEl);
-}
+const commands = {
+  async loadData(path) {
+    const data = await getData(path);
+    const preEl = document.createElement('pre');
+    preEl.textContent = JSON.stringify(data, null, 2);
+    document.body.appendChild(preEl);
+  },
+
+  addData(data) {
+    
+  }
+};
 
 (async function main() {
   // hook up event listeners
@@ -23,7 +29,7 @@ async function loadData(path) {
     }
 
     try {
-      const func = eval(funcName);
+      const func = commands[funcName];
       await func(...args);
     }
     catch (err) {

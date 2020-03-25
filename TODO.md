@@ -137,10 +137,6 @@
 
 
 ## TODO (other)
-* webpack ERROR:
-   * after having added dbux-graph to `webpack.config.js`, `dbux-code` rebuild errors out, not finding `regenerator-runtime` anymore
-   * it's because webpack multi-build (array of configs) does not seem to work correctly when merging different targets (i.e. one `node`, one `web`)
-   * Sln: run `dbux-graph` webpack separately (in parallel) with the rest
 * [error_handling]
    * if we have an error, try to trace "skipped contexts"
       * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.
@@ -180,6 +176,11 @@
       * evaluate + store `headerVars` (all variables that have bindings in loop header)
 * [values]
    * better overall value rendering
+* [dbux-graph]
+   * split into three: `dbux-graph-web`, `dbux-graph-data` + `dbux-graph-common`
+   * then let `<root>` build and `dbux-code` depend on `dbux-graph-data` + `dbux-graph-common`
+   * `dbux-graph-web`'s build responsibility stays with `dbux-graph`
+   * add a basic API, to allow `dbux-graph-data` use full power of `dbux-data` to generate a "virtual DOM", which `dbux-graph-web` will then render
 * [testing]
    * add `dbux-cli` and `samples` to the `webpack` setup
    * finish setting up basic testing in `samples`
@@ -293,6 +294,8 @@
    * (for proper multi-application testing)
    * be careful:
       * `__filename` + `__dirname` do not work w/ webpack when not targeting node
+* [lerna]
+   * setup w/ lerna and prepare production/publishable build
 * [instrumentation] support longer names
    * (and then hide them in tree view; show long version as tooltip)
 * [MultiKeyIndex] allow for storing data by multiple keys
