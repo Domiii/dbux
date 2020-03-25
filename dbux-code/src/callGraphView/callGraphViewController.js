@@ -1,18 +1,18 @@
 import { window, EventEmitter } from 'vscode';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { newLogger } from 'dbux-common/src/log/logger';
-import { ContextNodeProvider } from './ContextNodeProvider';
-import ContextNode from './ContextNode';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import { CallGraphNodeProvider } from './CallGraphNodeProvider';
+import CallRootNode from './CallRootNode';
 
-const { log, debug, warn, error: logError } = newLogger('ContextViewController');
+const { log, debug, warn, error: logError } = newLogger('CallGraphViewController');
 
-export class ContextViewController {
+export class CallGraphViewController {
   constructor(viewId, options) {
     this.onChangeEventEmitter = new EventEmitter();
-    this.contextNodeProvider = new ContextNodeProvider(this.onChangeEventEmitter);
-    this.contextView = window.createTreeView(viewId, { 
-      treeDataProvider: this.contextNodeProvider,
+    this.callGraphNodeProvider = new CallGraphNodeProvider(this.onChangeEventEmitter);
+    this.callGraphView = window.createTreeView(viewId, { 
+      treeDataProvider: this.callGraphNodeProvider,
       ...options
     });
   }
@@ -26,7 +26,7 @@ export class ContextViewController {
   }
 
   /**
-   * @param {ContextNode} node
+   * @param {CallRootNode} node
    */
   handleItemClick = (node) => {
     const dp = allApplications.getApplication(node.applicationId).dataProvider;
@@ -41,8 +41,8 @@ export class ContextViewController {
    * @param {number} contextId
    */
   revealByContextId = (applicationId, contextId, expand = false) => {
-    const node = this.contextNodeProvider._contextNodesByApp[applicationId][contextId];
-    this._revealByContextNode(node, expand);
+    const node = this.callGraphNodeProvider._rootNodesByApp[applicationId][contextId];
+    this._revealByNode(node, expand);
   }
 
   // deprecated
@@ -51,7 +51,7 @@ export class ContextViewController {
     if (!node) return;
     this.lastSelectedNode = node;
     node.gotoCode();
-    this._revealByContextNode(node);
+    this._revealByNode(node);
   }
 
   // deprecated
@@ -60,7 +60,7 @@ export class ContextViewController {
     if (!node) return;
     this.lastSelectedNode = node;
     node.gotoCode();
-    this._revealByContextNode(node);
+    this._revealByNode(node);
   }
 
   // ###########################################################################
@@ -68,38 +68,38 @@ export class ContextViewController {
   // ###########################################################################
 
   /**
-   * @param {ContextNode} node
+   * @param {CallRootNode} node
    */
-  _revealByContextNode = (node, expand = false) => {
-    this.contextView.reveal(node, { expand });
+  _revealByNode = (node, expand = false) => {
+    this.callGraphView.reveal(node, { expand });
   }
 
   // deprecated
   _getPreviousNode = () => {
-    const lastNode = this.contextView.selection[0] || this.lastSelectedNode;
-    if (!lastNode) return this.contextNodeProvider._rootNodes[0] || null;
+    const lastNode = this.callGraphView.selection[0] || this.lastSelectedNode;
+    if (!lastNode) return this.callGraphNodeProvider._rootNodes[0] || null;
     let id = lastNode.contextId;
     if (id !== 1) id -= 1;
-    return this.contextNodeProvider.nodesByApp[id];
+    return this.callGraphNodeProvider.nodesByApp[id];
   }
 
   // deprecated
   _getNextNode = () => {
-    const lastNode = this.contextView.selection[0] || this.lastSelectedNode;
-    if (!lastNode) return this.contextNodeProvider._rootNodes[0] || null;
+    const lastNode = this.callGraphView.selection[0] || this.lastSelectedNode;
+    if (!lastNode) return this.callGraphNodeProvider._rootNodes[0] || null;
     let id = lastNode.contextId;
-    if (id !== this.contextNodeProvider.nodesByApp.length) id += 1;
-    return this.contextNodeProvider.nodesByApp[id];
+    if (id !== this.callGraphNodeProvider.nodesByApp.length) id += 1;
+    return this.callGraphNodeProvider.nodesByApp[id];
   }
 }
 
-let contextViewController: ContextViewController;
+let callGraphViewController: CallGraphViewController;
 
-export function initContextView() {
-  contextViewController = new ContextViewController('dbuxContextView', {
+export function initCallGraphView() {
+  callGraphViewController = new CallGraphViewController('dbuxCallGraphView', {
     canSelectMany: false,
     showCollapseAll: true
   });
 
-  return contextViewController;
+  return callGraphViewController;
 }

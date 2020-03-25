@@ -3,15 +3,16 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 function makeKey(dp: DataProvider, trace: Trace) {
-  const { parentContextId } = dp.collections.executionContexts.getById(trace.contextId);
+  const { contextId } = trace;
+  const { parentTraceId = false } = dp.collections.executionContexts.getById(contextId);
 
-  return parentContextId || 0;
+  return parentTraceId;
 }
 
 
-export default class TracesByParentContextIndex extends CollectionIndex<Trace> {
+export default class TracesByParentTraceIndex extends CollectionIndex<Trace> {
   constructor() {
-    super('traces', 'byParentContext');
+    super('traces', 'byParentTrace');
   }
 
   makeKey = makeKey

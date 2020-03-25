@@ -46,17 +46,17 @@ const groupByMode = {
   },
   byParentContextTraceId(app, traces) {
     const tracesByParent = [];
+    const dp = app.dataProvider;
     for (const trace of traces) {
       const { contextId } = trace;
-      const context = app.dataProvider.collections.executionContexts.getById(contextId);
-      const parentTraceId = context.parentTraceId || 0;
+      const { parentTraceId = 0 } = dp.collections.executionContexts.getById(contextId);
       if (!tracesByParent[parentTraceId]) tracesByParent[parentTraceId] = [];
       tracesByParent[parentTraceId].push(trace);
     }
     const groups = tracesByParent
       .map((children, parentTraceId) => {
         const trace = app.dataProvider.collections.traces.getById(parentTraceId);
-        const label = trace ? makeTraceLabel(trace) : 'No Parent';
+        const label = trace ? makeTraceLabel(trace) : '(No Parent)';
         const description = `Parent: ${parentTraceId}`;
         return { label, children, description };
       });
@@ -69,15 +69,14 @@ const groupByMode = {
       const { contextId } = trace;
       const context = dp.collections.executionContexts.getById(contextId);
       const { schedulerTraceId } = context;
-      let { callId } = dp.collections.traces.getById(schedulerTraceId) || trace;
-      callId = callId || 0;
+      const { callId = 0 } = dp.collections.traces.getById(schedulerTraceId) || trace;
       if (!tracesByCall[callId]) tracesByCall[callId] = [];
       tracesByCall[callId].push(trace);
     }
     const groups = tracesByCall
       .map((children, callId) => {
         const trace = dp.collections.traces.getById(callId);
-        const label = trace ? makeCallTraceLabel(trace) : 'No Caller';
+        const label = trace ? makeCallTraceLabel(trace) : '(No Caller)';
         const description = `Call: ${callId}`;
         children = children.filter(({ traceId }) => dp.util.getTraceType(traceId) === TraceType.PushCallback);
         return { label, children, description };
@@ -100,7 +99,6 @@ modeTypeToLabel.set(modeType.byParentContextTraceId, 'by Parent');
 modeTypeToLabel.set(modeType.byCallback, 'by Callback');
 
 let groupingMode = 1;
-const modeChangedEvent = new NanoEvents();
 
 function isTraceCallbackRelated(trace) {
   const dp = allApplications.getById(trace.applicationId).dataProvider;
@@ -108,7 +106,7 @@ function isTraceCallbackRelated(trace) {
   return isCallbackRelatedTrace(type);
 }
 
-export { modeType, groupingMode, modeChangedEvent };
+export { modeType, groupingMode };
 
 export function switchMode(mode) {
   if (mode) groupingMode = mode;
@@ -121,7 +119,6 @@ export function switchMode(mode) {
       groupingMode = 1;
     }
   }
-  modeChangedEvent.emit('changed', modeType.getName(groupingMode));
   return groupingMode;
 }
 
@@ -134,8 +131,8 @@ export class StaticTraceTDNode extends BaseTreeViewNode {
     const { staticTraceId } = trace;
     const application = allApplications.getById(trace.applicationId);
     const { dataProvider } = application;
-    const staticTrace = dataProvider.collections.staticTraces.getById(staticTraceId);
     const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
+    if (groupingMode === modeType.byCallback && !isTraceCallbackRelated(trace)) switchMode();
     const mode = modeType.getName(groupingMode);
     let groupedTraces = groupByMode[mode](application, traces);
     let modeLabel = modeTypeToLabel.get(groupingMode);

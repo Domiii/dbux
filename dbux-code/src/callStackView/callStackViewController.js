@@ -4,13 +4,13 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import { CallStackNodeProvider } from './CallStackNodeProvider';
 import CallStackNode from './CallStackNode';
 
-const { log, debug, warn, error: logError } = newLogger('ContextViewController');
+const { log, debug, warn, error: logError } = newLogger('CallGraphViewController');
 
 export class CallStackViewController {
   constructor(viewId, options) {
     this.onChangeEventEmitter = new EventEmitter();
     this.callStackNodeProvider = new CallStackNodeProvider(this);
-    this.contextView = window.createTreeView(viewId, { 
+    this.callGraphView = window.createTreeView(viewId, { 
       treeDataProvider: this.callStackNodeProvider,
       ...options
     });
@@ -25,7 +25,7 @@ export class CallStackViewController {
   }
 
   /**
-   * @param {ContextNode} node
+   * @param {CallStackNode} node
    */
   handleItemClick = (node) => {
     traceSelection.selectTrace(node.trace, 'callStackViewController');
@@ -47,7 +47,7 @@ export class CallStackViewController {
    * @param {CallStackNode} node
    */
   _revealByNode = (node, expand = false) => {
-    this.contextView.reveal(node, { expand });
+    this.callGraphView.reveal(node, { expand });
   }
 }
 
