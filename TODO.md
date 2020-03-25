@@ -13,7 +13,7 @@
    * nest applications of same entry point under same node
       * most recent Application is parent, all others are children
       * make sure, `children` is `null` if it has no children (so `CollapsibleState` will be `None`)
-* [callGraphView/contextView]
+* [callGraphView]
    * add new button: "hide all previous roots / show all"
    * when expanding a CallGraph root, show all context names of that `runId` as children of that root node, uniquely (don't show the same name twice)
    * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a searchTerm

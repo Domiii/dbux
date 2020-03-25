@@ -4,7 +4,6 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
-import { modeChangedEvent } from './nodes/StaticTraceTDNodes';
 import TracesAtCursor from './TracesAtCursor';
 
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
@@ -18,8 +17,12 @@ class TraceDetailsController {
     this.tracesAtCursor = null; // assign on init
   }
 
+  refresh = () => {
+    this.treeDataProvider.refresh();
+  }
+
   refreshOnData = makeDebounce(() => {
-    controller.treeDataProvider.refresh();
+    this.refresh();
     this.tracesAtCursor.needRefresh = true;
     this.tracesAtCursor.updateSelectTraceAtCursorButton();
   }, 20);
@@ -50,11 +53,8 @@ class TraceDetailsController {
 
     // add traceSelection event handler
     traceSelection.onTraceSelectionChanged(() => {
-      controller.treeDataProvider.refresh();
+      this.refresh();
     });
-
-    // on staticTraceTDNode grouping mode changed
-    modeChangedEvent.on('changed', this.treeDataProvider.refresh);
   }
 }
 
@@ -67,7 +67,7 @@ export function initTraceDetailsController(context: ExtensionContext) {
   controller.initOnActivate(context);
 
   // refresh right away
-  controller.treeDataProvider.refresh();
+  controller.refresh();
 
   return controller;
 }

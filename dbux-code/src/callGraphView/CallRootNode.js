@@ -1,36 +1,34 @@
-import {
-  TreeItemCollapsibleState as CollapsibleState
-} from 'vscode';
+import { TreeItemCollapsibleState as CollapsibleState } from 'vscode';
 import path from 'path';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 
-export default class ContextNode {
+export default class CallRootNode {
   constructor(
     displayName,
     applicationId,
     runId,
     contextId,
     traceId,
-    contextNodeProvider
+    children,
+    callGraphNodeProvider
   ) {
     // node data
     this.applicationId = applicationId;
     this.runId = runId;
     this.contextId = contextId;
     this.traceId = traceId;
-    this.contextNodeProvider = contextNodeProvider;
+    this.callGraphNodeProvider = callGraphNodeProvider;
 
     // treeItem data
     this.label = displayName;
     this.parentNode = null;
-    this.children = EmptyArray;
+    this.children = children;
     this.description = `Trace#${applicationId}:${traceId}`;
-    this.collapsibleState = CollapsibleState.None;
+    this.collapsibleState = children?.length ? CollapsibleState.Collapsed : CollapsibleState.None;
     this.command = {
-      command: 'dbuxContextView.itemClick',
+      command: 'dbuxCallGraphView.itemClick',
       arguments: [this]
     };
-    this.contextValue = 'contextNode';
+    this.contextValue = 'callRootNode';
 
     // TODO: fix icon path
     this.iconPath = {
@@ -47,6 +45,6 @@ export default class ContextNode {
 const EmptyNode = {
   label: '(no selected application)',
   collapsibleState: CollapsibleState.None
-}
+};
 
 export { EmptyNode };

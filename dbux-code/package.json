@@ -10,7 +10,6 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:dbuxContextView",
 		"onLanguage:javascript"
 	],
 	"__main": "./src/index.js",
@@ -36,7 +35,7 @@
 					"name": "Trace Details"
 				},
 				{
-					"id": "dbuxContextView",
+					"id": "dbuxCallGraphView",
 					"name": "Call Graph Roots"
 				},
 				{
@@ -59,7 +58,7 @@
 				"title": "Dbux: Show graph view"
 			},
 			{
-				"command": "dbuxContextView.gotoEntry",
+				"command": "dbuxCallGraphView.gotoEntry",
 				"title": "Goto",
 				"icon": {
 					"light": "resources/light/boolean.svg",
@@ -67,7 +66,7 @@
 				}
 			},
 			{
-				"command": "dbuxContextView.itemClick",
+				"command": "dbuxCallGraphView.itemClick",
 				"title": "Click"
 			},
 			{
@@ -180,8 +179,8 @@
 			],
 			"view/item/context": [
 				{
-					"command": "dbuxContextView.gotoEntry",
-					"when": "view == dbuxContextView && viewItem == contextNode",
+					"command": "dbuxCallGraphView.gotoEntry",
+					"when": "view == dbuxCallGraphView && viewItem == callRootNode",
 					"group": "inline"
 				},
 				{
@@ -198,6 +197,18 @@
 					"command": "dbuxTraceDetailsView.switchGroupingMode",
 					"when": "view == dbuxTraceDetailsView && viewItem == dbuxTraceDetailsView.staticTraceTDNodeRoot",
 					"group": "inline"
+				}
+			],
+			"view/title": [
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
+					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
+					"group": "navigation"
 				}
 			]
 		}
