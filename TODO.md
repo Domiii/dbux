@@ -8,12 +8,6 @@
    * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a searchTerm
       * all roots with contexts whose name contains searchTerm are expanded, all others are `Collapsed` or `None`
       * filter contexts by searchTerm (match `name`; as well as `filePath` of its `Program`)
-* DataProviderUtil + Indexes
-   * write `getRealContextId` (use `isRealContextType`)
-   * write `getTracesOfRealContext`
-      * use `TracesByContextIndex` and `TracesByParentContextIndex`, depending on if context `isRealContext` or not
-   * add `ParentTracesInRealContextIndex`
-      * all traces that themselves are the `parentTraceId` of some context
 * [applicationView]
    * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
    * nest applications of same entry point under same node
@@ -145,6 +139,8 @@
 ## TODO (other)
 * webpack ERROR:
    * after having added dbux-graph to `webpack.config.js`, `dbux-code` rebuild errors out, not finding `regenerator-runtime` anymore
+   * it's because webpack multi-build (array of configs) does not seem to work correctly when merging different targets (i.e. one `node`, one `web`)
+   * Sln: run `dbux-graph` webpack separately (in parallel) with the rest
 * [error_handling]
    * if we have an error, try to trace "skipped contexts"
       * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.
