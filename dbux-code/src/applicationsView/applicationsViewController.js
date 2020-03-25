@@ -27,6 +27,15 @@ class ApplicationsViewController {
     this.treeDataProvider.initDefaultClickCommand(context);
 
     // data changed
+    allApplications.selection.onApplicationsChanged((apps) => {
+      this.refreshOnData();
+      
+      for (const app of apps) {
+        allApplications.selection.subscribe(
+          app.dataProvider.onData('staticProgramContexts', this.refreshOnData)
+        );
+      }
+    });
     allApplications.onAdded(this.refreshOnData);
     allApplications.onRemoved(this.refreshOnData);
     allApplications.onClear(this.refreshOnData);

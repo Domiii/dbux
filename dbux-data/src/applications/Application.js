@@ -1,7 +1,6 @@
-import path from 'path';
-import process from 'process';
 import DataProvider from '../DataProvider';
 import { newDataProvider } from '../dataProviderImpl';
+import { getFileName, getPackageJson, getClosestPackageJsonNameOrPath } from '../util/nodeUtil';
 
 
 /**
@@ -55,5 +54,30 @@ export default class Application {
   getRelativeFolder() {
     // Needs external help to do it; e.g. in VSCode, can use workspace-relative path.
     return this.entryPointPath;
+  }
+
+  /**
+   * TODO: make this cross-platform (might run this where we don't have Node)
+   */
+  getFileName() {
+    const { staticProgramContexts } = this.dataProvider.collections;
+    const fileCount = staticProgramContexts.size;
+    if (!fileCount) {
+      return '(unknown)';
+    }
+    
+    const file = staticProgramContexts.getById(1)?.filePath;
+    // if (fileCount > 1) {
+    //  NOTE: Cannot really do this, since the files might not be available at all.
+    //   // multiple files -> look for package.json
+    //   return getClosestPackageJsonNameOrPath(file);
+    // }
+
+    // just a single file -> return file name
+    return getFileName(file);
+  }
+
+  getSafeFileName() {
+    return (this.getFileName())?.replace(/[:\\/]/, '-');
   }
 }

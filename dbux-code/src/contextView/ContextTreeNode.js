@@ -50,7 +50,7 @@ export default class ContextNode extends TreeItem {
   }
 
   gotoCode = () => {
-    goToCodeLoc(Uri.file(this.filePath), this.location);
+    goToCodeLoc(this.filePath, this.location);
   }
 
   pushChild = (child) => {

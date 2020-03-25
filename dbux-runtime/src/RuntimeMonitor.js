@@ -138,7 +138,7 @@ export default class RuntimeMonitor {
 
       let resultValue;
       try {
-        resultValue = cb(...args);
+        resultValue = cb.apply(this, args);
         if (this && resultValue === undefined) {
           // not quite sure why - that's what babel preset-env does
           return this;
@@ -149,6 +149,7 @@ export default class RuntimeMonitor {
         _this.popCallback(callbackContextId, inProgramStaticTraceId, resultValue);
       }
     };
+    Object.defineProperty(wrappedCb, 'name', { value: cb.name });
     _inheritsLoose(wrappedCb, cb);
     return wrappedCb;
   }

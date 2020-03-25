@@ -40,9 +40,6 @@ const babelrcRoots = [
 
 const babelRegister = require('@babel/register');
 
-// make sure, this is loaded before starting instrumentation
-require('dbux-runtime');
-
 
 
 // setup babel-register

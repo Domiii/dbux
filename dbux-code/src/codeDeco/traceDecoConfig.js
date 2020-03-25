@@ -78,8 +78,6 @@ const StylingsByName = {
     }
   },
 
-  BeforeCallExpression: false,    // don't display
-
   ExpressionResult: {
     styling: {
       after: {
@@ -141,7 +139,14 @@ const StylingsByName = {
         color: 'gray',
       },
     }
-  }
+  },
+
+  // ########################################
+  // don't display
+  // ########################################
+  BeforeCallExpression: false,    // probably want to show this instead of ExpressionResult?
+  CalleeObject: false,
+  ExpressionValue: false,
 };
 
 const decoNamesByType = {
@@ -159,7 +164,7 @@ const decoNamesByType = {
   }
 };
 
-let configsByName;
+let configsByName, decoNames;
 
 // ###########################################################################
 // init
@@ -176,6 +181,7 @@ function initConfig(decoConfig) {
     }
     configsByName[decoName] = cfg;
   }
+  decoNames = Object.keys(configsByName);
 }
 
 export function initTraceDecorators() {
@@ -197,4 +203,8 @@ export function getTraceDecoName(dataProvider, staticTrace, trace) {
 
 export function getDecoConfigByName(decoName) {
   return configsByName[decoName];
+}
+
+export function getAllTraceDecoNames() {
+  return decoNames;
 }

@@ -11,6 +11,10 @@ import { isNodeInstrumented } from './instrumentationHelper';
 // function names
 // ###########################################################################
 
+export function isCallPath(path) {
+  return path.isCallExpression() || path.isOptionalCallExpression();
+}
+
 export function functionNoName(functionPath) {
   // return `(${getPresentableString(functionPath.toString(), 30)})`;
   return '(anonymous)';

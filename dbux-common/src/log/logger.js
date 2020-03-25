@@ -31,6 +31,16 @@ export function newLogger(ns) {
   return new Logger(ns);
 }
 
+export function newFileLogger(fpath) {
+  const comps = fpath.split(/[/\\]/);
+  let fname = comps[comps.length - 1];
+  const i = fname.lastIndexOf('.');
+  if (i > -1) {
+    fname = fname.substring(0, i);
+  }
+  return new Logger(fname);
+}
+
 export function loglog(ns, ...args) {
   console.log(`[${ns}]`, ...args);
 }

@@ -2,8 +2,14 @@
 /projects
 __samplesOutput__
 _testOut
-_data.json
+__data__
 
+
+# python
+__pycache__
+
+# clinic.js reports
+.clinic
 
 # OS
 .DS_Store

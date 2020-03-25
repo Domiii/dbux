@@ -72,6 +72,6 @@ module.exports = function dbuxRunFile(fpath) {
     require(fpath);
   }
   catch (err) {
-    console.error('ERROR when running instrumented code: ' + err && err.stack || err);
+    console.error('ERROR when running instrumented code:\n ', err && err.stack || err);
   }
 };

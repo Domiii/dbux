@@ -39,14 +39,6 @@ const renderDecorations = makeDebounce(function renderDecorations() {
 
 
 // ###########################################################################
-// dynamic updates
-// ###########################################################################
-
-export function updateRenderDecorations() {
-  renderDecorations();
-}
-
-// ###########################################################################
 // init
 // ###########################################################################
 
@@ -76,6 +68,10 @@ export function initCodeDeco(context) {
 
   // data changed
   allApplications.selection.onApplicationsChanged((selectedApps) => {
+    // applications changed -> re-render
+    renderDecorations();
+
+    // also subscribe to data events
     for (const app of selectedApps) {
       allApplications.selection.subscribe(
         app.dataProvider.onData('traces', renderDecorations),
