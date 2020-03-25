@@ -138,15 +138,16 @@
 
 ## TODO (other)
 * [error_handling]
-   * if we have an error, try to trace "skipped contexts"
-      * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.
-      * if things got skipped, trace executed in (real) context has caused the error
    * [errors_and_await]
       * test: when error thrown, do we pop the correct resume and await contexts?
    * How does it work?
-      * We mark possible `lastTraces` for all functions: i. any `ReturnStatement` and ii. at the end of the function
+      * track all `context.lastTraceId`
+      * mark possible `exitTraces`:
+         1. any `ReturnStatement`
+         1. at the end of the function
+         1. `try` blocks
       * Once a function has finished (we wrap all functions in `try`/`finally`), we insert a check:
-         * If `context.lastTraceId` is in `lastTraces`, there was no error
+         * If `context.lastTraceId` is in `exitTraces`, there was no error
          * else, `context.lastTraceId` caused an error
 * fix: Call Graph Roots -> name does not include actual function name
    * -> add `calleeName` to `staticTrace`?
