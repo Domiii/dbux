@@ -5,9 +5,20 @@
 * [callGraphView/contextView]
    * add new button: "hide all previous roots / show all"
    * when expanding a CallGraph root, show all context names of that `runId` as children of that root node, uniquely (don't show the same name twice)
-   * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a searchTerm
+   * add a `"filter by searchTerm"` button: show `QuickInput` to ask user to enter a searchTerm
       * all roots with contexts whose name contains searchTerm are expanded, all others are `Collapsed` or `None`
       * filter contexts by searchTerm (match `name`; as well as `filePath` of its `Program`)
+* keyword `wordcloud`
+   * prepare function to generate all keywords in all `staticContexts` of a single run
+   * multiply weight by how often they were called (use `contexts`, rather than `staticContexts`)
+   * add as "suggestions" to the `"filter by searchTerm"` `QuickInput`, sort by weight
+   * (we will add that to webview later)
+   * fine-grained keyword extraction, split names by:
+      1. upper-case letters: `addElement` -> `add`, `element`
+         * careful: `addUID` -> `add`, `uid`
+      2. `.`: `a.b` -> `a`, `b`
+      3. `_`: `some_func` -> `some`, `func`
+   * NOTE: is there some JS or python NLP packages to help with this?
 * [applicationView]
    * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
    * nest applications of same entry point under same node
