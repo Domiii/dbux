@@ -14,9 +14,10 @@ const outFile = 'bundle.js';
 const webpackPlugins = [];
 
 const projectRoot = path.resolve(__dirname);
-const root = path.resolve(__dirname + '/..');
+const root = path.resolve(__dirname, '..');
+
 const dbuxDepNames = ["dbux-common", "dbux-data", "dbux-code"];
-const dbuxDepsAbsolute = dbuxDepNames.map(f => path.resolve(path.join(root,f)));
+const dbuxDepsAbsolute = dbuxDepNames.map(f => path.resolve(path.join(root, f)));
 
 dbuxDepsAbsolute.forEach(f => {
   if (!fs.existsSync(f)) {
@@ -34,7 +35,7 @@ const allFolders = [
     .map(f => path.resolve(f))
 ];
 
-// aliases allow resolving libraries that we are building here
+// adding these aliases allows resolving required libraries without them being in `node_modules`
 const alias = fromEntries(dbuxDepNames.map(target => [target, path.resolve(path.join(root, target))]));
 
 module.exports = {

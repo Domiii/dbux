@@ -139,7 +139,7 @@ export default class BaseTreeViewNodeProvider {
     node.iconPath = this.makeNodeIconPath(node);
 
     // collapsibleState
-    if (node.canHaveChildren?.()) {
+    if (node.children || node.canHaveChildren?.()) {
       let collapsibleState = this.idsCollapsibleState.get(id);
       if (collapsibleState === undefined) {
         collapsibleState = node.defaultCollapsibleState || TreeItemCollapsibleState.Collapsed;

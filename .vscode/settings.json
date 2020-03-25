@@ -12,4 +12,5 @@
   "python.autoComplete.extraPaths": [
     "analysis/src"
   ],
+  "python.pythonPath": "C:\\tools\\Anaconda3\\python.exe",
 }

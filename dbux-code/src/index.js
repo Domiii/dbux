@@ -10,10 +10,10 @@ import { initCommands } from './commands/index';
 import { initToolBar } from './toolbar';
 import { initPlayback } from './playback/index';
 
-import { initCodeApplications } from './CodeApplication';
+import { initCodeApplications } from './codeUtil/CodeApplication';
 import { initTraceDetailsController } from './traceDetailsView/traceDetailsController';
 import { initResources } from './resources';
-import { initTraceSelection } from './codeSelection';
+import { initTraceSelection } from './codeUtil/codeSelection';
 import { initEditorTracesController } from './editorTracesView/editorTracesController';
 import { initApplicationsViewController } from './applicationsView/applicationsViewController';
 import { initLogging } from './logging';

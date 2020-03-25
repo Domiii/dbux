@@ -68,7 +68,15 @@ const output = {
 // console.warn('webpack folders:\n  ', allFolders.join('\n  '));
 // console.warn('webpack entries:', entry);
 
-const dbuxCode = require('./dbux-code/webpack.config');
+// NOTE: require things down here, not up above?
+// const dbuxCode = require('./dbux-code/webpack.config');
+
+// /*eslint global-require: 0 */
+const otherWebpackConfigs = [
+  require('./dbux-code/webpack.config'),
+  require('./dbux-graph/webpack.config')
+];
+
 
 // TODO: add dbux-code to babelRoots
 
@@ -138,10 +146,10 @@ module.exports = [
       // 'fs', 'net'   // debug library complains about these
     ]
   },
-
-  dbuxCode
-
+  
   // NOTE: you can have multiple configs per file (see https://stackoverflow.com/a/46825869)
+  ...otherWebpackConfigs
+  // dbuxCode
 ];
 
 console.debug('[dbux] webpack.config loaded',

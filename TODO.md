@@ -2,31 +2,27 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
+* [callGraphView/contextView]
+   * add new button: "hide all previous roots / show all"
+   * when expanding a CallGraph root, show all context names of that `runId` as children of that root node, uniquely (don't show the same name twice)
+   * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a searchTerm
+      * all roots with contexts whose name contains searchTerm are expanded, all others are `Collapsed` or `None`
+      * filter contexts by searchTerm (match `name`; as well as `filePath` of its `Program`)
 * DataProviderUtil + Indexes
    * write `getRealContextId` (use `isRealContextType`)
    * write `getTracesOfRealContext`
       * use `TracesByContextIndex` and `TracesByParentContextIndex`, depending on if context `isRealContext` or not
    * add `ParentTracesInRealContextIndex`
       * all traces that themselves are the `parentTraceId` of some context
-* async/await testing:
-   * does call graph navigation work properly?
-   * does `callStackView` work properly?
-* `Call Graph Roots`
-   * ordering should always be descending by id (newest first)
-      * also apply that order to children within groups
 * [applicationView]
    * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
    * nest applications of same entry point under same node
       * most recent Application is parent, all others are children
       * make sure, `children` is `null` if it has no children (so `CollapsibleState` will be `None`)
-* [object_tracking]
-   * list all traces of same `valueRef.trackId` in `traceDetailsView`
-      * add new "Track Object" node `TrackObjectTDNode` to `traceDetailsView`, if it trace has a `valueId`
-   * test using `oop2.js`
 * [callGraphView/contextView]
    * add new button: "hide all previous roots / show all"
-   * when expanding a CallGraph root, show all context names of that `runId` as children of that root node
-   * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a wildcard searchTerm
+   * when expanding a CallGraph root, show all context names of that `runId` as children of that root node, uniquely (don't show the same name twice)
+   * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a searchTerm
       * all roots with contexts whose name contains searchTerm are expanded, all others are `Collapsed` or `None`
       * filter contexts by searchTerm (match `name`; as well as `filePath` of its `Program`)
    * add a new "async view" mode to "Context Roots": switches between "runs" and "async runs"
@@ -58,13 +54,6 @@
    * add a new "clear filters" button at the top of the `callGraphView`
    * add a new "only this trace" filter button to `callGraphView`
       * only runs that passed through this trace
-* [callstackView]
-   * when clicking a node:
-      * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
-   * do not change selected trace in `callstackView`
-      * only update selected trace in `callstackView`, if triggered from anywhere but here
-   * if context has both `parentId` and `schedulerTrace`:
-      * add a button to the node to allow switching between `parent` and `scheduler`
 * [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
    * shows all applications in `allApplications`
    * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
@@ -154,6 +143,8 @@
 
 
 ## TODO (other)
+* webpack ERROR:
+   * after having added dbux-graph to `webpack.config.js`, `dbux-code` rebuild errors out, not finding `regenerator-runtime` anymore
 * [error_handling]
    * if we have an error, try to trace "skipped contexts"
       * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.

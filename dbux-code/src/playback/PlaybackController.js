@@ -4,12 +4,11 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import Trace from 'dbux-common/src/core/data/Trace';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
-import { goToTrace } from '../codeNav';
+import { goToTrace } from '../codeUtil/codeNav';
 
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 
 export default class PlaybackController {
-
   constructor() {
     tracePlayback.onPause(this.handlePause);
   }
@@ -75,7 +74,7 @@ export default class PlaybackController {
       let contexts = app.dataProvider.collections.executionContexts.getAll();
       for (let context of contexts) {
         if (!context) continue;
-        const { runId, contextId, parentContextId, schedulerTraceId, parentTraceId} = context;
+        const { runId, contextId, parentContextId, schedulerTraceId, parentTraceId } = context;
         info.push({ runId, contextId, parentContextId, schedulerTraceId, parentTraceId });
       }
       console.table(info);

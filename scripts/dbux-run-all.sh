@@ -11,6 +11,7 @@ dbuxDirs=(
   "dbux-runtime"
   "dbux-code"
   "dbux-cli"
+  "dbux-graph"
   "samples"
 )
 

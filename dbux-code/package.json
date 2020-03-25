@@ -21,7 +21,7 @@
 				{
 					"id": "dbuxViewContainer",
 					"title": "Dbux",
-					"icon": "media/dep.svg"
+					"icon": "resources/dep.svg"
 				}
 			]
 		},
@@ -53,6 +53,10 @@
 			{
 				"command": "dbux.exportApplicationData",
 				"title": "Dbux: Export application data"
+			},
+			{
+				"command": "dbux.showGraphView",
+				"title": "Dbux: Show graph view"
 			},
 			{
 				"command": "dbuxContextView.gotoEntry",

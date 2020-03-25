@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"module": "esnext",
+		"target": "esnext",
+		"checkJs": false,  /* Typecheck .js files. */
+	},
+	"include": [
+		"src"
+	]
+}

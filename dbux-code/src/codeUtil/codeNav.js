@@ -7,7 +7,7 @@ import {
 import { newFileLogger } from 'dbux-common/src/log/logger';
 import Loc from 'dbux-common/src/core/data/Loc';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { babelLocToCodeRange } from './helpers/codeLocHelpers';
+import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
 
 const { log, debug, warn, error: logError } = newFileLogger(__filename);
