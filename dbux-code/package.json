@@ -195,6 +195,18 @@
 					"when": "view == dbuxTraceDetailsView && viewItem == dbuxTraceDetailsView.staticTraceTDNodeRoot",
 					"group": "inline"
 				}
+			],
+			"view/title": [
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
+					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
+					"group": "navigation"
+				}
 			]
 		}
 	},
