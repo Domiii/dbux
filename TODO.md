@@ -152,7 +152,8 @@
    * [errors_and_await]
       * test: when error thrown, do we pop the correct resume and await contexts?
    * How does it work?
-      * track all `context.lastTraceId`
+      * `dp.util` will have 
+         * if `realContextHasPopped` && `getLastTraceInRealContext.staticTrace` !== ``getLastStaticTraceInRealContext` or a `getLastTraceInRealContext` is a `return` -> error!
       * mark possible `exitTraces`:
          1. any `ReturnStatement`
          1. at the end of the function
