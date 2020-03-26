@@ -29,12 +29,10 @@ export default {
     const { executionContexts } = dp.collections;
     let lastContextId = contextId;
     let parentContextId;
-    // TODO: avoid using while(true)
-    while (true) {
-      parentContextId = executionContexts.getById(lastContextId).parentContextId;
-      if (!parentContextId) return lastContextId;
-      else lastContextId = parentContextId;
+    while ((parentContextId = executionContexts.getById(lastContextId).parentContextId)) {
+      lastContextId = parentContextId;
     }
+    return lastContextId;
   },
 
   getFirstContextsInRuns(dp: DataProvider) {
@@ -169,18 +167,18 @@ export default {
   getRealContextId(dp: DataProvider, traceId) {
     const { contextId } = dp.collections.traces.getById(traceId);
     const context = dp.collections.executionContexts.getById(contextId);
-    const { contextType, parentContextId } = context;
+    const { parentContextId } = context;
+    const parentContext = dp.collections.executionContexts.getById(parentContextId);
 
-    if (isRealContextType(contextType)) return contextId;
+    if (isRealContextType(context.contextType)) {
+      return contextId;
+    }
+    else if (parentContext && isRealContextType(parentContext.contextType)) {
+      return parentContextId;
+    }
     else {
-      const parentContext = dp.collections.executionContexts.getById(parentContextId);
-      const { contextType: parentContextType } = parentContext;
-      if (parentContext && isRealContextType(parentContextType)) return parentContextId;
-      else {
-        logError('Could not find realContext.');
-        debugger;
-        return null;
-      }
+      logError('Could not find realContext.');
+      return null;
     }
   },
 
