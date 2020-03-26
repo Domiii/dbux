@@ -54,11 +54,19 @@
 				"title": "Dbux: Export application data"
 			},
 			{
-				"command": "dbuxCallGraphView.gotoEntry",
-				"title": "Goto",
+				"command": "dbuxCallGraphView.setFilter",
+				"title": "Filter",
 				"icon": {
 					"light": "resources/light/boolean.svg",
 					"dark": "resources/dark/boolean.svg"
+				}
+			},
+			{
+				"command": "dbuxCallGraphView.clearFilter",
+				"title": "Clear Filter",
+				"icon": {
+					"light": "resources/light/clear.svg",
+					"dark": "resources/dark/clear.svg"
 				}
 			},
 			{
@@ -154,12 +162,12 @@
 				},
 				{
 					"command": "dbuxPlayback.play",
-					"when": "dbuxPlayback.context.Playing == false",
+					"when": "dbuxPlayback.context.playing == false",
 					"group": "navigation@6"
 				},
 				{
 					"command": "dbuxPlayback.pause",
-					"when": "dbuxPlayback.context.Playing == true",
+					"when": "dbuxPlayback.context.playing == true",
 					"group": "navigation@7"
 				},
 				{
@@ -174,11 +182,6 @@
 				}
 			],
 			"view/item/context": [
-				{
-					"command": "dbuxCallGraphView.gotoEntry",
-					"when": "view == dbuxCallGraphView && viewItem == callRootNode",
-					"group": "inline"
-				},
 				{
 					"command": "dbuxCallStackView.showParent",
 					"when": "view == dbuxCallStackView && viewItem == callStackNode.both.scheduler",
@@ -196,6 +199,16 @@
 				}
 			],
 			"view/title": [
+				{
+					"command": "dbuxCallGraphView.setFilter",
+					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering == false",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxCallGraphView.clearFilter",
+					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering == true",
+					"group": "navigation"
+				},
 				{
 					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
 					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",

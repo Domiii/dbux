@@ -1,29 +1,31 @@
 import { TreeItemCollapsibleState as CollapsibleState } from 'vscode';
 import path from 'path';
+import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
+import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import { makeRootTraceLabel } from 'dbux-data/src/helpers/traceLabels';
+import allApplications from 'dbux-data/src/applications/allApplications';
+import ContextNode from './ContextNode';
 
 export default class CallRootNode {
+  children: Array<ContextNode>;
   constructor(
-    displayName,
-    applicationId,
-    runId,
-    contextId,
-    traceId,
-    children,
+    trace,
     callGraphNodeProvider
   ) {
     // node data
-    this.applicationId = applicationId;
-    this.runId = runId;
-    this.contextId = contextId;
-    this.traceId = traceId;
+    this.addedContext = new Set();
+    this.applicationId = trace.applicationId;
+    this.runId = trace.runId;
+    this.traceId = trace.traceId;
     this.callGraphNodeProvider = callGraphNodeProvider;
 
     // treeItem data
-    this.label = displayName;
+    this.label = makeRootTraceLabel(trace, allApplications.getById(trace.applicationId));
     this.parentNode = null;
-    this.children = children;
-    this.description = `Trace#${applicationId}:${traceId}`;
-    this.collapsibleState = children?.length ? CollapsibleState.Collapsed : CollapsibleState.None;
+    this.children = [];
+    this.description = `App#${this.applicationId} Run#${this.runId}`;
+    this.collapsibleState = CollapsibleState.None;
     this.command = {
       command: 'dbuxCallGraphView.itemClick',
       arguments: [this]
@@ -37,8 +39,52 @@ export default class CallRootNode {
     };
   }
 
+  updateChildren = () => {
+    this._clearChildren();
+    const dp = allApplications.getById(this.applicationId).dataProvider;
+    const childContexts = dp.indexes.executionContexts.byRun.get(this.runId) || EmptyArray;
+    for (let context of childContexts) {
+      this._addChildren(this.applicationId, context);
+    }
+    this.children = this._getFilteredChildren();
+    if (!this.children.length) {
+      this.collapsibleState = CollapsibleState.None;
+    }
+    else if (this.collapsibleState === CollapsibleState.None) {
+      this.collapsibleState = CollapsibleState.Collapsed;
+    }
+  }
+
+  _getFilteredChildren = () => {
+    const { filterString } = this.callGraphNodeProvider.callGraphViewController;
+    return this.children.filter(x => x.label.includes(filterString));
+  }
+
+  /**
+   * @param {ExecutionContext} context
+   */
+  _addChildren = (applicationId, context) => {
+    if (this.addedContext.has(context.staticContextId)) {
+      // already added
+      return;
+    }
+    if (!isRealContextType(context.contextType)) {
+      // do not show virtual context
+      return;
+    }
+    this.addedContext.add(context.staticContextId);
+    this.children.push(new ContextNode(applicationId, context, this));
+  }
+
+  _clearChildren = () => {
+    this.children = [];
+    this.addedContext = new Set();
+    this.collapsibleState = CollapsibleState.None;
+  }
+
+
   get tooltip() {
-    return `${this.applicationId} ${this.runId} ${this.contextId} ${this.traceId} (tooltip)`;
+    return `${this.applicationId} ${this.runId} ${this.traceId} (tooltip)`;
   }
 }
 

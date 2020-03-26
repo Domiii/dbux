@@ -11,8 +11,13 @@ const { log, debug, warn, error: logError } = newLogger('Commands');
  */
 export function initCallGraphViewCommands(context, callGraphViewController) {
   registerCommand(context,
-    'dbuxCallGraphView.gotoEntry',
-    (node: CallRootNode) => callGraphViewController.handleItemClick(node)
+    'dbuxCallGraphView.setFilter',
+    () => callGraphViewController.setFilter()
+  );
+
+  registerCommand(context,
+    'dbuxCallGraphView.clearFilter',
+    () => callGraphViewController.clearFilter()
   );
 
   registerCommand(context,
