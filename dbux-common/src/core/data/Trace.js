@@ -5,9 +5,15 @@ export default class Trace extends HasValue {
   traceId: number;
   staticTraceId: number;
   applicationId: number;
-  runId: Number;
+  runId: number;
   contextId: number;
-  loopId: Number;
+
+  loopId: number;
+
+  /**
+   * Whether this is the last trace (before the pop(s) in a context).
+   */
+  isLastInContext: boolean;
 
   /**
    * NOTE: this is the dynamic type only.

@@ -1,6 +1,6 @@
 import { logInternalError } from 'dbux-common/src/log/logger';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { isReturnTrace } from 'dbux-common/src/core/constants/TraceType';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -85,7 +85,7 @@ export default class RuntimeMonitor {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const parentContextId = this._runtime.peekCurrentContextId();
-    const parentTraceId = this._runtime.getContextTraceId(parentContextId);
+    const parentTraceId = this._runtime.getLastTraceIdInContext(parentContextId);
 
     const context = executionContextCollection.executeImmediate(
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId
@@ -100,6 +100,15 @@ export default class RuntimeMonitor {
   }
 
 
+  popFunction(contextId, inProgramStaticTraceId) {
+    this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
+    return this.popImmediate(contextId, inProgramStaticTraceId);
+  }
+
+  popTry() {
+    // TODO
+  }
+
   popImmediate(contextId, inProgramStaticTraceId) {
     // sanity checks
     const context = executionContextCollection.getById(contextId);
@@ -113,7 +122,7 @@ export default class RuntimeMonitor {
 
     // trace
     const runId = this._runtime.getCurrentRunId();
-    this._trace(contextId, runId, inProgramStaticTraceId);
+    this._trace(contextId, runId, inProgramStaticTraceId, null, true);
   }
 
   _pop(contextId) {
@@ -164,7 +173,7 @@ export default class RuntimeMonitor {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const parentContextId = this._runtime.peekCurrentContextId();
-    const parentTraceId = this._runtime.getContextTraceId(parentContextId);
+    const parentTraceId = this._runtime.getLastTraceIdInContext(parentContextId);
 
     // register context
     // console.debug('pushCallback', { parentContextId, schedulerContextId, schedulerTraceId });
@@ -196,7 +205,7 @@ export default class RuntimeMonitor {
 
     // trace
     const { traceId } = traceCollection.traceWithResultValue(callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue);
-    this._onTrace(callbackContextId, traceId);
+    this._onTrace(callbackContextId, traceId, true);
   }
 
 
@@ -208,7 +217,7 @@ export default class RuntimeMonitor {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const resumeContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
-    const parentTraceId = this._runtime.getContextTraceId(resumeContextId);
+    const parentTraceId = this._runtime.getLastTraceIdInContext(resumeContextId);
 
     // trace Await
     this._trace(resumeContextId, runId, inProgramStaticTraceId);
@@ -261,18 +270,14 @@ export default class RuntimeMonitor {
     return awaitResult;
   }
 
-  /**
-   * The `schedulerId` of a `resume` can be two things:
-   * (1) the function itself (when pushing the initial "resume context" on function call)
-   * (2) an await context (when resuming after an await)
-   */
+  
   pushResume(programId, resumeStaticContextId, inProgramStaticTraceId, dontTrace = false) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const parentContextId = this._runtime.peekCurrentContextId();
-    const parentTraceId = this._runtime.getContextTraceId(parentContextId);
+    const parentTraceId = this._runtime.getLastTraceIdInContext(parentContextId);
 
     // NOTE: we don't really need a `schedulerTraceId`, since the parent context is always the calling function
     const schedulerTraceId = null;
@@ -331,7 +336,7 @@ export default class RuntimeMonitor {
 
   traceExpression(programId, inProgramStaticTraceId, value) {
     if (!this._ensureExecuting()) {
-      return;
+      return value;
     }
 
     // if (value instanceof Function && !isClass(value)) {
@@ -374,18 +379,21 @@ export default class RuntimeMonitor {
     return wrapper;
   }
 
-  _trace(contextId, runId, inProgramStaticTraceId, traceType = null) {
+  _trace(contextId, runId, inProgramStaticTraceId, traceType = null, isPop = false) {
     const trace = traceCollection.trace(contextId, runId, inProgramStaticTraceId, traceType);
-    this._onTrace(contextId, trace.traceId);
+    this._onTrace(contextId, trace.traceId, isPop);
     return trace;
   }
 
-  _onTrace(contextId, traceId) {
-    this._runtime.setContextTrace(contextId, traceId);
+  _onTrace(contextId, traceId, isPop = false) {
+    if (isPop) {
+      return; // we do not want to consider `pop`s as "last trace of a context" at any rate.
+    }
+    this._runtime.setLastContextTrace(contextId, traceId);
   }
 
   // ###########################################################################
-  // values
+  // varible tracking?
   // ###########################################################################
 
   // addVar(programId, inProgramStaticVarAccessId, value) {
@@ -397,9 +405,61 @@ export default class RuntimeMonitor {
   // }
 
   // ###########################################################################
+  // error handling - NOTE: moved to `dbux-data`
+  // ###########################################################################
+
+  // isFunctionExitTrace(contextId, traceId) {
+  //   if (!traceId) {
+  //     // NOTE: should probably never happen, as at least a `push` would be traced
+  //     return true;
+  //   }
+  //   const trace = traceCollection.getById(traceId);
+  //   const { staticTraceId } = trace;
+  //   const staticTrace = staticTraceCollection.getById(staticTraceId);
+
+  //   // TODO: can we get `isLastInContext`, or move to `dbux-data`?
+  //   const { type: traceType, isLastInContext } = staticTrace;
+
+  //   return isReturnTrace(traceType) || isLastInContext;
+  // }
+
+  // checkErrorOnFunctionExit(contextId) {
+  //   const context = executionContextCollection.getById(contextId);
+  //   const { lastTraceId } = context;
+
+  //   const hasError = !this.isFunctionExitTrace(contextId, lastTraceId);
+  //   traceCollection.setTraceErrorStatus(context.lastTraceId, hasError);
+  // }
+
+  // // TODO: try instrumentation
+
+  // isTryExitTrace(traceId) {
+  //   if (!traceId) {
+  //     // NOTE: even empty try blocks have a sentinel
+  //     return true;
+  //   }
+  //   const trace = traceCollection.getById(traceId);
+  //   const { staticTraceId } = trace;
+  //   const staticTrace = staticTraceCollection.getById(staticTraceId);
+  //   return staticTrace.isTryExit;
+  // }
+
+  // checkErrorOnTryExit(contextId) {
+  //   const context = executionContextCollection.getById(contextId);
+  //   const { lastTraceId } = context;
+
+  //   const hasError = !this.isTryExitTrace(lastTraceId);
+  //   traceCollection.setTraceErrorStatus(context.lastTraceId, hasError);
+  // }
+
+
+  // ###########################################################################
   // loops
   // ###########################################################################
-  
+
+
+  // TODO: loops!
+
   async* wrapAsyncIterator(it) {
     for (const promise of it) {
       // wrap await

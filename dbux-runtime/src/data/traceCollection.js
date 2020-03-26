@@ -63,7 +63,18 @@ class TraceCollection extends Collection {
 
     return trace;
   }
+
+  // ########################################
+  // dynamic updates
+  // ########################################
+  markError(traceId) {
+    const trace = traceCollection.getById(traceId);
+  }
 }
+
+// ###########################################################################
+// prettyPrint
+// ###########################################################################
 
 function _prettyPrint(trace, value) {
   const {
@@ -125,6 +136,10 @@ function _prettyPrint(trace, value) {
   //   console.groupEnd();
   // }
 }
+
+// ###########################################################################
+// export
+// ###########################################################################
 
 /**
  * @type {TraceCollection}

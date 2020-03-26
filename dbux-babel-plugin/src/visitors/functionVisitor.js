@@ -4,7 +4,6 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import VarOwnerType from 'dbux-common/src/core/constants/VarOwnerType';
 import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
-import { getPreBodyLoc1D } from '../helpers/locHelpers';
 
 // ###########################################################################
 // helpers
@@ -27,9 +26,9 @@ function buildPushImmediate(contextId, dbux, staticId, traceId, isInterruptable)
   return buildSource(`var ${contextId} = ${dbux}.pushImmediate(${staticId}, ${traceId}, ${isInterruptable});`);
 }
 
-function buildPopImmediate(contextId, dbux, traceId) {
+function buildPopFunction(contextIdVar, dbux, traceId) {
   // TODO: use @babel/template instead
-  return buildSource(`${dbux}.popImmediate(${contextId}, ${traceId});`);
+  return buildSource(`${dbux}.popFunction(${contextIdVar}, ${traceId});`);
 }
 
 const pushResumeTemplate = template(
@@ -53,7 +52,7 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
   const contextIdVar = genContextIdName(bodyPath);
 
   let pushes = buildPushImmediate(contextIdVar, dbux, staticId, pushTraceId, !!staticResumeId);
-  let pops = buildPopImmediate(contextIdVar, dbux, popTraceId);
+  let pops = buildPopFunction(contextIdVar, dbux, popTraceId);
   if (staticResumeId) {
     // this is an interruptable function -> push + pop "resume contexts"
     // const resumeContextId = bodyPath.scope.generateUid('resumeContextId');
@@ -80,7 +79,7 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
 
   let body = bodyPath.node;
   if (!Array.isArray(bodyPath.node) && !t.isStatement(bodyPath.node)) {
-    // simple lambda expression -> convert to block lambda expression with return statement
+    // simple lambda expression -> convert to block lambda expression with return statement, so we can have our `try/finally`
     body = t.blockStatement([t.returnStatement(bodyPath.node)]);
   }
 

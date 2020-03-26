@@ -2,38 +2,33 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* [callGraphView/contextView]
+* [callGraphView]
    * add new button: "hide all previous roots / show all"
    * when expanding a CallGraph root, show all context names of that `runId` as children of that root node, uniquely (don't show the same name twice)
    * add a `"filter by searchTerm"` button: show `QuickInput` to ask user to enter a searchTerm
       * all roots with contexts whose name contains searchTerm are expanded, all others are `Collapsed` or `None`
       * filter contexts by searchTerm (match `name`; as well as `filePath` of its `Program`)
 * keyword `wordcloud`
-   * prepare function to generate all keywords in all `staticContexts` of a single run
-   * multiply weight by how often they were called (use `contexts`, rather than `staticContexts`)
+   * prepare function to generate all keywords in all `staticContexts` and their `fileName`s (without ext) of a single run
+      * multiply weight by how often they were called (use `contexts`, rather than `staticContexts`)
+      * TODO: we would also want to use the folder name, but for that, we first have to add instrumentation that identifies the relative project path via `package.json`
    * add as "suggestions" to the `"filter by searchTerm"` `QuickInput`, sort by weight
    * (we will add that to webview later)
    * fine-grained keyword extraction, split names by:
       1. upper-case letters: `addElement` -> `add`, `element`
          * careful: `addUID` -> `add`, `uid`
-      2. `.`: `a.b` -> `a`, `b`
-      3. `_`: `some_func` -> `some`, `func`
+      1. `.`: `a.b` -> `a`, `b`
+      1. `_`: `some_func` -> `some`, `func`
+      1. `ClassLoader.loadClass` -> (2x `class`, `loader`, `load`)
+         * NOTE for later: `loader` + `load` can be identified as the same, using `stemitization`, `lemmatization`
+            * https://www.datacamp.com/community/tutorials/stemming-lemmatization-python
+            * https://nlp.stanford.edu/IR-book/html/htmledition/stemming-and-lemmatization-1.html
    * NOTE: is there some JS or python NLP packages to help with this?
 * [applicationView]
    * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
    * nest applications of same entry point under same node
       * most recent Application is parent, all others are children
       * make sure, `children` is `null` if it has no children (so `CollapsibleState` will be `None`)
-* [callGraphView]
-   * add new button: "hide all previous roots / show all"
-   * when expanding a CallGraph root, show all context names of that `runId` as children of that root node, uniquely (don't show the same name twice)
-   * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a searchTerm
-      * all roots with contexts whose name contains searchTerm are expanded, all others are `Collapsed` or `None`
-      * filter contexts by searchTerm (match `name`; as well as `filePath` of its `Program`)
-   * add a new "async view" mode to "Context Roots": switches between "runs" and "async runs"
-      * define a new "async run" concept
-      * TODO
-      * attach `Resume` and `Await` nodes under their actual `parentContexts`, thus hiding roots from Resumes
 * [tracesAtCursor]
    * remove this view, replace with button at the top left
       * icon = crosshair (⌖)
@@ -59,14 +54,6 @@
    * add a new "clear filters" button at the top of the `callGraphView`
    * add a new "only this trace" filter button to `callGraphView`
       * only runs that passed through this trace
-* [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
-   * shows all applications in `allApplications`
-   * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
-   * allows you to remove applications...
-      * individually
-      * "all old versions" (applications that have already been executed again)
-      * "all selected"
-   * add a checkbox (button) to select "automatically discard older application when executing again"
 * [traceDetailsView]
    * [StaticTraceTDNode] of each trace: display more relevant information
       * `GroupMode` (button to toggle in the node)
@@ -95,7 +82,7 @@
       * button icon:  (???) https://www.google.com/search?q=empty+icon&tbm=isch
 * [applicationDisplayName]
    * find shortest unique part of 'entryPointPath' of all `selectedApplications`
-      * use a loop in `_notifyChanged`
+      * update in `_notifyChanged`?
 
 * [contextChildrenView]
    * treeview that shows partial `execution tree` in the context of the selected trace
@@ -147,10 +134,15 @@
 
 
 
+
+
+
+
+
 ## TODO (other)
 * [error_handling]
-   * [errors_and_await]
-      * test: when error thrown, do we pop the correct resume and await contexts?
+   * data dependency problem:
+      * `ErrorTracesByContextIndex` depends on `LastTraceInContext` and `LastStaticTraceInContext` information, which depend on `TracesByContext` and `StaticTracesByContext` indexes...?
    * How does it work?
       * `dp.util` will have 
          * if `realContextHasPopped` && `getLastTraceInRealContext.staticTrace` !== ``getLastStaticTraceInRealContext` or a `getLastTraceInRealContext` is a `return` -> error!
@@ -161,6 +153,8 @@
       * Once a function has finished (we wrap all functions in `try`/`finally`), we insert a check:
          * If `context.lastTraceId` is in `exitTraces`, there was no error
          * else, `context.lastTraceId` caused an error
+   * [errors_and_await]
+      * test: when error thrown, do we pop the correct resume and await contexts?
 * fix: Call Graph Roots -> name does not include actual function name
    * -> add `calleeName` to `staticTrace`?
    * -> `traceLabels`
@@ -217,6 +211,19 @@
          * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * [loops]
    * fix `DoWhileLoop` :(
+* [generators]
+   * not done yet :(
+* [async_runs]
+   * re-group execution order s.t. "asynchronous runs" can be visually running "as one"
+   * consider: async functions (in a way) run parallel to normal functions
+      * (while execution is single-threaded, I/O and other system tasks will keep on doing work in the background)
+   * what to do with callbacks that preceded and then triggered a `Resume`?
+   * link up promise chains
+   * make sure that we don't accidentally use/cause evil promise semantics [[1](https://stackoverflow.com/questions/46889290/waiting-for-more-than-one-concurrent-await-operation)] [[2](https://stackoverflow.com/questions/58288256/with-a-promise-why-do-browsers-return-a-reject-twice-but-not-a-resolve-twice/58288370#58288370)]
+   * double check against the [Promise/A+ spec](https://promisesaplus.com/#notes), especially semantics of promise rejections and their execution order
+      * rejections might be triggered from "platform code"
+      * https://stackoverflow.com/questions/42118900/when-is-the-body-of-a-promise-executed
+      * http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor
 * fix: `sourceHelper` must use original code, but exclude comments
 * fix: trace order for `super` instrumentation is incorrect
    * try to find `SequenceExpression` ancestor first, and isntrument that instead
@@ -224,7 +231,8 @@
    * generally less accurate than `trace.context.staticContextId`
    * cannot work correctly with interruptable functions
    * -> repurpose as `realStaticContextId`?
-* fix: `NewExpression` is not properly instrumented?
+* fix: `NewExpression` is not properly instrumented
+   * because our `callback` wrapping is too aggressive; won't work with babel es6 classes and breaks object identity
 * [InfoTDNode]
    * Push/Pop (of any kind) show next previous trace/context?
    * [CallbackArg] -> show `Push/PopCallback` nodes
@@ -250,14 +258,6 @@
       * idea: just record all variables after line, so rendering is less convoluted?
    * show `x {n_times_executed}` after line, but only if n is different from the previous line
       * show multiple, if there are different numbers for multiple traces of line?
-* fix "execution order" of "async runs"
-   * what to do with callbacks that preceded and then triggered a `Resume`?
-   * link up promise chains
-   * make sure that we don't accidentally use/cause evil promise semantics [[1](https://stackoverflow.com/questions/46889290/waiting-for-more-than-one-concurrent-await-operation)] [[2](https://stackoverflow.com/questions/58288256/with-a-promise-why-do-browsers-return-a-reject-twice-but-not-a-resolve-twice/58288370#58288370)]
-   * double check against the [Promise/A+ spec](https://promisesaplus.com/#notes), especially semantics of promise rejections and their execution order
-      * rejections might be triggered from "platform code"
-      * https://stackoverflow.com/questions/42118900/when-is-the-body-of-a-promise-executed
-      * http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor
 * [promises] keep track of `schedulerTraceId`
 * [params]
    * add trace/valueRef for `varAccess` of function `params`

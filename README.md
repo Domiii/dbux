@@ -308,6 +308,43 @@ You can re-add it manually:
 
 # Features
 
+## Data Recording + Data Processing Mechanisms
+
+* Instrumentation
+* Collection
+* Postprocessing
+   * adding one-to-one fields (pre-index)
+   * Index
+   * adding one-to-one fields (post-index)
+* Query + CachedQuery
+
+## Concept: Contexts + StaticContexts
+
+## Concept: Traces + StaticTraces
+
+## Data Flow
+
+### Object Tracking
+
+## Error Reporting
+
+
+## Control Flow
+
+### Basic Control Flow
+
+### Callback Tracking
+
+### Interruptable functions: async
+
+### Interruptable functions: generator
+
+### Error reporting
+
+* Are dynamic vs. static exit traces of functions the same?
+* special attention: `try` statements
+
+
 ## Call Graph Navigation
 
 * {Previous,Next}InContext

@@ -60,6 +60,26 @@ class ExecutionContextCollection extends Collection<ExecutionContext> {
     }
     super.add(entries);
   }
+
+  /**
+   * @param {ExecutionContext[]} contexts 
+   */
+  postIndex(contexts) {
+    try {
+      // determine last trace of every context
+      this.resolveLastTraceOfContext(contexts);
+    }
+    catch (err) {
+      logError('resolveCallIds failed', err, contexts);
+    }
+  }
+
+  resolveLastTraceOfContext() {
+    // TODO
+    // return !isReturnTrace(traceType) && !isTracePop(traceType) &&   // return and pop traces indicate that there was no error in that context
+    //   dp.util.isLastTraceInContext(traceId) &&        // is last trace we have recorded
+    //   !dp.util.isLastTraceInStaticContext(traceId);   // but is not last trace in the code
+  }
 }
 
 
@@ -77,13 +97,16 @@ class TraceCollection extends Collection<Trace> {
     super.add(traces);
   }
 
+  /**
+   * Post processing of trace data
+   */
   postAdd(traces: Trace[]) {
     try {
       // build dynamic call expression tree
       this.resolveCallIds(traces);
     }
     catch (err) {
-      logError('resolveCallIds failed', traces, err);
+      logError('resolveCallIds failed', err, traces);
     }
   }
 
@@ -335,6 +358,13 @@ export default class DataProvider {
           }
         }
       }
+    }
+
+    // notify collections that adding + index processing has finished
+    for (const collectionName in allData) {
+      const collection = this.collections[collectionName];
+      const entries = allData[collectionName];
+      collection.postIndex(entries);
     }
 
     // fire internal event listeners

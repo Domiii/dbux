@@ -1,12 +1,10 @@
 import { TreeItemCollapsibleState } from 'vscode';
-import NanoEvents from 'nanoevents';
 import Enum from 'dbux-common/src/util/Enum';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { makeRootTraceLabel, makeCallTraceLabel, makeTraceLabel } from 'dbux-data/src/helpers/traceLabels';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import TraceType, { hasTraceValue, isCallbackRelatedTrace } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { isCallbackRelatedTrace } from 'dbux-common/src/core/constants/TraceType';
 import TraceNode from './TraceNode';
 import GroupNode from './GroupNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';

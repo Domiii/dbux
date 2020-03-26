@@ -30,8 +30,10 @@ const TraceInstrumentationType = new Enum({
   Loop: 6,
   LoopBlock: 7,
 
+  // Special attention required for these
   MemberExpression: 8,
-  Super: 9
+  Super: 9,
+  ReturnArgument: 10
 });
 
 const traceCfg = (() => {
@@ -45,8 +47,10 @@ const traceCfg = (() => {
     Block,
     Loop,
     LoopBlock,
+
     MemberExpression,
-    Super
+    Super,
+    ReturnArgument
   } = TraceInstrumentationType;
 
   return {
@@ -178,7 +182,7 @@ const traceCfg = (() => {
     // ],
     ReturnStatement: [
       NoTrace,
-      [['argument', ExpressionResult]]
+      [['argument', ReturnArgument]]
     ],
     ThrowStatement: Statement,
 
@@ -326,7 +330,7 @@ function wrapCallExpression(path, state, cfg) {
   }
 
   // trace BeforeCallExpression (returns original path)
-  return traceBeforeExpression(path, state, TraceType.BeforeCallExpression, null);
+  return traceBeforeExpression(TraceType.BeforeCallExpression, path, state, null);
 }
 
 const enterInstrumentors = {
@@ -396,6 +400,17 @@ const enterInstrumentors = {
   },
   Super(path, state) {
     // NOTE: for some reason, this visitor does not get picked up by Babel
+  },
+
+  ReturnArgument(path, state, cfg) {
+    if (path.node) {
+      // trace `arg` in `return arg;`
+      return doTraceWrapExpression(TraceType.ReturnArgument, path, state, cfg);
+    }
+    else {
+      // trace `return;` statement
+      return traceBeforeExpression(TraceType.ReturnNoArgument, path.parentPath, state, cfg);
+    }
   }
 };
 

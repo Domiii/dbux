@@ -164,11 +164,18 @@ export default class Runtime {
   // Traces
   // ###########################################################################
   
-  setContextTrace(contextId, traceId) {
+  setLastContextTrace(contextId, traceId) {
     this._lastTraceByContextId[contextId] = traceId;
   }
 
-  getContextTraceId(contextId) {
+  /**
+   * This is currently used for two things:
+   * 1. Determine `parentTraceId` (which trace pushed which context)
+   * 2. Determine whether an error happened, by checking whether this dynamic last trace is an actual exit trace for a function.
+   * 
+   * NOTE: `Pop`s are not recorded here! (as that would mess with (2))
+   */
+  getLastTraceIdInContext(contextId) {
     return this._lastTraceByContextId[contextId];
   }
 

@@ -151,6 +151,7 @@ function exit(path, state) {
 function contextVisitors() {
   return {
     Function: functionVisitor(),
+    
     AwaitExpression: awaitVisitor(),
 
     /**
