@@ -31,9 +31,17 @@ export default class Collection<T> {
     this._all.push(...entries);
   }
 
-  postAdd(entries: T[]) {
-    // default: do nothing
-  }
+  /**
+   * Collections can use this to massage data after all data has been added, but before indexes have been processed.
+   * @virtual
+   */
+  postAdd(entries: T[]) { }
+
+  /**
+   * Collections can use this to massage data after all data has been added, and after indexes have been processed.
+   * @virtual
+   */
+  postIndex(entries) { }
 
   // ###########################################################################
   // Reads

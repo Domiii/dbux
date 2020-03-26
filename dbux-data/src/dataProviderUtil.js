@@ -1,4 +1,4 @@
-import { hasDynamicTypes, hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
+import { hasDynamicTypes, hasTraceValue, isReturnTrace, isTracePop } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
@@ -356,5 +356,31 @@ export default {
       }
     }
     return groups;
+  },
+
+  // ###########################################################################
+  // Error handling
+  // ###########################################################################
+
+  isErrorTrace(dp, traceId) {
+    // TODO: add `try` error traces (did not fail function, but raised an error)
+    const traceType = dp.util.getTraceType(traceId);
+    return !isReturnTrace(traceType) && !isTracePop(traceType) &&   // return and pop traces indicate that there was no error in that context
+      dp.util.isLastTraceInContext(traceId) &&        // is last trace we have recorded
+      !dp.util.isLastTraceInStaticContext(traceId);   // but is not last trace in the code
+  },
+
+  /**
+   * Whether this is the last trace we have seen in its context
+   */
+  isLastTraceInContext(dp, traceId) {
+    // TODO
+  },
+
+  /**
+   * Whether this is the last trace of its static context
+   */
+  isLastTraceInStaticContext(dp, traceId) {
+    // TODO
   }
 };

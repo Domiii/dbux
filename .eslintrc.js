@@ -77,6 +77,8 @@ module.exports = {
 		"linebreak-style": 0,
 		"quotes": 0,
 		"spaced-comment": 0,
-		"max-len": ["warn", { "code": 120 }]
+		"max-len": ["warn", { "code": 120 }],
+		"one-var": 0,
+		"one-var-per-line": 0
 	}
 };

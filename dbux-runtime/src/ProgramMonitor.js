@@ -49,6 +49,10 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.popImmediate(contextId, traceId);
   }
 
+  popFunction(contextId, traceId) {
+    return this._runtimeMonitor.popFunction(contextId, traceId);
+  }
+
 
   // CallbackArgument(inProgramStaticId, schedulerId, traceId, cb) {
   //   return this._runtimeMonitor.CallbackArgument(this.getProgramId(), 

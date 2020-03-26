@@ -22,6 +22,7 @@ export default class ExecutionContext {
   orderId : number;
   schedulerTraceId : number;
   createdAt: number;
+  lastTraceId: number;
 
   /**
    * This is probably not necessary.

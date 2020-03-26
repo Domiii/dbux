@@ -63,7 +63,7 @@ class QueryCache {
         // value does not exist
         if (this.cfg.onlyCacheExisting) {
           // don't cache
-          return;
+          return result;
         }
 
         // set to `null`; because `DoesNotExist === undefined`
