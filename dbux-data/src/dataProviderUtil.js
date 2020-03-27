@@ -359,28 +359,72 @@ export default {
   },
 
   // ###########################################################################
-  // Error handling
+  // Contexts + their traces
   // ###########################################################################
-
-  isErrorTrace(dp, traceId) {
-    // TODO: add `try` error traces (did not fail function, but raised an error)
-    const traceType = dp.util.getTraceType(traceId);
-    return !isReturnTrace(traceType) && !isTracePop(traceType) &&   // return and pop traces indicate that there was no error in that context
-      dp.util.isLastTraceInContext(traceId) &&        // is last trace we have recorded
-      !dp.util.isLastTraceInStaticContext(traceId);   // but is not last trace in the code
-  },
 
   /**
    * Whether this is the last trace we have seen in its context
    */
-  isLastTraceInContext(dp, traceId) {
-    // TODO
+  isLastTraceInRealContext(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const { contextId } = trace;
+    return dp.util.getLastTraceInRealContext(contextId) === trace;
   },
 
   /**
    * Whether this is the last trace of its static context
    */
-  isLastTraceInStaticContext(dp, traceId) {
-    // TODO
-  }
+  isLastTraceInStaticContext(dp, staticTraceId) {
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    const { staticContextId } = staticTrace;
+    return dp.util.getLastStaticTraceInContext(staticContextId) === staticTrace;
+  },
+
+  /**
+   * Whether this is the last trace we have seen in its context
+   */
+  getLastTraceInRealContext(dp, contextId) {
+    const traces = dp.indexes.traces.byRealContext(contextId);
+    return traces?.[traces.length - 1] || null;
+  },
+
+  /**
+   * Whether this is the last trace of its static context
+   */
+  getLastStaticTraceInContext(dp, staticContextId) {
+    const staticTraces = dp.indexes.staticTraces.byContext.get(staticContextId);
+    return staticTraces?.[staticTraces.length - 1] || null;
+  },
+
+  hasRealContextPopped(dp, contextId) {
+    const lastTrace = dp.util.getLastTraceInRealContext(contextId);
+    return lastTrace && isTracePop(lastTrace);
+  },
+
+  // ###########################################################################
+  // Error handling
+  // ###########################################################################
+
+  isErrorTrace(dp, traceId) {
+    // ` && `getLastTraceInRealContext.staticTrace` !== ``getLastStaticTraceInRealContext
+
+    const traceType = dp.util.getTraceType(traceId);
+
+    // is not a return trace (because return traces indicate function succeeded)
+    return !isReturnTrace(traceType) && 
+
+      // is last trace we have recorded in context
+      dp.util.isLastTraceInRealContext(traceId) &&
+
+      // but is not last trace in the code
+      !dp.util.isLastTraceInStaticContext(traceId) &&
+
+      // the context must have popped (finished), or else there was no error (yet)
+      dp.util.hasRealContextPopped(dp.util.getRealContextId(traceId));
+  },
+
+  hasContextError(dp, realContextId) {
+    const trace = dp.util.getLastTraceInRealContext(realContextId);
+    return dp.util.isErrorTrace(trace);
+  },
 };

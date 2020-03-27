@@ -141,11 +141,7 @@
 
 ## TODO (other)
 * [error_handling]
-   * data dependency problem:
-      * `ErrorTracesByContextIndex` depends on `LastTraceInContext` and `LastStaticTraceInContext` information, which depend on `TracesByContext` and `StaticTracesByContext` indexes...?
    * How does it work?
-      * `dp.util` will have 
-         * if `realContextHasPopped` && `getLastTraceInRealContext.staticTrace` !== ``getLastStaticTraceInRealContext` or a `getLastTraceInRealContext` is a `return` -> error!
       * mark possible `exitTraces`:
          1. any `ReturnStatement`
          1. at the end of the function
@@ -153,6 +149,11 @@
       * Once a function has finished (we wrap all functions in `try`/`finally`), we insert a check:
          * If `context.lastTraceId` is in `exitTraces`, there was no error
          * else, `context.lastTraceId` caused an error
+   * [ErrorTracesByRunIndex]
+      * Warning: data dependencies
+         * `ErrorTracesByRunIndex` depends on ``dp.util.isErrorTrace` information, which depend on `TracesByRealContext` and `StaticTracesByContext` indexes
+         * Sln: allow `CollectionIndex.dependencies` to be a function as well, from where we can call *SOME* `dp.util` functions
+            * NOTE: Not all data is available, so not all `util` functions can be used. Be aware of each `util`'s dependencies.
    * [errors_and_await]
       * test: when error thrown, do we pop the correct resume and await contexts?
 * fix: Call Graph Roots -> name does not include actual function name
