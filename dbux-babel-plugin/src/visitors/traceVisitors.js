@@ -236,7 +236,7 @@ const traceCfg = (() => {
     // ########################################
     TryStatement: [
       NoTrace,
-      [['block', Block], ['finalizer', Block]]
+      // [['block', Block], ['finalizer', Block]]
     ],
     CatchClause: [
       NoTrace,

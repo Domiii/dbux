@@ -140,12 +140,21 @@
 
 
 ## TODO (other)
+* fix: `try` is not instrumented correctly (errors out)
 * [error_handling]
+   * Core
+      * the actual error trace is the trace that did NOT get executed
+         * -> render error for the `staticTrace` that follows the last executed trace
+      * `staticTrace` order is unreliable; inject sentinel trace at end of every function instead
+      * also handle `try` blocks
+   * UI
+      * render trace error status in trace details
+      * show a "flame" indicator button in the top right, if there were any uncaught errors
+         * (and even if there were caught errors, but in a lighter color)
    * How does it work?
       * mark possible `exitTraces`:
          1. any `ReturnStatement`
-         1. at the end of the function
-         1. `try` blocks
+         1. the end of any function
       * Once a function has finished (we wrap all functions in `try`/`finally`), we insert a check:
          * If `context.lastTraceId` is in `exitTraces`, there was no error
          * else, `context.lastTraceId` caused an error

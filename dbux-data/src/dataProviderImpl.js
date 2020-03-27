@@ -26,6 +26,8 @@ import StaticContextsByFileIndex from './impl/indexes/StaticContextsByFileIndex'
 import StaticContextsByParentIndex from './impl/indexes/StaticContextsByParentIndex';
 import CallArgsByCallIndex from './impl/indexes/CallArgsByCallIndex';
 import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
+import TracesByRealContextIndex from './impl/indexes/TracesByRealContextIndex';
+import StaticTracesByContextIndex from './impl/indexes/StaticTracesByContextIndex';
 
 
 export function newDataProvider(application) {
@@ -43,6 +45,7 @@ export function newDataProvider(application) {
   // indexes
   dataProvider.addIndex(new StaticContextsByFileIndex());
   dataProvider.addIndex(new StaticContextsByParentIndex());
+  dataProvider.addIndex(new StaticTracesByContextIndex());
 
   dataProvider.addIndex(new ContextsByStaticContextIndex());
   dataProvider.addIndex(new ContextChildrenIndex());
@@ -61,8 +64,9 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new TracesByTrackIdIndex());
   dataProvider.addIndex(new CallArgsByCallIndex());
 
+  dataProvider.addIndex(new TracesByRealContextIndex());
 
-  // complex indexes
+  // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
   dataProvider.addIndex(new VisitedStaticTracesByFileIndex());
   dataProvider.addIndex(new ParentTracesInRealContextIndex());

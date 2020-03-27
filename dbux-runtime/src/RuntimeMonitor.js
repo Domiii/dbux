@@ -101,7 +101,7 @@ export default class RuntimeMonitor {
 
 
   popFunction(contextId, inProgramStaticTraceId) {
-    this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
+    // this.checkErrorOnFunctionExit(contextId, inProgramStaticTraceId);
     return this.popImmediate(contextId, inProgramStaticTraceId);
   }
 

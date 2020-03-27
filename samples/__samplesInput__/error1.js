@@ -1,13 +1,24 @@
-function f() {
-  console.log('f1');
+function ouch() {
   throw new Error('ouch!');
-  console.log('f2');
 }
 
-function main() {
-  console.log('main1');
-  f();
-  console.log('main2');
+function main1() {
+  console.log('[main1]', 'start');
+  ouch();
+  console.log('[main1]', 'end');
 }
 
-main();
+function main2() {
+  console.log('[main2]', 'start');
+  return ouch();
+}
+
+try {
+  main1();
+}
+catch (err) { }
+
+try {
+  main2();
+}
+catch (err) { }

@@ -7,7 +7,7 @@ import DataProvider from '../../DataProvider';
 
 export default class TracesByRealContextIndex extends CollectionIndex<Trace> {
   constructor() {
-    super('traces', 'byRealContext', false);
+    super('traces', 'byRealContext');
   }
 
   makeKey(dp: DataProvider, { traceId }: Trace) {

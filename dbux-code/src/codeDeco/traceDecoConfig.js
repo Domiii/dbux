@@ -156,7 +156,14 @@ const StylingsByName = {
   // ########################################
   // don't display
   // ########################################
-  BeforeCallExpression: false,    // probably want to show this instead of ExpressionResult?
+  BeforeCallExpression: false, //{
+  //   styling: {
+  //     after: {
+  //       contentText: 'B',
+  //       color: 'red'
+  //     }
+  //   }
+  // },
   CalleeObject: false,
   ExpressionValue: false,
   Callee: false

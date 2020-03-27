@@ -7,7 +7,7 @@ import DataProvider from '../../DataProvider';
 
 export default class StaticTracesByContextIndex extends CollectionIndex<Trace> {
   constructor() {
-    super('staticTraces', 'byContext', false);
+    super('staticTraces', 'byContext');
   }
 
   makeKey(dp: DataProvider, { staticContextId }: StaticTrace) {
