@@ -14,15 +14,26 @@ df.drop(['A', 'B'], axis=1)
 # -> complex queries
 staticTraces.query(f'callId == {callId} or resultCallId == {callId}')
 
-# -> join queries
+# -> join queries (several examples)
 # https://stackoverflow.com/a/40869861
+df.set_index('key').join(other.set_index('key'))
 B.query('client_id not in @A.client_id')
 B[~B.client_id.isin(A.client_id)]
+
+# merging dfs
+# https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.merge.html
+pd.merge(df1, df2, on=['A', 'B'])
+df1.merge(df2, left_on='lkey', right_on='rkey')
+
+
 
 # // ###########################################################################
 # // Display
 # // ###########################################################################
 
 # -> display a groupby object (https://stackoverflow.com/questions/22691010/how-to-print-a-groupby-object)
-for key, item in df.groupby('A'):
-  display(grouped_df.get_group(key))
+groups = df.groupby('A')
+for key, item in groups:
+  group = groups.get_group(key)
+  display(group) 
+  # .to_numpy().flatten().tolist()
