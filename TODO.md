@@ -142,23 +142,23 @@
 ## TODO (other)
 * fix: `try` is not instrumented correctly (errors out)
 * [error_handling]
-   * Problems
-      * the actual error trace is the trace that did NOT get executed
-         * Sln: patch function's `Pop`'s `staticTrace` to be the one that follows the last executed trace (that is the "error trace")
-            * NOTE: If there are no errors, set `Pop`'s `staticTrace` to be the `FunctionExit` trace
-               * -> new concept `isFunctionExitTrace` is either `return` or `EndOfFunction`
-               * -> need to insert `EndOfFunction` for every function
-            * Problem: How to "guess" and "patch" the "missing trace"?
-               * There is no `staticTrace` for `ExpressionResult` (it actually shares w/ `BCE`)
-                  * Sln: `getBCEForCallTrace`
-               * NOTE: `getters` and `setters` might actually work out-of-the-box this way, as well
-               * Data dependencies: Must be done before adding `pop` trace, but depends on `LastTraceInRealContext`
-                  * Sln1: If a `pop` trace indicates an error, do an expensive lookup without using `indexes` etc
-                     * (a) an error exists, if last trace before `pop` was NOT a `return` or `EndOfFunction` trace of same context
-                     * (b) lookup worst case: build temporary index (`groupby('contextId')` etc.)
-                        * NOTE: `TracesByRealContextIndex` needs that extra layer on top of it
-                  * Sln2: Do this in `RuntimeMonitor.popFunction` instead, and set `PopImmediate`'s `staticTraceId` correctly?
-                     * NOTE: probably not going to go any better
+   * Problem: the actual error trace is the trace that did NOT get executed
+      * Sln: patch function's `Pop`'s `staticTrace` to be the one that follows the last executed trace (that is the "error trace")
+         * NOTE: If there are no errors, set `Pop`'s `staticTrace` to be the `FunctionExit` trace
+            * -> new concept `isFunctionExitTrace` is either `return` or `EndOfFunction`
+            * -> need to insert `EndOfFunction` for every function
+         * Problem: How to "guess" and "patch" the "missing trace"?
+            * There is no `staticTrace` for `ExpressionResult` (it actually shares w/ `BCE`)
+               * Sln: `getBCEForCallTrace`
+            * NOTE: `getters` and `setters` might actually work out-of-the-box this way, as well
+            * Data dependencies: Must be done before adding `pop` trace, but depends on `LastTraceInRealContext`
+               * Sln1: Can the runtime track `LastTraceInRealContext`?
+                  * Quite easily!
+               * Sln2: If a `pop` trace indicates an error, do an expensive lookup without using `indexes` etc
+                  * (a) an error exists, if last trace before `pop` was NOT a `return` or `EndOfFunction` trace of same context
+                  * (b) lookup worst case: build temporary index (`groupby('contextId')` etc.)
+                     * NOTE: `TracesByRealContextIndex` needs that extra layer on top of it
+                  * NOTE: probably not going to go any better
 
    * More TODOs
       * trace `throw` statements
