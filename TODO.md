@@ -142,6 +142,20 @@
 ## TODO (other)
 * fix: `try` is not instrumented correctly (errors out)
 * [error_handling]
+   * Steps
+      0. Fix `staticTraceId` order
+         * trace `throw` statements
+         * reverse order: first process AST children, then process parent
+         * Special handling for `CallExpression` (insert `BCE` beforehand)
+         * Fix `super`
+      1. `Runtime` tracks `lastTraceInRealContext`
+      2. When `dbux-data` sees an error in a `pop` `trace`: set `staticTraceId` before adding
+         * Error condition: `lastTraceInRealContext` was NOT a `return` or `EndOfFunction` trace
+         * `guessErrorTrace`
+            * `throw` -> the error trace is the observed trace
+            * else if `participatesInCallTrace` -> `getBCEForCallTrace`
+            * else -> set `staticTraceId` to `lastObservedStaticTraceId + 1`
+      3. also handle `try` blocks
    * Problem: the actual error trace is the trace that did NOT get executed
       * Sln: patch function's `Pop`'s `staticTrace` to be the one that follows the last executed trace (that is the "error trace")
          * NOTE: If there are no errors, set `Pop`'s `staticTrace` to be the `FunctionExit` trace
@@ -154,16 +168,10 @@
             * Data dependencies: Must be done before adding `pop` trace, but depends on `LastTraceInRealContext`
                * Sln1: Can the runtime track `LastTraceInRealContext`?
                   * Quite easily!
-               * Sln2: If a `pop` trace indicates an error, do an expensive lookup without using `indexes` etc
-                  * (a) an error exists, if last trace before `pop` was NOT a `return` or `EndOfFunction` trace of same context
+               * Sln2: 
                   * (b) lookup worst case: build temporary index (`groupby('contextId')` etc.)
                      * NOTE: `TracesByRealContextIndex` needs that extra layer on top of it
                   * NOTE: probably not going to go any better
-
-   * More TODOs
-      * trace `throw` statements
-         * NOTE: this generates the actual "error trace" and does not require us to "guess the missing trace"
-      * also handle `try` blocks
    * UI
       * render trace error status in trace details
       * show a "flame" indicator button in the top right, if there were any uncaught errors
