@@ -144,11 +144,12 @@
 * [error_handling]
    * Steps
       0. Fix `staticTraceId` order
+         * on `visitor.exit`: `return` + `throw`: special treatment for `CallExpression` arguments
          * trace `throw` statements
          * reverse order: first process AST children, then process parent
          * Special handling for `CallExpression` (insert `BCE` beforehand)
          * Fix `super`
-      1. `Runtime` tracks `lastTraceInRealContext`
+      1. ⚠️ `Runtime` tracks `lastTraceInRealContext`
       2. When `dbux-data` sees an error in a `pop` `trace`: set `staticTraceId` before adding
          * Error condition: `lastTraceInRealContext` was NOT a `return` or `EndOfFunction` trace
          * `guessErrorTrace`

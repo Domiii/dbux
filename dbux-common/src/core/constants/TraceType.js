@@ -32,7 +32,9 @@ let TraceType = {
   BlockEnd: 18,
 
   ReturnArgument: 19,
-  ReturnNoArgument: 20
+  ReturnNoArgument: 20,
+
+  Throw: 21
 };
 
 TraceType = new Enum(TraceType);

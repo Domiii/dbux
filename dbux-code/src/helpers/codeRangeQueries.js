@@ -72,6 +72,7 @@ export function getTracesAt(application: Application, programId, pos): Trace[] {
 
   const traces = dp.util.getAllTracesOfStaticContext(staticContextId)
     .filter(trace =>
+      // ignore BCEs
       dp.util.getTraceType(trace.traceId) !== TraceType.BeforeCallExpression
     );
 

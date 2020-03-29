@@ -33,7 +33,8 @@ const TraceInstrumentationType = new Enum({
   // Special attention required for these
   MemberExpression: 8,
   Super: 9,
-  ReturnArgument: 10
+  ReturnArgument: 10,
+  ThrowArgument: 11
 });
 
 const traceCfg = (() => {
@@ -50,7 +51,8 @@ const traceCfg = (() => {
 
     MemberExpression,
     Super,
-    ReturnArgument
+    ReturnArgument,
+    ThrowArgument
   } = TraceInstrumentationType;
 
   return {
@@ -58,8 +60,9 @@ const traceCfg = (() => {
     // assignments
     // ########################################
     AssignmentExpression: [
-      ExpressionResult,
-      // [['right', ExpressionResult]]
+      // ExpressionResult,
+      NoTrace,
+      [['right', ExpressionResult, null, { originalIsParent: true }]]
     ],
     ClassPrivateProperty: [
       NoTrace,
@@ -184,7 +187,10 @@ const traceCfg = (() => {
       NoTrace,
       [['argument', ReturnArgument]]
     ],
-    ThrowStatement: Statement,
+    ThrowStatement: [
+      NoTrace,
+      [['argument', ThrowArgument]]
+    ],
 
 
     // ########################################
@@ -225,9 +231,9 @@ const traceCfg = (() => {
     ],
     // SwitchCase: [
     // TODO: insert trace call into `consequent` array.
-    //    NOTE: we cannot just block the `consequent` array as that will change the semantics (specifically: local variables cannot spill into subsequent cases anymore)
+    //    NOTE: we cannot just wrap the `consequent` statement array into a new block, as that will change the semantics (specifically: local variables would not be able to spill into subsequent cases)
     //   NoTrace,
-    //   [['consequent']]
+    //   [['consequent', Block]]
     // ],
 
 
@@ -305,8 +311,6 @@ function normalizeConfig(cfg) {
 function doTraceWrapExpression(traceType, path, state, cfg) {
   if (isCallPath(path)) {
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be call expressions
-    // return wrapCallExpression(path, state, cfg);
-    // do not instrument -> it will be taken care of later
     return null;
   }
 
@@ -342,7 +346,7 @@ const enterInstrumentors = {
   },
   ExpressionValue(pathOrPaths, state, cfg) {
     if (Array.isArray(pathOrPaths)) {
-      // e.g. `SequenceExpression`
+      // e.g. `SequenceExpression` + 
       for (const path of pathOrPaths) {
         doTraceWrapExpression(TraceType.ExpressionValue, path, state, cfg);
       }
@@ -408,9 +412,13 @@ const enterInstrumentors = {
       return doTraceWrapExpression(TraceType.ReturnArgument, path, state, cfg);
     }
     else {
-      // trace `return;` statement
+      // insert trace before `return;` statement
       return traceBeforeExpression(TraceType.ReturnNoArgument, path.parentPath, state, cfg);
     }
+  },
+
+  ThrowArgument(path, state, cfg) {
+    return doTraceWrapExpression(TraceType.Throw, path, state, cfg);
   }
 };
 
