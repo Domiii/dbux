@@ -311,7 +311,8 @@ function normalizeConfig(cfg) {
 function doTraceWrapExpression(traceType, path, state, cfg) {
   if (isCallPath(path)) {
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be call expressions
-    return null;
+    // return null;
+    return wrapCallExpression(path, state, cfg);
   }
 
   // any other expression with a result
@@ -399,7 +400,10 @@ const enterInstrumentors = {
     }
     else {
       // trace object (e.g. `x` in `x.y`) as-is
-      return doTraceWrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
+      doTraceWrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
+
+      // NOTE: the `originalPath` is not maintained
+      return undefined;
     }
   },
   Super(path, state) {
