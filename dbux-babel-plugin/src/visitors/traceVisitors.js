@@ -436,6 +436,8 @@ function exitCallExpression(path, state, callResultType) {
 /**
  * NOTE: we have these specifically for expressions that
  * potentially can be `CallExpression`.
+ * 
+ * WARNING: `exit` instrumentors are traversed in opposite order by Babel.
  */
 const exitInstrumentors = {
   CallExpression(path, state) {
@@ -463,8 +465,6 @@ const exitInstrumentors = {
 // ###########################################################################
 
 function visit(onTrace, instrumentors, path, state, cfg) {
-  if (!onTrace(path)) return;
-
   const [traceType, children, extraCfg] = cfg;
   if (extraCfg?.ignore?.includes(path.node.type)) {
     // ignore (array of type name)
@@ -474,6 +474,13 @@ function visit(onTrace, instrumentors, path, state, cfg) {
     // filter (custom function)
     return;
   }
+
+  if (!traceType && !children) {
+    return;
+  }
+
+  // start tracing
+  if (!onTrace(path)) return; // mark as visited
 
   if (children) {
     // 1. trace children
