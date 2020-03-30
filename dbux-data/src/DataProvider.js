@@ -8,13 +8,24 @@ import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import deserialize from 'dbux-common/src/serialization/deserialize';
-import TraceType, { isTraceExpression } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit } from 'dbux-common/src/core/constants/TraceType';
 
 import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
+
+function errorWrapMethod(obj, methodName, ...args) {
+  try {
+    // build dynamic call expression tree
+    /* eslint prefer-spread: 0 */ // (false positive)
+    obj[methodName].apply(obj, args);
+  }
+  catch (err) {
+    logError(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err, ...args);
+  }
+}
 
 class StaticProgramContextCollection extends Collection<StaticProgramContext> {
   constructor(dp) {
@@ -101,13 +112,9 @@ class TraceCollection extends Collection<Trace> {
    * Post processing of trace data
    */
   postAdd(traces: Trace[]) {
-    try {
-      // build dynamic call expression tree
-      this.resolveCallIds(traces);
-    }
-    catch (err) {
-      logError('resolveCallIds failed', err, traces);
-    }
+    // build dynamic call expression tree
+    errorWrapMethod(this, 'resolveCallIds', traces);
+    errorWrapMethod(this, 'resolveErrorTraces', traces);
   }
 
   resolveCallIds(traces: Trace[]) {
@@ -117,16 +124,17 @@ class TraceCollection extends Collection<Trace> {
       const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
       const traceType = this.dp.util.getTraceType(traceId);
       if (traceType === TraceType.BeforeCallExpression) {
+        trace.callId = trace.traceId;  // refers to its own call
         beforeCalls.push(trace);
-        console.log(' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
+        // debug('[callIds]', ' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
       }
       else if (isTraceExpression(traceType)) {
-        // NOTE: `hasTraceValue` to filter out Push/PopCallback
+        // NOTE: `isTraceExpression` to filter out Push/PopCallback
         if (staticTrace.resultCallId) {
           // call results: reference their call by `resultCallId` and vice versa by `resultId`
           // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
           const beforeCall = beforeCalls.pop();
-          console.log(' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
+          // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
             logError('[resultCallId]', beforeCall.staticTraceId, staticTrace.staticTraceId, 'staticTrace.resultCallId !== beforeCall.staticTraceId - is trace result of a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
             beforeCalls.push(beforeCall);   // something is wrong -> push it back
@@ -143,6 +151,54 @@ class TraceCollection extends Collection<Trace> {
             logError('[callId]', beforeCall.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
           }
           trace.callId = beforeCall.traceId;
+        }
+      }
+    }
+  }
+
+  resolveErrorTraces(traces) {
+    for (const trace of traces) {
+      const {
+        traceId,
+        previousTrace: previousTraceId
+      } = trace;
+
+      const traceType = this.dp.util.getTraceType(traceId);
+      if (!isTracePop(traceType) || !previousTraceId) {
+        continue;
+      }
+
+      const previousTraceType = this.dp.util.getTraceType(previousTraceId);
+      if (!isTraceFunctionExit(previousTraceType)) {
+        // error!
+        trace.error = true;
+
+        // guess error trace
+        const previousTrace = this.dp.collections.traces.getById(previousTraceId);
+        const { staticTraceId, callId, resultCallId } = previousTrace;
+        if (previousTraceType === TraceType.Throw) {
+          // trace is error trace
+          trace.staticTraceId = staticTraceId;
+        }
+        else if (callId) {
+          // participates in a call but call did not finish -> set expected error trace to BCE
+          const callTrace = this.dp.collections.traces.getById(callId);
+          if (!callTrace.resultId) {
+            // strange...
+          }
+          else {
+            const resultTrace = this.dp.collections.traces.getById(callTrace.resultId);
+            trace.staticTraceId = resultTrace.staticTraceId;
+          }
+        }
+        else if (resultCallId) {
+          // the last trace we saw was a successful function call. error was caused by next trace of that function call
+          const resultTrace = this.dp.collections.traces.getById(resultCallId);
+          trace.staticTraceId = resultTrace.staticTraceId + 1;
+        }
+        else {
+          // the error trace is (probably) the trace following the last executed trace
+          trace.staticTraceId = staticTraceId + 1;
         }
       }
     }

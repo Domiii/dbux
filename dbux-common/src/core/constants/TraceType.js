@@ -34,7 +34,9 @@ let TraceType = {
   ReturnArgument: 19,
   ReturnNoArgument: 20,
 
-  Throw: 21
+  ThrowArgument: 21,
+
+  EndOfFunction: 22
 };
 
 TraceType = new Enum(TraceType);
@@ -55,6 +57,16 @@ popTypes[TraceType.PopCallback] = true;
 
 export function isTracePop(traceType) {
   return popTypes[traceType];
+}
+
+
+const functionExitTypes = new Array(TraceType.getCount()).map(_ => false);
+functionExitTypes[TraceType.ReturnArgument] = true;
+functionExitTypes[TraceType.ReturnNoArgument] = true;
+functionExitTypes[TraceType.EndOfFunction] = true;
+
+export function isTraceFunctionExit(traceType) {
+  return functionExitTypes[traceType];
 }
 
 
@@ -115,7 +127,6 @@ returnTypes[TraceType.ReturnNoArgument] = true;
 export function isReturnTrace(traceType) {
   return returnTypes[traceType];
 }
-
 
 
 export default TraceType;

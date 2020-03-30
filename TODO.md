@@ -142,21 +142,13 @@
 ## TODO (other)
 * fix: `try` is not instrumented correctly (errors out)
 * [error_handling]
-   * Steps
-      0. Fix `staticTraceId` order
-         * on `visitor.exit`: `return` + `throw`: special treatment for `CallExpression` arguments
-         * trace `throw` statements
-         * reverse order: first process AST children, then process parent
-         * Special handling for `CallExpression` (insert `BCE` beforehand)
-         * Fix `super`
-      1. ⚠️ `Runtime` tracks `lastTraceInRealContext`
-      2. When `dbux-data` sees an error in a `pop` `trace`: set `staticTraceId` before adding
-         * Error condition: `lastTraceInRealContext` was NOT a `return` or `EndOfFunction` trace
-         * `guessErrorTrace`
-            * `throw` -> the error trace is the observed trace
-            * else if `participatesInCallTrace` -> `getBCEForCallTrace`
-            * else -> set `staticTraceId` to `lastObservedStaticTraceId + 1`
-      3. also handle `try` blocks
+   * more TODOs
+      * need to make sure, `caller` is traced before `callee` for call expressions
+      * `throw` trace is not working because it runs the `NewExpression` visitor first instead (and unsuccessfully so)
+      * `EndOfFunction` trace is not injected for some reason (probably a babel bug?)
+      * need to repurpose `EndOfFunction` to become `EndOfContext` (to also work for `Program`s)
+      * handle `try` blocks
+      * Fix `super`
    * Problem: the actual error trace is the trace that did NOT get executed
       * Sln: patch function's `Pop`'s `staticTrace` to be the one that follows the last executed trace (that is the "error trace")
          * NOTE: If there are no errors, set `Pop`'s `staticTrace` to be the `FunctionExit` trace

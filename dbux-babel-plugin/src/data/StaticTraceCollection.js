@@ -129,7 +129,7 @@ export default class StaticTraceCollection extends StaticCollection {
     }
 
     // context-sensitive data
-    trace._callId = cfg?.callId;
+    trace._callId = cfg?.callId || type === TraceType.BeforeCallExpression && _traceId;
     trace._resultCallId = cfg?.resultCallId;
 
     // misc data

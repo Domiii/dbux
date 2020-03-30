@@ -4,6 +4,7 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import VarOwnerType from 'dbux-common/src/core/constants/VarOwnerType';
 import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
+import { buildTraceNoValue } from '../helpers/traceHelpers';
 
 // ###########################################################################
 // helpers
@@ -77,10 +78,20 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
     ];
   }
 
-  let body = bodyPath.node;
-  if (!Array.isArray(bodyPath.node) && !t.isStatement(bodyPath.node)) {
+  const bodyNode = bodyPath.node;
+  let body = bodyNode;
+  if (!Array.isArray(bodyNode) && !t.isStatement(bodyNode)) {
     // simple lambda expression -> convert to block lambda expression with return statement, so we can have our `try/finally`
-    body = t.blockStatement([t.returnStatement(bodyPath.node)]);
+    body = t.blockStatement([t.returnStatement(bodyNode)]);
+
+    // patch return statement to share loc of original expression, s.t. `traceVisitor` will succeed
+    body.body[0].loc = bodyNode.loc;
+    body.body[0].argument.loc = bodyNode.loc;
+  }
+  else {
+    // trace `EndOfFunction` behind current body
+    const endOfFunction = buildTraceNoValue(bodyPath, state, TraceType.EndOfFunction);
+    bodyPath.insertAfter(endOfFunction);
   }
 
   // wrap the function in a try/finally statement

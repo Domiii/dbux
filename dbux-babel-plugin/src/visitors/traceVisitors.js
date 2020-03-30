@@ -308,7 +308,7 @@ function normalizeConfig(cfg) {
 // instrumentation recipes by node type
 // ###########################################################################
 
-function doTraceWrapExpression(traceType, path, state, cfg) {
+function wrapExpression(traceType, path, state, cfg) {
   if (isCallPath(path)) {
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be call expressions
     return null;
@@ -342,18 +342,18 @@ const enterInstrumentors = {
     return wrapCallExpression(path, state, cfg);
   },
   ExpressionResult(path, state, cfg) {
-    return doTraceWrapExpression(TraceType.ExpressionResult, path, state, cfg);
+    return wrapExpression(TraceType.ExpressionResult, path, state, cfg);
   },
   ExpressionValue(pathOrPaths, state, cfg) {
     if (Array.isArray(pathOrPaths)) {
       // e.g. `SequenceExpression` + 
       for (const path of pathOrPaths) {
-        doTraceWrapExpression(TraceType.ExpressionValue, path, state, cfg);
+        wrapExpression(TraceType.ExpressionValue, path, state, cfg);
       }
       return null;  // get originalPaths is currently meanignless since `path.get` would not work on it
     }
     else {
-      return doTraceWrapExpression(TraceType.ExpressionValue, pathOrPaths, state, cfg);
+      return wrapExpression(TraceType.ExpressionValue, pathOrPaths, state, cfg);
     }
   },
   // ExpressionNoValue(path, state) {
@@ -389,7 +389,7 @@ const enterInstrumentors = {
     if (path.node.computed) {
       // if `computed`, also trace property independently
       const propertyPath = path.get('property');
-      doTraceWrapExpression(TraceType.ExpressionValue, propertyPath, state);
+      wrapExpression(TraceType.ExpressionValue, propertyPath, state);
     }
 
     const objPath = path.get('object');
@@ -399,7 +399,7 @@ const enterInstrumentors = {
     }
     else {
       // trace object (e.g. `x` in `x.y`) as-is
-      doTraceWrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
+      wrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
 
       // NOTE: the `originalPath` is not maintained
       return undefined;
@@ -415,13 +415,13 @@ const enterInstrumentors = {
 // exitInstrumentors
 // ###########################################################################
 
-function exitExpression(path, state, traceType) {
-  if (isCallExpression(path)) {
-    return exitCallExpression(path, state, traceType);
-  }
+// function wrapExpressionExit(path, state, traceType) {
+//   if (isCallPath(path)) {
+//     return exitCallExpression(path, state, traceType);
+//   }
 
   
-}
+// }
 
 function exitCallExpression(path, state, callResultType) {
   // CallExpression
@@ -445,7 +445,7 @@ const exitInstrumentors = {
   ReturnArgument(path, state, cfg) {
     if (path.node) {
       // trace `arg` in `return arg;`
-      return doTraceWrapExpression(TraceType.ReturnArgument, path, state, cfg);
+      return wrapExpression(TraceType.ReturnArgument, path, state, cfg);
     }
     else {
       // insert trace before `return;` statement
@@ -454,7 +454,7 @@ const exitInstrumentors = {
   },
 
   ThrowArgument(path, state, cfg) {
-    return doTraceWrapExpression(TraceType.Throw, path, state, cfg);
+    return wrapExpression(TraceType.ThrowArgument, path, state, cfg);
   }
 };
 
@@ -475,8 +475,21 @@ function visit(onTrace, instrumentors, path, state, cfg) {
     return;
   }
 
-  const traceTypeName = TraceInstrumentationType.nameFromForce(traceType);
+  if (children) {
+    // 1. trace children
+    for (const child of children) {
+      const [childName, ...childCfg] = child;
+      const childPath = path.get(childName);
+
+      if (childPath.node) {
+        visit(onTrace, instrumentors, childPath, state, childCfg);
+      }
+    }
+  }
+
   if (traceType) {
+    // 2. trace parent
+    const traceTypeName = TraceInstrumentationType.nameFromForce(traceType);
     // if (!instrumentors[traceTypeName]) {
     //   err('instrumentors are missing TraceType:', traceTypeName);
     // }
@@ -488,16 +501,6 @@ function visit(onTrace, instrumentors, path, state, cfg) {
     }
   }
 
-  if (children) {
-    for (const child of children) {
-      const [childName, ...childCfg] = child;
-      const childPath = path.get(childName);
-
-      if (childPath.node) {
-        visit(onTrace, instrumentors, childPath, state, childCfg);
-      }
-    }
-  }
 }
 
 let _cfg;

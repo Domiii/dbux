@@ -359,6 +359,18 @@ export default {
   },
 
   // ###########################################################################
+  // Call expressions
+  // ###########################################################################
+
+  /**
+   * 
+   */
+  getStaticCallId(dp, staticTraceId) {
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    return staticTrace.resultCallId || staticTrace.callId;
+  },
+
+  // ###########################################################################
   // Contexts + their traces
   // ###########################################################################
 
@@ -428,45 +440,45 @@ export default {
   // Error handling
   // ###########################################################################
 
-  isErrorTrace(dp, traceId) {
-    // ` && `getLastTraceInRealContext.staticTrace` !== ``getLastStaticTraceInRealContext
+  // isErrorTrace(dp, traceId) {
+  //   // ` && `getLastTraceInRealContext.staticTrace` !== ``getLastStaticTraceInRealContext
 
-    const trace = dp.collections.traces.getById(traceId);
-    const { staticTraceId } = trace;
-    const traceType = dp.util.getTraceType(traceId);
+  //   const trace = dp.collections.traces.getById(traceId);
+  //   const { staticTraceId } = trace;
+  //   const traceType = dp.util.getTraceType(traceId);
 
-    console.log('errorTrace', !isReturnTrace(traceType),
+  //   console.log('errorTrace', !isReturnTrace(traceType),
 
-      traceId, staticTraceId,
-      dp.util.getRealContextId(traceId),
+  //     traceId, staticTraceId,
+  //     dp.util.getRealContextId(traceId),
 
-      dp.util.getLastTraceInRealContext(dp.util.getRealContextId(traceId))?.traceId,
-      dp.util.getLastStaticTraceInContext(dp.collections.staticTraces.getById(staticTraceId).staticContextId)?.staticTraceId,
+  //     dp.util.getLastTraceInRealContext(dp.util.getRealContextId(traceId))?.traceId,
+  //     dp.util.getLastStaticTraceInContext(dp.collections.staticTraces.getById(staticTraceId).staticContextId)?.staticTraceId,
 
-      // is last trace we have recorded in context
-      dp.util.isLastTraceInRealContext(traceId),
+  //     // is last trace we have recorded in context
+  //     dp.util.isLastTraceInRealContext(traceId),
 
-      // but is not last trace in the code
-      !dp.util.isLastStaticTraceInContext(staticTraceId),
+  //     // but is not last trace in the code
+  //     !dp.util.isLastStaticTraceInContext(staticTraceId),
 
-      // the context must have popped (finished), or else there was no error (yet)
-      dp.util.hasRealContextPopped(dp.util.getRealContextId(traceId)));
+  //     // the context must have popped (finished), or else there was no error (yet)
+  //     dp.util.hasRealContextPopped(dp.util.getRealContextId(traceId)));
 
-    // is not a return trace (because return traces indicate function succeeded)
-    return !isReturnTrace(traceType) &&
+  //   // is not a return trace (because return traces indicate function succeeded)
+  //   return !isReturnTrace(traceType) &&
 
-      // is last trace we have recorded in context
-      dp.util.isLastTraceInRealContext(traceId) &&
+  //     // is last trace we have recorded in context
+  //     dp.util.isLastTraceInRealContext(traceId) &&
 
-      // but is not last trace in the code
-      !dp.util.isLastStaticTraceInContext(staticTraceId) &&
+  //     // but is not last trace in the code
+  //     !dp.util.isLastStaticTraceInContext(staticTraceId) &&
 
-      // the context must have popped (finished), or else there was no error (yet)
-      dp.util.hasRealContextPopped(dp.util.getRealContextId(traceId));
-  },
+  //     // the context must have popped (finished), or else there was no error (yet)
+  //     dp.util.hasRealContextPopped(dp.util.getRealContextId(traceId));
+  // },
 
-  hasContextError(dp, realContextId) {
-    const trace = dp.util.getLastTraceInRealContext(realContextId);
-    return dp.util.isErrorTrace(trace);
-  },
+  // hasContextError(dp, realContextId) {
+  //   const trace = dp.util.getLastTraceInRealContext(realContextId);
+  //   return dp.util.isErrorTrace(trace);
+  // },
 };

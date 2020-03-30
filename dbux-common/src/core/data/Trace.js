@@ -11,9 +11,9 @@ export default class Trace extends HasValue {
   loopId: number;
 
   /**
-   * Whether this is the last trace (before the pop(s) in a context).
+   * This is currently only set for `Pop` traces (to enable error tracking).
    */
-  isLastInContext: boolean;
+  previousTrace: number;
 
   /**
    * NOTE: this is the dynamic type only.

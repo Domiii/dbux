@@ -210,10 +210,10 @@ export function initTraceDecorators() {
 }
 
 export function getTraceDecoName(dataProvider, staticTrace, trace) {
-  const { traceId } = trace;
+  const { traceId, error } = trace;
 
   // special decorations
-  if (dataProvider.util.isErrorTrace(traceId)) {
+  if (error) {
     return 'Error';
   }
 

@@ -22,3 +22,9 @@ try {
   main2();
 }
 catch (err) { }
+
+/**
+ * TODO: test...
+ * 
+ * -> body-less lambda expression
+ */

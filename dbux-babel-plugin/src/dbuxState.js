@@ -118,6 +118,9 @@ export default function injectDbuxState(programPath, programState) {
 
 
     markExited(path, purpose) {
+      if (path.parentPath.isThrowStatement()) {
+        debugger;
+      }
       if (!purpose) {
         throw new Error('Could not mark path because no purpose was given:\n' + path.toString());
       }
