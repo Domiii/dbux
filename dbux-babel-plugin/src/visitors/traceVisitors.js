@@ -311,8 +311,7 @@ function normalizeConfig(cfg) {
 function doTraceWrapExpression(traceType, path, state, cfg) {
   if (isCallPath(path)) {
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be call expressions
-    // return null;
-    return wrapCallExpression(path, state, cfg);
+    return null;
   }
 
   // any other expression with a result
@@ -408,6 +407,39 @@ const enterInstrumentors = {
   },
   Super(path, state) {
     // NOTE: for some reason, this visitor does not get picked up by Babel
+  }
+};
+
+
+// ###########################################################################
+// exitInstrumentors
+// ###########################################################################
+
+function exitExpression(path, state, traceType) {
+  if (isCallExpression(path)) {
+    return exitCallExpression(path, state, traceType);
+  }
+
+  
+}
+
+function exitCallExpression(path, state, callResultType) {
+  // CallExpression
+  // instrument args after everything else has already been done
+  // const calleePath = path.get('callee');
+  // const beforeCallTraceId = getPathTraceId(calleePath);
+  // traceCallExpression(path, state, beforeCallTraceId);
+  const beforeCallTraceId = getPathTraceId(path);
+  traceCallExpression(path, state, callResultType, beforeCallTraceId);
+}
+
+/**
+ * NOTE: we have these specifically for expressions that
+ * potentially can be `CallExpression`.
+ */
+const exitInstrumentors = {
+  CallExpression(path, state) {
+    exitCallExpression(path, state, TraceType.CallExpressionResult);
   },
 
   ReturnArgument(path, state, cfg) {
@@ -423,18 +455,6 @@ const enterInstrumentors = {
 
   ThrowArgument(path, state, cfg) {
     return doTraceWrapExpression(TraceType.Throw, path, state, cfg);
-  }
-};
-
-const exitInstrumentors = {
-  CallExpression(path, state) {
-    // CallExpression
-    // instrument args after everything else has already been done
-    // const calleePath = path.get('callee');
-    // const beforeCallTraceId = getPathTraceId(calleePath);
-    // traceCallExpression(path, state, beforeCallTraceId);
-    const beforeCallTraceId = getPathTraceId(path);
-    return traceCallExpression(path, state, beforeCallTraceId);
   }
 };
 

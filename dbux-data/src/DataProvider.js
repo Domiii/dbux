@@ -403,7 +403,7 @@ export default class DataProvider {
    */
   serialize() {
     const collections = Object.values(this.collections);
-    return {
+    const obj = {
       version: this.version,
       collections: Object.fromEntries(collections.map(collection => {
         const {
@@ -417,6 +417,7 @@ export default class DataProvider {
         ];
       }))
     };
+    return JSON.stringify(obj, null, 2);
   }
 
   /**

@@ -34,15 +34,15 @@ const root = path.resolve(path.join(__dirname, '/..'));
 //   ]]
 // };
 
-const outputFolderName = 'dist';
-const outFile = 'bundle.js';
+
+const outFile = 'graph.js';
 const buildMode = 'development';
 //const buildMode = 'production';
 
 
 function buildConfig(projectRoot) {
   const src = path.join(projectRoot, 'src');
-  const outputFolder = path.join(projectRoot, outputFolderName);
+  const outputFolder = path.join(root, 'dbux-code', 'resources', 'dist');
 
   const webpackPlugins = [
     // add post-build hook
@@ -85,7 +85,7 @@ function buildConfig(projectRoot) {
       quiet: false,
       //host: '0.0.0.0',
       // host:
-      hot: true,
+      // hot: true,
       port: 3040,
       publicPath: '/',
       writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work

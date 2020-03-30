@@ -79,6 +79,7 @@ module.exports = {
 		"spaced-comment": 0,
 		"max-len": ["warn", { "code": 120 }],
 		"one-var": 0,
-		"one-var-per-line": 0
+		"one-var-per-line": 0,
+		"dot-location": 0
 	}
 };

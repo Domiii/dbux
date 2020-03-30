@@ -93,8 +93,8 @@ function instrumentArgs(callPath, state, beforeCallTraceId) {
   replacements.forEach(r => r());
 }
 
-export function traceCallExpression(callPath, state, beforeCallTraceId) {
-  const originalCallPath = _traceWrapExpression('traceExpr', TraceType.CallExpressionResult, callPath, state, {
+export function traceCallExpression(callPath, state, resultType, beforeCallTraceId) {
+  const originalCallPath = _traceWrapExpression('traceExpr', resultType, callPath, state, {
     resultCallId: beforeCallTraceId
   });
 

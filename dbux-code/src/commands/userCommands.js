@@ -16,11 +16,6 @@ export function initUserCommands(context) {
   // ###########################################################################
   // exportApplicationData
   // ###########################################################################
-  function serialize(data) {
-    // return jsonStringify(data);
-
-    return JSON.stringify(data, null, 2);
-  }
 
   async function doExport(application) {
     const exportFolder = path.join(__dirname, '../../analysis/__data__/');
@@ -33,7 +28,7 @@ export function initUserCommands(context) {
 
     const exportFpath = path.join(exportFolder, `${applicationName || '(unknown)'}_data.json`);
     const data = application.dataProvider.serialize();
-    fs.writeFileSync(exportFpath, serialize(data));
+    fs.writeFileSync(exportFpath, data);
 
     const btns = {
       Open: async () => {
@@ -60,7 +55,8 @@ export function initUserCommands(context) {
   // ###########################################################################
 
   registerCommand(context, 'dbux.showGraphView', async () => {
-    const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
-    await showGraphView(context, application);
+    // const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
+    // await showGraphView(context, application);
+    await showGraphView(context);
   });
 }

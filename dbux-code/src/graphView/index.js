@@ -5,18 +5,23 @@ import {
 } from 'vscode';
 
 import path from 'path';
+import { promises as fs } from 'fs';
 
 let panel;
-let graphResourcePath;
+let resourcePath;
 
-function createGraphView(context) {
-  const defaultColumn = ViewColumn.Two;
+const defaultColumn = ViewColumn.Two;
+
+function revealGraphView() {
   if (panel) {
     // reveal
     panel.reveal(defaultColumn);
-    return;
+    return true;
   }
+  return false;
+}
 
+function createGraphView(context) {
   const webviewId = 'dbux-graph';
   const title = 'Graph View';
 
@@ -26,7 +31,7 @@ function createGraphView(context) {
     defaultColumn, // Editor column to show the new webview panel in.
     {
       enableScripts: true,
-      localResourceRoots: [Uri.file(graphResourcePath)]
+      localResourceRoots: [Uri.file(resourcePath)]
     }
   );
 
@@ -34,6 +39,7 @@ function createGraphView(context) {
   panel.onDidDispose(
     () => {
       // do further cleanup operations
+      panel = null;
     },
     null,
     context.subscriptions
@@ -41,22 +47,54 @@ function createGraphView(context) {
 }
 
 /**
+ * Properly and safely serialize any JavaScript string for embedding in a website.
+ *
+ * @see https://stackoverflow.com/questions/14780858/escape-in-script-tag-contents/60929079#60929079
+ */
+function code2Html(src) {
+  src = src.replace(/<\/script>/g, '\\x3c/script>');
+  src = JSON.stringify(src);
+  const script = `<script>eval(eval(${src}))</script>`;
+  return script;
+}
+
+async function makeScript(scriptPath) {
+  const src = await fs.readFile(scriptPath, "utf8");
+  return code2Html(src);
+  // NOTE: "panel.webview.asWebviewUri" errors out ("unknown url scheme")
+  // let graphJsUri = Uri.file(scriptPath);
+  // graphJsUri = panel.webview.asWebviewUri(graphJsUri);
+  // return `<script src="${graphjsUri.toString()}"></script>`;
+}
+
+
+/**
  * @see https://code.visualstudio.com/api/extension-guides/webview
  */
 export async function showGraphView(context, application) {
-  graphResourcePath = path.join(context.extensionPath, 'resources', 'graph');
+  resourcePath = path.join(context.extensionPath, 'resources');
 
-  // create (if not existing yet)
-  createGraphView(context);
+  // reveal or create
+  if (!revealGraphView()) {
+    createGraphView(context);
+  }
   
-  const graphjsPath = Uri.file(path.join(graphResourcePath, 'graph.js'));
-  const graphjsUri = panel.webview.asWebviewUri(graphjsPath);
-
   // set HTML content
-  panel.webview.html = getWebviewRootHtml(graphjsUri);
+  // TODO: use remote URL when developing locally to enable hot reload
+  const scriptPath = path.join(resourcePath, 'dist', 'graph.js');
+  panel.webview.html = await getWebviewRootHtml(scriptPath);
 }
 
-function getWebviewRootHtml(graphjsUri) {
+
+async function getWebviewRootHtml(...scriptPaths) {
+  const scripts = (
+    await Promise.all(
+      scriptPaths.map(fpath => makeScript(fpath))
+    )
+  ).join('\n  ');
+
+  console.log('scripts', scripts);
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,8 +103,14 @@ function getWebviewRootHtml(graphjsUri) {
     <title>Test</title>
 </head>
 <body>
-  loading "${graphjsUri.toString()}"...
-  <script src="${graphjsUri.toString()}"></script>
+  loading "graph.js"...
+  ${scripts}
+  <script>
+    postMessage({
+      func: 'loadData',
+      args: ['data/oop1_data.json']
+    });
+  </script>
 </body>
 </html>`;
 }
