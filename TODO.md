@@ -192,6 +192,11 @@
             * NOTE: Not all data is available, so not all `util` functions can be used. Be aware of each `util`'s dependencies.
    * [errors_and_await]
       * test: when error thrown, do we pop the correct resume and await contexts?
+* [dbux-graph]
+   * split into three: `dbux-graph-web`, `dbux-graph-data` + `dbux-graph-common`
+   * then let `<root>` build and `dbux-code` depend on `dbux-graph-data` + `dbux-graph-common`
+   * `dbux-graph-web`'s build responsibility stays with `dbux-graph`
+   * add a basic API, to allow `dbux-graph-data` use full power of `dbux-data` to generate a "virtual DOM", which `dbux-graph-web` will then render
 * fix: Call Graph Roots -> name does not include actual function name
    * -> add `calleeName` to `staticTrace`?
    * -> `traceLabels`
@@ -220,11 +225,6 @@
       * evaluate + store `headerVars` (all variables that have bindings in loop header)
 * [values]
    * better overall value rendering
-* [dbux-graph]
-   * split into three: `dbux-graph-web`, `dbux-graph-data` + `dbux-graph-common`
-   * then let `<root>` build and `dbux-code` depend on `dbux-graph-data` + `dbux-graph-common`
-   * `dbux-graph-web`'s build responsibility stays with `dbux-graph`
-   * add a basic API, to allow `dbux-graph-data` use full power of `dbux-data` to generate a "virtual DOM", which `dbux-graph-web` will then render
 * [testing]
    * add `dbux-cli` and `samples` to the `webpack` setup
    * finish setting up basic testing in `samples`

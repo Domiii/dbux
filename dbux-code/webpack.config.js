@@ -14,29 +14,69 @@ const outFile = 'bundle.js';
 const webpackPlugins = [];
 
 const projectRoot = path.resolve(__dirname);
-const root = path.resolve(__dirname, '..');
+const MonoRoot = path.resolve(__dirname, '..');
 
-const dbuxDepNames = ["dbux-common", "dbux-data", "dbux-code"];
-const dbuxDepsAbsolute = dbuxDepNames.map(f => path.resolve(path.join(root, f)));
+const dependencyPaths = ["dbux-common", "dbux-data", "dbux-code"];
 
-dbuxDepsAbsolute.forEach(f => {
-  if (!fs.existsSync(f)) {
-    throw new Error('invalid dbux dependency does not exist: ' + f);
+
+function makeAbsolutePaths(root, relativePaths) {
+  return relativePaths.map(f => path.resolve(path.join(root, f)));
+}
+
+/**
+ * Resolve dependencies:
+ * 1. node_modules/
+ * 2. relativePaths: A list of paths relative to `root` that are also used in this project
+ */
+function makeResolve(root, relativePaths = []) {
+  const absolutePaths = relativePaths.map(f => path.resolve(path.join(root, f)));
+  absolutePaths.forEach(f => {
+    if (!fs.existsSync(f)) {
+      throw new Error('invalid dependency does not exist: ' + f);
+    }
+  });
+
+  const moduleFolders = [
+    path.join(root, '/node_modules'),
+    ...[...absolutePaths]
+      .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
+      .flat()
+      .map(f => path.resolve(f))
+  ];
+
+  // adding these aliases allows resolving required libraries without them being in `node_modules`
+  const alias = fromEntries(relativePaths.map(target => [
+    path.basename(target), 
+    path.resolve(path.join(root, target))
+  ]));
+
+  return {
+    symlinks: true,
+    alias,
+    modules: [
+      ...moduleFolders
+    ]
+  };
+}
+
+
+const resolve = makeResolve(MonoRoot, dependencyPaths);
+const absolutePaths = makeAbsolutePaths(MonoRoot, dependencyPaths);
+const rules = [
+  // {
+  //   loader: 'babel-loader',
+  //   include: [
+  //     path.join(projectRoot, 'src')
+  //   ]
+  // },
+  {
+    loader: 'babel-loader',
+    include: absolutePaths.map(r => path.join(r, 'src')),
+    options: {
+      babelrcRoots: absolutePaths
+    }
   }
-});
-
-
-
-const allFolders = [
-  path.join(root, '/node_modules'),
-  ...[...dbuxDepsAbsolute]
-    .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
-    .flat()
-    .map(f => path.resolve(f))
 ];
-
-// adding these aliases allows resolving required libraries without them being in `node_modules`
-const alias = fromEntries(dbuxDepNames.map(target => [target, path.resolve(path.join(root, target))]));
 
 module.exports = {
   // https://github.com/webpack/webpack/issues/2145
@@ -57,29 +97,9 @@ module.exports = {
     devtoolModuleFilenameTemplate: "../[resource-path]",
     // sourceMapFilename: outFile + ".map"
   },
-  resolve: {
-    symlinks: true,
-    alias,
-    modules: [
-      ...allFolders
-    ]
-  },
+  resolve,
   module: {
-    rules: [
-      // {
-      //   loader: 'babel-loader',
-      //   include: [
-      //     path.join(projectRoot, 'src')
-      //   ]
-      // },
-      {
-        loader: 'babel-loader',
-        include: dbuxDepsAbsolute.map(r => path.join(r, 'src')),
-        options: {
-          babelrcRoots: dbuxDepsAbsolute
-        }
-      }
-    ],
+    rules,
   },
   externals: {
     uws: "uws",

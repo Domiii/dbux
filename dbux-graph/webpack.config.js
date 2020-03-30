@@ -35,7 +35,6 @@ const root = path.resolve(path.join(__dirname, '/..'));
 // };
 
 
-const outFile = 'graph.js';
 const buildMode = 'development';
 //const buildMode = 'production';
 
@@ -85,11 +84,11 @@ function buildConfig(projectRoot) {
       quiet: false,
       //host: '0.0.0.0',
       // host:
-      // hot: true,
+      hot: false,
       port: 3040,
       publicPath: '/',
       writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
-      filename: outFile,
+      filename: 'graph.js',
       historyApiFallback: {
         rewrites: [
           {
@@ -103,10 +102,12 @@ function buildConfig(projectRoot) {
     },
     plugins: webpackPlugins,
     context: path.join(projectRoot, '.'),
-    entry: path.join(src, 'app.js'),
+    entry: {
+      graph: path.join(src, 'web', 'graph.js')
+    },
     output: {
       path: outputFolder,
-      filename: outFile,
+      filename: '[name].js',
       publicPath: '/',
       // sourceMapFilename: outFile + ".map"
     },

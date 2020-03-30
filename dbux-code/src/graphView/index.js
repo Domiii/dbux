@@ -53,6 +53,7 @@ function createGraphView(context) {
  */
 function code2Html(src) {
   src = src.replace(/<\/script>/g, '\\x3c/script>');
+  src = `${src}; console.log('hi');`;
   src = JSON.stringify(src);
   const script = `<script>eval(eval(${src}))</script>`;
   return script;
