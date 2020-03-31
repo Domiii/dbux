@@ -140,7 +140,17 @@
 
 
 ## TODO (other)
-* fix: `try` is not instrumented correctly (errors out)
+* fix: `CallExpression.arguments` are instrumented too early
+   * -> want to only instrument if they don't match another pattern
+* fix: `staticTraceId` must resemble AST ordering for error tracing
+   * e.g.
+      * `CallExpression.arguments`
+      * `awaitVisitors`, `loopVisitors` and more
+      * and many more...
+   * Sln: generate `orderId` for each ast node and map to `staticTraceId`
+      * Add a new pass to generate `orderId` for each node before starting instrumentation
+      * When tracing, also store `orderId` in `staticTrace`
+      * When error observed, 
 * [error_handling]
    * more TODOs
       * need to make sure, `caller` is traced before `callee` for call expressions
