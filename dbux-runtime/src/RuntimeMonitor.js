@@ -381,7 +381,7 @@ export default class RuntimeMonitor {
 
   _trace(contextId, runId, inProgramStaticTraceId, traceType = null, isPop = false) {
     const trace = traceCollection.trace(contextId, runId, inProgramStaticTraceId, traceType);
-    this._onTrace(contextId, trace.traceId, trace, isPop);
+    this._onTrace(contextId, trace.traceId, isPop);
     if (isPop) {
       trace.previousTrace = this._runtime.getLastTraceIdInContext(contextId);
     }

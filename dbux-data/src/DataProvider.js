@@ -183,12 +183,13 @@ class TraceCollection extends Collection<Trace> {
         else if (callId) {
           // participates in a call but call did not finish -> set expected error trace to BCE
           const callTrace = this.dp.collections.traces.getById(callId);
-          if (!callTrace.resultId) {
+          if (callTrace.resultId) {
             // strange...
+            logError('last (non-result) call trace in error context has `resultId`', callTrace.resultId, callTrace);
           }
           else {
-            const resultTrace = this.dp.collections.traces.getById(callTrace.resultId);
-            trace.staticTraceId = resultTrace.staticTraceId;
+            // the call trace caused the error
+            trace.staticTraceId = callTrace.staticTraceId;
           }
         }
         else if (resultCallId) {

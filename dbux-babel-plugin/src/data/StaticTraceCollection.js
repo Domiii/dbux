@@ -24,7 +24,7 @@ const traceCustomizationsByType = {
   // [TraceType.Resume]: tracePathEnd,
   [TraceType.BlockStart]: tracePathStart,
   [TraceType.BlockEnd]: tracePathEnd,
-  [TraceType.EndOfFunction]: tracePathEnd
+  [TraceType.EndOfContext]: tracePathEnd
 };
 
 

@@ -10,6 +10,7 @@ import { logInternalError } from '../log/logger';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { buildDbuxInit } from '../data/staticData';
+import { injectContextEndTrace, buildContextEndTrace } from '../helpers/contextHelper';
 
 
 // ###########################################################################
@@ -55,6 +56,9 @@ function wrapProgram(path, state) {
     bodyNodes,
     exportNodes
   ] = extractTopLevelDeclarations(path);
+
+  // add `ContextEnd` trace
+  bodyNodes.push(buildContextEndTrace(path, state));
 
   const programBody = [
     ...importNodes,     // imports first

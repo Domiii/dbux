@@ -149,8 +149,11 @@
       * and many more...
    * Sln: generate `orderId` for each ast node and map to `staticTraceId`
       * Add a new pass to generate `orderId` for each node before starting instrumentation
+         * Need to store `orderId` by `context`
       * When tracing, also store `orderId` in `staticTrace`
-      * When error observed, 
+      * When error observed, lookup `staticTrace` by `orderId`
+         * Problem: data dependencies: need to lookup when adding traces
+            * Sln: Initialize `static` data and pure indexes of `static` data first
 * [error_handling]
    * more TODOs
       * need to make sure, `caller` is traced before `callee` for call expressions

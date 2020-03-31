@@ -36,7 +36,7 @@ let TraceType = {
 
   ThrowArgument: 21,
 
-  EndOfFunction: 22
+  EndOfContext: 22
 };
 
 TraceType = new Enum(TraceType);
@@ -63,7 +63,7 @@ export function isTracePop(traceType) {
 const functionExitTypes = new Array(TraceType.getCount()).map(_ => false);
 functionExitTypes[TraceType.ReturnArgument] = true;
 functionExitTypes[TraceType.ReturnNoArgument] = true;
-functionExitTypes[TraceType.EndOfFunction] = true;
+functionExitTypes[TraceType.EndOfContext] = true;
 
 export function isTraceFunctionExit(traceType) {
   return functionExitTypes[traceType];

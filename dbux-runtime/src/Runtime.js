@@ -48,7 +48,7 @@ export default class Runtime {
    */
   _currentRunId = 0;
 
-  _lastTraceByContextId = [];
+  _lastTraceByContextId = {};
 
 
   // ###########################################################################

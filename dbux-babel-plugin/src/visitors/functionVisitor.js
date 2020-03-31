@@ -5,6 +5,7 @@ import VarOwnerType from 'dbux-common/src/core/constants/VarOwnerType';
 import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import { buildTraceNoValue } from '../helpers/traceHelpers';
+import { injectContextEndTrace } from '../helpers/contextHelper';
 
 // ###########################################################################
 // helpers
@@ -78,38 +79,29 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
     ];
   }
 
-  const bodyNode = bodyPath.node;
-  let body = bodyNode;
-  if (!Array.isArray(bodyNode) && !t.isStatement(bodyNode)) {
+  const origBodyNode = bodyPath.node;
+  let bodyNode = origBodyNode;
+  if (!Array.isArray(origBodyNode) && !t.isStatement(origBodyNode)) {
     // simple lambda expression -> convert to block lambda expression with return statement, so we can have our `try/finally`
-    body = t.blockStatement([t.returnStatement(bodyNode)]);
+    bodyNode = t.blockStatement([t.returnStatement(origBodyNode)]);
 
     // patch return loc to keep loc of original expression (needed for `ReturnStatement` `traceVisitor`)
-    body.body[0].loc = bodyNode.loc;
-    body.body[0].argument.loc = bodyNode.loc;
+    bodyNode.body[0].loc = origBodyNode.loc;
+    bodyNode.body[0].argument.loc = origBodyNode.loc;
+  }
+  else {
+    injectContextEndTrace(bodyPath, state);
   }
 
   // wrap the function in a try/finally statement
   const newBody = buildBlock([
     ...pushes,
-    buildWrapTryFinally(body, pops)
+    buildWrapTryFinally(bodyNode, pops)
   ]);
 
   // patch function body node to keep loc of original body (needed for `injectFunctionEndTrace`)
-  newBody.loc = bodyNode.loc;
+  newBody.loc = origBodyNode.loc;
   bodyPath.replaceWith(newBody);
-}
-
-/**
- * We inject `EdnOfFunction` at the end of the function to keep `staticTraceId`s in order.
- */
-function injectFunctionEndTrace(path, state) {
-  if (!state.onExit(path, 'context')) return;
-
-  // trace `EndOfFunction` behind current body
-  const bodyPath = path.get('body');
-  const endOfFunction = buildTraceNoValue(bodyPath, state, TraceType.EndOfFunction);
-  bodyPath.insertAfter(endOfFunction);
 }
 
 // ###########################################################################
@@ -165,7 +157,9 @@ export default function functionVisitor() {
     },
 
     exit(path, state) {
-      injectFunctionEndTrace(path, state);
+      if (!state.onExit(path, 'context')) return;
+      
+      // injectContextEndTrace(path, state);
     }
   };
 }
