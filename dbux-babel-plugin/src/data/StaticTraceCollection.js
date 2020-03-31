@@ -23,7 +23,8 @@ const traceCustomizationsByType = {
   [TraceType.Await]: tracePathEnd,
   // [TraceType.Resume]: tracePathEnd,
   [TraceType.BlockStart]: tracePathStart,
-  [TraceType.BlockEnd]: tracePathEnd
+  [TraceType.BlockEnd]: tracePathEnd,
+  [TraceType.EndOfFunction]: tracePathEnd
 };
 
 

@@ -16,7 +16,7 @@ import { isNodeInstrumented } from './helpers/instrumentationHelper';
  */
 export default function injectDbuxState(programPath, programState) {
   const filePath = programState.filename;
-  const fileName = filePath && getBasename(filePath)
+  const fileName = filePath && getBasename(filePath);
 
   const { scope } = programPath;
   const { file: programFile } = programState;

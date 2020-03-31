@@ -98,14 +98,15 @@ function enter(path, state) {
   // instrument Program itself
   wrapProgram(path, state);
 
-  visitInOrder(path, state, contextVisitors());
-  visitInOrder(path, state, traceVisitors());
+  // visitInOrder(path, state, contextVisitors());
+  // visitInOrder(path, state, traceVisitors());
 
-  // // merge all visitors
-  // let allVisitors = mergeVisitors(
-  //   buildAllTraceVisitors(),
-  //   contextVisitors(),
-  // );
+  // merge all visitors
+  let allVisitors = mergeVisitors(
+    contextVisitors(),
+    traceVisitors(),
+  );
+  visitInOrder(path, state, allVisitors);
 }
 
 function visitInOrder(path, state, visitors) {

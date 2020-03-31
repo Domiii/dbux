@@ -144,9 +144,6 @@
 * [error_handling]
    * more TODOs
       * need to make sure, `caller` is traced before `callee` for call expressions
-      * `throw` + `return` traces are not working because `NewExpression` and other visitors are called first instead
-         * -> get rid of `exitInstrumentors`!
-      * `EndOfFunction` trace is not injected for some reason (probably a babel bug?)
       * need to repurpose `EndOfFunction` to become `EndOfContext` (to also work for `Program`s)
       * handle `try` blocks
       * Fix `super`

@@ -311,7 +311,7 @@ function normalizeConfig(cfg) {
 function wrapExpression(traceType, path, state, cfg) {
   if (isCallPath(path)) {
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be call expressions
-    return null;
+    return wrapCallExpression(path, state, traceType, cfg);
   }
 
   // any other expression with a result
@@ -325,7 +325,7 @@ function wrapExpression(traceType, path, state, cfg) {
   return traceWrapExpression(traceType, path, state, tracePath);
 }
 
-function wrapCallExpression(path, state, cfg) {
+function wrapCallExpression(path, state, callResultType, cfg) {
   // CallExpression
   const calleePath = path.get('callee');
   if (calleePath.isSuper()) {
@@ -333,13 +333,17 @@ function wrapCallExpression(path, state, cfg) {
     traceSuper(calleePath, state);
   }
 
-  // trace BeforeCallExpression (returns original path)
-  return traceBeforeExpression(TraceType.BeforeCallExpression, path, state, null);
+  // trace BeforeCallExpression (returns `originalPath`)
+  path = traceBeforeExpression(TraceType.BeforeCallExpression, path, state, null);
+
+  // trace CallResult
+  const beforeCallTraceId = getPathTraceId(path);
+  traceCallExpression(path, state, callResultType, beforeCallTraceId);
 }
 
 const enterInstrumentors = {
   CallExpression(path, state, cfg) {
-    return wrapCallExpression(path, state, cfg);
+    return wrapCallExpression(path, state, TraceType.CallExpressionResult, cfg);
   },
   ExpressionResult(path, state, cfg) {
     return wrapExpression(TraceType.ExpressionResult, path, state, cfg);
@@ -407,41 +411,6 @@ const enterInstrumentors = {
   },
   Super(path, state) {
     // NOTE: for some reason, this visitor does not get picked up by Babel
-  }
-};
-
-
-// ###########################################################################
-// exitInstrumentors
-// ###########################################################################
-
-// function wrapExpressionExit(path, state, traceType) {
-//   if (isCallPath(path)) {
-//     return exitCallExpression(path, state, traceType);
-//   }
-
-  
-// }
-
-function exitCallExpression(path, state, callResultType) {
-  // CallExpression
-  // instrument args after everything else has already been done
-  // const calleePath = path.get('callee');
-  // const beforeCallTraceId = getPathTraceId(calleePath);
-  // traceCallExpression(path, state, beforeCallTraceId);
-  const beforeCallTraceId = getPathTraceId(path);
-  traceCallExpression(path, state, callResultType, beforeCallTraceId);
-}
-
-/**
- * NOTE: we have these specifically for expressions that
- * potentially can be `CallExpression`.
- * 
- * WARNING: `exit` instrumentors are traversed in opposite order by Babel.
- */
-const exitInstrumentors = {
-  CallExpression(path, state) {
-    exitCallExpression(path, state, TraceType.CallExpressionResult);
   },
 
   ReturnArgument(path, state, cfg) {
@@ -459,6 +428,56 @@ const exitInstrumentors = {
     return wrapExpression(TraceType.ThrowArgument, path, state, cfg);
   }
 };
+
+
+// ###########################################################################
+// exitInstrumentors
+// WARNING: The DFS nature of AST traversal means that `exit` instrumentors are 
+//          traversed in opposite order (inner exits before outer).
+// ###########################################################################
+
+// function wrapExpressionExit(path, state, traceType) {
+//   if (isCallPath(path)) {
+//     return exitCallExpression(path, state, traceType);
+//   }
+
+  
+// }
+
+// function exitCallExpression(path, state, callResultType) {
+//   // CallExpression
+//   // instrument args after everything else has already been done
+//   // const calleePath = path.get('callee');
+//   // const beforeCallTraceId = getPathTraceId(calleePath);
+//   // traceCallExpression(path, state, beforeCallTraceId);
+//   const beforeCallTraceId = getPathTraceId(path);
+//   traceCallExpression(path, state, callResultType, beforeCallTraceId);
+// }
+
+// /**
+//  * NOTE: we have these specifically for expressions that
+//  * potentially can be `CallExpression`.
+//  */
+// const exitInstrumentors = {
+//   CallExpression(path, state) {
+//     exitCallExpression(path, state, TraceType.CallExpressionResult);
+//   },
+
+//   ReturnArgument(path, state, cfg) {
+//     if (path.node) {
+//       // trace `arg` in `return arg;`
+//       return wrapExpression(TraceType.ReturnArgument, path, state, cfg);
+//     }
+//     else {
+//       // insert trace before `return;` statement
+//       return traceBeforeExpression(TraceType.ReturnNoArgument, path.parentPath, state, cfg);
+//     }
+//   },
+
+//   ThrowArgument(path, state, cfg) {
+//     return wrapExpression(TraceType.ThrowArgument, path, state, cfg);
+//   }
+// };
 
 // ###########################################################################
 // visitors
@@ -524,9 +543,9 @@ export function buildAllTraceVisitors() {
         visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
       },
 
-      exit(path, state) {
-        visit(state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
-      }
+      // exit(path, state) {
+      //   visit(state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
+      // }
     };
   }
   return visitors;

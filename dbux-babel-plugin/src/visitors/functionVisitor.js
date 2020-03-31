@@ -84,21 +84,32 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
     // simple lambda expression -> convert to block lambda expression with return statement, so we can have our `try/finally`
     body = t.blockStatement([t.returnStatement(bodyNode)]);
 
-    // patch return statement to share loc of original expression, s.t. `traceVisitor` will succeed
+    // patch return loc to keep loc of original expression (needed for `ReturnStatement` `traceVisitor`)
     body.body[0].loc = bodyNode.loc;
     body.body[0].argument.loc = bodyNode.loc;
   }
-  else {
-    // trace `EndOfFunction` behind current body
-    const endOfFunction = buildTraceNoValue(bodyPath, state, TraceType.EndOfFunction);
-    bodyPath.insertAfter(endOfFunction);
-  }
 
   // wrap the function in a try/finally statement
-  bodyPath.replaceWith(buildBlock([
+  const newBody = buildBlock([
     ...pushes,
     buildWrapTryFinally(body, pops)
-  ]));
+  ]);
+
+  // patch function body node to keep loc of original body (needed for `injectFunctionEndTrace`)
+  newBody.loc = bodyNode.loc;
+  bodyPath.replaceWith(newBody);
+}
+
+/**
+ * We inject `EdnOfFunction` at the end of the function to keep `staticTraceId`s in order.
+ */
+function injectFunctionEndTrace(path, state) {
+  if (!state.onExit(path, 'context')) return;
+
+  // trace `EndOfFunction` behind current body
+  const bodyPath = path.get('body');
+  const endOfFunction = buildTraceNoValue(bodyPath, state, TraceType.EndOfFunction);
+  bodyPath.insertAfter(endOfFunction);
 }
 
 // ###########################################################################
@@ -151,6 +162,10 @@ export default function functionVisitor() {
       }
 
       wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId);
+    },
+
+    exit(path, state) {
+      injectFunctionEndTrace(path, state);
     }
   };
 }

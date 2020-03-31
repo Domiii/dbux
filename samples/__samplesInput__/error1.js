@@ -18,10 +18,10 @@ try {
 }
 catch (err) { }
 
-try {
-  main2();
-}
-catch (err) { }
+// try {
+//   main2();
+// }
+// catch (err) { }
 
 /**
  * TODO: test...

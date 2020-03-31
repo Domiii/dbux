@@ -86,6 +86,14 @@ const StylingsByName = {
       },
     }
   },
+  ReturnArgument: {
+    styling: {
+      after: {
+        contentText: '✦',
+        color: 'red',
+      },
+    }
+  },
   CallArgument: {
     styling: {
       after: {
@@ -141,8 +149,17 @@ const StylingsByName = {
   },
 
   // ########################################
-  // Error
+  // Errors + Error handling
   // ########################################
+
+  ThrowArgument: {
+    styling: {
+      after: {
+        contentText: '🌋',
+        color: 'yellow'
+      }
+    }
+  },
 
   Error: {
     styling: {
