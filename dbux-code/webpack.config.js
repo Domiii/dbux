@@ -16,7 +16,7 @@ const webpackPlugins = [];
 const projectRoot = path.resolve(__dirname);
 const MonoRoot = path.resolve(__dirname, '..');
 
-const dependencyPaths = ["dbux-common", "dbux-data", "dbux-code"];
+const dependencyPaths = ["dbux-common", "dbux-data", "dbux-code", "dbux-graph-common", "dbux-graph-host"];
 
 
 function makeAbsolutePaths(root, relativePaths) {

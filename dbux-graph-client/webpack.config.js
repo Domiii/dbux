@@ -41,6 +41,8 @@ const buildMode = 'development';
 
 function buildConfig(projectRoot) {
   const src = path.join(projectRoot, 'src');
+
+  // TODO: Do not build to remote path. Copy on deploy instead.
   const outputFolder = path.join(root, 'dbux-code', 'resources', 'dist');
 
   const webpackPlugins = [

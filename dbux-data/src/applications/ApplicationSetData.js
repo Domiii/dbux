@@ -136,6 +136,11 @@ export default class ApplicationSetData {
     this.firstTracesInOrder._handleApplicationsChanged();
   }
 
+  getTrace(applicationId, traceId) {
+    const application = this.set.getApplication(applicationId);
+    return application?.dataProvider.collections.traces.getTrace(traceId);
+  }
+
   /**
    * Return amount of applications that have executed given file.
    */

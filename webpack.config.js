@@ -74,11 +74,11 @@ const output = {
 // /*eslint global-require: 0 */
 const otherWebpackConfigs = [
   require('./dbux-code/webpack.config'),
+
+  // NOTE: webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
   // require('./dbux-graph-web/webpack.config')
 ];
 
-
-// TODO: add dbux-code to babelRoots
 
 module.exports = [
   {
