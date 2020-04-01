@@ -46,6 +46,35 @@ function createGraphView(context) {
   );
 }
 
+
+function buildHostIpcAdapterVsCode() {
+  return {
+    init(webviewWindow, handleMessageEvent) {
+      this.webviewWindow = webviewWindow;
+    },
+    postMessage(msg) {
+      this.webviewWindow.postMessage(msg);
+    }
+  };
+}
+
+/**
+ * 
+ * @see https://github.com/microsoft/vscode-extension-samples/tree/master/webview-sample/media/main.js#L4
+ */
+function buildGuestAdapterVsCode() {
+  return {
+    init(handleMessageEvent) {
+      this.vscode = acquireVsCodeApi();
+
+      window.addEventListener('message', handleMessageEvent);
+    },
+    postMessage(msg) {
+      this.vscode.postMessage(msg);
+    }
+  };
+}
+
 /**
  * Properly and safely serialize any JavaScript string for embedding in a website.
  *
@@ -93,8 +122,6 @@ async function getWebviewRootHtml(...scriptPaths) {
       scriptPaths.map(fpath => makeScript(fpath))
     )
   ).join('\n  ');
-
-  console.log('scripts', scripts);
 
   return `<!DOCTYPE html>
 <html lang="en">

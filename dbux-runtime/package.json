@@ -6,7 +6,7 @@
   "module": "dist/index.js",
   "main": "dist/index.js",
   "scripts": {
-    "clean": "rm -rf dist && rm -rf dist.samples",
+    "clean": "rm -rf dist",
     "_before-run": "npx link-module-alias",
     "build": "npm run clean && npm run _before-run && webpack --config config/webpack.config.js",
     "test": "node --stack-trace-limit=1000 node_modules/.bin/jest",

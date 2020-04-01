@@ -74,7 +74,7 @@ const output = {
 // /*eslint global-require: 0 */
 const otherWebpackConfigs = [
   require('./dbux-code/webpack.config'),
-  // require('./dbux-graph/webpack.config')
+  // require('./dbux-graph-web/webpack.config')
 ];
 
 

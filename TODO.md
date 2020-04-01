@@ -2,7 +2,7 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* [callGraphView]
+* [callGraphView - search]
    * add new button: "hide all previous roots / show all"
    * when expanding a CallGraph root, show all context names of that `runId` as children of that root node, uniquely (don't show the same name twice)
    * add a `"filter by searchTerm"` button: show `QuickInput` to ask user to enter a searchTerm
@@ -24,6 +24,10 @@
             * https://www.datacamp.com/community/tutorials/stemming-lemmatization-python
             * https://nlp.stanford.edu/IR-book/html/htmledition/stemming-and-lemmatization-1.html
    * NOTE: is there some JS or python NLP packages to help with this?
+* [errors]
+   * just like, "select trace at cursor", insert two 🔥 buttons (one top right, one above `callGraphView`)
+      * button is grayed out if there are no errors
+      * when clicked, list all errors in call graph view
 * [applicationView]
    * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
    * nest applications of same entry point under same node

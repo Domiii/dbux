@@ -79,7 +79,7 @@ function buildConfig(projectRoot) {
       contentBase: [
         path.join(projectRoot, 'public'),
         path.join(projectRoot, 'dist'),
-        path.resolve(__dirname, '..', 'analysis', '__data__')
+        path.resolve(root, 'analysis', '__data__')
       ],
       quiet: false,
       //host: '0.0.0.0',
@@ -103,7 +103,7 @@ function buildConfig(projectRoot) {
     plugins: webpackPlugins,
     context: path.join(projectRoot, '.'),
     entry: {
-      graph: path.join(src, 'web', 'graph.js')
+      graph: path.join(src, 'index.js')
     },
     output: {
       path: outputFolder,

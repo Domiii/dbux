@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph graph</title>
+  </head>
+  <body>
+    <script>
+      window.ipcAdapter = {
+        postMessage(msg) {
+          console.warn('dbux-graph-client trying to send message to host, without host attached.');
+        },
+        onMessage(evt) {
+          console.log('dbux-graph-client received message event:', evt);
+        }
+      };
+    </script>
+    <script src="graph.js"></script>
+    <script>
+      graph.commands.loadData('data/oop1_data.json');
+    </script>
+  </body>
+</html>

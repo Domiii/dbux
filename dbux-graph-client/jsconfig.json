@@ -5,6 +5,6 @@
 		"checkJs": false,  /* Typecheck .js files. */
 	},
 	"include": [
-		"src"
+		"src", "src/**/*"
 	]
 }
