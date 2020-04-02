@@ -12,10 +12,11 @@
    * nest applications of same entry point under same node
       * most recent Application is parent, all others are children
       * make sure, `children` is `null` if it has no children (so `CollapsibleState` will be `None`)
-* add a button to the top right to toggle (show/hide) all intrusive features
+* add a command to toggle (show/hide) all intrusive features
    * includes:
       * show/hide all `codeDeco`s
       * show/hide all other buttons in the top right
+   * command name: `Dbux: Toggle Controls`
 * display a warning at the top of EditorWindow:
    * if it has been edited after the time of it's most recent `Program` `Context`
       * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))

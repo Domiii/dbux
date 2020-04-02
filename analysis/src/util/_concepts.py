@@ -2,6 +2,9 @@
 # // Queries
 # // ###########################################################################
 
+# -> get a single cell of a df (use `iloc` with `row` + `col` as arguments)
+df.iloc[0]['staticContextId']
+
 # -> get one column as a list
 allFunctionNames = staticContexts[['displayName']].to_numpy().flatten().tolist()
 

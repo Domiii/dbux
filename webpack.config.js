@@ -32,11 +32,11 @@ const targets = [
   "dbux-runtime"
 ];
 
-const resol = makeResolve(MonoRoot, dependencyPaths);
+const resolve = makeResolve(MonoRoot, dependencyPaths);
 // fix for https://github.com/websockets/ws/issues/1538
-resol.mainFields = ['main'];
+resolve.mainFields = ['main'];
 // fix for https://github.com/websockets/ws/issues/1538
-resol.alias.ws = path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'));
+resolve.alias.ws = path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'));
 // alias['socket.io-client'] = path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ));
 // console.warn(resol);
 
@@ -107,7 +107,7 @@ module.exports = [
       // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
       globalObject: 'typeof self !== "undefined" ? self : this',
     },
-    resolve: resol,
+    resolve: resolve,
     module: {
       rules: [
         {
@@ -137,7 +137,7 @@ module.exports = [
       nodeExternals({
         whitelist: [
           'perf_hooks',
-          ...Object.keys(resol.alias).map(name => new RegExp(`^${name}/.*`))
+          ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/.*`))
         ],
         // (...args) {
         //   console.debug('nodeExternals', ...args);
