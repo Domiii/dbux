@@ -10,7 +10,7 @@ def isnan(x):
 
 def loadDbuxFile(fpath):
   fpath = f'../__data__/{fpath}'
-  with open(fpath) as file:
+  with open(fpath, encoding='utf-8') as file:
     rawData = json.load(file)
   return rawData
 
