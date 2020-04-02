@@ -8,7 +8,7 @@
     "clean": "rm -rf ./dist",
     "_before-run": "npx link-module-alias && yarn install",
     "start": "npm run _before-run && npm run build:watch",
-    "build:watch": "npx nodemon --exec \"node ./node_modules/webpack-dev-server/bin/webpack-dev-server\"",
+    "build:watch": "npx nodemon --exec \"node ../node_modules/webpack-dev-server/bin/webpack-dev-server\"",
     "postinstall": "npx link-module-alias",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,21 +16,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dbux-common": "*",
+    "dbux-graph-common": "*",
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "nodemon": "../node_modules/nodemon",
-    "webpack": "../node_modules/webpack",
-    "webpack-dev-server": "../node_modules/webpack-dev-server",
     "npm-run-all": "^4.1.5",
-    "open-cli": "^6.0.0"
+    "open-cli": "^6.0.0",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   },
-  "peerDependencies": {
-    "lodash": "../node_modules/lodash",
-    "nanoevents": "*"
-  },
-  "_moduleAliases": {
-    "nodemon": "../node_modules/nodemon",
-    "webpack-dev-server": "../node_modules/webpack-dev-server"
-  }
+  "peerDependencies": {},
+  "_moduleAliases": {}
 }

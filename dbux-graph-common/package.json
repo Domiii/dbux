@@ -13,7 +13,7 @@
   "devDependencies": {
   },
   "peerDependencies": {
-    "lodash": "../node_modules/lodash",
+    "lodash": "*",
     "nanoevents": "*"
   },
   "_moduleAliases": {

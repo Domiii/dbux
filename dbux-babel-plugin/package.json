@@ -19,6 +19,9 @@
     "__archive_build": "npm run clean && npx babel src -d dist",
     "__archive_prepublish": "npm run clean && npm run build"
   },
+  "dependencies": {
+    "dbux-common": "*"
+  },
   "devDependencies": {
     "@babel/code-frame": "^7.8.3",
     "@babel/generator": "^7.8.3",
@@ -39,10 +42,8 @@
     "babel-plugin"
   ],
   "peerDependencies": {
-    "dbux-common": "../dbux-common",
     "lodash": "*"
   },
   "_moduleAliases": {
-    "dbux-common": "../dbux-common"
   }
 }

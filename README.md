@@ -47,6 +47,20 @@ npm start # start webpack build of all projects in watch mode
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
 
+## Analyze with Python Notebooks
+
+In the `analyze/` folder, you find several python notebooks that allow you analyze the data that `dbux` generates. Here is how you set that up:
+
+1. Run some program with Dbux enabled (e.g. `samples/[...]/oop1.js`)
+1. In the VSCode extension, open a file of that program that has traces in it
+1. In VSCode `Run Command` (`CTRL/Command + SHIFT + P`) -> `Dbux: Export file`
+1. Make sure you have Python + Jupyter setup
+   * Windows
+      * [Install `Anaconda` with `chocolatey`](https://chocolatey.org/packages/anaconda3)
+      * Set your `%PYTHONPATH%` in system config to your Anaconda `Lib` + `DLLs` folders (e.g. `C:\tools\Anaconda3\Lib;C:\tools\Anaconda3\DLLs;`)
+      * Done!
+1. Run one of the notebooks, load the file, and analyze :)
+
 
 ## Test: Project 1
 

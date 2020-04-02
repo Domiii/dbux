@@ -217,9 +217,9 @@
 		"_before-run": "npx link-module-alias",
 		"postinstall": "npx link-module-alias",
 		"test": "node ./test/runTest.js",
-		"vscode:prepublish": "npx webpack --mode production",
-		"start": "npm run _before-run && npx webpack --mode development --watch",
-		"start-debug": "node --inspect-brk=9233 ./node_modules/webpack/bin/webpack --mode development --watch",
+		"vscode:prepublish": "node ../node_modules/webpack/bin/webpack --mode production",
+		"start": "node ../node_modules/webpack/bin/webpack --mode development --watch",
+		"start-debug": "node --inspect-brk=9233 ../node_modules/webpack/bin/webpack --mode development --watch",
 		"build-prod": "npx webpack --mode production",
 		"build-dev": "npx webpack --mode development",
 		"analyze": "npx webpack --mode development --json | npx webpack-bundle-size-analyzer"
@@ -238,15 +238,13 @@
 	"dependencies": {
 		"comment-json": "^3.0.2",
 		"moment": "^2.24.0",
-		"socket.io": "^2.3.0"
+		"socket.io": "^2.3.0",
+		"dbux-common": "*",
+		"dbux-data": "*"
 	},
 	"peerDependencies": {
-		"dbux-common": "../dbux-common",
-		"dbux-data": "../dbux-data",
 		"lodash": "*"
 	},
 	"_moduleAliases": {
-		"dbux-common": "../dbux-common",
-		"dbux-data": "../dbux-data"
 	}
 }

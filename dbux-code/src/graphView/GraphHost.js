@@ -1,4 +1,4 @@
-import GraphHostBase from 'dbux-graph-host/GraphHost';
+import GraphHostBase from 'dbux-graph-host/src/GraphHost';
 import {
   window,
   Uri,
