@@ -13,11 +13,12 @@ export default class BaseTreeViewNodeProvider {
   rootNodes;
   idsCollapsibleState = new Map();
 
-  constructor(viewName) {
+  constructor(viewName, showCollapseAll = false) {
     this.viewName = viewName;
     // NOTE: view creation inside the data provider is not ideal, 
     //      but it makes things a lot easier for now
     this.treeView = window.createTreeView(viewName, {
+      showCollapseAll,
       treeDataProvider: this
     });
 
@@ -139,7 +140,10 @@ export default class BaseTreeViewNodeProvider {
     node.iconPath = this.makeNodeIconPath(node);
 
     // collapsibleState
-    if (node.canHaveChildren?.()) {
+    if ('collapsibleStateOverride' in node) {
+      node.collapsibleState = node.collapsibleStateOverride;
+    }
+    else if (node.children?.length || node.canHaveChildren?.()) {
       let collapsibleState = this.idsCollapsibleState.get(id);
       if (collapsibleState === undefined) {
         collapsibleState = node.defaultCollapsibleState || TreeItemCollapsibleState.Collapsed;
@@ -160,11 +164,6 @@ export default class BaseTreeViewNodeProvider {
 
     // init
     node.init?.();
-    
-    if (node.children) {
-      // this node has built-in children
-      this._decorateNodes(node, node.children);
-    }
 
     if (node.children) {
       // this node has built-in children

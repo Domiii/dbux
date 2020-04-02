@@ -70,10 +70,6 @@
 				}
 			},
 			{
-				"command": "dbuxCallGraphView.itemClick",
-				"title": "Click"
-			},
-			{
 				"command": "dbuxCallStackView.showParent",
 				"title": "Switch to Parent",
 				"icon": {

@@ -1,80 +1,93 @@
-import { window, commands } from 'vscode';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import traceSelection from 'dbux-data/src/traceSelection';
+import { ExtensionContext, commands, window } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
+import allApplications from 'dbux-data/src/applications/allApplications';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
-import { CallGraphNodeProvider } from './CallGraphNodeProvider';
-import CallRootNode from './CallRootNode';
+import CallGraphNodeProvider from './CallGraphNodeProvider';
 
-const { log, debug, warn, error: logError } = newLogger('CallGraphViewController');
+const { log, debug, warn, error: logError } = newLogger('callGraphViewController');
 
-export class CallGraphViewController {
-  constructor(viewId, options) {
-    this.callGraphNodeProvider = new CallGraphNodeProvider(this);
-    this.callGraphView = window.createTreeView(viewId, { 
-      treeDataProvider: this.callGraphNodeProvider,
-      ...options
-    });
-    this.filterString = '';
+let controller;
 
-    allApplications.selection.onApplicationsChanged((apps) => {
-      this.refresh();
-      for (const app of apps) {
+class CallGraphViewController {
+  constructor() {
+    this.treeDataProvider = new CallGraphNodeProvider(this);
+    this.treeView = this.treeDataProvider.treeView;
+    this._filterString = '';
+  }
+
+  refresh = () => {
+    this.treeDataProvider.refresh();
+  }
+
+  refreshOnData = makeDebounce(() => {
+    this.refresh();
+  });
+
+  initOnActivate(context) {
+    commands.executeCommand('setContext', 'dbuxCallGraphView.context.filtering', false);
+
+    // ########################################
+    // hook up event handlers
+    // ########################################
+
+    // click event listener
+    this.treeDataProvider.initDefaultClickCommand(context);
+
+    // data changed
+    allApplications.selection.onApplicationsChanged((selectedApps) => {
+      for (const app of selectedApps) {
         allApplications.selection.subscribe(
-          app.dataProvider.onData('executionContexts', this.refresh)
+          app.dataProvider.onData('executionContexts', this.refreshOnData)
         );
       }
     });
   }
 
-  // ###########################################################################
-  // Public methods
-  // ###########################################################################
+  getFilterString() {
+    return this._filterString;
+  }
 
-  refresh = makeDebounce(() => {
-    this.callGraphNodeProvider.refresh();
-  }, 100)
-  
-  /**
-   * @param {CallRootNode} node
-   */
-  handleItemClick = (node) => {
-    const dp = allApplications.getApplication(node.applicationId).dataProvider;
-    const trace = dp.collections.traces.getById(node.traceId);
-    if (trace) {
-      traceSelection.selectTrace(trace);
-    }
+  isFiltering() {
+    return !!this._filterString;
   }
 
   setFilter = () => {
     window.showInputBox({
       ignoreFocusOut: true,
       placeHolder: 'keyword to filter e.g. \'[cb]\'',
-      value: this.filterString
+      value: this._filterString
     }).then((filterString) => {
       if (filterString !== undefined) {
-        this.filterString = filterString;
-        this.refresh();
-        commands.executeCommand('setContext', 'dbuxCallGraphView.context.filtering', true);
+        this._setFilter(filterString);
       }
     });
   }
-
+  
   clearFilter = () => {
-    this.filterString = '';
+    this._setFilter('');
+  }
+  
+  _setFilter = (str) => {
+    this._filterString = str;
+    commands.executeCommand('setContext', 'dbuxCallGraphView.context.filtering', this.isFiltering());
     this.refresh();
-    commands.executeCommand('setContext', 'dbuxCallGraphView.context.filtering', false);
+    for (let node of this.treeDataProvider.rootNodes) {
+      const expand = !!node.collapsibleState;
+      this.treeView.reveal(node, { expand, select: false });
+    }
   }
 }
 
-let callGraphViewController: CallGraphViewController;
+// ###########################################################################
+// init
+// ###########################################################################
 
-export function initCallGraphView() {
-  commands.executeCommand('setContext', 'dbuxCallGraphView.context.filtering', false);
-  callGraphViewController = new CallGraphViewController('dbuxCallGraphView', {
-    canSelectMany: false,
-    showCollapseAll: true
-  });
+export function initCallGraphView(context: ExtensionContext) {
+  controller = new CallGraphViewController();
+  controller.initOnActivate(context);
 
-  return callGraphViewController;
+  // refresh right away
+  controller.refresh();
+
+  return controller;
 }

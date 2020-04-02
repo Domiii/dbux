@@ -19,9 +19,4 @@ export function initCallGraphViewCommands(context, callGraphViewController) {
     'dbuxCallGraphView.clearFilter',
     () => callGraphViewController.clearFilter()
   );
-
-  registerCommand(context,
-    'dbuxCallGraphView.itemClick',
-    (node: CallRootNode) => callGraphViewController.handleItemClick(node)
-  );
 }

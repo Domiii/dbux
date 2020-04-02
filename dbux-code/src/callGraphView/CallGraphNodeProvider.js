@@ -1,78 +1,46 @@
-import { EventEmitter } from 'vscode';
+import { TreeItemCollapsibleState as CollapsibleState } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
-import Trace from 'dbux-common/src/core/data/Trace';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import CallRootNode, { EmptyNode } from './CallRootNode';
+import CallRootNode from './CallRootNode';
+import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
+import EmptyNode from './EmptyNode';
 
 const { log, debug, warn, error: logError } = newLogger('CallGraphNodeProvider');
 
-export class CallGraphNodeProvider {
-  _rootNodesByApp: Array<Array<CallRootNode>> = [];
-  constructor(viewController) {
-    this._onChangeEventEmitter = new EventEmitter();
-    this.onDidChangeTreeData = this._onChangeEventEmitter.event;
-    this.callGraphViewController = viewController;
+export default class CallGraphNodeProvider extends BaseTreeViewNodeProvider {
+  constructor(treeViewController) {
+    super('dbuxCallGraphView', true);
+    this.treeViewController = treeViewController;
   }
 
-  refresh = () => {
+  buildRoots() {
     const allFisrtTraces = allApplications.selection.data.firstTracesInOrder.getAll();
-    const allRootNode = allFisrtTraces.map(this._getRootNodeByTrace);
-    this._rootNodes = allRootNode.reverse();
+    const allRootNode = allFisrtTraces.map(trace => this.buildRootNode(trace));
 
-    // tell vscode to refresh view
-    this._onChangeEventEmitter.fire();
-  }
 
-  // ########################################
-  // Util
-  // ########################################
-
-  /**
-   * @param {Trace} trace
-   */
-  _getRootNodeByTrace = (trace) => {
-    const { applicationId, runId } = trace;
-
-    if (!this._rootNodesByApp[applicationId]) this._rootNodesByApp[applicationId] = [];
-    
-    // build node if not exist
-    if (!this._rootNodesByApp[applicationId][runId]) {
-      const newNode = new CallRootNode(trace, this);
-      this._rootNodesByApp[applicationId][runId] = newNode;
+    if (!allRootNode.length) {
+      allRootNode.push(EmptyNode.instance);
     }
-    // build children
-    this._rootNodesByApp[applicationId][runId].updateChildren();
-    return this._rootNodesByApp[applicationId][runId];
+
+    return allRootNode.reverse();
   }
 
-  // ########################################
-  // TreeDataProvider methods
-  // ########################################
-
-  /**
-   * @param {CallRootNode} node
-   */
-  getTreeItem = (node) => {
-    return node;
-  }
-
-  /**
-   * @param {CallRootNode} node
-   */
-  getChildren = (node) => {
-    if (node) {
-      return node.children;
+  buildRootNode = (trace) => {
+    const newRootNode = this.buildNode(CallRootNode, trace);
+    newRootNode.children = newRootNode.buildChildren(trace.applicationId, trace.runId);
+    
+    // custom collapsibleState
+    if (newRootNode.children.length) {
+      if (this.treeViewController.isFiltering()) {
+        newRootNode.collapsibleStateOverride = CollapsibleState.Expanded;
+      }
     }
     else {
-      if (this._rootNodes.length) return this._rootNodes;
-      return [EmptyNode];
+      newRootNode.collapsibleStateOverride = CollapsibleState.None;
     }
-  }
 
-  /**
-   * @param {CallRootNode} node
-   */
-  getParent = (node) => {
-    return node.parentNode;
+    // newRootNode.collapsibleStateOverride = CollapsibleState.Expanded;
+    
+    return newRootNode;
   }
 }
