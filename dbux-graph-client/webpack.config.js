@@ -11,32 +11,28 @@ const outputFolder = path.join(MonoRoot, 'dbux-code', 'resources', 'dist');
 const buildMode = 'development';
 //const buildMode = 'production';
 
-const dependencyPaths = ["dbux-common", "dbux-data", "dbux-graph-common", "dbux-graph-client"];
+const dependencyPaths = ["dbux-common", "dbux-graph-common", "dbux-graph-client"];
 
 const resolve = makeResolve(MonoRoot, dependencyPaths);
-const absolutePaths = makeAbsolutePaths(MonoRoot, dependencyPaths);
+const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
 const rules = [
   {
     loader: 'babel-loader',
-    test(resource, issuer) {
-      // see: https://stackoverflow.com/a/46769010
-      console.debug('[TEST]\n  ', resource, issuer);
-      return true;
-    },
+    // test(resource) { /* see: https://stackoverflow.com/a/46769010 */ console.debug('[TEST]\n  ', resource); return true; },
     include: [
-      ...absolutePaths.map(r => path.join(r, 'src')),
+      ...absoluteDependencies.map(r => path.join(r, 'src')),
       // '../dbux-graph-common/src'
     ],
     options: {
       babelrc: true,
       babelrcRoots: [
-        ...absolutePaths,
+        ...absoluteDependencies,
         // '../dbux-graph-common'
       ]
     }
   }
 ];
-console.log(rules[0].include);
+// console.log(rules[0].options.babelrcRoots);
 
 const src = path.join(projectRoot, 'src');
 
@@ -58,8 +54,7 @@ const webpackPlugins = [
   }
 ];
 
-
-return {
+module.exports = {
   //watch: true,
   mode: buildMode,
   target: 'web',
@@ -109,5 +104,3 @@ return {
     rules
   }
 };
-
-// console.warn('dbux-graph webpack config loaded');

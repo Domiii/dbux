@@ -7,9 +7,10 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "_before-run": "npx link-module-alias && yarn install",
-    "start": "npm run _before-run && npm run build:watch",
-    "build:watch": "npx nodemon --exec \"node ../node_modules/webpack-dev-server/bin/webpack-dev-server\"",
-    "postinstall": "npx link-module-alias",
+    "start": "npm run build:serve",
+    "build:serve": "npx nodemon --exec \"node ../node_modules/webpack-dev-server/bin/webpack-dev-server\"",
+    "build:debug": "node ../node_modules/webpack/bin/webpack",
+    "_postinstall": "npx link-module-alias",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

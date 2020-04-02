@@ -2,12 +2,26 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* [callGraphView - search]
-   * add new button: "hide all previous roots / show all"
-   * when expanding a CallGraph root, show all context names of that `runId` as children of that root node, uniquely (don't show the same name twice)
-   * add a `"filter by searchTerm"` button: show `QuickInput` to ask user to enter a searchTerm
-      * all roots with contexts whose name contains searchTerm are expanded, all others are `Collapsed` or `None`
-      * filter contexts by searchTerm (match `name`; as well as `filePath` of its `Program`)
+
+* [errors]
+   * just like, "select trace at cursor", insert two 🔥 buttons (one top right, one above `callGraphView`)
+      * button is grayed out if there are no errors
+      * when clicked, list all errors in call graph view
+* [applicationView]
+   * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
+   * nest applications of same entry point under same node
+      * most recent Application is parent, all others are children
+      * make sure, `children` is `null` if it has no children (so `CollapsibleState` will be `None`)
+* add a button to the top right to toggle (show/hide) all intrusive features
+   * includes:
+      * show/hide all `codeDeco`s
+      * show/hide all other buttons in the top right
+* display a warning at the top of EditorWindow:
+   * if it has been edited after the time of it's most recent `Program` `Context`
+      * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
+      * offer buttons to let user reply...:
+         * do not show warning again for this file (before restart)
+         * remove the application from `allApplications`
 * keyword `wordcloud`
    * prepare function to generate all keywords in all `staticContexts` and their `fileName`s (without ext) of a single run
       * multiply weight by how often they were called (use `contexts`, rather than `staticContexts`)
@@ -24,15 +38,6 @@
             * https://www.datacamp.com/community/tutorials/stemming-lemmatization-python
             * https://nlp.stanford.edu/IR-book/html/htmledition/stemming-and-lemmatization-1.html
    * NOTE: is there some JS or python NLP packages to help with this?
-* [errors]
-   * just like, "select trace at cursor", insert two 🔥 buttons (one top right, one above `callGraphView`)
-      * button is grayed out if there are no errors
-      * when clicked, list all errors in call graph view
-* [applicationView]
-   * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
-   * nest applications of same entry point under same node
-      * most recent Application is parent, all others are children
-      * make sure, `children` is `null` if it has no children (so `CollapsibleState` will be `None`)
 * [tracesAtCursor]
    * remove this view, replace with button at the top left
       * icon = crosshair (⌖)
@@ -112,17 +117,10 @@
 ## TODO (dbux-code + dbux-data; lower priority)
 * [UI design]
    * proper icons + symbols for all tree nodes?
-* add a button to the top right to toggle (show/hide) all intrusive features
-   * includes:
-      * hide `codeDeco`
-      * hide any extra buttons (currently: playback buttons) in the top right
-   * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+B CTRL+X` (need every single key))
+* dbux toggle/enable/disable controls
+   * e.g. keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+B CTRL+X` (need every single key))
+   
 * display a warning at the top of EditorWindow:
-   * if it has been edited after the time of it's most recent `Program` `Context`
-      * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
-      * offer buttons to...:
-         * not show warning again for this file (before restart)
-         * remove the application from `allApplications`
    * if it is very large and thus will slow things down (e.g. > x traces?)
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
@@ -144,6 +142,8 @@
 
 
 ## TODO (other)
+* fix: webpack build of `dbux-babel-plugin` has now externalized `dbux-common` which leads to errors when `require`-ing it
+* fix: `dbux-graph-client` webpack config is not `babel`ing `dbux-graph-common` (but `dbux-code` is doing it just fine)
 * [dbux-graph]
    * produce a `webpack.tools.js`
       * "shared library" trick

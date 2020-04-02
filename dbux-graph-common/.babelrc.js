@@ -30,3 +30,5 @@ module.exports = {
     "@babel/plugin-transform-runtime"
   ]
 };
+
+// console.warn('[dbux-graph-common]', '.babelrc.js loaded');

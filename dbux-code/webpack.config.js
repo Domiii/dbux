@@ -19,7 +19,7 @@ const dependencyPaths = ["dbux-common", "dbux-data", "dbux-graph-common", "dbux-
 
 
 const resolve = makeResolve(MonoRoot, dependencyPaths);
-const absolutePaths = makeAbsolutePaths(MonoRoot, dependencyPaths);
+const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
 const rules = [
   // {
   //   loader: 'babel-loader',
@@ -29,9 +29,9 @@ const rules = [
   // },
   {
     loader: 'babel-loader',
-    include: absolutePaths.map(r => path.join(r, 'src')),
+    include: absoluteDependencies.map(r => path.join(r, 'src')),
     options: {
-      babelrcRoots: absolutePaths
+      babelrcRoots: absoluteDependencies
     }
   }
 ];

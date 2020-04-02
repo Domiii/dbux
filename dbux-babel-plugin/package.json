@@ -11,10 +11,10 @@
   },
   "scripts": {
     "clean": "rm -rf dist && rm -rf dist.samples",
-    "postinstall": "npx link-module-alias",
+    "_postinstall": "npx link-module-alias",
     "_before-run": "npx link-module-alias",
-    "build": "npm run clean && npm run _before-run && webpack --config config/webpack.config.js",
-    "test": "npm run _before-run && node --stack-trace-limit=1000 ../node_modules/jest/bin/jest.js --runInBand",
+    "build": "npm run clean && webpack --config config/webpack.config.js",
+    "test": "node --stack-trace-limit=1000 ../node_modules/jest/bin/jest.js --runInBand",
     "test:watch": "npm run test -- --watch",
     "__archive_build": "npm run clean && npx babel src -d dist",
     "__archive_prepublish": "npm run clean && npm run build"

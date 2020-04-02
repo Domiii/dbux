@@ -25,7 +25,7 @@ exports.makeResolve = function makeResolve(root, relativePaths = []) {
 
   const moduleFolders = [
     path.join(root, '/node_modules'),
-    ...[...absolutePaths]
+    ...absolutePaths
       .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
       .flat()
       .map(f => path.resolve(f))
@@ -41,6 +41,7 @@ exports.makeResolve = function makeResolve(root, relativePaths = []) {
     symlinks: true,
     alias,
     modules: [
+      // see: https://github.com/webpack/webpack/issues/8824#issuecomment-475995296
       ...moduleFolders
     ]
   };
