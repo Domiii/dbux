@@ -14,8 +14,8 @@ export default class CallGraphNodeProvider extends BaseTreeViewNodeProvider {
   }
 
   buildRoots() {
-    const allFisrtTraces = allApplications.selection.data.firstTracesInOrder.getAll();
-    const allRootNode = allFisrtTraces.map(trace => this.buildRootNode(trace));
+    const allFirstTraces = allApplications.selection.data.firstTracesInOrder.getAll();
+    const allRootNode = allFirstTraces.map(trace => this.buildRootNode(trace));
 
 
     if (!allRootNode.length) {
