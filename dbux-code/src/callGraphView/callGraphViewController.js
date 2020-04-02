@@ -13,6 +13,7 @@ class CallGraphViewController {
     this.treeDataProvider = new CallGraphNodeProvider(this);
     this.treeView = this.treeDataProvider.treeView;
     this._filterString = '';
+    this._mode = 'context';
   }
 
   refresh = () => {
@@ -23,8 +24,22 @@ class CallGraphViewController {
     this.refresh();
   });
 
+  refreshIcon = () => {
+    let hasError = false;
+    for (const app of allApplications.selection.getAll()) {
+      if (app.dataProvider.util.getAllErrorTraces().length) {
+        hasError = true;
+        break;
+      }
+    }
+    commands.executeCommand('setContext', 'dbuxCallGraphView.context.mode', 'context');
+    commands.executeCommand('setContext', 'dbuxCallGraphView.context.hasError', hasError);
+  }
+
   initOnActivate(context) {
     commands.executeCommand('setContext', 'dbuxCallGraphView.context.filtering', false);
+    commands.executeCommand('setContext', 'dbuxCallGraphView.context.hasError', false);
+    commands.executeCommand('setContext', 'dbuxCallGraphView.context.mode', 'context');
 
     // ########################################
     // hook up event handlers
@@ -37,11 +52,41 @@ class CallGraphViewController {
     allApplications.selection.onApplicationsChanged((selectedApps) => {
       for (const app of selectedApps) {
         allApplications.selection.subscribe(
-          app.dataProvider.onData('executionContexts', this.refreshOnData)
+          app.dataProvider.onData('executionContexts', this.refreshOnData),
+          app.dataProvider.onData('traces', this.refreshIcon)
         );
       }
     });
   }
+
+  // ########################################
+  //  Mode functions (showContext/showError)
+  // ########################################
+
+  getMode() {
+    return this._mode;
+  }
+
+  showContext() {
+    this._setMode('context');
+  }
+
+  showError() {
+    this._setMode('error');
+  }
+
+  _setMode(mode) {
+    if (this._mode !== mode) {
+      this._mode = mode;
+      this.refreshIcon();
+      this.clearFilter();
+      this.refresh();
+    }
+  }
+
+  // ########################################
+  //  Filter functions
+  // ########################################
 
   getFilterString() {
     return this._filterString;
@@ -62,18 +107,20 @@ class CallGraphViewController {
       }
     });
   }
-  
+
   clearFilter = () => {
     this._setFilter('');
   }
-  
+
   _setFilter = (str) => {
     this._filterString = str;
     commands.executeCommand('setContext', 'dbuxCallGraphView.context.filtering', this.isFiltering());
     this.refresh();
-    for (let node of this.treeDataProvider.rootNodes) {
-      const expand = !!node.collapsibleState;
-      this.treeView.reveal(node, { expand, select: false });
+    if (this.isFiltering()) {
+      for (let node of this.treeDataProvider.rootNodes) {
+        const expand = !!node.collapsibleState;
+        this.treeView.reveal(node, { expand, select: false });
+      }
     }
   }
 }

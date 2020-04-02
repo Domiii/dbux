@@ -27,8 +27,10 @@ export default class CallGraphNodeProvider extends BaseTreeViewNodeProvider {
 
   buildRootNode = (trace) => {
     const newRootNode = this.buildNode(CallRootNode, trace);
-    newRootNode.children = newRootNode.buildChildren(trace.applicationId, trace.runId);
-    
+    const { applicationId, runId } = trace;
+    const mode = this.treeViewController.getMode();
+    newRootNode.children = newRootNode.buildChildren(applicationId, runId, mode);
+
     // custom collapsibleState
     if (newRootNode.children.length) {
       if (this.treeViewController.isFiltering()) {
@@ -40,7 +42,7 @@ export default class CallGraphNodeProvider extends BaseTreeViewNodeProvider {
     }
 
     // newRootNode.collapsibleStateOverride = CollapsibleState.Expanded;
-    
+
     return newRootNode;
   }
 }

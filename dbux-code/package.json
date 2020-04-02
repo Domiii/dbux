@@ -54,6 +54,30 @@
 				"title": "Dbux: Export application data"
 			},
 			{
+				"command": "dbuxCallGraphView.showContext",
+				"title": "Show contexts",
+				"icon": {
+					"light": "resources/light/document.svg",
+					"dark": "resources/dark/document.svg"
+				}
+			},
+			{
+				"command": "dbuxCallGraphView.showError",
+				"title": "Show all error",
+				"icon": {
+					"light": "resources/light/fire.svg",
+					"dark": "resources/dark/fire.svg"
+				}
+			},
+			{
+				"command": "dbuxCallGraphView.showError.disabled",
+				"title": "No traces at cursor",
+				"icon": {
+					"light": "resources/light/fire_disabled.svg",
+					"dark": "resources/dark/fire_disabled.svg"
+				}
+			},
+			{
 				"command": "dbuxCallGraphView.setFilter",
 				"title": "Filter",
 				"icon": {
@@ -150,31 +174,46 @@
 			"editor/title": [
 				{
 					"command": "dbuxPlayback.previousTrace",
-					"group": "navigation@5"
+					"group": "navigation@21"
 				},
 				{
 					"command": "dbuxPlayback.nextTrace",
-					"group": "navigation@8"
+					"group": "navigation@24"
 				},
 				{
 					"command": "dbuxPlayback.play",
 					"when": "dbuxPlayback.context.playing == false",
-					"group": "navigation@6"
+					"group": "navigation@22"
 				},
 				{
 					"command": "dbuxPlayback.pause",
 					"when": "dbuxPlayback.context.playing == true",
-					"group": "navigation@7"
+					"group": "navigation@23"
+				},
+				{
+					"command": "dbuxCallGraphView.showContext",
+					"when": "dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError == true",
+					"group": "navigation@31"
+				},
+				{
+					"command": "dbuxCallGraphView.showError",
+					"when": "dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError == true",
+					"group": "navigation@32"
+				},
+				{
+					"command": "dbuxCallGraphView.showError.disabled",
+					"when": "dbuxCallGraphView.context.hasError == false",
+					"group": "navigation@33"
 				},
 				{
 					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
 					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == true",
-					"group": "navigation@3"
+					"group": "navigation@11"
 				},
 				{
 					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
 					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == false",
-					"group": "navigation@4"
+					"group": "navigation@12"
 				}
 			],
 			"view/item/context": [
@@ -203,6 +242,21 @@
 				{
 					"command": "dbuxCallGraphView.clearFilter",
 					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering == true",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxCallGraphView.showContext",
+					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError == true",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxCallGraphView.showError",
+					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError == true",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxCallGraphView.showError.disabled",
+					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.hasError == false",
 					"group": "navigation"
 				},
 				{

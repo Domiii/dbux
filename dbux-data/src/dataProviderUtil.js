@@ -43,6 +43,10 @@ export default {
     return dp.indexes.traces.firsts.get(1);
   },
 
+  getAllErrorTraces(dp: DataProvider) {
+    return dp.indexes.traces.error.get(1) || EmptyArray;
+  },
+
   // ###########################################################################
   // static contexts
   // ###########################################################################
@@ -88,7 +92,7 @@ export default {
   },
 
   getFirstTraceOfRun(dp: DataProvider, runId) {
-    const traces = dp.indexes.traces.byRunId.get(runId);
+    const traces = dp.indexes.traces.byRun.get(runId);
     if (!traces?.length) {
       return null;
     }
@@ -96,7 +100,7 @@ export default {
   },
 
   getLastTraceOfRun(dp: DataProvider, runId) {
-    const traces = dp.indexes.traces.byRunId.get(runId);
+    const traces = dp.indexes.traces.byRun.get(runId);
     if (!traces?.length) {
       return null;
     }

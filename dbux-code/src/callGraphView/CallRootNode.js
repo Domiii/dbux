@@ -4,14 +4,29 @@ import traceSelection from 'dbux-data/src/traceSelection';
 import { makeRootTraceLabel } from 'dbux-data/src/helpers/traceLabels';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import ContextNode from './ContextNode';
+import ErrorNode from './ErrorNode';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
 export default class CallRootNode extends BaseTreeViewNode {
   static makeLabel(trace: Trace, parent, moreProps) {
     return makeRootTraceLabel(trace, allApplications.getById(trace.applicationId));
   }
-  
-  buildChildren = (applicationId, runId) => {
+
+  buildChildren = (applicationId, runId, mode = 'context') => {
+    let children;
+    if (mode === 'context') {
+      children = this.getAllContextChildren(applicationId, runId);
+    }
+    else if (mode === 'error') {
+      children = this.getAllErrorChildren(applicationId, runId);
+    }
+
+    const filterString = this.treeNodeProvider.treeViewController.getFilterString();
+    const filteredChildren = children.filter(x => x.label.includes(filterString));
+    return filteredChildren;
+  }
+
+  getAllContextChildren(applicationId, runId) {
     const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.byRun.get(runId) || EmptyArray;
 
@@ -30,25 +45,36 @@ export default class CallRootNode extends BaseTreeViewNode {
       addedContext.add(staticContextId);
       children.push(this.buildContextNode(context, applicationId));
     }
-    
-    const filterString = this.treeNodeProvider.treeViewController.getFilterString();
-    
-    const filteredChildren = children.filter(x => x.label.includes(filterString));
-
-    return filteredChildren;
+    return children;
   }
-  
+
+  getAllErrorChildren(applicationId, runId) {
+    // TODO: Test with error sample
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const errors = dp.indexes.traces.errorByRun.get(runId) || EmptyArray;
+
+    const children = [];
+    for (let errorTrace of errors) {
+      children.push(this.buildErrorNode(errorTrace));
+    }
+    return children;
+  }
+
   buildContextNode = (context, applicationId) => {
     const dp = allApplications.getById(applicationId).dataProvider;
     const firstTrace = dp.util.getFirstTraceOfContext(context.contextId);
     const props = { firstTrace, applicationId };
     return this.treeNodeProvider.buildNode(ContextNode, context, this, props);
   }
-  
+
+  buildErrorNode = (errorTrace) => {
+    return this.treeNodeProvider.buildNode(ErrorNode, errorTrace, this);
+  }
+
   get trace() {
     return this.entry;
   }
-  
+
   handleClick = () => {
     if (this.trace) {
       traceSelection.selectTrace(this.trace);
