@@ -168,6 +168,14 @@
 					"light": "resources/light/pause.svg",
 					"dark": "resources/dark/pause.svg"
 				}
+			},
+			{
+				"command": "dbuxApplicationsView.showEntryPoint",
+				"title": "Go to Entry",
+				"icon": {
+					"light": "resources/light/nextTrace.svg",
+					"dark": "resources/dark/nextTrace.svg"
+				}
 			}
 		],
 		"menus": {
@@ -229,7 +237,12 @@
 				},
 				{
 					"command": "dbuxTraceDetailsView.switchGroupingMode",
-					"when": "view == dbuxTraceDetailsView && viewItem == dbuxTraceDetailsView.staticTraceTDNodeRoot",
+					"when": "view == dbuxTraceDetailsView && viewItem == staticTraceTDNodeRoot",
+					"group": "inline"
+				},
+				{
+					"command": "dbuxApplicationsView.showEntryPoint",
+					"when": "view == dbuxApplicationsView && viewItem == applicationNode",
 					"group": "inline"
 				}
 			],
