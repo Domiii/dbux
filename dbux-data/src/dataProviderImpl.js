@@ -10,11 +10,13 @@ import FirstContextsInRunsIndex from './impl/indexes/FirstContextsInRunsIndex';
 import TracesByContextIndex from './impl/indexes/TracesByContextIndex';
 import TracesByParentContextIndex from './impl/indexes/TracesByParentContextIndex';
 import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
-import TracesByRunIdIndex from './impl/indexes/TracesByRunIdIndex';
+import TracesByRunIndex from './impl/indexes/TracesByRunIndex';
 import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextIndex';
 import TracesByTrackIdIndex from './impl/indexes/TracesByTrackIdIndex';
 import TracesByParentTraceIndex from './impl/indexes/TracesByParentTraceIndex';
 import TracesByParentStaticContextIndex from './impl/indexes/TracesByParentStaticContextIndex';
+import ErrorTracesIndex from './impl/indexes/ErrorTracesIndex';
+import ErrorTracesByRunIndex from './impl/indexes/ErrorTracesByRunIndex';
 
 import VisitedStaticTracesByFileIndex from './impl/indexes/VisitedStaticTracesByFileIndex';
 import ParentTracesInRealContextIndex from './impl/indexes/ParentTracesInRealContextIndex';
@@ -26,6 +28,7 @@ import StaticContextsByFileIndex from './impl/indexes/StaticContextsByFileIndex'
 import StaticContextsByParentIndex from './impl/indexes/StaticContextsByParentIndex';
 import CallArgsByCallIndex from './impl/indexes/CallArgsByCallIndex';
 import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
+import ContextsByRunIndex from './impl/indexes/ContextsByRunIndex';
 
 
 export function newDataProvider(application) {
@@ -45,6 +48,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new StaticContextsByParentIndex());
 
   dataProvider.addIndex(new ContextsByStaticContextIndex());
+  dataProvider.addIndex(new ContextsByRunIndex());
   dataProvider.addIndex(new ContextChildrenIndex());
   dataProvider.addIndex(new RootContextsIndex());
   dataProvider.addIndex(new FirstContextsInRunsIndex());
@@ -57,8 +61,10 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new TracesByStaticTraceIndex());
   dataProvider.addIndex(new TracesByStaticContextIndex());
   dataProvider.addIndex(new TracesByParentStaticContextIndex());
-  dataProvider.addIndex(new TracesByRunIdIndex());
+  dataProvider.addIndex(new TracesByRunIndex());
   dataProvider.addIndex(new TracesByTrackIdIndex());
+  dataProvider.addIndex(new ErrorTracesIndex());
+  dataProvider.addIndex(new ErrorTracesByRunIndex());
   dataProvider.addIndex(new CallArgsByCallIndex());
 
 

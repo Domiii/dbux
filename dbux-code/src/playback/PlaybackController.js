@@ -19,14 +19,14 @@ export default class PlaybackController {
   // ###########################################################################
 
   play = () => {
-    commands.executeCommand('setContext', 'dbuxPlayback.context.Playing', true);
+    commands.executeCommand('setContext', 'dbuxPlayback.context.playing', true);
     tracePlayback.play();
     this.printTracesInfo();
     this.printContextsInfo();
   }
 
   pause = () => {
-    commands.executeCommand('setContext', 'dbuxPlayback.context.Playing', false);
+    commands.executeCommand('setContext', 'dbuxPlayback.context.playing', false);
     tracePlayback.pause();
   }
 
@@ -43,7 +43,7 @@ export default class PlaybackController {
   // ###########################################################################
 
   handlePause() {
-    commands.executeCommand('setContext', 'dbuxPlayback.context.Playing', false);
+    commands.executeCommand('setContext', 'dbuxPlayback.context.playing', false);
   }
 
   // ###########################################################################

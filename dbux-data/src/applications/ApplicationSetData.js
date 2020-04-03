@@ -23,6 +23,7 @@ class FirstTracesInOrder {
     const applications = this.applicationSetData.set.getAll();
     const allFirstTraces = applications.map((app) => app.dataProvider.util.getFirstTracesInRuns() || EmptyArray);
 
+    // sort traces by trace.createdAt
     const indexPointers = Array(applications.length).fill(0);
     const tracesCount = allFirstTraces.reduce((sum, arr) => sum + arr.length, 0);
 
@@ -82,7 +83,7 @@ class FirstTracesInOrder {
     const key = this._makeKey(firstTrace);
     const index = this._firstTraceIndexById.get(key);
     if (index === undefined) {
-      throw new Error('invalid query - context is not a root trace', firstTrace);
+      throw new Error('invalid query - given trace is not a root trace', firstTrace);
     }
     return index;
   }
