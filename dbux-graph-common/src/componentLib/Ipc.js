@@ -17,7 +17,7 @@ class IpcCall {
 
 export default class Ipc {
   ipcAdapter;
-  lastId = 0;
+  lastCallId = 0;
   calls = {};
 
   constructor(ipcAdapter, commands) {
@@ -30,11 +30,12 @@ export default class Ipc {
     this.ipcAdapter.postMessage(msg);
   }
 
-  async sendMessage(commandName, args) {
-    const callId = ++this.lastId;
+  async sendMessage(commandName, componentId, args) {
+    const callId = ++this.lastCallId;
 
     const msg = {
       dbuxCallId: callId,
+      dbuxComponentId: componentId,
       dbuxRequest: commandName,
       args
     };
@@ -64,9 +65,10 @@ export default class Ipc {
     }
   }
 
-  replyToCall(status, callId, result) {
+  replyToCall(status, callId, componentId, result) {
     this.postMessage({
       dbuxCallId: callId,
+      dbuxComponentId: componentId,
       result,
       status
     });
@@ -75,6 +77,7 @@ export default class Ipc {
   handleMessage = async evt => {
     const {
       dbuxCallId: callId,
+      dbuxComponentId: componentId,
       dbuxRequest: commandName
     } = evt.data;
 
@@ -100,12 +103,12 @@ export default class Ipc {
         }
         else {
           const res = await func(...args);
-          this.replyToCall('resolve', callId, res);
+          this.replyToCall('resolve', callId, componentId, res);
         }
       }
       catch (err) {
         logError('Failed to execute command:', commandName, args, err);
-        this.replyToCall('reject', callId, err.message);
+        this.replyToCall('reject', callId, componentId, err.message);
       }
     }
   }

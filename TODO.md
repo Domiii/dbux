@@ -144,13 +144,13 @@
 
 ## TODO (other)
 * design "comprehension questions" + tasks
-* fix `calls1` bug:
 * dbux-graph web components
-  * client = view only
-  * distributed components, synchronizing by `id`
-  * props update triggers `render`
-  * `render` does NOT propagate to children (unlike React)
-  * batch `postMessage`
+   * TODO: handle `dynamic child list`, and `named children` both consistently
+   * client = view only
+   * distributed components, synchronizing by `id`
+   * props update triggers `render`
+   * `render` does NOT propagate to children (unlike React)
+   * batch `postMessage`
 * fix: webpack build of `dbux-babel-plugin` has now externalized `dbux-common` which leads to errors when `require`-ing it
 * fix: `dbux-graph-client` webpack config is not `babel`ing `dbux-graph-common` (but `dbux-code` is doing it just fine)
 * [dbux-graph]

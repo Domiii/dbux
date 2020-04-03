@@ -37,6 +37,10 @@ const resolve = makeResolve(MonoRoot, dependencyPaths);
 resolve.mainFields = ['main'];
 // fix for https://github.com/websockets/ws/issues/1538
 resolve.alias.ws = path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'));
+
+// TODO: add `src` alias to every build
+// resolve.alias.src = 
+
 // alias['socket.io-client'] = path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ));
 // console.warn(resol);
 

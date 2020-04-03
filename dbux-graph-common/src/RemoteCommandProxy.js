@@ -1,24 +1,24 @@
-import Ipc from './Ipc';
+import Ipc from './componentLib/Ipc';
 
 /**
  * @param {Ipc} ipc
  */
-async function remoteCommandCb(ipc, commandName, ...args) {
-  const result = await ipc.sendMessage(commandName, args);
+async function remoteCommandCb(ipc, componentId, commandName, ...args) {
+  const result = await ipc.sendMessage(componentId, commandName, args);
   return result;
 }
 
 class RemoteCommandProxy {
-  _cachedCallbacks = {};
+  constructor(ipc, componentId) {
+    const _cachedCallbacks = {};
 
-  constructor(ipc) {
     // neat little hackfix - see: https://stackoverflow.com/a/40714458
     return new Proxy(this, {
       get: (_this, commandName) => {
-        let cb = this._cachedCallbacks[commandName];
+        let cb = _cachedCallbacks[commandName];
         if (!cb) {
           // create new cb
-          cb = remoteCommandCb.bind(this, ipc, commandName);
+          cb = remoteCommandCb.bind(this, ipc, componentId, commandName);
           this._cachedCallbacks[commandName] = cb;
         }
 

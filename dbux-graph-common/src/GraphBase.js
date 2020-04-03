@@ -1,14 +1,11 @@
-import Ipc from './Ipc';
+import Ipc from './componentLib/Ipc';
 import RemoteCommandProxy from './RemoteCommandProxy';
+import ComponentEndpoint from './componentLib/ComponentEndpoint';
 
 class GraphBase {
-  constructor() {
-  }
-
   startIpc(ipcAdapter) {
     const { commands } = this;
-    this.ipc = new Ipc(ipcAdapter, commands);
-    this.remote = new RemoteCommandProxy(this.ipc);
+    this.remote = new RemoteCommandProxy(this.ipc, this.componentId);
     // this.ipc.init(this._handleMessage);
   }
 }

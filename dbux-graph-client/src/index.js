@@ -1,7 +1,7 @@
 import GraphClient from './GraphClient';
 
 const { ipcAdapter } = window;
-const graph = new GraphClient();
+componentManager.addComponent(GraphClient);
 
 graph.startIpc(ipcAdapter);
 
