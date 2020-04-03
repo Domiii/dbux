@@ -10,6 +10,7 @@ import { logInternalError } from '../log/logger';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { buildDbuxInit } from '../data/staticData';
+import { injectContextEndTrace, buildContextEndTrace } from '../helpers/contextHelper';
 
 
 // ###########################################################################
@@ -56,6 +57,9 @@ function wrapProgram(path, state) {
     exportNodes
   ] = extractTopLevelDeclarations(path);
 
+  // add `ContextEnd` trace
+  bodyNodes.push(buildContextEndTrace(path, state));
+
   const programBody = [
     ...importNodes,     // imports first
     ...startCalls,
@@ -98,14 +102,15 @@ function enter(path, state) {
   // instrument Program itself
   wrapProgram(path, state);
 
-  visitInOrder(path, state, contextVisitors());
-  visitInOrder(path, state, traceVisitors());
+  // visitInOrder(path, state, contextVisitors());
+  // visitInOrder(path, state, traceVisitors());
 
-  // // merge all visitors
-  // let allVisitors = mergeVisitors(
-  //   buildAllTraceVisitors(),
-  //   contextVisitors(),
-  // );
+  // merge all visitors
+  let allVisitors = mergeVisitors(
+    contextVisitors(),
+    traceVisitors(),
+  );
+  visitInOrder(path, state, allVisitors);
 }
 
 function visitInOrder(path, state, visitors) {
@@ -151,6 +156,7 @@ function exit(path, state) {
 function contextVisitors() {
   return {
     Function: functionVisitor(),
+    
     AwaitExpression: awaitVisitor(),
 
     /**

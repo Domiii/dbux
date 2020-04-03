@@ -23,7 +23,8 @@ const traceCustomizationsByType = {
   [TraceType.Await]: tracePathEnd,
   // [TraceType.Resume]: tracePathEnd,
   [TraceType.BlockStart]: tracePathStart,
-  [TraceType.BlockEnd]: tracePathEnd
+  [TraceType.BlockEnd]: tracePathEnd,
+  [TraceType.EndOfContext]: tracePathEnd
 };
 
 
@@ -129,7 +130,7 @@ export default class StaticTraceCollection extends StaticCollection {
     }
 
     // context-sensitive data
-    trace._callId = cfg?.callId;
+    trace._callId = cfg?.callId || type === TraceType.BeforeCallExpression && _traceId;
     trace._resultCallId = cfg?.resultCallId;
 
     // misc data

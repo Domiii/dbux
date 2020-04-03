@@ -4,7 +4,8 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import VarOwnerType from 'dbux-common/src/core/constants/VarOwnerType';
 import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
-import { getPreBodyLoc1D } from '../helpers/locHelpers';
+import { buildTraceNoValue } from '../helpers/traceHelpers';
+import { injectContextEndTrace } from '../helpers/contextHelper';
 
 // ###########################################################################
 // helpers
@@ -27,9 +28,9 @@ function buildPushImmediate(contextId, dbux, staticId, traceId, isInterruptable)
   return buildSource(`var ${contextId} = ${dbux}.pushImmediate(${staticId}, ${traceId}, ${isInterruptable});`);
 }
 
-function buildPopImmediate(contextId, dbux, traceId) {
+function buildPopFunction(contextIdVar, dbux, traceId) {
   // TODO: use @babel/template instead
-  return buildSource(`${dbux}.popImmediate(${contextId}, ${traceId});`);
+  return buildSource(`${dbux}.popFunction(${contextIdVar}, ${traceId});`);
 }
 
 const pushResumeTemplate = template(
@@ -53,7 +54,7 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
   const contextIdVar = genContextIdName(bodyPath);
 
   let pushes = buildPushImmediate(contextIdVar, dbux, staticId, pushTraceId, !!staticResumeId);
-  let pops = buildPopImmediate(contextIdVar, dbux, popTraceId);
+  let pops = buildPopFunction(contextIdVar, dbux, popTraceId);
   if (staticResumeId) {
     // this is an interruptable function -> push + pop "resume contexts"
     // const resumeContextId = bodyPath.scope.generateUid('resumeContextId');
@@ -78,17 +79,29 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
     ];
   }
 
-  let body = bodyPath.node;
-  if (!Array.isArray(bodyPath.node) && !t.isStatement(bodyPath.node)) {
-    // simple lambda expression -> convert to block lambda expression with return statement
-    body = t.blockStatement([t.returnStatement(bodyPath.node)]);
+  const origBodyNode = bodyPath.node;
+  let bodyNode = origBodyNode;
+  if (!Array.isArray(origBodyNode) && !t.isStatement(origBodyNode)) {
+    // simple lambda expression -> convert to block lambda expression with return statement, so we can have our `try/finally`
+    bodyNode = t.blockStatement([t.returnStatement(origBodyNode)]);
+
+    // patch return loc to keep loc of original expression (needed for `ReturnStatement` `traceVisitor`)
+    bodyNode.body[0].loc = origBodyNode.loc;
+    bodyNode.body[0].argument.loc = origBodyNode.loc;
+  }
+  else {
+    injectContextEndTrace(bodyPath, state);
   }
 
   // wrap the function in a try/finally statement
-  bodyPath.replaceWith(buildBlock([
+  const newBody = buildBlock([
     ...pushes,
-    buildWrapTryFinally(body, pops)
-  ]));
+    buildWrapTryFinally(bodyNode, pops)
+  ]);
+
+  // patch function body node to keep loc of original body (needed for `injectFunctionEndTrace`)
+  newBody.loc = origBodyNode.loc;
+  bodyPath.replaceWith(newBody);
 }
 
 // ###########################################################################
@@ -141,6 +154,12 @@ export default function functionVisitor() {
       }
 
       wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId);
+    },
+
+    exit(path, state) {
+      if (!state.onExit(path, 'context')) return;
+      
+      // injectContextEndTrace(path, state);
     }
   };
 }

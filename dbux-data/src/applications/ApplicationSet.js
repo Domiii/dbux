@@ -47,6 +47,14 @@ export default class ApplicationSet {
     return this._applicationIds.has(application.applicationId);
   }
 
+  getApplication(applicationOrIdOrEntryPointPath) {
+    const application = this.allApplications.getApplication(applicationOrIdOrEntryPointPath);
+    if (this._applicationIds.has(application.applicationId)) {
+      return application;
+    }
+    return null;
+  }
+
   addApplication(applicationOrIdOrEntryPointPath) {
     if (this.containsApplication(applicationOrIdOrEntryPointPath)) {
       return;

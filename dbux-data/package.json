@@ -11,14 +11,14 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "dbux-common": "*"
+  },
   "devDependencies": {},
   "peerDependencies": {
-    "dbux-common": "../dbux-common",
     "nanoevents": "*",
     "lodash": "*"
   },
   "_moduleAliases": {
-    "dbux-common": "../dbux-common"
   }
 }

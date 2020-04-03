@@ -76,7 +76,7 @@
 			"name": "test file",
 			"type": "node",
 			"request": "launch",
-			"program": "${workspaceFolder}/dbux-babel-plugin/node_modules/jest/bin/jest.js",
+			"program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
 				"--preserve-symlinks"

@@ -10,10 +10,10 @@ export class TraceSelection {
     return this.selected === trace;
   }
 
-  selectTrace(selected, sender = null, args) {
-    this.selected = selected;
+  selectTrace(trace, sender = null, args) {
+    this.selected = trace;
 
-    this._emitter.emit('selectionChanged', selected, sender, args);
+    this._emitter.emit('selectionChanged', trace, sender, args);
   }
 
   onTraceSelectionChanged(cb) {

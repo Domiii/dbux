@@ -93,15 +93,13 @@ function instrumentArgs(callPath, state, beforeCallTraceId) {
   replacements.forEach(r => r());
 }
 
-export function traceCallExpression(callPath, state, beforeCallTraceId) {
-  const originalCallPath = _traceWrapExpression('traceExpr', TraceType.CallExpressionResult, callPath, state, {
+export function traceCallExpression(callPath, state, resultType, beforeCallTraceId) {
+  const originalCallPath = _traceWrapExpression('traceExpr', resultType, callPath, state, {
     resultCallId: beforeCallTraceId
   });
 
   instrumentArgs(originalCallPath, state, beforeCallTraceId);
 
-  // NOTE: trace "before" an expression is not right before it actually executes the call.
-  //    The last code ran before a function is executed is the evaluation of the last argument.
   //   const newNode = buildTraceExprBeforeAndAfter(expressionPath, state);
   //   expressionPath.replaceWith(newNode);
   //   state.onCopy(expressionPath, expressionPath.get('expressions.1.arguments.1'), 'trace');
@@ -135,9 +133,9 @@ function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg,
 }
 
 export const traceBeforeExpression = function traceBeforeExpression(
-  templ, expressionPath, state, traceType, tracePath) {
+  templ, traceType, expressionPath, state, tracePath) {
   const { ids: { dbux } } = state;
-  const traceId = state.traces.addTrace(tracePath || expressionPath, traceType || TraceType.BeforeExpression);
+  const traceId = state.traces.addTrace(tracePath || expressionPath, traceType || TraceType.BeforeExpression, null);
 
   replaceWithTemplate(templ, expressionPath, {
     dbux,

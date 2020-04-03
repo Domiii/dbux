@@ -5,9 +5,15 @@ export default class Trace extends HasValue {
   traceId: number;
   staticTraceId: number;
   applicationId: number;
-  runId: Number;
+  runId: number;
   contextId: number;
-  loopId: Number;
+
+  loopId: number;
+
+  /**
+   * This is currently only set for `Pop` traces (to enable error tracking).
+   */
+  previousTrace: number;
 
   /**
    * NOTE: this is the dynamic type only.

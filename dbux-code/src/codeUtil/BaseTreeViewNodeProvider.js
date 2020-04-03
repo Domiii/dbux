@@ -76,8 +76,11 @@ export default class BaseTreeViewNodeProvider {
     this.idsCollapsibleState.set(node.id, node.collapsibleState);
   }
 
+  /**
+   * @virtual
+   */
   handleRefresh() {
-    // does nothing by default
+    // can be overridden by children
   }
 
   handleClick = (node) => {
