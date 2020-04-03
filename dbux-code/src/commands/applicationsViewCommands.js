@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { registerCommand } from './commandUtil';
-import { showTextDocument } from '../codeNav';
+import { showTextDocument } from '../codeUtil/codeNav';
 
 const { log, debug, warn, error: logError } = newLogger('Commands');
 

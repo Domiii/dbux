@@ -337,8 +337,8 @@ function wrapCallExpression(path, state, callResultType, cfg) {
   path = traceBeforeExpression(TraceType.BeforeCallExpression, path, state, null);
 
   // trace CallResult
-  const beforeCallTraceId = getPathTraceId(path);
-  traceCallExpression(path, state, callResultType, beforeCallTraceId);
+  path.setData('callResultType', callResultType);
+  return path;
 }
 
 const enterInstrumentors = {
@@ -439,45 +439,29 @@ const enterInstrumentors = {
 // function wrapExpressionExit(path, state, traceType) {
 //   if (isCallPath(path)) {
 //     return exitCallExpression(path, state, traceType);
-//   }
-
-  
+//   }  
 // }
 
-// function exitCallExpression(path, state, callResultType) {
-//   // CallExpression
-//   // instrument args after everything else has already been done
-//   // const calleePath = path.get('callee');
-//   // const beforeCallTraceId = getPathTraceId(calleePath);
-//   // traceCallExpression(path, state, beforeCallTraceId);
-//   const beforeCallTraceId = getPathTraceId(path);
-//   traceCallExpression(path, state, callResultType, beforeCallTraceId);
-// }
+function exitCallExpression(path, state) {
+  // CallExpression
+  // instrument args after everything else has already been done
+  // const calleePath = path.get('callee');
+  // const beforeCallTraceId = getPathTraceId(calleePath);
+  // traceCallExpression(path, state, beforeCallTraceId);
+  const beforeCallTraceId = getPathTraceId(path);
+  const callResultType = path.getData('callResultType') || TraceType.CallExpressionResult;
+  traceCallExpression(path, state, callResultType, beforeCallTraceId);
+}
 
-// /**
-//  * NOTE: we have these specifically for expressions that
-//  * potentially can be `CallExpression`.
-//  */
-// const exitInstrumentors = {
-//   CallExpression(path, state) {
-//     exitCallExpression(path, state, TraceType.CallExpressionResult);
-//   },
-
-//   ReturnArgument(path, state, cfg) {
-//     if (path.node) {
-//       // trace `arg` in `return arg;`
-//       return wrapExpression(TraceType.ReturnArgument, path, state, cfg);
-//     }
-//     else {
-//       // insert trace before `return;` statement
-//       return traceBeforeExpression(TraceType.ReturnNoArgument, path.parentPath, state, cfg);
-//     }
-//   },
-
-//   ThrowArgument(path, state, cfg) {
-//     return wrapExpression(TraceType.ThrowArgument, path, state, cfg);
-//   }
-// };
+/**
+ * NOTE: we have these specifically for expressions that
+ * potentially can be `CallExpression`.
+ */
+const exitInstrumentors = {
+  CallExpression(path, state) {
+    exitCallExpression(path, state);
+  }
+};
 
 // ###########################################################################
 // visitors
@@ -526,7 +510,6 @@ function visit(onTrace, instrumentors, path, state, cfg) {
       }
     }
   }
-
 }
 
 let _cfg;
@@ -543,9 +526,9 @@ export function buildAllTraceVisitors() {
         visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
       },
 
-      // exit(path, state) {
-      //   visit(state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
-      // }
+      exit(path, state) {
+        visit(state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
+      }
     };
   }
   return visitors;
