@@ -151,7 +151,7 @@ export class StaticTraceTDNode extends BaseTreeViewNode {
   }
 
   init() {
-    this.contextValue = 'dbuxTraceDetailsView.staticTraceTDNodeRoot';
+    this.contextValue = 'staticTraceTDNodeRoot';
   }
 
   buildChildren() {

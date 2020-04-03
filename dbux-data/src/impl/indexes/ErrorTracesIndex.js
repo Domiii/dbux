@@ -3,12 +3,15 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
-export default class TracesByRunIdIndex extends CollectionIndex<Trace> {
+export default class ErrorTracesIndex extends CollectionIndex<Trace> {
   constructor() {
-    super('traces', 'byRunId');
+    super('traces', 'error');
   }
 
   makeKey(dp: DataProvider, trace: Trace) {
-    return trace.runId;
+    if (trace.error) {
+      return 1;
+    }
+    return false;
   }
 }

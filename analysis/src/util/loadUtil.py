@@ -13,7 +13,7 @@ def loadDbuxFile(fpath):
   # thisDir = os.path.dirname(os.path.realpath(__file__))
   # fpath = f'{thisDir}/../__data__/{fpath}'
   fpath = f'../__data__/{fpath}'
-  with open(fpath) as file:
+  with open(fpath, encoding='utf-8') as file:
     rawData = json.load(file)
   return rawData
 
