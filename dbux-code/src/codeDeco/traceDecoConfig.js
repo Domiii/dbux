@@ -183,7 +183,8 @@ const StylingsByName = {
   // },
   CalleeObject: false,
   ExpressionValue: false,
-  Callee: false
+  Callee: false,
+  EndOfContext: false
 };
 
 const decoNamesByType = {

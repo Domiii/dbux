@@ -1,5 +1,5 @@
-function f(x) {
-  console.log(x);
+function f(x, y) {
+  console.log(x, y);
 }
 
-f(1);
+f(1, 2);

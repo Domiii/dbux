@@ -95,7 +95,9 @@ class DataProvider:
 
 
     print('static traces (by staticContext)')
-    groups = staticTraces.drop('loc', axis=1).groupby('staticContextId')
+    # groups =  staticTraces.\
+    groups =  staticTraces.drop('loc', axis=1).\
+              groupby('staticContextId')
     for key, item in groups:
       group = groups.get_group(key)
       display(group)
