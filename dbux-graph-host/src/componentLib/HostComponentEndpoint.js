@@ -1,6 +1,7 @@
 import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
 import { newLogger } from 'dbux-common/src/log/logger';
 import HostComponentList from './HostComponentList';
+import HostComponentManager from './HostComponentManager';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentEndpoint');
 
@@ -39,23 +40,24 @@ class HostComponentEndpoint extends ComponentEndpoint {
   _doInit(parent, componentId, ipc, initialState) {
     super._doInit(parent, componentId, ipc, initialState);
 
-    // NOTE: this is called by `BaseComponentManager._initComponent`
-    // TODO: fix this up
+    // NOTE: this is called by `BaseComponentManager.createComponent`
 
-    this._initPromise = manager.remote['_internal.initComponent']({
-      
-    }).then(
-      () => {
-        // success
-        this.isInitialized = true;
+    this._initPromise = this.init().                    // 1. init host 
+      then(HostComponentManager.instance._initClient).  // 2. init client
+      then(
+        (resultFromClientInit) => {
+          // success                                    // 3. resolve `_initPromise`
+          this.isInitialized = true;
+          return resultFromClientInit;
+        },
+        (err) => {
+          // error :(
+          logError('failed to initialize client - error occured (probably on client)\n  ', err);
+        }
+      ).finally(() => {
+        // _initPromise has fulfilled its purpose
         this._initPromise = null;
-      },
-      (err) => {
-        // error
-        this._initPromise = null;
-        logError('failed to initialize client - error occured (probably on client)\n  ', err);
-      }
-    );
+      });
   }
 
   waitForInit() {

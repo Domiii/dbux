@@ -23,6 +23,33 @@ export function decorateClasses($el, cfg) {
   }
 }
 
+// ###########################################################################
+// building elements from strings
+// ###########################################################################
+
+/**
+ * @example `var td = htmlToElement('<td>foo</td>');`
+ * @param {String} HTML representing a single element
+ * @return {Element}
+ * @see https://stackoverflow.com/a/35385518
+ */
+export function compileHtmlElement(html) {
+  const template = document.createElement('template');
+  html = html.trim(); // leading/trailing whitespace causes unwanted text nodes
+  template.innerHTML = html;
+  return template.content.firstChild;
+}
+
+/**
+ * @see https://stackoverflow.com/a/35385518
+ */
+export function compileHtmlElements(html) {
+  const template = document.createElement('template');
+  html = html.trim(); // leading/trailing whitespace causes unwanted text nodes
+  template.innerHTML = html;
+  return template.content.childNodes;
+}
+
 // ##################################################################################################################
 // More rendering (HTML, CSS + color) utilities
 // ##################################################################################################################

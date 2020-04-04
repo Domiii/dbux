@@ -5,6 +5,9 @@ import Toolbar from './Toolbar';
 
 class GraphDocument extends HostComponentEndpoint {
   toolbar;
+  /**
+   * @type {GraphRoot}
+   */
   root;
 
   // ###########################################################################
@@ -19,18 +22,24 @@ class GraphDocument extends HostComponentEndpoint {
     // ########################################
 
     allApplications.selection.onApplicationsChanged((selectedApps) => {
-      this.reset();
+      this.resetGraph();
 
       for (const app of selectedApps) {
+        const { applicationId } = app;
         allApplications.selection.subscribe(
-          app.dataProvider.onData('executionContexts', this.addContexts)
+          app.dataProvider.onData('executionContexts', 
+            contexts => this.addContexts(applicationId, contexts)
+          )
         );
       }
     });
   }
 
   initRender() {
-    this.toolbar = this.children.create(Toolbar);
+    this.toolbar = this.children.createComponent(Toolbar);
+
+    // start rendering empty graph
+    this.resetGraph();
   }
 
 
@@ -38,9 +47,15 @@ class GraphDocument extends HostComponentEndpoint {
   // reset
   // ###########################################################################
 
-  reset = () => {
-    // TODO: add to children
-    this.root = GraphRoot.create({ applicationId });
+  resetGraph = () => {
+    const state = {
+      applications: allApplications.selection.getAll().map(app => ({
+        applicationId: app.applicationId,
+        entryPointPath: app.entryPointPath,
+        name: app.getFileName()
+      }))
+    };
+    this.root = this.children.createComponent(GraphRoot, state);
   }
 
 
@@ -48,9 +63,8 @@ class GraphDocument extends HostComponentEndpoint {
   // manage children
   // ###########################################################################
 
-  addContexts = (contexts) => {
-    // TODO: handle dynamic child list, and named children both consistently
-    this.root.addContexts(contexts);
+  addContexts = (applicationId, contexts) => {
+    this.root.addContexts(applicationId, contexts);
   }
 }
 

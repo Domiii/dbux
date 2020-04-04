@@ -1,7 +1,7 @@
 import GraphDocument from './components/GraphDocument';
 import HostComponentManager from './componentLib/HostComponentManager';
 
-let doc;
+let componentManager, doc;
 
 /**
  * Start the dbux-graph-host.
@@ -10,6 +10,8 @@ let doc;
 export function start(ipcAdapter) {
   // TODO: should this also be given the controls to start the client?
 
-  HostComponentManager.create(ipcAdapter);
+  componentManager = new HostComponentManager();
+  componentManager.start(ipcAdapter);
+  
   doc = HostComponentManager.instance.addComponent(GraphDocument);
 }

@@ -14,6 +14,8 @@ const buildMode = 'development';
 const dependencyPaths = ["dbux-common", "dbux-graph-common", "dbux-graph-client"];
 
 const resolve = makeResolve(MonoRoot, dependencyPaths);
+resolve.alias['@'] = path.join(projectRoot, 'src');
+
 const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
 const rules = [
   {

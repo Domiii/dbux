@@ -27,19 +27,22 @@ class BaseComponentManager extends ComponentEndpoint {
     _instance = this;
   }
 
-  start(ipcAdapter) {
-    this.ipcAdapter = ipcAdapter;
-    this._initComponent(this);
+  getComponent(componentId) {
+    return this._componentsById.get(componentId);
   }
 
-  addComponent(ComponentEndpointClass, initialState = {}) {
+  start(ipcAdapter) {
+    this.ipcAdapter = ipcAdapter;
+    this._registerComponent(1, null, this);
+  }
+
+  createComponent(componentId, parent, ComponentEndpointClass, initialState = {}) {
     const component = new ComponentEndpointClass();
-    this._initComponent(component, initialState);
+    this._registerComponent(componentId, parent, component, initialState);
     return component;
   }
 
-  _initComponent(component, initialState = {}) {
-    const componentId = ++this._lastComponentId;
+  _registerComponent(componentId, parent, component, initialState = {}) {
     const ipc = new Ipc(this._ipcAdapter, this);
     this._componentsById.set(componentId, component);
     component._doInit(parent, ipc, componentId, initialState);

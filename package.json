@@ -1,7 +1,9 @@
 {
 	"name": "dbux-root",
 	"private": true,
-	"workspaces": ["dbux-*"],
+	"workspaces": [
+		"dbux-*"
+	],
 	"devDependencies": {
 		"@babel/cli": "^7.8.3",
 		"@babel/core": "^7.8.3",
@@ -22,6 +24,7 @@
 		"cloc": "^2.5.1",
 		"eslint": "^6.8.0",
 		"eslint-config-airbnb-base": "^14.0.0",
+		"eslint-import-resolver-webpack": "^0.12.1",
 		"eslint-plugin-import": "^2.18.2",
 		"http-server": "^0.12.1",
 		"jest": "^25.1.0",

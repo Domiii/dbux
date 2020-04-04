@@ -1,10 +1,5 @@
-import GraphClient from './GraphClient';
+import ClientComponentManager from './componentLib/ClientComponentManager';
 
-export function start() {
-  const { ipcAdapter } = window;
-  componentManager.addComponent(GraphClient);
-
-  graph.startIpc(ipcAdapter);
-
-  window.graph = graph;
-}
+window.startDbuxGraphClient = function startDbuxGraphClient(ipcAdapter) {
+  new ClientComponentManager().start(ipcAdapter);
+};

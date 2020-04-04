@@ -145,12 +145,18 @@
 ## TODO (other)
 * design "comprehension questions" + tasks
 * dbux-graph web components
-   * TODO: handle `dynamic child list`, and `named children` both consistently
-   * client = view only
-   * distributed components, synchronizing by `id`
-   * props update triggers `render`
-   * `render` does NOT propagate to children (unlike React)
+   * write `dbux-graph-client/scripts/pre-build` component-registry script
+   * propagate ancestry updates
+   * `setState` logic and -> propagate state updates
+   * `ClientComponentEndpoint.initEl` might create two important elements:
+      * `el` -> added to parent
+      * `childrenContainerEl` -> used as DOM parent for children
+   * finish up `ContextNode`
+   * NOTES
+      * `render` does NOT propagate to children (unlike React)
    * batch `postMessage`
+   * add `jsx` support
+      * https://stackoverflow.com/questions/30430982/can-i-use-jsx-without-react-to-inline-html-in-script
 * fix: webpack build of `dbux-babel-plugin` has now externalized `dbux-common` which leads to errors when `require`-ing it
 * fix: `dbux-graph-client` webpack config is not `babel`ing `dbux-graph-common` (but `dbux-code` is doing it just fine)
 * [dbux-graph]
