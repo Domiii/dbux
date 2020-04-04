@@ -12,10 +12,26 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   init() {
     this.el = this.initEl();
     if (this.parent && this.el) {
-      // append as child to parent element
+      // append element to DOM
       this.parent.el.appendChild(this.el);
     }
   }
+
+  /**
+   * Functions that are called by Host internally.
+   */
+  _internal = {
+    addChild() {
+
+    },
+    remove() {
+      if (this.parent) {
+        // remove element from DOM
+        this.el.parentNode.removeChild(this.el);
+        this.el = null;
+      }
+    }
+  };
 }
 
 export default ClientComponentEndpoint;

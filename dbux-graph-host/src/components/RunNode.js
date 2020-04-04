@@ -1,10 +1,11 @@
-import HostComponentEndpoint from '../HostComponentEndpoint';
+import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import ContextNode from './ContextNode';
 
 class RunNode extends HostComponentEndpoint {
   init() {
-    const contexts = null; // TODO
-    this.setChildren(contexts.map(context => ContextNode.create({ context })));
+    const { runId } = this.state;
+    const contexts = null; // TODO: get contexts in selected application
+    this.setChildren(contexts.map(context => this.children.addComponent(ContextNode, { context })));
   }
 }
 

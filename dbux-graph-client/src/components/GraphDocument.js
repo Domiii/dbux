@@ -1,4 +1,4 @@
-import ClientComponentEndpoint from '../ClientComponentEndpoint';
+import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class GraphDocument extends ClientComponentEndpoint {
   initEl() {

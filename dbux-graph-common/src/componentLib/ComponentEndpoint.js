@@ -1,38 +1,29 @@
+import RemoteCommandProxy from './RemoteCommandProxy';
+import Ipc from './Ipc';
+
 class ComponentEndpoint {
+  /**
+   * Parent endpoint (is null if this is the root (or "Document") endpoint)
+   */
+  parent;
+
   componentId;
+  /**
+   * @type {Ipc}
+   */
+  ipc;
   remote;
   state;
 
-  /**
-   * The index in the parent's children array.
-   */
-  index;
-  parent;
-
   constructor() {
-    
   }
 
-  _doInit(ipc, componentId, initialState) {
+  _doInit(parent, componentId, ipc, initialState) {
+    this.parent = parent;
     this.componentId = componentId;
+    this.ipc = ipc;
     this.remote = new RemoteCommandProxy(ipc, componentId);
     this.state = initialState;
-
-    // TODO: set index + parent
-    this.index = ;
-    this.parent = ;
-  }
-
-  // ###########################################################################
-  // Manage children
-  // ###########################################################################
-
-  reset() {
-    this.setChildren([]);
-  }
-
-  setChildren(children) {
-    // TODO
   }
 
   // ###########################################################################
@@ -58,12 +49,11 @@ class ComponentEndpoint {
   }
 
   // ###########################################################################
-  // static
+  // internal base commands
   // ###########################################################################
 
-  static create(initialState) {
-    // TODO: register component instance and get everything we need from `componentManager`
-  }
+  _internalBase = {
+  };
 }
 
 export default ComponentEndpoint;

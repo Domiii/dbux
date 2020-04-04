@@ -1,6 +1,8 @@
+import get from 'lodash/get';
 import { newLogger } from 'dbux-common/src/log/logger';
+import MessageType from './MessageType';
 
-const { log, debug, warn, error: logError } = newLogger('graph-common/ipc');
+const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/ipc');
 
 class IpcCall {
   promise;
@@ -18,44 +20,120 @@ class IpcCall {
 export default class Ipc {
   ipcAdapter;
   lastCallId = 0;
-  calls = {};
+  calls = new Map();
 
-  constructor(ipcAdapter, commands) {
+  constructor(ipcAdapter, endpoint) {
     this.ipcAdapter = ipcAdapter;
-    this.commands = commands;
-    ipcAdapter.onMessage(this.handleMessage);
+    this.endpoint = endpoint;
+    ipcAdapter.onMessage(this._handleMessage);
   }
 
-  postMessage(msg) {
-    this.ipcAdapter.postMessage(msg);
-  }
+  // ###########################################################################
+  // Public methods
+  // ###########################################################################
 
   async sendMessage(commandName, componentId, args) {
-    const callId = ++this.lastCallId;
-
     const msg = {
-      dbuxCallId: callId,
-      dbuxComponentId: componentId,
-      dbuxRequest: commandName,
+      messageType: MessageType.Request,
+      componentId,
+      commandName,
       args
     };
 
-    this.postMessage(msg);
+    return this._sendMessageRaw(msg);
+  }
 
-    const call = this.calls[callId] = new IpcCall(callId);
+  // ###########################################################################
+  // Internal: sending + handling messages
+  // ###########################################################################
+
+  async _sendInit(msg) {
+    msg.messageType = MessageType.InitComponent;
+    return this._sendMessageRaw(msg);
+  }
+
+  /**
+   * Send out a request.
+   */
+  async _sendMessageRaw(msg) {
+    const callId = msg.callId = ++this.lastCallId;
+
+    this.ipcAdapter.postMessage(msg);
+
+    const call = new IpcCall(callId);
+    this.calls.set(callId, call);
     const result = await call.promise;
 
     return result;
   }
 
-  processReply(status, callId, result) {
-    const call = this.calls[callId];
+  /**
+   * Send back reply (after having received request).
+   */
+  _sendReply(status, callId, componentId, result) {
+    this._postMessage({
+      messageType: MessageType.Reply,
+      callId,
+      componentId,
+      result,
+      status
+    });
+  }
+
+  async _processRequest(message) {
+    const {
+      callId,
+      componentId,
+      commandName,
+      args
+    } = message;
+
+    try {
+      const func = get(this.endpoint, commandName);
+      if (!func) {
+        throw new Error('IPC Command does not exist on endpoint');
+      }
+      else {
+        const res = await func.apply(this.endpoint, args);
+        this._sendReply('resolve', callId, componentId, res);
+      }
+    }
+    catch (err) {
+      this._sendReject(message, err);
+    }
+  }
+
+  _sendReject(message, err) {
+    const {
+      callId,
+      componentId,
+      commandName,
+      args
+    } = message;
+    
+    const info = 'Failed to process request - ';
+    logError(info + commandName, args);
+    logError(err.stack);
+    this._sendReply('reject', callId, componentId, info + err.message);
+  }
+
+  /**
+   * Handle reply and notify original caller (after having received reply)
+   */
+  _processReply(message) {
+    const {
+      callId,
+      status,
+      result
+    } = message;
+
+    const call = this.calls.get(callId);
     if (!call) {
       logError('Received invalid callId - does not exist:', callId);
       return;
     }
 
-    this.calls[callId] = null;  // reset call
+    this.calls.set(callId, null);  // reset call
 
     if (status === 'resolve') {
       call.resolve(result);
@@ -65,51 +143,53 @@ export default class Ipc {
     }
   }
 
-  replyToCall(status, callId, componentId, result) {
-    this.postMessage({
-      dbuxCallId: callId,
-      dbuxComponentId: componentId,
-      result,
-      status
-    });
-  }
+  // ###########################################################################
+  // handleMessage
+  // ###########################################################################
 
-  handleMessage = async evt => {
+  _handleMessage = async evt => {
+    const message = evt.data;
     const {
-      dbuxCallId: callId,
-      dbuxComponentId: componentId,
-      dbuxRequest: commandName
-    } = evt.data;
+      messageType,
+      callId
+    } = message;
 
-    if (!callId) {
+    if (!callId || !messageType) {
       // sometimes other libraries, browser internals or extensions send messages that we do not want to handle
       return;
     }
 
-    if (!commandName) {
-      // received reply to our own request
-      const { status, result } = evt.data;
-      this.processReply(status, callId, result);
+    const handler = this._messageHandlers[messageType];
+    if (!handler) {
+      logError('Could not handle message. Unregistered messageType - ' + messageType);
     }
-    else {
+
+    handler.apply(this, message);
+  }
+
+  // ###########################################################################
+  // Message handlers
+  // ###########################################################################
+
+  _messageHandlers = {
+    // [MessageType.InitComponent](message) {
+    //   const {
+    //     callId
+    //   } = message;
+
+    //   BaseComponentManager.instance.initComponent();
+
+    //   th
+    // },
+
+    async [MessageType.Request](message) {
       // new request from remote
-      const {
-        args
-      } = evt.data;
-      try {
-        const func = this.commands[commandName];
-        if (!func) {
-          logError('IPC Command does not exist:', commandName);
-        }
-        else {
-          const res = await func(...args);
-          this.replyToCall('resolve', callId, componentId, res);
-        }
-      }
-      catch (err) {
-        logError('Failed to execute command:', commandName, args, err);
-        this.replyToCall('reject', callId, componentId, err.message);
-      }
+      this._processRequest(message);
+    },
+
+    [MessageType.Reply](message) {
+      // received reply to our own request
+      this._processReply(message);
     }
   }
 }

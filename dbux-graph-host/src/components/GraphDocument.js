@@ -1,5 +1,5 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
-import HostComponentEndpoint from '../HostComponentEndpoint';
+import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
 
@@ -30,8 +30,7 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   initRender() {
-    // TODO: add to children
-    this.toolbar = Toolbar.create();
+    this.toolbar = this.children.create(Toolbar);
   }
 
 
@@ -41,7 +40,7 @@ class GraphDocument extends HostComponentEndpoint {
 
   reset = () => {
     // TODO: add to children
-    this.root = GraphRoot.create();
+    this.root = GraphRoot.create({ applicationId });
   }
 
 

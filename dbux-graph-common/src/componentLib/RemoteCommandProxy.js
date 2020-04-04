@@ -1,4 +1,4 @@
-import Ipc from './componentLib/Ipc';
+import Ipc from './Ipc';
 
 /**
  * @param {Ipc} ipc

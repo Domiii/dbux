@@ -1,4 +1,4 @@
-import ClientComponentEndpoint from '../ClientComponentEndpoint';
+import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import ContextNode from './ContextNode';
 import { setElementStyle } from '../util/domUtil';
 

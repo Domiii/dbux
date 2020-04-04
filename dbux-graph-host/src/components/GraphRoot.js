@@ -1,4 +1,4 @@
-import HostComponentEndpoint from '../HostComponentEndpoint';
+import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
 
 class GraphRoot extends HostComponentEndpoint {
@@ -7,7 +7,7 @@ class GraphRoot extends HostComponentEndpoint {
     runIds.sort((a, b) => b - a);     // sort runIds in ascending order
 
     // create Run nodes
-    this.addChildren(runIds.map(runId => RunNode.create({ runId })));
+    this.addChildren(runIds.map(runId => this.children.create(RunNode, { runId })));
   }
 }
 
