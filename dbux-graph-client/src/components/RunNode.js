@@ -1,18 +1,22 @@
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import ContextNode from './ContextNode';
-import { setElementStyle } from '../util/domUtil';
+import { compileHtmlElement } from '../util/domUtil';
 
 class RunNode extends ClientComponentEndpoint {
-  initEl() {
+  createEl() {
+    const el = compileHtmlElement(/*html*/`
+      <div class="red">
+        <h3 data-el="title"></h3>
+        <div data-mount="ContextNode"></div>
+      </div>
+    `);
+
+    return el;
+  }
+
+  update() {
     const { runId } = this.state;
-
-    const node = document.createElement('div');
-    node.textContent = `Run #${runId}`;
-    setElementStyle(node, {
-      backgroundColor: 'red'
-    });
-
-    return node;
+    
+    this.els.title.textContent = `Run #${runId}`;
   }
 }
 

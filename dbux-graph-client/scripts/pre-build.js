@@ -3,3 +3,8 @@
  */
 
 // TODO!
+
+/**
+ * -> gather all components in `src/components`
+ * -> set name equal to relative path (not just name alone)
+ */

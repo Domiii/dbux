@@ -50,6 +50,18 @@ export function compileHtmlElements(html) {
   return template.content.childNodes;
 }
 
+export function collectElementsByDataAttr(attrName) {
+  const all = this.el.querySelectorAll(`[data-${attrName}]`);
+  const els = {};
+  all.forEach(el => {
+    const name = el.getAttribute('data-mount');
+    if (name) {
+      els[name] = el;
+    }
+  });
+  return els;
+}
+
 // ##################################################################################################################
 // More rendering (HTML, CSS + color) utilities
 // ##################################################################################################################

@@ -1,9 +1,12 @@
 import BaseComponentManager from 'dbux-graph-common/src/componentLib/BaseComponentManager';
+import { newLogger } from 'dbux-common/src/log/logger';
+
+const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
 
 class HostComponentManager extends BaseComponentManager {
-  createComponent(parent, ComponentEndpointClass, initialState = {}) {
+  _createComponent(parent, ComponentEndpointClass, initialState = {}) {
     const componentId = ++this._lastComponentId;
-    return super.createComponent(componentId, parent, ComponentEndpointClass, initialState);
+    return super._createComponent(componentId, parent, ComponentEndpointClass, initialState);
   }
 
   _initClient(component) {
@@ -21,7 +24,20 @@ class HostComponentManager extends BaseComponentManager {
       componentName,
       state
     ];
-    return this.remote['_internal.createComponent'](args);
+    return this._remoteInternal.createComponent(args);
+  }
+
+  _updateClient(component) {
+    const {
+      componentId,
+      state
+    } = component;
+
+    const args = [
+      componentId,
+      state
+    ];
+    return this._remoteInternal.updateComponent(args);
   }
 }
 

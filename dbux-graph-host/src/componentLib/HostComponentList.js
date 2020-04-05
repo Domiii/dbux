@@ -17,43 +17,31 @@ class HostComponentList {
   }
 
   // ###########################################################################
-  // Manage the list
+  // public methods
   // ###########################################################################
 
-  reset() {
-    this.setComponents([]);
-  }
-
   createComponent(parent, ComponentClass, initialState) {
-    const comp = HostComponentManager.instance.createComponent(parent, ComponentClass, initialState);
-    this.addComponent(comp);
+    const comp = this.parent.componentManager._createComponent(parent, ComponentClass, initialState);
+    this.components.push(comp);
     return comp;
   }
 
-  addComponent(...components) {
-    return this.addComponents(components);
+  clear() {
+    for (let i = this.components.length - 1; i >= 0; --i) {
+      this.components[i].dispose();
+    }
   }
 
-  addComponents(components) {
-    this.components.push(...components);
-
-    // TODO: send to remote
-  }
-
-  setComponents(components) {
-    this.components = [...components];
-
-    // TODO: send to remote
-  }
+  // ###########################################################################
+  // private methods
+  // ###########################################################################
 
   /**
    * NOTE: Do not call `_removeComponent` directly.
-   * Call `unwantedComponent.remove()` instead.
+   * Call `unwantedComponent.dispose()` instead.
    */
   _removeComponent(component) {
     pull(this.components, component);
-    
-    // TODO: send to remote
   }
 }
 

@@ -1,5 +1,8 @@
 import Ipc from './Ipc';
 import ComponentEndpoint from './ComponentEndpoint';
+import { newLogger } from 'dbux-common/src/log/logger';
+
+const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/BaseComponentManager');
 
 let _instance;
 class BaseComponentManager extends ComponentEndpoint {
@@ -22,7 +25,8 @@ class BaseComponentManager extends ComponentEndpoint {
     super();
     
     if (_instance) {
-      throw new Error('Tried to create more than one ComponentManager, but should be used as singleton.');
+      log();
+      // throw new Error('Tried to create more than one ComponentManager, but should be used as singleton.');
     }
     _instance = this;
   }
@@ -36,8 +40,8 @@ class BaseComponentManager extends ComponentEndpoint {
     this._registerComponent(1, null, this);
   }
 
-  createComponent(componentId, parent, ComponentEndpointClass, initialState = {}) {
-    const component = new ComponentEndpointClass();
+  _createComponent(componentId, parent, ComponentEndpointClass, initialState = {}) {
+    const component = new ComponentEndpointClass(this);
     this._registerComponent(componentId, parent, component, initialState);
     return component;
   }
@@ -45,7 +49,7 @@ class BaseComponentManager extends ComponentEndpoint {
   _registerComponent(componentId, parent, component, initialState = {}) {
     const ipc = new Ipc(this._ipcAdapter, this);
     this._componentsById.set(componentId, component);
-    component._doInit(parent, ipc, componentId, initialState);
+    component._doInit(this, parent, ipc, componentId, initialState);
   }
 }
 

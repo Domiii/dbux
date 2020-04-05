@@ -1,4 +1,4 @@
-import GraphHostBase from 'dbux-graph-host/src/GraphHost';
+import { startGraphHost } from 'dbux-graph-host';
 import {
   window,
   Uri,
@@ -6,11 +6,9 @@ import {
 } from 'vscode';
 
 import path from 'path';
-import { promises as fs } from 'fs';
 
 
 const defaultColumn = ViewColumn.Two;
-
 
 function buildHostIpcAdapterVsCode() {
   return {
@@ -24,22 +22,22 @@ function buildHostIpcAdapterVsCode() {
 }
 
 
-export default class GraphHost extends GraphHostBase {
+export default class GraphHost {
+  extensionContext;
+
   panel;
+  hostComponentManager;
   resourcePath;
 
-  constructor(context, application) {
-    super();
-
-    this.context = context;
-    this.application = application;
+  constructor(extensionContext) {
+    this.extensionContext = extensionContext;
   }
 
   /**
    * @see https://code.visualstudio.com/api/extension-guides/webview
    */
   async show() {
-    resourcePath = path.join(context.extensionPath, 'resources');
+    this.resourcePath = path.join(this.extensionContext.extensionPath, 'resources');
 
     // reveal or create
     if (!this.reveal()) {
@@ -48,14 +46,14 @@ export default class GraphHost extends GraphHostBase {
 
     // set HTML content
     // TODO: use remote URL when developing locally to enable hot reload
-    const scriptPath = path.join(resourcePath, 'dist', 'graph.js');
-    panel.webview.html = await getWebviewRootHtml(scriptPath);
+    const scriptPath = path.join(this.resourcePath, 'dist', 'graph.js');
+    this.panel.webview.html = await getWebviewRootHtml(scriptPath);
   }
 
   reveal() {
-    if (panel) {
+    if (this.panel) {
       // reveal
-      panel.reveal(defaultColumn);
+      this.panel.reveal(defaultColumn);
       return true;
     }
     return false;
@@ -67,31 +65,31 @@ export default class GraphHost extends GraphHostBase {
 
   _start() {
     const ipcAdapter = buildHostIpcAdapterVsCode(this.panel.webview);
-    this.startIpc(ipcAdapter);
+    this.hostComponentManager = startGraphHost(ipcAdapter);
   }
 
   _createWebview() {
     const webviewId = 'dbux-graph';
     const title = 'Graph View';
 
-    panel = window.createWebviewPanel(
+    this.panel = window.createWebviewPanel(
       webviewId,
       title,
       defaultColumn, // Editor column to show the new webview panel in.
       {
         enableScripts: true,
-        localResourceRoots: [Uri.file(resourcePath)]
+        localResourceRoots: [Uri.file(this.resourcePath)]
       }
     );
 
     // cleanup
-    panel.onDidDispose(
+    this.panel.onDidDispose(
       () => {
         // do further cleanup operations
-        panel = null;
+        this.panel = null;
       },
       null,
-      context.subscriptions
+      this.extensionContext.subscriptions
     );
 
     this._start();

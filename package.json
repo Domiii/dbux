@@ -26,6 +26,7 @@
 		"eslint-config-airbnb-base": "^14.0.0",
 		"eslint-import-resolver-webpack": "^0.12.1",
 		"eslint-plugin-import": "^2.18.2",
+		"file-loader": "^6.0.0",
 		"http-server": "^0.12.1",
 		"jest": "^25.1.0",
 		"jest-expect-message": "^1.0.2",

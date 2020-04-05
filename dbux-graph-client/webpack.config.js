@@ -18,6 +18,7 @@ resolve.alias['@'] = path.join(projectRoot, 'src');
 
 const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
 const rules = [
+  // JavaScript
   {
     loader: 'babel-loader',
     // test(resource) { /* see: https://stackoverflow.com/a/46769010 */ console.debug('[TEST]\n  ', resource); return true; },
@@ -32,6 +33,38 @@ const rules = [
         // '../dbux-graph-common'
       ]
     }
+  },
+
+  // CSS
+  {
+    test: /\.s?[ac]ss$/i,
+    include: [
+      path.join(projectRoot, 'src'),
+      path.join(projectRoot, 'node_modules')
+    ],
+    use: [
+      // Creates `style` nodes from JS strings
+      'style-loader',
+      // Translates CSS into CommonJS
+      'css-loader',
+      // Compiles Sass to CSS
+      'sass-loader'
+    ]
+  },
+
+  // fonts (see https://chriscourses.com/blog/loading-fonts-webpack)
+  {
+    test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+    use: [
+      {
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+          // NOTE: this is relative to webpack's `publicPath`
+          outputPath: 'fonts/'
+        }
+      }
+    ]
   }
 ];
 // console.log(rules[0].options.babelrcRoots);

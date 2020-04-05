@@ -12,7 +12,7 @@ import { showGraphView } from '../graphView';
 const { log, debug, warn, error: logError } = newFileLogger(__filename);
 
 
-export function initUserCommands(context) {
+export function initUserCommands(extensionContext) {
   // ###########################################################################
   // exportApplicationData
   // ###########################################################################
@@ -44,7 +44,7 @@ export function initUserCommands(context) {
     }
   }
 
-  registerCommand(context, 'dbux.exportApplicationData', async () => {
+  registerCommand(extensionContext, 'dbux.exportApplicationData', async () => {
     const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
     await doExport(application);
   });
@@ -54,9 +54,7 @@ export function initUserCommands(context) {
   // show graph view
   // ###########################################################################
 
-  registerCommand(context, 'dbux.showGraphView', async () => {
-    // const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
-    // await showGraphView(context, application);
-    await showGraphView(context);
+  registerCommand(extensionContext, 'dbux.showGraphView', async () => {
+    await showGraphView(extensionContext);
   });
 }

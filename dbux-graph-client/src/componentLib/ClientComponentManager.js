@@ -12,7 +12,7 @@ class ClientComponentManager extends BaseComponentManager {
     this.componentRegistry = componentRegistry;
 
     for (const [name, Comp] of Object.entries(componentRegistry)) {
-      Comp.componentName = name;
+      Comp._componentName = name;
     }
   }
 
@@ -20,17 +20,17 @@ class ClientComponentManager extends BaseComponentManager {
     return this.componentRegistry[name];
   }
 
-  _internal = {
+  _publicInternal = {
     async createComponent(parentId, componentId, componentName, initialState) {
       const parent = parentId && this.getComponent(parentId) || null;
       const ComponentClass = this.getComponentClassByName(componentName);
-      const component = this.createComponent(parent, componentId, ComponentClass, initialState);
+      const component = this._createComponent(parent, componentId, ComponentClass, initialState);
 
       // init
       const result = await component.init();
 
       // update
-      await component.update(initialState);
+      await component.update();
 
       return result;
     }

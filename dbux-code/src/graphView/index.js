@@ -1,13 +1,13 @@
-import GraphHost from './GraphHost';
+import GraphViewHost from './GraphViewHost';
 
 let graphHost;
 
 /**
  * 
  */
-export async function showGraphView(context, application) {
+export async function showGraphView(context) {
   if (!graphHost) {
-    graphHost = new GraphHost(context, application);
+    graphHost = new GraphViewHost(context);
   }
   graphHost.show();
 }

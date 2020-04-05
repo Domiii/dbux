@@ -1,27 +1,26 @@
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
+import { compileHtmlElement } from '@/util/domUtil';
 
 class GraphRoot extends ClientComponentEndpoint {
-  titleEl;
+  createEl() {
+    const el = compileHtmlElement(/*html*/`
+      <div class="red">
+        <h2 data-el="title"></h2>
+        <div data-mount="RunNode"></div>
+      </div>
+    `);
 
-  initEl() {
-    // create elements
-    const el = document.createElement('div');
-    this.titleEl = document.createElement('h3');
-
-    // append children
-    el.appendChild(this.titleEl);
-
-    // return `el`
     return el;
   }
 
   update() {
     const { applications } = this.state;
+
     if (applications) {
-      this.titleEl.textContent = `${applications.map(app => app.name).join(', ')}`;
+      this.els.title.textContent = `${applications.map(app => app.name).join(', ')}`;
     }
     else {
-      this.titleEl.textContent = '(no applications selected)';
+      this.els.title.textContent = '(no applications selected)';
     }
   }
 }
