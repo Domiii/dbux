@@ -1,18 +1,10 @@
+import { newLogger } from 'dbux-common/src/log/logger';
 import Ipc from './Ipc';
 import ComponentEndpoint from './ComponentEndpoint';
-import { newLogger } from 'dbux-common/src/log/logger';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/BaseComponentManager');
 
-let _instance;
 class BaseComponentManager extends ComponentEndpoint {
-  /**
-   * @type {BaseComponentManager}
-   */
-  static get instance() {
-    return _instance;
-  }
-
   _lastComponentId = 0;
   _ipcAdapter;
   _componentsById = new Map();
@@ -23,12 +15,6 @@ class BaseComponentManager extends ComponentEndpoint {
 
   constructor() {
     super();
-    
-    if (_instance) {
-      log();
-      // throw new Error('Tried to create more than one ComponentManager, but should be used as singleton.');
-    }
-    _instance = this;
   }
 
   getComponent(componentId) {

@@ -10,17 +10,6 @@ import path from 'path';
 
 const defaultColumn = ViewColumn.Two;
 
-function buildHostIpcAdapterVsCode() {
-  return {
-    init(webview) {
-      this.webview = webview;
-    },
-    postMessage(msg) {
-      this.webview.postMessage(msg);
-    }
-  };
-}
-
 
 export default class GraphHost {
   extensionContext;
@@ -63,8 +52,25 @@ export default class GraphHost {
   // initialization
   // ###########################################################################
 
+
+  buildHostIpcAdapterVsCode(webview) {
+    return {
+      postMessage(msg) {
+        webview.postMessage(msg);
+      },
+
+      onMessage(cb) {
+        webview.onDidReceiveMessage(
+          cb,
+          null,
+          this.extensionContext.subscriptions
+        );
+      }
+    };
+  }
+
   _start() {
-    const ipcAdapter = buildHostIpcAdapterVsCode(this.panel.webview);
+    const ipcAdapter = this._buildHostIpcAdapterVsCode(this.panel.webview);
     this.hostComponentManager = startGraphHost(ipcAdapter);
   }
 

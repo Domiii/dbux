@@ -177,7 +177,7 @@ export default class Ipc {
     //     callId
     //   } = message;
 
-    //   BaseComponentManager.instance.initComponent();
+    //   this.componentManager.initComponent();
 
     //   th
     // },

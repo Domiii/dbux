@@ -320,7 +320,9 @@
 		"moment": "^2.24.0",
 		"socket.io": "^2.3.0",
 		"dbux-common": "*",
-		"dbux-data": "*"
+		"dbux-data": "*",
+		"dbux-graph-common": "*",
+		"dbux-graph-host": "*"
 	},
 	"peerDependencies": {
 		"lodash": "*"
