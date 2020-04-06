@@ -1,19 +1,15 @@
 import RemoteCommandProxy from './RemoteCommandProxy';
-import Ipc from './Ipc';
 
-class ComponentEndpoint {
+class 
+ComponentEndpoint {
   componentManager;
-  
+
   /**
    * Parent endpoint (is null if this is the root (or "Document") endpoint)
    */
   parent;
 
   componentId;
-  /**
-   * @type {Ipc}
-   */
-  ipc;
   remote;
   state;
 
@@ -23,13 +19,13 @@ class ComponentEndpoint {
     this._componentName = this.constructor._componentName || this.constructor.name;
   }
 
-  _doInit(componentManager, parent, componentId, ipc, initialState) {
+  _doInit(componentManager, parent, componentId, initialState) {
     this.componentManager = componentManager;
     this.parent = parent;
     this.componentId = componentId;
-    this.ipc = ipc;
-    this.remote = new RemoteCommandProxy(ipc, componentId, 'public');
-    this._remoteInternal = new RemoteCommandProxy(ipc, componentId, '_publicInternal');
+
+    this.remote = new RemoteCommandProxy(componentManager.ipc, componentId, 'public');
+    this._remoteInternal = new RemoteCommandProxy(componentManager.ipc, componentId, '_publicInternal');
     this.state = initialState;
   }
 
@@ -70,8 +66,12 @@ class ComponentEndpoint {
   // }
 
   // ###########################################################################
-  // internal base commands
+  // internal stuff
   // ###########################################################################
+
+  handlePing() {
+    console.warn(this.debugTag, 'was pinged by the remote.');
+  }
 
   _publicInternal = {
   };

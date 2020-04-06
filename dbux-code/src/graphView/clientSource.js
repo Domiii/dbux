@@ -23,31 +23,14 @@ async function makeScript(scriptPath) {
 }
 
 
-/**
- * 
- * @see https://github.com/microsoft/vscode-extension-samples/tree/master/webview-sample/media/main.js#L4
- */
-function buildGuestAdapterVsCode() {
-  return {
-    init(handleMessageEvent) {
-      this.vscode = window.acquireVsCodeApi();
-
-      window.addEventListener('message', handleMessageEvent);
-    },
-    postMessage(msg) {
-      this.vscode.postMessage(msg);
-    }
-  };
-}
-
-async function getWebviewRootHtml(...scriptPaths) {
+export async function getWebviewClientHtml(...scriptPaths) {
   const scripts = (
     await Promise.all(
       scriptPaths.map(fpath => makeScript(fpath))
     )
   ).join('\n  ');
 
-  return `<!DOCTYPE html>
+  return /*html*/`<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -55,13 +38,39 @@ async function getWebviewRootHtml(...scriptPaths) {
     <title>Test</title>
 </head>
 <body>
-  loading "graph.js"...
+  <div id="root"></div>
+  <button onclick="gogo();">start!</button>
   ${scripts}
   <script>
-    postMessage({
-      func: 'loadData',
-      args: ['data/oop1_data.json']
-    });
+    /**
+      * 
+      * @see https://github.com/microsoft/vscode-extension-samples/tree/master/webview-sample/media/main.js#L4
+      */
+    const vscode = acquireVsCodeApi();
+    let messageHandler;
+
+    function gogo() {
+      const ipcAdapter = {
+        postMessage(msg) {
+          vscode.postMessage(msg);
+        },
+        onMessage(cb) {
+          if (messageHandler) {
+            // remove previous handler -> only allow one at a time
+            window.removeEventListener('message', messageHandler);
+          }
+          
+          window.addEventListener('message', messageHandler = (evt) => {
+            const message = evt.data;
+            cb(message);
+          });
+        }
+      };
+      
+      startDbuxGraphClient(ipcAdapter);
+    }
+
+    //gogo();
   </script>
 </body>
 </html>`;

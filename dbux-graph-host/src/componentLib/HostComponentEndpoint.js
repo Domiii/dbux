@@ -2,7 +2,6 @@ import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpo
 import sleep from 'dbux-common/src/util/sleep';
 import { newLogger } from 'dbux-common/src/log/logger';
 import HostComponentList from './HostComponentList';
-import HostComponentManager from './HostComponentManager';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentEndpoint');
 
@@ -75,8 +74,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
   // _doInit
   // ###########################################################################
 
-  _doInit(componentManager, parent, componentId, ipc, initialState) {
-    super._doInit(componentManager, parent, componentId, ipc, initialState);
+  _doInit(componentManager, parent, componentId, initialState) {
+    super._doInit(componentManager, parent, componentId, initialState);
 
     // NOTE: this is called by `BaseComponentManager._createComponent`
 
@@ -85,7 +84,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     ).   
       then(this.update.bind(this)).                     // 2. host: update
       then(() => (
-        this.componentManager._initClient(this)         // 3. client: init -> update
+        parent && this.componentManager._initClient(this)// 3. client: init -> update
       )).
       then(
         (resultFromClientInit) => {
@@ -109,6 +108,9 @@ class HostComponentEndpoint extends ComponentEndpoint {
   // ###########################################################################
 
   async _startUpdate() {
+    // make sure, things are initialized
+    await this.waitForInit();
+
     // NOTE: this is called by `setState`
     if (this._waitingForUpdate) {
       // already waiting for update -> will send out changes in a bit anyway

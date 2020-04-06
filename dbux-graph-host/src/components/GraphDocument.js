@@ -37,6 +37,7 @@ class GraphDocument extends HostComponentEndpoint {
 
   initChildren() {
     this.toolbar = this.children.createComponent(Toolbar);
+    this.root = this.children.createComponent(GraphRoot);
 
     // start rendering empty graph
     this.resetGraph();
@@ -48,19 +49,15 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   resetGraph = () => {
-    // dispose previous root (if there was any)
-    this.root?.dispose();
-    this.root = null;
-
     // initialize new root
-    const state = {
+    const update = {
       applications: allApplications.selection.getAll().map(app => ({
         applicationId: app.applicationId,
         entryPointPath: app.entryPointPath,
         name: app.getFileName()
       }))
     };
-    this.root = this.children.createComponent(GraphRoot, state);
+    this.root.setState(update);
   }
 
 

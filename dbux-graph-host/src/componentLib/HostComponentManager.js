@@ -1,15 +1,23 @@
 import BaseComponentManager from 'dbux-graph-common/src/componentLib/BaseComponentManager';
 import { newLogger } from 'dbux-common/src/log/logger';
+import HostComponentEndpoint from './HostComponentEndpoint';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
 
+class AppComponent extends HostComponentEndpoint {
+}
+
 class HostComponentManager extends BaseComponentManager {
-  _createComponent(parent, ComponentEndpointClass, initialState = {}) {
-    const componentId = ++this._lastComponentId;
-    return super._createComponent(componentId, parent, ComponentEndpointClass, initialState);
+  start() {
+    super.start(AppComponent);
   }
 
-  _initClient(component) {
+  _createComponent(parent, ComponentEndpointClass, initialState = {}) {
+    const componentId = ++this._lastComponentId;
+    return this._registerComponent(componentId, parent, ComponentEndpointClass, initialState);
+  }
+
+  async _initClient(component) {
     const {
       componentId,
       componentName,
@@ -18,13 +26,15 @@ class HostComponentManager extends BaseComponentManager {
     } = component;
     const parentId = parent?.componentId || 0;
 
-    const args = [
+    // send only to client after parent has finished init'ing
+    await parent?.waitForInit();
+
+    return this.app._remoteInternal.createComponent(
       parentId,
       componentId,
       componentName,
       state
-    ];
-    return this._remoteInternal.createComponent(args);
+    );
   }
 
   _updateClient(component) {
@@ -33,11 +43,10 @@ class HostComponentManager extends BaseComponentManager {
       state
     } = component;
 
-    const args = [
+    return this.app._remoteInternal.updateComponent(
       componentId,
       state
-    ];
-    return this._remoteInternal.updateComponent(args);
+    );
   }
 }
 

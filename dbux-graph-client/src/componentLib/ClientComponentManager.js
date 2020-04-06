@@ -1,9 +1,39 @@
 import BaseComponentManager from 'dbux-graph-common/src/componentLib/BaseComponentManager';
 import componentRegistry from '@/_clientRegistry';
+import ClientComponentEndpoint from './ClientComponentEndpoint';
+
+// ###########################################################################
+// ClientApp
+// ###########################################################################
+
+class AppComponent extends ClientComponentEndpoint {
+  _publicInternal = {
+    async createComponent(parentId, componentId, componentName, initialState) {
+      const parent = this.componentManager.getComponent(parentId);
+      
+      // NOTE: parent should never be null
+
+      const ComponentClass = this.componentManager.getComponentClassByName(componentName);
+      const component = this.componentManager._registerComponent(componentId, parent, ComponentClass, initialState);
+
+      // init
+      const result = await component.init();
+
+      // update
+      await component.update();
+
+      return result;
+    }
+  };
+}
+
+// ###########################################################################
+// ClientComponentManager
+// ###########################################################################
 
 class ClientComponentManager extends BaseComponentManager {
-  constructor() {
-    super();
+  constructor(ipcAdapter) {
+    super(ipcAdapter);
 
     this.initComponentRegistry();
   }
@@ -20,21 +50,9 @@ class ClientComponentManager extends BaseComponentManager {
     return this.componentRegistry[name];
   }
 
-  _publicInternal = {
-    async createComponent(parentId, componentId, componentName, initialState) {
-      const parent = parentId && this.getComponent(parentId) || null;
-      const ComponentClass = this.getComponentClassByName(componentName);
-      const component = this._createComponent(parent, componentId, ComponentClass, initialState);
-
-      // init
-      const result = await component.init();
-
-      // update
-      await component.update();
-
-      return result;
-    }
-  };
+  start() {
+    super.start(AppComponent);
+  }
 }
 
 export default ClientComponentManager;

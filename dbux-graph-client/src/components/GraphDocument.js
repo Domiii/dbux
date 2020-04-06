@@ -2,7 +2,7 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class GraphDocument extends ClientComponentEndpoint {
   createEl() {
-    return document.body;
+    return document.getElementById('root');
   }
 }
 

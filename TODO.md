@@ -145,12 +145,9 @@
 ## TODO (other)
 * design comprehension questions + tasks
 * dbux-graph web components
-   * propagate ancestry updates
-   * `setState` logic and -> propagate state updates
-   * `ClientComponentEndpoint.initEl` might create two important elements:
-      * `el` -> added to parent
-      * `childrenContainerEl` -> used as DOM parent for children
-   * finish up `ContextNode`
+   * add button to reset webview html, without closing (this way, dev tool settings stay alive)
+   * fix `context` hierarchy
+   * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
    * NOTES
       * `render` does NOT propagate to children (unlike React)
    * write `dbux-graph-client/scripts/pre-build` component-registry script

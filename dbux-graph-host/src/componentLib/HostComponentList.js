@@ -1,5 +1,4 @@
 import pull from 'lodash/pull';
-import HostComponentManager from './HostComponentManager';
 
 class HostComponentList {
   components = [];
@@ -20,8 +19,8 @@ class HostComponentList {
   // public methods
   // ###########################################################################
 
-  createComponent(parent, ComponentClass, initialState) {
-    const comp = this.parent.componentManager._createComponent(parent, ComponentClass, initialState);
+  createComponent(ComponentClass, initialState) {
+    const comp = this.parent.componentManager._createComponent(this.parent, ComponentClass, initialState);
     this.components.push(comp);
     return comp;
   }

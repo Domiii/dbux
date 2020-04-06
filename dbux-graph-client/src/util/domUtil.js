@@ -1,9 +1,6 @@
-/**
- * Generic render utilities.
- * Not to be confused with the `renderUtil/` folder which contains *specific* render utilities for specific parts (business logic) of the app.
- */
+import { newLogger } from 'dbux-common/src/log/logger';
 
-export const DefaultSlideDelay = 200;
+const { log, debug, warn, error: logError } = newLogger('dbux-common/domUtil');
 
 
 // ##################################################################################################################
@@ -50,12 +47,17 @@ export function compileHtmlElements(html) {
   return template.content.childNodes;
 }
 
-export function collectElementsByDataAttr(attrName) {
-  const all = this.el.querySelectorAll(`[data-${attrName}]`);
+export function collectElementsByDataAttr(containerEl, groupName) {
+  const attrName = `data-${groupName}`;
+  const all = containerEl.querySelectorAll(`[${attrName}]`);
   const els = {};
   all.forEach(el => {
-    const name = el.getAttribute('data-mount');
+    const name = el.getAttribute(attrName);
     if (name) {
+      if (els[name]) {
+        warn(`[collectElementsByDataAttr] element name used more than once: \
+${name} in group ${groupName} in element ${containerEl.innerHTML}`);
+      }
       els[name] = el;
     }
   });

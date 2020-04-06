@@ -45,8 +45,8 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   }
 
   _processEl() {
-    this.els = collectElementsByDataAttr('el');
-    this.mountPointsByComponentName = collectElementsByDataAttr('mount');
+    this.els = collectElementsByDataAttr(this.el, 'el');
+    this.mountPointsByComponentName = collectElementsByDataAttr(this.el, 'mount');
 
     // hook up event listeners
     if (this.on) {
@@ -68,9 +68,9 @@ class ClientComponentEndpoint extends ComponentEndpoint {
       }
     }
 
-    if (this.parent) {
+    if (this.parent?.el) {
       // append element to DOM
-      this.parent.appendChild(this);
+      this.parent.el.appendChild(this.el);
     }
   }
 

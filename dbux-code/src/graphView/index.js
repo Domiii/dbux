@@ -9,5 +9,5 @@ export async function showGraphView(context) {
   if (!graphHost) {
     graphHost = new GraphViewHost(context);
   }
-  graphHost.show();
+  return graphHost.show();
 }

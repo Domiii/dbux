@@ -9,8 +9,8 @@ class Toolbar extends ClientComponentEndpoint {
 
   createEl() {
     return compileHtmlElement(/*html*/`
-      <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
-        <a data-el="home" class="navbar-brand" href="#">Dbux</a>
+      <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+        <a data-el="hi" class="navbar-brand" href="#">Dbux</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -18,7 +18,7 @@ class Toolbar extends ClientComponentEndpoint {
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a data-el="hi" class="nav-link" href="#">hi!</a>
+              <a data-el="hi2" class="nav-link" href="#">hi!</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -46,7 +46,7 @@ class Toolbar extends ClientComponentEndpoint {
 
   update() {
     const { count } = this.state;
-    this.el.hi.textContent = `hi! (${count})`;
+    this.els.hi.textContent = `hi! (${count})`;
   }
 
   // ###########################################################################
@@ -57,7 +57,7 @@ class Toolbar extends ClientComponentEndpoint {
     home: {
       click(evt) {
         evt.preventDefault();
-        this.remote.home();
+        this.remote.gotoHome();
       }
     },
 

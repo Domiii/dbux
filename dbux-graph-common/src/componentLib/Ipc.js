@@ -22,9 +22,9 @@ export default class Ipc {
   lastCallId = 0;
   calls = new Map();
 
-  constructor(ipcAdapter, endpoint) {
+  constructor(ipcAdapter, componentManager) {
     this.ipcAdapter = ipcAdapter;
-    this.endpoint = endpoint;
+    this.componentManager = componentManager;
     ipcAdapter.onMessage(this._handleMessage);
   }
 
@@ -32,7 +32,7 @@ export default class Ipc {
   // Public methods
   // ###########################################################################
 
-  async sendMessage(commandName, componentId, args) {
+  async sendMessage(componentId, commandName, args) {
     const msg = {
       messageType: MessageType.Request,
       componentId,
@@ -49,6 +49,12 @@ export default class Ipc {
 
   async _sendInit(msg) {
     msg.messageType = MessageType.InitComponent;
+    return this._sendMessageRaw(msg);
+  }
+
+  async _sendPing() {
+    const msg = {};
+    msg.messageType = MessageType.Ping;
     return this._sendMessageRaw(msg);
   }
 
@@ -71,7 +77,7 @@ export default class Ipc {
    * Send back reply (after having received request).
    */
   _sendReply(status, callId, componentId, result) {
-    this._postMessage({
+    this.ipcAdapter.postMessage({
       messageType: MessageType.Reply,
       callId,
       componentId,
@@ -89,12 +95,17 @@ export default class Ipc {
     } = message;
 
     try {
-      const func = get(this.endpoint, commandName);
+      const endpoint = this.componentManager.getComponent(componentId);
+      if (!endpoint) {
+        logError('Received invalid request: componentId is not registered:', componentId);
+        return;
+      }
+      const func = get(endpoint, commandName);
       if (!func) {
-        throw new Error('IPC Command does not exist on endpoint');
+        throw new Error('IPC Command does not exist on endpoint: ' + commandName);
       }
       else {
-        const res = await func.apply(this.endpoint, args);
+        const res = await func.apply(endpoint, args);
         this._sendReply('resolve', callId, componentId, res);
       }
     }
@@ -147,8 +158,12 @@ export default class Ipc {
   // handleMessage
   // ###########################################################################
 
-  _handleMessage = async evt => {
-    const message = evt.data;
+  _handleMessage = async message => {
+    // debug('received msg', message);
+    if (!message) {
+      return;
+    }
+
     const {
       messageType,
       callId
@@ -164,7 +179,7 @@ export default class Ipc {
       logError('Could not handle message. Unregistered messageType - ' + messageType);
     }
 
-    handler.apply(this, message);
+    handler.call(this, message);
   }
 
   // ###########################################################################
@@ -190,6 +205,10 @@ export default class Ipc {
     [MessageType.Reply](message) {
       // received reply to our own request
       this._processReply(message);
+    },
+
+    [MessageType.Ping](message) {
+      this.componentManager.handlePing();
     }
   }
 }

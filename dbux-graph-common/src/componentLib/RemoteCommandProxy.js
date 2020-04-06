@@ -15,12 +15,12 @@ class RemoteCommandProxy {
     // neat little hackfix - see: https://stackoverflow.com/a/40714458
     return new Proxy(this, {
       get: (_this, commandName) => {
-        let cb = _cachedCallbacks[commandName];
         const realCommandName = `${propName}.${commandName}`;
+        let cb = _cachedCallbacks[realCommandName];
         if (!cb) {
           // create new cb
-          cb = remoteCommandCb.bind(this, ipc, propName, componentId, realCommandName);
-          this._cachedCallbacks[realCommandName] = cb;
+          cb = remoteCommandCb.bind(this, ipc, componentId, realCommandName);
+          _cachedCallbacks[realCommandName] = cb;
         }
 
         return cb;
