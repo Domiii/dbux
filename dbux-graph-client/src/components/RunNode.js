@@ -5,7 +5,7 @@ class RunNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
       <div class="red">
-        <h3 data-el="title"></h3>
+        <h6 data-el="title"></h6>
         <div data-mount="ContextNode"></div>
       </div>
     `);
@@ -14,9 +14,9 @@ class RunNode extends ClientComponentEndpoint {
   }
 
   update() {
-    const { runId } = this.state;
+    const { applicationId, runId } = this.state;
     
-    this.els.title.textContent = `Run #${runId}`;
+    this.els.title.textContent = `Run #${runId} (Application #${applicationId})`;
   }
 }
 

@@ -3,6 +3,8 @@ import ClientComponentManager from './componentLib/ClientComponentManager';
 
 import 'bootstrap/dist/css/bootstrap.css';
 
+import './styles.css';
+
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-client/index');
 
 let componentManager;

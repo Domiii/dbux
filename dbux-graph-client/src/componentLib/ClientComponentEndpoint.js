@@ -49,7 +49,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     const mountName = child.componentName;
     const mountPointEl = this.mountPointsByComponentName[mountName];
     if (!mountPointEl) {
-      logError('Could not add child to parent. Parent did not have a mount type for', mountName);
+      logError(`Could not add child to parent. Parent ${this.componentName} did not have a mount type for child ${mountName}`);
       return;
     }
 

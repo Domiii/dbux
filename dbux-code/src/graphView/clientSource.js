@@ -39,7 +39,7 @@ export async function getWebviewClientHtml(...scriptPaths) {
 </head>
 <body>
   <div id="root"></div>
-  <button onclick="gogo();">start!</button>
+  <!--button onclick="gogo();">start!</button-->
   ${scripts}
   <script>
     /**
@@ -70,7 +70,7 @@ export async function getWebviewClientHtml(...scriptPaths) {
       startDbuxGraphClient(ipcAdapter);
     }
 
-    //gogo();
+    gogo();
   </script>
 </body>
 </html>`;

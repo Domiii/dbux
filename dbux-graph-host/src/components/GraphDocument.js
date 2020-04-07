@@ -21,18 +21,7 @@ class GraphDocument extends HostComponentEndpoint {
     // register event listeners
     // ########################################
 
-    allApplications.selection.onApplicationsChanged((selectedApps) => {
-      this.resetGraph();
-
-      for (const app of selectedApps) {
-        const { applicationId } = app;
-        allApplications.selection.subscribe(
-          app.dataProvider.onData('executionContexts', 
-            contexts => this.addContexts(applicationId, contexts)
-          )
-        );
-      }
-    });
+    allApplications.selection.onApplicationsChanged(this.refresh);
   }
 
   initChildren() {
@@ -40,26 +29,37 @@ class GraphDocument extends HostComponentEndpoint {
     this.root = this.children.createComponent(GraphRoot);
 
     // start rendering empty graph
-    this.resetGraph();
+    this.root.refresh();
   }
 
 
   // ###########################################################################
-  // reset
+  // refresh
   // ###########################################################################
 
-  resetGraph = () => {
-    // initialize new root
-    const update = {
-      applications: allApplications.selection.getAll().map(app => ({
-        applicationId: app.applicationId,
-        entryPointPath: app.entryPointPath,
-        name: app.getFileName()
-      }))
-    };
-    this.root.setState(update);
-  }
+  refresh = (selectedApps) => {
+    // update root application data
+    this.root.refresh();
 
+    for (const app of selectedApps) {
+      const { applicationId } = app;
+
+      // add existing contexts
+      const { dataProvider } = app;
+      this.addContexts(applicationId, dataProvider.collections.executionContexts.getAll());
+
+      // add data listeners
+      allApplications.selection.subscribe(
+        app.dataProvider.onData('executionContexts',
+          contexts => {
+            // update root application data (since initially, application name is not available)
+            this.root.refresh();
+            this.addContexts(applicationId, contexts);
+          }
+        )
+      );
+    }
+  }
 
   // ###########################################################################
   // manage children

@@ -5,14 +5,17 @@ class ContextNode extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
       <div class="context">
-        <h3 data-el="title"></h3>
+        <span data-el="title"></span>
         <div data-mount="ContextNode" class="children"></div>
       </div>
     `);
   }
 
   update() {
-    const { contextId, displayName } = this.state;
+    const {
+      displayName,
+      context: { contextId }
+    } = this.state;
 
     this.els.title.textContent = `${displayName}#${contextId}`;
   }

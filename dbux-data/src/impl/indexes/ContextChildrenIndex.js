@@ -3,15 +3,15 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
-function makeKey(dp: DataProvider, context: ExecutionContext) {
-  return context.parentContextId || 0;
-}
-
-
+/**
+ *  aka "ContextsByParentIndex"
+ */
 export default class ContextChildrenIndex extends CollectionIndex<ExecutionContext> {
   constructor() {
     super('executionContexts', 'children');
   }
 
-  makeKey = makeKey
+  makeKey(dp: DataProvider, context: ExecutionContext) {
+    return context.parentContextId || 0;
+  }
 }

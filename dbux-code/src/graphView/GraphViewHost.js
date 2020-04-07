@@ -78,7 +78,7 @@ export default class GraphViewHost {
               await cb(...args);
             }
             catch (err) {
-              logError(err);
+              logError('Error processing message from Client', err);
             }
           },
           null,
