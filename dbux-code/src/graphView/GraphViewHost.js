@@ -35,13 +35,17 @@ export default class GraphViewHost {
     // reveal or create
     if (!this.reveal()) {
       this._createWebview();
-      // set HTML content
-      // TODO: use remote URL when developing locally to enable hot reload
-      const scriptPath = path.join(this.resourcePath, 'dist', 'graph.js');
-      this.panel.webview.html = await getWebviewClientHtml(scriptPath);
-
-      this._startHost();
+      await this.reset();
     }
+  }
+
+  async reset() {
+    // set HTML content
+    // TODO: use remote URL when developing locally to enable hot reload
+    const scriptPath = path.join(this.resourcePath, 'dist', 'graph.js');
+    this.panel.webview.html = await getWebviewClientHtml(scriptPath);
+
+    this._startHost();
   }
 
   reveal() {
@@ -67,7 +71,8 @@ export default class GraphViewHost {
 
       onMessage: ((cb) => {
         if (this._messageHandler) {
-          // dispose previous message handler; only use one at a time
+          // WARNING: only allow one message handler at a time
+          // dispose previous message handler
           this._messageHandler.dispose();
         }
         this._messageHandler = webview.onDidReceiveMessage(
@@ -122,5 +127,7 @@ export default class GraphViewHost {
   _started = (manager) => {
     // (re-)started!
     this.hostComponentManager = manager;
+
+    // TODO: hook up `reset` function to manager
   }
 }

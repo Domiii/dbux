@@ -9,10 +9,10 @@ let componentManager, doc;
 
 function reset() {
   componentManager = new HostComponentManager(_ipcAdapter);
-  componentManager.handlePing = clientConnected;
+  componentManager.handlePing = pairingCompleted;
 }
 
-function clientConnected() {
+function pairingCompleted() {
   // client is ready!
   debug('dbux-graph-client connected. - Starting host...');
 
@@ -35,7 +35,6 @@ function clientConnected() {
  * Starts listening for app events and rendering to the user.
  */
 export function startGraphHost(ipcAdapter, onStart) {
-  // TODO: should this also be given the controls to start the client?
   _ipcAdapter = ipcAdapter;
   _onStart = onStart;
 
