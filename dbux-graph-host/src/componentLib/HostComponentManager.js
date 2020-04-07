@@ -5,7 +5,22 @@ import HostComponentEndpoint from './HostComponentEndpoint';
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
 
 class AppComponent extends HostComponentEndpoint {
+  _publicInternal = {
+    logClientError(args) {
+      this.componentManager.externals.logClientError(args);
+    },
+
+    async prompt(...args) {
+      const result = await this.componentManager.externals.prompt(...args);
+      return result;
+    }
+  }
 }
+
+// TODO: create externals proxy?
+const usedExternals = [
+  'restartApp', 'logClientError', 'prompt'
+];
 
 class HostComponentManager extends BaseComponentManager {
   constructor(ipcAdapter, externals) {
@@ -30,9 +45,10 @@ class HostComponentManager extends BaseComponentManager {
       parent,
       state
     } = component;
+
     const parentId = parent?.componentId || 0;
 
-    // send only to client after parent has finished init'ing
+    // send new component to client *AFTER* its parent has finished init'ing
     await parent?.waitForInit();
 
     return this.app._remoteInternal.createComponent(

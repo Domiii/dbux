@@ -15,6 +15,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   el;
   els;
   mountPointsByComponentName;
+  isInitialized;
 
   /**
    * Use this to create the HTML node to represent this component.
@@ -43,6 +44,22 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     this._processEl();
     this.setupEl();
   }
+
+  appendChild(child) {
+    const mountName = child.componentName;
+    const mountPointEl = this.mountPointsByComponentName[mountName];
+    if (!mountPointEl) {
+      logError('Could not add child to parent. Parent did not have a mount type for', mountName);
+      return;
+    }
+
+    mountPointEl.appendChild(child.el);
+  }
+
+  // ###########################################################################
+  // private methods
+  // ###########################################################################
+
 
   _processEl() {
     this.els = collectElementsByDataAttr(this.el, 'el');
@@ -74,16 +91,23 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     }
   }
 
-  appendChild(child) {
-    const mountName = child.componentName;
-    const mountPointEl = this.mountPointsByComponentName[mountName];
-    if (!mountPointEl) {
-      logError('Could not add child to parent. Parent did not have a mount type for', mountName);
-      return;
-    }
-
-    mountPointEl.appendChild(child.el);
+  async _performInit() {
+    await this.init();
+    this.isInitialized = true;
   }
+
+  async _performUpdate() {
+    try {
+      await this.update();
+    }
+    catch (err) {
+      logError('Component update failed', err);
+    }
+  }
+
+  // ###########################################################################
+  // internally used remote commands
+  // ###########################################################################
 
   /**
    * Functions that are called by Host internally.
@@ -91,7 +115,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   _publicInternal = {
     async updateClient(state) {
       this.state = state;
-      await this.update();
+      await this._performUpdate();
     },
 
     dispose() {

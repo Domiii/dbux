@@ -33,6 +33,10 @@ ComponentEndpoint {
   // Getters
   // ###########################################################################
 
+  get app() {
+    return this.componentManager.app;
+  }
+
   get debugTag() {
     return `[${this.componentName}]`;
   }

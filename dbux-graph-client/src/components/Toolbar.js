@@ -10,32 +10,8 @@ class Toolbar extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-        <a data-el="hi" class="navbar-brand" href="#">Dbux</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a data-el="hi2" class="nav-link" href="#">hi!</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                。。。
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="https://github.com/Domiii/dbux">Github</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">(...)</a>
-              </div>
-            </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">🔍</button>
-          </form>
-        </div>
+        <a data-el="hiBtn" class="btn btn-info" href="#"></a>
+        <a data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</a>
       </nav>
     `);
   }
@@ -46,7 +22,7 @@ class Toolbar extends ClientComponentEndpoint {
 
   update() {
     const { count } = this.state;
-    this.els.hi.textContent = `hi! (${count})`;
+    this.els.hiBtn.textContent = `hi! (${count})`;
   }
 
   // ###########################################################################
@@ -54,21 +30,25 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   on = {
-    home: {
-      click(evt) {
-        evt.preventDefault();
-        this.remote.gotoHome();
-      }
-    },
-
-    hi: {
+    hiBtn: {
       click(evt) {
         evt.preventDefault();
         this.remote.addHi(2);
       },
 
       focus(evt) {
+        evt.preventDefault();
         evt.target.blur();
+      }
+    },
+
+    restartBtn: {
+      async click(evt) {
+        evt.preventDefault();
+
+        if (await this.app.prompt('Do you really want to restart?')) {
+          this.remote.restartApp();
+        }
       }
     }
   }

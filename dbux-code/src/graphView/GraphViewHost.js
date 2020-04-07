@@ -9,11 +9,10 @@ import {
 import path from 'path';
 import { getWebviewClientHtml } from './clientSource';
 
-const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
+const { log, debug, warn, error: logError } = newLogger('GraphViewHost');
 
 
 const defaultColumn = ViewColumn.Two;
-
 
 export default class GraphViewHost {
   extensionContext;
@@ -35,17 +34,15 @@ export default class GraphViewHost {
     // reveal or create
     if (!this.reveal()) {
       this._createWebview();
-      await this.reset();
+      await this.restart();
     }
   }
 
-  async reset() {
-    // set HTML content
+  restart = async () => {
+    // set HTML content + restart
     // TODO: use remote URL when developing locally to enable hot reload
-    const scriptPath = path.join(this.resourcePath, 'dist', 'graph.js');
-    this.panel.webview.html = await getWebviewClientHtml(scriptPath);
-
-    this._startHost();
+    this._restartHost();
+    await this._restartClientDOM();
   }
 
   reveal() {
@@ -116,7 +113,18 @@ export default class GraphViewHost {
     );
   }
 
-  _startHost() {
+  /**
+   * hackfix: necessary because webview won't update if the `html` value is not different from previous assignment.
+   */
+  _webviewRerenderToken = 0;
+
+  async _restartClientDOM() {
+    const scriptPath = path.join(this.resourcePath, 'dist', 'graph.js');
+    this.panel.webview.html = (await getWebviewClientHtml(scriptPath)) +
+      `<!-- ${++this._webviewRerenderToken} -->`;
+  }
+
+  _restartHost() {
     const ipcAdapter = this._buildHostIpcAdapterVsCode(this.panel.webview);
     startGraphHost(this._started, ipcAdapter, this.externals);
   }
@@ -134,6 +142,17 @@ export default class GraphViewHost {
   // ###########################################################################
 
   externals = {
-    reset: this.reset
+    restartApp: this.restart,
+
+    logClientError(args) {
+      logError('[CLIENT ERORR]', ...args);
+    },
+
+    async prompt(message) {
+      const result = await window.showInformationMessage(message, 'Ok', 'Cancel');
+      return result === 'Ok';
+    }
   }
 }
+
+console.log('1234testtoken56789');
