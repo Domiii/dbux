@@ -13,30 +13,35 @@ process.env.BABEL_DISABLE_CACHE = 1;
 
 const outputFolderName = 'dist';
 const outFile = 'bundle.js';
+const defaultEntryPoint = 'src/index.js';
 const buildMode = 'development';
 //const buildMode = 'production';
 
 const MonoRoot = path.resolve(__dirname);
 
-const dependencyPaths = [
-  "dbux-common",
-  "dbux-data",
-
-  "dbux-babel-plugin",
-  "dbux-runtime"
-];
-
 const targets = [
   // "dbux-cli"
   "dbux-babel-plugin",
-  "dbux-runtime"
+  "dbux-runtime",
+  "dbux-graph-host"
 ];
+
+const dependencyPaths = [
+  "dbux-common",
+  "dbux-data"
+];
+
+dependencyPaths.push(...targets);
 
 const resolve = makeResolve(MonoRoot, dependencyPaths);
 // fix for https://github.com/websockets/ws/issues/1538
 resolve.mainFields = ['main'];
 // fix for https://github.com/websockets/ws/issues/1538
 resolve.alias.ws = path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'));
+
+// TODO: add `src` alias to every build
+// resolve.alias.src = 
+
 // alias['socket.io-client'] = path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ));
 // console.warn(resol);
 
@@ -46,7 +51,7 @@ const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
 const webpackPlugins = [];
 
 // const entry = fromEntries(targets.map(target => [target, path.join('..', target, 'src/index.js').substring(1)]));  // hackfix: path.join('.', dir) removes the leading period
-const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, 'src/index.js'))]));
+const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, defaultEntryPoint))]));
 
 // `context` is the path from which any relative paths are resolved
 const context = MonoRoot;
@@ -107,7 +112,7 @@ module.exports = [
       // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
       globalObject: 'typeof self !== "undefined" ? self : this',
     },
-    resolve: resolve,
+    resolve,
     module: {
       rules: [
         {
@@ -132,6 +137,7 @@ module.exports = [
     //   },
     // },
     externals: [
+      'fs',
       // see: https://www.npmjs.com/package/webpack-node-externals
       // NOTE: `node-externals` does not bundle `node_modules` but that also (for some reason) sometimes ignores linked packages in `yarn workspaces` monorepos :(
       nodeExternals({

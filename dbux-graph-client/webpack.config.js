@@ -14,8 +14,11 @@ const buildMode = 'development';
 const dependencyPaths = ["dbux-common", "dbux-graph-common", "dbux-graph-client"];
 
 const resolve = makeResolve(MonoRoot, dependencyPaths);
+resolve.alias['@'] = path.join(projectRoot, 'src');
+
 const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
 const rules = [
+  // JavaScript
   {
     loader: 'babel-loader',
     // test(resource) { /* see: https://stackoverflow.com/a/46769010 */ console.debug('[TEST]\n  ', resource); return true; },
@@ -30,6 +33,37 @@ const rules = [
         // '../dbux-graph-common'
       ]
     }
+  },
+
+  // CSS
+  {
+    test: /\.css$/i,
+    include: [
+      path.join(projectRoot, 'src'),
+      path.join(projectRoot, 'node_modules'),
+      path.join(MonoRoot, 'node_modules')
+    ],
+    use: [
+      // Creates `style` nodes from JS strings
+      'style-loader',
+      // Translates CSS into CommonJS
+      'css-loader'
+    ]
+  },
+
+  // fonts (see https://chriscourses.com/blog/loading-fonts-webpack)
+  {
+    test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+    use: [
+      {
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+          // NOTE: this is relative to webpack's `publicPath`
+          outputPath: 'fonts/'
+        }
+      }
+    ]
   }
 ];
 // console.log(rules[0].options.babelrcRoots);
@@ -59,8 +93,11 @@ module.exports = {
   mode: buildMode,
   target: 'web',
 
+  // see https://stackoverflow.com/questions/54147824/can-the-vs-code-webview-developer-tools-deal-with-source-maps
+  devtool: 'eval-source-map',
+
   // https://github.com/webpack/webpack/issues/2145
-  devtool: 'inline-module-source-map',
+  // devtool: 'inline-module-source-map',
   // devtool: 'source-map',
   // devtool: 'inline-source-map',
   devServer: {

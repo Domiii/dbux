@@ -13,8 +13,8 @@
     "prettier": "1.19.1"
   },
   "dependencies": {
-    "dbux-common": "file:../dbux-common",
-    "dbux-data": "file:../dbux-data",
+    "dbux-common": "*",
+    "dbux-data": "*",
     "module-alias": "^2.2.2",
     "yargs": "^15.1.0"
   }

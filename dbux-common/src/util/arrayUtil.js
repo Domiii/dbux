@@ -4,15 +4,13 @@ import map from 'lodash/map';
 import xor from 'lodash/xor';
 import mergeWith from 'lodash/mergeWith';
 
-export const EmptyArray = Object.freeze([]);
-
 /**
  * @see https://stackoverflow.com/questions/29951293/using-lodash-to-compare-arrays-items-existence-without-order
  */
 export function areArraysEqual(a, b) {
   if (a === b) return true;
   if (a == null || b == null) return false;
-  if (a.length != b.length) return false;
+  if (a.length !== b.length) return false;
   
   return xor(a, b).length === 0;
 }

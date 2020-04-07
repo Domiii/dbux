@@ -17,17 +17,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bootstrap": "^4.4.1",
     "dbux-common": "*",
-    "dbux-graph-common": "*",
-    "express": "^4.17.1"
+    "dbux-graph-common": "*"
   },
   "devDependencies": {
+    "express": "^4.17.1",
     "npm-run-all": "^4.1.5",
     "open-cli": "^6.0.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "lodash": "*"
+  },
   "_moduleAliases": {}
 }

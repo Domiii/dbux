@@ -9,13 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dbux-common": "*"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "peerDependencies": {
     "lodash": "*",
     "nanoevents": "*"
   },
-  "_moduleAliases": {
-  }
+  "_moduleAliases": {}
 }

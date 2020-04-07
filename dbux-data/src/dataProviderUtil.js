@@ -1,9 +1,10 @@
-import { hasDynamicTypes, hasTraceValue, isReturnTrace, isTracePop } from 'dbux-common/src/core/constants/TraceType';
-import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import { hasDynamicTypes, hasTraceValue, isTracePop } from 'dbux-common/src/core/constants/TraceType';
+import { pushArrayOfArray} from 'dbux-common/src/util/arrayUtil';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
+import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
 import DataProvider from './DataProvider';
-import { isRealContextType } from '../../dbux-common/src/core/constants/ExecutionContextType';
 
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 

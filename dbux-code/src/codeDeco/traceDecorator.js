@@ -2,7 +2,7 @@ import { window } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import groupBy from 'lodash/groupBy';
 import { getTraceDecoName, getDecoConfigByName, getAllTraceDecoNames } from './traceDecoConfig';
 import { babelLocToCodeRange } from '../helpers/codeLocHelpers';

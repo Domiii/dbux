@@ -143,14 +143,15 @@
 
 
 ## TODO (other)
-* design "comprehension questions" + tasks
-* fix `calls1` bug:
+* design comprehension questions + tasks
 * dbux-graph web components
-  * client = view only
-  * distributed components, synchronizing by `id`
-  * props update triggers `render`
-  * `render` does NOT propagate to children (unlike React)
-  * batch `postMessage`
+   * add button to reset webview html, without closing (this way, dev tool settings stay alive)
+   * fix `context` hierarchy
+   * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
+   * NOTES
+      * `render` does NOT propagate to children (unlike React)
+   * write `dbux-graph-client/scripts/pre-build` component-registry script
+   * batch `postMessage`
 * fix: webpack build of `dbux-babel-plugin` has now externalized `dbux-common` which leads to errors when `require`-ing it
 * fix: `dbux-graph-client` webpack config is not `babel`ing `dbux-graph-common` (but `dbux-code` is doing it just fine)
 * [dbux-graph]

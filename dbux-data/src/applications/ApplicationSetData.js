@@ -1,4 +1,4 @@
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import Trace from 'dbux-common/src/core/data/Trace';
 
 // ###########################################################################

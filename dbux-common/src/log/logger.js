@@ -5,6 +5,9 @@ const errors = [];
 
 const emitter = new NanoEvents();
 
+/**
+ * Use this as error hook
+ */
 export function onLogError(cb) {
   emitter.on('error', cb);
 }
@@ -63,10 +66,10 @@ export function logError(ns, ...args) {
 }
 
 export function logInternalError(...args) {
-  const err = ['[DBUX INTERNAL ERROR]', ...args];
-  console.error(...err);
-  errors.push(err);
-  emitter.emit('error', ...err);
+  const msgArgs = ['[DBUX INTERNAL ERROR]', ...args];
+  console.error(...msgArgs);
+  errors.push(msgArgs);
+  emitter.emit('error', ...msgArgs);
 }
 
 export function getErrors() {

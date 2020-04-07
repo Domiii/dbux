@@ -15,11 +15,15 @@ const outFile = 'bundle.js';
 const webpackPlugins = [];
 
 
-const dependencyPaths = ["dbux-common", "dbux-data", "dbux-graph-common", "dbux-graph-host", "dbux-code"];
+const dependencyPaths = [
+  "dbux-common", "dbux-data", "dbux-graph-common", 
+  "dbux-graph-host", "dbux-code"
+];
 
 
 const resolve = makeResolve(MonoRoot, dependencyPaths);
 const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
+// console.log(resolve.modules);
 const rules = [
   // {
   //   loader: 'babel-loader',

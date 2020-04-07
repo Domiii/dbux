@@ -6,6 +6,7 @@ import {
 import Application from 'dbux-data/src/applications/Application';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { showTextDocument } from './codeNav';
+import { showWarningMessage } from './codeModals';
 
 /**
  * Add some cool stuff to `dbux-data/src/applications/Application`s for
@@ -57,6 +58,7 @@ export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
 
   if (!application) {
     // suggest to open and use the first application that is selected and currently running.
+    const msg = 'Failed. No application running in file. Make sure to open a file with an application that ran before!';
     const firstApp = allApplications.selection.getAll()[0];
     const btns = {
       [`Select ${firstApp.getFileName()}`]: async () => {
@@ -64,9 +66,7 @@ export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
         return firstApp;
       }
     };
-    const result = await window.showWarningMessage('Failed. No application running in file. Make sure to open a file with an application that ran before!',
-      ...Object.keys(btns));
-    return await result && btns[result]?.() || null;
+    return showWarningMessage(msg, btns);
   }
 
   return application;

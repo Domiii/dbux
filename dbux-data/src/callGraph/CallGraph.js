@@ -1,6 +1,6 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import { isTracePush, isTracePop } from 'dbux-common/src/core/constants/TraceType';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import last from 'lodash/last';
 import DataProvider from '../DataProvider';
 
