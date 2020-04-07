@@ -1,5 +1,5 @@
 import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import traceSelection from 'dbux-data/src/traceSelection';
 import { makeRootTraceLabel } from 'dbux-data/src/helpers/traceLabels';
 import allApplications from 'dbux-data/src/applications/allApplications';

@@ -16,7 +16,7 @@
 			],
 			"stopOnEntry": false,
 			"sourceMaps": true,
-			"trace": true,
+			// "trace": true,
 			// "outFiles": ["${workspaceRoot}/dbux-code/dist/*.js"],
 			// "preLaunchTask": "npm: build-dbux-code"
 			"outFiles": [
@@ -39,7 +39,7 @@
 				"${file}"
 			],
 			"protocol": "inspector",
-			"trace": true,
+			// "trace": true,
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
@@ -152,7 +152,7 @@
 			"name": "chrome todomvc",
 			"type": "chrome",
 			"request": "launch",
-			"trace": true,
+			// "trace": true,
 			"url": "http://localhost:3030",
 			"pathMapping": {
 				// "/samples/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/src/dbux/samples/",
@@ -205,7 +205,7 @@
 			"sourceMaps": true,
 			// "program": "${file}",
 			"protocol": "inspector",
-			"trace": true,
+			// "trace": true,
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
@@ -227,7 +227,7 @@
 			"sourceMaps": true,
 			// "program": "${file}",
 			"protocol": "inspector",
-			"trace": true,
+			// "trace": true,
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",

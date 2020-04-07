@@ -6,6 +6,10 @@ class Toolbar extends HostComponentEndpoint {
   }
 
   public = {
+    reset() {
+      this.componentManager.externals.reset();
+    },
+
     gotoHome() {
       
     },

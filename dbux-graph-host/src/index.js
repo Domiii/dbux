@@ -1,14 +1,15 @@
 import { newLogger } from 'dbux-common/src/log/logger';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import GraphDocument from './components/GraphDocument';
 import HostComponentManager from './componentLib/HostComponentManager';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
 
-let _ipcAdapter, _onStart;
+let _onStart, _args;
 let componentManager, doc;
 
 function reset() {
-  componentManager = new HostComponentManager(_ipcAdapter);
+  componentManager = new HostComponentManager(...(_args || EmptyArray));
   componentManager.handlePing = pairingCompleted;
 }
 
@@ -34,8 +35,8 @@ function pairingCompleted() {
  * Start the dbux-graph-host.
  * Starts listening for app events and rendering to the user.
  */
-export function startGraphHost(ipcAdapter, onStart) {
-  _ipcAdapter = ipcAdapter;
+export function startGraphHost(onStart, ...args) {
+  _args = args;
   _onStart = onStart;
 
   reset();

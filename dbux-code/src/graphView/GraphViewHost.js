@@ -118,7 +118,7 @@ export default class GraphViewHost {
 
   _startHost() {
     const ipcAdapter = this._buildHostIpcAdapterVsCode(this.panel.webview);
-    startGraphHost(ipcAdapter, this._started);
+    startGraphHost(this._started, ipcAdapter, this.externals);
   }
 
   /**
@@ -127,7 +127,13 @@ export default class GraphViewHost {
   _started = (manager) => {
     // (re-)started!
     this.hostComponentManager = manager;
+  }
 
-    // TODO: hook up `reset` function to manager
+  // ###########################################################################
+  // provide externals to HostComponentManager
+  // ###########################################################################
+
+  externals = {
+    reset: this.reset
   }
 }

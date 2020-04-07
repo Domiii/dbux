@@ -8,6 +8,12 @@ class AppComponent extends HostComponentEndpoint {
 }
 
 class HostComponentManager extends BaseComponentManager {
+  constructor(ipcAdapter, externals) {
+    super(ipcAdapter);
+
+    this.externals = externals;
+  }
+
   start() {
     super.start(AppComponent);
   }
