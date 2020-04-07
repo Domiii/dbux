@@ -2,14 +2,14 @@
 
 set -x    # trace mode
 
-source "../pre-install.sh"
+source "../../_install.common.sh"
 
 # config
 thisDir="$(getScriptDir "${BASH_SOURCE[0]}")"
 projectPath="express"
 githubUrl="https://github.com/BugsJS/express.git"
-bugId="26"
-checkoutWhat="test" # "test", "fix" or "full"
+bugId="27"
+tagCategory="test" # "test", "fix" or "full"
 
 
 # let's go!
@@ -27,12 +27,14 @@ fi
 cd $projectRoot
 
 # remove git folder
-if [[ -e "./.git" ]]; then
-  rm -rf "./.git"
-fi
+# if [[ -e "./.git" ]]; then
+#   rm -rf "./.git"
+# fi
 
 # checkout right branch
-git checkout "tags/Bug-$bugId-$checkoutWhat"
+git checkout "tags/Bug-$bugId-$tagCategory"
+
+code -n .
 
 
 # `# copy files (NOTE: Cygwin does not support glob-style copy)`

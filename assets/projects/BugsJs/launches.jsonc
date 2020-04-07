@@ -1,0 +1,36 @@
+{
+  "express": {
+    "_base": {
+      "name": "test file",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/_mocha",
+      "runtimeArgs": [
+        "--stack-trace-limit=1000",
+        "--preserve-symlinks"
+      ],
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "--require=test/support/env"
+        // "--reporter=json",
+      ],
+      // see: https://github.com/microsoft/vscode/issues/5422
+      "restart": true,
+      "protocol": "inspector",
+      "trace": "all",
+      "disableOptimisticBPs": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    "bugs": {
+      "27": {
+        "args": [
+          "--grep",
+          "should defer all the param routes",
+          "--",
+          "./test/app.param.js"
+        ]
+      }
+    }
+  }
+}
