@@ -19,7 +19,8 @@
   "dependencies": {
     "bootstrap": "^4.4.1",
     "dbux-common": "*",
-    "dbux-graph-common": "*"
+    "dbux-graph-common": "*",
+    "panzoom": "^9.2.1"
   },
   "devDependencies": {
     "express": "^4.17.1",
