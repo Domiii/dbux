@@ -5,7 +5,7 @@
 
 * [errors]
    * just like, "select trace at cursor", insert two 🔥 buttons (one top right, one above `callGraphView`)
-      * button is grayed out if there are no errors
+      * button is grayed out if there are no errors.
       * when clicked, list all errors in call graph view
 * [applicationView]
    * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
