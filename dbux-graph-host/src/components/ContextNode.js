@@ -23,6 +23,7 @@ class ContextNode extends HostComponentEndpoint {
 
     // get all children
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
+    this.state.hasChildren = !!childContexts.length;
     childContexts.forEach(childContext => {
       // create child context
       return this.children.createComponent(ContextNode, {
@@ -30,7 +31,6 @@ class ContextNode extends HostComponentEndpoint {
         context: childContext
       });
     });
-    this.state.hasChildren = !!childContexts.length;
   }
 }
 

@@ -4,7 +4,7 @@ import { compileHtmlElement } from '@/util/domUtil';
 class GraphRoot extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div class="red">
+      <div class="root">
         <h2 data-el="title"></h2>
         <div data-mount="RunNode"></div>
       </div>

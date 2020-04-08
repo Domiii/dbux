@@ -5,7 +5,10 @@ class GraphDocument extends ClientComponentEndpoint {
     const el = document.getElementById('root');
 
     // complete reset
-    el.innerHTML = '';
+    el.innerHTML = /*html*/`<div>
+      <div data-mount="Toolbar"></div>
+      <div data-mount="GraphRoot"></div>
+    </div>`;
     
     return el;
   }
