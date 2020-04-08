@@ -1,6 +1,74 @@
-.context {
-  display: flex;
-  flex: 1;
-  flex-direction: row;
+@import url("https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap");
+/* *{
+  margin: 0;
+  padding: 0;
+}
+html,body{
+  height:100%;
+  width:100%;
+}
+.graph{
+  height:100%;
+  width:100%;
+}
+canvas{
+  display:block;
+} */
+.red{
+  display:flex;
+  flex-direction: column;
+}
+.root{
+  height: auto;
+  width: auto;
+  display:inline-block;
+}
+.context{
+  display:flex;
+  justify-content:flex-start;
+  height:auto;
+  width:auto;
+  margin:5px;
   border: 1px solid black;
+}
+.name{
+  width:auto;
+}
+.open_close_btn{
+  font-family: none;
+  height:20px;
+  width: 20px;
+  margin:3px;
+}
+.child{
+  width:auto;
+
+}
+
+
+
+/*focus flash*/
+.flash-me {
+  -webkit-animation: flash linear 1.7s infinite;
+  animation: flash linear 1.7s infinite;
+}
+
+@-webkit-keyframes flash {
+  0%   { background:#fff; } 
+  20%  { opacity: 1; background:none; } 
+  40%  { background:#fff; } 
+  60%  { opacity: 1; background:none; }	
+  80%  { background:#fff;} 
+  100% { opacity: 1; background:none; }
+}
+@keyframes flash {
+  0%   { background:#fff; } 
+  100% { opacity: 1; background:none; }
+}
+#minimap{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  border: 2px solid white;
+  background-color:black;
 }
