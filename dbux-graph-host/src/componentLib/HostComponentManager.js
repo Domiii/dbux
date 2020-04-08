@@ -13,13 +13,18 @@ class AppComponent extends HostComponentEndpoint {
     async confirm(...args) {
       const result = await this.componentManager.externals.confirm(...args);
       return result;
+    },
+
+    async prompt(...args) {
+      const result = await this.componentManager.externals.prompt(...args);
+      return result;
     }
   }
 }
 
 // TODO: create externals proxy?
 const usedExternals = [
-  'restartApp', 'logClientError', 'confirm'
+  'restartApp', 'logClientError', 'confirm', 'prompt'
 ];
 
 class HostComponentManager extends BaseComponentManager {
