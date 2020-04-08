@@ -87,7 +87,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
 
     if (this.parent?.el) {
       // append element to DOM
-      this.parent.el.appendChild(this.el);
+      this.parent.appendChild(this);
     }
   }
 
