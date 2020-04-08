@@ -10,6 +10,8 @@ export class ExecutionContextCollection extends Collection {
   _lastContextId = -1;
   _lastOrderIds = [];
 
+  _lastTraceIds = [];
+
   constructor() {
     super('executionContexts');
   }
@@ -22,7 +24,9 @@ export class ExecutionContextCollection extends Collection {
     return staticContextCollection.getById(staticContextId);
   }
 
-  // Write operations
+  // ###########################################################################
+  // Create
+  // ###########################################################################
 
   /**
    * @return {ExecutionContext}
@@ -69,6 +73,7 @@ export class ExecutionContextCollection extends Collection {
 
     return context;
   }
+
 
   // ###########################################################################
   // privat methods

@@ -47,6 +47,20 @@ npm start # start webpack build of all projects in watch mode
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
 
+## Analyze with Python Notebooks
+
+In the `analyze/` folder, you find several python notebooks that allow you analyze the data that `dbux` generates. Here is how you set that up:
+
+1. Run some program with Dbux enabled (e.g. `samples/[...]/oop1.js`)
+1. In the VSCode extension, open a file of that program that has traces in it
+1. In VSCode `Run Command` (`CTRL/Command + SHIFT + P`) -> `Dbux: Export file`
+1. Make sure you have Python + Jupyter setup
+   * Windows
+      * [Install `Anaconda` with `chocolatey`](https://chocolatey.org/packages/anaconda3)
+      * Set your `%PYTHONPATH%` in system config to your Anaconda `Lib` + `DLLs` folders (e.g. `C:\tools\Anaconda3\Lib;C:\tools\Anaconda3\DLLs;`)
+      * Done!
+1. Run one of the notebooks, load the file, and analyze :)
+
 
 ## Test: Project 1
 
@@ -307,6 +321,43 @@ You can re-add it manually:
 
 
 # Features
+
+## Data Recording + Data Processing Mechanisms
+
+* Instrumentation
+* Collection
+* Postprocessing
+   * adding one-to-one fields (pre-index)
+   * Index
+   * adding one-to-one fields (post-index)
+* Query + CachedQuery
+
+## Concept: Contexts + StaticContexts
+
+## Concept: Traces + StaticTraces
+
+## Data Flow
+
+### Object Tracking
+
+## Error Reporting
+
+
+## Control Flow
+
+### Basic Control Flow
+
+### Callback Tracking
+
+### Interruptable functions: async
+
+### Interruptable functions: generator
+
+### Error reporting
+
+* Are dynamic vs. static exit traces of functions the same?
+* special attention: `try` statements
+
 
 ## Call Graph Navigation
 

@@ -4,16 +4,16 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import { initServer } from './net/server';
 import { initCodeDeco } from './codeDeco';
 
-import { initContextView } from './contextView/contextViewController';
+import { initCallGraphView } from './callGraphView/callGraphViewController';
 import { initCallStackView } from './callStackView/callStackViewController';
 import { initCommands } from './commands/index';
 import { initToolBar } from './toolbar';
 import { initPlayback } from './playback/index';
 
-import { initCodeApplications } from './CodeApplication';
+import { initCodeApplications } from './codeUtil/CodeApplication';
 import { initTraceDetailsController } from './traceDetailsView/traceDetailsController';
 import { initResources } from './resources';
-import { initTraceSelection } from './codeSelection';
+import { initTraceSelection } from './codeUtil/codeSelection';
 import { initEditorTracesController } from './editorTracesView/editorTracesController';
 import { initApplicationsViewController } from './applicationsView/applicationsViewController';
 import { initLogging } from './logging';
@@ -37,20 +37,20 @@ function activate(context) {
     initEditorTracesController(context);
     initApplicationsViewController(context);
     
-    const contextViewController = initContextView();
+    const callGraphViewController = initCallGraphView();
     const callStackViewController = initCallStackView();
     const playbackController = initPlayback();
     const traceDetailsController = initTraceDetailsController(context);
 
     initCommands(
       context,
-      contextViewController,
+      callGraphViewController,
       callStackViewController,
       playbackController,
       traceDetailsController
     );
     
-    initToolBar(context, contextViewController);
+    initToolBar(context, callGraphViewController);
   } catch (e) {
     logError('could not activate', e);
     debugger;

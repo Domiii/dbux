@@ -30,8 +30,11 @@ const TraceInstrumentationType = new Enum({
   Loop: 6,
   LoopBlock: 7,
 
+  // Special attention required for these
   MemberExpression: 8,
-  Super: 9
+  Super: 9,
+  ReturnArgument: 10,
+  ThrowArgument: 11
 });
 
 const traceCfg = (() => {
@@ -45,8 +48,11 @@ const traceCfg = (() => {
     Block,
     Loop,
     LoopBlock,
+
     MemberExpression,
-    Super
+    Super,
+    ReturnArgument,
+    ThrowArgument
   } = TraceInstrumentationType;
 
   return {
@@ -54,8 +60,9 @@ const traceCfg = (() => {
     // assignments
     // ########################################
     AssignmentExpression: [
-      ExpressionResult,
-      // [['right', ExpressionResult]]
+      // ExpressionResult,
+      NoTrace,
+      [['right', ExpressionResult, null, { originalIsParent: true }]]
     ],
     ClassPrivateProperty: [
       NoTrace,
@@ -178,9 +185,12 @@ const traceCfg = (() => {
     // ],
     ReturnStatement: [
       NoTrace,
-      [['argument', ExpressionResult]]
+      [['argument', ReturnArgument]]
     ],
-    ThrowStatement: Statement,
+    ThrowStatement: [
+      NoTrace,
+      [['argument', ThrowArgument]]
+    ],
 
 
     // ########################################
@@ -221,9 +231,9 @@ const traceCfg = (() => {
     ],
     // SwitchCase: [
     // TODO: insert trace call into `consequent` array.
-    //    NOTE: we cannot just block the `consequent` array as that will change the semantics (specifically: local variables cannot spill into subsequent cases anymore)
+    //    NOTE: we cannot just wrap the `consequent` statement array into a new block, as that will change the semantics (specifically: local variables would not be able to spill into subsequent cases)
     //   NoTrace,
-    //   [['consequent']]
+    //   [['consequent', Block]]
     // ],
 
 
@@ -232,7 +242,7 @@ const traceCfg = (() => {
     // ########################################
     TryStatement: [
       NoTrace,
-      [['block', Block], ['finalizer', Block]]
+      // [['block', Block], ['finalizer', Block]]
     ],
     CatchClause: [
       NoTrace,
@@ -298,12 +308,10 @@ function normalizeConfig(cfg) {
 // instrumentation recipes by node type
 // ###########################################################################
 
-function doTraceWrapExpression(traceType, path, state, cfg) {
+function wrapExpression(traceType, path, state, cfg) {
   if (isCallPath(path)) {
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be call expressions
-    // return wrapCallExpression(path, state, cfg);
-    // do not instrument -> it will be taken care of later
-    return null;
+    return wrapCallExpression(path, state, traceType, cfg);
   }
 
   // any other expression with a result
@@ -317,7 +325,7 @@ function doTraceWrapExpression(traceType, path, state, cfg) {
   return traceWrapExpression(traceType, path, state, tracePath);
 }
 
-function wrapCallExpression(path, state, cfg) {
+function wrapCallExpression(path, state, callResultType, cfg) {
   // CallExpression
   const calleePath = path.get('callee');
   if (calleePath.isSuper()) {
@@ -325,27 +333,31 @@ function wrapCallExpression(path, state, cfg) {
     traceSuper(calleePath, state);
   }
 
-  // trace BeforeCallExpression (returns original path)
-  return traceBeforeExpression(path, state, TraceType.BeforeCallExpression, null);
+  // trace BeforeCallExpression (returns `originalPath`)
+  path = traceBeforeExpression(TraceType.BeforeCallExpression, path, state, null);
+
+  // trace CallResult
+  path.setData('callResultType', callResultType);
+  return path;
 }
 
 const enterInstrumentors = {
   CallExpression(path, state, cfg) {
-    return wrapCallExpression(path, state, cfg);
+    return wrapCallExpression(path, state, TraceType.CallExpressionResult, cfg);
   },
   ExpressionResult(path, state, cfg) {
-    return doTraceWrapExpression(TraceType.ExpressionResult, path, state, cfg);
+    return wrapExpression(TraceType.ExpressionResult, path, state, cfg);
   },
   ExpressionValue(pathOrPaths, state, cfg) {
     if (Array.isArray(pathOrPaths)) {
-      // e.g. `SequenceExpression`
+      // e.g. `SequenceExpression` + 
       for (const path of pathOrPaths) {
-        doTraceWrapExpression(TraceType.ExpressionValue, path, state, cfg);
+        wrapExpression(TraceType.ExpressionValue, path, state, cfg);
       }
       return null;  // get originalPaths is currently meanignless since `path.get` would not work on it
     }
     else {
-      return doTraceWrapExpression(TraceType.ExpressionValue, pathOrPaths, state, cfg);
+      return wrapExpression(TraceType.ExpressionValue, pathOrPaths, state, cfg);
     }
   },
   // ExpressionNoValue(path, state) {
@@ -381,7 +393,7 @@ const enterInstrumentors = {
     if (path.node.computed) {
       // if `computed`, also trace property independently
       const propertyPath = path.get('property');
-      doTraceWrapExpression(TraceType.ExpressionValue, propertyPath, state);
+      wrapExpression(TraceType.ExpressionValue, propertyPath, state);
     }
 
     const objPath = path.get('object');
@@ -391,23 +403,63 @@ const enterInstrumentors = {
     }
     else {
       // trace object (e.g. `x` in `x.y`) as-is
-      return doTraceWrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
+      wrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
+
+      // NOTE: the `originalPath` is not maintained
+      return undefined;
     }
   },
   Super(path, state) {
     // NOTE: for some reason, this visitor does not get picked up by Babel
+  },
+
+  ReturnArgument(path, state, cfg) {
+    if (path.node) {
+      // trace `arg` in `return arg;`
+      return wrapExpression(TraceType.ReturnArgument, path, state, cfg);
+    }
+    else {
+      // insert trace before `return;` statement
+      return traceBeforeExpression(TraceType.ReturnNoArgument, path.parentPath, state, cfg);
+    }
+  },
+
+  ThrowArgument(path, state, cfg) {
+    return wrapExpression(TraceType.ThrowArgument, path, state, cfg);
   }
 };
 
+
+// ###########################################################################
+// exitInstrumentors
+// WARNING: The DFS nature of AST traversal means that `exit` instrumentors are 
+//          traversed in opposite order (inner exits before outer).
+// ###########################################################################
+
+// function wrapExpressionExit(path, state, traceType) {
+//   if (isCallPath(path)) {
+//     return exitCallExpression(path, state, traceType);
+//   }  
+// }
+
+function exitCallExpression(path, state) {
+  // CallExpression
+  // instrument args after everything else has already been done
+  // const calleePath = path.get('callee');
+  // const beforeCallTraceId = getPathTraceId(calleePath);
+  // traceCallExpression(path, state, beforeCallTraceId);
+  const beforeCallTraceId = getPathTraceId(path);
+  const callResultType = path.getData('callResultType') || TraceType.CallExpressionResult;
+  traceCallExpression(path, state, callResultType, beforeCallTraceId);
+}
+
+/**
+ * NOTE: we have these specifically for expressions that
+ * potentially can be `CallExpression`.
+ */
 const exitInstrumentors = {
   CallExpression(path, state) {
-    // CallExpression
-    // instrument args after everything else has already been done
-    // const calleePath = path.get('callee');
-    // const beforeCallTraceId = getPathTraceId(calleePath);
-    // traceCallExpression(path, state, beforeCallTraceId);
-    const beforeCallTraceId = getPathTraceId(path);
-    return traceCallExpression(path, state, beforeCallTraceId);
+    exitCallExpression(path, state);
   }
 };
 
@@ -416,8 +468,6 @@ const exitInstrumentors = {
 // ###########################################################################
 
 function visit(onTrace, instrumentors, path, state, cfg) {
-  if (!onTrace(path)) return;
-
   const [traceType, children, extraCfg] = cfg;
   if (extraCfg?.ignore?.includes(path.node.type)) {
     // ignore (array of type name)
@@ -428,8 +478,28 @@ function visit(onTrace, instrumentors, path, state, cfg) {
     return;
   }
 
-  const traceTypeName = TraceInstrumentationType.nameFromForce(traceType);
+  if (!traceType && !children) {
+    return;
+  }
+
+  // start tracing
+  if (!onTrace(path)) return; // mark as visited
+
+  if (children) {
+    // 1. trace children
+    for (const child of children) {
+      const [childName, ...childCfg] = child;
+      const childPath = path.get(childName);
+
+      if (childPath.node) {
+        visit(onTrace, instrumentors, childPath, state, childCfg);
+      }
+    }
+  }
+
   if (traceType) {
+    // 2. trace parent
+    const traceTypeName = TraceInstrumentationType.nameFromForce(traceType);
     // if (!instrumentors[traceTypeName]) {
     //   err('instrumentors are missing TraceType:', traceTypeName);
     // }
@@ -437,17 +507,6 @@ function visit(onTrace, instrumentors, path, state, cfg) {
       const originalPath = instrumentors[traceTypeName](path, state, extraCfg);
       if (originalPath) {
         path = originalPath;
-      }
-    }
-  }
-
-  if (children) {
-    for (const child of children) {
-      const [childName, ...childCfg] = child;
-      const childPath = path.get(childName);
-
-      if (childPath.node) {
-        visit(onTrace, instrumentors, childPath, state, childCfg);
       }
     }
   }

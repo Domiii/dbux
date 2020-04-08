@@ -6,17 +6,17 @@ process.env.BABEL_DISABLE_CACHE = 1;
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 
 const outputFolderName = 'dist';
-const root = path.resolve(__dirname + '/../../..');
+const MonoRoot = path.resolve(__dirname + '/../../..');
 //const dbuxPlugin = require(path.join(root, 'node_modules/dbux-babel-plugin'));
-const dbuxPluginPath = path.join(root, '/dbux-babel-plugin');
+const dbuxPluginPath = path.join(MonoRoot, '/dbux-babel-plugin');
 const dbuxPlugin = path.resolve(dbuxPluginPath);
 
 require(dbuxPlugin);
 
 
 // const dbuxFolders = ["dbux-runtime", "dbux-common", "dbux-data"];
-const dbuxFolders = ["dbux-runtime"];
-const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(root, f)));
+// const dbuxFolders = ["dbux-runtime"];
+// const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(MonoRoot, f)));
 
 
 const babelOptions = {
@@ -39,8 +39,6 @@ const buildMode = 'development';
 //const buildMode = 'production';
 
 
-
-
 module.exports = (projectRoot) => {
   // const ExtraWatchWebpackPlugin = require(projectRoot + '/node_modules/extra-watch-webpack-plugin');
 
@@ -56,7 +54,7 @@ module.exports = (projectRoot) => {
   //   .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
   //   .flat()
   //   .map(f => path.resolve(f));
-    // console.log('webpack folders:', allFolders.join('\n'));
+  // console.log('webpack folders:', allFolders.join('\n'));
   return {
     //watch: true,
     mode: buildMode,
@@ -91,11 +89,11 @@ module.exports = (projectRoot) => {
       symlinks: true,
       // extensions: ['.js', '.jsx'],
       modules: [
-        root,
+        MonoRoot,
         // dbuxRoots.map(f => path.join(f, 'dist')),
         path.join(projectRoot, 'src'),
         path.join(projectRoot, 'node_modules'),
-        path.join(root, 'node_modules')
+        path.join(MonoRoot, 'node_modules')
       ].flat()
     },
     module: {

@@ -10,7 +10,6 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:dbuxContextView",
 		"onLanguage:javascript"
 	],
 	"__main": "./src/index.js",
@@ -21,7 +20,7 @@
 				{
 					"id": "dbuxViewContainer",
 					"title": "Dbux",
-					"icon": "media/dep.svg"
+					"icon": "resources/dep.svg"
 				}
 			]
 		},
@@ -36,7 +35,7 @@
 					"name": "Trace Details"
 				},
 				{
-					"id": "dbuxContextView",
+					"id": "dbuxCallGraphView",
 					"name": "Call Graph Roots"
 				},
 				{
@@ -55,16 +54,52 @@
 				"title": "Dbux: Export application data"
 			},
 			{
-				"command": "dbuxContextView.gotoEntry",
-				"title": "Goto",
+				"command": "dbux.showGraphView",
+				"title": "Dbux: Show graph view"
+			},
+			{
+				"command": "dbuxCallGraphView.gotoEntry",
+				"title": "Goto"
+			},
+			{
+				"command": "dbuxCallGraphView.showContext",
+				"title": "Show contexts",
+				"icon": {
+					"light": "resources/light/document.svg",
+					"dark": "resources/dark/document.svg"
+				}
+			},
+			{
+				"command": "dbuxCallGraphView.showError",
+				"title": "Show all error",
+				"icon": {
+					"light": "resources/light/fire.svg",
+					"dark": "resources/dark/fire.svg"
+				}
+			},
+			{
+				"command": "dbuxCallGraphView.showError.disabled",
+				"title": "No traces at cursor",
+				"icon": {
+					"light": "resources/light/fire_disabled.svg",
+					"dark": "resources/dark/fire_disabled.svg"
+				}
+			},
+			{
+				"command": "dbuxCallGraphView.setFilter",
+				"title": "Filter",
 				"icon": {
 					"light": "resources/light/boolean.svg",
 					"dark": "resources/dark/boolean.svg"
 				}
 			},
 			{
-				"command": "dbuxContextView.itemClick",
-				"title": "Click"
+				"command": "dbuxCallGraphView.clearFilter",
+				"title": "Clear Filter",
+				"icon": {
+					"light": "resources/light/clear.svg",
+					"dark": "resources/dark/clear.svg"
+				}
 			},
 			{
 				"command": "dbuxCallStackView.showParent",
@@ -141,45 +176,63 @@
 					"light": "resources/light/pause.svg",
 					"dark": "resources/dark/pause.svg"
 				}
+			},
+			{
+				"command": "dbuxApplicationsView.showEntryPoint",
+				"title": "Go to Entry",
+				"icon": {
+					"light": "resources/light/nextTrace.svg",
+					"dark": "resources/dark/nextTrace.svg"
+				}
 			}
 		],
 		"menus": {
 			"editor/title": [
 				{
 					"command": "dbuxPlayback.previousTrace",
-					"group": "navigation@5"
+					"group": "navigation@21"
 				},
 				{
 					"command": "dbuxPlayback.nextTrace",
-					"group": "navigation@8"
+					"group": "navigation@24"
 				},
 				{
 					"command": "dbuxPlayback.play",
-					"when": "dbuxPlayback.context.Playing == false",
-					"group": "navigation@6"
+					"when": "dbuxPlayback.context.playing == false",
+					"group": "navigation@22"
 				},
 				{
 					"command": "dbuxPlayback.pause",
-					"when": "dbuxPlayback.context.Playing == true",
-					"group": "navigation@7"
+					"when": "dbuxPlayback.context.playing == true",
+					"group": "navigation@23"
+				},
+				{
+					"command": "dbuxCallGraphView.showContext",
+					"when": "dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError == true",
+					"group": "navigation@31"
+				},
+				{
+					"command": "dbuxCallGraphView.showError",
+					"when": "dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError == true",
+					"group": "navigation@32"
+				},
+				{
+					"command": "dbuxCallGraphView.showError.disabled",
+					"when": "dbuxCallGraphView.context.hasError == false",
+					"group": "navigation@33"
 				},
 				{
 					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
 					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == true",
-					"group": "navigation@3"
+					"group": "navigation@11"
 				},
 				{
 					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
 					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == false",
-					"group": "navigation@4"
+					"group": "navigation@12"
 				}
 			],
 			"view/item/context": [
-				{
-					"command": "dbuxContextView.gotoEntry",
-					"when": "view == dbuxContextView && viewItem == contextNode",
-					"group": "inline"
-				},
 				{
 					"command": "dbuxCallStackView.showParent",
 					"when": "view == dbuxCallStackView && viewItem == callStackNode.both.scheduler",
@@ -192,8 +245,50 @@
 				},
 				{
 					"command": "dbuxTraceDetailsView.switchGroupingMode",
-					"when": "view == dbuxTraceDetailsView && viewItem == dbuxTraceDetailsView.staticTraceTDNodeRoot",
+					"when": "view == dbuxTraceDetailsView && viewItem == staticTraceTDNodeRoot",
 					"group": "inline"
+				},
+				{
+					"command": "dbuxApplicationsView.showEntryPoint",
+					"when": "view == dbuxApplicationsView && viewItem == applicationNode",
+					"group": "inline"
+				}
+			],
+			"view/title": [
+				{
+					"command": "dbuxCallGraphView.setFilter",
+					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering == false",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxCallGraphView.clearFilter",
+					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering == true",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxCallGraphView.showContext",
+					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError == true",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxCallGraphView.showError",
+					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError == true",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxCallGraphView.showError.disabled",
+					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.hasError == false",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
+					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
+					"group": "navigation"
+				},
+				{
+					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
+					"group": "navigation"
 				}
 			]
 		}
@@ -202,9 +297,9 @@
 		"_before-run": "npx link-module-alias",
 		"postinstall": "npx link-module-alias",
 		"test": "node ./test/runTest.js",
-		"vscode:prepublish": "npx webpack --mode production",
-		"start": "npm run _before-run && npx webpack --mode development --watch",
-		"start-debug": "node --inspect-brk=9233 ./node_modules/webpack/bin/webpack --mode development --watch",
+		"vscode:prepublish": "node ../node_modules/webpack/bin/webpack --mode production",
+		"start": "node ../node_modules/webpack/bin/webpack --mode development --watch",
+		"start-debug": "node --inspect-brk=9233 ../node_modules/webpack/bin/webpack --mode development --watch",
 		"build-prod": "npx webpack --mode production",
 		"build-dev": "npx webpack --mode development",
 		"analyze": "npx webpack --mode development --json | npx webpack-bundle-size-analyzer"
@@ -223,15 +318,15 @@
 	"dependencies": {
 		"comment-json": "^3.0.2",
 		"moment": "^2.24.0",
-		"socket.io": "^2.3.0"
+		"socket.io": "^2.3.0",
+		"dbux-common": "*",
+		"dbux-data": "*",
+		"dbux-graph-common": "*",
+		"dbux-graph-host": "*"
 	},
 	"peerDependencies": {
-		"dbux-common": "../dbux-common",
-		"dbux-data": "../dbux-data",
 		"lodash": "*"
 	},
 	"_moduleAliases": {
-		"dbux-common": "../dbux-common",
-		"dbux-data": "../dbux-data"
 	}
 }

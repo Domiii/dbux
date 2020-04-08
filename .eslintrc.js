@@ -61,6 +61,7 @@ module.exports = {
 		"prefer-const": 0,
 		"prefer-arrow-callback": 0,
 		"prefer-template": 0, // string templates
+		"prefer-spread": 0,
 		"eol-last": 0,
 		"arrow-parens": 0,
 		"arrow-body-style": 0,
@@ -77,6 +78,9 @@ module.exports = {
 		"linebreak-style": 0,
 		"quotes": 0,
 		"spaced-comment": 0,
-		"max-len": ["warn", { "code": 120 }]
+		"max-len": ["warn", { "code": 120 }],
+		"one-var": 0,
+		"one-var-declaration-per-line": 0,
+		"dot-location": 0
 	}
 };

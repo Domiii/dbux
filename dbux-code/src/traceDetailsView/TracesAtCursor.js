@@ -3,8 +3,8 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import { compareTraces } from 'dbux-data/src/traceSelection/relevantTraces';
 import traceSelection from 'dbux-data/src/traceSelection';
 import Trace from 'dbux-common/src/core/data/Trace';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
-import { getCursorLocation } from '../codeNav';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import { getCursorLocation } from '../codeUtil/codeNav';
 import { getTracesAt } from '../helpers/codeRangeQueries';
 
 export default class TracesAtCursor {
@@ -60,12 +60,16 @@ export default class TracesAtCursor {
   }
 
   getAllTracesAtCursor = () => {
-    const { fpath, pos } = getCursorLocation();
-    return allApplications.selection.data.mapApplicationsOfFilePath(
-      fpath, (application, programId) => {
-        return getTracesAt(application, programId, pos) || EmptyArray;
-      }
-    );
+    const where = getCursorLocation();
+    if (where) {
+      const { fpath, pos } = where;
+      return allApplications.selection.data.mapApplicationsOfFilePath(
+        fpath, (application, programId) => {
+          return getTracesAt(application, programId, pos) || EmptyArray;
+        }
+      );
+    }
+    return EmptyArray;
   }
 
   /**

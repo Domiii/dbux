@@ -10,6 +10,10 @@ export default class TraceNode extends BaseTreeViewNode {
     return `${prefix} ${label}`;
   }
 
+  init = () => {
+    this.contextValue = 'applicationNode';
+  }
+
   get application() {
     return this.entry;
   }

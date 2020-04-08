@@ -5,13 +5,12 @@ set -e
 thisDirRelative=$(dirname "$0")
 thisDir=$(node -e "console.log(require('path').resolve('$thisDirRelative'))") # get absolute path using node
 
-cd "$thisDir/../../.."
+MonoRoot="$thisDir/../../.."
+
+cd $MonoRoot
 
 
 # cd projects/todomvc/examples/vanilla-es6
-if [[ ! -e projects ]]; then
-  mkdir projects
-fi
 cd projects
 if [[ ! -e todomvc ]]; then
   git clone https://github.com/tastejs/todomvc.git
@@ -31,7 +30,7 @@ yarn install
 
 
 `# install the good stuff`
-yarn add --dev babel-loader  @babel/node @babel/cli @babel/core @babel/preset-env && \
+yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
 yarn add --dev webpack webpack-cli webpack-dev-server nodemon && \
 yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime
 

@@ -2,7 +2,7 @@ import findLast from 'lodash/findLast';
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import Trace from 'dbux-common/src/core/data/Trace';
 import Application from 'dbux-data/src/applications/Application';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { babelLocToCodeRange } from './codeLocHelpers';
 
@@ -72,6 +72,7 @@ export function getTracesAt(application: Application, programId, pos): Trace[] {
 
   const traces = dp.util.getAllTracesOfStaticContext(staticContextId)
     .filter(trace =>
+      // ignore BCEs
       dp.util.getTraceType(trace.traceId) !== TraceType.BeforeCallExpression
     );
 

@@ -2,37 +2,43 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* DataProviderUtil + Indexes
-   * write `getRealContextId` (use `isRealContextType`)
-   * write `getTracesOfRealContext`
-      * use `TracesByContextIndex` and `TracesByParentContextIndex`, depending on if context `isRealContext` or not
-   * add `ParentTracesInRealContextIndex`
-      * all traces that themselves are the `parentTraceId` of some context
-* async/await testing:
-   * does call graph navigation work properly?
-   * does `callStackView` work properly?
-* `Call Graph Roots`
-   * ordering should always be descending by id (newest first)
-      * also apply that order to children within groups
+
+* [errors]
+   * just like, "select trace at cursor", insert two 🔥 buttons (one top right, one above `callGraphView`)
+      * button is grayed out if there are no errors
+      * when clicked, list all errors in call graph view
 * [applicationView]
    * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
    * nest applications of same entry point under same node
       * most recent Application is parent, all others are children
       * make sure, `children` is `null` if it has no children (so `CollapsibleState` will be `None`)
-* [object_tracking]
-   * list all traces of same `valueRef.trackId` in `traceDetailsView`
-      * add new "Track Object" node `TrackObjectTDNode` to `traceDetailsView`, if it trace has a `valueId`
-   * test using `oop2.js`
-* [callGraphView/contextView]
-   * add new button: "hide all previous roots / show all"
-   * when expanding a CallGraph root, show all context names of that `runId` as children of that root node
-   * add a "filter by searchTerm" button: show `QuickInput` to ask user to enter a wildcard searchTerm
-      * all roots with contexts whose name contains searchTerm are expanded, all others are `Collapsed` or `None`
-      * filter contexts by searchTerm (match `name`; as well as `filePath` of its `Program`)
-   * add a new "async view" mode to "Context Roots": switches between "runs" and "async runs"
-      * define a new "async run" concept
-      * TODO
-      * attach `Resume` and `Await` nodes under their actual `parentContexts`, thus hiding roots from Resumes
+* add a command to toggle (show/hide) all intrusive features
+   * includes:
+      * show/hide all `codeDeco`s
+      * show/hide all other buttons in the top right
+   * command name: `Dbux: Toggle Controls`
+* display a warning at the top of EditorWindow:
+   * if it has been edited after the time of it's most recent `Program` `Context`
+      * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
+      * offer buttons to let user reply...:
+         * do not show warning again for this file (before restart)
+         * remove the application from `allApplications`
+* keyword `wordcloud`
+   * prepare function to generate all keywords in all `staticContexts` and their `fileName`s (without ext) of a single run
+      * multiply weight by how often they were called (use `contexts`, rather than `staticContexts`)
+      * TODO: we would also want to use the folder name, but for that, we first have to add instrumentation that identifies the relative project path via `package.json`
+   * add as "suggestions" to the `"filter by searchTerm"` `QuickInput`, sort by weight
+   * (we will add that to webview later)
+   * fine-grained keyword extraction, split names by:
+      1. upper-case letters: `addElement` -> `add`, `element`
+         * careful: `addUID` -> `add`, `uid`
+      1. `.`: `a.b` -> `a`, `b`
+      1. `_`: `some_func` -> `some`, `func`
+      1. `ClassLoader.loadClass` -> (2x `class`, `loader`, `load`)
+         * NOTE for later: `loader` + `load` can be identified as the same, using `stemitization`, `lemmatization`
+            * https://www.datacamp.com/community/tutorials/stemming-lemmatization-python
+            * https://nlp.stanford.edu/IR-book/html/htmledition/stemming-and-lemmatization-1.html
+   * NOTE: is there some JS or python NLP packages to help with this?
 * [tracesAtCursor]
    * remove this view, replace with button at the top left
       * icon = crosshair (⌖)
@@ -58,21 +64,6 @@
    * add a new "clear filters" button at the top of the `callGraphView`
    * add a new "only this trace" filter button to `callGraphView`
       * only runs that passed through this trace
-* [callstackView]
-   * when clicking a node:
-      * highlight selected trace in tree (currently we highlight selected trace by adding the `play.svg` icon, see `traceDetailsView`)
-   * do not change selected trace in `callstackView`
-      * only update selected trace in `callstackView`, if triggered from anywhere but here
-   * if context has both `parentId` and `schedulerTrace`:
-      * add a button to the node to allow switching between `parent` and `scheduler`
-* [applicationList] add a new TreeView (name: `dbuxApplicationList`) below the `dbuxContentView`
-   * shows all applications in `allApplications`
-   * lets you switch between them by clicking on them (can use `allApplications.setSelectedApplication`)
-   * allows you to remove applications...
-      * individually
-      * "all old versions" (applications that have already been executed again)
-      * "all selected"
-   * add a checkbox (button) to select "automatically discard older application when executing again"
 * [traceDetailsView]
    * [StaticTraceTDNode] of each trace: display more relevant information
       * `GroupMode` (button to toggle in the node)
@@ -101,7 +92,7 @@
       * button icon:  (???) https://www.google.com/search?q=empty+icon&tbm=isch
 * [applicationDisplayName]
    * find shortest unique part of 'entryPointPath' of all `selectedApplications`
-      * use a loop in `_notifyChanged`
+      * update in `_notifyChanged`?
 
 * [contextChildrenView]
    * treeview that shows partial `execution tree` in the context of the selected trace
@@ -127,17 +118,10 @@
 ## TODO (dbux-code + dbux-data; lower priority)
 * [UI design]
    * proper icons + symbols for all tree nodes?
-* add a button to the top right to toggle (show/hide) all intrusive features
-   * includes:
-      * hide `codeDeco`
-      * hide any extra buttons (currently: playback buttons) in the top right
-   * add a keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+B CTRL+X` (need every single key))
+* dbux toggle/enable/disable controls
+   * e.g. keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+B CTRL+X` (need every single key))
+   
 * display a warning at the top of EditorWindow:
-   * if it has been edited after the time of it's most recent `Program` `Context`
-      * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
-      * offer buttons to...:
-         * not show warning again for this file (before restart)
-         * remove the application from `allApplications`
    * if it is very large and thus will slow things down (e.g. > x traces?)
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
@@ -153,7 +137,90 @@
 
 
 
+
+
+
+
+
 ## TODO (other)
+* design comprehension questions + tasks
+* dbux-graph web components
+   * add button to reset webview html, without closing (this way, dev tool settings stay alive)
+   * fix `context` hierarchy
+   * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
+   * NOTES
+      * `render` does NOT propagate to children (unlike React)
+   * write `dbux-graph-client/scripts/pre-build` component-registry script
+   * batch `postMessage`
+* fix: webpack build of `dbux-babel-plugin` has now externalized `dbux-common` which leads to errors when `require`-ing it
+* fix: `dbux-graph-client` webpack config is not `babel`ing `dbux-graph-common` (but `dbux-code` is doing it just fine)
+* [dbux-graph]
+   * produce a `webpack.tools.js`
+      * "shared library" trick
+         * takes care of `module.resolve` + `alias`
+         * easily babel them up as well
+
+   * split into three: `dbux-graph-web`, `dbux-graph-data` + `dbux-graph-common`
+   * then let `<root>` build and `dbux-code` depend on `dbux-graph-data` + `dbux-graph-common`
+   * `dbux-graph-web`'s build responsibility stays with `dbux-graph`
+   * add a basic API, to allow `dbux-graph-data` use full power of `dbux-data` to generate a "virtual DOM", which `dbux-graph-web` will then render
+
+* fix: `CallExpression.arguments` are instrumented too early
+   * -> move back to `exitVisitors`
+
+* fix: `staticTraceId` must resemble AST ordering for error tracing
+   * e.g.
+      * `CallExpression.arguments`
+      * `awaitVisitors`, `loopVisitors` and more
+      * and many more...
+   * Sln: generate `orderId` for each ast node and map to `staticTraceId`
+      * Add a new pass to generate `orderId` for each node before starting instrumentation
+         * Need to store `orderId` by `context`
+      * When tracing, also store `orderId` in `staticTrace`
+      * When error observed, lookup `staticTrace` by `orderId`
+         * Problem: data dependencies: need to lookup when adding traces
+            * Sln: Initialize `static` data and pure indexes of `static` data first
+* [error_handling]
+   * more TODOs
+      * need to make sure, `caller` is traced before `callee` for call expressions
+      * need to repurpose `EndOfFunction` to become `EndOfContext` (to also work for `Program`s)
+      * handle `try` blocks
+      * Fix `super`
+   * Problem: the actual error trace is the trace that did NOT get executed
+      * Sln: patch function's `Pop`'s `staticTrace` to be the one that follows the last executed trace (that is the "error trace")
+         * NOTE: If there are no errors, set `Pop`'s `staticTrace` to be the `FunctionExit` trace
+            * -> new concept `isFunctionExitTrace` is either `return` or `EndOfFunction`
+            * -> need to insert `EndOfFunction` for every function
+         * Problem: How to "guess" and "patch" the "missing trace"?
+            * There is no `staticTrace` for `ExpressionResult` (it actually shares w/ `BCE`)
+               * Sln: `getBCEForCallTrace`
+            * NOTE: `getters` and `setters` might actually work out-of-the-box this way, as well
+            * Data dependencies: Must be done before adding `pop` trace, but depends on `LastTraceInRealContext`
+               * Sln1: Can the runtime track `LastTraceInRealContext`?
+                  * Quite easily!
+               * Sln2: 
+                  * (b) lookup worst case: build temporary index (`groupby('contextId')` etc.)
+                     * NOTE: `TracesByRealContextIndex` needs that extra layer on top of it
+                  * NOTE: probably not going to go any better
+   * UI
+      * render trace error status in trace details
+      * show a "flame" indicator button in the top right, if there were any uncaught errors
+         * (and even if there were caught errors, but in a lighter color)
+         * similar to "trace at cursor" button, replicate that button in `TraceDetailsView`
+   * How does it work?
+      * mark possible `exitTraces`:
+         1. any `ReturnStatement`
+         1. the end of any function
+      * Once a function has finished (we wrap all functions in `try`/`finally`), we insert a check:
+         * If `context.lastTraceId` is in `exitTraces`, there was no error
+         * else, `context.lastTraceId` caused an error
+   * [ErrorTracesByRunIndex]
+      * Warning: data dependencies
+         * `ErrorTracesByRunIndex` depends on ``dp.util.isErrorTrace` information, which depend on `TracesByRealContext` and `StaticTracesByContext` indexes
+         * Sln: allow `CollectionIndex.dependencies` to be a function as well, from where we can call *SOME* `dp.util` functions
+            * NOTE: Not all data is available, so not all `util` functions can be used. Be aware of each `util`'s dependencies.
+   * [errors_and_await]
+      * test: when error thrown, do we pop the correct resume and await contexts?
 * fix: Call Graph Roots -> name does not include actual function name
    * -> add `calleeName` to `staticTrace`?
    * -> `traceLabels`
@@ -180,12 +247,6 @@
          * before `init`, and after `condition` has evaluated to `true`?
    * in loop's `BlockStart`:
       * evaluate + store `headerVars` (all variables that have bindings in loop header)
-* [error_handling]
-   * if we have an error, try to trace "skipped contexts"
-      * add a "shadow trace" to end of every injected `try` block. If it did not get executed, we have an error situation.
-      * if things got skipped, trace executed in (real) context has caused the error
-   * [errors_and_await]
-      * test: when error thrown, do we pop the correct resume and await contexts?
 * [values]
    * better overall value rendering
 * [testing]
@@ -211,6 +272,19 @@
          * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * [loops]
    * fix `DoWhileLoop` :(
+* [generators]
+   * not done yet :(
+* [async_runs]
+   * re-group execution order s.t. "asynchronous runs" can be visually running "as one"
+   * consider: async functions (in a way) run parallel to normal functions
+      * (while execution is single-threaded, I/O and other system tasks will keep on doing work in the background)
+   * what to do with callbacks that preceded and then triggered a `Resume`?
+   * link up promise chains
+   * make sure that we don't accidentally use/cause evil promise semantics [[1](https://stackoverflow.com/questions/46889290/waiting-for-more-than-one-concurrent-await-operation)] [[2](https://stackoverflow.com/questions/58288256/with-a-promise-why-do-browsers-return-a-reject-twice-but-not-a-resolve-twice/58288370#58288370)]
+   * double check against the [Promise/A+ spec](https://promisesaplus.com/#notes), especially semantics of promise rejections and their execution order
+      * rejections might be triggered from "platform code"
+      * https://stackoverflow.com/questions/42118900/when-is-the-body-of-a-promise-executed
+      * http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor
 * fix: `sourceHelper` must use original code, but exclude comments
 * fix: trace order for `super` instrumentation is incorrect
    * try to find `SequenceExpression` ancestor first, and isntrument that instead
@@ -218,7 +292,8 @@
    * generally less accurate than `trace.context.staticContextId`
    * cannot work correctly with interruptable functions
    * -> repurpose as `realStaticContextId`?
-* fix: `NewExpression` is not properly instrumented?
+* fix: `NewExpression` is not properly instrumented
+   * because our `callback` wrapping is too aggressive; won't work with babel es6 classes and breaks object identity
 * [InfoTDNode]
    * Push/Pop (of any kind) show next previous trace/context?
    * [CallbackArg] -> show `Push/PopCallback` nodes
@@ -244,14 +319,6 @@
       * idea: just record all variables after line, so rendering is less convoluted?
    * show `x {n_times_executed}` after line, but only if n is different from the previous line
       * show multiple, if there are different numbers for multiple traces of line?
-* fix "execution order" of "async runs"
-   * what to do with callbacks that preceded and then triggered a `Resume`?
-   * link up promise chains
-   * make sure that we don't accidentally use/cause evil promise semantics [[1](https://stackoverflow.com/questions/46889290/waiting-for-more-than-one-concurrent-await-operation)] [[2](https://stackoverflow.com/questions/58288256/with-a-promise-why-do-browsers-return-a-reject-twice-but-not-a-resolve-twice/58288370#58288370)]
-   * double check against the [Promise/A+ spec](https://promisesaplus.com/#notes), especially semantics of promise rejections and their execution order
-      * rejections might be triggered from "platform code"
-      * https://stackoverflow.com/questions/42118900/when-is-the-body-of-a-promise-executed
-      * http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor
 * [promises] keep track of `schedulerTraceId`
 * [params]
    * add trace/valueRef for `varAccess` of function `params`
@@ -301,6 +368,8 @@
    * (for proper multi-application testing)
    * be careful:
       * `__filename` + `__dirname` do not work w/ webpack when not targeting node
+* [lerna]
+   * setup w/ lerna and prepare production/publishable build
 * [instrumentation] support longer names
    * (and then hide them in tree view; show long version as tooltip)
 * [MultiKeyIndex] allow for storing data by multiple keys

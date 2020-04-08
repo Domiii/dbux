@@ -29,7 +29,14 @@ let TraceType = {
 
   Statement: 16,
   BlockStart: 17,
-  BlockEnd: 18
+  BlockEnd: 18,
+
+  ReturnArgument: 19,
+  ReturnNoArgument: 20,
+
+  ThrowArgument: 21,
+
+  EndOfContext: 22
 };
 
 TraceType = new Enum(TraceType);
@@ -53,6 +60,16 @@ export function isTracePop(traceType) {
 }
 
 
+const functionExitTypes = new Array(TraceType.getCount()).map(_ => false);
+functionExitTypes[TraceType.ReturnArgument] = true;
+functionExitTypes[TraceType.ReturnNoArgument] = true;
+functionExitTypes[TraceType.EndOfContext] = true;
+
+export function isTraceFunctionExit(traceType) {
+  return functionExitTypes[traceType];
+}
+
+
 const dynamicTypeTypes = new Array(TraceType.getCount()).map(_ => false);
 // shared w/ PushCallback + PopCallback
 dynamicTypeTypes[TraceType.CallbackArgument] = true;  
@@ -64,26 +81,22 @@ export function hasDynamicTypes(traceType) {
 }
 
 
-const valueTypes = new Array(TraceType.getCount()).map(_ => false);
-valueTypes[TraceType.ExpressionResult] = true;
-valueTypes[TraceType.CallArgument] = true;
-valueTypes[TraceType.CallbackArgument] = true;
-valueTypes[TraceType.CallExpressionResult] = true;
-valueTypes[TraceType.PopCallback] = true;
-
-export function hasTraceValue(traceType) {
-  return valueTypes[traceType];
-}
-
-
 const expressionTypes = new Array(TraceType.getCount()).map(_ => false);
 expressionTypes[TraceType.ExpressionResult] = true;
 expressionTypes[TraceType.CallArgument] = true;
 expressionTypes[TraceType.CallbackArgument] = true;
 expressionTypes[TraceType.CallExpressionResult] = true;
+expressionTypes[TraceType.ReturnArgument] = true;
 
 export function isTraceExpression(traceType) {
   return expressionTypes[traceType];
+}
+
+const valueTypes = [...expressionTypes];
+valueTypes[TraceType.PopCallback] = true; // has return value of function
+
+export function hasTraceValue(traceType) {
+  return valueTypes[traceType];
 }
 
 
@@ -97,11 +110,23 @@ export function isCallbackRelatedTrace(traceType) {
 }
 
 
-const dataTraceTypes = new Array(TraceType.getCount()).map(_ => false);
-dataTraceTypes[TraceType.CallArgument] = true;
-dataTraceTypes[TraceType.ExpressionValue] = true;
-export function isDataTraceType(traceType) {
-  return dataTraceTypes[traceType];
+const dataOnlyTypes = new Array(TraceType.getCount()).map(_ => false);
+// dataTraceTypes[TraceType.CallArgument] = true;
+dataOnlyTypes[TraceType.ExpressionValue] = true;
+/**
+ * Traces that are important for data flow analysis, but not important for control flow analysis
+ */
+export function isDataTrace(traceType) {
+  return dataOnlyTypes[traceType];
 }
+
+
+const returnTypes = new Array(TraceType.getCount()).map(_ => false);
+returnTypes[TraceType.ReturnArgument] = true;
+returnTypes[TraceType.ReturnNoArgument] = true;
+export function isReturnTrace(traceType) {
+  return returnTypes[traceType];
+}
+
 
 export default TraceType;

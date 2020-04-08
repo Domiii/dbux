@@ -1,6 +1,6 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import path from 'path';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import traceSelection from 'dbux-data/src/traceSelection';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { makeTraceLabel } from 'dbux-data/src/helpers/traceLabels';

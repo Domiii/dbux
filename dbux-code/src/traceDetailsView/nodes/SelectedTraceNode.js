@@ -4,8 +4,8 @@ import Application from 'dbux-data/src/applications/Application';
 import TraceNode from './TraceNode';
 
 export default class SelectedTraceNode extends TraceNode {
-  static makeLabel(trace: Trace, application: Application) {
-    const label = TraceNode.makeLabel(trace, application);
+  static makeLabel(trace: Trace) {
+    const label = TraceNode.makeLabel(trace);
 
     return `${label}`;
   }

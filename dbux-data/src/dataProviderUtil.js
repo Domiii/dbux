@@ -1,7 +1,9 @@
-import { hasDynamicTypes, hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
-import { pushArrayOfArray, EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import { hasDynamicTypes, hasTraceValue, isTracePop } from 'dbux-common/src/core/constants/TraceType';
+import { pushArrayOfArray} from 'dbux-common/src/util/arrayUtil';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { newLogger } from 'dbux-common/src/log/logger';
-import StaticContextType, { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
+import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
+import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
 import DataProvider from './DataProvider';
 
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
@@ -28,11 +30,10 @@ export default {
     const { executionContexts } = dp.collections;
     let lastContextId = contextId;
     let parentContextId;
-    while (true) {
-      parentContextId = executionContexts.getById(lastContextId).parentContextId;
-      if (!parentContextId) return lastContextId;
-      else lastContextId = parentContextId;
+    while ((parentContextId = executionContexts.getById(lastContextId).parentContextId)) {
+      lastContextId = parentContextId;
     }
+    return lastContextId;
   },
 
   getFirstContextsInRuns(dp: DataProvider) {
@@ -41,6 +42,10 @@ export default {
 
   getFirstTracesInRuns(dp: DataProvider) {
     return dp.indexes.traces.firsts.get(1);
+  },
+
+  getAllErrorTraces(dp: DataProvider) {
+    return dp.indexes.traces.error.get(1) || EmptyArray;
   },
 
   // ###########################################################################
@@ -88,7 +93,7 @@ export default {
   },
 
   getFirstTraceOfRun(dp: DataProvider, runId) {
-    const traces = dp.indexes.traces.byRunId.get(runId);
+    const traces = dp.indexes.traces.byRun.get(runId);
     if (!traces?.length) {
       return null;
     }
@@ -96,7 +101,7 @@ export default {
   },
 
   getLastTraceOfRun(dp: DataProvider, runId) {
-    const traces = dp.indexes.traces.byRunId.get(runId);
+    const traces = dp.indexes.traces.byRun.get(runId);
     if (!traces?.length) {
       return null;
     }
@@ -155,6 +160,43 @@ export default {
     const trace = dp.collections.traces.getById(traceId);
     const { contextId } = trace;
     return dp.collections.executionContexts.getById(contextId);
+  },
+
+  isTraceInRealContext(dp: DataProvider, traceId) {
+    const { contextId } = dp.collections.traces.getById(traceId);
+    const { contextType } = dp.collections.executionContexts.getById(contextId);
+
+    return isRealContextType(contextType);
+  },
+
+  getRealContextId(dp: DataProvider, traceId) {
+    const { contextId } = dp.collections.traces.getById(traceId);
+    const context = dp.collections.executionContexts.getById(contextId);
+    const { parentContextId } = context;
+    const parentContext = dp.collections.executionContexts.getById(parentContextId);
+
+    if (isRealContextType(context.contextType)) {
+      return contextId;
+    }
+    else if (parentContext && isRealContextType(parentContext.contextType)) {
+      return parentContextId;
+    }
+    else {
+      logError('Could not find realContext.');
+      return null;
+    }
+  },
+
+  getTracesOfRealContext(dp: DataProvider, traceId) {
+    const { contextId } = dp.collections.traces.getById(traceId);
+    if (dp.util.isTraceInRealContext(traceId)) {
+      return dp.indexes.traces.byContext.get(contextId);
+    }
+    else {
+      const context = dp.collections.executionContexts.getById(contextId);
+      const { parentContextId } = context;
+      return dp.indexes.traces.byParentContext.get(parentContextId);
+    }
   },
 
   getTraceStaticContext(dp: DataProvider, traceId) {
@@ -224,6 +266,16 @@ export default {
     return callStaticId && dp.collections.staticTraces.getById(callStaticId) || null;
   },
 
+  getCallResultTrace(dp: DataProvider, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    if (trace.resultId) return trace;
+    if (trace.callId) return dp.util.getCallResultTrace(trace.callId);
+    if (trace.schedulerTraceId) return dp.util.getCallResultTrace(trace.schedulerTraceId);
+
+    // Not a call related trace or is already a result trace
+    return null;
+  },
+
   // ###########################################################################
   // traces of interruptable functions
   // ###########################################################################
@@ -235,7 +287,7 @@ export default {
     if (!staticContext) {
       return null;
     }
-    
+
     const {
       type: staticContextType
     } = staticContext;
@@ -307,5 +359,129 @@ export default {
       }
     }
     return groups;
-  }
+  },
+
+  // ###########################################################################
+  // Call expressions
+  // ###########################################################################
+
+  /**
+   * 
+   */
+  getStaticCallId(dp, staticTraceId) {
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    return staticTrace.resultCallId || staticTrace.callId;
+  },
+
+  // ###########################################################################
+  // Contexts + their traces
+  // ###########################################################################
+
+  /**
+   * Whether this is the last trace we have seen in its context.
+   * NOTE: Ignores final `PopImmediate`.
+   */
+  isLastTraceInRealContext(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const { contextId } = trace;
+    return dp.util.getLastTraceInRealContext(contextId) === trace;
+  },
+
+  /**
+   * Whether this is the last trace of its static context
+   * NOTE: Ignores final `PopImmediate`.
+   */
+  isLastStaticTraceInContext(dp, staticTraceId) {
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    const { staticContextId } = staticTrace;
+    return dp.util.getLastStaticTraceInContext(staticContextId) === staticTrace;
+  },
+
+  getActualLastTraceInRealContext(dp, contextId) {
+    const traces = dp.indexes.traces.byRealContext.get(contextId);
+    return traces?.[traces.length - 1] || null;
+  },
+
+  /**
+   * Whether this is the last trace we have seen in its context.
+   * NOTE: Ignores final `PopImmediate`.
+   */
+  getLastTraceInRealContext(dp, contextId) {
+    const traces = dp.indexes.traces.byRealContext.get(contextId);
+    let last = traces?.[traces.length - 1] || null;
+    if (last) {
+      // ignore pop
+      const { traceId: lastId } = last;
+      const traceType = dp.util.getTraceType(lastId);
+      if (isTracePop(traceType)) {
+        last = traces[traces.length - 2] || null;
+      }
+    }
+    return last;
+  },
+
+  /**
+   * Whether this is the last trace of its static context.
+   * NOTE: Ignores final `PopImmediate`.
+   */
+  getLastStaticTraceInContext(dp, staticContextId) {
+    const staticTraces = dp.indexes.staticTraces.byContext.get(staticContextId);
+    let last = staticTraces?.[staticTraces.length - 1] || null;
+    if (isTracePop(last?.type)) {
+      // ignore pop
+      last = staticTraces[staticTraces.length - 2] || null;
+    }
+    return last;
+  },
+
+  hasRealContextPopped(dp, contextId) {
+    const lastTrace = dp.util.getActualLastTraceInRealContext(contextId);
+    return lastTrace && isTracePop(dp.util.getTraceType(lastTrace.traceId)) || false;
+  },
+
+  // ###########################################################################
+  // Error handling
+  // ###########################################################################
+
+  // isErrorTrace(dp, traceId) {
+  //   // ` && `getLastTraceInRealContext.staticTrace` !== ``getLastStaticTraceInRealContext
+
+  //   const trace = dp.collections.traces.getById(traceId);
+  //   const { staticTraceId } = trace;
+  //   const traceType = dp.util.getTraceType(traceId);
+
+  //   console.log('errorTrace', !isReturnTrace(traceType),
+
+  //     traceId, staticTraceId,
+  //     dp.util.getRealContextId(traceId),
+
+  //     dp.util.getLastTraceInRealContext(dp.util.getRealContextId(traceId))?.traceId,
+  //     dp.util.getLastStaticTraceInContext(dp.collections.staticTraces.getById(staticTraceId).staticContextId)?.staticTraceId,
+
+  //     // is last trace we have recorded in context
+  //     dp.util.isLastTraceInRealContext(traceId),
+
+  //     // but is not last trace in the code
+  //     !dp.util.isLastStaticTraceInContext(staticTraceId),
+
+  //     // the context must have popped (finished), or else there was no error (yet)
+  //     dp.util.hasRealContextPopped(dp.util.getRealContextId(traceId)));
+
+  //   // is not a return trace (because return traces indicate function succeeded)
+  //   return !isReturnTrace(traceType) &&
+
+  //     // is last trace we have recorded in context
+  //     dp.util.isLastTraceInRealContext(traceId) &&
+
+  //     // but is not last trace in the code
+  //     !dp.util.isLastStaticTraceInContext(staticTraceId) &&
+
+  //     // the context must have popped (finished), or else there was no error (yet)
+  //     dp.util.hasRealContextPopped(dp.util.getRealContextId(traceId));
+  // },
+
+  // hasContextError(dp, realContextId) {
+  //   const trace = dp.util.getLastTraceInRealContext(realContextId);
+  //   return dp.util.isErrorTrace(trace);
+  // },
 };

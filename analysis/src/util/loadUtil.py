@@ -2,6 +2,7 @@ import pandas as pd
 import json
 # from math import isnan
 import numpy as np
+import os
 
 # NOTE: math.isnan only works for floats
 # see https://stackoverflow.com/a/44154660
@@ -9,8 +10,10 @@ def isnan(x):
     return (x is np.nan or x != x)
 
 def loadDbuxFile(fpath):
+  # thisDir = os.path.dirname(os.path.realpath(__file__))
+  # fpath = f'{thisDir}/../__data__/{fpath}'
   fpath = f'../__data__/{fpath}'
-  with open(fpath) as file:
+  with open(fpath, encoding='utf-8') as file:
     rawData = json.load(file)
   return rawData
 

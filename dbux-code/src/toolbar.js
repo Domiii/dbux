@@ -1,31 +1,31 @@
 import { newLogger } from 'dbux-common/src/log/logger';
 import { registerCommand } from './commands/commandUtil';
-import { ContextViewController } from './contextView/contextViewController';
+import { CallGraphViewController } from './callGraphView/callGraphViewController';
 
-const { log, debug, warn, error: logError } = newLogger('Commands');
+const { log, debug, warn, error: logError } = newLogger('Toolbar');
 
-export function initToolBar(context, contextViewController: ContextViewController) {
+export function initToolBar(context, callGraphViewController: CallGraphViewController) {
 
   registerCommand(context,
-    'dbuxContextView.addEntry',
+    'dbuxCallGraphView.addEntry',
     (...args) => log('Clicked on add entry, parameter', ...args)
   );
 
   registerCommand(context,
-    'dbuxContextView.next',
-    () => contextViewController.gotoNextContext()
+    'dbuxCallGraphView.next',
+    () => callGraphViewController.gotoNextContext()
   );
 
   registerCommand(context,
-    'dbuxContextView.previous',
-    () => contextViewController.gotoPreviousContext()
+    'dbuxCallGraphView.previous',
+    () => callGraphViewController.gotoPreviousContext()
   );
 
   registerCommand(context,
-    'dbuxContextView.clear',
+    'dbuxCallGraphView.clear',
     () => {
-      contextViewController.contextNodeProvider.clear();
-      contextViewController.contextNodeProvider.refreshView();
+      callGraphViewController.callGraphNodeProvider.clear();
+      callGraphViewController.callGraphNodeProvider.refreshView();
     }
   );
 

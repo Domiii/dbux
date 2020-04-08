@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"module": "esnext",
+		"target": "esnext",
+		"checkJs": false,  /* Typecheck .js files. */
+		"baseUrl": "./",
+		"paths": {
+			"@/*": [ "src/*" ]
+		}
+	},
+	"include": [
+		"src",
+		"src/**/*"
+	]
+}

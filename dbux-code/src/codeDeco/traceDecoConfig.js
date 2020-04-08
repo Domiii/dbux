@@ -86,7 +86,14 @@ const StylingsByName = {
       },
     }
   },
-  Callee: false, // don't render at all
+  ReturnArgument: {
+    styling: {
+      after: {
+        contentText: '✦',
+        color: 'red',
+      },
+    }
+  },
   CallArgument: {
     styling: {
       after: {
@@ -142,11 +149,42 @@ const StylingsByName = {
   },
 
   // ########################################
+  // Errors + Error handling
+  // ########################################
+
+  ThrowArgument: {
+    styling: {
+      after: {
+        contentText: '🌋',
+        color: 'yellow'
+      }
+    }
+  },
+
+  Error: {
+    styling: {
+      after: {
+        contentText: '🔥',
+        color: 'yellow'
+      }
+    }
+  },
+
+  // ########################################
   // don't display
   // ########################################
-  BeforeCallExpression: false,    // probably want to show this instead of ExpressionResult?
+  BeforeCallExpression: false, //{
+  //   styling: {
+  //     after: {
+  //       contentText: 'B',
+  //       color: 'red'
+  //     }
+  //   }
+  // },
   CalleeObject: false,
   ExpressionValue: false,
+  Callee: false,
+  EndOfContext: false
 };
 
 const decoNamesByType = {
@@ -155,7 +193,7 @@ const decoNamesByType = {
     if (valueRef?.category === ValueRefCategory.Function) {
       return 'CallbackArgument';
     }
-    
+
     const previousTrace = dataProvider.collections.traces.getById(trace.traceId - 1);
     if (previousTrace.contextId > trace.contextId) {
       return 'CallExpressionStep';
@@ -163,6 +201,7 @@ const decoNamesByType = {
     return 'CallExpressionNoStep';
   }
 };
+
 
 let configsByName, decoNames;
 
@@ -189,7 +228,15 @@ export function initTraceDecorators() {
 }
 
 export function getTraceDecoName(dataProvider, staticTrace, trace) {
-  const traceType = dataProvider.util.getTraceType(trace.traceId);
+  const { traceId, error } = trace;
+
+  // special decorations
+  if (error) {
+    return 'Error';
+  }
+
+  // default: check by type name
+  const traceType = dataProvider.util.getTraceType(traceId);
   const typeName = TraceType.nameFrom(traceType);
   const f = decoNamesByType[typeName];
   if (f) {

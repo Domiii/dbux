@@ -1,5 +1,5 @@
 import { TreeItemCollapsibleState } from 'vscode';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import allApplications from 'dbux-data/src/applications/allApplications';
 
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';

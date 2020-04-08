@@ -1,11 +1,12 @@
 const path = require('path');
-const fs = require('fs');
 const process = require('process');
-const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
+const { makeResolve, makeAbsolutePaths } = require('../scripts/webpack.util');
 
-process.env.BABEL_DISABLE_CACHE = 1;
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
+const projectRoot = path.resolve(__dirname);
+const MonoRoot = path.resolve(__dirname, '..');
+
 
 const outputFolderName = 'dist';
 const outFile = 'bundle.js';
@@ -13,29 +14,31 @@ const outFile = 'bundle.js';
 
 const webpackPlugins = [];
 
-const projectRoot = path.resolve(__dirname);
-const root = path.resolve(__dirname + '/..');
-const dbuxDepNames = ["dbux-common", "dbux-data", "dbux-code"];
-const dbuxDepsAbsolute = dbuxDepNames.map(f => path.resolve(path.join(root,f)));
 
-dbuxDepsAbsolute.forEach(f => {
-  if (!fs.existsSync(f)) {
-    throw new Error('invalid dbux dependency does not exist: ' + f);
-  }
-});
-
-
-
-const allFolders = [
-  path.join(root, '/node_modules'),
-  ...[...dbuxDepsAbsolute]
-    .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
-    .flat()
-    .map(f => path.resolve(f))
+const dependencyPaths = [
+  "dbux-common", "dbux-data", "dbux-graph-common", 
+  "dbux-graph-host", "dbux-code"
 ];
 
-// aliases allow resolving libraries that we are building here
-const alias = fromEntries(dbuxDepNames.map(target => [target, path.resolve(path.join(root, target))]));
+
+const resolve = makeResolve(MonoRoot, dependencyPaths);
+const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
+// console.log(resolve.modules);
+const rules = [
+  // {
+  //   loader: 'babel-loader',
+  //   include: [
+  //     path.join(projectRoot, 'src')
+  //   ]
+  // },
+  {
+    loader: 'babel-loader',
+    include: absoluteDependencies.map(r => path.join(r, 'src')),
+    options: {
+      babelrcRoots: absoluteDependencies
+    }
+  }
+];
 
 module.exports = {
   // https://github.com/webpack/webpack/issues/2145
@@ -56,29 +59,9 @@ module.exports = {
     devtoolModuleFilenameTemplate: "../[resource-path]",
     // sourceMapFilename: outFile + ".map"
   },
-  resolve: {
-    symlinks: true,
-    alias,
-    modules: [
-      ...allFolders
-    ]
-  },
+  resolve,
   module: {
-    rules: [
-      // {
-      //   loader: 'babel-loader',
-      //   include: [
-      //     path.join(projectRoot, 'src')
-      //   ]
-      // },
-      {
-        loader: 'babel-loader',
-        include: dbuxDepsAbsolute.map(r => path.join(r, 'src')),
-        options: {
-          babelrcRoots: dbuxDepsAbsolute
-        }
-      }
-    ],
+    rules,
   },
   externals: {
     uws: "uws",
