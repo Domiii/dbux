@@ -151,6 +151,14 @@ export default class GraphViewHost {
     async confirm(message) {
       const result = await window.showInformationMessage(message, 'Ok', 'Cancel');
       return result === 'Ok';
+    },
+
+    async prompt(message) {
+      const result = await window.showInputBox({
+        ignoreFocusOut: true,
+        placeHolder: message
+      });
+      return result;
     }
   }
 }
