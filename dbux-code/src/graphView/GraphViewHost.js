@@ -162,5 +162,3 @@ export default class GraphViewHost {
     }
   }
 }
-
-console.log('1234testtoken56789');
