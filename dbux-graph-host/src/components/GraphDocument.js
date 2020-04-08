@@ -21,7 +21,7 @@ class GraphDocument extends HostComponentEndpoint {
     // register event listeners
     // ########################################
 
-    allApplications.selection.onApplicationsChanged(this.refresh);
+    allApplications.selection.onApplicationsChanged(this.handleApplicationsChanged);
   }
 
   initChildren() {
@@ -34,12 +34,13 @@ class GraphDocument extends HostComponentEndpoint {
 
 
   // ###########################################################################
-  // refresh
+  // OnApplicationsChanged
   // ###########################################################################
 
-  refresh = (selectedApps) => {
+  handleApplicationsChanged = (selectedApps) => {
     // update root application data
     this.root.refresh();
+    this.root.children.clear();
 
     for (const app of selectedApps) {
       const { applicationId } = app;
