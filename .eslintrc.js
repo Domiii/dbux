@@ -82,5 +82,9 @@ module.exports = {
 		"one-var": 0,
 		"one-var-declaration-per-line": 0,
 		"dot-location": 0
+	},
+
+	settings: {
+		'import/resolver': 'webpack'
 	}
 };

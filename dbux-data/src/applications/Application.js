@@ -1,6 +1,6 @@
 import DataProvider from '../DataProvider';
 import { newDataProvider } from '../dataProviderImpl';
-import { getFileName, getPackageJson, getClosestPackageJsonNameOrPath } from '../util/nodeUtil';
+import { getFileName } from '../util/nodeUtil';
 
 
 /**

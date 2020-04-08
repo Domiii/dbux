@@ -144,9 +144,13 @@
 
 ## TODO (other)
 * design comprehension questions + tasks
+* fix: `findLongestWordLength/1for-bad` errors
+* fix: `dbux-code/src/net/Client` does not receive `data` event when breakpoint added on `init`
+* fix: `panzoom` library slow to unusable degree on `dbux-graph-client`
+* fix: `await0` shows an error (but there is none)
 * dbux-graph web components
-   * add button to reset webview html, without closing (this way, dev tool settings stay alive)
-   * fix `context` hierarchy
+   * batch `postMessage` calls before sending out
+   * map data (or some sort of `id`) to `componentId`
    * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
    * NOTES
       * `render` does NOT propagate to children (unlike React)
