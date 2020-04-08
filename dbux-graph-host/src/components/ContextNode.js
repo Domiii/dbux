@@ -7,25 +7,26 @@ class ContextNode extends HostComponentEndpoint {
     const {
       applicationId,
       context: {
-        contextId
+        contextId,
+        staticContextId
       }
     } = this.state;
+    
+    const dp = allApplications.getById(applicationId).dataProvider;
+
+    // get name (and other needed data)
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    const {
+      displayName
+    } = staticContext;
+    this.state.displayName = displayName;
 
     // get all children
-    const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
     childContexts.forEach(childContext => {
       // create child context
-      const {
-        staticContextId
-      } = childContext;
-      const staticContext = dp.collections.staticContexts.getById(staticContextId);
-      const {
-        displayName
-      } = staticContext;
       return this.children.createComponent(ContextNode, {
         applicationId,
-        displayName,
         context: childContext
       });
     });

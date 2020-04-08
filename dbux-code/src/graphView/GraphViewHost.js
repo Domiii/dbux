@@ -148,7 +148,7 @@ export default class GraphViewHost {
       logError('[CLIENT ERORR]', ...args);
     },
 
-    async prompt(message) {
+    async confirm(message) {
       const result = await window.showInformationMessage(message, 'Ok', 'Cancel');
       return result === 'Ok';
     }

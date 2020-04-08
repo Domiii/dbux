@@ -10,10 +10,6 @@ class Toolbar extends HostComponentEndpoint {
       await this.componentManager.externals.restartApp();
     },
 
-    gotoHome() {
-      
-    },
-
     addHi(n) {
       const { count } = this.state;
       this.setState({ count: count + n });
