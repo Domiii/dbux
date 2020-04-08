@@ -51,6 +51,33 @@ class GraphDocument extends ClientComponentEndpoint {
       0.5
     );
 
+
+    panzoom.on('panstart', function (e) {
+      console.log('panstart', e);
+      // Note: e === instance.
+    });
+
+    panzoom.on('pan', function (e) {
+      console.log('pan', e);
+    });
+
+    panzoom.on('panend', function (e) {
+      console.log('panend', e);
+    });
+
+    panzoom.on('zoom', function (e) {
+      console.log('Fired when `element` is zoomed', e);
+    });
+
+    panzoom.on('zoomend', function (e) {
+      console.log('Fired when zoom animation ended', e);
+    });
+
+    panzoom.on('transform', function (e) {
+      // This event will be called along with events above.
+      console.log('transform', e);
+    });
+
     return panzoom;
   }
   //focus slide. referance https://codepen.io/relign/pen/qqZxqW?editors=0011

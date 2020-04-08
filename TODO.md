@@ -146,9 +146,14 @@
 * design comprehension questions + tasks
 * fix: `findLongestWordLength/1for-bad` errors
 * fix: `dbux-code/src/net/Client` does not receive `data` event when breakpoint added on `init`
-* fix: `panzoom` library slow to unusable degree on `dbux-graph-client`
 * fix: `await0` shows an error (but there is none)
 * dbux-graph web components
+   * `panzoom`'s `scale` and/or `transform` cause webview to skip render frames
+      * Sln: triggering partial repaints (e.g. by simulating toggle button click) helps, but sometimes leaves things blurry
+         * maybe we can trigger a resize or other internal render events?
+         * maybe we can apply more/different transforms?
+         * maybe the key is to do just about anything in event handler, not in `rAF` or `setTimeout?
+
    * batch `postMessage` calls before sending out
    * map data (or some sort of `id`) to `componentId`
    * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
