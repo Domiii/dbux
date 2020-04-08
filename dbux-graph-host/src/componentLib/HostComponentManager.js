@@ -10,8 +10,8 @@ class AppComponent extends HostComponentEndpoint {
       this.componentManager.externals.logClientError(args);
     },
 
-    async prompt(...args) {
-      const result = await this.componentManager.externals.prompt(...args);
+    async confirm(...args) {
+      const result = await this.componentManager.externals.confirm(...args);
       return result;
     }
   }
@@ -19,7 +19,7 @@ class AppComponent extends HostComponentEndpoint {
 
 // TODO: create externals proxy?
 const usedExternals = [
-  'restartApp', 'logClientError', 'prompt'
+  'restartApp', 'logClientError', 'confirm'
 ];
 
 class HostComponentManager extends BaseComponentManager {

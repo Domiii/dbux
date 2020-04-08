@@ -2,7 +2,6 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { compileHtmlElement } from '@/util/domUtil';
 
 class Toolbar extends ClientComponentEndpoint {
-
   // ###########################################################################
   // createEl
   // ###########################################################################
@@ -33,7 +32,7 @@ class Toolbar extends ClientComponentEndpoint {
     hiBtn: {
       click(evt) {
         evt.preventDefault();
-        this.remote.addHi(2);
+        this.remote.addHi(3);
       },
 
       focus(evt) {
@@ -46,7 +45,7 @@ class Toolbar extends ClientComponentEndpoint {
       async click(evt) {
         evt.preventDefault();
 
-        if (await this.app.prompt('Do you really want to restart?')) {
+        if (await this.app.confirm('Do you really want to restart?')) {
           this.remote.restartApp();
         }
       }

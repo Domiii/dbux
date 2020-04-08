@@ -26,8 +26,8 @@ class AppComponent extends ClientComponentEndpoint {
     }
   };
 
-  prompt(...args) {
-    return this._remoteInternal.prompt(...args);
+  confirm(...args) {
+    return this._remoteInternal.confirm(...args);
   }
 }
 
