@@ -30,6 +30,7 @@ class ContextNode extends HostComponentEndpoint {
         context: childContext
       });
     });
+    this.state.hasChildren = !!childContexts.length;
   }
 }
 
