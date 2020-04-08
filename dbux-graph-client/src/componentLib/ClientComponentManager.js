@@ -7,6 +7,14 @@ import ClientComponentEndpoint from './ClientComponentEndpoint';
 // ###########################################################################
 
 class AppComponent extends ClientComponentEndpoint {
+  confirm(...args) {
+    return this._remoteInternal.confirm(...args);
+  }
+
+  prompt(...args) {
+    return this._remoteInternal.prompt(...args);
+  }
+
   _publicInternal = {
     async createComponent(parentId, componentId, componentName, initialState) {
       const parent = this.componentManager.getComponent(parentId);
@@ -25,10 +33,6 @@ class AppComponent extends ClientComponentEndpoint {
       return result;
     }
   };
-
-  confirm(...args) {
-    return this._remoteInternal.confirm(...args);
-  }
 }
 
 // ###########################################################################
