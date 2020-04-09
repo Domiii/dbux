@@ -24,6 +24,19 @@ class GraphDocument extends ClientComponentEndpoint {
     return el;
   }
 
+  /**
+   * hackfix: the VSCode webview does not re-render correctly when `panzoom` library updates element `transform`.
+   *    This forces it to re-render.
+   */
+  _repaint = () => {
+    // var el = document.querySelector('#root');
+    // var el = domElement;
+    const { el } = this;
+    const p = el.parentNode;
+    p.removeChild(el);
+    p.appendChild(el);
+  }
+
   initPanZoom = (el) => {
     let panzoom;
     panzoom = createPanzoom(el, {
@@ -52,30 +65,28 @@ class GraphDocument extends ClientComponentEndpoint {
     );
 
 
-    panzoom.on('panstart', function (e) {
-      console.log('panstart', e);
-      // Note: e === instance.
+    panzoom.on('panstart', (e) => {
+      // console.log('panstart', e);
     });
 
-    panzoom.on('pan', function (e) {
-      console.log('pan', e);
+    panzoom.on('pan', (e) => {
+      // this._repaint();
     });
 
-    panzoom.on('panend', function (e) {
-      console.log('panend', e);
+    panzoom.on('panend', (e) => {
+      // this._repaint();
     });
 
-    panzoom.on('zoom', function (e) {
-      console.log('Fired when `element` is zoomed', e);
+    panzoom.on('zoom', (e) => {
+      // this._repaint();
     });
 
-    panzoom.on('zoomend', function (e) {
-      console.log('Fired when zoom animation ended', e);
+    panzoom.on('zoomend', (e) => {
+      // this._repaint();
     });
 
-    panzoom.on('transform', function (e) {
-      // This event will be called along with events above.
-      console.log('transform', e);
+    panzoom.on('transform', (e) => {
+      this._repaint();
     });
 
     return panzoom;
