@@ -93,6 +93,15 @@ export function renderTraceDecorations(editor, fpath) {
   }
 }
 
+export function clearTraceDecorations(editor) {
+  for (const decoName of getAllTraceDecoNames()) {
+    const config = getDecoConfigByName(decoName);
+    if (config) {
+      editor.setDecorations(config.editorDecorationType, EmptyArray);
+    }
+  }
+}
+
 function createTraceGroupDecoration(dataProvider, decoName, staticTrace, traces) {
   const {
     staticTraceId,

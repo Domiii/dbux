@@ -58,6 +58,22 @@
 				"title": "Dbux: Show graph view"
 			},
 			{
+				"command": "dbux.showDecorations",
+				"title": "Dbux: Show decorations"
+			},
+			{
+				"command": "dbux.hideDecorations",
+				"title": "Dbux: Hide all decorations"
+			},
+			{
+				"command": "dbux.showNavButton",
+				"title": "Dbux: Show navigation buttons"
+			},
+			{
+				"command": "dbux.hideNavButton",
+				"title": "Dbux: Hide all navigation buttons"
+			},
+			{
 				"command": "dbuxCallGraphView.gotoEntry",
 				"title": "Goto"
 			},
@@ -190,45 +206,47 @@
 			"editor/title": [
 				{
 					"command": "dbuxPlayback.previousTrace",
+					"when": "dbux.context.showNavButton == true",
 					"group": "navigation@21"
 				},
 				{
 					"command": "dbuxPlayback.nextTrace",
+					"when": "dbux.context.showNavButton == true",
 					"group": "navigation@24"
 				},
 				{
 					"command": "dbuxPlayback.play",
-					"when": "dbuxPlayback.context.playing == false",
+					"when": "dbuxPlayback.context.playing == false && dbux.context.showNavButton == true",
 					"group": "navigation@22"
 				},
 				{
 					"command": "dbuxPlayback.pause",
-					"when": "dbuxPlayback.context.playing == true",
+					"when": "dbuxPlayback.context.playing == true && dbux.context.showNavButton == true",
 					"group": "navigation@23"
 				},
 				{
 					"command": "dbuxCallGraphView.showContext",
-					"when": "dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError == true",
+					"when": "dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
 					"group": "navigation@31"
 				},
 				{
 					"command": "dbuxCallGraphView.showError",
-					"when": "dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError == true",
+					"when": "dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
 					"group": "navigation@32"
 				},
 				{
 					"command": "dbuxCallGraphView.showError.disabled",
-					"when": "dbuxCallGraphView.context.hasError == false",
+					"when": "dbuxCallGraphView.context.hasError == false && dbux.context.showNavButton == true",
 					"group": "navigation@33"
 				},
 				{
 					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
-					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == true",
+					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == true && dbux.context.showNavButton == true",
 					"group": "navigation@11"
 				},
 				{
 					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
-					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == false",
+					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == false && dbux.context.showNavButton == true",
 					"group": "navigation@12"
 				}
 			],
