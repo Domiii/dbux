@@ -2,7 +2,7 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-
+* fix: `case-studies/findLongestWordLength/1for-bad` has errors
 * [errors]
    * just like, "select trace at cursor", insert two 🔥 buttons (one top right, one above `callGraphView`)
       * button is grayed out if there are no errors.
@@ -144,7 +144,6 @@
 
 ## TODO (other)
 * design comprehension questions + tasks
-* fix: `findLongestWordLength/1for-bad` errors
 * fix: `dbux-code/src/net/Client` does not receive `data` event when breakpoint added on `init`
 * fix: `await0` shows an error (but there is none)
 * dbux-graph web components

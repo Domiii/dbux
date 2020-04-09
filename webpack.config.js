@@ -29,7 +29,7 @@ const MonoRoot = path.resolve(__dirname);
 
 const targets = [
   // "dbux-cli"
-  // ["dbux-babel-plugin"],
+  ["dbux-babel-plugin"],
   ["dbux-runtime", {
     resolve: {
       // fix for https://github.com/websockets/ws/issues/1538
@@ -41,7 +41,7 @@ const targets = [
       }
     }
   }],
-  // ["dbux-graph-host"],
+  ["dbux-graph-host"],
   // ["dbux-case-studies"]
 ];
 

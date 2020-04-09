@@ -199,14 +199,6 @@ export default {
     }
   },
 
-  getTraceStaticContext(dp: DataProvider, traceId) {
-    const context = dp.util.getTraceContext(traceId);
-    const {
-      staticContextId
-    } = context;
-    return dp.collections.staticContexts.getById(staticContextId);
-  },
-
   getTraceContextType(dp: DataProvider, traceId) {
     const staticContext = dp.util.getTraceStaticContext(traceId);
     return staticContext.type;
@@ -243,11 +235,14 @@ export default {
   },
 
   getTraceStaticContextId(dp: DataProvider, traceId) {
-    const trace = dp.collections.traces.getById(traceId);
-    const { staticTraceId } = trace;
-    const context = dp.collections.contexts.getById(staticTraceId);
+    const context = dp.util.getTraceContext(traceId);
     const { staticContextId } = context;
     return staticContextId;
+  },
+
+  getTraceStaticContext(dp: DataProvider, traceId) {
+    const staticContextId = dp.util.getTraceStaticContextId(traceId);
+    return dp.collections.staticContexts.getById(staticContextId);
   },
 
   getCalleeTraceOfArg(dp: DataProvider, traceId) {
