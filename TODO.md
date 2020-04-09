@@ -144,6 +144,7 @@
 
 ## TODO (other)
 * fix: instrumentation - in `findLongestWord/1for-bad1`, `staticTraceId` order is messed up
+   * (see below: "AST ordering")
 * check: does `f(a, await b, c)` work correctly?
    * -> probably not, because result needs to be resolved later
    * `resolveCallIds` would try to resolve results too fast
@@ -159,9 +160,6 @@
       * `render` does NOT propagate to children (unlike React)
    * write `dbux-graph-client/scripts/pre-build` component-registry script
    * batch `postMessage`
-
-* fix: `CallExpression.arguments` are instrumented too early
-   * -> move back to `exitVisitors`
 
 * fix: `staticTraceId` must resemble AST ordering for error tracing to work correctly
    * examples of out-of-order static traces
