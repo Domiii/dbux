@@ -13,7 +13,6 @@ function findLongestWordLength(str) {
 }
 
 
-debugger;
 console.assert(
   findLongestWordLength(
     "The quick brown fox jumped over the lazy dog"

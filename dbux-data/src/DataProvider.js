@@ -165,12 +165,19 @@ class TraceCollection extends Collection<Trace> {
 
       const traceType = this.dp.util.getTraceType(traceId);
       if (!isTracePop(traceType) || !previousTraceId) {
+        // only (certain) pop traces can generate errors
+        continue;
+      }
+
+      const staticContext = this.dp.util.getTraceStaticContext(traceId);
+      if (staticContext.isInterruptable) {
+        // interruptable contexts, only have `Push` and `Pop` traces, everything else is in `Resume` children
         continue;
       }
 
       const previousTraceType = this.dp.util.getTraceType(previousTraceId);
       if (!isTraceFunctionExit(previousTraceType)) {
-        // error!
+        // before pop must be a function exit trace, else -> error!
         trace.error = true;
 
         // guess error trace

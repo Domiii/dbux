@@ -24,6 +24,19 @@ class GraphDocument extends ClientComponentEndpoint {
     return el;
   }
 
+  /**
+   * hackfix: the VSCode webview does not re-render correctly when `panzoom` library updates element `transform`.
+   *    This forces it to re-render.
+   */
+  _repaint = () => {
+    // var el = document.querySelector('#root');
+    // var el = domElement;
+    const { el } = this;
+    const p = el.parentNode;
+    p.removeChild(el);
+    p.appendChild(el);
+  }
+
   initPanZoom = (el) => {
     let panzoom;
     panzoom = createPanzoom(el, {
@@ -50,6 +63,31 @@ class GraphDocument extends ClientComponentEndpoint {
       0,
       0.5
     );
+
+
+    panzoom.on('panstart', (e) => {
+      // console.log('panstart', e);
+    });
+
+    panzoom.on('pan', (e) => {
+      // this._repaint();
+    });
+
+    panzoom.on('panend', (e) => {
+      // this._repaint();
+    });
+
+    panzoom.on('zoom', (e) => {
+      // this._repaint();
+    });
+
+    panzoom.on('zoomend', (e) => {
+      // this._repaint();
+    });
+
+    panzoom.on('transform', (e) => {
+      this._repaint();
+    });
 
     return panzoom;
   }

@@ -11,12 +11,16 @@ const outputFolder = path.join(MonoRoot, 'dbux-code', 'resources', 'dist');
 const buildMode = 'development';
 //const buildMode = 'production';
 
-const dependencyPaths = ["dbux-common", "dbux-graph-common", "dbux-graph-client"];
+const dependencies = [
+  "dbux-common", 
+  "dbux-graph-common", 
+  "dbux-graph-client"
+];
 
-const resolve = makeResolve(MonoRoot, dependencyPaths);
+const resolve = makeResolve(MonoRoot, dependencies);
 resolve.alias['@'] = path.join(projectRoot, 'src');
 
-const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
+const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencies);
 const rules = [
   // JavaScript
   {

@@ -5,17 +5,24 @@ const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntrie
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
+// ###########################################################################
+// makeAbsolutePaths
+// ###########################################################################
 
-exports.makeAbsolutePaths = function makeAbsolutePaths(root, relativePaths) {
+function makeAbsolutePaths(root, relativePaths) {
   return relativePaths.map(f => path.resolve(path.join(root, f)));
-};
+}
+
+// ###########################################################################
+// makeResolve
+// ###########################################################################
 
 /**
  * Resolve dependencies:
  * 1. node_modules/
  * 2. relativePaths: A list of paths relative to `root` that are also used in this project
  */
-exports.makeResolve = function makeResolve(root, relativePaths = []) {
+function makeResolve(root, relativePaths = []) {
   const absolutePaths = relativePaths.map(f => path.resolve(path.join(root, f)));
   absolutePaths.forEach(f => {
     if (!fs.existsSync(f)) {
@@ -45,4 +52,48 @@ exports.makeResolve = function makeResolve(root, relativePaths = []) {
       ...moduleFolders
     ]
   };
+}
+
+// ###########################################################################
+// package.json
+// ###########################################################################
+
+function readPackageJson(fpath) {
+  const content = fs.readFileSync(fpath);
+  return JSON.parse(content);
+}
+
+function getDependenciesPackageJson(root, entryName, pattern) {
+  const packageJsonPath = path.join(root, entryName, 'package.json');
+  const packageJson = readPackageJson(packageJsonPath);
+  let dependencies = packageJson && packageJson.dependencies;
+  if (!dependencies) {
+    return [];
+  }
+
+  dependencies = Object.keys(dependencies);
+  return dependencies.filter(dep => pattern.test(dep));
+}
+
+
+/**
+ * Build webpack `resolve` entry for dependencies from `package.json`.
+ * WARNING: Assumes matching dependencies to be direct children of `root` path.
+ */
+function makeResolvePackageJson(root, entryName, dependencyPattern) {
+  const deps = getDependenciesPackageJson(root, entryName, dependencyPattern);
+  return makeResolve(root, deps);
+}
+
+module.exports = {
+  makeAbsolutePaths,
+  makeResolve,
+
+  readPackageJson,
+  makeResolvePackageJson,
+  getDependenciesPackageJson
 };
+
+// ###########################################################################
+// 
+// ###########################################################################

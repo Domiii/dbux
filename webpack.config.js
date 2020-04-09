@@ -4,10 +4,14 @@
 
 const path = require('path');
 const process = require('process');
+const mergeWith = require('lodash/mergeWith');
+const isArray = require('lodash/isArray');
 const nodeExternals = require('webpack-node-externals');
-const { makeResolve, makeAbsolutePaths } = require('./scripts/webpack.util');
-
-const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
+const {
+  getDependenciesPackageJson,
+  makeResolve,
+  makeAbsolutePaths
+} = require('./scripts/webpack.util');
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
@@ -17,27 +21,44 @@ const defaultEntryPoint = 'src/index.js';
 const buildMode = 'development';
 //const buildMode = 'production';
 
+// ###########################################################################
+// config
+// ###########################################################################
+
 const MonoRoot = path.resolve(__dirname);
 
 const targets = [
   // "dbux-cli"
-  "dbux-babel-plugin",
-  "dbux-runtime",
-  "dbux-graph-host"
+  ["dbux-babel-plugin"],
+  ["dbux-runtime", {
+    resolve: {
+      // fix for https://github.com/websockets/ws/issues/1538
+      mainFields: ['main'],
+
+      // fix for https://github.com/websockets/ws/issues/1538
+      alias: {
+        ws: path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'))
+      }
+    }
+  }],
+  ["dbux-graph-host"],
+  // ["dbux-case-studies"]
 ];
 
-const dependencyPaths = [
-  "dbux-common",
-  "dbux-data"
-];
+// ###########################################################################
+// utilities
+// ###########################################################################
 
-dependencyPaths.push(...targets);
+function arrayMerge(dst, src) {
+  if (isArray(dst)) {
+    return dst.concat(src);
+  }
+  return undefined;
+}
+function mergeWithArrays(dst, src) {
+  return mergeWith(dst, src, arrayMerge);
+}
 
-const resolve = makeResolve(MonoRoot, dependencyPaths);
-// fix for https://github.com/websockets/ws/issues/1538
-resolve.mainFields = ['main'];
-// fix for https://github.com/websockets/ws/issues/1538
-resolve.alias.ws = path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'));
 
 // TODO: add `src` alias to every build
 // resolve.alias.src = 
@@ -45,13 +66,10 @@ resolve.alias.ws = path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_module
 // alias['socket.io-client'] = path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ));
 // console.warn(resol);
 
-const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
-
 
 const webpackPlugins = [];
 
-// const entry = fromEntries(targets.map(target => [target, path.join('..', target, 'src/index.js').substring(1)]));  // hackfix: path.join('.', dir) removes the leading period
-const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, defaultEntryPoint))]));
+// const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, defaultEntryPoint))]));
 
 // `context` is the path from which any relative paths are resolved
 const context = MonoRoot;
@@ -67,23 +85,27 @@ const output = {
   // library: target
 };
 
-// console.warn('webpack folders:\n  ', allFolders.join('\n  '));
-// console.warn('webpack entries:', entry);
+// ###########################################################################
+// buildConfig
+// ###########################################################################
 
-// NOTE: require things down here, not up above?
-// const dbuxCode = require('./dbux-code/webpack.config');
+function buildConfig([target, configOverrides]) {
+  const targetRoot = path.join(MonoRoot, target);
+  const src = path.join(targetRoot, 'src');
 
-// /*eslint global-require: 0 */
-const otherWebpackConfigs = [
-  require('./dbux-code/webpack.config'),
+  const entry = {
+    [target]: path.join(targetRoot, defaultEntryPoint)
+  };
 
-  // NOTE: Don't build `dbux-graph-web` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
-  // require('./dbux-graph-web/webpack.config')
-];
+  const dependencyPattern = /^dbux-.*/;
+  const dependencies = getDependenciesPackageJson(MonoRoot, target, dependencyPattern);
+  dependencies.push(target);
+  const resolve = makeResolve(MonoRoot, dependencies);
+  resolve.alias['@'] = src;
 
+  const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencies);
 
-module.exports = [
-  {
+  let cfg = {
     watch: true,  // NOTE: webpack 4 ignores `watch` attribute on any config but the first
     watchOptions: {
       poll: true,
@@ -158,7 +180,32 @@ module.exports = [
       }),
       // 'fs', 'net'   // debug library complains about these
     ]
-  },
+  };
+
+  cfg = mergeWithArrays(cfg, configOverrides);
+  
+  return cfg;
+}
+
+// ###########################################################################
+// other configs (NOTE: node only! don't mix targets with webpack.)
+// ###########################################################################
+
+// /*eslint global-require: 0 */
+const otherWebpackConfigs = [
+  require('./dbux-code/webpack.config'),
+
+  // NOTE: Don't build `dbux-graph-web` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
+  // require('./dbux-graph-web/webpack.config')
+];
+
+
+// ###########################################################################
+// module.exports
+// ###########################################################################
+
+module.exports = [
+  ...targets.map(buildConfig),
 
   // NOTE: you can have multiple configs per file (see https://stackoverflow.com/a/46825869)
   ...otherWebpackConfigs
