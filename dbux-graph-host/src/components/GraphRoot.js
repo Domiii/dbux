@@ -20,7 +20,7 @@ class GraphRoot extends HostComponentEndpoint {
     let runIds = new Set(contexts.map(context => context?.runId || 0));
     runIds.delete(0);
     runIds = Array.from(runIds);
-    runIds.sort((a, b) => b - a);     // sort runIds in ascending order (because set is unordered)
+    runIds.sort((a, b) => a - b);     // sort runIds in ascending order (because set is unordered)
 
     // create Run nodes
     runIds.forEach(runId =>

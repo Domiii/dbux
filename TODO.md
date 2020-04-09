@@ -143,18 +143,17 @@
 
 
 ## TODO (other)
-* design comprehension questions + tasks
-* fix: provide an easier way to use some `ipynb` to analyze any application
-* fix: `dbux-code/src/net/Client` does not receive `data` event when breakpoint added on `init`
+* fix: instrumentation - in `findLongestWord/1for-bad1`, `staticTraceId` order is messed up
+* check: does `f(a, await b, c)` work correctly?
+   * -> probably not, because result needs to be resolved later
+   * `resolveCallIds` would try to resolve results too fast
+* fix: rename `dbux-case-studies` to `dbux-projects`
+* fix: setup `eslint` to use correct index of `webpack` multi config
+* (big goal: design projects, bugs, comprehension questions + tasks)
+* fix: provide an easier way to use `ipynb` to analyze any application
 * dbux-graph web components
-   * `panzoom`'s `scale` and/or `transform` cause webview to skip render frames
-      * Sln: triggering partial repaints (e.g. by simulating toggle button click) helps, but sometimes leaves things blurry
-         * maybe we can trigger a resize or other internal render events?
-         * maybe we can apply more/different transforms?
-         * maybe the key is to do just about anything in event handler, not in `rAF` or `setTimeout?
-
-   * batch `postMessage` calls before sending out
    * map data (or some sort of `id`) to `componentId`
+   * batch `postMessage` calls before sending out
    * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
    * NOTES
       * `render` does NOT propagate to children (unlike React)
