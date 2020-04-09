@@ -1,7 +1,6 @@
 import RemoteCommandProxy from './RemoteCommandProxy';
 
-class 
-ComponentEndpoint {
+class ComponentEndpoint {
   componentManager;
 
   /**
