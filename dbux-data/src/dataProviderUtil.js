@@ -1,5 +1,5 @@
 import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop } from 'dbux-common/src/core/constants/TraceType';
-import { pushArrayOfArray} from 'dbux-common/src/util/arrayUtil';
+import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
@@ -290,13 +290,30 @@ export default {
     return callStaticId && dp.collections.staticTraces.getById(callStaticId) || null;
   },
 
+  /**
+   * Return the result trace in the call if exist
+   */
   getCallResultTrace(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    if (trace.resultId) return trace;
-    if (trace.callId) return dp.util.getCallResultTrace(trace.callId);
-    if (trace.schedulerTraceId) return dp.util.getCallResultTrace(trace.schedulerTraceId);
+    const type = dp.util.getTraceType(traceId);
+    if (trace.schedulerTraceId) {
+      // trace is push/pop callback
+      return dp.util.getCallResultTrace(trace.schedulerTraceId);
+    }
+    else if (trace.callId && type !== TraceType.BeforeCallExpression) {
+      // trace is call/callback arg
+      return dp.util.getCallResultTrace(trace.callId);
+    }
+    else if (trace.resultId) {
+      // trace is a BeforeCallExpression and has result
+      return dp.collections.traces.getById(trace.resultId);
+    }
+    else if (trace.resultCallId) {
+      // trace itself is a resultTrace
+      return trace;
+    }
 
-    // Not a call related trace or is already a result trace
+    // Not a call related trace or the call does not have a result
     return null;
   },
 

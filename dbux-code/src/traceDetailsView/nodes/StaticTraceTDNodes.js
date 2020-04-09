@@ -126,6 +126,7 @@ export class StaticTraceTDNode extends BaseTreeViewNode {
   }
 
   static makeProperties(trace, parent, detail) {
+    // build children here since label depends on children
     const { staticTraceId } = trace;
     const application = allApplications.getById(trace.applicationId);
     const { dataProvider } = application;
@@ -155,6 +156,7 @@ export class StaticTraceTDNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
+    // use built children in makeProperties
     const { treeNodeProvider, groupedTraces } = this;
 
     const nodes = groupedTraces.map((groupData) => {
