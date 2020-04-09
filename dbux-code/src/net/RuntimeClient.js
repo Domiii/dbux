@@ -2,7 +2,7 @@ import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import Application from 'dbux-data/src/applications/Application';
 
-const { log, debug, warn, error: logError } = newLogger('runtime-client');
+const { log, debug, warn, error: logError } = newLogger('RuntimeClient');
 
 export default class Client {
   server;
@@ -61,10 +61,12 @@ export default class Client {
       }
     }
 
+    debug('init');
     this.socket.emit('init_ack', this.application.applicationId);
   }
 
   _handleData = (data) => {
+    debug('data received');
     this.application.addData(data);
   }
 

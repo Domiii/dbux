@@ -70,9 +70,6 @@ export default class Client {
 
     // start initial handshake
     this._sendInit();
-
-    // kill socket after configured period of inactivity
-    this._refreshInactivityTimer();
   };
 
   _handleConnectFailed = () => {
