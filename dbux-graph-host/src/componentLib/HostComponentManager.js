@@ -24,7 +24,7 @@ class AppComponent extends HostComponentEndpoint {
 
 // TODO: create externals proxy?
 const usedExternals = [
-  'restartApp', 'logClientError', 'confirm', 'prompt'
+  'restart', 'logClientError', 'confirm', 'prompt'
 ];
 
 class HostComponentManager extends BaseComponentManager {
@@ -37,6 +37,21 @@ class HostComponentManager extends BaseComponentManager {
   start() {
     super.start(AppComponent);
   }
+  
+  async restart() {
+    debug('restarting...');
+    this.ipc.ipcAdapter.postMessage = (msg) => {
+      // when invoked by remote, we try to send response back after shutdown. This prevents that.
+      debug('silenced message after Host shutdown:', JSON.stringify(msg));
+    };
+    
+    // externals.restart can also re-load client code (something we cannot reliably do internally)
+    await this.externals.restart();
+  }
+
+  // ###########################################################################
+  // private methods
+  // ###########################################################################
 
   _createComponent(parent, ComponentEndpointClass, initialState = {}) {
     const componentId = ++this._lastComponentId;

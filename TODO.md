@@ -143,8 +143,13 @@
 
 
 ## TODO (other)
-* design comprehension questions + tasks
-* fix: provide an easier way to use some `ipynb` to analyze any application
+* fix: rename `dbux-case-studies` to `dbux-projects`
+* fix: setup `eslint` to use correct index of `webpack` multi config
+* fix: instrumentation - in `findLongestWord/1for-bad1`, `staticTraceId` order is messed up
+* check: does `f(a, await b, c)` work correctly? (probably not)
+   * `resolveCallIds` would try to resolve things too fast
+* (big goal: design projects, bugs, comprehension questions + tasks)
+* fix: provide an easier way to use `ipynb` to analyze any application
 * fix: `dbux-code/src/net/Client` does not receive `data` event when breakpoint added on `init`
 * dbux-graph web components
    * `panzoom`'s `scale` and/or `transform` cause webview to skip render frames

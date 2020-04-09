@@ -6,8 +6,8 @@ class Toolbar extends HostComponentEndpoint {
   }
 
   public = {
-    async restartApp() {
-      await this.componentManager.externals.restartApp();
+    async restart() {
+      await this.componentManager.restart();
     },
 
     addHi(n) {
