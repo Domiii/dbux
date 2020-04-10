@@ -1,16 +1,18 @@
-import caseStudyRegistry from './_caseStudyRegistry';
+import caseStudyRegistry from './_projectRegistry';
 
 /**
  * Retrieves all case study objects, 
  * sorted by name (in descending order).
  */
-export function getAllCaseStudies() {
+export function buildDefaultProjectList() {
   // fix up names
-  //    NOTE: function + class names might get mangled by Webpack
   for (const name in caseStudyRegistry) {
     const Clazz = caseStudyRegistry[name];
+    
+    // NOTE: function + class names might get mangled by Webpack
     Clazz.constructorName = name;
   }
+
 
   // sort all classes by name
   const classes = Object.values(caseStudyRegistry);
@@ -20,7 +22,5 @@ export function getAllCaseStudies() {
     return nameB.localeCompare(nameA);
   });
 
-  // instantiate all classes!?
-
-  return classes;
+  return new ProjectList();
 }

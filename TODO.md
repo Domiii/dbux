@@ -17,12 +17,15 @@
       * show/hide all `codeDeco`s
       * show/hide all other buttons in the top right
    * command name: `Dbux: Toggle Controls`
-* display a warning at the top of EditorWindow:
-   * if it has been edited after the time of it's most recent `Program` `Context`
+* [edited warning]
+   * display a warning at the top of EditorWindow if it has been edited after the time of it's most recent `Program` `Context`
       * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
       * offer buttons to let user reply...:
          * do not show warning again for this file (before restart)
          * remove the application from `allApplications`
+* [slow warning]
+   * display a warning at the top of EditorWindow if it is very large and thus will slow things down (e.g. > x traces?)
+      * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 * keyword `wordcloud`
    * prepare function to generate all keywords in all `staticContexts` and their `fileName`s (without ext) of a single run
       * multiply weight by how often they were called (use `contexts`, rather than `staticContexts`)
@@ -115,24 +118,19 @@
 
 
 
-## TODO (dbux-code + dbux-data; lower priority)
-* [UI design]
-   * proper icons + symbols for all tree nodes?
-* dbux toggle/enable/disable controls
-   * e.g. keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+B CTRL+X` (need every single key))
-   
-* display a warning at the top of EditorWindow:
-   * if it is very large and thus will slow things down (e.g. > x traces?)
-      * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 
 
 
 
-
-
-
-
+## TODO (`dbux-projects`)
+* list projects
+* for each project, list it's bugs to choose from
+* have a button: "prepare" bug + open it in VSCode
+* save changes automatically before moving to another bug
+   * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
+* difficulty classification
+* hint system + more relevant information
 
 
 
@@ -173,6 +171,9 @@
       * When error observed, lookup `staticTrace` by `orderId`
          * Problem: data dependencies: need to lookup when adding traces
             * Sln: Initialize `static` data and pure indexes of `static` data first
+   * Problem: conditions on branches cannot predict the branch which observes the errors
+      * Sln: make sure to trace every branch anywhere
+         * e.g. `if`, `ternary`, ... other?
 * [error_handling]
    * more TODOs
       * handle `try` blocks

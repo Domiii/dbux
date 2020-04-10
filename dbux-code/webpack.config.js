@@ -20,7 +20,7 @@ const dependencyPaths = [
   "dbux-data",
   "dbux-graph-common",
   "dbux-graph-host",
-  "dbux-case-studies",
+  "dbux-projects",
   "dbux-code"
 ];
 

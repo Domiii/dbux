@@ -1,10 +1,13 @@
 {
-  "name": "dbux-case-studies",
+  "name": "dbux-projects",
   "version": "1.0.0",
   "description": "",
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dbux-common": "*"
   },
   "keywords": [],
   "author": "",

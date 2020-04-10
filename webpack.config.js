@@ -28,7 +28,7 @@ const buildMode = 'development';
 const MonoRoot = path.resolve(__dirname);
 
 const targets = [
-  // "dbux-cli"
+  // "dbux-cli",
   ["dbux-babel-plugin"],
   ["dbux-runtime", {
     resolve: {
@@ -42,7 +42,7 @@ const targets = [
     }
   }],
   ["dbux-graph-host"],
-  // ["dbux-case-studies"]
+  ["dbux-projects"]
 ];
 
 // ###########################################################################
