@@ -1,4 +1,6 @@
 import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
+import Project from './Project';
+import Bug from './Bug';
 
 export default class BugRunner {
   manager;
@@ -6,7 +8,13 @@ export default class BugRunner {
    * @type {SerialTaskQueue}
    */
   _queue;
+  /**
+   * @type {Project}
+   */
   _project;
+  /**
+   * @type {Bug}
+   */
   _bug;
 
   constructor(manager) {
@@ -45,7 +53,7 @@ export default class BugRunner {
     }
     
     this._project = project;
-    await project.install();
+    await project.installProject();
   }
 
   async activateBug(bug) {

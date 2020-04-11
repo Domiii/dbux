@@ -60,7 +60,7 @@ code -n .
 */
 
 export default class ExpressInstaller extends ProjectInstaller {
-  async install() {
+  async installProject() {
     // thisDir = "$(getScriptDir "${ BASH_SOURCE[0] } ")"
     // projectPath = "express"
     // githubUrl = "https://github.com/BugsJS/express.git"

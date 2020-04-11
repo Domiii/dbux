@@ -11,14 +11,14 @@ export default class ProjectInstaller {
   }
 
   // ###########################################################################
-  // abstract methods
+  // Installer implementation
   // ###########################################################################
 
   /**
    * @abstract
    */
-  async install() {
-    throw new Error(`${this} did not implement abstract method "install"`);
+  async installProject() {
+    throw new Error(`${this} did not implement abstract method "installProject"`);
   }
 
   /**
@@ -34,6 +34,10 @@ export default class ProjectInstaller {
   async selectBug(bug) {
     throw new Error(`${this} did not implement abstract method "selectBug"`);
   }
+
+  // ###########################################################################
+  // misc
+  // ###########################################################################
 
   toString() {
     return this.project.toString();

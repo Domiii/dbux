@@ -44,9 +44,9 @@ export default class Project {
   /**
    * @abstract
    */
-  async install() {
+  async installProject() {
     const installer = this._getOrCreateInstaller();
-    return installer.install();
+    return installer.installProject();
   }
 
   /**
