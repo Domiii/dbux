@@ -41,7 +41,7 @@ const targets = [
       }
     }
   }],
-  ["dbux-graph-host"],
+  // ["dbux-graph-host"],
   ["dbux-projects"]
 ];
 
@@ -188,7 +188,8 @@ function buildConfig([target, configOverrides]) {
 }
 
 // ###########################################################################
-// other configs (NOTE: node only! don't mix targets with webpack.)
+// other configs
+//  (WARNING: add node configs only! don't mix targets with webpack; it doesn't like it.)
 // ###########################################################################
 
 // /*eslint global-require: 0 */

@@ -2,16 +2,8 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* fix: `case-studies/findLongestWordLength/1for-bad` has errors
-* [errors]
-   * just like, "select trace at cursor", insert two 🔥 buttons (one top right, one above `callGraphView`)
-      * button is grayed out if there are no errors.
-      * when clicked, list all errors in call graph view
-* [applicationView]
-   * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
-   * nest applications of same entry point under same node
-      * most recent Application is parent, all others are children
-      * make sure, `children` is `null` if it has no children (so `CollapsibleState` will be `None`)
+* multi-purpose `TreeView`: merge several of our (not so frequently used treeViews) into one
+   * -> Make sure it is still easy to use
 * add a command to toggle (show/hide) all intrusive features
    * includes:
       * show/hide all `codeDeco`s
@@ -131,6 +123,13 @@
    * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
 * difficulty classification
 * hint system + more relevant information
+* file management
+   * asset folder?
+   * target folder?
+   * allow target folder to be configurable
+
+
+
 
 
 

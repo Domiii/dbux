@@ -1,14 +1,17 @@
-import { buildDefaultProjectList } from '@';
+import ProjectsManager from './ProjectsManager';
 
 (async function main() {
-  const projects = buildDefaultProjectList();
+  const externals = {
+    
+  };
+  const manager = new ProjectsManager({
+    externals
+  });
+  const projects = manager.buildDefaultProjectList();
+  const runner = manager.newBugRunner();
   const project1 = projects.getAt(0);
-
-  const runner = new BugRunner();
-
   const bug = project1.bugs.getAt(0);
+  
   runner.activateBug(bug);
   bug.openEditor();
-
-  // TODO: need some sort of manager/authority/ConfigProvider to provide externals for `openEditor`
 })();

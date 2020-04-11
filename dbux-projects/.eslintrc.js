@@ -7,7 +7,7 @@ module.exports = {
     'import/resolver': {
       webpack: {
         config: path.join(__dirname, '../webpack.config.js'),
-        'config-index': 3
+        'config-index': 2
       }
     }
   }
