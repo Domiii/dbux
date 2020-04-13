@@ -3,7 +3,7 @@ import path from 'path';
 export default class Bug {
   project;
   
-  mainFilePath;
+  testFilePaths;
   id;
   title;
   description;
@@ -27,7 +27,13 @@ export default class Bug {
   }
 
   async openInEditor() {
-    const fpath = path.join(this.project.projectPath, this.mainFilePath);
-    return this.manager.editor.openFolder(fpath);
+    // add folder to IDE
+    await this.manager.externals.editor.openFolder(this.project.projectPath);
+
+    // open file (if any)
+    if (this.testFilePaths[0]) {
+      const fpath = path.join(this.project.projectPath, this.testFilePaths[0]);
+      await this.manager.externals.editor.openFolder(fpath);
+    }
   }
 }

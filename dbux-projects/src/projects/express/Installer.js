@@ -89,28 +89,17 @@ export default class ExpressInstaller extends ProjectInstaller {
     // (result.err && warn || log)('  ->', result.err || result.out);
     debug(`Cloned.`);
 
-    // add "attach to node" `launch.json` entry
-    /*
-    {
-      "type": "node",
-      "request": "attach",
-      "name": "Attach to any node program",
-      "port": 9229
-    }
-    */
-
-    // TODO
-
-
-    // add instrumentation (w/ webpack)
-    // TODO
+    // TODO: copy assets
+    // TODO: start webpack if necessary
+    // TODO: manage/expose (webpack) bug background process
   }
 
   async loadBugs() {
-    // TODO!
+    // TODO: load automatically from BugsJs bug database
     return [
       {
-        mainFilePath: './test/app.param.js',
+        // NOTE: some bugs have multiple test files, or no test file at all
+        testFilePaths: ['./test/app.param.js'],
         runArgs: [
           "--grep",
           "should defer all the param routes",
@@ -124,10 +113,13 @@ export default class ExpressInstaller extends ProjectInstaller {
   }
 
   async selectBug(bug) {
-    const bugId = bug.id;
+    const {
+      id, name
+    } = bug;
     const tagCategory = "test"; // "test", "fix" or "full"
 
     // checkout the bug branch
-    exec(`git checkout "tags/Bug-${bugId}-${tagCategory}"`);
+    debug(`Checking out bug ${name || id}...`);
+    exec(`git checkout "tags/Bug-${id}-${tagCategory}"`);
   }
 }

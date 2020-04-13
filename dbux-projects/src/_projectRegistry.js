@@ -1,6 +1,6 @@
-import Express from './projects/bugsjsExpress/Project';
+import express from './projects/express/Project';
 
 
 export default {
-  Express
+  express
 };

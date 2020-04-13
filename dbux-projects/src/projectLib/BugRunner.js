@@ -52,20 +52,20 @@ export default class BugRunner {
   // ###########################################################################
 
   /**
-   * NOTE: synchronized method
+   * NOTE: synchronized.
    */
   async activateProject(project) {
     return this._activateProject(project);
   }
 
   /**
-   * Not synchronized.
+   * NOTE: Not synchronized.
    */
   async _activateProject(project) {
     if (this.isProjectActive(project)) {
       return;
     }
-    
+
     this._project = project;
     await project.installProject();
   }
@@ -81,10 +81,23 @@ export default class BugRunner {
 
     // activate project
     await this._activateProject(bug.project);
-    
+
     // select bug
     this._bug = bug;
     await bug.project.selectBug(bug);
+  }
 
+  async testBug(bug) {
+    // TODO: use bug.runArgs
+    // TODO: add "attach to node" `launch.json` entry (via externals)
+    
+    /*
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to any node program",
+      "port": 9229
+    }
+    */
   }
 }

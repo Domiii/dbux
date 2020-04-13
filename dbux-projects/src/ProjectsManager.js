@@ -11,8 +11,7 @@ class ProjectsManager {
   constructor(cfg, externals) {
     this.config = cfg;
     this.externals = externals;
-
-    this.editor = new EditorApi();
+    this.editor = externals.editor;
   }
 
   /**
