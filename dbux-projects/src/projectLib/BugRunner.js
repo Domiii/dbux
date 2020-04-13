@@ -24,6 +24,7 @@ export default class BugRunner {
     this.manager = manager;
     this._queue = new SerialTaskQueue('BugRunnerQueue');
 
+    // TODO: synchronized methods deadlock when they call each other
     this._queue.synchronizedMethods(this,
       'activateProject',
       'activateBug'
@@ -50,7 +51,17 @@ export default class BugRunner {
   // activation methods
   // ###########################################################################
 
+  /**
+   * NOTE: synchronized method
+   */
   async activateProject(project) {
+    return this._activateProject(project);
+  }
+
+  /**
+   * Not synchronized.
+   */
+  async _activateProject(project) {
     if (this.isProjectActive(project)) {
       return;
     }
@@ -60,20 +71,20 @@ export default class BugRunner {
   }
 
   async activateBug(bug) {
+    return this._activateBug(bug);
+  }
+
+  async _activateBug(bug) {
     if (this.isBugActive(bug)) {
       return;
     }
-    
-    console.debug('activateBug', 0);
 
     // activate project
-    await this.activateProject(bug.project);
-    console.debug('activateBug', 1);
+    await this._activateProject(bug.project);
     
     // select bug
     this._bug = bug;
     await bug.project.selectBug(bug);
 
-    console.debug('activateBug', 2);
   }
 }

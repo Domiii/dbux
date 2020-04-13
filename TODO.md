@@ -118,6 +118,10 @@
 ## TODO (`dbux-projects`)
 * list projects
 * for each project, list it's bugs to choose from
+* project installer
+   * add `launch.json`
+      * (possibly a more cross-IDE-compatible generalized solution?)
+   * add webpack
 * have a button: "prepare" bug + open it in VSCode
 * save changes automatically before moving to another bug
    * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding

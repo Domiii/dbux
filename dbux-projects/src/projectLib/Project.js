@@ -1,4 +1,5 @@
 import path from 'path';
+import sh from 'shelljs';
 import ProjectInstaller from './ProjectInstaller';
 import BugList from './BugList';
 
@@ -20,9 +21,12 @@ export default class Project {
   // getters
   // ###########################################################################
 
+  get projectsRoot() {
+    return this.manager.config.projectsRoot;
+  }
+
   get projectPath() {
-    const { projectsRoot } = this.manager.config;
-    return path.join(projectsRoot, this.folderName);
+    return path.join(this.projectsRoot, this.folderName);
   }
 
   // ###########################################################################
@@ -53,6 +57,10 @@ export default class Project {
       if (!Installer) {
         throw new Error(`${this} class did not define "static Installer = ...;"`);
       }
+
+      // make sure, `projectsRoot` exists
+      const { projectsRoot } = this;
+      sh.mkdir('-p', projectsRoot);
 
       this._installer = new Installer(this);
     }

@@ -54,13 +54,13 @@ export function logDebug(ns, ...args) {
 }
 
 export function logWarn(ns, ...args) {
-  ns = `[DBUX ${ns}]`;
+  ns = `[${ns}]`;
   console.warn(ns, ...args);
   emitter.emit('warn', ns, ...args);
 }
 
 export function logError(ns, ...args) {
-  ns = `[DBUX ${ns}]`;
+  ns = `[${ns}]`;
   console.error(ns, ...args);
   emitter.emit('error', ns, ...args);
 }

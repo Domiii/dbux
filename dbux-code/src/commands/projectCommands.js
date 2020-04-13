@@ -1,15 +1,21 @@
 import path from 'path';
+import { newLogger } from 'dbux-common/src/log/logger';
 import ProjectsManager from 'dbux-projects/src/ProjectsManager';
 import { registerCommand } from './commandUtil';
 
+const { log, debug, warn, error: logError } = newLogger('dbux-code');
+
 
 const cfg = {
-  projectsRoot: path.join(__dirname, '../../../projects')
+  projectsRoot: path.join(__dirname, '../../projects')
 };
 const externals = {
 
 };
 
+/**
+ * @type {ProjectsManager}
+ */
 let manager;
 
 export function initProjectCommands(extensionContext) {
@@ -17,6 +23,8 @@ export function initProjectCommands(extensionContext) {
 
   const projects = manager.buildDefaultProjectList();
   const runner = manager.newBugRunner();
+  
+  debug(`Initialized dbux-projects at ${path.resolve(cfg.projectsRoot)}.`);
 
   registerCommand(extensionContext, 'dbux.runSample0', async () => {
     const project1 = projects.getAt(0);
@@ -24,6 +32,13 @@ export function initProjectCommands(extensionContext) {
     const bug = bugs.getAt(0);
 
     await runner.activateBug(bug);
-    // await bug.openEditor();
+
+    // TODO: start webpack if necessary
+    // TODO: manage/expose webpack background process
+    
+    await bug.openInEditor();
+
+    // TODO: runner.executeBugInDebugMode(bug); // use bug.runArgs
+    // TODO: runner.
   });
 }

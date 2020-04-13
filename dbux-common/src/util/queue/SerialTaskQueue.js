@@ -2,7 +2,7 @@ import isFunction from 'lodash/isFunction';
 import { newLogger } from 'dbux-common/src/log/logger';
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
-const DefaultTimeout = 1000;
+const DefaultTimeout = 5000;
 
 export default class SerialTaskQueue {
   _pendingSet = new Set();
@@ -157,7 +157,7 @@ export default class SerialTaskQueue {
         // watch for timeout
         const startTime = Date.now();
         const timeoutTimer = setInterval(() => {
-          warn(`Scheduled task ${cb.__name} took a long time:`, ((Date.now() - startTime) / 1000).toFixed(2) + 's');
+          warn(`Scheduled task "${cb.__name}" still running (`, ((Date.now() - startTime) / 1000).toFixed(2) + 's)...');
         }, DefaultTimeout);
 
         try {
@@ -177,7 +177,7 @@ export default class SerialTaskQueue {
   }
 
   _log(...args) {
-    console.debug(...args);
+    // debug(...args);
   }
 
   // ###########################################################################
@@ -190,7 +190,15 @@ export default class SerialTaskQueue {
       if (!isFunction(method)) {
         throw new Error(`invalid methodName ${methodName} in obj ${obj} is not a function`);
       }
+
+      const { name } = method;
+
+      // bind
       method = method.bind(obj);
+
+      // hackfix: name
+      method.__name = name;
+
       obj[methodName] = this.synchronizedFunction(method);
     }
   }

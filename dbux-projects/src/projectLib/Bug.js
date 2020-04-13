@@ -1,7 +1,9 @@
+import path from 'path';
 
 export default class Bug {
   project;
   
+  mainFilePath;
   id;
   title;
   description;
@@ -22,5 +24,10 @@ export default class Bug {
 
   get manager() {
     return this.project.manager;
+  }
+
+  async openInEditor() {
+    const fpath = path.join(this.project.projectPath, this.mainFilePath);
+    return this.manager.editor.openFolder(fpath);
   }
 }
