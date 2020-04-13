@@ -1,11 +1,29 @@
+import path from 'path';
+import ProjectInstaller from './ProjectInstaller';
 import BugList from './BugList';
+
 
 export default class Project {
   /**
    * @type {BugList}
    */
-  bugs;
+  _bugs;
   _installer;
+
+  folderName;
+
+  constructor(manager) {
+    this.manager = manager;
+  }
+
+  // ###########################################################################
+  // getters
+  // ###########################################################################
+
+  get projectPath() {
+    const { projectsRoot } = this.manager.config;
+    return path.join(projectsRoot, this.folderName);
+  }
 
   // ###########################################################################
   // bugs
@@ -15,11 +33,11 @@ export default class Project {
    * @return {BugList}
    */
   async getOrLoadBugs() {
-    if (!this.bugs) {
+    if (!this._bugs) {
       const arr = await this.loadBugs();
-      this.bugs = new BugList(this, arr);
+      this._bugs = new BugList(this, arr);
     }
-    return this.bugs;
+    return this._bugs;
   }
 
   // ###########################################################################

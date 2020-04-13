@@ -1,5 +1,8 @@
-import { sleep } from 'src/util/sleep';
 import isFunction from 'lodash/isFunction';
+import { newLogger } from 'dbux-common/src/log/logger';
+const { log, debug, warn, error: logError } = newLogger('dbux-code');
+
+const DefaultTimeout = 1000;
 
 export default class SerialTaskQueue {
   _pendingSet = new Set();
@@ -110,7 +113,7 @@ export default class SerialTaskQueue {
       };
 
       wrappedCb.__priority = priority; // hackfix
-      wrappedCb.__name = cb.name;
+      wrappedCb.__name = cb.__name || cb.name;
 
       this._addCb(wrappedCb);
     });
@@ -134,6 +137,7 @@ export default class SerialTaskQueue {
 
   _run = async () => {
     this._running = true;
+
     try {
       while (!this.isEmpty()) {
         // make sure, higher priority items come before lower piority items
@@ -150,8 +154,19 @@ export default class SerialTaskQueue {
         this._debugTag && this._log(this._debugTag, 'run', cb.__name, cb.__priority);
         this._pendingSet.delete(cb);
 
-        // execute task
-        await cb();
+        // watch for timeout
+        const startTime = Date.now();
+        const timeoutTimer = setInterval(() => {
+          warn(`Scheduled task ${cb.__name} took a long time:`, ((Date.now() - startTime) / 1000).toFixed(2) + 's');
+        }, DefaultTimeout);
+
+        try {
+          // execute task
+          await cb();
+        }
+        finally {
+          clearInterval(timeoutTimer);
+        }
       }
     }
     finally {
@@ -173,7 +188,7 @@ export default class SerialTaskQueue {
     for (const methodName of methodNames) {
       let method = obj[methodName];
       if (!isFunction(method)) {
-        throw new Error(`invalid methodName ${methodName} in obj ${obj}`);
+        throw new Error(`invalid methodName ${methodName} in obj ${obj} is not a function`);
       }
       method = method.bind(obj);
       obj[methodName] = this.synchronizedFunction(method);
@@ -187,8 +202,9 @@ export default class SerialTaskQueue {
    */
   synchronizedFunction(cb) {
     return async function synchronized(...args) {
-      const bound = cb.bind(this, ...args);
+      const bound = cb.bind(null, ...args);
+      bound.__name = cb.name;
       return this.enqueue(bound);
-    };
+    }.bind(this);
   }
 }

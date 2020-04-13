@@ -8,6 +8,7 @@ import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditor, getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
 import { showGraphView } from '../graphView';
+import { initProjectCommands } from './projectCommands';
 
 const { log, debug, warn, error: logError } = newFileLogger(__filename);
 
@@ -57,4 +58,10 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.showGraphView', async () => {
     await showGraphView(extensionContext);
   });
+
+  // ###########################################################################
+  // more commands
+  // ###########################################################################
+
+  initProjectCommands(extensionContext);
 }

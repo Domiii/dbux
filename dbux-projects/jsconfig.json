@@ -5,8 +5,11 @@
 		"checkJs": false,  /* Typecheck .js files. */
 		"baseUrl": "./",
 		"paths": {
-			"@/*": [ "src/*" ]
-		}
+			// "@/*": [ "src/*" ]
+		},
+		"lib": [
+			"es6"
+		]
 	},
 	"include": [
 		"src",

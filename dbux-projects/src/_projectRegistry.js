@@ -1,4 +1,4 @@
-import Express from '@/projects/bugsjsExpress';
+import Express from './projects/bugsjsExpress/Project';
 
 
 export default {

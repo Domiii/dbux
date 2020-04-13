@@ -1,5 +1,9 @@
-import ProjectInstaller from '@/projectLib/ProjectInstaller';
-import shell from 'shelljs';
+import sh from 'shelljs';
+import { newLogger } from 'dbux-common/src/log/logger';
+import ProjectInstaller from '../../projectLib/ProjectInstaller';
+
+
+const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 /*
 #!/usr/bin/env bash
@@ -60,35 +64,44 @@ code -n .
 */
 
 export default class ExpressInstaller extends ProjectInstaller {
+  githubUrl = 'https://github.com/BugsJS/express.git';
+
   async installProject() {
-    // thisDir = "$(getScriptDir "${ BASH_SOURCE[0] } ")"
-    // projectPath = "express"
-    // githubUrl = "https://github.com/BugsJS/express.git"
-    // bugId = "27"
-    // tagCategory = "test" # "test", "fix" or "full"
+    const {
+      project: {
+        projectPath
+      },
+      githubUrl
+    } = this;
 
-    // if [[ ! -e $projectRoot ]]; then
-    //   git clone $githubUrl
-    // fi
+    // cd into it
+    sh.cd(projectPath);
 
-    // cd $projectRoot
+    // TODO: read git + editor commands from config
 
-    // # remove git folder
-    // # if [[ -e "./.git" ]]; then
-    // #   rm -rf "./.git"
-    // # fi
+    // clone (will do nothing if already cloned)
+    debug(`Cloning from ${githubUrl}...`);
+    await this.exec(`git clone ${githubUrl}`);
 
-    // # checkout right branch
-    // git checkout "tags/Bug-$bugId-$tagCategory"
-
-    // code -n .
+    // open editor
+    await this.exec(`code -n .`, { silent: false }, true);
   }
 
   async loadBugs() {
-    // TODO
+    // TODO!
+    return [
+      {
+        id: 27,
+        name: 'express bug 27'
+      }
+    ];
   }
 
   async selectBug(bug) {
-    // TODO
+    const bugId = bug.id;
+    const tagCategory = "test"; // "test", "fix" or "full"
+
+    // checkout the bug branch
+    sh.exec(`git checkout "tags/Bug-${bugId}-${tagCategory}"`);
   }
 }

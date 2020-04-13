@@ -4,6 +4,9 @@ import Bug from './Bug';
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 export default class BugList {
+  /**
+   * @type {Bug}
+   */
   _list = [];
   _byId = new Map();
 
@@ -29,10 +32,16 @@ export default class BugList {
     }
   }
 
+  /**
+   * @return {ProjectsManager}
+   */
   get manager() {
     return this.project.manager;
   }
 
+  /**
+   * @return {Bug}
+   */
   getById(id) {
     return this._byId.get(id) || null;
   }

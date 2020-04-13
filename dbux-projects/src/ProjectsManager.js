@@ -2,32 +2,41 @@ import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
 
-/**
- * Retrieves all case study objects, 
- * sorted by name (in descending order).
- */
-function buildDefaultProjectList() {
-  // fix up names
-  for (const name in caseStudyRegistry) {
-    const Clazz = caseStudyRegistry[name];
+class ProjectsManager {
+  config;
+  externals;
 
-    // NOTE: function + class names might get mangled by Webpack
-    Clazz.constructorName = name;
+  constructor(cfg, externals) {
+    this.config = cfg;
+    this.externals = externals;
   }
 
-  // sort all classes by name
-  const classes = Object.values(caseStudyRegistry);
-  classes.sort((a, b) => {
-    const nameA = a.constructorName.toLowerCase();
-    const nameB = b.constructorName.toLowerCase();
-    return nameB.localeCompare(nameA);
-  });
+  /**
+   * Retrieves all case study objects, 
+   * sorted by name (in descending order).
+   */
+  buildDefaultProjectList() {
+    // fix up names
+    for (const name in caseStudyRegistry) {
+      const Clazz = caseStudyRegistry[name];
 
-  return new ProjectList(this, classes);
-}
+      // NOTE: function/class names might get mangled by Webpack (or other bundlers/tools)
+      Clazz.constructorName = name;
+    }
 
-class ProjectsManager {
-  buildDefaultProjectList = buildDefaultProjectList;
+    // sort all classes by name
+    const classes = Object.values(caseStudyRegistry);
+    classes.sort((a, b) => {
+      const nameA = a.constructorName.toLowerCase();
+      const nameB = b.constructorName.toLowerCase();
+      return nameB.localeCompare(nameA);
+    });
+
+    // build + return ProjectList
+    const list = new ProjectList(this);
+    list.add(...classes.map(ProjectClazz => new ProjectClazz(this)));
+    return list;
+  }
 
   newBugRunner() {
     return new BugRunner(this);
