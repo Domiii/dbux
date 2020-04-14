@@ -325,6 +325,7 @@
 		"socket.io": "^2.3.0",
 		"dbux-common": "*",
 		"dbux-data": "*",
+		"dbux-cli": "*",
 		"dbux-projects": "*",
 		"dbux-graph-common": "*",
 		"dbux-graph-host": "*"

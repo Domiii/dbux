@@ -1,6 +1,6 @@
 import path from 'path';
 import sh from 'shelljs';
-import ProjectInstaller from './ProjectInstaller';
+import RunnerImpl from './RunnerImpl';
 import BugList from './BugList';
 
 
@@ -49,7 +49,7 @@ export default class Project {
   // ###########################################################################
 
   /**
-   * @return {ProjectInstaller}
+   * @return {RunnerImpl}
    */
   _getOrCreateInstaller() {
     if (!this._installer) {
@@ -62,6 +62,7 @@ export default class Project {
       const { projectsRoot } = this;
       sh.mkdir('-p', projectsRoot);
 
+      // create installer
       this._installer = new Installer(this);
     }
     return this._installer;

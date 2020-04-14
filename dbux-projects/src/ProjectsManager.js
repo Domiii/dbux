@@ -1,7 +1,6 @@
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
-import EditorApi from './projectLib/EditorApi';
 
 
 class ProjectsManager {

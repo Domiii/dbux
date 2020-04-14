@@ -1,7 +1,7 @@
 import Project from '../../projectLib/Project';
-import ExpressInstaller from './Installer';
+import ExpressRunner from './Runner';
 
 export default class ExpressProject extends Project {
-  static Installer = ExpressInstaller;
+  static Installer = ExpressRunner;
   folderName = 'express';
 }

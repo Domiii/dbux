@@ -41,7 +41,7 @@ export function initProjectCommands(extensionContext) {
     const bugs = await project1.getOrLoadBugs();
     const bug = bugs.getAt(0);
 
-    // install project -> install bug -> activate bug for use
+    // install project -> start webpack -> checkout bug -> activate bug for us
     await runner.activateBug(bug);
 
     // TODO: manage/expose (webpack) project background process

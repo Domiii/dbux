@@ -10,7 +10,8 @@ sh.config.execPath = (
   sh.which('nodejs')
 ).toString();
 
-export default class ProjectInstaller {
+
+export default class RunnerImpl {
   /**
    * @type {Project}
    * @readonly
@@ -22,7 +23,7 @@ export default class ProjectInstaller {
   }
 
   // ###########################################################################
-  // Installer implementation
+  // Runner abstract methods
   // ###########################################################################
 
   /**
@@ -44,6 +45,13 @@ export default class ProjectInstaller {
    */
   async selectBug(bug) {
     throw new Error(`${this} did not implement abstract method "selectBug"`);
+  }
+
+  /**
+   * @abstract
+   */
+  async testBug(bug, port) {
+    throw new Error(`${this} did not implement abstract method "testBug"`);
   }
 
   // ###########################################################################

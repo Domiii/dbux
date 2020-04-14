@@ -1,5 +1,5 @@
 
-module.exports = function dbuxRunFile(fpath) {
+module.exports = function dbuxRunFile(targetPath) {
   const path = require('path');
   const moduleAlias = require('module-alias');
   const process = require('process');
@@ -24,14 +24,14 @@ module.exports = function dbuxRunFile(fpath) {
   sharedDeps.forEach(dep => moduleAlias.addAlias(dep, path.join(dbuxRoot, 'node_modules', dep)));
 
   const babelrcRoots = [
-    `${fpath}/..`,
-    `${fpath}/../..`
+    `${targetPath}/..`,
+    `${targetPath}/../..`
   ];
 
   const babelRegister = require('@babel/register');
   const dbuxBabelPlugin = require('dbux-babel-plugin');
 
-  // make sure, core stuff is loaded before starting instrumentation
+  // make sure, core stuff is loaded and working before starting instrumentation
   require('dbux-runtime');
 
 
@@ -39,16 +39,16 @@ module.exports = function dbuxRunFile(fpath) {
   const babelRegisterOptions = {
     ignore: [
       // '**/node_modules/**',
-      function (fpath) {
+      function (modulePath) {
         // no node_modules
-        if (fpath.match('(node_modules)|(dist)')) {
+        if (modulePath.match('(node_modules)|(dist)')) {
           return true;
         }
 
-        fpath = fpath.toLowerCase();
+        modulePath = modulePath.toLowerCase();
 
         const shouldIgnore = false;
-        console.warn('dbux-run [babel]', fpath, !shouldIgnore);
+        console.warn('dbux-run [babel]', modulePath, !shouldIgnore);
         return shouldIgnore;
       }
     ],
@@ -64,12 +64,12 @@ module.exports = function dbuxRunFile(fpath) {
   babelRegister(babelRegisterOptions);
 
   // go time!
-  if (!path.isAbsolute(fpath)) {
-    fpath = path.join(cliDir, fpath);
+  if (!path.isAbsolute(targetPath)) {
+    targetPath = path.join(cliDir, targetPath);
   }
 
   try {
-    require(fpath);
+    require(targetPath);
   }
   catch (err) {
     console.error('ERROR when running instrumented code:\n ', err && err.stack || err);

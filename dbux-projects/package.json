@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "dbux-common": "*",
+    "dbux-cli": "*",
     "shelljs": "*"
   },
   "keywords": [],

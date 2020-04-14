@@ -1,7 +1,8 @@
 import sh from 'shelljs';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { newLogger } from 'dbux-common/src/log/logger';
 import exec from 'dbux-projects/src/util/exec';
-import ProjectInstaller from '../../projectLib/ProjectInstaller';
+import RunnerImpl from '../../projectLib/RunnerImpl';
 
 
 const { log, debug, warn, error: logError } = newLogger('dbux-projects/Installer');
@@ -64,7 +65,7 @@ code -n .
 
 */
 
-export default class ExpressInstaller extends ProjectInstaller {
+export default class ExpressRunner extends RunnerImpl {
   githubUrl = 'https://github.com/BugsJS/express.git';
 
   async installProject() {
@@ -96,15 +97,16 @@ export default class ExpressInstaller extends ProjectInstaller {
 
   async loadBugs() {
     // TODO: load automatically from BugsJs bug database
+    const testFilePaths = ['./test/app.param.js'];
     return [
       {
         // NOTE: some bugs have multiple test files, or no test file at all
-        testFilePaths: ['./test/app.param.js'],
+        testFilePaths,
         runArgs: [
           "--grep",
           "should defer all the param routes",
           "--",
-          "./test/app.param.js"
+          ...testFilePaths
         ],
         id: 27,
         name: 'express bug 27'
@@ -121,5 +123,43 @@ export default class ExpressInstaller extends ProjectInstaller {
     // checkout the bug branch
     debug(`Checking out bug ${name || id}...`);
     exec(`git checkout "tags/Bug-${id}-${tagCategory}"`);
+  }
+
+  async testBug(bug, port) {
+    const {
+      project: {
+        projectPath
+      }
+    } = this;
+    // NOTE: NYC uses either of the following:
+    //  1. simple 
+    //    - node-preload - https://www.npmjs.com/package/node-preload ("Request that Node.js child processes preload modules")
+    //    - process-on-spawn - 
+    //  2. wrapped
+    //    - spawn-wrap - https://github.com/istanbuljs/spawn-wrap ("brutal hack [...] in cases where tests or the system under test are loaded via child processes rather than via require(). [...] any child processes launched by that child process will also be wrapped.")
+
+    // const cwd = ;
+    const cli = 'bin/dbux-run-file.js';
+    const program = `${projectPath}/node_modules/.bin/_mocha`;
+    const args = [
+      '--require=test/support/env',
+      ...(bug.runArgs || EmptyArray)
+    ].join(' ');      //.map(s => `"${s}"`).join(' ');
+
+    // cd ...
+    `node --stack-trace-limit=1000 --nolazy --inspect-brk=${port} "${cli}" "${program}" ${args}`;
+    /*
+    "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/_mocha",
+      "runtimeArgs": [
+        "--stack-trace-limit=1000",
+        "--preserve-symlinks"
+      ],
+      "cwd": "${workspaceFolder}",
+      "args": [
+        // "--reporter=json",
+      ],
+      */
   }
 }
