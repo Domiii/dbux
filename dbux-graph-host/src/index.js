@@ -2,6 +2,7 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import GraphDocument from './components/GraphDocument';
 import HostComponentManager from './componentLib/HostComponentManager';
+import componentRegistry from './_hostRegistry';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
 
@@ -9,7 +10,7 @@ let _onStart, _args;
 let componentManager, doc;
 
 function reset() {
-  componentManager = new HostComponentManager(...(_args || EmptyArray));
+  componentManager = new HostComponentManager(...(_args || EmptyArray), componentRegistry);
   componentManager.handlePing = pairingCompleted;
 }
 

@@ -5,8 +5,11 @@ export default class TraceNode extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
       <div class="trace">
-        <div class="name">
+        <div data-el="name" class="name">
           <span data-el="displayName"></span>
+        </div>
+        <div data-mount="ContextNode" class="children">
+          <div class="childHead">&nbsp;</div>
         </div>
       </div>
     `);
