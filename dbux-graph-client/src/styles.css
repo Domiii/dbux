@@ -75,9 +75,10 @@ canvas{
   position: fixed;
   display:block;
   right: 10px;
-  top: 10px;
-  border: 2px solid white;
-  background-color:black;
+  top: 60px;
+  border: 2px solid black;
+  background:black;
+  
 }
 
 
