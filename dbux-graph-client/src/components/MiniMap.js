@@ -5,38 +5,44 @@ import { compileHtmlElement } from '@/util/domUtil';
 
 class MiniMap extends ClientComponentEndpoint {
   createEl() {
+    // document.addEventListener('keypress', () => {
+    //   const rootEl = this.parent.el.querySelector('.root');
+    //   html2canvas(rootEl).then((canvas) => {
+    //     document.querySelector('#test').innderHTML = '';
+    //     document.querySelector('#test').appendChild(canvas);
+    //   });
+    // });
     return compileHtmlElement(/*html*/`
     <canvas id = "minimap"></canvas>
     `);
+
   }
   update() {
     this.el.height = window.innerHeight - 60;
     this.el.width = window.innerWidth / 6;
 
     const mutationObserver = new MutationObserver(this.drawMiniMap);
-    mutationObserver.observe(this.parent.el.querySelector('.root'), {
-      attributes: true,
-      characterData: true,
+    mutationObserver.observe(this.parent.el.querySelector('#test'), {
+      // attributes: true,
+      // characterData: true,
       childList: true,
       subtree: true,
-      attributeOldValue: true,
-      characterDataOldValue: true
+      // attributeOldValue: true,
+      // characterDataOldValue: true
     });
     // mutationObserver.disconnect();
   }
   drawMiniMap = makeDebounce(() => {
-    const rootEl = this.parent.el.querySelector('.root');
+    const rootEl = this.parent.el.querySelector('#test');
     html2canvas(rootEl).then((canvas) => {
-      console.log(canvas);
       let data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
-      canvas.style.transform = 'scale(' + 1 / (data.width / this.el.width) + ',' + 1 / (data.width / this.el.width) + ')';
       let ctx = this.el.getContext('2d');
       ctx.save();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, this.el.width, this.el.height);
       ctx.scale(1 / (data.width / this.el.width), 1 / (data.width / this.el.width));
       ctx.drawImage(canvas, 0, 0);
       ctx.restore();
     });
-  }, 200);
+  }, 500);
 }
 export default MiniMap;

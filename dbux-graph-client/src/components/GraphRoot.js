@@ -6,8 +6,10 @@ class GraphRoot extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
       <div class="root">
-        <h2 data-el="title"></h2>
-        <div data-mount="RunNode"></div>
+        <div id="test">
+          <h2 data-el="title"></h2>
+          <div data-mount="RunNode"></div>
+        </div>
       </div>
     `);
   }
@@ -45,8 +47,7 @@ class GraphRoot extends ClientComponentEndpoint {
       //   let shouldIgnore = !evt.altKey;
       //   return shouldIgnore;
       // },
-      bounds: true,
-      boundsPadding: 0.1,
+      boundsPadding: 0.2,
       maxZoom: 2,
       minZoom: 0.1,
     });
