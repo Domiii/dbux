@@ -30,19 +30,25 @@ export default class TracesAtCursor {
     if (!this.needRefresh) return;
     this.index = 0;
     const allTraces = this.getAllTracesAtCursor();
+    this.allTraces = allTraces;
+    this.needRefresh = false;
+
+    // update index to `most important trace`
     if (traceSelection.selected) {
-      allTraces.reduce((t1, t2, id) => {
-        if (compareTraces(t1, t2) > 0) {
+      allTraces.forEach((nextTrace, id) => {
+        const nearestTrace = this.allTraces[this.index];
+        if (nextTrace.staticTraceId > nearestTrace.staticTraceId) {
+          // use innerTraces first
           this.index = id;
-          return t2;
         }
-        else {
-          return t1;
+        else if (nextTrace.staticTraceId === nearestTrace.staticTraceId) {
+          // compare if both are inner traces
+          if (compareTraces(nearestTrace, nextTrace) > 0) {
+            this.index = id;
+          }
         }
       });
     }
-    this.allTraces = allTraces;
-    this.needRefresh = false;
   }
 
   getNext = () => {

@@ -8,6 +8,7 @@ import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditor, getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
 import { showGraphView } from '../graphView';
+import { setShowDeco } from '../codeDeco';
 
 const { log, debug, warn, error: logError } = newFileLogger(__filename);
 
@@ -57,4 +58,16 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.showGraphView', async () => {
     await showGraphView(extensionContext);
   });
+
+  // ###########################################################################
+  // show/hide code decorations
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.showDecorations', () => {
+    setShowDeco(true);
+  }, true);
+
+  registerCommand(extensionContext, 'dbux.hideDecorations', () => {
+    setShowDeco(false);
+  }, true);
 }

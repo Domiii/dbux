@@ -3,8 +3,6 @@ import DataProvider from './DataProvider';
 import CallGraph from './callGraph/CallGraph';
 
 import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
-import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
-import RootContextsIndex from './impl/indexes/RootContextsIndex';
 import FirstTracesIndex from './impl/indexes/FirstTracesIndex';
 import FirstContextsInRunsIndex from './impl/indexes/FirstContextsInRunsIndex';
 import TracesByContextIndex from './impl/indexes/TracesByContextIndex';
@@ -15,9 +13,13 @@ import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextInde
 import TracesByTrackIdIndex from './impl/indexes/TracesByTrackIdIndex';
 import TracesByParentTraceIndex from './impl/indexes/TracesByParentTraceIndex';
 import TracesByParentStaticContextIndex from './impl/indexes/TracesByParentStaticContextIndex';
+import TracesByRealContextIndex from './impl/indexes/TracesByRealContextIndex';
+import TracesByCallIndex from './impl/indexes/TracesByCallIndex';
 import ErrorTracesIndex from './impl/indexes/ErrorTracesIndex';
 import ErrorTracesByRunIndex from './impl/indexes/ErrorTracesByRunIndex';
 
+import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
+import RootContextsIndex from './impl/indexes/RootContextsIndex';
 import VisitedStaticTracesByFileIndex from './impl/indexes/VisitedStaticTracesByFileIndex';
 import ParentTracesInRealContextIndex from './impl/indexes/ParentTracesInRealContextIndex';
 
@@ -26,9 +28,7 @@ import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTrace
 import dataProviderUtil from './dataProviderUtil';
 import StaticContextsByFileIndex from './impl/indexes/StaticContextsByFileIndex';
 import StaticContextsByParentIndex from './impl/indexes/StaticContextsByParentIndex';
-import CallArgsByCallIndex from './impl/indexes/CallArgsByCallIndex';
 import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
-import TracesByRealContextIndex from './impl/indexes/TracesByRealContextIndex';
 import StaticTracesByContextIndex from './impl/indexes/StaticTracesByContextIndex';
 import ContextsByRunIndex from './impl/indexes/ContextsByRunIndex';
 
@@ -66,9 +66,9 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new TracesByParentStaticContextIndex());
   dataProvider.addIndex(new TracesByRunIndex());
   dataProvider.addIndex(new TracesByTrackIdIndex());
+  dataProvider.addIndex(new TracesByCallIndex());
   dataProvider.addIndex(new ErrorTracesIndex());
   dataProvider.addIndex(new ErrorTracesByRunIndex());
-  dataProvider.addIndex(new CallArgsByCallIndex());
 
   dataProvider.addIndex(new TracesByRealContextIndex());
 
