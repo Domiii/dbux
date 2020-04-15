@@ -16,8 +16,12 @@ const webpackPlugins = [];
 
 
 const dependencyPaths = [
-  "dbux-common", "dbux-data", "dbux-graph-common", 
-  "dbux-graph-host", "dbux-code"
+  "dbux-common",
+  "dbux-data",
+  "dbux-graph-common",
+  "dbux-graph-host",
+  "dbux-case-studies",
+  "dbux-code"
 ];
 
 

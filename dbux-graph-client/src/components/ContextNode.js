@@ -7,8 +7,8 @@ class ContextNode extends ClientComponentEndpoint {
       <div class="context">
         <div data-el="name" class="name">
           <span data-el="displayName"></span>
+          <button data-el="oCBtn" class="open_close_btn" style="display:none">▽</button>
         </div>
-        <button data-el="oCBtn" class="open_close_btn" style="display:none">▽</button>
         <div data-mount="ContextNode" data-el="children" class="children">
           <div class="childHead">&nbsp;</div>
         </div>
@@ -52,7 +52,7 @@ class ContextNode extends ClientComponentEndpoint {
           this.els.oCBtn.innerHTML = '▽';//﹀ ▽
         } else {
           this.els.children.style.display = 'none';
-          this.els.oCBtn.innerHTML = '▷';//〉 ▷
+          this.els.oCBtn.innerHTML = '▷';//〉 ▷  ►
         }
       }
     }

@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
 
-import { initServer } from './net/server';
+import { initServer } from './net/RuntimeServer';
 import { initCodeDeco } from './codeDeco';
 
 import { initCallGraphView } from './callGraphView/callGraphViewController';

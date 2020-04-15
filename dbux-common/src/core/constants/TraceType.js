@@ -87,6 +87,7 @@ expressionTypes[TraceType.CallArgument] = true;
 expressionTypes[TraceType.CallbackArgument] = true;
 expressionTypes[TraceType.CallExpressionResult] = true;
 expressionTypes[TraceType.ReturnArgument] = true;
+expressionTypes[TraceType.ThrowArgument] = true;
 
 export function isTraceExpression(traceType) {
   return expressionTypes[traceType];

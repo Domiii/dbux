@@ -1,14 +1,16 @@
 import http from 'http';
 import * as SocketIOServer from 'socket.io';
 import { newLogger, logWarn } from 'dbux-common/src/log/logger';
-import Client from './Client';
+import RuntimeClient from './RuntimeClient';
 
 const DefaultPort = 3374;
 
 const { log, debug, warn, error: logError } = newLogger('net-server');
 
 /**
- * NOTE: We can connect to this server at ws://localhost:3374/socket.io/?transport=websocket
+ * Server for `dbux-runtime` to connect to.
+ * 
+ * NOTE: This server's URL is at ws://localhost:<DefaultPort>/socket.io/?transport=websocket
  */
 class Server {
   _socket;
@@ -37,7 +39,7 @@ class Server {
    * New socket connected
    */
   _handleAccept = (socket) => {
-    const client = new Client(this, socket);
+    const client = new RuntimeClient(this, socket);
     this._clients.push(client);
 
     // handle disconnects

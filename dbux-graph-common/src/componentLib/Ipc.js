@@ -46,6 +46,10 @@ export default class Ipc {
   // ###########################################################################
   // Internal: sending + handling messages
   // ###########################################################################
+  
+  _postMessage(msg) {
+    this.ipcAdapter.postMessage(msg);
+  }
 
   async _sendInit(msg) {
     msg.messageType = MessageType.InitComponent;
@@ -64,7 +68,7 @@ export default class Ipc {
   async _sendMessageRaw(msg) {
     const callId = msg.callId = ++this.lastCallId;
 
-    this.ipcAdapter.postMessage(msg);
+    this._postMessage(msg);
 
     const call = new IpcCall(callId);
     this.calls.set(callId, call);
@@ -77,7 +81,7 @@ export default class Ipc {
    * Send back reply (after having received request).
    */
   _sendReply(status, callId, componentId, result) {
-    this.ipcAdapter.postMessage({
+    this._postMessage({
       messageType: MessageType.Reply,
       callId,
       componentId,

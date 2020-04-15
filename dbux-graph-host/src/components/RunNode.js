@@ -5,15 +5,24 @@ import ContextNode from './ContextNode';
 
 class RunNode extends HostComponentEndpoint {
   init() {
-    const { applicationId, runId } = this.state;
+    const {
+      applicationId, 
+      runId
+    } = this.state;
 
     const dp = allApplications.getById(applicationId).dataProvider;
-    const contexts = dp.indexes.executionContexts.byRun.get(runId) || EmptyArray;
+    // const trace = dp.util.getFirstTraceOfRun();
+    // contexts.forEach(context => this.children.createComponent(ContextNode, {
+    //   applicationId,
+    //   context
+    // }));
 
-    contexts.forEach(context => this.children.createComponent(ContextNode, { 
+    const contexts = dp.indexes.executionContexts.byRun.get(runId) || EmptyArray;
+    const context = contexts[0];
+    this.children.createComponent(ContextNode, {
       applicationId,
       context
-    }));
+    });
   }
 }
 

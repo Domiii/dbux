@@ -2,7 +2,7 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-
+* fix: `case-studies/findLongestWordLength/1for-bad` has errors
 * [errors]
    * just like, "select trace at cursor", insert two 🔥 buttons (one top right, one above `callGraphView`)
       * button is grayed out if there are no errors.
@@ -143,33 +143,28 @@
 
 
 ## TODO (other)
-* design comprehension questions + tasks
+* fix: instrumentation - in `findLongestWord/1for-bad1`, `staticTraceId` order is messed up
+* check: does `f(a, await b, c)` work correctly?
+   * -> probably not, because result needs to be resolved later
+   * `resolveCallIds` would try to resolve results too fast
+* fix: rename `dbux-case-studies` to `dbux-projects`
+* fix: setup `eslint` to use correct index of `webpack` multi config
+* (big goal: design projects, bugs, comprehension questions + tasks)
+* fix: provide an easier way to use `ipynb` to analyze any application
 * dbux-graph web components
-   * add button to reset webview html, without closing (this way, dev tool settings stay alive)
-   * fix `context` hierarchy
+   * map data (or some sort of `id`) to `componentId`
+   * batch `postMessage` calls before sending out
    * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
    * NOTES
       * `render` does NOT propagate to children (unlike React)
    * write `dbux-graph-client/scripts/pre-build` component-registry script
    * batch `postMessage`
-* fix: webpack build of `dbux-babel-plugin` has now externalized `dbux-common` which leads to errors when `require`-ing it
-* fix: `dbux-graph-client` webpack config is not `babel`ing `dbux-graph-common` (but `dbux-code` is doing it just fine)
-* [dbux-graph]
-   * produce a `webpack.tools.js`
-      * "shared library" trick
-         * takes care of `module.resolve` + `alias`
-         * easily babel them up as well
-
-   * split into three: `dbux-graph-web`, `dbux-graph-data` + `dbux-graph-common`
-   * then let `<root>` build and `dbux-code` depend on `dbux-graph-data` + `dbux-graph-common`
-   * `dbux-graph-web`'s build responsibility stays with `dbux-graph`
-   * add a basic API, to allow `dbux-graph-data` use full power of `dbux-data` to generate a "virtual DOM", which `dbux-graph-web` will then render
 
 * fix: `CallExpression.arguments` are instrumented too early
    * -> move back to `exitVisitors`
 
-* fix: `staticTraceId` must resemble AST ordering for error tracing
-   * e.g.
+* fix: `staticTraceId` must resemble AST ordering for error tracing to work correctly
+   * examples of out-of-order static traces
       * `CallExpression.arguments`
       * `awaitVisitors`, `loopVisitors` and more
       * and many more...
@@ -182,8 +177,6 @@
             * Sln: Initialize `static` data and pure indexes of `static` data first
 * [error_handling]
    * more TODOs
-      * need to make sure, `caller` is traced before `callee` for call expressions
-      * need to repurpose `EndOfFunction` to become `EndOfContext` (to also work for `Program`s)
       * handle `try` blocks
       * Fix `super`
    * Problem: the actual error trace is the trace that did NOT get executed
@@ -202,11 +195,6 @@
                   * (b) lookup worst case: build temporary index (`groupby('contextId')` etc.)
                      * NOTE: `TracesByRealContextIndex` needs that extra layer on top of it
                   * NOTE: probably not going to go any better
-   * UI
-      * render trace error status in trace details
-      * show a "flame" indicator button in the top right, if there were any uncaught errors
-         * (and even if there were caught errors, but in a lighter color)
-         * similar to "trace at cursor" button, replicate that button in `TraceDetailsView`
    * How does it work?
       * mark possible `exitTraces`:
          1. any `ReturnStatement`
@@ -214,11 +202,6 @@
       * Once a function has finished (we wrap all functions in `try`/`finally`), we insert a check:
          * If `context.lastTraceId` is in `exitTraces`, there was no error
          * else, `context.lastTraceId` caused an error
-   * [ErrorTracesByRunIndex]
-      * Warning: data dependencies
-         * `ErrorTracesByRunIndex` depends on ``dp.util.isErrorTrace` information, which depend on `TracesByRealContext` and `StaticTracesByContext` indexes
-         * Sln: allow `CollectionIndex.dependencies` to be a function as well, from where we can call *SOME* `dp.util` functions
-            * NOTE: Not all data is available, so not all `util` functions can be used. Be aware of each `util`'s dependencies.
    * [errors_and_await]
       * test: when error thrown, do we pop the correct resume and await contexts?
 * fix: Call Graph Roots -> name does not include actual function name

@@ -116,12 +116,11 @@ export default class GraphViewHost {
   /**
    * hackfix: necessary because webview won't update if the `html` value is not different from previous assignment.
    */
-  _webviewRerenderToken = 0;
+  _webviewUpdateToken = 0;
 
   async _restartClientDOM() {
     const scriptPath = path.join(this.resourcePath, 'dist', 'graph.js');
-    this.panel.webview.html = (await getWebviewClientHtml(scriptPath)) +
-      `<!-- ${++this._webviewRerenderToken} -->`;
+    this.panel.webview.html = (await getWebviewClientHtml(scriptPath)) + `<!-- ${++this._webviewUpdateToken} -->`;
   }
 
   _restartHost() {
@@ -142,7 +141,7 @@ export default class GraphViewHost {
   // ###########################################################################
 
   externals = {
-    restartApp: this.restart,
+    restart: this.restart,
 
     logClientError(args) {
       logError('[CLIENT ERORR]', ...args);

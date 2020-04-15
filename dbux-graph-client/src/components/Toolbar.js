@@ -46,7 +46,7 @@ class Toolbar extends ClientComponentEndpoint {
         evt.preventDefault();
 
         if (await this.app.confirm('Do you really want to restart?')) {
-          this.remote.restartApp();
+          this.remote.restart();
         }
       }
     }
