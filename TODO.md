@@ -123,6 +123,7 @@
       * (possibly a more cross-IDE-compatible generalized solution?)
    * add webpack
 * have a button: "prepare" bug + open it in VSCode
+* manage running bugs/tests
 * save changes automatically before moving to another bug
    * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
 * difficulty classification
@@ -131,7 +132,18 @@
    * asset folder?
    * target folder?
    * allow target folder to be configurable
-
+* express test fail: `return function(req, res, next, val){ ... };` -> `Cannot read property 'loc' of undefined`
+   at isNodeInstrumented (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1165:16)
+    at getCallbackDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1047:91)
+    at getFunctionDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1072:26)
+    at getTraceDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:387:107)
+    at traceDefault (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:406:21)
+    at StaticTraceCollection.addTrace (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:444:17)
+    at buildTraceExpr (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1603:30)
+    at _traceWrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1695:17)
+    at traceWrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1624:10)
+    at wrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:2981:91)
+    at Object.ReturnArgument (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:3075:14)
 
 
 
@@ -144,6 +156,7 @@
 
 
 ## TODO (other)
+
 * fix: instrumentation - in `findLongestWord/1for-bad1`, `staticTraceId` order is messed up
    * (see below: "AST ordering")
 * check: does `f(a, await b, c)` work correctly?

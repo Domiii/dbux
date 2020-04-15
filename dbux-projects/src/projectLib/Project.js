@@ -15,7 +15,7 @@ export default class Project {
     this.manager = manager;
 
     // NOTE: we get `constructorName` from the registry
-    this.folderName = this.constructor.constructorName;
+    this.name = this.folderName = this.constructor.constructorName;
   }
 
   // ###########################################################################

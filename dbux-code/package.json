@@ -10,7 +10,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onLanguage:javascript"
+		// "onLanguage:javascript"
+		"*"
 	],
 	"__main": "./src/index.js",
 	"main": "./dist/bundle.js",

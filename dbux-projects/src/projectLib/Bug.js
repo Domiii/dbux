@@ -22,6 +22,10 @@ export default class Bug {
     this.project = project;
   }
 
+  get debugTag() {
+    return `${this.project} (bug #${this.id})`;
+  }
+
   get manager() {
     return this.project.manager;
   }

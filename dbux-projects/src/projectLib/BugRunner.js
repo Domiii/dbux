@@ -21,6 +21,8 @@ export default class BugRunner {
    */
   _bug;
 
+  debugPort = 9853;
+
   constructor(manager) {
     this.manager = manager;
   }
@@ -34,7 +36,7 @@ export default class BugRunner {
     }
 
     // make sure, `projectsRoot` exists
-    const { projectsRoot } = this;
+    const { projectsRoot } = this.manager.config;
     sh.mkdir('-p', projectsRoot);
 
     this._queue = new SerialTaskQueue('BugRunnerQueue');
@@ -99,6 +101,6 @@ export default class BugRunner {
   async testBug(bug) {
     await this._activateBug(bug);
 
-    await bug.project.testBug(bug);
+    await bug.project.testBug(bug, this.debugPort);
   }
 }

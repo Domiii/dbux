@@ -1,3 +1,5 @@
+import path from 'path';
+import spawn from 'child_process';
 import sh from 'shelljs';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { newLogger } from 'dbux-common/src/log/logger';
@@ -6,7 +8,7 @@ import Project from 'dbux-projects/src/projectLib/Project';
 import { installDbuxCli } from 'dbux-projects/src/projectLib/installUtil';
 
 
-const { log, debug, warn, error: logError } = newLogger('dbux-projects/Installer');
+const { log, debug, warn, error: logError } = newLogger('dbux-projects/Project');
 
 /*
 #!/usr/bin/env bash
@@ -109,9 +111,9 @@ export default class ExpressProject extends Project {
         // NOTE: some bugs have multiple test files, or no test file at all
         testFilePaths,
         runArgs: [
-          "--grep",
-          "should defer all the param routes",
-          "--",
+          '--grep',
+          '"should defer all the param routes"',
+          '--',
           ...testFilePaths
         ],
         id: 27,
@@ -131,7 +133,7 @@ export default class ExpressProject extends Project {
     exec(`git checkout "tags/Bug-${id}-${tagCategory}"`);
   }
 
-  async testBug(bug, port) {
+  async testBug(bug, debugPort) {
     const {
       projectPath
     } = this;
@@ -143,19 +145,53 @@ export default class ExpressProject extends Project {
     //    - spawn-wrap - https://github.com/istanbuljs/spawn-wrap ("brutal hack [...] in cases where tests or the system under test are loaded via child processes rather than via require(). [...] any child processes launched by that child process will also be wrapped.")
 
     // const cwd = ;
-    const dbuxRegister = `${projectPath}/node_modules/.bin/dbux-register.js`;
+    const dbuxRegister = `${projectPath}/node_modules/.bin/dbux-register`;
     const program = `${projectPath}/node_modules/.bin/_mocha`;
-    const args = [
+    const argArray = [
       ...(bug.runArgs || EmptyArray)
-    ].join(' ');      //.map(s => `"${s}"`).join(' ');
+    ];
+    const args = argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
 
     // cd ...
     // TODO: spawn, listen on and process on-going process
     //    see https://stackoverflow.com/questions/14332721/node-js-spawn-child-process-and-get-terminal-output-live
-    `node --stack-trace-limit=1000 --nolazy --inspect-brk=${port} \
-      -r="test/support/env" \
-      -r="${dbuxRegister}" \
-      "${program}" ${args}`;
+    const requireArr = [
+      path.join(projectPath, 'test/support/env'),
+      dbuxRegister
+    ];
+    const reqs = requireArr.map(r => `--require="${r}"`).join(' '); // =${debugPort}
+    const cmd = `node --stack-trace-limit=1000 --nolazy --inspect-brk=${debugPort} ${reqs} "${program}" ${args}`;
+    const commandOptions = {
+      cwd: projectPath
+    };
+    sh.cd(projectPath);
+
+
+    if (argArray.includes(undefined)) {
+      throw new Error(bug.debugTag + ' - invalid `Project bug` arguments must not include `undefined`: ' + cmd);
+    }
+
+    debug('>', cmd);
+
+    const processLogger = newLogger(`Project ${this.name}`);
+    return new Promise((resolve, reject) => {
+      const child = spawn.exec(cmd, commandOptions, function (err, stdout, stderr) {
+        if (!err) {
+          resolve();
+        }
+        else {
+          err.code = err.code || 1;
+          reject(err);
+        }
+      });
+      child.stdout.on('data', (...chunks) => {
+        processLogger.debug(...chunks);
+      });
+      child.stderr.on('data', (...chunks) => {
+        processLogger.warn(...chunks);
+      });
+    });
+
 
     // TODO: enable auto attach (run command? or remind user?)
     //      see: https://code.visualstudio.com/blogs/2018/07/12/introducing-logpoints-and-auto-attach
