@@ -1,6 +1,5 @@
 import path from 'path';
 import sh from 'shelljs';
-import RunnerImpl from './RunnerImpl';
 import BugList from './BugList';
 
 
@@ -9,12 +8,14 @@ export default class Project {
    * @type {BugList}
    */
   _bugs;
-  _installer;
 
   folderName;
 
   constructor(manager) {
     this.manager = manager;
+
+    // NOTE: we get `constructorName` from the registry
+    this.folderName = this.constructor.constructorName;
   }
 
   // ###########################################################################
@@ -45,48 +46,25 @@ export default class Project {
   }
 
   // ###########################################################################
-  // install + load
+  // project methods
   // ###########################################################################
-
-  /**
-   * @return {RunnerImpl}
-   */
-  _getOrCreateInstaller() {
-    if (!this._installer) {
-      const { Installer } = this.constructor;
-      if (!Installer) {
-        throw new Error(`${this} class did not define "static Installer = ...;"`);
-      }
-
-      // make sure, `projectsRoot` exists
-      const { projectsRoot } = this;
-      sh.mkdir('-p', projectsRoot);
-
-      // create installer
-      this._installer = new Installer(this);
-    }
-    return this._installer;
-  }
 
   /**
    * @abstract
    */
   async installProject() {
-    const installer = this._getOrCreateInstaller();
-    return installer.installProject();
+    throw new Error(this + ' abstract method not implemented');
   }
 
   /**
    * @abstract
    */
   async loadBugs() {
-    const installer = this._getOrCreateInstaller();
-    return installer.loadBugs();
+    throw new Error(this + ' abstract method not implemented');
   }
 
   async selectBug(bug) {
-    const installer = this._getOrCreateInstaller();
-    return installer.selectBug(bug);
+    throw new Error(this + ' abstract method not implemented');
   }
 
   // ###########################################################################

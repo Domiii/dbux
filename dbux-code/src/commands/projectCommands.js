@@ -38,18 +38,24 @@ export function initProjectCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.runSample0', async () => {
     const project1 = projects.getAt(0);
-    const bugs = await project1.getOrLoadBugs();
+
+    // activate/install project
+    await runner.activateProject(project1);
+
+    // load bugs
+    const bugs = await runner.getOrLoadBugs(project1);
     const bug = bugs.getAt(0);
 
-    // install project -> start webpack -> checkout bug -> activate bug for us
+    // checkout bug -> activate bug
     await runner.activateBug(bug);
-
-    // TODO: manage/expose (webpack) project background process
     
+    // open in editor (must be after activation/installation)
     await bug.openInEditor();
 
+    // run it!
     await runner.testBug(bug);
 
-    // TODO: "suggest" some first "analysis steps"
+    // TODO: "suggest" some first "analysis steps"?
+    // future work: manage/expose (webpack) project background process
   });
 }

@@ -36,12 +36,16 @@ class ProjectsManager {
 
     // build + return ProjectList
     const list = new ProjectList(this);
-    list.add(...classes.map(ProjectClazz => new ProjectClazz(this)));
+    list.add(...classes.map(ProjectClazz => 
+      new ProjectClazz(this)
+    ));
     return list;
   }
 
   newBugRunner() {
-    return new BugRunner(this);
+    const runner = new BugRunner(this);
+    runner.start();
+    return runner;
   }
 }
 

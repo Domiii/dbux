@@ -1,5 +1,6 @@
 import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import { newLogger } from 'dbux-common/src/log/logger';
+import sh from 'shelljs';
 import Project from './Project';
 import Bug from './Bug';
 
@@ -22,12 +23,27 @@ export default class BugRunner {
 
   constructor(manager) {
     this.manager = manager;
+  }
+
+  /**
+   * Initializes things and creates new task queue.
+   */
+  start() {
+    if (this._queue) {
+      throw new Error('already running');
+    }
+
+    // make sure, `projectsRoot` exists
+    const { projectsRoot } = this;
+    sh.mkdir('-p', projectsRoot);
+
     this._queue = new SerialTaskQueue('BugRunnerQueue');
 
     // TODO: synchronized methods deadlock when they call each other
     this._queue.synchronizedMethods(this,
       'activateProject',
-      'activateBug'
+      'activateBug',
+      'testBug'
     );
   }
 
@@ -55,13 +71,6 @@ export default class BugRunner {
    * NOTE: synchronized.
    */
   async activateProject(project) {
-    return this._activateProject(project);
-  }
-
-  /**
-   * NOTE: Not synchronized.
-   */
-  async _activateProject(project) {
     if (this.isProjectActive(project)) {
       return;
     }
@@ -70,11 +79,11 @@ export default class BugRunner {
     await project.installProject();
   }
 
-  async activateBug(bug) {
-    return this._activateBug(bug);
+  async getOrLoadBugs(project) {
+    return project.getOrLoadBugs();
   }
 
-  async _activateBug(bug) {
+  async activateBug(bug) {
     if (this.isBugActive(bug)) {
       return;
     }
@@ -88,16 +97,8 @@ export default class BugRunner {
   }
 
   async testBug(bug) {
-    // TODO: use bug.runArgs
-    // TODO: add "attach to node" `launch.json` entry (via externals)
-    
-    /*
-    {
-      "type": "node",
-      "request": "attach",
-      "name": "Attach to any node program",
-      "port": 9229
-    }
-    */
+    await this._activateBug(bug);
+
+    await bug.project.testBug(bug);
   }
 }

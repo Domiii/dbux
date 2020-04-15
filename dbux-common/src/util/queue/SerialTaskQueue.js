@@ -184,6 +184,9 @@ export default class SerialTaskQueue {
   // synchronized
   // ###########################################################################
 
+  /**
+   * TODO: currently calling one synchronized method from another synchronized method causes deadlock
+   */
   synchronizedMethods(obj, ...methodNames) {
     for (const methodName of methodNames) {
       let method = obj[methodName];
@@ -199,7 +202,11 @@ export default class SerialTaskQueue {
       // hackfix: name
       method.__name = name;
 
+      // override method
       obj[methodName] = this.synchronizedFunction(method);
+      
+      // add new method that does not cause deadlocks when called from another synchronized method
+      obj[`_${methodName}`] = method;
     }
   }
 

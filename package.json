@@ -47,6 +47,7 @@
 		"build:watch": "npx nodemon --exec \"npx webpack --watch --mode development\"",
 		"graph": "cd dbux-graph-client && npm start",
 		"dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
+		"dbux-install-force": "yarn install --force",
 		"dbux-all": "sh scripts/dbux-run-all.sh",
 		"dbux-uninstall": "rm -rf ./node_modules && rm -f ./package-lock.json && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json\"",
 		"p1-install": "sh ./assets/projects/todomvc-vanilla-es6/install.sh",

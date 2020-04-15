@@ -12,7 +12,7 @@
 * [edited warning]
    * display a warning at the top of EditorWindow if it has been edited after the time of it's most recent `Program` `Context`
       * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
-      * offer buttons to let user reply...:
+      * offer buttons to let user take action immediately:
          * do not show warning again for this file (before restart)
          * remove the application from `allApplications`
 * [slow warning]
@@ -374,7 +374,8 @@
       * PROBLEM: instrumenting source-mapped files requires source-map merging which can be iffy and bug-prone
    * Option 3: while debugging, integrate with debugger API to guide user to step into function, then retrospectively retrieve data from call-site
       * most straight-forward, but UX is worse
-* [instrumentation] proper `cli`
+* [cli] proper cli
+   * fix: `installDbuxCli`
 * [instrumentation] allow to easily instrument any referenced modules (not just our own code)
    * ... and optionally any of its references?
 * add test setup to all libs

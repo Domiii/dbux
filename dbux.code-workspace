@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "projects/express"
 		}
 	],
 	"settings": {
@@ -17,6 +20,7 @@
 		"gitlens.hovers.currentLine.over": "line",
 		"python.dataScience.textOutputLimit": 0,
 		"python.dataScience.maxOutputSize": 1000,
+		"debug.node.autoAttach": "on",
 		// "files.associations": {
 		// 	"*.js": "typescriptreact"
 		// }
