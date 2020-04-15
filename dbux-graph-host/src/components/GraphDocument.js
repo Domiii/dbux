@@ -3,10 +3,11 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
 import TraceMode from './TraceMode';
-
+import MiniMap from './MiniMap';
 
 class GraphDocument extends HostComponentEndpoint {
   toolbar;
+  minimap;
   /**
    * @type {GraphRoot}
    */
@@ -33,6 +34,7 @@ class GraphDocument extends HostComponentEndpoint {
     const traceModeName = TraceMode.getName(this.traceMode);
     this.toolbar = this.children.createComponent(Toolbar, { traceModeName });
     this.root = this.children.createComponent(GraphRoot);
+    this.minimap = this.children.createComponent(MiniMap);
 
     // start rendering empty graph
     this.root.refresh();
