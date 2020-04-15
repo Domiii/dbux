@@ -2,9 +2,11 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
+import MiniMap from './MiniMap';
 
 class GraphDocument extends HostComponentEndpoint {
   toolbar;
+  minimap;
   /**
    * @type {GraphRoot}
    */
@@ -27,6 +29,7 @@ class GraphDocument extends HostComponentEndpoint {
   initChildren() {
     this.toolbar = this.children.createComponent(Toolbar);
     this.root = this.children.createComponent(GraphRoot);
+    this.minimap = this.children.createComponent(MiniMap);
 
     // start rendering empty graph
     this.root.refresh();

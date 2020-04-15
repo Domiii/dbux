@@ -4,11 +4,12 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 class GraphDocument extends ClientComponentEndpoint {
   createEl() {
     const el = document.getElementById('root');
-
+    let mouseDown = false;
     // complete reset
     el.innerHTML = /*html*/`<div>
       <div data-mount="Toolbar"></div>
       <div data-mount="GraphRoot"></div>
+      <div data-mount="MiniMap" id = "minimap"></div>
     </div>`;
 
     this.panzoom = this.initPanZoom(el);
@@ -21,6 +22,15 @@ class GraphDocument extends ClientComponentEndpoint {
         }
       }
     });
+    // window.addEventListener('mousedown', () => {
+    //   mouseDown = true;
+    // });
+    // window.addEventListener('mouseup', () => {
+    //   mouseDown = false;
+    // });
+    // window.addEventListener('mousemove', () => {
+    //   if (mouseDown) console.log(el.getBoundingClientRect());
+    // });
     return el;
   }
 
@@ -46,11 +56,11 @@ class GraphDocument extends ClientComponentEndpoint {
         let shouldIgnore = !evt.ctrlKey;
         return shouldIgnore;
       },
-      beforeMouseDown(evt) {
-        // allow mouse-down panning only if altKey is down. Otherwise - ignore
-        let shouldIgnore = !evt.altKey;
-        return shouldIgnore;
-      },
+      // beforeMouseDown(evt) {
+      //   // allow mouse-down panning only if altKey is down. Otherwise - ignore
+      //   let shouldIgnore = !evt.altKey;
+      //   return shouldIgnore;
+      // },
       bounds: true,
       boundsPadding: 0.1,
       maxZoom: 2,

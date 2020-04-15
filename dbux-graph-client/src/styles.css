@@ -45,7 +45,6 @@ canvas{
 }
 .child{
   width:auto;
-
 }
 
 
@@ -68,10 +67,17 @@ canvas{
   0%   { background:#fff; } 
   100% { opacity: 1; background:none; }
 }
+
+
+/* minimap */
+
 #minimap{
-  position: absolute;
+  position: fixed;
+  display:block;
   right: 10px;
   top: 10px;
   border: 2px solid white;
   background-color:black;
 }
+
+
