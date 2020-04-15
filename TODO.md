@@ -116,6 +116,7 @@
 
 
 ## TODO (`dbux-projects`)
+* auto attach is not working
 * list projects
 * for each project, list it's bugs to choose from
 * project installer
