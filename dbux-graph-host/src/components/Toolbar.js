@@ -13,6 +13,10 @@ class Toolbar extends HostComponentEndpoint {
     addHi(n) {
       const { count } = this.state;
       this.setState({ count: count + n });
+    },
+
+    switchTraceMode() {
+      this.componentManager.doc.switchTraceMode();
     }
   }
 }

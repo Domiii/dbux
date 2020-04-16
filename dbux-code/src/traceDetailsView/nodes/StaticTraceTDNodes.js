@@ -2,7 +2,7 @@ import { TreeItemCollapsibleState } from 'vscode';
 import Enum from 'dbux-common/src/util/Enum';
 import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
 import traceSelection from 'dbux-data/src/traceSelection';
-import { makeRootTraceLabel, makeCallTraceLabel, makeTraceLabel } from 'dbux-data/src/helpers/traceLabels';
+import { makeRootTraceLabel, makeTraceLabel, makeTraceValueLabel, makeCallValueLabel } from 'dbux-data/src/helpers/traceLabels';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import TraceType, { isCallbackRelatedTrace } from 'dbux-common/src/core/constants/TraceType';
 import TraceNode from './TraceNode';
@@ -74,7 +74,7 @@ const groupByMode = {
     const groups = tracesByCall
       .map((children, callId) => {
         const trace = dp.collections.traces.getById(callId);
-        const label = trace ? makeCallTraceLabel(trace) : '(No Caller)';
+        const label = trace ? makeCallValueLabel(trace) : '(No Caller)';
         const description = `Call: ${callId}`;
         children = children.filter(({ traceId }) => dp.util.getTraceType(traceId) === TraceType.PushCallback);
         return { label, children, description };
@@ -126,6 +126,7 @@ export class StaticTraceTDNode extends BaseTreeViewNode {
   }
 
   static makeProperties(trace, parent, detail) {
+    // build children here since label depends on children
     const { staticTraceId } = trace;
     const application = allApplications.getById(trace.applicationId);
     const { dataProvider } = application;
@@ -155,6 +156,7 @@ export class StaticTraceTDNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
+    // use built children in makeProperties
     const { treeNodeProvider, groupedTraces } = this;
 
     const nodes = groupedTraces.map((groupData) => {
@@ -162,7 +164,7 @@ export class StaticTraceTDNode extends BaseTreeViewNode {
       const node = new GroupNode(treeNodeProvider, label, null, this);
       if (children.length) {
         node.children = children.map((trace) => {
-          const childLabel = makeCallTraceLabel(trace);
+          const childLabel = makeTraceValueLabel(trace);
           return new TraceNode(treeNodeProvider, childLabel, trace, node);
         });
       }

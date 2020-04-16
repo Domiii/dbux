@@ -1,3 +1,4 @@
+import { commands } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { registerCommand } from './commands/commandUtil';
 import { CallGraphViewController } from './callGraphView/callGraphViewController';
@@ -6,27 +7,15 @@ const { log, debug, warn, error: logError } = newLogger('Toolbar');
 
 export function initToolBar(context, callGraphViewController: CallGraphViewController) {
 
+  commands.executeCommand('setContext', 'dbux.context.showNavButton', true);
+
   registerCommand(context,
-    'dbuxCallGraphView.addEntry',
-    (...args) => log('Clicked on add entry, parameter', ...args)
+    'dbux.showNavButton',
+    () => commands.executeCommand('setContext', 'dbux.context.showNavButton', true)
   );
 
   registerCommand(context,
-    'dbuxCallGraphView.next',
-    () => callGraphViewController.gotoNextContext()
+    'dbux.hideNavButton',
+    () => commands.executeCommand('setContext', 'dbux.context.showNavButton', false)
   );
-
-  registerCommand(context,
-    'dbuxCallGraphView.previous',
-    () => callGraphViewController.gotoPreviousContext()
-  );
-
-  registerCommand(context,
-    'dbuxCallGraphView.clear',
-    () => {
-      callGraphViewController.callGraphNodeProvider.clear();
-      callGraphViewController.callGraphNodeProvider.refreshView();
-    }
-  );
-
 }

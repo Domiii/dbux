@@ -7,6 +7,7 @@ export default class Trace extends HasValue {
   applicationId: number;
   runId: number;
   contextId: number;
+  valueId: number;
 
   loopId: number;
 
