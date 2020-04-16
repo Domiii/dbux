@@ -5,7 +5,6 @@ import {
   Uri,
   ViewColumn
 } from 'vscode';
-
 import path from 'path';
 import { getWebviewClientHtml } from './clientSource';
 
@@ -14,7 +13,7 @@ const { log, debug, warn, error: logError } = newLogger('GraphViewHost');
 
 const defaultColumn = ViewColumn.Two;
 
-export default class GraphViewHost {
+export default class GraphWebView {
   extensionContext;
 
   panel;
@@ -148,7 +147,8 @@ export default class GraphViewHost {
     },
 
     async confirm(message) {
-      const result = await window.showInformationMessage(message, 'Ok', 'Cancel');
+      const cfg = { modal: true };
+      const result = await window.showInformationMessage(message, cfg, 'Ok', 'Cancel');
       return result === 'Ok';
     },
 
