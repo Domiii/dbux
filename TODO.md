@@ -143,14 +143,14 @@
 
 
 ## TODO (other)
+* fix: rename `dbux-case-studies` to `dbux-projects`
+* fix: setup `eslint` to use correct index of `webpack` multi config
+* (big goal: design projects, bugs, comprehension questions + tasks)
 * fix: instrumentation - in `findLongestWord/1for-bad1`, `staticTraceId` order is messed up
    * (see below: "AST ordering")
 * check: does `f(a, await b, c)` work correctly?
    * -> probably not, because result needs to be resolved later
    * `resolveCallIds` would try to resolve results too fast
-* fix: rename `dbux-case-studies` to `dbux-projects`
-* fix: setup `eslint` to use correct index of `webpack` multi config
-* (big goal: design projects, bugs, comprehension questions + tasks)
 * fix: provide an easier way to use `ipynb` to analyze any application
 * dbux-graph web components
    * map data (or some sort of `id`) to `componentId`
