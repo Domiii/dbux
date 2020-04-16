@@ -11,11 +11,12 @@ import { initToolBar } from './toolbar';
 import { initPlayback } from './playback/index';
 
 import { initCodeApplications } from './codeUtil/CodeApplication';
-import { initTraceDetailsController } from './traceDetailsView/traceDetailsController';
+import { initTraceDetailsView } from './traceDetailsView/traceDetailsController';
 import { initResources } from './resources';
 import { initTraceSelection } from './codeUtil/codeSelection';
-import { initEditorTracesController } from './editorTracesView/editorTracesController';
-import { initApplicationsViewController } from './applicationsView/applicationsViewController';
+import { initEditorTracesView } from './editorTracesView/editorTracesController';
+import { initApplicationsView } from './applicationsView/applicationsViewController';
+import { initProjectView } from './projectView/projectViewController';
 import { initLogging } from './logging';
 
 
@@ -32,15 +33,17 @@ function activate(context) {
     initServer(context);
     initCodeApplications(context);
     initCodeDeco(context);
-    
+    initToolBar(context);
+
     initTraceSelection(context);
-    initEditorTracesController(context);
-    initApplicationsViewController(context);
-    
+    initEditorTracesView(context);
+    initApplicationsView(context);
+    initProjectView(context);
+
     const callGraphViewController = initCallGraphView();
     const callStackViewController = initCallStackView();
+    const traceDetailsController = initTraceDetailsView(context);
     const playbackController = initPlayback();
-    const traceDetailsController = initTraceDetailsController(context);
 
     initCommands(
       context,
@@ -49,8 +52,6 @@ function activate(context) {
       playbackController,
       traceDetailsController
     );
-    
-    initToolBar(context, callGraphViewController);
   } catch (e) {
     logError('could not activate', e);
     debugger;

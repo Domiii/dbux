@@ -62,7 +62,7 @@ class TraceDetailsController {
 // init
 // ###########################################################################
 
-export function initTraceDetailsController(context: ExtensionContext) {
+export function initTraceDetailsView(context: ExtensionContext) {
   controller = new TraceDetailsController();
   controller.initOnActivate(context);
 
