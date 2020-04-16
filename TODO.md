@@ -108,12 +108,12 @@
 
 
 ## TODO (`dbux-projects`)
-* `exec` needs live updates
-   * input system?
+* fix: what to do when switching between bugs but installation (or user) modified files?
+   * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
+   * `commit` and forget?
 * auto attach is not working
-* debug vs. run mode
-* webpack support
-* project state management
+* allow debug vs. run mode
+* project state management?
    * `new Enum()`
 
 * [UI]
@@ -128,16 +128,7 @@
    * manage `bugRunner` state + progress?
    * manage `running` bugs/tests
 
-* what to do when switching between bugs but user edited code?
-   * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
    * save changes to patch file before moving to another bug?
-
-* [Deployment]
-   * need to further install dependencies (e.g. `babel` etc.) in order to run anything
-
-* [dbux-practice]
-* difficulty classification
-* hint system + more relevant information
 * file management
    * asset folder?
    * target folder?
@@ -156,6 +147,16 @@
     at Object.ReturnArgument (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:3075:14)
 
 
+* [Deployment]
+   * need to further install dependencies (e.g. `babel` etc.) in order to run anything
+
+* [dbux-practice]
+   * difficulty classification
+   * hint system + more relevant information
+
+* [more]
+   * webpack support
+
 
 
 
@@ -173,9 +174,14 @@
 * (big goal: design projects, bugs, comprehension questions + tasks)
 * fix: instrumentation - in `findLongestWord/1for-bad1`, `staticTraceId` order is messed up
    * (see below: "AST ordering")
-* check: does `f(a, await b, c)` work correctly?
-   * -> probably not, because result needs to be resolved later
-   * `resolveCallIds` would try to resolve results too fast
+* test: 
+   * `return await x;`
+      * -> problem: `awaitVisitor` and `returnVisitor` at odds?
+   * `o[await x]`
+      * -> similar problem
+   * `f(a, await b, c)`
+      * -> probably won't work, because result needs to be resolved later
+      * `resolveCallIds` would try to resolve results too fast
 * fix: provide an easier way to use `ipynb` to analyze any application
 * dbux-graph web components
    * map data (or some sort of `id`) to `componentId`
@@ -183,8 +189,7 @@
    * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
    * NOTES
       * `render` does NOT propagate to children (unlike React)
-   * write `dbux-graph-client/scripts/pre-build` component-registry script
-   * batch `postMessage`
+   * write automatic `dbux-graph-client/scripts/pre-build` component-registry script
 
 * fix: `staticTraceId` must resemble AST ordering for error tracing to work correctly
    * examples of out-of-order static traces
