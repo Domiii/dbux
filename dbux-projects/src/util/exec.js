@@ -8,6 +8,13 @@ function cleanOutput(chunk) {
   return isString(chunk) && chunk.trim() || chunk;
 }
 
+function pipeStreamToLogger(stream, logger) {
+  // TODO: concat chunks, and split by newline instead
+  stream.on('data', (chunk) => {
+    logger.debug('', cleanOutput(chunk));
+  });
+}
+
 /**
  * Wrapper for `shelljs.exec`.
  * 
@@ -33,12 +40,8 @@ export default async function exec(command, logger, options, ignoreNotFound = fa
 
     // TODO: chunks are often partial output strings. we ideally want to wait for newline before outputting
 
-    child.stdout.on('data', (chunk) => {
-      logger.debug('', cleanOutput(chunk));
-    });
-    child.stderr.on('data', (chunk) => {
-      logger.warn('', cleanOutput(chunk));
-    });
+    pipeStreamToLogger(child.stdout, logger);
+    pipeStreamToLogger(child.stderr, logger);
 
     // done
     let done = false;
