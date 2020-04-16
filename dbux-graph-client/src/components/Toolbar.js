@@ -10,6 +10,7 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
         <a data-el="hiBtn" class="btn btn-info" href="#"></a>
+        <a data-el="switchModeBtn" class="btn btn-info" href="#"></a>
         <a data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</a>
       </nav>
     `);
@@ -19,9 +20,10 @@ class Toolbar extends ClientComponentEndpoint {
   // update
   // ###########################################################################
 
-  update() {
-    const { count } = this.state;
+  update = () => {
+    const { count, traceModeName } = this.state;
     this.els.hiBtn.textContent = `hi! (${count})`;
+    this.els.switchModeBtn.textContent = `${traceModeName}`;
   }
 
   // ###########################################################################
@@ -38,6 +40,13 @@ class Toolbar extends ClientComponentEndpoint {
       focus(evt) {
         evt.preventDefault();
         evt.target.blur();
+      }
+    },
+
+    switchModeBtn: {
+      click(evt) {
+        evt.preventDefault();
+        this.remote.switchTraceMode();
       }
     },
 

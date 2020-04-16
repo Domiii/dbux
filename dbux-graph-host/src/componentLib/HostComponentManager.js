@@ -28,10 +28,12 @@ const usedExternals = [
 ];
 
 class HostComponentManager extends BaseComponentManager {
-  constructor(ipcAdapter, externals) {
+  constructor(ipcAdapter, externals, registry) {
     super(ipcAdapter);
 
     this.externals = externals;
+
+    this.registry = registry;
   }
 
   start() {
