@@ -10,7 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onLanguage:javascript"
+		"*"
 	],
 	"__main": "./src/index.js",
 	"main": "./dist/bundle.js",
@@ -49,6 +49,10 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "dbux.runSample0",
+				"title": "Dbux: Sample 0"
+			},
 			{
 				"command": "dbux.exportApplicationData",
 				"title": "Dbux: Export application data"
@@ -339,6 +343,8 @@
 		"socket.io": "^2.3.0",
 		"dbux-common": "*",
 		"dbux-data": "*",
+		"dbux-cli": "*",
+		"dbux-projects": "*",
 		"dbux-graph-common": "*",
 		"dbux-graph-host": "*"
 	},
