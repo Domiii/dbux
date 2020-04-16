@@ -75,9 +75,6 @@ class ComponentEndpoint {
   handlePing() {
     console.warn(this.debugTag, 'was pinged by the remote.');
   }
-
-  _publicInternal = {
-  };
 }
 
 export default ComponentEndpoint;

@@ -2,27 +2,22 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* fix: `case-studies/findLongestWordLength/1for-bad` has errors
-* [errors]
-   * just like, "select trace at cursor", insert two 🔥 buttons (one top right, one above `callGraphView`)
-      * button is grayed out if there are no errors.
-      * when clicked, list all errors in call graph view
-* [applicationView]
-   * add a button that allows us to jump straight to the entry point (use `codeNav`'s `showTextDocument`)
-   * nest applications of same entry point under same node
-      * most recent Application is parent, all others are children
-      * make sure, `children` is `null` if it has no children (so `CollapsibleState` will be `None`)
+* multi-purpose `TreeView`: merge several of our (not so frequently used treeViews) into one
+   * -> Make sure it is still easy to use
 * add a command to toggle (show/hide) all intrusive features
    * includes:
       * show/hide all `codeDeco`s
       * show/hide all other buttons in the top right
    * command name: `Dbux: Toggle Controls`
-* display a warning at the top of EditorWindow:
-   * if it has been edited after the time of it's most recent `Program` `Context`
+* [edited warning]
+   * display a warning at the top of EditorWindow if it has been edited after the time of it's most recent `Program` `Context`
       * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
-      * offer buttons to let user reply...:
+      * offer buttons to let user take action immediately:
          * do not show warning again for this file (before restart)
          * remove the application from `allApplications`
+* [slow warning]
+   * display a warning at the top of EditorWindow if it is very large and thus will slow things down (e.g. > x traces?)
+      * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 * keyword `wordcloud`
    * prepare function to generate all keywords in all `staticContexts` and their `fileName`s (without ext) of a single run
       * multiply weight by how often they were called (use `contexts`, rather than `staticContexts`)
@@ -115,22 +110,41 @@
 
 
 
-## TODO (dbux-code + dbux-data; lower priority)
-* [UI design]
-   * proper icons + symbols for all tree nodes?
-* dbux toggle/enable/disable controls
-   * e.g. keyboard shortcut (e.g. tripple combo `CTRL+D CTRL+B CTRL+X` (need every single key))
-   
-* display a warning at the top of EditorWindow:
-   * if it is very large and thus will slow things down (e.g. > x traces?)
-      * potentially ask user for confirmation first? (remember decision until restart or config option override?)
 
 
 
 
 
-
-
+## TODO (`dbux-projects`)
+* auto attach is not working
+* list projects
+* for each project, list it's bugs to choose from
+* project installer
+   * add `launch.json`
+      * (possibly a more cross-IDE-compatible generalized solution?)
+   * add webpack
+* have a button: "prepare" bug + open it in VSCode
+* manage running bugs/tests
+* save changes automatically before moving to another bug
+   * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
+* difficulty classification
+* hint system + more relevant information
+* file management
+   * asset folder?
+   * target folder?
+   * allow target folder to be configurable
+* express test fail: `return function(req, res, next, val){ ... };` -> `Cannot read property 'loc' of undefined`
+   at isNodeInstrumented (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1165:16)
+    at getCallbackDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1047:91)
+    at getFunctionDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1072:26)
+    at getTraceDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:387:107)
+    at traceDefault (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:406:21)
+    at StaticTraceCollection.addTrace (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:444:17)
+    at buildTraceExpr (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1603:30)
+    at _traceWrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1695:17)
+    at traceWrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1624:10)
+    at wrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:2981:91)
+    at Object.ReturnArgument (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:3075:14)
 
 
 
@@ -173,6 +187,9 @@
       * When error observed, lookup `staticTrace` by `orderId`
          * Problem: data dependencies: need to lookup when adding traces
             * Sln: Initialize `static` data and pure indexes of `static` data first
+   * Problem: conditions on branches cannot predict the branch which observes the errors
+      * Sln: make sure to trace every branch anywhere
+         * e.g. `if`, `ternary`, ... other?
 * [error_handling]
    * more TODOs
       * handle `try` blocks
@@ -370,7 +387,8 @@
       * PROBLEM: instrumenting source-mapped files requires source-map merging which can be iffy and bug-prone
    * Option 3: while debugging, integrate with debugger API to guide user to step into function, then retrospectively retrieve data from call-site
       * most straight-forward, but UX is worse
-* [instrumentation] proper `cli`
+* [cli] proper cli
+   * fix: `installDbuxCli`
 * [instrumentation] allow to easily instrument any referenced modules (not just our own code)
    * ... and optionally any of its references?
 * add test setup to all libs

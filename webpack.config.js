@@ -28,7 +28,7 @@ const buildMode = 'development';
 const MonoRoot = path.resolve(__dirname);
 
 const targets = [
-  // "dbux-cli"
+  // "dbux-cli",
   ["dbux-babel-plugin"],
   ["dbux-runtime", {
     resolve: {
@@ -41,8 +41,8 @@ const targets = [
       }
     }
   }],
-  ["dbux-graph-host"],
-  // ["dbux-case-studies"]
+  // ["dbux-graph-host"],
+  // ["dbux-projects"]
 ];
 
 // ###########################################################################
@@ -188,7 +188,8 @@ function buildConfig([target, configOverrides]) {
 }
 
 // ###########################################################################
-// other configs (NOTE: node only! don't mix targets with webpack.)
+// other configs
+//  (WARNING: add node configs only! don't mix targets with webpack; it doesn't like it.)
 // ###########################################################################
 
 // /*eslint global-require: 0 */

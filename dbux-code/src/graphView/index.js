@@ -1,4 +1,4 @@
-import GraphViewHost from './GraphViewHost';
+import GraphWebView from './GraphWebView';
 
 let graphHost;
 
@@ -7,7 +7,7 @@ let graphHost;
  */
 export async function showGraphView(context) {
   if (!graphHost) {
-    graphHost = new GraphViewHost(context);
+    graphHost = new GraphWebView(context);
   }
   return graphHost.show();
 }
