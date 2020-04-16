@@ -38,10 +38,10 @@ function activate(context) {
     initTraceSelection(context);
     initEditorTracesView(context);
     initApplicationsView(context);
-    initProjectView(context);
-
+    
     const callGraphViewController = initCallGraphView();
     const callStackViewController = initCallStackView();
+    const projectViewController = initProjectView(context);
     const traceDetailsController = initTraceDetailsView(context);
     const playbackController = initPlayback();
 
@@ -50,7 +50,8 @@ function activate(context) {
       callGraphViewController,
       callStackViewController,
       playbackController,
-      traceDetailsController
+      traceDetailsController,
+      projectViewController
     );
   } catch (e) {
     logError('could not activate', e);
