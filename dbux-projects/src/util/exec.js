@@ -9,7 +9,7 @@ function cleanOutput(chunk) {
 }
 
 function pipeStreamToLogger(stream, logger) {
-  // TODO: concat chunks, and split by newline instead
+  // TODO: concat chunks, and wait for, then split by newline instead (or use `process.stdout/stderr.write`)
   stream.on('data', (chunk) => {
     logger.debug('', cleanOutput(chunk));
   });
@@ -37,8 +37,6 @@ export default async function exec(command, logger, options, ignoreNotFound = fa
 
   return new Promise((resolve, reject) => {
     const child = spawn.exec(command, options);
-
-    // TODO: chunks are often partial output strings. we ideally want to wait for newline before outputting
 
     pipeStreamToLogger(child.stdout, logger);
     pipeStreamToLogger(child.stderr, logger);
