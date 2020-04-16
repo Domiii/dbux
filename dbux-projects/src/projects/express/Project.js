@@ -100,8 +100,8 @@ export default class ExpressProject extends Project {
 
     // TODO: wean off monoroot dependencies to prepare for deployment
     const MonoRoot = path.resolve(projectPath, '../..');
-    const dbuxRegister = `${MonoRoot}/node_modules/.bin/dbux-register`;
-    const program = `${projectPath}/node_modules/.bin/_mocha`;
+    const dbuxRegister = `${MonoRoot}/node_modules/dbux-cli/bin/dbux-register.js`;
+    const program = `${projectPath}/node_modules/mocha/bin/_mocha`;
     const argArray = [
       ...(bug.runArgs || EmptyArray)
     ];
