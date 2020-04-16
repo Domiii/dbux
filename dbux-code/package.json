@@ -10,7 +10,6 @@
 		"Other"
 	],
 	"activationEvents": [
-		// "onLanguage:javascript"
 		"*"
 	],
 	"__main": "./src/index.js",

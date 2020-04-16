@@ -82,6 +82,9 @@ export default class BugRunner {
   }
 
   async getOrLoadBugs(project) {
+    // if (!this.isProjectActive(project)) {
+    //   await this.activateProject(project);
+    // }
     return project.getOrLoadBugs();
   }
 

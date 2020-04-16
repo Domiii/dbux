@@ -1,75 +1,18 @@
 import path from 'path';
-import spawn from 'child_process';
 import sh from 'shelljs';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import { newLogger } from 'dbux-common/src/log/logger';
 import exec from 'dbux-projects/src/util/exec';
 import Project from 'dbux-projects/src/projectLib/Project';
-import { installDbuxCli } from 'dbux-projects/src/projectLib/installUtil';
 
-
-const { log, debug, warn, error: logError } = newLogger('dbux-projects/Project');
-
-/*
-#!/usr/bin/env bash
-
-set -x    # trace mode
-
-source "../../_install.common.sh"
-
-# config
-thisDir="$(getScriptDir "${BASH_SOURCE[0]}")"
-projectPath="express"
-githubUrl="https://github.com/BugsJS/express.git"
-bugId="27"
-tagCategory="test" # "test", "fix" or "full"
-
-
-# let's go!
-
-projectPathAbsolute="$ProjectsRoot/$projectPath)"
-projectRoot="$ProjectsRoot/$(getFirstInPath "$projectPath")"
-
-
-# clone
-cd $ProjectsRoot
-if [[ ! -e $projectRoot ]]; then
-  git clone $githubUrl
-fi
-
-cd $projectRoot
-
-# remove git folder
-# if [[ -e "./.git" ]]; then
-#   rm -rf "./.git"
-# fi
-
-# checkout right branch
-git checkout "tags/Bug-$bugId-$tagCategory"
-
-code -n .
-
-
-# `# copy files (NOTE: Cygwin does not support glob-style copy)`
-# cp "$thisDir/files/package.json" .
-# cp "$thisDir/files/webpack.config.js" .
-# cp "$thisDir/files/nodemon.json" .
-
-# `# install default dependencies`
-# yarn install
-
-# `# install the good stuff`
-# yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
-# yarn add --dev webpack webpack-cli webpack-dev-server nodemon && \
-# yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime
-
-# `# run it!`
-# npm start
-
-*/
 
 export default class ExpressProject extends Project {
   githubUrl = 'https://github.com/BugsJS/express.git';
+
+  async installDependencies() {
+    // # yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
+    // # yarn add --dev webpack webpack-cli webpack-dev-server nodemon && \
+    // # yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime
+  }
 
   async installProject() {
     const {
@@ -85,15 +28,20 @@ export default class ExpressProject extends Project {
 
     // clone (will do nothing if already cloned)
     const curDir = sh.pwd();
-    debug(`Cloning (if not already cloned) from "${githubUrl}"\n  in "${curDir}"...`);
-    const result = await exec(`git clone ${githubUrl}`);
-    // log('  ->', result.err || result.out);
-    // (result.err && warn || log)('  ->', result.err || result.out);
-    debug(`Cloned.`);
+    if (!await sh.test('-d', projectPath)) {
+      this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
+      // project does not exist yet
+      await exec(`git clone ${githubUrl} ${projectPath}`, this.logger);
+      // log('  ->', result.err || result.out);
+      // (result.err && warn || log)('  ->', result.err || result.out);
+      this.log(`Cloned.`);
+    }
+    else {
+      this.log('(skipped cloning)');
+    }
 
     // install dependencies
-    sh.cd(projectPath);
-    await installDbuxCli();
+    await this.installDbuxCli(projectPath);
 
     // TODO: copy assets
     // sh.cp('-u', src, dst);
@@ -129,14 +77,18 @@ export default class ExpressProject extends Project {
     const tagCategory = "test"; // "test", "fix" or "full"
 
     // checkout the bug branch
-    debug(`Checking out bug ${name || id}...`);
-    exec(`git checkout "tags/Bug-${id}-${tagCategory}"`);
+    sh.cd(this.projectPath);
+    this.log(`Checking out bug ${name || id}...`);
+    await exec(`git checkout "tags/Bug-${id}-${tagCategory}"`, this.logger);
   }
 
   async testBug(bug, debugPort) {
     const {
       projectPath
     } = this;
+    
+    sh.cd(projectPath);
+
     // NOTE: NYC uses either of the following:
     //  1. simple 
     //    - node-preload - https://www.npmjs.com/package/node-preload ("Request that Node.js child processes preload modules")
@@ -145,7 +97,10 @@ export default class ExpressProject extends Project {
     //    - spawn-wrap - https://github.com/istanbuljs/spawn-wrap ("brutal hack [...] in cases where tests or the system under test are loaded via child processes rather than via require(). [...] any child processes launched by that child process will also be wrapped.")
 
     // const cwd = ;
-    const dbuxRegister = `${projectPath}/node_modules/.bin/dbux-register`;
+
+    // TODO: wean off monoroot dependencies to prepare for deployment
+    const MonoRoot = path.resolve(projectPath, '../..');
+    const dbuxRegister = `${MonoRoot}/node_modules/.bin/dbux-register`;
     const program = `${projectPath}/node_modules/.bin/_mocha`;
     const argArray = [
       ...(bug.runArgs || EmptyArray)
@@ -164,33 +119,13 @@ export default class ExpressProject extends Project {
     const commandOptions = {
       cwd: projectPath
     };
-    sh.cd(projectPath);
 
 
     if (argArray.includes(undefined)) {
       throw new Error(bug.debugTag + ' - invalid `Project bug` arguments must not include `undefined`: ' + cmd);
     }
 
-    debug('>', cmd);
-
-    const processLogger = newLogger(`Project ${this.name}`);
-    return new Promise((resolve, reject) => {
-      const child = spawn.exec(cmd, commandOptions, function (err, stdout, stderr) {
-        if (!err) {
-          resolve();
-        }
-        else {
-          err.code = err.code || 1;
-          reject(err);
-        }
-      });
-      child.stdout.on('data', (...chunks) => {
-        processLogger.debug(...chunks);
-      });
-      child.stderr.on('data', (...chunks) => {
-        processLogger.warn(...chunks);
-      });
-    });
+    await exec(cmd, this.logger, commandOptions);
 
 
     // TODO: enable auto attach (run command? or remind user?)

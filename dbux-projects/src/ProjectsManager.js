@@ -6,6 +6,8 @@ import BugRunner from './projectLib/BugRunner';
 class ProjectsManager {
   config;
   externals;
+  projects;
+  runner;
 
   constructor(cfg, externals) {
     this.config = cfg;
@@ -39,13 +41,14 @@ class ProjectsManager {
     list.add(...classes.map(ProjectClazz => 
       new ProjectClazz(this)
     ));
-    return list;
+    
+    return this.projects = list;
   }
 
   newBugRunner() {
     const runner = new BugRunner(this);
     runner.start();
-    return runner;
+    return this.runner = runner;
   }
 }
 

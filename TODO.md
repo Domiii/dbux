@@ -2,19 +2,11 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* multi-purpose `TreeView`: merge several of our (not so frequently used treeViews) into one
-   * -> Make sure it is still easy to use
 * add a command to toggle (show/hide) all intrusive features
    * includes:
       * show/hide all `codeDeco`s
       * show/hide all other buttons in the top right
    * command name: `Dbux: Toggle Controls`
-* [edited warning]
-   * display a warning at the top of EditorWindow if it has been edited after the time of it's most recent `Program` `Context`
-      * see: `window.showInformationMessage` and `window.showWarningMessage` ([here](https://code.visualstudio.com/api/references/vscode-api#window.showWarningMessage); [result screen](https://kimcodesblog.files.wordpress.com/2018/01/vscode-extension1.png))
-      * offer buttons to let user take action immediately:
-         * do not show warning again for this file (before restart)
-         * remove the application from `allApplications`
 * [slow warning]
    * display a warning at the top of EditorWindow if it is very large and thus will slow things down (e.g. > x traces?)
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
@@ -116,17 +108,34 @@
 
 
 ## TODO (`dbux-projects`)
+* `exec` needs live updates
+   * input system?
 * auto attach is not working
-* list projects
-* for each project, list it's bugs to choose from
-* project installer
-   * add `launch.json`
-      * (possibly a more cross-IDE-compatible generalized solution?)
-   * add webpack
-* have a button: "prepare" bug + open it in VSCode
-* manage running bugs/tests
-* save changes automatically before moving to another bug
+* debug vs. run mode
+* webpack support
+* project state management
+   * `new Enum()`
+
+* [UI]
+   * list projects
+   * list bugs of each project
+   * show/hide/clear log
+   * project
+      * -> `openInEditor` (see `externals.editor`)
+         * if first install, ask user if they want to add project folder to workspace?
+   * bug
+      * -> `openInEditor` (see `externals.editor`)
+   * manage `bugRunner` state + progress?
+   * manage `running` bugs/tests
+
+* what to do when switching between bugs but user edited code?
    * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
+   * save changes to patch file before moving to another bug?
+
+* [Deployment]
+   * need to further install dependencies (e.g. `babel` etc.) in order to run anything
+
+* [dbux-practice]
 * difficulty classification
 * hint system + more relevant information
 * file management
@@ -156,9 +165,11 @@
 
 
 
+
+
 ## TODO (other)
-* fix: rename `dbux-case-studies` to `dbux-projects`
-* fix: setup `eslint` to use correct index of `webpack` multi config
+* fix: setup `eslint` to use correct index of `webpack` multi config to allow for `src` alias
+   * Problem: won't work since different projects would have an ambiguous definition of `src`
 * (big goal: design projects, bugs, comprehension questions + tasks)
 * fix: instrumentation - in `findLongestWord/1for-bad1`, `staticTraceId` order is messed up
    * (see below: "AST ordering")

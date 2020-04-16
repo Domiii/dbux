@@ -49,6 +49,15 @@
 			]
 		},
 		{
+			"type": "node",
+			"request": "attach",
+			"name": "[dbux-project] attach",
+			"port": 9853,
+			"skipFiles": [
+				"<node_internals>/**"
+			]
+		},
+		{
 			"name": "dbux-instrument",
 			"type": "node",
 			"request": "launch",

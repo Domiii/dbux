@@ -15,6 +15,7 @@ export function onLogError(cb) {
 export class Logger {
   constructor(ns) {
     this.ns = ns;
+    // this._emitter = 
 
     const logFunctions = {
       log: loglog,
@@ -25,7 +26,10 @@ export class Logger {
 
     for (const name in logFunctions) {
       const f = logFunctions[name];
-      this[name] = f.bind(this, ns);
+      this[name] = (...args) => {
+        f(ns, ...args);
+        // this._emitter.emit(name, ...args);
+      }
     }
   }
 }

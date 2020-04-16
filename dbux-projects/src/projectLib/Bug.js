@@ -31,9 +31,6 @@ export default class Bug {
   }
 
   async openInEditor() {
-    // add folder to IDE
-    await this.manager.externals.editor.openFolder(this.project.projectPath);
-
     // open file (if any)
     if (this.testFilePaths[0]) {
       const fpath = path.join(this.project.projectPath, this.testFilePaths[0]);

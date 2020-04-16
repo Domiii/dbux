@@ -1,15 +1,10 @@
-import sh from 'shelljs';
-import exec from 'dbux-projects/src/util/exec';
+// import sh from 'shelljs';
+// import exec from 'dbux-projects/src/util/exec';
+// import { newLogger } from '../../../dbux-common/src/log/logger';
+
+// const logger = newLogger('installUtil');
 
 
-// ###########################################################################
-// manage dbux files
-// ###########################################################################
-
-export async function installDbuxCli(projectPath) {
-  sh.cd(projectPath);
-
-  // TODO: make this work in production as well
-
-  await exec('yarn add ../../dbux-cli');
-}
+// // ###########################################################################
+// // manage dbux files
+// // ###########################################################################

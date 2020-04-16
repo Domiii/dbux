@@ -1,10 +1,11 @@
 import path from 'path';
 import { newLogger } from 'dbux-common/src/log/logger';
-import ProjectsManager from 'dbux-projects/src/ProjectsManager';
+import { initDbuxProjects, ProjectsManager } from 'dbux-projects/src';
 import exec from 'dbux-projects/src/util/exec';
 import { registerCommand } from './commandUtil';
 
-const { log, debug, warn, error: logError } = newLogger('dbux-code');
+const logger = newLogger('projectCommands');
+const { log, debug, warn, error: logError } = logger;
 
 
 const cfg = {
@@ -14,11 +15,11 @@ const externals = {
   editor: {
     async openFile(fpath) {
       // TODO: use vscode API to open in `this` editor window
-      await exec(`code ${fpath}`, { silent: false }, true);
+      await exec(`code ${fpath}`, logger, { silent: false }, true);
     },
     async openFolder(fpath) {
       // TODO: use vscode API to add to workspace
-      await exec(`code --add ${fpath}`, { silent: false }, true);
+      await exec(`code --add ${fpath}`, logger, { silent: false }, true);
     }
   }
 };
@@ -29,11 +30,11 @@ const externals = {
 let manager;
 
 export function initProjectCommands(extensionContext) {
-  manager = new ProjectsManager(cfg, externals);
+  manager = initDbuxProjects(cfg, externals);
 
   const projects = manager.buildDefaultProjectList();
   const runner = manager.newBugRunner();
-  
+
   debug(`Initialized dbux-projects. Projects folder = "${path.resolve(cfg.projectsRoot)}"`);
 
   registerCommand(extensionContext, 'dbux.runSample0', async () => {
@@ -48,7 +49,7 @@ export function initProjectCommands(extensionContext) {
 
     // checkout bug -> activate bug
     await runner.activateBug(bug);
-    
+
     // open in editor (must be after activation/installation)
     await bug.openInEditor();
 
