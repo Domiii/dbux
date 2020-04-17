@@ -40,8 +40,11 @@ export default class ExpressProject extends Project {
       this.log('(skipped cloning)');
     }
 
-    // install dependencies
-    await this.installDbuxCli(projectPath);
+    // install
+    await this.npmInstall();
+
+    // install dbux dependencies
+    await this.installDbuxCli();
 
     // TODO: copy assets
     // sh.cp('-u', src, dst);

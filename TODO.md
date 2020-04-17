@@ -108,6 +108,15 @@
 
 
 ## TODO (`dbux-projects`)
+* replace `callbackWrapper` with improved function tracking instead
+   * track...
+      * function declarations (even non-statement declaration)
+      * Context `push`
+      * CallExpression `callee`
+      * any function value
+   * provide improved UI to allow tracking function calls
+* fix up serializer
+
 * fix: what to do when switching between bugs but installation (or user) modified files?
    * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
    * `commit` and forget?
@@ -133,18 +142,6 @@
    * asset folder?
    * target folder?
    * allow target folder to be configurable
-* express test fail: `return function(req, res, next, val){ ... };` -> `Cannot read property 'loc' of undefined`
-   at isNodeInstrumented (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1165:16)
-    at getCallbackDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1047:91)
-    at getFunctionDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1072:26)
-    at getTraceDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:387:107)
-    at traceDefault (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:406:21)
-    at StaticTraceCollection.addTrace (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:444:17)
-    at buildTraceExpr (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1603:30)
-    at _traceWrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1695:17)
-    at traceWrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1624:10)
-    at wrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:2981:91)
-    at Object.ReturnArgument (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:3075:14)
 
 
 * [Deployment]

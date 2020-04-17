@@ -8,7 +8,7 @@ import Enum from '../../util/Enum';
 /**
  * 
  */
-let ValueRefCategory = {
+let ValueTypeCategory = {
   /**
    * Primitives have a small, fixed size, primarily: number, bool
    */
@@ -20,22 +20,22 @@ let ValueRefCategory = {
   Object: 4
 };
 
-ValueRefCategory = new Enum(ValueRefCategory);
+ValueTypeCategory = new Enum(ValueTypeCategory);
 
-export function determineValueRefCategory(value) {
+export function determineValueTypeCategory(value) {
   if (isFunction(value)) {
-    return ValueRefCategory.Function;
+    return ValueTypeCategory.Function;
   }
   if (isString(value)) {
-    return ValueRefCategory.String;
+    return ValueTypeCategory.String;
   }
   if (isArray(value)) {
-    return ValueRefCategory.Array;
+    return ValueTypeCategory.Array;
   }
   if (isObject(value)) {
-    return ValueRefCategory.Object;
+    return ValueTypeCategory.Object;
   }
-  return ValueRefCategory.Primitive;
+  return ValueTypeCategory.Primitive;
 }
 
-export default ValueRefCategory;
+export default ValueTypeCategory;

@@ -1,5 +1,5 @@
 import { logInternalError } from 'dbux-common/src/log/logger';
-import ValueRefCategory, { determineValueRefCategory } from 'dbux-common/src/core/constants/ValueRefCategory';
+import ValueTypeCategory, { determineValueTypeCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
 import serialize from 'dbux-common/src/serialization/serialize';
 import Collection from './Collection';
 import pools from './pools';
@@ -41,8 +41,8 @@ class ValueCollection extends Collection {
   }
 
   registerValue(value, valueHolder) {
-    const category = determineValueRefCategory(value);
-    if (category === ValueRefCategory.Primitive) {
+    const category = determineValueTypeCategory(value);
+    if (category === ValueTypeCategory.Primitive) {
       valueHolder.valueId = 0;
       valueHolder.value = value;
     }
@@ -81,7 +81,7 @@ class ValueCollection extends Collection {
     valueRef.valueId = valueId;
     valueRef.trackId = tracked.trackId;
     valueRef.category = category;
-    valueRef.serialized = serialize(value);
+    valueRef.serialized = serialize(category, value);
 
     // add + send
     this._add(valueRef);
