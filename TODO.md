@@ -108,6 +108,13 @@
 
 
 ## TODO (`dbux-projects`)
+* make sure, express works:
+   * run it in dbux
+   * switch between bugs
+   * run again
+* make sure, switching between multiple projects works
+   * (add eslint next?)
+* load bugs from bug database automatically?
 * replace `callbackWrapper` with improved function tracking instead
    * track...
       * function declarations (even non-statement declaration)

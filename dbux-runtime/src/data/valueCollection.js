@@ -1,8 +1,15 @@
 import { logInternalError } from 'dbux-common/src/log/logger';
-import ValueTypeCategory, { determineValueTypeCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
-import serialize from 'dbux-common/src/serialization/serialize';
+import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState } from 'dbux-common/src/core/constants/ValueTypeCategory';
+// import serialize from 'dbux-common/src/serialization/serialize';
 import Collection from './Collection';
 import pools from './pools';
+
+const SerializationConfig = {
+  maxDepth: 3,
+  maxObjectSize: 100,   // applies to arrays and object
+  maxStringLength: 1000
+};
+
 
 class TrackedValue {
   static _lastId = 0;
@@ -47,14 +54,10 @@ class ValueCollection extends Collection {
       valueHolder.value = value;
     }
     else {
-      const valueId = this._addValue(category, value);
-      valueHolder.valueId = valueId;
+      const valueRef = this._serialize(value, 1, category);
+      valueHolder.valueId = valueRef.valueId;
       valueHolder.value = undefined;
     }
-  }
-
-  addValue(value) {
-
   }
 
   /**
@@ -70,10 +73,10 @@ class ValueCollection extends Collection {
     return tracked;
   }
 
-  _addValue(category, value) {
+  _addValue(value, category, typeName, serialized, pruneState = false) {
     // create new ref
     const valueRef = new pools.values.allocate();
-    
+
     // track value
     const tracked = this._trackValue(value, valueRef);
 
@@ -81,12 +84,84 @@ class ValueCollection extends Collection {
     valueRef.valueId = valueId;
     valueRef.trackId = tracked.trackId;
     valueRef.category = category;
-    valueRef.serialized = serialize(category, value);
+    valueRef.typeName = typeName;
+    valueRef.serialized = serialized;
+    valueRef.pruneState = pruneState;
 
-    // add + send
+    // register + send out
     this._add(valueRef);
 
-    return valueId;
+    return valueRef;
+  }
+
+
+  // ###########################################################################
+  // serialization
+  // ###########################################################################
+
+  _serialize(value, nDepth = 1, category = null) {
+    if (nDepth > SerializationConfig.maxDepth) {
+      return this._addValue(null, null, null, '...', ValuePruneState.Omitted);
+    }
+
+    category = category || determineValueTypeCategory(value);
+
+    // let serialized = serialize(category, value, serializationConfig);
+    let serialized;
+    let pruneState = ValuePruneState.Normal;
+    let typeName = '';
+
+    switch (category) {
+      case ValueTypeCategory.String:
+        if (value.length > SerializationConfig.maxStringLength) {
+          serialized = serialized.substring(0, SerializationConfig.maxStringLength);
+          pruneState = ValuePruneState.Shortened;
+        }
+        break;
+      case ValueTypeCategory.Function:
+        serialized = 'ƒ';
+        break;
+      case ValueTypeCategory.Array: {
+        let n = value.length;
+        if (n > SerializationConfig.maxObjectSize) {
+          pruneState = ValuePruneState.Shortened;
+          n = SerializationConfig.maxObjectSize;
+        }
+
+        // build array
+        serialized = [];
+        for (let i = 0; i < n; ++i) {
+          const childRef = this._serialize(value, nDepth + 1);
+          serialized.push(childRef.valueId);
+        }
+        break;
+      }
+      case ValueTypeCategory.Object: {
+        const keys = Object.keys(value);
+        typeName = value.constructor?.name || '';
+
+        let n = keys.length;
+        if (n > SerializationConfig.maxObjectSize) {
+          pruneState = ValuePruneState.Shortened;
+          n = SerializationConfig.maxObjectSize;
+        }
+
+        // build object
+        serialized = [];
+        for (let i = 0; i < n; ++i) {
+          const k = keys[i];
+          const childRef = this._serialize(value[k], nDepth + 1);
+          serialized.push(childRef.valueId);
+        }
+        break;
+      }
+      default:
+        serialized = value + '';
+        break;
+    }
+
+    // add/register/track value
+    return this._addValue(value, category, typeName, serialized, pruneState);
   }
 }
 

@@ -12,17 +12,34 @@ const category2Method = {
   [ValueTypeCategory.Primitive]: SerializationMethod.ToString,
   [ValueTypeCategory.String]: SerializationMethod.ToString,
 
-  [ValueTypeCategory.Array]: SerializationMethod.Object,
-  [ValueTypeCategory.Object]: SerializationMethod.Object
+  [ValueTypeCategory.Array]: SerializationMethod.JSON,
+  [ValueTypeCategory.Object]: SerializationMethod.JSON
 };
 
 function getBestMethod(category, value) {
   return category2Method[category];
 }
 
+// function stringify(val, depth, replacer, space) {
+//   depth = isNaN(+depth) ? 1 : depth;
+//   function _build(key, val, depth, o, a) { // (JSON.stringify() has it's own rules, which we respect here by using it for property iteration)
+//     return !val || typeof val != 'object' ? val : (a = Array.isArray(val), JSON.stringify(val, function (k, v) { if (a || depth > 0) { if (replacer) v = replacer(k, v); if (!k) return (a = Array.isArray(v), val = v); !o && (o = a ? [] : {}); o[k] = _build(k, v, a ? depth : depth - 1); } }), o || (a ? [] : {}));
+//   }
+//   return JSON.stringify(_build('', val, depth), null, space);
+// }
+
+function doSerialize(method, x) {
+  // const method = getBestMethod(category, x);
+
+  serializedValue = serializers[method](x);
+}
+
+// ###########################################################################
+// complexSerializer
+// ###########################################################################
+
 const serializers = {
   [SerializationMethod.Function](x) {
-    // TODO: add serious Function tracking
     return 'ƒ';
   },
 
@@ -36,26 +53,25 @@ const serializers = {
     return `${x}`;
   },
 
-  [SerializationMethod.Object](x) {
-    if (isArray(x)) {
-      // array
-      // TODO
-    }
-    else {
-      // object
-      // TODO
-    }
-  }
+  // [SerializationMethod.Object](x) {
+  //   if (isArray(x)) {
+  //     // array
+  //     // TODO
+  //   }
+  //   else {
+  //     // object
+  //     // TODO
+  //   }
+  // }
 };
 
 export default function serialize(category, inputValue) {
   // TODO: largely improve this process!
+  let serializedValue;
   const method = getBestMethod(category, inputValue);
 
-  let serializedValue;
-
   try {
-    serializedValue = serializers[method](inputValue);
+    serializedValue = doSerialize(method, inputValue);
   }
   catch (err) {
     warn('could not serialize object', inputValue, err);

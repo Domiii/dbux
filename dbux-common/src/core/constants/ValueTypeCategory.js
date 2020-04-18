@@ -13,11 +13,12 @@ let ValueTypeCategory = {
    * Primitives have a small, fixed size, primarily: number, bool
    */
   Primitive: 1,
+  String: 2,
 
-  Function: 2,
-  String: 3,
-  Array: 3,
-  Object: 4
+  // complex types
+  Object: 3,
+  Array: 4,
+  Function: 5
 };
 
 ValueTypeCategory = new Enum(ValueTypeCategory);
@@ -38,4 +39,25 @@ export function determineValueTypeCategory(value) {
   return ValueTypeCategory.Primitive;
 }
 
+export function isCategoryComplex(category) {
+  return category >= ValueTypeCategory.Object;
+}
+
 export default ValueTypeCategory;
+
+
+// ###########################################################################
+// ValuePruneState
+// ###########################################################################
+
+let ValuePruneState = {
+  Normal: 0,
+  Omitted: 1,
+  Shortened: 2
+};
+
+ValuePruneState = new Enum(ValuePruneState);
+
+export {
+  ValuePruneState
+};

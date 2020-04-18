@@ -7,7 +7,7 @@ import ValueRef from 'dbux-common/src/core/data/ValueRef';
 import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext';
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
-import deserialize from 'dbux-common/src/serialization/deserialize';
+import ValueTypeCategory, { ValuePruneState } from 'dbux-common/src/core/constants/ValueTypeCategory';
 import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit } from 'dbux-common/src/core/constants/TraceType';
 
 import Collection from './Collection';
@@ -219,11 +219,56 @@ class ValueCollection extends Collection<ValueRef> {
   }
 
   add(entries) {
-    for (const entry of entries) {
-      entry.value = deserialize(entry.serialized);
-      entry.serialized = null; // don't need this, so don't keep it around
-    }
+    // add entries to collection
     super.add(entries);
+
+    // deserialize
+    for (const entry of entries) {
+      entry.value = this._deserialize(entry);
+      entry.serialized = null; // don't need this, so don't keep it around
+
+      // TODO: keep real arrays + objects, and add a way to easily retrieve string representation
+    }
+  }
+
+  getAllById(ids) {
+    return ids.map(id => this.getById(id));
+  }
+
+  /**
+   * NOTE: This still only returns a string representation?
+   */
+  _deserialize(entry) {
+    const {
+      category,
+      serialized,
+      pruneState
+    } = entry;
+
+    if (pruneState === ValuePruneState.Omitted) {
+      return serialized;
+    }
+
+    switch (category) {
+      case ValueTypeCategory.Array: {
+        let children = this.getAllById(entry.serialized);
+        children = children.map(child => child.value);
+        
+        // TODO: consider pruneState.Shortened
+        // TODO: finish up
+
+        return children;
+      }
+      case ValueTypeCategory.Object: {
+        const children = this.getAllById(entry.serialized);
+
+        // TODO
+        
+        break;
+      }
+      default:
+        return serialized;
+    }
   }
 }
 
