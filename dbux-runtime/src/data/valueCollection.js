@@ -5,7 +5,7 @@ import Collection from './Collection';
 import pools from './pools';
 
 const SerializationConfig = {
-  maxDepth: 3,
+  maxDepth: 0,
   maxObjectSize: 100,   // applies to arrays and object
   maxStringLength: 1000
 };
@@ -98,6 +98,17 @@ class ValueCollection extends Collection {
   // ###########################################################################
   // serialization
   // ###########################################################################
+  _errorCount = 0;
+
+  _readProperty(obj, key) {
+    try {
+      return obj[key];
+    }
+    catch (err) {
+      ++this._errorCount;
+      return `(ERROR: accessing ${key} caused exception)`;
+    }
+  }
 
   _serialize(value, nDepth = 1, category = null) {
     if (nDepth > SerializationConfig.maxDepth) {
@@ -137,10 +148,10 @@ class ValueCollection extends Collection {
         break;
       }
       case ValueTypeCategory.Object: {
-        const keys = Object.keys(value);
+        const props = Object.keys(value);
         typeName = value.constructor?.name || '';
 
-        let n = keys.length;
+        let n = props.length;
         if (n > SerializationConfig.maxObjectSize) {
           pruneState = ValuePruneState.Shortened;
           n = SerializationConfig.maxObjectSize;
@@ -149,9 +160,10 @@ class ValueCollection extends Collection {
         // build object
         serialized = [];
         for (let i = 0; i < n; ++i) {
-          const k = keys[i];
-          const childRef = this._serialize(value[k], nDepth + 1);
-          serialized.push(childRef.valueId);
+          const prop = props[i];
+          const propValue = this._readProperty(value, prop);
+          const childRef = this._serialize(propValue, nDepth + 1);
+          serialized.push([prop, childRef.valueId]);
         }
         break;
       }

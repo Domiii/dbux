@@ -145,9 +145,12 @@ export function makeCallValueLabel(callTrace) {
 
   const args = dp.indexes.traces.byCall.get(traceId) || EmptyArray;
   const argValues = args.slice(1).map(arg => dp.util.getTraceValue(arg.traceId));
-  const resultValue = dp.util.getTraceValue(resultId);
+  const resultValue = resultId && dp.util.getTraceValue(resultId);
+  const result = resultValue && ` -> ${resultValue}` || '';
 
-  return `(${argValues.join(', ')}) -> ${resultValue}`;
+  // TODO: why do we soemtimes not have a result?
+
+  return `(${argValues.join(', ')})${result}`;
 }
 
 /**

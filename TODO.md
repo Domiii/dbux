@@ -2,6 +2,7 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
+* "error (flame) button" does not do anything when clicked?
 * add a command to toggle (show/hide) all intrusive features
    * includes:
       * show/hide all `codeDeco`s
@@ -108,6 +109,15 @@
 
 
 ## TODO (`dbux-projects`)
+* [errors] false positive: ```
+   exports.deprecate = function(fn, msg){
+      if (process.env.NODE_ENV === 'test') return fn;
+      // prepend module name
+      msg = 'express: ' + msg;`
+   ```
+* "Error: timeout of 2000ms exceeded"
+   * nothing was received because of error
+   * can we try this outside extension host etc to speed up process?
 * make sure, express works:
    * run it in dbux
    * switch between bugs
@@ -173,6 +183,13 @@
 
 
 ## TODO (other)
+* fix: when selecting a traced "return", it says "no trace at cursor"
+   * (same with almost any keywords for now)
+* in `app.param.js` we don't have any trace in any of the request handler callbacks
+* [net/Client]
+   * Client operations fail when waiting too long (e.g. when pausing in debugger) (such as `this._socket.emit`)
+* [serialization]
+   * early accessing of getters can cause exceptions and maybe worse
 * fix: setup `eslint` to use correct index of `webpack` multi config to allow for `src` alias
    * Problem: won't work since different projects would have an ambiguous definition of `src`
 * (big goal: design projects, bugs, comprehension questions + tasks)
