@@ -2,7 +2,12 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* "error (flame) button" does not do anything when clicked?
+* fix: "error (flame) button" does not do anything when clicked
+* add button to `ApplicationsView` to switch to `ApplicationFilesView`
+   * -> list all files
+   * click:
+      * if not open: open file -> then go to first trace in file
+      * if open: just open (don't go to trace)
 * add a command to toggle (show/hide) all intrusive features
    * includes:
       * show/hide all `codeDeco`s
@@ -109,6 +114,9 @@
 
 
 ## TODO (`dbux-projects`)
+* wrap `exec` processes into new `Process` class?
+   * allow for better controlling processes
+   * if a process fails or is cancelled it's current `async` function also needs to stop/fail
 * [errors] false positive: ```
    exports.deprecate = function(fn, msg){
       if (process.env.NODE_ENV === 'test') return fn;

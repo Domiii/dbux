@@ -111,6 +111,23 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   }
 
   // ###########################################################################
+  // render utilities
+  // ###########################################################################
+
+  /**
+   * hackfix: the VSCode webview does not re-render correctly when `panzoom` library updates element `transform`.
+   *    This forces it to re-render.
+   */
+  _repaint = () => {
+    // var el = document.querySelector('#root');
+    // var el = domElement;
+    const { el } = this;
+    const p = el.parentNode;
+    p.removeChild(el);
+    p.appendChild(el);
+  }
+
+  // ###########################################################################
   // internally used remote commands
   // ###########################################################################
 
