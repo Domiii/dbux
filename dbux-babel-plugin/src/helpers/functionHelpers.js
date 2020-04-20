@@ -44,8 +44,9 @@ function getCallbackDisplayName(functionPath, state) {
         callName = trace.displayName;
       }
       else {
-        callName = '[cb] (unnamed)';
-        // warn('could not extract name of callback\'s callee:', functionPath.toString());
+        // callName = '(unnamed)';
+        warn('could not extract name of callback\'s callee:', functionPath.parentPath.toString());
+        return null;
       }
     }
     return `[cb] ${callName}`;

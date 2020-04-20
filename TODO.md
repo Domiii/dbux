@@ -114,7 +114,7 @@
 
 
 ## TODO (`dbux-projects`)
-* add `signal-exit`? https://www.npmjs.com/package/signal-exit
+* fix `guessFunctionName`: `[cb] [cb] (unnamed)`
 * [errors] false positive: ```
    exports.deprecate = function(fn, msg){
       if (process.env.NODE_ENV === 'test') return fn;
@@ -125,9 +125,10 @@
    * testing often comes with timeout (e.g. "Error: timeout of 2000ms exceeded")
    * nothing was received because of error
    * can we try this outside extension host etc to speed up process?
+   * add `signal-exit`? https://www.npmjs.com/package/signal-exit
 * fix: what to do when switching between bugs but installation (or user) modified files?
-   * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
-   * `commit` and forget?
+   * NOTE: switching between bugs requires `git checkout` which needs local changes to be committed or reset
+   * auto `commit` and forget?
 * make sure, express works:
    * run it in dbux
    * switch between bugs
@@ -186,6 +187,15 @@
 
 
 
+## TODO (dbux-graph)
+* replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
+* NOTES
+   * `render` does NOT propagate to children (unlike React)
+
+
+
+
+
 
 
 ## TODO (other)
@@ -212,9 +222,6 @@
 * dbux-graph web components
    * map data (or some sort of `id`) to `componentId`
    * batch `postMessage` calls before sending out
-   * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
-   * NOTES
-      * `render` does NOT propagate to children (unlike React)
    * write automatic `dbux-graph-client/scripts/pre-build` component-registry script
 
 * fix: `staticTraceId` must resemble AST ordering for error tracing to work correctly

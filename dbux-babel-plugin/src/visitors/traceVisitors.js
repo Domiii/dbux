@@ -9,9 +9,11 @@
 import Enum from 'dbux-common/src/util/Enum';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceSuper } from '../helpers/traceHelpers';
-import { instrumentLoop } from './loopVisitors';
+import { loopVisitor } from './loopVisitors';
 import { getPathTraceId } from '../data/StaticTraceCollection';
 import { isCallPath } from '../helpers/functionHelpers';
+import functionVisitor from './functionVisitor';
+import awaitVisitor from './awaitVisitor';
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
@@ -28,13 +30,15 @@ const TraceInstrumentationType = new Enum({
   Statement: 4,
   Block: 5,
   Loop: 6,
-  LoopBlock: 7,
 
   // Special attention required for these
   MemberExpression: 8,
   Super: 9,
   ReturnArgument: 10,
-  ThrowArgument: 11
+  ThrowArgument: 11,
+
+  Function: 12,
+  Await: 13
 });
 
 const traceCfg = (() => {
@@ -52,7 +56,10 @@ const traceCfg = (() => {
     MemberExpression,
     Super,
     ReturnArgument,
-    ThrowArgument
+    ThrowArgument,
+
+    Function,
+    Await
   } = TraceInstrumentationType;
 
   return {
@@ -100,11 +107,6 @@ const traceCfg = (() => {
     NewExpression: [
       // TODO: fix this
       ExpressionResult
-    ],
-    AwaitExpression: [
-      NoTrace // WARNING: don't change this - will cause await to bug out, due to a conflict with `awaitVisitor`'s instrumentation
-      // ExpressionResult
-      // [['argument', ExpressionNoValue]]
     ],
     /**
      * Ternary operator
@@ -183,7 +185,9 @@ const traceCfg = (() => {
     //     ignore: ['ImportDeclaration'] // ignore: cannot mess with imports
     //   }
     // ],
+
     ReturnStatement: [
+      // TODO: make sure ReturnArgument executes, if there is no argument
       NoTrace,
       [['argument', ReturnArgument]]
     ],
@@ -197,25 +201,19 @@ const traceCfg = (() => {
     // loops
     // ########################################
     ForStatement: [
-      Loop,
-      [['test', ExpressionResult], ['update', ExpressionResult], ['body', LoopBlock]]
+      Loop
     ],
     ForInStatement: [
-      Loop,
-      [['body', LoopBlock]]
+      Loop
     ],
     ForOfStatement: [
-      Loop,
-      [['body', LoopBlock]]
+      Loop
     ],
     DoWhileLoop: [
       // TODO: currently disabled because babel doesn't like it; probably a babel bug?
-      Loop,
-      [['test', ExpressionResult], ['body', LoopBlock]]
     ],
     WhileStatement: [
-      Loop,
-      [['test', ExpressionResult], ['body', LoopBlock]]
+      Loop
     ],
 
     // ########################################
@@ -251,8 +249,26 @@ const traceCfg = (() => {
 
     // ExpressionStatement: [['expression', true]], // already taken care of by everything else
 
+    // ########################################
+    // functions
+    // ########################################
+    Function: [
+      Function
+    ],
+
+    // ########################################
+    // await
+    // ########################################
+    AwaitExpression: [
+      Await
+    ],
   };
 })();
+
+
+// ###########################################################################
+// utilities
+// ###########################################################################
 
 function err(message, obj) {
   throw new Error(message + (obj && (' - ' + JSON.stringify(obj)) || ''));
@@ -385,9 +401,7 @@ const enterInstrumentors = {
     // }
   },
   Loop(path, state) {
-    instrumentLoop(path, state);
-  },
-  LoopBlock(path, state) {
+    loopVisitor(path, state);
   },
   MemberExpression(path, state) {
     // trace object of method call
@@ -427,7 +441,10 @@ const enterInstrumentors = {
 
   ThrowArgument(path, state, cfg) {
     return wrapExpression(TraceType.ThrowArgument, path, state, cfg);
-  }
+  },
+
+  Function: functionVisitor,
+  Await: awaitVisitor
 };
 
 
@@ -446,7 +463,7 @@ const enterInstrumentors = {
 function exitCallExpression(path, state) {
   // CallExpression
   // instrument args after everything else has already been done
-  
+
   // const calleePath = path.get('callee');
   // const beforeCallTraceId = getPathTraceId(calleePath);
   // traceCallExpression(path, state, beforeCallTraceId);
@@ -464,6 +481,26 @@ const exitInstrumentors = {
     exitCallExpression(path, state);
   }
 };
+
+// ###########################################################################
+// children
+// ###########################################################################
+
+const ChildrenVisitorsTag = '_childrenVisitors';
+
+function pushChild(path, child) {
+  // TODO: push to array
+  path.setData(ChildrenVisitorsTag, child);
+}
+
+function popChild(path, state) {
+  const children = path.getData(ChildrenVisitorsTag);
+
+  for (const child of children) {
+    const [childName, ...childCfg] = child;
+    visit(onTrace, instrumentors, path, state, childCfg);
+  }
+}
 
 // ###########################################################################
 // visitors
@@ -487,14 +524,21 @@ function visit(onTrace, instrumentors, path, state, cfg) {
   // start tracing
   if (!onTrace(path)) return; // mark as visited
 
+  // TODO: fix order:
+  //  What is the order if you have children but also other nodes at the same time?
+  //  children types are always:
+  //    ExpressionValue, ExpressionResult, ReturnArgument, ThrowArgument, Block
+
   if (children) {
     // 1. trace children
-    for (const child of children) {
-      const [childName, ...childCfg] = child;
-      const childPath = path.get(childName);
+    if (children) {
+      for (const child of children) {
+        const [childName, ...childCfg] = child;
+        const childPath = path.get(childName);
 
-      if (childPath.node) {
-        visit(onTrace, instrumentors, childPath, state, childCfg);
+        if (childPath.node) {
+          pushChild(childPath, child);
+        }
       }
     }
   }
@@ -514,6 +558,10 @@ function visit(onTrace, instrumentors, path, state, cfg) {
   }
 }
 
+function visitEnter(path, state, visitorCfg) {
+  return visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
+}
+
 let _cfg;
 export function buildAllTraceVisitors() {
   const visitors = {};
@@ -524,13 +572,19 @@ export function buildAllTraceVisitors() {
   for (const visitorName in _cfg) {
     const visitorCfg = _cfg[visitorName];
     visitors[visitorName] = {
+      
       enter(path, state) {
-        visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
-      },
-
-      exit(path, state) {
-        visit(state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
+        // if (path.getData()) {
+        //   visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg)
+        // }
+        // TODO: fix this
+        // TODO: remove exitInstrumentors
+        visitEnter(path, state, visitorCfg);
       }
+
+      // exit(path, state) {
+      //   visit(state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
+      // }
     };
   }
   return visitors;

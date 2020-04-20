@@ -4,7 +4,6 @@ import TraceType from 'dbux-common/src/core/constants/TraceType';
 import VarOwnerType from 'dbux-common/src/core/constants/VarOwnerType';
 import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
-import { buildTraceNoValue } from '../helpers/traceHelpers';
 import { injectContextEndTrace } from '../helpers/contextHelper';
 
 // ###########################################################################
@@ -156,10 +155,10 @@ export default function functionVisitor() {
       wrapFunctionBody(path, bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId);
     },
 
-    exit(path, state) {
-      if (!state.onExit(path, 'context')) return;
+    // exit(path, state) {
+    //   if (!state.onExit(path, 'context')) return;
       
-      // injectContextEndTrace(path, state);
-    }
+    //   // injectContextEndTrace(path, state);
+    // }
   };
 }
