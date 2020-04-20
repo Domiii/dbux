@@ -56,7 +56,7 @@ class GraphRoot extends ClientComponentEndpoint {
     panzoom.zoomAbs(
       0,
       0,
-      0.5
+      1
     );
 
 
@@ -81,7 +81,7 @@ class GraphRoot extends ClientComponentEndpoint {
     });
 
     panzoom.on('transform', (e) => {
-      this._repaint();
+      // this._repaint();
     });
 
     return panzoom;
