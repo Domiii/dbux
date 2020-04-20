@@ -114,22 +114,25 @@
 
 
 ## TODO (`dbux-projects`)
-* wrap `exec` processes into new `Process` class?
-   * allow for better controlling processes
-   * if a process fails or is cancelled it's current `async` function also needs to stop/fail
+* add `signal-exit`? https://www.npmjs.com/package/signal-exit
 * [errors] false positive: ```
    exports.deprecate = function(fn, msg){
       if (process.env.NODE_ENV === 'test') return fn;
       // prepend module name
       msg = 'express: ' + msg;`
    ```
-* "Error: timeout of 2000ms exceeded"
+* [runtime_timeout] find a workaround
+   * testing often comes with timeout (e.g. "Error: timeout of 2000ms exceeded")
    * nothing was received because of error
    * can we try this outside extension host etc to speed up process?
+* fix: what to do when switching between bugs but installation (or user) modified files?
+   * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
+   * `commit` and forget?
 * make sure, express works:
    * run it in dbux
    * switch between bugs
    * run again
+   * cancel
 * make sure, switching between multiple projects works
    * (add eslint next?)
 * load bugs from bug database automatically?
@@ -141,12 +144,7 @@
       * any function value
    * provide improved UI to allow tracking function calls
 * fix up serializer
-
-* fix: what to do when switching between bugs but installation (or user) modified files?
-   * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
-   * `commit` and forget?
 * auto attach is not working
-* allow debug vs. run mode
 * project state management?
    * `new Enum()`
 
@@ -193,6 +191,7 @@
 ## TODO (other)
 * fix: when selecting a traced "return", it says "no trace at cursor"
    * (same with almost any keywords for now)
+* `displayName` is often too long for proper analysis in py/callGraph
 * in `app.param.js` we don't have any trace in any of the request handler callbacks
 * [net/Client]
    * Client operations fail when waiting too long (e.g. when pausing in debugger) (such as `this._socket.emit`)
@@ -201,8 +200,6 @@
 * fix: setup `eslint` to use correct index of `webpack` multi config to allow for `src` alias
    * Problem: won't work since different projects would have an ambiguous definition of `src`
 * (big goal: design projects, bugs, comprehension questions + tasks)
-* fix: instrumentation - in `findLongestWord/1for-bad1`, `staticTraceId` order is messed up
-   * (see below: "AST ordering")
 * test: 
    * `return await x;`
       * -> problem: `awaitVisitor` and `returnVisitor` at odds?
@@ -221,10 +218,16 @@
    * write automatic `dbux-graph-client/scripts/pre-build` component-registry script
 
 * fix: `staticTraceId` must resemble AST ordering for error tracing to work correctly
+   * `CallExpression.arguments` are out of order
+      * e.g. in `findLongestWord/1for-bad1`
+      * because:
+         * -> 1. `BCE`
+         * -> 2. let other visitors take care of arguments
+         * -> 3. let other visitors take care of result
+         * -> 4. wrap all uninstrumented arguments in `Exit`
    * examples of out-of-order static traces
-      * `CallExpression.arguments`
-      * `awaitVisitors`, `loopVisitors` and more
-      * and many more...
+      * `awaitVisitors`, `loopVisitors`
+      * anything that is not build into the singular visitor tree
    * Sln: generate `orderId` for each ast node and map to `staticTraceId`
       * Add a new pass to generate `orderId` for each node before starting instrumentation
          * Need to store `orderId` by `context`

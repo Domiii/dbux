@@ -31,19 +31,37 @@ function _getGlobal() {
 }
 
 
+let client;
+let didBeforeShutdown = false;
+function _onBeforeShutdown(x) {
+  console.warn('_onBeforeShutdown', x, didBeforeShutdown);
+  if (didBeforeShutdown) {
+    return;
+  }
+
+  didBeforeShutdown = true;
+  client.flush();
+
+  // give socket a short grace period
+  setTimeout(() => {}, 200);
+}
+
 (function main() {
   __global__ = _getGlobal();
   registerDbuxAsGlobal();
 
   // NOTE: make sure to `initClient` right at the start, or else:
   // make sure that the client's `createdAt` will be smaller than any other `createdAt` in data set!
-  const client = initClient();
+  client = initClient();
 
   if (__global__.process) {
-    // register `beforeExit` handler to make sure, the client can send all the good stuff
-    process.on('beforeExit', () => {
-      console.warn('beforeExit');
-      client.flush();
+    // handle `beforeExit`, `SIGTERM` and `SIGINT` separately
+    // see: https://github.com/nodejs/node/issues/12359#issuecomment-293567749
+
+    // NOTE: `exit` does not allow for async handlers
+    // see: https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
+    [`SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
+      process.on(eventType, _onBeforeShutdown);
     });
   }
 })();
