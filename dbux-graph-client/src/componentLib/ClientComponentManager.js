@@ -7,6 +7,10 @@ import ClientComponentEndpoint from './ClientComponentEndpoint';
 // ###########################################################################
 
 class AppComponent extends ClientComponentEndpoint {
+  createEl() {
+    // doesn't do anything
+  }
+
   confirm(...args) {
     return this._remoteInternal.confirm(...args);
   }

@@ -8,6 +8,7 @@ class ContextNode extends ClientComponentEndpoint {
         <div data-el="name" class="name">
           <span data-el="displayName"></span>
           <button data-el="oCBtn" class="open_close_btn" style="display:none">▽</button>
+          <div data-mount="TraceNode"></div>
         </div>
         <div data-mount="ContextNode" data-el="children" class="children">
           <div class="childHead">&nbsp;</div>
@@ -21,7 +22,6 @@ class ContextNode extends ClientComponentEndpoint {
       displayName,
       context: { contextId, staticContextId },
       hasChildren,
-      
     } = this.state;
 
     this.el.id = `context_${contextId}`;

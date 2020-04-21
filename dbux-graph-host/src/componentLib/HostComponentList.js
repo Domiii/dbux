@@ -1,4 +1,5 @@
 import pull from 'lodash/pull';
+import isString from 'lodash/isString';
 
 class HostComponentList {
   components = [];
@@ -19,7 +20,16 @@ class HostComponentList {
   // public methods
   // ###########################################################################
 
-  createComponent(ComponentClass, initialState) {
+  createComponent(ComponentClassOrName, initialState) {
+    const { registry } = this.parent.componentManager;
+    let ComponentClass;
+    if (!isString(ComponentClassOrName)) {
+      ComponentClass = ComponentClassOrName;
+    }
+    else {
+      ComponentClass = registry[ComponentClassOrName];
+    }
+
     const comp = this.parent.componentManager._createComponent(this.parent, ComponentClass, initialState);
     this.components.push(comp);
     return comp;

@@ -10,7 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onLanguage:javascript"
+		"*"
 	],
 	"__main": "./src/index.js",
 	"main": "./dist/bundle.js",
@@ -20,7 +20,7 @@
 				{
 					"id": "dbuxViewContainer",
 					"title": "Dbux",
-					"icon": "resources/dep.svg"
+					"icon": "resources/bug.svg"
 				}
 			]
 		},
@@ -45,10 +45,18 @@
 				{
 					"id": "dbuxApplicationsView",
 					"name": "Applications"
+				},
+				{
+					"id": "dbuxProjectView",
+					"name": "Projects"
 				}
 			]
 		},
 		"commands": [
+			{
+				"command": "dbux.runSample0",
+				"title": "Dbux: Sample 0"
+			},
 			{
 				"command": "dbux.exportApplicationData",
 				"title": "Dbux: Export application data"
@@ -162,6 +170,22 @@
 				}
 			},
 			{
+				"command": "dbuxApplicationsView.showEntryPoint",
+				"title": "Go to Entry",
+				"icon": {
+					"light": "resources/light/nextTrace.svg",
+					"dark": "resources/dark/nextTrace.svg"
+				}
+			},
+			{
+				"command": "dbuxProjectView.node.activateBug",
+				"title": "Activate Bug",
+				"icon": {
+					"light": "resources/light/bug.svg",
+					"dark": "resources/dark/bug.svg"
+				}
+			},
+			{
 				"command": "dbuxPlayback.previousTrace",
 				"title": "Start",
 				"icon": {
@@ -191,14 +215,6 @@
 				"icon": {
 					"light": "resources/light/pause.svg",
 					"dark": "resources/dark/pause.svg"
-				}
-			},
-			{
-				"command": "dbuxApplicationsView.showEntryPoint",
-				"title": "Go to Entry",
-				"icon": {
-					"light": "resources/light/nextTrace.svg",
-					"dark": "resources/dark/nextTrace.svg"
 				}
 			}
 		],
@@ -268,7 +284,12 @@
 				},
 				{
 					"command": "dbuxApplicationsView.showEntryPoint",
-					"when": "view == dbuxApplicationsView && viewItem == applicationNode",
+					"when": "view == dbuxApplicationsView && viewItem == ApplicationNode",
+					"group": "inline"
+				},
+				{
+					"command": "dbuxProjectView.node.activateBug",
+					"when": "view == dbuxProjectView && viewItem == BugNode",
 					"group": "inline"
 				}
 			],
@@ -339,6 +360,8 @@
 		"socket.io": "^2.3.0",
 		"dbux-common": "*",
 		"dbux-data": "*",
+		"dbux-cli": "*",
+		"dbux-projects": "*",
 		"dbux-graph-common": "*",
 		"dbux-graph-host": "*"
 	},

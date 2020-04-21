@@ -255,12 +255,12 @@ export default {
   /**
    * Get callId of a call related trace
    */
-  getTraceCallId(dp: DataProvider, traceId) {
+  getCalleeTraceId(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const context = dp.collections.executionContexts.getById(trace.contextId);
     if (context.schedulerTraceId) {
       // trace is push/pop callback
-      return dp.util.getTraceCallId(context.schedulerTraceId);
+      return dp.util.getCalleeTraceId(context.schedulerTraceId);
     }
     else if (trace.callId) {
       // trace is call/callback argument or BeforeCallExpression
@@ -274,6 +274,17 @@ export default {
       // not a call related trace
       return null;
     }
+  },
+
+  isTraceArgument(dp: DataProvider, traceId) {
+    // a trace is an argument if it has callId not pointing to itself
+    const trace = dp.collections.traces.getById(traceId);
+    if (trace.callId) {
+      if (trace.callId !== trace.traceId) {
+        return true
+      }
+    }
+    return false;
   },
 
   getCalleeStaticTrace(dp: DataProvider, traceId) {

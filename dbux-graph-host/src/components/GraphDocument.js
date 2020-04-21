@@ -2,9 +2,12 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
+import TraceMode from './TraceMode';
+import MiniMap from './MiniMap';
 
 class GraphDocument extends HostComponentEndpoint {
   toolbar;
+  minimap;
   /**
    * @type {GraphRoot}
    */
@@ -15,6 +18,9 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   init() {
+    this.componentManager.doc = this;
+    this.traceMode = TraceMode.AllTraces;
+    
     this.initChildren();
 
     // ########################################
@@ -25,8 +31,10 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   initChildren() {
-    this.toolbar = this.children.createComponent(Toolbar);
+    const traceModeName = TraceMode.getName(this.traceMode);
+    this.toolbar = this.children.createComponent(Toolbar, { traceModeName });
     this.root = this.children.createComponent(GraphRoot);
+    this.minimap = this.children.createComponent(MiniMap);
 
     // start rendering empty graph
     this.root.refresh();
@@ -38,10 +46,39 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   handleApplicationsChanged = (selectedApps) => {
+    this.refreshGraphRoot();
+  }
+
+  // ###########################################################################
+  // manage children
+  // ###########################################################################
+
+  addContexts = (applicationId, contexts) => {
+    this.root.addContexts(applicationId, contexts);
+  }
+
+  // ###########################################################################
+  // public controller method
+  // ###########################################################################
+
+  switchTraceMode() {
+    const nextMode = (this.traceMode + 1) % TraceMode.getCount();
+    this.traceMode = nextMode;
+    this.refreshGraphRoot();
+    this.toolbar.setState({ traceModeName: TraceMode.getName(this.traceMode) });
+  }
+
+  getTraceMode() {
+    return TraceMode.getName(this.traceMode);
+  }
+
+  refreshGraphRoot() {
     // update root application data
     this.root.refresh();
-    this.root.children.clear();
 
+    // update children contexts
+    this.root.children.clear();
+    const selectedApps = allApplications.selection.getAll();
     for (const app of selectedApps) {
       const { applicationId } = app;
 
@@ -60,14 +97,6 @@ class GraphDocument extends HostComponentEndpoint {
         )
       );
     }
-  }
-
-  // ###########################################################################
-  // manage children
-  // ###########################################################################
-
-  addContexts = (applicationId, contexts) => {
-    this.root.addContexts(applicationId, contexts);
   }
 }
 

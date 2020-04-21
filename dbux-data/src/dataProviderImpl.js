@@ -1,4 +1,5 @@
 import DataProvider from './DataProvider';
+import dataProviderUtil from './dataProviderUtil';
 
 import CallGraph from './callGraph/CallGraph';
 
@@ -19,18 +20,18 @@ import ErrorTracesIndex from './impl/indexes/ErrorTracesIndex';
 import ErrorTracesByRunIndex from './impl/indexes/ErrorTracesByRunIndex';
 
 import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
+import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
+import ContextsByRunIndex from './impl/indexes/ContextsByRunIndex';
+import ContextsByParentTraceIndex from './impl/indexes/ContextsByParentTraceIndex';
 import RootContextsIndex from './impl/indexes/RootContextsIndex';
 import VisitedStaticTracesByFileIndex from './impl/indexes/VisitedStaticTracesByFileIndex';
 import ParentTracesInRealContextIndex from './impl/indexes/ParentTracesInRealContextIndex';
 
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
-import dataProviderUtil from './dataProviderUtil';
 import StaticContextsByFileIndex from './impl/indexes/StaticContextsByFileIndex';
 import StaticContextsByParentIndex from './impl/indexes/StaticContextsByParentIndex';
-import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
 import StaticTracesByContextIndex from './impl/indexes/StaticTracesByContextIndex';
-import ContextsByRunIndex from './impl/indexes/ContextsByRunIndex';
 
 
 export function newDataProvider(application) {
@@ -52,6 +53,7 @@ export function newDataProvider(application) {
 
   dataProvider.addIndex(new ContextsByStaticContextIndex());
   dataProvider.addIndex(new ContextsByRunIndex());
+  dataProvider.addIndex(new ContextsByParentTraceIndex());
   dataProvider.addIndex(new ContextChildrenIndex());
   dataProvider.addIndex(new RootContextsIndex());
   dataProvider.addIndex(new FirstContextsInRunsIndex());

@@ -10,7 +10,7 @@ const { log, debug, warn, error: logError } = newLogger('CallGraphNodeProvider')
 export default class CallGraphNodeProvider extends BaseTreeViewNodeProvider {
   constructor(treeViewController) {
     super('dbuxCallGraphView', true);
-    this.treeViewController = treeViewController;
+    this.controller = treeViewController;
   }
 
   buildRoots() {
@@ -28,12 +28,12 @@ export default class CallGraphNodeProvider extends BaseTreeViewNodeProvider {
   buildRootNode = (trace) => {
     const newRootNode = this.buildNode(CallRootNode, trace);
     const { applicationId, runId } = trace;
-    const mode = this.treeViewController.getMode();
+    const mode = this.controller.getMode();
     newRootNode.children = newRootNode.buildChildren(applicationId, runId, mode);
 
     // custom collapsibleState
     if (newRootNode.children.length) {
-      if (this.treeViewController.isFiltering()) {
+      if (this.controller.isFiltering()) {
         newRootNode.collapsibleStateOverride = CollapsibleState.Expanded;
       }
     }

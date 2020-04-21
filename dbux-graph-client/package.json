@@ -20,6 +20,7 @@
     "bootstrap": "^4.4.1",
     "dbux-common": "*",
     "dbux-graph-common": "*",
+    "html2canvas": "^1.0.0-rc.5",
     "panzoom": "^9.2.1"
   },
   "devDependencies": {
