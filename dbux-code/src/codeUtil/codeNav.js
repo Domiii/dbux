@@ -2,7 +2,8 @@ import {
   window,
   Uri,
   Position,
-  Selection
+  Selection,
+  ViewColumn
 } from 'vscode';
 import { newFileLogger } from 'dbux-common/src/log/logger';
 import Loc from 'dbux-common/src/core/data/Loc';
@@ -36,7 +37,7 @@ let lastRequestedDocumentFpath;
  * It rejects all in-flight promises, if you query it too fast; so we need to slow things down.
  * @see https://github.com/microsoft/vscode/issues/93003
  */
-export async function showTextDocument(fpath) {
+export async function showTextDocument(fpath, column = ViewColumn.Active) {
   // see https://code.visualstudio.com/api/references/vscode-api#Uri
   // console.log(window.activeTextEditor.document.uri.path);
   if (lastRequestedDocumentFpath === fpath) {
@@ -47,7 +48,7 @@ export async function showTextDocument(fpath) {
 
   const uri = Uri.file(fpath);
   try {
-    editorOpenPromise = window.showTextDocument(uri);
+    editorOpenPromise = window.showTextDocument(uri, column);
     const editor = await editorOpenPromise;
     return editor;
   }
@@ -62,19 +63,19 @@ export async function showTextDocument(fpath) {
   return null;
 }
 
-export async function getOrOpenTraceEditor(trace) {
+export async function getOrOpenTraceEditor(trace, column = ViewColumn.Active) {
   const dp = allApplications.getApplication(trace.applicationId).dataProvider;
   const filePath = dp.queries.programFilePathByTraceId(trace.traceId);
 
-  return showTextDocument(filePath);
+  return showTextDocument(filePath, column);
 }
 
-export async function goToTrace(trace) {
+export async function goToTrace(trace, column = ViewColumn.Active) {
   const dp = allApplications.getApplication(trace.applicationId).dataProvider;
   const { staticTraceId } = dp.collections.traces.getById(trace.traceId);
   const { loc } = dp.collections.staticTraces.getById(staticTraceId);
 
-  const editor = await getOrOpenTraceEditor(trace);
+  const editor = await getOrOpenTraceEditor(trace, column);
   selectLocInEditor(editor, loc);
 }
 

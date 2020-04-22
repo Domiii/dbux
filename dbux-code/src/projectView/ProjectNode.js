@@ -2,7 +2,7 @@ import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
 export default class ProjectNode extends BaseTreeViewNode {
   static makeLabel(project) {
-    return project || 'project name here';
+    return project.name;
   }
 
   init = () => {

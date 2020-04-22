@@ -1,4 +1,3 @@
-import allApplications from 'dbux-data/src/applications/allApplications';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
 import ProjectNode from './ProjectNode';
 import EmptyNode from './EmptyNode';
@@ -16,20 +15,11 @@ export default class ProjectNodeProvider extends BaseTreeViewNodeProvider {
   // ###########################################################################
 
   buildRoots() {
-    const appByPath = {};
-    for (const app of allApplications.getAll()) {
-      const entry = app.entryPointPath;
-      if (!appByPath[entry]) appByPath[entry] = [];
-      appByPath[entry].push(this.buildProjectNode(app));
-    }
-
     const roots = [];
-    for (let [entry, apps] of Object.entries(appByPath)) {
-      const newRoot = apps.slice(-1)[0];
-      const children = apps.slice(0, -1).reverse();
-      newRoot.children = children.length ? children : null;
-      newRoot.tooltip = entry;
-      roots.push(newRoot);
+
+    for (let project of this.controller.manager.projects) {
+      const node = this.buildProjectNode(project);
+      roots.push(node);
     }
 
     if (!roots.length) {
@@ -39,7 +29,7 @@ export default class ProjectNodeProvider extends BaseTreeViewNodeProvider {
     return roots.reverse();
   }
 
-  buildProjectNode = (app) => {
-    return this.buildNode(ProjectNode, app);
+  buildProjectNode = (project) => {
+    return this.buildNode(ProjectNode, project);
   }
 }

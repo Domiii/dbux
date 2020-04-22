@@ -1,6 +1,6 @@
 import { window } from 'vscode';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
-import ValueRefCategory from 'dbux-common/src/core/constants/ValueRefCategory';
+import ValueTypeCategory from 'dbux-common/src/core/constants/ValueTypeCategory';
 
 // TODO: use proper theming
 
@@ -190,7 +190,7 @@ const StylingsByName = {
 const decoNamesByType = {
   CallExpressionResult(dataProvider, staticTrace, trace) {
     const valueRef = dataProvider.util.getTraceValueRef(trace.traceId);
-    if (valueRef?.category === ValueRefCategory.Function) {
+    if (valueRef?.category === ValueTypeCategory.Function) {
       return 'CallbackArgument';
     }
 

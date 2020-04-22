@@ -79,7 +79,16 @@ export default class Project {
   // install helpers
   // ###########################################################################
 
-  async installDbuxCli(projectPath) {
+  async npmInstall() {
+    const { projectPath } = this;
+
+    sh.cd(projectPath);
+    await exec(`npm install`, this.logger);
+  }
+
+  async installDbuxCli() {
+    const { projectPath } = this;
+
     sh.cd(projectPath);
 
     // TODO: make this work in production as well
@@ -87,8 +96,10 @@ export default class Project {
     // await exec('pwd', this.logger);
 
     // const dbuxCli = path.resolve(projectPath, '../../dbux-cli');
-    const dbuxCli = '../../dbux-cli';
-    await exec(`yarn add ${dbuxCli}`, this.logger);
+    const dbuxCli = '../../dbux-common ../../dbux-cli';
+
+    // TODO: select `NPM` or `yarn` based on `lock` file discovery?
+    await exec(`npm install -D ${dbuxCli}`, this.logger);
   }
 
   // ###########################################################################

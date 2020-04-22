@@ -1,5 +1,6 @@
 # import util
 from util.loadUtil import loadDbuxFile, collectionDf
+from IPython.display import display, HTML
 
 class Collections:
   def __init__(self, rawData):
@@ -64,11 +65,23 @@ class DataProvider:
       return contextName
 
 
-  def printTracesByContext(data):
-    staticContexts = data.collections.staticContexts
-    staticTraces = data.collections.staticTraces
-    contexts = data.collections.contexts
-    traces = data.collections.traces
+  def printStaticTracesByStaticContext(self):
+    staticTraces = self.collections.staticTraces
+
+    print('static traces (by staticContext)')
+    # groups =  staticTraces.\
+    groups =  staticTraces.drop('loc', axis=1).\
+              groupby('staticContextId')
+    for key, item in groups:
+      group = groups.get_group(key)
+      display(group)
+
+
+  def printTracesByContext(self):
+    staticContexts = self.collections.staticContexts
+    staticTraces = self.collections.staticTraces
+    contexts = self.collections.contexts
+    traces = self.collections.traces
 
     # print('staticContexts')
     # display(staticContexts.drop('loc', axis=1))
@@ -88,17 +101,8 @@ class DataProvider:
       group = group.merge(groupStatic, left_on='staticTraceId', right_on='staticTraceId')
 
       contextId = group.iloc[0]['contextId']
-      contextName = data.getContextDisplayName(contextId)
+      contextName = self.getContextDisplayName(contextId)
       print(f'\n  traces for "{contextName}"')
 
-      display(group)
-
-
-    print('static traces (by staticContext)')
-    # groups =  staticTraces.\
-    groups =  staticTraces.drop('loc', axis=1).\
-              groupby('staticContextId')
-    for key, item in groups:
-      group = groups.get_group(key)
       display(group)
 

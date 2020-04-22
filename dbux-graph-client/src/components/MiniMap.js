@@ -15,23 +15,24 @@ class MiniMap extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
     <canvas id = "minimap"></canvas>
     `);
-
   }
   update() {
     this.el.height = window.innerHeight - 60;
     this.el.width = window.innerWidth / 6;
 
-    const mutationObserver = new MutationObserver(this.drawMiniMap);
-    mutationObserver.observe(this.parent.el.querySelector('#test'), {
-      // attributes: true,
-      // characterData: true,
-      childList: true,
-      subtree: true,
-      // attributeOldValue: true,
-      // characterDataOldValue: true
-    });
-    // mutationObserver.disconnect();
+    // TODO: performance still suffers when facing great amounts of data (despite 500ms debouncing)
+    // const mutationObserver = new MutationObserver(this.drawMiniMap);
+    // mutationObserver.observe(this.parent.el.querySelector('#test'), {
+    //   // attributes: true,
+    //   // characterData: true,
+    //   childList: true,
+    //   subtree: true,
+    //   // attributeOldValue: true,
+    //   // characterDataOldValue: true
+    // });
+    // // mutationObserver.disconnect();
   }
+
   drawMiniMap = makeDebounce(() => {
     const rootEl = this.parent.el.querySelector('#test');
     html2canvas(rootEl).then((canvas) => {

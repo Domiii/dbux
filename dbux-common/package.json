@@ -18,5 +18,8 @@
   "dependencies": {
     "colors": "^1.4.0"
   },
+  "peerDependencies": {
+    "lodash": "*"
+  },
   "_moduleAliases": {}
 }

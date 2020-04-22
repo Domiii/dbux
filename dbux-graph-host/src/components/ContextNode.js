@@ -1,9 +1,10 @@
+import { ViewColumn } from 'vscode';
+import { goToTrace } from 'dbux-code/src/codeUtil/codeNav';
 import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import TraceMode from './TraceMode';
-
 
 const { log, debug, warn, error: logError } = newLogger('ContextNode');
 
@@ -26,6 +27,7 @@ class ContextNode extends HostComponentEndpoint {
     this.state.displayName = displayName;
 
     this.buildChildren();
+    this.state.hasChildren = !!this.children.length;
   }
 
   buildChildren() {
@@ -66,7 +68,6 @@ class ContextNode extends HostComponentEndpoint {
     else if (mode === TraceMode.ContextOnly) {
       // get all child context
       const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
-      this.state.hasChildren = !!childContexts.length;
       childContexts.forEach(childContext => {
         // create child context
         return this.children.createComponent('ContextNode', {
@@ -77,6 +78,14 @@ class ContextNode extends HostComponentEndpoint {
     }
     else {
       logError('Unknown TraceMode', TraceMode.getName(mode), mode);
+    }
+  }
+
+  public = {
+    showContext(applicationId, contextId) {
+      const { dataProvider } = allApplications.getById(applicationId);
+      const trace = dataProvider.util.getFirstTraceOfContext(contextId);
+      goToTrace(trace, ViewColumn.Beside);
     }
   }
 }
