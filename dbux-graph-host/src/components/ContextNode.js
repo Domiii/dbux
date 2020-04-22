@@ -1,3 +1,4 @@
+import { goToTrace } from 'dbux-code/src/codeUtil/codeNav';
 import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
@@ -77,6 +78,14 @@ class ContextNode extends HostComponentEndpoint {
     }
     else {
       logError('Unknown TraceMode', TraceMode.getName(mode), mode);
+    }
+  }
+
+  public = {
+    showContext(applicationId, contextId) {
+      const { dataProvider } = allApplications.getById(applicationId);
+      const trace = dataProvider.util.getFirstTraceOfContext(contextId);
+      goToTrace(trace);
     }
   }
 }
