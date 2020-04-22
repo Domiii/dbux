@@ -6,7 +6,7 @@ const logger = newLogger('projectCommands');
 const { log, debug, warn, error: logError } = logger;
 
 export function initProjectCommands(extensionContext, projectViewController) {
-  
+
 }
 
 /**
@@ -17,9 +17,7 @@ export function initProjectUserCommands(extensionContext, projectViewController)
    * @type {ProjectsManager}
    */
   let { manager } = projectViewController;
-
-  const projects = manager.buildDefaultProjectList();
-  const runner = manager.newBugRunner();
+  const { projects, runner } = manager;
 
   registerCommand(extensionContext, 'dbux.runSample0', async () => {
     const project1 = projects.getAt(0);
