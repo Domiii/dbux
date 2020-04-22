@@ -1,8 +1,20 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
+import traceSelection from 'dbux-data/src/traceSelection';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
 
 class GraphRoot extends HostComponentEndpoint {
+  init() {
+    traceSelection.onTraceSelectionChanged(this.onTraceSelected);
+  }
+
+  onTraceSelected(trace) {
+    this.setState({
+      traceId: trace.traceId,
+      applicationId: trace.applicationId
+    });
+  }
+
   refresh() {
     // call setState with refreshed data
     const update = {
