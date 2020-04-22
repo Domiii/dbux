@@ -7,7 +7,7 @@ import ValueRef from 'dbux-common/src/core/data/ValueRef';
 import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext';
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
-import deserialize from 'dbux-common/src/serialization/deserialize';
+import ValueTypeCategory, { ValuePruneState } from 'dbux-common/src/core/constants/ValueTypeCategory';
 import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit } from 'dbux-common/src/core/constants/TraceType';
 
 import Collection from './Collection';
@@ -219,11 +219,58 @@ class ValueCollection extends Collection<ValueRef> {
   }
 
   add(entries) {
-    for (const entry of entries) {
-      entry.value = deserialize(entry.serialized);
-      entry.serialized = null; // don't need this, so don't keep it around
-    }
+    // add entries to collection
     super.add(entries);
+
+    // deserialize
+    for (const entry of entries) {
+      entry.value = this._deserialize(entry);
+      entry.valueString = JSON.stringify(entry.value);
+      entry.serialized = null; // don't need this, so don't keep it around
+
+      // TODO: keep real arrays + objects, and add a way to easily retrieve string representation
+    }
+  }
+
+  getAllById(ids) {
+    return ids.map(id => this.getById(id));
+  }
+
+  /**
+   * NOTE: This still only returns a string representation?
+   */
+  _deserialize(entry) {
+    const {
+      category,
+      serialized,
+      pruneState
+    } = entry;
+
+    if (pruneState === ValuePruneState.Omitted) {
+      return serialized;
+    }
+
+    switch (category) {
+      case ValueTypeCategory.Array: {
+        // TODO: consider pruneState.Shortened
+        // TODO: improve this
+        let value = this.getAllById(entry.serialized);
+        value = value.map(child => child.value);
+        return JSON.stringify(value);
+      }
+      case ValueTypeCategory.Object: {
+        // TODO: consider pruneState.Shortened
+        // TODO: improve this
+        const value = {};
+        for (const [key, childId] of entry.serialize) {
+          const child = this.getById(childId);
+          value[key] = child;
+        }
+        return value;
+      }
+      default:
+        return serialized;
+    }
   }
 }
 

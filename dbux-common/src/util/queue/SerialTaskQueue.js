@@ -1,14 +1,16 @@
 import isFunction from 'lodash/isFunction';
 import { newLogger } from 'dbux-common/src/log/logger';
+import { isPromise } from '../isPromise';
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
-const DefaultTimeout = 5000;
+const WarnTimeout = 10000;
 
 export default class SerialTaskQueue {
   _pendingSet = new Set();
   _queue = [];
   _donePromise;
   _running;
+  _version = 0;
 
   // ###########################################################################
   // init
@@ -18,12 +20,6 @@ export default class SerialTaskQueue {
     this._debugTag = debugTag;
 
     this._reset();
-  }
-
-  _reset() {
-    this._donePromise = new Promise(resolve => {
-      this._resolveDone = resolve;
-    });
   }
 
   // ###########################################################################
@@ -68,20 +64,83 @@ export default class SerialTaskQueue {
     this._enqueueOne(cb, priority);
   }
 
-  // ###########################################################################
-  // misc public methods
-  // ###########################################################################
+  /**
+   * Clears all pending (not already executing) tasks.
+   */
+  clear() {
+    this._queue = [];
+    this._pendingSet.clear();
+  }
 
+  /**
+   * Calls `clear()`, and rejects any waiting tasks.
+   * NOTE: If there is a currently executing async task, it will keep on going 
+   *      (as we cannot cancel blackboxed promises),
+   *      but will be detached from the queue.
+   * IMPROTANT: You can `await` on cancel to make sure 
+   *      not to do anything while the currently active task has not finished yet.
+   */
+  async cancel() {
+    if (!this._running) {
+      return;
+    }
+
+    this.clear();
+    const task = this._activeTask;
+
+    if (this._waitCount) {
+      this._rejectWaitQueue(new Error('queue cancelled'));
+    }
+    else {
+      this._resolveWaitQueue();
+    }
+
+    await task;
+  }
+
+
+  // ###########################################################################
+  // wait queue
+  // ###########################################################################
 
   /**
    * Wait until queue is empty.
    * Multiple calls to `waitUntilFinished` will resolve in the order they came in.
    */
   async waitUntilFinished() {
+    ++this._waitCount;
     this._donePromise = this._donePromise.then(() => {
       // add no-op to ensure that calls to `waitUntilFinished` are resolved in FIFO order
     });
     await this._donePromise;
+  }
+
+  // ########################################
+  // wait queue (private)
+  // ########################################
+
+  _reset() {
+    this._activeTask = null;
+    this._waitCount = 0;
+    this._donePromise = new Promise((resolve, reject) => {
+      this._resolveDoneCb = resolve;
+      this._rejectDoneCb = reject;
+    });
+  }
+
+  _resolveWaitQueue() {
+    this._running = false;
+    
+    this._resolveDoneCb();
+    this._reset();
+  }
+
+  _rejectWaitQueue(err) {
+    this._running = false;
+    ++this._version;
+    
+    this._rejectDoneCb(err);
+    this._reset();
   }
 
   // ###########################################################################
@@ -93,10 +152,8 @@ export default class SerialTaskQueue {
    */
   _enqueueOne(cb, priority = 0) {
     this._debugTag && this._log(this._debugTag, 'add', cb.name, priority);
-    if (!this._running) {
-      this._running = true;
-      setTimeout(this._run);
-    }
+    this._startRun();
+
     // console.debug('> task', cb.name);
     return new Promise((resolve, reject) => {
       const wrappedCb = async () => {
@@ -135,8 +192,18 @@ export default class SerialTaskQueue {
   // run
   // ###########################################################################
 
-  _run = async () => {
+  _startRun() {
+    if (this._running) {
+      return;
+    }
+
     this._running = true;
+    ++this._version;
+    setTimeout(this._run);
+  }
+
+  _run = async () => {
+    const version = this._version;
 
     try {
       while (!this.isEmpty()) {
@@ -158,22 +225,34 @@ export default class SerialTaskQueue {
         const startTime = Date.now();
         const timeoutTimer = setInterval(() => {
           warn(`Scheduled task "${cb.__name}" still running (`, ((Date.now() - startTime) / 1000).toFixed(2) + 's)...');
-        }, DefaultTimeout);
+        }, WarnTimeout);
 
         try {
           // execute task
-          await cb();
+          const result = cb();
+          if (isPromise(result)) {
+            this._activeTask = result;
+            await result;
+          }
         }
         finally {
           clearInterval(timeoutTimer);
+          if (this._version === version) {
+            // only change queue state, if this is still active
+            this._activeTask = null;
+          }
         }
       }
+      if (this._version === version) {
+        this._resolveWaitQueue();
+      }
     }
-    finally {
-      this._reset();
-      this._running = false;
-      this._resolveDone();
+    catch (err) {
+      this.clear();
+      this._rejectWaitQueue(err);
     }
+    // finally {
+    // }
   }
 
   _log(...args) {
@@ -204,7 +283,7 @@ export default class SerialTaskQueue {
 
       // override method
       obj[methodName] = this.synchronizedFunction(method);
-      
+
       // add new method that does not cause deadlocks when called from another synchronized method
       obj[`_${methodName}`] = method;
     }

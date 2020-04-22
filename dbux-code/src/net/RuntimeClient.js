@@ -17,9 +17,9 @@ export default class Client {
     this.socket = socket;
     this._connected = true;
 
-    socket.on('error', this._handleError);
-    socket.on('init', this._handleInit);
-    socket.on('data', this._handleData);
+    this.on('error', this._handleError);
+    this.on('init', this._handleInit);
+    this.on('data', this._handleData);
   }
 
   isConnected() {
@@ -66,7 +66,7 @@ export default class Client {
   }
 
   _handleData = (data) => {
-    debug('data received');
+    debug('data received; trying to addData...');
     this.application.addData(data);
   }
 
@@ -88,6 +88,13 @@ export default class Client {
 
 
   on(eventName, cb) {
-    this.socket.on(eventName, cb);
+    this.socket.on(eventName, (...args) => {
+      try {
+        cb(...args);
+      }
+      catch (err) {
+        logError(`socket event ${eventName} failed`, err);
+      }
+    });
   }
 }

@@ -327,14 +327,15 @@ function wrapExpression(traceType, path, state, cfg) {
 
 function wrapCallExpression(path, state, callResultType, cfg) {
   // CallExpression
-  const calleePath = path.get('callee');
-  if (calleePath.isSuper()) {
-    // super needs special treatment
-    traceSuper(calleePath, state);
-  }
 
   // trace BeforeCallExpression (returns `originalPath`)
   path = traceBeforeExpression(TraceType.BeforeCallExpression, path, state, null);
+
+  // special treatment for `super`
+  const calleePath = path.get('callee');
+  if (calleePath.isSuper()) {
+    traceSuper(calleePath, state);
+  }
 
   // trace CallResult
   path.setData('callResultType', callResultType);
@@ -445,6 +446,7 @@ const enterInstrumentors = {
 function exitCallExpression(path, state) {
   // CallExpression
   // instrument args after everything else has already been done
+  
   // const calleePath = path.get('callee');
   // const beforeCallTraceId = getPathTraceId(calleePath);
   // traceCallExpression(path, state, beforeCallTraceId);

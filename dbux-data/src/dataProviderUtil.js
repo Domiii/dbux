@@ -129,17 +129,11 @@ export default {
   },
 
   getTraceValue(dp: DataProvider, traceId) {
-    const trace = dp.collections.traces.getById(traceId);
-    const { valueId } = trace;
+    return dp.util.getTraceValueRef(traceId)?.value;
+  },
 
-    if (valueId) {
-      // value is reference type
-      const ref = dp.collections.values.getById(valueId);
-      return ref.value;
-    }
-
-    // value is primitive type (or trace has no value)
-    return trace.value;
+  getTraceValueString(dp: DataProvider, traceId) {
+    return dp.util.getTraceValueRef(traceId)?.valueString;
   },
 
   getTraceValueRef(dp: DataProvider, traceId) {

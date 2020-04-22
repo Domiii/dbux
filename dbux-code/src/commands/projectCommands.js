@@ -19,7 +19,10 @@ export function initProjectUserCommands(extensionContext, projectViewController)
   let { manager } = projectViewController;
   const { projects, runner } = manager;
 
-  registerCommand(extensionContext, 'dbux.runSample0', async () => {
+  async function go(debugMode) {
+    // cancel any currently running tasks
+    await runner.cancel();
+
     const project1 = projects.getAt(0);
 
     // activate/install project
@@ -36,9 +39,19 @@ export function initProjectUserCommands(extensionContext, projectViewController)
     await bug.openInEditor();
 
     // run it!
-    await runner.testBug(bug);
+    await runner.testBug(bug, debugMode);
 
     // TODO: "suggest" some first "analysis steps"?
     // future work: manage/expose (webpack) project background process
+  }
+
+  registerCommand(extensionContext, 'dbux.debugProjectBug0', async () => {
+    await go(true);
+  });
+  registerCommand(extensionContext, 'dbux.runProjectBug0', async () => {
+    await go(false);
+  });
+  registerCommand(extensionContext, 'dbux.cancelBugRunner', async () => {
+    await runner.cancel();
   });
 }

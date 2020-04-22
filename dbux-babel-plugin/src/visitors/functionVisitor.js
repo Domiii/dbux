@@ -49,7 +49,7 @@ const popResumeTemplate = template(
 /**
  * Instrument all Functions to keep track of all (possibly async) execution stacks.
  */
-function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId = null) {
+function wrapFunctionBody(path, bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId = null) {
   const { ids: { dbux }, contexts: { genContextIdName } } = state;
   const contextIdVar = genContextIdName(bodyPath);
 
@@ -153,7 +153,7 @@ export default function functionVisitor() {
         staticResumeId = addResumeContext(bodyPath, state, staticId);
       }
 
-      wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId);
+      wrapFunctionBody(path, bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId);
     },
 
     exit(path, state) {
