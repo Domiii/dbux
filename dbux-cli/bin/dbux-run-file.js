@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 
 const dbuxRunFile = require('../src/dbuxRunFile');
 

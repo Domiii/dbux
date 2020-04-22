@@ -56,6 +56,11 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     mountPointEl.appendChild(child.el);
   }
 
+  forceUpdate() {
+    // tell host to update without a state change
+    this._remoteInternal.forceUpdate();
+  }
+
   // ###########################################################################
   // private methods
   // ###########################################################################

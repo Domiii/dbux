@@ -13,6 +13,7 @@ class ContextNode extends ClientComponentEndpoint {
             <div id="arrow" data-popper-arrow></div>
           </div>
           <button data-el="oCBtn" class="open_close_btn" style="display:none">▽</button>
+          <div data-mount="TraceNode"></div>
         </div>
         <div data-mount="ContextNode" data-el="children" class="children">
           <div class="childHead">&nbsp;</div>

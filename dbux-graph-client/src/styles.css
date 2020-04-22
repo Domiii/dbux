@@ -32,6 +32,15 @@ canvas{
   border: 1px solid black;
   white-space: nowrap;
 }
+.trace{
+  display:flex;
+  justify-content:flex-start;
+  height:auto;
+  width:auto;
+  margin:5px;
+  border: 1px solid black;
+  white-space: nowrap;
+}
 .name{
   width:auto;
   height:auto;

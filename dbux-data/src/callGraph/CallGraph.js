@@ -141,8 +141,10 @@ export default class CallGraph {
 
     if (lowerIndex === null) return null;
     else {
+      // return if lastResult exist, or getNextTrace of lastParentTrace
       const previousParentTraceId = parentTraces[lowerIndex].traceId;
-      return this.dp.util.getCallResultTrace(previousParentTraceId);
+      const lastResultTrace = this.dp.util.getCallResultTrace(previousParentTraceId);
+      return lastResultTrace || this.getNextInContext(previousParentTraceId);
     }
   }
 

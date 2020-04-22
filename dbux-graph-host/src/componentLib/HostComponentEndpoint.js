@@ -48,6 +48,17 @@ class HostComponentEndpoint extends ComponentEndpoint {
     this._startUpdate();
   }
 
+  /**
+   * Update without changing state.
+   */
+  forceUpdate() {
+    return this._startUpdate();
+  }
+
+  updateTree() {
+    throw new Error('NYI');
+  }
+
   waitForInit() {
     return this._initPromise;
   }
@@ -177,6 +188,16 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
     // also dispose on client
     return this._remoteInternal.dispose();
+  }
+
+  // ###########################################################################
+  // internal commands
+  // ###########################################################################
+
+  _publicInternal = {
+    forceUpdate() {
+      this.forceUpdate();
+    }
   }
 
   // ###########################################################################
