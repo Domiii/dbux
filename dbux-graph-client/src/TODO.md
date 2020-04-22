@@ -18,6 +18,14 @@
    2. 因為一些 node 有兩個 parent：除了直覺的那個 parent 之外有另一個 parent 可能在他的前面出現。當我們 call `focus` 之後，畫出一條線，從被 focus 的 trace 到另一個（前面的） parent
    3. done| 當focus時，加入css flash特效來幫助user確定是哪個div
 10. mini map
-11. 滑輪希望可以往下滑， zoom的功能可能需要兩種方式： (i) zoom button (+ / -), (ii) ctrl + 滑輪 也可以 zoom
+11. done| 滑輪希望可以往下滑， zoom的功能可能需要兩種方式： (i) zoom button (+ / -), (ii) ctrl + 滑輪 也可以 zoom
 
- 
+
+1. 邊界
+2. minimap/先關掉
+3. popper
+
+
+4. 點擊code，graph會移動
+5. 點擊graph可以在vscode顯示
+5. 顯示loop的方式可能可以有一個loop的tag，並顯示loop的次數

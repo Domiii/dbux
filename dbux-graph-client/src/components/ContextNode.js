@@ -8,15 +8,17 @@ class ContextNode extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <div class="context">
         <div data-el="name" class="name">
-          <span data-el="displayName" class="displayname" aria-dsecribedby="tooltip"></span>
-          <div data-el="toolTip" class="tooltip_cls" role="tooltip">
+          <div style="display:flex; height:auto; align-item:flex-end;">
+            <span data-el="displayName" class="displayname" aria-dsecribedby="tooltip"></span>
+            <div data-el="toolTip" class="tooltip_cls" role="tooltip">
             <div id="arrow" data-popper-arrow></div>
+            </div>
+            <button data-el="oCBtn" class="open_close_btn" style="display:none">▽</button>
           </div>
-          <button data-el="oCBtn" class="open_close_btn" style="display:none">▽</button>
           <div data-mount="TraceNode"></div>
         </div>
         <div data-mount="ContextNode" data-el="children" class="children">
-          <div class="childHead">&nbsp;</div>
+          <div class="child_head">&nbsp;</div>
         </div>
       </div>
       `);
@@ -117,6 +119,12 @@ class ContextNode extends ClientComponentEndpoint {
       },
       blur() {
         this.hide();
+      },
+      click(evt) {
+        if (evt.shiftKey) {
+          const { context, applicationId } = this.state;
+          this.remote.showContext(applicationId, context.contextId);
+        }
       }
     }
   }
