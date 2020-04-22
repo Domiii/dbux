@@ -158,8 +158,20 @@ export default class RuntimeMonitor {
         _this.popCallback(callbackContextId, inProgramStaticTraceId, resultValue);
       }
     };
+
+    // override name
     Object.defineProperty(wrappedCb, 'name', { value: cb.name });
+
+    // basic inheritance es5 chain
+    // TODO: support es6 classes as well
     _inheritsLoose(wrappedCb, cb);
+
+    // copy all non-native properties of the function
+    const props = Object.keys(cb);
+    for (const prop of props) {
+      wrappedCb[prop] = cb[prop];
+    }
+
     return wrappedCb;
   }
 
@@ -374,9 +386,10 @@ export default class RuntimeMonitor {
     const { traceId: schedulerTraceId } = trace;
     this._onTrace(contextId, schedulerTraceId);
 
-    const wrapper = this.makeCallbackWrapper(contextId, schedulerTraceId, inProgramStaticTraceId, cb);
+    // const wrapper = this.makeCallbackWrapper(contextId, schedulerTraceId, inProgramStaticTraceId, cb);
+    // return wrapper;
 
-    return wrapper;
+    return cb;
   }
 
   _trace(contextId, runId, inProgramStaticTraceId, traceType = null, isPop = false) {

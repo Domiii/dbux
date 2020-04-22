@@ -40,8 +40,11 @@ export default class ExpressProject extends Project {
       this.log('(skipped cloning)');
     }
 
-    // install dependencies
-    await this.installDbuxCli(projectPath);
+    // install
+    await this.npmInstall();
+
+    // install dbux dependencies
+    await this.installDbuxCli();
 
     // TODO: copy assets
     // sh.cp('-u', src, dst);
@@ -82,50 +85,47 @@ export default class ExpressProject extends Project {
     await exec(`git checkout "tags/Bug-${id}-${tagCategory}"`, this.logger);
   }
 
-  async testBug(bug, debugPort) {
+  async testBugCommand(bug, debugPort) {
     const {
       projectPath
     } = this;
     
+    // cwd
     sh.cd(projectPath);
 
-    // NOTE: NYC uses either of the following:
+    // NOTE: depending on the mode, NYC uses either of the following:
     //  1. simple 
     //    - node-preload - https://www.npmjs.com/package/node-preload ("Request that Node.js child processes preload modules")
     //    - process-on-spawn - 
     //  2. wrapped
     //    - spawn-wrap - https://github.com/istanbuljs/spawn-wrap ("brutal hack [...] in cases where tests or the system under test are loaded via child processes rather than via require(). [...] any child processes launched by that child process will also be wrapped.")
 
-    // const cwd = ;
-
-    // TODO: wean off monoroot dependencies to prepare for deployment
+    // TODO: get rid of monoroot dependencies to prepare for deployment
     const MonoRoot = path.resolve(projectPath, '../..');
     const dbuxRegister = `${MonoRoot}/node_modules/dbux-cli/bin/dbux-register.js`;
     const program = `${projectPath}/node_modules/mocha/bin/_mocha`;
-    const argArray = [
-      ...(bug.runArgs || EmptyArray)
-    ];
-    const args = argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
 
-    // cd ...
-    // TODO: spawn, listen on and process on-going process
-    //    see https://stackoverflow.com/questions/14332721/node-js-spawn-child-process-and-get-terminal-output-live
+    const defaultArgs = `--stack-trace-limit=1000 --nolazy`;
+    const debugArgs = debugPort && `--inspect-brk=${debugPort}` || '';
+
+    // pre-load some modules
     const requireArr = [
       path.join(projectPath, 'test/support/env'),
       dbuxRegister
     ];
-    const reqs = requireArr.map(r => `--require="${r}"`).join(' '); // =${debugPort}
-    const cmd = `node --stack-trace-limit=1000 --nolazy --inspect-brk=${debugPort} ${reqs} "${program}" ${args}`;
-    const commandOptions = {
-      cwd: projectPath
-    };
+    const reqs = requireArr.map(r => `--require="${r}"`).join(' ');
 
-
+    // args
+    const argArray = [
+      ...(bug.runArgs || EmptyArray)
+    ];
     if (argArray.includes(undefined)) {
       throw new Error(bug.debugTag + ' - invalid `Project bug` arguments must not include `undefined`: ' + cmd);
     }
-
-    await exec(cmd, this.logger, commandOptions);
+    const args = argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
+    
+    // final result
+    return `node ${defaultArgs} ${debugArgs} ${reqs} "${program}" ${args}`;
 
 
     // TODO: enable auto attach (run command? or remind user?)

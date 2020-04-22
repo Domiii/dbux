@@ -1,7 +1,7 @@
 /**
  * @see https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/basic-algorithm-scripting/find-the-longest-word-in-a-string
  */
-function findLongestWordLength(str) {
+function flwl(str) {
   const words = str.split(' ');
   let longest = 0;
   for (const word of words) {
@@ -14,7 +14,10 @@ function findLongestWordLength(str) {
 
 
 console.assert(
-  findLongestWordLength(
-    "The quick brown fox jumped over the lazy dog"
-  ) === 6
+  flwl(
+    "fox f2"
+  ) === 3
+  // findLongestWordLength(
+  //   "The quick brown fox jumped over the lazy dog"
+  // ) === 6
 );

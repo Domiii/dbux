@@ -2,6 +2,12 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
+* fix: "error (flame) button" does not do anything when clicked
+* add button to `ApplicationsView` to switch to `ApplicationFilesView`
+   * -> list all files
+   * click:
+      * if not open: open file -> then go to first trace in file
+      * if open: just open (don't go to trace)
 * add a command to toggle (show/hide) all intrusive features
    * includes:
       * show/hide all `codeDeco`s
@@ -108,12 +114,38 @@
 
 
 ## TODO (`dbux-projects`)
-* `exec` needs live updates
-   * input system?
+* add `signal-exit`? https://www.npmjs.com/package/signal-exit
+* [errors] false positive: ```
+   exports.deprecate = function(fn, msg){
+      if (process.env.NODE_ENV === 'test') return fn;
+      // prepend module name
+      msg = 'express: ' + msg;`
+   ```
+* [runtime_timeout] find a workaround
+   * testing often comes with timeout (e.g. "Error: timeout of 2000ms exceeded")
+   * nothing was received because of error
+   * can we try this outside extension host etc to speed up process?
+* fix: what to do when switching between bugs but installation (or user) modified files?
+   * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
+   * `commit` and forget?
+* make sure, express works:
+   * run it in dbux
+   * switch between bugs
+   * run again
+   * cancel
+* make sure, switching between multiple projects works
+   * (add eslint next?)
+* load bugs from bug database automatically?
+* replace `callbackWrapper` with improved function tracking instead
+   * track...
+      * function declarations (even non-statement declaration)
+      * Context `push`
+      * CallExpression `callee`
+      * any function value
+   * provide improved UI to allow tracking function calls
+* fix up serializer
 * auto attach is not working
-* debug vs. run mode
-* webpack support
-* project state management
+* project state management?
    * `new Enum()`
 
 * [UI]
@@ -128,33 +160,22 @@
    * manage `bugRunner` state + progress?
    * manage `running` bugs/tests
 
-* what to do when switching between bugs but user edited code?
-   * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
    * save changes to patch file before moving to another bug?
+* file management
+   * asset folder?
+   * target folder?
+   * allow target folder to be configurable
+
 
 * [Deployment]
    * need to further install dependencies (e.g. `babel` etc.) in order to run anything
 
 * [dbux-practice]
-* difficulty classification
-* hint system + more relevant information
-* file management
-   * asset folder?
-   * target folder?
-   * allow target folder to be configurable
-* express test fail: `return function(req, res, next, val){ ... };` -> `Cannot read property 'loc' of undefined`
-   at isNodeInstrumented (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1165:16)
-    at getCallbackDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1047:91)
-    at getFunctionDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1072:26)
-    at getTraceDisplayName (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:387:107)
-    at traceDefault (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:406:21)
-    at StaticTraceCollection.addTrace (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:444:17)
-    at buildTraceExpr (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1603:30)
-    at _traceWrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1695:17)
-    at traceWrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:1624:10)
-    at wrapExpression (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:2981:91)
-    at Object.ReturnArgument (/Users/domi/code/dbux/dbux-babel-plugin/dist/index.js:3075:14)
+   * difficulty classification
+   * hint system + more relevant information
 
+* [more]
+   * webpack support
 
 
 
@@ -168,14 +189,25 @@
 
 
 ## TODO (other)
+* fix: when selecting a traced "return", it says "no trace at cursor"
+   * (same with almost any keywords for now)
+* `displayName` is often too long for proper analysis in py/callGraph
+* in `app.param.js` we don't have any trace in any of the request handler callbacks
+* [net/Client]
+   * Client operations fail when waiting too long (e.g. when pausing in debugger) (such as `this._socket.emit`)
+* [serialization]
+   * early accessing of getters can cause exceptions and maybe worse
 * fix: setup `eslint` to use correct index of `webpack` multi config to allow for `src` alias
    * Problem: won't work since different projects would have an ambiguous definition of `src`
 * (big goal: design projects, bugs, comprehension questions + tasks)
-* fix: instrumentation - in `findLongestWord/1for-bad1`, `staticTraceId` order is messed up
-   * (see below: "AST ordering")
-* check: does `f(a, await b, c)` work correctly?
-   * -> probably not, because result needs to be resolved later
-   * `resolveCallIds` would try to resolve results too fast
+* test: 
+   * `return await x;`
+      * -> problem: `awaitVisitor` and `returnVisitor` at odds?
+   * `o[await x]`
+      * -> similar problem
+   * `f(a, await b, c)`
+      * -> probably won't work, because result needs to be resolved later
+      * `resolveCallIds` would try to resolve results too fast
 * fix: provide an easier way to use `ipynb` to analyze any application
 * dbux-graph web components
    * map data (or some sort of `id`) to `componentId`
@@ -183,14 +215,19 @@
    * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
    * NOTES
       * `render` does NOT propagate to children (unlike React)
-   * write `dbux-graph-client/scripts/pre-build` component-registry script
-   * batch `postMessage`
+   * write automatic `dbux-graph-client/scripts/pre-build` component-registry script
 
 * fix: `staticTraceId` must resemble AST ordering for error tracing to work correctly
+   * `CallExpression.arguments` are out of order
+      * e.g. in `findLongestWord/1for-bad1`
+      * because:
+         * -> 1. `BCE`
+         * -> 2. let other visitors take care of arguments
+         * -> 3. let other visitors take care of result
+         * -> 4. wrap all uninstrumented arguments in `Exit`
    * examples of out-of-order static traces
-      * `CallExpression.arguments`
-      * `awaitVisitors`, `loopVisitors` and more
-      * and many more...
+      * `awaitVisitors`, `loopVisitors`
+      * anything that is not build into the singular visitor tree
    * Sln: generate `orderId` for each ast node and map to `staticTraceId`
       * Add a new pass to generate `orderId` for each node before starting instrumentation
          * Need to store `orderId` by `context`
