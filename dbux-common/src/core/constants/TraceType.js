@@ -83,6 +83,7 @@ export function hasDynamicTypes(traceType) {
 
 const expressionTypes = new Array(TraceType.getCount()).map(_ => false);
 expressionTypes[TraceType.ExpressionResult] = true;
+expressionTypes[TraceType.ExpressionValue] = true;
 expressionTypes[TraceType.CallArgument] = true;
 expressionTypes[TraceType.CallbackArgument] = true;
 expressionTypes[TraceType.CallExpressionResult] = true;

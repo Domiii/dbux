@@ -19,6 +19,17 @@ function universalLib(globalName, fallbackCb) {
   }
 }
 
+/**
+ * @see https://stackoverflow.com/a/35813135
+ */
+export function isEnvNode() {
+  return (typeof process !== 'undefined') && (process.release?.name === 'node');
+}
+
+/**
+ * Exports some globals usually aware in browser environments.
+ * If not available, will try to load it otherwise.
+ */
 export default {
   /**
    * usage: `universalLibs.performance.now()`

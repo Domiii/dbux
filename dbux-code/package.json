@@ -50,8 +50,16 @@
 		},
 		"commands": [
 			{
-				"command": "dbux.runSample0",
-				"title": "Dbux: Sample 0"
+				"command": "dbux.debugProjectBug0",
+				"title": "Dbux Projects: Debug Express Bug#1"
+			},
+			{
+				"command": "dbux.runProjectBug0",
+				"title": "Dbux Projects: Run Express Bug#1"
+			},
+			{
+				"command": "dbux.cancelBugRunner",
+				"title": "Dbux Projects: Cancel All"
 			},
 			{
 				"command": "dbux.exportApplicationData",

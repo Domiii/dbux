@@ -1,10 +1,8 @@
-import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
-import { newLogger } from 'dbux-common/src/log/logger';
 import sh from 'shelljs';
+import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
+import Process from 'dbux-projects/src/util/Process';
 import Project from './Project';
 import Bug from './Bug';
-
-const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 export default class BugRunner {
   manager;
@@ -101,9 +99,34 @@ export default class BugRunner {
     await bug.project.selectBug(bug);
   }
 
-  async testBug(bug) {
+  /**
+   * Run bug (if in debug mode, will wait for debugger to attach)
+   */
+  async testBug(bug, debugMode = true) {
+    const { project } = bug;
+    const {
+      projectPath
+    } = project;
+
+    // do whatever it takes (usually: `activateProject` -> `git checkout`)
     await this._activateBug(bug);
 
-    await bug.project.testBug(bug, this.debugPort);
+    const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+    const commandOptions = {
+      cwd: projectPath
+    };
+
+    this._process = new Process();
+    try {
+      return this._process.start(cmd, project.logger, commandOptions);
+    }
+    finally {
+      this._process = null;
+    }
+  }
+
+  async cancel() {
+    await this._process?.kill();
+    await this._queue.cancel();
   }
 }

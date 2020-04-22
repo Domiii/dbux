@@ -47,7 +47,7 @@ export class ValueTDNode extends TraceDetailNode {
     const application = allApplications.getApplication(trace.applicationId);
     const { traceId } = trace;
     const { dataProvider } = application;
-    const value = dataProvider.util.getTraceValue(traceId);
+    const value = dataProvider.util.getTraceValueString(traceId);
     return `Value: ${value}`;
   }
 
