@@ -51,7 +51,7 @@ class ApplicationsViewController {
 // ###########################################################################
 
 
-export function initApplicationsViewController(context) {
+export function initApplicationsView(context) {
   controller = new ApplicationsViewController();
   controller.initOnActivate(context);
 

@@ -83,6 +83,9 @@ export default class BaseTreeViewNodeProvider {
     // can be overridden by children
   }
 
+  /**
+   * @virtual
+   */
   handleClick = (node) => {
     node.handleClick?.();
   }
