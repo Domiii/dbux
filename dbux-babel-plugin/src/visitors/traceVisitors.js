@@ -41,6 +41,11 @@ const TraceInstrumentationType = new Enum({
   Await: 13
 });
 
+const InstrumentationDirection = {
+  Enter: 1,
+  Exit: 2
+};
+
 const traceCfg = (() => {
   const {
     NoTrace,
@@ -441,10 +446,7 @@ const enterInstrumentors = {
 
   ThrowArgument(path, state, cfg) {
     return wrapExpression(TraceType.ThrowArgument, path, state, cfg);
-  },
-
-  Function: functionVisitor,
-  Await: awaitVisitor
+  }
 };
 
 
@@ -477,6 +479,9 @@ function exitCallExpression(path, state) {
  * potentially can be `CallExpression`.
  */
 const exitInstrumentors = {
+  Function: functionVisitor,
+  Await: awaitVisitor,
+
   CallExpression(path, state) {
     exitCallExpression(path, state);
   }
@@ -486,19 +491,36 @@ const exitInstrumentors = {
 // children
 // ###########################################################################
 
-const ChildrenVisitorsTag = '_childrenVisitors';
+const PendingVisitorsTag = '_pendingVisitors';
 
-function pushChild(path, child) {
-  // TODO: push to array
-  path.setData(ChildrenVisitorsTag, child);
-}
-
-function popChild(path, state) {
-  const children = path.getData(ChildrenVisitorsTag);
+function pushChildVisitors(path, children) {
+  if (!children) {
+    return;
+  }
 
   for (const child of children) {
     const [childName, ...childCfg] = child;
-    visit(onTrace, instrumentors, path, state, childCfg);
+    const childPath = path.get(childName);
+
+    if (childPath.node) {
+      let pendingVisitors = childPath.getData(PendingVisitorsTag);
+      if (!pendingVisitors) {
+        childPath.setData(PendingVisitorsTag, pendingVisitors = []);
+      }
+      pendingVisitors.push(child);
+    }
+  }
+}
+
+function popVisitors(path, state) {
+  const children = path.getData(PendingVisitorsTag);
+  if (!children) {
+    return;
+  }
+
+  for (const child of children) {
+    const [childName, ...childCfg] = child;
+    visitEnter(path, state, childCfg);
   }
 }
 
@@ -506,8 +528,8 @@ function popChild(path, state) {
 // visitors
 // ###########################################################################
 
-function visit(onTrace, instrumentors, path, state, cfg) {
-  const [traceType, children, extraCfg] = cfg;
+function visit(direction, onTrace, instrumentors, path, state, cfg) {
+  const [instrumentationType, children, extraCfg] = cfg;
   if (extraCfg?.ignore?.includes(path.node.type)) {
     // ignore (array of type name)
     return;
@@ -517,7 +539,7 @@ function visit(onTrace, instrumentors, path, state, cfg) {
     return;
   }
 
-  if (!traceType && !children) {
+  if (!instrumentationType && !children) {
     return;
   }
 
@@ -529,28 +551,32 @@ function visit(onTrace, instrumentors, path, state, cfg) {
   //  children types are always:
   //    ExpressionValue, ExpressionResult, ReturnArgument, ThrowArgument, Block
 
-  if (children) {
-    // 1. trace children
-    if (children) {
-      for (const child of children) {
-        const [childName, ...childCfg] = child;
-        const childPath = path.get(childName);
+  if (direction === InstrumentationDirection.Enter) {
+    // TODO: popEnterVisitors
 
-        if (childPath.node) {
-          pushChild(childPath, child);
-        }
-      }
-    }
+    // instrument this path
+    instrumentPath(instrumentationType, instrumentors, path, state, extraCfg);
+
+    // add children to visitor queue
+    pushChildVisitors(path, children);
   }
+  else {
+    // instrument this path
+    instrumentPath(instrumentationType, instrumentors, path, state, extraCfg);
 
-  if (traceType) {
-    // 2. trace parent
-    const traceTypeName = TraceInstrumentationType.nameFromForce(traceType);
+    // TODO: popExitVisitors
+  }
+}
+
+function instrumentPath(instrumentationType, instrumentors, path, state, cfg) {
+  if (instrumentationType) {
+    // 2. trace node itself
+    const traceTypeName = TraceInstrumentationType.nameFromForce(instrumentationType);
     // if (!instrumentors[traceTypeName]) {
     //   err('instrumentors are missing TraceType:', traceTypeName);
     // }
     if (instrumentors[traceTypeName]) {
-      const originalPath = instrumentors[traceTypeName](path, state, extraCfg);
+      const originalPath = instrumentors[traceTypeName](path, state, cfg);
       if (originalPath) {
         path = originalPath;
       }
@@ -559,7 +585,10 @@ function visit(onTrace, instrumentors, path, state, cfg) {
 }
 
 function visitEnter(path, state, visitorCfg) {
-  return visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
+  return visit(InstrumentationDirection.Enter, state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg);
+}
+function visitExit(path, state, visitorCfg) {
+  return visit(InstrumentationDirection.Exit, state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
 }
 
 let _cfg;
@@ -572,19 +601,16 @@ export function buildAllTraceVisitors() {
   for (const visitorName in _cfg) {
     const visitorCfg = _cfg[visitorName];
     visitors[visitorName] = {
-      
       enter(path, state) {
         // if (path.getData()) {
         //   visit(state.onTrace.bind(state), enterInstrumentors, path, state, visitorCfg)
         // }
-        // TODO: fix this
-        // TODO: remove exitInstrumentors
         visitEnter(path, state, visitorCfg);
-      }
+      },
 
-      // exit(path, state) {
-      //   visit(state.onTraceExit.bind(state), exitInstrumentors, path, state, visitorCfg);
-      // }
+      exit(path, state) {
+        visitExit(path, state, visitorCfg);
+      }
     };
   }
   return visitors;

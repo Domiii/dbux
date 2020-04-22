@@ -89,6 +89,7 @@ function wrapFunctionBody(path, bodyPath, state, staticId, pushTraceId, popTrace
     bodyNode.body[0].argument.loc = origBodyNode.loc;
   }
   else {
+    // add ContextEnd trace
     injectContextEndTrace(bodyPath, state);
   }
 
@@ -126,12 +127,12 @@ export default function functionVisitor() {
         displayName,
         isInterruptable
       };
-      const staticId = state.contexts.addStaticContext(path, staticContextData);
+      const staticContextId = state.contexts.addStaticContext(path, staticContextData);
       const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
       const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
 
       // add varAccess
-      const ownerId = staticId;
+      const ownerId = staticContextId;
       
       // TODO: this?
       // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
@@ -147,12 +148,12 @@ export default function functionVisitor() {
         )
       );
 
-      let staticResumeId;
+      let staticResumeContextId;
       if (isInterruptable) {
-        staticResumeId = addResumeContext(bodyPath, state, staticId);
+        staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
       }
 
-      wrapFunctionBody(path, bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId);
+      wrapFunctionBody(path, bodyPath, state, staticContextId, pushTraceId, popTraceId, staticResumeContextId);
     },
 
     // exit(path, state) {

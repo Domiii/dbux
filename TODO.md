@@ -199,8 +199,39 @@
 
 
 ## TODO (other)
-* fix: when selecting a traced "return", it says "no trace at cursor"
-   * (same with almost any keywords for now)
+* fix: `CallExpression`, `Function`, `Await` have special interactions
+   * they all might be children of other visitors
+   * NOTE: currently all other visitors use `wrapExpression`
+      * -> checks `isCallPath` and has special handling only for that
+      * -> Problem: come up with comprehensive conflict resolution here
+         * `CallExpression`: `traceReturnType` controlled if `return` or `throw`
+         * `Function`: no wrapping for functions
+         * `Await`: `resumeTraceId` is `TraceType.Resume`, but can also be `ReturnArgument` or `ThrowArgument`?
+      * -> Problem: how to let a trace play multiple different roles?
+   * (finish: child visitor queue)
+* split up `functionVisitor`
+   * enter
+      * child('body'): generate `pushTraceId`
+   * exit
+      * child('body'): generate `popTraceId` -> instrument
+* split up `awaitVisitor`
+   * exit: 
+      * child('argument'): generate `preTraceId` -> instrument `preAwait`
+      * self: generate `resumeTraceId` -> instrument `await`
+   ```js
+   _dbux.postAwait(
+   (await _dbux.wrapAwait(
+      xArg,
+      _contextId6 = _dbux.preAwait(10, 29)
+   )), 
+   _contextId6, 
+   30
+   );
+   ```
+* fix: small trace odities
+   * when selecting a traced "return", it says "no trace at cursor"
+      * (same with almost any keywords for now)
+   * `if else` considers `else` as a block, and inserts (potentially unwanted) code deco
 * `displayName` is often too long for proper analysis in py/callGraph
 * in `app.param.js` we don't have any trace in any of the request handler callbacks
 * [net/Client]
