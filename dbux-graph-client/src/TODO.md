@@ -12,6 +12,11 @@
 6. done| 有小孩的 node 有某個方式讓使用者看到說：「這個 node 是可以打開/關掉的」
 7. done| 關掉的 node 的高度可以縮小（像是沒有 children 一樣）
 8. 打開的 node 如果有 100 個小孩（或是特別放大時），node 可能會看到，但 node 的 title 看不到了（因為，以目前來講， title 在最上面，但最上面的部分可能目前不在 viewport 裡面），能不能 somehow 讓使用者看到 node 的 title ，能不能讓 title 移到下面？
+   get mouse position and check in or out of context.
+   check parent context in or out viewbox.
+   display parent context name on toolbar?
+   display path?
+
 9. 加一個 `function focus(contextId)`: 把 viewport 從目前的位置自動 pan 到一個地方，使得有 `contextId` 的 trace 在 viewport 的正中間出現
    1. done| 這個 pan 可不可以有一個 animation - 不要馬上移動，反而用 linear interpolation 在一個（可以設定的） 時段 (例如 0.3s) 內慢慢移動
     -> 可以參考 https://www.youtube.com/watch?v=8uLVnM36XUc (x lerp 的基本概念)
@@ -21,11 +26,14 @@
 11. done| 滑輪希望可以往下滑， zoom的功能可能需要兩種方式： (i) zoom button (+ / -), (ii) ctrl + 滑輪 也可以 zoom
 
 
+
+#bug
 1. 邊界
 2. minimap/先關掉
-3. popper
+3. popper can't work in scale
 
-
-4. 點擊code，graph會移動
-5. 點擊graph可以在vscode顯示
-5. 顯示loop的方式可能可以有一個loop的tag，並顯示loop的次數
+new todo
+1. 點擊code，graph會移動(slide)
+2. done| 點擊graph可以在vscode顯示
+3. 在toolbar上新增一個選擇是否同步的button
+4. 顯示loop的方式可能可以有一個loop的tag，並顯示loop的次數

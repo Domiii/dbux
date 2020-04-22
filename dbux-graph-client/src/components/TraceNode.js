@@ -6,9 +6,10 @@ export default class TraceNode extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <div class="trace">
         <div data-el="name" class="name">
-
-          <span data-el="displayName"></span>
-          <button data-el="oCBtn" class="open_close_btn">▽</button>
+          <div style="display:flex; height:auto; align-item:flex-end;">
+            <span data-el="displayName"></span>
+            <button data-el="oCBtn" class="open_close_btn">▽</button>
+          </div>
         </div>
         <div data-mount="ContextNode" class="children">
           <div class="childHead">&nbsp;</div>
@@ -40,6 +41,14 @@ export default class TraceNode extends ClientComponentEndpoint {
         } else {
           this.els.children.style.display = 'none';
           this.els.oCBtn.innerHTML = '▷';//〉 ▷  ►
+        }
+      }
+    },
+    displayName: {
+      click(evt) {
+        if (evt.shiftKey) {
+          const { traceId, applicationId } = this.state.trace;
+          this.remote.showTrace(applicationId, traceId);
         }
       }
     }

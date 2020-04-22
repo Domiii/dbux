@@ -10,7 +10,6 @@ class GraphDocument extends ClientComponentEndpoint {
       <div data-mount="GraphRoot"></div>
       </div>`;
     // <div data-mount="MiniMap" id = "minimap"></div>
-    
     // window.addEventListener('mousedown', () => {
     //   mouseDown = true;
     // });
