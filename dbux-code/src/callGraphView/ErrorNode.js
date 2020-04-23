@@ -4,11 +4,15 @@ import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
 export default class ErrorNode extends BaseTreeViewNode {
   static makeLabel(trace: Trace, parent, moreProps) {
-    return makeTraceLabel(trace);
+    return `${makeTraceLabel(trace)} 🔥`;
   }
-
+  
   get trace() {
     return this.entry;
+  }
+  
+  makeIconPath() {
+    return traceSelection.isSelected(this.trace) ? 'play.svg' : ' ';
   }
 
   handleClick = () => {

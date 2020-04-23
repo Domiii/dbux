@@ -49,7 +49,6 @@ export default class CallRootNode extends BaseTreeViewNode {
   }
 
   getAllErrorChildren(applicationId, runId) {
-    // TODO: Test with error sample
     const dp = allApplications.getById(applicationId).dataProvider;
     const errors = dp.indexes.traces.errorByRun.get(runId) || EmptyArray;
 
@@ -61,9 +60,7 @@ export default class CallRootNode extends BaseTreeViewNode {
   }
 
   buildContextNode = (context, applicationId) => {
-    const dp = allApplications.getById(applicationId).dataProvider;
-    const firstTrace = dp.util.getFirstTraceOfContext(context.contextId);
-    const props = { firstTrace, applicationId };
+    const props = { applicationId };
     return this.treeNodeProvider.buildNode(ContextNode, context, this, props);
   }
 
