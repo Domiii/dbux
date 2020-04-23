@@ -43,7 +43,9 @@ export default class BugRunner {
     this._queue.synchronizedMethods(this,
       'activateProject',
       'activateBug',
-      'testBug'
+      'testBug',
+      'resetProject',
+      'exec'
     );
   }
 
@@ -56,7 +58,7 @@ export default class BugRunner {
   }
 
   isProjectActive(project) {
-    return this._project === project;
+    return this._project === project && project._installed;
   }
 
   isBugActive(bug) {
@@ -77,6 +79,12 @@ export default class BugRunner {
 
     this._project = project;
     await project.installProject();
+    project._installed = true;
+  }
+
+  async resetProject(project) {
+    project._installed = false;
+    this._exec(project, 'rm -rf ./node_modules package-lock.json yarn.lock');
   }
 
   async getOrLoadBugs(project) {
@@ -104,17 +112,24 @@ export default class BugRunner {
    */
   async testBug(bug, debugMode = true) {
     const { project } = bug;
-    const {
-      projectPath
-    } = project;
 
     // do whatever it takes (usually: `activateProject` -> `git checkout`)
     await this._activateBug(bug);
 
     const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+    await this._exec(project, cmd);
+  }
+
+  async exec(project, cmd) {
+    const {
+      projectPath
+    } = project;
+
     const commandOptions = {
       cwd: projectPath
     };
+
+    sh.cd(projectPath);
 
     this._process = new Process();
     try {

@@ -103,7 +103,7 @@ function enter(path, state) {
   // visitInOrder(path, state, contextVisitors());
   // visitInOrder(path, state, traceVisitors());
 
-  traverse(path, state, traceVisitors);
+  traverse(path, state, traceVisitors());
 }
 
 function traverse(path, state, visitors) {

@@ -8,12 +8,16 @@
 
 import Enum from 'dbux-common/src/util/Enum';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
+import { newLogger } from 'dbux-common/src/log/logger';
 import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceSuper } from '../helpers/traceHelpers';
 import { loopVisitor } from './loopVisitors';
 import { getPathTraceId } from '../data/StaticTraceCollection';
 import { isCallPath } from '../helpers/functionHelpers';
-import functionVisitor from './functionVisitor';
-import awaitVisitor from './awaitVisitor';
+import { functionVisitEnter } from './functionVisitor';
+import { awaitVisitEnter } from './awaitVisitor';
+
+
+const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
@@ -56,14 +60,13 @@ const traceCfg = (() => {
     Statement,
     Block,
     Loop,
-    LoopBlock,
 
     MemberExpression,
     Super,
     ReturnArgument,
     ThrowArgument,
 
-    Function,
+    Function: F,
     Await
   } = TraceInstrumentationType;
 
@@ -216,6 +219,7 @@ const traceCfg = (() => {
     ],
     DoWhileLoop: [
       // TODO: currently disabled because babel doesn't like it; probably a babel bug?
+      Loop
     ],
     WhileStatement: [
       Loop
@@ -258,7 +262,7 @@ const traceCfg = (() => {
     // functions
     // ########################################
     Function: [
-      Function
+      F
     ],
 
     // ########################################
@@ -279,8 +283,12 @@ function err(message, obj) {
   throw new Error(message + (obj && (' - ' + JSON.stringify(obj)) || ''));
 }
 
-function validateCfgNode(node) {
+function validateCfgNode(name, node) {
   const [traceType, children, nodeCfg] = node;
+
+  if (traceType === undefined) {
+    throw new Error(`invalid traceType in cfgNode: ${name} - ${JSON.stringify(node)}`);
+  }
 
   // make sure, it has a valid type
   TraceInstrumentationType.nameFromForce(traceType);
@@ -289,7 +297,7 @@ function validateCfgNode(node) {
 function validateCfg(cfg) {
   for (const name in cfg) {
     const nodeCfg = cfg[name];
-    validateCfgNode(nodeCfg);
+    validateCfgNode(name, nodeCfg);
     // const [traceType, children, extraCfg] = nodeCfg;
     // for (const child of children) {
     //   ...
@@ -446,7 +454,10 @@ const enterInstrumentors = {
 
   ThrowArgument(path, state, cfg) {
     return wrapExpression(TraceType.ThrowArgument, path, state, cfg);
-  }
+  },
+  
+  Function: functionVisitEnter,
+  Await: awaitVisitEnter
 };
 
 
@@ -479,9 +490,6 @@ function exitCallExpression(path, state) {
  * potentially can be `CallExpression`.
  */
 const exitInstrumentors = {
-  Function: functionVisitor,
-  Await: awaitVisitor,
-
   CallExpression(path, state) {
     exitCallExpression(path, state);
   }
@@ -518,7 +526,11 @@ function popVisitors(path, state) {
     return;
   }
 
-  for (const child of children) {
+  visitEnterAll(children);
+}
+
+function visitEnterAll(nodes, path, state) {
+  for (const child of nodes) {
     const [childName, ...childCfg] = child;
     visitEnter(path, state, childCfg);
   }
@@ -553,12 +565,15 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
 
   if (direction === InstrumentationDirection.Enter) {
     // TODO: popEnterVisitors
+    // TODO: fix order between children and path itself
+    
+    // add children to visitor queue
+    // pushChildVisitors(path, children);
+    children && visitEnterAll(children, path, state);
 
     // instrument this path
     instrumentPath(instrumentationType, instrumentors, path, state, extraCfg);
 
-    // add children to visitor queue
-    pushChildVisitors(path, children);
   }
   else {
     // instrument this path
@@ -575,8 +590,13 @@ function instrumentPath(instrumentationType, instrumentors, path, state, cfg) {
     // if (!instrumentors[traceTypeName]) {
     //   err('instrumentors are missing TraceType:', traceTypeName);
     // }
-    if (instrumentors[traceTypeName]) {
-      const originalPath = instrumentors[traceTypeName](path, state, cfg);
+    const instrumentor = instrumentors[traceTypeName];
+    if (instrumentor) {
+      if (!(instrumentor instanceof Function)) {
+        logError('instrumentor is not a function:', traceTypeName);
+        return;
+      }
+      const originalPath = instrumentor(path, state, cfg);
       if (originalPath) {
         path = originalPath;
       }

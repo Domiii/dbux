@@ -108,57 +108,59 @@ function wrapFunctionBody(path, bodyPath, state, staticId, pushTraceId, popTrace
 // visitor
 // ###########################################################################
 
+export function functionVisitEnter(path, state) {
+  if (!state.onEnter(path, 'context')) return;
+  // console.warn('F', path.toString());
+
+  const name = guessFunctionName(path, state);
+  const displayName = getFunctionDisplayName(path, state, name);
+  const isGenerator = path.node.generator;
+  const isAsync = path.node.async;
+  const isInterruptable = isGenerator || isAsync;
+  const bodyPath = path.get('body');
+
+  const staticContextData = {
+    type: 2, // {StaticContextType}
+    name,
+    displayName,
+    isInterruptable
+  };
+  const staticContextId = state.contexts.addStaticContext(path, staticContextData);
+  const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
+  const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
+
+  // add varAccess
+  const ownerId = staticContextId;
+
+  // TODO: this?
+  // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
+
+  // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
+  const params = path.get('params');
+  const paramIds = params.map(param =>
+    Object.values(param.getBindingIdentifierPaths())
+  ).flat();
+  paramIds.forEach(paramPath =>
+    state.varAccess.addVarAccess(
+      paramPath.name, paramPath, ownerId, VarOwnerType.Trace
+    )
+  );
+
+  let staticResumeContextId;
+  if (isInterruptable) {
+    staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
+  }
+
+  wrapFunctionBody(path, bodyPath, state, staticContextId, pushTraceId, popTraceId, staticResumeContextId);
+}
+
 export default function functionVisitor() {
   return {
-    enter(path, state) {
-      if (!state.onEnter(path, 'context')) return;
-      // console.warn('F', path.toString());
-
-      const name = guessFunctionName(path, state);
-      const displayName = getFunctionDisplayName(path, state, name);
-      const isGenerator = path.node.generator;
-      const isAsync = path.node.async;
-      const isInterruptable = isGenerator || isAsync;
-      const bodyPath = path.get('body');
-
-      const staticContextData = {
-        type: 2, // {StaticContextType}
-        name,
-        displayName,
-        isInterruptable
-      };
-      const staticContextId = state.contexts.addStaticContext(path, staticContextData);
-      const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
-      const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
-
-      // add varAccess
-      const ownerId = staticContextId;
-      
-      // TODO: this?
-      // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
-
-      // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
-      const params = path.get('params');
-      const paramIds = params.map(param => 
-        Object.values(param.getBindingIdentifierPaths())
-      ).flat();
-      paramIds.forEach(paramPath => 
-        state.varAccess.addVarAccess(
-          paramPath.name, paramPath, ownerId, VarOwnerType.Trace
-        )
-      );
-
-      let staticResumeContextId;
-      if (isInterruptable) {
-        staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
-      }
-
-      wrapFunctionBody(path, bodyPath, state, staticContextId, pushTraceId, popTraceId, staticResumeContextId);
-    },
+    enter: functionVisitEnter,
 
     // exit(path, state) {
     //   if (!state.onExit(path, 'context')) return;
-      
+
     //   // injectContextEndTrace(path, state);
     // }
   };

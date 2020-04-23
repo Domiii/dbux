@@ -20,11 +20,11 @@
     "prettier": "1.19.1"
   },
   "dependencies": {
-    "module-alias": "^2.2.2",
-    "yargs": "^15.1.0",
-    "shelljs": "*"
+    "module-alias": "^2.2.2"
   },
   "peerDependencies": {
-    "dbux-common": "*"
+    "dbux-common": "*",
+    "yargs": "*",
+    "shelljs": "*"
   }
 }

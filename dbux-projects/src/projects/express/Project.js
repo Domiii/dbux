@@ -40,11 +40,11 @@ export default class ExpressProject extends Project {
       this.log('(skipped cloning)');
     }
 
+    // install dbux dependencies
+    // await this.installDbuxCli();
+
     // install
     await this.npmInstall();
-
-    // install dbux dependencies
-    await this.installDbuxCli();
 
     // TODO: copy assets
     // sh.cp('-u', src, dst);
@@ -105,27 +105,31 @@ export default class ExpressProject extends Project {
     const dbuxRegister = `${MonoRoot}/node_modules/dbux-cli/bin/dbux-register.js`;
     const program = `${projectPath}/node_modules/mocha/bin/_mocha`;
 
-    const defaultArgs = `--stack-trace-limit=1000 --nolazy`;
-    const debugArgs = debugPort && `--inspect-brk=${debugPort}` || '';
+    const nodeArgs = `--stack-trace-limit=1000 --nolazy`;
+    const nodeDebugArgs = debugPort && `--inspect-brk=${debugPort}` || '';
 
     // pre-load some modules
     const requireArr = [
       path.join(projectPath, 'test/support/env'),
       dbuxRegister
     ];
-    const reqs = requireArr.map(r => `--require="${r}"`).join(' ');
+    const preRunModules = requireArr.map(r => `--require="${r}"`).join(' ');
 
-    // args
-    const argArray = [
+    // bugArgs
+    const bugArgArray = [
       ...(bug.runArgs || EmptyArray)
     ];
-    if (argArray.includes(undefined)) {
-      throw new Error(bug.debugTag + ' - invalid `Project bug` arguments must not include `undefined`: ' + cmd);
+    if (bugArgArray.includes(undefined)) {
+      throw new Error(bug.debugTag + ' - invalid `Project bug` arguments must not include `undefined`: ' + bugArgArray);
     }
-    const args = argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
+    const bugArgs = bugArgArray.join(' ');      //.map(s => `"${s}"`).join(' ');
+
+    // keep alive: if we don't do this, mocha will kill process when run has ended, and we won't receive data sent by runtime
+    const keepAlive = '--no-exit';
+
     
-    // final result
-    return `node ${defaultArgs} ${debugArgs} ${reqs} "${program}" ${args}`;
+    // final command
+    return `node ${nodeArgs} ${nodeDebugArgs} ${preRunModules} "${program}" ${keepAlive} ${bugArgs}`;
 
 
     // TODO: enable auto attach (run command? or remind user?)

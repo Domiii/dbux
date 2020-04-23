@@ -64,7 +64,10 @@
 		"link-module-alias": "^1.2.0",
 		"lodash": "^4.17.15",
 		"nanoevents": "^2.0.0",
-		"webpack-node-externals": "^1.7.2"
+		"webpack-node-externals": "^1.7.2",
+		"colors": "*",
+    "yargs": "^15.1.0",
+    "shelljs": "*"
 	},
 	"optionalDependencies": {
 		"bufferutil": "^4.0.1",
