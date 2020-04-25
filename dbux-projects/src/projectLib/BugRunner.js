@@ -3,6 +3,7 @@ import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
 import Project from './Project';
 import Bug from './Bug';
+import EmptyObject from '../../../dbux-common/src/util/EmptyObject';
 
 export default class BugRunner {
   manager;
@@ -40,14 +41,20 @@ export default class BugRunner {
     this._queue = new SerialTaskQueue('BugRunnerQueue');
 
     // TODO: synchronized methods deadlock when they call each other
-    this._queue.synchronizedMethods(this,
+    this._queue.synchronizedMethods(this, //this._wrapSynchronized,
       'activateProject',
       'activateBug',
       'testBug',
       'resetProject',
-      'exec'
+      // 'exec'
     );
   }
+
+  // _wrapSynchronized(f) {
+  //   return () => {
+
+  //   };
+  // }
 
   // ###########################################################################
   // public getters
@@ -68,6 +75,17 @@ export default class BugRunner {
   // ###########################################################################
   // activation methods
   // ###########################################################################
+
+  // async _runOnProject(cb, ...args) {
+  //   const project = this._project;
+  //   project._runner = this;
+  //   try {
+  //     return cb.apply(project, ...args);
+  //   }
+  //   finally {
+  //     project._runner = null;
+  //   }
+  // }
 
   /**
    * NOTE: synchronized.
@@ -120,20 +138,30 @@ export default class BugRunner {
     await this._exec(project, cmd);
   }
 
-  async exec(project, cmd) {
+  async _exec(project, cmd, options = null) {
     const {
       projectPath
     } = project;
 
-    const commandOptions = {
+    if (this._process) {
+      project.logger.error(`[possible race condition] executing command "${cmd}" while command "${this._process.command}" was already running`);
+    }
+
+    // set cwd
+    options = options || EmptyObject;
+    options.processOptions = {
+      ...options.processOptions,
       cwd: projectPath
     };
+
+    // // wait until current process finshed it's workload
+    // this._process?.waitToEnd();
 
     sh.cd(projectPath);
 
     this._process = new Process();
     try {
-      return this._process.start(cmd, project.logger, commandOptions);
+      return this._process.start(cmd, project.logger, options);
     }
     finally {
       this._process = null;

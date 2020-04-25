@@ -112,19 +112,16 @@
 
 
 ## TODO (`dbux-projects`)
-* fix `guessFunctionName`: `[cb] [cb] (unnamed)`
-* [errors] false positive: ```
-   exports.deprecate = function(fn, msg){
-      if (process.env.NODE_ENV === 'test') return fn;
-      // prepend module name
-      msg = 'express: ' + msg;`
-   ```
-* program exits too fast, not allowing us to send data out
-* [runtime_timeout] find a workaround
+* basic functionality:
+   * auto-commit
+   * cancel
+   * uninstall
+* find a workaround for test timeout?
    * testing often comes with timeout (e.g. "Error: timeout of 2000ms exceeded")
-   * nothing was received because of error
-   * can we try this outside extension host etc to speed up process?
-   * add `signal-exit`? https://www.npmjs.com/package/signal-exit
+      * nothing was received because of error
+      * can we try this outside extension host etc to speed up process?
+      * add `signal-exit`? https://www.npmjs.com/package/signal-exit
+   * check: does this still occur, even with `--no-exit`?
 * fix: what to do when switching between bugs but installation (or user) modified files?
    * NOTE: switching between bugs requires `git checkout` which needs local changes to be committed or reset
    * auto `commit` and forget?
@@ -230,9 +227,10 @@
 
 
 ## TODO (other)
+* TODO: pull + test recent changes from `dev`
 * fix: instrumentation order causes big headache
+   * fix `guessFunctionName`: `[cb] [cb] (unnamed)`
    * fix: `throw` is not traced
-   * false-positive errors reported (e.g. `if (val === 'new') return next('route');`)
 * fix: `CallExpression`, `Function`, `Await` have special interactions
    * they all might be children of other visitors
    * NOTE: currently all other visitors use `wrapExpression`
@@ -265,6 +263,15 @@
       30
       );
       ```
+
+* [errors] false positive:
+   * e.g. `if (val === 'new') return next('route');`
+   * e.g. ```
+   exports.deprecate = function(fn, msg){
+      if (process.env.NODE_ENV === 'test') return fn;
+      // prepend module name
+      msg = 'express: ' + msg;`
+   ```
 * fix: small trace odities
    * when selecting a traced "return", it says "no trace at cursor"
       * (same with almost any keywords for now)

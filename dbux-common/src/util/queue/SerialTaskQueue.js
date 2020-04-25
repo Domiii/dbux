@@ -266,7 +266,16 @@ export default class SerialTaskQueue {
   /**
    * TODO: currently calling one synchronized method from another synchronized method causes deadlock
    */
-  synchronizedMethods(obj, ...methodNames) {
+  synchronizedMethods(obj, transformOrFirstMethodName, ...methodNames) {
+    let transformCb;
+    if (isString(transformOrFirstMethodName)) {
+      // just one of the methods
+      methodNames.push(transformOrFirstMethodName);
+    }
+    else {
+      transformCb = transformOrFirstMethodName;
+    }
+
     for (const methodName of methodNames) {
       let method = obj[methodName];
       if (!isFunction(method)) {
@@ -277,6 +286,9 @@ export default class SerialTaskQueue {
 
       // bind
       method = method.bind(obj);
+
+      // transform
+      transformCb && (method = transformCb(method));
 
       // hackfix: name
       method.__name = name;

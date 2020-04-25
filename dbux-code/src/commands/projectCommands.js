@@ -15,11 +15,17 @@ const externals = {
   editor: {
     async openFile(fpath) {
       // TODO: use vscode API to open in `this` editor window
-      await exec(`code ${fpath}`, logger, { silent: false }, true);
+      await exec(`code ${fpath}`, logger, {
+        failWhenNotFound: false,
+        processOptions: { silent: false }
+      });
     },
     async openFolder(fpath) {
       // TODO: use vscode API to add to workspace
-      await exec(`code --add ${fpath}`, logger, { silent: false }, true);
+      await exec(`code --add ${fpath}`, logger, {
+        failWhenNotFound: false,
+        processOptions: { silent: false }
+      });
     }
   }
 };
@@ -33,7 +39,7 @@ export function initProjectCommands(extensionContext) {
   manager = initDbuxProjects(cfg, externals);
 
   const projects = manager.buildDefaultProjectList();
-  const runner = manager.newBugRunner();
+  const runner = manager.getRunner();
 
   debug(`Initialized dbux-projects. Projects folder = "${path.resolve(cfg.projectsRoot)}"`);
 

@@ -20,13 +20,19 @@ function pipeStreamToLogger(stream, logger) {
 
 
 export default class Process {
+  command;
   _process;
   _promise;
 
   constructor() {
   }
 
-  async start(command, logger, options, ignoreNotFound = false) {
+  /**
+   *
+   * @param {*} options.failOnStatusCode If true (default), fail if command returns non-zero status code
+   * @param {*} options.failWhenNotFound If true (default), fails if program was not found
+   */
+  async start(command, logger, options) {
     if (!command || !logger) {
       throw new Error(`command or logger parameter missing: ${command}, ${logger}`);
     }
@@ -34,19 +40,27 @@ export default class Process {
       throw new Error('tried to start process more than once');
     }
 
-    options = {
+    this.command = command;
+
+    const processOptions = {
       cwd: sh.pwd().toString(),
-      ...(options || EmptyObject),
+      ...(options?.processOptions || EmptyObject),
       async: true
     };
 
+    const {
+      failOnStatusCode = true,
+      failWhenNotFound = true
+      
+    } = (options || EmptyObject);
+
     // some weird problem where some shells don't recognize things correctly
     // see: https://github.com/shelljs/shelljs/blob/master/src/exec.js#L51
-    options.cwd = path.resolve(options.cwd);
+    processOptions.cwd = path.resolve(processOptions.cwd);
 
     logger.debug('>', command); //, `(pwd = ${sh.pwd().toString()})`);
 
-    const process = this._process = spawn.exec(command, options);
+    const process = this._process = spawn.exec(command, processOptions);
 
     pipeStreamToLogger(process.stdout, logger);
     pipeStreamToLogger(process.stderr, logger);
@@ -72,11 +86,11 @@ export default class Process {
         // logger.debug(`process exit, code=${code}, signal=${signal}`);
         if (checkDone()) { return; }
 
-        if (code) {
+        if (!failOnStatusCode && code) {
           reject(code);
         }
         else {
-          resolve();
+          resolve(code);
         }
       });
 
@@ -85,7 +99,7 @@ export default class Process {
 
         const code = err.code = err.code || -1;
 
-        if (ignoreNotFound && code === 127) {
+        if (failWhenNotFound && code === 127) {
           // command not found, but we don't care
           // see: https://stackoverflow.com/questions/1763156/127-return-code-from
           resolve();

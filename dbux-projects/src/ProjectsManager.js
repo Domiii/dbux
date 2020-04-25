@@ -38,17 +38,19 @@ class ProjectsManager {
 
     // build + return ProjectList
     const list = new ProjectList(this);
-    list.add(...classes.map(ProjectClazz => 
+    list.add(...classes.map(ProjectClazz =>
       new ProjectClazz(this)
     ));
-    
+
     return this.projects = list;
   }
 
-  newBugRunner() {
-    const runner = new BugRunner(this);
-    runner.start();
-    return this.runner = runner;
+  getRunner() {
+    if (!this.runner) {
+      const runner = this.runner = new BugRunner(this);
+      runner.start();
+    }
+    return this.runner;
   }
 }
 
