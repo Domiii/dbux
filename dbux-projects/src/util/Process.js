@@ -51,14 +51,15 @@ export default class Process {
     const {
       failOnStatusCode = true,
       failWhenNotFound = true
-      
+
     } = (options || EmptyObject);
 
     // some weird problem where some shells don't recognize things correctly
     // see: https://github.com/shelljs/shelljs/blob/master/src/exec.js#L51
-    processOptions.cwd = path.resolve(processOptions.cwd);
+    const { cwd } = processOptions;
+    processOptions.cwd = path.resolve(cwd);
 
-    logger.debug('>', command); //, `(pwd = ${sh.pwd().toString()})`);
+    logger.debug(`${cwd}$`, command); //, `(pwd = ${sh.pwd().toString()})`);
 
     const process = this._process = spawn.exec(command, processOptions);
 

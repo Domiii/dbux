@@ -1,7 +1,6 @@
 import path from 'path';
 import sh from 'shelljs';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import exec from 'dbux-projects/src/util/exec';
 import Project from 'dbux-projects/src/projectLib/Project';
 
 
@@ -73,16 +72,27 @@ export default class ExpressProject extends Project {
     ];
   }
 
+  getBugGitTag(id, tagCategory) {
+    return `Bug-${id}-${tagCategory}`;
+  }
+
   async selectBug(bug) {
     const {
       id, name
     } = bug;
     const tagCategory = "test"; // "test", "fix" or "full"
+    const tag = bug.getBugGitTag(id, tagCategory);
+
+    // TODO: auto commit any pending changes
+    // TODO: create branch if not existing
+    // TODO: checkout bug, if not done so before
 
     // checkout the bug branch
     sh.cd(this.projectPath);
     this.log(`Checking out bug ${name || id}...`);
-    await exec(`git checkout "tags/Bug-${id}-${tagCategory}"`, this.logger);
+
+    // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
+    await this.exec(`git checkout -B ${tag} tags/${tag}`);
   }
 
   async testBugCommand(bug, debugPort) {

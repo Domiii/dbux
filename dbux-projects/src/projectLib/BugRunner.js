@@ -1,3 +1,4 @@
+import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
@@ -148,11 +149,11 @@ export default class BugRunner {
     }
 
     // set cwd
-    options = options || EmptyObject;
-    options.processOptions = {
-      ...options.processOptions,
-      cwd: projectPath
-    };
+    options = defaultsDeep(options, {
+      processOptions: {
+        cwd: projectPath
+      }
+    });
 
     // // wait until current process finshed it's workload
     // this._process?.waitToEnd();

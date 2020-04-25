@@ -1,6 +1,8 @@
 import isFunction from 'lodash/isFunction';
+import isString from 'lodash/isString';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { isPromise } from '../isPromise';
+
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 const WarnTimeout = 10000;
