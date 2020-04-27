@@ -54,11 +54,11 @@
 		},
 		"commands": [
 			{
-				"command": "dbux.debugProjectBug0",
+				"command": "dbux.debugProject1Bug0",
 				"title": "Dbux Projects: Debug Express Bug#1"
 			},
 			{
-				"command": "dbux.runProjectBug0",
+				"command": "dbux.runProject1Bug0",
 				"title": "Dbux Projects: Run Express Bug#1"
 			},
 			{

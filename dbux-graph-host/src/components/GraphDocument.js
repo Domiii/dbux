@@ -19,7 +19,7 @@ class GraphDocument extends HostComponentEndpoint {
 
   init() {
     this.componentManager.doc = this;
-    this.traceMode = TraceMode.AllTraces;
+    this.traceMode = TraceMode.ContextOnly;
     
     this.initChildren();
 
@@ -34,7 +34,7 @@ class GraphDocument extends HostComponentEndpoint {
     const traceModeName = TraceMode.getName(this.traceMode);
     this.toolbar = this.children.createComponent(Toolbar, { traceModeName });
     this.root = this.children.createComponent(GraphRoot);
-    this.minimap = this.children.createComponent(MiniMap);
+    // this.minimap = this.children.createComponent(MiniMap);
 
     // start rendering empty graph
     this.root.refresh();

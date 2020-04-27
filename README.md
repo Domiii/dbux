@@ -229,6 +229,10 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 
 # Known Issues
 
+* don't call `process.exit` (at least not immediately)
+   * `process.exit` will kill the process before all recorded data has been sent out
+   * if you *MUST* call it, make sure to put it in a `setTimeout` with 0.5-1s delay
+   * NOTE: many frameworks that might kill your process allow disabling it (e.g. `Mocha`'s `--no-exit` argument)
 * What applications work so well with DBUX?
    * TODO: we are still exploring that
 * What applications **won't** work so well with DBUX?
@@ -239,7 +243,7 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
       * TODO: at least flag traces caused by `dbux-runtime` by setting some `trace-triggered-from-dbux-builtin-call` flag while running built-in functions
          * NOTE: This will still mess with proxy and getter functions that themselves have side effects, such as caching functions, tracers and more.
 * Issues under Windows
-   * **sometimes**, when running things in VSCode built-in terminal, it changes to lower-case drive letter
+   * **sometimes**, when running things in VSCode built-in terminal, it might change to lower-case drive letter
       * This causes a mixture of lower-case and upper-case drive letters to start appearing in `require` paths
          * => this makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
       * Official bug report: https://github.com/microsoft/vscode/issues/9448

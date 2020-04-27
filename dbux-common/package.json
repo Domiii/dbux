@@ -13,13 +13,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "flow-bin": "^0.116.1"
   },
   "dependencies": {
-    "colors": "^1.4.0"
   },
   "peerDependencies": {
-    "lodash": "*"
+    "flow-bin": "^0.116.1",
+    "lodash": "*",
+    "colors": "^1.4.0"
   },
   "_moduleAliases": {}
 }

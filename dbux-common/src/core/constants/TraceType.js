@@ -130,5 +130,8 @@ export function isReturnTrace(traceType) {
   return returnTypes[traceType];
 }
 
+export function isBeforeCallExpression(traceType) {
+  return traceType === TraceType.BeforeCallExpression;
+}
 
 export default TraceType;

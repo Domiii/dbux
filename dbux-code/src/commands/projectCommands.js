@@ -6,7 +6,7 @@ const logger = newLogger('projectCommands');
 const { log, debug, warn, error: logError } = logger;
 
 export function initProjectCommands(extensionContext, projectViewController) {
-
+  // initProjectUserCommands(extensionContext, projectViewController);
 }
 
 /**
@@ -17,7 +17,8 @@ export function initProjectUserCommands(extensionContext, projectViewController)
    * @type {ProjectsManager}
    */
   let { manager } = projectViewController;
-  const { projects, runner } = manager;
+  const projects = manager.getOrCreateDefaultProjectList();
+  const runner = manager.getOrCreateRunner();
 
   async function go(debugMode) {
     // cancel any currently running tasks
@@ -32,9 +33,6 @@ export function initProjectUserCommands(extensionContext, projectViewController)
     const bugs = await runner.getOrLoadBugs(project1);
     const bug = bugs.getAt(0);
 
-    // checkout bug -> activate bug
-    await runner.activateBug(bug);
-
     // open in editor (must be after activation/installation)
     await bug.openInEditor();
 
@@ -45,13 +43,19 @@ export function initProjectUserCommands(extensionContext, projectViewController)
     // future work: manage/expose (webpack) project background process
   }
 
-  registerCommand(extensionContext, 'dbux.debugProjectBug0', async () => {
+  registerCommand(extensionContext, 'dbux.debugProject1Bug0', async () => {
     await go(true);
   });
-  registerCommand(extensionContext, 'dbux.runProjectBug0', async () => {
+  registerCommand(extensionContext, 'dbux.runProject1Bug0', async () => {
     await go(false);
   });
   registerCommand(extensionContext, 'dbux.cancelBugRunner', async () => {
     await runner.cancel();
+  });
+  registerCommand(extensionContext, 'dbux.resetProject1', async () => {
+    // await runner.resetProject(project1);
+  });
+  registerCommand(extensionContext, 'dbux.gotoProject1', async () => {
+    // await runner.openInEditor(bug);
   });
 }
