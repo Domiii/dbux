@@ -43,16 +43,60 @@ canvas{
 }
 .name{
   width:auto;
+  height:auto;
 }
+.displayname{
+  display:inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: hidden;
+  width: 5rem;
+  height: auto;
+}
+
+
+.tooltip_cls {
+  background: #333;
+  color: white;
+  font-weight: bold;
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: 4px;
+}
+#arrow,
+#arrow::before {
+position: absolute;
+width: 8px;
+height: 8px;
+z-index: -1;
+}
+
+#arrow::before {
+content: '';
+transform: rotate(45deg);
+background: #333;
+}
+.tooltip_cls[data-popper-placement^='bottom'] > #arrow {
+top: -4px;
+}
+.tooltip_cls {
+/* ... */
+display: none;
+}
+
+.tooltip_cls[data-show] {
+display: block;
+}
+
+
 .open_close_btn{
+  display:inline-block;
   font-family: none;
-  /* height:20px;
-  width: 20px; */
   margin:0;
   padding: 0 0.2rem;
   line-height: 1rem;
 }
-.child{
+.children{
   width:auto;
 }
 

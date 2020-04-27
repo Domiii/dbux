@@ -64,7 +64,7 @@ class EditorTracesController {
 // ###########################################################################
 
 
-export function initEditorTracesController(context: ExtensionContext) {
+export function initEditorTracesView(context: ExtensionContext) {
   controller = new EditorTracesController();
   controller.initOnActivate(context);
 

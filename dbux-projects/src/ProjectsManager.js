@@ -13,6 +13,9 @@ class ProjectsManager {
     this.config = cfg;
     this.externals = externals;
     this.editor = externals.editor;
+
+    this.projects = this.buildDefaultProjectList();
+    this.runner = this.newBugRunner();
   }
 
   /**
@@ -42,13 +45,13 @@ class ProjectsManager {
       new ProjectClazz(this)
     ));
     
-    return this.projects = list;
+    return list;
   }
 
   newBugRunner() {
     const runner = new BugRunner(this);
     runner.start();
-    return this.runner = runner;
+    return runner;
   }
 }
 

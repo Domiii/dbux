@@ -1,4 +1,3 @@
-import last from 'lodash/last';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
 import ApplicationNode from './ApplicationNode';

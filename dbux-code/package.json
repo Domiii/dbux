@@ -20,7 +20,7 @@
 				{
 					"id": "dbuxViewContainer",
 					"title": "Dbux",
-					"icon": "resources/dep.svg"
+					"icon": "resources/bug.svg"
 				}
 			]
 		},
@@ -45,6 +45,10 @@
 				{
 					"id": "dbuxApplicationsView",
 					"name": "Applications"
+				},
+				{
+					"id": "dbuxProjectView",
+					"name": "Projects"
 				}
 			]
 		},
@@ -174,6 +178,22 @@
 				}
 			},
 			{
+				"command": "dbuxApplicationsView.showEntryPoint",
+				"title": "Go to Entry",
+				"icon": {
+					"light": "resources/light/nextTrace.svg",
+					"dark": "resources/dark/nextTrace.svg"
+				}
+			},
+			{
+				"command": "dbuxProjectView.node.activateBug",
+				"title": "Activate Bug",
+				"icon": {
+					"light": "resources/light/bug.svg",
+					"dark": "resources/dark/bug.svg"
+				}
+			},
+			{
 				"command": "dbuxPlayback.previousTrace",
 				"title": "Start",
 				"icon": {
@@ -203,14 +223,6 @@
 				"icon": {
 					"light": "resources/light/pause.svg",
 					"dark": "resources/dark/pause.svg"
-				}
-			},
-			{
-				"command": "dbuxApplicationsView.showEntryPoint",
-				"title": "Go to Entry",
-				"icon": {
-					"light": "resources/light/nextTrace.svg",
-					"dark": "resources/dark/nextTrace.svg"
 				}
 			}
 		],
@@ -280,7 +292,12 @@
 				},
 				{
 					"command": "dbuxApplicationsView.showEntryPoint",
-					"when": "view == dbuxApplicationsView && viewItem == applicationNode",
+					"when": "view == dbuxApplicationsView && viewItem == ApplicationNode",
+					"group": "inline"
+				},
+				{
+					"command": "dbuxProjectView.node.activateBug",
+					"when": "view == dbuxProjectView && viewItem == BugNode",
 					"group": "inline"
 				}
 			],

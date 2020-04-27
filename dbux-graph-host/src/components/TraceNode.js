@@ -1,3 +1,5 @@
+import { ViewColumn } from 'vscode';
+import { goToTrace } from 'dbux-code/src/codeUtil/codeNav';
 import { newLogger } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import allApplications from 'dbux-data/src/applications/allApplications';
@@ -17,6 +19,7 @@ export default class TraceNode extends HostComponentEndpoint {
     this.state.displayName = makeTraceLabel(trace);
 
     this.buildChildren();
+    this.state.hasChildren = !!this.children.length;
   }
 
   buildChildren() {
@@ -54,6 +57,14 @@ export default class TraceNode extends HostComponentEndpoint {
     else {
       logError('Unknown TraceMode', TraceMode.getName(mode), mode);
       debugger;
+    }
+  }
+
+  public = {
+    showTrace(applicationId, traceId) {
+      const { dataProvider } = allApplications.getById(applicationId);
+      const trace = dataProvider.collections.traces.getById(traceId);
+      goToTrace(trace, ViewColumn.One);
     }
   }
 }

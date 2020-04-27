@@ -14,6 +14,7 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { renderTraceDecorations, clearTraceDecorations } from './traceDecorator';
 import { initTraceDecorators } from './traceDecoConfig';
+import { initEditedWarning } from './editedWarning';
 // import DataProvider from 'dbux-data/src/DataProvider';
 // import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 
@@ -59,6 +60,8 @@ const renderDecorations = makeDebounce(function renderDecorations() {
 export function initCodeDeco(context) {
   // init traces
   initTraceDecorators();
+
+  initEditedWarning();
 
   // start rendering
   activeEditor = window.activeTextEditor;

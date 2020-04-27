@@ -17,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
     "dbux-common": "*",
     "dbux-graph-common": "*",
