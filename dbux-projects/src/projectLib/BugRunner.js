@@ -1,8 +1,10 @@
+import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
 import Project from './Project';
 import Bug from './Bug';
+import EmptyObject from '../../../dbux-common/src/util/EmptyObject';
 
 export default class BugRunner {
   manager;
@@ -40,12 +42,20 @@ export default class BugRunner {
     this._queue = new SerialTaskQueue('BugRunnerQueue');
 
     // TODO: synchronized methods deadlock when they call each other
-    this._queue.synchronizedMethods(this,
+    this._queue.synchronizedMethods(this, //this._wrapSynchronized,
       'activateProject',
       'activateBug',
-      'testBug'
+      'testBug',
+      'resetProject',
+      // 'exec'
     );
   }
+
+  // _wrapSynchronized(f) {
+  //   return () => {
+
+  //   };
+  // }
 
   // ###########################################################################
   // public getters
@@ -56,7 +66,7 @@ export default class BugRunner {
   }
 
   isProjectActive(project) {
-    return this._project === project;
+    return this._project === project && project._installed;
   }
 
   isBugActive(bug) {
@@ -66,6 +76,17 @@ export default class BugRunner {
   // ###########################################################################
   // activation methods
   // ###########################################################################
+
+  // async _runOnProject(cb, ...args) {
+  //   const project = this._project;
+  //   project._runner = this;
+  //   try {
+  //     return cb.apply(project, ...args);
+  //   }
+  //   finally {
+  //     project._runner = null;
+  //   }
+  // }
 
   /**
    * NOTE: synchronized.
@@ -77,6 +98,12 @@ export default class BugRunner {
 
     this._project = project;
     await project.installProject();
+    project._installed = true;
+  }
+
+  async resetProject(project) {
+    project._installed = false;
+    this._exec(project, 'rm -rf ./node_modules package-lock.json yarn.lock');
   }
 
   async getOrLoadBugs(project) {
@@ -95,8 +122,8 @@ export default class BugRunner {
     await this._activateProject(bug.project);
 
     // select bug
-    this._bug = bug;
     await bug.project.selectBug(bug);
+    this._bug = bug;
   }
 
   /**
@@ -104,21 +131,38 @@ export default class BugRunner {
    */
   async testBug(bug, debugMode = true) {
     const { project } = bug;
-    const {
-      projectPath
-    } = project;
 
     // do whatever it takes (usually: `activateProject` -> `git checkout`)
     await this._activateBug(bug);
 
     const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
-    const commandOptions = {
-      cwd: projectPath
-    };
+    await this._exec(project, cmd);
+  }
+
+  async _exec(project, cmd, options = null) {
+    const {
+      projectPath
+    } = project;
+
+    if (this._process) {
+      project.logger.error(`[possible race condition] executing command "${cmd}" while command "${this._process.command}" was already running`);
+    }
+
+    // set cwd
+    options = defaultsDeep(options, {
+      processOptions: {
+        cwd: projectPath
+      }
+    });
+
+    // // wait until current process finshed it's workload
+    // this._process?.waitToEnd();
+
+    sh.cd(projectPath);
 
     this._process = new Process();
     try {
-      return this._process.start(cmd, project.logger, commandOptions);
+      return this._process.start(cmd, project.logger, options);
     }
     finally {
       this._process = null;

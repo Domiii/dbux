@@ -8,7 +8,8 @@ import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import ValueTypeCategory, { ValuePruneState } from 'dbux-common/src/core/constants/ValueTypeCategory';
-import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
+import { hasCallId, isCallResult, isCallTrace } from 'dbux-common/src/core/constants/traceCategorization';
 
 import Collection from './Collection';
 import Queries from './queries/Queries';
@@ -117,20 +118,23 @@ class TraceCollection extends Collection<Trace> {
     errorWrapMethod(this, 'resolveErrorTraces', traces);
   }
 
+  /**
+   * TODO: This will not work with asynchronous call expressions (which have `await` arguments).
+   */
   resolveCallIds(traces: Trace[]) {
     const beforeCalls = [];
     for (const trace of traces) {
       const { traceId, staticTraceId } = trace;
       const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
       const traceType = this.dp.util.getTraceType(traceId);
-      if (traceType === TraceType.BeforeCallExpression) {
+      if (isBeforeCallExpression(traceType)) {
         trace.callId = trace.traceId;  // refers to its own call
         beforeCalls.push(trace);
         // debug('[callIds]', ' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
       }
-      else if (isTraceExpression(traceType)) {
+      else if (isCallTrace(traceType)) {
         // NOTE: `isTraceExpression` to filter out Push/PopCallback
-        if (staticTrace.resultCallId) {
+        if (isCallResult(staticTrace)) {
           // call results: reference their call by `resultCallId` and vice versa by `resultId`
           // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
           const beforeCall = beforeCalls.pop();
@@ -144,7 +148,7 @@ class TraceCollection extends Collection<Trace> {
             trace.resultCallId = beforeCall.traceId;
           }
         }
-        if (staticTrace.callId) {
+        if (hasCallId(staticTrace)) {
           // call args: reference their call by `callId`
           const beforeCall = beforeCalls[beforeCalls.length - 1];
           if (staticTrace.callId !== beforeCall?.staticTraceId) {
@@ -303,7 +307,10 @@ export default class DataProvider {
   _dataEventListeners = {};
 
   versions: number[] = [];
-  application: StaticProgramContext;
+  /**
+   * @type {StaticProgramContext}
+   */
+  application;
   util: any;
 
   constructor(application) {

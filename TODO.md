@@ -2,12 +2,27 @@
 # TODO
 
 ## TODO (dbux-code + dbux-data; high priority)
-* fix: "error (flame) button" does not do anything when clicked
+* allow to select `BeforeCallExpression` traces (disable `CallExpressionResult` traces instead?)
+* when clicking error button: call `reveal({focus: true})` on `CallRootsView`
+* when displaying a context in call-graph/-stack, allow to easily understand/goto:
+   * filename:lineNumber
+      * TODO: for all filenames of same application, we want to remove `commonPrefix`
+         1. store `commonPrefix`
+         2. when seeing new `StaticProgramContext` in DataProvider, extract `commonPrefix`
+            -> if first time or if `commonPrefix` is shorter than before, update `commonPrefix` of all files
+               (maybe send out an event to update GUI? maybe not necessary...)
+            -> else, only set `commonPrefix` for new files (before adding)
+   * parentTrace
+      * traceLabel + valueLabel
+   * all contexts of same staticContext (TODO: more complex; need to design details)
+      -> can highlight in Graph
 * add button to `ApplicationsView` to switch to `ApplicationFilesView`
    * -> list all files
    * click:
       * if not open: open file -> then go to first trace in file
       * if open: just open (don't go to trace)
+
+
 * add a command to toggle (show/hide) all intrusive features
    * includes:
       * show/hide all `codeDeco`s
@@ -32,23 +47,6 @@
             * https://www.datacamp.com/community/tutorials/stemming-lemmatization-python
             * https://nlp.stanford.edu/IR-book/html/htmledition/stemming-and-lemmatization-1.html
    * NOTE: is there some JS or python NLP packages to help with this?
-* [tracesAtCursor]
-   * remove this view, replace with button at the top left
-      * icon = crosshair (⌖)
-         * e.g.: https://www.google.com/search?q=crosshair+icon&tbm=isch
-      * select `getMostRelevantTraceAtCursor()` (see below)
-      * if it returns `null`, change button color to gray, else red
-   * `getMostRelevantTraceAtCursor()` function
-      * Notes
-         * can use generator function for this
-         * `onData`: reset
-      * if `selectedTrace` exists:
-         * only select traces of same `staticContextId` (or, if `Resume` or `Await`, of same `staticContextId` of `parentContext`)
-         * prefer traces of minimum `contextId` (or, if `Resume` or `Await`, `parentContextId`) distance
-         * prefer traces of minimum `runId` distance
-         * prefer traces of minimum `traceId` distance
-      * if there is no `selectedTrace`:
-         * same order as `getTracesAt(application, programId, pos)`
 * [SubGraph_Filtering]
    * add two new buttons (for filtering) to each `callGraphView` root node: include/exclude
    * when filter active:
@@ -114,20 +112,19 @@
 
 
 ## TODO (`dbux-projects`)
-* add `signal-exit`? https://www.npmjs.com/package/signal-exit
-* [errors] false positive: ```
-   exports.deprecate = function(fn, msg){
-      if (process.env.NODE_ENV === 'test') return fn;
-      // prepend module name
-      msg = 'express: ' + msg;`
-   ```
-* [runtime_timeout] find a workaround
+* basic functionality:
+   * auto-commit
+   * cancel
+   * uninstall
+* find a workaround for test timeout?
    * testing often comes with timeout (e.g. "Error: timeout of 2000ms exceeded")
-   * nothing was received because of error
-   * can we try this outside extension host etc to speed up process?
+      * nothing was received because of error
+      * can we try this outside extension host etc to speed up process?
+      * add `signal-exit`? https://www.npmjs.com/package/signal-exit
+   * check: does this still occur, even with `--no-exit`?
 * fix: what to do when switching between bugs but installation (or user) modified files?
-   * NOTE: switching between bugs requires `git checkout` which needs local changes to be reset before succeeding
-   * `commit` and forget?
+   * NOTE: switching between bugs requires `git checkout` which needs local changes to be committed or reset
+   * auto `commit` and forget?
 * make sure, express works:
    * run it in dbux
    * switch between bugs
@@ -182,6 +179,47 @@
 
 
 
+## TODO (dbux-graph)
+* add a css class for font scaling (e.g. `.scale-font`): when zooming, font-size stays the same
+   * NOTE: can use `vh` instead of `px` or `rem` (see: https://stackoverflow.com/questions/24469375/keeping-text-size-the-same-on-zooming)
+* highlight mode: highlight important nodes, de-emphasize unimportant nodes
+   * highlight mode examples
+      * all contexts of `staticContext`
+      * all traces of `staticTrace`
+      * search mode: important nodes = nodes that match search criteria
+   * highlight style
+      * scale font, normal font-size
+      * clear, bright colors
+      * high contrast
+   * de-emphasized style
+      * don't scale font, small font-size
+      * darkened colors
+      * low contrast
+* "trace <-> context mode" switch per node (and maybe sub-tree); not for entire graph
+* replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
+* NOTES
+   * `render` does NOT propagate to children (unlike React)
+
+
+
+
+
+
+
+## TODO (dbux-tutorials) - Getting to know DBUX
+* Design considerations
+   * Fast paced, not too complex, easy to grasp
+   * Touches on all Dbux core features
+   * Allows for comparison between Dbux and traditional tools
+   * Allows for strategy to be developed and discussed???
+* Beginner: Simple exercises (e.g. broken loop)
+* Intermediate: todomvc
+* Advanced: express
+
+
+
+
+
 
 
 
@@ -189,32 +227,72 @@
 
 
 ## TODO (other)
-* fix: when selecting a traced "return", it says "no trace at cursor"
-   * (same with almost any keywords for now)
+* fix: object tracking is broken
+* fix: instrumentation order causes big headache
+   * fix `guessFunctionName`: `[cb] [cb] (unnamed)`
+   * fix: `throw` is not traced
+* fix: `CallExpression`, `Function`, `Await` have special interactions
+   * they all might be children of other visitors
+   * NOTE: currently all other visitors use `wrapExpression`
+      * -> checks `isCallPath` and has special handling only for that
+      * -> Problem: come up with comprehensive conflict resolution here
+         * `CallExpression`: `traceReturnType` controlled if `return` or `throw`
+         * `Function`: no wrapping for functions
+         * `Await`: `resumeTraceId` is `TraceType.Resume`, but can also be `ReturnArgument` or `ThrowArgument`?
+      * -> Problem: how to let a trace play multiple different roles?
+   * (finish: child visitor queue)
+   * patch babel-traverse (to support non-type-based visitors):
+      1. [context.shouldVisit](https://github.com/babel/babel/blob/a34424a8942ed7346894e5fd36dc1490d4e2190c/packages/babel-traverse/src/context.js#L25)
+      2. [traverse.node](https://github.com/babel/babel/blob/master/packages/babel-traverse/src/index.js#L59)
+   * split up `functionVisitor`
+      * enter
+         * child('body'): generate `pushTraceId`
+      * exit
+         * child('body'): generate `popTraceId` -> instrument
+   * split up `awaitVisitor`
+      * exit: 
+         * child('argument'): generate `preTraceId` -> instrument `preAwait`
+         * self: generate `resumeTraceId` -> instrument `await`
+      ```js
+      _dbux.postAwait(
+      (await _dbux.wrapAwait(
+         xArg,
+         _contextId6 = _dbux.preAwait(10, 29)
+      )), 
+      _contextId6, 
+      30
+      );
+      ```
+
+* [errors] false positive:
+   * e.g. `if (val === 'new') return next('route');`
+   * e.g. ```
+   exports.deprecate = function(fn, msg){
+      if (process.env.NODE_ENV === 'test') return fn;
+      // prepend module name
+      msg = 'express: ' + msg;`
+   ```
+* fix: small trace odities
+   * when selecting a traced "return", it says "no trace at cursor"
+      * (same with almost any keywords for now)
+   * `if else` considers `else` as a block, and inserts (potentially unwanted) code deco
 * `displayName` is often too long for proper analysis in py/callGraph
-* in `app.param.js` we don't have any trace in any of the request handler callbacks
-* [net/Client]
-   * Client operations fail when waiting too long (e.g. when pausing in debugger) (such as `this._socket.emit`)
+   * -> do not add source code of function itself -> change to `cb#i of A.f` instead
 * [serialization]
    * early accessing of getters can cause exceptions and maybe worse
 * fix: setup `eslint` to use correct index of `webpack` multi config to allow for `src` alias
    * Problem: won't work since different projects would have an ambiguous definition of `src`
-* (big goal: design projects, bugs, comprehension questions + tasks)
 * test: 
+   * `throw await x;`
    * `return await x;`
-      * -> problem: `awaitVisitor` and `returnVisitor` at odds?
    * `o[await x]`
-      * -> similar problem
+      * -> problem: `awaitVisitor` and `returnVisitor`/`memberExoression visitor` at odds?
    * `f(a, await b, c)`
-      * -> probably won't work, because result needs to be resolved later
-      * `resolveCallIds` would try to resolve results too fast
+      * -> probably won't work, because `resolveCallIds` would try to resolve results too fast
 * fix: provide an easier way to use `ipynb` to analyze any application
 * dbux-graph web components
    * map data (or some sort of `id`) to `componentId`
    * batch `postMessage` calls before sending out
-   * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
-   * NOTES
-      * `render` does NOT propagate to children (unlike React)
    * write automatic `dbux-graph-client/scripts/pre-build` component-registry script
 
 * fix: `staticTraceId` must resemble AST ordering for error tracing to work correctly

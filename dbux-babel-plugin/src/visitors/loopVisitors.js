@@ -58,7 +58,17 @@ function addLoopStaticVars(path, state, loopId, loopHeadLoc) {
  * `for await (const left of dbux.wrapAsyncIterator(right)) { ... }`
  */
 function instrumentForAwaitOfLoop(path, state) {
-  // TODO: instrument this
+  /**
+     * TODO: Handle `for await of`
+     * explanation:
+     *    `for await (const x of xs) { f(x); g(x); }` is like sugar of:
+     *    `for (const (x = await _x) of (async xs)) { f(x); g(x); }`
+     *    (it calls y[Symbol.asyncIterator]() instead of y[Symbol.iterator]())
+     * @see https://www.codementor.io/@tiagolopesferreira/asynchronous-iterators-in-javascript-jl1yg8la1
+     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
+     * @see https://github.com/babel/babel/issues/4969
+     * @see https://babeljs.io/docs/en/babel-types#forofstatement
+   */
 
   // `for await (const left of dbux.wrapAsyncIterator(right)) { ... }`
 }
@@ -87,7 +97,14 @@ export function instrumentLoopBodyDefault(bodyPath, state, staticVars) {
 // core
 // ###########################################################################
 
-export function instrumentLoop(path, state) {
+
+
+export function loopVisitor(path, state) {
+  // Loop, 
+  //  [['test', ExpressionResult], ['update', ExpressionResult], ['body', LoopBlock]]
+  //  [['test', ExpressionResult], ['body', LoopBlock]]
+
+
   // const bodyPath = path.get('body');
 
   // const isForAwaitOf = path.isForOfStatement() && path.node.await;

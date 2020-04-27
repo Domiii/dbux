@@ -46,7 +46,7 @@ export function initProjectView(context) {
   controller = new ProjectViewController(context);
 
   // refresh right away
-  controller.treeDataProvider.refresh();
+  // controller.treeDataProvider.refresh();
 
   return controller;
 }

@@ -54,7 +54,7 @@
 		"p1-go": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
 		"p1-start": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
 		"dbux-code-start": "cd ./dbux-code && npm start",
-		"cloc": "npx cloc --match-f='.*\\.((js)|(py))$' --fullpath --match-d='(dbux-[^/]+|samples/__samplesInput__)' --not-match-d='(node_modules|dist)$'  --by-file .",
+		"cloc": "npx cloc --match-f='.*\\.((js)|(py))$' --fullpath --match-d='(dbux-[^/]+|analysis|samples/__samplesInput__)' --not-match-d='(node_modules|dist)$'  --by-file .",
 		"clinic": "clinic flame -- node dbux-cli/bin/run-js-unbabel ../samples/__samplesOutput__/oop1.es5.js || (echo \"\\033[1;31mCould not execute clinic - checking installed version:\\033[0m\" && clinic -v)"
 	},
 	"dependencies": {
@@ -64,7 +64,10 @@
 		"link-module-alias": "^1.2.0",
 		"lodash": "^4.17.15",
 		"nanoevents": "^2.0.0",
-		"webpack-node-externals": "^1.7.2"
+		"webpack-node-externals": "^1.7.2",
+		"colors": "*",
+    "yargs": "^15.1.0",
+    "shelljs": "*"
 	},
 	"optionalDependencies": {
 		"bufferutil": "^4.0.1",

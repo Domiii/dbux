@@ -26,7 +26,7 @@ export const buildTraceNoValue = function buildTraceNoValue(templ, path, state, 
 /**
  * NOTE: We cannot reliably use templates for this, because 
  * it sometimes generates `ExpressionStatement` instead of `CallExpression`.
- * (specifically, when trying to wrap a `spreadArgument`)
+ * (specifically, that is when trying to wrap a `spreadArgument`)
  */
 function buildTraceExpr(expressionPath, state, methodName, traceType, cfg) {
   const tracePath = cfg?.tracePath;

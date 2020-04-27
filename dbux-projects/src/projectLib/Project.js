@@ -26,6 +26,10 @@ export default class Project {
   // getters
   // ###########################################################################
 
+  get runner() {
+    return this.manager.runner;
+  }
+
   get projectsRoot() {
     return this.manager.config.projectsRoot;
   }
@@ -76,6 +80,33 @@ export default class Project {
   }
 
   // ###########################################################################
+  // utilities
+  // ###########################################################################
+
+  exec(command, options) {
+    return this.runner._exec(this, command, options);
+  }
+
+  /**
+   * 
+   * @return {bool} Whether any files in this project have changed.
+   * @see https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
+   */
+  async checkFilesChanged() {
+    await this.exec('git update-index --refresh', {
+      failOnStatusCode: false
+    });
+
+    // returns status code 1, if there are any changes
+    // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
+    const code = await this.exec('git diff-index --quiet HEAD --', {
+      failOnStatusCode: false
+    });
+
+    return !!code;  // code !== 0 means that there are pending changes
+  }
+
+  // ###########################################################################
   // install helpers
   // ###########################################################################
 
@@ -83,7 +114,7 @@ export default class Project {
     const { projectPath } = this;
 
     sh.cd(projectPath);
-    await exec(`npm install`, this.logger);
+    await this.exec(`npm install`, this.logger);
   }
 
   async installDbuxCli() {
@@ -99,7 +130,7 @@ export default class Project {
     const dbuxCli = '../../dbux-common ../../dbux-cli';
 
     // TODO: select `NPM` or `yarn` based on `lock` file discovery?
-    await exec(`npm install -D ${dbuxCli}`, this.logger);
+    await this.exec(`npm install -D ${dbuxCli}`, this.logger);
   }
 
   // ###########################################################################
