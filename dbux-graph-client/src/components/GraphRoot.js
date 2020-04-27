@@ -4,6 +4,15 @@ import { compileHtmlElement } from '@/util/domUtil';
 
 class GraphRoot extends ClientComponentEndpoint {
   createEl() {
+    window.addEventListener('keypress', async (e) => {
+      if (e.key === "s") {
+        let contextId = await this.app.prompt("traceId");
+        contextId = contextId && parseInt(contextId);
+        if (contextId) {
+          this.slide(contextId, 1);
+        }
+      }
+    });
     return compileHtmlElement(/*html*/`
       <div class="root">
         <div id="test">
@@ -17,15 +26,6 @@ class GraphRoot extends ClientComponentEndpoint {
   update() {
     const { applications } = this.state;
     this.panzoom = this.initPanZoom(this.el);
-    window.addEventListener('keypress', async (e) => {
-      if (e.key === "s") {
-        let contextId = await this.app.prompt("traceId");
-        contextId = contextId && parseInt(contextId);
-        if (contextId) {
-          this.slide(contextId, 1);
-        }
-      }
-    });
     if (applications?.length) {
       this.els.title.textContent = `${applications.map(app => app.name).join(', ')}`;
     }
@@ -33,6 +33,7 @@ class GraphRoot extends ClientComponentEndpoint {
       this.els.title.textContent = '(no applications selected)';
     }
   }
+
   initPanZoom = (el) => {
     let panzoom;
     panzoom = createPanzoom(el, {
@@ -56,9 +57,8 @@ class GraphRoot extends ClientComponentEndpoint {
     panzoom.zoomAbs(
       0,
       0,
-      0.5
+      1
     );
-
 
     panzoom.on('panstart', (e) => {
       // console.log('panstart', e);
@@ -87,29 +87,46 @@ class GraphRoot extends ClientComponentEndpoint {
     return panzoom;
   }
   //focus slide. referance https://codepen.io/relign/pen/qqZxqW?editors=0011
-  slide = (contextId, slideSpeed) => {
-    slideSpeed = slideSpeed || 1;
+  slide = (contextId, slideSpeed = 1) => {
     contextId = contextId === "root" ? '#root' : '#context_' + contextId;
     let node = document.querySelector(contextId);
+    if (!node) {
+      alert("trace not foound");
+    }
+    let nodePos = node.getBoundingClientRect();
+    let toolbar = document.querySelector("#toolbar");
+    let barPos = toolbar.getBoundingClientRect();
 
-    requestAnimationFrame(() => this.step(node, slideSpeed));
+    let slideData = {
+      startTime: Date.now(),
+      startX: this.panzoom.getTransform().x,
+      startY: this.panzoom.getTransform().y,
+      distanceX: barPos.left - nodePos.x,
+      distanceY: barPos.bottom + 10 - nodePos.y,
+      slideSpeed
+    };
+
+    requestAnimationFrame(() => this.step(node, slideData));
 
     node.classList.add("flash-me");
     setTimeout(() => { node.classList.remove("flash-me"); }, (slideSpeed + 3) * 1000);
   }
-  step = (node, slideSpeed) => {
-    let nodePos = node.getBoundingClientRect();
-    let distanceX = 0 - nodePos.x;//+(window.innerWidth-nodePos.width)/2;
-    let distanceY = 0 - nodePos.y;//+(window.innerHeight-nodePos.height)/2;
+  step = (node, slideData) => {
+    const {
+      startTime,
+      startX,
+      startY,
+      distanceX,
+      distanceY,
+      slideSpeed
+    } = slideData;
 
-    let startTime = Date.now();
-    let startX = this.panzoom.getTransform().x;
-    let startY = this.panzoom.getTransform().y;
     let progress = Math.min(1.0, (Date.now() - startTime) / (slideSpeed * 1000));
 
     this.panzoom.moveTo(startX + distanceX * progress, startY + distanceY * progress);
+    this._repaint();
     if (progress < 1.0) {
-      window.requestAnimationFrame(() => this.step(node, slideSpeed));
+      requestAnimationFrame(() => this.step(node, slideData));
     }
   }
 }

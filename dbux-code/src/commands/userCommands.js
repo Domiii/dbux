@@ -8,13 +8,13 @@ import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditor, getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
 import { showGraphView } from '../graphView';
-import { initProjectCommands } from './projectCommands';
+import { initProjectUserCommands } from './projectCommands';
 import { setShowDeco } from '../codeDeco';
 
 const { log, debug, warn, error: logError } = newFileLogger(__filename);
 
 
-export function initUserCommands(extensionContext) {
+export function initUserCommands(extensionContext, projectViewController) {
   // ###########################################################################
   // exportApplicationData
   // ###########################################################################
@@ -78,5 +78,5 @@ export function initUserCommands(extensionContext) {
   // projects
   // ###########################################################################
 
-  initProjectCommands(extensionContext);
+  initProjectUserCommands(extensionContext, projectViewController);
 }

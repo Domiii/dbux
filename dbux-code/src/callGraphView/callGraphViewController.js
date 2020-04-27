@@ -8,7 +8,7 @@ const { log, debug, warn, error: logError } = newLogger('callGraphViewController
 
 let controller;
 
-class CallGraphViewController {
+export class CallGraphViewController {
   constructor() {
     this.treeDataProvider = new CallGraphNodeProvider(this);
     this.treeView = this.treeDataProvider.treeView;

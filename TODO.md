@@ -227,7 +227,7 @@
 
 
 ## TODO (other)
-* TODO: pull + test recent changes from `dev`
+* fix: object tracking is broken
 * fix: instrumentation order causes big headache
    * fix `guessFunctionName`: `[cb] [cb] (unnamed)`
    * fix: `throw` is not traced

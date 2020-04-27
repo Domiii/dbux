@@ -1,47 +1,24 @@
-import path from 'path';
 import { newLogger } from 'dbux-common/src/log/logger';
-import { initDbuxProjects, ProjectsManager } from 'dbux-projects/src';
-import exec from 'dbux-projects/src/util/exec';
+import { ProjectsManager } from 'dbux-projects/src';
 import { registerCommand } from './commandUtil';
 
 const logger = newLogger('projectCommands');
 const { log, debug, warn, error: logError } = logger;
 
-
-const cfg = {
-  projectsRoot: path.join(__dirname, '../../projects')
-};
-const externals = {
-  editor: {
-    async openFile(fpath) {
-      // TODO: use vscode API to open in `this` editor window
-      await exec(`code ${fpath}`, logger, {
-        failWhenNotFound: false,
-        processOptions: { silent: false }
-      });
-    },
-    async openFolder(fpath) {
-      // TODO: use vscode API to add to workspace
-      await exec(`code --add ${fpath}`, logger, {
-        failWhenNotFound: false,
-        processOptions: { silent: false }
-      });
-    }
-  }
-};
+export function initProjectCommands(extensionContext, projectViewController) {
+  // initProjectUserCommands(extensionContext, projectViewController);
+}
 
 /**
- * @type {ProjectsManager}
+ * @param {ProjectsManager} projectViewController 
  */
-let manager;
-
-export function initProjectCommands(extensionContext) {
-  manager = initDbuxProjects(cfg, externals);
-
-  const projects = manager.buildDefaultProjectList();
-  const runner = manager.getRunner();
-
-  debug(`Initialized dbux-projects. Projects folder = "${path.resolve(cfg.projectsRoot)}"`);
+export function initProjectUserCommands(extensionContext, projectViewController) {
+  /**
+   * @type {ProjectsManager}
+   */
+  let { manager } = projectViewController;
+  const projects = manager.getOrCreateDefaultProjectList();
+  const runner = manager.getOrCreateRunner();
 
   async function go(debugMode) {
     // cancel any currently running tasks
