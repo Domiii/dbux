@@ -72,8 +72,8 @@ export default class ExpressProject extends Project {
     ];
   }
 
-  getBugGitTag(id, tagCategory) {
-    return `Bug-${id}-${tagCategory}`;
+  getBugGitTag(bugId, tagCategory) {
+    return `Bug-${bugId}-${tagCategory}`;
   }
 
   async selectBug(bug) {
@@ -81,7 +81,7 @@ export default class ExpressProject extends Project {
       id, name
     } = bug;
     const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = bug.getBugGitTag(id, tagCategory);
+    const tag = this.getBugGitTag(id, tagCategory);
 
     // TODO: auto commit any pending changes
     // TODO: create branch if not existing

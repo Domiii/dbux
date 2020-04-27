@@ -122,8 +122,8 @@ export default class BugRunner {
     await this._activateProject(bug.project);
 
     // select bug
-    this._bug = bug;
     await bug.project.selectBug(bug);
+    this._bug = bug;
   }
 
   /**
