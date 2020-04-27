@@ -27,14 +27,17 @@ const externals = {
 
 class ProjectViewController {
   constructor(context) {
-    this.treeDataProvider = new ProjectNodeProvider(context, this);
-    this.treeView = this.treeDataProvider.treeView;
-
     // ########################################
     //  init projectManager
     // ########################################
     this.manager = initDbuxProjects(cfg, externals);
     debug(`Initialized dbux-projects. Projects folder = "${path.resolve(cfg.projectsRoot)}"`);
+    
+    // ########################################
+    //  init treeView
+    // ########################################
+    this.treeDataProvider = new ProjectNodeProvider(context, this);
+    this.treeView = this.treeDataProvider.treeView;
   }
 }
 
@@ -46,7 +49,7 @@ export function initProjectView(context) {
   controller = new ProjectViewController(context);
 
   // refresh right away
-  // controller.treeDataProvider.refresh();
+  controller.treeDataProvider.refresh();
 
   return controller;
 }

@@ -2,7 +2,7 @@ import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
 export default class BugNode extends BaseTreeViewNode {
   static makeLabel(bug) {
-    return bug || 'bug name here';
+    return bug.name;
   }
 
   init = () => {
