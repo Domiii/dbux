@@ -2,7 +2,7 @@ import { TreeItemCollapsibleState, TreeItem } from 'vscode';
 
 export default class EmptyNode extends TreeItem {
   constructor() {
-    super('(no application now)');
+    super('(no application running)');
 
     this.collapsibleState = TreeItemCollapsibleState.None;
   }
