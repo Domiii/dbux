@@ -182,6 +182,7 @@
 
 
 ## TODO (dbux-graph)
+* fix: `ocBtn` (better name: `toggleBtn`) does not work when clicking too fast and slightly moving the mouse (because of `pan`)
 * buttons:
    * collapse/expand all children
 * `ContextNode`
