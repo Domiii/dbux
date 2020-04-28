@@ -1,21 +1,17 @@
 
 # TODO
 
-## TODO (dbux-code + dbux-data; high priority)
+## TODO (shared)
+* [Projects]
+   * show status of runner while runner is running
+      * -> need to add event listener to runner for that
+   * add buttons:
+      * "select bug"
+      * "delete project"
+      * "cancel" (calls `BugRunner.cancel()`)
 * allow to select `BeforeCallExpression` traces (disable `CallExpressionResult` traces instead?)
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
-* when displaying a context in call-graph/-stack, allow to easily understand/goto:
-   * filename:lineNumber
-      * TODO: for all filenames of same application, we want to remove `commonPrefix`
-         1. store `commonPrefix`
-         2. when seeing new `StaticProgramContext` in DataProvider, extract `commonPrefix`
-            -> if first time or if `commonPrefix` is shorter than before, update `commonPrefix` of all files
-               (maybe send out an event to update GUI? maybe not necessary...)
-            -> else, only set `commonPrefix` for new files (before adding)
-   * parentTrace
-      * traceLabel + valueLabel
-   * all contexts of same staticContext (TODO: more complex; need to design details)
-      -> can highlight in Graph
+
 * add button to `ApplicationsView` to switch to `ApplicationFilesView`
    * -> list all files
    * click:
@@ -172,7 +168,13 @@
    * hint system + more relevant information
 
 * [more]
-   * webpack support
+   * support for projects with webpack
+   * add webpack to projects that don't have it to speed up instrumentation (by a lot)
+
+
+
+
+
 
 
 
@@ -180,25 +182,46 @@
 
 
 ## TODO (dbux-graph)
-* add a css class for font scaling (e.g. `.scale-font`): when zooming, font-size stays the same
-   * NOTE: can use `vh` instead of `px` or `rem` (see: https://stackoverflow.com/questions/24469375/keeping-text-size-the-same-on-zooming)
-* highlight mode: highlight important nodes, de-emphasize unimportant nodes
+* buttons:
+   * collapse/expand all children
+* `ContextNode`
+   * link/label: filename:lineNumber
+      * TODO: for all filenames of same application, we want to remove `commonPrefix`
+         1. store `commonPrefix`
+         2. when seeing new `StaticProgramContext` in DataProvider, extract `commonPrefix`
+            -> if first time or if `commonPrefix` is shorter than before, update `commonPrefix` of all files
+               (maybe send out an event to update GUI? maybe not necessary...)
+            -> else, only set `commonPrefix` for new files (before adding)
+   * link/label: parentTrace
+      * traceLabel + valueLabel
+   * grouping: add new `GroupNode` base class
+      * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
+      * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
+         * (e.g. `next` in `express`)
+* highlight system: highlight *important* nodes, de-emphasize *unimportant* nodes
    * highlight mode examples
       * all contexts of `staticContext`
       * all traces of `staticTrace`
-      * search mode: important nodes = nodes that match search criteria
-   * highlight style
-      * scale font, normal font-size
-      * clear, bright colors
-      * high contrast
-   * de-emphasized style
-      * don't scale font, small font-size
-      * darkened colors
-      * low contrast
+      * search mode: highlight nodes that match search criteria
+   * styles
+      * highlighted style
+         * scale font, normal font-size
+         * clear, bright colors
+         * high contrast
+      * de-emphasized style
+         * don't scale font, small font-size
+         * darkened colors
+         * low contrast
+* add a css class for font scaling (e.g. `.scale-font`): when zooming, font-size stays the same
+   * NOTE: can use `vh` instead of `px` or `rem` (see: https://stackoverflow.com/questions/24469375/keeping-text-size-the-same-on-zooming)
 * "trace <-> context mode" switch per node (and maybe sub-tree); not for entire graph
 * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
 * NOTES
    * `render` does NOT propagate to children (unlike React)
+
+
+
+
 
 
 
@@ -228,6 +251,8 @@
 
 ## TODO (other)
 * fix: object tracking is broken
+* in `express`, `application` object is considered a function (because it is created as such)
+   * hum...
 * fix: instrumentation order causes big headache
    * fix `guessFunctionName`: `[cb] [cb] (unnamed)`
    * fix: `throw` is not traced

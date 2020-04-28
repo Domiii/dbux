@@ -57,9 +57,18 @@ export default class Process {
     // some weird problem where some shells don't recognize things correctly
     // see: https://github.com/shelljs/shelljs/blob/master/src/exec.js#L51
     const { cwd } = processOptions;
+
+    if (!cwd) {
+      throw new Error('Unknown cwd. Make sure you either pass it in via `processOptions.cwd` or setting it via `shelljs.cd`.');
+    }
+
+    if (!sh.test('-d', cwd)) {
+      logger.error(`WARNING: Trying to execute command in non-existing working directory="${cwd}"`);
+    }
+
     processOptions.cwd = path.resolve(cwd);
 
-    logger.debug(`${cwd}$`, command); //, `(pwd = ${sh.pwd().toString()})`);
+    logger.debug(`> ${cwd}$`, command); //, `(pwd = ${sh.pwd().toString()})`);
 
     const process = this._process = spawn.exec(command, processOptions);
 

@@ -104,31 +104,31 @@ module.exports = {
   // devtool: 'inline-module-source-map',
   // devtool: 'source-map',
   // devtool: 'inline-source-map',
-  devServer: {
-    contentBase: [
-      path.join(projectRoot, 'public'),
-      outputFolder,
-      path.resolve(MonoRoot, 'analysis', '__data__')
-    ],
-    quiet: false,
-    //host: '0.0.0.0',
-    // host:
-    hot: false,
-    port: 3040,
-    publicPath: '/',
-    writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
-    filename: 'graph.js',
-    historyApiFallback: {
-      rewrites: [
-        {
-          from: /^\/data\/.*$/,
-          to(context) {
-            return `${context.parsedUrl.pathname.toLowerCase().substring(5)}`;
-          }
-        },
-      ]
-    }
-  },
+  // devServer: {
+  //   contentBase: [
+  //     path.join(projectRoot, 'public'),
+  //     outputFolder,
+  //     path.resolve(MonoRoot, 'analysis', '__data__')
+  //   ],
+  //   quiet: false,
+  //   //host: '0.0.0.0',
+  //   // host:
+  //   hot: false,
+  //   port: 3040,
+  //   publicPath: '/',
+  //   writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
+  //   filename: 'graph.js',
+  //   historyApiFallback: {
+  //     rewrites: [
+  //       {
+  //         from: /^\/data\/.*$/,
+  //         to(context) {
+  //           return `${context.parsedUrl.pathname.toLowerCase().substring(5)}`;
+  //         }
+  //       },
+  //     ]
+  //   }
+  // },
   plugins: webpackPlugins,
   context: path.join(projectRoot, '.'),
   entry: {
