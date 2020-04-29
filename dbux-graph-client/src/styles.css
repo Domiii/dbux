@@ -55,7 +55,7 @@ canvas{
 }
 
 
-.tooltip_cls {
+#tooltip {
   background: #333;
   color: white;
   font-weight: bold;
@@ -76,16 +76,16 @@ content: '';
 transform: rotate(45deg);
 background: #333;
 }
-.tooltip_cls[data-popper-placement^='bottom'] > #arrow {
-top: -4px;
+#tooltip[data-popper-placement^='bottom'] > #arrow {
+  top: -4px;
 }
-.tooltip_cls {
+#tooltip {
 /* ... */
-display: none;
+  display: none;
 }
 
-.tooltip_cls[data-show] {
-display: block;
+#tooltip[data-show] {
+  display: block;
 }
 
 

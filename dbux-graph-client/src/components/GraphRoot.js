@@ -1,6 +1,7 @@
 import createPanzoom from 'panzoom';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { compileHtmlElement } from '@/util/domUtil';
+import popperManeger from '../popperManeger';
 
 class GraphRoot extends ClientComponentEndpoint {
   createEl() {
@@ -15,17 +16,27 @@ class GraphRoot extends ClientComponentEndpoint {
     });
     return compileHtmlElement(/*html*/`
       <div class="root">
-        <div id="test">
+        <div data-el="body">
           <h2 data-el="title"></h2>
           <div data-mount="RunNode"></div>
         </div>
+        <div data-el="toolTip" id="tooltip" role="tooltip">
+          <span></span>
+          <div id="arrow" data-popper-arrow></div>
+        </div>   
       </div>
     `);
   }
 
+  setupEl() {
+    this.panzoom = this.initPanZoom(this.els.body);
+
+    // hackfix: make popperEl global for now
+    window._popperEl = this.els.toolTip;
+  }
+
   update() {
     const { applications } = this.state;
-    this.panzoom = this.initPanZoom(this.el);
     if (applications?.length) {
       this.els.title.textContent = `${applications.map(app => app.name).join(', ')}`;
     }
@@ -74,6 +85,7 @@ class GraphRoot extends ClientComponentEndpoint {
 
     panzoom.on('zoom', (e) => {
       // this._repaint();
+      popperManeger.update();
     });
 
     panzoom.on('zoomend', (e) => {
@@ -82,6 +94,7 @@ class GraphRoot extends ClientComponentEndpoint {
 
     panzoom.on('transform', (e) => {
       this._repaint();
+      popperManeger.update();
     });
 
     return panzoom;
