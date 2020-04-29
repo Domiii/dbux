@@ -1,5 +1,6 @@
 import { createPopper } from '@popperjs/core';
 import { compileHtmlElement } from '@/util/domUtil';
+import ExpandableNodeWrapper from '@/dom/ExpandableNodeWrapper';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class ContextNode extends ClientComponentEndpoint {
@@ -8,7 +9,7 @@ class ContextNode extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <div class="context">
         <div>
-          <button data-el="oCBtn" class="open_close_btn" style="display:none">▽</button>
+          <button data-el="oCBtn" class="open_close_btn">▽</button>
         </div>
         <div class="body">
           <div data-el="title" class="title">
@@ -27,11 +28,20 @@ class ContextNode extends ClientComponentEndpoint {
       `);
   }
 
+  setupEl() {
+    const {
+      oCBtn,
+      children
+    } = this.els;
+    
+    this.expandableNode = new ExpandableNodeWrapper(
+      oCBtn, children, true);
+  }
+
   update() {
     const {
       displayName,
-      context: { contextId, staticContextId },
-      hasChildren,
+      context: { contextId, staticContextId }
     } = this.state;
 
 
@@ -41,7 +51,6 @@ class ContextNode extends ClientComponentEndpoint {
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
     this.els.toolTip.textContent = `${displayName}`;
-    this.els.oCBtn.style.display = hasChildren ? 'initial' : 'none';
     this.els.children.id = `children_${contextId}`;
 
     createPopper(this.els.displayName, this.els.toolTip, {
@@ -98,18 +107,6 @@ class ContextNode extends ClientComponentEndpoint {
   }
 
   on = {
-
-    oCBtn: {
-      click() {
-        if (this.els.children.style.display === 'none') {
-          this.els.children.style.display = 'initial';
-          this.els.oCBtn.innerHTML = '▽';//﹀ ▽
-        } else {
-          this.els.children.style.display = 'none';
-          this.els.oCBtn.innerHTML = '▷';//〉 ▷  ►
-        }
-      }
-    },
     displayName: {
       mouseenter() {
         this.show();

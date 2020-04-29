@@ -3,8 +3,6 @@ import sleep from 'dbux-common/src/util/sleep';
 import { newLogger } from 'dbux-common/src/log/logger';
 import HostComponentList from './HostComponentList';
 
-const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentEndpoint');
-
 /**
  * The Host endpoint controls the Client endpoint.
  */
@@ -105,7 +103,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         },
         (err) => {
           // error :(
-          logError(this.debugTag, 'failed to initialize client - error occured (probably on client)\n  ', err);
+          this.logger.error('failed to initialize client - error occured (probably on client)\n  ', err);
         }
       ).
       finally(() => {
@@ -139,6 +137,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
   }
 
   async _executeUpdate() {
+    // debounce mechanism
     this._waitingForUpdate = true;
     await sleep(0);
     this._waitingForUpdate = false;
@@ -157,7 +156,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         },
         (err) => {
           // error :(
-          logError(this.debugTag, 'failed to update client - error occured (probably on client)\n  ', err);
+          this.logger.error('failed to update client - error occured (probably on client)\n  ', err);
         }
       ).
       finally(() => {

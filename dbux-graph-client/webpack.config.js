@@ -93,7 +93,7 @@ const webpackPlugins = [
 ];
 
 module.exports = {
-  //watch: true,
+  watch: true,
   mode: buildMode,
   target: 'web',
 

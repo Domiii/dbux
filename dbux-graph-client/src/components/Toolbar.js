@@ -7,6 +7,7 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   createEl() {
+    // return compileHtmlElement(/*html*/`<div></div>`);
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light" id="toolbar">
         <a data-el="switchModeBtn" class="btn btn-info" href="#"></a>
