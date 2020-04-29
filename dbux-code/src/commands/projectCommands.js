@@ -39,6 +39,10 @@ export function initProjectUserCommands(extensionContext, projectViewController)
     // run it!
     await runner.testBug(bug, debugMode);
 
+    // await runner.deleteProject(project)
+
+    // await runner.forceReinstall(project)
+
     // TODO: "suggest" some first "analysis steps"?
     // future work: manage/expose (webpack) project background process
   }

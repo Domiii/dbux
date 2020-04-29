@@ -25,6 +25,7 @@ canvas{
 }
 .context{
   display:flex;
+  flex-direction: row;
   justify-content:flex-start;
   height:auto;
   width:auto;
@@ -32,6 +33,11 @@ canvas{
   border: 1px solid black;
   white-space: nowrap;
 }
+
+.context .body {
+  flex-direction: column;
+}
+
 .trace{
   display:flex;
   justify-content:flex-start;
@@ -41,16 +47,16 @@ canvas{
   border: 1px solid black;
   white-space: nowrap;
 }
-.name{
-  width:auto;
-  height:auto;
+.title{
+  /* width:auto;
+  height:auto; */
 }
 .displayname{
   display:inline-block;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-x: hidden;
-  width: 5rem;
+  max-width: 20rem;
   height: auto;
 }
 
@@ -93,7 +99,7 @@ background: #333;
   display:inline-block;
   font-family: none;
   margin:0;
-  padding: 0 0.2rem;
+  padding: 0;
   line-height: 1rem;
 }
 .children{

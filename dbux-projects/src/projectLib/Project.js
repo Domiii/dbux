@@ -114,7 +114,12 @@ export default class Project {
     const { projectPath } = this;
 
     sh.cd(projectPath);
-    await this.exec(`npm install`, this.logger);
+    await this.exec(`npm install`);
+
+    // hackfix: npm installs are broken somehow.
+    //      Sometimes running it a second time after checking out a different branch 
+    //      deletes all node_modules. This will bring everything back correctly (for now).
+    await this.exec(`npm install`);
   }
 
   async installDbuxCli() {
