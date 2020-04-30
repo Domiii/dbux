@@ -14,6 +14,7 @@ canvas{
 html,body{
   height:100%;
   width:100%;
+  font-size: 11px; /* NOTE: courier is a rather "big" font, making smaller font size seem bigger */
   font-family: "Lucida Console", Courier, monospace;
 }
 
