@@ -6,8 +6,6 @@ import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import TraceMode from './TraceMode';
 
-const { log, debug, warn, error: logError } = newLogger('ContextNode');
-
 class ContextNode extends HostComponentEndpoint {
   init() {
     const {
@@ -26,11 +24,18 @@ class ContextNode extends HostComponentEndpoint {
     } = staticContext;
     this.state.displayName = displayName;
 
-    this.buildChildren();
+    // add GraphNode controller
+    this.graphNode = this.controllers.createComponent('GraphNode', {
+      isExpanded: false
+    });
+
+    // build sub graph
+    this.buildChildNodes();
+
     this.state.hasChildren = !!this.children.length;
   }
 
-  buildChildren() {
+  buildChildNodes() {
     const {
       applicationId,
       context: {
@@ -77,7 +82,7 @@ class ContextNode extends HostComponentEndpoint {
       });
     }
     else {
-      logError('Unknown TraceMode', TraceMode.getName(mode), mode);
+      this.logger.error('Unknown TraceMode', TraceMode.getName(mode), mode);
     }
   }
 

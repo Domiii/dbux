@@ -17,11 +17,28 @@ class HostComponentList {
   }
 
   // ###########################################################################
-  // iterator
+  // iterators
   // ###########################################################################
 
   * [Symbol.iterator]() {
     yield* this.components;
+  }
+
+  * filter(filter) {
+    for (const child of this.components) {
+      if (filter(child)) {
+        yield child;
+      }
+    }
+  }
+
+  * dfs(filter) {
+    for (const child of this.components) {
+      if (!filter || filter(child)) {
+        yield child;
+        yield* child.children.dfs(filter);
+      }
+    }
   }
 
   // ###########################################################################

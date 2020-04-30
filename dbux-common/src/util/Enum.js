@@ -87,6 +87,33 @@ export default class Enum {
     }
     return value;
   }
+
+  previousValue(value) {
+    const { values } = this;
+    let idx = values.indexOf(value);
+    idx = (idx - 1) % values.length;
+    return values[idx];
+  }
+
+  nextValue(value) {
+    const { values } = this;
+    let idx = values.indexOf(value);
+    idx = (idx + 1) % values.length;
+    return values[idx];
+  }
+
+  switchCall(valueOrName, functions, ...args) {
+    const name = this.nameFromForce(valueOrName);
+
+    const cb = functions[name];
+    if (!functions[name]) {
+      throw new Error(`${this.constructor.name}.switchCall() failed: functions does not contain property "${name}"`);
+    }
+    if (!(cb instanceof Function)) {
+      throw new Error(`${this.constructor.name}.switchCall() failed: functions["${name}"] is not a function`);
+    }
+    return cb(...args);
+  }
 }
 
 

@@ -12,14 +12,13 @@ class ClientComponentEndpoint extends ComponentEndpoint {
    */
   el;
   isInitialized;
-  dom = new DOMWrapper(this);
 
   constructor() {
     super();
   }
 
   get els() {
-    return this.dom.els;
+    return this.dom?.els;
   }
 
   /**
@@ -28,7 +27,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
    * @virtual
    */
   createEl() {
-    this.logger.warn('ClientComponentEndpoint did not implement `createEl`');
+    this.logger.warn(this.debugTag, 'ClientComponentEndpoint did not implement `createEl`');
   }
 
   /**
@@ -43,10 +42,11 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     this.el = this.createEl();
 
     if (!this.el) {
-      return;
+      throw new Error(`${this.debugTag} \`createEl\` must return a DOM element. If this component has no DOM, make sure to override \`init()\` instead.`);
     }
 
     // process DOM
+    this.dom = new DOMWrapper(this);
     this.dom.process();
 
     // call event
@@ -100,11 +100,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     },
 
     dispose() {
-      if (this.el?.parentNode) {
-        // remove element from DOM
-        this.el.parentNode.removeChild(this.el);
-        this.el = null;
-      }
+      this.dom?.remove();
     }
   };
 

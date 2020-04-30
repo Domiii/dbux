@@ -1,6 +1,5 @@
 import { createPopper } from '@popperjs/core';
 import { compileHtmlElement } from '@/util/domUtil';
-import ExpandableNodeWrapper from '@/dom/ExpandableNodeWrapper';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class ContextNode extends ClientComponentEndpoint {
@@ -9,7 +8,7 @@ class ContextNode extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <div class="context">
         <div>
-          <button data-el="oCBtn" class="open_close_btn">▽</button>
+          <button data-el="nodeToggleBtn" class="open_close_btn">▽</button>
         </div>
         <div class="body">
           <div data-el="title" class="title">
@@ -21,7 +20,7 @@ class ContextNode extends ClientComponentEndpoint {
             </div>
             <div data-mount="TraceNode"></div>
           </div>
-          <div data-mount="ContextNode" data-el="children" class="children">
+          <div data-mount="ContextNode" data-el="nodeChildren" class="children">
           </div>
         </div>
       </div>
@@ -29,13 +28,6 @@ class ContextNode extends ClientComponentEndpoint {
   }
 
   setupEl() {
-    const {
-      oCBtn,
-      children
-    } = this.els;
-    
-    this.expandableNode = new ExpandableNodeWrapper(
-      oCBtn, children, true);
   }
 
   update() {
@@ -51,7 +43,7 @@ class ContextNode extends ClientComponentEndpoint {
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
     this.els.toolTip.textContent = `${displayName}`;
-    this.els.children.id = `children_${contextId}`;
+    this.els.nodeChildren.id = `children_${contextId}`;
 
     createPopper(this.els.displayName, this.els.toolTip, {
       placement: "bottom-start",

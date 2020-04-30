@@ -79,4 +79,13 @@ export default class DOMWrapper {
     p.removeChild(el);
     p.appendChild(el);
   }
+
+  remove() {
+    const { el } = this;
+    if (el?.parentNode) {
+      // remove element from DOM
+      el.parentNode.removeChild(el);
+      this.owner.el = null;
+    }
+  }
 }

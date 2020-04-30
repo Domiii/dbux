@@ -63,10 +63,7 @@ class GraphDocument extends HostComponentEndpoint {
 
   switchTraceMode() {
     // const nextMode = (this.traceMode + 1) % TraceMode.getCount();
-    const { values } = TraceMode;
-    let idx = values.indexOf(this.traceMode);
-    idx = (idx + 1) % values.length;
-    this.traceMode = values[idx];
+    this.traceMode = TraceMode.nextValue(this.traceMode);
     
     this.refreshGraphRoot();
     this.toolbar.setState({
