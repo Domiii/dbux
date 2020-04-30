@@ -6,7 +6,13 @@ const logger = newLogger('projectCommands');
 const { log, debug, warn, error: logError } = logger;
 
 export function initProjectCommands(extensionContext, projectViewController) {
-  // initProjectUserCommands(extensionContext, projectViewController);
+  registerCommand(extensionContext, 'dbuxProjectView.node.activateBug', async (node) => {
+    await projectViewController.activateBugByNode(node);
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.activateBugWithDebugger', async (node) => {
+    await projectViewController.activateBugByNode(node, true);
+  });
 }
 
 /**
