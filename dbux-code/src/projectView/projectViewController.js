@@ -46,17 +46,17 @@ class ProjectViewController {
       cancellable: true,
       location: ProgressLocation.Notification,
       title: `Activating bug{${bugNode.bug.name}} of project{${bugNode.bug.project.name}}`
-    }, (progress, cancelToken) => {
+    }, async (progress, cancelToken) => {
       const runner = this.manager.getOrCreateRunner();
-      this._go(progress, cancelToken, runner, bugNode, debugMode);
-      cancelToken.onCancellationRequested(()=>{
+      cancelToken.onCancellationRequested(() => {
+        log('canceled');
         runner.cancel();
-      })
+      });
+      await this._go(progress, cancelToken, runner, bugNode, debugMode);
     });
   }
 
   async _go(progress, cancelToken, runner, bugNode, debugMode = true) {
-
     // cancel any currently running tasks
     await runner.cancel();
 
