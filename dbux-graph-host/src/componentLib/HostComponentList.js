@@ -20,7 +20,7 @@ class HostComponentList {
   // iterators
   // ###########################################################################
 
-  * [Symbol.iterator]() {
+  *[Symbol.iterator]() {
     yield* this.components;
   }
 
@@ -39,6 +39,17 @@ class HostComponentList {
         yield* child.children.dfs(filter);
       }
     }
+  }
+
+  /**
+   * Depth of the component tree (0 at this node).
+   */
+  computeMaxDepth() {
+    let d = 0;
+    for (const child of this.components) {
+      d = Math.max(d + 1, child.children.computeMaxDepth());
+    }
+    return d;
   }
 
   // ###########################################################################

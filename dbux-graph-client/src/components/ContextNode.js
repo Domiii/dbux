@@ -8,7 +8,7 @@ class ContextNode extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <div class="context">
         <div>
-          <button data-el="nodeToggleBtn" class="open_close_btn">▽</button>
+          <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
         </div>
         <div class="body">
           <div data-el="title" class="title">
