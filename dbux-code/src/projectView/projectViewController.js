@@ -1,9 +1,9 @@
-import { window, ProgressLocation } from 'vscode';
 import path from 'path';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { initDbuxProjects } from 'dbux-projects/src';
 import exec from 'dbux-projects/src/util/exec';
 import ProjectNodeProvider from './projectNodeProvider';
+import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 
 const logger = newLogger('projectViewController');
 const { log, debug, warn, error: logError } = logger;
@@ -41,48 +41,44 @@ class ProjectViewController {
     this.treeView = this.treeDataProvider.treeView;
   }
 
-  async goWithProgress(bugNode, debugMode = true) {
-    window.withProgress({
-      cancellable: true,
-      location: ProgressLocation.Notification,
-      title: `Activating bug{${bugNode.bug.name}} of project{${bugNode.bug.project.name}}`
-    }, async (progress, cancelToken) => {
-      const runner = this.manager.getOrCreateRunner();
-      cancelToken.onCancellationRequested(() => {
-        log('canceled');
-        runner.cancel();
-      });
-      await this._go(progress, cancelToken, runner, bugNode, debugMode);
-    });
+  async activateBugByNode(bugNode, debugMode = false) {
+    const options = {
+      title: `[dbux] Activating bug:{${bugNode.bug.name}}`
+    };
+
+    runTaskWithProgressBar(async (progress, cancelToken) => {
+      await this._activateBug(progress, cancelToken, bugNode, debugMode);
+    }, options);
   }
 
-  async _go(progress, cancelToken, runner, bugNode, debugMode = true) {
+  async _activateBug(progress, cancelToken, bugNode, debugMode) {
+    const { bug } = bugNode;
+    const runner = this.manager.getOrCreateRunner();
+
     // cancel any currently running tasks
     await runner.cancel();
+    progress.report({ increment: 20, message: 'activating...' });
 
     // activate/install project
     if (cancelToken.isCancellationRequested) {
       return;
     }
-    progress.report({ increment: 40, message: 'activating...' });
     await runner.activateProject(bugNode.bug.project);
-
-    // load bugs
-    const { bug } = bugNode;
+    progress.report({ increment: 40, message: 'opening in editor...' });
 
     // open in editor (must be after activation/installation)
     if (cancelToken.isCancellationRequested) {
       return;
     }
-    progress.report({ increment: 20, message: 'opening in editor...' });
     await bug.openInEditor();
+    progress.report({ increment: 10, message: 'running test...' });
 
     // run it!
     if (cancelToken.isCancellationRequested) {
       return;
     }
-    progress.report({ increment: 40, message: 'running test...' });
     await runner.testBug(bug, debugMode);
+    progress.report({ increment: 30, message: 'Finished!' });
   }
 }
 

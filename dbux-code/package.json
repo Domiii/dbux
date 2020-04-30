@@ -202,11 +202,19 @@
 				}
 			},
 			{
-				"command": "dbuxProjectView.node.activateBug",
-				"title": "Activate Bug",
+				"command": "dbuxProjectView.node.activateBugWithDebugger",
+				"title": "Activate Bug With Debugger",
 				"icon": {
 					"light": "resources/light/bug.svg",
 					"dark": "resources/dark/bug.svg"
+				}
+			},
+			{
+				"command": "dbuxProjectView.node.activateBug",
+				"title": "Activate Bug",
+				"icon": {
+					"light": "resources/light/play.svg",
+					"dark": "resources/dark/play.svg"
 				}
 			},
 			{
@@ -307,9 +315,14 @@
 					"group": "inline"
 				},
 				{
+					"command": "dbuxProjectView.node.activateBugWithDebugger",
+					"when": "view == dbuxProjectView && viewItem == BugNode",
+					"group": "inline@1"
+				},
+				{
 					"command": "dbuxProjectView.node.activateBug",
 					"when": "view == dbuxProjectView && viewItem == BugNode",
-					"group": "inline"
+					"group": "inline@2"
 				}
 			],
 			"view/title": [
