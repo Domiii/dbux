@@ -26,11 +26,13 @@ export default class ExpressProject extends Project {
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    const curDir = sh.pwd();
     if (!await sh.test('-d', projectPath)) {
-      this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
+      // const curDir = sh.pwd().toString();
+      // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
-      await exec(`git clone ${githubUrl} ${projectPath}`, this.logger);
+      await this.exec(`git clone ${githubUrl} ${projectPath}`, {
+        cdToProjectPath: false
+      });
       // log('  ->', result.err || result.out);
       // (result.err && warn || log)('  ->', result.err || result.out);
       this.log(`Cloned.`);
@@ -93,6 +95,9 @@ export default class ExpressProject extends Project {
 
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);
+
+    // bug commit might have different dependencies -> `npm install` again
+    await this.npmInstall();
   }
 
   async testBugCommand(bug, debugPort) {

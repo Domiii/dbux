@@ -7,9 +7,10 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "_before-run": "npx link-module-alias && yarn install",
-    "start": "npm run build:serve",
-    "build:serve": "npx nodemon --exec \"node ../node_modules/webpack-dev-server/bin/webpack-dev-server\"",
-    "build:debug": "node ../node_modules/webpack/bin/webpack",
+    "__start": "npm run build:serve",
+    "__build:serve": "npx nodemon --exec \"node ../node_modules/webpack-dev-server/bin/webpack-dev-server\"",
+    "start": "npm run build:debug",
+    "build:debug": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack\"",
     "_postinstall": "npx link-module-alias",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

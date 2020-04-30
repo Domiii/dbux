@@ -139,6 +139,9 @@ export default class BugRunner {
     await this._exec(project, cmd);
   }
 
+  /**
+   * @param {boolean} options.cdToProjectPath [Default=true] Whether to cd to `project.projectPath`.
+   */
   async _exec(project, cmd, options = null) {
     const {
       projectPath
@@ -149,16 +152,23 @@ export default class BugRunner {
     }
 
     // set cwd
-    options = defaultsDeep(options, {
-      processOptions: {
-        cwd: projectPath
-      }
-    });
+    let cwd;
+    if (options?.cdToProjectPath !== false) {
+      cwd = projectPath;
+
+      // set cwd option
+      options = defaultsDeep(options, {
+        processOptions: {
+          cwd
+        }
+      });
+
+      // cd into it
+      sh.cd(cwd);
+    }
 
     // // wait until current process finshed it's workload
     // this._process?.waitToEnd();
-
-    sh.cd(projectPath);
 
     this._process = new Process();
     try {
