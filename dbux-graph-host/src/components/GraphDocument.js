@@ -20,7 +20,7 @@ class GraphDocument extends HostComponentEndpoint {
   init() {
     this.componentManager.doc = this;
     this.traceMode = TraceMode.ContextOnly;
-    
+
     this.initChildren();
 
     // ########################################
@@ -62,10 +62,13 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   switchTraceMode() {
-    const nextMode = (this.traceMode + 1) % TraceMode.getCount();
-    this.traceMode = nextMode;
+    // const nextMode = (this.traceMode + 1) % TraceMode.getCount();
+    this.traceMode = TraceMode.nextValue(this.traceMode);
+    
     this.refreshGraphRoot();
-    this.toolbar.setState({ traceModeName: TraceMode.getName(this.traceMode) });
+    this.toolbar.setState({
+      traceModeName: TraceMode.getName(this.traceMode)
+    });
   }
 
   getTraceMode() {

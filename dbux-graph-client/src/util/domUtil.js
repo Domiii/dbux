@@ -7,15 +7,15 @@ const { log, debug, warn, error: logError } = newLogger('dbux-common/domUtil');
 // Conditional CSS classes
 // ##################################################################################################################
 
-export function decorateClasses($el, cfg) {
+export function decorateClasses(el, cfg) {
   for (let clazz in cfg) {
     let val = cfg[clazz];
 
     if (val) {
-      $el.addClass(clazz);
+      el.classList.add(clazz);
     }
     else {
-      $el.removeClass(clazz);
+      el.classList.remove(clazz);
     }
   }
 }

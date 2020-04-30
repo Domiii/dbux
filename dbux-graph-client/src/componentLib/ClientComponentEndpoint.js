@@ -1,9 +1,7 @@
 import isFunction from 'lodash/isFunction';
 import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
-import { newLogger } from 'dbux-common/src/log/logger';
+import DOMWrapper from '@/dom/DOMWrapper';
 import { collectElementsByDataAttr } from '@/util/domUtil';
-
-const { log, debug, warn, error: logError } = newLogger('ClientComponentEndpoint');
 
 /**
  * The Client endpoint is controlled by the Host endpoint.
@@ -13,9 +11,15 @@ class ClientComponentEndpoint extends ComponentEndpoint {
    * The DOM element visually representing this component instance.
    */
   el;
-  els;
-  mountPointsByComponentName;
   isInitialized;
+
+  constructor() {
+    super();
+  }
+
+  get els() {
+    return this.dom?.els;
+  }
 
   /**
    * Use this to create the HTML node to represent this component.
@@ -23,7 +27,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
    * @virtual
    */
   createEl() {
-    warn(this.componentName, 'ClientComponentEndpoint did not implement `createEl`');
+    this.logger.warn(this.debugTag, 'ClientComponentEndpoint did not implement `createEl`');
   }
 
   /**
@@ -38,22 +42,15 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     this.el = this.createEl();
 
     if (!this.el) {
-      return;
+      throw new Error(`${this.debugTag} \`createEl\` must return a DOM element. If this component has no DOM, make sure to override \`init()\` instead.`);
     }
 
-    this._processEl();
+    // process DOM
+    this.dom = new DOMWrapper(this);
+    this.dom.process();
+
+    // call event
     this.setupEl();
-  }
-
-  appendChild(child) {
-    const mountName = child.componentName;
-    const mountPointEl = this.mountPointsByComponentName[mountName];
-    if (!mountPointEl) {
-      logError(`Could not add child to parent. Parent ${this.componentName} did not have a mount type for child ${mountName}`);
-      return;
-    }
-
-    mountPointEl.appendChild(child.el);
   }
 
   forceUpdate() {
@@ -65,37 +62,6 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   // private methods
   // ###########################################################################
 
-
-  _processEl() {
-    this.els = collectElementsByDataAttr(this.el, 'el');
-    this.mountPointsByComponentName = collectElementsByDataAttr(this.el, 'mount');
-
-    // hook up event listeners
-    if (this.on) {
-      for (const elName in this.on) {
-        const compConfig = this.on[elName];
-        const el = this.els[elName];
-        if (!el) {
-          logError(this.debugTag, `Invalid event handler (on) - el name does not exist: "${elName}". Are you missing a "data-el" attribute?`);
-          continue;
-        }
-        for (const eventName in compConfig) {
-          const cb = compConfig[eventName];
-          if (!isFunction(cb)) {
-            logError(this.debugTag, `Invalid event handler (on) - is not a function: "${elName}.${eventName}"`);
-            continue;
-          }
-          el.addEventListener(eventName, cb.bind(this));
-        }
-      }
-    }
-
-    if (this.parent?.el) {
-      // append element to DOM
-      this.parent.appendChild(this);
-    }
-  }
-
   async _performInit() {
     await this.init();
     this.isInitialized = true;
@@ -106,7 +72,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
       await this.update();
     }
     catch (err) {
-      logError('Component update failed', err);
+      this.logger.error('Component update failed', err);
     }
   }
 
@@ -115,16 +81,9 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   // ###########################################################################
 
   /**
-   * hackfix: the VSCode webview does not re-render correctly when `panzoom` library updates element `transform`.
-   *    This forces it to re-render.
    */
   _repaint = () => {
-    // var el = document.querySelector('#root');
-    // var el = domElement;
-    const { el } = this;
-    const p = el.parentNode;
-    p.removeChild(el);
-    p.appendChild(el);
+    this.dom.repaint();
   }
 
   // ###########################################################################
@@ -141,13 +100,13 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     },
 
     dispose() {
-      if (this.el?.parentNode) {
-        // remove element from DOM
-        this.el.parentNode.removeChild(this.el);
-        this.el = null;
-      }
+      this.dom?.remove();
     }
   };
+
+  toString() {
+    return this.componentName;
+  }
 }
 
 export default ClientComponentEndpoint;

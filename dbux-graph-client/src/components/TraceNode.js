@@ -8,7 +8,7 @@ export default class TraceNode extends ClientComponentEndpoint {
         <div data-el="name" class="name">
           <div style="display:flex; height:auto; align-item:flex-end;">
             <span data-el="displayName"></span>
-            <button data-el="oCBtn" class="open_close_btn">▽</button>
+            <button data-el="nodeToggleBtn" class="open_close_btn">▽</button>
           </div>
         </div>
         <div data-mount="ContextNode" class="children">
@@ -29,18 +29,18 @@ export default class TraceNode extends ClientComponentEndpoint {
 
     this.el.id = `trace_${traceId}`;
     this.els.displayName.textContent = `${displayName}`;
-    this.els.oCBtn.style.display = hasChildren ? 'initial' : 'none';
+    this.els.nodeToggleBtn.style.display = hasChildren ? 'initial' : 'none';
   }
   on = {
 
-    oCBtn: {
+    nodeToggleBtn: {
       click() {
         if (this.els.children.style.display === 'none') {
           this.els.children.style.display = 'initial';
-          this.els.oCBtn.innerHTML = '▽';//﹀ ▽
+          this.els.nodeToggleBtn.innerHTML = '▽';//﹀ ▽
         } else {
           this.els.children.style.display = 'none';
-          this.els.oCBtn.innerHTML = '▷';//〉 ▷  ►
+          this.els.nodeToggleBtn.innerHTML = '▷';//〉 ▷  ►
         }
       }
     },

@@ -1,5 +1,6 @@
 import get from 'lodash/get';
 import { newLogger } from 'dbux-common/src/log/logger';
+import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import MessageType from './MessageType';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/ipc');
@@ -46,8 +47,12 @@ export default class Ipc {
   // ###########################################################################
   // Internal: sending + handling messages
   // ###########################################################################
-  
-  _postMessage(msg) {
+
+  // _postMessage = makeDebounce((msg) => {
+  //   this.ipcAdapter.postMessage(msg);
+  // }, 0);
+
+  _postMessage = (msg) => {
     this.ipcAdapter.postMessage(msg);
   }
 
@@ -125,7 +130,7 @@ export default class Ipc {
       commandName,
       args
     } = message;
-    
+
     const info = 'Failed to process request - ';
     logError(info + commandName, args);
     logError(err.stack);

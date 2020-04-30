@@ -1,8 +1,10 @@
+import { ViewColumn } from 'vscode';
 import path from 'path';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { initDbuxProjects } from 'dbux-projects/src';
 import exec from 'dbux-projects/src/util/exec';
 import ProjectNodeProvider from './projectNodeProvider';
+import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 
 const logger = newLogger('projectViewController');
@@ -16,8 +18,8 @@ const cfg = {
 const externals = {
   editor: {
     async openFile(fpath) {
-      // TODO: use vscode API to open in `this` editor window
-      await exec(`code ${fpath}`, logger, { silent: false }, true);
+      // await exec(`code ${fpath}`, logger, { silent: false }, true);
+      return showTextDocument(fpath, ViewColumn.One);
     },
     async openFolder(fpath) {
       // TODO: use vscode API to add to workspace

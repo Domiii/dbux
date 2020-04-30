@@ -182,6 +182,8 @@
 
 
 ## TODO (dbux-graph)
+* fix: require `alt` for `pan` (else button clicks don't work so well)
+   * e.g. `nodeToggleBtn` does not work when clicking too fast and slightly moving the mouse
 * buttons:
    * collapse/expand all children
 * `ContextNode`
