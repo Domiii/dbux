@@ -1,7 +1,7 @@
 
+import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
-import ExecutionContext from '../../../../dbux-common/src/core/data/ExecutionContext';
 
 
 export default class ContextsByStaticContextIndex extends CollectionIndex<ExecutionContext> {

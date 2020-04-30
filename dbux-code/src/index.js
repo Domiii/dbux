@@ -1,21 +1,22 @@
 import { window } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
 
-import { initServer } from './net/server';
+import { initServer } from './net/RuntimeServer';
 import { initCodeDeco } from './codeDeco';
 
-import { initContextView } from './contextView/contextViewController';
+import { initCallGraphView } from './callGraphView/callGraphViewController';
 import { initCallStackView } from './callStackView/callStackViewController';
 import { initCommands } from './commands/index';
 import { initToolBar } from './toolbar';
 import { initPlayback } from './playback/index';
 
-import { initCodeApplications } from './CodeApplication';
-import { initTraceDetailsController } from './traceDetailsView/traceDetailsController';
+import { initCodeApplications } from './codeUtil/CodeApplication';
+import { initTraceDetailsView } from './traceDetailsView/traceDetailsController';
 import { initResources } from './resources';
-import { initTraceSelection } from './codeSelection';
-import { initEditorTracesController } from './editorTracesView/editorTracesController';
-import { initApplicationsViewController } from './applicationsView/applicationsViewController';
+import { initTraceSelection } from './codeUtil/codeSelection';
+import { initEditorTracesView } from './editorTracesView/editorTracesController';
+import { initApplicationsView } from './applicationsView/applicationsViewController';
+import { initProjectView } from './projectView/projectViewController';
 import { initLogging } from './logging';
 
 
@@ -32,25 +33,26 @@ function activate(context) {
     initServer(context);
     initCodeApplications(context);
     initCodeDeco(context);
-    
+    initToolBar(context);
+
     initTraceSelection(context);
-    initEditorTracesController(context);
-    initApplicationsViewController(context);
+    initEditorTracesView(context);
+    initApplicationsView(context);
     
-    const contextViewController = initContextView();
+    const callGraphViewController = initCallGraphView();
     const callStackViewController = initCallStackView();
+    const projectViewController = initProjectView(context);
+    const traceDetailsController = initTraceDetailsView(context);
     const playbackController = initPlayback();
-    const traceDetailsController = initTraceDetailsController(context);
 
     initCommands(
       context,
-      contextViewController,
+      callGraphViewController,
       callStackViewController,
       playbackController,
-      traceDetailsController
+      traceDetailsController,
+      projectViewController
     );
-    
-    initToolBar(context, contextViewController);
   } catch (e) {
     logError('could not activate', e);
     debugger;

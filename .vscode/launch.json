@@ -16,7 +16,7 @@
 			],
 			"stopOnEntry": false,
 			"sourceMaps": true,
-			"trace": true,
+			// "trace": true,
 			// "outFiles": ["${workspaceRoot}/dbux-code/dist/*.js"],
 			// "preLaunchTask": "npm: build-dbux-code"
 			"outFiles": [
@@ -39,13 +39,22 @@
 				"${file}"
 			],
 			"protocol": "inspector",
-			"trace": true,
+			// "trace": true,
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 			"outFiles": [
 				"${workspaceRoot}/dbux-babel-plugin/dist/**/*.js",
 				"${workspaceRoot}/dbux-runtime/dist/**/*.js"
+			]
+		},
+		{
+			"type": "node",
+			"request": "attach",
+			"name": "[dbux-project] attach",
+			"port": 9853,
+			"skipFiles": [
+				"<node_internals>/**"
 			]
 		},
 		{
@@ -76,12 +85,12 @@
 			"name": "test file",
 			"type": "node",
 			"request": "launch",
-			"program": "${workspaceFolder}/dbux-babel-plugin/node_modules/jest/bin/jest.js",
+			"program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
 				"--preserve-symlinks"
 			],
-			"cwd": "${workspaceFolder}/dbux-babel-plugin",
+			"cwd": "${workspaceFolder}/dbux-cli",
 			"args": [
 				"-i",
 				"--config=jest.config.js",
@@ -152,7 +161,7 @@
 			"name": "chrome todomvc",
 			"type": "chrome",
 			"request": "launch",
-			"trace": true,
+			// "trace": true,
 			"url": "http://localhost:3030",
 			"pathMapping": {
 				// "/samples/": "${workspaceFolder}/projects/todomvc/examples/vanilla-es6/src/dbux/samples/",
@@ -205,7 +214,7 @@
 			"sourceMaps": true,
 			// "program": "${file}",
 			"protocol": "inspector",
-			"trace": true,
+			// "trace": true,
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
@@ -227,7 +236,7 @@
 			"sourceMaps": true,
 			// "program": "${file}",
 			"protocol": "inspector",
-			"trace": true,
+			// "trace": true,
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",

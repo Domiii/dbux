@@ -1,9 +1,9 @@
 import groupBy from 'lodash/groupBy';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
 import { getTracesAt } from '../helpers/codeRangeQueries';
-import { getCursorLocation } from '../codeNav';
+import { getCursorLocation } from '../codeUtil/codeNav';
 import TraceNode from './nodes/TraceNode';
 import EmptyNode from './nodes/EmptyNode';
 

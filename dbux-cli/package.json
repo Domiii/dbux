@@ -4,8 +4,15 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "__": "   # hackfix for .bin -> see: https://github.com/yarnpkg/yarn/issues/3421#issuecomment-443972019",
+    "postinstall": "yarn --check-files --ignore-scripts"
   },
+  "bin": {
+    "dbux-run-file": "./bin/dbux-run-file.js",
+    "dbux-register": "./bin/dbux-register.js"
+  },
+  "main": "./src/index.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -13,9 +20,11 @@
     "prettier": "1.19.1"
   },
   "dependencies": {
-    "dbux-common": "file:../dbux-common",
-    "dbux-data": "file:../dbux-data",
-    "module-alias": "^2.2.2",
-    "yargs": "^15.1.0"
+    "module-alias": "^2.2.2"
+  },
+  "peerDependencies": {
+    "dbux-common": "*",
+    "yargs": "*",
+    "shelljs": "*"
   }
 }

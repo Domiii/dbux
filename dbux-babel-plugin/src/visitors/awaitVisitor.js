@@ -40,7 +40,7 @@ function addResumeContext(awaitPath, state) {
   return state.contexts.addResumeContext(awaitPath, locStart);
 }
 
-function enter(path, state) {
+export function awaitVisitEnter(path, state) {
   if (!state.onEnter(path, 'context')) return;
 
   // console.log('[AWAIT]', path.toString());
@@ -88,6 +88,6 @@ function enter(path, state) {
 
 export default function awaitVisitor() {
   return {
-    enter
+    enter: awaitVisitEnter
   };
 }

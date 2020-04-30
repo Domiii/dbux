@@ -8,7 +8,10 @@ const { log, debug, warn, error: logError } = newLogger('Commands');
 export function initTraceDetailsViewCommands(context, traceDetailsViewController) {
   registerCommand(context,
     'dbuxTraceDetailsView.switchGroupingMode',
-    (node) => switchMode()
+    (node) => {
+      switchMode();
+      traceDetailsViewController.refresh();
+    }
   );
 
   registerCommand(context,

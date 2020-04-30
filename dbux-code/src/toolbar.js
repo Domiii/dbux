@@ -1,32 +1,19 @@
+import { commands } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { registerCommand } from './commands/commandUtil';
-import { ContextViewController } from './contextView/contextViewController';
 
-const { log, debug, warn, error: logError } = newLogger('Commands');
+const { log, debug, warn, error: logError } = newLogger('Toolbar');
 
-export function initToolBar(context, contextViewController: ContextViewController) {
+export function initToolBar(context) {
+  commands.executeCommand('setContext', 'dbux.context.showNavButton', true);
 
   registerCommand(context,
-    'dbuxContextView.addEntry',
-    (...args) => log('Clicked on add entry, parameter', ...args)
+    'dbux.showNavButton',
+    () => commands.executeCommand('setContext', 'dbux.context.showNavButton', true)
   );
 
   registerCommand(context,
-    'dbuxContextView.next',
-    () => contextViewController.gotoNextContext()
+    'dbux.hideNavButton',
+    () => commands.executeCommand('setContext', 'dbux.context.showNavButton', false)
   );
-
-  registerCommand(context,
-    'dbuxContextView.previous',
-    () => contextViewController.gotoPreviousContext()
-  );
-
-  registerCommand(context,
-    'dbuxContextView.clear',
-    () => {
-      contextViewController.contextNodeProvider.clear();
-      contextViewController.contextNodeProvider.refreshView();
-    }
-  );
-
 }

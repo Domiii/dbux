@@ -1,11 +1,14 @@
 import * as t from '@babel/types';
 import { NodePath } from '@babel/core';
 import { isDebug } from 'dbux-common/src/util/nodeUtil';
+import { newLogger } from 'dbux-common/src/log/logger';
 import { logInternalWarning, logInternalError } from '../log/logger';
 import { getAllClassParents, getClassAncestryString } from './traversalHelpers';
 import { getMemberExpressionName } from './objectHelpers';
 import { extractSourceStringWithoutComments } from './sourceHelpers';
 import { isNodeInstrumented } from './instrumentationHelper';
+
+const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 // ###########################################################################
 // function names
@@ -24,7 +27,7 @@ function getCallbackDisplayName(functionPath, state) {
   const { parentPath } = functionPath;
   const calleePath = parentPath.get('callee') || parentPath.parentPath?.get('callee');
 
-  if (calleePath) {
+  if (calleePath?.node) {
     /**
      * 9. anonymous callback argument - f(() => {}) - `t.isCallExpression(p)`
      */
@@ -41,8 +44,9 @@ function getCallbackDisplayName(functionPath, state) {
         callName = trace.displayName;
       }
       else {
-        callName = 'unknown';
-        logInternalError('could not extract name of callback\'s callee:', functionPath.toString());
+        // callName = '(unnamed)';
+        warn('could not extract name of callback\'s callee:', functionPath.parentPath.toString());
+        return null;
       }
     }
     return `[cb] ${callName}`;
@@ -121,7 +125,7 @@ export function guessFunctionName(functionPath: NodePath, state) {
       }
       else if (leftPath.isMemberExpression()) {
         /**
-         * 8. this assignment: `this.f = () => {}`
+         * 8. object assignment: `o.f = () => {}`
          */
         name = getMemberExpressionName(leftPath, state, false);
       }

@@ -47,6 +47,20 @@ npm start # start webpack build of all projects in watch mode
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
 
+## Analyze with Python Notebooks
+
+In the `analyze/` folder, you find several python notebooks that allow you analyze the data that `dbux` generates. Here is how you set that up:
+
+1. Run some program with Dbux enabled (e.g. `samples/[...]/oop1.js`)
+1. In the VSCode extension, open a file of that program that has traces in it
+1. In VSCode `Run Command` (`CTRL/Command + SHIFT + P`) -> `Dbux: Export file`
+1. Make sure you have Python + Jupyter setup
+   * Windows
+      * [Install `Anaconda` with `chocolatey`](https://chocolatey.org/packages/anaconda3)
+      * Set your `%PYTHONPATH%` in system config to your Anaconda `Lib` + `DLLs` folders (e.g. `C:\tools\Anaconda3\Lib;C:\tools\Anaconda3\DLLs;`)
+      * Done!
+1. Run one of the notebooks, load the file, and analyze :)
+
 
 ## Test: Project 1
 
@@ -215,6 +229,10 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 
 # Known Issues
 
+* don't call `process.exit` (at least not immediately)
+   * `process.exit` will kill the process before all recorded data has been sent out
+   * if you *MUST* call it, make sure to put it in a `setTimeout` with 0.5-1s delay
+   * NOTE: many frameworks that might kill your process allow disabling it (e.g. `Mocha`'s `--no-exit` argument)
 * What applications work so well with DBUX?
    * TODO: we are still exploring that
 * What applications **won't** work so well with DBUX?
@@ -225,7 +243,7 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
       * TODO: at least flag traces caused by `dbux-runtime` by setting some `trace-triggered-from-dbux-builtin-call` flag while running built-in functions
          * NOTE: This will still mess with proxy and getter functions that themselves have side effects, such as caching functions, tracers and more.
 * Issues under Windows
-   * **sometimes**, when running things in VSCode built-in terminal, it changes to lower-case drive letter
+   * **sometimes**, when running things in VSCode built-in terminal, it might change to lower-case drive letter
       * This causes a mixture of lower-case and upper-case drive letters to start appearing in `require` paths
          * => this makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
       * Official bug report: https://github.com/microsoft/vscode/issues/9448
@@ -307,6 +325,43 @@ You can re-add it manually:
 
 
 # Features
+
+## Data Recording + Data Processing Mechanisms
+
+* Instrumentation
+* Collection
+* Postprocessing
+   * adding one-to-one fields (pre-index)
+   * Index
+   * adding one-to-one fields (post-index)
+* Query + CachedQuery
+
+## Concept: Contexts + StaticContexts
+
+## Concept: Traces + StaticTraces
+
+## Data Flow
+
+### Object Tracking
+
+## Error Reporting
+
+
+## Control Flow
+
+### Basic Control Flow
+
+### Callback Tracking
+
+### Interruptable functions: async
+
+### Interruptable functions: generator
+
+### Error reporting
+
+* Are dynamic vs. static exit traces of functions the same?
+* special attention: `try` statements
+
 
 ## Call Graph Navigation
 

@@ -3,9 +3,7 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 function makeKey(dp: DataProvider, trace: Trace) {
-  const {
-    parentContextId
-  } = dp.collections.executionContexts.getById(trace.contextId);
+  const { parentContextId } = dp.collections.executionContexts.getById(trace.contextId);
 
   return parentContextId || 0;
 }

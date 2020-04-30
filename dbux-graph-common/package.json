@@ -1,0 +1,20 @@
+{
+  "name": "dbux-graph-common",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "postinstall": "npx link-module-alias"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dbux-common": "*"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "lodash": "*",
+    "nanoevents": "*"
+  },
+  "_moduleAliases": {}
+}

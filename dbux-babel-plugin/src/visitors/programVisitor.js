@@ -1,15 +1,14 @@
-import functionVisitor from './functionVisitor';
+import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { buildSource, buildWrapTryFinally } from '../helpers/builders';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 import { replaceProgramBody } from '../helpers/program';
 import injectDbuxState from '../dbuxState';
-import awaitVisitor from './awaitVisitor';
 import { buildAllTraceVisitors as traceVisitors } from './traceVisitors';
 import { mergeVisitors } from '../helpers/visitorHelpers';
 import { logInternalError } from '../log/logger';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { buildDbuxInit } from '../data/staticData';
+import { injectContextEndTrace, buildContextEndTrace } from '../helpers/contextHelper';
 
 
 // ###########################################################################
@@ -56,6 +55,9 @@ function wrapProgram(path, state) {
     exportNodes
   ] = extractTopLevelDeclarations(path);
 
+  // add `ContextEnd` trace
+  bodyNodes.push(buildContextEndTrace(path, state));
+
   const programBody = [
     ...importNodes,     // imports first
     ...startCalls,
@@ -98,17 +100,13 @@ function enter(path, state) {
   // instrument Program itself
   wrapProgram(path, state);
 
-  visitInOrder(path, state, contextVisitors());
-  visitInOrder(path, state, traceVisitors());
+  // visitInOrder(path, state, contextVisitors());
+  // visitInOrder(path, state, traceVisitors());
 
-  // // merge all visitors
-  // let allVisitors = mergeVisitors(
-  //   buildAllTraceVisitors(),
-  //   contextVisitors(),
-  // );
+  traverse(path, state, traceVisitors());
 }
 
-function visitInOrder(path, state, visitors) {
+function traverse(path, state, visitors) {
   // TODO: babel is unhappy with any DoWhileLoop visitor
   delete visitors.DoWhileLoop;
 
@@ -142,49 +140,6 @@ function exit(path, state) {
 
   addDbuxInitDeclaration(path, state);
 }
-
-
-// ###########################################################################
-// Traversal of everything inside of Program
-// ###########################################################################
-
-function contextVisitors() {
-  return {
-    Function: functionVisitor(),
-    AwaitExpression: awaitVisitor(),
-
-    /**
-     * TODO: Handle `for await of`
-     * explanation: 
-     *    `for await (const x of xs) { f(x); g(x); }` is like sugar of:
-     *    `for (const (x = await _x) of (async xs)) { f(x); g(x); }`
-     *    (it calls y[Symbol.asyncIterator]() instead of y[Symbol.iterator]())
-     * @see https://www.codementor.io/@tiagolopesferreira/asynchronous-iterators-in-javascript-jl1yg8la1
-     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
-     * @see https://github.com/babel/babel/issues/4969
-     * @see https://babeljs.io/docs/en/babel-types#forofstatement
-     */
-    // ForOfStatement(path) {
-    //   if (path.node.await) {
-    //     // TODO....
-    //   }
-    // },
-
-
-    /*
-    more TODO:
-    see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop
-    see: https://stackoverflow.com/questions/2734025/is-javascript-guaranteed-to-be-single-threaded/2734311#2734311
-    
-    TODO: generator functions
- 
- 
-    //instrumentOtherCallbacks(); // e.g.: event handlers, non-promisified libraries
-    // big problem => sending objects into blackboxed modules that will call methods on them
-    */
-  };
-}
-
 
 // ########################################
 // programVisitor

@@ -1,0 +1,20 @@
+{
+  "name": "dbux-projects",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dbux-cli": "*",
+    "dbux-common": "*",
+    "shelljs": "*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "shelljs": "^0.8.3"
+  }
+}

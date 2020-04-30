@@ -2,8 +2,8 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import Application from 'dbux-data/src/applications/Application';
 import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
+import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 
 // ###########################################################################

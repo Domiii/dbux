@@ -3,8 +3,8 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import { compareTraces } from 'dbux-data/src/traceSelection/relevantTraces';
 import traceSelection from 'dbux-data/src/traceSelection';
 import Trace from 'dbux-common/src/core/data/Trace';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
-import { getCursorLocation } from '../codeNav';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import { getCursorLocation } from '../codeUtil/codeNav';
 import { getTracesAt } from '../helpers/codeRangeQueries';
 
 export default class TracesAtCursor {
@@ -30,19 +30,25 @@ export default class TracesAtCursor {
     if (!this.needRefresh) return;
     this.index = 0;
     const allTraces = this.getAllTracesAtCursor();
+    this.allTraces = allTraces;
+    this.needRefresh = false;
+
+    // update index to `most important trace`
     if (traceSelection.selected) {
-      allTraces.reduce((t1, t2, id) => {
-        if (compareTraces(t1, t2) > 0) {
+      allTraces.forEach((nextTrace, id) => {
+        const nearestTrace = this.allTraces[this.index];
+        if (nextTrace.staticTraceId > nearestTrace.staticTraceId) {
+          // use innerTraces first
           this.index = id;
-          return t2;
         }
-        else {
-          return t1;
+        else if (nextTrace.staticTraceId === nearestTrace.staticTraceId) {
+          // compare if both are inner traces
+          if (compareTraces(nearestTrace, nextTrace) > 0) {
+            this.index = id;
+          }
         }
       });
     }
-    this.allTraces = allTraces;
-    this.needRefresh = false;
   }
 
   getNext = () => {
@@ -60,12 +66,16 @@ export default class TracesAtCursor {
   }
 
   getAllTracesAtCursor = () => {
-    const { fpath, pos } = getCursorLocation();
-    return allApplications.selection.data.mapApplicationsOfFilePath(
-      fpath, (application, programId) => {
-        return getTracesAt(application, programId, pos) || EmptyArray;
-      }
-    );
+    const where = getCursorLocation();
+    if (where) {
+      const { fpath, pos } = where;
+      return allApplications.selection.data.mapApplicationsOfFilePath(
+        fpath, (application, programId) => {
+          return getTracesAt(application, programId, pos) || EmptyArray;
+        }
+      );
+    }
+    return EmptyArray;
   }
 
   /**

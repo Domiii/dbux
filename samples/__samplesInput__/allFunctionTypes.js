@@ -23,6 +23,10 @@ class C {
 }
 
 
+o.f10 = function () {
+};
+
+
 // // generator function
 // function *f8() {
 //   yield 1;

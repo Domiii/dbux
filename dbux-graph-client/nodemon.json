@@ -1,0 +1,7 @@
+{
+  "watch": [
+    "./webpack.config.js"
+  ],
+  "ext": "js",
+  "delay": "500"
+}

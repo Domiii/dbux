@@ -1,5 +1,5 @@
 import TraceType, { hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import staticTraceCollection from './staticTraceCollection';
 import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
@@ -63,7 +63,18 @@ class TraceCollection extends Collection {
 
     return trace;
   }
+
+  // ########################################
+  // dynamic updates
+  // ########################################
+  markError(traceId) {
+    const trace = traceCollection.getById(traceId);
+  }
 }
+
+// ###########################################################################
+// prettyPrint
+// ###########################################################################
 
 function _prettyPrint(trace, value) {
   const {
@@ -125,6 +136,10 @@ function _prettyPrint(trace, value) {
   //   console.groupEnd();
   // }
 }
+
+// ###########################################################################
+// export
+// ###########################################################################
 
 /**
  * @type {TraceCollection}

@@ -7,14 +7,26 @@ import ValueRef from 'dbux-common/src/core/data/ValueRef';
 import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext';
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
-import deserialize from 'dbux-common/src/serialization/deserialize';
-import TraceType, { isTraceExpression } from 'dbux-common/src/core/constants/TraceType';
+import ValueTypeCategory, { ValuePruneState } from 'dbux-common/src/core/constants/ValueTypeCategory';
+import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
+import { hasCallId, isCallResult, isCallTrace } from 'dbux-common/src/core/constants/traceCategorization';
 
 import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
 
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
+
+function errorWrapMethod(obj, methodName, ...args) {
+  try {
+    // build dynamic call expression tree
+    /* eslint prefer-spread: 0 */ // (false positive)
+    obj[methodName].apply(obj, args);
+  }
+  catch (err) {
+    logError(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err, ...args);
+  }
+}
 
 class StaticProgramContextCollection extends Collection<StaticProgramContext> {
   constructor(dp) {
@@ -60,6 +72,26 @@ class ExecutionContextCollection extends Collection<ExecutionContext> {
     }
     super.add(entries);
   }
+
+  /**
+   * @param {ExecutionContext[]} contexts 
+   */
+  postIndex(contexts) {
+    try {
+      // determine last trace of every context
+      this.resolveLastTraceOfContext(contexts);
+    }
+    catch (err) {
+      logError('resolveCallIds failed', err, contexts);
+    }
+  }
+
+  resolveLastTraceOfContext() {
+    // TODO
+    // return !isReturnTrace(traceType) && !isTracePop(traceType) &&   // return and pop traces indicate that there was no error in that context
+    //   dp.util.isLastTraceInContext(traceId) &&        // is last trace we have recorded
+    //   !dp.util.isLastTraceInStaticContext(traceId);   // but is not last trace in the code
+  }
 }
 
 
@@ -77,33 +109,36 @@ class TraceCollection extends Collection<Trace> {
     super.add(traces);
   }
 
+  /**
+   * Post processing of trace data
+   */
   postAdd(traces: Trace[]) {
-    try {
-      // build dynamic call expression tree
-      this.resolveCallIds(traces);
-    }
-    catch (err) {
-      logError('resolveCallIds failed', traces, err);
-    }
+    // build dynamic call expression tree
+    errorWrapMethod(this, 'resolveCallIds', traces);
+    errorWrapMethod(this, 'resolveErrorTraces', traces);
   }
 
+  /**
+   * TODO: This will not work with asynchronous call expressions (which have `await` arguments).
+   */
   resolveCallIds(traces: Trace[]) {
     const beforeCalls = [];
     for (const trace of traces) {
       const { traceId, staticTraceId } = trace;
       const staticTrace = this.dp.collections.staticTraces.getById(staticTraceId);
       const traceType = this.dp.util.getTraceType(traceId);
-      if (traceType === TraceType.BeforeCallExpression) {
+      if (isBeforeCallExpression(traceType)) {
+        trace.callId = trace.traceId;  // refers to its own call
         beforeCalls.push(trace);
-        console.log(' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
+        // debug('[callIds]', ' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
       }
-      else if (isTraceExpression(traceType)) {
-        // NOTE: `hasTraceValue` to filter out Push/PopCallback
-        if (staticTrace.resultCallId) {
+      else if (isCallTrace(traceType)) {
+        // NOTE: `isTraceExpression` to filter out Push/PopCallback
+        if (isCallResult(staticTrace)) {
           // call results: reference their call by `resultCallId` and vice versa by `resultId`
           // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
           const beforeCall = beforeCalls.pop();
-          console.log(' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
+          // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
             logError('[resultCallId]', beforeCall.staticTraceId, staticTrace.staticTraceId, 'staticTrace.resultCallId !== beforeCall.staticTraceId - is trace result of a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
             beforeCalls.push(beforeCall);   // something is wrong -> push it back
@@ -113,13 +148,69 @@ class TraceCollection extends Collection<Trace> {
             trace.resultCallId = beforeCall.traceId;
           }
         }
-        if (staticTrace.callId) {
+        if (hasCallId(staticTrace)) {
           // call args: reference their call by `callId`
           const beforeCall = beforeCalls[beforeCalls.length - 1];
           if (staticTrace.callId !== beforeCall?.staticTraceId) {
             logError('[callId]', beforeCall.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
           }
           trace.callId = beforeCall.traceId;
+        }
+      }
+    }
+  }
+
+  resolveErrorTraces(traces) {
+    for (const trace of traces) {
+      const {
+        traceId,
+        previousTrace: previousTraceId
+      } = trace;
+
+      const traceType = this.dp.util.getTraceType(traceId);
+      if (!isTracePop(traceType) || !previousTraceId) {
+        // only (certain) pop traces can generate errors
+        continue;
+      }
+
+      const staticContext = this.dp.util.getTraceStaticContext(traceId);
+      if (staticContext.isInterruptable) {
+        // interruptable contexts, only have `Push` and `Pop` traces, everything else is in `Resume` children
+        continue;
+      }
+
+      const previousTraceType = this.dp.util.getTraceType(previousTraceId);
+      if (!isTraceFunctionExit(previousTraceType)) {
+        // before pop must be a function exit trace, else -> error!
+        trace.error = true;
+
+        // guess error trace
+        const previousTrace = this.dp.collections.traces.getById(previousTraceId);
+        const { staticTraceId, callId, resultCallId } = previousTrace;
+        if (previousTraceType === TraceType.ThrowArgument) {
+          // trace is error trace
+          trace.staticTraceId = staticTraceId;
+        }
+        else if (callId) {
+          // participates in a call but call did not finish -> set expected error trace to BCE
+          const callTrace = this.dp.collections.traces.getById(callId);
+          if (callTrace.resultId) {
+            // strange...
+            logError('last (non-result) call trace in error context has `resultId`', callTrace.resultId, callTrace);
+          }
+          else {
+            // the call trace caused the error
+            trace.staticTraceId = callTrace.staticTraceId;
+          }
+        }
+        else if (resultCallId) {
+          // the last trace we saw was a successful function call. error was caused by next trace of that function call
+          const resultTrace = this.dp.collections.traces.getById(resultCallId);
+          trace.staticTraceId = resultTrace.staticTraceId + 1;
+        }
+        else {
+          // the error trace is (probably) the trace following the last executed trace
+          trace.staticTraceId = staticTraceId + 1;
         }
       }
     }
@@ -132,11 +223,58 @@ class ValueCollection extends Collection<ValueRef> {
   }
 
   add(entries) {
-    for (const entry of entries) {
-      entry.value = deserialize(entry.serialized);
-      entry.serialized = null; // don't need this, so don't keep it around
-    }
+    // add entries to collection
     super.add(entries);
+
+    // deserialize
+    for (const entry of entries) {
+      entry.value = this._deserialize(entry);
+      entry.valueString = JSON.stringify(entry.value);
+      entry.serialized = null; // don't need this, so don't keep it around
+
+      // TODO: keep real arrays + objects, and add a way to easily retrieve string representation
+    }
+  }
+
+  getAllById(ids) {
+    return ids.map(id => this.getById(id));
+  }
+
+  /**
+   * NOTE: This still only returns a string representation?
+   */
+  _deserialize(entry) {
+    const {
+      category,
+      serialized,
+      pruneState
+    } = entry;
+
+    if (pruneState === ValuePruneState.Omitted) {
+      return serialized;
+    }
+
+    switch (category) {
+      case ValueTypeCategory.Array: {
+        // TODO: consider pruneState.Shortened
+        // TODO: improve this
+        let value = this.getAllById(entry.serialized);
+        value = value.map(child => child.value);
+        return JSON.stringify(value);
+      }
+      case ValueTypeCategory.Object: {
+        // TODO: consider pruneState.Shortened
+        // TODO: improve this
+        const value = {};
+        for (const [key, childId] of entry.serialize) {
+          const child = this.getById(childId);
+          value[key] = child;
+        }
+        return value;
+      }
+      default:
+        return serialized;
+    }
   }
 }
 
@@ -169,7 +307,10 @@ export default class DataProvider {
   _dataEventListeners = {};
 
   versions: number[] = [];
-  application: StaticProgramContext;
+  /**
+   * @type {StaticProgramContext}
+   */
+  application;
   util: any;
 
   constructor(application) {
@@ -337,6 +478,13 @@ export default class DataProvider {
       }
     }
 
+    // notify collections that adding + index processing has finished
+    for (const collectionName in allData) {
+      const collection = this.collections[collectionName];
+      const entries = allData[collectionName];
+      collection.postIndex(entries);
+    }
+
     // fire internal event listeners
     for (const collectionName in allData) {
       // const collection = this.collections[collectionName];
@@ -373,7 +521,7 @@ export default class DataProvider {
    */
   serialize() {
     const collections = Object.values(this.collections);
-    return {
+    const obj = {
       version: this.version,
       collections: Object.fromEntries(collections.map(collection => {
         const {
@@ -387,6 +535,7 @@ export default class DataProvider {
         ];
       }))
     };
+    return JSON.stringify(obj, null, 2);
   }
 
   /**

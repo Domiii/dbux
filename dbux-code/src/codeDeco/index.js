@@ -12,14 +12,16 @@ import {
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import { renderTraceDecorations } from './traceDecorator';
+import { renderTraceDecorations, clearTraceDecorations } from './traceDecorator';
 import { initTraceDecorators } from './traceDecoConfig';
+import { initEditedWarning } from './editedWarning';
 // import DataProvider from 'dbux-data/src/DataProvider';
 // import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
 
 const { log, debug, warn, error: logError } = newLogger('code-deco');
 
 let activeEditor: TextEditor;
+let showDeco = true;
 
 
 // ###########################################################################
@@ -33,8 +35,13 @@ const renderDecorations = makeDebounce(function renderDecorations() {
 
   const fpath = activeEditor.document.uri.fsPath;
 
-  // render traces
-  renderTraceDecorations(activeEditor, fpath);
+  if (showDeco) {
+    // render traces
+    renderTraceDecorations(activeEditor, fpath);
+  }
+  else {
+    clearTraceDecorations(activeEditor);
+  }
 });
 
 
@@ -53,6 +60,8 @@ const renderDecorations = makeDebounce(function renderDecorations() {
 export function initCodeDeco(context) {
   // init traces
   initTraceDecorators();
+
+  initEditedWarning();
 
   // start rendering
   activeEditor = window.activeTextEditor;
@@ -94,4 +103,13 @@ export function initCodeDeco(context) {
   //     renderDecorations();
   //   }
   // }, null, context.subscriptions);
+}
+
+export function setShowDeco(val) {
+  showDeco = !!val;
+  renderDecorations();
+}
+
+export function switchShowDeco() {
+  setShowDeco(!showDeco);
 }

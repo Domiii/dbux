@@ -1,5 +1,6 @@
 # import util
 from util.loadUtil import loadDbuxFile, collectionDf
+from IPython.display import display, HTML
 
 class Collections:
   def __init__(self, rawData):
@@ -51,3 +52,57 @@ class DataProvider:
       result = staticTraces.query(f'resultCallId == {callId}').iloc[0]
       names = grp[['displayName']].to_numpy().flatten().tolist()
       yield (callId, names, result)
+
+
+  def getContextDisplayName(self, contextId):
+      staticContexts = self.collections.staticContexts
+      contexts = self.collections.contexts
+
+      context = contexts.query(f'contextId == {contextId}')
+      staticContextId = context.iloc[0]['staticContextId']
+      staticContext = staticContexts.query(f'staticId == {staticContextId}')
+      contextName = staticContext.iloc[0]['displayName']
+      return contextName
+
+
+  def printStaticTracesByStaticContext(self):
+    staticTraces = self.collections.staticTraces
+
+    print('static traces (by staticContext)')
+    # groups =  staticTraces.\
+    groups =  staticTraces.drop('loc', axis=1).\
+              groupby('staticContextId')
+    for key, item in groups:
+      group = groups.get_group(key)
+      display(group)
+
+
+  def printTracesByContext(self):
+    staticContexts = self.collections.staticContexts
+    staticTraces = self.collections.staticTraces
+    contexts = self.collections.contexts
+    traces = self.collections.traces
+
+    # print('staticContexts')
+    # display(staticContexts.drop('loc', axis=1))
+
+    # print('contexts')
+    # display(contexts)
+
+    # display(traces.drop('createdAt', axis=1))
+
+    print('\n\ntraces (by context)')
+    groups = traces.drop('createdAt', axis=1).groupby('contextId')
+    for key, item in groups:
+      group = groups.get_group(key)
+      groupStatic = staticTraces[['staticTraceId', 'displayName', 'type']]
+      groupStatic = groupStatic.rename(columns={'type': 'sType'})
+    #   group = pd.merge(group, displayName, on=['staticTraceId'])
+      group = group.merge(groupStatic, left_on='staticTraceId', right_on='staticTraceId')
+
+      contextId = group.iloc[0]['contextId']
+      contextName = self.getContextDisplayName(contextId)
+      print(f'\n  traces for "{contextName}"')
+
+      display(group)
+

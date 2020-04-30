@@ -5,6 +5,9 @@ const errors = [];
 
 const emitter = new NanoEvents();
 
+/**
+ * Use this as error hook
+ */
 export function onLogError(cb) {
   emitter.on('error', cb);
 }
@@ -12,6 +15,7 @@ export function onLogError(cb) {
 export class Logger {
   constructor(ns) {
     this.ns = ns;
+    // this._emitter = 
 
     const logFunctions = {
       log: loglog,
@@ -22,7 +26,10 @@ export class Logger {
 
     for (const name in logFunctions) {
       const f = logFunctions[name];
-      this[name] = f.bind(this, ns);
+      this[name] = (...args) => {
+        f(ns, ...args);
+        // this._emitter.emit(name, ...args);
+      }
     }
   }
 }
@@ -51,22 +58,22 @@ export function logDebug(ns, ...args) {
 }
 
 export function logWarn(ns, ...args) {
-  ns = `[DBUX ${ns}]`;
+  ns = `[${ns}]`;
   console.warn(ns, ...args);
   emitter.emit('warn', ns, ...args);
 }
 
 export function logError(ns, ...args) {
-  ns = `[DBUX ${ns}]`;
+  ns = `[${ns}]`;
   console.error(ns, ...args);
   emitter.emit('error', ns, ...args);
 }
 
 export function logInternalError(...args) {
-  const err = ['[DBUX INTERNAL ERROR]', ...args];
-  console.error(...err);
-  errors.push(err);
-  emitter.emit('error', ...err);
+  const msgArgs = ['[DBUX INTERNAL ERROR]', ...args];
+  console.error(...msgArgs);
+  errors.push(msgArgs);
+  emitter.emit('error', ...msgArgs);
 }
 
 export function getErrors() {

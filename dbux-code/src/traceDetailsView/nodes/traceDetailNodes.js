@@ -1,14 +1,8 @@
-import { TreeItemCollapsibleState, TreeItem } from 'vscode';
 import omit from 'lodash/omit';
-import TraceType, { hasTraceValue } from 'dbux-common/src/core/constants/TraceType';
-import Application from 'dbux-data/src/applications/Application';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import tracePlayback from 'dbux-data/src/playback/tracePlayback';
-import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
 import { getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
-import { EmptyArray } from 'dbux-common/src/util/arrayUtil';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
-import TraceNode from './TraceNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { StaticTraceTDNode } from './StaticTraceTDNodes';
 import { InfoTDNode } from './traceInfoNodes';
@@ -53,7 +47,7 @@ export class ValueTDNode extends TraceDetailNode {
     const application = allApplications.getApplication(trace.applicationId);
     const { traceId } = trace;
     const { dataProvider } = application;
-    const value = dataProvider.util.getTraceValue(traceId);
+    const value = dataProvider.util.getTraceValueString(traceId);
     return `Value: ${value}`;
   }
 
