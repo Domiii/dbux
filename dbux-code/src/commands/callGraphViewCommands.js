@@ -33,4 +33,14 @@ export function initCallGraphViewCommands(context, callGraphViewController) {
     'dbuxCallGraphView.showError.disabled',
     () => window.showInformationMessage('No error occurred.')
   );
+
+  registerCommand(context,
+    'dbuxCallGraphView.selectError',
+    () => callGraphViewController.selectError()
+  );
+
+  registerCommand(context,
+    'dbuxCallGraphView.selectError.disabled',
+    () => window.showInformationMessage('No error occurred.')
+  );
 }

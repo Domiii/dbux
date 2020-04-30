@@ -10,19 +10,18 @@ class ContextNode extends HostComponentEndpoint {
   init() {
     const {
       applicationId,
-      context: {
-        staticContextId
-      }
+      context
     } = this.state;
 
     const dp = allApplications.getById(applicationId).dataProvider;
 
     // get name (and other needed data)
-    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
     const {
       displayName
     } = staticContext;
-    this.state.displayName = displayName;
+    const label = displayName + this._makeContextPositionLabel(applicationId, context);
+    this.state.displayName = label;
 
     // add GraphNode controller
     this.graphNode = this.controllers.createComponent('GraphNode', {
@@ -84,6 +83,16 @@ class ContextNode extends HostComponentEndpoint {
     else {
       this.logger.error('Unknown TraceMode', TraceMode.getName(mode), mode);
     }
+  }
+
+  _makeContextPositionLabel(applicationId, context) {
+    const { staticContextId } = context;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const { programId, loc } = dp.collections.staticContexts.getById(staticContextId);
+    const fileName = programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
+
+    const { line, column } = loc.start;
+    return `@${fileName}:${line}:${column}`;
   }
 
   public = {
