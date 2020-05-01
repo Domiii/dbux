@@ -231,8 +231,6 @@ class ValueCollection extends Collection<ValueRef> {
       entry.value = this._deserialize(entry);
       // entry.valueString = JSON.stringify(entry.value);
       delete entry.serialized; // don't need this, so don't keep it around
-
-      // TODO: keep real arrays + objects, and add a way to easily retrieve string representation
     }
   }
 
