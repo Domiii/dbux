@@ -11,6 +11,12 @@ class HostComponentEndpoint extends ComponentEndpoint {
    * @type {HostComponentList}
    */
   children;
+  /**
+   * Controllers are similar to children but usually have no DOM representation, and usually
+   * aim to act on "actual" "children" of their owner instead.
+   * @type {HostComponentList}
+   */
+  controllers;
 
   _isInitialized = false;
   _initPromise;
@@ -23,6 +29,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     super();
 
     this.children = new HostComponentList(this);
+    this.controllers = new HostComponentList(this);
   }
 
   get isInitializing() {

@@ -17,11 +17,39 @@ class HostComponentList {
   }
 
   // ###########################################################################
-  // iterator
+  // iterators
   // ###########################################################################
 
-  * [Symbol.iterator]() {
+  *[Symbol.iterator]() {
     yield* this.components;
+  }
+
+  * filter(filter) {
+    for (const child of this.components) {
+      if (filter(child)) {
+        yield child;
+      }
+    }
+  }
+
+  * dfs(filter) {
+    for (const child of this.components) {
+      if (!filter || filter(child)) {
+        yield child;
+        yield* child.children.dfs(filter);
+      }
+    }
+  }
+
+  /**
+   * Depth of the component tree (0 at this node).
+   */
+  computeMaxDepth() {
+    let d = 0;
+    for (const child of this.components) {
+      d = Math.max(d + 1, child.children.computeMaxDepth());
+    }
+    return d;
   }
 
   // ###########################################################################

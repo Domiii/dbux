@@ -46,6 +46,14 @@ class ComponentEndpoint {
     return this._componentName;
   }
 
+  /**
+   * NOTE: logically speaking, a `parent` sometimes plays more of the role of `owner` in certain relationships.
+   *        E.g. This name makes more sense for pure controller components (that do not have their own DOM elements).
+   */
+  get owner() {
+    return this.parent;
+  }
+
   // ###########################################################################
   // event overloads
   // ###########################################################################
