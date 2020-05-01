@@ -9,6 +9,7 @@
       * "select bug"
       * "delete project"
       * "cancel" (calls `BugRunner.cancel()`)
+* in `traceDetails`: change 6 navigation buttons to buttons inside a single node (horizontal instead of vertical)
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
 * when selecting a trace:
    * if previously selected trace is not under cursor:
@@ -256,18 +257,34 @@
 
 ## TODO (other)
 * test logger floodgate mechanism
-* fix: object tracking is broken (`value` node)
-   * test in `oop0`
-* mixed type objects for object tracking
+* fix: object tracking
+   * catch + floodgate errors thrown in object getters
+   * make sure `express` runs
+* fix: function names
+   * get all names during a preliminary run, then do instrumentation on second
+* fix: `traveValueLabels`
+   * get callee name from instrumentation
+   * good traceValueLabel for all expressions
+* define clear list of features
+   * write 3 minimal user stories per feature (applied to a specific bug somewhere)
+   * also demonstrate each feature on express
+      * TODO: find express bugs related to features that are commonly used
+* fix: instrumentation order
+   * for `CallExpression`, manually start visit to `callee` first
+   * hardcode mixed `TraceType`s (`Throw/Return` + `Await/Call/Function`)
+   * test combinations with functions
+      * odd one out: `return await function f() {}`
+* fix: more instrumentation order problems
+   * Problem: `guessFunctionName`: `[cb] [cb] (unnamed)`
+   * Problem: `throw` is not traced (`error1`)
+   * Problem: in `o.f()` trace, `o` has a higher `traceId` than `o.f()`'s `BCE`
+* allow for mixed type objects for object tracking
    * in `express`, `application` object is also a function
    * need to allow "objectified functions" to be displayed as such
    * Problem: How to determine what is an "objectified function"?
       * -> `Object.keys` is not empty
+* fix: in `a.b.c`, only `a.b` is traced?
 * fix: in `console.log(a.b.c);`, `a` is not traced
-* fix: instrumentation order causes big headache
-   * Problem: `guessFunctionName`: `[cb] [cb] (unnamed)`
-   * Problem: `throw` is not traced
-   * Problem: in `o.f()` trace, `o` has a higher `traceId` than `o.f()`'s `BCE`
 * fix: `CallExpression`, `Function`, `Await` have special interactions
    * they all might be children of other visitors
    * NOTE: currently all other visitors use `wrapExpression`
