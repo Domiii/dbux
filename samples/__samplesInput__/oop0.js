@@ -1,2 +1,8 @@
-const a = { b: { c: 1 } };
-a.b.c;
+const a = { 
+  f() {}, 
+  b: { c: 1 }
+};
+console.log(a.b.c);
+
+a.f();
+

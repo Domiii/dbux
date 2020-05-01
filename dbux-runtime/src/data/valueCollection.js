@@ -5,9 +5,9 @@ import Collection from './Collection';
 import pools from './pools';
 
 const SerializationConfig = {
-  maxDepth: 0,
-  maxObjectSize: 100,   // applies to arrays and object
-  maxStringLength: 1000
+  maxDepth: 2,
+  maxObjectSize: 20,   // applies to arrays and object
+  maxStringLength: 100
 };
 
 
@@ -151,6 +151,7 @@ class ValueCollection extends Collection {
         const props = Object.keys(value);
         typeName = value.constructor?.name || '';
 
+        // prune?
         let n = props.length;
         if (n > SerializationConfig.maxObjectSize) {
           pruneState = ValuePruneState.Shortened;

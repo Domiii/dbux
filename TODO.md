@@ -9,14 +9,17 @@
       * "select bug"
       * "delete project"
       * "cancel" (calls `BugRunner.cancel()`)
-* allow to select `BeforeCallExpression` traces (disable `CallExpressionResult` traces instead?)
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
-
-* add button to `ApplicationsView` to switch to `ApplicationFilesView`
-   * -> list all files
-   * click:
-      * if not open: open file -> then go to first trace in file
-      * if open: just open (don't go to trace)
+* when selecting a trace:
+   * if previously selected trace is not under cursor:
+      * first find the inner-most `staticTrace` at cursor, and start from that
+   * else: keep switching through all possible traces under cursor
+* add files to `ApplicationsView`
+   * list all files as children for each application
+      * click:
+         * if not open: open file -> then go to first trace in file
+         * if open: just open (don't go to trace)
+   * group all "previous runs" under a "(previous runs)" node
 
 
 * add a command to toggle (show/hide) all intrusive features
@@ -252,11 +255,16 @@
 
 ## TODO (other)
 * fix: object tracking is broken
+   * test in `oop0`
 * in `express`, `application` object is considered a function (because it is created as such)
-   * hum...
+   * need to allow "objectified functions" to be displayed as such :/
+   * Problem: How to determine what is an "objectified function"?
+      * -> if `Object.keys` is not empty
+* fix: in `console.log(a.b.c);`, `a` is not traced
 * fix: instrumentation order causes big headache
-   * fix `guessFunctionName`: `[cb] [cb] (unnamed)`
-   * fix: `throw` is not traced
+   * Problem: `guessFunctionName`: `[cb] [cb] (unnamed)`
+   * Problem: `throw` is not traced
+   * Problem: in `o.f()` trace, `o` has a higher `traceId` than `o.f()`'s `BCE`
 * fix: `CallExpression`, `Function`, `Await` have special interactions
    * they all might be children of other visitors
    * NOTE: currently all other visitors use `wrapExpression`

@@ -5,6 +5,31 @@ const errors = [];
 
 const emitter = new NanoEvents();
 
+let floodGate = false;
+
+function emit(...args) {
+  // TODO: set/unset floodGate, if there is too much activity in too short time, so we stop sending messages in periods of high activity
+  //  2 filters: (1) activity filter. When passed threshold enable floodgate. (2) during floodgate, reduce messages to 1 per n seconds, summarizing gated errors.
+  /*
+  dt = time passed since last emit
+  gateTime = 1
+  oldWeight = 0.2;
+  newWeight = 1-oldWeight;
+  newActivity = floodGate ? 0 : 1;
+  rate = pow(gateTime * dt, 3)
+  activity = (
+    activity * oldWeight + 
+    newActivity * newWeight
+  ) * rate;
+  */
+
+  if (floodGate) {
+    return;
+  }
+
+  emitter.emit(...args);
+}
+
 /**
  * Use this as error hook
  */
@@ -60,20 +85,20 @@ export function logDebug(ns, ...args) {
 export function logWarn(ns, ...args) {
   ns = `[${ns}]`;
   console.warn(ns, ...args);
-  emitter.emit('warn', ns, ...args);
+  emit('warn', ns, ...args);
 }
 
 export function logError(ns, ...args) {
   ns = `[${ns}]`;
   console.error(ns, ...args);
-  emitter.emit('error', ns, ...args);
+  emit('error', ns, ...args);
 }
 
 export function logInternalError(...args) {
   const msgArgs = ['[DBUX INTERNAL ERROR]', ...args];
   console.error(...msgArgs);
   errors.push(msgArgs);
-  emitter.emit('error', ...msgArgs);
+  emit('error', ...msgArgs);
 }
 
 export function getErrors() {
