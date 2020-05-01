@@ -255,12 +255,14 @@
 
 
 ## TODO (other)
-* fix: object tracking is broken
+* test logger floodgate mechanism
+* fix: object tracking is broken (`value` node)
    * test in `oop0`
-* in `express`, `application` object is considered a function (because it is created as such)
-   * need to allow "objectified functions" to be displayed as such :/
+* mixed type objects for object tracking
+   * in `express`, `application` object is also a function
+   * need to allow "objectified functions" to be displayed as such
    * Problem: How to determine what is an "objectified function"?
-      * -> if `Object.keys` is not empty
+      * -> `Object.keys` is not empty
 * fix: in `console.log(a.b.c);`, `a` is not traced
 * fix: instrumentation order causes big headache
    * Problem: `guessFunctionName`: `[cb] [cb] (unnamed)`

@@ -229,7 +229,7 @@ class ValueCollection extends Collection<ValueRef> {
     // deserialize
     for (const entry of entries) {
       entry.value = this._deserialize(entry);
-      entry.valueString = JSON.stringify(entry.value);
+      // entry.valueString = JSON.stringify(entry.value);
       delete entry.serialized; // don't need this, so don't keep it around
 
       // TODO: keep real arrays + objects, and add a way to easily retrieve string representation
@@ -256,19 +256,15 @@ class ValueCollection extends Collection<ValueRef> {
 
     switch (category) {
       case ValueTypeCategory.Array: {
-        // TODO: consider pruneState.Shortened
-        // TODO: improve this
         let value = this.getAllById(entry.serialized);
         value = value.map(child => child.value);
         return value;
       }
       case ValueTypeCategory.Object: {
-        // TODO: consider pruneState.Shortened
-        // TODO: improve this
         const value = {};
         for (const [key, childId] of entry.serialized) {
           const child = this.getById(childId);
-          value[key] = child;
+          value[key] = child.value;
         }
         return value;
       }

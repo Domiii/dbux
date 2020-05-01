@@ -5,7 +5,7 @@ import Collection from './Collection';
 import pools from './pools';
 
 const SerializationConfig = {
-  maxDepth: 2,
+  maxDepth: 3,
   maxObjectSize: 20,   // applies to arrays and object
   maxStringLength: 100
 };

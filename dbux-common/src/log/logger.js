@@ -5,28 +5,54 @@ const errors = [];
 
 const emitter = new NanoEvents();
 
+const MinSecondsPerReport = 2;
+const MinGateReportThreshold = 1;
 let floodGate = false;
+let floodGateReported = false;
+let nGatedReports = 0;
+let lastReportTime = Date.now() / 1000;
+// let floodGateTimer;
 
-function emit(...args) {
-  // TODO: set/unset floodGate, if there is too much activity in too short time, so we stop sending messages in periods of high activity
-  //  2 filters: (1) activity filter. When passed threshold enable floodgate. (2) during floodgate, reduce messages to 1 per n seconds, summarizing gated errors.
-  /*
-  dt = time passed since last emit
-  gateTime = 1
-  oldWeight = 0.2;
-  newWeight = 1-oldWeight;
-  newActivity = floodGate ? 0 : 1;
-  rate = pow(gateTime * dt, 3)
-  activity = (
-    activity * oldWeight + 
-    newActivity * newWeight
-  ) * rate;
-  */
+function startFloodGate() {
+  // floodGateTimer = 
+  setTimeout(liftFloodGate, MinSecondsPerReport * 1000);
+}
 
+function liftFloodGate() {
+  floodGate = false;
+
+  if (nGatedReports >= MinGateReportThreshold) {  // only report if there is a substantial amount
+    // floodGateTimer = null;
+    reportUnchecked('error', `Floodgate lifted. Muted ${nGatedReports} reports in the past ${MinSecondsPerReport} seconds.`);
+  }
+  nGatedReports = 0;
+}
+
+function report(...args) {
+  // floodgate mechanism
   if (floodGate) {
+    // flood gate in effect
+    ++nGatedReports;
+    if (!floodGateReported) {
+      floodGateReported = true;
+      reportUnchecked('error', `Error reporting muted due to possibly error flood.`);
+    }
     return;
   }
 
+  // check if flood gate started
+  const time = Date.now() / 1000;
+  const dt = (time - lastReportTime);
+  floodGate = dt < MinSecondsPerReport;
+
+  if (floodGate) {
+    startFloodGate();
+  }
+
+  reportUnchecked(...args);
+}
+
+function reportUnchecked(...args) {
   emitter.emit(...args);
 }
 
@@ -85,20 +111,20 @@ export function logDebug(ns, ...args) {
 export function logWarn(ns, ...args) {
   ns = `[${ns}]`;
   console.warn(ns, ...args);
-  emit('warn', ns, ...args);
+  report('warn', ns, ...args);
 }
 
 export function logError(ns, ...args) {
   ns = `[${ns}]`;
   console.error(ns, ...args);
-  emit('error', ns, ...args);
+  report('error', ns, ...args);
 }
 
 export function logInternalError(...args) {
   const msgArgs = ['[DBUX INTERNAL ERROR]', ...args];
   console.error(...msgArgs);
   errors.push(msgArgs);
-  emit('error', ...msgArgs);
+  report('error', ...msgArgs);
 }
 
 export function getErrors() {
