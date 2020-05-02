@@ -111,6 +111,67 @@
 
 
 
+## TODO (dbux-graph)
+* `ContextNode`:
+   * remove `shift+click`
+   * replace it by clicking on the title (`displayName`) element instead (make it a `<a>`)
+* `GraphNode`
+   * apply `GraphNode` controller pattern to all "graph node" components: `Run`, `GraphRoot`
+   * add "contractAllButThis" button to `GraphNode`
+   * add `reveal` function to `host/GraphNode`:
+      * make sure, all contracted parents change to `ExpandChildren`
+      * slide to node
+      * highlight node
+* fix: require `alt` for `pan` (else button clicks don't work so well)
+   * e.g. `nodeToggleBtn` does not work when clicking too fast and slightly moving the mouse
+* `ContextNode`
+   * link/label: parentTrace
+      * traceLabel + valueLabel
+      * remove `ParentTraces` from `TraceMode` enum (adding an extra node for each unnecessary due to its 1:1 relationship with `context`)
+* highlight system: highlight *important* nodes, de-emphasize *unimportant* nodes
+   * highlight mode examples
+      * `context` of currently selected `trace`
+      * all contexts of `staticContext`
+      * all traces of `staticTrace`
+      * search mode: highlight nodes that match search criteria
+   * styles
+      * highlighted style
+         * scale font, normal font-size
+         * clear, bright colors
+         * high contrast
+      * de-emphasized style
+         * don't scale font, small font-size
+         * darkened colors
+         * low contrast
+* grouping: add new `GroupNode` controller component
+   * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
+   * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
+      * (e.g. `next` in `express`)
+* add a css class for font scaling (e.g. `.scale-font`): when zooming, font-size stays the same
+   * NOTE: can use `vh` instead of `px` or `rem` (see: https://stackoverflow.com/questions/24469375/keeping-text-size-the-same-on-zooming)
+* "trace <-> context mode" switch per node (and maybe sub-tree); not for entire graph
+* replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
+* `ContextNode`
+   * link/label: filename:lineNumber
+      * TODO: for all filenames of same application, we want to remove `commonPrefix`
+         1. store `commonPrefix`
+         2. when seeing new `StaticProgramContext` in DataProvider, extract `commonPrefix`
+            -> if first time or if `commonPrefix` is shorter than before, update `commonPrefix` of all files
+               (maybe send out an event to update GUI? maybe not necessary...)
+            -> else, only set `commonPrefix` for new files (before adding)
+* NOTES
+   * `render` does NOT propagate to children (unlike React)
+
+
+
+
+
+
+
+
+
+
+
 ## TODO (`dbux-projects`)
 * basic functionality:
    * auto-commit
@@ -185,51 +246,6 @@
 
 
 
-## TODO (dbux-graph)
-* fix: require `alt` for `pan` (else button clicks don't work so well)
-   * e.g. `nodeToggleBtn` does not work when clicking too fast and slightly moving the mouse
-* buttons:
-   * collapse/expand all children
-* `ContextNode`
-   * link/label: filename:lineNumber
-      * TODO: for all filenames of same application, we want to remove `commonPrefix`
-         1. store `commonPrefix`
-         2. when seeing new `StaticProgramContext` in DataProvider, extract `commonPrefix`
-            -> if first time or if `commonPrefix` is shorter than before, update `commonPrefix` of all files
-               (maybe send out an event to update GUI? maybe not necessary...)
-            -> else, only set `commonPrefix` for new files (before adding)
-   * link/label: parentTrace
-      * traceLabel + valueLabel
-   * grouping: add new `GroupNode` base class
-      * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
-      * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
-         * (e.g. `next` in `express`)
-* highlight system: highlight *important* nodes, de-emphasize *unimportant* nodes
-   * highlight mode examples
-      * all contexts of `staticContext`
-      * all traces of `staticTrace`
-      * search mode: highlight nodes that match search criteria
-   * styles
-      * highlighted style
-         * scale font, normal font-size
-         * clear, bright colors
-         * high contrast
-      * de-emphasized style
-         * don't scale font, small font-size
-         * darkened colors
-         * low contrast
-* add a css class for font scaling (e.g. `.scale-font`): when zooming, font-size stays the same
-   * NOTE: can use `vh` instead of `px` or `rem` (see: https://stackoverflow.com/questions/24469375/keeping-text-size-the-same-on-zooming)
-* "trace <-> context mode" switch per node (and maybe sub-tree); not for entire graph
-* replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
-* NOTES
-   * `render` does NOT propagate to children (unlike React)
-
-
-
-
-
-
 
 
 
@@ -265,6 +281,13 @@
 * fix: `traveValueLabels`
    * get callee name from instrumentation
    * good traceValueLabel for all expressions
+* `dbux-graph`
+   * add `HostComponentEndpoint.getController/s`
+      * -> look up controller(s) by type; works similar to Unity's `GetComponent/s`
+   * pass down context
+      * have `GraphRoot` and `Run` add themselves to the context
+      * have `ContextNode` register by app+id
+      * add `GraphRoot.getContextNode(context)`
 * define clear list of features
    * write 3 minimal user stories per feature (applied to a specific bug somewhere)
    * also demonstrate each feature on express
