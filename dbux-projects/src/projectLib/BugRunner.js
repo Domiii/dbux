@@ -2,9 +2,10 @@ import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
+import EmptyObject from 'dbux-common/src/util/EmptyObject';
+import { newLogger } from 'dbux-common/src/log/logger';
 import Project from './Project';
 import Bug from './Bug';
-import EmptyObject from '../../../dbux-common/src/util/EmptyObject';
 
 export default class BugRunner {
   manager;
@@ -25,6 +26,11 @@ export default class BugRunner {
 
   constructor(manager) {
     this.manager = manager;
+    this._ownLogger = newLogger('BugRunner');
+  }
+
+  get logger() {
+    return this._project?.logger || this._ownLogger;
   }
 
   /**
@@ -62,7 +68,7 @@ export default class BugRunner {
   // ###########################################################################
 
   isBusy() {
-    return this._queue.isBusy();
+    return this._queue.isBusy() || this._process;
   }
 
   isProjectActive(project) {
@@ -172,7 +178,7 @@ export default class BugRunner {
 
     this._process = new Process();
     try {
-      return this._process.start(cmd, project.logger, options);
+      return await this._process.start(cmd, project.logger, options);
     }
     finally {
       this._process = null;
@@ -180,6 +186,12 @@ export default class BugRunner {
   }
 
   async cancel() {
+    if (!this.isBusy()) {
+      // nothing to do
+      return;
+    }
+
+    this.logger.debug('Cancelling...');
     await this._process?.kill();
     await this._queue.cancel();
   }

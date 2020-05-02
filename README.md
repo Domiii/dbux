@@ -229,13 +229,17 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 
 # Known Issues
 
-* don't call `process.exit` (at least not immediately)
-   * `process.exit` will kill the process before all recorded data has been sent out
+* calling `process.exit` too early will leave you blind
+   * `process.exit` kills the process, even if not all recorded data has been sent out yet
+   * as a result, you won't see all traces/contexts etc.
    * if you *MUST* call it, make sure to put it in a `setTimeout` with 0.5-1s delay
-   * NOTE: many frameworks that might kill your process allow disabling it (e.g. `Mocha`'s `--no-exit` argument)
-* What applications work so well with DBUX?
-   * TODO: we are still exploring that
-* What applications **won't** work so well with DBUX?
+   * NOTE: many frameworks that might kill your process allow disabling that (e.g. `Mocha`'s `--no-exit` argument)
+* impure property getters can cause unwanted side effects
+   * dbux tracks data in real-time, by reading variables, objects, arrays etc.
+   * It also reads all (or at least many) properties of objects, thereby unwittingly causing side-effects that a pure observer should not cause.
+   * e.g. `class A { count = 0; get x() { return ++this.count; } } // dbux will read x, and thus unwittingly change count`
+   * TODO: how to prevent dbux from altering semantics of your program?
+* What applications **won't** work so well with dbux?
    * Proxies and custom object getters with side effects
       * For serialization `dbux-runtime` iterates (or will in the future iterate) over object properties
       * Thus possibly causing side effects with proxy and getter functions

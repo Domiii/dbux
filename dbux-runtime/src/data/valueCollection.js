@@ -1,5 +1,4 @@
-import { logInternalError } from 'dbux-common/src/log/logger';
-import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState } from 'dbux-common/src/core/constants/ValueTypeCategory';
+import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjectCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
 // import serialize from 'dbux-common/src/serialization/serialize';
 import Collection from './Collection';
 import pools from './pools';
@@ -54,7 +53,7 @@ class ValueCollection extends Collection {
       valueHolder.value = value;
     }
     else {
-      const valueRef = this._serialize(value, 1, category);
+      const valueRef = this._serialize(value, 1, null, category);
       valueHolder.valueId = valueRef.valueId;
       valueHolder.value = undefined;
     }
@@ -73,16 +72,23 @@ class ValueCollection extends Collection {
     return tracked;
   }
 
+  _addOmitted() {
+    return this._addValue(null, null, null, '(...)', ValuePruneState.Omitted);
+  }
+
   _addValue(value, category, typeName, serialized, pruneState = false) {
     // create new ref
     const valueRef = new pools.values.allocate();
 
     // track value
-    const tracked = this._trackValue(value, valueRef);
+    if (isObjectCategory(category)) {
+      const tracked = this._trackValue(value, valueRef);
+      valueRef.trackId = tracked.trackId;
+    }
 
+    // store all other props
     const valueId = this._all.length;
     valueRef.valueId = valueId;
-    valueRef.trackId = tracked.trackId;
     valueRef.category = category;
     valueRef.typeName = typeName;
     valueRef.serialized = serialized;
@@ -96,23 +102,44 @@ class ValueCollection extends Collection {
 
 
   // ###########################################################################
-  // serialization
+  // add a bit of bubblewrap when accessing object properties 
   // ###########################################################################
-  _errorCount = 0;
+
+  _readErrorCount = 0;
+  _readErrorsByCtor = new Map();
+
+  _canReadProperty(obj) {
+    // check objects of this type have already been floodgated
+    return !this._readErrorsByCtor.has(Object.getPrototypeOf(obj));
+  }
+
 
   _readProperty(obj, key) {
     try {
       return obj[key];
     }
     catch (err) {
-      ++this._errorCount;
+      ++this._readErrorCount;
+      this._readErrorsByCtor.set(Object.getPrototypeOf(obj), obj);
+      if (!(this._readErrorCount % 100)) {
+        this.logger.error(`When copying object data, invoking object getters caused ${this._readErrorCount} exceptions (if this number is very high, you will likely observe significant slow-down)`);
+      }
       return `(ERROR: accessing ${key} caused exception)`;
     }
   }
 
-  _serialize(value, nDepth = 1, category = null) {
-    if (nDepth > SerializationConfig.maxDepth) {
-      return this._addValue(null, null, null, '...', ValuePruneState.Omitted);
+
+  // ###########################################################################
+  // serialize
+  // ###########################################################################
+
+  /**
+   * @param {Map} visited
+   */
+  _serialize(value, depth = 1, visited = null, category = null) {
+    // TODO: prevent infinite loops
+    if (depth > SerializationConfig.maxDepth) {
+      return this._addOmitted();
     }
 
     category = category || determineValueTypeCategory(value);
@@ -122,16 +149,33 @@ class ValueCollection extends Collection {
     let pruneState = ValuePruneState.Normal;
     let typeName = '';
 
+    // infinite loop prevention
+    if (isObjectCategory(category)) {
+      if (!visited) {
+        visited = new Map();
+      }
+      else {
+        const existingValueRef = visited.get(value);
+        if (existingValueRef) {
+          return existingValueRef;
+        }
+      }
+    }
+
+    // process by category
     switch (category) {
       case ValueTypeCategory.String:
         if (value.length > SerializationConfig.maxStringLength) {
-          serialized = serialized.substring(0, SerializationConfig.maxStringLength);
+          serialized = value.substring(0, SerializationConfig.maxStringLength);
           pruneState = ValuePruneState.Shortened;
         }
         break;
+
       case ValueTypeCategory.Function:
         serialized = 'ƒ';
+        // TODO: can have custom properties too
         break;
+
       case ValueTypeCategory.Array: {
         let n = value.length;
         if (n > SerializationConfig.maxObjectSize) {
@@ -142,11 +186,12 @@ class ValueCollection extends Collection {
         // build array
         serialized = [];
         for (let i = 0; i < n; ++i) {
-          const childRef = this._serialize(value, nDepth + 1);
+          const childRef = this._serialize(value, depth + 1, visited);
           serialized.push(childRef.valueId);
         }
         break;
       }
+
       case ValueTypeCategory.Object: {
         const props = Object.keys(value);
         typeName = value.constructor?.name || '';
@@ -162,19 +207,30 @@ class ValueCollection extends Collection {
         serialized = [];
         for (let i = 0; i < n; ++i) {
           const prop = props[i];
-          const propValue = this._readProperty(value, prop);
-          const childRef = this._serialize(propValue, nDepth + 1);
+          let childRef;
+          if (!this._canReadProperty(value)) {
+            childRef = this._addOmitted();
+          }
+          else {
+            const propValue = this._readProperty(value, prop);
+            childRef = this._serialize(propValue, depth + 1, visited);
+          }
           serialized.push([prop, childRef.valueId]);
         }
         break;
       }
+
       default:
         serialized = value + '';
         break;
     }
 
     // add/register/track value
-    return this._addValue(value, category, typeName, serialized, pruneState);
+    const valueRef = this._addValue(value, category, typeName, serialized, pruneState);
+    if (visited) {
+      visited.set(value, valueRef);
+    }
+    return valueRef;
   }
 }
 

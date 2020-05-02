@@ -272,10 +272,9 @@
 
 
 ## TODO (other)
-* test logger floodgate mechanism
-* fix: object tracking
-   * catch + floodgate errors thrown in object getters
-   * make sure `express` runs
+* fix: in `express` -> `response.js:570`, `return this;` was not traced
+* while accessing an object property, disable tracing
+   * -> causes infinite loop
 * fix: function names
    * get all names during a preliminary run, then do instrumentation on second
 * fix: `traveValueLabels`
@@ -283,7 +282,7 @@
    * good traceValueLabel for all expressions
 * `dbux-graph`
    * add `HostComponentEndpoint.getController/s`
-      * -> look up controller(s) by type; works similar to Unity's `GetComponent/s`
+      * -> look up controller(s) by type; similar to Unity's `GetComponent/s`
    * pass down context
       * have `GraphRoot` and `Run` add themselves to the context
       * have `ContextNode` register by app+id
