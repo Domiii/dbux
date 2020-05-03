@@ -1,6 +1,6 @@
 import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
 import sleep from 'dbux-common/src/util/sleep';
-import { newLogger } from 'dbux-common/src/log/logger';
+import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import HostComponentList from './HostComponentList';
 
 /**
@@ -90,11 +90,20 @@ class HostComponentEndpoint extends ComponentEndpoint {
   // _doInit
   // ###########################################################################
 
+  /**
+   * NOTE: this is called by `BaseComponentManager._createComponent`
+   */
   _doInit(componentManager, parent, componentId, initialState) {
+    // store properties
     super._doInit(componentManager, parent, componentId, initialState);
 
-    // NOTE: this is called by `BaseComponentManager._createComponent`
+    // assign context
+    this.context = { 
+      ...(parent?.context || EmptyObject),
+      ...(this.context || EmptyObject)
+    };
 
+    // do the long async init dance
     this._initPromise = Promise.resolve(
       this._runNoSetState('init')                       // 1. host: init
     ).   

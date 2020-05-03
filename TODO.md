@@ -272,13 +272,6 @@
 
 
 ## TODO (other)
-* fix: in `express` -> `response.js:570` (`return this;`) was not traced
-* while accessing an object property, disable tracing
-* fix: function names
-   * get all names during a preliminary run, then do instrumentation on second
-* fix: `traveValueLabels`
-   * get callee name from instrumentation
-   * good traceValueLabel for all expressions
 * `dbux-graph`
    * add `HostComponentEndpoint.getController/s`
       * -> look up controller(s) by type; similar to Unity's `GetComponent/s`
@@ -286,6 +279,15 @@
       * have `GraphRoot` and `Run` add themselves to the context
       * have `ContextNode` register by app+id
       * add `GraphRoot.getContextNode(context)`
+   * add button to toggle "follow mode": when following, slide to + highlight context onTraceSelected
+      * already partially there in `GraphRoot`
+* fix: in `express` -> `response.js:570` (`return this;`) was not traced
+* while accessing an object property, disable tracing
+* fix: function names
+   * get all names during a preliminary run, then do instrumentation on second
+* fix: `traveValueLabels`
+   * get callee name from instrumentation
+   * good traceValueLabel for all expressions
 * define clear list of features
    * write 3 minimal user stories per feature (applied to a specific bug somewhere)
    * also demonstrate each feature on express
