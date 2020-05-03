@@ -272,9 +272,8 @@
 
 
 ## TODO (other)
-* fix: in `express` -> `response.js:570`, `return this;` was not traced
+* fix: in `express` -> `response.js:570` (`return this;`) was not traced
 * while accessing an object property, disable tracing
-   * -> causes infinite loop
 * fix: function names
    * get all names during a preliminary run, then do instrumentation on second
 * fix: `traveValueLabels`
@@ -291,6 +290,9 @@
    * write 3 minimal user stories per feature (applied to a specific bug somewhere)
    * also demonstrate each feature on express
       * TODO: find express bugs related to features that are commonly used
+   * setup a test checklist?
+* test
+   * if forced `process.exit` will trigger the "Process shutdown" error message in console
 * fix: instrumentation order
    * for `CallExpression`, manually start visit to `callee` first
    * hardcode mixed `TraceType`s (`Throw/Return` + `Await/Call/Function`)

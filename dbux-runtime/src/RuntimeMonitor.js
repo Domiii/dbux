@@ -8,7 +8,6 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
-import staticVarAccessCollection from './data/staticVarAccessCollection';
 
 function _inheritsLoose(subClass, superClass) {
   if (superClass.prototype) {
@@ -33,7 +32,6 @@ export default class RuntimeMonitor {
 
   _programMonitors = new Map();
   _runtime = new Runtime();
-
 
   // ###########################################################################
   // Program management
@@ -300,19 +298,22 @@ export default class RuntimeMonitor {
     const { contextId: resumeContextId } = resumeContext;
     this._runtime.push(resumeContextId);
 
-    // if (!dontTrace) { // NOTE: We don't want to trace when pushing the default Resume context of an interruptable function
-    // trace
     this._trace(resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
-    // }
 
     return resumeContextId;
   }
 
   popResume(resumeContextId = null) {
-    resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
-
     // sanity checks
+    if (resumeContextId === 0) {
+      logInternalError('Tried to popResume, but id was 0. Is this an async function that started in an object getter?');
+      return;
+    }
+
+    resumeContextId = resumeContextId || this._runtime.peekCurrentContextId();
     const context = executionContextCollection.getById(resumeContextId);
+
+    // more sanity checks
     if (!context) {
       logInternalError('Tried to popResume, but context was not registered:', resumeContextId);
       return;
@@ -421,31 +422,8 @@ export default class RuntimeMonitor {
   // }
 
   // ###########################################################################
-  // error handling - NOTE: moved to `dbux-data`
+  // error handling
   // ###########################################################################
-
-  // isFunctionExitTrace(contextId, traceId) {
-  //   if (!traceId) {
-  //     // NOTE: should probably never happen, as at least a `push` would be traced
-  //     return true;
-  //   }
-  //   const trace = traceCollection.getById(traceId);
-  //   const { staticTraceId } = trace;
-  //   const staticTrace = staticTraceCollection.getById(staticTraceId);
-
-  //   // TODO: can we get `isLastInContext`, or move to `dbux-data`?
-  //   const { type: traceType, isLastInContext } = staticTrace;
-
-  //   return isReturnTrace(traceType) || isLastInContext;
-  // }
-
-  // checkErrorOnFunctionExit(contextId) {
-  //   const context = executionContextCollection.getById(contextId);
-  //   const { lastTraceId } = context;
-
-  //   const hasError = !this.isFunctionExitTrace(contextId, lastTraceId);
-  //   traceCollection.setTraceErrorStatus(context.lastTraceId, hasError);
-  // }
 
   // // TODO: try instrumentation
 
@@ -494,14 +472,21 @@ export default class RuntimeMonitor {
   }
 
   beforeLoopStart() {
-
   }
 
   pushLoop() {
-
   }
 
   popLoop() {
+  }
 
+  // ###########################################################################
+  // internally used stuff
+  // ###########################################################################
+
+  disabled;
+
+  setDisabled(disabled) {
+    this.disabled = disabled;
   }
 }

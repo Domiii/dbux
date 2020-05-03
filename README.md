@@ -115,6 +115,10 @@ or with npm:
 
 # References
 
+## Analyzing source maps
+
+* [This little tool](http://sokra.github.io/source-map-visualization/) allows us to investigate how our input + output files relate to one another. (NOTE: The author claims its just a hacked together toy, so maybe don't trust it too much.)
+
 ## Debugging Intermediate + Advanced
 * Getting the debugger to work when it just won't work!
    * https://stackoverflow.com/a/53288608
@@ -230,9 +234,11 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 # Known Issues
 
 * calling `process.exit` too early will leave you blind
+   * You should see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. If this was not a crash, you probably called `process.exit` manually." in the console.
    * `process.exit` kills the process, even if not all recorded data has been sent out yet
    * as a result, you won't see all traces/contexts etc.
-   * if you *MUST* call it, make sure to put it in a `setTimeout` with 0.5-1s delay
+   * if you *MUST* call it, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side
+   * TODO: Make `runtime/Client`'s `DontStayAwake` configurable.
    * NOTE: many frameworks that might kill your process allow disabling that (e.g. `Mocha`'s `--no-exit` argument)
 * impure property getters can cause unwanted side effects
    * dbux tracks data in real-time, by reading variables, objects, arrays etc.

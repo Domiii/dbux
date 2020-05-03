@@ -31,6 +31,7 @@ export function makePrettyLog(origLog, customColor) {
 }
 
 console.log = makePrettyLog(console.log, 'white');
+console._error = console.error;  // keep the original around
 console.error = makePrettyLog(console.error, 'red');
 console.warn = makePrettyLog(console.warn, 'yellow');
 console.debug = makePrettyLog(console.debug, 'gray');

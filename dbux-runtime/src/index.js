@@ -2,10 +2,10 @@ import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
 
 const dbux = {
-  trace: RuntimeMonitor.instance,
+  _r: RuntimeMonitor.instance,
 
   initProgram(staticProgramData) {
-    return this.trace.addProgram(staticProgramData);
+    return this._r.addProgram(staticProgramData);
   }
 };
 
@@ -30,20 +30,25 @@ function _getGlobal() {
   }
 }
 
-
+/**
+ * @type {import('./client/Client').default}
+ */
 let client;
-let didBeforeShutdown = false;
-function _onBeforeShutdown(x) {
-  console.warn('_onBeforeShutdown', x, didBeforeShutdown);
-  if (didBeforeShutdown) {
+
+let _didShutdown = false;
+function handleShutdown() {
+  console.debug('shutdown detected');
+  if (_didShutdown) {
+    // this can get triggered more than once (if registered to multiple different events)
     return;
   }
+  _didShutdown = true;
 
-  didBeforeShutdown = true;
-  client.flush();
-
-  // give socket a short grace period
-  setTimeout(() => {}, 200);
+  client.tryFlush();
+  
+  if (!client.hasFlushed()) {
+    console.error('Process shutdown but not all data has been sent out. Analysis will be incomplete. If this was not a crash, you probably called `process.exit` manually.');
+  }
 }
 
 (function main() {
@@ -54,16 +59,23 @@ function _onBeforeShutdown(x) {
   // make sure that the client's `createdAt` will be smaller than any other `createdAt` in data set!
   client = initClient();
 
-  if (__global__.process) {
-    // handle `beforeExit`, `SIGTERM` and `SIGINT` separately
-    // see: https://github.com/nodejs/node/issues/12359#issuecomment-293567749
+  // NOTE: we want to improve our chances that all data gets sent out before the process closes down.
+  //    However, that will be done anyway, unless `process.exit` is called; which kills without warning anyway.
 
-    // NOTE: `exit` does not allow for async handlers
-    // see: https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
-    [`SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
-      process.on(eventType, _onBeforeShutdown);
-    });
-  }
+  // register `exit` handler that sends out a warning if there is unsent stuff
+  // process.on('exit', handleShutdown);
+  __global__.process.on('exit', handleShutdown);
+
+  // if (__global__.process) {
+  //   // handle `beforeExit`, `SIGTERM` and `SIGINT` separately
+  //   // see: https://github.com/nodejs/node/issues/12359#issuecomment-293567749
+
+  //   // NOTE: `exit` does not allow for async handlers
+  //   // see: https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
+  //   [`SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
+  //     process.on(eventType, _onBeforeShutdown);
+  //   });
+  // }
 })();
 
 export default dbux;

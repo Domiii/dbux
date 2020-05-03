@@ -106,25 +106,73 @@ class ValueCollection extends Collection {
   // ###########################################################################
 
   _readErrorCount = 0;
-  _readErrorsByCtor = new Map();
+  _readErrorsByType = new Map();
+  _getKeysErrorsByType = new Map();
 
-  _canReadProperty(obj) {
-    // check objects of this type have already been floodgated
-    return !this._readErrorsByCtor.has(Object.getPrototypeOf(obj));
+  _canReadProperties(obj) {
+    // TODO: `Object.getPrototypeOf` can trigger a proxy trap; need to check on that as well.
+
+    // check if objects of this type have already been floodgated
+    return !this._readErrorsByType.has(Object.getPrototypeOf(obj));
   }
 
 
+  /**
+   * Read a property of an object to copy + track it.
+   * WARNING: This might invoke a getter function, thereby tempering with semantics (something that we genreally never want to do).
+   */
   _readProperty(obj, key) {
     try {
+      this._startAccess(obj);
       return obj[key];
     }
     catch (err) {
-      ++this._readErrorCount;
-      this._readErrorsByCtor.set(Object.getPrototypeOf(obj), obj);
-      if (!(this._readErrorCount % 100)) {
-        this.logger.error(`When copying object data, invoking object getters caused ${this._readErrorCount} exceptions (if this number is very high, you will likely observe significant slow-down)`);
-      }
+      this._onAccessError(obj, this._readErrorsByType);
       return `(ERROR: accessing ${key} caused exception)`;
+    }
+    finally {
+      this._endAccess(obj);
+    }
+  }
+
+  _canReadKeys(obj) {
+    return !this._getKeysErrorsByType.has(Object.getPrototypeOf(obj));
+  }
+
+  /**
+   * `Object.keys` can also invoke user-defined functions.
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/ownKeys*} obj
+   */
+  _getProperties(obj) {
+    try {
+      this._startAccess(obj);
+      return Object.keys(obj);
+    }
+    catch (err) {
+      this._onAccessError(obj, this._getKeysErrorsByType);
+      return null;
+    }
+    finally {
+      this._endAccess(obj);
+    }
+  }
+
+  _startAccess(obj) {
+    // TODO: disable tracing while reading the property
+  }
+
+  _endAccess(obj) {
+
+  }
+
+  _onAccessError(obj, errorsByType) {
+    ++this._readErrorCount;
+
+    // TODO: consider adding a timeout for floodgates?
+
+    errorsByType.set(Object.getPrototypeOf(obj), obj);
+    if (!(this._readErrorCount % 100)) {
+      this.logger.error(`When copying object data, invoking object getters caused ${this._readErrorCount} exceptions (if this number is very high, you will likely observe significant slow-down)`);
     }
   }
 
@@ -193,29 +241,38 @@ class ValueCollection extends Collection {
       }
 
       case ValueTypeCategory.Object: {
-        const props = Object.keys(value);
-        typeName = value.constructor?.name || '';
-
-        // prune?
-        let n = props.length;
-        if (n > SerializationConfig.maxObjectSize) {
-          pruneState = ValuePruneState.Shortened;
-          n = SerializationConfig.maxObjectSize;
+        if (!this._canReadKeys(value)) {
+          pruneState = ValuePruneState.Omitted;
         }
+        else {
+          // iterate over all object properties
+          const props = this._getProperties(value);
 
-        // build object
-        serialized = [];
-        for (let i = 0; i < n; ++i) {
-          const prop = props[i];
-          let childRef;
-          if (!this._canReadProperty(value)) {
-            childRef = this._addOmitted();
+          // NOTE: the name might be mangled. We ideally want to get it from source code when we can.
+          //    (NOTE: not all types are instrumented by dbux)
+          typeName = value.constructor?.name || '';
+
+          // prune
+          let n = props.length;
+          if (n > SerializationConfig.maxObjectSize) {
+            pruneState = ValuePruneState.Shortened;
+            n = SerializationConfig.maxObjectSize;
           }
-          else {
-            const propValue = this._readProperty(value, prop);
-            childRef = this._serialize(propValue, depth + 1, visited);
+
+          // build object
+          serialized = [];
+          for (let i = 0; i < n; ++i) {
+            const prop = props[i];
+            let childRef;
+            if (!this._canReadProperties(value)) {
+              childRef = this._addOmitted();
+            }
+            else {
+              const propValue = this._readProperty(value, prop);
+              childRef = this._serialize(propValue, depth + 1, visited);
+            }
+            serialized.push([prop, childRef.valueId]);
           }
-          serialized.push([prop, childRef.valueId]);
         }
         break;
       }
