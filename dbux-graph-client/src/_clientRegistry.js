@@ -1,3 +1,6 @@
+import Highlighter from './components/controllers/Highlighter';
+import HighlightManager from './components/controllers/HighlightManager';
+
 const ContextNode = require('@/components/ContextNode').default;
 const TraceNode = require('@/components/TraceNode').default;
 const GraphDocument = require('@/components/GraphDocument').default;
@@ -15,5 +18,7 @@ export default {
   GraphNode,
   RunNode,
   Toolbar,
-  MiniMap
+  MiniMap,
+  Highlighter,
+  HighlightManager
 };

@@ -6,6 +6,8 @@ import RunNode from './components/RunNode';
 import Toolbar from './components/Toolbar';
 import MiniMap from './components/MiniMap';
 import GraphNode from './components/controllers/GraphNode';
+import Highlighter from './components/controllers/Highlighter';
+import HighlightManager from './components/controllers/HighlightManager';
 
 export default {
   GraphDocument,
@@ -15,5 +17,7 @@ export default {
   GraphRoot,
   RunNode,
   Toolbar,
-  MiniMap
+  MiniMap,
+  Highlighter,
+  HighlightManager
 };
