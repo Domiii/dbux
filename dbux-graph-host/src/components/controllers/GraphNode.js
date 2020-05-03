@@ -3,8 +3,9 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class GraphNode extends HostComponentEndpoint {
   init() {
-    if (this.owner.graphNode) {
-      this.state.mode = this.owner.graphNode.getChildMode();
+    const parent = this.owner.parent?.controllers.getComponent(GraphNode);
+    if (parent) {
+      this.state.mode = parent.getChildMode();
     }
     else {
       this.state.mode = GraphNodeMode.Collapsed;
@@ -30,7 +31,7 @@ export default class GraphNode extends HostComponentEndpoint {
     // propagate mode to sub graph
     const childMode = this.getChildMode();
     for (const child of this.owner.children.filter(hasGraphNode)) {
-      child.graphNode.setMode(childMode);
+      child.controllers.getComponent(GraphNode).setMode(childMode);
     }
   }
 
@@ -48,5 +49,5 @@ export default class GraphNode extends HostComponentEndpoint {
 }
 
 function hasGraphNode(comp) {
-  return !!comp.graphNode;
+  return !!comp.controllers.getComponent(GraphNode);
 }

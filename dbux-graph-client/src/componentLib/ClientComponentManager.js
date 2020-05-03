@@ -47,21 +47,9 @@ class AppComponent extends ClientComponentEndpoint {
 
 class ClientComponentManager extends BaseComponentManager {
   constructor(ipcAdapter) {
-    super(ipcAdapter);
-
-    // component registry
-    this.initComponentRegistry();
-  }
-
-  initComponentRegistry() {
     // add hard-coded AppComponent
     componentRegistry.AppComponent = AppComponent;
-
-    // register all components by name
-    this.componentRegistry = componentRegistry;
-    for (const [name, Comp] of Object.entries(componentRegistry)) {
-      Comp._componentName = name;
-    }
+    super(ipcAdapter, componentRegistry);
   }
 
   getComponentClassByName(name) {

@@ -24,7 +24,7 @@ class ContextNode extends HostComponentEndpoint {
     this.state.displayName = label;
 
     // add GraphNode controller
-    this.graphNode = this.controllers.createComponent('GraphNode', {
+    this.controllers.createComponent('GraphNode', {
       isExpanded: false
     });
 
