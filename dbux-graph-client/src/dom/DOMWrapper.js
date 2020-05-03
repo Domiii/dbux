@@ -1,5 +1,5 @@
 import isFunction from 'lodash/isFunction';
-import { collectElementsByDataAttr } from '../util/domUtil';
+import { collectElementsByDataAttrMulti } from '../util/domUtil';
 
 /**
  * Helps DOM elements "components" more easily manage it's DOM.
@@ -27,8 +27,8 @@ export default class DOMWrapper {
       on
     } = this.owner;
 
-    this.els = collectElementsByDataAttr(el, 'el');
-    this.mountPointsByComponentName = collectElementsByDataAttr(el, 'mount');
+    this.els = collectElementsByDataAttrMulti(el, 'el');
+    this.mountPointsByComponentName = collectElementsByDataAttrMulti(el, 'mount');
 
     // hook up event listeners
     if (on) {

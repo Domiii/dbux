@@ -47,18 +47,35 @@ export function compileHtmlElements(html) {
   return template.content.childNodes;
 }
 
-export function collectElementsByDataAttr(containerEl, groupName) {
+/**
+ * Allows for multiple comma-separated entries per attribute.
+ */
+export function collectElementsByDataAttrMulti(containerEl, groupName) {
+  return collectElementsByDataAttr(containerEl, groupName, true);
+}
+
+export function collectElementsByDataAttr(containerEl, groupName, multi = false) {
   const attrName = `data-${groupName}`;
   const all = containerEl.querySelectorAll(`[${attrName}]`);
   const els = {};
-  all.forEach(el => {
-    const name = el.getAttribute(attrName);
+  function regEl(name, el) {
     if (name) {
       if (els[name]) {
         warn(`[collectElementsByDataAttr] element name used more than once: \
 ${name} in group ${groupName} in element ${containerEl.innerHTML}`);
       }
       els[name] = el;
+    }
+  }
+  all.forEach(el => {
+    const nameOrNames = el.getAttribute(attrName);
+    if (multi) {
+      nameOrNames.split(',').
+        map(name => name.trim()).
+        forEach(name => regEl(name, el));
+    }
+    else {
+      regEl(nameOrNames, el);
     }
   });
   return els;

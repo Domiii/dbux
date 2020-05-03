@@ -1,4 +1,4 @@
-import valueCollection from './data/valueCollection';
+import { newLogger } from 'dbux-common/src/log/logger';
 
 /**
  * Comes from the order we execute things in programVisitor
@@ -12,18 +12,21 @@ const ProgramStopTraceId = 2;
 
 export default class ProgramMonitor {
   /**
-   * @type {ProgramStaticContext}
+   * @type {import('dbux-common/src/core/data/StaticProgramContext').default}
    */
   _staticProgramContext;
 
   /**
-   * @param {ProgramStaticContext} staticProgramContext
+   * @type {import('./RuntimeMonitor').default}
    */
+  _runtimeMonitor;
+
   constructor(runtimeMonitor, staticProgramContext) {
     const inProgramStaticId = 1;
     this._runtimeMonitor = runtimeMonitor;
     this._staticProgramContext = staticProgramContext;
     this._programContextId = this.pushImmediate(inProgramStaticId, ProgramStartTraceId, false);
+    this._logger = newLogger(staticProgramContext.filePath);
   }
 
   /**
@@ -42,14 +45,26 @@ export default class ProgramMonitor {
 
 
   pushImmediate(inProgramStaticId, traceId, isInterruptable) {
+    if (this.disabled) {
+      return 0;
+    }
+
     return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticId, traceId, isInterruptable);
   }
 
   popImmediate(contextId, traceId) {
+    if (this.disabled) {
+      return;
+    }
+
     return this._runtimeMonitor.popImmediate(contextId, traceId);
   }
 
   popFunction(contextId, traceId) {
+    if (this.disabled) {
+      return;
+    }
+
     return this._runtimeMonitor.popFunction(contextId, traceId);
   }
 
@@ -121,5 +136,17 @@ export default class ProgramMonitor {
 
   pushLoop() {
 
+  }
+
+  // ###########################################################################
+  // internal stuff
+  // ###########################################################################
+
+  get disabled() {
+    return this._runtimeMonitor.disabled;
+  }
+
+  warnDisabled(...args) {
+    this._logger.warn(...args);
   }
 }

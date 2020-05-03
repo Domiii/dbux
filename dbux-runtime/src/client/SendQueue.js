@@ -1,18 +1,22 @@
 class SendQueue {
   client;
-  buffers = {};
+  buffers;
   timer;
 
   constructor(client) {
     this.client = client;
+
+    this.clear();
   }
 
   clear() {
     this.buffers = {};
     this.timer = null;
+    this.empty = true;
   }
 
   send(dataName, data) {
+    this.empty = false;
     const buffer = (this.buffers[dataName] = this.buffers[dataName] || []);
     buffer.push(data);
 
@@ -20,6 +24,7 @@ class SendQueue {
   }
 
   sendAll(dataName, data) {
+    this.empty = false;
     const buffer = (this.buffers[dataName] = this.buffers[dataName] || []);
     buffer.push(...data);
 

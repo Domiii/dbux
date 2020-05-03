@@ -39,7 +39,7 @@ export function determineValueTypeCategory(value) {
   return ValueTypeCategory.Primitive;
 }
 
-export function isCategoryComplex(category) {
+export function isObjectCategory(category) {
   return category >= ValueTypeCategory.Object;
 }
 

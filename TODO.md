@@ -9,14 +9,18 @@
       * "select bug"
       * "delete project"
       * "cancel" (calls `BugRunner.cancel()`)
-* allow to select `BeforeCallExpression` traces (disable `CallExpressionResult` traces instead?)
+* in `traceDetails`: change 6 navigation buttons to buttons inside a single node (horizontal instead of vertical)
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
-
-* add button to `ApplicationsView` to switch to `ApplicationFilesView`
-   * -> list all files
-   * click:
-      * if not open: open file -> then go to first trace in file
-      * if open: just open (don't go to trace)
+* when selecting a trace:
+   * if previously selected trace is not under cursor:
+      * first find the inner-most `staticTrace` at cursor, and start from that
+   * else: keep switching through all possible traces under cursor
+* add files to `ApplicationsView`
+   * list all files as children for each application
+      * click:
+         * if not open: open file -> then go to first trace in file
+         * if open: just open (don't go to trace)
+   * group all "previous runs" under a "(previous runs)" node
 
 
 * add a command to toggle (show/hide) all intrusive features
@@ -107,6 +111,67 @@
 
 
 
+## TODO (dbux-graph)
+* `ContextNode`:
+   * remove `shift+click`
+   * replace it by clicking on the title (`displayName`) element instead (make it a `<a>`)
+* `GraphNode`
+   * apply `GraphNode` controller pattern to all "graph node" components: `Run`, `GraphRoot`
+   * add "contractAllButThis" button to `GraphNode`
+   * add `reveal` function to `host/GraphNode`:
+      * make sure, all contracted parents change to `ExpandChildren`
+      * slide to node
+      * highlight node
+* fix: require `alt` for `pan` (else button clicks don't work so well)
+   * e.g. `nodeToggleBtn` does not work when clicking too fast and slightly moving the mouse
+* `ContextNode`
+   * link/label: parentTrace
+      * traceLabel + valueLabel
+      * remove `ParentTraces` from `TraceMode` enum (adding an extra node for each unnecessary due to its 1:1 relationship with `context`)
+* highlight system: highlight *important* nodes, de-emphasize *unimportant* nodes
+   * highlight mode examples
+      * `context` of currently selected `trace`
+      * all contexts of `staticContext`
+      * all traces of `staticTrace`
+      * search mode: highlight nodes that match search criteria
+   * styles
+      * highlighted style
+         * scale font, normal font-size
+         * clear, bright colors
+         * high contrast
+      * de-emphasized style
+         * don't scale font, small font-size
+         * darkened colors
+         * low contrast
+* grouping: add new `GroupNode` controller component
+   * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
+   * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
+      * (e.g. `next` in `express`)
+* add a css class for font scaling (e.g. `.scale-font`): when zooming, font-size stays the same
+   * NOTE: can use `vh` instead of `px` or `rem` (see: https://stackoverflow.com/questions/24469375/keeping-text-size-the-same-on-zooming)
+* "trace <-> context mode" switch per node (and maybe sub-tree); not for entire graph
+* replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
+* `ContextNode`
+   * link/label: filename:lineNumber
+      * TODO: for all filenames of same application, we want to remove `commonPrefix`
+         1. store `commonPrefix`
+         2. when seeing new `StaticProgramContext` in DataProvider, extract `commonPrefix`
+            -> if first time or if `commonPrefix` is shorter than before, update `commonPrefix` of all files
+               (maybe send out an event to update GUI? maybe not necessary...)
+            -> else, only set `commonPrefix` for new files (before adding)
+* NOTES
+   * `render` does NOT propagate to children (unlike React)
+
+
+
+
+
+
+
+
+
+
+
 ## TODO (`dbux-projects`)
 * basic functionality:
    * auto-commit
@@ -181,51 +246,6 @@
 
 
 
-## TODO (dbux-graph)
-* fix: require `alt` for `pan` (else button clicks don't work so well)
-   * e.g. `nodeToggleBtn` does not work when clicking too fast and slightly moving the mouse
-* buttons:
-   * collapse/expand all children
-* `ContextNode`
-   * link/label: filename:lineNumber
-      * TODO: for all filenames of same application, we want to remove `commonPrefix`
-         1. store `commonPrefix`
-         2. when seeing new `StaticProgramContext` in DataProvider, extract `commonPrefix`
-            -> if first time or if `commonPrefix` is shorter than before, update `commonPrefix` of all files
-               (maybe send out an event to update GUI? maybe not necessary...)
-            -> else, only set `commonPrefix` for new files (before adding)
-   * link/label: parentTrace
-      * traceLabel + valueLabel
-   * grouping: add new `GroupNode` base class
-      * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
-      * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
-         * (e.g. `next` in `express`)
-* highlight system: highlight *important* nodes, de-emphasize *unimportant* nodes
-   * highlight mode examples
-      * all contexts of `staticContext`
-      * all traces of `staticTrace`
-      * search mode: highlight nodes that match search criteria
-   * styles
-      * highlighted style
-         * scale font, normal font-size
-         * clear, bright colors
-         * high contrast
-      * de-emphasized style
-         * don't scale font, small font-size
-         * darkened colors
-         * low contrast
-* add a css class for font scaling (e.g. `.scale-font`): when zooming, font-size stays the same
-   * NOTE: can use `vh` instead of `px` or `rem` (see: https://stackoverflow.com/questions/24469375/keeping-text-size-the-same-on-zooming)
-* "trace <-> context mode" switch per node (and maybe sub-tree); not for entire graph
-* replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
-* NOTES
-   * `render` does NOT propagate to children (unlike React)
-
-
-
-
-
-
 
 
 
@@ -252,12 +272,45 @@
 
 
 ## TODO (other)
-* fix: object tracking is broken
-* in `express`, `application` object is considered a function (because it is created as such)
-   * hum...
-* fix: instrumentation order causes big headache
-   * fix `guessFunctionName`: `[cb] [cb] (unnamed)`
-   * fix: `throw` is not traced
+* `dbux-graph`
+   * add `HostComponentEndpoint.getController/s`
+      * -> look up controller(s) by type; similar to Unity's `GetComponent/s`
+   * pass down context
+      * have `GraphRoot` and `Run` add themselves to the context
+      * have `ContextNode` register by app+id
+      * add `GraphRoot.getContextNode(context)`
+   * add button to toggle "follow mode": when following, slide to + highlight context onTraceSelected
+      * already partially there in `GraphRoot`
+* fix: in `express` -> `response.js:570` (`return this;`) was not traced
+* while accessing an object property, disable tracing
+* fix: function names
+   * get all names during a preliminary run, then do instrumentation on second
+* fix: `traveValueLabels`
+   * get callee name from instrumentation
+   * good traceValueLabel for all expressions
+* define clear list of features
+   * write 3 minimal user stories per feature (applied to a specific bug somewhere)
+   * also demonstrate each feature on express
+      * TODO: find express bugs related to features that are commonly used
+   * setup a test checklist?
+* test
+   * if forced `process.exit` will trigger the "Process shutdown" error message in console
+* fix: instrumentation order
+   * for `CallExpression`, manually start visit to `callee` first
+   * hardcode mixed `TraceType`s (`Throw/Return` + `Await/Call/Function`)
+   * test combinations with functions
+      * odd one out: `return await function f() {}`
+* fix: more instrumentation order problems
+   * Problem: `guessFunctionName`: `[cb] [cb] (unnamed)`
+   * Problem: `throw` is not traced (`error1`)
+   * Problem: in `o.f()` trace, `o` has a higher `traceId` than `o.f()`'s `BCE`
+* allow for mixed type objects for object tracking
+   * in `express`, `application` object is also a function
+   * need to allow "objectified functions" to be displayed as such
+   * Problem: How to determine what is an "objectified function"?
+      * -> `Object.keys` is not empty
+* fix: in `a.b.c`, only `a.b` is traced?
+* fix: in `console.log(a.b.c);`, `a` is not traced
 * fix: `CallExpression`, `Function`, `Await` have special interactions
    * they all might be children of other visitors
    * NOTE: currently all other visitors use `wrapExpression`
