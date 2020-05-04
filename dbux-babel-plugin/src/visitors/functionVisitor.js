@@ -2,9 +2,9 @@ import template from '@babel/template';
 import * as t from "@babel/types";
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import VarOwnerType from 'dbux-common/src/core/constants/VarOwnerType';
-import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import { injectContextEndTrace } from '../helpers/contextHelper';
+import { getNodeNames } from './nameVisitors';
 
 // ###########################################################################
 // helpers
@@ -112,8 +112,18 @@ export function functionVisitEnter(path, state) {
   if (!state.onEnter(path, 'context')) return;
   // console.warn('F', path.toString());
 
-  const name = guessFunctionName(path, state);
-  const displayName = getFunctionDisplayName(path, state, name);
+  // const names = path.getData('_dbux_names');
+  const names = getNodeNames(path.node);
+  if (!names) {
+    // this is probably an instrumented function
+    return;
+  }
+  
+  const {
+    name,
+    displayName
+  } = names;
+
   const isGenerator = path.node.generator;
   const isAsync = path.node.async;
   const isInterruptable = isGenerator || isAsync;

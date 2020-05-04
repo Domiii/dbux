@@ -40,9 +40,9 @@ function pickRandom(arr) {
 function main() {
   const n = 20; // 20
   const animals = Array(n).fill(0).map(i => {
-    // const AnimalClass = pickRandom(AnimalClasses);
-    // return new pickRandom(AnimalClasses)();
-    return new AnimalClasses[Math.floor(Math.random() * AnimalClasses.length)]();
+    const AnimalClass = pickRandom(AnimalClasses);
+    return new AnimalClass();
+    // return new AnimalClasses[Math.floor(Math.random() * AnimalClasses.length)]();
   });
 
   for (const animal of animals) {
