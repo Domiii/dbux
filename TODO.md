@@ -118,11 +118,9 @@
 
 
 ## TODO (dbux-graph)
+* remove `ParentTraces` from `TraceMode` enum (adding an extra node for parent trace unnecessary due to its 1:1 relationship with `context`)
 * fix: require `alt` for `pan` (else button clicks don't work so well)
    * will fix: `nodeToggleBtn` does not work when clicking too fast and slightly moving the mouse during the click
-* `ContextNode`:
-   * remove `shift+click` go-to-code click handler
-   * replace it with: clicking on the title (`displayName`) element instead (make it a `<a>`)
 * finish highlight system: highlight *important* nodes, de-emphasize *unimportant* nodes
    * NOTE: already started in `Highlighter` + `HighlightManager` controllers
    * implement:
@@ -139,6 +137,17 @@
          * don't scale font, small font-size
          * darkened colors
          * low contrast
+* add "follow mode" button to `Toolbar`: when following, slide to + highlight context onTraceSelected
+* (!!!) `ContextNode`
+   * When stepping through code, also follow along in the graph
+   * button -> highlight all calls of a particular staticContext
+      * also show a dropdown list in the node: lists all contexts that call `staticContext` (via `parentTrace`)
+         * (select trace when clicking each)
+   * highlight all context nodes where an object was referenced
+   * Buttons to go to next/previous invocation of this function
+   * Display contextual information for every function call
+   * link/label: parentTrace
+      * traceLabel + valueLabel
 * `GraphNode`
    * apply `GraphNode` controller pattern to all "graph node" components: `Run`, `GraphRoot`
    * add "contractAllButThis" button to `GraphNode`
@@ -146,13 +155,9 @@
       * make sure, all contracted parents change to `ExpandChildren`
       * slide to node
       * highlight node
-* add "follow mode" button to `Toolbar`: when following, slide to + highlight context onTraceSelected
-* `ContextNode`
-   * link/label: parentTrace
-      * traceLabel + valueLabel
-   * button -> menu: list all contexts that call `staticContext` (via `parentTrace`)
-      * (select trace when clicking each)
-* remove `ParentTraces` from `TraceMode` enum (adding an extra node for parent trace unnecessary due to its 1:1 relationship with `context`)
+* `ContextNode`:
+   * remove `shift+click` go-to-code click handler
+   * replace it with: clicking on the title (`displayName`) element instead (make it a `<a>`)
 * grouping: add new `GroupNode` controller component
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s

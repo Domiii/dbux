@@ -8,7 +8,7 @@ class GraphRoot extends HostComponentEndpoint {
     traceSelection.onTraceSelectionChanged(this.onTraceSelected);
   }
 
-  onTraceSelected(trace) {
+  onTraceSelected = (trace) => {
     this.setState({
       traceId: trace.traceId,
       applicationId: trace.applicationId
