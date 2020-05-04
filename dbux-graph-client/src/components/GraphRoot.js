@@ -59,6 +59,7 @@ class GraphRoot extends ClientComponentEndpoint {
       //   let shouldIgnore = !evt.altKey;
       //   return shouldIgnore;
       // },
+      bounds: true,
       boundsPadding: 0.2,
       maxZoom: 2,
       minZoom: 0.1,

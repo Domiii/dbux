@@ -28,12 +28,14 @@
 
 
 #bug
-1. 邊界
-2. minimap/先關掉
-3. popper can't work in scale
+1. 邊界              
+2. minimap/關        
+3. popper position   
 
 new todo
 1. 點擊code，graph會移動(slide)
 2. done| 點擊graph可以在vscode顯示
 3. 在toolbar上新增一個選擇是否同步的button
-4. 顯示loop的方式可能可以有一個loop的tag，並顯示loop的次數
+4. 顯示loop的方式可能可以有一個loop的tag，並顯示loop的次數 grade
+5. set toolbar style and position
+   5-1.一個按鈕可以一鍵開啟/關掉所有的list
