@@ -1,4 +1,5 @@
 import { codeFrameColumns } from '@babel/code-frame';
+import isFunction from 'lodash/isFunction';
 
 /**
  * Proper error extraction:
@@ -12,7 +13,7 @@ function _errorWrap(visitor) {
       return visitor.apply(this, args);
     }
     // finally {
-      
+
     // }
     catch (err) {
       const [path, { file: { code } }] = args;
@@ -28,9 +29,16 @@ function _errorWrap(visitor) {
 }
 
 export default function errorWrapVisitor(visitor) {
-  for (const [visitorName, actions] of Object.entries(visitor || {})) {
-    for (const [actionName, f] of Object.entries(actions || {})) {
-      actions[actionName] = _errorWrap(f);
+  for (const [typeName, actions] of Object.entries(visitor || {})) {
+    if (isFunction(actions)) {
+      // simple function
+      visitor[typeName] = _errorWrap(actions);
+    }
+    else {
+      // enter/exit actions
+      for (const [actionName, f] of Object.entries(actions || {})) {
+        actions[actionName] = _errorWrap(f);
+      }
     }
   }
 

@@ -47,7 +47,7 @@ function handleShutdown() {
   client.tryFlush();
   
   if (!client.hasFlushed()) {
-    console.error('Process shutdown but not all data has been sent out. Analysis will be incomplete. If this was not a crash, you probably called `process.exit` manually.');
+    console.error('Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably a crash or you called `process.exit` manually.');
   }
 }
 

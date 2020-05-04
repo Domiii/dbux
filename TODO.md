@@ -299,6 +299,8 @@
 * fix: function names
    * get all names during a preliminary run, then do instrumentation on second
    * will fix: `guessFunctionName` returning `[cb] [cb] (unnamed)`
+   * also: `displayName` is often too long for proper analysis in py/callGraph
+      * -> do not add source code of function itself -> change to `cb#i of A.f` instead
 * fix: `traveValueLabels`
    * get callee name from instrumentation
    * improve traceValueLabel for all expressions
@@ -362,8 +364,6 @@
    * when selecting a traced "return", it says "no trace at cursor"
       * (same with almost any keywords for now)
    * `if else` considers `else` as a block, and inserts (potentially unwanted) code deco
-* `displayName` is often too long for proper analysis in py/callGraph
-   * -> do not add source code of function itself -> change to `cb#i of A.f` instead
 * [serialization]
    * early accessing of getters can cause exceptions and maybe worse
 * fix: setup `eslint` to use correct index of `webpack` multi config to allow for `src` alias
