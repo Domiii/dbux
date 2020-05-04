@@ -1,3 +1,4 @@
+import { newLogger } from 'dbux-common/src/log/logger';
 import { getDefaultClient } from '../client/index';
 
 /**
@@ -9,6 +10,7 @@ export default class Collection {
 
   constructor(name) {
     this._name = name;
+    this.logger = newLogger(`[${name} Collection]`);
   }
 
   getAll() {
@@ -28,7 +30,7 @@ export default class Collection {
     this._all.push(newEntry);
     this._send(newEntry);
 
-    return this._all.length-1;
+    return this._all.length - 1;
   }
 
   /**

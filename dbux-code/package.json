@@ -111,7 +111,23 @@
 			},
 			{
 				"command": "dbuxCallGraphView.showError.disabled",
-				"title": "No traces at cursor",
+				"title": "No error occurred",
+				"icon": {
+					"light": "resources/light/fire_disabled.svg",
+					"dark": "resources/dark/fire_disabled.svg"
+				}
+			},
+			{
+				"command": "dbuxCallGraphView.selectError",
+				"title": "Go to first error",
+				"icon": {
+					"light": "resources/light/fire.svg",
+					"dark": "resources/dark/fire.svg"
+				}
+			},
+			{
+				"command": "dbuxCallGraphView.selectError.disabled",
+				"title": "No error occurred",
 				"icon": {
 					"light": "resources/light/fire_disabled.svg",
 					"dark": "resources/dark/fire_disabled.svg"
@@ -186,11 +202,19 @@
 				}
 			},
 			{
-				"command": "dbuxProjectView.node.activateBug",
-				"title": "Activate Bug",
+				"command": "dbuxProjectView.node.activateBugWithDebugger",
+				"title": "Activate Bug With Debugger",
 				"icon": {
 					"light": "resources/light/bug.svg",
 					"dark": "resources/dark/bug.svg"
+				}
+			},
+			{
+				"command": "dbuxProjectView.node.activateBug",
+				"title": "Activate Bug",
+				"icon": {
+					"light": "resources/light/play.svg",
+					"dark": "resources/dark/play.svg"
 				}
 			},
 			{
@@ -249,17 +273,12 @@
 					"group": "navigation@23"
 				},
 				{
-					"command": "dbuxCallGraphView.showContext",
-					"when": "dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
-					"group": "navigation@31"
-				},
-				{
-					"command": "dbuxCallGraphView.showError",
-					"when": "dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
+					"command": "dbuxCallGraphView.selectError",
+					"when": "dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
 					"group": "navigation@32"
 				},
 				{
-					"command": "dbuxCallGraphView.showError.disabled",
+					"command": "dbuxCallGraphView.selectError.disabled",
 					"when": "dbuxCallGraphView.context.hasError == false && dbux.context.showNavButton == true",
 					"group": "navigation@33"
 				},
@@ -296,9 +315,14 @@
 					"group": "inline"
 				},
 				{
+					"command": "dbuxProjectView.node.activateBugWithDebugger",
+					"when": "view == dbuxProjectView && viewItem == BugNode",
+					"group": "inline@1"
+				},
+				{
 					"command": "dbuxProjectView.node.activateBug",
 					"when": "view == dbuxProjectView && viewItem == BugNode",
-					"group": "inline"
+					"group": "inline@2"
 				}
 			],
 			"view/title": [

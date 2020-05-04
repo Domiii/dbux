@@ -13,8 +13,11 @@ class BaseComponentManager {
    */
   app;
 
-  constructor(ipcAdapter) {
+  constructor(ipcAdapter, componentRegistry) {
     this.ipc = new Ipc(ipcAdapter, this);
+
+    // component registry
+    this.initComponentRegistry(componentRegistry);
   }
 
   hasStarted() {
@@ -34,6 +37,18 @@ class BaseComponentManager {
     this._componentsById.set(componentId, component);
     component._doInit(this, parent, componentId, initialState);
     return component;
+  }
+
+  // ###########################################################################
+  // componentRegistry
+  // ###########################################################################
+
+  initComponentRegistry(componentRegistry) {
+    // register all components by name
+    this.componentRegistry = componentRegistry;
+    for (const [name, Comp] of Object.entries(componentRegistry)) {
+      Comp._componentName = name;
+    }
   }
 }
 

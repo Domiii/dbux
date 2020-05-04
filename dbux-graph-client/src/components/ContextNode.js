@@ -11,7 +11,7 @@ class ContextNode extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <div class="context">
         <div>
-          <button data-el="oCBtn" class="open_close_btn" style="display:none">▽</button>
+          <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
         </div>
         <div class="body">
           <div data-el="title" class="title">
@@ -23,18 +23,20 @@ class ContextNode extends ClientComponentEndpoint {
             </div>
             <div data-mount="TraceNode"></div>
           </div>
-          <div data-mount="ContextNode" data-el="children" class="children">
+          <div data-mount="ContextNode" data-el="nodeChildren" class="children">
           </div>
         </div>
       </div>
       `);
   }
 
+  setupEl() {
+  }
+
   update() {
     const {
       displayName,
-      context: { contextId, staticContextId },
-      hasChildren,
+      context: { contextId, staticContextId }
     } = this.state;
 
 
@@ -43,8 +45,49 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.title.id = `name_${contextId}`;
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
-    this.els.oCBtn.style.display = hasChildren ? 'initial' : 'none';
-    this.els.children.id = `children_${contextId}`;
+    this.els.toolTip.textContent = `${displayName}`;
+    this.els.nodeChildren.id = `children_${contextId}`;
+
+    createPopper(this.els.displayName, this.els.toolTip, {
+      placement: "bottom-start",
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+      ],
+    });
+  }
+
+  destroy = () => {
+    let { popperInstance } = this;
+    if (popperInstance) {
+      popperInstance.destroy();
+      popperInstance = null;
+    }
+  }
+
+  show = () => {
+    const { displayName, toolTip } = this.els;
+    toolTip.setAttribute('data-show', '');
+    this.popperInstance = createPopper(displayName, toolTip, {
+      placement: "bottom-start",
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+      ],
+    });
+  }
+
+  hide = () => {
+    this.els.toolTip.removeAttribute('data-show');
+    this.destroy();
   }
 
   getBinaryHsl(i) {
@@ -59,17 +102,6 @@ class ContextNode extends ClientComponentEndpoint {
   }
 
   on = {
-    oCBtn: {
-      click() {
-        if (this.els.children.style.display === 'none') {
-          this.els.children.style.display = 'initial';
-          this.els.oCBtn.innerHTML = '▽';//﹀ ▽
-        } else {
-          this.els.children.style.display = 'none';
-          this.els.oCBtn.innerHTML = '▷';//〉 ▷  ►
-        }
-      }
-    },
     displayName: {
       mouseenter() {
         this.popperEl.firstChild.textContent = `${this.state.displayName}`;

@@ -1,3 +1,4 @@
+import { newLogger } from 'dbux-common/src/log/logger';
 import RemoteCommandProxy from './RemoteCommandProxy';
 
 class ComponentEndpoint {
@@ -16,6 +17,7 @@ class ComponentEndpoint {
     // TODO: `this.constructor.name` won't work on Host when enabling minifcation/obfuscation in webpack/bundler
     //    NOTE: Client already has a better way for this
     this._componentName = this.constructor._componentName || this.constructor.name;
+    this.logger = newLogger(this.debugTag);
   }
 
   _doInit(componentManager, parent, componentId, initialState) {
@@ -42,6 +44,14 @@ class ComponentEndpoint {
 
   get componentName() {
     return this._componentName;
+  }
+
+  /**
+   * NOTE: logically speaking, a `parent` sometimes plays more of the role of `owner` in certain relationships.
+   *        E.g. This name makes more sense for pure controller components (that do not have their own DOM elements).
+   */
+  get owner() {
+    return this.parent;
   }
 
   // ###########################################################################

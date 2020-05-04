@@ -7,6 +7,9 @@ import { transformSync } from '@babel/core';
 import { babelConfigNext, babelConfigEs5 } from './babelConfigs';
 import dbuxBabelPlugin from '..';
 
+const sourceMaps = 'inline';
+
+
 const { parse } = path;
 
 const AllConfigs = {
@@ -29,7 +32,8 @@ export function writeResultCodeToFile(inputCode, title, babelOptions, plugin) {
     babelOptions,
     {
       babelrc: false,
-      configFile: false
+      configFile: false,
+      sourceMaps
     },
     function customizer(dst, src) {
       if (Array.isArray(dst)) {

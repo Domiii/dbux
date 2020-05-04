@@ -7,8 +7,8 @@ import ClientComponentEndpoint from './ClientComponentEndpoint';
 // ###########################################################################
 
 class AppComponent extends ClientComponentEndpoint {
-  createEl() {
-    // doesn't do anything
+  init() {
+    // nothing to do
   }
 
   confirm(...args) {
@@ -26,6 +26,8 @@ class AppComponent extends ClientComponentEndpoint {
       // NOTE: parent should never be null (except for AppComponent, which does not get initialized this way)
 
       const ComponentClass = this.componentManager.getComponentClassByName(componentName);
+
+      // NOTE: `_registerComponent` also calls `_doInit`
       const component = this.componentManager._registerComponent(componentId, parent, ComponentClass, initialState);
 
       // init
@@ -45,21 +47,9 @@ class AppComponent extends ClientComponentEndpoint {
 
 class ClientComponentManager extends BaseComponentManager {
   constructor(ipcAdapter) {
-    super(ipcAdapter);
-
-    // component registry
-    this.initComponentRegistry();
-  }
-
-  initComponentRegistry() {
     // add hard-coded AppComponent
     componentRegistry.AppComponent = AppComponent;
-
-    // register all components by name
-    this.componentRegistry = componentRegistry;
-    for (const [name, Comp] of Object.entries(componentRegistry)) {
-      Comp._componentName = name;
-    }
+    super(ipcAdapter, componentRegistry);
   }
 
   getComponentClassByName(name) {

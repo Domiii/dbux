@@ -1,5 +1,6 @@
 import { TreeItemCollapsibleState as CollapsibleState } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import CallRootNode from './CallRootNode';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
@@ -44,5 +45,16 @@ export default class CallGraphNodeProvider extends BaseTreeViewNodeProvider {
     // newRootNode.collapsibleStateOverride = CollapsibleState.Expanded;
 
     return newRootNode;
+  }
+
+  getFirstError() {
+    const allFirstTraces = allApplications.selection.data.firstTracesInOrder.getAll();
+    for (const trace of allFirstTraces) {
+      const { applicationId, runId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const errors = dp.indexes.traces.errorByRun.get(runId) || EmptyArray;
+      if (errors.length) return errors[0];
+    }
+    return null;
   }
 }

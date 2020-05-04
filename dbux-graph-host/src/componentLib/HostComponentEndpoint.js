@@ -1,9 +1,7 @@
 import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
 import sleep from 'dbux-common/src/util/sleep';
-import { newLogger } from 'dbux-common/src/log/logger';
+import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import HostComponentList from './HostComponentList';
-
-const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentEndpoint');
 
 /**
  * The Host endpoint controls the Client endpoint.
@@ -13,6 +11,12 @@ class HostComponentEndpoint extends ComponentEndpoint {
    * @type {HostComponentList}
    */
   children;
+  /**
+   * Controllers are similar to children but usually have no DOM representation, and usually
+   * aim to act on "actual" "children" of their owner instead.
+   * @type {HostComponentList}
+   */
+  controllers;
 
   _isInitialized = false;
   _initPromise;
@@ -25,6 +29,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     super();
 
     this.children = new HostComponentList(this);
+    this.controllers = new HostComponentList(this);
   }
 
   get isInitializing() {
@@ -85,11 +90,20 @@ class HostComponentEndpoint extends ComponentEndpoint {
   // _doInit
   // ###########################################################################
 
+  /**
+   * NOTE: this is called by `BaseComponentManager._createComponent`
+   */
   _doInit(componentManager, parent, componentId, initialState) {
+    // store properties
     super._doInit(componentManager, parent, componentId, initialState);
 
-    // NOTE: this is called by `BaseComponentManager._createComponent`
+    // assign context
+    this.context = { 
+      ...(parent?.context || EmptyObject),
+      ...(this.context || EmptyObject)
+    };
 
+    // do the long async init dance
     this._initPromise = Promise.resolve(
       this._runNoSetState('init')                       // 1. host: init
     ).   
@@ -105,7 +119,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         },
         (err) => {
           // error :(
-          logError(this.debugTag, 'failed to initialize client - error occured (probably on client)\n  ', err);
+          this.logger.error('failed to initialize client - error occured (probably on client)\n  ', err);
         }
       ).
       finally(() => {
@@ -139,6 +153,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
   }
 
   async _executeUpdate() {
+    // debounce mechanism
     this._waitingForUpdate = true;
     await sleep(0);
     this._waitingForUpdate = false;
@@ -157,7 +172,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         },
         (err) => {
           // error :(
-          logError(this.debugTag, 'failed to update client - error occured (probably on client)\n  ', err);
+          this.logger.error('failed to update client - error occured (probably on client)\n  ', err);
         }
       ).
       finally(() => {

@@ -50,13 +50,17 @@ export default class BaseTreeViewNodeProvider {
       this.handleRefresh();
 
       // NOTE: if we only want to update subtree, pass root of subtree to `fire`
-      this._onDidChangeTreeData.fire();
+      this.repaint();
     }
     catch (err) {
       logError(`${this.constructor.name}.refresh() failed`, err);
       debugger;
       throw err;
     }
+  }
+
+  repaint() {
+    this._onDidChangeTreeData.fire();
   }
 
   handleCollapsibleStateChanged = evt => {
@@ -103,10 +107,14 @@ export default class BaseTreeViewNodeProvider {
     return new NodeClass(this, label, entry, parent, moreProps);
   }
 
-  buildChildren(parent) {
-    parent.children = parent.buildChildren();
-    this._decorateNodes(parent, parent.children);
-    return parent.children;
+  buildChildren(node) {
+    node.children = node.buildChildren();
+    this.decorateChildren(node);
+    return node.children;
+  }
+
+  decorateChildren(node) {
+    this._decorateNodes(node, node.children);
   }
 
   // ###########################################################################

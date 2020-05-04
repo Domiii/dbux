@@ -3,7 +3,7 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
 import TraceMode from './TraceMode';
-import MiniMap from './MiniMap';
+// import HighlightManager from './controllers/HighlightManager';
 
 class GraphDocument extends HostComponentEndpoint {
   toolbar;
@@ -13,6 +13,10 @@ class GraphDocument extends HostComponentEndpoint {
    */
   root;
 
+  context = {
+    graphDocument: this
+  };
+
   // ###########################################################################
   // init
   // ###########################################################################
@@ -20,8 +24,8 @@ class GraphDocument extends HostComponentEndpoint {
   init() {
     this.componentManager.doc = this;
     this.traceMode = TraceMode.ContextOnly;
-    
-    this.initChildren();
+
+    this.createOwnComponents();
 
     // ########################################
     // register event listeners
@@ -30,10 +34,13 @@ class GraphDocument extends HostComponentEndpoint {
     allApplications.selection.onApplicationsChanged(this.handleApplicationsChanged);
   }
 
-  initChildren() {
+  createOwnComponents() {
     const traceModeName = TraceMode.getName(this.traceMode);
+
     this.toolbar = this.children.createComponent(Toolbar, { traceModeName });
     this.root = this.children.createComponent(GraphRoot);
+
+    // this.controllers.createComponent(HighlightManager);
     // this.minimap = this.children.createComponent(MiniMap);
 
     // start rendering empty graph
@@ -62,10 +69,13 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   switchTraceMode() {
-    const nextMode = (this.traceMode + 1) % TraceMode.getCount();
-    this.traceMode = nextMode;
+    // const nextMode = (this.traceMode + 1) % TraceMode.getCount();
+    this.traceMode = TraceMode.nextValue(this.traceMode);
+    
     this.refreshGraphRoot();
-    this.toolbar.setState({ traceModeName: TraceMode.getName(this.traceMode) });
+    this.toolbar.setState({
+      traceModeName: TraceMode.getName(this.traceMode)
+    });
   }
 
   getTraceMode() {

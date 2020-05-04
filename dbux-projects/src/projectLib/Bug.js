@@ -34,7 +34,7 @@ export default class Bug {
     // open file (if any)
     if (this.testFilePaths[0]) {
       const fpath = path.join(this.project.projectPath, this.testFilePaths[0]);
-      await this.manager.externals.editor.openFolder(fpath);
+      await this.manager.externals.editor.openFile(fpath);
     }
   }
 }

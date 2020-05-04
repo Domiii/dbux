@@ -37,14 +37,23 @@ let lastRequestedDocumentFpath;
  * It rejects all in-flight promises, if you query it too fast; so we need to slow things down.
  * @see https://github.com/microsoft/vscode/issues/93003
  */
-export async function showTextDocument(fpath, column = ViewColumn.Active) {
+export async function showTextDocument(fpath, column) {
   // see https://code.visualstudio.com/api/references/vscode-api#Uri
-  // console.log(window.activeTextEditor.document.uri.path);
+  // console.log('previous active editor', window.activeTextEditor.document?.uri.path);
   if (lastRequestedDocumentFpath === fpath) {
     return editorOpenPromise;
   }
   // await editorOpenPromise; // this will actually cause the bug again! (not sure why...)
   lastRequestedDocumentFpath = fpath;
+
+  if (!column) {
+    if (window.activeTextEditor.document) {
+      column = ViewColumn.Active;
+    }
+    else {
+      column = ViewColumn.One;
+    }
+  }
 
   const uri = Uri.file(fpath);
   try {

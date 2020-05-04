@@ -9,7 +9,8 @@ const { log, debug, warn, error: logError } = newLogger('CLIENT');
 // config
 // ###########################################################################
 
-const InactivityDelay = 1000;
+const StayAwake = false;
+const SleepDelay = 1000;
 const DefaultPort = 3374;
 const Remote = `ws://localhost:${DefaultPort}`;
 
@@ -50,6 +51,11 @@ export default class Client {
 
   constructor() {
     this._sendQueue = new SendQueue(this);
+
+    if (StayAwake) {
+      // connect + stay awake
+      this._connect();
+    }
   }
 
   isConnected() {
@@ -58,6 +64,10 @@ export default class Client {
 
   isReady() {
     return this._ready;
+  }
+
+  hasFlushed() {
+    return this._sendQueue.empty;
   }
 
   // ###########################################################################
@@ -161,7 +171,11 @@ export default class Client {
     return false;
   }
 
-  flush() {
+  /**
+   * NOTE: will send out data right away, if it is already connected.
+   * If it is not connected, will try to send data as early as possible.
+   */
+  tryFlush() {
     this._sendQueue.flush();
   }
 
@@ -195,10 +209,16 @@ export default class Client {
   // ###########################################################################
 
   _refreshInactivityTimer() {
+    if (StayAwake) {
+      // stay awake
+      return;
+    }
+
+    // disconnect after a while
     if (this._killTimer) {
       clearTimeout(this._killTimer);
     }
-    this._killTimer = setTimeout(this._disconnect, InactivityDelay);
+    this._killTimer = setTimeout(this._disconnect, SleepDelay);
   }
 
   _disconnect = () => {

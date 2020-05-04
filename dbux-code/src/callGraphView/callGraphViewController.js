@@ -1,5 +1,6 @@
 import { ExtensionContext, commands, window } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
+import traceSelection from 'dbux-data/src/traceSelection';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import CallGraphNodeProvider from './CallGraphNodeProvider';
@@ -32,7 +33,7 @@ export class CallGraphViewController {
         break;
       }
     }
-    commands.executeCommand('setContext', 'dbuxCallGraphView.context.mode', 'context');
+    commands.executeCommand('setContext', 'dbuxCallGraphView.context.mode', this._mode);
     commands.executeCommand('setContext', 'dbuxCallGraphView.context.hasError', hasError);
   }
 
@@ -48,6 +49,9 @@ export class CallGraphViewController {
     // click event listener
     this.treeDataProvider.initDefaultClickCommand(context);
 
+    // to refresh 'selected trace' icon
+    traceSelection.onTraceSelectionChanged(this.refresh);
+
     // data changed
     allApplications.selection.onApplicationsChanged((selectedApps) => {
       for (const app of selectedApps) {
@@ -57,6 +61,18 @@ export class CallGraphViewController {
         );
       }
     });
+  }
+
+  // ###########################################################################
+  //  Public
+  // ###########################################################################
+
+  selectError() {
+    this.showError();
+    const firstError = this.treeDataProvider.getFirstError();
+    if (firstError) {
+      traceSelection.selectTrace(firstError);
+    }
   }
 
   // ########################################
@@ -73,15 +89,6 @@ export class CallGraphViewController {
 
   showError() {
     this._setMode('error');
-  }
-
-  _setMode(mode) {
-    if (this._mode !== mode) {
-      this._mode = mode;
-      this.refreshIcon();
-      this.clearFilter();
-      this.refresh();
-    }
   }
 
   // ########################################
@@ -112,6 +119,19 @@ export class CallGraphViewController {
     this._setFilter('');
   }
 
+  // ###########################################################################
+  //  Private
+  // ###########################################################################
+
+  _setMode(mode) {
+    if (this._mode !== mode) {
+      this._mode = mode;
+      this.refreshIcon();
+      this.clearFilter();
+      this.refresh();
+    }
+  }
+  
   _setFilter = (str) => {
     this._filterString = str;
     commands.executeCommand('setContext', 'dbuxCallGraphView.context.filtering', this.isFiltering());

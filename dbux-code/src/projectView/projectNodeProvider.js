@@ -17,7 +17,8 @@ export default class ProjectNodeProvider extends BaseTreeViewNodeProvider {
   buildRoots() {
     const roots = [];
 
-    for (let project of this.controller.manager.projects) {
+    const projects = this.controller.manager.getOrCreateDefaultProjectList();
+    for (let project of projects) {
       const node = this.buildProjectNode(project);
       roots.push(node);
     }
@@ -29,7 +30,7 @@ export default class ProjectNodeProvider extends BaseTreeViewNodeProvider {
     return roots.reverse();
   }
 
-  buildProjectNode = (project) => {
+  buildProjectNode(project) {
     return this.buildNode(ProjectNode, project);
   }
 }

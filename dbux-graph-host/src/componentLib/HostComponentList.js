@@ -3,6 +3,7 @@ import isString from 'lodash/isString';
 
 class HostComponentList {
   components = [];
+  componentsByName = new Map();
 
   constructor(parent) {
     this.parent = parent;
@@ -16,12 +17,54 @@ class HostComponentList {
     return this.components.length;
   }
 
+  getComponent(Clazz) {
+    if (!Clazz._componentName) {
+      throw new Error(`Invalid component class. Did you forget to add this component to _hostRegistry? - ${Clazz}`);
+    }
+    return this.componentsByName.get(Clazz._componentName)?.[0] || null;
+  }
+
+  getComponents(Clazz) {
+    if (!Clazz._componentName) {
+      throw new Error(`Invalid component class. Did you forget to add this component to _hostRegistry? - ${Clazz}`);
+    }
+    return this.componentsByName.get(Clazz._componentName) || null;
+  }
+
   // ###########################################################################
-  // iterator
+  // iterators
   // ###########################################################################
 
   * [Symbol.iterator]() {
     yield* this.components;
+  }
+
+  * filter(filter) {
+    for (const child of this.components) {
+      if (filter(child)) {
+        yield child;
+      }
+    }
+  }
+
+  * dfs(filter) {
+    for (const child of this.components) {
+      if (!filter || filter(child)) {
+        yield child;
+        yield* child.children.dfs(filter);
+      }
+    }
+  }
+
+  /**
+   * Depth of the component tree (0 at this node).
+   */
+  computeMaxDepth() {
+    let d = 0;
+    for (const child of this.components) {
+      d = Math.max(d + 1, child.children.computeMaxDepth());
+    }
+    return d;
   }
 
   // ###########################################################################
@@ -29,17 +72,29 @@ class HostComponentList {
   // ###########################################################################
 
   createComponent(ComponentClassOrName, initialState) {
-    const { registry } = this.parent.componentManager;
-    let ComponentClass;
-    if (!isString(ComponentClassOrName)) {
-      ComponentClass = ComponentClassOrName;
+    // get component class + name
+    const { componentRegistry } = this.parent.componentManager;
+    let Clazz;
+    let name;
+    if (isString(ComponentClassOrName)) {
+      name = ComponentClassOrName;
+      Clazz = componentRegistry[name];
     }
     else {
-      ComponentClass = registry[ComponentClassOrName];
+      Clazz = ComponentClassOrName;
+      name = Clazz._componentName;
     }
 
-    const comp = this.parent.componentManager._createComponent(this.parent, ComponentClass, initialState);
+    // create + store
+    const comp = this.parent.componentManager._createComponent(this.parent, Clazz, initialState);
     this.components.push(comp);
+    let byName = this.getComponents(Clazz);
+    if (!byName) {
+      this.componentsByName.set(name, byName = []);
+    }
+    byName.push(comp);
+
+    // return
     return comp;
   }
 
@@ -57,8 +112,11 @@ class HostComponentList {
    * NOTE: Do not call `_removeComponent` directly.
    * Call `unwantedComponent.dispose()` instead.
    */
-  _removeComponent(component) {
-    pull(this.components, component);
+  _removeComponent(comp) {
+    pull(this.components, comp);
+
+    let byName = this.getComponents(comp.constructor);
+    pull(byName, comp);
   }
 }
 

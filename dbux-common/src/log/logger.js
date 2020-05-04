@@ -5,6 +5,57 @@ const errors = [];
 
 const emitter = new NanoEvents();
 
+const MinSecondsPerReport = 2;
+const MinGateReportThreshold = 1;
+let floodGate = false;
+let floodGateReported = false;
+let nGatedReports = 0;
+let lastReportTime = Date.now() / 1000;
+// let floodGateTimer;
+
+function startFloodGate() {
+  // floodGateTimer = 
+  setTimeout(liftFloodGate, MinSecondsPerReport * 1000);
+}
+
+function liftFloodGate() {
+  floodGate = false;
+
+  if (nGatedReports >= MinGateReportThreshold) {  // only report if there is a substantial amount
+    // floodGateTimer = null;
+    reportUnchecked('error', `Floodgate lifted. Muted ${nGatedReports} reports in the past ${MinSecondsPerReport} seconds.`);
+  }
+  nGatedReports = 0;
+}
+
+function report(...args) {
+  // floodgate mechanism
+  if (floodGate) {
+    // flood gate in effect
+    ++nGatedReports;
+    if (!floodGateReported) {
+      floodGateReported = true;
+      reportUnchecked('error', `Error reporting muted due to possibly error flood.`);
+    }
+    return;
+  }
+
+  // check if flood gate started
+  const time = Date.now() / 1000;
+  const dt = (time - lastReportTime);
+  floodGate = dt < MinSecondsPerReport;
+
+  if (floodGate) {
+    startFloodGate();
+  }
+
+  reportUnchecked(...args);
+}
+
+function reportUnchecked(...args) {
+  emitter.emit(...args);
+}
+
 /**
  * Use this as error hook
  */
@@ -60,20 +111,20 @@ export function logDebug(ns, ...args) {
 export function logWarn(ns, ...args) {
   ns = `[${ns}]`;
   console.warn(ns, ...args);
-  emitter.emit('warn', ns, ...args);
+  report('warn', ns, ...args);
 }
 
 export function logError(ns, ...args) {
   ns = `[${ns}]`;
   console.error(ns, ...args);
-  emitter.emit('error', ns, ...args);
+  report('error', ns, ...args);
 }
 
 export function logInternalError(...args) {
   const msgArgs = ['[DBUX INTERNAL ERROR]', ...args];
   console.error(...msgArgs);
   errors.push(msgArgs);
-  emitter.emit('error', ...msgArgs);
+  report('error', ...msgArgs);
 }
 
 export function getErrors() {

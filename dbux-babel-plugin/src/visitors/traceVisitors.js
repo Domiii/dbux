@@ -585,7 +585,6 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
 
 function instrumentPath(instrumentationType, instrumentors, path, state, cfg) {
   if (instrumentationType) {
-    // 2. trace node itself
     const traceTypeName = TraceInstrumentationType.nameFromForce(instrumentationType);
     // if (!instrumentors[traceTypeName]) {
     //   err('instrumentors are missing TraceType:', traceTypeName);

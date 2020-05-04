@@ -6,31 +6,35 @@ import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import TraceMode from './TraceMode';
 
-const { log, debug, warn, error: logError } = newLogger('ContextNode');
-
 class ContextNode extends HostComponentEndpoint {
   init() {
     const {
       applicationId,
-      context: {
-        staticContextId
-      }
+      context
     } = this.state;
 
     const dp = allApplications.getById(applicationId).dataProvider;
 
     // get name (and other needed data)
-    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
     const {
       displayName
     } = staticContext;
-    this.state.displayName = displayName;
+    const label = displayName + this._makeContextPositionLabel(applicationId, context);
+    this.state.displayName = label;
 
-    this.buildChildren();
+    // add GraphNode controller
+    this.controllers.createComponent('GraphNode', {
+      isExpanded: false
+    });
+
+    // build sub graph
+    this.buildChildNodes();
+
     this.state.hasChildren = !!this.children.length;
   }
 
-  buildChildren() {
+  buildChildNodes() {
     const {
       applicationId,
       context: {
@@ -77,8 +81,18 @@ class ContextNode extends HostComponentEndpoint {
       });
     }
     else {
-      logError('Unknown TraceMode', TraceMode.getName(mode), mode);
+      this.logger.error('Unknown TraceMode', TraceMode.getName(mode), mode);
     }
+  }
+
+  _makeContextPositionLabel(applicationId, context) {
+    const { staticContextId } = context;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const { programId, loc } = dp.collections.staticContexts.getById(staticContextId);
+    const fileName = programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
+
+    const { line, column } = loc.start;
+    return `@${fileName}:${line}:${column}`;
   }
 
   public = {

@@ -3,10 +3,6 @@
   margin: 0;
   padding: 0;
 }
-html,body{
-  height:100%;
-  width:100%;
-}
 .graph{
   height:100%;
   width:100%;
@@ -14,6 +10,14 @@ html,body{
 canvas{
   display:block;
 } */
+
+html,body{
+  height:100%;
+  width:100%;
+  font-size: 11px; /* NOTE: courier is a rather "big" font, making smaller font size seem bigger */
+  font-family: "Lucida Console", Courier, monospace;
+}
+
 .red{
   display:flex;
   flex-direction: column;
@@ -95,12 +99,12 @@ background: #333;
 }
 
 
-.open_close_btn{
+.nodeToggleBtn{
   display:inline-block;
-  font-family: none;
   margin:0;
   padding: 0;
   line-height: 1rem;
+  min-width: 1.4rem; /* NOTE: on some systems, some of those emojis are extra-wide */
 }
 .children{
   width:auto;
@@ -140,4 +144,14 @@ background: #333;
   
 }
 
+
+body {
+  width: 100vw;
+  height: 100vh;
+}
+
+
+.hidden {
+  display: none !important;
+}
 
