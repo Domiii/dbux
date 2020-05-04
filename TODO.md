@@ -10,6 +10,9 @@
       * "delete project"
       * "cancel" (calls `BugRunner.cancel()`)
 * in `traceDetails`: change 6 navigation buttons to buttons inside a single node (horizontal instead of vertical)
+* configurable keyboard shortcuts for navigation buttons
+   * for configurable keybindings, see:
+      * https://code.visualstudio.com/api/references/contribution-points#contributes.keybindings
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
 * when selecting a trace:
    * if previously selected trace is not under cursor:
@@ -21,6 +24,9 @@
          * if not open: open file -> then go to first trace in file
          * if open: just open (don't go to trace)
    * group all "previous runs" under a "(previous runs)" node
+* configuration that allows user to make changes and keep the changes after restarting
+   * https://code.visualstudio.com/api/references/contribution-points#contributes.configuration
+   * https://github.com/microsoft/vscode-extension-samples/tree/master/configuration-sample
 
 
 * add a command to toggle (show/hide) all intrusive features
@@ -112,27 +118,17 @@
 
 
 ## TODO (dbux-graph)
-* `ContextNode`:
-   * remove `shift+click`
-   * replace it by clicking on the title (`displayName`) element instead (make it a `<a>`)
-* `GraphNode`
-   * apply `GraphNode` controller pattern to all "graph node" components: `Run`, `GraphRoot`
-   * add "contractAllButThis" button to `GraphNode`
-   * add `reveal` function to `host/GraphNode`:
-      * make sure, all contracted parents change to `ExpandChildren`
-      * slide to node
-      * highlight node
 * fix: require `alt` for `pan` (else button clicks don't work so well)
-   * e.g. `nodeToggleBtn` does not work when clicking too fast and slightly moving the mouse
-* `ContextNode`
-   * link/label: parentTrace
-      * traceLabel + valueLabel
-      * remove `ParentTraces` from `TraceMode` enum (adding an extra node for each unnecessary due to its 1:1 relationship with `context`)
-* highlight system: highlight *important* nodes, de-emphasize *unimportant* nodes
-   * highlight mode examples
-      * `context` of currently selected `trace`
-      * all contexts of `staticContext`
-      * all traces of `staticTrace`
+   * will fix: `nodeToggleBtn` does not work when clicking too fast and slightly moving the mouse during the click
+* `ContextNode`:
+   * remove `shift+click` go-to-code click handler
+   * replace it with: clicking on the title (`displayName`) element instead (make it a `<a>`)
+* finish highlight system: highlight *important* nodes, de-emphasize *unimportant* nodes
+   * NOTE: already started in `Highlighter` + `HighlightManager` controllers
+   * implement:
+      * "Clear" button in toolbar to remove all highlighting
+      * `context` of currently selected `trace` (if in "follow" mode)
+      * all contexts of `staticContext` (add button to `ContextNode`)
       * search mode: highlight nodes that match search criteria
    * styles
       * highlighted style
@@ -143,13 +139,26 @@
          * don't scale font, small font-size
          * darkened colors
          * low contrast
+* `GraphNode`
+   * apply `GraphNode` controller pattern to all "graph node" components: `Run`, `GraphRoot`
+   * add "contractAllButThis" button to `GraphNode`
+   * add `reveal` function to `host/GraphNode`:
+      * make sure, all contracted parents change to `ExpandChildren`
+      * slide to node
+      * highlight node
+* add "follow mode" button to `Toolbar`: when following, slide to + highlight context onTraceSelected
+* `ContextNode`
+   * link/label: parentTrace
+      * traceLabel + valueLabel
+   * button -> menu: list all contexts that call `staticContext` (via `parentTrace`)
+      * (select trace when clicking each)
+* remove `ParentTraces` from `TraceMode` enum (adding an extra node for parent trace unnecessary due to its 1:1 relationship with `context`)
 * grouping: add new `GroupNode` controller component
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
       * (e.g. `next` in `express`)
 * add a css class for font scaling (e.g. `.scale-font`): when zooming, font-size stays the same
    * NOTE: can use `vh` instead of `px` or `rem` (see: https://stackoverflow.com/questions/24469375/keeping-text-size-the-same-on-zooming)
-* "trace <-> context mode" switch per node (and maybe sub-tree); not for entire graph
 * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
 * `ContextNode`
    * link/label: filename:lineNumber
@@ -272,36 +281,35 @@
 
 
 ## TODO (other)
-* `dbux-graph`
-   * add `HostComponentEndpoint.getController/s`
-      * -> look up controller(s) by type; similar to Unity's `GetComponent/s`
-   * pass down context
-      * have `GraphRoot` and `Run` add themselves to the context
-      * have `ContextNode` register by app+id
-      * add `GraphRoot.getContextNode(context)`
-   * add button to toggle "follow mode": when following, slide to + highlight context onTraceSelected
-      * already partially there in `GraphRoot`
-* fix: in `express` -> `response.js:570` (`return this;`) was not traced
-* while accessing an object property, disable tracing
-* fix: function names
-   * get all names during a preliminary run, then do instrumentation on second
-* fix: `traveValueLabels`
-   * get callee name from instrumentation
-   * good traceValueLabel for all expressions
-* define clear list of features
+* define clear list of currently available features
+   * list
+      * stepping through execution (forward + backward)
+      * gain a strong overview by just looking at the graph
+      * all contexts of `staticContext`
+         * all contexts that call `staticContext` (via `parentTrace`)
+      * all traces/contexts where an object (incl. function or array) is referenced
+         * tracking callback handles of functions
+      * grouping
    * write 3 minimal user stories per feature (applied to a specific bug somewhere)
    * also demonstrate each feature on express
       * TODO: find express bugs related to features that are commonly used
    * setup a test checklist?
-* test
-   * if forced `process.exit` will trigger the "Process shutdown" error message in console
+* fix: in `express` -> `response.js:570` (`return this;`) was not traced
+* while accessing an object property, disable tracing
+* fix: function names
+   * get all names during a preliminary run, then do instrumentation on second
+   * will fix: `guessFunctionName` returning `[cb] [cb] (unnamed)`
+   * also: `displayName` is often too long for proper analysis in py/callGraph
+      * -> do not add source code of function itself -> change to `cb#i of A.f` instead
+* fix: `traveValueLabels`
+   * get callee name from instrumentation
+   * improve traceValueLabel for all expressions
 * fix: instrumentation order
    * for `CallExpression`, manually start visit to `callee` first
    * hardcode mixed `TraceType`s (`Throw/Return` + `Await/Call/Function`)
    * test combinations with functions
       * odd one out: `return await function f() {}`
 * fix: more instrumentation order problems
-   * Problem: `guessFunctionName`: `[cb] [cb] (unnamed)`
    * Problem: `throw` is not traced (`error1`)
    * Problem: in `o.f()` trace, `o` has a higher `traceId` than `o.f()`'s `BCE`
 * allow for mixed type objects for object tracking
@@ -356,8 +364,6 @@
    * when selecting a traced "return", it says "no trace at cursor"
       * (same with almost any keywords for now)
    * `if else` considers `else` as a block, and inserts (potentially unwanted) code deco
-* `displayName` is often too long for proper analysis in py/callGraph
-   * -> do not add source code of function itself -> change to `cb#i of A.f` instead
 * [serialization]
    * early accessing of getters can cause exceptions and maybe worse
 * fix: setup `eslint` to use correct index of `webpack` multi config to allow for `src` alias

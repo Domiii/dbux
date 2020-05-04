@@ -9,6 +9,7 @@ import { logInternalError } from '../log/logger';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { buildDbuxInit } from '../data/staticData';
 import { injectContextEndTrace, buildContextEndTrace } from '../helpers/contextHelper';
+import nameVisitors from './nameVisitors';
 
 
 // ###########################################################################
@@ -80,6 +81,11 @@ function enter(path, state) {
   // inject data + methods that we are going to use for instrumentation
   injectDbuxState(path, state);
 
+  // before starting instrumentation, first get raw data from unmodified AST
+  const traceVisitorObj = traceVisitors();
+  const nameVisitorObj = nameVisitors();
+  traverse(path, state, nameVisitorObj);
+
   const {
     fileName,
     filePath,
@@ -103,7 +109,7 @@ function enter(path, state) {
   // visitInOrder(path, state, contextVisitors());
   // visitInOrder(path, state, traceVisitors());
 
-  traverse(path, state, traceVisitors());
+  traverse(path, state, traceVisitorObj);
 }
 
 function traverse(path, state, visitors) {

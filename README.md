@@ -234,7 +234,7 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 # Known Issues
 
 * calling `process.exit` too early will leave you blind
-   * You should see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. If this was not a crash, you probably called `process.exit` manually." in the console.
+   * You should see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably a crash or you called `process.exit` manually." in the console.
    * `process.exit` kills the process, even if not all recorded data has been sent out yet
    * as a result, you won't see all traces/contexts etc.
    * if you *MUST* call it, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side
