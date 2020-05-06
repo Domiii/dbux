@@ -32,6 +32,12 @@ class GraphRoot extends HostComponentEndpoint {
       this.children.createComponent(RunNode, { applicationId, runId })
     );
   }
+
+  public = {
+    requireFocus: (applicationId, contextId) => {
+      this.controllers.getComponent('FocusController').focus(applicationId, contextId);
+    }
+  }
 }
 
 export default GraphRoot;

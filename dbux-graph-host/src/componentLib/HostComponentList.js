@@ -18,6 +18,9 @@ class HostComponentList {
   }
 
   getComponent(Clazz) {
+    if (isString(Clazz)) {
+      return this.componentsByName.get(Clazz)?.[0] || null;
+    }
     if (!Clazz._componentName) {
       throw new Error(`Invalid component class. Did you forget to add this component to _hostRegistry? - ${Clazz}`);
     }
@@ -25,6 +28,9 @@ class HostComponentList {
   }
 
   getComponents(Clazz) {
+    if (isString(Clazz)) {
+      return this.componentsByName.get(Clazz) || null;
+    }
     if (!Clazz._componentName) {
       throw new Error(`Invalid component class. Did you forget to add this component to _hostRegistry? - ${Clazz}`);
     }

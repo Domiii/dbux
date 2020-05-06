@@ -6,10 +6,14 @@ export default class FocusController extends HostComponentEndpoint {
     traceSelection.onTraceSelectionChanged(this.onTraceSelected);
   }
 
-  onTraceSelected = (trace) => {
-    const { traceId, contextId, applicationId } = trace;
+  onTraceSelected(trace) {
+    const { contextId, applicationId } = trace;
+    this.focus(applicationId, contextId);
+  }
+
+  focus(applicationId, contextId) {
     this.setState({
-      focus: { traceId, contextId, applicationId }
+      focus: { applicationId, contextId }
     });
   }
 
