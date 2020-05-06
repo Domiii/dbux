@@ -6,7 +6,7 @@ export default class FocusController extends HostComponentEndpoint {
     traceSelection.onTraceSelectionChanged(this.onTraceSelected);
   }
 
-  onTraceSelected(trace) {
+  onTraceSelected = (trace) => {
     if (!trace) this.clearFocus();
     else {
       const { contextId, applicationId } = trace;

@@ -15,11 +15,13 @@ class GraphRoot extends HostComponentEndpoint {
     this.controllers.createComponent('FocusController');
   }
 
-  refresh() {
+  clear() {
     // clear
     this.children.clear();
     this.contextNodesByContext = new Map();
+  }
 
+  refresh() {
     // call setState with refreshed data
     const update = {
       applications: allApplications.selection.getAll().map(app => ({

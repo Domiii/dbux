@@ -83,6 +83,8 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   refreshGraphRoot() {
+    this.root.clear();
+
     // update root application data
     this.root.refresh();
 
