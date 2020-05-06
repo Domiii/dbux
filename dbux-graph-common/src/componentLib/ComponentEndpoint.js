@@ -85,6 +85,10 @@ class ComponentEndpoint {
   handlePing() {
     console.warn(this.debugTag, 'was pinged by the remote.');
   }
+
+  toString() {
+    return this.debugTag;
+  }
 }
 
 export default ComponentEndpoint;
