@@ -111,7 +111,8 @@ export default class Ipc {
       }
       const func = get(endpoint, commandName);
       if (!func) {
-        throw new Error('IPC Command does not exist on endpoint: ' + commandName);
+        endpoint.logger.error('IPC Command does not exist on endpoint:', commandName);
+        return;
       }
       else {
         const res = await func.apply(endpoint, args);

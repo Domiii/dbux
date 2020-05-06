@@ -39,13 +39,13 @@
 				"${file}"
 			],
 			"protocol": "inspector",
-			// "trace": true,
+			"trace": true,
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 			"outFiles": [
-				"${workspaceRoot}/dbux-babel-plugin/dist/**/*.js",
-				"${workspaceRoot}/dbux-runtime/dist/**/*.js"
+				"${workspaceFolder}/dbux-babel-plugin/dist/**/*.js",
+				"${workspaceFolder}/dbux-runtime/dist/**/*.js"
 			]
 		},
 		{

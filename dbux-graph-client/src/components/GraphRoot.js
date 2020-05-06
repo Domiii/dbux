@@ -1,19 +1,23 @@
 import createPanzoom from 'panzoom';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { compileHtmlElement } from '@/util/domUtil';
-import popperManeger from '../popperManeger';
+import popperManeger from '../popperManager';
 
 class GraphRoot extends ClientComponentEndpoint {
   createEl() {
     window.addEventListener('keypress', async (e) => {
       if (e.key === "s") {
+        let applicationId = await this.app.prompt("applicationId");
         let contextId = await this.app.prompt("traceId");
+        applicationId = applicationId && parseInt(applicationId);
         contextId = contextId && parseInt(contextId);
-        if (contextId) {
-          this.slide(contextId, 1);
+        
+        if (applicationId && contextId) {
+          this.remote.requestFocus(applicationId, contextId);
         }
       }
     });
+
     return compileHtmlElement(/*html*/`
       <div class="root">
         <div data-el="body">
@@ -30,7 +34,7 @@ class GraphRoot extends ClientComponentEndpoint {
 
   setupEl() {
     this.panzoom = this.initPanZoom(this.els.body);
-
+    
     // hackfix: make popperEl global for now
     window._popperEl = this.els.toolTip;
   }
@@ -99,50 +103,6 @@ class GraphRoot extends ClientComponentEndpoint {
     });
 
     return panzoom;
-  }
-  //focus slide. referance https://codepen.io/relign/pen/qqZxqW?editors=0011
-  slide = (contextId, slideSpeed = 1) => {
-    contextId = contextId === "root" ? '#root' : '#context_' + contextId;
-    let node = document.querySelector(contextId);
-    if (!node) {
-      alert("trace not foound");
-    }
-    let nodePos = node.getBoundingClientRect();
-    let toolbar = document.querySelector("#toolbar");
-    let barPos = toolbar.getBoundingClientRect();
-
-    let slideData = {
-      startTime: Date.now(),
-      startX: this.panzoom.getTransform().x,
-      startY: this.panzoom.getTransform().y,
-      distanceX: barPos.left - nodePos.x,
-      distanceY: barPos.bottom + 10 - nodePos.y,
-      slideSpeed
-    };
-
-    requestAnimationFrame(() => this.step(node, slideData));
-
-    node.classList.add("flash-me");
-    setTimeout(() => { node.classList.remove("flash-me"); }, (slideSpeed + 3) * 1000);
-  }
-  step = (node, slideData) => {
-    const {
-      startTime,
-      startX,
-      startY,
-      distanceX,
-      distanceY,
-      slideSpeed
-    } = slideData;
-
-    let progress = Math.min(1.0, (Date.now() - startTime) / (slideSpeed * 1000));
-
-    this.panzoom.moveTo(startX + distanceX * progress, startY + distanceY * progress);
-    this._repaint();
-    if (progress < 1.0) {
-      requestAnimationFrame(() => this.step(node, slideData));
-    }
-  }
+  } 
 }
-
 export default GraphRoot;

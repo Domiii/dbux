@@ -86,8 +86,7 @@ class GraphDocument extends HostComponentEndpoint {
     // update root application data
     this.root.refresh();
 
-    // update children contexts
-    this.root.children.clear();
+    // add already existing children contexts
     const selectedApps = allApplications.selection.getAll();
     for (const app of selectedApps) {
       const { applicationId } = app;

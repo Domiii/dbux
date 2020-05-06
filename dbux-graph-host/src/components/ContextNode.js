@@ -1,6 +1,5 @@
 import { ViewColumn } from 'vscode';
 import { goToTrace } from 'dbux-code/src/codeUtil/codeNav';
-import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
@@ -27,6 +26,9 @@ class ContextNode extends HostComponentEndpoint {
     this.controllers.createComponent('GraphNode', {
       isExpanded: false
     });
+
+    // register with root
+    this.context.graphRoot._contextNodeCreated(this);
 
     // build sub graph
     this.buildChildNodes();
