@@ -1,6 +1,6 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
-import traceSelection from 'dbux-data/src/traceSelection';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+import traceSelection from 'dbux-data/src/traceSelection';
 import RunNode from './RunNode';
 
 class GraphRoot extends HostComponentEndpoint {
@@ -11,21 +11,17 @@ class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext = [];
 
   init() {
-    traceSelection.onTraceSelectionChanged(this.onTraceSelected);
+    // add GraphNode controller
+    this.controllers.createComponent('FocusController');
   }
 
-  onTraceSelected = (trace) => {
-    this.setState({
-      traceId: trace?.traceId || 0,
-      applicationId: trace?.applicationId || 0
-    });
-  }
-
-  refresh() {
+  clear() {
     // clear
     this.children.clear();
     this.contextNodesByContext = new Map();
+  }
 
+  refresh() {
     // call setState with refreshed data
     const update = {
       applications: allApplications.selection.getAll().map(app => ({
@@ -61,6 +57,12 @@ class GraphRoot extends HostComponentEndpoint {
   _contextNodeCreated(contextNode) {
     const { state: { context } } = contextNode;
     this.contextNodesByContext.set(context, contextNode);
+  }
+
+  public = {
+    requestFocus: (applicationId, contextId) => {
+      this.controllers.getComponent('FocusController').focus(applicationId, contextId);
+    }
   }
 }
 

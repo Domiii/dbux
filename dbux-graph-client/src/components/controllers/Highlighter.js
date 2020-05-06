@@ -13,7 +13,7 @@ export default class Highlighter extends ClientComponentEndpoint {
 
   update() {
     const { state: { enabled } } = this;
-    
+
     decorateClasses(this.highlighterEl, {
       highlighted: enabled
     });
