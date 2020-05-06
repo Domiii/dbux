@@ -4,6 +4,12 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
 
 class GraphRoot extends HostComponentEndpoint {
+  context = {
+    graphRoot: this
+  };
+
+  contextNodesByContext = [];
+
   init() {
     traceSelection.onTraceSelectionChanged(this.onTraceSelected);
   }
@@ -16,6 +22,10 @@ class GraphRoot extends HostComponentEndpoint {
   }
 
   refresh() {
+    // clear
+    this.children.clear();
+    this.contextNodesByContext = new Map();
+
     // call setState with refreshed data
     const update = {
       applications: allApplications.selection.getAll().map(app => ({
@@ -38,6 +48,19 @@ class GraphRoot extends HostComponentEndpoint {
     runIds.forEach(runId =>
       this.children.createComponent(RunNode, { applicationId, runId })
     );
+  }
+
+  // ###########################################################################
+  // context management
+  // ###########################################################################
+
+  getContextNodeByContext(context) {
+    return this.contextNodesByContext.get(context);
+  }
+
+  _contextNodeCreated(contextNode) {
+    const { state: { context } } = contextNode;
+    this.contextNodesByContext.set(context, contextNode);
   }
 }
 
