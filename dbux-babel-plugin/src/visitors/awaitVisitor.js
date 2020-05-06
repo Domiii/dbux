@@ -60,6 +60,7 @@ export function awaitVisitEnter(path, state) {
   const argumentPath = path.get('argument');
   const argument = argumentPath.node;
 
+  // TODO: trace-type
   const preTraceId = state.traces.addTrace(argumentPath, TraceType.Await, true);
   const resumeTraceId = state.traces.addTrace(path, TraceType.Resume, true);
 

@@ -1,4 +1,4 @@
-import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { newLogger } from 'dbux-common/src/log/logger';
@@ -295,12 +295,12 @@ export default {
    */
   getCallResultTrace(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    const type = dp.util.getTraceType(traceId);
+    const traceType = dp.util.getTraceType(traceId);
     if (trace.schedulerTraceId) {
       // trace is push/pop callback
       return dp.util.getCallResultTrace(trace.schedulerTraceId);
     }
-    else if (trace.callId && type !== TraceType.BeforeCallExpression) {
+    else if (trace.callId && isBeforeCallExpression(traceType)) {
       // trace is call/callback arg
       return dp.util.getCallResultTrace(trace.callId);
     }

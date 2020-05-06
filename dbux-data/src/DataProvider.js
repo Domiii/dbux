@@ -187,7 +187,7 @@ class TraceCollection extends Collection<Trace> {
         // guess error trace
         const previousTrace = this.dp.collections.traces.getById(previousTraceId);
         const { staticTraceId, callId, resultCallId } = previousTrace;
-        if (previousTraceType === TraceType.ThrowArgument) {
+        if (isTraceThrow(previousTraceType)) {
           // trace is error trace
           trace.staticTraceId = staticTraceId;
         }

@@ -20,6 +20,8 @@ import { getNodeNames } from './nameVisitors';
 
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
+const Verbose = false;
+
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
   CallExpression: 1,
@@ -671,6 +673,9 @@ function _getFullName(cfg) {
 }
 
 function logInst(tag, cfg, path, direction = null, ...other) {
+  if (!Verbose) {
+    return;
+  }
   const nodeName = getNodeNames(path.node)?.name;
   const cfgName = _getFullName(cfg);
   const dirIndicator = direction && direction === InstrumentationDirection.Enter ? ' ->' : ' <-';

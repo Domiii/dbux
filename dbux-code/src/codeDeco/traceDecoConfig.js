@@ -238,6 +238,9 @@ export function getTraceDecoName(dataProvider, staticTrace, trace) {
   // default: check by type name
   const traceType = dataProvider.util.getTraceType(traceId);
   const typeName = TraceType.nameFrom(traceType);
+
+  // TODO: trace-type
+
   const f = decoNamesByType[typeName];
   if (f) {
     const name = f(dataProvider, staticTrace, trace);

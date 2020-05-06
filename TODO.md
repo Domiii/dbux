@@ -288,7 +288,8 @@
 ## TODO (other)
 * fix: re-invent TraceType to support multiple roles per trace
    * `// TODO: trace-type`
-   * 
+   * TODO: fix labels for multi-role traces
+      * currently only gets first selected role
 * fix: basic instrumentation order
    * Problem: in `o.f()` trace, `o` has a higher `traceId` than `o.f()`'s `BCE`
    * -> Problem: how to let a trace play multiple different roles (e.g. in `return f();`)?

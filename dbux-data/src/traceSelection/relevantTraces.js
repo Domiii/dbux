@@ -97,6 +97,8 @@ function compareByTraceId(t1, t2) {
 function areBothResumeAwait(t1, t2) {
   const t1Type = getTraceType(t1);
   const t2Type = getTraceType(t2);
+
+  // TODO: trace-type
   if (t1Type === TraceType.Resume || t1Type === TraceType.Await) {
     if (t2Type === TraceType.Resume || t2Type === TraceType.Await) {
       return true;

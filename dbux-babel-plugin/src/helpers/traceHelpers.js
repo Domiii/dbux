@@ -135,6 +135,8 @@ function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg,
 export const traceBeforeExpression = function traceBeforeExpression(
   templ, traceType, expressionPath, state, tracePath) {
   const { ids: { dbux } } = state;
+
+  // TODO: trace-type
   const traceId = state.traces.addTrace(tracePath || expressionPath, traceType || TraceType.BeforeExpression, null);
 
   replaceWithTemplate(templ, expressionPath, {

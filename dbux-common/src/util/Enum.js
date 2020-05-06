@@ -1,8 +1,9 @@
-// Some small utilities to work with enums
-
-
+/**
+ * Enum class
+ */
 export default class Enum {
-  constructor(valuesByNames) {
+  constructor(namesOrValuesByNames) {
+    const valuesByNames = makeEnumObject(namesOrValuesByNames);
     this.valuesByNames = Object.freeze(valuesByNames);
     this.names = Object.keys(valuesByNames);
     this.values = Object.values(valuesByNames);
@@ -18,6 +19,39 @@ export default class Enum {
       }
       this[name] = valuesByNames[name];
     }
+  }
+
+  get is() {
+    if (!this._is) {
+      // first time access of `is`
+      this._is = this._makeIs();
+    }
+    return this._is;
+  }
+
+  _makeIs() {
+    return new Proxy({}, {
+      get: (target, name) => {
+        let cb = target[name];
+        if (cb === undefined) {
+          // first time access of `is[name]`
+          const value = this.valueFromForce(name);
+          cb = target[name] = this._isValue.bind(this, value);
+        }
+        return cb;
+      },
+
+      ownKeys: () => {
+        return this.names;
+      }
+    });
+  }
+
+  /**
+   * @virtual
+   */
+  isValue(value, nameOrValue) {
+    return value === this.getValue(nameOrValue);
   }
 
   get byName() {
@@ -88,6 +122,10 @@ export default class Enum {
     return value;
   }
 
+  // ###########################################################################
+  // previous + next
+  // ###########################################################################
+
   previousValue(value) {
     const { values } = this;
     let idx = values.indexOf(value);
@@ -102,6 +140,11 @@ export default class Enum {
     return values[idx];
   }
 
+  // ###########################################################################
+  // switchCall
+  // ###########################################################################
+  
+  // call function from a set of functions, based on given input
   switchCall(valueOrName, functions, ...args) {
     const name = this.nameFromForce(valueOrName);
 
@@ -113,6 +156,29 @@ export default class Enum {
       throw new Error(`${this.constructor.name}.switchCall() failed: functions["${name}"] is not a function`);
     }
     return cb(...args);
+  }
+
+  // ###########################################################################
+  // utilities
+  // ###########################################################################
+
+
+  makeEnumObject(namesOrValuesByNames) {
+    if (!Array.isArray(namesOrValuesByNames)) {
+      return namesOrValuesByNames;
+    }
+    else {
+      return this.makeSimpleEnumObject(namesOrValuesByNames);
+    }
+  }
+
+  /**
+   * @virtual
+   */
+  makeSimpleEnumObject(names) {
+    return Object.fromEntries(
+      names.map((name, i) => [name, i + 1])
+    );
   }
 }
 
