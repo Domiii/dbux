@@ -120,7 +120,7 @@ export function switchMode(mode) {
   return groupingMode;
 }
 
-export class StaticTraceTDNode extends BaseTreeViewNode {
+export default class StaticTraceTDNode extends BaseTreeViewNode {
   static makeTraceDetail(trace, parent) {
     return trace;
   }
@@ -135,7 +135,7 @@ export class StaticTraceTDNode extends BaseTreeViewNode {
     const mode = modeType.getName(groupingMode);
     let groupedTraces = groupByMode[mode](application, traces);
     let modeLabel = modeTypeToLabel.get(groupingMode);
-    const label = `Executed: ${traces.length}x (${groupedTraces.length} groups ${modeLabel})`;
+    const label = `Trace Executed: ${traces.length}x (${groupedTraces.length} groups ${modeLabel})`;
 
     return {
       groupedTraces,

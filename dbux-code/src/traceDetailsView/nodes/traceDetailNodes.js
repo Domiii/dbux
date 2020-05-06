@@ -4,9 +4,10 @@ import tracePlayback from 'dbux-data/src/playback/tracePlayback';
 import { getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import { StaticTraceTDNode } from './StaticTraceTDNodes';
+import StaticTraceTDNode from './StaticTraceTDNodes';
+import StaticContextTDNode from './StaticContextTDNodes';
+import TrackObjectTDNode from './TrackObjectTDNodes';
 import { InfoTDNode } from './traceInfoNodes';
-import { TrackObjectTDNode } from './TrackObjectTDNodes';
 
 
 function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
@@ -205,14 +206,13 @@ export const NavigationNodeClasses = [
   }
 ];
 
-
-
 // ###########################################################################
 // DetailNodeClasses
 // ###########################################################################
 
 export const DetailNodeClasses = [
   StaticTraceTDNode,
+  StaticContextTDNode,
   TrackObjectTDNode,
   InfoTDNode,
   // ValueTDNode,
