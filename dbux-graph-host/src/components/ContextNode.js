@@ -101,7 +101,7 @@ class ContextNode extends HostComponentEndpoint {
     showContext(applicationId, contextId) {
       const { dataProvider } = allApplications.getById(applicationId);
       const trace = dataProvider.util.getFirstTraceOfContext(contextId);
-      goToTrace(trace, ViewColumn.One);
+      goToTrace(trace);
     }
   }
 }

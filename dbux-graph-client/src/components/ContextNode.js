@@ -1,10 +1,14 @@
-import { createPopper } from '@popperjs/core';
+import popperManeger from '../popperManager';
 import { compileHtmlElement } from '@/util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
+import Highlighter from './controllers/Highlighter';
 
 class ContextNode extends ClientComponentEndpoint {
+  get popperEl() {
+    return window._popperEl;
+  }
+
   createEl() {
-    this.popperInstance = null;
     return compileHtmlElement(/*html*/`
       <div class="context">
         <div>
@@ -33,60 +37,20 @@ class ContextNode extends ClientComponentEndpoint {
   update() {
     const {
       displayName,
+      applicationId,
       context: { contextId, staticContextId }
     } = this.state;
 
 
-    this.el.id = `context_${contextId}`;
+    this.el.id = `application_${applicationId}-context_${contextId}`;
     this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},50%,75%)`;
     this.els.title.id = `name_${contextId}`;
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
     this.els.toolTip.textContent = `${displayName}`;
     this.els.nodeChildren.id = `children_${contextId}`;
-
-    createPopper(this.els.displayName, this.els.toolTip, {
-      placement: "bottom-start",
-      modifiers: [
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 8],
-          },
-        },
-      ],
-    });
   }
-
-  destroy = () => {
-    let { popperInstance } = this;
-    if (popperInstance) {
-      popperInstance.destroy();
-      popperInstance = null;
-    }
-  }
-
-  show = () => {
-    const { displayName, toolTip } = this.els;
-    toolTip.setAttribute('data-show', '');
-    this.popperInstance = createPopper(displayName, toolTip, {
-      placement: "bottom-start",
-      modifiers: [
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 8],
-          },
-        },
-      ],
-    });
-  }
-
-  hide = () => {
-    this.els.toolTip.removeAttribute('data-show');
-    this.destroy();
-  }
-
+  
   getBinaryHsl(i) {
     let color = 0;
     let base = 180;
@@ -101,16 +65,18 @@ class ContextNode extends ClientComponentEndpoint {
   on = {
     displayName: {
       mouseenter() {
-        this.show();
+        this.popperEl.firstChild.textContent = `${this.state.displayName}`;
+        popperManeger.show(this.els.displayName, this.popperEl);
       },
       focus() {
-        this.show();
+        this.popperEl.firstChlild.textContent = `${this.state.displayName}`;
+        popperManeger.show(this.els.displayName, this.popperEl);
       },
       mouseleave() {
-        this.hide();
+        popperManeger.hide(this.popperEl);
       },
       blur() {
-        this.hide();
+        popperManeger.hide(this.popperEl);
       },
       click(evt) {
         if (evt.shiftKey) {

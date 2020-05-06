@@ -1,4 +1,5 @@
 import HostComponentEndpoint from 'dbux-graph-host/src/componentLib/HostComponentEndpoint';
+import { getClosestPackageJsonNameOrPath } from '../../../../dbux-data/src/util/nodeUtil';
 
 export default class Highlighter extends HostComponentEndpoint {
   get manager() {

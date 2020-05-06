@@ -64,7 +64,7 @@ export default class TraceNode extends HostComponentEndpoint {
     showTrace(applicationId, traceId) {
       const { dataProvider } = allApplications.getById(applicationId);
       const trace = dataProvider.collections.traces.getById(traceId);
-      goToTrace(trace, ViewColumn.One);
+      goToTrace(trace);
     }
   }
 }
