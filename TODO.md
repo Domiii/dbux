@@ -2,6 +2,24 @@
 # TODO
 
 ## TODO (shared)
+* (!!!) `ContextNode`
+   * button -> highlight all contexts of this staticContext
+      * also add list to `traceDetailsView`: lists all contexts that call `staticContext` (via `parentTrace`)
+         * (select call trace when clicking)
+   * highlight all context nodes where an object was referenced (add button to `Object References` node in `traceDetailsView`)
+   * Buttons -> go to next/previous context of this staticContext (`parentTrace` of next/previous context)
+   * (Display contextual information for every function call)
+   * (link/label: parentTrace)
+      * traceLabel + valueLabel
+* add "follow mode" button to `Toolbar`: when following, slide to + highlight context `onTraceSelected`
+   * When stepping through code, also follow along in the graph
+* `GraphNode`
+   * add "collapseAllButThis" button
+      * all collapsed parents change to `ExpandChildren`
+   * apply `GraphNode` controller pattern to all "graph node" components: `Run`, `GraphRoot`
+   * add `reveal` function to `host/GraphNode`:
+      * slide to node
+      * highlight node
 * [Projects]
    * show status of runner while runner is running
       * -> need to add event listener to runner for that
@@ -137,24 +155,6 @@
          * don't scale font, small font-size
          * darkened colors
          * low contrast
-* add "follow mode" button to `Toolbar`: when following, slide to + highlight context onTraceSelected
-* (!!!) `ContextNode`
-   * When stepping through code, also follow along in the graph
-   * button -> highlight all calls of a particular staticContext
-      * also show a dropdown list in the node: lists all contexts that call `staticContext` (via `parentTrace`)
-         * (select trace when clicking each)
-   * highlight all context nodes where an object was referenced
-   * Buttons to go to next/previous invocation of this function
-   * Display contextual information for every function call
-   * link/label: parentTrace
-      * traceLabel + valueLabel
-* `GraphNode`
-   * apply `GraphNode` controller pattern to all "graph node" components: `Run`, `GraphRoot`
-   * add "contractAllButThis" button to `GraphNode`
-   * add `reveal` function to `host/GraphNode`:
-      * make sure, all contracted parents change to `ExpandChildren`
-      * slide to node
-      * highlight node
 * `ContextNode`:
    * remove `shift+click` go-to-code click handler
    * replace it with: clicking on the title (`displayName`) element instead (make it a `<a>`)
@@ -286,6 +286,9 @@
 
 
 ## TODO (other)
+* fix: re-invent TraceType to support multiple roles per trace
+   * `// TODO: trace-type`
+   * 
 * fix: basic instrumentation order
    * Problem: in `o.f()` trace, `o` has a higher `traceId` than `o.f()`'s `BCE`
    * -> Problem: how to let a trace play multiple different roles (e.g. in `return f();`)?
