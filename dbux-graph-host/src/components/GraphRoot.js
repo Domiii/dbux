@@ -3,6 +3,11 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
 
 class GraphRoot extends HostComponentEndpoint {
+  init() {
+    // add GraphNode controller
+    this.controllers.createComponent('FocusController');
+  }
+
   refresh() {
     // call setState with refreshed data
     const update = {

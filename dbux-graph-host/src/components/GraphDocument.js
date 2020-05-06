@@ -1,5 +1,4 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
-import traceSelection from 'dbux-data/src/traceSelection';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
@@ -33,14 +32,6 @@ class GraphDocument extends HostComponentEndpoint {
     // ########################################
 
     allApplications.selection.onApplicationsChanged(this.handleApplicationsChanged);
-    traceSelection.onTraceSelectionChanged(this.onTraceSelected);
-  }
-
-  onTraceSelected = (trace) => {
-    const { traceId, contextId, applicationId } = trace;
-    this.setState({
-      focus: { traceId, contextId, applicationId }
-    });
   }
 
   createOwnComponents() {
