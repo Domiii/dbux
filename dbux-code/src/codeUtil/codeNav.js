@@ -72,19 +72,19 @@ export async function showTextDocument(fpath, column) {
   return null;
 }
 
-export async function getOrOpenTraceEditor(trace, column = ViewColumn.Active) {
+export async function getOrOpenTraceEditor(trace) {
   const dp = allApplications.getApplication(trace.applicationId).dataProvider;
   const filePath = dp.queries.programFilePathByTraceId(trace.traceId);
 
-  return showTextDocument(filePath, column);
+  return showTextDocument(filePath);
 }
 
-export async function goToTrace(trace, column = ViewColumn.Active) {
+export async function goToTrace(trace) {
   const dp = allApplications.getApplication(trace.applicationId).dataProvider;
   const { staticTraceId } = dp.collections.traces.getById(trace.traceId);
   const { loc } = dp.collections.staticTraces.getById(staticTraceId);
 
-  const editor = await getOrOpenTraceEditor(trace, column);
+  const editor = await getOrOpenTraceEditor(trace);
   selectLocInEditor(editor, loc);
 }
 
