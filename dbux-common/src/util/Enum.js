@@ -3,7 +3,7 @@
  */
 export default class Enum {
   constructor(namesOrValuesByNames) {
-    const valuesByNames = makeEnumObject(namesOrValuesByNames);
+    const valuesByNames = this.makeEnumObject(namesOrValuesByNames);
     this.valuesByNames = Object.freeze(valuesByNames);
     this.names = Object.keys(valuesByNames);
     this.values = Object.values(valuesByNames);
@@ -156,6 +156,19 @@ export default class Enum {
       throw new Error(`${this.constructor.name}.switchCall() failed: functions["${name}"] is not a function`);
     }
     return cb(...args);
+  }
+
+  // ###########################################################################
+  // isAnyOf
+  // ###########################################################################
+
+  isAnyOf(targetValueOrName, namesString) {
+    const names = namesString.split(' ');
+    if (names.length === 0) {
+      throw new Error(`no names given to ${this}.isAnyOf`);
+    }
+    const searchName = this.nameFromForce(targetValueOrName);
+    return names.includes(searchName);
   }
 
   // ###########################################################################
