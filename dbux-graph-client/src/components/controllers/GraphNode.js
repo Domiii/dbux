@@ -21,7 +21,7 @@ export default class GraphNode extends ClientComponentEndpoint {
     this.toggleButtonVisible();   // call initially
 
     // on click -> nextMode
-    this.owner.dom.addEventListeners(this.on);
+    this.owner.dom.addEventListeners(this);
   }
 
   /**

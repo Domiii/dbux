@@ -32,7 +32,7 @@ export default class DOMWrapper {
 
     // hook up event listeners
     if (on) {
-      this.addEventListeners(on);
+      this.addEventListeners(this);
     }
 
     if (parent && parent.dom && parent.el) {
@@ -41,7 +41,9 @@ export default class DOMWrapper {
     }
   }
 
-  addEventListeners(on) {
+  addEventListeners(owner) {
+    const { on } = owner;
+
     for (const elName in on) {
       const compConfig = on[elName];
       const child = this.els[elName];
@@ -55,7 +57,7 @@ export default class DOMWrapper {
           this.logger.error(`Invalid event handler (on) - is not a function: "${elName}.${eventName}"`);
           continue;
         }
-        child.addEventListener(eventName, cb.bind(this.owner));
+        child.addEventListener(eventName, cb.bind(owner));
       }
     }
   }

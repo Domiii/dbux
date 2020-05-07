@@ -2,6 +2,7 @@ import isFunction from 'lodash/isFunction';
 import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
 import DOMWrapper from '@/dom/DOMWrapper';
 import { collectElementsByDataAttr } from '@/util/domUtil';
+import ClientComponentList from './ClientComponentList';
 
 /**
  * The Client endpoint is controlled by the Host endpoint.
@@ -12,6 +13,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
    */
   el;
   isInitialized;
+  children = new ClientComponentList(this);
 
   constructor() {
     super();
@@ -63,6 +65,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   // ###########################################################################
 
   async _performInit() {
+    this.owner?.children._addComponent(this);
     await this.init();
     this.isInitialized = true;
   }
@@ -101,6 +104,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
 
     dispose() {
       this.dom?.remove();
+      this.owner?.children._removeComponent(this);
     }
   };
 
