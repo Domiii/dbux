@@ -1,6 +1,6 @@
-import BitMaskEnum from '../../util/BitMaskEnum';
+import Enum from '../../util/Enum';
 
-const TraceTypeSet = {
+let TraceType = {
   PushImmediate: 1,
   PopImmediate: 1,
 
@@ -21,115 +21,121 @@ const TraceTypeSet = {
   PushCallback: 1,
   PopCallback: 1,
 
-  Await: 1,
-  Resume: 1,
-
   Statement: 1,
   BlockStart: 1,
   BlockEnd: 1,
 
+  // Return
   ReturnArgument: 1,
   ReturnNoArgument: 1,
 
+  // Throw
   ThrowArgument: 1,
+  ThrowCallExpession: 1,
+
+  // Await
+  Await: 1,
+  Resume: 1,
+  
+
+  // AwaitCallExpression: 1,
+  // ReturnAwait: 1,
+  // ReturnAwaitCallExpression: 1,
 
   EndOfContext: 1
 };
 
 /**
- * @type {(BitMaskEnum|TraceTypeSet)}
+ * @type {(Enum|TraceTypeSet)}
  */
-const TraceType = new BitMaskEnum(Object.values(TraceTypeSet));
+TraceType = new Enum(Object.keys(TraceType));
 
-const pushTypes = 
-  TraceType.PushImmediate |
-  TraceType.PushCallback |
-  TraceType.Resume;
+const pushTypes = new Array(TraceType.getCount()).map(() => false);
+pushTypes[TraceType.PushImmediate] = true;
+pushTypes[TraceType.PushCallback] = true;
+pushTypes[TraceType.Resume] = true;
 
 export function isTracePush(traceType) {
-  return !!(pushTypes & traceType);
+  return pushTypes[traceType];
 }
 
 
-const popTypes =
-  TraceType.PopImmediate |
-  TraceType.PopCallback;
+const popTypes = new Array(TraceType.getCount()).map(() => false);
+popTypes[TraceType.PopImmediate] = true;
+popTypes[TraceType.PopCallback] = true;
 
 export function isTracePop(traceType) {
-  return !!(popTypes & traceType);
+  return popTypes[traceType];
 }
 
 
-const functionExitTypes =
-  TraceType.ReturnArgument |
-  TraceType.ReturnNoArgument |
-  TraceType.EndOfContext; 
-  
+const returnTraceTypes = new Array(TraceType.getCount()).map(() => false);
+returnTraceTypes[TraceType.ReturnArgument] = true;
+returnTraceTypes[TraceType.ReturnNoArgument] = true;
+
+export function isTraceReturn(traceType) {
+  return returnTraceTypes[traceType];
+}
+
+
+const functionExitTypes = [...returnTraceTypes];
+functionExitTypes[TraceType.EndOfContext] = true;
+
 export function isTraceFunctionExit(traceType) {
-  return !!(functionExitTypes & traceType);
+  return functionExitTypes[traceType];
 }
 
 
-const dynamicTypeTypes =
-  // shared w/ PushCallback + PopCallback
-  TraceType.CallbackArgument |  
-  // might be shared w/ CallbackArgument, PushCallback + PopCallback
-  TraceType.CallArgument;
+const dynamicTypeTypes = new Array(TraceType.getCount()).map(() => false);
+// shared w/ PushCallback + PopCallback
+dynamicTypeTypes[TraceType.CallbackArgument] = true;  
+// might be shared w/ CallbackArgument, PushCallback + PopCallback
+dynamicTypeTypes[TraceType.CallArgument] = true;
 
 export function hasDynamicTypes(traceType) {
-  return !!(dynamicTypeTypes & traceType);
+  return dynamicTypeTypes[traceType];
 }
 
 
-const expressionTypes =
-  TraceType.ExpressionResult |
-  TraceType.ExpressionValue |
-  TraceType.CallArgument |
-  TraceType.CallbackArgument |
-  TraceType.CallExpressionResult |
-  TraceType.ReturnArgument |
-  TraceType.ThrowArgument;
+const expressionTypes = new Array(TraceType.getCount()).map(() => false);
+expressionTypes[TraceType.ExpressionResult] = true;
+expressionTypes[TraceType.ExpressionValue] = true;
+expressionTypes[TraceType.CallArgument] = true;
+expressionTypes[TraceType.CallbackArgument] = true;
+expressionTypes[TraceType.CallExpressionResult] = true;
+expressionTypes[TraceType.ReturnArgument] = true;
+expressionTypes[TraceType.ThrowArgument] = true;
 
 export function isTraceExpression(traceType) {
-  return !!(expressionTypes & traceType);
+  return expressionTypes[traceType];
 }
 
-const valueTypes = expressionTypes |
-  TraceType.PopCallback; // has return value of function
+const valueTypes = [...expressionTypes];
+valueTypes[TraceType.PopCallback] = true; // has return value of function
 
 export function hasTraceValue(traceType) {
-  return !!(valueTypes & traceType);
+  return valueTypes[traceType];
 }
 
 
-const callbackTypes =
-  TraceType.CallbackArgument |
-  TraceType.PushCallback |
-  TraceType.PopCallback;
+const callbackTypes = new Array(TraceType.getCount()).map(() => false);
+callbackTypes[TraceType.CallbackArgument] = true;
+callbackTypes[TraceType.PushCallback] = true;
+callbackTypes[TraceType.PopCallback] = true;
 
 export function isCallbackRelatedTrace(traceType) {
-  return !!(callbackTypes & traceType);
+  return callbackTypes[traceType];
 }
 
 
-const dataOnlyTypes =
+const dataOnlyTypes = new Array(TraceType.getCount()).map(() => false);
 // dataTraceTypes[TraceType.CallArgument] = true;
-  TraceType.ExpressionValue;
-
+dataOnlyTypes[TraceType.ExpressionValue] = true;
 /**
  * Traces that are important for data flow analysis, but not important for control flow analysis
  */
 export function isDataTrace(traceType) {
-  return !!(dataOnlyTypes & traceType);
-}
-
-
-const returnTypes =
-  TraceType.ReturnArgument |
-  TraceType.ReturnNoArgument;
-
-export function isReturnTrace(traceType) {
-  return !!(returnTypes & traceType);
+  return dataOnlyTypes[traceType];
 }
 
 export function isBeforeCallExpression(traceType) {
@@ -137,7 +143,7 @@ export function isBeforeCallExpression(traceType) {
 }
 
 export function isTraceThrow(traceType) {
-  // TraceType.ThrowArgument;
+  TraceType.is.ThrowArgument(traceType);
 }
 
 export default TraceType;

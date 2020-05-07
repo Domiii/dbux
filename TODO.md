@@ -286,8 +286,19 @@
 
 
 ## TODO (other)
+* merge + test latest PR
+* fix: `ComponentList` needs to add role (`child` or `controller`), so we can properly categorize on `Client` as well
+   * -> or get rid of categorization and just fix things up in `GraphNode` instead?
 * fix: re-invent TraceType to support multiple roles per trace
    * `// TODO: trace-type`
+   * NOTES
+      * only `expressions` can take on multiple roles (for now, it seems that way)
+      * for `CallExpression`, we just override the `traceType` for result
+         * for `CallExpressionResult` we use `resultCallId` to identify it's role
+         * for call arguments, we use `callId`
+   * Ideas
+      * -> produce a more reliable/robust way of instrumenting expressions with multiple roles
+      * -> trace categorization/role assignment might need data lookup (e.g. for `getTraceType(tost)`)
    * TODO: fix labels for multi-role traces
       * currently only gets first selected role
 * fix: basic instrumentation order

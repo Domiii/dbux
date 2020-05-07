@@ -20,7 +20,7 @@ import { getNodeNames } from './nameVisitors';
 
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
-const Verbose = false;
+const Verbose = true;
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
@@ -157,12 +157,12 @@ const traceCfg = (() => {
 
     SequenceExpression: [
       NoTrace,
-      [['expressions', ExpressionValue]]
+      [['expressions', ExpressionValue, null, { array: true }]]
     ],
 
     TemplateLiteral: [
       NoTrace,
-      [['expressions', ExpressionValue]]
+      [['expressions', ExpressionValue, null, { array: true }]]
     ],
 
     UnaryExpression: [
@@ -416,46 +416,16 @@ const enterInstrumentors = {
   Loop(path, state) {
     loopVisitor(path, state);
   },
-  MemberExpression(path, state) {
-    // trace object of method call
-    if (path.node.computed) {
-      // if `computed`, also trace property independently
-      const propertyPath = path.get('property');
-      wrapExpression(TraceType.ExpressionValue, propertyPath, state);
-    }
-
-    const objPath = path.get('object');
-    if (objPath.isSuper()) {
-      // super needs special treatment
-      // TODO: replace `traceSuper` with:
-      //    1. `traceBeforeExpression` on Enter
-      return traceSuper(objPath, state);
-    }
-    else {
-      // trace object (e.g. `x` in `x.y`) as-is
-      wrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
-
-      // NOTE: the `originalPath` is not maintained
-      return undefined;
-    }
-  },
-  // Super(path, state) {
-  //   // NOTE: for some reason, `Super` visitor does not get picked up by Babel
-  // },
-
+  
   ReturnArgument(path, state, cfg) {
     if (path.node) {
       // trace `arg` in `return arg;`
-      return wrapExpression(TraceType.ReturnArgument, path, state, cfg);
+      return beforeExpression(TraceType.ReturnArgument, path, state, cfg);
     }
     else {
       // insert trace before `return;` statement
       return traceBeforeExpression(TraceType.ReturnNoArgument, path.parentPath, state, cfg);
     }
-  },
-
-  ThrowArgument(path, state, cfg) {
-    return wrapExpression(TraceType.ThrowArgument, path, state, cfg);
   },
 
   Function: functionVisitEnter,
@@ -474,6 +444,10 @@ const enterInstrumentors = {
 // }
 
 function wrapExpression(traceType, path, state, cfg) {
+  if (isCallPath(path)) {
+    return wrapCallExpression(path, state);
+  }
+
   // any other expression with a result
   const originalIsParent = cfg?.originalIsParent;
   let tracePath;
@@ -520,6 +494,44 @@ const exitInstrumentors = {
       return wrapExpression(TraceType.ExpressionValue, pathOrPaths, state, cfg);
     }
   },
+  MemberExpression(path, state) {
+    // trace object of method call
+    if (path.node.computed) {
+      // if `computed`, also trace property independently
+      const propertyPath = path.get('property');
+      wrapExpression(TraceType.ExpressionValue, propertyPath, state);
+    }
+
+    const objPath = path.get('object');
+    if (objPath.isSuper()) {
+      // super needs special treatment
+      // TODO: replace `traceSuper` with:
+      //    1. `traceBeforeExpression` on Enter
+      return traceSuper(objPath, state);
+    }
+    else {
+      // trace object (e.g. `x` in `x.y`) as-is
+      wrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
+
+      // NOTE: the `originalPath` is not maintained
+      return undefined;
+    }
+  },
+  // Super(path, state) {
+  //   // NOTE: for some reason, `Super` visitor does not get picked up by Babel
+  // },
+  
+  ReturnArgument(path, state, cfg) {
+    if (path.node) {
+      // trace `arg` in `return arg;`
+      return wrapExpression(TraceType.ReturnArgument, path, state, cfg);
+    }
+    return null;
+  },
+
+  ThrowArgument(path, state, cfg) {
+    return wrapExpression(TraceType.ThrowArgument, path, state, cfg);
+  },
 };
 
 // ###########################################################################
@@ -558,10 +570,18 @@ const exitInstrumentors = {
 
 function visitChildren(visitFn, childCfgs, path, state) {
   for (const childCfg of childCfgs) {
-    const { visitorName } = childCfg;
+    const { visitorName, extraCfg } = childCfg;
     if (path.node?.[visitorName]) {
       const childPath = path.get(visitorName);
-      visitFn(childPath, state, childCfg);
+      // console.debug(visitorName, childPath?.toString() || 'undefined', childPath?.getData);
+      if (extraCfg?.array) {
+        for (const p of childPath) {
+          visitFn(p, state, childCfg);
+        }
+      }
+      else {
+        visitFn(childPath, state, childCfg);
+      }
     }
   }
 }
@@ -597,14 +617,14 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
   // mark as visited;
   const visitedBefore = !onTrace(path);
 
-  // log
-  logInst('V', cfg, path, direction, '--', visitedBefore);
-
-  if (visitedBefore) return;
-
   if (direction === InstrumentationDirection.Enter) {
+    // -> Enter
     // 1. instrument self
-    instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg);
+    // log
+
+    if (!visitedBefore) {
+      instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg);
+    }
 
     // 2. visit children
     children && visitEnterAll(children, path, state);
@@ -614,11 +634,16 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
     children && visitExitAll(children, path, state);
 
     // 2. instrument self
-    instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg);
+
+    // log
+    if (!visitedBefore) {
+      instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg);
+    }
   }
 }
 
 function instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg) {
+  logInst('V', cfg, path, direction);
   if (instrumentationType) {
     const instrumentationTypeName = TraceInstrumentationType.nameFromForce(instrumentationType);
     // if (!instrumentors[traceTypeName]) {

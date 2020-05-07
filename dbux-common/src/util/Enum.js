@@ -36,7 +36,7 @@ export default class Enum {
         if (cb === undefined) {
           // first time access of `is[name]`
           const value = this.valueFromForce(name);
-          cb = target[name] = this._isValue.bind(this, value);
+          cb = target[name] = this.isValue.bind(this, value);
         }
         return cb;
       },

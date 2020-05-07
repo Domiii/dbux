@@ -8,7 +8,7 @@ import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import ValueTypeCategory, { ValuePruneState } from 'dbux-common/src/core/constants/ValueTypeCategory';
-import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from 'dbux-common/src/core/constants/TraceType';
 import { hasCallId, isCallResult, isCallTrace } from 'dbux-common/src/core/constants/traceCategorization';
 
 import Collection from './Collection';
@@ -175,7 +175,7 @@ class TraceCollection extends Collection<Trace> {
 
       const staticContext = this.dp.util.getTraceStaticContext(traceId);
       if (staticContext.isInterruptable) {
-        // interruptable contexts, only have `Push` and `Pop` traces, everything else is in `Resume` children
+        // interruptable contexts only have `Push` and `Pop` traces, everything else (including error handling!) is in `Resume` children
         continue;
       }
 
