@@ -24,7 +24,7 @@ class AppComponent extends HostComponentEndpoint {
 
 // TODO: create externals proxy?
 const usedExternals = [
-  'restart', 'logClientError', 'confirm', 'prompt'
+  'restart', 'logClientError', 'confirm', 'prompt', 'goToTrace'
 ];
 
 class HostComponentManager extends BaseComponentManager {

@@ -61,7 +61,8 @@ export default class GraphNode extends ClientComponentEndpoint {
 
   on = {
     nodeToggleBtn: {
-      click() {
+      // TODO: not to use arrow function
+      click: () => {
         this.remote.nextMode();
       }
     }

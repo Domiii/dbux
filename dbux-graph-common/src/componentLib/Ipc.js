@@ -106,7 +106,7 @@ export default class Ipc {
     try {
       const endpoint = this.componentManager.getComponent(componentId);
       if (!endpoint) {
-        logError('Received invalid request: componentId is not registered:', componentId);
+        logError(`Received invalid request: componentId is not registered: ${componentId} - command="${commandName}", args="${JSON.stringify(args)}"`);
         return;
       }
       const func = get(endpoint, commandName);
