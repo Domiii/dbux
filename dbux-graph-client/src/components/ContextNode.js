@@ -18,9 +18,6 @@ class ContextNode extends ClientComponentEndpoint {
           <div data-el="title" class="title">
             <div style="display:flex; height:auto; align-item:flex-end;">
               <span data-el="displayName" class="displayname" aria-dsecribedby="tooltip"></span>
-              <div data-el="toolTip" class="tooltip_cls" role="tooltip">
-              <div id="arrow" data-popper-arrow></div>
-              </div>
             </div>
             <div data-mount="TraceNode"></div>
           </div>
@@ -47,10 +44,9 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.title.id = `name_${contextId}`;
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
-    this.els.toolTip.textContent = `${displayName}`;
     this.els.nodeChildren.id = `children_${contextId}`;
   }
-  
+
   getBinaryHsl(i) {
     let color = 0;
     let base = 180;
