@@ -1,11 +1,24 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+import traceSelection from 'dbux-data/src/traceSelection';
 import RunNode from './RunNode';
 
 class GraphRoot extends HostComponentEndpoint {
+  context = {
+    graphRoot: this
+  };
+
+  contextNodesByContext = [];
+
   init() {
     // add GraphNode controller
     this.controllers.createComponent('FocusController');
+  }
+
+  clear() {
+    // clear
+    this.children.clear();
+    this.contextNodesByContext = new Map();
   }
 
   refresh() {
@@ -33,8 +46,21 @@ class GraphRoot extends HostComponentEndpoint {
     );
   }
 
+  // ###########################################################################
+  // context management
+  // ###########################################################################
+
+  getContextNodeByContext(context) {
+    return this.contextNodesByContext.get(context);
+  }
+
+  _contextNodeCreated(contextNode) {
+    const { state: { context } } = contextNode;
+    this.contextNodesByContext.set(context, contextNode);
+  }
+
   public = {
-    requireFocus: (applicationId, contextId) => {
+    requestFocus: (applicationId, contextId) => {
       this.controllers.getComponent('FocusController').focus(applicationId, contextId);
     }
   }

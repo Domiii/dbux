@@ -3,7 +3,7 @@ import { buildSource, buildWrapTryFinally } from '../helpers/builders';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 import { replaceProgramBody } from '../helpers/program';
 import injectDbuxState from '../dbuxState';
-import { buildAllTraceVisitors as traceVisitors } from './traceVisitors';
+import { buildTraceVisitors as traceVisitors } from './traceVisitors';
 import { mergeVisitors } from '../helpers/visitorHelpers';
 import { logInternalError } from '../log/logger';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';

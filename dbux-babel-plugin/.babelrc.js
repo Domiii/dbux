@@ -1,6 +1,6 @@
 module.exports = {
   ignore: ['node_modules'],
-  "sourceMaps": "both",
+  "sourceMaps": "inline",
   "retainLines": true,
   "presets": [
     "@babel/preset-env",

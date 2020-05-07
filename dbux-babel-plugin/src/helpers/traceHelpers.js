@@ -171,19 +171,24 @@ export const traceValueBeforeExpression = function traceValueBeforePath(
   return originalTargetPath;
 }.bind(null, template('%%dbux%%.traceExpr(%%traceId%%, %%value%%), %%expression%%'));
 
-let thisPath;
+let _thisPath;
+
+/**
+ * Re-used path of a `this` AST node.
+ */
+function getOrCreateThisNode() {
+  if (!_thisPath) {
+    _thisPath = { node: t.thisExpression() };
+  }
+  return _thisPath;
+}
 
 export function traceSuper(path, state) {
   // find the first ancestor that is a statement
   const statementPath = path.findParent(ancestor => ancestor.isStatement());
 
-  // build `this` path
-  if (!thisPath) {
-    thisPath = { node: t.thisExpression() };
-  }
-
   // cannot wrap `super` -> trace `this` *before* the current statement instead
   // NOTE: we don't want to flag the `statementPath` as visited/instrumented
-  const newNode = buildTraceExpr(thisPath, state, 'traceExpr', TraceType.ExpressionValue, { tracePath: path });
+  const newNode = buildTraceExpr(getOrCreateThisNode(), state, 'traceExpr', TraceType.ExpressionValue, { tracePath: path });
   statementPath.insertBefore(t.expressionStatement(newNode));
 }

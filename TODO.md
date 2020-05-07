@@ -2,6 +2,24 @@
 # TODO
 
 ## TODO (shared)
+* (!!!) `ContextNode`
+   * button -> highlight all contexts of this staticContext
+      * also add list to `traceDetailsView`: lists all contexts that call `staticContext` (via `parentTrace`)
+         * (select call trace when clicking)
+   * highlight all context nodes where an object was referenced (add button to `Object References` node in `traceDetailsView`)
+   * Buttons -> go to next/previous context of this staticContext (`parentTrace` of next/previous context)
+   * (Display contextual information for every function call)
+   * (link/label: parentTrace)
+      * traceLabel + valueLabel
+* add "follow mode" button to `Toolbar`: when following, slide to + highlight context `onTraceSelected`
+   * When stepping through code, also follow along in the graph
+* `GraphNode`
+   * add "collapseAllButThis" button
+      * all collapsed parents change to `ExpandChildren`
+   * apply `GraphNode` controller pattern to all "graph node" components: `Run`, `GraphRoot`
+   * add `reveal` function to `host/GraphNode`:
+      * slide to node
+      * highlight node
 * [Projects]
    * show status of runner while runner is running
       * -> need to add event listener to runner for that
@@ -137,24 +155,6 @@
          * don't scale font, small font-size
          * darkened colors
          * low contrast
-* add "follow mode" button to `Toolbar`: when following, slide to + highlight context onTraceSelected
-* (!!!) `ContextNode`
-   * When stepping through code, also follow along in the graph
-   * button -> highlight all calls of a particular staticContext
-      * also show a dropdown list in the node: lists all contexts that call `staticContext` (via `parentTrace`)
-         * (select trace when clicking each)
-   * highlight all context nodes where an object was referenced
-   * Buttons to go to next/previous invocation of this function
-   * Display contextual information for every function call
-   * link/label: parentTrace
-      * traceLabel + valueLabel
-* `GraphNode`
-   * apply `GraphNode` controller pattern to all "graph node" components: `Run`, `GraphRoot`
-   * add "contractAllButThis" button to `GraphNode`
-   * add `reveal` function to `host/GraphNode`:
-      * make sure, all contracted parents change to `ExpandChildren`
-      * slide to node
-      * highlight node
 * `ContextNode`:
    * remove `shift+click` go-to-code click handler
    * replace it with: clicking on the title (`displayName`) element instead (make it a `<a>`)
@@ -286,6 +286,15 @@
 
 
 ## TODO (other)
+* fix: re-invent TraceType to support multiple roles per trace
+   * `// TODO: trace-type`
+   * 
+* fix: basic instrumentation order
+   * Problem: in `o.f()` trace, `o` has a higher `traceId` than `o.f()`'s `BCE`
+   * -> Problem: how to let a trace play multiple different roles (e.g. in `return f();`)?
+* fix: `NewExpression` is not properly instrumented
+   * because our `callback` wrapping was too aggressive; won't work with babel es6 classes and breaks object identity
+* test: `traceOrder2`
 * define clear list of currently available features
    * list
       * stepping through execution (forward + backward)
@@ -301,11 +310,6 @@
    * setup a test checklist?
 * fix: in `express` -> `response.js:570` (`return this;`) was not traced
 * while accessing an object property, disable tracing
-* fix: function names
-   * get all names during a preliminary run, then do instrumentation on second
-   * will fix: `guessFunctionName` returning `[cb] [cb] (unnamed)`
-   * also: `displayName` is often too long for proper analysis in py/callGraph
-      * -> do not add source code of function itself -> change to `cb#i of A.f` instead
 * fix: `traveValueLabels`
    * get callee name from instrumentation
    * improve traceValueLabel for all expressions
@@ -316,7 +320,6 @@
       * odd one out: `return await function f() {}`
 * fix: more instrumentation order problems
    * Problem: `throw` is not traced (`error1`)
-   * Problem: in `o.f()` trace, `o` has a higher `traceId` than `o.f()`'s `BCE`
 * allow for mixed type objects for object tracking
    * in `express`, `application` object is also a function
    * need to allow "objectified functions" to be displayed as such
@@ -324,6 +327,11 @@
       * -> `Object.keys` is not empty
 * fix: in `a.b.c`, only `a.b` is traced?
 * fix: in `console.log(a.b.c);`, `a` is not traced
+* fix: `function` instrumentation
+   * fix order of instrumentation (split into `Enter` and `Exit`?)
+   * keep track of all function references
+* fix: `await` instrumentation
+   * `Await`: `resumeTraceId` is `TraceType.Resume`, but can also be `ReturnArgument` or `ThrowArgument`?
 * fix: `CallExpression`, `Function`, `Await` have special interactions
    * they all might be children of other visitors
    * NOTE: currently all other visitors use `wrapExpression`
@@ -331,12 +339,6 @@
       * -> Problem: come up with comprehensive conflict resolution here
          * `CallExpression`: `traceReturnType` controlled if `return` or `throw`
          * `Function`: no wrapping for functions
-         * `Await`: `resumeTraceId` is `TraceType.Resume`, but can also be `ReturnArgument` or `ThrowArgument`?
-      * -> Problem: how to let a trace play multiple different roles?
-   * (finish: child visitor queue)
-   * patch babel-traverse (to support non-type-based visitors):
-      1. [context.shouldVisit](https://github.com/babel/babel/blob/a34424a8942ed7346894e5fd36dc1490d4e2190c/packages/babel-traverse/src/context.js#L25)
-      2. [traverse.node](https://github.com/babel/babel/blob/master/packages/babel-traverse/src/index.js#L59)
    * split up `functionVisitor`
       * enter
          * child('body'): generate `pushTraceId`
@@ -357,7 +359,13 @@
       );
       ```
 
-* [errors] false positive:
+* partial solution: Use a separate map to track callbacks and their points of passage instead?
+   * => Won't work as comprehensively at all
+   * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities
+   * Known issues: 
+      * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
+      * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
+* fix: [errors] false positive:
    * e.g. `if (val === 'new') return next('route');`
    * e.g. ```
    exports.deprecate = function(fn, msg){
@@ -369,23 +377,16 @@
    * when selecting a traced "return", it says "no trace at cursor"
       * (same with almost any keywords for now)
    * `if else` considers `else` as a block, and inserts (potentially unwanted) code deco
-* [serialization]
-   * early accessing of getters can cause exceptions and maybe worse
 * fix: setup `eslint` to use correct index of `webpack` multi config to allow for `src` alias
    * Problem: won't work since different projects would have an ambiguous definition of `src`
-* test: 
-   * `throw await x;`
-   * `return await x;`
-   * `o[await x]`
-      * -> problem: `awaitVisitor` and `returnVisitor`/`memberExoression visitor` at odds?
-   * `f(a, await b, c)`
-      * -> probably won't work, because `resolveCallIds` would try to resolve results too fast
 * fix: provide an easier way to use `ipynb` to analyze any application
 * dbux-graph web components
    * map data (or some sort of `id`) to `componentId`
    * batch `postMessage` calls before sending out
    * write automatic `dbux-graph-client/scripts/pre-build` component-registry script
-
+* fix: function names
+   * also: `displayName` is often too long for proper analysis in py/callGraph
+      * -> do not add source code of function itself -> change to `cb#i of A.f` instead
 * fix: `staticTraceId` must resemble AST ordering for error tracing to work correctly
    * `CallExpression.arguments` are out of order
       * e.g. in `findLongestWord/1for-bad1`
@@ -411,41 +412,15 @@
    * more TODOs
       * handle `try` blocks
       * Fix `super`
-   * Problem: the actual error trace is the trace that did NOT get executed
-      * Sln: patch function's `Pop`'s `staticTrace` to be the one that follows the last executed trace (that is the "error trace")
-         * NOTE: If there are no errors, set `Pop`'s `staticTrace` to be the `FunctionExit` trace
-            * -> new concept `isFunctionExitTrace` is either `return` or `EndOfFunction`
-            * -> need to insert `EndOfFunction` for every function
-         * Problem: How to "guess" and "patch" the "missing trace"?
-            * There is no `staticTrace` for `ExpressionResult` (it actually shares w/ `BCE`)
-               * Sln: `getBCEForCallTrace`
-            * NOTE: `getters` and `setters` might actually work out-of-the-box this way, as well
-            * Data dependencies: Must be done before adding `pop` trace, but depends on `LastTraceInRealContext`
-               * Sln1: Can the runtime track `LastTraceInRealContext`?
-                  * Quite easily!
-               * Sln2: 
-                  * (b) lookup worst case: build temporary index (`groupby('contextId')` etc.)
-                     * NOTE: `TracesByRealContextIndex` needs that extra layer on top of it
-                  * NOTE: probably not going to go any better
-   * How does it work?
+   * (README) How does it work?
       * mark possible `exitTraces`:
          1. any `ReturnStatement`
          1. the end of any function
       * Once a function has finished (we wrap all functions in `try`/`finally`), we insert a check:
          * If `context.lastTraceId` is in `exitTraces`, there was no error
          * else, `context.lastTraceId` caused an error
-   * [errors_and_await]
-      * test: when error thrown, do we pop the correct resume and await contexts?
-* fix: Call Graph Roots -> name does not include actual function name
-   * -> add `calleeName` to `staticTrace`?
-   * -> `traceLabels`
-   * `groups by Parent` seems buggy:
-      * it shows `!!capture`
-   * use `TraceNode` for group nodes when grouping by `parent` (so we can click to go there)?
-* test
-   * group modes (see `StaticTraceTDNodes.js`)
-   * new trace select button (see `relevantTraces.js`)
-* re-design `Call Graph Roots` to work with new group+merge strategy
+* fix: `throw` + `await` instrumentation
+   * test: when error thrown, do we pop the correct resume and await contexts?
 * [variable_tracking]
    * Nodes
       * any expressions: https://github.com/babel/babel/tree/master/packages/babel-types/src/validators/generated/index.js#L3446
@@ -462,29 +437,12 @@
          * before `init`, and after `condition` has evaluated to `true`?
    * in loop's `BlockStart`:
       * evaluate + store `headerVars` (all variables that have bindings in loop header)
-* [values]
-   * better overall value rendering
 * [testing]
    * add `dbux-cli` and `samples` to the `webpack` setup
    * finish setting up basic testing in `samples`
       * move a basic `server` implementation from `dbux-code` to `dbux-data`
       * then: let sample tests easily run their own server to operate on the data level
       * make sure the `test file` `launch.json` entry work withs `samples/__tests__`
-* [callbacks]
-   * add function mapping + also map to all their callbacks
-   * Problem: we cannot wrap callbacks, as it will break the function's (or class's) identity.
-      * This breaks...
-         * `instanceof` on any class variable that is not the actual declaration of the class (i.e. when returning a class, storing them in other variables, passing as argument etc...)
-         * triggers a babel assertion when targeting esnext and using es6 classes in anything but `new` statements
-         * identity-mapping of callbacks
-            * `removeEventListener` etc.
-            * `reselect`, React's `useCallback` and probably many more caching functionality (does not break things)
-      * partial solution: Use a separate map to track callbacks and their points of passage instead?
-         * => Won't work as comprehensively at all
-         * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities
-         * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
-            * => Same issue as with passing callbacks in React
-         * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * [loops]
    * fix `DoWhileLoop` :(
 * [generators]
@@ -507,8 +465,10 @@
    * generally less accurate than `trace.context.staticContextId`
    * cannot work correctly with interruptable functions
    * -> repurpose as `realStaticContextId`?
-* fix: `NewExpression` is not properly instrumented
-   * because our `callback` wrapping is too aggressive; won't work with babel es6 classes and breaks object identity
+* advanced instrumentation?
+   * we could patch `babel-traverse` to support non-type-based visitors:
+      1. [context.shouldVisit](https://github.com/babel/babel/blob/a34424a8942ed7346894e5fd36dc1490d4e2190c/packages/babel-traverse/src/context.js#L25)
+      2. [traverse.node](https://github.com/babel/babel/blob/master/packages/babel-traverse/src/index.js#L59)
 * [InfoTDNode]
    * Push/Pop (of any kind) show next previous trace/context?
    * [CallbackArg] -> show `Push/PopCallback` nodes

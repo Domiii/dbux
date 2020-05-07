@@ -10,7 +10,6 @@ const { log, debug, warn, error: logError } = newLogger('dbux-common/domUtil');
 export function decorateClasses(el, cfg) {
   for (let clazz in cfg) {
     let val = cfg[clazz];
-
     if (val) {
       el.classList.add(clazz);
     }
