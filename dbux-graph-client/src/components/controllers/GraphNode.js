@@ -21,7 +21,7 @@ export default class GraphNode extends ClientComponentEndpoint {
     this.toggleButtonVisible();   // call initially
 
     // on click -> nextMode
-    nodeToggleBtn.addEventListener('click', () => this.remote.nextMode());
+    this.owner.dom.addEventListeners(this.on);
   }
 
   /**
@@ -56,6 +56,14 @@ export default class GraphNode extends ClientComponentEndpoint {
         listEl.classList.add('hidden');
         btnEl.innerHTML = '▷';
         break;
+    }
+  }
+
+  on = {
+    nodeToggleBtn: {
+      click() {
+        this.remote.nextMode();
+      }
     }
   }
 }
