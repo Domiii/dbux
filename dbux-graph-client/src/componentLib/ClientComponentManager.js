@@ -18,17 +18,38 @@ class AppComponent extends ClientComponentEndpoint {
   prompt(...args) {
     return this._remoteInternal.prompt(...args);
   }
+  
+  _deserializeShared(comp, src) {
+    if (!src) {
+      return;
+    }
+
+    try {
+      src = JSON.stringify(`comp.shared = ${src}.bind(comp)`);
+      eval(eval(src));
+    } 
+    catch (err) {
+      console.error(err); // only show on client; don't send error object back to server
+      throw new Error(`could not deserialize 'shared' function -\n${src}\n\n${err.message}`);
+    }
+  }
 
   _publicInternal = {
-    async createComponent(parentId, componentId, componentName, initialState) {
+    async createComponent(parentId, componentId, componentName, shared, initialState) {
       const parent = this.componentManager.getComponent(parentId);
 
       // NOTE: parent should never be null (except for AppComponent, which does not get initialized this way)
 
       const ComponentClass = this.componentManager.getComponentClassByName(componentName);
 
-      // NOTE: `_registerComponent` also calls `_doInit`
+      // NOTE: `_registerComponent` also calls `_build`
       const component = this.componentManager._registerComponent(componentId, parent, ComponentClass, initialState);
+
+      // deserialize shared
+      this._deserializeShared(component, shared);
+
+      // preInit
+      await component._preInit();
 
       // init
       const result = await component._performInit();

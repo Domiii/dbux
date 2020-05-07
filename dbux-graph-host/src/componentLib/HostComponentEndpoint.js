@@ -87,26 +87,21 @@ class HostComponentEndpoint extends ComponentEndpoint {
   }
 
   // ###########################################################################
-  // _doInit
+  // _build
   // ###########################################################################
 
   /**
    * NOTE: this is called by `BaseComponentManager._createComponent`
    */
-  _doInit(componentManager, parent, componentId, initialState) {
+  _build(componentManager, parent, componentId, initialState) {
     // store properties
-    super._doInit(componentManager, parent, componentId, initialState);
-
-    // assign context
-    this.context = { 
-      ...(parent?.context || EmptyObject),
-      ...(this.context || EmptyObject)
-    };
+    super._build(componentManager, parent, componentId, initialState);
 
     // do the long async init dance
     this._initPromise = Promise.resolve(
-      this._runNoSetState('init')                       // 1. host: init
+      this._preInit()                                   // 0. host: preInit
     ).   
+      then(this._runNoSetState.bind(this, 'init')).     // 1. host: init
       then(this.update.bind(this)).                     // 2. host: update
       then(() => (
         parent && this.componentManager._initClient(this)// 3. client: init -> update

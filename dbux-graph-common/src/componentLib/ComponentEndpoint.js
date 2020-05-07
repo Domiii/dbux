@@ -1,4 +1,6 @@
+import isPlainObject from 'lodash/isPlainObject';
 import { newLogger } from 'dbux-common/src/log/logger';
+import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import RemoteCommandProxy from './RemoteCommandProxy';
 
 class ComponentEndpoint {
@@ -20,7 +22,7 @@ class ComponentEndpoint {
     this.logger = newLogger(this.debugTag);
   }
 
-  _doInit(componentManager, parent, componentId, initialState) {
+  _build(componentManager, parent, componentId, initialState) {
     this.componentManager = componentManager;
     this.parent = parent;
     this.componentId = componentId;
@@ -28,6 +30,25 @@ class ComponentEndpoint {
     this.remote = new RemoteCommandProxy(componentManager.ipc, componentId, 'public');
     this._remoteInternal = new RemoteCommandProxy(componentManager.ipc, componentId, '_publicInternal');
     this.state = initialState;
+  }
+
+  async _preInit() {
+    if (this.context) {
+      throw new Error(`${this.debugTag} has assigned a context in the wrong place. Make sure to only assign context in shared function.`);
+    }
+
+    // run shared
+    const sharedResult = await this.shared?.();
+    if (isPlainObject(sharedResult)) {
+      // store returned object in `this`
+      Object.assign(this, sharedResult);
+    }
+    
+    // assign context
+    this.context = Object.freeze({
+      ...(this.parent?.context || EmptyObject),
+      ...(this.context || EmptyObject)
+    });
   }
 
   // ###########################################################################
