@@ -4,10 +4,6 @@ import traceSelection from 'dbux-data/src/traceSelection';
 import RunNode from './RunNode';
 
 class GraphRoot extends HostComponentEndpoint {
-  context = {
-    graphRoot: this
-  };
-
   contextNodesByContext = [];
 
   init() {
@@ -58,6 +54,22 @@ class GraphRoot extends HostComponentEndpoint {
     const { state: { context } } = contextNode;
     this.contextNodesByContext.set(context, contextNode);
   }
+  
+  // ###########################################################################
+  // shared
+  // ###########################################################################
+
+  shared() {
+    return {
+      context: {
+        graphRoot: this
+      }
+    };
+  }
+
+  // ###########################################################################
+  // public
+  // ###########################################################################
 
   public = {
     requestFocus: (applicationId, contextId) => {
