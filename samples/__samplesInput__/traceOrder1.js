@@ -6,9 +6,10 @@
  * 3. ReturnArgument
  */
 
+var qwerty = (z) => x + y + z;
 
-function h(x, y) {
-  return g(x * y);
+function j(x, y) {
+  return (z) => x + y + z;
 }
 
 function f(x, ...args) {
@@ -19,14 +20,15 @@ function g(x) {
   return x + 1;
 }
 
+function h(x, y) {
+  return g(x * y);
+}
+
 
 function i(x, y) {
   return g(x * y) - g(x + y);
 }
 
-function j(x, y) {
-  return (z) => x + y + z;
-}
 
 f(g(1), g(2));
 h(g(3), g(4));

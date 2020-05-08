@@ -16,6 +16,7 @@ import { isCallPath } from '../helpers/functionHelpers';
 import { functionVisitEnter } from './functionVisitor';
 import { awaitVisitEnter } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
+import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
 
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
@@ -107,7 +108,8 @@ const traceCfg = (() => {
 
 
     // ########################################
-    // expressions
+    // call expressions
+    // NOTE: also sync this against `isCallPath`
     // ########################################
     CallExpression: [
       CallExpression
@@ -116,9 +118,12 @@ const traceCfg = (() => {
       CallExpression
     ],
     NewExpression: [
-      // TODO: fix this
-      ExpressionResult
+      CallExpression
     ],
+
+    // ########################################
+    // more expressions
+    // ########################################
     /**
      * Ternary operator
      */
@@ -416,7 +421,7 @@ const enterInstrumentors = {
   Loop(path, state) {
     loopVisitor(path, state);
   },
-  
+
   ReturnArgument(path, state, cfg) {
     if (path.node) {
       // trace `arg` in `return arg;`
@@ -426,6 +431,10 @@ const enterInstrumentors = {
       // insert trace before `return;` statement
       return traceBeforeExpression(TraceType.ReturnNoArgument, path.parentPath, state, cfg);
     }
+  },
+
+  ThrowArgument(path, state, cfg) {
+    return beforeExpression(TraceType.ThrowArgument, path, state, cfg);
   },
 
   Function: functionVisitEnter,
@@ -451,7 +460,7 @@ function wrapExpression(traceType, path, state, cfg) {
   // any other expression with a result
   const originalIsParent = cfg?.originalIsParent;
   let tracePath;
-  if (originalIsParent) {
+  if (originalIsParent && !isPathInstrumented(path.parentPath)) {
     // we want to highlight the parentPath, instead of just the value path
     tracePath = path.parentPath;
   }
@@ -520,7 +529,7 @@ const exitInstrumentors = {
   // Super(path, state) {
   //   // NOTE: for some reason, `Super` visitor does not get picked up by Babel
   // },
-  
+
   ReturnArgument(path, state, cfg) {
     if (path.node) {
       // trace `arg` in `return arg;`
@@ -570,18 +579,11 @@ const exitInstrumentors = {
 
 function visitChildren(visitFn, childCfgs, path, state) {
   for (const childCfg of childCfgs) {
-    const { visitorName, extraCfg } = childCfg;
+    const { visitorName } = childCfg;
     if (path.node?.[visitorName]) {
       const childPath = path.get(visitorName);
       // console.debug(visitorName, childPath?.toString() || 'undefined', childPath?.getData);
-      if (extraCfg?.array) {
-        for (const p of childPath) {
-          visitFn(p, state, childCfg);
-        }
-      }
-      else {
-        visitFn(childPath, state, childCfg);
-      }
+      visitFn(childPath, state, childCfg);
     }
   }
 }
@@ -615,30 +617,28 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
   }
 
   // mark as visited;
-  const visitedBefore = !onTrace(path);
+  let shouldVisit = false;
+  if (instrumentationType && !isPathInstrumented(path)) {
+    shouldVisit = onTrace(path); // hasVisited
+  }
 
   if (direction === InstrumentationDirection.Enter) {
     // -> Enter
-    // 1. instrument self
-    // log
 
-    if (!visitedBefore) {
-      instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg);
-    }
+    // 1. instrument self
+    shouldVisit && instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg);
 
     // 2. visit children
     children && visitEnterAll(children, path, state);
   }
   else {
+    // <- Exit
+
     // 1. visit children
     children && visitExitAll(children, path, state);
 
     // 2. instrument self
-
-    // log
-    if (!visitedBefore) {
-      instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg);
-    }
+    shouldVisit && instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg);
   }
 }
 
@@ -660,10 +660,25 @@ function instrumentPath(direction, instrumentationType, instrumentors, path, sta
         logError('instrumentor is not a function:', instrumentationTypeName, '-', instrumentor);
         return;
       }
-      const originalPath = instrumentor(path, state, cfg.extraCfg);
-      if (originalPath) {
-        path = originalPath;
+
+      // actual instrumentation
+      const { extraCfg } = cfg;
+      if (extraCfg?.array) {
+        // path is an array?
+        for (const p of path) {
+          // const originalPath =
+          instrumentor(p, state, extraCfg);
+        }
       }
+      else {
+        // const originalPath = 
+        instrumentor(path, state, extraCfg);
+      }
+
+      // TODO: remember originalPath for further processing?
+      // if (originalPath) {
+      //   path = originalPath;
+      // }
     }
   }
 }

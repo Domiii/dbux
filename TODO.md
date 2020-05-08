@@ -291,6 +291,16 @@
    * -> or get rid of categorization and just fix things up in `GraphNode` instead?
 * fix: re-invent TraceType to support multiple roles per trace
    * `// TODO: trace-type`
+   * bugs
+      * identify all multi-role visits and make sure they are resolved
+         * `NewExpression`
+         * `Function`
+            * `VariableAssignment.init`
+            * `return`
+         * `await`
+         * -> anything that is not just a simple expression!
+      * fix labels for multi-role traces
+         * currently only gets first selected role
    * NOTES
       * only `expressions` can take on multiple roles (for now, it seems that way)
       * for `CallExpression`, we just override the `traceType` for result
@@ -299,8 +309,6 @@
    * Ideas
       * -> produce a more reliable/robust way of instrumenting expressions with multiple roles
       * -> trace categorization/role assignment might need data lookup (e.g. for `getTraceType(tost)`)
-   * TODO: fix labels for multi-role traces
-      * currently only gets first selected role
 * fix: basic instrumentation order
    * Problem: in `o.f()` trace, `o` has a higher `traceId` than `o.f()`'s `BCE`
    * -> Problem: how to let a trace play multiple different roles (e.g. in `return f();`)?
