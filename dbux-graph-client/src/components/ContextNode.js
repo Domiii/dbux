@@ -1,4 +1,3 @@
-import popperManeger from '../popperManager';
 import { compileHtmlElement } from '@/util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import Highlighter from './controllers/Highlighter';
@@ -17,10 +16,7 @@ class ContextNode extends ClientComponentEndpoint {
         <div class="body">
           <div data-el="title" class="title">
             <div style="display:flex; height:auto; align-item:flex-end;">
-              <span data-el="displayName" class="displayname" aria-dsecribedby="tooltip"></span>
-              <div data-el="toolTip" class="tooltip_cls" role="tooltip">
-              <div id="arrow" data-popper-arrow></div>
-              </div>
+              <span data-el="displayName, popperTarget" class="displayname" aria-dsecribedby="tooltip"></span>
             </div>
             <div data-mount="TraceNode"></div>
           </div>
@@ -29,9 +25,6 @@ class ContextNode extends ClientComponentEndpoint {
         </div>
       </div>
       `);
-  }
-
-  setupEl() {
   }
 
   update() {
@@ -47,10 +40,10 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.title.id = `name_${contextId}`;
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
-    this.els.toolTip.textContent = `${displayName}`;
+    this.els.displayName.setAttribute('popper-string', `${displayName}`);
     this.els.nodeChildren.id = `children_${contextId}`;
   }
-  
+
   getBinaryHsl(i) {
     let color = 0;
     let base = 180;
@@ -64,20 +57,6 @@ class ContextNode extends ClientComponentEndpoint {
 
   on = {
     displayName: {
-      mouseenter() {
-        this.popperEl.firstChild.textContent = `${this.state.displayName}`;
-        popperManeger.show(this.els.displayName, this.popperEl);
-      },
-      focus() {
-        this.popperEl.firstChlild.textContent = `${this.state.displayName}`;
-        popperManeger.show(this.els.displayName, this.popperEl);
-      },
-      mouseleave() {
-        popperManeger.hide(this.popperEl);
-      },
-      blur() {
-        popperManeger.hide(this.popperEl);
-      },
       click(evt) {
         if (evt.shiftKey) {
           const { context, applicationId } = this.state;

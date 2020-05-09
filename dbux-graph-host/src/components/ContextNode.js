@@ -1,5 +1,3 @@
-import { ViewColumn } from 'vscode';
-import { goToTrace } from 'dbux-code/src/codeUtil/codeNav';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
@@ -26,6 +24,9 @@ class ContextNode extends HostComponentEndpoint {
     this.controllers.createComponent('GraphNode', {
       isExpanded: false
     });
+
+    // add PopperController
+    this.controllers.createComponent('PopperController');
 
     // register with root
     this.context.graphRoot._contextNodeCreated(this);
@@ -98,10 +99,10 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   public = {
-    showContext(applicationId, contextId) {
+    async showContext(applicationId, contextId) {
       const { dataProvider } = allApplications.getById(applicationId);
       const trace = dataProvider.util.getFirstTraceOfContext(contextId);
-      goToTrace(trace);
+      await this.componentManager.externals.goToTrace(trace);
     }
   }
 }

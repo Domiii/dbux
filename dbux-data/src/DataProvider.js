@@ -132,7 +132,7 @@ class TraceCollection extends Collection<Trace> {
         beforeCalls.push(trace);
         // debug('[callIds]', ' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
       }
-      else if (isCallTrace(traceType)) {
+      else if (isCallTrace(staticTrace)) {
         // NOTE: `isTraceExpression` to filter out Push/PopCallback
         if (isCallResult(staticTrace)) {
           // call results: reference their call by `resultCallId` and vice versa by `resultId`
