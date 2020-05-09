@@ -7,6 +7,7 @@ import {
 } from 'vscode';
 import path from 'path';
 import { getWebviewClientHtml } from './clientSource';
+import { goToTrace } from '../codeUtil/codeNav';
 
 const { log, debug, warn, error: logError } = newLogger('GraphViewHost');
 
@@ -158,6 +159,10 @@ export default class GraphWebView {
         placeHolder: message
       });
       return result;
+    },
+
+    async goToTrace(trace) {
+      await goToTrace(trace);
     }
   }
 }

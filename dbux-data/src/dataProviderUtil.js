@@ -92,6 +92,13 @@ export default {
     return traces[traces.length - 1];
   },
 
+  getParentTraceOfContext(dp: DataProvider, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    const parentTrace = dp.collections.traces.getById(context.parentTraceId);
+
+    return parentTrace;
+  },
+
   getFirstTraceOfRun(dp: DataProvider, runId) {
     const traces = dp.indexes.traces.byRun.get(runId);
     if (!traces?.length) {
@@ -268,6 +275,18 @@ export default {
       // not a call related trace
       return null;
     }
+  },
+
+  /**
+   * Get callId of a executionContext
+   */
+  getCalleeTraceOfContext(dp: DataProvider, contextId) {
+    const parentTrace = dp.util.getParentTraceOfContext(contextId);
+    if (parentTrace) {
+      const calleeId = dp.util.getCalleeTraceId(parentTrace.traceId);
+      return dp.collections.traces.getById(calleeId);
+    }
+    return null;
   },
 
   isTraceArgument(dp: DataProvider, traceId) {

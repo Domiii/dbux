@@ -24,7 +24,7 @@ class AppComponent extends HostComponentEndpoint {
 
 // TODO: create externals proxy?
 const usedExternals = [
-  'restart', 'logClientError', 'confirm', 'prompt'
+  'restart', 'logClientError', 'confirm', 'prompt', 'goToTrace'
 ];
 
 class HostComponentManager extends BaseComponentManager {
@@ -37,14 +37,14 @@ class HostComponentManager extends BaseComponentManager {
   start() {
     super.start(AppComponent);
   }
-  
+
   async restart() {
     debug('restarting...');
     this.ipc.ipcAdapter.postMessage = (msg) => {
       // when invoked by remote, we try to send response back after shutdown. This prevents that.
       debug('silenced message after Host shutdown:', JSON.stringify(msg));
     };
-    
+
     // externals.restart can also re-load client code (something we cannot reliably do internally)
     await this.externals.restart();
   }
@@ -58,6 +58,25 @@ class HostComponentManager extends BaseComponentManager {
     return this._registerComponent(componentId, parent, ComponentEndpointClass, initialState);
   }
 
+  _wrapShared(component) {
+    const { shared } = component;
+    if (!shared) {
+      return null;
+    }
+    if (!(shared instanceof Function)) {
+      throw new Error(component.debugTag + '.shared is not a function');
+    }
+
+    const src = shared.toString();
+
+    // make sure it is avalid function declaration expression
+    if (!/^function\s+shared\s*\(\s*\)\s*\{/.test(src)) {
+      throw new Error(component.debugTag + '.shared must be a function, declared like so: `function shared() { ... }` (necessary for simplifying serialization)');
+    }
+    
+    return src;
+  }
+
   async _initClient(component) {
     const {
       componentId,
@@ -67,6 +86,8 @@ class HostComponentManager extends BaseComponentManager {
     } = component;
 
     const parentId = parent?.componentId || 0;
+    
+    const shared = this._wrapShared(component);
 
     // send new component to client *AFTER* its parent has finished init'ing
     await parent?.waitForInit();
@@ -75,6 +96,7 @@ class HostComponentManager extends BaseComponentManager {
       parentId,
       componentId,
       componentName,
+      shared,
       state
     );
   }

@@ -32,27 +32,31 @@ export default class DOMWrapper {
 
     // hook up event listeners
     if (on) {
-      for (const elName in on) {
-        const compConfig = on[elName];
-        const child = this.els[elName];
-        if (!child) {
-          this.logger.error(`Invalid event handler (on) - el name does not exist: "${elName}". Are you missing a "data-el" attribute?`);
-          continue;
-        }
-        for (const eventName in compConfig) {
-          const cb = compConfig[eventName];
-          if (!isFunction(cb)) {
-            this.logger.error(`Invalid event handler (on) - is not a function: "${elName}.${eventName}"`);
-            continue;
-          }
-          child.addEventListener(eventName, cb.bind(owner));
-        }
-      }
+      this.addEventListeners(on);
     }
 
     if (parent && parent.dom && parent.el) {
       // append element to parent, if it has one
       parent.dom.appendChild(owner);
+    }
+  }
+
+  addEventListeners(on) {
+    for (const elName in on) {
+      const compConfig = on[elName];
+      const child = this.els[elName];
+      if (!child) {
+        this.logger.error(`Invalid event handler (on) - el name does not exist: "${elName}". Are you missing a "data-el" attribute?`);
+        continue;
+      }
+      for (const eventName in compConfig) {
+        const cb = compConfig[eventName];
+        if (!isFunction(cb)) {
+          this.logger.error(`Invalid event handler (on) - is not a function: "${elName}.${eventName}"`);
+          continue;
+        }
+        child.addEventListener(eventName, cb.bind(this.owner));
+      }
     }
   }
 

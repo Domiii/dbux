@@ -1,7 +1,6 @@
 import createPanzoom from 'panzoom';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { compileHtmlElement } from '@/util/domUtil';
-import popperManeger from '../popperManager';
 
 class GraphRoot extends ClientComponentEndpoint {
   createEl() {
@@ -88,18 +87,12 @@ class GraphRoot extends ClientComponentEndpoint {
       // this._repaint();
     });
 
-    panzoom.on('zoom', (e) => {
-      // this._repaint();
-      popperManeger.update();
-    });
-
     panzoom.on('zoomend', (e) => {
       // this._repaint();
     });
 
     panzoom.on('transform', (e) => {
       this._repaint();
-      popperManeger.update();
     });
 
     return panzoom;

@@ -6,6 +6,8 @@ const TraceNode = require('@/components/TraceNode').default;
 const GraphDocument = require('@/components/GraphDocument').default;
 const GraphRoot = require('@/components/GraphRoot').default;
 const FocusController = require('@/components/controllers/FocusController').default;
+const PopperController = require('@/components/controllers/PopperController').default;
+const PopperManager = require('@/components/controllers/PopperManager').default;
 const GraphNode = require('@/components/controllers/GraphNode').default;
 const RunNode = require('@/components/RunNode').default;
 const Toolbar = require('@/components/Toolbar').default;
@@ -21,6 +23,8 @@ export default {
   Toolbar,
   MiniMap,
   FocusController,
+  PopperController,
+  PopperManager,
   Highlighter,
   HighlightManager
 };

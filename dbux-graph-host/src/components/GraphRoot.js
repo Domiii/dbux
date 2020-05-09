@@ -1,18 +1,14 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
-import traceSelection from 'dbux-data/src/traceSelection';
 import RunNode from './RunNode';
 
 class GraphRoot extends HostComponentEndpoint {
-  context = {
-    graphRoot: this
-  };
-
   contextNodesByContext = [];
 
   init() {
     // add GraphNode controller
     this.controllers.createComponent('FocusController');
+    this.controllers.createComponent('PopperManager');
   }
 
   clear() {
@@ -58,6 +54,22 @@ class GraphRoot extends HostComponentEndpoint {
     const { state: { context } } = contextNode;
     this.contextNodesByContext.set(context, contextNode);
   }
+
+  // ###########################################################################
+  // shared
+  // ###########################################################################
+
+  shared() {
+    return {
+      context: {
+        graphRoot: this
+      }
+    };
+  }
+
+  // ###########################################################################
+  // public
+  // ###########################################################################
 
   public = {
     requestFocus: (applicationId, contextId) => {

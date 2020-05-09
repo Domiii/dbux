@@ -4,7 +4,7 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
-export class TrackObjectTDNode extends BaseTreeViewNode {
+export default class TrackObjectTDNode extends BaseTreeViewNode {
   static makeTraceDetail(trace, parent) {
     return trace;
   }

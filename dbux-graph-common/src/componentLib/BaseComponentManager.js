@@ -35,7 +35,7 @@ class BaseComponentManager {
   _registerComponent(componentId, parent, ComponentEndpointClass, initialState = {}) {
     const component = new ComponentEndpointClass(this);
     this._componentsById.set(componentId, component);
-    component._doInit(this, parent, componentId, initialState);
+    component._build(this, parent, componentId, initialState);
     return component;
   }
 

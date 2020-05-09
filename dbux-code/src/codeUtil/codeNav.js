@@ -47,7 +47,7 @@ export async function showTextDocument(fpath, column) {
   lastRequestedDocumentFpath = fpath;
 
   if (!column) {
-    if (window.activeTextEditor.document) {
+    if (window.activeTextEditor?.document) {
       column = ViewColumn.Active;
     }
     else {
