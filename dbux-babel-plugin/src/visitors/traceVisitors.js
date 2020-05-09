@@ -645,15 +645,18 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
 
   // mark as visited;
   let shouldVisit = false;
+  let instrumentor;
   if (instrumentationType && !isPathInstrumented(path)) {
-    shouldVisit = onTrace(path); // hasVisited
+    logInst('V', cfg, path, direction);
+    instrumentor = getInstrumentor(instrumentors, instrumentationType);
+    shouldVisit = instrumentor && onTrace(path); // instrumentor && !hasVisited
   }
 
   if (direction === InstrumentationDirection.Enter) {
     // -> Enter
 
     // 1. instrument self
-    shouldVisit && instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg);
+    shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
 
     // 2. visit children
     children && visitEnterAll(children, path, state);
@@ -665,49 +668,46 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
     children && visitExitAll(children, path, state);
 
     // 2. instrument self
-    shouldVisit && instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg);
+    shouldVisit && instrumentPath(direction, instrumentor, path, state, cfg);
   }
 }
 
-function instrumentPath(direction, instrumentationType, instrumentors, path, state, cfg) {
-  logInst('V', cfg, path, direction);
-  if (instrumentationType) {
-    const instrumentationTypeName = TraceInstrumentationType.nameFromForce(instrumentationType);
-    // if (!instrumentors[traceTypeName]) {
-    //   err('instrumentors are missing TraceType:', traceTypeName);
-    // }
-    const instrumentor = instrumentors[instrumentationTypeName];
-    if (instrumentor) {
-      // NOTE: a TraceType might not have an instrumentor both on `Enter` as well as `Exit`
+function getInstrumentor(instrumentors, instrumentationType) {
+  // NOTE: a TraceType might not have an instrumentor both on `Enter` as well as `Exit`
+  const instrumentationTypeName = TraceInstrumentationType.nameFromForce(instrumentationType);
+  // if (!instrumentors[traceTypeName]) {
+  //   err('instrumentors are missing TraceType:', traceTypeName);
+  // }
+  const instrumentor = instrumentors[instrumentationTypeName];
+  if (instrumentor && !(instrumentor instanceof Function)) {
+    logError('instrumentor is not a function:', instrumentationTypeName, '-', instrumentor);
+    return null;
+  }
+  return instrumentor;
+}
 
-      // log
-      logInst('I', cfg, path, direction);
+function instrumentPath(direction, instrumentor, path, state, cfg) {
+  // log
+  logInst('I', cfg, path, direction);
 
-      if (!(instrumentor instanceof Function)) {
-        logError('instrumentor is not a function:', instrumentationTypeName, '-', instrumentor);
-        return;
-      }
-
-      // actual instrumentation
-      const { extraCfg } = cfg;
-      if (extraCfg?.array) {
-        // path is an array?
-        for (const p of path) {
-          // const originalPath =
-          instrumentor(p, state, extraCfg);
-        }
-      }
-      else {
-        // const originalPath = 
-        instrumentor(path, state, extraCfg);
-      }
-
-      // TODO: remember originalPath for further processing?
-      // if (originalPath) {
-      //   path = originalPath;
-      // }
+  // actual instrumentation
+  const { extraCfg } = cfg;
+  if (extraCfg?.array) {
+    // path is an array?
+    for (const p of path) {
+      // const originalPath =
+      instrumentor(p, state, extraCfg);
     }
   }
+  else {
+    // const originalPath = 
+    instrumentor(path, state, extraCfg);
+  }
+
+  // TODO: remember originalPath for further processing?
+  // if (originalPath) {
+  //   path = originalPath;
+  // }
 }
 
 function visitEnter(path, state, visitorCfg) {

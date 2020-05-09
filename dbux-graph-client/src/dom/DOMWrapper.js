@@ -32,7 +32,7 @@ export default class DOMWrapper {
 
     // hook up event listeners
     if (on) {
-      this.addEventListeners(this);
+      this.addEventListeners(this.owner);
     }
 
     if (parent && parent.dom && parent.el) {

@@ -286,7 +286,12 @@
 
 
 ## TODO (other)
-* merge + test latest PR
+* fix up correct `value` objects
+   * fix `valueRef.value`: all kinds of `undefined`
+      * -> fix value types
+      * -> fix looking up ref types correctly
+   * show `valueRef.value` where appropriate
+* find a more interesting `express` bug that relates to its most popular features
 * fix: `ComponentList` needs to add role (`child` or `controller`), so we can properly categorize on `Client` as well
    * -> or get rid of categorization and just fix things up in `GraphNode` instead?
 * fix: re-invent TraceType to support multiple roles per trace
@@ -294,9 +299,6 @@
    * bugs
       * identify all multi-role visits and make sure they are resolved
          * array paths: `SequenceExpression.expressions` + `CallExpression.arguments`
-         * `Function`
-            * `VariableAssignment.init`
-            * `return`
          * `await`
          * -> anything that is not just a simple expression!
       * fix labels for multi-role traces
