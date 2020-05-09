@@ -393,10 +393,10 @@ export default class DataProvider {
   addData(allData): { [string]: any[] } {
     // sanity checks
     if (!allData || allData.constructor.name !== 'Object') {
-      logError('invalid data must be (but is not) object -', allData);
+      logError('invalid data must be (but is not) object -', JSON.stringify(allData).substring(0, 500));
     }
 
-    // debug('received', allData);
+    // debug('received', JSON.stringify(allData).substring(0, 500));
 
     this._addData(allData);
     this._postAdd(allData);

@@ -48,7 +48,7 @@ const popResumeTemplate = template(
 /**
  * Instrument all Functions to keep track of all (possibly async) execution stacks.
  */
-function wrapFunctionBody(path, bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId = null) {
+function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId = null) {
   const { ids: { dbux }, contexts: { genContextIdName } } = state;
   const contextIdVar = genContextIdName(bodyPath);
 
@@ -108,12 +108,13 @@ function wrapFunctionBody(path, bodyPath, state, staticId, pushTraceId, popTrace
 // visitor
 // ###########################################################################
 
-export function functionVisitEnter(path, state) {
-  if (!state.onEnter(path, 'context')) return;
-  // console.warn('F', path.toString());
-
+/**
+ * NOTE: this only instruments the `bodyPath` of a function, thus thats what we expect
+ */
+export function functionVisitEnter(bodyPath, state) {
   // const names = path.getData('_dbux_names');
-  const names = getNodeNames(path.node);
+  const functionPath = bodyPath.parentPath; // actual function path
+  const names = getNodeNames(functionPath.node);
   if (!names) {
     // this is probably an instrumented function
     return;
@@ -124,10 +125,9 @@ export function functionVisitEnter(path, state) {
     displayName
   } = names;
 
-  const isGenerator = path.node.generator;
-  const isAsync = path.node.async;
+  const isGenerator = functionPath.node.generator;
+  const isAsync = functionPath.node.async;
   const isInterruptable = isGenerator || isAsync;
-  const bodyPath = path.get('body');
 
   const staticContextData = {
     type: 2, // {StaticContextType}
@@ -135,18 +135,18 @@ export function functionVisitEnter(path, state) {
     displayName,
     isInterruptable
   };
-  const staticContextId = state.contexts.addStaticContext(path, staticContextData);
+  const staticContextId = state.contexts.addStaticContext(functionPath, staticContextData);
   const pushTraceId = state.traces.addTrace(bodyPath, TraceType.PushImmediate);
   const popTraceId = state.traces.addTrace(bodyPath, TraceType.PopImmediate);
 
   // add varAccess
   const ownerId = staticContextId;
 
-  // TODO: this?
+  // TODO: also trace `this`?
   // state.varAccess.addVarAccess(path, ownerId, VarOwnerType.Context, 'this', false);
 
   // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/lib/virtual-types.js
-  const params = path.get('params');
+  const params = functionPath.get('params');
   const paramIds = params.map(param =>
     Object.values(param.getBindingIdentifierPaths())
   ).flat();
@@ -161,17 +161,5 @@ export function functionVisitEnter(path, state) {
     staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
   }
 
-  wrapFunctionBody(path, bodyPath, state, staticContextId, pushTraceId, popTraceId, staticResumeContextId);
-}
-
-export default function functionVisitor() {
-  return {
-    enter: functionVisitEnter,
-
-    // exit(path, state) {
-    //   if (!state.onExit(path, 'context')) return;
-
-    //   // injectContextEndTrace(path, state);
-    // }
-  };
+  wrapFunctionBody(bodyPath, state, staticContextId, pushTraceId, popTraceId, staticResumeContextId);
 }

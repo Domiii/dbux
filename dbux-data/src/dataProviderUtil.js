@@ -212,6 +212,7 @@ export default {
 
   getTraceProgramId(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
+    
     const {
       staticTraceId,
     } = trace;

@@ -2,47 +2,47 @@ import Enum from '../../util/Enum';
 
 let TraceType = {
   PushImmediate: 1,
-  PopImmediate: 1,
+  PopImmediate: 2,
 
-  BeforeExpression: 1,
-  BeforeCallExpression: 1,
+  BeforeExpression: 3,
+  BeforeCallExpression: 4,
   /**
    * E.g. `a.b.c` for `a.b.c.f()` method call.
    * Not traced for `f()` (no object involved).
    */
-  CalleeObject: 1,
-  CallExpressionResult: 1,
-  ExpressionResult: 1,
-  ExpressionValue: 1,
+  CalleeObject: 5,
+  CallExpressionResult: 6,
+  ExpressionResult: 7,
+  ExpressionValue: 8,
 
-  CallArgument: 1,
-  CallbackArgument: 1,
+  CallArgument: 9,
+  CallbackArgument: 10,
 
-  PushCallback: 1,
-  PopCallback: 1,
+  PushCallback: 11,
+  PopCallback: 12,
 
-  Statement: 1,
-  BlockStart: 1,
-  BlockEnd: 1,
+  Statement: 13,
+  BlockStart: 14,
+  BlockEnd: 15,
 
   // Return
-  ReturnArgument: 1,
-  ReturnNoArgument: 1,
+  ReturnArgument: 16,
+  ReturnNoArgument: 17,
 
   // Throw
-  ThrowArgument: 1,
-  ThrowCallExpession: 1,
+  ThrowArgument: 18,
+  ThrowCallExpession: 19,
 
   // Await
-  Await: 1,
-  Resume: 1,
+  Await: 20,
+  Resume: 21,
   
 
   // AwaitCallExpression: 1,
   // ReturnAwait: 1,
   // ReturnAwaitCallExpression: 1,
 
-  EndOfContext: 1
+  EndOfContext: 22
 };
 
 /**

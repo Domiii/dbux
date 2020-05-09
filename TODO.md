@@ -293,7 +293,7 @@
    * `// TODO: trace-type`
    * bugs
       * identify all multi-role visits and make sure they are resolved
-         * `NewExpression`
+         * array paths: `SequenceExpression.expressions` + `CallExpression.arguments`
          * `Function`
             * `VariableAssignment.init`
             * `return`

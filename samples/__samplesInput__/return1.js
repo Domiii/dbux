@@ -1,5 +1,5 @@
 /**
- * Verify order of `staticTraceId` of nested combinations between:
+ * Nested combinations between:
  * 0. Function
  * 1. CallExpression
  * 2. Arithmetic expressions
@@ -7,10 +7,6 @@
  */
 
 var qwerty = (z) => x + y + z;
-
-function j(x, y) {
-  return (z) => x + y + z;
-}
 
 function f(x, ...args) {
   console.log(x, ...args);
@@ -28,6 +24,11 @@ function h(x, y) {
 function i(x, y) {
   return g(x * y) - g(x + y);
 }
+
+function j(x, y) {
+  return (z) => x + y + z;
+}
+
 
 
 f(g(1), g(2));

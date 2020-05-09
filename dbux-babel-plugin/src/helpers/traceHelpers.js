@@ -185,7 +185,7 @@ function getOrCreateThisNode() {
   return _thisPath;
 }
 
-export function traceSuper(path, state) {
+export function traceBeforeSuper(path, state) {
   // find the first ancestor that is a statement
   const statementPath = path.findParent(ancestor => ancestor.isStatement());
 

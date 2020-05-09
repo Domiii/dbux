@@ -9,7 +9,7 @@
 import Enum from 'dbux-common/src/util/Enum';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger } from 'dbux-common/src/log/logger';
-import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceSuper } from '../helpers/traceHelpers';
+import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceBeforeSuper } from '../helpers/traceHelpers';
 import { loopVisitor } from './loopVisitors';
 import { getPathTraceId } from '../data/StaticTraceCollection';
 import { isCallPath } from '../helpers/functionHelpers';
@@ -18,10 +18,11 @@ import { awaitVisitEnter } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
+const Verbose = false;
+// const Verbose = true;
 
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
-const Verbose = true;
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
@@ -40,13 +41,14 @@ const TraceInstrumentationType = new Enum({
   Loop: 6,
 
   // Special attention required for these
-  MemberExpression: 8,
-  Super: 9,
-  ReturnArgument: 10,
-  ThrowArgument: 11,
+  MemberProperty: 8,
+  MemberObject: 9,
+  Super: 10,
+  ReturnArgument: 11,
+  ThrowArgument: 12,
 
-  Function: 12,
-  Await: 13
+  Function: 13,
+  Await: 14
 });
 
 const InstrumentationDirection = {
@@ -65,12 +67,13 @@ const traceCfg = (() => {
     Block,
     Loop,
 
-    MemberExpression,
+    MemberProperty,
+    MemberObject,
     Super,
     ReturnArgument,
     ThrowArgument,
 
-    Function: F,
+    Function: Func,
     Await
   } = TraceInstrumentationType;
 
@@ -153,11 +156,13 @@ const traceCfg = (() => {
     ],
 
     MemberExpression: [
-      MemberExpression
+      NoTrace,
+      [['propery', MemberProperty], ['object', MemberObject]]
     ],
 
     OptionalMemberExpression: [
-      MemberExpression
+      NoTrace,
+      [['propery', MemberProperty], ['object', MemberObject]]
     ],
 
     SequenceExpression: [
@@ -258,13 +263,17 @@ const traceCfg = (() => {
       [['body', Block]]
     ],
 
-    // ExpressionStatement: [['expression', true]], // already taken care of by everything else
+    ExpressionStatement: [
+      NoTrace,
+      [['expression', ExpressionValue]]
+    ],
 
     // ########################################
     // functions
     // ########################################
     Function: [
-      F
+      NoTrace,
+      [['body', Func]]
     ],
 
     // ########################################
@@ -329,6 +338,9 @@ function normalizeConfigNode(parentCfg, visitorName, cfgNode) {
   };
 
   if (children) {
+    if (!Array.isArray(children)) {
+      throw new Error('invalid config node. Children must be an array of arrays: ' + JSON.stringify(visitorName));
+    }
     cfgNode.children = children.map(([childName, ...childCfg]) => {
       return normalizeConfigNode(cfgNode, childName, childCfg);
     });
@@ -365,7 +377,7 @@ function beforeCallExpression(callResultType, path, state, cfg) {
   // special treatment for `super`
   const calleePath = path.get('callee');
   if (calleePath.isSuper()) {
-    traceSuper(calleePath, state);
+    traceBeforeSuper(calleePath, state);
   }
 
   // `BeforeCallExpression` (returns `originalPath`)
@@ -380,24 +392,41 @@ const enterInstrumentors = {
   CallExpression(path, state, cfg) {
     return beforeCallExpression(TraceType.CallExpressionResult, path, state, cfg);
   },
-  ExpressionResult(path, state, cfg) {
-    return beforeExpression(TraceType.ExpressionResult, path, state, cfg);
+  // ExpressionResult(path, state, cfg) {
+  //   return beforeExpression(TraceType.ExpressionResult, path, state, cfg);
+  // },
+  // ExpressionValue(pathOrPaths, state, cfg) {
+  //   if (Array.isArray(pathOrPaths)) {
+  //     // e.g. `SequenceExpression`
+  //     for (const path of pathOrPaths) {
+  //       beforeExpression(TraceType.ExpressionValue, path, state, cfg);
+  //     }
+  //     return null;  // returning originalPaths is currently meanignless since `path.get` would not work on it
+  //   }
+  //   else {
+  //     return beforeExpression(TraceType.ExpressionValue, pathOrPaths, state, cfg);
+  //   }
+  // },
+
+  MemberProperty(propertyPath, state) {
+    const path = propertyPath.parentPath;
+    if (path.node.computed) {
+      return beforeExpression(TraceType.ExpressionValue, propertyPath, state);
+    }
+    return null;
   },
-  ExpressionValue(pathOrPaths, state, cfg) {
-    if (Array.isArray(pathOrPaths)) {
-      // e.g. `SequenceExpression`
-      for (const path of pathOrPaths) {
-        beforeExpression(TraceType.ExpressionValue, path, state, cfg);
-      }
-      return null;  // returning originalPaths is currently meanignless since `path.get` would not work on it
+
+  MemberObject(objPath, state) {
+    if (objPath.isSuper()) {
+      // NOTE: this will inject a node before its *ancestor statement*
+      return traceBeforeSuper(objPath, state);
     }
     else {
-      return beforeExpression(TraceType.ExpressionValue, pathOrPaths, state, cfg);
+      // trace object (e.g. `x` in `x.y`) as-is
+      return beforeExpression(TraceType.ExpressionValue, objPath, state, null, false);
     }
   },
-  // ExpressionNoValue(path, state) {
-  //   traceBeforeExpression(path, state);
-  // },
+
   Statement(path, state) {
     const traceStart = buildTraceNoValue(path, state, TraceType.Statement);
     path.insertBefore(traceStart);
@@ -503,27 +532,25 @@ const exitInstrumentors = {
       return wrapExpression(TraceType.ExpressionValue, pathOrPaths, state, cfg);
     }
   },
-  MemberExpression(path, state) {
-    // trace object of method call
+  MemberProperty(propertyPath, state) {
+    const path = propertyPath.parentPath;
     if (path.node.computed) {
-      // if `computed`, also trace property independently
-      const propertyPath = path.get('property');
-      wrapExpression(TraceType.ExpressionValue, propertyPath, state);
+      return wrapExpression(TraceType.ExpressionValue, propertyPath, state);
     }
+    return null;
+  },
 
-    const objPath = path.get('object');
+  MemberObject(objPath, state) {
     if (objPath.isSuper()) {
-      // super needs special treatment
-      // TODO: replace `traceSuper` with:
-      //    1. `traceBeforeExpression` on Enter
-      return traceSuper(objPath, state);
+      // nothing to do here
+      return null;
     }
     else {
       // trace object (e.g. `x` in `x.y`) as-is
       wrapExpression(TraceType.ExpressionValue, objPath, state, null, false);
 
       // NOTE: the `originalPath` is not maintained
-      return undefined;
+      return null;
     }
   },
   // Super(path, state) {

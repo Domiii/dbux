@@ -39,7 +39,7 @@
 				"${file}"
 			],
 			"protocol": "inspector",
-			"trace": true,
+			// "trace": true,
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
