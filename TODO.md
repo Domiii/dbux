@@ -291,7 +291,8 @@
       * -> fix value types
       * -> fix looking up ref types correctly
    * show `valueRef.value` where appropriate
-* find a more interesting `express` bug that relates to its most popular features
+* fix: dbux-graph breaks when starting/re-starting multiple apps
+* find `express` bugs that relate more to popular features
 * fix: `ComponentList` needs to add role (`child` or `controller`), so we can properly categorize on `Client` as well
    * -> or get rid of categorization and just fix things up in `GraphNode` instead?
 * fix: re-invent TraceType to support multiple roles per trace

@@ -14,7 +14,8 @@ function _errWrap(f) {
       return await f(...args);
     }
     catch (err) {
-      logError('Error when executing function of task');
+      logError('Error when executing function of task', 
+        f.name || '(anonymous callback)', '-', err);
       throw err;
     }
   };
