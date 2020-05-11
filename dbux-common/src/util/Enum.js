@@ -51,7 +51,7 @@ export default class Enum {
    * @virtual
    */
   isValue(value, nameOrValue) {
-    return value === this.getValue(nameOrValue);
+    return value === this.valueFrom(nameOrValue);
   }
 
   get byName() {
@@ -143,7 +143,7 @@ export default class Enum {
   // ###########################################################################
   // switchCall
   // ###########################################################################
-  
+
   // call function from a set of functions, based on given input
   switchCall(valueOrName, functions, ...args) {
     const name = this.nameFromForce(valueOrName);

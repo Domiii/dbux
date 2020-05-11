@@ -3,6 +3,9 @@ import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjec
 import Collection from './Collection';
 import pools from './pools';
 
+const Verbose = true;
+// const Verbose = false;
+
 const SerializationConfig = {
   maxDepth: 3,
   maxObjectSize: 20,   // applies to arrays and object
@@ -73,23 +76,29 @@ class ValueCollection extends Collection {
   }
 
   _addOmitted() {
-    return this._addValue(null, null, null, '(...)', ValuePruneState.Omitted);
+    if (!this._omitted) {
+      this._omitted = this._registerValue(null, null);
+      this._finishValue(this._omitted, null, '(...)', ValuePruneState.Omitted);
+    }
+    return this._omitted;
   }
 
-  _addValue(value, category, typeName, serialized, pruneState = false) {
-    // create new ref
-    const valueRef = new pools.values.allocate();
+  _registerValue(value, category) {
+    // TODO: figure out a better way to store primitive values? (don't need refs for those...)
 
-    // track value
-    if (isObjectCategory(category)) {
-      const tracked = this._trackValue(value, valueRef);
-      valueRef.trackId = tracked.trackId;
-    }
-
-    // store all other props
+    // create new ref + track object value
+    const valueRef = pools.values.allocate();
     const valueId = this._all.length;
+    const tracked = this._trackValue(value, valueRef);
+
     valueRef.valueId = valueId;
+    valueRef.trackId = tracked.trackId;
     valueRef.category = category;
+    return valueRef;
+  }
+
+  _finishValue(valueRef, typeName, serialized, pruneState = false) {
+    // store all other props
     valueRef.typeName = typeName;
     valueRef.serialized = serialized;
     valueRef.pruneState = pruneState;
@@ -102,7 +111,7 @@ class ValueCollection extends Collection {
 
 
   // ###########################################################################
-  // add a bit of bubblewrap when accessing object properties 
+  // bubblewrap when accessing object properties
   // ###########################################################################
 
   _readErrorCount = 0;
@@ -185,7 +194,6 @@ class ValueCollection extends Collection {
    * @param {Map} visited
    */
   _serialize(value, depth = 1, visited = null, category = null) {
-    // TODO: prevent infinite loops
     if (depth > SerializationConfig.maxDepth) {
       return this._addOmitted();
     }
@@ -196,6 +204,8 @@ class ValueCollection extends Collection {
     let serialized;
     let pruneState = ValuePruneState.Normal;
     let typeName = '';
+
+    // TODO: also fix bugs in `_deserialize` in `DataProvider`
 
     // infinite loop prevention
     if (isObjectCategory(category)) {
@@ -210,6 +220,12 @@ class ValueCollection extends Collection {
       }
     }
 
+    // register
+    const valueRef = this._registerValue(value, category);
+
+    // add to visited, if necessary
+    visited && visited.set(value, valueRef);
+
     // process by category
     switch (category) {
       case ValueTypeCategory.String:
@@ -221,7 +237,7 @@ class ValueCollection extends Collection {
 
       case ValueTypeCategory.Function:
         serialized = 'ƒ';
-        // TODO: can have custom properties too
+        // TODO: functions can have custom properties too
         break;
 
       case ValueTypeCategory.Array: {
@@ -234,8 +250,8 @@ class ValueCollection extends Collection {
         // build array
         serialized = [];
         for (let i = 0; i < n; ++i) {
-          const childRef = this._serialize(value, depth + 1, visited);
-          serialized.push(childRef.valueId);
+          const childRefOrPrimitive = this._serialize(value[i], depth + 1, visited);
+          serialized.push(childRefOrPrimitive.valueId);
         }
         break;
       }
@@ -282,11 +298,8 @@ class ValueCollection extends Collection {
         break;
     }
 
-    // add/register/track value
-    const valueRef = this._addValue(value, category, typeName, serialized, pruneState);
-    if (visited) {
-      visited.set(value, valueRef);
-    }
+    // finish value
+    this._finishValue(valueRef, typeName, serialized, pruneState);
     return valueRef;
   }
 }

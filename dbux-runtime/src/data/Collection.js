@@ -27,10 +27,11 @@ export default class Collection {
    * @returns {number} The id of the new entry
    */
   _add(newEntry) {
-    this._all.push(newEntry);
+    if (!newEntry.valueId) {
+      throw new Error(this._name + `valueId must be set before call to _add`);
+    }
+    this._all[newEntry.valueId] = newEntry;
     this._send(newEntry);
-
-    return this._all.length - 1;
   }
 
   /**

@@ -24,7 +24,7 @@ function errorWrapMethod(obj, methodName, ...args) {
     obj[methodName].apply(obj, args);
   }
   catch (err) {
-    logError(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err, ...args);
+    logError(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err); //...args);
   }
 }
 
@@ -82,7 +82,7 @@ class ExecutionContextCollection extends Collection<ExecutionContext> {
       this.resolveLastTraceOfContext(contexts);
     }
     catch (err) {
-      logError('resolveCallIds failed', err, contexts);
+      logError('resolveLastTraceOfContext failed', err); //contexts);
     }
   }
 
@@ -152,9 +152,11 @@ class TraceCollection extends Collection<Trace> {
           // call args: reference their call by `callId`
           const beforeCall = beforeCalls[beforeCalls.length - 1];
           if (staticTrace.callId !== beforeCall?.staticTraceId) {
-            logError('[callId]', beforeCall.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
+            logError('[callId]', beforeCall?.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
           }
-          trace.callId = beforeCall.traceId;
+          else {
+            trace.callId = beforeCall.traceId;
+          }
         }
       }
     }

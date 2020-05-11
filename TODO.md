@@ -2,6 +2,9 @@
 # TODO
 
 ## TODO (shared)
+* `Hide all decorations` should be "Toggle" instead of "Hide"
+   * also: we also want to toggle the buttons at the top (its a lot of buttons - hah
+   )
 * (!!!) `ContextNode`
    * button -> highlight all contexts of this staticContext
       * also add list to `traceDetailsView`: lists all contexts that call `staticContext` (via `parentTrace`)
@@ -291,6 +294,12 @@
       * -> fix value types
       * -> fix looking up ref types correctly
    * show `valueRef.value` where appropriate
+* fix: in express when mocha test timeout
+   * we see:
+      1. -> `Error: timeout of 2000ms exceeded`
+      1. -> `received init from client twice. Please restart application`
+   * -> it seems to try to re-init after the error somehow.
+      * Did it restart the process after being killed off?
 * fix: dbux-graph breaks when starting/re-starting multiple apps
 * find `express` bugs that relate more to popular features
 * fix: `ComponentList` needs to add role (`child` or `controller`), so we can properly categorize on `Client` as well
