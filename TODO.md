@@ -289,6 +289,13 @@
 
 
 ## TODO (other)
+* fix: variable instrumentations
+   * cannot always select trace of `animals` in `const animals = Array(n).fill(0).map(i => {...`
+   * ...but works for `const n = 20`
+* add new `value` node to `TDView`
+   * allow inspecting value
+   * show `tracked Nx` stats
+   * if `isCall`, show result value as well
 * fix up correct `value` objects
    * fix `valueRef.value`: all kinds of `undefined`
       * -> fix value types

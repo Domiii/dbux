@@ -331,7 +331,7 @@ export default {
     // else if (isCallArgumentTrace(trace)) {
     else if (hasCallId(trace)) {
       // call argument
-      return this.getCallResultTrace(trace.callId);
+      return dp.util.getCallResultTrace(trace.callId);
     }
     else if (isCallResult(trace)) {
       // trace itself is a resultTrace

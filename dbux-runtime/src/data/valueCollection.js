@@ -91,9 +91,14 @@ class ValueCollection extends Collection {
     const valueId = this._all.length;
     const tracked = this._trackValue(value, valueRef);
 
+    // store values
     valueRef.valueId = valueId;
     valueRef.trackId = tracked.trackId;
     valueRef.category = category;
+
+    // register by id
+    this._all.push(valueRef);
+
     return valueRef;
   }
 
@@ -103,8 +108,8 @@ class ValueCollection extends Collection {
     valueRef.serialized = serialized;
     valueRef.pruneState = pruneState;
 
-    // register + send out
-    this._add(valueRef);
+    // send out
+    this._send(valueRef);
 
     return valueRef;
   }
