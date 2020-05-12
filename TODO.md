@@ -284,10 +284,7 @@
 
 
 ## TODO (other)
-* fix: variable instrumentation
-   * cannot always select trace of `animals` in `const animals = Array(n).fill(0).map(i => {...`
-   * ...but works for `const n = 20`
-   * -> `MemberExpression`!?
+* fix: arrays (and all kinds of other things) are classified as functions
 * while accessing an object property, disable tracing
 * fix: `traveValueLabels`
    * get callee name from instrumentation

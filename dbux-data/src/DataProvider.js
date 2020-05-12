@@ -140,7 +140,8 @@ class TraceCollection extends Collection<Trace> {
           const beforeCall = beforeCalls.pop();
           // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
-            logError('[resultCallId]', beforeCall.staticTraceId, staticTrace.staticTraceId, 'staticTrace.resultCallId !== beforeCall.staticTraceId - is trace result of a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
+            logError(`Could not resolve resultCallId for trace "${staticTrace.displayName}" #${traceId}: with staticTrace #${staticTraceId} \
+and staticTrace.resultCallId #${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall.staticTraceId}.`);
             beforeCalls.push(beforeCall);   // something is wrong -> push it back
           }
           else {
