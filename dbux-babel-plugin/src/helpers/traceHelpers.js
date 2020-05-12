@@ -93,11 +93,12 @@ function instrumentArgs(callPath, state, beforeCallTraceId) {
   replacements.forEach(r => r());
 }
 
-export function traceCallExpression(callPath, state, resultType, beforeCallTraceId) {
+export function traceCallExpression(callPath, state, resultType, beforeCallTraceId, tracePath = null) {
   instrumentArgs(callPath, state, beforeCallTraceId);
   //const originalCallPath = 
   _traceWrapExpression('traceExpr', resultType, callPath, state, {
-    resultCallId: beforeCallTraceId
+    resultCallId: beforeCallTraceId,
+    tracePath
   });
 
   //   const newNode = buildTraceExprBeforeAndAfter(expressionPath, state);
@@ -135,6 +136,8 @@ function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg,
 export const traceBeforeExpression = function traceBeforeExpression(
   templ, traceType, expressionPath, state, tracePath) {
   const { ids: { dbux } } = state;
+
+  // TODO: trace-type
   const traceId = state.traces.addTrace(tracePath || expressionPath, traceType || TraceType.BeforeExpression, null);
 
   replaceWithTemplate(templ, expressionPath, {
@@ -183,7 +186,7 @@ function getOrCreateThisNode() {
   return _thisPath;
 }
 
-export function traceSuper(path, state) {
+export function traceBeforeSuper(path, state) {
   // find the first ancestor that is a statement
   const statementPath = path.findParent(ancestor => ancestor.isStatement());
 

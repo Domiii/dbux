@@ -1,10 +1,11 @@
-import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
 import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
 import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
 import DataProvider from './DataProvider';
+import { isCallResult, hasCallId } from '../../dbux-common/src/core/constants/traceCategorization';
 
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 
@@ -218,6 +219,7 @@ export default {
 
   getTraceProgramId(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
+    
     const {
       staticTraceId,
     } = trace;
@@ -263,11 +265,11 @@ export default {
       // trace is push/pop callback
       return dp.util.getCalleeTraceId(context.schedulerTraceId);
     }
-    else if (trace.callId) {
+    else if (hasCallId(trace)) {
       // trace is call/callback argument or BeforeCallExpression
       return trace.callId;
     }
-    else if (trace.resultCallId) {
+    else if (isCallResult(trace)) {
       // trace is call expression result
       return trace.resultCallId;
     }
@@ -314,20 +316,24 @@ export default {
    */
   getCallResultTrace(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    const type = dp.util.getTraceType(traceId);
+    const traceType = dp.util.getTraceType(traceId);
     if (trace.schedulerTraceId) {
       // trace is push/pop callback
       return dp.util.getCallResultTrace(trace.schedulerTraceId);
     }
-    else if (trace.callId && type !== TraceType.BeforeCallExpression) {
-      // trace is call/callback arg
+    else if (isBeforeCallExpression(traceType)) {
+      if (trace.resultId) {
+        // trace is a BeforeCallExpression and has result
+        return dp.collections.traces.getById(trace.resultId);
+      }
+      return null;
+    }
+    // else if (isCallArgumentTrace(trace)) {
+    else if (hasCallId(trace)) {
+      // call argument
       return dp.util.getCallResultTrace(trace.callId);
     }
-    else if (trace.resultId) {
-      // trace is a BeforeCallExpression and has result
-      return dp.collections.traces.getById(trace.resultId);
-    }
-    else if (trace.resultCallId) {
+    else if (isCallResult(trace)) {
       // trace itself is a resultTrace
       return trace;
     }

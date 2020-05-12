@@ -54,7 +54,6 @@ export default class BaseTreeViewNodeProvider {
     }
     catch (err) {
       logError(`${this.constructor.name}.refresh() failed`, err);
-      debugger;
       throw err;
     }
   }

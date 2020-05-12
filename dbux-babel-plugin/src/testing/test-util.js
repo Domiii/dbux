@@ -42,17 +42,22 @@ export function writeResultCodeToFile(inputCode, title, babelOptions, plugin) {
     }
   );
   // console.warn(babelOptions.plugins.map(p => (typeof p === 'function' ? p.toString() : JSON.stringify(p)).split('\n')[0]).join(','));
-  const outputCode = transformSync(inputCode, babelOptions).code;
 
-  // const srcPath = __dirname + '/..';
-  // const rootPath = srcPath + '/..';
-  const rootPath = __dirname + '/../../..';
-  const samplesOutputPath = rootPath + '/samples/__samplesOutput__';
-  const filename = title;
-  fs.mkdirSync(samplesOutputPath, { recursive: true });
-  const fpath = path.resolve(samplesOutputPath + '/' + filename);
-  console.debug('Writing file', fpath);
-  fs.writeFileSync(fpath, outputCode);
+  try {
+    const outputCode = transformSync(inputCode, babelOptions).code;
+    // const srcPath = __dirname + '/..';
+    // const rootPath = srcPath + '/..';
+    const rootPath = __dirname + '/../../..';
+    const samplesOutputPath = rootPath + '/samples/__samplesOutput__';
+    const filename = title;
+    fs.mkdirSync(samplesOutputPath, { recursive: true });
+    const fpath = path.resolve(samplesOutputPath + '/' + filename);
+    console.debug('Writing file', fpath);
+    fs.writeFileSync(fpath, outputCode);
+  }
+  catch (err) {
+    throw new Error(`instrumentation "${title}" failed - ${err}`);
+  }
 }
 
 export function runAllSnapshotTests(codes, filename, plugin, shouldWriteResultToFile = false, customTestConfig = null) {

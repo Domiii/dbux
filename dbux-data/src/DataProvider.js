@@ -8,7 +8,7 @@ import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext
 import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import ValueTypeCategory, { ValuePruneState } from 'dbux-common/src/core/constants/ValueTypeCategory';
-import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from 'dbux-common/src/core/constants/TraceType';
 import { hasCallId, isCallResult, isCallTrace } from 'dbux-common/src/core/constants/traceCategorization';
 
 import Collection from './Collection';
@@ -24,7 +24,7 @@ function errorWrapMethod(obj, methodName, ...args) {
     obj[methodName].apply(obj, args);
   }
   catch (err) {
-    logError(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err, ...args);
+    logError(`${obj.constructor.name}.${methodName}`, 'failed\n  ', err); //...args);
   }
 }
 
@@ -82,7 +82,7 @@ class ExecutionContextCollection extends Collection<ExecutionContext> {
       this.resolveLastTraceOfContext(contexts);
     }
     catch (err) {
-      logError('resolveCallIds failed', err, contexts);
+      logError('resolveLastTraceOfContext failed', err); //contexts);
     }
   }
 
@@ -140,7 +140,8 @@ class TraceCollection extends Collection<Trace> {
           const beforeCall = beforeCalls.pop();
           // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
-            logError('[resultCallId]', beforeCall.staticTraceId, staticTrace.staticTraceId, 'staticTrace.resultCallId !== beforeCall.staticTraceId - is trace result of a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
+            logError(`Could not resolve resultCallId for trace "${staticTrace.displayName}" #${traceId}: with staticTrace #${staticTraceId} \
+and staticTrace.resultCallId #${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall.staticTraceId}.`);
             beforeCalls.push(beforeCall);   // something is wrong -> push it back
           }
           else {
@@ -152,9 +153,11 @@ class TraceCollection extends Collection<Trace> {
           // call args: reference their call by `callId`
           const beforeCall = beforeCalls[beforeCalls.length - 1];
           if (staticTrace.callId !== beforeCall?.staticTraceId) {
-            logError('[callId]', beforeCall.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
+            logError('[callId]', beforeCall?.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
           }
-          trace.callId = beforeCall.traceId;
+          else {
+            trace.callId = beforeCall.traceId;
+          }
         }
       }
     }
@@ -175,7 +178,7 @@ class TraceCollection extends Collection<Trace> {
 
       const staticContext = this.dp.util.getTraceStaticContext(traceId);
       if (staticContext.isInterruptable) {
-        // interruptable contexts, only have `Push` and `Pop` traces, everything else is in `Resume` children
+        // interruptable contexts only have `Push` and `Pop` traces, everything else (including error handling!) is in `Resume` children
         continue;
       }
 
@@ -187,7 +190,7 @@ class TraceCollection extends Collection<Trace> {
         // guess error trace
         const previousTrace = this.dp.collections.traces.getById(previousTraceId);
         const { staticTraceId, callId, resultCallId } = previousTrace;
-        if (previousTraceType === TraceType.ThrowArgument) {
+        if (isTraceThrow(previousTraceType)) {
           // trace is error trace
           trace.staticTraceId = staticTraceId;
         }
@@ -218,6 +221,8 @@ class TraceCollection extends Collection<Trace> {
 }
 
 class ValueCollection extends Collection<ValueRef> {
+  _visited = new Set();
+
   constructor(dp) {
     super('values', dp);
   }
@@ -228,9 +233,7 @@ class ValueCollection extends Collection<ValueRef> {
 
     // deserialize
     for (const entry of entries) {
-      entry.value = this._deserialize(entry);
-      // entry.valueString = JSON.stringify(entry.value);
-      delete entry.serialized; // don't need this, so don't keep it around
+      this._deserialize(entry);
     }
   }
 
@@ -238,37 +241,55 @@ class ValueCollection extends Collection<ValueRef> {
     return ids.map(id => this.getById(id));
   }
 
+  _deserialize(entry) {
+    this._deserializeValue(entry);
+    // entry.valueString = JSON.stringify(entry.value);
+    delete entry.serialized; // don't need this, so don't keep it around
+  }
+
   /**
    * NOTE: This still only returns a string representation?
    */
-  _deserialize(entry) {
-    const {
-      category,
-      serialized,
-      pruneState
-    } = entry;
-
-    if (pruneState === ValuePruneState.Omitted) {
-      return serialized;
-    }
-
-    switch (category) {
-      case ValueTypeCategory.Array: {
-        let value = this.getAllById(entry.serialized);
-        value = value.map(child => child.value);
-        return value;
+  _deserializeValue(entry) {
+    if (!entry.value) {
+      if (this._visited.has(entry)) {
+        return '(circular reference)';
       }
-      case ValueTypeCategory.Object: {
-        const value = {};
-        for (const [key, childId] of entry.serialized) {
-          const child = this.getById(childId);
-          value[key] = child.value;
+      this._visited.add(entry);
+      const {
+        category,
+        serialized,
+        pruneState
+      } = entry;
+
+      let value;
+      if (pruneState === ValuePruneState.Omitted) {
+        value = serialized;
+      }
+      else {
+        switch (category) {
+          case ValueTypeCategory.Array: {
+            value = this.getAllById(entry.serialized);
+            value = value.map(child => this._deserializeValue(child));
+            break;
+          }
+          case ValueTypeCategory.Object: {
+            value = {};
+            for (const [key, childId] of entry.serialized) {
+              const child = this.getById(childId);
+              value[key] = this._deserializeValue(child);
+            }
+            break;
+          }
+          default:
+            value = serialized;
+            break;
         }
-        return value;
       }
-      default:
-        return serialized;
+      entry.value = value;
     }
+
+    return entry.value;
   }
 }
 
@@ -393,10 +414,10 @@ export default class DataProvider {
   addData(allData): { [string]: any[] } {
     // sanity checks
     if (!allData || allData.constructor.name !== 'Object') {
-      logError('invalid data must be (but is not) object -', allData);
+      logError('invalid data must be (but is not) object -', JSON.stringify(allData).substring(0, 500));
     }
 
-    // debug('received', allData);
+    // debug('received', JSON.stringify(allData).substring(0, 500));
 
     this._addData(allData);
     this._postAdd(allData);

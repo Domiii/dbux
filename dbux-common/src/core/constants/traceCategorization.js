@@ -14,6 +14,7 @@
  * thus we link it via `resultCallId`.
 */
 
+
 // ###########################################################################
 // Call expressions
 // ###########################################################################
@@ -22,6 +23,14 @@ export function isCallTrace(tost) {
   return tost.callId || tost.resultCallId;
 }
 
+// TODO: must do data look-up to get actual `traceType`
+// export function isCallArgument(tost) {
+//   return hasCallId(tost) && !isBeforeCallExpression(tost.type);
+// }
+
+/**
+ * Only `BeforeCallExpression` and call argument traces have `callId`.
+ */
 export function hasCallId(tost) {
   return tost.callId;
 }

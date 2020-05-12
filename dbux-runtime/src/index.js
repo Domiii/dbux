@@ -60,8 +60,7 @@ function handleShutdown() {
   client = initClient();
 
   // NOTE: we want to improve our chances that all data gets sent out before the process closes down.
-  //    However, that will be done anyway, unless `process.exit` is called; which kills without warning anyway.
-
+  //    `process.exit` can disrupt that (kills without allowing us to perform another async handshake + `send`)
   // register `exit` handler that sends out a warning if there is unsent stuff
   // process.on('exit', handleShutdown);
   __global__.process.on('exit', handleShutdown);

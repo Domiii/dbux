@@ -15,7 +15,7 @@ const { log, debug, warn, error: logError } = newLogger('dbux-code');
 // ###########################################################################
 
 export function isCallPath(path) {
-  return path.isCallExpression() || path.isOptionalCallExpression();
+  return path.isCallExpression() || path.isOptionalCallExpression() || path.isNewExpression();
 }
 
 export function functionNoName(functionPath) {

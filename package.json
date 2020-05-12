@@ -49,7 +49,7 @@
 		"dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
 		"dbux-install-force": "yarn install --force",
 		"dbux-all": "sh scripts/dbux-run-all.sh",
-		"dbux-uninstall": "rm -rf ./node_modules && rm -f ./package-lock.json && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json\"",
+		"dbux-uninstall": "rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
 		"p1-install": "sh ./assets/projects/todomvc-vanilla-es6/install.sh",
 		"p1-go": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
 		"p1-start": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
@@ -59,15 +59,16 @@
 	},
 	"dependencies": {
 		"@babel/runtime": "^7.8.3",
+		"colors": "*",
 		"core-js": "^3.6.4",
+		"fastbitset": "^0.2.8",
 		"find-package-json": "^1.2.0",
 		"link-module-alias": "^1.2.0",
 		"lodash": "^4.17.15",
 		"nanoevents": "^2.0.0",
+		"shelljs": "*",
 		"webpack-node-externals": "^1.7.2",
-		"colors": "*",
-    "yargs": "^15.1.0",
-    "shelljs": "*"
+		"yargs": "^15.1.0"
 	},
 	"optionalDependencies": {
 		"bufferutil": "^4.0.1",

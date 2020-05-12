@@ -49,6 +49,7 @@ module.exports = {
 		"no-confusing-arrow": 0,
 		"no-cond-assign": ["error", "except-parens"],
 		"no-await-in-loop": 0,
+		"no-bitwise": 0,
 		"constructor-super": "warn",
 		"valid-typeof": "warn",
 		// "class-methods-use-this": "warn",

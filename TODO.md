@@ -2,6 +2,11 @@
 # TODO
 
 ## TODO (shared)
+[Graph]
+* fix `RunNode` label?
+* make `ContextNode` colors lighter by default
+* `Hide all decorations` should be "Toggle" instead of "Hide"
+   * also: we also want to toggle the buttons at the top (its a lot of buttons - hah)
 * (!!!) `ContextNode`
    * button -> highlight all contexts of this staticContext
       * also add list to `traceDetailsView`: lists all contexts that call `staticContext` (via `parentTrace`)
@@ -12,7 +17,8 @@
    * (link/label: parentTrace)
       * traceLabel + valueLabel
 * add "follow mode" button to `Toolbar`: when following, slide to + highlight context `onTraceSelected`
-   * When stepping through code, also follow along in the graph
+   * when `follow mode` on: When stepping through code, also follow along in the graph
+* fix `blink` css: wrong color blending
 * `GraphNode`
    * add "collapseAllButThis" button
       * all collapsed parents change to `ExpandChildren`
@@ -20,6 +26,22 @@
    * add `reveal` function to `host/GraphNode`:
       * slide to node
       * highlight node
+* `ContextNode`:
+   * remove `shift+click` go-to-code click handler
+   * replace it with: clicking on the title (`displayName`) element instead (make it a `<a>`)
+   * make sure to ignore clicks to any buttons while the `pan` button (`alt`?) is held
+* remove `ParentTraces` from `TraceMode` enum (adding an extra node for parent trace unnecessary due to its 1:1 relationship with `context`)
+
+[UI]
+* in `traceDetails`: change 6 navigation buttons to buttons inside a single node (horizontal instead of vertical)
+   * make buttons behave more like normal debugger buttons
+      * -> if nothing is available for any direction, just step to the next trace
+* when clicking error button: call `reveal({focus: true})` on `CallRootsView`
+* `snipe trace` button currently not working correctly:
+   * if previously selected trace is not under cursor:
+      * first find the inner-most `staticTrace` at cursor, and start from that
+   * else: keep switching through all possible traces under cursor
+
 * [Projects]
    * show status of runner while runner is running
       * -> need to add event listener to runner for that
@@ -27,15 +49,9 @@
       * "select bug"
       * "delete project"
       * "cancel" (calls `BugRunner.cancel()`)
-* in `traceDetails`: change 6 navigation buttons to buttons inside a single node (horizontal instead of vertical)
 * configurable keyboard shortcuts for navigation buttons
    * for configurable keybindings, see:
       * https://code.visualstudio.com/api/references/contribution-points#contributes.keybindings
-* when clicking error button: call `reveal({focus: true})` on `CallRootsView`
-* when selecting a trace:
-   * if previously selected trace is not under cursor:
-      * first find the inner-most `staticTrace` at cursor, and start from that
-   * else: keep switching through all possible traces under cursor
 * add files to `ApplicationsView`
    * list all files as children for each application
       * click:
@@ -46,12 +62,6 @@
    * https://code.visualstudio.com/api/references/contribution-points#contributes.configuration
    * https://github.com/microsoft/vscode-extension-samples/tree/master/configuration-sample
 
-
-* add a command to toggle (show/hide) all intrusive features
-   * includes:
-      * show/hide all `codeDeco`s
-      * show/hide all other buttons in the top right
-   * command name: `Dbux: Toggle Controls`
 * [slow warning]
    * display a warning at the top of EditorWindow if it is very large and thus will slow things down (e.g. > x traces?)
       * potentially ask user for confirmation first? (remember decision until restart or config option override?)
@@ -136,7 +146,6 @@
 
 
 ## TODO (dbux-graph)
-* remove `ParentTraces` from `TraceMode` enum (adding an extra node for parent trace unnecessary due to its 1:1 relationship with `context`)
 * fix: require `alt` for `pan` (else button clicks don't work so well)
    * will fix: `nodeToggleBtn` does not work when clicking too fast and slightly moving the mouse during the click
 * finish highlight system: highlight *important* nodes, de-emphasize *unimportant* nodes
@@ -155,9 +164,6 @@
          * don't scale font, small font-size
          * darkened colors
          * low contrast
-* `ContextNode`:
-   * remove `shift+click` go-to-code click handler
-   * replace it with: clicking on the title (`displayName`) element instead (make it a `<a>`)
 * grouping: add new `GroupNode` controller component
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
@@ -165,14 +171,6 @@
 * add a css class for font scaling (e.g. `.scale-font`): when zooming, font-size stays the same
    * NOTE: can use `vh` instead of `px` or `rem` (see: https://stackoverflow.com/questions/24469375/keeping-text-size-the-same-on-zooming)
 * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
-* `ContextNode`
-   * link/label: filename:lineNumber
-      * TODO: for all filenames of same application, we want to remove `commonPrefix`
-         1. store `commonPrefix`
-         2. when seeing new `StaticProgramContext` in DataProvider, extract `commonPrefix`
-            -> if first time or if `commonPrefix` is shorter than before, update `commonPrefix` of all files
-               (maybe send out an event to update GUI? maybe not necessary...)
-            -> else, only set `commonPrefix` for new files (before adding)
 * NOTES
    * `render` does NOT propagate to children (unlike React)
 
@@ -286,15 +284,45 @@
 
 
 ## TODO (other)
+* while accessing an object property, disable tracing
+* fix: `traveValueLabels`
+   * get callee name from instrumentation
+   * improve traceValueLabel for all expressions
+* allow for mixed type objects for object tracking
+   * in `express`, `application` object is also a function
+   * need to allow "objectified functions" to be displayed as such
+   * Problem: How to determine what is an "objectified function"?
+      * -> `Object.keys` is not empty
+* add new `value` node to `TDView`
+   * allow inspecting value
+   * show `tracked Nx` stats
+   * if `isCall`, show result value as well
+* fix: in express when mocha test timeout
+   * we see:
+      1. -> `Error: timeout of 2000ms exceeded`
+      1. -> `received init from client twice. Please restart application`
+   * -> it seems to try to re-init after the error somehow.
+      * Did it restart the process after being killed off?
+* fix: `dbux-graph` breaks when starting/re-starting multiple apps
+* fix: `ComponentList` needs to add role (`child` or `controller`), so we can properly categorize on `Client` as well
+   * -> or get rid of categorization and just fix things up in `GraphNode` instead?
 * fix: re-invent TraceType to support multiple roles per trace
    * `// TODO: trace-type`
-   * 
-* fix: basic instrumentation order
-   * Problem: in `o.f()` trace, `o` has a higher `traceId` than `o.f()`'s `BCE`
-   * -> Problem: how to let a trace play multiple different roles (e.g. in `return f();`)?
-* fix: `NewExpression` is not properly instrumented
-   * because our `callback` wrapping was too aggressive; won't work with babel es6 classes and breaks object identity
-* test: `traceOrder2`
+   * bugs
+      * identify all multi-role visits and make sure they are resolved
+         * array paths: `SequenceExpression.expressions` + `CallExpression.arguments`
+         * `await`
+         * -> anything that is not just a simple expression!
+      * fix labels for multi-role traces
+         * currently only gets first selected role
+   * NOTES
+      * only `expressions` can take on multiple roles (for now, it seems that way)
+      * for `CallExpression`, we just override the `traceType` for result
+         * for `CallExpressionResult` we use `resultCallId` to identify it's role
+         * for call arguments, we use `callId`
+   * Ideas
+      * -> produce a more reliable/robust way of instrumenting expressions with multiple roles
+      * -> trace categorization/role assignment might need data lookup (e.g. for `getTraceType(tost)`)
 * define clear list of currently available features
    * list
       * stepping through execution (forward + backward)
@@ -308,23 +336,8 @@
    * also demonstrate each feature on express
       * TODO: find express bugs related to features that are commonly used
    * setup a test checklist?
-* fix: in `express` -> `response.js:570` (`return this;`) was not traced
-* while accessing an object property, disable tracing
-* fix: `traveValueLabels`
-   * get callee name from instrumentation
-   * improve traceValueLabel for all expressions
-* fix: instrumentation order
-   * for `CallExpression`, manually start visit to `callee` first
-   * hardcode mixed `TraceType`s (`Throw/Return` + `Await/Call/Function`)
-   * test combinations with functions
-      * odd one out: `return await function f() {}`
-* fix: more instrumentation order problems
-   * Problem: `throw` is not traced (`error1`)
-* allow for mixed type objects for object tracking
-   * in `express`, `application` object is also a function
-   * need to allow "objectified functions" to be displayed as such
-   * Problem: How to determine what is an "objectified function"?
-      * -> `Object.keys` is not empty
+* share some basic coding strategies?
+   * no ballsy one-liners (-> not even `getA().b`)
 * fix: in `a.b.c`, only `a.b` is traced?
 * fix: in `console.log(a.b.c);`, `a` is not traced
 * fix: `function` instrumentation
@@ -358,21 +371,13 @@
       30
       );
       ```
-
-* partial solution: Use a separate map to track callbacks and their points of passage instead?
-   * => Won't work as comprehensively at all
-   * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities
-   * Known issues: 
-      * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
-      * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
-* fix: [errors] false positive:
-   * e.g. `if (val === 'new') return next('route');`
-   * e.g. ```
-   exports.deprecate = function(fn, msg){
-      if (process.env.NODE_ENV === 'test') return fn;
-      // prepend module name
-      msg = 'express: ' + msg;`
-   ```
+* fix callback tracking
+   * partial solution: Use a separate map to track callbacks and their points of passage instead?
+      * => Won't work as comprehensively at all
+      * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities
+      * Known issues: 
+         * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
+         * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * fix: small trace odities
    * when selecting a traced "return", it says "no trace at cursor"
       * (same with almost any keywords for now)
@@ -459,8 +464,6 @@
       * https://stackoverflow.com/questions/42118900/when-is-the-body-of-a-promise-executed
       * http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor
 * fix: `sourceHelper` must use original code, but exclude comments
-* fix: trace order for `super` instrumentation is incorrect
-   * try to find `SequenceExpression` ancestor first, and isntrument that instead
 * fix: `StaticTrace.staticContextId`
    * generally less accurate than `trace.context.staticContextId`
    * cannot work correctly with interruptable functions
@@ -508,20 +511,15 @@
       * `iterateTracesBack`
       * `getTraceCount`
 * [cursorTracesView] + [traceSelection]
-   * when user textEditor selection changes, select "best" trace at cursor
-      * deselect previous trace
-      * need to design heuristic:
-         * if a trace was previously selected, select the one "closest" to that
-         * minimum effort: try to select one in the same run (if existing)
    * when jumping between traces, keep a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
 * [instrumentation]
    * more accurate callstacks
       * find correct trace of setter in callstack
       * find correct trace of getter in callstack
-      * NOTE: this is tedious :(
+      * NOTE: this is very hard :(
 * [interactive_mode]
-   * when clicking a value (and when in "online mode"), send command back to application to `console(inspect(value))`
+   * when clicking a value (and when in "online mode"), send command back to application to `console.log(inspect(value))`
 * [dataView]
    * a more complete approach to understanding values in current context
    * properly serialize and send object data

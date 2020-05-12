@@ -196,8 +196,10 @@ const decoNamesByType = {
 
     const previousTrace = dataProvider.collections.traces.getById(trace.traceId - 1);
     if (previousTrace.contextId > trace.contextId) {
+      // call expression of a function that we also instrumented (stepped into)
       return 'CallExpressionStep';
     }
+    // unknown function call
     return 'CallExpressionNoStep';
   }
 };
@@ -238,6 +240,9 @@ export function getTraceDecoName(dataProvider, staticTrace, trace) {
   // default: check by type name
   const traceType = dataProvider.util.getTraceType(traceId);
   const typeName = TraceType.nameFrom(traceType);
+
+  // TODO: trace-type
+
   const f = decoNamesByType[typeName];
   if (f) {
     const name = f(dataProvider, staticTrace, trace);

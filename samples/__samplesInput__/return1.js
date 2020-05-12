@@ -1,16 +1,12 @@
 /**
- * Verify order of `staticTraceId` of nested combinations between:
+ * Nested combinations between:
  * 0. Function
  * 1. CallExpression
  * 2. Arithmetic expressions
  * 3. ReturnArgument
  */
 
-
-function j(x, y) {
-  return (z) => x + y + z;
-}
-
+var qwerty = (z) => x + y + z;
 
 function f(x, ...args) {
   console.log(x, ...args);
@@ -21,12 +17,19 @@ function g(x) {
 }
 
 function h(x, y) {
-  return g(x * y); // TODO: why is there no error here?
+  return g(x * y);
 }
+
 
 function i(x, y) {
   return g(x * y) - g(x + y);
 }
+
+function j(x, y) {
+  return (z) => x + y + z;
+}
+
+
 
 f(g(1), g(2));
 h(g(3), g(4));

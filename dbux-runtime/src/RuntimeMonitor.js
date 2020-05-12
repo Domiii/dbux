@@ -353,16 +353,19 @@ export default class RuntimeMonitor {
     }
 
     // if (value instanceof Function && !isClass(value)) {
-    if (value instanceof Function) {
-      // scheduled callback
-      const cb = value;
-      return this._traceCallbackArgument(programId, inProgramStaticTraceId, cb);
-    }
-    else {
+    // if (value instanceof Function) {
+    //   // NOTE: this would override TraceType, but TraceType must sometimes not be overridden (e.g. `ReturnArgument`)
+    //   // scheduled callback
+    //   const cb = value;
+    //   return this._traceCallbackArgument(programId, inProgramStaticTraceId, cb);
+    // }
+    // else 
+    {
       const contextId = this._runtime.peekCurrentContextId();
       const runId = this._runtime.getCurrentRunId();
+      const overrideType = null;
 
-      const { traceId } = traceCollection.traceWithResultValue(contextId, runId, inProgramStaticTraceId, null, value);
+      const { traceId } = traceCollection.traceWithResultValue(contextId, runId, inProgramStaticTraceId, overrideType, value);
       this._onTrace(contextId, traceId);
 
       return value;

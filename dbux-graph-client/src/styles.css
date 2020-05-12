@@ -18,10 +18,6 @@ html,body{
   font-family: "Lucida Console", Courier, monospace;
 }
 
-.red{
-  display:flex;
-  flex-direction: column;
-}
 .root{
   height: auto;
   width: auto;
@@ -55,7 +51,7 @@ html,body{
   /* width:auto;
   height:auto; */
 }
-.displayname{
+.displayName{
   display:inline-block;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -160,4 +156,23 @@ body {
   height: 100vh;
   width:100vh;
   background-color: gray;
+}
+
+.where {
+  color: gray;
+}
+
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.run-node {
+  display:flex;
+  flex-direction: column;
+}
+
+.darkgray {
+  color: #666;
 }

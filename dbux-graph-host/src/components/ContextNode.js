@@ -17,8 +17,9 @@ class ContextNode extends HostComponentEndpoint {
     const {
       displayName
     } = staticContext;
-    const label = displayName + this._makeContextPositionLabel(applicationId, context);
+    const label = displayName;
     this.state.displayName = label;
+    this.state.positionLabel = this._makeContextPositionLabel(applicationId, context);
 
     // add GraphNode controller
     this.controllers.createComponent('GraphNode', {

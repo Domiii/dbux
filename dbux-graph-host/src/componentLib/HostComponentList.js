@@ -1,77 +1,8 @@
-import pull from 'lodash/pull';
 import isString from 'lodash/isString';
 
-class HostComponentList {
-  components = [];
-  componentsByName = new Map();
+import ComponentList from 'dbux-graph-common/src/componentLib/ComponentList';
 
-  constructor(parent) {
-    this.parent = parent;
-  }
-
-  // ###########################################################################
-  // getter
-  // ###########################################################################
-
-  get length() {
-    return this.components.length;
-  }
-
-  getComponent(Clazz) {
-    if (isString(Clazz)) {
-      return this.componentsByName.get(Clazz)?.[0] || null;
-    }
-    if (!Clazz._componentName) {
-      throw new Error(`Invalid component class. Did you forget to add this component to _hostRegistry? - ${Clazz}`);
-    }
-    return this.componentsByName.get(Clazz._componentName)?.[0] || null;
-  }
-
-  getComponents(Clazz) {
-    if (isString(Clazz)) {
-      return this.componentsByName.get(Clazz) || null;
-    }
-    if (!Clazz._componentName) {
-      throw new Error(`Invalid component class. Did you forget to add this component to _hostRegistry? - ${Clazz}`);
-    }
-    return this.componentsByName.get(Clazz._componentName) || null;
-  }
-
-  // ###########################################################################
-  // iterators
-  // ###########################################################################
-
-  * [Symbol.iterator]() {
-    yield* this.components;
-  }
-
-  * filter(filter) {
-    for (const child of this.components) {
-      if (filter(child)) {
-        yield child;
-      }
-    }
-  }
-
-  * dfs(filter) {
-    for (const child of this.components) {
-      if (!filter || filter(child)) {
-        yield child;
-        yield* child.children.dfs(filter);
-      }
-    }
-  }
-
-  /**
-   * Depth of the component tree (0 at this node).
-   */
-  computeMaxDepth() {
-    let d = 0;
-    for (const child of this.components) {
-      d = Math.max(d + 1, child.children.computeMaxDepth());
-    }
-    return d;
-  }
+class HostComponentList extends ComponentList {
 
   // ###########################################################################
   // public methods
@@ -79,7 +10,7 @@ class HostComponentList {
 
   createComponent(ComponentClassOrName, initialState) {
     // get component class + name
-    const { componentRegistry } = this.parent.componentManager;
+    const { componentRegistry } = this._owner.componentManager;
     let Clazz;
     let name;
     if (isString(ComponentClassOrName)) {
@@ -92,13 +23,8 @@ class HostComponentList {
     }
 
     // create + store
-    const comp = this.parent.componentManager._createComponent(this.parent, Clazz, initialState);
-    this.components.push(comp);
-    let byName = this.getComponents(Clazz);
-    if (!byName) {
-      this.componentsByName.set(name, byName = []);
-    }
-    byName.push(comp);
+    const comp = this._owner.componentManager._createComponent(this._owner, Clazz, initialState);
+    this._addComponent(comp);
 
     // return
     return comp;
@@ -108,21 +34,6 @@ class HostComponentList {
     for (let i = this.components.length - 1; i >= 0; --i) {
       this.components[i].dispose();
     }
-  }
-
-  // ###########################################################################
-  // private methods
-  // ###########################################################################
-
-  /**
-   * NOTE: Do not call `_removeComponent` directly.
-   * Call `unwantedComponent.dispose()` instead.
-   */
-  _removeComponent(comp) {
-    pull(this.components, comp);
-
-    let byName = this.getComponents(comp.constructor);
-    pull(byName, comp);
   }
 }
 

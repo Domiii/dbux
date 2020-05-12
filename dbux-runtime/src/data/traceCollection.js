@@ -33,6 +33,10 @@ class TraceCollection extends Collection {
     }
 
     const trace = pools.traces.allocate();
+    // generate new traceId and store
+    trace.traceId = this._all.length;
+    this._all.push(trace);
+    
     trace.contextId = contextId;
     trace.runId = runId;
     trace.type = type;
@@ -53,10 +57,6 @@ class TraceCollection extends Collection {
     } = staticContext;
     trace.staticTraceId = staticTraceCollection.getStaticTraceId(programId, inProgramStaticTraceId);
 
-    // generate new traceId and store
-    trace.traceId = this._all.length;
-
-    this._all.push(trace);
     this._send(trace);
 
     // _prettyPrint(trace, value);

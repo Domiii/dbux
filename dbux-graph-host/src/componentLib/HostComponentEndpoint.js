@@ -60,7 +60,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
     return this._startUpdate();
   }
 
-  updateTree() {
+  forceUpdateTree() {
+    // TODO: forceUpdate of self and all components in subtree
     throw new Error('NYI');
   }
 
