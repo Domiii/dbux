@@ -284,7 +284,6 @@
 
 
 ## TODO (other)
-* fix: arrays (and all kinds of other things) are classified as functions
 * while accessing an object property, disable tracing
 * fix: `traveValueLabels`
    * get callee name from instrumentation
@@ -298,11 +297,6 @@
    * allow inspecting value
    * show `tracked Nx` stats
    * if `isCall`, show result value as well
-* fix up correct `value` objects
-   * fix `valueRef.value`: all kinds of `undefined`
-      * -> fix value types
-      * -> fix looking up ref types correctly
-   * show `valueRef.value` where appropriate
 * fix: in express when mocha test timeout
    * we see:
       1. -> `Error: timeout of 2000ms exceeded`
@@ -342,6 +336,8 @@
    * also demonstrate each feature on express
       * TODO: find express bugs related to features that are commonly used
    * setup a test checklist?
+* share some basic coding strategies?
+   * no ballsy one-liners (-> not even `getA().b`)
 * fix: in `a.b.c`, only `a.b` is traced?
 * fix: in `console.log(a.b.c);`, `a` is not traced
 * fix: `function` instrumentation

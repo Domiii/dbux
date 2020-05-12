@@ -1,6 +1,6 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import map from 'lodash/map';
-import isPlainObject from 'lodash/isPlainObject';
+import isObject from 'lodash/isObject';
 
 /**
  * Use:
@@ -28,7 +28,7 @@ makeTreeItem('Debug', [
  */
 
 function arrayToTreeItems(arr) {
-  return arr.map(child => makeTreeItem(child));
+  return arr.map((value, i) => makeChildNode(i, value)); //makeTreeItem(child));
 }
 
 function objectToTreeItems(obj) {
@@ -37,7 +37,7 @@ function objectToTreeItems(obj) {
 }
 
 function makeChildNode(key, value) {
-  return isPlainObject(value) ?
+  return isObject(value) ?
     makeTreeItem(key, value) :  // open up objects recursively
     makeTreeItem(`${key}: ${value}`);
 }

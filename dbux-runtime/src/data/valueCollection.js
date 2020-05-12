@@ -99,6 +99,9 @@ class ValueCollection extends Collection {
     // register by id
     this._all.push(valueRef);
 
+    // mark for sending
+    this._send(valueRef);
+
     return valueRef;
   }
 
@@ -107,9 +110,6 @@ class ValueCollection extends Collection {
     valueRef.typeName = typeName;
     valueRef.serialized = serialized;
     valueRef.pruneState = pruneState;
-
-    // send out
-    this._send(valueRef);
 
     return valueRef;
   }

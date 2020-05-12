@@ -221,6 +221,8 @@ and staticTrace.resultCallId #${staticTrace.resultCallId} not matching beforeCal
 }
 
 class ValueCollection extends Collection<ValueRef> {
+  _visited = new Set();
+
   constructor(dp) {
     super('values', dp);
   }
@@ -231,9 +233,7 @@ class ValueCollection extends Collection<ValueRef> {
 
     // deserialize
     for (const entry of entries) {
-      entry.value = this._deserialize(entry);
-      // entry.valueString = JSON.stringify(entry.value);
-      delete entry.serialized; // don't need this, so don't keep it around
+      this._deserialize(entry);
     }
   }
 
@@ -241,37 +241,55 @@ class ValueCollection extends Collection<ValueRef> {
     return ids.map(id => this.getById(id));
   }
 
+  _deserialize(entry) {
+    this._deserializeValue(entry);
+    // entry.valueString = JSON.stringify(entry.value);
+    delete entry.serialized; // don't need this, so don't keep it around
+  }
+
   /**
    * NOTE: This still only returns a string representation?
    */
-  _deserialize(entry) {
-    const {
-      category,
-      serialized,
-      pruneState
-    } = entry;
-
-    if (pruneState === ValuePruneState.Omitted) {
-      return serialized;
-    }
-
-    switch (category) {
-      case ValueTypeCategory.Array: {
-        let value = this.getAllById(entry.serialized);
-        value = value.map(child => child.value);
-        return value;
+  _deserializeValue(entry) {
+    if (!entry.value) {
+      if (this._visited.has(entry)) {
+        return '(circular reference)';
       }
-      case ValueTypeCategory.Object: {
-        const value = {};
-        for (const [key, childId] of entry.serialized) {
-          const child = this.getById(childId);
-          value[key] = child.value;
+      this._visited.add(entry);
+      const {
+        category,
+        serialized,
+        pruneState
+      } = entry;
+
+      let value;
+      if (pruneState === ValuePruneState.Omitted) {
+        value = serialized;
+      }
+      else {
+        switch (category) {
+          case ValueTypeCategory.Array: {
+            value = this.getAllById(entry.serialized);
+            value = value.map(child => this._deserializeValue(child));
+            break;
+          }
+          case ValueTypeCategory.Object: {
+            value = {};
+            for (const [key, childId] of entry.serialized) {
+              const child = this.getById(childId);
+              value[key] = this._deserializeValue(child);
+            }
+            break;
+          }
+          default:
+            value = serialized;
+            break;
         }
-        return value;
       }
-      default:
-        return serialized;
+      entry.value = value;
     }
+
+    return entry.value;
   }
 }
 
