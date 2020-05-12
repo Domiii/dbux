@@ -9,6 +9,7 @@
 import Enum from 'dbux-common/src/util/Enum';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger } from 'dbux-common/src/log/logger';
+import truncate from 'lodash/truncate';
 import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceBeforeSuper } from '../helpers/traceHelpers';
 import { loopVisitor } from './loopVisitors';
 import { getPathTraceId } from '../data/StaticTraceCollection';
@@ -18,8 +19,8 @@ import { awaitVisitEnter } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
-const Verbose = false;
-// const Verbose = true;
+// const Verbose = false;
+const Verbose = true;
 
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
@@ -86,6 +87,20 @@ const traceCfg = (() => {
       NoTrace,
       [['right', ExpressionResult, null, { originalIsParent: true }]]
     ],
+    VariableDeclarator: [
+      NoTrace,
+      [['init', ExpressionResult, null, { originalIsParent: true }]]
+    ],
+    // VariableDeclaration: [
+    //   NoTrace,
+    //   null,
+    //   {
+    //     // filter(path, state) {
+    //     //   // ignore variable declarations in for loops inits
+    //     //   return !path.parentPath.isFor();
+    //     // }
+    //   }
+    // ],
     ClassPrivateProperty: [
       NoTrace,
       [['value', ExpressionResult]]
@@ -93,20 +108,6 @@ const traceCfg = (() => {
     ClassProperty: [
       NoTrace,
       [['value', ExpressionResult]]
-    ],
-    VariableDeclaration: [
-      NoTrace,
-      null,
-      {
-        // filter(path, state) {
-        //   // ignore variable declarations in for loops inits
-        //   return !path.parentPath.isFor();
-        // }
-      }
-    ],
-    VariableDeclarator: [
-      NoTrace,
-      [['init', ExpressionResult, null, { originalIsParent: true }]]
     ],
 
 
@@ -363,15 +364,15 @@ function normalizeConfig(cfg) {
 // ENTER instrumentors
 // ###########################################################################
 
-function beforeExpression(traceType, path, state, cfg) {
+function beforeExpression(traceType, path, state) {
   if (isCallPath(path)) {
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be CallExpressions
-    return beforeCallExpression(traceType, path, state, cfg);
+    return beforeCallExpression(traceType, path, state);
   }
   return null;
 }
 
-function beforeCallExpression(callResultType, path, state, cfg) {
+function beforeCallExpression(callResultType, path, state) {
   // CallExpression
 
   // special treatment for `super`
@@ -381,7 +382,8 @@ function beforeCallExpression(callResultType, path, state, cfg) {
   }
 
   // `BeforeCallExpression` (returns `originalPath`)
-  path = traceBeforeExpression(TraceType.BeforeCallExpression, path, state, null);
+  const tracePath = getTracePath(path);
+  path = traceBeforeExpression(TraceType.BeforeCallExpression, path, state, tracePath);
 
   // trace CallResult (on exit)
   path.setData('callResultType', callResultType);
@@ -389,22 +391,22 @@ function beforeCallExpression(callResultType, path, state, cfg) {
 }
 
 const enterInstrumentors = {
-  CallExpression(path, state, cfg) {
-    return beforeCallExpression(TraceType.CallExpressionResult, path, state, cfg);
+  CallExpression(path, state) {
+    return beforeCallExpression(TraceType.CallExpressionResult, path, state);
   },
-  // ExpressionResult(path, state, cfg) {
-  //   return beforeExpression(TraceType.ExpressionResult, path, state, cfg);
-  // },
-  // ExpressionValue(pathOrPaths, state, cfg) {
+  ExpressionResult(path, state) {
+    return beforeExpression(null, path, state);
+  },
+  // ExpressionValue(pathOrPaths, state) {
   //   if (Array.isArray(pathOrPaths)) {
   //     // e.g. `SequenceExpression`
   //     for (const path of pathOrPaths) {
-  //       beforeExpression(TraceType.ExpressionValue, path, state, cfg);
+  //       beforeExpression(TraceType.ExpressionValue, path, state);
   //     }
   //     return null;  // returning originalPaths is currently meanignless since `path.get` would not work on it
   //   }
   //   else {
-  //     return beforeExpression(TraceType.ExpressionValue, pathOrPaths, state, cfg);
+  //     return beforeExpression(TraceType.ExpressionValue, pathOrPaths, state);
   //   }
   // },
 
@@ -451,19 +453,19 @@ const enterInstrumentors = {
     loopVisitor(path, state);
   },
 
-  ReturnArgument(path, state, cfg) {
+  ReturnArgument(path, state) {
     if (path.node) {
       // trace `arg` in `return arg;`
-      return beforeExpression(TraceType.ReturnArgument, path, state, cfg);
+      return beforeExpression(TraceType.ReturnArgument, path, state);
     }
     else {
       // insert trace before `return;` statement
-      return traceBeforeExpression(TraceType.ReturnNoArgument, path.parentPath, state, cfg);
+      return traceBeforeExpression(TraceType.ReturnNoArgument, path.parentPath, state);
     }
   },
 
-  ThrowArgument(path, state, cfg) {
-    return beforeExpression(TraceType.ThrowArgument, path, state, cfg);
+  ThrowArgument(path, state) {
+    return beforeExpression(TraceType.ThrowArgument, path, state);
   },
 
   Function: functionVisitEnter,
@@ -481,23 +483,17 @@ const enterInstrumentors = {
 //   }  
 // }
 
-function wrapExpression(traceType, path, state, cfg) {
-  if (isCallPath(path)) {
-    return wrapCallExpression(path, state);
-  }
+function wrapExpression(traceType, path, state) {
+  const tracePath = getTracePath(path);
 
-  // any other expression with a result
-  const originalIsParent = cfg?.originalIsParent;
-  let tracePath;
-  if (originalIsParent && !isPathInstrumented(path.parentPath)) {
-    // we want to highlight the parentPath, instead of just the value path
-    tracePath = path.parentPath;
+  if (isCallPath(path)) {
+    return wrapCallExpression(path, state, tracePath);
   }
 
   return traceWrapExpression(traceType, path, state, tracePath);
 }
 
-function wrapCallExpression(path, state) {
+function wrapCallExpression(path, state, tracePath = null) {
   // CallExpression
   // instrument args after everything else has already been done
 
@@ -506,7 +502,7 @@ function wrapCallExpression(path, state) {
   // traceCallExpression(path, state, beforeCallTraceId);
   const beforeCallTraceId = getPathTraceId(path);
   const callResultType = path.getData('callResultType') || TraceType.CallExpressionResult;
-  return traceCallExpression(path, state, callResultType, beforeCallTraceId);
+  return traceCallExpression(path, state, callResultType, beforeCallTraceId, tracePath);
 }
 
 /**
@@ -515,21 +511,21 @@ function wrapCallExpression(path, state) {
  */
 const exitInstrumentors = {
   CallExpression(path, state) {
-    return wrapCallExpression(path, state);
+    return wrapExpression(null, path, state);
   },
-  ExpressionResult(path, state, cfg) {
-    return wrapExpression(TraceType.ExpressionResult, path, state, cfg);
+  ExpressionResult(path, state) {
+    return wrapExpression(TraceType.ExpressionResult, path, state);
   },
-  ExpressionValue(pathOrPaths, state, cfg) {
+  ExpressionValue(pathOrPaths, state) {
     if (Array.isArray(pathOrPaths)) {
       // e.g. `SequenceExpression`
       for (const path of pathOrPaths) {
-        wrapExpression(TraceType.ExpressionValue, path, state, cfg);
+        wrapExpression(TraceType.ExpressionValue, path, state);
       }
       return null;  // returning originalPaths is currently meanignless since `path.get` would not work on it
     }
     else {
-      return wrapExpression(TraceType.ExpressionValue, pathOrPaths, state, cfg);
+      return wrapExpression(TraceType.ExpressionValue, pathOrPaths, state);
     }
   },
   MemberProperty(propertyPath, state) {
@@ -557,16 +553,16 @@ const exitInstrumentors = {
   //   // NOTE: for some reason, `Super` visitor does not get picked up by Babel
   // },
 
-  ReturnArgument(path, state, cfg) {
+  ReturnArgument(path, state) {
     if (path.node) {
       // trace `arg` in `return arg;`
-      return wrapExpression(TraceType.ReturnArgument, path, state, cfg);
+      return wrapExpression(TraceType.ReturnArgument, path, state);
     }
     return null;
   },
 
-  ThrowArgument(path, state, cfg) {
-    return wrapExpression(TraceType.ThrowArgument, path, state, cfg);
+  ThrowArgument(path, state) {
+    return wrapExpression(TraceType.ThrowArgument, path, state);
   },
 };
 
@@ -647,9 +643,20 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
   let shouldVisit = false;
   let instrumentor;
   if (instrumentationType && !isPathInstrumented(path)) {
-    logInst('V', cfg, path, direction);
+    Verbose && logInst('V', cfg, path, direction);
     instrumentor = getInstrumentor(instrumentors, instrumentationType);
     shouldVisit = instrumentor && onTrace(path); // instrumentor && !hasVisited
+
+    if (direction === InstrumentationDirection.Enter) {
+      // store config on enter
+      if (extraCfg) {
+        if (path.getData('visitorCfg')) {
+          // ideally, there should not be such a conflict
+          logError('config override at path - old:', path.getData('visitorCfg'), ', new:', extraCfg);
+        }
+        path.setData('visitorCfg', extraCfg);
+      }
+    }
   }
 
   if (direction === InstrumentationDirection.Enter) {
@@ -688,7 +695,7 @@ function getInstrumentor(instrumentors, instrumentationType) {
 
 function instrumentPath(direction, instrumentor, path, state, cfg) {
   // log
-  logInst('I', cfg, path, direction);
+  Verbose && logInst('I', cfg, path, direction);
 
   // actual instrumentation
   const { extraCfg } = cfg;
@@ -696,12 +703,12 @@ function instrumentPath(direction, instrumentor, path, state, cfg) {
     // path is an array?
     for (const p of path) {
       // const originalPath =
-      instrumentor(p, state, extraCfg);
+      instrumentor(p, state);
     }
   }
   else {
     // const originalPath = 
-    instrumentor(path, state, extraCfg);
+    instrumentor(path, state);
   }
 
   // TODO: remember originalPath for further processing?
@@ -726,6 +733,25 @@ function visitExit(path, state, visitorCfg) {
 //   throw new Error(message + (obj && (' - ' + JSON.stringify(obj)) || ''));
 // }
 
+function getTracePath(path) {
+  const cfg = path.getData('visitorCfg');
+  const originalIsParent = cfg?.originalIsParent;
+  if (originalIsParent) {
+    let tracePath = path.parentPath;
+    while (tracePath && !tracePath.isStatement() && isPathInstrumented(tracePath)) {
+      // this expression is represented by the parentPath, instead of just the value path
+      tracePath = tracePath.parentPath;
+    }
+    if (tracePath && (tracePath.isStatement() || isPathInstrumented(tracePath))) {
+      // invalid path
+      tracePath = null;
+    }
+    return tracePath;
+  }
+  return null;
+}
+
+
 function _getFullName(cfg) {
   const { parentCfg,
     // instrumentationType,
@@ -740,17 +766,13 @@ function _getFullName(cfg) {
 }
 
 function logInst(tag, cfg, path, direction = null, ...other) {
-  if (!Verbose) {
-    return;
-  }
   const nodeName = getNodeNames(path.node)?.name;
   const cfgName = _getFullName(cfg);
   const dirIndicator = direction && direction === InstrumentationDirection.Enter ? ' ->' : ' <-';
   console.debug(
     `[${tag}]${dirIndicator || ''}`,
-    nodeName && `${path.node.type} ${nodeName}` || path.toString(),
-    ':',
-    cfgName,
+    `${cfgName}:`,
+    nodeName && `${path.node.type} ${nodeName}` || truncate(path.toString().replace(/\n/g, ' '), { length: 100 }),
     // TraceInstrumentationType.nameFromForce(instrumentationType),
     ...other
   );

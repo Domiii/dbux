@@ -93,11 +93,12 @@ function instrumentArgs(callPath, state, beforeCallTraceId) {
   replacements.forEach(r => r());
 }
 
-export function traceCallExpression(callPath, state, resultType, beforeCallTraceId) {
+export function traceCallExpression(callPath, state, resultType, beforeCallTraceId, tracePath = null) {
   instrumentArgs(callPath, state, beforeCallTraceId);
   //const originalCallPath = 
   _traceWrapExpression('traceExpr', resultType, callPath, state, {
-    resultCallId: beforeCallTraceId
+    resultCallId: beforeCallTraceId,
+    tracePath
   });
 
   //   const newNode = buildTraceExprBeforeAndAfter(expressionPath, state);

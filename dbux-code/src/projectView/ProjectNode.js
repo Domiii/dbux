@@ -47,12 +47,13 @@ export default class ProjectNode extends BaseTreeViewNode {
     const runner = this.treeNodeProvider.controller.manager.getOrCreateRunner();
     const bugs = await runner.getOrLoadBugs(this.project);
     const children = [];
-    progress.report({ message: 'Building Nodes' });
+    // progress.report({ message: 'Building Nodes' });
     for (const bug of bugs) {
       children.push(this.buildBugNode(bug));
     }
     this.childrenBuilt = true;
     this.children = children;
+
     this.treeNodeProvider.decorateChildren(this);
     this.treeNodeProvider.repaint();
     return children;
