@@ -3,8 +3,8 @@ import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjec
 import Collection from './Collection';
 import pools from './pools';
 
-const Verbose = true;
-// const Verbose = false;
+// const Verbose = true;
+const Verbose = false;
 
 const SerializationConfig = {
   maxDepth: 3,
