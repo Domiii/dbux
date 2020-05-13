@@ -6,8 +6,9 @@ export default class ComponentList {
   components = [];
   componentsByName = new Map();
 
-  constructor(owner) {
+  constructor(owner, roleName) {
     this._owner = owner;
+    this._roleName = roleName;
   }
 
   // ###########################################################################

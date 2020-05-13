@@ -14,6 +14,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   el;
   isInitialized;
   children = new ClientComponentList(this);
+  controllers = new ClientComponentList(this);
 
   constructor() {
     super();
@@ -64,8 +65,11 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   // private methods
   // ###########################################################################
 
-  async _performInit() {
-    this.owner?.children._addComponent(this);
+  async _performClientInit(role) {
+    if (this.owner) {
+      const list = this.owner._getComponentListByRoleName(role);
+      list._addComponent(this);
+    }
     await this.init();
     this.isInitialized = true;
   }

@@ -9,6 +9,7 @@ export default class GraphNode extends ClientComponentEndpoint {
       nodeChildren
     } = this.owner.els;
 
+    this.owner.el.classList.add('graph-node');
     this.btnEl = nodeToggleBtn;
     this.listEl = nodeChildren;
 
@@ -46,11 +47,11 @@ export default class GraphNode extends ClientComponentEndpoint {
     switch (mode) {
       case GraphNodeMode.ExpandChildren:
         listEl.classList.remove('hidden');
-        btnEl.innerHTML = '☰';
+        btnEl.innerHTML = '-';
         break;
       case GraphNodeMode.ExpandSubgraph:
         listEl.classList.remove('hidden');
-        btnEl.innerHTML = '🌿';
+        btnEl.innerHTML = '☰';
         break;
       case GraphNodeMode.Collapsed:
         listEl.classList.add('hidden');

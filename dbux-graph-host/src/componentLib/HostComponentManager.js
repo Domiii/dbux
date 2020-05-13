@@ -85,15 +85,21 @@ class HostComponentManager extends BaseComponentManager {
       state
     } = component;
 
+    // parent
     const parentId = parent?.componentId || 0;
+
+    // role
+    const role = component._internalRoleName;
     
+    // shared
     const shared = this._wrapShared(component);
 
     // send new component to client *AFTER* its parent has finished init'ing
     await parent?.waitForInit();
 
-    return this.app._remoteInternal.createComponent(
+    return this.app._remoteInternal.createClientComponent(
       parentId,
+      role,
       componentId,
       componentName,
       shared,

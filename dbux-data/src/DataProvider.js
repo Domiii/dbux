@@ -256,6 +256,14 @@ class ValueCollection extends Collection<ValueRef> {
         return '(circular reference)';
       }
       this._visited.add(entry);
+
+      if (!('serialized' in entry)) {
+        logError(`error when deserializing value #${entry.valueId} (data missing): ${JSON.stringify(entry)}`);
+        entry.category = ValueTypeCategory.String;
+        entry.pruneState = ValuePruneState.Omitted;
+        return entry.value = '(error when deserializing)';
+      }
+
       const {
         category,
         serialized,

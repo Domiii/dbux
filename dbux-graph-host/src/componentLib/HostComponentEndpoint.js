@@ -28,8 +28,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
   constructor() {
     super();
 
-    this.children = new HostComponentList(this);
-    this.controllers = new HostComponentList(this);
+    this.children = new HostComponentList(this, 'child');
+    this.controllers = new HostComponentList(this, 'controller');
   }
 
   get isInitializing() {

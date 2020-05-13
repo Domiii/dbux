@@ -29,12 +29,12 @@ html,body{
   justify-content:flex-start;
   height:auto;
   width:auto;
-  margin:5px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   white-space: nowrap;
 }
 
-.context .body {
+.flex-column {
+  display: flex;
   flex-direction: column;
 }
 
@@ -48,8 +48,7 @@ html,body{
   white-space: nowrap;
 }
 .title{
-  /* width:auto;
-  height:auto; */
+  width: 100%;
 }
 .displayName{
   display:inline-block;
@@ -94,8 +93,9 @@ background: #333;
   display: block;
 }
 
-
-.nodeToggleBtn{
+.context button,
+.nodeToggleBtn {
+  background-color: rgba(0,0,0,0);
   display:inline-block;
   margin:0;
   padding: 0;
@@ -104,6 +104,10 @@ background: #333;
 }
 .children{
   width:auto;
+}
+
+.full-width {
+  width: 100%;
 }
 
 
@@ -168,11 +172,6 @@ body {
   flex-direction: row;
 }
 
-.run-node {
-  display:flex;
-  flex-direction: column;
-}
-
 .darkgray {
   color: #666;
 }
@@ -187,16 +186,16 @@ body {
 
 .dbux-link:hover {
   color: rgb(104, 91, 218);
-  
+} 
 .highlighter{
 
 }
 .highlight-on {
   background: gray !important;
 }
-.highlight-on .context:not(.highlight) > * {
+.highlight-on .graph-node:not(.highlight) > * {
   background: gray !important;
 }
-.highlight-on .context .children {
+.highlight-on .graph-node .children {
   background: gray !important;
 }

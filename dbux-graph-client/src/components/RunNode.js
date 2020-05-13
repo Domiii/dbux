@@ -4,12 +4,16 @@ import { compileHtmlElement } from '../util/domUtil';
 class RunNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-      <div class="run-node">
-        <div style="display:flex; flex-direction:row;">
-          <h6 data-el="title"></h6>
-          <button data-el="nodeToggleBtn" class="open_close_btn">▽</button>
+      <div class="flex-row">
+        <!--div>
+          <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
+        </div-->
+        <div class="flex-column">
+          <!--div style="display:flex; flex-direction:row;">
+            <h6 data-el="title"></h6>
+          </div-->
+          <div data-el="nodeChildren" data-mount="ContextNode"></div>
         </div>
-        <div data-mount="ContextNode" data-el="childrenContext"></div>
       </div>
     `);
 
@@ -18,20 +22,7 @@ class RunNode extends ClientComponentEndpoint {
   
   update() {
     const { applicationId, runId } = this.state;
-    this.els.title.textContent = `Run #${runId} (Application #${applicationId})`;
-  }
-  on = {
-    nodeToggleBtn: {
-      click() {
-        if (this.els.childrenContext.style.display === 'none') {
-          this.els.childrenContext.style.display = 'initial';
-          this.els.nodeToggleBtn.innerHTML = '▽';//﹀ ▽
-        } else {
-          this.els.childrenContext.style.display = 'none';
-          this.els.nodeToggleBtn.innerHTML = '▷';//〉 ▷
-        }         
-      }
-    }
+    // this.els.title.textContent = `Run #${runId} (Application #${applicationId})`;
   }
 }
 

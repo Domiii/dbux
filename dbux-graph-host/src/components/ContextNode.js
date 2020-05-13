@@ -99,7 +99,8 @@ class ContextNode extends HostComponentEndpoint {
     const fileName = programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
 
     const { line, column } = loc.start;
-    return `@${fileName}:${line}:${column}`;
+    // return `@${fileName}:${line}:${column}`;
+    return `${fileName}:${line}`;
   }
 
   public = {

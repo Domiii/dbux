@@ -33,9 +33,8 @@
 * remove `ParentTraces` from `TraceMode` enum (adding an extra node for parent trace unnecessary due to its 1:1 relationship with `context`)
 
 [UI]
-* in `traceDetails`: change 6 navigation buttons to buttons inside a single node (horizontal instead of vertical)
-   * make buttons behave more like normal debugger buttons
-      * -> if nothing is available for any direction, just step to the next trace
+* [navigation]
+   * ignore trace if type `isPlainExpressionValue`
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
 * `snipe trace` button currently not working correctly:
    * if previously selected trace is not under cursor:
@@ -284,19 +283,29 @@
 
 
 ## TODO (other)
-* while accessing an object property, disable tracing
+* look at inf loop bug: `manager.highlighterUpdated`
+* fix: instrumentation of `return;`
+   * when running express bug #1
+      * error detected in `setImmediate(done, layerError);` (before `return;`)
+      * probably caused by `return;` not being instrumented correctly!
+* fix value tracking UI
+   * add new `value` node to `TDView`
+      * allow inspecting value
+      * show `tracked Nx` stats
+      * if `isCall`, show result value as well
+   * `this.methods[method] = true` shows `undefined` in `Trace Executed`
+* fix:
+   * in `this.methods[method]`, `method` is not a selectable trace
+   * strings are also tracked -> disable tracking of strings
 * fix: `traveValueLabels`
-   * get callee name from instrumentation
+   * get callee name from instrumentation!!!
    * improve traceValueLabel for all expressions
+* while accessing an object property, disable tracing
 * allow for mixed type objects for object tracking
    * in `express`, `application` object is also a function
    * need to allow "objectified functions" to be displayed as such
    * Problem: How to determine what is an "objectified function"?
       * -> `Object.keys` is not empty
-* add new `value` node to `TDView`
-   * allow inspecting value
-   * show `tracked Nx` stats
-   * if `isCall`, show result value as well
 * fix: in express when mocha test timeout
    * we see:
       1. -> `Error: timeout of 2000ms exceeded`

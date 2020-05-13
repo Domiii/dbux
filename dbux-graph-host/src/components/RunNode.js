@@ -17,6 +17,12 @@ class RunNode extends HostComponentEndpoint {
     //   context
     // }));
 
+    // // add GraphNode controller
+    // this.controllers.createComponent('GraphNode', {
+    //   isExpanded: false
+    // });
+
+    // add root context
     const contexts = dp.indexes.executionContexts.byRun.get(runId) || EmptyArray;
     const context = contexts[0];
     this.children.createComponent(ContextNode, {
