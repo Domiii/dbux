@@ -1,4 +1,4 @@
-import { window, ProgressLocation } from 'vscode';
+import { ProgressLocation } from 'vscode';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
 import BugLoadingNode from './BugLoadingNode';
@@ -10,7 +10,6 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   init = () => {
-    this.contextValue = 'ProjectNode';
     this.childrenBuilt = false;
   }
 

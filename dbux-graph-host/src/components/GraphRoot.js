@@ -1,12 +1,12 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
+import ContextNode from './ContextNode';
 
 class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext = [];
 
   init() {
-    // add GraphNode controller
     this.controllers.createComponent('FocusController');
     this.controllers.createComponent('PopperManager');
   }
@@ -46,6 +46,9 @@ class GraphRoot extends HostComponentEndpoint {
   // context management
   // ###########################################################################
 
+  /**
+   *  @return {ContextNode}
+   */
   getContextNodeByContext(context) {
     return this.contextNodesByContext.get(context);
   }
@@ -55,22 +58,6 @@ class GraphRoot extends HostComponentEndpoint {
     this.contextNodesByContext.set(context, contextNode);
   }
   
-  // ###########################################################################
-  // shared
-  // ###########################################################################
-
-  shared() {
-    return {
-      context: {
-        graphRoot: this
-      }
-    };
-  }
-
-  // ###########################################################################
-  // public
-  // ###########################################################################
-
   // ###########################################################################
   // shared
   // ###########################################################################

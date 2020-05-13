@@ -1,19 +1,16 @@
 import { commands } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
-import { registerCommand } from './commands/commandUtil';
 
-const { log, debug, warn, error: logError } = newLogger('Toolbar');
+let showAllNavButton;
 
-export function initToolBar(context) {
-  commands.executeCommand('setContext', 'dbux.context.showNavButton', true);
+export function initToolBar() {
+  showNavButton(true);
+}
 
-  registerCommand(context,
-    'dbux.showNavButton',
-    () => commands.executeCommand('setContext', 'dbux.context.showNavButton', true)
-  );
+export function showNavButton(bool) {
+  commands.executeCommand('setContext', 'dbux.context.showNavButton', bool);
+  showAllNavButton = bool;
+}
 
-  registerCommand(context,
-    'dbux.hideNavButton',
-    () => commands.executeCommand('setContext', 'dbux.context.showNavButton', false)
-  );
+export function toggleNavButton() {
+  showNavButton(!showAllNavButton);
 }

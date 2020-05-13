@@ -1,4 +1,4 @@
-import { window, ExtensionContext } from 'vscode';
+import { ExtensionContext } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import traceSelection from 'dbux-data/src/traceSelection';

@@ -1,10 +1,11 @@
 import traceSelection from 'dbux-data/src/traceSelection';
 import EmptyObject from 'dbux-common/src/util/EmptyObject';
-import { NavigationTDNode, NavigationNodeClasses, DetailNodeClasses } from './nodes/traceDetailNodes';
+import { DetailNodeClasses } from './nodes/traceDetailNodes';
 import SelectedTraceNode from './nodes/SelectedTraceNode';
 import TraceNode from './nodes/TraceNode';
 import EmptyNode from './nodes/EmptyNode';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
+import NavigationNode from './nodes/NavigationNode';
 
 export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
   constructor() {
@@ -20,8 +21,7 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
 
     if (traceSelection.selected) {
       const trace = traceSelection.selected;
-      // console.debug('refreshed trace', trace.traceId);
-      // const application = allApplications.getById(trace.applicationId);
+      
       roots.push(
         this.buildSelectedTraceNode(trace),
         ...this.buildTraceDetailNodes(trace, null)
@@ -35,18 +35,10 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
     return roots;
   }
 
-  buildSelectedTraceNode(trace) {
-    return this.buildNode(SelectedTraceNode, trace);
-  }
-
-  buildTraceNode(trace, parent) {
-    return this.buildNode(TraceNode, trace, parent);
-  }
-
   buildTraceDetailNodes(trace, parent) {
     const nodes = [
-      // navigation nodes
-      ...this.buildNavigationNodes(trace, parent),
+      // navigation node
+      this.buildNavigationNode(trace, parent),
 
       // other detail nodes
       ...this.buildDetailNodes(trace, parent, DetailNodeClasses)
@@ -77,31 +69,20 @@ export default class TraceDetailsDataProvider extends BaseTreeViewNodeProvider {
     };
     return this.buildNode(NodeClass, detail, parent, treeItemProps);
   }
-
+  
   // ###########################################################################
-  // Navigation nodes
+  // Util
   // ###########################################################################
-
-  buildNavigationNodes(trace, parent): NavigationTDNode[] {
-    return NavigationNodeClasses.map(NodeClass => {
-      return this.buildNavigationNode(NodeClass, trace, parent);
-    });
+  
+  buildSelectedTraceNode(trace) {
+    return this.buildNode(SelectedTraceNode, trace);
   }
 
-  buildNavigationNode(NodeClass, trace, parent): NavigationTDNode {
-    const { controlName } = NodeClass;
-    const targetTrace = NodeClass.getTargetTrace(controlName);
+  buildNavigationNode(trace, parent) {
+    return this.buildNode(NavigationNode, trace, parent);
+  }
 
-    let label;
-    if (targetTrace) {
-      const arrow = NodeClass.makeArrow(trace, targetTrace, parent);
-      label = `${arrow} ${TraceNode.makeLabel(targetTrace, parent)}`;
-    }
-
-    const moreProps = {
-      trace,
-      targetTrace
-    };
-    return new NodeClass(this, label, targetTrace, parent, moreProps);
+  buildTraceNode(trace, parent) {
+    return this.buildNode(TraceNode, trace, parent);
   }
 }

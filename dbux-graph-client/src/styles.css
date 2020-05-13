@@ -177,6 +177,17 @@ body {
   color: #666;
 }
 
+/* ContextNode link style */
+
+.dbux-link {
+  color: rgb(71, 52, 243);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.dbux-link:hover {
+  color: rgb(104, 91, 218);
+  
 .highlighter{
 
 }

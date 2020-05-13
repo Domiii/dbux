@@ -82,12 +82,8 @@
 				"title": "Dbux: Hide all decorations"
 			},
 			{
-				"command": "dbux.showNavButton",
-				"title": "Dbux: Show navigation buttons"
-			},
-			{
-				"command": "dbux.hideNavButton",
-				"title": "Dbux: Hide all navigation buttons"
+				"command": "dbux.toggleNavButton",
+				"title": "Dbux: Toggle all navigation buttons"
 			},
 			{
 				"command": "dbuxCallGraphView.gotoEntry",
@@ -178,6 +174,54 @@
 				}
 			},
 			{
+				"command": "dbuxTraceDetailsView.navigation.PreviousInContext",
+				"title": "PreviousInContext",
+				"icon": {
+					"light": "resources/light/previousInContext.svg",
+					"dark": "resources/dark/previousInContext.svg"
+				}
+			},
+			{
+				"command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
+				"title": "PreviousChildContext",
+				"icon": {
+					"light": "resources/light/previousChildContext.svg",
+					"dark": "resources/dark/previousChildContext.svg"
+				}
+			},
+			{
+				"command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
+				"title": "PreviousParentContext",
+				"icon": {
+					"light": "resources/light/previousParentContext.svg",
+					"dark": "resources/dark/previousParentContext.svg"
+				}
+			},
+			{
+				"command": "dbuxTraceDetailsView.navigation.NextInContext",
+				"title": "NextInContext",
+				"icon": {
+					"light": "resources/light/nextInContext.svg",
+					"dark": "resources/dark/nextInContext.svg"
+				}
+			},
+			{
+				"command": "dbuxTraceDetailsView.navigation.NextChildContext",
+				"title": "NextChildContext",
+				"icon": {
+					"light": "resources/light/nextChildContext.svg",
+					"dark": "resources/dark/nextChildContext.svg"
+				}
+			},
+			{
+				"command": "dbuxTraceDetailsView.navigation.NextParentContext",
+				"title": "NextParentContext",
+				"icon": {
+					"light": "resources/light/nextParentContext.svg",
+					"dark": "resources/dark/nextParentContext.svg"
+				}
+			},
+			{
 				"command": "dbuxTraceDetailsView.selectTraceAtCursor",
 				"title": "Select Trace At Cursor",
 				"icon": {
@@ -216,62 +260,10 @@
 					"light": "resources/light/play.svg",
 					"dark": "resources/dark/play.svg"
 				}
-			},
-			{
-				"command": "dbuxPlayback.previousTrace",
-				"title": "Start",
-				"icon": {
-					"light": "resources/light/previousTrace.svg",
-					"dark": "resources/dark/previousTrace.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.nextTrace",
-				"title": "Pause",
-				"icon": {
-					"light": "resources/light/nextTrace.svg",
-					"dark": "resources/dark/nextTrace.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.play",
-				"title": "Start",
-				"icon": {
-					"light": "resources/light/play.svg",
-					"dark": "resources/dark/play.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.pause",
-				"title": "Pause",
-				"icon": {
-					"light": "resources/light/pause.svg",
-					"dark": "resources/dark/pause.svg"
-				}
 			}
 		],
 		"menus": {
 			"editor/title": [
-				{
-					"command": "dbuxPlayback.previousTrace",
-					"when": "dbux.context.showNavButton == true",
-					"group": "navigation@21"
-				},
-				{
-					"command": "dbuxPlayback.nextTrace",
-					"when": "dbux.context.showNavButton == true",
-					"group": "navigation@24"
-				},
-				{
-					"command": "dbuxPlayback.play",
-					"when": "dbuxPlayback.context.playing == false && dbux.context.showNavButton == true",
-					"group": "navigation@22"
-				},
-				{
-					"command": "dbuxPlayback.pause",
-					"when": "dbuxPlayback.context.playing == true && dbux.context.showNavButton == true",
-					"group": "navigation@23"
-				},
 				{
 					"command": "dbuxCallGraphView.selectError",
 					"when": "dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
@@ -306,8 +298,38 @@
 				},
 				{
 					"command": "dbuxTraceDetailsView.switchGroupingMode",
-					"when": "view == dbuxTraceDetailsView && viewItem == staticTraceTDNodeRoot",
+					"when": "view == dbuxTraceDetailsView && viewItem == dbuxTraceDetailsView.staticTraceTDNodeRoot",
 					"group": "inline"
+				},
+				{
+					"command": "dbuxTraceDetailsView.navigation.PreviousInContext",
+					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
+					"group": "inline@3"
+				},
+				{
+					"command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
+					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
+					"group": "inline@2"
+				},
+				{
+					"command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
+					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
+					"group": "inline@1"
+				},
+				{
+					"command": "dbuxTraceDetailsView.navigation.NextInContext",
+					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
+					"group": "inline@4"
+				},
+				{
+					"command": "dbuxTraceDetailsView.navigation.NextChildContext",
+					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
+					"group": "inline@5"
+				},
+				{
+					"command": "dbuxTraceDetailsView.navigation.NextParentContext",
+					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
+					"group": "inline@6"
 				},
 				{
 					"command": "dbuxApplicationsView.showEntryPoint",
@@ -316,12 +338,12 @@
 				},
 				{
 					"command": "dbuxProjectView.node.activateBugWithDebugger",
-					"when": "view == dbuxProjectView && viewItem == BugNode",
+					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.bugNode",
 					"group": "inline@1"
 				},
 				{
 					"command": "dbuxProjectView.node.activateBug",
-					"when": "view == dbuxProjectView && viewItem == BugNode",
+					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.bugNode",
 					"group": "inline@2"
 				}
 			],
