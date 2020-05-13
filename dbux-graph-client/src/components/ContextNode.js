@@ -1,6 +1,5 @@
 import { compileHtmlElement } from '@/util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import Highlighter from './controllers/Highlighter';
 
 class ContextNode extends ClientComponentEndpoint {
   get popperEl() {
@@ -12,6 +11,7 @@ class ContextNode extends ClientComponentEndpoint {
       <div class="context">
         <div>
           <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
+          <button data-el="highlighterBtn">🔆</button>
         </div>
         <div class="flex-column">
           <div data-el="title" class="title">
