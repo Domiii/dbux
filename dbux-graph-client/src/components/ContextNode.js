@@ -17,6 +17,7 @@ class ContextNode extends ClientComponentEndpoint {
             <div style="display:flex; height:auto; align-item:flex-end;">
               <div class="flex-row">
                 <div data-el="displayName,popperTarget" class="displayName dbux-link"></div>
+                &nbsp;
                 <div data-el="where" class="darkgray"></div>
               </div>
               <button data-el="highlighterBtn">🔆</button>
@@ -39,7 +40,7 @@ class ContextNode extends ClientComponentEndpoint {
     } = this.state;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},50%,75%)`;
+    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},50%,85%)`;
     this.els.title.id = `name_${contextId}`;
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
