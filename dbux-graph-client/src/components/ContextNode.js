@@ -11,9 +11,8 @@ class ContextNode extends ClientComponentEndpoint {
       <div class="context">
         <div>
           <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
-          <button data-el="highlighterBtn">🔆</button>
         </div>
-        <div class="flex-column">
+        <div class="full-width flex-column">
           <div data-el="title" class="title">
             <div style="display:flex; height:auto; align-item:flex-end;">
               <div class="flex-row">
@@ -21,6 +20,7 @@ class ContextNode extends ClientComponentEndpoint {
                 </div>
                 <div data-el="where" class="darkgray">
                 </div>
+                <button data-el="highlighterBtn">🔆</button>
               </div>
             </div>
             <div data-mount="TraceNode"></div>

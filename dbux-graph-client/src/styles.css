@@ -48,8 +48,7 @@ html,body{
   white-space: nowrap;
 }
 .title{
-  /* width:auto;
-  height:auto; */
+  width: 100%;
 }
 .displayName{
   display:inline-block;
@@ -94,7 +93,7 @@ background: #333;
   display: block;
 }
 
-
+.context button,
 .nodeToggleBtn {
   background-color: rgba(0,0,0,0);
   display:inline-block;
@@ -105,6 +104,10 @@ background: #333;
 }
 .children{
   width:auto;
+}
+
+.full-width {
+  width: 100%;
 }
 
 
