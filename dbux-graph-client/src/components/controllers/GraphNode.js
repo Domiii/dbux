@@ -9,6 +9,7 @@ export default class GraphNode extends ClientComponentEndpoint {
       nodeChildren
     } = this.owner.els;
 
+    this.owner.el.classList.add('graph-node');
     this.btnEl = nodeToggleBtn;
     this.listEl = nodeChildren;
 

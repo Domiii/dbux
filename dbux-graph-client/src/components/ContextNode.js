@@ -19,6 +19,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <div data-el="displayName,popperTarget" class="displayName dbux-link"></div>
                 <div data-el="where" class="darkgray"></div>
               </div>
+              <button data-el="highlighterBtn">🔆</button>
             </div>
             <div data-mount="TraceNode"></div>
           </div>

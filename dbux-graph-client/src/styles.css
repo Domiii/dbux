@@ -186,16 +186,16 @@ body {
 
 .dbux-link:hover {
   color: rgb(104, 91, 218);
-  
+} 
 .highlighter{
 
 }
 .highlight-on {
   background: gray !important;
 }
-.highlight-on .context:not(.highlight) > * {
+.highlight-on .graph-node:not(.highlight) > * {
   background: gray !important;
 }
-.highlight-on .context .children {
+.highlight-on .graph-node .children {
   background: gray !important;
 }

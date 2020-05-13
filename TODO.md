@@ -33,9 +33,8 @@
 * remove `ParentTraces` from `TraceMode` enum (adding an extra node for parent trace unnecessary due to its 1:1 relationship with `context`)
 
 [UI]
-* in `traceDetails`: change 6 navigation buttons to buttons inside a single node (horizontal instead of vertical)
-   * make buttons behave more like normal debugger buttons
-      * -> if nothing is available for any direction, just step to the next trace
+* [navigation]
+   * ignore trace if type `isPlainExpressionValue`
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
 * `snipe trace` button currently not working correctly:
    * if previously selected trace is not under cursor:

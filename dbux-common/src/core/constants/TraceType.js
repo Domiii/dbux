@@ -143,7 +143,11 @@ export function isBeforeCallExpression(traceType) {
 }
 
 export function isTraceThrow(traceType) {
-  TraceType.is.ThrowArgument(traceType);
+  return TraceType.is.ThrowArgument(traceType);
+}
+
+export function isPlainExpressionValue(traceType) {
+  return TraceType.is.ExpressionValue(traceType);
 }
 
 export default TraceType;
