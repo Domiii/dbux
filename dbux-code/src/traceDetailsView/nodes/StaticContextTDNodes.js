@@ -35,10 +35,6 @@ export default class StaticContextTDNode extends BaseTreeViewNode {
     return TreeItemCollapsibleState.Expanded;
   }
 
-  init() {
-    this.contextValue = 'staticContextTDNodeRoot';
-  }
-
   buildChildren() {
     // use built children in makeProperties
     const nodes = this.calleeTraces.map(this.buildCalleeTraceNode);
@@ -47,7 +43,6 @@ export default class StaticContextTDNode extends BaseTreeViewNode {
 
   buildCalleeTraceNode = (calleeTrace) => {
     const newNode = this.treeNodeProvider.buildNode(TraceNode, calleeTrace, this);
-    newNode.contextValue = 'StaticContextTraceNode';
     return newNode;
   }
 }

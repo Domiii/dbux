@@ -6,7 +6,7 @@ export default class BugNode extends BaseTreeViewNode {
   }
 
   init = () => {
-    this.contextValue = 'BugNode';
+    this.contextValue = 'dbuxProjectView.bugNode';
   }
 
   get bug() {

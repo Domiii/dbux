@@ -1,32 +1,11 @@
 import omit from 'lodash/omit';
 import allApplications from 'dbux-data/src/applications/allApplications';
-import tracePlayback from 'dbux-data/src/playback/tracePlayback';
-import { getTraceCreatedAt } from 'dbux-data/src/helpers/traceLabels';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import StaticTraceTDNode from './StaticTraceTDNodes';
 import StaticContextTDNode from './StaticContextTDNodes';
 import TrackObjectTDNode from './TrackObjectTDNodes';
 import { InfoTDNode } from './traceInfoNodes';
-
-
-function renderTargetTraceArrow(trace, targetTrace, originalArrow) {
-  const { contextId } = trace;
-  const { contextId: targetContextId } = targetTrace;
-
-  if (targetContextId < contextId) {
-    // target context is a parent -> step out
-    return '↑';
-  }
-  else if (targetContextId > contextId) {
-    // target context is a child -> step into
-    return '↓';
-  }
-  else 
-  {
-    return originalArrow;
-  }
-}
 
 export class TraceDetailNode extends BaseTreeViewNode {
 }
@@ -51,10 +30,6 @@ export class ValueTDNode extends TraceDetailNode {
     const value = dataProvider.util.getTraceValueString(traceId);
     return `Value: ${value}`;
   }
-
-  // makeIconPath(traceDetail) {
-  //   return 'string.svg';
-  // }
 }
 
 // ###########################################################################
@@ -118,94 +93,6 @@ export class DebugTDNode extends TraceDetailNode {
   }
 }
 
-
-// ###########################################################################
-// Navigation nodes
-// ###########################################################################
-
-export class NavigationTDNode extends TraceDetailNode {
-  static getTargetTrace(controlName) {
-    return tracePlayback[`get${controlName}`] && tracePlayback[`get${controlName}`]();
-  }
-
-  init() {
-    if (this.targetTrace) {
-      // NOTE: description MUST be a string or it won't be properly displayed
-      const dt = getTraceCreatedAt(this.targetTrace);
-      this.description = dt + '';
-
-      // goto callback
-      this.gotoCb = tracePlayback[`goto${this.constructor.controlName}`].bind(tracePlayback);
-    }
-  }
-
-  handleClick() {
-    this.gotoCb?.();
-  }
-}
-
-export const NavigationNodeClasses = [
-  class NextInContext extends NavigationTDNode {
-    static get controlName() {
-      return 'NextInContext';
-    }
-
-    static makeArrow() {
-      return '→';
-    }
-  },
-
-  class NextChildContext extends NavigationTDNode {
-    static get controlName() {
-      return 'NextChildContext';
-    }
-
-    static makeArrow(trace, targetTrace) {
-      return renderTargetTraceArrow(trace, targetTrace, '↘');
-    }
-  },
-
-  class NextParentContext extends NavigationTDNode {
-    static get controlName() {
-      return 'NextParentContext';
-    }
-
-    static makeArrow(trace, targetTrace) {
-      return renderTargetTraceArrow(trace, targetTrace, '↗');
-    }
-  },
-
-  class PreviousInContext extends NavigationTDNode {
-    static get controlName() {
-      return 'PreviousInContext';
-    }
-
-    static makeArrow() {
-      return '←';
-    }
-  },
-
-  class PreviousChildContext extends NavigationTDNode {
-    static get controlName() {
-      return 'PreviousChildContext';
-    }
-
-    static makeArrow(trace, targetTrace) {
-      return renderTargetTraceArrow(trace, targetTrace, '↙');
-    }
-  },
-
-  class PreviousParentContext extends NavigationTDNode {
-    static get controlName() {
-      return 'PreviousParentContext';
-    }
-
-    static makeArrow(trace, targetTrace) {
-      return renderTargetTraceArrow(trace, targetTrace, '↖');
-    }
-  }
-];
-
 // ###########################################################################
 // DetailNodeClasses
 // ###########################################################################
@@ -215,6 +102,5 @@ export const DetailNodeClasses = [
   StaticContextTDNode,
   TrackObjectTDNode,
   InfoTDNode,
-  // ValueTDNode,
   DebugTDNode
 ];
