@@ -284,6 +284,7 @@
 
 
 ## TODO (other)
+* look at inf loop bug: `manager.highlighterUpdated`
 * fix: instrumentation of `return;`
    * when running express bug #1
       * error detected in `setImmediate(done, layerError);` (before `return;`)
