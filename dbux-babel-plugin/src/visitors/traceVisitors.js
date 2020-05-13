@@ -46,10 +46,11 @@ const TraceInstrumentationType = new Enum({
   MemberObject: 9,
   Super: 10,
   ReturnArgument: 11,
-  ThrowArgument: 12,
+  ReturnNoArgument: 12,
+  ThrowArgument: 13,
 
-  Function: 13,
-  Await: 14
+  Function: 14,
+  Await: 15
 });
 
 const InstrumentationDirection = {
@@ -72,6 +73,7 @@ const traceCfg = (() => {
     MemberObject,
     Super,
     ReturnArgument,
+    ReturnNoArgument,
     ThrowArgument,
 
     Function: Func,
@@ -204,7 +206,7 @@ const traceCfg = (() => {
     // ],
 
     ReturnStatement: [
-      NoTrace,
+      ReturnNoArgument,
       [['argument', ReturnArgument]]
     ],
     ThrowStatement: [
@@ -453,15 +455,20 @@ const enterInstrumentors = {
     loopVisitor(path, state);
   },
 
-  ReturnArgument(path, state) {
-    if (path.node) {
-      // trace `arg` in `return arg;`
-      return beforeExpression(TraceType.ReturnArgument, path, state);
-    }
-    else {
+  ReturnNoArgument(path, state) {
+    if (!path.node.argument) {
       // insert trace before `return;` statement
-      return traceBeforeExpression(TraceType.ReturnNoArgument, path.parentPath, state);
+      const beforeReturn = buildTraceNoValue(path, state, TraceType.ReturnNoArgument);
+      path.insertBefore(beforeReturn);
     }
+
+    // don't handle the argument case here
+    return null;
+  },
+
+  ReturnArgument(path, state) {
+    // trace `arg` in `return arg;`
+    return beforeExpression(TraceType.ReturnArgument, path, state);
   },
 
   ThrowArgument(path, state) {
@@ -554,11 +561,8 @@ const exitInstrumentors = {
   // },
 
   ReturnArgument(path, state) {
-    if (path.node) {
-      // trace `arg` in `return arg;`
-      return wrapExpression(TraceType.ReturnArgument, path, state);
-    }
-    return null;
+    // trace `arg` in `return arg;`
+    return wrapExpression(TraceType.ReturnArgument, path, state);
   },
 
   ThrowArgument(path, state) {
