@@ -82,12 +82,8 @@
 				"title": "Dbux: Hide all decorations"
 			},
 			{
-				"command": "dbux.showNavButton",
-				"title": "Dbux: Show navigation buttons"
-			},
-			{
-				"command": "dbux.hideNavButton",
-				"title": "Dbux: Hide all navigation buttons"
+				"command": "dbux.toggleNavButton",
+				"title": "Dbux: Toggle all navigation buttons"
 			},
 			{
 				"command": "dbuxCallGraphView.gotoEntry",
@@ -219,7 +215,7 @@
 			},
 			{
 				"command": "dbuxPlayback.previousTrace",
-				"title": "Start",
+				"title": "Select previous trace",
 				"icon": {
 					"light": "resources/light/previousTrace.svg",
 					"dark": "resources/dark/previousTrace.svg"
@@ -227,7 +223,7 @@
 			},
 			{
 				"command": "dbuxPlayback.nextTrace",
-				"title": "Pause",
+				"title": "Select next trace",
 				"icon": {
 					"light": "resources/light/nextTrace.svg",
 					"dark": "resources/dark/nextTrace.svg"
@@ -265,12 +261,12 @@
 				{
 					"command": "dbuxPlayback.play",
 					"when": "dbuxPlayback.context.playing == false && dbux.context.showNavButton == true",
-					"group": "navigation@22"
+					"group": "navigation@26"
 				},
 				{
 					"command": "dbuxPlayback.pause",
 					"when": "dbuxPlayback.context.playing == true && dbux.context.showNavButton == true",
-					"group": "navigation@23"
+					"group": "navigation@27"
 				},
 				{
 					"command": "dbuxCallGraphView.selectError",

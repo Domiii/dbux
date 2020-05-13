@@ -1,15 +1,15 @@
-import { window, workspace } from 'vscode';
+import { window } from 'vscode';
 import path from 'path';
 import fs from 'fs';
 // import { stringify as jsonStringify } from 'comment-json';
-import allApplications from 'dbux-data/src/applications/allApplications';
 import { newFileLogger } from 'dbux-common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
-import { getSelectedApplicationInActiveEditor, getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
+import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
 import { showGraphView } from '../graphView';
 import { initProjectUserCommands } from './projectCommands';
 import { setShowDeco } from '../codeDeco';
+import { toggleNavButton } from '../toolbar';
 
 const { log, debug, warn, error: logError } = newFileLogger(__filename);
 
@@ -73,6 +73,13 @@ export function initUserCommands(extensionContext, projectViewController) {
     setShowDeco(false);
   }, true);
   
+  // ###########################################################################
+  // show/hide nav buttons
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.toggleNavButton',
+    toggleNavButton
+  );
 
   // ###########################################################################
   // projects
