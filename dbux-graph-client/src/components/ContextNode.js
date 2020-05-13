@@ -11,6 +11,7 @@ class ContextNode extends ClientComponentEndpoint {
       <div class="context">
         <div>
           <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
+          <button data-el="highlighterBtn">🔆</button>
         </div>
         <div class="body">
           <div data-el="title" class="title">

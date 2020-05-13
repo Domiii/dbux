@@ -13,13 +13,17 @@ export default class Highlighter extends HostComponentEndpoint {
     this.setState({
       enabled: this.state.enabled + 1
     });
-    this.manager.highlighterUpdated(this);
+    // this.manager.highlighterUpdated(this);
   }
 
   dec() {
     this.setState({
       enabled: this.state.enabled - 1
     });
-    this.manager.highlighterUpdated(this);
+    // this.manager.highlighterUpdated(this);
+  }
+  public = {
+    inc: this.inc,
+    dec: this.dec
   }
 }

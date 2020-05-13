@@ -1,5 +1,3 @@
-import Highlighter from './components/controllers/Highlighter';
-import HighlightManager from './components/controllers/HighlightManager';
 
 const ContextNode = require('@/components/ContextNode').default;
 const TraceNode = require('@/components/TraceNode').default;
@@ -9,6 +7,8 @@ const FocusController = require('@/components/controllers/FocusController').defa
 const PopperController = require('@/components/controllers/PopperController').default;
 const PopperManager = require('@/components/controllers/PopperManager').default;
 const GraphNode = require('@/components/controllers/GraphNode').default;
+const Highlighter = require('@/components/controllers/Highlighter').default;
+const HighlightManager = require('@/components/controllers/HighlightManager').default;
 const RunNode = require('@/components/RunNode').default;
 const Toolbar = require('@/components/Toolbar').default;
 const MiniMap = require('@/components/MiniMap').default;
