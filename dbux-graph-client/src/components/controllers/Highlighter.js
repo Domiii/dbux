@@ -1,21 +1,41 @@
 import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
-import { decorateClasses } from '@/util/domUtil';
 
 export default class Highlighter extends ClientComponentEndpoint {
   init() {
     const {
-      highlighter
+      highlighterBtn
     } = this.owner.els;
 
-    this.highlighterEl = highlighter;
+    this.highlighterEl = highlighterBtn;
+
+
+    this.highlighting = false;
+    this.owner.dom.addEventListeners(this);
   }
 
 
   update() {
-    const { state: { enabled } } = this;
+    const { enabled } = this.state;
+    if (enabled) {
+      this.highlighterEl.classList.add('highlight');
+    } else {
+      this.highlighterEl.classList.remove('highlight');
+    }
+  }
 
-    decorateClasses(this.highlighterEl, {
-      highlighted: enabled
-    });
+  on = {
+    highlighterBtn: {
+      click: () => {
+        if (!this.highlighting) {
+          this.highlighting = !this.highlighting;
+          this.highlighterEl.innerHTML = "🔅";
+          this.remote.inc();
+        } else {
+          this.highlighting = !this.highlighting;
+          this.highlighterEl.innerHTML = "🔆";
+          this.remote.dec();
+        }
+      }
+    }
   }
 }

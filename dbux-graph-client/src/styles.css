@@ -176,3 +176,16 @@ body {
 .darkgray {
   color: #666;
 }
+
+.highlighter{
+
+}
+.highlight-on {
+  background: gray !important;
+}
+.highlight-on .context:not(.highlight) > * {
+  background: gray !important;
+}
+.highlight-on .context .children {
+  background: gray !important;
+}
