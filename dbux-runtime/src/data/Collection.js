@@ -10,7 +10,7 @@ export default class Collection {
 
   constructor(name) {
     this._name = name;
-    this.logger = newLogger(`[${name} Collection]`);
+    this.logger = newLogger(`${name} Collection`);
   }
 
   getAll() {

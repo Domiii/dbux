@@ -39,6 +39,10 @@ class ValueCollection extends Collection {
     super('values');
   }
 
+  _log(...args) {
+    this.logger.log(...args);
+  }
+
   registerValueMaybe(hasValue, value, valueHolder) {
     if (!hasValue) {
       valueHolder.valueId = 0;
@@ -56,7 +60,9 @@ class ValueCollection extends Collection {
       valueHolder.value = value;
     }
     else {
+      // NOTE: (for now) `valueHolder` is always trace
       const valueRef = this._serialize(value, 1, null, category);
+      Verbose && this._log(`value #${valueRef.valueId} for trace #${valueHolder.traceId}: ${ValueTypeCategory.nameFrom(category)} (${valueRef.serialized})`);
       valueHolder.valueId = valueRef.valueId;
       valueHolder.value = undefined;
     }
@@ -123,11 +129,20 @@ class ValueCollection extends Collection {
   _readErrorsByType = new Map();
   _getKeysErrorsByType = new Map();
 
-  _canReadProperties(obj) {
+  /**
+   * Heuristic to determine whether this (probably) is safe to access,
+   * based on past error observations.
+   */
+  _canAccess(obj) {
     // TODO: `Object.getPrototypeOf` can trigger a proxy trap; need to check on that as well.
 
     // check if objects of this type have already been floodgated
     return !this._readErrorsByType.has(Object.getPrototypeOf(obj));
+  }
+
+  _canReadKeys(obj) {
+    // TODO: `getPrototypeOf` can trigger a proxy trap
+    return !this._getKeysErrorsByType.has(Object.getPrototypeOf(obj));
   }
 
 
@@ -147,10 +162,6 @@ class ValueCollection extends Collection {
     finally {
       this._endAccess(obj);
     }
-  }
-
-  _canReadKeys(obj) {
-    return !this._getKeysErrorsByType.has(Object.getPrototypeOf(obj));
   }
 
   /**
@@ -173,10 +184,16 @@ class ValueCollection extends Collection {
 
   _startAccess(obj) {
     // TODO: disable tracing while reading the property
+    if (__dbux__._r.disabled) {
+      this.logger.error('Tried to start accessing object while already accessing another object.');
+      return;
+    }
+
+    __dbux__._r.setDisabled(true)
   }
 
   _endAccess(obj) {
-
+    __dbux__._r.setDisabled(false)
   }
 
   _onAccessError(obj, errorsByType) {
@@ -234,9 +251,13 @@ class ValueCollection extends Collection {
     // process by category
     switch (category) {
       case ValueTypeCategory.String:
-        if (value.length > SerializationConfig.maxStringLength) {
+        if (value.length > SerializationConfig.maxStringLength) 
+        {
           serialized = value.substring(0, SerializationConfig.maxStringLength);
           pruneState = ValuePruneState.Shortened;
+        }
+        else {
+          serialized = value;
         }
         break;
 
@@ -255,8 +276,10 @@ class ValueCollection extends Collection {
         // build array
         serialized = [];
         for (let i = 0; i < n; ++i) {
-          const childRefOrPrimitive = this._serialize(value[i], depth + 1, visited);
-          serialized.push(childRefOrPrimitive.valueId);
+          const childValue = value[i];
+          const childRef = this._serialize(childValue, depth + 1, visited);
+          Verbose && this._log(`${' '.repeat(depth)}#${childRef.valueId} A[${i}] ${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
+          serialized.push(childRef.valueId);
         }
         break;
       }
@@ -285,12 +308,13 @@ class ValueCollection extends Collection {
           for (let i = 0; i < n; ++i) {
             const prop = props[i];
             let childRef;
-            if (!this._canReadProperties(value)) {
+            if (!this._canAccess(value)) {
               childRef = this._addOmitted();
             }
             else {
-              const propValue = this._readProperty(value, prop);
-              childRef = this._serialize(propValue, depth + 1, visited);
+              const childValue = this._readProperty(value, prop);
+              childRef = this._serialize(childValue, depth + 1, visited);
+              Verbose && this._log(`${' '.repeat(depth)}#${childRef.valueId} O[${prop}] ${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
             }
             serialized.push([prop, childRef.valueId]);
           }

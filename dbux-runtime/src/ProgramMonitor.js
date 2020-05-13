@@ -43,6 +43,9 @@ export default class ProgramMonitor {
     return this._programContextId;
   }
 
+  // ###########################################################################
+  // context management
+  // ###########################################################################
 
   pushImmediate(inProgramStaticId, traceId, isInterruptable) {
     if (this.disabled) {
@@ -75,6 +78,11 @@ export default class ProgramMonitor {
   // }
 
   preAwait(inProgramStaticId, traceId) {
+    if (this.disabled) {
+      // TODO: calling asynchronous methods when disabled hints at non-pure getters and will most likely cause trouble :(
+        this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey call asynchronous code)`);
+      return 0;
+    }
     return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticId, traceId);
   }
 
@@ -108,6 +116,9 @@ export default class ProgramMonitor {
    * `t` is short for `trace` (we have a lot of these, so we want to keep the name short)
    */
   t(inProgramStaticTraceId) {
+    if (this.disabled) {
+      return 0;
+    }
     return this._runtimeMonitor.trace(this.getProgramId(), inProgramStaticTraceId);
   }
 
@@ -115,10 +126,16 @@ export default class ProgramMonitor {
    * 
    */
   traceExpr(inProgramStaticTraceId, value) {
+    if (this.disabled) {
+      return value;
+    }
     return this._runtimeMonitor.traceExpression(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
   traceArg(inProgramStaticTraceId, value) {
+    if (this.disabled) {
+      return value;
+    }
     return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
@@ -127,6 +144,9 @@ export default class ProgramMonitor {
   // ###########################################################################
 
   addVarAccess(inProgramStaticVarAccessId, value) {
+    if (this.disabled) {
+      return value;
+    }
     return this._runtimeMonitor.addVarAccess(this.getProgramId(), inProgramStaticVarAccessId, value);
   }
 

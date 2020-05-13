@@ -284,6 +284,19 @@
 
 
 ## TODO (other)
+* fix: instrumentation of `return;`
+   * when running express bug #1
+      * error detected in `setImmediate(done, layerError);` (before `return;`)
+      * probably caused by `return;` not being instrumented correctly!
+* fix value tracking UI
+   * add new `value` node to `TDView`
+      * allow inspecting value
+      * show `tracked Nx` stats
+      * if `isCall`, show result value as well
+   * `this.methods[method] = true` shows `undefined` in `Trace Executed`
+* fix:
+   * in `this.methods[method]`, `method` is not a selectable trace
+   * strings are also tracked -> disable tracking of strings
 * fix: `traveValueLabels`
    * get callee name from instrumentation!!!
    * improve traceValueLabel for all expressions
@@ -293,10 +306,6 @@
    * need to allow "objectified functions" to be displayed as such
    * Problem: How to determine what is an "objectified function"?
       * -> `Object.keys` is not empty
-* add new `value` node to `TDView`
-   * allow inspecting value
-   * show `tracked Nx` stats
-   * if `isCall`, show result value as well
 * fix: in express when mocha test timeout
    * we see:
       1. -> `Error: timeout of 2000ms exceeded`

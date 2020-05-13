@@ -13,9 +13,7 @@ let __global__;
 
 function registerDbuxAsGlobal() {
   /* eslint-disable no-var */
-  __global__.__dbux__ = {
-    thisIsDbux: true
-  };
+  __global__.__dbux__ = dbux;
 }
 
 function _getGlobal() {
