@@ -11,7 +11,7 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light" id="toolbar">
         <a data-el="switchModeBtn" class="btn btn-info" href="#"></a>
-        <a data-el="syncMoveBtn" class="btn" href="#"></a>
+        <a data-el="syncModeBtn" class="btn btn-info" href="#"></a>
         <a data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</a>
       </nav>
     `);
@@ -22,8 +22,9 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   update = () => {
-    const { traceModeName } = this.state;
+    const { traceModeName, syncMode } = this.state;
     this.els.switchModeBtn.textContent = `${traceModeName}`;
+    this.els.syncModeBtn.textContent = syncMode ? 'Sync: 🟢' : 'Sync: 🔴';
   }
 
   // ###########################################################################
@@ -47,10 +48,11 @@ class Toolbar extends ClientComponentEndpoint {
         }
       }
     },
-    syncMoveBtn: {
+
+    syncModeBtn: {
       click(evt) {
         evt.preventDefault();
-        this.remote.reSyncMode();
+        this.remote.toggleSyncMode();
       }
     }
   }

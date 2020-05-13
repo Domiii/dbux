@@ -35,6 +35,19 @@ export default class GraphNode extends HostComponentEndpoint {
     }
   }
 
+  reveal() {
+    let currentNode = this.owner.parent;
+    let graphNode;
+    while (currentNode && hasGraphNode(currentNode)) {
+      graphNode = currentNode.controllers.getComponent(GraphNode);
+      if (graphNode.state.mode === GraphNodeMode.Collapsed) {
+        // Expand children if parent mode is collapsed
+        graphNode.setMode(GraphNodeMode.ExpandChildren);
+      }
+      currentNode = currentNode.parent;
+    }
+  }
+
   public = {
     setMode: this.setMode,
     nextMode: () => {
@@ -44,7 +57,8 @@ export default class GraphNode extends HostComponentEndpoint {
         mode = GraphNodeMode.nextValue(mode);
       }
       this.setMode(mode);
-    }
+    },
+    reveal: this.reveal
   }
 }
 

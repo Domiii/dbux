@@ -1,6 +1,7 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
+import ContextNode from './ContextNode';
 
 class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext = [];
@@ -45,6 +46,9 @@ class GraphRoot extends HostComponentEndpoint {
   // context management
   // ###########################################################################
 
+  /**
+   *  @return {ContextNode}
+   */
   getContextNodeByContext(context) {
     return this.contextNodesByContext.get(context);
   }
