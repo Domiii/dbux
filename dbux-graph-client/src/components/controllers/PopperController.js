@@ -12,7 +12,7 @@ export default class PopperController extends ClientComponentEndpoint {
     this.manager = this.owner.context.graphRoot.popperManager;
 
     // on click -> nextMode
-    this.owner.dom.addEventListeners(this.on);
+    this.owner.dom.addEventListeners(this);
   }
 
   on = {
