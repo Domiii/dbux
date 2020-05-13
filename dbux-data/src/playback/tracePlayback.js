@@ -90,22 +90,22 @@ export class TracePlayback {
 
   // TODO: NEED MORE TEST - fix 'Neighboring traces having non-neighboring contexts.' error.
 
-  getPreviousTrace() {
-    const prevTrace = this._getPreviousTraceInApplication(this.currentTrace);
-    if (prevTrace?.runId !== this.currentTrace.runId) {
+  getPreviousTrace(trace = this.currentTrace) {
+    const prevTrace = this._getPreviousTraceInApplication(trace);
+    if (prevTrace?.runId !== trace.runId) {
       // if it is the first trace in application, find the previous run
-      return this._getLastTraceInPreviousRun(this.currentTrace) || this.currentTrace;
+      return this._getLastTraceInPreviousRun(trace) || trace;
     }
-    else return prevTrace || this.currentTrace;
+    else return prevTrace || trace;
   }
 
-  getNextTrace() {
-    const nextTrace = this._getNextTraceInApplication(this.currentTrace);
-    if (nextTrace?.runId !== this.currentTrace.runId) {
+  getNextTrace(trace = this.currentTrace) {
+    const nextTrace = this._getNextTraceInApplication(trace);
+    if (nextTrace?.runId !== trace.runId) {
       // if it is the last trace in application, find the next run
-      return this._getFirstTraceInNextRun(this.currentTrace) || this.currentTrace;
+      return this._getFirstTraceInNextRun(trace) || trace;
     }
-    else return nextTrace || this.currentTrace;
+    else return nextTrace || trace;
   }
 
   getPreviousInContext(trace = this.currentTrace) {

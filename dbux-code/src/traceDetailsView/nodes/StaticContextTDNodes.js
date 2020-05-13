@@ -16,8 +16,10 @@ export default class StaticContextTDNode extends BaseTreeViewNode {
     const { contextId } = trace;
     const { staticContextId } = dp.collections.executionContexts.getById(contextId);
     const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray;
-    const calleeTraces = contexts.map((context) => dp.util.getCalleeTraceOfContext(context.contextId));
-    const label = `Function executed: ${contexts.length}x`;
+    const calleeTraces = contexts
+      .map((context) => dp.util.getCalleeTraceOfContext(context.contextId))
+      .filter(t => !!t);
+    const label = `Function executed: ${calleeTraces.length}x`;
 
     return {
       calleeTraces,
@@ -33,19 +35,14 @@ export default class StaticContextTDNode extends BaseTreeViewNode {
     return TreeItemCollapsibleState.Expanded;
   }
 
-  init() {
-    this.contextValue = 'staticContextTDNodeRoot';
-  }
-
   buildChildren() {
     // use built children in makeProperties
-    const nodes = this.calleeTraces.filter(t => !!t).map(this.buildCalleeTraceNode);
+    const nodes = this.calleeTraces.map(this.buildCalleeTraceNode);
     return nodes;
   }
 
   buildCalleeTraceNode = (calleeTrace) => {
     const newNode = this.treeNodeProvider.buildNode(TraceNode, calleeTrace, this);
-    newNode.contextValue = 'StaticContextTraceNode';
     return newNode;
   }
 }

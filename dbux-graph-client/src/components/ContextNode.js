@@ -16,11 +16,8 @@ class ContextNode extends ClientComponentEndpoint {
           <div data-el="title" class="title">
             <div style="display:flex; height:auto; align-item:flex-end;">
               <div class="flex-row">
-                <div data-el="displayName,popperTarget" class="displayName" aria-dsecribedby="tooltip">
-                </div>
-                <div data-el="where" class="darkgray">
-                </div>
-                <button data-el="highlighterBtn">🔆</button>
+                <div data-el="displayName,popperTarget" class="displayName dbux-link"></div>
+                <div data-el="where" class="darkgray"></div>
               </div>
             </div>
             <div data-mount="TraceNode"></div>
@@ -45,9 +42,11 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.title.id = `name_${contextId}`;
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
-    this.els.displayName.setAttribute('popper-string', `${displayName}`);
     this.els.where.textContent = positionLabel;
     this.els.nodeChildren.id = `children_${contextId}`;
+
+    this.popperString = `shift + click to follow`;
+    // this.popperString = `${displayName}`;
   }
 
   getBinaryHsl(i) {

@@ -38,18 +38,17 @@ function activate(context) {
     initTraceSelection(context);
     initEditorTracesView(context);
     initApplicationsView(context);
+    initPlayback();
     
     const callGraphViewController = initCallGraphView();
     const callStackViewController = initCallStackView();
     const projectViewController = initProjectView(context);
     const traceDetailsController = initTraceDetailsView(context);
-    const playbackController = initPlayback();
 
     initCommands(
       context,
       callGraphViewController,
       callStackViewController,
-      playbackController,
       traceDetailsController,
       projectViewController
     );
