@@ -3,12 +3,13 @@ import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
 export default class PopperController extends ClientComponentEndpoint {
   /**
    * Owner requirement:
-   *  el `popperTarget`: with attribute [popperString]
+   *  el `popperTarget`
+   *  property/getter: `popperString`
    *  context `popperManager`
    */
   init() {
     this.target = this.owner.els.popperTarget;
-    this.popperString = this.target.getAttribute('popper-string');
+    this.popperString = this.owner.popperString;
     this.manager = this.owner.context.graphRoot.popperManager;
 
     // on click -> nextMode

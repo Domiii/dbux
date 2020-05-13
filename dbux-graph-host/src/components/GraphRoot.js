@@ -6,7 +6,6 @@ class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext = [];
 
   init() {
-    // add GraphNode controller
     this.controllers.createComponent('FocusController');
     this.controllers.createComponent('PopperManager');
   }
@@ -55,22 +54,6 @@ class GraphRoot extends HostComponentEndpoint {
     this.contextNodesByContext.set(context, contextNode);
   }
   
-  // ###########################################################################
-  // shared
-  // ###########################################################################
-
-  shared() {
-    return {
-      context: {
-        graphRoot: this
-      }
-    };
-  }
-
-  // ###########################################################################
-  // public
-  // ###########################################################################
-
   // ###########################################################################
   // shared
   // ###########################################################################

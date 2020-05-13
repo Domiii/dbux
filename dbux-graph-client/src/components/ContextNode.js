@@ -1,6 +1,5 @@
 import { compileHtmlElement } from '@/util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import Highlighter from './controllers/Highlighter';
 
 class ContextNode extends ClientComponentEndpoint {
   get popperEl() {
@@ -17,7 +16,7 @@ class ContextNode extends ClientComponentEndpoint {
           <div data-el="title" class="title">
             <div style="display:flex; height:auto; align-item:flex-end;">
               <div class="flex-row">
-                <div data-el="displayName,popperTarget" class="displayName" aria-dsecribedby="tooltip">
+                <div data-el="displayName,popperTarget" class="displayName">
                 </div>
                 <div data-el="where" class="darkgray">
                 </div>
@@ -45,9 +44,10 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.title.id = `name_${contextId}`;
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
-    this.els.displayName.setAttribute('popper-string', `${displayName}`);
     this.els.where.textContent = positionLabel;
     this.els.nodeChildren.id = `children_${contextId}`;
+
+    this.popperString = `${displayName}`;
   }
 
   getBinaryHsl(i) {
