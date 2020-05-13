@@ -284,10 +284,10 @@
 
 
 ## TODO (other)
-* while accessing an object property, disable tracing
 * fix: `traveValueLabels`
-   * get callee name from instrumentation
+   * get callee name from instrumentation!!!
    * improve traceValueLabel for all expressions
+* while accessing an object property, disable tracing
 * allow for mixed type objects for object tracking
    * in `express`, `application` object is also a function
    * need to allow "objectified functions" to be displayed as such

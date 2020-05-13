@@ -43,6 +43,7 @@ function report(...args) {
   // check if flood gate started
   const time = Date.now() / 1000;
   const dt = (time - lastReportTime);
+  lastReportTime = time;
   floodGate = dt < MinSecondsPerReport;
 
   if (floodGate) {

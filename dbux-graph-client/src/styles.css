@@ -29,12 +29,12 @@ html,body{
   justify-content:flex-start;
   height:auto;
   width:auto;
-  margin:5px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   white-space: nowrap;
 }
 
-.context .body {
+.flex-column {
+  display: flex;
   flex-direction: column;
 }
 
@@ -95,7 +95,8 @@ background: #333;
 }
 
 
-.nodeToggleBtn{
+.nodeToggleBtn {
+  background-color: rgba(0,0,0,0);
   display:inline-block;
   margin:0;
   padding: 0;
@@ -166,11 +167,6 @@ body {
 .flex-row {
   display: flex;
   flex-direction: row;
-}
-
-.run-node {
-  display:flex;
-  flex-direction: column;
 }
 
 .darkgray {

@@ -13,7 +13,7 @@ class ContextNode extends ClientComponentEndpoint {
         <div>
           <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
         </div>
-        <div class="body">
+        <div class="flex-column">
           <div data-el="title" class="title">
             <div style="display:flex; height:auto; align-item:flex-end;">
               <div class="flex-row">
@@ -64,6 +64,9 @@ class ContextNode extends ClientComponentEndpoint {
   on = {
     displayName: {
       click(evt) {
+        // const graphNode = this.controllers.getComponent('GraphNode');
+        // console.log(graphNode.isDOMExpanded());
+
         if (evt.shiftKey) {
           const { context, applicationId } = this.state;
           this.remote.showContext(applicationId, context.contextId);

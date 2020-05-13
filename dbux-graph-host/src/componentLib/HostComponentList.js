@@ -24,6 +24,7 @@ class HostComponentList extends ComponentList {
 
     // create + store
     const comp = this._owner.componentManager._createComponent(this._owner, Clazz, initialState);
+    comp._internalRoleName = this._roleName;
     this._addComponent(comp);
 
     // return

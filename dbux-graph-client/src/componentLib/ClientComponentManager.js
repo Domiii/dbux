@@ -35,7 +35,7 @@ class AppComponent extends ClientComponentEndpoint {
   }
 
   _publicInternal = {
-    async createComponent(parentId, componentId, componentName, shared, initialState) {
+    async createClientComponent(parentId, role, componentId, componentName, shared, initialState) {
       const parent = this.componentManager.getComponent(parentId);
 
       // NOTE: parent should never be null (except for AppComponent, which does not get initialized this way)
@@ -52,7 +52,7 @@ class AppComponent extends ClientComponentEndpoint {
       await component._preInit();
 
       // init
-      const result = await component._performInit();
+      const result = await component._performClientInit(role);
 
       // update
       await component._performUpdate();
@@ -81,7 +81,7 @@ class ClientComponentManager extends BaseComponentManager {
     super.start(AppComponent);
 
     // NOTE: usually `init` is called by Host, but AppComponent is a special case
-    this.app._performInit();
+    this.app._performClientInit();
   }
 }
 

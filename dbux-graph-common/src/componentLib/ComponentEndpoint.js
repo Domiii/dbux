@@ -32,6 +32,9 @@ class ComponentEndpoint {
     this.state = initialState;
   }
 
+  /**
+   * Initialize `shared` and `context`.
+   */
   async _preInit() {
     if (this.context) {
       throw new Error(`${this.debugTag} has assigned a context in the wrong place. Make sure to only assign context in shared function.`);
@@ -49,6 +52,20 @@ class ComponentEndpoint {
       ...(this.parent?.context || EmptyObject),
       ...(this.context || EmptyObject)
     });
+  }
+
+  _getComponentListByRoleName(role) {
+    switch (role) {
+      case 'child': {
+        return this.children;
+      }
+      case 'controller': {
+        return this.controllers;
+      }
+      default: {
+        throw new Error('unknown role: ' + role);
+      }
+    }
   }
 
   // ###########################################################################
