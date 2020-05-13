@@ -260,62 +260,10 @@
 					"light": "resources/light/play.svg",
 					"dark": "resources/dark/play.svg"
 				}
-			},
-			{
-				"command": "dbuxPlayback.previousTrace",
-				"title": "Select previous trace",
-				"icon": {
-					"light": "resources/light/previousTrace.svg",
-					"dark": "resources/dark/previousTrace.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.nextTrace",
-				"title": "Select next trace",
-				"icon": {
-					"light": "resources/light/nextTrace.svg",
-					"dark": "resources/dark/nextTrace.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.play",
-				"title": "Start",
-				"icon": {
-					"light": "resources/light/play.svg",
-					"dark": "resources/dark/play.svg"
-				}
-			},
-			{
-				"command": "dbuxPlayback.pause",
-				"title": "Pause",
-				"icon": {
-					"light": "resources/light/pause.svg",
-					"dark": "resources/dark/pause.svg"
-				}
 			}
 		],
 		"menus": {
 			"editor/title": [
-				{
-					"command": "dbuxPlayback.previousTrace",
-					"when": "dbux.context.showNavButton == true",
-					"group": "navigation@21"
-				},
-				{
-					"command": "dbuxPlayback.nextTrace",
-					"when": "dbux.context.showNavButton == true",
-					"group": "navigation@24"
-				},
-				{
-					"command": "dbuxPlayback.play",
-					"when": "dbuxPlayback.context.playing == false && dbux.context.showNavButton == true",
-					"group": "navigation@26"
-				},
-				{
-					"command": "dbuxPlayback.pause",
-					"when": "dbuxPlayback.context.playing == true && dbux.context.showNavButton == true",
-					"group": "navigation@27"
-				},
 				{
 					"command": "dbuxCallGraphView.selectError",
 					"when": "dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
