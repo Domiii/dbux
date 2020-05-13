@@ -29,6 +29,9 @@ class ContextNode extends HostComponentEndpoint {
     // add PopperController
     this.controllers.createComponent('PopperController');
 
+    // add Highlighter
+    this.controllers.createComponent('Highlighter');
+
     // register with root
     this.context.graphRoot._contextNodeCreated(this);
 
