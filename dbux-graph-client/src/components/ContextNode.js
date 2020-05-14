@@ -20,7 +20,7 @@ class ContextNode extends ClientComponentEndpoint {
                 &nbsp;
                 <div data-el="where" class="darkgray"></div>
               </div>
-              <button data-el="highlighterBtn">🔆</button>
+              <button data-el="staticContextHighlightBtn">💡</button>
             </div>
             <div data-mount="TraceNode"></div>
           </div>
@@ -72,6 +72,11 @@ class ContextNode extends ClientComponentEndpoint {
           const { context, applicationId } = this.state;
           this.remote.showContext(applicationId, context.contextId);
         }
+      }
+    },
+    staticContextHighlightBtn: {
+      click(evt) {
+        this.remote.toggleStaticContextHighlight();
       }
     }
   }

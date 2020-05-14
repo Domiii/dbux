@@ -1,6 +1,7 @@
-import { TreeItemCollapsibleState } from 'vscode';
+import { TreeItemCollapsibleState, window } from 'vscode';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import allApplications from 'dbux-data/src/applications/allApplications';
+import objectTracker from 'dbux-data/src/objectTracker';
 
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
@@ -38,8 +39,17 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
   }
 
   init() {
-    this.contextValue = 'dbuxTraceDetailsView.traceObjectTDNodeRoot';
+    const { applicationId, traceId } = this.trace;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    if (dp.util.isTraceRealObject(traceId)) {
+      this.contextValue = 'dbuxTraceDetailsView.traceObjectTDNodeRoot.withObjectValue';
+    }
   }
+  
+  selectObject() {
+    objectTracker.selectTrace(this.trace);
+  }
+
 
   buildChildren() {
     const { trackedTraces, treeNodeProvider } = this;
