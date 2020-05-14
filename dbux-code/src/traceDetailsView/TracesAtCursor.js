@@ -6,6 +6,7 @@ import Trace from 'dbux-common/src/core/data/Trace';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { getCursorLocation } from '../codeUtil/codeNav';
 import { getTracesAt } from '../helpers/codeRangeQueries';
+import { isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
 
 export default class TracesAtCursor {
   allTraces: Array<Trace>;
@@ -34,20 +35,32 @@ export default class TracesAtCursor {
     this.needRefresh = false;
 
     // update index to `most important trace`
-    if (traceSelection.selected) {
-      allTraces.forEach((nextTrace, id) => {
-        const nearestTrace = this.allTraces[this.index];
-        if (nextTrace.staticTraceId > nearestTrace.staticTraceId) {
-          // use innerTraces first
-          this.index = id;
-        }
-        else if (nextTrace.staticTraceId === nearestTrace.staticTraceId) {
-          // compare if both are inner traces
+    let nearestTrace;
+    for (const [id, nextTrace] of allTraces.entries()) {
+      const { applicationId, traceId } = nextTrace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      if (isBeforeCallExpression(dp.util.getTraceType(traceId))) {
+        // skip BCE here to ensure staticTraceId represents the right executing order
+      }
+      else if (!nearestTrace) {
+        // assign if there is not any non-BCE trace yet
+        this.index = id;
+        nearestTrace = nextTrace;
+      }
+      else if (nextTrace.staticTraceId < nearestTrace.staticTraceId) {
+        // use innerTraces first
+        this.index = id;
+        nearestTrace = nextTrace;
+      }
+      else if (nextTrace.staticTraceId === nearestTrace.staticTraceId) {
+        // compare if both are inner traces
+        if (traceSelection.selected) {
           if (compareTraces(nearestTrace, nextTrace) > 0) {
             this.index = id;
+            nearestTrace = nextTrace;
           }
         }
-      });
+      }
     }
   }
 

@@ -33,7 +33,7 @@ class ContextNode extends HostComponentEndpoint {
     this.controllers.createComponent('PopperController');
 
     // add Highlighter
-    this.controllers.createComponent('Highlighter');
+    this.highlighter = this.controllers.createComponent('Highlighter');
 
     // register with root
     this.context.graphRoot._contextNodeCreated(this);
@@ -98,6 +98,10 @@ class ContextNode extends HostComponentEndpoint {
     // }
   }
 
+  reveal() {
+    this.controllers.getComponent('GraphNode').reveal();
+  }
+
   _makeContextPositionLabel(applicationId, context) {
     const { staticContextId } = context;
     const dp = allApplications.getById(applicationId).dataProvider;
@@ -114,6 +118,11 @@ class ContextNode extends HostComponentEndpoint {
       const { dataProvider } = allApplications.getById(applicationId);
       const trace = dataProvider.util.getFirstTraceOfContext(contextId);
       await this.componentManager.externals.goToTrace(trace);
+    },
+    toggleStaticContextHighlight: () => {
+      const { applicationId, context: { staticContextId } } = this.state;
+      const contextNodeManager = this.context.graphRoot.controllers.getComponent('ContextNodeManager');
+      contextNodeManager.toggleStaticContextHighlight(applicationId, staticContextId);
     }
   }
 }

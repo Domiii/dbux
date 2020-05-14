@@ -16,7 +16,7 @@ export default class Highlighter extends HostComponentEndpoint {
 
     if (this.state.enabled === 1) {
       // freshly enabled
-      this.manager.highlighterUpdated(+1);
+      this.manager.registHighlight(this, +1);
     }
   }
 
@@ -27,9 +27,20 @@ export default class Highlighter extends HostComponentEndpoint {
 
     if (this.state.enabled === 0) {
       // freshly disabled
-      this.manager.highlighterUpdated(-1);
+      this.manager.registHighlight(this, -1);
     }
   }
+
+  clear() {
+    if (this.state.enabled > 0) {
+      this.manager.registHighlight(this, -1);
+    }
+
+    this.setState({
+      enabled: 0
+    });
+  }
+
   public = {
     inc: this.inc,
     dec: this.dec

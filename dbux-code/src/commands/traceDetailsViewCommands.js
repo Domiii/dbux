@@ -15,6 +15,13 @@ export function initTraceDetailsViewCommands(context, traceDetailsViewController
     }
   );
 
+  registerCommand(context,
+    'dbuxTraceDetailsView.selectObject',
+    (node) => {
+      node.selectObject();
+    }
+  );
+
   for (let methodName of NavigationMethods) {
     registerCommand(context,
       `dbuxTraceDetailsView.navigation.${methodName}`,

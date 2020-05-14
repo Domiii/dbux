@@ -1,5 +1,5 @@
-import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { compileHtmlElement, decorateClasses } from '@/util/domUtil';
+import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
@@ -10,7 +10,7 @@ class Toolbar extends ClientComponentEndpoint {
     // return compileHtmlElement(/*html*/`<div></div>`);
     return compileHtmlElement(/*html*/`
       <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light" id="toolbar">
-        <a data-el="switchModeBtn" class="btn btn-info" href="#"></a>
+        <!--a data-el="switchModeBtn" class="btn btn-info hidden" href="#"></a-->
         <a data-el="syncModeBtn" class="btn btn-info" href="#"></a>
         <a data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></a>
         <a data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</a>
