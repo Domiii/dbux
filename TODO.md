@@ -283,6 +283,7 @@
 
 ## TODO (other)
 * fix: graph
+   * `FocusManager` bugs out if in `Sync` after `Restart`
    * graph bugs out if disabled and then re-enabled (e.g. when moved between columns)
    * sometimes, when selecting a node the first time, it selects the wrong column
    * change ContextNode.where to display loc of call (`parentTrace`), not of function
@@ -293,6 +294,10 @@
          * if a trace is selected in sync mode, or any hidden node is being used in any way
       * Easier alternative for now: add slow-fading background color css anim to new run nodes
    * when highlighting is enabled, `popper` `background` color should not be affected
+   * add crosshair icon to `ContextNode` to select `Push` trace
+* fix trace grouping in `TraceDetailsView`
+   * groups cannot be selected -> find a better solution
+   * don't add an extra node, if it's a single node
 * fix: conflict between `MemberExpression` + `CallExpression`
    * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`
    * Sln: add `callId` to those callee traces as well?

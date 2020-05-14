@@ -4,7 +4,7 @@ import { compileHtmlElement } from '../util/domUtil';
 class RunNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-      <div class="run-node flex-row">
+      <div class="run-node flex-row width-fit">
         <!--div>
           <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
         </div-->

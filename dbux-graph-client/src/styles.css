@@ -175,6 +175,10 @@ html,body{
   width: 100%;
 }
 
+.width-fit {
+  width: fit-content;
+}
+
 .no-padding {
   padding: 0 !important;
 }
