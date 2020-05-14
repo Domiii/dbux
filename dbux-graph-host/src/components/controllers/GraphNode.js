@@ -4,11 +4,14 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 export default class GraphNode extends HostComponentEndpoint {
   init() {
     const parent = this.owner.parent?.controllers.getComponent(GraphNode);
-    if (parent) {
-      this.state.mode = parent.getChildMode();
-    }
-    else {
-      this.state.mode = GraphNodeMode.Collapsed;
+
+    if (!this.state.mode) {
+      if (parent) {
+        this.state.mode = parent.getChildMode();
+      }
+      else {
+        this.state.mode = GraphNodeMode.Collapsed;
+      }
     }
   }
 

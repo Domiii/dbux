@@ -26,7 +26,7 @@ export function buildTree(input) {
     // left
     let val = input[iInput++];
     if (val !== null) {
-      nodeQueue.append(node.left = new TreeNode(val));
+      nodeQueue.push(node.left = new TreeNode(val));
     }
 
     if (iInput >= input.length) {
@@ -36,7 +36,7 @@ export function buildTree(input) {
     // right
     val = input[iInput++];
     if (val !== null) {
-      nodeQueue.append(node.right = new TreeNode(val));
+      nodeQueue.push(node.right = new TreeNode(val));
     }
   }
   return root;
