@@ -168,7 +168,21 @@ export default {
   },
 
   getTraceValueString(dp: DataProvider, traceId) {
-    return dp.util.getTraceValueRef(traceId)?.valueString;
+    const trace = dp.collections.traces.getById(traceId);
+    const { value } = trace;
+    if (value !== undefined) {
+      return value + '';
+    }
+
+    const valueRef = dp.util.getTraceValueRef(traceId);
+    if (valueRef) {
+      if (!valueRef.valueString) {
+        // hackfix: down and dirty
+        valueRef.valueString = JSON.stringify(valueRef.value);
+      }
+      return valueRef.valueString;
+    }
+    return null;
   },
 
   getTraceValueRef(dp: DataProvider, traceId) {

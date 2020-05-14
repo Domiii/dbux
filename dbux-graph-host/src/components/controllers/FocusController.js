@@ -8,14 +8,23 @@ export default class FocusController extends HostComponentEndpoint {
     this.syncMode = true;
     traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
 
-
     this.highlightManager.on('clear', () => {
       this.clearFocus();
       this.lastHighlighter = null;
     });
+
+    // if already selected, show things right away
+    setTimeout(() => {
+      this.handleTraceSelected(traceSelection.selected);
+    }, 500);
   }
 
   handleTraceSelected = (trace) => {
+    if (trace?.contextId === this.state.focus?.contextId &&
+      trace?.applicationId === this.state.focus?.applicationId) {
+      // nothing to do
+      return;
+    }
     if (!trace) this.clearFocus();
     else if (this.syncMode) {
       const { contextId, applicationId } = trace;
@@ -33,8 +42,9 @@ export default class FocusController extends HostComponentEndpoint {
     });
   }
 
-  revealContext(applicationId, contextId) {
+  async revealContext(applicationId, contextId) {
     const contextNode = this.getContextNode(applicationId, contextId);
+    await contextNode.waitForInit();
     contextNode.controllers.getComponent('GraphNode').reveal();
   }
 
@@ -62,8 +72,7 @@ export default class FocusController extends HostComponentEndpoint {
   toggleSyncMode() {
     this.syncMode = !this.syncMode;
     if (this.syncMode) {
-      const { contextId, applicationId } = traceSelection.selected;
-      this.focus(applicationId, contextId);
+      this.handleTraceSelected(traceSelection.selected);
     }
     else {
       if (this.lastHighlighter) {

@@ -11,8 +11,10 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light" id="toolbar">
         <!--a data-el="switchModeBtn" class="btn btn-info hidden" href="#"></a-->
-        <a data-el="syncModeBtn" class="btn btn-info" href="#"></a>
-        <a data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></a>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <a data-el="syncModeBtn" class="btn btn-info" href="#"></a>
+          <a data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></a>
+        </div>
         <a data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</a>
       </nav>
     `);
@@ -24,8 +26,14 @@ class Toolbar extends ClientComponentEndpoint {
 
   update = () => {
     const { traceModeName, syncMode } = this.state;
-    this.els.switchModeBtn.textContent = `${traceModeName}`;
-    this.els.syncModeBtn.textContent = syncMode ? 'Sync: 🟢' : 'Sync: 🔴';
+    // this.els.switchModeBtn.textContent = `${traceModeName}`;
+    // this.els.syncModeBtn.textContent = `Sync: ${syncMode ? '✅' : '❌'}`;
+
+    this.els.syncModeBtn.textContent = 'Sync';
+
+    decorateClasses(this.els.syncModeBtn, {
+      active: syncMode
+    });
 
 
     this.renderThinMode();
@@ -34,7 +42,7 @@ class Toolbar extends ClientComponentEndpoint {
   renderThinMode() {
     // re-render thin mode (NOTE: does not go through host/state)
     const { thinMode } = this;
-    this.els.thinModeBtn.innerHTML = `${!!thinMode && '||' || '|&nbsp;&nbsp;|'}`;
+    this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
     const docEl = this.context.graphDocument.el;
     decorateClasses(docEl, {
       'thin-mode': thinMode
@@ -47,13 +55,12 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   on = {
-    switchModeBtn: {
-      click(evt) {
-        evt.preventDefault();
-        this.remote.switchTraceMode();
-      }
-    },
-
+    // switchModeBtn: {
+    //   click(evt) {
+    //     evt.preventDefault();
+    //     this.remote.switchTraceMode();
+    //   }
+    // },
 
     restartBtn: {
       async click(evt) {
@@ -62,14 +69,18 @@ class Toolbar extends ClientComponentEndpoint {
         if (await this.app.confirm('Do you really want to restart?')) {
           this.remote.restart();
         }
-      }
+      },
+
+      focus(evt) { evt.target.blur(); }
     },
 
     syncModeBtn: {
       click(evt) {
         evt.preventDefault();
         this.remote.toggleSyncMode();
-      }
+      },
+
+      focus(evt) { evt.target.blur(); }
     },
 
     thinModeBtn: {
@@ -78,7 +89,9 @@ class Toolbar extends ClientComponentEndpoint {
         
         this.thinMode = !this.thinMode;
         this.renderThinMode();
-      }
+      },
+      
+      focus(evt) { evt.target.blur(); }
     }
   }
 }

@@ -10,7 +10,7 @@ const MinGateReportThreshold = 1;
 let floodGate = false;
 let floodGateReported = false;
 let nGatedReports = 0;
-let lastReportTime = Date.now() / 1000;
+let lastReportTime = 0;
 // let floodGateTimer;
 
 function startFloodGate() {

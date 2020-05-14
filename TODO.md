@@ -2,9 +2,6 @@
 # TODO
 
 ## TODO (shared)
-[Graph]
-* fix `RunNode` label?
-* make `ContextNode` colors lighter by default
 * `Hide all decorations` should be "Toggle" instead of "Hide"
    * also: we also want to toggle the buttons at the top (its a lot of buttons - hah)
 * (!!!) `ContextNode`
@@ -40,6 +37,20 @@
    * if previously selected trace is not under cursor:
       * first find the inner-most `staticTrace` at cursor, and start from that
    * else: keep switching through all possible traces under cursor
+
+[Persistance]
+* use `Memento` to persist extension state through VSCode restarts
+   * -> reference: https://stackoverflow.com/questions/51821924/how-to-persist-information-for-a-vscode-extension
+* what to persist?
+   * dbux-data
+      * all applications' data: save to/load from memento
+         * HINT: see `userCommands` -> `doExport`
+      * `traceSelection` -> `traceId`
+   * Graph
+      * re-open GraphWebview if open
+      * store state of all components by `componentId`
+         * careful: some components have invisible state (state that is not in `this.state`), such as `HighlightManager`
+         * -> for that, we might need a basic serialization system for components
 
 * [Projects]
    * show status of runner while runner is running
@@ -146,23 +157,11 @@
 
 ## TODO (dbux-graph)
 * fix: require `alt` for `pan` (else button clicks don't work so well)
-   * will fix: `nodeToggleBtn` does not work when clicking too fast and slightly moving the mouse during the click
-* finish highlight system: highlight *important* nodes, de-emphasize *unimportant* nodes
-   * NOTE: already started in `Highlighter` + `HighlightManager` controllers
-   * implement:
-      * "Clear" button in toolbar to remove all highlighting
-      * `context` of currently selected `trace` (if in "follow" mode)
-      * all contexts of `staticContext` (add button to `ContextNode`)
-      * search mode: highlight nodes that match search criteria
-   * styles
-      * highlighted style
-         * scale font, normal font-size
-         * clear, bright colors
-         * high contrast
-      * de-emphasized style
-         * don't scale font, small font-size
-         * darkened colors
-         * low contrast
+   * will fix: `nodeToggleBtn` does not work when clicking too fast and slightly amoving the mouse during the click
+* when `Sync` is `on`
+   * show indicator of where we are, relative to current context children
+   * -> maybe draw a horizontal line in `node-left-padding`
+   * if current trace is parent trace of some child, also indicate that
 * grouping: add new `GroupNode` controller component
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
@@ -284,9 +283,16 @@
 
 ## TODO (other)
 * fix: graph
+   * graph bugs out if disabled and then re-enabled (e.g. when moved between columns)
+   * sometimes, when selecting a node the first time, it selects the wrong column
    * change ContextNode.where to display loc of call (`parentTrace`), not of function
    * if node is already in view, don't move in `FocusManager`
    * only show `valueLabels` on demand (too cluttered)
+   * Toolbar: "`hide old`" button
+      * Problem: need to handle the "hidden" situation
+         * if a trace is selected in sync mode, or any hidden node is being used in any way
+      * Easier alternative for now: add slow-fading background color css anim to new run nodes
+   * when highlighting is enabled, `popper` `background` color should not be affected
 * fix: conflict between `MemberExpression` + `CallExpression`
    * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`
    * Sln: add `callId` to those callee traces as well?

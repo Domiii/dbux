@@ -20,6 +20,8 @@ html,body{
   height: 100vh;
   font-size: 12px; /* NOTE: courier is a rather "big" font, making smaller font size seem bigger */
   font-family: "Lucida Console", Courier, monospace;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 
@@ -57,7 +59,7 @@ html,body{
   /* offset fixed toolbar height */
   margin-top: 50px;
   /* this way, the viewport will (usually) not move when working on nodes near the bottom of the graph */
-  margin-bottom: 95vh;
+  margin-bottom: calc(95vh+50px);
 }
 
 .run-node {

@@ -19,7 +19,6 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   init() {
-    this.componentManager.doc = this;
     this.traceMode = TraceMode.ContextOnly;
 
     this.createOwnComponents();

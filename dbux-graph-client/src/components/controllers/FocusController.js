@@ -24,11 +24,11 @@ export default class FocusController extends ClientComponentEndpoint {
     contextId = `#application_${applicationId}-context_${contextId}`;
     let node = document.querySelector(contextId);
     if (!node) {
-      this.app.confirm("trace is not found!");
+      this.logger.error("context node of selected trace not found");
       return;
     }
     let nodePos = node.getBoundingClientRect();
-    if (nodePos.x === 0) {
+    if (!nodePos.height) {
       this.logger.error('Trying to slide to unrevealed node');
     }
     let toolbar = document.querySelector("#toolbar");

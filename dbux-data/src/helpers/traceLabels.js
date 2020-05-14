@@ -144,9 +144,9 @@ export function makeCallValueLabel(callTrace) {
   const dp = allApplications.getById(applicationId).dataProvider;
 
   const args = dp.indexes.traces.byCall.get(traceId) || EmptyArray;
-  const argValues = args.slice(1).map(arg => dp.util.getTraceValue(arg.traceId));
-  const resultValue = resultId && dp.util.getTraceValue(resultId);
-  const result = resultValue && ` -> ${JSON.stringify(resultValue)}` || '';
+  const argValues = args.slice(1).map(arg => dp.util.getTraceValueString(arg.traceId));
+  const resultValue = resultId && dp.util.getTraceValueString(resultId);
+  const result = resultValue && ` -> ${resultValue}` || '';
 
   return `(${argValues.join(', ')})${result}`;
 }
@@ -166,7 +166,7 @@ export function makeTraceValueLabel(trace) {
   }
   else if (dp.util.doesTraceHaveValue(traceId)) {
     // trace has value
-    return `${dp.util.getTraceValue(traceId)}`;
+    return `${dp.util.getTraceValueString(traceId)}`;
   }
   else {
     // default trace
