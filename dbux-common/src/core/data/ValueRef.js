@@ -1,10 +1,13 @@
 export default class ValueRef {
   valueId: number;
   trackId: number;
-  type: number;
+
+  category: number;
+  pruneState: number;
+  typeName: string;
 
   // when stored in DataProvider, serialized is taken out
-  // serialized: any, 
+  // serialized: any,
 
   value: any;
 }

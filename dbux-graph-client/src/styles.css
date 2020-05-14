@@ -11,33 +11,38 @@ canvas{
   display:block;
 } */
 
+/** ###########################################################################
+ * global setup
+ * ############################################################################ */
+
 html,body{
-  height:100%;
-  width:100%;
-  font-size: 11px; /* NOTE: courier is a rather "big" font, making smaller font size seem bigger */
+  width: 100vw;
+  height: 100vh;
+  font-size: 12px; /* NOTE: courier is a rather "big" font, making smaller font size seem bigger */
   font-family: "Lucida Console", Courier, monospace;
 }
 
-.root{
-  height: auto;
-  width: auto;
+
+/** ###########################################################################
+ * graph nodes
+ * ############################################################################ */
+
+.graph-node .title button {
+  background-color: rgba(0,0,0,0.1);
   display:inline-block;
-}
-.context{
-  display:flex;
-  flex-direction: row;
-  justify-content:flex-start;
-  height:auto;
-  width:auto;
-  /* border: 1px solid black; */
-  white-space: nowrap;
+  margin:0;
+  padding: 0;
+  border: 0;
+  line-height: 1rem;
+  min-width: 1.4rem; /* NOTE: on some systems, some of those emojis are extra-wide */
 }
 
-.flex-column {
-  display: flex;
-  flex-direction: column;
+.context-node .node-children{
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+
+/* 
 .trace{
   display:flex;
   justify-content:flex-start;
@@ -46,7 +51,25 @@ html,body{
   margin:5px;
   border: 1px solid black;
   white-space: nowrap;
+} */
+
+.graph-root {
+  /* offset fixed toolbar height */
+  margin-top: 50px;
+  /* this way, the viewport will (usually) not move when working on nodes near the bottom of the graph */
+  margin-bottom: 95vh;
 }
+
+.run-node {
+  margin-top: 1em;
+  border: 1px solid black;
+}
+
+.context-node {
+  white-space: nowrap;
+  border-right: 0;
+}
+
 .title{
   width: 100%;
 }
@@ -60,12 +83,142 @@ html,body{
 }
 
 
+.node-left-padding {
+  padding-left: 1em;
+}
+
+.thin-mode .node-left-padding {
+  padding-left: 0.4em;
+}
+
+/** ###########################################################################
+ * graph decorations
+ * ############################################################################ */
+
+.where {
+  color: gray;
+}
+
+/* ContextNode link style */
+
+.dbux-link {
+  color: rgb(71, 52, 243);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.dbux-link:hover {
+  color: rgb(104, 91, 218);
+} 
+
+/** ###########################################################################
+ * general purpose highlight animation
+ * ############################################################################ */
+
+
+/*focus flash*/
+.flash-me {
+  -webkit-animation: flash linear 1.7s infinite;
+  animation: flash linear 1.7s infinite;
+}
+
+@-webkit-keyframes flash {
+  0%   { background:#fff; } 
+  20%  { opacity: 1; background:none; } 
+  40%  { background:#fff; } 
+  60%  { opacity: 1; background:none; }	
+  80%  { background:#fff;} 
+  100% { opacity: 1; background:none; }
+}
+@keyframes flash {
+  0%   { background:#fff; } 
+  100% { opacity: 1; background:none; }
+}
+
+
+/** ###########################################################################
+ * minimap
+ * ############################################################################ */
+
+#minimap{
+  position: fixed;
+  display:block;
+  right: 10px;
+  top: 60px;
+  border: 2px solid black;
+  background:black;
+}
+
+
+/** ###########################################################################
+ * misc + general-purpose
+ * ############################################################################ */
+
+.hidden {
+  display: none !important;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.full-width {
+  width: 100%;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.no-horizontal-padding {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/** ###########################################################################
+ * colors
+ * ############################################################################ */
+
+.darkgray {
+  color: #555;
+}
+
+
+/** ###########################################################################
+ * highlighter
+ * ############################################################################ */
+
+.highlighter{
+
+}
+.highlight-on {
+  background: gray !important;
+}
+.highlight-on .graph-node:not(.highlight) > * {
+  background: gray !important;
+}
+.highlight-on .graph-node .children {
+  background: gray !important;
+}
+
+/** ###########################################################################
+ * tooltips
+ * ############################################################################ */
+ 
+
 #tooltip {
   background: #333;
   color: white;
   font-weight: bold;
   padding: 4px 8px;
-  font-size: 13px;
+  font-size: 11px;
   border-radius: 4px;
 }
 #arrow,
@@ -91,111 +244,4 @@ background: #333;
 
 #tooltip[data-show] {
   display: block;
-}
-
-.context button,
-.nodeToggleBtn {
-  background-color: rgba(0,0,0,0);
-  display:inline-block;
-  margin:0;
-  padding: 0;
-  line-height: 1rem;
-  min-width: 1.4rem; /* NOTE: on some systems, some of those emojis are extra-wide */
-}
-.children{
-  width:auto;
-}
-
-.full-width {
-  width: 100%;
-}
-
-
-
-/*focus flash*/
-.flash-me {
-  -webkit-animation: flash linear 1.7s infinite;
-  animation: flash linear 1.7s infinite;
-}
-
-@-webkit-keyframes flash {
-  0%   { background:#fff; } 
-  20%  { opacity: 1; background:none; } 
-  40%  { background:#fff; } 
-  60%  { opacity: 1; background:none; }	
-  80%  { background:#fff;} 
-  100% { opacity: 1; background:none; }
-}
-@keyframes flash {
-  0%   { background:#fff; } 
-  100% { opacity: 1; background:none; }
-}
-
-
-/* minimap */
-
-#minimap{
-  position: fixed;
-  display:block;
-  right: 10px;
-  top: 60px;
-  border: 2px solid black;
-  background:black;
-  
-}
-
-
-body {
-  width: 100vw;
-  height: 100vh;
-}
-
-
-.hidden {
-  display: none !important;
-}
-
-
-#dark{
-  height: 100vh;
-  width:100vh;
-  background-color: gray;
-}
-
-.where {
-  color: gray;
-}
-
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
-}
-
-.darkgray {
-  color: #666;
-}
-
-/* ContextNode link style */
-
-.dbux-link {
-  color: rgb(71, 52, 243);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.dbux-link:hover {
-  color: rgb(104, 91, 218);
-} 
-.highlighter{
-
-}
-.highlight-on {
-  background: gray !important;
-}
-.highlight-on .graph-node:not(.highlight) > * {
-  background: gray !important;
-}
-.highlight-on .graph-node .children {
-  background: gray !important;
 }

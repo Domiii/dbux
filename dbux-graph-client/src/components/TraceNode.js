@@ -11,7 +11,7 @@ export default class TraceNode extends ClientComponentEndpoint {
             <button data-el="nodeToggleBtn" class="open_close_btn">▽</button>
           </div>
         </div>
-        <div data-mount="ContextNode" class="children">
+        <div data-mount="ContextNode" class="node-children">
           <div class="childHead">&nbsp;</div>
         </div>
       </div>

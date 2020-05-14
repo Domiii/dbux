@@ -146,9 +146,7 @@ export function makeCallValueLabel(callTrace) {
   const args = dp.indexes.traces.byCall.get(traceId) || EmptyArray;
   const argValues = args.slice(1).map(arg => dp.util.getTraceValue(arg.traceId));
   const resultValue = resultId && dp.util.getTraceValue(resultId);
-  const result = resultValue && ` -> ${resultValue}` || '';
-
-  // TODO: why do we soemtimes not have a result?
+  const result = resultValue && ` -> ${JSON.stringify(resultValue)}` || '';
 
   return `(${argValues.join(', ')})${result}`;
 }
@@ -160,10 +158,10 @@ export function makeCallValueLabel(callTrace) {
 export function makeTraceValueLabel(trace) {
   const { applicationId, traceId } = trace;
   const dp = allApplications.getById(applicationId).dataProvider;
-  const callId = dp.util.getCalleeTraceId(traceId);
-  if (callId) {
+  const calleeId = dp.util.getCalleeTraceId(traceId);
+  if (calleeId) {
     // trace is call related
-    const callTrace = dp.collections.traces.getById(callId);
+    const callTrace = dp.collections.traces.getById(calleeId);
     return makeCallValueLabel(callTrace);
   }
   else if (dp.util.doesTraceHaveValue(traceId)) {

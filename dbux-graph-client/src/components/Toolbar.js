@@ -1,5 +1,5 @@
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import { compileHtmlElement } from '@/util/domUtil';
+import { compileHtmlElement, decorateClasses } from '@/util/domUtil';
 
 class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
@@ -9,9 +9,10 @@ class Toolbar extends ClientComponentEndpoint {
   createEl() {
     // return compileHtmlElement(/*html*/`<div></div>`);
     return compileHtmlElement(/*html*/`
-      <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light" id="toolbar">
+      <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light" id="toolbar">
         <a data-el="switchModeBtn" class="btn btn-info" href="#"></a>
         <a data-el="syncModeBtn" class="btn btn-info" href="#"></a>
+        <a data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></a>
         <a data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</a>
       </nav>
     `);
@@ -25,6 +26,20 @@ class Toolbar extends ClientComponentEndpoint {
     const { traceModeName, syncMode } = this.state;
     this.els.switchModeBtn.textContent = `${traceModeName}`;
     this.els.syncModeBtn.textContent = syncMode ? 'Sync: 🟢' : 'Sync: 🔴';
+
+
+    this.renderThinMode();
+  }
+
+  renderThinMode() {
+    // re-render thin mode (NOTE: does not go through host/state)
+    const { thinMode } = this;
+    this.els.thinModeBtn.innerHTML = `${!!thinMode && '||' || '|&nbsp;&nbsp;|'}`;
+    const docEl = this.context.graphDocument.el;
+    decorateClasses(docEl, {
+      'thin-mode': thinMode
+    });
+
   }
 
   // ###########################################################################
@@ -38,6 +53,7 @@ class Toolbar extends ClientComponentEndpoint {
         this.remote.switchTraceMode();
       }
     },
+
 
     restartBtn: {
       async click(evt) {
@@ -53,6 +69,15 @@ class Toolbar extends ClientComponentEndpoint {
       click(evt) {
         evt.preventDefault();
         this.remote.toggleSyncMode();
+      }
+    },
+
+    thinModeBtn: {
+      click(evt) {
+        evt.preventDefault();
+        
+        this.thinMode = !this.thinMode;
+        this.renderThinMode();
       }
     }
   }

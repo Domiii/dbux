@@ -137,7 +137,13 @@ export default {
   },
 
   getTraceValue(dp: DataProvider, traceId) {
-    return dp.util.getTraceValueRef(traceId)?.value;
+    const trace = dp.collections.traces.getById(traceId);
+    const { value } = trace;
+    if (value !== undefined) {
+      return value;
+    }
+
+    return dp.util.getTraceValueRef(traceId)?.value || undefined;
   },
 
   getTraceValueString(dp: DataProvider, traceId) {

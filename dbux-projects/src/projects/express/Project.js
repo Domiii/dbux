@@ -175,7 +175,6 @@ export default class ExpressProject extends Project {
     const tag = this.getBugGitTag(id, tagCategory);
 
     // TODO: auto commit any pending changes
-    // TODO: create branch if not existing
     // TODO: checkout bug, if not done so before
 
     // checkout the bug branch
@@ -185,7 +184,7 @@ export default class ExpressProject extends Project {
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);
 
-    // bug commit might have different dependencies -> `npm install` again
+    // `npm install` again! (NOTE: the bug tag might have different dependencies)
     await this.npmInstall();
   }
 
@@ -217,14 +216,14 @@ export default class ExpressProject extends Project {
       path.join(projectPath, 'test/support/env'),
       dbuxRegister
     ];
-    const preRunModules = requireArr.map(r => `--require="${r}"`).join(' ');
+    const requireArgs = requireArr.map(r => `--require="${r}"`).join(' ');
 
     // bugArgs
     const bugArgArray = [
       ...(bug.runArgs || EmptyArray)
     ];
     if (bugArgArray.includes(undefined)) {
-      throw new Error(bug.debugTag + ' - invalid `Project bug` arguments must not include `undefined`: ' + bugArgArray);
+      throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(bugArgArray));
     }
     const bugArgs = bugArgArray.join(' ');      //.map(s => `"${s}"`).join(' ');
 
@@ -233,7 +232,7 @@ export default class ExpressProject extends Project {
 
 
     // final command
-    return `node ${nodeArgs} ${nodeDebugArgs} ${preRunModules} "${program}" ${keepAlive} ${bugArgs}`;
+    return `node ${nodeArgs} ${nodeDebugArgs} ${requireArgs} "${program}" ${keepAlive} ${bugArgs}`;
 
 
     // TODO: enable auto attach (run command? or remind user?)

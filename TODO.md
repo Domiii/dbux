@@ -283,24 +283,29 @@
 
 
 ## TODO (other)
-* look at inf loop bug: `manager.highlighterUpdated`
-* fix: instrumentation of `return;`
-   * when running express bug #1
-      * error detected in `setImmediate(done, layerError);` (before `return;`)
-      * probably caused by `return;` not being instrumented correctly!
+* fix: graph
+   * change ContextNode.where to display loc of call (`parentTrace`), not of function
+   * if node is already in view, don't move in `FocusManager`
+   * only show `valueLabels` on demand (too cluttered)
+* fix: conflict between `MemberExpression` + `CallExpression`
+   * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`
+   * Sln: add `callId` to those callee traces as well?
+      * Problem: Would change the assumption that only BCE + arguments have `callId`
+* fix: `makeCallValueLabel`
+   * sometimes does not work for object values?
+   * improve array rendering
+* fix: `function` declarations are not tracked
+* fix: in `this.methods[method]`, `method` is not a selectable trace
+* fix: strings are currently tracked -> disable tracking of strings
 * fix value tracking UI
    * add new `value` node to `TDView`
       * allow inspecting value
       * show `tracked Nx` stats
       * if `isCall`, show result value as well
    * `this.methods[method] = true` shows `undefined` in `Trace Executed`
-* fix:
-   * in `this.methods[method]`, `method` is not a selectable trace
-   * strings are also tracked -> disable tracking of strings
 * fix: `traveValueLabels`
-   * get callee name from instrumentation!!!
+   * get callee name from instrumentation
    * improve traceValueLabel for all expressions
-* while accessing an object property, disable tracing
 * allow for mixed type objects for object tracking
    * in `express`, `application` object is also a function
    * need to allow "objectified functions" to be displayed as such

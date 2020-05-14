@@ -8,23 +8,29 @@ class ContextNode extends ClientComponentEndpoint {
 
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div class="context">
-        <div>
-          <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
-        </div>
+      <div class="context-node flex-row">
         <div class="full-width flex-column">
           <div data-el="title" class="title">
-            <div style="display:flex; height:auto; align-item:flex-end;">
+            <div class="flex-row">
               <div class="flex-row">
+                <button data-el="nodeToggleBtn" class="nodeToggleBtn"></button>
+                &nbsp;
                 <div data-el="displayName,popperTarget" class="displayName dbux-link"></div>
+                &nbsp;
+                <div data-el="callValueLabel"></div>
                 &nbsp;
                 <div data-el="where" class="darkgray"></div>
               </div>
-              <button data-el="highlighterBtn">🔆</button>
+              <div class="flex-row">
+                &nbsp;
+                <button data-el="highlighterBtn">🔆</button>
+              </div>
             </div>
             <div data-mount="TraceNode"></div>
           </div>
-          <div data-mount="ContextNode" data-el="nodeChildren" class="children">
+          <div class="full-width flex-row">
+            <div class="node-left-padding"></div>
+            <div data-mount="ContextNode" data-el="nodeChildren" class="node-children"></div>
           </div>
         </div>
       </div>
@@ -33,10 +39,11 @@ class ContextNode extends ClientComponentEndpoint {
 
   update() {
     const {
-      displayName,
-      positionLabel,
       applicationId,
-      context: { contextId, staticContextId }
+      context: { contextId, staticContextId },
+      displayName,
+      callValueLabel,
+      positionLabel
     } = this.state;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
@@ -44,11 +51,11 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.title.id = `name_${contextId}`;
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
+    this.els.callValueLabel.textContent = callValueLabel;
     this.els.where.textContent = positionLabel;
     this.els.nodeChildren.id = `children_${contextId}`;
 
-    this.popperString = `shift + click to follow`;
-    // this.popperString = `${displayName}`;
+    this.popperString = `${displayName} (shift + click to follow)`;
   }
 
   getBinaryHsl(i) {
