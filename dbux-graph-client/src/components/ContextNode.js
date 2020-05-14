@@ -47,8 +47,7 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.where.textContent = positionLabel;
     this.els.nodeChildren.id = `children_${contextId}`;
 
-    this.popperString = `shift + click to follow`;
-    // this.popperString = `${displayName}`;
+    this.popperString = `${displayName} (shift + click to follow)`;
   }
 
   getBinaryHsl(i) {

@@ -283,11 +283,6 @@
 
 
 ## TODO (other)
-* look at inf loop bug: `manager.highlighterUpdated`
-* fix: instrumentation of `return;`
-   * when running express bug #1
-      * error detected in `setImmediate(done, layerError);` (before `return;`)
-      * probably caused by `return;` not being instrumented correctly!
 * fix value tracking UI
    * add new `value` node to `TDView`
       * allow inspecting value
