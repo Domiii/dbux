@@ -6,6 +6,7 @@ import RunNode from './components/RunNode';
 import Toolbar from './components/Toolbar';
 import MiniMap from './components/MiniMap';
 import GraphNode from './components/controllers/GraphNode';
+import ContextNodeManager from './components/controllers/ContextNodeManager';
 import FocusController from './components/controllers/FocusController';
 import PopperController from './components/controllers/PopperController';
 import PopperManager from './components/controllers/PopperManager';
@@ -21,6 +22,7 @@ export default {
   RunNode,
   Toolbar,
   MiniMap,
+  ContextNodeManager,
   FocusController,
   PopperController,
   PopperManager,

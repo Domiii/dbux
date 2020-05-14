@@ -9,6 +9,7 @@ class GraphRoot extends HostComponentEndpoint {
   init() {
     this.controllers.createComponent('FocusController');
     this.controllers.createComponent('PopperManager');
+    this.controllers.createComponent('ContextNodeManager');
   }
 
   clear() {
@@ -49,7 +50,7 @@ class GraphRoot extends HostComponentEndpoint {
   /**
    *  @return {ContextNode}
    */
-  getContextNodeByContext(context) {
+  getContextNodeByContext = (context) => {
     return this.contextNodesByContext.get(context);
   }
 

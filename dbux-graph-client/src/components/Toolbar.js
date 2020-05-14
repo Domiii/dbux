@@ -11,7 +11,7 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light" id="toolbar">
         <!-- TODO: remove? -->
-        <!-- <a data-el="switchModeBtn" class="btn btn-info" href="#"></a> -->
+        <a data-el="switchModeBtn" class="btn btn-info hidden" href="#"></a>
         <a data-el="syncModeBtn" class="btn btn-info" href="#"></a>
         <a data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</a>
       </nav>

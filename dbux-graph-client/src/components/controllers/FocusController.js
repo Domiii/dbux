@@ -15,11 +15,12 @@ export default class FocusController extends ClientComponentEndpoint {
       this.focus = focus;
       this.slide(focus.applicationId, focus.contextId);
     }
+    this.logger.debug('focuscontroller updated');
   }
 
   //focus slide. referance https://codepen.io/relign/pen/qqZxqW?editors=0011
   //need chossing application 
-  slide = (applicationId, contextId, slideSpeed = 1) => {
+  slide = (applicationId, contextId, slideSpeed = 0.3) => {
     contextId = `#application_${applicationId}-context_${contextId}`;
     let node = document.querySelector(contextId);
     if (!node) {
@@ -27,6 +28,9 @@ export default class FocusController extends ClientComponentEndpoint {
       return;
     }
     let nodePos = node.getBoundingClientRect();
+    if (nodePos.x === 0) {
+      this.logger.error('Trying to slide to unrevealed node');
+    }
     let toolbar = document.querySelector("#toolbar");
     let barPos = toolbar.getBoundingClientRect();
 
@@ -36,13 +40,13 @@ export default class FocusController extends ClientComponentEndpoint {
       startY: this.panzoom.getTransform().y,
       distanceX: barPos.left - nodePos.x,
       distanceY: barPos.bottom + 10 - nodePos.y,
-      slideSpeed: 1
+      slideSpeed
     };
 
     requestAnimationFrame(() => this.step(node));
 
-    node.classList.add("flash-me");
-    setTimeout(() => { node.classList.remove("flash-me"); }, (slideSpeed + 3) * 1000);
+    // node.classList.add("flash-me");
+    // setTimeout(() => { node.classList.remove("flash-me"); }, (slideSpeed + 3) * 1000);
   }
 
   step = (node) => {

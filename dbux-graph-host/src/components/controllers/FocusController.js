@@ -4,47 +4,73 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class FocusController extends HostComponentEndpoint {
   init() {
+    this.highlightManager = this.context.graphDocument.controllers.getComponent('HighlightManager');
     this.syncMode = true;
-    traceSelection.onTraceSelectionChanged(this.onTraceSelected);
+    traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
+
+
+    this.highlightManager.on('clear', () => {
+      this.clearFocus();
+      this.lastHighlighter = null;
+    });
   }
 
-  onTraceSelected = (trace) => {
+  handleTraceSelected = (trace) => {
     if (!trace) this.clearFocus();
     else if (this.syncMode) {
-      this.focusTrace(trace);
+      const { contextId, applicationId } = trace;
+      this.focus(applicationId, contextId);
     }
   }
 
   focus(applicationId, contextId) {
+    this.highlightManager.clear();
+    this.highlightContext(applicationId, contextId);
     this.revealContext(applicationId, contextId);
+
     this.setState({
       focus: { applicationId, contextId }
     });
   }
 
-  focusTrace(trace) {
-    if (!trace) return;
-    const { contextId, applicationId } = trace;
-    this.focus(applicationId, contextId);
-  }
-
   revealContext(applicationId, contextId) {
-    const dp = allApplications.getById(applicationId).dataProvider;
-    const context = dp.collections.executionContexts.getById(contextId);
-    const contextNode = this.owner.getContextNodeByContext(context);
+    const contextNode = this.getContextNode(applicationId, contextId);
     contextNode.controllers.getComponent('GraphNode').reveal();
   }
 
-  clearFocus() {
-    this.setState({
-      focus: null
-    });
+  highlightContext(applicationId, contextId) {
+    const contextNode = this.getContextNode(applicationId, contextId);
+    this.lastHighlighter = contextNode.controllers.getComponent('Highlighter');
+    this.lastHighlighter.inc();
+  }
+
+  getContextNode(applicationId, contextId) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const context = dp.collections.executionContexts.getById(contextId);
+    const contextNode = this.owner.getContextNodeByContext(context);
+    return contextNode;
+  }
+
+  clearFocus = () => {
+    if (this.state.focus) {
+      this.setState({
+        focus: null
+      });
+    }
   }
 
   toggleSyncMode() {
     this.syncMode = !this.syncMode;
     if (this.syncMode) {
-      this.focusTrace(traceSelection.selected);
+      const { contextId, applicationId } = traceSelection.selected;
+      this.focus(applicationId, contextId);
+    }
+    else {
+      if (this.lastHighlighter) {
+        this.lastHighlighter.dec();
+        this.lastHighlighter = null;
+      }
+      this.clearFocus();
     }
     return this.syncMode;
   }

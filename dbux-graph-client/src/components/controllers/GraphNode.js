@@ -58,6 +58,8 @@ export default class GraphNode extends ClientComponentEndpoint {
         btnEl.innerHTML = '▷';
         break;
     }
+
+    this.logger.debug('graphNode updated');
   }
 
   on = {
