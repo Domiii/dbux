@@ -6,6 +6,7 @@ import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticConte
 import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
 import DataProvider from './DataProvider';
 import { isCallResult, hasCallId } from '../../dbux-common/src/core/constants/traceCategorization';
+import { isObjectCategory } from '../../dbux-common/src/core/constants/ValueTypeCategory';
 
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 
@@ -20,8 +21,17 @@ export default {
   },
 
   // ###########################################################################
-  // root contexts
+  // contexts
   // ###########################################################################
+
+  getContextsByTrackId(dp: DataProvider, trackId) {
+    const traces = dp.indexes.traces.byTrackId.get(trackId);
+    const contextsSet = new Set();
+    traces.forEach((trace) => {
+      contextsSet.add(dp.collections.executionContexts.getById(trace.contextId));
+    });
+    return Array.from(contextsSet);
+  },
 
   getAllRootContexts(dp: DataProvider) {
     return dp.indexes.executionContexts.roots.get(1);
@@ -122,6 +132,17 @@ export default {
     return firstTraceId === traceId;
   },
 
+  isTraceRealObject(dp: DataProvider, traceId) {
+    const { valueId } = dp.collections.traces.getById(traceId);
+    if (valueId) {
+      const { category } = dp.collections.values.getById(valueId);
+      if (category) {
+        return isObjectCategory(category);
+      }
+    }
+    return false;
+  },
+
   doesTraceHaveValue(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId, type: dynamicType } = trace;
@@ -219,7 +240,7 @@ export default {
 
   getTraceProgramId(dp: DataProvider, traceId) {
     const trace = dp.collections.traces.getById(traceId);
-    
+
     const {
       staticTraceId,
     } = trace;

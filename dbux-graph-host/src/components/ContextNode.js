@@ -92,6 +92,10 @@ class ContextNode extends HostComponentEndpoint {
     }
   }
 
+  reveal() {
+    this.controllers.getComponent('GraphNode').reveal();
+  }
+
   _makeContextPositionLabel(applicationId, context) {
     const { staticContextId } = context;
     const dp = allApplications.getById(applicationId).dataProvider;
