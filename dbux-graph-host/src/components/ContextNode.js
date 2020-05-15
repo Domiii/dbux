@@ -25,9 +25,7 @@ class ContextNode extends HostComponentEndpoint {
     this.state.positionLabel = this._makeContextPositionLabel(applicationId, context);
 
     // add GraphNode controller
-    this.controllers.createComponent('GraphNode', {
-      isExpanded: false
-    });
+    this.controllers.createComponent('GraphNode', { });
 
     // add PopperController
     this.controllers.createComponent('PopperController');

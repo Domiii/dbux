@@ -13,8 +13,7 @@ class ContextNode extends ClientComponentEndpoint {
           <div data-el="title" class="title">
             <div class="flex-row">
               <div class="flex-row">
-                <button data-el="nodeToggleBtn" class="nodeToggleBtn"></button>
-                &nbsp;
+                <button data-el="nodeToggleBtn" class="node-toggle-btn"></button>
                 <div data-el="displayName,popperTarget" class="displayName dbux-link"></div>
                 &nbsp;
                 <div data-el="callValueLabel"></div>

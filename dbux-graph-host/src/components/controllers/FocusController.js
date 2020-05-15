@@ -16,7 +16,7 @@ export default class FocusController extends HostComponentEndpoint {
     // if already selected, show things right away
     setTimeout(() => {
       this.handleTraceSelected(traceSelection.selected);
-    }, 500);
+    }, 100);
   }
 
   handleTraceSelected = (trace) => {
@@ -28,15 +28,19 @@ export default class FocusController extends HostComponentEndpoint {
     if (!trace) this.clearFocus();
     else if (this.syncMode) {
       const { contextId, applicationId } = trace;
+
+      // NOTE: focus is async
       this.focus(applicationId, contextId);
     }
   }
 
-  focus(applicationId, contextId) {
+  async focus(applicationId, contextId) {
     this.highlightManager.clear();
     this.highlightContext(applicationId, contextId);
-    this.revealContext(applicationId, contextId);
 
+    await this.revealContext(applicationId, contextId);
+
+    // NOTE: this initiates an animation, and will finish after a little while
     this.setState({
       focus: { applicationId, contextId }
     });
@@ -44,8 +48,10 @@ export default class FocusController extends HostComponentEndpoint {
 
   async revealContext(applicationId, contextId) {
     const contextNode = this.getContextNode(applicationId, contextId);
-    await contextNode.waitForInit();
-    contextNode.controllers.getComponent('GraphNode').reveal();
+    // await contextNode.waitForInit();      // make sure, node has initialized
+
+    const graphNode = contextNode.controllers.getComponent('GraphNode');
+    await graphNode.reveal();   // make sure, node has revealed
   }
 
   highlightContext(applicationId, contextId) {

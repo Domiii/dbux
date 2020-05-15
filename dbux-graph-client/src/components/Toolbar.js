@@ -9,7 +9,7 @@ class Toolbar extends ClientComponentEndpoint {
   createEl() {
     // return compileHtmlElement(/*html*/`<div></div>`);
     return compileHtmlElement(/*html*/`
-      <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light" id="toolbar">
+      <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light no-padding" id="toolbar">
         <!--a data-el="switchModeBtn" class="btn btn-info hidden" href="#"></a-->
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <a data-el="syncModeBtn" class="btn btn-info" href="#"></a>

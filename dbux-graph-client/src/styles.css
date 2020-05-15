@@ -16,8 +16,8 @@ canvas{
  * ############################################################################ */
 
 html,body{
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   font-size: 12px; /* NOTE: courier is a rather "big" font, making smaller font size seem bigger */
   font-family: "Lucida Console", Courier, monospace;
   padding: 0 !important;
@@ -57,9 +57,9 @@ html,body{
 
 .graph-root {
   /* offset fixed toolbar height */
-  margin-top: 50px;
+  margin-top: 30px;
   /* this way, the viewport will (usually) not move when working on nodes near the bottom of the graph */
-  margin-bottom: calc(95vh+50px);
+  margin-bottom: calc(95vh+30px);
 }
 
 .run-node {
@@ -96,6 +96,11 @@ html,body{
 /** ###########################################################################
  * graph decorations
  * ############################################################################ */
+
+.node-toggle-btn {
+  margin-right: 0.3rem !important;
+}
+
 
 .where {
   color: gray;

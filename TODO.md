@@ -282,6 +282,8 @@
 
 
 ## TODO (other)
+* proper run: add to `extensions` folder
+   * see: https://github.com/Microsoft/vscode/issues/25159
 * fix: graph
    * `FocusManager` bugs out if in `Sync` after `Restart`
    * graph bugs out if disabled and then re-enabled (e.g. when moved between columns)
