@@ -1,8 +1,36 @@
 import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
 
+/**
+ * Padding (in pixels) to leave 
+ */
+const pad = 10;
+
+
+
+function computeDelta1D(p, s, bp, bs) {
+  let dLeft = bp - p - pad;
+  if (dLeft > 0) {
+    // too far left
+    return dLeft;
+  }
+  else {
+    // too far right
+    const dRight = (bp + bs) - (p + s) - pad;   // distance to right edge
+    return Math.max(dLeft, dRight); // NOTE: both numbers are negative; we want the one, closer to 0
+  }
+}
+
+window.computeDelta = function computeDelta(node) {
+  const 
+};
+
 export default class FocusController extends ClientComponentEndpoint {
   init() {
     this.panzoom = this.owner.panzoom;
+
+    // [debug-global] for debugging purposes
+    window.panzoom = this.panzoom;
+
     this.focus = {};
     this.slideData = {
       slideSpeed: 1
@@ -27,19 +55,21 @@ export default class FocusController extends ClientComponentEndpoint {
       this.logger.error("context node of selected trace not found");
       return;
     }
-    let nodePos = node.getBoundingClientRect();
-    if (!nodePos.height) {
+
+    let nodeBounds = node.getBoundingClientRect();
+    if (!nodeBounds.height) {
       this.logger.error('Trying to slide to unrevealed node');
     }
-    let toolbar = document.querySelector("#toolbar");
-    let barPos = toolbar.getBoundingClientRect();
+
+    // let toolbar = document.querySelector("#toolbar");
+    // let barPos = toolbar.getBoundingClientRect();
 
     this.slideData = {
       startTime: Date.now(),
       startX: this.panzoom.getTransform().x,
       startY: this.panzoom.getTransform().y,
-      distanceX: barPos.left - nodePos.x,
-      distanceY: barPos.bottom + 10 - nodePos.y,
+      distanceX: barPos.left - nodeBounds.x,
+      distanceY: barPos.bottom + 10 - nodeBounds.y,
       slideSpeed
     };
 
