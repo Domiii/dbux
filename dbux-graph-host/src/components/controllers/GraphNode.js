@@ -47,10 +47,9 @@ export default class GraphNode extends HostComponentEndpoint {
     if (parent && hasGraphNode(parent)) {
       const parentGraphNode = parent.controllers.getComponent(GraphNode);
       await parentGraphNode.reveal(true);
-      await parentGraphNode.waitForUpdate();
     }
     if (expandItself && GraphNodeMode.is.Collapsed(this.state.mode)) {
-      // Expand children if parent mode is collapsed
+      // expand children if collapsed
       this.setOwnMode(GraphNodeMode.ExpandChildren);
       await this.waitForUpdate();
     }

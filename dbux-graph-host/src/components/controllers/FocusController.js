@@ -16,7 +16,7 @@ export default class FocusController extends HostComponentEndpoint {
     // if already selected, show things right away
     setTimeout(() => {
       this.handleTraceSelected(traceSelection.selected);
-    }, 100);
+    });
   }
 
   handleTraceSelected = (trace) => {
