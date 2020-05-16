@@ -102,8 +102,21 @@ html,body{
 }
 
 
-.where {
+.loc-label {
   color: gray;
+}
+
+.hide-locs .loc-label {
+  display: none !important;
+}
+
+.value-label {
+  color: #333;
+  background: rgba(0,0,0,0.1);
+  font-size: 11px;
+}
+.hide-values .value-label {
+  display: none !important;
 }
 
 /* ContextNode link style */

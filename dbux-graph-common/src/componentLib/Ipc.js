@@ -150,7 +150,7 @@ export default class Ipc {
 
     const call = this.calls.get(callId);
     if (!call) {
-      logError('Received invalid callId - does not exist:', callId, JSON.stringify(message));
+      logError('Received invalid reply - callId does not exist:', callId, JSON.stringify(message));
       return;
     }
 

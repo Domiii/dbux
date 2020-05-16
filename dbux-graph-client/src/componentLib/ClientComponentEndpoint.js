@@ -61,6 +61,11 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     this._remoteInternal.forceUpdate();
   }
 
+  setState(...args) {
+    // tell host to setState
+    this._remoteInternal.setState(...args);
+  }
+
   // ###########################################################################
   // private methods
   // ###########################################################################

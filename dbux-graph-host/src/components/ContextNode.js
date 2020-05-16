@@ -21,7 +21,7 @@ class ContextNode extends HostComponentEndpoint {
     this.state.displayName = label;
 
     const parentTrace = dp.util.getParentTraceOfContext(context.contextId);
-    this.state.callValueLabel = parentTrace && makeTraceValueLabel(parentTrace) || '';
+    this.state.valueLabel = parentTrace && makeTraceValueLabel(parentTrace) || '';
     this.state.positionLabel = this._makeContextPositionLabel(applicationId, context);
 
     // add GraphNode controller

@@ -6,8 +6,12 @@ import componentRegistry from './_hostRegistry';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
 
-let _onStart, _args;
-let componentManager, doc;
+let _onStart, _restart, _args;
+
+/**
+ * @type {HostComponentManager}
+ */
+let componentManager;
 
 function reset() {
   componentManager = new HostComponentManager(...(_args || EmptyArray), componentRegistry);
@@ -16,19 +20,24 @@ function reset() {
 
 function pairingCompleted() {
   // client is ready!
-  debug('dbux-graph-client connected. - Starting host...');
-
   if (componentManager.hasStarted()) {
-    reset();
+    debug('dbux-graph-client was restarted from outside. - Restarting everything...');
+    // client got restarted without the host telling it to -> ignore this start, and force another restart instead
+    // reset();
+    // setTimeout(_restart, 300);   // delaying things seems to make it worse
+    _restart();
+    return;
   }
+
+  debug('dbux-graph-client connected. - Starting host...');
 
   // start
   componentManager.start();
 
   // build component tree
-  doc = componentManager.app.children.createComponent(GraphDocument);
+  const doc = componentManager.app.children.createComponent(GraphDocument);
 
-  // notify caller
+  // notify starter (e.g. code/GraphWebView)
   _onStart(componentManager);
 }
 
@@ -36,9 +45,10 @@ function pairingCompleted() {
  * Start the dbux-graph-host.
  * Starts listening for app events and rendering to the user.
  */
-export function startGraphHost(onStart, ...args) {
+export function startGraphHost(onStart, restart, ...args) {
   _args = args;
   _onStart = onStart;
+  _restart = restart;
 
   reset();
 }

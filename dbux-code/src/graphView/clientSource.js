@@ -7,7 +7,7 @@ import { promises as fs } from 'fs';
  */
 function code2Html(src) {
   src = src.replace(/<\/script>/g, '\\x3c/script>');
-  src = `${src}; console.log('hi');`;
+  src = `${src};`;
   src = JSON.stringify(src);
   const script = `<script>eval(eval(${src}))</script>`;
   return script;

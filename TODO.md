@@ -3,11 +3,14 @@
 
 ## TODO (shared)
 * `Hide all decorations` should be "Toggle" instead of "Hide"
-   * also: we also want to toggle the buttons at the top (its a lot of buttons - hah)
 * (!!!) `ContextNode`
-   * button -> highlight all contexts of this staticContext
-      * also add list to `traceDetailsView`: lists all contexts that call `staticContext` (via `parentTrace`)
-         * (select call trace when clicking)
+   * bug: "highlight contexts of staticContext" button
+      * steps to reproduce:
+         * sync mode: ON
+         * click highlight button
+         * select trace
+         * click another highlight button
+         * -> need to click twice because highlight clear event not handled properly by highlight button
    * highlight all context nodes where an object was referenced (add button to `Object References` node in `traceDetailsView`)
    * Buttons -> go to next/previous context of this staticContext (`parentTrace` of next/previous context)
    * (Display contextual information for every function call)
@@ -156,8 +159,11 @@
 
 
 ## TODO (dbux-graph)
-* fix: require `alt` for `pan` (else button clicks don't work so well)
-   * will fix: `nodeToggleBtn` does not work when clicking too fast and slightly amoving the mouse during the click
+* fix: panzoom to actually move scrollbars when panning
+   * -> copy panzoom
+   * -> make changes to copy of panzoom
+   * -> for panning, set `scrollTop` and `scrollLeft`, instead of using `transform`
+   * -> for zooming, keep using `transform`
 * when `Sync` is `on`
    * show indicator of where we are, relative to current context children
    * -> maybe draw a horizontal line in `node-left-padding`
@@ -166,6 +172,8 @@
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
       * (e.g. `next` in `express`)
+* fix: don't generate `valueLabels` if values are hidden
+   * add proper `NodeDecoration` controller component to `GraphDocument`?
 * add a css class for font scaling (e.g. `.scale-font`): when zooming, font-size stays the same
    * NOTE: can use `vh` instead of `px` or `rem` (see: https://stackoverflow.com/questions/24469375/keeping-text-size-the-same-on-zooming)
 * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
@@ -282,21 +290,24 @@
 
 
 ## TODO (other)
-* proper run: add to `extensions` folder
-   * see: https://github.com/Microsoft/vscode/issues/25159
 * fix: graph
-   * `FocusManager` bugs out if in `Sync` after `Restart`
-   * graph bugs out if disabled and then re-enabled (e.g. when moved between columns)
-   * sometimes, when selecting a node the first time, it selects the wrong column
+   * fix `loc` colors
+   * graph bugs out if visibility or column changes
+      * -> host receives invalid `reply` messages that it did not look for
+      * -> it appears we are not resetting `Ipc` object properly?
+         * -> or are there two clients that live in parallel?
+
+   * sometimes (initially?), when selecting (shift+click) a node the first time, it selects the wrong column
    * change ContextNode.where to display loc of call (`parentTrace`), not of function
-   * if node is already in view, don't move in `FocusManager`
-   * only show `valueLabels` on demand (too cluttered)
+
    * Toolbar: "`hide old`" button
       * Problem: need to handle the "hidden" situation
          * if a trace is selected in sync mode, or any hidden node is being used in any way
       * Easier alternative for now: add slow-fading background color css anim to new run nodes
    * when highlighting is enabled, `popper` `background` color should not be affected
    * add crosshair icon to `ContextNode` to select `Push` trace
+* proper run: add to `extensions` folder
+   * see: https://github.com/Microsoft/vscode/issues/25159
 * fix trace grouping in `TraceDetailsView`
    * groups cannot be selected -> find a better solution
    * don't add an extra node, if it's a single node

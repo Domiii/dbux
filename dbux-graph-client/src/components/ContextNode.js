@@ -16,13 +16,17 @@ class ContextNode extends ClientComponentEndpoint {
                 <button data-el="nodeToggleBtn" class="node-toggle-btn"></button>
                 <div data-el="displayName,popperTarget" class="displayName dbux-link"></div>
                 &nbsp;
-                <div data-el="callValueLabel"></div>
+                <button data-el="staticContextHighlightBtn">💡</button>
                 &nbsp;
-                <div data-el="where" class="darkgray"></div>
+                <div>
+                  <span class="loc-label" data-el="locLabel"></span>
+                </div>
+                &nbsp;
+                <div>
+                  <span class="value-label" data-el="valueLabel"></span>
+                </div>
               </div>
               <div class="flex-row">
-                &nbsp;
-                <button data-el="staticContextHighlightBtn">💡</button>
               </div>
             </div>
             <div data-mount="TraceNode"></div>
@@ -41,7 +45,7 @@ class ContextNode extends ClientComponentEndpoint {
       applicationId,
       context: { contextId, staticContextId },
       displayName,
-      callValueLabel,
+      valueLabel,
       positionLabel
     } = this.state;
 
@@ -50,8 +54,8 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.title.id = `name_${contextId}`;
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
-    this.els.callValueLabel.textContent = callValueLabel;
-    this.els.where.textContent = positionLabel;
+    this.els.locLabel.textContent = positionLabel;
+    this.els.valueLabel.textContent = valueLabel;
     this.els.nodeChildren.id = `children_${contextId}`;
 
     this.popperString = `${displayName} (shift + click to follow)`;

@@ -62,17 +62,18 @@ class GraphRoot extends ClientComponentEndpoint {
         let shouldIgnore = !evt.ctrlKey;
         return shouldIgnore;
       },
-      // beforeMouseDown(evt) {
-      //   // allow mouse-down panning only if altKey is down. Otherwise - ignore
-      //   let shouldIgnore = !evt.altKey;
-      //   return shouldIgnore;
-      // },
+      beforeMouseDown(evt) {
+        // allow mouse-down panning only if altKey is down. Otherwise - ignore
+        let shouldIgnore = !evt.altKey;
+        return shouldIgnore;
+      },
       bounds: true,
       boundsPadding: 0.2,
       maxZoom: 2,
       minZoom: 0.1,
     });
-    window.panzoom = panzoom;
+    // [debug-global]
+    // window.panzoom = panzoom;
 
     panzoom.zoomAbs(
       0,

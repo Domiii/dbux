@@ -224,9 +224,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
   // ###########################################################################
 
   _publicInternal = {
-    forceUpdate() {
-      this.forceUpdate();
-    }
+    forceUpdate: this.forceUpdate,
+    setState: this.setState
   }
 
   // ###########################################################################

@@ -13,6 +13,8 @@ class Toolbar extends ClientComponentEndpoint {
         <!--a data-el="switchModeBtn" class="btn btn-info hidden" href="#"></a-->
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <a data-el="syncModeBtn" class="btn btn-info" href="#"></a>
+          <a data-el="locModeBtn" class="btn btn-info" href="#">loc</a>
+          <a data-el="valueModeBtn" class="btn btn-info" href="#">val</a>
           <a data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></a>
         </div>
         <a data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</a>
@@ -25,29 +27,49 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   update = () => {
-    const { traceModeName, syncMode } = this.state;
+    const { 
+      syncMode,
+      locMode,
+      valueMode,
+      thinMode
+    } = this.state;
     // this.els.switchModeBtn.textContent = `${traceModeName}`;
     // this.els.syncModeBtn.textContent = `Sync: ${syncMode ? '✅' : '❌'}`;
 
     this.els.syncModeBtn.textContent = 'Sync';
 
+    // render buttons
     decorateClasses(this.els.syncModeBtn, {
       active: syncMode
     });
+    decorateClasses(this.els.locModeBtn, {
+      active: locMode
+    });
+    decorateClasses(this.els.valueModeBtn, {
+      active: valueMode
+    });
+    decorateClasses(this.els.thinModeBtn, {
+      active: thinMode
+    });
+    this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
 
 
-    this.renderThinMode();
+    this.renderModes();
   }
 
-  renderThinMode() {
-    // re-render thin mode (NOTE: does not go through host/state)
-    const { thinMode } = this;
-    this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
+  renderModes() {
+    const {
+      locMode,
+      valueMode,
+      thinMode
+    } = this.state;
+
     const docEl = this.context.graphDocument.el;
     decorateClasses(docEl, {
+      'hide-locs': !locMode,
+      'hide-values': !valueMode,
       'thin-mode': thinMode
     });
-
   }
 
   // ###########################################################################
@@ -83,16 +105,35 @@ class Toolbar extends ClientComponentEndpoint {
       focus(evt) { evt.target.blur(); }
     },
 
+    locModeBtn: {
+      click(evt) {
+        evt.preventDefault();
+        this.setState({
+          locMode: !this.state.locMode
+        });
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    valueModeBtn: {
+      click(evt) {
+        evt.preventDefault();
+        this.setState({
+          valueMode: !this.state.valueMode
+        });
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
     thinModeBtn: {
       click(evt) {
         evt.preventDefault();
-        
-        this.thinMode = !this.thinMode;
-        this.renderThinMode();
+        this.setState({
+          thinMode: !this.state.thinMode
+        });
       },
-      
       focus(evt) { evt.target.blur(); }
-    }
+    },
   }
 }
 
