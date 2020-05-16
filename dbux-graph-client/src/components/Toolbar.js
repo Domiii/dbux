@@ -36,7 +36,7 @@ class Toolbar extends ClientComponentEndpoint {
     // this.els.switchModeBtn.textContent = `${traceModeName}`;
     // this.els.syncModeBtn.textContent = `Sync: ${syncMode ? '✅' : '❌'}`;
 
-    this.els.syncModeBtn.textContent = 'Sync';
+    this.els.syncModeBtn.textContent = 'sync';
 
     // render buttons
     decorateClasses(this.els.syncModeBtn, {

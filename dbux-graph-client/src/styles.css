@@ -97,23 +97,30 @@ html,body{
  * graph decorations
  * ############################################################################ */
 
+.highlight-btn {
+  margin-right: 0.3rem !important;
+}
+
 .node-toggle-btn {
   margin-right: 0.3rem !important;
 }
 
 
 .loc-label {
-  color: gray;
+  color: #555;
+  margin-right: 0.3rem !important;
 }
 
 .hide-locs .loc-label {
   display: none !important;
 }
 
+
 .value-label {
   color: #333;
   background: rgba(0,0,0,0.1);
   font-size: 11px;
+  margin-right: 0.3rem !important;
 }
 .hide-values .value-label {
   display: none !important;
@@ -122,13 +129,14 @@ html,body{
 /* ContextNode link style */
 
 .dbux-link {
-  color: rgb(71, 52, 243);
-  text-decoration: underline;
+  /* color: rgb(71, 52, 243); */
+  color: black;
   cursor: pointer;
 }
 
 .dbux-link:hover {
-  color: rgb(104, 91, 218);
+  /* color: rgb(104, 91, 218); */
+  text-decoration: underline;
 } 
 
 /** ###########################################################################

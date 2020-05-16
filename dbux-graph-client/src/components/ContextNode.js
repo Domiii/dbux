@@ -16,12 +16,10 @@ class ContextNode extends ClientComponentEndpoint {
                 <button data-el="nodeToggleBtn" class="node-toggle-btn"></button>
                 <div data-el="displayName,popperTarget" class="displayName dbux-link"></div>
                 &nbsp;
-                <button data-el="staticContextHighlightBtn">💡</button>
-                &nbsp;
+                <button class="highlight-btn" data-el="staticContextHighlightBtn">💡</button>
                 <div>
                   <span class="loc-label" data-el="locLabel"></span>
                 </div>
-                &nbsp;
                 <div>
                   <span class="value-label" data-el="valueLabel"></span>
                 </div>
