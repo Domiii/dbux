@@ -154,7 +154,7 @@ export default {
   */
   getValueTrace(dp, traceId) {
     let trace = dp.collections.traces.getById(traceId);
-    const traceType = dp.util.getTraceType(trace);
+    const traceType = dp.util.getTraceType(traceId);
     if (isBeforeCallExpression(traceType) && trace.resultId) {
       // trace is a BeforeCallExpression and has result
       return dp.collections.traces.getById(trace.resultId);
@@ -163,13 +163,19 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  isTraceRealObject(dp, traceId) {
+  isTraceTrackableValue(dp, traceId) {
     const valueRef = dp.util.getTraceValueRef(traceId);
     return valueRef && isObjectCategory(valueRef.category) || false;
   },
 
   /** @param {DataProvider} dp */
-  isTracePlainObjectOrArray(dp, traceId) {
+  isTracePlainObjectOrArrayValue(dp, traceId) {
+    const valueRef = dp.util.getTraceValueRef(traceId);
+    return valueRef && isPlainObjectOrArrayCategory(valueRef.category) || false;
+  },
+
+  /** @param {DataProvider} dp */
+  isTraceFunctionValue(dp, traceId) {
     const valueRef = dp.util.getTraceValueRef(traceId);
     return valueRef && isPlainObjectOrArrayCategory(valueRef.category) || false;
   },
@@ -214,8 +220,16 @@ export default {
     // get value
     const value = dp.util.getTraceValue(traceId);
     if (value !== undefined) {
+      let valueString;
+      if (dp.util.isTraceFunctionValue(traceId)) {
+        valueString = value;
+      }
+      else {
+        valueString = JSON.stringify(value);
+      }
+
       // hackfix: we cache this thing
-      return trace.valueString = JSON.stringify(value);
+      return trace.valueString = valueString;
     }
     
 

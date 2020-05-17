@@ -5,31 +5,10 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import StaticTraceTDNode from './StaticTraceTDNodes';
 import StaticContextTDNode from './StaticContextTDNodes';
 import TrackObjectTDNode from './TrackObjectTDNodes';
+import ValueTDNode from './ValueTDNode';
 import { InfoTDNode } from './traceInfoNodes';
 
 export class TraceDetailNode extends BaseTreeViewNode {
-}
-
-// ###########################################################################
-// Value
-// ###########################################################################
-
-export class ValueTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace, parent) {
-    const application = allApplications.getApplication(trace.applicationId);
-    const { traceId } = trace;
-    const { dataProvider } = application;
-    const hasValue = dataProvider.util.doesTraceHaveValue(traceId);
-    return hasValue ? trace : null;
-  }
-
-  static makeLabel(trace, parent) {
-    const application = allApplications.getApplication(trace.applicationId);
-    const { traceId } = trace;
-    const { dataProvider } = application;
-    const value = dataProvider.util.getTraceValueString(traceId);
-    return `Value: ${value}`;
-  }
 }
 
 // ###########################################################################
@@ -98,10 +77,10 @@ export class DebugTDNode extends TraceDetailNode {
 // ###########################################################################
 
 export const DetailNodeClasses = [
-  StaticTraceTDNode,
-  StaticContextTDNode,
   ValueTDNode,
   TrackObjectTDNode,
+  StaticTraceTDNode,
+  StaticContextTDNode,
   InfoTDNode,
   DebugTDNode
 ];

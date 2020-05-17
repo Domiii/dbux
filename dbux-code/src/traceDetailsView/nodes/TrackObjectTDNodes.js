@@ -27,11 +27,9 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
     return props.label;
   }
 
-  get defaultCollapsibleState() {
-    if (!this.trackedTraces) {
-      return TreeItemCollapsibleState.None;
-    }
-    return TreeItemCollapsibleState.Collapsed;
+  
+  canHaveChildren() {
+    return !!this.trackedTraces?.length;
   }
 
   init() {
@@ -47,7 +45,7 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
     if (!dp.util.doesTraceHaveValue(traceId)) {
       this.description = '(trace has no value)';
     }
-    else if (!dp.util.isTraceRealObject(traceId)) {
+    else if (!dp.util.isTraceTrackableValue(traceId)) {
       this.description = '(trace\'s value is not an object/array/function)';
     }
     else {

@@ -1,42 +1,45 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import { makeTreeItems } from '../../helpers/treeViewHelpers';
+import { makeTreeItems, makeTreeChildren } from '../../helpers/treeViewHelpers';
+import ValueTypeCategory from 'dbux-common/src/core/constants/ValueTypeCategory';
 
 export default class ValueTDNode extends BaseTreeViewNode {
-
   static makeTraceDetail(trace, parent) {
     return trace;
+  }
+
+  static makeLabel(trace, parent) {
+    return 'Value';
   }
 
   static makeProperties(trace, parent, detail) {
     const dp = allApplications.getById(trace.applicationId).dataProvider;
 
     const value = dp.util.getTraceValue(trace.traceId);
-    const label = `Value`;
 
     return {
-      label,
       value
     };
   }
 
-  get defaultCollapsibleState() {
+  canHaveChildren() {
     const { trace: { applicationId, traceId } } = this;
     const dp = allApplications.getById(applicationId).dataProvider;
 
-    if (!dp.util.isTracePlainObjectOrArray(traceId)) {
-      return TreeItemCollapsibleState.None;
-    }
-    return TreeItemCollapsibleState.Collapsed;
+    return dp.util.isTracePlainObjectOrArrayValue(traceId);
   }
 
   init() {
     const { trace: { applicationId, traceId } } = this;
     const dp = allApplications.getById(applicationId).dataProvider;
 
-    if (!dp.util.isTracePlainObjectOrArray(traceId)) {
+    if (!dp.util.isTracePlainObjectOrArrayValue(traceId)) {
       this.description = dp.util.getTraceValueString(traceId);
+    }
+    else {
+      const valueRef = dp.util.getTraceValueRef(traceId);
+      this.description = ValueTypeCategory.nameFrom(valueRef.category);
     }
   }
 
@@ -49,10 +52,10 @@ export default class ValueTDNode extends BaseTreeViewNode {
       return null;
     }
 
-    if (!dp.util.isTracePlainObjectOrArray(traceId)) {
+    if (!dp.util.isTracePlainObjectOrArrayValue(traceId)) {
       return null;
     }
 
-    return makeTreeItems(value);
+    return makeTreeChildren(value);
   }
 }

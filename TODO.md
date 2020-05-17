@@ -2,6 +2,11 @@
 # TODO
 
 ## TODO (shared)
+* fix TDV: "Trace Executed: Nx"
+   * labels broken
+   * need to re-design grouping a bit
+* fix TDV: "Function Executed: Nx"
+   * often reports 0x (e.g. in `oop1.js` -> any `speak()` function)
 * (!!!) `ContextNode`
    * bug: "highlight contexts of staticContext" button
       * steps to reproduce:
