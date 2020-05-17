@@ -100,6 +100,7 @@ export class DebugTDNode extends TraceDetailNode {
 export const DetailNodeClasses = [
   StaticTraceTDNode,
   StaticContextTDNode,
+  ValueTDNode,
   TrackObjectTDNode,
   InfoTDNode,
   DebugTDNode

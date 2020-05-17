@@ -16,6 +16,7 @@
    * add "collapseAllButThis" button
       * all ascendants change to `ExpandChildren`
       * everything else: `Collapse`
+* `Enum` names should be `C`apitalized: https://github.com/Domiii/dbux/blame/b14d4aec90eb641b89878688d9b2f31397f48156/dbux-code/src/traceDetailsView/nodes/StaticTraceTDNodes.js#L86
 
 [UI]
 * [navigation]
@@ -281,7 +282,6 @@
    * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`
    * Sln: add `callId` to those callee traces as well?
       * Problem: Would change the assumption that only BCE + arguments have `callId`
-* fix: instrumentation `this.methods[method] = true` shows `undefined` in `Trace Executed`
 * fix: graph
    * sometimes (initially?), when selecting (shift+click) a node the first time, it selects the wrong column?
    * change ContextNode.`locLabel` to display loc of (`parentTrace`), not of function
@@ -312,9 +312,6 @@
       1. -> `received init from client twice. Please restart application`
    * -> it seems to try to re-init after the error somehow.
       * Did it restart the process after being killed off?
-* fix: `dbux-graph` breaks when starting/re-starting multiple apps
-* fix: `ComponentList` needs to add role (`child` or `controller`), so we can properly categorize on `Client` as well
-   * -> or get rid of categorization and just fix things up in `GraphNode` instead?
 * fix: re-invent TraceType to support multiple roles per trace
    * `// TODO: trace-type`
    * bugs

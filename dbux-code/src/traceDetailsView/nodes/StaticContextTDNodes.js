@@ -32,7 +32,7 @@ export default class StaticContextTDNode extends BaseTreeViewNode {
   }
 
   get defaultCollapsibleState() {
-    return TreeItemCollapsibleState.Expanded;
+    return TreeItemCollapsibleState.Collapsed;
   }
 
   buildChildren() {

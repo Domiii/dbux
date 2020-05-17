@@ -148,7 +148,7 @@ export default class StaticTraceTDNode extends BaseTreeViewNode {
   }
 
   get defaultCollapsibleState() {
-    return TreeItemCollapsibleState.Expanded;
+    return TreeItemCollapsibleState.Collapsed;
   }
 
   init() {

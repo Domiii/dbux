@@ -16,9 +16,9 @@ let ValueTypeCategory = {
   String: 2,
 
   // complex types
-  Object: 3,
-  Array: 4,
-  Function: 5
+  Function: 3,
+  Object: 4,
+  Array: 5
 };
 
 ValueTypeCategory = new Enum(ValueTypeCategory);
@@ -40,6 +40,10 @@ export function determineValueTypeCategory(value) {
 }
 
 export function isObjectCategory(category) {
+  return category >= ValueTypeCategory.Function;
+}
+
+export function isPlainObjectOrArrayCategory(category) {
   return category >= ValueTypeCategory.Object;
 }
 
