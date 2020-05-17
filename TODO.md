@@ -2,7 +2,6 @@
 # TODO
 
 ## TODO (shared)
-* `Hide all decorations` should be "Toggle" instead of "Hide"
 * (!!!) `ContextNode`
    * bug: "highlight contexts of staticContext" button
       * steps to reproduce:
@@ -11,35 +10,17 @@
          * select trace
          * click another highlight button
          * -> need to click twice because highlight clear event not handled properly by highlight button
-   * highlight all context nodes where an object was referenced (add button to `Object References` node in `traceDetailsView`)
-   * Buttons -> go to next/previous context of this staticContext (`parentTrace` of next/previous context)
-   * (Display contextual information for every function call)
-   * (link/label: parentTrace)
-      * traceLabel + valueLabel
-* add "follow mode" button to `Toolbar`: when following, slide to + highlight context `onTraceSelected`
-   * when `follow mode` on: When stepping through code, also follow along in the graph
-* fix `blink` css: wrong color blending
+   * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
+   * add Navigation buttons: go to next/previous trace of this staticTrace
 * `GraphNode`
    * add "collapseAllButThis" button
-      * all collapsed parents change to `ExpandChildren`
-   * apply `GraphNode` controller pattern to all "graph node" components: `Run`, `GraphRoot`
-   * add `reveal` function to `host/GraphNode`:
-      * slide to node
-      * highlight node
-* `ContextNode`:
-   * remove `shift+click` go-to-code click handler
-   * replace it with: clicking on the title (`displayName`) element instead (make it a `<a>`)
-   * make sure to ignore clicks to any buttons while the `pan` button (`alt`?) is held
-* remove `ParentTraces` from `TraceMode` enum (adding an extra node for parent trace unnecessary due to its 1:1 relationship with `context`)
+      * all ascendants change to `ExpandChildren`
+      * everything else: `Collapse`
 
 [UI]
 * [navigation]
    * ignore trace if type `isPlainExpressionValue`
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
-* `snipe trace` button currently not working correctly:
-   * if previously selected trace is not under cursor:
-      * first find the inner-most `staticTrace` at cursor, and start from that
-   * else: keep switching through all possible traces under cursor
 
 [Persistance]
 * use `Memento` to persist extension state through VSCode restarts
@@ -290,43 +271,33 @@
 
 
 ## TODO (other)
+* fix value tracking UI
+   * add new `value` node to `TDView`
+      * allow inspecting value
+      * show `tracked Nx` stats
+      * if `isCall`, show result value as well
+* fix: in `this.methods[method]`, `method` is not a selectable trace
+* fix: conflict between `MemberExpression` + `CallExpression`
+   * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`
+   * Sln: add `callId` to those callee traces as well?
+      * Problem: Would change the assumption that only BCE + arguments have `callId`
+* fix: instrumentation `this.methods[method] = true` shows `undefined` in `Trace Executed`
 * fix: graph
-   * fix `loc` colors
-   * graph bugs out if visibility or column changes
-      * -> host receives invalid `reply` messages that it did not look for
-      * -> it appears we are not resetting `Ipc` object properly?
-         * -> or are there two clients that live in parallel?
-
-   * sometimes (initially?), when selecting (shift+click) a node the first time, it selects the wrong column
-   * change ContextNode.where to display loc of call (`parentTrace`), not of function
-
+   * sometimes (initially?), when selecting (shift+click) a node the first time, it selects the wrong column?
+   * change ContextNode.`locLabel` to display loc of (`parentTrace`), not of function
    * Toolbar: "`hide old`" button
-      * Problem: need to handle the "hidden" situation
+      * Problem: hidden context nodes can cause trouble
          * if a trace is selected in sync mode, or any hidden node is being used in any way
       * Easier alternative for now: add slow-fading background color css anim to new run nodes
    * when highlighting is enabled, `popper` `background` color should not be affected
    * add crosshair icon to `ContextNode` to select `Push` trace
 * proper run: add to `extensions` folder
    * see: https://github.com/Microsoft/vscode/issues/25159
-* fix trace grouping in `TraceDetailsView`
-   * groups cannot be selected -> find a better solution
-   * don't add an extra node, if it's a single node
-* fix: conflict between `MemberExpression` + `CallExpression`
-   * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`
-   * Sln: add `callId` to those callee traces as well?
-      * Problem: Would change the assumption that only BCE + arguments have `callId`
 * fix: `makeCallValueLabel`
    * sometimes does not work for object values?
    * improve array rendering
 * fix: `function` declarations are not tracked
-* fix: in `this.methods[method]`, `method` is not a selectable trace
 * fix: strings are currently tracked -> disable tracking of strings
-* fix value tracking UI
-   * add new `value` node to `TDView`
-      * allow inspecting value
-      * show `tracked Nx` stats
-      * if `isCall`, show result value as well
-   * `this.methods[method] = true` shows `undefined` in `Trace Executed`
 * fix: `traveValueLabels`
    * get callee name from instrumentation
    * improve traceValueLabel for all expressions
@@ -409,6 +380,11 @@
       30
       );
       ```
+
+* fix: graph bugs out if visibility or column changes
+   * -> host receives invalid `reply` messages that it did not look for
+   * -> it appears we are not resetting `Ipc` object properly?
+      * -> or are there two clients that live in parallel?
 * fix callback tracking
    * partial solution: Use a separate map to track callbacks and their points of passage instead?
       * => Won't work as comprehensively at all

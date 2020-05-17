@@ -94,6 +94,14 @@ const StylingsByName = {
       },
     }
   },
+  ReturnNoArgument: {
+    styling: {
+      after: {
+        contentText: '✦',
+        color: 'gray',
+      },
+    }
+  },
   CallArgument: {
     styling: {
       after: {
