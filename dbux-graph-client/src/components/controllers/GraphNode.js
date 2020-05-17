@@ -17,12 +17,16 @@ export default class GraphNode extends ClientComponentEndpoint {
     const observerOptions = {
       childList: true
     };
-    const observer = this.observer = new MutationObserver(this.toggleButtonVisible);
+    const observer = this.observer = new MutationObserver(this.renderListEmptyState);
     observer.observe(nodeChildren, observerOptions);
-    this.toggleButtonVisible();   // call initially
+    this.renderListEmptyState();   // call initially
 
     // on click -> nextMode
     this.owner.dom.addEventListeners(this);
+
+    nodeToggleBtn && nodeToggleBtn.addEventListener('click', evt => {
+      this.remote.nextMode();
+    });
   }
 
   /**
@@ -32,41 +36,67 @@ export default class GraphNode extends ClientComponentEndpoint {
     return !this.listEl.classList.contains('hidden');
   }
 
-  toggleButtonVisible = () => {
-    const hidden = !this.listEl.children.length;
+  isListEmpty() {
+    const { listEl } = this;
+    return !listEl.children.length;
+  }
+
+  /**
+   * Hide button if list is empty
+   */
+  renderListEmptyState = () => {
+    const { btnEl, listEl } = this;
 
     // show/hide button
-    decorateClasses(this.btnEl, {
-      hidden
+    btnEl && decorateClasses(btnEl, {
+      hidden: this.isListEmpty()
     });
+
+    decorateClasses(listEl, {
+      hidden: this.isListEmpty()
+    });
+
+    this.render();
   }
 
   update() {
+    this.render();
+  }
+
+  render() {
     const { listEl, btnEl, state: { mode } } = this;
 
-    switch (mode) {
-      case GraphNodeMode.ExpandChildren:
-        listEl.classList.remove('hidden');
-        btnEl.innerHTML = '-';
-        break;
-      case GraphNodeMode.ExpandSubgraph:
-        listEl.classList.remove('hidden');
-        btnEl.innerHTML = '☰';
-        break;
-      case GraphNodeMode.Collapsed:
-        listEl.classList.add('hidden');
-        btnEl.innerHTML = '▷';
-        break;
+    // if (this.isListEmpty()) {
+    //   // button should already be hidden -> now also hide list
+    //   listEl.classList.add('hidden');
+    // }
+    if (!this.isListEmpty())
+    {
+      switch (mode) {
+        case GraphNodeMode.ExpandChildren:
+          listEl.classList.remove('hidden');
+          btnEl && (btnEl.innerHTML = '-');
+          break;
+        case GraphNodeMode.ExpandSubgraph:
+          listEl.classList.remove('hidden');
+          btnEl && (btnEl.innerHTML = '☰');
+          break;
+        case GraphNodeMode.Collapsed:
+          // NOTE: cannot hide children if it has no button (for now)
+          btnEl && listEl.classList.add('hidden');
+          btnEl && (btnEl.innerHTML = '▷');
+          break;
+      }
     }
 
     this.logger.debug('graphNode updated');
   }
 
   on = {
-    nodeToggleBtn: {
-      click() {
-        this.remote.nextMode();
-      }
-    }
+    //   nodeToggleBtn: {
+    //     click() {
+    //       this.remote.nextMode();
+    //     }
+    //   }
   }
 }

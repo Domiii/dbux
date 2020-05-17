@@ -1,11 +1,76 @@
 import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
 
+// ###########################################################################
+// animation computations
+// ###########################################################################
+
+/**
+ * Padding (in pixels) between the edge of the viewport and node target position
+ */
+const focusPadding = 30;
+
+/**
+ * Padding (in pixels) added by scrollbars at the bottom and the right
+ */
+const scrollPadding = 10;
+
+/**
+ * @param {*} p position
+ * @param {*} s size
+ * @param {*} wp window position
+ * @param {*} ws window size
+ */
+function computeDelta1D(p, s, wp, ws) {
+  wp += focusPadding;
+  ws -= focusPadding;
+
+  let dLeft = wp - p;
+  if (dLeft > 0) {
+    // too far left
+    return dLeft;
+  }
+
+  // too far right
+  const dRight = (wp + ws) - (p + s);   // distance to right edge
+  if (dRight < 0) {
+    return Math.max(dLeft, dRight); // NOTE: both numbers are negative, and we want the one closer to 0
+  }
+
+  // we are already in the right spot
+  return 0;
+}
+
+/**
+ * Computes amount of pixels by which a node is outisde the viewport.
+ */
+function computeDelta(node) {
+  const nodeBounds = node.getBoundingClientRect();
+
+  // start underneath the toolbar
+  let toolbar = document.querySelector("#toolbar");
+  let barY = toolbar.getBoundingClientRect().bottom;
+
+  return {
+    x: computeDelta1D(nodeBounds.x, nodeBounds.width, 0, window.innerWidth - scrollPadding),
+    y: computeDelta1D(nodeBounds.y, nodeBounds.height, barY, window.innerHeight - barY - scrollPadding)
+  };
+}
+window.computeDelta = computeDelta;
+
+// ###########################################################################
+// FocusController
+// ###########################################################################
+
 export default class FocusController extends ClientComponentEndpoint {
   init() {
     this.panzoom = this.owner.panzoom;
+
+    // [debug-global] for debugging purposes
+    window.panzoom = this.panzoom;
+
     this.focus = {};
     this.slideData = {
-      slideSpeed: 1
+      animTime: 1
     };
   }
 
@@ -20,33 +85,41 @@ export default class FocusController extends ClientComponentEndpoint {
 
   //focus slide. referance https://codepen.io/relign/pen/qqZxqW?editors=0011
   //need chossing application 
-  slide = (applicationId, contextId, slideSpeed = 0.3) => {
-    contextId = `#application_${applicationId}-context_${contextId}`;
-    let node = document.querySelector(contextId);
+  slide = (applicationId, contextId, animTime = 0.1) => {
+    const nodeId = `#application_${applicationId}-context_${contextId}`;
+    let node = document.querySelector(nodeId);
     if (!node) {
-      this.app.confirm("trace is not found!");
+      this.logger.error("context node of selected trace not found");
       return;
     }
-    let nodePos = node.getBoundingClientRect();
-    if (nodePos.x === 0) {
-      this.logger.error('Trying to slide to unrevealed node');
+
+    let nodeBounds = node.getBoundingClientRect();
+    if (!nodeBounds.height && !nodeBounds.width) {
+      this.logger.error('Trying to slide to unrevealed node', nodeId, JSON.stringify(nodeBounds));
+      return;
     }
-    let toolbar = document.querySelector("#toolbar");
-    let barPos = toolbar.getBoundingClientRect();
+
+    const delta = computeDelta(node);
+    
+    if (!(Math.abs(delta.x) + Math.abs(delta.y))) {
+      // nothing to do here
+      return;
+    }
+
+    this.logger.debug(`Moving node #${nodeId} by ${delta.x}, ${delta.y}`);
 
     this.slideData = {
       startTime: Date.now(),
       startX: this.panzoom.getTransform().x,
       startY: this.panzoom.getTransform().y,
-      distanceX: barPos.left - nodePos.x,
-      distanceY: barPos.bottom + 10 - nodePos.y,
-      slideSpeed
+      delta,
+      animTime
     };
 
     requestAnimationFrame(() => this.step(node));
 
     // node.classList.add("flash-me");
-    // setTimeout(() => { node.classList.remove("flash-me"); }, (slideSpeed + 3) * 1000);
+    // setTimeout(() => { node.classList.remove("flash-me"); }, (animTime + 3) * 1000);
   }
 
   step = (node) => {
@@ -58,14 +131,16 @@ export default class FocusController extends ClientComponentEndpoint {
       startTime,
       startX,
       startY,
-      distanceX,
-      distanceY,
-      slideSpeed
+      delta: {
+        x,
+        y
+      },
+      animTime
     } = this.slideData;
 
-    let progress = Math.min(1.0, (Date.now() - startTime) / (slideSpeed * 1000));
+    let progress = Math.min(1.0, (Date.now() - startTime) / (animTime * 1000));
 
-    this.panzoom.moveTo(startX + distanceX * progress, startY + distanceY * progress);
+    this.panzoom.moveTo(startX + x * progress, startY + y * progress);
     this.owner._repaint();
     if (progress < 1.0) {
       requestAnimationFrame(() => this.step(node));

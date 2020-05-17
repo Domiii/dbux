@@ -1,3 +1,4 @@
+import noop from 'lodash/noop';
 import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
 import sleep from 'dbux-common/src/util/sleep';
 import EmptyObject from 'dbux-common/src/util/EmptyObject';
@@ -57,7 +58,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
    * Update without changing state.
    */
   forceUpdate() {
-    return this._startUpdate();
+    this._startUpdate();
   }
 
   forceUpdateTree() {
@@ -66,11 +67,24 @@ class HostComponentEndpoint extends ComponentEndpoint {
   }
 
   waitForInit() {
+    // NOTE: make sure, `waitFor` calls fulfill in order by appending our own task into the promise chain
+    // return this._initPromise = this._initPromise.then(noop);
     return this._initPromise;
   }
 
-  waitForUpdate() {
-    return this._updatePromise;
+  async waitForUpdate() {
+    // make sure, init has finished
+    await this.waitForInit();
+
+    // hackfix: while waiting, there is no promise available yet
+    //    NOTE: we can probably create the updatePromise while waiting already
+    while (this._waitingForUpdate) {
+      await sleep(0);
+    }
+
+    if (this._updatePromise) {
+      await (this._updatePromise = this._updatePromise.then(noop));
+    }
   }
 
   // ###########################################################################
@@ -101,7 +115,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     // do the long async init dance
     this._initPromise = Promise.resolve(
       this._preInit()                                   // 0. host: preInit
-    ).   
+    ).
       then(this._runNoSetState.bind(this, 'init')).     // 1. host: init
       then(this.update.bind(this)).                     // 2. host: update
       then(() => (
@@ -129,23 +143,27 @@ class HostComponentEndpoint extends ComponentEndpoint {
   // ###########################################################################
 
   async _startUpdate() {
-    // make sure, things are initialized
-    await this.waitForInit();
+    if (!this.isInitialized) {
+      // make sure, things are initialized
+      await this.waitForInit();
+    }
 
     // NOTE: this is called by `setState`
     if (this._waitingForUpdate) {
       // already waiting for update -> will send out changes in a bit anyway
-      return this._updatePromise;
+      return;
     }
 
     if (this._updatePromise) {
-      // if already has update pending -> add self to queue
-      return this._updatePromise = this._updatePromise.then(() => {
-        return this._executeUpdate();
+      // if already has update pending -> add self to queue to update again afterwards
+      this._updatePromise.then(() => {
+        this._updatePromise = this._executeUpdate();
       });
     }
-
-    return this._executeUpdate();
+    else {
+      // send update out right away
+      this._updatePromise = this._executeUpdate();
+    }
   }
 
   async _executeUpdate() {
@@ -155,7 +173,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     this._waitingForUpdate = false;
 
     // push out new update
-    const promise = this._updatePromise = Promise.resolve(
+    const promise = Promise.resolve(
       this._runNoSetState('update')                           // 1. host: update
     ).
       then(() => (
@@ -206,9 +224,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
   // ###########################################################################
 
   _publicInternal = {
-    forceUpdate() {
-      this.forceUpdate();
-    }
+    forceUpdate: this.forceUpdate,
+    setState: this.setState
   }
 
   // ###########################################################################

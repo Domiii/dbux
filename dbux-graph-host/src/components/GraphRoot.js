@@ -2,11 +2,15 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
 import ContextNode from './ContextNode';
+import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
 
 class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext = [];
 
   init() {
+    this.controllers.createComponent('GraphNode', {
+      mode: GraphNodeMode.ExpandChildren
+    });
     this.controllers.createComponent('FocusController');
     this.controllers.createComponent('PopperManager');
     this.controllers.createComponent('ContextNodeManager');

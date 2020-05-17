@@ -21,7 +21,7 @@ class BaseComponentManager {
   }
 
   hasStarted() {
-    return this._lastComponentId > 0;
+    return this._lastComponentId > 1;
   }
 
   getComponent(componentId) {

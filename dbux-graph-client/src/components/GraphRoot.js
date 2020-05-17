@@ -18,10 +18,13 @@ class GraphRoot extends ClientComponentEndpoint {
     });
 
     return compileHtmlElement(/*html*/`
-      <div class="root">
-        <div data-el="body">
+      <div class="graph-root">
+        <div data-el="body" class="flex-column">
           <h2 data-el="title"></h2>
-          <div data-mount="RunNode"></div>
+          <div>
+            <button data-el="nodeToggleBtn" class="nodeToggleBtn"></button>
+          </div>
+          <div data-el="nodeChildren" data-mount="RunNode" class="node-children"></div>
         </div>
         <div data-el="toolTip" id="tooltip" role="tooltip">
           <span></span>
@@ -30,6 +33,8 @@ class GraphRoot extends ClientComponentEndpoint {
       </div>
     `);
   }
+  
+  test() {}
 
   setupEl() {
     this.panzoom = this.initPanZoom(this.els.body);
@@ -57,17 +62,18 @@ class GraphRoot extends ClientComponentEndpoint {
         let shouldIgnore = !evt.ctrlKey;
         return shouldIgnore;
       },
-      // beforeMouseDown(evt) {
-      //   // allow mouse-down panning only if altKey is down. Otherwise - ignore
-      //   let shouldIgnore = !evt.altKey;
-      //   return shouldIgnore;
-      // },
+      beforeMouseDown(evt) {
+        // allow mouse-down panning only if altKey is down. Otherwise - ignore
+        let shouldIgnore = !evt.altKey;
+        return shouldIgnore;
+      },
       bounds: true,
       boundsPadding: 0.2,
       maxZoom: 2,
       minZoom: 0.1,
     });
-    window.panzoom = panzoom;
+    // [debug-global]
+    // window.panzoom = panzoom;
 
     panzoom.zoomAbs(
       0,

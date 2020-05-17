@@ -13,16 +13,9 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
   static makeProperties(trace, parent, detail) {
     const dp = allApplications.getById(trace.applicationId).dataProvider;
 
-    const { valueId } = trace;
-    let trackedTraces = EmptyArray;
-    if (valueId) {
-      const { trackId } = dp.collections.values.getById(valueId);
-      if (trackId) {
-        trackedTraces = dp.indexes.traces.byTrackId.get(trackId);
-      }
-    }
+    const trackedTraces = dp.util.getAllTracesOfObjectOfTrace(trace.traceId);
 
-    const label = `${trackedTraces.length}x tracked traces`;
+    const label = `Object traces`;
 
     return {
       trackedTraces,
@@ -34,15 +27,30 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
     return props.label;
   }
 
-  get defaultCollapsibleState() {
-    return TreeItemCollapsibleState.Expanded;
+  
+  canHaveChildren() {
+    return !!this.trackedTraces?.length;
   }
 
   init() {
-    const { applicationId, traceId } = this.trace;
+    const { 
+      trace: {
+        applicationId, traceId
+      },
+      trackedTraces
+    } = this;
+
     const dp = allApplications.getById(applicationId).dataProvider;
-    if (dp.util.isTraceRealObject(traceId)) {
+
+    if (!dp.util.doesTraceHaveValue(traceId)) {
+      this.description = '(trace has no value)';
+    }
+    else if (!dp.util.isTraceTrackableValue(traceId)) {
+      this.description = '(trace\'s value is not an object/array/function)';
+    }
+    else {
       this.contextValue = 'dbuxTraceDetailsView.traceObjectTDNodeRoot.withObjectValue';
+      this.description = `${trackedTraces.length}x`;
     }
   }
   
@@ -53,6 +61,10 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
 
   buildChildren() {
     const { trackedTraces, treeNodeProvider } = this;
+
+    if (!trackedTraces) {
+      return null;
+    }
 
     const children = trackedTraces.map(t => treeNodeProvider.buildTraceNode(t, this));
     return children;

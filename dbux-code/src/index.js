@@ -18,6 +18,7 @@ import { initEditorTracesView } from './editorTracesView/editorTracesController'
 import { initApplicationsView } from './applicationsView/applicationsViewController';
 import { initProjectView } from './projectView/projectViewController';
 import { initLogging } from './logging';
+import { showGraphView } from './graphView';
 
 
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -52,6 +53,9 @@ function activate(context) {
       traceDetailsController,
       projectViewController
     );
+
+    // for now, let's activate the graph view right away
+    showGraphView(context);
   } catch (e) {
     logError('could not activate', e);
     debugger;

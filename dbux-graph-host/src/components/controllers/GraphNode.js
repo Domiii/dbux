@@ -4,11 +4,14 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 export default class GraphNode extends HostComponentEndpoint {
   init() {
     const parent = this.owner.parent?.controllers.getComponent(GraphNode);
-    if (parent) {
-      this.state.mode = parent.getChildMode();
-    }
-    else {
-      this.state.mode = GraphNodeMode.Collapsed;
+
+    if (!this.state.mode) {
+      if (parent) {
+        this.state.mode = parent.getChildMode();
+      }
+      else {
+        this.state.mode = GraphNodeMode.Collapsed;
+      }
     }
   }
 
@@ -24,8 +27,12 @@ export default class GraphNode extends HostComponentEndpoint {
     }
   }
 
-  setMode(mode) {
+  setOwnMode(mode) {
     this.setState({ mode });
+  }
+
+  setMode(mode) {
+    this.setOwnMode(mode);
     // GraphNodeMode.switchCall(mode, this.modeHandlers);
 
     // propagate mode to sub graph
@@ -35,15 +42,16 @@ export default class GraphNode extends HostComponentEndpoint {
     }
   }
 
-  reveal(expandItself = false) {
+  async reveal(expandItself = false) {
     const { parent } = this.owner;
     if (parent && hasGraphNode(parent)) {
       const parentGraphNode = parent.controllers.getComponent(GraphNode);
-      parentGraphNode.reveal(true);
+      await parentGraphNode.reveal(true);
     }
     if (expandItself && GraphNodeMode.is.Collapsed(this.state.mode)) {
-      // Expand children if parent mode is collapsed
-      this.setMode(GraphNodeMode.ExpandChildren);
+      // expand children if collapsed
+      this.setOwnMode(GraphNodeMode.ExpandChildren);
+      await this.waitForUpdate();
     }
   }
 

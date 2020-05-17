@@ -8,23 +8,30 @@ class ContextNode extends ClientComponentEndpoint {
 
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div class="context">
-        <div>
-          <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
-        </div>
+      <div class="context-node flex-row">
         <div class="full-width flex-column">
           <div data-el="title" class="title">
-            <div style="display:flex; height:auto; align-item:flex-end;">
+            <div class="flex-row">
               <div class="flex-row">
+                <button data-el="nodeToggleBtn" class="node-toggle-btn"></button>
                 <div data-el="displayName,popperTarget" class="displayName dbux-link"></div>
                 &nbsp;
-                <div data-el="where" class="darkgray"></div>
+                <button class="highlight-btn" data-el="staticContextHighlightBtn">💡</button>
+                <div>
+                  <span class="loc-label" data-el="locLabel"></span>
+                </div>
+                <div>
+                  <span class="value-label" data-el="valueLabel"></span>
+                </div>
               </div>
-              <button data-el="staticContextHighlightBtn">💡</button>
+              <div class="flex-row">
+              </div>
             </div>
             <div data-mount="TraceNode"></div>
           </div>
-          <div data-mount="ContextNode" data-el="nodeChildren" class="children">
+          <div class="full-width flex-row">
+            <div class="node-left-padding"></div>
+            <div data-mount="ContextNode" data-el="nodeChildren" class="node-children"></div>
           </div>
         </div>
       </div>
@@ -33,10 +40,11 @@ class ContextNode extends ClientComponentEndpoint {
 
   update() {
     const {
-      displayName,
-      positionLabel,
       applicationId,
-      context: { contextId, staticContextId }
+      context: { contextId, staticContextId },
+      displayName,
+      valueLabel,
+      positionLabel
     } = this.state;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
@@ -44,11 +52,11 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.title.id = `name_${contextId}`;
     //this.els.title.textContent = `${displayName}#${contextId}`;
     this.els.displayName.textContent = `${displayName}`;
-    this.els.where.textContent = positionLabel;
+    this.els.locLabel.textContent = positionLabel;
+    this.els.valueLabel.textContent = valueLabel;
     this.els.nodeChildren.id = `children_${contextId}`;
 
-    this.popperString = `shift + click to follow`;
-    // this.popperString = `${displayName}`;
+    this.popperString = `${displayName} (shift + click to follow)`;
   }
 
   getBinaryHsl(i) {

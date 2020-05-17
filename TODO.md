@@ -2,44 +2,42 @@
 # TODO
 
 ## TODO (shared)
-[Graph]
-* fix `RunNode` label?
-* make `ContextNode` colors lighter by default
-* `Hide all decorations` should be "Toggle" instead of "Hide"
-   * also: we also want to toggle the buttons at the top (its a lot of buttons - hah)
+* fix TDV: "Function Executed: Nx"
+   * often reports 0x (e.g. in `oop1.js` -> any `speak()` function)
 * (!!!) `ContextNode`
-   * button -> highlight all contexts of this staticContext
-      * also add list to `traceDetailsView`: lists all contexts that call `staticContext` (via `parentTrace`)
-         * (select call trace when clicking)
-   * highlight all context nodes where an object was referenced (add button to `Object References` node in `traceDetailsView`)
-   * Buttons -> go to next/previous context of this staticContext (`parentTrace` of next/previous context)
-   * (Display contextual information for every function call)
-   * (link/label: parentTrace)
-      * traceLabel + valueLabel
-* add "follow mode" button to `Toolbar`: when following, slide to + highlight context `onTraceSelected`
-   * when `follow mode` on: When stepping through code, also follow along in the graph
-* fix `blink` css: wrong color blending
+   * bug: "highlight contexts of staticContext" button
+      * steps to reproduce:
+         * sync mode: ON
+         * click highlight button
+         * select trace
+         * click another highlight button
+         * -> need to click twice because highlight clear event not handled properly by highlight button
+   * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
+   * add Navigation buttons: go to next/previous trace of this staticTrace
 * `GraphNode`
    * add "collapseAllButThis" button
-      * all collapsed parents change to `ExpandChildren`
-   * apply `GraphNode` controller pattern to all "graph node" components: `Run`, `GraphRoot`
-   * add `reveal` function to `host/GraphNode`:
-      * slide to node
-      * highlight node
-* `ContextNode`:
-   * remove `shift+click` go-to-code click handler
-   * replace it with: clicking on the title (`displayName`) element instead (make it a `<a>`)
-   * make sure to ignore clicks to any buttons while the `pan` button (`alt`?) is held
-* remove `ParentTraces` from `TraceMode` enum (adding an extra node for parent trace unnecessary due to its 1:1 relationship with `context`)
+      * all ascendants change to `ExpandChildren`
+      * everything else: `Collapse`
+* `Enum` names should be `C`apitalized: https://github.com/Domiii/dbux/blame/b14d4aec90eb641b89878688d9b2f31397f48156/dbux-code/src/traceDetailsView/nodes/StaticTraceTDNodes.js#L86
 
 [UI]
 * [navigation]
    * ignore trace if type `isPlainExpressionValue`
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
-* `snipe trace` button currently not working correctly:
-   * if previously selected trace is not under cursor:
-      * first find the inner-most `staticTrace` at cursor, and start from that
-   * else: keep switching through all possible traces under cursor
+
+[Persistance]
+* use `Memento` to persist extension state through VSCode restarts
+   * -> reference: https://stackoverflow.com/questions/51821924/how-to-persist-information-for-a-vscode-extension
+* what to persist?
+   * dbux-data
+      * all applications' data: save to/load from memento
+         * HINT: see `userCommands` -> `doExport`
+      * `traceSelection` -> `traceId`
+   * Graph
+      * re-open GraphWebview if open
+      * store state of all components by `componentId`
+         * careful: some components have invisible state (state that is not in `this.state`), such as `HighlightManager`
+         * -> for that, we might need a basic serialization system for components
 
 * [Projects]
    * show status of runner while runner is running
@@ -145,28 +143,21 @@
 
 
 ## TODO (dbux-graph)
-* fix: require `alt` for `pan` (else button clicks don't work so well)
-   * will fix: `nodeToggleBtn` does not work when clicking too fast and slightly moving the mouse during the click
-* finish highlight system: highlight *important* nodes, de-emphasize *unimportant* nodes
-   * NOTE: already started in `Highlighter` + `HighlightManager` controllers
-   * implement:
-      * "Clear" button in toolbar to remove all highlighting
-      * `context` of currently selected `trace` (if in "follow" mode)
-      * all contexts of `staticContext` (add button to `ContextNode`)
-      * search mode: highlight nodes that match search criteria
-   * styles
-      * highlighted style
-         * scale font, normal font-size
-         * clear, bright colors
-         * high contrast
-      * de-emphasized style
-         * don't scale font, small font-size
-         * darkened colors
-         * low contrast
+* fix: panzoom to actually move scrollbars when panning
+   * -> copy panzoom
+   * -> make changes to copy of panzoom
+   * -> for panning, set `scrollTop` and `scrollLeft`, instead of using `transform`
+   * -> for zooming, keep using `transform`
+* when `Sync` is `on`
+   * show indicator of where we are, relative to current context children
+   * -> maybe draw a horizontal line in `node-left-padding`
+   * if current trace is parent trace of some child, also indicate that
 * grouping: add new `GroupNode` controller component
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
       * (e.g. `next` in `express`)
+* fix: don't generate `valueLabels` if values are hidden
+   * add proper `NodeDecoration` controller component to `GraphDocument`?
 * add a css class for font scaling (e.g. `.scale-font`): when zooming, font-size stays the same
    * NOTE: can use `vh` instead of `px` or `rem` (see: https://stackoverflow.com/questions/24469375/keeping-text-size-the-same-on-zooming)
 * replace bootstrap with [something more lightweight](https://www.google.com/search?q=lightweight+bootstrap+alternative)
@@ -283,24 +274,35 @@
 
 
 ## TODO (other)
-* look at inf loop bug: `manager.highlighterUpdated`
-* fix: instrumentation of `return;`
-   * when running express bug #1
-      * error detected in `setImmediate(done, layerError);` (before `return;`)
-      * probably caused by `return;` not being instrumented correctly!
-* fix value tracking UI
-   * add new `value` node to `TDView`
-      * allow inspecting value
-      * show `tracked Nx` stats
-      * if `isCall`, show result value as well
-   * `this.methods[method] = true` shows `undefined` in `Trace Executed`
-* fix:
-   * in `this.methods[method]`, `method` is not a selectable trace
-   * strings are also tracked -> disable tracking of strings
+* fix TDV: "Trace Executed: Nx"
+   * label broken if parentTrace is `CallExpression` with `MemberExpression` callee + no arguments (see below)
+   * improve "group by" label
+   * need to re-design grouping a bit?
+      * Run, Context, Parent
+* fix: in `this.methods[method]`, `method` is not a selectable trace
+* fix: conflict between `MemberExpression` + `CallExpression`
+   * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`
+   * Sln: add `callId` to those callee traces as well?
+      * Problem: Would change the assumption that only BCE + arguments have `callId`
+* fix: graph
+   * sometimes (initially?), when selecting (shift+click) a node the first time, it selects the wrong column?
+   * change ContextNode.`locLabel` to display loc of (`parentTrace`), not of function
+   * Toolbar: "`hide old`" button
+      * Problem: hidden context nodes can cause trouble
+         * if a trace is selected in sync mode, or any hidden node is being used in any way
+      * Easier alternative for now: add slow-fading background color css anim to new run nodes
+   * when highlighting is enabled, `popper` `background` color should not be affected
+   * add crosshair icon to `ContextNode` to select `Push` trace
+* proper run: add to `extensions` folder
+   * see: https://github.com/Microsoft/vscode/issues/25159
+* fix: `makeCallValueLabel`
+   * sometimes does not work for object values?
+   * improve array rendering
+* fix: `function` declarations are not tracked
+* fix: strings are currently tracked -> disable tracking of strings
 * fix: `traveValueLabels`
-   * get callee name from instrumentation!!!
+   * get callee name from instrumentation
    * improve traceValueLabel for all expressions
-* while accessing an object property, disable tracing
 * allow for mixed type objects for object tracking
    * in `express`, `application` object is also a function
    * need to allow "objectified functions" to be displayed as such
@@ -312,9 +314,6 @@
       1. -> `received init from client twice. Please restart application`
    * -> it seems to try to re-init after the error somehow.
       * Did it restart the process after being killed off?
-* fix: `dbux-graph` breaks when starting/re-starting multiple apps
-* fix: `ComponentList` needs to add role (`child` or `controller`), so we can properly categorize on `Client` as well
-   * -> or get rid of categorization and just fix things up in `GraphNode` instead?
 * fix: re-invent TraceType to support multiple roles per trace
    * `// TODO: trace-type`
    * bugs
@@ -380,6 +379,11 @@
       30
       );
       ```
+
+* fix: graph bugs out if visibility or column changes
+   * -> host receives invalid `reply` messages that it did not look for
+   * -> it appears we are not resetting `Ipc` object properly?
+      * -> or are there two clients that live in parallel?
 * fix callback tracking
    * partial solution: Use a separate map to track callbacks and their points of passage instead?
       * => Won't work as comprehensively at all

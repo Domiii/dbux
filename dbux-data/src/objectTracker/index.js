@@ -15,7 +15,7 @@ export class ObjectTracker {
   selectTrace(trace, sender = null, args) {
     const { applicationId, traceId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
-    if (dp.util.isTraceRealObject(traceId)) {
+    if (dp.util.isTraceTrackableValue(traceId)) {
       this.selected = trace;
       this._emitter.emit('selectionChanged', trace, sender, args);
     }

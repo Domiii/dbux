@@ -2,18 +2,15 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class Toolbar extends HostComponentEndpoint {
   init() {
-    this.state.count = 38;
-    this.state.syncMode = true;
+    this.state.syncMode = this.context.graphDocument.getTraceMode();
+    this.state.locMode = true;
+    this.state.thinMode = false;
+    this.state.valueMode = false;
   }
 
   public = {
     async restart() {
       await this.componentManager.restart();
-    },
-
-    addHi(n) {
-      const { count } = this.state;
-      this.setState({ count: count + n });
     },
 
     toggleSyncMode() {
@@ -24,7 +21,7 @@ class Toolbar extends HostComponentEndpoint {
     },
 
     switchTraceMode() {
-      this.componentManager.doc.switchTraceMode();
+      this.context.graphDocument.switchTraceMode();
     }
   }
 }

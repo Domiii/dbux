@@ -2,6 +2,7 @@ import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import ContextNode from './ContextNode';
+import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
 
 class RunNode extends HostComponentEndpoint {
   init() {
@@ -21,6 +22,11 @@ class RunNode extends HostComponentEndpoint {
     // this.controllers.createComponent('GraphNode', {
     //   isExpanded: false
     // });
+    
+    // add GraphNode
+    this.controllers.createComponent('GraphNode', {
+      // mode: GraphNodeMode.ExpandChildren
+    });
 
     // add root context
     const contexts = dp.indexes.executionContexts.byRun.get(runId) || EmptyArray;

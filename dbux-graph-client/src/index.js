@@ -41,8 +41,16 @@ function renderErrorSHUTDOWN(args) {
     </div>`;
 }
 
+// window._graphInstance = 0;
 
 window.startDbuxGraphClient = function startDbuxGraphClient(ipcAdapter) {
+  // console.log('Client started', ++window._graphInstance);
+
+  // const r = Math.random();
+  // setInterval(() => {
+  //   console.log('Client alive', r);
+  // }, 500);
+
   componentManager = new ClientComponentManager(ipcAdapter);
   componentManager.start();
 

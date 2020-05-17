@@ -38,13 +38,6 @@ export default class GraphWebView {
     }
   }
 
-  restart = async () => {
-    // set HTML content + restart
-    // TODO: use remote URL when developing locally to enable hot reload
-    this._restartHost();
-    await this._restartClientDOM();
-  }
-
   reveal() {
     if (this.panel) {
       // reveal
@@ -58,6 +51,10 @@ export default class GraphWebView {
   // initialization
   // ###########################################################################
 
+  /**
+   * hackfix: this is necessary because webview won't update if the `html` value is not different from previous assignment.
+   */
+  _webviewUpdateToken = 0;
   _messageHandler;
 
   _buildHostIpcAdapterVsCode(webview) {
@@ -67,6 +64,7 @@ export default class GraphWebView {
       },
 
       onMessage: ((cb) => {
+        // registering new event handler (happens when new Ipc object is initialized)
         if (this._messageHandler) {
           // WARNING: only allow one message handler at a time
           // dispose previous message handler
@@ -92,6 +90,8 @@ export default class GraphWebView {
     const webviewId = 'dbux-graph';
     const title = 'Graph View';
 
+    this.oldViewColumn = null;
+
     this.panel = window.createWebviewPanel(
       webviewId,
       title,
@@ -101,6 +101,11 @@ export default class GraphWebView {
         localResourceRoots: [Uri.file(this.resourcePath)]
       }
     );
+
+    this.panel.onDidChangeViewState(
+      this.handleDidChangeViewState,
+      null,
+      this.extensionContext.subscriptions);
 
     // cleanup
     this.panel.onDidDispose(
@@ -114,26 +119,60 @@ export default class GraphWebView {
   }
 
   /**
-   * hackfix: necessary because webview won't update if the `html` value is not different from previous assignment.
-   */
-  _webviewUpdateToken = 0;
-
-  async _restartClientDOM() {
-    const scriptPath = path.join(this.resourcePath, 'dist', 'graph.js');
-    this.panel.webview.html = (await getWebviewClientHtml(scriptPath)) + `<!-- ${++this._webviewUpdateToken} -->`;
-  }
-
-  _restartHost() {
-    const ipcAdapter = this._buildHostIpcAdapterVsCode(this.panel.webview);
-    startGraphHost(this._started, ipcAdapter, this.externals);
-  }
-
-  /**
    * NOTE: this callback might be called more than once.
    */
   _started = (manager) => {
     // (re-)started!
     this.hostComponentManager = manager;
+  }
+
+
+  // ###########################################################################
+  // restart
+  // ###########################################################################
+
+  restart = async () => {
+    // set HTML content + restart
+    this._restartHost();
+    await this._restartClientDOM();
+  }
+
+  async _restartClientDOM() {
+    // TODO: consider using remote URL when developing locally to enable webpack-dev-server's hot reload
+    const scriptPath = path.join(this.resourcePath, 'dist', 'graph.js');
+    const html = await getWebviewClientHtml(scriptPath);
+    this.panel.webview.html = html + `<!-- ${++this._webviewUpdateToken} -->`;
+  }
+
+  _restartHost() {
+    const ipcAdapter = this._buildHostIpcAdapterVsCode(this.panel.webview);
+    startGraphHost(this._started, this.restart, ipcAdapter, this.externals);
+  }
+
+  // ###########################################################################
+  // onDidChangeViewState
+  // ###########################################################################
+
+  /**
+   * BIG NOTE: `onDidChangeViewState` event is triggered when webview is moved or hidden.
+   *    When moving a webview, it actually gets hidden and revealed again briefly.
+   *    Either way it always destroys the entire webview's state.
+   *    Since we do not have any persistence, we need to reset the whole thing for now.
+   * 
+   * @see https://code.visualstudio.com/api/extension-guides/webview#persistence
+   */
+  handleDidChangeViewState = ({ webviewPanel }) => {
+    // const { viewColumn } = webviewPanel;
+    // const { oldViewColumn, wasVisible } = this;
+
+    // if (webviewPanel.visible) {
+    //   this.wasVisible = true;
+    //   if (!wasVisible || viewColumn !== oldViewColumn) {
+    //     // WebView View state actually changed -> restart necessary
+    //     this.oldViewColumn = viewColumn;
+    //     this.restart();
+    //   }
+    // }
   }
 
   // ###########################################################################

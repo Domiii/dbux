@@ -8,34 +8,50 @@ export default class FocusController extends HostComponentEndpoint {
     this.syncMode = true;
     traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
 
-
     this.highlightManager.on('clear', () => {
       this.clearFocus();
       this.lastHighlighter = null;
     });
+
+    // if already selected, show things right away
+    setTimeout(() => {
+      this.handleTraceSelected(traceSelection.selected);
+    });
   }
 
   handleTraceSelected = (trace) => {
+    if (trace?.contextId === this.state.focus?.contextId &&
+      trace?.applicationId === this.state.focus?.applicationId) {
+      // nothing to do
+      return;
+    }
     if (!trace) this.clearFocus();
     else if (this.syncMode) {
       const { contextId, applicationId } = trace;
+
+      // NOTE: focus is async
       this.focus(applicationId, contextId);
     }
   }
 
-  focus(applicationId, contextId) {
+  async focus(applicationId, contextId) {
     this.highlightManager.clear();
     this.highlightContext(applicationId, contextId);
-    this.revealContext(applicationId, contextId);
 
+    await this.revealContext(applicationId, contextId);
+
+    // NOTE: this initiates an animation, and will finish after a little while
     this.setState({
       focus: { applicationId, contextId }
     });
   }
 
-  revealContext(applicationId, contextId) {
+  async revealContext(applicationId, contextId) {
     const contextNode = this.getContextNode(applicationId, contextId);
-    contextNode.controllers.getComponent('GraphNode').reveal();
+    // await contextNode.waitForInit();      // make sure, node has initialized
+
+    const graphNode = contextNode.controllers.getComponent('GraphNode');
+    await graphNode.reveal();   // make sure, node has revealed
   }
 
   highlightContext(applicationId, contextId) {
@@ -62,8 +78,7 @@ export default class FocusController extends HostComponentEndpoint {
   toggleSyncMode() {
     this.syncMode = !this.syncMode;
     if (this.syncMode) {
-      const { contextId, applicationId } = traceSelection.selected;
-      this.focus(applicationId, contextId);
+      this.handleTraceSelected(traceSelection.selected);
     }
     else {
       if (this.lastHighlighter) {

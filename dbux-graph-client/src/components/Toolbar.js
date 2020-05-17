@@ -1,5 +1,5 @@
+import { compileHtmlElement, decorateClasses } from '@/util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-import { compileHtmlElement } from '@/util/domUtil';
 
 class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
@@ -9,10 +9,14 @@ class Toolbar extends ClientComponentEndpoint {
   createEl() {
     // return compileHtmlElement(/*html*/`<div></div>`);
     return compileHtmlElement(/*html*/`
-      <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light" id="toolbar">
-        <!-- TODO: remove? -->
-        <a data-el="switchModeBtn" class="btn btn-info hidden" href="#"></a>
-        <a data-el="syncModeBtn" class="btn btn-info" href="#"></a>
+      <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light no-padding" id="toolbar">
+        <!--a data-el="switchModeBtn" class="btn btn-info hidden" href="#"></a-->
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <a data-el="syncModeBtn" class="btn btn-info" href="#"></a>
+          <a data-el="locModeBtn" class="btn btn-info" href="#">loc</a>
+          <a data-el="valueModeBtn" class="btn btn-info" href="#">val</a>
+          <a data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></a>
+        </div>
         <a data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</a>
       </nav>
     `);
@@ -23,9 +27,49 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   update = () => {
-    const { traceModeName, syncMode } = this.state;
-    this.els.switchModeBtn.textContent = `${traceModeName}`;
-    this.els.syncModeBtn.textContent = syncMode ? 'Sync: 🟢' : 'Sync: 🔴';
+    const { 
+      syncMode,
+      locMode,
+      valueMode,
+      thinMode
+    } = this.state;
+    // this.els.switchModeBtn.textContent = `${traceModeName}`;
+    // this.els.syncModeBtn.textContent = `Sync: ${syncMode ? '✅' : '❌'}`;
+
+    this.els.syncModeBtn.textContent = 'sync';
+
+    // render buttons
+    decorateClasses(this.els.syncModeBtn, {
+      active: syncMode
+    });
+    decorateClasses(this.els.locModeBtn, {
+      active: locMode
+    });
+    decorateClasses(this.els.valueModeBtn, {
+      active: valueMode
+    });
+    decorateClasses(this.els.thinModeBtn, {
+      active: thinMode
+    });
+    this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
+
+
+    this.renderModes();
+  }
+
+  renderModes() {
+    const {
+      locMode,
+      valueMode,
+      thinMode
+    } = this.state;
+
+    const docEl = this.context.graphDocument.el;
+    decorateClasses(docEl, {
+      'hide-locs': !locMode,
+      'hide-values': !valueMode,
+      'thin-mode': thinMode
+    });
   }
 
   // ###########################################################################
@@ -33,12 +77,12 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   on = {
-    switchModeBtn: {
-      click(evt) {
-        evt.preventDefault();
-        this.remote.switchTraceMode();
-      }
-    },
+    // switchModeBtn: {
+    //   click(evt) {
+    //     evt.preventDefault();
+    //     this.remote.switchTraceMode();
+    //   }
+    // },
 
     restartBtn: {
       async click(evt) {
@@ -47,15 +91,49 @@ class Toolbar extends ClientComponentEndpoint {
         if (await this.app.confirm('Do you really want to restart?')) {
           this.remote.restart();
         }
-      }
+      },
+
+      focus(evt) { evt.target.blur(); }
     },
 
     syncModeBtn: {
       click(evt) {
         evt.preventDefault();
         this.remote.toggleSyncMode();
-      }
-    }
+      },
+
+      focus(evt) { evt.target.blur(); }
+    },
+
+    locModeBtn: {
+      click(evt) {
+        evt.preventDefault();
+        this.setState({
+          locMode: !this.state.locMode
+        });
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    valueModeBtn: {
+      click(evt) {
+        evt.preventDefault();
+        this.setState({
+          valueMode: !this.state.valueMode
+        });
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    thinModeBtn: {
+      click(evt) {
+        evt.preventDefault();
+        this.setState({
+          thinMode: !this.state.thinMode
+        });
+      },
+      focus(evt) { evt.target.blur(); }
+    },
   }
 }
 

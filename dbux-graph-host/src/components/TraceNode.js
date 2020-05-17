@@ -31,7 +31,7 @@ export default class TraceNode extends HostComponentEndpoint {
     } = this.state;
     const dp = allApplications.getById(applicationId).dataProvider;
     
-    const mode = this.componentManager.doc.traceMode;
+    const mode = this.context.graphDocument.traceMode;
     if (mode === TraceMode.AllTraces) {
       const children = dp.indexes.executionContexts.byParentTrace.get(traceId) || EmptyArray;
       children.forEach(child => {

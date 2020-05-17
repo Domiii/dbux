@@ -42,6 +42,12 @@ function makeChildNode(key, value) {
     makeTreeItem(`${key}: ${value}`);
 }
 
+export function makeTreeChildren(obj) {
+  return Array.isArray(obj) ?
+    arrayToTreeItems(obj) :    // array
+    objectToTreeItems(obj);    // object
+}
+
 export function makeTreeItem(labelOrArr, children, props) {
   let label;
   if (Array.isArray(labelOrArr)) {
@@ -53,9 +59,7 @@ export function makeTreeItem(labelOrArr, children, props) {
   const item = new TreeItem('' + label);
   if (children) {
     item.collapsibleState = TreeItemCollapsibleState.Expanded;
-    item.children = Array.isArray(children) ?
-      arrayToTreeItems(children) :    // array
-      objectToTreeItems(children);    // object
+    item.children = makeTreeChildren(children);
   }
   if (props) {
     Object.assign(item, props);

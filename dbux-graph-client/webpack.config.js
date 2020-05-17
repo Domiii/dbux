@@ -12,8 +12,8 @@ const buildMode = 'development';
 //const buildMode = 'production';
 
 const dependencies = [
-  "dbux-common", 
-  "dbux-graph-common", 
+  "dbux-common",
+  "dbux-graph-common",
   "dbux-graph-client"
 ];
 
@@ -77,19 +77,19 @@ const src = path.join(projectRoot, 'src');
 const webpackPlugins = [
   // add post-build hook
   // see: https://stackoverflow.com/a/49786887apply: 
-  (compiler) => {
-    compiler.hooks.afterEmit.tap('AfterEmitPlugin', (compilation) => {
-      // copy result to dbux-code after build finished
-      // WARNING: If we do not delay this, for some reason, this webpack config will affect other webpack configs in the root's multi build
-      // setTimeout(() => {
-      //   const from = path.join(outputFolder, outFile);
-      //   const relativeTargetFolder = 'dbux-code/resources/graph';
-      //   const to = path.join(root, relativeTargetFolder, 'graph.js');
-      //   fs.copyFileSync(from, to);
-      //   console.debug('Copied graph.js to ' + relativeTargetFolder);
-      // }, 1000);
-    });
-  }
+  // (compiler) => {
+  // compiler.hooks.afterEmit.tap('AfterEmitPlugin', (compilation) => {
+  // copy result to dbux-code after build finished
+  // WARNING: If we do not delay this, for some reason, this webpack config will affect other webpack configs in the root's multi build
+  // setTimeout(() => {
+  //   const from = path.join(outputFolder, outFile);
+  //   const relativeTargetFolder = 'dbux-code/resources/graph';
+  //   const to = path.join(root, relativeTargetFolder, 'graph.js');
+  //   fs.copyFileSync(from, to);
+  //   console.debug('Copied graph.js to ' + relativeTargetFolder);
+  // }, 1000);
+  //   });
+  // }
 ];
 
 module.exports = {
