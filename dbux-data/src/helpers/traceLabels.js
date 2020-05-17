@@ -158,10 +158,10 @@ export function makeCallValueLabel(callTrace) {
 export function makeTraceValueLabel(trace) {
   const { applicationId, traceId } = trace;
   const dp = allApplications.getById(applicationId).dataProvider;
-  const calleeId = dp.util.getCalleeTraceId(traceId);
-  if (calleeId) {
+  const callId = dp.util.getTraceCallId(traceId);
+  if (callId) {
     // trace is call related
-    const callTrace = dp.collections.traces.getById(calleeId);
+    const callTrace = dp.collections.traces.getById(callId);
     return makeCallValueLabel(callTrace);
   }
   else if (dp.util.doesTraceHaveValue(traceId)) {

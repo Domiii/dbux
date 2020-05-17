@@ -2,9 +2,6 @@
 # TODO
 
 ## TODO (shared)
-* fix TDV: "Trace Executed: Nx"
-   * labels broken
-   * need to re-design grouping a bit
 * fix TDV: "Function Executed: Nx"
    * often reports 0x (e.g. in `oop1.js` -> any `speak()` function)
 * (!!!) `ContextNode`
@@ -277,11 +274,11 @@
 
 
 ## TODO (other)
-* fix value tracking UI
-   * add new `value` node to `TDView`
-      * allow inspecting value
-      * show `tracked Nx` stats
-      * if `isCall`, show result value as well
+* fix TDV: "Trace Executed: Nx"
+   * label broken if parentTrace is `CallExpression` with `MemberExpression` callee + no arguments (see below)
+   * improve "group by" label
+   * need to re-design grouping a bit?
+      * Run, Context, Parent
 * fix: in `this.methods[method]`, `method` is not a selectable trace
 * fix: conflict between `MemberExpression` + `CallExpression`
    * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`
