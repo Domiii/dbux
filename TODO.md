@@ -39,6 +39,9 @@
       * go to `dbux-data` -> `DataProvider.js` -> `class ValueCollection`
       * change `dataProviderUtil`'s value reader methods correspondingly
          * (NOTE: there is about 10 of them, starting with `getValueTrace`)
+      * Testing?
+         * in `runtime -> valueCollection.js`: make sure to set `Verbose = true`
+         * use `memberExpressions1.js`
    * fix `ValueTDNode` to render individual object + array entries using the same heuristics as `traceValueString`
 
 [Persistance]
