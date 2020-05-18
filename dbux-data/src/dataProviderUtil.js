@@ -5,7 +5,7 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
 import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from 'dbux-common/src/core/constants/traceCategorization';
-import { isObjectCategory, isPlainObjectOrArrayCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
+import { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
 import DataProvider from './DataProvider';
 
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
@@ -177,7 +177,7 @@ export default {
   /** @param {DataProvider} dp */
   isTraceFunctionValue(dp, traceId) {
     const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef && isPlainObjectOrArrayCategory(valueRef.category) || false;
+    return valueRef && isFunctionCategory(valueRef.category) || false;
   },
 
   /** @param {DataProvider} dp */

@@ -47,6 +47,10 @@ export function isPlainObjectOrArrayCategory(category) {
   return category >= ValueTypeCategory.Object;
 }
 
+export function isFunctionCategory(category) {
+  return ValueTypeCategory.is.Function(category);
+}
+
 export default ValueTypeCategory;
 
 
