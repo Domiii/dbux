@@ -1,23 +1,23 @@
 import isString from 'lodash/isString';
 
-// https://leetcode.com/submissions/detail/258300839/
-// https://leetcode.com/problems/trim-a-binary-search-tree/
-
 function TreeNode(val) {
   this.val = val;
   this.left = this.right = null;
 }
 
-/**
- * Takes (a string representation of or) a pre-order traversal array and returns a new tree for it.
- * You can find something similar on leetcode playground: https://leetcode.com/playground/new/binary-tree
- */
+const nodeQueue = [];
+
+function left(node, val) {
+  nodeQueue.push(node.left = new TreeNode(val));
+}
+
+function right(node, val) {
+  nodeQueue.push(node.right = new TreeNode(val));
+}
+
 function buildTree(input) {
-  if (isString(input)) {
-    input = JSON.parse(input);
-  }
   const root = new TreeNode(input[0]);
-  const nodeQueue = [root];
+  nodeQueue.push(root);
   let iInput = 1;
 
   for (let iQueue = 0; iInput < input.length; ++iQueue) {
@@ -26,7 +26,7 @@ function buildTree(input) {
     // left
     let val = input[iInput++];
     if (val !== null) {
-      nodeQueue.push(node.left = new TreeNode(val));
+      left(node, val);
     }
 
     if (iInput >= input.length) {
@@ -36,7 +36,7 @@ function buildTree(input) {
     // right
     val = input[iInput++];
     if (val !== null) {
-      nodeQueue.push(node.right = new TreeNode(val));
+      right(node, val);
     }
   }
   return root;

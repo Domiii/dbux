@@ -14,6 +14,10 @@ function largestOfFour(a) {
   return largest;
 }
 
+// ########################################
+// run test #1
+// ########################################
+
 console.assert(
   isEqual(
     largestOfFour(

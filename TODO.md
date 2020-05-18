@@ -2,6 +2,9 @@
 # TODO
 
 ## TODO (shared)
+* add button "`call`" to `Toolbar` to switch (i) `title` and (ii) `loc` between `parentTrace` and `context`
+* add crosshair button to `ContextNode` to select `Push` trace
+* when clicking error button: call `reveal({focus: true})` on `CallRootsView`
 * bug in TDV: "Function Executed: Nx"
    * often reports 0x (e.g. in `oop1.js` -> any `speak()` function)
 * Toolbar: add `hide old` button
@@ -9,12 +12,13 @@
       * e.g. if a trace is selected/highlighted/focused/revelaed in sync mode
       * -> need to patch up all relevant places to account for hidden nodes
    * advanced
-      * don't show code decorations of "hidden" traces
+      * show a "Hiding X nodes" button at the top of the root (parallel to `RunNode`s)
+         * -> When clicking it, unhide them
+      * in `traceDecorator`: don't show code decorations of "hidden" traces
       * when selecting "trace at cursor", prevent selecting any "hidden" trace
       * maybe add `[hidden]` to `traceLabel`, `contextLabel` and `dp.util.getTraceValueString` if they are hidden?
-* (!!!) `ContextNode`
-   * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
-   * add Navigation buttons: go to next/previous trace of this staticTrace
+* add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
+* [TraceDetailsView] add Navigation buttons: go to next/previous trace of this staticTrace
 
 * `GraphNode`
    * add "collapseAllButThis" button
@@ -26,8 +30,16 @@
    * -> remove `Collapse` mode
    * -> also reset `x` and `y` translation of `panzoom` (since it bugs out the scrollbars :()
 
-[UI]
-* when clicking error button: call `reveal({focus: true})` on `CallRootsView`
+* largely improve `value` storage + rendering:
+   * refactor value storing
+      * go to `dbux-runtime` -> `valueCollection.js`
+         * (NOTE: in plain objects + arrays, we currently allocate one `ValueRef` for each primitive)
+         * -> instead, let `ValueRef` allocate a single array to store *all* it's primitives
+         * -> use lazy initialization for that array: only when at least one primitive is discovered -> allocate the array
+      * go to `dbux-data` -> `DataProvider.js` -> `class ValueCollection`
+      * change `dataProviderUtil`'s value reader methods correspondingly
+         * (NOTE: there is about 10 of them, starting with `getValueTrace`)
+   * fix `ValueTDNode` to render individual object + array entries using the same heuristics as `traceValueString`
 
 [Persistance]
 * use `Memento` to persist extension state through VSCode restarts
@@ -43,13 +55,8 @@
          * careful: some components have invisible state (state that is not in `this.state`), such as `HighlightManager`
          * -> for that, we might need a basic serialization system for components
 
-* [Projects]
-   * show status of runner while runner is running
-      * -> need to add event listener to runner for that
-   * add buttons:
-      * "select bug"
-      * "delete project"
-      * "cancel" (calls `BugRunner.cancel()`)
+
+# TODO (shared, low priority)
 * configurable keyboard shortcuts for navigation buttons
    * for configurable keybindings, see:
       * https://code.visualstudio.com/api/references/contribution-points#contributes.keybindings
@@ -90,28 +97,6 @@
    * add a new "clear filters" button at the top of the `callGraphView`
    * add a new "only this trace" filter button to `callGraphView`
       * only runs that passed through this trace
-* [traceDetailsView]
-   * [StaticTraceTDNode] of each trace: display more relevant information
-      * `GroupMode` (button to toggle in the node)
-         * no grouping (default)
-         * by contextId
-         * by runId -> contextId
-         * by `parentContextTraceId` (e.g. for `reduce` etc.)?
-         * [for callbacks only] "Callback mode"
-            * add one group per `call` trace (e.g. `target.addEventListener(type, callback, !!capture);`)
-               * add all `PushCallbacks` of any `callback` in that call as child
-            * sort by `createdAt` in descending order
-            * very useful e.g. in `$on` function inside `todomvc`!
-         * combination of the above
-      * offer multiple `TraceDisplayMode`s:
-         * value
-         * ancestor context
-            * allow cycling through levels of depth (parent -> grandparent etc)
-         * descendant context
-            * allow cycling through levels of depth (child -> grandchild etc)
-         * related info: get bindings of relevant nearby variables and display those?
-            * https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md#bindings
-
 * [UI]
    * add a new option `showHideIfEmpty` to `BaseTreeViewNode`:
       * if `true`: render new button in node that toggles the `hideIfEmpty` behavior
@@ -147,15 +132,15 @@
 
 
 ## TODO (dbux-graph)
+* add zoom buttons to graph
 * fix: panzoom to actually move scrollbars when panning
-   * -> copy panzoom
-   * -> make changes to copy of panzoom
+   * -> copy panzoom to a new file, e.g. `dbux-graph-client/src/util/panzoom.js`
+   * -> import panzoom from that file instead of the `panzoom` node_module
    * -> for panning, set `scrollTop` and `scrollLeft`, instead of using `transform`
    * -> for zooming, keep using `transform`
-* when `Sync` is `on`
-   * show indicator of where we are, relative to current context children
+* show vertical indicator of where we are within a `ContextNode` (relative to context children)
    * -> maybe draw a horizontal line in `node-left-padding`
-   * if current trace is parent trace of some child, also indicate that
+   * -> if current trace is parent trace of some child, also indicate that somehow?
 * grouping: add new `GroupNode` controller component
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
@@ -179,10 +164,13 @@
 
 
 ## TODO (`dbux-projects`)
-* basic functionality:
-   * auto-commit
-   * cancel
-   * uninstall
+* add buttons:
+   * "select bug"
+   * "delete project"
+   * "cancel" (calls `BugRunner.cancel()`)
+* add auto-commit function
+   * show diff of all own changes
+   * -> allow comparing to actual solution? (after submitting?)
 * find a workaround for test timeout?
    * testing often comes with timeout (e.g. "Error: timeout of 2000ms exceeded")
       * nothing was received because of error
@@ -278,19 +266,18 @@
 
 
 ## TODO (other)
-* unify `value` string rendering:
-   * use same way of representing `valueString` in (i) `ValueTDNode` and in (ii) `traceValueLabel`
+* `binTree2` 
+   * raises errors
+   * `makeTraceValueLabel` omits `node` argument?
+      * does not look like a `CallValueLabel`
 * dbux-graph:
-   * add crosshair button to `ContextNode` to select `Push` trace
    * change modifier key to `CTRL` (because `SHIFT+Click` causes unwanted selection of text)
-   * add button to `Toolbar` to switch label (and `loc`) between `parentTrace` and `context`
-* fix: in `traceValueLabel`, we often might prefer variable name over complete object representation
-   * in graph, when clicking that name -> select trace and display object `value`?
 * fix: in `this.methods[method]`, `method` is not a selectable trace
 * fix: conflict between `MemberExpression` + `CallExpression`
    * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`
    * Sln: add `callId` to those callee traces as well?
       * Problem: Would change the assumption that only BCE + arguments have `callId`
+      * Problem: does not make sense for all the intermediate objects and computed values involved
 * fix: graph
    * sometimes (initially?), when selecting (shift+click) a node the first time, it selects the wrong column?
    * change ContextNode.`locLabel` to display loc of (`parentTrace`), not of function
@@ -306,7 +293,6 @@
 * fix: strings are currently tracked -> disable tracking of strings
 * fix: `traveValueLabels`
    * get callee name from instrumentation
-   * improve traceValueLabel for all expressions
 * fix TDV: "Trace Executed: Nx"
    * label broken if parentTrace is `CallExpression` with `MemberExpression` callee + no arguments (see below)
    * improve "group by" label
@@ -323,43 +309,8 @@
       1. -> `received init from client twice. Please restart application`
    * -> it seems to try to re-init after the error somehow.
       * Did it restart the process after being killed off?
-* fix: re-invent TraceType to support multiple roles per trace
-   * `// TODO: trace-type`
-   * bugs
-      * identify all multi-role visits and make sure they are resolved
-         * array paths: `SequenceExpression.expressions` + `CallExpression.arguments`
-         * `await`
-         * -> anything that is not just a simple expression!
-      * fix labels for multi-role traces
-         * currently only gets first selected role
-   * NOTES
-      * only `expressions` can take on multiple roles (for now, it seems that way)
-      * for `CallExpression`, we just override the `traceType` for result
-         * for `CallExpressionResult` we use `resultCallId` to identify it's role
-         * for call arguments, we use `callId`
-   * Ideas
-      * -> produce a more reliable/robust way of instrumenting expressions with multiple roles
-      * -> trace categorization/role assignment might need data lookup (e.g. for `getTraceType(tost)`)
-* define clear list of currently available features
-   * list
-      * stepping through execution (forward + backward)
-      * gain a strong overview by just looking at the graph
-      * all contexts of `staticContext`
-         * all contexts that call `staticContext` (via `parentTrace`)
-      * all traces/contexts where an object (incl. function or array) is referenced
-         * tracking callback handles of functions
-      * grouping
-   * write 3 minimal user stories per feature (applied to a specific bug somewhere)
-   * also demonstrate each feature on express
-      * TODO: find express bugs related to features that are commonly used
-   * setup a test checklist?
 * share some basic coding strategies?
-   * no ballsy one-liners (-> not even `getA().b`)
-* fix: in `a.b.c`, only `a.b` is traced?
-* fix: in `console.log(a.b.c);`, `a` is not traced
-* fix: `function` instrumentation
-   * fix order of instrumentation (split into `Enter` and `Exit`?)
-   * keep track of all function references
+   * e.g. no ballsy one-liners (-> not even `getA().b`)
 * fix: `await` instrumentation
    * `Await`: `resumeTraceId` is `TraceType.Resume`, but can also be `ReturnArgument` or `ThrowArgument`?
 * fix: `CallExpression`, `Function`, `Await` have special interactions

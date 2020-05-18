@@ -239,8 +239,6 @@ class ValueCollection extends Collection {
     let pruneState = ValuePruneState.Normal;
     let typeName = '';
 
-    // TODO: also fix bugs in `_deserialize` in `DataProvider`
-
     // infinite loop prevention
     if (isObjectCategory(category)) {
       if (!visited) {
