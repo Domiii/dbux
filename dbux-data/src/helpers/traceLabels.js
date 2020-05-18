@@ -147,8 +147,8 @@ export function makeCallValueLabel(callTrace) {
   const argValues = args.slice(1).map(arg => dp.util.getTraceValueString(arg.traceId));
   const resultValue = resultId && dp.util.getTraceValueString(resultId);
   const result = resultValue && ` -> ${resultValue}` || '';
-
-  return `(${argValues.join(', ')})${result}`;
+  const str = `(${argValues.join(', ')})${result}`;
+  return str;
 }
 
 /**

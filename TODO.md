@@ -2,16 +2,26 @@
 # TODO
 
 ## TODO (shared)
-* fix TDV: "Function Executed: Nx"
+* bug in TDV: "Function Executed: Nx"
    * often reports 0x (e.g. in `oop1.js` -> any `speak()` function)
+* bug: "highlight contexts of staticContext" button
+   * steps to reproduce:
+      * sync mode: ON
+      * click highlight button
+      * select trace
+      * click another highlight button
+      * -> need to click twice because highlight clear event not handled properly by highlight button
+* Toolbar: add `Collapse all` button
+   * make sure to also reset `x` and `y` translation of `panzoom`
+* Toolbar: add `hide old` button
+   * Careful: hidden context nodes can cause trouble if hidden node is being used in any way
+      * e.g. if a trace is selected/highlighted/focused/revelaed in sync mode
+      * -> need to patch up all relevant places to account for hidden nodes
+   * advanced
+      * don't show code decorations of "hidden" traces
+      * when selecting "trace at cursor", prevent selecting any "hidden" trace
+      * maybe add `[hidden]` to `traceLabel`, `contextLabel` and `dp.util.getTraceValueString` if they are hidden?
 * (!!!) `ContextNode`
-   * bug: "highlight contexts of staticContext" button
-      * steps to reproduce:
-         * sync mode: ON
-         * click highlight button
-         * select trace
-         * click another highlight button
-         * -> need to click twice because highlight clear event not handled properly by highlight button
    * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
    * add Navigation buttons: go to next/previous trace of this staticTrace
 * `GraphNode`
@@ -275,15 +285,11 @@
 
 ## TODO (other)
 * dbux-graph:
-   * in `traceValueLabel`, we still see `[object Object]` for arguments
+   * add crosshair button to `ContextNode` to select `Push` trace
    * change modifier key to `CTRL` (because `SHIFT+Click` causes unwanted selection of text)
-   * when selecting a node in graph, also make sure, `activeTextEditor` gets set correctly
    * add button to `Toolbar` to switch label (and `loc`) between `parentTrace` and `context`
-* fix TDV: "Trace Executed: Nx"
-   * label broken if parentTrace is `CallExpression` with `MemberExpression` callee + no arguments (see below)
-   * improve "group by" label
-   * need to re-design grouping a bit?
-      * Run, Context, Parent
+* fix: in `traceValueLabel`, we often might prefer variable name over complete object representation
+   * in graph, when clicking that name -> select trace and display object `value`?
 * fix: in `this.methods[method]`, `method` is not a selectable trace
 * fix: conflict between `MemberExpression` + `CallExpression`
    * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`
@@ -293,11 +299,8 @@
    * sometimes (initially?), when selecting (shift+click) a node the first time, it selects the wrong column?
    * change ContextNode.`locLabel` to display loc of (`parentTrace`), not of function
    * Toolbar: "`hide old`" button
-      * Problem: hidden context nodes can cause trouble
-         * if a trace is selected in sync mode, or any hidden node is being used in any way
       * Easier alternative for now: add slow-fading background color css anim to new run nodes
    * when highlighting is enabled, `popper` `background` color should not be affected
-   * add crosshair icon to `ContextNode` to select `Push` trace
 * proper run: add to `extensions` folder
    * see: https://github.com/Microsoft/vscode/issues/25159
 * fix: `makeCallValueLabel`
@@ -308,6 +311,11 @@
 * fix: `traveValueLabels`
    * get callee name from instrumentation
    * improve traceValueLabel for all expressions
+* fix TDV: "Trace Executed: Nx"
+   * label broken if parentTrace is `CallExpression` with `MemberExpression` callee + no arguments (see below)
+   * improve "group by" label
+   * need to re-design grouping a bit?
+      * Run, Context, Parent
 * allow for mixed type objects for object tracking
    * in `express`, `application` object is also a function
    * need to allow "objectified functions" to be displayed as such
