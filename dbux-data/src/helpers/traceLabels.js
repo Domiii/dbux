@@ -135,21 +135,9 @@ export function makeRootTraceLabel(trace) {
   return label;
 }
 
-/**
- * Make label that shows the params and return value of call trace
- * @param {Trace} trace 
- */
-export function makeCallValueLabel(callTrace) {
-  const { applicationId, traceId, resultId } = callTrace;
-  const dp = allApplications.getById(applicationId).dataProvider;
-
-  const args = dp.indexes.traces.byCall.get(traceId) || EmptyArray;
-  const argValues = args.slice(1).map(arg => dp.util.getTraceValueString(arg.traceId));
-  const resultValue = resultId && dp.util.getTraceValueString(resultId);
-  const result = resultValue && ` -> ${resultValue}` || '';
-  const str = `(${argValues.join(', ')})${result}`;
-  return str;
-}
+// ###########################################################################
+// Value labels
+// ###########################################################################
 
 /**
  * Make label that shows the value of trace, or `callValueLabel` of call trace
@@ -172,4 +160,20 @@ export function makeTraceValueLabel(trace) {
     // default trace
     return makeTraceLabel(trace);
   }
+}
+
+/**
+ * Make label that shows the params and return value of call trace
+ * @param {Trace} trace 
+ */
+export function makeCallValueLabel(callTrace) {
+  const { applicationId, traceId, resultId } = callTrace;
+  const dp = allApplications.getById(applicationId).dataProvider;
+
+  const args = dp.indexes.traces.byCall.get(traceId) || EmptyArray;
+  const argValues = args.slice(1).map(arg => dp.util.getTraceValueStringShort(arg.traceId));
+  const resultValue = resultId && dp.util.getTraceValueStringShort(resultId);
+  const result = resultValue && ` -> ${resultValue}` || '';
+  const str = `(${argValues.join(', ')})${result}`;
+  return str;
 }

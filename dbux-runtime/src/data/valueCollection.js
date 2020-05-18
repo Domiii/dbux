@@ -335,7 +335,7 @@ class ValueCollection extends Collection {
       }
 
       default:
-        serialized = value + '';
+        serialized = value;
         break;
     }
 

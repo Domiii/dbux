@@ -4,15 +4,6 @@
 ## TODO (shared)
 * bug in TDV: "Function Executed: Nx"
    * often reports 0x (e.g. in `oop1.js` -> any `speak()` function)
-* bug: "highlight contexts of staticContext" button
-   * steps to reproduce:
-      * sync mode: ON
-      * click highlight button
-      * select trace
-      * click another highlight button
-      * -> need to click twice because highlight clear event not handled properly by highlight button
-* Toolbar: add `Collapse all` button
-   * make sure to also reset `x` and `y` translation of `panzoom`
 * Toolbar: add `hide old` button
    * Careful: hidden context nodes can cause trouble if hidden node is being used in any way
       * e.g. if a trace is selected/highlighted/focused/revelaed in sync mode
@@ -24,15 +15,18 @@
 * (!!!) `ContextNode`
    * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
    * add Navigation buttons: go to next/previous trace of this staticTrace
+
 * `GraphNode`
    * add "collapseAllButThis" button
       * all ascendants change to `ExpandChildren`
       * everything else: `Collapse`
 * `Enum` names should be `C`apitalized: https://github.com/Domiii/dbux/blame/b14d4aec90eb641b89878688d9b2f31397f48156/dbux-code/src/traceDetailsView/nodes/StaticTraceTDNodes.js#L86
 
+* `GraphNode` toggle button on `GraphRoot`:
+   * -> remove `Collapse` mode
+   * -> also reset `x` and `y` translation of `panzoom` (since it bugs out the scrollbars :()
+
 [UI]
-* [navigation]
-   * ignore trace if type `isPlainExpressionValue`
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
 
 [Persistance]
@@ -284,6 +278,8 @@
 
 
 ## TODO (other)
+* unify `value` string rendering:
+   * use same way of representing `valueString` in (i) `ValueTDNode` and in (ii) `traceValueLabel`
 * dbux-graph:
    * add crosshair button to `ContextNode` to select `Push` trace
    * change modifier key to `CTRL` (because `SHIFT+Click` causes unwanted selection of text)
