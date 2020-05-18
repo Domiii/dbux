@@ -60,6 +60,8 @@ html,body{
   margin-top: 30px;
   /* this way, the viewport will (usually) not move when working on nodes near the bottom of the graph */
   margin-bottom: calc(95vh+30px);
+
+  padding-left: 2px;
 }
 
 .run-node {

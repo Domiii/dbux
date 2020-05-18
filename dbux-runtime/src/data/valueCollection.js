@@ -2,6 +2,7 @@ import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjec
 // import serialize from 'dbux-common/src/serialization/serialize';
 import Collection from './Collection';
 import pools from './pools';
+import isFunction from 'lodash/isFunction';
 
 // const Verbose = true;
 const Verbose = false;
@@ -165,13 +166,24 @@ class ValueCollection extends Collection {
   }
 
   /**
-   * `Object.keys` can also invoke user-defined functions.
-   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/ownKeys*} obj
+   * 
    */
   _getProperties(obj) {
     try {
       this._startAccess(obj);
-      return Object.keys(obj);
+
+      // NOTE: `for in` gets a lot of enumerable properties that `Object.keys` does not get
+      const keys = [];
+      for (const key in obj) {
+        if (!isFunction(obj[key])) {
+          keys.push(key);
+        }
+      }
+      return keys;
+
+      // // `Object.keys` can also invoke user - defined functions.
+      // // @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/ownKeys*} obj
+      // return Object.keys(obj);
     }
     catch (err) {
       this._onAccessError(obj, this._getKeysErrorsByType);

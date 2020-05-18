@@ -274,6 +274,11 @@
 
 
 ## TODO (other)
+* dbux-graph:
+   * in `traceValueLabel`, we still see `[object Object]` for arguments
+   * change modifier key to `CTRL` (because `SHIFT+Click` causes unwanted selection of text)
+   * when selecting a node in graph, also make sure, `activeTextEditor` gets set correctly
+   * add button to `Toolbar` to switch label (and `loc`) between `parentTrace` and `context`
 * fix TDV: "Trace Executed: Nx"
    * label broken if parentTrace is `CallExpression` with `MemberExpression` callee + no arguments (see below)
    * improve "group by" label
