@@ -2,11 +2,15 @@
 # TODO
 
 ## TODO (shared)
-* add button "`call`" to `Toolbar` to switch (i) `title` and (ii) `loc` between `parentTrace` and `context`
-* add crosshair button to `ContextNode` to select `Push` trace
+* in `ContextNode`: add crosshair button to select `Push` trace of `context`
+* in `ContextNode`: make `loc-label` clickable (and add `popper`), similar to `displayName`
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
 * bug in TDV: "Function Executed: Nx"
    * often reports 0x (e.g. in `oop1.js` -> any `speak()` function)
+* refactor `Toolbar` -> move all mode control to `GraphRender` component in `GraphDocument.controllers`
+   * NOTE: access via `this.context.graphDocument.controllers.getComponent`
+   * remove `this.traceMode` from `GraphDocument`
+      * NOTE: don't add any properties directly to a component, unless you have a very good reason to
 * Toolbar: add `hide old` button
    * Careful: hidden context nodes can cause trouble if hidden node is being used in any way
       * e.g. if a trace is selected/highlighted/focused/revelaed in sync mode
@@ -269,12 +273,8 @@
 
 
 ## TODO (other)
-* `binTree2` 
-   * raises errors
-   * `makeTraceValueLabel` omits `node` argument?
-      * does not look like a `CallValueLabel`
-* dbux-graph:
-   * change modifier key to `CTRL` (because `SHIFT+Click` causes unwanted selection of text)
+* in TrackedObjectTDNode, render `valueString`
+* fix `valueStringShort`?
 * fix: in `this.methods[method]`, `method` is not a selectable trace
 * fix: conflict between `MemberExpression` + `CallExpression`
    * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`

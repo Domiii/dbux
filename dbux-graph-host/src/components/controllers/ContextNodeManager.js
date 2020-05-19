@@ -18,12 +18,12 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   highlightContexts(contexts) {
     this.contextNodes = contexts.map(this.owner.getContextNodeByContext);
-    this.contextNodes.forEach((contextNode) => contextNode.highlighter.inc());
+    this.contextNodes.forEach((contextNode) => contextNode.controllers.getComponent('Highlighter').inc());
     this.contextNodes.forEach((contextNode) => contextNode.reveal());
   }
 
   clear() {
-    this.contextNodes?.forEach((contextNode) => contextNode.highlighter.dec());
+    this.contextNodes?.forEach((contextNode) => contextNode.controllers.getComponent('Highlighter').dec());
     this.selector = null;
     this.contextNodes = null;
   }

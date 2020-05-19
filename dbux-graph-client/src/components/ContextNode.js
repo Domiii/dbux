@@ -1,4 +1,6 @@
 import { compileHtmlElement } from '@/util/domUtil';
+import { isMouseEventPlatformModifierKey } from '@/util/keyUtil';
+import { getPlatformModifierKeyString } from '@/util/platformUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class ContextNode extends ClientComponentEndpoint {
@@ -14,11 +16,15 @@ class ContextNode extends ClientComponentEndpoint {
             <div class="flex-row">
               <div class="flex-row">
                 <button data-el="nodeToggleBtn" class="node-toggle-btn"></button>
-                <div data-el="displayName,popperTarget" class="displayName dbux-link"></div>
+                <div data-el="displayName,popperTarget" class="displayName dbux-link">
+                  <span data-el="ownLabel"></span>
+                  <span data-el="parentLabel"></span>
+                </div>
                 &nbsp;
                 <button class="highlight-btn" data-el="staticContextHighlightBtn">💡</button>
-                <div>
-                  <span class="loc-label" data-el="locLabel"></span>
+                <div class="loc-label">
+                  <span data-el="locLabel"></span>
+                  <span data-el="parentLocLabel"></span>
                 </div>
                 <div>
                   <span class="value-label" data-el="valueLabel"></span>
@@ -44,19 +50,24 @@ class ContextNode extends ClientComponentEndpoint {
       context: { contextId, staticContextId },
       displayName,
       valueLabel,
-      positionLabel
+      locLabel,
+      parentTraceNameLabel,
+      parentTraceLocLabel
     } = this.state;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
     this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},50%,85%)`;
     this.els.title.id = `name_${contextId}`;
     //this.els.title.textContent = `${displayName}#${contextId}`;
-    this.els.displayName.textContent = `${displayName}`;
-    this.els.locLabel.textContent = positionLabel;
+    this.els.ownLabel.textContent = displayName;
+    this.els.parentLabel.textContent = parentTraceNameLabel || displayName;
+    this.els.locLabel.textContent = locLabel;
+    this.els.parentLocLabel.textContent = parentTraceLocLabel;
     this.els.valueLabel.textContent = valueLabel;
     this.els.nodeChildren.id = `children_${contextId}`;
 
-    this.popperString = `${displayName} (shift + click to follow)`;
+    const modKey = getPlatformModifierKeyString();
+    this.popperString = `${displayName} (${modKey} + click to follow)`;
   }
 
   getBinaryHsl(i) {
@@ -76,7 +87,7 @@ class ContextNode extends ClientComponentEndpoint {
         // const graphNode = this.controllers.getComponent('GraphNode');
         // console.log(graphNode.isDOMExpanded());
 
-        if (evt.shiftKey) {
+        if (isMouseEventPlatformModifierKey(evt)) {
           const { context, applicationId } = this.state;
           this.remote.showContext(applicationId, context.contextId);
         }

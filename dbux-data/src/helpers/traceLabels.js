@@ -177,3 +177,34 @@ export function makeCallValueLabel(callTrace) {
   const str = `(${argValues.join(', ')})${result}`;
   return str;
 }
+
+// ###########################################################################
+// loc (location) labels
+// ###########################################################################
+
+
+export function makeContextLocLabel(applicationId, context) {
+  const { staticContextId } = context;
+  const dp = allApplications.getById(applicationId).dataProvider;
+  const { programId, loc } = dp.collections.staticContexts.getById(staticContextId);
+  const fileName = programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
+
+  const { line, column } = loc.start;
+  // return `@${fileName}:${line}:${column}`;
+  return `${fileName}:${line}`;
+}
+
+export function makeTraceLocLabel(trace) {
+  const {
+    traceId,
+    applicationId
+  } = trace;
+
+  const dp = allApplications.getById(applicationId).dataProvider;
+  const fileName = dp.util.getTraceFileName(traceId);
+  const loc = dp.util.getTraceLoc(traceId);
+
+  const { line, column } = loc.start;
+  // return `@${fileName}:${line}:${column}`;
+  return `${fileName}:${line}`;
+}

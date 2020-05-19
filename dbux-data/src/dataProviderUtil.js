@@ -351,6 +351,12 @@ export default {
     return staticContext.type;
   },
 
+  getStaticTrace(dp, traceId) {
+    const traqce = dp.collections.traces.getById(traceId);
+    const { staticTraceId } = traqce;
+    return dp.collections.staticTraces.getById(staticTraceId);
+  },
+
   /** @param {DataProvider} dp */
   getStaticTraceProgramId(dp, staticTraceId) {
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
@@ -715,4 +721,13 @@ export default {
   //   const trace = dp.util.getLastTraceInRealContext(realContextId);
   //   return dp.util.isErrorTrace(trace);
   // },
+
+  // ###########################################################################
+  // loc (locations)
+  // ###########################################################################
+
+  getTraceLoc(dp, traceId) {
+    const { loc } = dp.util.getStaticTrace(traceId);
+    return loc;
+  }
 };

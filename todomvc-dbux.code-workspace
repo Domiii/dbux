@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "projects/todomvc/examples/vanilla-es6"
+		}
+	],
+	"settings": {}
+}

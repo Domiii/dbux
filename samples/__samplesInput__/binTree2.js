@@ -25,7 +25,7 @@ function buildTree(input) {
 
     // left
     let val = input[iInput++];
-    if (val !== null) {
+    if (val !== null && val < node.val) {
       left(node, val);
     }
 
@@ -35,7 +35,7 @@ function buildTree(input) {
 
     // right
     val = input[iInput++];
-    if (val !== null) {
+    if (val !== null && val > node.val) {
       right(node, val);
     }
   }

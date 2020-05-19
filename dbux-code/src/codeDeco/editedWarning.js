@@ -29,7 +29,7 @@ export function initEditedWarning() {
     }
 
     messageBoxDisposed = false;
-    await showWarningMessage('[Warning] Change to document may affect Dbux', {
+    await showWarningMessage('[Dbux Warning] Document changed -> code decorations will be inaccurate', {
       [`Don't show again for this file`]: async () => {
         documentBlackList.add(e.document.fileName);
       },

@@ -7,8 +7,8 @@ function f(x, cb1, cb2) {
 }
 
 function g(cb) {
-  console.log('g');
   cb();
+  console.log('g');
 }
 
 function h() {

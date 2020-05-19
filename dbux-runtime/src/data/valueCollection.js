@@ -8,7 +8,7 @@ import isFunction from 'lodash/isFunction';
 const Verbose = false;
 
 const SerializationConfig = {
-  maxDepth: 3,
+  maxDepth: 6,
   maxObjectSize: 20,   // applies to arrays and object
   maxStringLength: 100
 };

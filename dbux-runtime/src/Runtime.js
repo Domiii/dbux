@@ -50,6 +50,8 @@ export default class Runtime {
 
   _lastTraceByContextId = {};
 
+  _lastBceInByContextId = {};
+
 
   // ###########################################################################
   // Stack management
@@ -168,6 +170,10 @@ export default class Runtime {
     this._lastTraceByContextId[contextId] = traceId;
   }
 
+  setBCEForContext(contextId, traceId) {
+    this._lastBceInByContextId[contextId] = traceId;
+  }
+
   /**
    * This is currently used for two things:
    * 1. Determine `parentTraceId` (which trace pushed which context)
@@ -175,7 +181,12 @@ export default class Runtime {
    * 
    * NOTE: `Pop`s are not recorded here! (as that would mess with (2))
    */
-  getLastTraceIdInContext(contextId) {
+  getParentTraceId() {
+    const parentContextId = this.peekCurrentContextId();
+    return this._lastBceInByContextId[parentContextId];
+  }
+
+  getLastTraceInContext(contextId) {
     return this._lastTraceByContextId[contextId];
   }
 

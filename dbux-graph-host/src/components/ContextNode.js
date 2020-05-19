@@ -1,6 +1,6 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import { makeTraceValueLabel } from 'dbux-data/src/helpers/traceLabels';
+import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel } from 'dbux-data/src/helpers/traceLabels';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class ContextNode extends HostComponentEndpoint {
@@ -18,20 +18,18 @@ class ContextNode extends HostComponentEndpoint {
       displayName
     } = staticContext;
     const label = displayName;
-    this.state.displayName = label;
-
     const parentTrace = dp.util.getParentTraceOfContext(context.contextId);
+
+    this.state.displayName = label;
+    this.state.locLabel = makeContextLocLabel(applicationId, context);
     this.state.valueLabel = parentTrace && makeTraceValueLabel(parentTrace) || '';
-    this.state.positionLabel = this._makeContextPositionLabel(applicationId, context);
+    this.state.parentTraceNameLabel = parentTrace && makeTraceLabel(parentTrace) || '(caller unknown)';
+    this.state.parentTraceLocLabel = parentTrace && makeTraceLocLabel(parentTrace);
 
-    // add GraphNode controller
+    // add controllers
     this.controllers.createComponent('GraphNode', { });
-
-    // add PopperController
     this.controllers.createComponent('PopperController');
-
-    // add Highlighter
-    this.highlighter = this.controllers.createComponent('Highlighter');
+    this.controllers.createComponent('Highlighter');
 
     // register with root
     this.context.graphRoot._contextNodeCreated(this);
@@ -98,17 +96,6 @@ class ContextNode extends HostComponentEndpoint {
 
   reveal() {
     this.controllers.getComponent('GraphNode').reveal();
-  }
-
-  _makeContextPositionLabel(applicationId, context) {
-    const { staticContextId } = context;
-    const dp = allApplications.getById(applicationId).dataProvider;
-    const { programId, loc } = dp.collections.staticContexts.getById(staticContextId);
-    const fileName = programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
-
-    const { line, column } = loc.start;
-    // return `@${fileName}:${line}:${column}`;
-    return `${fileName}:${line}`;
   }
 
   public = {
