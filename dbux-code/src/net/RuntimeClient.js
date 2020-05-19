@@ -2,6 +2,8 @@ import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import Application from 'dbux-data/src/applications/Application';
 
+const Verbose = false;
+
 const { log, debug, warn, error: logError } = newLogger('RuntimeClient');
 
 export default class Client {
@@ -11,7 +13,7 @@ export default class Client {
   _connected;
 
   constructor(server, socket) {
-    debug('connected');
+    Verbose && debug('connected');
 
     this.server = server;
     this.socket = socket;
@@ -74,7 +76,7 @@ export default class Client {
    * Called by Server as it helps track connection state.
    */
   _handleDisconnect = () => {
-    debug('disconnected', this.application?.entryPointPath);
+    Verbose && debug('disconnected', this.application?.entryPointPath);
     this._connected = false;
   }
 

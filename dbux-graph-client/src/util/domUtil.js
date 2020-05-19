@@ -19,6 +19,13 @@ export function decorateClasses(el, cfg) {
   }
 }
 
+export function decorateAttr(el, cfg) {
+  for (let attr in cfg) {
+    let val = cfg[attr];
+    el.setAttribute(attr, val);
+  }
+}
+
 // ###########################################################################
 // building elements from strings
 // ###########################################################################

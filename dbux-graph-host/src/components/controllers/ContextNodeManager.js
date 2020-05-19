@@ -18,12 +18,12 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   highlightContexts(contexts) {
     this.contextNodes = contexts.map(this.owner.getContextNodeByContext);
-    this.contextNodes.forEach((contextNode) => contextNode.highlighter.inc());
+    this.contextNodes.forEach((contextNode) => contextNode.controllers.getComponent('Highlighter').inc());
     this.contextNodes.forEach((contextNode) => contextNode.reveal());
   }
 
   clear() {
-    this.contextNodes?.forEach((contextNode) => contextNode.highlighter.dec());
+    this.contextNodes?.forEach((contextNode) => contextNode.controllers.getComponent('Highlighter').dec());
     this.selector = null;
     this.contextNodes = null;
   }
@@ -57,11 +57,15 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   highlightByObject = (trace) => {
     if (this.selector) this.clear();
-    const { applicationId, traceId, valueId } = trace;
+
+    const { applicationId, traceId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
-    const { trackId } = dp.collections.values.getById(valueId);
-    this.selector = trace;
+
+    trace = dp.util.getValueTrace(traceId);
+    const trackId = dp.util.getTraceTrackId(traceId);
     const contexts = dp.util.getContextsByTrackId(trackId);
+
+    this.selector = trace;
     this.highlightContexts(contexts);
   }
 

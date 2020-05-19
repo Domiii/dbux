@@ -5,7 +5,7 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
 import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from 'dbux-common/src/core/constants/traceCategorization';
-import { isObjectCategory, isPlainObjectOrArrayCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
+import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
 import DataProvider from './DataProvider';
 
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
@@ -175,9 +175,15 @@ export default {
   },
 
   /** @param {DataProvider} dp */
-  isTraceFunctionValue(dp, traceId) {
+  isTracePlainObject(dp, traceId) {
     const valueRef = dp.util.getTraceValueRef(traceId);
     return valueRef && isPlainObjectOrArrayCategory(valueRef.category) || false;
+  },
+
+  /** @param {DataProvider} dp */
+  isTraceFunctionValue(dp, traceId) {
+    const valueRef = dp.util.getTraceValueRef(traceId);
+    return valueRef && isFunctionCategory(valueRef.category) || false;
   },
 
   /** @param {DataProvider} dp */
@@ -231,9 +237,36 @@ export default {
       // hackfix: we cache this thing
       return trace.valueString = valueString;
     }
-    
 
     return null;
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceValueStringShort(dp, traceId) {
+    const trace = dp.util.getValueTrace(traceId);
+
+    if (trace.valueStringShort) {
+      // already cached
+      return trace.valueStringShort;
+    }
+
+    // get value
+    let valueString = dp.util.getTraceValueString(traceId);
+    const ShortLength = 30;
+    if (valueString && valueString.length > (ShortLength - 3)) {
+      if (dp.util.isTracePlainObject(traceId)) {
+        // object -> just use category
+        const valueRef = dp.util.getTraceValueRef(traceId);
+        valueString = ValueTypeCategory.nameFrom(valueRef.category);
+      }
+      else {
+        // TODO: do this recursively, so array-of-object does not display object itself
+        valueString = valueString.substring(0, ShortLength - 3) + '...';
+      }
+    }
+
+    // hackfix: we cache this thing
+    return trace.valueStringShort = valueString;
   },
 
   /** @param {DataProvider} dp */
@@ -249,6 +282,11 @@ export default {
 
     // value is primitive type (or trace has no value)
     return null;
+  },
+
+  getTraceTrackId(dp, traceId) {
+    const valueRef = dp.util.getTraceValueRef(traceId);
+    return valueRef?.trackId;
   },
 
   /** @param {DataProvider} dp */
@@ -316,6 +354,12 @@ export default {
   getTraceContextType(dp, traceId) {
     const staticContext = dp.util.getTraceStaticContext(traceId);
     return staticContext.type;
+  },
+
+  getStaticTrace(dp, traceId) {
+    const traqce = dp.collections.traces.getById(traceId);
+    const { staticTraceId } = traqce;
+    return dp.collections.staticTraces.getById(staticTraceId);
   },
 
   /** @param {DataProvider} dp */
@@ -682,4 +726,13 @@ export default {
   //   const trace = dp.util.getLastTraceInRealContext(realContextId);
   //   return dp.util.isErrorTrace(trace);
   // },
+
+  // ###########################################################################
+  // loc (locations)
+  // ###########################################################################
+
+  getTraceLoc(dp, traceId) {
+    const { loc } = dp.util.getStaticTrace(traceId);
+    return loc;
+  }
 };
