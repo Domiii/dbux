@@ -284,6 +284,11 @@ export default {
     return null;
   },
 
+  getTraceTrackId(dp, traceId) {
+    const valueRef = dp.util.getTraceValueRef(traceId);
+    return valueRef?.trackId;
+  },
+
   /** @param {DataProvider} dp */
   getAllTracesOfObjectOfTrace(dp, traceId) {
     const valueRef = dp.util.getTraceValueRef(traceId);

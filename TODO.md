@@ -2,7 +2,11 @@
 # TODO
 
 ## TODO (shared)
+* when a `ContextNode` has been highlighted, and new contexts are added, matching `ContextNodes` are not highlighted automatically (need to add event)
 * in `ContextNode`: add crosshair button to select `Push` trace of `context`
+* in `Object traces` node: `traces` do not render as "selected"
+   * -> can we make sure their icon changes to the "play" icon?
+   * -> just use `TraceNode` instead?
 * in `ContextNode`: make `loc-label` clickable (and add `popper`), similar to `displayName`
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
 * bug in TDV: "Function Executed: Nx"
@@ -15,6 +19,9 @@
    * Careful: hidden context nodes can cause trouble if hidden node is being used in any way
       * e.g. if a trace is selected/highlighted/focused/revelaed in sync mode
       * -> need to patch up all relevant places to account for hidden nodes
+      * -> add new `HiddenNode` to encapsulate this
+      * -> consider `GroupNode` concept here
+         * NOTE: multiple nodes collapsed into one, is very similar to what we expect of the future `GroupNode` concept
    * advanced
       * show a "Hiding X nodes" button at the top of the root (parallel to `RunNode`s)
          * -> When clicking it, unhide them

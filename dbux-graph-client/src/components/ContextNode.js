@@ -16,9 +16,9 @@ class ContextNode extends ClientComponentEndpoint {
             <div class="flex-row">
               <div class="flex-row">
                 <button data-el="nodeToggleBtn" class="node-toggle-btn"></button>
-                <div data-el="displayName,popperTarget" class="displayName dbux-link">
-                  <span data-el="ownLabel"></span>
-                  <span data-el="parentLabel"></span>
+                <div data-el="displayName,popperTarget" class="displayName flex-row">
+                  <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
+                  <div data-el="ownLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
                 &nbsp;
                 <button class="highlight-btn" data-el="staticContextHighlightBtn">💡</button>

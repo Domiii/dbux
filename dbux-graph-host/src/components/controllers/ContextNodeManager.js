@@ -57,11 +57,15 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   highlightByObject = (trace) => {
     if (this.selector) this.clear();
-    const { applicationId, traceId, valueId } = trace;
+
+    const { applicationId, traceId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
-    const { trackId } = dp.collections.values.getById(valueId);
-    this.selector = trace;
+
+    trace = dp.util.getValueTrace(traceId);
+    const trackId = dp.util.getTraceTrackId(traceId);
     const contexts = dp.util.getContextsByTrackId(trackId);
+
+    this.selector = trace;
     this.highlightContexts(contexts);
   }
 

@@ -23,7 +23,7 @@ class ContextNode extends HostComponentEndpoint {
     this.state.displayName = label;
     this.state.locLabel = makeContextLocLabel(applicationId, context);
     this.state.valueLabel = parentTrace && makeTraceValueLabel(parentTrace) || '';
-    this.state.parentTraceNameLabel = parentTrace && makeTraceLabel(parentTrace) || '(caller unknown)';
+    this.state.parentTraceNameLabel = parentTrace && makeTraceLabel(parentTrace) || '';
     this.state.parentTraceLocLabel = parentTrace && makeTraceLocLabel(parentTrace);
 
     // add controllers
