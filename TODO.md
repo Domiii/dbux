@@ -153,8 +153,8 @@
 * fix: panzoom to actually move scrollbars when panning
    * -> copy panzoom to a new file, e.g. `dbux-graph-client/src/util/panzoom.js`
    * -> import panzoom from that file instead of the `panzoom` node_module
-   * -> for panning, set `scrollTop` and `scrollLeft`, instead of using `transform`
-   * -> for zooming, keep using `transform`
+   * -> for panning, set `scrollTop` and `scrollLeft`, instead of using `transform -> translate`
+   * -> for zooming, keep using `transform -> scale`
 * show vertical indicator of where we are within a `ContextNode` (relative to context children)
    * -> maybe draw a horizontal line in `node-left-padding`
    * -> if current trace is parent trace of some child, also indicate that somehow?
@@ -181,6 +181,7 @@
 
 
 ## TODO (`dbux-projects`)
+* add `backgroundProcesses` management
 * add buttons:
    * "select bug"
    * "delete project"
@@ -283,14 +284,12 @@
 
 
 ## TODO (other)
+* fix `HostComponentEndpoint._build` to call an `async` method instead of promises
+   * -> or find another way to "wait for all ascendants to init"
+* fix up `todomvc-es6/Project`
 * in TrackedObjectTDNode, render `valueString`
 * fix `valueStringShort`?
 * fix: in `this.methods[method]`, `method` is not a selectable trace
-* fix: conflict between `MemberExpression` + `CallExpression`
-   * in member expression + call expression (without arguments!), `parentTrace` of call's context is the `object` of the member expression which does not have a `callId`
-   * Sln: add `callId` to those callee traces as well?
-      * Problem: Would change the assumption that only BCE + arguments have `callId`
-      * Problem: does not make sense for all the intermediate objects and computed values involved
 * fix: graph
    * sometimes (initially?), when selecting (shift+click) a node the first time, it selects the wrong column?
    * change ContextNode.`locLabel` to display loc of (`parentTrace`), not of function
@@ -307,10 +306,9 @@
 * fix: `traveValueLabels`
    * get callee name from instrumentation
 * fix TDV: "Trace Executed: Nx"
-   * label broken if parentTrace is `CallExpression` with `MemberExpression` callee + no arguments (see below)
-   * improve "group by" label
+   * improve label of "group by" node
    * need to re-design grouping a bit?
-      * Run, Context, Parent
+      * current: Run, Context, Parent
 * allow for mixed type objects for object tracking
    * in `express`, `application` object is also a function
    * need to allow "objectified functions" to be displayed as such
@@ -438,7 +436,15 @@
    * fix `DoWhileLoop` :(
 * [generators]
    * not done yet :(
+   * possible Test projects
+      * `mongoose`
+         * The call graphs of the mongoose module have the most unique
+   edges, which is caused by JavaScript generator functions.
+            * ref: [Towards the Efficient Use of Dynamic Call Graph Generators of Node.js Applications [2020]]
 * [async_runs]
+   * possible Test projects
+      * `shields`
+            * ref: [Towards the Efficient Use of Dynamic Call Graph Generators of Node.js Applications [2020]]
    * re-group execution order s.t. "asynchronous runs" can be visually running "as one"
    * consider: async functions (in a way) run parallel to normal functions
       * (while execution is single-threaded, I/O and other system tasks will keep on doing work in the background)
