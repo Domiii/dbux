@@ -1,4 +1,4 @@
-import { TreeItemCollapsibleState } from 'vscode';
+import { TreeItemCollapsibleState, TreeItem } from 'vscode';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import TraceNode from './TraceNode';
@@ -19,20 +19,27 @@ export default class StaticContextTDNode extends BaseTreeViewNode {
     const calleeTraces = contexts
       .map((context) => dp.util.getCalleeTraceOfContext(context.contextId))
       .filter(t => !!t);
-    const label = `Function executed: ${calleeTraces.length}x`;
+
+    // StaticProgramContext do not have parentTrace and will be filtered
+    const label = `Function executed: ${Math.max(calleeTraces.length, 1)}x`;
+
+    let collapsibleStateOverride;
+    if (calleeTraces.length) {
+      collapsibleStateOverride = TreeItemCollapsibleState.Collapsed;
+    }
+    else {
+      collapsibleStateOverride = TreeItemCollapsibleState.None;
+    }
 
     return {
       calleeTraces,
-      label
+      label,
+      collapsibleStateOverride
     };
   }
 
   static makeLabel(trace, parent, props) {
     return props.label;
-  }
-
-  get defaultCollapsibleState() {
-    return TreeItemCollapsibleState.Collapsed;
   }
 
   buildChildren() {
