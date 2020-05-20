@@ -1,3 +1,4 @@
+import isEqual from 'lodash/isEqual';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import objectTracker from 'dbux-data/src/objectTracker';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
@@ -5,15 +6,27 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 export default class ContextNodeManager extends HostComponentEndpoint {
   init() {
     this.selector = null;
+    this.selectorType = null;
     this.contextNodes = null;
 
     const highlightManager = this.context.graphDocument.controllers.getComponent('HighlightManager');
     highlightManager.on('clear', () => {
       this.selector = null;
+      this.selectorType = null;
       this.contextNodes = null;
     });
 
     objectTracker.onObjectSelectionChanged(this.highlightByObject);
+  }
+
+  refreshOnData = () => {
+    if (this.selectorType === 'objectTrace') {
+      this.highlightByStaticContext(this.selector);
+    }
+    else if (this.selectorType === 'staticContext') {
+      const { applicationId, staticContextId } = this.selector;
+      this.highlightByStaticContext(applicationId, staticContextId);
+    }
   }
 
   highlightContexts(contexts) {
@@ -22,9 +35,10 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     this.contextNodes.forEach((contextNode) => contextNode.reveal());
   }
 
-  clear() {
+  clear() { 
     this.contextNodes?.forEach((contextNode) => contextNode.controllers.getComponent('Highlighter').dec());
     this.selector = null;
+    this.selectorType = null;
     this.contextNodes = null;
   }
 
@@ -35,15 +49,14 @@ export default class ContextNodeManager extends HostComponentEndpoint {
   highlightByStaticContext = (applicationId, staticContextId) => {
     if (this.selector) this.clear();
     const dp = allApplications.getById(applicationId).dataProvider;
-    this.selector = dp.collections.staticContexts.getById(staticContextId);
     const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId);
+    this.selector = { applicationId, staticContextId };
+    this.selectorType = 'staticContext';
     this.highlightContexts(contexts);
   }
 
   toggleStaticContextHighlight = (applicationId, staticContextId) => {
-    const dp = allApplications.getById(applicationId).dataProvider;
-    const staticContext = dp.collections.staticContexts.getById(staticContextId);
-    if (staticContext === this.selector) {
+    if (isEqual(this.selector, { applicationId, staticContextId })) {
       this.clear();
     }
     else {
@@ -66,6 +79,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     const contexts = dp.util.getContextsByTrackId(trackId);
 
     this.selector = trace;
+    this.selectorType = 'objectTrace';
     this.highlightContexts(contexts);
   }
 

@@ -34,7 +34,7 @@ class GraphRoot extends HostComponentEndpoint {
     this.setState(update);
   }
 
-  addContexts(applicationId, contexts) {
+  addContexts = (applicationId, contexts) => {
     // get unique set of runIds
     let runIds = new Set(contexts.map(context => context?.runId || 0));
     runIds.delete(0);
@@ -45,6 +45,8 @@ class GraphRoot extends HostComponentEndpoint {
     runIds.forEach(runId =>
       this.children.createComponent(RunNode, { applicationId, runId })
     );
+
+    // this.controllers.getComponent('ContextNodeManager').refreshOnData();
   }
 
   focusContext(applicationId, contextId) {
