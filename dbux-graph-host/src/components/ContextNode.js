@@ -28,7 +28,7 @@ class ContextNode extends HostComponentEndpoint {
     this.state.parentTraceLocLabel = parentTrace && makeTraceLocLabel(parentTrace);
 
     // add controllers
-    this.controllers.createComponent('GraphNode', { });
+    this.controllers.createComponent('GraphNode', {});
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
 
@@ -105,15 +105,42 @@ class ContextNode extends HostComponentEndpoint {
       const trace = dataProvider.util.getFirstTraceOfContext(contextId);
       await this.componentManager.externals.goToTrace(trace);
     },
-    selectFirstTrace(applicationId, contextId) {
+    selectFirstTrace() {
+      const { applicationId, context: { contextId } } = this.state;
       const { dataProvider } = allApplications.getById(applicationId);
       const trace = dataProvider.util.getFirstTraceOfContext(contextId);
       traceSelection.selectTrace(trace);
     },
-    toggleStaticContextHighlight: () => {
+    toggleStaticContextHighlight() {
       const { applicationId, context: { staticContextId } } = this.state;
       const contextNodeManager = this.context.graphRoot.controllers.getComponent('ContextNodeManager');
       contextNodeManager.toggleStaticContextHighlight(applicationId, staticContextId);
+    },
+    selectPreviousContextByStaticContext() {
+      const { applicationId, context } = this.state;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const contexts = dp.indexes.executionContexts.byStaticContext.get(context.staticContextId) || EmptyArray;
+      const index = dp.util.binarySearchByKey(contexts, context, (x) => x.contextId);
+      if (index !== 0) {
+        const { contextId } = contexts[index - 1];
+        this.context.graphRoot.focusContext(applicationId, contextId);
+      }
+      else {
+        this.componentManager.externals.alert('This is the first context of staticContext', false);
+      }
+    },
+    selectNextContextByStaticContext() {
+      const { applicationId, context } = this.state;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const contexts = dp.indexes.executionContexts.byStaticContext.get(context.staticContextId) || EmptyArray;
+      const index = dp.util.binarySearchByKey(contexts, context, (x) => x.contextId);
+      if (index !== contexts.length - 1) {
+        const { contextId } = contexts[index + 1];
+        this.context.graphRoot.focusContext(applicationId, contextId);
+      }
+      else {
+        this.componentManager.externals.alert('This is the last context of staticContext', false);
+      }
     }
   }
 }

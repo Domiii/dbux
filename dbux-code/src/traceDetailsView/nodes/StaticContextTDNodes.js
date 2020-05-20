@@ -12,8 +12,8 @@ export default class StaticContextTDNode extends BaseTreeViewNode {
 
   static makeProperties(trace, parent, detail) {
     // build children here since label depends on children
-    const dp = allApplications.getById(trace.applicationId).dataProvider;
-    const { contextId } = trace;
+    const { applicationId, contextId } = trace;
+    const dp = allApplications.getById(applicationId).dataProvider;
     const { staticContextId } = dp.collections.executionContexts.getById(contextId);
     const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray;
     const calleeTraces = contexts

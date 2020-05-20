@@ -1,8 +1,8 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
+import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
 import ContextNode from './ContextNode';
-import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
 
 class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext = [];
@@ -47,6 +47,10 @@ class GraphRoot extends HostComponentEndpoint {
     );
   }
 
+  focusContext(applicationId, contextId) {
+    this.controllers.getComponent('FocusController').focus(applicationId, contextId);
+  }
+
   // ###########################################################################
   // context management
   // ###########################################################################
@@ -80,8 +84,8 @@ class GraphRoot extends HostComponentEndpoint {
   // ###########################################################################
 
   public = {
-    requestFocus: (applicationId, contextId) => {
-      this.controllers.getComponent('FocusController').focus(applicationId, contextId);
+    requestFocus(applicationId, contextId) {
+      this.focusContext(applicationId, contextId);
     }
   }
 }

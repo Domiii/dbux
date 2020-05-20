@@ -22,6 +22,8 @@ class ContextNode extends ClientComponentEndpoint {
                 </div>
                 &nbsp;
                 <button class="highlight-btn" data-el="staticContextHighlightBtn">💡</button>
+                <button data-el="prevContextBtn">⇦</button>
+                <button data-el="nextContextBtn">⇨</button>
                 <div class="loc-label">
                   <span data-el="locLabel"></span>
                   <span data-el="parentLocLabel"></span>
@@ -69,6 +71,8 @@ class ContextNode extends ClientComponentEndpoint {
     const modKey = getPlatformModifierKeyString();
     this.els.parentLabel.setAttribute('data-tooltip', this.els.parentLabel.textContent);
     this.els.ownLabel.setAttribute('data-tooltip', `${displayName} (${modKey} + click to follow)`);
+    this.els.prevContextBtn.setAttribute('data-tooltip', 'Go to previous function execution');
+    this.els.nextContextBtn.setAttribute('data-tooltip', 'Go to next function execution');
   }
 
   getBinaryHsl(i) {
@@ -105,6 +109,16 @@ class ContextNode extends ClientComponentEndpoint {
     staticContextHighlightBtn: {
       click(evt) {
         this.remote.toggleStaticContextHighlight();
+      }
+    },
+    prevContextBtn: {
+      click(evt) {
+        this.remote.selectPreviousContextByStaticContext();
+      }
+    },
+    nextContextBtn: {
+      click(evt) {
+        this.remote.selectNextContextByStaticContext();
       }
     }
   }
