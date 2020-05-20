@@ -135,21 +135,9 @@ export function makeRootTraceLabel(trace) {
   return label;
 }
 
-/**
- * Make label that shows the params and return value of call trace
- * @param {Trace} trace 
- */
-export function makeCallValueLabel(callTrace) {
-  const { applicationId, traceId, resultId } = callTrace;
-  const dp = allApplications.getById(applicationId).dataProvider;
-
-  const args = dp.indexes.traces.byCall.get(traceId) || EmptyArray;
-  const argValues = args.slice(1).map(arg => dp.util.getTraceValueString(arg.traceId));
-  const resultValue = resultId && dp.util.getTraceValueString(resultId);
-  const result = resultValue && ` -> ${resultValue}` || '';
-  const str = `(${argValues.join(', ')})${result}`;
-  return str;
-}
+// ###########################################################################
+// Value labels
+// ###########################################################################
 
 /**
  * Make label that shows the value of trace, or `callValueLabel` of call trace
@@ -172,4 +160,51 @@ export function makeTraceValueLabel(trace) {
     // default trace
     return makeTraceLabel(trace);
   }
+}
+
+/**
+ * Make label that shows the params and return value of call trace
+ * @param {Trace} trace 
+ */
+export function makeCallValueLabel(callTrace) {
+  const { applicationId, traceId, resultId } = callTrace;
+  const dp = allApplications.getById(applicationId).dataProvider;
+
+  const args = dp.indexes.traces.byCall.get(traceId) || EmptyArray;
+  const argValues = args.slice(1).map(arg => dp.util.getTraceValueStringShort(arg.traceId));
+  const resultValue = resultId && dp.util.getTraceValueStringShort(resultId);
+  const result = resultValue && ` -> ${resultValue}` || '';
+  const str = `(${argValues.join(', ')})${result}`;
+  return str;
+}
+
+// ###########################################################################
+// loc (location) labels
+// ###########################################################################
+
+
+export function makeContextLocLabel(applicationId, context) {
+  const { staticContextId } = context;
+  const dp = allApplications.getById(applicationId).dataProvider;
+  const { programId, loc } = dp.collections.staticContexts.getById(staticContextId);
+  const fileName = programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
+
+  const { line, column } = loc.start;
+  // return `@${fileName}:${line}:${column}`;
+  return `${fileName}:${line}`;
+}
+
+export function makeTraceLocLabel(trace) {
+  const {
+    traceId,
+    applicationId
+  } = trace;
+
+  const dp = allApplications.getById(applicationId).dataProvider;
+  const fileName = dp.util.getTraceFileName(traceId);
+  const loc = dp.util.getTraceLoc(traceId);
+
+  const { line, column } = loc.start;
+  // return `@${fileName}:${line}:${column}`;
+  return `${fileName}:${line}`;
 }

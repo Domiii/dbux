@@ -4,8 +4,9 @@ class Toolbar extends HostComponentEndpoint {
   init() {
     this.state.syncMode = this.context.graphDocument.getTraceMode();
     this.state.locMode = true;
-    this.state.thinMode = false;
+    this.state.callMode = false;
     this.state.valueMode = false;
+    this.state.thinMode = false;
   }
 
   public = {

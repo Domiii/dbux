@@ -19,8 +19,14 @@
 // Call expressions
 // ###########################################################################
 
-export function isCallTrace(tost) {
-  return tost.callId || tost.resultCallId;
+/**
+ * Whether given `tost` participates in a CallExpression as
+ * (a) BeforeCallExpression, (b) Callee, (c) CallArgument, (d) CallExpressionResult.
+ * 
+ * @return {boolean}
+ */
+export function isCallExpressionTrace(tost) {
+  return !!(tost.callId || tost.resultCallId);
 }
 
 // TODO: must do data look-up to get actual `traceType`
@@ -32,9 +38,9 @@ export function isCallTrace(tost) {
  * Only `BeforeCallExpression` and call argument traces have `callId`.
  */
 export function hasCallId(tost) {
-  return tost.callId;
+  return !!tost.callId;
 }
 
 export function isCallResult(tost) {
-  return tost.resultCallId;
+  return !!tost.resultCallId;
 }

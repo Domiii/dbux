@@ -3,6 +3,8 @@ import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import universalLibs from 'dbux-common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
+const Verbose = false;
+
 const { log, debug, warn, error: logError } = newLogger('CLIENT');
 
 // ###########################################################################
@@ -75,7 +77,7 @@ export default class Client {
   // ###########################################################################
 
   _handleConnect = () => {
-    debug('connected');
+    Verbose && debug('connected');
     this._connected = true;
 
     // start initial handshake
@@ -83,11 +85,11 @@ export default class Client {
   };
 
   _handleConnectFailed = () => {
-    debug('failed to connect');
+    Verbose && debug('failed to connect');
   }
 
   _handleDisconnect = () => {
-    debug('disconnected');
+    Verbose && debug('disconnected');
     this._connected = false;
     this._ready = false;
     this._socket = null;

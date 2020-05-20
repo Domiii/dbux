@@ -1,22 +1,18 @@
 
-function f(x, cb1, cb2) {
+function a(cb1, cb2) {
   setTimeout(() => {
     cb1(cb2);
-  });
-  console.log('f', x);
+  }, 2000);
+  console.log('a');
 }
 
-function g(cb) {
-  console.log('g');
+function b(cb) {
   cb();
+  console.log('b');
 }
 
-function h() {
-  console.log('h');
+function c() {
+  console.log('c');
 }
 
-function i() { }
-
-f(3, g, h, i); // i is a cb that was never called!
-
-
+a(b, c);

@@ -1,4 +1,4 @@
-import { compileHtmlElement, decorateClasses } from '@/util/domUtil';
+import { compileHtmlElement, decorateClasses, decorateAttr } from '@/util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class Toolbar extends ClientComponentEndpoint {
@@ -12,8 +12,9 @@ class Toolbar extends ClientComponentEndpoint {
       <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light no-padding" id="toolbar">
         <!--a data-el="switchModeBtn" class="btn btn-info hidden" href="#"></a-->
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <a data-el="syncModeBtn" class="btn btn-info" href="#"></a>
+          <a data-el="syncModeBtn" class="btn btn-info" href="#">sync</a>
           <a data-el="locModeBtn" class="btn btn-info" href="#">loc</a>
+          <a data-el="callModeBtn" class="btn btn-info" href="#">call</a>
           <a data-el="valueModeBtn" class="btn btn-info" href="#">val</a>
           <a data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></a>
         </div>
@@ -30,13 +31,12 @@ class Toolbar extends ClientComponentEndpoint {
     const { 
       syncMode,
       locMode,
+      callMode,
       valueMode,
       thinMode
     } = this.state;
     // this.els.switchModeBtn.textContent = `${traceModeName}`;
     // this.els.syncModeBtn.textContent = `Sync: ${syncMode ? '✅' : '❌'}`;
-
-    this.els.syncModeBtn.textContent = 'sync';
 
     // render buttons
     decorateClasses(this.els.syncModeBtn, {
@@ -44,6 +44,9 @@ class Toolbar extends ClientComponentEndpoint {
     });
     decorateClasses(this.els.locModeBtn, {
       active: locMode
+    });
+    decorateClasses(this.els.callModeBtn, {
+      active: callMode
     });
     decorateClasses(this.els.valueModeBtn, {
       active: valueMode
@@ -60,6 +63,7 @@ class Toolbar extends ClientComponentEndpoint {
   renderModes() {
     const {
       locMode,
+      callMode,
       valueMode,
       thinMode
     } = this.state;
@@ -69,6 +73,10 @@ class Toolbar extends ClientComponentEndpoint {
       'hide-locs': !locMode,
       'hide-values': !valueMode,
       'thin-mode': thinMode
+    });
+
+    decorateAttr(docEl, {
+      'data-call-mode': callMode && 1 || 0
     });
   }
 
@@ -113,6 +121,18 @@ class Toolbar extends ClientComponentEndpoint {
         });
       },
       focus(evt) { evt.target.blur(); }
+    },
+
+    callModeBtn: {
+      click(evt) {
+        evt.preventDefault();
+        evt.target.blur();
+        
+        this.setState({
+          callMode: !this.state.callMode
+        });
+      },
+      // focus(evt) { evt.target.blur(); }
     },
 
     valueModeBtn: {

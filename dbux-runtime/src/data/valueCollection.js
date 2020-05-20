@@ -8,7 +8,7 @@ import isFunction from 'lodash/isFunction';
 const Verbose = false;
 
 const SerializationConfig = {
-  maxDepth: 3,
+  maxDepth: 6,
   maxObjectSize: 20,   // applies to arrays and object
   maxStringLength: 100
 };
@@ -239,8 +239,6 @@ class ValueCollection extends Collection {
     let pruneState = ValuePruneState.Normal;
     let typeName = '';
 
-    // TODO: also fix bugs in `_deserialize` in `DataProvider`
-
     // infinite loop prevention
     if (isObjectCategory(category)) {
       if (!visited) {
@@ -335,7 +333,7 @@ class ValueCollection extends Collection {
       }
 
       default:
-        serialized = value + '';
+        serialized = value;
         break;
     }
 

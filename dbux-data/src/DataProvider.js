@@ -9,7 +9,7 @@ import StaticContext from 'dbux-common/src/core/data/StaticContext';
 import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
 import ValueTypeCategory, { ValuePruneState } from 'dbux-common/src/core/constants/ValueTypeCategory';
 import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from 'dbux-common/src/core/constants/TraceType';
-import { hasCallId, isCallResult, isCallTrace } from 'dbux-common/src/core/constants/traceCategorization';
+import { hasCallId, isCallResult, isCallExpressionTrace } from 'dbux-common/src/core/constants/traceCategorization';
 
 import Collection from './Collection';
 import Queries from './queries/Queries';
@@ -132,7 +132,7 @@ class TraceCollection extends Collection<Trace> {
         beforeCalls.push(trace);
         // debug('[callIds]', ' '.repeat(beforeCalls.length - 1), '>', trace.traceId, staticTrace.displayName);
       }
-      else if (isCallTrace(staticTrace)) {
+      else if (isCallExpressionTrace(staticTrace)) {
         // NOTE: `isTraceExpression` to filter out Push/PopCallback
         if (isCallResult(staticTrace)) {
           // call results: reference their call by `resultCallId` and vice versa by `resultId`
@@ -257,12 +257,13 @@ class ValueCollection extends Collection<ValueRef> {
       }
       this._visited.add(entry);
 
-      if (!('serialized' in entry)) {
-        logError(`error when deserializing value #${entry.valueId} (data missing): ${JSON.stringify(entry)}`);
-        entry.category = ValueTypeCategory.String;
-        entry.pruneState = ValuePruneState.Omitted;
-        return entry.value = '(error when deserializing)';
-      }
+      // NOTE: if `undefined`, object property is not actually sent/received via SocketIO?
+      // if (!('serialized' in entry)) {
+      //   logError(`error when deserializing value #${entry.valueId} (data missing): ${JSON.stringify(entry)}`);
+      //   entry.category = ValueTypeCategory.String;
+      //   entry.pruneState = ValuePruneState.Omitted;
+      //   return entry.value = '(error when deserializing)';
+      // }
 
       const {
         category,

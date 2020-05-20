@@ -1,6 +1,6 @@
 import { logInternalError } from 'dbux-common/src/log/logger';
 import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
-import TraceType, { isReturnTrace } from 'dbux-common/src/core/constants/TraceType';
+import TraceType, { isReturnTrace, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -83,7 +83,7 @@ export default class RuntimeMonitor {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const parentContextId = this._runtime.peekCurrentContextId();
-    const parentTraceId = this._runtime.getLastTraceIdInContext(parentContextId);
+    const parentTraceId = this._runtime.getParentTraceId();
 
     const context = executionContextCollection.executeImmediate(
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId
@@ -183,7 +183,7 @@ export default class RuntimeMonitor {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const parentContextId = this._runtime.peekCurrentContextId();
-    const parentTraceId = this._runtime.getLastTraceIdInContext(parentContextId);
+    const parentTraceId = this._runtime.getParentTraceId();
 
     // register context
     // console.debug('pushCallback', { parentContextId, schedulerContextId, schedulerTraceId });
@@ -214,8 +214,8 @@ export default class RuntimeMonitor {
     this._pop(callbackContextId);
 
     // trace
-    const { traceId } = traceCollection.traceWithResultValue(callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue);
-    this._onTrace(callbackContextId, traceId, true);
+    const trace = traceCollection.traceWithResultValue(callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue);
+    this._onTrace(callbackContextId, trace, true);
   }
 
 
@@ -227,7 +227,7 @@ export default class RuntimeMonitor {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const resumeContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
-    const parentTraceId = this._runtime.getLastTraceIdInContext(resumeContextId);
+    const parentTraceId = this._runtime.getParentTraceId();
 
     // trace Await
     this._trace(resumeContextId, runId, inProgramStaticTraceId);
@@ -287,7 +287,7 @@ export default class RuntimeMonitor {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const parentContextId = this._runtime.peekCurrentContextId();
-    const parentTraceId = this._runtime.getLastTraceIdInContext(parentContextId);
+    const parentTraceId = this._runtime.getParentTraceId();
 
     // NOTE: we don't really need a `schedulerTraceId`, since the parent context is always the calling function
     const schedulerTraceId = null;
@@ -365,8 +365,8 @@ export default class RuntimeMonitor {
       const runId = this._runtime.getCurrentRunId();
       const overrideType = null;
 
-      const { traceId } = traceCollection.traceWithResultValue(contextId, runId, inProgramStaticTraceId, overrideType, value);
-      this._onTrace(contextId, traceId);
+      const trace = traceCollection.traceWithResultValue(contextId, runId, inProgramStaticTraceId, overrideType, value);
+      this._onTrace(contextId, trace);
 
       return value;
     }
@@ -386,9 +386,8 @@ export default class RuntimeMonitor {
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
 
-    const trace = traceCollection.traceWithResultValue(contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument, cb);
-    const { traceId: schedulerTraceId } = trace;
-    this._onTrace(contextId, schedulerTraceId);
+    const schedulerTrace = traceCollection.traceWithResultValue(contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument, cb);
+    this._onTrace(contextId, schedulerTrace);
 
     // const wrapper = this.makeCallbackWrapper(contextId, schedulerTraceId, inProgramStaticTraceId, cb);
     // return wrapper;
@@ -398,16 +397,23 @@ export default class RuntimeMonitor {
 
   _trace(contextId, runId, inProgramStaticTraceId, traceType = null, isPop = false) {
     const trace = traceCollection.trace(contextId, runId, inProgramStaticTraceId, traceType);
-    this._onTrace(contextId, trace.traceId, isPop);
+    this._onTrace(contextId, trace, isPop);
     if (isPop) {
-      trace.previousTrace = this._runtime.getLastTraceIdInContext(contextId);
+      trace.previousTrace = this._runtime.getLastTraceInContext(contextId);
     }
     return trace;
   }
 
-  _onTrace(contextId, traceId, isPop = false) {
+  _onTrace(contextId, trace, isPop = false) {
     if (isPop) {
-      return; // we do not want to consider `pop`s as "last trace of a context" at any rate.
+      // NOTE: we do not want to consider `pop`s as "last trace of a context"
+      return;
+    }
+
+    const { traceId, staticTraceId } = trace;
+    const { type: traceType } = staticTraceCollection.getById(staticTraceId);
+    if (isBeforeCallExpression(traceType)) {
+      this._runtime.setBCEForContext(contextId, traceId);
     }
     this._runtime.setLastContextTrace(contextId, traceId);
   }
