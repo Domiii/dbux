@@ -9,7 +9,7 @@ function makeDomController(domElement, options) {
   }
 
   var owner = domElement.parentElement;
-  domElement.scrollTop = 0;
+  // domElement.scrollTop = 0;
   
   if (!options.disableKeyboardInteraction) {
     owner.setAttribute('tabindex', 0);
@@ -39,11 +39,20 @@ function makeDomController(domElement, options) {
 
   function applyTransform(transform) {
     // TODO: Should we cache this?
-    domElement.style.transformOrigin = '0 0 0';
+    // domElement.style.transformOrigin = '0 0 0';
+    // domElement.style.transform = 'matrix(' +
+    //   transform.scale + ', 0, 0, ' +
+    //   transform.scale + ', ' +
+    //   transform.x + ', ' + transform.y + ')';
     domElement.style.transform = 'matrix(' +
-      transform.scale + ', 0, 0, ' +
-      transform.scale + ', ' +
-      transform.x + ', ' + transform.y + ')'
+    transform.scale + ', 0, 0, ' +
+    transform.scale + ', ' +
+    0 + ', ' + 0 + ')';
+    domElement.scrollLeft = -transform.x;
+    domElement.scrollTop = -transform.y;
+    // domElement.scrollTop = 100;
+      
+      console.log("tx",transform.x,"ty",transform.y,"scrollTop",domElement.scrollTop,"scollLeft",domElement.scrollLeft, domElement);
   }
 }
 

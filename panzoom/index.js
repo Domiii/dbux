@@ -287,6 +287,7 @@ function createPanZoom(domElement, options) {
   }
 
   function moveBy(dx, dy) {
+    console.log(transform.x + dx, transform.y + dy);
     moveTo(transform.x + dx, transform.y + dy);
   }
 
@@ -761,10 +762,11 @@ function createPanZoom(domElement, options) {
     var point = transformToScreen(offset.x, offset.y);
     var dx = point.x - mouseX;
     var dy = point.y - mouseY;
-
+    
     mouseX = point.x;
     mouseY = point.y;
-
+    
+    // console.log(point,mouseX,mouseY);
     internalMoveBy(dx, dy);
   }
 

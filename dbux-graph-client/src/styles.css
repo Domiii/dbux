@@ -22,6 +22,7 @@ html,body{
   font-family: "Lucida Console", Courier, monospace;
   padding: 0 !important;
   margin: 0 !important;
+  overflow: hidden;
 }
 
 
@@ -63,6 +64,12 @@ html,body{
   margin-bottom: 100vh;
 
   padding-left: 2px;
+}
+
+.graph-cont {
+  width: 200px;
+  height: 200px;
+  overflow: auto;
 }
 
 .run-node {
