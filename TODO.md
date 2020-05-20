@@ -284,7 +284,6 @@
 
 
 ## TODO (other)
-* fix `HostComponentEndpoint._build` to run `init` and `update` synchronously, before starting client init
 * fix up `todomvc-es6/Project`
 * in TrackedObjectTDNode, render `valueString`
 * fix `valueStringShort`?
