@@ -284,8 +284,7 @@
 
 
 ## TODO (other)
-* fix `HostComponentEndpoint._build` to call an `async` method instead of promises
-   * -> or find another way to "wait for all ascendants to init"
+* fix `HostComponentEndpoint._build` to run `init` and `update` synchronously, before starting client init
 * fix up `todomvc-es6/Project`
 * in TrackedObjectTDNode, render `valueString`
 * fix `valueStringShort`?

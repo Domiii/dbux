@@ -1,8 +1,8 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
+import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
 import ContextNode from './ContextNode';
-import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
 
 class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext = [];

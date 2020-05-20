@@ -39,7 +39,7 @@ class GraphDocument extends HostComponentEndpoint {
     // this.minimap = this.children.createComponent(MiniMap);
 
     // start rendering empty graph
-    this.root.refresh();
+    // this.root.refresh();
   }
 
 

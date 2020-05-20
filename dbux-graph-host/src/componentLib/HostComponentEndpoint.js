@@ -1,8 +1,10 @@
 import noop from 'lodash/noop';
 import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
 import sleep from 'dbux-common/src/util/sleep';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import HostComponentList from './HostComponentList';
+
+// const Verbose = true;
+const Verbose = false;
 
 /**
  * The Host endpoint controls the Client endpoint.
@@ -113,29 +115,30 @@ class HostComponentEndpoint extends ComponentEndpoint {
     super._build(componentManager, parent, componentId, initialState);
 
     // do the long async init dance
-    this._initPromise = Promise.resolve(
-      this._preInit()                                   // 0. host: preInit
-    ).
-      then(this._runNoSetState.bind(this, 'init')).     // 1. host: init
-      then(this.update.bind(this)).                     // 2. host: update
-      then(() => (
-        parent && this.componentManager._initClient(this)// 3. client: init -> update
-      )).
-      then(
-        (resultFromClientInit) => {
-          // success                                    // 4. waitForInit (resolved)
-          this._isInitialized = true;
-          return resultFromClientInit;
-        },
-        (err) => {
-          // error :(
-          this.logger.error('failed to initialize client - error occured (probably on client)\n  ', err);
-        }
-      ).
-      finally(() => {
+    this._initPromise = Promise.resolve()
+      .then(() => {
+        this._preInit();                                    // 0. host: preInit
+        this._runNoSetState('init');                        // 1. host: init
+        Verbose && this.logger.debug('init called');
+        this._runNoSetState('update');                      // 2. host: update
+      })
+      .then(this._doInit.bind(this)).
+      catch(err => {
+        this.logger.error('failed to initialize client - error occured (probably on client)\n  ', err);
+        return null;
+      }).finally(() => {
         // _initPromise has fulfilled its purpose
         this._initPromise = null;
       });
+  }
+
+  async _doInit() {
+    await sleep();    // hackfix: this way `_initPromise` can be assigned correctly
+    const resultFromClientInit = this.parent && await this.componentManager._initClient(this); // 3. client: init -> update (ignore `internal root component`)
+    // success                                        // 4. waitForInit resolved
+    Verbose && this.logger.debug('initialized');
+    this._isInitialized = true;
+    return resultFromClientInit;
   }
 
   // ###########################################################################
@@ -146,6 +149,9 @@ class HostComponentEndpoint extends ComponentEndpoint {
     if (!this.isInitialized) {
       // make sure, things are initialized
       await this.waitForInit();
+    }
+    if (!this.isInitialized) {
+      throw new Error(`${this.debugTag} - first update detected before init has started. Make sure to not call setState or before initialization has started.`);
     }
 
     // NOTE: this is called by `setState`
