@@ -51,16 +51,16 @@ export default class DOMWrapper {
         this.logger.error(`Invalid event handler (on) - el name does not exist: "${elName}". Are you missing a "data-el" attribute?`);
         continue;
       }
-      
-      this.addElementEventListeners(_this, child, cfg);
+
+      this.addElementEventListeners(_this, child, cfg, elName);
     }
   }
 
-  addElementEventListeners(_this, el, cfg) {
+  addElementEventListeners(_this, el, cfg, elName = null) {
     for (const eventName in cfg) {
       const cb = cfg[eventName];
       if (!isFunction(cb)) {
-        this.logger.error(`Invalid event handler (on) - is not a function: "${elName}.${eventName}"`);
+        this.logger.error(`Invalid event handler (on) - is not a function: "${elName || el.innerHTML}.${eventName}"`);
         continue;
       }
       el.addEventListener(eventName, cb.bind(_this));

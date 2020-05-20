@@ -16,7 +16,7 @@ class ContextNode extends ClientComponentEndpoint {
             <div class="flex-row">
               <div class="flex-row">
                 <button data-el="nodeToggleBtn" class="node-toggle-btn"></button>
-                <div data-el="displayName,popperTarget" class="displayName flex-row">
+                <div data-el="displayName" class="displayName flex-row">
                   <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
                   <div data-el="ownLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
@@ -67,7 +67,8 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.nodeChildren.id = `children_${contextId}`;
 
     const modKey = getPlatformModifierKeyString();
-    this.popperString = `${displayName} (${modKey} + click to follow)`;
+    this.els.parentLabel.setAttribute('data-tooltip', this.els.parentLabel.textContent);
+    this.els.ownLabel.setAttribute('data-tooltip', `${displayName} (${modKey} + click to follow)`);
   }
 
   getBinaryHsl(i) {
