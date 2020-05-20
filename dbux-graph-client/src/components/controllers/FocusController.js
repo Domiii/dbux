@@ -141,7 +141,7 @@ export default class FocusController extends ClientComponentEndpoint {
     let progress = Math.min(1.0, (Date.now() - startTime) / (animTime * 1000));
 
     this.panzoom.moveTo(startX + x * progress, startY + y * progress);
-    this.owner._repaint();
+    // this.owner._repaint();
     if (progress < 1.0) {
       requestAnimationFrame(() => this.step(node));
     }

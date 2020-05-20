@@ -760,8 +760,10 @@ function createPanZoom(domElement, options) {
 
     var offset = getOffsetXY(e);
     var point = transformToScreen(offset.x, offset.y);
-    var dx = point.x - mouseX;
-    var dy = point.y - mouseY;
+    // var dx = point.x - mouseX;
+    // var dy = point.y - mouseY;
+    var dx = mouseX - point.x;
+    var dy = mouseY - point.y;
     
     mouseX = point.x;
     mouseY = point.y;
@@ -815,8 +817,8 @@ function createPanZoom(domElement, options) {
     var offsetX, offsetY;
     // I tried using e.offsetX, but that gives wrong results for svg, when user clicks on a path.
     var ownerRect = owner.getBoundingClientRect();
-    offsetX = e.clientX - ownerRect.left;
-    offsetY = e.clientY - ownerRect.top;
+    offsetX = e.clientX - ownerRect.scrollLeft;
+    offsetY = e.clientY - ownerRect.scrollTop;
 
     return { x: offsetX, y: offsetY };
   }

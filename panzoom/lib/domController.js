@@ -48,11 +48,11 @@ function makeDomController(domElement, options) {
     transform.scale + ', 0, 0, ' +
     transform.scale + ', ' +
     0 + ', ' + 0 + ')';
-    domElement.scrollLeft = -transform.x;
-    domElement.scrollTop = -transform.y;
+    domElement.scrollLeft = transform.x;
+    domElement.scrollTop = transform.y;
     // domElement.scrollTop = 100;
       
-      console.log("tx",transform.x,"ty",transform.y,"scrollTop",domElement.scrollTop,"scollLeft",domElement.scrollLeft, domElement);
+      // console.log("tx",transform.x,"ty",transform.y,"scrollTop",domElement.scrollTop,"scollLeft",domElement.scrollLeft, domElement);
   }
 }
 

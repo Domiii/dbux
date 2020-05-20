@@ -67,8 +67,16 @@ html,body{
 }
 
 .graph-cont {
-  width: 200px;
-  height: 200px;
+  /* width: 200px;
+  height: 200px; */
+  width: 100vw;
+  height: calc(100vh - 30px);
+  overflow: scroll;
+}
+
+.graph-cont > .body {
+  width: fit-content;
+  height: fit-content;
   overflow: auto;
 }
 
