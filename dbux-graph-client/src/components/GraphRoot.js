@@ -29,7 +29,8 @@ class GraphRoot extends ClientComponentEndpoint {
         <div data-el="toolTip" id="tooltip" role="tooltip">
           <span></span>
           <div id="arrow" data-popper-arrow></div>
-        </div>   
+        </div>
+        <div data-mount="ZoomBar"></div>   
       </div>
     `);
   }

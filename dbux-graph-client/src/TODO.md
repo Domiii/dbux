@@ -30,8 +30,6 @@
 #bug
 1. 邊界              
 2. minimap/關        
-3. popper position
-4. focus 到被收起來的context時會預設移動到左上角
    
 
 new todo
@@ -44,3 +42,10 @@ new todo
 6. high lighter/light manager
 7. done| graph slide => in graph document => this.state.focus.... 移動結束後給一個event到host
 
+
+#panzoom
+* fix: panzoom to actually move scrollbars when panning
+   * -> copy panzoom to a new file, e.g. `dbux-graph-client/src/util/panzoom.js`
+   * -> import panzoom from that file instead of the `panzoom` node_module
+   * -> for panning, set `scrollTop` and `scrollLeft`, instead of using `transform`
+   * -> for zooming, keep using `transform`

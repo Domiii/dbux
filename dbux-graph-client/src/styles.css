@@ -302,3 +302,18 @@ background: #333;
 #tooltip[data-show] {
   display: block;
 }
+
+
+/** ###########################################################################
+ * zoombar
+ * ############################################################################ */
+
+#zoombar {
+  position:fixed;
+  bottom:10px;
+  right:10px;
+}
+
+#zoombar .button {
+  margin:2.5px;
+}

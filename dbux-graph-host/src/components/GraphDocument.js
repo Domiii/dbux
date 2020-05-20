@@ -8,7 +8,8 @@ import TraceMode from './TraceMode';
 
 class GraphDocument extends HostComponentEndpoint {
   toolbar;
-  minimap;
+  // minimap;
+
   /**
    * @type {GraphRoot}
    */

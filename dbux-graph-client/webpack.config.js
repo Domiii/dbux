@@ -14,7 +14,8 @@ const buildMode = 'development';
 const dependencies = [
   "dbux-common",
   "dbux-graph-common",
-  "dbux-graph-client"
+  "dbux-graph-client",
+  "panzoom"
 ];
 
 const resolve = makeResolve(MonoRoot, dependencies);

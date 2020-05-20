@@ -4,6 +4,7 @@ import ContextNode from './components/ContextNode';
 import GraphRoot from './components/GraphRoot';
 import RunNode from './components/RunNode';
 import Toolbar from './components/Toolbar';
+import ZoomBar from './components/ZoomBar';
 import MiniMap from './components/MiniMap';
 import GraphNode from './components/controllers/GraphNode';
 import ContextNodeManager from './components/controllers/ContextNodeManager';
@@ -22,6 +23,7 @@ export default {
   RunNode,
   Toolbar,
   MiniMap,
+  ZoomBar,
   ContextNodeManager,
   FocusController,
   PopperController,
