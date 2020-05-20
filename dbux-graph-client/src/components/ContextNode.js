@@ -21,7 +21,7 @@ class ContextNode extends ClientComponentEndpoint {
                   <div data-el="ownLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
                 &nbsp;
-                <button class="highlight-btn" data-el="staticContextHighlightBtn">💡</button>
+                <button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button>
                 <div class="loc-label">
                   <span data-el="locLabel"></span>
                   <span data-el="parentLocLabel"></span>

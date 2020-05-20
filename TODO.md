@@ -11,10 +11,6 @@
 * when clicking error button: call `reveal({focus: true})` on `CallRootsView`
 * bug in TDV: "Function Executed: Nx"
    * often reports 0x (e.g. in `oop1.js` -> any `speak()` function)
-* refactor `Toolbar` -> move all mode control to `GraphRender` component in `GraphDocument.controllers`
-   * NOTE: access via `this.context.graphDocument.controllers.getComponent`
-   * remove `this.traceMode` from `GraphDocument`
-      * NOTE: don't add any properties directly to a component, unless you have a very good reason to
 * Toolbar: add `hide old` button
    * Careful: hidden context nodes can cause trouble if hidden node is being used in any way
       * e.g. if a trace is selected/highlighted/focused/revelaed in sync mode
@@ -28,8 +24,15 @@
       * in `traceDecorator`: don't show code decorations of "hidden" traces
       * when selecting "trace at cursor", prevent selecting any "hidden" trace
       * maybe add `[hidden]` to `traceLabel`, `contextLabel` and `dp.util.getTraceValueString` if they are hidden?
+* refactor `Toolbar` -> move all mode control to `GraphRender` component in `GraphDocument.controllers`
+   * NOTE: access via `this.context.graphDocument.controllers.getComponent`
+   * remove `this.traceMode` from `GraphDocument`
+      * NOTE: don't add any properties directly to a component, unless you have a very good reason to
 * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
 * [TraceDetailsView] add Navigation buttons: go to next/previous trace of this staticTrace
+
+
+
 
 * `GraphNode`
    * add "collapseAllButThis" button
