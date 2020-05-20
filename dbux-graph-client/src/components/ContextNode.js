@@ -89,8 +89,16 @@ class ContextNode extends ClientComponentEndpoint {
         // console.log(graphNode.isDOMExpanded());
 
         if (isMouseEventPlatformModifierKey(evt)) {
-          const { context, applicationId } = this.state;
-          this.remote.showContext(applicationId, context.contextId);
+          const { context: { contextId }, applicationId } = this.state;
+          if (evt.shiftKey) {
+            // select trace with ctrl(meta) + shift + click
+            this.remote.selectFirstTrace(applicationId, contextId);
+            document.getSelection().removeAllRanges();
+          }
+          else {
+            // only show context by ctrl(meta) + click
+            this.remote.showContext(applicationId, contextId);
+          }
         }
       }
     },

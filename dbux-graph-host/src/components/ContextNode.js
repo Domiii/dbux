@@ -1,4 +1,5 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
+import traceSelection from 'dbux-data/src/traceSelection';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel } from 'dbux-data/src/helpers/traceLabels';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
@@ -103,6 +104,11 @@ class ContextNode extends HostComponentEndpoint {
       const { dataProvider } = allApplications.getById(applicationId);
       const trace = dataProvider.util.getFirstTraceOfContext(contextId);
       await this.componentManager.externals.goToTrace(trace);
+    },
+    selectFirstTrace(applicationId, contextId) {
+      const { dataProvider } = allApplications.getById(applicationId);
+      const trace = dataProvider.util.getFirstTraceOfContext(contextId);
+      traceSelection.selectTrace(trace);
     },
     toggleStaticContextHighlight: () => {
       const { applicationId, context: { staticContextId } } = this.state;
