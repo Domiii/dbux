@@ -1,9 +1,8 @@
-import { TreeItemCollapsibleState, window } from 'vscode';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import objectTracker from 'dbux-data/src/objectTracker';
 
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import ObjectNode from './ObjectNode';
 
 export default class TrackObjectTDNode extends BaseTreeViewNode {
   static makeTraceDetail(trace, parent) {
@@ -60,13 +59,17 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
 
 
   buildChildren() {
-    const { trackedTraces, treeNodeProvider } = this;
+    const { trackedTraces } = this;
 
     if (!trackedTraces) {
       return null;
     }
 
-    const children = trackedTraces.map(t => treeNodeProvider.buildTraceNode(t, this));
+    const children = trackedTraces.map(this.buildObjectNode);
     return children;
+  }
+
+  buildObjectNode = (trace) => {
+    return this.treeNodeProvider.buildNode(ObjectNode, trace, this);
   }
 }

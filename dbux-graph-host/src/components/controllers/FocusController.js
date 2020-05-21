@@ -3,8 +3,11 @@ import traceSelection from 'dbux-data/src/traceSelection';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class FocusController extends HostComponentEndpoint {
+  get highlightManager() {
+    return this.context.graphDocument.controllers.getComponent('HighlightManager');
+  }
+
   init() {
-    this.highlightManager = this.context.graphDocument.controllers.getComponent('HighlightManager');
     this.syncMode = true;
     traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
 

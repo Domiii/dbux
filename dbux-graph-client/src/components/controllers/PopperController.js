@@ -8,14 +8,9 @@ export default class PopperController extends ClientComponentEndpoint {
 
   /**
    * Owner requirement:
-   *  el `popperTarget`
-   *  property/getter: `popperString`
-   *  context `popperManager`
+   *  DOM elements with attribute [data-tooltip]
    */
   init() {
-    // on click -> nextMode
-    // this.owner.dom.addEventListeners(this);
-
     const targets = this.owner.el.querySelectorAll('[data-tooltip]');
     targets.forEach(target => {
       this.owner.dom.addElementEventListeners(this, target, this.targetEvents);
