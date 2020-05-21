@@ -99,7 +99,7 @@ class GraphRoot extends ClientComponentEndpoint {
     });
 
     panzoom.on('transform', (e) => {
-      this._repaint();
+      // this._repaint();
     });
 
     return panzoom;

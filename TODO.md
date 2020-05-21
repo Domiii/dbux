@@ -284,6 +284,13 @@
 
 
 ## TODO (other)
+* add `crosshair` icon to selected context
+* fix: parentTrace detection
+   * currently gets it wrong for nested calls, e.g. `handler(_itemId(target), target.checked);`
+   * -> need to use a stack for BCEs
+* fix: when navigating nested `CallExpression`, need to be careful when jumping between them
+   * e.g.: When we do `PreviousParentContext`, and then `NextChildContext` again, we might end up in the wrong child
+   * design: does that make sense?
 * fix up `todomvc-es6/Project`
 * in TrackedObjectTDNode, render `valueString`
 * fix `valueStringShort`?
@@ -300,6 +307,7 @@
    * sometimes does not work for object values?
    * improve array rendering
 * fix: `function` declarations are not tracked
+   * store staticContextId by `function`, so we can look them up later
 * fix: strings are currently tracked -> disable tracking of strings
 * fix: `traveValueLabels`
    * get callee name from instrumentation

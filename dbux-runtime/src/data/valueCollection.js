@@ -272,8 +272,9 @@ class ValueCollection extends Collection {
         break;
 
       case ValueTypeCategory.Function:
-        serialized = 'ƒ';
+        // TODO: look up staticContext information by function instead
         // TODO: functions can have custom properties too
+        serialized = 'ƒ ' + value.name;
         break;
 
       case ValueTypeCategory.Array: {

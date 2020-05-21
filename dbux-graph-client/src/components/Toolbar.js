@@ -11,13 +11,13 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <a data-el="syncModeBtn" class="btn btn-info" href="#">sync</a>
-          <a data-el="locModeBtn" class="btn btn-info" href="#">loc</a>
-          <a data-el="callModeBtn" class="btn btn-info" href="#">call</a>
-          <a data-el="valueModeBtn" class="btn btn-info" href="#">val</a>
-          <a data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></a>
+          <button data-el="syncModeBtn" class="btn btn-info" href="#">sync</button>
+          <button data-el="locModeBtn" class="btn btn-info" href="#">loc</button>
+          <button data-el="callModeBtn" class="btn btn-info" href="#">call</button>
+          <button data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
+          <button data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
         </div>
-        <a data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</a>
+        <button data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</button>
       </nav>
     `);
   }

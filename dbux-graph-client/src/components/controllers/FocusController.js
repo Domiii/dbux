@@ -105,47 +105,49 @@ export default class FocusController extends ClientComponentEndpoint {
       return;
     }
 
-    this.logger.debug(`Moving node ${nodeId} by ${delta.x}, ${delta.y}`);
+    // TODO: fix panzoom scrollbars, then re-enable this part
 
-    this.slideData = {
-      startTime: Date.now(),
-      startX: this.panzoom.getTransform().x,
-      startY: this.panzoom.getTransform().y,
-      delta,
-      animTime
-    };
+    // this.logger.debug(`Moving node ${nodeId} by ${delta.x}, ${delta.y}`);
 
-    requestAnimationFrame(() => this.step(node));
+    // this.slideData = {
+    //   startTime: Date.now(),
+    //   startX: this.panzoom.getTransform().x,
+    //   startY: this.panzoom.getTransform().y,
+    //   delta,
+    //   animTime
+    // };
+
+    // requestAnimationFrame(() => this.step(node));
 
     // node.classList.add("flash-me");
     // setTimeout(() => { node.classList.remove("flash-me"); }, (animTime + 3) * 1000);
   }
 
   step = (node) => {
-    if (!this.focus) {
-      return;
-    }
+    // if (!this.focus) {
+    //   return;
+    // }
 
-    const {
-      startTime,
-      startX,
-      startY,
-      delta: {
-        x,
-        y
-      },
-      animTime
-    } = this.slideData;
+    // const {
+    //   startTime,
+    //   startX,
+    //   startY,
+    //   delta: {
+    //     x,
+    //     y
+    //   },
+    //   animTime
+    // } = this.slideData;
 
-    let progress = Math.min(1.0, (Date.now() - startTime) / (animTime * 1000));
+    // let progress = Math.min(1.0, (Date.now() - startTime) / (animTime * 1000));
 
-    this.panzoom.moveTo(startX + x * progress, startY + y * progress);
-    this.owner._repaint();
-    if (progress < 1.0) {
-      requestAnimationFrame(() => this.step(node));
-    }
-    else {
-      this.remote.notifyFocused();
-    }
+    // this.panzoom.moveTo(startX + x * progress, startY + y * progress);
+    // this.owner._repaint();
+    // if (progress < 1.0) {
+    //   requestAnimationFrame(() => this.step(node));
+    // }
+    // else {
+    //   this.remote.notifyFocused();
+    // }
   }
 }

@@ -3,8 +3,8 @@ import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpo
 import sleep from 'dbux-common/src/util/sleep';
 import HostComponentList from './HostComponentList';
 
-const Verbose = true;
-// const Verbose = false;
+// const Verbose = true;
+const Verbose = false;
 
 /**
  * The Host endpoint controls the Client endpoint.
