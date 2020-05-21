@@ -6,6 +6,7 @@ import ContextNode from './ContextNode';
 
 class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext = [];
+  runNodesById = [];
 
   init() {
     this.controllers.createComponent('GraphNode', {
@@ -14,6 +15,10 @@ class GraphRoot extends HostComponentEndpoint {
     this.controllers.createComponent('FocusController');
     this.controllers.createComponent('PopperManager');
     this.controllers.createComponent('ContextNodeManager');
+  }
+
+  get popperManager() {
+    return this.controllers.getComponent('PopperManager');
   }
 
   clear() {

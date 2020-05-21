@@ -73,9 +73,6 @@ html,body{
 .title{
   width: 100%;
 }
-.displayName{
-}
-
 
 .node-left-padding {
   padding-left: 1em;
@@ -144,7 +141,7 @@ html,body{
   display: none !important;
 }
 
-[data-call-mode="1"] [data-el="ownLabel"] {
+[data-call-mode="1"] [data-el="contextLabel"] {
   /* display: none !important; */
 }
 [data-call-mode="0"] [data-el="parentLabel"] {

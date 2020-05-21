@@ -8,8 +8,8 @@ class GraphRoot extends ClientComponentEndpoint {
       if (e.key === "s") {
         let applicationId = await this.app.prompt("applicationId");
         let contextId = await this.app.prompt("traceId");
-        applicationId = applicationId && parseInt(applicationId);
-        contextId = contextId && parseInt(contextId);
+        applicationId = applicationId && parseInt(applicationId, 10);
+        contextId = contextId && parseInt(contextId, 10);
         
         if (applicationId && contextId) {
           this.remote.requestFocus(applicationId, contextId);
@@ -56,8 +56,7 @@ class GraphRoot extends ClientComponentEndpoint {
   }
 
   initPanZoom = (el) => {
-    let panzoom;
-    panzoom = createPanzoom(el, {
+    let panzoom = createPanzoom(el, {
       smoothScroll: false,
       zoomDoubleClickSpeed: 1,
       beforeWheel(evt) {
