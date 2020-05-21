@@ -2,6 +2,7 @@ import get from 'lodash/get';
 import { newLogger } from 'dbux-common/src/log/logger';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import MessageType from './MessageType';
+import ComponentEndpoint from './ComponentEndpoint';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/ipc');
 
@@ -34,6 +35,7 @@ export default class Ipc {
   // ###########################################################################
 
   async sendMessage(componentId, commandName, args) {
+    args = this._encodeValues(args);
     const msg = {
       messageType: MessageType.Request,
       componentId,
@@ -95,6 +97,51 @@ export default class Ipc {
     });
   }
 
+  _sendReject(message, err) {
+    const {
+      callId,
+      componentId,
+      commandName,
+      args
+    } = message;
+
+    const info = 'Failed to process request - ';
+    logError(info + commandName, args);
+    logError(err.stack);
+    this._sendReply('reject', callId, componentId, info + err.message);
+  }
+
+  // ###########################################################################
+  // process request + reply
+  // ###########################################################################
+
+  _componentIdentifier = 'b,GZ5s2Nq}+p.:7,componentId';
+
+  _encodeValue(value) {
+    if (value instanceof ComponentEndpoint) {
+      return {
+        [this._componentIdentifier]: value.componentId
+      };
+    }
+    return value;
+  }
+
+  _decodeValue(value) {
+    const componentId = value?.[this._componentIdentifier];
+    if (componentId) {
+      return this.componentManager.getComponent(componentId);
+    }
+    return value;
+  }
+
+  _encodeValues(values) {
+    return values.map(val => this._encodeValue(val));
+  }
+
+  _decodeValues(values) {
+    return values.map(val => this._decodeValue(val));
+  }
+
   async _processRequest(message) {
     const {
       callId,
@@ -115,27 +162,15 @@ export default class Ipc {
         return;
       }
       else {
-        const res = await func.apply(endpoint, args);
-        this._sendReply('resolve', callId, componentId, res);
+        const decodedArgs = this._decodeValues(args);
+        const res = await func.apply(endpoint, decodedArgs);
+        const encodedResult = this._encodeValue(res);
+        this._sendReply('resolve', callId, componentId, encodedResult);
       }
     }
     catch (err) {
       this._sendReject(message, err);
     }
-  }
-
-  _sendReject(message, err) {
-    const {
-      callId,
-      componentId,
-      commandName,
-      args
-    } = message;
-
-    const info = 'Failed to process request - ';
-    logError(info + commandName, args);
-    logError(err.stack);
-    this._sendReply('reject', callId, componentId, info + err.message);
   }
 
   /**
@@ -157,7 +192,8 @@ export default class Ipc {
     this.calls.set(callId, null);  // reset call
 
     if (status === 'resolve') {
-      call.resolve(result);
+      const decodedResult = this._decodeValue(result);
+      call.resolve(decodedResult);
     }
     else {
       call.reject(new Error(result));
