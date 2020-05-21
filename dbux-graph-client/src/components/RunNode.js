@@ -4,20 +4,21 @@ import { compileHtmlElement } from '../util/domUtil';
 class RunNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-      <div class="run-node flex-row width-fit">
-        <!--div>
-          <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
-        </div-->
-        <div class="flex-column">
-          <!--div style="display:flex; flex-direction:row;">
-            <h6 data-el="title"></h6>
-          </div-->
-          <div data-el="nodeChildren" data-mount="ContextNode" class="node-children"></div>
+      <div class="run-node new width-fit">
+        <div class="run-node-content">
+          <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
         </div>
       </div>
     `);
 
     return el;
+  }
+
+  setupEl() {
+    this.el.addEventListener('animationend', () => {
+      // "new" animation has finished -> remove class
+      this.el.classList.remove('new');
+    });
   }
   
   update() {
