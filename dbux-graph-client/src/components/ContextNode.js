@@ -16,12 +16,14 @@ class ContextNode extends ClientComponentEndpoint {
             <div class="flex-row">
               <div class="flex-row">
                 <button data-el="nodeToggleBtn" class="node-toggle-btn"></button>
-                <div data-el="displayName,popperTarget" class="displayName flex-row">
+                <div data-el="displayName" class="displayName flex-row">
                   <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
                   <div data-el="ownLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
                 &nbsp;
-                <button class="highlight-btn" data-el="staticContextHighlightBtn">💡</button>
+                <button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button>
+                <button data-el="prevContextBtn">⇦</button>
+                <button data-el="nextContextBtn">⇨</button>
                 <div class="loc-label">
                   <span data-el="locLabel"></span>
                   <span data-el="parentLocLabel"></span>
@@ -67,7 +69,10 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.nodeChildren.id = `children_${contextId}`;
 
     const modKey = getPlatformModifierKeyString();
-    this.popperString = `${displayName} (${modKey} + click to follow)`;
+    this.els.parentLabel.setAttribute('data-tooltip', this.els.parentLabel.textContent);
+    this.els.ownLabel.setAttribute('data-tooltip', `${displayName} (${modKey} + click to follow)`);
+    this.els.prevContextBtn.setAttribute('data-tooltip', 'Go to previous function execution');
+    this.els.nextContextBtn.setAttribute('data-tooltip', 'Go to next function execution');
   }
 
   getBinaryHsl(i) {
@@ -88,14 +93,32 @@ class ContextNode extends ClientComponentEndpoint {
         // console.log(graphNode.isDOMExpanded());
 
         if (isMouseEventPlatformModifierKey(evt)) {
-          const { context, applicationId } = this.state;
-          this.remote.showContext(applicationId, context.contextId);
+          const { context: { contextId }, applicationId } = this.state;
+          if (evt.shiftKey) {
+            // select trace with ctrl(meta) + shift + click
+            this.remote.selectFirstTrace(applicationId, contextId);
+            document.getSelection().removeAllRanges();
+          }
+          else {
+            // only show context by ctrl(meta) + click
+            this.remote.showContext(applicationId, contextId);
+          }
         }
       }
     },
     staticContextHighlightBtn: {
       click(evt) {
         this.remote.toggleStaticContextHighlight();
+      }
+    },
+    prevContextBtn: {
+      click(evt) {
+        this.remote.selectPreviousContextByStaticContext();
+      }
+    },
+    nextContextBtn: {
+      click(evt) {
+        this.remote.selectNextContextByStaticContext();
       }
     }
   }

@@ -37,6 +37,9 @@ export default class CallGraphNodeProvider extends BaseTreeViewNodeProvider {
       if (this.treeViewController.isFiltering()) {
         newRootNode.collapsibleStateOverride = CollapsibleState.Expanded;
       }
+      else if (this.treeViewController.getMode() === 'error') {
+        newRootNode.collapsibleStateOverride = CollapsibleState.Expanded;
+      }
     }
     else {
       newRootNode.collapsibleStateOverride = CollapsibleState.None;

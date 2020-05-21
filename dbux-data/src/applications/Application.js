@@ -63,7 +63,9 @@ export default class Application {
     const { staticProgramContexts } = this.dataProvider.collections;
     const fileCount = staticProgramContexts.size;
     if (!fileCount) {
-      return '(unknown)';
+      // return `getRelativeFolder` instead
+      // return '(unknown)';
+      return this.getRelativeFolder();
     }
     
     const file = staticProgramContexts.getById(1)?.filePath;

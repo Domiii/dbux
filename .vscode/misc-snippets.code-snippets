@@ -35,7 +35,7 @@
 		"scope": "javascript,typescript"
 	},
 	
-	"Comment Barrier 1": {
+	"Comment Barrier 1: css": {
 		"prefix": "comment-barrier1",
 		"body": [
 			"/** ###########################################################################",
@@ -44,7 +44,7 @@
 		],
 		"scope": "css,scss"
 	},
-	"Comment Barrier 2": {
+	"Comment Barrier 2: css": {
 		"prefix": "comment-barrier2",
 		"body": [
 			"/** #######################################",

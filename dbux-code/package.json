@@ -86,6 +86,10 @@
 				"title": "Dbux: Toggle all navigation buttons"
 			},
 			{
+				"command": "dbux.toggleErrorLog",
+				"title": "Dbux: Toggle all error log"
+			},
+			{
 				"command": "dbuxCallGraphView.gotoEntry",
 				"title": "Goto"
 			},

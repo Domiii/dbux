@@ -80,7 +80,7 @@ export const DetailNodeClasses = [
   ValueTDNode,
   TrackObjectTDNode,
   StaticTraceTDNode,
-  // StaticContextTDNode,
+  StaticContextTDNode,
   InfoTDNode,
   DebugTDNode
 ];

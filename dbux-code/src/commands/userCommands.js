@@ -10,6 +10,7 @@ import { showGraphView } from '../graphView';
 import { initProjectUserCommands } from './projectCommands';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
+import { toggleErrorLog } from '../logging';
 
 const { log, debug, warn, error: logError } = newFileLogger(__filename);
 
@@ -79,6 +80,14 @@ export function initUserCommands(extensionContext, projectViewController) {
 
   registerCommand(extensionContext, 'dbux.toggleNavButton',
     toggleNavButton
+  );
+
+  // ###########################################################################
+  // show/hide error log
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.toggleErrorLog',
+    toggleErrorLog
   );
 
   // ###########################################################################

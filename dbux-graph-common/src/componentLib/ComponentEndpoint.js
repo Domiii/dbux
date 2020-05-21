@@ -35,13 +35,13 @@ class ComponentEndpoint {
   /**
    * Initialize `shared` and `context`.
    */
-  async _preInit() {
+  _preInit() {
     if (this.context) {
       throw new Error(`${this.debugTag} has assigned a context in the wrong place. Make sure to only assign context in shared function.`);
     }
 
     // run shared
-    const sharedResult = await this.shared?.();
+    const sharedResult = this.shared?.();
     if (isPlainObject(sharedResult)) {
       // store returned object in `this`
       Object.assign(this, sharedResult);
