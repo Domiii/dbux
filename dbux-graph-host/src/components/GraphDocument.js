@@ -43,7 +43,7 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   handleApplicationsChanged = (selectedApps) => {
-    this.refreshGraphRoot();
+    this.refreshGraphRoot(selectedApps);
   }
 
   // ###########################################################################
@@ -58,14 +58,13 @@ class GraphDocument extends HostComponentEndpoint {
   // public controller method
   // ###########################################################################
 
-  refreshGraphRoot() {
+  refreshGraphRoot(selectedApps) {
     this.root.clear();
 
     // update root application data
     this.root.refresh();
 
     // add already existing children contexts
-    const selectedApps = allApplications.selection.getAll();
     for (const app of selectedApps) {
       const { applicationId } = app;
 

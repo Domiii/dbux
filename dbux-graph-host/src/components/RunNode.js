@@ -1,8 +1,9 @@
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import { newLogger } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import ContextNode from './ContextNode';
-import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
+
+const { log, debug, warn, error: logError } = newLogger('[RunNode]');
 
 class RunNode extends HostComponentEndpoint {
   init() {
@@ -12,29 +13,21 @@ class RunNode extends HostComponentEndpoint {
     } = this.state;
 
     const dp = allApplications.getById(applicationId).dataProvider;
-    // const trace = dp.util.getFirstTraceOfRun();
-    // contexts.forEach(context => this.children.createComponent(ContextNode, {
-    //   applicationId,
-    //   context
-    // }));
 
-    // // add GraphNode controller
-    // this.controllers.createComponent('GraphNode', {
-    //   isExpanded: false
-    // });
-    
     // add GraphNode
-    this.controllers.createComponent('GraphNode', {
-      // mode: GraphNodeMode.ExpandChildren
-    });
+    this.controllers.createComponent('GraphNode');
 
     // add root context
-    const contexts = dp.indexes.executionContexts.byRun.get(runId) || EmptyArray;
-    const context = contexts[0];
-    this.children.createComponent(ContextNode, {
-      applicationId,
-      context
-    });
+    const contexts = dp.indexes.executionContexts.byRun.get(runId);
+    if (contexts) {
+      this.children.createComponent(ContextNode, {
+        applicationId,
+        context: contexts[0]
+      });
+    }
+    else {
+      logError('Creating RunNode with no context');
+    }
   }
 }
 

@@ -1,3 +1,4 @@
+import { binarySearchByKey } from 'dbux-common/src/util/arrayUtil';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import traceSelection from 'dbux-data/src/traceSelection';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
@@ -89,7 +90,7 @@ class ContextNode extends HostComponentEndpoint {
       const { applicationId, context } = this.state;
       const dp = allApplications.getById(applicationId).dataProvider;
       const contexts = dp.indexes.executionContexts.byStaticContext.get(context.staticContextId) || EmptyArray;
-      const index = dp.util.binarySearchByKey(contexts, context, (x) => x.contextId);
+      const index = binarySearchByKey(contexts, context, (x) => x.contextId);
       if (index !== 0) {
         const { contextId } = contexts[index - 1];
         this.context.graphRoot.focusContext(applicationId, contextId);
@@ -102,7 +103,7 @@ class ContextNode extends HostComponentEndpoint {
       const { applicationId, context } = this.state;
       const dp = allApplications.getById(applicationId).dataProvider;
       const contexts = dp.indexes.executionContexts.byStaticContext.get(context.staticContextId) || EmptyArray;
-      const index = dp.util.binarySearchByKey(contexts, context, (x) => x.contextId);
+      const index = binarySearchByKey(contexts, context, (x) => x.contextId);
       if (index !== contexts.length - 1) {
         const { contextId } = contexts[index + 1];
         this.context.graphRoot.focusContext(applicationId, contextId);
