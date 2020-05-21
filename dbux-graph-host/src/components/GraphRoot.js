@@ -46,7 +46,7 @@ class GraphRoot extends HostComponentEndpoint {
       this.children.createComponent(RunNode, { applicationId, runId })
     );
 
-    // this.controllers.getComponent('ContextNodeManager').refreshOnData();
+    this.controllers.getComponent('ContextNodeManager').refreshOnData();
   }
 
   focusContext(applicationId, contextId) {

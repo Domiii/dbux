@@ -2,11 +2,16 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class Toolbar extends HostComponentEndpoint {
   init() {
-    this.state.syncMode = this.context.graphDocument.getTraceMode();
+    this.state.syncMode = this.focusController.syncMode;
     this.state.locMode = true;
     this.state.callMode = false;
     this.state.valueMode = false;
     this.state.thinMode = false;
+  }
+
+  get focusController() {
+    const graphRoot = this.parent.children.getComponent('GraphRoot');
+    return graphRoot.controllers.getComponent('FocusController');
   }
 
   public = {
@@ -15,9 +20,7 @@ class Toolbar extends HostComponentEndpoint {
     },
 
     toggleSyncMode() {
-      const graphRoot = this.parent.children.getComponent('GraphRoot');
-      const focusController = graphRoot.controllers.getComponent('FocusController');
-      const mode = focusController.toggleSyncMode();
+      const mode = this.focusController.toggleSyncMode();
       this.setState({ syncMode: mode });
     },
 
