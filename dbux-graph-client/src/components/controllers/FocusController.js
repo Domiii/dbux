@@ -105,7 +105,7 @@ export default class FocusController extends ClientComponentEndpoint {
       return;
     }
 
-    this.logger.debug(`Moving node #${nodeId} by ${delta.x}, ${delta.y}`);
+    this.logger.debug(`Moving node ${nodeId} by ${delta.x}, ${delta.y}`);
 
     this.slideData = {
       startTime: Date.now(),

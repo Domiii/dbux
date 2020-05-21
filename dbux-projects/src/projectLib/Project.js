@@ -13,6 +13,11 @@ export default class Project {
 
   folderName;
 
+  /**
+   * Hold reference to webpack (watch mode), `http-serve` and other long-running background processes.
+   */
+  backgroundProcesses = [];
+
   constructor(manager) {
     this.manager = manager;
 
@@ -109,6 +114,35 @@ export default class Project {
   // ###########################################################################
   // install helpers
   // ###########################################################################
+
+  async gitClone() {
+    const {
+      projectsRoot,
+      projectPath,
+      githubUrl
+    } = this;
+
+    // cd into project root
+    sh.cd(projectsRoot);
+
+    // TODO: read git + editor commands from config
+
+    // clone (will do nothing if already cloned)
+    if (!await sh.test('-d', projectPath)) {
+      // const curDir = sh.pwd().toString();
+      // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
+      // project does not exist yet
+      await this.exec(`git clone ${githubUrl} ${projectPath}`, {
+        cdToProjectPath: false
+      });
+      // log('  ->', result.err || result.out);
+      // (result.err && warn || log)('  ->', result.err || result.out);
+      this.log(`Cloned.`);
+    }
+    else {
+      this.log('(skipped cloning)');
+    }
+  }
 
   async npmInstall() {
     const { projectPath } = this;
