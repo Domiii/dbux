@@ -11,21 +11,16 @@ class ContextNode extends HostComponentEndpoint {
       context
     } = this.state;
 
-    const dp = allApplications.getById(applicationId).dataProvider;
-
     // get name (and other needed data)
+    const dp = allApplications.getById(applicationId).dataProvider;
     const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
-    const {
-      displayName
-    } = staticContext;
-    const label = displayName;
-    const parentTrace = dp.util.getParentTraceOfContext(context.contextId);
+    this.parentTrace = dp.util.getParentTraceOfContext(context.contextId);
 
-    this.state.displayName = label;
-    this.state.locLabel = makeContextLocLabel(applicationId, context);
-    this.state.valueLabel = parentTrace && makeTraceValueLabel(parentTrace) || '';
-    this.state.parentTraceNameLabel = parentTrace && makeTraceLabel(parentTrace) || '';
-    this.state.parentTraceLocLabel = parentTrace && makeTraceLocLabel(parentTrace);
+    this.state.contextNameLabel = staticContext.displayName;
+    this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
+    this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
+    this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
+    this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
 
     // add controllers
     this.controllers.createComponent('GraphNode', {});
@@ -41,6 +36,12 @@ class ContextNode extends HostComponentEndpoint {
     this.state.hasChildren = !!this.children.length;
   }
 
+  get firstTrace() {
+    const { applicationId, context: { contextId } } = this.state;
+    const { dataProvider } = allApplications.getById(applicationId);
+    return dataProvider.util.getFirstTraceOfContext(contextId);
+  }
+
   buildChildNodes() {
     const {
       applicationId,
@@ -49,37 +50,9 @@ class ContextNode extends HostComponentEndpoint {
       }
     } = this.state;
 
-    const dp = allApplications.getById(applicationId).dataProvider;
-
-    // const mode = this.componentManager.doc.traceMode;
-    // if (mode === TraceMode.AllTraces) {
-    //   // get all traces
-    //   const childTraces = dp.indexes.traces.byContext.get(contextId) || EmptyArray;
-    //   childTraces.forEach(childTrace => {
-    //     // create child trace
-    //     return this.children.createComponent('TraceNode', {
-    //       trace: childTrace
-    //     });
-    //   });
-    // }
-    // else if (mode === TraceMode.ParentTraces) {
-    //   // get all traces
-    //   const childTraces = dp.indexes.traces.byContext.get(contextId) || EmptyArray;
-    //   childTraces
-    //     .filter(trace => {
-    //       const children = dp.indexes.executionContexts.byParentTrace.get(trace.traceId);
-    //       return !!children?.length;
-    //     })
-    //     .forEach(childTrace => {
-    //       // create child trace
-    //       return this.children.createComponent('TraceNode', {
-    //         trace: childTrace
-    //       });
-    //     });
-    // }
-    // else if (mode === TraceMode.ContextOnly) {
-
+    
     // get all child contexts
+    const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
     childContexts.forEach(childContext => {
       // create child context
@@ -88,11 +61,6 @@ class ContextNode extends HostComponentEndpoint {
         context: childContext
       });
     });
-
-    // }
-    // else {
-    //   this.logger.error('Unknown TraceMode', TraceMode.getName(mode), mode);
-    // }
   }
 
   reveal() {
@@ -100,16 +68,17 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   public = {
-    async showContext(applicationId, contextId) {
-      const { dataProvider } = allApplications.getById(applicationId);
-      const trace = dataProvider.util.getFirstTraceOfContext(contextId);
-      await this.componentManager.externals.goToTrace(trace);
+    async goToFirstTrace() {
+      await this.componentManager.externals.goToTrace(this.firstTrace);
+    },
+    async goToParentTrace() {
+      await this.componentManager.externals.goToTrace(this.parentTrace);
     },
     selectFirstTrace() {
-      const { applicationId, context: { contextId } } = this.state;
-      const { dataProvider } = allApplications.getById(applicationId);
-      const trace = dataProvider.util.getFirstTraceOfContext(contextId);
-      traceSelection.selectTrace(trace);
+      traceSelection.selectTrace(this.firstTrace);
+    },
+    selectParentTrace() {
+      traceSelection.selectTrace(this.parentTrace);
     },
     toggleStaticContextHighlight() {
       const { applicationId, context: { staticContextId } } = this.state;

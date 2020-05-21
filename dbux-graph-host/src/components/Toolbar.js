@@ -23,10 +23,6 @@ class Toolbar extends HostComponentEndpoint {
       const mode = this.focusController.toggleSyncMode();
       this.setState({ syncMode: mode });
     },
-
-    switchTraceMode() {
-      this.context.graphDocument.switchTraceMode();
-    }
   }
 }
 
