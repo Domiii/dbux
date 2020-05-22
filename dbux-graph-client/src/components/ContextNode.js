@@ -62,8 +62,8 @@ class ContextNode extends ClientComponentEndpoint {
     // this.els.nodeChildren.id = `children_${contextId}`;
     this.els.contextLabel.textContent = contextNameLabel;
     this.els.locLabel.textContent = contextLocLabel;
-    this.els.parentLabel.textContent = parentTraceNameLabel || contextNameLabel;
-    this.els.parentLocLabel.textContent = parentTraceLocLabel;
+    this.els.parentLabel.textContent = parentTraceNameLabel || '';
+    this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
 
     // set popper

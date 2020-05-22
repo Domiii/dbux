@@ -51,7 +51,7 @@ class ContextNode extends HostComponentEndpoint {
       }
     } = this.state;
 
-    
+
     // get all child contexts
     const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
@@ -73,13 +73,17 @@ class ContextNode extends HostComponentEndpoint {
       await this.componentManager.externals.goToTrace(this.firstTrace);
     },
     async goToParentTrace() {
-      await this.componentManager.externals.goToTrace(this.parentTrace);
+      if (this.parentTrace) {
+        await this.componentManager.externals.goToTrace(this.parentTrace);
+      }
     },
     selectFirstTrace() {
       traceSelection.selectTrace(this.firstTrace);
     },
     selectParentTrace() {
-      traceSelection.selectTrace(this.parentTrace);
+      if (this.parentTrace) {
+        traceSelection.selectTrace(this.parentTrace);
+      }
     },
     toggleStaticContextHighlight() {
       const { applicationId, context: { staticContextId } } = this.state;
