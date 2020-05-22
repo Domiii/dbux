@@ -50,7 +50,7 @@ export default class Runtime {
 
   _lastTraceByContextId = {};
 
-  _lastBceInByContextId = {};
+  _bcesInByContextId = {};
 
 
   // ###########################################################################
@@ -170,16 +170,20 @@ export default class Runtime {
     this._lastTraceByContextId[contextId] = traceId;
   }
 
-  setBCEForContext(contextId, traceId) {
-    this._lastBceInByContextId[contextId] = traceId;
+  addBCEForContext(contextId, traceId) {
+    let bceStack = this._bcesInByContextId[contextId];
+    if (!bceStack) {
+      bceStack = this._bcesInByContextId[contextId] = [];
+    }
+    bceStack.push(traceId);
   }
 
   /**
    * Determine `parentTraceId` (which trace pushed which context).
    */
-  getParentTraceId() {
+  popParentTraceId() {
     const parentContextId = this.peekCurrentContextId();
-    return this._lastBceInByContextId[parentContextId] || 
+    return this._bcesInByContextId[parentContextId] || 
            this.getLastTraceInContext(parentContextId);
   }
 
