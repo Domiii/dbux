@@ -2,7 +2,27 @@ import template from '@babel/template';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { getPathTraceId } from '../data/StaticTraceCollection';
+import { isPathInstrumented } from './instrumentationHelper';
 
+
+export function getTracePath(path) {
+  const cfg = path.getData('visitorCfg');
+  const originalIsParent = cfg?.originalIsParent;
+  if (originalIsParent) {
+    // NOTE: we try to find the first parent path that is an expression and not instrumented
+    let tracePath = path.parentPath;
+    while (tracePath && !tracePath.isStatement() && isPathInstrumented(tracePath)) {
+      // this expression is represented by the parentPath, instead of just the value path
+      tracePath = tracePath.parentPath;
+    }
+    if (tracePath && (tracePath.isStatement() || isPathInstrumented(tracePath))) {
+      // invalid path
+      tracePath = null;
+    }
+    return tracePath;
+  }
+  return null;
+}
 
 // ###########################################################################
 // builders + utilities
@@ -194,4 +214,29 @@ export function traceBeforeSuper(path, state) {
   // NOTE: we don't want to flag the `statementPath` as visited/instrumented
   const newNode = buildTraceExpr(getOrCreateThisNode(), state, 'traceExpr', TraceType.ExpressionValue, { tracePath: path });
   statementPath.insertBefore(t.expressionStatement(newNode));
+}
+
+
+/**
+ * NOTE: convert `o.f(...args)` to `var _o, _f; _o = traceValue(o), _f = traceValue(_o.f), BCE, traceCall(_f.call(_o, ...args));`
+ * We do this to get accurate `parentTrace` relationships, where we want to:
+ *   (a) handle getters carefully
+ *   (b) discern between getter and call expression on the stack
+ *   (c) resolve conflicts with `super.f()`
+ */
+export function instrumentBeforeCallExpression(callResultType, path, state) {
+  if (calleePath.isMemberExpression) {
+    const _oId = path.scope.generateDeclaredUidIdentifier('o');
+    const _fId = path.scope.generateDeclaredUidIdentifier('f');
+
+
+
+    return callPath;
+  }
+  else {
+    // TODO: trace function itself
+    // `BeforeCallExpression` (returns `originalPath`)
+    const tracePath = getTracePath(path);
+    path = traceBeforeExpression(TraceType.BeforeCallExpression, path, state, tracePath);
+  }
 }

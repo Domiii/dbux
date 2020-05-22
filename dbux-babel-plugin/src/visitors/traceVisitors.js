@@ -10,7 +10,7 @@ import Enum from 'dbux-common/src/util/Enum';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger } from 'dbux-common/src/log/logger';
 import truncate from 'lodash/truncate';
-import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceBeforeSuper } from '../helpers/traceHelpers';
+import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceBeforeSuper, instrumentBeforeCallExpression, getTracePath } from '../helpers/traceHelpers';
 import { loopVisitor } from './loopVisitors';
 import { getPathTraceId } from '../data/StaticTraceCollection';
 import { isCallPath } from '../helpers/functionHelpers';
@@ -19,8 +19,8 @@ import { awaitVisitEnter } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
-const Verbose = false;
-// const Verbose = true;
+// const Verbose = false;
+const Verbose = true;
 
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
@@ -366,15 +366,15 @@ function normalizeConfig(cfg) {
 // ENTER instrumentors
 // ###########################################################################
 
-function beforeExpression(traceType, path, state) {
+function enterExpression(traceType, path, state) {
   if (isCallPath(path)) {
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be CallExpressions
-    return beforeCallExpression(traceType, path, state);
+    return enterCallExpression(traceType, path, state);
   }
   return null;
 }
 
-function beforeCallExpression(callResultType, path, state) {
+function enterCallExpression(callResultType, path, state) {
   // CallExpression
 
   // special treatment for `super`
@@ -382,22 +382,20 @@ function beforeCallExpression(callResultType, path, state) {
   if (calleePath.isSuper()) {
     traceBeforeSuper(calleePath, state);
   }
-
-  // `BeforeCallExpression` (returns `originalPath`)
-  const tracePath = getTracePath(path);
-  path = traceBeforeExpression(TraceType.BeforeCallExpression, path, state, tracePath);
+  else {
+    path = instrumentBeforeCallExpression(callResultType, path, state);
+  }
 
   // trace CallResult (on exit)
   path.setData('callResultType', callResultType);
-  return path;
 }
 
 const enterInstrumentors = {
   CallExpression(path, state) {
-    return beforeCallExpression(TraceType.CallExpressionResult, path, state);
+    return enterCallExpression(TraceType.CallExpressionResult, path, state);
   },
   ExpressionResult(path, state) {
-    return beforeExpression(null, path, state);
+    return enterExpression(null, path, state);
   },
   // ExpressionValue(pathOrPaths, state) {
   //   if (Array.isArray(pathOrPaths)) {
@@ -415,7 +413,7 @@ const enterInstrumentors = {
   MemberProperty(propertyPath, state) {
     const path = propertyPath.parentPath;
     if (path.node.computed) {
-      return beforeExpression(TraceType.ExpressionValue, propertyPath, state);
+      return enterExpression(TraceType.ExpressionValue, propertyPath, state);
     }
     return null;
   },
@@ -427,7 +425,7 @@ const enterInstrumentors = {
     }
     else {
       // trace object (e.g. `x` in `x.y`) as-is
-      return beforeExpression(TraceType.ExpressionValue, objPath, state, null, false);
+      return enterExpression(TraceType.ExpressionValue, objPath, state, null, false);
     }
   },
 
@@ -468,11 +466,11 @@ const enterInstrumentors = {
 
   ReturnArgument(path, state) {
     // trace `arg` in `return arg;`
-    return beforeExpression(TraceType.ReturnArgument, path, state);
+    return enterExpression(TraceType.ReturnArgument, path, state);
   },
 
   ThrowArgument(path, state) {
-    return beforeExpression(TraceType.ThrowArgument, path, state);
+    return enterExpression(TraceType.ThrowArgument, path, state);
   },
 
   Function: functionVisitEnter,
@@ -737,23 +735,6 @@ function visitExit(path, state, visitorCfg) {
 //   throw new Error(message + (obj && (' - ' + JSON.stringify(obj)) || ''));
 // }
 
-function getTracePath(path) {
-  const cfg = path.getData('visitorCfg');
-  const originalIsParent = cfg?.originalIsParent;
-  if (originalIsParent) {
-    let tracePath = path.parentPath;
-    while (tracePath && !tracePath.isStatement() && isPathInstrumented(tracePath)) {
-      // this expression is represented by the parentPath, instead of just the value path
-      tracePath = tracePath.parentPath;
-    }
-    if (tracePath && (tracePath.isStatement() || isPathInstrumented(tracePath))) {
-      // invalid path
-      tracePath = null;
-    }
-    return tracePath;
-  }
-  return null;
-}
 
 
 function _getFullName(cfg) {
