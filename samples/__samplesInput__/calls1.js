@@ -1,21 +1,38 @@
-function main() {
-  const c = add(1, 2);
-  const d = mul(
-    add(c, mul(2, 3)),
-    add(5, mul(6, [7, 8].reduce((a, x) => a + x)))
-  );
-  console.log(
-    add(d, -100),
-    [100, 20, 33, 4, 5, 6, 7].reduce((a, x) => Math.min(a, x))
-  );
-}
+/* eslint-disable */
 
-function add(a, b) {
-  return a + b;
-}
+var a = {
+  get b() {
+    console.log('b');
+    return {
+      f(x) { console.log('f', x); }
+    }
+  },
 
-function mul(a, b) {
-  return a * b;
-}
+  g() {
+    console.log('g');
+    return {
+      h(x) {
+        console.log('h', x);
+      }
+    };
+  }
+};
 
-main();
+a.b.f(1);
+
+a.g().h(2);
+
+var _o, _f;
+_o = a.b,
+  _f = _o.f, 
+  _f.call(_o, 1);
+
+var _o2, _f2, _o3, _f3;
+
+_o3 = (
+  _o2 = a,
+  _f2 = _o2.g,
+  _f2.call(_o2)
+),
+  _f3 = _o3.h,
+  _f3.call(_o3)
