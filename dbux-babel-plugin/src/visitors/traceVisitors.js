@@ -160,12 +160,12 @@ const traceCfg = (() => {
 
     MemberExpression: [
       NoTrace,
-      [['propery', MemberProperty], ['object', MemberObject]]
+      [['object', MemberObject], ['propery', MemberProperty]]
     ],
 
     OptionalMemberExpression: [
       NoTrace,
-      [['propery', MemberProperty], ['object', MemberObject]]
+      [['object', MemberObject], ['propery', MemberProperty]]
     ],
 
     SequenceExpression: [
@@ -383,7 +383,7 @@ function enterCallExpression(callResultType, path, state) {
     traceBeforeSuper(calleePath, state);
   }
   else {
-    path = instrumentBeforeCallExpression(callResultType, path, state);
+    path = instrumentBeforeCallExpression(path, state);
   }
 
   // trace CallResult (on exit)

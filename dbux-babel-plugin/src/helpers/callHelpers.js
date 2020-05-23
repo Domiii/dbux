@@ -6,8 +6,13 @@ export function callDbuxMethod(state, methodName, ...args) {
     ids: { dbux }
   } = state;
 
-  t.callExpression(t.memberExpression(dbux, t.identifier(methodName)), args);
+  return t.callExpression(t.memberExpression(dbux, t.identifier(methodName)), args);
 }
+
+
+// export function buildCallExpression() {
+
+// }
 
 export function getCalleeName(state, callPath) {
   const callee = callPath.get('callee');

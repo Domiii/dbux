@@ -70,11 +70,10 @@ export function getTracesAt(application: Application, programId, pos): Trace[] {
     staticId: staticContextId
   } = staticContext;
 
-  const traces = dp.util.getAllTracesOfStaticContext(staticContextId)
-    .filter(trace =>
-      // ignore BCEs
-      dp.util.getTraceType(trace.traceId) !== TraceType.CallExpressionResult
-    );
+  const traces = dp.util.getAllTracesOfStaticContext(staticContextId);
+    // .filter(trace =>
+    //   dp.util.getTraceType(trace.traceId) !== TraceType.CallExpressionResult
+    // );
 
   // only return traces at cursor
   return traces.filter(trace => {

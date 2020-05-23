@@ -3,6 +3,7 @@ import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContex
 import Stack from './Stack';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
+import traceCollection from './data/traceCollection';
 
 // function mergeStacks(dst, src) {
 //   if ((src?.getDepth() || 0) > 0) {
@@ -181,10 +182,19 @@ export default class Runtime {
   /**
    * Determine `parentTraceId` (which trace pushed which context).
    */
-  popParentTraceId() {
+  getParentTraceId() {
     const parentContextId = this.peekCurrentContextId();
-    return this._bcesInByContextId[parentContextId] || 
-           this.getLastTraceInContext(parentContextId);
+    const lastTraceId = this.getLastTraceInContext(parentContextId);
+    const lastTrace = traceCollection.getById(lastTraceId);
+    if (lastTrace?.callId) {
+      // last trace was a parameter or a BCE -> return BCE
+      return this._bcesInByContextId[parentContextId];
+    }
+
+    // this context was probably not created by a call.
+    //    it was probably a getter, proxy trap etc.
+    //    in this case, just assume that the parent is the last trace.
+    return lastTraceId;
   }
 
   /**
