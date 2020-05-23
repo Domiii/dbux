@@ -1,45 +1,45 @@
 /* eslint-disable */
 
-f(1);
+// f(1);
 
-function f(x) {
-  console.log('f', x);
-}
+// function f(x) {
+//   console.log('f', x);
+// }
 
 
-// var a = {
-//   get b() {
-//     console.log('b');
-//     return {
-//       f(x) { console.log('f', x); }
-//     }
-//   },
+var a = {
+  get b() {
+    console.log('b');
+    return {
+      f(x) { console.log('f', x); }
+    }
+  },
 
-//   g() {
-//     console.log('g');
-//     return {
-//       h(x) {
-//         console.log('h', x);
-//       }
-//     };
-//   },
+  g() {
+    console.log('g');
+    return {
+      h(x) {
+        console.log('h', x);
+      }
+    };
+  },
 
-//   get i() {
-//     console.log('i');
-//     return function j(x, y) {
-//       console.log('j', x, y);
-//     };
-//   }
-// };
+  get i() {
+    console.log('i');
+    return function j(x, y) {
+      console.log('j', x, y);
+    };
+  }
+};
 
-// a.b.f(1);
+a.b.f(1);
 
 // var _o, _f;
 // _o = a.b,
 //   _f = _o.f,
 //   _f.call(_o, 1);
 
-// a.g().h(2);
+a.g().h(2);
 
 // a.i(3, 4);
 

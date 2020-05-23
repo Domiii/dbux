@@ -280,6 +280,9 @@
 ## TODO (other)
 * add `crosshair` icon to selected context
 * revamp `CallExpression` instrumentation for `parentTrace` detection
+   * Steps
+      * 
+      * (fix: `MemberExpression.object` is traced later, causing wrong order of `staticTraceId` of `a` in `a.b.f(x)`)
    * more scenarios: `nested memberExpr`, `optional`, `new`, `super`
       * `a.b.c.f()`
       * `f?.()`

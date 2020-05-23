@@ -65,15 +65,15 @@ export function getTracesAt(application: Application, programId, pos): Trace[] {
   if (!staticContext) {
     return null;
   }
-  
-  const { 
+
+  const {
     staticId: staticContextId
   } = staticContext;
 
   const traces = dp.util.getAllTracesOfStaticContext(staticContextId);
-    // .filter(trace =>
-    //   dp.util.getTraceType(trace.traceId) !== TraceType.CallExpressionResult
-    // );
+  // .filter(trace =>
+  //   dp.util.getTraceType(trace.traceId) !== TraceType.CallExpressionResult
+  // );
 
   // only return traces at cursor
   return traces.filter(trace => {

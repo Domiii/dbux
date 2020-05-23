@@ -90,7 +90,6 @@ export function traceWrapExpression(traceType, path, state, tracePath, markVisit
 
 function instrumentArgs(callPath, state, beforeCallTraceId) {
   const args = callPath.node.arguments;
-  const replacements = [];
 
   for (let i = 0; i < args.length; ++i) {
     // if (t.isFunction(args[i])) {
@@ -120,10 +119,6 @@ function instrumentArgs(callPath, state, beforeCallTraceId) {
       argTrace._callId = beforeCallTraceId;
     }
   }
-
-  // // TODO: I deferred to here because I felt it was safer this way,
-  // //    but might not need to defer at all.
-  // replacements.forEach(r => r());
 }
 
 export function traceCallExpression(callPath, state, resultType, beforeCallTraceId, tracePath = null) {
@@ -248,8 +243,8 @@ const instrumentBeforeMemberCallExpression =
     const fPath = calleePath.get('property');
     const argPath = path.get('arguments');
 
-    const oTraceId = state.traces.addTrace(oPath, TraceType.ExpressionValue);
-    const calleeTraceId = state.traces.addTrace(calleePath, TraceType.BeforeCallExpression);
+    // const oTraceId = state.traces.addTrace(oPath, TraceType.ExpressionValue);
+    // const calleeTraceId = state.traces.addTrace(calleePath, TraceType.BeforeCallExpression);
 
     const originalLoc = path.node.loc; // NOTE: we need to get loc before instrumentation
 
@@ -258,42 +253,42 @@ const instrumentBeforeMemberCallExpression =
 
     const o = path.scope.generateDeclaredUidIdentifier('o');
     const f = path.scope.generateDeclaredUidIdentifier(fPath.node.name);
-    
-    // NOTE: using this approach over template helps keep the identity of the original nodes
-    //  (templates copy, rahter than re-use nodes)
-    const callExpr = t.callExpression(
-      t.memberExpression(f, t.identifier('call')),
-      // [o, ...argPath.map(p => p.node)]
-      [o]
-    );
 
     replaceWithTemplate(templ, path, {
       dbux,
       o,
       f,
-      oTraceId: t.numericLiteral(oTraceId),
-      calleeTraceId: t.numericLiteral(calleeTraceId),
+      // oTraceId: t.numericLiteral(oTraceId),
+      // calleeTraceId: t.numericLiteral(calleeTraceId),
       oNode: oPath.node,
-      fNode: fPath.node,
-      callExpr
+      fNode: fPath.node
     });
 
+    // keep path data, keep locs, set pathTraceId
     const newCallPath = path.get('expressions.2');
 
-    // hackfix: put the arg nodes in as-is, so the args (and their entire subtree) will stay instrumentable and stay as-is
-    newCallPath.node.arguments.push(...argPath.map(p => p.node));
+    const { expressions } = path.node;
+
+    // hackfix: put nodes in as-is, so those sub-trees will keep their data, locs and everything else
+    expressions[0].right = oPath.node;
+    // expressions[1].right.property = ;
+    expressions[2].arguments.push(...argPath.map(p => p.node));
 
     state.onCopy(path, newCallPath);
 
     // set loc on actual call, so it gets instrumented on exit as well
     newCallPath.node.loc = originalLoc;
 
+    newCallPath.get('callee').setData('bcePath', );
+
     return newCallPath;
-  }).bind(null, template(`
-  %%o%% = %%dbux%%.traceExpr(%%oTraceId%%, %%oNode%%),
-    %%f%% = %%dbux%%.traceExpr(%%calleeTraceId%%, %%o%%.%%fNode%%),
-    // %%f%%.call(%%args%%)
-    %%callExpr%%
+  }).bind(null, template(
+    // %%o%% = %%dbux%%.traceExpr(%%oTraceId%%, %%oNode%%),
+    //  %%f%% = %%dbux%%.traceExpr(%%calleeTraceId%%, %%o%%.%%fNode%%),
+    `
+    %%o%% = %%oNode%%,
+      %%f%% = %%o%%.%%fNode%%,
+      %%f%%.call(%%o%%)     // NOTE: we push the actual arguments in later
   `));
 
 /**

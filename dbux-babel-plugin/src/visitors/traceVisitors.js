@@ -27,19 +27,20 @@ const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
-  CallExpression: 1,
+  Callee: 1,
+  CallExpression: 2,
   /**
    * Result of a computation
    */
-  ExpressionResult: 2,
+  ExpressionResult: 3,
   /**
    * Only keeping track of data
    */
-  ExpressionValue: 3,
+  ExpressionValue: 4,
   // ExpressionNoValue: 3,
-  Statement: 4,
-  Block: 5,
-  Loop: 6,
+  Statement: 5,
+  Block: 6,
+  Loop: 7,
 
   // Special attention required for these
   MemberProperty: 8,
@@ -61,6 +62,7 @@ const InstrumentationDirection = {
 const traceCfg = (() => {
   const {
     NoTrace,
+    Callee,
     CallExpression,
     ExpressionResult,
     ExpressionValue,
@@ -118,7 +120,8 @@ const traceCfg = (() => {
     // NOTE: also sync this against `isCallPath`
     // ########################################
     CallExpression: [
-      CallExpression
+      CallExpression,
+      [['callee', Callee]]
     ],
     OptionalCallExpression: [
       CallExpression
@@ -492,22 +495,25 @@ function wrapExpression(traceType, path, state) {
   const tracePath = getTracePath(path);
 
   if (isCallPath(path)) {
-    return wrapCallExpression(path, state, tracePath);
+    return wrapCallExpression(path, state);
   }
 
   return traceWrapExpression(traceType, path, state, tracePath);
 }
 
-function wrapCallExpression(path, state, tracePath = null) {
+function wrapCallExpression(path, state) {
   // CallExpression
   // instrument args after everything else has already been done
 
   // const calleePath = path.get('callee');
   // const beforeCallTraceId = getPathTraceId(calleePath);
   // traceCallExpression(path, state, beforeCallTraceId);
-  const beforeCallTraceId = getPathTraceId(tracePath || path);
+
+  // TODO: instrument BCE as well, here
+
+  const beforeCallTraceId = getPathTraceId(path.get('callee'));
   const callResultType = path.getData('callResultType') || TraceType.CallExpressionResult;
-  return traceCallExpression(path, state, callResultType, beforeCallTraceId, tracePath);
+  return traceCallExpression(path, state, callResultType, beforeCallTraceId);
 }
 
 /**
