@@ -60,7 +60,6 @@ class GraphRoot extends ClientComponentEndpoint {
     let panzoom;
     panzoom = createPanzoom(el, {
       smoothScroll: false,
-      zoomDoubleClickSpeed: 1,
       beforeWheel(evt) {
         let shouldIgnore = !evt.ctrlKey;
         return shouldIgnore;
@@ -70,8 +69,6 @@ class GraphRoot extends ClientComponentEndpoint {
         let shouldIgnore = !evt.altKey;
         return shouldIgnore;
       },
-      bounds: true,
-      boundsPadding: 0.2,
       maxZoom: 2,
       minZoom: 0.1,
     });

@@ -28,9 +28,9 @@ module.exports = createPanZoom;
  */
 function createPanZoom(domElement, options) {
   options = options || {};
-
+  
   var panController = options.controller;
-
+  
   if (!panController) {
     if (makeSvgController.canAttach(domElement)) {
       panController = makeSvgController(domElement, options);
@@ -50,7 +50,7 @@ function createPanZoom(domElement, options) {
   var storedCTMResult = { x: 0, y: 0 };
 
   var isDirty = false;
-  var transform = new Transform();
+  var transform = new Transform(domElement);
 
   if (panController.initTransform) {
     panController.initTransform(transform);
@@ -64,7 +64,9 @@ function createPanZoom(domElement, options) {
   var minZoom = typeof options.minZoom === 'number' ? options.minZoom : 0;
 
   var boundsPadding = typeof options.boundsPadding === 'number' ? options.boundsPadding : 0.05;
-  var zoomDoubleClickSpeed = typeof options.zoomDoubleClickSpeed === 'number' ? options.zoomDoubleClickSpeed : defaultDoubleTapZoomSpeed;
+  // i can use api to disable doubleclick ,so i change it
+  // var zoomDoubleClickSpeed = typeof options.zoomDoubleClickSpeed === 'number' ? options.zoomDoubleClickSpeed : defaultDoubleTapZoomSpeed;
+  var zoomDoubleClickSpeed = typeof options.zoomDoubleClickSpeed === 'number' ? options.zoomDoubleClickSpeed : false;
   var beforeWheel = options.beforeWheel || noop;
   var beforeMouseDown = options.beforeMouseDown || noop;
   var speed = typeof options.zoomSpeed === 'number' ? options.zoomSpeed : defaultZoomSpeed;
@@ -180,6 +182,8 @@ function createPanZoom(domElement, options) {
     transform.scale = scale;
   }
 
+
+  // [zoom]
   function transformToScreen(x, y) {
     if (panController.getScreenCTM) {
       var parentCTM = panController.getScreenCTM();
@@ -277,17 +281,21 @@ function createPanZoom(domElement, options) {
   }
 
   function moveTo(x, y) {
+    // [scroll fix]
+    // console.log('moveToXY:','x:',x,'y:',y);
     transform.x = x;
     transform.y = y;
 
-    keepTransformInsideBounds();
+    // because we use scroll bar to control pan, so we don't need bounds -del
+    // keepTransformInsideBounds();
 
     triggerEvent('pan');
     makeDirty();
   }
 
   function moveBy(dx, dy) {
-    console.log(transform.x + dx, transform.y + dy);
+    // [scroll fix]
+    // console.log('transfrom:',transform);
     moveTo(transform.x + dx, transform.y + dy);
   }
 
@@ -376,6 +384,7 @@ function createPanZoom(domElement, options) {
     frameAnimation = window.requestAnimationFrame(frame);
   }
 
+  // [zoom]
   function zoomByRatio(clientX, clientY, ratio) {
     if (isNaN(clientX) || isNaN(clientY) || isNaN(ratio)) {
       throw new Error('zoom requires valid numbers');
@@ -383,6 +392,7 @@ function createPanZoom(domElement, options) {
 
     var newScale = transform.scale * ratio;
 
+    // check newScale whether biger or smaller than set -del
     if (newScale < minZoom) {
       if (transform.scale === minZoom) return;
 
@@ -395,18 +405,27 @@ function createPanZoom(domElement, options) {
     }
 
     var size = transformToScreen(clientX, clientY);
-
-    transform.x = size.x - ratio * (size.x - transform.x);
-    transform.y = size.y - ratio * (size.y - transform.y);
+    console.log('size:',size);
+    console.log('scroll pos:','x:',transform.x,'y:',transform.y);
+    transform.x = ratio * 100-100;
+    transform.y = ratio * 100-100;
+    console.log('ratio:',ratio,'tx:',ratio*size.x,'ty:',ratio*size.y);
+    console.log('change','scroll pos:','x:',transform.x,'y:',transform.y)
 
     // TODO: https://github.com/anvaka/panzoom/issues/112
-    if (bounds && boundsPadding === 1 && minZoom === 1) {
+    // we don't use bounds -del
+
+    // if (bounds && boundsPadding === 1 && minZoom === 1) {
+    //   transform.scale *= ratio;
+    //   keepTransformInsideBounds();
+    // } else {
+    //   var transformAdjusted = keepTransformInsideBounds();
+    //   if (!transformAdjusted) transform.scale *= ratio;
+    // }
+    if(minZoom !== 1){
       transform.scale *= ratio;
-      keepTransformInsideBounds();
-    } else {
-      var transformAdjusted = keepTransformInsideBounds();
-      if (!transformAdjusted) transform.scale *= ratio;
     }
+
 
     triggerEvent('zoom');
 
@@ -439,7 +458,6 @@ function createPanZoom(domElement, options) {
     if (!smooth) {
       return moveBy(dx, dy);
     }
-
     if (moveByAnimation) moveByAnimation.cancel();
 
     var from = { x: 0, y: 0 };
@@ -710,6 +728,9 @@ function createPanZoom(domElement, options) {
   }
 
   function onDoubleClick(e) {
+    if(!zoomDoubleClickSpeed){
+      return;
+    }
     beforeDoubleClick(e);
     var offset = getOffsetXY(e);
     if (transformOrigin) {
@@ -739,9 +760,12 @@ function createPanZoom(domElement, options) {
     smoothScroll.cancel();
 
     var offset = getOffsetXY(e);
+    
     var point = transformToScreen(offset.x, offset.y);
     mouseX = point.x;
     mouseY = point.y;
+    // mouseX = offsetX;
+    // mouseY = offsetY;
 
     // We need to listen on document itself, since mouse can go outside of the
     // window, and we will loose it
@@ -767,8 +791,10 @@ function createPanZoom(domElement, options) {
     
     mouseX = point.x;
     mouseY = point.y;
-    
-    // console.log(point,mouseX,mouseY);
+
+    // [scroll fix] 
+    // console.log('[scroll fix]\n','mouseXY:','x:',mouseX,'y:',mouseY);
+    // console.log('dxy:','x:',dx,'y:',dy);
     internalMoveBy(dx, dy);
   }
 
@@ -796,12 +822,10 @@ function createPanZoom(domElement, options) {
   function onMouseWheel(e) {
     // if client does not want to handle this event - just ignore the call
     if (beforeWheel(e)) return;
-
     smoothScroll.cancel();
 
     var delta = e.deltaY;
     if (e.deltaMode > 0) delta *= 100;
-
     var scaleMultiplier = getScaleMultiplier(delta);
 
     if (scaleMultiplier !== 1) {
@@ -817,9 +841,12 @@ function createPanZoom(domElement, options) {
     var offsetX, offsetY;
     // I tried using e.offsetX, but that gives wrong results for svg, when user clicks on a path.
     var ownerRect = owner.getBoundingClientRect();
-    offsetX = e.clientX - ownerRect.scrollLeft;
-    offsetY = e.clientY - ownerRect.scrollTop;
-
+    offsetX = e.clientX - ownerRect.left;
+    offsetY = e.clientY - ownerRect.top;
+    
+    // var graphCont = owner.querySelector('.graph-cont');
+    // offsetX = e.clientX - graphCont.scrollLeft;
+    // offsetY = e.clientY - graphCont.scrollTop;
     return { x: offsetX, y: offsetY };
   }
 
@@ -862,6 +889,7 @@ function createPanZoom(domElement, options) {
     };
   }
 
+  // [zoom]
   function publicZoomTo(clientX, clientY, scaleMultiplier) {
     smoothScroll.cancel();
     cancelZoomAnimation();
@@ -1010,7 +1038,7 @@ function autoRun() {
       return;
     }
     var options = collectOptions(panzoomScript);
-    console.log(options);
+
     window[globalName] = createPanZoom(el, options);
   }
 

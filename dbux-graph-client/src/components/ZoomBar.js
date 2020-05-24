@@ -18,13 +18,13 @@ export default class ZoomBtn extends ClientComponentEndpoint {
     zoomInBtn: {
       click() {
         const { top } = document.querySelector('.graph-root').getBoundingClientRect();
-        this.panzoom.zoomTo(0, 30 - top, this.panzoom.getScaleMultiplier(-1 * 100));
+        this.panzoom.zoomTo(100, 100, this.panzoom.getScaleMultiplier(-1 * 100));
       }
     },
     zoomOutBtn: {
       click() {
         const { top } = document.querySelector('.graph-root').getBoundingClientRect();
-        this.panzoom.zoomTo(0, 30 - top, this.panzoom.getScaleMultiplier(1 * 100));
+        this.panzoom.zoomTo(100, 100, this.panzoom.getScaleMultiplier(1 * 100));
       }
     }
   }

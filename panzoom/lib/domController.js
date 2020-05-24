@@ -44,15 +44,16 @@ function makeDomController(domElement, options) {
     //   transform.scale + ', 0, 0, ' +
     //   transform.scale + ', ' +
     //   transform.x + ', ' + transform.y + ')';
-    domElement.style.transform = 'matrix(' +
+    console.log(transform)
+    domElement.querySelector('.body').style.transform = 'matrix(' +
     transform.scale + ', 0, 0, ' +
     transform.scale + ', ' +
     0 + ', ' + 0 + ')';
     domElement.scrollLeft = transform.x;
     domElement.scrollTop = transform.y;
-    // domElement.scrollTop = 100;
-      
-      // console.log("tx",transform.x,"ty",transform.y,"scrollTop",domElement.scrollTop,"scollLeft",domElement.scrollLeft, domElement);
+    
+    // [scroll fix]
+    // console.log("tx",transform.x,"ty",transform.y,"scrollTop",domElement.scrollTop,"scollLeft",domElement.scrollLeft);
   }
 }
 

@@ -72,6 +72,7 @@ html,body{
   width: 100vw;
   height: calc(100vh - 30px);
   overflow: scroll;
+  transform-origin: 100px 100px;
 }
 
 .graph-cont > .body {
