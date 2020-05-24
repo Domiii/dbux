@@ -2,6 +2,7 @@
 # TODO
 
 ## TODO (shared)
+* on error: render 🔥 in `ContextNode`
 * in `Object traces` node: BCE `traces` do not render as "selected"
 * in `ContextNode`: make `loc-label` clickable (and add `popper`), similar to `displayName`
 * when clicking error button: call `reveal({focus: true})` on `TraceDetailsView`
@@ -280,6 +281,9 @@
 ## TODO (other)
 * add `crosshair` icon to selected context
 * revamp `CallExpression` instrumentation for `parentTrace` detection
+   * last few problems?
+      * check: cannot currently select `return` traces?
+      * generates 4 separate traces on `a.i(...)`: `a.i(a.g().h(2), a.b.f(1));`
    * Steps
       * 
       * (fix: `MemberExpression.object` is traced later, causing wrong order of `staticTraceId` of `a` in `a.b.f(x)`)

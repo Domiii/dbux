@@ -19,8 +19,8 @@ import { awaitVisitEnter } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
-// const Verbose = false;
-const Verbose = true;
+const Verbose = false;
+// const Verbose = true;
 
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
@@ -511,9 +511,8 @@ function wrapCallExpression(path, state) {
 
   // TODO: instrument BCE as well, here
 
-  const beforeCallTraceId = getPathTraceId(path.get('callee'));
   const callResultType = path.getData('callResultType') || TraceType.CallExpressionResult;
-  return traceCallExpression(path, state, callResultType, beforeCallTraceId);
+  return traceCallExpression(path, state, callResultType);
 }
 
 /**

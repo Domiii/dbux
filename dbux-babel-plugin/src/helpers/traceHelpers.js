@@ -2,7 +2,7 @@ import template from '@babel/template';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { getPathTraceId } from '../data/StaticTraceCollection';
-import { isPathInstrumented } from './instrumentationHelper';
+import { isPathInstrumented, isNodeInstrumented } from './instrumentationHelper';
 
 
 export function getTracePath(path) {
@@ -88,64 +88,6 @@ export function traceWrapExpression(traceType, path, state, tracePath, markVisit
 }
 
 
-function instrumentArgs(callPath, state, beforeCallTraceId) {
-  const args = callPath.node.arguments;
-
-  for (let i = 0; i < args.length; ++i) {
-    // if (t.isFunction(args[i])) {
-    //   instrumentCallbackSchedulingArg(callPath, state, i);
-    // }
-    // else {
-    const argPath = callPath.get('arguments.' + i);
-    if (!argPath.node.loc) {
-      // synthetic node -> ignore
-      //  e.g. we replace `o.f(x)` with `[...] o.call(o, x)`, 
-      //      and we do not want to trace the `o` arg here
-      continue;
-    }
-
-    const argTraceId = getPathTraceId(argPath);
-    // const argContextId = !argTraceId && getPathContextId(argPath) || null;
-    if (!argTraceId) {
-      // not instrumented yet -> add trace
-      // replacements.push(() => 
-      traceWrapArg(argPath, state, beforeCallTraceId);
-      // );
-    }
-    else { // if (argTraceId) {
-      // has been instrumented and has a trace -> just set it's callId
-      // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
-      const argTrace = state.traces.getById(argTraceId);
-      argTrace._callId = beforeCallTraceId;
-    }
-  }
-}
-
-export function traceCallExpression(callPath, state, resultType, beforeCallTraceId, tracePath = null) {
-  instrumentArgs(callPath, state, beforeCallTraceId);
-  //const originalCallPath = 
-  _traceWrapExpression('traceExpr', resultType, callPath, state, {
-    resultCallId: beforeCallTraceId,
-    tracePath
-  });
-
-  //   const newNode = buildTraceExprBeforeAndAfter(expressionPath, state);
-  //   expressionPath.replaceWith(newNode);
-  //   state.onCopy(expressionPath, expressionPath.get('expressions.1.arguments.1'), 'trace');
-}
-
-
-export function traceWrapArg(argPath, state, beforeCallTraceId) {
-  const tracePath = argPath;
-  if (argPath.isSpreadElement()) {
-    argPath = argPath.get('argument');
-  }
-  return _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, {
-    callId: beforeCallTraceId,
-    tracePath
-  });
-}
-
 function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg, markVisited = true) {
   // if (t.isLiteral(node)) {
   //   // don't care about literals
@@ -223,6 +165,10 @@ export function traceBeforeSuper(path, state) {
   statementPath.insertBefore(t.expressionStatement(newNode));
 }
 
+// ###########################################################################
+// call enter
+// ###########################################################################
+
 /**
  * Convert `o.f(...args)` to:
  * ```
@@ -235,6 +181,8 @@ export function traceBeforeSuper(path, state) {
  *   (a) handle getters carefully
  *   (b) discern between getter and call expression on the stack
  *   (c) resolve conflicts with `super.f()`
+ * 
+ * NOTE: We do *NOT* instrument here, because it would mess up `staticTraceId` order (e.g. in `f(u).g(v)`)
  */
 const instrumentBeforeMemberCallExpression =
   (function instrumentBeforeMemberCallExpression(templ, path, state) {
@@ -246,16 +194,19 @@ const instrumentBeforeMemberCallExpression =
     // const oTraceId = state.traces.addTrace(oPath, TraceType.ExpressionValue);
     // const calleeTraceId = state.traces.addTrace(calleePath, TraceType.BeforeCallExpression);
 
-    const originalLoc = path.node.loc; // NOTE: we need to get loc before instrumentation
+    // NOTE: we need to get loc before instrumentation
+    const { loc } = path.node;
+    const calleeLoc = calleePath.node.loc;
 
     // build
     const { ids: { dbux } } = state;
 
+    // TODO: better names :(
     const o = path.scope.generateDeclaredUidIdentifier('o');
-    const f = path.scope.generateDeclaredUidIdentifier(fPath.node.name);
+    const f = path.scope.generateDeclaredUidIdentifier(calleePath.node.name || 'func');
 
     replaceWithTemplate(templ, path, {
-      dbux,
+      // dbux,
       o,
       f,
       // oTraceId: t.numericLiteral(oTraceId),
@@ -264,31 +215,37 @@ const instrumentBeforeMemberCallExpression =
       fNode: fPath.node
     });
 
-    // keep path data, keep locs, set pathTraceId
-    const newCallPath = path.get('expressions.2');
 
-    const { expressions } = path.node;
+    // set loc, so it gets instrumented on exit as well
+    const calleePathId = 'expressions.1.right';
+    const bcePathId = 'expressions.2';
+    const newPath = path.get('expressions.3');
+    const newCalleePath = path.get(calleePathId);
 
-    // hackfix: put nodes in as-is, so those sub-trees will keep their data, locs and everything else
-    expressions[0].right = oPath.node;
-    // expressions[1].right.property = ;
-    expressions[2].arguments.push(...argPath.map(p => p.node));
+    // hackfix: put `o` and `args` in as-is; they are still going to get instrumented
+    path.node.expressions[0].right = oPath.node;
+    newPath.node.arguments.push(...argPath.map(p => p.node));
 
-    state.onCopy(path, newCallPath);
+    newCalleePath.node.loc = calleeLoc;
+    newPath.node.loc = loc;
 
-    // set loc on actual call, so it gets instrumented on exit as well
-    newCallPath.node.loc = originalLoc;
+    // keep path data
+    state.onCopy(path, newPath);
 
-    newCallPath.get('callee').setData('bcePath', );
+    // prepare for later
+    newPath.setData('_calleePath', calleePathId);
+    newPath.setData('_bcePathId', bcePathId);
 
-    return newCallPath;
+    return newPath;
   }).bind(null, template(
     // %%o%% = %%dbux%%.traceExpr(%%oTraceId%%, %%oNode%%),
     //  %%f%% = %%dbux%%.traceExpr(%%calleeTraceId%%, %%o%%.%%fNode%%),
+    // NOTE: `f.call.call(f, args)` also works (i.e. function f(x) { console.log(this, x); } f.call(this, 1); // -> f.call.call(f, this, 1))
     `
     %%o%% = %%oNode%%,
       %%f%% = %%o%%.%%fNode%%,
-      %%f%%.call(%%o%%)     // NOTE: we push the actual arguments in later
+      null,
+      %%f%%.call(%%o%%)     // NOTE: we will manually push in actual arguments
   `));
 
 /**
@@ -298,33 +255,57 @@ const instrumentBeforeMemberCallExpression =
 const instrumentBeforeCallExpressionDefault =
   (function instrumentBeforeCallExpressionDefault(templ, path, state) {
     const calleePath = path.get('callee');
-    // const argPath = path.get('arguments');
+    const argPath = path.get('arguments');
 
-    const calleeTraceId = state.traces.addTrace(calleePath, TraceType.BeforeCallExpression);
+    // const calleeTraceId = state.traces.addTrace(calleePath, TraceType.BeforeCallExpression);
+    const { loc } = path.node;
+    const calleeLoc = calleePath.node.loc;
 
     // build
-    const { ids: { dbux } } = state;
+    // const { ids: { dbux } } = state;
     path.setData('testtest', 1);
 
+    // TODO: better names :(
+    const f = path.scope.generateDeclaredUidIdentifier(calleePath.node.name || 'func');
+
     replaceWithTemplate(templ, path, {
-      dbux,
-      calleeTraceId: t.numericLiteral(calleeTraceId),
-      fNode: calleePath.node,
-      callExpr: path.node
+      // dbux,
+      f,
+      // calleeTraceId: t.numericLiteral(calleeTraceId),
+      fNode: calleePath.node
     });
 
-    const originalPath = path.get('expressions.1');
     // state.markEntered(originalPath, 'trace');
 
-    state.onCopy(path, originalPath);
+    // set loc, so it gets instrumented on exit as well
+    const calleePathId = 'expressions.0';
+    const bcePathId = 'expressions.1';
+    const newPath = path.get('expressions.2');
+    const newCalleePath = path.get(calleePathId);
+
+    // hackfix: put `args` in as-is; they are still going to get instrumented
+    newPath.node.arguments = argPath.map(p => p.node);
+
+    newCalleePath.node.loc = calleeLoc;
+    newPath.node.loc = loc;
+
+
+    // keep path data
+    state.onCopy(path, newPath);
+
+    // prepare for later
+    newPath.setData('_calleePath', calleePathId);
+    newPath.setData('_bcePathId', bcePathId);
 
     // set loc on actual call, so it gets instrumented on exit as well
     // originalPath.node.loc = path.node.loc;
 
-    return originalPath;
-  }).bind(null, template(`
-    %%dbux%%.traceExpr(%%calleeTraceId%%, %%fNode%%),
-    %%callExpr%%
+    return newPath;
+  }).bind(null, template(
+    `
+    %%f%% = %%fNode%%,
+    null,
+    %%f%%() // NOTE: we insert arguments manually
   `));
 
 export function instrumentBeforeCallExpression(path, state) {
@@ -337,4 +318,82 @@ export function instrumentBeforeCallExpression(path, state) {
     // const tracePath = getTracePath(path);
     // return traceBeforeExpression(TraceType.BeforeCallExpression, path, state, tracePath);
   }
+}
+
+
+
+// ###########################################################################
+// call exit
+// ###########################################################################
+
+
+function instrumentArgs(callPath, state, beforeCallTraceId) {
+  const args = callPath.node.arguments;
+
+  for (let i = 0; i < args.length; ++i) {
+    // if (t.isFunction(args[i])) {
+    //   instrumentCallbackSchedulingArg(callPath, state, i);
+    // }
+    // else {
+    const argPath = callPath.get('arguments.' + i);
+    if (!argPath.node.loc) {
+      // synthetic node -> ignore
+      //  e.g. we replace `o.f(x)` with `[...] o.call(o, x)`, 
+      //      and we do not want to trace the `o` arg here
+      continue;
+    }
+
+    const argTraceId = getPathTraceId(argPath);
+    // const argContextId = !argTraceId && getPathContextId(argPath) || null;
+    if (!argTraceId) {
+      // not instrumented yet -> add trace
+      // replacements.push(() => 
+      traceWrapArg(argPath, state, beforeCallTraceId);
+      // );
+    }
+    else { // if (argTraceId) {
+      // has been instrumented and has a trace -> just set it's callId
+      // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
+      const argTrace = state.traces.getById(argTraceId);
+      argTrace._callId = beforeCallTraceId;
+    }
+  }
+}
+
+
+export function traceWrapArg(argPath, state, beforeCallTraceId) {
+  const tracePath = argPath;
+  if (argPath.isSpreadElement()) {
+    argPath = argPath.get('argument');
+  }
+  return _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, {
+    callId: beforeCallTraceId,
+    tracePath
+  });
+}
+
+
+export function traceCallExpression(callPath, state, resultType) {
+  const calleePathId = callPath.getData('_calleePath');
+  const bcePathId = callPath.getData('_bcePathId');
+
+  const calleePath = callPath.parentPath.get(calleePathId);
+  const bcePath = callPath.parentPath.get(bcePathId);
+
+  if (!getPathTraceId(calleePath) && !isPathInstrumented(calleePath)) {
+    // trace callee, if not traced before (left-hand side of parenthesis; e.g. `o.f` in `o.f(x)`)
+    // traceWrapExpression(TraceType.ExpressionValue, calleePath, state);
+  }
+
+  // trace BCE
+  const bceNode = buildTraceNoValue(callPath, state, TraceType.BeforeCallExpression);
+  const bceTraceId = getPathTraceId(callPath);
+  bcePath.replaceWith(bceNode);
+
+  instrumentArgs(callPath, state, bceTraceId);
+  //const originalCallPath = 
+  _traceWrapExpression('traceExpr', resultType, callPath, state, {
+    resultCallId: bceTraceId,
+    // tracePath
+  });
 }

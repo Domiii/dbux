@@ -1,11 +1,22 @@
 /* eslint-disable */
 
-// f(1);
+// f();
+// f()(1);
 
 // function f(x) {
-//   console.log('f', x);
+//   return function j(x, y) {
+//     console.log('j', x, y);
+//   };
 // }
 
+function main() {
+  a.i();
+  a.i(3, 4);
+  a.b.f(1);
+  a.g().h(2);
+
+  a.i(a.g().h(2), a.b.f(1));
+}
 
 var a = {
   get b() {
@@ -32,20 +43,14 @@ var a = {
   }
 };
 
-a.b.f(1);
+main();
+
+
 
 // var _o, _f;
 // _o = a.b,
 //   _f = _o.f,
 //   _f.call(_o, 1);
-
-a.g().h(2);
-
-// a.i(3, 4);
-
-// a.i(a.g().h(2), a.b.f(1));
-
-// console.log(' ');
 
 
 // var _o, _f, _o2, _f2;
