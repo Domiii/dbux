@@ -82,7 +82,6 @@ export default class FocusController extends ClientComponentEndpoint {
       this.focus = focus;
       this.slide(focus.applicationId, focus.contextId);
     }
-    this.logger.debug('focuscontroller updated');
   }
 
   //focus slide. referance https://codepen.io/relign/pen/qqZxqW?editors=0011
@@ -112,7 +111,7 @@ export default class FocusController extends ClientComponentEndpoint {
       return;
     }
 
-    this.logger.debug(`Moving node #${nodeId} by ${delta.x}, ${delta.y}`);
+    this.logger.debug(`Moving node ${nodeId} by ${delta.x}, ${delta.y}`);
 
     this.slideData = {
       startTime: Date.now(),

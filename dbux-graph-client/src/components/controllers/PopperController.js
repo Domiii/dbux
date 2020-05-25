@@ -1,35 +1,34 @@
 import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
 
 export default class PopperController extends ClientComponentEndpoint {
-  /**
-   * Owner requirement:
-   *  el `popperTarget`
-   *  property/getter: `popperString`
-   *  context `popperManager`
-   */
-  init() {
-    this.target = this.owner.els.popperTarget;
-    this.popperString = this.owner.popperString;
-    this.manager = this.owner.context.graphRoot.popperManager;
 
-    // on click -> nextMode
-    this.owner.dom.addEventListeners(this);
+  get manager() {
+    return this.owner.context.graphRoot.popperManager;
   }
 
-  on = {
-    popperTarget: {
-      mouseenter: () => {
-        this.manager.show(this.target, this.popperString);
-      },
-      focus: () => {
-        this.manager.show(this.target, this.popperString);
-      },
-      mouseleave: () => {
-        this.manager.hide();
-      },
-      blur: () => {
-        this.manager.hide();
-      }
+  /**
+   * Owner requirement:
+   *  DOM elements with attribute [data-tooltip]
+   */
+  init() {
+    const targets = this.owner.el.querySelectorAll('[data-tooltip]');
+    targets.forEach(target => {
+      this.owner.dom.addElementEventListeners(this, target, this.targetEvents);
+    });
+  }
+
+  targetEvents = {
+    mouseenter(evt) {
+      this.manager.show(evt.target, evt.target.getAttribute('data-tooltip'));
+    },
+    focus: () => {
+      this.manager.show(this.target, this.popperString);
+    },
+    mouseleave: () => {
+      this.manager.hide();
+    },
+    blur: () => {
+      this.manager.hide();
     }
   }
 }

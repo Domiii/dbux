@@ -1,8 +1,8 @@
 import allApplications from 'dbux-data/src/applications/allApplications';
+import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
 import ContextNode from './ContextNode';
-import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
 
 class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext = [];
@@ -35,7 +35,7 @@ class GraphRoot extends HostComponentEndpoint {
     this.setState(update);
   }
 
-  addContexts(applicationId, contexts) {
+  addContexts = (applicationId, contexts) => {
     // get unique set of runIds
     let runIds = new Set(contexts.map(context => context?.runId || 0));
     runIds.delete(0);
@@ -46,6 +46,12 @@ class GraphRoot extends HostComponentEndpoint {
     runIds.forEach(runId =>
       this.children.createComponent(RunNode, { applicationId, runId })
     );
+
+    this.controllers.getComponent('ContextNodeManager').refreshOnData();
+  }
+
+  focusContext(applicationId, contextId) {
+    this.controllers.getComponent('FocusController').focus(applicationId, contextId);
   }
 
   // ###########################################################################
@@ -81,8 +87,8 @@ class GraphRoot extends HostComponentEndpoint {
   // ###########################################################################
 
   public = {
-    requestFocus: (applicationId, contextId) => {
-      this.controllers.getComponent('FocusController').focus(applicationId, contextId);
+    requestFocus(applicationId, contextId) {
+      this.focusContext(applicationId, contextId);
     }
   }
 }

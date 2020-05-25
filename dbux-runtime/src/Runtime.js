@@ -175,17 +175,18 @@ export default class Runtime {
   }
 
   /**
-   * This is currently used for two things:
-   * 1. Determine `parentTraceId` (which trace pushed which context)
-   * 2. Determine whether an error happened, by checking whether this dynamic last trace is an actual exit trace for a function.
-   * 
-   * NOTE: `Pop`s are not recorded here! (as that would mess with (2))
+   * Determine `parentTraceId` (which trace pushed which context).
    */
   getParentTraceId() {
     const parentContextId = this.peekCurrentContextId();
-    return this._lastBceInByContextId[parentContextId];
+    return this._lastBceInByContextId[parentContextId] || 
+           this.getLastTraceInContext(parentContextId);
   }
 
+  /**
+   * Determine whether an error happened, by checking whether this dynamic last trace is an actual exit trace for a function.
+   * NOTE: `Pop`s are not recorded here! (as that would mess with that goal)
+   */
   getLastTraceInContext(contextId) {
     return this._lastTraceByContextId[contextId];
   }

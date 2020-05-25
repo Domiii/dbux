@@ -254,6 +254,23 @@ html,body{
   max-width: 20rem;
 }
 
+/** ###########################################################################
+ * hackfix for emojis
+ * ############################################################################ */
+
+ /**
+  * Emojis don't display centered on Retina screens...
+  *
+  * @see https://stackoverflow.com/questions/44142464/how-do-i-horizontally-center-an-emoji
+  * @see https://codepen.io/faessler/pen/aRNOEY
+  */
+.emoji span {
+  display: inline-block;
+  font-size: 4em;
+  transform: scale(.25) translateY(1.1em);
+  margin: -1em -.333em;
+}
+
 
 /** ###########################################################################
  * colors

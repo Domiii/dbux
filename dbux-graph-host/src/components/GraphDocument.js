@@ -35,14 +35,14 @@ class GraphDocument extends HostComponentEndpoint {
   createOwnComponents() {
     const traceModeName = TraceMode.getName(this.traceMode);
 
-    this.toolbar = this.children.createComponent(Toolbar, { traceModeName });
-    this.root = this.children.createComponent(GraphRoot);
     this.controllers.createComponent(HighlightManager);
     // this.controllers.createComponent(FocusController);
+    this.root = this.children.createComponent(GraphRoot);
+    this.toolbar = this.children.createComponent(Toolbar, { traceModeName });
     // this.minimap = this.children.createComponent(MiniMap);
 
     // start rendering empty graph
-    this.root.refresh();
+    // this.root.refresh();
   }
 
 

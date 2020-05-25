@@ -186,10 +186,15 @@ export default class GraphWebView {
       logError('[CLIENT ERORR]', ...args);
     },
 
-    async confirm(message) {
-      const cfg = { modal: true };
+    async confirm(message, modal = true) {
+      const cfg = { modal };
       const result = await window.showInformationMessage(message, cfg, 'Ok', 'Cancel');
       return result === 'Ok';
+    },
+
+    alert(message, modal = true) {
+      const cfg = { modal };
+      window.showInformationMessage(message, cfg, 'Ok');
     },
 
     async prompt(message) {

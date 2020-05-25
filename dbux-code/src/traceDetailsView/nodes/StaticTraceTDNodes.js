@@ -165,7 +165,9 @@ export default class StaticTraceTDNode extends BaseTreeViewNode {
       if (children.length) {
         node.children = children.map((trace) => {
           const childLabel = makeTraceValueLabel(trace);
-          return new TraceNode(treeNodeProvider, childLabel, trace, node);
+          const childNode = new TraceNode(treeNodeProvider, childLabel, trace, node);
+          childNode.collapsibleState = TreeItemCollapsibleState.Expanded;
+          return childNode;
         });
       }
       else {
