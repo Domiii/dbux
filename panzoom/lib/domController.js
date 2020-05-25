@@ -44,11 +44,14 @@ function makeDomController(domElement, options) {
     //   transform.scale + ', 0, 0, ' +
     //   transform.scale + ', ' +
     //   transform.x + ', ' + transform.y + ')';
-    console.log(transform)
-    domElement.querySelector('.body').style.transform = 'matrix(' +
-    transform.scale + ', 0, 0, ' +
-    transform.scale + ', ' +
-    0 + ', ' + 0 + ')';
+    
+    // domElement.querySelector('.body').style.transform = 'matrix(' +
+    // transform.scale + ', 0, 0, ' +
+    // transform.scale + ', ' +
+    // 0 + ', ' + 0 + ')';
+    
+    // just use scale, so use scale to replcae matrix -del
+    domElement.querySelector('.body').style.transform = `scale(${transform.scale})`;
     domElement.scrollLeft = transform.x;
     domElement.scrollTop = transform.y;
     

@@ -405,27 +405,28 @@ function createPanZoom(domElement, options) {
     }
 
     var size = transformToScreen(clientX, clientY);
-    console.log('size:',size);
-    console.log('scroll pos:','x:',transform.x,'y:',transform.y);
-    transform.x = ratio * 100-100;
-    transform.y = ratio * 100-100;
-    console.log('ratio:',ratio,'tx:',ratio*size.x,'ty:',ratio*size.y);
-    console.log('change','scroll pos:','x:',transform.x,'y:',transform.y)
-
+    
     // TODO: https://github.com/anvaka/panzoom/issues/112
     // we don't use bounds -del
-
+    
     // if (bounds && boundsPadding === 1 && minZoom === 1) {
-    //   transform.scale *= ratio;
-    //   keepTransformInsideBounds();
+    //     transform.scale *= ratio;
+    //     keepTransformInsideBounds();
     // } else {
-    //   var transformAdjusted = keepTransformInsideBounds();
-    //   if (!transformAdjusted) transform.scale *= ratio;
+    //     var transformAdjusted = keepTransformInsideBounds();
+    //     if (!transformAdjusted) transform.scale *= ratio;
     // }
+
+    // origin scroll position *ratio + mouse position * ratio change -del
+    // console.log('size:,x:',size.x,'y:',size.y);
+    // console.log('scroll pos:','x:',transform.x,'y:',transform.y);
+    transform.x = transform.x * ratio + ratio * size.x - size.x;
+    transform.y = transform.y * ratio + ratio * size.y - size.y;
+    // console.log('change scroll pos:','x:',transform.x,'y:',transform.y);
+    
     if(minZoom !== 1){
       transform.scale *= ratio;
     }
-
 
     triggerEvent('zoom');
 
@@ -841,6 +842,7 @@ function createPanZoom(domElement, options) {
     var offsetX, offsetY;
     // I tried using e.offsetX, but that gives wrong results for svg, when user clicks on a path.
     var ownerRect = owner.getBoundingClientRect();
+    
     offsetX = e.clientX - ownerRect.left;
     offsetY = e.clientY - ownerRect.top;
     

@@ -4,6 +4,7 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
 import TraceMode from './TraceMode';
+// import FocusController from './controllers/FocusController';
 // import HighlightManager from './controllers/HighlightManager';
 
 class GraphDocument extends HostComponentEndpoint {
@@ -37,6 +38,7 @@ class GraphDocument extends HostComponentEndpoint {
     this.toolbar = this.children.createComponent(Toolbar, { traceModeName });
     this.root = this.children.createComponent(GraphRoot);
     this.controllers.createComponent(HighlightManager);
+    // this.controllers.createComponent(FocusController);
     // this.minimap = this.children.createComponent(MiniMap);
 
     // start rendering empty graph
