@@ -303,31 +303,39 @@ class ValueCollection extends Collection {
           // iterate over all object properties
           const props = this._getProperties(value);
 
-          // NOTE: the name might be mangled. We ideally want to get it from source code when we can.
-          //    (NOTE: not all types are instrumented by dbux)
-          typeName = value.constructor?.name || '';
-
-          // prune
-          let n = props.length;
-          if (n > SerializationConfig.maxObjectSize) {
-            pruneState = ValuePruneState.Shortened;
-            n = SerializationConfig.maxObjectSize;
+          if (!props) {
+            // error
+            serialized = `(ERROR: accessing object caused exception)`;
+            category = ValueTypeCategory.String;
+            pruneState = ValuePruneState.Omitted;
           }
+          else {
+            // NOTE: the name might be mangled. We ideally want to get it from source code when we can.
+            //    (NOTE: not all types are instrumented by dbux)
+            typeName = value.constructor?.name || '';
 
-          // build object
-          serialized = [];
-          for (let i = 0; i < n; ++i) {
-            const prop = props[i];
-            let childRef;
-            if (!this._canAccess(value)) {
-              childRef = this._addOmitted();
+            // prune
+            let n = props.length;
+            if (n > SerializationConfig.maxObjectSize) {
+              pruneState = ValuePruneState.Shortened;
+              n = SerializationConfig.maxObjectSize;
             }
-            else {
-              const childValue = this._readProperty(value, prop);
-              childRef = this._serialize(childValue, depth + 1, visited);
-              Verbose && this._log(`${' '.repeat(depth)}#${childRef.valueId} O[${prop}] ${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
+
+            // build object
+            serialized = [];
+            for (let i = 0; i < n; ++i) {
+              const prop = props[i];
+              let childRef;
+              if (!this._canAccess(value)) {
+                childRef = this._addOmitted();
+              }
+              else {
+                const childValue = this._readProperty(value, prop);
+                childRef = this._serialize(childValue, depth + 1, visited);
+                Verbose && this._log(`${' '.repeat(depth)}#${childRef.valueId} O[${prop}] ${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
+              }
+              serialized.push([prop, childRef.valueId]);
             }
-            serialized.push([prop, childRef.valueId]);
           }
         }
         break;
