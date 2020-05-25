@@ -26,7 +26,9 @@
 * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
 * [TraceDetailsView] add Navigation buttons: go to next/previous trace of this staticTrace
 * in editor, when we select a range with the cursor, only select traces that are completely contained by that range (e.g. when selecting `g(x)` in `f(g(x));`, do not select `f`)
-
+* graph: define a `customElement` (e.g. `img-local`) that automatically translates an image file name from the resource folder to it's correct path
+   * add a web component (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
+      * prepend the component's `src` attribute with ``GraphWebView.resourcePath`
 
 
 

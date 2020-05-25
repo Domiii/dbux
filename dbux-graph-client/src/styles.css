@@ -29,7 +29,7 @@ html,body{
  * graph nodes
  * ############################################################################ */
 
-.graph-node .title button {
+.graph-node .content button {
   background-color: rgba(0,0,0,0.1);
   display:inline-block;
   margin:0;
@@ -176,7 +176,7 @@ html,body{
 
 .dbux-link {
   /* color: rgb(71, 52, 243); */
-  color: black;
+  /* color: black; */
   cursor: pointer;
 }
 
@@ -293,6 +293,13 @@ html,body{
   color: #555;
 }
 
+.red {
+  color: red;
+}
+
+.darkred {
+  color: darkred;
+}
 
 /** ###########################################################################
  * highlighter

@@ -16,12 +16,12 @@ export default class ContextNodeManager extends HostComponentEndpoint {
       this.contextNodes = null;
     });
 
-    objectTracker.onObjectSelectionChanged(this.highlightByObject);
+    objectTracker.onObjectSelectionChanged(this.selectObject);
   }
 
   refreshOnData = () => {
     if (this.selectorType === 'objectTrace') {
-      this.highlightByObject(this.selector);
+      this.selectObject(this.selector);
     }
     else if (this.selectorType === 'staticContext') {
       const { applicationId, staticContextId } = this.selector;
@@ -35,7 +35,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     this.contextNodes.forEach((contextNode) => contextNode.reveal());
   }
 
-  clear() { 
+  clear() {
     this.contextNodes?.forEach((contextNode) => contextNode.controllers.getComponent('Highlighter').dec());
     this.selector = null;
     this.selectorType = null;
@@ -50,6 +50,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     if (this.selector) this.clear();
     const dp = allApplications.getById(applicationId).dataProvider;
     const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId);
+
     this.selector = { applicationId, staticContextId };
     this.selectorType = 'staticContext';
     this.highlightContexts(contexts);
@@ -68,17 +69,17 @@ export default class ContextNodeManager extends HostComponentEndpoint {
   //  byObject
   // ###########################################################################
 
-  highlightByObject = (trace) => {
+  selectObject = (traceSelector) => {
     if (this.selector) this.clear();
 
-    const { applicationId, traceId } = trace;
+    const { applicationId, traceId: origTraceId } = traceSelector;
     const dp = allApplications.getById(applicationId).dataProvider;
-
-    trace = dp.util.getValueTrace(traceId);
+    
+    const { traceId } = dp.util.getValueTrace(origTraceId);
     const trackId = dp.util.getTraceTrackId(traceId);
     const contexts = dp.util.getContextsByTrackId(trackId);
 
-    this.selector = trace;
+    this.selector = { applicationId, traceId };
     this.selectorType = 'objectTrace';
     this.highlightContexts(contexts);
   }

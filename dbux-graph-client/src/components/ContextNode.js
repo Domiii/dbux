@@ -1,4 +1,4 @@
-import { compileHtmlElement } from '@/util/domUtil';
+import { compileHtmlElement, decorateClasses } from '@/util/domUtil';
 import { isMouseEventPlatformModifierKey } from '@/util/keyUtil';
 import { getPlatformModifierKeyString } from '@/util/platformUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
@@ -12,14 +12,17 @@ class ContextNode extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <div class="context-node flex-row">
         <div class="full-width flex-column">
-          <div data-el="title" class="title">
+          <div class="content">
             <div class="flex-row">
               <div class="flex-row">
                 <button data-el="nodeToggleBtn" class="node-toggle-btn"></button>
-                <div class="flex-row">
+                <div data-el="title" class="flex-row">
                   <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
                   <div data-el="contextLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
+                <!--div data-el="selectedTraceIcon" class="darkred">
+                  &nbsp;☩
+                </div-->
                 &nbsp;
                 <button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button>
                 <button data-el="prevContextBtn" class="hidden">⇦</button>
@@ -54,6 +57,7 @@ class ContextNode extends ClientComponentEndpoint {
       parentTraceNameLabel,
       parentTraceLocLabel,
       valueLabel,
+      isSelected
     } = this.state;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
@@ -65,6 +69,10 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.parentLabel.textContent = parentTraceNameLabel || contextNameLabel;
     this.els.parentLocLabel.textContent = parentTraceLocLabel;
     this.els.valueLabel.textContent = valueLabel;
+    
+    decorateClasses(this.els.title, {
+      darkred: isSelected
+    });
 
     // set popper
     const modKey = getPlatformModifierKeyString();
