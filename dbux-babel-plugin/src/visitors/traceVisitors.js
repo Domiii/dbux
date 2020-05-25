@@ -27,7 +27,7 @@ const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
 const TraceInstrumentationType = new Enum({
   NoTrace: 0,
-  Callee: 1,
+  // Callee: 1,
   CallExpression: 2,
   /**
    * Result of a computation
@@ -62,7 +62,7 @@ const InstrumentationDirection = {
 const traceCfg = (() => {
   const {
     NoTrace,
-    Callee,
+    // Callee,
     CallExpression,
     ExpressionResult,
     ExpressionValue,
@@ -121,7 +121,7 @@ const traceCfg = (() => {
     // ########################################
     CallExpression: [
       CallExpression,
-      [['callee', Callee]]
+      // [['callee', Callee]]
     ],
     OptionalCallExpression: [
       CallExpression

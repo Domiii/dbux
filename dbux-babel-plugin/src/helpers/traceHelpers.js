@@ -178,6 +178,66 @@ export function traceBeforeSuper(path, state) {
 // ###########################################################################
 
 /**
+ * NOTE: the call templates do not have arguments.
+ * We will push them in manually.
+ */
+const callTemplatesMember = {
+  // NOTE: `f.call.call(f, args)` also works (i.e. function f(x) { console.log(this, x); } f.call(this, 1); // -> f.call.call(f, this, 1))
+  CallExpression: template(
+    `
+  %%o%% = %%oNode%%,
+    %%f%% = %%o%%.%%fNode%%,
+    null,
+    %%f%%.call(%%o%%)
+  `),
+
+  /**
+   * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
+   */
+  OptionalCallExpression: template(
+    `
+    %%o%% = %%oNode%%,
+      %%f%% = %%o%%.%%fNode%%,
+      null,
+      %%f%%?.call(%%o%%)
+  `),
+
+  NewExpression: template(
+    `
+  %%o%% = %%oNode%%,
+    %%f%% = %%o%%.%%fNode%%,
+    null,
+    new %%f%%()
+`)
+};
+
+const callTemplatesDefault = {
+  CallExpression: template(
+    `
+    %%f%% = %%fNode%%,
+    null,
+    %%f%%()
+  `),
+
+  /**
+   * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
+   */
+  OptionalCallExpression: template(
+    `
+    %%f%% = %%fNode%%,
+    null,
+    %%f%%?.()
+  `),
+
+  NewExpression: template(
+    `
+    %%f%% = %%fNode%%,
+    null,
+    new %%f%%()
+  `)
+};
+
+/**
  * Convert `o.f(...args)` to:
  * ```
  * var _o, _f;
@@ -193,7 +253,7 @@ export function traceBeforeSuper(path, state) {
  * NOTE: We do *NOT* instrument here, because it would mess up `staticTraceId` order (e.g. in `f(u).g(v)`)
  */
 const instrumentBeforeMemberCallExpression =
-  (function instrumentBeforeMemberCallExpression(templ, path, state) {
+  (function instrumentBeforeMemberCallExpression(path, state) {
     const calleePath = path.get('callee');
     const oPath = calleePath.get('object');
     const fPath = calleePath.get('property');
@@ -212,6 +272,8 @@ const instrumentBeforeMemberCallExpression =
     // TODO: better names :(
     const o = path.scope.generateDeclaredUidIdentifier('o');
     const f = path.scope.generateDeclaredUidIdentifier(calleePath.node.name || 'func');
+
+    const templ = callTemplatesMember[path.type];
 
     replaceWithTemplate(templ, path, {
       // dbux,
@@ -250,23 +312,14 @@ const instrumentBeforeMemberCallExpression =
     newPath.setData('_bcePathId', bcePathId);
 
     return newPath;
-  }).bind(null, template(
-    // %%o%% = %%dbux%%.traceExpr(%%oTraceId%%, %%oNode%%),
-    //  %%f%% = %%dbux%%.traceExpr(%%calleeTraceId%%, %%o%%.%%fNode%%),
-    // NOTE: `f.call.call(f, args)` also works (i.e. function f(x) { console.log(this, x); } f.call(this, 1); // -> f.call.call(f, this, 1))
-    `
-    %%o%% = %%oNode%%,
-      %%f%% = %%o%%.%%fNode%%,
-      null,
-      %%f%%.call(%%o%%)     // NOTE: we will manually push in actual arguments
-  `));
+  });
 
 /**
  * Convert `f(...args)` to: `traceBCE(f), f(...args)`
  * 
  */
 const instrumentBeforeCallExpressionDefault =
-  (function instrumentBeforeCallExpressionDefault(templ, path, state) {
+  (function instrumentBeforeCallExpressionDefault(path, state) {
     const calleePath = path.get('callee');
     const argPath = path.get('arguments');
 
@@ -280,6 +333,8 @@ const instrumentBeforeCallExpressionDefault =
 
     // TODO: better names :(
     const f = path.scope.generateDeclaredUidIdentifier(calleePath.node.name || 'func');
+
+    const templ = callTemplatesDefault[path.type];
 
     replaceWithTemplate(templ, path, {
       // dbux,
@@ -315,12 +370,7 @@ const instrumentBeforeCallExpressionDefault =
     // originalPath.node.loc = path.node.loc;
 
     return newPath;
-  }).bind(null, template(
-    `
-    %%f%% = %%fNode%%,
-    null,
-    %%f%%() // NOTE: we insert arguments manually
-  `));
+  });
 
 export function instrumentBeforeCallExpression(path, state) {
   const calleePath = path.get('callee');
@@ -333,7 +383,6 @@ export function instrumentBeforeCallExpression(path, state) {
     // return traceBeforeExpression(TraceType.BeforeCallExpression, path, state, tracePath);
   }
 }
-
 
 
 // ###########################################################################

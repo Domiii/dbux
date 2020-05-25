@@ -280,23 +280,11 @@
 
 
 ## TODO (other)
-* fix when we have multiple apps a, b and we restart b:
+* fix: when we have multiple apps a, b and we restart b:
    * old `a` nodes don't get removed and `a` gets added two more times
 * add `crosshair` icon to selected context
 * revamp `CallExpression` instrumentation for `parentTrace` detection
-   * last few problems?
-      * check: cannot currently select `return` traces?
-      * generates 4 separate traces on `a.i(...)`: `a.i(a.g().h(2), a.b.f(1));`
-   * Steps
-      * 
-      * (fix: `MemberExpression.object` is traced later, causing wrong order of `staticTraceId` of `a` in `a.b.f(x)`)
-   * more scenarios: `nested memberExpr`, `optional`, `new`, `super`
-      * `a.b.c.f()`
-      * `f?.()`
-      * `o?.f()`
-      * `o?.f?.()`
-      * `new o?.f()`
-      * `new o?.f?.()`
+   * more scenarios: `super`
       * `super()`
       * `super.f()`
 * fix: when navigating nested `CallExpression`, need to be careful when jumping between them
@@ -320,6 +308,11 @@
 * fix: `function` declarations are not tracked
    * store staticContextId by `function`, so we can look them up later
 * fix: strings are currently tracked -> disable tracking of strings
+* fix: optional chaining for calls does not work
+   * Fix: in case of optional chaining...
+      1. don't access `o.f` if `o` does not exist
+      2. don't call the function if it does not exist
+   * NOTE: maybe we can add a check that throws a more meaningful error when we try to call a non-existing function without optional chaining?
 * fix: `traveValueLabels`
    * get callee name from instrumentation
 * fix TDV: "Trace Executed: Nx"
@@ -380,6 +373,7 @@
          * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
          * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * fix: small trace odities
+   * for optional call, don't trace as `CallExpression` but trace as `ExpressionResult` if there is no function
    * when selecting a traced "return", it says "no trace at cursor"
       * (same with almost any keywords for now)
    * `if else` considers `else` as a block, and inserts (potentially unwanted) code deco
