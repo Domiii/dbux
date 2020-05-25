@@ -6,7 +6,15 @@ import { isPathInstrumented, isNodeInstrumented } from './instrumentationHelper'
 
 
 export function getTracePath(path) {
+  // TODO: should we merge the override into the config? (-> so far only one use-case for that, and it might vary with different situations, so just hack it for now)
   const cfg = path.getData('visitorCfg');
+  const originalIsParentOverride = path.getData('originalIsParent');
+  if (originalIsParentOverride === false) {
+    // override of settings for synthetic nodes
+    // NOTE: because of the way we instrument call expressions, the callee will be handled here for a `AssignmentExpression.right` which has `originalIsParent` but should not apply here
+    return path;
+  }
+
   const originalIsParent = cfg?.originalIsParent;
   if (originalIsParent) {
     // this expression is represented by the parentPath, instead of just the value path
@@ -217,9 +225,11 @@ const instrumentBeforeMemberCallExpression =
 
 
     // set loc, so it gets instrumented on exit as well
+    const oPathId = 'expressions.0.right';
     const calleePathId = 'expressions.1.right';
     const bcePathId = 'expressions.2';
     const newPath = path.get('expressions.3');
+    const newOPath = path.get(oPathId);
     const newCalleePath = path.get(calleePathId);
 
     // hackfix: put `o` and `args` in as-is; they are still going to get instrumented
@@ -233,7 +243,10 @@ const instrumentBeforeMemberCallExpression =
     state.onCopy(path, newPath);
 
     // prepare for later
-    newPath.setData('_calleePath', calleePathId);
+    // newPath.setData('_calleePath', calleePathId);
+    newOPath.setData('originalIsParent', false);
+    newOPath.setData('resultType', TraceType.ExpressionValue);
+    newCalleePath.setData('originalIsParent', false);
     newPath.setData('_bcePathId', bcePathId);
 
     return newPath;
@@ -294,8 +307,9 @@ const instrumentBeforeCallExpressionDefault =
     state.onCopy(path, newPath);
 
     // prepare for later
-    newPath.setData('_calleePath', calleePathId);
+    // newPath.setData('_calleePath', calleePathId);
     newPath.setData('_bcePathId', bcePathId);
+    newCalleePath.setData('originalIsParent', false);
 
     // set loc on actual call, so it gets instrumented on exit as well
     // originalPath.node.loc = path.node.loc;
@@ -374,16 +388,16 @@ export function traceWrapArg(argPath, state, beforeCallTraceId) {
 
 
 export function traceCallExpression(callPath, state, resultType) {
-  const calleePathId = callPath.getData('_calleePath');
+  // const calleePathId = callPath.getData('_calleePath');
   const bcePathId = callPath.getData('_bcePathId');
 
-  const calleePath = callPath.parentPath.get(calleePathId);
+  // const calleePath = callPath.parentPath.get(calleePathId);
   const bcePath = callPath.parentPath.get(bcePathId);
 
-  if (!getPathTraceId(calleePath) && !isPathInstrumented(calleePath)) {
-    // trace callee, if not traced before (left-hand side of parenthesis; e.g. `o.f` in `o.f(x)`)
-    // traceWrapExpression(TraceType.ExpressionValue, calleePath, state);
-  }
+  // if (!getPathTraceId(calleePath) && !isPathInstrumented(calleePath)) {
+  //   // trace callee, if not traced before (left-hand side of parenthesis; e.g. `o.f` in `o.f(x)`)
+  //   traceWrapExpression(TraceType.ExpressionValue, calleePath, state);
+  // }
 
   // trace BCE
   const bceNode = buildTraceNoValue(callPath, state, TraceType.BeforeCallExpression);

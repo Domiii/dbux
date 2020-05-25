@@ -492,12 +492,15 @@ const enterInstrumentors = {
 // }
 
 function wrapExpression(traceType, path, state) {
-  const tracePath = getTracePath(path);
+  let tracePath = getTracePath(path);
 
   if (isCallPath(path)) {
     return wrapCallExpression(path, state);
   }
 
+  if (traceType === TraceType.ExpressionResult) {
+    traceType = path.getData('resultType') || traceType;
+  }
   return traceWrapExpression(traceType, path, state, tracePath);
 }
 
@@ -650,7 +653,7 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
   let shouldVisit = false;
   let instrumentor;
   if (instrumentationType && !isPathInstrumented(path)) {
-    Verbose && logInst('V', cfg, path, direction);
+    Verbose && logInst('v', cfg, path, direction);
     instrumentor = getInstrumentor(instrumentors, instrumentationType);
     shouldVisit = instrumentor && onTrace(path); // instrumentor && !hasVisited
 
@@ -702,7 +705,7 @@ function getInstrumentor(instrumentors, instrumentationType) {
 
 function instrumentPath(direction, instrumentor, path, state, cfg) {
   // log
-  Verbose && logInst('I', cfg, path, direction);
+  Verbose && logInst('II', cfg, path, direction);
 
   // actual instrumentation
   const { extraCfg } = cfg;

@@ -31214,24 +31214,28 @@ exports[`dbux-babel-plugin calls1.es5.js: calls1.es5.js 1`] = `
 "
 /* eslint-disable */
 
-// f();
-// f()(1);
-
-// function f(x) {
-//   return () => console.log('f()()', x);
-// }
 
 function main() {
-  a.i()(3, 4);
+  f(a.g());
+  // a.i();
+  // a.i(3, 4);
   // a.b.f(1);
   // a.g().h(2);
 
   // a.i(a.g().h(2), a.b.f(1));
 }
 
+// f();
+// f()(1);
+function f(x) {
+  // return function j(x, y) {
+  console.log('f', x);
+  return x;
+  // };
+}
+
 var a = {
   get b() {
-    console.log('b');
     return {
       f(x) { console.log('f', x); }
     }
@@ -31247,7 +31251,6 @@ var a = {
   },
 
   get i() {
-    console.log('i');
     return function j(x, y) {
       console.log('j', x, y);
     };
@@ -31292,18 +31295,15 @@ try {
   var _main;
 
   /* eslint-disable */
-  // f();
-  // f()(1);
-  // function f(x) {
-  //   return () => console.log('f()()', x);
-  // }
   var main = function main() {
     var _contextId2 = _dbux.pushImmediate(2, 4, false);
 
     try {
-      var _func, _o, _func2;
+      var _f, _o, _func;
 
-      _func = (_o = _dbux.traceExpr(7, a), _func2 = _dbux.traceExpr(8, _o.i), _dbux.t(9), _dbux.traceExpr(10, _func2.call(_o))), _dbux.t(11), _dbux.traceExpr(14, _func(_dbux.traceArg(12, 3), _dbux.traceArg(13, 4))); // a.b.f(1);
+      _f = _dbux.traceExpr(7, f), _dbux.t(12), _dbux.traceExpr(13, _f((_o = _dbux.traceExpr(8, a), _func = _dbux.traceExpr(9, _o.g), _dbux.t(10), _dbux.traceExpr(11, _func.call(_o))))); // a.i();
+      // a.i(3, 4);
+      // a.b.f(1);
       // a.g().h(2);
       // a.i(a.g().h(2), a.b.f(1));
 
@@ -31311,97 +31311,109 @@ try {
     } finally {
       _dbux.popFunction(_contextId2, 5);
     }
+  }; // f();
+  // f()(1);
+
+
+  var f = function f(x) {
+    var _contextId3 = _dbux.pushImmediate(3, 14, false);
+
+    try {
+      var _o2, _func2;
+
+      // return function j(x, y) {
+      _o2 = _dbux.traceExpr(17, console), _func2 = _dbux.traceExpr(18, _o2.log), _dbux.t(19), _dbux.traceExpr(22, _func2.call(_o2, _dbux.traceArg(20, 'f'), _dbux.traceArg(21, x)));
+      return _dbux.traceExpr(23, x); // };
+
+      _dbux.t(16);
+    } finally {
+      _dbux.popFunction(_contextId3, 15);
+    }
   };
 
-  var a = _dbux.traceExpr(70, {
+  var a = _dbux.traceExpr(69, {
     get b() {
-      var _contextId3 = _dbux.pushImmediate(3, 15, false);
+      var _contextId4 = _dbux.pushImmediate(4, 24, false);
 
       try {
-        var _o2, _func3;
-
-        _o2 = _dbux.traceExpr(18, console), _func3 = _dbux.traceExpr(19, _o2.log), _dbux.t(20), _dbux.traceExpr(22, _func3.call(_o2, _dbux.traceArg(21, 'b')));
-        return _dbux.traceExpr(32, {
+        return _dbux.traceExpr(36, {
           f: function f(x) {
-            var _contextId4 = _dbux.pushImmediate(4, 23, false);
+            var _contextId5 = _dbux.pushImmediate(5, 27, false);
 
             try {
-              var _o3, _func4;
+              var _o3, _func3;
 
-              _o3 = _dbux.traceExpr(26, console), _func4 = _dbux.traceExpr(27, _o3.log), _dbux.t(28), _dbux.traceExpr(31, _func4.call(_o3, _dbux.traceArg(29, 'f'), _dbux.traceArg(30, x)));
+              _o3 = _dbux.traceExpr(30, console), _func3 = _dbux.traceExpr(31, _o3.log), _dbux.t(32), _dbux.traceExpr(35, _func3.call(_o3, _dbux.traceArg(33, 'f'), _dbux.traceArg(34, x)));
 
-              _dbux.t(25);
+              _dbux.t(29);
             } finally {
-              _dbux.popFunction(_contextId4, 24);
+              _dbux.popFunction(_contextId5, 28);
             }
           }
         });
 
-        _dbux.t(17);
+        _dbux.t(26);
       } finally {
-        _dbux.popFunction(_contextId3, 16);
+        _dbux.popFunction(_contextId4, 25);
       }
     },
 
     g: function g() {
-      var _contextId5 = _dbux.pushImmediate(5, 33, false);
+      var _contextId6 = _dbux.pushImmediate(6, 37, false);
 
       try {
-        var _o4, _func5;
+        var _o4, _func4;
 
-        _o4 = _dbux.traceExpr(36, console), _func5 = _dbux.traceExpr(37, _o4.log), _dbux.t(38), _dbux.traceExpr(40, _func5.call(_o4, _dbux.traceArg(39, 'g')));
-        return _dbux.traceExpr(50, {
+        _o4 = _dbux.traceExpr(40, console), _func4 = _dbux.traceExpr(41, _o4.log), _dbux.t(42), _dbux.traceExpr(44, _func4.call(_o4, _dbux.traceArg(43, 'g')));
+        return _dbux.traceExpr(54, {
           h: function h(x) {
-            var _contextId6 = _dbux.pushImmediate(6, 41, false);
+            var _contextId7 = _dbux.pushImmediate(7, 45, false);
 
             try {
-              var _o5, _func6;
+              var _o5, _func5;
 
-              _o5 = _dbux.traceExpr(44, console), _func6 = _dbux.traceExpr(45, _o5.log), _dbux.t(46), _dbux.traceExpr(49, _func6.call(_o5, _dbux.traceArg(47, 'h'), _dbux.traceArg(48, x)));
+              _o5 = _dbux.traceExpr(48, console), _func5 = _dbux.traceExpr(49, _o5.log), _dbux.t(50), _dbux.traceExpr(53, _func5.call(_o5, _dbux.traceArg(51, 'h'), _dbux.traceArg(52, x)));
 
-              _dbux.t(43);
+              _dbux.t(47);
             } finally {
-              _dbux.popFunction(_contextId6, 42);
+              _dbux.popFunction(_contextId7, 46);
             }
           }
         });
 
-        _dbux.t(35);
+        _dbux.t(39);
       } finally {
-        _dbux.popFunction(_contextId5, 34);
+        _dbux.popFunction(_contextId6, 38);
       }
     },
 
     get i() {
-      var _contextId7 = _dbux.pushImmediate(7, 51, false);
+      var _contextId8 = _dbux.pushImmediate(8, 55, false);
 
       try {
-        var _o6, _func7;
-
-        _o6 = _dbux.traceExpr(54, console), _func7 = _dbux.traceExpr(55, _o6.log), _dbux.t(56), _dbux.traceExpr(58, _func7.call(_o6, _dbux.traceArg(57, 'i')));
-        return _dbux.traceExpr(69, function j(x, y) {
-          var _contextId8 = _dbux.pushImmediate(8, 59, false);
+        return _dbux.traceExpr(68, function j(x, y) {
+          var _contextId9 = _dbux.pushImmediate(9, 58, false);
 
           try {
-            var _o7, _func8;
+            var _o6, _func6;
 
-            _o7 = _dbux.traceExpr(62, console), _func8 = _dbux.traceExpr(63, _o7.log), _dbux.t(64), _dbux.traceExpr(68, _func8.call(_o7, _dbux.traceArg(65, 'j'), _dbux.traceArg(66, x), _dbux.traceArg(67, y)));
+            _o6 = _dbux.traceExpr(61, console), _func6 = _dbux.traceExpr(62, _o6.log), _dbux.t(63), _dbux.traceExpr(67, _func6.call(_o6, _dbux.traceArg(64, 'j'), _dbux.traceArg(65, x), _dbux.traceArg(66, y)));
 
-            _dbux.t(61);
+            _dbux.t(60);
           } finally {
-            _dbux.popFunction(_contextId8, 60);
+            _dbux.popFunction(_contextId9, 59);
           }
         });
 
-        _dbux.t(53);
+        _dbux.t(57);
       } finally {
-        _dbux.popFunction(_contextId7, 52);
+        _dbux.popFunction(_contextId8, 56);
       }
     }
 
   });
 
-  _main = _dbux.traceExpr(71, main), _dbux.t(72), _dbux.traceExpr(73, _main()); // var _o, _f;
+  _main = _dbux.traceExpr(70, main), _dbux.t(71), _dbux.traceExpr(72, _main()); // var _o, _f;
   // _o = a.b,
   //   _f = _o.f,
   //   _f.call(_o, 1);
@@ -31435,7 +31447,7 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 65,
+          \\"line\\": 68,
           \\"column\\": 19
         }
       },
@@ -31449,11 +31461,11 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 10,
+          \\"line\\": 4,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 16,
+          \\"line\\": 12,
           \\"column\\": 1
         }
       },
@@ -31466,11 +31478,28 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 19,
+          \\"line\\": 16,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 21,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f\\",
+      \\"displayName\\": \\"f\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 4,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 24,
+          \\"line\\": 28,
           \\"column\\": 3
         }
       },
@@ -31479,15 +31508,15 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"b\\",
       \\"isInterruptable\\": false
     }, {
-      \\"_staticId\\": 4,
-      \\"_parentId\\": 3,
+      \\"_staticId\\": 5,
+      \\"_parentId\\": 4,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
+          \\"line\\": 26,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 22,
+          \\"line\\": 26,
           \\"column\\": 35
         }
       },
@@ -31496,15 +31525,15 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"f\\",
       \\"isInterruptable\\": false
     }, {
-      \\"_staticId\\": 5,
+      \\"_staticId\\": 6,
       \\"_parentId\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 26,
+          \\"line\\": 30,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 33,
+          \\"line\\": 37,
           \\"column\\": 3
         }
       },
@@ -31513,15 +31542,15 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"g\\",
       \\"isInterruptable\\": false
     }, {
-      \\"_staticId\\": 6,
-      \\"_parentId\\": 5,
+      \\"_staticId\\": 7,
+      \\"_parentId\\": 6,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 29,
+          \\"line\\": 33,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 31,
+          \\"line\\": 35,
           \\"column\\": 7
         }
       },
@@ -31530,15 +31559,15 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"h\\",
       \\"isInterruptable\\": false
     }, {
-      \\"_staticId\\": 7,
+      \\"_staticId\\": 8,
       \\"_parentId\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 35,
+          \\"line\\": 39,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 40,
+          \\"line\\": 43,
           \\"column\\": 3
         }
       },
@@ -31547,15 +31576,15 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"i\\",
       \\"isInterruptable\\": false
     }, {
-      \\"_staticId\\": 8,
-      \\"_parentId\\": 7,
+      \\"_staticId\\": 9,
+      \\"_parentId\\": 8,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 37,
+          \\"line\\": 40,
           \\"column\\": 11
         },
         \\"end\\": {
-          \\"line\\": 39,
+          \\"line\\": 42,
           \\"column\\": 5
         }
       },
@@ -31582,11 +31611,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 65,
+          \\"line\\": 68,
           \\"column\\": 19
         },
         \\"end\\": {
-          \\"line\\": 65,
+          \\"line\\": 68,
           \\"column\\": 19
         }
       },
@@ -31597,11 +31626,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 65,
+          \\"line\\": 68,
           \\"column\\": 18
         },
         \\"end\\": {
-          \\"line\\": 65,
+          \\"line\\": 68,
           \\"column\\": 19
         }
       },
@@ -31612,11 +31641,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 10,
+          \\"line\\": 4,
           \\"column\\": 16
         },
         \\"end\\": {
-          \\"line\\": 10,
+          \\"line\\": 4,
           \\"column\\": 17
         }
       },
@@ -31627,11 +31656,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 16,
+          \\"line\\": 12,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 16,
+          \\"line\\": 12,
           \\"column\\": 1
         }
       },
@@ -31642,11 +31671,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 16,
+          \\"line\\": 12,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 16,
+          \\"line\\": 12,
           \\"column\\": 1
         }
       },
@@ -31655,31 +31684,32 @@ function _dbux_init(dbuxRuntime) {
       \\"_staticContextId\\": 2,
       \\"type\\": 22
     }, {
-      \\"displayName\\": \\"a.i()\\",
+      \\"displayName\\": \\"f\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
+          \\"line\\": 5,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 7
-        }
+          \\"line\\": 5,
+          \\"column\\": 3
+        },
+        \\"identifierName\\": \\"f\\"
       },
       \\"_callId\\": false,
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 2,
       \\"type\\": 7
     }, {
-      \\"displayName\\": \\"a.i()\\",
+      \\"displayName\\": \\"f(a.g())\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
+          \\"line\\": 5,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 7
+          \\"line\\": 5,
+          \\"column\\": 10
         }
       },
       \\"_callId\\": false,
@@ -31687,1073 +31717,1054 @@ function _dbux_init(dbuxRuntime) {
       \\"_staticContextId\\": 2,
       \\"type\\": 7
     }, {
-      \\"displayName\\": \\"a.i()\\",
+      \\"displayName\\": \\"f(a.g())\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
+          \\"line\\": 5,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 7
-        }
-      },
-      \\"_callId\\": 9,
-      \\"_traceId\\": 9,
-      \\"_staticContextId\\": 2,
-      \\"type\\": 4
-    }, {
-      \\"displayName\\": \\"a.i()\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 7
+          \\"line\\": 5,
+          \\"column\\": 10
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 9,
-      \\"_traceId\\": 10,
+      \\"_traceId\\": 9,
       \\"_staticContextId\\": 2,
-      \\"type\\": 6
+      \\"type\\": 7
     }, {
-      \\"displayName\\": \\"a.i()(3, 4)\\",
+      \\"displayName\\": \\"a.g()\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 2
+          \\"line\\": 5,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 13
-        }
-      },
-      \\"_callId\\": 11,
-      \\"_traceId\\": 11,
-      \\"_staticContextId\\": 2,
-      \\"type\\": 4
-    }, {
-      \\"displayName\\": \\"3\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 8
-        },
-        \\"end\\": {
-          \\"line\\": 11,
+          \\"line\\": 5,
           \\"column\\": 9
         }
       },
-      \\"_callId\\": 11,
-      \\"_traceId\\": 12,
+      \\"_callId\\": 10,
+      \\"_traceId\\": 10,
       \\"_staticContextId\\": 2,
-      \\"type\\": 9
+      \\"type\\": 4
     }, {
-      \\"displayName\\": \\"4\\",
+      \\"displayName\\": \\"a.g()\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 11
+          \\"line\\": 5,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 12
-        }
-      },
-      \\"_callId\\": 11,
-      \\"_traceId\\": 13,
-      \\"_staticContextId\\": 2,
-      \\"type\\": 9
-    }, {
-      \\"displayName\\": \\"a.i()(3, 4)\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 13
+          \\"line\\": 5,
+          \\"column\\": 9
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 11,
-      \\"_traceId\\": 14,
+      \\"_resultCallId\\": 10,
+      \\"_traceId\\": 11,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 6
+    }, {
+      \\"displayName\\": \\"f(a.g())\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 10
+        }
+      },
+      \\"_callId\\": 12,
+      \\"_traceId\\": 12,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 4
+    }, {
+      \\"displayName\\": \\"f(a.g())\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 10
+        }
+      },
+      \\"_callId\\": false,
+      \\"_resultCallId\\": 12,
+      \\"_traceId\\": 13,
       \\"_staticContextId\\": 2,
       \\"type\\": 6
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 19,
-          \\"column\\": 10
+          \\"line\\": 16,
+          \\"column\\": 14
         },
         \\"end\\": {
-          \\"line\\": 19,
-          \\"column\\": 11
+          \\"line\\": 16,
+          \\"column\\": 15
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 15,
+      \\"_traceId\\": 14,
       \\"_staticContextId\\": 3,
       \\"type\\": 1
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 24,
-          \\"column\\": 2
+          \\"line\\": 21,
+          \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 24,
-          \\"column\\": 3
+          \\"line\\": 21,
+          \\"column\\": 1
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 16,
+      \\"_traceId\\": 15,
       \\"_staticContextId\\": 3,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 24,
-          \\"column\\": 2
+          \\"line\\": 21,
+          \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 24,
-          \\"column\\": 3
+          \\"line\\": 21,
+          \\"column\\": 1
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 17,
+      \\"_traceId\\": 16,
       \\"_staticContextId\\": 3,
       \\"type\\": 22
     }, {
       \\"displayName\\": \\"console\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 20,
-          \\"column\\": 4
+          \\"line\\": 18,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 20,
-          \\"column\\": 11
+          \\"line\\": 18,
+          \\"column\\": 9
         },
         \\"identifierName\\": \\"console\\"
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 17,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"console.log\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 18,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 13
+        }
       },
       \\"_callId\\": false,
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 3,
       \\"type\\": 7
     }, {
-      \\"displayName\\": \\"console.log\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 20,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 20,
-          \\"column\\": 15
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 19,
-      \\"_staticContextId\\": 3,
-      \\"type\\": 7
-    }, {
-      \\"displayName\\": \\"console.log('b')\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 20,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 20,
-          \\"column\\": 20
-        }
-      },
-      \\"_callId\\": 20,
-      \\"_traceId\\": 20,
-      \\"_staticContextId\\": 3,
-      \\"type\\": 4
-    }, {
-      \\"displayName\\": \\"'b'\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 20,
-          \\"column\\": 16
-        },
-        \\"end\\": {
-          \\"line\\": 20,
-          \\"column\\": 19
-        }
-      },
-      \\"_callId\\": 20,
-      \\"_traceId\\": 21,
-      \\"_staticContextId\\": 3,
-      \\"type\\": 9
-    }, {
-      \\"displayName\\": \\"console.log('b')\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 20,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 20,
-          \\"column\\": 20
-        }
-      },
-      \\"_callId\\": false,
-      \\"_resultCallId\\": 20,
-      \\"_traceId\\": 22,
-      \\"_staticContextId\\": 3,
-      \\"type\\": 6
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 11
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 12
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 23,
-      \\"_staticContextId\\": 4,
-      \\"type\\": 1
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 34
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 35
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 24,
-      \\"_staticContextId\\": 4,
-      \\"type\\": 2
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 34
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 35
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 25,
-      \\"_staticContextId\\": 4,
-      \\"type\\": 22
-    }, {
-      \\"displayName\\": \\"console\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 13
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 20
-        },
-        \\"identifierName\\": \\"console\\"
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 26,
-      \\"_staticContextId\\": 4,
-      \\"type\\": 7
-    }, {
-      \\"displayName\\": \\"console.log\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 13
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 24
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 27,
-      \\"_staticContextId\\": 4,
-      \\"type\\": 7
-    }, {
       \\"displayName\\": \\"console.log('f', x)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 13
+          \\"line\\": 18,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 32
+          \\"line\\": 18,
+          \\"column\\": 21
         }
       },
-      \\"_callId\\": 28,
-      \\"_traceId\\": 28,
-      \\"_staticContextId\\": 4,
+      \\"_callId\\": 19,
+      \\"_traceId\\": 19,
+      \\"_staticContextId\\": 3,
       \\"type\\": 4
     }, {
       \\"displayName\\": \\"'f'\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 25
+          \\"line\\": 18,
+          \\"column\\": 14
         },
         \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 28
+          \\"line\\": 18,
+          \\"column\\": 17
         }
       },
-      \\"_callId\\": 28,
-      \\"_traceId\\": 29,
-      \\"_staticContextId\\": 4,
+      \\"_callId\\": 19,
+      \\"_traceId\\": 20,
+      \\"_staticContextId\\": 3,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 30
+          \\"line\\": 18,
+          \\"column\\": 19
         },
         \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 31
+          \\"line\\": 18,
+          \\"column\\": 20
         },
         \\"identifierName\\": \\"x\\"
       },
-      \\"_callId\\": 28,
-      \\"_traceId\\": 30,
-      \\"_staticContextId\\": 4,
+      \\"_callId\\": 19,
+      \\"_traceId\\": 21,
+      \\"_staticContextId\\": 3,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"console.log('f', x)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 13
+          \\"line\\": 18,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 32
+          \\"line\\": 18,
+          \\"column\\": 21
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 28,
-      \\"_traceId\\": 31,
-      \\"_staticContextId\\": 4,
+      \\"_resultCallId\\": 19,
+      \\"_traceId\\": 22,
+      \\"_staticContextId\\": 3,
       \\"type\\": 6
     }, {
-      \\"displayName\\": \\"{ f(x) { console.log('f', x); } }\\",
+      \\"displayName\\": \\"x\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 21,
-          \\"column\\": 11
+          \\"line\\": 19,
+          \\"column\\": 9
         },
         \\"end\\": {
-          \\"line\\": 23,
-          \\"column\\": 5
-        }
+          \\"line\\": 19,
+          \\"column\\": 10
+        },
+        \\"identifierName\\": \\"x\\"
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 32,
+      \\"_traceId\\": 23,
       \\"_staticContextId\\": 3,
       \\"type\\": 16
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 26,
-          \\"column\\": 6
+          \\"line\\": 24,
+          \\"column\\": 10
         },
         \\"end\\": {
-          \\"line\\": 26,
-          \\"column\\": 7
+          \\"line\\": 24,
+          \\"column\\": 11
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 33,
+      \\"_traceId\\": 24,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 1
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 28,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 28,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 25,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 28,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 28,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 26,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 22
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 26,
+          \\"column\\": 11
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 12
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 27,
       \\"_staticContextId\\": 5,
       \\"type\\": 1
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 33,
-          \\"column\\": 2
+          \\"line\\": 26,
+          \\"column\\": 34
         },
         \\"end\\": {
-          \\"line\\": 33,
-          \\"column\\": 3
+          \\"line\\": 26,
+          \\"column\\": 35
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 34,
+      \\"_traceId\\": 28,
       \\"_staticContextId\\": 5,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 33,
-          \\"column\\": 2
+          \\"line\\": 26,
+          \\"column\\": 34
         },
         \\"end\\": {
-          \\"line\\": 33,
-          \\"column\\": 3
+          \\"line\\": 26,
+          \\"column\\": 35
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 35,
+      \\"_traceId\\": 29,
       \\"_staticContextId\\": 5,
       \\"type\\": 22
     }, {
       \\"displayName\\": \\"console\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 27,
-          \\"column\\": 4
+          \\"line\\": 26,
+          \\"column\\": 13
         },
         \\"end\\": {
-          \\"line\\": 27,
-          \\"column\\": 11
+          \\"line\\": 26,
+          \\"column\\": 20
         },
         \\"identifierName\\": \\"console\\"
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 36,
+      \\"_traceId\\": 30,
       \\"_staticContextId\\": 5,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"console.log\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 27,
-          \\"column\\": 4
+          \\"line\\": 26,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 24
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 31,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"console.log('f', x)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 26,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 32
+        }
+      },
+      \\"_callId\\": 32,
+      \\"_traceId\\": 32,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 4
+    }, {
+      \\"displayName\\": \\"'f'\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 26,
+          \\"column\\": 25
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 28
+        }
+      },
+      \\"_callId\\": 32,
+      \\"_traceId\\": 33,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"x\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 26,
+          \\"column\\": 30
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 31
+        },
+        \\"identifierName\\": \\"x\\"
+      },
+      \\"_callId\\": 32,
+      \\"_traceId\\": 34,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"console.log('f', x)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 26,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 32
+        }
+      },
+      \\"_callId\\": false,
+      \\"_resultCallId\\": 32,
+      \\"_traceId\\": 35,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 6
+    }, {
+      \\"displayName\\": \\"{ f(x) { console.log('f', x); } }\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 25,
+          \\"column\\": 11
         },
         \\"end\\": {
           \\"line\\": 27,
-          \\"column\\": 15
+          \\"column\\": 5
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 36,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 16
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 30,
+          \\"column\\": 6
+        },
+        \\"end\\": {
+          \\"line\\": 30,
+          \\"column\\": 7
         }
       },
       \\"_callId\\": false,
       \\"_traceId\\": 37,
-      \\"_staticContextId\\": 5,
-      \\"type\\": 7
+      \\"_staticContextId\\": 6,
+      \\"type\\": 1
     }, {
-      \\"displayName\\": \\"console.log('g')\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 27,
-          \\"column\\": 4
+          \\"line\\": 37,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 27,
-          \\"column\\": 20
-        }
-      },
-      \\"_callId\\": 38,
-      \\"_traceId\\": 38,
-      \\"_staticContextId\\": 5,
-      \\"type\\": 4
-    }, {
-      \\"displayName\\": \\"'g'\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 27,
-          \\"column\\": 16
-        },
-        \\"end\\": {
-          \\"line\\": 27,
-          \\"column\\": 19
-        }
-      },
-      \\"_callId\\": 38,
-      \\"_traceId\\": 39,
-      \\"_staticContextId\\": 5,
-      \\"type\\": 9
-    }, {
-      \\"displayName\\": \\"console.log('g')\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 27,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 27,
-          \\"column\\": 20
+          \\"line\\": 37,
+          \\"column\\": 3
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 38,
-      \\"_traceId\\": 40,
-      \\"_staticContextId\\": 5,
-      \\"type\\": 6
+      \\"_traceId\\": 38,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 29,
-          \\"column\\": 11
+          \\"line\\": 37,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 29,
-          \\"column\\": 12
+          \\"line\\": 37,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 39,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 22
+    }, {
+      \\"displayName\\": \\"console\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 31,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 31,
+          \\"column\\": 11
+        },
+        \\"identifierName\\": \\"console\\"
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 40,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"console.log\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 31,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 31,
+          \\"column\\": 15
         }
       },
       \\"_callId\\": false,
       \\"_traceId\\": 41,
       \\"_staticContextId\\": 6,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"console.log('g')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 31,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 31,
+          \\"column\\": 20
+        }
+      },
+      \\"_callId\\": 42,
+      \\"_traceId\\": 42,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 4
+    }, {
+      \\"displayName\\": \\"'g'\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 31,
+          \\"column\\": 16
+        },
+        \\"end\\": {
+          \\"line\\": 31,
+          \\"column\\": 19
+        }
+      },
+      \\"_callId\\": 42,
+      \\"_traceId\\": 43,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"console.log('g')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 31,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 31,
+          \\"column\\": 20
+        }
+      },
+      \\"_callId\\": false,
+      \\"_resultCallId\\": 42,
+      \\"_traceId\\": 44,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 6
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 33,
+          \\"column\\": 11
+        },
+        \\"end\\": {
+          \\"line\\": 33,
+          \\"column\\": 12
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 45,
+      \\"_staticContextId\\": 7,
       \\"type\\": 1
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 31,
+          \\"line\\": 35,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 31,
+          \\"line\\": 35,
           \\"column\\": 7
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 42,
-      \\"_staticContextId\\": 6,
+      \\"_traceId\\": 46,
+      \\"_staticContextId\\": 7,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 31,
+          \\"line\\": 35,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 31,
+          \\"line\\": 35,
           \\"column\\": 7
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 43,
-      \\"_staticContextId\\": 6,
+      \\"_traceId\\": 47,
+      \\"_staticContextId\\": 7,
       \\"type\\": 22
     }, {
       \\"displayName\\": \\"console\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 15
         },
         \\"identifierName\\": \\"console\\"
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 44,
-      \\"_staticContextId\\": 6,
+      \\"_traceId\\": 48,
+      \\"_staticContextId\\": 7,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"console.log\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 19
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 45,
-      \\"_staticContextId\\": 6,
+      \\"_traceId\\": 49,
+      \\"_staticContextId\\": 7,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"console.log('h', x)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 27
         }
       },
-      \\"_callId\\": 46,
-      \\"_traceId\\": 46,
-      \\"_staticContextId\\": 6,
+      \\"_callId\\": 50,
+      \\"_traceId\\": 50,
+      \\"_staticContextId\\": 7,
       \\"type\\": 4
     }, {
       \\"displayName\\": \\"'h'\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 20
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 23
         }
       },
-      \\"_callId\\": 46,
-      \\"_traceId\\": 47,
-      \\"_staticContextId\\": 6,
+      \\"_callId\\": 50,
+      \\"_traceId\\": 51,
+      \\"_staticContextId\\": 7,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 25
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 26
         },
         \\"identifierName\\": \\"x\\"
       },
-      \\"_callId\\": 46,
-      \\"_traceId\\": 48,
-      \\"_staticContextId\\": 6,
+      \\"_callId\\": 50,
+      \\"_traceId\\": 52,
+      \\"_staticContextId\\": 7,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"console.log('h', x)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 27
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 46,
-      \\"_traceId\\": 49,
-      \\"_staticContextId\\": 6,
+      \\"_resultCallId\\": 50,
+      \\"_traceId\\": 53,
+      \\"_staticContextId\\": 7,
       \\"type\\": 6
     }, {
       \\"displayName\\": \\"{ h(x) { console.log('h', x); } }\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 28,
+          \\"line\\": 32,
           \\"column\\": 11
         },
         \\"end\\": {
-          \\"line\\": 32,
+          \\"line\\": 36,
           \\"column\\": 5
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 50,
-      \\"_staticContextId\\": 5,
+      \\"_traceId\\": 54,
+      \\"_staticContextId\\": 6,
       \\"type\\": 16
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 35,
+          \\"line\\": 39,
           \\"column\\": 10
         },
         \\"end\\": {
-          \\"line\\": 35,
+          \\"line\\": 39,
           \\"column\\": 11
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 51,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 1
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 40,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 40,
-          \\"column\\": 3
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 52,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 2
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 40,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 40,
-          \\"column\\": 3
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 53,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 22
-    }, {
-      \\"displayName\\": \\"console\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 36,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 36,
-          \\"column\\": 11
-        },
-        \\"identifierName\\": \\"console\\"
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 54,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 7
-    }, {
-      \\"displayName\\": \\"console.log\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 36,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 36,
-          \\"column\\": 15
         }
       },
       \\"_callId\\": false,
       \\"_traceId\\": 55,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 7
-    }, {
-      \\"displayName\\": \\"console.log('i')\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 36,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 36,
-          \\"column\\": 20
-        }
-      },
-      \\"_callId\\": 56,
-      \\"_traceId\\": 56,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 4
-    }, {
-      \\"displayName\\": \\"'i'\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 36,
-          \\"column\\": 16
-        },
-        \\"end\\": {
-          \\"line\\": 36,
-          \\"column\\": 19
-        }
-      },
-      \\"_callId\\": 56,
-      \\"_traceId\\": 57,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 9
-    }, {
-      \\"displayName\\": \\"console.log('i')\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 36,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 36,
-          \\"column\\": 20
-        }
-      },
-      \\"_callId\\": false,
-      \\"_resultCallId\\": 56,
-      \\"_traceId\\": 58,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 6
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 37,
-          \\"column\\": 28
-        },
-        \\"end\\": {
-          \\"line\\": 37,
-          \\"column\\": 29
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 59,
       \\"_staticContextId\\": 8,
       \\"type\\": 1
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 39,
+          \\"line\\": 43,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 43,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 56,
+      \\"_staticContextId\\": 8,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 43,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 43,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 57,
+      \\"_staticContextId\\": 8,
+      \\"type\\": 22
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 40,
+          \\"column\\": 28
+        },
+        \\"end\\": {
+          \\"line\\": 40,
+          \\"column\\": 29
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 58,
+      \\"_staticContextId\\": 9,
+      \\"type\\": 1
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 42,
           \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 39,
+          \\"line\\": 42,
+          \\"column\\": 5
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 59,
+      \\"_staticContextId\\": 9,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 42,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 42,
           \\"column\\": 5
         }
       },
       \\"_callId\\": false,
       \\"_traceId\\": 60,
-      \\"_staticContextId\\": 8,
-      \\"type\\": 2
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 39,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 39,
-          \\"column\\": 5
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 61,
-      \\"_staticContextId\\": 8,
+      \\"_staticContextId\\": 9,
       \\"type\\": 22
     }, {
       \\"displayName\\": \\"console\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 13
         },
         \\"identifierName\\": \\"console\\"
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 62,
-      \\"_staticContextId\\": 8,
+      \\"_traceId\\": 61,
+      \\"_staticContextId\\": 9,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"console.log\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 17
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 63,
-      \\"_staticContextId\\": 8,
+      \\"_traceId\\": 62,
+      \\"_staticContextId\\": 9,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"console.log('j', x, y)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 28
         }
       },
-      \\"_callId\\": 64,
-      \\"_traceId\\": 64,
-      \\"_staticContextId\\": 8,
+      \\"_callId\\": 63,
+      \\"_traceId\\": 63,
+      \\"_staticContextId\\": 9,
       \\"type\\": 4
     }, {
       \\"displayName\\": \\"'j'\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 18
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 21
         }
       },
-      \\"_callId\\": 64,
-      \\"_traceId\\": 65,
-      \\"_staticContextId\\": 8,
+      \\"_callId\\": 63,
+      \\"_traceId\\": 64,
+      \\"_staticContextId\\": 9,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 23
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 24
         },
         \\"identifierName\\": \\"x\\"
       },
-      \\"_callId\\": 64,
-      \\"_traceId\\": 66,
-      \\"_staticContextId\\": 8,
+      \\"_callId\\": 63,
+      \\"_traceId\\": 65,
+      \\"_staticContextId\\": 9,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"y\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 26
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 27
         },
         \\"identifierName\\": \\"y\\"
       },
-      \\"_callId\\": 64,
-      \\"_traceId\\": 67,
-      \\"_staticContextId\\": 8,
+      \\"_callId\\": 63,
+      \\"_traceId\\": 66,
+      \\"_staticContextId\\": 9,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"console.log('j', x, y)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 28
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 64,
-      \\"_traceId\\": 68,
-      \\"_staticContextId\\": 8,
+      \\"_resultCallId\\": 63,
+      \\"_traceId\\": 67,
+      \\"_staticContextId\\": 9,
       \\"type\\": 6
     }, {
       \\"displayName\\": \\"j\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 37,
+          \\"line\\": 40,
           \\"column\\": 11
         },
         \\"end\\": {
-          \\"line\\": 39,
+          \\"line\\": 42,
           \\"column\\": 5
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 69,
-      \\"_staticContextId\\": 8,
+      \\"_traceId\\": 68,
+      \\"_staticContextId\\": 9,
       \\"type\\": 16
     }, {
-      \\"displayName\\": \\"a = { get b() { console.log('b'); return { f(x) { console.log('f', x); } } }, g() { console.log('g'); return { h(x) { console.log('h', x); } }; }, get i() { console.log('i'); return function j(x, y) { console.log('j', x, y); }; } }\\",
+      \\"displayName\\": \\"a = { get b() { return { f(x) { console.log('f', x); } } }, g() { console.log('g'); return { h(x) { console.log('h', x); } }; }, get i() { return function j(x, y) { console.log('j', x, y); }; } }\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 18,
+          \\"line\\": 23,
           \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 41,
+          \\"line\\": 44,
           \\"column\\": 1
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 70,
+      \\"_traceId\\": 69,
       \\"_staticContextId\\": 1,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"main\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 4
         },
         \\"identifierName\\": \\"main\\"
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 71,
+      \\"_traceId\\": 70,
       \\"_staticContextId\\": 1,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"main()\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 6
         }
       },
-      \\"_callId\\": 72,
-      \\"_traceId\\": 72,
+      \\"_callId\\": 71,
+      \\"_traceId\\": 71,
       \\"_staticContextId\\": 1,
       \\"type\\": 4
     }, {
       \\"displayName\\": \\"main()\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 6
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 72,
-      \\"_traceId\\": 73,
+      \\"_resultCallId\\": 71,
+      \\"_traceId\\": 72,
       \\"_staticContextId\\": 1,
       \\"type\\": 6
     }],
     \\"varAccess\\": [{
       \\"_varId\\": 1,
-      \\"_ownerId\\": 4,
+      \\"_ownerId\\": 3,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 8
+          \\"line\\": 16,
+          \\"column\\": 11
         },
         \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 9
+          \\"line\\": 16,
+          \\"column\\": 12
         },
         \\"identifierName\\": \\"x\\"
       },
       \\"ownerType\\": 2
     }, {
       \\"_varId\\": 2,
-      \\"_ownerId\\": 6,
+      \\"_ownerId\\": 5,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 29,
+          \\"line\\": 26,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 29,
+          \\"line\\": 26,
           \\"column\\": 9
         },
         \\"identifierName\\": \\"x\\"
@@ -32761,29 +32772,44 @@ function _dbux_init(dbuxRuntime) {
       \\"ownerType\\": 2
     }, {
       \\"_varId\\": 3,
-      \\"_ownerId\\": 8,
+      \\"_ownerId\\": 7,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 37,
-          \\"column\\": 22
+          \\"line\\": 33,
+          \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 37,
-          \\"column\\": 23
+          \\"line\\": 33,
+          \\"column\\": 9
         },
         \\"identifierName\\": \\"x\\"
       },
       \\"ownerType\\": 2
     }, {
       \\"_varId\\": 4,
-      \\"_ownerId\\": 8,
+      \\"_ownerId\\": 9,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 37,
+          \\"line\\": 40,
+          \\"column\\": 22
+        },
+        \\"end\\": {
+          \\"line\\": 40,
+          \\"column\\": 23
+        },
+        \\"identifierName\\": \\"x\\"
+      },
+      \\"ownerType\\": 2
+    }, {
+      \\"_varId\\": 5,
+      \\"_ownerId\\": 9,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 40,
           \\"column\\": 25
         },
         \\"end\\": {
-          \\"line\\": 37,
+          \\"line\\": 40,
           \\"column\\": 26
         },
         \\"identifierName\\": \\"y\\"
@@ -32800,24 +32826,28 @@ exports[`dbux-babel-plugin calls1.esNext.js: calls1.esNext.js 1`] = `
 "
 /* eslint-disable */
 
-// f();
-// f()(1);
-
-// function f(x) {
-//   return () => console.log('f()()', x);
-// }
 
 function main() {
-  a.i()(3, 4);
+  f(a.g());
+  // a.i();
+  // a.i(3, 4);
   // a.b.f(1);
   // a.g().h(2);
 
   // a.i(a.g().h(2), a.b.f(1));
 }
 
+// f();
+// f()(1);
+function f(x) {
+  // return function j(x, y) {
+  console.log('f', x);
+  return x;
+  // };
+}
+
 var a = {
   get b() {
-    console.log('b');
     return {
       f(x) { console.log('f', x); }
     }
@@ -32833,7 +32863,6 @@ var a = {
   },
 
   get i() {
-    console.log('i');
     return function j(x, y) {
       console.log('j', x, y);
     };
@@ -32876,18 +32905,15 @@ try {
   var _main;
 
   /* eslint-disable */
-  // f();
-  // f()(1);
-  // function f(x) {
-  //   return () => console.log('f()()', x);
-  // }
   function main() {
     var _contextId2 = _dbux.pushImmediate(2, 4, false);
 
     try {
-      var _func, _o, _func2;
+      var _f, _o, _func;
 
-      _func = (_o = _dbux.traceExpr(7, a), _func2 = _dbux.traceExpr(8, _o.i), _dbux.t(9), _dbux.traceExpr(10, _func2.call(_o))), _dbux.t(11), _dbux.traceExpr(14, _func(_dbux.traceArg(12, 3), _dbux.traceArg(13, 4))); // a.b.f(1);
+      _f = _dbux.traceExpr(7, f), _dbux.t(12), _dbux.traceExpr(13, _f((_o = _dbux.traceExpr(8, a), _func = _dbux.traceExpr(9, _o.g), _dbux.t(10), _dbux.traceExpr(11, _func.call(_o))))); // a.i();
+      // a.i(3, 4);
+      // a.b.f(1);
       // a.g().h(2);
       // a.i(a.g().h(2), a.b.f(1));
 
@@ -32895,99 +32921,111 @@ try {
     } finally {
       _dbux.popFunction(_contextId2, 5);
     }
+  } // f();
+  // f()(1);
+
+
+  function f(x) {
+    var _contextId3 = _dbux.pushImmediate(3, 14, false);
+
+    try {
+      var _o2, _func2;
+
+      // return function j(x, y) {
+      _o2 = _dbux.traceExpr(17, console), _func2 = _dbux.traceExpr(18, _o2.log), _dbux.t(19), _dbux.traceExpr(22, _func2.call(_o2, _dbux.traceArg(20, 'f'), _dbux.traceArg(21, x)));
+      return _dbux.traceExpr(23, x); // };
+
+      _dbux.t(16);
+    } finally {
+      _dbux.popFunction(_contextId3, 15);
+    }
   }
 
-  var a = _dbux.traceExpr(70, {
+  var a = _dbux.traceExpr(69, {
     get b() {
-      var _contextId3 = _dbux.pushImmediate(3, 15, false);
+      var _contextId4 = _dbux.pushImmediate(4, 24, false);
 
       try {
-        var _o2, _func3;
-
-        _o2 = _dbux.traceExpr(18, console), _func3 = _dbux.traceExpr(19, _o2.log), _dbux.t(20), _dbux.traceExpr(22, _func3.call(_o2, _dbux.traceArg(21, 'b')));
-        return _dbux.traceExpr(32, {
+        return _dbux.traceExpr(36, {
           f(x) {
-            var _contextId4 = _dbux.pushImmediate(4, 23, false);
+            var _contextId5 = _dbux.pushImmediate(5, 27, false);
 
             try {
-              var _o3, _func4;
+              var _o3, _func3;
 
-              _o3 = _dbux.traceExpr(26, console), _func4 = _dbux.traceExpr(27, _o3.log), _dbux.t(28), _dbux.traceExpr(31, _func4.call(_o3, _dbux.traceArg(29, 'f'), _dbux.traceArg(30, x)));
+              _o3 = _dbux.traceExpr(30, console), _func3 = _dbux.traceExpr(31, _o3.log), _dbux.t(32), _dbux.traceExpr(35, _func3.call(_o3, _dbux.traceArg(33, 'f'), _dbux.traceArg(34, x)));
 
-              _dbux.t(25);
+              _dbux.t(29);
             } finally {
-              _dbux.popFunction(_contextId4, 24);
+              _dbux.popFunction(_contextId5, 28);
             }
           }
 
         });
 
-        _dbux.t(17);
+        _dbux.t(26);
       } finally {
-        _dbux.popFunction(_contextId3, 16);
+        _dbux.popFunction(_contextId4, 25);
       }
     },
 
     g() {
-      var _contextId5 = _dbux.pushImmediate(5, 33, false);
+      var _contextId6 = _dbux.pushImmediate(6, 37, false);
 
       try {
-        var _o4, _func5;
+        var _o4, _func4;
 
-        _o4 = _dbux.traceExpr(36, console), _func5 = _dbux.traceExpr(37, _o4.log), _dbux.t(38), _dbux.traceExpr(40, _func5.call(_o4, _dbux.traceArg(39, 'g')));
-        return _dbux.traceExpr(50, {
+        _o4 = _dbux.traceExpr(40, console), _func4 = _dbux.traceExpr(41, _o4.log), _dbux.t(42), _dbux.traceExpr(44, _func4.call(_o4, _dbux.traceArg(43, 'g')));
+        return _dbux.traceExpr(54, {
           h(x) {
-            var _contextId6 = _dbux.pushImmediate(6, 41, false);
+            var _contextId7 = _dbux.pushImmediate(7, 45, false);
 
             try {
-              var _o5, _func6;
+              var _o5, _func5;
 
-              _o5 = _dbux.traceExpr(44, console), _func6 = _dbux.traceExpr(45, _o5.log), _dbux.t(46), _dbux.traceExpr(49, _func6.call(_o5, _dbux.traceArg(47, 'h'), _dbux.traceArg(48, x)));
+              _o5 = _dbux.traceExpr(48, console), _func5 = _dbux.traceExpr(49, _o5.log), _dbux.t(50), _dbux.traceExpr(53, _func5.call(_o5, _dbux.traceArg(51, 'h'), _dbux.traceArg(52, x)));
 
-              _dbux.t(43);
+              _dbux.t(47);
             } finally {
-              _dbux.popFunction(_contextId6, 42);
+              _dbux.popFunction(_contextId7, 46);
             }
           }
 
         });
 
-        _dbux.t(35);
+        _dbux.t(39);
       } finally {
-        _dbux.popFunction(_contextId5, 34);
+        _dbux.popFunction(_contextId6, 38);
       }
     },
 
     get i() {
-      var _contextId7 = _dbux.pushImmediate(7, 51, false);
+      var _contextId8 = _dbux.pushImmediate(8, 55, false);
 
       try {
-        var _o6, _func7;
-
-        _o6 = _dbux.traceExpr(54, console), _func7 = _dbux.traceExpr(55, _o6.log), _dbux.t(56), _dbux.traceExpr(58, _func7.call(_o6, _dbux.traceArg(57, 'i')));
-        return _dbux.traceExpr(69, function j(x, y) {
-          var _contextId8 = _dbux.pushImmediate(8, 59, false);
+        return _dbux.traceExpr(68, function j(x, y) {
+          var _contextId9 = _dbux.pushImmediate(9, 58, false);
 
           try {
-            var _o7, _func8;
+            var _o6, _func6;
 
-            _o7 = _dbux.traceExpr(62, console), _func8 = _dbux.traceExpr(63, _o7.log), _dbux.t(64), _dbux.traceExpr(68, _func8.call(_o7, _dbux.traceArg(65, 'j'), _dbux.traceArg(66, x), _dbux.traceArg(67, y)));
+            _o6 = _dbux.traceExpr(61, console), _func6 = _dbux.traceExpr(62, _o6.log), _dbux.t(63), _dbux.traceExpr(67, _func6.call(_o6, _dbux.traceArg(64, 'j'), _dbux.traceArg(65, x), _dbux.traceArg(66, y)));
 
-            _dbux.t(61);
+            _dbux.t(60);
           } finally {
-            _dbux.popFunction(_contextId8, 60);
+            _dbux.popFunction(_contextId9, 59);
           }
         });
 
-        _dbux.t(53);
+        _dbux.t(57);
       } finally {
-        _dbux.popFunction(_contextId7, 52);
+        _dbux.popFunction(_contextId8, 56);
       }
     }
 
   });
 
-  _main = _dbux.traceExpr(71, main), _dbux.t(72), _dbux.traceExpr(73, _main()); // var _o, _f;
+  _main = _dbux.traceExpr(70, main), _dbux.t(71), _dbux.traceExpr(72, _main()); // var _o, _f;
   // _o = a.b,
   //   _f = _o.f,
   //   _f.call(_o, 1);
@@ -33021,7 +33059,7 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 65,
+          \\"line\\": 68,
           \\"column\\": 19
         }
       },
@@ -33035,11 +33073,11 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 10,
+          \\"line\\": 4,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 16,
+          \\"line\\": 12,
           \\"column\\": 1
         }
       },
@@ -33052,11 +33090,28 @@ function _dbux_init(dbuxRuntime) {
       \\"_parentId\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 19,
+          \\"line\\": 16,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 21,
+          \\"column\\": 1
+        }
+      },
+      \\"type\\": 2,
+      \\"name\\": \\"f\\",
+      \\"displayName\\": \\"f\\",
+      \\"isInterruptable\\": false
+    }, {
+      \\"_staticId\\": 4,
+      \\"_parentId\\": 1,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 24,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 24,
+          \\"line\\": 28,
           \\"column\\": 3
         }
       },
@@ -33065,15 +33120,15 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"b\\",
       \\"isInterruptable\\": false
     }, {
-      \\"_staticId\\": 4,
-      \\"_parentId\\": 3,
+      \\"_staticId\\": 5,
+      \\"_parentId\\": 4,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
+          \\"line\\": 26,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 22,
+          \\"line\\": 26,
           \\"column\\": 35
         }
       },
@@ -33082,15 +33137,15 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"f\\",
       \\"isInterruptable\\": false
     }, {
-      \\"_staticId\\": 5,
+      \\"_staticId\\": 6,
       \\"_parentId\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 26,
+          \\"line\\": 30,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 33,
+          \\"line\\": 37,
           \\"column\\": 3
         }
       },
@@ -33099,15 +33154,15 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"g\\",
       \\"isInterruptable\\": false
     }, {
-      \\"_staticId\\": 6,
-      \\"_parentId\\": 5,
+      \\"_staticId\\": 7,
+      \\"_parentId\\": 6,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 29,
+          \\"line\\": 33,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 31,
+          \\"line\\": 35,
           \\"column\\": 7
         }
       },
@@ -33116,15 +33171,15 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"h\\",
       \\"isInterruptable\\": false
     }, {
-      \\"_staticId\\": 7,
+      \\"_staticId\\": 8,
       \\"_parentId\\": 1,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 35,
+          \\"line\\": 39,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 40,
+          \\"line\\": 43,
           \\"column\\": 3
         }
       },
@@ -33133,15 +33188,15 @@ function _dbux_init(dbuxRuntime) {
       \\"displayName\\": \\"i\\",
       \\"isInterruptable\\": false
     }, {
-      \\"_staticId\\": 8,
-      \\"_parentId\\": 7,
+      \\"_staticId\\": 9,
+      \\"_parentId\\": 8,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 37,
+          \\"line\\": 40,
           \\"column\\": 11
         },
         \\"end\\": {
-          \\"line\\": 39,
+          \\"line\\": 42,
           \\"column\\": 5
         }
       },
@@ -33168,11 +33223,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 65,
+          \\"line\\": 68,
           \\"column\\": 19
         },
         \\"end\\": {
-          \\"line\\": 65,
+          \\"line\\": 68,
           \\"column\\": 19
         }
       },
@@ -33183,11 +33238,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 65,
+          \\"line\\": 68,
           \\"column\\": 18
         },
         \\"end\\": {
-          \\"line\\": 65,
+          \\"line\\": 68,
           \\"column\\": 19
         }
       },
@@ -33198,11 +33253,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 10,
+          \\"line\\": 4,
           \\"column\\": 16
         },
         \\"end\\": {
-          \\"line\\": 10,
+          \\"line\\": 4,
           \\"column\\": 17
         }
       },
@@ -33213,11 +33268,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 16,
+          \\"line\\": 12,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 16,
+          \\"line\\": 12,
           \\"column\\": 1
         }
       },
@@ -33228,11 +33283,11 @@ function _dbux_init(dbuxRuntime) {
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 16,
+          \\"line\\": 12,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 16,
+          \\"line\\": 12,
           \\"column\\": 1
         }
       },
@@ -33241,31 +33296,32 @@ function _dbux_init(dbuxRuntime) {
       \\"_staticContextId\\": 2,
       \\"type\\": 22
     }, {
-      \\"displayName\\": \\"a.i()\\",
+      \\"displayName\\": \\"f\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
+          \\"line\\": 5,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 7
-        }
+          \\"line\\": 5,
+          \\"column\\": 3
+        },
+        \\"identifierName\\": \\"f\\"
       },
       \\"_callId\\": false,
       \\"_traceId\\": 7,
       \\"_staticContextId\\": 2,
       \\"type\\": 7
     }, {
-      \\"displayName\\": \\"a.i()\\",
+      \\"displayName\\": \\"f(a.g())\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
+          \\"line\\": 5,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 7
+          \\"line\\": 5,
+          \\"column\\": 10
         }
       },
       \\"_callId\\": false,
@@ -33273,1073 +33329,1054 @@ function _dbux_init(dbuxRuntime) {
       \\"_staticContextId\\": 2,
       \\"type\\": 7
     }, {
-      \\"displayName\\": \\"a.i()\\",
+      \\"displayName\\": \\"f(a.g())\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
+          \\"line\\": 5,
           \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 7
-        }
-      },
-      \\"_callId\\": 9,
-      \\"_traceId\\": 9,
-      \\"_staticContextId\\": 2,
-      \\"type\\": 4
-    }, {
-      \\"displayName\\": \\"a.i()\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 7
+          \\"line\\": 5,
+          \\"column\\": 10
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 9,
-      \\"_traceId\\": 10,
+      \\"_traceId\\": 9,
       \\"_staticContextId\\": 2,
-      \\"type\\": 6
+      \\"type\\": 7
     }, {
-      \\"displayName\\": \\"a.i()(3, 4)\\",
+      \\"displayName\\": \\"a.g()\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 2
+          \\"line\\": 5,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 13
-        }
-      },
-      \\"_callId\\": 11,
-      \\"_traceId\\": 11,
-      \\"_staticContextId\\": 2,
-      \\"type\\": 4
-    }, {
-      \\"displayName\\": \\"3\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 8
-        },
-        \\"end\\": {
-          \\"line\\": 11,
+          \\"line\\": 5,
           \\"column\\": 9
         }
       },
-      \\"_callId\\": 11,
-      \\"_traceId\\": 12,
+      \\"_callId\\": 10,
+      \\"_traceId\\": 10,
       \\"_staticContextId\\": 2,
-      \\"type\\": 9
+      \\"type\\": 4
     }, {
-      \\"displayName\\": \\"4\\",
+      \\"displayName\\": \\"a.g()\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 11
+          \\"line\\": 5,
+          \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 12
-        }
-      },
-      \\"_callId\\": 11,
-      \\"_traceId\\": 13,
-      \\"_staticContextId\\": 2,
-      \\"type\\": 9
-    }, {
-      \\"displayName\\": \\"a.i()(3, 4)\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 11,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 11,
-          \\"column\\": 13
+          \\"line\\": 5,
+          \\"column\\": 9
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 11,
-      \\"_traceId\\": 14,
+      \\"_resultCallId\\": 10,
+      \\"_traceId\\": 11,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 6
+    }, {
+      \\"displayName\\": \\"f(a.g())\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 10
+        }
+      },
+      \\"_callId\\": 12,
+      \\"_traceId\\": 12,
+      \\"_staticContextId\\": 2,
+      \\"type\\": 4
+    }, {
+      \\"displayName\\": \\"f(a.g())\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 5,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 5,
+          \\"column\\": 10
+        }
+      },
+      \\"_callId\\": false,
+      \\"_resultCallId\\": 12,
+      \\"_traceId\\": 13,
       \\"_staticContextId\\": 2,
       \\"type\\": 6
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 19,
-          \\"column\\": 10
+          \\"line\\": 16,
+          \\"column\\": 14
         },
         \\"end\\": {
-          \\"line\\": 19,
-          \\"column\\": 11
+          \\"line\\": 16,
+          \\"column\\": 15
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 15,
+      \\"_traceId\\": 14,
       \\"_staticContextId\\": 3,
       \\"type\\": 1
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 24,
-          \\"column\\": 2
+          \\"line\\": 21,
+          \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 24,
-          \\"column\\": 3
+          \\"line\\": 21,
+          \\"column\\": 1
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 16,
+      \\"_traceId\\": 15,
       \\"_staticContextId\\": 3,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 24,
-          \\"column\\": 2
+          \\"line\\": 21,
+          \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 24,
-          \\"column\\": 3
+          \\"line\\": 21,
+          \\"column\\": 1
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 17,
+      \\"_traceId\\": 16,
       \\"_staticContextId\\": 3,
       \\"type\\": 22
     }, {
       \\"displayName\\": \\"console\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 20,
-          \\"column\\": 4
+          \\"line\\": 18,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 20,
-          \\"column\\": 11
+          \\"line\\": 18,
+          \\"column\\": 9
         },
         \\"identifierName\\": \\"console\\"
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 17,
+      \\"_staticContextId\\": 3,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"console.log\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 18,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 18,
+          \\"column\\": 13
+        }
       },
       \\"_callId\\": false,
       \\"_traceId\\": 18,
       \\"_staticContextId\\": 3,
       \\"type\\": 7
     }, {
-      \\"displayName\\": \\"console.log\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 20,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 20,
-          \\"column\\": 15
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 19,
-      \\"_staticContextId\\": 3,
-      \\"type\\": 7
-    }, {
-      \\"displayName\\": \\"console.log('b')\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 20,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 20,
-          \\"column\\": 20
-        }
-      },
-      \\"_callId\\": 20,
-      \\"_traceId\\": 20,
-      \\"_staticContextId\\": 3,
-      \\"type\\": 4
-    }, {
-      \\"displayName\\": \\"'b'\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 20,
-          \\"column\\": 16
-        },
-        \\"end\\": {
-          \\"line\\": 20,
-          \\"column\\": 19
-        }
-      },
-      \\"_callId\\": 20,
-      \\"_traceId\\": 21,
-      \\"_staticContextId\\": 3,
-      \\"type\\": 9
-    }, {
-      \\"displayName\\": \\"console.log('b')\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 20,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 20,
-          \\"column\\": 20
-        }
-      },
-      \\"_callId\\": false,
-      \\"_resultCallId\\": 20,
-      \\"_traceId\\": 22,
-      \\"_staticContextId\\": 3,
-      \\"type\\": 6
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 11
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 12
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 23,
-      \\"_staticContextId\\": 4,
-      \\"type\\": 1
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 34
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 35
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 24,
-      \\"_staticContextId\\": 4,
-      \\"type\\": 2
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 34
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 35
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 25,
-      \\"_staticContextId\\": 4,
-      \\"type\\": 22
-    }, {
-      \\"displayName\\": \\"console\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 13
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 20
-        },
-        \\"identifierName\\": \\"console\\"
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 26,
-      \\"_staticContextId\\": 4,
-      \\"type\\": 7
-    }, {
-      \\"displayName\\": \\"console.log\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 13
-        },
-        \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 24
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 27,
-      \\"_staticContextId\\": 4,
-      \\"type\\": 7
-    }, {
       \\"displayName\\": \\"console.log('f', x)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 13
+          \\"line\\": 18,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 32
+          \\"line\\": 18,
+          \\"column\\": 21
         }
       },
-      \\"_callId\\": 28,
-      \\"_traceId\\": 28,
-      \\"_staticContextId\\": 4,
+      \\"_callId\\": 19,
+      \\"_traceId\\": 19,
+      \\"_staticContextId\\": 3,
       \\"type\\": 4
     }, {
       \\"displayName\\": \\"'f'\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 25
+          \\"line\\": 18,
+          \\"column\\": 14
         },
         \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 28
+          \\"line\\": 18,
+          \\"column\\": 17
         }
       },
-      \\"_callId\\": 28,
-      \\"_traceId\\": 29,
-      \\"_staticContextId\\": 4,
+      \\"_callId\\": 19,
+      \\"_traceId\\": 20,
+      \\"_staticContextId\\": 3,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 30
+          \\"line\\": 18,
+          \\"column\\": 19
         },
         \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 31
+          \\"line\\": 18,
+          \\"column\\": 20
         },
         \\"identifierName\\": \\"x\\"
       },
-      \\"_callId\\": 28,
-      \\"_traceId\\": 30,
-      \\"_staticContextId\\": 4,
+      \\"_callId\\": 19,
+      \\"_traceId\\": 21,
+      \\"_staticContextId\\": 3,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"console.log('f', x)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 13
+          \\"line\\": 18,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 32
+          \\"line\\": 18,
+          \\"column\\": 21
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 28,
-      \\"_traceId\\": 31,
-      \\"_staticContextId\\": 4,
+      \\"_resultCallId\\": 19,
+      \\"_traceId\\": 22,
+      \\"_staticContextId\\": 3,
       \\"type\\": 6
     }, {
-      \\"displayName\\": \\"{ f(x) { console.log('f', x); } }\\",
+      \\"displayName\\": \\"x\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 21,
-          \\"column\\": 11
+          \\"line\\": 19,
+          \\"column\\": 9
         },
         \\"end\\": {
-          \\"line\\": 23,
-          \\"column\\": 5
-        }
+          \\"line\\": 19,
+          \\"column\\": 10
+        },
+        \\"identifierName\\": \\"x\\"
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 32,
+      \\"_traceId\\": 23,
       \\"_staticContextId\\": 3,
       \\"type\\": 16
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 26,
-          \\"column\\": 6
+          \\"line\\": 24,
+          \\"column\\": 10
         },
         \\"end\\": {
-          \\"line\\": 26,
-          \\"column\\": 7
+          \\"line\\": 24,
+          \\"column\\": 11
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 33,
+      \\"_traceId\\": 24,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 1
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 28,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 28,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 25,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 28,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 28,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 26,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 22
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 26,
+          \\"column\\": 11
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 12
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 27,
       \\"_staticContextId\\": 5,
       \\"type\\": 1
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 33,
-          \\"column\\": 2
+          \\"line\\": 26,
+          \\"column\\": 34
         },
         \\"end\\": {
-          \\"line\\": 33,
-          \\"column\\": 3
+          \\"line\\": 26,
+          \\"column\\": 35
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 34,
+      \\"_traceId\\": 28,
       \\"_staticContextId\\": 5,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 33,
-          \\"column\\": 2
+          \\"line\\": 26,
+          \\"column\\": 34
         },
         \\"end\\": {
-          \\"line\\": 33,
-          \\"column\\": 3
+          \\"line\\": 26,
+          \\"column\\": 35
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 35,
+      \\"_traceId\\": 29,
       \\"_staticContextId\\": 5,
       \\"type\\": 22
     }, {
       \\"displayName\\": \\"console\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 27,
-          \\"column\\": 4
+          \\"line\\": 26,
+          \\"column\\": 13
         },
         \\"end\\": {
-          \\"line\\": 27,
-          \\"column\\": 11
+          \\"line\\": 26,
+          \\"column\\": 20
         },
         \\"identifierName\\": \\"console\\"
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 36,
+      \\"_traceId\\": 30,
       \\"_staticContextId\\": 5,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"console.log\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 27,
-          \\"column\\": 4
+          \\"line\\": 26,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 24
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 31,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"console.log('f', x)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 26,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 32
+        }
+      },
+      \\"_callId\\": 32,
+      \\"_traceId\\": 32,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 4
+    }, {
+      \\"displayName\\": \\"'f'\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 26,
+          \\"column\\": 25
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 28
+        }
+      },
+      \\"_callId\\": 32,
+      \\"_traceId\\": 33,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"x\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 26,
+          \\"column\\": 30
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 31
+        },
+        \\"identifierName\\": \\"x\\"
+      },
+      \\"_callId\\": 32,
+      \\"_traceId\\": 34,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"console.log('f', x)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 26,
+          \\"column\\": 13
+        },
+        \\"end\\": {
+          \\"line\\": 26,
+          \\"column\\": 32
+        }
+      },
+      \\"_callId\\": false,
+      \\"_resultCallId\\": 32,
+      \\"_traceId\\": 35,
+      \\"_staticContextId\\": 5,
+      \\"type\\": 6
+    }, {
+      \\"displayName\\": \\"{ f(x) { console.log('f', x); } }\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 25,
+          \\"column\\": 11
         },
         \\"end\\": {
           \\"line\\": 27,
-          \\"column\\": 15
+          \\"column\\": 5
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 36,
+      \\"_staticContextId\\": 4,
+      \\"type\\": 16
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 30,
+          \\"column\\": 6
+        },
+        \\"end\\": {
+          \\"line\\": 30,
+          \\"column\\": 7
         }
       },
       \\"_callId\\": false,
       \\"_traceId\\": 37,
-      \\"_staticContextId\\": 5,
-      \\"type\\": 7
+      \\"_staticContextId\\": 6,
+      \\"type\\": 1
     }, {
-      \\"displayName\\": \\"console.log('g')\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 27,
-          \\"column\\": 4
+          \\"line\\": 37,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 27,
-          \\"column\\": 20
-        }
-      },
-      \\"_callId\\": 38,
-      \\"_traceId\\": 38,
-      \\"_staticContextId\\": 5,
-      \\"type\\": 4
-    }, {
-      \\"displayName\\": \\"'g'\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 27,
-          \\"column\\": 16
-        },
-        \\"end\\": {
-          \\"line\\": 27,
-          \\"column\\": 19
-        }
-      },
-      \\"_callId\\": 38,
-      \\"_traceId\\": 39,
-      \\"_staticContextId\\": 5,
-      \\"type\\": 9
-    }, {
-      \\"displayName\\": \\"console.log('g')\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 27,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 27,
-          \\"column\\": 20
+          \\"line\\": 37,
+          \\"column\\": 3
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 38,
-      \\"_traceId\\": 40,
-      \\"_staticContextId\\": 5,
-      \\"type\\": 6
+      \\"_traceId\\": 38,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 29,
-          \\"column\\": 11
+          \\"line\\": 37,
+          \\"column\\": 2
         },
         \\"end\\": {
-          \\"line\\": 29,
-          \\"column\\": 12
+          \\"line\\": 37,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 39,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 22
+    }, {
+      \\"displayName\\": \\"console\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 31,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 31,
+          \\"column\\": 11
+        },
+        \\"identifierName\\": \\"console\\"
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 40,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"console.log\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 31,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 31,
+          \\"column\\": 15
         }
       },
       \\"_callId\\": false,
       \\"_traceId\\": 41,
       \\"_staticContextId\\": 6,
+      \\"type\\": 7
+    }, {
+      \\"displayName\\": \\"console.log('g')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 31,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 31,
+          \\"column\\": 20
+        }
+      },
+      \\"_callId\\": 42,
+      \\"_traceId\\": 42,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 4
+    }, {
+      \\"displayName\\": \\"'g'\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 31,
+          \\"column\\": 16
+        },
+        \\"end\\": {
+          \\"line\\": 31,
+          \\"column\\": 19
+        }
+      },
+      \\"_callId\\": 42,
+      \\"_traceId\\": 43,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 9
+    }, {
+      \\"displayName\\": \\"console.log('g')\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 31,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 31,
+          \\"column\\": 20
+        }
+      },
+      \\"_callId\\": false,
+      \\"_resultCallId\\": 42,
+      \\"_traceId\\": 44,
+      \\"_staticContextId\\": 6,
+      \\"type\\": 6
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 33,
+          \\"column\\": 11
+        },
+        \\"end\\": {
+          \\"line\\": 33,
+          \\"column\\": 12
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 45,
+      \\"_staticContextId\\": 7,
       \\"type\\": 1
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 31,
+          \\"line\\": 35,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 31,
+          \\"line\\": 35,
           \\"column\\": 7
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 42,
-      \\"_staticContextId\\": 6,
+      \\"_traceId\\": 46,
+      \\"_staticContextId\\": 7,
       \\"type\\": 2
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 31,
+          \\"line\\": 35,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 31,
+          \\"line\\": 35,
           \\"column\\": 7
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 43,
-      \\"_staticContextId\\": 6,
+      \\"_traceId\\": 47,
+      \\"_staticContextId\\": 7,
       \\"type\\": 22
     }, {
       \\"displayName\\": \\"console\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 15
         },
         \\"identifierName\\": \\"console\\"
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 44,
-      \\"_staticContextId\\": 6,
+      \\"_traceId\\": 48,
+      \\"_staticContextId\\": 7,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"console.log\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 19
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 45,
-      \\"_staticContextId\\": 6,
+      \\"_traceId\\": 49,
+      \\"_staticContextId\\": 7,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"console.log('h', x)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 27
         }
       },
-      \\"_callId\\": 46,
-      \\"_traceId\\": 46,
-      \\"_staticContextId\\": 6,
+      \\"_callId\\": 50,
+      \\"_traceId\\": 50,
+      \\"_staticContextId\\": 7,
       \\"type\\": 4
     }, {
       \\"displayName\\": \\"'h'\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 20
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 23
         }
       },
-      \\"_callId\\": 46,
-      \\"_traceId\\": 47,
-      \\"_staticContextId\\": 6,
+      \\"_callId\\": 50,
+      \\"_traceId\\": 51,
+      \\"_staticContextId\\": 7,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 25
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 26
         },
         \\"identifierName\\": \\"x\\"
       },
-      \\"_callId\\": 46,
-      \\"_traceId\\": 48,
-      \\"_staticContextId\\": 6,
+      \\"_callId\\": 50,
+      \\"_traceId\\": 52,
+      \\"_staticContextId\\": 7,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"console.log('h', x)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 30,
+          \\"line\\": 34,
           \\"column\\": 27
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 46,
-      \\"_traceId\\": 49,
-      \\"_staticContextId\\": 6,
+      \\"_resultCallId\\": 50,
+      \\"_traceId\\": 53,
+      \\"_staticContextId\\": 7,
       \\"type\\": 6
     }, {
       \\"displayName\\": \\"{ h(x) { console.log('h', x); } }\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 28,
+          \\"line\\": 32,
           \\"column\\": 11
         },
         \\"end\\": {
-          \\"line\\": 32,
+          \\"line\\": 36,
           \\"column\\": 5
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 50,
-      \\"_staticContextId\\": 5,
+      \\"_traceId\\": 54,
+      \\"_staticContextId\\": 6,
       \\"type\\": 16
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 35,
+          \\"line\\": 39,
           \\"column\\": 10
         },
         \\"end\\": {
-          \\"line\\": 35,
+          \\"line\\": 39,
           \\"column\\": 11
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 51,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 1
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 40,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 40,
-          \\"column\\": 3
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 52,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 2
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 40,
-          \\"column\\": 2
-        },
-        \\"end\\": {
-          \\"line\\": 40,
-          \\"column\\": 3
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 53,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 22
-    }, {
-      \\"displayName\\": \\"console\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 36,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 36,
-          \\"column\\": 11
-        },
-        \\"identifierName\\": \\"console\\"
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 54,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 7
-    }, {
-      \\"displayName\\": \\"console.log\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 36,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 36,
-          \\"column\\": 15
         }
       },
       \\"_callId\\": false,
       \\"_traceId\\": 55,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 7
-    }, {
-      \\"displayName\\": \\"console.log('i')\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 36,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 36,
-          \\"column\\": 20
-        }
-      },
-      \\"_callId\\": 56,
-      \\"_traceId\\": 56,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 4
-    }, {
-      \\"displayName\\": \\"'i'\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 36,
-          \\"column\\": 16
-        },
-        \\"end\\": {
-          \\"line\\": 36,
-          \\"column\\": 19
-        }
-      },
-      \\"_callId\\": 56,
-      \\"_traceId\\": 57,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 9
-    }, {
-      \\"displayName\\": \\"console.log('i')\\",
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 36,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 36,
-          \\"column\\": 20
-        }
-      },
-      \\"_callId\\": false,
-      \\"_resultCallId\\": 56,
-      \\"_traceId\\": 58,
-      \\"_staticContextId\\": 7,
-      \\"type\\": 6
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 37,
-          \\"column\\": 28
-        },
-        \\"end\\": {
-          \\"line\\": 37,
-          \\"column\\": 29
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 59,
       \\"_staticContextId\\": 8,
       \\"type\\": 1
     }, {
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 39,
+          \\"line\\": 43,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 43,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 56,
+      \\"_staticContextId\\": 8,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 43,
+          \\"column\\": 2
+        },
+        \\"end\\": {
+          \\"line\\": 43,
+          \\"column\\": 3
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 57,
+      \\"_staticContextId\\": 8,
+      \\"type\\": 22
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 40,
+          \\"column\\": 28
+        },
+        \\"end\\": {
+          \\"line\\": 40,
+          \\"column\\": 29
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 58,
+      \\"_staticContextId\\": 9,
+      \\"type\\": 1
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 42,
           \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 39,
+          \\"line\\": 42,
+          \\"column\\": 5
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 59,
+      \\"_staticContextId\\": 9,
+      \\"type\\": 2
+    }, {
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 42,
+          \\"column\\": 4
+        },
+        \\"end\\": {
+          \\"line\\": 42,
           \\"column\\": 5
         }
       },
       \\"_callId\\": false,
       \\"_traceId\\": 60,
-      \\"_staticContextId\\": 8,
-      \\"type\\": 2
-    }, {
-      \\"loc\\": {
-        \\"start\\": {
-          \\"line\\": 39,
-          \\"column\\": 4
-        },
-        \\"end\\": {
-          \\"line\\": 39,
-          \\"column\\": 5
-        }
-      },
-      \\"_callId\\": false,
-      \\"_traceId\\": 61,
-      \\"_staticContextId\\": 8,
+      \\"_staticContextId\\": 9,
       \\"type\\": 22
     }, {
       \\"displayName\\": \\"console\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 13
         },
         \\"identifierName\\": \\"console\\"
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 62,
-      \\"_staticContextId\\": 8,
+      \\"_traceId\\": 61,
+      \\"_staticContextId\\": 9,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"console.log\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 17
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 63,
-      \\"_staticContextId\\": 8,
+      \\"_traceId\\": 62,
+      \\"_staticContextId\\": 9,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"console.log('j', x, y)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 28
         }
       },
-      \\"_callId\\": 64,
-      \\"_traceId\\": 64,
-      \\"_staticContextId\\": 8,
+      \\"_callId\\": 63,
+      \\"_traceId\\": 63,
+      \\"_staticContextId\\": 9,
       \\"type\\": 4
     }, {
       \\"displayName\\": \\"'j'\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 18
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 21
         }
       },
-      \\"_callId\\": 64,
-      \\"_traceId\\": 65,
-      \\"_staticContextId\\": 8,
+      \\"_callId\\": 63,
+      \\"_traceId\\": 64,
+      \\"_staticContextId\\": 9,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"x\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 23
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 24
         },
         \\"identifierName\\": \\"x\\"
       },
-      \\"_callId\\": 64,
-      \\"_traceId\\": 66,
-      \\"_staticContextId\\": 8,
+      \\"_callId\\": 63,
+      \\"_traceId\\": 65,
+      \\"_staticContextId\\": 9,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"y\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 26
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 27
         },
         \\"identifierName\\": \\"y\\"
       },
-      \\"_callId\\": 64,
-      \\"_traceId\\": 67,
-      \\"_staticContextId\\": 8,
+      \\"_callId\\": 63,
+      \\"_traceId\\": 66,
+      \\"_staticContextId\\": 9,
       \\"type\\": 9
     }, {
       \\"displayName\\": \\"console.log('j', x, y)\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 6
         },
         \\"end\\": {
-          \\"line\\": 38,
+          \\"line\\": 41,
           \\"column\\": 28
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 64,
-      \\"_traceId\\": 68,
-      \\"_staticContextId\\": 8,
+      \\"_resultCallId\\": 63,
+      \\"_traceId\\": 67,
+      \\"_staticContextId\\": 9,
       \\"type\\": 6
     }, {
       \\"displayName\\": \\"j\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 37,
+          \\"line\\": 40,
           \\"column\\": 11
         },
         \\"end\\": {
-          \\"line\\": 39,
+          \\"line\\": 42,
           \\"column\\": 5
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 69,
-      \\"_staticContextId\\": 8,
+      \\"_traceId\\": 68,
+      \\"_staticContextId\\": 9,
       \\"type\\": 16
     }, {
-      \\"displayName\\": \\"a = { get b() { console.log('b'); return { f(x) { console.log('f', x); } } }, g() { console.log('g'); return { h(x) { console.log('h', x); } }; }, get i() { console.log('i'); return function j(x, y) { console.log('j', x, y); }; } }\\",
+      \\"displayName\\": \\"a = { get b() { return { f(x) { console.log('f', x); } } }, g() { console.log('g'); return { h(x) { console.log('h', x); } }; }, get i() { return function j(x, y) { console.log('j', x, y); }; } }\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 18,
+          \\"line\\": 23,
           \\"column\\": 4
         },
         \\"end\\": {
-          \\"line\\": 41,
+          \\"line\\": 44,
           \\"column\\": 1
         }
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 70,
+      \\"_traceId\\": 69,
       \\"_staticContextId\\": 1,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"main\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 4
         },
         \\"identifierName\\": \\"main\\"
       },
       \\"_callId\\": false,
-      \\"_traceId\\": 71,
+      \\"_traceId\\": 70,
       \\"_staticContextId\\": 1,
       \\"type\\": 7
     }, {
       \\"displayName\\": \\"main()\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 6
         }
       },
-      \\"_callId\\": 72,
-      \\"_traceId\\": 72,
+      \\"_callId\\": 71,
+      \\"_traceId\\": 71,
       \\"_staticContextId\\": 1,
       \\"type\\": 4
     }, {
       \\"displayName\\": \\"main()\\",
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 0
         },
         \\"end\\": {
-          \\"line\\": 43,
+          \\"line\\": 46,
           \\"column\\": 6
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 72,
-      \\"_traceId\\": 73,
+      \\"_resultCallId\\": 71,
+      \\"_traceId\\": 72,
       \\"_staticContextId\\": 1,
       \\"type\\": 6
     }],
     \\"varAccess\\": [{
       \\"_varId\\": 1,
-      \\"_ownerId\\": 4,
+      \\"_ownerId\\": 3,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 22,
-          \\"column\\": 8
+          \\"line\\": 16,
+          \\"column\\": 11
         },
         \\"end\\": {
-          \\"line\\": 22,
-          \\"column\\": 9
+          \\"line\\": 16,
+          \\"column\\": 12
         },
         \\"identifierName\\": \\"x\\"
       },
       \\"ownerType\\": 2
     }, {
       \\"_varId\\": 2,
-      \\"_ownerId\\": 6,
+      \\"_ownerId\\": 5,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 29,
+          \\"line\\": 26,
           \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 29,
+          \\"line\\": 26,
           \\"column\\": 9
         },
         \\"identifierName\\": \\"x\\"
@@ -34347,29 +34384,44 @@ function _dbux_init(dbuxRuntime) {
       \\"ownerType\\": 2
     }, {
       \\"_varId\\": 3,
-      \\"_ownerId\\": 8,
+      \\"_ownerId\\": 7,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 37,
-          \\"column\\": 22
+          \\"line\\": 33,
+          \\"column\\": 8
         },
         \\"end\\": {
-          \\"line\\": 37,
-          \\"column\\": 23
+          \\"line\\": 33,
+          \\"column\\": 9
         },
         \\"identifierName\\": \\"x\\"
       },
       \\"ownerType\\": 2
     }, {
       \\"_varId\\": 4,
-      \\"_ownerId\\": 8,
+      \\"_ownerId\\": 9,
       \\"loc\\": {
         \\"start\\": {
-          \\"line\\": 37,
+          \\"line\\": 40,
+          \\"column\\": 22
+        },
+        \\"end\\": {
+          \\"line\\": 40,
+          \\"column\\": 23
+        },
+        \\"identifierName\\": \\"x\\"
+      },
+      \\"ownerType\\": 2
+    }, {
+      \\"_varId\\": 5,
+      \\"_ownerId\\": 9,
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 40,
           \\"column\\": 25
         },
         \\"end\\": {
-          \\"line\\": 37,
+          \\"line\\": 40,
           \\"column\\": 26
         },
         \\"identifierName\\": \\"y\\"
@@ -65998,7 +66050,7 @@ try {
   _f = _dbux.traceExpr(63, f), _dbux.t(72), _dbux.traceExpr(73, _f((_g4 = _dbux.traceExpr(64, g), _dbux.t(65), _dbux.traceExpr(67, _g4(_dbux.traceArg(66, 1)))), (_g5 = _dbux.traceExpr(68, g), _dbux.t(69), _dbux.traceExpr(71, _g5(_dbux.traceArg(70, 2))))));
   _h = _dbux.traceExpr(74, h), _dbux.t(83), _dbux.traceExpr(84, _h((_g6 = _dbux.traceExpr(75, g), _dbux.t(76), _dbux.traceExpr(78, _g6(_dbux.traceArg(77, 3)))), (_g7 = _dbux.traceExpr(79, g), _dbux.t(80), _dbux.traceExpr(82, _g7(_dbux.traceArg(81, 4))))));
   _i = _dbux.traceExpr(85, i), _dbux.t(86), _dbux.traceExpr(89, _i(_dbux.traceArg(87, 5), _dbux.traceArg(88, 6)));
-  _func2 = (_j = _dbux.traceExpr(90, j), _dbux.t(91), _dbux.traceExpr(94, _j(_dbux.traceArg(92, 7), _dbux.traceArg(93, 8)))), _dbux.t(95), _dbux.traceExpr(97, _func2(_dbux.traceArg(96, 9)));
+  _dbux.traceExpr(95, _func2 = (_j = _dbux.traceExpr(90, j), _dbux.t(91), _dbux.traceExpr(94, _j(_dbux.traceArg(92, 7), _dbux.traceArg(93, 8))))), _dbux.t(96), _dbux.traceExpr(98, _func2(_dbux.traceArg(97, 9)));
 
   _dbux.t(3);
 } finally {
@@ -67666,6 +67718,22 @@ function _dbux_init(dbuxRuntime) {
       \\"_staticContextId\\": 1,
       \\"type\\": 6
     }, {
+      \\"displayName\\": \\"j(7, 8)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 37,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 37,
+          \\"column\\": 7
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 95,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 8
+    }, {
       \\"displayName\\": \\"j(7, 8)(9)\\",
       \\"loc\\": {
         \\"start\\": {
@@ -67677,8 +67745,8 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 10
         }
       },
-      \\"_callId\\": 95,
-      \\"_traceId\\": 95,
+      \\"_callId\\": 96,
+      \\"_traceId\\": 96,
       \\"_staticContextId\\": 1,
       \\"type\\": 4
     }, {
@@ -67693,8 +67761,8 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 9
         }
       },
-      \\"_callId\\": 95,
-      \\"_traceId\\": 96,
+      \\"_callId\\": 96,
+      \\"_traceId\\": 97,
       \\"_staticContextId\\": 1,
       \\"type\\": 9
     }, {
@@ -67710,8 +67778,8 @@ function _dbux_init(dbuxRuntime) {
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 95,
-      \\"_traceId\\": 97,
+      \\"_resultCallId\\": 96,
+      \\"_traceId\\": 98,
       \\"_staticContextId\\": 1,
       \\"type\\": 6
     }],
@@ -68032,7 +68100,7 @@ try {
   _f = _dbux.traceExpr(63, f), _dbux.t(72), _dbux.traceExpr(73, _f((_g4 = _dbux.traceExpr(64, g), _dbux.t(65), _dbux.traceExpr(67, _g4(_dbux.traceArg(66, 1)))), (_g5 = _dbux.traceExpr(68, g), _dbux.t(69), _dbux.traceExpr(71, _g5(_dbux.traceArg(70, 2))))));
   _h = _dbux.traceExpr(74, h), _dbux.t(83), _dbux.traceExpr(84, _h((_g6 = _dbux.traceExpr(75, g), _dbux.t(76), _dbux.traceExpr(78, _g6(_dbux.traceArg(77, 3)))), (_g7 = _dbux.traceExpr(79, g), _dbux.t(80), _dbux.traceExpr(82, _g7(_dbux.traceArg(81, 4))))));
   _i = _dbux.traceExpr(85, i), _dbux.t(86), _dbux.traceExpr(89, _i(_dbux.traceArg(87, 5), _dbux.traceArg(88, 6)));
-  _func2 = (_j = _dbux.traceExpr(90, j), _dbux.t(91), _dbux.traceExpr(94, _j(_dbux.traceArg(92, 7), _dbux.traceArg(93, 8)))), _dbux.t(95), _dbux.traceExpr(97, _func2(_dbux.traceArg(96, 9)));
+  _dbux.traceExpr(95, _func2 = (_j = _dbux.traceExpr(90, j), _dbux.t(91), _dbux.traceExpr(94, _j(_dbux.traceArg(92, 7), _dbux.traceArg(93, 8))))), _dbux.t(96), _dbux.traceExpr(98, _func2(_dbux.traceArg(97, 9)));
 
   _dbux.t(3);
 } finally {
@@ -69700,6 +69768,22 @@ function _dbux_init(dbuxRuntime) {
       \\"_staticContextId\\": 1,
       \\"type\\": 6
     }, {
+      \\"displayName\\": \\"j(7, 8)\\",
+      \\"loc\\": {
+        \\"start\\": {
+          \\"line\\": 37,
+          \\"column\\": 0
+        },
+        \\"end\\": {
+          \\"line\\": 37,
+          \\"column\\": 7
+        }
+      },
+      \\"_callId\\": false,
+      \\"_traceId\\": 95,
+      \\"_staticContextId\\": 1,
+      \\"type\\": 8
+    }, {
       \\"displayName\\": \\"j(7, 8)(9)\\",
       \\"loc\\": {
         \\"start\\": {
@@ -69711,8 +69795,8 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 10
         }
       },
-      \\"_callId\\": 95,
-      \\"_traceId\\": 95,
+      \\"_callId\\": 96,
+      \\"_traceId\\": 96,
       \\"_staticContextId\\": 1,
       \\"type\\": 4
     }, {
@@ -69727,8 +69811,8 @@ function _dbux_init(dbuxRuntime) {
           \\"column\\": 9
         }
       },
-      \\"_callId\\": 95,
-      \\"_traceId\\": 96,
+      \\"_callId\\": 96,
+      \\"_traceId\\": 97,
       \\"_staticContextId\\": 1,
       \\"type\\": 9
     }, {
@@ -69744,8 +69828,8 @@ function _dbux_init(dbuxRuntime) {
         }
       },
       \\"_callId\\": false,
-      \\"_resultCallId\\": 95,
-      \\"_traceId\\": 97,
+      \\"_resultCallId\\": 96,
+      \\"_traceId\\": 98,
       \\"_staticContextId\\": 1,
       \\"type\\": 6
     }],

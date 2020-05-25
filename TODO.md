@@ -25,6 +25,7 @@
       * NOTE: don't add any properties directly to a component, unless you have a very good reason to
 * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
 * [TraceDetailsView] add Navigation buttons: go to next/previous trace of this staticTrace
+* in editor, when we select a range with the cursor, only select traces that are completely contained by that range (e.g. when selecting `g(x)` in `f(g(x));`, do not select `f`)
 
 
 
@@ -279,6 +280,8 @@
 
 
 ## TODO (other)
+* fix when we have multiple apps a, b and we restart b:
+   * old `a` nodes don't get removed and `a` gets added two more times
 * add `crosshair` icon to selected context
 * revamp `CallExpression` instrumentation for `parentTrace` detection
    * last few problems?

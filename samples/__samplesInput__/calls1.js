@@ -1,26 +1,28 @@
 /* eslint-disable */
 
-// f();
-// f()(1);
-
-// function f(x) {
-//   return function j(x, y) {
-//     console.log('j', x, y);
-//   };
-// }
 
 function main() {
   a.i();
   a.i(3, 4);
   a.b.f(1);
   a.g().h(2);
+  f(a.g());
+  a.i(a.g());
 
   a.i(a.g().h(2), a.b.f(1));
 }
 
+// f();
+// f()(1);
+function f(x) {
+  // return function j(x, y) {
+  console.log('f', x);
+  return x;
+  // };
+}
+
 var a = {
   get b() {
-    console.log('b');
     return {
       f(x) { console.log('f', x); }
     }
@@ -36,7 +38,6 @@ var a = {
   },
 
   get i() {
-    console.log('i');
     return function j(x, y) {
       console.log('j', x, y);
     };
