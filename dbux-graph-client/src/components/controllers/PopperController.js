@@ -1,7 +1,6 @@
 import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
 
 export default class PopperController extends ClientComponentEndpoint {
-
   get manager() {
     return this.owner.context.graphRoot.popperManager;
   }

@@ -6,6 +6,7 @@ import ContextNode from './ContextNode';
 
 class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext = [];
+  runNodesById = [];
 
   init() {
     this.controllers.createComponent('GraphNode', {

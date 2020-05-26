@@ -3,7 +3,6 @@ import HighlightManager from './controllers/HighlightManager';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
-import TraceMode from './TraceMode';
 // import FocusController from './controllers/FocusController';
 // import HighlightManager from './controllers/HighlightManager';
 
@@ -21,8 +20,6 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   init() {
-    this.traceMode = TraceMode.ContextOnly;
-
     this.createOwnComponents();
 
     // ########################################
@@ -33,12 +30,10 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   createOwnComponents() {
-    const traceModeName = TraceMode.getName(this.traceMode);
-
     this.controllers.createComponent(HighlightManager);
     // this.controllers.createComponent(FocusController);
     this.root = this.children.createComponent(GraphRoot);
-    this.toolbar = this.children.createComponent(Toolbar, { traceModeName });
+    this.toolbar = this.children.createComponent(Toolbar);
     // this.minimap = this.children.createComponent(MiniMap);
 
     // start rendering empty graph
@@ -51,7 +46,7 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   handleApplicationsChanged = (selectedApps) => {
-    this.refreshGraphRoot();
+    this.refreshGraphRoot(selectedApps);
   }
 
   // ###########################################################################
@@ -66,28 +61,13 @@ class GraphDocument extends HostComponentEndpoint {
   // public controller method
   // ###########################################################################
 
-  switchTraceMode() {
-    // const nextMode = (this.traceMode + 1) % TraceMode.getCount();
-    this.traceMode = TraceMode.nextValue(this.traceMode);
-
-    this.refreshGraphRoot();
-    this.toolbar.setState({
-      traceModeName: TraceMode.getName(this.traceMode)
-    });
-  }
-
-  getTraceMode() {
-    return TraceMode.getName(this.traceMode);
-  }
-
-  refreshGraphRoot() {
+  refreshGraphRoot(selectedApps) {
     this.root.clear();
 
     // update root application data
     this.root.refresh();
 
     // add already existing children contexts
-    const selectedApps = allApplications.selection.getAll();
     for (const app of selectedApps) {
       const { applicationId } = app;
 

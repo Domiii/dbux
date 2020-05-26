@@ -1,6 +1,5 @@
 
 const ContextNode = require('@/components/ContextNode').default;
-const TraceNode = require('@/components/TraceNode').default;
 const GraphDocument = require('@/components/GraphDocument').default;
 const GraphRoot = require('@/components/GraphRoot').default;
 const ContextNodeManager = require('@/components/controllers/ContextNodeManager').default;
@@ -17,7 +16,6 @@ const ZoomBar = require('@/components/ZoomBar').default;
 
 export default {
   ContextNode,
-  TraceNode,
   GraphDocument,
   GraphRoot,
   GraphNode,
