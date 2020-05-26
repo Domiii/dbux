@@ -68,6 +68,10 @@ class ContextNode extends HostComponentEndpoint {
     this.controllers.getComponent('GraphNode').reveal();
   }
 
+  setSelected(isSelected) {
+    this.setState({ isSelected });
+  }
+
   public = {
     async goToFirstTrace() {
       await this.componentManager.externals.goToTrace(this.firstTrace);

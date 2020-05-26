@@ -53,12 +53,12 @@ export default class Client {
 
   _handleInit = (initialData) => {
     if (this.isReady()) {
-      logError('received init from client twice. Please restart application -', initialData?.entryPointPath);
+      logError(`${initialData?.entryPointPath} - received init from client twice. Please restart application.`);
     }
     else {
       this.application = this._getOrCreateApplication(initialData);
       if (!this.application) {
-        logError('application reconnected but `applicationId` not found. Please restart application -', initialData?.entryPointPath);
+        logError(`${initialData?.entryPointPath} - application claims to have reconnected but we don't have any of its previous information. Please restart application.`);
         return;
       }
     }

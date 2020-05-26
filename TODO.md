@@ -2,15 +2,10 @@
 # TODO
 
 ## TODO (shared)
-* when a `ContextNode` has been highlighted, and new contexts are added, matching `ContextNodes` are not highlighted automatically (need to add event)
-* in `ContextNode`: add crosshair button to select `Push` trace of `context`
-* in `Object traces` node: `traces` do not render as "selected"
-   * -> can we make sure their icon changes to the "play" icon?
-   * -> just use `TraceNode` instead?
+* on error: render 🔥 in `ContextNode`
+* in `Object traces` node: BCE `traces` do not render as "selected"
 * in `ContextNode`: make `loc-label` clickable (and add `popper`), similar to `displayName`
-* when clicking error button: call `reveal({focus: true})` on `CallRootsView`
-* bug in TDV: "Function Executed: Nx"
-   * often reports 0x (e.g. in `oop1.js` -> any `speak()` function)
+* when clicking error button: call `reveal({focus: true})` on `TraceDetailsView`
 * Toolbar: add `hide old` button
    * Careful: hidden context nodes can cause trouble if hidden node is being used in any way
       * e.g. if a trace is selected/highlighted/focused/revelaed in sync mode
@@ -30,7 +25,10 @@
       * NOTE: don't add any properties directly to a component, unless you have a very good reason to
 * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
 * [TraceDetailsView] add Navigation buttons: go to next/previous trace of this staticTrace
-
+* in editor, when we select a range with the cursor, only select traces that are completely contained by that range (e.g. when selecting `g(x)` in `f(g(x));`, do not select `f`)
+* graph: define a `customElement` (e.g. `img-local`) that automatically translates an image file name from the resource folder to it's correct path
+   * add a web component (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
+      * prepend the component's `src` attribute with ``GraphWebView.resourcePath`
 
 
 
@@ -284,6 +282,16 @@
 
 
 ## TODO (other)
+* fix: when we have multiple apps a, b and we restart b:
+   * old `a` nodes don't get removed and `a` gets added two more times
+* add `crosshair` icon to selected context
+* revamp `CallExpression` instrumentation for `parentTrace` detection
+   * more scenarios: `super`
+      * `super()`
+      * `super.f()`
+* fix: when navigating nested `CallExpression`, need to be careful when jumping between them
+   * e.g.: When we do `PreviousParentContext`, and then `NextChildContext` again, we might end up in the wrong child
+   * design: does that make sense?
 * fix up `todomvc-es6/Project`
 * in TrackedObjectTDNode, render `valueString`
 * fix `valueStringShort`?
@@ -300,7 +308,13 @@
    * sometimes does not work for object values?
    * improve array rendering
 * fix: `function` declarations are not tracked
+   * store staticContextId by `function`, so we can look them up later
 * fix: strings are currently tracked -> disable tracking of strings
+* fix: optional chaining for calls does not work
+   * Fix: in case of optional chaining...
+      1. don't access `o.f` if `o` does not exist
+      2. don't call the function if it does not exist
+   * NOTE: maybe we can add a check that throws a more meaningful error when we try to call a non-existing function without optional chaining?
 * fix: `traveValueLabels`
    * get callee name from instrumentation
 * fix TDV: "Trace Executed: Nx"
@@ -361,6 +375,7 @@
          * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
          * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * fix: small trace odities
+   * for optional call, don't trace as `CallExpression` but trace as `ExpressionResult` if there is no function
    * when selecting a traced "return", it says "no trace at cursor"
       * (same with almost any keywords for now)
    * `if else` considers `else` as a block, and inserts (potentially unwanted) code deco

@@ -28,13 +28,36 @@ export default class FocusController extends HostComponentEndpoint {
       // nothing to do
       return;
     }
+
     if (!trace) this.clearFocus();
     else if (this.syncMode) {
+      // only if in sync mode -> focus on the node
       const { contextId, applicationId } = trace;
 
-      // NOTE: focus is async
+      // WARNING: focus is async
       this.focus(applicationId, contextId);
     }
+
+    // always decorate ContextNode
+    this._selectContextNode(trace);
+  }
+
+  _selectContextNode(trace) {
+    if (this._selectedContextNode) {
+      // deselect old
+      this._selectedContextNode.setSelected(false);
+    }
+
+    let contextNode;
+    if (trace) {
+      const { applicationId, contextId } = trace;
+      contextNode = this.context.graphRoot.getContextNodeById(applicationId, contextId);
+      if (contextNode) {
+        // select new
+        contextNode.setSelected(true);
+      }
+    }
+    this._selectedContextNode = contextNode;
   }
 
   async focus(applicationId, contextId) {
@@ -50,7 +73,7 @@ export default class FocusController extends HostComponentEndpoint {
   }
 
   async revealContext(applicationId, contextId) {
-    const contextNode = this.getContextNode(applicationId, contextId);
+    const contextNode = this.owner.getContextNodeById(applicationId, contextId);
     // await contextNode.waitForInit();      // make sure, node has initialized
 
     const graphNode = contextNode.controllers.getComponent('GraphNode');
@@ -58,16 +81,9 @@ export default class FocusController extends HostComponentEndpoint {
   }
 
   highlightContext(applicationId, contextId) {
-    const contextNode = this.getContextNode(applicationId, contextId);
+    const contextNode = this.owner.getContextNodeById(applicationId, contextId);
     this.lastHighlighter = contextNode.controllers.getComponent('Highlighter');
     this.lastHighlighter.inc();
-  }
-
-  getContextNode(applicationId, contextId) {
-    const dp = allApplications.getById(applicationId).dataProvider;
-    const context = dp.collections.executionContexts.getById(contextId);
-    const contextNode = this.owner.getContextNodeByContext(context);
-    return contextNode;
   }
 
   clearFocus = () => {

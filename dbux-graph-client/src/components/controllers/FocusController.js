@@ -110,7 +110,7 @@ export default class FocusController extends ClientComponentEndpoint {
       // nothing to do here
       return;
     }
-
+    
     this.logger.debug(`Moving node ${nodeId} by ${delta.x}, ${delta.y}`);
 
     this.slideData = {

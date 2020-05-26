@@ -54,7 +54,7 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   addContexts = (applicationId, contexts) => {
-    this.root.addContexts(applicationId, contexts);
+    this.root.addContextNodes(applicationId, contexts);
   }
 
   // ###########################################################################

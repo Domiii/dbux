@@ -36,7 +36,7 @@ class GraphRoot extends HostComponentEndpoint {
     this.setState(update);
   }
 
-  addContexts = (applicationId, contexts) => {
+  addContextNodes = (applicationId, contexts) => {
     // get unique set of runIds
     let runIds = new Set(contexts.map(context => context?.runId || 0));
     runIds.delete(0);
@@ -48,6 +48,7 @@ class GraphRoot extends HostComponentEndpoint {
       this.children.createComponent(RunNode, { applicationId, runId })
     );
 
+    // create and/or update Context nodes
     this.controllers.getComponent('ContextNodeManager').refreshOnData();
   }
 
@@ -58,6 +59,12 @@ class GraphRoot extends HostComponentEndpoint {
   // ###########################################################################
   // context management
   // ###########################################################################
+
+  getContextNodeById(applicationId, contextId) {
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const context = dp.collections.executionContexts.getById(contextId);
+    return this.getContextNodeByContext(context);
+  }
 
   /**
    *  @return {ContextNode}

@@ -3,8 +3,8 @@ import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpo
 import sleep from 'dbux-common/src/util/sleep';
 import HostComponentList from './HostComponentList';
 
-const Verbose = true;
-// const Verbose = false;
+// const Verbose = true;
+const Verbose = false;
 
 /**
  * The Host endpoint controls the Client endpoint.
@@ -128,7 +128,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     this._initPromise = Promise.resolve()
       .then(this._doInit.bind(this)).
       catch(err => {
-        this.logger.error('error when initializing client (probably on client)\n  ', err);
+        this.logger.error('error when initializing client\n  ', err);
         return null;
       }).finally(() => {
         // _initPromise has fulfilled its purpose
@@ -196,7 +196,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         },
         (err) => {
           // error :(
-          this.logger.error('failed to update client - error occured (probably on client)\n  ', err);
+          this.logger.error('error when updating client\n  ', err);
         }
       ).
       finally(() => {

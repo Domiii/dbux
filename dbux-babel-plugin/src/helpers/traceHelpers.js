@@ -2,14 +2,46 @@ import template from '@babel/template';
 import * as t from '@babel/types';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { getPathTraceId } from '../data/StaticTraceCollection';
+import { isPathInstrumented, isNodeInstrumented } from './instrumentationHelper';
 
+
+export function getTracePath(path) {
+  // TODO: should we merge the override into the config? (-> so far only one use-case for that, and it might vary with different situations, so just hack it for now)
+  const cfg = path.getData('visitorCfg');
+  const originalIsParentOverride = path.getData('originalIsParent');
+  if (originalIsParentOverride === false) {
+    // override of settings for synthetic nodes
+    // NOTE: because of the way we instrument call expressions, the callee will be handled here for a `AssignmentExpression.right` which has `originalIsParent` but should not apply here
+    return path;
+  }
+
+  const originalIsParent = cfg?.originalIsParent;
+  if (originalIsParent) {
+    // this expression is represented by the parentPath, instead of just the value path
+    // NOTE: we try to find the first parent path that is an expression and not instrumented
+    let tracePath = path.parentPath;
+    while (tracePath && !tracePath.isStatement() && isPathInstrumented(tracePath)) {
+      tracePath = tracePath.parentPath;
+    }
+    if (tracePath && (tracePath.isStatement() || isPathInstrumented(tracePath))) {
+      // invalid path
+      tracePath = null;
+    }
+    return tracePath;
+  }
+  return null;
+}
 
 // ###########################################################################
 // builders + utilities
 // ###########################################################################
 
 function replaceWithTemplate(templ, path, cfg) {
-  const newNode = templ(cfg);
+  let newNode = templ(cfg);
+  if (path.isExpression() && newNode.type === 'ExpressionStatement') {
+    // we wanted an expression, not a statement
+    newNode = newNode.expression;
+  }
   path.replaceWith(newNode);
 }
 
@@ -64,60 +96,6 @@ export function traceWrapExpression(traceType, path, state, tracePath, markVisit
 }
 
 
-function instrumentArgs(callPath, state, beforeCallTraceId) {
-  const args = callPath.node.arguments;
-  const replacements = [];
-
-  for (let i = 0; i < args.length; ++i) {
-    // if (t.isFunction(args[i])) {
-    //   instrumentCallbackSchedulingArg(callPath, state, i);
-    // }
-    // else {
-    const argPath = callPath.get('arguments.' + i);
-    const argTraceId = getPathTraceId(argPath);
-    // const argContextId = !argTraceId && getPathContextId(argPath) || null;
-    if (!argTraceId) {
-      // not instrumented yet -> add trace
-      replacements.push(() => traceWrapArg(argPath, state, beforeCallTraceId));
-    }
-    else { // if (argTraceId) {
-      // has been instrumented and has a trace -> just set it's callId
-      // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
-      const argTrace = state.traces.getById(argTraceId);
-      argTrace._callId = beforeCallTraceId;
-    }
-  }
-
-  // TODO: I deferred to here because I felt it was safer this way,
-  //    but might not need to defer at all.
-  replacements.forEach(r => r());
-}
-
-export function traceCallExpression(callPath, state, resultType, beforeCallTraceId, tracePath = null) {
-  instrumentArgs(callPath, state, beforeCallTraceId);
-  //const originalCallPath = 
-  _traceWrapExpression('traceExpr', resultType, callPath, state, {
-    resultCallId: beforeCallTraceId,
-    tracePath
-  });
-
-  //   const newNode = buildTraceExprBeforeAndAfter(expressionPath, state);
-  //   expressionPath.replaceWith(newNode);
-  //   state.onCopy(expressionPath, expressionPath.get('expressions.1.arguments.1'), 'trace');
-}
-
-
-export function traceWrapArg(argPath, state, beforeCallTraceId) {
-  const tracePath = argPath;
-  if (argPath.isSpreadElement()) {
-    argPath = argPath.get('argument');
-  }
-  return _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, {
-    callId: beforeCallTraceId,
-    tracePath
-  });
-}
-
 function _traceWrapExpression(methodName, traceType, expressionPath, state, cfg, markVisited = true) {
   // if (t.isLiteral(node)) {
   //   // don't care about literals
@@ -137,7 +115,6 @@ export const traceBeforeExpression = function traceBeforeExpression(
   templ, traceType, expressionPath, state, tracePath) {
   const { ids: { dbux } } = state;
 
-  // TODO: trace-type
   const traceId = state.traces.addTrace(tracePath || expressionPath, traceType || TraceType.BeforeExpression, null);
 
   replaceWithTemplate(templ, expressionPath, {
@@ -148,7 +125,7 @@ export const traceBeforeExpression = function traceBeforeExpression(
 
   // prevent infinite loop
   const originalPath = expressionPath.get('expressions.1');
-  // prevent instrumenting `originalPath` again
+  // prevent instrumenting `originalPath` again, and also copy all data
   state.onCopy(expressionPath, originalPath, 'trace');
   return originalPath;
 }.bind(null, template('%%dbux%%.t(%%traceId%%), %%expression%%'));
@@ -194,4 +171,292 @@ export function traceBeforeSuper(path, state) {
   // NOTE: we don't want to flag the `statementPath` as visited/instrumented
   const newNode = buildTraceExpr(getOrCreateThisNode(), state, 'traceExpr', TraceType.ExpressionValue, { tracePath: path });
   statementPath.insertBefore(t.expressionStatement(newNode));
+}
+
+// ###########################################################################
+// call enter
+// ###########################################################################
+
+/**
+ * NOTE: the call templates do not have arguments.
+ * We will push them in manually.
+ */
+const callTemplatesMember = {
+  // NOTE: `f.call.call(f, args)` also works (i.e. function f(x) { console.log(this, x); } f.call(this, 1); // -> f.call.call(f, this, 1))
+  CallExpression: template(
+    `
+  %%o%% = %%oNode%%,
+    %%f%% = %%o%%.%%fNode%%,
+    null,
+    %%f%%.call(%%o%%)
+  `),
+
+  /**
+   * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
+   */
+  OptionalCallExpression: template(
+    `
+    %%o%% = %%oNode%%,
+      %%f%% = %%o%%.%%fNode%%,
+      null,
+      %%f%%?.call(%%o%%)
+  `),
+
+  NewExpression: template(
+    `
+  %%o%% = %%oNode%%,
+    %%f%% = %%o%%.%%fNode%%,
+    null,
+    new %%f%%()
+`)
+};
+
+const callTemplatesDefault = {
+  CallExpression: template(
+    `
+    %%f%% = %%fNode%%,
+    null,
+    %%f%%()
+  `),
+
+  /**
+   * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
+   */
+  OptionalCallExpression: template(
+    `
+    %%f%% = %%fNode%%,
+    null,
+    %%f%%?.()
+  `),
+
+  NewExpression: template(
+    `
+    %%f%% = %%fNode%%,
+    null,
+    new %%f%%()
+  `)
+};
+
+/**
+ * Convert `o.f(...args)` to:
+ * ```
+ * var _o, _f;
+ * _o = traceValue(o),      // execute potential getters in `o`
+ *  _f = traceBCE(_o.f),    // get f -> trace callee (BCE)
+ *  _f.call(_o, ...args);   // call! (also the return value of the expression)
+ * ```
+ * We do this to get accurate `parentTrace` relationships, where we want to:
+ *   (a) handle getters carefully
+ *   (b) discern between getter and call expression on the stack
+ *   (c) resolve conflicts with `super.f()`
+ * 
+ * NOTE: We do *NOT* instrument here, because it would mess up `staticTraceId` order (e.g. in `f(u).g(v)`)
+ */
+const instrumentBeforeMemberCallExpression =
+  (function instrumentBeforeMemberCallExpression(path, state) {
+    const calleePath = path.get('callee');
+    const oPath = calleePath.get('object');
+    const fPath = calleePath.get('property');
+    const argPath = path.get('arguments');
+
+    // const oTraceId = state.traces.addTrace(oPath, TraceType.ExpressionValue);
+    // const calleeTraceId = state.traces.addTrace(calleePath, TraceType.BeforeCallExpression);
+
+    // NOTE: we need to get loc before instrumentation
+    const { loc } = path.node;
+    const calleeLoc = calleePath.node.loc;
+
+    // build
+    const { ids: { dbux } } = state;
+
+    // TODO: better names :(
+    const o = path.scope.generateDeclaredUidIdentifier('o');
+    const f = path.scope.generateDeclaredUidIdentifier(calleePath.node.name || 'func');
+
+    const templ = callTemplatesMember[path.type];
+
+    replaceWithTemplate(templ, path, {
+      // dbux,
+      o,
+      f,
+      // oTraceId: t.numericLiteral(oTraceId),
+      // calleeTraceId: t.numericLiteral(calleeTraceId),
+      oNode: oPath.node,
+      fNode: fPath.node
+    });
+
+
+    // set loc, so it gets instrumented on exit as well
+    const oPathId = 'expressions.0.right';
+    const calleePathId = 'expressions.1.right';
+    const bcePathId = 'expressions.2';
+    const newPath = path.get('expressions.3');
+    const newOPath = path.get(oPathId);
+    const newCalleePath = path.get(calleePathId);
+
+    // hackfix: put `o` and `args` in as-is; they are still going to get instrumented
+    path.node.expressions[0].right = oPath.node;
+    newPath.node.arguments.push(...argPath.map(p => p.node));
+
+    newCalleePath.node.loc = calleeLoc;
+    newPath.node.loc = loc;
+
+    // keep path data
+    state.onCopy(path, newPath);
+
+    // prepare for later
+    // newPath.setData('_calleePath', calleePathId);
+    newOPath.setData('originalIsParent', false);
+    newOPath.setData('resultType', TraceType.ExpressionValue);
+    newCalleePath.setData('originalIsParent', false);
+    newPath.setData('_bcePathId', bcePathId);
+
+    return newPath;
+  });
+
+/**
+ * Convert `f(...args)` to: `traceBCE(f), f(...args)`
+ * 
+ */
+const instrumentBeforeCallExpressionDefault =
+  (function instrumentBeforeCallExpressionDefault(path, state) {
+    const calleePath = path.get('callee');
+    const argPath = path.get('arguments');
+
+    // const calleeTraceId = state.traces.addTrace(calleePath, TraceType.BeforeCallExpression);
+    const { loc } = path.node;
+    const calleeLoc = calleePath.node.loc;
+
+    // build
+    // const { ids: { dbux } } = state;
+    path.setData('testtest', 1);
+
+    // TODO: better names :(
+    const f = path.scope.generateDeclaredUidIdentifier(calleePath.node.name || 'func');
+
+    const templ = callTemplatesDefault[path.type];
+
+    replaceWithTemplate(templ, path, {
+      // dbux,
+      f,
+      // calleeTraceId: t.numericLiteral(calleeTraceId),
+      fNode: calleePath.node
+    });
+
+    // state.markEntered(originalPath, 'trace');
+
+    // set loc, so it gets instrumented on exit as well
+    const calleePathId = 'expressions.0';
+    const bcePathId = 'expressions.1';
+    const newPath = path.get('expressions.2');
+    const newCalleePath = path.get(calleePathId);
+
+    // hackfix: put `args` in as-is; they are still going to get instrumented
+    newPath.node.arguments = argPath.map(p => p.node);
+
+    newCalleePath.node.loc = calleeLoc;
+    newPath.node.loc = loc;
+
+
+    // keep path data
+    state.onCopy(path, newPath);
+
+    // prepare for later
+    // newPath.setData('_calleePath', calleePathId);
+    newPath.setData('_bcePathId', bcePathId);
+    newCalleePath.setData('originalIsParent', false);
+
+    // set loc on actual call, so it gets instrumented on exit as well
+    // originalPath.node.loc = path.node.loc;
+
+    return newPath;
+  });
+
+export function instrumentBeforeCallExpression(path, state) {
+  const calleePath = path.get('callee');
+  if (calleePath.isMemberExpression()) {
+    return instrumentBeforeMemberCallExpression(path, state);
+  }
+  else {
+    return instrumentBeforeCallExpressionDefault(path, state);
+    // const tracePath = getTracePath(path);
+    // return traceBeforeExpression(TraceType.BeforeCallExpression, path, state, tracePath);
+  }
+}
+
+
+// ###########################################################################
+// call exit
+// ###########################################################################
+
+
+function instrumentArgs(callPath, state, beforeCallTraceId) {
+  const args = callPath.node.arguments;
+
+  for (let i = 0; i < args.length; ++i) {
+    // if (t.isFunction(args[i])) {
+    //   instrumentCallbackSchedulingArg(callPath, state, i);
+    // }
+    // else {
+    const argPath = callPath.get('arguments.' + i);
+    if (!argPath.node.loc) {
+      // synthetic node -> ignore
+      //  e.g. we replace `o.f(x)` with `[...] o.call(o, x)`, 
+      //      and we do not want to trace the `o` arg here
+      continue;
+    }
+
+    const argTraceId = getPathTraceId(argPath);
+    // const argContextId = !argTraceId && getPathContextId(argPath) || null;
+    if (!argTraceId) {
+      // not instrumented yet -> add trace
+      // replacements.push(() => 
+      traceWrapArg(argPath, state, beforeCallTraceId);
+      // );
+    }
+    else { // if (argTraceId) {
+      // has been instrumented and has a trace -> just set it's callId
+      // Example: in `f(await g())` `await g()` has already been instrumented by `awaitVisitor`
+      const argTrace = state.traces.getById(argTraceId);
+      argTrace._callId = beforeCallTraceId;
+    }
+  }
+}
+
+
+export function traceWrapArg(argPath, state, beforeCallTraceId) {
+  const tracePath = argPath;
+  if (argPath.isSpreadElement()) {
+    argPath = argPath.get('argument');
+  }
+  return _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, {
+    callId: beforeCallTraceId,
+    tracePath
+  });
+}
+
+
+export function traceCallExpression(callPath, state, resultType) {
+  // const calleePathId = callPath.getData('_calleePath');
+  const bcePathId = callPath.getData('_bcePathId');
+
+  // const calleePath = callPath.parentPath.get(calleePathId);
+  const bcePath = callPath.parentPath.get(bcePathId);
+
+  // if (!getPathTraceId(calleePath) && !isPathInstrumented(calleePath)) {
+  //   // trace callee, if not traced before (left-hand side of parenthesis; e.g. `o.f` in `o.f(x)`)
+  //   traceWrapExpression(TraceType.ExpressionValue, calleePath, state);
+  // }
+
+  // trace BCE
+  const bceNode = buildTraceNoValue(callPath, state, TraceType.BeforeCallExpression);
+  const bceTraceId = getPathTraceId(callPath);
+  bcePath.replaceWith(bceNode);
+
+  instrumentArgs(callPath, state, bceTraceId);
+  //const originalCallPath = 
+  _traceWrapExpression('traceExpr', resultType, callPath, state, {
+    resultCallId: bceTraceId,
+    // tracePath
+  });
 }
