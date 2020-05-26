@@ -15,6 +15,7 @@ class GraphRoot extends HostComponentEndpoint {
     this.controllers.createComponent('FocusController');
     this.controllers.createComponent('PopperManager');
     this.controllers.createComponent('ContextNodeManager');
+    this.controllers.createComponent('ZoomBar');
   }
 
   clear() {
