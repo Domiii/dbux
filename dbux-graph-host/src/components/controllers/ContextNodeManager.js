@@ -21,7 +21,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   refreshOnData = () => {
     if (this.selectorType === 'objectTrace') {
-      this.highlightByStaticContext(this.selector);
+      this.highlightByObject(this.selector);
     }
     else if (this.selectorType === 'staticContext') {
       const { applicationId, staticContextId } = this.selector;

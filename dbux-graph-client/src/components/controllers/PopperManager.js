@@ -16,9 +16,6 @@ export default class PopperManager extends ClientComponentEndpoint {
     this.popper = null;
     this.tooltip = this.owner.els.toolTip;
 
-    // hackfix: let owner access this manager, in order to be called by popperController through context.graphRoot.popperManager
-    this.owner.popperManager = this;
-
     // regist update function if owner controls panzoom
     if (this.owner.panzoom) {
       this.panzoom = this.owner.panzoom;

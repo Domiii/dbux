@@ -734,29 +734,5 @@ export default {
   getTraceLoc(dp, traceId) {
     const { loc } = dp.util.getStaticTrace(traceId);
     return loc;
-  },
-
-  // ###########################################################################
-  // binary search
-  // ###########################################################################
-
-  binarySearchByKey(dp, arr, x, makeKey) {
-    if (makeKey) {
-      arr = arr.map(makeKey);
-      x = makeKey(x);
-    }
-    let start = 0;
-    let end = arr.length - 1;
-    let mid;
-
-    while (start <= end) {
-      mid = Math.floor((start + end) / 2);
-      if (arr[mid] === x) return mid;
-      else if (arr[mid] < x) start = mid + 1;
-      else end = mid - 1;
-    }
-
-    // x not in arr
-    return null;
   }
 };

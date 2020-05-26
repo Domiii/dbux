@@ -10,7 +10,6 @@ class Toolbar extends ClientComponentEndpoint {
     // return compileHtmlElement(/*html*/`<div></div>`);
     return compileHtmlElement(/*html*/`
       <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light no-padding" id="toolbar">
-        <!--a data-el="switchModeBtn" class="btn btn-info hidden" href="#"></a-->
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <a data-el="syncModeBtn" class="btn btn-info" href="#">sync</a>
           <a data-el="locModeBtn" class="btn btn-info" href="#">loc</a>
@@ -35,7 +34,6 @@ class Toolbar extends ClientComponentEndpoint {
       valueMode,
       thinMode
     } = this.state;
-    // this.els.switchModeBtn.textContent = `${traceModeName}`;
     // this.els.syncModeBtn.textContent = `Sync: ${syncMode ? '✅' : '❌'}`;
 
     // render buttons
@@ -85,13 +83,6 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   on = {
-    // switchModeBtn: {
-    //   click(evt) {
-    //     evt.preventDefault();
-    //     this.remote.switchTraceMode();
-    //   }
-    // },
-
     restartBtn: {
       async click(evt) {
         evt.preventDefault();

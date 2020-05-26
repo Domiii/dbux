@@ -1,6 +1,6 @@
 import createPanzoom from 'panzoom';
-import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { compileHtmlElement } from '@/util/domUtil';
+import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class GraphRoot extends ClientComponentEndpoint {
   createEl() {
@@ -8,8 +8,8 @@ class GraphRoot extends ClientComponentEndpoint {
       if (e.key === "s") {
         let applicationId = await this.app.prompt("applicationId");
         let contextId = await this.app.prompt("traceId");
-        applicationId = applicationId && parseInt(applicationId);
-        contextId = contextId && parseInt(contextId);
+        applicationId = applicationId && parseInt(applicationId, 10);
+        contextId = contextId && parseInt(contextId, 10);
         
         if (applicationId && contextId) {
           this.remote.requestFocus(applicationId, contextId);
@@ -33,6 +33,10 @@ class GraphRoot extends ClientComponentEndpoint {
       </div>
     `);
   }
+
+  get popperManager() {
+    return this.controllers.getComponent('PopperManager');
+  }
   
   test() {}
 
@@ -54,8 +58,7 @@ class GraphRoot extends ClientComponentEndpoint {
   }
 
   initPanZoom = (el) => {
-    let panzoom;
-    panzoom = createPanzoom(el, {
+    let panzoom = createPanzoom(el, {
       smoothScroll: false,
       zoomDoubleClickSpeed: 1,
       beforeWheel(evt) {

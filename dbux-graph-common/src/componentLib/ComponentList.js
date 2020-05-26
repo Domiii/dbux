@@ -70,7 +70,7 @@ export default class ComponentList {
   computeMaxDepth() {
     let d = 0;
     for (const child of this.components) {
-      d = Math.max(d + 1, child.children.computeMaxDepth());
+      d = Math.max(d, child.children.computeMaxDepth() + 1);
     }
     return d;
   }
