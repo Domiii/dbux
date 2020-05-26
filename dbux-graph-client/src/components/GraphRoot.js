@@ -1,6 +1,6 @@
 import createPanzoom from 'panzoom';
-import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 import { compileHtmlElement } from '@/util/domUtil';
+import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class GraphRoot extends ClientComponentEndpoint {
   createEl() {
@@ -34,6 +34,10 @@ class GraphRoot extends ClientComponentEndpoint {
         </div>   
       </div>
     `);
+  }
+
+  get popperManager() {
+    return this.controllers.getComponent('PopperManager');
   }
   
   test() {}

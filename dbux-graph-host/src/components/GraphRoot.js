@@ -17,10 +17,6 @@ class GraphRoot extends HostComponentEndpoint {
     this.controllers.createComponent('ContextNodeManager');
   }
 
-  get popperManager() {
-    return this.controllers.getComponent('PopperManager');
-  }
-
   clear() {
     // clear
     this.children.clear();
