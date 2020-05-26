@@ -22,6 +22,7 @@ html,body{
   font-family: "Lucida Console", Courier, monospace;
   padding: 0 !important;
   margin: 0 !important;
+  overflow: hidden;
 }
 
 
@@ -63,6 +64,26 @@ html,body{
   margin-bottom: 100vh;
 
   padding-left: 2px;
+}
+
+.graph-cont {
+  /* width: 200px;
+  height: 200px; */
+  width: 100vw;
+  height: calc(100vh - 30px);
+  overflow: scroll;
+}
+
+.graph-cont > .body {
+  width: fit-content;
+  height: fit-content;
+  overflow: auto;
+  transform-origin: 0 0;
+}
+
+.run-node {
+  margin-top: 1em;
+  border: 1px solid black;
 }
 
 .context-node {
@@ -354,4 +375,19 @@ background: #333;
 
 #tooltip[data-show] {
   display: block;
+}
+
+
+/** ###########################################################################
+ * zoombar
+ * ############################################################################ */
+
+#zoombar {
+  position:fixed;
+  bottom:10px;
+  right:10px;
+}
+
+#zoombar .button {
+  margin:2.5px;
 }

@@ -3,11 +3,13 @@ import HighlightManager from './controllers/HighlightManager';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
+// import FocusController from './controllers/FocusController';
 // import HighlightManager from './controllers/HighlightManager';
 
 class GraphDocument extends HostComponentEndpoint {
   toolbar;
-  minimap;
+  // minimap;
+
   /**
    * @type {GraphRoot}
    */
@@ -29,6 +31,7 @@ class GraphDocument extends HostComponentEndpoint {
 
   createOwnComponents() {
     this.controllers.createComponent(HighlightManager);
+    // this.controllers.createComponent(FocusController);
     this.root = this.children.createComponent(GraphRoot);
     this.toolbar = this.children.createComponent(Toolbar);
     // this.minimap = this.children.createComponent(MiniMap);

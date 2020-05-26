@@ -18,8 +18,9 @@ class GraphRoot extends ClientComponentEndpoint {
     });
 
     return compileHtmlElement(/*html*/`
-      <div class="graph-root">
-        <div data-el="body" class="flex-column">
+    <div class="graph-root">
+      <div data-el="graphCont" class="graph-cont">
+        <div data-el="body" class="body flex-column">
           <h2 data-el="title"></h2>
           <div>
             <button data-el="nodeToggleBtn" class="nodeToggleBtn"></button>
@@ -28,11 +29,13 @@ class GraphRoot extends ClientComponentEndpoint {
             <div class="before-run-node"></div>
           </div>
         </div>
-        <div data-el="toolTip" id="tooltip" role="tooltip">
-          <span></span>
-          <div id="arrow" data-popper-arrow></div>
-        </div>   
       </div>
+      <div data-el="toolTip" id="tooltip" role="tooltip">
+        <span></span>
+        <div id="arrow" data-popper-arrow></div>
+      </div>
+      <div data-mount="ZoomBar"></div> 
+    </div>
     `);
   }
 
@@ -43,7 +46,7 @@ class GraphRoot extends ClientComponentEndpoint {
   test() {}
 
   setupEl() {
-    this.panzoom = this.initPanZoom(this.els.body);
+    this.panzoom = this.initPanZoom(this.els.graphCont);
     
     // hackfix: make popperEl global for now
     window._popperEl = this.els.toolTip;
@@ -62,7 +65,6 @@ class GraphRoot extends ClientComponentEndpoint {
   initPanZoom = (el) => {
     let panzoom = createPanzoom(el, {
       smoothScroll: false,
-      zoomDoubleClickSpeed: 1,
       beforeWheel(evt) {
         let shouldIgnore = !evt.ctrlKey;
         return shouldIgnore;
@@ -72,9 +74,7 @@ class GraphRoot extends ClientComponentEndpoint {
         let shouldIgnore = !evt.altKey;
         return shouldIgnore;
       },
-      bounds: true,
-      boundsPadding: 0.2,
-      maxZoom: 2,
+      maxZoom: 5,
       minZoom: 0.1,
     });
     // [debug-global]

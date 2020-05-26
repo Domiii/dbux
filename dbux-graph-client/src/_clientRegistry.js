@@ -12,6 +12,7 @@ const HighlightManager = require('@/components/controllers/HighlightManager').de
 const RunNode = require('@/components/RunNode').default;
 const Toolbar = require('@/components/Toolbar').default;
 const MiniMap = require('@/components/MiniMap').default;
+const ZoomBar = require('@/components/ZoomBar').default;
 
 export default {
   ContextNode,
@@ -21,6 +22,7 @@ export default {
   RunNode,
   Toolbar,
   MiniMap,
+  ZoomBar,
   ContextNodeManager,
   FocusController,
   PopperController,

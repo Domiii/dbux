@@ -23,7 +23,7 @@ const scrollPadding = 10;
 function computeDelta1D(p, s, wp, ws) {
   wp += focusPadding;
   ws -= focusPadding;
-
+  
   let dLeft = wp - p;
   if (dLeft > 0) {
     // too far left
@@ -43,6 +43,8 @@ function computeDelta1D(p, s, wp, ws) {
 /**
  * Computes amount of pixels by which a node is outisde the viewport.
  */
+
+// [scroll fix]
 function computeDelta(node) {
   const nodeBounds = node.getBoundingClientRect();
 
@@ -98,56 +100,59 @@ export default class FocusController extends ClientComponentEndpoint {
       return;
     }
 
+    // [scroll fix]
     const delta = computeDelta(node);
-    
+    // console.log('\n');
+    // console.log('scroll position:', 'Top:', this.panzoom.getTransform().y, 'Left:', this.panzoom.getTransform().x);
+    // console.log('delta:', 'x', delta.x, 'y:', delta.y);
+
     if (!(Math.abs(delta.x) + Math.abs(delta.y))) {
       // nothing to do here
       return;
     }
+    
+    this.logger.debug(`Moving node ${nodeId} by ${delta.x}, ${delta.y}`);
 
-    // TODO: fix panzoom scrollbars, then re-enable this part
+    this.slideData = {
+      startTime: Date.now(),
+      startX: this.panzoom.getTransform().x,
+      startY: this.panzoom.getTransform().y,
+      delta,
+      animTime
+    };
 
-    // this.logger.debug(`Moving node ${nodeId} by ${delta.x}, ${delta.y}`);
-
-    // this.slideData = {
-    //   startTime: Date.now(),
-    //   startX: this.panzoom.getTransform().x,
-    //   startY: this.panzoom.getTransform().y,
-    //   delta,
-    //   animTime
-    // };
-
-    // requestAnimationFrame(() => this.step(node));
+    requestAnimationFrame(() => this.step(node));
 
     // node.classList.add("flash-me");
     // setTimeout(() => { node.classList.remove("flash-me"); }, (animTime + 3) * 1000);
   }
 
   step = (node) => {
-    // if (!this.focus) {
-    //   return;
-    // }
+    if (!this.focus) {
+      return;
+    }
 
-    // const {
-    //   startTime,
-    //   startX,
-    //   startY,
-    //   delta: {
-    //     x,
-    //     y
-    //   },
-    //   animTime
-    // } = this.slideData;
+    const {
+      startTime,
+      startX,
+      startY,
+      delta: {
+        x,
+        y
+      },
+      animTime
+    } = this.slideData;
 
-    // let progress = Math.min(1.0, (Date.now() - startTime) / (animTime * 1000));
+    let progress = Math.min(1.0, (Date.now() - startTime) / (animTime * 1000));
 
-    // this.panzoom.moveTo(startX + x * progress, startY + y * progress);
+    // [scroll fix]
+    this.panzoom.moveTo(startX - x * progress, startY - y * progress);
     // this.owner._repaint();
-    // if (progress < 1.0) {
-    //   requestAnimationFrame(() => this.step(node));
-    // }
-    // else {
-    //   this.remote.notifyFocused();
-    // }
+    if (progress < 1.0) {
+      requestAnimationFrame(() => this.step(node));
+    }
+    else {
+      this.remote.notifyFocused();
+    }
   }
 }

@@ -2,7 +2,8 @@
 	"name": "dbux-root",
 	"private": true,
 	"workspaces": [
-		"dbux-*"
+		"dbux-*",
+		"panzoom"
 	],
 	"devDependencies": {
 		"@babel/cli": "^7.8.3",

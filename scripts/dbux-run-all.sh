@@ -15,6 +15,7 @@ dbuxDirs=(
   "dbux-graph-client"
   "dbux-graph-host"
   "samples"
+  "panzoom"
 )
 
 
