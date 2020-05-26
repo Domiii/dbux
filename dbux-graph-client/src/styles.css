@@ -81,11 +81,6 @@ html,body{
   transform-origin: 0 0;
 }
 
-.run-node {
-  margin-top: 1em;
-  border: 1px solid black;
-}
-
 .context-node {
   white-space: nowrap;
   border-right: 0;
