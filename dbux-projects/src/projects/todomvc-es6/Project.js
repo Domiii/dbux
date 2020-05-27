@@ -24,12 +24,12 @@ export default class TodomvcEs6Project extends Project {
     await this.npmInstall();
 
     // TODO: get rid of outdated dependencies; replace with webpack 4 (5?) toolchain
-    // yarn remove webpack webpack-dev-server babel-loader babel-core babel babel-plugin-__coverage__ babel-preset-es2015 babel-preset-es2016 babel-preset-react babel-preset-stage-2
+    // yarn remove webpack webpack-dev-server babel-loader babel-core babel babel-plugin-__coverage__ babel-preset-es2015 babel-preset-es2016 babel-preset-react babel-preset-stage-2 html-webpack-plugin
 
     // TODO: install updated webpack + babel dependencies
     /*
     yarn add --dev babel - loader @babel/node @babel/cli @babel/core @babel/preset-env && \
-    yarn add --dev webpack webpack - cli webpack-dev-server nodemon && \
+    yarn add --dev webpack webpack-cli webpack-dev-server nodemon html-webpack-plugin && \
     yarn add core - js@3 @babel/runtime @babel/plugin-transform-runtime
     */
 
@@ -37,6 +37,9 @@ export default class TodomvcEs6Project extends Project {
 
     // TODO: copy assets
     // sh.cp('-u', src, dst);
+
+    // TODO run it:
+    // node node_modules/.bin/webpack --config ./webpack.config.js
   }
 
   async loadBugs() {
