@@ -43,6 +43,18 @@ class ProjectViewController {
     this.treeView = this.treeDataProvider.treeView;
   }
 
+  // ###########################################################################
+  // project node buttons
+  // ###########################################################################
+
+  async nodeAddToWorkspace(projectNode) {
+    await projectNode.addToWorkspace();
+  }
+
+  // ###########################################################################
+  // bug node buttons
+  // ###########################################################################
+
   async activateBugByNode(bugNode, debugMode = false) {
     const options = {
       title: `[dbux] Activating bug:{${bugNode.bug.name}}`

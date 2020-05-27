@@ -1,4 +1,6 @@
-import { ProgressLocation } from 'vscode';
+import { ProgressLocation, Uri, workspace } from 'vscode';
+import { pathGetBasename } from 'dbux-common/src/util/pathUtil';
+import Project from 'dbux-projects/src/projectLib/Project';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
 import BugLoadingNode from './BugLoadingNode';
@@ -11,8 +13,12 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   init = () => {
     this.childrenBuilt = false;
+    this.contextValue = 'dbuxProjectView.projectNode';
   }
 
+  /**
+   * @type {Project}
+   */
   get project() {
     return this.entry;
   }
@@ -60,5 +66,14 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   buildBugNode(bug) {
     return this.treeNodeProvider.buildNode(BugNode, bug);
+  }
+
+  async addToWorkspace() {
+    const uri = Uri.file(this.project.projectPath);
+    const i = workspace.workspaceFolders?.length || 0;
+    await workspace.updateWorkspaceFolders(i, null, {
+      name: pathGetBasename(this.project.projectPath),
+      uri
+    });
   }
 }

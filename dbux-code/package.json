@@ -258,6 +258,14 @@
 				}
 			},
 			{
+				"command": "dbuxProjectView.node.addProjectToWorkspace",
+				"title": "Add Project Folder to Workspace",
+				"icon": {
+					"light": "resources/light/crosshair_disabled.svg",
+					"dark": "resources/dark/crosshair_disabled.svg"
+				}
+			},
+			{
 				"command": "dbuxProjectView.node.activateBugWithDebugger",
 				"title": "Activate Bug With Debugger",
 				"icon": {
@@ -352,6 +360,11 @@
 					"command": "dbuxApplicationsView.showEntryPoint",
 					"when": "view == dbuxApplicationsView && viewItem == ApplicationNode",
 					"group": "inline"
+				},
+				{
+					"command": "dbuxProjectView.node.addProjectToWorkspace",
+					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.projectNode",
+					"group": "inline@2"
 				},
 				{
 					"command": "dbuxProjectView.node.activateBugWithDebugger",

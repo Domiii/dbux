@@ -156,6 +156,14 @@ export default class Project {
     await this.exec(`npm install`);
   }
 
+  async yarnInstall() {
+    const { projectPath } = this;
+
+    sh.cd(projectPath);
+    await this.exec(`yarn install`);
+
+  }
+
   async installDbuxCli() {
     const { projectPath } = this;
 

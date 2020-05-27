@@ -50,10 +50,12 @@ var a = {
 main();
 
 
+// a.b().f(1);
 
 // var _o, _f;
-// _o = a.b,
+// _o = a.b(),
 //   _f = _o.f,
+//   BCE(),
 //   _f.call(_o, 1);
 
 

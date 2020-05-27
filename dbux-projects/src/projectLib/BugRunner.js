@@ -4,6 +4,7 @@ import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
 import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import { newLogger } from 'dbux-common/src/log/logger';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import Project from './Project';
 import Bug from './Bug';
 
@@ -68,7 +69,7 @@ export default class BugRunner {
   // ###########################################################################
 
   isBusy() {
-    return this._queue.isBusy() || this._process;
+    return this._queue.isBusy() || this._process || this._project;
   }
 
   isProjectActive(project) {
@@ -192,7 +193,19 @@ export default class BugRunner {
     }
 
     this.logger.debug('Cancelling...');
-    await this._process?.kill();
+
+    // cancel all further steps already in queue
     await this._queue.cancel();
+    
+    // kill active process
+    await this._process?.kill();
+
+    // kill background processes
+    for (const process in this._project?.backgroundProcesses || EmptyArray) {
+      process.kill();
+    }
+
+    this._bug = null;
+    this._project = null;
   }
 }
