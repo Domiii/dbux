@@ -7,11 +7,17 @@ class Toolbar extends HostComponentEndpoint {
     this.state.callMode = false;
     this.state.valueMode = false;
     this.state.thinMode = false;
+    this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
   }
 
   get focusController() {
     const graphRoot = this.parent.children.getComponent('GraphRoot');
     return graphRoot.controllers.getComponent('FocusController');
+  }
+
+  get hiddenNodeManager() {
+    const graphRoot = this.parent.children.getComponent('GraphRoot');
+    return graphRoot.controllers.getComponent('HiddenNodeManager');
   }
 
   public = {
@@ -23,6 +29,10 @@ class Toolbar extends HostComponentEndpoint {
       const mode = this.focusController.toggleSyncMode();
       this.setState({ syncMode: mode });
     },
+
+    setHideNewMode(mode) {
+      this.hiddenNodeManager.setHideNewMode(mode);
+    }
   }
 }
 

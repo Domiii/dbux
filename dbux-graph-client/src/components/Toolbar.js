@@ -16,6 +16,9 @@ class Toolbar extends ClientComponentEndpoint {
           <button data-el="callModeBtn" class="btn btn-info" href="#">call</button>
           <button data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
           <button data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
+          <button data-el="showAllRunNodeBtn" class="no-horizontal-padding btn btn-info" href="#">ShowAll</button>
+          <button data-el="hideAllRunNodeBtn" class="no-horizontal-padding btn btn-info" href="#">HideOld</button>
+          <button data-el="hideNewRunNodeBtn" class="no-horizontal-padding btn btn-info" href="#">HideNew</button>
         </div>
         <button data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</button>
       </nav>
@@ -32,7 +35,8 @@ class Toolbar extends ClientComponentEndpoint {
       locMode,
       callMode,
       valueMode,
-      thinMode
+      thinMode,
+      hideNewMode
     } = this.state;
     // this.els.syncModeBtn.textContent = `Sync: ${syncMode ? '✅' : '❌'}`;
 
@@ -51,6 +55,9 @@ class Toolbar extends ClientComponentEndpoint {
     });
     decorateClasses(this.els.thinModeBtn, {
       active: thinMode
+    });
+    decorateClasses(this.els.hideNewRunNodeBtn, {
+      active: hideNewMode
     });
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
 
@@ -142,6 +149,18 @@ class Toolbar extends ClientComponentEndpoint {
         this.setState({
           thinMode: !this.state.thinMode
         });
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    hideNewRunNodeBtn: {
+      click(evt) {
+        evt.preventDefault();
+        const mode = !this.state.hideNewMode;
+        this.setState({
+          hideNewMode: mode
+        });
+        this.remote.setHideNewMode(mode);
       },
       focus(evt) { evt.target.blur(); }
     },

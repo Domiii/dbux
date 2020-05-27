@@ -8,9 +8,13 @@ const { log, debug, warn, error: logError } = newLogger('[RunNode]');
 class RunNode extends HostComponentEndpoint {
   init() {
     const {
-      applicationId, 
-      runId
+      applicationId,
+      runId,
     } = this.state;
+
+    // state.visible is managed by graphRoot.controllers.HiddenNodeManager
+    // don't call setState({ visible: bool }) directly
+    this.state.visible = !this.parent.controllers.getComponent('HiddenNodeManager').hideNewMode;
 
     const dp = allApplications.getById(applicationId).dataProvider;
 

@@ -1,14 +1,110 @@
+import NanoEvents from 'nanoevents';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
 import ContextNode from './ContextNode';
 
+export class AllRunNodes {
+  constructor(createComponent) {
+    this._all = new Map();
+    this.createComponent = createComponent;
+  }
+
+  get(applicationId, runId) {
+    return this._all.get(this.makeKey(applicationId, runId));
+  }
+
+  /**
+   * @return {RunNode[]}
+   */
+  getAll() {
+    return Array.from(this._all.values());
+  }
+
+  add(applicationId, runId) {
+    if (this.get(applicationId, runId)) {
+      // skip if exist
+    }
+    else {
+      const runNode = this.children.createComponent(RunNode, { applicationId, runId });
+      this._all.set(this.makeKey(applicationId, runId), runNode);
+    }
+  }
+
+  remove(applicationId, runId) {
+    const node = this.get(applicationId, runId);
+    if (node) {
+      node.dispose();
+      this._all.delete(this.makeKey(applicationId, runId));
+    }
+    else {
+      // skip if not exist
+    }
+  }
+
+  clear() {
+    this.getAll().forEach(node => node.dispose());
+    this._all = new Map();
+  }
+
+  makeKey(appId, runId) {
+    return `${appId}_${runId}`;
+  }
+}
+
+// export class AllContextNode {
+//   constructor() {
+//     this._all = new Map();
+//   }
+
+//   get(applicationId, runId) {
+//     return this._all.get(this.makeKey(applicationId, runId));
+//   }
+
+//   /**
+//    * @return {RunNode[]}
+//    */
+//   getAll() {
+//     return Array.from(this._all.values());
+//   }
+
+//   add(contextNode) {
+//     const {applicationId, contextId} = 
+//     if (!this.get(applicationId, contextId)) {
+//       this._all.set(this.makeKey(applicationId, contextId), runNode);
+//     }
+//   }
+
+//   remove(applicationId, runId) {
+//     const node = this.get(applicationId, runId);
+//     if (node) {
+//       node.dispose();
+//       this._all.delete(this.makeKey(applicationId, runId));
+//     }
+//     else {
+//       // skip if not exist
+//     }
+//   }
+
+//   clear() {
+//     this._all = new Map();
+//   }
+
+//   makeKey(appId, contextId) {
+//     return `${appId}_${contextId}`;
+//   }
+// }
+
 class GraphRoot extends HostComponentEndpoint {
-  contextNodesByContext = [];
-  runNodesById = [];
+  contextNodesByContext;
+  allRunNodes: AllRunNodes;
 
   init() {
+    this.allRunNodes = new AllRunNodes(this.children.createComponent);
+    this.contextNodesByContext = new Map();
+    this._emitter = new NanoEvents();
+
     this.controllers.createComponent('GraphNode', {
       mode: GraphNodeMode.ExpandChildren
     });
@@ -16,48 +112,88 @@ class GraphRoot extends HostComponentEndpoint {
     this.controllers.createComponent('PopperManager');
     this.controllers.createComponent('ContextNodeManager');
     this.controllers.createComponent('ZoomBar');
+    this.controllers.createComponent('HiddenNodeManager');
+  }
+
+  update() {
+    const { applications } = this.state;
+    this.updateAllRunNodes(applications);
+    this.subscribeContextChange(applications);
+  }
+
+  updateAllRunNodes(applications) {
+    this.clear();
+
+    // build run nodes
+    for (const { applicationId } of applications) {
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const contexts = dp.collections.executionContexts.getAll();
+      this.addRunNodeByContexts(applicationId, contexts);
+    }
+
+    this._emitter.emit('refresh');
   }
 
   clear() {
-    // clear
-    this.children.clear();
+    this.allRunNodes.clear();
     this.contextNodesByContext = new Map();
   }
 
-  refresh() {
-    // call setState with refreshed data
-    const update = {
-      applications: allApplications.selection.getAll().map(app => ({
-        applicationId: app.applicationId,
-        entryPointPath: app.entryPointPath,
-        name: app.getFileName()
-      }))
-    };
-    this.setState(update);
+  subscribeContextChange(applications) {
+    for (const { applicationId } of applications) {
+      const app = allApplications.getById(applicationId);
+      allApplications.selection.subscribe(
+        app.dataProvider.onData('executionContexts', (contexts) => {
+          this.addRunNodeByContexts(applicationId, contexts);
+          this._emitter.emit('newNode');
+        })
+      );
+    }
   }
 
-  addContextNodes = (applicationId, contexts) => {
-    // get unique set of runIds
-    let runIds = new Set(contexts.map(context => context?.runId || 0));
-    runIds.delete(0);
-    runIds = Array.from(runIds);
-    runIds.sort((a, b) => a - b);     // sort runIds in ascending order (because set is unordered)
+  addRunNodeByContexts(applicationId, contexts) {
+    const runIds = new Set(contexts.map(context => context?.runId || 0));
 
-    // create Run nodes
-    runIds.forEach(runId =>
-      this.children.createComponent(RunNode, { applicationId, runId })
-    );
-
-    // create and/or update Context nodes
-    this.controllers.getComponent('ContextNodeManager').refreshOnData();
+    runIds.forEach(runId => {
+      if (runId) {
+        this.allRunNodes.add(applicationId, runId);
+      }
+    });
   }
 
   focusContext(applicationId, contextId) {
-    this.controllers.getComponent('FocusController').focus(applicationId, contextId);
+    this.focusController.focus(applicationId, contextId);
   }
 
   // ###########################################################################
-  // context management
+  // own event listener
+  // ###########################################################################
+  on(eventName, cb) {
+    this._emitter.on(eventName, cb);
+  }
+
+  // ###########################################################################
+  // getters
+  // ###########################################################################
+
+  get focusController() {
+    return this.controllers.getComponent('FocusController');
+  }
+
+  // ###########################################################################
+  // run node management
+  // ###########################################################################
+
+  getRunNodeById(applicationId, runId) {
+    return this.allRunNodes.get(applicationId, runId);
+  }
+
+  getAllRunNode() {
+    return this.allRunNodes.getAll();
+  }
+
+  // ###########################################################################
+  // context node management
   // ###########################################################################
 
   getContextNodeById(applicationId, contextId) {
@@ -77,7 +213,7 @@ class GraphRoot extends HostComponentEndpoint {
     const { state: { context } } = contextNode;
     this.contextNodesByContext.set(context, contextNode);
   }
-  
+
   // ###########################################################################
   // shared
   // ###########################################################################
