@@ -13,13 +13,14 @@ const { log, debug, warn, error: logError } = logger;
 let controller;
 
 const cfg = {
+  // TODO: fix these paths (`__dirname` is overwritten by webpack and points to the `dist` dir; `__filename` points to `bundle.js`)
   projectsRoot: path.join(__dirname, '../../projects')
 };
 const externals = {
   editor: {
     async openFile(fpath) {
       // await exec(`code ${fpath}`, logger, { silent: false }, true);
-      return showTextDocument(fpath, ViewColumn.One);
+      return showTextDocument(fpath);
     },
     async openFolder(fpath) {
       // TODO: use vscode API to add to workspace

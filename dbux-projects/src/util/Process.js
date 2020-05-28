@@ -51,7 +51,6 @@ export default class Process {
     const {
       failOnStatusCode = true,
       failWhenNotFound = true
-
     } = (options || EmptyObject);
 
     // some weird problem where some shells don't recognize things correctly

@@ -7,7 +7,7 @@ const ProjectRoot = path.resolve(__dirname);
 
 
 const resultCfg = buildWebpackConfig(ProjectRoot, {
-  mode: 'production',
+  mode: 'development',
   context: path.resolve(path.join(ProjectRoot, 'src')),
   entry: {
     app: './bootstrap.js',
@@ -32,7 +32,7 @@ const resultCfg = buildWebpackConfig(ProjectRoot, {
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: "development"
+        NODE_ENV: JSON.stringify("development")
       }
     })
   ],

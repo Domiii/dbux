@@ -19,27 +19,25 @@ export default class TodomvcEs6Project extends Project {
 
     // install dbux dependencies
     // await this.installDbuxCli();
+    await this.copyAssets();
 
-    // npm install
-    await this.npmInstall();
+    // get rid of outdated dependencies; replace with webpack 4 (5?) toolchain
+    // await this.exec('yarn remove webpack webpack-dev-server babel-loader babel-core babel babel-plugin-__coverage__ babel-preset-es2015 babel-preset-es2016 babel-preset-react babel-preset-stage-2 html-webpack-plugin');
 
-    // TODO: get rid of outdated dependencies; replace with webpack 4 (5?) toolchain
-    // yarn remove webpack webpack-dev-server babel-loader babel-core babel babel-plugin-__coverage__ babel-preset-es2015 babel-preset-es2016 babel-preset-react babel-preset-stage-2 html-webpack-plugin
+    // get rid of outdated .babelrc
+    sh.rm('-f', './.babelrc');
 
-    // TODO: install updated webpack + babel dependencies
-    /*
-    yarn add --dev babel - loader @babel/node @babel/cli @babel/core @babel/preset-env && \
-    yarn add --dev webpack webpack-cli webpack-dev-server nodemon html-webpack-plugin && \
-    yarn add core - js@3 @babel/runtime @babel/plugin-transform-runtime
-    */
+    // yarn install
+    await this.yarnInstall();
 
-    // rm .babelrc
+    // install updated webpack + babel dependencies
+    // await this.exec(`yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env \
+    //     webpack webpack-cli webpack-dev-server nodemon html-webpack-plugin && \
+    // yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime`);
+  }
 
-    // TODO: copy assets
-    // sh.cp('-u', src, dst);
-
-    // TODO run it:
-    // node node_modules/.bin/webpack --config ./webpack.config.js
+  async run() {
+    return this.execBackground('node node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./webpack.config.js --env.dev');
   }
 
   async loadBugs() {
@@ -63,5 +61,6 @@ export default class TodomvcEs6Project extends Project {
     // TODO!
     // TODO: start webpack if not yet running
     // TODO: manage/expose (webpack) bug background process
+    // return '';
   }
 }

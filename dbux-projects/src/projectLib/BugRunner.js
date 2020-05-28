@@ -106,6 +106,9 @@ export default class BugRunner {
     this._project = project;
     await project.installProject();
     project._installed = true;
+
+    // run background processes if necessary
+    project.run?.();
   }
 
   async resetProject(project) {
@@ -143,6 +146,10 @@ export default class BugRunner {
     await this._activateBug(bug);
 
     const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+
+    if (!cmd) {
+      throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
+    }
     await this._exec(project, cmd);
   }
 
