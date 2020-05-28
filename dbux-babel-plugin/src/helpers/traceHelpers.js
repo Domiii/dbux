@@ -183,10 +183,9 @@ export function traceBeforeSuper(path, state) {
  */
 const callTemplatesMember = {
   // NOTE: `f.call.call(f, args)` also works (i.e. function f(x) { console.log(this, x); } f.call(this, 1); // -> f.call.call(f, this, 1))
-  CallExpression: template(
-    `
+  CallExpression: f => template(`
   %%o%% = %%oNode%%,
-    %%f%% = %%o%%.%%fNode%%,
+    %%f%% = ${f},
     null,
     %%f%%.call(%%o%%)
   `),
@@ -194,18 +193,16 @@ const callTemplatesMember = {
   /**
    * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
    */
-  OptionalCallExpression: template(
-    `
-    %%o%% = %%oNode%%,
-      %%f%% = %%o%%.%%fNode%%,
-      null,
-      %%f%%?.call(%%o%%)
+  OptionalCallExpression: f => template(`
+  %%o%% = %%oNode%%,
+    %%f%% = ${f},
+    null,
+    %%f%%?.call(%%o%%)
   `),
 
-  NewExpression: template(
-    `
+  NewExpression: f => template(`
   %%o%% = %%oNode%%,
-    %%f%% = %%o%%.%%fNode%%,
+    %%f%% = ${f},
     null,
     new %%f%%()
 `)
@@ -273,7 +270,10 @@ const instrumentBeforeMemberCallExpression =
     const o = path.scope.generateDeclaredUidIdentifier('o');
     const f = path.scope.generateDeclaredUidIdentifier(calleePath.node.name || 'func');
 
-    const templ = callTemplatesMember[path.type];
+    const templ = callTemplatesMember[path.type](calleePath.node.computed ?
+      '%%o%%[%%fNode%%]' :
+      '%%o%%.%%fNode%%'
+    );
 
     replaceWithTemplate(templ, path, {
       // dbux,
