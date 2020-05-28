@@ -25,7 +25,7 @@ class GraphRoot extends ClientComponentEndpoint {
             <div>
               <button data-el="nodeToggleBtn" class="nodeToggleBtn"></button>
             </div>
-            <div data-el="nodeChildren" data-mount="RunNode" class="node-children">
+            <div data-el="nodeChildren" data-mount="RunNode" class="node-children flex-column">
               <div class="before-run-node"></div>
               <div data-el="hiddenNode" class="width-fit"></div>
             </div>

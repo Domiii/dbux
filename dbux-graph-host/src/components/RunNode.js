@@ -12,9 +12,8 @@ class RunNode extends HostComponentEndpoint {
       runId,
     } = this.state;
 
-    // state.visible is managed by graphRoot.controllers.HiddenNodeManager
-    // don't call setState({ visible: bool }) directly
-    this.state.visible = !this.parent.controllers.getComponent('HiddenNodeManager').hideNewMode;
+    const hiddenNodeManager = this.parent.controllers.getComponent('HiddenNodeManager');
+    this.state.visible = hiddenNodeManager.shouldBeVisible(applicationId, runId);
 
     const dp = allApplications.getById(applicationId).dataProvider;
 
@@ -28,6 +27,7 @@ class RunNode extends HostComponentEndpoint {
         applicationId,
         context: contexts[0]
       });
+      this.state.createdAt = dp.util.getRunCreatedAt(runId);
     }
     else {
       logError('Creating RunNode with no context');

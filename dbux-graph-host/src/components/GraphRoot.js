@@ -6,9 +6,9 @@ import RunNode from './RunNode';
 import ContextNode from './ContextNode';
 
 export class AllRunNodes {
-  constructor(createComponent) {
+  constructor(buildNode) {
     this._all = new Map();
-    this.createComponent = createComponent;
+    this.buildNode = buildNode;
   }
 
   get(applicationId, runId) {
@@ -27,7 +27,7 @@ export class AllRunNodes {
       // skip if exist
     }
     else {
-      const runNode = this.children.createComponent(RunNode, { applicationId, runId });
+      const runNode = this.buildNode({ applicationId, runId });
       this._all.set(this.makeKey(applicationId, runId), runNode);
     }
   }
@@ -53,55 +53,12 @@ export class AllRunNodes {
   }
 }
 
-// export class AllContextNode {
-//   constructor() {
-//     this._all = new Map();
-//   }
-
-//   get(applicationId, runId) {
-//     return this._all.get(this.makeKey(applicationId, runId));
-//   }
-
-//   /**
-//    * @return {RunNode[]}
-//    */
-//   getAll() {
-//     return Array.from(this._all.values());
-//   }
-
-//   add(contextNode) {
-//     const {applicationId, contextId} = 
-//     if (!this.get(applicationId, contextId)) {
-//       this._all.set(this.makeKey(applicationId, contextId), runNode);
-//     }
-//   }
-
-//   remove(applicationId, runId) {
-//     const node = this.get(applicationId, runId);
-//     if (node) {
-//       node.dispose();
-//       this._all.delete(this.makeKey(applicationId, runId));
-//     }
-//     else {
-//       // skip if not exist
-//     }
-//   }
-
-//   clear() {
-//     this._all = new Map();
-//   }
-
-//   makeKey(appId, contextId) {
-//     return `${appId}_${contextId}`;
-//   }
-// }
-
 class GraphRoot extends HostComponentEndpoint {
   contextNodesByContext;
   allRunNodes: AllRunNodes;
 
   init() {
-    this.allRunNodes = new AllRunNodes(this.children.createComponent);
+    this.allRunNodes = new AllRunNodes((state) => this.children.createComponent(RunNode, state));
     this.contextNodesByContext = new Map();
     this._emitter = new NanoEvents();
 
@@ -113,6 +70,13 @@ class GraphRoot extends HostComponentEndpoint {
     this.controllers.createComponent('ContextNodeManager');
     this.controllers.createComponent('ZoomBar');
     this.controllers.createComponent('HiddenNodeManager');
+
+    // gives initial state
+    this.state.applications = allApplications.selection.getAll().map(app => ({
+      applicationId: app.applicationId,
+      entryPointPath: app.entryPointPath,
+      name: app.getFileName()
+    }));
   }
 
   update() {
@@ -168,6 +132,7 @@ class GraphRoot extends HostComponentEndpoint {
   // ###########################################################################
   // own event listener
   // ###########################################################################
+
   on(eventName, cb) {
     this._emitter.on(eventName, cb);
   }
