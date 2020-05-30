@@ -288,7 +288,7 @@
    * sometimes does not work for object values?
    * improve array rendering
 * fix: `function` declarations are not tracked
-   * store staticContextId by `function`, so we can look them up later
+   * store staticContextId by `function` object, so we can look them up later
 * fix: strings are currently tracked -> disable tracking of strings
 * fix: `traveValueLabels`
    * get callee name from instrumentation
