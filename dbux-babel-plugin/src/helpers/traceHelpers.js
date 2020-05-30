@@ -229,6 +229,15 @@ function getCalleeDisplayName(calleePath) {
  *  _f = traceBCE(_o.f),    // get f -> trace callee (BCE)
  *  _f.call(_o, ...args);   // call! (also the return value of the expression)
  * ```
+ * 
+ * Convert `super.f(...args)` to:
+ * ```
+ * _o = this,
+ *  _f = super.f,
+ *  BCE,
+ *  _f(x)
+ * ```
+ * 
  * We do this to get accurate `parentTrace` relationships, where we want to:
  *   (a) handle getters carefully
  *   (b) discern between getter and call expression on the stack
@@ -258,13 +267,14 @@ const instrumentMemberCallExpressionEnter =
     const o = path.scope.generateDeclaredUidIdentifier('o');
     const f = path.scope.generateDeclaredUidIdentifier(getCalleeDisplayName(calleePath));
 
+    const isSuper = oPath.isSuper();
+
     const fNode = t.cloneNode(calleePath.node);
     // = computed ?
     //   (optional ? '%%o%%?.[%%fId%%]' : '%%o%%[%%fId%%]') :
     //   (optional ? '%%o%%?.%%fId%%' : '%%o%%.%%fId%%')
-    fNode.object = o;
+    fNode.object = isSuper ? oPath.node : o;    // if super -> don't replace
     fNode.property = fIdPath.node;
-
 
     const templ = callTemplatesMember[path.type]();
     replaceWithTemplate(templ, path, {
@@ -273,7 +283,7 @@ const instrumentMemberCallExpressionEnter =
       f,
       // oTraceId: t.numericLiteral(oTraceId),
       // calleeTraceId: t.numericLiteral(calleeTraceId),
-      oNode: oPath.node,
+      oNode: isSuper ? t.thisExpression() : oPath.node,   // if super -> trace `this` instead of `super`
       fNode
     });
 
@@ -285,7 +295,10 @@ const instrumentMemberCallExpressionEnter =
     const newPath = path.get('expressions.3');
 
     // hackfix: put `o` and `args` in as-is; since they are still going to get instrumented and cloning in templates is not guaranteed to keep all properties
-    path.node.expressions[0].right = oPath.node;
+    if (!isSuper) {
+      // NOTE: if super -> don't replace
+      path.node.expressions[0].right = oPath.node;
+    }
     newPath.node.arguments.push(...argPath.map(p => p.node));
 
     const newOPath = path.get(oPathId);

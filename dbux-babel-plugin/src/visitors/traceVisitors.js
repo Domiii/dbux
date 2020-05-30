@@ -416,8 +416,8 @@ const enterInstrumentors = {
 
   MemberObject(objPath, state) {
     if (objPath.isSuper()) {
-      // NOTE: this will inject a node before its *ancestor statement*
-      return traceBeforeSuper(objPath, state);
+      // Do nothing. We already take care of this via `instrumentMemberCallExpressionEnter`.
+      // return traceBeforeSuper(objPath, state);
     }
     else {
       // trace object (e.g. `x` in `x.y`) as-is
