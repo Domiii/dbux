@@ -2,7 +2,7 @@
 
 This is a pre-alpha project, aiming at making the JS runtime and its dynamic call graph visual and interactive through a combination of instrumentation (using Babel) + a VSCode extension, effectively (ultimately) making it an amazing tool for (i) program comprehension + (ii) debugging.
 
-The `master` branch is not quite active yet. Check out the `dev` branch instead.
+The `master` branch is not quite active yet. Check out the [`dev` branch](https://github.com/Domiii/dbux/tree/dev) instead.
 
 Here is a (very very early, read: crude) 1min demo video of just a small subset of the features:
 
