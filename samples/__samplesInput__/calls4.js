@@ -29,7 +29,7 @@ class B extends A {
   }
 
   f(x) {
-    // super.f(x);
+    super.f(x);
     /**
      * replace: (o = this, f = super.f, BCE, f(x))
      */

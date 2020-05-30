@@ -171,9 +171,9 @@ export const traceValueBeforeExpression = function traceValueBeforePath(
  */
 const callTemplatesMember = {
   // NOTE: `f.call.call(f, args)` also works (i.e. function f(x) { console.log(this, x); } f.call(this, 1); // -> f.call.call(f, this, 1))
-  CallExpression: f => template(`
+  CallExpression: () => template(`
   %%o%% = %%oNode%%,
-    %%f%% = ${f},
+    %%f%% = %%fNode%%,
     null,
     %%f%%.call(%%o%%)
   `),
@@ -181,16 +181,16 @@ const callTemplatesMember = {
   /**
    * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
    */
-  OptionalCallExpression: f => template(`
+  OptionalCallExpression: () => template(`
   %%o%% = %%oNode%%,
-    %%f%% = ${f},
+    %%f%% = %%fNode%%,
     null,
     %%f%%?.call(%%o%%)
   `),
 
-  NewExpression: f => template(`
+  NewExpression: () => template(`
   %%o%% = %%oNode%%,
-    %%f%% = ${f},
+    %%f%% = %%fNode%%,
     null,
     new %%f%%()
 `)
@@ -242,7 +242,7 @@ const instrumentMemberCallExpressionEnter =
   (function instrumentBeforeMemberCallExpression(path, state) {
     const calleePath = path.get('callee');
     const oPath = calleePath.get('object');
-    const fPath = calleePath.get('property');
+    const fIdPath = calleePath.get('property');
     const argPath = path.get('arguments');
 
     // const oTraceId = state.traces.addTrace(oPath, TraceType.ExpressionValue);
@@ -258,13 +258,15 @@ const instrumentMemberCallExpressionEnter =
     const o = path.scope.generateDeclaredUidIdentifier('o');
     const f = path.scope.generateDeclaredUidIdentifier(getCalleeDisplayName(calleePath));
 
-    const { computed, optional } = calleePath.node;
-    const templ = callTemplatesMember[path.type](computed ?
-      (optional ? '%%o%%?.[%%fNode%%]' : '%%o%%[%%fNode%%]') :
-      (optional ? '%%o%%?.%%fNode%%' : '%%o%%.%%fNode%%')
-    );
+    const fNode = t.cloneNode(calleePath.node);
+    // = computed ?
+    //   (optional ? '%%o%%?.[%%fId%%]' : '%%o%%[%%fId%%]') :
+    //   (optional ? '%%o%%?.%%fId%%' : '%%o%%.%%fId%%')
+    fNode.object = o;
+    fNode.property = fIdPath.node;
 
 
+    const templ = callTemplatesMember[path.type]();
     replaceWithTemplate(templ, path, {
       // dbux,
       o,
@@ -272,7 +274,7 @@ const instrumentMemberCallExpressionEnter =
       // oTraceId: t.numericLiteral(oTraceId),
       // calleeTraceId: t.numericLiteral(calleeTraceId),
       oNode: oPath.node,
-      fNode: fPath.node
+      fNode
     });
 
 
@@ -281,12 +283,13 @@ const instrumentMemberCallExpressionEnter =
     const calleePathId = 'expressions.1.right';
     const bcePathId = 'expressions.2';
     const newPath = path.get('expressions.3');
-    const newOPath = path.get(oPathId);
-    const newCalleePath = path.get(calleePathId);
 
-    // hackfix: put `o` and `args` in as-is; they are still going to get instrumented
+    // hackfix: put `o` and `args` in as-is; since they are still going to get instrumented and cloning in templates is not guaranteed to keep all properties
     path.node.expressions[0].right = oPath.node;
     newPath.node.arguments.push(...argPath.map(p => p.node));
+
+    const newOPath = path.get(oPathId);
+    const newCalleePath = path.get(calleePathId);
 
     newCalleePath.node.loc = calleeLoc;
     newPath.node.loc = loc;
