@@ -14,37 +14,13 @@ export default class ExpressProject extends Project {
   }
 
   async installProject() {
-    const {
-      projectsRoot,
-      projectPath,
-      githubUrl
-    } = this;
-
-    // cd into project root
-    sh.cd(projectsRoot);
-
-    // TODO: read git + editor commands from config
-
-    // clone (will do nothing if already cloned)
-    if (!await sh.test('-d', projectPath)) {
-      // const curDir = sh.pwd().toString();
-      // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
-      // project does not exist yet
-      await this.exec(`git clone ${githubUrl} ${projectPath}`, {
-        cdToProjectPath: false
-      });
-      // log('  ->', result.err || result.out);
-      // (result.err && warn || log)('  ->', result.err || result.out);
-      this.log(`Cloned.`);
-    }
-    else {
-      this.log('(skipped cloning)');
-    }
+    // git clone
+    await this.gitClone();
 
     // install dbux dependencies
     // await this.installDbuxCli();
 
-    // install
+    // npm install
     await this.npmInstall();
 
     // TODO: copy assets

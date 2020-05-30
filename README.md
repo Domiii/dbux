@@ -231,27 +231,28 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 
 
 
-# Known Issues
+# Known Issues & Limitations
 
-* calling `process.exit` too early will leave you blind
+* Calling `process.exit` too early will leave you blind
    * You should see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably a crash or you called `process.exit` manually." in the console.
    * `process.exit` kills the process, even if not all recorded data has been sent out yet
    * as a result, you won't see all traces/contexts etc.
    * if you *MUST* call it, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side
    * TODO: Make `runtime/Client`'s `DontStayAwake` configurable.
    * NOTE: many frameworks that might kill your process allow disabling that (e.g. `Mocha`'s `--no-exit` argument)
-* impure property getters can cause unwanted side effects
+* Impure property getters will be called by `dbux` and break things
    * dbux tracks data in real-time, by reading variables, objects, arrays etc.
    * It also reads all (or at least many) properties of objects, thereby unwittingly causing side-effects that a pure observer should not cause.
    * e.g. `class A { count = 0; get x() { return ++this.count; } } // dbux will read x, and thus unwittingly change count`
-   * TODO: how to prevent dbux from altering semantics of your program?
-* What applications **won't** work so well with dbux?
-   * Proxies and custom object getters with side effects
-      * For serialization `dbux-runtime` iterates (or will in the future iterate) over object properties
-      * Thus possibly causing side effects with proxy and getter functions
-      * At least it will leave unwanted traces (while attempting to "observe") - Damn you, [Observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics))!!! :(
-      * TODO: at least flag traces caused by `dbux-runtime` by setting some `trace-triggered-from-dbux-builtin-call` flag while running built-in functions
-         * NOTE: This will still mess with proxy and getter functions that themselves have side effects, such as caching functions, tracers and more.
+      * -> In this case, dbux will certainly break your program.
+      * The same applies to `console.log` et al in your getters. While that is generally not too bad, seeing a lot of unwanted `console.log`s is bound to lead to confusion.
+* Proxies and other custom object getters with side effects
+   * As explained in the previous point, the `dbux-runtime` iterates over object properties
+   * Thus possibly causing side effects with proxy and getter functions
+   * At least it will leave unwanted traces (while attempting to "observe") - Damn you, [Observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics))!!! :(
+* `eval`'ed code will not be traced
+   * While `eval` is sometimes necessary, 
+   * Any dynamically executed code will not be traced (not a feature that we are looking at in the foreseeable future)
 * Issues under Windows
    * **sometimes**, when running things in VSCode built-in terminal, it might change to lower-case drive letter
       * This causes a mixture of lower-case and upper-case drive letters to start appearing in `require` paths

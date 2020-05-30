@@ -6,7 +6,7 @@ import defaultsDeep from 'lodash/defaultsDeep';
 import { newLogger } from 'dbux-common/src/log/logger';
 
 
-const { log, debug, warn, error: logError } = newLogger('TaskWithProgressBar');
+const { log, debug, warn, error: logError } = newLogger('BackgroundTask');
 
 function _errWrap(f) {
   return async (...args) => {

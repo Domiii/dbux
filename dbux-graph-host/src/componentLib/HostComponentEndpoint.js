@@ -176,19 +176,27 @@ class HostComponentEndpoint extends ComponentEndpoint {
     }
   }
 
+  _performUpdate() {
+    try {
+      this.update();
+    }
+    finally {
+      this._waitingForUpdate = false;
+    }
+  }
+
   async _executeUpdate() {
     // debounce mechanism
     this._waitingForUpdate = true;
     await sleep(0);
-    this._waitingForUpdate = false;
 
     // push out new update
     const promise = Promise.resolve(
-      this._runNoSetState('update')                           // 1. host: update
+      this._performUpdate()                                   // 1. host: update
     ).
-      then(() => (
-        this._remoteInternal.updateClient(this.state)         // 2. client: init -> update
-      )).
+      then(() => {
+        return this._remoteInternal.updateClient(this.state); // 2. client: update
+      }).
       then(
         (resultFromClientInit) => {
           // success                                          // 3. waitForUpdate (resolved)

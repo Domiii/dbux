@@ -1,8 +1,10 @@
 import path from 'path';
 import sh from 'shelljs';
-import exec from '../util/exec';
+import pull from 'lodash/pull';
+import defaultsDeep from 'lodash/defaultsDeep';
+import { newLogger } from 'dbux-common/src/log/logger';
 import BugList from './BugList';
-import { newLogger } from '../../../dbux-common/src/log/logger';
+import Process from '../util/Process';
 
 
 export default class Project {
@@ -10,6 +12,11 @@ export default class Project {
    * @type {BugList}
    */
   _bugs;
+
+  /**
+   * @type {ProjectsManager}
+   */
+  manager;
 
   folderName;
 
@@ -92,6 +99,38 @@ export default class Project {
     return this.runner._exec(this, command, options);
   }
 
+  execBackground(cmd, options) {
+    const {
+      projectPath
+    } = this;
+
+    // set cwd
+    let cwd;
+    if (options?.cdToProjectPath !== false) {
+      cwd = projectPath;
+
+      // set cwd option
+      options = defaultsDeep(options, {
+        processOptions: {
+          cwd
+        }
+      });
+
+      // cd into it
+      sh.cd(cwd);
+    }
+
+    // // wait until current process finshed it's workload
+    // this._process?.waitToEnd();
+
+    const process = new Process();
+    this.backgroundProcesses.push(process);
+    process.start(cmd, this.logger, options).finally(() => {
+      pull(this.backgroundProcesses, process);
+    });
+    return process;
+  }
+
   /**
    * 
    * @return {bool} Whether any files in this project have changed.
@@ -142,6 +181,8 @@ export default class Project {
     else {
       this.log('(skipped cloning)');
     }
+
+    sh.cd(projectPath);
   }
 
   async npmInstall() {
@@ -154,6 +195,13 @@ export default class Project {
     //      Sometimes running it a second time after checking out a different branch 
     //      deletes all node_modules. This will bring everything back correctly (for now).
     await this.exec(`npm install`);
+  }
+
+  async yarnInstall() {
+    const { projectPath } = this;
+
+    sh.cd(projectPath);
+    await this.exec(`yarn install`);
   }
 
   async installDbuxCli() {
@@ -170,6 +218,13 @@ export default class Project {
 
     // TODO: select `NPM` or `yarn` based on `lock` file discovery?
     await this.exec(`npm install -D ${dbuxCli}`, this.logger);
+  }
+
+  async copyAssets() {
+    // TODO: fix these paths (`__dirname` is overwritten by webpack and points to the `dist` dir; `__filename` points to `bundle.js`)
+    const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${this.folderName}`));
+    this.logger.log('Copying assets from', assetDir);
+    await sh.cp('-R', assetDir, this.projectsRoot);
   }
 
   // ###########################################################################

@@ -1,4 +1,4 @@
-import { getBasename } from 'dbux-common/src/util/pathUtil';
+import { pathGetBasename } from 'dbux-common/src/util/pathUtil';
 
 import StaticContextCollection from './data/StaticContextCollection';
 import StaticTraceCollection from './data/StaticTraceCollection';
@@ -16,7 +16,7 @@ import { isNodeInstrumented } from './helpers/instrumentationHelper';
  */
 export default function injectDbuxState(programPath, programState) {
   const filePath = programState.filename;
-  const fileName = filePath && getBasename(filePath);
+  const fileName = filePath && pathGetBasename(filePath);
 
   const { scope } = programPath;
   const { file: programFile } = programState;

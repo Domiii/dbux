@@ -151,27 +151,15 @@ export const traceValueBeforeExpression = function traceValueBeforePath(
   return originalTargetPath;
 }.bind(null, template('%%dbux%%.traceExpr(%%traceId%%, %%value%%), %%expression%%'));
 
-let _thisPath;
+// export function traceBeforeSuper(path, state) {
+//   // find the first ancestor that is a statement
+//   const statementPath = path.findParent(ancestor => ancestor.isStatement());
 
-/**
- * Re-used path of a `this` AST node.
- */
-function getOrCreateThisNode() {
-  if (!_thisPath) {
-    _thisPath = { node: t.thisExpression() };
-  }
-  return _thisPath;
-}
-
-export function traceBeforeSuper(path, state) {
-  // find the first ancestor that is a statement
-  const statementPath = path.findParent(ancestor => ancestor.isStatement());
-
-  // cannot wrap `super` -> trace `this` *before* the current statement instead
-  // NOTE: we don't want to flag the `statementPath` as visited/instrumented
-  const newNode = buildTraceExpr(getOrCreateThisNode(), state, 'traceExpr', TraceType.ExpressionValue, { tracePath: path });
-  statementPath.insertBefore(t.expressionStatement(newNode));
-}
+//   // cannot wrap `super` -> trace `this` *before* the current statement instead
+//   // NOTE: we don't want to flag the `statementPath` as visited/instrumented
+//   const newNode = buildTraceExpr(getOrCreateNode(t.thisExpression()), state, 'traceExpr', TraceType.ExpressionValue, { tracePath: path });
+//   statementPath.insertBefore(t.expressionStatement(newNode));
+// }
 
 // ###########################################################################
 // call enter
@@ -183,10 +171,9 @@ export function traceBeforeSuper(path, state) {
  */
 const callTemplatesMember = {
   // NOTE: `f.call.call(f, args)` also works (i.e. function f(x) { console.log(this, x); } f.call(this, 1); // -> f.call.call(f, this, 1))
-  CallExpression: template(
-    `
+  CallExpression: () => template(`
   %%o%% = %%oNode%%,
-    %%f%% = %%o%%.%%fNode%%,
+    %%f%% = %%fNode%%,
     null,
     %%f%%.call(%%o%%)
   `),
@@ -194,18 +181,16 @@ const callTemplatesMember = {
   /**
    * @see https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js
    */
-  OptionalCallExpression: template(
-    `
-    %%o%% = %%oNode%%,
-      %%f%% = %%o%%.%%fNode%%,
-      null,
-      %%f%%?.call(%%o%%)
+  OptionalCallExpression: () => template(`
+  %%o%% = %%oNode%%,
+    %%f%% = %%fNode%%,
+    null,
+    %%f%%?.call(%%o%%)
   `),
 
-  NewExpression: template(
-    `
+  NewExpression: () => template(`
   %%o%% = %%oNode%%,
-    %%f%% = %%o%%.%%fNode%%,
+    %%f%% = %%fNode%%,
     null,
     new %%f%%()
 `)
@@ -214,8 +199,6 @@ const callTemplatesMember = {
 const callTemplatesDefault = {
   CallExpression: template(
     `
-    %%f%% = %%fNode%%,
-    null,
     %%f%%()
   `),
 
@@ -224,18 +207,19 @@ const callTemplatesDefault = {
    */
   OptionalCallExpression: template(
     `
-    %%f%% = %%fNode%%,
-    null,
     %%f%%?.()
   `),
 
   NewExpression: template(
     `
-    %%f%% = %%fNode%%,
-    null,
     new %%f%%()
   `)
 };
+
+// TODO: the name chosen here will show up in error messages -> get proper displayName for callee instead
+function getCalleeDisplayName(calleePath) {
+  return calleePath.node.name || 'func';
+}
 
 /**
  * Convert `o.f(...args)` to:
@@ -245,18 +229,29 @@ const callTemplatesDefault = {
  *  _f = traceBCE(_o.f),    // get f -> trace callee (BCE)
  *  _f.call(_o, ...args);   // call! (also the return value of the expression)
  * ```
+ * 
+ * Convert `super.f(...args)` to:
+ * ```
+ * _o = this,
+ *  _f = super.f,
+ *  BCE,
+ *  _f(x)
+ * ```
+ * 
  * We do this to get accurate `parentTrace` relationships, where we want to:
  *   (a) handle getters carefully
  *   (b) discern between getter and call expression on the stack
  *   (c) resolve conflicts with `super.f()`
  * 
- * NOTE: We do *NOT* instrument here, because it would mess up `staticTraceId` order (e.g. in `f(u).g(v)`)
+ * NOTEs:
+ * * We do *NOT* instrument here, because it would mess up `staticTraceId` order (e.g. in `f(u).g(v)`).
+ * * `oNode` (including `super`) and `fNode` will be traced as `ExpressionResult` (via `AssignmentExpression.right`)
  */
-const instrumentBeforeMemberCallExpression =
+const instrumentMemberCallExpressionEnter =
   (function instrumentBeforeMemberCallExpression(path, state) {
     const calleePath = path.get('callee');
     const oPath = calleePath.get('object');
-    const fPath = calleePath.get('property');
+    const fIdPath = calleePath.get('property');
     const argPath = path.get('arguments');
 
     // const oTraceId = state.traces.addTrace(oPath, TraceType.ExpressionValue);
@@ -267,36 +262,47 @@ const instrumentBeforeMemberCallExpression =
     const calleeLoc = calleePath.node.loc;
 
     // build
-    const { ids: { dbux } } = state;
+    // const { ids: { dbux } } = state;
 
-    // TODO: better names :(
     const o = path.scope.generateDeclaredUidIdentifier('o');
-    const f = path.scope.generateDeclaredUidIdentifier(calleePath.node.name || 'func');
+    const f = path.scope.generateDeclaredUidIdentifier(getCalleeDisplayName(calleePath));
 
-    const templ = callTemplatesMember[path.type];
+    const isSuper = oPath.isSuper();
 
+    const fNode = t.cloneNode(calleePath.node);
+    // = computed ?
+    //   (optional ? '%%o%%?.[%%fId%%]' : '%%o%%[%%fId%%]') :
+    //   (optional ? '%%o%%?.%%fId%%' : '%%o%%.%%fId%%')
+    fNode.object = isSuper ? oPath.node : o;    // if super -> don't replace
+    fNode.property = fIdPath.node;
+
+    const templ = callTemplatesMember[path.type]();
     replaceWithTemplate(templ, path, {
       // dbux,
       o,
       f,
       // oTraceId: t.numericLiteral(oTraceId),
       // calleeTraceId: t.numericLiteral(calleeTraceId),
-      oNode: oPath.node,
-      fNode: fPath.node
+      oNode: isSuper ? t.thisExpression() : oPath.node,   // if super -> trace `this` instead of `super`
+      fNode
     });
 
 
-    // set loc, so it gets instrumented on exit as well
+    // set loc, so new nodes will be instrumented correctly
     const oPathId = 'expressions.0.right';
     const calleePathId = 'expressions.1.right';
     const bcePathId = 'expressions.2';
     const newPath = path.get('expressions.3');
+
+    // hackfix: put `o` and `args` in as-is; since they are still going to get instrumented and cloning in templates is not guaranteed to keep all properties
+    if (!isSuper) {
+      // NOTE: if super -> don't replace
+      path.node.expressions[0].right = oPath.node;
+    }
+    newPath.node.arguments.push(...argPath.map(p => p.node));
+
     const newOPath = path.get(oPathId);
     const newCalleePath = path.get(calleePathId);
-
-    // hackfix: put `o` and `args` in as-is; they are still going to get instrumented
-    path.node.expressions[0].right = oPath.node;
-    newPath.node.arguments.push(...argPath.map(p => p.node));
 
     newCalleePath.node.loc = calleeLoc;
     newPath.node.loc = loc;
@@ -315,10 +321,10 @@ const instrumentBeforeMemberCallExpression =
   });
 
 /**
- * Convert `f(...args)` to: `traceBCE(f), f(...args)`
+ * Convert `f(...args)` to: `traceBCE(f), f(...args)` to trace callee (`f`) and place BCE correctly
  * 
  */
-const instrumentBeforeCallExpressionDefault =
+const instrumentDefaultCallExpressionEnter =
   (function instrumentBeforeCallExpressionDefault(path, state) {
     const calleePath = path.get('callee');
     const argPath = path.get('arguments');
@@ -329,19 +335,39 @@ const instrumentBeforeCallExpressionDefault =
 
     // build
     // const { ids: { dbux } } = state;
-    path.setData('testtest', 1);
 
-    // TODO: better names :(
-    const f = path.scope.generateDeclaredUidIdentifier(calleePath.node.name || 'func');
+    const f = path.scope.generateDeclaredUidIdentifier(getCalleeDisplayName(calleePath));
 
-    const templ = callTemplatesDefault[path.type];
+    // super needs special treatment
+    const isSuper = calleePath.isSuper();
 
-    replaceWithTemplate(templ, path, {
-      // dbux,
-      f,
-      // calleeTraceId: t.numericLiteral(calleeTraceId),
-      fNode: calleePath.node
-    });
+    // replace with our custom callee
+    if (!isSuper) {   // NOTE: `super` cannot be replaced
+      const templ = callTemplatesDefault[path.type];
+
+      // f(...)
+      replaceWithTemplate(templ, path, {
+        f
+      });
+    }
+
+    // prepend actual call with (i) callee assignment + (ii) BCE placeholder
+    path.replaceWith(t.sequenceExpression([
+      // (i) callee assignment (%%f%% = %%fNode%%)
+      //    NOTE: super cannot be assigned, so we set it to `null` (`f` will not be used in that case)
+      isSuper &&
+      t.nullLiteral() ||
+      t.assignmentExpression('=',
+        f,
+        calleePath.node
+      ),
+
+      // (ii) BCE placeholder
+      t.nullLiteral(),
+
+      // (iii) actual call
+      path.node
+    ]));
 
     // state.markEntered(originalPath, 'trace');
 
@@ -354,7 +380,9 @@ const instrumentBeforeCallExpressionDefault =
     // hackfix: put `args` in as-is; they are still going to get instrumented
     newPath.node.arguments = argPath.map(p => p.node);
 
-    newCalleePath.node.loc = calleeLoc;
+    if (!isSuper) {
+      newCalleePath.node.loc = calleeLoc;
+    }
     newPath.node.loc = loc;
 
 
@@ -372,13 +400,13 @@ const instrumentBeforeCallExpressionDefault =
     return newPath;
   });
 
-export function instrumentBeforeCallExpression(path, state) {
+export function instrumentCallExpressionEnter(path, state) {
   const calleePath = path.get('callee');
   if (calleePath.isMemberExpression()) {
-    return instrumentBeforeMemberCallExpression(path, state);
+    return instrumentMemberCallExpressionEnter(path, state);
   }
   else {
-    return instrumentBeforeCallExpressionDefault(path, state);
+    return instrumentDefaultCallExpressionEnter(path, state);
     // const tracePath = getTracePath(path);
     // return traceBeforeExpression(TraceType.BeforeCallExpression, path, state, tracePath);
   }
@@ -437,11 +465,9 @@ export function traceWrapArg(argPath, state, beforeCallTraceId) {
 
 
 export function traceCallExpression(callPath, state, resultType) {
-  // const calleePathId = callPath.getData('_calleePath');
   const bcePathId = callPath.getData('_bcePathId');
 
-  // const calleePath = callPath.parentPath.get(calleePathId);
-  const bcePath = callPath.parentPath.get(bcePathId);
+  const bcePath = bcePathId && callPath.parentPath.get(bcePathId) || null;
 
   // if (!getPathTraceId(calleePath) && !isPathInstrumented(calleePath)) {
   //   // trace callee, if not traced before (left-hand side of parenthesis; e.g. `o.f` in `o.f(x)`)
