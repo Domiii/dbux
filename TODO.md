@@ -283,6 +283,7 @@
 
 
 ## TODO (other)
+* when moving cursor to trace etc, use `revealRange` w/ `TextEditorRevealType.InCenter`
 * fix: when we have multiple apps a, b and we restart b:
    * old `a` nodes don't get removed and `a` gets added two more times
 * in TrackedObjectTDNode, render `valueString`
