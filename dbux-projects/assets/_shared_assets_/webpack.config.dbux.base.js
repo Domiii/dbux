@@ -6,7 +6,11 @@ process.env.BABEL_DISABLE_CACHE = 1;
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 
-const outputFolderName = 'dist';
+const buildMode = 'development';
+//const buildMode = 'production';
+
+// const outFile = 'bundle.js';
+// const outputFolderName = 'dist';
 const MonoRoot = path.resolve(path.join(__dirname, '/../..'));
 //const dbuxPlugin = require(path.join(root, 'node_modules/dbux-babel-plugin'));
 const dbuxPluginPath = path.join(MonoRoot, '/dbux-babel-plugin');
@@ -46,10 +50,6 @@ const babelOptions = {
     }
   ]]
 };
-
-const outFile = 'bundle.js';
-const buildMode = 'development';
-//const buildMode = 'production';
 
 
 module.exports = (projectRoot, customConfig, ...cfgOverrides) => {
@@ -91,12 +91,12 @@ module.exports = (projectRoot, customConfig, ...cfgOverrides) => {
     },
     plugins: [],
     context: path.join(projectRoot, '.'),
-    output: {
-      path: path.join(projectRoot, outputFolderName),
-      filename: outFile,
-      publicPath: outputFolderName,
-      // sourceMapFilename: outFile + ".map"
-    },
+    // output: {
+    //   path: path.join(projectRoot, outputFolderName),
+    //   filename: outFile,
+    //   publicPath: outputFolderName,
+    //   // sourceMapFilename: outFile + ".map"
+    // },
     resolve: {
       symlinks: true,
       // extensions: ['.js', '.jsx'],
