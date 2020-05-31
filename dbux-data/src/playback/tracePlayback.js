@@ -138,6 +138,16 @@ export class TracePlayback {
     return dp.callGraph.getNextChildContext(trace.traceId);
   }
 
+  getPreviousStaticTrace(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    return dp.callGraph.getPreviousByStaticTrace(trace.traceId);
+  }
+
+  getNextStaticTrace(trace = this.currentTrace) {
+    const dp = this._getDataProviderOfTrace(trace);
+    return dp.callGraph.getNextByStaticTrace(trace.traceId);
+  }
+
   // ###########################################################################
   // Play helpers
   // ###########################################################################

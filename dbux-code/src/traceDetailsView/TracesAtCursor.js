@@ -2,11 +2,11 @@ import { window, ExtensionContext, commands } from 'vscode';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import { compareTraces } from 'dbux-data/src/traceSelection/relevantTraces';
 import traceSelection from 'dbux-data/src/traceSelection';
+import { isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
 import Trace from 'dbux-common/src/core/data/Trace';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { getCursorLocation } from '../codeUtil/codeNav';
 import { getTracesAt } from '../helpers/codeRangeQueries';
-import { isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
 
 export default class TracesAtCursor {
   allTraces: Array<Trace>;
@@ -64,18 +64,24 @@ export default class TracesAtCursor {
     }
   }
 
-  getNext = () => {
+  get() {
     // need to refresh if this.sortedTraces is expired
     if (this.needRefresh) {
       this.refresh();
     }
+    return this.allTraces[this.index] || null;
+  }
 
-    const nextTrace = this.allTraces[this.index];
+  previous() {
+    this.index--;
+    // set to last if reach the begin of sortedTraces
+    if (this.index < 0) this.index = this.allTraces.length;
+  }
+
+  next() {
     this.index++;
     // set to zero if reach the end of sortedTraces
     if (this.index >= this.allTraces.length) this.index = 0;
-
-    return nextTrace || null;
   }
 
   getAllTracesAtCursor = () => {
