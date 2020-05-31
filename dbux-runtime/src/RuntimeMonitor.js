@@ -413,7 +413,7 @@ export default class RuntimeMonitor {
     const { traceId, staticTraceId } = trace;
     const { type: traceType } = staticTraceCollection.getById(staticTraceId);
     if (isBeforeCallExpression(traceType)) {
-      this._runtime.setBCEForContext(contextId, traceId);
+      this._runtime.addBCEForContext(contextId, traceId);
     }
     this._runtime.setLastContextTrace(contextId, traceId);
   }

@@ -1,0 +1,34 @@
+{
+  "name": "panzoom",
+  "version": "9.2.4",
+  "description": "Extensible, mobile friendly pan and zoom framework (supports DOM and SVG).",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test/*.js",
+    "build": "browserify -s panzoom ./index.js > dist/panzoom.js && uglifyjs dist/panzoom.js > dist/panzoom.min.js",
+    "start": "npm run build"
+  },
+  "keywords": [
+    "dom",
+    "svg",
+    "pan",
+    "zoom"
+  ],
+  "author": "Andrei Kashcha",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anvaka/panzoom"
+  },
+  "dependencies": {
+    "amator": "^1.1.0",
+    "ngraph.events": "^1.2.1",
+    "wheel": "^1.0.0"
+  },
+  "devDependencies": {
+    "browserify": "^16.5.1",
+    "jsdom": "^16.2.2",
+    "tap": "^14.10.7",
+    "uglify-js": "^3.9.1"
+  }
+}

@@ -11,13 +11,16 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <a data-el="syncModeBtn" class="btn btn-info" href="#">sync</a>
-          <a data-el="locModeBtn" class="btn btn-info" href="#">loc</a>
-          <a data-el="callModeBtn" class="btn btn-info" href="#">call</a>
-          <a data-el="valueModeBtn" class="btn btn-info" href="#">val</a>
-          <a data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></a>
+          <button data-el="syncModeBtn" class="btn btn-info" href="#">sync</button>
+          <button data-el="locModeBtn" class="btn btn-info" href="#">loc</button>
+          <button data-el="callModeBtn" class="btn btn-info" href="#">call</button>
+          <button data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
+          <button data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
+          <button data-el="showAllRunBtn" class="no-horizontal-padding btn btn-info" href="#">ShowAll</button>
+          <button data-el="hideOldRunBtn" class="no-horizontal-padding btn btn-info" href="#">HideOld</button>
+          <button data-el="hideNewRunBtn" class="no-horizontal-padding btn btn-info" href="#">HideNew</button>
         </div>
-        <a data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</a>
+        <button data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</button>
       </nav>
     `);
   }
@@ -141,6 +144,17 @@ class Toolbar extends ClientComponentEndpoint {
         evt.preventDefault();
         this.setState({
           thinMode: !this.state.thinMode
+        });
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    hideNewRunBtn: {
+      click(evt) {
+        evt.preventDefault();
+        const mode = !this.state.hideNewMode;
+        this.setState({
+          hideNewMode: mode
         });
       },
       focus(evt) { evt.target.blur(); }

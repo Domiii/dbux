@@ -3,15 +3,10 @@ import HighlightManager from './controllers/HighlightManager';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
-// import HighlightManager from './controllers/HighlightManager';
 
 class GraphDocument extends HostComponentEndpoint {
   toolbar;
-  minimap;
-  /**
-   * @type {GraphRoot}
-   */
-  root;
+  // minimap;
 
   // ###########################################################################
   // init
@@ -20,69 +15,29 @@ class GraphDocument extends HostComponentEndpoint {
   init() {
     this.createOwnComponents();
 
-    // ########################################
     // register event listeners
-    // ########################################
-
     allApplications.selection.onApplicationsChanged(this.handleApplicationsChanged);
   }
 
   createOwnComponents() {
     this.controllers.createComponent(HighlightManager);
-    this.root = this.children.createComponent(GraphRoot);
+    this.graphRoot = this.children.createComponent(GraphRoot);
     this.toolbar = this.children.createComponent(Toolbar);
     // this.minimap = this.children.createComponent(MiniMap);
-
-    // start rendering empty graph
-    // this.root.refresh();
   }
 
-
   // ###########################################################################
-  // OnApplicationsChanged
+  // HandleApplicationsChanged
   // ###########################################################################
 
   handleApplicationsChanged = (selectedApps) => {
-    this.refreshGraphRoot(selectedApps);
-  }
-
-  // ###########################################################################
-  // manage children
-  // ###########################################################################
-
-  addContexts = (applicationId, contexts) => {
-    this.root.addContexts(applicationId, contexts);
-  }
-
-  // ###########################################################################
-  // public controller method
-  // ###########################################################################
-
-  refreshGraphRoot(selectedApps) {
-    this.root.clear();
-
-    // update root application data
-    this.root.refresh();
-
-    // add already existing children contexts
-    for (const app of selectedApps) {
-      const { applicationId } = app;
-
-      // add existing contexts
-      const { dataProvider } = app;
-      this.addContexts(applicationId, dataProvider.collections.executionContexts.getAll());
-
-      // add data listeners
-      allApplications.selection.subscribe(
-        app.dataProvider.onData('executionContexts',
-          contexts => {
-            // update root application data (since initially, application name is not available)
-            this.root.refresh();
-            this.addContexts(applicationId, contexts);
-          }
-        )
-      );
-    }
+    this.graphRoot.setState({
+      applications: selectedApps.map(app => ({
+        applicationId: app.applicationId,
+        entryPointPath: app.entryPointPath,
+        name: app.getFileName()
+      }))
+    });
   }
   
   // ###########################################################################

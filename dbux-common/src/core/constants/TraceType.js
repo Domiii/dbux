@@ -5,6 +5,9 @@ let TraceType = {
   PopImmediate: 2,
 
   BeforeExpression: 3,
+  /**
+   * NOTE: `BeforeCallExpression` has now become `Callee`, meaning it also holds a value
+   */
   BeforeCallExpression: 4,
   /**
    * E.g. `a.b.c` for `a.b.c.f()` method call.
@@ -98,6 +101,7 @@ export function hasDynamicTypes(traceType) {
 
 
 const expressionTypes = new Array(TraceType.getCount()).map(() => false);
+expressionTypes[TraceType.BeforeCallExpression] = true;
 expressionTypes[TraceType.ExpressionResult] = true;
 expressionTypes[TraceType.ExpressionValue] = true;
 expressionTypes[TraceType.CallArgument] = true;

@@ -21,18 +21,18 @@
     "bootstrap": "^4.4.1",
     "dbux-common": "*",
     "dbux-graph-common": "*",
-    "html2canvas": "^1.0.0-rc.5",
-    "panzoom": "^9.2.1"
+    "html2canvas": "^1.0.0-rc.5"
   },
   "devDependencies": {
     "express": "^4.17.1",
+    "link-module-alias": "*",
     "npm-run-all": "^4.1.5",
-    "open-cli": "^6.0.0",
-    "link-module-alias": "*"
+    "open-cli": "^6.0.0"
   },
   "peerDependencies": {
     "lodash": "*",
-    "webpack-cli": "*"
+    "webpack-cli": "*",
+    "panzoom": "*"
   },
   "_moduleAliases": {
     "webpack": "../node_modules/webpack"

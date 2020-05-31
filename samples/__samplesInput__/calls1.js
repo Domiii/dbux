@@ -1,21 +1,72 @@
+/* eslint-disable */
+
+
 function main() {
-  const c = add(1, 2);
-  const d = mul(
-    add(c, mul(2, 3)),
-    add(5, mul(6, [7, 8].reduce((a, x) => a + x)))
-  );
-  console.log(
-    add(d, -100),
-    [100, 20, 33, 4, 5, 6, 7].reduce((a, x) => Math.min(a, x))
-  );
+  a.i();
+  a.i(3, 4);
+  a.b.f(1);
+  a.g().h(2);
+  f(a.g());
+  a.i(a.g());
+
+  a.i(a.g().h(2), a.b.f(1));
+
+  a.x?.();
+  // a?.i(a.g?.().h?.x?.(2));
 }
 
-function add(a, b) {
-  return a + b;
+// f();
+// f()(1);
+function f(x) {
+  // return function j(x, y) {
+  console.log('f', x);
+  return x;
+  // };
 }
 
-function mul(a, b) {
-  return a * b;
-}
+var a = {
+  get b() {
+    return {
+      f(x) { console.log('f', x); }
+    }
+  },
+
+  g() {
+    console.log('g');
+    return {
+      h(x) {
+        console.log('h', x);
+      }
+    };
+  },
+
+  get i() {
+    return function j(x, y) {
+      console.log('j', x, y);
+    };
+  }
+};
 
 main();
+
+
+
+// var _o, _f;
+// _o = a.b,
+//   _f = _o.f,
+//   _f.call(_o, 1);
+
+
+// var _o, _f, _o2, _f2;
+// _o2 = (
+//   _o = a,
+//   _f = _o.g,
+//   _f.call(_o)
+// ),
+//   _f2 = _o2.h,
+//   _f2.call(_o2, 2)
+
+// var _o, _f;
+// _o = a,
+//   _f = _o.i,
+//   _f.call(_o, 3)

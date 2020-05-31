@@ -22,14 +22,14 @@ html,body{
   font-family: "Lucida Console", Courier, monospace;
   padding: 0 !important;
   margin: 0 !important;
+  overflow: hidden;
 }
-
 
 /** ###########################################################################
  * graph nodes
  * ############################################################################ */
 
-.graph-node .title button {
+.graph-node .content button {
   background-color: rgba(0,0,0,0.1);
   display:inline-block;
   margin:0;
@@ -65,9 +65,19 @@ html,body{
   padding-left: 2px;
 }
 
-.run-node {
-  margin-top: 1em;
-  border: 1px solid black;
+.graph-cont {
+  /* width: 200px;
+  height: 200px; */
+  width: 100vw;
+  height: calc(100vh - 30px);
+  overflow: scroll;
+}
+
+.graph-cont > .body {
+  width: fit-content;
+  height: fit-content;
+  overflow: auto;
+  transform-origin: 0 0;
 }
 
 .context-node {
@@ -86,6 +96,43 @@ html,body{
 .thin-mode .node-left-padding {
   padding-left: 0.4em;
 }
+
+/** ###########################################################################
+ * RunNode
+ * ############################################################################ */
+
+.run-node {
+  padding: 10px;
+}
+.run-node > div {
+  border: 1px solid black;
+}
+
+@keyframes new-run-node {
+  from {
+    padding: 1px;
+  }
+  to {
+    padding: 10px;
+  }
+}
+@keyframes new-run-node-content {
+  from {
+    border: 10px solid yellow;
+  }
+  to {
+    border: 1px solid orange;
+  }
+}
+.run-node.new {
+  animation: new-run-node 10s linear;
+  animation-fill-mode: forwards;
+}
+.run-node.new > div {
+  animation: new-run-node-content 10s linear;
+  animation-fill-mode: forwards;
+}
+
 
 /** ###########################################################################
  * graph decorations
@@ -144,7 +191,7 @@ html,body{
 
 .dbux-link {
   /* color: rgb(71, 52, 243); */
-  color: black;
+  /* color: black; */
   cursor: pointer;
 }
 
@@ -261,6 +308,13 @@ html,body{
   color: #555;
 }
 
+.red {
+  color: red;
+}
+
+.darkred {
+  color: darkred;
+}
 
 /** ###########################################################################
  * highlighter
@@ -315,4 +369,19 @@ background: #333;
 
 #tooltip[data-show] {
   display: block;
+}
+
+
+/** ###########################################################################
+ * zoombar
+ * ############################################################################ */
+
+#zoombar {
+  position:fixed;
+  bottom:10px;
+  right:10px;
+}
+
+#zoombar .button {
+  margin:2.5px;
 }

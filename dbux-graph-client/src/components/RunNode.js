@@ -4,24 +4,33 @@ import { compileHtmlElement } from '../util/domUtil';
 class RunNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-      <div class="run-node flex-row width-fit">
-        <!--div>
-          <button data-el="nodeToggleBtn" class="nodeToggleBtn">▽</button>
-        </div-->
-        <div class="flex-column">
-          <!--div style="display:flex; flex-direction:row;">
-            <h6 data-el="title"></h6>
-          </div-->
-          <div data-el="nodeChildren" data-mount="ContextNode" class="node-children"></div>
+      <div class="run-node new width-fit">
+        <div class="run-node-content">
+          <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
         </div>
       </div>
     `);
 
     return el;
   }
+
+  setupEl() {
+    // this.el.addEventListener('animationend', () => {
+    setTimeout(() => {
+      // "new" animation has finished -> remove class
+      this.el.classList.remove('new');
+    }, 10 * 1000);
+  }
   
   update() {
-    const { applicationId, runId } = this.state;
+    const { applicationId, runId, visible, createdAt } = this.state;
+    this.el.style.order = createdAt || 0;
+    if (visible) {
+      this.el.classList.remove('hidden');
+    }
+    else {
+      this.el.classList.add('hidden');
+    }
     // this.els.title.textContent = `Run #${runId} (Application #${applicationId})`;
   }
 }

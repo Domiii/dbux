@@ -1,4 +1,3 @@
-import Ipc from './Ipc';
 
 /**
  * @param {Ipc} ipc

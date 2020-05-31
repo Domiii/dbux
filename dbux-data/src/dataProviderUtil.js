@@ -67,6 +67,7 @@ export default {
   // ###########################################################################
   // static contexts
   // ###########################################################################
+
   /** @param {DataProvider} dp */
   getStaticContextParent(dp, staticContextId) {
     const staticContext = dp.collections.staticContexts.getById(staticContextId);
@@ -74,6 +75,14 @@ export default {
     return dp.collections.staticContexts.getById(parentId);
   },
 
+  // ###########################################################################
+  // run
+  // ###########################################################################
+
+  /** @param {DataProvider} dp */
+  getRunCreatedAt(dp, runId) {
+    return dp.indexes.executionContexts.byRun.get(runId)[0]?.createdAt || null;
+  },
 
   // ###########################################################################
   // traces
