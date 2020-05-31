@@ -10,8 +10,6 @@ export default class GraphNode extends ClientComponentEndpoint {
     } = this.owner.els;
 
     this.owner.el.classList.add('graph-node');
-    this.btnEl = nodeToggleBtn;
-    this.listEl = nodeChildren;
 
     // hide button if owner has no children
     const observerOptions = {
@@ -21,14 +19,19 @@ export default class GraphNode extends ClientComponentEndpoint {
     observer.observe(nodeChildren, observerOptions);
     this.renderListEmptyState();   // call initially
 
-    // on click -> nextMode
-    this.owner.dom.addEventListeners(this);
-
-    nodeToggleBtn && nodeToggleBtn.addEventListener('click', evt => {
+    nodeToggleBtn?.addEventListener('click', evt => {
       this.remote.nextMode();
     });
   }
 
+  get btnEl() {
+    return this.owner.els.nodeToggleBtn;
+  }
+
+  get listEl() {
+    return this.owner.els.nodeChildren;
+  }
+  
   /**
    * NOTE: state.isExpanded might not always be mirrored by DOM (but we are trying to achieve just that here).
    */
@@ -88,13 +91,5 @@ export default class GraphNode extends ClientComponentEndpoint {
           break;
       }
     }
-  }
-
-  on = {
-    //   nodeToggleBtn: {
-    //     click() {
-    //       this.remote.nextMode();
-    //     }
-    //   }
   }
 }

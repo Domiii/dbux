@@ -49,13 +49,8 @@ class GraphRoot extends ClientComponentEndpoint {
     return this.controllers.getComponent('PopperManager');
   }
 
-  test() { }
-
   setupEl() {
     this.panzoom = this.initPanZoom(this.els.graphCont);
-
-    // hackfix: make popperEl global for now
-    window._popperEl = this.els.toolTip;
   }
 
   update() {

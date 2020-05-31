@@ -4,10 +4,6 @@ import { getPlatformModifierKeyString } from '@/util/platformUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class ContextNode extends ClientComponentEndpoint {
-  get popperEl() {
-    return window._popperEl;
-  }
-
   createEl() {
     return compileHtmlElement(/*html*/`
       <div class="context-node flex-row">

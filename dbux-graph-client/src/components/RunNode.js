@@ -23,7 +23,7 @@ class RunNode extends ClientComponentEndpoint {
   }
   
   update() {
-    const { applicationId, runId, visible, createdAt } = this.state;
+    const { visible, createdAt } = this.state;
     this.el.style.order = createdAt || 0;
     if (visible) {
       this.el.classList.remove('hidden');
