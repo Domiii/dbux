@@ -3,9 +3,9 @@
  * 
  * @see https://stackoverflow.com/a/59907288/2228771
  */
-export function getBasename(path: string) {
+export function pathGetBasename(path: string) {
   // make sure the basename is not empty, if string ends with separator
-  let end = path.length-1;
+  let end = path.length - 1;
   while (path[end] === '/' || path[end] === '\\') {
     --end;
   }
@@ -28,7 +28,7 @@ export function getBasename(path: string) {
   else {
     start = Math.max(i1, i2);
   }
-  return path.substring(start+1, end+1);
+  return path.substring(start + 1, end + 1);
 }
 
 // // tests

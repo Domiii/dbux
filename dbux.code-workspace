@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "projects/express"
+		},
+		{
+			"path": "projects/todomvc-es6"
 		}
 	],
 	"settings": {

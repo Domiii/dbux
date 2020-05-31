@@ -4,6 +4,7 @@ import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
 import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import { newLogger } from 'dbux-common/src/log/logger';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import Project from './Project';
 import Bug from './Bug';
 
@@ -68,7 +69,7 @@ export default class BugRunner {
   // ###########################################################################
 
   isBusy() {
-    return this._queue.isBusy() || this._process;
+    return this._queue.isBusy() || this._process || this._project;
   }
 
   isProjectActive(project) {
@@ -105,6 +106,9 @@ export default class BugRunner {
     this._project = project;
     await project.installProject();
     project._installed = true;
+
+    // run background processes if necessary
+    project.run?.();
   }
 
   async resetProject(project) {
@@ -142,6 +146,10 @@ export default class BugRunner {
     await this._activateBug(bug);
 
     const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+
+    if (!cmd) {
+      throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
+    }
     await this._exec(project, cmd);
   }
 
@@ -192,7 +200,19 @@ export default class BugRunner {
     }
 
     this.logger.debug('Cancelling...');
-    await this._process?.kill();
+
+    // cancel all further steps already in queue
     await this._queue.cancel();
+    
+    // kill active process
+    await this._process?.kill();
+
+    // kill background processes
+    for (const process in this._project?.backgroundProcesses || EmptyArray) {
+      process.kill();
+    }
+
+    this._bug = null;
+    this._project = null;
   }
 }

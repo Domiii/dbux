@@ -10,7 +10,7 @@ import Enum from 'dbux-common/src/util/Enum';
 import TraceType from 'dbux-common/src/core/constants/TraceType';
 import { newLogger } from 'dbux-common/src/log/logger';
 import truncate from 'lodash/truncate';
-import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceBeforeSuper, instrumentBeforeCallExpression, getTracePath } from '../helpers/traceHelpers';
+import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceBeforeSuper, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
 import { loopVisitor } from './loopVisitors';
 import { getPathTraceId } from '../data/StaticTraceCollection';
 import { isCallPath } from '../helpers/functionHelpers';
@@ -380,14 +380,7 @@ function enterExpression(traceType, path, state) {
 function enterCallExpression(callResultType, path, state) {
   // CallExpression
 
-  // special treatment for `super`
-  const calleePath = path.get('callee');
-  if (calleePath.isSuper()) {
-    traceBeforeSuper(calleePath, state);
-  }
-  else {
-    path = instrumentBeforeCallExpression(path, state);
-  }
+  path = instrumentCallExpressionEnter(path, state);
 
   // trace CallResult (on exit)
   path.setData('callResultType', callResultType);
@@ -423,8 +416,8 @@ const enterInstrumentors = {
 
   MemberObject(objPath, state) {
     if (objPath.isSuper()) {
-      // NOTE: this will inject a node before its *ancestor statement*
-      return traceBeforeSuper(objPath, state);
+      // Do nothing. We already take care of this via `instrumentMemberCallExpressionEnter`.
+      // return traceBeforeSuper(objPath, state);
     }
     else {
       // trace object (e.g. `x` in `x.y`) as-is

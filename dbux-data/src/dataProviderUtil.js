@@ -124,6 +124,14 @@ export default {
     const context = dp.collections.executionContexts.getById(contextId);
     const parentTrace = dp.collections.traces.getById(context.parentTraceId);
 
+    if (parentTrace) {
+      // if parent is call -> get call's BCE
+      const callId = dp.util.getTraceCallId(parentTrace.traceId);
+      if (callId) {
+        return dp.collections.traces.getById(callId);
+      }
+    }
+
     return parentTrace;
   },
 
@@ -471,7 +479,7 @@ export default {
     const trace = dp.collections.traces.getById(traceId);
     if (trace.callId) {
       if (trace.callId !== trace.traceId) {
-        return true
+        return true;
       }
     }
     return false;

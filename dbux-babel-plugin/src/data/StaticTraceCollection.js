@@ -5,6 +5,7 @@ import StaticCollection from './StaticCollection';
 import { extractSourceStringWithoutComments } from '../helpers/sourceHelpers';
 import { getPresentableString } from '../helpers/misc';
 import { getFunctionDisplayName } from '../helpers/functionHelpers';
+import { getNodeNames } from '../visitors/nameVisitors';
 
 
 // ###########################################################################
@@ -69,7 +70,8 @@ function tracePathEnd(path, state, thin) {
 function getTraceDisplayName(path, state) {
   let displayName;
   if (path.isFunction()) {
-    displayName = getFunctionDisplayName(path, state);
+    displayName = getNodeNames(path.node)?.displayName;
+    // displayName = getFunctionDisplayName(path, state);
   }
   else {
     const str = extractSourceStringWithoutComments(path.node, state);
