@@ -107,6 +107,9 @@ html,body{
 .run-node > div {
   border: 1px solid black;
 }
+.hidden-run-node > div {
+  background-color: rgba(206, 206, 206, 0.5);
+}
 
 @keyframes new-run-node {
   from {

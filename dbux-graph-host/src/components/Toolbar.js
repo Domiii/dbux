@@ -28,7 +28,19 @@ class Toolbar extends HostComponentEndpoint {
     toggleSyncMode() {
       const mode = this.focusController.toggleSyncMode();
       this.setState({ syncMode: mode });
-    }
+    },
+
+    showAllRun() {
+      this.hiddenNodeManager.showAll();
+    },
+
+    hideOldRun(time) {
+      this.hiddenNodeManager.hideBefore(time);
+    },
+
+    hideNewRun(time) {
+      this.hiddenNodeManager.hideAfter(time);
+    },
   }
 }
 

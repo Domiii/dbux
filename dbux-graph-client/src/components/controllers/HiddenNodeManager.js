@@ -3,23 +3,37 @@ import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
 export default class HiddenNodeManager extends ClientComponentEndpoint {
   /**
    * Owner requirement:
-   *  el `hiddenNode`
+   *  el `hiddenBeforeNode`
+   *  el `hiddenAfterNode`
    */
-  get hiddenNode() {
-    return this.owner.els.hiddenNode;
+  get hiddenBeforeNode() {
+    return this.owner.els.hiddenBeforeNode;
+  }
+
+  get hiddenAfterNode() {
+    return this.owner.els.hiddenAfterNode;
   }
 
   init() {
-    this.hiddenNode.classList.add('hidden');
+    this.hiddenBeforeNode.classList.add('hidden');
+    this.hiddenAfterNode.classList.add('hidden');
   }
 
   update() {
-    if (this.state.hiddenCount) {
-      this.hiddenNode.classList.remove('hidden');
-      this.hiddenNode.textContent = `${this.state.hiddenCount} nodes hidden`;
+    if (this.state.hideBeforeCount) {
+      this.hiddenBeforeNode.classList.remove('hidden');
+      this.hiddenBeforeNode.children[0].textContent = `${this.state.hideBeforeCount} nodes hidden`;
     }
     else {
-      this.hiddenNode.classList.add('hidden');
+      this.hiddenBeforeNode.classList.add('hidden');
+    }
+
+    if (this.state.hideAfterCount) {
+      this.hiddenAfterNode.classList.remove('hidden');
+      this.hiddenAfterNode.children[0].textContent = `${this.state.hideAfterCount} nodes hidden`;
+    }
+    else {
+      this.hiddenAfterNode.classList.add('hidden');
     }
   }
 }

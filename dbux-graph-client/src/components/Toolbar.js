@@ -30,12 +30,14 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   update = () => {
-    const { 
+    const {
       syncMode,
       locMode,
       callMode,
       valueMode,
-      thinMode
+      thinMode,
+      hideOldMode,
+      hideNewMode
     } = this.state;
     // this.els.syncModeBtn.textContent = `Sync: ${syncMode ? '✅' : '❌'}`;
 
@@ -54,6 +56,12 @@ class Toolbar extends ClientComponentEndpoint {
     });
     decorateClasses(this.els.thinModeBtn, {
       active: thinMode
+    });
+    decorateClasses(this.els.hideOldRunBtn, {
+      active: hideOldMode
+    });
+    decorateClasses(this.els.hideNewRunBtn, {
+      active: hideNewMode
     });
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
 
@@ -121,7 +129,7 @@ class Toolbar extends ClientComponentEndpoint {
       click(evt) {
         evt.preventDefault();
         evt.target.blur();
-        
+
         this.setState({
           callMode: !this.state.callMode
         });
@@ -149,6 +157,30 @@ class Toolbar extends ClientComponentEndpoint {
       focus(evt) { evt.target.blur(); }
     },
 
+    showAllRunBtn: {
+      click(evt) {
+        evt.preventDefault();
+        this.setState({
+          hideOldMode: false,
+          hideNewMode: false
+        });
+        this.remote.showAllRun();
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    hideOldRunBtn: {
+      click(evt) {
+        evt.preventDefault();
+        const mode = !this.state.hideOldMode;
+        this.setState({
+          hideOldMode: mode
+        });
+        this.remote.hideOldRun(mode && Date.now());
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
     hideNewRunBtn: {
       click(evt) {
         evt.preventDefault();
@@ -156,6 +188,7 @@ class Toolbar extends ClientComponentEndpoint {
         this.setState({
           hideNewMode: mode
         });
+        this.remote.hideNewRun(mode && Date.now());
       },
       focus(evt) { evt.target.blur(); }
     },

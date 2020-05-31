@@ -5,7 +5,7 @@ class RunNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
       <div class="run-node new width-fit">
-        <div class="run-node-content">
+        <div>
           <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
         </div>
       </div>
@@ -18,7 +18,7 @@ class RunNode extends ClientComponentEndpoint {
     // this.el.addEventListener('animationend', () => {
     setTimeout(() => {
       // "new" animation has finished -> remove class
-      this.el.classList.remove('new');
+      this.el?.classList.remove('new');
     }, 10 * 1000);
   }
   

@@ -12,13 +12,13 @@ class RunNode extends HostComponentEndpoint {
       runId,
     } = this.state;
 
-    const hiddenNodeManager = this.parent.controllers.getComponent('HiddenNodeManager');
-    this.state.visible = hiddenNodeManager.shouldBeVisible(applicationId, runId);
-
     const dp = allApplications.getById(applicationId).dataProvider;
 
     // add GraphNode
     this.controllers.createComponent('GraphNode');
+
+    // register with root
+    this.context.graphRoot._runNodeCreated(this);
 
     // add root context
     const contexts = dp.indexes.executionContexts.byRun.get(runId);
@@ -32,6 +32,9 @@ class RunNode extends HostComponentEndpoint {
     else {
       logError('Creating RunNode with no context');
     }
+
+    const hiddenNodeManager = this.parent.controllers.getComponent('HiddenNodeManager');
+    this.state.visible = hiddenNodeManager.shouldBeVisible(this);
   }
 }
 

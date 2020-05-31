@@ -3,8 +3,8 @@ import RunNode from '../RunNode';
 
 export default class HiddenNodeManager extends HostComponentEndpoint {
   init() {
-    this.state.hideBefore = null;
-    this.state.hideAfter = null;
+    this.state.hideBefore = false;
+    this.state.hideAfter = false;
 
     this.owner.on('newNode', this._updateHiddenNode);
   }
@@ -23,7 +23,15 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   // ###########################################################################
 
   showAll() {
-    this.setState({ hideBefore: null, hideAfter: null });
+    this.setState({ hideBefore: false, hideAfter: false });
+  }
+
+  hideBefore(time) {
+    this.setState({ hideBefore: time });
+  }
+
+  hideAfter(time) {
+    this.setState({ hideAfter: time });
   }
 
   shouldBeVisible(runNode) {
@@ -50,8 +58,10 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   }
 
   _updateHiddenNode = () => {
-    const hiddenCount = this.getAllRunNode().filter(node => node.state.hidden).length;
-    this.setState({ hiddenCount });
+    const { hideBefore, hideAfter } = this.state;
+    const hideBeforeCount = hideBefore && this.getAllRunNode().filter(node => node.state.createdAt < hideBefore).length;
+    const hideAfterCount = hideAfter && this.getAllRunNode().filter(node => node.state.createdAt > hideAfter).length;
+    this.setState({ hideBeforeCount, hideAfterCount });
   }
 
   // ###########################################################################
@@ -63,9 +73,5 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
    */
   getAllRunNode() {
     return this.owner.getAllRunNode();
-  }
-
-  makeKey(applicationId, runId) {
-    return `${applicationId}_${runId}`;
   }
 }

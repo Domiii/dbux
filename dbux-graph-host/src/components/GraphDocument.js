@@ -16,7 +16,7 @@ class GraphDocument extends HostComponentEndpoint {
     this.createOwnComponents();
 
     // register event listeners
-    allApplications.selection.onApplicationsChanged(this.handleApplicationsChanged);
+    allApplications.selection.onApplicationsChanged(this.graphRoot.refresh);
   }
 
   createOwnComponents() {
@@ -26,20 +26,6 @@ class GraphDocument extends HostComponentEndpoint {
     // this.minimap = this.children.createComponent(MiniMap);
   }
 
-  // ###########################################################################
-  // HandleApplicationsChanged
-  // ###########################################################################
-
-  handleApplicationsChanged = (selectedApps) => {
-    this.graphRoot.setState({
-      applications: selectedApps.map(app => ({
-        applicationId: app.applicationId,
-        entryPointPath: app.entryPointPath,
-        name: app.getFileName()
-      }))
-    });
-  }
-  
   // ###########################################################################
   // shared
   // ###########################################################################
