@@ -52,7 +52,7 @@ const buildMode = 'development';
 //const buildMode = 'production';
 
 
-module.exports = (projectRoot, ...cfgOverrides) => {
+module.exports = (projectRoot, customConfig, ...cfgOverrides) => {
   // const ExtraWatchWebpackPlugin = require(projectRoot + '/node_modules/extra-watch-webpack-plugin');
   // webpackPlugins.push(
   //   new ExtraWatchWebpackPlugin({
@@ -63,10 +63,11 @@ module.exports = (projectRoot, ...cfgOverrides) => {
   // );
 
   // const allFolders = [projectRoot, ...dbuxRoots]
-  //   .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
+  //   .map(f => [path.join(f, srcFolder), path.join(f, 'node_modules')])
   //   .flat()
   //   .map(f => path.resolve(f));
   // console.log('webpack folders:', allFolders.join('\n'));
+  const srcFolder = customConfig && customConfig.src || 'src';
   const cfg = {
     //watch: true,
     mode: buildMode,
@@ -102,7 +103,7 @@ module.exports = (projectRoot, ...cfgOverrides) => {
       modules: [
         MonoRoot,
         // dbuxRoots.map(f => path.join(f, 'dist')),
-        path.join(projectRoot, 'src'),
+        path.join(projectRoot, srcFolder),
         path.join(projectRoot, 'node_modules'),
         path.join(MonoRoot, 'node_modules')
       ].flat()
@@ -113,7 +114,7 @@ module.exports = (projectRoot, ...cfgOverrides) => {
           test: /\.jsx?$/,
           loader: 'babel-loader',
           include: [
-            path.join(projectRoot, 'src')
+            path.join(projectRoot, srcFolder)
           ],
           options: babelOptions
         }
@@ -125,7 +126,7 @@ module.exports = (projectRoot, ...cfgOverrides) => {
       //     test: /\.jsx?$/,
       //     loaders: ['babel'],
       //     include: [
-      //       path.join(projectRoot, 'src')
+      //       path.join(projectRoot, srcFolder)
       //     ],
       //     options: babelOptions
       //   }
@@ -137,7 +138,6 @@ module.exports = (projectRoot, ...cfgOverrides) => {
   };
 
   const resultCfg = mergeConcatArray(cfg, ...cfgOverrides);
-  debugger;
   return resultCfg;
 };
 

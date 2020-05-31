@@ -417,8 +417,6 @@
 		}
 	},
 	"scripts": {
-		"_before-run": "npx link-module-alias",
-		"postinstall": "npx link-module-alias",
 		"test": "node ./test/runTest.js",
 		"vscode:prepublish": "node ../node_modules/webpack/bin/webpack --mode production",
 		"start": "node ../node_modules/webpack/bin/webpack --mode development --watch",

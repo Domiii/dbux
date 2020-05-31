@@ -9,6 +9,10 @@
 		{
 			"name": "todomvc-es6",
 			"path": "projects/todomvc-es6"
+		},
+		{
+			"name": "realworld-web-components",
+			"path": "projects/realworld-web-components"
 		}
 	],
 	"settings": {}

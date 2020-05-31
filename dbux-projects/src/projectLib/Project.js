@@ -18,12 +18,38 @@ export default class Project {
    */
   manager;
 
-  folderName;
-
   /**
    * Hold reference to webpack (watch mode), `http-serve` and other long-running background processes.
    */
   backgroundProcesses = [];
+
+  /**
+   * Automatically assigned from the project registry.
+   */
+  folderName;
+
+  // ###########################################################################
+  // config
+  // ###########################################################################
+
+  /**
+   * Provided for each individual project.
+   */
+  gitUrl;
+
+  /**
+   * A specific commit hash or tag name to refer to (if wanted)
+   */
+  gitCommit;
+
+  /**
+   * `npm` or `yarn`
+   */
+  packageManager = 'yarn';
+
+  // ###########################################################################
+  // constructor
+  // ###########################################################################
 
   constructor(manager) {
     this.manager = manager;
@@ -70,10 +96,11 @@ export default class Project {
   // ###########################################################################
 
   /**
-   * @abstract
+   * @virtual
    */
   async installProject() {
-    throw new Error(this + ' abstract method not implemented');
+    // git clone
+    await this.gitClone();
   }
 
   /**
@@ -154,11 +181,34 @@ export default class Project {
   // install helpers
   // ###########################################################################
 
+  /**
+   * NOTE: This method is called by `gitClone`, only after a new clone has succeeded.
+   */
+  async install() {
+    // copy assets
+    await this.copyAssets();
+
+    // install dbux dependencies
+    // await this.installDbuxCli();
+
+    await this.installDependencies();
+
+    // yarn install
+    await this.yarnInstall();
+  }
+
+  /**
+   * NOTE: this method is called by `install` by default.
+   * If already cloned, this will do nothing.
+   * @virtual
+   */
+  async installDependencies() { }
+
   async gitClone() {
     const {
       projectsRoot,
       projectPath,
-      githubUrl
+      gitUrl: githubUrl
     } = this;
 
     // cd into project root
@@ -174,21 +224,31 @@ export default class Project {
       await this.exec(`git clone ${githubUrl} ${projectPath}`, {
         cdToProjectPath: false
       });
+
+      sh.cd(projectPath);
+
+      // if given, switch to specific commit hash, branch or tag name
+      // see: https://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
+      if (this.gitCommit) {
+        await this.exec(`git reset --hard ${this.gitCommit}`);
+      }
+
+      this.log(`Cloned. Installing...`);
+
+      // run hook
+      await this.install();
+
       // log('  ->', result.err || result.out);
       // (result.err && warn || log)('  ->', result.err || result.out);
-      this.log(`Cloned.`);
+      this.log(`Install finished.`);
     }
     else {
+      sh.cd(projectPath);
       this.log('(skipped cloning)');
     }
-
-    sh.cd(projectPath);
   }
 
   async npmInstall() {
-    const { projectPath } = this;
-
-    sh.cd(projectPath);
     await this.exec(`npm install`);
 
     // hackfix: npm installs are broken somehow.
@@ -198,17 +258,10 @@ export default class Project {
   }
 
   async yarnInstall() {
-    const { projectPath } = this;
-
-    sh.cd(projectPath);
     await this.exec(`yarn install`);
   }
 
   async installDbuxCli() {
-    const { projectPath } = this;
-
-    sh.cd(projectPath);
-
     // TODO: make this work in production as well
 
     // await exec('pwd', this.logger);
@@ -216,15 +269,30 @@ export default class Project {
     // const dbuxCli = path.resolve(projectPath, '../../dbux-cli');
     const dbuxCli = '../../dbux-common ../../dbux-cli';
 
-    // TODO: select `NPM` or `yarn` based on `lock` file discovery?
-    await this.exec(`npm install -D ${dbuxCli}`, this.logger);
+    // TODO: select `npm` or `yarn` based on packageManager setting (but requires change in command)
+    await this.exec(`yarn add --dev ${dbuxCli}`, this.logger);
   }
 
+  /**
+   * Copy all assets into project folder.
+   */
   async copyAssets() {
-    // TODO: fix these paths (`__dirname` is overwritten by webpack and points to the `dist` dir; `__filename` points to `bundle.js`)
-    const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${this.folderName}`));
-    this.logger.log('Copying assets from', assetDir);
-    await sh.cp('-R', assetDir, this.projectsRoot);
+    // copy individual assets first
+    await this.copyAssetFolder(this.folderName);
+
+    // copy shared assets (NOTE: doesn't override individual assets)
+    await this.copyAssetFolder('_shared_assets_');
+  }
+
+  async copyAssetFolder(assetFolderName) {
+    // TODO: fix these paths! (`__dirname` is overwritten by webpack and points to the `dist` dir; `__filename` points to `bundle.js`)
+    const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
+
+    if (await sh.test('-d', assetDir)) {
+      // copy assets, if this project has any
+      this.logger.log('Copying assets from', assetDir);
+      await sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
+    }
   }
 
   // ###########################################################################

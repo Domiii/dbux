@@ -27,10 +27,16 @@
       * NOTE: don't add any properties directly to a component, unless you have a very good reason to
 * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
 * in editor, when we select a range with the cursor, only select traces that are completely contained by that range (e.g. when selecting `g(x)` in `f(g(x));`, do not select `f`)
-* Problem: we cannot currently easily add images from the `resource` folder
-   * graph: define a `customElement` (e.g. `img-local`) that automatically translates an image file name from the resource folder to it's correct path
-   * add a web component (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
-      * prepend the component's `src` attribute with ``GraphWebView.resourcePath`
+* fix: we cannot currently easily add images to the `graph` from the `resource` folder
+   * -> define a `customElement` (e.g. `img-local`) that wraps an `img` element
+      * prepend the img's `src` attribute with `GraphWebView.resourcePath`
+      * -> Concept: "web component" (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
+* add `Cancel` button to `projectsView`
+   * NOTE: needs a basic event system to monitor all project + bug activity
+   * -> don't show button when nothing running
+   * while any bug is running...
+      * need to cancel before being able to run another bug
+      * "run" button of that bug becomes "cancel" button
 
 
 

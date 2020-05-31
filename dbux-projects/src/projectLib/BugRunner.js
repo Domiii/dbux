@@ -106,9 +106,6 @@ export default class BugRunner {
     this._project = project;
     await project.installProject();
     project._installed = true;
-
-    // run background processes if necessary
-    project.run?.();
   }
 
   async resetProject(project) {
@@ -148,9 +145,11 @@ export default class BugRunner {
     const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
 
     if (!cmd) {
-      throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
+      // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
     }
-    await this._exec(project, cmd);
+    else {
+      await this._exec(project, cmd);
+    }
   }
 
   /**
@@ -208,7 +207,7 @@ export default class BugRunner {
     await this._process?.kill();
 
     // kill background processes
-    for (const process in this._project?.backgroundProcesses || EmptyArray) {
+    for (const process of this._project?.backgroundProcesses || EmptyArray) {
       process.kill();
     }
 

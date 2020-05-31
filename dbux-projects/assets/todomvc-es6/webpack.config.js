@@ -1,14 +1,14 @@
 const path = require('path');
 const webpack = require('webpack');
-const buildWebpackConfig = require('./webpack.base.config.js');
+const buildWebpackConfig = require('./webpack.config.dbux.base');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const ProjectRoot = path.resolve(__dirname);
 
 
-const resultCfg = buildWebpackConfig(ProjectRoot, {
+const resultCfg = buildWebpackConfig(ProjectRoot, {}, {
   mode: 'development',
-  context: path.resolve(path.join(ProjectRoot, 'src')),
+  context: path.join(ProjectRoot, 'src'),
   entry: {
     app: './bootstrap.js',
     vendor: ['todomvc-app-css/index.css'],

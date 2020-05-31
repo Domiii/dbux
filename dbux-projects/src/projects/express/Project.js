@@ -5,7 +5,7 @@ import Project from 'dbux-projects/src/projectLib/Project';
 
 
 export default class ExpressProject extends Project {
-  githubUrl = 'https://github.com/BugsJS/express.git';
+  gitUrl = 'https://github.com/BugsJS/express.git';
 
   async installDependencies() {
     // # yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
