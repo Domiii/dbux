@@ -16,10 +16,13 @@ class RunNode extends ClientComponentEndpoint {
 
   setupEl() {
     // this.el.addEventListener('animationend', () => {
+    // const createdAt = ?;
+    // const remainingAnimTime = Date.now() - createdAt;
+    const remainingAnimTime = 10 * 1000;
     setTimeout(() => {
       // "new" animation has finished -> remove class
       this.el.classList.remove('new');
-    }, 10 * 1000);
+    }, remainingAnimTime);
   }
   
   update() {

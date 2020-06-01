@@ -185,6 +185,18 @@ export default class Project {
    * NOTE: This method is called by `gitClone`, only after a new clone has succeeded.
    */
   async install() {
+    // remove files
+    let { projectPath, rmFiles } = this;
+    if (rmFiles) {
+      const absRmFiles = rmFiles.map(fName => path.join(projectPath, fName));
+      const iErr = absRmFiles.findIndex(f => !f.startsWith(projectPath));
+      if (iErr >= 0) {
+        throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
+      }
+      this.logger.warn('Removing files:', absRmFiles);
+      sh.rm('-rf', absRmFiles);
+    }
+
     // copy assets
     await this.copyAssets();
 
@@ -193,8 +205,12 @@ export default class Project {
 
     await this.installDependencies();
 
-    // yarn install
-    await this.yarnInstall();
+    if (this.packageManager === 'yarn') {
+      await this.yarnInstall();
+    }
+    else {
+      await this.npmInstall();
+    }
   }
 
   /**

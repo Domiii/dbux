@@ -13,6 +13,10 @@
 		{
 			"name": "realworld-web-components",
 			"path": "projects/realworld-web-components"
+		},
+		{
+			"name": "express",
+			"path": "projects/express"
 		}
 	],
 	"settings": {}

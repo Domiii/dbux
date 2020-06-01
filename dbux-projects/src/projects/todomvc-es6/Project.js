@@ -1,11 +1,15 @@
-import path from 'path';
 import sh from 'shelljs';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import Project from 'dbux-projects/src/projectLib/Project';
 
 
 export default class TodomvcEs6Project extends Project {
   gitUrl = 'https://github.com/kentcdodds/es6-todomvc.git';
+
+  rmFiles = [
+    'webpack.config.js',
+    'package.json',
+    '.babelrc'
+  ];
 
   async installDependencies() {
     // get rid of outdated dependencies; replace with webpack 4 (5?) toolchain
@@ -24,11 +28,11 @@ export default class TodomvcEs6Project extends Project {
   }
 
   async installProject() {
-    // git clone etc...
-    await super.installProject();
-
     // get rid of outdated .babelrc
     sh.rm('-f', './.babelrc');
+
+    // git clone etc...
+    await super.installProject();
   }
 
   async loadBugs() {

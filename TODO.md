@@ -194,9 +194,6 @@
       * can we try this outside extension host etc to speed up process?
       * add `signal-exit`? https://www.npmjs.com/package/signal-exit
    * check: does this still occur, even with `--no-exit`?
-* fix: what to do when switching between bugs but installation (or user) modified files?
-   * NOTE: switching between bugs requires `git checkout` which needs local changes to be committed or reset
-   * auto `commit` and forget?
 * make sure, express works:
    * run it in dbux
    * switch between bugs
@@ -283,6 +280,20 @@
 
 
 ## TODO (other)
+* `dbux-graph` errors
+   * bugs out if visibility or column changes
+      * -> host receives invalid `reply` messages that it did not look for
+      * -> it appears we are not resetting `Ipc` object properly?
+         * -> or are there two clients that live in parallel?
+   * bugs out when working with multiple applications
+   * Client: `Received invalid request: componentId is not registered: 1629 - command="_publicInternal.dispose", args="[]"`
+* fix: what to do when switching between bugs but installation (or user) modified files?
+   * NOTE: switching between bugs requires `git checkout` which needs local changes to be committed or reset
+   * auto `commit` and forget?
+   * ultimately store user changes in patch and commit to DB
+* fix source maps?
+   * when `dbux-babel-plugin` reports an error
+   * when `dbux-code` reports an error
 * when moving cursor to trace etc, use `revealRange` w/ `TextEditorRevealType.InCenter`
 * fix: when we have multiple apps a, b and we restart b:
    * old `a` nodes don't get removed and `a` gets added two more times
@@ -345,10 +356,6 @@
       );
       ```
 
-* fix: graph bugs out if visibility or column changes
-   * -> host receives invalid `reply` messages that it did not look for
-   * -> it appears we are not resetting `Ipc` object properly?
-      * -> or are there two clients that live in parallel?
 * fix callback tracking
    * partial solution: Use a separate map to track callbacks and their points of passage instead?
       * => Won't work as comprehensively at all

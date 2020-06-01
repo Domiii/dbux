@@ -7,6 +7,8 @@ import Project from 'dbux-projects/src/projectLib/Project';
 export default class ExpressProject extends Project {
   gitUrl = 'https://github.com/BugsJS/express.git';
 
+  packageManager = 'npm';
+
   async installDependencies() {
     // # yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
     // # yarn add --dev webpack webpack-cli webpack-dev-server nodemon && \
@@ -19,9 +21,6 @@ export default class ExpressProject extends Project {
 
     // install dbux dependencies
     // await this.installDbuxCli();
-
-    // npm install
-    await this.npmInstall();
 
     // TODO: copy assets
     // sh.cp('-u', src, dst);
@@ -160,7 +159,7 @@ export default class ExpressProject extends Project {
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);
 
-    // `npm install` again! (NOTE: the bug tag might have different dependencies)
+    // `npm install` again! (NOTE: the buggy version might have different dependencies)
     await this.npmInstall();
   }
 
