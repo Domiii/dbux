@@ -38,16 +38,9 @@
       * need to cancel before being able to run another bug
       * "run" button of that bug becomes "cancel" button
 
-
-
-* `GraphNode`
-   * add "collapseAllButThis" button
-      * all ascendants change to `ExpandChildren`
-      * everything else: `Collapse`
-* `Enum` names should be `C`apitalized: https://github.com/Domiii/dbux/blame/b14d4aec90eb641b89878688d9b2f31397f48156/dbux-code/src/traceDetailsView/nodes/StaticTraceTDNodes.js#L86
-
-* `GraphNode` toggle button on `GraphRoot`:
-   * -> remove `Collapse` mode
+* add `DataFilter`
+   * when hiding graph nodes, actually change global `dbux-data` filter settings
+   * in any view, as well as TextEditor decorations, only retrieve traces, collections, values etc. that match current filter conditions
 
 * largely improve `value` storage + rendering:
    * refactor value storing
@@ -280,6 +273,10 @@
 
 
 ## TODO (other)
+* jest exits forcefully
+* see if we can use jest with `dbux-register`
+   * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
+* error resolution doesn't work properly with recursion
 * `dbux-graph` errors
    * bugs out if visibility or column changes
       * -> host receives invalid `reply` messages that it did not look for

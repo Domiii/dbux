@@ -182,7 +182,6 @@
 			"program": "${workspaceFolder}/dbux-babel-plugin/node_modules/jest/bin/jest.js",
 			"cwd": "${workspaceFolder}/dbux-babel-plugin",
 			"args": [
-				"-i",
 				"--runInBand",
 				"--config",
 				"jest.config.js",

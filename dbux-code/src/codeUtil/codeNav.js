@@ -47,7 +47,8 @@ export async function showTextDocument(fpath, column) {
   lastRequestedDocumentFpath = fpath;
 
   if (!column) {
-    if (window.activeTextEditor?.document) {
+    // use a naive heuristic: if active file is js file choose active column
+    if (window.activeTextEditor?.document?.fileName?.endsWith('.js')) {
       column = ViewColumn.Active;
     }
     else {

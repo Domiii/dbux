@@ -5,6 +5,7 @@ import defaultsDeep from 'lodash/defaultsDeep';
 import { newLogger } from 'dbux-common/src/log/logger';
 import BugList from './BugList';
 import Process from '../util/Process';
+import EmptyArray from '../../../dbux-common/src/util/EmptyArray';
 
 
 export default class Project {
@@ -74,21 +75,6 @@ export default class Project {
 
   get projectPath() {
     return path.join(this.projectsRoot, this.folderName);
-  }
-
-  // ###########################################################################
-  // bugs
-  // ###########################################################################
-
-  /**
-   * @return {BugList}
-   */
-  async getOrLoadBugs() {
-    if (!this._bugs) {
-      const arr = await this.loadBugs();
-      this._bugs = new BugList(this, arr);
-    }
-    return this._bugs;
   }
 
   // ###########################################################################
@@ -309,6 +295,32 @@ export default class Project {
       this.logger.log('Copying assets from', assetDir);
       await sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
     }
+  }
+
+  // ###########################################################################
+  // bugs
+  // ###########################################################################
+
+  /**
+   * @return {BugList}
+   */
+  async getOrLoadBugs() {
+    if (!this._bugs) {
+      const arr = await this.loadBugs();
+      this._bugs = new BugList(this, arr);
+    }
+    return this._bugs;
+  }
+
+  getBugArgs(bug) {
+    // bugArgs
+    const bugArgArray = [
+      ...(bug.runArgs || EmptyArray)
+    ];
+    if (bugArgArray.includes(undefined)) {
+      throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(bugArgArray));
+    }
+    return bugArgArray.join(' ');      //.map(s => `"${s}"`).join(' ');
   }
 
   // ###########################################################################

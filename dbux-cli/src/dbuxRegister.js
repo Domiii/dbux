@@ -45,6 +45,7 @@ module.exports = function dbuxRegister(targetPath = null) {
       function shouldPatch(modulePath) {
         // no node_modules
         if (modulePath.match('(node_modules)|(dist)')) {
+          // console.warn('dbux-run [babel]', modulePath, false);
           return true;
         }
 
