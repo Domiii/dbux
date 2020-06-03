@@ -160,10 +160,6 @@ class Toolbar extends ClientComponentEndpoint {
     showAllRunBtn: {
       click(evt) {
         evt.preventDefault();
-        this.setState({
-          hideOldMode: false,
-          hideNewMode: false
-        });
         this.remote.showAllRun();
       },
       focus(evt) { evt.target.blur(); }
@@ -173,9 +169,6 @@ class Toolbar extends ClientComponentEndpoint {
       click(evt) {
         evt.preventDefault();
         const mode = !this.state.hideOldMode;
-        this.setState({
-          hideOldMode: mode
-        });
         this.remote.hideOldRun(mode && Date.now());
       },
       focus(evt) { evt.target.blur(); }
@@ -185,9 +178,6 @@ class Toolbar extends ClientComponentEndpoint {
       click(evt) {
         evt.preventDefault();
         const mode = !this.state.hideNewMode;
-        this.setState({
-          hideNewMode: mode
-        });
         this.remote.hideNewRun(mode && Date.now());
       },
       focus(evt) { evt.target.blur(); }

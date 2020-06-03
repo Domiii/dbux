@@ -8,6 +8,14 @@ class Toolbar extends HostComponentEndpoint {
     this.state.valueMode = false;
     this.state.thinMode = false;
     this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
+
+    // listen on hiddenModeChanged event to sync hideMode
+    this.hiddenNodeManager.onModeChanged(({ hideBefore, hideAfter }) => {
+      this.setState({
+        hideOldMode: !!hideBefore,
+        hideNewMode: !!hideAfter
+      });
+    });
   }
 
   get focusController() {

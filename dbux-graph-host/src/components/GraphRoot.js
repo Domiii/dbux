@@ -43,6 +43,7 @@ class GraphRoot extends HostComponentEndpoint {
     this.controllers.createComponent('ContextNodeManager');
     this.controllers.createComponent('ZoomBar');
     this.controllers.createComponent('HiddenNodeManager');
+    this.controllers.createComponent('PopperController');
 
     // gives initial state
     this.state.applications = allApplications.selection.getAll().map(app => ({

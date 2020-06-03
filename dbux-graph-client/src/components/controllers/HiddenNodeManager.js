@@ -17,12 +17,20 @@ export default class HiddenNodeManager extends ClientComponentEndpoint {
   init() {
     this.hiddenBeforeNode.classList.add('hidden');
     this.hiddenAfterNode.classList.add('hidden');
+
+    this.hiddenBeforeNode.classList.add('cursor-pointer');
+    this.hiddenAfterNode.classList.add('cursor-pointer');
+
+    this.hiddenBeforeNode.setAttribute('data-tooltip', 'Click to unhide');
+    this.hiddenAfterNode.setAttribute('data-tooltip', 'Click to unhide');
+
+    this.owner.dom.addEventListeners(this);
   }
 
   update() {
     if (this.state.hideBeforeCount) {
       this.hiddenBeforeNode.classList.remove('hidden');
-      this.hiddenBeforeNode.children[0].textContent = `${this.state.hideBeforeCount} nodes hidden`;
+      this.hiddenBeforeNode.children[0].textContent = `Hiding ${this.state.hideBeforeCount} nodes`;
     }
     else {
       this.hiddenBeforeNode.classList.add('hidden');
@@ -30,10 +38,23 @@ export default class HiddenNodeManager extends ClientComponentEndpoint {
 
     if (this.state.hideAfterCount) {
       this.hiddenAfterNode.classList.remove('hidden');
-      this.hiddenAfterNode.children[0].textContent = `${this.state.hideAfterCount} nodes hidden`;
+      this.hiddenAfterNode.children[0].textContent = `Hiding ${this.state.hideAfterCount} nodes`;
     }
     else {
       this.hiddenAfterNode.classList.add('hidden');
+    }
+  }
+
+  on = {
+    hiddenBeforeNode: {
+      click() {
+        this.remote.hideBefore(false);
+      }
+    },
+    hiddenAfterNode: {
+      click() {
+        this.remote.hideAfter(false);
+      }
     }
   }
 }

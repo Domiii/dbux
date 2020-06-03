@@ -1,3 +1,4 @@
+import NanoEvents from 'nanoevents';
 import HostComponentEndpoint from 'dbux-graph-host/src/componentLib/HostComponentEndpoint';
 import RunNode from '../RunNode';
 
@@ -5,6 +6,7 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   init() {
     this.state.hideBefore = false;
     this.state.hideAfter = false;
+    this._emitter = new NanoEvents();
 
     this.owner.on('newNode', this._updateHiddenNode);
   }
@@ -14,8 +16,13 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
       const { applicationId, runId } = runNode.state;
       const visible = this.shouldBeVisible(runNode);
       this._setVisible(applicationId, runId, visible);
-      this._updateHiddenNode();
     }
+    this._updateHiddenNode();
+
+    this._emitter.emit('modeChanged', {
+      hideBefore: this.state.hideBefore,
+      hideAfter: this.state.hideAfter
+    });
   }
 
   // ###########################################################################
@@ -65,6 +72,14 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   }
 
   // ###########################################################################
+  // own event
+  // ###########################################################################
+
+  onModeChanged(cb) {
+    this._emitter.on('modeChanged', cb);
+  }
+
+  // ###########################################################################
   // util
   // ###########################################################################
 
@@ -73,5 +88,14 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
    */
   getAllRunNode() {
     return this.owner.getAllRunNode();
+  }
+
+  public = {
+    hideBefore(time) {
+      this.setState({ hideBefore: time });
+    },
+    hideAfter(time) {
+      this.setState({ hideAfter: time });
+    }
   }
 }

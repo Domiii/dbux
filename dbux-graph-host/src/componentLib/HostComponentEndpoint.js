@@ -115,13 +115,17 @@ class HostComponentEndpoint extends ComponentEndpoint {
     super._build(componentManager, parent, componentId, initialState);
 
     try {
+      this._waitingForUpdate = true;
       this._preInit();                                    // 0. host: preInit
-      this._runNoSetState('init');                        // 1. host: init
+      this.init();                                        // 1. host: init
       Verbose && this.logger.debug('init called');
-      this._runNoSetState('update');                      // 2. host: update
+      this.update();                                      // 2. host: update
     }
     catch (err) {
       this.logger.error('init or initial update failed on host\n  ', err);
+    }
+    finally {
+      this._waitingForUpdate = false;
     }
 
     // do the long async init dance
@@ -150,18 +154,18 @@ class HostComponentEndpoint extends ComponentEndpoint {
   // ###########################################################################
 
   async _startUpdate() {
+    // NOTE: this is called by `setState`
+    if (this._waitingForUpdate) {
+      // already waiting for update -> will send out changes in a bit anyway
+      return;
+    }
+
     if (!this.isInitialized) {
       // make sure, things are initialized
       await this.waitForInit();
     }
     if (!this.isInitialized) {
       throw new Error(`${this.debugTag} - first update detected before init has started. Make sure to not call setState or before initialization has started.`);
-    }
-
-    // NOTE: this is called by `setState`
-    if (this._waitingForUpdate) {
-      // already waiting for update -> will send out changes in a bit anyway
-      return;
     }
 
     if (this._updatePromise) {

@@ -4,7 +4,7 @@ import { compileHtmlElement } from '../util/domUtil';
 class RunNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-      <div class="run-node new width-fit">
+      <div class="run-node width-fit">
         <div>
           <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
         </div>
@@ -15,11 +15,15 @@ class RunNode extends ClientComponentEndpoint {
   }
 
   setupEl() {
-    // this.el.addEventListener('animationend', () => {
-    setTimeout(() => {
-      // "new" animation has finished -> remove class
-      this.el?.classList.remove('new');
-    }, 10 * 1000);
+    const totalAnimTime = 10 * 1000;
+    const remainingAnimTime = totalAnimTime + this.state.createdAt - Date.now();
+    if (remainingAnimTime > 0) {
+      this.el.classList.add('new');
+      setTimeout(() => {
+        // "new" animation has finished -> remove class
+        this.el.classList.remove('new');
+      }, remainingAnimTime);
+    }
   }
   
   update() {
