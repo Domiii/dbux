@@ -10,7 +10,7 @@ import GroupNode from './GroupNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 const groupByMode = {
-  byRunId(app, traces) {
+  ByRunId(app, traces) {
     const tracesByRunId = [];
     for (const trace of traces) {
       const { runId } = trace;
@@ -26,7 +26,7 @@ const groupByMode = {
       });
     return groups.filter(group => !!group);
   },
-  byContextId(app, traces) {
+  ByContextId(app, traces) {
     const tracesByContextId = [];
     for (const trace of traces) {
       const { contextId } = trace;
@@ -42,7 +42,7 @@ const groupByMode = {
       });
     return groups.filter(group => !!group);
   },
-  byParentContextTraceId(app, traces) {
+  ByParentContextTraceId(app, traces) {
     const tracesByParent = [];
     const dp = app.dataProvider;
     for (const trace of traces) {
@@ -60,7 +60,7 @@ const groupByMode = {
       });
     return groups.filter(group => !!group);
   },
-  byCallback(app, traces) {
+  ByCallback(app, traces) {
     const dp = app.dataProvider;
     const tracesByCall = [];
     for (const trace of traces) {
@@ -84,17 +84,17 @@ const groupByMode = {
 };
 
 const modeType = new Enum({
-  byRunId: 1,
-  byContextId: 2,
-  byParentContextTraceId: 3,
-  byCallback: 4
+  ByRunId: 1,
+  ByContextId: 2,
+  ByParentContextTraceId: 3,
+  ByCallback: 4
 });
 
 const modeTypeToLabel = new Map();
-modeTypeToLabel.set(modeType.byRunId, 'by Run');
-modeTypeToLabel.set(modeType.byContextId, 'by Context');
-modeTypeToLabel.set(modeType.byParentContextTraceId, 'by Parent');
-modeTypeToLabel.set(modeType.byCallback, 'by Callback');
+modeTypeToLabel.set(modeType.ByRunId, 'by Run');
+modeTypeToLabel.set(modeType.ByContextId, 'by Context');
+modeTypeToLabel.set(modeType.ByParentContextTraceId, 'by Parent');
+modeTypeToLabel.set(modeType.ByCallback, 'by Callback');
 
 let groupingMode = 1;
 
@@ -131,7 +131,7 @@ export default class StaticTraceTDNode extends BaseTreeViewNode {
     const application = allApplications.getById(trace.applicationId);
     const { dataProvider } = application;
     const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
-    if (groupingMode === modeType.byCallback && !isTraceCallbackRelated(trace)) switchMode();
+    if (groupingMode === modeType.ByCallback && !isTraceCallbackRelated(trace)) switchMode();
     const mode = modeType.getName(groupingMode);
     let groupedTraces = groupByMode[mode](application, traces);
     let modeLabel = modeTypeToLabel.get(groupingMode);
