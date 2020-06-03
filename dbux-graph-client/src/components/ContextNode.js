@@ -40,7 +40,9 @@ class ContextNode extends ClientComponentEndpoint {
             </div>
           </div>
           <div class="full-width flex-row">
-            <div class="node-left-padding"></div>
+            <div class="node-left-padding">
+              <div data-el="indicator" class="indicator  hidden"></div>
+            </div>
             <div data-mount="ContextNode" data-el="nodeChildren" class="node-children"></div>
           </div>
         </div>
@@ -57,7 +59,8 @@ class ContextNode extends ClientComponentEndpoint {
       parentTraceNameLabel,
       parentTraceLocLabel,
       valueLabel,
-      isSelected
+      isSelected,
+      traceId
     } = this.state;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
@@ -69,10 +72,12 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
     this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
-    
     decorateClasses(this.els.title, {
       darkred: isSelected
     });
+
+    // set indicator
+    this.setIndicator(traceId, this.children.getComponents('ContextNode'));
 
     // set popper
     const modKey = getPlatformModifierKeyString();
@@ -122,6 +127,32 @@ class ContextNode extends ClientComponentEndpoint {
         // ctrl(meta) + click: show trace
         this.remote.goToParentTrace();
       }
+    }
+  }
+
+  setIndicator(TraceId, children) {
+    // mode != GraphNodeMode.Collapsed
+    let graphNodeMode = this.controllers.getComponent('GraphNode')?.state.mode;
+    if (graphNodeMode !== 1 && children && TraceId) {
+      // check traceId > or < context children's traceId -del
+      let childrenContextId = children.map((x) => x.state.parentTraceId).findIndex(x => x >= TraceId);
+
+      if (childrenContextId !== -1) {
+        let toggleBounds = children[childrenContextId].el.getBoundingClientRect();
+        //container -> nodeChildren element
+        let containerBounds = this.els.nodeChildren.getBoundingClientRect();
+
+        this.els.indicator.style?.removeProperty('bottom');
+        this.els.indicator.style.top = `${toggleBounds.top - containerBounds.top}px`;
+      } else {
+        //when traceId bigger than all children's traceId -del
+        this.els.indicator.style?.removeProperty('top');
+        this.els.indicator.style.bottom = '0px';
+      }
+      this.els.indicator.classList.remove('hidden');
+    } else {
+      //Trace deselect
+      this.els.indicator.classList.add('hidden');
     }
   }
 

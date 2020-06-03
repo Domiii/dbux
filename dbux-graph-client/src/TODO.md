@@ -27,25 +27,25 @@
 
 
 
-#bug
-1. 邊界              
-2. minimap/關        
+#bug             
+1. minimap/關        
    
 
 new todo
-1. 點擊code，graph會移動(slide)
+1. done| 點擊code，graph會移動(slide)
 2. done| 點擊graph可以在vscode顯示
-3. 在toolbar上新增一個選擇是否同步的button
-4. 顯示loop的方式可能可以有一個loop的tag，並顯示loop的次數 grade
-5. set toolbar style and position
-   5-1.一個按鈕可以一鍵開啟/關掉所有的list
-6. high lighter/light manager
+3. 顯示loop的方式可能可以有一個loop的tag，並顯示loop的次數 grade
+6. done| high lighter/light manager
 7. done| graph slide => in graph document => this.state.focus.... 移動結束後給一個event到host
 
 
 #panzoom
-* fix: panzoom to actually move scrollbars when panning
+* done| fix: panzoom to actually move scrollbars when panning
    * -> copy panzoom to a new file, e.g. `dbux-graph-client/src/util/panzoom.js`
    * -> import panzoom from that file instead of the `panzoom` node_module
    * -> for panning, set `scrollTop` and `scrollLeft`, instead of using `transform`
    * -> for zooming, keep using `transform`
+
+* set zoom origin point with focus or highlight node's bounds
+
+* display line on choice trace with traceId

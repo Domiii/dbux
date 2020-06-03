@@ -25,6 +25,8 @@ export default class FocusController extends HostComponentEndpoint {
   handleTraceSelected = (trace) => {
     if (trace?.contextId === this.state.focus?.contextId &&
       trace?.applicationId === this.state.focus?.applicationId) {
+      this._selectedContextNode?.setSelected(true, trace.traceId);
+
       // nothing to do
       return;
     }
@@ -50,11 +52,11 @@ export default class FocusController extends HostComponentEndpoint {
 
     let contextNode;
     if (trace) {
-      const { applicationId, contextId } = trace;
+      const { applicationId, contextId, traceId } = trace;
       contextNode = this.context.graphRoot.getContextNodeById(applicationId, contextId);
       if (contextNode) {
         // select new
-        contextNode.setSelected(true);
+        contextNode.setSelected(true, traceId);
       }
     }
     this._selectedContextNode = contextNode;
@@ -76,8 +78,9 @@ export default class FocusController extends HostComponentEndpoint {
     const contextNode = this.owner.getContextNodeById(applicationId, contextId);
     // await contextNode.waitForInit();      // make sure, node has initialized
 
-    const graphNode = contextNode.controllers.getComponent('GraphNode');
-    await graphNode.reveal();   // make sure, node has revealed
+    // const graphNode = contextNode.controllers.getComponent('GraphNode');
+    // await graphNode.reveal();   // make sure, node has revealed
+    await contextNode.reveal(true);
   }
 
   highlightContext(applicationId, contextId) {

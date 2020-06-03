@@ -91,11 +91,24 @@ html,body{
 }
 
 .node-left-padding {
-  padding-left: 1em;
+  width: 1em;
+  position: relative;
 }
 
 .thin-mode .node-left-padding {
-  padding-left: 0.4em;
+  width: 0.4em;
+  position: relative;
+}
+
+.indicator{
+  position: absolute;
+  border-top: 0.5px solid black;
+  width: 1em;
+}
+.thih-mode .indicator{
+  position: absolute;
+  border-top: 0.5px solid black;
+  width: 0.4em;
 }
 
 /** ###########################################################################

@@ -22,7 +22,9 @@ class ContextNode extends HostComponentEndpoint {
     this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
     this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
-
+    // TODO: add parentTrace.traceId to state
+    this.state.parentTraceId = this.parentTrace?.traceId || '';
+    
     // add controllers
     this.controllers.createComponent('GraphNode', {});
     this.controllers.createComponent('PopperController');
@@ -64,12 +66,12 @@ class ContextNode extends HostComponentEndpoint {
     });
   }
 
-  reveal() {
-    this.controllers.getComponent('GraphNode').reveal();
+  reveal(expandItself = false) {
+    this.controllers.getComponent('GraphNode').reveal(expandItself);
   }
 
-  setSelected(isSelected) {
-    this.setState({ isSelected });
+  setSelected(isSelected, traceId) {
+    this.setState({ isSelected, traceId });
   }
 
   public = {
