@@ -5,6 +5,10 @@
 		},
 		{
 			"path": "projects\\todomvc\\examples\\vanilla-es6"
+		},
+		{
+			"name": "todomvc-es6",
+			"path": "projects\\todomvc-es6"
 		}
 	],
 	"settings": {}

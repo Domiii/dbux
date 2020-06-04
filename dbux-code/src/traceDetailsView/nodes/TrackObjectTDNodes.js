@@ -41,15 +41,16 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
 
     const dp = allApplications.getById(applicationId).dataProvider;
 
-    if (!dp.util.doesTraceHaveValue(traceId)) {
-      this.description = '(trace has no value)';
-    }
-    else if (!dp.util.isTraceTrackableValue(traceId)) {
-      this.description = '(trace\'s value is not an object/array/function)';
-    }
-    else {
+    if (trackedTraces) {
       this.contextValue = 'dbuxTraceDetailsView.traceObjectTDNodeRoot.withObjectValue';
       this.description = `${trackedTraces.length}x`;
+    }
+    else if (!dp.util.doesTraceHaveValue(traceId)) {
+      this.description = '(trace has no value)';
+    }
+    else {
+      // if (!dp.util.isTraceTrackableValue(traceId)) {
+      this.description = '(trace\'s value is not an object/array/function)';
     }
   }
   

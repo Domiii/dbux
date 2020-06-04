@@ -37,21 +37,35 @@ function activate(context) {
     initToolBar(context);
 
     initTraceSelection(context);
-    initEditorTracesView(context);
-    initApplicationsView(context);
     initPlayback();
     
-    const callGraphViewController = initCallGraphView();
-    const callStackViewController = initCallStackView();
-    const projectViewController = initProjectView(context);
+    initApplicationsView(context);
     const traceDetailsController = initTraceDetailsView(context);
+    const projectViewController = initProjectView(context);
+    
+    //  To bring these three views back, uncomment relevant lines and add this to `package.json` `contributes.views.dbuxViewContainer`:
+    //  {
+    //    "id": "dbuxEditorTracesView",
+    //    "name": "Traces at Cursor"
+    //  },
+    // {
+    //   "id": "dbuxCallGraphView",
+    //   "name": "Call Graph Roots"
+    // },
+    // {
+    //   "id": "dbuxCallStackView",
+    //   "name": "Call Stack"
+    // },
+
+    const callGraphViewController = initCallGraphView();
+    // const callStackViewController = initCallStackView();
+    // initEditorTracesView(context);
 
     initCommands(
       context,
-      callGraphViewController,
-      callStackViewController,
       traceDetailsController,
-      projectViewController
+      projectViewController,
+      callGraphViewController
     );
 
     // for now, let's activate the graph view right away

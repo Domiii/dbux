@@ -8,6 +8,7 @@ import { getCursorLocation } from '../codeUtil/codeNav';
 import { getTracesAt } from '../helpers/codeRangeQueries';
 import { isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
 
+
 export default class TracesAtCursor {
   allTraces: Array<Trace>;
   /**

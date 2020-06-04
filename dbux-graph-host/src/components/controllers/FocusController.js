@@ -77,7 +77,7 @@ export default class FocusController extends HostComponentEndpoint {
     // await contextNode.waitForInit();      // make sure, node has initialized
 
     const graphNode = contextNode.controllers.getComponent('GraphNode');
-    await graphNode.reveal();   // make sure, node has revealed
+    await graphNode.reveal(true);   // make sure, node has revealed
   }
 
   highlightContext(applicationId, contextId) {

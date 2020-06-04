@@ -3,7 +3,8 @@ import {
   Uri,
   Position,
   Selection,
-  ViewColumn
+  ViewColumn,
+  TextEditorRevealType
 } from 'vscode';
 import { newFileLogger } from 'dbux-common/src/log/logger';
 import Loc from 'dbux-common/src/core/data/Loc';
@@ -25,7 +26,7 @@ export async function goToCodeLoc(fpath, loc: Loc) {
 export function selectLocInEditor(editor, loc) {
   const range = babelLocToCodeRange(loc);
   editor.selection = new Selection(range.start, range.end);
-  editor.revealRange(range);
+  editor.revealRange(range, TextEditorRevealType.InCenter);
 }
 
 

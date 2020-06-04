@@ -273,7 +273,12 @@
 
 
 ## TODO (other)
-* jest exits forcefully
+* sometimes `valueRef.value` is undefined and `typeName` is `''`, even though it is an object
+   * (e.g. `todos` in `todomvc-es6`)
+* jest (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
+   * also swallows exit check console messages?
+* errors caught mid-way cause `resolveCallIds` to fail
+   * (probably because there are unmatched `BCE`s on the stack)
 * see if we can use jest with `dbux-register`
    * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
 * error resolution doesn't work properly with recursion
