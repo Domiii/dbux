@@ -2,6 +2,8 @@
 const ContextNode = require('@/components/ContextNode').default;
 const GraphDocument = require('@/components/GraphDocument').default;
 const GraphRoot = require('@/components/GraphRoot').default;
+const HiddenAfterNode = require('@/components/HiddenAfterNode').default;
+const HiddenBeforeNode = require('@/components/HiddenBeforeNode').default;
 const ContextNodeManager = require('@/components/controllers/ContextNodeManager').default;
 const FocusController = require('@/components/controllers/FocusController').default;
 const PopperController = require('@/components/controllers/PopperController').default;
@@ -19,6 +21,8 @@ export default {
   ContextNode,
   GraphDocument,
   GraphRoot,
+  HiddenAfterNode,
+  HiddenBeforeNode,
   GraphNode,
   RunNode,
   Toolbar,

@@ -8,7 +8,8 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
     this.state.hideAfter = false;
     this._emitter = new NanoEvents();
 
-    this.owner.on('newNode', this._updateHiddenNode);
+    this.owner.on('newNode', this._notifyHiddenCountChanged);
+    this.owner.on('refresh', this._notifyHiddenCountChanged);
   }
 
   update() {
@@ -17,13 +18,18 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
       const visible = this.shouldBeVisible(runNode);
       this._setVisible(applicationId, runId, visible);
     }
-    this._updateHiddenNode();
-
-    this._emitter.emit('modeChanged', {
-      hideBefore: this.state.hideBefore,
-      hideAfter: this.state.hideAfter
-    });
+    this._notifyStateChanged();
+    this._notifyHiddenCountChanged();
   }
+
+  get hiddenBeforeNode() {
+    return this.owner.children.getComponent('HiddenBeforeNode');
+  }
+
+  get hiddenAfterNode() {
+    return this.owner.children.getComponent('HiddenAfterNode');
+  }
+
 
   // ###########################################################################
   // public
@@ -55,6 +61,20 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
     return true;
   }
 
+  /**
+ * @param {RunNode} runNode 
+ */
+  getHiddenNodeHidingThis(runNode) {
+    const { hideBefore, hideAfter } = this.state;
+    if (hideBefore && runNode.state.createdAt < hideBefore) {
+      return this.hiddenBeforeNode;
+    }
+    if (hideAfter && runNode.state.createdAt > hideAfter) {
+      return this.hiddenAfterNode;
+    }
+    return null;
+  }
+
   // ###########################################################################
   // private
   // ###########################################################################
@@ -64,19 +84,43 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
     runNode.setState({ visible });
   }
 
-  _updateHiddenNode = () => {
-    const { hideBefore, hideAfter } = this.state;
-    const hideBeforeCount = hideBefore && this.getAllRunNode().filter(node => node.state.createdAt < hideBefore).length;
-    const hideAfterCount = hideAfter && this.getAllRunNode().filter(node => node.state.createdAt > hideAfter).length;
-    this.setState({ hideBeforeCount, hideAfterCount });
-  }
-
   // ###########################################################################
   // own event
   // ###########################################################################
 
-  onModeChanged(cb) {
-    this._emitter.on('modeChanged', cb);
+  _notifyStateChanged = () => {
+    this._emitter.emit('stateChanged', {
+      hideBefore: this.state.hideBefore,
+      hideAfter: this.state.hideAfter
+    });
+  }
+
+  onStateChanged(cb) {
+    this._emitter.on('stateChanged', cb);
+  }
+
+  _notifyHiddenCountChanged = () => {
+    const { hideBefore, hideAfter } = this.state;
+    let hideBeforeCount = 0;
+    let hideAfterCount = 0;
+    for (const runNode of this.getAllRunNode()) {
+      // NOTE: if a node is hiddenBefore/After in the same time, only count as hiddenBefore
+      if (hideBefore && runNode.state.createdAt < hideBefore) {
+        hideBeforeCount += 1;
+      }
+      else if (hideAfter && runNode.state.createdAt > hideAfter) {
+        hideAfterCount += 1;
+      }
+    }
+
+    this._emitter.emit('countChanged', {
+      hideBeforeCount,
+      hideAfterCount
+    });
+  }
+
+  onHiddenCountChanged(cb) {
+    this._emitter.on('countChanged', cb);
   }
 
   // ###########################################################################
@@ -88,14 +132,5 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
    */
   getAllRunNode() {
     return this.owner.getAllRunNode();
-  }
-
-  public = {
-    hideBefore(time) {
-      this.setState({ hideBefore: time });
-    },
-    hideAfter(time) {
-      this.setState({ hideAfter: time });
-    }
   }
 }

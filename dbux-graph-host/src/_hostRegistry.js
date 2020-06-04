@@ -1,6 +1,8 @@
 import GraphDocument from './components/GraphDocument';
 import ContextNode from './components/ContextNode';
 import GraphRoot from './components/GraphRoot';
+import HiddenAfterNode from './components/HiddenAfterNode';
+import HiddenBeforeNode from './components/HiddenBeforeNode';
 import RunNode from './components/RunNode';
 import Toolbar from './components/Toolbar';
 import ZoomBar from './components/ZoomBar';
@@ -20,6 +22,8 @@ export default {
   GraphNode,
   HiddenNodeManager,
   GraphRoot,
+  HiddenAfterNode,
+  HiddenBeforeNode,
   RunNode,
   Toolbar,
   MiniMap,

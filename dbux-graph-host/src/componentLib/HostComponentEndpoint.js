@@ -114,6 +114,17 @@ class HostComponentEndpoint extends ComponentEndpoint {
     // store properties
     super._build(componentManager, parent, componentId, initialState);
 
+    this._initPromise = sleep()
+      // do the long async init dance
+      .then(this._doInitClient.bind(this)).
+      catch(err => {
+        this.logger.error('error when initializing client\n  ', err);
+        return null;
+      }).finally(() => {
+        // _initPromise has fulfilled its purpose
+        this._initPromise = null;
+      });
+
     try {
       this._waitingForUpdate = true;
       this._preInit();                                    // 0. host: preInit
@@ -128,19 +139,9 @@ class HostComponentEndpoint extends ComponentEndpoint {
       this._waitingForUpdate = false;
     }
 
-    // do the long async init dance
-    this._initPromise = Promise.resolve()
-      .then(this._doInit.bind(this)).
-      catch(err => {
-        this.logger.error('error when initializing client\n  ', err);
-        return null;
-      }).finally(() => {
-        // _initPromise has fulfilled its purpose
-        this._initPromise = null;
-      });
   }
 
-  async _doInit() {
+  async _doInitClient() {
     await sleep();    // hackfix: this way `_initPromise` can be assigned correctly
     const resultFromClientInit = this.parent && await this.componentManager._initClient(this); // 3. client: init -> update (ignore `internal root component`)
     // success                                        // 4. waitForInit resolved

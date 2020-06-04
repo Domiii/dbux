@@ -20,13 +20,7 @@ export default class PopperController extends ClientComponentEndpoint {
     mouseenter(evt) {
       this.manager.show(evt.target, evt.target.getAttribute('data-tooltip'));
     },
-    focus: () => {
-      this.manager.show(this.target, this.popperString);
-    },
     mouseleave: () => {
-      this.manager.hide();
-    },
-    blur: () => {
       this.manager.hide();
     }
   }

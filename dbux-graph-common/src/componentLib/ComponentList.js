@@ -1,5 +1,6 @@
 import pull from 'lodash/pull';
 import isString from 'lodash/isString';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 
 
 export default class ComponentList {
@@ -29,7 +30,27 @@ export default class ComponentList {
     return this.componentsByName.get(Clazz._componentName)?.[0] || null;
   }
 
+  /**
+   * Returns copy of components
+   */
   getComponents(Clazz) {
+    let name;
+    if (isString(Clazz)) {
+      name = Clazz;
+    }
+    else {
+      if (!Clazz._componentName) {
+        throw new Error(`[INTERNAL ERROR] Invalid component class. Did you forget to add this component to _hostRegistry? - ${Clazz}`);
+      }
+      name = Clazz._componentName;
+    }
+    return [...(this.componentsByName.get(name) || EmptyArray)];
+  }
+
+  /**
+   * Returns actual array of components
+   */
+  getComponentsRef(Clazz) {
     if (isString(Clazz)) {
       return this.componentsByName.get(Clazz) || null;
     }
@@ -85,7 +106,7 @@ export default class ComponentList {
     const name = Clazz._componentName;
 
     this.components.push(comp);
-    let byName = this.getComponents(Clazz);
+    let byName = this.getComponentsRef(Clazz);
     if (!byName) {
       this.componentsByName.set(name, byName = []);
     }
@@ -101,7 +122,7 @@ export default class ComponentList {
 
     pull(this.components, comp);
 
-    let byName = this.getComponents(Clazz);
+    let byName = this.getComponentsRef(Clazz);
     pull(byName, comp);
   }
 }

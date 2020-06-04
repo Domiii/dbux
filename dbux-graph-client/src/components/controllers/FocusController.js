@@ -23,7 +23,7 @@ const scrollPadding = 10;
 function computeDelta1D(p, s, wp, ws) {
   wp += focusPadding;
   ws -= focusPadding;
-  
+
   let dLeft = wp - p;
   if (dLeft > 0) {
     // too far left
@@ -57,51 +57,47 @@ function computeDelta(node) {
     y: computeDelta1D(nodeBounds.y, nodeBounds.height, barY, window.innerHeight - barY - scrollPadding)
   };
 }
-window.computeDelta = computeDelta;
 
 // ###########################################################################
 // FocusController
 // ###########################################################################
 
 export default class FocusController extends ClientComponentEndpoint {
+  get panzoom() {
+    return this.owner.panzoom;
+  }
+
   init() {
-    this.panzoom = this.owner.panzoom;
-
-    // [debug-global] for debugging purposes
-    window.panzoom = this.panzoom;
-
-    this.focus = {};
-    this.slideData = {
-      animTime: 1
-    };
+    // this can be used to verigfy if it is animating
+    this.targetDOM = null;
   }
 
-  update() {
-    const { focus } = this.state;
-    if (focus) {
-      this.focus = focus;
-      this.slide(focus.applicationId, focus.contextId);
-    }
-  }
-
-  //focus slide. referance https://codepen.io/relign/pen/qqZxqW?editors=0011
-  //need chossing application 
-  slide = (applicationId, contextId, animTime = 0.1) => {
-    const nodeId = `#application_${applicationId}-context_${contextId}`;
-    let node = document.querySelector(nodeId);
+  /**
+   * @param {ClientComponentEndpoint} node
+   */
+  slide = (node) => {
+    // Note: Slide to given node. referance https://codepen.io/relign/pen/qqZxqW?editors=0011
     if (!node) {
-      this.logger.error("context node of selected trace not found");
+      this.stopSlide();
       return;
     }
 
-    let nodeBounds = node.getBoundingClientRect();
+    if (!node.el) {
+      this.logger.error(`Trying to focus on node without DOM element: ${JSON.stringify(node)}`);
+      return;
+    }
+
+    const targetDOM = node.el;
+    this.targetDOM = node.el;
+
+    let nodeBounds = targetDOM.getBoundingClientRect();
     if (!nodeBounds.height && !nodeBounds.width) {
-      this.logger.error('Trying to slide to unrevealed node', nodeId, JSON.stringify(nodeBounds));
+      this.logger.error('Trying to slide to unrevealed DOM:', targetDOM, JSON.stringify(nodeBounds));
       return;
     }
 
     // [scroll fix]
-    const delta = computeDelta(node);
+    const delta = computeDelta(targetDOM);
     // console.log('\n');
     // console.log('scroll position:', 'Top:', this.panzoom.getTransform().y, 'Left:', this.panzoom.getTransform().x);
     // console.log('delta:', 'x', delta.x, 'y:', delta.y);
@@ -110,28 +106,27 @@ export default class FocusController extends ClientComponentEndpoint {
       // nothing to do here
       return;
     }
-    
-    this.logger.debug(`Moving node ${nodeId} by ${delta.x}, ${delta.y}`);
 
-    this.slideData = {
+    const slideData = {
       startTime: Date.now(),
       startX: this.panzoom.getTransform().x,
       startY: this.panzoom.getTransform().y,
       delta,
-      animTime
+      animTime: 0.1
     };
 
-    requestAnimationFrame(() => this.step(node));
-
-    // node.classList.add("flash-me");
-    // setTimeout(() => { node.classList.remove("flash-me"); }, (animTime + 3) * 1000);
+    requestAnimationFrame(() => this._step(targetDOM, slideData));
   }
 
-  step = (node) => {
-    if (!this.focus) {
+  stopSlide() {
+    this.targetDOM = null;
+  }
+
+  _step = (targetDOM, slideData) => {
+    if (targetDOM !== this.targetDOM) {
+      // target changed, stop animation
       return;
     }
-
     const {
       startTime,
       startX,
@@ -141,18 +136,21 @@ export default class FocusController extends ClientComponentEndpoint {
         y
       },
       animTime
-    } = this.slideData;
+    } = slideData;
 
     let progress = Math.min(1.0, (Date.now() - startTime) / (animTime * 1000));
 
     // [scroll fix]
     this.panzoom.moveTo(startX - x * progress, startY - y * progress);
-    // this.owner._repaint();
     if (progress < 1.0) {
-      requestAnimationFrame(() => this.step(node));
+      requestAnimationFrame(() => this._step(targetDOM, slideData));
     }
     else {
-      this.remote.notifyFocused();
+      this.targetDOM = null;
     }
+  }
+
+  public = {
+    slide: this.slide
   }
 }

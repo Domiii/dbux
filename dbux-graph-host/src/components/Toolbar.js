@@ -10,7 +10,7 @@ class Toolbar extends HostComponentEndpoint {
     this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
 
     // listen on hiddenModeChanged event to sync hideMode
-    this.hiddenNodeManager.onModeChanged(({ hideBefore, hideAfter }) => {
+    this.hiddenNodeManager.onStateChanged(({ hideBefore, hideAfter }) => {
       this.setState({
         hideOldMode: !!hideBefore,
         hideNewMode: !!hideAfter

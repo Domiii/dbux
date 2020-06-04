@@ -25,15 +25,11 @@ class GraphRoot extends ClientComponentEndpoint {
             <div>
               <button data-el="nodeToggleBtn" class="nodeToggleBtn"></button>
             </div>
-            <div data-el="hiddenBeforeNode" class="run-node hidden-run-node width-fit">
-              <div></div>
-            </div>
+            <div data-mount="HiddenBeforeNode"></div>
             <div data-el="nodeChildren" data-mount="RunNode" class="node-children flex-column">
               <div class="before-run-node"></div>
             </div>
-            <div data-el="hiddenAfterNode" class="run-node hidden-run-node width-fit">
-              <div></div>
-            </div>
+            <div data-mount="HiddenAfterNode"></div>
           </div>
         </div>
         <div data-el="toolTip" id="tooltip" role="tooltip">
@@ -78,8 +74,6 @@ class GraphRoot extends ClientComponentEndpoint {
       maxZoom: 5,
       minZoom: 0.1,
     });
-    // [debug-global]
-    // window.panzoom = panzoom;
 
     panzoom.zoomAbs(
       0,

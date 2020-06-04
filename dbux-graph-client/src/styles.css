@@ -108,7 +108,7 @@ html,body{
   border: 1px solid black;
 }
 .hidden-run-node > div {
-  background-color: rgba(206, 206, 206, 0.5);
+  background-color: rgba(206, 206, 206, 0.815);
 }
 
 @keyframes new-run-node {

@@ -64,12 +64,16 @@ class ContextNode extends HostComponentEndpoint {
     });
   }
 
-  reveal() {
-    this.controllers.getComponent('GraphNode').reveal();
+  async reveal() {
+    await this.controllers.getComponent('GraphNode').reveal();
   }
 
   setSelected(isSelected) {
     this.setState({ isSelected });
+  }
+
+  isHiddenBy() {
+    return this.context.runNode.isHiddenBy();
   }
 
   public = {
