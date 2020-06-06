@@ -7,6 +7,8 @@ import BugList from './BugList';
 import Process from '../util/Process';
 import EmptyArray from '../../../dbux-common/src/util/EmptyArray';
 
+const AssetFolder = '_shared_assets_';
+const PatchFolderName = '_patches_';
 
 export default class Project {
   /**
@@ -87,6 +89,16 @@ export default class Project {
   async installProject() {
     // git clone
     await this.gitClone();
+  }
+
+  async startWatchModeIfNotRunning() {
+    if (!this.backgroundProcesses?.length) {
+      await this.startWatchMode();
+
+      if (!this.backgroundProcesses?.length) {
+        this.logger.error('project.startWatchMode did not result in any new background processes');
+      }
+    }
   }
 
   /**
@@ -197,6 +209,12 @@ export default class Project {
     else {
       await this.npmInstall();
     }
+
+    // call `afterInstall` hook for different projects to do their postinstall things
+    await this.afterInstall();
+
+    // after install completed: commit modifications, so we can easily apply patches etc
+    await this.autoCommit();
   }
 
   /**
@@ -205,6 +223,13 @@ export default class Project {
    * @virtual
    */
   async installDependencies() { }
+
+  async afterInstall() { }
+
+  async autoCommit() {
+    await this.exec(`git add -A && git commit -am "[dbux auto commit]"`);
+  }
+
 
   async gitClone() {
     const {
@@ -275,6 +300,10 @@ export default class Project {
     await this.exec(`yarn add --dev ${dbuxCli}`, this.logger);
   }
 
+  // ###########################################################################
+  // assets
+  // ###########################################################################
+
   /**
    * Copy all assets into project folder.
    */
@@ -283,7 +312,7 @@ export default class Project {
     await this.copyAssetFolder(this.folderName);
 
     // copy shared assets (NOTE: doesn't override individual assets)
-    await this.copyAssetFolder('_shared_assets_');
+    await this.copyAssetFolder(AssetFolder);
   }
 
   async copyAssetFolder(assetFolderName) {
@@ -295,6 +324,30 @@ export default class Project {
       this.logger.log('Copying assets from', assetDir);
       await sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
     }
+  }
+
+  // ###########################################################################
+  // patches
+  // ###########################################################################
+
+  getPatchFolder() {
+    return path.join(this.projectPath, PatchFolderName);
+  }
+
+  getPatchFile(patchFName) {
+    if (!patchFName.endsWith('.patch')) {
+      patchFName += '.patch';
+    }
+    return path.join(this.getPatchFolder(), patchFName);
+  }
+
+  async applyPatch(patchFName) {
+    return this.exec(`git apply ${this.getPatchFile(patchFName)}`);
+  }
+
+  async extractPatch(patchFName) {
+    // TODO: also copy to `AssetFolder`?
+    return this.exec(`git diff > ${this.getPatchFile(patchFName)}`);
   }
 
   // ###########################################################################

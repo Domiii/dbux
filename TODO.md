@@ -273,6 +273,11 @@
 
 
 ## TODO (other)
+* projects
+   * only run webpack if not started yet
+   * fix bugs with patch files
+      * generate commits from patch files so we can easily determine whether patch/commit was applied
+   * when bug patch is applied, might have to remove `.git` folder, so `SCM` plugins won't reveal anything accidentally
 * sometimes `valueRef.value` is undefined and `typeName` is `''`, even though it is an object
    * (e.g. `todos` in `todomvc-es6`)
 * jest (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
@@ -289,10 +294,6 @@
          * -> or are there two clients that live in parallel?
    * bugs out when working with multiple applications
    * Client: `Received invalid request: componentId is not registered: 1629 - command="_publicInternal.dispose", args="[]"`
-* fix: what to do when switching between bugs but installation (or user) modified files?
-   * NOTE: switching between bugs requires `git checkout` which needs local changes to be committed or reset
-   * auto `commit` and forget?
-   * ultimately store user changes in patch and commit to DB
 * fix source maps?
    * when `dbux-babel-plugin` reports an error
    * when `dbux-code` reports an error
