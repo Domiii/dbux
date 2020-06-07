@@ -52,7 +52,7 @@ module.exports = function dbuxRegister(targetPath = null) {
         modulePath = modulePath.toLowerCase();
 
         const shouldIgnore = false;
-        console.warn('dbux-run [babel]', modulePath, !shouldIgnore);
+        // console.warn('dbux-run [babel]', modulePath, !shouldIgnore);
         return shouldIgnore;
       }
     ],

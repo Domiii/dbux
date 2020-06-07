@@ -273,13 +273,14 @@
 
 
 ## TODO (other)
+* sometimes `valueRef.value` is undefined and `typeName` is `''`, even though trace is an object
+   * (e.g. `todos` in `todomvc-es6`, or `newItem` in `this.storage.save(newItem, callback)`)
 * projects
    * only run webpack if not started yet
    * fix bugs with patch files
       * generate commits from patch files so we can easily determine whether patch/commit was applied
    * when bug patch is applied, might have to remove `.git` folder, so `SCM` plugins won't reveal anything accidentally
-* sometimes `valueRef.value` is undefined and `typeName` is `''`, even though it is an object
-   * (e.g. `todos` in `todomvc-es6`)
+* parent trace wrong in case of `call`, `apply` et al
 * jest (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
    * also swallows exit check console messages?
 * errors caught mid-way cause `resolveCallIds` to fail

@@ -35,6 +35,11 @@ export default class TodomvcEs6Project extends Project {
   async loadBugs() {
     return [
       {
+        name: 'baseline',
+        description: 'Bug-free life',
+        runArgs: []
+      },
+      {
         name: 'error1',
         patch: 'error1',
         description: 'todos are not showing up. Luckily there is a clear error message.',
