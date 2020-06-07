@@ -11,6 +11,9 @@ function fixShellJs() {
   if (!sh.config.execPath) {
     console.error('node executable not found');
   }
+
+  // NOTE: this next part is technically not a hackfix, just setting a mode :)
+  sh.set('+v');
 }
 
 export function installHackfixes() {

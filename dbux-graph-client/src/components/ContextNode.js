@@ -61,7 +61,7 @@ class ContextNode extends ClientComponentEndpoint {
     } = this.state;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},50%,85%)`;
+    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},50%,95%)`;
     // this.els.title.id = `name_${contextId}`;
     // this.els.nodeChildren.id = `children_${contextId}`;
     this.els.contextLabel.textContent = contextNameLabel;
@@ -69,15 +69,15 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
     this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
-    
+
     decorateClasses(this.els.title, {
-      darkred: isSelected
+      'selected-trace': isSelected
     });
 
     // set popper
     const modKey = getPlatformModifierKeyString();
-    this.els.contextLabel.setAttribute('data-tooltip', `${this.els.contextLabel.textContent} (${modKey} + click to follow)`);
-    this.els.parentLabel.setAttribute('data-tooltip', `${this.els.parentLabel.textContent} (${modKey} + click to follow)`);
+    this.els.contextLabel.setAttribute('data-tooltip', `${this.els.contextLabel.textContent} (${modKey} + click to select trace)`);
+    this.els.parentLabel.setAttribute('data-tooltip', `${this.els.parentLabel.textContent} (${modKey} + click to select trace)`);
     this.els.prevContextBtn.setAttribute('data-tooltip', 'Go to previous function execution');
     this.els.nextContextBtn.setAttribute('data-tooltip', 'Go to next function execution');
   }
@@ -98,31 +98,38 @@ class ContextNode extends ClientComponentEndpoint {
   // ########################################
 
   handleClickOnContext(evt) {
+    if (evt.altKey) {
+      // panning
+      return;
+    }
     if (isMouseEventPlatformModifierKey(evt)) {
-      if (evt.shiftKey) {
-        // ctrl(meta) + shift + click: select trace
-        this.remote.selectFirstTrace();
-        document.getSelection().removeAllRanges();
-      }
-      else {
-        // ctrl(meta) + click: show trace
-        this.remote.goToFirstTrace();
-      }
+      // if (evt.shiftKey) {
+      // ctrl(meta) + click: select trace
+      this.remote.selectFirstTrace();
+      document.getSelection().removeAllRanges();
+    }
+    else {
+      // click: show trace
+      this.remote.goToFirstTrace();
     }
   }
 
   handleClickOnParentTrace(evt) {
-    if (isMouseEventPlatformModifierKey(evt)) {
-      if (evt.shiftKey) {
-        // ctrl(meta) + shift + click: select trace
-        this.remote.selectParentTrace();
-        document.getSelection().removeAllRanges();
-      }
-      else {
-        // ctrl(meta) + click: show trace
-        this.remote.goToParentTrace();
-      }
+    if (evt.altKey) {
+      // panning
+      return;
     }
+    if (isMouseEventPlatformModifierKey(evt)) {
+      // if (evt.shiftKey) {
+      // ctrl(meta) + click: select trace
+      this.remote.selectParentTrace();
+      document.getSelection().removeAllRanges();
+    }
+    else {
+      // click: show trace
+      this.remote.goToParentTrace();
+    }
+    // }
   }
 
   on = {

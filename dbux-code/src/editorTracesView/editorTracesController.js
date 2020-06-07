@@ -10,6 +10,10 @@ const { log, debug, warn, error: logError } = newLogger('editorTracesController'
 
 let controller;
 
+/**
+ * TreeView to investigate and understand all traces at cursor.
+ * Currently unused.
+ */
 class EditorTracesController {
   constructor() {
     this.treeDataProvider = new EditorTracesNodeProvider();

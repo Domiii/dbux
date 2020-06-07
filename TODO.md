@@ -4,6 +4,7 @@
 ## TODO (shared)
 * on error: render 🔥 in `ContextNode`
 * [TraceDetailsView] add Navigation buttons: go to next/previous trace of this staticTrace
+* when highlighting is enabled, `background` color of `popper` should not be affected
 * when clicking error button: call `reveal({focus: true})` on `TraceDetailsView`
 * Toolbar: add `hide old` button
    * Careful: hidden context nodes can cause trouble if hidden node is being used in any way
@@ -26,21 +27,20 @@
       * NOTE: don't add any properties directly to a component, unless you have a very good reason to
 * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
 * in editor, when we select a range with the cursor, only select traces that are completely contained by that range (e.g. when selecting `g(x)` in `f(g(x));`, do not select `f`)
-* Problem: we cannot currently easily add images from the `resource` folder
-   * graph: define a `customElement` (e.g. `img-local`) that automatically translates an image file name from the resource folder to it's correct path
-   * add a web component (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
-      * prepend the component's `src` attribute with ``GraphWebView.resourcePath`
+* fix: we cannot currently easily add images to the `graph` from the `resource` folder
+   * -> define a `customElement` (e.g. `img-local`) that wraps an `img` element
+      * prepend the img's `src` attribute with `GraphWebView.resourcePath`
+      * -> Concept: "web component" (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
+* add `Cancel` button to `projectsView`
+   * NOTE: needs a basic event system to monitor all project + bug activity
+   * -> don't show button when nothing running
+   * while any bug is running...
+      * need to cancel before being able to run another bug
+      * "run" button of that bug becomes "cancel" button
 
-
-
-* `GraphNode`
-   * add "collapseAllButThis" button
-      * all ascendants change to `ExpandChildren`
-      * everything else: `Collapse`
-* `Enum` names should be `C`apitalized: https://github.com/Domiii/dbux/blame/b14d4aec90eb641b89878688d9b2f31397f48156/dbux-code/src/traceDetailsView/nodes/StaticTraceTDNodes.js#L86
-
-* `GraphNode` toggle button on `GraphRoot`:
-   * -> remove `Collapse` mode
+* add `DataFilter`
+   * when hiding graph nodes, actually change global `dbux-data` filter settings
+   * in any view, as well as TextEditor decorations, only retrieve traces, collections, values etc. that match current filter conditions
 
 * largely improve `value` storage + rendering:
    * refactor value storing
@@ -187,9 +187,6 @@
       * can we try this outside extension host etc to speed up process?
       * add `signal-exit`? https://www.npmjs.com/package/signal-exit
    * check: does this still occur, even with `--no-exit`?
-* fix: what to do when switching between bugs but installation (or user) modified files?
-   * NOTE: switching between bugs requires `git checkout` which needs local changes to be committed or reset
-   * auto `commit` and forget?
 * make sure, express works:
    * run it in dbux
    * switch between bugs
@@ -276,40 +273,45 @@
 
 
 ## TODO (other)
-* `oop1.js` does not work anymore
+* sometimes `valueRef.value` is undefined and `typeName` is `''`, even though trace is an object
+   * (e.g. `todos` in `todomvc-es6`, or `newItem` in `this.storage.save(newItem, callback)`)
+* projects
+   * only run webpack if not started yet
+   * fix bugs with patch files
+      * generate commits from patch files so we can easily determine whether patch/commit was applied
+   * when bug patch is applied, might have to remove `.git` folder, so `SCM` plugins won't reveal anything accidentally
+* parent trace wrong in case of `call`, `apply` et al
+* jest (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
+   * also swallows exit check console messages?
+* errors caught mid-way cause `resolveCallIds` to fail
+   * (probably because there are unmatched `BCE`s on the stack)
+* see if we can use jest with `dbux-register`
+   * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
+* error resolution doesn't work properly with recursion
+* `dbux-graph` errors
+   * bugs out if visibility or column changes
+      * -> host receives invalid `reply` messages that it did not look for
+      * -> it appears we are not resetting `Ipc` object properly?
+         * -> or are there two clients that live in parallel?
+   * bugs out when working with multiple applications
+   * Client: `Received invalid request: componentId is not registered: 1629 - command="_publicInternal.dispose", args="[]"`
+* fix source maps?
+   * when `dbux-babel-plugin` reports an error
+   * when `dbux-code` reports an error
+* when moving cursor to trace etc, use `revealRange` w/ `TextEditorRevealType.InCenter`
 * fix: when we have multiple apps a, b and we restart b:
    * old `a` nodes don't get removed and `a` gets added two more times
-* add `crosshair` icon to selected context
-* revamp `CallExpression` instrumentation for `parentTrace` detection
-   * more scenarios: `super`
-      * `super()`
-      * `super.f()`
-* fix: when navigating nested `CallExpression`, need to be careful when jumping between them
-   * e.g.: When we do `PreviousParentContext`, and then `NextChildContext` again, we might end up in the wrong child
-   * design: does that make sense?
-* fix up `todomvc-es6/Project`
 * in TrackedObjectTDNode, render `valueString`
 * fix `valueStringShort`?
-* fix: in `this.methods[method]`, `method` is not a selectable trace
-* fix: graph
-   * sometimes (initially?), when selecting (shift+click) a node the first time, it selects the wrong column?
-   * change ContextNode.`locLabel` to display loc of (`parentTrace`), not of function
-   * Toolbar: "`hide old`" button
-      * Easier alternative for now: add slow-fading background color css anim to new run nodes
-   * when highlighting is enabled, `popper` `background` color should not be affected
+* fix: in `o[x]`, `x` is not traced
 * proper run: add to `extensions` folder
    * see: https://github.com/Microsoft/vscode/issues/25159
 * fix: `makeCallValueLabel`
    * sometimes does not work for object values?
    * improve array rendering
 * fix: `function` declarations are not tracked
-   * store staticContextId by `function`, so we can look them up later
+   * store staticContextId by `function` object, so we can look them up later
 * fix: strings are currently tracked -> disable tracking of strings
-* fix: optional chaining for calls does not work
-   * Fix: in case of optional chaining...
-      1. don't access `o.f` if `o` does not exist
-      2. don't call the function if it does not exist
-   * NOTE: maybe we can add a check that throws a more meaningful error when we try to call a non-existing function without optional chaining?
 * fix: `traveValueLabels`
    * get callee name from instrumentation
 * fix TDV: "Trace Executed: Nx"
@@ -318,13 +320,13 @@
       * current: Run, Context, Parent
 * allow for mixed type objects for object tracking
    * in `express`, `application` object is also a function
-   * need to allow "objectified functions" to be displayed as such
+   * for "objectified functions": allow inspecting object properties
    * Problem: How to determine what is an "objectified function"?
-      * -> `Object.keys` is not empty
+      * -> `for in` loop runs at least once?
 * fix: in express when mocha test timeout
    * we see:
       1. -> `Error: timeout of 2000ms exceeded`
-      1. -> `received init from client twice. Please restart application`
+      2. -> `[Dbux] (...) received init from client twice. Please restart application`
    * -> it seems to try to re-init after the error somehow.
       * Did it restart the process after being killed off?
 * share some basic coding strategies?
@@ -358,10 +360,6 @@
       );
       ```
 
-* fix: graph bugs out if visibility or column changes
-   * -> host receives invalid `reply` messages that it did not look for
-   * -> it appears we are not resetting `Ipc` object properly?
-      * -> or are there two clients that live in parallel?
 * fix callback tracking
    * partial solution: Use a separate map to track callbacks and their points of passage instead?
       * => Won't work as comprehensively at all

@@ -17,13 +17,15 @@ export default class BaseTreeViewNodeProvider {
     this.viewName = viewName;
     // NOTE: view creation inside the data provider is not ideal, 
     //      but it makes things a lot easier for now
-    this.treeView = window.createTreeView(viewName, {
-      showCollapseAll,
-      treeDataProvider: this
-    });
+    if (viewName) {
+      this.treeView = window.createTreeView(viewName, {
+        showCollapseAll,
+        treeDataProvider: this
+      });
 
-    this.treeView.onDidCollapseElement(this.handleCollapsibleStateChanged);
-    this.treeView.onDidExpandElement(this.handleCollapsibleStateChanged);
+      this.treeView.onDidCollapseElement(this.handleCollapsibleStateChanged);
+      this.treeView.onDidExpandElement(this.handleCollapsibleStateChanged);
+    }
   }
 
   initDefaultClickCommand(context) {

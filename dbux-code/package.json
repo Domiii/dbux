@@ -27,20 +27,8 @@
 		"views": {
 			"dbuxViewContainer": [
 				{
-					"id": "dbuxCallStackView",
-					"name": "Call Stack"
-				},
-				{
 					"id": "dbuxTraceDetailsView",
 					"name": "Trace Details"
-				},
-				{
-					"id": "dbuxCallGraphView",
-					"name": "Call Graph Roots"
-				},
-				{
-					"id": "dbuxEditorTracesView",
-					"name": "Traces at Cursor"
 				},
 				{
 					"id": "dbuxApplicationsView",
@@ -417,8 +405,6 @@
 		}
 	},
 	"scripts": {
-		"_before-run": "npx link-module-alias",
-		"postinstall": "npx link-module-alias",
 		"test": "node ./test/runTest.js",
 		"vscode:prepublish": "node ../node_modules/webpack/bin/webpack --mode production",
 		"start": "node ../node_modules/webpack/bin/webpack --mode development --watch",
