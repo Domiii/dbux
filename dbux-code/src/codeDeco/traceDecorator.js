@@ -114,7 +114,6 @@ function createTraceGroupDecoration(dataProvider, decoName, staticTrace, traces)
   // let valueString;
   // const hasValue = dataProvider.util.doesStaticTraceHaveValue(staticTraceId);
   // if (hasValue) {
-  //   // TODO: check individual traces for values instead, as *Callback trace types often come from a `CallArgument` trace
   //   const values = traces.map(trace => dataProvider.util.getTraceValue(trace.traceId));
   //   valueString = `\n* ${values.map(v => v === undefined ? 'undefined' : v).join('\n* ')}\n\n`;
   // }

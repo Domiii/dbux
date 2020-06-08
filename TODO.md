@@ -3,6 +3,15 @@
 
 ## TODO (shared)
 * on error: render 🔥 in `ContextNode`
+* navigation:
+   * fast clicking fails sometimes
+      * it will report that in `dbux-code/src/commands/traceDetailsViewCommands.js` -> `navigationNode.select` -> `navigationNode` is `undefined`
+      * NOTE: take a look at `NavigationNode.select` and uncomment the `debug` statement. maybe it has to do with that?
+   * change `CallGraph.get{Next,Previous}InContext` to ignore trace if `isDataOnlyTrace` return `true`
+   * when clicking any of the nav buttons, select the `NavigationNode` (this way, the buttons stay visible)
+   * if no child found, let `{Next,Previous}ChildInContext` jump to `{start,end}` of context (same as `{Previous,Next}ParentContext`?)
+* `Object traces`
+   * before highlight: collapse all + disable sync mode
 * [TraceDetailsView] add Navigation buttons: go to next/previous trace of this staticTrace
 * when highlighting is enabled, `background` color of `popper` should not be affected
 * when clicking error button: call `reveal({focus: true})` on `TraceDetailsView`
