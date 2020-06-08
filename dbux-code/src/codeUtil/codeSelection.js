@@ -13,7 +13,7 @@ import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 // TODO: clean up `selectedTrace*` stuff and integrate with playback feature
 
 const selectedTraceDecoType = {
-  border: '1px solid blue'
+  border: '1px solid red'
 };
 let selectedTraceRegistration: CodeDecoRegistration;
 

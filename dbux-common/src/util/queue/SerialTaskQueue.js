@@ -226,7 +226,7 @@ export default class SerialTaskQueue {
         // watch for timeout
         const startTime = Date.now();
         const timeoutTimer = setInterval(() => {
-          warn(`Scheduled task "${cb.__name}" still running (`, ((Date.now() - startTime) / 1000).toFixed(2) + 's)...');
+          warn(`Scheduled task "${cb.__name}" still running (${((Date.now() - startTime) / 1000).toFixed(2)}s)...`);
         }, WarnTimeout);
 
         try {

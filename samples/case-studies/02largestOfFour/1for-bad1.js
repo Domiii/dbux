@@ -7,7 +7,7 @@ import isEqual from 'lodash/isEqual';
 function largestOfFour(a) {
   let largest = a[0];
   for (const next of a) {
-    if (Math.max(...next) > Math.max(largest)) {
+    if (Math.max(...next) > Math.max(...largest)) {
       largest = next;
     }
   }
@@ -18,7 +18,8 @@ function largestOfFour(a) {
 // run test #1
 // ########################################
 
-console.assert(
+console.error(
+  'result correct:',
   isEqual(
     largestOfFour(
       [

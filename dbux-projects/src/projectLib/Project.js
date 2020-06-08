@@ -5,7 +5,10 @@ import defaultsDeep from 'lodash/defaultsDeep';
 import { newLogger } from 'dbux-common/src/log/logger';
 import BugList from './BugList';
 import Process from '../util/Process';
+import EmptyArray from '../../../dbux-common/src/util/EmptyArray';
 
+const AssetFolder = '_shared_assets_';
+const PatchFolderName = '_patches_';
 
 export default class Project {
   /**
@@ -18,12 +21,38 @@ export default class Project {
    */
   manager;
 
-  folderName;
-
   /**
    * Hold reference to webpack (watch mode), `http-serve` and other long-running background processes.
    */
   backgroundProcesses = [];
+
+  /**
+   * Automatically assigned from the project registry.
+   */
+  folderName;
+
+  // ###########################################################################
+  // config
+  // ###########################################################################
+
+  /**
+   * Provided for each individual project.
+   */
+  gitUrl;
+
+  /**
+   * A specific commit hash or tag name to refer to (if wanted)
+   */
+  gitCommit;
+
+  /**
+   * `npm` or `yarn`
+   */
+  packageManager = 'yarn';
+
+  // ###########################################################################
+  // constructor
+  // ###########################################################################
 
   constructor(manager) {
     this.manager = manager;
@@ -51,29 +80,25 @@ export default class Project {
   }
 
   // ###########################################################################
-  // bugs
-  // ###########################################################################
-
-  /**
-   * @return {BugList}
-   */
-  async getOrLoadBugs() {
-    if (!this._bugs) {
-      const arr = await this.loadBugs();
-      this._bugs = new BugList(this, arr);
-    }
-    return this._bugs;
-  }
-
-  // ###########################################################################
   // project methods
   // ###########################################################################
 
   /**
-   * @abstract
+   * @virtual
    */
   async installProject() {
-    throw new Error(this + ' abstract method not implemented');
+    // git clone
+    await this.gitClone();
+  }
+
+  async startWatchModeIfNotRunning() {
+    if (!this.backgroundProcesses?.length) {
+      await this.startWatchMode();
+
+      if (!this.backgroundProcesses?.length) {
+        this.logger.error('project.startWatchMode did not result in any new background processes');
+      }
+    }
   }
 
   /**
@@ -154,11 +179,63 @@ export default class Project {
   // install helpers
   // ###########################################################################
 
+  /**
+   * NOTE: This method is called by `gitClone`, only after a new clone has succeeded.
+   */
+  async install() {
+    // remove files
+    let { projectPath, rmFiles } = this;
+    if (rmFiles) {
+      const absRmFiles = rmFiles.map(fName => path.join(projectPath, fName));
+      const iErr = absRmFiles.findIndex(f => !f.startsWith(projectPath));
+      if (iErr >= 0) {
+        throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
+      }
+      this.logger.warn('Removing files:', absRmFiles);
+      sh.rm('-rf', absRmFiles);
+    }
+
+    // copy assets
+    await this.copyAssets();
+
+    // install dbux dependencies
+    // await this.installDbuxCli();
+
+    await this.installDependencies();
+
+    if (this.packageManager === 'yarn') {
+      await this.yarnInstall();
+    }
+    else {
+      await this.npmInstall();
+    }
+
+    // call `afterInstall` hook for different projects to do their postinstall things
+    await this.afterInstall();
+
+    // after install completed: commit modifications, so we can easily apply patches etc
+    await this.autoCommit();
+  }
+
+  /**
+   * NOTE: this method is called by `install` by default.
+   * If already cloned, this will do nothing.
+   * @virtual
+   */
+  async installDependencies() { }
+
+  async afterInstall() { }
+
+  async autoCommit() {
+    await this.exec(`git add -A && git commit -am "[dbux auto commit]"`);
+  }
+
+
   async gitClone() {
     const {
       projectsRoot,
       projectPath,
-      githubUrl
+      gitUrl: githubUrl
     } = this;
 
     // cd into project root
@@ -174,21 +251,31 @@ export default class Project {
       await this.exec(`git clone ${githubUrl} ${projectPath}`, {
         cdToProjectPath: false
       });
+
+      sh.cd(projectPath);
+
+      // if given, switch to specific commit hash, branch or tag name
+      // see: https://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
+      if (this.gitCommit) {
+        await this.exec(`git reset --hard ${this.gitCommit}`);
+      }
+
+      this.log(`Cloned. Installing...`);
+
+      // run hook
+      await this.install();
+
       // log('  ->', result.err || result.out);
       // (result.err && warn || log)('  ->', result.err || result.out);
-      this.log(`Cloned.`);
+      this.log(`Install finished.`);
     }
     else {
+      sh.cd(projectPath);
       this.log('(skipped cloning)');
     }
-
-    sh.cd(projectPath);
   }
 
   async npmInstall() {
-    const { projectPath } = this;
-
-    sh.cd(projectPath);
     await this.exec(`npm install`);
 
     // hackfix: npm installs are broken somehow.
@@ -198,17 +285,10 @@ export default class Project {
   }
 
   async yarnInstall() {
-    const { projectPath } = this;
-
-    sh.cd(projectPath);
     await this.exec(`yarn install`);
   }
 
   async installDbuxCli() {
-    const { projectPath } = this;
-
-    sh.cd(projectPath);
-
     // TODO: make this work in production as well
 
     // await exec('pwd', this.logger);
@@ -216,15 +296,84 @@ export default class Project {
     // const dbuxCli = path.resolve(projectPath, '../../dbux-cli');
     const dbuxCli = '../../dbux-common ../../dbux-cli';
 
-    // TODO: select `NPM` or `yarn` based on `lock` file discovery?
-    await this.exec(`npm install -D ${dbuxCli}`, this.logger);
+    // TODO: select `npm` or `yarn` based on packageManager setting (but requires change in command)
+    await this.exec(`yarn add --dev ${dbuxCli}`, this.logger);
   }
 
+  // ###########################################################################
+  // assets
+  // ###########################################################################
+
+  /**
+   * Copy all assets into project folder.
+   */
   async copyAssets() {
-    // TODO: fix these paths (`__dirname` is overwritten by webpack and points to the `dist` dir; `__filename` points to `bundle.js`)
-    const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${this.folderName}`));
-    this.logger.log('Copying assets from', assetDir);
-    await sh.cp('-R', assetDir, this.projectsRoot);
+    // copy individual assets first
+    await this.copyAssetFolder(this.folderName);
+
+    // copy shared assets (NOTE: doesn't override individual assets)
+    await this.copyAssetFolder(AssetFolder);
+  }
+
+  async copyAssetFolder(assetFolderName) {
+    // TODO: fix these paths! (`__dirname` is overwritten by webpack and points to the `dist` dir; `__filename` points to `bundle.js`)
+    const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
+
+    if (await sh.test('-d', assetDir)) {
+      // copy assets, if this project has any
+      this.logger.log('Copying assets from', assetDir);
+      await sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
+    }
+  }
+
+  // ###########################################################################
+  // patches
+  // ###########################################################################
+
+  getPatchFolder() {
+    return path.join(this.projectPath, PatchFolderName);
+  }
+
+  getPatchFile(patchFName) {
+    if (!patchFName.endsWith('.patch')) {
+      patchFName += '.patch';
+    }
+    return path.join(this.getPatchFolder(), patchFName);
+  }
+
+  async applyPatch(patchFName) {
+    return this.exec(`git apply ${this.getPatchFile(patchFName)}`);
+  }
+
+  async extractPatch(patchFName) {
+    // TODO: also copy to `AssetFolder`?
+    return this.exec(`git diff > ${this.getPatchFile(patchFName)}`);
+  }
+
+  // ###########################################################################
+  // bugs
+  // ###########################################################################
+
+  /**
+   * @return {BugList}
+   */
+  async getOrLoadBugs() {
+    if (!this._bugs) {
+      const arr = await this.loadBugs();
+      this._bugs = new BugList(this, arr);
+    }
+    return this._bugs;
+  }
+
+  getBugArgs(bug) {
+    // bugArgs
+    const bugArgArray = [
+      ...(bug.runArgs || EmptyArray)
+    ];
+    if (bugArgArray.includes(undefined)) {
+      throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(bugArgArray));
+    }
+    return bugArgArray.join(' ');      //.map(s => `"${s}"`).join(' ');
   }
 
   // ###########################################################################

@@ -53,7 +53,6 @@ export default class BugRunner {
       'activateProject',
       'activateBug',
       'testBug',
-      'resetProject',
       // 'exec'
     );
   }
@@ -106,14 +105,6 @@ export default class BugRunner {
     this._project = project;
     await project.installProject();
     project._installed = true;
-
-    // run background processes if necessary
-    project.run?.();
-  }
-
-  async resetProject(project) {
-    project._installed = false;
-    this._exec(project, 'rm -rf ./node_modules package-lock.json yarn.lock');
   }
 
   async getOrLoadBugs(project) {
@@ -123,16 +114,34 @@ export default class BugRunner {
     return project.getOrLoadBugs();
   }
 
+  /**
+   * @param {Bug} bug 
+   */
   async activateBug(bug) {
     if (this.isBugActive(bug)) {
       return;
     }
 
+    const { project } = bug;
+
     // activate project
-    await this._activateProject(bug.project);
+    await this._activateProject(project);
+
+    // git reset hard
+    // TODO: make sure, user gets to save own changes first
+    sh.cd(project.projectPath);
+    await project.exec('git reset --hard');
+
+    if (bug.patch) {
+      // activate patch
+      await project.applyPatch(bug.patch);
+    }
+
+    // start watch mode (if necessary)
+    await project.startWatchModeIfNotRunning();
 
     // select bug
-    await bug.project.selectBug(bug);
+    await project.selectBug(bug);
     this._bug = bug;
   }
 
@@ -148,9 +157,11 @@ export default class BugRunner {
     const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
 
     if (!cmd) {
-      throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
+      // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
     }
-    await this._exec(project, cmd);
+    else {
+      await this._exec(project, cmd);
+    }
   }
 
   /**
@@ -203,12 +214,12 @@ export default class BugRunner {
 
     // cancel all further steps already in queue
     await this._queue.cancel();
-    
+
     // kill active process
     await this._process?.kill();
 
     // kill background processes
-    for (const process in this._project?.backgroundProcesses || EmptyArray) {
+    for (const process of this._project?.backgroundProcesses || EmptyArray) {
       process.kill();
     }
 
