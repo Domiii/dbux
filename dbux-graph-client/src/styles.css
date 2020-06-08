@@ -50,26 +50,33 @@ html,body{
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.indicator-before .indicator{
+.indicator-hidden .indicator{
+  display:none !important;
+}
+.indicator-cont{
+  position:relative;
+  width:0;
+  height:auto;
+}
+.set-top .indicator{
   position: absolute;
-  border-top: 0.5px solid black;
+  border-top: 1px solid black;
   width: 1em;
-  left:-10px;
+  left:-1.1em;
   top:0;
 }
-.indicator-middle .indicator{
+.set-middle .indicator{
   position: absolute;
-  border-top: 0.5px solid black;
-  width: 0.4em;
-  left:-10px;
-  top:center;
+  border-top: 1px solid black;
+  width: 1em;
+  left:-1.1em;
+  top:50%;
 }
-.indicator-after .indicator{
+.set-bottom .indicator{
   position: absolute;
-  position: absolute;
-  border-top: 0.5px solid black;
-  width: 0.4em;
-  left:-10px;
+  border-top: 1px solid black;
+  width: 1em;
+  left:-1.1em;
   bottom:0;
 }
 

@@ -3,6 +3,7 @@ import { isMouseEventPlatformModifierKey } from '@/util/keyUtil';
 import { getPlatformModifierKeyString } from '@/util/platformUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
+let choiceElm;
 class ContextNode extends ClientComponentEndpoint {
   get popperEl() {
     return window._popperEl;
@@ -10,7 +11,10 @@ class ContextNode extends ClientComponentEndpoint {
 
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div class="context-node flex-row">
+    <div class="context-node flex-row">
+      <div class = "indicator-cont">
+        <div data-el="indicator" class='indicator'></div>
+      </div>
         <div class="full-width flex-column">
           <div class="content">
             <div class="flex-row">
@@ -45,7 +49,6 @@ class ContextNode extends ClientComponentEndpoint {
             <div data-mount="ContextNode" data-el="nodeChildren" class="node-children"></div>
           </div>
         </div>
-        <div data-el="indicator" class='incidator'></div>
       </div>
       `);
   }
@@ -78,7 +81,6 @@ class ContextNode extends ClientComponentEndpoint {
 
     // set indicator
     this.setIndicator(traceId, this.children.getComponents('ContextNode'));
-
     // set popper
     const modKey = getPlatformModifierKeyString();
     this.els.contextLabel.setAttribute('data-tooltip', `${this.els.contextLabel.textContent} (${modKey} + click to select trace)`);
@@ -138,27 +140,23 @@ class ContextNode extends ClientComponentEndpoint {
   }
 
   setIndicator(traceId, children) {
-    this.els.nodeChildren.childNodes.classList?.remove('indicator-before indicator-middle indicator-after');
+    choiceElm?.classList.remove('set-top', 'set-bottom');
+
     if (children && traceId) {
       // check traceId > or < context children's traceId -del
       let childContextId = children.map((x) => x.state.parentTraceId);
-      let toggleBefore = childContextId.findIndex(x => x > traceId);
-      let toggleMiddle = childContextId.findIndex(x => x === traceId);
-      let toggleAfter = toggleBefore !== -1 ? toggleBefore - 1 : children.length - 1;
+      let toggle = childContextId.findIndex(x => x > traceId);
 
-      // console.log(childContextId, toggleBefore, toggleMiddle, toggleAfter);
-      if (toggleBefore !== -1) {
-        children[toggleBefore].el.classList.add('indicator-before');
-        console.log(`before${traceId}`);
+      if (toggle !== -1) {
+        choiceElm = children[toggle].el.querySelector('.indicator-cont');
+        choiceElm?.classList?.add('set-top');
+      } else {
+        choiceElm = children[children.length - 1].el.querySelector('.indicator-cont');
+        choiceElm?.classList?.add('set-bottom');
       }
-      if (toggleMiddle !== -1) {
-        children[toggleMiddle].el.classList.add('indicator-middle');
-        console.log(`middle${traceId}`);
-      }
-      if (toggleAfter !== -1) {
-        children[toggleAfter].el.classList.add('indicator-after');
-        console.log(`after${traceId}`);
-      }
+      // if (toggleMiddle !== -1) {
+      //   children[toggleMiddle].el.classList.add('set-middle');
+      // }
     }
   }
 

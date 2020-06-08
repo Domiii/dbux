@@ -55,7 +55,8 @@ export default class FocusController extends HostComponentEndpoint {
       contextNode = this.context.graphRoot.getContextNodeById(applicationId, contextId);
       if (contextNode) {
         // select new
-        contextNode.setSelected(true, traceId);
+        // get traceId for display indicator -del
+        contextNode.setSelected(true, trace.traceId);
       }
     }
     this._selectedContextNode = contextNode;
