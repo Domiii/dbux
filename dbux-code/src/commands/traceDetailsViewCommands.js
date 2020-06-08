@@ -26,7 +26,7 @@ export function initTraceDetailsViewCommands(context, traceDetailsViewController
     registerCommand(context,
       `dbuxTraceDetailsView.navigation.${methodName}`,
       (navigationNode) => {
-        navigationNode.select(methodName);
+        navigationNode?.select(methodName);
       }
     );
   }
