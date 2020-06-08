@@ -44,6 +44,28 @@ html,body{
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+.indicator-before .indicator{
+  position: absolute;
+  border-top: 0.5px solid black;
+  width: 1em;
+  left:-10px;
+  top:0;
+}
+.indicator-middle .indicator{
+  position: absolute;
+  border-top: 0.5px solid black;
+  width: 0.4em;
+  left:-10px;
+  top:center;
+}
+.indicator-after .indicator{
+  position: absolute;
+  position: absolute;
+  border-top: 0.5px solid black;
+  width: 0.4em;
+  left:-10px;
+  bottom:0;
+}
 
 /* 
 .trace{
@@ -98,17 +120,6 @@ html,body{
 .thin-mode .node-left-padding {
   width: 0.4em;
   position: relative;
-}
-
-.indicator{
-  position: absolute;
-  border-top: 0.5px solid black;
-  width: 1em;
-}
-.thih-mode .indicator{
-  position: absolute;
-  border-top: 0.5px solid black;
-  width: 0.4em;
 }
 
 /** ###########################################################################

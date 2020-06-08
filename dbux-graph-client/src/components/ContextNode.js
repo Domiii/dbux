@@ -41,11 +41,11 @@ class ContextNode extends ClientComponentEndpoint {
           </div>
           <div class="full-width flex-row">
             <div class="node-left-padding">
-              <div data-el="indicator" class="indicator  hidden"></div>
             </div>
             <div data-mount="ContextNode" data-el="nodeChildren" class="node-children"></div>
           </div>
         </div>
+        <div data-el="indicator" class='incidator'></div>
       </div>
       `);
   }
@@ -130,29 +130,28 @@ class ContextNode extends ClientComponentEndpoint {
     }
   }
 
-  setIndicator(TraceId, children) {
-    // mode != GraphNodeMode.Collapsed
-    let graphNodeMode = this.controllers.getComponent('GraphNode')?.state.mode;
-    if (graphNodeMode !== 1 && children && TraceId) {
+  setIndicator(traceId, children) {
+    this.els.nodeChildren.childNodes.classList?.remove('indicator-before indicator-middle indicator-after');
+    if (children && traceId) {
       // check traceId > or < context children's traceId -del
-      let childrenContextId = children.map((x) => x.state.parentTraceId).findIndex(x => x >= TraceId);
+      let childContextId = children.map((x) => x.state.parentTraceId);
+      let toggleBefore = childContextId.findIndex(x => x > traceId);
+      let toggleMiddle = childContextId.findIndex(x => x === traceId);
+      let toggleAfter = toggleBefore !== -1 ? toggleBefore - 1 : children.length - 1;
 
-      if (childrenContextId !== -1) {
-        let toggleBounds = children[childrenContextId].el.getBoundingClientRect();
-        //container -> nodeChildren element
-        let containerBounds = this.els.nodeChildren.getBoundingClientRect();
-
-        this.els.indicator.style?.removeProperty('bottom');
-        this.els.indicator.style.top = `${toggleBounds.top - containerBounds.top}px`;
-      } else {
-        //when traceId bigger than all children's traceId -del
-        this.els.indicator.style?.removeProperty('top');
-        this.els.indicator.style.bottom = '0px';
+      // console.log(childContextId, toggleBefore, toggleMiddle, toggleAfter);
+      if (toggleBefore !== -1) {
+        children[toggleBefore].el.classList.add('indicator-before');
+        console.log(`before${traceId}`);
       }
-      this.els.indicator.classList.remove('hidden');
-    } else {
-      //Trace deselect
-      this.els.indicator.classList.add('hidden');
+      if (toggleMiddle !== -1) {
+        children[toggleMiddle].el.classList.add('indicator-middle');
+        console.log(`middle${traceId}`);
+      }
+      if (toggleAfter !== -1) {
+        children[toggleAfter].el.classList.add('indicator-after');
+        console.log(`after${traceId}`);
+      }
     }
   }
 
