@@ -2,6 +2,8 @@ const path = require('path');
 const process = require('process');
 const mergeWith = require('lodash/mergeWith');
 
+require('source-map-loader');
+
 process.env.BABEL_DISABLE_CACHE = 1;
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
