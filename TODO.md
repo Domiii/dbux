@@ -284,6 +284,7 @@
 ## TODO (other)
 * sometimes `valueRef.value` is undefined and `typeName` is `''`, even though trace is an object
    * (e.g. `todos` in `todomvc-es6`, or `newItem` in `this.storage.save(newItem, callback)`)
+* fix: instrumentation of assignments w/ `init instanceof CallExpression`
 * projects
    * only run webpack if not started yet
    * fix bugs with patch files

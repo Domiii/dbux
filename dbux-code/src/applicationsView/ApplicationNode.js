@@ -6,7 +6,7 @@ export default class ProjectNode extends BaseTreeViewNode {
   static makeLabel(app: Application) {
     const prefix = allApplications.selection.containsApplication(app) ? '☑' : '☐';
     // const label = app.getRelativeFolder();
-    const label = app.getFileName();
+    const label = app.getPreferredName();
     return `${prefix} ${label}`;
   }
 

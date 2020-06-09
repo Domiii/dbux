@@ -185,7 +185,7 @@ export default class Project {
   async install() {
     // remove files
     let { projectPath, rmFiles } = this;
-    if (rmFiles) {
+    if (rmFiles?.length) {
       const absRmFiles = rmFiles.map(fName => path.join(projectPath, fName));
       const iErr = absRmFiles.findIndex(f => !f.startsWith(projectPath));
       if (iErr >= 0) {

@@ -30,7 +30,8 @@ class GraphRoot extends HostComponentEndpoint {
       applications: allApplications.selection.getAll().map(app => ({
         applicationId: app.applicationId,
         entryPointPath: app.entryPointPath,
-        name: app.getFileName()
+        name: app.getPreferredName()
+        // name: app.getRelativeFolder()
       }))
     };
     this.setState(update);
