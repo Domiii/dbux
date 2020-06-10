@@ -92,7 +92,7 @@ export default class Project {
   }
 
   async startWatchModeIfNotRunning() {
-    if (!this.backgroundProcesses?.length) {
+    if (!this.backgroundProcesses?.length && this.startWatchMode) {
       await this.startWatchMode();
 
       if (!this.backgroundProcesses?.length) {

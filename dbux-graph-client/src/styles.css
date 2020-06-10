@@ -331,13 +331,13 @@ html,body{
 
 }
 .highlight-on {
-  background: gray !important;
+  background: #888 !important;
 }
 .highlight-on .graph-node:not(.highlight) > * {
-  background: gray !important;
+  background: #888 !important;
 }
 .highlight-on .graph-node .children {
-  background: gray !important;
+  background: #888 !important;
 }
 
 /** ###########################################################################

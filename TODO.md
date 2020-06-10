@@ -281,14 +281,15 @@
 
 
 ## TODO (other)
-* sometimes `valueRef.value` is undefined and `typeName` is `''`, even though trace is an object
-   * (e.g. `todos` in `todomvc-es6`, or `newItem` in `this.storage.save(newItem, callback)`)
+* some assignments (and possibly other expressions) are traced twice
+   * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
 * fix: instrumentation of assignments w/ `init instanceof CallExpression`
 * projects
    * only run webpack if not started yet
    * fix bugs with patch files
       * generate commits from patch files so we can easily determine whether patch/commit was applied
    * when bug patch is applied, might have to remove `.git` folder, so `SCM` plugins won't reveal anything accidentally
+   * `nodeRequireArgs` in `dbux-projects/src/nodeUtil` only supports relative paths?
 * parent trace wrong in case of `call`, `apply` et al
 * jest 
    * (if test not asynchronous) exits right away, not allowing dbux-runtime to send data

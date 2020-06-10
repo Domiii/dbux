@@ -19,7 +19,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     objectTracker.onObjectSelectionChanged(this.selectObject);
   }
 
-  refreshOnData = () => {
+  refreshOnData = () => {    
     if (this.selectorType === 'objectTrace') {
       this.selectObject(this.selector);
     }
