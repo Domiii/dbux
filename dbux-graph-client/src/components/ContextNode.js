@@ -59,7 +59,9 @@ class ContextNode extends ClientComponentEndpoint {
       parentTraceLocLabel,
       valueLabel,
       isSelected,
-      traceId
+      traceId,
+      isSelectedTraceCallRelated,
+      contextIdOfSelectedCallTrace
     } = this.state;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
@@ -76,7 +78,8 @@ class ContextNode extends ClientComponentEndpoint {
     });
 
     // set indicator
-    this.setIndicator(traceId, this.children.getComponents('ContextNode'), 'callTrace');
+    this.setIndicator(traceId, this.children.getComponents('ContextNode'), isSelectedTraceCallRelated, contextIdOfSelectedCallTrace);
+    console.log(traceId, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace);
     // set popper
     const modKey = getPlatformModifierKeyString();
     this.els.contextLabel.setAttribute('data-tooltip', `${this.els.contextLabel.textContent} (${modKey} + click to select trace)`);
@@ -143,26 +146,32 @@ class ContextNode extends ClientComponentEndpoint {
     // }
   }
 
-  setIndicator(traceId, children, traceType) {
+  setIndicator(traceId, children, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace) {
     choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
+    if (!children || !traceId) {
+      return;
+    }
 
-    if (children && traceId) {
-      // check traceId > or < context children's traceId -del
-      let childrenParentId = children.map((x) => x.state.parentTraceId);
-      let toggle = childrenParentId.findIndex(x => x > traceId);
-      if (toggle !== -1 && traceType === 'callTrace') {
-        choiceElm = children[toggle].el.querySelector('.indicator-cont');
-        //set middle and display something -del
-        choiceElm?.classList?.add('set-calltrace');
-      } else if (toggle !== -1) {
-        choiceElm = children[toggle].el.querySelector('.indicator-cont');
-        choiceElm?.classList?.add('set-top');
-      } else {
-        choiceElm = children[children.length - 1].el.querySelector('.indicator-cont');
-        choiceElm?.classList?.add('set-bottom');
-      }
+    //check indicator position -del
+    let selectChild = children.map((x) => [x.state.context.parentTraceId, x.state.context.contextId]);
+    let toggle = selectChild.findIndex(x => x[0] > traceId);
+
+    // check trace is selectedTraceCallRelated -del
+    if (toggle !== -1 && isSelectedTraceCallRelated && contextIdOfSelectedCallTrace !== undefined) {
+      toggle = selectChild.findIndex(x => x[1] === contextIdOfSelectedCallTrace);
+      choiceElm = children[toggle]?.el.querySelector('.indicator-cont');
+      choiceElm?.classList?.add('set-calltrace');
+    } 
+    else if (toggle !== -1) {
+      choiceElm = children[toggle]?.el.querySelector('.indicator-cont');
+      choiceElm?.classList?.add('set-top');
+    } 
+    else {
+      choiceElm = children[children.length - 1]?.el.querySelector('.indicator-cont');
+      choiceElm?.classList?.add('set-bottom');
     }
   }
+
 
   on = {
     contextLabel: {

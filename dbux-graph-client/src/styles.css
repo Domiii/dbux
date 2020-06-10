@@ -56,22 +56,23 @@ html,body{
 }
 .set-top .indicator{
   position: absolute;
-  border-top: 1px solid rgb(0, 0, 0);
+  border-top: 1px solid rgb(139, 0, 0);
   width: 1em;
   left:-1.1em;
   top:0;
 }
 .set-calltrace .indicator::before{
-  content:"X>";
+  content:"●";
   position: absolute;
+  color: rgb(139, 0, 0);
   /* border-top: 1px solid black;
   width: 1em; */
-  left:-1.1em;
+  left:-0.85em;
   top:0;
 }
 .set-bottom .indicator{
   position: absolute;
-  border-top: 1px solid black;
+  border-top: 1px solid rgb(139, 0, 0);
   width: 1em;
   left:-1.1em;
   bottom:0;
