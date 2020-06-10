@@ -15,7 +15,7 @@ class ContextNode extends HostComponentEndpoint {
     // get name (and other needed data)
     const dp = allApplications.getById(applicationId).dataProvider;
     const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
-    this.parentTrace = dp.util.getParentTraceOfContext(context.contextId);
+    this.parentTrace = dp.util.getCalleeTraceOfContext(context.contextId);
 
     this.state.contextNameLabel = staticContext.displayName;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
@@ -69,7 +69,18 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   setSelected(isSelected) {
-    this.setState({ isSelected });
+    const selectedTrace = traceSelection.selected;
+    let isSelectedTraceCallRelated = false;
+    let contextIdOfSelectedCallTrace = null;
+    if (selectedTrace) {
+      const { applicationId } = this.state;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const callId = dp.util.getTraceCallId(selectedTrace.traceId);
+      const child = dp.indexes.executionContexts.byParentTrace.get(callId);
+      isSelectedTraceCallRelated = !!callId;
+      contextIdOfSelectedCallTrace = child && child[0].contextId;
+    }
+    this.setState({ isSelected, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace });
   }
 
   isHiddenBy() {

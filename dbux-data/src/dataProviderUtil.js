@@ -124,15 +124,7 @@ export default {
     const context = dp.collections.executionContexts.getById(contextId);
     const parentTrace = dp.collections.traces.getById(context.parentTraceId);
 
-    if (parentTrace) {
-      // if parent is call -> get call's BCE
-      const callId = dp.util.getTraceCallId(parentTrace.traceId);
-      if (callId) {
-        return dp.collections.traces.getById(callId);
-      }
-    }
-
-    return parentTrace;
+    return parentTrace || null;
   },
 
   /** @param {DataProvider} dp */
@@ -462,14 +454,14 @@ export default {
   },
 
   /**
-   * Get callId of a executionContext
+   * Return the BCE of a context, or the parentTrace if BCE does not exist
    * @param {DataProvider} dp 
   */
   getCalleeTraceOfContext(dp, contextId) {
     const parentTrace = dp.util.getParentTraceOfContext(contextId);
     if (parentTrace) {
       const calleeId = dp.util.getTraceCallId(parentTrace.traceId);
-      return dp.collections.traces.getById(calleeId);
+      return dp.collections.traces.getById(calleeId) || parentTrace;
     }
     return null;
   },
