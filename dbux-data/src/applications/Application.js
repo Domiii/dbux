@@ -1,3 +1,4 @@
+import { pathGetParent } from 'dbux-common/src/util/pathUtil';
 import DataProvider from '../DataProvider';
 import { newDataProvider } from '../dataProviderImpl';
 import { getFileName } from '../util/nodeUtil';
@@ -53,16 +54,16 @@ export default class Application {
 
   getRelativeFolder() {
     // Needs external help to do it; e.g. in VSCode, can use workspace-relative path.
-    return this.entryPointPath;
+    return pathGetParent(this.entryPointPath);
   }
 
   /**
    * TODO: make this cross-platform (might run this where we don't have Node)
    */
-  getFileName() {
+  getPreferredName() {
     const { staticProgramContexts } = this.dataProvider.collections;
     const fileCount = staticProgramContexts.size;
-    if (!fileCount) {
+    if (fileCount !== 1) {
       // return `getRelativeFolder` instead
       // return '(unknown)';
       return this.getRelativeFolder();
@@ -80,6 +81,6 @@ export default class Application {
   }
 
   getSafeFileName() {
-    return (this.getFileName())?.replace(/[:\\/]/, '-');
+    return (this.getPreferredName())?.replace(/[:\\/]/, '-');
   }
 }

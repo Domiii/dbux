@@ -38,13 +38,14 @@ function pickRandom(arr) {
 
 
 function main() {
-  const n = 10;
+  const n = 3;
   const animals = Array(n).fill(0).map(i => {
     const AnimalClass = pickRandom(AnimalClasses);
     return new AnimalClass();
     // return new AnimalClasses[Math.floor(Math.random() * AnimalClasses.length)]();
   });
 
+  // let all animals speak once
   for (const animal of animals) {
     animal.speak();
   }

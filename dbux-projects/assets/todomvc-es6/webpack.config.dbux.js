@@ -18,7 +18,7 @@ const resultCfg = buildWebpackConfig(ProjectRoot, {}, {
   },
 
   devServer: {
-    port: 3031,
+    port: 3032,
     contentBase: [
       path.join(ProjectRoot, 'dist')
     ],

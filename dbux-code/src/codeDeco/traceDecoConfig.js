@@ -102,14 +102,6 @@ const StylingsByName = {
       },
     }
   },
-  CallArgument: {
-    styling: {
-      after: {
-        contentText: '✦',
-        color: 'red',
-      },
-    }
-  },
 
   Statement: {
     styling: {
@@ -191,6 +183,7 @@ const StylingsByName = {
   // },
   CalleeObject: false,
   ExpressionValue: false,
+  CallArgument: false,
   Callee: false,
   EndOfContext: false
 };
