@@ -228,7 +228,8 @@ export default {
       return value;
     }
 
-    return dp.util.getTraceValueRef(traceId)?.value || undefined;
+    const valueRef = dp.util.getTraceValueRef(traceId);
+    return valueRef && valueRef.value || undefined;
   },
 
   /** @param {DataProvider} dp */

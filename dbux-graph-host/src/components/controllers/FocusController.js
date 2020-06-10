@@ -25,10 +25,9 @@ export default class FocusController extends HostComponentEndpoint {
   }
 
   handleTraceSelected = async (trace) => {
-    let contextNode;
-
     await this.waitForInit();
-
+    
+    let contextNode;
     if (trace) {
       const { applicationId, contextId } = trace;
       contextNode = this.owner.getContextNodeById(applicationId, contextId);
@@ -62,10 +61,10 @@ export default class FocusController extends HostComponentEndpoint {
     this._selectedContextNode = contextNode;
   }
 
-  toggleSyncMode() {
+  async toggleSyncMode() {
     this.syncMode = !this.syncMode;
     if (this.syncMode) {
-      this.handleTraceSelected(traceSelection.selected);
+      await this.handleTraceSelected(traceSelection.selected);
     }
     else {
       this.lastHighlighter?.dec();

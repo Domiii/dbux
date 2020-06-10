@@ -45,13 +45,14 @@ module.exports = function dbuxRegister(targetPath = null) {
       function shouldPatch(modulePath) {
         // no node_modules
         if (modulePath.match('(node_modules)|(dist)')) {
+          // console.warn('dbux-run [babel]', modulePath, false);
           return true;
         }
 
         modulePath = modulePath.toLowerCase();
 
         const shouldIgnore = false;
-        console.warn('dbux-run [babel]', modulePath, !shouldIgnore);
+        // console.warn('dbux-run [babel]', modulePath, !shouldIgnore);
         return shouldIgnore;
       }
     ],

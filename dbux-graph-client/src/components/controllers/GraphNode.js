@@ -19,6 +19,9 @@ export default class GraphNode extends ClientComponentEndpoint {
     observer.observe(nodeChildren, observerOptions);
     this.renderListEmptyState();   // call initially
 
+    // on click -> nextMode
+    this.owner.dom.addEventListeners(this, true);
+
     nodeToggleBtn?.addEventListener('click', evt => {
       this.remote.nextMode();
     });
@@ -73,8 +76,7 @@ export default class GraphNode extends ClientComponentEndpoint {
     //   // button should already be hidden -> now also hide list
     //   listEl.classList.add('hidden');
     // }
-    if (!this.isListEmpty())
-    {
+    if (!this.isListEmpty()) {
       switch (mode) {
         case GraphNodeMode.ExpandChildren:
           listEl.classList.remove('hidden');
@@ -90,6 +92,13 @@ export default class GraphNode extends ClientComponentEndpoint {
           btnEl && (btnEl.innerHTML = '▷');
           break;
       }
+    }
+  }
+
+  on = {
+
+    nodeToggleBtn: {
+      focus(evt) { evt.target.blur(); }
     }
   }
 }

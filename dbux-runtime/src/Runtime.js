@@ -68,7 +68,7 @@ export default class Runtime {
   _executeEmptyStackBarrier = () => {
     if (this._executingStack) {
       // we had an unhandled interrupt (should never happen?)
-      console.warn('interrupt');
+      // console.warn('interrupt');
       this.interrupt();
     }
     this._emptyStackBarrier = null;

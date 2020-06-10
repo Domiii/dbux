@@ -1,8 +1,12 @@
-import express from './projects/express/Project';
-import todomvcEs6 from './projects/todomvc-es6/Project';
+import Express from './projects/express/Project';
+import TodomvcEs6 from './projects/todomvc-es6/Project';
+import RealworldWebComponentsProject from './projects/realworld-web-components/Project';
+import JavascriptAlgorithmProject from './projects/javascript-algorithms/Project';
 
 
 export default {
-  express,
-  'todomvc-es6': todomvcEs6
+  'todomvc-es6': TodomvcEs6,
+  'realworld-web-components': RealworldWebComponentsProject,
+  'javascript-algorithms': JavascriptAlgorithmProject,
+  express: Express,
 };

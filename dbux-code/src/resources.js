@@ -1,7 +1,12 @@
 import path from 'path';
-import {ExtensionContext} from 'vscode';
+import { ExtensionContext } from 'vscode';
 
-let context: ExtensionContext;
+/**
+ * @type {ExtensionContext}
+ */
+let context;
+
+// TODO: manage all resources here? (such as `dbux-projects/assets`)
 
 export function getResourcePath(...relativePathSegments) {
   return context.asAbsolutePath(path.join('resources', ...relativePathSegments));
@@ -14,6 +19,6 @@ export function getThemeResourcePath(...relativePathSegments) {
   };
 }
 
-export function initResources(_context : ExtensionContext) {
+export function initResources(_context) {
   context = _context;
 }

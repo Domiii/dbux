@@ -4,9 +4,17 @@ export default class Bug {
   project;
   
   testFilePaths;
+  /**
+   * Either all bugs have an assigned an id, or none do (and id will be auto-assigned by project)
+   */
   id;
   title;
   description;
+  
+  /**
+   * [Optional] file name of patch inside of `_patches_` folder to be applied to activate bug
+   */
+  patch;
 
   /**
    * Can be used to provide even more information about the bug.

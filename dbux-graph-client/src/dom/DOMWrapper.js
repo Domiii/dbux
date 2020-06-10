@@ -41,14 +41,16 @@ export default class DOMWrapper {
     }
   }
 
-  addEventListeners(_this = this.owner) {
+  addEventListeners(_this = this.owner, ignoreMissingElements = false) {
     const { on } = _this;
 
     for (const elName in on) {
       const cfg = on[elName];
       const child = this.els[elName];
       if (!child) {
-        this.logger.error(`Invalid event handler (on) - el name does not exist: "${elName}". Are you missing a "data-el" attribute?`);
+        if (!ignoreMissingElements) {
+          this.logger.error(`Invalid event handler (on) - el name does not exist: "${elName}". Are you missing a "data-el" attribute?`);
+        }
         continue;
       }
 

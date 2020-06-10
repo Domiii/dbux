@@ -3,7 +3,8 @@ import {
   Uri,
   Position,
   Selection,
-  ViewColumn
+  ViewColumn,
+  TextEditorRevealType
 } from 'vscode';
 import { newFileLogger } from 'dbux-common/src/log/logger';
 import Loc from 'dbux-common/src/core/data/Loc';
@@ -25,7 +26,7 @@ export async function goToCodeLoc(fpath, loc: Loc) {
 export function selectLocInEditor(editor, loc) {
   const range = babelLocToCodeRange(loc);
   editor.selection = new Selection(range.start, range.end);
-  editor.revealRange(range);
+  editor.revealRange(range, TextEditorRevealType.InCenterIfOutsideViewport);
 }
 
 
@@ -47,7 +48,8 @@ export async function showTextDocument(fpath, column) {
   lastRequestedDocumentFpath = fpath;
 
   if (!column) {
-    if (window.activeTextEditor?.document) {
+    // use a naive heuristic: if active file is js file choose active column
+    if (window.activeTextEditor?.document?.fileName?.endsWith('.js')) {
       column = ViewColumn.Active;
     }
     else {

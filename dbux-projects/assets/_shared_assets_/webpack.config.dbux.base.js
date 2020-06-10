@@ -2,11 +2,17 @@ const path = require('path');
 const process = require('process');
 const mergeWith = require('lodash/mergeWith');
 
+require('source-map-loader');
+
 process.env.BABEL_DISABLE_CACHE = 1;
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 
-const outputFolderName = 'dist';
+const buildMode = 'development';
+//const buildMode = 'production';
+
+// const outFile = 'bundle.js';
+// const outputFolderName = 'dist';
 const MonoRoot = path.resolve(path.join(__dirname, '/../..'));
 //const dbuxPlugin = require(path.join(root, 'node_modules/dbux-babel-plugin'));
 const dbuxPluginPath = path.join(MonoRoot, '/dbux-babel-plugin');
@@ -47,12 +53,8 @@ const babelOptions = {
   ]]
 };
 
-const outFile = 'bundle.js';
-const buildMode = 'development';
-//const buildMode = 'production';
 
-
-module.exports = (projectRoot, ...cfgOverrides) => {
+module.exports = (projectRoot, customConfig, ...cfgOverrides) => {
   // const ExtraWatchWebpackPlugin = require(projectRoot + '/node_modules/extra-watch-webpack-plugin');
   // webpackPlugins.push(
   //   new ExtraWatchWebpackPlugin({
@@ -63,10 +65,13 @@ module.exports = (projectRoot, ...cfgOverrides) => {
   // );
 
   // const allFolders = [projectRoot, ...dbuxRoots]
-  //   .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
+  //   .map(f => [path.join(f, srcFolder), path.join(f, 'node_modules')])
   //   .flat()
   //   .map(f => path.resolve(f));
   // console.log('webpack folders:', allFolders.join('\n'));
+  const srcFolder = customConfig && customConfig.src || 'src';
+  const dbuxRuntimeFolder = path.join(MonoRoot, 'dbux-runtime', 'dist');
+
   const cfg = {
     //watch: true,
     mode: buildMode,
@@ -90,19 +95,19 @@ module.exports = (projectRoot, ...cfgOverrides) => {
     },
     plugins: [],
     context: path.join(projectRoot, '.'),
-    output: {
-      path: path.join(projectRoot, outputFolderName),
-      filename: outFile,
-      publicPath: outputFolderName,
-      // sourceMapFilename: outFile + ".map"
-    },
+    // output: {
+    //   path: path.join(projectRoot, outputFolderName),
+    //   filename: outFile,
+    //   publicPath: outputFolderName,
+    //   // sourceMapFilename: outFile + ".map"
+    // },
     resolve: {
       symlinks: true,
       // extensions: ['.js', '.jsx'],
       modules: [
         MonoRoot,
         // dbuxRoots.map(f => path.join(f, 'dist')),
-        path.join(projectRoot, 'src'),
+        path.join(projectRoot, srcFolder),
         path.join(projectRoot, 'node_modules'),
         path.join(MonoRoot, 'node_modules')
       ].flat()
@@ -113,9 +118,15 @@ module.exports = (projectRoot, ...cfgOverrides) => {
           test: /\.jsx?$/,
           loader: 'babel-loader',
           include: [
-            path.join(projectRoot, 'src')
+            path.join(projectRoot, srcFolder)
           ],
           options: babelOptions
+        },
+        {
+          test: /\.js$/,
+          loader: 'source-map-loader',
+          include: [dbuxRuntimeFolder],
+          enforce: 'pre'
         }
       ],
 
@@ -125,7 +136,7 @@ module.exports = (projectRoot, ...cfgOverrides) => {
       //     test: /\.jsx?$/,
       //     loaders: ['babel'],
       //     include: [
-      //       path.join(projectRoot, 'src')
+      //       path.join(projectRoot, srcFolder)
       //     ],
       //     options: babelOptions
       //   }
@@ -137,7 +148,6 @@ module.exports = (projectRoot, ...cfgOverrides) => {
   };
 
   const resultCfg = mergeConcatArray(cfg, ...cfgOverrides);
-  debugger;
   return resultCfg;
 };
 

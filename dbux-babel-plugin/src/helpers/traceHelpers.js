@@ -320,12 +320,22 @@ const instrumentMemberCallExpressionEnter =
     return newPath;
   });
 
+function getIsRequire(calleePath) {
+  return calleePath.isIdentifier() && calleePath.node.name === 'require';
+}
+
+function getCanTraceArgs(calleePath) {
+  const isImport = calleePath.isImport();
+  const isRequire = getIsRequire(calleePath);
+  return !isImport && !isRequire;
+}
+
 /**
  * Convert `f(...args)` to: `traceBCE(f), f(...args)` to trace callee (`f`) and place BCE correctly
  * 
  */
 const instrumentDefaultCallExpressionEnter =
-  (function instrumentBeforeCallExpressionDefault(path, state) {
+  (function instrumentDefaultCallExpressionEnter(path, state) {
     const calleePath = path.get('callee');
     const argPath = path.get('arguments');
 
@@ -338,11 +348,12 @@ const instrumentDefaultCallExpressionEnter =
 
     const f = path.scope.generateDeclaredUidIdentifier(getCalleeDisplayName(calleePath));
 
-    // super needs special treatment
-    const isSuper = calleePath.isSuper();
+    // super(), import(), require() all need special treatment
+    const canTraceArgs = getCanTraceArgs(calleePath);
+    const isSpecialCallee = calleePath.isSuper() || !canTraceArgs;
 
     // replace with our custom callee
-    if (!isSuper) {   // NOTE: `super` cannot be replaced
+    if (!isSpecialCallee) {   // NOTE: `super` cannot be replaced
       const templ = callTemplatesDefault[path.type];
 
       // f(...)
@@ -354,13 +365,16 @@ const instrumentDefaultCallExpressionEnter =
     // prepend actual call with (i) callee assignment + (ii) BCE placeholder
     path.replaceWith(t.sequenceExpression([
       // (i) callee assignment (%%f%% = %%fNode%%)
-      //    NOTE: super cannot be assigned, so we set it to `null` (`f` will not be used in that case)
-      isSuper &&
-      t.nullLiteral() ||
-      t.assignmentExpression('=',
-        f,
-        calleePath.node
-      ),
+      isSpecialCallee &&
+
+        // callee cannot be assigned, so we set it to `null` (`f` will not be used in that case)
+        t.nullLiteral() ||
+
+        // trace callee
+        t.assignmentExpression('=',
+          f,
+          calleePath.node
+        ),
 
       // (ii) BCE placeholder
       t.nullLiteral(),
@@ -377,10 +391,16 @@ const instrumentDefaultCallExpressionEnter =
     const newPath = path.get('expressions.2');
     const newCalleePath = path.get(calleePathId);
 
-    // hackfix: put `args` in as-is; they are still going to get instrumented
-    newPath.node.arguments = argPath.map(p => p.node);
+    if (canTraceArgs) {
+      // hackfix: put `args` in as-is; they are still going to get instrumented
+      newPath.node.arguments = argPath.map(p => p.node);
+    }
+    else {
+      // // nuclear option: just remove loc to prevent further instrumentation?
+      // newPath.node.arguments.forEach(arg => arg.loc = null);
+    }
 
-    if (!isSuper) {
+    if (!isSpecialCallee) {
       newCalleePath.node.loc = calleeLoc;
     }
     newPath.node.loc = loc;
@@ -392,7 +412,7 @@ const instrumentDefaultCallExpressionEnter =
     // prepare for later
     // newPath.setData('_calleePath', calleePathId);
     newPath.setData('_bcePathId', bcePathId);
-    newCalleePath.setData('originalIsParent', false);
+    newCalleePath.setData('originalIsParent', false); // override config for `AssignmentExpression.right`
 
     // set loc on actual call, so it gets instrumented on exit as well
     // originalPath.node.loc = path.node.loc;
@@ -419,6 +439,11 @@ export function instrumentCallExpressionEnter(path, state) {
 
 
 function instrumentArgs(callPath, state, beforeCallTraceId) {
+  const calleePath = callPath.get('callee');
+  if (!getCanTraceArgs(calleePath)) {
+    return;
+  }
+
   const args = callPath.node.arguments;
 
   for (let i = 0; i < args.length; ++i) {

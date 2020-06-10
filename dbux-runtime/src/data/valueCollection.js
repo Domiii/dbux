@@ -6,9 +6,10 @@ import isFunction from 'lodash/isFunction';
 
 // const Verbose = true;
 const Verbose = false;
+const VerboseErrors = Verbose || true;
 
 const SerializationConfig = {
-  maxDepth: 6,
+  maxDepth: 3,
   maxObjectSize: 20,   // applies to arrays and object
   maxStringLength: 100
 };
@@ -158,7 +159,9 @@ class ValueCollection extends Collection {
     }
     catch (err) {
       this._onAccessError(obj, this._readErrorsByType);
-      return `(ERROR: accessing ${key} caused exception)`;
+      const msg = `ERROR: accessing ${Object.getPrototypeOf(obj)}.${key} caused exception`;
+      VerboseErrors && this.logger.debug(msg, err.message);
+      return `(${msg})`;
     }
     finally {
       this._endAccess(obj);
@@ -186,6 +189,7 @@ class ValueCollection extends Collection {
       // return Object.keys(obj);
     }
     catch (err) {
+      VerboseErrors && this.logger.debug(`ERROR: accessing object ${Object.getPrototypeOf(obj)} caused exception`, err.message);
       this._onAccessError(obj, this._getKeysErrorsByType);
       return null;
     }
@@ -201,20 +205,19 @@ class ValueCollection extends Collection {
       return;
     }
 
-    __dbux__._r.setDisabled(true)
+    __dbux__._r.setDisabled(true);
   }
 
   _endAccess(obj) {
-    __dbux__._r.setDisabled(false)
+    __dbux__._r.setDisabled(false);
   }
 
   _onAccessError(obj, errorsByType) {
+    // TODO: consider adding a timeout for floodgates?
     ++this._readErrorCount;
 
-    // TODO: consider adding a timeout for floodgates?
-
     errorsByType.set(Object.getPrototypeOf(obj), obj);
-    if (!(this._readErrorCount % 100)) {
+    if ((this._readErrorCount % 100) === 1) {
       this.logger.error(`When copying object data, invoking object getters caused ${this._readErrorCount} exceptions (if this number is very high, you will likely observe significant slow-down)`);
     }
   }

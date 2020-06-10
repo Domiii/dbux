@@ -8,6 +8,7 @@ import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { getCursorLocation } from '../codeUtil/codeNav';
 import { getTracesAt } from '../helpers/codeRangeQueries';
 
+
 export default class TracesAtCursor {
   allTraces: Array<Trace>;
   /**

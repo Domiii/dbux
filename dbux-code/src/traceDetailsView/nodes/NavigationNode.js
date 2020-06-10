@@ -46,7 +46,7 @@ export default class NavigationNode extends BaseTreeViewNode {
     return false;
   }
 
-  findTargetTrace(methodName, trace = this.trace) {
+  findTargetTrace(methodName, trace = traceSelection.selected) {
     const targetTrace = tracePlayback[`get${methodName}`]?.(trace);
 
     // find default target if target not found
@@ -69,6 +69,16 @@ export default class NavigationNode extends BaseTreeViewNode {
   }
 
   select(methodName) {
+    // TODO: too many places storing `trace`?
+    // const getIds = () => {
+    //   return [
+    //     traceSelection.selected,
+    //     tracePlayback.currentTrace,
+    //     this.trace
+    //   ].map(t => t?.traceId);
+    // };
+    // const ids1 = getIds();
+
     const trace = this.findTargetTrace(methodName);
     if (trace) {
       traceSelection.selectTrace(trace);
@@ -76,5 +86,8 @@ export default class NavigationNode extends BaseTreeViewNode {
     else {
       window.showInformationMessage(`Can't find "${methodName}" of current trace.`);
     }
+    
+    // const ids2 = getIds();
+    // debug(`${methodName}: ${ids1} -> ${ids2}`);
   }
 }

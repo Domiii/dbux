@@ -133,12 +133,12 @@ export function isCallbackRelatedTrace(traceType) {
 
 
 const dataOnlyTypes = new Array(TraceType.getCount()).map(() => false);
-// dataTraceTypes[TraceType.CallArgument] = true;
+dataOnlyTypes[TraceType.CallArgument] = true;
 dataOnlyTypes[TraceType.ExpressionValue] = true;
 /**
  * Traces that are important for data flow analysis, but not important for control flow analysis
  */
-export function isDataTrace(traceType) {
+export function isDataOnlyTrace(traceType) {
   return dataOnlyTypes[traceType];
 }
 

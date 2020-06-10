@@ -10,7 +10,8 @@ const { log, debug, warn, error: logError } = newLogger('CallGraphNodeProvider')
 
 export default class CallGraphNodeProvider extends BaseTreeViewNodeProvider {
   constructor(treeViewController) {
-    super('dbuxCallGraphView', true);
+    // super('dbuxCallGraphView', true);
+    super(null, true);
     this.treeViewController = treeViewController;
   }
 
