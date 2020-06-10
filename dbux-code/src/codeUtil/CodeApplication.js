@@ -13,13 +13,8 @@ import { showWarningMessage } from './codeModals';
  * its lifetime inside of VSCode.
  */
 export class CodeApplication extends Application {
-  _relativeFolder = null;
-
   getRelativeFolder() {
-    if (!this._relativeFolder) {
-      this._relativeFolder = workspace.asRelativePath(this.entryPointPath);
-    }
-    return this._relativeFolder;
+    return workspace.asRelativePath(super.getRelativeFolder());
   }
 }
 
@@ -61,7 +56,7 @@ export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
     const msg = 'Failed. No application running in file. Make sure to open a file with an application that ran before!';
     const firstApp = allApplications.selection.getAll()[0];
     const btns = {
-      [`Select ${firstApp.getFileName()}`]: async () => {
+      [`Select ${firstApp.getPreferredName()}`]: async () => {
         await showTextDocument(firstApp.entryPointPath);
         return firstApp;
       }

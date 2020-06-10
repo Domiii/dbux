@@ -26,7 +26,7 @@ export async function goToCodeLoc(fpath, loc: Loc) {
 export function selectLocInEditor(editor, loc) {
   const range = babelLocToCodeRange(loc);
   editor.selection = new Selection(range.start, range.end);
-  editor.revealRange(range, TextEditorRevealType.InCenter);
+  editor.revealRange(range, TextEditorRevealType.InCenterIfOutsideViewport);
 }
 
 

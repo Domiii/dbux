@@ -2,6 +2,8 @@ const path = require('path');
 const process = require('process');
 const mergeWith = require('lodash/mergeWith');
 
+require('source-map-loader');
+
 process.env.BABEL_DISABLE_CACHE = 1;
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
@@ -68,6 +70,8 @@ module.exports = (projectRoot, customConfig, ...cfgOverrides) => {
   //   .map(f => path.resolve(f));
   // console.log('webpack folders:', allFolders.join('\n'));
   const srcFolder = customConfig && customConfig.src || 'src';
+  const dbuxRuntimeFolder = path.join(MonoRoot, 'dbux-runtime', 'dist');
+
   const cfg = {
     //watch: true,
     mode: buildMode,
@@ -117,6 +121,12 @@ module.exports = (projectRoot, customConfig, ...cfgOverrides) => {
             path.join(projectRoot, srcFolder)
           ],
           options: babelOptions
+        },
+        {
+          test: /\.js$/,
+          loader: 'source-map-loader',
+          include: [dbuxRuntimeFolder],
+          enforce: 'pre'
         }
       ],
 

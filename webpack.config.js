@@ -104,6 +104,7 @@ function buildConfig([target, configOverrides]) {
   resolve.alias['@'] = src;
 
   const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencies);
+  const includeSrcs = absoluteDependencies.map(r => path.join(r, 'src'));
 
   let cfg = {
     watch: true,  // NOTE: webpack 4 ignores `watch` attribute on any config but the first
@@ -115,8 +116,8 @@ function buildConfig([target, configOverrides]) {
 
     // https://github.com/webpack/webpack/issues/2145
     // devtool: 'inline-module-source-map',
-    devtool: 'source-map',
-    // devtool: 'inline-source-map',
+    // devtool: 'source-map',
+    devtool: 'inline-source-map',
     plugins: webpackPlugins,
     context,
     entry,
@@ -144,10 +145,16 @@ function buildConfig([target, configOverrides]) {
           //   return true;
           // },
           loader: 'babel-loader',
-          include: absoluteDependencies.map(r => path.join(r, 'src')),
+          include: includeSrcs,
           options: {
             babelrcRoots: absoluteDependencies
           }
+        },
+        {
+          use: ['source-map-loader'],
+          include: absoluteDependencies.map(r => path.join(r, 'dist')),
+          test: /\.js$/,
+          enforce: 'pre'
         }
       ],
     },

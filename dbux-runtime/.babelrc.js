@@ -3,7 +3,7 @@ const thisRoot = path.resolve(__dirname);
 
 module.exports = {
   ignore: [],
-  "sourceMaps": "both",
+  "sourceMaps": "inline",
   "retainLines": true,
   "presets": [
     [

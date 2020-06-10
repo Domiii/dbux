@@ -185,7 +185,7 @@ export default class Project {
   async install() {
     // remove files
     let { projectPath, rmFiles } = this;
-    if (rmFiles) {
+    if (rmFiles?.length) {
       const absRmFiles = rmFiles.map(fName => path.join(projectPath, fName));
       const iErr = absRmFiles.findIndex(f => !f.startsWith(projectPath));
       if (iErr >= 0) {
@@ -222,7 +222,23 @@ export default class Project {
    * If already cloned, this will do nothing.
    * @virtual
    */
-  async installDependencies() { }
+  async installDependencies() {
+    // get rid of outdated dependencies; replace with webpack 4 (5?) toolchain
+    //  then install updated webpack + babel dependencies
+    // TODO: choose correct package manager
+    await this.exec(`yarn add --dev source-map-loader`);
+    /*
+    await this.exec(`\
+        yarn remove webpack webpack-dev-server babel-loader babel-core babel babel-plugin-__coverage__ \
+          babel-preset-es2015 babel-preset-es2016 babel-preset-react babel-preset-stage-2 html-webpack-plugin && \
+        \
+        yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env \
+          webpack webpack-cli webpack-dev-server nodemon html-webpack-plugin && \
+        \
+        yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime`
+    );
+    */
+  }
 
   async afterInstall() { }
 

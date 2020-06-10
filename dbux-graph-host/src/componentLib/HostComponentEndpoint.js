@@ -114,19 +114,9 @@ class HostComponentEndpoint extends ComponentEndpoint {
     // store properties
     super._build(componentManager, parent, componentId, initialState);
 
-    try {
-      this._preInit();                                    // 0. host: preInit
-      this._runNoSetState('init');                        // 1. host: init
-      Verbose && this.logger.debug('init called');
-      this._runNoSetState('update');                      // 2. host: update
-    }
-    catch (err) {
-      this.logger.error('init or initial update failed on host\n  ', err);
-    }
-
-    // do the long async init dance
-    this._initPromise = Promise.resolve()
-      .then(this._doInit.bind(this)).
+    this._initPromise = sleep()
+      // do the long async init dance
+      .then(this._doInitClient.bind(this)).
       catch(err => {
         this.logger.error('error when initializing client\n  ', err);
         return null;
@@ -134,9 +124,24 @@ class HostComponentEndpoint extends ComponentEndpoint {
         // _initPromise has fulfilled its purpose
         this._initPromise = null;
       });
+
+    try {
+      this._waitingForUpdate = true;
+      this._preInit();                                    // 0. host: preInit
+      this.init();                                        // 1. host: init
+      Verbose && this.logger.debug('init called');
+      this.update();                                      // 2. host: update
+    }
+    catch (err) {
+      this.logger.error('init or initial update failed on host\n  ', err);
+    }
+    finally {
+      this._waitingForUpdate = false;
+    }
+
   }
 
-  async _doInit() {
+  async _doInitClient() {
     await sleep();    // hackfix: this way `_initPromise` can be assigned correctly
     const resultFromClientInit = this.parent && await this.componentManager._initClient(this); // 3. client: init -> update (ignore `internal root component`)
     // success                                        // 4. waitForInit resolved
@@ -150,18 +155,18 @@ class HostComponentEndpoint extends ComponentEndpoint {
   // ###########################################################################
 
   async _startUpdate() {
+    // NOTE: this is called by `setState`
+    if (this._waitingForUpdate) {
+      // already waiting for update -> will send out changes in a bit anyway
+      return;
+    }
+
     if (!this.isInitialized) {
       // make sure, things are initialized
       await this.waitForInit();
     }
     if (!this.isInitialized) {
       throw new Error(`${this.debugTag} - first update detected before init has started. Make sure to not call setState or before initialization has started.`);
-    }
-
-    // NOTE: this is called by `setState`
-    if (this._waitingForUpdate) {
-      // already waiting for update -> will send out changes in a bit anyway
-      return;
     }
 
     if (this._updatePromise) {

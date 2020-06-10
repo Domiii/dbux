@@ -5,10 +5,6 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 let choiceElm;
 class ContextNode extends ClientComponentEndpoint {
-  get popperEl() {
-    return window._popperEl;
-  }
-
   createEl() {
     return compileHtmlElement(/*html*/`
     <div class="context-node flex-row">
@@ -98,6 +94,14 @@ class ContextNode extends ClientComponentEndpoint {
       base /= 2;
     }
     return color;
+  }
+
+  get hiddenNodeManager() {
+    return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
+  }
+
+  isHiddenBy() {
+    return this.hiddenNodeManager.getHiddenNodeHidingThis(this.context.runNode);
   }
 
   // ########################################

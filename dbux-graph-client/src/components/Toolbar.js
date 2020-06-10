@@ -16,6 +16,9 @@ class Toolbar extends ClientComponentEndpoint {
           <button data-el="callModeBtn" class="btn btn-info" href="#">call</button>
           <button data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
           <button data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
+          <button data-el="showAllRunBtn" class="no-horizontal-padding btn btn-info" href="#">ShowAll</button>
+          <button data-el="hideOldRunBtn" class="no-horizontal-padding btn btn-info" href="#">HideOld</button>
+          <button data-el="hideNewRunBtn" class="no-horizontal-padding btn btn-info" href="#">HideNew</button>
         </div>
         <button data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</button>
       </nav>
@@ -27,12 +30,14 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   update = () => {
-    const { 
+    const {
       syncMode,
       locMode,
       callMode,
       valueMode,
-      thinMode
+      thinMode,
+      hideOldMode,
+      hideNewMode
     } = this.state;
     // this.els.syncModeBtn.textContent = `Sync: ${syncMode ? '✅' : '❌'}`;
 
@@ -51,6 +56,12 @@ class Toolbar extends ClientComponentEndpoint {
     });
     decorateClasses(this.els.thinModeBtn, {
       active: thinMode
+    });
+    decorateClasses(this.els.hideOldRunBtn, {
+      active: hideOldMode
+    });
+    decorateClasses(this.els.hideNewRunBtn, {
+      active: hideNewMode
     });
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
 
@@ -118,7 +129,7 @@ class Toolbar extends ClientComponentEndpoint {
       click(evt) {
         evt.preventDefault();
         evt.target.blur();
-        
+
         this.setState({
           callMode: !this.state.callMode
         });
@@ -142,6 +153,32 @@ class Toolbar extends ClientComponentEndpoint {
         this.setState({
           thinMode: !this.state.thinMode
         });
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    showAllRunBtn: {
+      click(evt) {
+        evt.preventDefault();
+        this.remote.showAllRun();
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    hideOldRunBtn: {
+      click(evt) {
+        evt.preventDefault();
+        const mode = !this.state.hideOldMode;
+        this.remote.hideOldRun(mode && Date.now());
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    hideNewRunBtn: {
+      click(evt) {
+        evt.preventDefault();
+        const mode = !this.state.hideNewMode;
+        this.remote.hideNewRun(mode && Date.now());
       },
       focus(evt) { evt.target.blur(); }
     },

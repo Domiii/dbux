@@ -3,10 +3,11 @@ import { isTracePush, isTracePop } from 'dbux-common/src/core/constants/TraceTyp
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import last from 'lodash/last';
 import DataProvider from '../DataProvider';
+import { binarySearchByKey } from '../../../dbux-common/src/util/arrayUtil';
 
 const { log, debug, warn, error: logError } = newLogger('CallGraph');
 
-export default class CallGraph { 
+export default class CallGraph {
 
   /**
    * @param {DataProvider} dp
@@ -22,7 +23,7 @@ export default class CallGraph {
   /**
    * Search algorithm ref.: https://github.com/Domiii/dbux#call-graph-navigation
    */
-  
+
   getPreviousInContext(traceId) {
     const trace = this.dp.collections.traces.getById(traceId);
     const traces = this.dp.util.getTracesOfRealContext(traceId);
@@ -129,6 +130,32 @@ export default class CallGraph {
     }
   }
 
+  getPreviousByStaticTrace(traceId) {
+    const trace = this.dp.collections.traces.getById(traceId);
+    const traces = this.dp.indexes.traces.byStaticTrace.get(trace.staticTraceId);
+    const index = binarySearchByKey(traces, trace, (t) => t.traceId);
+    
+    if (index !== null && index > 0) {
+      return traces[index - 1];
+    }
+    else {
+      return null;
+    }
+  }
+
+  getNextByStaticTrace(traceId) {
+    const trace = this.dp.collections.traces.getById(traceId);
+    const traces = this.dp.indexes.traces.byStaticTrace.get(trace.staticTraceId);
+    const index = binarySearchByKey(traces, trace, (t) => t.traceId);
+    
+    if (index !== null && index < traces.length - 1) {
+      return traces[index + 1];
+    }
+    else {
+      return null;
+    }
+  }
+
   // ###########################################################################
   //  Private
   // ###########################################################################
@@ -198,18 +225,18 @@ export default class CallGraph {
     let start = 0;
     let end = arr.length - 1;
     let mid;
-  
+
     if (arr[end] < x) return null;
-  
+
     while (start < end) {
       mid = Math.floor((start + end) / 2);
       if (arr[mid] < x) start = mid + 1;
       else end = mid;
     }
-  
+
     return start;
   }
-  
+
   _binarySearchLowerIndexByKey(arr, x, makeKey) {
     if (!arr.length) return null;
     if (makeKey) {
@@ -219,15 +246,15 @@ export default class CallGraph {
     let start = 0;
     let end = arr.length - 1;
     let mid;
-  
+
     if (arr[start] >= x) return null;
-  
+
     while (start < end) {
       mid = Math.ceil((start + end) / 2);
       if (arr[mid] < x) start = mid;
       else end = mid - 1;
     }
-  
+
     return start;
   }
 

@@ -10,7 +10,7 @@ class GraphRoot extends ClientComponentEndpoint {
         let contextId = await this.app.prompt("traceId");
         applicationId = applicationId && parseInt(applicationId, 10);
         contextId = contextId && parseInt(contextId, 10);
-        
+
         if (applicationId && contextId) {
           this.remote.requestFocus(applicationId, contextId);
         }
@@ -18,38 +18,35 @@ class GraphRoot extends ClientComponentEndpoint {
     });
 
     return compileHtmlElement(/*html*/`
-    <div class="graph-root">
-      <div data-el="graphCont" class="graph-cont">
-        <div data-el="body" class="body flex-column">
-          <h2 data-el="title"></h2>
-          <div>
-            <button data-el="nodeToggleBtn" class="nodeToggleBtn"></button>
-          </div>
-          <div data-el="nodeChildren" data-mount="RunNode" class="node-children">
-            <div class="before-run-node"></div>
+      <div class="graph-root">
+        <div data-el="graphCont" class="graph-cont">
+          <div data-el="body" class="body flex-column">
+            <h2 data-el="title"></h2>
+            <div>
+              <button data-el="nodeToggleBtn" class="nodeToggleBtn"></button>
+            </div>
+            <div data-mount="HiddenBeforeNode"></div>
+            <div data-el="nodeChildren" data-mount="RunNode" class="node-children flex-column">
+              <div class="before-run-node"></div>
+            </div>
+            <div data-mount="HiddenAfterNode"></div>
           </div>
         </div>
+        <div data-el="toolTip" id="tooltip" role="tooltip">
+          <span></span>
+          <div id="arrow" data-popper-arrow></div>
+        </div>
+        <div data-mount="ZoomBar"></div> 
       </div>
-      <div data-el="toolTip" id="tooltip" role="tooltip">
-        <span></span>
-        <div id="arrow" data-popper-arrow></div>
-      </div>
-      <div data-mount="ZoomBar"></div> 
-    </div>
     `);
   }
 
   get popperManager() {
     return this.controllers.getComponent('PopperManager');
   }
-  
-  test() {}
 
   setupEl() {
     this.panzoom = this.initPanZoom(this.els.graphCont);
-    
-    // hackfix: make popperEl global for now
-    window._popperEl = this.els.toolTip;
   }
 
   update() {
@@ -77,8 +74,6 @@ class GraphRoot extends ClientComponentEndpoint {
       maxZoom: 5,
       minZoom: 0.1,
     });
-    // [debug-global]
-    // window.panzoom = panzoom;
 
     panzoom.zoomAbs(
       0,
@@ -107,6 +102,6 @@ class GraphRoot extends ClientComponentEndpoint {
     });
 
     return panzoom;
-  } 
+  }
 }
 export default GraphRoot;
