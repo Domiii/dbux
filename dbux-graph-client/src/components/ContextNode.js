@@ -80,7 +80,7 @@ class ContextNode extends ClientComponentEndpoint {
     });
 
     // set indicator
-    this.setIndicator(traceId, this.children.getComponents('ContextNode'));
+    this.setIndicator(traceId, this.children.getComponents('ContextNode'), 'callTrace');
     // set popper
     const modKey = getPlatformModifierKeyString();
     this.els.contextLabel.setAttribute('data-tooltip', `${this.els.contextLabel.textContent} (${modKey} + click to select trace)`);
@@ -139,24 +139,24 @@ class ContextNode extends ClientComponentEndpoint {
     // }
   }
 
-  setIndicator(traceId, children) {
-    choiceElm?.classList.remove('set-top', 'set-bottom');
+  setIndicator(traceId, children, traceType) {
+    choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
 
     if (children && traceId) {
       // check traceId > or < context children's traceId -del
-      let childContextId = children.map((x) => x.state.parentTraceId);
-      let toggle = childContextId.findIndex(x => x > traceId);
-
-      if (toggle !== -1) {
+      let childrenParentId = children.map((x) => x.state.parentTraceId);
+      let toggle = childrenParentId.findIndex(x => x > traceId);
+      if (toggle !== -1 && traceType === 'callTrace') {
+        choiceElm = children[toggle].el.querySelector('.indicator-cont');
+        //set middle and display something -del
+        choiceElm?.classList?.add('set-calltrace');
+      } else if (toggle !== -1) {
         choiceElm = children[toggle].el.querySelector('.indicator-cont');
         choiceElm?.classList?.add('set-top');
       } else {
         choiceElm = children[children.length - 1].el.querySelector('.indicator-cont');
         choiceElm?.classList?.add('set-bottom');
       }
-      // if (toggleMiddle !== -1) {
-      //   children[toggleMiddle].el.classList.add('set-middle');
-      // }
     }
   }
 

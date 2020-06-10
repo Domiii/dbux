@@ -50,9 +50,6 @@ html,body{
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.indicator-hidden .indicator{
-  display:none !important;
-}
 .indicator-cont{
   position:relative;
   width:0;
@@ -60,17 +57,18 @@ html,body{
 }
 .set-top .indicator{
   position: absolute;
-  border-top: 1px solid black;
+  border-top: 1px solid rgb(0, 0, 0);
   width: 1em;
   left:-1.1em;
   top:0;
 }
-.set-middle .indicator{
+.set-calltrace .indicator::before{
+  content:"X>";
   position: absolute;
-  border-top: 1px solid black;
-  width: 1em;
+  /* border-top: 1px solid black;
+  width: 1em; */
   left:-1.1em;
-  top:50%;
+  top:0;
 }
 .set-bottom .indicator{
   position: absolute;
