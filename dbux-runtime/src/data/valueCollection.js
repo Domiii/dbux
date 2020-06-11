@@ -143,6 +143,12 @@ class ValueCollection extends Collection {
   }
 
   _canReadKeys(obj) {
+    if (obj.constructor.prototype === obj) {
+      // NOTE: we cannot read properties of many built-in prototype objects
+      // e.g. `NodeList.prototype`
+      return false;
+    }
+
     // TODO: `getPrototypeOf` can trigger a proxy trap
     return !this._getKeysErrorsByType.has(Object.getPrototypeOf(obj));
   }

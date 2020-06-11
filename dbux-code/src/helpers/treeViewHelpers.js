@@ -1,6 +1,7 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import map from 'lodash/map';
 import isObject from 'lodash/isObject';
+import isEmpty from 'lodash/isEmpty';
 
 /**
  * Use:
@@ -36,10 +37,14 @@ function objectToTreeItems(obj) {
   );
 }
 
+function keyValueLabel(key, value) {
+  return `${key}: ${JSON.stringify(value)}`;
+}
+
 function makeChildNode(key, value) {
   return isObject(value) ?
     makeTreeItem(key, value) :  // open up objects recursively
-    makeTreeItem(`${key}: ${value}`);
+    makeTreeItem(keyValueLabel(key, value));
 }
 
 export function makeTreeChildren(obj) {
@@ -56,9 +61,22 @@ export function makeTreeItem(labelOrArr, children, props) {
   else {
     label = labelOrArr;
   }
-  const item = new TreeItem('' + label);
-  if (children) {
-    item.collapsibleState = TreeItemCollapsibleState.Expanded;
+  label = ('' + label); // coerce to string (else it won't show up)
+
+  const hasChildren = children && !isEmpty(children);
+  let collapsibleState;
+  if (hasChildren) {
+    collapsibleState = TreeItemCollapsibleState.Expanded;
+  }
+  else {
+    collapsibleState = TreeItemCollapsibleState.None;
+    if (children) {
+      label = keyValueLabel(label, children);
+    }
+  }
+
+  const item = new TreeItem(label, collapsibleState);
+  if (hasChildren) {
     item.children = makeTreeChildren(children);
   }
   if (props) {

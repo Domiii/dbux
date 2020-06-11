@@ -25,7 +25,6 @@ html,body{
   overflow: hidden;
 }
 
-
 /** ###########################################################################
  * graph nodes
  * ############################################################################ */
@@ -114,6 +113,9 @@ html,body{
 .run-node > div {
   border: 1px solid black;
 }
+.hidden-run-node > div {
+  background-color: rgba(206, 206, 206, 0.815);
+}
 
 @keyframes new-run-node {
   from {
@@ -179,7 +181,7 @@ html,body{
 
 [data-el="parentLabel"] {
   color: #222;
-  background: rgba(0,0,0,0.1);
+  background: rgba(0,0,0,0.05);
   font-size: 11px;
   margin-right: 0.3rem !important;
 }
@@ -289,6 +291,10 @@ html,body{
   max-width: 20rem;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 /** ###########################################################################
  * hackfix for emojis
  * ############################################################################ */
@@ -331,13 +337,13 @@ html,body{
 
 }
 .highlight-on {
-  background: gray !important;
+  background: #888 !important;
 }
 .highlight-on .graph-node:not(.highlight) > * {
-  background: gray !important;
+  background: #888 !important;
 }
 .highlight-on .graph-node .children {
-  background: gray !important;
+  background: #888 !important;
 }
 
 /** ###########################################################################

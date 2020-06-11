@@ -29,4 +29,13 @@ export default class HighlightManager extends HostComponentEndpoint {
       highlightAmount: this.state.highlightAmount + newState
     });
   }
+
+  clearDisposedHighlighter = () => {
+    for (const highlighter of this.allHighlighter) {
+      if (highlighter.isDisposed) this.allHighlighter.delete(highlighter);
+    }
+    this.setState({
+      highlightAmount: this.allHighlighter.size
+    });
+  }
 }

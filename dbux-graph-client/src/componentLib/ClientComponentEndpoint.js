@@ -1,7 +1,5 @@
-import isFunction from 'lodash/isFunction';
 import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
 import DOMWrapper from '@/dom/DOMWrapper';
-import { collectElementsByDataAttr } from '@/util/domUtil';
 import ClientComponentList from './ClientComponentList';
 
 /**
@@ -71,6 +69,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   // ###########################################################################
 
   async _performClientInit(role) {
+    this._internalRoleName = role;
     if (this.owner) {
       const list = this.owner._getComponentListByRoleName(role);
       list._addComponent(this);
@@ -112,8 +111,13 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     },
 
     dispose() {
+      this._isDisposed = true;
       this.dom?.remove();
-      this.owner?.children._removeComponent(this);
+
+      if (this.owner) {
+        const list = this.owner._getComponentListByRoleName(this._internalRoleName);
+        list._removeComponent(this);
+      }
     }
   };
 

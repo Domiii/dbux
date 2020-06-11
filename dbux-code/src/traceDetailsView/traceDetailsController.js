@@ -28,8 +28,30 @@ class TraceDetailsController {
   }, 20);
 
   selectTraceAtCursor = () => {
-    const nextTrace = this.tracesAtCursor.getNext();
-    if (nextTrace) traceSelection.selectTrace(nextTrace, 'selectTraceAtCursor');
+    let trace = this.tracesAtCursor.get();
+    if (traceSelection.selected === trace) {
+      this.tracesAtCursor.next();
+      trace = this.tracesAtCursor.get();
+    }
+    if (trace) {
+      traceSelection.selectTrace(trace, 'selectTraceAtCursor');
+    }
+  }
+
+  previousStaticTrace() {
+    this.tracesAtCursor.previous();
+    const trace = this.tracesAtCursor.get();
+    if (trace) {
+      traceSelection.selectTrace(trace, 'selectTraceAtCursor');
+    }
+  }
+
+  nextStaticTrace() {
+    this.tracesAtCursor.next();
+    const trace = this.tracesAtCursor.get();
+    if (trace) {
+      traceSelection.selectTrace(trace, 'selectTraceAtCursor');
+    }
   }
 
   initOnActivate(context) {

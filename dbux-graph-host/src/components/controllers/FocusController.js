@@ -1,4 +1,4 @@
-import allApplications from 'dbux-data/src/applications/allApplications';
+import NanoEvents from 'nanoevents';
 import traceSelection from 'dbux-data/src/traceSelection';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
@@ -7,107 +7,115 @@ export default class FocusController extends HostComponentEndpoint {
     return this.context.graphDocument.controllers.getComponent('HighlightManager');
   }
 
+  get hiddenNodeManager() {
+    return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
+  }
+
   init() {
     this.syncMode = true;
-    traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
+    this._emitter = new NanoEvents();
 
     this.highlightManager.on('clear', () => {
-      this.clearFocus();
       this.lastHighlighter = null;
     });
 
+    this.hiddenNodeManager.onStateChanged(this.handleHiddenNodeChanged);
+
+    traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
     // if already selected, show things right away
-    setTimeout(() => {
-      this.handleTraceSelected(traceSelection.selected);
-    });
+    this.handleTraceSelected(traceSelection.selected);
   }
 
   handleTraceSelected = async (trace) => {
-    if (trace?.contextId === this.state.focus?.contextId &&
-      trace?.applicationId === this.state.focus?.applicationId) {
-      // nothing to do
-      return;
+    await this.waitForInit();
+    
+    let contextNode;
+    if (trace) {
+      const { applicationId, contextId } = trace;
+      contextNode = this.owner.getContextNodeById(applicationId, contextId);
+      if (this.syncMode) {
+        this.focus(contextNode);
+      }
+    }
+    else {
+      this.clearFocus();
     }
 
-    // always reveal + decorate ContextNode
-    await this._selectContextNode(trace);
-
-    if (!trace) this.clearFocus();
-    else if (this.syncMode) {
-      // only if in sync mode -> focus on the node
-      const { contextId, applicationId } = trace;
-      await this.focus(applicationId, contextId);
-    }
+    // always decorate ContextNode
+    this._selectContextNode(contextNode);
   }
 
-  async _selectContextNode(trace) {
-    const { contextId, applicationId } = trace;
-    await this.revealContext(applicationId, contextId);
+  handleHiddenNodeChanged = () => {
+    this.handleTraceSelected(traceSelection.selected);
+  }
+
+  _selectContextNode(contextNode) {
     if (this._selectedContextNode) {
       // deselect old
       this._selectedContextNode.setSelected(false);
     }
 
-    let contextNode;
-    if (trace) {
-      contextNode = this.context.graphRoot.getContextNodeById(applicationId, contextId);
-      if (contextNode) {
-        // select new
-        contextNode.setSelected(true);
-      }
+    if (contextNode) {
+      // select new
+      contextNode.setSelected(true);
     }
+
     this._selectedContextNode = contextNode;
   }
 
-  focus(applicationId, contextId) {
-    // highlight
+  toggleSyncMode() {
+    const mode = !this.syncMode;
+    this.setSyncMode(mode);
+    return mode;
+  }
+
+  setSyncMode(mode) {
+    if (this.syncMode === mode) {
+      return;
+    }
+    this.syncMode = mode;
+    if (this.syncMode) {
+      this.handleTraceSelected(traceSelection.selected);
+    }
+    else {
+      this.lastHighlighter?.dec();
+      this.lastHighlighter = null;
+    }
+    this._emitter.emit('modeChanged', this.syncMode);
+  }
+
+  async focus(node) {
+    // if node is hidden, we focus on the hiddenNode
+    const hiddenNode = node.isHiddenBy();
+    let targetNode = node;
+    if (hiddenNode) {
+      targetNode = hiddenNode;
+    }
+
+    await targetNode.reveal?.();
+    this.highlight(targetNode);
+    this.remote.slide(targetNode);
+  }
+
+  clearFocus() {
+    this.lastHighlighter?.dec();
+    this.lastHighlighter = null;
+    this.remote.slide(null);
+  }
+
+  highlight(node) {
     this.highlightManager.clear();
-    this.highlightContext(applicationId, contextId);
-
-    // start movement animation
-    this.setState({
-      focus: { applicationId, contextId }
-    });
-  }
-
-  async revealContext(applicationId, contextId) {
-    const contextNode = this.owner.getContextNodeById(applicationId, contextId);
-    // await contextNode.waitForInit();      // make sure, node has initialized
-
-    const graphNode = contextNode.controllers.getComponent('GraphNode');
-    await graphNode.reveal(true);   // make sure, node has revealed
-  }
-
-  highlightContext(applicationId, contextId) {
-    const contextNode = this.owner.getContextNodeById(applicationId, contextId);
-    this.lastHighlighter = contextNode.controllers.getComponent('Highlighter');
+    // we clear all highlighter before highlight, so no need to dec lastHighlighter here
+    // this.lastHighlighter.dec();
+    this.lastHighlighter = node.controllers.getComponent('Highlighter');
     this.lastHighlighter.inc();
   }
 
-  clearFocus = () => {
-    if (this.state.focus) {
-      this.setState({
-        focus: null
-      });
-    }
-  }
-
-  async toggleSyncMode() {
-    this.syncMode = !this.syncMode;
-    if (this.syncMode) {
-      await this.handleTraceSelected(traceSelection.selected);
-    }
-    else {
-      if (this.lastHighlighter) {
-        this.lastHighlighter.dec();
-        this.lastHighlighter = null;
-      }
-      this.clearFocus();
-    }
-    return this.syncMode;
-  }
-
-  public = {
-    notifyFocused: this.clearFocus
+  // ###########################################################################
+  // own event
+  // ###########################################################################
+  
+  on(evtName, cb) {
+    this._emitter.on(evtName, cb);
   }
 }
