@@ -15,9 +15,10 @@ class ContextNode extends HostComponentEndpoint {
     // get name (and other needed data)
     const dp = allApplications.getById(applicationId).dataProvider;
     const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
-    this.parentTrace = dp.util.getParentTraceOfContext(context.contextId);
+    const errorTag = (dp.indexes.traces.errorByContext.get(context.contextId)?.length) ? '🔥' : '';
+    this.parentTrace = dp.util.getCalleeTraceOfContext(context.contextId);
 
-    this.state.contextNameLabel = staticContext.displayName;
+    this.state.contextNameLabel = staticContext.displayName + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
     this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
@@ -64,12 +65,27 @@ class ContextNode extends HostComponentEndpoint {
     });
   }
 
-  reveal() {
-    this.controllers.getComponent('GraphNode').reveal();
+  async reveal() {
+    await this.controllers.getComponent('GraphNode').reveal();
   }
 
   setSelected(isSelected) {
-    this.setState({ isSelected });
+    const selectedTrace = traceSelection.selected;
+    let isSelectedTraceCallRelated = false;
+    let contextIdOfSelectedCallTrace = null;
+    if (selectedTrace) {
+      const { applicationId } = this.state;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const callId = dp.util.getTraceCallId(selectedTrace.traceId);
+      const child = dp.indexes.executionContexts.byParentTrace.get(callId);
+      isSelectedTraceCallRelated = !!callId;
+      contextIdOfSelectedCallTrace = child && child[0].contextId;
+    }
+    this.setState({ isSelected, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace });
+  }
+
+  isHiddenBy() {
+    return this.context.runNode.isHiddenBy();
   }
 
   public = {

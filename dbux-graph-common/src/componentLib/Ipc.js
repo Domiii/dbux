@@ -1,8 +1,10 @@
 import get from 'lodash/get';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger, logDebug } from 'dbux-common/src/log/logger';
 import { makeDebounce } from 'dbux-common/src/util/scheduling';
 import MessageType from './MessageType';
 import ComponentEndpoint from './ComponentEndpoint';
+
+const Verbose = false;
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/ipc');
 
@@ -55,6 +57,7 @@ export default class Ipc {
   // }, 0);
 
   _postMessage = (msg) => {
+    Verbose && debug('postMessage', msg);
     this.ipcAdapter.postMessage(msg);
   }
 
@@ -204,28 +207,29 @@ export default class Ipc {
   // handleMessage
   // ###########################################################################
 
-  _handleMessage = async message => {
-    // debug('received msg', message);
-    if (!message) {
+  _handleMessage = async msg => {
+    if (!msg) {
       return;
     }
 
     const {
       messageType,
       callId
-    } = message;
+    } = msg;
 
     if (!callId || !messageType) {
       // sometimes other libraries, browser internals or extensions send messages that we do not want to handle
       return;
     }
 
+    Verbose && debug('_handleMessage', msg);
+
     const handler = this._messageHandlers[messageType];
     if (!handler) {
       logError('Could not handle message. Unregistered messageType - ' + messageType);
     }
 
-    handler.call(this, message);
+    handler.call(this, msg);
   }
 
   // ###########################################################################
