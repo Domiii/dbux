@@ -1,3 +1,4 @@
+import NanoEvents from 'nanoevents';
 import traceSelection from 'dbux-data/src/traceSelection';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
@@ -12,6 +13,7 @@ export default class FocusController extends HostComponentEndpoint {
 
   init() {
     this.syncMode = true;
+    this._emitter = new NanoEvents();
 
     this.highlightManager.on('clear', () => {
       this.lastHighlighter = null;
@@ -61,16 +63,25 @@ export default class FocusController extends HostComponentEndpoint {
     this._selectedContextNode = contextNode;
   }
 
-  async toggleSyncMode() {
-    this.syncMode = !this.syncMode;
+  toggleSyncMode() {
+    const mode = !this.syncMode;
+    this.setSyncMode(mode);
+    return mode;
+  }
+
+  setSyncMode(mode) {
+    if (this.syncMode === mode) {
+      return;
+    }
+    this.syncMode = mode;
     if (this.syncMode) {
-      await this.handleTraceSelected(traceSelection.selected);
+      this.handleTraceSelected(traceSelection.selected);
     }
     else {
       this.lastHighlighter?.dec();
       this.lastHighlighter = null;
     }
-    return this.syncMode;
+    this._emitter.emit('modeChanged', this.syncMode);
   }
 
   async focus(node) {
@@ -98,5 +109,13 @@ export default class FocusController extends HostComponentEndpoint {
     // this.lastHighlighter.dec();
     this.lastHighlighter = node.controllers.getComponent('Highlighter');
     this.lastHighlighter.inc();
+  }
+
+  // ###########################################################################
+  // own event
+  // ###########################################################################
+  
+  on(evtName, cb) {
+    this._emitter.on(evtName, cb);
   }
 }

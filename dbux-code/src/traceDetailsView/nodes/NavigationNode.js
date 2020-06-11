@@ -20,10 +20,10 @@ const NavigationMethods = [
 // if default method is not provided, it returns null when `findTargetTrace` failed
 const defaultMethods = {
   NextInContext: 'NextTrace',
-  NextChildContext: 'NextTrace',
+  NextChildContext: 'NextParentContext',
   NextParentContext: 'NextTrace',
   PreviousInContext: 'PreviousTrace',
-  PreviousChildContext: 'PreviousTrace',
+  PreviousChildContext: 'PreviousParentContext',
   PreviousParentContext: 'PreviousTrace',
 };
 
@@ -86,6 +86,8 @@ export default class NavigationNode extends BaseTreeViewNode {
     else {
       window.showInformationMessage(`Can't find "${methodName}" of current trace.`);
     }
+
+    this.treeNodeProvider.treeView.reveal(this);
     
     // const ids2 = getIds();
     // debug(`${methodName}: ${ids1} -> ${ids2}`);

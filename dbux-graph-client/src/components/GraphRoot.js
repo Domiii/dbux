@@ -4,19 +4,6 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class GraphRoot extends ClientComponentEndpoint {
   createEl() {
-    window.addEventListener('keypress', async (e) => {
-      if (e.key === "s") {
-        let applicationId = await this.app.prompt("applicationId");
-        let contextId = await this.app.prompt("traceId");
-        applicationId = applicationId && parseInt(applicationId, 10);
-        contextId = contextId && parseInt(contextId, 10);
-
-        if (applicationId && contextId) {
-          this.remote.requestFocus(applicationId, contextId);
-        }
-      }
-    });
-
     return compileHtmlElement(/*html*/`
       <div class="graph-root">
         <div data-el="graphCont" class="graph-cont">

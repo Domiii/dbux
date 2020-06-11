@@ -52,7 +52,7 @@ class GraphRoot extends HostComponentEndpoint {
     this.state.applications = allApplications.selection.getAll().map(app => ({
       applicationId: app.applicationId,
       entryPointPath: app.entryPointPath,
-      name: app.getFileName()
+      name: app.getPreferredName()
     }));
   }
 
@@ -202,9 +202,7 @@ class GraphRoot extends HostComponentEndpoint {
   // ###########################################################################
 
   public = {
-    requestFocus(applicationId, contextId) {
-      this.focusContext(applicationId, contextId);
-    }
+    
   }
 }
 

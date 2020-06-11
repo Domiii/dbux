@@ -1,6 +1,7 @@
 import isEqual from 'lodash/isEqual';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import objectTracker from 'dbux-data/src/objectTracker';
+import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class ContextNodeManager extends HostComponentEndpoint {
@@ -17,13 +18,18 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     });
 
     this.owner.on('newNode', this.refreshOnData);
+    this.owner.on('refresh', this.refreshOnData);
 
-    objectTracker.onObjectSelectionChanged(this.selectObject);
+    objectTracker.onObjectSelectionChanged(this.highlightByObject);
   }
 
   refreshOnData = () => {
-    if (this.selectorType === 'objectTrace') {
-      this.selectObject(this.selector);
+    if (!allApplications.selection.containsApplication(this.selector?.applicationId)) {
+      // block highlighting on non-active apps
+      this.clear();
+    }
+    else if (this.selectorType === 'objectTrace') {
+      this.highlightByObject(this.selector);
     }
     else if (this.selectorType === 'staticContext') {
       const { applicationId, staticContextId } = this.selector;
@@ -33,12 +39,16 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   highlightContexts(contexts) {
     this.contextNodes = contexts.map(this.owner.getContextNodeByContext);
-    this.contextNodes.forEach((contextNode) => contextNode.controllers.getComponent('Highlighter').inc());
-    this.contextNodes.forEach((contextNode) => contextNode.reveal());
+    this.contextNodes.forEach((contextNode) => contextNode?.controllers.getComponent('Highlighter').inc());
+    this.contextNodes.forEach((contextNode) => contextNode?.reveal());
   }
 
   clear() {
-    this.contextNodes?.forEach((contextNode) => contextNode.controllers.getComponent('Highlighter').dec());
+    this.contextNodes?.forEach((contextNode) => {
+      if (contextNode?.isDisposed) {
+        contextNode.controllers.getComponent('Highlighter').dec();
+      }
+    });
     this.selector = null;
     this.selectorType = null;
     this.contextNodes = null;
@@ -71,13 +81,16 @@ export default class ContextNodeManager extends HostComponentEndpoint {
   //  byObject
   // ###########################################################################
 
-  selectObject = (traceSelector) => {
+  highlightByObject = (traceSelector) => {
     if (this.selector) this.clear();
 
-    const { applicationId, traceId: origTraceId } = traceSelector;
+    this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
+    this.context.graphRoot.controllers.getComponent('FocusController').setSyncMode(false);
+
+    const { applicationId, traceId: originTraceId } = traceSelector;
     const dp = allApplications.getById(applicationId).dataProvider;
     
-    const { traceId } = dp.util.getValueTrace(origTraceId);
+    const { traceId } = dp.util.getValueTrace(originTraceId);
     const trackId = dp.util.getTraceTrackId(traceId);
     const contexts = dp.util.getContextsByTrackId(trackId);
 

@@ -16,6 +16,10 @@ class Toolbar extends HostComponentEndpoint {
         hideNewMode: !!hideAfter
       });
     });
+
+    this.focusController.on('modeChanged', (mode) => {
+      this.setState({ syncMode: mode });
+    });
   }
 
   get focusController() {
@@ -33,13 +37,8 @@ class Toolbar extends HostComponentEndpoint {
       await this.componentManager.restart();
     },
 
-    async toggleSyncMode() {
-      const mode = await this.focusController.toggleSyncMode();
-      this.setState({ syncMode: mode });
-    },
-
-    showAllRun() {
-      this.hiddenNodeManager.showAll();
+    toggleSyncMode() {
+      const mode = this.focusController.toggleSyncMode();
     },
 
     hideOldRun(time) {
