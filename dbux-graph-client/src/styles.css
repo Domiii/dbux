@@ -181,7 +181,7 @@ html,body{
 
 [data-el="parentLabel"] {
   color: #222;
-  background: rgba(0,0,0,0.1);
+  background: rgba(0,0,0,0.05);
   font-size: 11px;
   margin-right: 0.3rem !important;
 }
@@ -337,13 +337,13 @@ html,body{
 
 }
 .highlight-on {
-  background: gray !important;
+  background: #888 !important;
 }
 .highlight-on .graph-node:not(.highlight) > * {
-  background: gray !important;
+  background: #888 !important;
 }
 .highlight-on .graph-node .children {
-  background: gray !important;
+  background: #888 !important;
 }
 
 /** ###########################################################################

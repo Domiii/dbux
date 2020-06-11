@@ -15,6 +15,8 @@ class ComponentEndpoint {
   remote;
   state;
 
+  _isDisposed = false;
+
   constructor() {
     // TODO: `this.constructor.name` won't work on Host when enabling minifcation/obfuscation in webpack/bundler
     //    NOTE: Client already has a better way for this
@@ -90,6 +92,10 @@ class ComponentEndpoint {
    */
   get owner() {
     return this.parent;
+  }
+
+  get isDisposed() {
+    return this._isDisposed;
   }
 
   // ###########################################################################

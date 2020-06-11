@@ -231,12 +231,16 @@ class HostComponentEndpoint extends ComponentEndpoint {
    * First disposes all descendants (removes recursively) and then removes itself.
    */
   dispose() {
+    this._isDisposed = true;
     for (const child of this.children) {
       child.dispose();
     }
 
     // remove from parent
-    this.parent.children._removeComponent(this);
+    if (this.owner) {
+      const list = this.owner._getComponentListByRoleName(this._internalRoleName);
+      list._removeComponent(this);
+    }
 
     // also dispose on client
     return this._remoteInternal.dispose();

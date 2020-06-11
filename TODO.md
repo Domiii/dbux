@@ -4,9 +4,6 @@
 ## TODO (shared)
 * on error: render 🔥 in `ContextNode`
 * navigation:
-   * fast clicking fails sometimes
-      * it will report that in `dbux-code/src/commands/traceDetailsViewCommands.js` -> `navigationNode.select` -> `navigationNode` is `undefined`
-      * NOTE: take a look at `NavigationNode.select` and uncomment the `debug` statement. maybe it has to do with that?
    * change `CallGraph.get{Next,Previous}InContext` to ignore trace if `isDataOnlyTrace` return `true`
    * when clicking any of the nav buttons, select the `NavigationNode` (this way, the buttons stay visible)
    * if no child found, let `{Next,Previous}ChildInContext` jump to `{start,end}` of context (same as `{Previous,Next}ParentContext`?)
@@ -52,6 +49,8 @@
    * in any view, as well as TextEditor decorations, only retrieve traces, collections, values etc. that match current filter conditions
 
 * largely improve `value` storage + rendering:
+   * meaningful visualization to indicate when object got ommitted/pruned
+   * make sure that `_getKeysErrorsByType` never contains `Object.prototype` itself
    * refactor value storing
       * go to `dbux-runtime` -> `valueCollection.js`
          * (NOTE: in plain objects + arrays, we currently allocate one `ValueRef` for each primitive)
@@ -282,18 +281,21 @@
 
 
 ## TODO (other)
-* sometimes `valueRef.value` is undefined and `typeName` is `''`, even though trace is an object
-   * (e.g. `todos` in `todomvc-es6`, or `newItem` in `this.storage.save(newItem, callback)`)
+* some assignments (and possibly other expressions) are traced twice
+   * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
 * fix: instrumentation of assignments w/ `init instanceof CallExpression`
 * projects
    * only run webpack if not started yet
    * fix bugs with patch files
       * generate commits from patch files so we can easily determine whether patch/commit was applied
    * when bug patch is applied, might have to remove `.git` folder, so `SCM` plugins won't reveal anything accidentally
+   * `nodeRequireArgs` in `dbux-projects/src/nodeUtil` only supports relative paths?
 * parent trace wrong in case of `call`, `apply` et al
-* jest (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
+* jest 
+   * (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
    * also swallows exit check console messages?
-* errors caught mid-way cause `resolveCallIds` to fail
+* when encountering errors caught mid-way
+   * `resolveCallIds` will fail
    * (probably because there are unmatched `BCE`s on the stack)
 * see if we can use jest with `dbux-register`
    * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
