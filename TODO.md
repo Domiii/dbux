@@ -26,10 +26,10 @@
       * maybe add `[hidden]` to `traceLabel`, `contextLabel` and `dp.util.getTraceValueString` if they are hidden?
 
 * fix graph bugs:
-   * reproduce:
-      * run two different files or projects `A.js`, `B.js`
-      * run `A.js` again
-      * will client report error like: `[GraphViewHost] [CLIENT ERORR] [dbux-graph-common/ipc] Received invalid request: componentId is not registered: 23528 - command="_publicInternal.dispose", args="[]`
+   * `[GraphViewHost] [CLIENT ERORR] [dbux-graph-common/ipc] Received invalid request: componentId is not registered: 23528 - command="_publicInternal.dispose", args="[]`
+      * steps to reproduce:
+         * run two different files or projects `A.js`, `B.js`
+         * run `A.js` again
 * `dbux-projects`
    * add "cancel all" button to the top
    * add a better icon for "add folder to workspace" button
@@ -312,6 +312,11 @@
 * when encountering errors caught mid-way
    * `resolveCallIds` will fail
    * (probably because there are unmatched `BCE`s on the stack)
+* big graphs (e.g. `javascript-algorithms` -> `bug #1`) create very slowly, and we have to wait until it finished building to see anything
+   * Domi's guess: It's probably asynchronous operations delayed by `sleep` etc. Spends a lot of time waiting.
+      * NOTE: there are currently 2 x `sleep(0)` in `HostComponentEndpoint`
+   * Step #1: profile this (which parts take how much time?)
+      * also: How are "time spent" and "# of components" correlated?
 * see if we can use jest with `dbux-register`
    * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
 * error resolution doesn't work properly with recursion
