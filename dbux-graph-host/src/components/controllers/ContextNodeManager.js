@@ -24,7 +24,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
   }
 
   refreshOnData = () => {
-    if (!allApplications.selection.containsApplication(this.selector?.applicationId)) {
+    if (this.selector && !allApplications.selection.containsApplication(this.selector.applicationId)) {
       // block highlighting on non-active apps
       this.clear();
     }
@@ -45,7 +45,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   clear() {
     this.contextNodes?.forEach((contextNode) => {
-      if (contextNode?.isDisposed) {
+      if (!contextNode.isDisposed) {
         contextNode.controllers.getComponent('Highlighter').dec();
       }
     });

@@ -235,6 +235,9 @@ class HostComponentEndpoint extends ComponentEndpoint {
     for (const child of this.children) {
       child.dispose();
     }
+    for (const controller of this.controllers) {
+      controller.dispose();
+    }
 
     // remove from parent
     if (this.owner) {

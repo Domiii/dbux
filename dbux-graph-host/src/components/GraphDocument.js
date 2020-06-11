@@ -16,7 +16,10 @@ class GraphDocument extends HostComponentEndpoint {
     this.createOwnComponents();
 
     // register event listeners
-    allApplications.selection.onApplicationsChanged(this.graphRoot.refresh);
+    allApplications.selection.onApplicationsChanged(() => {
+      this.graphRoot.refresh();
+      this.controllers.getComponent(HighlightManager).clearDisposedHighlighter();
+    });
   }
 
   createOwnComponents() {
