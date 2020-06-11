@@ -281,15 +281,21 @@
 
 
 ## TODO (other)
+* fix `HostComponentEndpoint._startUpdate`: must check `waiting` after `waitForInit` a second time
 * some assignments (and possibly other expressions) are traced twice
    * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
 * fix: instrumentation of assignments w/ `init instanceof CallExpression`
 * projects
+   * report error if `applyPatch` failed
    * only run webpack if not started yet
+      * don't cancel all when clicking a button; add "Cancel All" button instead
    * fix bugs with patch files
       * generate commits from patch files so we can easily determine whether patch/commit was applied
-   * when bug patch is applied, might have to remove `.git` folder, so `SCM` plugins won't reveal anything accidentally
+   * when bug patch is applied, might have to: (1) remove `.git` folder, or (2) commit changes, so `SCM` plugins won't show user the changes
    * `nodeRequireArgs` in `dbux-projects/src/nodeUtil` only supports relative paths?
+* instrument `try` blocks
+   * test errors in `try/finally` -> find errors in `try` block?
+   * also show some sort of error symbol when tracing `catch` block?
 * parent trace wrong in case of `call`, `apply` et al
 * jest 
    * (if test not asynchronous) exits right away, not allowing dbux-runtime to send data

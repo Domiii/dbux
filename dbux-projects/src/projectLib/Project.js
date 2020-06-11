@@ -358,12 +358,12 @@ export default class Project {
   }
 
   async applyPatch(patchFName) {
-    return this.exec(`git apply ${this.getPatchFile(patchFName)}`);
+    return this.exec(`git apply --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
   }
 
   async extractPatch(patchFName) {
     // TODO: also copy to `AssetFolder`?
-    return this.exec(`git diff > ${this.getPatchFile(patchFName)}`);
+    return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
   }
 
   // ###########################################################################
