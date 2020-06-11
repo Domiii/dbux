@@ -232,7 +232,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
     }
 
     // remove from parent
-    this.parent.children._removeComponent(this);
+    if (this.owner) {
+      const list = this.owner._getComponentListByRoleName(this._internalRoleName);
+      list._removeComponent(this);
+    }
 
     // also dispose on client
     return this._remoteInternal.dispose();
