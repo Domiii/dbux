@@ -26,19 +26,25 @@ export default class TodomvcEs6Project extends Project {
       {
         name: 'error1',
         patch: 'error1',
-        description: 'todos are not showing up. Luckily there is a clear error message.',
+        description: 'Todo list is always empty. Luckily there is a clear error message.',
         runArgs: []
       },
       {
         name: 'error2',
         patch: 'error2',
-        description: 'todos are not showing up. We see an error, but it is not the actual bug cause, only a sypmtom.',
+        description: 'Todo list is always empty. We see an error message, but it is not the actual bug cause, only a sypmtom.',
         runArgs: []
       },
       {
         name: 'error3',
         patch: 'error3',
-        description: 'todos are not showing up. Sadly no error is visible.',
+        description: 'Todo list is always empty. Sadly no error message is given. Luckily dbux displays an error indicator.',
+        runArgs: []
+      },
+      {
+        name: 'error4',
+        patch: 'error4',
+        description: 'Cannot delete todos anymore. No error message.',
         runArgs: []
       }
     ];

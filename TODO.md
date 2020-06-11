@@ -2,7 +2,6 @@
 # TODO
 
 ## TODO (shared)
-* on error: render 🔥 in `ContextNode`
 * navigation:
    * change `CallGraph.get{Next,Previous}InContext` to ignore trace if `isDataOnlyTrace` return `true`
    * when clicking any of the nav buttons, select the `NavigationNode` (this way, the buttons stay visible)
@@ -26,7 +25,17 @@
       * when selecting "trace at cursor", prevent selecting any "hidden" trace
       * maybe add `[hidden]` to `traceLabel`, `contextLabel` and `dp.util.getTraceValueString` if they are hidden?
 
-* add a new "add folder to workspace" icon (for `dbux-projects`)
+* fix graph bugs:
+   * reproduce:
+      * run two different files or projects `A.js`, `B.js`
+      * run `A.js` again
+      * will client report error like: `[GraphViewHost] [CLIENT ERORR] [dbux-graph-common/ipc] Received invalid request: componentId is not registered: 23528 - command="_publicInternal.dispose", args="[]`
+* `dbux-projects`
+   * add "cancel all" button to the top
+   * add a better icon for "add folder to workspace" button
+   * display background runner status in `ProjectNode`
+      * if running in background, show green light
+      * when clicked -> cancel all
 * refactor `Toolbar` -> move all mode control to `GraphRender` component in `GraphDocument.controllers`
    * NOTE: access via `this.context.graphDocument.controllers.getComponent`
    * remove `this.traceMode` from `GraphDocument`
@@ -328,7 +337,7 @@
    * sometimes does not work for object values?
    * improve array rendering
 * fix: `function` declarations are not tracked
-   * store staticContextId by `function` object, so we can look them up later
+   * store staticContextId by `function` object, so we can quickly jump to them and find all their references
 * fix: use correct package manager when working with libraries in `dbux-projects`
 * fix: strings are currently tracked -> disable tracking of strings
 * fix: `traveValueLabels`
