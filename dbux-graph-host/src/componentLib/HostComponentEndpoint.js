@@ -226,6 +226,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
    * First disposes all descendants (removes recursively) and then removes itself.
    */
   dispose() {
+    this._isDisposed = true;
     for (const child of this.children) {
       child.dispose();
     }

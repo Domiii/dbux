@@ -1,7 +1,5 @@
-import isFunction from 'lodash/isFunction';
 import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
 import DOMWrapper from '@/dom/DOMWrapper';
-import { collectElementsByDataAttr } from '@/util/domUtil';
 import ClientComponentList from './ClientComponentList';
 
 /**
@@ -112,6 +110,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     },
 
     dispose() {
+      this._isDisposed = true;
       this.dom?.remove();
       this.owner?.children._removeComponent(this);
     }
