@@ -88,7 +88,7 @@ export default class GraphWebView {
 
   _createWebview() {
     const webviewId = 'dbux-graph';
-    const title = 'Graph View';
+    const title = 'Call Graph';
 
     this.oldViewColumn = null;
 
