@@ -290,6 +290,10 @@
 
 
 ## TODO (other)
+* project design
+   * how to practice with bugs that require parsing a lot of code first?
+      * -> have simpler bugs in each parts of the code, so the code is more accessible
+* [dbux-graph] when clicking the scrollbar the first time, it disappears, and a gray square pops up in the top left corner instead
 * fix `HostComponentEndpoint._startUpdate`: must check `waiting` after `waitForInit` a second time
 * some assignments (and possibly other expressions) are traced twice
    * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
