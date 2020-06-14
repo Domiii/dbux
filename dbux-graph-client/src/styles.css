@@ -25,7 +25,6 @@ html,body{
   overflow: hidden;
 }
 
-
 /** ###########################################################################
  * graph nodes
  * ############################################################################ */
@@ -113,6 +112,9 @@ html,body{
 }
 .run-node > div {
   border: 1px solid black;
+}
+.hidden-run-node > div {
+  background-color: rgba(206, 206, 206, 0.815);
 }
 
 @keyframes new-run-node {
@@ -287,6 +289,10 @@ html,body{
   overflow-x: hidden;
   text-overflow: ellipsis;
   max-width: 20rem;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 /** ###########################################################################

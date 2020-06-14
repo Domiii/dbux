@@ -1,0 +1,13 @@
+diff --git a/src/controller.js b/src/controller.js
+index 8a48c90..d25ec0a 100644
+--- a/src/controller.js
++++ b/src/controller.js
+@@ -161,7 +161,7 @@ Controller.prototype.removeCompletedItems = function() {
+   var that = this
+   that.model.read({completed: true}, function(data) {
+     data.forEach(function(item) {
+-      that.removeItem(item.id)
++      that.removeItem(item)
+     })
+   })
+ 

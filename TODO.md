@@ -2,7 +2,6 @@
 # TODO
 
 ## TODO (shared)
-* on error: render 🔥 in `ContextNode`
 * navigation:
    * change `CallGraph.get{Next,Previous}InContext` to ignore trace if `isDataOnlyTrace` return `true`
    * when clicking any of the nav buttons, select the `NavigationNode` (this way, the buttons stay visible)
@@ -26,7 +25,17 @@
       * when selecting "trace at cursor", prevent selecting any "hidden" trace
       * maybe add `[hidden]` to `traceLabel`, `contextLabel` and `dp.util.getTraceValueString` if they are hidden?
 
-* add a new "add folder to workspace" icon (for `dbux-projects`)
+* fix graph bugs:
+   * `[GraphViewHost] [CLIENT ERORR] [dbux-graph-common/ipc] Received invalid request: componentId is not registered: 23528 - command="_publicInternal.dispose", args="[]`
+      * steps to reproduce:
+         * run two different files or projects `A.js`, `B.js`
+         * run `A.js` again
+* `dbux-projects`
+   * add "cancel all" button to the top
+   * add a better icon for "add folder to workspace" button
+   * display background runner status in `ProjectNode`
+      * if running in background, show green light
+      * when clicked -> cancel all
 * refactor `Toolbar` -> move all mode control to `GraphRender` component in `GraphDocument.controllers`
    * NOTE: access via `this.context.graphDocument.controllers.getComponent`
    * remove `this.traceMode` from `GraphDocument`
@@ -281,15 +290,21 @@
 
 
 ## TODO (other)
+* fix `HostComponentEndpoint._startUpdate`: must check `waiting` after `waitForInit` a second time
 * some assignments (and possibly other expressions) are traced twice
    * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
 * fix: instrumentation of assignments w/ `init instanceof CallExpression`
 * projects
+   * report error if `applyPatch` failed
    * only run webpack if not started yet
+      * don't cancel all when clicking a button; add "Cancel All" button instead
    * fix bugs with patch files
       * generate commits from patch files so we can easily determine whether patch/commit was applied
-   * when bug patch is applied, might have to remove `.git` folder, so `SCM` plugins won't reveal anything accidentally
+   * when bug patch is applied, might have to: (1) remove `.git` folder, or (2) commit changes, so `SCM` plugins won't show user the changes
    * `nodeRequireArgs` in `dbux-projects/src/nodeUtil` only supports relative paths?
+* instrument `try` blocks
+   * test errors in `try/finally` -> find errors in `try` block?
+   * also show some sort of error symbol when tracing `catch` block?
 * parent trace wrong in case of `call`, `apply` et al
 * jest 
    * (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
@@ -297,6 +312,11 @@
 * when encountering errors caught mid-way
    * `resolveCallIds` will fail
    * (probably because there are unmatched `BCE`s on the stack)
+* big graphs (e.g. `javascript-algorithms` -> `bug #1`) create very slowly, and we have to wait until it finished building to see anything
+   * Domi's guess: It's probably asynchronous operations delayed by `sleep` etc. Spends a lot of time waiting.
+      * NOTE: there are currently 2 x `sleep(0)` in `HostComponentEndpoint`
+   * Step #1: profile this (which parts take how much time?)
+      * also: How are "time spent" and "# of components" correlated?
 * see if we can use jest with `dbux-register`
    * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
 * error resolution doesn't work properly with recursion
@@ -322,7 +342,7 @@
    * sometimes does not work for object values?
    * improve array rendering
 * fix: `function` declarations are not tracked
-   * store staticContextId by `function` object, so we can look them up later
+   * store staticContextId by `function` object, so we can quickly jump to them and find all their references
 * fix: use correct package manager when working with libraries in `dbux-projects`
 * fix: strings are currently tracked -> disable tracking of strings
 * fix: `traveValueLabels`

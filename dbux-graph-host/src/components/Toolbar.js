@@ -7,6 +7,19 @@ class Toolbar extends HostComponentEndpoint {
     this.state.callMode = false;
     this.state.valueMode = false;
     this.state.thinMode = false;
+    this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
+
+    // listen on hiddenModeChanged event to sync hideMode
+    this.hiddenNodeManager.onStateChanged(({ hideBefore, hideAfter }) => {
+      this.setState({
+        hideOldMode: !!hideBefore,
+        hideNewMode: !!hideAfter
+      });
+    });
+
+    this.focusController.on('modeChanged', (mode) => {
+      this.setState({ syncMode: mode });
+    });
   }
 
   get focusController() {
@@ -14,14 +27,26 @@ class Toolbar extends HostComponentEndpoint {
     return graphRoot.controllers.getComponent('FocusController');
   }
 
+  get hiddenNodeManager() {
+    const graphRoot = this.parent.children.getComponent('GraphRoot');
+    return graphRoot.controllers.getComponent('HiddenNodeManager');
+  }
+
   public = {
     async restart() {
       await this.componentManager.restart();
     },
 
-    async toggleSyncMode() {
-      const mode = await this.focusController.toggleSyncMode();
-      this.setState({ syncMode: mode });
+    toggleSyncMode() {
+      const mode = this.focusController.toggleSyncMode();
+    },
+
+    hideOldRun(time) {
+      this.hiddenNodeManager.hideBefore(time);
+    },
+
+    hideNewRun(time) {
+      this.hiddenNodeManager.hideAfter(time);
     },
   }
 }

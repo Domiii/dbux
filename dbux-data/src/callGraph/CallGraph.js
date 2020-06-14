@@ -1,12 +1,13 @@
 import { newLogger } from 'dbux-common/src/log/logger';
-import { isTracePush, isTracePop } from 'dbux-common/src/core/constants/TraceType';
+import { binarySearchByKey } from 'dbux-common/src/util/arrayUtil';
+import { isTracePush, isTracePop, isDataOnlyTrace } from 'dbux-common/src/core/constants/TraceType';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import last from 'lodash/last';
 import DataProvider from '../DataProvider';
 
 const { log, debug, warn, error: logError } = newLogger('CallGraph');
 
-export default class CallGraph { 
+export default class CallGraph {
 
   /**
    * @param {DataProvider} dp
@@ -22,54 +23,24 @@ export default class CallGraph {
   /**
    * Search algorithm ref.: https://github.com/Domiii/dbux#call-graph-navigation
    */
-  
-  getPreviousInContext(traceId) {
-    const trace = this.dp.collections.traces.getById(traceId);
-    const traces = this.dp.util.getTracesOfRealContext(traceId);
-    const index = this._binarySearchByKey(traces, trace, (t) => t.traceId);
-    if (index === null) {
-      logError('Trace not found in traces');
-      debugger;
-      return null;
-    }
-    const previousTraceById = this.dp.collections.traces.getById(traceId - 1);
 
-    if (index !== 0) {
-      return traces[index - 1];
-    }
-    // handle push/pop siblings
-    else if (previousTraceById &&
-      isTracePush(this.dp.util.getTraceType(traceId)) &&
-      isTracePop(this.dp.util.getTraceType(previousTraceById.traceId))) {
-      return previousTraceById;
+  getPreviousInContext(traceId) {
+    const previousTrace = this._getPreviousInContext(traceId);
+    if (previousTrace && isDataOnlyTrace(this.dp.util.getTraceType(previousTrace.traceId))) {
+      return this.getPreviousInContext(previousTrace.traceId);
     }
     else {
-      return null;
+      return previousTrace;
     }
   }
 
   getNextInContext(traceId) {
-    const trace = this.dp.collections.traces.getById(traceId);
-    const traces = this.dp.util.getTracesOfRealContext(traceId);
-    const index = this._binarySearchByKey(traces, trace, (t) => t.traceId);
-    if (index === null) {
-      logError('Trace not found in traces');
-      debugger;
-      return null;
-    }
-    const nextTraceById = this.dp.collections.traces.getById(traceId + 1);
-
-    if (index !== traces.length - 1) {
-      return traces[index + 1];
-    }
-    // handle push/pop siblings
-    else if (nextTraceById &&
-      isTracePop(this.dp.util.getTraceType(traceId)) &&
-      isTracePush(this.dp.util.getTraceType(nextTraceById.traceId))) {
-      return nextTraceById;
+    const nextTrace = this._getNextInContext(traceId);
+    if (nextTrace && isDataOnlyTrace(this.dp.util.getTraceType(nextTrace.traceId))) {
+      return this.getNextInContext(nextTrace.traceId);
     }
     else {
-      return null;
+      return nextTrace;
     }
   }
 
@@ -129,9 +100,85 @@ export default class CallGraph {
     }
   }
 
+  getPreviousByStaticTrace(traceId) {
+    const trace = this.dp.collections.traces.getById(traceId);
+    const traces = this.dp.indexes.traces.byStaticTrace.get(trace.staticTraceId);
+    const index = binarySearchByKey(traces, trace, (t) => t.traceId);
+    
+    if (index !== null && index > 0) {
+      return traces[index - 1];
+    }
+    else {
+      return null;
+    }
+  }
+
+  getNextByStaticTrace(traceId) {
+    const trace = this.dp.collections.traces.getById(traceId);
+    const traces = this.dp.indexes.traces.byStaticTrace.get(trace.staticTraceId);
+    const index = binarySearchByKey(traces, trace, (t) => t.traceId);
+    
+    if (index !== null && index < traces.length - 1) {
+      return traces[index + 1];
+    }
+    else {
+      return null;
+    }
+  }
+
   // ###########################################################################
   //  Private
   // ###########################################################################
+  _getPreviousInContext(traceId) {
+    const trace = this.dp.collections.traces.getById(traceId);
+    const traces = this.dp.util.getTracesOfRealContext(traceId);
+    const index = this._binarySearchByKey(traces, trace, (t) => t.traceId);
+    if (index === null) {
+      logError('Trace not found in traces');
+      debugger;
+      return null;
+    }
+    const previousTraceById = this.dp.collections.traces.getById(traceId - 1);
+
+    if (index !== 0) {
+      return traces[index - 1];
+    }
+    // handle push/pop siblings
+    else if (previousTraceById &&
+      isTracePush(this.dp.util.getTraceType(traceId)) &&
+      isTracePop(this.dp.util.getTraceType(previousTraceById.traceId))) {
+      return previousTraceById;
+    }
+    else {
+      return null;
+    }
+  }
+
+  _getNextInContext(traceId) {
+    const trace = this.dp.collections.traces.getById(traceId);
+    const traces = this.dp.util.getTracesOfRealContext(traceId);
+    const index = this._binarySearchByKey(traces, trace, (t) => t.traceId);
+    if (index === null) {
+      logError('Trace not found in traces');
+      debugger;
+      return null;
+    }
+    const nextTraceById = this.dp.collections.traces.getById(traceId + 1);
+
+    if (index !== traces.length - 1) {
+      return traces[index + 1];
+    }
+    // handle push/pop siblings
+    else if (nextTraceById &&
+      isTracePop(this.dp.util.getTraceType(traceId)) &&
+      isTracePush(this.dp.util.getTraceType(nextTraceById.traceId))) {
+      return nextTraceById;
+    }
+    else {
+      return null;
+    }
+  }
+
   _getPreviousChildTrace(traceId) {
     const realContextId = this.dp.util.getRealContextId(traceId);
     const trace = this.dp.collections.traces.getById(traceId);
@@ -198,18 +245,18 @@ export default class CallGraph {
     let start = 0;
     let end = arr.length - 1;
     let mid;
-  
+
     if (arr[end] < x) return null;
-  
+
     while (start < end) {
       mid = Math.floor((start + end) / 2);
       if (arr[mid] < x) start = mid + 1;
       else end = mid;
     }
-  
+
     return start;
   }
-  
+
   _binarySearchLowerIndexByKey(arr, x, makeKey) {
     if (!arr.length) return null;
     if (makeKey) {
@@ -219,15 +266,15 @@ export default class CallGraph {
     let start = 0;
     let end = arr.length - 1;
     let mid;
-  
+
     if (arr[start] >= x) return null;
-  
+
     while (start < end) {
       mid = Math.ceil((start + end) / 2);
       if (arr[mid] < x) start = mid;
       else end = mid - 1;
     }
-  
+
     return start;
   }
 
