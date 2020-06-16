@@ -1,5 +1,13 @@
 
 ## Project ideas
+* bugsjs
+   * express (1900 loc)
+   * bower (7714 loc)
+   * eslint (134486 loc)
+   * shields (30516 loc)
+   * http://github.com/BugsJS/pencilblue
+   * https://github.com/BugsJS/node_redis
+   * https://github.com/BugsJS/mongoose
 * vscode
    * loc: 500k
    * complications
@@ -18,7 +26,6 @@
    * https://github.com/codecombat/codecombat
 
 ## more project ideas:
-* all bugsjs projects
 * that "gamify your chores" app... "ha... something"?
 * js game engines
 * https://github.com/Khan

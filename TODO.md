@@ -194,59 +194,32 @@
 ## TODO (`dbux-projects`)
 * add `backgroundProcesses` management
 * add buttons:
-   * "select bug"
    * "delete project"
+      * with confirm modal
    * "cancel" (calls `BugRunner.cancel()`)
+      * show as red button while anything is running (including background processes)
+   * project -> "open project in new window"
+      * -> exec(`code -n ${projectPath}`)
+         * -> report error to user if `code` could not be found
+   * bug -> "open bug"?
 * add auto-commit function
-   * show diff of all own changes
-   * -> allow comparing to actual solution? (after submitting?)
-* find a workaround for test timeout?
-   * testing often comes with timeout (e.g. "Error: timeout of 2000ms exceeded")
-      * nothing was received because of error
-      * can we try this outside extension host etc to speed up process?
-      * add `signal-exit`? https://www.npmjs.com/package/signal-exit
-   * check: does this still occur, even with `--no-exit`?
-* make sure, express works:
-   * run it in dbux
-   * switch between bugs
-   * run again
-   * cancel
-* make sure, switching between multiple projects works
-   * (add eslint next?)
-* load bugs from bug database automatically?
-* replace `callbackWrapper` with improved function tracking instead
-   * track...
-      * function declarations (even non-statement declaration)
-      * Context `push`
-      * CallExpression `callee`
-      * any function value
-   * provide improved UI to allow tracking function calls
-* fix up serializer
-* auto attach is not working
-* project state management?
-   * `new Enum()`
-
-* [UI]
-   * list projects
-   * list bugs of each project
-   * show/hide/clear log
-   * project
-      * -> `openInEditor` (see `externals.editor`)
-         * if first install, ask user if they want to add project folder to workspace?
-   * bug
-      * -> `openInEditor` (see `externals.editor`)
-   * manage `bugRunner` state + progress?
-   * manage `running` bugs/tests
-
-   * save changes to patch file before moving to another bug?
-* file management
-   * asset folder?
-   * target folder?
-   * allow target folder to be configurable
+   * allow saving own project changes
+   * when switching between bugs, need to commit all changes
+      * when switching back to that bug, need to fetch that commit
+   * allow reviewing diff of all own changes
+   * allow comparing to actual solution? (after submitting?)
+   * [future work] allow sending to backend
+* load bugs from bug database automatically
+* fix: vscode auto attach is not working?
+* show/hide/clear log for each project
+   * -> add one `dbux-project` `OutputChannel` (https://code.visualstudio.com/api/references/vscode-api#window.createOutputChannel)
+   * add a button to top to open/reveal/focus the `dbux-project` channel
 
 
 * [Deployment]
-   * need to further install dependencies (e.g. `babel` etc.) in order to run anything
+   * fix up paths
+   * discern correctly between `npm` and `yarn`
+   * improve dependency management
 
 * [dbux-practice]
    * difficulty classification
@@ -292,8 +265,8 @@
 
 
 ## TODO (other)
-* project design
-   * how to practice with bugs that require parsing a lot of code first?
+* practice design:
+   * how to practice with bugs that require parsing a lot of code at first?
       * -> have simpler bugs in each parts of the code, so the code is more accessible
 * [dbux-graph] when clicking the scrollbar the first time, it disappears, and a gray square pops up in the top left corner instead
 * fix: instrumentation of assignments w/ `init instanceof CallExpression`
@@ -301,7 +274,8 @@
    * report error if `applyPatch` failed
    * only run webpack if not started yet
       * don't cancel all when clicking a button; add "Cancel All" button instead
-   * fix bugs with patch files
+   * visualize background process (webpack) status
+   * fix patch file problems
       * generate commits from patch files so we can easily determine whether patch/commit was applied
    * when bug patch is applied, might have to: (1) remove `.git` folder, or (2) commit changes, so `SCM` plugins won't show user the changes
    * `nodeRequireArgs` in `dbux-projects/src/nodeUtil` only supports relative paths?
