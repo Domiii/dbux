@@ -1,0 +1,9 @@
+{
+  "name": "dbux-project-sandbox",
+  "private": true,
+  "scripts": {
+    "cloc-express": "npx cloc --exclude-dir=node_modules --match-f='.*\\.js$' ../projects/express/lib --by-file",
+    "cloc-vscode": "cd projects && git clone https://github.com/microsoft/vscode.git || true && cd vscode && npx cloc --exclude-dir=node_modules,fixtures --match-f='.*\\.(js|ts)$' ./src --by-file",
+    "cloc-habitica": "cd projects && git clone https://github.com/HabitRPG/habitica || true && cd habitica && npx cloc --exclude-dir=node_modules,fixtures --match-f='.*\\.(js|ts|vue)$' website/client/src website/server --by-file"
+  }
+}

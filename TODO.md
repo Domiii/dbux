@@ -11,6 +11,8 @@
 * [TraceDetailsView] add Navigation buttons: go to next/previous trace of this staticTrace
 * when highlighting is enabled, `background` color of `popper` should not be affected
 * when clicking error button: call `reveal({focus: true})` on `TraceDetailsView`
+* fix: when we have multiple apps a, b and we restart b:
+   * old `a` nodes don't get removed and `a` gets added two more times
 * Toolbar: add `hide old` button
    * Careful: hidden context nodes can cause trouble if hidden node is being used in any way
       * e.g. if a trace is selected/highlighted/focused/revelaed in sync mode
@@ -294,9 +296,6 @@
    * how to practice with bugs that require parsing a lot of code first?
       * -> have simpler bugs in each parts of the code, so the code is more accessible
 * [dbux-graph] when clicking the scrollbar the first time, it disappears, and a gray square pops up in the top left corner instead
-* fix `HostComponentEndpoint._startUpdate`: must check `waiting` after `waitForInit` a second time
-* some assignments (and possibly other expressions) are traced twice
-   * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
 * fix: instrumentation of assignments w/ `init instanceof CallExpression`
 * projects
    * report error if `applyPatch` failed
@@ -313,17 +312,15 @@
 * jest 
    * (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
    * also swallows exit check console messages?
-* when encountering errors caught mid-way
-   * `resolveCallIds` will fail
-   * (probably because there are unmatched `BCE`s on the stack)
-* big graphs (e.g. `javascript-algorithms` -> `bug #1`) create very slowly, and we have to wait until it finished building to see anything
-   * Domi's guess: It's probably asynchronous operations delayed by `sleep` etc. Spends a lot of time waiting.
-      * NOTE: there are currently 2 x `sleep(0)` in `HostComponentEndpoint`
-   * Step #1: profile this (which parts take how much time?)
-      * also: How are "time spent" and "# of components" correlated?
-* see if we can use jest with `dbux-register`
-   * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
-* error resolution doesn't work properly with recursion
+   * see if we can use jest with `dbux-register`
+      * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
+* error tracing
+   * when encountering errors caught mid-way
+      * `resolveCallIds` will fail
+   * error resolution doesn't work properly with recursion
+      * (probably because there are unmatched `BCE`s on the stack)
+* big graphs (e.g. `javascript-algorithms` -> `bug #1`) build very slowly, and we have to wait until it finished building to see anything
+   * turns out: it's a lot faster in non-debug mode
 * `dbux-graph` errors
    * bugs out if visibility or column changes
       * -> host receives invalid `reply` messages that it did not look for
@@ -331,20 +328,14 @@
          * -> or are there two clients that live in parallel?
    * bugs out when working with multiple applications
    * Client: `Received invalid request: componentId is not registered: 1629 - command="_publicInternal.dispose", args="[]"`
-* fix source maps?
-   * when `dbux-babel-plugin` reports an error
-   * when `dbux-code` reports an error
-* when moving cursor to trace etc, use `revealRange` w/ `TextEditorRevealType.InCenter`
-* fix: when we have multiple apps a, b and we restart b:
-   * old `a` nodes don't get removed and `a` gets added two more times
-* in TrackedObjectTDNode, render `valueString`
-* fix `valueStringShort`?
+* fix source maps
+   * when `dbux-code` reports an error, stack trace does not apply source maps
+* in TrackedObjectTDNode, render `valueString`?
 * fix: in `o[x]`, `x` is not traced
-* proper run: add to `extensions` folder
+* some assignments (and possibly other expressions) are traced twice
+   * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
+* deployment: add to `extensions` folder
    * see: https://github.com/Microsoft/vscode/issues/25159
-* fix: `makeCallValueLabel`
-   * sometimes does not work for object values?
-   * improve array rendering
 * fix: `function` declarations are not tracked
    * store staticContextId by `function` object, so we can quickly jump to them and find all their references
 * fix: use correct package manager when working with libraries in `dbux-projects`
@@ -366,8 +357,6 @@
       2. -> `[Dbux] (...) received init from client twice. Please restart application`
    * -> it seems to try to re-init after the error somehow.
       * Did it restart the process after being killed off?
-* share some basic coding strategies?
-   * e.g. no ballsy one-liners (-> not even `getA().b`)
 * fix: `await` instrumentation
    * `Await`: `resumeTraceId` is `TraceType.Resume`, but can also be `ReturnArgument` or `ThrowArgument`?
 * fix: `CallExpression`, `Function`, `Await` have special interactions
