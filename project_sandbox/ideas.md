@@ -28,7 +28,6 @@
 ## more project ideas:
 * that "gamify your chores" app... "ha... something"?
 * js game engines
-* https://github.com/Khan
 * https://github.com/topics/javascript-applications
 * https://github.com/trending/javascript
 * https://codetabs.com/count-loc/count-loc-online.html
