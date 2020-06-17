@@ -1,8 +1,16 @@
 import isEqual from 'lodash/isEqual';
+import Enum from 'dbux-common/src/util/Enum';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import objectTracker from 'dbux-data/src/objectTracker';
 import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
+
+let SelectorType = {
+  ObjectTrace: 1,
+  StaticContext: 2
+};
+
+SelectorType = new Enum(SelectorType);
 
 export default class ContextNodeManager extends HostComponentEndpoint {
   init() {
@@ -28,10 +36,10 @@ export default class ContextNodeManager extends HostComponentEndpoint {
       // block highlighting on non-active apps
       this.clear();
     }
-    else if (this.selectorType === 'objectTrace') {
+    else if (this.selectorType === SelectorType.ObjectTrace) {
       this.highlightByObject(this.selector);
     }
-    else if (this.selectorType === 'staticContext') {
+    else if (this.selectorType === SelectorType.StaticContext) {
       const { applicationId, staticContextId } = this.selector;
       this.highlightByStaticContext(applicationId, staticContextId);
     }
@@ -60,11 +68,14 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   highlightByStaticContext = (applicationId, staticContextId) => {
     if (this.selector) this.clear();
+    
+    this.context.graphRoot.controllers.getComponent('FocusController').setSyncMode(false);
+    
     const dp = allApplications.getById(applicationId).dataProvider;
     const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId);
 
     this.selector = { applicationId, staticContextId };
-    this.selectorType = 'staticContext';
+    this.selectorType = SelectorType.StaticContext;
     this.highlightContexts(contexts);
   }
 
@@ -95,7 +106,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     const contexts = dp.util.getContextsByTrackId(trackId);
 
     this.selector = { applicationId, traceId };
-    this.selectorType = 'objectTrace';
+    this.selectorType = SelectorType.ObjectTrace;
     this.highlightContexts(contexts);
   }
 

@@ -87,8 +87,7 @@ export default class FocusController extends ClientComponentEndpoint {
       return;
     }
 
-    const targetDOM = node.el;
-    this.targetDOM = node.el;
+    const targetDOM = this.targetDOM = node.el;
 
     let nodeBounds = targetDOM.getBoundingClientRect();
     if (!nodeBounds.height && !nodeBounds.width) {
