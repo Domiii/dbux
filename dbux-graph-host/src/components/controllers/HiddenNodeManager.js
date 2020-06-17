@@ -113,6 +113,11 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
       }
     }
 
+    // remove hideBefore state if nothing is hidden e.g. while deselect hiddenNode
+    if (!hideBeforeCount) {
+      this.hideBefore(false);
+    }
+
     this._emitter.emit('countChanged', {
       hideBeforeCount,
       hideAfterCount
