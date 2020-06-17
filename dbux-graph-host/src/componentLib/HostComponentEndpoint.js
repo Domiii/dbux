@@ -138,7 +138,6 @@ class HostComponentEndpoint extends ComponentEndpoint {
     finally {
       this._waitingForUpdate = false;
     }
-
   }
 
   async _doInitClient() {
@@ -232,21 +231,26 @@ class HostComponentEndpoint extends ComponentEndpoint {
    */
   dispose() {
     this._isDisposed = true;
-    for (const child of this.children) {
-      child.dispose();
-    }
-    for (const controller of this.controllers) {
-      controller.dispose();
-    }
+    Promise.resolve(this.waitForInit()).then(() => {
+      if (!this.isInitialized) {
+        throw new Error(this.debugTag + ' Trying to dispose before initialized');
+      }
+      for (const child of this.children) {
+        child.dispose();
+      }
+      for (const controller of this.controllers) {
+        controller.dispose();
+      }
 
-    // remove from parent
-    if (this.owner) {
-      const list = this.owner._getComponentListByRoleName(this._internalRoleName);
-      list._removeComponent(this);
-    }
+      // remove from parent
+      if (this.owner) {
+        const list = this.owner._getComponentListByRoleName(this._internalRoleName);
+        list._removeComponent(this);
+      }
 
-    // also dispose on client
-    return this._remoteInternal.dispose();
+      // also dispose on client
+      return this._remoteInternal.dispose();
+    });
   }
 
   // ###########################################################################
