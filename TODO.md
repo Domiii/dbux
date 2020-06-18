@@ -367,6 +367,7 @@
       * Known issues: 
          * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
          * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
+   * NOTE: longjohn et al patch all potential scheduler calls for this, see: https://github.com/tlrobinson/long-stack-traces/blob/master/lib/long-stack-traces.js#L89
 * fix: small trace odities
    * for optional call, don't trace as `CallExpression` but trace as `ExpressionResult` if there is no function
    * when selecting a traced "return", it says "no trace at cursor"
