@@ -304,6 +304,15 @@
       2. -> `[Dbux] (...) received init from client twice. Please restart application`
    * -> it seems to try to re-init after the error somehow.
       * Did it restart the process after being killed off?
+* fix callback tracking
+   * partial solution: use data tracking for callbacks
+      * TODO: also data-trace function at declaration
+      * NOTE: Won't work as comprehensively at all
+         * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities
+         * Known issues: 
+            * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
+            * We cannot easily capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
+   * NOTE: longjohn et al patch all potential scheduler calls for this, see: https://github.com/tlrobinson/long-stack-traces/blob/master/lib/long-stack-traces.js#L89
 * fix: `await` instrumentation
    * `Await`: `resumeTraceId` is `TraceType.Resume`, but can also be `ReturnArgument` or `ThrowArgument`?
 * fix: `CallExpression`, `Function`, `Await` have special interactions
@@ -332,14 +341,6 @@
       30
       );
       ```
-
-* fix callback tracking
-   * partial solution: Use a separate map to track callbacks and their points of passage instead?
-      * => Won't work as comprehensively at all
-      * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities
-      * Known issues: 
-         * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
-         * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * fix: small trace odities
    * for optional call, don't trace as `CallExpression` but trace as `ExpressionResult` if there is no function
    * when selecting a traced "return", it says "no trace at cursor"
