@@ -65,12 +65,13 @@ class ContextNode extends HostComponentEndpoint {
     });
   }
 
-  async reveal() {
-    await this.controllers.getComponent('GraphNode').reveal();
+  async reveal(expandItself = false) {
+    await this.controllers.getComponent('GraphNode').reveal(expandItself);
   }
 
   setSelected(isSelected) {
     const selectedTrace = traceSelection.selected;
+    const { traceId } = selectedTrace;
     let isSelectedTraceCallRelated = false;
     let contextIdOfSelectedCallTrace = null;
     if (selectedTrace) {
@@ -81,7 +82,7 @@ class ContextNode extends HostComponentEndpoint {
       isSelectedTraceCallRelated = !!callId;
       contextIdOfSelectedCallTrace = child && child[0].contextId;
     }
-    this.setState({ isSelected, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace });
+    this.setState({ isSelected, traceId, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace });
   }
 
   isHiddenBy() {

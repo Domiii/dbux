@@ -49,6 +49,34 @@ html,body{
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+.indicator-cont{
+  position:relative;
+  width:0;
+  height:auto;
+}
+.set-top .indicator{
+  position: absolute;
+  border-top: 1px solid rgb(139, 0, 0);
+  width: 1em;
+  left:-1.1em;
+  top:0;
+}
+.set-calltrace .indicator::before{
+  content:"●";
+  position: absolute;
+  color: rgb(139, 0, 0);
+  /* border-top: 1px solid black;
+  width: 1em; */
+  left:-0.85em;
+  top:0;
+}
+.set-bottom .indicator{
+  position: absolute;
+  border-top: 1px solid rgb(139, 0, 0);
+  width: 1em;
+  left:-1.1em;
+  bottom:0;
+}
 
 /* 
 .trace{
@@ -96,11 +124,13 @@ html,body{
 }
 
 .node-left-padding {
-  padding-left: 1em;
+  width: 1em;
+  position: relative;
 }
 
 .thin-mode .node-left-padding {
-  padding-left: 0.4em;
+  width: 0.4em;
+  position: relative;
 }
 
 /** ###########################################################################

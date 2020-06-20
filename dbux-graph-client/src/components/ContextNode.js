@@ -3,10 +3,14 @@ import { isMouseEventPlatformModifierKey } from '@/util/keyUtil';
 import { getPlatformModifierKeyString } from '@/util/platformUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
+let choiceElm;
 class ContextNode extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div class="context-node flex-row">
+    <div class="context-node flex-row">
+      <div class = "indicator-cont">
+        <div data-el="indicator" class='indicator'></div>
+      </div>
         <div class="full-width flex-column">
           <div class="content">
             <div class="flex-row">
@@ -36,7 +40,8 @@ class ContextNode extends ClientComponentEndpoint {
             </div>
           </div>
           <div class="full-width flex-row">
-            <div class="node-left-padding"></div>
+            <div class="node-left-padding">
+            </div>
             <div data-mount="ContextNode" data-el="nodeChildren" class="node-children"></div>
           </div>
         </div>
@@ -53,7 +58,10 @@ class ContextNode extends ClientComponentEndpoint {
       parentTraceNameLabel,
       parentTraceLocLabel,
       valueLabel,
-      isSelected
+      isSelected,
+      traceId,
+      isSelectedTraceCallRelated,
+      contextIdOfSelectedCallTrace
     } = this.state;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
@@ -65,11 +73,13 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
     this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
-
     decorateClasses(this.els.title, {
       'selected-trace': isSelected
     });
 
+    // set indicator
+    this.setIndicator(traceId, this.children.getComponents('ContextNode'), isSelectedTraceCallRelated, contextIdOfSelectedCallTrace);
+    console.log(traceId, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace);
     // set popper
     const modKey = getPlatformModifierKeyString();
     this.els.contextLabel.setAttribute('data-tooltip', `${this.els.contextLabel.textContent} (${modKey} + click to select trace)`);
@@ -135,6 +145,33 @@ class ContextNode extends ClientComponentEndpoint {
     }
     // }
   }
+
+  setIndicator(traceId, children, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace) {
+    choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
+    if (!children || !traceId) {
+      return;
+    }
+
+    //check indicator position -del
+    let selectChild = children.map((x) => [x.state.context.parentTraceId, x.state.context.contextId]);
+    let toggle = selectChild.findIndex(x => x[0] > traceId);
+
+    // check trace is selectedTraceCallRelated -del
+    if (toggle !== -1 && isSelectedTraceCallRelated && contextIdOfSelectedCallTrace !== undefined) {
+      toggle = selectChild.findIndex(x => x[1] === contextIdOfSelectedCallTrace);
+      choiceElm = children[toggle]?.el.querySelector('.indicator-cont');
+      choiceElm?.classList?.add('set-calltrace');
+    } 
+    else if (toggle !== -1) {
+      choiceElm = children[toggle]?.el.querySelector('.indicator-cont');
+      choiceElm?.classList?.add('set-top');
+    } 
+    else {
+      choiceElm = children[children.length - 1]?.el.querySelector('.indicator-cont');
+      choiceElm?.classList?.add('set-bottom');
+    }
+  }
+
 
   on = {
     contextLabel: {
