@@ -57,11 +57,7 @@ export default class NavigationNode extends BaseTreeViewNode {
     const defaultMethodName = defaultMethods[methodName];
     if (defaultMethodName) {
       const defaultTarget = tracePlayback[`get${defaultMethodName}`]?.(trace);
-      if (!defaultTarget) {
-        logError(`can't get${defaultMethodName} of traceId${trace.traceId}`);
-        return trace;
-      }
-      return defaultTarget;
+      return defaultTarget || null;
     }
     else {
       return null;

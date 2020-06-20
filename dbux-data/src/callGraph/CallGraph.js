@@ -26,7 +26,12 @@ export default class CallGraph {
 
   getPreviousInContext(traceId) {
     const previousTrace = this._getPreviousInContext(traceId);
-    if (previousTrace && isDataOnlyTrace(this.dp.util.getTraceType(previousTrace.traceId))) {
+    if (this._isDataTrace(previousTrace)) {
+      if (traceId === previousTrace.traceId) {
+        // avoiding endless loop
+        logError('Found same trace in `getPreviousInContext`');
+        return null;
+      }
       return this.getPreviousInContext(previousTrace.traceId);
     }
     else {
@@ -36,7 +41,12 @@ export default class CallGraph {
 
   getNextInContext(traceId) {
     const nextTrace = this._getNextInContext(traceId);
-    if (nextTrace && isDataOnlyTrace(this.dp.util.getTraceType(nextTrace.traceId))) {
+    if (this._isDataTrace(nextTrace)) {
+      if (traceId === nextTrace.traceId) {
+        // avoiding endless loop
+        logError('Found same trace in `getNextInContext`');
+        return null;
+      }
       return this.getNextInContext(nextTrace.traceId);
     }
     else {
@@ -285,5 +295,14 @@ export default class CallGraph {
 
   _getContextByTrace = (trace) => {
     return this.dp.collections.executionContexts.getById(trace.contextId);
+  }
+
+  _isDataTrace(trace) {
+    if (trace && isDataOnlyTrace(this.dp.util.getTraceType(trace.traceId))) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }

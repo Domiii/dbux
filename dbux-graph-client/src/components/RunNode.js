@@ -21,14 +21,17 @@ class RunNode extends ClientComponentEndpoint {
       this.el.classList.add('new');
       setTimeout(() => {
         // "new" animation has finished -> remove class
-        this.el.classList.remove('new');
+        if (!this.isDisposed) {
+          this.el.classList.remove('new');
+        }
       }, remainingAnimTime);
     }
   }
-  
+
   update() {
     const { visible, createdAt } = this.state;
-    this.el.style.order = createdAt || 0;
+    // deduct by a constant to avoid overflow
+    this.el.style.order = createdAt - 1592380000000 || 0;
     if (visible) {
       this.el.classList.remove('hidden');
     }
