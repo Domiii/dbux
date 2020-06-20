@@ -232,6 +232,9 @@
 
 
 ## TODO (other)
+* dbux-graph:
+   * add search function
+   * add "id" to context nodes (toolbar-togglable)
 * get ready for deployment!
 * [dbux-projects]
    * support multiple tests per bug
