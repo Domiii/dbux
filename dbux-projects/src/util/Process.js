@@ -131,13 +131,17 @@ export default class Process {
   async kill(signal = 'SIGTERM') {
     this._killed = true;
     this._process?.kill(signal);
-    await this._promise.catch(err => {
+    await this.waitToEnd().catch(err => {
       debug('ignored process error after kill:', err.message);
     });
   }
 
   async waitToEnd() {
     // add noop to make sure callers to `wait` will resolve in order
-    return this._promise = this._promise.then(() => { });
+    if (!this._promise) {
+      // not started yet
+      return;
+    }
+    await (this._promise = this._promise.then(() => { }));
   }
 }

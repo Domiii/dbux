@@ -44,7 +44,7 @@ export default class TodomvcEs6Project extends Project {
       {
         name: 'error4',
         patch: 'error4',
-        description: 'Cannot delete todos anymore. No error message.',
+        description: '"Clear completed" button does not do anything. No error message.',
         runArgs: []
       }
     ];

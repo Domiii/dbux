@@ -219,9 +219,8 @@ export default class BugRunner {
     await this._process?.kill();
 
     // kill background processes
-    for (const process of this._project?.backgroundProcesses || EmptyArray) {
-      process.kill();
-    }
+    const backgroundProcesses = this._project?.backgroundProcesses || EmptyArray;
+    await Promise.all(backgroundProcesses.map(p => p.kill()));
 
     this._bug = null;
     this._project = null;

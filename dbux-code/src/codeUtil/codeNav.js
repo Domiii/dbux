@@ -50,7 +50,8 @@ export async function showTextDocument(fpath, column) {
   if (!column) {
     // use a naive heuristic: if active file is js file choose active column
     if (window.activeTextEditor?.document?.fileName?.endsWith('.js')) {
-      column = ViewColumn.Active;
+      // column = ViewColumn.Active;
+      column = window.activeTextEditor.viewColumn || ViewColumn.One;
     }
     else {
       column = ViewColumn.One;

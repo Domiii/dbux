@@ -232,6 +232,7 @@
 
 
 ## TODO (other)
+* get ready for deployment!
 * [dbux-projects]
    * support multiple tests per bug
       * e.g. https://github.com/BugsJS/express/releases/tag/Bug-10-test -> https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f

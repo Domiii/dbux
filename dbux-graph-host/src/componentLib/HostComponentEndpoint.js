@@ -116,13 +116,17 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
     this._initPromise = new Promise(r => {
       // do the long async init dance
-      // [hackfix] we are delaying `initClient` via `resolve` because it needs `_internalRoleName` (and maybe other stuff?), which will be set after `_build` was called
-      //  TODO: this is not good, since `init` might also depend on that data, and it is called already
-      this._doInitClient.bind(this)
-        .catch(err => {
+      // [hackfix] we are delaying `initClient` via `resolve().then()` because it needs `_internalRoleName` (and maybe other stuff?), 
+      //    which will be set after `_build` was called.
+      //    This is not good, since `init` might also want that data but it is called immediately.
+      //    see: https://gist.github.com/Domiii/1eeedd50d911ee8a651a2452594443a5#when-are-chained-callbacks-in-promises-resolved
+      Promise.resolve().
+        then(this._doInitClient.bind(this)).
+        catch(err => {
           this.logger.error('error when initializing client\n  ', err);
           return null;
-        }).finally(() => {
+        }).
+        finally(() => {
           // _initPromise has fulfilled its purpose
           this._initPromise = null;
           r();

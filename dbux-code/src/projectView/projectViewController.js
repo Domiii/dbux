@@ -104,6 +104,14 @@ class ProjectViewController {
 export function initProjectView(context) {
   controller = new ProjectViewController(context);
 
+  // shut it all down when VSCode shuts down
+  context.subscriptions.push({
+    dispose() {
+      const runner = controller.manager.getOrCreateRunner();
+      runner.cancel();
+    }
+  });
+
   // refresh right away
   controller.treeDataProvider.refresh();
 
