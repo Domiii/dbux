@@ -15,6 +15,8 @@ import Collection from './Collection';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
 
+import DataProviderUtil from './dataProviderUtil';
+
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
 function errorWrapMethod(obj, methodName, ...args) {
@@ -302,7 +304,6 @@ class ValueCollection extends Collection<ValueRef> {
   }
 }
 
-
 export default class DataProvider {
   /**
    * Used for serialization
@@ -335,7 +336,11 @@ export default class DataProvider {
    * @type {StaticProgramContext}
    */
   application;
-  util: any;
+
+  /**
+   * @type {DataProviderUtil}
+   */
+  util;
 
   constructor(application) {
     this.application = application;

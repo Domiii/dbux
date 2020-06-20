@@ -6,7 +6,10 @@ import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticConte
 import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from 'dbux-common/src/core/constants/traceCategorization';
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
-import DataProvider from './DataProvider';
+
+/**
+ * @typedef {import('./DataProvider').default} DataProvider
+ */
 
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 

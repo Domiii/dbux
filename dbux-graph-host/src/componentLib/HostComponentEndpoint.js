@@ -104,7 +104,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
   }
 
   // ###########################################################################
-  // _build
+  // _build + init
   // ###########################################################################
 
   /**
@@ -114,40 +114,39 @@ class HostComponentEndpoint extends ComponentEndpoint {
     // store properties
     super._build(componentManager, parent, componentId, initialState);
 
-    const initHost = () => {
-      try {
-        this._waitingForUpdate = true;
-        this._preInit();                                    // 0. host: preInit
-        this.init();                                        // 1. host: init
-        Verbose && this.logger.debug('init called');
-        this.update();                                      // 2. host: update
-      }
-      catch (err) {
-        this.logger.error('init or initial update failed on host\n  ', err);
-      }
-      finally {
-        this._waitingForUpdate = false;
-      }
-    };
-
     this._initPromise = new Promise(r => {
       // do the long async init dance
       // [hackfix] we are delaying `initClient` via `resolve` because it needs `_internalRoleName` (and maybe other stuff?), which will be set after `_build` was called
       //  TODO: this is not good, since `init` might also depend on that data, and it is called already
-      r(Promise.resolve()
-        .then(this._doInitClient.bind(this))
+      this._doInitClient.bind(this)
         .catch(err => {
           this.logger.error('error when initializing client\n  ', err);
           return null;
         }).finally(() => {
           // _initPromise has fulfilled its purpose
           this._initPromise = null;
-        })
-      );
+          r();
+        });
     });
 
     // start initHost after `_initPromise` has been assigned
-    initHost();
+    this._initHost();
+  }
+
+  _initHost() {
+    try {
+      this._waitingForUpdate = true;
+      this._preInit();                                    // 0. host: preInit
+      this.init();                                        // 1. host: init
+      Verbose && this.logger.debug('init called');
+      this.update();                                      // 2. host: update
+    }
+    catch (err) {
+      this.logger.error('init or initial update failed on host\n  ', err);
+    }
+    finally {
+      this._waitingForUpdate = false;
+    }
   }
 
   async _doInitClient() {
@@ -247,21 +246,26 @@ class HostComponentEndpoint extends ComponentEndpoint {
    */
   dispose() {
     this._isDisposed = true;
-    for (const child of this.children) {
-      child.dispose();
-    }
-    for (const controller of this.controllers) {
-      controller.dispose();
-    }
+    Promise.resolve(this.waitForInit()).then(() => {
+      if (!this.isInitialized) {
+        throw new Error(this.debugTag + ' Trying to dispose before initialized');
+      }
+      for (const child of this.children) {
+        child.dispose();
+      }
+      for (const controller of this.controllers) {
+        controller.dispose();
+      }
 
-    // remove from parent
-    if (this.owner) {
-      const list = this.owner._getComponentListByRoleName(this._internalRoleName);
-      list._removeComponent(this);
-    }
+      // remove from parent
+      if (this.owner) {
+        const list = this.owner._getComponentListByRoleName(this._internalRoleName);
+        list._removeComponent(this);
+      }
 
-    // also dispose on client
-    return this._remoteInternal.dispose();
+      // also dispose on client
+      return this._remoteInternal.dispose();
+    });
   }
 
   // ###########################################################################
