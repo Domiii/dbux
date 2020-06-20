@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// TODO: this generates results, different from `dbuxRunFile`; making it hard to trace down certain behavior
+
 const fs = require('fs');
 const path = require('path');
 const moduleAlias = require('module-alias');
@@ -23,7 +25,6 @@ const sharedDeps = [
 // add aliases (since these libraries are not locally available)
 dbuxAliases.forEach(alias => moduleAlias.addAlias(alias, path.join(dbuxRoot, alias)));
 sharedDeps.forEach(dep => moduleAlias.addAlias(dep, path.join(dbuxRoot, 'node_modules', dep)));
-
 
 const dbuxBabelPlugin = require('dbux-babel-plugin');
 const cliBabelOptions = require(path.join(cliDir, 'babel.config.js'));

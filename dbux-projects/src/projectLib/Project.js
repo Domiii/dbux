@@ -246,6 +246,10 @@ export default class Project {
     await this.exec(`git add -A && git commit -am "[dbux auto commit]"`);
   }
 
+  async deleteProjectFolder() {
+    await sh.rm('rf', this.projectPath);
+  }
+
 
   async gitClone() {
     const {

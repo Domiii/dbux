@@ -11,27 +11,6 @@
 * [TraceDetailsView] add Navigation buttons: go to next/previous trace of this staticTrace
 * when highlighting is enabled, `background` color of `popper` should not be affected
 * when clicking error button: call `reveal({focus: true})` on `TraceDetailsView`
-* fix: when we have multiple apps a, b and we restart b:
-   * old `a` nodes don't get removed and `a` gets added two more times
-* Toolbar: add `hide old` button
-   * Careful: hidden context nodes can cause trouble if hidden node is being used in any way
-      * e.g. if a trace is selected/highlighted/focused/revelaed in sync mode
-      * -> need to patch up all relevant places to account for hidden nodes
-      * -> add new `HiddenNode` to encapsulate this
-      * -> consider `GroupNode` concept here
-         * NOTE: multiple nodes collapsed into one, is very similar to what we expect of the future `GroupNode` concept
-   * advanced
-      * show a "Hiding X nodes" button at the top of the root (parallel to `RunNode`s)
-         * -> When clicking it, unhide them
-      * in `traceDecorator`: don't show code decorations of "hidden" traces
-      * when selecting "trace at cursor", prevent selecting any "hidden" trace
-      * maybe add `[hidden]` to `traceLabel`, `contextLabel` and `dp.util.getTraceValueString` if they are hidden?
-
-* fix graph bugs:
-   * `[GraphViewHost] [CLIENT ERORR] [dbux-graph-common/ipc] Received invalid request: componentId is not registered: 23528 - command="_publicInternal.dispose", args="[]`
-      * steps to reproduce:
-         * run two different files or projects `A.js`, `B.js`
-         * run `A.js` again
 * `dbux-projects`
    * add "cancel all" button to the top
    * add a better icon for "add folder to workspace" button
@@ -44,16 +23,16 @@
       * NOTE: don't add any properties directly to a component, unless you have a very good reason to
 * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
 * in editor, when we select a range with the cursor, only select traces that are completely contained by that range (e.g. when selecting `g(x)` in `f(g(x));`, do not select `f`)
-* fix: we cannot currently easily add images to the `graph` from the `resource` folder
-   * -> define a `customElement` (e.g. `img-local`) that wraps an `img` element
-      * prepend the img's `src` attribute with `GraphWebView.resourcePath`
-      * -> Concept: "web component" (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
 * add `Cancel` button to `projectsView`
    * NOTE: needs a basic event system to monitor all project + bug activity
    * -> don't show button when nothing running
    * while any bug is running...
       * need to cancel before being able to run another bug
       * "run" button of that bug becomes "cancel" button
+* fix: we cannot currently easily add images to the `graph` from the `resource` folder
+   * -> define a `customElement` (e.g. `img-local`) that wraps an `img` element
+      * prepend the img's `src` attribute with `GraphWebView.resourcePath`
+      * -> Concept: "web component" (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
 
 * add `DataFilter`
    * when hiding graph nodes, actually change global `dbux-data` filter settings
@@ -193,15 +172,6 @@
 
 ## TODO (`dbux-projects`)
 * add `backgroundProcesses` management
-* add buttons:
-   * "delete project"
-      * with confirm modal
-   * "cancel" (calls `BugRunner.cancel()`)
-      * show as red button while anything is running (including background processes)
-   * project -> "open project in new window"
-      * -> exec(`code -n ${projectPath}`)
-         * -> report error to user if `code` could not be found
-   * bug -> "open bug"?
 * add auto-commit function
    * allow saving own project changes
    * when switching between bugs, need to commit all changes
@@ -211,9 +181,6 @@
    * [future work] allow sending to backend
 * load bugs from bug database automatically
 * fix: vscode auto attach is not working?
-* show/hide/clear log for each project
-   * -> add one `dbux-project` `OutputChannel` (https://code.visualstudio.com/api/references/vscode-api#window.createOutputChannel)
-   * add a button to top to open/reveal/focus the `dbux-project` channel
 
 
 * [Deployment]
@@ -265,6 +232,12 @@
 
 
 ## TODO (other)
+* [dbux-projects]
+   * support multiple tests per bug
+      * e.g. https://github.com/BugsJS/express/releases/tag/Bug-10-test -> https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
+   * `eslint` sample bugs require setting a node version
+      * NOTE: they use `n` for that; see `myTest.py`
+         * -> `n` is not natively supported on Windows (see https://github.com/tj/n/issues/511)
 * practice design:
    * how to practice with bugs that require parsing a lot of code at first?
       * -> have simpler bugs in each parts of the code, so the code is more accessible
