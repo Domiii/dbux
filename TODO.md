@@ -246,7 +246,10 @@
    * how to practice with bugs that require parsing a lot of code at first?
       * -> have simpler bugs in each parts of the code, so the code is more accessible
 * [dbux-graph] when clicking the scrollbar the first time, it disappears, and a gray square pops up in the top left corner instead
-* fix: instrumentation of assignments w/ `init instanceof CallExpression`
+* parent trace wrong for `call`, `apply`?
+   * `callback.call(this, JSON.parse(localStorage[name]))`
+   * probably because args are not traced correctly
+* fix: instrumentation of assignments w/ `init instanceof CallExpression`???
 * projects
    * report error if `applyPatch` failed
    * only run webpack if not started yet
@@ -259,7 +262,6 @@
 * instrument `try` blocks
    * test errors in `try/finally` -> find errors in `try` block?
    * also show some sort of error symbol when tracing `catch` block?
-* parent trace wrong in case of `call`, `apply` et al
 * jest 
    * (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
    * also swallows exit check console messages?
