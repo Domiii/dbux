@@ -246,6 +246,10 @@ export default class Project {
     await this.exec(`git add -A && git commit -am "[dbux auto commit]"`);
   }
 
+  async deleteProjectFolder() {
+    await sh.rm('rf', this.projectPath);
+  }
+
 
   async gitClone() {
     const {
@@ -358,12 +362,12 @@ export default class Project {
   }
 
   async applyPatch(patchFName) {
-    return this.exec(`git apply ${this.getPatchFile(patchFName)}`);
+    return this.exec(`git apply --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
   }
 
   async extractPatch(patchFName) {
     // TODO: also copy to `AssetFolder`?
-    return this.exec(`git diff > ${this.getPatchFile(patchFName)}`);
+    return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
   }
 
   // ###########################################################################

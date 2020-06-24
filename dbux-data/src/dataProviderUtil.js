@@ -224,7 +224,7 @@ export default {
     }
 
     const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef && valueRef.value || undefined;
+    return valueRef && valueRef.value;
   },
 
   /** @param {DataProvider} dp */

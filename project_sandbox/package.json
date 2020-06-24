@@ -1,0 +1,13 @@
+{
+  "name": "dbux-project-sandbox",
+  "private": true,
+  "scripts": {
+    "install-bug-dataset": "git clone https://github.com/BugsJS/bug-dataset.git",
+    "cloc-express": "npx cloc --exclude-dir=node_modules --match-f='.*\\.js$' --by-file ../projects/express/lib",
+    "cloc-vscode": "cd projects && git clone https://github.com/microsoft/vscode.git || true && cd vscode && npx cloc --exclude-dir=node_modules,fixtures --match-f='.*\\.(js|ts)$' ./src --by-file",
+    "cloc-habitica": "cd projects && git clone https://github.com/HabitRPG/habitica || true && cd habitica && npx cloc --exclude-dir=node_modules,fixtures --match-f='.*\\.(js|ts|vue)$' website/client/src website/server --by-file",
+    "cloc-bower": "cd projects && git clone https://github.com/BugsJS/bower.git || true && cd bower && npx cloc --match-f='.*\\.(js|ts)$' --by-file lib",
+    "cloc-eslint": "cd projects && git clone https://github.com/BugsJS/eslint.git || true && cd eslint && npx cloc --match-f='.*\\.(e?js|ts)$' --by-file lib bin tools tests/lib templates",
+    "cloc-shields": "cd projects && git clone https://github.com/BugsJS/shields.git || true && cd shields && npx cloc --match-f='.*\\.(e?js|ts)$' --by-file lib services frontend"
+  }
+}

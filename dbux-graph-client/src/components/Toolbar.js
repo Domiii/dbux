@@ -11,13 +11,13 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <button data-el="hideNewRunBtn" class="btn btn-info" href="#"></button>
+          <button data-el="hideOldRunBtn" class="btn btn-info" href="#">x</button>
           <button data-el="syncModeBtn" class="btn btn-info" href="#">sync</button>
           <button data-el="locModeBtn" class="btn btn-info" href="#">loc</button>
           <button data-el="callModeBtn" class="btn btn-info" href="#">call</button>
           <button data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
           <button data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
-          <button data-el="hideNewRunBtn" class="btn btn-info" href="#"></button>
-          <button data-el="hideOldRunBtn" class="btn btn-info" href="#">🛇</button>
         </div>
         <button data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</button>
       </nav>

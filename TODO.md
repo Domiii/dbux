@@ -2,7 +2,6 @@
 # TODO
 
 ## TODO (shared)
-* on error: render 🔥 in `ContextNode`
 * navigation:
    * change `CallGraph.get{Next,Previous}InContext` to ignore trace if `isDataOnlyTrace` return `true`
    * when clicking any of the nav buttons, select the `NavigationNode` (this way, the buttons stay visible)
@@ -12,37 +11,28 @@
 * [TraceDetailsView] add Navigation buttons: go to next/previous trace of this staticTrace
 * when highlighting is enabled, `background` color of `popper` should not be affected
 * when clicking error button: call `reveal({focus: true})` on `TraceDetailsView`
-* Toolbar: add `hide old` button
-   * Careful: hidden context nodes can cause trouble if hidden node is being used in any way
-      * e.g. if a trace is selected/highlighted/focused/revelaed in sync mode
-      * -> need to patch up all relevant places to account for hidden nodes
-      * -> add new `HiddenNode` to encapsulate this
-      * -> consider `GroupNode` concept here
-         * NOTE: multiple nodes collapsed into one, is very similar to what we expect of the future `GroupNode` concept
-   * advanced
-      * show a "Hiding X nodes" button at the top of the root (parallel to `RunNode`s)
-         * -> When clicking it, unhide them
-      * in `traceDecorator`: don't show code decorations of "hidden" traces
-      * when selecting "trace at cursor", prevent selecting any "hidden" trace
-      * maybe add `[hidden]` to `traceLabel`, `contextLabel` and `dp.util.getTraceValueString` if they are hidden?
-
-* add a new "add folder to workspace" icon (for `dbux-projects`)
+* `dbux-projects`
+   * add "cancel all" button to the top
+   * add a better icon for "add folder to workspace" button
+   * display background runner status in `ProjectNode`
+      * if running in background, show green light
+      * when clicked -> cancel all
 * refactor `Toolbar` -> move all mode control to `GraphRender` component in `GraphDocument.controllers`
    * NOTE: access via `this.context.graphDocument.controllers.getComponent`
    * remove `this.traceMode` from `GraphDocument`
       * NOTE: don't add any properties directly to a component, unless you have a very good reason to
 * add buttons to `ContextNode`: go to next/previous context of this staticContext (`parentTrace` of next/previous context)
 * in editor, when we select a range with the cursor, only select traces that are completely contained by that range (e.g. when selecting `g(x)` in `f(g(x));`, do not select `f`)
-* fix: we cannot currently easily add images to the `graph` from the `resource` folder
-   * -> define a `customElement` (e.g. `img-local`) that wraps an `img` element
-      * prepend the img's `src` attribute with `GraphWebView.resourcePath`
-      * -> Concept: "web component" (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
 * add `Cancel` button to `projectsView`
    * NOTE: needs a basic event system to monitor all project + bug activity
    * -> don't show button when nothing running
    * while any bug is running...
       * need to cancel before being able to run another bug
       * "run" button of that bug becomes "cancel" button
+* fix: we cannot currently easily add images to the `graph` from the `resource` folder
+   * -> define a `customElement` (e.g. `img-local`) that wraps an `img` element
+      * prepend the img's `src` attribute with `GraphWebView.resourcePath`
+      * -> Concept: "web component" (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
 
 * add `DataFilter`
    * when hiding graph nodes, actually change global `dbux-data` filter settings
@@ -182,60 +172,21 @@
 
 ## TODO (`dbux-projects`)
 * add `backgroundProcesses` management
-* add buttons:
-   * "select bug"
-   * "delete project"
-   * "cancel" (calls `BugRunner.cancel()`)
 * add auto-commit function
-   * show diff of all own changes
-   * -> allow comparing to actual solution? (after submitting?)
-* find a workaround for test timeout?
-   * testing often comes with timeout (e.g. "Error: timeout of 2000ms exceeded")
-      * nothing was received because of error
-      * can we try this outside extension host etc to speed up process?
-      * add `signal-exit`? https://www.npmjs.com/package/signal-exit
-   * check: does this still occur, even with `--no-exit`?
-* make sure, express works:
-   * run it in dbux
-   * switch between bugs
-   * run again
-   * cancel
-* make sure, switching between multiple projects works
-   * (add eslint next?)
-* load bugs from bug database automatically?
-* replace `callbackWrapper` with improved function tracking instead
-   * track...
-      * function declarations (even non-statement declaration)
-      * Context `push`
-      * CallExpression `callee`
-      * any function value
-   * provide improved UI to allow tracking function calls
-* fix up serializer
-* auto attach is not working
-* project state management?
-   * `new Enum()`
-
-* [UI]
-   * list projects
-   * list bugs of each project
-   * show/hide/clear log
-   * project
-      * -> `openInEditor` (see `externals.editor`)
-         * if first install, ask user if they want to add project folder to workspace?
-   * bug
-      * -> `openInEditor` (see `externals.editor`)
-   * manage `bugRunner` state + progress?
-   * manage `running` bugs/tests
-
-   * save changes to patch file before moving to another bug?
-* file management
-   * asset folder?
-   * target folder?
-   * allow target folder to be configurable
+   * allow saving own project changes
+   * when switching between bugs, need to commit all changes
+      * when switching back to that bug, need to fetch that commit
+   * allow reviewing diff of all own changes
+   * allow comparing to actual solution? (after submitting?)
+   * [future work] allow sending to backend
+* load bugs from bug database automatically
+* fix: vscode auto attach is not working?
 
 
 * [Deployment]
-   * need to further install dependencies (e.g. `babel` etc.) in order to run anything
+   * fix up paths
+   * discern correctly between `npm` and `yarn`
+   * improve dependency management
 
 * [dbux-practice]
    * difficulty classification
@@ -281,25 +232,48 @@
 
 
 ## TODO (other)
-* some assignments (and possibly other expressions) are traced twice
-   * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
-* fix: instrumentation of assignments w/ `init instanceof CallExpression`
+* dbux-graph:
+   * add search function
+   * add "id" to context nodes (toolbar-togglable)
+* get ready for deployment!
+* [dbux-projects]
+   * support multiple tests per bug
+      * e.g. https://github.com/BugsJS/express/releases/tag/Bug-10-test -> https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
+   * `eslint` sample bugs require setting a node version
+      * NOTE: they use `n` for that; see `myTest.py`
+         * -> `n` is not natively supported on Windows (see https://github.com/tj/n/issues/511)
+* practice design:
+   * how to practice with bugs that require parsing a lot of code at first?
+      * -> have simpler bugs in each parts of the code, so the code is more accessible
+* [dbux-graph] when clicking the scrollbar the first time, it disappears, and a gray square pops up in the top left corner instead
+* parent trace wrong for `call`, `apply`?
+   * `callback.call(this, JSON.parse(localStorage[name]))`
+   * probably because args are not traced correctly
+* fix: instrumentation of assignments w/ `init instanceof CallExpression`???
 * projects
+   * report error if `applyPatch` failed
    * only run webpack if not started yet
-   * fix bugs with patch files
+      * don't cancel all when clicking a button; add "Cancel All" button instead
+   * visualize background process (webpack) status
+   * fix patch file problems
       * generate commits from patch files so we can easily determine whether patch/commit was applied
-   * when bug patch is applied, might have to remove `.git` folder, so `SCM` plugins won't reveal anything accidentally
+   * when bug patch is applied, might have to: (1) remove `.git` folder, or (2) commit changes, so `SCM` plugins won't show user the changes
    * `nodeRequireArgs` in `dbux-projects/src/nodeUtil` only supports relative paths?
-* parent trace wrong in case of `call`, `apply` et al
+* instrument `try` blocks
+   * test errors in `try/finally` -> find errors in `try` block?
+   * also show some sort of error symbol when tracing `catch` block?
 * jest 
    * (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
    * also swallows exit check console messages?
-* when encountering errors caught mid-way
-   * `resolveCallIds` will fail
-   * (probably because there are unmatched `BCE`s on the stack)
-* see if we can use jest with `dbux-register`
-   * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
-* error resolution doesn't work properly with recursion
+   * see if we can use jest with `dbux-register`
+      * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
+* error tracing
+   * when encountering errors caught mid-way
+      * `resolveCallIds` will fail
+   * error resolution doesn't work properly with recursion
+      * (probably because there are unmatched `BCE`s on the stack)
+* big graphs (e.g. `javascript-algorithms` -> `bug #1`) build very slowly, and we have to wait until it finished building to see anything
+   * turns out: it's a lot faster in non-debug mode
 * `dbux-graph` errors
    * bugs out if visibility or column changes
       * -> host receives invalid `reply` messages that it did not look for
@@ -307,22 +281,16 @@
          * -> or are there two clients that live in parallel?
    * bugs out when working with multiple applications
    * Client: `Received invalid request: componentId is not registered: 1629 - command="_publicInternal.dispose", args="[]"`
-* fix source maps?
-   * when `dbux-babel-plugin` reports an error
-   * when `dbux-code` reports an error
-* when moving cursor to trace etc, use `revealRange` w/ `TextEditorRevealType.InCenter`
-* fix: when we have multiple apps a, b and we restart b:
-   * old `a` nodes don't get removed and `a` gets added two more times
-* in TrackedObjectTDNode, render `valueString`
-* fix `valueStringShort`?
+* fix source maps
+   * when `dbux-code` reports an error, stack trace does not apply source maps
+* in TrackedObjectTDNode, render `valueString`?
 * fix: in `o[x]`, `x` is not traced
-* proper run: add to `extensions` folder
+* some assignments (and possibly other expressions) are traced twice
+   * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
+* deployment: add to `extensions` folder
    * see: https://github.com/Microsoft/vscode/issues/25159
-* fix: `makeCallValueLabel`
-   * sometimes does not work for object values?
-   * improve array rendering
 * fix: `function` declarations are not tracked
-   * store staticContextId by `function` object, so we can look them up later
+   * store staticContextId by `function` object, so we can quickly jump to them and find all their references
 * fix: use correct package manager when working with libraries in `dbux-projects`
 * fix: strings are currently tracked -> disable tracking of strings
 * fix: `traveValueLabels`
@@ -342,8 +310,15 @@
       2. -> `[Dbux] (...) received init from client twice. Please restart application`
    * -> it seems to try to re-init after the error somehow.
       * Did it restart the process after being killed off?
-* share some basic coding strategies?
-   * e.g. no ballsy one-liners (-> not even `getA().b`)
+* fix callback tracking
+   * partial solution: use data tracking for callbacks
+      * TODO: also data-trace function at declaration
+      * NOTE: Won't work as comprehensively at all
+         * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities
+         * Known issues: 
+            * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
+            * We cannot easily capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
+   * NOTE: longjohn et al patch all potential scheduler calls for this, see: https://github.com/tlrobinson/long-stack-traces/blob/master/lib/long-stack-traces.js#L89
 * fix: `await` instrumentation
    * `Await`: `resumeTraceId` is `TraceType.Resume`, but can also be `ReturnArgument` or `ThrowArgument`?
 * fix: `CallExpression`, `Function`, `Await` have special interactions
@@ -372,14 +347,6 @@
       30
       );
       ```
-
-* fix callback tracking
-   * partial solution: Use a separate map to track callbacks and their points of passage instead?
-      * => Won't work as comprehensively at all
-      * Cannot accurately track how callbacks were passed when executing them without it really; can only guess several possibilities
-      * Known issues: 
-         * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
-         * We cannot capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
 * fix: small trace odities
    * for optional call, don't trace as `CallExpression` but trace as `ExpressionResult` if there is no function
    * when selecting a traced "return", it says "no trace at cursor"

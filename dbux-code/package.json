@@ -59,7 +59,7 @@
 			},
 			{
 				"command": "dbux.showGraphView",
-				"title": "Dbux: Show graph view"
+				"title": "Dbux: Call Graph"
 			},
 			{
 				"command": "dbux.showDecorations",

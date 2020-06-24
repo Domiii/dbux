@@ -104,7 +104,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
   }
 
   // ###########################################################################
-  // _build
+  // _build + init
   // ###########################################################################
 
   /**
@@ -114,17 +114,30 @@ class HostComponentEndpoint extends ComponentEndpoint {
     // store properties
     super._build(componentManager, parent, componentId, initialState);
 
-    this._initPromise = sleep()
+    this._initPromise = new Promise(r => {
       // do the long async init dance
-      .then(this._doInitClient.bind(this)).
-      catch(err => {
-        this.logger.error('error when initializing client\n  ', err);
-        return null;
-      }).finally(() => {
-        // _initPromise has fulfilled its purpose
-        this._initPromise = null;
-      });
+      // [hackfix] we are delaying `initClient` via `resolve().then()` because it needs `_internalRoleName` (and maybe other stuff?), 
+      //    which will be set after `_build` was called.
+      //    This is not good, since `init` might also want that data but it is called immediately.
+      //    see: https://gist.github.com/Domiii/1eeedd50d911ee8a651a2452594443a5#when-are-chained-callbacks-in-promises-resolved
+      Promise.resolve().
+        then(this._doInitClient.bind(this)).
+        catch(err => {
+          this.logger.error('error when initializing client\n  ', err);
+          return null;
+        }).
+        finally(() => {
+          // _initPromise has fulfilled its purpose
+          this._initPromise = null;
+          r();
+        });
+    });
 
+    // start initHost after `_initPromise` has been assigned
+    this._initHost();
+  }
+
+  _initHost() {
     try {
       this._waitingForUpdate = true;
       this._preInit();                                    // 0. host: preInit
@@ -141,7 +154,6 @@ class HostComponentEndpoint extends ComponentEndpoint {
   }
 
   async _doInitClient() {
-    await sleep();    // hackfix: this way `_initPromise` can be assigned correctly
     const resultFromClientInit = this.parent && await this.componentManager._initClient(this); // 3. client: init -> update (ignore `internal root component`)
     // success                                        // 4. waitForInit resolved
     Verbose && this.logger.debug('initialized');
@@ -164,8 +176,15 @@ class HostComponentEndpoint extends ComponentEndpoint {
       // make sure, things are initialized
       await this.waitForInit();
     }
+
     if (!this.isInitialized) {
       throw new Error(`${this.debugTag} - first update detected before init has started. Make sure to not call setState or before initialization has started.`);
+    }
+
+    // NOTE: this is called by `setState`
+    if (this._waitingForUpdate) {
+      // already waiting for update -> will send out changes in a bit anyway
+      return;
     }
 
     if (this._updatePromise) {
