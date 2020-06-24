@@ -1,3 +1,4 @@
+import NanoEvents from 'nanoevents';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
@@ -28,10 +29,16 @@ export default class BugRunner {
   constructor(manager) {
     this.manager = manager;
     this._ownLogger = newLogger('BugRunner');
+    this._emitter = new NanoEvents();
+    this.bugActivating = 0;
   }
 
   get logger() {
     return this._project?.logger || this._ownLogger;
+  }
+
+  get bug() {
+    return this._bug;
   }
 
   /**
@@ -123,26 +130,36 @@ export default class BugRunner {
     }
 
     const { project } = bug;
-
-    // activate project
-    await this._activateProject(project);
-
-    // git reset hard
-    // TODO: make sure, user gets to save own changes first
-    sh.cd(project.projectPath);
-    await project.exec('git reset --hard');
-
-    if (bug.patch) {
-      // activate patch
-      await project.applyPatch(bug.patch);
-    }
-
-    // start watch mode (if necessary)
-    await project.startWatchModeIfNotRunning();
-
-    // select bug
-    await project.selectBug(bug);
     this._bug = bug;
+    this._emitter.emit('start', bug);
+
+    this.bugActivating += 1;
+
+    try {
+      // activate project
+      await this._activateProject(project);
+
+      // git reset hard
+      // TODO: make sure, user gets to save own changes first
+      sh.cd(project.projectPath);
+      await project.exec('git reset --hard');
+
+      if (bug.patch) {
+        // activate patch
+        await project.applyPatch(bug.patch);
+      }
+
+      // start watch mode (if necessary)
+      await project.startWatchModeIfNotRunning();
+
+      // select bug
+      await project.selectBug(bug);
+    } finally {
+      this.bugActivating += -1;
+      if (this._project && !this._project.backgroundProcesses.length) {
+        this._emitter.emit('end');
+      }
+    }
   }
 
   /**
@@ -224,5 +241,9 @@ export default class BugRunner {
 
     this._bug = null;
     this._project = null;
+  }
+
+  on(evtName, cb) {
+    this._emitter.on(evtName, cb);
   }
 }

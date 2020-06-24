@@ -270,6 +270,14 @@
 				}
 			},
 			{
+				"command": "dbuxProjectView.node.stopProject",
+				"title": "Stop running",
+				"icon": {
+					"light": "resources/light/pause.svg",
+					"dark": "resources/dark/pause.svg"
+				}
+			},
+			{
 				"command": "dbuxProjectView.node.activateBugWithDebugger",
 				"title": "Activate Bug With Debugger",
 				"icon": {
@@ -283,6 +291,14 @@
 				"icon": {
 					"light": "resources/light/play.svg",
 					"dark": "resources/dark/play.svg"
+				}
+			},
+			{
+				"command": "dbuxProjectView.node.stopBug",
+				"title": "Stop running",
+				"icon": {
+					"light": "resources/light/pause.svg",
+					"dark": "resources/dark/pause.svg"
 				}
 			}
 		],
@@ -381,6 +397,11 @@
 					"group": "inline@2"
 				},
 				{
+					"command": "dbuxProjectView.node.stopProject",
+					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.projectNode.activated",
+					"group": "inline"
+				},
+				{
 					"command": "dbuxProjectView.node.activateBugWithDebugger",
 					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.bugNode",
 					"group": "inline@1"
@@ -389,6 +410,11 @@
 					"command": "dbuxProjectView.node.activateBug",
 					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.bugNode",
 					"group": "inline@2"
+				},
+				{
+					"command": "dbuxProjectView.node.stopBug",
+					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.bugNode.activated",
+					"group": "inline"
 				}
 			],
 			"view/title": [

@@ -36,12 +36,19 @@ class ProjectViewController {
     // ########################################
     this.manager = initDbuxProjects(cfg, externals);
     debug(`Initialized dbux-projects. Projects folder = "${path.resolve(cfg.projectsRoot)}"`);
-
+    
     // ########################################
     //  init treeView
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
     this.treeView = this.treeDataProvider.treeView;
+
+    // ########################################
+    //  listen on bugRunner
+    // ########################################
+    const bugRunner = this.manager.getOrCreateRunner();
+    bugRunner.on('start', this.treeDataProvider.refresh);
+    bugRunner.on('end', this.treeDataProvider.refresh);
   }
 
   // ###########################################################################

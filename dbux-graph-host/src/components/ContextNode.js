@@ -71,10 +71,11 @@ class ContextNode extends HostComponentEndpoint {
 
   setSelected(isSelected) {
     const selectedTrace = traceSelection.selected;
-    const { traceId } = selectedTrace;
+    let traceId = null;
     let isSelectedTraceCallRelated = false;
     let contextIdOfSelectedCallTrace = null;
     if (selectedTrace) {
+      traceId = selectedTrace.traceId;
       const { applicationId } = this.state;
       const dp = allApplications.getById(applicationId).dataProvider;
       const callId = dp.util.getTraceCallId(selectedTrace.traceId);

@@ -13,7 +13,7 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   init = () => {
     this.childrenBuilt = false;
-    this.contextValue = 'dbuxProjectView.projectNode';
+    this.contextValue = 'dbuxProjectView.projectNode' + (this.isActivated() ? '.activated' : '');
   }
 
   /**
@@ -23,8 +23,12 @@ export default class ProjectNode extends BaseTreeViewNode {
     return this.entry;
   }
 
-  get isActivated() {
-    return false;
+  get description() {
+    return this.project._installed ? 'installed' : '';
+  }
+
+  isActivated() {
+    return this.project.runner.isProjectActive(this.project);
   }
 
   handleClick() {
@@ -46,6 +50,16 @@ export default class ProjectNode extends BaseTreeViewNode {
       });
       return [BugLoadingNode.instance];
     }
+  }
+
+  deleteProject() {
+    runTaskWithProgressBar((progress, cancelToken) => {
+      return this.project.deleteProjectFolder();
+    }, {
+      cancellable: false,
+      location: ProgressLocation.Notification,
+      title: `Deleting project: ${this.project.name}`
+    });
   }
 
   async registLoadBug(progress) {
