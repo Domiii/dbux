@@ -48,6 +48,13 @@ class Toolbar extends HostComponentEndpoint {
     hideNewRun(time) {
       this.hiddenNodeManager.hideAfter(time);
     },
+
+    search(searchTerm) {
+      this.setState({ searchTerm });
+      
+      const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
+      contextNodeManager.highlightBySearchTerm(searchTerm);
+    }
   }
 }
 

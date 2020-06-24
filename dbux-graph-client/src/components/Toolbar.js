@@ -18,6 +18,7 @@ class Toolbar extends ClientComponentEndpoint {
           <button data-el="callModeBtn" class="btn btn-info" href="#">call</button>
           <button data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
           <button data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
+          <button data-el="searchBtn" class="btn btn-info" href="#">🔍</button>
         </div>
         <button data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</button>
       </nav>
@@ -36,7 +37,8 @@ class Toolbar extends ClientComponentEndpoint {
       valueMode,
       thinMode,
       hideOldMode,
-      hideNewMode
+      hideNewMode,
+      searchTerm
     } = this.state;
 
     // render buttons
@@ -61,10 +63,13 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.hideNewRunBtn, {
       active: !hideNewMode
     });
+    decorateClasses(this.els.searchBtn, {
+      active: !!searchTerm
+    });
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
     this.els.hideNewRunBtn.innerHTML = `${hideNewMode ? '⚪' : '🔴'}`;
 
-    
+
     this.renderModes();
   }
 
@@ -173,6 +178,24 @@ class Toolbar extends ClientComponentEndpoint {
       },
       focus(evt) { evt.target.blur(); }
     },
+
+    searchBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        if (this.state.searchTerm) {
+          // stop searching
+          await this.remote.search(null);
+        }
+        else {
+          // start searching
+          const searchTerm = await this.app.prompt('Enter search term');
+          if (searchTerm) {
+            await this.remote.search(searchTerm);
+          }
+        }
+      },
+      focus(evt) { evt.target.blur(); }
+    }
   }
 }
 

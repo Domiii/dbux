@@ -67,6 +67,21 @@ export default {
     return dp.indexes.traces.error.get(1) || EmptyArray;
   },
 
+  /** @param {DataProvider} dp */
+  searchContexts(dp, searchTerm) {
+    searchTerm = searchTerm.toLowerCase();
+    
+    return dp.collections.executionContexts.getAll().filter(context => {
+      if (!context) {
+        return false;
+      }
+      
+      const { staticContextId } = context;
+      const staticContext = dp.collections.staticContexts.getById(staticContextId);
+      return staticContext.displayName.toLowerCase().includes(searchTerm);
+    });
+  },
+
   // ###########################################################################
   // static contexts
   // ###########################################################################

@@ -46,7 +46,12 @@ export default class TodomvcEs6Project extends Project {
         patch: 'error4',
         description: '"Clear completed" button does not do anything. No error message.',
         runArgs: []
-      }
+      },
+      // more bugs:
+
+      // template.show -> template has a minor render defect
+      // template.show -> incorrect variable scope causes only one item to be rendered
+      
     ];
   }
 
