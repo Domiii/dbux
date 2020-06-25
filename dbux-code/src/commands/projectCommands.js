@@ -10,6 +10,10 @@ export function initProjectCommands(extensionContext, projectViewController) {
     await projectViewController.nodeAddToWorkspace(node);
   });
 
+  registerCommand(extensionContext, 'dbuxProjectView.node.deleteProject', (node) => {
+    node.deleteProject();
+  });
+
   registerCommand(extensionContext, 'dbuxProjectView.node.stopProject', (node) => {
     projectViewController.manager.runner.cancel();
   });
@@ -24,10 +28,6 @@ export function initProjectCommands(extensionContext, projectViewController) {
 
   registerCommand(extensionContext, 'dbuxProjectView.node.stopBug', (node) => {
     projectViewController.manager.runner.cancel();
-  });
-
-  registerCommand(extensionContext, 'dbuxProjectView.node.removeProject', (node) => {
-    node.removeProject();
   });
 }
 

@@ -265,8 +265,16 @@
 				"command": "dbuxProjectView.node.addProjectToWorkspace",
 				"title": "Add Project Folder to Workspace",
 				"icon": {
-					"light": "resources/light/crosshair_disabled.svg",
-					"dark": "resources/dark/crosshair_disabled.svg"
+					"light": "resources/light/crosshair.svg",
+					"dark": "resources/dark/crosshair.svg"
+				}
+			},
+			{
+				"command": "dbuxProjectView.node.deleteProject",
+				"title": "Delete Project Folder",
+				"icon": {
+					"light": "resources/light/clear.svg",
+					"dark": "resources/dark/clear.svg"
 				}
 			},
 			{
@@ -393,13 +401,18 @@
 				},
 				{
 					"command": "dbuxProjectView.node.addProjectToWorkspace",
-					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.projectNode",
+					"when": "view == dbuxProjectView && viewItem =~ /dbuxProjectView\\.projectNode/",
+					"group": "inline@1"
+				},
+				{
+					"command": "dbuxProjectView.node.deleteProject",
+					"when": "view == dbuxProjectView && viewItem =~ /dbuxProjectView\\.projectNode/",
 					"group": "inline@2"
 				},
 				{
 					"command": "dbuxProjectView.node.stopProject",
 					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.projectNode.activated",
-					"group": "inline"
+					"group": "inline@0"
 				},
 				{
 					"command": "dbuxProjectView.node.activateBugWithDebugger",
