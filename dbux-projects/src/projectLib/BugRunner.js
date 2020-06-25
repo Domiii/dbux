@@ -156,9 +156,7 @@ export default class BugRunner {
       await project.selectBug(bug);
     } finally {
       this.bugActivating += -1;
-      if (this._project && !this._project.backgroundProcesses.length) {
-        this._emitter.emit('end');
-      }
+      this.maybeNotifyEnd();
     }
   }
 
@@ -241,6 +239,12 @@ export default class BugRunner {
 
     this._bug = null;
     this._project = null;
+  }
+
+  maybeNotifyEnd() {
+    if (this._project && !this._project.backgroundProcesses.length && !this.bugActivating) {
+      this._emitter.emit('end');
+    }
   }
 
   on(evtName, cb) {

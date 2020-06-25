@@ -152,9 +152,7 @@ export default class Project {
     this.backgroundProcesses.push(process);
     process.start(cmd, this.logger, options).finally(() => {
       pull(this.backgroundProcesses, process);
-      if (!this.runner.bugActivating) {
-        this._emitter.emit('end');
-      }
+      this.runner.maybeNotifyEnd();
     });
     return process;
   }
