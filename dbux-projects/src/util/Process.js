@@ -154,4 +154,17 @@ export default class Process {
     }
     await (this._promise = this._promise.then(() => { }));
   }
+
+  static async execCaptureOut(cmd, options, logger) {
+    const process = new Process();
+
+    options = {
+      ...options,
+      captureOut: true
+    };
+
+    await process.start(cmd, options, logger || newLogger('exec'));
+
+    return process.out;
+  }
 }

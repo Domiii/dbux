@@ -92,7 +92,7 @@ export default class Project {
       return false;
     }
 
-    const remote = (await this.exec('git remote -v', { captureOut: true })).out;
+    const remote = await Process.execCaptureOut('git remote -v');
     return remote?.includes(this.gitRemote);
   }
 
