@@ -491,18 +491,18 @@
 	},
 	"dependencies": {
 		"comment-json": "^3.0.2",
-		"moment": "^2.24.0",
-		"socket.io": "^2.3.0",
+		"dbux-cli": "*",
 		"dbux-common": "*",
 		"dbux-data": "*",
-		"dbux-cli": "*",
-		"dbux-projects": "*",
 		"dbux-graph-common": "*",
-		"dbux-graph-host": "*"
+		"dbux-graph-host": "*",
+		"dbux-projects": "*",
+		"moment": "^2.24.0",
+		"socket.io": "^2.3.0",
+		"strip-color": "^0.1.0"
 	},
 	"peerDependencies": {
 		"lodash": "*"
 	},
-	"_moduleAliases": {
-	}
+	"_moduleAliases": {}
 }
