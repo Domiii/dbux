@@ -163,7 +163,7 @@ export default class Process {
       captureOut: true
     };
 
-    await process.start(cmd, options, logger || newLogger('exec'));
+    await process.start(cmd, logger || newLogger('exec'), options);
 
     return process.out;
   }
