@@ -239,6 +239,10 @@ export default class BugRunner {
 
     this._bug = null;
     this._project = null;
+
+    // hackfix: send end event to refresh projectView
+    // in the time project.backgroundProcess ends, this._project still exist, thus projectNode is activated
+    this._emitter.emit('end');
   }
 
   maybeNotifyEnd() {
