@@ -2,7 +2,7 @@ import Project from 'dbux-projects/src/projectLib/Project';
 
 
 export default class RealworldWebComponentsProject extends Project {
-  gitUrl = 'https://github.com/gothinkster/web-components-realworld-example-app.git';
+  gitRemote = 'gothinkster/web-components-realworld-example-app.git';
 
   /**
    * @see https://github.com/gothinkster/web-components-realworld-example-app/commit/e435cf6b57a7214c158d289335d2b867c5d45c92

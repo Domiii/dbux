@@ -5,7 +5,7 @@ import { buildMochaRunBugCommand as buildMochaCommand } from 'dbux-projects/src/
 
 
 export default class ExpressProject extends Project {
-  gitUrl = 'https://github.com/BugsJS/express.git';
+  gitRemote = 'BugsJS/express.git';
 
   packageManager = 'npm';
 

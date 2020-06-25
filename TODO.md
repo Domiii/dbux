@@ -64,9 +64,8 @@
    * probably because args are not traced correctly
 * Object rendering:
    * visualize when value got ommitted/pruned
-   * better string rendering
-      * show actual string length, if pruned
-   * make valueCollection parameters easily configurable?
+   * show actual string length, if pruned
+   * make valueCollection prune/omit parameters easily configurable
 * dbux-graph:
    * add "id" to context nodes (toolbar-togglable)
 * get ready for deployment!

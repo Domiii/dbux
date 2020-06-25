@@ -1,6 +1,8 @@
 import { compileHtmlElement, decorateClasses, decorateAttr } from '@/util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
+let addedDocumentClick = false;
+
 class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
   // createEl
@@ -20,9 +22,38 @@ class Toolbar extends ClientComponentEndpoint {
           <button data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
           <button data-el="searchBtn" class="btn btn-info" href="#">🔍</button>
         </div>
+        <div data-el="moreMenu" class="dropdown">
+          <button data-el="moreMenuBtn" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            ☰
+          </button>
+          <div data-el="moreMenuBody" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </div>
         <button data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</button>
       </nav>
     `);
+  }
+
+  setupEl() {
+    this.dropDownOpen = false;
+    if (!addedDocumentClick) {
+      addedDocumentClick = true;
+      document.addEventListener('click', (evt) => {
+        const btn = this.els.moreMenuBody;
+        if (evt.target !== btn && this.dropDownOpen) {
+          this.toggleMenu();
+        }
+      });
+    }
+  }
+
+  toggleMenu() {
+    if (this.dropDownOpen)
+    btn.style.display = 'none';
+    this.dropDownOpen = false;
   }
 
   // ###########################################################################
@@ -193,6 +224,14 @@ class Toolbar extends ClientComponentEndpoint {
             await this.remote.search(searchTerm);
           }
         }
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    moreMenuBtn: {
+      click(evt) {
+        this.els.moreMenuBody.style.display = 'inherit';
+        this.dropDownOpen = true;
       },
       focus(evt) { evt.target.blur(); }
     }

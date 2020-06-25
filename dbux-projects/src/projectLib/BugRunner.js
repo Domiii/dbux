@@ -129,9 +129,9 @@ export default class BugRunner {
 
     // git reset hard
     // TODO: make sure, user gets to save own changes first
-    sh.cd(project.projectPath);
-    await project.exec('git reset --hard');
+    await project.gitResetHard();
 
+    sh.cd(project.projectPath);
     if (bug.patch) {
       // activate patch
       await project.applyPatch(bug.patch);

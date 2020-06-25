@@ -38,7 +38,7 @@ export default class Project {
   /**
    * Provided for each individual project.
    */
-  gitUrl;
+  gitRemote;
 
   /**
    * A specific commit hash or tag name to refer to (if wanted)
@@ -49,6 +49,10 @@ export default class Project {
    * `npm` or `yarn`
    */
   packageManager = 'yarn';
+
+  get gitUrl() {
+    return 'https://github.com/' + this.gitRemote;
+  }
 
   // ###########################################################################
   // constructor
@@ -77,6 +81,26 @@ export default class Project {
 
   get projectPath() {
     return path.join(this.projectsRoot, this.folderName);
+  }
+
+  // ###########################################################################
+  // git stuff
+  // ###########################################################################
+
+  get isCorrectGitRepository() {
+    if (!this.gitRemote) {
+      return false;
+    }
+    return sh.exec('git remote -v').includes(this.gitRemote);
+  }
+
+  async gitResetHard(args) {
+    if (!this.isCorrectGitRepository) {
+      this.logger.warn('Trying to `git reset --hard`, but was not correct git repository: ', this.gitUrl);
+      return;
+    }
+    sh.cd(this.projectPath);
+    this.exec('git reset --hard ' + (args || ''));
   }
 
   // ###########################################################################
@@ -277,7 +301,7 @@ export default class Project {
       // if given, switch to specific commit hash, branch or tag name
       // see: https://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
       if (this.gitCommit) {
-        await this.exec(`git reset --hard ${this.gitCommit}`);
+        await this.gitResetHard(this.gitCommit);
       }
 
       this.log(`Cloned. Installing...`);

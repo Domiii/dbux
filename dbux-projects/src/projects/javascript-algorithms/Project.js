@@ -3,7 +3,7 @@ import Project from 'dbux-projects/src/projectLib/Project';
 import { buildJestRunBugCommand } from 'dbux-projects/src/util/jestUtil';
 
 export default class JavascriptAlgorithmProject extends Project {
-  gitUrl = 'https://github.com/trekhleb/javascript-algorithms.git';
+  gitRemote = 'trekhleb/javascript-algorithms.git';
 
   async loadBugs() {
     // TODO: load automatically from BugsJs bug database

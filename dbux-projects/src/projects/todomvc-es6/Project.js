@@ -3,7 +3,7 @@ import Project from 'dbux-projects/src/projectLib/Project';
 
 
 export default class TodomvcEs6Project extends Project {
-  gitUrl = 'https://github.com/kentcdodds/es6-todomvc.git';
+  gitRemote = 'kentcdodds/es6-todomvc.git';
 
   rmFiles = [
     'webpack.config.js',

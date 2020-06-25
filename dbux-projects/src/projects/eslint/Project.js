@@ -5,7 +5,7 @@ import { buildMochaRunBugCommand as buildMochaCommand } from 'dbux-projects/src/
 
 
 export default class EslintProject extends Project {
-  gitUrl = 'https://github.com/BugsJS/eslint.git';
+  gitRemote = 'BugsJS/eslint.git';
 
   packageManager = 'npm';
 
