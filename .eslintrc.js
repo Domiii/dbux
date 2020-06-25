@@ -83,7 +83,8 @@ module.exports = {
 		"one-var": 0,
 		"one-var-declaration-per-line": 0,
 		"dot-location": 0,
-		"default-case": 0
+		"default-case": 0,
+		"object-shorthand": 0
 	},
 
 	settings: {

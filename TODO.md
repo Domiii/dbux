@@ -44,6 +44,12 @@
 
 
 
+## dbux-practice
+   * user interaction log
+   * backend
+   * user login
+   * bug difficulty classification
+   * hint system + more relevant information
 
 
 
@@ -53,10 +59,9 @@
 
 
 ## TODO (other)
-* [dbux-practice]
-   * difficulty classification
-   * hint system + more relevant information
-* express is not running anymore?
+* parent trace wrong for `call`, `apply`?
+   * `callback.call(this, JSON.parse(localStorage[name]))`
+   * probably because args are not traced correctly
 * Object rendering:
    * visualize when value got ommitted/pruned
    * better string rendering
@@ -70,15 +75,9 @@
    * support multiple tests per bug
       * e.g. https://github.com/BugsJS/express/releases/tag/Bug-10-test -> https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
    * `eslint` sample bugs require setting a node version
-      * NOTE: they use `n` for that; see `myTest.py`
+      * NOTE: BugsJs uses `n` for that; see `myTest.py`
          * -> `n` is not natively supported on Windows (see https://github.com/tj/n/issues/511)
-* practice design:
-   * how to practice with bugs that require parsing a lot of code at first?
-      * -> have simpler bugs in each parts of the code, so the code is more accessible
 * [dbux-graph] when clicking the scrollbar the first time, it disappears, and a gray square pops up in the top left corner instead
-* parent trace wrong for `call`, `apply`?
-   * `callback.call(this, JSON.parse(localStorage[name]))`
-   * probably because args are not traced correctly
 * fix: instrumentation of assignments w/ `init instanceof CallExpression`???
 * projects
    * report error if `applyPatch` failed

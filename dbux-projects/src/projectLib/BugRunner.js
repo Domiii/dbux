@@ -210,8 +210,6 @@ export default class BugRunner {
       return;
     }
 
-    this.logger.debug('Cancelling...');
-
     // cancel all further steps already in queue
     await this._queue.cancel();
 
@@ -224,5 +222,7 @@ export default class BugRunner {
 
     this._bug = null;
     this._project = null;
+    
+    this.logger.debug('Cancelled.');
   }
 }

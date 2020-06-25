@@ -23,6 +23,7 @@ import { showGraphView } from './graphView';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
+let projectViewController;
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -41,7 +42,7 @@ function activate(context) {
     
     initApplicationsView(context);
     const traceDetailsController = initTraceDetailsView(context);
-    const projectViewController = initProjectView(context);
+    projectViewController = initProjectView(context);
     
     //  To bring these three views back, uncomment relevant lines and add this to `package.json` `contributes.views.dbuxViewContainer`:
     //  {
@@ -79,10 +80,11 @@ function activate(context) {
 
 // this method is called when your extension is deactivated
 function deactivate() {
-  window.showInformationMessage('Dbux deactviated.');
 }
 
 export {
   activate,
   deactivate,
 };
+
+global.window = window;

@@ -11,7 +11,7 @@ const VerboseErrors = Verbose || true;
 const SerializationConfig = {
   maxDepth: 2,
   maxObjectSize: 20,   // applies to arrays and object
-  maxStringLength: 100
+  maxStringLength: 1000
 };
 
 
