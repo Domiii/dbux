@@ -87,20 +87,22 @@ export default class Project {
   // git stuff
   // ###########################################################################
 
-  get isCorrectGitRepository() {
+  async isCorrectGitRepository() {
     if (!this.gitRemote) {
       return false;
     }
-    return sh.exec('git remote -v').includes(this.gitRemote);
+
+    const remote = (await this.exec('git remote -v', { captureOut: true })).out;
+    return remote?.includes(this.gitRemote);
   }
 
   async gitResetHard(args) {
     sh.cd(this.projectPath);
-    if (!this.isCorrectGitRepository) {
-      this.logger.warn('Trying to `git reset --hard`, but was not correct git repository: ', this.gitUrl);
+    if (!await this.isCorrectGitRepository()) {
+      this.logger.warn('Trying to `git reset --hard`, but was not correct git repository: ', (await this.exec('git remote -v', { captureOut: true })).out);
       return;
     }
-    this.exec('git reset --hard ' + (args || ''));
+    await this.exec('git reset --hard ' + (args || ''));
   }
 
   // ###########################################################################

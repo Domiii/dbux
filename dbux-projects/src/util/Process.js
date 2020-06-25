@@ -18,13 +18,19 @@ function pipeStreamToLogger(stream, logger) {
   });
 }
 
-
 export default class Process {
   command;
   _process;
   _promise;
 
   constructor() {
+  }
+
+  captureStream(stream) {
+    this.out = '';
+    stream.on('data', chunk => {
+      this.out += chunk;
+    });
   }
 
   /**
@@ -73,6 +79,10 @@ export default class Process {
 
     pipeStreamToLogger(process.stdout, logger);
     pipeStreamToLogger(process.stderr, logger);
+
+    if (options?.captureOut) {
+      this.captureStream(process.stdout);
+    }
 
     // done
     let done = false;
