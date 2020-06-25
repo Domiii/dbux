@@ -116,7 +116,7 @@ export default class ExpressProject extends Project {
             '--',
             ...bug.testFilePaths
           ],
-          require: ['test/support/env'],
+          require: ['./test/support/env.js'],
           ...bug,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
         };

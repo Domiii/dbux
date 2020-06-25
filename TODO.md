@@ -1,6 +1,4 @@
 
-# TODO
-
 ## TODO (shared)
 * `dbux-graph`
    * display amount of total nodes behind `RunNode`
@@ -10,64 +8,6 @@
    * display background runner status in `ProjectNode`
       * if running in background, show green light
       * when clicked -> cancel all
-
-
-
-
-## TODO (nice-to-haves)
-* in editor, when we select a range with the cursor, only select traces that are completely contained by that range (e.g. when selecting `g(x)` in `f(g(x));`, do not select `f`)
-* add `Cancel` button to `projectsView`
-   * NOTE: needs a basic event system to monitor all project + bug activity
-   * -> don't show button when nothing running
-   * while any bug is running...
-      * need to cancel before being able to run another bug
-      * "run" button of that bug becomes "cancel" button
-* fix: we cannot currently easily add images to the `graph` from the `resource` folder
-   * -> define a `customElement` (e.g. `img-local`) that wraps an `img` element
-      * prepend the img's `src` attribute with `GraphWebView.resourcePath`
-      * -> Concept: "web component" (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
-
-* largely improve `value` storage + rendering:
-   * make sure that `_getKeysErrorsByType` never contains `Object.prototype` itself
-   * refactor value storing
-      * go to `dbux-runtime` -> `valueCollection.js`
-         * (NOTE: in plain objects + arrays, we currently allocate one `ValueRef` for each primitive)
-         * -> instead, let `ValueRef` allocate a single array to store *all* it's primitives
-         * -> use lazy initialization for that array: only when at least one primitive is discovered -> allocate the array
-      * go to `dbux-data` -> `DataProvider.js` -> `class ValueCollection`
-      * change `dataProviderUtil`'s value reader methods correspondingly
-         * (NOTE: there is about 10 of them, starting with `getValueTrace`)
-      * Testing?
-         * in `runtime -> valueCollection.js`: make sure to set `Verbose = true`
-         * use `memberExpressions1.js`
-   * fix `ValueTDNode` to render individual object + array entries using the same heuristics as `traceValueString`
-
-[Persistance]
-* use `Memento` to persist extension state through VSCode restarts
-   * -> reference: https://stackoverflow.com/questions/51821924/how-to-persist-information-for-a-vscode-extension
-* what to persist?
-   * dbux-data
-      * all applications' data: save to/load from memento
-         * HINT: see `userCommands` -> `doExport`
-      * `traceSelection` -> `traceId`
-   * Graph
-      * re-open GraphWebview if open
-      * store state of all components by `componentId`
-         * careful: some components have invisible state (state that is not in `this.state`), such as `HighlightManager`
-         * -> for that, we might need a basic serialization system for components
-
-
-
-
-
-
-
-
-
-
-
-
-## TODO (dbux-graph)
 * grouping: add new `GroupNode` controller component
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
@@ -99,38 +39,8 @@
    * discern correctly between `npm` and `yarn`
    * improve dependency management
 
-* [dbux-practice]
-   * difficulty classification
-   * hint system + more relevant information
-
-* [more]
-   * support for projects with webpack
-   * add webpack to projects that don't have it to speed up instrumentation (by a lot)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## TODO (dbux-tutorials) - Getting to know DBUX
-* Design considerations
-   * Fast paced, not too complex, easy to grasp
-   * Touches on all Dbux core features
-   * Allows for comparison between Dbux and traditional tools
-   * Allows for strategy to be developed and discussed???
-* Beginner: Simple exercises (e.g. broken loop)
-* Intermediate: todomvc
-* Advanced: express
 
 
 
@@ -143,10 +53,16 @@
 
 
 ## TODO (other)
-* express is not running anymore (on Windows)?
-* Object rendering: meaningful visualization to indicate when object got ommitted/pruned
+* [dbux-practice]
+   * difficulty classification
+   * hint system + more relevant information
+* express is not running anymore?
+* Object rendering:
+   * visualize when value got ommitted/pruned
+   * better string rendering
+      * show actual string length, if pruned
+   * make valueCollection parameters easily configurable?
 * dbux-graph:
-   * add search function
    * add "id" to context nodes (toolbar-togglable)
 * get ready for deployment!
    * setup w/ lerna and prepare production/publishable build?
@@ -435,6 +351,56 @@
 
 
 
+
+
+
+
+
+
+
+
+
+## TODO (nice-to-haves)
+* in editor, when we select a range with the cursor, only select traces that are completely contained by that range (e.g. when selecting `g(x)` in `f(g(x));`, do not select `f`)
+* add `Cancel` button to `projectsView`
+   * NOTE: needs a basic event system to monitor all project + bug activity
+   * -> don't show button when nothing running
+   * while any bug is running...
+      * need to cancel before being able to run another bug
+      * "run" button of that bug becomes "cancel" button
+* fix: we cannot currently easily add images to the `graph` from the `resource` folder
+   * -> define a `customElement` (e.g. `img-local`) that wraps an `img` element
+      * prepend the img's `src` attribute with `GraphWebView.resourcePath`
+      * -> Concept: "web component" (see here: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
+
+* largely improve `value` storage + rendering:
+   * make sure that `_getKeysErrorsByType` never contains `Object.prototype` itself
+   * refactor value storing
+      * go to `dbux-runtime` -> `valueCollection.js`
+         * (NOTE: in plain objects + arrays, we currently allocate one `ValueRef` for each primitive)
+         * -> instead, let `ValueRef` allocate a single array to store *all* it's primitives
+         * -> use lazy initialization for that array: only when at least one primitive is discovered -> allocate the array
+      * go to `dbux-data` -> `DataProvider.js` -> `class ValueCollection`
+      * change `dataProviderUtil`'s value reader methods correspondingly
+         * (NOTE: there is about 10 of them, starting with `getValueTrace`)
+      * Testing?
+         * in `runtime -> valueCollection.js`: make sure to set `Verbose = true`
+         * use `memberExpressions1.js`
+   * fix `ValueTDNode` to render individual object + array entries using the same heuristics as `traceValueString`
+
+[Persistance]
+* use `Memento` to persist extension state through VSCode restarts
+   * -> reference: https://stackoverflow.com/questions/51821924/how-to-persist-information-for-a-vscode-extension
+* what to persist?
+   * dbux-data
+      * all applications' data: save to/load from memento
+         * HINT: see `userCommands` -> `doExport`
+      * `traceSelection` -> `traceId`
+   * Graph
+      * re-open GraphWebview if open
+      * store state of all components by `componentId`
+         * careful: some components have invisible state (state that is not in `this.state`), such as `HighlightManager`
+         * -> for that, we might need a basic serialization system for components
 
 
 

@@ -143,7 +143,7 @@ class ValueCollection extends Collection {
   }
 
   _canReadKeys(obj) {
-    if (obj.constructor.prototype === obj) {
+    if (obj.constructor?.prototype === obj) {
       // NOTE: we cannot read properties of many built-in prototype objects
       // e.g. `NodeList.prototype`
       return false;
@@ -195,7 +195,7 @@ class ValueCollection extends Collection {
       // return Object.keys(obj);
     }
     catch (err) {
-      VerboseErrors && this.logger.debug(`ERROR: accessing object ${Object.getPrototypeOf(obj)} caused exception`, err.message);
+      VerboseErrors && this.logger.debug(`accessing object ${Object.getPrototypeOf(obj)} caused exception:`, err.message);
       this._onAccessError(obj, this._getKeysErrorsByType);
       return null;
     }
