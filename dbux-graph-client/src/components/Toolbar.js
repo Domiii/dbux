@@ -26,13 +26,14 @@ class Toolbar extends ClientComponentEndpoint {
           <button data-el="moreMenuBtn" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             ☰
           </button>
-          <div data-el="moreMenuBody" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
+          <div data-el="moreMenuBody" class="dropdown-menu" 
+          style="left: inherit; right: 0; min-width: 0;"
+          aria-labelledby="dropdownMenuButton">
+            <button data-el="showIdsBtn" class="btn btn-info full-width" href="#">ids</button>
+            <div class="dropdown-divider"></div>
+            <button data-el="restartBtn" class="btn btn-danger full-width" href="#">⚠️Restart⚠️</button>
           </div>
         </div>
-        <button data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</button>
       </nav>
     `);
   }
@@ -42,7 +43,7 @@ class Toolbar extends ClientComponentEndpoint {
     if (!addedDocumentClick) {
       addedDocumentClick = true;
       document.addEventListener('click', (evt) => {
-        const btn = this.els.moreMenuBody;
+        const btn = this.els.moreMenuBtn;
         if (evt.target !== btn && this.dropDownOpen) {
           this.toggleMenu();
         }
@@ -51,9 +52,13 @@ class Toolbar extends ClientComponentEndpoint {
   }
 
   toggleMenu() {
-    if (this.dropDownOpen)
-    btn.style.display = 'none';
-    this.dropDownOpen = false;
+    this.dropDownOpen = !this.dropDownOpen;
+    if (this.dropDownOpen) {
+      this.els.moreMenuBody.style.display = 'inherit';
+    }
+    else {
+      this.els.moreMenuBody.style.display = 'none';
+    }
   }
 
   // ###########################################################################
@@ -230,8 +235,7 @@ class Toolbar extends ClientComponentEndpoint {
 
     moreMenuBtn: {
       click(evt) {
-        this.els.moreMenuBody.style.display = 'inherit';
-        this.dropDownOpen = true;
+        this.toggleMenu();
       },
       focus(evt) { evt.target.blur(); }
     }
