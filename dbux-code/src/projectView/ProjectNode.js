@@ -1,5 +1,6 @@
 import { ProgressLocation, Uri, workspace, window } from 'vscode';
 import { pathGetBasename } from 'dbux-common/src/util/pathUtil';
+import sleep from 'dbux-common/src/util/sleep';
 import Project from 'dbux-projects/src/projectLib/Project';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
@@ -78,9 +79,10 @@ export default class ProjectNode extends BaseTreeViewNode {
     if (result === 'Ok') {
       runTaskWithProgressBar(async (progress, cancelToken) => {
         progress.report({ increment: 20, message: 'deleting folder...' });
-        console.log('deleting folder...');
+        // wait for progress bar to show
+        await sleep(100);
         await this.project.deleteProjectFolder();
-        console.log('Done.');
+        progress.report({ increment: 80, message: 'Done.' });
       }, {
         cancellable: false,
         location: ProgressLocation.Notification,
