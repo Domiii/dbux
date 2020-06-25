@@ -59,85 +59,61 @@
 
 
 ## TODO (other)
+* [dbux-graph] when clicking the scrollbar the first time, it disappears, and a gray square pops up in the top left corner instead
 * parent trace wrong for `call`, `apply`?
    * `callback.call(this, JSON.parse(localStorage[name]))`
    * probably because args are not traced correctly
-* Object rendering:
-   * visualize when value got ommitted/pruned
-   * show actual string length, if pruned
-   * make valueCollection prune/omit parameters easily configurable
 * dbux-graph:
    * add "id" to context nodes (toolbar-togglable)
-* get ready for deployment!
-   * setup w/ lerna and prepare production/publishable build?
-* [dbux-projects]
-   * support multiple tests per bug
-      * e.g. https://github.com/BugsJS/express/releases/tag/Bug-10-test -> https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
-   * `eslint` sample bugs require setting a node version
-      * NOTE: BugsJs uses `n` for that; see `myTest.py`
-         * -> `n` is not natively supported on Windows (see https://github.com/tj/n/issues/511)
-* [dbux-graph] when clicking the scrollbar the first time, it disappears, and a gray square pops up in the top left corner instead
-* fix: instrumentation of assignments w/ `init instanceof CallExpression`???
-* projects
-   * report error if `applyPatch` failed
-   * only run webpack if not started yet
-      * don't cancel all when clicking a button; add "Cancel All" button instead
-   * visualize background process (webpack) status
-   * fix patch file problems
-      * generate commits from patch files so we can easily determine whether patch/commit was applied
-   * when bug patch is applied, might have to: (1) remove `.git` folder, or (2) commit changes, so `SCM` plugins won't show user the changes
-   * `nodeRequireArgs` in `dbux-projects/src/nodeUtil` only supports relative paths?
-* instrument `try` blocks
-   * test errors in `try/finally` -> find errors in `try` block?
-   * also show some sort of error symbol when tracing `catch` block?
-* jest 
-   * (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
-   * also swallows exit check console messages?
-   * see if we can use jest with `dbux-register`
-      * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
+* fix: in `o[x]`, `x` is not traced
 * error tracing
    * when encountering errors caught mid-way
       * `resolveCallIds` will fail
    * error resolution doesn't work properly with recursion
       * (probably because there are unmatched `BCE`s on the stack)
-* big graphs (e.g. `javascript-algorithms` -> `bug #1`) build very slowly, and we have to wait until it finished building to see anything
-   * turns out: it's a lot faster in non-debug mode
+* Object rendering:
+   * visualize when value got ommitted/pruned
+   * show actual string length, if pruned
+   * make valueCollection prune/omit parameters easily configurable
 * `dbux-graph` errors
    * bugs out if visibility or column changes
       * -> host receives invalid `reply` messages that it did not look for
       * -> it appears we are not resetting `Ipc` object properly?
          * -> or are there two clients that live in parallel?
-   * bugs out when working with multiple applications
-   * Client: `Received invalid request: componentId is not registered: 1629 - command="_publicInternal.dispose", args="[]"`
-* fix source maps
-   * when `dbux-code` reports an error, stack trace does not apply source maps
 * in TrackedObjectTDNode, render `valueString`?
-* fix: in `o[x]`, `x` is not traced
+* get ready for deployment!
+   * setup w/ lerna and prepare production/publishable build?
+* instrument `try` blocks
+   * test errors in `try/finally` -> find errors in `try` block?
+   * also show some sort of error symbol when tracing `catch` block?
+* big graphs (e.g. `javascript-algorithms` -> `bug #1`) build very slowly, and we have to wait until it finished building to see anything
+   * double check: should be fine in non-debug mode!
 * some assignments (and possibly other expressions) are traced twice
    * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
 * deployment: add to `extensions` folder
    * see: https://github.com/Microsoft/vscode/issues/25159
 * fix: `function` declarations are not tracked
    * store staticContextId by `function` object, so we can quickly jump to them and find all their references
-* fix: use correct package manager when working with libraries in `dbux-projects`
+* fix: use correct package manager (npm vs. yarn) when working with libraries in `dbux-projects`
 * fix: strings are currently tracked -> disable tracking of strings
 * fix: `traveValueLabels`
    * get callee name from instrumentation
 * fix TDV: "Trace Executed: Nx"
    * improve label of "group by" node
-   * need to re-design grouping a bit?
-      * current: Run, Context, Parent
+   * need to re-design grouping a bit
+      * for simple cases, no grouping needed
+      * current groups are by: Run, Context, Parent
 * allow for mixed type objects for object tracking
    * in `express`, `application` object is also a function
    * for "objectified functions": allow inspecting object properties
    * Problem: How to determine what is an "objectified function"?
       * -> `for in` loop runs at least once?
-* fix: in express when mocha test timeout
-   * we see:
+* projects -> express
+   * when mocha test timeout happens, we see:
       1. -> `Error: timeout of 2000ms exceeded`
       2. -> `[Dbux] (...) received init from client twice. Please restart application`
    * -> it seems to try to re-init after the error somehow.
-      * Did it restart the process after being killed off?
+      * Did it reconnect multiple times or restart the process after being killed off?
 * fix callback tracking
    * partial solution: use data tracking for callbacks
       * TODO: also data-trace function at declaration
@@ -147,34 +123,27 @@
             * identity-tracking functions breaks with wrapper functions, as well as `bind`, `call`, `apply` etc...
             * We cannot easily capture all possible calls using instrumentation, since some of that might happen in black-boxed modules
    * NOTE: longjohn et al patch all potential scheduler calls for this, see: https://github.com/tlrobinson/long-stack-traces/blob/master/lib/long-stack-traces.js#L89
-* fix: `await` instrumentation
-   * `Await`: `resumeTraceId` is `TraceType.Resume`, but can also be `ReturnArgument` or `ThrowArgument`?
-* fix: `CallExpression`, `Function`, `Await` have special interactions
-   * they all might be children of other visitors
-   * NOTE: currently all other visitors use `wrapExpression`
-      * -> checks `isCallPath` and has special handling only for that
-      * -> Problem: come up with comprehensive conflict resolution here
-         * `CallExpression`: `traceReturnType` controlled if `return` or `throw`
-         * `Function`: no wrapping for functions
-   * split up `functionVisitor`
-      * enter
-         * child('body'): generate `pushTraceId`
-      * exit
-         * child('body'): generate `popTraceId` -> instrument
-   * split up `awaitVisitor`
-      * exit: 
-         * child('argument'): generate `preTraceId` -> instrument `preAwait`
-         * self: generate `resumeTraceId` -> instrument `await`
-      ```js
-      _dbux.postAwait(
-      (await _dbux.wrapAwait(
-         xArg,
-         _contextId6 = _dbux.preAwait(10, 29)
-      )), 
-      _contextId6, 
-      30
-      );
-      ```
+* [dbux-projects]
+   * support multiple tests per bug
+      * e.g. https://github.com/BugsJS/express/releases/tag/Bug-10-test -> https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
+   * `eslint` sample bugs require setting a node version
+      * NOTE: BugsJs uses `n` for that; see `myTest.py`
+         * -> `n` is not natively supported on Windows (see https://github.com/tj/n/issues/511)
+   * report error if `applyPatch` failed
+   * only run webpack if not started yet: don't kill project-wide backgroundProcesses when starting bug of same project?
+      * fix this by remembering per-bug backgroundProcesses, as well as per-project
+         * -> only kill per-bug backgroundProcesses when changing bug, but not changing project
+   * fix patch file problems
+      * generate commits from patch files so we can reliably determine whether patch/commit was applied?
+      * also requires managing user changes
+   * when bug patch is applied, might have to: (1) remove `.git` folder, or (2) commit changes, so `SCM` plugins won't show user the changes
+   * `nodeRequireArgs` in `dbux-projects/src/nodeUtil` only supports relative paths?
+* projects -> jest
+   * (if test not asynchronous) exits right away, not allowing dbux-runtime to send data
+   * also swallows "exit check" console messages
+   * see if we can use jest with `dbux-register`
+      * currently we provide `dbux-babel-plugin` manually (via `.babelrc.js`), and set `--cache=false`
+
 * fix: small trace odities
    * for optional call, don't trace as `CallExpression` but trace as `ExpressionResult` if there is no function
    * when selecting a traced "return", it says "no trace at cursor"
@@ -183,10 +152,6 @@
 * fix: setup `eslint` to use correct index of `webpack` multi config to allow for `src` alias
    * Problem: won't work since different projects would have an ambiguous definition of `src`
 * fix: provide an easier way to use `ipynb` to analyze any application
-* dbux-graph web components
-   * map data (or some sort of `id`) to `componentId`
-   * batch `postMessage` calls before sending out
-   * write automatic `dbux-graph-client/scripts/pre-build` component-registry script
 * fix: function names
    * also: `displayName` is often too long for proper analysis in py/callGraph
       * -> do not add source code of function itself -> change to `cb#i of A.f` instead
@@ -214,7 +179,6 @@
 * [error_handling]
    * more TODOs
       * handle `try` blocks
-      * Fix `super`
    * (README) How does it work?
       * mark possible `exitTraces`:
          1. any `ReturnStatement`
@@ -349,6 +313,42 @@
 
 
 
+## TODO: async!
+* fix: `await` instrumentation
+   * `Await`: `resumeTraceId` is `TraceType.Resume`, but can also be `ReturnArgument` or `ThrowArgument`?
+* fix: `CallExpression`, `Function`, `Await` have special interactions
+   * they all might be children of other visitors
+   * NOTE: currently all other visitors use `wrapExpression`
+      * -> checks `isCallPath` and has special handling only for that
+      * -> Problem: come up with comprehensive conflict resolution here
+         * `CallExpression`: `traceReturnType` controlled if `return` or `throw`
+         * `Function`: no wrapping for functions
+   * split up `functionVisitor`
+      * enter
+         * child('body'): generate `pushTraceId`
+      * exit
+         * child('body'): generate `popTraceId` -> instrument
+   * split up `awaitVisitor`
+      * exit: 
+         * child('argument'): generate `preTraceId` -> instrument `preAwait`
+         * self: generate `resumeTraceId` -> instrument `await`
+      ```js
+      _dbux.postAwait(
+      (await _dbux.wrapAwait(
+         xArg,
+         _contextId6 = _dbux.preAwait(10, 29)
+      )), 
+      _contextId6, 
+      30
+      );
+      ```
+
+
+
+
+
+
+
 
 
 
@@ -359,6 +359,12 @@
 
 
 ## TODO (nice-to-haves)
+* fix source maps
+   * when `dbux-code` reports an error, stack trace does not apply source maps
+* dbux-graph web components
+   * map data (or some sort of `id`) to `componentId`
+   * batch `postMessage` calls before sending out
+   * write automatic `dbux-graph-client/scripts/pre-build` component-registry script
 * in editor, when we select a range with the cursor, only select traces that are completely contained by that range (e.g. when selecting `g(x)` in `f(g(x));`, do not select `f`)
 * add `Cancel` button to `projectsView`
    * NOTE: needs a basic event system to monitor all project + bug activity
