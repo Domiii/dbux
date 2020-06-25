@@ -99,7 +99,7 @@ export default class Project {
   async gitResetHard(args) {
     sh.cd(this.projectPath);
     if (!await this.isCorrectGitRepository()) {
-      this.logger.warn('Trying to `git reset --hard`, but was not correct git repository: ', (await this.exec('git remote -v', { captureOut: true })).out);
+      this.logger.warn('Trying to `git reset --hard`, but was not correct git repository: ', await Process.execCaptureOut('git remote -v'));
       return;
     }
     await this.exec('git reset --hard ' + (args || ''));
