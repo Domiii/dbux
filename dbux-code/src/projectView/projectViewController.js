@@ -1,14 +1,28 @@
-import { ViewColumn } from 'vscode';
 import path from 'path';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger, setOutputStreams } from 'dbux-common/src/log/logger';
 import { initDbuxProjects } from 'dbux-projects/src';
 import exec from 'dbux-projects/src/util/exec';
 import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
+import OutputChannel from './OutputChannel';
 
+// ########################################
+//  setup logger for project
+// ########################################
 const logger = newLogger('projectViewController');
 const { log, debug, warn, error: logError } = logger;
+const outputChannel = new OutputChannel('dbux-project');
+setOutputStreams({
+  log: outputChannel.log.bind(outputChannel),
+  warn: outputChannel.log.bind(outputChannel),
+  error: outputChannel.log.bind(outputChannel),
+  debug: outputChannel.log.bind(outputChannel)
+});
+
+export function showOutputChannel() {
+  outputChannel.show();
+}
 
 let controller;
 
@@ -42,6 +56,13 @@ class ProjectViewController {
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
     this.treeView = this.treeDataProvider.treeView;
+
+    // ########################################
+    //  listen on bugRunner
+    // ########################################
+    const bugRunner = this.manager.getOrCreateRunner();
+    bugRunner.on('start', this.treeDataProvider.refresh);
+    bugRunner.on('end', this.treeDataProvider.refresh);
   }
 
   // ###########################################################################
@@ -57,43 +78,50 @@ class ProjectViewController {
   // ###########################################################################
 
   async activateBugByNode(bugNode, debugMode = false) {
+    showOutputChannel();
     const options = {
-      title: `[dbux] Activating bug:{${bugNode.bug.name}}`
+      title: `[dbux] Activating Project ${bugNode.bug.project.name}@${bugNode.bug.name}`
     };
 
     runTaskWithProgressBar(async (progress, cancelToken) => {
-      await this._activateBug(progress, cancelToken, bugNode, debugMode);
+      const runner = this.manager.getOrCreateRunner();
+      cancelToken.onCancellationRequested(runner.cancel.bind(runner));
+
+      await this._activateBug(progress, cancelToken, bugNode.bug, debugMode);
     }, options);
   }
 
-  async _activateBug(progress, cancelToken, bugNode, debugMode) {
-    const { bug } = bugNode;
+  async _activateBug(progress, cancelToken, bug, debugMode = false) {
+    if (cancelToken.isCancellationRequested) {
+      return;
+    }
     const runner = this.manager.getOrCreateRunner();
-
     // cancel any currently running tasks
     await runner.cancel();
-    progress.report({ increment: 20, message: 'activating...' });
 
     // activate/install project
     if (cancelToken.isCancellationRequested) {
       return;
     }
-    await runner.activateProject(bugNode.bug.project);
-    progress.report({ increment: 40, message: 'opening in editor...' });
+    progress.report({ increment: 5, message: 'installing project...' });
+    await runner.activateProject(bug.project);
 
     // open in editor (must be after activation/installation)
     if (cancelToken.isCancellationRequested) {
       return;
     }
+    progress.report({ increment: 45, message: 'opening in editor...' });
     await bug.openInEditor();
-    progress.report({ increment: 10, message: 'running test...' });
 
     // run it!
     if (cancelToken.isCancellationRequested) {
       return;
     }
+    progress.report({ increment: 15, message: 'running bug test...' });
     await runner.testBug(bug, debugMode);
-    progress.report({ increment: 30, message: 'Finished!' });
+
+
+    progress.report({ increment: 35, message: 'Finished!' });
   }
 }
 

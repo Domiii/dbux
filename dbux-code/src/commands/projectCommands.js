@@ -10,12 +10,24 @@ export function initProjectCommands(extensionContext, projectViewController) {
     await projectViewController.nodeAddToWorkspace(node);
   });
 
+  registerCommand(extensionContext, 'dbuxProjectView.node.deleteProject', (node) => {
+    node.deleteProject();
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.stopProject', (node) => {
+    projectViewController.manager.runner.cancel();
+  });
+
   registerCommand(extensionContext, 'dbuxProjectView.node.activateBug', async (node) => {
     await projectViewController.activateBugByNode(node);
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.activateBugWithDebugger', async (node) => {
     await projectViewController.activateBugByNode(node, true);
+  });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.stopBug', (node) => {
+    projectViewController.manager.runner.cancel();
   });
 }
 

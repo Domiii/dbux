@@ -188,7 +188,7 @@ export default class GraphWebView {
 
     async confirm(message, modal = true) {
       const cfg = { modal };
-      const result = await window.showInformationMessage(message, cfg, 'OK');
+      const result = await window.showInformationMessage(message, cfg, 'Ok');
       return result === 'Ok';
     },
 

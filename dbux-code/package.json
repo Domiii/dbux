@@ -265,8 +265,24 @@
 				"command": "dbuxProjectView.node.addProjectToWorkspace",
 				"title": "Add Project Folder to Workspace",
 				"icon": {
-					"light": "resources/light/crosshair_disabled.svg",
-					"dark": "resources/dark/crosshair_disabled.svg"
+					"light": "resources/light/crosshair.svg",
+					"dark": "resources/dark/crosshair.svg"
+				}
+			},
+			{
+				"command": "dbuxProjectView.node.deleteProject",
+				"title": "Delete Project Folder",
+				"icon": {
+					"light": "resources/light/clear.svg",
+					"dark": "resources/dark/clear.svg"
+				}
+			},
+			{
+				"command": "dbuxProjectView.node.stopProject",
+				"title": "Stop running",
+				"icon": {
+					"light": "resources/light/pause.svg",
+					"dark": "resources/dark/pause.svg"
 				}
 			},
 			{
@@ -283,6 +299,14 @@
 				"icon": {
 					"light": "resources/light/play.svg",
 					"dark": "resources/dark/play.svg"
+				}
+			},
+			{
+				"command": "dbuxProjectView.node.stopBug",
+				"title": "Stop running",
+				"icon": {
+					"light": "resources/light/pause.svg",
+					"dark": "resources/dark/pause.svg"
 				}
 			}
 		],
@@ -377,8 +401,18 @@
 				},
 				{
 					"command": "dbuxProjectView.node.addProjectToWorkspace",
-					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.projectNode",
+					"when": "view == dbuxProjectView && viewItem =~ /dbuxProjectView\\.projectNode/",
+					"group": "inline@1"
+				},
+				{
+					"command": "dbuxProjectView.node.deleteProject",
+					"when": "view == dbuxProjectView && viewItem =~ /dbuxProjectView\\.projectNode/",
 					"group": "inline@2"
+				},
+				{
+					"command": "dbuxProjectView.node.stopProject",
+					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.projectNode.activated",
+					"group": "inline@0"
 				},
 				{
 					"command": "dbuxProjectView.node.activateBugWithDebugger",
@@ -389,6 +423,11 @@
 					"command": "dbuxProjectView.node.activateBug",
 					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.bugNode",
 					"group": "inline@2"
+				},
+				{
+					"command": "dbuxProjectView.node.stopBug",
+					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.bugNode.activated",
+					"group": "inline"
 				}
 			],
 			"view/title": [
@@ -452,18 +491,18 @@
 	},
 	"dependencies": {
 		"comment-json": "^3.0.2",
-		"moment": "^2.24.0",
-		"socket.io": "^2.3.0",
+		"dbux-cli": "*",
 		"dbux-common": "*",
 		"dbux-data": "*",
-		"dbux-cli": "*",
-		"dbux-projects": "*",
 		"dbux-graph-common": "*",
-		"dbux-graph-host": "*"
+		"dbux-graph-host": "*",
+		"dbux-projects": "*",
+		"moment": "^2.24.0",
+		"socket.io": "^2.3.0",
+		"strip-color": "^0.1.0"
 	},
 	"peerDependencies": {
 		"lodash": "*"
 	},
-	"_moduleAliases": {
-	}
+	"_moduleAliases": {}
 }

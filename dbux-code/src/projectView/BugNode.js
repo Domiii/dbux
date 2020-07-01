@@ -9,8 +9,13 @@ export default class BugNode extends BaseTreeViewNode {
     return this.entry;
   }
 
+  isActive() {
+    const bugRunner = this.treeNodeProvider.controller.manager.getOrCreateRunner();
+    return bugRunner.isBugActive(this.bug);
+  }
+
   init = () => {
-    this.contextValue = 'dbuxProjectView.bugNode';
+    this.contextValue = 'dbuxProjectView.bugNode' + (this.isActive() ? '.activated' : '');
     this.description = this.bug.description;
   }
 
