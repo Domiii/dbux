@@ -1,7 +1,5 @@
 
 ## TODO (shared)
-* `dbux-graph`
-   * display amount of total nodes behind `RunNode`
 * `dbux-projects`
    * add "cancel all" button to the top
    * add a better icon for "add folder to workspace" button
@@ -60,6 +58,7 @@
 
 
 ## TODO (other)
+* [dbux-practice] complete workflow design
 * [dbux-graph] when clicking the scrollbar the first time, it disappears, and a gray square pops up in the top left corner instead
 * parent trace wrong for `call`, `apply`?
    * `callback.call(this, JSON.parse(localStorage[name]))`
