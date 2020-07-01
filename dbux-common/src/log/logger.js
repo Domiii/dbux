@@ -100,30 +100,45 @@ export function newFileLogger(fpath) {
   return new Logger(fname);
 }
 
-export function loglog(ns, ...args) {
-  console.log(`[${ns}]`, ...args);
+let outputStreams = {
+  log: console.log.bind(console),
+  warn: console.log.bind(console),
+  error: console.log.bind(console),
+  debug: console.log.bind(console)
+};
+
+export function setOutputStreams(newOutputStreams) {
+  outputStreams = newOutputStreams;
 }
 
-const prettyDebug = makePrettyLog(console.debug, 'gray');
+export function loglog(ns, ...args) {
+  outputStreams.log(`[${ns}]`, ...args);
+}
+
+// const prettyDebug = makePrettyLog(console.debug, 'gray');
 export function logDebug(ns, ...args) {
-  prettyDebug(`[${ns}]`, ...args);
+  // color decoration
+  // prettyDebug(`[${ns}]`, ...args);
+  
+  // no color
+  outputStreams.debug(`[${ns}]`, ...args);
 }
 
 export function logWarn(ns, ...args) {
   ns = `[${ns}]`;
-  console.warn(ns, ...args);
+  outputStreams.warn(ns, ...args);
   report('warn', ns, ...args);
 }
 
 export function logError(ns, ...args) {
   ns = `[${ns}]`;
-  console.error(ns, ...args);
+  outputStreams.error(ns, ...args);
   report('error', ns, ...args);
 }
 
 export function logInternalError(...args) {
   const msgArgs = ['[DBUX INTERNAL ERROR]', ...args];
-  console.error(...msgArgs);
+  outputStreams.error(...msgArgs);
   errors.push(msgArgs);
   report('error', ...msgArgs);
 }

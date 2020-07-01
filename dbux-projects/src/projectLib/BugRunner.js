@@ -1,8 +1,8 @@
+import NanoEvents from 'nanoevents';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import { newLogger } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import Project from './Project';
@@ -28,10 +28,16 @@ export default class BugRunner {
   constructor(manager) {
     this.manager = manager;
     this._ownLogger = newLogger('BugRunner');
+    this._emitter = new NanoEvents();
+    this.bugActivating = 0;
   }
 
   get logger() {
     return this._project?.logger || this._ownLogger;
+  }
+
+  get bug() {
+    return this._bug;
   }
 
   /**
@@ -123,26 +129,34 @@ export default class BugRunner {
     }
 
     const { project } = bug;
-
-    // activate project
-    await this._activateProject(project);
-
-    // git reset hard
-    // TODO: make sure, user gets to save own changes first
-    await project.gitResetHard();
-
-    sh.cd(project.projectPath);
-    if (bug.patch) {
-      // activate patch
-      await project.applyPatch(bug.patch);
-    }
-
-    // start watch mode (if necessary)
-    await project.startWatchModeIfNotRunning();
-
-    // select bug
-    await project.selectBug(bug);
     this._bug = bug;
+    this._emitter.emit('start', bug);
+
+    this.bugActivating += 1;
+
+    try {    
+      // activate project
+      await this._activateProject(project);
+
+      // git reset hard
+      // TODO: make sure, user gets to save own changes first
+      await project.gitResetHard();
+
+      sh.cd(project.projectPath);
+      if (bug.patch) {
+        // activate patch
+        await project.applyPatch(bug.patch);
+      }
+
+      // start watch mode (if necessary)
+      await project.startWatchModeIfNotRunning();
+
+      // select bug
+      await project.selectBug(bug);
+    } finally {
+      this.bugActivating += -1;
+      this.maybeNotifyEnd();
+    }
   }
 
   /**
@@ -222,7 +236,19 @@ export default class BugRunner {
 
     this._bug = null;
     this._project = null;
-    
-    this.logger.debug('Cancelled.');
+
+    // hackfix: send end event to refresh projectView
+    // in the time project.backgroundProcess ends, this._project still exist, thus projectNode is activated
+    this._emitter.emit('end');
+  }
+
+  maybeNotifyEnd() {
+    if (this._project && !this._project.backgroundProcesses.length && !this.bugActivating) {
+      this._emitter.emit('end');
+    }
+  }
+
+  on(evtName, cb) {
+    this._emitter.on(evtName, cb);
   }
 }

@@ -1,5 +1,6 @@
-import { ProgressLocation, Uri, workspace } from 'vscode';
+import { ProgressLocation, Uri, workspace, window } from 'vscode';
 import { pathGetBasename } from 'dbux-common/src/util/pathUtil';
+import sleep from 'dbux-common/src/util/sleep';
 import Project from 'dbux-projects/src/projectLib/Project';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
@@ -13,7 +14,7 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   init = () => {
     this.childrenBuilt = false;
-    this.contextValue = 'dbuxProjectView.projectNode';
+    this.contextValue = 'dbuxProjectView.projectNode' + (this.isActivated() ? '.activated' : '');
   }
 
   /**
@@ -23,8 +24,12 @@ export default class ProjectNode extends BaseTreeViewNode {
     return this.entry;
   }
 
-  get isActivated() {
-    return false;
+  get description() {
+    return this.project._installed ? 'installed' : '';
+  }
+
+  isActivated() {
+    return this.project.runner.isProjectActive(this.project);
   }
 
   handleClick() {
@@ -66,6 +71,24 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   buildBugNode(bug) {
     return this.treeNodeProvider.buildNode(BugNode, bug);
+  }
+
+  async deleteProject() {
+    const confirmMessage = `Do you really want to delete project: ${this.project.name}`;
+    const result = await window.showInformationMessage(confirmMessage, { modal: true }, 'Ok');
+    if (result === 'Ok') {
+      runTaskWithProgressBar(async (progress, cancelToken) => {
+        progress.report({ increment: 20, message: 'deleting folder...' });
+        // wait for progress bar to show
+        await sleep(100);
+        await this.project.deleteProjectFolder();
+        progress.report({ increment: 80, message: 'Done.' });
+      }, {
+        cancellable: false,
+        location: ProgressLocation.Notification,
+        title: `Deleting project: ${this.project.name}`
+      });
+    }
   }
 
   async addToWorkspace() {

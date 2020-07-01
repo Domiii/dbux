@@ -3,9 +3,9 @@ import sh from 'shelljs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import { newLogger } from 'dbux-common/src/log/logger';
+import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import BugList from './BugList';
 import Process from '../util/Process';
-import EmptyArray from '../../../dbux-common/src/util/EmptyArray';
 
 const AssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
@@ -178,6 +178,7 @@ export default class Project {
     this.backgroundProcesses.push(process);
     process.start(cmd, this.logger, options).finally(() => {
       pull(this.backgroundProcesses, process);
+      this.runner.maybeNotifyEnd();
     });
     return process;
   }
@@ -273,7 +274,7 @@ export default class Project {
   }
 
   async deleteProjectFolder() {
-    await sh.rm('rf', this.projectPath);
+    await sh.rm('-rf', this.projectPath);
   }
 
 
