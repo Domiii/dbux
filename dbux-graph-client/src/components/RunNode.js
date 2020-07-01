@@ -4,11 +4,14 @@ import { compileHtmlElement } from '../util/domUtil';
 class RunNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
+    <div class="flex-row align-center">
       <div class="run-node width-fit">
         <div>
           <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
         </div>
       </div>
+      <div data-el="childrenAmountTag"></div>
+    </div>
     `);
 
     return el;
@@ -29,7 +32,7 @@ class RunNode extends ClientComponentEndpoint {
   }
 
   update() {
-    const { visible, createdAt } = this.state;
+    const { visible, createdAt, childrenAmount } = this.state;
     // deduct by a constant to avoid overflow
     this.el.style.order = createdAt - 1592380000000 || 0;
     if (visible) {
@@ -38,6 +41,7 @@ class RunNode extends ClientComponentEndpoint {
     else {
       this.el.classList.add('hidden');
     }
+    this.els.childrenAmountTag.textContent = `${childrenAmount || 0}`;
     // this.els.title.textContent = `Run #${runId} (Application #${applicationId})`;
   }
 }

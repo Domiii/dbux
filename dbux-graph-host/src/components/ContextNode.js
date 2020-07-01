@@ -44,6 +44,13 @@ class ContextNode extends HostComponentEndpoint {
     return dataProvider.util.getFirstTraceOfContext(contextId);
   }
 
+  get contextChildrenAmount() {
+    const contextChildren = this.children.getComponents('ContextNode');
+    let amount = contextChildren.length;
+    contextChildren.forEach(childNode => amount += childNode.contextChildrenAmount);
+    return amount;
+  }
+
   buildChildNodes() {
     const {
       applicationId,

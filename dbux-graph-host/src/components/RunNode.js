@@ -32,6 +32,7 @@ class RunNode extends HostComponentEndpoint {
 
     const hiddenNodeManager = this.parent.controllers.getComponent('HiddenNodeManager');
     this.state.visible = hiddenNodeManager.shouldBeVisible(this);
+    this.state.childrenAmount = this.contextChildrenAmount;
   }
 
   isHiddenBy() {
@@ -40,6 +41,13 @@ class RunNode extends HostComponentEndpoint {
 
   get hiddenNodeManager() {
     return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
+  }
+
+  get contextChildrenAmount() {
+    const contextChildren = this.children.getComponents('ContextNode');
+    let amount = contextChildren.length;
+    contextChildren.forEach(childNode => amount += childNode.contextChildrenAmount);
+    return amount;
   }
 
   // ###########################################################################
