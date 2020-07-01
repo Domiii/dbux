@@ -225,10 +225,12 @@ export default class BugRunner {
     }
 
     // cancel all further steps already in queue
-    await this._queue.cancel();
+    const queuePromise = this._queue.cancel();
 
     // kill active process
     await this._process?.kill();
+
+    await queuePromise;
 
     // kill background processes
     const backgroundProcesses = this._project?.backgroundProcesses || EmptyArray;

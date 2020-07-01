@@ -1,7 +1,7 @@
 import { compileHtmlElement, decorateClasses, decorateAttr } from '@/util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
-let addedDocumentClick = false;
+let documentClickHandler;
 
 class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
@@ -40,16 +40,18 @@ class Toolbar extends ClientComponentEndpoint {
 
   setupEl() {
     this.dropDownOpen = false;
-    if (!addedDocumentClick) {
-      addedDocumentClick = true;
-      document.addEventListener('click', (evt) => {
-        const btn = this.els.moreMenuBtn;
-        if (evt.target !== btn && this.dropDownOpen) {
-          this.toggleMenu();
-        }
-      });
+    if (documentClickHandler) {
+      document.removeEventListener('click', documentClickHandler);
     }
+    document.addEventListener('click', documentClickHandler = this._onDocumentClick);
   }
+
+  _onDocumentClick = (evt) => {
+    const btn = this.els.moreMenuBtn;
+    if (evt.target !== btn && this.dropDownOpen) {
+      this.toggleMenu();
+    }
+  };
 
   toggleMenu() {
     this.dropDownOpen = !this.dropDownOpen;
