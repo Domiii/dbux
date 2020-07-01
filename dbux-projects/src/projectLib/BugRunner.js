@@ -3,7 +3,6 @@ import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import { newLogger } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import Project from './Project';
@@ -135,15 +134,15 @@ export default class BugRunner {
 
     this.bugActivating += 1;
 
-    try {
+    try {    
       // activate project
       await this._activateProject(project);
 
       // git reset hard
       // TODO: make sure, user gets to save own changes first
-      sh.cd(project.projectPath);
-      await project.exec('git reset --hard');
+      await project.gitResetHard();
 
+      sh.cd(project.projectPath);
       if (bug.patch) {
         // activate patch
         await project.applyPatch(bug.patch);
@@ -224,8 +223,6 @@ export default class BugRunner {
       // nothing to do
       return;
     }
-
-    this.logger.debug('Cancelling...');
 
     // cancel all further steps already in queue
     await this._queue.cancel();

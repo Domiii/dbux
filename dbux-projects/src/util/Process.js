@@ -18,13 +18,19 @@ function pipeStreamToLogger(stream, logger) {
   });
 }
 
-
 export default class Process {
   command;
   _process;
   _promise;
 
   constructor() {
+  }
+
+  captureStream(stream) {
+    this.out = '';
+    stream.on('data', chunk => {
+      this.out += chunk;
+    });
   }
 
   /**
@@ -73,6 +79,10 @@ export default class Process {
 
     pipeStreamToLogger(process.stdout, logger);
     pipeStreamToLogger(process.stderr, logger);
+
+    if (options?.captureOut) {
+      this.captureStream(process.stdout);
+    }
 
     // done
     let done = false;
@@ -127,8 +137,11 @@ export default class Process {
 
   /**
    * NOTE: SIGTERM is the default choice for the internally used `ChildProcess.kill` method as well.
+   * @see https://nodejs.org/api/child_process.html#child_process_subprocess_kill_signal
    */
   async kill(signal = 'SIGTERM') {
+    // TODO: does not work correctly on windows
+    // see: https://stackoverflow.com/questions/32705857/cant-kill-child-process-on-windows?noredirect=1&lq=1
     this._killed = true;
     this._process?.kill(signal);
     await this.waitToEnd().catch(err => {
@@ -143,5 +156,18 @@ export default class Process {
       return;
     }
     await (this._promise = this._promise.then(() => { }));
+  }
+
+  static async execCaptureOut(cmd, options, logger) {
+    const process = new Process();
+
+    options = {
+      ...options,
+      captureOut: true
+    };
+
+    await process.start(cmd, logger || newLogger('exec'), options);
+
+    return process.out;
   }
 }

@@ -3,7 +3,7 @@ import Project from 'dbux-projects/src/projectLib/Project';
 
 
 export default class TodomvcEs6Project extends Project {
-  gitUrl = 'https://github.com/kentcdodds/es6-todomvc.git';
+  gitRemote = 'kentcdodds/es6-todomvc.git';
 
   rmFiles = [
     'webpack.config.js',
@@ -46,7 +46,18 @@ export default class TodomvcEs6Project extends Project {
         patch: 'error4',
         description: '"Clear completed" button does not do anything. No error message.',
         runArgs: []
-      }
+      },
+      {
+        name: 'error5',
+        patch: 'error5',
+        description: 'The todo list is always incomplete',
+        runArgs: []
+      },
+      // more bugs:
+
+      // template.show -> template has a minor render defect
+      // template.show -> incorrect variable scope causes only one item to be rendered
+      
     ];
   }
 

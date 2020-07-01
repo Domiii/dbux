@@ -22,9 +22,10 @@ export function buildNodeCommand(cfg) {
   const nodeDebugArgs = debugPort && `--inspect-brk=${debugPort}` || '';
 
   // pre-load some modules
-  const nodeRequireArr = [
-    ...requireArr.map(r => path.join(cwd, r))
-  ];
+  // const nodeRequireArr = [
+  //   ...requireArr.map(r => path.join(cwd, r))
+  // ];
+  const nodeRequireArr = requireArr;
   const nodeRequireArgs = nodeRequireArr.map(r => `--require="${r}"`).join(' ');
 
   // final command

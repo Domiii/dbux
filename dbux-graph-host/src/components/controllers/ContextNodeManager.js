@@ -7,7 +7,8 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 let SelectorType = {
   ObjectTrace: 1,
-  StaticContext: 2
+  StaticContext: 2,
+  Search: 3
 };
 
 SelectorType = new Enum(SelectorType);
@@ -36,12 +37,23 @@ export default class ContextNodeManager extends HostComponentEndpoint {
       // block highlighting on non-active apps
       this.clear();
     }
-    else if (this.selectorType === SelectorType.ObjectTrace) {
-      this.highlightByObject(this.selector);
-    }
-    else if (this.selectorType === SelectorType.StaticContext) {
-      const { applicationId, staticContextId } = this.selector;
-      this.highlightByStaticContext(applicationId, staticContextId);
+    else {
+      switch (this.selectorType) {
+        case SelectorType.ObjectTrace: {
+          this.highlightByObject(this.selector);
+          break;
+        }
+        case SelectorType.StaticContext: {
+          const { applicationId, staticContextId } = this.selector;
+          this.highlightByStaticContext(applicationId, staticContextId);
+          break;
+        }
+        case SelectorType.Search: {
+          const { searchTerm } = this.selector;
+          this.highlightBySearchTerm(searchTerm);
+          break;
+        }
+      }
     }
   }
 
@@ -68,9 +80,9 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   highlightByStaticContext = (applicationId, staticContextId) => {
     if (this.selector) this.clear();
-    
+
     this.context.graphRoot.controllers.getComponent('FocusController').setSyncMode(false);
-    
+
     const dp = allApplications.getById(applicationId).dataProvider;
     const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId);
 
@@ -88,6 +100,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     }
   }
 
+
   // ###########################################################################
   //  byObject
   // ###########################################################################
@@ -100,7 +113,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
     const { applicationId, traceId: originTraceId } = traceSelector;
     const dp = allApplications.getById(applicationId).dataProvider;
-    
+
     const { traceId } = dp.util.getValueTrace(originTraceId);
     const trackId = dp.util.getTraceTrackId(traceId);
     const contexts = dp.util.getContextsByTrackId(trackId);
@@ -115,7 +128,30 @@ export default class ContextNodeManager extends HostComponentEndpoint {
       this.clear();
     }
     else {
-      this.highlightByStaticContext(trace);
+      this.highlightByObject(trace);
     }
+  }
+
+  // ###########################################################################
+  // search
+  // ###########################################################################
+
+
+  highlightBySearchTerm(searchTerm) {
+    if (this.selector) this.clear();
+    if (!searchTerm) {
+      return;
+    }
+
+    this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
+    this.context.graphRoot.controllers.getComponent('FocusController').setSyncMode(false);
+
+    const contexts = allApplications.selection.getAll().
+      map(({ dataProvider: dp }) => dp.util.searchContexts(searchTerm)).
+      flat();
+
+    this.selector = { searchTerm };
+    this.selectorType = SelectorType.Search;
+    this.highlightContexts(contexts);
   }
 }

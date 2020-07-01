@@ -1,6 +1,8 @@
 import { compileHtmlElement, decorateClasses, decorateAttr } from '@/util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
+let addedDocumentClick = false;
+
 class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
   // createEl
@@ -18,10 +20,45 @@ class Toolbar extends ClientComponentEndpoint {
           <button data-el="callModeBtn" class="btn btn-info" href="#">call</button>
           <button data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
           <button data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
+          <button data-el="searchBtn" class="btn btn-info" href="#">🔍</button>
         </div>
-        <button data-el="restartBtn" class="btn btn-danger" href="#">⚠️Restart⚠️</button>
+        <div data-el="moreMenu" class="dropdown">
+          <button data-el="moreMenuBtn" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            ☰
+          </button>
+          <div data-el="moreMenuBody" class="dropdown-menu" 
+          style="left: inherit; right: 0; min-width: 0;"
+          aria-labelledby="dropdownMenuButton">
+            <button data-el="showIdsBtn" class="btn btn-info full-width" href="#">ids</button>
+            <div class="dropdown-divider"></div>
+            <button data-el="restartBtn" class="btn btn-danger full-width" href="#">⚠️Restart⚠️</button>
+          </div>
+        </div>
       </nav>
     `);
+  }
+
+  setupEl() {
+    this.dropDownOpen = false;
+    if (!addedDocumentClick) {
+      addedDocumentClick = true;
+      document.addEventListener('click', (evt) => {
+        const btn = this.els.moreMenuBtn;
+        if (evt.target !== btn && this.dropDownOpen) {
+          this.toggleMenu();
+        }
+      });
+    }
+  }
+
+  toggleMenu() {
+    this.dropDownOpen = !this.dropDownOpen;
+    if (this.dropDownOpen) {
+      this.els.moreMenuBody.style.display = 'inherit';
+    }
+    else {
+      this.els.moreMenuBody.style.display = 'none';
+    }
   }
 
   // ###########################################################################
@@ -36,7 +73,8 @@ class Toolbar extends ClientComponentEndpoint {
       valueMode,
       thinMode,
       hideOldMode,
-      hideNewMode
+      hideNewMode,
+      searchTerm
     } = this.state;
 
     // render buttons
@@ -61,10 +99,13 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.hideNewRunBtn, {
       active: !hideNewMode
     });
+    decorateClasses(this.els.searchBtn, {
+      active: !!searchTerm
+    });
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
     this.els.hideNewRunBtn.innerHTML = `${hideNewMode ? '⚪' : '🔴'}`;
 
-    
+
     this.renderModes();
   }
 
@@ -173,6 +214,31 @@ class Toolbar extends ClientComponentEndpoint {
       },
       focus(evt) { evt.target.blur(); }
     },
+
+    searchBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        if (this.state.searchTerm) {
+          // stop searching
+          await this.remote.search(null);
+        }
+        else {
+          // start searching
+          const searchTerm = await this.app.prompt('Enter search term');
+          if (searchTerm) {
+            await this.remote.search(searchTerm);
+          }
+        }
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    moreMenuBtn: {
+      click(evt) {
+        this.toggleMenu();
+      },
+      focus(evt) { evt.target.blur(); }
+    }
   }
 }
 

@@ -79,7 +79,7 @@ class ContextNode extends ClientComponentEndpoint {
 
     // set indicator
     this.setIndicator(traceId, this.children.getComponents('ContextNode'), isSelectedTraceCallRelated, contextIdOfSelectedCallTrace);
-    console.log(traceId, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace);
+    // console.log(traceId, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace);
     // set popper
     const modKey = getPlatformModifierKeyString();
     this.els.contextLabel.setAttribute('data-tooltip', `${this.els.contextLabel.textContent} (${modKey} + click to select trace)`);
@@ -154,7 +154,7 @@ class ContextNode extends ClientComponentEndpoint {
 
     //check indicator position -del
     let selectChild = children.map((x) => [x.state.context.parentTraceId, x.state.context.contextId]);
-    let toggle = selectChild.findIndex(x => x[0] > traceId);
+    let toggle = selectChild.findIndex(x => x[0] >= traceId);
 
     // check trace is selectedTraceCallRelated -del
     if (toggle !== -1 && isSelectedTraceCallRelated && contextIdOfSelectedCallTrace !== undefined) {
