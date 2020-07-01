@@ -215,8 +215,19 @@ export default {
 
   /** @param {DataProvider} dp */
   doesTraceHaveValue(dp, traceId) {
-    const value = dp.util.getTraceValue(traceId);
-    return value !== undefined;
+    const trace = dp.util.getValueTrace(traceId);
+    const { value } = trace;
+    if (value === undefined) {
+      const valueRef = dp.util.getTraceValueRef(traceId);
+      if (!valueRef) {
+        // TODO: better distinguish between existing and non-existing values
+        return false;
+      }
+    }
+    return true;
+
+    // const value = dp.util.getTraceValue(traceId);
+    // return value !== undefined;
     // const trace = dp.collections.traces.getById(traceId);
     // const { staticTraceId, type: dynamicType } = trace;
     // if (dynamicType) {
@@ -239,7 +250,11 @@ export default {
     }
 
     const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef && valueRef.value;
+    if (!valueRef) {
+      // TODO: better distinguish between existing and non-existing values
+      return undefined;
+    }
+    return valueRef.value;
   },
 
   /** @param {DataProvider} dp */

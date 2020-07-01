@@ -47,6 +47,12 @@ export default class TodomvcEs6Project extends Project {
         description: '"Clear completed" button does not do anything. No error message.',
         runArgs: []
       },
+      {
+        name: 'error5',
+        patch: 'error5',
+        description: 'The todo list is always incomplete',
+        runArgs: []
+      },
       // more bugs:
 
       // template.show -> template has a minor render defect
