@@ -47,7 +47,8 @@
 ## dbux-practice
    * user interaction log
    * backend
-   * user login
+   * user login (github oauth)
+      * see https://github.com/microsoft/vscode/issues/91309
    * bug difficulty classification
    * hint system + more relevant information
 
