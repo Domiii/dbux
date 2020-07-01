@@ -78,8 +78,9 @@ class ContextNode extends ClientComponentEndpoint {
     });
 
     // set indicator
-    this.setIndicator(traceId, this.children.getComponents('ContextNode'), isSelectedTraceCallRelated, contextIdOfSelectedCallTrace);
-    // console.log(traceId, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace);
+
+    this.setIndicator(traceId, this.children.getComponents('ContextNode'), isSelectedTraceCallRelated, contextIdOfSelectedCallTrace, isSelected);
+
     // set popper
     const modKey = getPlatformModifierKeyString();
     this.els.contextLabel.setAttribute('data-tooltip', `${this.els.contextLabel.textContent} (${modKey} + click to select trace)`);
@@ -146,9 +147,9 @@ class ContextNode extends ClientComponentEndpoint {
     // }
   }
 
-  setIndicator(traceId, children, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace) {
-    choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
-    if (!children || !traceId) {
+  setIndicator(traceId, children, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace, isSelected) {
+    // check isSelected... if isSelected is false, this update is deselect old from focusControler -del
+    if (!children || !traceId || !isSelected) {
       return;
     }
 
@@ -159,16 +160,34 @@ class ContextNode extends ClientComponentEndpoint {
     // check trace is selectedTraceCallRelated -del
     if (toggle !== -1 && isSelectedTraceCallRelated && contextIdOfSelectedCallTrace !== undefined) {
       toggle = selectChild.findIndex(x => x[1] === contextIdOfSelectedCallTrace);
-      choiceElm = children[toggle]?.el.querySelector('.indicator-cont');
-      choiceElm?.classList?.add('set-calltrace');
-    } 
+      let newChoiceElm = children[toggle]?.el.querySelector('.indicator-cont');
+      
+      if (choiceElm !== newChoiceElm) {
+        choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
+        choiceElm = newChoiceElm;
+        choiceElm?.classList?.add('set-calltrace');
+      }
+      // console.log(choiceElm?.classList);
+      // console.log('toggle:', toggle, 'element:', children[toggle]?.el);
+      // console.log('**********************')
+    }
     else if (toggle !== -1) {
-      choiceElm = children[toggle]?.el.querySelector('.indicator-cont');
-      choiceElm?.classList?.add('set-top');
-    } 
+      let newChoiceElm = children[toggle]?.el.querySelector('.indicator-cont');
+      
+      if (choiceElm !== newChoiceElm) {
+        choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
+        choiceElm = newChoiceElm;
+        choiceElm?.classList?.add('set-top');
+      }
+    }
     else {
-      choiceElm = children[children.length - 1]?.el.querySelector('.indicator-cont');
-      choiceElm?.classList?.add('set-bottom');
+      let newChoiceElm = children[toggle]?.el.querySelector('.indicator-cont');
+      
+      if (choiceElm !== newChoiceElm) {
+        choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
+        choiceElm = newChoiceElm;
+        choiceElm?.classList?.add('set-bottom');
+      }
     }
   }
 
