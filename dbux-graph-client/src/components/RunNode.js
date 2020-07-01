@@ -4,14 +4,14 @@ import { compileHtmlElement } from '../util/domUtil';
 class RunNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-    <div class="flex-row align-center">
-      <div class="run-node width-fit">
-        <div>
-          <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
+      <div class="flex-row vertical-align-center">
+        <div class="run-node width-fit">
+          <div>
+            <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
+          </div>
         </div>
+        <div data-el="childrenAmountTag"></div>
       </div>
-      <div data-el="childrenAmountTag"></div>
-    </div>
     `);
 
     return el;
