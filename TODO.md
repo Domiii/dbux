@@ -60,9 +60,10 @@
 ## TODO (other)
 * [dbux-practice] complete workflow design
 * [dbux-graph] when clicking the scrollbar the first time, it disappears, and a gray square pops up in the top left corner instead
-* parent trace wrong for `call`, `apply`?
+* parent trace wrong for:
    * `callback.call(this, JSON.parse(localStorage[name]))`
-   * probably because args are not traced correctly
+   * `callback(() => { ... })`
+   * -> probably because args are not traced correctly
 * dbux-graph:
    * add "id" to context nodes (toolbar-togglable)
 * fix: in `o[x]`, `x` is not traced
@@ -83,15 +84,13 @@
 * in TrackedObjectTDNode, render `valueString`?
 * get ready for deployment!
    * setup w/ lerna and prepare production/publishable build?
+   * add to `extensions` folder
+      * see: https://github.com/Microsoft/vscode/issues/25159
 * instrument `try` blocks
    * test errors in `try/finally` -> find errors in `try` block?
    * also show some sort of error symbol when tracing `catch` block?
-* big graphs (e.g. `javascript-algorithms` -> `bug #1`) build very slowly, and we have to wait until it finished building to see anything
-   * double check: should be fine in non-debug mode!
 * some assignments (and possibly other expressions) are traced twice
    * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
-* deployment: add to `extensions` folder
-   * see: https://github.com/Microsoft/vscode/issues/25159
 * fix: `function` declarations are not tracked
    * store staticContextId by `function` object, so we can quickly jump to them and find all their references
 * fix: use correct package manager (npm vs. yarn) when working with libraries in `dbux-projects`
