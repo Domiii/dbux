@@ -56,12 +56,12 @@ export default class BugRunner {
     this._queue = new SerialTaskQueue('BugRunnerQueue');
 
     // TODO: synchronized methods deadlock when they call each other
-    this._queue.synchronizedMethods(this, //this._wrapSynchronized,
-      'activateProject',
-      'activateBug',
-      'testBug',
-      // 'exec'
-    );
+    // this._queue.synchronizedMethods(this, //this._wrapSynchronized,
+    //   'activateProject',
+    //   'activateBug',
+    //   'testBug',
+    //   // 'exec'
+    // );
   }
 
   // _wrapSynchronized(f) {
@@ -136,24 +136,24 @@ export default class BugRunner {
     const { project } = bug;
     this._bug = bug;
 
-    // activate project
-    await this._activateProject(project);
-
-    // git reset hard
-    // TODO: make sure, user gets to save own changes first
-    await project.gitResetHard();
-
-    sh.cd(project.projectPath);
-    if (bug.patch) {
-      // activate patch
-      await project.applyPatch(bug.patch);
-    }
-
-    // start watch mode (if necessary)
-    await project.startWatchModeIfNotRunning();
-
-    // select bug
-    await project.selectBug(bug);
+    this._queue.enqueue(
+      // activate project
+      async () => this.activateProject(project),
+      // git reset hard
+      // TODO: make sure, user gets to save own changes first
+      async () => project.gitResetHard(),
+      async () => {
+        sh.cd(project.projectPath);
+        if (bug.patch) {
+          // activate patch
+          await this.roject.applyPatch(bug.patch);
+        }
+      },
+      // start watch mode (if necessary)
+      async () => project.startWatchModeIfNotRunning(),
+      // select bug
+      async () => project.selectBug(bug)
+    );
   }
 
   /**
@@ -163,7 +163,7 @@ export default class BugRunner {
     const { project } = bug;
 
     // do whatever it takes (usually: `activateProject` -> `git checkout`)
-    await this._activateBug(bug);
+    await this.activateBug(bug);
 
     const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
 
@@ -174,7 +174,8 @@ export default class BugRunner {
       await this._exec(project, cmd);
     }
 
-    if (this._project.backgroundProcesses.length) {
+    // need to check this._project exist, it might be kill during activating
+    if (this._project?.backgroundProcesses.length) {
       this.setStatus(BugRunnerStatus.RunningInBackground);
     }
     else {

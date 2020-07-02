@@ -277,6 +277,7 @@ export default class Project {
 
   async deleteProjectFolder() {
     await sh.rm('-rf', this.projectPath);
+    this._installed = false;
   }
 
 
