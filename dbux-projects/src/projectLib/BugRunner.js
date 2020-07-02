@@ -7,6 +7,7 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import Project from './Project';
 import Bug from './Bug';
+import BugRunnerStatus from './BugRunnerStatus';
 
 export default class BugRunner {
   manager;
@@ -29,7 +30,7 @@ export default class BugRunner {
     this.manager = manager;
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
-    this.bugActivating = 0;
+    this.status = BugRunnerStatus.None;
   }
 
   get logger() {
@@ -109,6 +110,10 @@ export default class BugRunner {
     }
 
     this._project = project;
+
+    // Runner become busy after starting installing project, setStatus should be called after this._project is set
+    this.setStatus(BugRunnerStatus.Busy);
+
     await project.installProject();
     project._installed = true;
   }
@@ -130,33 +135,25 @@ export default class BugRunner {
 
     const { project } = bug;
     this._bug = bug;
-    this._emitter.emit('start', bug);
 
-    this.bugActivating += 1;
+    // activate project
+    await this._activateProject(project);
 
-    try {    
-      // activate project
-      await this._activateProject(project);
+    // git reset hard
+    // TODO: make sure, user gets to save own changes first
+    await project.gitResetHard();
 
-      // git reset hard
-      // TODO: make sure, user gets to save own changes first
-      await project.gitResetHard();
-
-      sh.cd(project.projectPath);
-      if (bug.patch) {
-        // activate patch
-        await project.applyPatch(bug.patch);
-      }
-
-      // start watch mode (if necessary)
-      await project.startWatchModeIfNotRunning();
-
-      // select bug
-      await project.selectBug(bug);
-    } finally {
-      this.bugActivating += -1;
-      this.maybeNotifyEnd();
+    sh.cd(project.projectPath);
+    if (bug.patch) {
+      // activate patch
+      await project.applyPatch(bug.patch);
     }
+
+    // start watch mode (if necessary)
+    await project.startWatchModeIfNotRunning();
+
+    // select bug
+    await project.selectBug(bug);
   }
 
   /**
@@ -175,6 +172,13 @@ export default class BugRunner {
     }
     else {
       await this._exec(project, cmd);
+    }
+
+    if (this._project.backgroundProcesses.length) {
+      this.setStatus(BugRunnerStatus.RunningInBackground);
+    }
+    else {
+      this.setStatus(BugRunnerStatus.Done);
     }
   }
 
@@ -239,18 +243,55 @@ export default class BugRunner {
     this._bug = null;
     this._project = null;
 
-    // hackfix: send end event to refresh projectView
-    // in the time project.backgroundProcess ends, this._project still exist, thus projectNode is activated
-    this._emitter.emit('end');
+    this.setStatus(BugRunnerStatus.None);
   }
 
-  maybeNotifyEnd() {
-    if (this._project && !this._project.backgroundProcesses.length && !this.bugActivating) {
-      this._emitter.emit('end');
+  // ###########################################################################
+  // status controll
+  // ###########################################################################
+
+  setStatus(status) {
+    if (this.status !== status) {
+      this.status = status;
+      this._emitter.emit('statusChanged', status);
+    }
+  }
+
+  /**
+   * This should be called after all background progresses of a project finished, to set the status from `RunningInBackground` to `None`
+   * @param {Project} project 
+   */
+  maybeSetStatusNone(project) {
+    if (!this._project || this._project !== project) {
+      this._ownLogger.error(`Project ${project.name} claimed to finished its background processes after BugRunner deactivate it.`);
+    }
+    else if (project.backgroundProcesses.length) {
+      this._ownLogger.error(`Project ${project.name} called \`maybeSetStatusNone\` before all background processes finished.`);
+    }
+    else {
+      this.setStatus(BugRunnerStatus.None);
     }
   }
 
   on(evtName, cb) {
     this._emitter.on(evtName, cb);
+  }
+
+  getProjectStatus(project) {
+    if (this._project === project) {
+      return this.status;
+    }
+    else {
+      return BugRunnerStatus.None;
+    }
+  }
+
+  getBugStatus(bug) {
+    if (this._bug === bug) {
+      return this.status;
+    }
+    else {
+      return BugRunnerStatus.None;
+    }
   }
 }

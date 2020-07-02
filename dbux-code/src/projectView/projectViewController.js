@@ -1,3 +1,4 @@
+import { window } from 'vscode';
 import path from 'path';
 import { newLogger, setOutputStreams } from 'dbux-common/src/log/logger';
 import { initDbuxProjects } from 'dbux-projects/src';
@@ -6,6 +7,7 @@ import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
+import PracticeStopwatch from './PracticeStopwatch';
 
 // ########################################
 //  setup logger for project
@@ -56,13 +58,14 @@ class ProjectViewController {
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
     this.treeView = this.treeDataProvider.treeView;
+    this.practiceStopwatch = new PracticeStopwatch('practice');
+    this.practiceStopwatch.registOnClick(context, this.maybeStopWatch.bind(this));
 
     // ########################################
     //  listen on bugRunner
     // ########################################
     const bugRunner = this.manager.getOrCreateRunner();
-    bugRunner.on('start', this.treeDataProvider.refresh);
-    bugRunner.on('end', this.treeDataProvider.refresh);
+    bugRunner.on('statusChanged', this.treeDataProvider.refresh.bind(this.treeDataProvider));
   }
 
   // ###########################################################################
@@ -95,33 +98,48 @@ class ProjectViewController {
     if (cancelToken.isCancellationRequested) {
       return;
     }
-    const runner = this.manager.getOrCreateRunner();
     // cancel any currently running tasks
+    progress.report({ message: 'Canceling previous tasks...' });
+    const runner = this.manager.getOrCreateRunner();
     await runner.cancel();
-
-    // activate/install project
+    
     if (cancelToken.isCancellationRequested) {
       return;
     }
-    progress.report({ increment: 5, message: 'installing project...' });
-    await runner.activateProject(bug.project);
-
-    // open in editor (must be after activation/installation)
+    // activate it!
+    progress.report({ message: 'activating...' });
+    await runner.testBug(bug, debugMode);
+    
     if (cancelToken.isCancellationRequested) {
       return;
     }
-    progress.report({ increment: 45, message: 'opening in editor...' });
+    progress.report({ message: 'opening in editor...' });
     await bug.openInEditor();
 
-    // run it!
-    if (cancelToken.isCancellationRequested) {
-      return;
+    progress.report({ message: 'Finished!' });
+  }
+
+  // ###########################################################################
+  // practice stopwatch
+  // ###########################################################################
+
+  async maybeStartWatch() {
+    const result = await window.showInformationMessage('Do you want to start the timer?', { modal: true }, 'Yes');
+    if (result === 'Yes') {
+      this.practiceStopwatch.start();
     }
-    progress.report({ increment: 15, message: 'running bug test...' });
-    await runner.testBug(bug, debugMode);
+  }
 
-
-    progress.report({ increment: 35, message: 'Finished!' });
+  async maybeStopWatch() {
+    this.practiceStopwatch.pause();
+    const result = await window.showInformationMessage('Do you want to stop the timer?', { modal: true }, 'Stop');
+    if (result === 'Stop') {
+      // already pause, do nothing
+      this.practiceStopwatch.hide();
+    }
+    else {
+      this.practiceStopwatch.start();
+    }
   }
 }
 

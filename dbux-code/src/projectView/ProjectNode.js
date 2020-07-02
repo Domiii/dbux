@@ -2,6 +2,7 @@ import { ProgressLocation, Uri, workspace, window } from 'vscode';
 import { pathGetBasename } from 'dbux-common/src/util/pathUtil';
 import sleep from 'dbux-common/src/util/sleep';
 import Project from 'dbux-projects/src/projectLib/Project';
+import BugRunnerStatus, { isStatusRunningType } from 'dbux-projects/src/projectLib/BugRunnerStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
 import BugLoadingNode from './BugLoadingNode';
@@ -29,7 +30,23 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   isActivated() {
-    return this.project.runner.isProjectActive(this.project);
+    return isStatusRunningType(this.project.runner.getProjectStatus(this.project));
+  }
+
+  makeIconPath() {
+    const status = this.project.runner.getProjectStatus(this.project);
+    switch (status) {
+      case BugRunnerStatus.None:
+        return '';
+      case BugRunnerStatus.Busy:
+        return 'hourglass.svg';
+      case BugRunnerStatus.RunningInBackground:
+        return 'play.svg';
+      case BugRunnerStatus.Done:
+        return 'dependency.svg';
+      default:
+        return '';
+    }
   }
 
   handleClick() {
