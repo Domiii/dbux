@@ -29,6 +29,13 @@ export default class ProjectNode extends BaseTreeViewNode {
     return this.project._installed ? 'installed' : '';
   }
 
+  get bugLoadingNode() {
+    if (!this._bugLoadingNode) {
+      this._bugLoadingNode = new BugLoadingNode();
+    }
+    return this._bugLoadingNode;
+  }
+
   isActivated() {
     return isStatusRunningType(this.project.runner.getProjectStatus(this.project));
   }
@@ -58,32 +65,28 @@ export default class ProjectNode extends BaseTreeViewNode {
       return this.children;
     }
     else {
-      runTaskWithProgressBar((progress, cancelToken) => {
+      runTaskWithProgressBar(async (progress, cancelToken) => {
         progress.report({ message: 'Loading bugs' });
-        return this.registLoadBug(progress);
+        await this._buildChindren(progress);
+        this.treeNodeProvider.repaint();
       }, {
         cancellable: true,
         location: ProgressLocation.Notification,
         title: `Loading bugs of project:${this.project.name}`
       });
-      return [BugLoadingNode.instance];
+      return [this.bugLoadingNode];
     }
   }
 
-  async registLoadBug(progress) {
+  async _buildChindren(progress) {
     const runner = this.treeNodeProvider.controller.manager.getOrCreateRunner();
-    const bugs = await runner.getOrLoadBugs(this.project);
-    const children = [];
-    // progress.report({ message: 'Building Nodes' });
-    for (const bug of bugs) {
-      children.push(this.buildBugNode(bug));
-    }
+    // getOrLoadBugs returns a `BugList`, use Array.from to convert to array
+    const bugs = Array.from(await runner.getOrLoadBugs(this.project));
     this.childrenBuilt = true;
-    this.children = children;
+    this.children = bugs.map(this.buildBugNode.bind(this));
 
     this.treeNodeProvider.decorateChildren(this);
-    this.treeNodeProvider.repaint();
-    return children;
+    return this.children;
   }
 
   buildBugNode(bug) {
@@ -95,12 +98,16 @@ export default class ProjectNode extends BaseTreeViewNode {
     const result = await window.showInformationMessage(confirmMessage, { modal: true }, 'Ok');
     if (result === 'Ok') {
       runTaskWithProgressBar(async (progress, cancelToken) => {
-        progress.report({ increment: 20, message: 'deleting folder...' });
+        if (this.project.runner.isProjectActive(this.project)) {
+          progress.report({ message: 'canceling current jobs...' });
+          await this.project.runner.cancel();
+        }
+        progress.report({ message: 'deleting folder...' });
         // wait for progress bar to show
         await sleep(100);
         await this.project.deleteProjectFolder();
         this.treeNodeProvider.refresh();
-        progress.report({ increment: 80, message: 'Done.' });
+        progress.report({ message: 'Done.' });
       }, {
         cancellable: false,
         location: ProgressLocation.Notification,
