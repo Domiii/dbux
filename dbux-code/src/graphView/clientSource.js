@@ -23,7 +23,7 @@ async function makeScript(scriptPath) {
 }
 
 
-export async function getWebviewClientHtml(...scriptPaths) {
+export async function buildWebviewClientHtml(...scriptPaths) {
   const scripts = (
     await Promise.all(
       scriptPaths.map(fpath => makeScript(fpath))
@@ -39,17 +39,27 @@ export async function getWebviewClientHtml(...scriptPaths) {
 </head>
 <body>
   <div id="root"></div>
-  <!--button onclick="gogo();">start!</button-->
+
   ${scripts}
   <script>
-    /**
-      * 
-      * @see https://github.com/microsoft/vscode-extension-samples/tree/master/webview-sample/media/main.js#L4
-      */
-    const vscode = acquireVsCodeApi();
-    let messageHandler;
+    function main() {
+      window.x = (window.x || 0) + 1;
+      console.debug('Client main', x);
+      if (window.__dbuxComponentManager) {
+        // started this before -> need to tear down, and go again?
+        componentManager.restart();
+        console.debug('Sending restart request...');
+        return;
+      }
+      console.debug('Client init');
 
-    function gogo() {
+      /**
+        * 
+        * @see https://github.com/microsoft/vscode-extension-samples/tree/master/webview-sample/media/main.js#L4
+        */
+      const vscode = acquireVsCodeApi();
+      let messageHandler;
+
       const ipcAdapter = {
         postMessage(msg) {
           vscode.postMessage(msg);
@@ -66,11 +76,10 @@ export async function getWebviewClientHtml(...scriptPaths) {
           });
         }
       };
-      
-      startDbuxGraphClient(ipcAdapter);
+      window.__dbuxComponentManager = startDbuxGraphClient(ipcAdapter);
     }
 
-    gogo();
+    main();
   </script>
 </body>
 </html>`;

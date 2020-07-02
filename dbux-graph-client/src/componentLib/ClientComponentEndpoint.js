@@ -111,7 +111,8 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     },
 
     dispose() {
-      this._isDisposed = true;
+      super.dispose();
+      
       this.dom?.remove();
 
       if (this.owner) {

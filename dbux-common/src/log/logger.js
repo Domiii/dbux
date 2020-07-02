@@ -100,15 +100,31 @@ export function newFileLogger(fpath) {
   return new Logger(fname);
 }
 
-let outputStreams = {
+const consoleOutputStreams = {
   log: console.log.bind(console),
-  warn: console.log.bind(console),
-  error: console.log.bind(console),
-  debug: console.log.bind(console)
+  warn: console.warn.bind(console),
+  error: console.error.bind(console),
+  debug: console.debug.bind(console)
 };
 
+let outputStreams = consoleOutputStreams;
+
+function mergeOutputStreams(newStreams) {
+  return Object.fromEntries(
+    Object.entries(consoleOutputStreams).map(([name, cb]) => {
+      return [
+        name,
+        (...args) => {
+          cb(...args);
+          newStreams[name]?.apply(newStreams, args);
+        }
+      ];
+    })
+  );
+}
+
 export function setOutputStreams(newOutputStreams) {
-  outputStreams = newOutputStreams;
+  outputStreams = mergeOutputStreams(newOutputStreams);
 }
 
 export function loglog(ns, ...args) {
@@ -119,7 +135,7 @@ export function loglog(ns, ...args) {
 export function logDebug(ns, ...args) {
   // color decoration
   // prettyDebug(`[${ns}]`, ...args);
-  
+
   // no color
   outputStreams.debug(`[${ns}]`, ...args);
 }

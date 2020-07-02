@@ -6,8 +6,9 @@ import {
   ViewColumn
 } from 'vscode';
 import path from 'path';
-import { getWebviewClientHtml } from './clientSource';
+import { buildWebviewClientHtml } from './clientSource';
 import { goToTrace } from '../codeUtil/codeNav';
+import { performance } from 'perf_hooks';
 
 const { log, debug, warn, error: logError } = newLogger('GraphViewHost');
 
@@ -137,17 +138,17 @@ export default class GraphWebView {
     await this._restartClientDOM();
   }
 
-  async _restartClientDOM() {
-    // TODO: consider using remote URL when developing locally to enable webpack-dev-server's hot reload
-    const scriptPath = path.join(this.resourcePath, 'dist', 'graph.js');
-    const html = await getWebviewClientHtml(scriptPath);
-    this.panel.webview.html = html + `<!-- ${++this._webviewUpdateToken} -->`;
-  }
-
   _restartHost() {
     const ipcAdapter = this._buildHostIpcAdapterVsCode(this.panel.webview);
     startGraphHost(this._started, this.restart, ipcAdapter, this.externals);
   }
+
+  async _restartClientDOM() {
+    const scriptPath = path.join(this.resourcePath, 'dist', 'graph.js');
+    const html = await buildWebviewClientHtml(scriptPath);
+    this.panel.webview.html = html + `<!-- ${++this._webviewUpdateToken} -->`;
+  }
+
 
   // ###########################################################################
   // onDidChangeViewState
@@ -162,6 +163,7 @@ export default class GraphWebView {
    * @see https://code.visualstudio.com/api/extension-guides/webview#persistence
    */
   handleDidChangeViewState = ({ webviewPanel }) => {
+    // debug('handleDidChangeViewState', webviewPanel.visible, performance.now());
     // const { viewColumn } = webviewPanel;
     // const { oldViewColumn, wasVisible } = this;
 
@@ -180,6 +182,9 @@ export default class GraphWebView {
   // ###########################################################################
 
   externals = {
+    /**
+     * Used for the "Restart" button
+     */
     restart: this.restart,
 
     logClientError(args) {
