@@ -5,7 +5,7 @@ import {
 import { logError } from 'dbux-common/src/log/logger';
 
 // command regist helper
-export function registerCommand(context, commandName, func, pushToClient = false) {
+export function registerCommand(context, commandName, func) {
   function _errWrap(f) {
     return async (...args) => {
       try {
@@ -19,7 +19,9 @@ export function registerCommand(context, commandName, func, pushToClient = false
   }
 
   const newCommand = commands.registerCommand(commandName, _errWrap(func));
-  if (pushToClient) context.subscriptions.push(newCommand);
+  
+  // clear on deactivate
+  context.subscriptions.push(newCommand);
 
   return newCommand;
 }
