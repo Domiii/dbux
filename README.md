@@ -274,17 +274,27 @@ Istanbul + NYC add require hooks to instrument any loaded file on the fly
 
 ## Keyboard shortcuts
 
-NOTE: VSCode's Terminal has no "Clear" keybinding anymore
-You can re-add it manually:
+NOTE: VSCode's Terminal/DebugConsole/Output windows often have no "Clear" keybinding (sometimes some of them do?)
+You can add that manually:
 
 1. CTRL+SHIFT+P -> "Open Keyboard Shortcuts (JSON)"
 1. add (for Windows use `ctrl`; for MAC use `cmd`):
-```js
-{ 
-   "key": "ctrl+k",
+```json
+{
+   "key": "cmd+k",
+   "command": "workbench.debug.panel.action.clearReplAction",
+   "when": "inDebugRepl"
+},
+{
+   "key": "cmd+k",
+   "command": "workbench.output.action.clearOutput",
+   "when": "activePanel == 'workbench.panel.output'"
+},
+{
+   "key": "cmd+k",
    "command": "workbench.action.terminal.clear",
    "when": "terminalFocus"
-},
+}
 ```
 
 # Some of the more annoying problems that have already been resolved

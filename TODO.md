@@ -1,5 +1,12 @@
 
 ## TODO (shared)
+* add "GroupMode.Ungrouped" to "Trace Executed ..." node
+   * make it the default option
+* parent trace wrong for:
+   * todomvc: `callback.call(this, JSON.parse(localStorage[name]))`
+   * todomvc-es6 (`npm run p1-start`): `callback(() => { ... })`
+   * -> args are not traced correctly?
+   * -> parentTrace heuristics?
 * `dbux-projects`
    * add "cancel all" button to the top
    * add a better icon for "add folder to workspace" button
@@ -58,20 +65,20 @@
 
 
 ## TODO (other)
+* fix: don't `gitResetHard` every time we run a bug
+   * come up with better way to manage this properly
+* fix graph theme + sync mode
+   * better coloring schema, so we sync mode becomes a pleasant experience
+   * CONSIDER: always track in graph, but don't necessarily reveal?
 * [dbux-practice] complete workflow design
-* [dbux-graph] when clicking the scrollbar the first time, it disappears, and a gray square pops up in the top left corner instead
-* parent trace wrong for:
-   * `callback.call(this, JSON.parse(localStorage[name]))`
-   * `callback(() => { ... })`
-   * -> probably because args are not traced correctly
-* dbux-graph:
-   * add "id" to context nodes (toolbar-togglable)
-* fix: in `o[x]`, `x` is not traced
 * error tracing
    * when encountering errors caught mid-way
       * `resolveCallIds` will fail
    * error resolution doesn't work properly with recursion
       * (probably because there are unmatched `BCE`s on the stack)
+* dbux-graph:
+   * add "id" to context nodes (toolbar-togglable)
+* fix: in `o[x]`, `x` is not traced
 * Object rendering:
    * visualize when value got ommitted/pruned
    * show actual string length, if pruned

@@ -2,6 +2,7 @@ import path from 'path';
 import sh from 'shelljs';
 import Project from 'dbux-projects/src/projectLib/Project';
 import { buildMochaRunBugCommand as buildMochaCommand } from 'dbux-projects/src/util/mochaUtil';
+import { isArray } from 'lodash';
 
 
 export default class ExpressProject extends Project {
@@ -21,14 +22,21 @@ export default class ExpressProject extends Project {
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
     const bugs = [
       {
+        // https://github.com/BugsJS/express/releases/tag/Bug-1-test
+        // https://github.com/BugsJS/express/commit/8bd36202bef586889d20bd5fa0732d3495da54eb
         id: 1,
         testRe: 'should only include each method once',
         testFilePaths: ['test/app.options.js']
       },
       {
+        // https://github.com/BugsJS/express/releases/tag/Bug-2-test
+        // https://github.com/BugsJS/express/commit/3260309b422cd964ce834e3925823c80b3399f3c
         id: 2,
-        testRe: 'should respect X-Forwarded-Proto',
-        testFilePaths: ['test/req.protocol.js']
+        testRe: [
+          'req .protocol when "trust proxy" is enabled when trusting hop count should respect X-Forwarded-Proto',
+          'when "trust proxy" trusting hop count should respect X-Forwarded-Proto'
+        ],
+        testFilePaths: ['test/req.protocol.js', 'test/req.secure.js']
       },
       {
         // https://github.com/BugsJS/express/commit/796657f6f67bd8f8dfae8d25a2d353c8d657da50
@@ -106,13 +114,20 @@ export default class ExpressProject extends Project {
           return null;
         }
 
+        let { testRe } = bug;
+        if (isArray(testRe)) {
+          testRe = testRe.map(re => `(?:${re})`).join('|');
+        }
+
+        testRe = testRe.replace(/"/g, '\\"');
+
         return {
           // id: i + 1,
           name: `bug #${bug.id}`,
-          description: bug.testRe,
+          description: testRe,
           runArgs: [
             '--grep',
-            `"${bug.testRe}"`,
+            `"${testRe}"`,
             '--',
             ...bug.testFilePaths
           ],
