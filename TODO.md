@@ -2,11 +2,15 @@
 ## TODO (shared)
 * add "GroupMode.Ungrouped" to "Trace Executed ..." node
    * make it the default option
-* parent trace wrong for:
-   * todomvc: `callback.call(this, JSON.parse(localStorage[name]))`
-   * todomvc-es6 (`npm run p1-start`): `callback(() => { ... })`
-   * -> args are not traced correctly?
-   * -> parentTrace heuristics?
+* navigation: "stepping in"
+   * `step in` backwards doesn't work?
+   * if `selectedTrace` has `callId`, always `step in`to that call right away
+      * -> no matter if forward or backward
+      * -> no need to first select last argument before stepping down
+   * before stepping down, instead of selecting last argument, select the call's BCE
+* in sync mode:
+   * graph first scrolls to node
+   * then scrolls right back to zero
 * `dbux-projects`
    * add "cancel all" button to the top
    * add a better icon for "add folder to workspace" button
@@ -50,12 +54,15 @@
 
 
 ## dbux-practice
-   * user interaction log
-   * backend
-   * user login (github oauth)
-      * see https://github.com/microsoft/vscode/issues/91309
-   * bug difficulty classification
-   * hint system + more relevant information
+
+* user interaction log
+* backend
+* user login (github oauth)
+   * see https://github.com/microsoft/vscode/issues/91309
+* bug difficulty classification
+* hint system + more relevant information
+
+
 
 
 
@@ -65,19 +72,51 @@
 
 
 ## TODO (other)
-* fix: don't `gitResetHard` every time we run a bug
-   * come up with better way to manage this properly
+* when running `express, bug #2`
+   * ValueCollection complains about exceptions
+   * when running twice -> all kinds of errors
+* core instrumentation bugs
+   * returning ternary expression is interpreted as `error`
+      * e.g. `return ~index ? host.substring(0, index) : host;`
+   * parent trace wrong for any nested call
+      * e.g.:
+         * express, bug #2: `this.set('trust proxy fn', compileTrust(val));`
+         * todomvc: `callback.call(this, JSON.parse(localStorage[name]))`
+         * todomvc-es6 (`npm run p1-start`): `callback(() => { ... })`
+      * -> args are not traced correctly?
+      * -> parentTrace heuristics incorrect?
+   * variable assignment with `CallExpression` RHS does not allow selecting LHS
+* fix: bug run-down
+   * stop if `git checkout` failed
+   * don't `gitResetHard` every time we run a bug
+      * check if bug was already selected before doing the setup
+         * Problem: need to deal with patch files
+            * generate commits from patch files so we can reliably determine whether patch/commit was applied?
+      * always show changes to user and let them confirm before `gitResetHard`
+      * allow saving/submitting own changes for bugs
+         * remember bug progress
 * fix graph theme + sync mode
    * better coloring schema, so we sync mode becomes a pleasant experience
    * CONSIDER: always track in graph, but don't necessarily reveal?
+* bug testing
+   * if there is no test, let user fill out a checklist
+   * record + display test results
+   * allow user to change test timeout (in case of slow computers)
+      * -> or just set it very high?
+      * NOTE: it's still useful to deal with infinite loops caused by faulty fixes etc
 * [dbux-practice] complete workflow design
+   * bug spreadsheet
+      * overall bug analysis
+         * concepts, domain knowledge, difficulty
+      * hints
 * error tracing
    * when encountering errors caught mid-way
       * `resolveCallIds` will fail
    * error resolution doesn't work properly with recursion
       * (probably because there are unmatched `BCE`s on the stack)
-* dbux-graph:
-   * add "id" to context nodes (toolbar-togglable)
+* fix: call traces for getters are off
+   * it's actually the next trace in context (if the getter did not error out)
+   * e.g.: `req.protocol` (not `req`)
 * fix: in `o[x]`, `x` is not traced
 * Object rendering:
    * visualize when value got ommitted/pruned
@@ -139,10 +178,6 @@
    * only run webpack if not started yet: don't kill project-wide backgroundProcesses when starting bug of same project?
       * fix this by remembering per-bug backgroundProcesses, as well as per-project
          * -> only kill per-bug backgroundProcesses when changing bug, but not changing project
-   * fix patch file problems
-      * generate commits from patch files so we can reliably determine whether patch/commit was applied?
-      * also requires managing user changes
-   * when bug patch is applied, might have to: (1) remove `.git` folder, or (2) commit changes, so `SCM` plugins won't show user the changes
    * `nodeRequireArgs` in `dbux-projects/src/nodeUtil` only supports relative paths?
 * projects -> jest
    * (if test not asynchronous) exits right away, not allowing dbux-runtime to send data

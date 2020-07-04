@@ -38,6 +38,22 @@ export default class ExpressProject extends Project {
         ],
         testFilePaths: ['test/req.protocol.js', 'test/req.secure.js']
       },
+      // {
+      //   // NOTE: this test passes by default
+      //   // https://github.com/BugsJS/express/commit/4a59ea5dd0a7cb5b8cce80be39a5579876993cf1
+      //   id: 3,
+      //   testRe: 'res .* should work when only .default is provided',
+      //   testFilePaths: ['test/res.format.js']
+      // },
+      {
+        // https://github.com/BugsJS/express/commit/337662df8c02d379e5a14b4f0155ecb29b4aa81e
+        id: 4,
+        testRe: [
+          'should work with IPv[46] address',
+          'should return an array with the whole IPv[46]',
+        ],
+        testFilePaths: ['test/req.subdomains.js']
+      },
       {
         // https://github.com/BugsJS/express/commit/796657f6f67bd8f8dfae8d25a2d353c8d657da50
         id: 5,

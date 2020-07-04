@@ -138,12 +138,12 @@ export default class BugRunner {
       // activate project
       await this._activateProject(project);
 
-      // git reset hard
-      // TODO: make sure, user gets to save own changes first
-      await project.gitResetHard();
-
       sh.cd(project.projectPath);
       if (bug.patch) {
+        // git reset hard
+        // TODO: make sure, user gets to save own changes first
+        await project.gitResetHard();
+
         // activate patch
         await project.applyPatch(bug.patch);
       }
