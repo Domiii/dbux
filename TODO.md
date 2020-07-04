@@ -104,6 +104,7 @@
    * allow user to change test timeout (in case of slow computers)
       * -> or just set it very high?
       * NOTE: it's still useful to deal with infinite loops caused by faulty fixes etc
+   * run bug in terminal for proper coloring + make "playing around" easier
 * [dbux-practice] complete workflow design
    * bug spreadsheet
       * overall bug analysis
