@@ -30,7 +30,7 @@ export async function buildWebviewClientHtml(...scriptPaths) {
     )
   ).join('\n  ');
 
-  return /*html*/`<!DOCTYPE html>
+  return (/*html*/ `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -82,5 +82,5 @@ export async function buildWebviewClientHtml(...scriptPaths) {
     main();
   </script>
 </body>
-</html>`;
+</html>`);
 }
