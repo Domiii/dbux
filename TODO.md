@@ -85,7 +85,7 @@
          * `resolveCallIds` will fail
       * error resolution doesn't work properly with recursion
          * (probably because there are unmatched `BCE`s on the stack)
-* fix: in `o[x]`, `x` is not traced
+   * fix: in `o[x]`, `x` is not traced
 * fix: bug run-down
    * stop if `git checkout` failed
    * don't `gitResetHard` every time we run a bug
@@ -95,9 +95,6 @@
       * always show changes to user and let them confirm before `gitResetHard`
       * allow saving/submitting own changes for bugs
          * remember bug progress
-* fix graph theme + sync mode
-   * better coloring schema, so we sync mode becomes a pleasant experience
-   * CONSIDER: always track in graph, but don't necessarily reveal?
 * bug testing
    * if there is no test, let user fill out a checklist
    * record + display test results
@@ -105,6 +102,9 @@
       * -> or just set it very high?
       * NOTE: it's still useful to deal with infinite loops caused by faulty fixes etc
    * run bug in terminal for proper coloring + make "playing around" easier
+* fix graph theme + sync mode
+   * better coloring schema, so we sync mode becomes a pleasant experience
+   * CONSIDER: always track in graph, but don't necessarily reveal?
 * [dbux-practice] complete workflow design
    * bug spreadsheet
       * overall bug analysis
@@ -113,6 +113,9 @@
 * fix: call traces for getters are off
    * it's actually the next trace in context (if the getter did not error out)
    * e.g.: `req.protocol` (not `req`)
+* identify + visualize getters and setters with an "f"!
+   * just any context's parentTrace that is not stemming from a call?
+   * Problem: when encountering getter inside of a `CallExpression`
 * Object rendering:
    * visualize when value got ommitted/pruned
    * show actual string length, if pruned
