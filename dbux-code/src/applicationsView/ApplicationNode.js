@@ -10,16 +10,20 @@ export default class ProjectNode extends BaseTreeViewNode {
     return `${prefix} ${label}`;
   }
 
-  init = () => {
-    this.contextValue = 'ApplicationNode';
-  }
-
+  /**
+   * @type {Application}
+   */
   get application() {
     return this.entry;
   }
 
   get isSelected() {
     return allApplications.selection.containsApplication(this.application);
+  }
+
+  init = () => {
+    this.contextValue = 'ApplicationNode';
+    this.description = this.application.entryPointPath;
   }
 
   canHaveChildren() {

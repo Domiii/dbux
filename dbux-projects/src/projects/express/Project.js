@@ -57,8 +57,21 @@ export default class ExpressProject extends Project {
       {
         // https://github.com/BugsJS/express/commit/796657f6f67bd8f8dfae8d25a2d353c8d657da50
         id: 5,
-        testRe: 'should support windows',
+        testRe: 'utils\\.isAbsolute\\(\\) should support windows',
         testFilePaths: ['test/utils.js']
+      },
+      // {
+      //   // NOTE: passing by default
+      //   // https://github.com/BugsJS/express/commit/f07f197a3cc7805bce37b3a4908e844b8d7f7455
+      //   id: 6,
+      //   testRe: 'app.head\\(\\) should override prior',
+      //   testFilePaths: ['test/app.head.js'],
+      //   require: []
+      // },
+      {
+        id: 7,
+        testRe: '.sendFile.* (should invoke the callback without error when HEAD|should invoke the callback without error when 304)',
+        testFilePaths: ['test/res.sendFile.js']
       },
       {
         id: 8,
@@ -71,16 +84,50 @@ export default class ExpressProject extends Project {
         testRe: 'should return the mounted path',
         testFilePaths: ['test/app.js']
       },
+      // {
+      //   // https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
+      //   id: 10,
+      //   testRe: 'should be called for any URL when "*"',
+      //   testFilePaths: ['test/Router.js']
+      // },
       {
-        // https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
-        id: 10,
-        testRe: 'should be called for any URL when "*"',
-        testFilePaths: ['test/Router.js']
+        id: 11,
+        testRe: 'should send number as json',
+        testFilePaths: ['test/res.send.js']
       },
       // {
-      //   id: 19,
-      //   testRe: '',
+      //   id: 12,
+      //   testRe: [
+      //     'should keep correct parameter indexes',
+      //     'should work following a partial capture group'
+      //   ],
+      //   testFilePaths: ['test/app.router.js']
       // },
+      {
+        id: 13,
+        testRe: 'should support altering req.params across routes',
+        testFilePaths: ['test/app.param.js']
+      },
+      {
+        id: 14,
+        testRe: 'should handle blank URL',
+        testFilePaths: ['test/Router.js']
+      },
+      {
+        id: 15,
+        testRe: [
+          'should set the correct  charset for the Content-Type',
+          'should default the Content-Type'
+        ],
+        testFilePaths: ['test/res.format.js']
+      },
+      {
+        id: 16,
+        testRe: [
+          'should include the redirect type'
+        ],
+        testFilePaths: ['test/res.redirect.js']
+      },
       {
         id: 20,
         testRe: '',

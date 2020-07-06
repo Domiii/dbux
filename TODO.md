@@ -11,16 +11,14 @@
 * in sync mode:
    * graph first scrolls to node
    * then scrolls right back to zero
-* `dbux-projects`
-   * add "cancel all" button to the top
-   * add a better icon for "add folder to workspace" button
-   * display background runner status in `ProjectNode`
-      * if running in background, show green light
-      * when clicked -> cancel all
 * grouping: add new `GroupNode` controller component
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
       * (e.g. `next` in `express`)
+* `BaseTreeViewNode`
+   * when clicking any button in a `BaseTreeViewNode`: select the node
+   * make sure, that when refreshing, previously selected node, is still selected
+      * if it clears the selection, select manually
 
 
 
@@ -385,7 +383,9 @@
       );
       ```
 
-
+## TODO: basic splicing
+* trace object property assignment locations
+* trace variable assignment locations
 
 
 
