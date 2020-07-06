@@ -70,9 +70,6 @@
 
 
 ## TODO (other)
-* when running `express, bug #2`
-   * ValueCollection complains about exceptions
-   * when running twice -> all kinds of errors
 * core instrumentation bugs
    * returning ternary expression is interpreted as `error`
       * e.g. `return ~index ? host.substring(0, index) : host;`
@@ -83,7 +80,12 @@
          * todomvc-es6 (`npm run p1-start`): `callback(() => { ... })`
       * -> args are not traced correctly?
       * -> parentTrace heuristics incorrect?
-   * variable assignment with `CallExpression` RHS does not allow selecting LHS
+   * error tracing
+      * when encountering errors caught mid-way
+         * `resolveCallIds` will fail
+      * error resolution doesn't work properly with recursion
+         * (probably because there are unmatched `BCE`s on the stack)
+* fix: in `o[x]`, `x` is not traced
 * fix: bug run-down
    * stop if `git checkout` failed
    * don't `gitResetHard` every time we run a bug
@@ -108,29 +110,18 @@
       * overall bug analysis
          * concepts, domain knowledge, difficulty
       * hints
-* error tracing
-   * when encountering errors caught mid-way
-      * `resolveCallIds` will fail
-   * error resolution doesn't work properly with recursion
-      * (probably because there are unmatched `BCE`s on the stack)
 * fix: call traces for getters are off
    * it's actually the next trace in context (if the getter did not error out)
    * e.g.: `req.protocol` (not `req`)
-* fix: in `o[x]`, `x` is not traced
 * Object rendering:
    * visualize when value got ommitted/pruned
    * show actual string length, if pruned
    * make valueCollection prune/omit parameters easily configurable
-* `dbux-graph` errors
-   * bugs out if visibility or column changes
-      * -> host receives invalid `reply` messages that it did not look for
-      * -> it appears we are not resetting `Ipc` object properly?
-         * -> or are there two clients that live in parallel?
-* in TrackedObjectTDNode, render `valueString`?
 * get ready for deployment!
    * setup w/ lerna and prepare production/publishable build?
    * add to `extensions` folder
       * see: https://github.com/Microsoft/vscode/issues/25159
+* in TrackedObjectTDNode, render `valueString`?
 * instrument `try` blocks
    * test errors in `try/finally` -> find errors in `try` block?
    * also show some sort of error symbol when tracing `catch` block?
@@ -138,15 +129,10 @@
    * e.g. `this.subscribers = []` (one `ExpressionValue`, one `ExpressionResult`)
 * fix: `function` declarations are not tracked
    * store staticContextId by `function` object, so we can quickly jump to them and find all their references
-* fix: use correct package manager (npm vs. yarn) when working with libraries in `dbux-projects`
+* [dbux-project] fix: use correct package manager (npm vs. yarn) when working with libraries in `dbux-projects`
 * fix: strings are currently tracked -> disable tracking of strings
 * fix: `traveValueLabels`
    * get callee name from instrumentation
-* fix TDV: "Trace Executed: Nx"
-   * improve label of "group by" node
-   * need to re-design grouping a bit
-      * for simple cases, no grouping needed
-      * current groups are by: Run, Context, Parent
 * allow for mixed type objects for object tracking
    * in `express`, `application` object is also a function
    * for "objectified functions": allow inspecting object properties
@@ -403,6 +389,8 @@
 ## TODO (nice-to-haves)
 * fix source maps
    * when `dbux-code` reports an error, stack trace does not apply source maps
+   * but launch trace file does not contain any obvious hints (files are resolved correctly etc)
+* variable assignment with `CallExpression` RHS does not allow selecting LHS
 * dbux-graph web components
    * map data (or some sort of `id`) to `componentId`
    * batch `postMessage` calls before sending out
