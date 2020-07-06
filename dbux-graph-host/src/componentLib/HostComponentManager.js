@@ -56,7 +56,7 @@ class HostComponentManager extends BaseComponentManager {
   }
 
   silentShutdown() {
-    this.app.dispose(true);
+    this.app?.dispose(true);
   }
 
   // ###########################################################################

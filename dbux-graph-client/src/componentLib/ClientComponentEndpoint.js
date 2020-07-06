@@ -97,6 +97,17 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     this.dom.repaint();
   }
 
+  dispose() {
+    super.dispose();
+
+    this.dom?.remove();
+
+    if (this.owner) {
+      const list = this.owner._getComponentListByRoleName(this._internalRoleName);
+      list._removeComponent(this);
+    }
+  }
+
   // ###########################################################################
   // internally used remote commands
   // ###########################################################################
@@ -110,16 +121,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
       await this._performUpdate();
     },
 
-    dispose() {
-      super.dispose();
-      
-      this.dom?.remove();
-
-      if (this.owner) {
-        const list = this.owner._getComponentListByRoleName(this._internalRoleName);
-        list._removeComponent(this);
-      }
-    }
+    dispose: this.dispose.bind(this)
   };
 
   toString() {
