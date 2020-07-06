@@ -487,10 +487,10 @@ export default {
   },
 
   /**
-   * Return the BCE of a context, or the parentTrace if BCE does not exist
+   * The caller trace of a context is the parentTrace, and, if it's an actual call, the call's BCE.
    * @param {DataProvider} dp 
   */
-  getCalleeTraceOfContext(dp, contextId) {
+  getCallerTraceOfContext(dp, contextId) {
     const parentTrace = dp.util.getParentTraceOfContext(contextId);
     if (parentTrace) {
       const calleeId = dp.util.getTraceCallId(parentTrace.traceId);
