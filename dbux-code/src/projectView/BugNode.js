@@ -6,21 +6,24 @@ export default class BugNode extends BaseTreeViewNode {
     return bug.name;
   }
 
+  init = () => {
+    this.description = this.bug.description;
+  }
+
   get bug() {
     return this.entry;
   }
 
-  get runner() {
-    return this.bug.project.runner;
+  get contextValue() {
+    return `dbuxProjectView.bugNode.${BugRunnerStatus.getName(this.status)}`;
   }
 
-  isActive() {
-    return isStatusRunningType(this.runner.getBugStatus(this.bug));
+  get status() {
+    return this.bug.project.runner.getBugStatus(this.bug);
   }
 
   makeIconPath() {
-    const status = this.runner.getBugStatus(this.bug);
-    switch (status) {
+    switch (this.status) {
       case BugRunnerStatus.None:
         return '';
       case BugRunnerStatus.Busy:
@@ -32,11 +35,6 @@ export default class BugNode extends BaseTreeViewNode {
       default:
         return '';
     }
-  }
-
-  init = () => {
-    this.contextValue = 'dbuxProjectView.bugNode' + (this.isActive() ? '.activated' : '');
-    this.description = this.bug.description;
   }
 
   canHaveChildren() {

@@ -31,11 +31,11 @@ function _errWrap(f) {
 /**
  * @param {taskWithProgressBarCallback} cb
  */
-export function runTaskWithProgressBar(cb, options) {
+export async function runTaskWithProgressBar(cb, options) {
   options = defaultsDeep(options, {
     cancellable: true,
     location: ProgressLocation.Notification,
     title: '[dbux]'
   });
-  window.withProgress(options, _errWrap(cb));
+  return window.withProgress(options, _errWrap(cb));
 }

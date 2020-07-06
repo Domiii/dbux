@@ -15,7 +15,6 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   init = () => {
     this.childrenBuilt = false;
-    this.contextValue = 'dbuxProjectView.projectNode' + (this.isActivated() ? '.activated' : '');
   }
 
   /**
@@ -29,6 +28,10 @@ export default class ProjectNode extends BaseTreeViewNode {
     return this.project._installed ? 'installed' : '';
   }
 
+  get contextValue() {
+    return `dbuxProjectView.projectNode.${BugRunnerStatus.getName(this.status)}`;
+  }
+
   get bugLoadingNode() {
     if (!this._bugLoadingNode) {
       this._bugLoadingNode = new BugLoadingNode();
@@ -36,13 +39,12 @@ export default class ProjectNode extends BaseTreeViewNode {
     return this._bugLoadingNode;
   }
 
-  isActivated() {
-    return isStatusRunningType(this.project.runner.getProjectStatus(this.project));
+  get status() {
+    return this.project.runner.getProjectStatus(this.project);
   }
 
   makeIconPath() {
-    const status = this.project.runner.getProjectStatus(this.project);
-    switch (status) {
+    switch (this.status) {
       case BugRunnerStatus.None:
         return '';
       case BugRunnerStatus.Busy:
@@ -66,13 +68,13 @@ export default class ProjectNode extends BaseTreeViewNode {
     }
     else {
       runTaskWithProgressBar(async (progress, cancelToken) => {
-        progress.report({ message: 'Loading bugs' });
+        progress.report({ message: 'loading bug list...' });
         await this._buildChindren(progress);
         this.treeNodeProvider.repaint();
       }, {
         cancellable: true,
         location: ProgressLocation.Notification,
-        title: `Loading bugs of project:${this.project.name}`
+        title: `[dbux] ${this.project.name}`
       });
       return [this.bugLoadingNode];
     }
@@ -94,25 +96,26 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   async deleteProject() {
-    const confirmMessage = `Do you really want to delete project: ${this.project.name}`;
-    const result = await window.showInformationMessage(confirmMessage, { modal: true }, 'Ok');
-    if (result === 'Ok') {
-      runTaskWithProgressBar(async (progress, cancelToken) => {
-        if (this.project.runner.isProjectActive(this.project)) {
-          progress.report({ message: 'canceling current jobs...' });
-          await this.project.runner.cancel();
-        }
-        progress.report({ message: 'deleting folder...' });
-        // wait for progress bar to show
-        await sleep(100);
-        await this.project.deleteProjectFolder();
-        this.treeNodeProvider.refresh();
-        progress.report({ message: 'Done.' });
-      }, {
-        cancellable: false,
-        location: ProgressLocation.Notification,
-        title: `Deleting project: ${this.project.name}`
-      });
+    if (isStatusRunningType(this.status)) {
+      window.showInformationMessage('[dbux] project is running now...');
+    }
+    else {
+      const confirmMessage = `Do you really want to delete project: ${this.project.name}`;
+      const result = await window.showInformationMessage(confirmMessage, { modal: true }, 'Ok');
+      if (result === 'Ok') {
+        runTaskWithProgressBar(async (progress, cancelToken) => {
+          progress.report({ message: 'deleting project folder...' });
+          // wait for progress bar to show
+          await sleep(100);
+          await this.project.deleteProjectFolder();
+          this.treeNodeProvider.refresh();
+          progress.report({ message: 'Done.' });
+        }, {
+          cancellable: false,
+          location: ProgressLocation.Notification,
+          title: `[dbux] ${this.project.name}`
+        });
+      }
     }
   }
 

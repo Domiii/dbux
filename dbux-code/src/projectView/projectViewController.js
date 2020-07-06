@@ -1,8 +1,9 @@
-import { window } from 'vscode';
+import { window, commands } from 'vscode';
 import path from 'path';
 import { newLogger, setOutputStreams } from 'dbux-common/src/log/logger';
 import { initDbuxProjects } from 'dbux-projects/src';
 import exec from 'dbux-projects/src/util/exec';
+import BugRunnerStatus from 'dbux-projects/src/projectLib/BugRunnerStatus';
 import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -65,7 +66,12 @@ class ProjectViewController {
     //  listen on bugRunner
     // ########################################
     const bugRunner = this.manager.getOrCreateRunner();
-    bugRunner.on('statusChanged', this.treeDataProvider.refresh.bind(this.treeDataProvider));
+    bugRunner.on('statusChanged', this.onStatusChanged.bind(this));
+  }
+
+  onStatusChanged(status) {
+    commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === BugRunnerStatus.Busy);
+    this.treeDataProvider.repaint();
   }
 
   // ###########################################################################
@@ -83,40 +89,27 @@ class ProjectViewController {
   async activateBugByNode(bugNode, debugMode = false) {
     showOutputChannel();
     const options = {
+      cancellable: false,
       title: `[dbux] Activating Project ${bugNode.bug.project.name}@${bugNode.bug.name}`
     };
 
-    runTaskWithProgressBar(async (progress, cancelToken) => {
+    return runTaskWithProgressBar(async (progress, cancelToken) => {
+      const { bug } = bugNode;
       const runner = this.manager.getOrCreateRunner();
-      cancelToken.onCancellationRequested(runner.cancel.bind(runner));
 
-      await this._activateBug(progress, cancelToken, bugNode.bug, debugMode);
+      // cancel any currently running tasks
+      progress.report({ message: 'Canceling previous tasks...' });
+      await runner.cancel();
+
+      // activate it!
+      progress.report({ message: 'activating...' });
+      await runner.testBug(bug, debugMode);
+
+      progress.report({ message: 'opening in editor...' });
+      await bug.openInEditor();
+
+      progress.report({ message: 'Finished!' });
     }, options);
-  }
-
-  async _activateBug(progress, cancelToken, bug, debugMode = false) {
-    if (cancelToken.isCancellationRequested) {
-      return;
-    }
-    // cancel any currently running tasks
-    progress.report({ message: 'Canceling previous tasks...' });
-    const runner = this.manager.getOrCreateRunner();
-    await runner.cancel();
-    
-    if (cancelToken.isCancellationRequested) {
-      return;
-    }
-    // activate it!
-    progress.report({ message: 'activating...' });
-    await runner.testBug(bug, debugMode);
-    
-    if (cancelToken.isCancellationRequested) {
-      return;
-    }
-    progress.report({ message: 'opening in editor...' });
-    await bug.openInEditor();
-
-    progress.report({ message: 'Finished!' });
   }
 
   // ###########################################################################

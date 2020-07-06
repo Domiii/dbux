@@ -58,7 +58,7 @@ function activate(context) {
     //   "name": "Call Stack"
     // },
 
-    const callGraphViewController = initCallGraphView();
+    const callGraphViewController = initCallGraphView(context);
     // const callStackViewController = initCallStackView();
     // initEditorTracesView(context);
 

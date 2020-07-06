@@ -136,7 +136,7 @@ export default class BugRunner {
     const { project } = bug;
     this._bug = bug;
 
-    this._queue.enqueue(
+    await this._queue.enqueue(
       // activate project
       async () => this.activateProject(project),
       // git reset hard
@@ -146,7 +146,7 @@ export default class BugRunner {
         sh.cd(project.projectPath);
         if (bug.patch) {
           // activate patch
-          await this.roject.applyPatch(bug.patch);
+          await project.applyPatch(bug.patch);
         }
       },
       // start watch mode (if necessary)
@@ -162,24 +162,30 @@ export default class BugRunner {
   async testBug(bug, debugMode = true) {
     const { project } = bug;
 
-    // do whatever it takes (usually: `activateProject` -> `git checkout`)
-    await this.activateBug(bug);
+    try {
+      // do whatever it takes (usually: `activateProject` -> `git checkout`)
+      await this.activateBug(bug);
 
-    const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+      // hackfix: set status here again in case of `this.activateBug` skips installaion process
+      this.setStatus(BugRunnerStatus.Busy);
 
-    if (!cmd) {
-      // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
-    }
-    else {
-      await this._exec(project, cmd);
-    }
+      const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
 
-    // need to check this._project exist, it might be kill during activating
-    if (this._project?.backgroundProcesses.length) {
-      this.setStatus(BugRunnerStatus.RunningInBackground);
+      if (!cmd) {
+        // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
+      }
+      else {
+        await this._exec(project, cmd);
+      }
     }
-    else {
-      this.setStatus(BugRunnerStatus.Done);
+    finally {
+      // need to check this._project exist, it might be kill during activating
+      if (this._project?.backgroundProcesses.length) {
+        this.setStatus(BugRunnerStatus.RunningInBackground);
+      }
+      else {
+        this.setStatus(BugRunnerStatus.Done);
+      }
     }
   }
 
@@ -223,19 +229,15 @@ export default class BugRunner {
     }
   }
 
+  // NOTE: May cause error if used while running
   async cancel() {
     if (!this.isBusy()) {
       // nothing to do
       return;
     }
 
-    // cancel all further steps already in queue
-    const queuePromise = this._queue.cancel();
-
-    // kill active process
-    await this._process?.kill();
-
-    await queuePromise;
+    // cancel all further steps already in queue and wait for the activated process done
+    await this._queue.cancel();
 
     // kill background processes
     const backgroundProcesses = this._project?.backgroundProcesses || EmptyArray;
