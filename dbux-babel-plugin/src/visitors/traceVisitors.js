@@ -163,12 +163,12 @@ const traceCfg = (() => {
 
     MemberExpression: [
       NoTrace,
-      [['object', MemberObject], ['propery', MemberProperty]]
+      [['object', MemberObject], ['property', MemberProperty]]
     ],
 
     OptionalMemberExpression: [
       NoTrace,
-      [['object', MemberObject], ['propery', MemberProperty]]
+      [['object', MemberObject], ['property', MemberProperty]]
     ],
 
     SequenceExpression: [

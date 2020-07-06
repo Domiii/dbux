@@ -71,13 +71,6 @@
 
 ## TODO (other)
 * core instrumentation bugs
-   * parent trace wrong for any nested call
-      * e.g.:
-         * express, bug #2: `this.set('trust proxy fn', compileTrust(val));`
-         * todomvc: `callback.call(this, JSON.parse(localStorage[name]))`
-         * todomvc-es6 (`npm run p1-start`): `callback(() => { ... })`
-      * -> args are not traced correctly?
-      * -> parentTrace heuristics incorrect?
    * error tracing
       * when encountering errors caught mid-way
          * `resolveCallIds` will fail
