@@ -71,8 +71,6 @@
 
 ## TODO (other)
 * core instrumentation bugs
-   * returning ternary expression is interpreted as `error`
-      * e.g. `return ~index ? host.substring(0, index) : host;`
    * parent trace wrong for any nested call
       * e.g.:
          * express, bug #2: `this.set('trust proxy fn', compileTrust(val));`

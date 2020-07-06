@@ -369,21 +369,24 @@ function normalizeConfig(cfg) {
 // ENTER instrumentors
 // ###########################################################################
 
-function enterExpression(traceType, path, state) {
+function enterExpression(traceResultType, path, state) {
   if (isCallPath(path)) {
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be CallExpressions
-    return enterCallExpression(traceType, path, state);
+    return enterCallExpression(traceResultType, path, state);
+  }
+
+  // trace CallResult (on exit)
+  if (!path.getData('traceResultType')) {
+    path.setData('traceResultType', traceResultType);
   }
   return null;
 }
 
-function enterCallExpression(callResultType, path, state) {
+function enterCallExpression(traceResultType, path, state) {
   // CallExpression
 
   path = instrumentCallExpressionEnter(path, state);
-
-  // trace CallResult (on exit)
-  path.setData('callResultType', callResultType);
+  path.setData('traceResultType', traceResultType);
 }
 
 const enterInstrumentors = {
@@ -492,7 +495,7 @@ function wrapExpression(traceType, path, state) {
   }
 
   if (traceType === TraceType.ExpressionResult) {
-    traceType = path.getData('resultType') || traceType;
+    traceType = path.getData('traceResultType') || traceType;
   }
   return traceWrapExpression(traceType, path, state, tracePath);
 }
@@ -507,8 +510,8 @@ function wrapCallExpression(path, state) {
 
   // TODO: instrument BCE as well, here
 
-  const callResultType = path.getData('callResultType') || TraceType.CallExpressionResult;
-  return traceCallExpression(path, state, callResultType);
+  const traceResultType = path.getData('traceResultType') || TraceType.CallExpressionResult;
+  return traceCallExpression(path, state, traceResultType);
 }
 
 /**

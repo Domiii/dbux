@@ -313,7 +313,7 @@ const instrumentMemberCallExpressionEnter =
     // prepare for later
     // newPath.setData('_calleePath', calleePathId);
     newOPath.setData('originalIsParent', false);
-    newOPath.setData('resultType', TraceType.ExpressionValue);
+    newOPath.setData('traceResultType', TraceType.ExpressionValue);
     newCalleePath.setData('originalIsParent', false);
     newPath.setData('_bcePathId', bcePathId);
 
