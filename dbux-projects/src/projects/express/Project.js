@@ -95,17 +95,17 @@ export default class ExpressProject extends Project {
         testRe: 'should send number as json',
         testFilePaths: ['test/res.send.js']
       },
-      // {
-      //   id: 12,
-      //   testRe: [
-      //     'should keep correct parameter indexes',
-      //     'should work following a partial capture group'
-      //   ],
-      //   testFilePaths: ['test/app.router.js']
-      // },
+      {
+        id: 12,
+        testRe: [
+          'should keep correct parameter indexes',
+          'should work following a partial capture group'
+        ],
+        testFilePaths: ['test/app.router.js']
+      },
       {
         id: 13,
-        testRe: 'should support altering req.params across routes',
+        testRe: 'should support alterizng req.params across routes',
         testFilePaths: ['test/app.param.js']
       },
       {
@@ -114,12 +114,14 @@ export default class ExpressProject extends Project {
         testFilePaths: ['test/Router.js']
       },
       {
+        // NOTE: process does not exit
         id: 15,
         testRe: [
-          'should set the correct  charset for the Content-Type',
+          // 'should set the correct charset for the Content\\-Type',
           'should default the Content-Type'
         ],
-        testFilePaths: ['test/res.format.js']
+        testFilePaths: ['test/res.format.js'],
+        require: []
       },
       {
         id: 16,
@@ -127,6 +129,19 @@ export default class ExpressProject extends Project {
           'should include the redirect type'
         ],
         testFilePaths: ['test/res.redirect.js']
+      },
+      {
+        id: 18,
+        testRe: [
+          'should not call when values differ on error',
+          'should call when values differ when using "next"'
+        ],
+        testFilePaths: ['test/app.param.js']
+      },
+      {
+        id: 19,
+        testRe: ['should work in array of paths'],
+        testFilePaths: ['test/app.router.js']
       },
       {
         id: 20,

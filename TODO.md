@@ -71,13 +71,16 @@
 
 ## TODO (other)
 * core instrumentation bugs
+   * assignments are traced twice?
+      * e.g. `req.params = layer.params;`
+      * maybe has to do w/ `originalIsParent`?
    * error tracing
       * when encountering errors caught mid-way
          * `resolveCallIds` will fail
       * error resolution doesn't work properly with recursion
          * (probably because there are unmatched `BCE`s on the stack)
-   * fix: in `o[x]`, `x` is not traced
-* fix: bug run-down
+   * trace function parameters
+* fix: "running" a bug smoothly
    * stop if `git checkout` failed
    * don't `gitResetHard` every time we run a bug
       * check if bug was already selected before doing the setup
@@ -86,13 +89,33 @@
       * always show changes to user and let them confirm before `gitResetHard`
       * allow saving/submitting own changes for bugs
          * remember bug progress
-* bug testing
-   * if there is no test, let user fill out a checklist
-   * record + display test results
-   * allow user to change test timeout (in case of slow computers)
+* [dbux-projects]
+   * run bug in terminal for proper coloring + make "playing around" easier
+      * for Terminal API, see: https://stackoverflow.com/a/62774501/2228771
+   * get test result from test process
+      * pass/fail counts
+      * show terminal for more details
+   * display test results
+      * integrate "bug hunt" timer
+   * when running new bug
+      * ask user to clear previous applications (and there are previous applications that are not of this bug)
+   * when selecting a bug, show a modal to introduce it, and offer buttons to choose
+      * start (w/ timer)
+      * practice (without timer; cannot use timer in the future)
+      * close
+   * after finishing
+      * store results on backend
+         * integrate github login
+      * show choices
+         * compare to others' results
+         * compare to actual solution
+         * (if available) watch video of how to debug this thing
+   * allow setting application name via babel config
+      * -> set application name for bugs correspondingly
+   * allow user to change mocha/jest run timeout (in case of slow computers)
       * -> or just set it very high?
       * NOTE: it's still useful to deal with infinite loops caused by faulty fixes etc
-   * run bug in terminal for proper coloring + make "playing around" easier
+   * if there is no test, let user fill out a checklist
 * fix graph theme + sync mode
    * better coloring schema, so we sync mode becomes a pleasant experience
    * CONSIDER: always track in graph, but don't necessarily reveal?
