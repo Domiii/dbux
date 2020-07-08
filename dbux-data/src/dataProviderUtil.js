@@ -351,7 +351,7 @@ export default {
   // ###########################################################################
 
   /**
-   * Get calleeTrace(BCE) of a call related trace
+   * Get callerTrace(BCE) of a call related trace
    * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the callId of the former
    * @param {DataProvider} dp
    * @param {number} traceId
@@ -386,12 +386,12 @@ export default {
   getCalleeTraceOfContext(dp, contextId) {
     const parentTrace = dp.util.getParentTraceOfContext(contextId);
     if (parentTrace) {
-      const calleeTrace = dp.util.getCalleeTraceOfTrace(parentTrace.traceId);
-      if (!calleeTrace) {
-        logError('can\'t find calleeTraceOfContext by parentTrace');
+      const callerTrace = dp.util.getCalleeTraceOfTrace(parentTrace.traceId);
+      if (!callerTrace) {
+        logError('can\'t find callerTraceOfContext by parentTrace');
         return null;
       }
-      return calleeTrace;
+      return callerTrace;
     }
     return null;
   },

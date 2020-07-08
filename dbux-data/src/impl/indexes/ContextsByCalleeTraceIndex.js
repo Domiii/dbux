@@ -3,8 +3,8 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 function makeKey(dp: DataProvider, context: ExecutionContext) {
-  const calleeTrace = dp.util.getCalleeTraceOfContext(context.contextId);
-  return calleeTrace?.traceId || false;
+  const callerTrace = dp.util.getCalleeTraceOfContext(context.contextId);
+  return callerTrace?.traceId || false;
 }
 
 

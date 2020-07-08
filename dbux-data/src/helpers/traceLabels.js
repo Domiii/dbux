@@ -18,9 +18,9 @@ function makeCalleeTraceLabel(trace, application) {
   const dp = application.dataProvider;
   const { traceId } = trace;
   if (dp.util.isTraceArgument(traceId)) {
-    const calleeTrace = dp.util.getCalleeStaticTrace(traceId);
-    if (calleeTrace) {
-      return `   (arg of ${calleeTrace.displayName})`;
+    const callerTrace = dp.util.getCalleeStaticTrace(traceId);
+    if (callerTrace) {
+      return `   (arg of ${callerTrace.displayName})`;
     }
   }
   return '';
