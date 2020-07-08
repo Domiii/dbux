@@ -8,9 +8,9 @@ function makeKey(dp: DataProvider, context: ExecutionContext) {
 }
 
 
-export default class ContextsByParentTraceIndex extends CollectionIndex<ExecutionContext> {
+export default class ContextsByCalleeTraceIndex extends CollectionIndex<ExecutionContext> {
   constructor() {
-    super('executionContexts', 'byParentTrace');
+    super('executionContexts', 'byCalleeTrace');
   }
 
   makeKey = makeKey

@@ -1,5 +1,5 @@
 import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
-import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
+import { isVirtualContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
 import Trace from 'dbux-common/src/core/data/Trace';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
@@ -8,7 +8,7 @@ import DataProvider from '../../DataProvider';
 export default class ParentTracesInRealContextIndex extends CollectionIndex<Trace> {
   constructor() {
     super('traces', 'parentsByRealContext', false);
-    this.added = new Set();
+    this.addedParentTraces = new Set();
   }
 
   dependencies = {
@@ -19,15 +19,19 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex<Trac
     //   ['staticTraces', 'byFile']
     // ],
 
+    /**
+     * Find parent trace when a context is added
+     */
     collections: {
       executionContexts: {
         added: (contexts: ExecutionContext[]) => {
           for (const context of contexts) {
             const { parentTraceId, contextType } = context;
-            if (contextType === ExecutionContextType.Await) continue;
-            if (parentTraceId && !this.added.has(parentTraceId)) {
+            // skip parent trace of virtualContext
+            if (isVirtualContextType(contextType)) continue;
+            if (parentTraceId && !this.addedParentTraces.has(parentTraceId)) {
               this.addEntryById(parentTraceId);
-              this.added.add(parentTraceId);
+              this.addedParentTraces.add(parentTraceId);
             }
           }
         }

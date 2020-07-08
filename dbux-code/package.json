@@ -241,8 +241,8 @@
 				"command": "dbuxTraceDetailsView.selectTraceAtCursor",
 				"title": "Select Trace At Cursor",
 				"icon": {
-					"light": "resources/light/crosshair.svg",
-					"dark": "resources/dark/crosshair.svg"
+					"light": "resources/light/crosshair_red.svg",
+					"dark": "resources/dark/crosshair_red.svg"
 				}
 			},
 			{

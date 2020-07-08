@@ -90,7 +90,7 @@ export default class CallGraph {
       return prevChild;
     }
     else {
-      const children = this.dp.indexes.traces.byParentTrace.get(prevChild.resultCallId) || EmptyArray;
+      const children = this.dp.indexes.traces.byCalleeTrace.get(traceId) || EmptyArray;
       if (children.length) return last(children);
       else return null;
     }
@@ -104,7 +104,7 @@ export default class CallGraph {
       return nextChild;
     }
     else {
-      const children = this.dp.indexes.traces.byParentTrace.get(traceId) || EmptyArray;
+      const children = this.dp.indexes.traces.byCalleeTrace.get(traceId) || EmptyArray;
       if (children.length) return children[0];
       else return null;
     }
@@ -190,18 +190,16 @@ export default class CallGraph {
   }
 
   _getPreviousChildTrace(traceId) {
-    const realContextId = this.dp.util.getRealContextId(traceId);
     const trace = this.dp.collections.traces.getById(traceId);
+    const realContextId = this.dp.util.getRealContextId(traceId);
     const parentTraces = this.dp.indexes.traces.parentsByRealContext.get(realContextId) || EmptyArray;
+    const calleeTracesInContext = parentTraces.map(this.dp.getCalleeTraceOfTrace);
 
-    const lowerIndex = this._binarySearchLowerIndexByKey(parentTraces, trace, (t) => t.traceId);
+    const lowerIndex = this._binarySearchLowerIndexByKey(calleeTracesInContext, trace, (t) => t.traceId);
 
     if (lowerIndex === null) return null;
     else {
-      // return if lastResult exist, or getNextTrace of lastParentTrace
-      const previousParentTraceId = parentTraces[lowerIndex].traceId;
-      const lastResultTrace = this.dp.util.getCallResultTrace(previousParentTraceId);
-      return lastResultTrace || this.getNextInContext(previousParentTraceId);
+      return calleeTracesInContext[lowerIndex];
     }
   }
 
@@ -209,11 +207,12 @@ export default class CallGraph {
     const realContextId = this.dp.util.getRealContextId(traceId);
     const trace = this.dp.collections.traces.getById(traceId);
     const parentTraces = this.dp.indexes.traces.parentsByRealContext.get(realContextId) || EmptyArray;
+    const calleeTracesInContext = parentTraces.map(this.dp.getCalleeTraceOfTrace);
 
-    const upperIndex = this._binarySearchUpperIndexByKey(parentTraces, trace, (t) => t.traceId);
+    const upperIndex = this._binarySearchUpperIndexByKey(calleeTracesInContext, trace, (t) => t.traceId);
 
     if (upperIndex === null) return null;
-    else return parentTraces[upperIndex];
+    else return calleeTracesInContext[upperIndex];
   }
 
   // ########################################
