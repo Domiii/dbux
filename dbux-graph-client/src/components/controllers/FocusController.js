@@ -111,7 +111,7 @@ export default class FocusController extends ClientComponentEndpoint {
       startX: this.panzoom.getTransform().x,
       startY: this.panzoom.getTransform().y,
       delta,
-      animTime: 1
+      animTime: 0.1
     };
 
     requestAnimationFrame(() => this._step(targetDOM, slideData));
