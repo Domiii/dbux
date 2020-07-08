@@ -54,7 +54,7 @@ function makeDomController(domElement, options) {
     domElement.querySelector('.body').style.transform = `scale(${transform.scale})`;
     domElement.scrollLeft = transform.x;
     domElement.scrollTop = transform.y;
-    console.trace('scroll', domElement.querySelector('.body').style.transform, transform.x, transform.y);
+    // console.trace('scroll', domElement.querySelector('.body').style.transform, transform.x, transform.y);
     
     // [scroll fix]
     // console.log("tx",transform.x,"ty",transform.y,"scrollTop",domElement.scrollTop,"scollLeft",domElement.scrollLeft);
