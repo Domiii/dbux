@@ -8,7 +8,7 @@ import DataProvider from '../../DataProvider';
 export default class ParentTracesInRealContextIndex extends CollectionIndex<Trace> {
   constructor() {
     super('traces', 'parentsByRealContext', false);
-    this.addedParentTraces = new Set();
+    this.addedTraces = new Set();
   }
 
   dependencies = {
@@ -28,10 +28,12 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex<Trac
           for (const context of contexts) {
             const { parentTraceId, contextType } = context;
             // skip parent trace of virtualContext
-            if (isVirtualContextType(contextType)) continue;
-            if (parentTraceId && !this.addedParentTraces.has(parentTraceId)) {
+            if (isVirtualContextType(contextType)) {
+              continue;
+            }
+            if (parentTraceId && !this.addedTraces.has(parentTraceId)) {
               this.addEntryById(parentTraceId);
-              this.addedParentTraces.add(parentTraceId);
+              this.addedTraces.add(parentTraceId);
             }
           }
         }
