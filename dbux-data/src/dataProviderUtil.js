@@ -139,7 +139,7 @@ export default {
 
   /**
    * Returns the parentTrace of a context, not necessarily a BCE
-   * Use getCalleeTraceOfContext if you want the BCE of a context
+   * Use getCallerTraceOfContext if you want the BCE of a context
    * @param {DataProvider} dp 
    * @param {number} contextId 
    */
@@ -356,13 +356,13 @@ export default {
    * @param {DataProvider} dp
    * @param {number} traceId
   */
-  getCalleeTraceOfTrace(dp, traceId) {
+  getCallerTraceOfTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     // TODO: deal with callback traces after context.schedulerTraceId is back
     // const context = dp.collections.executionContexts.getById(trace.contextId);
     // if (context.schedulerTraceId) {
     //   // trace is push/pop callback
-    //   return dp.util.getCalleeTraceOfTrace(context.schedulerTraceId);
+    //   return dp.util.getCallerTraceOfTrace(context.schedulerTraceId);
     // }
     if (isCallResult(trace)) {
       // trace is call expression result
@@ -383,11 +383,13 @@ export default {
    * @param {DataProvider} dp 
    * @param {number} contextId
   */
-  getCalleeTraceOfContext(dp, contextId) {
+  getCallerTraceOfContext(dp, contextId) {
     const parentTrace = dp.util.getParentTraceOfContext(contextId);
     if (parentTrace) {
-      const callerTrace = dp.util.getCalleeTraceOfTrace(parentTrace.traceId);
+      const callerTrace = dp.util.getCallerTraceOfTrace(parentTrace.traceId);
       if (!callerTrace) {
+        // BUG: some parentTrace doesn't have `callId` neither `resultCallId`
+        // try: express bug#1, context#285 trace#5205
         logError('can\'t find callerTraceOfContext by parentTrace');
         return null;
       }

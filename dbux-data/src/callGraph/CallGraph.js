@@ -203,7 +203,7 @@ export default class CallGraph {
       return null;
     }
     else {
-      return this.dp.util.getCalleeTraceOfTrace(parentTraces[lowerIndex].traceId);
+      return this.dp.util.getCallerTraceOfTrace(parentTraces[lowerIndex].traceId);
     }
   }
 
@@ -218,7 +218,7 @@ export default class CallGraph {
       return null;
     }
     else {
-      return this.dp.util.getCalleeTraceOfTrace(parentTraces[upperIndex].traceId);
+      return this.dp.util.getCallerTraceOfTrace(parentTraces[upperIndex].traceId);
     }
   }
 

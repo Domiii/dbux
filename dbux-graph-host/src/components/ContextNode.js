@@ -17,7 +17,7 @@ class ContextNode extends HostComponentEndpoint {
     const dp = allApplications.getById(applicationId).dataProvider;
     const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
     const errorTag = (dp.indexes.traces.errorByContext.get(context.contextId)?.length) ? '🔥' : '';
-    this.parentTrace = dp.util.getCalleeTraceOfContext(context.contextId);
+    this.parentTrace = dp.util.getCallerTraceOfContext(context.contextId);
 
     this.state.contextNameLabel = staticContext.displayName + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
@@ -91,7 +91,7 @@ class ContextNode extends HostComponentEndpoint {
       traceId = selectedTrace.traceId;
       const { applicationId } = this.state;
       const dp = allApplications.getById(applicationId).dataProvider;
-      const callId = dp.util.getCalleeTraceOfTrace(traceId)?.traceId;
+      const callId = dp.util.getCallerTraceOfTrace(traceId)?.traceId;
       const child = dp.indexes.executionContexts.byCalleeTrace.get(callId);
       isSelectedTraceCallRelated = !!callId;
       contextIdOfSelectedCallTrace = child && child[0].contextId;

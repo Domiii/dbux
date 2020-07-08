@@ -4,7 +4,7 @@ import DataProvider from '../../DataProvider';
 
 function makeKey(dp: DataProvider, trace: Trace) {
   const { contextId } = trace;
-  const callerTraceId = dp.util.getCalleeTraceOfContext(contextId)?.traceId;
+  const callerTraceId = dp.util.getCallerTraceOfContext(contextId)?.traceId;
 
   return callerTraceId || false;
 }
