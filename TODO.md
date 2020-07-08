@@ -19,6 +19,11 @@
    * when clicking any button in a `BaseTreeViewNode`: select the node
    * make sure, that when refreshing, previously selected node, is still selected
       * if it clears the selection, select manually
+* [dbux-projects]
+   * if bug (project) needs opening of website, add button to go to website
+      * -> better manage the port?
+      * -> if port is blocked, we could use `find-process` to get + kill the process (if user confirms)?
+         * https://www.npmjs.com/package/find-process
 
 
 
@@ -74,11 +79,6 @@
    * assignments are traced twice?
       * e.g. `req.params = layer.params;`
       * maybe has to do w/ `originalIsParent`?
-   * error tracing
-      * when encountering errors caught mid-way
-         * `resolveCallIds` will fail
-      * error resolution doesn't work properly with recursion
-         * (probably because there are unmatched `BCE`s on the stack)
    * trace function parameters
 * fix: "running" a bug smoothly
    * stop if `git checkout` failed

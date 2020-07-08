@@ -139,14 +139,28 @@ class TraceCollection extends Collection<Trace> {
         if (isCallResult(staticTrace)) {
           // call results: reference their call by `resultCallId` and vice versa by `resultId`
           // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
-          const beforeCall = beforeCalls.pop();
+          let beforeCall = beforeCalls.pop();
           // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
-            logError(`Could not resolve resultCallId for trace "${staticTrace.displayName}" #${traceId}: with staticTrace #${staticTraceId} \
-and staticTrace.resultCallId #${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall.staticTraceId}.`);
-            beforeCalls.push(beforeCall);   // something is wrong -> push it back
+            // maybe something did not get popped. Let's look for it directly!
+            const idx = beforeCalls.findIndex(bce => bce.staticTraceId === staticTrace.resultCallId);
+            if (idx >= 0) {
+              // it's on the stack - just take it
+              beforeCall = beforeCalls[idx];
+              beforeCalls.splice(idx, 1);
+            }
+            else {
+              // it's just not there...
+              beforeCalls.push(beforeCall);   // something is wrong -> push it back
+              const stackInfo = beforeCalls.map(t => `#${t.staticTraceId} ${this.dp.collections.staticTraces.getById(t.staticTraceId)?.displayName || '(no staticTrace found)'}`);
+              logError(`Could not resolve resultCallId for trace "#${staticTrace.staticTraceId} ${staticTrace.displayName}" (traceId ${traceId}). resultCallId ${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall.staticTraceId}. BCE Stack:\n  ${stackInfo.join('\n  ')}`);
+
+              beforeCall = null;
+            }
           }
-          else {
+          
+          if (beforeCall) {
+            // all good!
             beforeCall.resultId = traceId;
             trace.resultCallId = beforeCall.traceId;
           }
@@ -155,7 +169,7 @@ and staticTrace.resultCallId #${staticTrace.resultCallId} not matching beforeCal
           // call args: reference their call by `callId`
           const beforeCall = beforeCalls[beforeCalls.length - 1];
           if (staticTrace.callId !== beforeCall?.staticTraceId) {
-            logError('[callId]', beforeCall?.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall);
+            logError('[callId]', beforeCall?.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall, `]. Stack staticTraceIds: ${beforeCalls.map(t => t.staticTraceId)}`);
           }
           else {
             trace.callId = beforeCall.traceId;
