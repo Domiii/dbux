@@ -6,6 +6,7 @@ import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
+import { queryTerminalPid } from '../codeUtil/terminalUtil';
 
 // ########################################
 //  setup logger for project
@@ -95,6 +96,7 @@ class ProjectViewController {
     if (cancelToken.isCancellationRequested) {
       return;
     }
+
     const runner = this.manager.getOrCreateRunner();
     // cancel any currently running tasks
     await runner.cancel();

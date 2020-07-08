@@ -90,13 +90,15 @@
       * allow saving/submitting own changes for bugs
          * remember bug progress
 * [dbux-projects]
-   * run bug in terminal for proper coloring + make "playing around" easier
+   * run bug in terminal for proper coloring + making "playing around" easier
       * for Terminal API, see: https://stackoverflow.com/a/62774501/2228771
-   * get test result from test process
-      * pass/fail counts
-      * show terminal for more details
+      * extend `RuntimeServer` to also accept terminal wrapper data
+      * write a wrapper process `terminalWrapper.js`
+         * send process return value back to server
    * display test results
-      * integrate "bug hunt" timer
+   * integrate "bug hunt" timer
+      * pause, cancel, submit
+      * "submit" only available if bug runner succeeded
    * when running new bug
       * ask user to clear previous applications (and there are previous applications that are not of this bug)
    * when selecting a bug, show a modal to introduce it, and offer buttons to choose
