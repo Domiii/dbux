@@ -1,8 +1,7 @@
-import path from 'path';
 import sh from 'shelljs';
 import Project from 'dbux-projects/src/projectLib/Project';
 import { buildMochaRunBugCommand as buildMochaCommand } from 'dbux-projects/src/util/mochaUtil';
-import { isArray } from 'lodash';
+import isArray from 'lodash/isArray';
 
 
 export default class ExpressProject extends Project {

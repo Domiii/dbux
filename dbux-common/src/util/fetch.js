@@ -1,5 +1,5 @@
 // import merge from 'lodash/merge';
-// import { isString } from 'lodash';
+// import isString from 'lodash/isString';
 // import { stringify as stringifyQueryString } from 'querystring';
 // import fetch from 'node-fetch';
 
