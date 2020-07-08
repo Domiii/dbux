@@ -104,7 +104,7 @@ export default class ExpressProject extends Project {
       },
       {
         id: 13,
-        testRe: 'should support alterizng req.params across routes',
+        testRe: 'should support altering req.params across routes',
         testFilePaths: ['test/app.param.js']
       },
       {

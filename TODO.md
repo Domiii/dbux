@@ -1,5 +1,6 @@
 
 ## TODO (shared)
+* reveal+focus `TraceDetailsView` when trace is selected
 * add "GroupMode.Ungrouped" to "Trace Executed ..." node
    * make it the default option
 * navigation: "stepping in"
@@ -76,7 +77,7 @@
 
 ## TODO (other)
 * core instrumentation bugs
-   * assignments are traced twice?
+   * assignments are traced twice, once with `ExpressionValue`, once with `ExpressionResult`
       * e.g. `req.params = layer.params;`
       * maybe has to do w/ `originalIsParent`?
    * trace function parameters
