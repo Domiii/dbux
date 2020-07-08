@@ -4,6 +4,7 @@ import traceSelection from 'dbux-data/src/traceSelection';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel } from 'dbux-data/src/helpers/traceLabels';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+import GraphNodeMode from '../../../dbux-graph-common/src/shared/GraphNodeMode';
 
 class ContextNode extends HostComponentEndpoint {
   init() {
@@ -76,7 +77,11 @@ class ContextNode extends HostComponentEndpoint {
     await this.controllers.getComponent('GraphNode').reveal(expandItself);
   }
 
-  setSelected(isSelected) {
+  expand() {
+    this.controllers.getComponent('GraphNode').setOwnMode(GraphNodeMode.ExpandChildren);
+  }
+
+  async setSelected(isSelected) {
     const selectedTrace = traceSelection.selected;
     let traceId = null;
     let isSelectedTraceCallRelated = false;
@@ -90,6 +95,9 @@ class ContextNode extends HostComponentEndpoint {
       const child = dp.indexes.executionContexts.byCalleeTrace.get(callId);
       isSelectedTraceCallRelated = !!callId;
       contextIdOfSelectedCallTrace = child && child[0].contextId;
+    }
+    if (isSelected) {
+      this.expand();
     }
     this.setState({ isSelected, traceId, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace });
   }
