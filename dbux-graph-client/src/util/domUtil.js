@@ -26,6 +26,19 @@ export function decorateAttr(el, cfg) {
   }
 }
 
+/**
+ * This is a hackfix function, that magically
+ * fixes several issues caused by buggy webview
+ * behavior.
+ */
+export function repaintEl(el) {
+  // var el = document.querySelector('#root');
+  // var el = domElement;
+  const p = el.parentNode;
+  p.removeChild(el);
+  p.appendChild(el);
+}
+
 // ###########################################################################
 // building elements from strings
 // ###########################################################################

@@ -248,17 +248,18 @@ class HostComponentEndpoint extends ComponentEndpoint {
   /**
    * First disposes all descendants (removes recursively) and then removes itself.
    */
-  dispose() {
-    this._isDisposed = true;
+  dispose(silent = false) {
+    super.dispose();
+
     Promise.resolve(this.waitForInit()).then(() => {
       if (!this.isInitialized) {
         throw new Error(this.debugTag + ' Trying to dispose before initialized');
       }
-      for (const child of this.children) {
-        child.dispose();
+      for (const component of this.children) {
+        component.dispose(silent);
       }
-      for (const controller of this.controllers) {
-        controller.dispose();
+      for (const component of this.controllers) {
+        component.dispose(silent);
       }
 
       // remove from parent
@@ -267,8 +268,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
         list._removeComponent(this);
       }
 
-      // also dispose on client
-      return this._remoteInternal.dispose();
+      if (!silent) {
+        // also dispose on client
+        return this._remoteInternal.dispose();
+      }
     });
   }
 

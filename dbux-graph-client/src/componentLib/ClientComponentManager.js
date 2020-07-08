@@ -83,6 +83,10 @@ class ClientComponentManager extends BaseComponentManager {
     // NOTE: usually `init` is called by Host, but AppComponent is a special case
     this.app._performClientInit();
   }
+
+  async restart() {
+    await this.app.remote.restart();
+  }
 }
 
 export default ClientComponentManager;

@@ -14,6 +14,9 @@ let _onStart, _restart, _args;
 let componentManager;
 
 function reset() {
+  if (componentManager) {
+    componentManager.silentShutdown();
+  }
   componentManager = new HostComponentManager(...(_args || EmptyArray), componentRegistry);
   componentManager.handlePing = pairingCompleted;
 }
@@ -21,6 +24,7 @@ function reset() {
 function pairingCompleted() {
   // client is ready!
   if (componentManager.hasStarted()) {
+    // host was already running -> meaning we need to restart the whole thing
     debug('dbux-graph-client was restarted from outside. - Restarting everything...');
     // client got restarted without the host telling it to -> ignore this start, and force another restart instead
     // reset();

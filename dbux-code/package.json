@@ -490,6 +490,7 @@
 		"vscode-test": "^1.2.2"
 	},
 	"dependencies": {
+		"axios": "^0.19.2",
 		"comment-json": "^3.0.2",
 		"dbux-cli": "*",
 		"dbux-common": "*",

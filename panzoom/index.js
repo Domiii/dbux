@@ -283,6 +283,10 @@ function createPanZoom(domElement, options) {
   function moveTo(x, y) {
     // [scroll fix]
     // console.log('moveToXY:','x:',x,'y:',y);
+    if (x === transform.x && y === transform.y) {
+      return;
+    }
+    
     transform.x = x;
     transform.y = y;
 
@@ -495,7 +499,7 @@ function createPanZoom(domElement, options) {
     // by the size of the scrollable domElement
     wheel.addWheelListener(owner, onMouseWheel, { passive: false });
 
-    makeDirty();
+    // makeDirty();
   }
 
   function releaseEvents() {

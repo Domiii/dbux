@@ -3,6 +3,7 @@ import allApplications from 'dbux-data/src/applications/allApplications';
 import Application from 'dbux-data/src/applications/Application';
 
 const Verbose = false;
+// const Verbose = true;
 
 const { log, debug, warn, error: logError } = newLogger('RuntimeClient');
 

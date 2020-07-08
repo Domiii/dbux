@@ -54,7 +54,8 @@ window.startDbuxGraphClient = function startDbuxGraphClient(ipcAdapter) {
   componentManager = new ClientComponentManager(ipcAdapter);
   componentManager.start();
 
-  // notify Host that the client is ready
+  // NOTE: "ping" actually means "clientReady"
+  // TODO: rename sendPing
   componentManager.ipc._sendPing();
 
   return componentManager;

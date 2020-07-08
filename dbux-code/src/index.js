@@ -19,6 +19,7 @@ import { initApplicationsView } from './applicationsView/applicationsViewControl
 import { initProjectView } from './projectView/projectViewController';
 import { initLogging } from './logging';
 import { showGraphView } from './graphView';
+import { initDbuxPractice } from './practice/dbuxPracticeController';
 
 
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -36,6 +37,7 @@ function activate(context) {
     initCodeApplications(context);
     initCodeDeco(context);
     initToolBar(context);
+    initDbuxPractice(context);
 
     initTraceSelection(context);
     initPlayback();

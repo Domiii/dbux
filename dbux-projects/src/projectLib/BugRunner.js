@@ -138,12 +138,12 @@ export default class BugRunner {
       // activate project
       await this._activateProject(project);
 
-      // git reset hard
-      // TODO: make sure, user gets to save own changes first
-      await project.gitResetHard();
-
       sh.cd(project.projectPath);
       if (bug.patch) {
+        // git reset hard
+        // TODO: make sure, user gets to save own changes first
+        await project.gitResetHard();
+
         // activate patch
         await project.applyPatch(bug.patch);
       }
@@ -225,10 +225,12 @@ export default class BugRunner {
     }
 
     // cancel all further steps already in queue
-    await this._queue.cancel();
+    const queuePromise = this._queue.cancel();
 
     // kill active process
     await this._process?.kill();
+
+    await queuePromise;
 
     // kill background processes
     const backgroundProcesses = this._project?.backgroundProcesses || EmptyArray;
