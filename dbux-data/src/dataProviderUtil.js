@@ -364,13 +364,13 @@ export default {
     //   // trace is push/pop callback
     //   return dp.util.getCalleeTraceOfTrace(context.schedulerTraceId);
     // }
-    if (hasCallId(trace)) {
-      // trace is call/callback argument or BCE
-      return dp.collections.traces.getById(trace.callId);
-    }
-    else if (isCallResult(trace)) {
+    if (isCallResult(trace)) {
       // trace is call expression result
       return dp.collections.traces.getById(trace.resultCallId);
+    }
+    else if (hasCallId(trace)) {
+      // trace is call/callback argument or BCE
+      return dp.collections.traces.getById(trace.callId);
     }
     else {
       // not a call related trace
