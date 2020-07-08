@@ -48,12 +48,16 @@ class Server {
       this._clients = this._clients.filter(c => c !== client);
     });
   }
+
+  dispose() {
+    this._socket.close();
+  }
 }
 
 
 let server;
 
-export function initServer() {
+export function initServer(context) {
   const httpServer = http.createServer();
   const port = DefaultPort;
   // const address = '0.0.0.0';
@@ -64,6 +68,8 @@ export function initServer() {
 
   server = new Server();
   server.initServer(httpServer);
+  
+  context.subscriptions.push(server);
 
   return server;
 }

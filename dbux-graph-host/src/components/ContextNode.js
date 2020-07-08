@@ -16,7 +16,7 @@ class ContextNode extends HostComponentEndpoint {
     const dp = allApplications.getById(applicationId).dataProvider;
     const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
     const errorTag = (dp.indexes.traces.errorByContext.get(context.contextId)?.length) ? '🔥' : '';
-    this.parentTrace = dp.util.getCalleeTraceOfContext(context.contextId);
+    this.parentTrace = dp.util.getCallerTraceOfContext(context.contextId);
 
     this.state.contextNameLabel = staticContext.displayName + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);

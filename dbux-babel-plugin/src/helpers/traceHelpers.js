@@ -313,7 +313,7 @@ const instrumentMemberCallExpressionEnter =
     // prepare for later
     // newPath.setData('_calleePath', calleePathId);
     newOPath.setData('originalIsParent', false);
-    newOPath.setData('resultType', TraceType.ExpressionValue);
+    newOPath.setData('traceResultType', TraceType.ExpressionValue);
     newCalleePath.setData('originalIsParent', false);
     newPath.setData('_bcePathId', bcePathId);
 
@@ -452,10 +452,9 @@ function instrumentArgs(callPath, state, beforeCallTraceId) {
     // }
     // else {
     const argPath = callPath.get('arguments.' + i);
-    if (!argPath.node.loc) {
+    if (!argPath.node.loc && !argPath.getData('traceResultType')) {
       // synthetic node -> ignore
-      //  e.g. we replace `o.f(x)` with `[...] o.call(o, x)`, 
-      //      and we do not want to trace the `o` arg here
+      // E.g.: we replace `o.f(x)` with `_o = ..., _f = ..., f.call(o, x)`, and we do not want to trace the `o` arg here
       continue;
     }
 

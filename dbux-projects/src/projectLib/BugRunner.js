@@ -139,13 +139,17 @@ export default class BugRunner {
     await this._queue.enqueue(
       // activate project
       async () => this.activateProject(project),
-      // git reset hard
-      // TODO: make sure, user gets to save own changes first
-      async () => project.gitResetHard(),
       async () => {
+        // git reset hard
+        // TODO: make sure, user gets to save own changes first
         sh.cd(project.projectPath);
         if (bug.patch) {
-          // activate patch
+          await project.gitResetHard();
+        }
+      },
+      async () => {
+        // activate patch
+        if (bug.patch) {
           await project.applyPatch(bug.patch);
         }
       },
