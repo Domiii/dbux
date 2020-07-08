@@ -3,7 +3,7 @@ import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger, logError } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import Project from './Project';
 import Bug from './Bug';
@@ -168,14 +168,40 @@ export default class BugRunner {
     // do whatever it takes (usually: `activateProject` -> `git checkout`)
     await this._activateBug(bug);
 
-    const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+    const command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
 
-    if (!cmd) {
+    if (!command) {
+      // nothing to do
+      project.logger.debug('has no test command. Nothing left to do.');
       // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
     }
     else {
-      await this._exec(project, cmd);
+      await this._exec(project, command);
+      // await this.execInTerminal(command);
     }
+  }
+
+  async execInTerminal(command) {
+    // TODO: expose terminal API via externals
+    // TODO: expose node IO server via externals (don't want to add `socketio` as a dependency to dbux-projects)
+    
+    // const port = 6543;
+
+    // // see: https://socket.io/docs/server-api/
+    // let socketServer;
+    // try {
+    //   const cwd = project.projectPath;
+    //   const runJs = `node run.js ${port} "${cwd}" "${command}"`;
+    //   sendCommandToDefaultTerminal(command);
+    // }
+    // catch (err) {
+    //   (this._project.logger.logError || logError.bind(null, 'dbux-projects test run'))();
+    // }
+    // finally {
+    //   // clean up server
+    //   socketServer?.close();
+    // }
+
   }
 
   /**

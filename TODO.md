@@ -1,8 +1,5 @@
 
 ## TODO (shared)
-* reveal+focus `TraceDetailsView` when trace is selected
-* add "GroupMode.Ungrouped" to "Trace Executed ..." node
-   * make it the default option
 * navigation: "stepping in"
    * `step in` backwards doesn't work?
    * if `selectedTrace` has `callId`, always `step in`to that call right away
@@ -16,10 +13,13 @@
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
       * (e.g. `next` in `express`)
+* no need for `async` in `getOrLoadBugs`
+   * also, remove `load node` in `ProjectView`
 * `BaseTreeViewNode`
    * when clicking any button in a `BaseTreeViewNode`: select the node
    * make sure, that when refreshing, previously selected node, is still selected
       * if it clears the selection, select manually
+* reveal+focus `TraceDetailsView` when trace is selected
 * [dbux-projects]
    * if bug (project) needs opening of website, add button to go to website
       * -> better manage the port?

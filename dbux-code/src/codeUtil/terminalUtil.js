@@ -1,5 +1,23 @@
 import { window } from 'vscode';
 
+const DefaultTerminalName = 'dbux-run';
+
+export function getOrCreateDefaultTerminal() {
+  let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
+  if (!terminal) {
+    terminal = window.createTerminal(DefaultTerminalName);
+  }
+  return terminal;
+}
+
+export function sendCommandToDefaultTerminal(command) {
+  const terminal = getOrCreateDefaultTerminal();
+
+  terminal.sendText(command, true);
+  terminal.show(false);
+}
+
+
 /**
  * @see https://github.com/microsoft/vscode-extension-samples/blob/master/terminal-sample/src/extension.ts#L177
  */

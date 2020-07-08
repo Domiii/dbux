@@ -19,8 +19,8 @@ import { awaitVisitEnter } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
-// const Verbose = false;
-const Verbose = true;
+const Verbose = false;
+// const Verbose = true;
 
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
