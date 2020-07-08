@@ -354,7 +354,7 @@
 				},
 				{
 					"command": "dbuxTraceDetailsView.switchGroupingMode",
-					"when": "viewItem == dbuxTraceDetailsView.staticTraceTDNodeRoot",
+					"when": "viewItem == dbuxTraceDetailsView.node.staticTraceTDNodeRoot",
 					"group": "inline"
 				},
 				{
