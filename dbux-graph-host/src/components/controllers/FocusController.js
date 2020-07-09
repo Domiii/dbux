@@ -51,7 +51,7 @@ export default class FocusController extends HostComponentEndpoint {
   }
 
   _selectContextNode(contextNode) {
-    if (this._selectedContextNode) {
+    if (this._selectedContextNode && !this._selectedContextNode._isDisposed) {
       // deselect old
       this._selectedContextNode.setSelected(false);
     }
@@ -99,7 +99,9 @@ export default class FocusController extends HostComponentEndpoint {
   }
 
   clearFocus() {
-    this.lastHighlighter?.dec();
+    if (this.lastHighlighter && !this.lastHighlighter._isDisposed) {
+      this.lastHighlighter?.dec();
+    }
     this.lastHighlighter = null;
     this.remote.slide(null);
   }

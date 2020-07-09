@@ -1,4 +1,5 @@
 import { window } from 'vscode';
+import process from 'process';
 import { newLogger } from 'dbux-common/src/log/logger';
 
 import { initServer } from './net/RuntimeServer';
@@ -26,11 +27,18 @@ const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 let projectViewController;
 
+function registerErrorHandler() {
+  process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
+    debugger;
+  });
+}
+
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
   try {
+    registerErrorHandler();
     initLogging();
     initResources(context);
     initServer(context);
