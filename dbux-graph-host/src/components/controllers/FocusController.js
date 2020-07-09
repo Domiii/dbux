@@ -21,7 +21,8 @@ export default class FocusController extends HostComponentEndpoint {
 
     this.hiddenNodeManager.onStateChanged(this.handleHiddenNodeChanged);
 
-    traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
+    const unbindSubscription = traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
+    this.addDisposable(unbindSubscription);
     // if already selected, show things right away
     this.handleTraceSelected(traceSelection.selected);
   }

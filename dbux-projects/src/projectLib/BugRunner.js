@@ -7,6 +7,7 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import Project from './Project';
 import Bug from './Bug';
+import BugRunnerStatus from './BugRunnerStatus';
 
 export default class BugRunner {
   manager;
@@ -29,7 +30,7 @@ export default class BugRunner {
     this.manager = manager;
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
-    this.bugActivating = 0;
+    this.status = BugRunnerStatus.None;
   }
 
   get logger() {
@@ -55,12 +56,12 @@ export default class BugRunner {
     this._queue = new SerialTaskQueue('BugRunnerQueue');
 
     // TODO: synchronized methods deadlock when they call each other
-    this._queue.synchronizedMethods(this, //this._wrapSynchronized,
-      'activateProject',
-      'activateBug',
-      'testBug',
-      // 'exec'
-    );
+    // this._queue.synchronizedMethods(this, //this._wrapSynchronized,
+    //   'activateProject',
+    //   'activateBug',
+    //   'testBug',
+    //   // 'exec'
+    // );
   }
 
   // _wrapSynchronized(f) {
@@ -109,6 +110,10 @@ export default class BugRunner {
     }
 
     this._project = project;
+
+    // Runner become busy after starting installing project, setStatus should be called after this._project is set
+    this.setStatus(BugRunnerStatus.Busy);
+
     await project.installProject();
     project._installed = true;
   }
@@ -130,33 +135,29 @@ export default class BugRunner {
 
     const { project } = bug;
     this._bug = bug;
-    this._emitter.emit('start', bug);
 
-    this.bugActivating += 1;
-
-    try {    
+    await this._queue.enqueue(
       // activate project
-      await this._activateProject(project);
-
-      sh.cd(project.projectPath);
-      if (bug.patch) {
+      async () => this.activateProject(project),
+      async () => {
         // git reset hard
         // TODO: make sure, user gets to save own changes first
-        await project.gitResetHard();
-
+        sh.cd(project.projectPath);
+        if (bug.patch) {
+          await project.gitResetHard();
+        }
+      },
+      async () => {
         // activate patch
-        await project.applyPatch(bug.patch);
-      }
-
+        if (bug.patch) {
+          await project.applyPatch(bug.patch);
+        }
+      },
       // start watch mode (if necessary)
-      await project.startWatchModeIfNotRunning();
-
+      async () => project.startWatchModeIfNotRunning(),
       // select bug
-      await project.selectBug(bug);
-    } finally {
-      this.bugActivating += -1;
-      this.maybeNotifyEnd();
-    }
+      async () => project.selectBug(bug)
+    );
   }
 
   /**
@@ -165,16 +166,30 @@ export default class BugRunner {
   async testBug(bug, debugMode = true) {
     const { project } = bug;
 
-    // do whatever it takes (usually: `activateProject` -> `git checkout`)
-    await this._activateBug(bug);
+    try {
+      // do whatever it takes (usually: `activateProject` -> `git checkout`)
+      await this.activateBug(bug);
 
-    const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+      // hackfix: set status here again in case of `this.activateBug` skips installaion process
+      this.setStatus(BugRunnerStatus.Busy);
 
-    if (!cmd) {
-      // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
+      const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+
+      if (!cmd) {
+        // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
+      }
+      else {
+        await this._exec(project, cmd);
+      }
     }
-    else {
-      await this._exec(project, cmd);
+    finally {
+      // need to check this._project exist, it might be kill during activating
+      if (this._project?.backgroundProcesses.length) {
+        this.setStatus(BugRunnerStatus.RunningInBackground);
+      }
+      else {
+        this.setStatus(BugRunnerStatus.Done);
+      }
     }
   }
 
@@ -218,19 +233,15 @@ export default class BugRunner {
     }
   }
 
+  // NOTE: May cause error if used while running
   async cancel() {
     if (!this.isBusy()) {
       // nothing to do
       return;
     }
 
-    // cancel all further steps already in queue
-    const queuePromise = this._queue.cancel();
-
-    // kill active process
-    await this._process?.kill();
-
-    await queuePromise;
+    // cancel all further steps already in queue and wait for the activated process done
+    await this._queue.cancel();
 
     // kill background processes
     const backgroundProcesses = this._project?.backgroundProcesses || EmptyArray;
@@ -239,18 +250,55 @@ export default class BugRunner {
     this._bug = null;
     this._project = null;
 
-    // hackfix: send end event to refresh projectView
-    // in the time project.backgroundProcess ends, this._project still exist, thus projectNode is activated
-    this._emitter.emit('end');
+    this.setStatus(BugRunnerStatus.None);
   }
 
-  maybeNotifyEnd() {
-    if (this._project && !this._project.backgroundProcesses.length && !this.bugActivating) {
-      this._emitter.emit('end');
+  // ###########################################################################
+  // status controll
+  // ###########################################################################
+
+  setStatus(status) {
+    if (this.status !== status) {
+      this.status = status;
+      this._emitter.emit('statusChanged', status);
+    }
+  }
+
+  /**
+   * This should be called after all background progresses of a project finished, to set the status from `RunningInBackground` to `None`
+   * @param {Project} project 
+   */
+  maybeSetStatusNone(project) {
+    if (!this._project || this._project !== project) {
+      this._ownLogger.error(`Project ${project.name} claimed to finished its background processes after BugRunner deactivate it.`);
+    }
+    else if (project.backgroundProcesses.length) {
+      this._ownLogger.error(`Project ${project.name} called \`maybeSetStatusNone\` before all background processes finished.`);
+    }
+    else {
+      this.setStatus(BugRunnerStatus.None);
     }
   }
 
   on(evtName, cb) {
     this._emitter.on(evtName, cb);
+  }
+
+  getProjectStatus(project) {
+    if (this._project === project) {
+      return this.status;
+    }
+    else {
+      return BugRunnerStatus.None;
+    }
+  }
+
+  getBugStatus(bug) {
+    if (this._bug === bug) {
+      return this.status;
+    }
+    else {
+      return BugRunnerStatus.None;
+    }
   }
 }

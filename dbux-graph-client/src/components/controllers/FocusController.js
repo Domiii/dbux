@@ -107,7 +107,7 @@ export default class FocusController extends ClientComponentEndpoint {
     }
 
     const slideData = {
-      startTime: Date.now(),
+      startTime: performance.now(),
       startX: this.panzoom.getTransform().x,
       startY: this.panzoom.getTransform().y,
       delta,
@@ -137,7 +137,7 @@ export default class FocusController extends ClientComponentEndpoint {
       animTime
     } = slideData;
 
-    let progress = Math.min(1.0, (Date.now() - startTime) / (animTime * 1000));
+    const progress = Math.min(1.0, (performance.now() - startTime) / (animTime * 1000));
 
     // [scroll fix]
     this.panzoom.moveTo(startX - x * progress, startY - y * progress);

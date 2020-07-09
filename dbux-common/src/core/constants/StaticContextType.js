@@ -13,7 +13,7 @@ let StaticContextType = {
 StaticContextType = new Enum(StaticContextType);
 
 
-const interruptableChildTypes = new Array(StaticContextType.getCount()).map(_ => false);
+const interruptableChildTypes = new Array(StaticContextType.getValueMaxIndex()).map(_ => false);
 interruptableChildTypes[StaticContextType.Await] = true;
 interruptableChildTypes[StaticContextType.Resume] = true;
 export function isVirtualContextType(staticContextType) {

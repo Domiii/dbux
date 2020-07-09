@@ -296,6 +296,21 @@ html,body{
   flex-direction: column;
 }
 
+.align-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vertical-align-center {
+  display: flex;
+  align-items: center;
+}
+
+.horizontal-align-center {
+  display: flex;
+  justify-content: center;
+}
 
 .full-width {
   width: 100%;

@@ -2,6 +2,7 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import { binarySearchByKey } from 'dbux-common/src/util/arrayUtil';
 import { isTracePush, isTracePop, isDataOnlyTrace } from 'dbux-common/src/core/constants/TraceType';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import { hasCallId } from 'dbux-common/src/core/constants/traceCategorization';
 import last from 'lodash/last';
 import DataProvider from '../DataProvider';
 
@@ -84,37 +85,39 @@ export default class CallGraph {
 
   getPreviousChildContext(traceId) {
     const trace = this.dp.collections.traces.getById(traceId);
-    const prevChild = this._getPreviousChildTrace(traceId);
 
-    if (trace !== prevChild) {
-      return prevChild;
+    // if trace has callId, `step in` to that call right away
+    if (hasCallId(trace)) {
+      const children = this.dp.indexes.traces.byCalleeTrace.get(trace.callId) || EmptyArray;
+      if (children.length) {
+        return last(children);
+      }
     }
-    else {
-      const children = this.dp.indexes.traces.byParentTrace.get(prevChild.resultCallId) || EmptyArray;
-      if (children.length) return last(children);
-      else return null;
-    }
+
+    // otherwise find the previous child or return null
+    return this._getPreviousChildTrace(traceId) || null;
   }
 
   getNextChildContext(traceId) {
     const trace = this.dp.collections.traces.getById(traceId);
-    const nextChild = this._getNextChildTrace(traceId);
 
-    if (trace !== nextChild) {
-      return nextChild;
+    // if trace has callId, `step in` to that call right away
+    if (hasCallId(trace)) {
+      const children = this.dp.indexes.traces.byCalleeTrace.get(trace.callId) || EmptyArray;
+      if (children.length) {
+        return children[0];
+      }
     }
-    else {
-      const children = this.dp.indexes.traces.byParentTrace.get(traceId) || EmptyArray;
-      if (children.length) return children[0];
-      else return null;
-    }
+
+    // otherwise find the next child or return null
+    return this._getNextChildTrace(traceId) || null;
   }
 
   getPreviousByStaticTrace(traceId) {
     const trace = this.dp.collections.traces.getById(traceId);
     const traces = this.dp.indexes.traces.byStaticTrace.get(trace.staticTraceId);
     const index = binarySearchByKey(traces, trace, (t) => t.traceId);
-    
+
     if (index !== null && index > 0) {
       return traces[index - 1];
     }
@@ -127,7 +130,7 @@ export default class CallGraph {
     const trace = this.dp.collections.traces.getById(traceId);
     const traces = this.dp.indexes.traces.byStaticTrace.get(trace.staticTraceId);
     const index = binarySearchByKey(traces, trace, (t) => t.traceId);
-    
+
     if (index !== null && index < traces.length - 1) {
       return traces[index + 1];
     }
@@ -190,18 +193,17 @@ export default class CallGraph {
   }
 
   _getPreviousChildTrace(traceId) {
-    const realContextId = this.dp.util.getRealContextId(traceId);
     const trace = this.dp.collections.traces.getById(traceId);
+    const realContextId = this.dp.util.getRealContextId(traceId);
     const parentTraces = this.dp.indexes.traces.parentsByRealContext.get(realContextId) || EmptyArray;
 
     const lowerIndex = this._binarySearchLowerIndexByKey(parentTraces, trace, (t) => t.traceId);
 
-    if (lowerIndex === null) return null;
+    if (lowerIndex === null) {
+      return null;
+    }
     else {
-      // return if lastResult exist, or getNextTrace of lastParentTrace
-      const previousParentTraceId = parentTraces[lowerIndex].traceId;
-      const lastResultTrace = this.dp.util.getCallResultTrace(previousParentTraceId);
-      return lastResultTrace || this.getNextInContext(previousParentTraceId);
+      return this.dp.util.getCallerTraceOfTrace(parentTraces[lowerIndex].traceId);
     }
   }
 
@@ -212,8 +214,12 @@ export default class CallGraph {
 
     const upperIndex = this._binarySearchUpperIndexByKey(parentTraces, trace, (t) => t.traceId);
 
-    if (upperIndex === null) return null;
-    else return parentTraces[upperIndex];
+    if (upperIndex === null) {
+      return null;
+    }
+    else {
+      return this.dp.util.getCallerTraceOfTrace(parentTraces[upperIndex].traceId);
+    }
   }
 
   // ########################################
@@ -277,11 +283,11 @@ export default class CallGraph {
     let end = arr.length - 1;
     let mid;
 
-    if (arr[start] >= x) return null;
+    if (arr[start] > x) return null;
 
     while (start < end) {
       mid = Math.ceil((start + end) / 2);
-      if (arr[mid] < x) start = mid;
+      if (arr[mid] <= x) start = mid;
       else end = mid - 1;
     }
 
