@@ -71,7 +71,7 @@ class ProjectViewController {
 
   onStatusChanged(status) {
     commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === BugRunnerStatus.Busy);
-    this.treeDataProvider.repaint();
+    this.treeDataProvider.refreshIcon();
   }
 
   // ###########################################################################

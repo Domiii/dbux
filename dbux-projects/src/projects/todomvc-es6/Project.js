@@ -59,7 +59,7 @@ export default class TodomvcEs6Project extends Project {
       // template.show -> incorrect variable scope causes only one item to be rendered
       
     ].map((bug) => {
-      bug.website = 'localhost:3032';
+      bug.website = 'http://localhost:3032';
       return bug;
     });
   }

@@ -316,6 +316,14 @@
 					"light": "resources/light/pause.svg",
 					"dark": "resources/dark/pause.svg"
 				}
+			},
+			{
+				"command": "dbuxProjectView.node.showWebsite",
+				"title": "Show website",
+				"icon": {
+					"light": "resources/light/boolean.svg",
+					"dark": "resources/dark/boolean.svg"
+				}
 			}
 		],
 		"menus": {
@@ -424,22 +432,27 @@
 				},
 				{
 					"command": "dbuxProjectView.node.activateBugWithDebugger",
-					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)/ && !dbuxProjectView.context.isBusy",
+					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
 					"group": "inline@1"
 				},
 				{
 					"command": "dbuxProjectView.node.activateBug",
-					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)/ && !dbuxProjectView.context.isBusy",
+					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
 					"group": "inline@2"
 				},
 				{
 					"command": "dbuxProjectView.node.busyIcon",
-					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)/ && dbuxProjectView.context.isBusy",
+					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && dbuxProjectView.context.isBusy",
 					"group": "inline"
 				},
 				{
 					"command": "dbuxProjectView.node.stopBug",
-					"when": "viewItem == dbuxProjectView.bugNode.RunningInBackground",
+					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\..*/",
+					"group": "inline"
+				},
+				{
+					"command": "dbuxProjectView.node.showWebsite",
+					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\.hasWebsite/",
 					"group": "inline"
 				}
 			],
