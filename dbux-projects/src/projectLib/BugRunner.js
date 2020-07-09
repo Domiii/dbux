@@ -161,6 +161,8 @@ export default class BugRunner {
 
   /**
    * Run bug (if in debug mode, will wait for debugger to attach)
+   * 
+   * @param {}
    */
   async testBug(bug, debugMode = true) {
     const { project } = bug;
@@ -168,40 +170,23 @@ export default class BugRunner {
     // do whatever it takes (usually: `activateProject` -> `git checkout`)
     await this._activateBug(bug);
 
-    const command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+    let command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+    command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
     if (!command) {
       // nothing to do
       project.logger.debug('has no test command. Nothing left to do.');
       // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
+      return null;
     }
     else {
-      await this._exec(project, command);
-      // await this.execInTerminal(command);
+      // await this._exec(project, command);
+      const cwd = project.projectPath;
+      this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
+      const result = await this._terminalWrapper.waitForResult();
+      project.logger.log(`Result:`, result);
+      return result;
     }
-  }
-
-  async execInTerminal(command) {
-    // TODO: expose terminal API via externals
-    // TODO: expose node IO server via externals (don't want to add `socketio` as a dependency to dbux-projects)
-    
-    // const port = 6543;
-
-    // // see: https://socket.io/docs/server-api/
-    // let socketServer;
-    // try {
-    //   const cwd = project.projectPath;
-    //   const runJs = `node run.js ${port} "${cwd}" "${command}"`;
-    //   sendCommandToDefaultTerminal(command);
-    // }
-    // catch (err) {
-    //   (this._project.logger.logError || logError.bind(null, 'dbux-projects test run'))();
-    // }
-    // finally {
-    //   // clean up server
-    //   socketServer?.close();
-    // }
-
   }
 
   /**
@@ -252,6 +237,10 @@ export default class BugRunner {
 
     // cancel all further steps already in queue
     const queuePromise = this._queue.cancel();
+
+    // kill active terminal wrapper
+    this._terminalWrapper?.cancel();
+    this._terminalWrapper = null;
 
     // kill active process
     await this._process?.kill();

@@ -6,7 +6,7 @@ import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
-import { queryTerminalPid } from '../codeUtil/terminalUtil';
+import { execInTerminal } from '../terminal/TerminalWrapper';
 
 // ########################################
 //  setup logger for project
@@ -41,7 +41,8 @@ const externals = {
       // TODO: use vscode API to add to workspace
       await exec(`code --add ${fpath}`, logger, { silent: false }, true);
     }
-  }
+  },
+  execInTerminal
 };
 
 class ProjectViewController {

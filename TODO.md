@@ -13,18 +13,6 @@
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
       * (e.g. `next` in `express`)
-* no need for `async` in `getOrLoadBugs`
-   * also, remove `load node` in `ProjectView`
-* `BaseTreeViewNode`
-   * when clicking any button in a `BaseTreeViewNode`: select the node
-   * make sure, that when refreshing, previously selected node, is still selected
-      * if it clears the selection, select manually
-* reveal+focus `TraceDetailsView` when trace is selected
-* [dbux-projects]
-   * if bug (project) needs opening of website, add button to go to website
-      * -> better manage the port?
-      * -> if port is blocked, we could use `find-process` to get + kill the process (if user confirms)?
-         * https://www.npmjs.com/package/find-process
 
 
 
@@ -76,6 +64,7 @@
 
 
 ## TODO (other)
+* run.js is killed too fast. Result does not get sent?
 * core instrumentation bugs
    * assignments are traced twice, once with `ExpressionValue`, once with `ExpressionResult`
       * e.g. `req.params = layer.params;`
@@ -141,7 +130,6 @@
    * setup w/ lerna and prepare production/publishable build?
    * add to `extensions` folder
       * see: https://github.com/Microsoft/vscode/issues/25159
-* in TrackedObjectTDNode, render `valueString`?
 * instrument `try` blocks
    * test errors in `try/finally` -> find errors in `try` block?
    * also show some sort of error symbol when tracing `catch` block?
@@ -309,11 +297,6 @@
 * [cursorTracesView] + [traceSelection]
    * when jumping between traces, keep a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
-* [instrumentation]
-   * more accurate callstacks
-      * find correct trace of setter in callstack
-      * find correct trace of getter in callstack
-      * NOTE: this is very hard :(
 * [interactive_mode]
    * when clicking a value (and when in "online mode"), send command back to application to `console.log(inspect(value))`
 * [dataView]
@@ -337,8 +320,6 @@
    * (for proper multi-application testing)
    * be careful:
       * `__filename` + `__dirname` do not work w/ webpack when not targeting node
-* [instrumentation] support longer names
-   * (and then hide them in tree view; show long version as tooltip)
 * [instrumentation] if we see a function call for which we have no context, find out where it goes
    * (i.e. dependency name or runtime-internal?)
       * -> then allow to easily add it to our config and re-run so we can get it next time

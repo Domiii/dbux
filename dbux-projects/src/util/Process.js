@@ -75,6 +75,7 @@ export default class Process {
 
     logger.debug(`> ${cwd}$`, command); //, `(pwd = ${sh.pwd().toString()})`);
 
+    // TODO: use spawn instead of exec? (allows for better control but needs https://www.npmjs.com/package/string-argv)
     const process = this._process = spawn.exec(command, processOptions);
 
     pipeStreamToLogger(process.stdout, logger);

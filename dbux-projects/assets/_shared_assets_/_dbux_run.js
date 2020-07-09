@@ -12,18 +12,24 @@ const Verbose = true;
 const [
   _node,
   _runJs,
-  port,
-  cwd,
-  command
+  argsEncoded
 ] = process.argv;
+
+const args = JSON.parse(argsEncoded);
+const { port, cwd, command } = args;
+
+console.debug('run.js command received:', args);
 
 
 function main() {
   const processOptions = {
-    cwd
+    cwd,
+    detached: false,
+    stdio: "inherit"
   };
 
-  spawn.exec(command, processOptions);
+  // TODO: use spawn instead of exec? (allows for better control but needs https://www.npmjs.com/package/string-argv)
+  const child = spawn.exec(command, processOptions);
 
   // ###########################################################################
   // process monitoring
@@ -41,18 +47,23 @@ function main() {
   }
 
 
-  process.on('exit', (code, signal) => {
+  child.on('exit', (code, signal) => {
     // logger.debug(`process exit, code=${code}, signal=${signal}`);
     if (checkDone()) { return; }
 
     reportStatusCode(code);
   });
 
-  process.on('error', (err) => {
+  child.on('error', (err) => {
     if (checkDone()) { return; }
 
     reportError(`[${err.code}] ${err.message || JSON.stringify(err)}`);
   });
+
+  // inherit stdio
+  child.stdout.pipe(process.stdout);
+  process.stdin.pipe(child.stdin);
+  child.stderr.pipe(process.stderr);
 }
 
 
@@ -63,9 +74,10 @@ function main() {
 let socket;
 let queue = [];
 let killTimer;
+let sent = false;
 
 const StayAwake = false;
-const KillDelay = 200;
+const KillDelay = 1000;
 
 function connect() {
   if (socket) {
@@ -91,13 +103,21 @@ function connect() {
   socket.on('error', (err) => console.error(`[run.js]`, err));
   socket.on('disconnect', () => {
     socket = null;
+    // console.warn('run.js disconnected');
+    process.exit();
+    if (!sent) {
+      // we got disconnected but did not finish our thing yet
+      // TODO: kill-tree the process?
+    }
   });
 }
 
 
 function flushQueue() {
-  socket.emit(queue);
+  // console.debug('run.js flushQueue', 'results', queue);
+  socket.emit('results', queue);
   queue = [];
+  sent = true;
 
   _refreshKillTimer();
 }
