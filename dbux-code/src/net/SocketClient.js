@@ -40,4 +40,8 @@ export default class SocketClient {
       }
     });
   }
+
+  dispose() {
+    this.socket?.disconnect(true);
+  }
 }

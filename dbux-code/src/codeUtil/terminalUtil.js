@@ -18,6 +18,8 @@ export function sendCommandToDefaultTerminal(command) {
 
   terminal.sendText(command, true);
   terminal.show(false);
+
+  return terminal;
 }
 
 

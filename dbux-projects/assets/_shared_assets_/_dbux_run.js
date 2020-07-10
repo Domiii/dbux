@@ -103,7 +103,7 @@ function connect() {
   socket.on('error', (err) => console.error(`[run.js]`, err));
   socket.on('disconnect', () => {
     socket = null;
-    // console.warn('run.js disconnected');
+    console.warn('[run.js] disconnected');
     process.exit();
     if (!sent) {
       // we got disconnected but did not finish our thing yet
@@ -114,7 +114,7 @@ function connect() {
 
 
 function flushQueue() {
-  // console.debug('run.js flushQueue', 'results', queue);
+  console.debug('run.js flushQueue', 'results', queue);
   socket.emit('results', queue);
   queue = [];
   sent = true;
@@ -132,7 +132,7 @@ function _refreshKillTimer() {
   if (killTimer) {
     clearTimeout(killTimer);
   }
-  killTimer = setTimeout(() => socket.disconnect(), KillDelay);
+  killTimer = setTimeout(() => socket.disconnect(true), KillDelay);
 }
 
 function sendData(data) {

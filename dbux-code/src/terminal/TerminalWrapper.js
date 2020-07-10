@@ -1,9 +1,11 @@
+import { window } from 'vscode';
 import { newLogger } from 'dbux-common/src/log/logger';
 import SocketClient from '../net/SocketClient';
 import SocketServer from '../net/SocketServer';
 import { sendCommandToDefaultTerminal } from '../codeUtil/terminalUtil';
 
-const Verbose = true;
+// const Verbose = true;
+const Verbose = false;
 
 const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
 
@@ -15,22 +17,29 @@ class TerminalClient extends SocketClient {
   constructor(...args) {
     super(...args);
 
-    this._resultPromise = new Promise(resolve => {
+    this._resultPromise = new Promise((resolve, reject) => {
       this._resolve = resolve;
+      this._reject = reject;
     });
     
     this.on('results', (results) => {
       Verbose && debug('results received');
-      this._resolve(results);
+      this.resolve(results);
     });
   }
 
   resolve(results) {
-    this._resolve(results);
+    const resolve = this._resolve;
+    this._reject = null;
+    this._resolve = null;
+    resolve?.(results);
   }
 
   _handleDisconnect() {
-    this._resolve(undefined);
+    const reject = this._reject;
+    this._reject = null;
+    this._resolve = null;
+    reject?.(undefined);
   }
 
   async waitForResults() {
@@ -67,7 +76,14 @@ class TerminalSocketServer extends SocketServer {
 }
 
 export default class TerminalWrapper {
+  _disposable;
+
   start(cwd, command, port) {
+    this._disposable = window.onDidCloseTerminal(terminal => {
+      if (terminal === this._terminal) {
+        this.dispose();
+      }
+    });
     this._promise = this._run(cwd, command, port);
   }
 
@@ -84,11 +100,10 @@ export default class TerminalWrapper {
     try {
       const args = JSON.stringify(JSON.stringify({ port, cwd, command }));
       const runJsCommand = `node _dbux_run.js ${args}`;
-      sendCommandToDefaultTerminal(runJsCommand);
+      this._terminal = sendCommandToDefaultTerminal(runJsCommand);
 
       const client = this.client = await socketServer.waitForNextClient();
       Verbose && debug('client connected');
-      socketServer.dispose(); // done with the server
       const results = await client.waitForResults();
       Verbose && debug('client finished. Results:', results);
       return results?.[0] || null;
@@ -100,9 +115,21 @@ export default class TerminalWrapper {
   }
 
   dispose() {
-    this.socketServer?.close();
-    this.client?.close();
+    const {
+      socketServer,
+      client,
+      _disposable
+    } = this;
+
+    this.socketServer = null;
+    this.client = null;
+    this._disposable = null;
     this._promise = null;
+    this.terminal = null;
+
+    socketServer?.dispose();
+    client?.dispose();
+    _disposable?.dispose();
   }
 
   cancel() {
@@ -112,6 +139,8 @@ export default class TerminalWrapper {
 
 export function execInTerminal(cwd, command) {
   const port = 6543;
+
+  // TODO: register wrapper with context
 
   const wrapper = new TerminalWrapper();
   wrapper.start(cwd, command, port);

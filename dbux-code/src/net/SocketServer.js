@@ -34,15 +34,16 @@ export default class SocketServer {
 
     // handle disconnects
     socket.on('disconnect', () => {
-      client._handleDisconnect?.();
       this._clients = this._clients.filter(c => c !== client);
+      client._handleDisconnect?.();
     });
 
     return client;
   }
 
   dispose() {
-    this._listenSocket.close();
+    this._listenSocket?.close();
+    this._listenSocket = null;
   }
 }
 
