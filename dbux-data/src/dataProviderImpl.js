@@ -12,7 +12,7 @@ import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
 import TracesByRunIndex from './impl/indexes/TracesByRunIndex';
 import TracesByStaticContextIndex from './impl/indexes/TracesByStaticContextIndex';
 import TracesByTrackIdIndex from './impl/indexes/TracesByTrackIdIndex';
-import TracesByParentTraceIndex from './impl/indexes/TracesByParentTraceIndex';
+import TracesByCalleeTraceIndex from './impl/indexes/TracesByCalleeTraceIndex';
 import TracesByParentStaticContextIndex from './impl/indexes/TracesByParentStaticContextIndex';
 import TracesByRealContextIndex from './impl/indexes/TracesByRealContextIndex';
 import TracesByCallIndex from './impl/indexes/TracesByCallIndex';
@@ -23,7 +23,7 @@ import ErrorTracesByRunIndex from './impl/indexes/ErrorTracesByRunIndex';
 import ContextChildrenIndex from './impl/indexes/ContextChildrenIndex';
 import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContextIndex';
 import ContextsByRunIndex from './impl/indexes/ContextsByRunIndex';
-import ContextsByParentTraceIndex from './impl/indexes/ContextsByParentTraceIndex';
+import ContextsByCalleeTraceIndex from './impl/indexes/ContextsByCalleeTraceIndex';
 import RootContextsIndex from './impl/indexes/RootContextsIndex';
 import VisitedStaticTracesByFileIndex from './impl/indexes/VisitedStaticTracesByFileIndex';
 import ParentTracesInRealContextIndex from './impl/indexes/ParentTracesInRealContextIndex';
@@ -54,7 +54,7 @@ export function newDataProvider(application) {
 
   dataProvider.addIndex(new ContextsByStaticContextIndex());
   dataProvider.addIndex(new ContextsByRunIndex());
-  dataProvider.addIndex(new ContextsByParentTraceIndex());
+  dataProvider.addIndex(new ContextsByCalleeTraceIndex());
   dataProvider.addIndex(new ContextChildrenIndex());
   dataProvider.addIndex(new RootContextsIndex());
   dataProvider.addIndex(new FirstContextsInRunsIndex());
@@ -63,7 +63,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new TracesByFileIndex());
   dataProvider.addIndex(new TracesByContextIndex());
   dataProvider.addIndex(new TracesByParentContextIndex());
-  dataProvider.addIndex(new TracesByParentTraceIndex());
+  dataProvider.addIndex(new TracesByCalleeTraceIndex());
   dataProvider.addIndex(new TracesByStaticTraceIndex());
   dataProvider.addIndex(new TracesByStaticContextIndex());
   dataProvider.addIndex(new TracesByParentStaticContextIndex());

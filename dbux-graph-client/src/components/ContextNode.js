@@ -78,7 +78,6 @@ class ContextNode extends ClientComponentEndpoint {
     });
 
     // set indicator
-
     this.setIndicator(traceId, this.children.getComponents('ContextNode'), isSelectedTraceCallRelated, contextIdOfSelectedCallTrace, isSelected);
 
     // set popper

@@ -4,6 +4,7 @@ import traceSelection from 'dbux-data/src/traceSelection';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel } from 'dbux-data/src/helpers/traceLabels';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+import GraphNodeMode from '../../../dbux-graph-common/src/shared/GraphNodeMode';
 
 class ContextNode extends HostComponentEndpoint {
   init() {
@@ -44,6 +45,13 @@ class ContextNode extends HostComponentEndpoint {
     return dataProvider.util.getFirstTraceOfContext(contextId);
   }
 
+  get contextChildrenAmount() {
+    const contextChildren = this.children.getComponents('ContextNode');
+    let amount = contextChildren.length;
+    contextChildren.forEach(childNode => amount += childNode.contextChildrenAmount);
+    return amount;
+  }
+
   buildChildNodes() {
     const {
       applicationId,
@@ -69,19 +77,27 @@ class ContextNode extends HostComponentEndpoint {
     await this.controllers.getComponent('GraphNode').reveal(expandItself);
   }
 
-  setSelected(isSelected) {
+  expand() {
+    this.controllers.getComponent('GraphNode').setOwnMode(GraphNodeMode.ExpandChildren);
+  }
+
+  async setSelected(isSelected) {
     const selectedTrace = traceSelection.selected;
     let traceId = null;
     let isSelectedTraceCallRelated = false;
     let contextIdOfSelectedCallTrace = null;
+    // if selected trace is call related, returns the contextId of this call
     if (selectedTrace) {
       traceId = selectedTrace.traceId;
       const { applicationId } = this.state;
       const dp = allApplications.getById(applicationId).dataProvider;
-      const callId = dp.util.getTraceCallId(selectedTrace.traceId);
-      const child = dp.indexes.executionContexts.byParentTrace.get(callId);
+      const callId = dp.util.getCallerTraceOfTrace(traceId)?.traceId;
+      const child = dp.indexes.executionContexts.byCalleeTrace.get(callId);
       isSelectedTraceCallRelated = !!callId;
       contextIdOfSelectedCallTrace = child && child[0].contextId;
+    }
+    if (isSelected) {
+      this.expand();
     }
     this.setState({ isSelected, traceId, isSelectedTraceCallRelated, contextIdOfSelectedCallTrace });
   }

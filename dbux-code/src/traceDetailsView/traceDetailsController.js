@@ -13,8 +13,15 @@ let controller;
 class TraceDetailsController {
   constructor() {
     this.treeDataProvider = new TraceDetailsDataProvider();
-    this.treeView = this.treeDataProvider.treeView;
     this.tracesAtCursor = null; // assign on init
+  }
+  
+  get treeView() {
+    return this.treeDataProvider.treeView;
+  }
+
+  reveal() {
+    this.treeView.reveal(this.treeDataProvider.rootNodes[1]);
   }
 
   refresh = () => {
@@ -76,6 +83,7 @@ class TraceDetailsController {
     // add traceSelection event handler
     traceSelection.onTraceSelectionChanged(() => {
       this.refresh();
+      this.reveal();
     });
   }
 }

@@ -1,5 +1,6 @@
 import path from 'path';
 import isString from 'lodash/isString';
+import kill from 'tree-kill';
 import sh from 'shelljs';
 import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import { newLogger } from 'dbux-common/src/log/logger';
@@ -148,11 +149,15 @@ export default class Process {
     // see: https://stackoverflow.com/questions/32705857/cant-kill-child-process-on-windows?noredirect=1&lq=1
     this._killed = true;
     this._process.stdin?.pause(); // see https://stackoverflow.com/questions/18694684/spawn-and-kill-a-process-in-node-js
-    this._process?.kill(signal);
-    await this.waitToEnd().catch(err => {
-      debug('ignored process error after kill:', err.message);
-    });
-    debug('process killed');
+    // this._process?.kill(signal);
+    kill(this._process.pid, signal);
+    await this.waitToEnd().
+      then((code) => {
+        debug(`process killed: command='${this.command}', code='${code}'`);
+      }).
+      catch(err => {
+        debug('ignored process error after kill:', err.message);
+      });
   }
 
   async waitToEnd() {

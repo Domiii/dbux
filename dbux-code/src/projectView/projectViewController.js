@@ -1,12 +1,15 @@
+import { window, commands } from 'vscode';
 import path from 'path';
 import { newLogger, setOutputStreams } from 'dbux-common/src/log/logger';
 import { initDbuxProjects } from 'dbux-projects/src';
 import exec from 'dbux-projects/src/util/exec';
+import BugRunnerStatus from 'dbux-projects/src/projectLib/BugRunnerStatus';
 import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import { execInTerminal } from '../terminal/TerminalWrapper';
+import PracticeStopwatch from './PracticeStopwatch';
 
 // ########################################
 //  setup logger for project
@@ -58,13 +61,19 @@ class ProjectViewController {
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
     this.treeView = this.treeDataProvider.treeView;
+    this.practiceStopwatch = new PracticeStopwatch('practice');
+    this.practiceStopwatch.registOnClick(context, this.maybeStopWatch.bind(this));
 
     // ########################################
     //  listen on bugRunner
     // ########################################
     const bugRunner = this.manager.getOrCreateRunner();
-    bugRunner.on('start', this.treeDataProvider.refresh);
-    bugRunner.on('end', this.treeDataProvider.refresh);
+    bugRunner.on('statusChanged', this.onStatusChanged.bind(this));
+  }
+
+  onStatusChanged(status) {
+    commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === BugRunnerStatus.Busy);
+    this.treeDataProvider.repaint();
   }
 
   // ###########################################################################
@@ -82,49 +91,50 @@ class ProjectViewController {
   async activateBugByNode(bugNode, debugMode = false) {
     showOutputChannel();
     const options = {
+      cancellable: false,
       title: `[dbux] Activating Project ${bugNode.bug.project.name}@${bugNode.bug.name}`
     };
 
-    runTaskWithProgressBar(async (progress, cancelToken) => {
+    return runTaskWithProgressBar(async (progress, cancelToken) => {
+      const { bug } = bugNode;
       const runner = this.manager.getOrCreateRunner();
-      cancelToken.onCancellationRequested(runner.cancel.bind(runner));
 
-      await this._activateBug(progress, cancelToken, bugNode.bug, debugMode);
+      // cancel any currently running tasks
+      progress.report({ message: 'Canceling previous tasks...' });
+      await runner.cancel();
+
+      // activate it!
+      progress.report({ message: 'activating...' });
+      await runner.testBug(bug, debugMode);
+
+      progress.report({ message: 'opening in editor...' });
+      await bug.openInEditor();
+
+      progress.report({ message: 'Finished!' });
     }, options);
   }
 
-  async _activateBug(progress, cancelToken, bug, debugMode = false) {
-    if (cancelToken.isCancellationRequested) {
-      return;
+  // ###########################################################################
+  // practice stopwatch
+  // ###########################################################################
+
+  async maybeStartWatch() {
+    const result = await window.showInformationMessage('Do you want to start the timer?', { modal: true }, 'Yes');
+    if (result === 'Yes') {
+      this.practiceStopwatch.start();
     }
+  }
 
-    const runner = this.manager.getOrCreateRunner();
-    // cancel any currently running tasks
-    await runner.cancel();
-
-    // activate/install project
-    if (cancelToken.isCancellationRequested) {
-      return;
+  async maybeStopWatch() {
+    this.practiceStopwatch.pause();
+    const result = await window.showInformationMessage('Do you want to stop the timer?', { modal: true }, 'Stop');
+    if (result === 'Stop') {
+      // already pause, do nothing
+      this.practiceStopwatch.hide();
     }
-    progress.report({ increment: 5, message: 'installing project...' });
-    await runner.activateProject(bug.project);
-
-    // open in editor (must be after activation/installation)
-    if (cancelToken.isCancellationRequested) {
-      return;
+    else {
+      this.practiceStopwatch.start();
     }
-    progress.report({ increment: 45, message: 'opening in editor...' });
-    await bug.openInEditor();
-
-    // run it!
-    if (cancelToken.isCancellationRequested) {
-      return;
-    }
-    progress.report({ increment: 15, message: 'running bug test...' });
-    await runner.testBug(bug, debugMode);
-
-
-    progress.report({ increment: 35, message: 'Finished!' });
   }
 }
 

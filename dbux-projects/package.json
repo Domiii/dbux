@@ -9,7 +9,8 @@
   "dependencies": {
     "dbux-cli": "*",
     "dbux-common": "*",
-    "shelljs": "*"
+    "shelljs": "*",
+    "tree-kill": "^1.2.2"
   },
   "keywords": [],
   "author": "",
