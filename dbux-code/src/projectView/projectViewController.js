@@ -14,9 +14,11 @@ import PracticeStopwatch from './PracticeStopwatch';
 // ########################################
 //  setup logger for project
 // ########################################
+
 const logger = newLogger('projectViewController');
 const { log, debug, warn, error: logError } = logger;
 const outputChannel = new OutputChannel('dbux-project');
+
 setOutputStreams({
   log: outputChannel.log.bind(outputChannel),
   warn: outputChannel.log.bind(outputChannel),

@@ -1,18 +1,10 @@
 
 ## TODO (shared)
-* navigation: "stepping in"
-   * `step in` backwards doesn't work?
-   * if `selectedTrace` has `callId`, always `step in`to that call right away
-      * -> no matter if forward or backward
-      * -> no need to first select last argument before stepping down
-   * before stepping down, instead of selecting last argument, select the call's BCE
-* in sync mode:
-   * graph first scrolls to node
-   * then scrolls right back to zero
 * grouping: add new `GroupNode` controller component
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
       * (e.g. `next` in `express`)
+* 
 
 
 
@@ -24,21 +16,6 @@
 
 
 
-## TODO (`dbux-projects`)
-* add `backgroundProcesses` management
-* add auto-commit function
-   * allow saving own project changes
-   * when switching between bugs, need to commit all changes
-      * when switching back to that bug, need to fetch that commit
-   * allow reviewing diff of all own changes
-   * allow comparing to actual solution? (after submitting?)
-   * [future work] allow sending to backend
-
-
-* [Deployment]
-   * fix up paths
-   * discern correctly between `npm` and `yarn`
-   * improve dependency management
 
 
 
@@ -49,8 +26,6 @@
 
 * user interaction log
 * backend
-* user login (github oauth)
-   * see https://github.com/microsoft/vscode/issues/91309
 * bug difficulty classification
 * hint system + more relevant information
 
@@ -64,14 +39,15 @@
 
 
 ## TODO (other)
-* run.js is killed too fast. Result does not get sent?
 * core instrumentation bugs
    * assignments are traced twice, once with `ExpressionValue`, once with `ExpressionResult`
       * e.g. `req.params = layer.params;`
       * maybe has to do w/ `originalIsParent`?
    * trace function parameters
 * fix: "running" a bug smoothly
-   * stop if `git checkout` failed
+   * stop running if `git checkout` failed
+      * NOTE: usually a failure is indicated by process `statusCode !== 0`
+      * currently
    * don't `gitResetHard` every time we run a bug
       * check if bug was already selected before doing the setup
          * Problem: need to deal with patch files
@@ -79,12 +55,8 @@
       * always show changes to user and let them confirm before `gitResetHard`
       * allow saving/submitting own changes for bugs
          * remember bug progress
+   * fix: allow for re-runninging "run.js" bug command from terminal
 * [dbux-projects]
-   * run bug in terminal for proper coloring + making "playing around" easier
-      * for Terminal API, see: https://stackoverflow.com/a/62774501/2228771
-      * extend `RuntimeServer` to also accept terminal wrapper data
-      * write a wrapper process `terminalWrapper.js`
-         * send process return value back to server
    * display test results
    * integrate "bug hunt" timer
       * pause, cancel, submit
@@ -126,10 +98,6 @@
    * visualize when value got ommitted/pruned
    * show actual string length, if pruned
    * make valueCollection prune/omit parameters easily configurable
-* get ready for deployment!
-   * setup w/ lerna and prepare production/publishable build?
-   * add to `extensions` folder
-      * see: https://github.com/Microsoft/vscode/issues/25159
 * instrument `try` blocks
    * test errors in `try/finally` -> find errors in `try` block?
    * also show some sort of error symbol when tracing `catch` block?
