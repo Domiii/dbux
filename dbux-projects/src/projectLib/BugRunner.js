@@ -86,6 +86,10 @@ export default class BugRunner {
     return this._bug === bug;
   }
 
+  getActiveBug() {
+    return this._bug;
+  }
+
   // ###########################################################################
   // activation methods
   // ###########################################################################

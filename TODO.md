@@ -392,8 +392,6 @@
    * fix `ValueTDNode` to render individual object + array entries using the same heuristics as `traceValueString`
 
 [Persistance]
-* use `Memento` to persist extension state through VSCode restarts
-   * -> reference: https://stackoverflow.com/questions/51821924/how-to-persist-information-for-a-vscode-extension
 * what to persist?
    * dbux-data
       * all applications' data: save to/load from memento
