@@ -3,7 +3,7 @@ import { isMouseEventPlatformModifierKey } from '@/util/keyUtil';
 import { getPlatformModifierKeyString } from '@/util/platformUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
-let choiceElm;
+let choicingIndicator;
 class ContextNode extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
@@ -160,34 +160,29 @@ class ContextNode extends ClientComponentEndpoint {
     // check trace is selectedTraceCallRelated -del
     if (toggle !== -1 && isSelectedTraceCallRelated && contextIdOfSelectedCallTrace !== undefined) {
       toggle = selectChild.findIndex(x => x[1] === contextIdOfSelectedCallTrace);
-      let newChoiceElm = children[toggle]?.el.querySelector('.indicator-cont');
       
-      if (choiceElm !== newChoiceElm) {
-        choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
-        choiceElm = newChoiceElm;
-        choiceElm?.classList?.add('set-calltrace');
-      }
-      // console.log(choiceElm?.classList);
+      let newIndicator = children[toggle]?.el.querySelector('.indicator-cont');
+      this.checkNewIndicator(newIndicator, 'set-calltrace');
+
+      // console.log(choicingIndicator?.classList);
       // console.log('toggle:', toggle, 'element:', children[toggle]?.el);
       // console.log('**********************')
     }
     else if (toggle !== -1) {
-      let newChoiceElm = children[toggle]?.el.querySelector('.indicator-cont');
-      
-      if (choiceElm !== newChoiceElm) {
-        choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
-        choiceElm = newChoiceElm;
-        choiceElm?.classList?.add('set-top');
-      }
+      let newIndicator = children[toggle]?.el.querySelector('.indicator-cont');
+      this.checkNewIndicator(newIndicator, 'set-top');
     }
     else {
-      let newChoiceElm = children[toggle]?.el.querySelector('.indicator-cont');
-      
-      if (choiceElm !== newChoiceElm) {
-        choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
-        choiceElm = newChoiceElm;
-        choiceElm?.classList?.add('set-bottom');
-      }
+      let newIndicator = children[toggle]?.el.querySelector('.indicator-cont');
+      this.checkNewIndicator(newIndicator, 'set-bottom');
+    }
+  }
+
+  checkNewIndicator(newIndicator, newClass) {
+    if (choicingIndicator !== newIndicator) {
+      choicingIndicator?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
+      choicingIndicator = newIndicator;
+      choicingIndicator?.classList?.add(newClass);
     }
   }
 
