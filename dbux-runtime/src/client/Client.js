@@ -193,8 +193,9 @@ export default class Client {
       transports: ['websocket']
     });
 
-    // on reconnection, reset the transports option, as the Websocket
-    // connection may have failed (caused by proxy, firewall, browser, ...)
+    // on reconnection, reset the transports option
+    // -> because the Websocket
+    //  connection may have failed (caused by proxy, firewall, browser, ...)
     socket.on('reconnect_attempt', () => {
       Verbose && debug('reconnecting...');
       // socket.io.opts.transports = ['websocket'];

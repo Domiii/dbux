@@ -86,8 +86,8 @@ class GraphRoot extends ClientComponentEndpoint {
     });
 
     panzoom.on('transform', (e) => {
-      this._repaint();
-      repaintEl(this.els.body);
+      // this._repaint();
+      // repaintEl(this.els.body);
     });
 
     // hackfix: scrollbar bugs out when scrolling or when touching it the first time around; this fixes it

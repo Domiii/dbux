@@ -1,32 +1,23 @@
 import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
 import allApplications from 'dbux-data/src/applications/allApplications';
 import Application from 'dbux-data/src/applications/Application';
+import SocketClient from './SocketClient';
 
 const Verbose = false;
 // const Verbose = true;
 
 const { log, debug, warn, error: logError } = newLogger('RuntimeClient');
 
-export default class Client {
-  server;
-  socket;
+export default class RuntimeClient extends SocketClient {
   application: Application;
-  _connected;
 
   constructor(server, socket) {
+    super(server, socket);
+
     Verbose && debug('connected');
 
-    this.server = server;
-    this.socket = socket;
-    this._connected = true;
-
-    this.on('error', this._handleError);
     this.on('init', this._handleInit);
     this.on('data', this._handleData);
-  }
-
-  isConnected() {
-    return this._connected;
   }
 
   isReady() {
@@ -71,33 +62,5 @@ export default class Client {
   _handleData = (data) => {
     debug('data received; trying to addData...');
     this.application.addData(data);
-  }
-
-  /**
-   * Called by Server as it helps track connection state.
-   */
-  _handleDisconnect = () => {
-    Verbose && debug('disconnected', this.application?.entryPointPath);
-    this._connected = false;
-  }
-
-  _handleError = (err) => {
-    logError(err);
-  };
-
-  // ###########################################################################
-  // receive data
-  // ###########################################################################
-
-
-  on(eventName, cb) {
-    this.socket.on(eventName, (...args) => {
-      try {
-        cb(...args);
-      }
-      catch (err) {
-        logError(`socket event ${eventName} failed`, err);
-      }
-    });
   }
 }

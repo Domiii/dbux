@@ -3,7 +3,7 @@
  * 
  * @see https://stackoverflow.com/a/59907288/2228771
  */
-export function pathGetBasename(path: string) {
+export function pathGetBasename(path) {
   // make sure the basename is not empty, if string ends with separator
   let end = path.length - 1;
   while (path[end] === '/' || path[end] === '\\') {
