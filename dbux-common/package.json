@@ -10,14 +10,13 @@
     "postinstall": "npx link-module-alias"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Domi",
+  "license": "Apache-2.0",
   "devDependencies": {
   },
   "dependencies": {
   },
   "peerDependencies": {
-    "flow-bin": "^0.116.1",
     "lodash": "*",
     "colors": "^1.4.0"
   },

@@ -1,7 +1,5 @@
 {
-  "private": true,
-  "name": "dbux-runtime",
-  "version": "1.0.0",
+  "name": "@dbux/runtime",
   "description": "",
   "module": "dist/index.js",
   "main": "dist/index.js",

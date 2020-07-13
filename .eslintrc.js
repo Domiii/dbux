@@ -89,6 +89,9 @@ module.exports = {
 	},
 
 	settings: {
-		'import/resolver': 'webpack'
+		'import/resolver': {
+			node: {}, // placed above other resolver configs
+			webpack: {}
+		}
 	}
 };

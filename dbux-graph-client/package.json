@@ -1,6 +1,5 @@
 {
-  "name": "dbux-graph-client",
-  "version": "1.0.0",
+  "name": "@dbux/graph-client",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -14,13 +13,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Domi",
+  "license": "Apache-2.0",
   "dependencies": {
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
-    "dbux-common": "*",
-    "dbux-graph-common": "*",
+    "@dbux/common": "*",
+    "@dbux/graph-common": "*",
     "html2canvas": "^1.0.0-rc.5"
   },
   "devDependencies": {

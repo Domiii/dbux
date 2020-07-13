@@ -1,5 +1,4 @@
 {
-	"name": "dbux-root",
 	"private": true,
 	"workspaces": [
 		"dbux-*",
@@ -15,10 +14,8 @@
 		"@babel/plugin-proposal-optional-chaining": "^7.8.3",
 		"@babel/plugin-syntax-dynamic-import": "^7.8.3",
 		"@babel/plugin-syntax-export-default-from": "^7.8.3",
-		"@babel/plugin-syntax-flow": "^7.8.3",
 		"@babel/plugin-transform-runtime": "^7.8.3",
 		"@babel/preset-env": "^7.8.3",
-		"@babel/preset-flow": "^7.8.3",
 		"@babel/register": "^7.8.3",
 		"babel-eslint": "^10.0.3",
 		"babel-loader": "^8.0.6",
@@ -33,6 +30,7 @@
 		"jest": "^25.1.0",
 		"jest-expect-message": "^1.0.2",
 		"jest-extended": "^0.11.5",
+		"lerna": "^3.22.1",
 		"nodemon": "^2.0.2",
 		"npm-run-all": "^4.1.5",
 		"object.fromentries": "^2.0.2",

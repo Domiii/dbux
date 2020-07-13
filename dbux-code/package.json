@@ -1,6 +1,5 @@
 {
-	"name": "dbux-code",
-	"displayName": "dbux-code",
+	"name": "@dbux/code",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
@@ -496,7 +495,6 @@
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.41.0",
-		"flow-bin": "^0.116.1",
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
 		"typescript": "^3.6.4",
@@ -505,12 +503,12 @@
 	"dependencies": {
 		"axios": "^0.19.2",
 		"comment-json": "^3.0.2",
-		"dbux-cli": "*",
-		"dbux-common": "*",
-		"dbux-data": "*",
-		"dbux-graph-common": "*",
-		"dbux-graph-host": "*",
-		"dbux-projects": "*",
+		"@dbux/cli": "*",
+		"@dbux/common": "*",
+		"@dbux/data": "*",
+		"@dbux/graph-common": "*",
+		"@dbux/graph-host": "*",
+		"@dbux/projects": "*",
 		"moment": "^2.24.0",
 		"socket.io": "^2.3.0",
 		"strip-color": "^0.1.0"

@@ -1,6 +1,5 @@
 {
-  "name": "dbux-projects",
-  "version": "1.0.0",
+  "name": "@dbux/projects",
   "description": "",
   "main": "dist/bundle.js",
   "scripts": {
@@ -13,8 +12,8 @@
     "tree-kill": "^1.2.2"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Domi",
+  "license": "Apache-2.0",
   "devDependencies": {
     "shelljs": "^0.8.3"
   }

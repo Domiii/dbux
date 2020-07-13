@@ -1,13 +1,12 @@
 {
-  "name": "dbux-graph-common",
-  "version": "1.0.0",
+  "name": "@dbux/graph-common",
   "description": "",
   "scripts": {
     "postinstall": "npx link-module-alias"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Domi",
+  "license": "Apache-2.0",
   "dependencies": {
     "dbux-common": "*"
   },

@@ -1,9 +1,10 @@
 import path from 'path';
-import sh from 'shelljs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
+import sh from 'shelljs';
 import { newLogger } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import { getDbuxRoot } from 'dbux-common/src/dbuxPaths';
 import BugList from './BugList';
 import Process from '../util/Process';
 
@@ -339,12 +340,13 @@ export default class Project {
   }
 
   async installDbuxCli() {
-    // TODO: make this work in production as well
+    // TODO: deployment
 
     // await exec('pwd', this.logger);
 
     // const dbuxCli = path.resolve(projectPath, '../../dbux-cli');
-    const dbuxCli = '../../dbux-common ../../dbux-cli';
+    const dbuxRoot = getDbuxRoot('../../');
+    const dbuxCli = `${dbuxRoot}dbux-common ${dbuxRoot}dbux-cli`;
 
     // TODO: select `npm` or `yarn` based on packageManager setting (but requires change in command)
     await this.exec(`yarn add --dev ${dbuxCli}`, this.logger);

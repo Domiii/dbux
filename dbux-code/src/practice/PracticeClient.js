@@ -4,7 +4,7 @@ export default class PracticeClient {
   init() {
     // Set config defaults when creating the instance
     this._client = axios.create({
-      baseURL: 'localhost:4040' // TODO: fix for deployment
+      baseURL: 'localhost:4040'
     });
   }
 

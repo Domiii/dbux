@@ -57,23 +57,6 @@
          * remember bug progress
    * fix: allow for re-runninging "run.js" bug command from terminal
 * [dbux-projects]
-   * display test results
-   * integrate "bug hunt" timer
-      * pause, cancel, submit
-      * "submit" only available if bug runner succeeded
-   * when running new bug
-      * ask user to clear previous applications (and there are previous applications that are not of this bug)
-   * when selecting a bug, show a modal to introduce it, and offer buttons to choose
-      * start (w/ timer)
-      * practice (without timer; cannot use timer in the future)
-      * close
-   * after finishing
-      * store results on backend
-         * integrate github login
-      * show choices
-         * compare to others' results
-         * compare to actual solution
-         * (if available) watch video of how to debug this thing
    * allow setting application name via babel config
       * -> set application name for bugs correspondingly
    * allow user to change mocha/jest run timeout (in case of slow computers)
