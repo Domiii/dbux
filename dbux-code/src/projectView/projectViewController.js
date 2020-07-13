@@ -4,6 +4,7 @@ import { newLogger, setOutputStreams } from 'dbux-common/src/log/logger';
 import { initDbuxProjects } from 'dbux-projects/src';
 import exec from 'dbux-projects/src/util/exec';
 import BugRunnerStatus from 'dbux-projects/src/projectLib/BugRunnerStatus';
+import getOrCreateBugsInformation from 'dbux-projects/src/dataLib/BugsInformation';
 import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -71,6 +72,8 @@ class ProjectViewController {
     // ########################################
     const bugRunner = this.manager.getOrCreateRunner();
     bugRunner.on('statusChanged', this.onStatusChanged.bind(this));
+
+    this.bugsInformation = getOrCreateBugsInformation(context.workspaceState);
   }
 
   onStatusChanged(status) {
