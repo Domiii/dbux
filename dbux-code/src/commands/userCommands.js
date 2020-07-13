@@ -68,11 +68,11 @@ export function initUserCommands(extensionContext, projectViewController) {
 
   registerCommand(extensionContext, 'dbux.showDecorations', () => {
     setShowDeco(true);
-  }, true);
+  });
 
   registerCommand(extensionContext, 'dbux.hideDecorations', () => {
     setShowDeco(false);
-  }, true);
+  });
   
   // ###########################################################################
   // show/hide nav buttons

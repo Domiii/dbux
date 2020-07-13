@@ -4,15 +4,15 @@ import DataProvider from '../../DataProvider';
 
 function makeKey(dp: DataProvider, trace: Trace) {
   const { contextId } = trace;
-  const { parentTraceId = false } = dp.collections.executionContexts.getById(contextId);
+  const callerTraceId = dp.util.getCallerTraceOfContext(contextId)?.traceId;
 
-  return parentTraceId;
+  return callerTraceId || false;
 }
 
 
-export default class TracesByParentTraceIndex extends CollectionIndex<Trace> {
+export default class TracesByCalleeTraceIndex extends CollectionIndex<Trace> {
   constructor() {
-    super('traces', 'byParentTrace');
+    super('traces', 'byCalleeTrace');
   }
 
   makeKey = makeKey

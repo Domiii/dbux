@@ -241,8 +241,8 @@
 				"command": "dbuxTraceDetailsView.selectTraceAtCursor",
 				"title": "Select Trace At Cursor",
 				"icon": {
-					"light": "resources/light/crosshair.svg",
-					"dark": "resources/dark/crosshair.svg"
+					"light": "resources/light/crosshair_red.svg",
+					"dark": "resources/dark/crosshair_red.svg"
 				}
 			},
 			{
@@ -279,7 +279,7 @@
 			},
 			{
 				"command": "dbuxProjectView.node.stopProject",
-				"title": "Stop running",
+				"title": "Stop project",
 				"icon": {
 					"light": "resources/light/pause.svg",
 					"dark": "resources/dark/pause.svg"
@@ -302,8 +302,16 @@
 				}
 			},
 			{
+				"command": "dbuxProjectView.node.busyIcon",
+				"title": "dbux-project running...",
+				"icon": {
+					"light": "resources/light/hourglass.svg",
+					"dark": "resources/dark/hourglass.svg"
+				}
+			},
+			{
 				"command": "dbuxProjectView.node.stopBug",
-				"title": "Stop running",
+				"title": "Stop bug",
 				"icon": {
 					"light": "resources/light/pause.svg",
 					"dark": "resources/dark/pause.svg"
@@ -346,7 +354,7 @@
 				},
 				{
 					"command": "dbuxTraceDetailsView.switchGroupingMode",
-					"when": "viewItem == dbuxTraceDetailsView.staticTraceTDNodeRoot",
+					"when": "viewItem == dbuxTraceDetailsView.node.staticTraceTDNodeRoot",
 					"group": "inline"
 				},
 				{
@@ -401,32 +409,37 @@
 				},
 				{
 					"command": "dbuxProjectView.node.addProjectToWorkspace",
-					"when": "view == dbuxProjectView && viewItem =~ /dbuxProjectView\\.projectNode/",
+					"when": "viewItem =~ /dbuxProjectView\\.projectNode/",
 					"group": "inline@1"
 				},
 				{
 					"command": "dbuxProjectView.node.deleteProject",
-					"when": "view == dbuxProjectView && viewItem =~ /dbuxProjectView\\.projectNode/",
+					"when": "viewItem =~ /dbuxProjectView\\.projectNode/",
 					"group": "inline@2"
 				},
 				{
 					"command": "dbuxProjectView.node.stopProject",
-					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.projectNode.activated",
+					"when": "viewItem == dbuxProjectView.projectNode.RunningInBackground",
 					"group": "inline@0"
 				},
 				{
 					"command": "dbuxProjectView.node.activateBugWithDebugger",
-					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.bugNode",
+					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)/ && !dbuxProjectView.context.isBusy",
 					"group": "inline@1"
 				},
 				{
 					"command": "dbuxProjectView.node.activateBug",
-					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.bugNode",
+					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)/ && !dbuxProjectView.context.isBusy",
 					"group": "inline@2"
 				},
 				{
+					"command": "dbuxProjectView.node.busyIcon",
+					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)/ && dbuxProjectView.context.isBusy",
+					"group": "inline"
+				},
+				{
 					"command": "dbuxProjectView.node.stopBug",
-					"when": "view == dbuxProjectView && viewItem == dbuxProjectView.bugNode.activated",
+					"when": "viewItem == dbuxProjectView.bugNode.RunningInBackground",
 					"group": "inline"
 				}
 			],
@@ -490,6 +503,7 @@
 		"vscode-test": "^1.2.2"
 	},
 	"dependencies": {
+		"axios": "^0.19.2",
 		"comment-json": "^3.0.2",
 		"dbux-cli": "*",
 		"dbux-common": "*",

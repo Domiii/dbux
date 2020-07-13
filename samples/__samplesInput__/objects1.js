@@ -6,6 +6,9 @@ var obj2 = {};
 var arr1 = ['a', 'b'];
 var arr2 = [];
 
+obj2.a = 3;
+obj2['b'] = 4;
+
 function f(x) {
   console.log(x);
 }

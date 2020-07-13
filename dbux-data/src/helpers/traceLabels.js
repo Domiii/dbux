@@ -18,9 +18,9 @@ function makeCalleeTraceLabel(trace, application) {
   const dp = application.dataProvider;
   const { traceId } = trace;
   if (dp.util.isTraceArgument(traceId)) {
-    const calleeTrace = dp.util.getCalleeStaticTrace(traceId);
-    if (calleeTrace) {
-      return `   (arg of ${calleeTrace.displayName})`;
+    const callerTrace = dp.util.getCalleeStaticTrace(traceId);
+    if (callerTrace) {
+      return `   (arg of ${callerTrace.displayName})`;
     }
   }
   return '';
@@ -146,10 +146,9 @@ export function makeRootTraceLabel(trace) {
 export function makeTraceValueLabel(trace) {
   const { applicationId, traceId } = trace;
   const dp = allApplications.getById(applicationId).dataProvider;
-  const callId = dp.util.getTraceCallId(traceId);
-  if (callId) {
+  const callTrace = dp.util.getCallerTraceOfTrace(traceId);
+  if (callTrace?.traceId) {
     // trace is call related
-    const callTrace = dp.collections.traces.getById(callId);
     return makeCallValueLabel(callTrace);
   }
   else if (dp.util.doesTraceHaveValue(traceId)) {

@@ -17,7 +17,7 @@ export default class StaticContextTDNode extends BaseTreeViewNode {
     const { staticContextId } = dp.collections.executionContexts.getById(contextId);
     const contexts = dp.indexes.executionContexts.byStaticContext.get(staticContextId) || EmptyArray;
     const calleeTraces = contexts
-      .map((context) => dp.util.getCalleeTraceOfContext(context.contextId))
+      .map((context) => dp.util.getCallerTraceOfContext(context.contextId))
       .filter(t => !!t);
 
     // StaticProgramContext do not have parentTrace and will be filtered

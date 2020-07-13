@@ -1,6 +1,7 @@
 import isPlainObject from 'lodash/isPlainObject';
 import { newLogger } from 'dbux-common/src/log/logger';
 import EmptyObject from 'dbux-common/src/util/EmptyObject';
+import isFunction from 'lodash/isFunction';
 import RemoteCommandProxy from './RemoteCommandProxy';
 
 class ComponentEndpoint {
@@ -16,6 +17,7 @@ class ComponentEndpoint {
   state;
 
   _isDisposed = false;
+  _disposables = [];
 
   constructor() {
     // TODO: `this.constructor.name` won't work on Host when enabling minifcation/obfuscation in webpack/bundler
@@ -121,6 +123,27 @@ class ComponentEndpoint {
   //  */
   // childrenChanged() {
   // }
+
+  // ###########################################################################
+  // dispose
+  // ###########################################################################
+
+  addDisposable(disp) {
+    this._disposables.push(disp);
+  }
+
+  dispose(silent = false) {
+    this._isDisposed = true;
+    
+    this._disposables.forEach((disp) => {
+      if (isFunction(disp)) {
+        disp();
+      }
+      else {
+        disp.dispose();
+      }
+    });
+  }
 
   // ###########################################################################
   // internal stuff

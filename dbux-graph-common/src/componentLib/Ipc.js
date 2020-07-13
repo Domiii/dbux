@@ -5,6 +5,7 @@ import MessageType from './MessageType';
 import ComponentEndpoint from './ComponentEndpoint';
 
 const Verbose = false;
+// const Verbose = true;
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/ipc');
 
@@ -51,15 +52,6 @@ export default class Ipc {
   // ###########################################################################
   // Internal: sending + handling messages
   // ###########################################################################
-
-  // _postMessage = makeDebounce((msg) => {
-  //   this.ipcAdapter.postMessage(msg);
-  // }, 0);
-
-  _postMessage = (msg) => {
-    Verbose && debug('postMessage', msg);
-    this.ipcAdapter.postMessage(msg);
-  }
 
   async _sendInit(msg) {
     msg.messageType = MessageType.InitComponent;
@@ -204,8 +196,17 @@ export default class Ipc {
   }
 
   // ###########################################################################
-  // handleMessage
+  // IPCAdapter interface
   // ###########################################################################
+
+  // _postMessage = makeDebounce((msg) => {
+  //   this.ipcAdapter.postMessage(msg);
+  // }, 0);
+
+  _postMessage = (msg) => {
+    Verbose && debug('postMessage', JSON.stringify(msg));
+    this.ipcAdapter.postMessage(msg);
+  }
 
   _handleMessage = async msg => {
     if (!msg) {
@@ -222,7 +223,7 @@ export default class Ipc {
       return;
     }
 
-    Verbose && debug('_handleMessage', msg);
+    Verbose && debug('_handleMessage', JSON.stringify(msg));
 
     const handler = this._messageHandlers[messageType];
     if (!handler) {

@@ -19,7 +19,13 @@ class AppComponent extends HostComponentEndpoint {
       const result = await this.componentManager.externals.prompt(...args);
       return result;
     }
-  }
+  };
+
+  public = {
+    async restart() {
+      return this.componentManager.restart();
+    }
+  };
 }
 
 // TODO: create externals proxy?
@@ -45,8 +51,12 @@ class HostComponentManager extends BaseComponentManager {
       debug('silenced message after Host shutdown:', JSON.stringify(msg));
     };
 
-    // externals.restart can also re-load client code (something we cannot reliably do internally)
+    // externals.restart will result in a call to shutdown, and also re-load client code (something we cannot reliably do internally)
     await this.externals.restart();
+  }
+
+  silentShutdown() {
+    this.app?.dispose(true);
   }
 
   // ###########################################################################
@@ -73,7 +83,7 @@ class HostComponentManager extends BaseComponentManager {
     if (!/^function\s+shared\s*\(\s*\)\s*\{/.test(src)) {
       throw new Error(component.debugTag + '.shared must be a function, declared like so: `function shared() { ... }` (necessary for simplifying serialization)');
     }
-    
+
     return src;
   }
 
@@ -90,7 +100,7 @@ class HostComponentManager extends BaseComponentManager {
 
     // role
     const role = component._internalRoleName;
-    
+
     // shared
     const shared = this._wrapShared(component);
 

@@ -1,7 +1,7 @@
-import path from 'path';
 import sh from 'shelljs';
 import Project from 'dbux-projects/src/projectLib/Project';
 import { buildMochaRunBugCommand as buildMochaCommand } from 'dbux-projects/src/util/mochaUtil';
+import isArray from 'lodash/isArray';
 
 
 export default class ExpressProject extends Project {
@@ -21,20 +21,56 @@ export default class ExpressProject extends Project {
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
     const bugs = [
       {
+        // https://github.com/BugsJS/express/releases/tag/Bug-1-test
+        // https://github.com/BugsJS/express/commit/8bd36202bef586889d20bd5fa0732d3495da54eb
         id: 1,
         testRe: 'should only include each method once',
         testFilePaths: ['test/app.options.js']
       },
       {
+        // https://github.com/BugsJS/express/releases/tag/Bug-2-test
+        // https://github.com/BugsJS/express/commit/3260309b422cd964ce834e3925823c80b3399f3c
         id: 2,
-        testRe: 'should respect X-Forwarded-Proto',
-        testFilePaths: ['test/req.protocol.js']
+        testRe: [
+          'req .protocol when "trust proxy" is enabled when trusting hop count should respect X-Forwarded-Proto',
+          'when "trust proxy" trusting hop count should respect X-Forwarded-Proto'
+        ],
+        testFilePaths: ['test/req.protocol.js', 'test/req.secure.js']
+      },
+      // {
+      //   // NOTE: this test passes by default
+      //   // https://github.com/BugsJS/express/commit/4a59ea5dd0a7cb5b8cce80be39a5579876993cf1
+      //   id: 3,
+      //   testRe: 'res .* should work when only .default is provided',
+      //   testFilePaths: ['test/res.format.js']
+      // },
+      {
+        // https://github.com/BugsJS/express/commit/337662df8c02d379e5a14b4f0155ecb29b4aa81e
+        id: 4,
+        testRe: [
+          'should work with IPv[46] address',
+          'should return an array with the whole IPv[46]',
+        ],
+        testFilePaths: ['test/req.subdomains.js']
       },
       {
         // https://github.com/BugsJS/express/commit/796657f6f67bd8f8dfae8d25a2d353c8d657da50
         id: 5,
-        testRe: 'should support windows',
+        testRe: 'utils\\.isAbsolute\\(\\) should support windows',
         testFilePaths: ['test/utils.js']
+      },
+      // {
+      //   // NOTE: passing by default
+      //   // https://github.com/BugsJS/express/commit/f07f197a3cc7805bce37b3a4908e844b8d7f7455
+      //   id: 6,
+      //   testRe: 'app.head\\(\\) should override prior',
+      //   testFilePaths: ['test/app.head.js'],
+      //   require: []
+      // },
+      {
+        id: 7,
+        testRe: '.sendFile.* (should invoke the callback without error when HEAD|should invoke the callback without error when 304)',
+        testFilePaths: ['test/res.sendFile.js']
       },
       {
         id: 8,
@@ -47,16 +83,65 @@ export default class ExpressProject extends Project {
         testRe: 'should return the mounted path',
         testFilePaths: ['test/app.js']
       },
+      // {
+      //   // https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
+      //   id: 10,
+      //   testRe: 'should be called for any URL when "*"',
+      //   testFilePaths: ['test/Router.js']
+      // },
       {
-        // https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
-        id: 10,
-        testRe: 'should be called for any URL when "*"',
+        id: 11,
+        testRe: 'should send number as json',
+        testFilePaths: ['test/res.send.js']
+      },
+      {
+        id: 12,
+        testRe: [
+          'should keep correct parameter indexes',
+          'should work following a partial capture group'
+        ],
+        testFilePaths: ['test/app.router.js']
+      },
+      {
+        id: 13,
+        testRe: 'should support alterizng req.params across routes',
+        testFilePaths: ['test/app.param.js']
+      },
+      {
+        id: 14,
+        testRe: 'should handle blank URL',
         testFilePaths: ['test/Router.js']
       },
-      // {
-      //   id: 19,
-      //   testRe: '',
-      // },
+      {
+        // NOTE: process does not exit
+        id: 15,
+        testRe: [
+          // 'should set the correct charset for the Content\\-Type',
+          'should default the Content-Type'
+        ],
+        testFilePaths: ['test/res.format.js'],
+        require: []
+      },
+      {
+        id: 16,
+        testRe: [
+          'should include the redirect type'
+        ],
+        testFilePaths: ['test/res.redirect.js']
+      },
+      {
+        id: 18,
+        testRe: [
+          'should not call when values differ on error',
+          'should call when values differ when using "next"'
+        ],
+        testFilePaths: ['test/app.param.js']
+      },
+      {
+        id: 19,
+        testRe: ['should work in array of paths'],
+        testFilePaths: ['test/app.router.js']
+      },
       {
         id: 20,
         testRe: '',
@@ -106,13 +191,20 @@ export default class ExpressProject extends Project {
           return null;
         }
 
+        let { testRe } = bug;
+        if (isArray(testRe)) {
+          testRe = testRe.map(re => `(?:${re})`).join('|');
+        }
+
+        testRe = testRe.replace(/"/g, '\\"');
+
         return {
           // id: i + 1,
           name: `bug #${bug.id}`,
-          description: bug.testRe,
+          description: testRe,
           runArgs: [
             '--grep',
-            `"${bug.testRe}"`,
+            `"${testRe}"`,
             '--',
             ...bug.testFilePaths
           ],

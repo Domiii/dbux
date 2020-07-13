@@ -9,8 +9,30 @@ import TraceNode from './TraceNode';
 import GroupNode from './GroupNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
+// ###########################################################################
+// grouping modes
+// ###########################################################################
+
+let GroupingMode = {
+  Ungrouped: 1,
+  ByRunId: 2,
+  ByContextId: 3,
+  ByParentContextTraceId: 4,
+  ByCallback: 5
+};
+GroupingMode = new Enum(GroupingMode);
+
+const GroupingModeLabel = new Map();
+GroupingModeLabel.set(GroupingMode.ByRunId, 'by Run');
+GroupingModeLabel.set(GroupingMode.ByContextId, 'by Context');
+GroupingModeLabel.set(GroupingMode.ByParentContextTraceId, 'by Parent');
+GroupingModeLabel.set(GroupingMode.ByCallback, 'by Callback');
+
+// Default mode
+let groupingMode = GroupingMode.Ungrouped;
+
 const groupByMode = {
-  ByRunId(app, traces) {
+  [GroupingMode.ByRunId](app, traces) {
     const tracesByRunId = [];
     for (const trace of traces) {
       const { runId } = trace;
@@ -26,7 +48,7 @@ const groupByMode = {
       });
     return groups.filter(group => !!group);
   },
-  ByContextId(app, traces) {
+  [GroupingMode.ByContextId](app, traces) {
     const tracesByContextId = [];
     for (const trace of traces) {
       const { contextId } = trace;
@@ -42,7 +64,7 @@ const groupByMode = {
       });
     return groups.filter(group => !!group);
   },
-  ByParentContextTraceId(app, traces) {
+  [GroupingMode.ByParentContextTraceId](app, traces) {
     const tracesByParent = [];
     const dp = app.dataProvider;
     for (const trace of traces) {
@@ -53,14 +75,14 @@ const groupByMode = {
     }
     const groups = tracesByParent
       .map((children, parentTraceId) => {
-        const trace = app.dataProvider.collections.traces.getById(parentTraceId);
+        const trace = dp.collections.traces.getById(parentTraceId);
         const label = trace ? makeTraceLabel(trace) : '(No Parent)';
         const description = `Parent: ${parentTraceId}`;
         return { label, children, description };
       });
     return groups.filter(group => !!group);
   },
-  ByCallback(app, traces) {
+  [GroupingMode.ByCallback](app, traces) {
     const dp = app.dataProvider;
     const tracesByCall = [];
     for (const trace of traces) {
@@ -83,38 +105,23 @@ const groupByMode = {
   }
 };
 
-const modeType = new Enum({
-  ByRunId: 1,
-  ByContextId: 2,
-  ByParentContextTraceId: 3,
-  ByCallback: 4
-});
-
-const modeTypeToLabel = new Map();
-modeTypeToLabel.set(modeType.ByRunId, 'by Run');
-modeTypeToLabel.set(modeType.ByContextId, 'by Context');
-modeTypeToLabel.set(modeType.ByParentContextTraceId, 'by Parent');
-modeTypeToLabel.set(modeType.ByCallback, 'by Callback');
-
-let groupingMode = 1;
-
 function isTraceCallbackRelated(trace) {
-  const dp = allApplications.getById(trace.applicationId).dataProvider;
-  const type = dp.util.getTraceType(trace.traceId);
+  const { applicationId, traceId } = trace;
+  const dp = allApplications.getById(applicationId).dataProvider;
+  const type = dp.util.getTraceType(traceId);
   return isCallbackRelatedTrace(type);
 }
 
-export { modeType, groupingMode };
+export { GroupingMode, groupingMode };
 
 export function switchMode(mode) {
-  if (mode) groupingMode = mode;
+  if (mode) {
+    groupingMode = mode;
+  }
   else {
-    groupingMode++;
-    if (groupingMode === 4 && !isTraceCallbackRelated(traceSelection.selected)) {
-      groupingMode = 1;
-    }
-    else if (groupingMode === 5) {
-      groupingMode = 1;
+    groupingMode = GroupingMode.nextValue(groupingMode);
+    if (groupingMode === GroupingMode.ByCallback && !isTraceCallbackRelated(traceSelection.selected)) {
+      groupingMode = GroupingMode.nextValue(groupingMode);
     }
   }
   return groupingMode;
@@ -127,15 +134,23 @@ export default class StaticTraceTDNode extends BaseTreeViewNode {
 
   static makeProperties(trace, parent, detail) {
     // build children here since label depends on children
-    const { staticTraceId } = trace;
-    const application = allApplications.getById(trace.applicationId);
-    const { dataProvider } = application;
-    const traces = dataProvider.indexes.traces.byStaticTrace.get(staticTraceId);
-    if (groupingMode === modeType.ByCallback && !isTraceCallbackRelated(trace)) switchMode();
-    const mode = modeType.getName(groupingMode);
-    let groupedTraces = groupByMode[mode](application, traces);
-    let modeLabel = modeTypeToLabel.get(groupingMode);
-    const label = `Trace Executed: ${traces.length}x (${groupedTraces.length} groups ${modeLabel})`;
+    const { applicationId, staticTraceId } = trace;
+    const app = allApplications.getById(applicationId);
+    const dp = app.dataProvider;
+    const traces = dp.indexes.traces.byStaticTrace.get(staticTraceId);
+    if (groupingMode === GroupingMode.ByCallback && !isTraceCallbackRelated(trace)) switchMode();
+
+
+    let groupedTraces, label;
+    if (groupingMode === GroupingMode.Ungrouped) {
+      groupedTraces = traces;
+      label = `Trace Executed: ${traces.length}x (ungrouped)`;
+    }
+    else {
+      groupedTraces = groupByMode[groupingMode](app, traces);
+      let modeLabel = GroupingModeLabel.get(groupingMode);
+      label = `Trace Executed: ${traces.length}x (${groupedTraces.length} groups ${modeLabel})`;
+    }
 
     return {
       groupedTraces,
@@ -152,30 +167,42 @@ export default class StaticTraceTDNode extends BaseTreeViewNode {
   }
 
   init() {
-    this.contextValue = 'dbuxTraceDetailsView.staticTraceTDNodeRoot';
+    this.contextValue = 'dbuxTraceDetailsView.node.staticTraceTDNodeRoot';
   }
 
   buildChildren() {
-    // use built children in makeProperties
+    // use children built in `makeProperties`
     const { treeNodeProvider, groupedTraces } = this;
+    let nodes;
 
-    const nodes = groupedTraces.map((groupData) => {
-      const { label, children, description } = groupData;
-      const node = new GroupNode(treeNodeProvider, label, null, this);
-      if (children.length) {
-        node.children = children.map((trace) => {
-          const childLabel = makeTraceValueLabel(trace);
-          const childNode = new TraceNode(treeNodeProvider, childLabel, trace, node);
-          childNode.collapsibleState = TreeItemCollapsibleState.Expanded;
-          return childNode;
-        });
-      }
-      else {
-        node.children = null;
-      }
-      node.description = description;
-      return node;
-    });
+    if (groupingMode === GroupingMode.Ungrouped) {
+      nodes = groupedTraces.map((trace) => {
+        const childLabel = makeTraceValueLabel(trace);
+        const childNode = new TraceNode(treeNodeProvider, childLabel, trace, this);
+        childNode.collapsibleState = TreeItemCollapsibleState.None;
+        return childNode;
+      });
+    }
+    else {
+      nodes = groupedTraces.map((groupData) => {
+        const { label, children, description } = groupData;
+        const node = new GroupNode(treeNodeProvider, label, null, this);
+        if (children.length) {
+          node.children = children.map((trace) => {
+            const childLabel = makeTraceValueLabel(trace);
+            const childNode = new TraceNode(treeNodeProvider, childLabel, trace, node);
+            childNode.collapsibleState = TreeItemCollapsibleState.Expanded;
+            return childNode;
+          });
+        }
+        else {
+          node.children = null;
+        }
+        node.description = description;
+        return node;
+      });
+    }
+
 
     return nodes;
   }

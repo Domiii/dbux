@@ -102,16 +102,16 @@ html,body{
   width: 100vw;
   /* height: 100vh; */
   height: calc(100vh - 30px);
-  overflow: scroll;
+  overflow: auto;
 }
 
 .graph-cont > .body {
   width: fit-content;
   height: fit-content;
-  overflow: auto;
   transform-origin: 0 0;
   /* this way, the viewport will (usually) not move when working on nodes near the bottom of the graph */
   margin-bottom: calc(100vh - 20px);
+  /* overflow: auto; */
 }
 
 .context-node {
@@ -296,6 +296,21 @@ html,body{
   flex-direction: column;
 }
 
+.align-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vertical-align-center {
+  display: flex;
+  align-items: center;
+}
+
+.horizontal-align-center {
+  display: flex;
+  justify-content: center;
+}
 
 .full-width {
   width: 100%;

@@ -1,5 +1,5 @@
 import isFunction from 'lodash/isFunction';
-import { collectElementsByDataAttrMulti } from '../util/domUtil';
+import { collectElementsByDataAttrMulti, repaintEl } from '../util/domUtil';
 
 /**
  * Helps DOM elements "components" more easily manage it's DOM.
@@ -87,10 +87,7 @@ export default class DOMWrapper {
   repaint = () => {
     // var el = document.querySelector('#root');
     // var el = domElement;
-    const { el } = this;
-    const p = el.parentNode;
-    p.removeChild(el);
-    p.appendChild(el);
+    repaintEl(this.el);
   }
 
   remove() {

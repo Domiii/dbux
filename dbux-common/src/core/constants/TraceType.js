@@ -53,7 +53,7 @@ let TraceType = {
  */
 TraceType = new Enum(Object.keys(TraceType));
 
-const pushTypes = new Array(TraceType.getCount()).map(() => false);
+const pushTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 pushTypes[TraceType.PushImmediate] = true;
 pushTypes[TraceType.PushCallback] = true;
 pushTypes[TraceType.Resume] = true;
@@ -63,7 +63,7 @@ export function isTracePush(traceType) {
 }
 
 
-const popTypes = new Array(TraceType.getCount()).map(() => false);
+const popTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 popTypes[TraceType.PopImmediate] = true;
 popTypes[TraceType.PopCallback] = true;
 
@@ -72,7 +72,7 @@ export function isTracePop(traceType) {
 }
 
 
-const returnTraceTypes = new Array(TraceType.getCount()).map(() => false);
+const returnTraceTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 returnTraceTypes[TraceType.ReturnArgument] = true;
 returnTraceTypes[TraceType.ReturnNoArgument] = true;
 
@@ -89,7 +89,7 @@ export function isTraceFunctionExit(traceType) {
 }
 
 
-const dynamicTypeTypes = new Array(TraceType.getCount()).map(() => false);
+const dynamicTypeTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 // shared w/ PushCallback + PopCallback
 dynamicTypeTypes[TraceType.CallbackArgument] = true;  
 // might be shared w/ CallbackArgument, PushCallback + PopCallback
@@ -100,7 +100,7 @@ export function hasDynamicTypes(traceType) {
 }
 
 
-const expressionTypes = new Array(TraceType.getCount()).map(() => false);
+const expressionTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 expressionTypes[TraceType.BeforeCallExpression] = true;
 expressionTypes[TraceType.ExpressionResult] = true;
 expressionTypes[TraceType.ExpressionValue] = true;
@@ -122,7 +122,7 @@ export function hasTraceValue(traceType) {
 }
 
 
-const callbackTypes = new Array(TraceType.getCount()).map(() => false);
+const callbackTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 callbackTypes[TraceType.CallbackArgument] = true;
 callbackTypes[TraceType.PushCallback] = true;
 callbackTypes[TraceType.PopCallback] = true;
@@ -132,7 +132,7 @@ export function isCallbackRelatedTrace(traceType) {
 }
 
 
-const dataOnlyTypes = new Array(TraceType.getCount()).map(() => false);
+const dataOnlyTypes = new Array(TraceType.getValueMaxIndex()).map(() => false);
 dataOnlyTypes[TraceType.CallArgument] = true;
 dataOnlyTypes[TraceType.ExpressionValue] = true;
 /**

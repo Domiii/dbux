@@ -70,12 +70,12 @@ export default {
   /** @param {DataProvider} dp */
   searchContexts(dp, searchTerm) {
     searchTerm = searchTerm.toLowerCase();
-    
+
     return dp.collections.executionContexts.getAll().filter(context => {
       if (!context) {
         return false;
       }
-      
+
       const { staticContextId } = context;
       const staticContext = dp.collections.staticContexts.getById(staticContextId);
       return staticContext.displayName.toLowerCase().includes(searchTerm);
@@ -137,7 +137,12 @@ export default {
     return traces[traces.length - 1];
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * Returns the parentTrace of a context, not necessarily a BCE
+   * Use getCallerTraceOfContext if you want the BCE of a context
+   * @param {DataProvider} dp 
+   * @param {number} contextId 
+   */
   getParentTraceOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
     const parentTrace = dp.collections.traces.getById(context.parentTraceId);
@@ -341,6 +346,119 @@ export default {
     return null;
   },
 
+  // ###########################################################################
+  // call related trace
+  // ###########################################################################
+
+  /**
+   * Get callerTrace(BCE) of a call related trace
+   * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the callId of the former
+   * @param {DataProvider} dp
+   * @param {number} traceId
+  */
+  getCallerTraceOfTrace(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    // TODO: deal with callback traces after context.schedulerTraceId is back
+    // const context = dp.collections.executionContexts.getById(trace.contextId);
+    // if (context.schedulerTraceId) {
+    //   // trace is push/pop callback
+    //   return dp.util.getCallerTraceOfTrace(context.schedulerTraceId);
+    // }
+    if (isCallResult(trace)) {
+      // trace is call expression result
+      return dp.collections.traces.getById(trace.resultCallId);
+    }
+    else if (hasCallId(trace)) {
+      // trace is call/callback argument or BCE
+      return dp.collections.traces.getById(trace.callId);
+    }
+    else {
+      // not a call related trace
+      return null;
+    }
+  },
+
+  /**
+   * Returns the BCE of a context
+   * @param {DataProvider} dp 
+   * @param {number} contextId
+  */
+  getCallerTraceOfContext(dp, contextId) {
+    const parentTrace = dp.util.getParentTraceOfContext(contextId);
+    if (parentTrace) {
+      const callerTrace = dp.util.getCallerTraceOfTrace(parentTrace.traceId);
+      if (!callerTrace) {
+        // BUG: some parentTrace doesn't have `callId` neither `resultCallId`
+        // try: express bug#1, context#285 trace#5205
+        logError('can\'t find callerTraceOfContext by parentTrace');
+        return null;
+      }
+      return callerTrace;
+    }
+    return null;
+  },
+
+  /** @param {DataProvider} dp */
+  isTraceArgument(dp, traceId) {
+    // a trace is an argument if it has callId not pointing to itself
+    const trace = dp.collections.traces.getById(traceId);
+    if (trace.callId) {
+      if (trace.callId !== trace.traceId) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  /** @param {DataProvider} dp */
+  getCalleeStaticTrace(dp, traceId) {
+    const argTrace = dp.collections.traces.getById(traceId);
+    const { staticTraceId } = argTrace;
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    const { callId: callStaticId } = staticTrace;
+
+    return callStaticId && dp.collections.staticTraces.getById(callStaticId) || null;
+  },
+
+  /**
+   * Return the result trace in the call if exist
+   * @param {DataProvider} dp 
+  */
+  getCallResultTrace(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    const traceType = dp.util.getTraceType(traceId);
+    if (trace.schedulerTraceId) {
+      // trace is push/pop callback
+      return dp.util.getCallResultTrace(trace.schedulerTraceId);
+    }
+    else if (isBeforeCallExpression(traceType)) {
+      if (trace.resultId) {
+        // trace is a BeforeCallExpression and has result
+        return dp.collections.traces.getById(trace.resultId);
+      }
+      return null;
+    }
+    // else if (isCallArgumentTrace(trace)) {
+    else if (hasCallId(trace)) {
+      // call argument
+      return dp.util.getCallResultTrace(trace.callId);
+    }
+    else if (isCallResult(trace)) {
+      // trace itself is a resultTrace
+      return trace;
+    }
+
+    // Not a call related trace or the call does not have a result
+    return null;
+  },
+
+  /**
+   * @param {DataProvider} dp 
+  */
+  getStaticCallId(dp, staticTraceId) {
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    return staticTrace.resultCallId || staticTrace.callId;
+  },
 
   // ###########################################################################
   // unsorted
@@ -453,106 +571,6 @@ export default {
     return dp.collections.staticContexts.getById(staticContextId);
   },
 
-  /** @param {DataProvider} dp */
-  getCalleeTraceOfArg(dp, traceId) {
-    const argTrace = dp.collections.traces.getById(traceId);
-    const { callId } = argTrace;
-
-    return callId && dp.collections.traces.getById(callId) || null;
-  },
-
-  /**
-   * Get callId of a call related trace
-   * @param {DataProvider} dp 
-  */
-  getTraceCallId(dp, traceId) {
-    const trace = dp.collections.traces.getById(traceId);
-    const context = dp.collections.executionContexts.getById(trace.contextId);
-    if (context.schedulerTraceId) {
-      // trace is push/pop callback
-      return dp.util.getTraceCallId(context.schedulerTraceId);
-    }
-    else if (hasCallId(trace)) {
-      // trace is call/callback argument or BeforeCallExpression
-      return trace.callId;
-    }
-    else if (isCallResult(trace)) {
-      // trace is call expression result
-      return trace.resultCallId;
-    }
-    else {
-      // not a call related trace
-      return null;
-    }
-  },
-
-  /**
-   * Return the BCE of a context, or the parentTrace if BCE does not exist
-   * @param {DataProvider} dp 
-  */
-  getCalleeTraceOfContext(dp, contextId) {
-    const parentTrace = dp.util.getParentTraceOfContext(contextId);
-    if (parentTrace) {
-      const calleeId = dp.util.getTraceCallId(parentTrace.traceId);
-      return dp.collections.traces.getById(calleeId) || parentTrace;
-    }
-    return null;
-  },
-
-  /** @param {DataProvider} dp */
-  isTraceArgument(dp, traceId) {
-    // a trace is an argument if it has callId not pointing to itself
-    const trace = dp.collections.traces.getById(traceId);
-    if (trace.callId) {
-      if (trace.callId !== trace.traceId) {
-        return true;
-      }
-    }
-    return false;
-  },
-
-  /** @param {DataProvider} dp */
-  getCalleeStaticTrace(dp, traceId) {
-    const argTrace = dp.collections.traces.getById(traceId);
-    const { staticTraceId } = argTrace;
-    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    const { callId: callStaticId } = staticTrace;
-
-    return callStaticId && dp.collections.staticTraces.getById(callStaticId) || null;
-  },
-
-  /**
-   * Return the result trace in the call if exist
-   * @param {DataProvider} dp 
-  */
-  getCallResultTrace(dp, traceId) {
-    const trace = dp.collections.traces.getById(traceId);
-    const traceType = dp.util.getTraceType(traceId);
-    if (trace.schedulerTraceId) {
-      // trace is push/pop callback
-      return dp.util.getCallResultTrace(trace.schedulerTraceId);
-    }
-    else if (isBeforeCallExpression(traceType)) {
-      if (trace.resultId) {
-        // trace is a BeforeCallExpression and has result
-        return dp.collections.traces.getById(trace.resultId);
-      }
-      return null;
-    }
-    // else if (isCallArgumentTrace(trace)) {
-    else if (hasCallId(trace)) {
-      // call argument
-      return dp.util.getCallResultTrace(trace.callId);
-    }
-    else if (isCallResult(trace)) {
-      // trace itself is a resultTrace
-      return trace;
-    }
-
-    // Not a call related trace or the call does not have a result
-    return null;
-  },
-
   // ###########################################################################
   // traces of interruptable functions
   // ###########################################################################
@@ -637,19 +655,6 @@ export default {
       }
     }
     return groups;
-  },
-
-  // ###########################################################################
-  // Call expressions
-  // ###########################################################################
-
-  /**
-   * 
-   * @param {DataProvider} dp 
-  */
-  getStaticCallId(dp, staticTraceId) {
-    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    return staticTrace.resultCallId || staticTrace.callId;
   },
 
   // ###########################################################################

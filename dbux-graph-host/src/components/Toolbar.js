@@ -33,10 +33,6 @@ class Toolbar extends HostComponentEndpoint {
   }
 
   public = {
-    async restart() {
-      await this.componentManager.restart();
-    },
-
     toggleSyncMode() {
       const mode = this.focusController.toggleSyncMode();
     },

@@ -62,6 +62,13 @@ export default class Enum {
     return this.names.length;
   }
 
+  /**
+   * plus one to make creating array of length `maxValueIndex + 1` convenient
+   */
+  getValueMaxIndex() {
+    return Math.max(...this.values) + 1;
+  }
+
   getName = (value) => {
     return this.namesByValues[value];
   }
