@@ -49,9 +49,9 @@ class ProjectsManager {
     return this.projects;
   }
 
-  getOrCreateRunner() {
+  getOrCreateRunner(storage) {
     if (!this.runner) {
-      const runner = this.runner = new BugRunner(this);
+      const runner = this.runner = new BugRunner(this, storage);
       runner.start();
     }
     return this.runner;

@@ -4,13 +4,14 @@ import { newLogger, setOutputStreams } from 'dbux-common/src/log/logger';
 import { initDbuxProjects } from 'dbux-projects/src';
 import exec from 'dbux-projects/src/util/exec';
 import BugRunnerStatus from 'dbux-projects/src/projectLib/BugRunnerStatus';
-import getOrCreateBugsInformation from 'dbux-projects/src/dataLib/BugsInformation';
+import getOrCreateBugsInformation from 'dbux-projects/src/dataLib';
 import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import { execInTerminal } from '../terminal/TerminalWrapper';
 import PracticeStopwatch from './PracticeStopwatch';
+import { set as storageSet, get as storageGet } from '../memento';
 
 // ########################################
 //  setup logger for project
@@ -48,6 +49,10 @@ const externals = {
       await exec(`code --add ${fpath}`, logger, { silent: false }, true);
     }
   },
+  storage: {
+    get: storageGet,
+    set: storageSet,
+  },
   execInTerminal
 };
 
@@ -60,6 +65,11 @@ class ProjectViewController {
     debug(`Initialized dbux-projects. Projects folder = "${path.resolve(cfg.projectsRoot)}"`);
 
     // ########################################
+    //  init projectManager
+    // ########################################
+    this.storage = getOrCreateBugsInformation(externals.storage);
+
+    // ########################################
     //  init treeView
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
@@ -70,10 +80,8 @@ class ProjectViewController {
     // ########################################
     //  listen on bugRunner
     // ########################################
-    const bugRunner = this.manager.getOrCreateRunner();
+    const bugRunner = this.manager.getOrCreateRunner(this.storage);
     bugRunner.on('statusChanged', this.onStatusChanged.bind(this));
-
-    this.bugsInformation = getOrCreateBugsInformation(context.workspaceState);
   }
 
   onStatusChanged(status) {
@@ -102,7 +110,7 @@ class ProjectViewController {
 
     return runTaskWithProgressBar(async (progress, cancelToken) => {
       const { bug } = bugNode;
-      const runner = this.manager.getOrCreateRunner();
+      const runner = this.manager.getOrCreateRunner(this.storage);
 
       // cancel any currently running tasks
       progress.report({ message: 'Canceling previous tasks...' });
@@ -153,7 +161,7 @@ export function initProjectView(context) {
   // shut it all down when VSCode shuts down
   context.subscriptions.push({
     dispose() {
-      const runner = controller.manager.getOrCreateRunner();
+      const runner = controller.manager.getOrCreateRunner(this.storage);
       runner.cancel();
     }
   });
