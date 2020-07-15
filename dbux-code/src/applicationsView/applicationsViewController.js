@@ -3,6 +3,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import ApplicationNodeProvider from './ApplicationNodeProvider';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('applicationsViewController');
 
 let controller;

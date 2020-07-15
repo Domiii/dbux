@@ -1,9 +1,19 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 
-export default class CollectionIndex<T> {
-  dp: DataProvider;
+/**
+ * @template {T}
+ */
+export default class CollectionIndex {
+  /**
+   * @type {DataProvider}
+   */
+  dp;
   name;
-  _byKey: T[][] = [];
+  
+  /**
+   * @type {T[][]}
+   */
+  _byKey = [];
 
   constructor(collectionName, indexName, addOnNewData = true) {
     this.collectionName = collectionName;
@@ -16,17 +26,27 @@ export default class CollectionIndex<T> {
     this.dp = dp;
   }
 
-  get(key: number): T[] {
+  /**
+   * @param {number} key 
+   * @return {T[]}
+   */
+  get(key) {
     return this._byKey[key];
   }
 
-  addEntries(entries : T[]) {
+  /**
+   * @param {T[]} entries 
+   */
+  addEntries(entries) {
     for (const entry of entries) {
       this.addEntry(entry);
     }
   }
 
-  addEntry(entry : T) {
+  /**
+   * @param {T} entry 
+   */
+  addEntry(entry) {
     const key = this.makeKey(this.dp, entry);
     if (key === undefined) {
       debugger;
@@ -58,10 +78,12 @@ export default class CollectionIndex<T> {
     this.addEntry(entry);
   }
 
-  /**
+  /** 
    * Returns a unique key (number) for given entry.
+   * @param {DataProvider} dp
+   * @param {T} entry 
    */
-  makeKey(dp, entry : T) : number | bool {
+  makeKey(/* dp, entry */) {
     throw new Error(`abstract method not implemented: ${this.constructor.name}.makeKey`);
   }
 }

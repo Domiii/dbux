@@ -1,7 +1,8 @@
 import NanoEvents from 'nanoevents';
-import allApplications from '../applications/allApplications';
 import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '../applications/allApplications';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ObjectTracker');
 
 export class ObjectTracker {

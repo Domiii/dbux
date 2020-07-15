@@ -4,6 +4,7 @@
 
 const path = require('path');
 const process = require('process');
+const fs = require('fs');
 const mergeWith = require('lodash/mergeWith');
 const isArray = require('lodash/isArray');
 const nodeExternals = require('webpack-node-externals');
@@ -98,7 +99,12 @@ function buildConfig([target, configOverrides]) {
   };
 
   const dependencyPattern = /^@dbux\/.*/;
-  const dependencies = getDependenciesPackageJson(MonoRoot, target, dependencyPattern);
+
+  const dependencyLinks = getDependenciesPackageJson(MonoRoot, target, dependencyPattern).
+    map(depName => path.join(MonoRoot, 'node_modules', depName));
+
+  const dependencies = dependencyLinks.map(link => fs.realpathSync(link).replace(MonoRoot, ''));
+
   dependencies.push(target);
   const resolve = makeResolve(MonoRoot, dependencies);
   resolve.alias['@'] = src;
@@ -199,8 +205,8 @@ function buildConfig([target, configOverrides]) {
 //  (WARNING: add node configs only! don't mix targets with webpack; it doesn't like it.)
 // ###########################################################################
 
-// /*eslint global-require: 0 */
 const otherWebpackConfigs = [
+  /* eslint-disable-next-line global-require */
   require('./dbux-code/webpack.config'),
 
   // NOTE: Don't build `dbux-graph-web` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)

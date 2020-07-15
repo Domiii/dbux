@@ -10,7 +10,10 @@ import { getTracesAt } from '../helpers/codeRangeQueries';
 
 
 export default class TracesAtCursor {
-  allTraces: Array<Trace>;
+  /**
+   * @type {Array<Trace>}
+   */
+  allTraces;
   /**
    * @param {ExtensionContext} context 
    */

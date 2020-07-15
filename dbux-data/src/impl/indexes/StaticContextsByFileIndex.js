@@ -4,12 +4,19 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
-export default class StaticContextsByFileIndex extends CollectionIndex<StaticContext> {
+/**
+ * @extends {CollectionIndex<StaticContext>}
+ */
+export default class StaticContextsByFileIndex extends CollectionIndex {
   constructor() {
     super('staticContexts', 'byFile');
   }
 
-  makeKey(dp: DataProvider, staticContext: StaticTrace) {
+  /**
+   * @param {DataProvider} dp 
+   * @param {StaticContext} staticContext
+   */
+  makeKey(dp, staticContext) {
     return staticContext.programId;
   }
 }

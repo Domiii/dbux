@@ -3,6 +3,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import ContextNode from './ContextNode';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('[RunNode]');
 
 class RunNode extends HostComponentEndpoint {

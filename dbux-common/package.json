@@ -10,7 +10,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "colors": "^1.4.0",
-    "lodash": "*"
+    "lodash": "*",
+    "nanoevents": "*"
   },
   "_moduleAliases": {},
   "gitHead": "18e0d5ec96bb1fb6348665436e01d4c4ce127999"

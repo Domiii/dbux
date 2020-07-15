@@ -4,12 +4,13 @@ import { registerCommand } from './commandUtil';
 import { switchMode } from '../traceDetailsView/nodes/StaticTraceTDNodes';
 import { NavigationMethods } from '../traceDetailsView/nodes/NavigationNode';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Commands');
 
 export function initTraceDetailsViewCommands(context, traceDetailsViewController) {
   registerCommand(context,
     'dbuxTraceDetailsView.switchGroupingMode',
-    (node) => {
+    (/* node */) => {
       switchMode();
       traceDetailsViewController.refresh();
     }

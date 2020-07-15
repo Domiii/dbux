@@ -2,6 +2,7 @@ import BaseComponentManager from '@dbux/graph-common/src/componentLib/BaseCompon
 import { newLogger } from '@dbux/common/src/log/logger';
 import HostComponentEndpoint from './HostComponentEndpoint';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
 
 class AppComponent extends HostComponentEndpoint {

@@ -18,7 +18,10 @@ export class CodeApplication extends Application {
   }
 }
 
-export function initCodeApplications(context: ExtensionContext) {
+/**
+ * @param {ExtensionContext} 
+ */
+export function initCodeApplications(/* context */) {
   allApplications.DefaultApplicationClass = CodeApplication;
 }
 
@@ -36,7 +39,6 @@ export function getSelectedApplicationInActiveEditor() {
   return application;
 }
 
-
 export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
   if (!allApplications.getAllCount()) {
     window.showWarningMessage('Failed. Must run DBUX-instrumented application first');
@@ -50,7 +52,6 @@ export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
 
   const application = getSelectedApplicationInActiveEditor();
   
-
   if (!application) {
     // suggest to open and use the first application that is selected and currently running.
     const msg = 'Failed. No application running in file. Make sure to open a file with an application that ran before!';

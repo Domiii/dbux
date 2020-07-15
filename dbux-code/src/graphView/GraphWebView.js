@@ -8,8 +8,8 @@ import {
 import path from 'path';
 import { buildWebviewClientHtml } from './clientSource';
 import { goToTrace } from '../codeUtil/codeNav';
-import { performance } from 'perf_hooks';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('GraphViewHost');
 
 
@@ -83,6 +83,7 @@ export default class GraphWebView {
           null,
           this.extensionContext.subscriptions
         );
+      // eslint-disable-next-line no-extra-bind
       }).bind(this)
     };
   }
@@ -162,7 +163,7 @@ export default class GraphWebView {
    * 
    * @see https://code.visualstudio.com/api/extension-guides/webview#persistence
    */
-  handleDidChangeViewState = ({ webviewPanel }) => {
+  handleDidChangeViewState = (/* { webviewPanel } */) => {
     // debug('handleDidChangeViewState', webviewPanel.visible, performance.now());
     // const { viewColumn } = webviewPanel;
     // const { oldViewColumn, wasVisible } = this;

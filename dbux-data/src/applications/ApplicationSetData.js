@@ -6,7 +6,10 @@ import Trace from '@dbux/common/src/core/data/Trace';
 // ###########################################################################
 
 class FirstTracesInOrder {
-  _firstTracesArray: Array<Trace>;
+  /**
+   * @type {Array<Trace>}
+   */
+  _firstTracesArray;
   _firstTraceIndexById = new Map();
 
   /**
@@ -17,7 +20,7 @@ class FirstTracesInOrder {
     this.applicationSet = applicationSetData.set;
     this._firstTracesArray = [];
   }
-  
+
   _mergeAll() {
     this._firstTracesArray = [];
     const applications = this.applicationSetData.set.getAll();
@@ -42,7 +45,7 @@ class FirstTracesInOrder {
       this._addOne(earliestTrace);
     }
   }
-  
+
   _handleApplicationsChanged = () => {
     const applications = this.applicationSet.getAll();
     this._mergeAll();
@@ -54,7 +57,7 @@ class FirstTracesInOrder {
     }
   }
 
-  _addExecutionContexts(app, contexts) {
+  _addExecutionContexts(/* app, contexts */) {
     // TODO: [performance] can we incrementally add new contexts only?
     this._mergeAll();
   }
@@ -92,12 +95,18 @@ class FirstTracesInOrder {
     return this._firstTracesArray[0] || null;
   }
 
-  getNextFirstTrace(firstTrace: Trace) {
+  /**
+   * @param {Trace} firstTrace 
+   */
+  getNextFirstTrace(firstTrace) {
     const order = this.getIndex(firstTrace);
     return this._firstTracesArray[order + 1] || null;
   }
 
-  getPreviousFirstTrace(firstTrace: Trace) {
+  /**
+   * @param {Trace} firstTrace 
+   */
+  getPreviousFirstTrace(firstTrace) {
     const order = this.getIndex(firstTrace);
     return this._firstTracesArray[order - 1] || null;
   }

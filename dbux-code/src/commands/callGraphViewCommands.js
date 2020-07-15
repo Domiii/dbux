@@ -3,6 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { CallGraphViewController } from '../callGraphView/callGraphViewController';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Commands');
 
 /**

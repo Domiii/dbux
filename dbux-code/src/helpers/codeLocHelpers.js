@@ -9,8 +9,9 @@
 import {
   Position, Range
 } from 'vscode';
-import Loc, { LocPos } from '@dbux/common/src/core/data/Loc';
 
+/** @typedef {import('@dbux/common/src/core/data/Loc').default} Loc */
+/** @typedef {import('@dbux/common/src/core/data/Loc').LocPos} LocPos */
 
 /**
  * VSCode's `Position` is slightly different from Babel's `start` and `end` in `SourceLocation`.
@@ -24,8 +25,11 @@ export function babelLineToCodeLine(babelLine) {
   return babelLine - 1;
 }
 
-
-export function codePositionToBabelPosition(pos: Position): LocPos {
+/**
+ * @param {Position} pos 
+ * @return {LocPos}
+ */
+export function codePositionToBabelPosition(pos) {
   const { line, character } = pos;
   return {
     line: codeLineToBabelLine(line),
@@ -35,8 +39,10 @@ export function codePositionToBabelPosition(pos: Position): LocPos {
 
 /**
  * Convert babel-style `loc` position definitions to VSCode `position`
+ * @param {LocPos} loc
+ * @return {Position}
  */
-export function babelLocToCodePosition(loc: LocPos): Position {
+export function babelLocToCodePosition(loc) {
   if (loc._pos) {
     // converted this before
     return loc._pos;
@@ -50,7 +56,11 @@ export function babelLocToCodePosition(loc: LocPos): Position {
   return loc._pos = new Position(babelLineToCodeLine(line), character);
 }
 
-export function babelLocToCodeRange(loc: Loc): Range {
+/**
+ * @param {Loc} loc 
+ * @return {Range}
+ */
+export function babelLocToCodeRange(loc) {
   if (loc._range) {
     // converted this before
     return loc._range;

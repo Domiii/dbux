@@ -8,7 +8,6 @@ import {
   TextEditor
 } from 'vscode';
 
-
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
@@ -18,9 +17,13 @@ import { initEditedWarning } from './editedWarning';
 // import DataProvider from '@dbux/data/src/DataProvider';
 // import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('code-deco');
 
-let activeEditor: TextEditor;
+/**
+ * @type {TextEditor}
+ */
+let activeEditor;
 let showDeco = true;
 
 

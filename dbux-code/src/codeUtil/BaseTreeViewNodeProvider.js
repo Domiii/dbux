@@ -4,6 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { getThemeResourcePath } from '../resources';
 import { registerCommand } from '../commands/commandUtil';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('editorTracesController');
 
 export default class BaseTreeViewNodeProvider {

@@ -7,6 +7,7 @@ import { sendCommandToDefaultTerminal } from '../codeUtil/terminalUtil';
 // const Verbose = true;
 const Verbose = false;
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
 
 // ###########################################################################

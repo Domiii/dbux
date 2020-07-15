@@ -5,6 +5,8 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import Application from './Application';
 import ApplicationSet from './ApplicationSet';
 
+// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('applications');
 
 
@@ -19,7 +21,10 @@ const { log, debug, warn, error: logError } = newLogger('applications');
 export class AllApplications {
   DefaultApplicationClass = Application;
 
-  _all: Array<Application> = [null];
+  /**
+   * @type {Application[]}
+   */
+  _all = [null];
   _activeApplicationsByPath = new Map();
 
   _emitter = new NanoEvents();
@@ -39,7 +44,11 @@ export class AllApplications {
     return this._all[applicationId];
   }
 
-  getApplication(applicationOrIdOrEntryPointPath: number | string | Application): Application {
+  /**
+   * @param {number | string | Application} applicationOrIdOrEntryPointPath 
+   * @return {Application}
+   */
+  getApplication(applicationOrIdOrEntryPointPath) {
     const application = this.tryGetApplication(applicationOrIdOrEntryPointPath);
     if (!application) {
       throw new Error('invalid applicationOrIdOrEntryPointPath: ' + applicationOrIdOrEntryPointPath);
@@ -55,7 +64,11 @@ export class AllApplications {
     return this._all.filter(app => !!app);
   }
 
-  tryGetApplication(applicationOrIdOrEntryPointPath: number | string | Application): Application {
+  /**
+   * @param {number | string | Application} applicationOrIdOrEntryPointPath
+   * @return {Application}
+   */
+  tryGetApplication(applicationOrIdOrEntryPointPath) {
     let application;
     if (applicationOrIdOrEntryPointPath instanceof Application) {
       // application

@@ -27,7 +27,7 @@ module.exports = {
 		"no-this-before-super": "warn",
 		"no-undef": "error",
 		"no-unreachable": "warn",
-		"no-unused-vars": "warn",
+		"no-unused-vars": ["warn", { varsIgnorePattern: "e|evt|err", args: 'after-used' }],
 		"no-else-return": 0,
 		"no-debugger": 0,
 		"no-console": "error",
@@ -50,6 +50,7 @@ module.exports = {
 		"no-cond-assign": ["error", "except-parens"],
 		"no-await-in-loop": 0,
 		"no-bitwise": 0,
+		"no-multiple-empty-lines": 0,
 		// "no-useless-escape": 0,
 		"constructor-super": "warn",
 		"valid-typeof": "warn",
@@ -80,12 +81,13 @@ module.exports = {
 		"linebreak-style": 0,
 		"quotes": 0,
 		"spaced-comment": 0,
-		"max-len": ["warn", { "code": 120 }],
+		"max-len": ["warn", { "code": 180, "ignoreComments": true }],
 		"one-var": 0,
 		"one-var-declaration-per-line": 0,
 		"dot-location": 0,
 		"default-case": 0,
-		"object-shorthand": 0
+		"object-shorthand": 0,
+		"generator-star-spacing": 0
 	},
 
 	settings: {

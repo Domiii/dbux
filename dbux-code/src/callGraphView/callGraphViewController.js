@@ -5,6 +5,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import CallGraphNodeProvider from './CallGraphNodeProvider';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('callGraphViewController');
 
 let controller;
@@ -153,7 +154,10 @@ export class CallGraphViewController {
 // init
 // ###########################################################################
 
-export function initCallGraphView(context: ExtensionContext) {
+/**
+ * @param {ExtensionContext} context 
+ */
+export function initCallGraphView(context) {
   controller = new CallGraphViewController();
   controller.initOnActivate(context);
 

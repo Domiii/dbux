@@ -3,8 +3,7 @@ module.exports = {
   "sourceMaps": "inline",
   "retainLines": true,
   "presets": [
-    "@babel/preset-env",
-    "@babel/preset-flow"
+    "@babel/preset-env"
   ],
   "plugins": [
     [
@@ -23,7 +22,6 @@ module.exports = {
     "@babel/plugin-proposal-function-bind",
     "@babel/plugin-syntax-export-default-from",
     "@babel/plugin-syntax-dynamic-import",
-    "@babel/plugin-syntax-flow",
     "@babel/plugin-transform-runtime"
   ]
 };

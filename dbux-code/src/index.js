@@ -20,6 +20,7 @@ import { showGraphView } from './graphView';
 import { initDbuxPractice } from './practice/dbuxPracticeController';
 
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 let projectViewController;

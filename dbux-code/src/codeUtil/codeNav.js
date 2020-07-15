@@ -1,24 +1,24 @@
 import {
   window,
   Uri,
-  Position,
   Selection,
   ViewColumn,
   TextEditorRevealType
 } from 'vscode';
-import { newFileLogger } from '@dbux/common/src/log/logger';
-import Loc from '@dbux/common/src/core/data/Loc';
+import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
+/** @typedef {import('@dbux/common/src/core/data/Loc').default} Loc */
 
-const { log, debug, warn, error: logError } = newFileLogger(__filename);
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('codeNav');
 
 /**
- * @param {Uri} URI (new vscode.Uri.file(FILEPATH))
- * @param {Position} position (new vscode.Position(LINE, CHARACTER))
+ * @param {string} fpath
+ * @param {Loc} loc
  */
-export async function goToCodeLoc(fpath, loc: Loc) {
+export async function goToCodeLoc(fpath, loc) {
   const editor = await showTextDocument(fpath);
   selectLocInEditor(editor, loc);
 }

@@ -10,29 +10,34 @@ import { getFileName } from '../util/nodeUtil';
  */
 export default class Application {
   /**
-  * @readonly
-  */
-  applicationId: number;
-  /**
+   * @type {number}
    * @readonly
    */
-  entryPointPath: string;
+  applicationId;
+  /**
+   * @type {string}
+   * @readonly
+   */
+  entryPointPath;
   /**
    * @readonly
    */
   allApplications;
   /**
+   * @type {DataProvider}
    * @readonly
    */
-  dataProvider: DataProvider;
+  dataProvider;
   /**
    * time of creation in milliseconds since vscode started
+   * @type {number}
    */
-  createdAt: number;
+  createdAt;
   /**
    * time of last update in milliseconds since vscode started
+   * @type {number}
    */
-  updatedAt: number;
+  updatedAt;
 
   constructor(applicationId, entryPointPath, createdAt, allApplications) {
     this.applicationId = applicationId;

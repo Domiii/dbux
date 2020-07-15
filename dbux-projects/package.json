@@ -10,7 +10,8 @@
     "@dbux/cli": "^0.0.2-alpha.1004+18e0d5e",
     "@dbux/common": "^0.0.2-alpha.1004+18e0d5e",
     "shelljs": "*",
-    "tree-kill": "^1.2.2"
+    "tree-kill": "^1.2.2",
+    "lodash": "*"
   },
   "keywords": [],
   "author": "Domi",

@@ -4,7 +4,10 @@ import { makeTraceLabel, getTraceCreatedAt } from '@dbux/data/src/helpers/traceL
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 export default class TraceNode extends BaseTreeViewNode {
-  static makeLabel(trace: Trace) {
+  /**
+   * @param {Trace} 
+   */
+  static makeLabel(trace) {
     return makeTraceLabel(trace);
   }
 

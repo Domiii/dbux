@@ -5,12 +5,17 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
-export default class StaticTracesByContextIndex extends CollectionIndex<Trace> {
+/** @extends {CollectionIndex<Trace>} */
+export default class StaticTracesByContextIndex extends CollectionIndex {
   constructor() {
     super('staticTraces', 'byContext');
   }
 
-  makeKey(dp: DataProvider, { staticContextId }: StaticTrace) {
+  /** 
+   * @param {DataProvider} dp
+   * @param {StaticTrace} { staticContextId }
+   */
+  makeKey(dp, { staticContextId }) {
     return staticContextId;
   }
 }

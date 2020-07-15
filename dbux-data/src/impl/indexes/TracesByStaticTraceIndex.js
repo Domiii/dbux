@@ -3,12 +3,17 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
-export default class TracesByStaticTraceIndex extends CollectionIndex<Trace> {
+/** @extends {CollectionIndex<Trace>} */
+export default class TracesByStaticTraceIndex extends CollectionIndex {
   constructor() {
     super('traces', 'byStaticTrace');
   }
 
-  makeKey(dp: DataProvider, trace: Trace) {
+  /** 
+   * @param {DataProvider} dp
+   * @param {Trace} trace
+   */
+  makeKey(dp, trace) {
     const {
       staticTraceId
     } = trace;

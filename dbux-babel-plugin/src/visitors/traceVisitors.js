@@ -10,9 +10,8 @@ import Enum from '@dbux/common/src/util/Enum';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import truncate from 'lodash/truncate';
-import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceBeforeSuper, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
+import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
 import { loopVisitor } from './loopVisitors';
-import { getPathTraceId } from '../data/StaticTraceCollection';
 import { isCallPath } from '../helpers/functionHelpers';
 import { functionVisitEnter } from './functionVisitor';
 import { awaitVisitEnter } from './awaitVisitor';
@@ -22,6 +21,7 @@ import { isPathInstrumented } from '../helpers/instrumentationHelper';
 const Verbose = false;
 // const Verbose = true;
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
 
@@ -422,6 +422,7 @@ const enterInstrumentors = {
     if (objPath.isSuper()) {
       // Do nothing. We already take care of this via `instrumentMemberCallExpressionEnter`.
       // return traceBeforeSuper(objPath, state);
+      return null;
     }
     else {
       // trace object (e.g. `x` in `x.y`) as-is
@@ -759,7 +760,7 @@ function logInst(tag, cfg, path, direction = null, ...other) {
   const nodeName = getNodeNames(path.node)?.name;
   const cfgName = _getFullName(cfg);
   const dirIndicator = direction && direction === InstrumentationDirection.Enter ? ' ->' : ' <-';
-  console.debug(
+  debug(
     `[${tag}]${dirIndicator || ''}`,
     `${cfgName}:`,
     nodeName && `${path.node.type} ${nodeName}` || truncate(path.toString().replace(/\n/g, ' '), { length: 100 }),

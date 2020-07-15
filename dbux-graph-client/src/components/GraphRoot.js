@@ -1,5 +1,5 @@
-import createPanzoom from 'panzoom';
-import { compileHtmlElement, repaintEl } from '@/util/domUtil';
+import createPanzoom from '@dbux/panzoom';
+import { compileHtmlElement } from '@/util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class GraphRoot extends ClientComponentEndpoint {
@@ -34,7 +34,6 @@ class GraphRoot extends ClientComponentEndpoint {
 
   setupEl() {
     this.panzoom = this.initPanZoom(this.els.graphCont);
-
   }
 
   update() {
@@ -95,7 +94,6 @@ class GraphRoot extends ClientComponentEndpoint {
     const repaint = () => {
       this._repaint();
       // repaintEl(this.els.body);
-      console.debug('repaint');
       this.els.graphCont.removeEventListener('scroll', repaint);
     };
     this.els.graphCont.addEventListener('scroll', repaint);

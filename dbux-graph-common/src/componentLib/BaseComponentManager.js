@@ -2,6 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import Ipc from './Ipc';
 import ComponentEndpoint from './ComponentEndpoint';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/BaseComponentManager');
 
 class BaseComponentManager {

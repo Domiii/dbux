@@ -5,12 +5,17 @@ import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
-export default class TracesByRealContextIndex extends CollectionIndex<Trace> {
+/** @extends {CollectionIndex<Trace>} */
+export default class TracesByRealContextIndex extends CollectionIndex {
   constructor() {
     super('traces', 'byRealContext');
   }
 
-  makeKey(dp: DataProvider, { traceId }: Trace) {
+  /** 
+   * @param {DataProvider} dp
+   * @param {Trace} { traceId }
+   */
+  makeKey(dp, { traceId }) {
     return dp.util.getRealContextId(traceId);
   }
 }

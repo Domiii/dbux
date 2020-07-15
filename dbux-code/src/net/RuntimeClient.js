@@ -6,10 +6,14 @@ import SocketClient from './SocketClient';
 const Verbose = false;
 // const Verbose = true;
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RuntimeClient');
 
 export default class RuntimeClient extends SocketClient {
-  application: Application;
+  /**
+   * @type {Application}
+   */
+  application;
 
   constructor(server, socket) {
     super(server, socket);
@@ -24,7 +28,10 @@ export default class RuntimeClient extends SocketClient {
     return !!this.application;
   }
 
-  _getOrCreateApplication(initialData): Application {
+  /**
+   * @return {Application}
+   */
+  _getOrCreateApplication(initialData) {
     const { applicationId } = initialData;
     let application;
     const firstTime = !applicationId;

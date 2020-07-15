@@ -6,6 +6,7 @@ import defaultsDeep from 'lodash/defaultsDeep';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ProgressBarTask');
 
 function _errWrap(f) {

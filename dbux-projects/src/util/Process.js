@@ -6,6 +6,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import spawn from 'child_process';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Process');
 
 function cleanOutput(chunk) {

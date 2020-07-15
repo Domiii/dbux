@@ -6,6 +6,7 @@ import CallRootNode from './CallRootNode';
 import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
 import EmptyNode from './EmptyNode';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('CallGraphNodeProvider');
 
 export default class CallGraphNodeProvider extends BaseTreeViewNodeProvider {

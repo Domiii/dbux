@@ -2,13 +2,18 @@ import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
-function makeKey(dp: DataProvider, context: ExecutionContext) {
+/** 
+ * @param {DataProvider} dp
+ * @param {ExecutionContext} context
+ */
+function makeKey(dp, context) {
   const callerTrace = dp.util.getCallerTraceOfContext(context.contextId);
   return callerTrace?.traceId || false;
 }
 
 
-export default class ContextsByCalleeTraceIndex extends CollectionIndex<ExecutionContext> {
+/** @extends {CollectionIndex<ExecutionContext>} */
+export default class ContextsByCalleeTraceIndex extends CollectionIndex {
   constructor() {
     super('executionContexts', 'byCalleeTrace');
   }

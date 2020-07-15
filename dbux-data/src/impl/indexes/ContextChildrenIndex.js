@@ -6,12 +6,17 @@ import DataProvider from '../../DataProvider';
 /**
  *  aka "ContextsByParentIndex"
  */
-export default class ContextChildrenIndex extends CollectionIndex<ExecutionContext> {
+/** @extends {CollectionIndex<ExecutionContext>} */
+export default class ContextChildrenIndex extends CollectionIndex {
   constructor() {
     super('executionContexts', 'children');
   }
 
-  makeKey(dp: DataProvider, context: ExecutionContext) {
+  /** 
+   * @param {DataProvider} dp
+   * @param {ExecutionContext} context
+   */
+  makeKey(dp, context) {
     return context.parentContextId || 0;
   }
 }

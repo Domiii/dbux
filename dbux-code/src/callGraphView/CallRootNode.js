@@ -8,7 +8,10 @@ import ErrorNode from './ErrorNode';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
 export default class CallRootNode extends BaseTreeViewNode {
-  static makeLabel(trace: Trace, parent, moreProps) {
+  /**
+   * @param {Trace} trace
+   */
+  static makeLabel(trace/* , parent, moreProps */) {
     return makeRootTraceLabel(trace, allApplications.getById(trace.applicationId));
   }
 

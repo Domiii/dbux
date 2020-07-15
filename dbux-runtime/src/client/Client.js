@@ -5,6 +5,7 @@ import SendQueue from './SendQueue';
 
 const Verbose = false;
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('CLIENT');
 
 // ###########################################################################

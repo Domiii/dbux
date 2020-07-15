@@ -4,6 +4,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import tracePlayback from '@dbux/data/src/playback/tracePlayback';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 
 export default class PlaybackController {

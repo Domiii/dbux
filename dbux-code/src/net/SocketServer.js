@@ -1,10 +1,10 @@
-import http from 'http';
-import { newLogger, logWarn } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import RuntimeClient from './RuntimeClient';
 import { makeListenSocket } from './serverUtil';
 
 const DefaultPort = 3374;
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RuntimeServer');
 
 /**

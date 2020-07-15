@@ -3,7 +3,7 @@
 	"version": "0.0.2-alpha.1004+18e0d5e",
 	"description": "",
 	"engines": {
-		"vscode": "^1.41.0"
+		"vscode": "^1.*.*"
 	},
 	"categories": [
 		"Other"

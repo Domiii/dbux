@@ -1,6 +1,7 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalUtil');
 
 const DefaultTerminalName = 'dbux-run';

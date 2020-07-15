@@ -6,10 +6,10 @@ import { hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
 import last from 'lodash/last';
 import DataProvider from '../DataProvider';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('CallGraph');
 
 export default class CallGraph {
-
   /**
    * @param {DataProvider} dp
    */

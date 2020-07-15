@@ -1,9 +1,13 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
-import Application from '@dbux/data/src/applications/Application';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
+/** @typedef {import('@dbux/data/src/applications/Application').default} Application */
+
 export default class ProjectNode extends BaseTreeViewNode {
-  static makeLabel(app: Application) {
+  /**
+   * @param {Application} app
+   */
+  static makeLabel(app) {
     const prefix = allApplications.selection.containsApplication(app) ? '☑' : '☐';
     // const label = app.getRelativeFolder();
     const label = app.getPreferredName();

@@ -6,6 +6,7 @@ import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
 import TracesAtCursor from './TracesAtCursor';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
 
 let controller;
@@ -92,7 +93,10 @@ class TraceDetailsController {
 // init
 // ###########################################################################
 
-export function initTraceDetailsView(context: ExtensionContext) {
+/**
+ * @param {ExtensionContext} context 
+ */
+export function initTraceDetailsView(context) {
   controller = new TraceDetailsController();
   controller.initOnActivate(context);
 

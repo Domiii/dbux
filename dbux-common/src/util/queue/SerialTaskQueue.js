@@ -1,8 +1,9 @@
 import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
-import { newLogger } from '@dbux/common/src/log/logger';
+import { newLogger } from '../../log/logger';
 import { isPromise } from '../isPromise';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 const WarnTimeout = 10000;
@@ -257,7 +258,7 @@ export default class SerialTaskQueue {
     // }
   }
 
-  _log(...args) {
+  _log(/* ...args */) {
     // debug(...args);
   }
 
