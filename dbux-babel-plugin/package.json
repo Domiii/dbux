@@ -1,5 +1,6 @@
 {
   "name": "@dbux/babel-plugin",
+  "version": "0.0.1",
   "description": "",
   "author": "Domi",
   "module": "dist/index.js",
@@ -18,7 +19,7 @@
     "__archive_prepublish": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@dbux/common": "*",
+    "@dbux/common": "0.0.1",
     "lodash": "*"
   },
   "devDependencies": {

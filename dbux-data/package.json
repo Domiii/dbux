@@ -1,6 +1,6 @@
 {
   "name": "@dbux/data",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -12,7 +12,7 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "*",
+    "@dbux/common": "0.0.1",
     "nanoevents": "*",
     "lodash": "*"
   },

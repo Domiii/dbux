@@ -1,5 +1,6 @@
 {
   "name": "@dbux/runtime",
+  "version": "0.0.1",
   "description": "",
   "module": "dist/index.js",
   "main": "dist/index.js",
@@ -19,7 +20,7 @@
     "babel-plugin"
   ],
   "dependencies": {
-    "@dbux/common": "*",
+    "@dbux/common": "0.0.1",
     "socket.io-client": "^2.3.0",
     "lodash": "*",
     "nanoevents": "*"

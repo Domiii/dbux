@@ -1,5 +1,6 @@
 {
   "name": "@dbux/cli",
+  "version": "0.0.1",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -19,7 +20,7 @@
   },
   "dependencies": {
     "module-alias": "^2.2.2",
-    "@dbux/common": "*",
+    "@dbux/common": "0.0.1",
     "yargs": "*",
     "shelljs": "*"
   }
