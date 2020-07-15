@@ -2,7 +2,7 @@ import { window } from 'vscode';
 import path from 'path';
 import fs from 'fs';
 // import { stringify as jsonStringify } from 'comment-json';
-import { newFileLogger } from 'dbux-common/src/log/logger';
+import { newFileLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';

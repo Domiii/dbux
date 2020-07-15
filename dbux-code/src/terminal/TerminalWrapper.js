@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import SocketClient from '../net/SocketClient';
 import SocketServer from '../net/SocketServer';
 import { sendCommandToDefaultTerminal } from '../codeUtil/terminalUtil';

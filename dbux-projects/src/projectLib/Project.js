@@ -2,9 +2,9 @@ import path from 'path';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
-import { newLogger } from 'dbux-common/src/log/logger';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import { getDbuxRoot } from 'dbux-common/src/dbuxPaths';
+import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { getDbuxRoot } from '@dbux/common/src/dbuxPaths';
 import BugList from './BugList';
 import Process from '../util/Process';
 

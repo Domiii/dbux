@@ -2,8 +2,8 @@ import path from 'path';
 import isString from 'lodash/isString';
 import kill from 'tree-kill';
 import sh from 'shelljs';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
-import { newLogger } from 'dbux-common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { newLogger } from '@dbux/common/src/log/logger';
 import spawn from 'child_process';
 
 const { log, debug, warn, error: logError } = newLogger('Process');

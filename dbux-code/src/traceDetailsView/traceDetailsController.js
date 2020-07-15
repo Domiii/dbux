@@ -1,8 +1,8 @@
 import { ExtensionContext } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import traceSelection from 'dbux-data/src/traceSelection';
-import { makeDebounce } from 'dbux-common/src/util/scheduling';
+import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import traceSelection from '@dbux/data/src/traceSelection';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
 import TracesAtCursor from './TracesAtCursor';
 

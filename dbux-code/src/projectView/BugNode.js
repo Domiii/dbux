@@ -1,4 +1,4 @@
-import BugRunnerStatus, { isStatusRunningType } from 'dbux-projects/src/projectLib/BugRunnerStatus';
+import BugRunnerStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/BugRunnerStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
 export default class BugNode extends BaseTreeViewNode {

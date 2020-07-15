@@ -1,5 +1,5 @@
-import BaseComponentManager from 'dbux-graph-common/src/componentLib/BaseComponentManager';
-import { newLogger } from 'dbux-common/src/log/logger';
+import BaseComponentManager from '@dbux/graph-common/src/componentLib/BaseComponentManager';
+import { newLogger } from '@dbux/common/src/log/logger';
 import HostComponentEndpoint from './HostComponentEndpoint';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');

@@ -1,5 +1,5 @@
-import allApplications from 'dbux-data/src/applications/allApplications';
-import objectTracker from 'dbux-data/src/objectTracker';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import objectTracker from '@dbux/data/src/objectTracker';
 
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import ObjectNode from './ObjectNode';

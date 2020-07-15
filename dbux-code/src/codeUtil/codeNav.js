@@ -6,9 +6,9 @@ import {
   ViewColumn,
   TextEditorRevealType
 } from 'vscode';
-import { newFileLogger } from 'dbux-common/src/log/logger';
-import Loc from 'dbux-common/src/core/data/Loc';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import { newFileLogger } from '@dbux/common/src/log/logger';
+import Loc from '@dbux/common/src/core/data/Loc';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
 

@@ -1,5 +1,5 @@
 {
-  "name": "dbux-data",
+  "name": "@dbux/data",
   "version": "1.0.0",
   "description": "",
   "module": "src/index.js",
@@ -12,7 +12,7 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "dbux-common": "*"
+    "@dbux/common": "*"
   },
   "devDependencies": {},
   "peerDependencies": {

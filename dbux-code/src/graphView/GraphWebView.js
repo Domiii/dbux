@@ -1,5 +1,5 @@
-import { newLogger } from 'dbux-common/src/log/logger';
-import { startGraphHost } from 'dbux-graph-host/src/index';
+import { newLogger } from '@dbux/common/src/log/logger';
+import { startGraphHost } from '@dbux/graph-host/src/index';
 import {
   window,
   Uri,

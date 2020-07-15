@@ -1,6 +1,6 @@
 import path from 'path';
 import sh from 'shelljs';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 export function buildNodeCommand(cfg) {
   let {

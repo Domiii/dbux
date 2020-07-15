@@ -1,7 +1,7 @@
-import { newLogger } from 'dbux-common/src/log/logger';
-import Trace from 'dbux-common/src/core/data/Trace';
-import traceSelection from 'dbux-data/src/traceSelection';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import { newLogger } from '@dbux/common/src/log/logger';
+import Trace from '@dbux/common/src/core/data/Trace';
+import traceSelection from '@dbux/data/src/traceSelection';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import CallStackNode, { EmptyNode, BarrierNode } from './CallStackNode';
 
 const { log, debug, warn, error: logError } = newLogger('CallStackNodeProvider');

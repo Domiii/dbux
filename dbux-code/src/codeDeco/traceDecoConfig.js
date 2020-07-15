@@ -1,6 +1,6 @@
 import { window } from 'vscode';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
-import ValueTypeCategory from 'dbux-common/src/core/constants/ValueTypeCategory';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
+import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
 
 // TODO: use proper theming
 

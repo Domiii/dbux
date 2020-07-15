@@ -42,9 +42,9 @@
 		"webpack-cli": "^3.3.10"
 	},
 	"scripts": {
-		"start": "npx npm-run-all -p build:watch graph",
+		"start": "npx npm-run-all -p build:watch build-graph:watch",
 		"build:watch": "npx nodemon --exec \"npx webpack --watch --mode development\"",
-		"graph": "cd dbux-graph-client && npm start",
+		"build-graph:watch": "cd dbux-graph-client && npm start",
 		"dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
 		"dbux-install-force": "yarn install --force",
 		"dbux-all": "sh scripts/dbux-run-all.sh",

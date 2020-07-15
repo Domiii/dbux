@@ -1,4 +1,4 @@
-import Project from 'dbux-projects/src/projectLib/Project';
+import Project from '@dbux/projects/src/projectLib/Project';
 
 
 export default class RealworldWebComponentsProject extends Project {

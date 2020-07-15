@@ -1,4 +1,4 @@
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import Ipc from './Ipc';
 import ComponentEndpoint from './ComponentEndpoint';
 

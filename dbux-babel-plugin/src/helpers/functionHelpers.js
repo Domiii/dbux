@@ -1,7 +1,7 @@
 import * as t from '@babel/types';
 import { NodePath } from '@babel/core';
-import { isDebug } from 'dbux-common/src/util/nodeUtil';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { isDebug } from '@dbux/common/src/util/nodeUtil';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { logInternalWarning, logInternalError } from '../log/logger';
 import { getAllClassParents, getClassAncestryString } from './traversalHelpers';
 import { getMemberExpressionName } from './objectHelpers';

@@ -1,8 +1,8 @@
 import isEqual from 'lodash/isEqual';
-import Enum from 'dbux-common/src/util/Enum';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import objectTracker from 'dbux-data/src/objectTracker';
-import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
+import Enum from '@dbux/common/src/util/Enum';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import objectTracker from '@dbux/data/src/objectTracker';
+import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 let SelectorType = {

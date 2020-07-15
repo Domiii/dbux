@@ -1,4 +1,4 @@
-import sleep from 'dbux-common/src/util/sleep';
+import sleep from '@dbux/common/src/util/sleep';
 
 async function fetchData(path) {
   const res = await fetch(path);

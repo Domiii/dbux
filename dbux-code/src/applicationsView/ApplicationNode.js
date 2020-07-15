@@ -1,5 +1,5 @@
-import allApplications from 'dbux-data/src/applications/allApplications';
-import Application from 'dbux-data/src/applications/Application';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import Application from '@dbux/data/src/applications/Application';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
 export default class ProjectNode extends BaseTreeViewNode {

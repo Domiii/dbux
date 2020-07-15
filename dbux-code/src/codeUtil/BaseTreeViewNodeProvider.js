@@ -1,6 +1,6 @@
 import { TreeItemCollapsibleState, EventEmitter, window, CommentThreadCollapsibleState } from 'vscode';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
-import { newLogger } from 'dbux-common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { getThemeResourcePath } from '../resources';
 import { registerCommand } from '../commands/commandUtil';
 

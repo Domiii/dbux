@@ -1,6 +1,6 @@
-import { logInternalError } from 'dbux-common/src/log/logger';
-import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
-import TraceType, { isReturnTrace, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
+import { logInternalError } from '@dbux/common/src/log/logger';
+import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+import TraceType, { isReturnTrace, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';

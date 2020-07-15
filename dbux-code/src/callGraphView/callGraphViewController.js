@@ -1,8 +1,8 @@
 import { ExtensionContext, commands, window } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
-import traceSelection from 'dbux-data/src/traceSelection';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import { makeDebounce } from 'dbux-common/src/util/scheduling';
+import { newLogger } from '@dbux/common/src/log/logger';
+import traceSelection from '@dbux/data/src/traceSelection';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import CallGraphNodeProvider from './CallGraphNodeProvider';
 
 const { log, debug, warn, error: logError } = newLogger('callGraphViewController');

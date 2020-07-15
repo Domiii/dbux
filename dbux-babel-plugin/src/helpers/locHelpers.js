@@ -1,5 +1,5 @@
 import isNumber from 'lodash/isNumber';
-import { LocPos, Loc1D } from 'dbux-common/src/core/data/Loc';
+import { LocPos, Loc1D } from '@dbux/common/src/core/data/Loc';
 
 /**
  * @param {LocPos} a 

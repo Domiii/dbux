@@ -1,4 +1,4 @@
-import BaseComponentManager from 'dbux-graph-common/src/componentLib/BaseComponentManager';
+import BaseComponentManager from '@dbux/graph-common/src/componentLib/BaseComponentManager';
 import componentRegistry from '@/_clientRegistry';
 import ClientComponentEndpoint from './ClientComponentEndpoint';
 

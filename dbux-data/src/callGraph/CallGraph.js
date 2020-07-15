@@ -1,8 +1,8 @@
-import { newLogger } from 'dbux-common/src/log/logger';
-import { binarySearchByKey } from 'dbux-common/src/util/arrayUtil';
-import { isTracePush, isTracePop, isDataOnlyTrace } from 'dbux-common/src/core/constants/TraceType';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import { hasCallId } from 'dbux-common/src/core/constants/traceCategorization';
+import { newLogger } from '@dbux/common/src/log/logger';
+import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
+import { isTracePush, isTracePop, isDataOnlyTrace } from '@dbux/common/src/core/constants/TraceType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
 import last from 'lodash/last';
 import DataProvider from '../DataProvider';
 

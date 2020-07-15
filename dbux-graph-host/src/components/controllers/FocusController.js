@@ -1,5 +1,5 @@
 import NanoEvents from 'nanoevents';
-import traceSelection from 'dbux-data/src/traceSelection';
+import traceSelection from '@dbux/data/src/traceSelection';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class FocusController extends HostComponentEndpoint {

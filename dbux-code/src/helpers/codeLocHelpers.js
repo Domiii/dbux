@@ -9,7 +9,7 @@
 import {
   Position, Range
 } from 'vscode';
-import Loc, { LocPos } from 'dbux-common/src/core/data/Loc';
+import Loc, { LocPos } from '@dbux/common/src/core/data/Loc';
 
 
 /**

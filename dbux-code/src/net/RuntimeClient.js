@@ -1,6 +1,6 @@
-import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import Application from 'dbux-data/src/applications/Application';
+import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import Application from '@dbux/data/src/applications/Application';
 import SocketClient from './SocketClient';
 
 const Verbose = false;

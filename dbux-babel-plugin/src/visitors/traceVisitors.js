@@ -6,9 +6,9 @@
  *  have the time yet to properly separate them again. That is why there is also some context instrumentation in this file
  */
 
-import Enum from 'dbux-common/src/util/Enum';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
-import { newLogger } from 'dbux-common/src/log/logger';
+import Enum from '@dbux/common/src/util/Enum';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { newLogger } from '@dbux/common/src/log/logger';
 import truncate from 'lodash/truncate';
 import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceBeforeSuper, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
 import { loopVisitor } from './loopVisitors';

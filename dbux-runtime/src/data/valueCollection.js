@@ -1,5 +1,5 @@
-import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjectCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
-// import serialize from 'dbux-common/src/serialization/serialize';
+import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjectCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
+// import serialize from '@dbux/common/src/serialization/serialize';
 import Collection from './Collection';
 import pools from './pools';
 import isFunction from 'lodash/isFunction';

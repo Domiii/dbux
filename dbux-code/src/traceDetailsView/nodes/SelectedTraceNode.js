@@ -1,5 +1,5 @@
 import { TreeItemCollapsibleState } from 'vscode';
-import Trace from 'dbux-common/src/core/data/Trace';
+import Trace from '@dbux/common/src/core/data/Trace';
 import TraceNode from './TraceNode';
 
 export default class SelectedTraceNode extends TraceNode {

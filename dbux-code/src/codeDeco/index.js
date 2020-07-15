@@ -9,14 +9,14 @@ import {
 } from 'vscode';
 
 
-import { makeDebounce } from 'dbux-common/src/util/scheduling';
-import { newLogger } from 'dbux-common/src/log/logger';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { renderTraceDecorations, clearTraceDecorations } from './traceDecorator';
 import { initTraceDecorators } from './traceDecoConfig';
 import { initEditedWarning } from './editedWarning';
-// import DataProvider from 'dbux-data/src/DataProvider';
-// import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
+// import DataProvider from '@dbux/data/src/DataProvider';
+// import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 
 const { log, debug, warn, error: logError } = newLogger('code-deco');
 

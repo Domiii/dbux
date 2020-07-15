@@ -1,4 +1,4 @@
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import Bug from './Bug';
 
 const { log, debug, warn, error: logError } = newLogger('dbux-code');

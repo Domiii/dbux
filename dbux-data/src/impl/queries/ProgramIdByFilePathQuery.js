@@ -1,4 +1,4 @@
-import { arePathsIdenticalDontResolve } from 'dbux-common/src/util/fileUtil';
+import { arePathsIdenticalDontResolve } from '@dbux/common/src/util/fileUtil';
 import CachedQuery from '../../queries/CachedQuery';
 
 

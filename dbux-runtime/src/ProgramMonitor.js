@@ -1,4 +1,4 @@
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 
 /**
  * Comes from the order we execute things in programVisitor
@@ -12,7 +12,7 @@ const ProgramStopTraceId = 2;
 
 export default class ProgramMonitor {
   /**
-   * @type {import('dbux-common/src/core/data/StaticProgramContext').default}
+   * @type {import('@dbux/common/src/core/data/StaticProgramContext').default}
    */
   _staticProgramContext;
 

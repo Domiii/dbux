@@ -1,5 +1,5 @@
-import { newLogger } from 'dbux-common/src/log/logger';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import ContextNode from './ContextNode';
 

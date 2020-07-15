@@ -97,7 +97,7 @@ function buildConfig([target, configOverrides]) {
     [target]: path.join(targetRoot, defaultEntryPoint)
   };
 
-  const dependencyPattern = /^dbux-.*/;
+  const dependencyPattern = /^@dbux\/.*/;
   const dependencies = getDependenciesPackageJson(MonoRoot, target, dependencyPattern);
   dependencies.push(target);
   const resolve = makeResolve(MonoRoot, dependencies);

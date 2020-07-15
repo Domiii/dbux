@@ -1,6 +1,6 @@
 import isObject from 'lodash/isObject';
 import isArray from 'lodash/isArray';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import SerializationMethod from './SerializationMethod';
 import ValueTypeCategory from '../core/constants/ValueTypeCategory';
 

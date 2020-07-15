@@ -1,5 +1,5 @@
 import http from 'http';
-import { newLogger, logWarn } from 'dbux-common/src/log/logger';
+import { newLogger, logWarn } from '@dbux/common/src/log/logger';
 import RuntimeClient from './RuntimeClient';
 import { makeListenSocket } from './serverUtil';
 

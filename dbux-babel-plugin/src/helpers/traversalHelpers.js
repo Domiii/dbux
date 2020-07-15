@@ -7,7 +7,7 @@
  */
 
 import * as t from '@babel/types';
-import {isDebug} from 'dbux-common/src/util/nodeUtil';
+import {isDebug} from '@dbux/common/src/util/nodeUtil';
 
 
 /**

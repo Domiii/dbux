@@ -1,7 +1,7 @@
 import { TreeItemCollapsibleState, window, workspace } from 'vscode';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import ValueTypeCategory from 'dbux-common/src/core/constants/ValueTypeCategory';
-import { isTraceExpression } from 'dbux-common/src/core/constants/TraceType';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
+import { isTraceExpression } from '@dbux/common/src/core/constants/TraceType';
 import isEmpty from 'lodash/isEmpty';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { makeTreeItems, makeTreeChildren } from '../../helpers/treeViewHelpers';

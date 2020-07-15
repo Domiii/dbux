@@ -1,6 +1,6 @@
 import http from 'http';
 import * as SocketIOServer from 'socket.io';
-import { newLogger, logWarn } from 'dbux-common/src/log/logger';
+import { newLogger, logWarn } from '@dbux/common/src/log/logger';
 
 const { log, debug, warn, error: logError } = newLogger('net/servers');
 

@@ -1,7 +1,7 @@
 import NanoEvents from 'nanoevents';
-import Trace from 'dbux-common/src/core/data/Trace';
-import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
-import { newLogger } from 'dbux-common/src/log/logger';
+import Trace from '@dbux/common/src/core/data/Trace';
+import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '../applications/allApplications';
 import traceSelection from '../traceSelection';
 

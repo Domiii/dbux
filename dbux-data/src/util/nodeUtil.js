@@ -1,7 +1,7 @@
 import path from 'path';
 import { promises as fs } from 'fs';
 import _findPackageJson from 'find-package-json';
-import { newFileLogger } from 'dbux-common/src/log/logger';
+import { newFileLogger } from '@dbux/common/src/log/logger';
 
 const { log, debug, warn, error: logError } = newFileLogger(__filename);
 

@@ -1,4 +1,4 @@
-import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
+import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 

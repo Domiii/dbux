@@ -1,4 +1,4 @@
-import { logInternalError } from 'dbux-common/src/log/logger';
+import { logInternalError } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 
 /**

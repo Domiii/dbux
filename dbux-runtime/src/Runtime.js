@@ -1,5 +1,5 @@
-import { logInternalError } from 'dbux-common/src/log/logger';
-import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
+import { logInternalError } from '@dbux/common/src/log/logger';
+import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import Stack from './Stack';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';

@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "dbux-common",
+  "name": "@dbux/common",
   "version": "1.0.0",
   "description": "",
   "module": "src/index.js",

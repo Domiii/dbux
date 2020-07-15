@@ -1,5 +1,5 @@
 {
-  "name": "dbux-project-sandbox",
+  "name": "@dbux/project-sandbox",
   "private": true,
   "scripts": {
     "install-bug-dataset": "git clone https://github.com/BugsJS/bug-dataset.git",

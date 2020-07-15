@@ -1,5 +1,5 @@
 import omit from 'lodash/omit';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import StaticTraceTDNode from './StaticTraceTDNodes';

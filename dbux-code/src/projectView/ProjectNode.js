@@ -1,8 +1,8 @@
 import { ProgressLocation, Uri, workspace, window } from 'vscode';
-import { pathGetBasename } from 'dbux-common/src/util/pathUtil';
-import sleep from 'dbux-common/src/util/sleep';
-import Project from 'dbux-projects/src/projectLib/Project';
-import BugRunnerStatus, { isStatusRunningType } from 'dbux-projects/src/projectLib/BugRunnerStatus';
+import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
+import sleep from '@dbux/common/src/util/sleep';
+import Project from '@dbux/projects/src/projectLib/Project';
+import BugRunnerStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/BugRunnerStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
 import BugLoadingNode from './BugLoadingNode';

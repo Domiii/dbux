@@ -1,6 +1,6 @@
-import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
-import { isVirtualContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
-import Trace from 'dbux-common/src/core/data/Trace';
+import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import { isVirtualContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
+import Trace from '@dbux/common/src/core/data/Trace';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 

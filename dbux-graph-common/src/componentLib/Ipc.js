@@ -1,6 +1,6 @@
 import get from 'lodash/get';
-import { newLogger, logDebug } from 'dbux-common/src/log/logger';
-import { makeDebounce } from 'dbux-common/src/util/scheduling';
+import { newLogger, logDebug } from '@dbux/common/src/log/logger';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import MessageType from './MessageType';
 import ComponentEndpoint from './ComponentEndpoint';
 

@@ -1,5 +1,5 @@
 import pull from 'lodash/pull';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 
 export default class ContextProvider {
   owner;

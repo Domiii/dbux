@@ -1,6 +1,6 @@
 import isPlainObject from 'lodash/isPlainObject';
-import { newLogger } from 'dbux-common/src/log/logger';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
+import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isFunction from 'lodash/isFunction';
 import RemoteCommandProxy from './RemoteCommandProxy';
 

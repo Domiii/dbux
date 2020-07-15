@@ -1,6 +1,6 @@
-import tracePlayback from 'dbux-data/src/playback/tracePlayback';
-import traceSelection from 'dbux-data/src/traceSelection';
-import { newLogger } from 'dbux-common/src/log/logger';
+import tracePlayback from '@dbux/data/src/playback/tracePlayback';
+import traceSelection from '@dbux/data/src/traceSelection';
+import { newLogger } from '@dbux/common/src/log/logger';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { window } from 'vscode';
 

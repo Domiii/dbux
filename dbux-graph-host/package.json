@@ -1,5 +1,5 @@
 {
-  "name": "dbux-graph-host",
+  "name": "@dbux/graph-host",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -11,8 +11,8 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "dbux-common": "*",
-    "dbux-graph-common": "*",
-    "dbux-data": "*"
+    "@dbux/common": "*",
+    "@dbux/graph-common": "*",
+    "@dbux/data": "*"
   }
 }

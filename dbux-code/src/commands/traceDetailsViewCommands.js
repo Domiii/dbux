@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { switchMode } from '../traceDetailsView/nodes/StaticTraceTDNodes';
 import { NavigationMethods } from '../traceDetailsView/nodes/NavigationNode';

@@ -1,5 +1,5 @@
 import NanoEvents from 'nanoevents';
-import HostComponentEndpoint from 'dbux-graph-host/src/componentLib/HostComponentEndpoint';
+import HostComponentEndpoint from '@dbux/graph-host/src/componentLib/HostComponentEndpoint';
 import RunNode from '../RunNode';
 
 export default class HiddenNodeManager extends HostComponentEndpoint {

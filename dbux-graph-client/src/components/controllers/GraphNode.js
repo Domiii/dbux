@@ -1,4 +1,4 @@
-import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
+import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
 import { decorateClasses } from '@/util/domUtil';
 

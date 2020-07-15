@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { onLogError } from 'dbux-common/src/log/logger';
+import { onLogError } from '@dbux/common/src/log/logger';
 
 let errorLogFlag = true;
 

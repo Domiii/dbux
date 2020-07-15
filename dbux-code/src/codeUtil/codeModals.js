@@ -1,7 +1,7 @@
 import {
   window
 } from 'vscode';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /**
  * Example to render a modal with one button "Open Editor":

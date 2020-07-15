@@ -1,5 +1,5 @@
-import { newLogger } from 'dbux-common/src/log/logger';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import GraphDocument from './components/GraphDocument';
 import HostComponentManager from './componentLib/HostComponentManager';
 import componentRegistry from './_hostRegistry';

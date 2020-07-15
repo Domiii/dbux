@@ -1,15 +1,15 @@
 import path from 'path';
 import pull from 'lodash/pull';
-import { newLogger } from 'dbux-common/src/log/logger';
-import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
-import Trace from 'dbux-common/src/core/data/Trace';
-import ValueRef from 'dbux-common/src/core/data/ValueRef';
-import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext';
-import StaticContext from 'dbux-common/src/core/data/StaticContext';
-import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
-import ValueTypeCategory, { ValuePruneState } from 'dbux-common/src/core/constants/ValueTypeCategory';
-import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from 'dbux-common/src/core/constants/TraceType';
-import { hasCallId, isCallResult, isCallExpressionTrace } from 'dbux-common/src/core/constants/traceCategorization';
+import { newLogger } from '@dbux/common/src/log/logger';
+import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import Trace from '@dbux/common/src/core/data/Trace';
+import ValueRef from '@dbux/common/src/core/data/ValueRef';
+import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContext';
+import StaticContext from '@dbux/common/src/core/data/StaticContext';
+import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
+import ValueTypeCategory, { ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
+import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
 
 import Collection from './Collection';
 import Queries from './queries/Queries';

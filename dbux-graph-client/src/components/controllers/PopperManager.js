@@ -1,5 +1,5 @@
 import isString from 'lodash/isString';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { createPopper } from '@popperjs/core';
 import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
 

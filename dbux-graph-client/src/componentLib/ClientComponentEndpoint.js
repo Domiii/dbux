@@ -1,4 +1,4 @@
-import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
+import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndpoint';
 import DOMWrapper from '@/dom/DOMWrapper';
 import ClientComponentList from './ClientComponentList';
 

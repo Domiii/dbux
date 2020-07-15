@@ -1,6 +1,6 @@
 import io, { Socket } from 'socket.io-client';
-import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
-import universalLibs from 'dbux-common/src/util/universalLibs';
+import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
+import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
 const Verbose = false;

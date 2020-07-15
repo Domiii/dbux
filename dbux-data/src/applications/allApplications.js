@@ -1,6 +1,6 @@
 import NanoEvents from 'nanoevents';
 import isString from 'lodash/isString';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 
 import Application from './Application';
 import ApplicationSet from './ApplicationSet';

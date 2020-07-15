@@ -1,4 +1,4 @@
-import { pathGetParent } from 'dbux-common/src/util/pathUtil';
+import { pathGetParent } from '@dbux/common/src/util/pathUtil';
 import DataProvider from '../DataProvider';
 import { newDataProvider } from '../dataProviderImpl';
 import { getFileName } from '../util/nodeUtil';

@@ -1,4 +1,4 @@
-import dbuxRunFile from 'dbux-cli/src/dbuxRunFile';
+import dbuxRunFile from '@dbux/cli/src/dbuxRunFile';
 import path from 'path';
 
 const srcFolder = path.join(__dirname, '..');

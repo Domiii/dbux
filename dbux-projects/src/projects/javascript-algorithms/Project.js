@@ -1,6 +1,6 @@
 import path from 'path';
-import Project from 'dbux-projects/src/projectLib/Project';
-import { buildJestRunBugCommand } from 'dbux-projects/src/util/jestUtil';
+import Project from '@dbux/projects/src/projectLib/Project';
+import { buildJestRunBugCommand } from '@dbux/projects/src/util/jestUtil';
 
 export default class JavascriptAlgorithmProject extends Project {
   gitRemote = 'trekhleb/javascript-algorithms.git';

@@ -1,6 +1,6 @@
 import { window } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
-import { ProjectsManager } from 'dbux-projects/src';
+import { newLogger } from '@dbux/common/src/log/logger';
+import { ProjectsManager } from '@dbux/projects/src';
 import { registerCommand } from './commandUtil';
 
 const logger = newLogger('projectCommands');

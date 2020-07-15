@@ -1,5 +1,5 @@
-import { getTraceCreatedAt, makeTraceLabel } from 'dbux-data/src/helpers/traceLabels';
-import traceSelection from 'dbux-data/src/traceSelection';
+import { getTraceCreatedAt, makeTraceLabel } from '@dbux/data/src/helpers/traceLabels';
+import traceSelection from '@dbux/data/src/traceSelection';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 export default class TraceNode extends BaseTreeViewNode {

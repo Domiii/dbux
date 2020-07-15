@@ -1,6 +1,6 @@
 import isString from 'lodash/isString';
 
-import ComponentList from 'dbux-graph-common/src/componentLib/ComponentList';
+import ComponentList from '@dbux/graph-common/src/componentLib/ComponentList';
 
 class HostComponentList extends ComponentList {
   // ###########################################################################

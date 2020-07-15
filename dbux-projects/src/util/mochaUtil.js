@@ -1,5 +1,5 @@
 import path from 'path';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { buildNodeCommand } from './nodeUtil';
 
 export async function buildMochaRunBugCommand(cwd, mochaArgs, requireArr = EmptyArray, debugPort = 9309) {

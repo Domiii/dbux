@@ -1,10 +1,10 @@
 import NanoEvents from 'nanoevents';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
-import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
-import Process from 'dbux-projects/src/util/Process';
-import { newLogger, logError } from 'dbux-common/src/log/logger';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
+import Process from '@dbux/projects/src/util/Process';
+import { newLogger, logError } from '@dbux/common/src/log/logger';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Project from './Project';
 import Bug from './Bug';
 import BugRunnerStatus from './BugRunnerStatus';

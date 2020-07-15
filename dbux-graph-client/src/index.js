@@ -1,4 +1,4 @@
-import { newLogger, onLogError } from 'dbux-common/src/log/logger';
+import { newLogger, onLogError } from '@dbux/common/src/log/logger';
 import ClientComponentManager from './componentLib/ClientComponentManager';
 
 import 'bootstrap/dist/css/bootstrap.css';

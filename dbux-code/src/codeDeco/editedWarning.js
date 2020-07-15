@@ -1,5 +1,5 @@
 import { workspace, window } from 'vscode';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { showWarningMessage } from '../codeUtil/codeModals';
 
 function getRelatedAppIds(fpath) {

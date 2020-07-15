@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
 

@@ -1,11 +1,11 @@
-import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
-import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import { newLogger } from 'dbux-common/src/log/logger';
-import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
-import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
-import { isCallResult, hasCallId } from 'dbux-common/src/core/constants/traceCategorization';
-import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
+import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
+import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { newLogger } from '@dbux/common/src/log/logger';
+import { isVirtualContextType } from '@dbux/common/src/core/constants/StaticContextType';
+import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
+import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
+import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
 
 /**
  * @typedef {import('./DataProvider').default} DataProvider

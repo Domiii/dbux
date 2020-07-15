@@ -3,8 +3,8 @@ import {
   workspace,
   ExtensionContext
 } from 'vscode';
-import Application from 'dbux-data/src/applications/Application';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import Application from '@dbux/data/src/applications/Application';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { showTextDocument } from './codeNav';
 import { showWarningMessage } from './codeModals';
 

@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 
 import { initRuntimeServer } from './net/SocketServer';
 import { initCodeDeco } from './codeDeco';

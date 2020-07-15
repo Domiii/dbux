@@ -1,5 +1,5 @@
 import sh from 'shelljs';
-import Project from 'dbux-projects/src/projectLib/Project';
+import Project from '@dbux/projects/src/projectLib/Project';
 
 
 export default class TodomvcEs6Project extends Project {
