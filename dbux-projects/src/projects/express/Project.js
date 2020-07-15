@@ -239,6 +239,9 @@ export default class ExpressProject extends Project {
 
     // `npm install` again! (NOTE: the buggy version might have different dependencies)
     await this.npmInstall();
+
+    // Copy assets again in this branch
+    await this.copyAssets();
   }
 
   async testBugCommand(bug, debugPort) {

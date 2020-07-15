@@ -99,7 +99,7 @@ export default class TerminalWrapper {
 
     try {
       const args = JSON.stringify(JSON.stringify({ port, cwd, command }));
-      const runJsCommand = `node _dbux_run.js ${args}`;
+      const runJsCommand = `cd ${cwd} && node _dbux_run.js ${args}`;
       this._terminal = sendCommandToDefaultTerminal(runJsCommand);
 
       const client = this.client = await socketServer.waitForNextClient();
