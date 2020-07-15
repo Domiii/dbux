@@ -1,6 +1,6 @@
 {
   "name": "@dbux/data",
-  "version": "0.0.2-alpha.1004+8a5cb63",
+  "version": "0.0.2-alpha.1004+18e0d5e",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -12,10 +12,10 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.0.2-alpha.1004+8a5cb63",
+    "@dbux/common": "^0.0.2-alpha.1004+18e0d5e",
     "lodash": "*",
     "nanoevents": "*"
   },
   "_moduleAliases": {},
-  "gitHead": "8a5cb63fee5e63898e29de2c1a8c34cf65b7115b"
+  "gitHead": "18e0d5ec96bb1fb6348665436e01d4c4ce127999"
 }
