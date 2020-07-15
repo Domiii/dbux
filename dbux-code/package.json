@@ -1,7 +1,7 @@
 {
 	"name": "@dbux/code",
+	"version": "0.0.2-alpha.1004+8a5cb63",
 	"description": "",
-	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.41.0"
 	},
@@ -501,18 +501,19 @@
 		"vscode-test": "^1.2.2"
 	},
 	"dependencies": {
+		"@dbux/cli": "^0.0.2-alpha.1004+8a5cb63",
+		"@dbux/common": "^0.0.2-alpha.1004+8a5cb63",
+		"@dbux/data": "^0.0.2-alpha.1004+8a5cb63",
+		"@dbux/graph-common": "^0.0.2-alpha.1004+8a5cb63",
+		"@dbux/graph-host": "^0.0.2-alpha.1004+8a5cb63",
+		"@dbux/projects": "^0.0.2-alpha.1004+8a5cb63",
 		"axios": "^0.19.2",
 		"comment-json": "^3.0.2",
-		"@dbux/cli": "*",
-		"@dbux/common": "*",
-		"@dbux/data": "*",
-		"@dbux/graph-common": "*",
-		"@dbux/graph-host": "*",
-		"@dbux/projects": "*",
+		"lodash": "*",
 		"moment": "^2.24.0",
 		"socket.io": "^2.3.0",
-		"strip-color": "^0.1.0",
-		"lodash": "*"
+		"strip-color": "^0.1.0"
 	},
-	"_moduleAliases": {}
+	"_moduleAliases": {},
+	"gitHead": "8a5cb63fee5e63898e29de2c1a8c34cf65b7115b"
 }

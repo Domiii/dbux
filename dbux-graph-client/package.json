@@ -1,5 +1,6 @@
 {
   "name": "@dbux/graph-client",
+  "version": "0.0.2-alpha.1004+8a5cb63",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -16,14 +17,14 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
+    "@dbux/common": "^0.0.2-alpha.1004+8a5cb63",
+    "@dbux/graph-common": "^0.0.2-alpha.1004+8a5cb63",
+    "@dbux/panzoom": "^0.0.2-alpha.1004+8a5cb63",
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
-    "@dbux/common": "*",
-    "@dbux/graph-common": "*",
     "html2canvas": "^1.0.0-rc.5",
     "lodash": "*",
-    "webpack-cli": "*",
-    "@dbux/panzoom": "*"
+    "webpack-cli": "*"
   },
   "devDependencies": {
     "express": "^4.17.1",
@@ -33,5 +34,6 @@
   },
   "_moduleAliases": {
     "webpack": "../node_modules/webpack"
-  }
+  },
+  "gitHead": "8a5cb63fee5e63898e29de2c1a8c34cf65b7115b"
 }

@@ -1,5 +1,6 @@
 {
   "name": "@dbux/babel-plugin",
+  "version": "0.0.2-alpha.1004+8a5cb63",
   "description": "",
   "author": "Domi",
   "module": "dist/index.js",
@@ -18,7 +19,7 @@
     "__archive_prepublish": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@dbux/common": "*",
+    "@dbux/common": "^0.0.2-alpha.1004+8a5cb63",
     "lodash": "*"
   },
   "devDependencies": {
@@ -40,6 +41,6 @@
     "tracing",
     "babel-plugin"
   ],
-  "_moduleAliases": {
-  }
+  "_moduleAliases": {},
+  "gitHead": "8a5cb63fee5e63898e29de2c1a8c34cf65b7115b"
 }

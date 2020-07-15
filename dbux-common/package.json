@@ -1,22 +1,18 @@
 {
-  "private": true,
   "name": "@dbux/common",
-  "version": "1.0.0",
+  "version": "0.0.2-alpha.1004",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
   "scripts": {
-    "_before-run": "npx link-module-alias",
-    "postinstall": "npx link-module-alias"
   },
   "keywords": [],
   "author": "Domi",
   "license": "Apache-2.0",
-  "devDependencies": {
-  },
   "dependencies": {
-    "lodash": "*",
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "lodash": "*"
   },
-  "_moduleAliases": {}
+  "_moduleAliases": {},
+  "gitHead": "8a5cb63fee5e63898e29de2c1a8c34cf65b7115b"
 }

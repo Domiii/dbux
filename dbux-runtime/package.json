@@ -1,5 +1,6 @@
 {
   "name": "@dbux/runtime",
+  "version": "0.0.2-alpha.1004+8a5cb63",
   "description": "",
   "module": "dist/index.js",
   "main": "dist/index.js",
@@ -8,7 +9,6 @@
     "build": "npm run clean && npm run _before-run && webpack --config config/webpack.config.js",
     "test": "node --stack-trace-limit=1000 node_modules/.bin/jest"
   },
-  "devDependencies": {},
   "keywords": [
     "dbux",
     "interactive",
@@ -19,11 +19,11 @@
     "babel-plugin"
   ],
   "dependencies": {
-    "@dbux/common": "*",
-    "socket.io-client": "^2.3.0",
+    "@dbux/common": "^0.0.2-alpha.1004+8a5cb63",
     "lodash": "*",
-    "nanoevents": "*"
+    "nanoevents": "*",
+    "socket.io-client": "^2.3.0"
   },
-  "_moduleAliases": {
-  }
+  "_moduleAliases": {},
+  "gitHead": "8a5cb63fee5e63898e29de2c1a8c34cf65b7115b"
 }

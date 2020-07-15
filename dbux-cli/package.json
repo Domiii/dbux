@@ -1,5 +1,6 @@
 {
   "name": "@dbux/cli",
+  "version": "0.0.2-alpha.1004+8a5cb63",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,9 +19,10 @@
     "prettier": "1.19.1"
   },
   "dependencies": {
+    "@dbux/common": "^0.0.2-alpha.1004+8a5cb63",
     "module-alias": "^2.2.2",
-    "@dbux/common": "*",
-    "yargs": "*",
-    "shelljs": "*"
-  }
+    "shelljs": "*",
+    "yargs": "*"
+  },
+  "gitHead": "8a5cb63fee5e63898e29de2c1a8c34cf65b7115b"
 }
