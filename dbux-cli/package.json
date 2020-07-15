@@ -19,9 +19,7 @@
   },
   "dependencies": {
     "module-alias": "^2.2.2",
-    "@dbux/common": "*"
-  },
-  "peerDependencies": {
+    "@dbux/common": "*",
     "yargs": "*",
     "shelljs": "*"
   }

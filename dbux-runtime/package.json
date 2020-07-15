@@ -20,9 +20,7 @@
   ],
   "dependencies": {
     "@dbux/common": "*",
-    "socket.io-client": "^2.3.0"
-  },
-  "peerDependencies": {
+    "socket.io-client": "^2.3.0",
     "lodash": "*",
     "nanoevents": "*"
   },

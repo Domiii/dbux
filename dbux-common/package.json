@@ -15,8 +15,6 @@
   "devDependencies": {
   },
   "dependencies": {
-  },
-  "peerDependencies": {
     "lodash": "*",
     "colors": "^1.4.0"
   },

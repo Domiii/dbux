@@ -8,12 +8,10 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "*"
-  },
-  "devDependencies": {},
-  "peerDependencies": {
+    "@dbux/common": "*",
     "lodash": "*",
     "nanoevents": "*"
   },
+  "devDependencies": {},
   "_moduleAliases": {}
 }

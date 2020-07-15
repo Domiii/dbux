@@ -12,13 +12,11 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "*"
-  },
-  "devDependencies": {},
-  "peerDependencies": {
+    "@dbux/common": "*",
     "nanoevents": "*",
     "lodash": "*"
   },
+  "devDependencies": {},
   "_moduleAliases": {
   }
 }

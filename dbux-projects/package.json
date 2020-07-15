@@ -13,8 +13,5 @@
   },
   "keywords": [],
   "author": "Domi",
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "shelljs": "^0.8.3"
-  }
+  "license": "Apache-2.0"
 }

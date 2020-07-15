@@ -18,7 +18,8 @@
     "__archive_prepublish": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@dbux/common": "*"
+    "@dbux/common": "*",
+    "lodash": "*"
   },
   "devDependencies": {
     "@babel/code-frame": "^7.8.3",
@@ -39,9 +40,6 @@
     "tracing",
     "babel-plugin"
   ],
-  "peerDependencies": {
-    "lodash": "*"
-  },
   "_moduleAliases": {
   }
 }
