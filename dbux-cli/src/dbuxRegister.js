@@ -1,9 +1,12 @@
-const path = require('path');
-const cliDir = path.join(__dirname, '..');
-const dbuxRoot = path.resolve(cliDir + '/..');
+const process = require('process');
+
+const babelRegister = require('@babel/register');
+const dbuxBabelPlugin = require('@dbux/babel-plugin');
+
+// make sure, core stuff is loaded and working before starting instrumentation
+require('@dbux/runtime');
 
 module.exports = function dbuxRegister(targetPath = null) {
-  const process = require('process');
   process.env.BABEL_DISABLE_CACHE = 1;
 
   // const dbuxAliases = [
@@ -30,12 +33,6 @@ module.exports = function dbuxRegister(targetPath = null) {
       `${targetPath}/../..`
     );
   }
-
-  const babelRegister = require('@babel/register');
-  const dbuxBabelPlugin = require('dbux-babel-plugin');
-
-  // make sure, core stuff is loaded and working before starting instrumentation
-  require('dbux-runtime');
 
 
   // setup babel-register

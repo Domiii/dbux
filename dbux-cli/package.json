@@ -19,7 +19,12 @@
     "prettier": "1.19.1"
   },
   "dependencies": {
+    "@babel/core": "7.8.3",
+    "@babel/preset-env": "7.8.3",
+    "@babel/register": "7.8.3",
+    "@dbux/babel-plugin": "^0.0.2-alpha.1004+18e0d5e",
     "@dbux/common": "^0.0.2-alpha.1004+18e0d5e",
+    "@dbux/runtime": "^0.0.2-alpha.1004+18e0d5e",
     "module-alias": "^2.2.2",
     "shelljs": "*",
     "yargs": "*"

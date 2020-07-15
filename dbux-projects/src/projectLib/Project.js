@@ -340,16 +340,11 @@ export default class Project {
   }
 
   async installDbuxCli() {
-    // TODO: deployment
-
     // await exec('pwd', this.logger);
-
-    // const dbuxCli = path.resolve(projectPath, '../../dbux-cli');
-    const dbuxRoot = getDbuxRoot('../../');
-    const dbuxCli = `${dbuxRoot}dbux-common ${dbuxRoot}dbux-cli`;
+    const dbuxClis = `@dbux/cli`;
 
     // TODO: select `npm` or `yarn` based on packageManager setting (but requires change in command)
-    await this.exec(`yarn add --dev ${dbuxCli}`, this.logger);
+    await this.exec(`yarn add --dev ${dbuxClis}`, this.logger);
   }
 
   // ###########################################################################
