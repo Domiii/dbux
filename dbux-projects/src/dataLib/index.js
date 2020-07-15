@@ -25,10 +25,10 @@ export default function getOrCreateBugsInformation(_storage) {
   // resetToDefault(storage);
 
   let obj = storage.get(keyName);
-  obj.save = function() {
+  obj.save = function () {
     storage.set(keyName, this);
   };
 
-  debug(`Current storage`, obj);
+  // debug(`Current storage`, obj);
   return obj;
 }

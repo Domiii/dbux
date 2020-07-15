@@ -14,18 +14,22 @@ function newBugsInformation() {
 }
 
 function processBugResult(obj, bug, result) {
-  debug(`processBugResult obj bug result`, obj, bug, result);
   obj.testRuns.push(testRunHandler.newTestRun(bug, result));
+
   let bugResult = getOrCreateBugResult(obj.bugResults, bug);
   bugResultHandler.updateStatus(bugResult, result);
-  debug(`new buginformation`, obj);
+
   obj.save();
 }
 
-function getOrCreateBugResult(bugResults, bug) {
-  let result = bugResults.filter((bugResult) => {
+function getBugResult(bugResults, bug) {
+  return bugResults.filter((bugResult) => {
     return bugResultHandler.isMatch(bugResult, bug.project.name, bug.id);
   })?.[0];
+}
+
+function getOrCreateBugResult(bugResults, bug) {
+  let result = getBugResult(bugResults, bug);
 
   if (!result) {
     result = bugResultHandler.newBugResult(bug);
@@ -35,8 +39,12 @@ function getOrCreateBugResult(bugResults, bug) {
   return result;
 }
 
+function getBugResultByBug(obj, bug) {
+  return getBugResult(obj.bugResults, bug);
+}
+
 export default {
   newBugsInformation,
   processBugResult,
-  getOrCreateBugResult,
+  getBugResultByBug,
 };

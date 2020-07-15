@@ -4,7 +4,6 @@ import { newLogger, setOutputStreams } from 'dbux-common/src/log/logger';
 import { initDbuxProjects } from 'dbux-projects/src';
 import exec from 'dbux-projects/src/util/exec';
 import BugRunnerStatus from 'dbux-projects/src/projectLib/BugRunnerStatus';
-import getOrCreateBugsInformation from 'dbux-projects/src/dataLib';
 import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -65,11 +64,6 @@ class ProjectViewController {
     debug(`Initialized dbux-projects. Projects folder = "${path.resolve(cfg.projectsRoot)}"`);
 
     // ########################################
-    //  init projectManager
-    // ########################################
-    this.storage = getOrCreateBugsInformation(externals.storage);
-
-    // ########################################
     //  init treeView
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
@@ -80,7 +74,7 @@ class ProjectViewController {
     // ########################################
     //  listen on bugRunner
     // ########################################
-    const bugRunner = this.manager.getOrCreateRunner(this.storage);
+    const bugRunner = this.manager.getOrCreateRunner();
     bugRunner.on('statusChanged', this.onStatusChanged.bind(this));
   }
 
@@ -110,7 +104,7 @@ class ProjectViewController {
 
     return runTaskWithProgressBar(async (progress, cancelToken) => {
       const { bug } = bugNode;
-      const runner = this.manager.getOrCreateRunner(this.storage);
+      const runner = this.manager.getOrCreateRunner();
 
       // cancel any currently running tasks
       progress.report({ message: 'Canceling previous tasks...' });
@@ -161,7 +155,7 @@ export function initProjectView(context) {
   // shut it all down when VSCode shuts down
   context.subscriptions.push({
     dispose() {
-      const runner = controller.manager.getOrCreateRunner(this.storage);
+      const runner = controller.manager.getOrCreateRunner();
       runner.cancel();
     }
   });
