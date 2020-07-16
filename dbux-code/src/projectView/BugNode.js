@@ -44,7 +44,7 @@ export default class BugNode extends BaseTreeViewNode {
       case BugResultStatusType.Solved:
         return 'correct.svg';
     }
-    return '';
+    return ' ';
   }
 
   canHaveChildren() {
