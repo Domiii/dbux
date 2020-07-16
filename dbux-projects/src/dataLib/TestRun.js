@@ -1,12 +1,12 @@
 
-function newTestRun(bug, result) {
+async function newTestRun(bug, result) {
   return {
     projectName: bug.project.name,
     bugId: bug.id,
     createAt: new Date(),
     nFailedTests: result.code,
     timer: undefined,
-    patch: undefined, // TODO
+    patch: await bug.project.getPatchString(), 
   };
 }
 

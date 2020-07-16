@@ -13,8 +13,8 @@ function newBugsInformation() {
   };
 }
 
-function processBugResult(obj, bug, result) {
-  obj.testRuns.push(testRunHandler.newTestRun(bug, result));
+async function processBugResult(obj, bug, result) {
+  obj.testRuns.push(await testRunHandler.newTestRun(bug, result));
 
   let bugResult = getOrCreateBugResult(obj.bugResults, bug);
   bugResultHandler.updateStatus(bugResult, result);
