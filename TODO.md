@@ -1,17 +1,4 @@
 
-## TODO (shared)
-* grouping: add new `GroupNode` controller component
-   * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
-   * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
-      * (e.g. `next` in `express`)
-* 
-
-
-
-
-
-
-
 
 
 

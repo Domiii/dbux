@@ -135,7 +135,7 @@ export default class Project {
     throw new Error(this + ' abstract method not implemented');
   }
 
-  async selectBug(bug) {
+  async selectBug(/* bug */) {
     throw new Error(this + ' abstract method not implemented');
   }
 
@@ -397,7 +397,7 @@ export default class Project {
    * 
    * @see https://git-scm.com/docs/git-apply#Documentation/git-apply.txt-ltpatchgt82308203
    */
-  async applyPatchString(patchString) {
+  async applyPatchString(/* patchString */) {
     // TODO: fix `exec` to take in a string argument that will be automatically piped to stdin
     // return this.exec(`git apply --ignore-space-change --ignore-whitespace -`);
   }
