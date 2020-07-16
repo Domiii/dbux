@@ -87,9 +87,10 @@ const traceCfg = (() => {
     // assignments
     // ########################################
     AssignmentExpression: [
-      // ExpressionResult,
-      NoTrace,
-      [['right', ExpressionResult, null, { originalIsParent: true }]]
+      ExpressionResult,
+      // NoTrace,
+      // NOTE: when using `originalIsParent`, ExpressionStatement.expression will trigger on the entire AssignmentExpression
+      // [['right', ExpressionResult, null, { originalIsParent: true }]]
     ],
     VariableDeclarator: [
       NoTrace,

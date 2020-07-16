@@ -2,11 +2,10 @@ import { window } from 'vscode';
 import process from 'process';
 import { newLogger } from 'dbux-common/src/log/logger';
 
-import { initServer } from './net/RuntimeServer';
+import { initRuntimeServer } from './net/SocketServer';
 import { initCodeDeco } from './codeDeco';
 
 import { initCallGraphView } from './callGraphView/callGraphViewController';
-import { initCallStackView } from './callStackView/callStackViewController';
 import { initCommands } from './commands/index';
 import { initToolBar } from './toolbar';
 import { initPlayback } from './playback/index';
@@ -15,7 +14,6 @@ import { initCodeApplications } from './codeUtil/CodeApplication';
 import { initTraceDetailsView } from './traceDetailsView/traceDetailsController';
 import { initResources } from './resources';
 import { initTraceSelection } from './codeUtil/codeSelection';
-import { initEditorTracesView } from './editorTracesView/editorTracesController';
 import { initApplicationsView } from './applicationsView/applicationsViewController';
 import { initProjectView } from './projectView/projectViewController';
 import { initLogging } from './logging';
@@ -41,7 +39,7 @@ function activate(context) {
     registerErrorHandler();
     initLogging();
     initResources(context);
-    initServer(context);
+    initRuntimeServer(context);
     initCodeApplications(context);
     initCodeDeco(context);
     initToolBar(context);

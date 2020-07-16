@@ -1,24 +1,10 @@
 
 ## TODO (shared)
-* add "GroupMode.Ungrouped" to "Trace Executed ..." node
-   * make it the default option
-* navigation: "stepping in"
-   * `step in` backwards doesn't work?
-   * if `selectedTrace` has `callId`, always `step in`to that call right away
-      * -> no matter if forward or backward
-      * -> no need to first select last argument before stepping down
-   * before stepping down, instead of selecting last argument, select the call's BCE
-* in sync mode:
-   * graph first scrolls to node
-   * then scrolls right back to zero
 * grouping: add new `GroupNode` controller component
    * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
    * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
       * (e.g. `next` in `express`)
-* `BaseTreeViewNode`
-   * when clicking any button in a `BaseTreeViewNode`: select the node
-   * make sure, that when refreshing, previously selected node, is still selected
-      * if it clears the selection, select manually
+* 
 
 
 
@@ -30,21 +16,6 @@
 
 
 
-## TODO (`dbux-projects`)
-* add `backgroundProcesses` management
-* add auto-commit function
-   * allow saving own project changes
-   * when switching between bugs, need to commit all changes
-      * when switching back to that bug, need to fetch that commit
-   * allow reviewing diff of all own changes
-   * allow comparing to actual solution? (after submitting?)
-   * [future work] allow sending to backend
-
-
-* [Deployment]
-   * fix up paths
-   * discern correctly between `npm` and `yarn`
-   * improve dependency management
 
 
 
@@ -55,8 +26,6 @@
 
 * user interaction log
 * backend
-* user login (github oauth)
-   * see https://github.com/microsoft/vscode/issues/91309
 * bug difficulty classification
 * hint system + more relevant information
 
@@ -71,17 +40,14 @@
 
 ## TODO (other)
 * core instrumentation bugs
-   * assignments are traced twice?
+   * assignments are traced twice, once with `ExpressionValue`, once with `ExpressionResult`
       * e.g. `req.params = layer.params;`
       * maybe has to do w/ `originalIsParent`?
-   * error tracing
-      * when encountering errors caught mid-way
-         * `resolveCallIds` will fail
-      * error resolution doesn't work properly with recursion
-         * (probably because there are unmatched `BCE`s on the stack)
    * trace function parameters
 * fix: "running" a bug smoothly
-   * stop if `git checkout` failed
+   * stop running if `git checkout` failed
+      * NOTE: usually a failure is indicated by process `statusCode !== 0`
+      * currently
    * don't `gitResetHard` every time we run a bug
       * check if bug was already selected before doing the setup
          * Problem: need to deal with patch files
@@ -89,14 +55,12 @@
       * always show changes to user and let them confirm before `gitResetHard`
       * allow saving/submitting own changes for bugs
          * remember bug progress
+   * fix: allow for re-runninging "run.js" bug command from terminal
 * [dbux-projects]
-   * run bug in terminal for proper coloring + make "playing around" easier
-      * for Terminal API, see: https://stackoverflow.com/a/62774501/2228771
-   * get test result from test process
-      * pass/fail counts
-      * show terminal for more details
    * display test results
-      * integrate "bug hunt" timer
+   * integrate "bug hunt" timer
+      * pause, cancel, submit
+      * "submit" only available if bug runner succeeded
    * when running new bug
       * ask user to clear previous applications (and there are previous applications that are not of this bug)
    * when selecting a bug, show a modal to introduce it, and offer buttons to choose
@@ -134,11 +98,6 @@
    * visualize when value got ommitted/pruned
    * show actual string length, if pruned
    * make valueCollection prune/omit parameters easily configurable
-* get ready for deployment!
-   * setup w/ lerna and prepare production/publishable build?
-   * add to `extensions` folder
-      * see: https://github.com/Microsoft/vscode/issues/25159
-* in TrackedObjectTDNode, render `valueString`?
 * instrument `try` blocks
    * test errors in `try/finally` -> find errors in `try` block?
    * also show some sort of error symbol when tracing `catch` block?
@@ -306,11 +265,6 @@
 * [cursorTracesView] + [traceSelection]
    * when jumping between traces, keep a history stack to allow us to go forth and back
       * forth/back buttons in `TraceDetailView`?
-* [instrumentation]
-   * more accurate callstacks
-      * find correct trace of setter in callstack
-      * find correct trace of getter in callstack
-      * NOTE: this is very hard :(
 * [interactive_mode]
    * when clicking a value (and when in "online mode"), send command back to application to `console.log(inspect(value))`
 * [dataView]
@@ -334,8 +288,6 @@
    * (for proper multi-application testing)
    * be careful:
       * `__filename` + `__dirname` do not work w/ webpack when not targeting node
-* [instrumentation] support longer names
-   * (and then hide them in tree view; show long version as tooltip)
 * [instrumentation] if we see a function call for which we have no context, find out where it goes
    * (i.e. dependency name or runtime-internal?)
       * -> then allow to easily add it to our config and re-run so we can get it next time
@@ -440,8 +392,6 @@
    * fix `ValueTDNode` to render individual object + array entries using the same heuristics as `traceValueString`
 
 [Persistance]
-* use `Memento` to persist extension state through VSCode restarts
-   * -> reference: https://stackoverflow.com/questions/51821924/how-to-persist-information-for-a-vscode-extension
 * what to persist?
    * dbux-data
       * all applications' data: save to/load from memento
