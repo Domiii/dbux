@@ -82,8 +82,8 @@ class ProjectViewController {
   // project node buttons
   // ###########################################################################
 
-  async nodeAddToWorkspace(projectNode) {
-    await projectNode.addToWorkspace();
+  nodeAddToWorkspace(projectNode) {
+    projectNode.addToWorkspace();
   }
 
   // ###########################################################################

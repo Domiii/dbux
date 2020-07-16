@@ -7,8 +7,8 @@ const logger = newLogger('projectCommands');
 const { log, debug, warn, error: logError } = logger;
 
 export function initProjectCommands(extensionContext, projectViewController) {
-  registerCommand(extensionContext, 'dbuxProjectView.node.addProjectToWorkspace', async (node) => {
-    await projectViewController.nodeAddToWorkspace(node);
+  registerCommand(extensionContext, 'dbuxProjectView.node.addProjectToWorkspace', (node) => {
+    projectViewController.nodeAddToWorkspace(node);
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.deleteProject', (node) => {

@@ -85,10 +85,10 @@ export default class ProjectNode extends BaseTreeViewNode {
     }
   }
 
-  async addToWorkspace() {
+  addToWorkspace() {
     const uri = Uri.file(this.project.projectPath);
     const i = workspace.workspaceFolders?.length || 0;
-    await workspace.updateWorkspaceFolders(i, null, {
+    workspace.updateWorkspaceFolders(i, null, {
       name: pathGetBasename(this.project.projectPath),
       uri
     });
