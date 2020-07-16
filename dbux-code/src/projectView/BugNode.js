@@ -1,4 +1,5 @@
-import BugRunnerStatus, { isStatusRunningType } from 'dbux-projects/src/projectLib/BugRunnerStatus';
+import { env, Uri } from 'vscode';
+import BugRunnerStatus from 'dbux-projects/src/projectLib/BugRunnerStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
 export default class BugNode extends BaseTreeViewNode {
@@ -15,7 +16,9 @@ export default class BugNode extends BaseTreeViewNode {
   }
 
   get contextValue() {
-    return `dbuxProjectView.bugNode.${BugRunnerStatus.getName(this.status)}`;
+    const status = BugRunnerStatus.getName(this.status);
+    const hasWebsite = this.bug.website ? 'hasWebsite' : '';
+    return `dbuxProjectView.bugNode.${status}.${hasWebsite}`;
   }
 
   get status() {
@@ -43,5 +46,11 @@ export default class BugNode extends BaseTreeViewNode {
 
   handleClick() {
 
+  }
+
+  showWebsite() {
+    if (this.bug.website) {
+      env.openExternal(Uri.parse(this.bug.website));
+    }
   }
 }

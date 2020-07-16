@@ -130,7 +130,7 @@ export default class Project {
   /**
    * @abstract
    */
-  async loadBugs() {
+  loadBugs() {
     throw new Error(this + ' abstract method not implemented');
   }
 
@@ -425,9 +425,9 @@ export default class Project {
   /**
    * @return {BugList}
    */
-  async getOrLoadBugs() {
+  getOrLoadBugs() {
     if (!this._bugs) {
-      const arr = await this.loadBugs();
+      const arr = this.loadBugs();
       this._bugs = new BugList(this, arr);
     }
     return this._bugs;
