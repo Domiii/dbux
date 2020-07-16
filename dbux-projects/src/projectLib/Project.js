@@ -371,7 +371,7 @@ export default class Project {
 
     if (await sh.test('-d', assetDir)) {
       // copy assets, if this project has any
-      this.logger.log('Copying assets from', assetDir);
+      this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
       await sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
     }
   }
