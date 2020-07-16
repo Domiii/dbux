@@ -27,7 +27,7 @@ let projectViewController;
 
 function registerErrorHandler() {
   process.on('unhandledRejection', (reason, promise: Promise<any>) => {
-    logError(`[Unhandled Rejection] reason: ${reason}, promise: ${promise}`);
+    logError(`[Unhandled Rejection] reason: ${reason}, promise: ${promise}`, new Error().stack);
   });
 }
 

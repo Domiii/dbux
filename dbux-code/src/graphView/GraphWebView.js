@@ -1,5 +1,5 @@
 import { newLogger } from 'dbux-common/src/log/logger';
-import { startGraphHost } from 'dbux-graph-host/src/index';
+import { startGraphHost, shutdownGraphHost } from 'dbux-graph-host/src/index';
 import {
   window,
   Uri,
@@ -24,6 +24,7 @@ export default class GraphWebView {
 
   constructor(extensionContext) {
     this.extensionContext = extensionContext;
+    this.wasVisible = false;
   }
 
   /**
@@ -59,7 +60,7 @@ export default class GraphWebView {
   _messageHandler;
 
   _buildHostIpcAdapterVsCode(webview) {
-    return {
+    const ipcAdapter = {
       postMessage(msg) {
         webview.postMessage(msg);
       },
@@ -83,15 +84,27 @@ export default class GraphWebView {
           null,
           this.extensionContext.subscriptions
         );
+      }).bind(this),
+
+      dispose: (() => {
+        ipcAdapter.postMessage = (msg) => {
+          // when invoked by remote, we try to send response back after shutdown. This prevents that.
+          debug('silenced message after Host shutdown:', JSON.stringify(msg));
+        };
+        ipcAdapter.onMessage = (msg) => {
+          // when invoked by remote, we try to send response back after shutdown. This prevents that.
+          debug('silenced message after Host shutdown:', JSON.stringify(msg));
+        };
+        this._messageHandler?.dispose();
       }).bind(this)
     };
+
+    return ipcAdapter;
   }
 
   _createWebview() {
     const webviewId = 'dbux-graph';
     const title = 'Call Graph';
-
-    this.oldViewColumn = null;
 
     this.panel = window.createWebviewPanel(
       webviewId,
@@ -102,6 +115,7 @@ export default class GraphWebView {
         localResourceRoots: [Uri.file(this.resourcePath)]
       }
     );
+    this.wasVisible = true;
 
     this.panel.onDidChangeViewState(
       this.handleDidChangeViewState,
@@ -164,17 +178,19 @@ export default class GraphWebView {
    */
   handleDidChangeViewState = ({ webviewPanel }) => {
     // debug('handleDidChangeViewState', webviewPanel.visible, performance.now());
-    // const { viewColumn } = webviewPanel;
-    // const { oldViewColumn, wasVisible } = this;
+    
+    // on closed, silent shutdown
+    if (this.wasVisible && !webviewPanel.visible) {
+      this.wasVisible = webviewPanel.visible;
+      shutdownGraphHost();
+      this.panel && (this.panel.webview.html = '');
+    }
 
-    // if (webviewPanel.visible) {
-    //   this.wasVisible = true;
-    //   if (!wasVisible || viewColumn !== oldViewColumn) {
-    //     // WebView View state actually changed -> restart necessary
-    //     this.oldViewColumn = viewColumn;
-    //     this.restart();
-    //   }
-    // }
+    // on open
+    if (!this.wasVisible && webviewPanel.visible) {
+      this.wasVisible = webviewPanel.visible;
+      this.restart();
+    }
   }
 
   // ###########################################################################
