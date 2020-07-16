@@ -118,6 +118,8 @@ class ProjectViewController {
       await bug.openInEditor();
 
       progress.report({ message: 'Finished!' });
+
+      this.treeDataProvider.refreshIcon();
     }, options);
   }
 

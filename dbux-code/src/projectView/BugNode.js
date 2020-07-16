@@ -32,16 +32,19 @@ export default class BugNode extends BaseTreeViewNode {
   }
 
   makeIconPath() {
-    switch (this.result) {
-      case BugResultStatusType.None:
-        return '';
-      case BugResultStatusType.Attempted:
+    switch (this.status) {
+      case BugRunnerStatus.Busy:
         return 'hourglass.svg';
+      case BugRunnerStatus.RunningInBackground:
+        return 'play.svg';
+    }
+    switch (this.result) {
+      case BugResultStatusType.Attempted:
+        return 'wrong.svg';
       case BugResultStatusType.Solved:
         return 'correct.svg';
-      default:
-        return '';
     }
+    return '';
   }
 
   canHaveChildren() {
