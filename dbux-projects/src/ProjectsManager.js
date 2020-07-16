@@ -1,8 +1,7 @@
-import getOrCreateBugsInformation from 'dbux-projects/src/dataLib';
+import getOrCreateProgressLog from 'dbux-projects/src/dataLib';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
-
 
 class ProjectsManager {
   config;
@@ -14,7 +13,7 @@ class ProjectsManager {
     this.config = cfg;
     this.externals = externals;
     this.editor = externals.editor;
-    this.bugsInformation = getOrCreateBugsInformation(externals.storage);
+    this.progressLog = getOrCreateProgressLog(externals.storage);
   }
 
   /**
@@ -53,7 +52,7 @@ class ProjectsManager {
 
   getOrCreateRunner() {
     if (!this.runner) {
-      const runner = this.runner = new BugRunner(this, this.bugsInformation);
+      const runner = this.runner = new BugRunner(this, this.progressLog);
       runner.start();
     }
     return this.runner;

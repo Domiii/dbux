@@ -3,10 +3,10 @@ import { newLogger } from 'dbux-common/src/log/logger';
 import bugResultHandler from './BugResult';
 import testRunHandler from './TestRun';
 
-const logger = newLogger('BugsInformation');
+const logger = newLogger('ProgressLog');
 const { log, debug, warn, error: logError } = logger;
 
-function newBugsInformation() {
+function newProgressLog() {
   return {
     testRuns: [],
     bugResults: [],
@@ -14,6 +14,7 @@ function newBugsInformation() {
 }
 
 async function processBugResult(obj, bug, result) {
+  debug(`process bug result`, obj, bug, result);
   obj.testRuns.push(await testRunHandler.newTestRun(bug, result));
 
   let bugResult = getOrCreateBugResult(obj.bugResults, bug);
@@ -40,11 +41,12 @@ function getOrCreateBugResult(bugResults, bug) {
 }
 
 function getBugResultByBug(obj, bug) {
+  debug(obj, bug);
   return getBugResult(obj.bugResults, bug);
 }
 
 export default {
-  newBugsInformation,
+  newProgressLog,
   processBugResult,
   getBugResultByBug,
 };

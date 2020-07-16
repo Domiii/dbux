@@ -1,28 +1,27 @@
 
 import { newLogger } from 'dbux-common/src/log/logger';
-import bugsInformationHandler from './BugsInformation';
+import progressLogHandler from './progressLog';
 
 const logger = newLogger('Project-DataLib');
 const { log, debug, warn, error: logError } = logger;
 
-const keyName = 'bugsInformation';
+const keyName = 'progressLog';
 let storage;
 
 /**
  * @param {Memento} storage - the permanent storage variable
  */
 function resetToDefault() {
-  debug(`Reset storage to default`);
-  storage.set(keyName, bugsInformationHandler.newBugsInformation());
+  storage.set(keyName, progressLogHandler.newProgressLog());
 }
 
-export default function getOrCreateBugsInformation(_storage) {
+export default function getOrCreateProgressLog(_storage) {
   storage = _storage;
   if (!storage.get(keyName)) {
-    storage.set(keyName, bugsInformationHandler.newBugsInformation());
+    resetToDefault();
   }
 
-  // resetToDefault(storage);
+  // resetToDefault();
 
   let obj = storage.get(keyName);
   obj.save = function () {

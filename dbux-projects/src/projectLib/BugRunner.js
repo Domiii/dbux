@@ -5,7 +5,7 @@ import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
 import { newLogger, logError } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import bugsInformationHandler from 'dbux-projects/src/dataLib/BugsInformation';
+import progressLogHandler from '../dataLib/progressLog';
 import Project from './Project';
 import Bug from './Bug';
 import BugRunnerStatus from './BugRunnerStatus';
@@ -195,7 +195,7 @@ export default class BugRunner {
         const cwd = project.projectPath;
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
         const result = await this._terminalWrapper.waitForResult();
-        bugsInformationHandler.processBugResult(this.storage, bug, result);
+        progressLogHandler.processBugResult(this.storage, bug, result);
         project.logger.log(`Result:`, result);
         return result;
       }

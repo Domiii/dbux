@@ -1,5 +1,5 @@
 import { env, Uri } from 'vscode';
-import bugsInformationHandler from 'dbux-projects/src/dataLib/BugsInformation';
+import progressLogHandler from 'dbux-projects/src/dataLib/progressLog';
 import BugResultStatusType from 'dbux-projects/src/dataLib/BugResultStatusType';
 import BugRunnerStatus from 'dbux-projects/src/projectLib/BugRunnerStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
@@ -28,7 +28,7 @@ export default class BugNode extends BaseTreeViewNode {
   }
 
   get result() {
-    return bugsInformationHandler.getBugResultByBug(this.bug.manager.bugsInformation, this.bug)?.status;
+    return progressLogHandler.getBugResultByBug(this.bug.manager.progressLog, this.bug)?.status;
   }
 
   makeIconPath() {
