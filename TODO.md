@@ -26,6 +26,7 @@
 
 
 ## TODO (other)
+* callId problem: ternary expression is not instrumented as argument (express#1)
 * core instrumentation bugs
    * assignments are traced twice, once with `ExpressionValue`, once with `ExpressionResult`
       * e.g. `req.params = layer.params;`

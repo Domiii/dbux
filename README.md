@@ -83,14 +83,30 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 ## Basics
 
 ```sh
+babelVersion=7.81
 `# jest` yarn add --dev jest jest-expect-message jest-extended
 `# babel basics` yarn add --dev @babel/core @babel/cli @babel/node @babel/register 
-`# babel plugins` yarn add --dev @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
-`# babel runtime` yarn add core-js@3 @babel/runtime
+`# babel plugins` yarn add --dev \
+@babel/compat-data@$babelVersion `# see https://stackoverflow.com/questions/60780664/could-not-find-plugin-proposal-numeric-separator` \
+@babel/preset-env@$babelVersion \
+@babel/plugin-proposal-class-properties@$babelVersion \
+@babel/plugin-proposal-optional-chaining@$babelVersion \
+@babel/plugin-proposal-decorators@$babelVersion \
+@babel/plugin-proposal-function-bind@$babelVersion \
+@babel/plugin-syntax-export-default-from@$babelVersion \
+@babel/plugin-syntax-dynamic-import@$babelVersion \
+@babel/plugin-transform-runtime@$babelVersion \
+`# babel runtime` yarn add core-js@3 @babel/runtime@$babelVersion
 `# eslint` yarn add --dev eslint eslint-config-airbnb-base
 `# webpack` yarn add --dev webpack webpack-cli webpack-dev-server nodemon
-`# flow` yarn add --dev flow-bin @babel/preset-flow eslint-plugin-flowtype && npx flow init #&& npx flow
-`# babel dev` yarn add --dev @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester
+`# babel dev` yarn add --dev \
+@babel/parser@$babelVersion \
+@babel/traverse@$babelVersion \
+@babel/types@$babelVersion \
+@babel/generator@$babelVersion
+@babel/template@$babelVersion \
+@babel/code-frame@$babelVersion \
+babel-plugin-tester
 ```
 
 or with npm:

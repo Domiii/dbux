@@ -26,6 +26,7 @@
     "@dbux/common": "^0.0.2-alpha.1004+18e0d5e",
     "@dbux/runtime": "^0.0.2-alpha.1004+18e0d5e",
     "module-alias": "^2.2.2",
+    "prettier": "^2.0.5",
     "shelljs": "*",
     "yargs": "*"
   },

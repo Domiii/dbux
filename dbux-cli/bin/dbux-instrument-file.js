@@ -17,10 +17,6 @@ process.env.BABEL_DISABLE_CACHE = 1;
 const cliDir = __dirname + '/..';
 const dbuxRoot = path.resolve(cliDir + '/..');
 
-const dbuxAliases = [
-  'dbux-babel-plugin'
-];
-
 const sharedDeps = [
   '@babel/core',
   '@babel/preset-env'
