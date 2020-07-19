@@ -4,6 +4,8 @@ import { ProjectsManager } from '@dbux/projects/src';
 import { registerCommand } from './commandUtil';
 
 const logger = newLogger('projectCommands');
+
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
 export function initProjectCommands(extensionContext, projectViewController) {
@@ -15,7 +17,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
     node.deleteProject();
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.stopProject', (node) => {
+  registerCommand(extensionContext, 'dbuxProjectView.node.stopProject', (/* node */) => {
     projectViewController.manager.runner.cancel();
   });
 
@@ -27,15 +29,15 @@ export function initProjectCommands(extensionContext, projectViewController) {
     projectViewController.activateBugByNode(node);
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.busyIcon', (node) => {
+  registerCommand(extensionContext, 'dbuxProjectView.node.busyIcon', (/* node */) => {
     window.showInformationMessage('[dbux] busy now...');
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.stopBug', (node) => {
+  registerCommand(extensionContext, 'dbuxProjectView.node.stopBug', (/* node */) => {
     projectViewController.manager.runner.cancel();
   });
 
-  registerCommand(extensionContext, 'dbux.cancelBugRunner', (node) => {
+  registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
     projectViewController.manager.runner.cancel();
   });
 }
@@ -43,5 +45,5 @@ export function initProjectCommands(extensionContext, projectViewController) {
 /**
  * @param {ProjectsManager} projectViewController 
  */
-export function initProjectUserCommands(extensionContext, projectViewController) {
+export function initProjectUserCommands(/* extensionContext, projectViewController */) {
 }

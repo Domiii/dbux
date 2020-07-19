@@ -1,4 +1,3 @@
-import path from 'path';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { buildNodeCommand } from './nodeUtil';
 

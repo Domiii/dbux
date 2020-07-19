@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 /**
  * TODO: use something that works in browser as well as in Node (currently only works properly in Node)
  */
@@ -5,11 +7,11 @@
 import colors from 'colors/safe';
 
 
-const inspectOptions = { depth: 0, colors: true };
-function _inspect(arg) {
-  const f = typeof window !== 'undefined' && window.inspect ? window.inspect : require('util').inspect;
-  return f(arg, inspectOptions);
-}
+// const inspectOptions = { depth: 0, colors: true };
+// function _inspect(arg) {
+//   const f = typeof window !== 'undefined' && window.inspect ? window.inspect : require('util').inspect;
+//   return f(arg, inspectOptions);
+// }
 
 
 /**

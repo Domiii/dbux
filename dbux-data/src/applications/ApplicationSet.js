@@ -2,7 +2,7 @@ import pull from 'lodash/pull';
 import { areArraysEqual } from '@dbux/common/src/util/arrayUtil';
 import NanoEvents from 'nanoevents';
 import ApplicationSetData from './ApplicationSetData';
-import Application from './Application';
+// import Application from './Application';
 
 export default class ApplicationSet {
   _unsubscribeCallbacks = [];

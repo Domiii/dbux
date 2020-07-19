@@ -132,7 +132,7 @@ class ComponentEndpoint {
     this._disposables.push(disp);
   }
 
-  dispose(silent = false) {
+  dispose(/* silent = false */) {
     this._isDisposed = true;
     
     this._disposables.forEach((disp) => {
@@ -150,7 +150,7 @@ class ComponentEndpoint {
   // ###########################################################################
 
   handlePing() {
-    console.warn(this.debugTag, 'was pinged by the remote.');
+    // console.warn(this.debugTag, 'was pinged by the remote.');
   }
 
   toString() {

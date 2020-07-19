@@ -12,6 +12,7 @@ import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newFileLogger(__filename);
 
 

@@ -1,5 +1,6 @@
-import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
+// eslint-disable-next-line no-unused-vars
 import Application from '@dbux/data/src/applications/Application';
 import SocketClient from './SocketClient';
 

@@ -251,7 +251,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
   dispose(silent = false) {
     super.dispose();
 
-    Promise.resolve(this.waitForInit()).then(() => {
+    Promise.resolve(this.waitForInit()).then(async () => {
       if (!this.isInitialized) {
         throw new Error(this.debugTag + ' Trying to dispose before initialized');
       }
@@ -270,7 +270,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
 
       if (!silent) {
         // also dispose on client
-        return this._remoteInternal.dispose();
+        await this._remoteInternal.dispose();
       }
     });
   }

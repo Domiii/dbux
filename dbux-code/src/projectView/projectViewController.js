@@ -16,7 +16,10 @@ import PracticeStopwatch from './PracticeStopwatch';
 // ########################################
 
 const logger = newLogger('projectViewController');
+
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
+
 const outputChannel = new OutputChannel('dbux-project');
 
 setOutputStreams({
@@ -97,7 +100,7 @@ class ProjectViewController {
       title: `[dbux] Activating Project ${bugNode.bug.project.name}@${bugNode.bug.name}`
     };
 
-    return runTaskWithProgressBar(async (progress, cancelToken) => {
+    return runTaskWithProgressBar(async (progress/* , cancelToken */) => {
       const { bug } = bugNode;
       const runner = this.manager.getOrCreateRunner();
 

@@ -1,4 +1,4 @@
-import { workspace, window } from 'vscode';
+import { workspace } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { showWarningMessage } from '../codeUtil/codeModals';
 

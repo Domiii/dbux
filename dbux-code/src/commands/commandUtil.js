@@ -1,5 +1,4 @@
 import {
-  window,
   commands
 } from 'vscode';
 import { logError } from '@dbux/common/src/log/logger';

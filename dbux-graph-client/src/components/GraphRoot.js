@@ -68,26 +68,26 @@ class GraphRoot extends ClientComponentEndpoint {
     //   1
     // );
 
-    panzoom.on('panstart', (e) => {
-      // console.log('panstart', e);
-    });
+    // panzoom.on('panstart', (e) => {
+    //   // console.log('panstart', e);
+    // });
 
-    panzoom.on('pan', (e) => {
-      // this._repaint();
-    });
+    // panzoom.on('pan', (e) => {
+    //   // this._repaint();
+    // });
 
-    panzoom.on('panend', (e) => {
-      // this._repaint();
-    });
+    // panzoom.on('panend', (e) => {
+    //   // this._repaint();
+    // });
 
-    panzoom.on('zoomend', (e) => {
-      // this._repaint();
-    });
+    // panzoom.on('zoomend', (e) => {
+    //   // this._repaint();
+    // });
 
-    panzoom.on('transform', (e) => {
-      // this._repaint();
-      // repaintEl(this.els.body);
-    });
+    // panzoom.on('transform', (e) => {
+    //   // this._repaint();
+    //   // repaintEl(this.els.body);
+    // });
 
     // hackfix: scrollbar bugs out when scrolling or when touching it the first time around; this fixes it
     //   (probably a webview bug)

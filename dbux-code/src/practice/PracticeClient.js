@@ -27,7 +27,7 @@ export default class PracticeClient {
     }
   }
 
-  async send(packet) {
+  async send(/* packet */) {
     // TODO: use LogQueue
     // TODO: persist LogQueue to disk -> send when back online, in case someone works while offline etc.
   }

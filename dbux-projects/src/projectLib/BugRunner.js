@@ -2,11 +2,11 @@ import NanoEvents from 'nanoevents';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
-import { newLogger, logError } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Process from '../util/Process';
 import Project from './Project';
-import Bug from './Bug';
+import Bug from './Bug'; // eslint-disable-line no-unused-vars
 import BugRunnerStatus from './BugRunnerStatus';
 
 export default class BugRunner {

@@ -11,6 +11,8 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
+    "nanoevents": "^2.0.0",
+    "lodash": "^4.17.19",
     "@dbux/common": "^0.0.2-alpha.1004+18e0d5e",
     "@dbux/data": "^0.0.2-alpha.1004+18e0d5e",
     "@dbux/graph-common": "^0.0.2-alpha.1004+18e0d5e"

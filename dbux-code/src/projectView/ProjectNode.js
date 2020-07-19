@@ -67,7 +67,7 @@ export default class ProjectNode extends BaseTreeViewNode {
       return this.children;
     }
     else {
-      runTaskWithProgressBar(async (progress, cancelToken) => {
+      runTaskWithProgressBar(async (progress/* , cancelToken */) => {
         progress.report({ message: 'loading bug list...' });
         await this._buildChindren(progress);
         this.treeNodeProvider.repaint();
@@ -80,7 +80,7 @@ export default class ProjectNode extends BaseTreeViewNode {
     }
   }
 
-  async _buildChindren(progress) {
+  async _buildChindren(/* progress */) {
     const runner = this.treeNodeProvider.controller.manager.getOrCreateRunner();
     // getOrLoadBugs returns a `BugList`, use Array.from to convert to array
     const bugs = Array.from(await runner.getOrLoadBugs(this.project));
@@ -103,7 +103,7 @@ export default class ProjectNode extends BaseTreeViewNode {
       const confirmMessage = `Do you really want to delete project: ${this.project.name}`;
       const result = await window.showInformationMessage(confirmMessage, { modal: true }, 'Ok');
       if (result === 'Ok') {
-        runTaskWithProgressBar(async (progress, cancelToken) => {
+        runTaskWithProgressBar(async (progress/* , cancelToken */) => {
           progress.report({ message: 'deleting project folder...' });
           // wait for progress bar to show
           await sleep(100);

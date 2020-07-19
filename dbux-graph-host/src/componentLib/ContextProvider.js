@@ -37,7 +37,7 @@ export default class ContextProvider {
     }
   }
 
-  unsubscribe(component) {
+  unsubscribe(/* component */) {
     // propagate recursively
   }
 

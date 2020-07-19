@@ -1,4 +1,3 @@
-import Enum from '@dbux/common/src/util/Enum';
 import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import staticContextCollection from './staticContextCollection';

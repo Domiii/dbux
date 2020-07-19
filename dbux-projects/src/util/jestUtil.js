@@ -1,4 +1,3 @@
-import path from 'path';
 import { buildNodeCommand } from './nodeUtil';
 
 /**

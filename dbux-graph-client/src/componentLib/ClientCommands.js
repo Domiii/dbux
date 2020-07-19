@@ -26,7 +26,7 @@ class ClientCommands {
     document.body.appendChild(preEl);
   }
 
-  addContexts(contexts) {
+  addContexts(/* contexts */) {
     // TODO
   }
 }

@@ -37,6 +37,7 @@ export default {
   get performance() {
     return universalLib('performance', () => {
       // hope for node or node-like environment
+      // eslint-disable-next-line no-eval
       const { performance: performanceNodeJs } = eval("import('perf_hooks')");
       return performanceNodeJs;
     });

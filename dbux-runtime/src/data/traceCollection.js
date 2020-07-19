@@ -67,75 +67,75 @@ class TraceCollection extends Collection {
   // ########################################
   // dynamic updates
   // ########################################
-  markError(traceId) {
-    const trace = traceCollection.getById(traceId);
-  }
+  // markError(traceId) {
+  //   const trace = traceCollection.getById(traceId);
+  // }
 }
 
 // ###########################################################################
 // prettyPrint
 // ###########################################################################
 
-function _prettyPrint(trace, value) {
-  const {
-    traceId,
-    contextId,
-    type: dynamicType,
-    staticTraceId,
-    // value 
-  } = trace;
-  const context = executionContextCollection.getById(contextId);
+// function _prettyPrint(trace, value) {
+//   const {
+//     traceId,
+//     contextId,
+//     type: dynamicType,
+//     staticTraceId,
+//     // value 
+//   } = trace;
+//   const context = executionContextCollection.getById(contextId);
 
-  const {
-    staticContextId,
-    stackDepth
-  } = context;
+//   const {
+//     staticContextId,
+//     stackDepth
+//   } = context;
 
-  const staticContext = staticContextCollection.getById(staticContextId);
-  const { programId } = staticContext;
+//   const staticContext = staticContextCollection.getById(staticContextId);
+//   const { programId } = staticContext;
 
-  const staticProgramContext = staticProgramContextCollection.getById(programId);
+//   const staticProgramContext = staticProgramContextCollection.getById(programId);
 
-  const {
-    fileName
-  } = staticProgramContext;
-  // const {
-  // } = staticContext;
+//   const {
+//     fileName
+//   } = staticProgramContext;
+//   // const {
+//   // } = staticContext;
 
-  const staticTrace = staticTraceCollection.getById(staticTraceId);
-  let {
-    displayName,
-    type: staticType,
-    loc
-  } = staticTrace;
+//   const staticTrace = staticTraceCollection.getById(staticTraceId);
+//   let {
+//     displayName,
+//     type: staticType,
+//     loc
+//   } = staticTrace;
 
-  const type = dynamicType || staticType; // if `dynamicType` is given take that, else `staticType`
-  const typeName = TraceType.nameFromForce(type);
+//   const type = dynamicType || staticType; // if `dynamicType` is given take that, else `staticType`
+//   const typeName = TraceType.nameFromForce(type);
 
-  const depthIndicator = ` `.repeat(stackDepth * 2);
-  const where = loc.start;
-  const codeLocation = `@${fileName}:${where.line}:${where.column}`;
+//   const depthIndicator = ` `.repeat(stackDepth * 2);
+//   const where = loc.start;
+//   const codeLocation = `@${fileName}:${where.line}:${where.column}`;
 
-  displayName = displayName || '';
+//   displayName = displayName || '';
 
-  // if (capturesValue && !v) {
-  //   console.group(displayName);
-  // }
-  // else
+//   // if (capturesValue && !v) {
+//   //   console.group(displayName);
+//   // }
+//   // else
 
-  // TODO: if we want to keep using this; fix to use `ValueCollection` instead
-  const v = hasTraceValue(type);
-  const result = v ? ['(', value, ')'] : EmptyArray;
-  console.debug('', traceId, contextId,
-    `${depthIndicator}[${typeName}] ${displayName}`,
-    ...result,
-    ` ${codeLocation} [DBUX]`
-  );
-  // }
-  // if (capturesValue && v) {
-  //   console.groupEnd();
-  // }
-}
+//   // TODO: if we want to keep using this; fix to use `ValueCollection` instead
+//   const v = hasTraceValue(type);
+//   const result = v ? ['(', value, ')'] : EmptyArray;
+//   console.debug('', traceId, contextId,
+//     `${depthIndicator}[${typeName}] ${displayName}`,
+//     ...result,
+//     ` ${codeLocation} [DBUX]`
+//   );
+//   // }
+//   // if (capturesValue && v) {
+//   //   console.groupEnd();
+//   // }
+// }
 
 // ###########################################################################
 // export

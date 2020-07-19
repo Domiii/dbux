@@ -1,5 +1,4 @@
 import Query from './Query';
-import isEqual from 'lodash/isEqual';
 
 // ###########################################################################
 // QueryCache

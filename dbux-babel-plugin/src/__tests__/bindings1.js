@@ -40,13 +40,13 @@ test('function bindings', () => {
       console.log(a, k, myGlobal);
     }
     `, {
-    Function(path, state) {
+    Function(path, /* state */) {
       // const params = path.get('params');
 
       // get all bindings in function
       expectPathBindingNames(path, ['x', 'a', 'c', 'k']);
       
-      const ids = path.getBindingIdentifiers();
+      // const ids = path.getBindingIdentifiers();
 
       // get all bindings in body
       expectPathBindingNamesInLoc1D(path, path.get('body').node, ['a', 'k', 'k']);
@@ -81,9 +81,9 @@ test('for-of bindings', () => {
       console.log(x, x2, v1);
     }
   `, {
-    ForOfStatement(path, state) {
+    ForOfStatement(path, /* state */) {
       // see: https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path/family.js#L215
-      const ids = path.get('left').getBindingIdentifierPaths();
+      // const ids = path.get('left').getBindingIdentifierPaths();
 
       expectPathBindingNames(path, []);  // no variable is declared in the loop signature
       expectPathBindingNames(path.get('left'), []); // no variable is declared in `left`

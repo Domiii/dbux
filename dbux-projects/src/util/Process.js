@@ -104,7 +104,7 @@ export default class Process {
     }
 
     return this._promise = new Promise((resolve, reject) => {
-      process.on('exit', (code, signal) => {
+      process.on('exit', (code/* , signal */) => {
         // logger.debug(`process exit, code=${code}, signal=${signal}`);
         if (checkDone()) { return; }
         
