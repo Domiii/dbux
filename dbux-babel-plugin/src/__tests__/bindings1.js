@@ -1,5 +1,5 @@
 import justRunMyPlugin from '../testing/justRunMyPlugin';
-import { getAllBoundVariableNames, getRealVariableNamesInLoc1D } from '../helpers/bindingsHelper';
+import { getRealVariableNamesInLoc1D } from '../helpers/bindingsHelper';
 import { getPreBodyLoc1D } from '../helpers/locHelpers';
 import { getContextPath } from '../helpers/traversalHelpers';
 import { getCalleeName } from '../helpers/callHelpers';

@@ -23,7 +23,7 @@
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
     "html2canvas": "^1.0.0-rc.5",
-    "lodash": "*",
+    "lodash": "^4.17.19",
     "webpack-cli": "*"
   },
   "devDependencies": {

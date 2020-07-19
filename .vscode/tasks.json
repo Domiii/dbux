@@ -16,16 +16,26 @@
         // "problemMatcher": ["$tsc-watch"]
     },
     {
-      "label": "Instrument folder (test)",
-      "command": "${workspaceRoot}/dbux-cli/bin/dbux-instrument-files.sh",
-      "args": [
-        "${fileDirname}"
-      ],
+      "label": "Test node",
       "type": "shell",
-      "runOptions": {
-        "reevaluateOnRerun": false
-      },
-      "problemMatcher": []
+      "command": "bash",
+      "args": [
+        "-lc",
+        "--",
+        "node -v"
+      ],
     }
+    // {
+    //   "label": "Instrument folder (test)",
+    //   "command": "${workspaceRoot}/dbux-cli/bin/dbux-instrument-files.sh",
+    //   "args": [
+    //     "${fileDirname}"
+    //   ],
+    //   "type": "shell",
+    //   "runOptions": {
+    //     "reevaluateOnRerun": false
+    //   },
+    //   "problemMatcher": []
+    // }
   ]
 }

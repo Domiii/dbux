@@ -10,7 +10,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "colors": "^1.4.0",
-    "lodash": "*",
+    "lodash": "^4.17.19",
     "nanoevents": "*"
   },
   "_moduleAliases": {},

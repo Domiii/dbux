@@ -10,7 +10,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@dbux/common": "^0.0.2-alpha.1004+18e0d5e",
-    "lodash": "*",
+    "lodash": "^4.17.19",
     "nanoevents": "*"
   },
   "_moduleAliases": {},

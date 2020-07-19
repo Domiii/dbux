@@ -1,11 +1,13 @@
-# application
-/projects
-.DS_Store
+# basics
+projects
 samples
 _testOut
+project_sandbox
+assets
+__archive__
 
-
-
+# OS files
+.DS_Store
 
 # Logs
 logs

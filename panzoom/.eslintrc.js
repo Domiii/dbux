@@ -1,24 +1,26 @@
 module.exports = {
-	"env": {
-		"commonjs": true,
-		"es5": true
+	env: {
+		commonjs: true,
+		es6: false
 	},
-	"globals": {
-		"console": true,
-		"globalThis": false // stage-3, not finalized yet - https://github.com/eslint/eslint/issues/11553
+	globals: {
+		console: true,
+		globalThis: false // stage-3, not finalized yet - https://github.com/eslint/eslint/issues/11553
 	},
-	"parser": "babel-eslint",
-	// "parserOptions": {
-	// 	"ecmaVersion": "2018",
-	// 	"ecmaFeatures": {
-	// 		"jsx": true
+	parser: "babel-eslint",
+	// parserOptions: {
+	// 	ecmaVersion: "2018",
+	// 	ecmaFeatures: {
+	// 		jsx: true
 	// 	},
-	// 	"sourceType": "module",
-	// 	"extraFileExtensions": [
+	// 	sourceType: "module",
+	// 	extraFileExtensions: [
 	// 		".ts"
 	// 	]
 	// },
-	"rules": {
+	rules: {
+		indent: 0,
+		"no-tabs": 0,
 		"no-const-assign": "warn",
 		"no-this-before-super": "warn",
 		"no-undef": "error",
@@ -41,7 +43,7 @@ module.exports = {
 		"no-empty-function": 0,
 		"no-multi-assign": 0,
 		"no-mixed-operators": 0,
-		"no-use-before-define": ["error", { "functions": false, "classes": true }],
+		"no-use-before-define": ["error", { functions: false, classes: true }],
 		"no-confusing-arrow": 0,
 		"no-cond-assign": ["error", "except-parens"],
 		"no-await-in-loop": 0,
@@ -73,9 +75,9 @@ module.exports = {
 		"implicit-arrow-linebreak": 0,
 		"function-paren-newline": 0,
 		"linebreak-style": 0,
-		"quotes": 0,
+		quotes: 0,
 		"spaced-comment": 0,
-		"max-len": ["warn", { "code": 120 }],
+		"max-len": ["warn", { code: 120 }],
 		"one-var": 0,
 		"one-var-declaration-per-line": 0,
 		"dot-location": 0,

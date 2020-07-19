@@ -509,7 +509,7 @@
 		"@dbux/projects": "^0.0.2-alpha.1004+18e0d5e",
 		"axios": "^0.19.2",
 		"comment-json": "^3.0.2",
-		"lodash": "*",
+		"lodash": "^4.17.19",
 		"moment": "^2.24.0",
 		"socket.io": "^2.3.0",
 		"strip-color": "^0.1.0"
