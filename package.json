@@ -62,7 +62,7 @@
 		"core-js": "^3.6.4",
 		"find-package-json": "^1.2.0",
 		"link-module-alias": "^1.2.0",
-		"lodash": "^4.17.15",
+		"lodash": "^4.17.19",
 		"nanoevents": "^2.0.0",
 		"webpack-node-externals": "^1.7.2",
 		"colors": "*",
