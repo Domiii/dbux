@@ -23,6 +23,7 @@ export default class SocketServer {
   start(port) {
     this._listenSocket = makeListenSocket(port);
     this._listenSocket.on('connect', this._handleAccept.bind(this));
+    this._listenSocket.on('error', this._handleError.bind(this));
   }
 
   /**
@@ -39,6 +40,10 @@ export default class SocketServer {
     });
 
     return client;
+  }
+
+  _handleError(err) {
+    logError(err);
   }
 
   dispose() {
