@@ -10,6 +10,7 @@ import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import { execInTerminal } from '../terminal/TerminalWrapper';
 import PracticeStopwatch from './PracticeStopwatch';
+import { set as storageSet, get as storageGet } from '../memento';
 
 // ########################################
 //  setup logger for project
@@ -46,6 +47,10 @@ const externals = {
       // TODO: use vscode API to add to workspace
       await exec(`code --add ${fpath}`, logger, { silent: false }, true);
     }
+  },
+  storage: {
+    get: storageGet,
+    set: storageSet,
   },
   async confirm(msg, modal = false) {
     const confirmText = 'Ok';
@@ -118,6 +123,8 @@ class ProjectViewController {
       await bug.openInEditor();
 
       progress.report({ message: 'Finished!' });
+
+      this.treeDataProvider.refreshIcon();
     }, options);
   }
 

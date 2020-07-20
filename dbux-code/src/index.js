@@ -16,6 +16,7 @@ import { initResources } from './resources';
 import { initTraceSelection } from './codeUtil/codeSelection';
 import { initApplicationsView } from './applicationsView/applicationsViewController';
 import { initProjectView } from './projectView/projectViewController';
+import { initMemento } from './memento';
 import { initLogging } from './logging';
 import { showGraphView } from './graphView';
 import { initDbuxPractice } from './practice/dbuxPracticeController';
@@ -44,6 +45,7 @@ function activate(context) {
     initCodeDeco(context);
     initToolBar(context);
     initDbuxPractice(context);
+    initMemento(context);
 
     initTraceSelection(context);
     initPlayback();
