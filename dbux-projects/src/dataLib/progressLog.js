@@ -15,7 +15,7 @@ function newProgressLog() {
 }
 
 async function processBugResult(progressLog, bug, result) {
-  debug(`process bug result`, progressLog, bug, result);
+  // debug(`process bug result`, progressLog, bug, result);
   progressLog.testRuns.push(await testRunHandler.newTestRun(bug, result));
 
   let bugResult = getOrCreateBugResult(progressLog.bugResults, bug);
@@ -42,7 +42,7 @@ function getOrCreateBugResult(bugResults, bug) {
 }
 
 function getBugResultByBug(progressLog, bug) {
-  debug(progressLog, bug);
+  // debug(progressLog, bug);
   return getBugResult(progressLog.bugResults, bug);
 }
 
