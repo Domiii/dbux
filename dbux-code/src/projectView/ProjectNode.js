@@ -5,16 +5,11 @@ import Project from '@dbux/projects/src/projectLib/Project';
 import BugRunnerStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/BugRunnerStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
-import BugLoadingNode from './BugLoadingNode';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 
 export default class ProjectNode extends BaseTreeViewNode {
   static makeLabel(project) {
     return project.name;
-  }
-
-  init = () => {
-    this.childrenBuilt = false;
   }
 
   /**
@@ -30,13 +25,6 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   get contextValue() {
     return `dbuxProjectView.projectNode.${BugRunnerStatus.getName(this.status)}`;
-  }
-
-  get bugLoadingNode() {
-    if (!this._bugLoadingNode) {
-      this._bugLoadingNode = new BugLoadingNode();
-    }
-    return this._bugLoadingNode;
   }
 
   get status() {
@@ -63,32 +51,10 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    if (this.childrenBuilt) {
-      return this.children;
-    }
-    else {
-      runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-        progress.report({ message: 'loading bug list...' });
-        await this._buildChindren(progress);
-        this.treeNodeProvider.repaint();
-      }, {
-        cancellable: true,
-        location: ProgressLocation.Notification,
-        title: `[dbux] ${this.project.name}`
-      });
-      return [this.bugLoadingNode];
-    }
-  }
-
-  async _buildChindren(/* progress */) {
     const runner = this.treeNodeProvider.controller.manager.getOrCreateRunner();
     // getOrLoadBugs returns a `BugList`, use Array.from to convert to array
-    const bugs = Array.from(await runner.getOrLoadBugs(this.project));
-    this.childrenBuilt = true;
-    this.children = bugs.map(this.buildBugNode.bind(this));
-
-    this.treeNodeProvider.decorateChildren(this);
-    return this.children;
+    const bugs = Array.from(runner.getOrLoadBugs(this.project));
+    return bugs.map(this.buildBugNode.bind(this));
   }
 
   buildBugNode(bug) {
@@ -119,10 +85,10 @@ export default class ProjectNode extends BaseTreeViewNode {
     }
   }
 
-  async addToWorkspace() {
+  addToWorkspace() {
     const uri = Uri.file(this.project.projectPath);
     const i = workspace.workspaceFolders?.length || 0;
-    await workspace.updateWorkspaceFolders(i, null, {
+    workspace.updateWorkspaceFolders(i, null, {
       name: pathGetBasename(this.project.projectPath),
       uri
     });

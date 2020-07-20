@@ -21,8 +21,13 @@ class TraceDetailsController {
     return this.treeDataProvider.treeView;
   }
 
-  reveal() {
-    this.treeView.reveal(this.treeDataProvider.rootNodes[1]);
+  // reveal treeView if any node exist
+  tryReveal() {
+    // try second node first to show the navigation buttons
+    const targetNode = this.treeDataProvider.rootNodes[1] || this.treeDataProvider.rootNodes[0];
+    if (targetNode) {
+      this.treeView.reveal(targetNode);
+    }
   }
 
   refresh = () => {
@@ -82,9 +87,9 @@ class TraceDetailsController {
     });
 
     // add traceSelection event handler
-    traceSelection.onTraceSelectionChanged(() => {
+    traceSelection.onTraceSelectionChanged((/* selected */) => {
       this.refresh();
-      this.reveal();
+      this.tryReveal();
     });
   }
 }

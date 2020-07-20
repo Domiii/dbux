@@ -1,6 +1,7 @@
 const yargs = require('yargs');
 const process = require('process');
 const babelRegister = require('@babel/register');
+const setBlocking = require('set-blocking');
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
@@ -9,8 +10,14 @@ const babelRegisterOptions = {
   ignore: [
     // '**/node_modules/**',
     function shouldIgnore(modulePath) {
-      const ignore = modulePath.match('(@dbux[\\/]cli)|(dbux-cli)[\\/]');
-      console.debug(`[dbux-cli] babel ignore ${ignore}`);
+      let ignore = !!modulePath.match(/(node_modules|dist)[\\/]/);
+      if (ignore) {
+        // console.debug(`[dbux-cli] babel include`, false, modulePath);
+        return true;
+      }
+
+      ignore = !modulePath.match(/(@dbux[\\/]cli)|(dbux\-cli)[\\/]/);
+      console.debug(`[dbux-cli] babel include`, !ignore, modulePath);
       return ignore;
     }
   ],
@@ -23,9 +30,15 @@ const babelRegisterOptions = {
 babelRegister(babelRegisterOptions);
 
 
+// process && process.on('exit', (...args) => {
+//   console.trace('exitteet');
+//   debugger;
+// });
+
 // start!
 yargs
-  .commandDir('src/commands')
+  .exitProcess(false)
+  .commandDir('../src/commands')
   .demandCommand()
   .help()
   .argv;

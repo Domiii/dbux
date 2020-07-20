@@ -29,7 +29,7 @@ function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
   const contextIdName = genContextIdName(path);
 
   return buildSource(`
-  const ${dbuxRuntime} = require('dbux-runtime');
+  const ${dbuxRuntime} = require('@dbux/runtime');
   const ${dbux} = ${dbuxInit}(${dbuxRuntime});
   const ${contextIdName} = ${dbux}.getProgramContextId();
   `);

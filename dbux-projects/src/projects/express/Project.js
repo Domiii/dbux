@@ -15,7 +15,7 @@ export default class ExpressProject extends Project {
   //   yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime
   // }
 
-  async loadBugs() {
+  loadBugs() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
@@ -239,6 +239,9 @@ export default class ExpressProject extends Project {
 
     // `npm install` again! (NOTE: the buggy version might have different dependencies)
     await this.npmInstall();
+
+    // Copy assets again in this branch
+    await this.copyAssets();
   }
 
   async testBugCommand(bug, debugPort) {

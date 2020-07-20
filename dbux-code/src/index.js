@@ -1,4 +1,5 @@
 import { window } from 'vscode';
+import process from 'process';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 import { initRuntimeServer } from './net/SocketServer';
@@ -15,6 +16,7 @@ import { initResources } from './resources';
 import { initTraceSelection } from './codeUtil/codeSelection';
 import { initApplicationsView } from './applicationsView/applicationsViewController';
 import { initProjectView } from './projectView/projectViewController';
+import { initMemento } from './memento';
 import { initLogging } from './logging';
 import { showGraphView } from './graphView';
 import { initDbuxPractice } from './practice/dbuxPracticeController';
@@ -25,11 +27,18 @@ const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 let projectViewController;
 
+function registerErrorHandler() {
+  process.on('unhandledRejection', (reason, promise) => {
+    logError(`[Unhandled Rejection] reason: ${reason}, promise: ${promise}`);
+  });
+}
+
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
   try {
+    registerErrorHandler();
     initLogging();
     initResources(context);
     initRuntimeServer(context);
@@ -37,6 +46,7 @@ function activate(context) {
     initCodeDeco(context);
     initToolBar(context);
     initDbuxPractice(context);
+    initMemento(context);
 
     initTraceSelection(context);
     initPlayback();

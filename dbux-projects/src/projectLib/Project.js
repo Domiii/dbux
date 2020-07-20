@@ -131,7 +131,7 @@ export default class Project {
   /**
    * @abstract
    */
-  async loadBugs() {
+  loadBugs() {
     throw new Error(this + ' abstract method not implemented');
   }
 
@@ -368,7 +368,7 @@ export default class Project {
 
     if (await sh.test('-d', assetDir)) {
       // copy assets, if this project has any
-      this.logger.log('Copying assets from', assetDir);
+      this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
       await sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
     }
   }
@@ -422,9 +422,9 @@ export default class Project {
   /**
    * @return {BugList}
    */
-  async getOrLoadBugs() {
+  getOrLoadBugs() {
     if (!this._bugs) {
-      const arr = await this.loadBugs();
+      const arr = this.loadBugs();
       this._bugs = new BugList(this, arr);
     }
     return this._bugs;

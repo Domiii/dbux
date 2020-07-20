@@ -22,7 +22,19 @@
       "args": [
         "-lc",
         "--",
-        "node -v"
+        "echo $PATH && node -v"
+      ],
+    },
+    {
+      "label": "eslint:files:open",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "--",
+        //"code $(npx eslint \"dbux-**/src/**/*.js\" | grep -E \"^(\\w|/).*\\.js\")"
+        // "npx eslint \\\"dbux-**/src/**/*.js\\\" | grep -E \"^(\\w|/).*\\.js\")"
+        "echo \\\"x.js\\\" | grep -E \\\"^[\\\\w/].*\\\\.js\\\""
       ],
     }
     // {

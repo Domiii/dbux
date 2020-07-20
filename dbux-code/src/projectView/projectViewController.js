@@ -10,6 +10,7 @@ import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import { execInTerminal } from '../terminal/TerminalWrapper';
 import PracticeStopwatch from './PracticeStopwatch';
+import { set as storageSet, get as storageGet } from '../memento';
 
 // ########################################
 //  setup logger for project
@@ -50,6 +51,10 @@ const externals = {
       await exec(`code --add ${fpath}`, logger, { silent: false }, true);
     }
   },
+  storage: {
+    get: storageGet,
+    set: storageSet,
+  },
   execInTerminal
 };
 
@@ -78,15 +83,15 @@ class ProjectViewController {
 
   onStatusChanged(status) {
     commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === BugRunnerStatus.Busy);
-    this.treeDataProvider.repaint();
+    this.treeDataProvider.refreshIcon();
   }
 
   // ###########################################################################
   // project node buttons
   // ###########################################################################
 
-  async nodeAddToWorkspace(projectNode) {
-    await projectNode.addToWorkspace();
+  nodeAddToWorkspace(projectNode) {
+    projectNode.addToWorkspace();
   }
 
   // ###########################################################################
@@ -116,6 +121,8 @@ class ProjectViewController {
       await bug.openInEditor();
 
       progress.report({ message: 'Finished!' });
+
+      this.treeDataProvider.refreshIcon();
     }, options);
   }
 

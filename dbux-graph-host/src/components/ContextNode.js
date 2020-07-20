@@ -81,7 +81,7 @@ class ContextNode extends HostComponentEndpoint {
     this.controllers.getComponent('GraphNode').setOwnMode(GraphNodeMode.ExpandChildren);
   }
 
-  async setSelected(isSelected) {
+  setSelected(isSelected) {
     const selectedTrace = traceSelection.selected;
     let traceId = null;
     let isSelectedTraceCallRelated = false;
@@ -95,7 +95,7 @@ class ContextNode extends HostComponentEndpoint {
       const child = dp.indexes.executionContexts.byCalleeTrace.get(callId);
       isSelectedTraceCallRelated = !!callId;
       contextIdOfSelectedCallTrace = child && child[0].contextId;
-    }
+    } 
     if (isSelected) {
       this.expand();
     }

@@ -14,7 +14,7 @@ export const builder = {
 /**
  * Run file with dbux instrumentations (using babel-register to add dbux-babel-plugin into the mix)
  */
-export const handler = wrapCommand(async ({ file }) => {
+export const handler = wrapCommand(({ file }) => {
   process.env.BABEL_DISABLE_CACHE = 1;
 
   // 0. patch up file path

@@ -15,11 +15,10 @@ const [
   argsEncoded
 ] = process.argv;
 
-const args = JSON.parse(argsEncoded);
+const args = JSON.parse(Buffer.from(argsEncoded, 'base64').toString('ascii'));
 const { port, cwd, command } = args;
 
 console.debug('run.js command received:', args);
-
 
 function main() {
   const processOptions = {

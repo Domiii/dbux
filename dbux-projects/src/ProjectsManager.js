@@ -1,7 +1,7 @@
+import getOrCreateProgressLog from './dataLib';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
-
 
 class ProjectsManager {
   config;
@@ -13,6 +13,7 @@ class ProjectsManager {
     this.config = cfg;
     this.externals = externals;
     this.editor = externals.editor;
+    this.progressLog = getOrCreateProgressLog(externals.storage);
   }
 
   /**
@@ -51,7 +52,7 @@ class ProjectsManager {
 
   getOrCreateRunner() {
     if (!this.runner) {
-      const runner = this.runner = new BugRunner(this);
+      const runner = this.runner = new BugRunner(this, this.progressLog);
       runner.start();
     }
     return this.runner;

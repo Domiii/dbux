@@ -4,10 +4,10 @@ export function wrapCommand(commandCallback) {
   return async argv => {
     let keepOpen;
     try {
-      keepOpen = await commandCallback(argv);
-      if (!keepOpen) {
-        exitProcess();
-      }
+      /* keepOpen = */ await commandCallback(argv);
+      // if (!keepOpen) {
+      //   exitProcess();
+      // }
     }
     catch (err) {
       console.error('Command failed:', err);

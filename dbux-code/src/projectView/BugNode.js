@@ -1,4 +1,7 @@
-import BugRunnerStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/BugRunnerStatus';
+import { env, Uri } from 'vscode';
+import progressLogHandler from '@dbux/projects/src/dataLib/progressLog';
+import BugResultStatusType from '@dbux/projects/src/dataLib/BugResultStatusType';
+import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
 export default class BugNode extends BaseTreeViewNode {
@@ -15,26 +18,33 @@ export default class BugNode extends BaseTreeViewNode {
   }
 
   get contextValue() {
-    return `dbuxProjectView.bugNode.${BugRunnerStatus.getName(this.status)}`;
+    const status = BugRunnerStatus.getName(this.status);
+    const hasWebsite = this.bug.website ? 'hasWebsite' : '';
+    return `dbuxProjectView.bugNode.${status}.${hasWebsite}`;
   }
 
   get status() {
     return this.bug.project.runner.getBugStatus(this.bug);
   }
 
+  get result() {
+    return progressLogHandler.getBugResultByBug(this.bug.manager.progressLog, this.bug)?.status;
+  }
+
   makeIconPath() {
     switch (this.status) {
-      case BugRunnerStatus.None:
-        return '';
       case BugRunnerStatus.Busy:
         return 'hourglass.svg';
       case BugRunnerStatus.RunningInBackground:
         return 'play.svg';
-      case BugRunnerStatus.Done:
-        return 'dependency.svg';
-      default:
-        return '';
     }
+    switch (this.result) {
+      case BugResultStatusType.Attempted:
+        return 'wrong.svg';
+      case BugResultStatusType.Solved:
+        return 'correct.svg';
+    }
+    return ' ';
   }
 
   canHaveChildren() {
@@ -43,5 +53,11 @@ export default class BugNode extends BaseTreeViewNode {
 
   handleClick() {
 
+  }
+
+  showWebsite() {
+    if (this.bug.website) {
+      env.openExternal(Uri.parse(this.bug.website));
+    }
   }
 }

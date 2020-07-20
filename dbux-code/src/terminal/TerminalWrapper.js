@@ -99,7 +99,8 @@ export default class TerminalWrapper {
     Verbose && debug('started');
 
     try {
-      const args = JSON.stringify(JSON.stringify({ port, cwd, command }));
+      const args = Buffer.from(JSON.stringify({ port, cwd, command })).toString('base64');
+      sendCommandToDefaultTerminal(`cd ${cwd}`);
       const runJsCommand = `node _dbux_run.js ${args}`;
       this._terminal = sendCommandToDefaultTerminal(runJsCommand);
 

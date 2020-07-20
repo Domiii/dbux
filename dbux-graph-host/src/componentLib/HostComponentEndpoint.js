@@ -51,6 +51,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
       throw new Error(this.debugTag + ` Tried to call setState during "${this.componentName}.${this._stateLockOwner}". Only use it in event handlers.`);
     }
 
+    if (this._isDisposed) {
+      throw new Error(this.debugTag + ` Tried to call setState after disposed`);
+    }
+
     Object.assign(this.state, update);
 
     this._startUpdate();
@@ -251,28 +255,28 @@ class HostComponentEndpoint extends ComponentEndpoint {
   dispose(silent = false) {
     super.dispose();
 
-    Promise.resolve(this.waitForInit()).then(async () => {
-      if (!this.isInitialized) {
-        throw new Error(this.debugTag + ' Trying to dispose before initialized');
-      }
-      for (const component of this.children) {
-        component.dispose(silent);
-      }
-      for (const component of this.controllers) {
-        component.dispose(silent);
-      }
+    // Promise.resolve(this.waitForInit()).then(() => {
+    if (!this.isInitialized) {
+      throw new Error(this.debugTag + ' Trying to dispose before initialized');
+    }
+    for (const component of this.children) {
+      component.dispose(silent);
+    }
+    for (const component of this.controllers) {
+      component.dispose(silent);
+    }
 
-      // remove from parent
-      if (this.owner) {
-        const list = this.owner._getComponentListByRoleName(this._internalRoleName);
-        list._removeComponent(this);
-      }
+    // remove from parent
+    if (this.owner) {
+      const list = this.owner._getComponentListByRoleName(this._internalRoleName);
+      list._removeComponent(this);
+    }
 
-      if (!silent) {
-        // also dispose on client
-        await this._remoteInternal.dispose();
-      }
-    });
+    if (!silent) {
+      // also dispose on client
+      this._remoteInternal.dispose();
+    }
+    // });
   }
 
   // ###########################################################################
