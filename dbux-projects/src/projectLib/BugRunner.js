@@ -5,6 +5,7 @@ import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
 import { newLogger, logError } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import progressLogHandler from '../dataLib/progressLog';
 import Project from './Project';
 import Bug from './Bug';
 import BugRunnerStatus from './BugRunnerStatus';
@@ -26,8 +27,9 @@ export default class BugRunner {
 
   debugPort = 9853;
 
-  constructor(manager) {
+  constructor(manager, storage) {
     this.manager = manager;
+    this.storage = storage;
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
     this.status = BugRunnerStatus.None;
@@ -193,6 +195,7 @@ export default class BugRunner {
         const cwd = project.projectPath;
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
         const result = await this._terminalWrapper.waitForResult();
+        progressLogHandler.processBugResult(this.storage, bug, result);
         project.logger.log(`Result:`, result);
         return result;
       }

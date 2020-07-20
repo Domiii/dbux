@@ -1,4 +1,6 @@
 import { env, Uri } from 'vscode';
+import progressLogHandler from 'dbux-projects/src/dataLib/progressLog';
+import BugResultStatusType from 'dbux-projects/src/dataLib/BugResultStatusType';
 import BugRunnerStatus from 'dbux-projects/src/projectLib/BugRunnerStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
@@ -25,19 +27,24 @@ export default class BugNode extends BaseTreeViewNode {
     return this.bug.project.runner.getBugStatus(this.bug);
   }
 
+  get result() {
+    return progressLogHandler.getBugResultByBug(this.bug.manager.progressLog, this.bug)?.status;
+  }
+
   makeIconPath() {
     switch (this.status) {
-      case BugRunnerStatus.None:
-        return '';
       case BugRunnerStatus.Busy:
         return 'hourglass.svg';
       case BugRunnerStatus.RunningInBackground:
         return 'play.svg';
-      case BugRunnerStatus.Done:
-        return 'dependency.svg';
-      default:
-        return '';
     }
+    switch (this.result) {
+      case BugResultStatusType.Attempted:
+        return 'wrong.svg';
+      case BugResultStatusType.Solved:
+        return 'correct.svg';
+    }
+    return ' ';
   }
 
   canHaveChildren() {
