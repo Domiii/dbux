@@ -195,13 +195,8 @@ export default class BugRunner {
         command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
         const result = await this._terminalWrapper.waitForResult();
-        progressLogHandler.processBugResult(this.storage, bug, result);
+        await progressLogHandler.processBugResult(this.storage, bug, result);
         project.logger.log(`Result:`, result);
-        if (result.code === 0) {
-          // test passed
-          // TODO: Not using modal after the second time success(check BugResultStatus)
-          this.manager.externals.confirm('Congratulations!! You have passed all test 🎉🎉🎉', true);
-        }
         return result;
       }
     }
@@ -325,7 +320,7 @@ export default class BugRunner {
     }
   }
 
-  getBugStatus(bug) {
+  getBugRunStatus(bug) {
     if (this._bug === bug) {
       return this.status;
     }

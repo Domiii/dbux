@@ -3,12 +3,18 @@ import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
 
+/**
+ * @typedef {import('./externals/Storage').default} ExternalStorage
+ */
+
 class ProjectsManager {
-  config;
-  externals;
   projects;
   runner;
 
+  /**
+   * @param {Object} externals 
+   * @param {ExternalStorage} externals.storage
+   */
   constructor(cfg, externals) {
     this.config = cfg;
     this.externals = externals;

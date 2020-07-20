@@ -1,7 +1,7 @@
 
 let memento;
 
-export function get(key, defaultValue) {
+export function get(key, defaultValue = undefined) {
   return memento.get(key, defaultValue);
 }
 

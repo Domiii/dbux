@@ -117,12 +117,17 @@ class ProjectViewController {
 
       // activate it!
       progress.report({ message: 'activating...' });
-      await runner.testBug(bug, debugMode);
+      const result = await runner.testBug(bug, debugMode);
 
-      progress.report({ message: 'opening in editor...' });
-      await bug.openInEditor();
-
-      progress.report({ message: 'Finished!' });
+      if (result?.code === 0) {
+        // test passed
+        // TODO: Not using modal after the second time success(check BugResultStatus)
+        window.showInformationMessage('Congratulations!! You have passed all test 🎉🎉🎉', { modal: true });
+      }
+      else {
+        progress.report({ message: 'opening in editor...' });
+        await bug.openInEditor();
+      }
 
       this.treeDataProvider.refreshIcon();
     }, options);

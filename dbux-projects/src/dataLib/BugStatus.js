@@ -1,10 +1,12 @@
 
 import Enum from 'dbux-common/src/util/Enum';
 
-const bugResultStatusType = new Enum({
+let BugStatus = {
   None: 1,
   Attempted: 2,
   Solved: 3,
-});
+};
 
-export default bugResultStatusType;
+BugStatus = new Enum(BugStatus);
+
+export default BugStatus;
