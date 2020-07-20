@@ -8,11 +8,12 @@ const { log, debug, warn, error: logError } = logger;
 const keyName = 'progressLog';
 let storage;
 
-/**
- * @param {Memento} storage - the permanent storage variable
- */
 function resetToDefault() {
   storage.set(keyName, progressLogHandler.newProgressLog());
+}
+
+function saveProgressLog(progressLog) {
+  storage.set(keyName, progressLog);
 }
 
 export default function getOrCreateProgressLog(_storage) {
@@ -23,11 +24,10 @@ export default function getOrCreateProgressLog(_storage) {
 
   // resetToDefault();
 
-  let processLog = storage.get(keyName);
-  processLog.save = function () {
-    storage.set(keyName, this);
-  };
+  let progressLog = storage.get(keyName);
 
   // debug(`Current storage`, obj);
-  return processLog;
+  return progressLog;
 }
+
+export { saveProgressLog };

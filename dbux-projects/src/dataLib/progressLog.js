@@ -1,5 +1,6 @@
 
 import { newLogger } from 'dbux-common/src/log/logger';
+import { saveProgressLog } from '.';
 import bugResultHandler from './BugResult';
 import testRunHandler from './TestRun';
 
@@ -13,14 +14,14 @@ function newProgressLog() {
   };
 }
 
-async function processBugResult(processLog, bug, result) {
-  debug(`process bug result`, processLog, bug, result);
-  processLog.testRuns.push(await testRunHandler.newTestRun(bug, result));
+async function processBugResult(progressLog, bug, result) {
+  debug(`process bug result`, progressLog, bug, result);
+  progressLog.testRuns.push(await testRunHandler.newTestRun(bug, result));
 
-  let bugResult = getOrCreateBugResult(processLog.bugResults, bug);
+  let bugResult = getOrCreateBugResult(progressLog.bugResults, bug);
   bugResultHandler.updateStatus(bugResult, result);
 
-  processLog.save();
+  saveProgressLog(progressLog);
 }
 
 function getBugResult(bugResults, bug) {
@@ -40,9 +41,9 @@ function getOrCreateBugResult(bugResults, bug) {
   return result;
 }
 
-function getBugResultByBug(processLog, bug) {
-  debug(processLog, bug);
-  return getBugResult(processLog.bugResults, bug);
+function getBugResultByBug(progressLog, bug) {
+  debug(progressLog, bug);
+  return getBugResult(progressLog.bugResults, bug);
 }
 
 export default {
