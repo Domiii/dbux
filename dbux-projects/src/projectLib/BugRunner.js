@@ -131,6 +131,25 @@ export default class BugRunner {
     return project.getOrLoadBugs();
   }
 
+  async saveBugPatchAndUpdateStorage(bug) {
+    const keyName = 'activatedBug';
+    let previousBugInformation = this.manager.externals.storage.get(keyName);
+    
+    if (previousBugInformation) {
+      let { projectName, bugId } = previousBugInformation;
+
+      let previousBug = this.manager.getOrCreateDefaultProjectList().getByName(projectName).getOrLoadBugs().getById(bugId);
+
+      await this.manager.saveRunningBug(previousBug);
+      await previousBug.project.gitResetHard();
+    }
+
+    await this.manager.externals.storage.set(keyName, {
+      projectName: bug.project.name,
+      bugId: bug.id,
+    });
+  }
+
   /**
    * @param {Bug} bug 
    */
@@ -138,6 +157,8 @@ export default class BugRunner {
     if (this.isBugActive(bug)) {
       return;
     }
+
+    await this.saveBugPatchAndUpdateStorage(bug);
 
     const { project } = bug;
     this._bug = bug;
@@ -178,7 +199,7 @@ export default class BugRunner {
       // do whatever it takes (usually: `activateProject` -> `git checkout`)
       await this.activateBug(bug);
 
-      // 
+      // apply stored patch
       await bug.project.manager.applyNewBugPatch(bug);
 
       // hackfix: set status here again in case of `this.activateBug` skips installaion process

@@ -107,13 +107,6 @@ class ProjectViewController {
       const { bug } = bugNode;
       const runner = this.manager.getOrCreateRunner();
 
-      // store current running bug
-      let runningBug = runner.getActiveBug();
-      if (runningBug && bug !== runningBug) {
-        await this.manager.saveRunningBug(runningBug);
-        await bug.project.gitResetHard();
-      }
-
       // cancel any currently running tasks
       progress.report({ message: 'Canceling previous tasks...' });
       await runner.cancel();
