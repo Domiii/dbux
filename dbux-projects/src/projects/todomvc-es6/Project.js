@@ -16,7 +16,7 @@ export default class TodomvcEs6Project extends Project {
     await sh.rm('-f', './.babelrc');
   }
 
-  async loadBugs() {
+  loadBugs() {
     return [
       {
         name: 'baseline',
@@ -58,7 +58,10 @@ export default class TodomvcEs6Project extends Project {
       // template.show -> template has a minor render defect
       // template.show -> incorrect variable scope causes only one item to be rendered
       
-    ];
+    ].map((bug) => {
+      bug.website = 'http://localhost:3032';
+      return bug;
+    });
   }
 
   async startWatchMode() {

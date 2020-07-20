@@ -130,7 +130,7 @@ export default class Project {
   /**
    * @abstract
    */
-  async loadBugs() {
+  loadBugs() {
     throw new Error(this + ' abstract method not implemented');
   }
 
@@ -371,7 +371,7 @@ export default class Project {
 
     if (await sh.test('-d', assetDir)) {
       // copy assets, if this project has any
-      this.logger.log('Copying assets from', assetDir);
+      this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
       await sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
     }
   }
@@ -395,9 +395,27 @@ export default class Project {
     return this.exec(`git apply --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
   }
 
+  /**
+   * Pipe patch content string to `git apply` via stdin.
+   * 
+   * @see https://git-scm.com/docs/git-apply#Documentation/git-apply.txt-ltpatchgt82308203
+   */
+  async applyPatchString(patchString) {
+    // TODO: fix `exec` to take in a string argument that will be automatically piped to stdin
+    // return this.exec(`git apply --ignore-space-change --ignore-whitespace -`);
+  }
+
   async extractPatch(patchFName) {
     // TODO: also copy to `AssetFolder`?
     return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
+  }
+
+  async getPatchString() {
+    return Process.execCaptureOut(`git diff --color=never`);
+  }
+
+  async getTagName() {
+    return Process.execCaptureOut(`git describe --tags`);
   }
 
   // ###########################################################################
@@ -407,9 +425,9 @@ export default class Project {
   /**
    * @return {BugList}
    */
-  async getOrLoadBugs() {
+  getOrLoadBugs() {
     if (!this._bugs) {
-      const arr = await this.loadBugs();
+      const arr = this.loadBugs();
       this._bugs = new BugList(this, arr);
     }
     return this._bugs;

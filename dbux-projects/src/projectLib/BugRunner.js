@@ -3,7 +3,7 @@ import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger, logError } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
 import Project from './Project';
 import Bug from './Bug';
@@ -86,6 +86,10 @@ export default class BugRunner {
     return this._bug === bug;
   }
 
+  getActiveBug() {
+    return this._bug;
+  }
+
   // ###########################################################################
   // activation methods
   // ###########################################################################
@@ -118,7 +122,7 @@ export default class BugRunner {
     project._installed = true;
   }
 
-  async getOrLoadBugs(project) {
+  getOrLoadBugs(project) {
     // if (!this.isProjectActive(project)) {
     //   await this.activateProject(project);
     // }
@@ -162,6 +166,8 @@ export default class BugRunner {
 
   /**
    * Run bug (if in debug mode, will wait for debugger to attach)
+   * 
+   * @param {}
    */
   async testBug(bug, debugMode = true) {
     const { project } = bug;
@@ -173,13 +179,22 @@ export default class BugRunner {
       // hackfix: set status here again in case of `this.activateBug` skips installaion process
       this.setStatus(BugRunnerStatus.Busy);
 
-      const cmd = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+      let command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+      command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
-      if (!cmd) {
+      if (!command) {
+        // nothing to do
+        project.logger.debug('has no test command. Nothing left to do.');
         // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
+        return null;
       }
       else {
-        await this._exec(project, cmd);
+        // await this._exec(project, command);
+        const cwd = project.projectPath;
+        this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
+        const result = await this._terminalWrapper.waitForResult();
+        project.logger.log(`Result:`, result);
+        return result;
       }
     }
     finally {
@@ -240,8 +255,17 @@ export default class BugRunner {
       return;
     }
 
-    // cancel all further steps already in queue and wait for the activated process done
-    await this._queue.cancel();
+    // cancel all further steps already in queue
+    const queuePromise = this._queue.cancel();
+
+    // kill active terminal wrapper
+    this._terminalWrapper?.cancel();
+    this._terminalWrapper = null;
+
+    // kill active process
+    await this._process?.kill();
+
+    await queuePromise;
 
     // kill background processes
     const backgroundProcesses = this._project?.backgroundProcesses || EmptyArray;

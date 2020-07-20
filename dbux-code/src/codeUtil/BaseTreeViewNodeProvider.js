@@ -63,6 +63,23 @@ export default class BaseTreeViewNodeProvider {
   repaint() {
     this._onDidChangeTreeData.fire();
   }
+  
+  /**
+   * Refresh iconPath of rootNodes and its children, then repaint the view
+   */
+  refreshIcon() {
+    this._refreshNodesIconPath(this.rootNodes);
+    this.repaint();
+  }
+
+  _refreshNodesIconPath(nodes) {
+    if (nodes) {
+      nodes.forEach(node => {
+        node.iconPath = this.makeNodeIconPath(node);
+        this._refreshNodesIconPath(node.children);
+      });
+    }
+  }
 
   handleCollapsibleStateChanged = evt => {
     // the event does not actually tell us or modify the state; we have to keep track manually

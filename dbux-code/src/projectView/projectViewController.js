@@ -8,14 +8,17 @@ import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
+import { execInTerminal } from '../terminal/TerminalWrapper';
 import PracticeStopwatch from './PracticeStopwatch';
 
 // ########################################
 //  setup logger for project
 // ########################################
+
 const logger = newLogger('projectViewController');
 const { log, debug, warn, error: logError } = logger;
 const outputChannel = new OutputChannel('dbux-project');
+
 setOutputStreams({
   log: outputChannel.log.bind(outputChannel),
   warn: outputChannel.log.bind(outputChannel),
@@ -43,7 +46,8 @@ const externals = {
       // TODO: use vscode API to add to workspace
       await exec(`code --add ${fpath}`, logger, { silent: false }, true);
     }
-  }
+  },
+  execInTerminal
 };
 
 class ProjectViewController {
@@ -71,15 +75,15 @@ class ProjectViewController {
 
   onStatusChanged(status) {
     commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === BugRunnerStatus.Busy);
-    this.treeDataProvider.repaint();
+    this.treeDataProvider.refreshIcon();
   }
 
   // ###########################################################################
   // project node buttons
   // ###########################################################################
 
-  async nodeAddToWorkspace(projectNode) {
-    await projectNode.addToWorkspace();
+  nodeAddToWorkspace(projectNode) {
+    projectNode.addToWorkspace();
   }
 
   // ###########################################################################
