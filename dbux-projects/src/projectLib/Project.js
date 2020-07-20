@@ -146,8 +146,8 @@ export default class Project {
   // utilities
   // ###########################################################################
 
-  exec(command, options) {
-    return this.runner._exec(this, command, options);
+  exec(command, options, input) {
+    return this.runner._exec(this, command, options, input);
   }
 
   execBackground(cmd, options) {
@@ -403,6 +403,7 @@ export default class Project {
   async applyPatchString(patchString) {
     // TODO: fix `exec` to take in a string argument that will be automatically piped to stdin
     // return this.exec(`git apply --ignore-space-change --ignore-whitespace -`);
+    return this.exec(`git apply --ignore-space-change --ignore-whitespace`, null, patchString);
   }
 
   async extractPatch(patchFName) {

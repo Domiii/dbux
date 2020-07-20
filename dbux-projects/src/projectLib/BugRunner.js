@@ -178,6 +178,9 @@ export default class BugRunner {
       // do whatever it takes (usually: `activateProject` -> `git checkout`)
       await this.activateBug(bug);
 
+      // 
+      await bug.project.manager.applyNewBugPatch(bug);
+
       // hackfix: set status here again in case of `this.activateBug` skips installaion process
       this.setStatus(BugRunnerStatus.Busy);
 
@@ -214,7 +217,7 @@ export default class BugRunner {
   /**
    * @param {boolean} options.cdToProjectPath [Default=true] Whether to cd to `project.projectPath`.
    */
-  async _exec(project, cmd, options = null) {
+  async _exec(project, cmd, options = null, input) {
     const {
       projectPath
     } = project;
@@ -244,7 +247,7 @@ export default class BugRunner {
 
     this._process = new Process();
     try {
-      return await this._process.start(cmd, project.logger, options);
+      return await this._process.start(cmd, project.logger, options, input);
     }
     finally {
       this._process = null;

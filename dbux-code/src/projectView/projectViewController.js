@@ -68,6 +68,7 @@ class ProjectViewController {
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
     this.treeView = this.treeDataProvider.treeView;
+
     this.practiceStopwatch = new PracticeStopwatch('practice');
     this.practiceStopwatch.registOnClick(context, this.maybeStopWatch.bind(this));
 
@@ -105,6 +106,13 @@ class ProjectViewController {
     return runTaskWithProgressBar(async (progress, cancelToken) => {
       const { bug } = bugNode;
       const runner = this.manager.getOrCreateRunner();
+
+      // store current running bug
+      let runningBug = runner.getActiveBug();
+      if (runningBug && bug !== runningBug) {
+        await this.manager.saveRunningBug(runningBug);
+        await bug.project.gitResetHard();
+      }
 
       // cancel any currently running tasks
       progress.report({ message: 'Canceling previous tasks...' });
