@@ -13,14 +13,14 @@ function newProgressLog() {
   };
 }
 
-async function processBugResult(obj, bug, result) {
-  debug(`process bug result`, obj, bug, result);
-  obj.testRuns.push(await testRunHandler.newTestRun(bug, result));
+async function processBugResult(processLog, bug, result) {
+  debug(`process bug result`, processLog, bug, result);
+  processLog.testRuns.push(await testRunHandler.newTestRun(bug, result));
 
-  let bugResult = getOrCreateBugResult(obj.bugResults, bug);
+  let bugResult = getOrCreateBugResult(processLog.bugResults, bug);
   bugResultHandler.updateStatus(bugResult, result);
 
-  obj.save();
+  processLog.save();
 }
 
 function getBugResult(bugResults, bug) {
@@ -40,9 +40,9 @@ function getOrCreateBugResult(bugResults, bug) {
   return result;
 }
 
-function getBugResultByBug(obj, bug) {
-  debug(obj, bug);
-  return getBugResult(obj.bugResults, bug);
+function getBugResultByBug(processLog, bug) {
+  debug(processLog, bug);
+  return getBugResult(processLog.bugResults, bug);
 }
 
 export default {

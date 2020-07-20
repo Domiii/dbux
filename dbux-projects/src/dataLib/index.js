@@ -23,11 +23,11 @@ export default function getOrCreateProgressLog(_storage) {
 
   // resetToDefault();
 
-  let obj = storage.get(keyName);
-  obj.save = function () {
+  let processLog = storage.get(keyName);
+  processLog.save = function () {
     storage.set(keyName, this);
   };
 
   // debug(`Current storage`, obj);
-  return obj;
+  return processLog;
 }
