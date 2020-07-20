@@ -38,14 +38,14 @@ module.exports = function dbuxRegister(targetPath = null) {
       function shouldIgnore(modulePath) {
         // no node_modules
         if (modulePath.match('(node_modules)|(dist)')) {
-          // console.warn('dbux-run [babel]', modulePath, false);
+          // console.debug(`dbux-register ignore`, modulePath);
           return true;
         }
 
         modulePath = modulePath.toLowerCase();
 
         const ignore = false;
-        // console.warn('dbux-run [babel]', modulePath, !ignore);
+        // console.debug(`dbux-register include`, !ignore, modulePath);
         return ignore;
       }
     ],

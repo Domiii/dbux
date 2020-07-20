@@ -451,7 +451,7 @@ const enterInstrumentors = {
     // }
   },
   Loop(path, state) {
-    loopVisitor(path, state);
+    // loopVisitor(path, state);
   },
 
   ReturnNoArgument(path, state) {
