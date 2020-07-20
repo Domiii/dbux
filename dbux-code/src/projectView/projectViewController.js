@@ -47,6 +47,11 @@ const externals = {
       await exec(`code --add ${fpath}`, logger, { silent: false }, true);
     }
   },
+  async confirm(msg, modal = false) {
+    const confirmText = 'Ok';
+    const result = window.showInformationMessage(msg, { modal }, confirmText);
+    return result === confirmText;
+  },
   execInTerminal
 };
 

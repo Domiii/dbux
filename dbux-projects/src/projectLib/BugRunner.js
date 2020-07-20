@@ -180,8 +180,7 @@ export default class BugRunner {
       this.setStatus(BugRunnerStatus.Busy);
 
       let command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
-      command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
-
+      
       if (!command) {
         // nothing to do
         project.logger.debug('has no test command. Nothing left to do.');
@@ -191,9 +190,15 @@ export default class BugRunner {
       else {
         // await this._exec(project, command);
         const cwd = project.projectPath;
+        command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
         const result = await this._terminalWrapper.waitForResult();
         project.logger.log(`Result:`, result);
+        if (result.code === 0) {
+          // test passed
+          // TODO: Not using modal after the second time success(check BugResultStatus)
+          this.manager.externals.confirm('Congratulations!! You have passed all test 🎉🎉🎉', true);
+        }
         return result;
       }
     }
