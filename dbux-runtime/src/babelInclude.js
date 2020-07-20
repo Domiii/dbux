@@ -1,6 +1,7 @@
 const path = require('path');
+const babelRegister = require('@babel/register');
 
-let dbuxRoot = path.resolve(__dirname + '/../..');
+let dbuxRoot = path.resolve(path.join(__dirname, '..', '..'));
 if (dbuxRoot.endsWith('node_modules')) {
   dbuxRoot = path.resolve(dbuxRoot + '/..');
 }
@@ -35,7 +36,9 @@ const babelRegisterOptions = {
       fpath = fpath.toLowerCase();
 
       const shouldIgnore = !fpath.match(folderPrefix);
-      console.warn('(dbux-runtime) babel', fpath, !shouldIgnore, folderPrefix);
+      
+      // eslint-disable-next-line no-console
+      console.warn('[dbux-runtime] babel', fpath, !shouldIgnore, folderPrefix);
       return shouldIgnore;
     }
   ],
@@ -57,7 +60,6 @@ const babelRegisterOptions = {
   // ]],
   babelrcRoots
 };
-const babelRegister = require('@babel/register');
 babelRegister(babelRegisterOptions);
 
 module.exports = require('./index');

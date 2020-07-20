@@ -15,10 +15,8 @@
   "keywords": [],
   "author": "Domi",
   "license": "Apache-2.0",
-  "devDependencies": {
-    "prettier": "^2.0.5"
-  },
   "dependencies": {
+    "prettier": "^2.0.5",
     "@babel/cli": "^7.8.3",
     "@babel/core": "^7.8.3",
     "@babel/node": "^7.5.5",

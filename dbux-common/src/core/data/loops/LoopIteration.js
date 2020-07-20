@@ -1,7 +1,20 @@
 export default class LoopIteration {
-  loopId: number;
-  runId: number;
+  /**
+   * @type {number}
+   */
+  loopId;
 
-  i: number;
-  vars: Array<Var>;
+  /**
+   * @type {number}
+   */
+  runId;
+
+  /**
+   * @type {number}
+   */
+  i;
+  /**
+   * @type {Array<Var>}
+   */
+  vars;
 }

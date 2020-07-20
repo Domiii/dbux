@@ -7,7 +7,7 @@ import { extractSourceStringWithoutComments } from './sourceHelpers';
 import { isNodeInstrumented } from './instrumentationHelper';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('dbux-code');
+const { log, debug, warn, error: logError } = newLogger('functionHelpers');
 
 // ###########################################################################
 // function names

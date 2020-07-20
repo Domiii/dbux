@@ -52,6 +52,7 @@ module.exports = {
     "no-bitwise": 0,
     "no-multiple-empty-lines": 0,
     // "no-useless-escape": 0,
+    "no-path-concat": 0,
     "constructor-super": "warn",
     "valid-typeof": "warn",
     // "class-methods-use-this": "warn",
@@ -95,5 +96,15 @@ module.exports = {
       node: {}, // placed above other resolver configs
       webpack: {}
     }
-  }
+  },
+
+  overrides: [
+    {
+      files: ['**/src/testing/*.js'],
+      rules: {
+        "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
+        "no-console": 0
+      }
+    }
+  ]
 };

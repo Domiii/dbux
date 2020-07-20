@@ -1,4 +1,4 @@
-import { makeDebounce } from '@dbux/common/src/util/scheduling'
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import html2canvas from 'html2canvas';
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';

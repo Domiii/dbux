@@ -1,6 +1,6 @@
 const path = require('path');
 
-let dbuxRoot = path.resolve(__dirname + '/../..');
+let dbuxRoot = path.resolve(path.join(__dirname, '..', '..'));
 if (dbuxRoot.endsWith('node_modules')) {
   dbuxRoot = path.resolve(dbuxRoot + '/..');
 }
@@ -15,6 +15,8 @@ let folderPrefix = `^${path.join(
   `(?:${path.join('node_modules', '/')})?(${folders.map(f => `(${f})`).join('|')})`,
   '(?!.*?node_modules)'
 )}`;
+
+const babelRegister = require('@babel/register');
 
 // fix: backslashes on windows
 folderPrefix = folderPrefix.replace(/\\/g, '\\\\');
@@ -58,7 +60,6 @@ const babelRegisterOptions = {
   // ]],
   babelrcRoots
 };
-const babelRegister = require('@babel/register');
 babelRegister(babelRegisterOptions);
 
 module.exports = require('./index');

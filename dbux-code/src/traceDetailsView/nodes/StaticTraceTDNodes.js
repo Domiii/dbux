@@ -128,11 +128,11 @@ export function switchMode(mode) {
 }
 
 export default class StaticTraceTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace, parent) {
+  static makeTraceDetail(trace/* , parent */) {
     return trace;
   }
 
-  static makeProperties(trace, parent, detail) {
+  static makeProperties(trace/* , parent, detail */) {
     // build children here since label depends on children
     const { applicationId, staticTraceId } = trace;
     const app = allApplications.getById(applicationId);

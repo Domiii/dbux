@@ -16,11 +16,11 @@ export class TraceDetailNode extends BaseTreeViewNode {
 // ###########################################################################
 
 export class DebugTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace, parent) {
+  static makeTraceDetail(trace/* , parent */) {
     return trace;
   }
 
-  static makeLabel(trace, parent) {
+  static makeLabel(/* trace, parent */) {
     return 'Debug';
   }
 

@@ -1,12 +1,9 @@
-import TraceType, { hasTraceValue } from '@dbux/common/src/core/constants/TraceType';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import staticTraceCollection from './staticTraceCollection';
 import executionContextCollection from './executionContextCollection';
 import staticContextCollection from './staticContextCollection';
 import Collection from './Collection';
 import pools from './pools';
 import valueCollection from './valueCollection';
-import staticProgramContextCollection from './staticProgramContextCollection';
 
 
 class TraceCollection extends Collection {

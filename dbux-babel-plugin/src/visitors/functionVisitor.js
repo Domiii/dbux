@@ -10,7 +10,7 @@ import { getNodeNames } from './nameVisitors';
 // helpers
 // ###########################################################################
 
-function addResumeContext(bodyPath, state, staticId) {
+function addResumeContext(bodyPath, state/* , staticId */) {
   const { loc: bodyLoc } = bodyPath.node;
 
   // the "resume context" starts with the function (function is in "Resumed" state initially)

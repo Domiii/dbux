@@ -10,7 +10,7 @@ import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('dbux-code');
+const { log, debug, warn, error: logError } = newLogger('RuntimeMonitor');
 
 function _inheritsLoose(subClass, superClass) {
   if (superClass.prototype) {
@@ -254,7 +254,7 @@ export default class RuntimeMonitor {
     return awaitContextId;
   }
 
-  wrapAwait(programId, awaitValue, awaitContextId) {
+  wrapAwait(programId, awaitValue, /* awaitContextId */) {
     // nothing to do
     return awaitValue;
   }
@@ -286,7 +286,7 @@ export default class RuntimeMonitor {
   }
 
   
-  pushResume(programId, resumeStaticContextId, inProgramStaticTraceId, dontTrace = false) {
+  pushResume(programId, resumeStaticContextId, inProgramStaticTraceId/* , dontTrace = false */) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -468,7 +468,7 @@ export default class RuntimeMonitor {
 
   // TODO: loops!
 
-  async* wrapAsyncIterator(it) {
+  async* wrapAsyncIterator(/* it */) {
     // TODO
     // for (const promise of it) {
     //   // wrap await

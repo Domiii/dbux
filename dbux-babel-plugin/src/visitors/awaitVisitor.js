@@ -1,8 +1,8 @@
 import template from "@babel/template";
 import * as t from "@babel/types";
-import { getPresentableString } from '../helpers/misc';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
+import { getPresentableString } from '../helpers/misc';
 
 // ###########################################################################
 // builders
@@ -12,7 +12,7 @@ const postAwaitTemplate = template(
   // WARNING: id must be passed AFTER awaitNode, 
   //    because else it will be undefined.
   //    The value will be bound before `await` and thus before `preAwait` was called.
-`%%dbux%%.postAwait(
+  `%%dbux%%.postAwait(
   %%awaitNode%%,
   %%awaitContextId%%,
   %%resumeTraceId%%
@@ -34,7 +34,7 @@ function getAwaitDisplayName(path) {
 
 function addResumeContext(awaitPath, state) {
   const { loc: awaitLoc } = awaitPath.node;
-  
+
   // the "resume context" starts after the await statement
   const locStart = awaitLoc.end;
   return state.contexts.addResumeContext(awaitPath, locStart);
@@ -84,7 +84,6 @@ export function awaitVisitEnter(path, state) {
   // prevent infinite loop
   const newAwaitPath = path.get('arguments.0');
   state.onCopy(path, newAwaitPath, 'context');
-
 }
 
 export default function awaitVisitor() {

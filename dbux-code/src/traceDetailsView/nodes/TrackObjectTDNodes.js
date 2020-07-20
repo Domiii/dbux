@@ -5,11 +5,11 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import ObjectNode from './ObjectNode';
 
 export default class TrackObjectTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace, parent) {
+  static makeTraceDetail(trace/* , parent */) {
     return trace;
   }
 
-  static makeProperties(trace, parent, detail) {
+  static makeProperties(trace/* , parent, detail */) {
     const dp = allApplications.getById(trace.applicationId).dataProvider;
 
     const trackedTraces = dp.util.getAllTracesOfObjectOfTrace(trace.traceId);

@@ -1,5 +1,5 @@
 import NanoEvents from 'nanoevents';
-import HostComponentEndpoint from '@dbux/graph-host/src/componentLib/HostComponentEndpoint';
+import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class HighlightManager extends HostComponentEndpoint {
   init() {

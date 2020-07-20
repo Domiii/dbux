@@ -5,7 +5,7 @@ import {
 import { newLogger } from '@dbux/common/src/log/logger';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('DbuxPracticeController');
+const { log, debug, warn, error: logError } = newLogger('PracticeController');
 
 // import CodeSubmissions from './CodeSubmissions';
 // import PracticeClient from './PracticeClient';
@@ -42,7 +42,7 @@ async function loginIfNecessaryAndGetToken() {
   // result is a JSON object where result.login === session.accountName
   // exec(`curl -H "Authorization: token ${accessToken}" https://api.github.com/user`)
   const token = await session.getAccessToken();
-  console.log('login successful!', JSON.stringify(session), token);
+  log('login successful!', JSON.stringify(session), token);
 
   return session;
 }

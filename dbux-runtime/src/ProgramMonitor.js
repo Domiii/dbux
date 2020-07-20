@@ -57,7 +57,7 @@ export default class ProgramMonitor {
 
   popImmediate(contextId, traceId) {
     if (this.disabled) {
-      return;
+      return undefined;
     }
 
     return this._runtimeMonitor.popImmediate(contextId, traceId);
@@ -65,7 +65,7 @@ export default class ProgramMonitor {
 
   popFunction(contextId, traceId) {
     if (this.disabled) {
-      return;
+      return undefined;
     }
 
     return this._runtimeMonitor.popFunction(contextId, traceId);
@@ -80,7 +80,7 @@ export default class ProgramMonitor {
   preAwait(inProgramStaticId, traceId) {
     if (this.disabled) {
       // TODO: calling asynchronous methods when disabled hints at non-pure getters and will most likely cause trouble :(
-        this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey call asynchronous code)`);
+      this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey  call asynchronous code)`);
       return 0;
     }
     return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticId, traceId);

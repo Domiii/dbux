@@ -204,17 +204,20 @@ class ValueCollection extends Collection {
     }
   }
 
-  _startAccess(obj) {
+  _startAccess(/* obj */) {
     // TODO: disable tracing while reading the property
+    // eslint-disable-next-line no-undef
     if (__dbux__._r.disabled) {
       this.logger.error('Tried to start accessing object while already accessing another object.');
       return;
     }
 
+    // eslint-disable-next-line no-undef
     __dbux__._r.setDisabled(true);
   }
 
-  _endAccess(obj) {
+  _endAccess() {
+    // eslint-disable-next-line no-undef
     __dbux__._r.setDisabled(false);
   }
 
@@ -224,7 +227,8 @@ class ValueCollection extends Collection {
 
     errorsByType.set(Object.getPrototypeOf(obj), obj);
     if ((this._readErrorCount % 100) === 1) {
-      this.logger.error(`When copying object data, invoking object getters caused ${this._readErrorCount} exceptions (if this number is very high, you will likely observe significant slow-down)`);
+      this.logger.error(`When copying object data, invoking object getters caused ${this._readErrorCount} ` +
+        `exceptions (if this number is very high, you will likely observe significant slow-down)`);
     }
   }
 
@@ -341,7 +345,8 @@ class ValueCollection extends Collection {
               else {
                 const childValue = this._readProperty(value, prop);
                 childRef = this._serialize(childValue, depth + 1, visited);
-                Verbose && this._log(`${' '.repeat(depth)}#${childRef.valueId} O[${prop}] ${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
+                Verbose && this._log(`${' '.repeat(depth)}#${childRef.valueId} O[${prop}] ` +
+                  `${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
               }
               serialized.push([prop, childRef.valueId]);
             }

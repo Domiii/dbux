@@ -21,11 +21,11 @@ export default class PopperManager extends ClientComponentEndpoint {
     if (this.owner.panzoom) {
       this.panzoom = this.owner.panzoom;
   
-      this.panzoom.on('zoom', (e) => {
+      this.panzoom.on('zoom', (/* e */) => {
         this.update();
       });
   
-      this.panzoom.on('transform', (e) => {
+      this.panzoom.on('transform', (/* e */) => {
         this.update();
       });
     }

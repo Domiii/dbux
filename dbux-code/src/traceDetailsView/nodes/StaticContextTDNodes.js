@@ -5,12 +5,12 @@ import TraceNode from './TraceNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 export default class StaticContextTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace, parent) {
+  static makeTraceDetail(trace/* , parent */) {
     const { applicationId } = trace;
     return { applicationId };
   }
 
-  static makeProperties(trace, parent, detail) {
+  static makeProperties(trace/* , parent, detail */) {
     // build children here since label depends on children
     const { applicationId, contextId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;

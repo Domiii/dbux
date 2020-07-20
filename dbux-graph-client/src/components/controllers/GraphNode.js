@@ -22,7 +22,7 @@ export default class GraphNode extends ClientComponentEndpoint {
     // on click -> nextMode
     this.owner.dom.addEventListeners(this, true);
 
-    nodeToggleBtn?.addEventListener('click', evt => {
+    nodeToggleBtn?.addEventListener('click', (/* evt */) => {
       this.remote.nextMode();
     });
   }

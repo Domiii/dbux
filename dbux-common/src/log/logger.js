@@ -87,7 +87,7 @@ export class Logger {
 }
 
 export function newLogger(ns) {
-  return new Logger(ns);
+  return new Logger(`DBUX ${ns}`);
 }
 
 export function newFileLogger(fpath) {

@@ -9,6 +9,7 @@ function fixShellJs() {
   ).toString();
 
   if (!sh.config.execPath) {
+    // eslint-disable-next-line no-console
     console.error('node executable not found');
   }
 
