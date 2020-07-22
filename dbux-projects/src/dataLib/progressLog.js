@@ -1,70 +1,39 @@
-
 import { newLogger } from 'dbux-common/src/log/logger';
-import { saveProgressLog } from '.';
-import bugResultHandler from './BugResult';
-import testRunHandler from './TestRun';
+import TestRun from './TestRunDef';
+import BugProgress from './BugProgress';
 
-const logger = newLogger('ProgressLog');
-const { log, debug, warn, error: logError } = logger;
 
-function newProgressLog() {
-  return {
-    testRuns: [],
-    bugResults: [],
-  };
-}
+const { log, debug, warn, error: logError } = newLogger('ProgressLog');
 
-async function processBugResult(progressLog, bug, result) {
-  progressLog.testRuns.push(await testRunHandler.newTestRun(bug, result));
 
-  let bugResult = getOrCreateBugResult(progressLog.bugResults, bug);
-  bugResultHandler.updateStatus(bugResult, result);
-
-  saveProgressLog(progressLog);
-}
-
-function processUnfinishTestRun(progressLog, bug, patchString) {
-  progressLog.testRuns.push(testRunHandler.newTestRunWithPatchString(bug, patchString));
-
-  saveProgressLog(progressLog);
-}
-
-function getBugResultByBug(progressLog, bug) {
-  return getBugResult(progressLog.bugResults, bug);
-}
-
-function getTestRunsByBug(progressLog, _bug) {
-  debug(`gettestrunsbybug`, progressLog, _bug);
-  return progressLog.testRuns.filter((bug) => {
-    return testRunHandler.isTestRunOfBug(bug, _bug);
-  });
-}
-
-// ########################################
-//  private
-// ########################################
-
-function getBugResult(bugResults, bug) {
-  return bugResults.filter((bugResult) => {
-    return bugResultHandler.isMatch(bugResult, bug.project.name, bug.id);
-  })?.[0];
-}
-
-function getOrCreateBugResult(bugResults, bug) {
-  let result = getBugResult(bugResults, bug);
-
-  if (!result) {
-    result = bugResultHandler.newBugResult(bug);
-    bugResults.push(result);
+export default class ProgressLog {
+  /**
+   * @param {Object} [logObject]
+   * @param {TestRun[]} logObject.testRuns
+   * @param {BugProgress[]} logObject.bugProgresses
+   */
+  constructor(logObject) {
+    this.testRuns = [...(logObject?.testRuns || [])];
+    this.bugProgresses = [...(logObject?.bugProgresses || [])];
   }
 
-  return result;
-}
+  /**
+   * @param {string} logString 
+   */
+  static fromString(logString) {
+    try {
+      return new ProgressLog(JSON.parse(logString));
+    }
+    catch {
+      logError('Failed converting string to progress log, string:', logString);
+      return null;
+    }
+  }
 
-export default {
-  newProgressLog,
-  processBugResult,
-  processUnfinishTestRun,
-  getBugResultByBug,
-  getTestRunsByBug,
-};
+  serialize() {
+    return JSON.stringify({
+      testRuns: this.testRuns,
+      bugProgresses: this.bugProgresses
+    });
+  }
+}

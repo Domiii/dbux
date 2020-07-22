@@ -122,7 +122,7 @@ class ProjectViewController {
 
       if (result?.code === 0) {
         // test passed
-        // TODO: Not using modal after the second time success(check BugResultStatus)
+        // TODO: Not using modal after the second time success(check BugProgress)
         window.showInformationMessage('Congratulations!! You have passed all test 🎉🎉🎉', { modal: true });
       }
       else {

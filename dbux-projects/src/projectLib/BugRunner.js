@@ -5,12 +5,18 @@ import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
 import Process from 'dbux-projects/src/util/Process';
 import { newLogger, logError } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import progressLogHandler from '../dataLib/progressLog';
 import Project from './Project';
 import Bug from './Bug';
 import BugRunnerStatus from './BugRunnerStatus';
 
+/**
+ * @typedef {import('../ProjectsManager').default} ProjectsManager
+ */
+
 export default class BugRunner {
+  /**
+   * @type {ProjectsManager}
+   */
   manager;
   /**
    * @type {SerialTaskQueue}
@@ -27,12 +33,12 @@ export default class BugRunner {
 
   debugPort = 9853;
 
-  constructor(manager, storage) {
+  constructor(manager) {
     this.manager = manager;
-    this.storage = storage;
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
     this.status = BugRunnerStatus.None;
+    this._ownLogger.debug('storage now:', this.manager.externals.storage.get('dbux-projects.progressLog'));
   }
 
   get logger() {
@@ -219,7 +225,7 @@ export default class BugRunner {
         command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
         const result = await this._terminalWrapper.waitForResult();
-        await progressLogHandler.processBugResult(this.storage, bug, result);
+        await this.manager.progressLogController.util.processBugProgress(bug, result);
         project.logger.log(`Result:`, result);
         return result;
       }
@@ -232,6 +238,7 @@ export default class BugRunner {
       else {
         this.setStatus(BugRunnerStatus.Done);
       }
+      this._ownLogger.debug('storage now:', this.manager.externals.storage.get('dbux-projects.progressLog'));
     }
   }
 

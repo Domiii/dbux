@@ -1,8 +1,7 @@
-import getOrCreateProgressLog from 'dbux-projects/src/dataLib';
-import processLogHandler from 'dbux-projects/src/dataLib/progressLog';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
+import ProgressLogController from './dataLib/ProgressLogController';
 
 /**
  * @typedef {import('./externals/Storage').default} ExternalStorage
@@ -20,7 +19,8 @@ class ProjectsManager {
     this.config = cfg;
     this.externals = externals;
     this.editor = externals.editor;
-    this.progressLog = getOrCreateProgressLog(externals.storage);
+    
+    this.progressLogController = new ProgressLogController(externals.storage);
   }
 
   /**
@@ -59,7 +59,7 @@ class ProjectsManager {
 
   getOrCreateRunner() {
     if (!this.runner) {
-      const runner = this.runner = new BugRunner(this, this.progressLog);
+      const runner = this.runner = new BugRunner(this);
       runner.start();
     }
     return this.runner;
@@ -69,12 +69,12 @@ class ProjectsManager {
     let patchString = await bug.project.getPatchString();
     if (patchString) {
       // TODO: prompt? or something else
-      processLogHandler.processUnfinishTestRun(this.progressLog, bug, patchString);
+      this.progressLogController.util.processUnfinishTestRun(bug, patchString);
     }
   }
 
   async applyNewBugPatch(bug) {
-    let testRuns = processLogHandler.getTestRunsByBug(this.progressLog, bug);
+    let testRuns = this.progressLogController.util.getTestRunsByBug(this.progressLog, bug);
     let testRun = testRuns.reduce((a, b) => {
       if (!a) {
         return b;
