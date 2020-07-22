@@ -93,17 +93,14 @@ export default class Project {
       return false;
     }
 
-    const processOptions = {
-      cwd: this.projectPath,
-    };
-    const remote = await this.execCaptureOut(`git remote -v`, processOptions);
+    const remote = await this.execCaptureOut(`git remote -v`);
     return remote?.includes(this.gitRemote);
   }
 
   async gitResetHard(args) {
     if (!await this.isCorrectGitRepository()) {
       this.logger.warn('Trying to `git reset --hard`, but was not correct git repository: ', 
-        await Process.execCaptureOut('git remote -v'));
+        await this.execCaptureOut('git remote -v'));
       return;
     }
     await this.exec('git reset --hard ' + (args || ''));
@@ -453,7 +450,7 @@ export default class Project {
   async getPatchString() {
     if (!await this.isCorrectGitRepository()) {
       this.logger.warn(`Execute getPatchString, but was not correct git repository.`);
-      return -1;
+      return null;
     }
 
     return this.execCaptureOut(`git diff --color=never`);
@@ -462,7 +459,7 @@ export default class Project {
   async getTagName() {
     if (!await this.isCorrectGitRepository()) {
       this.logger.warn(`Execute getTagName, but was not correct git repository.`);
-      return -1;
+      return null;
     }
 
     return this.execCaptureOut(`git describe --tags`);
