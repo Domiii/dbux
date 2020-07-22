@@ -1,5 +1,6 @@
 const path = require('path');
 const process = require('process');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { makeResolve, makeAbsolutePaths } = require('../scripts/webpack.util');
 
 
@@ -12,7 +13,9 @@ const outputFolderName = 'dist';
 const outFile = 'bundle.js';
 
 
-const webpackPlugins = [];
+const webpackPlugins = [
+  // new BundleAnalyzerPlugin()
+];
 
 
 const dependencyPaths = [
@@ -47,7 +50,6 @@ const rules = [
 module.exports = {
   // https://github.com/webpack/webpack/issues/2145
   mode: process.env.MODE || 'development',
-  watch: true,
   // devtool: 'inline-module-source-map',
   devtool: 'source-map',
   //devtool: 'inline-source-map',

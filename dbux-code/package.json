@@ -1,7 +1,12 @@
 {
-	"name": "@dbux/code",
+	"name": "dbux-code",
 	"version": "0.0.2-alpha.1004+18e0d5e",
+	"publisher": "Domi",
 	"description": "",
+	"repository": {
+		"type" : "git",
+		"url" : "https://github.com/Domiii/dbux"
+	},
 	"engines": {
 		"vscode": "^1.41.0"
 	},
@@ -496,12 +501,16 @@
 	},
 	"scripts": {
 		"test": "node ./test/runTest.js",
-		"vscode:prepublish": "node ../node_modules/webpack/bin/webpack --mode production",
+		"build:clean": "rm -rf ./dist && rm -rf ./public",
+		"vscode:prepublish": "npm run build:prod",
 		"start": "node ../node_modules/webpack/bin/webpack --mode development --watch",
 		"start-debug": "node --inspect-brk=9233 ../node_modules/webpack/bin/webpack --mode development --watch",
-		"build-prod": "npx webpack --mode production",
-		"build-dev": "npx webpack --mode development",
-		"analyze": "npx webpack --mode development --json | npx webpack-bundle-size-analyzer"
+		"build:prod": "npm run build:clean && node ../node_modules/webpack/bin/webpack --mode production",
+		"build:dev": "npm run build:clean && node ../node_modules/webpack/bin/webpack --mode development",
+		"build:analyze": "npm run build:clean && mkdir dist && node ../node_modules/webpack/bin/webpack --mode production --profile --json > dist/stats.json && npx webpack-bundle-analyzer dist/stats.json",
+		"package": "vsce package --yarn",
+		"package:analyze": "npm run package && rm -rf public && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
+		"publishthis": "npm run package && vsce publish --yarn"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
@@ -511,7 +520,9 @@
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
 		"typescript": "^3.6.4",
-		"vscode-test": "^1.2.2"
+		"vscode-test": "^1.2.2",
+		"webpack-bundle-analyzer": "^3.8.0",
+		"webpack-cli": "^3.3.10"
 	},
 	"dependencies": {
 		"@dbux/cli": "^0.0.2-alpha.1004+18e0d5e",
@@ -520,8 +531,6 @@
 		"@dbux/graph-common": "^0.0.2-alpha.1004+18e0d5e",
 		"@dbux/graph-host": "^0.0.2-alpha.1004+18e0d5e",
 		"@dbux/projects": "^0.0.2-alpha.1004+18e0d5e",
-		"axios": "^0.19.2",
-		"comment-json": "^3.0.2",
 		"lodash": "^4.17.19",
 		"moment": "^2.24.0",
 		"socket.io": "^2.3.0",

@@ -11,11 +11,12 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "nanoevents": "^2.0.0",
-    "lodash": "^4.17.19",
     "@dbux/common": "^0.0.2-alpha.1004+18e0d5e",
     "@dbux/data": "^0.0.2-alpha.1004+18e0d5e",
-    "@dbux/graph-common": "^0.0.2-alpha.1004+18e0d5e"
+    "@dbux/graph-common": "^0.0.2-alpha.1004+18e0d5e",
+    "lodash": "^4.17.19",
+    "nanoevents": "^2.0.0"
   },
-  "gitHead": "18e0d5ec96bb1fb6348665436e01d4c4ce127999"
+  "devDependencies": {
+  }
 }

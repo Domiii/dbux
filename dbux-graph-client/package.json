@@ -34,6 +34,5 @@
   },
   "_moduleAliases": {
     "webpack": "../node_modules/webpack"
-  },
-  "gitHead": "18e0d5ec96bb1fb6348665436e01d4c4ce127999"
+  }
 }

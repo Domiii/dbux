@@ -14,5 +14,6 @@
     "nanoevents": "^2.0.0"
   },
   "_moduleAliases": {},
-  "gitHead": "18e0d5ec96bb1fb6348665436e01d4c4ce127999"
+  "devDependencies": {
+  }
 }
