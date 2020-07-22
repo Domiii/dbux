@@ -100,9 +100,8 @@ export default class TerminalWrapper {
 
     try {
       const args = Buffer.from(JSON.stringify({ port, cwd, command })).toString('base64');
-      sendCommandToDefaultTerminal(`cd ${cwd}`);
       const runJsCommand = `node _dbux_run.js ${args}`;
-      this._terminal = sendCommandToDefaultTerminal(runJsCommand);
+      this._terminal = sendCommandToDefaultTerminal(cwd, runJsCommand);
 
       const client = this.client = await socketServer.waitForNextClient();
       Verbose && debug('client connected');

@@ -1,6 +1,7 @@
 const path = require('path');
 const process = require('process');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const CopyPlugin = require('copy-webpack-plugin');
 const { makeResolve, makeAbsolutePaths } = require('../scripts/webpack.util');
 
 
@@ -14,6 +15,14 @@ const outFile = 'bundle.js';
 
 
 const webpackPlugins = [
+  new CopyPlugin({
+    patterns: [
+      {
+        from: path.join(MonoRoot, 'dbux-projects', 'assets'),
+        to: path.join(MonoRoot, 'dbux-code', 'resources')
+      }
+    ]
+  })
   // new BundleAnalyzerPlugin()
 ];
 

@@ -363,7 +363,6 @@ export default class Project {
   }
 
   async copyAssetFolder(assetFolderName) {
-    // TODO: fix these paths! (`__dirname` is overwritten by webpack and points to the `dist` dir; `__filename` points to `bundle.js`)
     const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
 
     if (await sh.test('-d', assetDir)) {
@@ -397,7 +396,7 @@ export default class Project {
    * 
    * @see https://git-scm.com/docs/git-apply#Documentation/git-apply.txt-ltpatchgt82308203
    */
-  async applyPatchString(/* patchString */) {
+  async applyPatchString(patchString) {
     // TODO: fix `exec` to take in a string argument that will be automatically piped to stdin
     // return this.exec(`git apply --ignore-space-change --ignore-whitespace -`);
     return this.exec(`git apply --ignore-space-change --ignore-whitespace`, null, patchString);

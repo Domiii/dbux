@@ -3,8 +3,8 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/traceLabels';
+import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
-import GraphNodeMode from '../../../dbux-graph-common/src/shared/GraphNodeMode';
 
 class ContextNode extends HostComponentEndpoint {
   init() {
