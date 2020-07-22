@@ -4,6 +4,7 @@ import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import { newLogger } from 'dbux-common/src/log/logger';
 import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import EmptyObject from 'dbux-common/src/util/EmptyObject';
 import BugList from './BugList';
 import Process from '../util/Process';
 
@@ -92,16 +93,24 @@ export default class Project {
       return false;
     }
 
-    const remote = await Process.execCaptureOut('git remote -v');
+    const remote = await this.execCaptureOut(`git remote -v`);
     return remote?.includes(this.gitRemote);
   }
 
-  async gitResetHard(args) {
-    sh.cd(this.projectPath);
+  async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
-      this.logger.warn('Trying to `git reset --hard`, but was not correct git repository: ', await Process.execCaptureOut('git remote -v'));
-      return;
+      this.logger.warn(`Trying to exectute some git command, but was not correct git repository: `,
+        await this.execCaptureOut(`git remote -v`));
+      this.logger.error('This project encount some problem. ' + 
+        'This may be solved by pressing `clean project` folder button.');
+      return 0;
     }
+    return 1;
+  }
+
+  async gitResetHard(args) {
+    if (!await this.checkCorrectGitRepository()) return;
+
     await this.exec('git reset --hard ' + (args || ''));
   }
 
@@ -146,8 +155,20 @@ export default class Project {
   // utilities
   // ###########################################################################
 
-  exec(command, options, input) {
-    return this.runner._exec(this, command, options, input);
+  async exec(command, processOptions, input) {
+    processOptions = {
+      ...(processOptions || EmptyObject),
+      cwd: this.projectPath
+    };
+    return this.runner._exec(this, command, processOptions, input);
+  }
+
+  async execCaptureOut(command, processOptions) {
+    processOptions = {
+      ...(processOptions || EmptyObject),
+      cwd: this.projectPath
+    };
+    return Process.execCaptureOut(command, { processOptions });
   }
 
   execBackground(cmd, options) {
@@ -191,6 +212,10 @@ export default class Project {
    * @see https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
    */
   async checkFilesChanged() {
+    if (!await this.checkCorrectGitRepository()) {
+      return -1;
+    }
+
     await this.exec('git update-index --refresh', {
       failOnStatusCode: false
     });
@@ -272,6 +297,10 @@ export default class Project {
   async afterInstall() { }
 
   async autoCommit() {
+    if (!await this.checkCorrectGitRepository()) {
+      return;
+    }
+
     await this.exec(`git add -A && git commit -am "[dbux auto commit]"`);
   }
 
@@ -392,6 +421,10 @@ export default class Project {
   }
 
   async applyPatch(patchFName) {
+    if (!await this.checkCorrectGitRepository()) {
+      return -1;
+    }
+
     return this.exec(`git apply --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
   }
 
@@ -401,22 +434,36 @@ export default class Project {
    * @see https://git-scm.com/docs/git-apply#Documentation/git-apply.txt-ltpatchgt82308203
    */
   async applyPatchString(patchString) {
-    // TODO: fix `exec` to take in a string argument that will be automatically piped to stdin
-    // return this.exec(`git apply --ignore-space-change --ignore-whitespace -`);
+    if (!await this.checkCorrectGitRepository()) {
+      return -1;
+    }
+
     return this.exec(`git apply --ignore-space-change --ignore-whitespace`, null, patchString);
   }
 
   async extractPatch(patchFName) {
     // TODO: also copy to `AssetFolder`?
+    if (!await this.checkCorrectGitRepository()) {
+      return -1;
+    }
+
     return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
   }
 
   async getPatchString() {
-    return Process.execCaptureOut(`git diff --color=never`);
+    if (!await this.checkCorrectGitRepository()) {
+      return null;
+    }
+
+    return this.execCaptureOut(`git diff --color=never`);
   }
 
   async getTagName() {
-    return Process.execCaptureOut(`git describe --tags`);
+    if (!await this.checkCorrectGitRepository()) {
+      return null;
+    }
+
+    return this.execCaptureOut(`git describe --tags`);
   }
 
   // ###########################################################################
