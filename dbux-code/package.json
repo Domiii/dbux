@@ -1,11 +1,11 @@
 {
 	"name": "dbux-code",
-	"version": "0.0.2-alpha.1004+18e0d5e",
+	"version": "0.1.0",
 	"publisher": "Domi",
 	"description": "",
 	"repository": {
-		"type" : "git",
-		"url" : "https://github.com/Domiii/dbux"
+		"type": "git",
+		"url": "https://github.com/Domiii/dbux"
 	},
 	"engines": {
 		"vscode": "^1.41.0"
@@ -525,12 +525,12 @@
 		"webpack-cli": "^3.3.10"
 	},
 	"dependencies": {
-		"@dbux/cli": "^0.0.2-alpha.1004+18e0d5e",
-		"@dbux/common": "^0.0.2-alpha.1004+18e0d5e",
-		"@dbux/data": "^0.0.2-alpha.1004+18e0d5e",
-		"@dbux/graph-common": "^0.0.2-alpha.1004+18e0d5e",
-		"@dbux/graph-host": "^0.0.2-alpha.1004+18e0d5e",
-		"@dbux/projects": "^0.0.2-alpha.1004+18e0d5e",
+		"@dbux/cli": "^0.1.0",
+		"@dbux/common": "^0.1.0",
+		"@dbux/data": "^0.1.0",
+		"@dbux/graph-common": "^0.1.0",
+		"@dbux/graph-host": "^0.1.0",
+		"@dbux/projects": "^0.1.0",
 		"lodash": "^4.17.19",
 		"moment": "^2.24.0",
 		"socket.io": "^2.3.0",
