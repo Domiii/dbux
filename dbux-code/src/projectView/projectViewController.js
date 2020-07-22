@@ -11,6 +11,7 @@ import OutputChannel from './OutputChannel';
 import { execInTerminal } from '../terminal/TerminalWrapper';
 import PracticeStopwatch from './PracticeStopwatch';
 import { set as storageSet, get as storageGet } from '../memento';
+import { getResourcePath } from '../resources';
 
 // ########################################
 //  setup logger for project
@@ -47,7 +48,7 @@ const externals = {
       return showTextDocument(fpath);
     },
     async openFolder(fpath) {
-      // TODO: use vscode API to add to workspace
+      // TODO: use vscode API to add to workspace instead?
       await exec(`code --add ${fpath}`, logger, { silent: false }, true);
     }
   },
@@ -55,7 +56,10 @@ const externals = {
     get: storageGet,
     set: storageSet,
   },
-  execInTerminal
+  execInTerminal,
+  resources: {
+    getResourcePath
+  }
 };
 
 class ProjectViewController {

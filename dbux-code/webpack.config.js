@@ -19,7 +19,7 @@ const webpackPlugins = [
     patterns: [
       {
         from: path.join(MonoRoot, 'dbux-projects', 'assets'),
-        to: path.join(MonoRoot, 'dbux-code', 'resources')
+        to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'projects')
       }
     ]
   })

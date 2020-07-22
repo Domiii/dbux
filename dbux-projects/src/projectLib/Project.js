@@ -8,7 +8,7 @@ import { getDbuxRoot } from '@dbux/common/src/dbuxPaths';
 import BugList from './BugList';
 import Process from '../util/Process';
 
-const AssetFolder = '_shared_assets_';
+const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
 
 export default class Project {
@@ -226,7 +226,7 @@ export default class Project {
     }
 
     // copy assets
-    await this.copyAssets();
+    await this.installAssets();
 
     // install dbux dependencies
     // await this.installDbuxCli();
@@ -354,16 +354,26 @@ export default class Project {
   /**
    * Copy all assets into project folder.
    */
-  async copyAssets() {
+  async installAssets() {
     // copy individual assets first
     await this.copyAssetFolder(this.folderName);
 
     // copy shared assets (NOTE: doesn't override individual assets)
-    await this.copyAssetFolder(AssetFolder);
+    await this.copyAssetFolder(SharedAssetFolder);
+
+    if (process.env.NODE_ENV === 'production') {
+      // _dbux_run.js requires socket.io-client -> install in projects/ root
+      await this.runner._exec(this, `yarn add socket.io-client@2.3.0`, {
+        processOptions: {
+          cwd: this.projectsRoot
+        }
+      });
+    }
   }
 
   async copyAssetFolder(assetFolderName) {
-    const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
+    // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
+    const assetDir = this.manager.externals.resources.getResourcePath('dist', 'projects', assetFolderName);
 
     if (await sh.test('-d', assetDir)) {
       // copy assets, if this project has any

@@ -247,10 +247,9 @@ export default class BugRunner {
       project.logger.error(`[possible race condition] executing command "${cmd}" while command "${this._process.command}" was already running`);
     }
 
-    // set cwd
-    let cwd;
-    if (options?.cdToProjectPath !== false) {
-      cwd = projectPath;
+    // set default cwd
+    if (options?.cdToProjectPath !== false && !options?.processOptions?.cwd) {
+      let cwd = projectPath;
 
       // set cwd option
       options = defaultsDeep(options, {

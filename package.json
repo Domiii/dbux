@@ -43,7 +43,7 @@
 	},
 	"scripts": {
 		"start": "npx npm-run-all -p build:watch build-graph:watch",
-		"build:watch": "npx nodemon --exec \"npx webpack --watch --mode development\"",
+		"build:watch": "npx nodemon --exec \"npx webpack --watch --mode development --watch\"",
 		"build-graph:watch": "cd dbux-graph-client && npm start",
 		"//": "# see: https://explainshell.com/explain?cmd=git+clean+-fdx",
 		"git-clean-fdx": "git clean -fdx",
@@ -60,6 +60,7 @@
 		"eslint:testit": "cat test.txt | grep -E \"^(\\w|/).*\\.js\"",
 		"eslint:files:open": "code $(npx eslint \"dbux-**/src/**/*.js\" | grep -E \"^(\\w|/).*\\.js\")",
 		"code:reinstall": "cd dbux-code && npm run package:install",
+		"code:uninstall": "cd dbux-code && npm run uninstallself",
 		"code:publish": "cd dbux-code && npm run package:publish",
 		"zzold_dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
 		"zzold_dbux-install-force": "yarn install --force",

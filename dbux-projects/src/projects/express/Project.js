@@ -1,7 +1,7 @@
 import sh from 'shelljs';
-import Project from '@dbux/projects/src/projectLib/Project';
-import { buildMochaRunBugCommand as buildMochaCommand } from '@dbux/projects/src/util/mochaUtil';
 import isArray from 'lodash/isArray';
+import Project from '../../projectLib/Project';
+import { buildMochaRunBugCommand as buildMochaCommand } from '../../util/mochaUtil';
 
 
 export default class ExpressProject extends Project {
@@ -241,7 +241,7 @@ export default class ExpressProject extends Project {
     await this.npmInstall();
 
     // Copy assets again in this branch
-    await this.copyAssets();
+    await this.installAssets();
   }
 
   async testBugCommand(bug, debugPort) {
