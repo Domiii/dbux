@@ -15,7 +15,6 @@ function newProgressLog() {
 }
 
 async function processBugResult(progressLog, bug, result) {
-  // debug(`process bug result`, progressLog, bug, result);
   progressLog.testRuns.push(await testRunHandler.newTestRun(bug, result));
 
   let bugResult = getOrCreateBugResult(progressLog.bugResults, bug);
@@ -23,6 +22,27 @@ async function processBugResult(progressLog, bug, result) {
 
   saveProgressLog(progressLog);
 }
+
+function processUnfinishTestRun(progressLog, bug, patchString) {
+  progressLog.testRuns.push(testRunHandler.newTestRunWithPatchString(bug, patchString));
+
+  saveProgressLog(progressLog);
+}
+
+function getBugResultByBug(progressLog, bug) {
+  return getBugResult(progressLog.bugResults, bug);
+}
+
+function getTestRunsByBug(progressLog, _bug) {
+  debug(`gettestrunsbybug`, progressLog, _bug);
+  return progressLog.testRuns.filter((bug) => {
+    return testRunHandler.isTestRunOfBug(bug, _bug);
+  });
+}
+
+// ########################################
+//  private
+// ########################################
 
 function getBugResult(bugResults, bug) {
   return bugResults.filter((bugResult) => {
@@ -41,13 +61,10 @@ function getOrCreateBugResult(bugResults, bug) {
   return result;
 }
 
-function getBugResultByBug(progressLog, bug) {
-  // debug(progressLog, bug);
-  return getBugResult(progressLog.bugResults, bug);
-}
-
 export default {
   newProgressLog,
   processBugResult,
+  processUnfinishTestRun,
   getBugResultByBug,
+  getTestRunsByBug,
 };

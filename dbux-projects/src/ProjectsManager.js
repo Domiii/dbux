@@ -1,4 +1,5 @@
 import getOrCreateProgressLog from './dataLib';
+import processLogHandler from './dataLib/progressLog';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
@@ -56,6 +57,29 @@ class ProjectsManager {
       runner.start();
     }
     return this.runner;
+  }
+
+  async saveRunningBug(bug) {
+    let patchString = await bug.project.getPatchString();
+    if (patchString) {
+      // TODO: prompt? or something else
+      processLogHandler.processUnfinishTestRun(this.progressLog, bug, patchString);
+    }
+  }
+
+  async applyNewBugPatch(bug) {
+    let testRuns = processLogHandler.getTestRunsByBug(this.progressLog, bug);
+    let testRun = testRuns.reduce((a, b) => {
+      if (!a) {
+        return b;
+      }
+      return a.createAt > b.createAt ? a : b;
+    }, undefined);
+    let patchString = testRun?.patch;
+
+    if (patchString) {
+      await bug.project.applyPatchString(patchString);
+    }
   }
 }
 

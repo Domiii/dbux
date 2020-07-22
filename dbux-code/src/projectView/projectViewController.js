@@ -71,6 +71,7 @@ class ProjectViewController {
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
     this.treeView = this.treeDataProvider.treeView;
+
     this.practiceStopwatch = new PracticeStopwatch('practice');
     this.practiceStopwatch.registOnClick(context, this.maybeStopWatch.bind(this));
 
