@@ -1,5 +1,6 @@
 import { window } from 'vscode';
 import { onLogError } from 'dbux-common/src/log/logger';
+import { showOutputChannel } from './projectView/projectViewController';
 
 let errorLogFlag = true;
 
@@ -19,5 +20,6 @@ export function initLogging() {
 function onError(...args) {
   if (errorLogFlag) {
     window.showErrorMessage(args.join(' '));
+    showOutputChannel();
   }
 }
