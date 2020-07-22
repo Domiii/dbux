@@ -501,7 +501,6 @@
 		}
 	},
 	"scripts": {
-		"e": "echo",
 		"test": "node ./test/runTest.js",
 		"build:clean": "rm -rf ./dist ./public ./resources/dist && rm -rf *.vsix",
 		"vscode:prepublish": "npm run build:prod",
