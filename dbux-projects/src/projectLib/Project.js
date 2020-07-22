@@ -97,12 +97,20 @@ export default class Project {
     return remote?.includes(this.gitRemote);
   }
 
-  async gitResetHard(args) {
+  async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
-      this.logger.warn('Trying to `git reset --hard`, but was not correct git repository: ', 
-        await this.execCaptureOut('git remote -v'));
-      return;
+      this.logger.warn(`Trying to exectute some git command, but was not correct git repository: `,
+        await this.execCaptureOut(`git remote -v`));
+      this.logger.error('This project encount some problem. ' + 
+        'This may be solved by pressing `clean project` folder button.');
+      return 0;
     }
+    return 1;
+  }
+
+  async gitResetHard(args) {
+    if (!await this.checkCorrectGitRepository()) return;
+
     await this.exec('git reset --hard ' + (args || ''));
   }
 
@@ -204,8 +212,7 @@ export default class Project {
    * @see https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
    */
   async checkFilesChanged() {
-    if (!await this.isCorrectGitRepository()) {
-      this.logger.warn(`Execute checkFilesChanged, but was not correct git repository.`);
+    if (!await this.checkCorrectGitRepository()) {
       return -1;
     }
 
@@ -290,8 +297,7 @@ export default class Project {
   async afterInstall() { }
 
   async autoCommit() {
-    if (!await this.isCorrectGitRepository()) {
-      this.logger.warn(`Execute autoCommit, but was not correct git repository.`);
+    if (!await this.checkCorrectGitRepository()) {
       return;
     }
 
@@ -415,8 +421,7 @@ export default class Project {
   }
 
   async applyPatch(patchFName) {
-    if (!await this.isCorrectGitRepository()) {
-      this.logger.warn(`Execute applyPatch, but was not correct git repository.`);
+    if (!await this.checkCorrectGitRepository()) {
       return -1;
     }
 
@@ -429,8 +434,7 @@ export default class Project {
    * @see https://git-scm.com/docs/git-apply#Documentation/git-apply.txt-ltpatchgt82308203
    */
   async applyPatchString(patchString) {
-    if (!await this.isCorrectGitRepository()) {
-      this.logger.warn(`Execute applyPatchString, but was not correct git repository.`);
+    if (!await this.checkCorrectGitRepository()) {
       return -1;
     }
 
@@ -439,8 +443,7 @@ export default class Project {
 
   async extractPatch(patchFName) {
     // TODO: also copy to `AssetFolder`?
-    if (!await this.isCorrectGitRepository()) {
-      this.logger.warn(`Execute extractPatch, but was not correct git repository.`);
+    if (!await this.checkCorrectGitRepository()) {
       return -1;
     }
 
@@ -448,8 +451,7 @@ export default class Project {
   }
 
   async getPatchString() {
-    if (!await this.isCorrectGitRepository()) {
-      this.logger.warn(`Execute getPatchString, but was not correct git repository.`);
+    if (!await this.checkCorrectGitRepository()) {
       return null;
     }
 
@@ -457,8 +459,7 @@ export default class Project {
   }
 
   async getTagName() {
-    if (!await this.isCorrectGitRepository()) {
-      this.logger.warn(`Execute getTagName, but was not correct git repository.`);
+    if (!await this.checkCorrectGitRepository()) {
       return null;
     }
 
