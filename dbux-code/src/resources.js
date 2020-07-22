@@ -6,8 +6,6 @@ import { ExtensionContext } from 'vscode';
  */
 let context;
 
-// TODO: manage all resources here? (such as `dbux-projects/assets`)
-
 export function getResourcePath(...relativePathSegments) {
   return context.asAbsolutePath(path.join('resources', ...relativePathSegments));
 }

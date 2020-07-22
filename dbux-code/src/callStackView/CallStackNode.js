@@ -31,16 +31,13 @@ export default class CallStackNode {
       arguments: [this]
     };    
 
-    // TODO: fix icon path
-    if (traceSelection.isSelected(trace)) {
-      this.iconPath = {
-        light: path.join(__dirname, '..', '..', '..', 'resources', 'light', 'dependency.svg'),
-        dark: path.join(__dirname, '..', '..', '..', 'resources', 'dark', 'dependency.svg')
-      };
-    }
-    else {
-      this.iconPath = ' ';
-    }
+    // TODO: fix icon paths (this.makeNodeIconPath)
+    // if (traceSelection.isSelected(trace)) {
+    //   this.iconPath = getThemeResourcePath('dependency.svg');
+    // }
+    // else {
+    //   this.iconPath = ' ';
+    // }
   }
 
   get contextValue() {

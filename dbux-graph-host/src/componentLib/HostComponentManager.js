@@ -81,8 +81,9 @@ class HostComponentManager extends BaseComponentManager {
     const src = shared.toString();
 
     // make sure it is avalid function declaration expression
-    if (!/^function\s+shared\s*\(\s*\)\s*\{/.test(src)) {
-      throw new Error(component.debugTag + '.shared must be a function, declared like so: `function shared() { ... }` (necessary for simplifying serialization)');
+    if (!/^function\s*(shared)?\s*\(\s*\)\s*\{/.test(src)) {
+      // eslint-disable-next-line max-len
+      throw new Error(component.debugTag + '.shared must be an es5-style function, declared like so: `function shared() { ... }` (necessary for simplifying serialization). Found:\n\n' + src);
     }
 
     return src;

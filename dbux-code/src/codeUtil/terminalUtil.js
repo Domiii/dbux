@@ -6,16 +6,19 @@ const { log, debug, warn, error: logError } = newLogger('terminalUtil');
 
 const DefaultTerminalName = 'dbux-run';
 
-export function getOrCreateDefaultTerminal() {
+export function createDefaultTerminal(cwd) {
   let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
-  if (!terminal) {
-    terminal = window.createTerminal(DefaultTerminalName);
-  }
-  return terminal;
+  terminal?.dispose();
+  
+  const terminalOptions = {
+    name: DefaultTerminalName,
+    cwd
+  };
+  return window.createTerminal(terminalOptions);
 }
 
-export function sendCommandToDefaultTerminal(command) {
-  const terminal = getOrCreateDefaultTerminal();
+export function sendCommandToDefaultTerminal(cwd, command) {
+  const terminal = createDefaultTerminal(cwd);
 
   terminal.sendText(command, true);
   terminal.show(false);

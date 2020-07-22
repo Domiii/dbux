@@ -26,6 +26,9 @@
 
 
 ## TODO (other)
+* Deployment
+   * fix `dbux-project/assets` resource path
+   * fix: don't try to start server on every VSCode instance
 * callId problem: ternary expression is not instrumented as argument (express#1)
 * core instrumentation bugs
    * assignments are traced twice, once with `ExpressionValue`, once with `ExpressionResult`

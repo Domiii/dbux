@@ -40,7 +40,7 @@ export default class Process {
    * @param {*} options.failOnStatusCode If true (default), fail if command returns non-zero status code
    * @param {*} options.failWhenNotFound If true (default), fails if program was not found
    */
-  async start(command, logger, options) {
+  async start(command, logger, options, input) {
     if (!command || !logger) {
       throw new Error(`command or logger parameter missing: ${command}, ${logger}`);
     }
@@ -85,6 +85,11 @@ export default class Process {
 
     if (options?.captureOut) {
       this.captureStream(process.stdout);
+    }
+
+    if (input) {
+      process.stdin.write(input);
+      process.stdin.end();
     }
 
     // done
@@ -170,7 +175,7 @@ export default class Process {
     await (this._promise = this._promise.then(() => { }));
   }
 
-  static async execCaptureOut(cmd, options, logger) {
+  static async execCaptureOut(cmd, options, logger, input) {
     const process = new Process();
 
     options = {
@@ -178,7 +183,7 @@ export default class Process {
       captureOut: true
     };
 
-    await process.start(cmd, logger || newLogger('exec'), options);
+    await process.start(cmd, logger || newLogger('exec'), options, input);
 
     return process.out;
   }

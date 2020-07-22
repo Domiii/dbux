@@ -1,6 +1,6 @@
 {
   "name": "@dbux/cli",
-  "version": "0.0.2-alpha.1004+18e0d5e",
+  "version": "0.1.0",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,7 +16,6 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "prettier": "^2.0.5",
     "@babel/cli": "^7.8.3",
     "@babel/core": "^7.8.3",
     "@babel/node": "^7.5.5",
@@ -29,12 +28,12 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
     "@babel/register": "^7.8.3",
-    "@dbux/babel-plugin": "^0.0.2-alpha.1004+18e0d5e",
-    "@dbux/common": "^0.0.2-alpha.1004+18e0d5e",
-    "@dbux/runtime": "^0.0.2-alpha.1004+18e0d5e",
+    "@dbux/babel-plugin": "^0.1.0",
+    "@dbux/common": "^0.1.0",
+    "@dbux/runtime": "^0.1.0",
     "module-alias": "^2.2.2",
+    "prettier": "^2.0.5",
     "shelljs": "*",
     "yargs": "*"
-  },
-  "gitHead": "18e0d5ec96bb1fb6348665436e01d4c4ce127999"
+  }
 }

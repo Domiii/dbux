@@ -21,7 +21,7 @@ const logger = newLogger('projectViewController');
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
-const outputChannel = new OutputChannel('dbux-project');
+const outputChannel = new OutputChannel('Dbux');
 
 setOutputStreams({
   log: outputChannel.log.bind(outputChannel),
@@ -71,6 +71,7 @@ class ProjectViewController {
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
     this.treeView = this.treeDataProvider.treeView;
+
     this.practiceStopwatch = new PracticeStopwatch('practice');
     this.practiceStopwatch.registOnClick(context, this.maybeStopWatch.bind(this));
 

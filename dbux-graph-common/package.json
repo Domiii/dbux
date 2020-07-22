@@ -1,6 +1,6 @@
 {
   "name": "@dbux/graph-common",
-  "version": "0.0.2-alpha.1004+18e0d5e",
+  "version": "0.1.0",
   "description": "",
   "scripts": {
     "postinstall": "npx link-module-alias"
@@ -9,10 +9,9 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.0.2-alpha.1004+18e0d5e",
+    "@dbux/common": "^0.1.0",
     "lodash": "^4.17.19",
     "nanoevents": "^2.0.0"
   },
-  "_moduleAliases": {},
-  "gitHead": "18e0d5ec96bb1fb6348665436e01d4c4ce127999"
+  "_moduleAliases": {}
 }

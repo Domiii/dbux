@@ -59,6 +59,8 @@
 		"eslint:files": "npx eslint dbux-**/src/**/*.js | grep -E \"^(\\w|/).*\\.js\"",
 		"eslint:testit": "cat test.txt | grep -E \"^(\\w|/).*\\.js\"",
 		"eslint:files:open": "code $(npx eslint \"dbux-**/src/**/*.js\" | grep -E \"^(\\w|/).*\\.js\")",
+		"code:reinstall": "cd dbux-code && npm run package:install",
+		"code:publish": "cd dbux-code && npm run package:publish",
 		"zzold_dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
 		"zzold_dbux-install-force": "yarn install --force",
 		"zzold_p1-install": "sh ./assets/projects/todomvc-vanilla-es6/install.sh",
