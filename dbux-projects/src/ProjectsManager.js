@@ -2,12 +2,13 @@ import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
 import ProgressLogController from './dataLib/ProgressLogController';
+import Stopwatch from './stopwatch/Stopwatch';
 
 /**
  * @typedef {import('./externals/Storage').default} ExternalStorage
  */
 
-class ProjectsManager {
+export default class ProjectsManager {
   projects;
   runner;
 
@@ -19,7 +20,8 @@ class ProjectsManager {
     this.config = cfg;
     this.externals = externals;
     this.editor = externals.editor;
-    
+    this.stopwatch = new Stopwatch();
+
     this.progressLogController = new ProgressLogController(externals.storage);
   }
 
@@ -73,8 +75,13 @@ class ProjectsManager {
     }
   }
 
+  async resetBug(bug) {
+    await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
+    await this.progressLogController.util.processUnfinishTestRun(bug, '');
+  }
+
   async applyNewBugPatch(bug) {
-    let testRuns = this.progressLogController.util.getTestRunsByBug(this.progressLog, bug);
+    let testRuns = this.progressLogController.util.getTestRunsByBug(bug);
     let testRun = testRuns.reduce((a, b) => {
       if (!a) {
         return b;
@@ -87,6 +94,20 @@ class ProjectsManager {
       await bug.project.applyPatchString(patchString);
     }
   }
-}
 
-export default ProjectsManager;
+  async askForSubmit() {
+    const confirmString = 'You have passed the test for the first time, would you like to submit the result?';
+    const shouldSubmit = await this.externals.confirm(confirmString);
+    
+    if (shouldSubmit) {
+      this.submit();
+    }
+  }
+
+  /**
+   * Record the practice session data after user passed all tests.
+   */
+  submit() {
+    // TODO
+  }
+}

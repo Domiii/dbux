@@ -38,7 +38,6 @@ export default class BugRunner {
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
     this.status = BugRunnerStatus.None;
-    this._ownLogger.debug('storage now:', this.manager.externals.storage.get('dbux-projects.progressLog'));
   }
 
   get logger() {
@@ -146,8 +145,10 @@ export default class BugRunner {
 
       let previousBug = this.manager.getOrCreateDefaultProjectList().getByName(projectName).getOrLoadBugs().getById(bugId);
 
-      await this.manager.saveRunningBug(previousBug);
-      await previousBug.project.gitResetHard();
+      if (previousBug !== bug) {
+        await this.manager.saveRunningBug(previousBug);
+        await previousBug.project.gitResetHard();
+      }
     }
 
     await this.manager.externals.storage.set(keyName, {
@@ -226,6 +227,10 @@ export default class BugRunner {
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
         const result = await this._terminalWrapper.waitForResult();
         await this.manager.progressLogController.util.processBugProgress(bug, result);
+        if (result.code === 0) {
+          // user passed all tests
+          this.manager.askForSubmit();
+        }
         project.logger.log(`Result:`, result);
         return result;
       }
@@ -238,7 +243,6 @@ export default class BugRunner {
       else {
         this.setStatus(BugRunnerStatus.Done);
       }
-      this._ownLogger.debug('storage now:', this.manager.externals.storage.get('dbux-projects.progressLog'));
     }
   }
 

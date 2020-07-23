@@ -54,7 +54,7 @@ const externals = {
   },
   async confirm(msg, modal = false) {
     const confirmText = 'Ok';
-    const result = window.showInformationMessage(msg, { modal }, confirmText);
+    const result = await window.showInformationMessage(msg, { modal }, confirmText, 'cancel');
     return result === confirmText;
   },
   execInTerminal

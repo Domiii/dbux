@@ -1,4 +1,4 @@
-import { env, Uri } from 'vscode';
+import { env, Uri, window } from 'vscode';
 import BugStatus from 'dbux-projects/src/dataLib/BugStatus';
 import BugRunnerStatus from 'dbux-projects/src/projectLib/BugRunnerStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
@@ -57,6 +57,20 @@ export default class BugNode extends BaseTreeViewNode {
   showWebsite() {
     if (this.bug.website) {
       env.openExternal(Uri.parse(this.bug.website));
+    }
+  }
+
+  async tryResetBug() {
+    try {
+      await this.bug.manager.resetBug(this.bug);
+    }
+    catch (err) {
+      if (!err.userCanceled) {
+        throw err;
+      }
+      else {
+        window.showInformationMessage('Action canceled.');
+      }
     }
   }
 }

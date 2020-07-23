@@ -37,7 +37,6 @@ export default class ProgressLogController {
     try {
       const logString = this.progressLog.serialize();
       await this.storage.set(storageKey, logString);
-      debug('Progress log saved successfully', logString);
     }
     catch (err) {
       logError('Failed to save progress log:', err);

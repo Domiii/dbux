@@ -56,7 +56,7 @@ export default class Process {
     };
 
     const {
-      failOnStatusCode = true,
+      failOnStatusCode = false,
       failWhenNotFound = true
     } = (options || EmptyObject);
 
@@ -115,8 +115,8 @@ export default class Process {
         if (this._killed) {
           reject(new Error('Process was killed'));
         }
-        else if (!failOnStatusCode && code) {
-          reject(code);
+        else if (failOnStatusCode && code) {
+          reject(new Error(`Process failed with status code: ${code}`));
         }
         else {
           resolve(code);
