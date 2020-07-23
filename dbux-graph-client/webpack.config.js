@@ -97,9 +97,6 @@ const webpackPlugins = [
 
 module.exports = {
   mode,
-  env: {
-    NODE_ENV: mode
-  },
   target: 'web',
 
   // see https://stackoverflow.com/questions/54147824/can-the-vs-code-webview-developer-tools-deal-with-source-maps
