@@ -136,6 +136,15 @@ async function main() {
   input = new LineReader();
   log('Preparing to publish...');
 
+  // await Process.exec(
+  //   // 'sh -lc "echo hi ; read x; echo abc$x"',
+  //   // 'sh -lc "sleep 1; echo hihi"',
+  //   `python3 -c "'print(input())'"`,
+  //   { 
+  //     // sync: true 
+  //   }
+  // );
+
   await goToMaster();
 
   await pullDev();
