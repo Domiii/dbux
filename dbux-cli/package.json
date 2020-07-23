@@ -4,8 +4,8 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "__": "   # hackfix for .bin -> see: https://github.com/yarnpkg/yarn/issues/3421#issuecomment-443972019",
-    "postinstall": "yarn --check-files --ignore-scripts"
+    "//": "   # hackfix for .bin -> see: https://github.com/yarnpkg/yarn/issues/3421#issuecomment-443972019",
+    "_postinstall": "yarn --check-files --ignore-scripts"
   },
   "bin": {
     "dbux-run-file": "./bin/dbux-run-file.js",

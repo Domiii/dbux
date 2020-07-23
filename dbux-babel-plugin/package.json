@@ -10,8 +10,6 @@
   },
   "scripts": {
     "clean": "rm -rf dist && rm -rf dist.samples",
-    "_postinstall": "npx link-module-alias",
-    "_before-run": "npx link-module-alias",
     "build": "npm run clean && webpack --config config/webpack.config.js",
     "test": "node --stack-trace-limit=1000 ../node_modules/jest/bin/jest.js --runInBand",
     "test:watch": "npm run test -- --watch",

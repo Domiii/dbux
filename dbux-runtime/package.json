@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "npm run clean && npm run _before-run && webpack --config config/webpack.config.js",
+    "build": "npm run clean && webpack --config config/webpack.config.js",
     "test": "node --stack-trace-limit=1000 node_modules/.bin/jest"
   },
   "keywords": [
