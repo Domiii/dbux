@@ -26,7 +26,7 @@ function menuOption(val, options) {
 function menu(q, options) {
   log(q);
 
-  for (const val in Object.keys(options)) {
+  for (const val of Object.keys(options)) {
     const [text] = menuOption(val, options);
     log(` ${val}. ${text}`);
   }
@@ -63,6 +63,8 @@ function run(command) {
   if (result.code) {
     throw new Error(`Command "${command}" failed, exit status: ${result.code}`);
   }
+
+  return result.stdout.trim();
 }
 
 // ###########################################################################
@@ -87,7 +89,7 @@ function pullDev() {
   
   const ownName = path.basename(__filename);
 
-  if (result.stdout.includes(ownName)) {
+  if (result.stdout && result.stdout.includes(ownName)) {
     throw new Error(`Publish script ${ownName} (probably) has changed. Please run again to make sure.`);
   }
 }
@@ -115,7 +117,7 @@ function bumpVersion() {
 // ###########################################################################
 
 function getBranchName() {
-  return run('git branch --show-current').stdout.trim();
+  return run('git branch --show-current');
 }
 
 // ###########################################################################
