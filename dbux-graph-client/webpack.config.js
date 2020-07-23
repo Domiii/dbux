@@ -1,7 +1,12 @@
 /* eslint-env node */
 
 const path = require('path');
-const { makeResolve, makeAbsolutePaths } = require('../scripts/webpack.util');
+const webpack = require('webpack');
+const { 
+  makeResolve, 
+  makeAbsolutePaths,
+  getDbuxVersion
+} = require('../scripts/webpack.util');
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 
@@ -77,7 +82,15 @@ const rules = [
 
 const src = path.join(projectRoot, 'src');
 
+const DBUX_VERSION = getDbuxVersion();
+
+console.debug(`DBUX_VERSION=${DBUX_VERSION}`);
+
 const webpackPlugins = [
+  new webpack.EnvironmentPlugin({
+    NODE_ENV: mode,
+    DBUX_VERSION
+  }),
   // add post-build hook
   // see: https://stackoverflow.com/a/49786887apply: 
   // (compiler) => {
@@ -97,9 +110,6 @@ const webpackPlugins = [
 
 module.exports = {
   mode,
-  env: {
-    NODE_ENV: mode
-  },
   target: 'web',
 
   // see https://stackoverflow.com/questions/54147824/can-the-vs-code-webview-developer-tools-deal-with-source-maps

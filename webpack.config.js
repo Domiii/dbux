@@ -12,7 +12,8 @@ const nodeExternals = require('webpack-node-externals');
 const {
   getDependenciesPackageJson,
   makeResolve,
-  makeAbsolutePaths
+  makeAbsolutePaths,
+  getDbuxVersion
 } = require('./scripts/webpack.util');
 
 process.env.BABEL_DISABLE_CACHE = 1;
@@ -69,10 +70,14 @@ function mergeWithArrays(dst, src) {
 // alias['socket.io-client'] = path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ));
 // console.warn(resol);
 
+const DBUX_VERSION = getDbuxVersion();
+
+console.debug(`DBUX_VERSION=${DBUX_VERSION}`);
 
 const webpackPlugins = [
   new webpack.EnvironmentPlugin({
-    NODE_ENV: mode
+    NODE_ENV: mode,
+    DBUX_VERSION
   })
 ];
 

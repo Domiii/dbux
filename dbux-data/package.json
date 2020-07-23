@@ -1,18 +1,17 @@
 {
   "name": "@dbux/data",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
   "scripts": {
-    "postinstall": "npx link-module-alias",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.1.0",
+    "@dbux/common": "^0.1.1",
     "lodash": "^4.17.19",
     "nanoevents": "^2.0.0"
   },

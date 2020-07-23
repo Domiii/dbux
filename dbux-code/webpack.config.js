@@ -3,7 +3,11 @@ const process = require('process');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
-const { makeResolve, makeAbsolutePaths } = require('../scripts/webpack.util');
+const { 
+  makeResolve, 
+  makeAbsolutePaths,
+  getDbuxVersion
+} = require('../scripts/webpack.util');
 
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
@@ -16,7 +20,15 @@ const outFile = 'bundle.js';
 
 const mode = process.env.MODE || 'development';
 
+const DBUX_VERSION = getDbuxVersion();
+
+console.debug(`DBUX_VERSION=${DBUX_VERSION}`);
+
 const webpackPlugins = [
+  new webpack.EnvironmentPlugin({
+    NODE_ENV: mode,
+    DBUX_VERSION
+  }),
   new CopyPlugin({
     patterns: [
       {
@@ -24,9 +36,6 @@ const webpackPlugins = [
         to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'projects')
       }
     ]
-  }),
-  new webpack.EnvironmentPlugin({
-    NODE_ENV: mode
   })
   // new BundleAnalyzerPlugin()
 ];

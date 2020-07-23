@@ -373,12 +373,18 @@ export default class Project {
     // await exec('pwd', this.logger);
     const dbuxDeps = [
       '@dbux/cli',
-      '@dbux/babel-plugin',
-      '@dbux/runtime'
+      // '@dbux/babel-plugin',
+      // '@dbux/runtime'
     ];
 
+    if (!process.env.DBUX_VERSION) {
+      throw new Error('installDbuxCli() failed. DBUX_VERSION was not set.');
+    }
+
+    const dbuxDepString = dbuxDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`).join(' ');
+
     // TODO: select `npm` or `yarn` based on packageManager setting (but requires change in command)
-    await this.exec(`yarn add --dev ${dbuxDeps}`, this.logger);
+    await this.exec(`npm i -D ${dbuxDepString}`, this.logger);
   }
 
   // ###########################################################################
