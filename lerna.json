@@ -1,9 +1,9 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "strict": true,
   "npmClient": "yarn",
   "packages": [
-		"dbux-*",
-		"panzoom"
-	]
+    "dbux-*",
+    "panzoom"
+  ]
 }
