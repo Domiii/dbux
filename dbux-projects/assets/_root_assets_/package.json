@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@dbux/common": "file:../dbux/dbux-common"
+  },
+  "scripts": {
+    "prep": "npx link-module-alias"
+  },
+  "devDependencies": {
+    "link-module-alias": "^1.2.0"
+  }
+}
