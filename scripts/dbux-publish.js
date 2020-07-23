@@ -111,7 +111,7 @@ async function bumpVersion() {
   });
 
   if (choice !== 'None') {
-    await Process.exec(`npx lerna version ${choice}`);
+    await Process.exec(`npx lerna version ${choice} --force-publish`);
   }
 }
 
@@ -153,7 +153,7 @@ async function main() {
 
   // publish dependencies to NPM
   // NOTE: will trigger build scripts before publishing
-  await Process.exec('echo hi; npx lerna publish');
+  await Process.exec('npx lerna publish');
 
   // publish dbux-code to VSCode marketplace
   await Process.exec('npm run code:publish');

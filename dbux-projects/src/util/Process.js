@@ -124,6 +124,10 @@ export default class Process {
     }
     else {
       // WARNING: On MAC, for some reason, piping seems to swallow up line feeds?
+      // TODO: only register stdin listener on `resume`?
+      newProcess.stdin.on('resume', (...args) => {
+        console.error('STDIN RESUME', ...args);
+      });
       onStdin = buf => {
         const s = buf.toString();
         // console.error('stdin data', s);
