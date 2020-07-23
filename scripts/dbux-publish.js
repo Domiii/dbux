@@ -1,15 +1,23 @@
+/* eslint no-console: 0 */
+
+const path = require('path');
+const sh = require('shelljs');
+const isArray = require('lodash/isArray');
+const LineReader = require('./LineReader');
+
 // make sure, we can import dbux stuff without any problems
 require('../dbux-cli/bin/_dbux-register-self');
 
 // pretty log
-require('../dbux-common/src/util/prettyLogs.js');
+require('../dbux-common/src/util/prettyLogs');
 
-const path = require('path');
-const readline = require('readline');
-const sh = require('shelljs');
-const isArray = require('lodash/isArray');
+// Process
+const Process = require('../dbux-projects/src/util/Process').default;
 
-const { log, debug } = console;
+const { log, debug, error: logError } = console;
+
+
+let input;
 
 // ###########################################################################
 // menu
@@ -23,19 +31,19 @@ function menuOption(val, options) {
   return isArray(option) ? option : [option];
 }
 
-function menu(q, options) {
+async function menu(q, options) {
   log(q);
 
-  for (const val in Object.keys(options)) {
+  for (const val of Object.keys(options)) {
     const [text] = menuOption(val, options);
-    log(` ${val}. ${text}`);
+    log(` ${val}) ${text}`);
   }
 
   let val;
   let option;
   do {
     process.stdout.write('> ');
-    val = readline();
+    val = await input.readLine();
     option = menuOption(val, options);
   } while (!option);
 
@@ -57,12 +65,14 @@ function run(command) {
     debug(result.stdout);
   }
   if (result.stderr) {
-    console.error(result.stderr);
+    logError(result.stderr);
   }
 
   if (result.code) {
     throw new Error(`Command "${command}" failed, exit status: ${result.code}`);
   }
+
+  return result.stdout.trim();
 }
 
 // ###########################################################################
@@ -79,21 +89,21 @@ function goToMaster() {
   }
 }
 
-function pullDev() {
-  const result = menu('Pull dev?', {
-    y: ['Yes', () => run(`git pull origin dev`)],
-    n: 'No'
+async function pullDev() {
+  const result = await menu('Pull dev?', {
+    1: ['Yes', () => run(`git pull origin dev`)],
+    2: 'No'
   });
   
   const ownName = path.basename(__filename);
 
-  if (result.stdout.includes(ownName)) {
+  if (result.stdout && result.stdout.includes(ownName)) {
     throw new Error(`Publish script ${ownName} (probably) has changed. Please run again to make sure.`);
   }
 }
 
-function bumpVersion() {
-  const [choice] = menu('Version bump?', {
+async function bumpVersion() {
+  const [choice] = await menu('Version bump?', {
     1: ['None'],
     2: ['patch'],
     3: ['minor'],
@@ -101,7 +111,7 @@ function bumpVersion() {
   });
 
   if (choice !== 'None') {
-    run(`lerna version ${choice}`);
+    await Process.exec(`npx lerna version ${choice}`);
   }
 }
 
@@ -115,28 +125,32 @@ function bumpVersion() {
 // ###########################################################################
 
 function getBranchName() {
-  return run('git branch --show-current').stdout.trim();
+  return run('git branch --show-current');
 }
 
 // ###########################################################################
 // main
 // ###########################################################################
 
-function main() {
+async function main() {
+  input = new LineReader();
   log('Preparing to publish...');
 
-  goToMaster();
+  await goToMaster();
 
-  pullDev();
+  await pullDev();
 
-  bumpVersion();
+  await bumpVersion();
 
   // publish dependencies to NPM
   // NOTE: will trigger build scripts before publishing
-  run('lerna publish');
+  await Process.exec('echo hi; npx lerna publish');
 
   // publish dbux-code to VSCode marketplace
-  run('npm run code:publish');
+  await Process.exec('npm run code:publish');
 }
 
-main();
+main().catch((err) => {
+  logError(err);
+  process.exit(-1);
+});

@@ -2,7 +2,7 @@ import { window, commands } from 'vscode';
 import path from 'path';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import { initDbuxProjects } from '@dbux/projects/src';
-import exec from '@dbux/projects/src/util/exec';
+import Process from '@dbux/projects/src/util/Process';
 import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
 import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
@@ -55,7 +55,7 @@ class ProjectViewController {
         },
         async openFolder(fpath) {
           // TODO: use vscode API to add to workspace instead?
-          await exec(`code --add ${fpath}`, logger, { silent: false }, true);
+          await Process.exec(`code --add ${fpath}`, { silent: false }, logger);
         }
       },
       storage: {

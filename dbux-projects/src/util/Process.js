@@ -112,11 +112,11 @@ export default class Process {
       process.on('exit', (code/* , signal */) => {
         // logger.debug(`process exit, code=${code}, signal=${signal}`);
         if (checkDone()) { return; }
-        
+
         if (this._killed) {
           reject(new Error('Process was killed'));
         }
-        else if (!failOnStatusCode && code) {
+        else if (failOnStatusCode && code) {
           reject(code);
         }
         else {
@@ -186,5 +186,10 @@ export default class Process {
     await process.start(cmd, logger || newLogger('exec'), options, input);
 
     return process.out;
+  }
+
+  static async exec(command, options, logger) {
+    const process = new Process();
+    return process.start(command, logger || newLogger('exec'), options);
   }
 }
