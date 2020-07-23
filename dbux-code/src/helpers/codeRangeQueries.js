@@ -1,10 +1,9 @@
 import findLast from 'lodash/findLast';
-import StaticContext from 'dbux-common/src/core/data/StaticContext';
-import Trace from 'dbux-common/src/core/data/Trace';
-import Application from 'dbux-data/src/applications/Application';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import StaticContext from '@dbux/common/src/core/data/StaticContext';
+import Trace from '@dbux/common/src/core/data/Trace';
 import { babelLocToCodeRange } from './codeLocHelpers';
+
+/** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
 /**
  * This file provides data/query utilities for all kinds of data that 
@@ -24,12 +23,16 @@ import { babelLocToCodeRange } from './codeLocHelpers';
 /**
  * If not interruptable, returns array with static context of function.
  * If interruptable returns all Resume contexts.
+ * @return {StaticContext}
  */
-export function getStaticContextAt(application, programId, pos): StaticContext {
+export function getStaticContextAt(application, programId, pos) {
   const { dataProvider } = application;
+  /**
+   * @type {StaticContext[]}
+   */
   const staticContexts = dataProvider.indexes.staticContexts.byFile.get(programId);
-  const staticContext: StaticContext = findLast(staticContexts, staticContext => {
-    const range = babelLocToCodeRange(staticContext.loc);
+  const staticContext = findLast(staticContexts, entry => {
+    const range = babelLocToCodeRange(entry.loc);
     return range.contains(pos);
   });
 
@@ -56,8 +59,12 @@ export function getStaticContextAt(application, programId, pos): StaticContext {
 
 /**
  * TODO: *vastly* improve performance
+ * @param {Application} application
+ * @param {number} programId
+ * 
+ * @return {Trace[]}
  */
-export function getTracesAt(application: Application, programId, pos): Trace[] {
+export function getTracesAt(application, programId, pos) {
   const dp = application.dataProvider;
 
   // find inner most staticContext (function or Program) at position

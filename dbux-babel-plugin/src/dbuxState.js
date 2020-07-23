@@ -1,4 +1,4 @@
-import { pathGetBasename } from 'dbux-common/src/util/pathUtil';
+import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
 
 import StaticContextCollection from './data/StaticContextCollection';
 import StaticTraceCollection from './data/StaticTraceCollection';

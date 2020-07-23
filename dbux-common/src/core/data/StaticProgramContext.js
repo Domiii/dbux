@@ -1,8 +1,23 @@
-import Loc from "./Loc";
+/** @typedef {import('../Loc').default} Loc */
 
 export default class StaticProgramContext {
-  applicationId: number;
-  programId: number;
-  filePath: string;
-  fileName: string;
+  /**
+   * @type {number}
+   */
+  applicationId;
+  
+  /**
+   * @type {number}
+   */
+  programId;
+  
+  /**
+   * @type {string}
+   */
+  filePath;
+  
+  /**
+   * @type {string}
+   */
+  fileName;
 }

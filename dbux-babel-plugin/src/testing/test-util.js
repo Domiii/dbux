@@ -39,6 +39,7 @@ export function writeResultCodeToFile(inputCode, title, babelOptions, plugin) {
       if (Array.isArray(dst)) {
         return dst.concat(src);
       }
+      return undefined;
     }
   );
   // console.warn(babelOptions.plugins.map(p => (typeof p === 'function' ? p.toString() : JSON.stringify(p)).split('\n')[0]).join(','));
@@ -93,9 +94,10 @@ export function runSnapshotTests(code, filename, codeTitle, shouldWriteResultToF
 
   for (const version in configs) {
     const babelConfig = configs[version];
-    const babelOptions = Object.assign({
-      filename
-    }, babelConfig);
+    const babelOptions = {
+      filename,
+      ...babelConfig
+    };
 
     const title = fixTitle(codeTitle, version);
     const defaultConfig = {

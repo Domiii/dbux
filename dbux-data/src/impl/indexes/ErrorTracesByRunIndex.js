@@ -1,14 +1,19 @@
-import Trace from 'dbux-common/src/core/data/Trace';
+import Trace from '@dbux/common/src/core/data/Trace';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
-export default class ErrorTracesByRunIndex extends CollectionIndex<Trace> {
+/** @extends {CollectionIndex<Trace>} */
+export default class ErrorTracesByRunIndex extends CollectionIndex {
   constructor() {
     super('traces', 'errorByRun');
   }
 
-  makeKey(dp: DataProvider, trace: Trace) {
+  /** 
+   * @param {DataProvider} dp
+   * @param {Trace} trace
+   */
+  makeKey(dp, trace) {
     if (trace.error) {
       return trace.runId;
     }

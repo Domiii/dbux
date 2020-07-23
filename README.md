@@ -10,6 +10,14 @@ Here is a (very very early, read: crude) 1min demo video of just a small subset 
    <img src="http://img.youtube.com/vi/VAFcj75-vSs/0.jpg">
 </a>
 
+# Usage
+
+1. Install Dbux from the VSCode Marketplace
+1. > Developer: Reload Window (or just restart VSCode)
+1. Press the Dbux icon on the left
+1. Select "express" in the Projects view
+1. Select your first bug and enjoy!
+
 
 # Development + Contributing: Getting Started
 
@@ -28,7 +36,7 @@ cd dbux
 code .
 npm run dbux-install
 
-# if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
+# if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-reinstall`
 ```
 
 
@@ -39,13 +47,16 @@ code . # open project in vscode
 npm start # start webpack build of all projects in watch mode
 ```
 
-## Usage
+## Advanced Usage
 
-1. go to your debug tab, select `dbux-code` and press F5 (runs the vscode extension in debug mode)
+If you checked out the monorepo directly, it comes with some extra features:
+
+1. go to your debug tab, select the `dbux-code` configuration and press F5 (runs the vscode extension in debug mode)
 1. Inside of the new window, you can:
    * `dbux-run # instruments + executes currently opened file`
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
+   * and more...
 
 ## Analyze with Python Notebooks
 
@@ -83,14 +94,30 @@ Why is it not using LERNA? Because I did not know about LERNA when I started; bu
 ## Basics
 
 ```sh
+babelVersion=7.81
 `# jest` yarn add --dev jest jest-expect-message jest-extended
 `# babel basics` yarn add --dev @babel/core @babel/cli @babel/node @babel/register 
-`# babel plugins` yarn add --dev @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
-`# babel runtime` yarn add core-js@3 @babel/runtime
+`# babel plugins` yarn add --dev \
+@babel/compat-data@$babelVersion `# see https://stackoverflow.com/questions/60780664/could-not-find-plugin-proposal-numeric-separator` \
+@babel/preset-env@$babelVersion \
+@babel/plugin-proposal-class-properties@$babelVersion \
+@babel/plugin-proposal-optional-chaining@$babelVersion \
+@babel/plugin-proposal-decorators@$babelVersion \
+@babel/plugin-proposal-function-bind@$babelVersion \
+@babel/plugin-syntax-export-default-from@$babelVersion \
+@babel/plugin-syntax-dynamic-import@$babelVersion \
+@babel/plugin-transform-runtime@$babelVersion \
+`# babel runtime` yarn add core-js@3 @babel/runtime@$babelVersion
 `# eslint` yarn add --dev eslint eslint-config-airbnb-base
 `# webpack` yarn add --dev webpack webpack-cli webpack-dev-server nodemon
-`# flow` yarn add --dev flow-bin @babel/preset-flow eslint-plugin-flowtype && npx flow init #&& npx flow
-`# babel dev` yarn add --dev @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester
+`# babel dev` yarn add --dev \
+@babel/parser@$babelVersion \
+@babel/traverse@$babelVersion \
+@babel/types@$babelVersion \
+@babel/generator@$babelVersion
+@babel/template@$babelVersion \
+@babel/code-frame@$babelVersion \
+babel-plugin-tester
 ```
 
 or with npm:

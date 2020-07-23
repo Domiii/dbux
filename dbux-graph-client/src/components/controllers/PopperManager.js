@@ -1,8 +1,9 @@
 import isString from 'lodash/isString';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { createPopper } from '@popperjs/core';
 import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PopperController');
 
 export default class PopperManager extends ClientComponentEndpoint {
@@ -20,11 +21,11 @@ export default class PopperManager extends ClientComponentEndpoint {
     if (this.owner.panzoom) {
       this.panzoom = this.owner.panzoom;
   
-      this.panzoom.on('zoom', (e) => {
+      this.panzoom.on('zoom', (/* e */) => {
         this.update();
       });
   
-      this.panzoom.on('transform', (e) => {
+      this.panzoom.on('transform', (/* e */) => {
         this.update();
       });
     }

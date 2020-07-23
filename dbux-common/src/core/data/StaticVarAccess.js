@@ -1,5 +1,6 @@
-import Loc from "./Loc";
 import VarOwnerType from '../constants/VarOwnerType';
+
+/** @typedef {import('../Loc').default} Loc */
 
 export default class StaticVarAccess {
   /**
@@ -26,6 +27,13 @@ export default class StaticVarAccess {
    */
   staticOwnerId;
 
-  loc: Loc;
-  name: string;
+  /**
+   * @type {Loc}
+   */
+  loc;
+
+  /**
+   * @type {string}
+   */
+  name;
 }

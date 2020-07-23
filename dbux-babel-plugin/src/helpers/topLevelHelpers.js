@@ -1,7 +1,9 @@
-import { buildVarDecl, buildVarAssignments } from './builders';
-import { logInternalError } from '../log/logger';
 import * as t from '@babel/types';
+import { newLogger } from '@dbux/common/src/log/logger';
+import { buildVarDecl, buildVarAssignments } from './builders';
 
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('topLevelHelpers');
 
 function extractExportNamedVariableDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes) {
   // variable declaration
@@ -38,8 +40,7 @@ function extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes,
       bodyNodes.push(node.declaration);   // keep declaration in body
     }
     else {
-      logInternalError('Cannot understand export node (named export with declaration but without id)', node.toString());
-      return;
+      logError('Cannot understand export node (named export with declaration but without id)', node.toString());
     }
   }
   else if (node.specifiers) {
@@ -56,13 +57,13 @@ function extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes,
     );
   }
   else {
-    logInternalError('Cannot understand export node (named export with neither declaration nor specifiers)', node.toString());
+    logError('Cannot understand export node (named export with neither declaration nor specifiers)', node.toString());
   }
 }
 
 function extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes) {
   if (!node.declaration) {
-    logInternalError('cannot understand export default node', node.toString());
+    logError('cannot understand export default node', node.toString());
     exportNodes.push(node);
   }
   else if (node.declaration.id) {
@@ -96,7 +97,7 @@ function extractExportDeclaration(path, node, exportIds, newIds, bodyNodes, expo
     exportNodes.push(node);
   }
   else {
-    logInternalError('Cannot understand export node (not named, not default, but has declaration)', node.toString());
+    logError('Cannot understand export node (not named, not default, but has declaration)', node.toString());
   }
 }
 

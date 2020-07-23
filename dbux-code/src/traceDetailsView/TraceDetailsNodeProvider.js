@@ -1,5 +1,5 @@
-import traceSelection from 'dbux-data/src/traceSelection';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
+import traceSelection from '@dbux/data/src/traceSelection';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { DetailNodeClasses } from './nodes/traceDetailNodes';
 import SelectedTraceNode from './nodes/SelectedTraceNode';
 import TraceNode from './nodes/TraceNode';

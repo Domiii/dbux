@@ -9,12 +9,15 @@ module.exports = {
     node: true
   },
 
-  // settings: {
-  //   'import/resolver': {
-  //     webpack: {
-  //       config: path.join(__dirname, '../webpack.config.js'),
-  //       'config-index': 2
-  //     }
-  //   }
-  // }
+  settings: {
+    'import/resolver': {
+      // hackfix: https://github.com/benmosher/eslint-plugin-import/issues/1396#issuecomment-511007063
+      node: {},
+      //     webpack: {
+      //       config: path.join(__dirname, '../webpack.config.js'),
+      //       'config-index': 2
+      //     }
+      //   }
+    }
+  }
 };

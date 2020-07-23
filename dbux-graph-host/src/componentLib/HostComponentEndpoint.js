@@ -1,6 +1,6 @@
 import noop from 'lodash/noop';
-import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
-import sleep from 'dbux-common/src/util/sleep';
+import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndpoint';
+import sleep from '@dbux/common/src/util/sleep';
 import HostComponentList from './HostComponentList';
 
 // const Verbose = true;

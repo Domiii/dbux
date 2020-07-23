@@ -236,7 +236,7 @@ class Toolbar extends ClientComponentEndpoint {
     },
 
     moreMenuBtn: {
-      click(evt) {
+      click(/* evt */) {
         this.toggleMenu();
       },
       focus(evt) { evt.target.blur(); }

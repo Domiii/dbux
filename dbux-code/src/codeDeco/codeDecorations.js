@@ -4,16 +4,53 @@ import {
 } from 'vscode';
 import pull from 'lodash/pull';
 
+
+// ###########################################################################
+// CodeDecoRegistration
+// ###########################################################################
+
+export class CodeDecoRegistration {
+  unsubscribe;
+
+  constructor(editorDecorationType) {
+    this.editorDecorationType = editorDecorationType;
+  }
+
+  unsetDeco() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  }
+
+  setDeco(editor, deco) {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+
+    // eslint-disable-next-line no-use-before-define
+    this.unsubscribe = codeDecorations.addDeco(editor, this.editorDecorationType, deco);
+  }
+}
+
 // ###########################################################################
 // EditorDecorations
 // ###########################################################################
 
 export class EditorDecorations {
-  editorDecorationType: TextEditorDecorationType;
+  /**
+   * @type {TextEditorDecorationType}
+   */
+  editorDecorationType;
   editor;
-  decorations: EditorDecorations[] = [];
+  /**
+   * @type {EditorDecorations[]}
+   */
+  decorations = [];
 
-  constructor(editor, editorDecorationType: TextEditorDecorationType) {
+  /**
+   * @param {TextEditorDecorationType} editorDecorationType 
+   */
+  constructor(editor, editorDecorationType) {
     this.editor = editor;
     this.editorDecorationType = editorDecorationType;
   }
@@ -85,32 +122,9 @@ class CodeDecorations {
   }
 }
 
+
+
+
 const codeDecorations = new CodeDecorations();
-
-// ###########################################################################
-// CodeDecoRegistration
-// ###########################################################################
-
-export class CodeDecoRegistration {
-  unsubscribe;
-
-  constructor(editorDecorationType) {
-    this.editorDecorationType = editorDecorationType;
-  }
-
-  unsetDeco() {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
-  }
-
-  setDeco(editor, deco) {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
-
-    this.unsubscribe = codeDecorations.addDeco(editor, this.editorDecorationType, deco);
-  }
-}
 
 export default codeDecorations;

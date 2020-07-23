@@ -1,16 +1,18 @@
-import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
-import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import { newLogger } from 'dbux-common/src/log/logger';
-import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
-import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
-import { isCallResult, hasCallId } from 'dbux-common/src/core/constants/traceCategorization';
-import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
+import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
+import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { newLogger } from '@dbux/common/src/log/logger';
+import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
+import { isVirtualContextType } from '@dbux/common/src/core/constants/StaticContextType';
+import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
+import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
+import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
 
 /**
  * @typedef {import('./DataProvider').default} DataProvider
  */
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 
 export default {
@@ -620,8 +622,9 @@ export default {
    * 
    * TODO: improve performance, use MultiKeyIndex instead
    * @param {DataProvider} dp 
+   * @param {StaticTrace[]} staticTraces
   */
-  groupTracesByType(dp, staticTraces: StaticTrace[]) {
+  groupTracesByType(dp, staticTraces) {
     const groups = [];
     for (const staticTrace of staticTraces) {
       const {

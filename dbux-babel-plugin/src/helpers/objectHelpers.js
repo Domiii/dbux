@@ -1,4 +1,3 @@
-import * as t from '@babel/types';
 import { NodePath } from '@babel/core';
 import { getClassAncestryString } from './traversalHelpers';
 import { extractSourceStringWithoutComments } from './sourceHelpers';
@@ -17,7 +16,10 @@ export function getAllButRightMostPath(memberPath) {
 }
 
 export function getMemberExpressionName(path, state, includeAncestry = true) {
-  const objPath: NodePath = path.get('object');
+  /**
+   * @type {NodePath}
+   */
+  const objPath = path.get('object');
   let name;
   if (objPath.isThisExpression()) {
     const innerName = extractSourceStringWithoutComments(path.node.property, state);

@@ -1,5 +1,5 @@
-import Trace from 'dbux-common/src/core/data/Trace';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import Trace from '@dbux/common/src/core/data/Trace';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
 import traceSelection from './index';
 import allApplications from '../applications/allApplications';
 

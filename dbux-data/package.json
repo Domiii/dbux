@@ -1,6 +1,6 @@
 {
-  "name": "dbux-data",
-  "version": "1.0.0",
+  "name": "@dbux/data",
+  "version": "0.1.0",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -9,16 +9,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Domi",
+  "license": "Apache-2.0",
   "dependencies": {
-    "dbux-common": "*"
+    "@dbux/common": "^0.1.0",
+    "lodash": "^4.17.19",
+    "nanoevents": "^2.0.0"
   },
-  "devDependencies": {},
-  "peerDependencies": {
-    "nanoevents": "*",
-    "lodash": "*"
-  },
-  "_moduleAliases": {
-  }
+  "_moduleAliases": {}
 }

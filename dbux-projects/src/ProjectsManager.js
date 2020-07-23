@@ -95,6 +95,22 @@ export default class ProjectsManager {
     }
   }
 
+  async installDependencies() {
+    const { projectsRoot } = this.config;
+
+    if (process.env.NODE_ENV === 'production') {
+      // TODO: install dbux dependencies + their dependencies
+
+      // _dbux_run.js requires socket.io-client -> install in projects/ root
+      //    NOTE: this will be taken care of by installing above dependencies automatically (because runtime also depends on `socket.io-client`)
+      await this.runner._exec(this, `yarn add socket.io-client@2.3.0`, {
+        processOptions: {
+          cwd: projectsRoot
+        }
+      });
+    }
+  }
+
   async askForSubmit() {
     const confirmString = 'You have passed the test for the first time, would you like to submit the result?';
     const shouldSubmit = await this.externals.confirm(confirmString);

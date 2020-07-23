@@ -1,5 +1,4 @@
 import template from '@babel/template';
-import * as t from '@babel/types';
 import { runAllSnapshotTests } from '../testing/test-util';
 
 const codes = [

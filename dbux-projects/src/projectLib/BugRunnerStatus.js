@@ -1,4 +1,4 @@
-import Enum from 'dbux-common/src/util/Enum';
+import Enum from '@dbux/common/src/util/Enum';
 
 let BugRunnerStatus = {
   None: 1,

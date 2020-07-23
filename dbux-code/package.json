@@ -1,10 +1,15 @@
 {
 	"name": "dbux-code",
-	"displayName": "dbux-code",
+	"displayName": "Dbux ALPHA",
+	"version": "0.1.0",
+	"publisher": "Domi",
 	"description": "",
-	"version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Domiii/dbux"
+	},
 	"engines": {
-		"vscode": "^1.41.0"
+		"vscode": "^1.46.0"
 	},
 	"categories": [
 		"Other"
@@ -510,39 +515,48 @@
 	},
 	"scripts": {
 		"test": "node ./test/runTest.js",
-		"vscode:prepublish": "node ../node_modules/webpack/bin/webpack --mode production",
+		"build:clean": "rm -rf ./dist ./public ./resources/dist && rm -rf *.vsix",
+		"vscode:prepublish": "npm run build:prod",
 		"start": "node ../node_modules/webpack/bin/webpack --mode development --watch",
 		"start-debug": "node --inspect-brk=9233 ../node_modules/webpack/bin/webpack --mode development --watch",
-		"build-prod": "npx webpack --mode production",
-		"build-dev": "npx webpack --mode development",
-		"analyze": "npx webpack --mode development --json | npx webpack-bundle-size-analyzer"
+		"build:resources": "cd ../dbux-graph-client && npm run build:prod",
+		"build:prod": "npm run build:clean && npm run build:resources && node ../node_modules/webpack/bin/webpack --mode production",
+		"build:dev": "npm run build:clean && node ../node_modules/webpack/bin/webpack --mode development",
+		"build:analyze": "npm run build:clean && mkdir dist && node ../node_modules/webpack/bin/webpack --mode production --profile --json > dist/stats.json && npx webpack-bundle-analyzer dist/stats.json",
+		"uninstallself": "code --uninstall-extension Domi.dbux-code",
+		"reinstallself": "npm run uninstallself --silent ; sh -c 'files=(*.vsix); code --install-extension \"${files[0]}\"'",
+		"package": "vsce package --yarn",
+		"package:install": "npm run package && npm run reinstallself",
+		"package:analyze": "npm run package && rm -rf public && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
+		"publishthis": "npm run package && vsce publish --yarn"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.41.0",
-		"flow-bin": "^0.116.1",
+		"copy-webpack-plugin": "^6.0.3",
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
 		"typescript": "^3.6.4",
-		"vscode-test": "^1.2.2"
+		"vsce": "^1.77.0",
+		"vscode-test": "^1.2.2",
+		"webpack-bundle-analyzer": "^3.8.0",
+		"webpack": "^4.41.5",
+		"webpack-cli": "^3.3.10"
 	},
 	"dependencies": {
-		"axios": "^0.19.2",
-		"comment-json": "^3.0.2",
-		"dbux-cli": "*",
-		"dbux-common": "*",
-		"dbux-data": "*",
-		"dbux-graph-common": "*",
-		"dbux-graph-host": "*",
-		"dbux-projects": "*",
+		"@dbux/cli": "^0.1.0",
+		"@dbux/common": "^0.1.0",
+		"@dbux/data": "^0.1.0",
+		"@dbux/graph-common": "^0.1.0",
+		"@dbux/graph-host": "^0.1.0",
+		"@dbux/projects": "^0.1.0",
+		"lodash": "^4.17.19",
 		"moment": "^2.24.0",
 		"socket.io": "^2.3.0",
 		"strip-color": "^0.1.0"
 	},
-	"peerDependencies": {
-		"lodash": "*"
-	},
-	"_moduleAliases": {}
+	"_moduleAliases": {},
+	"gitHead": "18e0d5ec96bb1fb6348665436e01d4c4ce127999"
 }

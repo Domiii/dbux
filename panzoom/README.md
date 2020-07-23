@@ -1,3 +1,7 @@
+
+Adaption of `panzoom` from https://github.com/anvaka/panzoom to support scrollbar scrolling.
+
+
 # panzoom [![Build Status](https://travis-ci.org/anvaka/panzoom.svg)](https://travis-ci.org/anvaka/panzoom)
 
 Extensible, mobile friendly pan and zoom framework (supports DOM and SVG).

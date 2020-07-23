@@ -4,7 +4,7 @@ export default class Query {
     this.cfg = cfg || {};
   }
 
-  _init(dp) {}
+  _init(/* dp */) {}
 
   executor = (dp, args) => this.execute(dp, args);
 

@@ -1,4 +1,3 @@
-import path from 'path';
 import { buildNodeCommand } from './nodeUtil';
 
 /**
@@ -7,7 +6,6 @@ import { buildNodeCommand } from './nodeUtil';
 export async function buildJestRunBugCommand(cwd, jestArgs, requireArr, debugPort = 9309) {
   const program = `${cwd}/node_modules/jest/bin/jest.js`;
 
-  // [todo-deploy] get rid of monoroot dependencies to prepare for deployment
   // const transform = `{
   //     "^.+\\.jsx?$": ["babel-jest"]
   //   }`;

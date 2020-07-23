@@ -1,8 +1,7 @@
 import {
-  window,
   commands
 } from 'vscode';
-import { logError } from 'dbux-common/src/log/logger';
+import { logError } from '@dbux/common/src/log/logger';
 
 // command regist helper
 export function registerCommand(context, commandName, func) {

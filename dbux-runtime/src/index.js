@@ -18,6 +18,7 @@ function registerDbuxAsGlobal() {
 
 function _getGlobal() {
   if (typeof window !== 'undefined') {
+    // eslint-disable-next-line no-undef
     return window;
   }
   else if (typeof global !== 'undefined') {
@@ -35,7 +36,8 @@ let client;
 
 let _didShutdown = false;
 function handleShutdown() {
-  console.debug('shutdown detected');
+  // eslint-disable-next-line no-console
+  console.debug('[dbux-runtime] shutdown detected');
   if (_didShutdown) {
     // this can get triggered more than once (if registered to multiple different events)
     return;
@@ -45,7 +47,9 @@ function handleShutdown() {
   client.tryFlush();
   
   if (!client.hasFlushed()) {
-    console.error('Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably a crash or you called `process.exit` manually.');
+    // eslint-disable-next-line no-console
+    console.error('[dbux-runtime] Process shutdown but not all data has been sent out. Analysis will be incomplete. ' +
+      'This is probably a crash or you called `process.exit` manually.');
   }
 }
 

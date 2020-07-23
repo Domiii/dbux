@@ -1,7 +1,9 @@
-import { commands } from 'vscode';
 import PlaybackController from './PlaybackController';
 
-let playbackController: PlaybackController;
+/**
+ * @type {PlaybackController}
+ */
+let playbackController;
 
 export function initPlayback() {
   playbackController = new PlaybackController();

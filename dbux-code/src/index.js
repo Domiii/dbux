@@ -1,6 +1,6 @@
 import { window } from 'vscode';
 import process from 'process';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 
 import { initRuntimeServer } from './net/SocketServer';
 import { initCodeDeco } from './codeDeco';
@@ -22,12 +22,13 @@ import { showGraphView } from './graphView';
 import { initDbuxPractice } from './practice/dbuxPracticeController';
 
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 let projectViewController;
 
 function registerErrorHandler() {
-  process.on('unhandledRejection', (reason, promise: Promise<any>) => {
+  process.on('unhandledRejection', (reason, promise) => {
     logError(`[Unhandled Rejection] reason: ${reason}, promise: ${promise}`, new Error().stack);
   });
 }

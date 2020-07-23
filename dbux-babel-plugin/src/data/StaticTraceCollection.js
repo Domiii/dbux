@@ -1,4 +1,4 @@
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
 import * as t from '@babel/types';
 import StaticCollection from './StaticCollection';
 

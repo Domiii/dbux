@@ -3,12 +3,12 @@ function mergeOne(visitorName, ...visitors) {
   actionKeys = new Set(actionKeys.flat());
   const result = {};
   for (const actionKey of actionKeys) {
-    const actions = visitors.map(v => v[actionKey]).filter(v => !!v);
+    const origActions = visitors.map(v => v[actionKey]).filter(v => !!v);
     const f = function _mergedVisitor(actions, ...args) {
       for (const action of actions) {
         action.apply(this, args);
       }
-    }.bind(null, actions);
+    }.bind(null, origActions);
     result[actionKey] = f;
   }
   return result;

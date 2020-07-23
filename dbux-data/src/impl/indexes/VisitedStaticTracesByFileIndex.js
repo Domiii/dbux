@@ -1,11 +1,15 @@
-import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
-import Trace from 'dbux-common/src/core/data/Trace';
+import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
+import Trace from '@dbux/common/src/core/data/Trace';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
-export default class VisitedStaticTracesByFileIndex extends CollectionIndex<StaticTrace> {
-  visited: boolean[] = [];
+/** @extends {CollectionIndex<StaticTrace>} */
+export default class VisitedStaticTracesByFileIndex extends CollectionIndex {
+  /**
+   * @type {boolean[]}
+   */
+  visited = [];
 
   constructor() {
     super('staticTraces', 'visitedByFile', false);
@@ -20,7 +24,10 @@ export default class VisitedStaticTracesByFileIndex extends CollectionIndex<Stat
 
     collections: {
       traces: {
-        added: (traces: Trace[]) => {
+        /**
+         * @param {Trace[]} traces
+         */
+        added: (traces) => {
           for (const trace of traces) {
             const { staticTraceId } = trace;
             if (!this.visited[staticTraceId]) {
@@ -33,7 +40,11 @@ export default class VisitedStaticTracesByFileIndex extends CollectionIndex<Stat
     }
   }
 
-  makeKey(dp: DataProvider, staticTrace: StaticTrace) {
+  /** 
+   * @param {DataProvider} dp
+   * @param {StaticTrace} staticTrace
+   */
+  makeKey(dp, staticTrace) {
     const { staticTraceId } = staticTrace;
     // const traces = dp.indexes.traces.byStaticTrace.get(staticTraceId);
     // if (traces) {

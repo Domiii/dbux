@@ -1,9 +1,10 @@
 import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '../../log/logger';
 import { isPromise } from '../isPromise';
 
-const { log, debug, warn, error: logError } = newLogger('dbux-code');
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('SerialTaskQueue');
 
 const WarnTimeout = 10000;
 
@@ -208,7 +209,7 @@ export default class SerialTaskQueue {
     const version = this._version;
 
     try {
-      while (!this.isEmpty()) {
+      while (!this.isEmpty() && this._version === version) {
         // make sure, higher priority items come before lower piority items
         this._queue.sort((a, b) => {
           // hackfix
@@ -257,7 +258,7 @@ export default class SerialTaskQueue {
     // }
   }
 
-  _log(...args) {
+  _log(/* ...args */) {
     // debug(...args);
   }
 

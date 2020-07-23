@@ -1,9 +1,10 @@
-import { newLogger } from 'dbux-common/src/log/logger';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import GraphDocument from './components/GraphDocument';
 import HostComponentManager from './componentLib/HostComponentManager';
 import componentRegistry from './_hostRegistry';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
 
 let _onStart, _restart, _args;
@@ -39,7 +40,7 @@ function pairingCompleted() {
   componentManager.start();
 
   // build component tree
-  const doc = componentManager.app.children.createComponent(GraphDocument);
+  /* const doc = */ componentManager.app.children.createComponent(GraphDocument);
 
   // notify starter (e.g. code/GraphWebView)
   _onStart(componentManager);

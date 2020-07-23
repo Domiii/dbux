@@ -3,7 +3,7 @@
  * Might revive this at some point...
  */
 
-// import { __dbux_logObjectTrace, trackObject as __dbux_trackObject } from 'dbux-runtime/src/log/trackObject';
+// import { __dbux_logObjectTrace, trackObject as __dbux_trackObject } from '@dbux/runtime/src/log/trackObject';
 
 
 // // see: https://esprima.org/demo/parse.html

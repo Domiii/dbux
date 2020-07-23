@@ -1,13 +1,18 @@
-import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
-function makeKey(dp: DataProvider, context: ExecutionContext) {
+/** 
+ * @param {DataProvider} dp
+ * @param {ExecutionContext} context
+ */
+function makeKey(dp, context) {
   return context.runId;
 }
 
 
-export default class ContextsByRunIndex extends CollectionIndex<ExecutionContext> {
+/** @extends {CollectionIndex<ExecutionContext>} */
+export default class ContextsByRunIndex extends CollectionIndex {
   constructor() {
     super('executionContexts', 'byRun');
   }

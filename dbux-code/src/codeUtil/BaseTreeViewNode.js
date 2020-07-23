@@ -2,9 +2,12 @@ import { TreeItem } from 'vscode';
 
 export default class BaseTreeViewNode extends TreeItem {
   parent;
-  children: BaseNode[] = null;
+  /**
+   * @type {BaseNode[]}
+   */
+  children = null;
 
-  static makeLabel(entry) {
+  static makeLabel(/* entry */) {
     return '(unnamed node)';
   }
 

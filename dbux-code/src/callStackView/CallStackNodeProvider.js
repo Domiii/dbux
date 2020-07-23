@@ -1,13 +1,17 @@
-import { newLogger } from 'dbux-common/src/log/logger';
-import Trace from 'dbux-common/src/core/data/Trace';
-import traceSelection from 'dbux-data/src/traceSelection';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import { newLogger } from '@dbux/common/src/log/logger';
+import Trace from '@dbux/common/src/core/data/Trace';
+import traceSelection from '@dbux/data/src/traceSelection';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import CallStackNode, { EmptyNode, BarrierNode } from './CallStackNode';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('CallStackNodeProvider');
 
 export class CallStackNodeProvider {
-  _allNodes: Array<CallStackNode>;
+  /**
+   * @type {CallStackNode}
+   */
+  _allNodes;
 
   constructor(callStackViewController) {
     this.view = callStackViewController;
@@ -60,8 +64,14 @@ export class CallStackNodeProvider {
   }
   
   _getCallStackOfTrace(trace) {
-    let currentNode: CallStackNode;
-    let nextNode: CallStackNode;
+    /**
+     * @type {CallStackNode}
+     */
+    let currentNode;
+    /**
+     * @type {CallStackNode}
+     */
+    let nextNode;
     let callStack = [];
     let lastRunId = null;
     nextNode = this._createNodeByTrace(trace);
@@ -97,7 +107,6 @@ export class CallStackNodeProvider {
    * @param {Trace} trace
    */
   _createNodeByTrace = (trace, specifiedSearchMode = null) => {
-
     const parentStatus = this._getParentStatus(trace);
     let searchMode;
     if (specifiedSearchMode) searchMode = specifiedSearchMode;

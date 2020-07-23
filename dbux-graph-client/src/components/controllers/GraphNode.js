@@ -1,4 +1,4 @@
-import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
+import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
 import { decorateClasses } from '@/util/domUtil';
 
@@ -22,7 +22,7 @@ export default class GraphNode extends ClientComponentEndpoint {
     // on click -> nextMode
     this.owner.dom.addEventListeners(this, true);
 
-    nodeToggleBtn?.addEventListener('click', evt => {
+    nodeToggleBtn?.addEventListener('click', (/* evt */) => {
       this.remote.nextMode();
     });
   }

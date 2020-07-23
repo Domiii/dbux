@@ -1,23 +1,23 @@
 #!/usr/bin/env node
+/* eslint-env node, es5 */
 
 /**
- * Run JS file without babel, but common dependencies properly taken care of.
+ * Run JS file without babel, but common dependencies pre-loaded from dbux-cli/node_modules.
  * @file
  */
 
-const fs = require('fs');
-const path = require('path');
-const moduleAlias = require('module-alias');
+// const moduleAlias = require('module-alias');
 
-const cliDir = __dirname + '/..';
-const dbuxRoot = path.resolve(cliDir + '/..');
+// const cliDir = __dirname + '/..';
+// const dbuxRoot = path.resolve(cliDir + '/..');
 
-const dbuxAliases = [
-  'dbux-runtime'
+// // add aliases (since these libraries are not locally available)
+const dbuxDeps = [
+  '@dbux/runtime'
 ];
+dbuxDeps.forEach(require);
 
-// add aliases (since these libraries are not locally available)
-dbuxAliases.forEach(alias => moduleAlias.addAlias(alias, path.join(dbuxRoot, alias)));
+// dbuxAliases.forEach(alias => moduleAlias.addAlias(alias, path.join(dbuxRoot, alias)));
 
 
 // const mergeWith = require('lodash/mergeWith');
@@ -29,7 +29,4 @@ let { file } = argv;
 
 
 // go time!
-if (!path.isAbsolute(file)) {
-  file = path.join(cliDir, file);
-}
 require(file);

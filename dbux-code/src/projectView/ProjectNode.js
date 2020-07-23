@@ -1,8 +1,8 @@
 import { ProgressLocation, Uri, workspace, window } from 'vscode';
-import { pathGetBasename } from 'dbux-common/src/util/pathUtil';
-import sleep from 'dbux-common/src/util/sleep';
-import Project from 'dbux-projects/src/projectLib/Project';
-import BugRunnerStatus, { isStatusRunningType } from 'dbux-projects/src/projectLib/BugRunnerStatus';
+import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
+import sleep from '@dbux/common/src/util/sleep';
+import Project from '@dbux/projects/src/projectLib/Project';
+import BugRunnerStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/BugRunnerStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -69,7 +69,7 @@ export default class ProjectNode extends BaseTreeViewNode {
       const confirmMessage = `Do you really want to delete project: ${this.project.name}`;
       const result = await window.showInformationMessage(confirmMessage, { modal: true }, 'Ok');
       if (result === 'Ok') {
-        runTaskWithProgressBar(async (progress, cancelToken) => {
+        runTaskWithProgressBar(async (progress/* , cancelToken */) => {
           progress.report({ message: 'deleting project folder...' });
           // wait for progress bar to show
           await sleep(100);

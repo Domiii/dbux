@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
 const path = require('path');
 const moduleAlias = require('module-alias');
 const process = require('process');
+
 process.env.BABEL_DISABLE_CACHE = 1;
 
 
-const cliDir = __dirname + '/..';
+const cliDir = path.join(__dirname, '..');
 const dbuxRoot = path.resolve(cliDir + '/..');
 
-const dbuxAliases = [
-  'dbux-runtime'
-];
+// const dbuxAliases = [
+//   '@dbux/runtime'
+// ];
 
 const sharedDeps = [
   '@babel/core',
@@ -20,7 +20,7 @@ const sharedDeps = [
 ];
 
 // add aliases (since these libraries are not locally available)
-dbuxAliases.forEach(alias => moduleAlias.addAlias(alias, path.join(dbuxRoot, alias)));
+// dbuxAliases.forEach(alias => moduleAlias.addAlias(alias, path.join(dbuxRoot, alias)));
 sharedDeps.forEach(dep => moduleAlias.addAlias(dep, path.join(dbuxRoot, 'node_modules', dep)));
 
 

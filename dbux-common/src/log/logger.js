@@ -1,5 +1,5 @@
+/* eslint no-console: 0 */
 import NanoEvents from 'nanoevents';
-import { makePrettyLog } from '../util/prettyLogs';
 
 const errors = [];
 
@@ -81,13 +81,13 @@ export class Logger {
       this[name] = (...args) => {
         f(ns, ...args);
         // this._emitter.emit(name, ...args);
-      }
+      };
     }
   }
 }
 
 export function newLogger(ns) {
-  return new Logger(ns);
+  return new Logger(`DBUX ${ns}`);
 }
 
 export function newFileLogger(fpath) {
