@@ -1,8 +1,9 @@
 import { env, Uri } from 'vscode';
-import progressLogHandler from 'dbux-projects/src/dataLib/progressLog';
-import BugResultStatusType from 'dbux-projects/src/dataLib/BugResultStatusType';
-import BugRunnerStatus from 'dbux-projects/src/projectLib/BugRunnerStatus';
+import progressLogHandler from '@dbux/projects/src/dataLib/progressLog';
+import BugResultStatusType from '@dbux/projects/src/dataLib/BugResultStatusType';
+import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
+import 'lodash';
 
 export default class BugNode extends BaseTreeViewNode {
   static makeLabel(bug) {

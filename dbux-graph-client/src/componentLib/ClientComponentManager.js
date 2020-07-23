@@ -1,4 +1,4 @@
-import BaseComponentManager from 'dbux-graph-common/src/componentLib/BaseComponentManager';
+import BaseComponentManager from '@dbux/graph-common/src/componentLib/BaseComponentManager';
 import componentRegistry from '@/_clientRegistry';
 import ClientComponentEndpoint from './ClientComponentEndpoint';
 
@@ -26,9 +26,11 @@ class AppComponent extends ClientComponentEndpoint {
 
     try {
       src = JSON.stringify(`comp.shared = ${src}.bind(comp)`);
+      // eslint-disable-next-line no-eval
       eval(eval(src));
     } 
     catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err); // only show on client; don't send error object back to server
       throw new Error(`could not deserialize 'shared' function -\n${src}\n\n${err.message}`);
     }

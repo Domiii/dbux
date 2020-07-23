@@ -2,15 +2,20 @@ import {
   authentication
 } from 'vscode';
 
-import CodeSubmissions from './CodeSubmissions';
-import PracticeClient from './PracticeClient';
+import { newLogger } from '@dbux/common/src/log/logger';
 
-class DbuxPracticeController {
-  constructor() {
-    this.client = new PracticeClient();
-    this.submissions = new CodeSubmissions(this);
-  }
-}
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('PracticeController');
+
+// import CodeSubmissions from './CodeSubmissions';
+// import PracticeClient from './PracticeClient';
+
+// class DbuxPracticeController {
+//   constructor() {
+//     this.client = new PracticeClient();
+//     this.submissions = new CodeSubmissions(this);
+//   }
+// }
 
 
 
@@ -37,16 +42,16 @@ async function loginIfNecessaryAndGetToken() {
   // result is a JSON object where result.login === session.accountName
   // exec(`curl -H "Authorization: token ${accessToken}" https://api.github.com/user`)
   const token = await session.getAccessToken();
-  console.log('login successful!', JSON.stringify(session), token);
+  log('login successful!', JSON.stringify(session), token);
 
   return session;
 }
 
-async function getSession() {
-  return loginIfNecessaryAndGetToken();
-}
+// async function getSession() {
+//   return loginIfNecessaryAndGetToken();
+// }
 
-export function initDbuxPractice(context) {
+export function initDbuxPractice(/* context */) {
   // if (authentication.providerIds.includes(providerId)) {
   //   loginIfNecessary();
   // }

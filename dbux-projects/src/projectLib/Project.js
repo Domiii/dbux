@@ -1,14 +1,14 @@
 import path from 'path';
-import sh from 'shelljs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
-import { newLogger } from 'dbux-common/src/log/logger';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
+import sh from 'shelljs';
+import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import BugList from './BugList';
 import Process from '../util/Process';
 
-const AssetFolder = '_shared_assets_';
+const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
 
 export default class Project {
@@ -143,7 +143,7 @@ export default class Project {
     throw new Error(this + ' abstract method not implemented');
   }
 
-  async selectBug(bug) {
+  async selectBug(/* bug */) {
     throw new Error(this + ' abstract method not implemented');
   }
 
@@ -249,8 +249,10 @@ export default class Project {
       sh.rm('-rf', absRmFiles);
     }
 
+    await this.manager.installDependencies();
+
     // copy assets
-    await this.copyAssets();
+    await this.installAssets();
 
     // install dbux dependencies
     // await this.installDbuxCli();
@@ -368,15 +370,15 @@ export default class Project {
   }
 
   async installDbuxCli() {
-    // TODO: make this work in production as well
-
     // await exec('pwd', this.logger);
-
-    // const dbuxCli = path.resolve(projectPath, '../../dbux-cli');
-    const dbuxCli = '../../dbux-common ../../dbux-cli';
+    const dbuxDeps = [
+      '@dbux/cli',
+      '@dbux/babel-plugin',
+      '@dbux/runtime'
+    ];
 
     // TODO: select `npm` or `yarn` based on packageManager setting (but requires change in command)
-    await this.exec(`yarn add --dev ${dbuxCli}`, this.logger);
+    await this.exec(`yarn add --dev ${dbuxDeps}`, this.logger);
   }
 
   // ###########################################################################
@@ -386,17 +388,17 @@ export default class Project {
   /**
    * Copy all assets into project folder.
    */
-  async copyAssets() {
+  async installAssets() {
     // copy individual assets first
     await this.copyAssetFolder(this.folderName);
 
     // copy shared assets (NOTE: doesn't override individual assets)
-    await this.copyAssetFolder(AssetFolder);
+    await this.copyAssetFolder(SharedAssetFolder);
   }
 
   async copyAssetFolder(assetFolderName) {
-    // TODO: fix these paths! (`__dirname` is overwritten by webpack and points to the `dist` dir; `__filename` points to `bundle.js`)
-    const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
+    // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
+    const assetDir = this.manager.externals.resources.getResourcePath('dist', 'projects', assetFolderName);
 
     if (await sh.test('-d', assetDir)) {
       // copy assets, if this project has any

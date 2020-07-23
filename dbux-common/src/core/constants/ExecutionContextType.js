@@ -12,7 +12,7 @@ let ExecutionContextType = {
 ExecutionContextType = new Enum(ExecutionContextType);
 
 
-const interruptableChildTypes = new Array(ExecutionContextType.getValueMaxIndex()).map(_ => false);
+const interruptableChildTypes = new Array(ExecutionContextType.getValueMaxIndex()).map((/* _ */) => false);
 interruptableChildTypes[ExecutionContextType.Await] = true;
 interruptableChildTypes[ExecutionContextType.Resume] = true;
 export function isVirtualContextType(executionContextType) {

@@ -1,14 +1,28 @@
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 
-export default class Collection<T> {
+/**
+ * @template {T}
+ */
+export default class Collection {
   /**
    * NOTE: collection ids can be 0
+   * @type {number}
    */
-  _id : number;
-  _all : T[] = [];
+  _id;
+  /**
+   * @type {T[]}
+   */
+  _all = [];
 
-  name : string;
-  dp : DataProvider;
+  /**
+   * @type {string}
+   */
+  name;
+
+  /**
+   * @type {DataProvider}
+   */
+  dp;
 
   constructor(name, dp) {
     this.log = newLogger(`${name} (Col)`);
@@ -23,7 +37,10 @@ export default class Collection<T> {
   // Writes
   // ###########################################################################
 
-  add(entries : T[]) {
+  /**
+   * @param {T[]} entries 
+   */
+  add(entries) {
     if (!this._all.length && entries[0] !== null) {
       // pad with a `null`, if necessary
       this._all.push(null);
@@ -34,14 +51,16 @@ export default class Collection<T> {
   /**
    * Collections can use this to massage data after all data has been added, but before indexes have been processed.
    * @virtual
+   * 
+   * @param {T[]} entries
    */
-  postAdd(entries: T[]) { }
+  postAdd(/* entries */) { }
 
   /**
    * Collections can use this to massage data after all data has been added, and after indexes have been processed.
    * @virtual
    */
-  postIndex(entries) { }
+  postIndex(/* entries */) { }
 
   // ###########################################################################
   // Reads
@@ -52,8 +71,11 @@ export default class Collection<T> {
       yield this._all[i];
     }
   }
-  
-  get size() : number {
+
+  /**
+   * @type {number}
+   */
+  get size() {
     // TODO: make this more consistent (currently, we are padding null only after first add)
     return this._all.length > 0 ? this._all.length - 1 : 0;
   }
@@ -62,16 +84,23 @@ export default class Collection<T> {
     return this._all;
   }
 
-  getAll() : T[] {
+  /**
+   * @return {T[]}
+   */
+  getAll() {
     return this._all;
   }
 
-  getById(id : number) : T {
+  /**
+   * @param {number} id
+   * @return {T}
+   */
+  getById(id) {
     return this._all[id];
   }
 
   find(cb) {
-    const {all} = this;
+    const { all } = this;
     for (let i = 1; i < all.length; ++i) {
       const entry = all[i];
       if (cb(entry)) {

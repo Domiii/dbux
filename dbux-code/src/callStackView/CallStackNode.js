@@ -1,10 +1,10 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import path from 'path';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import traceSelection from 'dbux-data/src/traceSelection';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import { makeTraceLabel } from 'dbux-data/src/helpers/traceLabels';
-import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import traceSelection from '@dbux/data/src/traceSelection';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import { makeTraceLabel } from '@dbux/data/src/helpers/traceLabels';
+import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 
 export default class CallStackNode {
   constructor(
@@ -31,16 +31,13 @@ export default class CallStackNode {
       arguments: [this]
     };    
 
-    // TODO: fix icon path
-    if (traceSelection.isSelected(trace)) {
-      this.iconPath = {
-        light: path.join(__dirname, '..', '..', '..', 'resources', 'light', 'dependency.svg'),
-        dark: path.join(__dirname, '..', '..', '..', 'resources', 'dark', 'dependency.svg')
-      };
-    }
-    else {
-      this.iconPath = ' ';
-    }
+    // TODO: fix icon paths (this.makeNodeIconPath)
+    // if (traceSelection.isSelected(trace)) {
+    //   this.iconPath = getThemeResourcePath('dependency.svg');
+    // }
+    // else {
+    //   this.iconPath = ' ';
+    // }
   }
 
   get contextValue() {

@@ -1,4 +1,4 @@
-import { logInternalError } from 'dbux-common/src/log/logger';
+import { logInternalError } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 
 /**
@@ -20,6 +20,8 @@ class StaticVarAccessCollection extends Collection {
 
     for (let i = 0; i < list.length; ++i) {
       const entry = list[i];
+
+      // eslint-disable-next-line no-console
       console.assert(entry._staticId === i + 1);
 
       entry.programId = programId;

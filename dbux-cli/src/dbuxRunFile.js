@@ -10,9 +10,11 @@ module.exports = function dbuxRunFile(targetPath) {
   }
 
   try {
+    // eslint-disable-next-line
     require(targetPath);
   }
   catch (err) {
+    // eslint-disable-next-line
     console.error('ERROR when running instrumented code:\n ', err && err.stack || err);
   }
 };

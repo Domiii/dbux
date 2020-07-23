@@ -1,5 +1,5 @@
 
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import progressLogHandler from './progressLog';
 
 const logger = newLogger('Project-DataLib');

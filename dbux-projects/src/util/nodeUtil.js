@@ -1,10 +1,8 @@
-import path from 'path';
-import sh from 'shelljs';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 export function buildNodeCommand(cfg) {
   let {
-    cwd,
+    // cwd,
     nodeArgs = `--stack-trace-limit=1000 --nolazy`,
     debugPort,
     require: requireArr = EmptyArray,

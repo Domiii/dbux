@@ -1,5 +1,5 @@
-import TraceType, { isCallbackRelatedTrace } from 'dbux-common/src/core/constants/TraceType';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/core/constants/TraceType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeContextLabel } from './contextLabels';
 import allApplications from '../applications/allApplications';
 
@@ -76,11 +76,11 @@ const byType = {
     // const previousTrace = application.dataProvider.collections.traces.getById(trace.traceId - 1);
     return `↱ƒ ${makeDefaultTraceLabel(trace, application)}`;
   },
-  [TraceType.BlockStart](trace, application) {
+  [TraceType.BlockStart](/* trace, application */) {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
     return `↳`;
   },
-  [TraceType.BlockEnd](trace, application) {
+  [TraceType.BlockEnd](/* trace, application */) {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
     return `⤴`;
   }
@@ -188,7 +188,7 @@ export function makeContextLocLabel(applicationId, context) {
   const { programId, loc } = dp.collections.staticContexts.getById(staticContextId);
   const fileName = programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
 
-  const { line, column } = loc.start;
+  const { line/* , column */ } = loc.start;
   // return `@${fileName}:${line}:${column}`;
   return `${fileName}:${line}`;
 }
@@ -203,7 +203,7 @@ export function makeTraceLocLabel(trace) {
   const fileName = dp.util.getTraceFileName(traceId);
   const loc = dp.util.getTraceLoc(traceId);
 
-  const { line, column } = loc.start;
+  const { line/* , column */ } = loc.start;
   // return `@${fileName}:${line}:${column}`;
   return `${fileName}:${line}`;
 }

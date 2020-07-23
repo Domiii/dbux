@@ -1,5 +1,6 @@
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-common/domUtil');
 
 
@@ -146,10 +147,10 @@ export function selectTextOnClick(el) {
 // Forms
 // ###########################################################################
 
-export function formOnEnter($form, cb) {
-  $form.on('keydown', evt => {
+export function formOnEnter(formEl, cb) {
+  formEl.addEventListener('keydown', evt => {
     // console.log($(evt.target).closest('form')[0]);
-    if (evt.keyCode === 13 && $(evt.target).closest('form')[0] === $form[0]) {
+    if (evt.keyCode === 13 && evt.target.closest('form') === formEl) {
       cb(evt);
     }
   });

@@ -1,4 +1,4 @@
-import Var from '../Var';
+/** @typedef {import('../Var').default} Var */
 
 export default class Loop {
   /** @type {number} */

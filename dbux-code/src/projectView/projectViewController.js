@@ -1,9 +1,9 @@
 import { window, commands } from 'vscode';
 import path from 'path';
-import { newLogger, setOutputStreams } from 'dbux-common/src/log/logger';
-import { initDbuxProjects } from 'dbux-projects/src';
-import exec from 'dbux-projects/src/util/exec';
-import BugRunnerStatus from 'dbux-projects/src/projectLib/BugRunnerStatus';
+import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
+import { initDbuxProjects } from '@dbux/projects/src';
+import exec from '@dbux/projects/src/util/exec';
+import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
 import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -11,14 +11,18 @@ import OutputChannel from './OutputChannel';
 import { execInTerminal } from '../terminal/TerminalWrapper';
 import PracticeStopwatch from './PracticeStopwatch';
 import { set as storageSet, get as storageGet } from '../memento';
+import { getResourcePath } from '../resources';
 
 // ########################################
 //  setup logger for project
 // ########################################
 
 const logger = newLogger('projectViewController');
+
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
-const outputChannel = new OutputChannel('dbux-project');
+
+const outputChannel = new OutputChannel('Dbux');
 
 setOutputStreams({
   log: outputChannel.log.bind(outputChannel),
@@ -33,30 +37,37 @@ export function showOutputChannel() {
 
 let controller;
 
-const cfg = {
-  // TODO: fix these paths (`__dirname` is overwritten by webpack and points to the `dist` dir; `__filename` points to `bundle.js`)
-  projectsRoot: path.join(__dirname, '../../projects')
-};
-const externals = {
-  editor: {
-    async openFile(fpath) {
-      // await exec(`code ${fpath}`, logger, { silent: false }, true);
-      return showTextDocument(fpath);
-    },
-    async openFolder(fpath) {
-      // TODO: use vscode API to add to workspace
-      await exec(`code --add ${fpath}`, logger, { silent: false }, true);
-    }
-  },
-  storage: {
-    get: storageGet,
-    set: storageSet,
-  },
-  execInTerminal
-};
 
 class ProjectViewController {
   constructor(context) {
+    // ########################################
+    // cfg + externals
+    // ########################################
+    const cfg = {
+      // projectsRoot: getResourcePath('..', ...(process.env.NODE_ENV === 'development' ? ['..', '..'] : []), 'dbux_projects')
+      projectsRoot: getResourcePath('..', ...(process.env.NODE_ENV === 'development' ? ['..'] : []), 'projects')
+    };
+    const externals = {
+      editor: {
+        async openFile(fpath) {
+          // await exec(`code ${fpath}`, logger, { silent: false }, true);
+          return showTextDocument(fpath);
+        },
+        async openFolder(fpath) {
+          // TODO: use vscode API to add to workspace instead?
+          await exec(`code --add ${fpath}`, logger, { silent: false }, true);
+        }
+      },
+      storage: {
+        get: storageGet,
+        set: storageSet,
+      },
+      execInTerminal,
+      resources: {
+        getResourcePath
+      }
+    };
+
     // ########################################
     //  init projectManager
     // ########################################
@@ -103,7 +114,7 @@ class ProjectViewController {
       title: `[dbux] Activating Project ${bugNode.bug.project.name}@${bugNode.bug.name}`
     };
 
-    return runTaskWithProgressBar(async (progress, cancelToken) => {
+    return runTaskWithProgressBar(async (progress/* , cancelToken */) => {
       const { bug } = bugNode;
       const runner = this.manager.getOrCreateRunner();
 

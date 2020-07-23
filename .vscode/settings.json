@@ -5,6 +5,7 @@
       "mode": "auto"
     }
   ],
+  "eslint.lintTask.enable": true,
   "editor.snippetSuggestions": "top",
   "javascript.preferences.quoteStyle":"single",
   "jest.pathToJest": "sh scripts/runJest.sh",

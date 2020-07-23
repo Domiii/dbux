@@ -1,14 +1,17 @@
-import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import traceSelection from 'dbux-data/src/traceSelection';
-import { makeRootTraceLabel } from 'dbux-data/src/helpers/traceLabels';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import traceSelection from '@dbux/data/src/traceSelection';
+import { makeRootTraceLabel } from '@dbux/data/src/helpers/traceLabels';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import ContextNode from './ContextNode';
 import ErrorNode from './ErrorNode';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
 export default class CallRootNode extends BaseTreeViewNode {
-  static makeLabel(trace: Trace, parent, moreProps) {
+  /**
+   * @param {Trace} trace
+   */
+  static makeLabel(trace/* , parent, moreProps */) {
     return makeRootTraceLabel(trace, allApplications.getById(trace.applicationId));
   }
 

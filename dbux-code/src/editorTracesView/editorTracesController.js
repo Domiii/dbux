@@ -1,11 +1,12 @@
 import { window, ExtensionContext } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import traceSelection from 'dbux-data/src/traceSelection';
-import { makeDebounce } from 'dbux-common/src/util/scheduling';
+import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import traceSelection from '@dbux/data/src/traceSelection';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import { registerCommand } from '../commands/commandUtil';
 import EditorTracesNodeProvider from './EditorTracesNodeProvider';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('editorTracesController');
 
 let controller;
@@ -67,8 +68,10 @@ class EditorTracesController {
 // init
 // ###########################################################################
 
-
-export function initEditorTracesView(context: ExtensionContext) {
+/**
+ * @param {ExtensionContext} context 
+ */
+export function initEditorTracesView(context) {
   controller = new EditorTracesController();
   controller.initOnActivate(context);
 

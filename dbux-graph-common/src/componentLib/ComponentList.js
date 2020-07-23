@@ -1,6 +1,6 @@
 import pull from 'lodash/pull';
 import isString from 'lodash/isString';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 
 
 export default class ComponentList {

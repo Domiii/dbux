@@ -1,12 +1,13 @@
 import get from 'lodash/get';
-import { newLogger, logDebug } from 'dbux-common/src/log/logger';
-import { makeDebounce } from 'dbux-common/src/util/scheduling';
+import { newLogger, logDebug } from '@dbux/common/src/log/logger';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import MessageType from './MessageType';
 import ComponentEndpoint from './ComponentEndpoint';
 
 const Verbose = false;
 // const Verbose = true;
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/ipc');
 
 class IpcCall {
@@ -258,7 +259,7 @@ export default class Ipc {
       this._processReply(message);
     },
 
-    [MessageType.Ping](message) {
+    [MessageType.Ping](/* message */) {
       this.componentManager.handlePing();
     }
   }

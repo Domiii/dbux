@@ -1,7 +1,6 @@
 {
-  "private": true,
-  "name": "dbux-babel-plugin",
-  "version": "0.0.1",
+  "name": "@dbux/babel-plugin",
+  "version": "0.1.0",
   "description": "",
   "author": "Domi",
   "module": "dist/index.js",
@@ -20,15 +19,18 @@
     "__archive_prepublish": "npm run clean && npm run build"
   },
   "dependencies": {
-    "dbux-common": "*"
-  },
-  "devDependencies": {
     "@babel/code-frame": "^7.8.3",
+    "@babel/core": "^7.8.3",
     "@babel/generator": "^7.8.3",
     "@babel/parser": "7.8.3",
+    "@babel/register": "^7.8.3",
     "@babel/template": "^7.8.3",
     "@babel/traverse": "^7.8.3",
     "@babel/types": "^7.8.3",
+    "@dbux/common": "^0.1.0",
+    "lodash": "4.17.19"
+  },
+  "devDependencies": {
     "babel-loader": "^8.0.6",
     "babel-plugin-tester": "^8.0.1"
   },
@@ -41,9 +43,5 @@
     "tracing",
     "babel-plugin"
   ],
-  "peerDependencies": {
-    "lodash": "*"
-  },
-  "_moduleAliases": {
-  }
+  "_moduleAliases": {}
 }

@@ -1,15 +1,23 @@
 
-import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
+import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
-export default class ContextsByStaticContextIndex extends CollectionIndex<ExecutionContext> {
+/**
+ * @extends {CollectionIndex<ExecutionContext>}
+ */
+export default class ContextsByStaticContextIndex extends CollectionIndex {
   constructor() {
     super('executionContexts', 'byStaticContext');
   }
 
-  makeKey(dp: DataProvider, context: ExecutionContext) {
+  /**
+   * 
+   * @param {DataProvider} dp 
+   * @param {ExecutionContext} context 
+   */
+  makeKey(dp, context) {
     return context.staticContextId;
   }
 }

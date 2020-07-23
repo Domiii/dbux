@@ -10,7 +10,7 @@ export default class ObjectPool {
     return new this._Type();
   }
 
-  release(obj) {
+  release(/* obj */) {
     // TODO
   }
 }

@@ -1,12 +1,36 @@
-import Loc from "./Loc";
+/** @typedef {import('../Loc').default} Loc */
 
 export default class StaticContext {
-  staticContextType: number; // {StaticContextType}
-  name: string;
-  displayName: string;
-  isInterruptable: boolean;
-  staticId: number;
-  parentId: number;
-  programId: number;
-  loc: Loc;
+  /**
+   * @type {number}
+   */
+  staticContextType; // {StaticContextType}
+  /**
+   * @type {string}
+   */
+  name;
+  /**
+   * @type {string}
+   */
+  displayName;
+  /**
+   * @type {bool}
+   */
+  isInterruptable;
+  /**
+   * @type {number}
+   */
+  staticId;
+  /**
+   * @type {number}
+   */
+  parentId;
+  /**
+   * @type {number}
+   */
+  programId;
+  /**
+   * @type {Loc}
+   */
+  loc;
 }

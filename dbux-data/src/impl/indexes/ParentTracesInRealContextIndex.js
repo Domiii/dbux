@@ -1,11 +1,12 @@
-import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
-import { isVirtualContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
-import Trace from 'dbux-common/src/core/data/Trace';
+import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import { isVirtualContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
+import Trace from '@dbux/common/src/core/data/Trace';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
-export default class ParentTracesInRealContextIndex extends CollectionIndex<Trace> {
+/** @extends {CollectionIndex<Trace>} */
+export default class ParentTracesInRealContextIndex extends CollectionIndex {
   constructor() {
     super('traces', 'parentsByRealContext', false);
     this.addedTraces = new Set();
@@ -24,7 +25,10 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex<Trac
      */
     collections: {
       executionContexts: {
-        added: (contexts: ExecutionContext[]) => {
+        /**
+         * @param {ExecutionContext[]} contexts
+         */
+        added: (contexts) => {
           for (const context of contexts) {
             const { parentTraceId, contextType } = context;
             // skip parent trace of virtualContext
@@ -41,7 +45,11 @@ export default class ParentTracesInRealContextIndex extends CollectionIndex<Trac
     }
   }
 
-  makeKey(dp: DataProvider, { traceId }: Trace) {
+  /** 
+   * @param {DataProvider} dp
+   * @param {Trace} { traceId }
+   */
+  makeKey(dp, { traceId }) {
     return dp.util.getRealContextId(traceId);
   }
 }

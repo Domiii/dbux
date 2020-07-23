@@ -1,15 +1,15 @@
 import path from 'path';
 import pull from 'lodash/pull';
-import { newLogger } from 'dbux-common/src/log/logger';
-import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
-import Trace from 'dbux-common/src/core/data/Trace';
-import ValueRef from 'dbux-common/src/core/data/ValueRef';
-import StaticProgramContext from 'dbux-common/src/core/data/StaticProgramContext';
-import StaticContext from 'dbux-common/src/core/data/StaticContext';
-import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
-import ValueTypeCategory, { ValuePruneState } from 'dbux-common/src/core/constants/ValueTypeCategory';
-import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from 'dbux-common/src/core/constants/TraceType';
-import { hasCallId, isCallResult, isCallExpressionTrace } from 'dbux-common/src/core/constants/traceCategorization';
+import { newLogger } from '@dbux/common/src/log/logger';
+import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import Trace from '@dbux/common/src/core/data/Trace';
+import ValueRef from '@dbux/common/src/core/data/ValueRef';
+import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContext';
+import StaticContext from '@dbux/common/src/core/data/StaticContext';
+import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
+import ValueTypeCategory, { ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
+import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
 
 import Collection from './Collection';
 import Queries from './queries/Queries';
@@ -17,6 +17,7 @@ import Indexes from './indexes/Indexes';
 
 import DataProviderUtil from './dataProviderUtil';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
 function errorWrapMethod(obj, methodName, ...args) {
@@ -30,7 +31,10 @@ function errorWrapMethod(obj, methodName, ...args) {
   }
 }
 
-class StaticProgramContextCollection extends Collection<StaticProgramContext> {
+/**
+ * @extends {Collection<StaticProgramContext>}
+ */
+class StaticProgramContextCollection extends Collection {
   constructor(dp) {
     super('staticProgramContexts', dp);
   }
@@ -48,19 +52,28 @@ class StaticProgramContextCollection extends Collection<StaticProgramContext> {
   }
 }
 
-class StaticContextCollection extends Collection<StaticContext> {
+/**
+ * @extends {Collection<StaticContext>}
+ */
+class StaticContextCollection extends Collection {
   constructor(dp) {
     super('staticContexts', dp);
   }
 }
 
-class StaticTraceCollection extends Collection<StaticTrace> {
+/**
+ * @extends {Collection<StaticTrace>}
+ */
+class StaticTraceCollection extends Collection {
   constructor(dp) {
     super('staticTraces', dp);
   }
 }
 
-class ExecutionContextCollection extends Collection<ExecutionContext> {
+/**
+ * @extends {Collection<ExecutionContext>}
+ */
+class ExecutionContextCollection extends Collection {
   constructor(dp) {
     super('executionContexts', dp);
   }
@@ -97,7 +110,10 @@ class ExecutionContextCollection extends Collection<ExecutionContext> {
 }
 
 
-class TraceCollection extends Collection<Trace> {
+/**
+ * @extends {Collection<Trace>}
+ */
+class TraceCollection extends Collection {
   constructor(dp) {
     super('traces', dp);
   }
@@ -113,8 +129,9 @@ class TraceCollection extends Collection<Trace> {
 
   /**
    * Post processing of trace data
+   * @param {Trace[]} traces
    */
-  postAdd(traces: Trace[]) {
+  postAdd(traces) {
     // build dynamic call expression tree
     errorWrapMethod(this, 'resolveCallIds', traces);
     errorWrapMethod(this, 'resolveErrorTraces', traces);
@@ -122,8 +139,9 @@ class TraceCollection extends Collection<Trace> {
 
   /**
    * TODO: This will not work with asynchronous call expressions (which have `await` arguments).
+   * @param {Trace[]} traces
    */
-  resolveCallIds(traces: Trace[]) {
+  resolveCallIds(traces) {
     const beforeCalls = [];
     for (const trace of traces) {
       const { traceId, staticTraceId } = trace;
@@ -153,6 +171,8 @@ class TraceCollection extends Collection<Trace> {
               // it's just not there...
               beforeCalls.push(beforeCall);   // something is wrong -> push it back
               const stackInfo = beforeCalls.map(t => `#${t.staticTraceId} ${this.dp.collections.staticTraces.getById(t.staticTraceId)?.displayName || '(no staticTrace found)'}`);
+
+              // eslint-disable-next-line max-len
               logError(`Could not resolve resultCallId for trace "#${staticTrace.staticTraceId} ${staticTrace.displayName}" (traceId ${traceId}). resultCallId ${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall.staticTraceId}. BCE Stack:\n  ${stackInfo.join('\n  ')}`);
 
               beforeCall = null;
@@ -169,6 +189,7 @@ class TraceCollection extends Collection<Trace> {
           // call args: reference their call by `callId`
           const beforeCall = beforeCalls[beforeCalls.length - 1];
           if (staticTrace.callId !== beforeCall?.staticTraceId) {
+            // eslint-disable-next-line max-len
             logError('[callId]', beforeCall?.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall, `]. Stack staticTraceIds: ${beforeCalls.map(t => t.staticTraceId)}`);
           }
           else {
@@ -236,7 +257,10 @@ class TraceCollection extends Collection<Trace> {
   }
 }
 
-class ValueCollection extends Collection<ValueRef> {
+/**
+ * @extends {Collection<ValueRef>}
+ */
+class ValueCollection extends Collection {
   _visited = new Set();
 
   constructor(dp) {
@@ -345,7 +369,11 @@ export default class DataProvider {
    */
   _dataEventListeners = {};
 
-  versions: number[] = [];
+  /**
+   * @type {number[]}
+   */
+  versions = [];
+
   /**
    * @type {StaticProgramContext}
    */
@@ -395,9 +423,11 @@ export default class DataProvider {
   /**
    * Add a data event listener to given collection.
    * 
+   * @param {string} collectionName
+   * @param {([]) => void} cb
    * @returns {function} Unsubscribe function - Execute to cancel this listener.
    */
-  onData(collectionName: string, cb: ([]) => void) {
+  onData(collectionName, cb) {
     const listeners = this._dataEventListeners[collectionName] =
       (this._dataEventListeners[collectionName] || []);
     listeners.push(cb);
@@ -420,12 +450,12 @@ export default class DataProvider {
       listeners.push(cb);
     }
 
-    const unsubscribe = ((cfg) => {
+    const unsubscribe = (() => {
       for (const collectionName in cfg.collections) {
         const cb = cfg.collections[collectionName];
         pull(this._dataEventListeners[collectionName], cb);
       }
-    }).bind(this, cfg);
+    });
     return unsubscribe;
   }
 
@@ -438,8 +468,9 @@ export default class DataProvider {
 
   /**
    * Add given data (of different collections) to this `DataProvier`
+   * @param {{ [string]: any[] }} allData
    */
-  addData(allData): { [string]: any[] } {
+  addData(allData) {
     // sanity checks
     if (!allData || allData.constructor.name !== 'Object') {
       logError('invalid data must be (but is not) object -', JSON.stringify(allData).substring(0, 500));
@@ -544,7 +575,13 @@ export default class DataProvider {
     }
   }
 
-  _notifyData(collectionName: string, data: [], allListeners) {
+  /**
+   * 
+   * @param {string} collectionName 
+   * @param {[]} data 
+   * @param {*} allListeners 
+   */
+  _notifyData(collectionName, data, allListeners) {
     const listeners = allListeners[collectionName];
     if (listeners) {
       listeners.forEach((cb) => {

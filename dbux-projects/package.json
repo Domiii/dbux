@@ -1,21 +1,20 @@
 {
-  "name": "dbux-projects",
-  "version": "1.0.0",
+  "name": "@dbux/projects",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "dbux-cli": "*",
-    "dbux-common": "*",
+    "@dbux/cli": "^0.1.0",
+    "@dbux/common": "^0.1.0",
+    "lodash": "^4.17.19",
+    "nanoevents": "^2.0.0",
     "shelljs": "*",
     "tree-kill": "^1.2.2"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "shelljs": "^0.8.3"
-  }
+  "author": "Domi",
+  "license": "Apache-2.0"
 }

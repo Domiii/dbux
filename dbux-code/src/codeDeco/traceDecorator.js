@@ -1,12 +1,11 @@
-import { window } from 'vscode';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
-import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import groupBy from 'lodash/groupBy';
 import { getTraceDecoName, getDecoConfigByName, getAllTraceDecoNames } from './traceDecoConfig';
 import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceDecorator');
 
 
@@ -18,9 +17,10 @@ const { log, debug, warn, error: logError } = newLogger('traceDecorator');
  * Groups traces by decoName, as well as staticTraceId.
  * 
  * TODO: improve performance to work in long loops
+ * @param {StaticTrace[]} staticTraces
  */
 function groupTracesByDecoNameAndStaticTrace(application,
-  staticTraces: StaticTrace[], allDecosByName) {
+  staticTraces, allDecosByName) {
   const { dataProvider } = application;
   for (const staticTrace of staticTraces) {
     const {
@@ -102,7 +102,7 @@ export function clearTraceDecorations(editor) {
   }
 }
 
-function createTraceGroupDecoration(dataProvider, decoName, staticTrace, traces) {
+function createTraceGroupDecoration(dataProvider, decoName, staticTrace /*, traces */) {
   const {
     staticTraceId,
     loc

@@ -1,4 +1,4 @@
-import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
+import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 import StaticCollection from './StaticCollection';
 
 export default class StaticContextCollection extends StaticCollection {

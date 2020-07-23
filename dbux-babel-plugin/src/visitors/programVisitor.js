@@ -1,15 +1,18 @@
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { buildSource, buildWrapTryFinally } from '../helpers/builders';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 import { replaceProgramBody } from '../helpers/program';
 import injectDbuxState from '../dbuxState';
 import { buildTraceVisitors as traceVisitors } from './traceVisitors';
 import { mergeVisitors } from '../helpers/visitorHelpers';
-import { logInternalError } from '../log/logger';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { buildDbuxInit } from '../data/staticData';
 import { injectContextEndTrace, buildContextEndTrace } from '../helpers/contextHelper';
 import nameVisitors from './nameVisitors';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('programVisitor');
 
 
 // ###########################################################################
@@ -26,7 +29,7 @@ function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
   const contextIdName = genContextIdName(path);
 
   return buildSource(`
-  const ${dbuxRuntime} = require('dbux-runtime');
+  const ${dbuxRuntime} = require('@dbux/runtime');
   const ${dbux} = ${dbuxInit}(${dbuxRuntime});
   const ${contextIdName} = ${dbux}.getProgramContextId();
   `);
@@ -131,7 +134,7 @@ function traverse(path, state, visitors) {
     // hackfix: if we don't re-throw here, babel swallows the error for some reason
     // console.error(err);
     // throw new Error('traversal failed');
-    logInternalError('traversal failed');
+    logError('traversal failed');
     throw err;
   }
 }

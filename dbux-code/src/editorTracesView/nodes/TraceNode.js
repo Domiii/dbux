@@ -1,12 +1,13 @@
-import { getTraceCreatedAt, makeTraceLabel } from 'dbux-data/src/helpers/traceLabels';
-import traceSelection from 'dbux-data/src/traceSelection';
+import { getTraceCreatedAt, makeTraceLabel } from '@dbux/data/src/helpers/traceLabels';
+import traceSelection from '@dbux/data/src/traceSelection';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 export default class TraceNode extends BaseTreeViewNode {
   /**
    * @override
+   * @param {Trace} trace
    */
-  static makeLabel(trace: Trace) {
+  static makeLabel(trace) {
     return makeTraceLabel(trace);
   }
 

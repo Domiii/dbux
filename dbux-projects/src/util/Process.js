@@ -2,10 +2,11 @@ import path from 'path';
 import isString from 'lodash/isString';
 import kill from 'tree-kill';
 import sh from 'shelljs';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
-import { newLogger } from 'dbux-common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { newLogger } from '@dbux/common/src/log/logger';
 import spawn from 'child_process';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Process');
 
 function cleanOutput(chunk) {
@@ -108,7 +109,7 @@ export default class Process {
     }
 
     return this._promise = new Promise((resolve, reject) => {
-      process.on('exit', (code, signal) => {
+      process.on('exit', (code/* , signal */) => {
         // logger.debug(`process exit, code=${code}, signal=${signal}`);
         if (checkDone()) { return; }
         

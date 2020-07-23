@@ -213,17 +213,17 @@ class ContextNode extends ClientComponentEndpoint {
       }
     },
     staticContextHighlightBtn: {
-      click(evt) {
+      click(/* evt */) {
         this.remote.toggleStaticContextHighlight();
       }
     },
     prevContextBtn: {
-      click(evt) {
+      click(/* evt */) {
         this.remote.selectPreviousContextByStaticContext();
       }
     },
     nextContextBtn: {
-      click(evt) {
+      click(/* evt */) {
         this.remote.selectNextContextByStaticContext();
       }
     }

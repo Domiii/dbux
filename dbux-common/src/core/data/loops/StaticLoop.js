@@ -1,10 +1,22 @@
-import Loc from "../Loc";
+/** @typedef {import('../Loc').default} Loc */
 
 export default class StaticLoop {
-  staticLoopId: number;
-  staticContextId: number;
-  // type: number;
-  loc: Loc;
+  /**
+   * @type {number}
+   */
+  staticLoopId;
+  /**
+   * @type {number}
+   */
+  staticContextId;
+  
+  /**
+   * @type {Loc}
+   */
+  loc;
  
-  displayName: string;
+  /**
+   * @type {string}
+   */
+  displayName;
 }

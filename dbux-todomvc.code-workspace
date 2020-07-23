@@ -9,6 +9,10 @@
 		},
 		{
 			"path": "projects\\express"
+		},
+		{
+			"name": "eslint",
+			"path": "projects\\eslint"
 		}
 	],
 	"settings": {}

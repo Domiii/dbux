@@ -1,7 +1,6 @@
 {
-  "private": true,
-  "name": "dbux-cli",
-  "version": "1.0.0",
+  "name": "@dbux/cli",
+  "version": "0.1.0",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,17 +13,27 @@
   },
   "main": "./src/index.js",
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "prettier": "1.19.1"
-  },
+  "author": "Domi",
+  "license": "Apache-2.0",
   "dependencies": {
-    "module-alias": "^2.2.2"
-  },
-  "peerDependencies": {
-    "dbux-common": "*",
-    "yargs": "*",
-    "shelljs": "*"
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/node": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-decorators": "^7.8.3",
+    "@babel/plugin-proposal-function-bind": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-syntax-export-default-from": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/register": "^7.8.3",
+    "@dbux/babel-plugin": "^0.1.0",
+    "@dbux/common": "^0.1.0",
+    "@dbux/runtime": "^0.1.0",
+    "module-alias": "^2.2.2",
+    "prettier": "^2.0.5",
+    "shelljs": "*",
+    "yargs": "*"
   }
 }

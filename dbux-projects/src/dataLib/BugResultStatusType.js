@@ -1,5 +1,5 @@
 
-import Enum from 'dbux-common/src/util/Enum';
+import Enum from '@dbux/common/src/util/Enum';
 
 const bugResultStatusType = new Enum({
   None: 1,

@@ -1,7 +1,7 @@
 import path from 'path';
 import sh from 'shelljs';
-import Project from 'dbux-projects/src/projectLib/Project';
-import { buildMochaRunBugCommand as buildMochaCommand } from 'dbux-projects/src/util/mochaUtil';
+import Project from '@dbux/projects/src/projectLib/Project';
+import { buildMochaRunBugCommand as buildMochaCommand } from '@dbux/projects/src/util/mochaUtil';
 
 
 export default class EslintProject extends Project {

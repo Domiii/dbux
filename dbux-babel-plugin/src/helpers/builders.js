@@ -6,21 +6,21 @@ import { parse } from '@babel/parser';
 import { codeFrameColumns } from "@babel/code-frame";
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
-import { template } from '@babel/core';
+// import { template } from '@babel/core';
 
 export function buildNamedExport(ids) {
-  return t.exportNamedDeclaration(null, ids.map(id => t.exportSpecifier(id, id)))
+  return t.exportNamedDeclaration(null, ids.map(id => t.exportSpecifier(id, id)));
 }
 
 
-const errHandlerTemplate = template(`
-console.error(err);
-throw err;
-`);
+// const errHandlerTemplate = template(`
+// console.error(err);
+// throw err;
+// `);
 
 export function buildTryFinally(tryNodes, finallyNodes) {
   if (tryNodes.length === 1 && t.isBlockStatement(tryNodes[0])) {
-    tryNodes = tryNodes[0];
+    [tryNodes] = tryNodes; // same as: `tryNodes = tryNodes[0]`
   }
   else {
     tryNodes = t.blockStatement(tryNodes);
@@ -41,7 +41,7 @@ export function buildBlock(statements) {
 
 export function buildVarDecl(ids) {
   const kind = "let";
-  const declarations = ids.map((id, i) => {
+  const declarations = ids.map((id) => {
     return t.variableDeclarator(id, null);
   });
   return t.variableDeclaration(kind, declarations);
