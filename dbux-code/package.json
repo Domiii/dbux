@@ -1,5 +1,6 @@
 {
 	"name": "dbux-code",
+	"private": true,
 	"displayName": "Dbux ALPHA",
 	"version": "0.1.1",
 	"publisher": "Domi",

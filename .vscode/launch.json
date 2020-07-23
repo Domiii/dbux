@@ -39,7 +39,7 @@
 				"${file}"
 			],
 			"protocol": "inspector",
-			"trace": true,
+			// "trace": true,
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
@@ -252,6 +252,30 @@
 				"--extensionDevelopmentPath=${workspaceFolder}/dbux-code",
 				"--extensionTestsPath=${workspaceFolder}/dbux-code/test/suite/index"
 			]
-		}
+		},
+		{
+			"name": "__dbux-publish",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"runtimeArgs": [
+				"--stack-trace-limit=1000",
+				"--nolazy",
+			],
+			"sourceMaps": true,
+			"restart": true,
+			"program": "${workspaceFolder}/scripts/dbux-publish.js",
+			"args": [
+			],
+			"protocol": "inspector",
+			// "trace": true,
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"outFiles": [
+				"${workspaceFolder}/dbux-babel-plugin/dist/**/*.js",
+				"${workspaceFolder}/dbux-runtime/dist/**/*.js"
+			]
+		},
 	]
 }

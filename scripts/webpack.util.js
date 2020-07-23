@@ -19,14 +19,19 @@ function makeAbsolutePaths(root, relativePaths) {
 // package.json
 // ###########################################################################
 
-function readPackageJsonFile(fpath) {
+function readJsonFile(fpath) {
   const content = fs.readFileSync(fpath);
   return JSON.parse(content);
 }
 
 function readPackageJson(folder) {
   const packageJsonPath = path.join(folder, 'package.json');
-  return readPackageJsonFile(packageJsonPath);
+  return readJsonFile(packageJsonPath);
+}
+
+function readLernaJson() {
+  const lernaJsonPath = path.join(__dirname, '..', 'lerna.json');
+  return readJsonFile(lernaJsonPath);
 }
 
 function readPackageJsonName(folder) {
@@ -104,6 +109,18 @@ function makeResolve(root, relativePaths = []) {
   };
 }
 
+// ###########################################################################
+// getDbuxVersion
+// ###########################################################################
+
+function getDbuxVersion() {
+  const lerna = readLernaJson();
+  if (!lerna.version) {
+    throw new Error('lerna.json does not have a version.');
+  }
+  return lerna.version;
+}
+
 
 // ###########################################################################
 // 
@@ -116,5 +133,6 @@ module.exports = {
 
   readPackageJson,
   makeResolvePackageJson,
-  getDependenciesPackageJson: readPackageJsonDependencies
+  getDependenciesPackageJson: readPackageJsonDependencies,
+  getDbuxVersion
 };
