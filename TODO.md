@@ -27,6 +27,7 @@
 
 ## TODO (other)
 * Deployment
+   * -> `npm run prepublishOnly` fails
    * `Process.exec` still not working correctly -> Stays open indefinitely if process does not require input -> hook up to `resume` event
    * `node_modules` links are not updated after version bump?
       * => `Couldn't find any versions for "@dbux/cli" that matches "^0.1.3"`
