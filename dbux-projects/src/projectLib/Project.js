@@ -471,7 +471,7 @@ export default class Project {
       return null;
     }
 
-    return this.execCaptureOut(`git describe --tags`);
+    return (await this.execCaptureOut(`git describe --tags`)).trim();
   }
 
   // ###########################################################################

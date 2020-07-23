@@ -74,7 +74,7 @@ function goToMaster() {
     log('Switching to master');
     run('git checkout master');
     if (getBranchName() !== 'master') {
-      throw new Error('Could not switch to master');
+      throw new Error(`Could not switch to master - current branch is "${getBranchName()}"`);
     }
   }
 }
@@ -115,7 +115,7 @@ function bumpVersion() {
 // ###########################################################################
 
 function getBranchName() {
-  return run('git branch --show-current');
+  return run('git branch --show-current').stdout.trim();
 }
 
 // ###########################################################################
