@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 const path = require('path');
 const { makeResolve, makeAbsolutePaths } = require('../scripts/webpack.util');
 
@@ -8,7 +10,7 @@ const MonoRoot = path.resolve(__dirname, '..');
 
 // TODO: Do not build to remote path. Copy on deploy instead.
 const outputFolder = path.join(MonoRoot, 'dbux-code', 'resources', 'dist');
-const buildMode = 'development';
+const mode = 'development';
 //const buildMode = 'production';
 
 const dependencies = [
@@ -94,7 +96,10 @@ const webpackPlugins = [
 ];
 
 module.exports = {
-  mode: buildMode,
+  mode,
+  env: {
+    NODE_ENV: mode
+  },
   target: 'web',
 
   // see https://stackoverflow.com/questions/54147824/can-the-vs-code-webview-developer-tools-deal-with-source-maps

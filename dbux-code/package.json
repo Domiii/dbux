@@ -529,6 +529,7 @@
 		"vsce": "^1.77.0",
 		"vscode-test": "^1.2.2",
 		"webpack-bundle-analyzer": "^3.8.0",
+		"webpack": "^4.41.5",
 		"webpack-cli": "^3.3.10"
 	},
 	"dependencies": {

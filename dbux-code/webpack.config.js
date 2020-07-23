@@ -1,6 +1,7 @@
 const path = require('path');
 const process = require('process');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 const { makeResolve, makeAbsolutePaths } = require('../scripts/webpack.util');
 
@@ -13,6 +14,7 @@ const MonoRoot = path.resolve(__dirname, '..');
 const outputFolderName = 'dist';
 const outFile = 'bundle.js';
 
+const mode = process.env.MODE || 'development';
 
 const webpackPlugins = [
   new CopyPlugin({
@@ -22,6 +24,9 @@ const webpackPlugins = [
         to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'projects')
       }
     ]
+  }),
+  new webpack.EnvironmentPlugin({
+    NODE_ENV: mode
   })
   // new BundleAnalyzerPlugin()
 ];
@@ -58,7 +63,7 @@ const rules = [
 
 module.exports = {
   // https://github.com/webpack/webpack/issues/2145
-  mode: process.env.MODE || 'development',
+  mode,
   // devtool: 'inline-module-source-map',
   devtool: 'source-map',
   //devtool: 'inline-source-map',

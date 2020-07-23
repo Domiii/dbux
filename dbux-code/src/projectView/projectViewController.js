@@ -37,33 +37,37 @@ export function showOutputChannel() {
 
 let controller;
 
-const cfg = {
-  // TODO: fix these paths (`__dirname` is overwritten by webpack and points to the `dist` dir; `__filename` points to `bundle.js`)
-  projectsRoot: path.join(__dirname, '../../projects')
-};
-const externals = {
-  editor: {
-    async openFile(fpath) {
-      // await exec(`code ${fpath}`, logger, { silent: false }, true);
-      return showTextDocument(fpath);
-    },
-    async openFolder(fpath) {
-      // TODO: use vscode API to add to workspace instead?
-      await exec(`code --add ${fpath}`, logger, { silent: false }, true);
-    }
-  },
-  storage: {
-    get: storageGet,
-    set: storageSet,
-  },
-  execInTerminal,
-  resources: {
-    getResourcePath
-  }
-};
 
 class ProjectViewController {
   constructor(context) {
+    // ########################################
+    // cfg + externals
+    // ########################################
+    const cfg = {
+      // projectsRoot: getResourcePath('..', ...(process.env.NODE_ENV === 'development' ? ['..', '..'] : []), 'dbux_projects')
+      projectsRoot: getResourcePath('..', ...(process.env.NODE_ENV === 'development' ? ['..'] : []), 'projects')
+    };
+    const externals = {
+      editor: {
+        async openFile(fpath) {
+          // await exec(`code ${fpath}`, logger, { silent: false }, true);
+          return showTextDocument(fpath);
+        },
+        async openFolder(fpath) {
+          // TODO: use vscode API to add to workspace instead?
+          await exec(`code --add ${fpath}`, logger, { silent: false }, true);
+        }
+      },
+      storage: {
+        get: storageGet,
+        set: storageSet,
+      },
+      execInTerminal,
+      resources: {
+        getResourcePath
+      }
+    };
+
     // ########################################
     //  init projectManager
     // ########################################

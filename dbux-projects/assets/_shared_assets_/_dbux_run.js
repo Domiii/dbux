@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 /**
  * Process wrapper for running things in the VSCode terminal and communicating
  * process information back to caller extension.

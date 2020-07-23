@@ -209,7 +209,7 @@ export default class SerialTaskQueue {
     const version = this._version;
 
     try {
-      while (!this.isEmpty()) {
+      while (!this.isEmpty() && this._version === version) {
         // make sure, higher priority items come before lower piority items
         this._queue.sort((a, b) => {
           // hackfix

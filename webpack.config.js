@@ -7,6 +7,7 @@ const process = require('process');
 const fs = require('fs');
 const mergeWith = require('lodash/mergeWith');
 const isArray = require('lodash/isArray');
+const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const {
   getDependenciesPackageJson,
@@ -19,14 +20,15 @@ process.env.BABEL_DISABLE_CACHE = 1;
 const outputFolderName = 'dist';
 const outFile = 'bundle.js';
 const defaultEntryPoint = 'src/index.js';
-const buildMode = 'development';
-//const buildMode = 'production';
 
 // ###########################################################################
 // config
 // ###########################################################################
 
 const MonoRoot = path.resolve(__dirname);
+
+const mode = 'development';
+//const mode = 'production';
 
 const targets = [
   // "dbux-cli",
@@ -68,7 +70,11 @@ function mergeWithArrays(dst, src) {
 // console.warn(resol);
 
 
-const webpackPlugins = [];
+const webpackPlugins = [
+  new webpack.EnvironmentPlugin({
+    NODE_ENV: mode
+  })
+];
 
 // const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, defaultEntryPoint))]));
 
@@ -118,7 +124,7 @@ function buildConfig([target, configOverrides]) {
       poll: true,
       ignored: /node_modules/
     },
-    mode: buildMode,
+    mode,
 
     // https://github.com/webpack/webpack/issues/2145
     // devtool: 'inline-module-source-map',
@@ -196,7 +202,7 @@ function buildConfig([target, configOverrides]) {
   };
 
   cfg = mergeWithArrays(cfg, configOverrides);
-  
+
   return cfg;
 }
 

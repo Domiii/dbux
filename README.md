@@ -10,6 +10,14 @@ Here is a (very very early, read: crude) 1min demo video of just a small subset 
    <img src="http://img.youtube.com/vi/VAFcj75-vSs/0.jpg">
 </a>
 
+# Usage
+
+1. Install Dbux from the VSCode Marketplace
+1. > Developer: Reload Window (or just restart VSCode)
+1. Press the Dbux icon on the left
+1. Select "express" in the Projects view
+1. Select your first bug and enjoy!
+
 
 # Development + Contributing: Getting Started
 
@@ -28,7 +36,7 @@ cd dbux
 code .
 npm run dbux-install
 
-# if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
+# if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-reinstall`
 ```
 
 
@@ -39,13 +47,16 @@ code . # open project in vscode
 npm start # start webpack build of all projects in watch mode
 ```
 
-## Usage
+## Advanced Usage
 
-1. go to your debug tab, select `dbux-code` and press F5 (runs the vscode extension in debug mode)
+If you checked out the monorepo directly, it comes with some extra features:
+
+1. go to your debug tab, select the `dbux-code` configuration and press F5 (runs the vscode extension in debug mode)
 1. Inside of the new window, you can:
    * `dbux-run # instruments + executes currently opened file`
    * test on one of the pre-configured projects
    * use `dbux-cli` to setup + run your own project
+   * and more...
 
 ## Analyze with Python Notebooks
 

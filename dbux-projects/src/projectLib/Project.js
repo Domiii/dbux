@@ -225,6 +225,8 @@ export default class Project {
       sh.rm('-rf', absRmFiles);
     }
 
+    await this.manager.installDependencies();
+
     // copy assets
     await this.installAssets();
 
@@ -341,10 +343,14 @@ export default class Project {
 
   async installDbuxCli() {
     // await exec('pwd', this.logger);
-    const dbuxClis = `@dbux/cli`;
+    const dbuxDeps = [
+      '@dbux/cli',
+      '@dbux/babel-plugin',
+      '@dbux/runtime'
+    ];
 
     // TODO: select `npm` or `yarn` based on packageManager setting (but requires change in command)
-    await this.exec(`yarn add --dev ${dbuxClis}`, this.logger);
+    await this.exec(`yarn add --dev ${dbuxDeps}`, this.logger);
   }
 
   // ###########################################################################
@@ -360,15 +366,6 @@ export default class Project {
 
     // copy shared assets (NOTE: doesn't override individual assets)
     await this.copyAssetFolder(SharedAssetFolder);
-
-    if (process.env.NODE_ENV === 'production') {
-      // _dbux_run.js requires socket.io-client -> install in projects/ root
-      await this.runner._exec(this, `yarn add socket.io-client@2.3.0`, {
-        processOptions: {
-          cwd: this.projectsRoot
-        }
-      });
-    }
   }
 
   async copyAssetFolder(assetFolderName) {
