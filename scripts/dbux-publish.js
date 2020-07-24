@@ -9,11 +9,14 @@ const LineReader = require('./LineReader');
 // make sure, we can import dbux stuff without any problems
 require('../dbux-cli/bin/_dbux-register-self');
 
-// pretty log
+// Dbux built-in utilities
 require('../dbux-common/src/util/prettyLogs');
-
-// Process
+const { newLogger } = require('../dbux-projects/node_modules/@dbux/common/src/log/logger');
 const Process = require('../dbux-projects/src/util/Process').default;
+
+const logger = newLogger();
+const execCaptureOut = (cmd, options) => Process.execCaptureOut(cmd, options, logger);
+const exec = (cmd, options) => Process.exec(cmd, options, logger);
 
 const { log, debug, error: logError } = console;
 
@@ -69,7 +72,7 @@ async function yesno(q) {
 
 function run(command) {
   const cwd = path.resolve(path.join(__dirname, '..'));
-  debug(`${cwd}$ ${command}`);
+  debug(` ${cwd}$ ${command}`);
   const result = sh.exec(command, { cwd, silent: true });
   if (result.stdout) {
     debug(result.stdout);
@@ -125,7 +128,7 @@ async function bumpVersion() {
   });
 
   if (choice !== 'None') {
-    await Process.exec(`npx lerna version ${choice} --force-publish`);
+    await exec(`npx lerna version ${choice} --force-publish`);
   }
 }
 
@@ -150,15 +153,15 @@ async function main() {
   input = new LineReader();
   log('Preparing to publish...');
 
-  if (await Process.execCaptureOut('npm whoami') !== 'domiii') {
+  if (await execCaptureOut('npm whoami') !== 'domiii') {
     throw new Error('Not logged into NPM. Login first with: `npm login <user>`');
   }
 
-  if (!await Process.execCaptureOut('cd dbux-code && npx vsce ls-publishers')) {
+  if (!await execCaptureOut('cd dbux-code && npx vsce ls-publishers')) {
     throw new Error('Not logged in with VS Marketplace. Login first with: `cd dbux-code && npx vsce login dbux`');
   }
 
-  // await Process.exec(
+  // await exec(
   //   // 'sh -lc "echo hi ; read x; echo abc$x"',
   //   // 'sh -lc "sleep 1; echo hihi"',
   //   `python3 -c "'print(input())'"`,
@@ -182,25 +185,26 @@ async function main() {
     // NOTE: use this if cannot publish but versioning already happened - 'npx lerna publish from-package'
     publishCmd += ' from-package';
   }
-  await Process.exec(publishCmd);
+  await exec(publishCmd);
 
   // check package status on NPM
   if (await yesno('Check NPM packages online?')) {
     await open('https://www.npmjs.com/search?q=dbux');
   }
 
+  // check organization status on dev.azure
   if (await yesno('Check VSCode Marketplace backend?')) {
     await open('https://dev.azure.com/dbux');
   }
 
   // after version bump, things are not linked up correctly anymore
-  await Process.exec('npx lerna bootstrap --force-local && npx lerna link --force-local');
+  await exec('npx lerna bootstrap --force-local && npx lerna link --force-local');
 
   // // make sure dbux-code is ready
-  // await Process.exec('cd dbux-code && yarn list --prod --json');
+  // await exec('cd dbux-code && yarn list --prod --json');
 
   // publish dbux-code to VSCode marketplace (already built)
-  await Process.exec('npm run code:publish:no-build');
+  await exec('npm run code:publish:no-build');
 
   if (await yesno('Check out extension on Marketplace?')) {
     await open('https://marketplace.visualstudio.com/manage/publishers/Domi');
