@@ -1,53 +1,16 @@
 
 
 
-
-
-
-
-
-
-
-
-## dbux-practice
-
-* user interaction log
-* backend
-* bug difficulty classification
-* hint system + more relevant information
-
-
-
-
-
-
-
-
-
-
 ## TODO (other)
-* Deployment
-   * `Process.exec` still not working correctly -> Stays open indefinitely if process does not require input -> hook up to `resume` event
-   * fix `dbux-project/assets` resource path
-   * fix: don't try to start server on every VSCode instance
-* callId problem: ternary expression is not instrumented as argument (express#1)
 * core instrumentation bugs
+   * callId problem: ternary expression is not instrumented as argument (express#1)
    * assignments are traced twice, once with `ExpressionValue`, once with `ExpressionResult`
       * e.g. `req.params = layer.params;`
       * maybe has to do w/ `originalIsParent`?
    * trace function parameters
-* fix: "running" a bug smoothly
-   * stop running if `git checkout` failed
-      * NOTE: usually a failure is indicated by process `statusCode !== 0`
-      * currently
-   * don't `gitResetHard` every time we run a bug
-      * check if bug was already selected before doing the setup
-         * Problem: need to deal with patch files
-            * generate commits from patch files so we can reliably determine whether patch/commit was applied?
-      * always show changes to user and let them confirm before `gitResetHard`
-      * allow saving/submitting own changes for bugs
-         * remember bug progress
-   * fix: allow for re-runninging "run.js" bug command from terminal
+* Deployment
+   * `Process.exec` can use some polishing. Properly pipe stdout + stderr?
+   * fix `dbux-project/assets` resource path
 * [dbux-projects]
    * allow setting application name via babel config
       * -> set application name for bugs correspondingly
@@ -57,7 +20,7 @@
    * if there is no test, let user fill out a checklist
 * fix graph theme + sync mode
    * better coloring schema, so we sync mode becomes a pleasant experience
-   * CONSIDER: always track in graph, but don't necessarily reveal?
+   * consider: ALWAYS track `traceSelection` in graph, but don't necessarily reveal (if graph is visible)
 * [dbux-practice] complete workflow design
    * bug spreadsheet
       * overall bug analysis
