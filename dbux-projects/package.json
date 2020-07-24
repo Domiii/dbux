@@ -1,24 +1,22 @@
 {
   "name": "@dbux/projects",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "",
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@dbux/cli": "^0.1.6",
-    "@dbux/common": "^0.1.6",
+    "@dbux/cli": "^0.1.7",
+    "@dbux/common": "^0.1.7",
     "lodash": "^4.17.19",
     "nanoevents": "^2.0.0",
     "shelljs": "*",
-    "tree-kill": "^1.2.2",
-    "string-argv": "^0.3.1"
+    "string-argv": "^0.3.1",
+    "tree-kill": "^1.2.2"
   },
   "keywords": [],
   "author": "Domi",
   "license": "Apache-2.0",
-  "devDependencies": {
-  },
   "gitHead": "75f118096ec610225ed37081b28db70b21e95ce3"
 }
