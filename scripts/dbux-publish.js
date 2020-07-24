@@ -55,7 +55,7 @@ async function menu(q, options) {
 }
 
 async function yesno(q) {
-  q = `${q} (y/N) > `;
+  q = `${q} (y/N)`;
   // process.stderr.write(q); // NOTE: write() won't flush and there is no way to force it...?
   log(q);
 
@@ -192,6 +192,12 @@ async function main() {
   if (await yesno('Check VSCode Marketplace backend?')) {
     await open('https://dev.azure.com/dbux');
   }
+
+  // after version bump, things are not linked up correctly anymore
+  await Process.exec('npx lerna bootstrap --force-local && npx lerna link --force-local');
+
+  // make sure dbux-code is ready
+  await Process.exec('cd dbux-code && yarn list --prod --json');
 
   // publish dbux-code to VSCode marketplace
   await Process.exec('npm run code:publish');
