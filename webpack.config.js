@@ -103,28 +103,31 @@ const output = {
 
 function buildConfig([target, configOverrides]) {
   const targetRoot = path.join(MonoRoot, target);
-  const src = path.join(targetRoot, 'src');
 
   const entry = {
     [target]: path.join(targetRoot, defaultEntryPoint)
   };
 
+  // find all dbux depencies in target, so we can resolve their `src` folders
   const dependencyPattern = /^@dbux\/.*/;
 
+  // look up dependency by package name
   const dependencyLinks = getDependenciesPackageJson(MonoRoot, target, dependencyPattern).
-    map(depName => path.join(MonoRoot, 'node_modules', depName));
+    map(depName => path.join(targetRoot, 'node_modules', depName));
 
-  const dependencies = dependencyLinks.map(link => fs.realpathSync(link).replace(MonoRoot, ''));
+  // look up folders of each dependency
+  const dependencyFolderNames = dependencyLinks.map(link => fs.realpathSync(link).replace(MonoRoot, ''));
+  dependencyFolderNames.push(target);
 
-  dependencies.push(target);
-  const resolve = makeResolve(MonoRoot, dependencies);
-  resolve.alias['@'] = src;
+  // resolve
+  const resolve = makeResolve(MonoRoot, dependencyFolderNames);
+  // resolve.alias['@'] = src;
 
-  const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencies);
+  // add `src` folders to babel-loader
+  const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyFolderNames);
   const includeSrcs = absoluteDependencies.map(r => path.join(r, 'src'));
 
   let cfg = {
-    watch: true,  // NOTE: webpack 4 ignores `watch` attribute on any config but the first
     watchOptions: {
       poll: true,
       ignored: /node_modules/

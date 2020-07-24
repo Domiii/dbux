@@ -1,4 +1,4 @@
-import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
+import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
 
 // ###########################################################################
 // animation computations

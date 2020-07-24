@@ -1,5 +1,5 @@
 import createPanzoom from '@dbux/panzoom';
-import { compileHtmlElement } from '@/util/domUtil';
+import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class GraphRoot extends ClientComponentEndpoint {

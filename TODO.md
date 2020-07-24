@@ -27,7 +27,6 @@
 
 ## TODO (other)
 * Deployment
-   * -> `npm run prepublishOnly` fails
    * `npx lerna publish --from-package`
    * `Process.exec` still not working correctly -> Stays open indefinitely if process does not require input -> hook up to `resume` event
    * `node_modules` links are not updated after version bump?

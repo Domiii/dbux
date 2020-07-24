@@ -1,6 +1,6 @@
-import { compileHtmlElement, decorateClasses } from '@/util/domUtil';
-import { isMouseEventPlatformModifierKey } from '@/util/keyUtil';
-import { getPlatformModifierKeyString } from '@/util/platformUtil';
+import { compileHtmlElement, decorateClasses } from '../util/domUtil';
+import { isMouseEventPlatformModifierKey } from '../util/keyUtil';
+import { getPlatformModifierKeyString } from '../util/platformUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 let choiceElm;

@@ -40,7 +40,7 @@
 	"scripts": {
 		"start": "npx npm-run-all -p build:watch build-graph:watch",
 		"build:clean": "sh scripts/dbux-run-all.sh \"rm -rf dist\"",
-		"build:watch": "npx nodemon --exec \"npx webpack --watch --mode development --watch\"",
+		"build:watch": "npx nodemon --exec \"npx webpack --mode development --watch\"",
 		"build:prod": "npm run build:clean && node ./node_modules/webpack/bin/webpack --mode production",
 		"prepublishOnly": "npm run build:prod",
 		"build-graph:watch": "cd dbux-graph-client && npm start",

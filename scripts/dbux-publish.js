@@ -149,11 +149,14 @@ async function main() {
 
   await pullDev();
 
+  // bump version and produce new git tag
   await bumpVersion();
 
   // publish dependencies to NPM
   // NOTE: will trigger build scripts before publishing
   await Process.exec('npx lerna publish');
+
+  // NOTE: use instead if cannot publish but versioning already happened - 'npx lerna publish from-package'
 
   // publish dbux-code to VSCode marketplace
   await Process.exec('npm run code:publish');

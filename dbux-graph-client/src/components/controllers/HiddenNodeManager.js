@@ -1,4 +1,4 @@
-import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
+import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
 
 export default class HiddenNodeManager extends ClientComponentEndpoint {
   /**

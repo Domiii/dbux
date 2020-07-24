@@ -1,5 +1,5 @@
-// import DOMWrapper from '@/DOMWrapper';
-// import { compileHtmlElement } from '@/util/domUtil';
+// import DOMWrapper from '..//DOMWrapper';
+// import { compileHtmlElement } from '../util/domUtil';
 
 // class WCExpandableNode extends HTMLElement {
 //   static get observedAttributes() {
