@@ -35,5 +35,6 @@
     "prettier": "^2.0.5",
     "shelljs": "*",
     "yargs": "*"
-  }
+  },
+  "gitHead": "75f118096ec610225ed37081b28db70b21e95ce3"
 }

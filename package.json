@@ -65,6 +65,7 @@
 		"code:reinstall": "lerna run package:install --scope=dbux-code",
 		"code:uninstall": "lerna run package:uninstall --scope=dbux-code",
 		"code:publish": "cd dbux-code && npm run package:publish",
+		"code:publish:no-build": "cd dbux-code && npm run package:publish:no-build",
 		"zzold_dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
 		"zzold_dbux-install-force": "yarn install --force",
 		"zzold_p1-install": "sh ./assets/projects/todomvc-vanilla-es6/install.sh",

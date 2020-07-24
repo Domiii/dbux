@@ -98,7 +98,7 @@ export default class Process {
 
     // spawn regular process
     const [commandName, ...commandArgs] = stringArgv(command);
-    console.warn(commandName, commandArgs, JSON.stringify(processOptions));
+    // console.warn(commandName, commandArgs, JSON.stringify(processOptions));
     this._process = spawn(commandName, commandArgs, processOptions);
     const newProcess = this._process;
 
@@ -251,7 +251,7 @@ export default class Process {
 
     await newProcess.start(cmd, logger || newLogger('exec'), options, input);
 
-    return newProcess.out;
+    return (newProcess.out || '').trim();
   }
 
   static async exec(command, options, logger) {

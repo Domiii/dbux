@@ -16,5 +16,6 @@
     "@dbux/graph-common": "^0.1.6",
     "lodash": "^4.17.19",
     "nanoevents": "^2.0.0"
-  }
+  },
+  "gitHead": "75f118096ec610225ed37081b28db70b21e95ce3"
 }

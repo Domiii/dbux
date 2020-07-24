@@ -513,10 +513,12 @@
 		"build:analyze": "npm run build:clean && mkdir dist && node ../node_modules/webpack/bin/webpack --mode production --profile --json > dist/stats.json && npx webpack-bundle-analyzer dist/stats.json",
 		"uninstallself": "code --uninstall-extension Domi.dbux-code",
 		"reinstallself": "npm run uninstallself --silent ; sh -c 'files=(*.vsix); code --install-extension \"${files[0]}\"' && echo 'DBUX installed. \"Reload Window\" to see it.",
-		"package": "npm run build:prod && echo 'Packaging...' && vsce package --yarn",
+		"package": "npm run build:prod && npm run package:no-build",
+		"package:no-build": "echo 'Packaging...' && vsce package --yarn",
 		"package:install": "npm run package && npm run reinstallself",
 		"package:analyze": "npm run package && rm -rf public && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
-		"package:publish": "npm run package && echo 'Publishing...' && vsce publish --yarn"
+		"package:publish": "npm run package && echo 'Publishing...' && vsce publish --yarn",
+		"package:publish:no-build": "npm run package:no-build && echo 'Publishing...' && vsce publish --yarn"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",

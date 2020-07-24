@@ -19,5 +19,6 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "string-argv": "^0.3.1"
-  }
+  },
+  "gitHead": "75f118096ec610225ed37081b28db70b21e95ce3"
 }

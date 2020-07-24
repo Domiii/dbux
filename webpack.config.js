@@ -235,7 +235,7 @@ module.exports = (env, argv) => {
     ...targets.map(buildConfig),
 
     // NOTE: you can have multiple configs per file (see https://stackoverflow.com/a/46825869)
-    ...otherWebpackConfigs
+    ...otherWebpackConfigs.map(cb => cb(env, argv))
     // dbuxCode
   ];
 };
