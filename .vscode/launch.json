@@ -264,7 +264,7 @@
 			],
 			"sourceMaps": true,
 			"restart": true,
-			"program": "${workspaceFolder}/scripts/dbux-publish.js",
+			"program": "${workspaceFolder}/scripts/publish.js",
 			"args": [
 			],
 			"protocol": "inspector",

@@ -119,6 +119,9 @@ async function pullDev() {
   }
 }
 
+/**
+ * Bump version and produce new git tag
+ */
 async function bumpVersion() {
   const [choice] = await menu('Version bump?', {
     1: ['None'],
@@ -136,6 +139,43 @@ async function bumpVersion() {
 //   // NOTE: this will be done automatically when publishing
 //   run(`npm run build:prod`);
 // }
+
+async function publishToNPM() {
+  // publish dependencies to NPM
+  // NOTE: will trigger build scripts before publishing
+  log('Publishing to NPM...');
+  let publishCmd = 'npx lerna publish';
+  if (await yesno('publish from-package?')) {
+    // NOTE: use this if cannot publish but versioning already happened - 'npx lerna publish from-package'
+    publishCmd += ' from-package';
+  }
+  await exec(publishCmd);
+
+  // check package status on NPM
+  if (await yesno('Check NPM packages online?')) {
+    open('https://www.npmjs.com/search?q=dbux');
+  }
+}
+
+async function publishToMarketplace() {
+  // check organization status on dev.azure
+  if (await yesno('Check VSCode Marketplace backend?')) {
+    open('https://dev.azure.com/dbux');
+  }
+
+  // after version bump, things are not linked up correctly anymore
+  await exec('npx lerna bootstrap --force-local && npx lerna link --force-local');
+
+  // // make sure dbux-code is ready
+  // await exec('cd dbux-code && yarn list --prod --json');
+
+  // publish dbux-code to VSCode marketplace (already built)
+  await exec('npm run code:publish:no-build');
+
+  if (await yesno('Check out extension on Marketplace?')) {
+    open('https://marketplace.visualstudio.com/manage/publishers/Domi');
+  }
+}
 
 // ###########################################################################
 // utilities
@@ -174,41 +214,11 @@ async function main() {
 
   await pullDev();
 
-  // bump version and produce new git tag
   await bumpVersion();
 
-  // publish dependencies to NPM
-  // NOTE: will trigger build scripts before publishing
-  log('Publishing to NPM...');
-  let publishCmd = 'npx lerna publish';
-  if (await yesno('publish from-package?')) {
-    // NOTE: use this if cannot publish but versioning already happened - 'npx lerna publish from-package'
-    publishCmd += ' from-package';
-  }
-  await exec(publishCmd);
+  await publishToNPM();
 
-  // check package status on NPM
-  if (await yesno('Check NPM packages online?')) {
-    await open('https://www.npmjs.com/search?q=dbux');
-  }
-
-  // check organization status on dev.azure
-  if (await yesno('Check VSCode Marketplace backend?')) {
-    await open('https://dev.azure.com/dbux');
-  }
-
-  // after version bump, things are not linked up correctly anymore
-  await exec('npx lerna bootstrap --force-local && npx lerna link --force-local');
-
-  // // make sure dbux-code is ready
-  // await exec('cd dbux-code && yarn list --prod --json');
-
-  // publish dbux-code to VSCode marketplace (already built)
-  await exec('npm run code:publish:no-build');
-
-  if (await yesno('Check out extension on Marketplace?')) {
-    await open('https://marketplace.visualstudio.com/manage/publishers/Domi');
-  }
+  await publishToMarketplace();
 }
 
 main().catch((err) => {
