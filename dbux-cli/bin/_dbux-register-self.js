@@ -14,7 +14,7 @@ const babelRegisterOptions = {
     function shouldIgnore(modulePath) {
       let ignore = !!modulePath.match(/(node_modules|dist)[\\/]/);
       if (ignore) {
-        console.debug(`[dbux-cli] babel ignore`, modulePath);
+        // console.debug(`[dbux-cli] babel ignore`, modulePath);
         return true;
       }
 

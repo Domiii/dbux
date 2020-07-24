@@ -43,9 +43,10 @@ class ProjectViewController {
     // ########################################
     // cfg + externals
     // ########################################
+    const relPath = process.env.NODE_ENV === 'development' ? ['..'] : [];
     const cfg = {
       // projectsRoot: getResourcePath('..', ...(process.env.NODE_ENV === 'development' ? ['..', '..'] : []), 'dbux_projects')
-      projectsRoot: getResourcePath('..', ...(process.env.NODE_ENV === 'development' ? ['..'] : []), 'projects')
+      projectsRoot: getResourcePath('..', ...relPath, 'projects')
     };
     const externals = {
       editor: {

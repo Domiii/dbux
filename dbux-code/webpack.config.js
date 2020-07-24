@@ -3,8 +3,8 @@ const process = require('process');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
-const { 
-  makeResolve, 
+const {
+  makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
 } = require('../scripts/webpack.util');
@@ -14,92 +14,92 @@ const {
 const projectRoot = path.resolve(__dirname);
 const MonoRoot = path.resolve(__dirname, '..');
 
+module.exports = (env, argv) => {
+  const outputFolderName = 'dist';
+  const outFile = 'bundle.js';
 
-const outputFolderName = 'dist';
-const outFile = 'bundle.js';
+  const mode = argv.mode || 'development';
+  const DBUX_VERSION = getDbuxVersion();
 
-const mode = process.env.MODE || 'development';
+  console.debug(`[dbux-code] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}) building...`);
 
-const DBUX_VERSION = getDbuxVersion();
+  const webpackPlugins = [
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: mode,
+      DBUX_VERSION
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.join(MonoRoot, 'dbux-projects', 'assets'),
+          to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'projects')
+        }
+      ]
+    })
+    // new BundleAnalyzerPlugin()
+  ];
 
-console.debug(`DBUX_VERSION=${DBUX_VERSION}`);
 
-const webpackPlugins = [
-  new webpack.EnvironmentPlugin({
-    NODE_ENV: mode,
-    DBUX_VERSION
-  }),
-  new CopyPlugin({
-    patterns: [
-      {
-        from: path.join(MonoRoot, 'dbux-projects', 'assets'),
-        to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'projects')
+  const dependencyPaths = [
+    "dbux-common",
+    "dbux-data",
+    "dbux-graph-common",
+    "dbux-graph-host",
+    "dbux-projects",
+    "dbux-code"
+  ];
+
+
+  const resolve = makeResolve(MonoRoot, dependencyPaths);
+  const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
+  // console.log(resolve.modules);
+  const rules = [
+    // {
+    //   loader: 'babel-loader',
+    //   include: [
+    //     path.join(projectRoot, 'src')
+    //   ]
+    // },
+    {
+      loader: 'babel-loader',
+      include: absoluteDependencies.map(r => path.join(r, 'src')),
+      options: {
+        babelrcRoots: absoluteDependencies
       }
-    ]
-  })
-  // new BundleAnalyzerPlugin()
-];
-
-
-const dependencyPaths = [
-  "dbux-common",
-  "dbux-data",
-  "dbux-graph-common",
-  "dbux-graph-host",
-  "dbux-projects",
-  "dbux-code"
-];
-
-
-const resolve = makeResolve(MonoRoot, dependencyPaths);
-const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
-// console.log(resolve.modules);
-const rules = [
-  // {
-  //   loader: 'babel-loader',
-  //   include: [
-  //     path.join(projectRoot, 'src')
-  //   ]
-  // },
-  {
-    loader: 'babel-loader',
-    include: absoluteDependencies.map(r => path.join(r, 'src')),
-    options: {
-      babelrcRoots: absoluteDependencies
     }
-  }
-];
+  ];
 
-module.exports = {
-  // https://github.com/webpack/webpack/issues/2145
-  mode,
-  // devtool: 'inline-module-source-map',
-  devtool: 'source-map',
-  //devtool: 'inline-source-map',
-  target: 'node',
-  plugins: webpackPlugins,
-  context: path.join(projectRoot, '.'),
-  entry: projectRoot + '/src/_includeIndex.js',
-  output: {
-    path: path.join(projectRoot, outputFolderName),
-    filename: outFile,
-    publicPath: outputFolderName,
-    libraryTarget: "commonjs2",
-    devtoolModuleFilenameTemplate: "../[resource-path]",
-    // sourceMapFilename: outFile + ".map"
-  },
-  resolve,
-  module: {
-    rules,
-  },
-  externals: {
-    uws: "uws",
-    vscode: "commonjs vscode"
-  },
-  node: {
-    __dirname: false,
-    __filename: false,
-  }
+  return {
+    // https://github.com/webpack/webpack/issues/2145
+    mode,
+    // devtool: 'inline-module-source-map',
+    devtool: 'source-map',
+    //devtool: 'inline-source-map',
+    target: 'node',
+    plugins: webpackPlugins,
+    context: path.join(projectRoot, '.'),
+    entry: projectRoot + '/src/_includeIndex.js',
+    output: {
+      path: path.join(projectRoot, outputFolderName),
+      filename: outFile,
+      publicPath: outputFolderName,
+      libraryTarget: "commonjs2",
+      devtoolModuleFilenameTemplate: "../[resource-path]",
+      // sourceMapFilename: outFile + ".map"
+    },
+    resolve,
+    module: {
+      rules,
+    },
+    externals: {
+      uws: "uws",
+      vscode: "commonjs vscode"
+    },
+    node: {
+      __dirname: false,
+      __filename: false,
+    }
+  };
 };
 
 // console.warn('[dbux-code] webpack config loaded');

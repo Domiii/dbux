@@ -18,8 +18,8 @@ const {
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
-const outputFolderName = 'dist';
-const outFile = 'bundle.js';
+// const outputFolderName = 'dist';
+// const outFile = 'bundle.js';
 const defaultEntryPoint = 'src/index.js';
 
 // ###########################################################################
@@ -27,9 +27,6 @@ const defaultEntryPoint = 'src/index.js';
 // ###########################################################################
 
 const MonoRoot = path.resolve(__dirname);
-
-const mode = 'development';
-//const mode = 'production';
 
 const targets = [
   // "dbux-cli",
@@ -64,181 +61,184 @@ function mergeWithArrays(dst, src) {
 }
 
 
-// TODO: add `src` alias to every build
-// resolve.alias.src = 
+module.exports = (env, argv) => {
+  // TODO: add `src` alias to every build
+  // resolve.alias.src = 
 
-// alias['socket.io-client'] = path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ));
-// console.warn(resol);
+  // alias['socket.io-client'] = path.resolve(path.join(root, 'dbux-runtime/node_modules', 'socket.io-client', 'socket.io.js' ));
+  // console.warn(resol);
 
-const DBUX_VERSION = getDbuxVersion();
+  const mode = argv.mode || 'development';
+  const DBUX_VERSION = getDbuxVersion();
 
-console.debug(`DBUX_VERSION=${DBUX_VERSION}`);
+  console.debug(`[main] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}) building...`);
 
-const webpackPlugins = [
-  new webpack.EnvironmentPlugin({
-    NODE_ENV: mode,
-    DBUX_VERSION
-  })
-];
+  const webpackPlugins = [
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: mode,
+      DBUX_VERSION
+    })
+  ];
 
-// const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, defaultEntryPoint))]));
+  // const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, defaultEntryPoint))]));
 
-// `context` is the path from which any relative paths are resolved
-const context = MonoRoot;
+  // `context` is the path from which any relative paths are resolved
+  const context = MonoRoot;
 
-// const context = path.join(root, target);
-// const entry = {
-//   bundle: './src/index.js'
-// };
-const output = {
-  // path: path.join(context, outputFolderName),
-  path: context,
-  library: '[name]'     // see https://github.com/webpack/webpack/tree/master/examples/multi-part-library
-  // library: target
-};
-
-// ###########################################################################
-// buildConfig
-// ###########################################################################
-
-function buildConfig([target, configOverrides]) {
-  const targetRoot = path.join(MonoRoot, target);
-
-  const entry = {
-    [target]: path.join(targetRoot, defaultEntryPoint)
+  // const context = path.join(root, target);
+  // const entry = {
+  //   bundle: './src/index.js'
+  // };
+  const output = {
+    // path: path.join(context, outputFolderName),
+    path: context,
+    library: '[name]'     // see https://github.com/webpack/webpack/tree/master/examples/multi-part-library
+    // library: target
   };
 
-  // find all dbux depencies in target, so we can resolve their `src` folders
-  const dependencyPattern = /^@dbux\/.*/;
+  // ###########################################################################
+  // buildConfig
+  // ###########################################################################
 
-  // look up dependency by package name
-  const dependencyLinks = getDependenciesPackageJson(MonoRoot, target, dependencyPattern).
-    map(depName => path.join(targetRoot, 'node_modules', depName));
+  function buildConfig([target, configOverrides]) {
+    const targetRoot = path.join(MonoRoot, target);
 
-  // look up folders of each dependency
-  const dependencyFolderNames = dependencyLinks.map(link => fs.realpathSync(link).replace(MonoRoot, ''));
-  dependencyFolderNames.push(target);
+    const entry = {
+      [target]: path.join(targetRoot, defaultEntryPoint)
+    };
 
-  // resolve
-  const resolve = makeResolve(MonoRoot, dependencyFolderNames);
-  // resolve.alias['@'] = src;
+    // find all dbux depencies in target, so we can resolve their `src` folders
+    const dependencyPattern = /^@dbux\/.*/;
 
-  // add `src` folders to babel-loader
-  const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyFolderNames);
-  const includeSrcs = absoluteDependencies.map(r => path.join(r, 'src'));
+    // look up dependency by package name
+    const dependencyLinks = getDependenciesPackageJson(MonoRoot, target, dependencyPattern).
+      map(depName => path.join(targetRoot, 'node_modules', depName));
 
-  let cfg = {
-    watchOptions: {
-      poll: true,
-      ignored: /node_modules/
-    },
-    mode,
+    // look up folders of each dependency
+    const dependencyFolderNames = dependencyLinks.map(link => fs.realpathSync(link).replace(MonoRoot, ''));
+    dependencyFolderNames.push(target);
 
-    // https://github.com/webpack/webpack/issues/2145
-    // devtool: 'inline-module-source-map',
-    // devtool: 'source-map',
-    devtool: 'inline-source-map',
-    plugins: webpackPlugins,
-    context,
-    entry,
-    output: {
-      ...output,
-      libraryTarget: 'umd',
-      libraryExport: 'default',
-      publicPath: 'dbux',
-      filename: '[name]/dist/index.js',
-      sourceMapFilename: '[name]/dist/index.js.map',
+    // resolve
+    const resolve = makeResolve(MonoRoot, dependencyFolderNames);
+    // resolve.alias['@'] = src;
 
-      // see: https://gist.github.com/jarshwah/389f93f2282a165563990ed60f2b6d6c
-      devtoolModuleFilenameTemplate: 'file:///[absolute-resource-path]',  // map to source with absolute file path not webpack:// protocol
+    // add `src` folders to babel-loader
+    const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyFolderNames);
+    const includeSrcs = absoluteDependencies.map(r => path.join(r, 'src'));
 
-      // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
-      globalObject: 'typeof self !== "undefined" ? self : this',
-    },
-    resolve,
-    module: {
-      rules: [
-        {
-          // test(resource) {
-          //   // see: https://stackoverflow.com/a/46769010
-          //   console.debug('[TEST]\n  ', resource);
-          //   return true;
-          // },
-          loader: 'babel-loader',
-          include: includeSrcs,
-          options: {
-            babelrcRoots: absoluteDependencies
+    let cfg = {
+      watchOptions: {
+        poll: true,
+        ignored: /node_modules/
+      },
+      mode,
+
+      // https://github.com/webpack/webpack/issues/2145
+      // devtool: 'inline-module-source-map',
+      // devtool: 'source-map',
+      devtool: 'inline-source-map',
+      plugins: webpackPlugins,
+      context,
+      entry,
+      output: {
+        ...output,
+        libraryTarget: 'umd',
+        libraryExport: 'default',
+        publicPath: 'dbux',
+        filename: '[name]/dist/index.js',
+        sourceMapFilename: '[name]/dist/index.js.map',
+
+        // see: https://gist.github.com/jarshwah/389f93f2282a165563990ed60f2b6d6c
+        devtoolModuleFilenameTemplate: 'file:///[absolute-resource-path]',  // map to source with absolute file path not webpack:// protocol
+
+        // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
+        globalObject: 'typeof self !== "undefined" ? self : this',
+      },
+      resolve,
+      module: {
+        rules: [
+          {
+            // test(resource) {
+            //   // see: https://stackoverflow.com/a/46769010
+            //   console.debug('[TEST]\n  ', resource);
+            //   return true;
+            // },
+            loader: 'babel-loader',
+            include: includeSrcs,
+            options: {
+              babelrcRoots: absoluteDependencies
+            }
+          },
+          {
+            use: ['source-map-loader'],
+            include: absoluteDependencies.map(r => path.join(r, 'dist')),
+            test: /\.js$/,
+            enforce: 'pre'
           }
-        },
-        {
-          use: ['source-map-loader'],
-          include: absoluteDependencies.map(r => path.join(r, 'dist')),
-          test: /\.js$/,
-          enforce: 'pre'
-        }
-      ],
-    },
-
-    // see: https://webpack.js.org/guides/code-splitting/
-    // optimization: {
-    //   splitChunks: {
-    //     chunks: 'all',
-    //   },
-    // },
-    externals: [
-      'fs',
-      // see: https://www.npmjs.com/package/webpack-node-externals
-      // NOTE: `node-externals` does not bundle `node_modules` but that also (for some reason) sometimes ignores linked packages in `yarn workspaces` monorepos :(
-      nodeExternals({
-        whitelist: [
-          'perf_hooks',
-          ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/.*`))
         ],
-        // (...args) {
-        //   console.debug('nodeExternals', ...args);
-        //   return true;
-        // }
-        // [
-        //   'perf_hooks',
+      },
 
-        //   // quote from the docs: "Important - if you have set aliases in your webpack config with the exact same names as modules in node_modules, you need to whitelist them so Webpack will know they should be bundled."
-        //   ...Object.keys(resol.alias)
-        // ]
-      }),
-      // 'fs', 'net'   // debug library complains about these
-    ]
-  };
+      // see: https://webpack.js.org/guides/code-splitting/
+      // optimization: {
+      //   splitChunks: {
+      //     chunks: 'all',
+      //   },
+      // },
+      externals: [
+        'fs',
+        // see: https://www.npmjs.com/package/webpack-node-externals
+        // NOTE: `node-externals` does not bundle `node_modules` but that also (for some reason) sometimes ignores linked packages in `yarn workspaces` monorepos :(
+        nodeExternals({
+          whitelist: [
+            'perf_hooks',
+            ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/.*`))
+          ],
+          // (...args) {
+          //   console.debug('nodeExternals', ...args);
+          //   return true;
+          // }
+          // [
+          //   'perf_hooks',
 
-  cfg = mergeWithArrays(cfg, configOverrides);
+          //   // quote from the docs: "Important - if you have set aliases in your webpack config with the exact same names as modules in node_modules, you need to whitelist them so Webpack will know they should be bundled."
+          //   ...Object.keys(resol.alias)
+          // ]
+        }),
+        // 'fs', 'net'   // debug library complains about these
+      ]
+    };
 
-  return cfg;
-}
+    cfg = mergeWithArrays(cfg, configOverrides);
 
-// ###########################################################################
-// other configs
-//  (WARNING: add node configs only! don't mix targets with webpack; it doesn't like it.)
-// ###########################################################################
+    return cfg;
+  }
 
-const otherWebpackConfigs = [
-  /* eslint-disable-next-line global-require */
-  require('./dbux-code/webpack.config'),
+  // ###########################################################################
+  // other configs
+  //  (WARNING: add node configs only! don't mix targets with webpack; it doesn't like it.)
+  // ###########################################################################
 
-  // NOTE: Don't build `dbux-graph-web` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
-  // require('./dbux-graph-web/webpack.config')
-];
+  const otherWebpackConfigs = [
+    /* eslint-disable-next-line global-require */
+    require('./dbux-code/webpack.config'),
+
+    // NOTE: Don't build `dbux-graph-web` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
+    // require('./dbux-graph-web/webpack.config')
+  ];
 
 
-// ###########################################################################
-// module.exports
-// ###########################################################################
+  // ###########################################################################
+  // module.exports
+  // ###########################################################################
 
-module.exports = [
-  ...targets.map(buildConfig),
+  return [
+    ...targets.map(buildConfig),
 
-  // NOTE: you can have multiple configs per file (see https://stackoverflow.com/a/46825869)
-  ...otherWebpackConfigs
-  // dbuxCode
-];
+    // NOTE: you can have multiple configs per file (see https://stackoverflow.com/a/46825869)
+    ...otherWebpackConfigs
+    // dbuxCode
+  ];
+};
 
 // console.warn(Object.keys(resol.alias).map(name => new RegExp(`^${name}/.*`)));
 

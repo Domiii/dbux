@@ -2,6 +2,7 @@
 
 const path = require('path');
 const sh = require('shelljs');
+const open = require('open');
 const isArray = require('lodash/isArray');
 const LineReader = require('./LineReader');
 
@@ -53,6 +54,15 @@ async function menu(q, options) {
   return cb ? cb(resultText, val) : [resultText, val];
 }
 
+async function yesno(q) {
+  q = `${q} (y/N) > `;
+  // process.stderr.write(q); // NOTE: write() won't flush and there is no way to force it...?
+  log(q);
+
+  const val = await input.readLine();
+  return val === 'y';
+}
+
 // ###########################################################################
 // run
 // ###########################################################################
@@ -90,15 +100,19 @@ function goToMaster() {
 }
 
 async function pullDev() {
-  const result = await menu('Pull dev?', {
-    1: ['Yes', () => run(`git pull origin dev`)],
-    2: 'No'
-  });
-  
-  const ownName = path.basename(__filename);
+  // const result = await menu('Pull dev?', {
+  //   1: ['Yes', () => run(`git pull origin dev`)],
+  //   2: 'No'
+  // });
+  const result = await yesno('Pull dev?');
+  if (result) {
+    run(`git pull origin dev`);
 
-  if (result.stdout && result.stdout.includes(ownName)) {
-    throw new Error(`Publish script ${ownName} (probably) has changed. Please run again to make sure.`);
+    const ownName = path.basename(__filename);
+
+    if (result.stdout && result.stdout.includes(ownName)) {
+      throw new Error(`Publish script ${ownName} (probably) has changed. Please run again to make sure.`);
+    }
   }
 }
 
@@ -136,6 +150,14 @@ async function main() {
   input = new LineReader();
   log('Preparing to publish...');
 
+  if (await Process.execCaptureOut('npm whoami') !== 'domiii') {
+    throw new Error('Not logged into NPM. Login first with: `npm login <user>`');
+  }
+
+  if (!await Process.execCaptureOut('cd dbux-code && npx vsce ls-publishers')) {
+    throw new Error('Not logged in with VS Marketplace. Login first with: `cd dbux-code && npx vsce login dbux`');
+  }
+
   // await Process.exec(
   //   // 'sh -lc "echo hi ; read x; echo abc$x"',
   //   // 'sh -lc "sleep 1; echo hihi"',
@@ -154,12 +176,29 @@ async function main() {
 
   // publish dependencies to NPM
   // NOTE: will trigger build scripts before publishing
-  await Process.exec('npx lerna publish');
+  log('Publishing to NPM...');
+  let publishCmd = 'npx lerna publish';
+  if (await yesno('publish from-package?')) {
+    // NOTE: use this if cannot publish but versioning already happened - 'npx lerna publish from-package'
+    publishCmd += ' from-package';
+  }
+  await Process.exec(publishCmd);
 
-  // NOTE: use instead if cannot publish but versioning already happened - 'npx lerna publish from-package'
+  // check package status on NPM
+  if (await yesno('Check NPM packages online?')) {
+    await open('https://www.npmjs.com/search?q=dbux');
+  }
+
+  if (await yesno('Check VSCode Marketplace backend?')) {
+    await open('https://dev.azure.com/dbux');
+  }
 
   // publish dbux-code to VSCode marketplace
   await Process.exec('npm run code:publish');
+
+  if (await yesno('Check out extension on Marketplace?')) {
+    await open('https://marketplace.visualstudio.com/manage/publishers/Domi');
+  }
 }
 
 main().catch((err) => {
