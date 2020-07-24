@@ -2,7 +2,7 @@
 	"name": "dbux-code",
 	"private": true,
 	"displayName": "Dbux ALPHA",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"publisher": "Domi",
 	"description": "",
 	"repository": {
@@ -534,12 +534,12 @@
 		"webpack-cli": "^3.3.10"
 	},
 	"dependencies": {
-		"@dbux/cli": "^0.1.5",
-		"@dbux/common": "^0.1.5",
-		"@dbux/data": "^0.1.5",
-		"@dbux/graph-common": "^0.1.5",
-		"@dbux/graph-host": "^0.1.5",
-		"@dbux/projects": "^0.1.5",
+		"@dbux/cli": "^0.1.6",
+		"@dbux/common": "^0.1.6",
+		"@dbux/data": "^0.1.6",
+		"@dbux/graph-common": "^0.1.6",
+		"@dbux/graph-host": "^0.1.6",
+		"@dbux/projects": "^0.1.6",
 		"lodash": "^4.17.19",
 		"moment": "^2.24.0",
 		"socket.io": "^2.3.0",
