@@ -6,16 +6,16 @@ export function buildCommonCommandOptions() {
       default: false,
       type: 'boolean'
     },
-    injectDbux: {
+    dontInjectDbux: {
       alias: ['d'],
-      describe: 'Whether to inject Dbux. Allows for running the same code while easily switching between dbux and non-dbux runs.',
-      default: true,
+      describe: 'Do NOT inject Dbux. Allows for running the same code while easily switching between dbux and non-dbux runs.',
+      default: false,
       type: 'boolean'
     },
-    addPresets: {
+    dontAddPresets: {
       alias: ['p'],
-      describe: 'Whether to add `@babel/preset-env`. Not adding this, might cause incompatabilities, but keeps the code closer to its original form.',
-      default: true,
+      describe: 'Do NOT add `@babel/preset-env`. Not adding this, might cause incompatabilities, but keeps the code closer to its original form.',
+      default: false,
       type: 'boolean'
     }
   };

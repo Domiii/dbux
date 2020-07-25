@@ -4,6 +4,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 // sanity check: make sure, some core stuff is loaded and working before starting instrumentation
 import '@babel/preset-env';
+import injectDependencies from './injectDependencies';
 
 // import buildDefaultBabelOptions from './defaultBabelOptions';
 const baseBabelOptions = require('../babel.config');
@@ -13,26 +14,11 @@ export default function buildBabelOptions(options) {
 
   const {
     vanilla,
-    injectDbux,
-    addPresets
+    dontInjectDbux,
+    dontAddPresets
   } = options;
 
-  // const dbuxAliases = [
-  //   'dbux-babel-plugin',
-  //   'dbux-runtime'
-  // ];
-
-  // const sharedDeps = [
-  //   '@babel/core',
-  //   '@babel/register',
-  //   '@babel/preset-env'
-  // ];
-
-  // // add aliases (since these libraries are not locally available)
-  // const moduleAlias = require('module-alias');
-  // dbuxAliases.forEach(alias => moduleAlias.addAlias(alias, path.join(dbuxRoot, alias)));
-  // sharedDeps.forEach(dep => moduleAlias.addAlias(dep, path.join(dbuxRoot, 'node_modules', dep)));
-
+  injectDependencies();
 
   // setup babel-register
   const baseOptions = vanilla ? EmptyObject : baseBabelOptions;
@@ -62,12 +48,12 @@ export default function buildBabelOptions(options) {
     ]
   };
 
-  if (injectDbux) {
+  if (!dontInjectDbux) {
     babelOptions.plugins = babelOptions.plugins || [];
     babelOptions.plugins.push(dbuxBabelPlugin);
   }
 
-  if (!addPresets) {
+  if (dontAddPresets) {
     delete babelOptions.presets;
   }
 

@@ -6,7 +6,7 @@ import SendQueue from './SendQueue';
 const Verbose = false;
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('CLIENT');
+const { log, debug, warn, error: logError } = newLogger('Runtime Client');
 
 // ###########################################################################
 // config
@@ -77,16 +77,23 @@ export default class Client {
   // event handling
   // ###########################################################################
 
+  _connectFailed = false;
+
   _handleConnect = () => {
     Verbose && debug('connected');
     this._connected = true;
+    this._connectFailed = false;
 
     // start initial handshake
     this._sendInit();
   };
 
   _handleConnectFailed = () => {
-    Verbose && debug('failed to connect');
+    // Verbose && 
+    if (!this._connectFailed) {
+      this._connectFailed = true;
+      debug('failed to connect. Reconnecting...');
+    }
   }
 
   _handleDisconnect = () => {

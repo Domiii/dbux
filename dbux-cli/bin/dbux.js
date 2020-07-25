@@ -10,7 +10,7 @@ require('./_dbux-register-self');
 
 // start!
 yargs
-  .exitProcess(false)
+  // .exitProcess(true)
   .commandDir('../src/commands')
   .demandCommand()
   .help()
