@@ -1,10 +1,11 @@
 
 
 
-## TODO (other)
-* add for `eslint` into build pipeline
+## TODO
+* move process-related stuff from `dbux-projects` to `dbux-cli`
+* add `eslint` into build pipeline
 * core instrumentation bugs
-   * callId problem: ternary expression is not instrumented as argument (express#1)
+   * `callId` problem: ternary expression is not instrumented as argument (express#1)
       * thus has no `callId`
    * assignments are traced twice, once with `ExpressionValue`, once with `ExpressionResult`
       * e.g. `req.params = layer.params;`

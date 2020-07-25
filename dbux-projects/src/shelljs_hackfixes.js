@@ -10,7 +10,7 @@ function fixShellJs() {
 
   if (!sh.config.execPath) {
     // eslint-disable-next-line no-console
-    console.error('node executable not found');
+    console.error('node executable not found on your system. Make sure to install node and have it in system $PATH first.');
   }
 
   // NOTE: this next part is technically not a hackfix, just setting a mode :)

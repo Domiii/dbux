@@ -1,5 +1,5 @@
 import ProjectsManager from './ProjectsManager';
-import { installHackfixes } from './hackfixes';
+import { installHackfixes } from './shelljs_hackfixes';
 
 export function initDbuxProjects(cfg, externals) {
   installHackfixes();

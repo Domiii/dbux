@@ -7,49 +7,50 @@ import fs from 'fs';
 import prettier from 'prettier';
 import { transformSync } from '@babel/core';
 
-import dbuxBabelPlugin from '@dbux/babel-plugin';
-
 import { wrapCommand } from '../util/commandUtil';
 
 // pre-import dependencies that are not going to be in the target script
 import '@babel/preset-env';
-import buildDefaultBabelOptions from '../defaultBabelOptions';
+import buildBabelOptions from '../buildBabelOptions';
+import { buildCommonCommandOptions } from '../commonCommandOptions';
 
 export const command = 'instrument <file>';
-export const aliases = [];
-// export const describe = '';
+export const aliases = ['i'];
+export const describe = `Instrument file with dbux and print resulting code.
+  NOTE: If you want to investigate the result in VSCode you can use 'dbux instrument myFile.js | code -'`;
+
 export const builder = {
+  ...buildCommonCommandOptions(),
+  // quiet: {
+  //   alias: ['q'],
+  //   default: false,
+  //   type: 'boolean'
+  // }
 };
 
 
 /**
  * Run file with dbux instrumentations (using babel-register).
  */
-export const handler = wrapCommand(async ({ file }) => {
-  const babelOptions = {
-    ...buildDefaultBabelOptions(),
-    sourceMaps: false,
-    retainLines: true,
-    plugins: [
-      dbuxBabelPlugin
-    ]
-  };
+export const handler = wrapCommand(async ({ file, ...options }) => {
+  const babelOptions = buildBabelOptions(options);
 
-  // preset-env by default converts to es5 -> so we delete it (for now)
-  // WARNING: This will make it s.t. the code that `dbux run <file>` uses will be different from `dbux instrument <file>`
-  delete babelOptions.presets;
+  // read code
+  const targetPath = fs.realpathSync(file);
+  const inputCode = fs.readFileSync(targetPath, 'utf8');
 
-
-  // const mergeWith from 'lodash/mergeWith');
-  const inputCode = fs.readFileSync(file, 'utf8');
-
-  console.log('Instrumenting file', file, '...');
-
-  // console.warn(babelOptions.plugins.map(p => (typeof p === 'function' ? p.toString() : JSON.stringify(p)).split('\n')[0]).join(','));
+  // instrument
+  process.stdout.write(`// Instrumenting file ${targetPath}...\n`);
   const outputCode = transformSync(inputCode, babelOptions).code;
 
-  console.log(
-    prettier.format(outputCode)
+  const prettyCode = prettier.format(outputCode, 
+    // see https://stackoverflow.com/questions/50561649/module-build-failed-error-no-parser-and-no-file-path-given-couldnt-infer-a-p
+    { parser: "babel" }
   );
+
+  // show in vscode
+  // sh.exec(`echo output | code -`);
+
+  process.stdout.write(prettyCode + '\n');
 });
 
