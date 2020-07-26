@@ -18,8 +18,8 @@ import { awaitVisitEnter } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
-const Verbose = false;
-// const Verbose = true;
+// const Verbose = false;
+const Verbose = true;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
@@ -656,7 +656,7 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
     shouldVisit = instrumentor && onTrace(path); // instrumentor && !hasVisited
 
     if (direction === InstrumentationDirection.Enter) {
-      // store config on enter
+      // store config override on enter
       if (extraCfg) {
         if (path.getData('visitorCfg')) {
           // ideally, there should not be such a conflict

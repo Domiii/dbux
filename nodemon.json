@@ -4,5 +4,6 @@
     "./dbux-code/webpack.config.js"
   ],
   "ext": "js",
-  "delay": "500"
+  "delay": "500",
+  "quiet": true
 }

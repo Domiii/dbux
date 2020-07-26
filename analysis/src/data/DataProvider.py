@@ -1,6 +1,7 @@
 # import util
 from util.loadUtil import loadDbuxFile, collectionDf
 from IPython.display import display, HTML
+import pandas as pd
 
 class Collections:
   def __init__(self, rawData):
@@ -102,7 +103,9 @@ class DataProvider:
 
       contextId = group.iloc[0]['contextId']
       contextName = self.getContextDisplayName(contextId)
-      print(f'\n  traces for "{contextName}"')
+      print(f'\n  traces for "{contextName}" #{contextId}')
 
-      display(group)
+      # see https://stackoverflow.com/questions/11707586/how-do-i-expand-the-output-display-to-see-more-columns-of-a-pandas-dataframe
+      with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+        display(group)
 

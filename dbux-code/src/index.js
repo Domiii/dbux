@@ -28,9 +28,9 @@ const { log, debug, warn, error: logError } = newLogger('dbux-code');
 let projectViewController;
 
 function registerErrorHandler() {
-  process.on('unhandledRejection', (reason, promise) => {
-    logError(`[Unhandled Rejection] reason: ${reason}, promise: ${promise}`);
-  });
+  // process.on('unhandledRejection', (reason, promise) => {
+  //   logError(`[Unhandled Rejection] reason: ${reason}, promise: ${promise}`);
+  // });
 }
 
 /**

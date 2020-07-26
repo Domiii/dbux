@@ -259,6 +259,7 @@ const instrumentMemberCallExpressionEnter =
 
     // NOTE: we need to get loc before instrumentation
     const { loc } = path.node;
+    const oLoc = oPath.node.loc;
     const calleeLoc = calleePath.node.loc;
 
     // build
@@ -304,7 +305,11 @@ const instrumentMemberCallExpressionEnter =
     const newOPath = path.get(oPathId);
     const newCalleePath = path.get(calleePathId);
 
-    newCalleePath.node.loc = calleeLoc;
+    // set new callee loc, so it will still get instrumented
+    // newOPath.node.loc = oLoc;
+    newOPath.parentPath.node.loc = oLoc;
+    // newCalleePath.node.loc = calleeLoc;
+    newCalleePath.parentPath.node.loc = calleeLoc;
     newPath.node.loc = loc;
 
     // keep path data
@@ -312,9 +317,10 @@ const instrumentMemberCallExpressionEnter =
 
     // prepare for later
     // newPath.setData('_calleePath', calleePathId);
-    newOPath.setData('originalIsParent', false);
-    newOPath.setData('traceResultType', TraceType.ExpressionValue);
-    newCalleePath.setData('originalIsParent', false);
+    // newOPath.setData('originalIsParent', false);
+    newOPath.parentPath.setData('traceResultType', TraceType.ExpressionValue);
+    newCalleePath.parentPath.setData('traceResultType', TraceType.ExpressionValue);
+    // newCalleePath.setData('originalIsParent', false);
     newPath.setData('_bcePathId', bcePathId);
 
     return newPath;
@@ -331,7 +337,8 @@ function getCanTraceArgs(calleePath) {
 }
 
 /**
- * Convert `f(...args)` to: `traceBCE(f), f(...args)` to trace callee (`f`) and place BCE correctly
+ * Convert `f(...args)` to: `traceBCE(f), f(...args)`.
+ * Goal: trace callee `f`, and place BCE correctly
  * 
  */
 const instrumentDefaultCallExpressionEnter =
@@ -401,6 +408,7 @@ const instrumentDefaultCallExpressionEnter =
     }
 
     if (!isSpecialCallee) {
+      // set new callee loc, so it will still get instrumented
       newCalleePath.node.loc = calleeLoc;
     }
     newPath.node.loc = loc;
