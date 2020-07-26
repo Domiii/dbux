@@ -2,11 +2,7 @@
 
 
 ## TODO
-* move process-related stuff from `dbux-projects` to `dbux-cli`
-* add `eslint` into build pipeline
 * core instrumentation bugs
-   * `callId` problem: ternary expression is not instrumented as argument (express#1)
-      * thus has no `callId`
    * trace function parameters
    * fix: call traces for getters are off
       * it's actually the next trace in context (if the getter did not error out)
@@ -14,6 +10,8 @@
    * when encountering getter inside of a `CallExpression`, it will be mixed in with call, since it does not have its own BCE
    * identify + visualize getters and setters with an "f"?
       * just any context's parentTrace that is not stemming from a call?
+* add `eslint` into build pipeline
+* move process-related stuff from `dbux-projects` to `dbux-cli`
 * Deployment
    * `Process.exec` can use some polishing. Properly pipe stdout + stderr.
 * allow setting application name via babel config
