@@ -376,7 +376,8 @@ export default {
     }
     else {
       // not a call related trace
-      return null;
+      return trace;
+      // return null;
     }
   },
 
@@ -388,10 +389,11 @@ export default {
   getCallerTraceOfContext(dp, contextId) {
     const parentTrace = dp.util.getParentTraceOfContext(contextId);
     if (parentTrace) {
+      // try to get BCE of call
+      // NOTE: `parentTrace` of a context might not participate in a call, e.g. in case of getters or setters
       const callerTrace = dp.util.getCallerTraceOfTrace(parentTrace.traceId);
       if (!callerTrace) {
-        // BUG: some parentTrace has neither `callId` nor `resultCallId`
-        // try: express bug#1, context#285 trace#5205
+        // NOTE: this can never happen, since `getCallerTraceOfTrace` always returns something
         logError(`can't find callerTraceOfContext by parentTrace #${parentTrace.traceId} of context #${contextId}`);
         return null;
       }
