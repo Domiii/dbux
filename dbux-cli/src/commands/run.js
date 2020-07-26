@@ -2,7 +2,7 @@
 import fs from 'fs';
 import { wrapCommand } from '../util/commandUtil';
 import dbuxRegister from '../dbuxRegister';
-import { buildCommonCommandOptions } from '../commonCommandOptions';
+import { buildCommonCommandOptions, resolveCommandTargetPath } from '../commandCommons';
 
 export const command = 'run <file>';
 export const aliases = ['r'];
@@ -15,7 +15,7 @@ export const builder = buildCommonCommandOptions();
  */
 export const handler = wrapCommand(({ file, ...moreOptions }) => {
   // patch up file path
-  const targetPath = fs.realpathSync(file);
+  const targetPath = resolveCommandTargetPath(file);
   console.debug(`Running file ${targetPath}...`);
 
   // dbuxRegister (injects babel + dbux)

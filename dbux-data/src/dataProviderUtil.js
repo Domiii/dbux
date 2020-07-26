@@ -390,9 +390,9 @@ export default {
     if (parentTrace) {
       const callerTrace = dp.util.getCallerTraceOfTrace(parentTrace.traceId);
       if (!callerTrace) {
-        // BUG: some parentTrace doesn't have `callId` neither `resultCallId`
+        // BUG: some parentTrace has neither `callId` nor `resultCallId`
         // try: express bug#1, context#285 trace#5205
-        logError('can\'t find callerTraceOfContext by parentTrace');
+        logError(`can't find callerTraceOfContext by parentTrace #${parentTrace.traceId} of context #${contextId}`);
         return null;
       }
       return callerTrace;

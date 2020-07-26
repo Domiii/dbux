@@ -12,7 +12,7 @@ import { wrapCommand } from '../util/commandUtil';
 // pre-import dependencies that are not going to be in the target script
 import '@babel/preset-env';
 import buildBabelOptions from '../buildBabelOptions';
-import { buildCommonCommandOptions } from '../commonCommandOptions';
+import { buildCommonCommandOptions, resolveCommandTargetPath } from '../commandCommons';
 
 export const command = 'instrument <file>';
 export const aliases = ['i'];
@@ -36,11 +36,11 @@ export const handler = wrapCommand(async ({ file, ...options }) => {
   const babelOptions = buildBabelOptions(options);
 
   // read code
-  const targetPath = fs.realpathSync(file);
-  const inputCode = fs.readFileSync(targetPath, 'utf8');
+  const targetPath = resolveCommandTargetPath(file);
 
   // instrument
   process.stdout.write(`// Instrumenting file ${targetPath}...\n`);
+  const inputCode = fs.readFileSync(targetPath, 'utf8');
   const outputCode = transformSync(inputCode, babelOptions).code;
 
   const prettyCode = prettier.format(outputCode, 

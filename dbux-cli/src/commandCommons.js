@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 export function buildCommonCommandOptions() {
   return {
     vanilla: {
@@ -19,4 +21,14 @@ export function buildCommonCommandOptions() {
       type: 'boolean'
     }
   };
+}
+
+export function resolveCommandTargetPath(file) {
+  try {
+    const fpath = fs.realpathSync(file);
+    return fpath;
+  }
+  catch (err) {
+    throw new Error(`Could not resolve file: "${file}" - ${err.message}`);
+  }
 }

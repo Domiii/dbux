@@ -2,9 +2,6 @@
 
 
 ## TODO
-* fix up `dbux-cli`
-   cd dbux-cli && node --stack-trace-limit=1000 ./bin/dbux.js r ../samples/__samplesInput__/calls1.js
-   
 * move process-related stuff from `dbux-projects` to `dbux-cli`
 * add `eslint` into build pipeline
 * core instrumentation bugs
