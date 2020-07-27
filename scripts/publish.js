@@ -196,9 +196,6 @@ async function main() {
   input = new LineReader();
   log('Preparing to publish...');
 
-  await exec(`git commit -am '"dbux auto commit"'`);
-  return;
-
   if (await execCaptureOut('npm whoami') !== 'domiii') {
     throw new Error('Not logged into NPM. Login first with: `npm login <user>`');
   }

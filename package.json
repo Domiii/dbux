@@ -3,9 +3,9 @@
 	"displayName": "DBUX Monoroot",
 	"private": true,
 	"workspaces": [
-    "dbux-*",
-    "panzoom"
-  ],
+		"dbux-*",
+		"panzoom"
+	],
 	"devDependencies": {
 		"@babel/cli": "^7.8.3",
 		"@babel/core": "^7.8.3",
@@ -61,7 +61,7 @@
 	},
 	"scripts": {
 		"start": "npx npm-run-all -p build:watch build-graph:watch",
-		"start:prod": "npx npm-run-all -p build:watch:prod build-graph:watch:prod", 
+		"start:prod": "npx npm-run-all -p build:watch:prod build-graph:watch:prod",
 		"build:clean": "sh scripts/dbux-run-all.sh \"rm -rf dist\"",
 		"build:watch": "npx nodemon --exec \"npx webpack --mode development --watch\"",
 		"build:watch:prod": "npx nodemon --exec \"npx webpack --mode production --watch\"",
