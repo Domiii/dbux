@@ -1,14 +1,15 @@
 import path from 'path';
 import fs from 'fs';
+import { newLogger } from '@dbux/common/src/log/logger';
 import getOrCreateProgressLog from './dataLib';
 import processLogHandler from './dataLib/progressLog';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
 
-import { newLogger } from '@dbux/common/src/log/logger';
 
 const logger = newLogger('dbux-projects');
+const { debug } = logger;
 
 
 function readJsonFile(fpath) {
@@ -120,6 +121,17 @@ class ProjectsManager {
       ];
 
       dbuxDeps = dbuxDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
+      
+      const { projectsRoot } = this.config;
+      const options = {
+        processOptions: {
+          cwd: projectsRoot
+        }
+      };
+      
+      debug(`Verifying NPM cache. This might (or might not) take a while...`);
+      await this.runner._exec('npm cache verify', logger, options);
+      await this.runner._exec(`npm i ${dbuxDeps.join(' ')}`, logger, options);
     }
     else {
       // NOTE: hoisting takes care of everything for us
@@ -145,16 +157,6 @@ class ProjectsManager {
       //   `${socketIoName}@${socketIoVersion}`
       // ];
     }
-
-    const { projectsRoot } = this.config;
-    const options = {
-      processOptions: {
-        cwd: projectsRoot
-      }
-    };
-    
-    await this.runner._exec('npm cache verify', logger, options);
-    await this.runner._exec(`npm i ${dbuxDeps.join(' ')}`, logger, options);
   }
 }
 
