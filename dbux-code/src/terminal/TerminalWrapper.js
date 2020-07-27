@@ -79,56 +79,57 @@ class TerminalSocketServer extends SocketServer {
 export default class TerminalWrapper {
   _disposable;
 
-  start(cwd, command, port) {
+  constructor(port) { 
+    this.port = port;
+
     this._disposable = window.onDidCloseTerminal(terminal => {
       if (terminal === this._terminal) {
         this.dispose();
       }
     });
-    this._promise = this._run(cwd, command, port);
   }
 
-  async waitForResult() {
-    return this._promise;
+  getOrCreateTerminalSocketServer() {
+    if (!this.socketServer) {
+      this.socketServer = new TerminalSocketServer();
+      this.socketServer.start(this.port);
+    }
+    return this.socketServer;
   }
 
-  async _run(cwd, command, port) {
+  async handleNewClient(cb) {
     // see: https://socket.io/docs/server-api/
-    let socketServer = this.socketServer = new TerminalSocketServer();
-    socketServer.start(port);
-    Verbose && debug('started');
+    let socketServer = this.getOrCreateTerminalSocketServer();
 
-    try {
-      const args = Buffer.from(JSON.stringify({ port, cwd, command })).toString('base64');
-      const runJsCommand = `node _dbux_run.js ${args}`;
-      this._terminal = sendCommandToDefaultTerminal(cwd, runJsCommand);
-
-      const client = this.client = await socketServer.waitForNextClient();
+    socketServer.onNewClient(async () => {
+      const client = await socketServer.waitForNextClient();
       Verbose && debug('client connected');
+
       const results = await client.waitForResults();
       Verbose && debug('client finished. Results:', results);
-      return results?.[0] || null;
-    }
-    finally {
-      // clean up server
-      this.dispose();
-    }
+      
+      cb(results);
+    });
+  }
+
+  run(cwd, command) {
+    this.getOrCreateTerminalSocketServer();
+
+    const args = Buffer.from(JSON.stringify({ port: this.port, cwd, command })).toString('base64');
+    const runJsCommand = `node _dbux_run.js ${args}`;
+    this._terminal = sendCommandToDefaultTerminal(cwd, runJsCommand);
   }
 
   dispose() {
     const {
-      socketServer,
       client,
       _disposable
     } = this;
 
-    this.socketServer = null;
     this.client = null;
     this._disposable = null;
-    this._promise = null;
     this.terminal = null;
 
-    socketServer?.dispose();
     client?.dispose();
     _disposable?.dispose();
   }
@@ -138,12 +139,10 @@ export default class TerminalWrapper {
   }
 }
 
-export function execInTerminal(cwd, command) {
+export function initTerminalWrapper() {
   const port = 6543;
 
-  // TODO: register wrapper with context
+  const wrapper = new TerminalWrapper(port);
 
-  const wrapper = new TerminalWrapper();
-  wrapper.start(cwd, command, port);
   return wrapper;
 }

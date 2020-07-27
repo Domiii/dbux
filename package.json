@@ -42,7 +42,7 @@
 	},
 	"scripts": {
 		"start": "npx npm-run-all -p build:watch build-graph:watch",
-		"build:clean": "sh scripts/dbux-run-all.sh -- \"rm -rf dist\"",
+		"build:clean": "sh scripts/dbux-run-all.sh \"rm -rf dist\"",
 		"build:watch": "npx nodemon --exec \"npx webpack --mode development --watch\"",
 		"build:prod": "npm run build:clean && node ./node_modules/webpack/bin/webpack --mode production",
 		"prepublishOnly": "npm run build:prod",
@@ -53,7 +53,7 @@
 		"dbux-reinstall": "yarn add --dev lerna -W && npm run dbux-uninstall && npm run dbux-install",
 		"dbux-all": "sh scripts/dbux-run-all.sh",
 		"dbux-code-start": "cd ./dbux-code && npm start",
-		"dbux-uninstall": "npm run dbux-clean && lerna clean --yes && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
+		"dbux-uninstall": "npm run build:clean && lerna clean --yes && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
 		"clinic": "clinic flame -- node dbux-cli/bin/run-js-unbabel ../samples/__samplesOutput__/oop1.es5.js || (echo \"\\033[1;31mCould not execute clinic - checking installed version:\\033[0m\" && clinic -v)",
 		"cloc": "npx cloc --match-f='.*\\.((js)|(py))$' --fullpath --match-d='(dbux-[^/]+|analysis|samples/__samplesInput__)' --not-match-d='(node_modules|dist|project_sandbox)$'  --by-file .",
 		"eslint": "npx eslint dbux-**/src/**/*.js",
@@ -80,6 +80,7 @@
 		"lodash": "^4.17.19",
 		"nanoevents": "^2.0.0",
 		"shelljs": "*",
+		"socket.io-client": "^2.3.0",
 		"webpack-node-externals": "^1.7.2",
 		"yargs": "^15.1.0"
 	},

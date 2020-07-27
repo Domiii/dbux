@@ -303,7 +303,8 @@ export default class Project {
       return;
     }
 
-    await this.exec(`git add -A && git commit -am "[dbux auto commit]"`);
+    await this.exec(`git add -A`);
+    await this.exec(`git commit -am '"dbux auto commit"'`);
   }
 
   async deleteProjectFolder() {

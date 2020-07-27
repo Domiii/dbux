@@ -1,8 +1,14 @@
+import Process from './util/Process';
 import getOrCreateProgressLog from './dataLib';
 import processLogHandler from './dataLib/progressLog';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
+
+import { newLogger } from '@dbux/common/src/log/logger';
+
+const logger = newLogger('ProjectsManager');
+const { log, debug, warn, error: logError } = logger;
 
 class ProjectsManager {
   config;
@@ -85,12 +91,12 @@ class ProjectsManager {
   async installDependencies() {
     const { projectsRoot } = this.config;
 
-    if (process.env.NODE_ENV === 'production') {
+    if (true || process.env.NODE_ENV === 'production') {
       // TODO: install dbux dependencies + their dependencies
 
       // _dbux_run.js requires socket.io-client -> install in projects/ root
       //    NOTE: this will be taken care of by installing above dependencies automatically (because runtime also depends on `socket.io-client`)
-      await this.runner._exec(this, `yarn add socket.io-client@2.3.0`, {
+      await Process.exec(`yarn add socket.io-client@2.3.0`, {
         processOptions: {
           cwd: projectsRoot
         }

@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import NanoEvents from 'nanoevents';
 import RuntimeClient from './RuntimeClient';
 import { makeListenSocket } from './serverUtil';
 
@@ -18,11 +19,15 @@ export default class SocketServer {
 
   constructor(ClientClass) {
     this.ClientClass = ClientClass;
+    this._emitter = new NanoEvents();
   }
 
   start(port) {
     this._listenSocket = makeListenSocket(port);
-    this._listenSocket.on('connect', this._handleAccept.bind(this));
+    this._listenSocket.on('connect', (...args) => {
+      this._emitter.emit('connect');
+      this._handleAccept(...args);
+    });
   }
 
   /**
@@ -39,6 +44,10 @@ export default class SocketServer {
     });
 
     return client;
+  }
+
+  onNewClient(cb) {
+    this._emitter.on('connect', cb);
   }
 
   dispose() {

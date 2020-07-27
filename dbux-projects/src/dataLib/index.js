@@ -26,7 +26,7 @@ export default function getOrCreateProgressLog(_storage) {
 
   let progressLog = storage.get(keyName);
 
-  // debug(`Current storage`, progressLog);
+  debug(`Current storage`, progressLog);
   return progressLog;
 }
 

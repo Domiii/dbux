@@ -8,7 +8,7 @@ import ProjectNodeProvider from './projectNodeProvider';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
-import { execInTerminal } from '../terminal/TerminalWrapper';
+import { initTerminalWrapper } from '../terminal/TerminalWrapper';
 import PracticeStopwatch from './PracticeStopwatch';
 import { set as storageSet, get as storageGet } from '../memento';
 import { getResourcePath } from '../resources';
@@ -37,7 +37,6 @@ export function showOutputChannel() {
 
 let controller;
 
-
 class ProjectViewController {
   constructor(context) {
     // ########################################
@@ -63,7 +62,7 @@ class ProjectViewController {
         get: storageGet,
         set: storageSet,
       },
-      execInTerminal,
+      initTerminalWrapper,
       resources: {
         getResourcePath
       }

@@ -34,7 +34,6 @@ function getBugResultByBug(progressLog, bug) {
 }
 
 function getTestRunsByBug(progressLog, _bug) {
-  debug(`gettestrunsbybug`, progressLog, _bug);
   return progressLog.testRuns.filter((bug) => {
     return testRunHandler.isTestRunOfBug(bug, _bug);
   });

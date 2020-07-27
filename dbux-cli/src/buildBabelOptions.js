@@ -9,7 +9,7 @@ import injectDependencies from './injectDependencies';
 // import buildDefaultBabelOptions from './defaultBabelOptions';
 const baseBabelOptions = require('../babel.config');
 
-export default function buildBabelOptions(options) {
+export default function buildBabelOptions(options = EmptyObject) {
   process.env.BABEL_DISABLE_CACHE = 1;
 
   const {

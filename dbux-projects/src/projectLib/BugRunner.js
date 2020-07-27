@@ -33,6 +33,7 @@ export default class BugRunner {
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
     this.status = BugRunnerStatus.None;
+    this._terminalWrapper = this.manager.externals.initTerminalWrapper();
   }
 
   get logger() {
@@ -195,43 +196,40 @@ export default class BugRunner {
   async testBug(bug, debugMode = true) {
     const { project } = bug;
 
-    try {
-      // do whatever it takes (usually: `activateProject` -> `git checkout`)
-      await this.activateBug(bug);
+    // do whatever it takes (usually: `activateProject` -> `git checkout`)
+    await this.activateBug(bug);
 
-      // apply stored patch
-      await bug.project.manager.applyNewBugPatch(bug);
+    // apply stored patch
+    await bug.project.manager.applyNewBugPatch(bug);
 
-      // hackfix: set status here again in case of `this.activateBug` skips installaion process
-      this.setStatus(BugRunnerStatus.Busy);
+    // hackfix: set status here again in case of `this.activateBug` skips installaion process
+    this.setStatus(BugRunnerStatus.Busy);
 
-      let command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
-      command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
+    let command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+    command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
-      if (!command) {
-        // nothing to do
-        project.logger.debug('has no test command. Nothing left to do.');
-        // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
-        return null;
-      }
-      else {
-        // await this._exec(project, command);
-        const cwd = project.projectPath;
-        this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
-        const result = await this._terminalWrapper.waitForResult();
-        progressLogHandler.processBugResult(this.storage, bug, result);
-        project.logger.log(`Result:`, result);
-        return result;
-      }
+    if (!command) {
+      // nothing to do
+      project.logger.debug('has no test command. Nothing left to do.');
+      // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
+      return null;
     }
-    finally {
-      // need to check this._project exist, it might be kill during activating
-      if (this._project?.backgroundProcesses.length) {
-        this.setStatus(BugRunnerStatus.RunningInBackground);
-      }
-      else {
-        this.setStatus(BugRunnerStatus.Done);
-      }
+    else {
+      // await this._exec(project, command);
+      const cwd = project.projectPath;
+
+      this._terminalWrapper.handleNewClient((result) => {
+        progressLogHandler.processBugResult(this.storage, this._bug, result);
+
+        if (this._project?.backgroundProcesses.length) {
+          this.setStatus(BugRunnerStatus.RunningInBackground);
+        }
+        else {
+          this.setStatus(BugRunnerStatus.Done);
+        }
+      });
+
+      this._terminalWrapper.run(cwd, command);
     }
   }
 
@@ -286,7 +284,6 @@ export default class BugRunner {
 
     // kill active terminal wrapper
     this._terminalWrapper?.cancel();
-    this._terminalWrapper = null;
 
     // kill active process
     await this._process?.kill();

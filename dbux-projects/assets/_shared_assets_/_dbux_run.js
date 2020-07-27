@@ -39,6 +39,7 @@ function main() {
   // done
   let done = false;
   function checkDone() {
+    console.log('call checkdone');
     if (done) {
       return true;
     }
@@ -47,8 +48,8 @@ function main() {
     return false;
   }
 
-
   child.on('exit', (code, signal) => {
+    console.log('on exit');
     // logger.debug(`process exit, code=${code}, signal=${signal}`);
     if (checkDone()) { return; }
 
@@ -56,6 +57,7 @@ function main() {
   });
 
   child.on('error', (err) => {
+    console.log('on error');
     if (checkDone()) { return; }
 
     reportError(`[${err.code}] ${err.message || JSON.stringify(err)}`);
