@@ -2,6 +2,11 @@
 
 
 ## TODO
+* system integrity check upon first run?
+   * bash (all shell execution must work)
+   * node
+   * npm
+   * git
 * core instrumentation bugs
    * trace function parameters
    * fix: call traces for getters are off

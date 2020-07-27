@@ -504,7 +504,7 @@
 		"build:dev": "npm run build:clean && node ../node_modules/webpack/bin/webpack --mode development",
 		"build:analyze": "npm run build:clean && mkdir dist && node ../node_modules/webpack/bin/webpack --mode production --profile --json > dist/stats.json && npx webpack-bundle-analyzer dist/stats.json",
 		"uninstallself": "code --uninstall-extension Domi.dbux-code",
-		"reinstallself": "npm run uninstallself --silent ; sh -c 'files=(*.vsix); code --install-extension \"${files[0]}\"' && echo 'DBUX installed. \"Reload Window\" to see it.",
+		"reinstallself": "npm run uninstallself --silent ; sh -c 'files=(*.vsix); code --install-extension \"${files[0]}\"' && echo 'DBUX installed. >Developer: Reload Window< to see it.'",
 		"package": "npm run build:prod && npm run package:no-build",
 		"package:no-build": "echo 'Packaging...' && vsce package --yarn",
 		"package:install": "npm run package && npm run reinstallself",
