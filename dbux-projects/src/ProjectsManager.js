@@ -122,26 +122,28 @@ class ProjectsManager {
       dbuxDeps = dbuxDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
     }
     else {
-      // hackfix: read socket.io version from dbux-runtime package.json
-      // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
+      // NOTE: hoisting takes care of everything for us
 
-      // NOTE: __dirname is actually "..../dbux-code/dist", because of webpack
-      const pkgPath = path.join(__dirname, '..', '..', 'dbux-runtime');
-      const pkg = readPackageJson(pkgPath);
-      const socketIoName = 'socket.io-client';
-      const socketIoVersion = pkg?.dependencies?.
-        [socketIoName]?.
-        match(/\d+\.\d+.\d+/)?.[0];
+      // // hackfix: read socket.io version from dbux-runtime package.json
+      // // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
 
-      if (!socketIoVersion) {
-        throw new Error(`'Could not retrieve version of ${socketIoName} in "${pkgPath}"`);
-      }
-      dbuxDeps = [
-        'file://../dbux-common',
-        'file://../dbux-runtime',
-        'file://../dbux-cli',
-        `${socketIoName}@${socketIoVersion}`
-      ];
+      // // NOTE: __dirname is actually "..../dbux-code/dist", because of webpack
+      // const pkgPath = path.join(__dirname, '..', '..', 'dbux-runtime');
+      // const pkg = readPackageJson(pkgPath);
+      // const socketIoName = 'socket.io-client';
+      // const socketIoVersion = pkg?.dependencies?.
+      //   [socketIoName]?.
+      //   match(/\d+\.\d+.\d+/)?.[0];
+
+      // if (!socketIoVersion) {
+      //   throw new Error(`'Could not retrieve version of ${socketIoName} in "${pkgPath}"`);
+      // }
+      // dbuxDeps = [
+      //   'file://../dbux-common',
+      //   'file://../dbux-runtime',
+      //   'file://../dbux-cli',
+      //   `${socketIoName}@${socketIoVersion}`
+      // ];
     }
 
     const { projectsRoot } = this.config;

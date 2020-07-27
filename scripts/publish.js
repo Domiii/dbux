@@ -1,12 +1,11 @@
 /* eslint no-console: 0 */
+/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 
 const path = require('path');
 const sh = require('shelljs');
 const open = require('open');
+const isArray = require('lodash/isArray');
 const LineReader = require('./LineReader');
-
-// modules not available here?
-const isArray = require('../dbux-cli/node_modules/lodash/isArray');
 
 // make sure, we can import dbux stuff without any problems
 require('../dbux-cli/bin/_dbux-register-self');

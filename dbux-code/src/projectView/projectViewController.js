@@ -43,9 +43,11 @@ class ProjectViewController {
     // ########################################
     // cfg + externals
     // ########################################
-    const relPath = process.env.NODE_ENV === 'development' ? ['..'] : [];
+
+    // NOTE: Dependencies are hoisted at the root in dev mode
+    const relPath = process.env.NODE_ENV === 'production' ? [] : ['..'];
+    
     const cfg = {
-      // projectsRoot: getResourcePath('..', ...(process.env.NODE_ENV === 'development' ? ['..', '..'] : []), 'dbux_projects')
       projectsRoot: getResourcePath('..', ...relPath, 'dbux_projects')
     };
     const externals = {
