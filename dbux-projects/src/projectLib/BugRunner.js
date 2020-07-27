@@ -134,14 +134,18 @@ export default class BugRunner {
   async saveBugPatchAndUpdateStorage(bug) {
     const keyName = 'activatedBug';
     let previousBugInformation = this.manager.externals.storage.get(keyName);
-    
+
     if (previousBugInformation) {
       let { projectName, bugId } = previousBugInformation;
 
-      let previousBug = this.manager.getOrCreateDefaultProjectList().getByName(projectName).getOrLoadBugs().getById(bugId);
+      let previousProject = this.manager.getOrCreateDefaultProjectList().getByName(projectName);
 
-      await this.manager.saveRunningBug(previousBug);
-      await previousBug.project.gitResetHard();
+      if (await previousProject.isProjectFolderExists()) {
+        let previousBug = previousProject.getOrLoadBugs().getById(bugId);
+
+        await this.manager.saveRunningBug(previousBug);
+        await previousBug.project.gitResetHard();
+      }
     }
 
     await this.manager.externals.storage.set(keyName, {
