@@ -4,15 +4,15 @@
 ## TODO
 * add "Dbux: Run" command to dbux-code
 * code: resilience
+   * allow to fully test local package without having to publish first
+      * Problem: need to "full install" `@dbux/cli` and its dependencies
+   * make sure, `injectDependencies` always works
+      * make sure, all required babel dependencies are injected?
    * system integrity check upon first run?
       * bash (all shell execution must work)
       * node
       * npm
       * git
-   * allow to fully test local package without having to publish first
-      * needs to "full install" `@dbux/cli` and its dependencies
-   * make sure, `injectDependencies` always works
-      * make sure, all required babel dependencies are injected?
 * core instrumentation bugs
    * trace function parameters
    * fix: call traces for getters are off
