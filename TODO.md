@@ -4,10 +4,11 @@
 ## TODO
 * add "Dbux: Run" command to dbux-code
 * code: resilience
-   * allow to fully test local package without having to publish first
-      * Problem: need to "full install" `@dbux/cli` and its dependencies
-   * make sure, `injectDependencies` always works
-      * make sure, all required babel dependencies are injected?
+   * fix `installDbuxCli()`
+      * generate projectRoot's `package.json`: containing all of `dbux-cli`'s dependencies + `@dbux/cli`
+      * in dev mode: link dbux deps to local refs (e.g. `../dbux-cli`)
+   * fix `injectDependencies()`
+      * read projectRoot's `package.json` and wire them up via `module-alias` first?
    * system integrity check upon first run?
       * bash (all shell execution must work)
       * node
