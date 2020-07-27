@@ -1,3 +1,5 @@
+# see: https://github.com/Microsoft/vscode-vsce/issues/12
+
 .vscode/**
 .vscode-test/**
 test/**

@@ -82,6 +82,7 @@
 		"eslint:files": "npx eslint dbux-**/src/**/*.js | grep -E \"^(\\w|/).*\\.js\"",
 		"eslint:testit": "cat test.txt | grep -E \"^(\\w|/).*\\.js\"",
 		"eslint:files:open": "code $(npx eslint \"dbux-**/src/**/*.js\" | grep -E \"^(\\w|/).*\\.js\")",
+		"code:analyze": "lerna run build:analyze --scope=dbux-code",
 		"code:build:clean": "npx lerna run build:clean --scope=dbux-code",
 		"code:build:prod": "npx lerna run build:prod --scope=dbux-code",
 		"code:reinstall": "npx lerna run package:install --scope=dbux-code",
