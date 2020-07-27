@@ -155,16 +155,16 @@ async function publishToNPM() {
   await exec(publishCmd);
 
   // check package status on NPM
-  if (await yesno('Check NPM packages online?')) {
+  if (await yesno('Open NPM website?')) {
     open('https://www.npmjs.com/search?q=dbux');
   }
 }
 
 async function publishToMarketplace() {
   // check organization status on dev.azure
-  if (await yesno('Check VSCode Marketplace backend?')) {
-    open('https://dev.azure.com/dbux');
-  }
+  // if (await yesno('Open VSCode Marketplace backend?')) {
+  //   open('https://dev.azure.com/dbux');
+  // }
 
   // after version bump, things are not linked up correctly anymore
   await exec('npx lerna bootstrap --force-local && npx lerna link --force-local');
@@ -175,7 +175,7 @@ async function publishToMarketplace() {
   // publish dbux-code to VSCode marketplace (already built)
   await exec('npm run code:publish:no-build');
 
-  if (await yesno('Check out extension on Marketplace?')) {
+  if (await yesno('Open extension website?')) {
     open('https://marketplace.visualstudio.com/manage/publishers/Domi');
   }
 }
@@ -222,6 +222,9 @@ async function main() {
   await publishToNPM();
 
   await publishToMarketplace();
+
+  log('Done!');
+  process.exit(0); // not sure why but this process stays open for some reason
 }
 
 main().catch((err) => {
