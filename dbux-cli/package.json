@@ -8,8 +8,7 @@
     "_postinstall": "yarn --check-files --ignore-scripts"
   },
   "bin": {
-    "dbux-run-file": "./bin/dbux-run-file.js",
-    "dbux-register": "./bin/dbux-register.js"
+    "dbux": "./bin/dbux.js"
   },
   "main": "./src/index.js",
   "keywords": [],

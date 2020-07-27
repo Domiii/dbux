@@ -420,6 +420,7 @@ const instrumentDefaultCallExpressionEnter =
     // prepare for later
     // newPath.setData('_calleePath', calleePathId);
     newPath.setData('_bcePathId', bcePathId);
+    newCalleePath.setData('traceResultType', TraceType.ExpressionValue);
     newCalleePath.setData('originalIsParent', false); // override config for `AssignmentExpression.right`
 
     // set loc on actual call, so it gets instrumented on exit as well

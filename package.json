@@ -2,6 +2,10 @@
 	"name": "@dbux/monoroot",
 	"displayName": "DBUX Monoroot",
 	"private": true,
+	"workspaces": [
+		"dbux-*",
+		"panzoom"
+	],
 	"devDependencies": {
 		"@babel/cli": "^7.8.3",
 		"@babel/core": "^7.8.3",
@@ -40,30 +44,49 @@
 		"webpack": "^4.41.5",
 		"webpack-cli": "^3.3.10"
 	},
+	"dependencies": {
+		"@babel/runtime": "^7.8.3",
+		"core-js": "^3.6.4",
+		"find-package-json": "^1.2.0",
+		"lodash": "^4.17.19",
+		"nanoevents": "^2.0.0",
+		"shelljs": "*",
+		"socket.io-client": "^2.3.0",
+		"webpack-node-externals": "^1.7.2",
+		"yargs": "^15.1.0"
+	},
+	"optionalDependencies": {
+		"bufferutil": "^4.0.1",
+		"utf-8-validate": "^5.0.2"
+	},
 	"scripts": {
 		"start": "npx npm-run-all -p build:watch build-graph:watch",
-		"build:clean": "sh scripts/dbux-run-all.sh -- \"rm -rf dist\"",
+		"start:prod": "npx npm-run-all -p build:watch:prod build-graph:watch:prod",
+		"build:clean": "sh scripts/dbux-run-all.sh \"rm -rf dist\"",
 		"build:watch": "npx nodemon --exec \"npx webpack --mode development --watch\"",
-		"build:prod": "npm run build:clean && node ./node_modules/webpack/bin/webpack --mode production",
+		"build:watch:prod": "npx nodemon --exec \"npx webpack --mode production --watch\"",
+		"build:prod": "npm run build:clean && npx webpack --mode production",
 		"prepublishOnly": "npm run build:prod",
 		"build-graph:watch": "cd dbux-graph-client && npm start",
+		"build-graph:watch:prod": "cd dbux-graph-client && npm run start:prod",
 		"//": "# see: https://explainshell.com/explain?cmd=git+clean+-fdx",
 		"git-clean-fdx": "git clean -fdx",
-		"dbux-install": "yarn add --dev lerna -W && lerna bootstrap --force-local && lerna link --force-local",
-		"dbux-reinstall": "yarn add --dev lerna -W && npm run dbux-uninstall && npm run dbux-install",
+		"dbux-install": "npx lerna bootstrap --force-local && npx lerna link --force-local",
+		"dbux-reinstall": "npm run dbux-uninstall && npm run dbux-install",
 		"dbux-all": "sh scripts/dbux-run-all.sh",
 		"dbux-code-start": "cd ./dbux-code && npm start",
-		"dbux-uninstall": "npm run dbux-clean && lerna clean --yes && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
+		"dbux-uninstall": "npm run build:clean && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
 		"clinic": "clinic flame -- node dbux-cli/bin/run-js-unbabel ../samples/__samplesOutput__/oop1.es5.js || (echo \"\\033[1;31mCould not execute clinic - checking installed version:\\033[0m\" && clinic -v)",
 		"cloc": "npx cloc --match-f='.*\\.((js)|(py))$' --fullpath --match-d='(dbux-[^/]+|analysis|samples/__samplesInput__)' --not-match-d='(node_modules|dist|project_sandbox)$'  --by-file .",
 		"eslint": "npx eslint dbux-**/src/**/*.js",
 		"eslint:files": "npx eslint dbux-**/src/**/*.js | grep -E \"^(\\w|/).*\\.js\"",
 		"eslint:testit": "cat test.txt | grep -E \"^(\\w|/).*\\.js\"",
 		"eslint:files:open": "code $(npx eslint \"dbux-**/src/**/*.js\" | grep -E \"^(\\w|/).*\\.js\")",
-		"code:build:clean": "lerna run build:clean --scope=dbux-code",
-		"code:build:prod": "lerna run build:prod --scope=dbux-code",
-		"code:reinstall": "lerna run package:install --scope=dbux-code",
-		"code:uninstall": "lerna run package:uninstall --scope=dbux-code",
+		"code:analyze": "lerna run build:analyze --scope=dbux-code",
+		"code:build:clean": "npx lerna run build:clean --scope=dbux-code",
+		"code:build:prod": "npx lerna run build:prod --scope=dbux-code",
+		"code:reinstall": "npx lerna run package:install --scope=dbux-code",
+		"code:uninstall": "npx lerna run uninstallself --scope=dbux-code",
 		"code:publish": "cd dbux-code && npm run package:publish",
 		"code:publish:no-build": "cd dbux-code && npm run package:publish:no-build",
 		"zzold_dbux-install": "yarn install && sh scripts/dbux-run-all.sh \"yarn install\"",
@@ -72,19 +95,5 @@
 		"zzold_p1-go": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
 		"zzold_p1-start": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
 		"shapez-install": "git clone https://github.com/tobspr/shapez.io.git && cd shapez.io && git lfs pull && yarn && cd gulp && yarn && yarn gulp `# TODO: also install git-lfs + ffmpeg, see: https://github.com/tobspr/shapez.io/tree/master/.travis.yml`"
-	},
-	"dependencies": {
-		"@babel/runtime": "^7.8.3",
-		"core-js": "^3.6.4",
-		"find-package-json": "^1.2.0",
-		"lodash": "^4.17.19",
-		"nanoevents": "^2.0.0",
-		"shelljs": "*",
-		"webpack-node-externals": "^1.7.2",
-		"yargs": "^15.1.0"
-	},
-	"optionalDependencies": {
-		"bufferutil": "^4.0.1",
-		"utf-8-validate": "^5.0.2"
 	}
 }

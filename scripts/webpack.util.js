@@ -39,8 +39,8 @@ function readPackageJsonName(folder) {
   return packageJson && packageJson.name;
 }
 
-function readPackageJsonDependencies(root, entryName, pattern) {
-  const folder = path.join(root, entryName);
+function readPackageJsonDependencies(folder, pattern) {
+  // const folder = path.join(root, entryName);
   const packageJson = readPackageJson(folder);
   let dependencies = packageJson && packageJson.dependencies;
   if (!dependencies) {

@@ -1,4 +1,5 @@
 /* eslint no-console: 0 */
+/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 
 const path = require('path');
 const sh = require('shelljs');
@@ -11,7 +12,7 @@ require('../dbux-cli/bin/_dbux-register-self');
 
 // Dbux built-in utilities
 require('../dbux-common/src/util/prettyLogs');
-const { newLogger } = require('../dbux-projects/node_modules/@dbux/common/src/log/logger');
+const { newLogger } = require('../dbux-common/src/log/logger');
 const Process = require('../dbux-projects/src/util/Process').default;
 
 const logger = newLogger();
@@ -145,8 +146,10 @@ async function publishToNPM() {
   // NOTE: will trigger build scripts before publishing
   log('Publishing to NPM...');
   let publishCmd = 'npx lerna publish';
-  if (await yesno('publish from-package?')) {
-    // NOTE: use this if cannot publish but versioning already happened - 'npx lerna publish from-package'
+  if (await yesno('not from-package?')) {
+    // usually, we just want to go from package, since `lerna version` already prepared things for us
+  }
+  else {
     publishCmd += ' from-package';
   }
   await exec(publishCmd);
