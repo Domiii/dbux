@@ -1,5 +1,4 @@
 import NanoEvents from 'nanoevents';
-import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -135,14 +134,14 @@ export default class BugRunner {
     const keyName = 'activatedBug';
     let previousBugInformation = this.manager.externals.storage.get(keyName);
     
-    if (previousBugInformation) {
-      let { projectName, bugId } = previousBugInformation;
+    // if (previousBugInformation) {
+    //   let { projectName, bugId } = previousBugInformation;
 
-      let previousBug = this.manager.getOrCreateDefaultProjectList().getByName(projectName).getOrLoadBugs().getById(bugId);
+    //   let previousBug = this.manager.getOrCreateDefaultProjectList().getByName(projectName).getOrLoadBugs().getById(bugId);
 
-      await this.manager.saveRunningBug(previousBug);
-      await previousBug.project.gitResetHard();
-    }
+    //   await this.manager.saveRunningBug(previousBug);
+    //   await previousBug.project.gitResetHard();
+    // }
 
     await this.manager.externals.storage.set(keyName, {
       projectName: bug.project.name,
@@ -215,7 +214,6 @@ export default class BugRunner {
         return null;
       }
       else {
-        // await this._exec(project, command);
         const cwd = project.projectPath;
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
         const result = await this._terminalWrapper.waitForResult();
@@ -236,30 +234,11 @@ export default class BugRunner {
   }
 
   /**
-   * @param {boolean} options.cdToProjectPath [Default=true] Whether to cd to `project.projectPath`.
+   * 
    */
-  async _exec(project, cmd, options = null, input) {
-    const {
-      projectPath
-    } = project;
-
+  async _exec(cmd, logger, options = null, input) {
     if (this._process) {
-      project.logger.error(`[possible race condition] executing command "${cmd}" while command "${this._process.command}" was already running`);
-    }
-
-    // set default cwd
-    if (options?.cdToProjectPath !== false && !options?.processOptions?.cwd) {
-      let cwd = projectPath;
-
-      // set cwd option
-      options = defaultsDeep(options, {
-        processOptions: {
-          cwd
-        }
-      });
-
-      // cd into it
-      sh.cd(cwd);
+      logger.error(`[possible race condition] executing command "${cmd}" while command "${this._process.command}" was already running`);
     }
 
     // // wait until current process finshed it's workload
@@ -267,7 +246,7 @@ export default class BugRunner {
 
     this._process = new Process();
     try {
-      return await this._process.start(cmd, project.logger, options, input);
+      return await this._process.start(cmd, logger, options, input);
     }
     finally {
       this._process = null;

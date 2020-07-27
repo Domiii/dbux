@@ -3,15 +3,17 @@
 const path = require('path');
 const sh = require('shelljs');
 const open = require('open');
-const isArray = require('lodash/isArray');
 const LineReader = require('./LineReader');
+
+// modules not available here?
+const isArray = require('../dbux-cli/node_modules/lodash/isArray');
 
 // make sure, we can import dbux stuff without any problems
 require('../dbux-cli/bin/_dbux-register-self');
 
 // Dbux built-in utilities
 require('../dbux-common/src/util/prettyLogs');
-const { newLogger } = require('../dbux-projects/node_modules/@dbux/common/src/log/logger');
+const { newLogger } = require('../dbux-common/src/log/logger');
 const Process = require('../dbux-projects/src/util/Process').default;
 
 const logger = newLogger();
@@ -145,8 +147,10 @@ async function publishToNPM() {
   // NOTE: will trigger build scripts before publishing
   log('Publishing to NPM...');
   let publishCmd = 'npx lerna publish';
-  if (await yesno('publish from-package?')) {
-    // NOTE: use this if cannot publish but versioning already happened - 'npx lerna publish from-package'
+  if (await yesno('not from-package?')) {
+    // usually, we just want to go from package, since `lerna version` already prepared things for us
+  }
+  else {
     publishCmd += ' from-package';
   }
   await exec(publishCmd);
@@ -192,6 +196,9 @@ function getBranchName() {
 async function main() {
   input = new LineReader();
   log('Preparing to publish...');
+
+  await exec(`git commit -am '"dbux auto commit"'`);
+  return;
 
   if (await execCaptureOut('npm whoami') !== 'domiii') {
     throw new Error('Not logged into NPM. Login first with: `npm login <user>`');
