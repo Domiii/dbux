@@ -76,6 +76,7 @@
 		"dbux-all": "sh scripts/dbux-run-all.sh",
 		"dbux-code-start": "cd ./dbux-code && npm start",
 		"dbux-uninstall": "npm run build:clean && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
+		"dbux-lerna-fix": "lerna exec -- node ../scripts/lerna-fix.js",
 		"clinic": "clinic flame -- node dbux-cli/bin/run-js-unbabel ../samples/__samplesOutput__/oop1.es5.js || (echo \"\\033[1;31mCould not execute clinic - checking installed version:\\033[0m\" && clinic -v)",
 		"cloc": "npx cloc --match-f='.*\\.((js)|(py))$' --fullpath --match-d='(dbux-[^/]+|analysis|samples/__samplesInput__)' --not-match-d='(node_modules|dist|project_sandbox)$'  --by-file .",
 		"eslint": "npx eslint dbux-**/src/**/*.js",

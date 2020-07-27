@@ -6,7 +6,7 @@ const {
   makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
-} = require('../scripts/webpack.util');
+} = require('../scripts/package-util');
 
 // add some of our own good stuff
 require('../dbux-cli/bin/_dbux-register-self');

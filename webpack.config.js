@@ -20,7 +20,7 @@ const {
   makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
-} = require('./scripts/webpack.util');
+} = require('./scripts/package-util');
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
@@ -247,6 +247,7 @@ module.exports = (env, argv) => {
   }
   catch (err) {
     console.error('webpack.config failed:', err);
+    throw err;
   }
 };
 

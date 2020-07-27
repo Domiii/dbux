@@ -180,6 +180,12 @@ async function publishToMarketplace() {
   }
 }
 
+async function fixLerna() {
+  debug('Fixing up package.json files (lerna hackfix)...');
+
+  await exec('npm run dbux-lerna-fix');
+}
+
 // ###########################################################################
 // utilities
 // ###########################################################################
@@ -222,6 +228,8 @@ async function main() {
   await publishToNPM();
 
   await publishToMarketplace();
+
+  await fixLerna();
 
   log('Done!');
   process.exit(0); // not sure why but this process stays open for some reason
