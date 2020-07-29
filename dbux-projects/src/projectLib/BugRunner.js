@@ -1,4 +1,6 @@
 import NanoEvents from 'nanoevents';
+import path from 'path';
+import fs from 'fs';
 import sh from 'shelljs';
 import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -194,10 +196,10 @@ export default class BugRunner {
   async testBug(bug, debugMode = true) {
     const { project } = bug;
 
-    // testing `installDbuxCli`
-    sh.mkdir('-p', project.projectPath);
-    await project.manager.installDependencies();
-    return;
+    // // testing `installDbuxCli`
+    // sh.mkdir('-p', project.projectPath);
+    // await project.manager.installDependencies();
+    // return;
 
     try {
       // do whatever it takes (usually: `activateProject` -> `git checkout`)
@@ -220,7 +222,12 @@ export default class BugRunner {
       }
       else {
         const cwd = project.projectPath;
-        this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
+        const { NODE_ENV } = process.env;
+        const args = {
+          NODE_ENV,
+          DBUX_ROOT: NODE_ENV === 'development' ? fs.realpathSync(path.join(__dirname, '..')) : null
+        };
+        this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command, args);
         const result = await this._terminalWrapper.waitForResult();
         progressLogHandler.processBugResult(this.storage, bug, result);
         project.logger.log(`Result:`, result);

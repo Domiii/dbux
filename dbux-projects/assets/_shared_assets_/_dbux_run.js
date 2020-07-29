@@ -18,7 +18,7 @@ const [
 ] = process.argv;
 
 const args = JSON.parse(Buffer.from(argsEncoded, 'base64').toString('ascii'));
-const { port, cwd, command } = args;
+const { port, cwd, command, args: env } = args;
 
 console.debug('run.js command received:', args);
 
@@ -26,7 +26,8 @@ function main() {
   const processOptions = {
     cwd,
     detached: false,
-    stdio: "inherit"
+    stdio: "inherit",
+    env
   };
 
   

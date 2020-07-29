@@ -4,7 +4,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 // sanity check: make sure, some core stuff is loaded and working before starting instrumentation
 import '@babel/preset-env';
-import injectDependencies from './injectDependencies';
+// import injectDependencies from './injectDependencies';
 
 // import buildDefaultBabelOptions from './defaultBabelOptions';
 const baseBabelOptions = require('../babel.config');
@@ -18,9 +18,9 @@ export default function buildBabelOptions(options) {
     dontAddPresets
   } = options;
 
-  if (process.env.NODE_ENV === 'development') {
-    injectDependencies();
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  //   injectDependencies();
+  // }
 
   // setup babel-register
   const baseOptions = vanilla ? EmptyObject : baseBabelOptions;

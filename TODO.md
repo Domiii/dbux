@@ -4,6 +4,7 @@
 ## TODO
 * add "Dbux: Run" command to dbux-code
 * dbux-projects
+   * need a button or command to fully clear the `projectsRoot`
    * handle patch failures gracefully
 * code: resilience
    * fix `injectDependencies()`
@@ -19,6 +20,9 @@
       * node
       * npm
       * git
+   * handle version updates correctly
+      * automatically delete project folder on version update?
+         * add user warning (allow user to cancel, which will cancel the whole run)
 * core instrumentation bugs
    * trace function parameters
    * fix: call traces for getters are off
