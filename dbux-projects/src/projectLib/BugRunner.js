@@ -222,10 +222,9 @@ export default class BugRunner {
       }
       else {
         const cwd = project.projectPath;
-        const { NODE_ENV } = process.env;
+        const devMode = process.env.NODE_ENV === 'development';
         const args = {
-          NODE_ENV,
-          DBUX_ROOT: NODE_ENV === 'development' ? fs.realpathSync(path.join(__dirname, '..')) : null
+          DBUX_ROOT: devMode ? fs.realpathSync(path.join(__dirname, '..', '..')) : null
         };
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command, args);
         const result = await this._terminalWrapper.waitForResult();

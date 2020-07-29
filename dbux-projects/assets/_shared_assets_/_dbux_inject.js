@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const moduleAlias = require('module-alias');
 
-module.exports = function injectDependencies() {
+(function dbuxInject() {
   const dbuxAliases = [
     'cli',
     'babel-plugin',
@@ -30,11 +30,11 @@ module.exports = function injectDependencies() {
     // const relPath = process.env.NODE_ENV === 'production' ? [] : ['..'];
     const alias = `@dbux/${name}`;
     const target = fs.realpathSync(path.join(DBUX_ROOT, `dbux-${name}`));
-    console.debug('[DBUX inject]', alias, '->', target);
+    // console.debug('[DBUX inject]', alias, '->', target);
     moduleAlias.addAlias(alias, target);
   });
 
 
   // dbux go!
   require('@dbux/cli/bin/dbux-register.js');
-};
+})();

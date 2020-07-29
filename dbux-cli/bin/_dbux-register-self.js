@@ -13,18 +13,19 @@ const babelRegisterOptions = {
   ignore: [
     // '**/node_modules/**',
     function shouldIgnore(modulePath) {
-      let include = !modulePath.match(/((@dbux[\\/])|(dbux\\-.*?))src[\\/]/);
+      let include = modulePath.match(/((@dbux[\\/])|(dbux-.*?))src[\\/]/);
       if (include) {
         console.debug(`[dbux-cli] register-self include`, modulePath);
         return false;
       }
 
-      include = !!modulePath.match(/(node_modules|dist)[\\/]/);
+      // include = !!modulePath.match(/(node_modules|dist)[\\/]/);
       // if (include) {
-      //   // console.debug(`[dbux-cli] babel ignore`, modulePath);
+      console.debug(`[dbux-cli] register-self ignore`, modulePath);
       //   return false;
       // }
-      return !include;
+      // return !include;
+      return true;
     }
   ]
 };
