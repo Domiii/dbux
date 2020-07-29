@@ -215,32 +215,33 @@ class ProjectsManager {
 
       allDeps = [
         // NOTE: installing local refs actually *copies* them. We don't want that.
+        // we will use `module-alias` in `_dbux_inject.js` instead
         // this._convertPkgToLocalIfNecessary('@dbux/cli'),
         ...cliDeps.filter(dep => !dep.includes('dbux-')),
         ...socketIoDeps
       ];
 
-      // add dbux deps via `link-module-alias`
-      const dbuxDeps = [
-        'common',
-        'cli',
-        'babel-plugin',
-        'runtime'
-      ];
-      let pkg = readPackageJson(projectsRoot);
-      pkg = {
-        ...pkg,
-        script: {
-          postinstall: "npx link-module-alias"
-        },
-        _moduleAliases: Object.fromEntries(
-          dbuxDeps.map(name => [`@dbux/${name}`, `../dbux/dbux-${name}`])
-        )
-      };
+      // NOTE: `link-module-alias` can cause problems. See: https://github.com/Rush/link-module-alias/issues/3
+      // // add dbux deps via `link-module-alias`
+      // const dbuxDeps = [
+      //   'common',
+      //   'cli',
+      //   'babel-plugin',
+      //   'runtime'
+      // ];
+      // let pkg = readPackageJson(projectsRoot);
+      // pkg = {
+      //   ...pkg,
+      //   script: {
+      //     postinstall: "npx link-module-alias"
+      //   },
+      //   _moduleAliases: Object.fromEntries(
+      //     dbuxDeps.map(name => [`@dbux/${name}`, `../dbux/dbux-${name}`])
+      //   )
+      // };
 
-      // go!
-      await this.runner._exec(`npm i --save link-module-alias`, logger, execOptions);
-      writePackageJson(projectsRoot, pkg);
+      // await this.runner._exec(`npm i --save link-module-alias`, logger, execOptions);
+      // writePackageJson(projectsRoot, pkg);
       await this.runner._exec(`npm i --save ${allDeps.join(' ')}`, logger, execOptions);
     }
   }

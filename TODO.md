@@ -6,11 +6,10 @@
 * dbux-projects
    * handle patch failures gracefully
 * code: resilience
-   * fix `installDbuxCli()`
-      * generate projectRoot's `package.json`: containing all of `dbux-cli`'s dependencies + `@dbux/cli`
-      * in dev mode: link dbux deps to local refs (e.g. `../dbux-cli`)
    * fix `injectDependencies()`
-      * read projectRoot's `package.json` and wire them up via `module-alias` first?
+      * move to new asset file `_dbux_inject.js` that is required when starting test run
+      * move dbux-related `require`s from `mochaUtil` and `jestUtil` etc. to `BugRunner`
+      * require `_dbux_inject.js` only in dev mode
    * when removing extension
       * also delete `dbux_projects` `ProjectsRoot`
    * make `npm cache verify` a configurable option

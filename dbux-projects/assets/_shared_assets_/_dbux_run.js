@@ -29,6 +29,8 @@ function main() {
     stdio: "inherit"
   };
 
+  
+
   // TODO: use spawn instead of exec? (allows for better control but needs https://www.npmjs.com/package/string-argv)
   const child = spawn.exec(command, processOptions);
 

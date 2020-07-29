@@ -18,7 +18,9 @@ export default function buildBabelOptions(options) {
     dontAddPresets
   } = options;
 
-  injectDependencies();
+  if (process.env.NODE_ENV === 'development') {
+    injectDependencies();
+  }
 
   // setup babel-register
   const baseOptions = vanilla ? EmptyObject : baseBabelOptions;
