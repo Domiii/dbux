@@ -16,8 +16,8 @@ export async function buildMochaRunBugCommand(cwd, mochaArgs, requireArr = Empty
     debugPort,
     program,
     require: [
-      ...requireArr,
-      dbuxRegister
+      dbuxRegister,
+      ...requireArr
     ],
     programArgs: `${keepAlive} ${mochaArgs}`
   });

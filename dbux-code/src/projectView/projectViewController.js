@@ -45,7 +45,7 @@ class ProjectViewController {
     // ########################################
 
     // NOTE: Dependencies are hoisted at the root in dev mode
-    const relPath = process.env.NODE_ENV === 'production' ? [] : ['..'];
+    const relPath = process.env.NODE_ENV === 'production' ? [] : ['..', '..'];
     
     const cfg = {
       projectsRoot: getResourcePath('..', ...relPath, 'dbux_projects')

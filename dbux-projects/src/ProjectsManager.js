@@ -1,6 +1,9 @@
 import path from 'path';
 import fs from 'fs';
+import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
+import pick from 'lodash/pick';
+import size from 'lodash/size';
 import getOrCreateProgressLog from './dataLib';
 import processLogHandler from './dataLib/progressLog';
 import caseStudyRegistry from './_projectRegistry';
@@ -20,6 +23,16 @@ function readJsonFile(fpath) {
 function readPackageJson(folder) {
   const packageJsonPath = path.join(folder, 'package.json');
   return readJsonFile(packageJsonPath);
+}
+
+function writeJSonFile(fpath, obj) {
+  const content = JSON.stringify(obj, null, 2);
+  fs.writeFileSync(fpath, content);
+}
+
+function writePackageJson(folder, pkg) {
+  const packageJsonPath = path.join(folder, 'package.json');
+  return writeJSonFile(packageJsonPath, pkg);
 }
 
 
@@ -96,66 +109,139 @@ class ProjectsManager {
     }, undefined);
     let patchString = testRun?.patch;
 
-    if (patchString) {
-      await bug.project.applyPatchString(patchString);
-    }
+    // if (patchString) {
+    //   await bug.project.applyPatchString(patchString);
+    // }
   }
 
   async installDependencies() {
     await this.installDbuxCli();
   }
 
+  getDevPackageRoot() {
+    // NOTE: __dirname is actually "..../dbux-code/dist", because of webpack
+    return fs.realpathSync(path.join(__dirname, '..', '..'));
+  }
+
+  _convertPkgToLocalIfNecessary(pkgName, version = null) {
+    // NOTE: only dbux packages are available locally
+    const packageRoot = this.getDevPackageRoot();
+
+    if (process.env.NODE_ENV === 'development') {
+      const match = pkgName.match(/@dbux\/(.+)/);
+      if (match) {
+        // available locally
+        return `file://${packageRoot}/dbux-${match[1]}`;
+      }
+    }
+    if (!version) {
+      throw new Error('no version given for package: ' + pkgName);
+    }
+    return `${pkgName}@${version}`;
+  }
+
+  _readLocalPkgDeps(pkgFolder, ...depNames) {
+    const pkg = readPackageJson(pkgFolder);
+    let deps;
+    if (depNames.length) {
+      deps = pick(pkg.dependencies, depNames);
+      if (size(deps) !== depNames.length) {
+        throw new Error(`Could not read (some subset of the following) local package dependencies: ${depNames.join(', ')}`);
+      }
+    }
+    else {
+      deps = pkg.dependencies;
+    }
+    return Object.
+      entries(deps).
+      map(([pkgName, version]) => `${this._convertPkgToLocalIfNecessary(pkgName, version)}`);
+  }
+
   async installDbuxCli() {
     // await exec('pwd', this.logger);
-
     if (!process.env.DBUX_VERSION) {
       throw new Error('installDbuxCli() failed. DBUX_VERSION was not set.');
     }
 
-    let dbuxDeps;
+    let allDeps;
+
+
+    const { projectsRoot } = this.config;
+    const execOptions = {
+      processOptions: {
+        cwd: projectsRoot
+      }
+    };
+
+    const projectsRootPackageJson = path.join(projectsRoot, 'package.json');
+    if (!await sh.test('-f', projectsRootPackageJson)) {
+      // make sure, we have a local `package.json`
+      await this.runner._exec('npm init -y', logger, execOptions);
+    }
+    
+    // delete previously installed node_modules
+    // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
+    // await sh.rm('-rf', path.join(projectsRoot, 'node_modules'));
 
     if (process.env.NODE_ENV === 'production') {
       // in stand-alone mode, npm flattens the dependency tree in `node_modules`, thereby adding all other required dependencies
-      dbuxDeps = [
+      allDeps = [
         '@dbux/cli'
       ];
 
-      dbuxDeps = dbuxDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
-      
-      const { projectsRoot } = this.config;
-      const options = {
-        processOptions: {
-          cwd: projectsRoot
-        }
-      };
-      
+      allDeps = allDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
+
+      // production: use NPM
       debug(`Verifying NPM cache. This might (or might not) take a while...`);
-      await this.runner._exec('npm cache verify', logger, options);
-      await this.runner._exec(`npm i ${dbuxDeps.join(' ')}`, logger, options);
+      await this.runner._exec('npm cache verify', logger, execOptions);
+      await this.runner._exec(`npm i ${allDeps.join(' ')}`, logger, execOptions);
     }
     else {
-      // NOTE: hoisting takes care of everything for us
+      // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
+      // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
 
-      // // hackfix: read socket.io version from dbux-runtime package.json
-      // // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
+      const packageRoot = this.getDevPackageRoot();
 
-      // // NOTE: __dirname is actually "..../dbux-code/dist", because of webpack
-      // const pkgPath = path.join(__dirname, '..', '..', 'dbux-runtime');
-      // const pkg = readPackageJson(pkgPath);
-      // const socketIoName = 'socket.io-client';
-      // const socketIoVersion = pkg?.dependencies?.
-      //   [socketIoName]?.
-      //   match(/\d+\.\d+.\d+/)?.[0];
+      const cliPath = path.join(packageRoot, 'dbux-cli');
+      const cliDeps = this._readLocalPkgDeps(cliPath);
+
+      const runtimePath = path.join(packageRoot, 'dbux-runtime');
+      const socketIoDeps = this._readLocalPkgDeps(runtimePath, 'socket.io-client');
+      // const socketIoVersion = pkg?.dependencies?.[socketIoName]; // ?.match(/\d+\.\d+.\d+/)?.[0];
 
       // if (!socketIoVersion) {
-      //   throw new Error(`'Could not retrieve version of ${socketIoName} in "${pkgPath}"`);
+      //   throw new Error(`'Could not retrieve version of ${socketIoName} in "${runtimePath}"`);
       // }
-      // dbuxDeps = [
-      //   'file://../dbux-common',
-      //   'file://../dbux-runtime',
-      //   'file://../dbux-cli',
-      //   `${socketIoName}@${socketIoVersion}`
-      // ];
+
+      allDeps = [
+        // NOTE: installing local refs actually *copies* them. We don't want that.
+        // this._convertPkgToLocalIfNecessary('@dbux/cli'),
+        ...cliDeps.filter(dep => !dep.includes('dbux-')),
+        ...socketIoDeps
+      ];
+
+      // add dbux deps via `link-module-alias`
+      const dbuxDeps = [
+        'common',
+        'cli',
+        'babel-plugin',
+        'runtime'
+      ];
+      let pkg = readPackageJson(projectsRoot);
+      pkg = {
+        ...pkg,
+        script: {
+          postinstall: "npx link-module-alias"
+        },
+        _moduleAliases: Object.fromEntries(
+          dbuxDeps.map(name => [`@dbux/${name}`, `../dbux/dbux-${name}`])
+        )
+      };
+
+      // go!
+      await this.runner._exec(`npm i --save link-module-alias`, logger, execOptions);
+      writePackageJson(projectsRoot, pkg);
+      await this.runner._exec(`npm i --save ${allDeps.join(' ')}`, logger, execOptions);
     }
   }
 }

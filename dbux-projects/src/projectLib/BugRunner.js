@@ -194,12 +194,17 @@ export default class BugRunner {
   async testBug(bug, debugMode = true) {
     const { project } = bug;
 
+    // testing `installDbuxCli`
+    sh.mkdir('-p', project.projectPath);
+    await project.manager.installDependencies();
+    return;
+
     try {
       // do whatever it takes (usually: `activateProject` -> `git checkout`)
       await this.activateBug(bug);
 
       // apply stored patch
-      await bug.project.manager.applyNewBugPatch(bug);
+      await project.manager.applyNewBugPatch(bug);
 
       // hackfix: set status here again in case of `this.activateBug` skips installaion process
       this.setStatus(BugRunnerStatus.Busy);

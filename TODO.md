@@ -3,12 +3,18 @@
 
 ## TODO
 * add "Dbux: Run" command to dbux-code
+* dbux-projects
+   * handle patch failures gracefully
 * code: resilience
    * fix `installDbuxCli()`
       * generate projectRoot's `package.json`: containing all of `dbux-cli`'s dependencies + `@dbux/cli`
       * in dev mode: link dbux deps to local refs (e.g. `../dbux-cli`)
    * fix `injectDependencies()`
       * read projectRoot's `package.json` and wire them up via `module-alias` first?
+   * when removing extension
+      * also delete `dbux_projects` `ProjectsRoot`
+   * make `npm cache verify` a configurable option
+      * -> needs a better system to acces extension config options via externals
    * system integrity check upon first run?
       * bash (all shell execution must work)
       * node

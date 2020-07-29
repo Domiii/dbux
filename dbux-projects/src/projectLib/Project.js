@@ -353,7 +353,7 @@ export default class Project {
   }
 
   async npmInstall() {
-    await this.exec('npm cache verify');
+    // await this.exec('npm cache verify');
 
     await this.exec(`npm install`);
 
