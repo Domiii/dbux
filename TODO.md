@@ -2,20 +2,22 @@
 
 
 ## TODO
-* add "Dbux: Run" command to dbux-code
-* dbux-projects
-   * need a button or command to fully clear the `projectsRoot`
-   * handle patch failures gracefully
+* add "Dbux: Run Current File" command to dbux-code
 * code: resilience
-   * fix `injectDependencies()`
-      * move to new asset file `_dbux_inject.js` that is required when starting test run
-      * move dbux-related `require`s from `mochaUtil` and `jestUtil` etc. to `BugRunner`
-      * require `_dbux_inject.js` only in dev mode
-   * when removing extension
-      * also delete `dbux_projects` `ProjectsRoot`
+   * add `@dbux/cli` webpack bundle
+      * -> no more need for `_dbux_register_self.js` (usually)
+   * fix `installDbuxCli()`
+      * only install `@dbux/cli` (no need for anything else)
+   * fix `_dbux_inject.js`
+      * only link up `@dbux/cli`
+   * fix `dbux_register.js`
+      * register all own `dependencies` via `moduleAlias` (copy from `_dbux_inject.js`)
+   * dbux-projects
+      * need a button or command to fully clear the `projectsRoot`
+      * also delete `ProjectsRoot` when removing extension (use `vscode:uninstall` in `package.json`)
    * make `npm cache verify` a configurable option
       * -> needs a better system to acces extension config options via externals
-   * system integrity check upon first run?
+   * system integrity check upon first run
       * bash (all shell execution must work)
       * node
       * npm
