@@ -1,5 +1,7 @@
+/* eslint no-console: 0 */
+
 const path = require('path');
-const process = require('process');
+// const process = require('process');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
@@ -7,7 +9,7 @@ const {
   makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
-} = require('../scripts/webpack.util');
+} = require('../scripts/package-util');
 
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
