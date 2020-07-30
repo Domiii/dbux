@@ -195,9 +195,9 @@ module.exports = (env, argv) => {
           // see: https://www.npmjs.com/package/webpack-node-externals
           // NOTE: `node-externals` does not bundle `node_modules` but that also (for some reason) sometimes ignores linked packages in `yarn workspaces` monorepos :(
           nodeExternals({
-            whitelist: [
+            allowlist: [
               'perf_hooks',
-              ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/.*`))
+              ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
             ],
             // (...args) {
             //   console.debug('nodeExternals', ...args);
@@ -225,6 +225,8 @@ module.exports = (env, argv) => {
     // ###########################################################################
 
     const otherWebpackConfigs = [
+      /* eslint-disable-next-line global-require */
+      require('./dbux-cli/webpack.config'),
       /* eslint-disable-next-line global-require */
       require('./dbux-code/webpack.config'),
 

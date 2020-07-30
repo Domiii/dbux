@@ -52,7 +52,6 @@
 		"nanoevents": "^2.0.0",
 		"shelljs": "0.8.4",
 		"socket.io-client": "^2.3.0",
-		"webpack-node-externals": "^1.7.2",
 		"yargs": "^15.4.1"
 	},
 	"optionalDependencies": {
@@ -63,9 +62,9 @@
 		"start": "npx npm-run-all -p build:watch build-graph:watch",
 		"start:prod": "npx npm-run-all -p build:watch:prod build-graph:watch:prod",
 		"build:clean": "sh scripts/dbux-run-all.sh \"rm -rf dist\"",
-		"build:watch": "npx nodemon --exec \"npx webpack --mode development --watch\"",
-		"build:watch:prod": "npx nodemon --exec \"npx webpack --mode production --watch\"",
-		"build:prod": "npm run build:clean && npx webpack --mode production",
+		"build:watch": "npx nodemon --exec \"node --stack-trace-limit=1000 -- ./node_modules/webpack/bin/webpack.js --mode development --watch\"",
+		"build:watch:prod": "npx nodemon --exec \"node --stack-trace-limit=1000 -- ./node_modules/webpack/bin/webpack.js --mode production --watch\"",
+		"build:prod": "npm run build:clean && node --stack-trace-limit=1000 -- ./node_modules/webpack/bin/webpack.js --mode production",
 		"prepublishOnly": "npm run code:build:resources && npm run build:prod",
 		"build-graph:watch": "cd dbux-graph-client && npm start",
 		"build-graph:watch:prod": "cd dbux-graph-client && npm run start:prod",

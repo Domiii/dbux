@@ -98,6 +98,8 @@ module.exports = (env, argv) => {
       vscode: "commonjs vscode"
     },
     node: {
+      // generate actual output file information
+      // see: https://webpack.js.org/configuration/node/#node__filename
       __dirname: false,
       __filename: false,
     }

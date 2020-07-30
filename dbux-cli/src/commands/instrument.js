@@ -11,8 +11,8 @@ import { wrapCommand } from '../util/commandUtil';
 
 // pre-import dependencies that are not going to be in the target script
 import '@babel/preset-env';
-import buildBabelOptions from '../buildBabelOptions';
-import { buildCommonCommandOptions, resolveCommandTargetPath } from '../commandCommons';
+import buildBabelOptions from '../util/buildBabelOptions';
+import { buildCommonCommandOptions, resolveCommandTargetPath } from '../util/commandCommons';
 
 export const command = 'instrument <file>';
 export const aliases = ['i'];

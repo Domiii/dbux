@@ -1,6 +1,6 @@
 import babelRegister from '@babel/register';
 
-import buildBabelOptions from './buildBabelOptions';
+import buildBabelOptions from './util/buildBabelOptions';
 
 export default function dbuxRegister(options) {
   const babelOptions = buildBabelOptions(options);

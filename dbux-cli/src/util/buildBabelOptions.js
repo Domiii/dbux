@@ -7,7 +7,7 @@ import '@babel/preset-env';
 // import injectDependencies from './injectDependencies';
 
 // import buildDefaultBabelOptions from './defaultBabelOptions';
-const baseBabelOptions = require('../babel.config');
+const baseBabelOptions = require('../../config/.babelrc');
 
 export default function buildBabelOptions(options) {
   process.env.BABEL_DISABLE_CACHE = 1;
