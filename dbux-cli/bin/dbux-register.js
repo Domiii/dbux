@@ -2,6 +2,6 @@
 
 require('./_dbux-register-self');
 
-const dbuxRegister = require('../src/dbuxRegister').default;
+const dbuxRegister = require('../dist/dbuxRegister').default;
 
 dbuxRegister({});

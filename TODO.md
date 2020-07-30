@@ -4,8 +4,6 @@
 ## TODO
 * add "Dbux: Run Current File" command to dbux-code
 * code: resilience
-   * add `@dbux/cli` webpack bundle
-      * -> no more need for `_dbux_register_self.js` (usually)
    * fix `installDbuxCli()`
       * only install `@dbux/cli` (no need for anything else)
    * fix `_dbux_inject.js`
