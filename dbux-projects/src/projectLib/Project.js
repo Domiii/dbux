@@ -358,6 +358,7 @@ export default class Project {
     await this.exec(`npm install`);
 
     // hackfix: npm installs are broken somehow.
+    //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
     //      Sometimes running it a second time after checking out a different branch 
     //      deletes all node_modules. This will bring everything back correctly (for now).
     await this.exec(`npm install`);

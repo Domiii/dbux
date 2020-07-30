@@ -3,8 +3,17 @@
  * link up dependencies.
  */
 
+// eslint-disable-next-line prefer-destructuring
+const DBUX_ROOT = process.env.DBUX_ROOT;
+if (!DBUX_ROOT) {
+  // nothing to do
+  return;
+}
+
 const fs = require('fs');
 const path = require('path');
+
+// NOTE: 
 const moduleAlias = require('module-alias');
 
 (function dbuxInject() {
@@ -13,8 +22,6 @@ const moduleAlias = require('module-alias');
     'babel-plugin',
     'runtime'
   ];
-
-  const { DBUX_ROOT } = process.env;
 
   // const sharedDeps = [
   //   '@babel/core',
@@ -36,5 +43,5 @@ const moduleAlias = require('module-alias');
 
 
   // dbux go!
-  require('@dbux/cli/bin/dbux-register.js');
+  require('');
 })();

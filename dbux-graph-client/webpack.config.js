@@ -1,4 +1,5 @@
 /* eslint-env node */
+/* eslint no-console: 0 */
 
 const path = require('path');
 const webpack = require('webpack');
@@ -32,8 +33,32 @@ const dependencies = [
 module.exports = (env, argv) => {
   const mode = argv.mode || 'development';
   const DBUX_VERSION = getDbuxVersion();
+  const DBUX_ROOT = mode === 'development' ? MonoRoot : null;
 
-  console.debug(`[dbux-graph-client] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}) building...`);
+  console.debug(`[dbux-graph-client] (DBUX_VERSION=${DBUX_VERSION}, DBUX_ROOT=${DBUX_ROOT} mode=${mode}) building...`);
+
+  const webpackPlugins = [
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: mode,
+      DBUX_VERSION,
+      DBUX_ROOT
+    }),
+    // add post-build hook
+    // see: https://stackoverflow.com/a/49786887apply: 
+    // (compiler) => {
+    // compiler.hooks.afterEmit.tap('AfterEmitPlugin', (compilation) => {
+    // copy result to dbux-code after build finished
+    // WARNING: If we do not delay this, for some reason, this webpack config will affect other webpack configs in the root's multi build
+    // setTimeout(() => {
+    //   const from = path.join(outputFolder, outFile);
+    //   const relativeTargetFolder = 'dbux-code/resources/graph';
+    //   const to = path.join(root, relativeTargetFolder, 'graph.js');
+    //   fs.copyFileSync(from, to);
+    //   console.debug('Copied graph.js to ' + relativeTargetFolder);
+    // }, 1000);
+    //   });
+    // }
+  ];
 
   const resolve = makeResolve(MonoRoot, dependencies);
   const src = path.join(projectRoot, 'src');
@@ -89,29 +114,6 @@ module.exports = (env, argv) => {
     }
   ];
   // console.log(rules[0].options.babelrcRoots);
-
-
-  const webpackPlugins = [
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: mode,
-      DBUX_VERSION
-    }),
-    // add post-build hook
-    // see: https://stackoverflow.com/a/49786887apply: 
-    // (compiler) => {
-    // compiler.hooks.afterEmit.tap('AfterEmitPlugin', (compilation) => {
-    // copy result to dbux-code after build finished
-    // WARNING: If we do not delay this, for some reason, this webpack config will affect other webpack configs in the root's multi build
-    // setTimeout(() => {
-    //   const from = path.join(outputFolder, outFile);
-    //   const relativeTargetFolder = 'dbux-code/resources/graph';
-    //   const to = path.join(root, relativeTargetFolder, 'graph.js');
-    //   fs.copyFileSync(from, to);
-    //   console.debug('Copied graph.js to ' + relativeTargetFolder);
-    // }, 1000);
-    //   });
-    // }
-  ];
 
   return {
     mode,

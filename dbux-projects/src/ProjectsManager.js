@@ -123,39 +123,39 @@ class ProjectsManager {
     return fs.realpathSync(path.join(__dirname, '..', '..'));
   }
 
-  _convertPkgToLocalIfNecessary(pkgName, version = null) {
-    // NOTE: only dbux packages are available locally
-    const packageRoot = this.getDevPackageRoot();
+  // _convertPkgToLocalIfNecessary(pkgName, version = null) {
+  //   // NOTE: only dbux packages are available locally
+  //   const packageRoot = this.getDevPackageRoot();
 
-    if (process.env.NODE_ENV === 'development') {
-      const match = pkgName.match(/@dbux\/(.+)/);
-      if (match) {
-        // available locally
-        return `file://${packageRoot}/dbux-${match[1]}`;
-      }
-    }
-    if (!version) {
-      throw new Error('no version given for package: ' + pkgName);
-    }
-    return `${pkgName}@${version}`;
-  }
+  //   if (process.env.NODE_ENV === 'development') {
+  //     const match = pkgName.match(/@dbux\/(.+)/);
+  //     if (match) {
+  //       // available locally
+  //       return `file://${packageRoot}/dbux-${match[1]}`;
+  //     }
+  //   }
+  //   if (!version) {
+  //     throw new Error('no version given for package: ' + pkgName);
+  //   }
+  //   return `${pkgName}@${version}`;
+  // }
 
-  _readLocalPkgDeps(pkgFolder, ...depNames) {
-    const pkg = readPackageJson(pkgFolder);
-    let deps;
-    if (depNames.length) {
-      deps = pick(pkg.dependencies, depNames);
-      if (size(deps) !== depNames.length) {
-        throw new Error(`Could not read (some subset of the following) local package dependencies: ${depNames.join(', ')}`);
-      }
-    }
-    else {
-      deps = pkg.dependencies;
-    }
-    return Object.
-      entries(deps).
-      map(([pkgName, version]) => `${this._convertPkgToLocalIfNecessary(pkgName, version)}`);
-  }
+  // _readLocalPkgDeps(pkgFolder, ...depNames) {
+  //   const pkg = readPackageJson(pkgFolder);
+  //   let deps;
+  //   if (depNames.length) {
+  //     deps = pick(pkg.dependencies, depNames);
+  //     if (size(deps) !== depNames.length) {
+  //       throw new Error(`Could not read (some subset of the following) local package dependencies: ${depNames.join(', ')}`);
+  //     }
+  //   }
+  //   else {
+  //     deps = pkg.dependencies;
+  //   }
+  //   return Object.
+  //     entries(deps).
+  //     map(([pkgName, version]) => `${this._convertPkgToLocalIfNecessary(pkgName, version)}`);
+  // }
 
   async installDbuxCli() {
     // await exec('pwd', this.logger);
@@ -183,30 +183,35 @@ class ProjectsManager {
     // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
     // await sh.rm('-rf', path.join(projectsRoot, 'node_modules'));
 
-    // if (process.env.NODE_ENV === 'production') {
-    // in stand-alone mode, npm flattens the dependency tree in `node_modules`, thereby adding all other required dependencies
-    allDeps = [
-      '@dbux/cli'
-    ];
+    // NOTE: in development mode, we pull @dbux/cli (and it's dependencies) from the dev folder
+    if (process.env.NODE_ENV === 'production') {
+      // install @dbux/cli
+      allDeps = [
+        '@dbux/cli'
 
-    allDeps = allDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
+        // NOTE: these are already dependencies of `@dbux/cli`
+        // NOTE: npm flattens dependency tree by default
+        // NOTE: as a side-effect, this will also provide socket.io-client for `TerminalWrapper`'s `run.js`
+        // see: https://docs.npmjs.com/cli/install#algorithm
+        // see: https://visbud.blogspot.com/2019/06/how-to-prevent-nested-nodemodules.html
 
-    // production: use NPM
-    debug(`Verifying NPM cache. This might (or might not) take a while...`);
-    // await this.runner._exec('npm cache verify', logger, execOptions);
-    
-    
-    // TODO: how to link in dbux-cli in dev mode if link-module-alias can be dangerous?
+        // '@dbux/runtime',
+        // '@dbux/babel-plugin'
+      ];
+
+      allDeps = allDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
+
+      // debug(`Verifying NPM cache. This might (or might not) take a while...`);
+      // await this.runner._exec('npm cache verify', logger, execOptions);
 
 
-    await this.runner._exec(`npm i ${allDeps.join(' ')}`, logger, execOptions);
-    // }
+      await this.runner._exec(`npm i ${allDeps.join(' ')}`, logger, execOptions);
+    }
     // else {
     //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
     //   // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
 
-    //   const packageRoot = this.getDevPackageRoot();
-
+    //   const packageRoot = process.env.DBUX_ROOT;
     //   const cliPath = path.join(packageRoot, 'dbux-cli');
     //   const cliDeps = this._readLocalPkgDeps(cliPath);
 

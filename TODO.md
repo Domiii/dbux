@@ -4,12 +4,13 @@
 ## TODO
 * add "Dbux: Run Current File" command to dbux-code
 * code: resilience
-   * fix `installDbuxCli()`
-      * only install `@dbux/cli` (no need for anything else)
-   * fix `_dbux_inject.js`
-      * only link up `@dbux/cli`
-   * fix `dbux_register.js`
-      * register all own `dependencies` via `moduleAlias` (copy from `_dbux_inject.js`)
+   * provide `DBUX_ROOT` in `webpack.config`
+   * fix `installDbuxCli()`: only install `@dbux/cli` (and only in production)
+   * remove `_dbux_inject.js`
+   * have `dbux-register` link up all needed dependencies (via `moduleAlias`)
+      * alias all own `dependencies` (previously in `_dbux_inject.js`)
+      * alias socket.io-client (target: `@dbux/runtime/node_modules/socket.io-client`)
+      * dev mode only: alias dbux dependencies (including itself)
    * dbux-projects
       * need a button or command to fully clear the `projectsRoot`
       * also delete `ProjectsRoot` when removing extension (use `vscode:uninstall` in `package.json`)

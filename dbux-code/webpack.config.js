@@ -22,13 +22,15 @@ module.exports = (env, argv) => {
 
   const mode = argv.mode || 'development';
   const DBUX_VERSION = getDbuxVersion();
+  const DBUX_ROOT = mode === 'development' ? MonoRoot : null;
 
-  console.debug(`[dbux-code] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}) building...`);
+  console.debug(`[dbux-code] (DBUX_VERSION=${DBUX_VERSION}, DBUX_ROOT=${DBUX_ROOT} mode=${mode}) building...`);
 
   const webpackPlugins = [
     new webpack.EnvironmentPlugin({
       NODE_ENV: mode,
-      DBUX_VERSION
+      DBUX_VERSION,
+      DBUX_ROOT
     }),
     new CopyPlugin({
       patterns: [
