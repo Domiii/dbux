@@ -108,3 +108,18 @@ export function getCursorLocation() {
   }
   return null;
 }
+
+export function showTextInNewFile(tempFileName, text) {
+  return new Promise((resolve, reject) => {
+    const uri = Uri.parse(`untitled:/${tempFileName}`);
+    window.showTextDocument(uri).then(editor => {
+      editor.edit(editBuilder => {
+        editBuilder.replace(editor.selection, text);
+
+        resolve();
+      });
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}

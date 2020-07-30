@@ -78,7 +78,23 @@ class ProjectsManager {
     let patchString = testRun?.patch;
 
     if (patchString) {
-      await bug.project.applyPatchString(patchString);
+      try {
+        await bug.project.applyPatchString(patchString);
+        return true;
+      } catch (err) {
+        let keepRunning = await this.externals.showMessage.showWarningMessage(`Failed when applying previous progress of this bug.`, {
+          'Show diff in new tab and cancel': () => {
+            this.externals.editor.showTextInNewFile(`diff.diff`, patchString);
+            return false;
+          },
+          'Ignore and keep running': () => {
+            return true;
+          },
+        }, { modal: true });
+        return keepRunning;
+      }
+    } else {
+      return true;
     }
   }
 

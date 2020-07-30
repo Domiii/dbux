@@ -204,7 +204,9 @@ export default class BugRunner {
       await this.activateBug(bug);
 
       // apply stored patch
-      await bug.project.manager.applyNewBugPatch(bug);
+      if (!await bug.project.manager.applyNewBugPatch(bug)) {
+        return null;
+      }
 
       // hackfix: set status here again in case of `this.activateBug` skips installaion process
       this.setStatus(BugRunnerStatus.Busy);
