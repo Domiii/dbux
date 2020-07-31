@@ -22,7 +22,7 @@ const babelRegisterOptions = {
 
       // include = !!modulePath.match(/(node_modules|dist)[\\/]/);
       // if (include) {
-      // console.debug(`[dbux-cli] register-self ignore`, modulePath);
+      console.debug(`[dbux-cli] register-self include`, modulePath);
       //   return false;
       // }
       // return !include;

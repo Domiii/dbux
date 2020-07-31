@@ -1,9 +1,6 @@
 // import path from 'path';
 
 import fs from 'fs';
-// import path from 'path';
-// import moduleAlias from 'module-alias';
-// import process from 'process';
 import prettier from 'prettier';
 import { transformSync } from '@babel/core';
 
