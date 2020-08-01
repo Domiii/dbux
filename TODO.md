@@ -2,6 +2,7 @@
 
 
 ## TODO
+* merge PR
 * add "Dbux: Run Current File" command to dbux-code
 * code: resilience
    * provide `DBUX_ROOT` in `webpack.config`

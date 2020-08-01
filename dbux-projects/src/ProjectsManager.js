@@ -191,9 +191,8 @@ class ProjectsManager {
 
         // NOTE: these are already dependencies of `@dbux/cli`
         // NOTE: npm flattens dependency tree by default
-        // NOTE: as a side-effect, this will also provide socket.io-client for `TerminalWrapper`'s `run.js`
-        // see: https://docs.npmjs.com/cli/install#algorithm
-        // see: https://visbud.blogspot.com/2019/06/how-to-prevent-nested-nodemodules.html
+        //        see: https://docs.npmjs.com/cli/install#algorithm
+        //        see: https://visbud.blogspot.com/2019/06/how-to-prevent-nested-nodemodules.html
 
         // '@dbux/runtime',
         // '@dbux/babel-plugin'

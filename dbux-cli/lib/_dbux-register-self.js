@@ -16,16 +16,11 @@ const babelRegisterOptions = {
       let include = modulePath.match(/((@dbux[\\/])|(dbux-.*?))src[\\/]/);
       if (include) {
         // throw new Error('x');
-        // console.debug(`[dbux-cli] register-self include`, modulePath);
+        console.debug(`[dbux-cli] register-self include`, modulePath);
         return false;
       }
 
       // include = !!modulePath.match(/(node_modules|dist)[\\/]/);
-      // if (include) {
-      console.debug(`[dbux-cli] register-self include`, modulePath);
-      //   return false;
-      // }
-      // return !include;
       return true;
     }
   ]

@@ -35,41 +35,53 @@ function linkOwnDependencies() {
   // }
 
 
-  // NOTE: after webpack build, __dirname is actually `dist`
-  const DbuxCliRoot = path.resolve('..');
+  // NOTE: after webpack build, __dirname is actually `dbux-cli/dist`
+  const DbuxCliRoot = path.resolve(__dirname, '..');
+  debugger;
   let pkg = readPackageJson(DbuxCliRoot);
   const { dependencies } = pkg;
   let depNames = Object.keys(dependencies);
+
+  debugger;
 
   // add self
   depNames.push('@dbux/cli');
   // dependencies['@dbux/cli'] = process.env.DBUX_VERSION;
 
   // register all dependencies
-  const dbuxPackagePattern = /@dbux\//;
-
-
   let nodeModulesParent;
   if (process.env.NODE_ENV === 'development') {
-    // register dbux dependencies via their development folder
-    // NOTE: in dev folder, dependencies are hoisted to root
+    // link dbux dependencies to monorepo root development folder
+    // NOTE: in monorepo, dependencies are hoisted to root
+    // NOTE: in monorepo, packages are also linked to root `node_modules` folder
     nodeModulesParent = process.env.DBUX_ROOT;
 
-    let dbuxDepNames;
-    [dbuxDepNames, depNames] = partition(depNames, dep => dbuxPackagePattern.test(dep));
-    dbuxDepNames = dbuxDepNames.map(name => name.match(/@dbux\/(.*)/)[1]);
+    // let dbuxDepNames;
+    // const dbuxPackagePattern = /@dbux\//;
+    // [dbuxDepNames, depNames] = partition(depNames, dep => dbuxPackagePattern.test(dep));
+    // dbuxDepNames = dbuxDepNames.map(name => name.match(/@dbux\/(.*)/)[1]);
 
-    linkDependencies(dbuxDepNames.map(name => 
-      [`@dbux/${name}`, path.join(process.env.DBUX_ROOT, `dbux-${name}`)]
-    ));
+    // linkDependencies(dbuxDepNames.map(name =>
+    //   [`@dbux/${name}`, path.join(process.env.DBUX_ROOT, `dbux-${name}`)]
+    // ));
   }
   else {
     // production mode -> `@dbux/cli` stand-alone installation
-    nodeModulesParent = DbuxCliRoot;
+    // NOTE: in this case, we find ourselves in `node_modules/dbux-cli`, so `nodeModulesParent` goes up by two
+    nodeModulesParent = path.join(DbuxCliRoot, '../..');
   }
 
-  // register remaining dependencies against `node_modules` folder
-  linkDependencies(depNames.map(name =>
-    [ TODO ]
-  ));
+  // add socket.io-client, so it will be available to `_dbux_run.js` (TerminalWrapper)
+  depNames.push('socket.io-client');
+
+  // register remaining (i.e. all) dependencies against `node_modules` folder
+  const remainingDeps = depNames.map(name =>
+    [name, path.join(nodeModulesParent, 'node_modules', name)]
+  );
+
+  // remainingDeps.push([
+  //   'socket.io-client', '@dbux/runtime/node_modules/socket.io-client'
+  // ]);
+
+  linkDependencies(remainingDeps);
 }

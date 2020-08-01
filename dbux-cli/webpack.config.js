@@ -93,6 +93,9 @@ module.exports = (env, argv) => {
     ...fromEntries(glob.sync(path.join(projectRoot, 'src/{,commands/}*.js')).map(fpath =>
       [fpath.substring(projectSrc.length + 1, fpath.length - 3), fpath]
     )),
+
+    // TODO: dependOn
+    
     // ...fromEntries(glob.sync(path.join(projectRoot, 'config/*.js')).map(fpath =>
     //   [fpath.substring(projectConfig.length + 1, fpath.length - 3), fpath]
     // )),
