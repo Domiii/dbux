@@ -95,7 +95,7 @@ module.exports = (env, argv) => {
     )),
 
     // TODO: dependOn
-    
+
     // ...fromEntries(glob.sync(path.join(projectRoot, 'config/*.js')).map(fpath =>
     //   [fpath.substring(projectConfig.length + 1, fpath.length - 3), fpath]
     // )),
@@ -121,7 +121,15 @@ module.exports = (env, argv) => {
       // sourceMapFilename: outFile + ".map"
     },
 
-    // NOTE: the following generates chunks correctly; however the chunks are not imported in the entries...
+    resolve,
+    module: {
+      rules
+    },
+
+    // // NOTE: the following generates chunks correctly; however the chunks are not imported in the entries...
+    // // "all is not supported on Node in Webpack 4"
+    // // It is fixed in 5.0.0-alpha.13.
+    // // see: https://github.com/webpack/webpack/issues/9133#issuecomment-493183040
     // optimization: {
     //   splitChunks: {
     //     // NOTE: we are currently not generating any common chunks, because
@@ -132,7 +140,7 @@ module.exports = (env, argv) => {
     //         enforceSizeThreshold: 0,
     //         name: 'common-chunks',
     //         minChunks: 2,
-    //         chunks: 'all',
+    //         chunks: 'async',
     //         priority: 10,
     //         reuseExistingChunk: true,
     //         enforce: true
@@ -140,10 +148,6 @@ module.exports = (env, argv) => {
     //     }
     //   }
     // },
-    resolve,
-    module: {
-      rules
-    },
     externals: [
       /^fs$/,
       /^process$/,
