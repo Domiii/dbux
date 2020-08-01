@@ -16,5 +16,7 @@
     "@dbux/graph-common": "^0.1.10",
     "lodash": "^4.17.19",
     "nanoevents": "^2.0.0"
+  },
+  "devDependencies": {
   }
 }

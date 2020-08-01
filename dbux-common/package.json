@@ -13,5 +13,7 @@
     "lodash": "^4.17.19",
     "nanoevents": "^2.0.0"
   },
-  "_moduleAliases": {}
+  "_moduleAliases": {},
+  "devDependencies": {
+  }
 }

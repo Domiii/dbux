@@ -11,19 +11,18 @@ const {
   makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
-} = require('../scripts/package-util');
+} = require('./lib/package-util');
 
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 const projectRoot = path.resolve(__dirname);
-const projectRootNormalized = projectRoot.replace(/\\/g, '/');
+// const projectRootNormalized = projectRoot.replace(/\\/g, '/');
 const projectSrc = path.resolve(projectRoot, 'src');
 const projectConfig = path.resolve(projectRoot, 'config');
 const MonoRoot = path.resolve(__dirname, '..');
 
 module.exports = (env, argv) => {
   const outputFolderName = 'dist';
-  const outFile = 'bundle.js';
 
   const mode = argv.mode || 'development';
   const DBUX_VERSION = getDbuxVersion();
@@ -94,9 +93,9 @@ module.exports = (env, argv) => {
     ...fromEntries(glob.sync(path.join(projectRoot, 'src/{,commands/}*.js')).map(fpath =>
       [fpath.substring(projectSrc.length + 1, fpath.length - 3), fpath]
     )),
-    ...fromEntries(glob.sync(path.join(projectRoot, 'config/*.js')).map(fpath =>
-      [fpath.substring(projectConfig.length + 1, fpath.length - 3), fpath]
-    )),
+    // ...fromEntries(glob.sync(path.join(projectRoot, 'config/*.js')).map(fpath =>
+    //   [fpath.substring(projectConfig.length + 1, fpath.length - 3), fpath]
+    // )),
   };
 
 

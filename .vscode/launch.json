@@ -120,7 +120,7 @@
 				"--stack-trace-limit=1000",
 				"--nolazy",
 			],
-			"program": "${workspaceFolder}/dbux-cli/bin/run.js",
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
 				"run",
 				"-d",
@@ -146,7 +146,7 @@
 				"--stack-trace-limit=1000",
 				"--nolazy",
 			],
-			"program": "${workspaceFolder}/dbux-cli/bin/run.js",
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
 				"-d",
 				"-p",

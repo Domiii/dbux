@@ -1,17 +1,17 @@
-/* eslint-env node */
 /* eslint no-console: 0 */
 
 const path = require('path');
 const webpack = require('webpack');
+
+// add some of our own good stuff
+require('../dbux-cli/lib/_dbux-register-self');
+require('../dbux-common/src/util/prettyLogs');
+
 const {
   makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
-} = require('../scripts/package-util');
-
-// add some of our own good stuff
-require('../dbux-cli/bin/_dbux-register-self');
-require('../dbux-common/src/util/prettyLogs');
+} = require('../dbux-cli/lib/package-util');
 
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);

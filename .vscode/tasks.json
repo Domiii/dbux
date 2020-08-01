@@ -55,8 +55,9 @@
     }
     // {
     //   "label": "Instrument folder (test)",
-    //   "command": "${workspaceRoot}/dbux-cli/bin/dbux-instrument-files.sh",
+    //   "command": "${workspaceRoot}/dbux-cli/bin/dbux.sh",
     //   "args": [
+    //     "i",
     //     "${fileDirname}"
     //   ],
     //   "type": "shell",

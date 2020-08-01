@@ -9,7 +9,7 @@ const {
   makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
-} = require('../scripts/package-util');
+} = require('../dbux-cli/lib/package-util');
 
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);

@@ -1,4 +1,9 @@
+import path from 'path';
+import fs from 'fs';
+import partition from 'lodash/partition';
 import babelRegister from '@babel/register';
+
+import { readPackageJson } from '../lib/package-util';
 
 import buildBabelOptions from './util/buildBabelOptions';
 
@@ -12,8 +17,16 @@ export default function dbuxRegister(options) {
   babelRegister(babelOptions);
 }
 
+function linkDependencies(deps) {
+  for (let [alias, target] of deps) {
+    target = fs.realpathSync(target);
+    console.debug('[DBUX module-alias]', alias, '->', target);
+    moduleAlias.addAlias(alias, target);
+  }
+}
+
 /**
- * GOAL: Make own dependencies available, even if cwd is not local.
+ * Make `@dbux/cli`'s own dependencies (and itself) available, even if cwd does not contain them.
  */
 function linkOwnDependencies() {
   // const DBUX_ROOT = process.env.DBUX_ROOT;
@@ -21,32 +34,42 @@ function linkOwnDependencies() {
   //   throw new Error('[INTERNAL ERROR] DUX_ROOT not defined');
   // }
 
-  // add all of dbux/cli's node_modules via `module-alias`
-  const dbuxDeps = [
-    'common',
-    'cli',
-    'babel-plugin',
-    'runtime'
-  ];
+
+  // NOTE: after webpack build, __dirname is actually `dist`
+  const DbuxCliRoot = path.resolve('..');
+  let pkg = readPackageJson(DbuxCliRoot);
+  const { dependencies } = pkg;
+  let depNames = Object.keys(dependencies);
+
+  // add self
+  depNames.push('@dbux/cli');
+  // dependencies['@dbux/cli'] = process.env.DBUX_VERSION;
+
+  // register all dependencies
+  const dbuxPackagePattern = /@dbux\//;
 
 
+  let nodeModulesParent;
+  if (process.env.NODE_ENV === 'development') {
+    // register dbux dependencies via their development folder
+    // NOTE: in dev folder, dependencies are hoisted to root
+    nodeModulesParent = process.env.DBUX_ROOT;
 
-  // let pkg = readPackageJson(path.join(DBUX_ROOT, 'dbux-cli'));
+    let dbuxDepNames;
+    [dbuxDepNames, depNames] = partition(depNames, dep => dbuxPackagePattern.test(dep));
+    dbuxDepNames = dbuxDepNames.map(name => name.match(/@dbux\/(.*)/)[1]);
 
-  // TODO: add self
-  // TODO: add all dependencies
-  // TODO: if dev mode -> link dbux to root folder
-  //  const pattern = /@dbux\//;
-  // dependencies.filter(dep => pattern.test(dep))
+    linkDependencies(dbuxDepNames.map(name => 
+      [`@dbux/${name}`, path.join(process.env.DBUX_ROOT, `dbux-${name}`)]
+    ));
+  }
+  else {
+    // production mode -> `@dbux/cli` stand-alone installation
+    nodeModulesParent = DbuxCliRoot;
+  }
 
-  // [
-  //   ...dbuxAliases
-  // ].forEach(name => {
-  //   // NOTE: projectsRoot is a sibling folder of the mono repo
-  //   // const relPath = process.env.NODE_ENV === 'production' ? [] : ['..'];
-  //   const alias = `@dbux/${name}`;
-  //   const target = fs.realpathSync(path.join(DBUX_ROOT, `dbux-${name}`));
-  //   console.debug('[DBUX inject]', alias, '->', target);
-  //   moduleAlias.addAlias(alias, target);
-  // });
+  // register remaining dependencies against `node_modules` folder
+  linkDependencies(depNames.map(name =>
+    [ TODO ]
+  ));
 }
