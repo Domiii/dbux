@@ -11,6 +11,7 @@
     "start": "npm run build:watch",
     "start:prod": "npm run build:watch:prod",
     "build:prod": "node ../node_modules/webpack/bin/webpack --mode production",
+    "build:dev": "node ../node_modules/webpack/bin/webpack --mode development",
     "build:watch": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack\" --mode development --watch",
     "build:watch:prod": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack\" --mode production --watch",
     "test": "echo \"Error: no test specified\" && exit 1"

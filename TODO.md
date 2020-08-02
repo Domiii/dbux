@@ -4,7 +4,9 @@
 ## TODO
 * add "Dbux: Run Current File" command to dbux-code
 * code: resilience
-   * add + test dev package script to package.json
+   * fix `_dbux_run.js`
+      * move relevant code to `src` folder
+         * -> when requiring, will have env setup correctly
    * dbux-projects
       * need a button or command to fully clear the `projectsRoot`
       * also delete `ProjectsRoot` when removing extension (use `vscode:uninstall` in `package.json`)

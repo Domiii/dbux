@@ -4,7 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 // add some of our own good stuff
-require('../dbux-cli/lib/_dbux-register-self');
+require('../dbux-cli/lib/dbux-register-self');
 require('../dbux-common/src/util/prettyLogs');
 
 const {

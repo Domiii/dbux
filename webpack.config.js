@@ -12,7 +12,7 @@ const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 
 // add some of our own good stuff
-require('./dbux-cli/lib/_dbux-register-self');
+require('./dbux-cli/lib/dbux-register-self');
 require('./dbux-common/src/util/prettyLogs');
 
 const {

@@ -1,5 +1,6 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
 import SocketClient from '../net/SocketClient';
 import SocketServer from '../net/SocketServer';
 import { sendCommandToDefaultTerminal } from '../codeUtil/terminalUtil';
@@ -100,7 +101,8 @@ export default class TerminalWrapper {
 
     try {
       const runJsArgs = Buffer.from(JSON.stringify({ port, cwd, command, args })).toString('base64');
-      const runJsCommand = `node _dbux_run.js ${runJsArgs}`;
+      const initScript = getDbuxTargetPath('cli', 'lib/dbux-register-self.js');
+      const runJsCommand = `node --require=${initScript} _dbux_run.js ${runJsArgs}`;
       this._terminal = sendCommandToDefaultTerminal(cwd, runJsCommand);
 
       const client = this.client = await socketServer.waitForNextClient();

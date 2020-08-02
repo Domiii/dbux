@@ -8,7 +8,7 @@ const isArray = require('lodash/isArray');
 const LineReader = require('./LineReader');
 
 // make sure, we can import dbux stuff without any problems
-require('../dbux-cli/lib/_dbux-register-self');
+require('../dbux-cli/lib/dbux-register-self');
 
 // Dbux built-in utilities
 require('../dbux-common/src/util/prettyLogs');

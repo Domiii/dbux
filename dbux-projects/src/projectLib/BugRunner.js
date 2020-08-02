@@ -222,10 +222,11 @@ export default class BugRunner {
       }
       else {
         const cwd = project.projectPath;
-        // const devMode = process.env.NODE_ENV === 'development';
+        const devMode = process.env.NODE_ENV === 'development';
         const args = {
-          // NOTE: DBUX_ROOT is provided by webpack
-          // DBUX_ROOT: devMode ? fs.realpathSync(path.join(__dirname, '..', '..')) : null
+          // NOTE: DBUX_ROOT + NODE_ENV are provided by webpack
+          // DBUX_ROOT: devMode ? fs.realpathSync(path.join(__dirname, '..', '..')) : null,
+          // NODE_ENV: process.env.NODE_ENV
         };
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command, args);
         const result = await this._terminalWrapper.waitForResult();
