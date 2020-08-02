@@ -32,3 +32,10 @@ E.g.: `npx @dbux/cli i someFile.js | code -`
 
 ## Package structure
 In addition to the `src` and `dist` folders, it contains a `lib` folder which contains some scripts that are used in several command line utilitiies throughout the project structure (mostly in `webpack.config`s and `publish.js`) and do not require babel'ing.
+
+## Dependency Linking (Aliasing)
+In order to make things easier to use, `@dbux/cli` aliases all it's own dependencies in `linkOwnDependencies.js`.
+
+There is (at least) one big caveat:
+
+* `module-alias` [overwrites ` Module._resolveFilename`](https://github.com/ilearnio/module-alias/blob/dev/index.js#L29) and babel's plugin resolution ignores that (uses [a custom library](https://github.com/browserify/resolve/blob/master/lib/sync.js#L95) instead), meaning that babel plugins cannot be aliased, must either be installed or linked to a local `node_modules` folder in `cwd` or any of its parent directories

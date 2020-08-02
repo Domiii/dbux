@@ -4,14 +4,6 @@
 ## TODO
 * add "Dbux: Run Current File" command to dbux-code
 * code: resilience
-   * fix module lookup
-      * we use `module-alias` to hook everything up
-      * but babel's `resolvePlugin` uses the `resolve` NPM module, which cannot find aliased modules
-      * because `module-alias` injects modules by overwriting `Module._resolveFileName`, while `resolve` does not make use of it
-         * https://github.com/ilearnio/module-alias/blob/dev/index.js#L29
-      * possible solutions?
-         * does NYC provide linkage to even work if required resources are not on cwd?
-         * maybe have to use `link-module-alias` after all?
    * dbux-projects
       * need a button or command to fully clear the `projectsRoot`
       * also delete `ProjectsRoot` when removing extension (use `vscode:uninstall` in `package.json`)

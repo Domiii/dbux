@@ -101,7 +101,7 @@ export default class TerminalWrapper {
 
     try {
       const runJsArgs = Buffer.from(JSON.stringify({ port, cwd, command, args })).toString('base64');
-      const initScript = getDbuxTargetPath('cli', 'lib/link-self.js');
+      const initScript = getDbuxTargetPath('cli', 'lib/link-dependencies.js');
       const runJsCommand = `node --require=${initScript} _dbux_run.js ${runJsArgs}`;
       this._terminal = sendCommandToDefaultTerminal(cwd, runJsCommand);
 
