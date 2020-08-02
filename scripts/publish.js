@@ -173,7 +173,7 @@ async function publishToMarketplace() {
   // await exec('cd dbux-code && yarn list --prod --json');
 
   // publish dbux-code to VSCode marketplace (already built)
-  await exec('npm run code:publish:no-build');
+  await exec('npm run code:publish-no-build');
 
   if (await yesno('Open extension website?')) {
     open('https://marketplace.visualstudio.com/manage/publishers/Domi');
