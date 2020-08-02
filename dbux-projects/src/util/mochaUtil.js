@@ -7,7 +7,7 @@ export async function buildMochaRunBugCommand(cwd, mochaArgs, requireArr = Empty
 
   // NOTE: `Project.installDbuxCli` installs this for us
   // TODO: look up @dbux/cli depending on mode
-  const initScript = getDbuxTargetPath('@dbux/cli/bin/dbux-register.js');
+  const initScript = getDbuxTargetPath('cli', 'lib/dbux-register.js');
   // const initScript = `./_dbux_inject.js`;
 
   // keep alive: if we don't do this, mocha will call `process.exit` when run has ended, and we won't receive data sent by runtime

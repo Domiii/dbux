@@ -2,7 +2,6 @@
 
 
 ## TODO
-* merge PR
 * add "Dbux: Run Current File" command to dbux-code
 * code: resilience
    * add + test dev package script to package.json
@@ -19,6 +18,7 @@
    * handle version updates correctly
       * automatically delete project folder on version update?
          * add user warning (allow user to cancel, which will cancel the whole run)
+* merge PR
 * core instrumentation bugs
    * trace function parameters
    * fix: call traces for getters are off
