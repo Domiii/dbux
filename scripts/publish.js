@@ -176,7 +176,8 @@ async function publishToMarketplace() {
   await exec('npm run code:publish-no-build');
 
   if (await yesno('Open extension website?')) {
-    open('https://marketplace.visualstudio.com/manage/publishers/Domi');
+    // open('https://marketplace.visualstudio.com/manage/publishers/Domi');
+    open('https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code');
   }
 }
 

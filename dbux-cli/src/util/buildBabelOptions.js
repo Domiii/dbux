@@ -3,7 +3,7 @@ import dbuxBabelPlugin from '@dbux/babel-plugin';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 // sanity check: make sure, some core stuff is loaded and working before starting instrumentation
-import '@babel/preset-env';
+// import '@babel/preset-env';
 // import injectDependencies from './injectDependencies';
 
 // import buildDefaultBabelOptions from './defaultBabelOptions';
@@ -37,14 +37,14 @@ export default function buildBabelOptions(options) {
         
         // no node_modules
         if (modulePath.match('(node_modules)|(dist)')) {
-          // console.debug(`dbux-register ignore`, modulePath);
+          console.debug(`dbux-register ignore`, modulePath);
           return true;
         }
 
         modulePath = modulePath.toLowerCase();
 
         const ignore = false;
-        // console.debug(`dbux-register include`, !ignore, modulePath);
+        console.debug(`dbux-register include`, modulePath);
         return ignore;
       }
     ]

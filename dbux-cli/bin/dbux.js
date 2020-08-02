@@ -1,7 +1,5 @@
 const yargs = require('yargs');
 
-// require('./dbux-register-self');
-
 /**
 Some examples:
 * node ./bin/dbux r ../samples/__samplesInput__/calls0.js
