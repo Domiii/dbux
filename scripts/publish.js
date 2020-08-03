@@ -208,6 +208,10 @@ async function main() {
     throw new Error('Not logged in with VS Marketplace. Login first with: `cd dbux-code && npx vsce login dbux`');
   }
 
+  if (yesno('Run start-ssh-agent?')) {
+    await run('start-ssh-agent');
+  }
+
   // await exec(
   //   // 'sh -lc "echo hi ; read x; echo abc$x"',
   //   // 'sh -lc "sleep 1; echo hihi"',
