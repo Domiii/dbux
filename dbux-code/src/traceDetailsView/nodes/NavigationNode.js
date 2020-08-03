@@ -16,6 +16,8 @@ const NavigationMethods = [
   'PreviousParentContext',
   'PreviousStaticTrace',
   'NextStaticTrace',
+  'PreviousTrace',
+  'NextTrace',
 ];
 
 // if default method is not provided, it returns null when `findTargetTrace` failed
