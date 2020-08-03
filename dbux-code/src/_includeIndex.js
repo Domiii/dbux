@@ -1,3 +1,9 @@
+/**
+ * Use this to capture weird errors when loading.
+ * 
+ * @file
+ */
+
 try {
   // eslint-disable-next-line global-require
   const mods = require('./index');

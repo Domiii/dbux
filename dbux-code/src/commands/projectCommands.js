@@ -10,31 +10,31 @@ const { log, debug, warn, error: logError } = logger;
 
 export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbuxProjectView.node.addProjectToWorkspace', (node) => {
-    projectViewController.nodeAddToWorkspace(node);
+    return projectViewController.nodeAddToWorkspace(node);
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.deleteProject', (node) => {
-    node.deleteProject();
+    return node.deleteProject();
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.stopProject', (/* node */) => {
-    projectViewController.manager.runner.cancel();
+    return projectViewController.manager.runner.cancel();
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.activateBugWithDebugger', (node) => {
-    projectViewController.activateBugByNode(node, true);
+    return projectViewController.activateBugByNode(node, true);
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.activateBug', (node) => {
-    projectViewController.activateBugByNode(node);
+    return projectViewController.activateBugByNode(node);
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.busyIcon', (/* node */) => {
-    window.showInformationMessage('[dbux] busy now...');
+    return window.showInformationMessage('[dbux] busy now...');
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.stopBug', (/* node */) => {
-    projectViewController.manager.runner.cancel();
+    return projectViewController.manager.runner.cancel();
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.resetBug', async (node) => {
@@ -42,11 +42,11 @@ export function initProjectCommands(extensionContext, projectViewController) {
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.showWebsite', (node) => {
-    node.showWebsite?.();
+    return node.showWebsite?.();
   });
   
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
-    projectViewController.manager.runner.cancel();
+    return projectViewController.manager.runner.cancel();
   });
 }
 

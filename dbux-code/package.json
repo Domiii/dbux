@@ -1,556 +1,575 @@
 {
-	"name": "dbux-code",
-	"private": true,
-	"displayName": "Dbux ALPHA",
-	"version": "0.1.10",
-	"publisher": "Domi",
-	"description": "",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Domiii/dbux"
-	},
-	"engines": {
-		"vscode": "^1.46.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"*"
-	],
-	"__main": "./src/index.js",
-	"main": "./dist/bundle.js",
-	"contributes": {
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "dbuxViewContainer",
-					"title": "Dbux",
-					"icon": "resources/bug.svg"
-				}
-			]
-		},
-		"views": {
-			"dbuxViewContainer": [
-				{
-					"id": "dbuxTraceDetailsView",
-					"name": "Trace Details"
-				},
-				{
-					"id": "dbuxApplicationsView",
-					"name": "Applications"
-				},
-				{
-					"id": "dbuxProjectView",
-					"name": "Projects"
-				}
-			]
-		},
-		"commands": [
-			{
-				"command": "dbux.cancelBugRunner",
-				"title": "Dbux Projects: Cancel All"
-			},
-			{
-				"command": "dbux.exportApplicationData",
-				"title": "Dbux: Export application data"
-			},
-			{
-				"command": "dbux.showGraphView",
-				"title": "Dbux: Call Graph"
-			},
-			{
-				"command": "dbux.showDecorations",
-				"title": "Dbux: Show decorations"
-			},
-			{
-				"command": "dbux.hideDecorations",
-				"title": "Dbux: Hide all decorations"
-			},
-			{
-				"command": "dbux.toggleNavButton",
-				"title": "Dbux: Toggle all navigation buttons"
-			},
-			{
-				"command": "dbux.toggleErrorLog",
-				"title": "Dbux: Toggle all error log"
-			},
-			{
-				"command": "dbuxCallGraphView.gotoEntry",
-				"title": "Goto"
-			},
-			{
-				"command": "dbuxCallGraphView.showContext",
-				"title": "Show contexts",
-				"icon": {
-					"light": "resources/light/document.svg",
-					"dark": "resources/dark/document.svg"
-				}
-			},
-			{
-				"command": "dbuxCallGraphView.showError",
-				"title": "Show all error",
-				"icon": {
-					"light": "resources/light/fire.svg",
-					"dark": "resources/dark/fire.svg"
-				}
-			},
-			{
-				"command": "dbuxCallGraphView.showError.disabled",
-				"title": "No error occurred",
-				"icon": {
-					"light": "resources/light/fire_disabled.svg",
-					"dark": "resources/dark/fire_disabled.svg"
-				}
-			},
-			{
-				"command": "dbuxCallGraphView.selectError",
-				"title": "Go to first error",
-				"icon": {
-					"light": "resources/light/fire.svg",
-					"dark": "resources/dark/fire.svg"
-				}
-			},
-			{
-				"command": "dbuxCallGraphView.selectError.disabled",
-				"title": "No error occurred",
-				"icon": {
-					"light": "resources/light/fire_disabled.svg",
-					"dark": "resources/dark/fire_disabled.svg"
-				}
-			},
-			{
-				"command": "dbuxCallGraphView.setFilter",
-				"title": "Filter",
-				"icon": {
-					"light": "resources/light/boolean.svg",
-					"dark": "resources/dark/boolean.svg"
-				}
-			},
-			{
-				"command": "dbuxCallGraphView.clearFilter",
-				"title": "Clear Filter",
-				"icon": {
-					"light": "resources/light/clear.svg",
-					"dark": "resources/dark/clear.svg"
-				}
-			},
-			{
-				"command": "dbuxCallStackView.showParent",
-				"title": "Switch to Parent",
-				"icon": {
-					"light": "resources/light/boolean.svg",
-					"dark": "resources/dark/boolean.svg"
-				}
-			},
-			{
-				"command": "dbuxCallStackView.showScheduler",
-				"title": "Switch to Scheduler",
-				"icon": {
-					"light": "resources/light/string.svg",
-					"dark": "resources/dark/string.svg"
-				}
-			},
-			{
-				"command": "dbuxCallStackView.itemClick",
-				"title": "Click"
-			},
-			{
-				"command": "dbuxTraceDetailsView.switchGroupingMode",
-				"title": "SwitchMode",
-				"icon": {
-					"light": "resources/light/string.svg",
-					"dark": "resources/dark/string.svg"
-				}
-			},
-			{
-				"command": "dbuxTraceDetailsView.selectObject",
-				"title": "Select this object",
-				"icon": {
-					"light": "resources/light/boolean.svg",
-					"dark": "resources/dark/boolean.svg"
-				}
-			},
-			{
-				"command": "dbuxTraceDetailsView.navigation.PreviousInContext",
-				"title": "PreviousInContext",
-				"icon": {
-					"light": "resources/light/previousInContext.svg",
-					"dark": "resources/dark/previousInContext.svg"
-				}
-			},
-			{
-				"command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
-				"title": "PreviousChildContext",
-				"icon": {
-					"light": "resources/light/previousChildContext.svg",
-					"dark": "resources/dark/previousChildContext.svg"
-				}
-			},
-			{
-				"command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
-				"title": "PreviousParentContext",
-				"icon": {
-					"light": "resources/light/previousParentContext.svg",
-					"dark": "resources/dark/previousParentContext.svg"
-				}
-			},
-			{
-				"command": "dbuxTraceDetailsView.navigation.NextInContext",
-				"title": "NextInContext",
-				"icon": {
-					"light": "resources/light/nextInContext.svg",
-					"dark": "resources/dark/nextInContext.svg"
-				}
-			},
-			{
-				"command": "dbuxTraceDetailsView.navigation.NextChildContext",
-				"title": "NextChildContext",
-				"icon": {
-					"light": "resources/light/nextChildContext.svg",
-					"dark": "resources/dark/nextChildContext.svg"
-				}
-			},
-			{
-				"command": "dbuxTraceDetailsView.navigation.NextParentContext",
-				"title": "NextParentContext",
-				"icon": {
-					"light": "resources/light/nextParentContext.svg",
-					"dark": "resources/dark/nextParentContext.svg"
-				}
-			},
-			{
-				"command": "dbuxTraceDetailsView.navigation.PreviousStaticTrace",
-				"title": "PreviousStaticTrace",
-				"icon": {
-					"light": "resources/light/previousStaticTrace.svg",
-					"dark": "resources/dark/previousStaticTrace.svg"
-				}
-			},
-			{
-				"command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
-				"title": "NextStaticTrace",
-				"icon": {
-					"light": "resources/light/nextStaticTrace.svg",
-					"dark": "resources/dark/nextStaticTrace.svg"
-				}
-			},
-			{
-				"command": "dbuxTraceDetailsView.selectTraceAtCursor",
-				"title": "Select Trace At Cursor",
-				"icon": {
-					"light": "resources/light/crosshair_red.svg",
-					"dark": "resources/dark/crosshair_red.svg"
-				}
-			},
-			{
-				"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
-				"title": "No traces at cursor",
-				"icon": {
-					"light": "resources/light/crosshair_disabled.svg",
-					"dark": "resources/dark/crosshair_disabled.svg"
-				}
-			},
-			{
-				"command": "dbuxApplicationsView.showEntryPoint",
-				"title": "Go to Entry",
-				"icon": {
-					"light": "resources/light/nextTrace.svg",
-					"dark": "resources/dark/nextTrace.svg"
-				}
-			},
-			{
-				"command": "dbuxProjectView.node.addProjectToWorkspace",
-				"title": "Add Project Folder to Workspace",
-				"icon": {
-					"light": "resources/light/crosshair.svg",
-					"dark": "resources/dark/crosshair.svg"
-				}
-			},
-			{
-				"command": "dbuxProjectView.node.deleteProject",
-				"title": "Delete Project Folder",
-				"icon": {
-					"light": "resources/light/clear.svg",
-					"dark": "resources/dark/clear.svg"
-				}
-			},
-			{
-				"command": "dbuxProjectView.node.stopProject",
-				"title": "Stop project",
-				"icon": {
-					"light": "resources/light/pause.svg",
-					"dark": "resources/dark/pause.svg"
-				}
-			},
-			{
-				"command": "dbuxProjectView.node.activateBugWithDebugger",
-				"title": "Activate Bug With Debugger",
-				"icon": {
-					"light": "resources/light/bug.svg",
-					"dark": "resources/dark/bug.svg"
-				}
-			},
-			{
-				"command": "dbuxProjectView.node.activateBug",
-				"title": "Activate Bug",
-				"icon": {
-					"light": "resources/light/play.svg",
-					"dark": "resources/dark/play.svg"
-				}
-			},
-			{
-				"command": "dbuxProjectView.node.busyIcon",
-				"title": "dbux-project running...",
-				"icon": {
-					"light": "resources/light/hourglass.svg",
-					"dark": "resources/dark/hourglass.svg"
-				}
-			},
-			{
-				"command": "dbuxProjectView.node.stopBug",
-				"title": "Stop bug",
-				"icon": {
-					"light": "resources/light/pause.svg",
-					"dark": "resources/dark/pause.svg"
-				}
-			},
-			{
-				"command": "dbuxProjectView.node.resetBug",
-				"title": "Reset this bug",
-				"icon": {
-					"light": "resources/light/refresh.svg",
-					"dark": "resources/dark/refresh.svg"
-				}
-			},
-			{
-				"command": "dbuxProjectView.node.showWebsite",
-				"title": "Show website",
-				"icon": {
-					"light": "resources/light/boolean.svg",
-					"dark": "resources/dark/boolean.svg"
-				}
-			}
-		],
-		"menus": {
-			"editor/title": [
-				{
-					"command": "dbuxCallGraphView.selectError",
-					"when": "dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
-					"group": "navigation@32"
-				},
-				{
-					"command": "dbuxCallGraphView.selectError.disabled",
-					"when": "dbuxCallGraphView.context.hasError == false && dbux.context.showNavButton == true",
-					"group": "navigation@33"
-				},
-				{
-					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
-					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == true && dbux.context.showNavButton == true",
-					"group": "navigation@11"
-				},
-				{
-					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
-					"when": "dbuxTraceDetailsView.context.hasTracesAtCursor == false && dbux.context.showNavButton == true",
-					"group": "navigation@12"
-				}
-			],
-			"view/item/context": [
-				{
-					"command": "dbuxCallStackView.showParent",
-					"when": "view == dbuxCallStackView && viewItem == callStackNode.both.scheduler",
-					"group": "inline"
-				},
-				{
-					"command": "dbuxCallStackView.showScheduler",
-					"when": "view == dbuxCallStackView && viewItem == callStackNode.both.parent",
-					"group": "inline"
-				},
-				{
-					"command": "dbuxTraceDetailsView.switchGroupingMode",
-					"when": "viewItem == dbuxTraceDetailsView.node.staticTraceTDNodeRoot",
-					"group": "inline"
-				},
-				{
-					"command": "dbuxTraceDetailsView.selectObject",
-					"when": "viewItem == dbuxTraceDetailsView.traceObjectTDNodeRoot.withObjectValue",
-					"group": "inline"
-				},
-				{
-					"command": "dbuxTraceDetailsView.navigation.PreviousInContext",
-					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
-					"group": "inline@3"
-				},
-				{
-					"command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
-					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
-					"group": "inline@2"
-				},
-				{
-					"command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
-					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
-					"group": "inline@1"
-				},
-				{
-					"command": "dbuxTraceDetailsView.navigation.NextInContext",
-					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
-					"group": "inline@4"
-				},
-				{
-					"command": "dbuxTraceDetailsView.navigation.NextChildContext",
-					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
-					"group": "inline@5"
-				},
-				{
-					"command": "dbuxTraceDetailsView.navigation.NextParentContext",
-					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
-					"group": "inline@6"
-				},
-				{
-					"command": "dbuxTraceDetailsView.navigation.PreviousStaticTrace",
-					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
-					"group": "inline@7"
-				},
-				{
-					"command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
-					"when": "viewItem == dbuxTraceDetailsView.navigationNode",
-					"group": "inline@8"
-				},
-				{
-					"command": "dbuxApplicationsView.showEntryPoint",
-					"when": "view == dbuxApplicationsView && viewItem == ApplicationNode",
-					"group": "inline"
-				},
-				{
-					"command": "dbuxProjectView.node.addProjectToWorkspace",
-					"when": "viewItem =~ /dbuxProjectView\\.projectNode/",
-					"group": "inline@1"
-				},
-				{
-					"command": "dbuxProjectView.node.deleteProject",
-					"when": "viewItem =~ /dbuxProjectView\\.projectNode/",
-					"group": "inline@2"
-				},
-				{
-					"command": "dbuxProjectView.node.stopProject",
-					"when": "viewItem == dbuxProjectView.projectNode.RunningInBackground",
-					"group": "inline@0"
-				},
-				{
-					"command": "dbuxProjectView.node.activateBugWithDebugger",
-					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
-					"group": "inline@1"
-				},
-				{
-					"command": "dbuxProjectView.node.activateBug",
-					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
-					"group": "inline@2"
-				},
-				{
-					"command": "dbuxProjectView.node.busyIcon",
-					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && dbuxProjectView.context.isBusy",
-					"group": "inline"
-				},
-				{
-					"command": "dbuxProjectView.node.stopBug",
-					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\..*/",
-					"group": "inline"
-				},
-				{
-					"command": "dbuxProjectView.node.resetBug",
-					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\..*\\..*/",
-					"group": "inline"
-				},
-				{
-					"command": "dbuxProjectView.node.showWebsite",
-					"when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\.hasWebsite/",
-					"group": "inline"
-				}
-			],
-			"view/title": [
-				{
-					"command": "dbuxCallGraphView.setFilter",
-					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering == false",
-					"group": "navigation"
-				},
-				{
-					"command": "dbuxCallGraphView.clearFilter",
-					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering == true",
-					"group": "navigation"
-				},
-				{
-					"command": "dbuxCallGraphView.showContext",
-					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError == true",
-					"group": "navigation"
-				},
-				{
-					"command": "dbuxCallGraphView.showError",
-					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError == true",
-					"group": "navigation"
-				},
-				{
-					"command": "dbuxCallGraphView.showError.disabled",
-					"when": "view == dbuxCallGraphView && dbuxCallGraphView.context.hasError == false",
-					"group": "navigation"
-				},
-				{
-					"command": "dbuxTraceDetailsView.selectTraceAtCursor",
-					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
-					"group": "navigation"
-				},
-				{
-					"command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
-					"when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
-					"group": "navigation"
-				}
-			]
-		}
-	},
-	"scripts": {
-		"test": "node ./test/runTest.js",
-		"build:clean": "rm -rf ./dist ./public ./resources/dist && rm -rf *.vsix",
-		"vscode:prepublish": "",
-		"start": "node ../node_modules/webpack/bin/webpack --mode development --watch",
-		"start-debug": "node --inspect-brk=9233 ../node_modules/webpack/bin/webpack --mode development --watch",
-		"build:resources": "cd ../dbux-graph-client && npm run build:prod",
-		"build:prod": "npm run build:clean && npm run build:resources && node ../node_modules/webpack/bin/webpack --mode production",
-		"build:dev": "npm run build:clean && node ../node_modules/webpack/bin/webpack --mode development",
-		"build:analyze": "npm run build:clean && mkdir dist && node ../node_modules/webpack/bin/webpack --mode production --profile --json > dist/stats.json && npx webpack-bundle-analyzer dist/stats.json",
-		"uninstallself": "code --uninstall-extension Domi.dbux-code",
-		"reinstallself": "npm run uninstallself --silent ; sh -c 'files=(*.vsix); code --install-extension \"${files[0]}\"' && echo 'DBUX installed. >Developer: Reload Window< to see it.'",
-		"package": "npm run build:prod && npm run package:no-build",
-		"package:no-build": "echo 'Packaging...' && vsce package --yarn",
-		"package:install": "npm run package && npm run reinstallself",
-		"package:analyze": "npm run package && rm -rf public && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
-		"package:publish": "npm run package && echo 'Publishing...' && vsce publish --yarn",
-		"package:publish:no-build": "npm run package:no-build && echo 'Publishing...' && vsce publish --yarn"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.1.1",
-		"@types/mocha": "^5.2.7",
-		"@types/node": "^12.11.7",
-		"@types/vscode": "^1.41.0",
-		"copy-webpack-plugin": "^6.0.3",
-		"glob": "^7.1.5",
-		"mocha": "^6.2.2",
-		"typescript": "^3.6.4",
-		"vsce": "^1.77.0",
-		"vscode-test": "^1.2.2",
-		"webpack": "^4.41.5",
-		"webpack-bundle-analyzer": "^3.8.0",
-		"webpack-cli": "^3.3.10"
-	},
-	"dependencies": {
-		"@dbux/cli": "^0.1.10",
-		"@dbux/common": "^0.1.10",
-		"@dbux/data": "^0.1.10",
-		"@dbux/graph-common": "^0.1.10",
-		"@dbux/graph-host": "^0.1.10",
-		"@dbux/projects": "^0.1.10",
-		"lodash": "^4.17.19",
-		"moment": "^2.24.0",
-		"socket.io": "^2.3.0",
-		"strip-color": "^0.1.0"
-	},
-	"_moduleAliases": {}
+  "name": "dbux-code",
+  "private": true,
+  "displayName": "Dbux (ALPHA)",
+  "version": "0.1.15",
+  "publisher": "Domi",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Domiii/dbux"
+  },
+  "engines": {
+    "vscode": "^1.46.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "__main": "./src/index.js",
+  "main": "./dist/bundle.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "dbuxViewContainer",
+          "title": "Dbux",
+          "icon": "resources/bug.svg"
+        }
+      ]
+    },
+    "views": {
+      "dbuxViewContainer": [
+        {
+          "id": "dbuxTraceDetailsView",
+          "name": "Trace Details"
+        },
+        {
+          "id": "dbuxApplicationsView",
+          "name": "Applications"
+        },
+        {
+          "id": "dbuxProjectView",
+          "name": "Projects"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "dbux.cancelBugRunner",
+        "title": "Dbux Projects: Cancel All"
+      },
+      {
+        "command": "dbux.exportApplicationData",
+        "title": "Dbux: Export application data"
+      },
+      {
+        "command": "dbux.showGraphView",
+        "title": "Dbux: Call Graph"
+      },
+      {
+        "command": "dbux.showDecorations",
+        "title": "Dbux: Show decorations"
+      },
+      {
+        "command": "dbux.hideDecorations",
+        "title": "Dbux: Hide all decorations"
+      },
+      {
+        "command": "dbux.toggleNavButton",
+        "title": "Dbux: Toggle all navigation buttons"
+      },
+      {
+        "command": "dbux.toggleErrorLog",
+        "title": "Dbux: Toggle all error log"
+      },
+      {
+        "command": "dbuxCallGraphView.gotoEntry",
+        "title": "Goto"
+      },
+      {
+        "command": "dbuxCallGraphView.showContext",
+        "title": "Show contexts",
+        "icon": {
+          "light": "resources/light/document.svg",
+          "dark": "resources/dark/document.svg"
+        }
+      },
+      {
+        "command": "dbuxCallGraphView.showError",
+        "title": "Show all error",
+        "icon": {
+          "light": "resources/light/fire.svg",
+          "dark": "resources/dark/fire.svg"
+        }
+      },
+      {
+        "command": "dbuxCallGraphView.showError.disabled",
+        "title": "No error occurred",
+        "icon": {
+          "light": "resources/light/fire_disabled.svg",
+          "dark": "resources/dark/fire_disabled.svg"
+        }
+      },
+      {
+        "command": "dbuxCallGraphView.selectError",
+        "title": "Go to first error",
+        "icon": {
+          "light": "resources/light/fire.svg",
+          "dark": "resources/dark/fire.svg"
+        }
+      },
+      {
+        "command": "dbuxCallGraphView.selectError.disabled",
+        "title": "No error occurred",
+        "icon": {
+          "light": "resources/light/fire_disabled.svg",
+          "dark": "resources/dark/fire_disabled.svg"
+        }
+      },
+      {
+        "command": "dbuxCallGraphView.setFilter",
+        "title": "Filter",
+        "icon": {
+          "light": "resources/light/boolean.svg",
+          "dark": "resources/dark/boolean.svg"
+        }
+      },
+      {
+        "command": "dbuxCallGraphView.clearFilter",
+        "title": "Clear Filter",
+        "icon": {
+          "light": "resources/light/clear.svg",
+          "dark": "resources/dark/clear.svg"
+        }
+      },
+      {
+        "command": "dbuxCallStackView.showParent",
+        "title": "Switch to Parent",
+        "icon": {
+          "light": "resources/light/boolean.svg",
+          "dark": "resources/dark/boolean.svg"
+        }
+      },
+      {
+        "command": "dbuxCallStackView.showScheduler",
+        "title": "Switch to Scheduler",
+        "icon": {
+          "light": "resources/light/string.svg",
+          "dark": "resources/dark/string.svg"
+        }
+      },
+      {
+        "command": "dbuxCallStackView.itemClick",
+        "title": "Click"
+      },
+      {
+        "command": "dbuxTraceDetailsView.switchGroupingMode",
+        "title": "SwitchMode",
+        "icon": {
+          "light": "resources/light/string.svg",
+          "dark": "resources/dark/string.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.selectObject",
+        "title": "Select this object",
+        "icon": {
+          "light": "resources/light/boolean.svg",
+          "dark": "resources/dark/boolean.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.navigation.PreviousInContext",
+        "title": "PreviousInContext",
+        "icon": {
+          "light": "resources/light/previousInContext.svg",
+          "dark": "resources/dark/previousInContext.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
+        "title": "PreviousChildContext",
+        "icon": {
+          "light": "resources/light/previousChildContext.svg",
+          "dark": "resources/dark/previousChildContext.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
+        "title": "PreviousParentContext",
+        "icon": {
+          "light": "resources/light/previousParentContext.svg",
+          "dark": "resources/dark/previousParentContext.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.navigation.NextInContext",
+        "title": "NextInContext",
+        "icon": {
+          "light": "resources/light/nextInContext.svg",
+          "dark": "resources/dark/nextInContext.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.navigation.NextChildContext",
+        "title": "NextChildContext",
+        "icon": {
+          "light": "resources/light/nextChildContext.svg",
+          "dark": "resources/dark/nextChildContext.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.navigation.NextParentContext",
+        "title": "NextParentContext",
+        "icon": {
+          "light": "resources/light/nextParentContext.svg",
+          "dark": "resources/dark/nextParentContext.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.navigation.PreviousStaticTrace",
+        "title": "PreviousStaticTrace",
+        "icon": {
+          "light": "resources/light/previousStaticTrace.svg",
+          "dark": "resources/dark/previousStaticTrace.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
+        "title": "NextStaticTrace",
+        "icon": {
+          "light": "resources/light/nextStaticTrace.svg",
+          "dark": "resources/dark/nextStaticTrace.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.navigation.PreviousTrace",
+        "title": "Previous Trace",
+        "icon": {
+          "light": "resources/light/leftArrow.svg",
+          "dark": "resources/dark/leftArrow.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.navigation.NextTrace",
+        "title": "Next Trace",
+        "icon": {
+          "light": "resources/light/rightArrow.svg",
+          "dark": "resources/dark/rightArrow.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.selectTraceAtCursor",
+        "title": "Select Trace At Cursor",
+        "icon": {
+          "light": "resources/light/crosshair_red.svg",
+          "dark": "resources/dark/crosshair_red.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+        "title": "No traces at cursor",
+        "icon": {
+          "light": "resources/light/crosshair_disabled.svg",
+          "dark": "resources/dark/crosshair_disabled.svg"
+        }
+      },
+      {
+        "command": "dbuxApplicationsView.showEntryPoint",
+        "title": "Go to Entry",
+        "icon": {
+          "light": "resources/light/nextTrace.svg",
+          "dark": "resources/dark/nextTrace.svg"
+        }
+      },
+      {
+        "command": "dbuxProjectView.node.addProjectToWorkspace",
+        "title": "Add Project Folder to Workspace",
+        "icon": {
+          "light": "resources/light/crosshair.svg",
+          "dark": "resources/dark/crosshair.svg"
+        }
+      },
+      {
+        "command": "dbuxProjectView.node.deleteProject",
+        "title": "Delete Project Folder",
+        "icon": {
+          "light": "resources/light/clear.svg",
+          "dark": "resources/dark/clear.svg"
+        }
+      },
+      {
+        "command": "dbuxProjectView.node.stopProject",
+        "title": "Stop project",
+        "icon": {
+          "light": "resources/light/pause.svg",
+          "dark": "resources/dark/pause.svg"
+        }
+      },
+      {
+        "command": "dbuxProjectView.node.activateBugWithDebugger",
+        "title": "Activate Bug With Debugger",
+        "icon": {
+          "light": "resources/light/bug.svg",
+          "dark": "resources/dark/bug.svg"
+        }
+      },
+      {
+        "command": "dbuxProjectView.node.activateBug",
+        "title": "Activate Bug",
+        "icon": {
+          "light": "resources/light/play.svg",
+          "dark": "resources/dark/play.svg"
+        }
+      },
+      {
+        "command": "dbuxProjectView.node.busyIcon",
+        "title": "dbux-project running...",
+        "icon": {
+          "light": "resources/light/hourglass.svg",
+          "dark": "resources/dark/hourglass.svg"
+        }
+      },
+      {
+        "command": "dbuxProjectView.node.stopBug",
+        "title": "Stop bug",
+        "icon": {
+          "light": "resources/light/pause.svg",
+          "dark": "resources/dark/pause.svg"
+        }
+      },
+      {
+        "command": "dbuxProjectView.node.resetBug",
+        "title": "Reset this bug",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "dbuxProjectView.node.showWebsite",
+        "title": "Show website",
+        "icon": {
+          "light": "resources/light/boolean.svg",
+          "dark": "resources/dark/boolean.svg"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "dbuxCallGraphView.selectError",
+          "when": "dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
+          "group": "navigation@32"
+        },
+        {
+          "command": "dbuxCallGraphView.selectError.disabled",
+          "when": "dbuxCallGraphView.context.hasError == false && dbux.context.showNavButton == true",
+          "group": "navigation@33"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectTraceAtCursor",
+          "when": "dbuxTraceDetailsView.context.hasTracesAtCursor == true && dbux.context.showNavButton == true",
+          "group": "navigation@11"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+          "when": "dbuxTraceDetailsView.context.hasTracesAtCursor == false && dbux.context.showNavButton == true",
+          "group": "navigation@12"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "dbuxCallStackView.showParent",
+          "when": "view == dbuxCallStackView && viewItem == callStackNode.both.scheduler",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxCallStackView.showScheduler",
+          "when": "view == dbuxCallStackView && viewItem == callStackNode.both.parent",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxTraceDetailsView.switchGroupingMode",
+          "when": "viewItem == dbuxTraceDetailsView.node.staticTraceTDNodeRoot",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectObject",
+          "when": "viewItem == dbuxTraceDetailsView.traceObjectTDNodeRoot.withObjectValue",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousInContext",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@3"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@2"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@1"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextInContext",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@4"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextChildContext",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@5"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextParentContext",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@6"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousStaticTrace",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@7"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@8"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousTrace",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@9"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextTrace",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@10"
+        },
+        {
+          "command": "dbuxApplicationsView.showEntryPoint",
+          "when": "view == dbuxApplicationsView && viewItem == ApplicationNode",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxProjectView.node.addProjectToWorkspace",
+          "when": "viewItem =~ /dbuxProjectView\\.projectNode/",
+          "group": "inline@1"
+        },
+        {
+          "command": "dbuxProjectView.node.deleteProject",
+          "when": "viewItem =~ /dbuxProjectView\\.projectNode/",
+          "group": "inline@2"
+        },
+        {
+          "command": "dbuxProjectView.node.stopProject",
+          "when": "viewItem == dbuxProjectView.projectNode.RunningInBackground",
+          "group": "inline@0"
+        },
+        {
+          "command": "dbuxProjectView.node.activateBugWithDebugger",
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
+          "group": "inline@1"
+        },
+        {
+          "command": "dbuxProjectView.node.activateBug",
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
+          "group": "inline@2"
+        },
+        {
+          "command": "dbuxProjectView.node.busyIcon",
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && dbuxProjectView.context.isBusy",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxProjectView.node.stopBug",
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\..*/",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxProjectView.node.resetBug",
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\..*\\..*/",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxProjectView.node.showWebsite",
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\.hasWebsite/",
+          "group": "inline"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "dbuxCallGraphView.setFilter",
+          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering == false",
+          "group": "navigation"
+        },
+        {
+          "command": "dbuxCallGraphView.clearFilter",
+          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering == true",
+          "group": "navigation"
+        },
+        {
+          "command": "dbuxCallGraphView.showContext",
+          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError == true",
+          "group": "navigation"
+        },
+        {
+          "command": "dbuxCallGraphView.showError",
+          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError == true",
+          "group": "navigation"
+        },
+        {
+          "command": "dbuxCallGraphView.showError.disabled",
+          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.hasError == false",
+          "group": "navigation"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectTraceAtCursor",
+          "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
+          "group": "navigation"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+          "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "test": "node ./test/runTest.js",
+    "build:clean": "rm -rf ./dist ./public ./resources/dist && rm -rf *.vsix",
+    "vscode:prepublish": "",
+    "uninstallself": "code --uninstall-extension Domi.dbux-code",
+    "reinstallself": "yarn run uninstallself --silent ; files=(*.vsix); code --install-extension \"${files[0]}\" && echo 'DBUX installed. >Developer: Reload Window< to see it.'",
+    "package-no-build": "rm -rf *.vsix && echo 'Packaging...' && vsce package --yarn",
+    "package:analyze": "cd .. && yarn run build:prod && cd dbux-code && yarn run package-no-build && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
+    "package:publish-no-build": "yarn run package-no-build && yarn run publish-only",
+    "publish-only": "echo 'Publishing...' && vsce publish --yarn"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.11.7",
+    "@types/vscode": "^1.41.0",
+    "copy-webpack-plugin": "^6.0.3",
+    "glob": "^7.1.5",
+    "mocha": "^6.2.2",
+    "typescript": "^3.6.4",
+    "vsce": "^1.77.0",
+    "vscode-test": "^1.2.2",
+    "webpack": "^4.41.5",
+    "webpack-bundle-analyzer": "^3.8.0",
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^2.5.0"
+  },
+  "dependencies": {
+    "@dbux/cli": "^0.1.15",
+    "@dbux/common": "^0.1.15",
+    "@dbux/data": "^0.1.15",
+    "@dbux/graph-common": "^0.1.15",
+    "@dbux/graph-host": "^0.1.15",
+    "@dbux/projects": "^0.1.15",
+    "lodash": "^4.17.19",
+    "moment": "^2.24.0",
+    "socket.io": "^2.3.0",
+    "strip-color": "^0.1.0"
+  },
+  "_moduleAliases": {}
 }

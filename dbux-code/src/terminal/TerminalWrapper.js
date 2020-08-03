@@ -1,5 +1,6 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
 import SocketClient from '../net/SocketClient';
 import SocketServer from '../net/SocketServer';
 import { sendCommandToDefaultTerminal } from '../codeUtil/terminalUtil';
@@ -83,28 +84,29 @@ class TerminalSocketServer extends SocketServer {
 export default class TerminalWrapper {
   _disposable;
 
-  start(cwd, command, port) {
+  start(cwd, command, port, args) {
     this._disposable = window.onDidCloseTerminal(terminal => {
       if (terminal === this._terminal) {
         this.dispose();
       }
     });
-    this._promise = this._run(cwd, command, port);
+    this._promise = this._run(cwd, command, port, args);
   }
 
   async waitForResult() {
     return this._promise;
   }
 
-  async _run(cwd, command, port) {
+  async _run(cwd, command, port, args) {
     // see: https://socket.io/docs/server-api/
     let socketServer = this.socketServer = new TerminalSocketServer();
     socketServer.start(port);
     Verbose && debug('started');
 
     try {
-      const args = Buffer.from(JSON.stringify({ port, cwd, command })).toString('base64');
-      const runJsCommand = `node _dbux_run.js ${args}`;
+      const runJsArgs = Buffer.from(JSON.stringify({ port, cwd, command, args })).toString('base64');
+      const initScript = getDbuxTargetPath('cli', 'lib/link-dependencies.js');
+      const runJsCommand = `node --require=${initScript} _dbux_run.js ${runJsArgs}`;
       this._terminal = sendCommandToDefaultTerminal(cwd, runJsCommand);
 
       const client = this.client = await socketServer.waitForNextClient();
@@ -142,12 +144,12 @@ export default class TerminalWrapper {
   }
 }
 
-export function execInTerminal(cwd, command) {
+export function execInTerminal(cwd, command, args) {
   const port = 6543;
 
   // TODO: register wrapper with context
 
   const wrapper = new TerminalWrapper();
-  wrapper.start(cwd, command, port);
+  wrapper.start(cwd, command, port, args);
   return wrapper;
 }

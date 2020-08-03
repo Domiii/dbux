@@ -7,12 +7,13 @@ import {
 } from 'vscode';
 import path from 'path';
 import { buildWebviewClientHtml } from './clientSource';
+import { set as mementoSet, get as mementoGet } from '../memento';
 import { goToTrace } from '../codeUtil/codeNav';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('GraphViewHost');
 
-
+const mementoKey = 'dbux-code.GraphWebView.Column';
 const defaultColumn = ViewColumn.Two;
 
 export default class GraphWebView {
@@ -25,6 +26,26 @@ export default class GraphWebView {
   constructor(extensionContext) {
     this.extensionContext = extensionContext;
     this.wasVisible = false;
+    this.restorePreviousState();
+  }
+
+  _getPreviousState() {
+    return mementoGet(mementoKey);
+  }
+
+  async _setCurrentState(state) {
+    return mementoSet(mementoKey, state);
+  }
+
+  restorePreviousState() {
+    let state = this._getPreviousState();
+    if (state) {
+      this.show();
+    }
+  }
+
+  _getViewColumn() {
+    return this._getPreviousState() || defaultColumn;
   }
 
   /**
@@ -43,7 +64,7 @@ export default class GraphWebView {
   reveal() {
     if (this.panel) {
       // reveal
-      this.panel.reveal(defaultColumn);
+      this.panel.reveal(this._getViewColumn());
       return true;
     }
     return false;
@@ -108,10 +129,13 @@ export default class GraphWebView {
     const webviewId = 'dbux-graph';
     const title = 'Call Graph';
 
+    let viewColumn = this._getViewColumn();
+    this._setCurrentState(viewColumn);
+
     this.panel = window.createWebviewPanel(
       webviewId,
       title,
-      defaultColumn, // Editor column to show the new webview panel in.
+      viewColumn, // Editor column to show the new webview panel in.
       {
         enableScripts: true,
         localResourceRoots: [Uri.file(this.resourcePath)]
@@ -129,6 +153,7 @@ export default class GraphWebView {
       () => {
         // do further cleanup operations
         this.panel = null;
+        this._setCurrentState(null);
       },
       null,
       this.extensionContext.subscriptions
@@ -180,7 +205,10 @@ export default class GraphWebView {
    */
   handleDidChangeViewState = ({ webviewPanel }) => {
     // debug('handleDidChangeViewState', webviewPanel.visible, performance.now());
-    
+
+    const { viewColumn } = webviewPanel;
+    this._setCurrentState(viewColumn);
+
     // on closed, silent shutdown
     if (this.wasVisible && !webviewPanel.visible) {
       this.wasVisible = webviewPanel.visible;

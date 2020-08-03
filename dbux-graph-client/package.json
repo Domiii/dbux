@@ -1,6 +1,6 @@
 {
   "name": "@dbux/graph-client",
-  "version": "0.1.10",
+  "version": "0.1.15",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -11,6 +11,7 @@
     "start": "npm run build:watch",
     "start:prod": "npm run build:watch:prod",
     "build:prod": "node ../node_modules/webpack/bin/webpack --mode production",
+    "build:dev": "node ../node_modules/webpack/bin/webpack --mode development",
     "build:watch": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack\" --mode development --watch",
     "build:watch:prod": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack\" --mode production --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -19,9 +20,9 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.1.10",
-    "@dbux/graph-common": "^0.1.10",
-    "@dbux/panzoom": "^0.1.10",
+    "@dbux/common": "^0.1.15",
+    "@dbux/graph-common": "^0.1.15",
+    "@dbux/panzoom": "^0.1.15",
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
     "html2canvas": "^1.0.0-rc.5",

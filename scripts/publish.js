@@ -8,7 +8,7 @@ const isArray = require('lodash/isArray');
 const LineReader = require('./LineReader');
 
 // make sure, we can import dbux stuff without any problems
-require('../dbux-cli/bin/_dbux-register-self');
+require('../dbux-cli/lib/dbux-register-self');
 
 // Dbux built-in utilities
 require('../dbux-common/src/util/prettyLogs');
@@ -166,22 +166,20 @@ async function publishToMarketplace() {
   //   open('https://dev.azure.com/dbux');
   // }
 
-  // after version bump, things are not linked up correctly anymore
-  await exec('npx lerna bootstrap --force-local && npx lerna link --force-local');
-
   // // make sure dbux-code is ready
   // await exec('cd dbux-code && yarn list --prod --json');
 
   // publish dbux-code to VSCode marketplace (already built)
-  await exec('npm run code:publish:no-build');
+  await exec('npm run code:publish-no-build');
 
   if (await yesno('Open extension website?')) {
-    open('https://marketplace.visualstudio.com/manage/publishers/Domi');
+    // open('https://marketplace.visualstudio.com/manage/publishers/Domi');
+    open('https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code');
   }
 }
 
 async function fixLerna() {
-  debug('Fixing up package.json files (lerna hackfix)...');
+  debug('Checking for invalid entries in package.json files (lerna hackfix)...');
 
   await exec('npm run dbux-lerna-fix');
 }
@@ -210,6 +208,10 @@ async function main() {
     throw new Error('Not logged in with VS Marketplace. Login first with: `cd dbux-code && npx vsce login dbux`');
   }
 
+  if (await yesno('Run start-ssh-agent?')) {
+    await run('start-ssh-agent');
+  }
+
   // await exec(
   //   // 'sh -lc "echo hi ; read x; echo abc$x"',
   //   // 'sh -lc "sleep 1; echo hihi"',
@@ -227,7 +229,12 @@ async function main() {
 
   await publishToNPM();
 
-  await publishToMarketplace();
+  if (await yesno('Published to NPM. Also publish to Marketplace?')) {
+    await publishToMarketplace();
+  }
+  else if (await yesno('Install locally?')) {
+    await exec('npm run code:install');
+  }
 
   await fixLerna();
 

@@ -1,4 +1,6 @@
 import NanoEvents from 'nanoevents';
+import path from 'path';
+import fs from 'fs';
 import sh from 'shelljs';
 import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -139,16 +141,18 @@ export default class BugRunner {
     const keyName = 'activatedBug';
     let previousBugInformation = this.manager.externals.storage.get(keyName);
 
-    // if (previousBugInformation) {
-    //   let { projectName, bugId } = previousBugInformation;
+    if (previousBugInformation) {
+      let { projectName, bugId } = previousBugInformation;
 
-    //   let previousBug = this.manager.getOrCreateDefaultProjectList().getByName(projectName).getOrLoadBugs().getById(bugId);
+      let previousProject = this.manager.getOrCreateDefaultProjectList().getByName(projectName);
 
-    //   if (previousBug !== bug) {
-    //     await this.manager.saveRunningBug(previousBug);
-    //     await previousBug.project.gitResetHard();
-    //   }
-    // }
+      if (await previousProject.isProjectFolderExists()) {
+        let previousBug = previousProject.getOrLoadBugs().getById(bugId);
+
+        await this.manager.saveRunningBug(previousBug);
+        await previousBug.project.gitResetHard();
+      }
+    }
 
     await this.manager.externals.storage.set(keyName, {
       projectName: bug.project.name,
@@ -201,12 +205,19 @@ export default class BugRunner {
   async testBug(bug, debugMode = true) {
     const { project } = bug;
 
+    // // testing `installDbuxCli`
+    // sh.mkdir('-p', project.projectPath);
+    // await project.manager.installDependencies();
+    // return;
+
     try {
       // do whatever it takes (usually: `activateProject` -> `git checkout`)
       await this.activateBug(bug);
 
       // apply stored patch
-      await bug.project.manager.applyNewBugPatch(bug);
+      if (!await bug.project.manager.applyNewBugPatch(bug)) {
+        return null;
+      }
 
       // hackfix: set status here again in case of `this.activateBug` skips installaion process
       this.setStatus(BugRunnerStatus.Busy);
@@ -221,8 +232,14 @@ export default class BugRunner {
       }
       else {
         const cwd = project.projectPath;
-        command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
-        this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
+        // const devMode = process.env.NODE_ENV === 'development';
+        const args = {
+          // NOTE: DBUX_ROOT + NODE_ENV are provided by webpack
+
+          // DBUX_ROOT: devMode ? fs.realpathSync(path.join(__dirname, '..', '..')) : null,
+          // NODE_ENV: process.env.NODE_ENV
+        };
+        this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command, args);
         const result = await this._terminalWrapper.waitForResult();
         await this.manager.progressLogController.util.processBugProgress(bug, result);
         if (result.code === 0) {

@@ -44,6 +44,7 @@
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 			"outFiles": [
+				"${workspaceFolder}/dbux-cli/dist/**/*.js",
 				"${workspaceFolder}/dbux-babel-plugin/dist/**/*.js",
 				"${workspaceFolder}/dbux-runtime/dist/**/*.js"
 			]
@@ -79,6 +80,7 @@
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 			"outFiles": [
+				"${workspaceFolder}/dbux-cli/dist/**/*.js",
 				"${workspaceRoot}/dbux-babel-plugin/dist/**/*.js"
 			]
 		},
@@ -120,7 +122,7 @@
 				"--stack-trace-limit=1000",
 				"--nolazy",
 			],
-			"program": "${workspaceFolder}/dbux-cli/bin/run.js",
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
 				"run",
 				"-d",
@@ -146,7 +148,7 @@
 				"--stack-trace-limit=1000",
 				"--nolazy",
 			],
-			"program": "${workspaceFolder}/dbux-cli/bin/run.js",
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
 				"-d",
 				"-p",
@@ -276,6 +278,7 @@
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 			"outFiles": [
+				"${workspaceFolder}/dbux-cli/dist/**/*.js",
 				"${workspaceFolder}/dbux-babel-plugin/dist/**/*.js",
 				"${workspaceFolder}/dbux-runtime/dist/**/*.js"
 			]
