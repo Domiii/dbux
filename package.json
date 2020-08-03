@@ -84,6 +84,7 @@
 		"eslint:testit": "cat test.txt | grep -E \"^(\\w|/).*\\.js\"",
 		"eslint:files:open": "code $(npx eslint \"dbux-**/src/**/*.js\" | grep -E \"^(\\w|/).*\\.js\")",
 		"code:install": "cd dbux-code && yarn run package-no-build && yarn run reinstallself",
+		"code:install-only": "cd dbux-code && yarn run reinstallself",
 		"code:install:prod": "yarn run build:prod && yarn run code:install",
 		"code:install:dev": "yarn run build:dev && yarn run code:install",
 		"code:uninstall": "cd dbux-code && yarn run uninstallself",

@@ -57,6 +57,7 @@ module.exports = (env, argv) => {
 
 
   const dependencyPaths = [
+    "dbux-cli",
     "dbux-common",
     "dbux-runtime",
     "dbux-babel-plugin"

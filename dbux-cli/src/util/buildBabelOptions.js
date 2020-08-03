@@ -7,7 +7,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import injectDependencies from './injectDependencies';
 
 // import buildDefaultBabelOptions from './defaultBabelOptions';
-const baseBabelOptions = require('../../config/.babelrc');
+const baseBabelOptions = require('../../.babelrc');
 
 export default function buildBabelOptions(options) {
   process.env.BABEL_DISABLE_CACHE = 1;

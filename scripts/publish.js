@@ -229,7 +229,9 @@ async function main() {
 
   await publishToNPM();
 
-  await publishToMarketplace();
+  if (yesno('Published to NPM. Also publish to Marketplace?')) {
+    await publishToMarketplace();
+  }
 
   await fixLerna();
 

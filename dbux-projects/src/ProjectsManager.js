@@ -149,11 +149,11 @@ class ProjectsManager {
       }
     };
 
-    // const projectsRootPackageJson = path.join(projectsRoot, 'package.json');
-    // if (!await sh.test('-f', projectsRootPackageJson)) {
-    //   // make sure, we have a local `package.json`
-    //   await this.runner._exec('npm init -y', logger, execOptions);
-    // }
+    const projectsRootPackageJson = path.join(projectsRoot, 'package.json');
+    if (!await sh.test('-f', projectsRootPackageJson)) {
+      // make sure, we have a local `package.json`
+      await this.runner._exec('npm init -y', logger, execOptions);
+    }
 
     // delete previously installed node_modules
     // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
