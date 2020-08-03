@@ -236,6 +236,22 @@
         }
       },
       {
+        "command": "dbuxTraceDetailsView.navigation.PreviousTrace",
+        "title": "Previous Trace",
+        "icon": {
+          "light": "resources/light/leftArrow.svg",
+          "dark": "resources/dark/leftArrow.svg"
+        }
+      },
+      {
+        "command": "dbuxTraceDetailsView.navigation.NextTrace",
+        "title": "Next Trace",
+        "icon": {
+          "light": "resources/light/rightArrow.svg",
+          "dark": "resources/dark/rightArrow.svg"
+        }
+      },
+      {
         "command": "dbuxTraceDetailsView.selectTraceAtCursor",
         "title": "Select Trace At Cursor",
         "icon": {
@@ -407,6 +423,16 @@
           "command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
           "when": "viewItem == dbuxTraceDetailsView.navigationNode",
           "group": "inline@8"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousTrace",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@9"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextTrace",
+          "when": "viewItem == dbuxTraceDetailsView.navigationNode",
+          "group": "inline@10"
         },
         {
           "command": "dbuxApplicationsView.showEntryPoint",

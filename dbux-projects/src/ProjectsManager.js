@@ -2,7 +2,6 @@ import path from 'path';
 import fs from 'fs';
 import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
-import pick from 'lodash/pick';
 import size from 'lodash/size';
 import getOrCreateProgressLog from './dataLib';
 import processLogHandler from './dataLib/progressLog';
@@ -88,9 +87,25 @@ class ProjectsManager {
     }, undefined);
     let patchString = testRun?.patch;
 
-    // if (patchString) {
-    //   await bug.project.applyPatchString(patchString);
-    // }
+    if (patchString) {
+      try {
+        await bug.project.applyPatchString(patchString);
+        return true;
+      } catch (err) {
+        let keepRunning = await this.externals.showMessage.showWarningMessage(`Failed when applying previous progress of this bug.`, {
+          'Show diff in new tab and cancel': () => {
+            this.externals.editor.showTextInNewFile(`diff.diff`, patchString);
+            return false;
+          },
+          'Ignore and keep running': () => {
+            return true;
+          },
+        }, { modal: true });
+        return keepRunning;
+      }
+    } else {
+      return true;
+    }
   }
 
   async installDependencies() {
