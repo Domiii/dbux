@@ -10,15 +10,13 @@
 const fs = require('fs');
 const path = require('path');
 
+// make sure, we can import dbux stuff without any problems
+require('../dbux-cli/lib/dbux-register-self');
+require('../dbux-common/src/util/prettyLogs');
+
 const {
   readPackageJson
-} = require('./package-util');
-
-// make sure, we can import dbux stuff without any problems
-require('../dbux-cli/bin/_dbux-register-self');
-
-// Dbux built-in utilities
-require('../dbux-common/src/util/prettyLogs');
+} = require('../dbux-cli/lib/package-util');
 
 function main() {
   const folder = fs.realpathSync('.');

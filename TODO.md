@@ -2,17 +2,20 @@
 
 
 ## TODO
-* add "Dbux: Run" command to dbux-code
+* add "Dbux: Run Current File" command to dbux-code
 * code: resilience
-   * system integrity check upon first run?
+   * dbux-projects
+      * need a button or command to fully clear the `projectsRoot`
+   * system integrity check upon first run
       * bash (all shell execution must work)
       * node
       * npm
       * git
-   * allow to fully test local package without having to publish first
-      * needs to "full install" `@dbux/cli` and its dependencies
-   * make sure, `injectDependencies` always works
-      * make sure, all required babel dependencies are injected?
+   * handle version updates correctly
+      * -> make sure, we install correct dependencies (especially @dbux/cli) version
+      * automatically delete project folder on version update?
+         * add user warning (allow user to cancel, which will cancel the whole run)
+* merge PR
 * core instrumentation bugs
    * trace function parameters
    * fix: call traces for getters are off

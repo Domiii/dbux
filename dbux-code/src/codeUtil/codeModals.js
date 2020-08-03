@@ -14,13 +14,21 @@ showInformationMessage(value, {
 }, { modal: true });
 ```
  */
-export async function showInformationMessage(message, btnConfig, messageCfg = EmptyObject) {
+export async function showInformationMessage(message, btnConfig, messageCfg = EmptyObject, cancelCallback) {
   const result = await window.showInformationMessage(message, messageCfg, ...Object.keys(btnConfig));
+  if (result === undefined) {
+    await cancelCallback?.();
+    return null;
+  }
   return await result && btnConfig[result]?.() || null;
 }
 
-export async function showWarningMessage(message, btnConfig, messageCfg = EmptyObject) {
+export async function showWarningMessage(message, btnConfig, messageCfg = EmptyObject, cancelCallback) {
   const result = await window.showWarningMessage(message, messageCfg, ...Object.keys(btnConfig));
+  if (result === undefined) {
+    await cancelCallback?.();
+    return null;
+  }
   return await result && btnConfig[result]?.() || null;
 }
 

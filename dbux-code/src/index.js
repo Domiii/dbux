@@ -18,7 +18,7 @@ import { initApplicationsView } from './applicationsView/applicationsViewControl
 import { initProjectView } from './projectView/projectViewController';
 import { initMemento } from './memento';
 import { initLogging } from './logging';
-import { showGraphView } from './graphView';
+import { restoreGraphView } from './graphView';
 import { initDbuxPractice } from './practice/dbuxPracticeController';
 
 
@@ -81,7 +81,7 @@ function activate(context) {
     );
 
     // for now, let's activate the graph view right away
-    showGraphView(context);
+    restoreGraphView(context);
   } catch (e) {
     logError('could not activate', e);
     debugger;

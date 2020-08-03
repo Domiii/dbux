@@ -307,6 +307,10 @@ export default class Project {
     this._installed = false;
   }
 
+  async isProjectFolderExists() {
+    return sh.test('-d', path.join(this.projectPath, '.git'));
+  }
+
 
   async gitClone() {
     const {
@@ -321,7 +325,7 @@ export default class Project {
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    if (!await sh.test('-d', projectPath)) {
+    if (!await this.isProjectFolderExists()) {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
@@ -353,11 +357,12 @@ export default class Project {
   }
 
   async npmInstall() {
-    await this.exec('npm cache verify');
+    // await this.exec('npm cache verify');
 
     await this.exec(`npm install`);
 
     // hackfix: npm installs are broken somehow.
+    //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
     //      Sometimes running it a second time after checking out a different branch 
     //      deletes all node_modules. This will bring everything back correctly (for now).
     await this.exec(`npm install`);
