@@ -178,7 +178,7 @@ export default class GraphWebView {
    * 
    * @see https://code.visualstudio.com/api/extension-guides/webview#persistence
    */
-  handleDidChangeViewState = (/* { webviewPanel } */) => {
+  handleDidChangeViewState = ({ webviewPanel }) => {
     // debug('handleDidChangeViewState', webviewPanel.visible, performance.now());
     
     // on closed, silent shutdown
