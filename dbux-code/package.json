@@ -498,8 +498,8 @@
     "build:clean": "rm -rf ./dist ./public ./resources/dist && rm -rf *.vsix",
     "vscode:prepublish": "",
     "uninstallself": "code --uninstall-extension Domi.dbux-code",
-    "reinstallself": "yarn run uninstallself --silent ; sh -c 'files=(*.vsix); code --install-extension \"${files[0]}\"' && echo 'DBUX installed. >Developer: Reload Window< to see it.'",
-    "package-no-build": "echo 'Packaging...' && vsce package --yarn",
+    "reinstallself": "yarn run uninstallself --silent ; files=(*.vsix); code --install-extension \"${files[0]}\" && echo 'DBUX installed. >Developer: Reload Window< to see it.'",
+    "package-no-build": "rm -rf *.vsix && echo 'Packaging...' && vsce package --yarn",
     "package:analyze": "cd .. && yarn run build:prod && cd dbux-code && yarn run package-no-build && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
     "package:publish-no-build": "yarn run package-no-build && echo 'Publishing...' && vsce publish --yarn"
   },

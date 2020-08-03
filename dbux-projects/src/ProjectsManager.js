@@ -15,27 +15,6 @@ const logger = newLogger('dbux-projects');
 const { debug } = logger;
 
 
-function readJsonFile(fpath) {
-  const content = fs.readFileSync(fpath);
-  return JSON.parse(content);
-}
-
-function readPackageJson(folder) {
-  const packageJsonPath = path.join(folder, 'package.json');
-  return readJsonFile(packageJsonPath);
-}
-
-function writeJSonFile(fpath, obj) {
-  const content = JSON.stringify(obj, null, 2);
-  fs.writeFileSync(fpath, content);
-}
-
-function writePackageJson(folder, pkg) {
-  const packageJsonPath = path.join(folder, 'package.json');
-  return writeJSonFile(packageJsonPath, pkg);
-}
-
-
 class ProjectsManager {
   config;
   externals;
