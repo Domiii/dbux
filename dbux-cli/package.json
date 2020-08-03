@@ -1,6 +1,6 @@
 {
   "name": "@dbux/cli",
-  "version": "0.1.7",
+  "version": "0.1.10",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -8,8 +8,7 @@
     "_postinstall": "yarn --check-files --ignore-scripts"
   },
   "bin": {
-    "dbux-run-file": "./bin/dbux-run-file.js",
-    "dbux-register": "./bin/dbux-register.js"
+    "dbux": "./bin/dbux.js"
   },
   "main": "./src/index.js",
   "keywords": [],
@@ -28,13 +27,12 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
     "@babel/register": "^7.8.3",
-    "@dbux/babel-plugin": "^0.1.7",
-    "@dbux/common": "^0.1.7",
-    "@dbux/runtime": "^0.1.7",
+    "@dbux/babel-plugin": "^0.1.10",
+    "@dbux/common": "^0.1.10",
+    "@dbux/runtime": "^0.1.10",
     "module-alias": "^2.2.2",
     "prettier": "^2.0.5",
     "shelljs": "*",
     "yargs": "*"
-  },
-  "gitHead": "75f118096ec610225ed37081b28db70b21e95ce3"
+  }
 }

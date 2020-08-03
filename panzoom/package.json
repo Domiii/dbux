@@ -1,6 +1,6 @@
 {
   "name": "@dbux/panzoom",
-  "version": "0.1.7",
+  "version": "0.1.10",
   "description": "Extensible, mobile friendly pan and zoom framework (supports DOM and SVG).",
   "main": "index.js",
   "scripts": {
@@ -30,6 +30,5 @@
     "jsdom": "^16.2.2",
     "tap": "^14.10.7",
     "uglify-js": "^3.9.1"
-  },
-  "gitHead": "75f118096ec610225ed37081b28db70b21e95ce3"
+  }
 }
