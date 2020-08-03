@@ -1,6 +1,6 @@
 import NanoEvents from 'nanoevents';
 import { performance } from 'perf_hooks';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 
 const { log, debug, warn, error: logError } = newLogger('Stopwatch');
 
