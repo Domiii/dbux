@@ -2,6 +2,10 @@
 	"name": "@dbux/monoroot",
 	"displayName": "DBUX Monoroot",
 	"private": true,
+	"workspaces": [	
+		"dbux-*",	
+		"panzoom"	
+	],
 	"devDependencies": {
 		"@babel/cli": "^7.8.3",
 		"@babel/core": "^7.8.3",

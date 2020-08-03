@@ -2,8 +2,5 @@
   "version": "0.1.15",
   "strict": true,
   "npmClient": "yarn",
-  "packages": [
-    "dbux-*",
-    "panzoom"
-  ]
+  "useWorkspaces": true
 }
