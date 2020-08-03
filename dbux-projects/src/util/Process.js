@@ -183,7 +183,7 @@ export default class Process {
           reject(new Error('Process was killed'));
         }
         else if (failOnStatusCode && code) {
-          reject(code);
+          reject(new Error('statusCode: ' + code));
         }
         else {
           resolve(code);

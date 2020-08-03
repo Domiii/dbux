@@ -4,4 +4,4 @@ require('./_dbux-register-self');
 
 const dbuxRegister = require('../src/dbuxRegister').default;
 
-dbuxRegister();
+dbuxRegister({});

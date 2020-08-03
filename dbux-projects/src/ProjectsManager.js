@@ -1,14 +1,24 @@
-import Process from './util/Process';
+import path from 'path';
+import fs from 'fs';
+import { newLogger } from '@dbux/common/src/log/logger';
 import getOrCreateProgressLog from './dataLib';
 import processLogHandler from './dataLib/progressLog';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
 
-import { newLogger } from '@dbux/common/src/log/logger';
+const logger = newLogger('dbux-projects');
+const { debug } = logger;
 
-const logger = newLogger('ProjectsManager');
-const { log, debug, warn, error: logError } = logger;
+function readJsonFile(fpath) {
+  const content = fs.readFileSync(fpath);
+  return JSON.parse(content);
+}
+
+function readPackageJson(folder) {
+  const packageJsonPath = path.join(folder, 'package.json');
+  return readJsonFile(packageJsonPath);
+}
 
 class ProjectsManager {
   config;
@@ -89,18 +99,60 @@ class ProjectsManager {
   }
 
   async installDependencies() {
-    const { projectsRoot } = this.config;
+    await this.installDbuxCli();
+  }
 
-    if (true || process.env.NODE_ENV === 'production') {
-      // TODO: install dbux dependencies + their dependencies
+  async installDbuxCli() {
+    // await exec('pwd', this.logger);
 
-      // _dbux_run.js requires socket.io-client -> install in projects/ root
-      //    NOTE: this will be taken care of by installing above dependencies automatically (because runtime also depends on `socket.io-client`)
-      await Process.exec(`yarn add socket.io-client@2.3.0`, {
+    if (!process.env.DBUX_VERSION) {
+      throw new Error('installDbuxCli() failed. DBUX_VERSION was not set.');
+    }
+
+    let dbuxDeps;
+
+    if (process.env.NODE_ENV === 'production') {
+      // in stand-alone mode, npm flattens the dependency tree in `node_modules`, thereby adding all other required dependencies
+      dbuxDeps = [
+        '@dbux/cli'
+      ];
+
+      dbuxDeps = dbuxDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
+      
+      const { projectsRoot } = this.config;
+      const options = {
         processOptions: {
           cwd: projectsRoot
         }
-      });
+      };
+      
+      debug(`Verifying NPM cache. This might (or might not) take a while...`);
+      await this.runner._exec('npm cache verify', logger, options);
+      await this.runner._exec(`npm i ${dbuxDeps.join(' ')}`, logger, options);
+    }
+    else {
+      // NOTE: hoisting takes care of everything for us
+
+      // // hackfix: read socket.io version from dbux-runtime package.json
+      // // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
+
+      // // NOTE: __dirname is actually "..../dbux-code/dist", because of webpack
+      // const pkgPath = path.join(__dirname, '..', '..', 'dbux-runtime');
+      // const pkg = readPackageJson(pkgPath);
+      // const socketIoName = 'socket.io-client';
+      // const socketIoVersion = pkg?.dependencies?.
+      //   [socketIoName]?.
+      //   match(/\d+\.\d+.\d+/)?.[0];
+
+      // if (!socketIoVersion) {
+      //   throw new Error(`'Could not retrieve version of ${socketIoName} in "${pkgPath}"`);
+      // }
+      // dbuxDeps = [
+      //   'file://../dbux-common',
+      //   'file://../dbux-runtime',
+      //   'file://../dbux-cli',
+      //   `${socketIoName}@${socketIoVersion}`
+      // ];
     }
   }
 }

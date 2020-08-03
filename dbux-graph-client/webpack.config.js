@@ -6,7 +6,12 @@ const {
   makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
-} = require('../scripts/webpack.util');
+} = require('../scripts/package-util');
+
+// add some of our own good stuff
+require('../dbux-cli/bin/_dbux-register-self');
+require('../dbux-common/src/util/prettyLogs');
+
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 

@@ -11,7 +11,7 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import truncate from 'lodash/truncate';
 import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
-import { loopVisitor } from './loopVisitors';
+// import { loopVisitor } from './loopVisitors';
 import { isCallPath } from '../helpers/functionHelpers';
 import { functionVisitEnter } from './functionVisitor';
 import { awaitVisitEnter } from './awaitVisitor';

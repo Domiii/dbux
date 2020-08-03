@@ -46,11 +46,6 @@ export default class Project {
    */
   gitCommit;
 
-  /**
-   * `npm` or `yarn`
-   */
-  packageManager = 'yarn';
-
   get gitUrl() {
     return 'https://github.com/' + this.gitRemote;
   }
@@ -101,7 +96,7 @@ export default class Project {
     if (!await this.isCorrectGitRepository()) {
       this.logger.warn(`Trying to exectute some git command, but was not correct git repository: `,
         await this.execCaptureOut(`git remote -v`));
-      this.logger.error('This project encount some problem. ' + 
+      this.logger.error('This project encount some problem. ' +
         'This may be solved by pressing `clean project` folder button.');
       return 0;
     }
@@ -155,12 +150,17 @@ export default class Project {
   // utilities
   // ###########################################################################
 
-  async exec(command, processOptions, input) {
-    processOptions = {
-      ...(processOptions || EmptyObject),
-      cwd: this.projectPath
-    };
-    return this.runner._exec(this, command, processOptions, input);
+  async exec(command, options, input) {
+    if (options?.cdToProjectPath !== false) {
+      options = defaultsDeep(options, {
+        ...(options || EmptyObject),
+        processOptions: {
+          cwd: this.projectPath
+        }
+      });
+    }
+    
+    return this.runner._exec(command, this.logger, options, input);
   }
 
   async execCaptureOut(command, processOptions) {
@@ -254,17 +254,16 @@ export default class Project {
     // copy assets
     await this.installAssets();
 
-    // install dbux dependencies
-    // await this.installDbuxCli();
-
+    // install project's custom dependencies
     await this.installDependencies();
 
-    if (this.packageManager === 'yarn') {
-      await this.yarnInstall();
-    }
-    else {
-      await this.npmInstall();
-    }
+    // NOTE: disable yarn support for now
+    // if (this.packageManager === 'yarn') {
+    //   await this.yarnInstall();
+    // }
+    // else {
+    await this.npmInstall();
+    // }
 
     // call `afterInstall` hook for different projects to do their postinstall things
     await this.afterInstall();
@@ -279,10 +278,7 @@ export default class Project {
    * @virtual
    */
   async installDependencies() {
-    // get rid of outdated dependencies; replace with webpack 4 (5?) toolchain
-    //  then install updated webpack + babel dependencies
-    // TODO: choose correct package manager
-    await this.exec(`yarn add --dev source-map-loader`);
+    // await this.exec(`yarn add --dev source-map-loader`);
     /*
     await this.exec(`\
         yarn remove webpack webpack-dev-server babel-loader babel-core babel babel-plugin-__coverage__ \
@@ -358,6 +354,8 @@ export default class Project {
   }
 
   async npmInstall() {
+    await this.exec('npm cache verify');
+
     await this.exec(`npm install`);
 
     // hackfix: npm installs are broken somehow.
@@ -366,27 +364,9 @@ export default class Project {
     await this.exec(`npm install`);
   }
 
-  async yarnInstall() {
-    await this.exec(`yarn install`);
-  }
-
-  async installDbuxCli() {
-    // await exec('pwd', this.logger);
-    const dbuxDeps = [
-      '@dbux/cli',
-      // '@dbux/babel-plugin',
-      // '@dbux/runtime'
-    ];
-
-    if (!process.env.DBUX_VERSION) {
-      throw new Error('installDbuxCli() failed. DBUX_VERSION was not set.');
-    }
-
-    const dbuxDepString = dbuxDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`).join(' ');
-
-    // TODO: select `npm` or `yarn` based on packageManager setting (but requires change in command)
-    await this.exec(`npm i -D ${dbuxDepString}`, this.logger);
-  }
+  // async yarnInstall() {
+  //   await this.exec(`yarn install`);
+  // }
 
   // ###########################################################################
   // assets

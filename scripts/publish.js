@@ -1,4 +1,5 @@
 /* eslint no-console: 0 */
+/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 
 const path = require('path');
 const sh = require('shelljs');
@@ -11,7 +12,7 @@ require('../dbux-cli/bin/_dbux-register-self');
 
 // Dbux built-in utilities
 require('../dbux-common/src/util/prettyLogs');
-const { newLogger } = require('../dbux-projects/node_modules/@dbux/common/src/log/logger');
+const { newLogger } = require('../dbux-common/src/log/logger');
 const Process = require('../dbux-projects/src/util/Process').default;
 
 const logger = newLogger();
@@ -145,23 +146,25 @@ async function publishToNPM() {
   // NOTE: will trigger build scripts before publishing
   log('Publishing to NPM...');
   let publishCmd = 'npx lerna publish';
-  if (await yesno('publish from-package?')) {
-    // NOTE: use this if cannot publish but versioning already happened - 'npx lerna publish from-package'
+  if (await yesno('not from-package?')) {
+    // usually, we just want to go from package, since `lerna version` already prepared things for us
+  }
+  else {
     publishCmd += ' from-package';
   }
   await exec(publishCmd);
 
   // check package status on NPM
-  if (await yesno('Check NPM packages online?')) {
+  if (await yesno('Open NPM website?')) {
     open('https://www.npmjs.com/search?q=dbux');
   }
 }
 
 async function publishToMarketplace() {
   // check organization status on dev.azure
-  if (await yesno('Check VSCode Marketplace backend?')) {
-    open('https://dev.azure.com/dbux');
-  }
+  // if (await yesno('Open VSCode Marketplace backend?')) {
+  //   open('https://dev.azure.com/dbux');
+  // }
 
   // after version bump, things are not linked up correctly anymore
   await exec('npx lerna bootstrap --force-local && npx lerna link --force-local');
@@ -172,9 +175,15 @@ async function publishToMarketplace() {
   // publish dbux-code to VSCode marketplace (already built)
   await exec('npm run code:publish:no-build');
 
-  if (await yesno('Check out extension on Marketplace?')) {
+  if (await yesno('Open extension website?')) {
     open('https://marketplace.visualstudio.com/manage/publishers/Domi');
   }
+}
+
+async function fixLerna() {
+  debug('Fixing up package.json files (lerna hackfix)...');
+
+  await exec('npm run dbux-lerna-fix');
 }
 
 // ###########################################################################
@@ -219,6 +228,11 @@ async function main() {
   await publishToNPM();
 
   await publishToMarketplace();
+
+  await fixLerna();
+
+  log('Done!');
+  process.exit(0); // not sure why but this process stays open for some reason
 }
 
 main().catch((err) => {
