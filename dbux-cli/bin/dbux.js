@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const yargs = require('yargs');
 
 /**
@@ -17,6 +19,7 @@ Some examples:
 // start!
 yargs
   // .exitProcess(true)
+  .strict()
   .commandDir('../dist/commands')
   .demandCommand()
   .help()

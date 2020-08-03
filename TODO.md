@@ -2,6 +2,7 @@
 
 
 ## TODO
+* dbux run -> command not found in prod build?
 * add "Dbux: Run Current File" command to dbux-code
 * code: resilience
    * dbux-projects
