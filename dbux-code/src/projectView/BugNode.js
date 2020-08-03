@@ -55,10 +55,13 @@ export default class BugNode extends BaseTreeViewNode {
 
   }
 
-  showWebsite() {
+  async showWebsite() {
     if (this.bug.website) {
-      env.openExternal(Uri.parse(this.bug.website));
+      return env.openExternal(Uri.parse(this.bug.website));
     }
+
+    // return false to indicate that no website has been opened
+    return false;
   }
 
   async tryResetBug() {
