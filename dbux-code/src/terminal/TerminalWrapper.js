@@ -108,7 +108,7 @@ export default class TerminalWrapper {
       const results = await client.waitForResults();
       Verbose && debug('client finished. Results:', results);
       
-      cb(results);
+      cb(results?.[0] || null);
     });
   }
 
