@@ -1,6 +1,6 @@
 {
   "name": "@dbux/babel-plugin",
-  "version": "0.1.0",
+  "version": "0.1.10",
   "description": "",
   "author": "Domi",
   "module": "dist/index.js",
@@ -10,8 +10,6 @@
   },
   "scripts": {
     "clean": "rm -rf dist && rm -rf dist.samples",
-    "_postinstall": "npx link-module-alias",
-    "_before-run": "npx link-module-alias",
     "build": "npm run clean && webpack --config config/webpack.config.js",
     "test": "node --stack-trace-limit=1000 ../node_modules/jest/bin/jest.js --runInBand",
     "test:watch": "npm run test -- --watch",
@@ -27,7 +25,7 @@
     "@babel/template": "^7.8.3",
     "@babel/traverse": "^7.8.3",
     "@babel/types": "^7.8.3",
-    "@dbux/common": "^0.1.0",
+    "@dbux/common": "^0.1.10",
     "lodash": "4.17.19"
   },
   "devDependencies": {

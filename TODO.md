@@ -1,78 +1,51 @@
 
 
 
-
-
-
-
-
-
-
-
-## dbux-practice
-
-* user interaction log
-* backend
-* bug difficulty classification
-* hint system + more relevant information
-
-
-
-
-
-
-
-
-
-
-## TODO (other)
-* Deployment
-   * fix `dbux-project/assets` resource path
-   * fix: don't try to start server on every VSCode instance
-* callId problem: ternary expression is not instrumented as argument (express#1)
+## TODO
+* add "Dbux: Run" command to dbux-code
+* code: resilience
+   * system integrity check upon first run?
+      * bash (all shell execution must work)
+      * node
+      * npm
+      * git
+   * allow to fully test local package without having to publish first
+      * needs to "full install" `@dbux/cli` and its dependencies
+   * make sure, `injectDependencies` always works
+      * make sure, all required babel dependencies are injected?
 * core instrumentation bugs
-   * assignments are traced twice, once with `ExpressionValue`, once with `ExpressionResult`
-      * e.g. `req.params = layer.params;`
-      * maybe has to do w/ `originalIsParent`?
    * trace function parameters
-* fix: "running" a bug smoothly
-   * stop running if `git checkout` failed
-      * NOTE: usually a failure is indicated by process `statusCode !== 0`
-      * currently
-   * don't `gitResetHard` every time we run a bug
-      * check if bug was already selected before doing the setup
-         * Problem: need to deal with patch files
-            * generate commits from patch files so we can reliably determine whether patch/commit was applied?
-      * always show changes to user and let them confirm before `gitResetHard`
-      * allow saving/submitting own changes for bugs
-         * remember bug progress
-   * fix: allow for re-runninging "run.js" bug command from terminal
+   * fix: call traces for getters are off
+      * it's actually the next trace in context (if the getter did not error out)
+      * e.g.: `req.protocol` (instead of `req`)
+   * when encountering getter inside of a `CallExpression`, it will be mixed in with call, since it does not have its own BCE
+   * identify + visualize getters and setters with an "f"?
+      * just any context's parentTrace that is not stemming from a call?
+* add `eslint` into build pipeline
+* move process-related stuff from `dbux-projects` to `dbux-cli`
+* Deployment
+   * `Process.exec` can use some polishing. Properly pipe stdout + stderr.
+* allow setting application name via babel config
+   * also allow setting that application name via `dbux-cli`
+   * set application name for `dbux-projects` bugs correspondingly
 * [dbux-projects]
-   * allow setting application name via babel config
-      * -> set application name for bugs correspondingly
    * allow user to change mocha/jest run timeout (in case of slow computers)
       * -> or just set it very high?
       * NOTE: it's still useful to deal with infinite loops caused by faulty fixes etc
    * if there is no test, let user fill out a checklist
 * fix graph theme + sync mode
    * better coloring schema, so we sync mode becomes a pleasant experience
-   * CONSIDER: always track in graph, but don't necessarily reveal?
+   * consider: ALWAYS track `traceSelection` in graph, but don't necessarily reveal (if graph is visible)
 * [dbux-practice] complete workflow design
    * bug spreadsheet
       * overall bug analysis
          * concepts, domain knowledge, difficulty
       * hints
-* fix: call traces for getters are off
-   * it's actually the next trace in context (if the getter did not error out)
-   * e.g.: `req.protocol` (not `req`)
-* identify + visualize getters and setters with an "f"!
-   * just any context's parentTrace that is not stemming from a call?
-   * Problem: when encountering getter inside of a `CallExpression`
 * Object rendering:
    * visualize when value got ommitted/pruned
    * show actual string length, if pruned
    * make valueCollection prune/omit parameters easily configurable
-* instrument `try` blocks
+* instrument `try` + `catch` blocks
    * test errors in `try/finally` -> find errors in `try` block?
    * also show some sort of error symbol when tracing `catch` block?
 * some assignments (and possibly other expressions) are traced twice
@@ -80,6 +53,7 @@
 * fix: `function` declarations are not tracked
    * store staticContextId by `function` object, so we can quickly jump to them and find all their references
 * [dbux-project] fix: use correct package manager (npm vs. yarn) when working with libraries in `dbux-projects`
+   * -> don't use yarn, unless absolutely necessary (to reduce dependencies for users)
 * fix: strings are currently tracked -> disable tracking of strings
 * fix: `traveValueLabels`
    * get callee name from instrumentation

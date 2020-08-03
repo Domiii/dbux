@@ -1,4 +1,4 @@
-import { compileHtmlElement } from '@/util/domUtil';
+import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 export default class ZoomBtn extends ClientComponentEndpoint {

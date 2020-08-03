@@ -16,13 +16,21 @@
         // "problemMatcher": ["$tsc-watch"]
     },
     {
-      "label": "Test node",
+      "label": "Test shell",
       "type": "shell",
       "command": "bash",
       "args": [
         "-lc",
         "--",
         "echo $PATH && node -v"
+      ],
+    },
+    {
+      "label": "Test node",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "-v"
       ],
     },
     {

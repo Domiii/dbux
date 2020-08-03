@@ -1,26 +1,27 @@
 {
   "name": "@dbux/graph-client",
-  "version": "0.1.0",
+  "version": "0.1.10",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
   "scripts": {
     "clean": "rm -rf ./dist",
-    "_before-run": "npx link-module-alias",
     "__start": "npm run build:serve",
     "__build:serve": "npx nodemon --exec \"node ../node_modules/webpack-dev-server/bin/webpack-dev-server\"",
-    "start": "npm run _before-run && npm run build:dev",
+    "start": "npm run build:watch",
+    "start:prod": "npm run build:watch:prod",
     "build:prod": "node ../node_modules/webpack/bin/webpack --mode production",
-    "build:dev": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack\" --watch",
+    "build:watch": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack\" --mode development --watch",
+    "build:watch:prod": "npx nodemon --exec \"node ../node_modules/webpack/bin/webpack\" --mode production --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@dbux/common": "^0.1.0",
-    "@dbux/graph-common": "^0.1.0",
-    "@dbux/panzoom": "^0.1.0",
+    "@dbux/common": "^0.1.10",
+    "@dbux/graph-common": "^0.1.10",
+    "@dbux/panzoom": "^0.1.10",
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
     "html2canvas": "^1.0.0-rc.5",
@@ -28,12 +29,9 @@
   },
   "devDependencies": {
     "express": "^4.17.1",
-    "link-module-alias": "*",
     "npm-run-all": "^4.1.5",
     "open-cli": "^6.0.0",
+    "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
-  },
-  "_moduleAliases": {
-    "webpack": "../node_modules/webpack"
   }
 }

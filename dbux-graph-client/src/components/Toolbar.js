@@ -1,4 +1,4 @@
-import { compileHtmlElement, decorateClasses, decorateAttr } from '@/util/domUtil';
+import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 let documentClickHandler;

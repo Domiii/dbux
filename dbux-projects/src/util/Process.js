@@ -2,15 +2,19 @@ import path from 'path';
 import isString from 'lodash/isString';
 import kill from 'tree-kill';
 import sh from 'shelljs';
+import stringArgv from 'string-argv';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
-import spawn from 'child_process';
+import { spawn, execSync } from 'child_process';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Process');
 
 function cleanOutput(chunk) {
-  return isString(chunk) && chunk.trim() || chunk;
+  if (!isString(chunk)) {
+    chunk = chunk.toString('utf8');
+  }
+  return chunk.trim();
 }
 
 function pipeStreamToLogger(stream, logger) {
@@ -50,47 +54,105 @@ export default class Process {
 
     this.command = command;
 
+    const {
+      failOnStatusCode = false,
+      failWhenNotFound = true,
+      sync = false
+    } = (options || EmptyObject);
+
     const processOptions = {
       cwd: sh.pwd().toString(),
       ...(options?.processOptions || EmptyObject),
-      async: true
+      // async: !sync,
+      // stdio: sync ? [0, 1, 2] : 'inherit'
+      // stdio: 'inherit'
+      // stdio: [0, 1, 2]
     };
 
-    const {
-      failOnStatusCode = false,
-      failWhenNotFound = true
-    } = (options || EmptyObject);
+    if (!sync) {
+      processOptions.shell = true;
+    }
 
     // some weird problem where some shells don't recognize things correctly
     // see: https://github.com/shelljs/shelljs/blob/master/src/exec.js#L51
-    const { cwd } = processOptions;
+    let { cwd } = processOptions;
 
     if (!cwd) {
       throw new Error('Unknown cwd. Make sure you either pass it in via `processOptions.cwd` or setting it via `shelljs.cd`.');
     }
 
+    cwd = processOptions.cwd = path.resolve(cwd);
+
     if (!sh.test('-d', cwd)) {
       logger.error(`WARNING: Trying to execute command in non-existing working directory="${cwd}"`);
     }
 
-    processOptions.cwd = path.resolve(cwd);
-
     logger.debug(`> ${cwd}$`, command); //, `(pwd = ${sh.pwd().toString()})`);
 
-    // TODO: use spawn instead of exec? (allows for better control but needs https://www.npmjs.com/package/string-argv)
-    const process = this._process = spawn.exec(command, processOptions);
+    if (sync) {
+      // NOTE: this will just block until the process is done
+      this._process = execSync(command, processOptions);
+      return this._process;
+    }
 
-    pipeStreamToLogger(process.stdout, logger);
-    pipeStreamToLogger(process.stderr, logger);
+    // spawn regular process
+    const [commandName, ...commandArgs] = stringArgv(command);
+    // console.warn(commandName, commandArgs, JSON.stringify(processOptions));
+    this._process = spawn(commandName, commandArgs, processOptions);
+    const newProcess = this._process;
+
+    pipeStreamToLogger(newProcess.stdout, logger);
+    pipeStreamToLogger(newProcess.stderr, logger);
+    // newProcess.stdin.on('data', buf => {
+    //   console.error('newProcess stdin data', buf.toString());
+    // });
+
 
     if (options?.captureOut) {
-      this.captureStream(process.stdout);
+      this.captureStream(newProcess.stdout);
     }
 
+    // ########################################
+    // handle stdin
+    // ########################################
+
+    let onStdin;
     if (input) {
-      process.stdin.write(input);
-      process.stdin.end();
+      newProcess.stdin.write(input);
+      newProcess.stdin.end();
     }
+    else {
+      // WARNING: On MAC, for some reason, piping seems to swallow up line feeds?
+      // TODO: only register stdin listener on `resume`?
+      newProcess.stdin.on('resume', (...args) => {
+        console.error('STDIN RESUME', ...args);
+      });
+      onStdin = buf => {
+        const s = buf.toString();
+        // console.error('stdin data', s);
+
+        let lines = s.split(/\r\n/g);
+        const lastLine = lines[lines.length - 1];
+        if (lines.length > 1) {
+          lines = lines.slice(0, lines.length - 1);
+          lines.forEach(l => newProcess.stdin.write(l + '\n'));
+        }
+        newProcess.stdin.write(lastLine);
+        if (s.endsWith('\n') || s.endsWith('\r')) {
+          newProcess.stdin.write('\n');
+        }
+      };
+      process.stdin.on('data', onStdin);
+      // setTimeout(() => {
+      //   newProcess.stdin.end();
+      // }, 1000);
+      // process.stdin.pipe(newProcess.stdin);
+    }
+
+
+    // ########################################
+    // exit handling + promise wrapper
+    // ########################################
 
     // done
     let done = false;
@@ -99,6 +161,9 @@ export default class Process {
         return true;
       }
       done = true;
+
+      // stop reading stdin
+      onStdin && process.stdin.off('data', onStdin);
 
       // if (this._killed) {
       //   resolve('killed');
@@ -109,10 +174,10 @@ export default class Process {
     }
 
     return this._promise = new Promise((resolve, reject) => {
-      process.on('exit', (code/* , signal */) => {
+      newProcess.on('exit', (code/* , signal */) => {
         // logger.debug(`process exit, code=${code}, signal=${signal}`);
         if (checkDone()) { return; }
-        
+
         if (this._killed) {
           reject(new Error('Process was killed'));
         }
@@ -124,7 +189,7 @@ export default class Process {
         }
       });
 
-      process.on('error', (err) => {
+      newProcess.on('error', (err) => {
         if (checkDone()) { return; }
 
         const code = err.code = err.code || -1;
@@ -176,15 +241,20 @@ export default class Process {
   }
 
   static async execCaptureOut(cmd, options, logger, input) {
-    const process = new Process();
+    const newProcess = new Process();
 
     options = {
       ...options,
       captureOut: true
     };
 
-    await process.start(cmd, logger || newLogger('exec'), options, input);
+    await newProcess.start(cmd, logger || newLogger('exec'), options, input);
 
-    return process.out;
+    return (newProcess.out || '').trim();
+  }
+
+  static async exec(command, options, logger) {
+    const newProcess = new Process();
+    return newProcess.start(command, logger || newLogger('exec'), options);
   }
 }

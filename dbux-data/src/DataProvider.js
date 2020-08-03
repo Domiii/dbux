@@ -604,10 +604,19 @@ export default class DataProvider {
     const obj = {
       version: this.version,
       collections: Object.fromEntries(collections.map(collection => {
-        const {
+        let {
           name,
           _all: entries
         } = collection;
+
+        entries = entries.map(e => {
+          const newEntry = { ...e };
+
+          // delete some temps
+          delete newEntry.valueString;
+          delete newEntry.valueStringShort;
+          return newEntry;
+        });
 
         return [
           name,

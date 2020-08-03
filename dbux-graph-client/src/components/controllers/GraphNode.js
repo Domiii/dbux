@@ -1,6 +1,6 @@
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
-import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
-import { decorateClasses } from '@/util/domUtil';
+import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
+import { decorateClasses } from '../../util/domUtil';
 
 export default class GraphNode extends ClientComponentEndpoint {
   init() {

@@ -1,7 +1,7 @@
 import isString from 'lodash/isString';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { createPopper } from '@popperjs/core';
-import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
+import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PopperController');

@@ -1,5 +1,6 @@
 /* eslint no-console: 0 */
 import NanoEvents from 'nanoevents';
+import EmptyArray from '../util/EmptyArray';
 
 const errors = [];
 
@@ -78,6 +79,7 @@ export class Logger {
 
     for (const name in logFunctions) {
       const f = logFunctions[name];
+      // const nsArgs = (ns && [ns] || EmptyArray);
       this[name] = (...args) => {
         f(ns, ...args);
         // this._emitter.emit(name, ...args);
@@ -87,7 +89,7 @@ export class Logger {
 }
 
 export function newLogger(ns) {
-  return new Logger(`DBUX ${ns}`);
+  return new Logger(ns && `DBUX ${ns}`);
 }
 
 export function newFileLogger(fpath) {
@@ -127,27 +129,31 @@ export function setOutputStreams(newOutputStreams) {
   outputStreams = mergeOutputStreams(newOutputStreams);
 }
 
+function wrapNs(ns) {
+  return ns && `[${ns}]` || '';
+}
+
 export function loglog(ns, ...args) {
-  outputStreams.log(`[${ns}]`, ...args);
+  outputStreams.log(wrapNs(ns), ...args);
 }
 
 // const prettyDebug = makePrettyLog(console.debug, 'gray');
 export function logDebug(ns, ...args) {
   // color decoration
-  // prettyDebug(`[${ns}]`, ...args);
+  // prettyDebug(wrapNs(ns), ...args);
 
   // no color
-  outputStreams.debug(`[${ns}]`, ...args);
+  outputStreams.debug(wrapNs(ns), ...args);
 }
 
 export function logWarn(ns, ...args) {
-  ns = `[${ns}]`;
+  ns = wrapNs(ns);
   outputStreams.warn(ns, ...args);
   report('warn', ns, ...args);
 }
 
 export function logError(ns, ...args) {
-  ns = `[${ns}]`;
+  ns = wrapNs(ns);
   outputStreams.error(ns, ...args);
   report('error', ns, ...args);
 }

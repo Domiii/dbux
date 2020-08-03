@@ -39,7 +39,7 @@
 				"${file}"
 			],
 			"protocol": "inspector",
-			"trace": true,
+			// "trace": true,
 			"disableOptimisticBPs": true,
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
@@ -49,9 +49,9 @@
 			]
 		},
 		{
+			"name": "[dbux-project] attach",
 			"type": "node",
 			"request": "attach",
-			"name": "[dbux-project] attach",
 			"port": 9853,
 			"skipFiles": [
 				"<node_internals>/**"
@@ -111,54 +111,57 @@
 			"internalConsoleOptions": "neverOpen",
 		},
 
-		// TODO: put into dbux-cli/src/commands
-		// {
-		// 	"name": "run js (babel)",
-		// 	"type": "node",
-		// 	"request": "launch",
-		// 	"cwd": "${workspaceFolder}/dbux-cli",
-		// 	"runtimeArgs": [
-		// 		"--stack-trace-limit=1000",
-		// 		"--nolazy",
-		// 	],
-		// 	"program": "${workspaceFolder}/dbux-cli/bin/run-js.js",
-		// 	"args": [
-		// 		"${file}",
-		// 	],
-		// 	// see: https://github.com/microsoft/vscode/issues/5422
-		// 	"restart": true,
-		// 	"protocol": "inspector",
-		// 	"trace": "all",
-		// 	"disableOptimisticBPs": true,
-		// 	"console": "integratedTerminal",
-		// 	"internalConsoleOptions": "neverOpen",
-		// 	"outFiles": [
-		// 		"${workspaceRoot}/dbux-runtime/dist/**/*.js"
-		// 	]
-		// },
-		// {
-		// 	"name": "run js (no babel)",
-		// 	"type": "node",
-		// 	"request": "launch",
-		// 	"cwd": "${workspaceFolder}/dbux-cli",
-		// 	"runtimeArgs": [
-		// 		"--stack-trace-limit=1000",
-		// 		"--nolazy",
-		// 	],
-		// 	"program": "${workspaceFolder}/dbux-cli/bin/run-js-unbabel.js",
-		// 	"args": [
-		// 		"${file}",
-		// 	],
-		// 	"restart": true,
-		// 	"protocol": "inspector",
-		// 	"trace": "all",
-		// 	"disableOptimisticBPs": true,
-		// 	"console": "integratedTerminal",
-		// 	"internalConsoleOptions": "neverOpen",
-		// 	"outFiles": [
-		// 		"${workspaceRoot}/dbux-runtime/dist/**/*.js"
-		// 	]
-		// },
+		{
+			"name": "run js (no dbux, yes babel)",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}/dbux-cli",
+			"runtimeArgs": [
+				"--stack-trace-limit=1000",
+				"--nolazy",
+			],
+			"program": "${workspaceFolder}/dbux-cli/bin/run.js",
+			"args": [
+				"run",
+				"-d",
+				"${file}",
+			],
+			// see: https://github.com/microsoft/vscode/issues/5422
+			"restart": true,
+			"protocol": "inspector",
+			"trace": "all",
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"outFiles": [
+				"${workspaceRoot}/dbux-runtime/dist/**/*.js"
+			]
+		},
+		{
+			"name": "run js (no dbux, no babel)",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}/dbux-cli",
+			"runtimeArgs": [
+				"--stack-trace-limit=1000",
+				"--nolazy",
+			],
+			"program": "${workspaceFolder}/dbux-cli/bin/run.js",
+			"args": [
+				"-d",
+				"-p",
+				"${file}",
+			],
+			"restart": true,
+			"protocol": "inspector",
+			"trace": "all",
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"outFiles": [
+				"${workspaceRoot}/dbux-runtime/dist/**/*.js"
+			]
+		},
 		{
 			// debugging of Chrome-bound code - https://github.com/Microsoft/vscode-chrome-debug
 			"name": "chrome todomvc",
@@ -252,6 +255,30 @@
 				"--extensionDevelopmentPath=${workspaceFolder}/dbux-code",
 				"--extensionTestsPath=${workspaceFolder}/dbux-code/test/suite/index"
 			]
-		}
+		},
+		{
+			"name": "__dbux-publish",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"runtimeArgs": [
+				"--stack-trace-limit=1000",
+				"--nolazy",
+			],
+			"sourceMaps": true,
+			"restart": true,
+			"program": "${workspaceFolder}/scripts/publish.js",
+			"args": [
+			],
+			"protocol": "inspector",
+			// "trace": true,
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"outFiles": [
+				"${workspaceFolder}/dbux-babel-plugin/dist/**/*.js",
+				"${workspaceFolder}/dbux-runtime/dist/**/*.js"
+			]
+		},
 	]
 }
