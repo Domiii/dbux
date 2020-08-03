@@ -179,7 +179,7 @@ async function publishToMarketplace() {
 }
 
 async function fixLerna() {
-  debug('Fixing up package.json files (lerna hackfix)...');
+  debug('Checking for invalid entries in package.json files (lerna hackfix)...');
 
   await exec('npm run dbux-lerna-fix');
 }
@@ -229,7 +229,7 @@ async function main() {
 
   await publishToNPM();
 
-  if (yesno('Published to NPM. Also publish to Marketplace?')) {
+  if (await yesno('Published to NPM. Also publish to Marketplace?')) {
     await publishToMarketplace();
   }
 

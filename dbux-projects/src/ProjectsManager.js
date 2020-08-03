@@ -176,7 +176,7 @@ class ProjectsManager {
 
       const allDeps = [
         ...dbuxDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`),
-        'object.fromentries'
+        // 'object.fromentries'
       ];
 
       // debug(`Verifying NPM cache. This might (or might not) take a while...`);

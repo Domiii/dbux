@@ -64,8 +64,8 @@ function linkOwnDependencies() {
   }
   else {
     // production mode -> `@dbux/cli` stand-alone installation
-    // NOTE: in this case, we find ourselves in `nodeModulesParent/node_modules/@dbux/cli`
-    nodeModulesParent = path.resolve(DbuxCliRoot, '../..');
+    // NOTE: in this case, we find ourselves in `nodeModulesParent/node_modules/@dbux/cli` (so we want to go up 3!)
+    nodeModulesParent = path.resolve(DbuxCliRoot, '../../..');
   }
 
   // check if linkage works

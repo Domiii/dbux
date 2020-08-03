@@ -4,6 +4,7 @@ import Stack from './Stack';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
 import traceCollection from './data/traceCollection';
+import setImmediate from './setImmediate';
 
 
 // eslint-disable-next-line no-unused-vars

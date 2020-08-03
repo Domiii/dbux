@@ -37,14 +37,14 @@ export default function buildBabelOptions(options) {
         
         // no node_modules
         if (modulePath.match('(node_modules)|(dist)')) {
-          console.debug(`dbux-register ignore`, modulePath);
+          // console.debug(`dbux-register ignore`, modulePath);
           return true;
         }
 
         modulePath = modulePath.toLowerCase();
 
         const ignore = false;
-        console.debug(`dbux-register include`, modulePath);
+        // console.debug(`dbux-register include`, modulePath);
         return ignore;
       }
     ]
