@@ -95,6 +95,7 @@ class ProjectViewController {
     // ########################################
     const bugRunner = this.manager.getOrCreateRunner();
     bugRunner.on('statusChanged', this.onStatusChanged.bind(this));
+    bugRunner.on('resultChanged', () => this.treeDataProvider.refreshIcon());
   }
 
   onStatusChanged(status) {

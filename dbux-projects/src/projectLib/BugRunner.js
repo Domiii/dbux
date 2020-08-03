@@ -244,6 +244,8 @@ export default class BugRunner {
         else {
           this.setStatus(BugRunnerStatus.Done);
         }
+
+        this._emitter.emit('resultChanged');
       });
 
       this._terminalWrapper.run(cwd, command, args);

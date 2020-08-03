@@ -4,7 +4,6 @@ import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
 import SocketClient from '../net/SocketClient';
 import SocketServer from '../net/SocketServer';
 import { sendCommandToDefaultTerminal } from '../codeUtil/terminalUtil';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 // const Verbose = true;
 const Verbose = false;
