@@ -90,6 +90,7 @@
 		"code:uninstall": "cd dbux-code && yarn run uninstallself",
 		"code:publish": "cd dbux-code && yarn run package:publish",
 		"code:publish-no-build": "cd dbux-code && yarn run package:publish-no-build",
+		"code:publish-only": "cd dbux-code && yarn run publish-only",
 		"publish": "node ./scripts/publish.js",
 		"fix-shell:windows": "npm config set script-shell \"C:\\Program Files\\git\\bin\\bash.exe\"",
 		"zzfixme__code:analyze": "node ../node_modules/webpack/bin/webpack --mode production --profile --json > dist/stats.json && npx webpack-bundle-analyzer dist/stats.json",

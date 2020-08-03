@@ -208,7 +208,7 @@ async function main() {
     throw new Error('Not logged in with VS Marketplace. Login first with: `cd dbux-code && npx vsce login dbux`');
   }
 
-  if (yesno('Run start-ssh-agent?')) {
+  if (await yesno('Run start-ssh-agent?')) {
     await run('start-ssh-agent');
   }
 
@@ -231,6 +231,9 @@ async function main() {
 
   if (await yesno('Published to NPM. Also publish to Marketplace?')) {
     await publishToMarketplace();
+  }
+  else if (await yesno('Install locally?')) {
+    await exec('npm run code:install');
   }
 
   await fixLerna();

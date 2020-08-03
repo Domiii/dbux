@@ -6,7 +6,6 @@
 * code: resilience
    * dbux-projects
       * need a button or command to fully clear the `projectsRoot`
-      * also delete `ProjectsRoot` when removing extension (use `vscode:uninstall` in `package.json`)
    * system integrity check upon first run
       * bash (all shell execution must work)
       * node
