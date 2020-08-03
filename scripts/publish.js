@@ -166,9 +166,6 @@ async function publishToMarketplace() {
   //   open('https://dev.azure.com/dbux');
   // }
 
-  // after version bump, things are not linked up correctly anymore
-  await exec('npx lerna bootstrap --force-local && npx lerna link --force-local');
-
   // // make sure dbux-code is ready
   // await exec('cd dbux-code && yarn list --prod --json');
 

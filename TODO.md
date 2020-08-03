@@ -7,14 +7,13 @@
    * dbux-projects
       * need a button or command to fully clear the `projectsRoot`
       * also delete `ProjectsRoot` when removing extension (use `vscode:uninstall` in `package.json`)
-   * make `npm cache verify` a configurable option
-      * -> needs a better system to acces extension config options via externals
    * system integrity check upon first run
       * bash (all shell execution must work)
       * node
       * npm
       * git
    * handle version updates correctly
+      * -> make sure, we install correct dependencies (especially @dbux/cli) version
       * automatically delete project folder on version update?
          * add user warning (allow user to cancel, which will cancel the whole run)
 * merge PR

@@ -321,7 +321,7 @@ export default class Project {
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    if (!await sh.test('-d', projectPath)) {
+    if (!await sh.test('-d', path.join(projectPath, '.git'))) {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet

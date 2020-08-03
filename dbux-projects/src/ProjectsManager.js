@@ -142,9 +142,6 @@ class ProjectsManager {
       throw new Error('installDbuxCli() failed. DBUX_VERSION was not set.');
     }
 
-    let allDeps;
-
-
     const { projectsRoot } = this.config;
     const execOptions = {
       processOptions: {
@@ -165,7 +162,7 @@ class ProjectsManager {
     // NOTE: in development mode, we pull @dbux/cli (and it's dependencies) from the dev folder
     if (process.env.NODE_ENV === 'production') {
       // install @dbux/cli
-      allDeps = [
+      const dbuxDeps = [
         '@dbux/cli'
 
         // NOTE: these are already dependencies of `@dbux/cli`
@@ -177,7 +174,10 @@ class ProjectsManager {
         // '@dbux/babel-plugin'
       ];
 
-      allDeps = allDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
+      const allDeps = [
+        ...dbuxDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`),
+        'object.fromentries'
+      ];
 
       // debug(`Verifying NPM cache. This might (or might not) take a while...`);
       // await this.runner._exec('npm cache verify', logger, execOptions);

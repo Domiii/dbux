@@ -31,7 +31,10 @@ function linkOwnDependencies() {
 
   // NOTE: in webpack build, __dirname is actually dirname of the entry point
   // const DbuxCliRoot = path.resolve(__dirname, '..');
-  const DbuxCliRoot = __dirname.match(/(.*dbux-cli)/)[1];
+  const DbuxCliRoot = __dirname.match(/(.*(?:dbux-cli|@dbux[\\/]cli))/)?.[1];
+  if (!DbuxCliRoot) {
+    throw new Error(`Unable to find "@dbux/cli" directory in: ${__dirname}`);
+  }
   let pkg = readPackageJson(DbuxCliRoot);
   const { dependencies } = pkg;
   let depNames = Object.keys(dependencies);
@@ -61,7 +64,7 @@ function linkOwnDependencies() {
   }
   else {
     // production mode -> `@dbux/cli` stand-alone installation
-    // NOTE: in this case, we find ourselves in `nodeModulesParent/node_modules/dbux-cli`
+    // NOTE: in this case, we find ourselves in `nodeModulesParent/node_modules/@dbux/cli`
     nodeModulesParent = path.resolve(DbuxCliRoot, '../..');
   }
 
