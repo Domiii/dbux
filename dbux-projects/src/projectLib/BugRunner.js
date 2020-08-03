@@ -216,8 +216,8 @@ export default class BugRunner {
       // await this._exec(project, command);
       const cwd = project.projectPath;
 
-      this._terminalWrapper.handleNewClient((result) => {
-        progressLogHandler.processBugResult(this.storage, this._bug, result);
+      this._terminalWrapper.handleNewClient(async (result) => {
+        await progressLogHandler.processBugResult(this.storage, this._bug, result);
 
         if (this._project?.backgroundProcesses.length) {
           this.setStatus(BugRunnerStatus.RunningInBackground);
