@@ -353,7 +353,7 @@ export default {
   // ###########################################################################
 
   /**
-   * Get callerTrace(BCE) of a call related trace
+   * Get callerTrace(BCE) of a call related trace, returns itself if it is not a call related trace.
    * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the callId of the former
    * @param {DataProvider} dp
    * @param {number} traceId

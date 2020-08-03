@@ -9,7 +9,7 @@ const {
   makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
-} = require('../scripts/package-util');
+} = require('../dbux-cli/lib/package-util');
 
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
@@ -22,13 +22,15 @@ module.exports = (env, argv) => {
 
   const mode = argv.mode || 'development';
   const DBUX_VERSION = getDbuxVersion();
+  const DBUX_ROOT = mode === 'development' ? MonoRoot : null;
 
-  console.debug(`[dbux-code] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}) building...`);
+  console.debug(`[dbux-code] (DBUX_VERSION=${DBUX_VERSION}, DBUX_ROOT=${DBUX_ROOT} mode=${mode}) building...`);
 
   const webpackPlugins = [
     new webpack.EnvironmentPlugin({
       NODE_ENV: mode,
-      DBUX_VERSION
+      DBUX_VERSION,
+      DBUX_ROOT
     }),
     new CopyPlugin({
       patterns: [
@@ -98,6 +100,8 @@ module.exports = (env, argv) => {
       vscode: "commonjs vscode"
     },
     node: {
+      // generate actual output file information
+      // see: https://webpack.js.org/configuration/node/#node__filename
       __dirname: false,
       __filename: false,
     }

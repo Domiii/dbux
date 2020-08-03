@@ -1,6 +1,7 @@
 # basics
-projects
-samples
+dist
+/projects
+/samples
 _testOut
 project_sandbox
 assets

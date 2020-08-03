@@ -81,12 +81,12 @@ export function getFunctionDisplayName(functionPath, state, functionName) {
  * @param {NodePath}
  */
 export function guessFunctionName(functionPath, state) {
-  if (isDebug()) {
-    // basic sanity checks
-    if (!t.isFunction(functionPath)) {
-      throw new Error('invalid path must be function: ' + functionPath.node.type);
-    }
-  }
+  // if (isDebug()) {
+  //   // basic sanity checks
+  //   if (!t.isFunction(functionPath)) {
+  //     throw new Error('invalid path must be function: ' + functionPath.node.type);
+  //   }
+  // }
   const { node } = functionPath;
 
   /**

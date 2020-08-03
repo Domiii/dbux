@@ -1,4 +1,6 @@
 import NanoEvents from 'nanoevents';
+import path from 'path';
+import fs from 'fs';
 import sh from 'shelljs';
 import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -134,15 +136,19 @@ export default class BugRunner {
   async saveBugPatchAndUpdateStorage(bug) {
     const keyName = 'activatedBug';
     let previousBugInformation = this.manager.externals.storage.get(keyName);
-    
-    // if (previousBugInformation) {
-    //   let { projectName, bugId } = previousBugInformation;
 
-    //   let previousBug = this.manager.getOrCreateDefaultProjectList().getByName(projectName).getOrLoadBugs().getById(bugId);
+    if (previousBugInformation) {
+      let { projectName, bugId } = previousBugInformation;
 
-    //   await this.manager.saveRunningBug(previousBug);
-    //   await previousBug.project.gitResetHard();
-    // }
+      let previousProject = this.manager.getOrCreateDefaultProjectList().getByName(projectName);
+
+      if (await previousProject.isProjectFolderExists()) {
+        let previousBug = previousProject.getOrLoadBugs().getById(bugId);
+
+        await this.manager.saveRunningBug(previousBug);
+        await previousBug.project.gitResetHard();
+      }
+    }
 
     await this.manager.externals.storage.set(keyName, {
       projectName: bug.project.name,
@@ -195,11 +201,18 @@ export default class BugRunner {
   async testBug(bug, debugMode = true) {
     const { project } = bug;
 
+    // // testing `installDbuxCli`
+    // sh.mkdir('-p', project.projectPath);
+    // await project.manager.installDependencies();
+    // return;
+
     // do whatever it takes (usually: `activateProject` -> `git checkout`)
     await this.activateBug(bug);
 
     // apply stored patch
-    await bug.project.manager.applyNewBugPatch(bug);
+    if (!await bug.project.manager.applyNewBugPatch(bug)) {
+      return;
+    }
 
     // hackfix: set status here again in case of `this.activateBug` skips installaion process
     this.setStatus(BugRunnerStatus.Busy);
@@ -213,8 +226,14 @@ export default class BugRunner {
       // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
     }
     else {
-      // await this._exec(project, command);
       const cwd = project.projectPath;
+      // const devMode = process.env.NODE_ENV === 'development';
+      const args = {
+        // NOTE: DBUX_ROOT + NODE_ENV are provided by webpack
+
+        // DBUX_ROOT: devMode ? fs.realpathSync(path.join(__dirname, '..', '..')) : null,
+        // NODE_ENV: process.env.NODE_ENV
+      };
 
       this._terminalWrapper.handleNewClient(async (result) => {
         await progressLogHandler.processBugResult(this.storage, this._bug, result);
@@ -227,7 +246,7 @@ export default class BugRunner {
         }
       });
 
-      this._terminalWrapper.run(cwd, command);
+      this._terminalWrapper.run(cwd, command, args);
     }
   }
 

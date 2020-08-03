@@ -3,11 +3,11 @@ import dbuxBabelPlugin from '@dbux/babel-plugin';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 // sanity check: make sure, some core stuff is loaded and working before starting instrumentation
-import '@babel/preset-env';
-import injectDependencies from './injectDependencies';
+// import '@babel/preset-env';
+// import injectDependencies from './injectDependencies';
 
 // import buildDefaultBabelOptions from './defaultBabelOptions';
-const baseBabelOptions = require('../babel.config');
+const baseBabelOptions = require('../../.babelrc');
 
 export default function buildBabelOptions(options = EmptyObject) {
   process.env.BABEL_DISABLE_CACHE = 1;
@@ -18,7 +18,9 @@ export default function buildBabelOptions(options = EmptyObject) {
     dontAddPresets
   } = options;
 
-  injectDependencies();
+  // if (process.env.NODE_ENV === 'development') {
+  //   injectDependencies();
+  // }
 
   // setup babel-register
   const baseOptions = vanilla ? EmptyObject : baseBabelOptions;
@@ -42,7 +44,7 @@ export default function buildBabelOptions(options = EmptyObject) {
         modulePath = modulePath.toLowerCase();
 
         const ignore = false;
-        // console.debug(`dbux-register include`, !ignore, modulePath);
+        // console.debug(`dbux-register include`, modulePath);
         return ignore;
       }
     ]

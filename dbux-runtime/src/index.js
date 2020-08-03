@@ -1,3 +1,4 @@
+import getGlobal from '@dbux/common/src/getGlobal';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
 
@@ -14,19 +15,6 @@ let __global__;
 function registerDbuxAsGlobal() {
   /* eslint-disable no-var */
   __global__.__dbux__ = dbux;
-}
-
-function _getGlobal() {
-  if (typeof window !== 'undefined') {
-    // eslint-disable-next-line no-undef
-    return window;
-  }
-  else if (typeof global !== 'undefined') {
-    return global;
-  }
-  else {
-    return globalThis;
-  }
 }
 
 /**
@@ -54,7 +42,7 @@ function handleShutdown() {
 }
 
 (function main() {
-  __global__ = _getGlobal();
+  __global__ = getGlobal();
   registerDbuxAsGlobal();
 
   // NOTE: make sure to `initClient` right at the start, or else:

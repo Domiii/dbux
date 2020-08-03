@@ -1,8 +1,10 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
 import SocketClient from '../net/SocketClient';
 import SocketServer from '../net/SocketServer';
 import { sendCommandToDefaultTerminal } from '../codeUtil/terminalUtil';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 // const Verbose = true;
 const Verbose = false;
@@ -112,11 +114,12 @@ export default class TerminalWrapper {
     });
   }
 
-  run(cwd, command) {
+  run(cwd, command, args) {
     this.getOrCreateTerminalSocketServer();
 
-    const args = Buffer.from(JSON.stringify({ port: this.port, cwd, command })).toString('base64');
-    const runJsCommand = `node _dbux_run.js ${args}`;
+    const runJsArgs = Buffer.from(JSON.stringify({ port: this.port, cwd, command, args })).toString('base64');
+    const initScript = getDbuxTargetPath('cli', 'lib/link-dependencies.js');
+    const runJsCommand = `node --require=${initScript} _dbux_run.js ${runJsArgs}`;
     this._terminal = sendCommandToDefaultTerminal(cwd, runJsCommand);
   }
 

@@ -29,8 +29,11 @@ function readPackageJson(folder) {
   return readJsonFile(packageJsonPath);
 }
 
+/**
+ * NOTE: only used for development
+ */
 function readLernaJson() {
-  const lernaJsonPath = path.join(__dirname, '..', 'lerna.json');
+  const lernaJsonPath = path.join(__dirname, '../..', 'lerna.json');
   return readJsonFile(lernaJsonPath);
 }
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const process = require('process');
 const babelRegister = require('@babel/register');
 
@@ -6,22 +7,23 @@ process.env.BABEL_DISABLE_CACHE = 1;
 
 const defaultBabelOptions = require('../babel.config');
 
-// setup babel-register (could also use babel-node instead)
+
+// babel-register (makes sure that src/* files get babeled upon require)
 const babelRegisterOptions = {
   ...defaultBabelOptions,
   sourceMaps: 'inline',
   ignore: [
     // '**/node_modules/**',
     function shouldIgnore(modulePath) {
-      let ignore = !!modulePath.match(/(node_modules|dist)[\\/]/);
-      if (ignore) {
-        // console.debug(`[dbux-cli] babel ignore`, modulePath);
-        return true;
+      let include = modulePath.match(/((@dbux[\\/])|(dbux-.*?))src[\\/]/);
+      if (include) {
+        // throw new Error('x');
+        console.debug(`[dbux-cli] register-self include`, modulePath);
+        return false;
       }
 
-      ignore = !modulePath.match(/((@dbux[\\/])|(dbux\-.*?))src[\\/]/);
-      // console.debug(`[dbux-cli] register-self include`, !ignore, modulePath);
-      return ignore;
+      // include = !!modulePath.match(/(node_modules|dist)[\\/]/);
+      return true;
     }
   ]
 };

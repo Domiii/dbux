@@ -12,7 +12,7 @@ const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 
 // add some of our own good stuff
-require('./dbux-cli/bin/_dbux-register-self');
+require('./dbux-cli/lib/dbux-register-self');
 require('./dbux-common/src/util/prettyLogs');
 
 const {
@@ -20,7 +20,7 @@ const {
   makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
-} = require('./scripts/package-util');
+} = require('./dbux-cli/lib/package-util');
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
@@ -74,16 +74,19 @@ module.exports = (env, argv) => {
 
     const mode = argv.mode || 'development';
     const DBUX_VERSION = getDbuxVersion();
+    const DBUX_ROOT = mode === 'development' ? MonoRoot : null;
+
+    console.debug(`[main] (DBUX_VERSION=${DBUX_VERSION}, DBUX_ROOT=${DBUX_ROOT} mode=${mode}) building...`);
 
     const webpackPlugins = [
       new webpack.EnvironmentPlugin({
         NODE_ENV: mode,
-        DBUX_VERSION
+        DBUX_VERSION,
+        DBUX_ROOT
       })
     ];
 
 
-    console.debug(`[main] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}) building...`);
 
     // const entry = fromEntries(targets.map(target => [target, path.resolve(path.join(target, defaultEntryPoint))]));
 
@@ -195,9 +198,9 @@ module.exports = (env, argv) => {
           // see: https://www.npmjs.com/package/webpack-node-externals
           // NOTE: `node-externals` does not bundle `node_modules` but that also (for some reason) sometimes ignores linked packages in `yarn workspaces` monorepos :(
           nodeExternals({
-            whitelist: [
+            allowlist: [
               'perf_hooks',
-              ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/.*`))
+              ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
             ],
             // (...args) {
             //   console.debug('nodeExternals', ...args);
@@ -225,6 +228,8 @@ module.exports = (env, argv) => {
     // ###########################################################################
 
     const otherWebpackConfigs = [
+      /* eslint-disable-next-line global-require */
+      require('./dbux-cli/webpack.config'),
       /* eslint-disable-next-line global-require */
       require('./dbux-code/webpack.config'),
 

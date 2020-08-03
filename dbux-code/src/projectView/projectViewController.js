@@ -5,7 +5,8 @@ import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
 import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
 import ProjectNodeProvider from './projectNodeProvider';
-import { showTextDocument } from '../codeUtil/codeNav';
+import { showWarningMessage } from '../codeUtil/codeModals';
+import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import { initTerminalWrapper } from '../terminal/TerminalWrapper';
@@ -44,7 +45,7 @@ class ProjectViewController {
     // ########################################
 
     // NOTE: Dependencies are hoisted at the root in dev mode
-    const relPath = process.env.NODE_ENV === 'production' ? [] : ['..'];
+    const relPath = process.env.NODE_ENV === 'production' ? [] : ['..', '..'];
     
     const cfg = {
       projectsRoot: getResourcePath('..', ...relPath, 'dbux_projects')
@@ -58,7 +59,8 @@ class ProjectViewController {
         async openFolder(fpath) {
           // TODO: use vscode API to add to workspace instead?
           await Process.exec(`code --add ${fpath}`, { silent: false }, logger);
-        }
+        },
+        showTextInNewFile,
       },
       storage: {
         get: storageGet,
@@ -67,7 +69,10 @@ class ProjectViewController {
       initTerminalWrapper,
       resources: {
         getResourcePath
-      }
+      },
+      showMessage: {
+        showWarningMessage,
+      },
     };
 
     // ########################################
