@@ -33,12 +33,12 @@ function createProjectManager(extensionContext) {
   
   // the folder that contains `node_modules` for installing cli etc.
   const nodeModulesParent = process.env.NODE_ENV === 'production' ?
-    [] :            // extension_folder/
+    ['.'] :         // extension_folder/
     ['..'];         // monoRoot/dbux-code/..
 
   // the folder that contains the sample projects for dbux-projects/dbux-practice
   const projectsParent = process.env.NODE_ENV === 'production' ?
-    [] :            // extension_folder/
+    ['.'] :         // extension_folder/
     ['..', '..'];   // monoRoot/dbux-code/../..
 
   const cfg = {

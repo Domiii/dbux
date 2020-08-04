@@ -83,7 +83,7 @@ function activate(context) {
     // for now, let's activate the graph view right away
     restoreGraphView(context);
   } catch (e) {
-    logError('could not activate', e);
+    logError('could not activate', e.stack);
     debugger;
     throw e;
   }
