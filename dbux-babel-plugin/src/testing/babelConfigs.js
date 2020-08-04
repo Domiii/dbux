@@ -31,6 +31,7 @@ export const babelConfigEs5 = defaultsDeep({
     [
       '@babel/preset-env',
       {
+        exclude: ['@babel/plugin-transform-regenerator'],
         loose: true,
         useBuiltIns: 'usage',
         corejs: 3

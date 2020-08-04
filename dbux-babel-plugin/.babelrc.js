@@ -3,7 +3,10 @@ module.exports = {
   "sourceMaps": "inline",
   "retainLines": true,
   "presets": [
-    "@babel/preset-env"
+    "@babel/preset-env",
+    {
+      exclude: ['@babel/plugin-transform-regenerator']
+    }
   ],
   "plugins": [
     [
