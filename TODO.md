@@ -2,11 +2,8 @@
 
 
 ## TODO
-* dbux run -> command not found in prod build?
 * add "Dbux: Run Current File" command to dbux-code
 * code: resilience
-   * dbux-projects
-      * need a button or command to fully clear the `projectsRoot`
    * system integrity check upon first run
       * bash (all shell execution must work)
       * node
