@@ -109,7 +109,7 @@ class ProjectsManager {
   }
 
   async installDependencies() {
-    await this.installDbuxCli();
+    await this.installDbuxDependencies();
   }
 
   getDevPackageRoot() {
@@ -151,31 +151,46 @@ class ProjectsManager {
   //     map(([pkgName, version]) => `${this._convertPkgToLocalIfNecessary(pkgName, version)}`);
   // }
 
-  async installDbuxCli() {
+
+  isDependencyInstalled(name) {
+    const { dependencyRoot } = this.config;
+    return sh.test('-d', path.join(dependencyRoot, 'node_modules', name));
+  }
+
+  getDbuxCliBinPath() {
+    const { dependencyRoot } = this.config;
+    return path.join(dependencyRoot, 'node_modules/@dbux/cli/bin/dbux.js');
+  }
+
+  async installDbuxDependencies() {
     // await exec('pwd', this.logger);
     if (!process.env.DBUX_VERSION) {
-      throw new Error('installDbuxCli() failed. DBUX_VERSION was not set.');
+      throw new Error('installDbuxDependencies() failed. DBUX_VERSION was not set.');
     }
 
-    const { projectsRoot } = this.config;
-    const execOptions = {
-      processOptions: {
-        cwd: projectsRoot
-      }
-    };
-
-    const projectsRootPackageJson = path.join(projectsRoot, 'package.json');
-    if (!await sh.test('-f', projectsRootPackageJson)) {
-      // make sure, we have a local `package.json`
-      await this.runner._exec('npm init -y', logger, execOptions);
-    }
-
-    // delete previously installed node_modules
-    // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
-    // await sh.rm('-rf', path.join(projectsRoot, 'node_modules'));
-
-    // NOTE: in development mode, we pull @dbux/cli (and it's dependencies) from the dev folder
+    // NOTE: in development mode, we have @dbux/cli (and it's dependencies) all linked up to the dev folder anyway
     if (process.env.NODE_ENV === 'production') {
+      const { dependencyRoot } = this.config;
+      const execOptions = {
+        processOptions: {
+          cwd: dependencyRoot
+        }
+      };
+      const rootPackageJson = path.join(dependencyRoot, 'package.json');
+      if (!await sh.test('-f', rootPackageJson)) {
+        // make sure, we have a local `package.json`
+        await this.runner._exec('npm init -y', logger, execOptions);
+      }
+      else if (this.isDependencyInstalled('@dbux/cli')) {
+        // already done!
+        // TODO: check correct version? should not be necessary in the code extension case...
+        return;
+      }
+
+      // delete previously installed node_modules
+      // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
+      // await sh.rm('-rf', path.join(projectsRoot, 'node_modules'));
+
       // install @dbux/cli
       const dbuxDeps = [
         '@dbux/cli'

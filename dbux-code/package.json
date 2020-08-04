@@ -33,20 +33,28 @@
     "views": {
       "dbuxViewContainer": [
         {
-          "id": "dbuxTraceDetailsView",
-          "name": "Trace Details"
-        },
-        {
           "id": "dbuxApplicationsView",
           "name": "Applications"
         },
         {
+          "id": "dbuxTraceDetailsView",
+          "name": "Trace Details"
+        },
+        {
           "id": "dbuxProjectView",
-          "name": "Projects"
+          "name": "Practice"
         }
       ]
     },
     "commands": [
+      {
+        "command": "dbux.runFile",
+        "title": "Dbux: Run current file"
+      },
+      {
+        "command": "dbux.debugFile",
+        "title": "Dbux: Debug current file"
+      },
       {
         "command": "dbux.cancelBugRunner",
         "title": "Dbux Projects: Cancel All"
