@@ -1,6 +1,7 @@
 
 import Enum from '@dbux/common/src/util/Enum';
 
+// eslint-disable-next-line import/no-mutable-exports
 let BugStatus = {
   None: 1,
   Attempted: 2,

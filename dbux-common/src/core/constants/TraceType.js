@@ -1,5 +1,6 @@
 import Enum from '../../util/Enum';
 
+// eslint-disable-next-line import/no-mutable-exports
 let TraceType = {
   PushImmediate: 1,
   PopImmediate: 2,
