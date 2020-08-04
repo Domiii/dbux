@@ -169,6 +169,7 @@ export default class SerialTaskQueue {
         }
         catch (err) {
           reject(err);
+          throw err;
         }
       };
 
