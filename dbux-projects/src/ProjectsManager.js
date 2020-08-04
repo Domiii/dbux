@@ -7,6 +7,7 @@ import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
 import ProgressLogController from './dataLib/ProgressLogController';
 import Stopwatch from './stopwatch/Stopwatch';
+import { log } from 'console';
 
 
 const logger = newLogger('dbux-projects');
@@ -227,7 +228,7 @@ export default class ProjectsManager {
       // debug(`Verifying NPM cache. This might (or might not) take a while...`);
       // await this.runner._exec('npm cache verify', logger, execOptions);
 
-
+      log('\n\nInstalling Dbux dependencies. This might (or might not) take a while...');
       await this.runner._exec(`npm i ${allDeps.join(' ')}`, logger, execOptions);
     }
     // else {

@@ -1,3 +1,4 @@
+import { window } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { initDbuxProjects, ProjectsManager } from '@dbux/projects/src';
@@ -30,7 +31,7 @@ function createProjectManager(extensionContext) {
   // ########################################
   // cfg + externals
   // ########################################
-  
+
   // the folder that contains `node_modules` for installing cli etc.
   const nodeModulesParent = process.env.NODE_ENV === 'production' ?
     ['.'] :         // extension_folder/
@@ -60,6 +61,11 @@ function createProjectManager(extensionContext) {
     storage: {
       get: storageGet,
       set: storageSet,
+    },
+    async confirm(msg, modal = false) {
+      const confirmText = 'Ok';
+      const result = await window.showInformationMessage(msg, { modal }, confirmText, 'cancel');
+      return result === confirmText;
     },
     execInTerminal,
     resources: {
