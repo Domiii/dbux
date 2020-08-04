@@ -1,7 +1,10 @@
 import { window } from 'vscode';
 import path from 'path';
 import fs from 'fs';
+import isNaN from 'lodash/isNaN';
 // import { stringify as jsonStringify } from 'comment-json';
+import traceSelection from '@dbux/data/src/traceSelection';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { newFileLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
@@ -62,7 +65,7 @@ export function initUserCommands(extensionContext, projectViewController) {
     await showGraphView(extensionContext);
   });
 
-  
+
   // ###########################################################################
   // show/hide code decorations
   // ###########################################################################
@@ -74,7 +77,7 @@ export function initUserCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbux.hideDecorations', () => {
     setShowDeco(false);
   });
-  
+
   // ###########################################################################
   // show/hide nav buttons
   // ###########################################################################
@@ -90,6 +93,52 @@ export function initUserCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbux.toggleErrorLog',
     toggleErrorLog
   );
+
+  // ###########################################################################
+  // select trace
+  // ###########################################################################
+
+  async function openSelectTraceUI() {
+    // input application
+    const applicationIdByLabel = new Map();
+    const labels = [];
+    allApplications.selection.getAll().forEach(app => {
+      // NOTE: label should be a unique key
+      const label = `${app.getPreferredName()} (id: ${app.applicationId})`;
+      labels.push(label);
+      applicationIdByLabel.set(label, app.applicationId);
+    });
+    const applicationName = await window.showQuickPick(labels);
+    if (!applicationName) {
+      // user canceled selection
+      return;
+    }
+    const applicationId = applicationIdByLabel.get(applicationName);
+
+    // input traceId
+    const userInput = await window.showInputBox({ placeHolder: 'input a traceId' });
+    if (!userInput) {
+      // user canceled selection
+      return;
+    }
+    const traceId = parseInt(userInput, 10);
+    if (isNaN(traceId)) {
+      window.showErrorMessage(`Can't convert ${userInput} into integer`);
+      return;
+    }
+
+    // select trace
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const trace = dp.collections.traces.getById(traceId);
+    if (!trace) {
+      window.showErrorMessage(`Can't find trace of traceId ${traceId} & applicationId ${applicationId}`);
+    }
+    else {
+      traceSelection.selectTrace(trace);
+    }
+  }
+
+  registerCommand(extensionContext, 'dbux.selectTrace', openSelectTraceUI);
 
   // ###########################################################################
   // projects
