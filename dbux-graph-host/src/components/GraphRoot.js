@@ -88,15 +88,15 @@ class GraphRoot extends HostComponentEndpoint {
   _subscribeOnData() {
     for (const app of allApplications.selection.getAll()) {
       const { applicationId, dataProvider } = app;
-      allApplications.selection.subscribe(
-        dataProvider.onData('executionContexts',
-          (newContexts) => {
-            const newNodes = this.addRunNodeByContexts(applicationId, newContexts);
-            this._setApplicationState();
-            this._emitter.emit('newNode', newNodes);
-          }
-        )
+      const unsubscribe = dataProvider.onData('executionContexts',
+        (newContexts) => {
+          const newNodes = this.addRunNodeByContexts(applicationId, newContexts);
+          this._setApplicationState();
+          this._emitter.emit('newNode', newNodes);
+        }
       );
+      allApplications.selection.subscribe(unsubscribe);
+      this.addDisposable(unsubscribe);
     }
   }
 

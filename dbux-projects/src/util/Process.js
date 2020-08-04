@@ -73,7 +73,6 @@ export default class Process {
       processOptions.shell = true;
     }
 
-
     // some weird problem where some shells don't recognize things correctly
     // see: https://github.com/shelljs/shelljs/blob/master/src/exec.js#L51
     let { cwd } = processOptions;
@@ -183,7 +182,7 @@ export default class Process {
           reject(new Error('Process was killed'));
         }
         else if (failOnStatusCode && code) {
-          reject(new Error('statusCode: ' + code));
+          reject(new Error(`Process failed with status code: ${code}`));
         }
         else {
           resolve(code);

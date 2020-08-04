@@ -13,6 +13,7 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 // grouping modes
 // ###########################################################################
 
+// eslint-disable-next-line import/no-mutable-exports
 let GroupingMode = {
   Ungrouped: 1,
   ByRunId: 2,

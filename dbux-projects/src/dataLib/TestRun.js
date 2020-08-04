@@ -1,32 +1,25 @@
-
-async function newTestRun(bug, result) {
-  return {
-    projectName: bug.project.name,
-    bugId: bug.id,
-    createAt: new Date(),
-    nFailedTests: result.code,
-    timer: undefined,
-    patch: await bug.project.getPatchString(), 
-  };
+export default class TestRun {
+  /**
+   * @param {Bug} bug 
+   * @param {Object} result 
+   * @param {number} result.code
+   * @param {string} patch 
+   */
+  constructor(bug, result, patch) {
+    this.projectName = bug.project.name;
+    this.bugId = bug.id;
+    this.createAt = Date.now();
+    this.nFailedTests = result.code;
+    this.timer = undefined;
+    this.patch = patch;
+  }
 }
 
-function newTestRunWithPatchString(bug, patchString) {
-  return {
-    projectName: bug.project.name,
-    bugId: bug.id,
-    createAt: new Date(),
-    nFailedTests: -1,
-    timer: undefined,
-    patch: patchString,
-  };
+export function createTestRunWithPatchString(bug, patchString) {
+  return new TestRun(bug, { code: -1 }, patchString);
 }
 
-function isTestRunOfBug(obj, bug) {
-  return obj.projectName === bug.project.name && obj.bugId === bug.id;
+export async function createTestRun(bug, result) {
+  const patch = await bug.project.getPatchString();
+  return new TestRun(bug, result, patch);
 }
-
-export default {
-  newTestRun,
-  newTestRunWithPatchString,
-  isTestRunOfBug,
-};

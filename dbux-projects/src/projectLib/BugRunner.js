@@ -6,12 +6,18 @@ import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Process from '../util/Process';
-import progressLogHandler from '../dataLib/progressLog';
 import Project from './Project';
 import Bug from './Bug'; // eslint-disable-line no-unused-vars
 import BugRunnerStatus from './BugRunnerStatus';
 
+/**
+ * @typedef {import('../ProjectsManager').default} ProjectsManager
+ */
+
 export default class BugRunner {
+  /**
+   * @type {ProjectsManager}
+   */
   manager;
   /**
    * @type {SerialTaskQueue}
@@ -28,9 +34,8 @@ export default class BugRunner {
 
   debugPort = 9853;
 
-  constructor(manager, storage) {
+  constructor(manager) {
     this.manager = manager;
-    this.storage = storage;
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
     this.status = BugRunnerStatus.None;
@@ -218,7 +223,6 @@ export default class BugRunner {
       this.setStatus(BugRunnerStatus.Busy);
 
       let command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
-      command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
       if (!command) {
         // nothing to do
@@ -237,7 +241,11 @@ export default class BugRunner {
         };
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command, args);
         const result = await this._terminalWrapper.waitForResult();
-        progressLogHandler.processBugResult(this.storage, bug, result);
+        await this.manager.progressLogController.util.processBugProgress(bug, result);
+        if (result.code === 0) {
+          // user passed all tests
+          this.manager.askForSubmit();
+        }
         project.logger.log(`Result:`, result);
         return result;
       }
@@ -342,7 +350,7 @@ export default class BugRunner {
     }
   }
 
-  getBugStatus(bug) {
+  getBugRunStatus(bug) {
     if (this._bug === bug) {
       return this.status;
     }

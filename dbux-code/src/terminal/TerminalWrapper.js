@@ -23,6 +23,10 @@ class TerminalClient extends SocketClient {
       this._resolve = resolve;
       this._reject = reject;
     });
+
+    this.on('error', (err) => {
+      logError(err);
+    });
     
     this.on('results', (results) => {
       Verbose && debug('results received');

@@ -1,6 +1,11 @@
 import path from 'path';
 
+/** @typedef {import('./Project').default} Project */
+
 export default class Bug {
+  /**
+   * @type {Project}
+   */
   project;
   
   testFilePaths;

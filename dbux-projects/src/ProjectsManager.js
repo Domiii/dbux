@@ -2,29 +2,36 @@ import path from 'path';
 import fs from 'fs';
 import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
-import size from 'lodash/size';
-import getOrCreateProgressLog from './dataLib';
-import processLogHandler from './dataLib/progressLog';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
+import ProgressLogController from './dataLib/ProgressLogController';
+import Stopwatch from './stopwatch/Stopwatch';
 
 
 const logger = newLogger('dbux-projects');
 const { debug } = logger;
 
+/** @typedef {import('./projectLib/Bug').default} Bug */
+/** @typedef {import('./projectLib/Project').default} Project */
 
-class ProjectsManager {
+export default class ProjectsManager {
   config;
   externals;
   projects;
   runner;
 
+  /**
+   * @param {Object} externals 
+   * @param {ExternalStorage} externals.storage
+   */
   constructor(cfg, externals) {
     this.config = cfg;
     this.externals = externals;
     this.editor = externals.editor;
-    this.progressLog = getOrCreateProgressLog(externals.storage);
+    this.stopwatch = new Stopwatch();
+
+    this.progressLogController = new ProgressLogController(externals.storage);
   }
 
   /**
@@ -63,7 +70,7 @@ class ProjectsManager {
 
   getOrCreateRunner() {
     if (!this.runner) {
-      const runner = this.runner = new BugRunner(this, this.progressLog);
+      const runner = this.runner = new BugRunner(this);
       runner.start();
     }
     return this.runner;
@@ -73,12 +80,20 @@ class ProjectsManager {
     let patchString = await bug.project.getPatchString();
     if (patchString) {
       // TODO: prompt? or something else
-      processLogHandler.processUnfinishTestRun(this.progressLog, bug, patchString);
+      this.progressLogController.util.processUnfinishTestRun(bug, patchString);
     }
   }
 
+  /**
+   * @param {Bug} bug 
+   */
+  async resetBug(bug) {
+    await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
+    await this.progressLogController.util.processUnfinishTestRun(bug, '');
+  }
+
   async applyNewBugPatch(bug) {
-    let testRuns = processLogHandler.getTestRunsByBug(this.progressLog, bug);
+    let testRuns = this.progressLogController.util.getTestRunsByBug(bug);
     let testRun = testRuns.reduce((a, b) => {
       if (!a) {
         return b;
@@ -248,6 +263,20 @@ class ProjectsManager {
     //   await this.runner._exec(`npm i --save ${allDeps.join(' ')}`, logger, execOptions);
     // }
   }
-}
 
-export default ProjectsManager;
+  async askForSubmit() {
+    const confirmString = 'You have passed the test for the first time, would you like to submit the result?';
+    const shouldSubmit = await this.externals.confirm(confirmString);
+    
+    if (shouldSubmit) {
+      this.submit();
+    }
+  }
+
+  /**
+   * Record the practice session data after user passed all tests.
+   */
+  submit() {
+    // TODO
+  }
+}

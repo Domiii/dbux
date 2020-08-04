@@ -1,5 +1,6 @@
 import Enum from "../../util/Enum";
 
+// eslint-disable-next-line import/no-mutable-exports
 let VarOwnerType = {
   Context: 1,
   Trace: 2,

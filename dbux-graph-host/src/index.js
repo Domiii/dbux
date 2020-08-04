@@ -57,3 +57,12 @@ export function startGraphHost(onStart, restart, ...args) {
 
   reset();
 }
+
+export function shutdownGraphHost() {
+  if (componentManager) {
+    componentManager.silentShutdown();
+    
+    // clear closed componentManager
+    componentManager = null;
+  }
+}

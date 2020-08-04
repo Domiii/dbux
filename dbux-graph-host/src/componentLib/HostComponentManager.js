@@ -47,10 +47,7 @@ class HostComponentManager extends BaseComponentManager {
 
   async restart() {
     debug('restarting...');
-    this.ipc.ipcAdapter.postMessage = (msg) => {
-      // when invoked by remote, we try to send response back after shutdown. This prevents that.
-      debug('silenced message after Host shutdown:', JSON.stringify(msg));
-    };
+    // this.silentShutdown();
 
     // externals.restart will result in a call to shutdown, and also re-load client code (something we cannot reliably do internally)
     await this.externals.restart();
@@ -58,6 +55,7 @@ class HostComponentManager extends BaseComponentManager {
 
   silentShutdown() {
     this.app?.dispose(true);
+    this.ipc.ipcAdapter.dispose();
   }
 
   // ###########################################################################
