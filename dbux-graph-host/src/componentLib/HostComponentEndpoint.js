@@ -118,6 +118,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
     // store properties
     super._build(componentManager, parent, componentId, initialState);
 
+    componentManager.incInitCount();
+
     this._initPromise = new Promise(r => {
       // do the long async init dance
       // [hackfix] we are delaying `initClient` via `resolve().then()` because it needs `_internalRoleName` (and maybe other stuff?), 
@@ -133,6 +135,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         finally(() => {
           // _initPromise has fulfilled its purpose
           this._initPromise = null;
+          componentManager.decInitCount();
           r();
         });
     });
@@ -255,28 +258,28 @@ class HostComponentEndpoint extends ComponentEndpoint {
   dispose(silent = false) {
     super.dispose();
 
-    // Promise.resolve(this.waitForInit()).then(() => {
-    if (!this.isInitialized) {
-      throw new Error(this.debugTag + ' Trying to dispose before initialized');
-    }
-    for (const component of this.children) {
-      component.dispose(silent);
-    }
-    for (const component of this.controllers) {
-      component.dispose(silent);
-    }
+    Promise.resolve(this.waitForInit()).then(() => {
+      if (!this.isInitialized) {
+        throw new Error(this.debugTag + ' Trying to dispose before initialized');
+      }
+      for (const component of this.children) {
+        component.dispose(silent);
+      }
+      for (const component of this.controllers) {
+        component.dispose(silent);
+      }
 
-    // remove from parent
-    if (this.owner) {
-      const list = this.owner._getComponentListByRoleName(this._internalRoleName);
-      list._removeComponent(this);
-    }
+      // remove from parent
+      if (this.owner) {
+        const list = this.owner._getComponentListByRoleName(this._internalRoleName);
+        list._removeComponent(this);
+      }
 
-    if (!silent) {
-      // also dispose on client
-      this._remoteInternal.dispose();
-    }
-    // });
+      if (!silent) {
+        // also dispose on client
+        this._remoteInternal.dispose();
+      }
+    });
   }
 
   // ###########################################################################

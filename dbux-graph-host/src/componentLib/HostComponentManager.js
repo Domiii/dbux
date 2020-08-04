@@ -1,3 +1,4 @@
+import NanoEvents from 'nanoevents';
 import BaseComponentManager from '@dbux/graph-common/src/componentLib/BaseComponentManager';
 import { newLogger } from '@dbux/common/src/log/logger';
 import HostComponentEndpoint from './HostComponentEndpoint';
@@ -39,6 +40,8 @@ class HostComponentManager extends BaseComponentManager {
     super(ipcAdapter, componentRegistry);
 
     this.externals = externals;
+    this._initCount = 0;
+    this._emitter = new NanoEvents();
   }
 
   start() {
@@ -127,6 +130,38 @@ class HostComponentManager extends BaseComponentManager {
       componentId,
       state
     );
+  }
+
+  // ###########################################################################
+  // manage init count
+  // ###########################################################################
+
+  setInitCount(n) {
+    const oldState = this.isBusyInit();
+    
+    this._initCount += n;
+
+    const newState = this.isBusyInit();
+
+    if (oldState !== newState) {
+      this._emitter.emit('busyStateChanged', newState);
+    }
+  }
+
+  incInitCount() {
+    this.setInitCount(1);
+  }
+
+  decInitCount() {
+    this.setInitCount(-1);
+  }
+
+  isBusyInit() {
+    return !!this._initCount;
+  }
+
+  onBusyStateChanged(cb) {
+    return this._emitter.on('busyStateChanged', cb);
   }
 }
 

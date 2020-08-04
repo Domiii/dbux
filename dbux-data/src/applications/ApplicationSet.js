@@ -14,6 +14,7 @@ export default class ApplicationSet {
   constructor(allApplications) {
     this.allApplications = allApplications;
     this.applicationSetData = new ApplicationSetData(this);
+    this._busy = 0;
   }
   
   get data() {
@@ -56,6 +57,10 @@ export default class ApplicationSet {
   }
 
   addApplication(applicationOrIdOrEntryPointPath) {
+    if (this.isBusy()) {
+      throw this.createBusyError();
+    }
+
     if (this.containsApplication(applicationOrIdOrEntryPointPath)) {
       return;
     }
@@ -67,6 +72,10 @@ export default class ApplicationSet {
   }
 
   removeApplication(applicationOrIdOrEntryPointPath) {
+    if (this.isBusy()) {
+      throw this.createBusyError();
+    }
+
     if (!this.containsApplication(applicationOrIdOrEntryPointPath)) {
       return;
     }
@@ -125,5 +134,31 @@ export default class ApplicationSet {
   unsubscribeAll() {
     this._unsubscribeCallbacks.forEach(unsubscribe => unsubscribe());
     this._unsubscribeCallbacks = [];
+  }
+
+  // ###########################################################################
+  // manage busy state
+  // ##########################################################################
+
+  setBusy(n) {
+    this._busy += n;
+  }
+
+  incBusy() {
+    this.setBusy(1);
+  }
+
+  decBusy() {
+    this.setBusy(-1);
+  }
+
+  isBusy() {
+    return !!this._busy;
+  }
+
+  createBusyError() {
+    const err = new Error('ApplicationSet busy');
+    err.appBusyFlag = true;
+    return err;
   }
 }
