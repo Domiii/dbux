@@ -344,6 +344,14 @@
         }
       },
       {
+        "command": "dbuxProjectView.node.resetBug",
+        "title": "Reset this bug",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
         "command": "dbuxProjectView.node.showWebsite",
         "title": "Show website",
         "icon": {
@@ -484,6 +492,11 @@
         {
           "command": "dbuxProjectView.node.stopBug",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\..*/",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxProjectView.node.resetBug",
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\..*\\..*/",
           "group": "inline"
         },
         {

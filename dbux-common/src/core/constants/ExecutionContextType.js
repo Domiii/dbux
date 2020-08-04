@@ -1,6 +1,7 @@
 import Enum from '../../util/Enum';
 
 
+// eslint-disable-next-line import/no-mutable-exports
 let ExecutionContextType = {
   Immediate: 1,
   ExecuteCallback: 2,
