@@ -55,7 +55,7 @@ export default class Process {
     this.command = command;
 
     const {
-      failOnStatusCode = false,
+      failOnStatusCode = true,
       failWhenNotFound = true,
       sync = false
     } = (options || EmptyObject);
