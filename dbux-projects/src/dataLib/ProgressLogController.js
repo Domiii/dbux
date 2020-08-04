@@ -33,6 +33,9 @@ export default class ProgressLogController {
     );
   }
 
+  /**
+   * Save serialized data to external storage
+   */
   async save() {
     try {
       const logString = this.progressLog.serialize();
@@ -43,6 +46,9 @@ export default class ProgressLogController {
     }
   }
 
+  /**
+   * Load serialized data from external storage
+   */
   load() {
     try {
       const logString = this.storage.get(storageKey);

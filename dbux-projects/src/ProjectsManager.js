@@ -12,6 +12,8 @@ import Stopwatch from './stopwatch/Stopwatch';
 const logger = newLogger('dbux-projects');
 const { debug } = logger;
 
+/** @typedef {import('./projectLib/Bug').default} Bug */
+/** @typedef {import('./projectLib/Project').default} Project */
 
 export default class ProjectsManager {
   config;
@@ -82,6 +84,9 @@ export default class ProjectsManager {
     }
   }
 
+  /**
+   * @param {Bug} bug 
+   */
   async resetBug(bug) {
     await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
     await this.progressLogController.util.processUnfinishTestRun(bug, '');

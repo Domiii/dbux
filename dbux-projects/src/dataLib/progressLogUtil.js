@@ -1,21 +1,17 @@
-import TestRun from './TestRunDef';
-import Bug from '../projectLib/Bug';
-import { createTestRun, createTestRunWithPatchString } from './TestRunDef';
+import TestRun, { createTestRun, createTestRunWithPatchString } from './TestRun';
 import BugProgress from './BugProgress';
 import BugStatus from './BugStatus';
 
-/**
- * @typedef {import('./ProgressLogController').default} ProgressLogController
- */
+/** @typedef {import('../projectLib/Bug').default} Bug */
+/** @typedef {import('./ProgressLogController').default} ProgressLogController */
 
 export default {
 
   // ###########################################################################
-  // processor
+  // processor (update BugProgress & TestRun)
   // ###########################################################################
 
   /**
-   * 
    * @param {ProgressLogController} plc 
    * @param {Bug} bug 
    * @param {any} result 

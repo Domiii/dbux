@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import TestRun from './TestRunDef';
+import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 
 
