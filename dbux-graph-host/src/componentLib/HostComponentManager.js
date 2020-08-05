@@ -79,9 +79,13 @@ class HostComponentManager extends BaseComponentManager {
       throw new Error(component.debugTag + '.shared is not a function');
     }
 
-    const src = shared.toString();
+    let src = shared.toString().trim();
 
-    // make sure it is avalid function declaration expression
+    if (/^shared\s*\(\s*\)\s*\{/.test(src)) {
+      src = `function ${src}`;
+    }
+    
+    // make sure it is a valid function declaration expression
     if (!/^function\s*(shared)?\s*\(\s*\)\s*\{/.test(src)) {
       // eslint-disable-next-line max-len
       throw new Error(component.debugTag + '.shared must be an es5-style function, declared like so: `function shared() { ... }` (necessary for simplifying serialization). Found:\n\n' + src);
@@ -138,7 +142,7 @@ class HostComponentManager extends BaseComponentManager {
 
   setInitCount(n) {
     const oldState = this.isBusyInit();
-    
+
     this._initCount += n;
 
     const newState = this.isBusyInit();
