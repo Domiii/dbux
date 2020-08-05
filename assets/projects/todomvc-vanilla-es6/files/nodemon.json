@@ -1,8 +1,0 @@
-{
-  "watch": [
-    "../../../../assets/projects/todomvc-vanilla-es6/webpack.base.config.js",
-    "../../../../dbux-babel-plugin/dist"
-  ],
-  "ext": "js",
-  "delay": "500"
-}

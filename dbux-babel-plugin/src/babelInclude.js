@@ -1,4 +1,6 @@
 const path = require('path');
+const babelRegister = require('@babel/register');
+const babelPresets = require('../../config/babel-presets-node');
 
 let dbuxRoot = path.resolve(path.join(__dirname, '..', '..'));
 if (dbuxRoot.endsWith('node_modules')) {
@@ -16,7 +18,6 @@ let folderPrefix = `^${path.join(
   '(?!.*?node_modules)'
 )}`;
 
-const babelRegister = require('@babel/register');
 
 // fix: backslashes on windows
 folderPrefix = folderPrefix.replace(/\\/g, '\\\\');
@@ -26,6 +27,7 @@ folderPrefix = folderPrefix.replace(/\\/g, '\\\\');
 folderPrefix = folderPrefix.toLowerCase();
 
 const babelRegisterOptions = {
+  ...babelPresets,
   ignore: [
     // '**/node_modules/**',
     function (fpath) {
@@ -47,20 +49,6 @@ const babelRegisterOptions = {
   // plugins: [
   //   '@babel/plugin-transform-runtime'
   // ],
-  presets: [
-    "@babel/preset-env",
-    {
-      exclude: ['@babel/plugin-transform-regenerator']
-    }
-  ],
-  // presets: [[
-  //   "@babel/preset-env",
-  //   {
-  //     "loose": true,
-  //     "useBuiltIns": "usage",
-  //     "corejs": 3
-  //   }
-  // ]],
   babelrcRoots
 };
 babelRegister(babelRegisterOptions);

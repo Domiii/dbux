@@ -134,6 +134,7 @@ export default class Project {
    * @virtual
    */
   async installProject() {
+    throw new Error('OUCHASDASD');
     // git clone
     await this.gitClone();
   }
