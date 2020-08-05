@@ -1,8 +1,6 @@
 import Enum from '../util/Enum';
 
-/**
- * 
- */
+// eslint-disable-next-line import/no-mutable-exports
 let SerializationMethod = {
   Function: 1,
   ToString: 2,

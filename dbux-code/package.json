@@ -2,7 +2,7 @@
   "name": "dbux-code",
   "private": true,
   "displayName": "Dbux (ALPHA)",
-  "version": "0.1.15",
+  "version": "0.1.18",
   "publisher": "Domi",
   "description": "",
   "repository": {
@@ -33,20 +33,28 @@
     "views": {
       "dbuxViewContainer": [
         {
-          "id": "dbuxTraceDetailsView",
-          "name": "Trace Details"
-        },
-        {
           "id": "dbuxApplicationsView",
           "name": "Applications"
         },
         {
+          "id": "dbuxTraceDetailsView",
+          "name": "Trace Details"
+        },
+        {
           "id": "dbuxProjectView",
-          "name": "Projects"
+          "name": "Practice"
         }
       ]
     },
     "commands": [
+      {
+        "command": "dbux.runFile",
+        "title": "Dbux: Run current file"
+      },
+      {
+        "command": "dbux.debugFile",
+        "title": "Dbux: Debug current file"
+      },
       {
         "command": "dbux.cancelBugRunner",
         "title": "Dbux Projects: Cancel All"
@@ -74,6 +82,10 @@
       {
         "command": "dbux.toggleErrorLog",
         "title": "Dbux: Toggle all error log"
+      },
+      {
+        "command": "dbux.selectTrace",
+        "title": "Dbux: select trace"
       },
       {
         "command": "dbuxCallGraphView.gotoEntry",
@@ -332,6 +344,14 @@
         }
       },
       {
+        "command": "dbuxProjectView.node.resetBug",
+        "title": "Reset this bug",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
         "command": "dbuxProjectView.node.showWebsite",
         "title": "Show website",
         "icon": {
@@ -475,6 +495,11 @@
           "group": "inline"
         },
         {
+          "command": "dbuxProjectView.node.resetBug",
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\..*\\..*/",
+          "group": "inline"
+        },
+        {
           "command": "dbuxProjectView.node.showWebsite",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\.hasWebsite/",
           "group": "inline"
@@ -547,12 +572,12 @@
     "webpack-node-externals": "^2.5.0"
   },
   "dependencies": {
-    "@dbux/cli": "^0.1.15",
-    "@dbux/common": "^0.1.15",
-    "@dbux/data": "^0.1.15",
-    "@dbux/graph-common": "^0.1.15",
-    "@dbux/graph-host": "^0.1.15",
-    "@dbux/projects": "^0.1.15",
+    "@dbux/cli": "^0.1.18",
+    "@dbux/common": "^0.1.18",
+    "@dbux/data": "^0.1.18",
+    "@dbux/graph-common": "^0.1.18",
+    "@dbux/graph-host": "^0.1.18",
+    "@dbux/projects": "^0.1.18",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "socket.io": "^2.3.0",

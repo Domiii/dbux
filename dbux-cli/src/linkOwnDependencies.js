@@ -13,7 +13,7 @@ linkOwnDependencies();
 
 function linkDependencies(deps) {
   for (let [alias, target] of deps) {
-    console.debug('[DBUX module-alias]', alias, '->', target);
+    // console.debug('[DBUX module-alias]', alias, '->', target);
     target = fs.realpathSync(target);
     moduleAlias.addAlias(alias, target);
   }

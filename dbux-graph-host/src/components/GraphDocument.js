@@ -18,8 +18,22 @@ class GraphDocument extends HostComponentEndpoint {
     // register event listeners
     this.addDisposable(
       allApplications.selection.onApplicationsChanged(() => {
+        allApplications.selection.incBusy();
+        
         this.graphRoot.refresh();
         this.controllers.getComponent(HighlightManager).clearDisposedHighlighter();
+
+        if (this.componentManager.isBusyInit()) {
+          const unbind = this.componentManager.onBusyStateChanged((state) => {
+            if (!state) {
+              allApplications.selection.decBusy();
+              unbind();
+            }
+          });
+        }
+        else {
+          allApplications.selection.decBusy();
+        }
       })
     );
   }

@@ -37,8 +37,12 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return projectViewController.manager.runner.cancel();
   });
 
+  registerCommand(extensionContext, 'dbuxProjectView.node.resetBug', async (node) => {
+    await node.tryResetBug();
+  });
+
   registerCommand(extensionContext, 'dbuxProjectView.node.showWebsite', (node) => {
-    return node?.showWebsite();
+    return node.showWebsite?.();
   });
   
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {

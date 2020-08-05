@@ -3,6 +3,7 @@ import Enum from "../../util/Enum";
 /**
  * TODO: merge with ExecutionContextType. No need for the two to be different.
  */
+// eslint-disable-next-line import/no-mutable-exports
 let LoopType = {
   For: 1,
   ForIn: 2,

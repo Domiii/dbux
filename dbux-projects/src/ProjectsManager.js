@@ -2,29 +2,37 @@ import path from 'path';
 import fs from 'fs';
 import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
-import size from 'lodash/size';
-import getOrCreateProgressLog from './dataLib';
-import processLogHandler from './dataLib/progressLog';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
+import ProgressLogController from './dataLib/ProgressLogController';
+import Stopwatch from './stopwatch/Stopwatch';
+import { log } from 'console';
 
 
 const logger = newLogger('dbux-projects');
 const { debug } = logger;
 
+/** @typedef {import('./projectLib/Bug').default} Bug */
+/** @typedef {import('./projectLib/Project').default} Project */
 
-class ProjectsManager {
+export default class ProjectsManager {
   config;
   externals;
   projects;
   runner;
 
+  /**
+   * @param {Object} externals 
+   * @param {ExternalStorage} externals.storage
+   */
   constructor(cfg, externals) {
     this.config = cfg;
     this.externals = externals;
     this.editor = externals.editor;
-    this.progressLog = getOrCreateProgressLog(externals.storage);
+    this.stopwatch = new Stopwatch();
+
+    this.progressLogController = new ProgressLogController(externals.storage);
   }
 
   /**
@@ -63,7 +71,7 @@ class ProjectsManager {
 
   getOrCreateRunner() {
     if (!this.runner) {
-      const runner = this.runner = new BugRunner(this, this.progressLog);
+      const runner = this.runner = new BugRunner(this);
       runner.start();
     }
     return this.runner;
@@ -73,12 +81,20 @@ class ProjectsManager {
     let patchString = await bug.project.getPatchString();
     if (patchString) {
       // TODO: prompt? or something else
-      processLogHandler.processUnfinishTestRun(this.progressLog, bug, patchString);
+      this.progressLogController.util.processUnfinishTestRun(bug, patchString);
     }
   }
 
+  /**
+   * @param {Bug} bug 
+   */
+  async resetBug(bug) {
+    await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
+    await this.progressLogController.util.processUnfinishTestRun(bug, '');
+  }
+
   async applyNewBugPatch(bug) {
-    let testRuns = processLogHandler.getTestRunsByBug(this.progressLog, bug);
+    let testRuns = this.progressLogController.util.getTestRunsByBug(bug);
     let testRun = testRuns.reduce((a, b) => {
       if (!a) {
         return b;
@@ -109,7 +125,7 @@ class ProjectsManager {
   }
 
   async installDependencies() {
-    await this.installDbuxCli();
+    await this.installDbuxDependencies();
   }
 
   getDevPackageRoot() {
@@ -151,31 +167,46 @@ class ProjectsManager {
   //     map(([pkgName, version]) => `${this._convertPkgToLocalIfNecessary(pkgName, version)}`);
   // }
 
-  async installDbuxCli() {
+
+  isDependencyInstalled(name) {
+    const { dependencyRoot } = this.config;
+    return sh.test('-d', path.join(dependencyRoot, 'node_modules', name));
+  }
+
+  getDbuxCliBinPath() {
+    const { dependencyRoot } = this.config;
+    return path.join(dependencyRoot, 'node_modules/@dbux/cli/bin/dbux.js');
+  }
+
+  async installDbuxDependencies() {
     // await exec('pwd', this.logger);
     if (!process.env.DBUX_VERSION) {
-      throw new Error('installDbuxCli() failed. DBUX_VERSION was not set.');
+      throw new Error('installDbuxDependencies() failed. DBUX_VERSION was not set.');
     }
 
-    const { projectsRoot } = this.config;
-    const execOptions = {
-      processOptions: {
-        cwd: projectsRoot
-      }
-    };
-
-    const projectsRootPackageJson = path.join(projectsRoot, 'package.json');
-    if (!await sh.test('-f', projectsRootPackageJson)) {
-      // make sure, we have a local `package.json`
-      await this.runner._exec('npm init -y', logger, execOptions);
-    }
-
-    // delete previously installed node_modules
-    // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
-    // await sh.rm('-rf', path.join(projectsRoot, 'node_modules'));
-
-    // NOTE: in development mode, we pull @dbux/cli (and it's dependencies) from the dev folder
+    // NOTE: in development mode, we have @dbux/cli (and it's dependencies) all linked up to the dev folder anyway
     if (process.env.NODE_ENV === 'production') {
+      const { dependencyRoot } = this.config;
+      const execOptions = {
+        processOptions: {
+          cwd: dependencyRoot
+        }
+      };
+      const rootPackageJson = path.join(dependencyRoot, 'package.json');
+      if (!await sh.test('-f', rootPackageJson)) {
+        // make sure, we have a local `package.json`
+        await this.runner._exec('npm init -y', logger, execOptions);
+      }
+      else if (this.isDependencyInstalled('@dbux/cli')) {
+        // already done!
+        // TODO: check correct version? should not be necessary in the code extension case...
+        return;
+      }
+
+      // delete previously installed node_modules
+      // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
+      // await sh.rm('-rf', path.join(projectsRoot, 'node_modules'));
+
       // install @dbux/cli
       const dbuxDeps = [
         '@dbux/cli'
@@ -197,7 +228,7 @@ class ProjectsManager {
       // debug(`Verifying NPM cache. This might (or might not) take a while...`);
       // await this.runner._exec('npm cache verify', logger, execOptions);
 
-
+      log('\n\nInstalling Dbux dependencies. This might (or might not) take a while...');
       await this.runner._exec(`npm i ${allDeps.join(' ')}`, logger, execOptions);
     }
     // else {
@@ -248,6 +279,20 @@ class ProjectsManager {
     //   await this.runner._exec(`npm i --save ${allDeps.join(' ')}`, logger, execOptions);
     // }
   }
-}
 
-export default ProjectsManager;
+  async askForSubmit() {
+    const confirmString = 'You have passed the test for the first time, would you like to submit the result?';
+    const shouldSubmit = await this.externals.confirm(confirmString);
+    
+    if (shouldSubmit) {
+      this.submit();
+    }
+  }
+
+  /**
+   * Record the practice session data after user passed all tests.
+   */
+  submit() {
+    // TODO
+  }
+}

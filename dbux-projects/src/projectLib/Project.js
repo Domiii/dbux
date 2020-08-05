@@ -103,10 +103,27 @@ export default class Project {
     return 1;
   }
 
-  async gitResetHard(args) {
+  async gitCheckoutCommit(args) {
     if (!await this.checkCorrectGitRepository()) return;
 
     await this.exec('git reset --hard ' + (args || ''));
+  }
+
+  async gitResetHard(needConfirm = false, confirmMsg = '') {
+    if (!await this.checkCorrectGitRepository()) return;
+
+    if (needConfirm && !confirmMsg) {
+      this.logger.error('calling Project.gitResetHard with `needConfirm=true` but no `confirmMsg`');
+    }
+
+    if (!await this.checkFilesChanged()) return;
+
+    if (needConfirm && !await this.manager.externals.confirm(confirmMsg)) {
+      const err = new Error('Action rejected by user');
+      err.userCanceled = true;
+      throw err;
+    }
+    await this.exec('git reset --hard');
   }
 
   // ###########################################################################
@@ -216,15 +233,11 @@ export default class Project {
       return -1;
     }
 
-    await this.exec('git update-index --refresh', {
-      failOnStatusCode: false
-    });
+    await this.exec('git update-index --refresh');
 
     // returns status code 1, if there are any changes
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec('git diff-index --quiet HEAD --', {
-      failOnStatusCode: false
-    });
+    const code = await this.exec('git diff-index --quiet HEAD --');
 
     return !!code;  // code !== 0 means that there are pending changes
   }
@@ -329,7 +342,7 @@ export default class Project {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
-      await this.exec(`git clone ${githubUrl} ${projectPath}`, {
+      await this.exec(`git clone "${githubUrl}" "${projectPath}"`, {
         cdToProjectPath: false
       });
 
@@ -338,7 +351,7 @@ export default class Project {
       // if given, switch to specific commit hash, branch or tag name
       // see: https://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
       if (this.gitCommit) {
-        await this.gitResetHard(this.gitCommit);
+        await this.gitCheckoutCommit(this.gitCommit);
       }
 
       this.log(`Cloned. Installing...`);

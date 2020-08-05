@@ -18,11 +18,15 @@ export async function getPathToBash() {
 }
 
 export function createDefaultTerminal(cwd) {
-  let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
+  return createTerminal(DefaultTerminalName, cwd);
+}
+
+export function createTerminal(name, cwd) {
+  let terminal = window.terminals.find(t => t.name === name);
   terminal?.dispose();
-  
+
   const terminalOptions = {
-    name: DefaultTerminalName,
+    name,
     cwd
   };
   return window.createTerminal(terminalOptions);
@@ -85,4 +89,14 @@ export async function queryTerminalPid() {
   }
 
   return terminal.processId; // NOTE: processId returns a promise!
+}
+
+
+export function runInTerminalInteractive(terminalName, cwd, command) {
+  const terminal = createTerminal(terminalName, cwd);
+
+  terminal.sendText(command, true);
+  terminal.show(false);
+
+  return terminal;
 }
