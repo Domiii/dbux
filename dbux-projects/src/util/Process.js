@@ -119,7 +119,7 @@ export default class Process {
 
     let onStdin;
     if (input) {
-      newProcess.stdin.write(input);
+      newProcess.stdin.write(`${input}\n`);
       newProcess.stdin.end();
     }
     else {
