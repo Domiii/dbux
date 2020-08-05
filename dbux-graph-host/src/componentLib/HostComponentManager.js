@@ -144,6 +144,18 @@ class HostComponentManager extends BaseComponentManager {
     const newState = this.isBusyInit();
 
     if (oldState !== newState) {
+      if (newState) {
+        // free to busy
+        this._busyInitPromise = new Promise((r) => {
+          this._resolveInitPromise = r;
+        });
+      }
+      else {
+        // busy to free
+        this._resolveInitPromise();
+        this._resolveInitPromise = null;
+        this._busyInitPromise = null;
+      }
       this._emitter.emit('busyStateChanged', newState);
     }
   }
@@ -162,6 +174,10 @@ class HostComponentManager extends BaseComponentManager {
 
   onBusyStateChanged(cb) {
     return this._emitter.on('busyStateChanged', cb);
+  }
+
+  waitForBusyInit() {
+    return this._busyInitPromise;
   }
 }
 
