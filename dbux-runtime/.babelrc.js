@@ -30,6 +30,6 @@ module.exports = {
     "@babel/plugin-proposal-function-bind",
     "@babel/plugin-syntax-export-default-from",
     "@babel/plugin-syntax-dynamic-import",
-    //"@babel/plugin-transform-runtime"
+    "@babel/plugin-transform-runtime"
   ]
 };
