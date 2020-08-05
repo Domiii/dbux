@@ -342,7 +342,7 @@ export default class Project {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
-      await this.exec(`git clone ${githubUrl} ${projectPath}`, {
+      await this.exec(`git clone "${githubUrl}" "${projectPath}"`, {
         cdToProjectPath: false
       });
 

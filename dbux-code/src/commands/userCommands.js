@@ -14,6 +14,7 @@ import { initProjectUserCommands } from './projectCommands';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
+import { runFile } from './runCommands';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newFileLogger(__filename);
@@ -145,4 +146,12 @@ export function initUserCommands(extensionContext, projectViewController) {
   // ###########################################################################
 
   initProjectUserCommands(extensionContext, projectViewController);
+
+
+  // ###########################################################################
+  // run + debug
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.runFile', () => runFile(extensionContext));
+  registerCommand(extensionContext, 'dbux.debugFile', () => runFile(extensionContext, '--inspect-brk'));
 }

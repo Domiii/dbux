@@ -72,10 +72,12 @@ class HostComponentEndpoint extends ComponentEndpoint {
     throw new Error('NYI');
   }
 
-  waitForInit() {
+  async waitForInit() {
     // NOTE: make sure, `waitFor` calls fulfill in order by appending our own task into the promise chain
     // return this._initPromise = this._initPromise.then(noop);
-    return this._initPromise;
+    while (this._initPromise) {
+      await this._initPromise;
+    }
   }
 
   async waitForUpdate() {

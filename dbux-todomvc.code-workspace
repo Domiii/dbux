@@ -15,5 +15,7 @@
 			"path": "projects\\eslint"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"debug.node.autoAttach": "on"
+	}
 }

@@ -27,6 +27,7 @@ const babelOptions = {
   presets: [[
     "@babel/preset-env",
     {
+      exclude: ['@babel/plugin-transform-regenerator'],
       "loose": true,
       "useBuiltIns": "usage",
       "corejs": 3

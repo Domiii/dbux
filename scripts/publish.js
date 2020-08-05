@@ -146,12 +146,12 @@ async function publishToNPM() {
   // NOTE: will trigger build scripts before publishing
   log('Publishing to NPM...');
   let publishCmd = 'npx lerna publish';
-  if (await yesno('not from-package?')) {
-    // usually, we just want to go from package, since `lerna version` already prepared things for us
-  }
-  else {
-    publishCmd += ' from-package';
-  }
+  // if (await yesno('not from-package?')) {
+  //   // usually, we just want to go from package, since `lerna version` already prepared things for us
+  // }
+  // else {
+  publishCmd += ' from-package';
+  // }
   await exec(publishCmd);
 
   // check package status on NPM
@@ -208,9 +208,10 @@ async function main() {
     throw new Error('Not logged in with VS Marketplace. Login first with: `cd dbux-code && npx vsce login dbux`');
   }
 
-  if (await yesno('Run start-ssh-agent?')) {
-    await run('start-ssh-agent');
-  }
+  // TODO: this does not work the way we would like it to
+  // if (await yesno('Run start-ssh-agent?')) {
+  //   await run('start-ssh-agent');
+  // }
 
   // await exec(
   //   // 'sh -lc "echo hi ; read x; echo abc$x"',

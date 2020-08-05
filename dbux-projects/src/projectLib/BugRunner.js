@@ -205,7 +205,6 @@ export default class BugRunner {
   async testBug(bug, debugMode = true) {
     const { project } = bug;
 
-    // // testing `installDbuxCli`
     // sh.mkdir('-p', project.projectPath);
     // await project.manager.installDependencies();
     // return;

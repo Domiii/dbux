@@ -1,18 +1,11 @@
 import { window, commands } from 'vscode';
-import path from 'path';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
-import { initDbuxProjects } from '@dbux/projects/src';
-import Process from '@dbux/projects/src/util/Process';
 import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
 import ProjectNodeProvider from './projectNodeProvider';
-import { showWarningMessage } from '../codeUtil/codeModals';
-import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
-import { execInTerminal } from '../terminal/TerminalWrapper';
 import PracticeStopwatch from './PracticeStopwatch';
-import { set as storageSet, get as storageGet } from '../memento';
-import { getResourcePath } from '../resources';
+import { getOrCreateProjectManager } from './projectControl';
 
 // ########################################
 //  setup logger for project
@@ -36,55 +29,12 @@ export function showOutputChannel() {
   outputChannel.show();
 }
 
+
 let controller;
 
 class ProjectViewController {
   constructor(context) {
-    // ########################################
-    // cfg + externals
-    // ########################################
-
-    // NOTE: Dependencies are hoisted at the root in dev mode
-    const relPath = process.env.NODE_ENV === 'production' ? [] : ['..', '..'];
-    
-    const cfg = {
-      projectsRoot: getResourcePath('..', ...relPath, 'dbux_projects')
-    };
-    const externals = {
-      editor: {
-        async openFile(fpath) {
-          // await exec(`code ${fpath}`, logger, { silent: false }, true);
-          return showTextDocument(fpath);
-        },
-        async openFolder(fpath) {
-          // TODO: use vscode API to add to workspace instead?
-          await Process.exec(`code --add ${fpath}`, { silent: false }, logger);
-        },
-        showTextInNewFile,
-      },
-      storage: {
-        get: storageGet,
-        set: storageSet,
-      },
-      async confirm(msg, modal = false) {
-        const confirmText = 'Ok';
-        const result = await window.showInformationMessage(msg, { modal }, confirmText, 'cancel');
-        return result === confirmText;
-      },
-      execInTerminal,
-      resources: {
-        getResourcePath
-      },
-      showMessage: {
-        showWarningMessage,
-      },
-    };
-
-    // ########################################
-    //  init projectManager
-    // ########################################
-    this.manager = initDbuxProjects(cfg, externals);
-    debug(`Initialized dbux-projects. Projects folder = "${path.resolve(cfg.projectsRoot)}"`);
+    this.manager = getOrCreateProjectManager(context);
 
     // ########################################
     //  init treeView

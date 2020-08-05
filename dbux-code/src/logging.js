@@ -21,7 +21,7 @@ export function initLogging() {
 function onError(...args) {
   if (errorLogFlag) {
     showErrorMessage(args.join(' '), {
-      [`Show Error Log`]: () => {
+      [`Show Log`]: () => {
         showOutputChannel();
       }
     });
