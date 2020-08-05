@@ -26,7 +26,7 @@ const { log, debug, warn, error: logError } = newLogger('PracticeController');
 const providerId = 'github';
 const scopes = ['user:email'];
 
-async function loginIfNecessaryAndGetToken() {
+export async function askUserForGithubLogin() {
   const sessions = await authentication.getSessions(providerId, scopes);
   let session;
   if (sessions.length) {
@@ -36,11 +36,6 @@ async function loginIfNecessaryAndGetToken() {
     session = await authentication.login(providerId, scopes);
   }
 
-  // NOTE: we can verify accessToken on server by using the accessToken to send a query for the user
-  // TODO: need encryption (e.g. HTTPS) before sending around github accessTokens
-
-  // result is a JSON object where result.login === session.accountName
-  // exec(`curl -H "Authorization: token ${accessToken}" https://api.github.com/user`)
   const token = await session.getAccessToken();
   log('login successful!', JSON.stringify(session), token);
 
@@ -62,3 +57,10 @@ export function initDbuxPractice(/* context */) {
   //   }
   // });
 }
+
+// curl -H "Authorization: token ACCESS_TOKEN" https://api.github.com/user
+// function fetchGithubAccountData(accessToken) {
+//   // NOTE: we can verify accessToken by using the accessToken to send a query for the user.
+//   // const user = await fetch('https://api.github.com/user', { headers: { Authorization: `token ${accessToken}` } })
+//   // user.login === session.accountName
+// }

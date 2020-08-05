@@ -159,4 +159,11 @@ export function initUserCommands(extensionContext, projectViewController) {
 
   registerCommand(extensionContext, 'dbux.runFile', () => runFile(extensionContext));
   registerCommand(extensionContext, 'dbux.debugFile', () => runFile(extensionContext, '--inspect-brk'));
+
+
+  // ###########################################################################
+  // practice backend
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.backendLogin', () => );
 }
