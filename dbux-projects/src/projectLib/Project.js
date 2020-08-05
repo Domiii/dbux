@@ -233,11 +233,12 @@ export default class Project {
       return -1;
     }
 
-    await this.exec('git update-index --refresh');
+    // Not sure what this line does, but seems not really useful here, since these two line does the same thing.
+    // await this.exec('git update-index --refresh');
 
     // returns status code 1, if there are any changes
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec('git diff-index --quiet HEAD --');
+    const code = await this.exec('git diff-index --quiet HEAD --', { failOnStatusCode: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
