@@ -140,11 +140,9 @@ export default class BugRunner {
   }
 
   /**
-   * 
-   * @param {Bug} bug 
-   * @return {boolean} If bug is different from previous one.
+   * @return {Bug}
    */
-  async savePreviousBugPatch(bug) {
+  async getPreviousBug() {
     let previousBugInformation = this.manager.externals.storage.get(activatedBugKeyName);
 
     if (previousBugInformation) {
@@ -153,17 +151,10 @@ export default class BugRunner {
       let previousProject = this.manager.getOrCreateDefaultProjectList().getByName(projectName);
 
       if (await previousProject.isProjectFolderExists()) {
-        let previousBug = previousProject.getOrLoadBugs().getById(bugId);
-
-        if (previousBug === bug) {
-          return true;
-        }
-
-        await this.manager.saveRunningBug(previousBug);
-        await previousBug.project.gitResetHard();
+        return previousProject.getOrLoadBugs().getById(bugId);
       }
     }
-    return false;
+    return null;
   }
 
   /**
@@ -180,6 +171,10 @@ export default class BugRunner {
    * @param {Bug} bug 
    */
   async activateBug(bug) {
+    if (this.isBugActive(bug)) {
+      return;
+    }
+
     const { project } = bug;
     this._bug = bug;
 
@@ -222,17 +217,21 @@ export default class BugRunner {
     // do whatever it takes (usually: `activateProject` -> `git checkout`)
 
     try {
-      let isSameBug = false;
-      if (!this.isBugActive(bug)) {
-        isSameBug = await this.savePreviousBugPatch(bug);
-        await this.updateActivatingBug(bug);
+      let previousBug = await this.getPreviousBug();
 
-        await this.activateBug(bug);
+      if (bug !== previousBug) {
+        if (previousBug) {
+          await this.manager.saveRunningBug(previousBug);
+          await previousBug.project.gitResetHard();
+        }
+
+        await this.updateActivatingBug(bug);
       }
 
+      await this.activateBug(bug);
 
       // apply stored patch
-      if (!isSameBug && !await bug.project.manager.applyNewBugPatch(bug)) {
+      if (bug !== previousBug && !await bug.project.manager.applyNewBugPatch(bug)) {
         return null;
       }
 
