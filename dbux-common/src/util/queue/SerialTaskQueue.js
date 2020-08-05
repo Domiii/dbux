@@ -49,11 +49,17 @@ export default class SerialTaskQueue {
   // ###########################################################################
 
   enqueue(...cbs) {
-    return Promise.all(cbs.map(cb => this._enqueueOne(cb)));
+    return Promise.race([
+      Promise.all(cbs.map(cb => this._enqueueOne(cb))),
+      this.waitUntilFinished(),
+    ]);
   }
 
   enqueueWithPriority(priority, ...cbs) {
-    return Promise.all(cbs.map(cb => this._enqueueOne(cb, priority)));
+    return Promise.race([
+      Promise.all(cbs.map(cb => this._enqueueOne(cb, priority))),
+      this.waitUntilFinished(),
+    ]);
   }
 
   /**
