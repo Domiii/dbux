@@ -48,7 +48,10 @@ const babelRegisterOptions = {
   //   '@babel/plugin-transform-runtime'
   // ],
   presets: [
-    "@babel/preset-env"
+    "@babel/preset-env",
+    {
+      exclude: ['@babel/plugin-transform-regenerator']
+    }
   ],
   // presets: [[
   //   "@babel/preset-env",

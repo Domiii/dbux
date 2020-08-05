@@ -1,18 +1,11 @@
 import { window, commands } from 'vscode';
-import path from 'path';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
-import { initDbuxProjects } from '@dbux/projects/src';
-import Process from '@dbux/projects/src/util/Process';
 import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
 import ProjectNodeProvider from './projectNodeProvider';
-import { showWarningMessage } from '../codeUtil/codeModals';
-import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
-import { execInTerminal } from '../terminal/TerminalWrapper';
 import PracticeStopwatch from './PracticeStopwatch';
-import { set as storageSet, get as storageGet } from '../memento';
-import { getResourcePath } from '../resources';
+import { getOrCreateProjectManager } from './projectControl';
 
 // ########################################
 //  setup logger for project
@@ -36,51 +29,12 @@ export function showOutputChannel() {
   outputChannel.show();
 }
 
-let controller;
 
+let controller;
 
 class ProjectViewController {
   constructor(context) {
-    // ########################################
-    // cfg + externals
-    // ########################################
-
-    // NOTE: Dependencies are hoisted at the root in dev mode
-    const relPath = process.env.NODE_ENV === 'production' ? [] : ['..', '..'];
-    
-    const cfg = {
-      projectsRoot: getResourcePath('..', ...relPath, 'dbux_projects')
-    };
-    const externals = {
-      editor: {
-        async openFile(fpath) {
-          // await exec(`code ${fpath}`, logger, { silent: false }, true);
-          return showTextDocument(fpath);
-        },
-        async openFolder(fpath) {
-          // TODO: use vscode API to add to workspace instead?
-          await Process.exec(`code --add ${fpath}`, { silent: false }, logger);
-        },
-        showTextInNewFile,
-      },
-      storage: {
-        get: storageGet,
-        set: storageSet,
-      },
-      execInTerminal,
-      resources: {
-        getResourcePath
-      },
-      showMessage: {
-        showWarningMessage,
-      },
-    };
-
-    // ########################################
-    //  init projectManager
-    // ########################################
-    this.manager = initDbuxProjects(cfg, externals);
-    debug(`Initialized dbux-projects. Projects folder = "${path.resolve(cfg.projectsRoot)}"`);
+    this.manager = getOrCreateProjectManager(context);
 
     // ########################################
     //  init treeView
@@ -132,12 +86,17 @@ class ProjectViewController {
 
       // activate it!
       progress.report({ message: 'activating...' });
-      await runner.testBug(bug, debugMode);
+      const result = await runner.testBug(bug, debugMode);
 
-      progress.report({ message: 'opening in editor...' });
-      await bug.openInEditor();
-
-      progress.report({ message: 'Finished!' });
+      if (result?.code === 0) {
+        // test passed
+        // TODO: Not using modal after the second time success(check BugProgress)
+        window.showInformationMessage('Congratulations!! You have passed all test 🎉🎉🎉', { modal: true });
+      }
+      else {
+        progress.report({ message: 'opening in editor...' });
+        await bug.openInEditor();
+      }
 
       this.treeDataProvider.refreshIcon();
     }, options);

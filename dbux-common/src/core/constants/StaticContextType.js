@@ -4,6 +4,7 @@ import Enum from "../../util/Enum";
  * TODO: this and ExecutionContextType are different but don't need to.
  * Consider handling this like we do with `TraceType`: optional dynamic type in `ExecutionContext`
  */
+// eslint-disable-next-line import/no-mutable-exports
 let StaticContextType = {
   Program: 1,
   Function: 2,

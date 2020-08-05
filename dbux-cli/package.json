@@ -1,6 +1,6 @@
 {
   "name": "@dbux/cli",
-  "version": "0.1.15",
+  "version": "0.1.18",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,9 +15,7 @@
   "author": "Domi",
   "license": "Apache-2.0",
   "dependencies": {
-    "@babel/cli": "^7.8.3",
     "@babel/core": "^7.8.3",
-    "@babel/node": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-decorators": "^7.8.3",
     "@babel/plugin-proposal-function-bind": "^7.8.3",
@@ -27,9 +25,9 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
     "@babel/register": "^7.8.3",
-    "@dbux/babel-plugin": "^0.1.15",
-    "@dbux/common": "^0.1.15",
-    "@dbux/runtime": "^0.1.15",
+    "@dbux/babel-plugin": "^0.1.18",
+    "@dbux/common": "^0.1.18",
+    "@dbux/runtime": "^0.1.18",
     "lodash": "^4.17.19",
     "module-alias": "^2.2.2",
     "object.fromentries": "^2.0.2",

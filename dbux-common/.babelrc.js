@@ -6,6 +6,7 @@ module.exports = {
     [
       "@babel/preset-env",
       {
+        exclude: ['@babel/plugin-transform-regenerator'],
         "shippedProposals": true,
         "loose": true,
         "useBuiltIns": "usage",

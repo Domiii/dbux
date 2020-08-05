@@ -1,17 +1,32 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import Process from '@dbux/projects/src/util/Process';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalUtil');
 
 const DefaultTerminalName = 'dbux-run';
 
+export async function getPathToBash() {
+  let result = await Process.execCaptureAll(`which cygpath`, { failOnStatusCode: false });
+
+  if (result.code) {
+    return Process.execCaptureOut(`which bash`, { failOnStatusCode: false });
+  } else {
+    return Process.execCaptureOut('cygpath -w `which bash`', { failOnStatusCode: false });
+  }
+}
+
 export function createDefaultTerminal(cwd) {
-  let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
+  return createTerminal(DefaultTerminalName, cwd);
+}
+
+export function createTerminal(name, cwd) {
+  let terminal = window.terminals.find(t => t.name === name);
   terminal?.dispose();
-  
+
   const terminalOptions = {
-    name: DefaultTerminalName,
+    name,
     cwd
   };
   return window.createTerminal(terminalOptions);
@@ -22,6 +37,25 @@ export function sendCommandToDefaultTerminal(cwd, command) {
 
   terminal.sendText(command, true);
   terminal.show(false);
+
+  return terminal;
+}
+
+export async function execCommand(cwd, command) {
+  let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
+  terminal?.dispose();
+
+  let pathToBash = await getPathToBash();
+
+  const terminalOptions = {
+    name: DefaultTerminalName,
+    cwd,
+    shellPath: pathToBash,
+    shellArgs: [`-c`, `${command}; tail -f /dev/null;`],
+  };
+
+  terminal = window.createTerminal(terminalOptions);
+  terminal.show();
 
   return terminal;
 }
@@ -55,4 +89,14 @@ export async function queryTerminalPid() {
   }
 
   return terminal.processId; // NOTE: processId returns a promise!
+}
+
+
+export function runInTerminalInteractive(terminalName, cwd, command) {
+  const terminal = createTerminal(terminalName, cwd);
+
+  terminal.sendText(command, true);
+  terminal.show(false);
+
+  return terminal;
 }

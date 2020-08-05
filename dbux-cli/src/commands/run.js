@@ -6,7 +6,7 @@ import { buildCommonCommandOptions, resolveCommandTargetPath } from '../util/com
 
 export const command = 'run <file>';
 export const aliases = ['r'];
-// export const describe = '';
+export const describe = 'Run the given file with DBUX injected and reporting. Needs a receiving runtime server (such as the DBUX VSCode extension) running.';
 export const builder = buildCommonCommandOptions();
 
 

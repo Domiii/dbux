@@ -11,6 +11,11 @@ export default class BugList {
   _list = [];
   _byId = new Map();
 
+  /**
+   * 
+   * @param {*} project 
+   * @param {Object[]} arr 
+   */
   constructor(project, arr) {
     this.project = project;
     let lastBugId = 0;

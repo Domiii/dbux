@@ -9,7 +9,6 @@
 	"devDependencies": {
 		"@babel/cli": "^7.8.3",
 		"@babel/core": "^7.8.3",
-		"@babel/node": "^7.5.5",
 		"@babel/plugin-proposal-class-properties": "^7.8.3",
 		"@babel/plugin-proposal-decorators": "^7.8.3",
 		"@babel/plugin-proposal-function-bind": "^7.8.3",
@@ -72,7 +71,7 @@
 		"graph:build:watch:prod": "cd dbux-graph-client && yarn run start:prod",
 		"graph:build:prod": "cd dbux-graph-client && yarn run build:prod",
 		"graph:build:dev": "cd dbux-graph-client && yarn run build:dev",
-		"dbux-install": "echo 'WARNING: Make sure your shell is said to bash. Check https://bit.ly/3i2S8KE for how to set it up on Windows.' && npx lerna bootstrap --force-local && npx lerna link --force-local",
+		"dbux-install": "echo 'WARNING: Make sure your shell is set to bash. Check https://bit.ly/3i2S8KE for how to set it up on Windows.' && npx lerna bootstrap --force-local && npx lerna link --force-local",
 		"dbux-reinstall": "yarn run dbux-uninstall && yarn run dbux-install",
 		"dbux-all": "sh scripts/dbux-run-all.sh",
 		"dbux-uninstall": "yarn run build:clean && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",

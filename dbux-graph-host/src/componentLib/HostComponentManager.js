@@ -1,3 +1,4 @@
+import NanoEvents from 'nanoevents';
 import BaseComponentManager from '@dbux/graph-common/src/componentLib/BaseComponentManager';
 import { newLogger } from '@dbux/common/src/log/logger';
 import HostComponentEndpoint from './HostComponentEndpoint';
@@ -39,6 +40,8 @@ class HostComponentManager extends BaseComponentManager {
     super(ipcAdapter, componentRegistry);
 
     this.externals = externals;
+    this._initCount = 0;
+    this._emitter = new NanoEvents();
   }
 
   start() {
@@ -47,10 +50,7 @@ class HostComponentManager extends BaseComponentManager {
 
   async restart() {
     debug('restarting...');
-    this.ipc.ipcAdapter.postMessage = (msg) => {
-      // when invoked by remote, we try to send response back after shutdown. This prevents that.
-      debug('silenced message after Host shutdown:', JSON.stringify(msg));
-    };
+    // this.silentShutdown();
 
     // externals.restart will result in a call to shutdown, and also re-load client code (something we cannot reliably do internally)
     await this.externals.restart();
@@ -58,6 +58,7 @@ class HostComponentManager extends BaseComponentManager {
 
   silentShutdown() {
     this.app?.dispose(true);
+    this.ipc.ipcAdapter.dispose();
   }
 
   // ###########################################################################
@@ -129,6 +130,54 @@ class HostComponentManager extends BaseComponentManager {
       componentId,
       state
     );
+  }
+
+  // ###########################################################################
+  // manage init count
+  // ###########################################################################
+
+  setInitCount(n) {
+    const oldState = this.isBusyInit();
+    
+    this._initCount += n;
+
+    const newState = this.isBusyInit();
+
+    if (oldState !== newState) {
+      if (newState) {
+        // free to busy
+        this._busyInitPromise = new Promise((r) => {
+          this._resolveInitPromise = r;
+        });
+      }
+      else {
+        // busy to free
+        this._resolveInitPromise();
+        this._resolveInitPromise = null;
+        this._busyInitPromise = null;
+      }
+      this._emitter.emit('busyStateChanged', newState);
+    }
+  }
+
+  incInitCount() {
+    this.setInitCount(1);
+  }
+
+  decInitCount() {
+    this.setInitCount(-1);
+  }
+
+  isBusyInit() {
+    return !!this._initCount;
+  }
+
+  onBusyStateChanged(cb) {
+    return this._emitter.on('busyStateChanged', cb);
+  }
+
+  waitForBusyInit() {
+    return this._busyInitPromise;
   }
 }
 

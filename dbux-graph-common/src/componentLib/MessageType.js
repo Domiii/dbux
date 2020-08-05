@@ -1,5 +1,6 @@
 import Enum from '@dbux/common/src/util/Enum';
 
+// eslint-disable-next-line import/no-mutable-exports
 let MessageType = {
   InitComponent: 1,
   Request: 2,

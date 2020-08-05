@@ -17,7 +17,7 @@ function _errWrap(f) {
     catch (err) {
       logError('Error when executing function of task', 
         f.name || '(anonymous callback)', '-', err);
-      throw err;
+      // throw err;
     }
   };
 }

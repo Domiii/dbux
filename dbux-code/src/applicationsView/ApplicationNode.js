@@ -1,3 +1,4 @@
+import { window } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 
@@ -35,11 +36,21 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   handleClick() {
-    if (this.isSelected) {
-      allApplications.selection.removeApplication(this.application);
+    try {
+      if (this.isSelected) {
+        allApplications.selection.removeApplication(this.application);
+      }
+      else {
+        allApplications.selection.addApplication(this.application);
+      }
     }
-    else {
-      allApplications.selection.addApplication(this.application);
+    catch (err) {
+      if (err.appBusyFlag) {
+        window.showInformationMessage('[Dbux] Currently busy, try again');
+      }
+      else {
+        throw err;
+      }
     }
   }
 

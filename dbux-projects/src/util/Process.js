@@ -32,10 +32,17 @@ export default class Process {
   constructor() {
   }
 
-  captureStream(stream) {
+  captureOutputStream(stream) {
     this.out = '';
     stream.on('data', chunk => {
       this.out += chunk;
+    });
+  }
+
+  captureErrorStream(stream) {
+    this.err = '';
+    stream.on('data', chunk => {
+      this.err += chunk;
     });
   }
 
@@ -73,7 +80,6 @@ export default class Process {
       processOptions.shell = true;
     }
 
-
     // some weird problem where some shells don't recognize things correctly
     // see: https://github.com/shelljs/shelljs/blob/master/src/exec.js#L51
     let { cwd } = processOptions;
@@ -110,7 +116,11 @@ export default class Process {
 
 
     if (options?.captureOut) {
-      this.captureStream(newProcess.stdout);
+      this.captureOutputStream(newProcess.stdout);
+    }
+
+    if (options?.captureErr) {
+      this.captureErrorStream(newProcess.stderr);
     }
 
     // ########################################
@@ -119,7 +129,7 @@ export default class Process {
 
     let onStdin;
     if (input) {
-      newProcess.stdin.write(input);
+      newProcess.stdin.write(`${input}\n`);
       newProcess.stdin.end();
     }
     else {
@@ -183,7 +193,7 @@ export default class Process {
           reject(new Error('Process was killed'));
         }
         else if (failOnStatusCode && code) {
-          reject(new Error('statusCode: ' + code));
+          reject(new Error(`Process failed with status code: ${code}`));
         }
         else {
           resolve(code);
@@ -252,6 +262,24 @@ export default class Process {
     await newProcess.start(cmd, logger || newLogger('exec'), options, input);
 
     return (newProcess.out || '').trim();
+  }
+
+  static async execCaptureAll(cmd, options, logger, input) {
+    const newProcess = new Process();
+
+    options = {
+      ...options,
+      captureOut: true,
+      captureErr: true,
+    };
+
+    let result = await newProcess.start(cmd, logger || newLogger('exec'), options, input);
+
+    return {
+      code: result,
+      out: (newProcess.out || '').trim(),
+      err: (newProcess.err || '').trim(),
+    };
   }
 
   static async exec(command, options, logger) {

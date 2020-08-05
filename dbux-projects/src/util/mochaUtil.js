@@ -5,8 +5,7 @@ import { buildNodeCommand } from './nodeUtil';
 export async function buildMochaRunBugCommand(cwd, mochaArgs, requireArr = EmptyArray, debugPort = 9309) {
   const program = `${cwd}/node_modules/mocha/bin/_mocha`;
 
-  // NOTE: `Project.installDbuxCli` installs this for us
-  // TODO: look up @dbux/cli depending on mode
+  // NOTE: `Project.installDbuxDependencies` installs @dbux/cli for us
   const initScript = getDbuxTargetPath('cli', 'lib/dbux-register.js');
   // const initScript = `./_dbux_inject.js`;
 

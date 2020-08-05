@@ -12,7 +12,7 @@ export function registerCommand(context, commandName, func) {
       }
       catch (err) {
         logError(commandName, 'command failed', err);
-        throw err;
+        // throw err;
       }
     };
   }

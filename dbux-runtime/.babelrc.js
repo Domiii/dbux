@@ -7,7 +7,10 @@ module.exports = {
   "retainLines": true,
   "presets": [
     [
-      "@babel/preset-env"
+      "@babel/preset-env",
+      {
+        exclude: ['@babel/plugin-transform-regenerator']
+      }
     ]
   ],
   "plugins": [
@@ -27,6 +30,6 @@ module.exports = {
     "@babel/plugin-proposal-function-bind",
     "@babel/plugin-syntax-export-default-from",
     "@babel/plugin-syntax-dynamic-import",
-    //"@babel/plugin-transform-runtime"
+    "@babel/plugin-transform-runtime"
   ]
 };
