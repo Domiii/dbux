@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
 import SocketClient from '../net/SocketClient';
 import SocketServer from '../net/SocketServer';
-import { sendCommandToDefaultTerminal } from '../codeUtil/terminalUtil';
+import { execCommand } from '../codeUtil/terminalUtil';
 
 // const Verbose = true;
 const Verbose = false;
@@ -103,13 +103,26 @@ export default class TerminalWrapper {
       const runJsArgs = Buffer.from(JSON.stringify({ port, cwd, command, args })).toString('base64');
       const initScript = getDbuxTargetPath('cli', 'lib/link-dependencies.js');
       const runJsCommand = `node --require=${initScript} _dbux_run.js ${runJsArgs}`;
-      this._terminal = sendCommandToDefaultTerminal(cwd, runJsCommand);
+      this._terminal = await execCommand(cwd, runJsCommand);
 
-      const client = this.client = await socketServer.waitForNextClient();
-      Verbose && debug('client connected');
-      const results = await client.waitForResults();
-      Verbose && debug('client finished. Results:', results);
-      return results?.[0] || null;
+      const result = await new Promise((resolve, reject) => {
+        socketServer.waitForNextClient().then(async (client) => {
+          this.client = client;
+          Verbose && debug('client connected');
+
+          let results = await client.waitForResults();
+          Verbose && debug('client finished. Results:', results);
+
+          resolve(results?.[0] || null);
+        });
+
+        window.onDidCloseTerminal((terminal) => {
+          if (terminal === this._terminal) {
+            reject(new Error('User closed the terminal'));
+          }
+        });
+      });
+      return result;
     }
     finally {
       // clean up server

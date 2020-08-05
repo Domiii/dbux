@@ -32,10 +32,17 @@ export default class Process {
   constructor() {
   }
 
-  captureStream(stream) {
+  captureOutputStream(stream) {
     this.out = '';
     stream.on('data', chunk => {
       this.out += chunk;
+    });
+  }
+
+  captureErrorStream(stream) {
+    this.err = '';
+    stream.on('data', chunk => {
+      this.err += chunk;
     });
   }
 
@@ -110,7 +117,11 @@ export default class Process {
 
 
     if (options?.captureOut) {
-      this.captureStream(newProcess.stdout);
+      this.captureOutputStream(newProcess.stdout);
+    }
+
+    if (options?.captureErr) {
+      this.captureErrorStream(newProcess.stderr);
     }
 
     // ########################################
@@ -252,6 +263,24 @@ export default class Process {
     await newProcess.start(cmd, logger || newLogger('exec'), options, input);
 
     return (newProcess.out || '').trim();
+  }
+
+  static async execCaptureAll(cmd, options, logger, input) {
+    const newProcess = new Process();
+
+    options = {
+      ...options,
+      captureOut: true,
+      captureErr: true,
+    };
+
+    let result = await newProcess.start(cmd, logger || newLogger('exec'), options, input);
+
+    return {
+      code: result,
+      out: (newProcess.out || '').trim(),
+      err: (newProcess.err || '').trim(),
+    };
   }
 
   static async exec(command, options, logger) {

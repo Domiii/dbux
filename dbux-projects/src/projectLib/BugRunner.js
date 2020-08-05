@@ -237,8 +237,8 @@ export default class BugRunner {
         };
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command, args);
         const result = await this._terminalWrapper.waitForResult();
+
         progressLogHandler.processBugResult(this.storage, bug, result);
-        project.logger.log(`Result:`, result);
         return result;
       }
     }
