@@ -14,6 +14,8 @@ import BugRunnerStatus from './BugRunnerStatus';
  * @typedef {import('../ProjectsManager').default} ProjectsManager
  */
 
+const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
+
 export default class BugRunner {
   /**
    * @type {ProjectsManager}
@@ -137,9 +139,11 @@ export default class BugRunner {
     return project.getOrLoadBugs();
   }
 
-  async saveBugPatchAndUpdateStorage(bug) {
-    const keyName = 'activatedBug';
-    let previousBugInformation = this.manager.externals.storage.get(keyName);
+  /**
+   * @return {Bug}
+   */
+  async getPreviousBug() {
+    let previousBugInformation = this.manager.externals.storage.get(activatedBugKeyName);
 
     if (previousBugInformation) {
       let { projectName, bugId } = previousBugInformation;
@@ -147,14 +151,17 @@ export default class BugRunner {
       let previousProject = this.manager.getOrCreateDefaultProjectList().getByName(projectName);
 
       if (await previousProject.isProjectFolderExists()) {
-        let previousBug = previousProject.getOrLoadBugs().getById(bugId);
-
-        await this.manager.saveRunningBug(previousBug);
-        await previousBug.project.gitResetHard();
+        return previousProject.getOrLoadBugs().getById(bugId);
       }
     }
+    return null;
+  }
 
-    await this.manager.externals.storage.set(keyName, {
+  /**
+   * @param {Bug} bug 
+   */
+  async updateActivatingBug(bug) {
+    await this.manager.externals.storage.set(activatedBugKeyName, {
       projectName: bug.project.name,
       bugId: bug.id,
     });
@@ -167,8 +174,6 @@ export default class BugRunner {
     if (this.isBugActive(bug)) {
       return;
     }
-
-    await this.saveBugPatchAndUpdateStorage(bug);
 
     const { project } = bug;
     this._bug = bug;
@@ -200,7 +205,7 @@ export default class BugRunner {
   /**
    * Run bug (if in debug mode, will wait for debugger to attach)
    * 
-   * @param {}
+   * @param {Bug} bug
    */
   async testBug(bug, debugMode = true) {
     const { project } = bug;
@@ -209,12 +214,24 @@ export default class BugRunner {
     // await project.manager.installDependencies();
     // return;
 
+    // do whatever it takes (usually: `activateProject` -> `git checkout`)
+
     try {
-      // do whatever it takes (usually: `activateProject` -> `git checkout`)
+      let previousBug = await this.getPreviousBug();
+
+      if (bug !== previousBug) {
+        if (previousBug) {
+          await this.manager.saveRunningBug(previousBug);
+          await previousBug.project.gitResetHard();
+        }
+
+        await this.updateActivatingBug(bug);
+      }
+
       await this.activateBug(bug);
 
       // apply stored patch
-      if (!await bug.project.manager.applyNewBugPatch(bug)) {
+      if (bug !== previousBug && !await bug.project.manager.applyNewBugPatch(bug)) {
         return null;
       }
 
@@ -222,6 +239,7 @@ export default class BugRunner {
       this.setStatus(BugRunnerStatus.Busy);
 
       let command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+      command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
       if (!command) {
         // nothing to do
