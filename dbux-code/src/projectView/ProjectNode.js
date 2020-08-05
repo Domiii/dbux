@@ -46,14 +46,9 @@ export default class ProjectNode extends BaseTreeViewNode {
     }
   }
 
-  handleClick() {
-
-  }
-
   buildChildren() {
-    const runner = this.treeNodeProvider.controller.manager.getOrCreateRunner();
     // getOrLoadBugs returns a `BugList`, use Array.from to convert to array
-    const bugs = Array.from(runner.getOrLoadBugs(this.project));
+    const bugs = Array.from(this.project.getOrLoadBugs());
     return bugs.map(this.buildBugNode.bind(this));
   }
 

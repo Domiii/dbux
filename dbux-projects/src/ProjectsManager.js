@@ -6,20 +6,27 @@ import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
 import ProgressLogController from './dataLib/ProgressLogController';
-import Stopwatch from './stopwatch/Stopwatch';
+import PracticeSession from './practiceSession/PracticeSession';
+import PracticeSessionState from './practiceSession/PracticeSessionState';
 import { log } from 'console';
-
 
 const logger = newLogger('dbux-projects');
 const { debug } = logger;
 
-/** @typedef {import('./projectLib/Bug').default} Bug */
 /** @typedef {import('./projectLib/Project').default} Project */
+/** @typedef {import('./projectLib/Bug').default} Bug */
 
 export default class ProjectsManager {
   config;
   externals;
+  /**
+   * @type {PracticeSession}
+   */
+  practiceSession
   projects;
+  /**
+   * @type {BugRunner}
+   */
   runner;
 
   /**
@@ -30,7 +37,7 @@ export default class ProjectsManager {
     this.config = cfg;
     this.externals = externals;
     this.editor = externals.editor;
-    this.stopwatch = new Stopwatch();
+    this.practiceSession = null;
 
     this.progressLogController = new ProgressLogController(externals.storage);
   }
@@ -77,6 +84,89 @@ export default class ProjectsManager {
     return this.runner;
   }
 
+  // ###########################################################################
+  // practice flow management
+  // ###########################################################################
+
+  /**
+   * Currently the only public function to user
+   * NOTE: should handle practice flow carefully
+   * @param {Bug} bug 
+   * @param {boolean} debugMode 
+   */
+  async activateBug(bug, debugMode = false) {
+    if (!this.practiceSession) {
+      await this._startPracticeSession(bug, debugMode);
+    }
+    else if (this.practiceSession.bug === bug) {
+      // re-activate the bug again
+      const result = this._activateBug(bug, debugMode);
+      if (result === 0) {
+        // user passed all test
+        this.askForSubmit();
+        this.practiceSession.setState(PracticeSessionState.Solved);
+      }
+      else {
+        // some test failed
+        this.externals.alert(`[Dbux] ${result} test(s) failed. Try again!`);
+      }
+      // TODO: save result if needed
+    }
+    else {
+      // activate another bug
+      const confirmMsg = `There is a bug activated, you will not be able to submit the score once you give up, are you sure?`;
+      const confirmResult = await this.externals.confirm(confirmMsg);
+      if (confirmResult) {
+        // TODO: save old practice session here
+        await this._startPracticeSession();
+      }
+    }
+  }
+
+  stopPracticeSession() {
+    // TODO
+  }
+
+  /**
+   * Starts a practice session and activate the bug once, promise resolve after all is done
+   * @param {Bug} bug 
+   */
+  async _startPracticeSession(bug, debugMode) {
+    // if it is the first time activate this bug, ask to start timer
+    let stopwatchEnabled;
+    const bugProgress = this.progressLogController.util.getBugProgressByBug(bug);
+    if (bugProgress) {
+      stopwatchEnabled = false;
+    }
+    else {
+      stopwatchEnabled = await this.externals.confirm('This is your first time activating this bug, would you like to start a timer?');
+    }
+    
+    const { project } = bug;
+    const practiceSession = new PracticeSession(project, bug, stopwatchEnabled);
+    practiceSession.setState(PracticeSessionState.Activating);
+
+    // activate once to show user the bug, don't care about the result
+    await this._activateBug(bug, debugMode);
+    
+    practiceSession.setState(PracticeSessionState.Solving);
+    if (stopwatchEnabled) {
+      this.practiceSession.startStopwatch();
+    }
+
+    return practiceSession;
+  }
+
+  /**
+   * Install and run a bug
+   * NOTE: Only used internally to manage practice flow
+   * @param {Bug} bug 
+   */
+  async _activateBug(bug, debugMode) {
+    const result = await this.runner.testBug(bug, debugMode);
+    return result;
+  }
+
   async saveRunningBug(bug) {
     let patchString = await bug.project.getPatchString();
     if (patchString) {
@@ -93,6 +183,11 @@ export default class ProjectsManager {
     await this.progressLogController.util.processUnfinishTestRun(bug, '');
   }
 
+  /**
+   * 
+   * @param {Bug} bug 
+   * @return {boolean} Tells if user wants to keep running
+   */
   async applyNewBugPatch(bug) {
     let testRuns = this.progressLogController.util.getTestRunsByBug(bug);
     let testRun = testRuns.reduce((a, b) => {
@@ -283,7 +378,7 @@ export default class ProjectsManager {
   async askForSubmit() {
     const confirmString = 'You have passed the test for the first time, would you like to submit the result?';
     const shouldSubmit = await this.externals.confirm(confirmString);
-    
+
     if (shouldSubmit) {
       this.submit();
     }
@@ -293,6 +388,6 @@ export default class ProjectsManager {
    * Record the practice session data after user passed all tests.
    */
   submit() {
-    // TODO
+    // TODO: maybe a new data type? or submit remotely?
   }
 }

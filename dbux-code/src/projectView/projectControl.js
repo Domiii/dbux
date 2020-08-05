@@ -66,6 +66,9 @@ function createProjectManager(extensionContext) {
       const result = await window.showInformationMessage(msg, { modal }, confirmText, 'cancel');
       return result === confirmText;
     },
+    alert(msg, modal = false) {
+      window.showInformationMessage(msg, { modal });
+    },
     execInTerminal,
     resources: {
       getResourcePath

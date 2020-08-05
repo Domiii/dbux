@@ -200,7 +200,7 @@ export default class BugRunner {
   /**
    * Run bug (if in debug mode, will wait for debugger to attach)
    * 
-   * @param {}
+   * @param {Bug} bug
    */
   async testBug(bug, debugMode = true) {
     const { project } = bug;
@@ -214,7 +214,7 @@ export default class BugRunner {
       await this.activateBug(bug);
 
       // apply stored patch
-      if (!await bug.project.manager.applyNewBugPatch(bug)) {
+      if (!await this.manager.applyNewBugPatch(bug)) {
         return null;
       }
 
@@ -239,6 +239,7 @@ export default class BugRunner {
           // NODE_ENV: process.env.NODE_ENV
         };
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command, args);
+        // TODO: as we want to make ProjectManager the only UI, here should return result directly and process data ouside
         const result = await this._terminalWrapper.waitForResult();
         await this.manager.progressLogController.util.processBugProgress(bug, result);
         if (result.code === 0) {

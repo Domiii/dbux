@@ -2,9 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import ProgressLog from './ProgressLog';
 import ProgressLogUtil from './progressLogUtil';
 
-/**
- * @typedef {import('../externals/Storage').default} ExternalStorage
- */
+/** @typedef {import('../externals/Storage').default} ExternalStorage */
 
 const { log, debug, warn, error: logError } = newLogger('ProgressLogController');
 

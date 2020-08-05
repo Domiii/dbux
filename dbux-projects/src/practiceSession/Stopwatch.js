@@ -2,6 +2,8 @@ import NanoEvents from 'nanoevents';
 import { performance } from 'perf_hooks';
 import { newLogger } from '@dbux/common/src/log/logger';
 
+const Verbose = true;
+
 const { log, debug, warn, error: logError } = newLogger('Stopwatch');
 
 export default class Stopwatch {
@@ -12,12 +14,21 @@ export default class Stopwatch {
     this._emitter = new NanoEvents();
   }
 
+  get time() {
+    if (this.isTiming) {
+      return this._time + (performance.now() - this._timeOffset);
+    }
+    else {
+      return this._time;
+    }
+  }
+
   start() {
     if (!this.isTiming) {
       this._timeOffset = performance.now();
       this.isTiming = true;
-      this._emitter.emit('start');
-      debug(`Stopwatch started: time = ${this.getTime()}`);
+      this._emitter.emit('start', this.time);
+      Verbose && debug(`Stopwatch started: time = ${this.time}`);
     }
   }
 
@@ -25,8 +36,8 @@ export default class Stopwatch {
     if (this.isTiming) {
       this._time += performance.now() - this._timeOffset;
       this.isTiming = false;
-      this._emitter.emit('pause');
-      debug(`Stopwatch paused: time = ${this.getTime()}`);
+      this._emitter.emit('pause', this.time);
+      Verbose && debug(`Stopwatch paused: time = ${this.time}`);
     }
   }
 
@@ -34,16 +45,7 @@ export default class Stopwatch {
     this._time = 0;
     if (this.isTiming) {
       this.isTiming = false;
-      this._emitter.emit('pause');
-    }
-  }
-
-  getTime() {
-    if (this.isTiming) {
-      return this._time + (performance.now() - this._timeOffset);
-    }
-    else {
-      return this._time;
+      this._emitter.emit('reset', this.time);
     }
   }
 
