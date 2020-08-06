@@ -8,6 +8,7 @@ import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
 import { execInTerminal } from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
 import { getResourcePath } from '../resources';
+import { interactiveGithubLogin } from '../net/GithubAuth';
 
 const logger = newLogger('projectControl');
 
@@ -55,7 +56,7 @@ function createProjectManager(extensionContext) {
         // TODO: use vscode API to add to workspace instead?
         await Process.exec(`code --add "${fpath}"`, { silent: false }, logger);
       },
-      showTextInNewFile,
+      showTextInNewFile
     },
     storage: {
       get: storageGet,
@@ -73,6 +74,7 @@ function createProjectManager(extensionContext) {
     showMessage: {
       showWarningMessage,
     },
+    interactiveGithubLogin
   };
 
   // ########################################

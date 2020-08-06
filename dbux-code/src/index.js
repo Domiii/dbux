@@ -19,7 +19,6 @@ import { initProjectView } from './projectView/projectViewController';
 import { initMemento } from './memento';
 import { initLogging } from './logging';
 import { restoreGraphView } from './graphView';
-import { initDbuxPractice } from './practice/dbuxPracticeController';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -45,7 +44,6 @@ function activate(context) {
     initCodeApplications(context);
     initCodeDeco(context);
     initToolBar(context);
-    initDbuxPractice(context);
     initMemento(context);
 
     initTraceSelection(context);

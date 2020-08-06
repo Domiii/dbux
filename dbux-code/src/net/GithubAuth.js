@@ -20,42 +20,28 @@ const { log, debug, warn, error: logError } = newLogger('PracticeController');
 
 
 // ###########################################################################
-// test out authentication
+// Github Auth
+// @see https://github.com/microsoft/vscode-extension-samples/blob/master/github-authentication-sample/src/credentials.ts
 // ###########################################################################
 
-const providerId = 'github';
-const scopes = ['user:email'];
+const GITHUB_AUTH_PROVIDER_ID = 'github';
+// The GitHub Authentication Provider accepts the scopes described here:
+// https://developer.github.com/apps/building-oauth-apps/understanding-scopes-for-oauth-apps/
+const SCOPES = ['user:email'];
 
-export async function askUserForGithubLogin() {
-  const sessions = await authentication.getSessions(providerId, scopes);
-  let session;
-  if (sessions.length) {
-    [session] = sessions;
-    // const token = await session.getAccessToken();
-  } else {
-    session = await authentication.login(providerId, scopes);
-  }
+export async function interactiveGithubLogin() {
+  // set createIfNone to false to quietly re-establish previous session without trying to prompt for login
+  // const session = await authentication.getSession(GITHUB_AUTH_PROVIDER_ID, SCOPES, { createIfNone: false });
+  
+  const session = await authentication.getSession(GITHUB_AUTH_PROVIDER_ID, SCOPES, { 
+    createIfNone: true,
+    clearSessionPreference: true
+  });
 
-  const token = await session.getAccessToken();
-  log('login successful!', JSON.stringify(session), token);
+  const s = JSON.stringify(session, null, 2);
+  log('successfully logged in with Github', s);
 
   return session;
-}
-
-// async function getSession() {
-//   return loginIfNecessaryAndGetToken();
-// }
-
-export function initDbuxPractice(/* context */) {
-  // if (authentication.providerIds.includes(providerId)) {
-  //   loginIfNecessary();
-  // }
-
-  // authentication.onDidChangeAuthenticationProviders(async e => {
-  //   if (e.added.includes(providerId)) {
-  //     loginIfNecessary();
-  //   }
-  // });
 }
 
 // curl -H "Authorization: token ACCESS_TOKEN" https://api.github.com/user

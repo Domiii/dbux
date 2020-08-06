@@ -18,7 +18,7 @@ export async function runFile(extensionContext, nodeArgs) {
     return;
   }
 
-  await projectManager.installDbuxDependencies();
+  await projectManager.installDependencies();
 
   const activeEditor = window.activeTextEditor;
 
