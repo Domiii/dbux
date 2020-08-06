@@ -4,11 +4,12 @@ import getDb, { getFirebase } from './db';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Firebase Auth');
 
+// TODO: create and use Webview for firebase auth to get an `accessToken` (since the node version of firebase does not support proper, persistable login methods)
 
 export default class BackendAuth {
   constructor(backendController) {
     this._backendController = backendController;
-    
+
     const firebase = getFirebase();
     this._authInitPromise = new Promise((resolve, reject) => {
       firebase.auth().onAuthStateChanged((user) => {

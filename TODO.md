@@ -2,6 +2,8 @@
 
 
 ## TODO
+* static "run with dbux" website?
+   * [dbux-cli] need a web build for `dbuxRun.js`
 * fix installDbuxDependencies to use promise and not call twice
 * core instrumentation bugs
    * trace function parameters

@@ -1,23 +1,23 @@
 import GraphWebView from './GraphWebView';
 
-let graphHost;
+let graphWebView;
 
 /**
  * 
  */
 
 function initGraphWebView(context) {
-  if (!graphHost) {
-    graphHost = new GraphWebView(context);
+  if (!graphWebView) {
+    graphWebView = new GraphWebView(context);
   }
 }
 
 export async function showGraphView(context) {
   initGraphWebView(context);
-  return graphHost.show();
+  return graphWebView.show();
 }
 
 export async function restoreGraphView(context) {
   initGraphWebView(context);
-  return graphHost.restorePreviousState();
+  return graphWebView.init();
 }

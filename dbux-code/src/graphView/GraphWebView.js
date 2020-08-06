@@ -16,11 +16,7 @@ const { log, debug, warn, error: logError } = newLogger('GraphViewHost');
 const defaultColumn = ViewColumn.Two;
 
 export default class GraphWebView extends WebviewWrapper {
-  extensionContext;
-
-  panel;
   hostComponentManager;
-  resourcePath;
 
   constructor(extensionContext) {
     super(extensionContext, 'dbux-graph', 'Call Graph', defaultColumn);

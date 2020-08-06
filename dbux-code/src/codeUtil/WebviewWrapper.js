@@ -1,5 +1,4 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import { startGraphHost, shutdownGraphHost } from '@dbux/graph-host/src/index';
 import {
   window,
   Uri,
@@ -13,9 +12,7 @@ const { log, debug, warn, error: logError } = newLogger('WebviewWrapper');
 
 export default class WebviewWrapper {
   extensionContext;
-
   panel;
-  hostComponentManager;
   resourcePath;
 
   constructor(extensionContext, webviewId, title, preferredColumn = ViewColumn.Two) {
@@ -25,8 +22,14 @@ export default class WebviewWrapper {
     this.preferredColumn = preferredColumn;
     this.wasVisible = false;
     this.resourcePath = path.join(this.extensionContext.extensionPath, 'resources');
+  }
 
-    this.restorePreviousState();
+  /**
+   * Check if we showed it before, and if so, show it again.
+   * Usually called upon start-up.
+   */
+  async init() {
+    return this.restorePreviousState();
   }
 
   // ###########################################################################
@@ -45,10 +48,10 @@ export default class WebviewWrapper {
     return mementoSet(this.mementoKey, state);
   }
 
-  restorePreviousState() {
+  async restorePreviousState() {
     let state = this._getPreviousState();
     if (state) {
-      this.show();
+      await this.show();
     }
   }
 
@@ -134,13 +137,17 @@ export default class WebviewWrapper {
   _createWebview() {
     let viewColumn = this.getPreferredViewColumn();
 
+    const localResourceRoots = [
+      Uri.file(this.resourcePath)
+    ];
+
     this.panel = window.createWebviewPanel(
       this.webviewId,
       this.title,
       viewColumn, // Editor column to show the new webview panel in.
       {
         enableScripts: true,
-        localResourceRoots: [Uri.file(this.resourcePath)]
+        localResourceRoots
       }
     );
     this.wasVisible = true;
@@ -162,15 +169,6 @@ export default class WebviewWrapper {
     );
   }
 
-  /**
-   * NOTE: this callback might be called more than once.
-   */
-  _started = (manager) => {
-    // (re-)started!
-    this.hostComponentManager = manager;
-  }
-
-
   // ###########################################################################
   // shutdown + restart
   // ###########################################################################
@@ -187,7 +185,7 @@ export default class WebviewWrapper {
   _webviewUpdateToken = 0;
 
   async _restartClientDOM() {
-    const html = this.buildClientHtml();
+    const html = await this.buildClientHtml();
     this.panel.webview.html = html + `<!-- ${++this._webviewUpdateToken} -->`;
   }
 
