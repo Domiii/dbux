@@ -1,20 +1,14 @@
 import NanoEvents from 'nanoevents';
-import path from 'path';
-import fs from 'fs';
 import sh from 'shelljs';
 import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Process from '../util/Process';
-import Project from './Project';
-import Bug from './Bug'; // eslint-disable-line no-unused-vars
-import BugRunnerStatus from './BugRunnerStatus';
+import BugRunnerStatus from './RunStatus';
 
-/**
- * @typedef {import('../ProjectsManager').default} ProjectsManager
- */
-
-const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
+/** @typedef {import('../ProjectsManager').default} ProjectsManager */
+/** @typedef {import('./Bug').default} Bug */
+/** @typedef {import('./Project').default} Project */
 
 export default class BugRunner {
   /**
@@ -38,9 +32,9 @@ export default class BugRunner {
 
   constructor(manager) {
     this.manager = manager;
+    this.status = BugRunnerStatus.None;
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
-    this.status = BugRunnerStatus.None;
   }
 
   get logger() {
@@ -89,7 +83,7 @@ export default class BugRunner {
   }
 
   isProjectActive(project) {
-    return this._project === project && project._installed;
+    return this._project === project;
   }
 
   isBugActive(bug) {
@@ -116,55 +110,20 @@ export default class BugRunner {
   // }
 
   /**
+   * Install project
    * NOTE: synchronized.
    */
   async activateProject(project) {
-    if (this.isProjectActive(project)) {
+    if (this.isProjectActive(project) && project._installed) {
       return;
     }
-
-    this._project = project;
-
-    // Runner become busy after starting installing project, setStatus should be called after this._project is set
-    this.setStatus(BugRunnerStatus.Busy);
 
     await project.installProject();
     project._installed = true;
   }
 
   getOrLoadBugs(project) {
-    // if (!this.isProjectActive(project)) {
-    //   await this.activateProject(project);
-    // }
     return project.getOrLoadBugs();
-  }
-
-  /**
-   * @return {Bug}
-   */
-  async getPreviousBug() {
-    let previousBugInformation = this.manager.externals.storage.get(activatedBugKeyName);
-
-    if (previousBugInformation) {
-      let { projectName, bugId } = previousBugInformation;
-
-      let previousProject = this.manager.getOrCreateDefaultProjectList().getByName(projectName);
-
-      if (await previousProject.isProjectFolderExists()) {
-        return previousProject.getOrLoadBugs().getById(bugId);
-      }
-    }
-    return null;
-  }
-
-  /**
-   * @param {Bug} bug 
-   */
-  async updateActivatingBug(bug) {
-    await this.manager.externals.storage.set(activatedBugKeyName, {
-      projectName: bug.project.name,
-      bugId: bug.id,
-    });
   }
 
   /**
@@ -177,10 +136,14 @@ export default class BugRunner {
 
     const { project } = bug;
     this._bug = bug;
+    this._project = project;
+
+    this.setStatus(BugRunnerStatus.Busy);
 
     await this._queue.enqueue(
-      // activate project
+      // install project
       async () => this.activateProject(project),
+      // apply patch if needed
       async () => {
         // git reset hard
         // TODO: make sure, user gets to save own changes first
@@ -203,9 +166,14 @@ export default class BugRunner {
   }
 
   /**
-   * Run bug (if in debug mode, will wait for debugger to attach)
-   * 
+   * @typedef {Object} ExecuteResult
+   * @property {number} code - the result code, usually the number of failed test
+   */
+
+  /**
+   * Install and run bug (if in debug mode, will wait for debugger to attach)
    * @param {Bug} bug
+   * @returns {ExecuteResult}
    */
   async testBug(bug, debugMode = true) {
     const { project } = bug;
@@ -217,17 +185,6 @@ export default class BugRunner {
     // do whatever it takes (usually: `activateProject` -> `git checkout`)
 
     try {
-      let previousBug = await this.getPreviousBug();
-
-      if (bug !== previousBug) {
-        if (previousBug) {
-          await this.manager.saveRunningBug(previousBug);
-          await previousBug.project.gitResetHard();
-        }
-
-        await this.updateActivatingBug(bug);
-      }
-
       await this.activateBug(bug);
 
       // apply stored patch
@@ -259,12 +216,7 @@ export default class BugRunner {
         this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command, args);
         // TODO: as we want to make ProjectManager the only UI, here should return result directly and process data ouside
         const result = await this._terminalWrapper.waitForResult();
-        await this.manager.progressLogController.util.processBugProgress(bug, result);
-        if (result.code === 0) {
-          // user passed all tests
-          this.manager.askForSubmit();
-        }
-        project.logger.log(`Result:`, result);
+        project.logger.log(`Result: ${result}`);
         return result;
       }
     }
@@ -357,23 +309,5 @@ export default class BugRunner {
 
   on(evtName, cb) {
     this._emitter.on(evtName, cb);
-  }
-
-  getProjectStatus(project) {
-    if (this._project === project) {
-      return this.status;
-    }
-    else {
-      return BugRunnerStatus.None;
-    }
-  }
-
-  getBugRunStatus(bug) {
-    if (this._bug === bug) {
-      return this.status;
-    }
-    else {
-      return BugRunnerStatus.None;
-    }
   }
 }

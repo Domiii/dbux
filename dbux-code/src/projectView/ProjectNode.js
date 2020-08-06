@@ -2,7 +2,7 @@ import { ProgressLocation, Uri, workspace, window } from 'vscode';
 import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
 import sleep from '@dbux/common/src/util/sleep';
 import Project from '@dbux/projects/src/projectLib/Project';
-import BugRunnerStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/BugRunnerStatus';
+import RunStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -19,27 +19,27 @@ export default class ProjectNode extends BaseTreeViewNode {
     return this.entry;
   }
 
+  get manager() {
+    return this.treeNodeProvider.controller.manager;
+  }
+
   get description() {
     return this.project._installed ? 'installed' : '';
   }
 
   get contextValue() {
-    return `dbuxProjectView.projectNode.${BugRunnerStatus.getName(this.status)}`;
-  }
-
-  get status() {
-    return this.project.runner.getProjectStatus(this.project);
+    return `dbuxProjectView.projectNode.${RunStatus.getName(this.status)}`;
   }
 
   makeIconPath() {
-    switch (this.status) {
-      case BugRunnerStatus.None:
+    switch (this.project.runStatus) {
+      case RunStatus.None:
         return '';
-      case BugRunnerStatus.Busy:
+      case RunStatus.Busy:
         return 'hourglass.svg';
-      case BugRunnerStatus.RunningInBackground:
+      case RunStatus.RunningInBackground:
         return 'play.svg';
-      case BugRunnerStatus.Done:
+      case RunStatus.Done:
         return 'dependency.svg';
       default:
         return '';

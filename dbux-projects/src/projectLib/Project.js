@@ -11,6 +11,8 @@ import Process from '../util/Process';
 const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
 
+/** @typedef {import('../ProjectsManager').default} ProjectsManager */
+
 export default class Project {
   /**
    * @type {BugList}
@@ -77,6 +79,10 @@ export default class Project {
 
   get projectPath() {
     return path.join(this.projectsRoot, this.folderName);
+  }
+
+  get runStatus() {
+    return this.manager.getProjectRunStatus(this);
   }
 
   // ###########################################################################
@@ -312,7 +318,7 @@ export default class Project {
     this._installed = false;
   }
 
-  async isProjectFolderExists() {
+  isProjectFolderExists() {
     return sh.test('-d', path.join(this.projectPath, '.git'));
   }
 
@@ -330,7 +336,7 @@ export default class Project {
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    if (!await this.isProjectFolderExists()) {
+    if (!this.isProjectFolderExists()) {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet

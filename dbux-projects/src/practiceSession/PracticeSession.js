@@ -10,7 +10,7 @@ export default class PracticeSession {
    * @param {Project} project 
    * @param {Bug} bug 
    */
-  constructor(project, bug, stopwatchEnabled) {
+  constructor(project, bug, stopwatchEnabled = false) {
     this.stopwatch = new Stopwatch();
     this.stopwatchEnabled = stopwatchEnabled;
     this.project = project;

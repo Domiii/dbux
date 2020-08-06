@@ -1,6 +1,6 @@
 import { env, Uri, window } from 'vscode';
 import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
-import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
+import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import 'lodash';
 
@@ -17,28 +17,25 @@ export default class BugNode extends BaseTreeViewNode {
     return this.entry;
   }
 
+  get manager() {
+    return this.treeNodeProvider.controller.manager;
+  }
+
   get contextValue() {
-    const runStatus = BugRunnerStatus.getName(this.runStatus);
+    const runStatus = RunStatus.getName(this.runStatus);
     const hasWebsite = this.bug.website ? 'hasWebsite' : '';
     return `dbuxProjectView.bugNode.${runStatus}.${hasWebsite}`;
   }
 
-  get runStatus() {
-    return this.bug.project.runner.getBugRunStatus(this.bug);
-  }
-
-  get result() {
-    return this.bug.manager.progressLogController.util.getBugProgressByBug(this.bug)?.status;
-  }
-
   makeIconPath() {
-    switch (this.runStatus) {
-      case BugRunnerStatus.Busy:
+    switch (this.bug.runStatus) {
+      case RunStatus.Busy:
         return 'hourglass.svg';
-      case BugRunnerStatus.RunningInBackground:
+      case RunStatus.RunningInBackground:
         return 'play.svg';
     }
-    switch (this.result) {
+    const progress = this.manager.progressLogController.util.getBugProgressByBug(this.bug);
+    switch (progress?.status) {
       case BugStatus.Attempted:
         return 'wrong.svg';
       case BugStatus.Solved:

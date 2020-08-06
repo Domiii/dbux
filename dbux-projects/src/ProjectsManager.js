@@ -8,9 +8,12 @@ import BugRunner from './projectLib/BugRunner';
 import ProgressLogController from './dataLib/ProgressLogController';
 import PracticeSession from './practiceSession/PracticeSession';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
+import RunStatus from './projectLib/RunStatus';
 
 const logger = newLogger('dbux-projects');
 const { debug, log } = logger;
+
+const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
 
 /** @typedef {import('./projectLib/Project').default} Project */
 /** @typedef {import('./projectLib/Bug').default} Bug */
@@ -22,6 +25,9 @@ export default class ProjectsManager {
    * @type {PracticeSession}
    */
   practiceSession
+  /**
+   * @type {ProjectList}
+   */
   projects;
   /**
    * @type {BugRunner}
@@ -99,7 +105,7 @@ export default class ProjectsManager {
     }
     else if (this.practiceSession.bug === bug) {
       // re-activate the bug again
-      const result = this._activateBug(bug, debugMode);
+      const result = await this._activateBug(bug, debugMode);
       if (result === 0) {
         // user passed all test
         this.askForSubmit();
@@ -116,14 +122,15 @@ export default class ProjectsManager {
       const confirmMsg = `There is a bug activated, you will not be able to submit the score once you give up, are you sure?`;
       const confirmResult = await this.externals.confirm(confirmMsg);
       if (confirmResult) {
-        // TODO: save old practice session here
+        await this._saveAndClearPracticeSession();
         await this._startPracticeSession();
       }
     }
   }
 
-  stopPracticeSession() {
-    // TODO
+  async stopPracticeSession() {
+    await this.runner.cancel();
+    this._saveAndClearPracticeSession();
   }
 
   /**
@@ -140,14 +147,14 @@ export default class ProjectsManager {
     else {
       stopwatchEnabled = await this.externals.confirm('This is your first time activating this bug, would you like to start a timer?');
     }
-    
+
     const { project } = bug;
     const practiceSession = new PracticeSession(project, bug, stopwatchEnabled);
     practiceSession.setState(PracticeSessionState.Activating);
 
     // activate once to show user the bug, don't care about the result
     await this._activateBug(bug, debugMode);
-    
+
     practiceSession.setState(PracticeSessionState.Solving);
     if (stopwatchEnabled) {
       this.practiceSession.startStopwatch();
@@ -156,21 +163,55 @@ export default class ProjectsManager {
     return practiceSession;
   }
 
+  async _saveAndClearPracticeSession() {
+    if (!this.practiceSession) {
+      return;
+    }
+    const { bug } = this.practiceSession;
+
+    // TODO
+
+    this.practiceSession = null;
+  }
+
   /**
-   * Install and run a bug
+   * Install and run a bug, and save testRun after result
    * NOTE: Only used internally to manage practice flow
    * @param {Bug} bug 
    */
   async _activateBug(bug, debugMode) {
+    const previousBug = await this.getPreviousBug();
+
+    // if some bug are already activated, save the changes
+    if (bug !== previousBug) {
+      if (previousBug) {
+        await this.saveFileChanges(previousBug);
+        await previousBug.project.gitResetHard();
+      }
+
+      await this.updateActivatingBug(bug);
+    }
+
     const result = await this.runner.testBug(bug, debugMode);
+
+    await this.progressLogController.util.processBugRunResult(bug, result);
+
+    if (result.code === 0) {
+      await this.askForSubmit();
+    }
+
     return result;
   }
 
-  async saveRunningBug(bug) {
-    let patchString = await bug.project.getPatchString();
+  /**
+   * Saves any changes in current active project as patch of bug
+   * @param {Bug} bug 
+   */
+  async saveFileChanges(bug) {
+    const patchString = await bug.project.getPatchString();
     if (patchString) {
-      // TODO: prompt? or something else
-      this.progressLogController.util.processUnfinishTestRun(bug, patchString);
+      await this.progressLogController.util.addUnfinishedTestRun(bug, patchString);
+      await this.progressLogController.save();
     }
   }
 
@@ -179,7 +220,8 @@ export default class ProjectsManager {
    */
   async resetBug(bug) {
     await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
-    await this.progressLogController.util.processUnfinishTestRun(bug, '');
+    await this.progressLogController.util.addUnfinishedTestRun(bug, '');
+    await this.progressLogController.save();
   }
 
   /**
@@ -216,6 +258,38 @@ export default class ProjectsManager {
     } else {
       return true;
     }
+  }
+
+  // ###########################################################################
+  // Project/Bug run status getter
+  // ###########################################################################
+
+  /**
+   * @param {Project} project 
+   */
+  getProjectRunStatus(project) {
+    if (this.runner.isProjectActive(project)) {
+      return this.runner.status;
+    }
+    else {
+      return RunStatus.None;
+    }
+  }
+
+  /**
+   * @param {Bug} bug 
+   */
+  getBugRunStatus(bug) {
+    if (this.runner.isBugActive(bug)) {
+      return this.runner.status;
+    }
+    else {
+      return RunStatus.None;
+    }
+  }
+
+  onRunStatusChanged(cb) {
+    this.runner.on('statusChanged', cb);
   }
 
   async installDependencies() {
@@ -272,6 +346,37 @@ export default class ProjectsManager {
     return path.join(dependencyRoot, 'node_modules/@dbux/cli/bin/dbux.js');
   }
 
+  // ###########################################################################
+  // Activating Bug saves
+  // ###########################################################################
+
+  /**
+   * @return {Bug}
+   */
+  getPreviousBug() {
+    const previousBugInformation = this.externals.storage.get(activatedBugKeyName);
+
+    if (previousBugInformation) {
+      const { projectName, bugId } = previousBugInformation;
+      const previousProject = this.getOrCreateDefaultProjectList().getByName(projectName);
+
+      if (previousProject.isProjectFolderExists()) {
+        return previousProject.getOrLoadBugs().getById(bugId);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @param {Bug} bug 
+   */
+  async updateActivatingBug(bug) {
+    await this.externals.storage.set(activatedBugKeyName, {
+      projectName: bug.project.name,
+      bugId: bug.id,
+    });
+  }
+
 
   // ###########################################################################
   // Dependency Management
@@ -306,7 +411,7 @@ export default class ProjectsManager {
         }
       };
       const rootPackageJson = path.join(dependencyRoot, 'package.json');
-      if (!await sh.test('-f', rootPackageJson)) {
+      if (!sh.test('-f', rootPackageJson)) {
         // make sure, we have a local `package.json`
         await this.runner._exec('npm init -y', logger, execOptions);
       }

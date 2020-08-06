@@ -14,12 +14,3 @@ export default class TestRun {
     this.patch = patch;
   }
 }
-
-export function createTestRunWithPatchString(bug, patchString) {
-  return new TestRun(bug, { code: -1 }, patchString);
-}
-
-export async function createTestRun(bug, result) {
-  const patch = await bug.project.getPatchString();
-  return new TestRun(bug, result, patch);
-}

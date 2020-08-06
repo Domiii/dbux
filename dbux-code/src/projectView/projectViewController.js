@@ -1,6 +1,6 @@
 import { window, commands } from 'vscode';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
-import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
+import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import ProjectNodeProvider from './projectNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
@@ -46,14 +46,13 @@ class ProjectViewController {
     this.practiceStopwatch.registOnClick(context, this.maybeStopWatch.bind(this));
 
     // ########################################
-    //  listen on bugRunner
+    //  listen on runStatusChanged
     // ########################################
-    const bugRunner = this.manager.getOrCreateRunner();
-    bugRunner.on('statusChanged', this.onStatusChanged.bind(this));
+    this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
   }
 
-  onStatusChanged(status) {
-    commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === BugRunnerStatus.Busy);
+  handleStatusChanged(status) {
+    commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === RunStatus.Busy);
     this.treeDataProvider.refreshIcon();
   }
 
@@ -84,9 +83,9 @@ class ProjectViewController {
       progress.report({ message: 'Canceling previous tasks...' });
       await runner.cancel();
 
-      // activate it!
       progress.report({ message: 'activating...' });
-      const result = await runner.testBug(bug, debugMode);
+      // TODO: remove this
+      const result = await this.manager._activateBug(bug, debugMode);
 
       if (result?.code === 0) {
         // test passed

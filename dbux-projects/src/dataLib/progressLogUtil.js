@@ -1,4 +1,4 @@
-import TestRun, { createTestRun, createTestRunWithPatchString } from './TestRun';
+import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 import BugStatus from './BugStatus';
 
@@ -8,26 +8,42 @@ import BugStatus from './BugStatus';
 export default {
 
   // ###########################################################################
-  // processor (update BugProgress & TestRun)
+  // processor (update BugProgress & add TestRun)
   // ###########################################################################
 
   /**
+   * After a attempt, store TestRun, updateBugProgress and save to ExternalStorage
    * @param {ProgressLogController} plc 
    * @param {Bug} bug 
    * @param {any} result 
    */
-  async processBugProgress(plc, bug, result) {
-    plc.progressLog.testRuns.push(await createTestRun(bug, result));
-
-    plc.util.updateBugProgress(bug, result);
-
+  async processBugRunResult(plc, bug, result) {
+    await plc.util.addTestRun(bug, result);
+    plc.util.maybeUpdateBugProgress(bug, result);
     await plc.save();
   },
 
-  async processUnfinishTestRun(plc, bug, patchString) {
-    plc.progressLog.testRuns.push(createTestRunWithPatchString(bug, patchString));
-  
-    await plc.save();
+  /**
+   * NOTE: A unfinished TestRun is saved with result.code = -1
+   * @param {ProgressLogController} plc 
+   * @param {Bug} bug 
+   * @param {string} patchString 
+   */
+  async addUnfinishedTestRun(plc, bug, patchString = null) {
+    await plc.util.addTestRun(bug, { code: -1 }, patchString);
+  },
+
+  /**
+   * @param {ProgressLogController} plc 
+   * @param {Bug} bug 
+   * @param {string} patchString 
+   */
+  async addTestRun(plc, bug, result, patchString = null) {
+    if (patchString === null) {
+      patchString = await bug.project.getPatchString();
+    }
+    const testRun = new TestRun(bug, result, patchString);
+    plc.progressLog.testRuns.push(testRun);
   },
 
   /**
@@ -35,11 +51,14 @@ export default {
    * @param {Bug} bug 
    * @param {any} result 
    */
-  updateBugProgress(plc, bug, result) {
+  maybeUpdateBugProgress(plc, bug, result) {
     const bugProgress = plc.util.getOrCreateBugProgress(bug);
-    
-    bugProgress.updateAt = Date.now();
-    bugProgress.status = result.code ? BugStatus.Attempted : BugStatus.Solved;
+
+    if (bugProgress.status !== BugStatus.Solved) {
+      // only update when the first time solved
+      bugProgress.updateAt = Date.now();
+      bugProgress.status = result.code ? BugStatus.Attempted : BugStatus.Solved;
+    }
   },
 
   // ###########################################################################
@@ -75,14 +94,14 @@ export default {
    * @param {Bug} bug 
    */
   getOrCreateBugProgress(plc, bug) {
-    let result = plc.util.getBugProgressByBug(bug);
+    let bugProgress = plc.util.getBugProgressByBug(bug);
 
-    if (!result) {
-      result = new BugProgress(bug);
-      plc.progressLog.bugProgresses.push(result);
+    if (!bugProgress) {
+      bugProgress = new BugProgress(bug);
+      plc.progressLog.bugProgresses.push(bugProgress);
     }
 
-    return result;
+    return bugProgress;
   },
 
   /**
