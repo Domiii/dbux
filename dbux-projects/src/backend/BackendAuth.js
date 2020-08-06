@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import db, { firebase } from './db';
+import getDb, { getFirebase } from './db';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Firebase Auth');
@@ -8,6 +8,8 @@ const { log, debug, warn, error: logError } = newLogger('Firebase Auth');
 export default class BackendAuth {
   constructor(backendController) {
     this._backendController = backendController;
+    
+    const firebase = getFirebase();
     this._authInitPromise = new Promise((resolve, reject) => {
       firebase.auth().onAuthStateChanged((user) => {
         debug(`Auth state changed: ${user && `${user.displayName} (${user.email})` || '(not logged in)'}`);
