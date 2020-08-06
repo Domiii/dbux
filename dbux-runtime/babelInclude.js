@@ -1,5 +1,13 @@
+/**
+ * Useful for embedding runtime without webpack build.
+ * Should not be necessary anymore.
+ * 
+ * @file
+ */
+
 const path = require('path');
 const babelRegister = require('@babel/register');
+const babelPresets = require('../config/babel-presets-node');
 
 let dbuxRoot = path.resolve(path.join(__dirname, '..', '..'));
 if (dbuxRoot.endsWith('node_modules')) {
@@ -25,6 +33,7 @@ folderPrefix = folderPrefix.replace(/\\/g, '\\\\');
 folderPrefix = folderPrefix.toLowerCase();
 
 const babelRegisterOptions = {
+  ...babelPresets,
   ignore: [
     // '**/node_modules/**',
     function (fpath) {
@@ -44,25 +53,8 @@ const babelRegisterOptions = {
   ],
   sourceMaps: "both",
   retainLines: true,
-  // plugins: [
-  //   '@babel/plugin-transform-runtime'
-  // ],
-  presets: [
-    "@babel/preset-env",
-    {
-      exclude: ['@babel/plugin-transform-regenerator']
-    }
-  ],
-  // presets: [[
-  //   "@babel/preset-env",
-  //   {
-  //     "loose": true,
-  //     "useBuiltIns": "usage",
-  //     "corejs": 3
-  //   }
-  // ]],
   babelrcRoots
 };
 babelRegister(babelRegisterOptions);
 
-module.exports = require('./index');
+module.exports = require('./src/index');

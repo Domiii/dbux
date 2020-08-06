@@ -43,8 +43,8 @@ function createProjectManager(extensionContext) {
     ['..', '..'];   // monoRoot/dbux-code/../..
 
   const cfg = {
-    dependencyRoot: extensionContext.asAbsolutePath(...nodeModulesParent),
-    projectsRoot: extensionContext.asAbsolutePath(...projectsParent, 'dbux_projects')
+    dependencyRoot: extensionContext.asAbsolutePath(path.join(...nodeModulesParent)),
+    projectsRoot: getResourcePath(path.join('..', ...projectsParent, 'dbux_projects'))
   };
   const externals = {
     editor: {

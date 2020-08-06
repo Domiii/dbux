@@ -103,13 +103,18 @@ export function initUserCommands(extensionContext, projectViewController) {
     // input application
     const applicationIdByLabel = new Map();
     const labels = [];
-    allApplications.selection.getAll().forEach(app => {
+    const allSelectedApps = allApplications.selection.getAll();
+    allSelectedApps.forEach(app => {
       // NOTE: label should be a unique key
       const label = `${app.getPreferredName()} (id: ${app.applicationId})`;
       labels.push(label);
       applicationIdByLabel.set(label, app.applicationId);
     });
-    const applicationName = await window.showQuickPick(labels);
+    if (!allSelectedApps.length) {
+      window.showInformationMessage('[Dbux] No application selected');
+      return;
+    }
+    const applicationName = await window.showQuickPick(labels, { placeHolder: 'Select an application' });
     if (!applicationName) {
       // user canceled selection
       return;

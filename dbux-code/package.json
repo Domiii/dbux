@@ -49,11 +49,19 @@
     "commands": [
       {
         "command": "dbux.runFile",
-        "title": "Dbux: Run current file"
+        "title": "Dbux: Run current file",
+        "icon": {
+          "light": "resources/light/play.svg",
+          "dark": "resources/dark/play.svg"
+        }
       },
       {
         "command": "dbux.debugFile",
-        "title": "Dbux: Debug current file"
+        "title": "Dbux: Debug current file",
+        "icon": {
+          "light": "resources/light/bug.svg",
+          "dark": "resources/dark/bug.svg"
+        }
       },
       {
         "command": "dbux.cancelBugRunner",
@@ -315,8 +323,8 @@
         "command": "dbuxProjectView.node.activateBugWithDebugger",
         "title": "Activate Bug With Debugger",
         "icon": {
-          "light": "resources/light/bug.svg",
-          "dark": "resources/dark/bug.svg"
+          "light": "resources/light/debug.svg",
+          "dark": "resources/dark/debug.svg"
         }
       },
       {
@@ -539,6 +547,16 @@
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
           "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
+          "group": "navigation"
+        },
+        {
+          "command": "dbux.runFile",
+          "when": "view == dbuxApplicationsView",
+          "group": "navigation"
+        },
+        {
+          "command": "dbux.debugFile",
+          "when": "view == dbuxApplicationsView",
           "group": "navigation"
         }
       ]

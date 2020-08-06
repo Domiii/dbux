@@ -11,21 +11,14 @@ const logger = newLogger('runFile');
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
-let runBusy = false;
-
 export async function runFile(extensionContext, nodeArgs) {
   const projectManager = getOrCreateProjectManager(extensionContext);
-  if (runBusy) {
-    logError('Busy installing...');
+  if (projectManager.isInstallingSharedDependencies()) {
+    logError('Busy installing. This happens on first run of the command after extension installation (or update). This might (or might not) take a few minutes.');
     return;
   }
-  runBusy = true;
-  try {
-    await projectManager.installDbuxDependencies();
-  }
-  finally {
-    runBusy = false;
-  }
+
+  await projectManager.installDbuxDependencies();
 
   const activeEditor = window.activeTextEditor;
 

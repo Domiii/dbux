@@ -8,10 +8,9 @@ import BugRunner from './projectLib/BugRunner';
 import ProgressLogController from './dataLib/ProgressLogController';
 import PracticeSession from './practiceSession/PracticeSession';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
-import { log } from 'console';
 
 const logger = newLogger('dbux-projects');
-const { debug } = logger;
+const { debug, log } = logger;
 
 /** @typedef {import('./projectLib/Project').default} Project */
 /** @typedef {import('./projectLib/Bug').default} Bug */
@@ -273,7 +272,26 @@ export default class ProjectsManager {
     return path.join(dependencyRoot, 'node_modules/@dbux/cli/bin/dbux.js');
   }
 
+
+  // ###########################################################################
+  // Dependency Management
+  // ###########################################################################
+
+  isInstallingSharedDependencies() {
+    return !!this._installSharedDependenciesPromise;
+  }
+
+  hasInstalledSharedDependencies() {
+    // TODO: check correct version? should not be necessary for the VSCode extension because it will create a new extension folder for every version update anyway
+    return this.isDependencyInstalled('@dbux/cli');
+  }
+
   async installDbuxDependencies() {
+    await this._installSharedDependenciesPromise;
+    await (this._installSharedDependenciesPromise = this._doInstallDbuxDependencies());
+  }
+
+  async _doInstallDbuxDependencies() {
     // await exec('pwd', this.logger);
     if (!process.env.DBUX_VERSION) {
       throw new Error('installDbuxDependencies() failed. DBUX_VERSION was not set.');
@@ -292,9 +310,8 @@ export default class ProjectsManager {
         // make sure, we have a local `package.json`
         await this.runner._exec('npm init -y', logger, execOptions);
       }
-      else if (this.isDependencyInstalled('@dbux/cli')) {
+      else if (this.hasInstalledSharedDependencies()) {
         // already done!
-        // TODO: check correct version? should not be necessary in the code extension case...
         return;
       }
 
@@ -373,6 +390,7 @@ export default class ProjectsManager {
     //   // writePackageJson(projectsRoot, pkg);
     //   await this.runner._exec(`npm i --save ${allDeps.join(' ')}`, logger, execOptions);
     // }
+    this._installSharedDependenciesPromise = null;
   }
 
   async askForSubmit() {
