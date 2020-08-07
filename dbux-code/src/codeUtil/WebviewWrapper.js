@@ -1,27 +1,33 @@
-import { newLogger } from '@dbux/common/src/log/logger';
 import {
   window,
   Uri,
   ViewColumn
 } from 'vscode';
 import path from 'path';
+import { newLogger } from '@dbux/common/src/log/logger';
+import { wrapScriptTag, wrapScriptFileInTag } from './domTransformUtil';
 import { set as mementoSet, get as mementoGet } from '../memento';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('WebviewWrapper');
 
+
+let _extensionContext;
+export function initWebviewWrapper(extensionContext) {
+  _extensionContext = extensionContext;
+}
+
 export default class WebviewWrapper {
   extensionContext;
   panel;
-  resourcePath;
+  resourceRoot;
 
-  constructor(extensionContext, webviewId, title, preferredColumn = ViewColumn.Two) {
-    this.extensionContext = extensionContext;
+  constructor(webviewId, title, preferredColumn = ViewColumn.Two) {
     this.webviewId = webviewId;
     this.title = title;
     this.preferredColumn = preferredColumn;
     this.wasVisible = false;
-    this.resourcePath = path.join(this.extensionContext.extensionPath, 'resources');
+    this.resourceRoot = path.join(_extensionContext.extensionPath, 'resources');
   }
 
   /**
@@ -30,6 +36,14 @@ export default class WebviewWrapper {
    */
   async init() {
     return this.restorePreviousState();
+  }
+
+  // ###########################################################################
+  // utilities
+  // ###########################################################################
+
+  getResourcePath(...pathSegments) {
+    return path.join(this.resourceRoot, ...pathSegments);
   }
 
   // ###########################################################################
@@ -70,6 +84,7 @@ export default class WebviewWrapper {
     }
   }
 
+
   reveal() {
     if (this.panel) {
       // reveal
@@ -78,6 +93,7 @@ export default class WebviewWrapper {
     }
     return false;
   }
+
 
   // ###########################################################################
   // initialization
@@ -112,7 +128,7 @@ export default class WebviewWrapper {
             }
           },
           null,
-          this.extensionContext.subscriptions
+          _extensionContext.subscriptions
         );
         // eslint-disable-next-line no-extra-bind
       }).bind(this),
@@ -134,11 +150,13 @@ export default class WebviewWrapper {
     return ipcAdapter;
   }
 
+
   _createWebview() {
     let viewColumn = this.getPreferredViewColumn();
+    this._setCurrentState(viewColumn);
 
     const localResourceRoots = [
-      Uri.file(this.resourcePath)
+      Uri.file(this.resourceRoot)
     ];
 
     this.panel = window.createWebviewPanel(
@@ -155,7 +173,7 @@ export default class WebviewWrapper {
     this.panel.onDidChangeViewState(
       this.handleDidChangeViewState,
       null,
-      this.extensionContext.subscriptions);
+      _extensionContext.subscriptions);
 
     // cleanup
     this.panel.onDidDispose(
@@ -165,7 +183,7 @@ export default class WebviewWrapper {
         this._setCurrentState(null);
       },
       null,
-      this.extensionContext.subscriptions
+      _extensionContext.subscriptions
     );
   }
 
@@ -225,9 +243,10 @@ export default class WebviewWrapper {
    * 
    * @see https://code.visualstudio.com/api/extension-guides/webview#persistence
    */
-  handleDidChangeViewState = ({ webviewPanel }) => {
+  handleDidChangeViewState = async ({ webviewPanel }) => {
     // debug('handleDidChangeViewState', webviewPanel.visible, performance.now());
     this.preferredColumn = webviewPanel.viewColumn;
+    await this._setCurrentState(this.preferredColumn);
 
     // on closed, silent shutdown
     if (this.wasVisible && !webviewPanel.visible) {
@@ -242,4 +261,11 @@ export default class WebviewWrapper {
       this.restart();
     }
   }
+
+  // ###########################################################################
+  // HTML content utilities
+  // ###########################################################################
+
+  static wrapScriptTag = wrapScriptTag;
+  static wrapScriptFileInTag = wrapScriptFileInTag;
 }

@@ -1,32 +1,35 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import getDb, { getFirebase } from './db';
+import { makeLoginController } from './LoginController';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Firebase Auth');
 
 // TODO: create and use Webview for firebase auth to get an `accessToken` (since the node version of firebase does not support proper, persistable login methods)
 
+
+
 export default class BackendAuth {
   constructor(backendController) {
-    this._backendController = backendController;
+    this.backendController = backendController;
 
     const firebase = getFirebase();
-    this._authInitPromise = new Promise((resolve, reject) => {
-      firebase.auth().onAuthStateChanged((user) => {
-        debug(`Auth state changed: ${user && `${user.displayName} (${user.email})` || '(not logged in)'}`);
+    // this._authInitPromise = new Promise((resolve, reject) => {
+    //   firebase.auth().onAuthStateChanged((user) => {
+    //     debug(`Auth state changed: ${user && `${user.displayName} (${user.email})` || '(not logged in)'}`);
 
-        if (user) {
-          // User is signed in.
-        } else {
-          // No user is signed in.
-        }
+    //     if (user) {
+    //       // User is signed in.
+    //     } else {
+    //       // No user is signed in.
+    //     }
 
-        if (this._authInitPromise) {
-          this._authInitPromise = null;
-          resolve(user);
-        }
-      });
-    });
+    //     if (this._authInitPromise) {
+    //       this._authInitPromise = null;
+    //       resolve(user);
+    //     }
+    //   });
+    // });
   }
 
   async waitUntilAuthInit() {
@@ -45,6 +48,12 @@ export default class BackendAuth {
   //   // return await firebase.auth().signInWithCredential(cred);
   // }
 
+  async login() {
+    const { WebviewWrapper } = this.backendController.practiceManager.externals;
+    this.loginController = makeLoginController(WebviewWrapper);
+    return this.loginController.show();
+  }
+
   async loginWithLocalServer() {
     // 1. start local server
     // 2. navigate user to website and let user follow login flow
@@ -55,7 +64,7 @@ export default class BackendAuth {
   }
 
   logout() {
-    return firebase.auth().signOut();
+    return getFirebase().auth().signOut();
   }
 
   // /**

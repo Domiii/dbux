@@ -213,12 +213,12 @@ class ValueCollection extends Collection {
     }
 
     // eslint-disable-next-line no-undef
-    __dbux__._r.setDisabled(true);
+    __dbux__._r.incDisabled();
   }
 
   _endAccess() {
     // eslint-disable-next-line no-undef
-    __dbux__._r.setDisabled(false);
+    __dbux__._r.decDisabled();
   }
 
   _onAccessError(obj, errorsByType) {

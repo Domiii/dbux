@@ -10,7 +10,7 @@ import Stopwatch from './stopwatch/Stopwatch';
 import BackendController from './backend/BackendController';
 
 
-const logger = newLogger('dbux-projects');
+const logger = newLogger('PracticeManager');
 const { debug, log } = logger;
 
 /** @typedef {import('./projectLib/Bug').default} Bug */
@@ -226,9 +226,11 @@ export default class ProjectsManager {
     if (!process.env.DBUX_VERSION) {
       throw new Error('installDbuxDependencies() failed. DBUX_VERSION was not set.');
     }
-    const deps = this._sharedDependencyNames.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
-
-    await this.installModules(deps);
+    if (process.env.NODE_ENV === 'production') {
+      // NOTE: not necessary in dev mode
+      const deps = this._sharedDependencyNames.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
+      await this.installModules(deps);
+    }
   }
 
   async installModules(deps) {

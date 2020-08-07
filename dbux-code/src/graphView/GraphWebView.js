@@ -2,10 +2,8 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { startGraphHost, shutdownGraphHost } from '@dbux/graph-host/src/index';
 import {
   window,
-  Uri,
   ViewColumn
 } from 'vscode';
-import path from 'path';
 import { buildWebviewClientHtml } from './clientSource';
 import { goToTrace } from '../codeUtil/codeNav';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
@@ -18,8 +16,8 @@ const defaultColumn = ViewColumn.Two;
 export default class GraphWebView extends WebviewWrapper {
   hostComponentManager;
 
-  constructor(extensionContext) {
-    super(extensionContext, 'dbux-graph', 'Call Graph', defaultColumn);
+  constructor() {
+    super('dbux-graph', 'Call Graph', defaultColumn);
   }
 
   /**
@@ -31,7 +29,7 @@ export default class GraphWebView extends WebviewWrapper {
   }
 
   async buildClientHtml() {
-    const scriptPath = path.join(this.resourcePath, 'dist', 'graph.js');
+    const scriptPath = this.getResourcePath('dist', 'graph.js');
     return await buildWebviewClientHtml(scriptPath);
   }
   

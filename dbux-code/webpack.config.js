@@ -98,7 +98,7 @@ module.exports = (env, argv) => {
     externals: {
       uws: "uws",
       vscode: "commonjs vscode",
-      firebase: 'firebase'
+      firebase: 'umd firebase'
     },
     node: {
       // generate actual output file information

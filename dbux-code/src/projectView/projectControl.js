@@ -9,6 +9,7 @@ import { execInTerminal } from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
 import { getResourcePath } from '../resources';
 import { interactiveGithubLogin } from '../net/GithubAuth';
+import WebviewWrapper from '../codeUtil/WebviewWrapper';
 
 const logger = newLogger('projectControl');
 
@@ -74,6 +75,7 @@ function createProjectManager(extensionContext) {
     showMessage: {
       showWarningMessage,
     },
+    WebviewWrapper,
     interactiveGithubLogin
   };
 

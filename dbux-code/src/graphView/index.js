@@ -6,18 +6,18 @@ let graphWebView;
  * 
  */
 
-function initGraphWebView(context) {
+function initGraphWebView() {
   if (!graphWebView) {
-    graphWebView = new GraphWebView(context);
+    graphWebView = new GraphWebView();
   }
 }
 
-export async function showGraphView(context) {
-  initGraphWebView(context);
+export async function showGraphView() {
+  initGraphWebView();
   return graphWebView.show();
 }
 
-export async function restoreGraphView(context) {
-  initGraphWebView(context);
+export async function initGraphView() {
+  initGraphWebView();
   return graphWebView.init();
 }

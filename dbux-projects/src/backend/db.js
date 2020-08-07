@@ -13,9 +13,14 @@ let _db, firebase;
  */
 export function getFirebase() {
   if (!firebase) {
-    firebase = require('firebase');
-    require('firebase/auth');
-    require('firebase/firestore');
+    try {
+      firebase = require('firebase');
+      require('firebase/auth');
+      require('firebase/firestore');
+    }
+    catch (err) {
+      throw new Error(`Unable to load firebase. Make sure to call installBackendDependencies before trying to access DB capabilities: err.message`);
+    }
   }
 
   return firebase;
@@ -25,6 +30,7 @@ export default function getDb() {
   if (_db) {
     return _db;
   }
+  getFirebase();
 
   const firebaseConfig = {
     apiKey: "AIzaSyC-d0HDLJ8Gd9UZ175z7dg6J98ZrOIK0Mc",

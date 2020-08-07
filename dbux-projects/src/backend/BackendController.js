@@ -13,8 +13,12 @@ export default class BackendController {
     this.practiceManager = practiceManager;
   }
 
-  async init() {
+  async installBackendDependencies() {
     await this.practiceManager.installModules(this.deps);
+  }
+
+  async init() {
+    await this.installBackendDependencies();
     this.auth = new BackendAuth(this);
   }
 }
