@@ -24,6 +24,10 @@ const {
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
+
+// NOTE: we use this for bundling `debug` as "browser", which is used by `socket.io-client
+require('process').type = 'renderer';
+
 // ###########################################################################
 // utilities
 // ###########################################################################
@@ -193,26 +197,29 @@ module.exports = (env, argv) => {
         //     chunks: 'all',
         //   },
         // },
-        externals: [
-          'fs',
+        externals: [{
+          fs: 'fs',
+          net: 'net',
+          ws: 'ws'
+        }
           // see: https://www.npmjs.com/package/webpack-node-externals
-          // NOTE: `node-externals` does not bundle `node_modules` but that also (for some reason) sometimes ignores linked packages in `yarn workspaces` monorepos :(
-          nodeExternals({
-            allowlist: [
-              'perf_hooks',
-              ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
-            ],
-            // (...args) {
-            //   console.debug('nodeExternals', ...args);
-            //   return true;
-            // }
-            // [
-            //   'perf_hooks',
+          // NOTE: `node-externals` does not bundle `node_modules`
+          // nodeExternals({
+          //   allowlist: [
+          //     'perf_hooks',
+          //     ...Object.keys(resolve.alias).map(name => new RegExp(`^${name}/src/.*`))
+          //   ],
+          //   // (...args) {
+          //   //   console.debug('nodeExternals', ...args);
+          //   //   return true;
+          //   // }
+          //   // [
+          //   //   'perf_hooks',
 
-            //   // quote from the docs: "Important - if you have set aliases in your webpack config with the exact same names as modules in node_modules, you need to whitelist them so Webpack will know they should be bundled."
-            //   ...Object.keys(resol.alias)
-            // ]
-          }),
+          //   //   // quote from the docs: "Important - if you have set aliases in your webpack config with the exact same names as modules in node_modules, you need to whitelist them so Webpack will know they should be bundled."
+          //   //   ...Object.keys(resol.alias)
+          //   // ]
+          // }),
           // 'fs', 'net'   // debug library complains about these
         ]
       };
