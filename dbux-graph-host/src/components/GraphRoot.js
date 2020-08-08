@@ -25,6 +25,13 @@ export class RunNodeMap {
     return this._all.get(this.makeKey(applicationId, runId));
   }
 
+  has(applicationId, runId) {
+    return !!this.get(applicationId, runId);
+  }
+
+  /**
+   * @return {RunNode[]}
+   */
   getAll() {
     return [...this._all.values()];
   }
@@ -44,6 +51,7 @@ class GraphRoot extends HostComponentEndpoint {
     this._emitter = new NanoEvents();
     this._refreshPromise = null;
     this._refreshRequests = 0;
+    this._unsubscribeOnNewData = [];
 
     this.controllers.createComponent('GraphNode', {
       mode: GraphNodeMode.ExpandChildren
@@ -74,7 +82,7 @@ class GraphRoot extends HostComponentEndpoint {
       this._refreshRequests = 0;
 
       // oldApps
-      const oldAppIds = new Set(this.state.applications.map(app => app.applicationId));
+      const oldAppIds = new Set(this.runNodesById.getAll().map(runNode => runNode.state.applicationId));
 
       // wait for init before dispose something
       await this.componentManager.waitForBusyInit();
@@ -96,7 +104,7 @@ class GraphRoot extends HostComponentEndpoint {
       }
 
       // always re-subscribe since applicationSet clears subscribtion everytime it changes
-      this._subscribeOnData();
+      this._resubscribeOnData();
       this._setApplicationState();
 
       // wait for init to ensure client side finished
@@ -106,7 +114,12 @@ class GraphRoot extends HostComponentEndpoint {
     this._emitter.emit('refresh');
   }
 
-  _subscribeOnData() {
+  _resubscribeOnData() {
+    // unsubscribe old
+    this._unsubscribeOnNewData.forEach(f => f());
+    this._unsubscribeOnNewData = [];
+
+    // subscribe new
     for (const app of allApplications.selection.getAll()) {
       const { applicationId, dataProvider } = app;
       const unsubscribe = dataProvider.onData('executionContexts',
@@ -116,6 +129,7 @@ class GraphRoot extends HostComponentEndpoint {
           this._emitter.emit('newNode', newNodes);
         }
       );
+      this._unsubscribeOnNewData.push(unsubscribe);
       allApplications.selection.subscribe(unsubscribe);
       this.addDisposable(unsubscribe);
     }
@@ -127,7 +141,6 @@ class GraphRoot extends HostComponentEndpoint {
         applicationId: app.applicationId,
         entryPointPath: app.entryPointPath,
         name: app.getPreferredName()
-        // name: app.getRelativeFolder()
       }))
     };
     this.setState(update);
