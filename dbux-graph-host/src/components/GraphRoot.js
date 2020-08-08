@@ -141,7 +141,6 @@ class GraphRoot extends HostComponentEndpoint {
         applicationId: app.applicationId,
         entryPointPath: app.entryPointPath,
         name: app.getPreferredName()
-        // name: app.getRelativeFolder()
       }))
     };
     this.setState(update);

@@ -87,6 +87,28 @@ export default class ApplicationSet {
     this._notifyChanged();
   }
 
+  /**
+   * Replace previousApplication with newApplication and sends only one event
+   * @param {Application} previousApplication 
+   * @param {Application} newApplication 
+   */
+  replaceApplication(previousApplication, newApplication) {
+    if (this.isBusy()) {
+      throw this.createBusyError();
+    }
+
+    if (this.containsApplication(previousApplication)) {
+      this._applicationIds.delete(previousApplication.applicationId);
+      pull(this._applications, previousApplication);
+    }
+
+    this._applicationIds.add(newApplication.applicationId);
+    this._applications.push(newApplication);
+
+    
+    this._notifyChanged();
+  }
+
   clear() {
     return this._setApplications();
   }
