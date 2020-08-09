@@ -124,12 +124,14 @@ export class AllApplications {
     }
 
     if (previousApplication && this.selection.containsApplication(previousApplication)) {
-      // application restarted -> automatically deselect previous instance
-      this.applicationSelection.removeApplication(previousApplication);
+      // application restarted -> automatically deselect previous instance and add new one
+      this.applicationSelection.replaceApplication(previousApplication, application);
+    }
+    else {
+      // add new application to set of selected applications
+      this.applicationSelection.addApplication(application);
     }
     
-    // always add new application to set of selected applications
-    this.applicationSelection.addApplication(application);
 
     return application;
   }
