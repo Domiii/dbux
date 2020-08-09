@@ -11,12 +11,17 @@ import { isNodeInstrumented } from './helpers/instrumentationHelper';
 // Build custom dbux state object
 // ###########################################################################
 
+let unknownCount = 0;
+let iProgram = 0;
+
 /**
  * Build the state used by dbux-babel-plugin throughout the entire AST visit.
  */
 export default function injectDbuxState(programPath, programState) {
-  const filePath = programState.filename;
+  const filePath = programState.filename || `__unnamed_script_${++unknownCount}.js`;
   const fileName = filePath && pathGetBasename(filePath);
+
+  // console.debug(filePath);
 
   const { scope } = programPath;
   const { file: programFile } = programState;
@@ -35,7 +40,7 @@ export default function injectDbuxState(programPath, programState) {
     ids: {
       dbuxInit: scope.generateUid('dbux_init'),
       dbuxRuntime: scope.generateUid('dbuxRuntime'),
-      dbux: scope.generateUid('dbux')
+      dbux: scope.generateUid('dbux') + (++iProgram)
     },
     // console.log('[Program]', state.filename);
 
