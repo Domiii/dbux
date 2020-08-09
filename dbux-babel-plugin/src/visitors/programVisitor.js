@@ -76,6 +76,7 @@ function wrapProgram(path, state) {
 // ###########################################################################
 
 function enter(path, state) {
+  // const cfg = state.opts;
   if (state.onEnter) return; // make sure to not visit Program node more than once
   // console.warn('P', path.toString());
   // console.warn(state.file.code);

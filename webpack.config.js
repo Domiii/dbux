@@ -80,7 +80,7 @@ module.exports = (env, argv) => {
     const DBUX_VERSION = getDbuxVersion();
     const DBUX_ROOT = mode === 'development' ? MonoRoot : null;
 
-    console.debug(`[main] (DBUX_VERSION=${DBUX_VERSION}, DBUX_ROOT=${DBUX_ROOT} mode=${mode}) building...`);
+    console.debug(`[main] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
 
     const webpackPlugins = [
       new webpack.EnvironmentPlugin({
