@@ -34,7 +34,7 @@ function main() {
   };
   
 
-  // TODO: use spawn instead of exec? (allows for better control but needs https://www.npmjs.com/package/string-argv)
+  // run it!
   const child = spawn.exec(command, processOptions);
 
   // ###########################################################################

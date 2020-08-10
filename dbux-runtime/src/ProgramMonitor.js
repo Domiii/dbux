@@ -10,6 +10,11 @@ const ProgramStartTraceId = 1;
  */
 const ProgramStopTraceId = 2;
 
+/**
+ * In Babel-lingo, a "Program" is one *.js file.
+ * Thus the ProgramMonitor monitors a single file, 
+ * while all ProgramMonitors share a single `RuntimeMonitor`.
+ */
 export default class ProgramMonitor {
   /**
    * @type {import('@dbux/common/src/core/data/StaticProgramContext').default}

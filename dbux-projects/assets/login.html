@@ -1,0 +1,55 @@
+<head>
+  <title>Dbux Login</title>
+</head>
+
+<body>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase.js"></script>
+  <script>
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-d0HDLJ8Gd9UZ175z7dg6J98ZrOIK0Mc",
+      authDomain: "learn-learn-b8e5a.firebaseapp.com",
+      databaseURL: "https://learn-learn-b8e5a.firebaseio.com",
+      projectId: "learn-learn-b8e5a",
+      storageBucket: "learn-learn-b8e5a.appspot.com",
+      messagingSenderId: "249308200308",
+      appId: "1:249308200308:web:07556e84184b4546ef8021"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        loginSuccess();
+      }
+      else {
+        firebase.auth().getRedirectResult().then((result) => {
+          if (result && result.user) {
+            loginSuccess();
+          }
+          else {
+            doLogin();
+          }
+        });
+      }
+    });
+
+    function doLogin() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithRedirect(provider);
+    }
+
+    function loginSuccess() {
+      console.log(result.credential.accessToken);
+      document.querySelector('#message').textContent = `Success! Logged in as ${result.user.displayName}.`;
+    }
+  </script>
+
+  <div id="message">
+    Logging in with Google...
+  </div>
+  <!-- <button onclick="login()">Login with Google...</button> -->
+</body>

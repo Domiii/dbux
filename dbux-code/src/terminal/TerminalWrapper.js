@@ -155,14 +155,19 @@ export default class TerminalWrapper {
   cancel() {
     this.dispose();
   }
-}
 
-export function execInTerminal(cwd, command, args) {
-  const port = 6543;
 
-  // TODO: register wrapper with context
+  // ###########################################################################
+  // static functions
+  // ###########################################################################
 
-  const wrapper = new TerminalWrapper();
-  wrapper.start(cwd, command, port, args);
-  return wrapper;
+  static execInTerminal(cwd, command, args) {
+    const port = 6543;
+  
+    // TODO: register wrapper with context
+  
+    const wrapper = new TerminalWrapper();
+    wrapper.start(cwd, command, port, args);
+    return wrapper;
+  }
 }

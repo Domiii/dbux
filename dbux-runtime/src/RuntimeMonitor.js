@@ -498,9 +498,13 @@ export default class RuntimeMonitor {
   // internally used stuff
   // ###########################################################################
 
-  disabled;
+  disabled = 0;
 
-  setDisabled(disabled) {
-    this.disabled = disabled;
+  incDisabled() {
+    ++this.disabled;
+  }
+
+  decDisabled() {
+    --this.disabled;
   }
 }

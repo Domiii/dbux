@@ -13,6 +13,10 @@
 		{
 			"name": "eslint",
 			"path": "projects\\eslint"
+		},
+		{
+			"name": "express",
+			"path": "..\\dbux_projects\\express"
 		}
 	],
 	"settings": {

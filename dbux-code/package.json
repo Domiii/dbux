@@ -366,6 +366,12 @@
           "light": "resources/light/boolean.svg",
           "dark": "resources/dark/boolean.svg"
         }
+      },
+      {
+        "command": "dbux.backendLogin",
+        "title": "Dbux: Backend Login",
+        "when": "view == dbuxApplicationsView",
+        "group": "navigation"
       }
     ],
     "menus": {
