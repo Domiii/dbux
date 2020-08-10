@@ -604,6 +604,7 @@
     "@dbux/graph-host": "^0.1.25",
     "@dbux/projects": "^0.1.25",
     "@dbux/runtime": "^0.1.25",
+    "firebase": "^7.17.2",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "socket.io": "^2.3.0",

@@ -3,7 +3,6 @@
 
 ## TODO
 * core instrumentation bugs
-   * trace function parameters
    * fix: call traces for getters are off
       * it's actually the next trace in context (if the getter did not error out)
       * e.g.: `req.protocol` (instead of `req`)

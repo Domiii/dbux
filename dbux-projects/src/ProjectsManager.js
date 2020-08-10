@@ -209,7 +209,7 @@ export default class ProjectsManager {
     //    should not be necessary for the VSCode extension because it will create a new extension folder for every version update anyway
 
     // get name without version
-    const name = qualifiedDependencyName.match('([^@]+)(?:@.*)?')[1];
+    const name = qualifiedDependencyName.match('(@?[^@]+)(?:@.*)?')[1];
     if (process.env.NODE_ENV === 'development') {
       if (name.startsWith('@dbux/')) {
         // NOTE: in development mode, we have @dbux dependencies (and their dependencies) all linked up to the monoroot folder anyway
@@ -226,11 +226,9 @@ export default class ProjectsManager {
     if (!process.env.DBUX_VERSION) {
       throw new Error('installDbuxDependencies() failed. DBUX_VERSION was not set.');
     }
-    if (process.env.NODE_ENV === 'production') {
-      // NOTE: not necessary in dev mode
-      const deps = this._sharedDependencyNames.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
-      await this.installModules(deps);
-    }
+
+    const deps = this._sharedDependencyNames.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
+    await this.installModules(deps);
   }
 
   async installModules(deps) {
@@ -263,9 +261,9 @@ export default class ProjectsManager {
     // await this.runner._exec('npm cache verify', logger, execOptions);
 
     this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
-    
-    await this.runner._exec(`npm install --only=prod`, logger, execOptions);
-    // await this.runner._exec(`npm i ${deps.join(' ')}`, logger, execOptions);
+
+    // await this.runner._exec(`npm install --only=prod`, logger, execOptions);
+    await this.runner._exec(`npm install --only=prod && npm i ${deps.join(' ')}`, logger, execOptions);
     // await this.execInTerminal(dependencyRoot, `npm i ${deps.join(' ')}`);
 
     // else {
@@ -342,7 +340,7 @@ export default class ProjectsManager {
   // ###########################################################################
   // utilities
   // ###########################################################################
-  
+
   async execInTerminal(cwd, command, args) {
     try {
       this._terminalWrapper = this.externals.TerminalWrapper.execInTerminal(cwd, command, args);
