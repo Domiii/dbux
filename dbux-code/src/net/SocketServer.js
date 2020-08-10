@@ -60,10 +60,10 @@ let server;
 export async function initRuntimeServer(context) {
   if (!server) {
     server = new SocketServer(RuntimeClient);
-    context.subscriptions.push(server);
 
     try {
       await server.start(DefaultPort);
+      context.subscriptions.push(server);
     } catch (err) {
       server = null;
       throw new Error(`Could not start runtime server. This may due to multiple instances opened.`);
@@ -72,3 +72,10 @@ export async function initRuntimeServer(context) {
 
   return server;
 }
+
+// export async function stopRuntimeServer() {
+//   if (server) {
+//     server.dispose();
+//     server = null;
+//   }
+// }
