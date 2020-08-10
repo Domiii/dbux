@@ -7,6 +7,14 @@ const dbux = {
 
   initProgram(staticProgramData) {
     return this._r.addProgram(staticProgramData);
+  },
+
+  incDisabled() {
+    this._r.incDisabled();
+  },
+
+  decDisabled() {
+    this._r.decDisabled();
   }
 };
 

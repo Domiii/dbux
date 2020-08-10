@@ -2,6 +2,8 @@
 
 
 ## TODO
+* static "run with dbux" website?
+   * [dbux-cli] need a web build for `dbuxRun.js`
 * fix installDbuxDependencies to use promise and not call twice
 * core instrumentation bugs
    * trace function parameters
@@ -294,6 +296,9 @@
 
 
 ## TODO (nice-to-haves)
+* proxy instrumentation
+   * assign name to application via config
+   * when instrumenting files served via web, still need files to allow us looking and tracing the source code?
 * fix source maps
    * when `dbux-code` reports an error, stack trace does not apply source maps
    * but launch trace file does not contain any obvious hints (files are resolved correctly etc)

@@ -2,7 +2,7 @@
   "name": "dbux-code",
   "private": true,
   "displayName": "Dbux (ALPHA)",
-  "version": "0.1.18",
+  "version": "0.1.24",
   "publisher": "Domi",
   "description": "",
   "repository": {
@@ -366,6 +366,12 @@
           "light": "resources/light/boolean.svg",
           "dark": "resources/dark/boolean.svg"
         }
+      },
+      {
+        "command": "dbux.backendLogin",
+        "title": "Dbux: Backend Login",
+        "when": "view == dbuxApplicationsView",
+        "group": "navigation"
       }
     ],
     "menus": {
@@ -590,12 +596,14 @@
     "webpack-node-externals": "^2.5.0"
   },
   "dependencies": {
-    "@dbux/cli": "^0.1.18",
-    "@dbux/common": "^0.1.18",
-    "@dbux/data": "^0.1.18",
-    "@dbux/graph-common": "^0.1.18",
-    "@dbux/graph-host": "^0.1.18",
-    "@dbux/projects": "^0.1.18",
+    "@dbux/babel-plugin": "^0.1.24",
+    "@dbux/cli": "^0.1.24",
+    "@dbux/common": "^0.1.24",
+    "@dbux/data": "^0.1.24",
+    "@dbux/graph-common": "^0.1.24",
+    "@dbux/graph-host": "^0.1.24",
+    "@dbux/projects": "^0.1.24",
+    "@dbux/runtime": "^0.1.24",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "socket.io": "^2.3.0",

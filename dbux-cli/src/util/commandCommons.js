@@ -2,9 +2,8 @@ import fs from 'fs';
 
 export function buildCommonCommandOptions() {
   return {
-    vanilla: {
-      alias: ['v'],
-      describe: 'Do not add default babel presets + options. Just run as-is.',
+    next: {
+      describe: 'Add esnext babel presets + options.',
       default: false,
       type: 'boolean'
     },

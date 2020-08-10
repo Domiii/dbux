@@ -29,6 +29,7 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
 			"sourceMaps": true,
@@ -36,6 +37,7 @@
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
 				"run",
+				"-next",
 				"${file}"
 			],
 			"protocol": "inspector",
@@ -65,6 +67,7 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
@@ -91,6 +94,7 @@
 			"program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--preserve-symlinks"
 			],
 			"cwd": "${workspaceFolder}/dbux-cli",
@@ -120,6 +124,7 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
@@ -146,6 +151,7 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
@@ -214,6 +220,7 @@
 			"runtimeExecutable": "npm",
 			"runtimeArgs": [
 				// "--stack-trace-limit=1000",
+				"--enable-source-maps",
 				// "--nolazy",
 				"run",
 				"build-debug"
@@ -236,6 +243,7 @@
 			"runtimeExecutable": "npm",
 			"runtimeArgs": [
 				// "--stack-trace-limit=1000",
+				"--enable-source-maps",
 				// "--nolazy",
 				"run",
 				"start-debug"
@@ -265,6 +273,7 @@
 			"cwd": "${workspaceFolder}",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
 			"sourceMaps": true,

@@ -17,8 +17,8 @@ import { initApplicationsView } from './applicationsView/applicationsViewControl
 import { initProjectView } from './projectView/projectViewController';
 import { initMemento } from './memento';
 import { initLogging } from './logging';
-import { restoreGraphView } from './graphView';
-import { initDbuxPractice } from './practice/dbuxPracticeController';
+import { initGraphView } from './graphView';
+import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -44,12 +44,13 @@ function activate(context) {
     initCodeApplications(context);
     initCodeDeco(context);
     initToolBar(context);
-    initDbuxPractice(context);
     initMemento(context);
-
     initTraceSelection(context);
     initPlayback();
-    
+
+
+    initWebviewWrapper(context);
+
     initApplicationsView(context);
     const traceDetailsController = initTraceDetailsView(context);
     projectViewController = initProjectView(context);
@@ -80,7 +81,7 @@ function activate(context) {
     );
 
     // for now, let's activate the graph view right away
-    restoreGraphView(context);
+    initGraphView();
   } catch (e) {
     logError('could not activate', e.stack);
     debugger;

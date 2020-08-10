@@ -1,5 +1,3 @@
-import generate from '@babel/generator';
-
 export function getLine(path) {
   const { node: { loc } } = path;
 

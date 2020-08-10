@@ -10,11 +10,11 @@ const DefaultTerminalName = 'dbux-run';
 export async function getPathToBash() {
   let result = await Process.execCaptureAll(`which cygpath`, { failOnStatusCode: false });
 
-  if (result.code) {
-    return Process.execCaptureOut(`which bash`, { failOnStatusCode: false });
-  } else {
-    return Process.execCaptureOut('cygpath -w `which bash`', { failOnStatusCode: false });
+  let bashPath = await Process.execCaptureOut(`which bash`, { failOnStatusCode: false });
+  if (!result.code) {
+    bashPath = await Process.execCaptureOut(`cygpath -w ${bashPath}`, { failOnStatusCode: false });
   }
+  return bashPath;
 }
 
 export function createDefaultTerminal(cwd) {

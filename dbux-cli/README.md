@@ -19,7 +19,7 @@ Run some JavaScript with DBUX enabled.
 
 * `npx @dbux/cli r someFile.js`
 
-NOTE: It has babel with all kinds of `esnext` syntax proposals enabled by default. You can turn off babel with the `-v` (vanilla) flag.
+You can enable babel to add all kinds `esnext` syntax proposals enabled with the `-next` flag.
 
 Technical NOTE: It uses [`@babel/register`](https://babeljs.io/docs/en/babel-register) to essentially "instrument-on-import".
 

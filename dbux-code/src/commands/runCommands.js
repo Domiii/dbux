@@ -7,7 +7,7 @@ import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
 
 
-const logger = newLogger('runFile');
+const logger = newLogger('DBUX run file');
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
@@ -19,14 +19,14 @@ export async function runFile(extensionContext, nodeArgs) {
     return;
   }
 
-  await projectManager.installDbuxDependencies();
+  await projectManager.installDependencies();
 
   const activeEditor = window.activeTextEditor;
 
   let activePath = activeEditor?.document?.fileName;
 
   if (!activePath) {
-    logError(`The open editor window is not a (JS) file.`);
+    logError(`The open editor window is not a file.`);
     return;
   }
 
@@ -37,7 +37,7 @@ export async function runFile(extensionContext, nodeArgs) {
     cwd = path.dirname(file);
   }
   catch (err) {
-    logError(`Could not find open editor window's file "${activePath}": ${err.message}`);
+    logError(`Could not find file "${activePath}": ${err.message}`);
     return;
   }
 
