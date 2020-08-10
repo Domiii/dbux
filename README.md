@@ -1,8 +1,6 @@
 # Introduction
 
-This is a pre-alpha project, aiming at making the JS runtime and its dynamic call graph visual and interactive through a combination of instrumentation (using Babel) + a VSCode extension, effectively (ultimately) making it an amazing tool for (i) program comprehension + (ii) debugging.
-
-The `master` branch is not quite active yet. Check out the [`dev` branch](https://github.com/Domiii/dbux/tree/dev) instead.
+Dbux aims at visualizing the JS runtime and making it interactive, hopefully helping developers improve (i) program comprehension and (ii) debugging.
 
 Here is a (very very early, read: crude) 1min demo video of just a small subset of the features:
 
@@ -12,11 +10,9 @@ Here is a (very very early, read: crude) 1min demo video of just a small subset 
 
 # Usage
 
-1. Install Dbux from the VSCode Marketplace
-1. > Developer: Reload Window (or just restart VSCode)
-1. Press the Dbux icon on the left
-1. Select "express" in the Projects view
-1. Select your first bug and enjoy!
+1. Install Dbux from the [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
+1. Press the Dbux icon on the activity bar (usually at the very left, beneath the "Extensions" button)
+1. 
 
 
 # Development + Contributing: Getting Started

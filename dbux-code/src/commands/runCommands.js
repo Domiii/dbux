@@ -18,17 +18,13 @@ export async function runFile(extensionContext, nodeArgs) {
     return;
   }
 
-  await projectManager.installDependencies();
-
+  // resolve path
   const activeEditor = window.activeTextEditor;
-
   let activePath = activeEditor?.document?.fileName;
-
   if (!activePath) {
     logError(`The open editor window is not a file.`);
     return;
   }
-
   let file;
   let cwd;
   try {
@@ -39,7 +35,13 @@ export async function runFile(extensionContext, nodeArgs) {
     logError(`Could not find file "${activePath}": ${err.message}`);
     return;
   }
+  
+  // install dependencies
+  if (!projectManager.hasInstalledSharedDependencies()) {
+    await projectManager.installDependencies();
+  }
 
+  // go!
   const dbuxBin = projectManager.getDbuxCliBinPath();
   const command = `node ${nodeArgs || ''} "${dbuxBin}" run "${file}"`;
   runInTerminalInteractive('dbux-run', cwd, command);
