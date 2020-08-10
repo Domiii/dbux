@@ -20,8 +20,8 @@ export default class SocketServer {
     this.ClientClass = ClientClass;
   }
 
-  start(port) {
-    this._listenSocket = makeListenSocket(port);
+  async start(port) {
+    this._listenSocket = await makeListenSocket(port);
     this._listenSocket.on('connect', this._handleAccept.bind(this));
     this._listenSocket.on('error', this._handleError.bind(this));
   }
@@ -52,18 +52,21 @@ export default class SocketServer {
   }
 }
 
-
+/**
+ * @type {SocketServer}
+ */
 let server;
 
-export function initRuntimeServer(context) {
+export async function initRuntimeServer(context) {
   if (!server) {
     server = new SocketServer(RuntimeClient);
     context.subscriptions.push(server);
 
     try {
-      server.start(DefaultPort);
+      await server.start(DefaultPort);
     } catch (err) {
-      throw new Error(`Could not start runtime server. This may due to multiple instances opened. ${err.message}`);
+      server = null;
+      throw new Error(`Could not start runtime server. This may due to multiple instances opened.`);
     }
   }
 

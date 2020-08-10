@@ -73,7 +73,7 @@ class ProjectViewController {
 
   async activateBugByNode(bugNode, debugMode = false) {
     showOutputChannel();
-    initRuntimeServer(this.extensionContext);
+    await initRuntimeServer(this.extensionContext);
 
     const options = {
       cancellable: false,

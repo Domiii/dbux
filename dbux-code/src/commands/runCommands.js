@@ -42,7 +42,7 @@ export async function runFile(extensionContext, nodeArgs) {
   }
 
   // start runtime server
-  initRuntimeServer(extensionContext);
+  await initRuntimeServer(extensionContext);
 
   const dbuxBin = projectManager.getDbuxCliBinPath();
   const command = `node ${nodeArgs || ''} "${dbuxBin}" run "${file}"`;
