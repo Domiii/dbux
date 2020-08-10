@@ -262,9 +262,9 @@ export default class ProjectsManager {
     // debug(`Verifying NPM cache. This might (or might not) take a while...`);
     // await this.runner._exec('npm cache verify', logger, execOptions);
 
-    // await this.runner._exec(`npm i ${deps.join(' ')}`, logger, execOptions);
     this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
-    await this.execInTerminal(dependencyRoot, `npm i ${deps.join(' ')}`);
+    await this.runner._exec(`npm i ${deps.join(' ')}`, logger, execOptions);
+    // await this.execInTerminal(dependencyRoot, `npm i ${deps.join(' ')}`);
 
     // else {
     //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.

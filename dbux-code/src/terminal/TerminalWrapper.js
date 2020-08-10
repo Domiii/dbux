@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
@@ -106,6 +107,10 @@ export default class TerminalWrapper {
     try {
       const runJsArgs = Buffer.from(JSON.stringify({ port, cwd, command, args })).toString('base64');
       const initScript = getDbuxTargetPath('cli', 'lib/link-dependencies.js');
+      if (!fs.existsSync(initScript)) {
+        throw new Error(`Dbux cli not installed (could not resolve "${initScript}")`);
+      }
+      
       const runJsCommand = `node --require=${initScript} _dbux_run.js ${runJsArgs}`;
       this._terminal = await execCommand(cwd, runJsCommand);
 
