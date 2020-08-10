@@ -56,9 +56,16 @@ export default class SocketServer {
 let server;
 
 export function initRuntimeServer(context) {
-  server = new SocketServer(RuntimeClient);
-  server.start(DefaultPort);
-  context.subscriptions.push(server);
+  if (!server) {
+    server = new SocketServer(RuntimeClient);
+    context.subscriptions.push(server);
+
+    try {
+      server.start(DefaultPort);
+    } catch (err) {
+      throw new Error(`Could not start runtime server. This may due to multiple instances opened. ${err.message}`);
+    }
+  }
 
   return server;
 }

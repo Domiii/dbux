@@ -4,6 +4,7 @@ import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
+import { initRuntimeServer } from '../net/SocketServer';
 
 
 const logger = newLogger('runFile');
@@ -39,6 +40,9 @@ export async function runFile(extensionContext, nodeArgs) {
     logError(`Could not find open editor window's file "${activePath}": ${err.message}`);
     return;
   }
+
+  // start runtime server
+  initRuntimeServer(extensionContext);
 
   const dbuxBin = projectManager.getDbuxCliBinPath();
   const command = `node ${nodeArgs || ''} "${dbuxBin}" run "${file}"`;

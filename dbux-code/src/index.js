@@ -2,7 +2,6 @@ import { window } from 'vscode';
 import process from 'process';
 import { newLogger } from '@dbux/common/src/log/logger';
 
-import { initRuntimeServer } from './net/SocketServer';
 import { initCodeDeco } from './codeDeco';
 
 import { initCallGraphView } from './callGraphView/callGraphViewController';
@@ -41,7 +40,7 @@ function activate(context) {
     registerErrorHandler();
     initLogging();
     initResources(context);
-    initRuntimeServer(context);
+    // initRuntimeServer(context);
     initCodeApplications(context);
     initCodeDeco(context);
     initToolBar(context);
