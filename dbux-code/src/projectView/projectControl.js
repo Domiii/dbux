@@ -3,9 +3,9 @@ import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { initDbuxProjects, ProjectsManager } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
-import { showWarningMessage } from '../codeUtil/codeModals';
+import { showWarningMessage, showInformationMessage } from '../codeUtil/codeModals';
 import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
-import { execInTerminal } from '../terminal/TerminalWrapper';
+import TerminalWrapper from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
 import { getResourcePath } from '../resources';
 import { interactiveGithubLogin } from '../net/GithubAuth';
@@ -68,12 +68,13 @@ function createProjectManager(extensionContext) {
       const result = await window.showInformationMessage(msg, { modal }, confirmText, 'cancel');
       return result === confirmText;
     },
-    execInTerminal,
+    TerminalWrapper,
     resources: {
       getResourcePath
     },
     showMessage: {
-      showWarningMessage,
+      info: showInformationMessage,
+      warning: showWarningMessage,
     },
     WebviewWrapper,
     interactiveGithubLogin

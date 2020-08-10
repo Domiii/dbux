@@ -118,7 +118,7 @@ export default class ProjectsManager {
         await bug.project.applyPatchString(patchString);
         return true;
       } catch (err) {
-        let keepRunning = await this.externals.showMessage.showWarningMessage(`Failed when applying previous progress of this bug.`, {
+        let keepRunning = await this.externals.showMessage.warning(`Failed when applying previous progress of this bug.`, {
           'Show diff in new tab and cancel': () => {
             this.externals.editor.showTextInNewFile(`diff.diff`, patchString);
             return false;
@@ -262,8 +262,10 @@ export default class ProjectsManager {
     // debug(`Verifying NPM cache. This might (or might not) take a while...`);
     // await this.runner._exec('npm cache verify', logger, execOptions);
 
-    log(`\n\nInstalling dependencies: "${deps.join(', ')}" This might (or might not) take a while...\n\n`);
-    await this.runner._exec(`npm i ${deps.join(' ')}`, logger, execOptions);
+    // await this.runner._exec(`npm i ${deps.join(' ')}`, logger, execOptions);
+    this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
+    await this.execInTerminal(dependencyRoot, `npm i ${deps.join(' ')}`);
+
     // else {
     //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
     //   // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
@@ -314,6 +316,10 @@ export default class ProjectsManager {
     this._installPromise = null;
   }
 
+  // ###########################################################################
+  // submit
+  // ###########################################################################
+
   async askForSubmit() {
     const confirmString = 'You have passed the test for the first time, would you like to submit the result?';
     const shouldSubmit = await this.externals.confirm(confirmString);
@@ -328,5 +334,21 @@ export default class ProjectsManager {
    */
   submit() {
     // TODO
+  }
+
+
+  // ###########################################################################
+  // utilities
+  // ###########################################################################
+  
+  async execInTerminal(cwd, command, args) {
+    try {
+      this._terminalWrapper = this.externals.TerminalWrapper.execInTerminal(cwd, command, args);
+      return this._terminalWrapper.waitForResult();
+    }
+    finally {
+      this._terminalWrapper?.cancel();
+      this._terminalWrapper = null;
+    }
   }
 }

@@ -18,7 +18,6 @@ export function initWebviewWrapper(extensionContext) {
 }
 
 export default class WebviewWrapper {
-  extensionContext;
   panel;
   resourceRoot;
 

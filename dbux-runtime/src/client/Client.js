@@ -88,11 +88,11 @@ export default class Client {
     this._sendInit();
   };
 
-  _handleConnectFailed = () => {
+  _handleConnectFailed = (err) => {
     // Verbose && 
     if (!this._connectFailed) {
       this._connectFailed = true;
-      debug('failed to connect. Reconnecting...');
+      debug(`failed to connect (${err.message}). Reconnecting...`);
     }
   }
 

@@ -25,7 +25,7 @@ export async function runFile(extensionContext, nodeArgs) {
   let activePath = activeEditor?.document?.fileName;
 
   if (!activePath) {
-    logError(`The open editor window is not a (JS) file.`);
+    logError(`The open editor window is not a file.`);
     return;
   }
 
@@ -36,11 +36,11 @@ export async function runFile(extensionContext, nodeArgs) {
     cwd = path.dirname(file);
   }
   catch (err) {
-    logError(`Could not find open editor window's file "${activePath}": ${err.message}`);
+    logError(`Could not find file "${activePath}": ${err.message}`);
     return;
   }
 
   const dbuxBin = projectManager.getDbuxCliBinPath();
-  const command = `node ${nodeArgs || ''} "${dbuxBin}" run "${file}"`;
+  const command = `node ${nodeArgs || ''} "${dbuxBin}" run -v "${file}"`;
   runInTerminalInteractive('dbux-run', cwd, command);
 }
