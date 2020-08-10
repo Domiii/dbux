@@ -41,6 +41,6 @@ export async function runFile(extensionContext, nodeArgs) {
   }
 
   const dbuxBin = projectManager.getDbuxCliBinPath();
-  const command = `node ${nodeArgs || ''} "${dbuxBin}" run -v "${file}"`;
+  const command = `node ${nodeArgs || ''} "${dbuxBin}" run "${file}"`;
   runInTerminalInteractive('dbux-run', cwd, command);
 }

@@ -344,7 +344,7 @@ export default class ProjectsManager {
   async execInTerminal(cwd, command, args) {
     try {
       this._terminalWrapper = this.externals.TerminalWrapper.execInTerminal(cwd, command, args);
-      return this._terminalWrapper.waitForResult();
+      return await this._terminalWrapper.waitForResult();
     }
     finally {
       this._terminalWrapper?.cancel();

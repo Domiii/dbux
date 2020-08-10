@@ -13,7 +13,7 @@ export default function buildBabelOptions(options) {
   process.env.BABEL_DISABLE_CACHE = 1;
 
   const {
-    vanilla,
+    esnext,
     dontInjectDbux,
     dontAddPresets,
     dbuxOptions = {
@@ -26,7 +26,7 @@ export default function buildBabelOptions(options) {
   // }
 
   // setup babel-register
-  const baseOptions = vanilla ? EmptyObject : baseBabelOptions;
+  const baseOptions = esnext ? baseBabelOptions : EmptyObject;
   const babelOptions = {
     ...baseOptions,
 
