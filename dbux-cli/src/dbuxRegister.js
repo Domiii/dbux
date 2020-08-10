@@ -2,7 +2,7 @@ import babelRegister from '@babel/register';
 import buildBabelOptions from './util/buildBabelOptions';
 
 // link dependencies
-import '../lib/link-dependencies';
+import './linkOwnDependencies';
 
 // babelRegister
 export default function dbuxRegister(options) {
