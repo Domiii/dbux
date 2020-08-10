@@ -598,6 +598,8 @@
   "dependencies": {
     "@dbux/cli": "^0.1.22",
     "@dbux/common": "^0.1.22",
+    "@dbux/babel-plugin": "^0.1.22",
+    "@dbux/runtime": "^0.1.22",
     "@dbux/data": "^0.1.22",
     "@dbux/graph-common": "^0.1.22",
     "@dbux/graph-host": "^0.1.22",

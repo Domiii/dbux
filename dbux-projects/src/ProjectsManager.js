@@ -263,7 +263,9 @@ export default class ProjectsManager {
     // await this.runner._exec('npm cache verify', logger, execOptions);
 
     this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
-    await this.runner._exec(`npm i ${deps.join(' ')}`, logger, execOptions);
+    
+    await this.runner._exec(`npm install --only=prod`, logger, execOptions);
+    // await this.runner._exec(`npm i ${deps.join(' ')}`, logger, execOptions);
     // await this.execInTerminal(dependencyRoot, `npm i ${deps.join(' ')}`);
 
     // else {
