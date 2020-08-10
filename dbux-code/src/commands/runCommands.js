@@ -6,7 +6,7 @@ import { getOrCreateProjectManager } from '../projectView/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 
 
-const logger = newLogger('runFile');
+const logger = newLogger('DBUX run file');
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
