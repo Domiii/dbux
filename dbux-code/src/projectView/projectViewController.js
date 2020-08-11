@@ -6,6 +6,7 @@ import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import PracticeStopwatch from './PracticeStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
+import { initProjectCommands } from '../commands/projectCommands';
 
 // ########################################
 //  setup logger for project
@@ -143,6 +144,9 @@ export function initProjectView(context) {
 
   // refresh right away
   controller.treeDataProvider.refresh();
+
+  // register commands
+  initProjectCommands(context, controller);
 
   return controller;
 }

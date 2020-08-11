@@ -352,6 +352,33 @@ export default {
   // call related trace
   // ###########################################################################
 
+
+  /** @param {DataProvider} dp */
+  isTraceArgument(dp, traceId) {
+    // a trace is an argument if it has callId not pointing to itself
+    const trace = dp.collections.traces.getById(traceId);
+    if (trace.callId) {
+      if (trace.callId !== trace.traceId) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  isCallBCEOrResultTrace(dp, traceId) {
+    return dp.util.isCallResultTrace(traceId) || dp.util.isBCETrace(traceId);
+  },
+
+  isBCETrace(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    return trace.callId && trace.callId === traceId;
+  },
+
+  isCallResultTrace(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    return trace.resultCallId;
+  },
+
   /**
    * Get callerTrace(BCE) of a call related trace, returns itself if it is not a call related trace.
    * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the callId of the former
@@ -400,18 +427,6 @@ export default {
       return callerTrace;
     }
     return null;
-  },
-
-  /** @param {DataProvider} dp */
-  isTraceArgument(dp, traceId) {
-    // a trace is an argument if it has callId not pointing to itself
-    const trace = dp.collections.traces.getById(traceId);
-    if (trace.callId) {
-      if (trace.callId !== trace.traceId) {
-        return true;
-      }
-    }
-    return false;
   },
 
   /** @param {DataProvider} dp */

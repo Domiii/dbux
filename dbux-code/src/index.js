@@ -25,8 +25,6 @@ import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
-let projectViewController;
-
 function registerErrorHandler() {
   // process.on('unhandledRejection', (reason, promise) => {
   //   logError(`[Unhandled Rejection] reason: ${reason}, promise: ${promise}`);
@@ -54,7 +52,7 @@ function activate(context) {
 
     initApplicationsView(context);
     const traceDetailsController = initTraceDetailsView(context);
-    projectViewController = initProjectView(context);
+    initProjectView(context);
     
     //  To bring these three views back, uncomment relevant lines and add this to `package.json` `contributes.views.dbuxViewContainer`:
     //  {
@@ -77,7 +75,6 @@ function activate(context) {
     initCommands(
       context,
       traceDetailsController,
-      projectViewController,
       callGraphViewController
     );
 

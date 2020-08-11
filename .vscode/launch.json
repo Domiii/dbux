@@ -37,7 +37,7 @@
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
 				"run",
-				"-next",
+				"--next",
 				"${file}"
 			],
 			"protocol": "inspector",
