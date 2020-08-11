@@ -62,6 +62,11 @@ function handleShutdown() {
   // register `exit` handler that sends out a warning if there is unsent stuff
   __global__.process && __global__.process.on('exit', handleShutdown);
 
+  // __global__.process && __global__.process.on('uncaughtException', async (err) => {
+  //   console.error('uncaughtException', err);
+  //   return new Promise(r => setTimeout(r, 500)).then(() => console.warn('hbgiiasd'));
+  // });
+
   // if (__global__.process) {
   //   // handle `beforeExit`, `SIGTERM` and `SIGINT` separately
   //   // see: https://github.com/nodejs/node/issues/12359#issuecomment-293567749
