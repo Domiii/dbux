@@ -463,7 +463,7 @@ function instrumentArgs(callPath, state, beforeCallTraceId) {
     const argPath = callPath.get('arguments.' + i);
     if (!argPath.node.loc && !argPath.getData('traceResultType')) {
       // synthetic node -> ignore
-      // E.g.: we replace `o.f(x)` with `_o = ..., _f = ..., f.call(o, x)`, and we do not want to trace the `o` arg here
+      // E.g.: we replace `o.f(x)` with `_o = ..., _f = ..., f.call(o, x)`, and we do not want to trace `o` in `call`
       continue;
     }
 
@@ -490,7 +490,8 @@ export function traceWrapArg(argPath, state, beforeCallTraceId) {
   if (argPath.isSpreadElement()) {
     argPath = argPath.get('argument');
   }
-  return _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, {
+  const traceType = argPath.getData('traceResultType') || TraceType.CallArgument;
+  return _traceWrapExpression('traceArg', traceType, argPath, state, {
     callId: beforeCallTraceId,
     tracePath
   });

@@ -29,7 +29,9 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
-				"--enable-source-maps",
+
+				// NOTE: it appears that --enable-source maps slows things down, and in debug mode it just grinds to a halt
+				// "--enable-source-maps",
 				"--nolazy",
 			],
 			"sourceMaps": true,
