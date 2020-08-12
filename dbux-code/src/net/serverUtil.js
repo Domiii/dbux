@@ -15,28 +15,19 @@ export function makeHttpServer(port) {
   // const address = '0.0.0.0';
   const address = '';
 
-  let _resolve, _reject;
-  let _promise = new Promise((resolve, reject) => {
-    _resolve = resolve;
-    _reject = reject;
+  return new Promise((resolve, reject) => {
+    httpServer.listen(port, () => {
+      debug(`server listening on port ${address}:${port}...`);
+
+      resolve(httpServer);
+    });
+
+    httpServer.on('error', err => {
+      logError('dbux http server failed', err);
+
+      reject(new Error(`makeHttpServer failed`));
+    });
   });
-
-  httpServer.listen(port, () => {
-    debug(`server listening on port ${address}:${port}...`);
-
-    let resolve = _resolve;
-    _resolve = _reject = null;
-    resolve?.(httpServer);
-  });
-  httpServer.on('error', err => {
-    logError('dbux http server failed', err);
-
-    let reject = _reject;
-    _resolve = _reject = null;
-    reject?.();
-  });
-
-  return _promise;
 }
 
 
