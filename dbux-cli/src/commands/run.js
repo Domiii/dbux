@@ -2,6 +2,7 @@
 // import path from 'path';
 import { wrapCommand } from '../util/commandUtil';
 import dbuxRegister from '../dbuxRegister';
+import { processEnv } from '../util/processEnv';
 import { buildCommonCommandOptions, resolveCommandTargetPath } from '../util/commandCommons';
 
 export const command = 'run <file>';
@@ -9,11 +10,12 @@ export const aliases = ['r'];
 export const describe = 'Run the given file with DBUX injected and reporting. Needs a receiving runtime server (such as the DBUX VSCode extension) running.';
 export const builder = buildCommonCommandOptions();
 
-
 /**
  * Run file with dbux instrumentations (using babel-register to add dbux-babel-plugin into the mix)
  */
 export const handler = wrapCommand(({ file, ...moreOptions }) => {
+  processEnv(moreOptions.env);
+
   // patch up file path
   const targetPath = resolveCommandTargetPath(file);
   console.debug(`Running file ${targetPath}...`);
