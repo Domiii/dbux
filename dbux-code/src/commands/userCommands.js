@@ -11,7 +11,6 @@ import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
 import { showGraphView } from '../graphView';
-import { initProjectUserCommands } from './projectCommands';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
@@ -22,7 +21,7 @@ import { getOrCreateProjectManager } from '../projectView/projectControl';
 const { log, debug, warn, error: logError } = newLogger('userCommands');
 
 
-export function initUserCommands(extensionContext, projectViewController) {
+export function initUserCommands(extensionContext) {
   // ###########################################################################
   // exportApplicationData
   // ###########################################################################
@@ -147,12 +146,6 @@ export function initUserCommands(extensionContext, projectViewController) {
   }
 
   registerCommand(extensionContext, 'dbux.selectTrace', openSelectTraceUI);
-
-  // ###########################################################################
-  // projects
-  // ###########################################################################
-
-  initProjectUserCommands(extensionContext, projectViewController);
 
 
   // ###########################################################################

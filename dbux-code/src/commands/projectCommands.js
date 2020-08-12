@@ -49,9 +49,3 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return projectViewController.manager.runner.cancel();
   });
 }
-
-/**
- * @param {ProjectsManager} projectViewController 
- */
-export function initProjectUserCommands(/* extensionContext, projectViewController */) {
-}

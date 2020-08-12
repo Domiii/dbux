@@ -2,11 +2,8 @@
 
 
 ## TODO
-* static "run with dbux" website?
-   * [dbux-cli] need a web build for `dbuxRun.js`
-* fix installDbuxDependencies to use promise and not call twice
+* (for now) hide projectView behind command
 * core instrumentation bugs
-   * trace function parameters
    * fix: call traces for getters are off
       * it's actually the next trace in context (if the getter did not error out)
       * e.g.: `req.protocol` (instead of `req`)
@@ -14,9 +11,6 @@
    * identify + visualize getters and setters with an "f"?
       * just any context's parentTrace that is not stemming from a call?
 * add `eslint` into build pipeline
-* move process-related stuff from `dbux-projects` to `dbux-cli`
-* Deployment
-   * `Process.exec` can use some polishing. Properly pipe stdout + stderr.
 * allow setting application name via babel config
    * also allow setting that application name via `dbux-cli`
    * set application name for `dbux-projects` bugs correspondingly

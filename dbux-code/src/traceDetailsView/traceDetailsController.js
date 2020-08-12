@@ -26,7 +26,7 @@ class TraceDetailsController {
     // try second node first to show the navigation buttons
     const targetNode = this.treeDataProvider.rootNodes[1] || this.treeDataProvider.rootNodes[0];
     if (targetNode) {
-      this.treeView.reveal(targetNode);
+      this.treeView.reveal(targetNode, { focus: true });
     }
   }
 

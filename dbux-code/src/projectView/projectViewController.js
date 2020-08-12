@@ -1,13 +1,14 @@
 import { window, commands } from 'vscode';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
+import { checkSystem } from '@dbux/projects/src/checkSystem';
 import ProjectNodeProvider from './projectNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import PracticeStopwatch from './PracticeStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
 import { initRuntimeServer } from '../net/SocketServer';
-import { checkSystem } from '@dbux/projects/src/checkSystem';
+import { initProjectCommands } from '../commands/projectCommands';
 
 // ########################################
 //  setup logger for project
@@ -149,6 +150,9 @@ export function initProjectView(context) {
 
   // refresh right away
   controller.treeDataProvider.refresh();
+
+  // register commands
+  initProjectCommands(context, controller);
 
   return controller;
 }
