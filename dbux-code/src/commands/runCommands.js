@@ -82,14 +82,14 @@ export async function runFile(extensionContext, debugMode = false) {
     await projectManager.installDependencies();
   }
 
-  nodeArgs = `${nodeArgs || ''}`;
   // start runtime server
   await initRuntimeServer(extensionContext);
 
   let [nodeArgs, dbuxArgs, programArgs] = getArgs(debugMode);
+  nodeArgs = `${nodeArgs || ''}`;
 
   // go!
   const dbuxBin = projectManager.getDbuxCliBinPath();
-  const command = `node ${nodeArgs} "${dbuxBin}" run ${dbuxArgs} "${file}${programArgs}"`;
+  const command = `node ${nodeArgs} "${dbuxBin}" run ${dbuxArgs} "${file}" -- ${programArgs}`;
   runInTerminalInteractive('dbux-run', cwd, command);
 }
