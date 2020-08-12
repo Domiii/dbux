@@ -5,6 +5,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('net/servers');
 
+let _makeHttpServerPromise;
 
 /**
  * @param {number} port 
@@ -15,28 +16,23 @@ export function makeHttpServer(port) {
   // const address = '0.0.0.0';
   const address = '';
 
-  let _resolve, _reject;
-  let _promise = new Promise((resolve, reject) => {
-    _resolve = resolve;
-    _reject = reject;
+  if (_makeHttpServerPromise) {
+    return _makeHttpServerPromise;
+  }
+
+  return _makeHttpServerPromise = new Promise((resolve, reject) => {
+    httpServer.listen(port, () => {
+      debug(`server listening on port ${address}:${port}...`);
+
+      resolve(httpServer);
+    });
+
+    httpServer.on('error', err => {
+      logError('dbux http server failed', err);
+
+      reject(new Error(`makeHttpServer failed`));
+    });
   });
-
-  httpServer.listen(port, () => {
-    debug(`server listening on port ${address}:${port}...`);
-
-    let resolve = _resolve;
-    _resolve = _reject = null;
-    resolve?.(httpServer);
-  });
-  httpServer.on('error', err => {
-    logError('dbux http server failed', err);
-
-    let reject = _reject;
-    _resolve = _reject = null;
-    reject?.();
-  });
-
-  return _promise;
 }
 
 
