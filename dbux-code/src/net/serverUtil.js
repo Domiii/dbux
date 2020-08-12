@@ -5,6 +5,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('net/servers');
 
+let _makeHttpServerPromise;
 
 /**
  * @param {number} port 
@@ -15,7 +16,11 @@ export function makeHttpServer(port) {
   // const address = '0.0.0.0';
   const address = '';
 
-  return new Promise((resolve, reject) => {
+  if (_makeHttpServerPromise) {
+    return _makeHttpServerPromise;
+  }
+
+  return _makeHttpServerPromise = new Promise((resolve, reject) => {
     httpServer.listen(port, () => {
       debug(`server listening on port ${address}:${port}...`);
 
