@@ -1,6 +1,7 @@
 import { window, commands } from 'vscode';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
+import { checkSystem } from '@dbux/projects/src/checkSystem';
 import ProjectNodeProvider from './projectNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
@@ -73,6 +74,7 @@ class ProjectViewController {
   // ###########################################################################
 
   async activateBugByNode(bugNode, debugMode = false) {
+    await checkSystem(this.manager);
     showOutputChannel();
     await initRuntimeServer(this.extensionContext);
 
