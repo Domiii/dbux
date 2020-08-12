@@ -43,7 +43,6 @@ export async function runFile(extensionContext, nodeArgs) {
   }
 
   nodeArgs = `${nodeArgs || ''}`;
-  
   // start runtime server
   await initRuntimeServer(extensionContext);
 
