@@ -7,6 +7,19 @@ import { registerCommand } from '../commands/commandUtil';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('editorTracesController');
 
+const nodeClasses = new Map();
+
+function makeNodeClassId(NodeClass) {
+  // in production, names get mangled and/or removed entirely, so we need a different class identifier here
+  let id = nodeClasses.get(NodeClass);
+  if (!id) {
+    id = nodeClasses.size + 1;
+    nodeClasses.set(NodeClass, id);
+  }
+  
+  return (NodeClass.name || '') + id;
+}
+
 export default class BaseTreeViewNodeProvider {
   _onDidChangeTreeData = new EventEmitter();
   onDidChangeTreeData = this._onDidChangeTreeData.event;
@@ -140,8 +153,9 @@ export default class BaseTreeViewNodeProvider {
   // per-node operations
   // ###########################################################################
 
-  makeNodeId(nodeClassName, parent, i) {
-    return [parent?.id || '', nodeClassName, i].join('..');
+  makeNodeId(NodeClass, parent, i) {
+    const nodeClassId = makeNodeClassId(NodeClass);
+    return [parent?.id || '', nodeClassId, i].join('..');
   }
 
   makeNodeIconPath(node) {
@@ -158,7 +172,7 @@ export default class BaseTreeViewNodeProvider {
       const lastIdx = childIndexes.get(child.constructor) || 0;
       const index = lastIdx + 1;
       childIndexes.set(child.constructor, index);
-      const id = this.makeNodeId(child.constructor.name, parent, index);
+      const id = this.makeNodeId(child.constructor, parent, index);
 
       // decorate based on id
       this._decorateNewNode(child, id);
@@ -168,6 +182,8 @@ export default class BaseTreeViewNodeProvider {
   _decorateNewNode(node, id) {
     // id
     node.id = id;
+
+    // TODO: keep track of all node ids, since VSCode shows an error to the user if we don't do it right (and does not allow us to even log it)
 
     // iconPath
     node.iconPath = this.makeNodeIconPath(node);

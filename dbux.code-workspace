@@ -17,7 +17,7 @@
 		"gitlens.hovers.currentLine.over": "line",
 		"python.dataScience.textOutputLimit": 0,
 		"python.dataScience.maxOutputSize": 600,
-		"debug.node.autoAttach": "on",
+		"debug.node.autoAttach": "off",
 		// "files.associations": {
 		// 	"*.js": "typescriptreact"
 		// }

@@ -146,10 +146,16 @@ export function makeRootTraceLabel(trace) {
 export function makeTraceValueLabel(trace) {
   const { applicationId, traceId } = trace;
   const dp = allApplications.getById(applicationId).dataProvider;
-  const callTrace = dp.util.getCallerTraceOfTrace(traceId);
-  if (callTrace?.traceId) {
-    // trace is call related
-    return makeCallValueLabel(callTrace);
+  // const callTrace = dp.util.getCallerTraceOfTrace(traceId);
+
+  if (dp.util.isBCETrace(traceId)) {
+    // BCE
+    return makeCallValueLabel(trace);
+  }
+  else if (dp.util.isCallResultTrace(traceId)) {
+    //call result
+    const bceTrace = dp.util.getCallerTraceOfTrace(traceId);
+    return makeCallValueLabel(bceTrace);
   }
   else if (dp.util.doesTraceHaveValue(traceId)) {
     // trace has value
@@ -163,10 +169,10 @@ export function makeTraceValueLabel(trace) {
 
 /**
  * Make label that shows the params and return value of call trace
- * @param {Trace} trace 
+ * @param {Trace} bceTrace
  */
-export function makeCallValueLabel(callTrace) {
-  const { applicationId, traceId, resultId } = callTrace;
+export function makeCallValueLabel(bceTrace) {
+  const { applicationId, traceId, resultId } = bceTrace;
   const dp = allApplications.getById(applicationId).dataProvider;
 
   const args = dp.indexes.traces.byCall.get(traceId) || EmptyArray;
