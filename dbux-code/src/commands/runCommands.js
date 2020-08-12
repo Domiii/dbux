@@ -35,7 +35,10 @@ function getArgs(debugMode) {
   const config = workspace.getConfiguration('');
 
   let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`);
-  let enableSourceMaps = config.get(`dbux.${runMode}.enable-source-maps`);
+  // WARNING: for some reason, --enable-source-maps is very slow. Adding it when in debugger becomes unbearable (so we don't mix the two for now).
+  //          Must be a bug or misconfiguration somewhere.
+  //          Angular has similar issues: https://github.com/angular/angular-cli/issues/5423
+  let enableSourceMaps = config.get(`dbux.${runMode}.enable-source-maps`) || !debugMode;
   nodeArgs += debugMode ? ' --inspect-brk' : '';
   nodeArgs += enableSourceMaps ? ' --enable-source-maps' : '';
 
@@ -79,6 +82,7 @@ export async function runFile(extensionContext, debugMode = false) {
     await projectManager.installDependencies();
   }
 
+  nodeArgs = `${nodeArgs || ''}`;
   // start runtime server
   await initRuntimeServer(extensionContext);
 
@@ -87,6 +91,5 @@ export async function runFile(extensionContext, debugMode = false) {
   // go!
   const dbuxBin = projectManager.getDbuxCliBinPath();
   const command = `node ${nodeArgs} "${dbuxBin}" run ${dbuxArgs} "${file}${programArgs}"`;
-
   runInTerminalInteractive('dbux-run', cwd, command);
 }

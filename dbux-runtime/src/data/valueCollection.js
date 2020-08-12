@@ -9,7 +9,7 @@ const Verbose = false;
 const VerboseErrors = Verbose || true;
 
 const SerializationConfig = {
-  maxDepth: 2,
+  maxDepth: 3,
   maxObjectSize: 20,   // applies to arrays and object
   maxStringLength: 1000
 };
