@@ -4,6 +4,7 @@ import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
+import { initRuntimeServer } from '../net/SocketServer';
 
 
 const logger = newLogger('DBUX run file');
@@ -42,6 +43,9 @@ export async function runFile(extensionContext, nodeArgs) {
   }
 
   nodeArgs = `${nodeArgs || ''}`;
+  
+  // start runtime server
+  await initRuntimeServer(extensionContext);
 
   // go!
   const dbuxBin = projectManager.getDbuxCliBinPath();

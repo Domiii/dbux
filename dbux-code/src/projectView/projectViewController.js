@@ -6,6 +6,7 @@ import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import PracticeStopwatch from './PracticeStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
+import { initRuntimeServer } from '../net/SocketServer';
 import { initProjectCommands } from '../commands/projectCommands';
 
 // ########################################
@@ -35,6 +36,7 @@ let controller;
 
 class ProjectViewController {
   constructor(context) {
+    this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
 
     // ########################################
@@ -72,6 +74,8 @@ class ProjectViewController {
 
   async activateBugByNode(bugNode, debugMode = false) {
     showOutputChannel();
+    await initRuntimeServer(this.extensionContext);
+
     const options = {
       cancellable: false,
       title: `[dbux] Activating Project ${bugNode.bug.project.name}@${bugNode.bug.name}`

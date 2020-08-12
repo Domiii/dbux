@@ -101,7 +101,7 @@ export default class TerminalWrapper {
   async _run(cwd, command, port, args) {
     // see: https://socket.io/docs/server-api/
     let socketServer = this.socketServer = new TerminalSocketServer();
-    socketServer.start(port);
+    await socketServer.start(port);
     Verbose && debug('started');
 
     try {
