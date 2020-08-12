@@ -18,7 +18,12 @@ export function buildCommonCommandOptions() {
       describe: 'Do NOT add `@babel/preset-env`. Not adding this, might cause incompatabilities, but keeps the code closer to its original form.',
       default: false,
       type: 'boolean'
-    }
+    },
+    env: {
+      describe: "Specify environment variable to program.",
+      default: '',
+      type: 'string',
+    },
   };
 }
 

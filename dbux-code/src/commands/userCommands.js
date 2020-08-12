@@ -153,7 +153,7 @@ export function initUserCommands(extensionContext) {
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.runFile', () => runFile(extensionContext));
-  registerCommand(extensionContext, 'dbux.debugFile', () => runFile(extensionContext, '--inspect-brk'));
+  registerCommand(extensionContext, 'dbux.debugFile', () => runFile(extensionContext, true));
 
 
   // ###########################################################################
