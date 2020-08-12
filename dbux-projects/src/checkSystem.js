@@ -37,7 +37,6 @@ async function getRealPath(path) {
     let realPath = fs.realpathSync(path);
     return realPath;
   } catch (err) {
-    debug('get real path get err', err);
     let result = await Process.execCaptureAll(`cygpath -w ${path}`);
     return result.code ? '' : result.out;
   }
@@ -85,7 +84,7 @@ export async function checkSystem(projectManager, calledFromUser = false) {
     results.node.path && (results.node.version = await getNodeVersion());
   }
 
-  debug(requirement, results);
+  // debug(requirement, results);
 
   let success = true;
   let modalMessage = '';
@@ -97,12 +96,12 @@ export async function checkSystem(projectManager, calledFromUser = false) {
     let res = results[program];
 
     if (res?.path && (!req.version || res.version >= req.version)) {
-      message += `O ${program} installed. (path: ${res.path})` + (req.version ? `(version ${res.version} >= required ${req.version})` : ``);
+      message += `✓ ${program} installed. (path: ${res.path})` + (req.version ? `(version ${res.version} >= required ${req.version})` : ``);
     } else if (res?.path) {
-      message += `X ${program} installed but is too old. Version is ${res.version} but require ${req.version}.`;
+      message += `x ${program} installed but is too old. Version is ${res.version} but require ${req.version}.`;
       success = false;
     } else {
-      message += `X ${program} not found.`;
+      message += `x ${program} not found.`;
       success = false;
     }
 
