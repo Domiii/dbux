@@ -7,6 +7,7 @@ import OutputChannel from './OutputChannel';
 import PracticeStopwatch from './PracticeStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
 import { initRuntimeServer } from '../net/SocketServer';
+import { checkSystem } from '@dbux/projects/src/checkSystem';
 
 // ########################################
 //  setup logger for project
@@ -72,6 +73,7 @@ class ProjectViewController {
   // ###########################################################################
 
   async activateBugByNode(bugNode, debugMode = false) {
+    checkSystem(this.manager);
     showOutputChannel();
     await initRuntimeServer(this.extensionContext);
 

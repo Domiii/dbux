@@ -10,7 +10,22 @@ const logger = newLogger('checkSystem');
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
+const keyName = "dbux.project.systemCheck";
 const option = { failOnStatusCode: false };
+
+/**
+ * @param {ProjectManager} manager 
+ */
+async function updateCheckedStatus(manager, status) {
+  return await manager.externals.storage.set(keyName, status);
+}
+
+/**
+ * @param {ProjectManager} manager 
+ */
+function isChecked(manager) {
+  return manager.externals.storage.get(keyName, false);
+}
 
 async function canCheck() {
   let result = await Process.execCaptureAll(`which -v`, option);
@@ -51,6 +66,8 @@ async function getNodeVersion() {
  * @param {boolean} calledFromUser 
  */
 export async function checkSystem(projectManager, calledFromUser = false) {
+  if (!calledFromUser && isChecked(projectManager)) return;
+
   const requirement = {
     which: {},
     bash: {},
@@ -106,4 +123,6 @@ export async function checkSystem(projectManager, calledFromUser = false) {
   if (!success && !calledFromUser) {
     throw new Error(`System dependency check failed.`);
   }
+
+  updateCheckedStatus(projectManager, success);
 }
