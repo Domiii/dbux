@@ -6,6 +6,7 @@ import isNaN from 'lodash/isNaN';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
@@ -165,5 +166,14 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.backendLogin', async () => {
     const backend = await getOrCreateProjectManager().getOrInitBackend();
     await backend.auth.login();
+  });
+  
+  // ###########################################################################
+  // system check
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.systemCheck', () => {
+    let projectManager = getOrCreateProjectManager(extensionContext);
+    checkSystem(projectManager, true);
   });
 }

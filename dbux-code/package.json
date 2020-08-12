@@ -372,6 +372,10 @@
         "title": "Dbux: Backend Login",
         "when": "view == dbuxApplicationsView",
         "group": "navigation"
+      },
+      {
+        "command": "dbux.systemCheck",
+        "title": "Dbux: System Check"
       }
     ],
     "menus": {
