@@ -11,9 +11,16 @@ export class TraceSelection {
   }
 
   selectTrace(trace, sender = null, args) {
-    this.selected = trace;
+    this._setSelectTrace(trace);
+    this._emitSelectionChangedEvent(sender, args);
+  }
 
-    this._emitter.emit('selectionChanged', trace, sender, args);
+  _setSelectTrace(trace) {
+    this.selected = trace;
+  }
+
+  _emitSelectionChangedEvent(sender = null, args) {
+    this._emitter.emit('selectionChanged', this.selected, sender, args);
   }
 
   onTraceSelectionChanged(cb) {
