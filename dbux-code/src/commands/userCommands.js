@@ -1,4 +1,4 @@
-import { window } from 'vscode';
+import { window, Uri, env } from 'vscode';
 import path from 'path';
 import fs from 'fs';
 import isNaN from 'lodash/isNaN';
@@ -175,5 +175,13 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.systemCheck', () => {
     let projectManager = getOrCreateProjectManager(extensionContext);
     checkSystem(projectManager, true);
+  });
+
+  // ###########################################################################
+  // open help website
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.openWebsite', () => {
+    env.openExternal(Uri.parse('https://github.com/Domiii/dbux#introduction'));
   });
 }

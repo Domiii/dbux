@@ -48,6 +48,14 @@
     },
     "commands": [
       {
+        "command": "dbux.openWebsite",
+        "title": "Dbux: Help",
+        "icon": {
+          "light": "resources/light/question.svg",
+          "dark": "resources/dark/question.svg"
+        }
+      },
+      {
         "command": "dbux.runFile",
         "title": "Dbux: Run current file",
         "icon": {
@@ -137,7 +145,7 @@
       },
       {
         "command": "dbuxCallGraphView.selectError",
-        "title": "Go to first error",
+        "title": "Select to first error",
         "icon": {
           "light": "resources/light/fire.svg",
           "dark": "resources/dark/fire.svg"
@@ -549,6 +557,11 @@
           "group": "navigation"
         },
         {
+          "command": "dbuxCallGraphView.selectError",
+          "when": "view == dbuxTraceDetailsView && dbuxCallGraphView.context.hasError == true",
+          "group": "navigation"
+        },
+        {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
           "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
           "group": "navigation"
@@ -571,12 +584,17 @@
         {
           "command": "dbux.runFile",
           "when": "view == dbuxApplicationsView",
-          "group": "navigation"
+          "group": "navigation@15"
         },
         {
           "command": "dbux.debugFile",
           "when": "view == dbuxApplicationsView",
-          "group": "navigation"
+          "group": "navigation@10"
+        },
+        {
+          "command": "dbux.openWebsite",
+          "when": "view == dbuxApplicationsView",
+          "group": "navigation@5"
         }
       ]
     },
