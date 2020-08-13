@@ -142,9 +142,10 @@ async function bumpVersion() {
   }
   else {
     const version = await getDbuxVersion();
-    console.warn(version, version.endsWith('dev'));
     if (version.endsWith('dev')) {
-      throw new Error(`Invalid version ${version} - Cannot publish dev version.`);
+      const msg = `Invalid version ${version} - Cannot publish dev version.`;
+      console.error(msg);
+      throw new Error(msg);
     }
   }
 }
