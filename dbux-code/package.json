@@ -373,6 +373,11 @@
     "menus": {
       "editor/title": [
         {
+          "command": "dbux.runFile",
+          "when": "editorLangId == javascript",
+          "group": "navigation@5"
+        },
+        {
           "command": "dbuxCallGraphView.selectError",
           "when": "dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
           "group": "navigation@32"
