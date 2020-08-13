@@ -204,7 +204,7 @@ async function setDevVersion() {
     }
     else {
       // make sure, we are operating on the dev version
-      await exec(`npx lerna version ${version}-dev --yes`);
+      await exec(`npx lerna version prepatch --preid dev --yes`);
     }
   }
 }
