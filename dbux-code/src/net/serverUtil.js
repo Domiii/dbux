@@ -3,7 +3,7 @@ import * as SocketIOServer from 'socket.io';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('net/servers');
+const { log, debug, warn, error: logError } = newLogger('net/listener');
 
 let _makeHttpServerPromise;
 

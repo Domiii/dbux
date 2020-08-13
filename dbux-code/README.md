@@ -16,18 +16,37 @@ See https://github.com/Domiii/dbux for more info.
       * NOTE: In VSCode, in-view buttons are not visible unless you hover over the corresponding GUI element
 
 
-# Features
-
 TODO: Make a short video
 
-## "Run with Dbux" button
+# "Run with Dbux"
+
+* The "Run with Dbux" button is located at the top of the "Applications" view
+   * NOTE: You have to move mouse over it to see it. That's a VSCode limitation.
+* When you click the button, [dbux-cli](../dbux-cli) will run the file with the [dbux-runtime](../dbux-runtime) injected.
+   * NOTE: Architectural details are explained [here](../#architectural-notes).
 
 
-   * Allows you to run and analyze any applications you ran with Dbux enabled, using the:
-      * "Trace Details" treeview - Analyze and navigate individual traces
-      * "Applications" treeview - Manage (enable/disable) all JavaScript applications that you ran
-      * "Call Graph" webview - Bird's Eye overview over all executed files and functions
-   * The "Practice" treeview (currently hidden behind a command) uses `dbux-projects` to allow practicing dbux and, more generally, debugging on real-world projects and their bugs.
+# Analyzing our program's Runtime
+
+Currently, the dbux-code extension provides the following views to engage in JavaScript runtime analysis:
+
+## "Applications" treeview
+Allows you to manage (enable/disable) all Dbux-enabled JavaScript applications that you ran.
+
+* A new application will show up, once the first batch of an executed program's runtime data has been received.
+
+
+## "Trace Details" treeview
+Analyze and navigate individual traces.
+
+* When looking
+
+
+## "Call Graph" webview
+Bird's Eye overview over all executed files and functions.
+
+
+## The "Practice" treeview (currently hidden behind a command) uses `dbux-projects` to allow practicing dbux and, more generally, debugging on real-world projects and their bugs.
 
 
 # Commands
