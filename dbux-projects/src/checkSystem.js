@@ -72,7 +72,8 @@ export async function checkSystem(projectManager, calledFromUser = false) {
     modalMessage += `✓  which/where.exe\n`;
   } else {
     success = false;
-    modalMessage += `x  which/where.exe\n    Dbux requires at least one of these two programs to check following programs, but we can't find any in your system. Please try fixing this problem and try again.\n`;
+    modalMessage += `x  which/where.exe\n`;
+    modalMessage += `    Cannot run the system check because you are on a legacy system. We need where to be available on Windows (available from Windows 7 and Windows Server 2003 onward), and which to be available on any other system. If you are on Windows, please refer to: https://superuser.com/questions/49104/how-do-i-find-the-location-of-an-executable-in-window.\n`;
   }
 
   // debug(requirement, results);
