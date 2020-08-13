@@ -2,7 +2,14 @@
 	"folders": [
 		{
 			"path": "projects"
+		},
+		{
+			"path": "samples"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"dbux.run.dbuxArgs": "-d",
+		"dbux.run.nodeArgs": "--enable-source-maps",
+		"dbux.run.programArgs": "1 2 --xzy qq=3"
+	}
 }

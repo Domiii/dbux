@@ -570,7 +570,74 @@
           "group": "navigation"
         }
       ]
-    }
+    },
+    "configuration": [
+      {
+        "title": "Dbux",
+        "properties": {
+          "dbux.run.enable-source-maps": {
+            "type": "boolean",
+            "default": false,
+            "description": "toggle `--enable-source-maps` (since it can be super slow)",
+            "scope": "resource"
+          },
+          "dbux.run.dbuxArgs": {
+            "type": "string",
+            "default": "",
+            "description": "custom `dbux run` command options",
+            "scope": "resource"
+          },
+          "dbux.run.nodeArgs": {
+            "type": "string",
+            "default": "",
+            "description": "custom node options",
+            "scope": "resource"
+          },
+          "dbux.run.programArgs": {
+            "type": "string",
+            "default": "",
+            "description": "custom program arguments",
+            "scope": "resource"
+          },
+          "dbux.run.env": {
+            "type": "object",
+            "default": {},
+            "description": "custom program enviorment variables",
+            "scope": "resource"
+          },
+          "dbux.debug.enable-source-maps": {
+            "type": "boolean",
+            "default": false,
+            "description": "toggle `--enable-source-maps` (since it can be super slow)",
+            "scope": "resource"
+          },
+          "dbux.debug.dbuxArgs": {
+            "type": "string",
+            "default": "",
+            "description": "custom `dbux run` command options",
+            "scope": "resource"
+          },
+          "dbux.debug.nodeArgs": {
+            "type": "string",
+            "default": "",
+            "description": "custom node options",
+            "scope": "resource"
+          },
+          "dbux.debug.programArgs": {
+            "type": "string",
+            "default": "",
+            "description": "custom program arguments",
+            "scope": "resource"
+          },
+          "dbux.debug.env": {
+            "type": "object",
+            "default": {},
+            "description": "custom program environment variable",
+            "scope": "resource"
+          }
+        }
+      }
+    ]
   },
   "scripts": {
     "test": "node ./test/runTest.js",

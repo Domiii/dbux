@@ -152,11 +152,8 @@ export function initUserCommands(extensionContext) {
   // run + debug
   // ###########################################################################
 
-  // WARNING: for some reason, --enable-source-maps is very slow. Adding it when in debugger becomes unbearable (so we don't mix the two for now).
-  //          Must be a bug or misconfiguration somewhere.
-  //          Angular has similar issues: https://github.com/angular/angular-cli/issues/5423
-  registerCommand(extensionContext, 'dbux.runFile', () => runFile(extensionContext, '--enable-source-maps'));
-  registerCommand(extensionContext, 'dbux.debugFile', () => runFile(extensionContext, '--inspect-brk'));
+  registerCommand(extensionContext, 'dbux.runFile', () => runFile(extensionContext));
+  registerCommand(extensionContext, 'dbux.debugFile', () => runFile(extensionContext, true));
 
 
   // ###########################################################################
