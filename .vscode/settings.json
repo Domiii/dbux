@@ -13,7 +13,5 @@
     "analysis/src"
   ],
   "debug.node.autoAttach": "on",
-  "dbux.debug.dbuxArgs": "-d",
-  "dbux.debug.nodeArgs": "--enable-source-maps",
-  "dbux.debug.programArgs": "1 2 -x=3"
+  "dbux.run.dbuxArgs": "--next"
 }
