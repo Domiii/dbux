@@ -1,6 +1,6 @@
 {
   "name": "@dbux/babel-plugin",
-  "version": "0.1.26",
+  "version": "0.1.26-dev",
   "description": "",
   "author": "Domi",
   "module": "dist/index.js",
@@ -23,7 +23,7 @@
     "@babel/template": "^7.8.3",
     "@babel/traverse": "^7.8.3",
     "@babel/types": "^7.8.3",
-    "@dbux/common": "^0.1.26",
+    "@dbux/common": "^0.1.26-dev",
     "lodash": "4.17.19"
   },
   "devDependencies": {
