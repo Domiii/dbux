@@ -171,6 +171,6 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.systemCheck', () => {
     let projectManager = getOrCreateProjectManager(extensionContext);
-    checkSystem(projectManager, true);
+    checkSystem(projectManager, true, true);
   });
 }
