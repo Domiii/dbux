@@ -29,6 +29,11 @@ function readPackageJson(folder) {
   return readJsonFile(packageJsonPath);
 }
 
+function readPackageJsonVersion(folder) {
+  const pkg = readPackageJson(folder);
+  return pkg.version;
+}
+
 /**
  * NOTE: only used for development
  */
@@ -135,6 +140,7 @@ module.exports = {
   makeResolve,
 
   readPackageJson,
+  readPackageJsonVersion,
   makeResolvePackageJson,
   getDependenciesPackageJson: readPackageJsonDependencies,
   getDbuxVersion

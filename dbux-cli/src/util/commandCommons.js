@@ -2,7 +2,7 @@ import fs from 'fs';
 
 export function buildCommonCommandOptions() {
   return {
-    next: {
+    esnext: {
       describe: 'Add esnext babel presets + options.',
       default: false,
       type: 'boolean'
