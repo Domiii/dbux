@@ -1,7 +1,7 @@
 
-import fs from 'fs';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Process from './util/Process';
+import which, { hasWhich } from './util/which';
 
 /** @typedef {import('../../dbux-projects/src/ProjectsManager').default} ProjectManager */
 
@@ -27,31 +27,24 @@ function isChecked(manager) {
   return manager.externals.storage.get(keyName, false);
 }
 
-async function canCheck() {
-  let result = await Process.execCaptureAll(`which -v`, option);
-  return !result.code;
-}
-
-async function getRealPath(path) {
+/**
+ * Find real path to `program`.
+ * @param {string} program the program(command) name
+ * @return {object} contains `path` if path to `program` is found.
+ */
+async function check(program) {
   try {
-    let realPath = fs.realpathSync(path);
-    return realPath;
+    let path = await which(program);
+    return { path };
   } catch (err) {
-    let result = await Process.execCaptureAll(`cyygpath -w ${path}`, option);
-    return result.code ? '' : result.out;
+    return {};
   }
 }
 
-async function check(program) {
-  let result = await Process.execCaptureOut(`which ${program}`, option);
-
-  if (result === '') return {};
-
-  let path = await getRealPath(result);
-  if (!path) return {};
-  else return { path };
-}
-
+/**
+ * Parse output of `node -v` and parse major version as integer to return.
+ * @return {number} major version of `node`, `0` if parse failed or not installed.
+ */
 async function getNodeVersion() {
   let result = await Process.execCaptureOut(`node -v`, option);
 
@@ -60,50 +53,66 @@ async function getNodeVersion() {
 }
 
 /**
- * 
+ * Check if the current running OS is windows.
+ * @return {boolean} if the windows is windows.
+ */
+function isWindows() {
+  return process.platform === 'win32';
+}
+
+/**
  * @param {ProjectManager} projectManager 
+ * @param {object} requirement
  * @param {boolean} calledFromUser 
  */
-export async function checkSystem(projectManager, calledFromUser = false) {
+async function _checkSystem(projectManager, requirement, calledFromUser) {
   if (!calledFromUser && isChecked(projectManager)) return;
 
-  const requirement = {
-    wshich: {},
-    bash: {},
-    node: { version: 12 },
-    npm: {},
-    git: {},
-  };
   let results = {};
 
-  if (await canCheck()) {
+  let success = true;
+  let modalMessage = 'Dbux requires the following programs to be installed and available on your system in order to run smoothly.' +
+                     ' Please make sure, you have all of them installed.\n\n';
+
+  if (await hasWhich()) {
     for (let program of Object.keys(requirement)) {
       results[program] = await check(program);
     }
 
     results.node.path && (results.node.version = await getNodeVersion());
+    
+    modalMessage += `✓  which/where.exe\n`;
+  } else {
+    success = false;
+    modalMessage += `x  which/where.exe\n` +
+                    `    Cannot run the system check because you are on a legacy system. ` +
+                    `We need where to be available on Windows (available from Windows 7 and Windows Server 2003 onward), ` +
+                    `and which to be available on any other system. ` +
+                    `If you are on Windows, please refer to: https://superuser.com/questions/49104/how-do-i-find-the-location-of-an-executable-in-window.\n`;
   }
 
   // debug(requirement, results);
 
-  let success = true;
-  let modalMessage = '';
-
   for (let program of Object.keys(requirement)) {
-    let message = 'Dbux requires the following programs to be installed and available on your system in order to run smoothly. Please make sure, you have all of them installed.\n';
+    let message = '';
 
     let req = requirement[program];
     let res = results[program];
 
     if (res?.path && (!req.version || res.version >= req.version)) {
       message += `✓  ${program}\n    Found at "${res.path}"` + (req.version ? ` (v${res.version} >= ${req.version})` : ``);
+      res.success = true;
     } else if (res?.path) {
-      // eslint-disable-next-line max-len
-      message += `¯\\_(ツ)_/¯ ${program} installed but old. Version is ${res.version} but we recommend ${req.version}. Your version might or might not work. We don't know, but we recommend upgrading to latest (or at least a later) version instead.`;
+      message += `¯\\_(ツ)_/¯ ${program} installed but old. Version is ${res.version} but we recommend ${req.version}. ` +
+                 `Your version might or might not work. We don't know, but we recommend upgrading to latest (or at least a later) version instead.`;
       // success = false;
+    } else if (res) {
+      message += `x    ${program} not found.`;
+      res.success = success = false;
     } else {
-      message += `x   ${program} not found.`;
+      message += `?    ${program} not tested.`;
       success = false;
+      requirement[program] = { success: false };
     }
 
     modalMessage += `${message}\n`;
@@ -113,7 +122,14 @@ export async function checkSystem(projectManager, calledFromUser = false) {
     `\nSUCCESS! All system dependencies seem to be in order.` : 
     `\nPROBLEM: One or more system dependencies are not installed. Fix them then try again.`;
 
-  debug(success, modalMessage);
+  // debug(success, modalMessage);
+
+  if ((results?.git?.success === false || results?.bash?.success === false) && isWindows()) {
+    modalMessage += '\n\nWindows users can install bash and git into $PATH by installing git by installing "git" ' +
+                    'and checking the "adding UNIX tools to PATH". You can achieve that by:\n' +
+                    '1. Installing choco\n' +
+                    '2. then run: choco install git.install --params "/GitAndUnixToolsOnPath"';
+  }
 
   if (!success || calledFromUser) {
     if (success) await projectManager.externals.showMessage.info(modalMessage, {}, { modal: true });
@@ -125,4 +141,25 @@ export async function checkSystem(projectManager, calledFromUser = false) {
   }
 
   await updateCheckedStatus(projectManager, success);
+}
+
+/**
+ * Entry point of checking system compatibility
+ * @param {ProjectManager} projectManager
+ * @param {boolean} calledFromUser Whether the function is called by user. Decides showing success message to user or not.
+ * @param {boolean} fullCheck if false, skip checking `git` and `bash`.
+ */
+export async function checkSystem(projectManager, calledFromUser, fullCheck) {
+  const simpleCheckRequirement = {
+    node: { version: 12 },
+    npm: {},
+  };
+  const fullCheckRequirement = {
+    bash: {},
+    node: { version: 12 },
+    npm: {},
+    git: {},
+  };
+
+  await _checkSystem(projectManager, fullCheck ? fullCheckRequirement : simpleCheckRequirement, calledFromUser);
 }

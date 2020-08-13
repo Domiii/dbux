@@ -74,7 +74,7 @@ class ProjectViewController {
   // ###########################################################################
 
   async activateBugByNode(bugNode, debugMode = false) {
-    await checkSystem(this.manager);
+    await checkSystem(this.manager, false, true);
     showOutputChannel();
     await initRuntimeServer(this.extensionContext);
 
