@@ -142,6 +142,7 @@ async function bumpVersion() {
   }
   else {
     const version = await getDbuxVersion();
+    console.warn(version, version.endsWith('dev'));
     if (version.endsWith('dev')) {
       throw new Error(`Invalid version ${version} - Cannot publish dev version.`);
     }
@@ -204,7 +205,7 @@ async function setDevVersion() {
     }
     else {
       // make sure, we are operating on the dev version
-      await exec(`npx lerna version ${version}-dev --yes`);
+      await exec(`npx lerna version prepatch --preid dev --yes`);
     }
   }
 }
