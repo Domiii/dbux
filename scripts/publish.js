@@ -214,7 +214,7 @@ async function setDevVersion() {
 async function pushToDev() {
   const result = await yesno('Skip checking out and merging back into dev? ("yes" does nothing)');
   if (!result) {
-    run(`git checkout dev && git pull origin master`);
+    run(`git checkout dev && git pull origin master && git push`);
   }
 }
 
