@@ -35,7 +35,7 @@ Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 * `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet, as a result, you won't see all traces/contexts etc.
 * If you *MUST* call `process.exit`, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side.
    * NOTE: some frameworks that kill your process allow disabling that (e.g. `Mocha`'s `--no-exit` argument)
-* #201 tracks the [uncaughtException](https://nodejs.org/api/process.html#process_event_uncaughtexception) issue.
+* This is tracked in #201.
 
 #### Heisenbugs
 By trying to observe a program, you will inevitably change its behavior leading to the [observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics)) leading to [heisenbugs](https://en.wikipedia.org/wiki/Heisenbug).
@@ -81,11 +81,13 @@ This is a multi-module monorepo with the following modules:
 1. [`dbux-common`](dbux-common) Collection of commonly used utilities shared among (more or less) all other modules.
 1. [`dbux-babel-plugin`](dbux-babel-plugin) Instruments the program and injects `dbux-runtime` when supplied as a `plugin` to Babel.
 1. [`dbux-runtime`](dbux-runtime) When an instrumented program runs, the runtime is used to record and send runtime data to the `dbux-data` on a receiving server (using `socket-io.client`).
-1. [`dbux-cli`](dbux-cli) The cli (command-line interface) allows us to easily run a js program and instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).
+1. [`dbux-cli`](dbux-cli) The cli (command-line interface) allows us to easily run a js program while instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).
 1. [`dbux-data`](dbux-data) Receives, pre-processes and manages all data sent by `dbux-runtime` to any consumer. It provides the tools to easily query and analyze the js runtime data received from `dbux-runtime`.
 1. [`dbux-code`](dbux-code) The [dbux VSCode extension](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code), which you can install in VSCode with one click.
 1. [`dbux-projects`](dbux-projects) Used by `dbux-code` (while not dependending on `VSCode`) to allow practicing dbux (and debugging in general) on real-world bugs inside of real-world open source projects.
-1. [`dbux-graph-common`](dbux-graph-common), [`dbux-graph-client`](dbux-graph-client) and [`dbux-graph-host`](dbux-graph-host) Are responsible for rendering and interacting with the "Call Graph" in HTML. Inside of `dbux-code`, it is hosted in [GraphWebview](dbux-code\src\graphView\GraphWebView.js), but we can also host it independently on a website, in an iframe etc. `client` and `host` communicate via a supplied `IpcAdapter` which in turn has two functions: `onMessage` and `postMessage`.
+1. [`dbux-graph-common`](dbux-graph-common), [`dbux-graph-client`](dbux-graph-client) and [`dbux-graph-host`](dbux-graph-host) Are responsible for rendering and interacting with the "Call Graph" in HTML.
+   * Inside of `dbux-code`, the graph is hosted in [GraphWebView](dbux-code/src/graphView/GraphWebView.js), but we can also host it independently on a website, in an iframe etc.
+   * `client` and `host` communicate via a supplied `IpcAdapter` which in turn has two functions: `onMessage` and `postMessage`.
 
-![architecture-v001](docs\img\architecture-v001.png)
+![architecture-v001](docs/img/architecture-v001.png)
 
