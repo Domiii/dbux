@@ -92,7 +92,7 @@ function run(command) {
 }
 
 function getDbuxVersion() {
-  return readPackageJsonVersion('../dbux-code');
+  return readPackageJsonVersion(path.join(__dirname, '../dbux-code'));
 }
 
 // ###########################################################################
