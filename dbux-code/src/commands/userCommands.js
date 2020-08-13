@@ -10,7 +10,7 @@ import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
-import { showGraphView } from '../graphView';
+import { showGraphView, hideGraphView } from '../graphView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
@@ -60,13 +60,16 @@ export function initUserCommands(extensionContext) {
 
 
   // ###########################################################################
-  // show graph view
+  // show/hide graph view
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.showGraphView', async () => {
     await showGraphView(extensionContext);
   });
 
+  registerCommand(extensionContext, 'dbux.hideGraphView', async () => {
+    hideGraphView();
+  });
 
   // ###########################################################################
   // show/hide code decorations

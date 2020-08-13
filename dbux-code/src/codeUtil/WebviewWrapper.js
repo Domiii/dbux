@@ -1,7 +1,8 @@
 import {
   window,
   Uri,
-  ViewColumn
+  ViewColumn,
+  commands
 } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -72,6 +73,10 @@ export default class WebviewWrapper {
     return this._getPreviousState() || this.preferredColumn;
   }
 
+  // ###########################################################################
+  // show/hide, reveal
+  // ###########################################################################
+
   /**
    * @see https://code.visualstudio.com/api/extension-guides/webview
    */
@@ -83,7 +88,6 @@ export default class WebviewWrapper {
     }
   }
 
-
   reveal() {
     if (this.panel) {
       // reveal
@@ -93,6 +97,13 @@ export default class WebviewWrapper {
     return false;
   }
 
+  hide() {
+    if (this.panel) {
+      this.panel.dispose();
+      return true;
+    }
+    return false;
+  }
 
   // ###########################################################################
   // initialization
@@ -158,6 +169,8 @@ export default class WebviewWrapper {
       Uri.file(this.resourceRoot)
     ];
 
+    commands.executeCommand('setContext', 'dbuxWebView.context.isActive', true);
+
     this.panel = window.createWebviewPanel(
       this.webviewId,
       this.title,
@@ -180,6 +193,7 @@ export default class WebviewWrapper {
         // do further cleanup operations
         this.panel = null;
         this._setCurrentState(null);
+        commands.executeCommand('setContext', 'dbuxWebView.context.isActive', false);
       },
       null,
       _extensionContext.subscriptions

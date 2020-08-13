@@ -73,7 +73,19 @@
       },
       {
         "command": "dbux.showGraphView",
-        "title": "Dbux: Call Graph"
+        "title": "Dbux: Show Call Graph",
+        "icon": {
+          "light": "resources/light/tree.svg",
+          "dark": "resources/dark/tree.svg"
+        }
+      },
+      {
+        "command": "dbux.hideGraphView",
+        "title": "Dbux: Hide Call Graph",
+        "icon": {
+          "light": "resources/light/tree_disabled.svg",
+          "dark": "resources/dark/tree_disabled.svg"
+        }
       },
       {
         "command": "dbux.showDecorations",
@@ -544,6 +556,16 @@
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
           "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
+          "group": "navigation"
+        },
+        {
+          "command": "dbux.showGraphView",
+          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive == false",
+          "group": "navigation"
+        },
+        {
+          "command": "dbux.hideGraphView",
+          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive == true",
           "group": "navigation"
         },
         {
