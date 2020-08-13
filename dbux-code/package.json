@@ -132,14 +132,6 @@
         }
       },
       {
-        "command": "dbuxCallGraphView.selectError.disabled",
-        "title": "No error occurred",
-        "icon": {
-          "light": "resources/light/fire_disabled.svg",
-          "dark": "resources/dark/fire_disabled.svg"
-        }
-      },
-      {
         "command": "dbuxCallGraphView.setFilter",
         "title": "Filter",
         "icon": {
@@ -386,19 +378,9 @@
           "group": "navigation@32"
         },
         {
-          "command": "dbuxCallGraphView.selectError.disabled",
-          "when": "dbuxCallGraphView.context.hasError == false && dbux.context.showNavButton == true",
-          "group": "navigation@33"
-        },
-        {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
           "when": "dbuxTraceDetailsView.context.hasTracesAtCursor == true && dbux.context.showNavButton == true",
           "group": "navigation@11"
-        },
-        {
-          "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
-          "when": "dbuxTraceDetailsView.context.hasTracesAtCursor == false && dbux.context.showNavButton == true",
-          "group": "navigation@12"
         }
       ],
       "view/item/context": [
