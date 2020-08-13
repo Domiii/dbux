@@ -95,6 +95,10 @@ function getDbuxVersion() {
   return readPackageJsonVersion(path.join(__dirname, '../dbux-code'));
 }
 
+async function isDevVersion() {
+  return (await getDbuxVersion()).includes('dev');
+}
+
 // ###########################################################################
 // 
 // ###########################################################################
@@ -140,13 +144,10 @@ async function bumpVersion() {
   if (choice !== 'None') {
     await exec(`npx lerna version ${choice} --force-publish`);
   }
-  else {
-    const version = await getDbuxVersion();
-    if (version.endsWith('dev')) {
-      const msg = `Invalid version ${version} - Cannot publish dev version.`;
-      console.error(msg);
-      throw new Error(msg);
-    }
+  else if (await isDevVersion()) {
+    const msg = `Invalid version ${await getDbuxVersion()} - Cannot publish dev version.`;
+    console.error(msg);
+    throw new Error(msg);
   }
 }
 
@@ -200,13 +201,12 @@ async function fixLerna() {
 
 async function setDevVersion() {
   if (!await yesno('Skip setting dev version?')) {
-    const version = await getDbuxVersion();
-    if (version.endsWith('dev')) {
-      console.error('Something is wrong. We are already on a dev version. Did version bump not succeed?');
+    if (await isDevVersion()) {
+      console.error(`Something is wrong. We are already on a dev version (${await getDbuxVersion()}). Did version bump not succeed?`);
     }
     else {
       // make sure, we are operating on the dev version
-      await exec(`npx lerna version prepatch --preid dev --yes`);
+      await exec(`npx lerna version prepatch --preid dev --yes --force-publish`);
     }
   }
 }
