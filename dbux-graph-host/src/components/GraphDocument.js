@@ -21,7 +21,6 @@ class GraphDocument extends HostComponentEndpoint {
         allApplications.selection.incBusy();
         
         this.graphRoot.refresh();
-        this.controllers.getComponent(HighlightManager).clearDisposedHighlighter();
 
         if (this.componentManager.isBusyInit()) {
           const unbind = this.componentManager.onBusyStateChanged((state) => {
