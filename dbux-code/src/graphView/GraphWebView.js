@@ -7,6 +7,7 @@ import {
 import { buildWebviewClientHtml } from './clientSource';
 import { goToTrace } from '../codeUtil/codeNav';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
+import { getThemeResourcePath } from '../resources';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('GraphViewHost');
@@ -18,6 +19,10 @@ export default class GraphWebView extends WebviewWrapper {
 
   constructor() {
     super('dbux-graph', 'Call Graph', defaultColumn);
+  }
+
+  getIcon() {
+    return getThemeResourcePath('tree.svg');
   }
 
   /**
