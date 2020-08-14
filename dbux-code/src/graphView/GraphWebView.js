@@ -2,12 +2,13 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { startGraphHost, shutdownGraphHost } from '@dbux/graph-host/src/index';
 import {
   window,
-  ViewColumn
+  ViewColumn,
+  Uri
 } from 'vscode';
 import { buildWebviewClientHtml } from './clientSource';
 import { goToTrace } from '../codeUtil/codeNav';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
-import { getThemeResourcePath } from '../resources';
+import { getThemeResourcePathUri } from '../resources';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('GraphViewHost');
@@ -22,7 +23,7 @@ export default class GraphWebView extends WebviewWrapper {
   }
 
   getIcon() {
-    return getThemeResourcePath('tree.svg');
+    return getThemeResourcePathUri('tree.svg');
   }
 
   /**
