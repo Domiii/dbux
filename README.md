@@ -4,25 +4,10 @@
 [![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/bdD3yH)
 [![David](https://flat.badgen.net/david/dev/Domiii/dbux)](https://david-dm.org/Domiii/dbux?type=dev)
 
-# TOC<!-- omit in toc -->
-
-1. [Introduction](#introduction)
-2. [Using Dbux](#using-dbux)
-3. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
-4. [Programmatic Data Analysis](#programmatic-data-analysis)
-5. [Known Issues & Limitations](#known-issues--limitations)
-   1. [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
-   2. [Heisenbugs](#heisenbugs)
-   3. [`eval` (or any dynamically loaded code) will not be traced](#eval-or-any-dynamically-loaded-code-will-not-be-traced)
-   4. [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
-   5. [Issues under Windows](#issues-under-windows)
-6. [Architectural Notes](#architectural-notes)
-   1. [Call Graph](#call-graph)
-7. [Development + Contributions](#development--contributions)
 
 # Introduction
 
-Dbux aims at visualizing the JS runtime and making it interactive, hopefully helping developers improve (i) program comprehension and (ii) debugging.
+Dbux aims at visualizing the JS runtime and making it interactive, hopefully helping developers improve their (i) program comprehension and (ii) debugging techniques.
 
 If you have any questions or are interested in the progress of this project, feel free to [join us on DISCORD](https://discord.gg/bdD3yH).
 
@@ -32,43 +17,73 @@ Here is a (very very early, read: crude) 1min demo video of just a small subset 
    <img src="http://img.youtube.com/vi/VAFcj75-vSs/0.jpg">
 </a>
 
-# Using Dbux
+# Getting Started
 
-The easiest way to start with Dbux is through the [Dbux VSCode Plugin](dbux-code#readme).
+We recommend getting started with Dbux by playing around with the [Dbux VSCode Plugin](dbux-code#readme) and [reading its manual here](dbux-code#readme).
 
-NOTE: [Dbux VSCode Plugin](dbux-code#readme) is also (currently) the only frontend for Dbux. So even if you follow the steps below, you are likely going to need it, unless you want to perform [Programmatic Data Analysis](#programmatic-data-analysis) on the resulting data sets.
+If you are already familiar with the Plugin, feel free to further investigate the following topics down below:
 
-While you definitely want to get started with the VSCode plugin, you might encounter scenarios where the "Run" buttons are not enough anymore. In that case you might have to manually inject the [@dbux/babel-plugin](dbux-babel-plugin#readme), which is explained in the next section.
+1. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
+   * You definitely want to get started with the Dbux VSCode plugin to explore a bit. Once you want to use Dbux in a more complicated build setup, the "Run with Dbux" button (and it's "Debug" button friend) can probably not (trivially) run your application anymore.
+1. [Performance](#performance)
+   * Recording a lot of runtime data from a program can be very slow. This section explains several major performance considerations.
+1. [Known Issues & Limitations](#known-issues--limitations)
+   * Dbux is not perfect. Learn more about some of the better known imperfections here.
+1. [Dbux Data Analysis](#dbux-data-analysis)
+   * Dbux VSCode Plugin is (currently) the only frontend for Dbux. If you want to build your own frontend, want to further analyze your runtime data, or are just plain curious as to what kind of data is collected and what you can do with it, then this section is for you.
+1. [Architectural Notes](#architectural-notes)
+   * This section paints the bigger picture of all the components involved.
 
 
 # Adding Dbux to your build pipeline
 
-In order to analyze you runtime, your program must be instrumented with Dbux and injected with the [@dbux/runtime](dbux-runtime#readme). [@dbux/babel-plugin](dbux-babel-plugin#readme) is responsible for both, meaning you need to "[babel](https://babeljs.io/) your program" with [@dbux/babel-plugin](dbux-babel-plugin#readme) enabled.
+In order to analyze you runtime, your program must be instrumented with Dbux and injected with the [@dbux/runtime](dbux-runtime#readme). We employ [@dbux/babel-plugin](dbux-babel-plugin#readme) to do these two jobs for us.
 
-There are two primary ways:
+That means that you need to "[babel](https://babeljs.io/) your program" with [@dbux/babel-plugin](dbux-babel-plugin#readme) enabled.
 
-1. Use the [@dbux/cli](dbux-cli#readme) (command line interface) which in turn uses [@babel/register](https://babeljs.io/docs/en/babel-register) to instrument code on the fly. [Read more here](dbux-cli#readme).
-1. Add the [@dbux/babel-plugin](dbux-babel-plugin#readme) (IMPORTANT: as the **last** entry in your `plugins` array) to your build pipeline manually. [Read more here](dbux-babel-plugin#readme).
+There are two approaches:
+
+1. either: Use the [@dbux/cli](dbux-cli#readme) (command line interface)
+   * It uses [@babel/register](https://babeljs.io/docs/en/babel-register) to instrument code on the fly.
+   * This is also used by `Dbux VSCode Plugin`'s "Run with Dbux" button
+   * [Read more here](dbux-cli#readme).
+2. or: Add the [@dbux/babel-plugin](dbux-babel-plugin#readme) to your build pipeline manually
+   * IMPORTANT: it must be the **last** entry in your `plugins` array.
+   * [Read more here](dbux-babel-plugin#readme).
 
 
-# Programmatic Data Analysis
+# Performance
 
-[@dbux/runtime] produces fine-grained JavaScript runtime data. If you are interested in applying programmatic data analysis on this data, we currently provide two avenues to get started:
-
-1. [@dbux/data](dbux-data#readme) is the JavaScript module we also use internally to preprocess and manage all the data before visualizing it and making it interactive in the [Dbux VSCode Plugin](dbux-code#readme).
-1. [analysis](analysis) contains a few Python notebooks for rudimentary analysis on extracted data for testing and development purposes. We exported the data via the (also rather crude) [dbux.exportApplicationData command](dbux-code/src/codeUtil/codeExport.js). NOTE: This is a lot less mature than [@dbux/data](dbux-data#readme).
-
-Since this is still at somewhat of an infant stage, we want to gather feedback related to this feature in issue #208.
+TODO: This section needs more work.
 
 
 # Known Issues & Limitations
+
+## Syntax Limitations
+
+The following JS syntax constructs are not supported at all or its support is limited:
+
+* `async/await`
+* Generator functions
+* Asynchronous callstack
+   * While promises are supported, their asynchronous
+
+
+## Callback tracking
+
+Theoretically we should be able to track all callbacks and their data flow to the call site, however we don't do that properly quite yet.
+
+Some examples:
+
+* When calling `setTimeout`, you will see a new "Run"
+
 
 ## Calling `process.exit` as well as uncaught exceptions are not handled properly
 
 * You might see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably a crash or you called `process.exit` manually." in the console.
 * `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet, as a result, you won't see all traces/contexts etc.
 * If you *MUST* call `process.exit`, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side.
-   * NOTE: some frameworks that kill your process allow disabling that (e.g. `Mocha`'s `--no-exit` argument)
+   * NOTE: some frameworks that kill your process by default might require extra configuration (e.g. for `Mocha` you want to add the `--no-exit` flag)
 * This is tracked in #201.
 
 
@@ -92,13 +107,13 @@ By trying to observe a program, while definitely not intending to, you will inev
 NOTE: There are ways to avoid these issues, for example by allowing in-line comment directives (like Eslint), but we sadly just don't have that yet. Tracked in issue #209.
 
 
-## `eval` (or any dynamically loaded code) will not be traced
+## `eval` and dynamically loaded code
 
-As a general rule of thumb - Any dynamically loaded code will currently not be traced. That is because we are not currently proactively scanning the application for code injections or outside code references.
+As a general rule of thumb - Any dynamically loaded code will currently not be traced. That is because we are not proactively scanning the application for code injections or outside code references.
 
 Affected examples include:
 
-* Any instance of `eval` with non-instrumented code
+* Calling `eval` on non-instrumented code
 * Any kind of &lt;script> tags containing or referencing non-instrumented code
 
 In order to trace such code, the runtime would have to:
@@ -113,7 +128,7 @@ While this is not impossible, we certainly do not currently support this feature
 
 ## SyntaxError: Unexpected reserved word 'XX'
 
-* Example: When just running `var public = 3;` in `node` or the browser, you don't get an error. However when running the same code with [@dbux/cli](dbux-cli#readme) (which is also invoked when pressing the "Run" button), it throws a synxtax error.
+* Example: When just running `var public = 3;` in `node` or the browser, you don't get an error. However when running the same code with [@dbux/cli](dbux-cli#readme) (which is also invoked when pressing the `Dbux VSCode Plugin`'s "Run with Dbux" button), it throws a synxtax error.
 * That is because:
    1. `public` (and others) are reserved keywords and using reserved keywords is only an error in **strict mode** ([relevant discussion here](https://stackoverflow.com/questions/6458935/just-how-reserved-are-the-words-private-and-public-in-javascript)).
    2. [@dbux/cli](dbux-cli#readme) uses [@babel/register](https://babeljs.io/docs/en/babel-register) with a bunch of default settings.
@@ -132,33 +147,90 @@ While this is not impossible, we certainly do not currently support this feature
    * Solution: Restart your computer (can help!), run command in external `cmd` or find a better behaving terminal
 
 
+# Dbux Data Analysis
+
+`@dbux/runtime` produces fine-grained JavaScript runtime data. If you are interested in analyzing this data programmatically, we currently provide two avenues to get started:
+
+1. [@dbux/data](dbux-data#readme) is our main data processing JavaScript module. We use this to preprocess and manage all the data before visualizing it and making it interactive in the [Dbux VSCode Plugin](dbux-code#readme).
+1. [analysis](analysis) contains a few Python functions and notebooks for rudimentary analysis on extracted data for testing and development purposes. We exported the data via the (also rather crude) [dbux.exportApplicationData command](dbux-code/src/codeUtil/codeExport.js). NOTE: This approach is a lot less mature and provides a lot less pre-built functionality than [@dbux/data](dbux-data#readme).
+
+This feature is still at somewhat of an infant stage. We track related feedback in issue #208.
 
 # Architectural Notes
 
-This is a multi-module monorepo including the following modules:
-
-1. [`@dbux/common`](dbux-common#readme) Collection of commonly used utilities shared among (more or less) all other modules.
-1. [`@dbux/babel-plugin`](dbux-babel-plugin#readme) Instruments the program and injects `@dbux/runtime` when supplied as a `plugin` to Babel.
-1. [`@dbux/runtime`](dbux-runtime#readme) When an instrumented program runs, the runtime is used to record and send runtime data to the `@dbux/data` on a receiving server (using `socket-io.client`).
-1. [`@dbux/cli`](dbux-cli#readme) The cli (command-line interface) allows us to easily run a js program while instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).
-1. [`@dbux/data`](dbux-data#readme) Receives, pre-processes and manages all data sent by `@dbux/runtime` to any consumer. It provides the tools to easily query and analyze the js runtime data received from `@dbux/runtime`.
-1. [`dbux-code`](dbux-code#readme) The Dbux VSCode extension ([VSCode marketplace link](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)). You can also install it from within VSCode via the "Extensions" panel.
-1. [`@dbux/projects`](dbux-practice#readme) Used by `@dbux/code` (while not dependending on `VSCode`) to allow practicing dbux (and debugging in general) on real-world bugs inside of real-world open source projects.
-1. [`@dbux/graph-common`](dbux-graph-common#readme), [`@dbux/graph-client`](dbux-graph-client#readme) and [`@dbux/graph-host`](dbux-graph-host#readme) Are responsible for rendering and interacting with the "Call Graph" in HTML.
-
 ![architecture-v001](docs/img/architecture-v001.png)
 
+This [monorepo](https://en.wikipedia.org/wiki/Monorepo) includes the following modules:
 
-## Call Graph
+* [`@dbux/common`](dbux-common#readme) Collection of commonly used utilities shared among (more or less) all other modules.
+* [`@dbux/babel-plugin`](dbux-babel-plugin#readme) Instruments and injects `@dbux/runtime` into a given js program when supplied as a `plugin` to Babel.
+* [`@dbux/runtime`](dbux-runtime#readme) When an instrumented program runs, this module is responsible for recording and sending runtime data to the `@dbux/data` module, running on a receiving server (using `socket-io.client`). [The Dbux VSCode plugin](dbux-code#readme) hosts such a server.
+* [`@dbux/cli`](dbux-cli#readme) The cli (command-line interface) allows us to easily run a js program while instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).
+* [`@dbux/data`](dbux-data#readme) Receives, pre-processes and manages all data sent by `@dbux/runtime`. It allows us to query and analyze JS runtime data on a higher level.
+* [`dbux-code`](dbux-code#readme) The Dbux VSCode extension ([VSCode marketplace link](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)).
+* [`@dbux/practice`](dbux-practice#readme) Used by `dbux-code` (but does not depend on `VSCode`) to allow practicing Dbux (and, more generally) debugging concepts and strategies on real-world bugs inside of real-world open source projects.
+* [`@dbux/graph-common`](dbux-graph-common#readme), [`@dbux/graph-client`](dbux-graph-client#readme) and [`@dbux/graph-host`](dbux-graph-host#readme) Are responsible for rendering and letting the user interact with the "Call Graph" through an HTML GUI.
 
-A few more notes on the Call Graph implementation:
+
+## Call Graph GUI Implementation
+
+(For learning how to use the Call Graph, please refer to the [Dbux VSCode Plugin documentation](dbux-code#call-graph).)
+
+A few more notes on the Call Graph GUI implementation:
 
 * The Call Graph view is an HTML gui, currently most prominently seen as the "Call Graph" window inside the [Dbux VSCode Plugin](dbux-code#readme).
-* Inside of `@dbux/code`, the graph is hosted in [GraphWebView](dbux-code/src/graphView/GraphWebView.js), but you could also host it independently on a website, in an iframe etc.
-* It consists of three modules [`@dbux/graph-common`](dbux-graph-common#readme), [`@dbux/graph-client`](dbux-graph-client#readme) and [`@dbux/graph-host`](dbux-graph-host#readme).
+* Inside of `dbux-code`, the graph is hosted in [GraphWebView](dbux-code/src/graphView/GraphWebView.js), but you could also host it independently on a website, in an iframe etc.
+* The Call Graph consists of three modules [`@dbux/graph-common`](dbux-graph-common#readme), [`@dbux/graph-client`](dbux-graph-client#readme) and [`@dbux/graph-host`](dbux-graph-host#readme).
 * Client and host are running in separated runtimes, and they share the graph-common module for any code sharing between the two.
 * We developed an IPC-first component system to easily render things on the client, while allowing us to control it from the host.
 * `client` and `host` communicate via a supplied `IpcAdapter` which must provide two functions (whose implementation depends on the environment that they run in): `onMessage` and `postMessage`.
+
+# Terminology
+
+Terminology regarding the JavaScript runtime is either not well defined in general, or we have just not yet spent enough time finding all the definitions. That is why we try to explain some of the terminology that we came up with here (feel free to help us improve):
+
+## Trace
+
+TODO
+
+## Context
+
+TODO
+
+* aka `executionContext`
+
+(can probably also be called a "frame"?)
+
+## Static trace
+
+TODO: `staticTrace`
+
+## Static context
+
+TODO: `staticContext`
+
+## Run
+
+A "run" is an invocation of code from outside our visible (recorded) runtime. Examples include:
+
+* Execution of a JavaScript file (often called by `node` or by the webpack bundle (which in turn is called by the underlying JS runtime environment)).
+* Browser executing JavaScript of a &lt;script> tag
+* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick` etc. These callbacks are scheduled and then run by the underlying JS runtime environment.
+* DOM event handler callbacks
+
+The set of all runs comprise the "root nodes" of our Call Graph.
+
+## Call Graph
+
+TODO
+
+### Asynchronous Call Graph
+
+Currently, we only support a "synchronous call graph", meaning that **all** execution is organized in a single serial thread. While that makes sense (especially since JavaScript is inherently single-threaded), logically we want to group "threads of asynchronous contexts" together.
+
+That means that, for now, invocation of promise callbacks (callbacks passed to `then()`, `catch()`, `finally()` etc.), and even resuming of an `async` function will result in a new `run`, seen executing serially in the Call Graph, and you cannot easily trace a single promise or the execution of a asingle `async` function. Instead, they will be cut up into multiple pieces scattered across the linear Call Graph representation, and sprinkled with other unrelated calls that happen to occur in between.
+
+The "asynchronous call graph" feature is tracked in issue #210.
 
 
 # Development + Contributions

@@ -1,13 +1,12 @@
-VSCode extension for Dbux. 
+# Installation
 
-NOTE: This project is currently in ALPHA stage, and we do not recommend anyone using it quite yet, without having contacted us or participated in our workshops or online classes first. We are still working on making it more accessible, in order to, ultimately, unleash the power of advanced debugging and program comprehension strategies + tools to everyone!
+You can one-click install the plugin from the [VSCode marketplace](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code). You can also install it from within VSCode via the "Extensions" panel.
 
-See https://github.com/Domiii/dbux for more info.
+[You can learn more about Dbux here](https://github.com/Domiii/dbux).
 
 
 # Usage
 
-1. Install Dbux from the [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
 1. Open some JavaScript (*.js) file
 1. Run with Dbux
    * Use the "Dbux: Run current file" command, or...
