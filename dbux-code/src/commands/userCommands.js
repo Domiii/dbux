@@ -9,7 +9,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
-import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
+import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/codeExport';
 import { showGraphView, hideGraphView } from '../graphView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
