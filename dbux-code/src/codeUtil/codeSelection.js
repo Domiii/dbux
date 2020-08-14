@@ -65,26 +65,7 @@ function handleCursorChanged() {
 // init
 // ###########################################################################
 
-function maybeClearSelectedTrace() {
-  if (traceSelection.selected &&
-    !allApplications.selection.containsApplication(traceSelection.selected.applicationId)) {
-    // deselect
-    traceSelection.selectTrace(null);
-  }
-}
-
 export function initTraceSelection(/* context */) {
-  // unselect trace if its not in a selected application anymore
-  allApplications.selection.onApplicationsChanged((selectedApps) => {
-    // TODO: clearing the selected trace does not belong here...
-    maybeClearSelectedTrace();
-    for (const app of selectedApps) {
-      allApplications.selection.subscribe(
-        app.dataProvider.onData('traces', maybeClearSelectedTrace)
-      );
-    }
-  });
-
   // show + goto trace if selected
   traceSelection.onTraceSelectionChanged((selectedTrace, sender) => {
     highlightTraceInEditor(selectedTrace);
