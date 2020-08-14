@@ -57,7 +57,7 @@ export default class GraphWebView extends WebviewWrapper {
     restart: this.restart,
 
     logClientError(args) {
-      logError('[CLIENT ERORR]', ...args);
+      logError('[CLIENT ERROR]', ...args);
     },
 
     async confirm(message, modal = true) {
