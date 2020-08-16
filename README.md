@@ -6,8 +6,6 @@
 
 # Introduction
 
-Dbux aims at visualizing the JS runtime and making it interactive, hopefully helping developers improve (i) program comprehension and (ii) debugging.
-
 Here is a (very very early, read: crude) 1min demo video of just a small subset of the features:
 
 <a href="https://www.youtube.com/watch?v=VAFcj75-vSs" target="_blank" alt="video">
