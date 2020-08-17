@@ -4,8 +4,9 @@ import Enum from '@dbux/common/src/util/Enum';
 // eslint-disable-next-line import/no-mutable-exports
 let BugStatus = {
   None: 1,
-  Attempted: 2,
-  Solved: 3,
+  Solving: 2,
+  Attempted: 3,
+  Solved: 4,
 };
 
 BugStatus = new Enum(BugStatus);

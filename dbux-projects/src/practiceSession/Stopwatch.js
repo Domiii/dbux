@@ -49,6 +49,11 @@ export default class Stopwatch {
     }
   }
 
+  set(time) {
+    this._time = time;
+    this.isTiming = false;
+  }
+
   on(eventName, cb) {
     this._emitter.on(eventName, cb);
   }

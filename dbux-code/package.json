@@ -96,6 +96,10 @@
         "title": "Dbux: select trace"
       },
       {
+        "command": "dbux.resetPracticeProgress",
+        "title": "Dbux: Reset Practice Progress"
+      },
+      {
         "command": "dbuxCallGraphView.gotoEntry",
         "title": "Goto"
       },

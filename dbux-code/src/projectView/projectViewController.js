@@ -32,7 +32,7 @@ export function showOutputChannel() {
 
 let controller;
 
-class ProjectViewController {
+export class ProjectViewController {
   constructor(context) {
     this.manager = getOrCreateProjectManager(context);
 

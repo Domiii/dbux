@@ -1,7 +1,8 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { ProjectsManager } from '@dbux/projects/src';
 import { registerCommand } from './commandUtil';
+
+/** @typedef {import('../projectView/projectViewController').ProjectViewController} ProjectViewController */
 
 const logger = newLogger('projectCommands');
 
@@ -51,7 +52,10 @@ export function initProjectCommands(extensionContext, projectViewController) {
 }
 
 /**
- * @param {ProjectsManager} projectViewController 
+ * @param {ProjectViewController} projectViewController 
  */
-export function initProjectUserCommands(/* extensionContext, projectViewController */) {
+export function initProjectUserCommands(extensionContext, projectViewController) {
+  registerCommand(extensionContext, 'dbux.resetPracticeProgress', () => {
+    return projectViewController.manager.progressLogController.reset();
+  });
 }

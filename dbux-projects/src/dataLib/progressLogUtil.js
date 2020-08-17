@@ -18,8 +18,12 @@ export default {
    * @param {any} result 
    */
   async processBugRunResult(plc, bug, result) {
+    // await plc.util.addTestRun(bug, result);
+    // plc.util.maybeUpdateBugProgress(bug, result);
+    // await plc.save();
+
     await plc.util.addTestRun(bug, result);
-    plc.util.maybeUpdateBugProgress(bug, result);
+    plc.util.updateBugProgressStatusByResult(bug, result);
     await plc.save();
   },
 
@@ -49,7 +53,7 @@ export default {
   /**
    * @param {ProgressLogController} plc 
    * @param {Bug} bug 
-   * @param {any} result 
+   * @param {Object} result 
    */
   maybeUpdateBugProgress(plc, bug, result) {
     const bugProgress = plc.util.getOrCreateBugProgress(bug);
@@ -59,6 +63,47 @@ export default {
       bugProgress.updateAt = Date.now();
       bugProgress.status = result.code ? BugStatus.Attempted : BugStatus.Solved;
     }
+  },
+
+  /**
+   * @param {ProgressLogController} plc 
+   * @param {Bug} bug 
+   * @param {Object} update
+   */
+  updateBugProgress(plc, bug, update) {
+    const bugProgress = plc.util.getBugProgressByBug(bug);
+    for (const key of Object.keys(update)) {
+      bugProgress[key] = update[key];
+    }
+    bugProgress.updateAt = Date.now();
+  },
+
+  /**
+   * @param {ProgressLogController} plc 
+   * @param {Bug} bug 
+   * @param {Object} result
+   */
+  updateBugProgressStatusByResult(plc, bug, result) {
+    const bugProgress = plc.util.getBugProgressByBug(bug);
+    const resultStatus = result.code ? BugStatus.Attempted : BugStatus.Solved;
+    
+    // NOTE: only record the better ones
+    if (bugProgress.status !== BugStatus.Solved) {
+      bugProgress.status = resultStatus;
+      bugProgress.updateAt = Date.now();
+    }
+  },
+
+  /**
+   * @param {ProgressLogController} plc 
+   * @param {Bug} bug 
+   * @param {boolean} stopwatchEnabled
+   * @return {BugProgress}
+   */
+  addNewBugProgress(plc, bug, stopwatchEnabled, status = BugStatus.None) {
+    const bugProgress = new BugProgress(bug, stopwatchEnabled, status);
+    plc.progressLog.bugProgresses.push(bugProgress);
+    return bugProgress;
   },
 
   // ###########################################################################
@@ -93,12 +138,11 @@ export default {
    * @param {ProgressLogController} plc 
    * @param {Bug} bug 
    */
-  getOrCreateBugProgress(plc, bug) {
+  getOrCreateBugProgress(plc, bug, stopwatchEnabled) {
     let bugProgress = plc.util.getBugProgressByBug(bug);
 
     if (!bugProgress) {
-      bugProgress = new BugProgress(bug);
-      plc.progressLog.bugProgresses.push(bugProgress);
+      plc.util.addNewBugProgress(bug, stopwatchEnabled);
     }
 
     return bugProgress;
