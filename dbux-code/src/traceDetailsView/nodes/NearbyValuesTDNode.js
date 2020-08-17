@@ -1,9 +1,11 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { makeTraceLabel } from '@dbux/data/src/helpers/traceLabels';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import TraceNode from './TraceNode';
+import TraceValueNode from './TraceValueNode';
+
+/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
 
 export default class NearbyValuesTDNode extends BaseTreeViewNode {
   static makeTraceDetail(trace/* , parent */) {
@@ -23,18 +25,25 @@ export default class NearbyValuesTDNode extends BaseTreeViewNode {
   }
 
   buildChildren() {
-    const trace = this.entry;
+    const { trace } = this;
     const dp = allApplications.getById(trace.applicationId).dataProvider;
     const traces = dp.indexes.traces.byContext.get(trace.contextId) || EmptyArray;
     const nodes = [];
-    
+
     for (const childTrace of traces) {
-      const value = dp.util.getTraceValue(childTrace.traceId);
-      if (value) {
-        const label = makeTraceLabel(trace);
-        const newNode = new TraceNode(this.treeNodeProvider, label, childTrace, this);
-        nodes.push(newNode);
+      // filter BCE and no value traces
+      const type = dp.util.getTraceType(childTrace.traceId);
+      if (isBeforeCallExpression(type)) {
+        continue;
       }
+      const value = dp.util.getTraceValue(childTrace.traceId);
+      if (!value) {
+        continue;
+      }
+      const label = dp.collections.staticTraces.getById(childTrace.staticTraceId).displayName;
+      const props = { value };
+      const newNode = new TraceValueNode(this.treeNodeProvider, label, childTrace, this, props);
+      nodes.push(newNode);
     }
 
     return nodes;
