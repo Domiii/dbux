@@ -42,7 +42,8 @@ Allows you to manage (enable/disable) all Dbux-enabled JavaScript applications t
 ## Code decorations
 
 * Code that you ran with Dbux will be rendered with decorations.
-* You can toggle in-code decorations via the `Hide Decorations` and `Show Decorations` commands.
+* These decorations allow us to better understand which parts of the code actually executed.
+* You can toggle these decorations via the `Hide Decorations` and `Show Decorations` commands.
 
 
 ## "Trace Details" treeview

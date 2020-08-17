@@ -54,28 +54,46 @@ There are two approaches:
 
 # Performance
 
-TODO: This section needs more work.
+There are many performance considerations in tracing and recording *all* activity of a program.
+
+Main considerations include:
+
+* In order to render the value of variables, we need to actually copy all variables anytime they are used in any way.
+   * That can get very slow very fast if your code operates on large arrays, objects and strings.
+   * That is why we have a few parameters to tune.
+   * Currently, those parameters are hardcoded and cannot be configured from the outside.
+   * Tracked in #217
+* When executing *a lot of stuff* (e.g. long loops or high FPS games etc), things will get slow
+   * Instead of recording *everything*, we might want to be able to choose what to record, and when.
+   * For example: Dbux probably won't really work at all if you run it on a 30+FPS game.
+      * In that case, we might want to be very strategic in telling Dbux to only record: (i) initialization, (ii) a select few other functions and then (iii) several frames of the gameloop for our analysis.
+   * Currently, we do not have such fine-grained control over Dbux.
+   * Tracked in #219
+* When running a program with Dbux enabled, and also running it in debug mode (i.e. `--inspect` or `--inspect-brk`), things probably slow down even worse. Consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features unless there is a specific Debugger functionality that Dbux cannot compete with (of which arguably there might be a few, that are valuable in some circumstances).
 
 
 # Known Issues & Limitations
 
 ## Syntax Limitations
 
-The following JS syntax constructs are not supported at all or its support is limited:
+The following JS syntax constructs are not supported at all or support is limited:
 
 * `async/await`
 * Generator functions
-* Asynchronous callstack
-   * While promises are supported, their asynchronous
 
 
-## Callback tracking
+## Async Call Graph + Callback tracking
 
 Theoretically we should be able to track all callbacks and their data flow to the call site, however we don't do that properly quite yet.
 
 Some examples:
 
-* When calling `setTimeout`, you will see a new "Run"
+* When calling `setTimeout(f)`, you will see that `f` gets executed, but it's execution is not linked to the `setTimeout(f)` call that scheduled its execution.
+* The same problem exists with `Promise.then(f)`, and any instance where callbacks are used.
+
+NOTE: This link between a caller passing a callback and the execution of that callback is considered an edge in the "asynchronous call graph", an elusive feature that we are planning to support, but don't have finished yet.
+
+The related "asynchronous call graph" feature is tracked in issue #210.
 
 
 ## Calling `process.exit` as well as uncaught exceptions are not handled properly
