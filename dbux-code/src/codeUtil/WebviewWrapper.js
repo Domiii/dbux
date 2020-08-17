@@ -222,8 +222,10 @@ export default class WebviewWrapper {
   _webviewUpdateToken = 0;
 
   async _restartClientDOM() {
-    const html = await this.buildClientHtml();
-    this.panel.webview.html = html + `<!-- ${++this._webviewUpdateToken} -->`;
+    let html = await this.buildClientHtml();
+    html = html + `<!-- ${++this._webviewUpdateToken} -->`;
+    this.panel.webview.html = html;
+    // this.panel.webview.html = 'asd!!';
   }
 
   async _restartHost() {
