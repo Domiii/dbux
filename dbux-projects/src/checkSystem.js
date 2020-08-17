@@ -34,8 +34,8 @@ function isChecked(manager) {
  */
 async function check(program) {
   try {
-    let path = await which(program);
-    return { path };
+    let paths = await which(program);
+    return { path: paths[0], multiple: paths.length > 1 };
   } catch (err) {
     return {};
   }
@@ -102,6 +102,9 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
     if (res?.path && (!req.version || res.version >= req.version)) {
       message += `✓  ${program}\n    Found at "${res.path}"` + (req.version ? ` (v${res.version} >= ${req.version})` : ``);
       res.success = true;
+      if (res.multiple) {
+        message += `\n    Warning: multiple path found while checking.`;
+      }
     } else if (res?.path) {
       message += `¯\\_(ツ)_/¯ ${program} installed but old. Version is ${res.version} but we recommend ${req.version}. ` +
                  `Your version might or might not work. We don't know, but we recommend upgrading to latest (or at least a later) version instead.`;
