@@ -13,5 +13,5 @@
     "analysis/src"
   ],
   "debug.node.autoAttach": "on",
-  "dbux.run.dbuxArgs": "--next"
+  "dbux.run.dbuxArgs": "--esnext"
 }

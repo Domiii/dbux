@@ -1,5 +1,4 @@
 import { window } from 'vscode';
-import process from 'process';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 import { initCodeDeco } from './codeDeco';
@@ -35,6 +34,8 @@ function registerErrorHandler() {
  */
 function activate(context) {
   try {
+    log(`Starting Dbux v${process.env.DBUX_VERSION}...`);
+
     registerErrorHandler();
     initLogging();
     initResources(context);

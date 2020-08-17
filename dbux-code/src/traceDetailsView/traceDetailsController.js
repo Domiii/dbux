@@ -79,6 +79,7 @@ class TraceDetailsController {
 
     // data changed
     allApplications.selection.onApplicationsChanged((selectedApps) => {
+      this.refreshOnData();
       for (const app of selectedApps) {
         allApplications.selection.subscribe(
           app.dataProvider.onData('traces', this.refreshOnData)

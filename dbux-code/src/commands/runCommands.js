@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
@@ -84,6 +85,7 @@ export async function runFile(extensionContext, debugMode = false) {
 
   // start runtime server
   await initRuntimeServer(extensionContext);
+  await checkSystem(projectManager, false, false);
 
   let [nodeArgs, dbuxArgs, programArgs] = getArgs(debugMode);
   nodeArgs = `${nodeArgs || ''}`;

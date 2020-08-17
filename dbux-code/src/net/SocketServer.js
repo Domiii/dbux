@@ -5,7 +5,7 @@ import { makeListenSocket } from './serverUtil';
 const DefaultPort = 3374;
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('RuntimeServer');
+const { log, debug, warn, error: logError } = newLogger('SocketServer');
 
 /**
  * Server for `dbux-runtime` to connect to.
@@ -22,6 +22,8 @@ export default class SocketServer {
 
   async start(port) {
     this._listenSocket = await makeListenSocket(port);
+    this._port = port;
+    // debug(`listening on ${port}`);
     this._listenSocket.on('connect', this._handleAccept.bind(this));
     this._listenSocket.on('error', this._handleError.bind(this));
   }
@@ -47,8 +49,11 @@ export default class SocketServer {
   }
 
   dispose() {
-    this._listenSocket?.close();
-    this._listenSocket = null;
+    if (this._listenSocket) {
+      this._listenSocket.close();
+      debug(`server on ${this._port} has shutdown`);
+      this._listenSocket = null;
+    }
   }
 }
 

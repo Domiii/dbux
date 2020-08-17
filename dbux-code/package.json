@@ -2,7 +2,7 @@
   "name": "dbux-code",
   "private": true,
   "displayName": "Dbux (ALPHA)",
-  "version": "0.1.25",
+  "version": "0.1.28-dev.0",
   "publisher": "Domi",
   "description": "",
   "repository": {
@@ -48,6 +48,14 @@
     },
     "commands": [
       {
+        "command": "dbux.openWebsite",
+        "title": "Dbux: Help",
+        "icon": {
+          "light": "resources/light/question.svg",
+          "dark": "resources/dark/question.svg"
+        }
+      },
+      {
         "command": "dbux.runFile",
         "title": "Dbux: Run current file",
         "icon": {
@@ -73,7 +81,19 @@
       },
       {
         "command": "dbux.showGraphView",
-        "title": "Dbux: Call Graph"
+        "title": "Dbux: Show Call Graph",
+        "icon": {
+          "light": "resources/light/tree.svg",
+          "dark": "resources/dark/tree.svg"
+        }
+      },
+      {
+        "command": "dbux.hideGraphView",
+        "title": "Dbux: Hide Call Graph",
+        "icon": {
+          "light": "resources/light/tree_disabled.svg",
+          "dark": "resources/dark/tree_disabled.svg"
+        }
       },
       {
         "command": "dbux.showDecorations",
@@ -125,18 +145,10 @@
       },
       {
         "command": "dbuxCallGraphView.selectError",
-        "title": "Go to first error",
+        "title": "Select to first error",
         "icon": {
           "light": "resources/light/fire.svg",
           "dark": "resources/dark/fire.svg"
-        }
-      },
-      {
-        "command": "dbuxCallGraphView.selectError.disabled",
-        "title": "No error occurred",
-        "icon": {
-          "light": "resources/light/fire_disabled.svg",
-          "dark": "resources/dark/fire_disabled.svg"
         }
       },
       {
@@ -381,24 +393,19 @@
     "menus": {
       "editor/title": [
         {
+          "command": "dbux.runFile",
+          "when": "editorLangId == javascript",
+          "group": "navigation@5"
+        },
+        {
           "command": "dbuxCallGraphView.selectError",
           "when": "dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
           "group": "navigation@32"
         },
         {
-          "command": "dbuxCallGraphView.selectError.disabled",
-          "when": "dbuxCallGraphView.context.hasError == false && dbux.context.showNavButton == true",
-          "group": "navigation@33"
-        },
-        {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
           "when": "dbuxTraceDetailsView.context.hasTracesAtCursor == true && dbux.context.showNavButton == true",
           "group": "navigation@11"
-        },
-        {
-          "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
-          "when": "dbuxTraceDetailsView.context.hasTracesAtCursor == false && dbux.context.showNavButton == true",
-          "group": "navigation@12"
         }
       ],
       "view/item/context": [
@@ -550,6 +557,11 @@
           "group": "navigation"
         },
         {
+          "command": "dbuxCallGraphView.selectError",
+          "when": "view == dbuxTraceDetailsView && dbuxCallGraphView.context.hasError == true",
+          "group": "navigation"
+        },
+        {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
           "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
           "group": "navigation"
@@ -560,14 +572,29 @@
           "group": "navigation"
         },
         {
+          "command": "dbux.showGraphView",
+          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive == false",
+          "group": "navigation"
+        },
+        {
+          "command": "dbux.hideGraphView",
+          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive == true",
+          "group": "navigation"
+        },
+        {
           "command": "dbux.runFile",
           "when": "view == dbuxApplicationsView",
-          "group": "navigation"
+          "group": "navigation@15"
         },
         {
           "command": "dbux.debugFile",
           "when": "view == dbuxApplicationsView",
-          "group": "navigation"
+          "group": "navigation@10"
+        },
+        {
+          "command": "dbux.openWebsite",
+          "when": "view == dbuxApplicationsView",
+          "group": "navigation@5"
         }
       ]
     },
@@ -667,14 +694,14 @@
     "webpack-node-externals": "^2.5.0"
   },
   "dependencies": {
-    "@dbux/babel-plugin": "^0.1.25",
-    "@dbux/cli": "^0.1.25",
-    "@dbux/common": "^0.1.25",
-    "@dbux/data": "^0.1.25",
-    "@dbux/graph-common": "^0.1.25",
-    "@dbux/graph-host": "^0.1.25",
-    "@dbux/projects": "^0.1.25",
-    "@dbux/runtime": "^0.1.25",
+    "@dbux/babel-plugin": "^0.1.28-dev.0",
+    "@dbux/cli": "^0.1.28-dev.0",
+    "@dbux/common": "^0.1.28-dev.0",
+    "@dbux/data": "^0.1.28-dev.0",
+    "@dbux/graph-common": "^0.1.28-dev.0",
+    "@dbux/graph-host": "^0.1.28-dev.0",
+    "@dbux/projects": "^0.1.28-dev.0",
+    "@dbux/runtime": "^0.1.28-dev.0",
     "firebase": "^7.17.2",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",

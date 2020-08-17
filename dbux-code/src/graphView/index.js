@@ -17,6 +17,12 @@ export async function showGraphView() {
   return graphWebView.show();
 }
 
+export function hideGraphView() {
+  if (graphWebView) {
+    graphWebView.hide();
+  }
+}
+
 export async function initGraphView() {
   initGraphWebView();
   return graphWebView.init();

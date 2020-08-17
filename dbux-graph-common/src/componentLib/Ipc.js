@@ -101,9 +101,9 @@ export default class Ipc {
       args
     } = message;
 
-    const info = 'Failed to process request - ';
-    logError(info + commandName, args);
-    logError(err.stack);
+    const info = 'Error when processing request - ';
+    // logError(info + commandName, args);
+    // logError(err.stack);
     this._sendReply('reject', callId, componentId, info + err.message);
   }
 

@@ -24,7 +24,7 @@ export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
 
   // patch up argv: we are cheating, to make sure, argv can get processed as usual
   const programArgs = _.slice(1); //.map(arg => `"${arg}"`).join(' ');
-  console.warn('argv', process.argv);
+  // console.warn('argv', process.argv);
   process.argv = [process.argv[0] /* node */, targetPath /* program */, ...programArgs];
   
   

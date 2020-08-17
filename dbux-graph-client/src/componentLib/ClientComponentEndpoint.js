@@ -83,7 +83,8 @@ class ClientComponentEndpoint extends ComponentEndpoint {
       await this.update();
     }
     catch (err) {
-      this.logger.error('Component update failed', err);
+      this.logger.warn('Component update failed', err);
+      throw err;
     }
   }
 
