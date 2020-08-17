@@ -19,7 +19,7 @@ const option = { failOnStatusCode: false };
  *  1. which on nix (Linux, BSD, MAC etc.)
  *  2. where.exe on Windows
  * @param {string} command the command being queried
- * @return {Promise<string>} the actual path where `command` is
+ * @return {Promise<[string]>} the actual path where `command` is
  */
 export default async function which(command) {
   const which = await lookupWhich();
@@ -32,12 +32,21 @@ export default async function which(command) {
     throw new Error(`Couldn't find ${command} in $PATH.`);
   }
 
-  try {
-    let path = fs.realpathSync(result.out);
-    return path;
-  } catch (err) {
-    throw new Error(`${command} found in ${result.out}, but failed when checking by \`fs.realpathSync\`.`);
+  let paths = result.out.split('\n');
+  let realPaths = [];
+
+  for (let path of paths) {
+    try {
+      let realPath = fs.realpathSync(path);
+      realPaths.push(realPath);
+    } catch (err) {}
   }
+
+  if (realPaths.length === 0) {
+    throw new Error(`${command} found in ${paths}, but failed when checking by \`fs.realpathSync\`.`);
+  }
+
+  return realPaths;
 }
 
 /**
