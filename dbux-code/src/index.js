@@ -40,10 +40,10 @@ function activate(context) {
     initLogging();
     initResources(context);
     // initRuntimeServer(context);
+    initMemento(context);
     initCodeApplications(context);
     initCodeDeco(context);
     initToolBar(context);
-    initMemento(context);
     initTraceSelection(context);
     initPlayback();
 
