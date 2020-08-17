@@ -73,7 +73,7 @@
       },
       {
         "command": "dbux.cancelBugRunner",
-        "title": "Dbux Projects: Cancel All"
+        "title": "Dbux Practice: Cancel All"
       },
       {
         "command": "dbux.exportApplicationData",
@@ -604,62 +604,62 @@
         "properties": {
           "dbux.run.enable-source-maps": {
             "type": "boolean",
-            "default": false,
-            "description": "toggle `--enable-source-maps` (since it can be super slow)",
+            "default": true,
+            "description": "Toggle `--enable-source-maps` (since, despite its usefulness, it can be super slow)",
             "scope": "resource"
           },
           "dbux.run.dbuxArgs": {
             "type": "string",
             "default": "",
-            "description": "custom `dbux run` command options",
+            "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js",
             "scope": "resource"
           },
           "dbux.run.nodeArgs": {
             "type": "string",
             "default": "",
-            "description": "custom node options",
+            "description": "Custom node options passed to node when running the program.",
             "scope": "resource"
           },
           "dbux.run.programArgs": {
             "type": "string",
             "default": "",
-            "description": "custom program arguments",
+            "description": "Custom program arguments, available to the program via `process.argv`.",
             "scope": "resource"
           },
           "dbux.run.env": {
             "type": "object",
             "default": {},
-            "description": "custom program enviorment variables",
+            "description": "Custom program environment variables available via `process.env` (probably not working yet).",
             "scope": "resource"
           },
           "dbux.debug.enable-source-maps": {
             "type": "boolean",
             "default": false,
-            "description": "toggle `--enable-source-maps` (since it can be super slow)",
+            "description": "Toggle `--enable-source-maps` (since, despite its usefulness, it can be super slow)",
             "scope": "resource"
           },
           "dbux.debug.dbuxArgs": {
             "type": "string",
             "default": "",
-            "description": "custom `dbux run` command options",
+            "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js",
             "scope": "resource"
           },
           "dbux.debug.nodeArgs": {
             "type": "string",
             "default": "",
-            "description": "custom node options",
+            "description": "Custom node options passed to node when running the program.",
             "scope": "resource"
           },
           "dbux.debug.programArgs": {
             "type": "string",
             "default": "",
-            "description": "custom program arguments",
+            "description": "Custom program arguments, available to the program via `process.argv`.",
             "scope": "resource"
           },
           "dbux.debug.env": {
             "type": "object",
             "default": {},
-            "description": "custom program environment variable",
+            "description": "Custom program environment variables available via `process.env` (probably not working yet).",
             "scope": "resource"
           }
         }
