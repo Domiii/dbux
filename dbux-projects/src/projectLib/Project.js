@@ -106,7 +106,7 @@ export default class Project {
   async gitCheckoutCommit(args) {
     if (!await this.checkCorrectGitRepository()) return;
 
-    await this.exec('git reset --hard ' + (args || ''));
+    await this.execInTerminal('git reset --hard ' + (args || ''));
   }
 
   async gitResetHard(needConfirm = false, confirmMsg = '') {
@@ -123,7 +123,7 @@ export default class Project {
       err.userCanceled = true;
       throw err;
     }
-    await this.exec('git reset --hard');
+    await this.execInTerminal('git reset --hard');
   }
 
   // ###########################################################################
@@ -166,6 +166,20 @@ export default class Project {
   // ###########################################################################
   // utilities
   // ###########################################################################
+
+  async execInTerminal(command, options) {
+    let cwd = options?.cdToProjectPath === false ? '' : this.projectPath;
+
+    let { code } = await this.manager.externals.TerminalWrapper.execInTerminal(cwd, command, {}).waitForResult();
+
+    if (options?.failOnStatusCode === false) {
+      return code;
+    }
+    if (code) {
+      throw new Error(`Process exit code ${code}`);
+    }
+    return 0;
+  }
 
   async exec(command, options, input) {
     if (options?.cdToProjectPath !== false) {
@@ -238,7 +252,7 @@ export default class Project {
 
     // returns status code 1, if there are any changes
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec('git diff-index --quiet HEAD --', { failOnStatusCode: false });
+    const code = await this.execInTerminal('git diff-index --quiet HEAD --', { failOnStatusCode: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
@@ -313,7 +327,7 @@ export default class Project {
       return;
     }
 
-    await this.exec(`git add -A && git commit -am '"dbux auto commit"'`);
+    await this.execInTerminal(`git add -A && git commit -am '"dbux auto commit"'`);
   }
 
   async deleteProjectFolder() {
@@ -343,7 +357,7 @@ export default class Project {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
-      await this.exec(`git clone "${githubUrl}" "${projectPath}"`, {
+      await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
         cdToProjectPath: false
       });
 
@@ -373,13 +387,13 @@ export default class Project {
   async npmInstall() {
     // await this.exec('npm cache verify');
 
-    await this.exec(`npm install`);
+    await this.execInTerminal(`npm install`);
 
     // hackfix: npm installs are broken somehow.
     //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
     //      Sometimes running it a second time after checking out a different branch 
     //      deletes all node_modules. This will bring everything back correctly (for now).
-    await this.exec(`npm install`);
+    await this.execInTerminal(`npm install`);
   }
 
   // async yarnInstall() {
@@ -432,7 +446,7 @@ export default class Project {
       return -1;
     }
 
-    return this.exec(`git apply --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
+    return this.execInTerminal(`git apply --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
   }
 
   /**
@@ -454,7 +468,7 @@ export default class Project {
       return -1;
     }
 
-    return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
+    return this.execInTerminal(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
   }
 
   async getPatchString() {
