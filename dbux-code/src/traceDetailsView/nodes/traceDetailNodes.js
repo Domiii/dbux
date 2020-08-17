@@ -7,6 +7,7 @@ import StaticContextTDNode from './StaticContextTDNodes';
 import TrackObjectTDNode from './TrackObjectTDNodes';
 import ValueTDNode from './ValueTDNode';
 import { InfoTDNode } from './traceInfoNodes';
+import NearbyValuesTDNode from './NearbyValuesTDNode';
 
 export class TraceDetailNode extends BaseTreeViewNode {
 }
@@ -80,6 +81,7 @@ export const DetailNodeClasses = [
   ValueTDNode,
   TrackObjectTDNode,
   StaticTraceTDNode,
+  NearbyValuesTDNode,
   // StaticContextTDNode,
   InfoTDNode,
   DebugTDNode

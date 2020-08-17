@@ -1,12 +1,11 @@
-import { TreeItemCollapsibleState, window, workspace } from 'vscode';
+import { window, workspace } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
 import { isTraceExpression } from '@dbux/common/src/core/constants/TraceType';
 import isEmpty from 'lodash/isEmpty';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import { makeTreeItems, makeTreeChildren } from '../../helpers/treeViewHelpers';
+import { makeTreeChildren } from '../../helpers/treeViewHelpers';
 import { showInformationMessage } from '../../codeUtil/codeModals';
-import { showTextDocument } from '../../codeUtil/codeNav';
 
 export default class ValueTDNode extends BaseTreeViewNode {
   static makeTraceDetail(trace/* , parent */) {

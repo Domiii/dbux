@@ -248,7 +248,10 @@ export default {
   //   return hasTraceValue(staticTrace.type);
   // },
 
-  /** @param {DataProvider} dp */
+  /**
+   * Find value of given trace, returns undefined if not a value trace
+   * @param {DataProvider} dp
+   */
   getTraceValue(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
     const { value } = trace;
