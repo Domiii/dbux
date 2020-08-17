@@ -35,10 +35,7 @@ export default class TerminalWrapper {
     let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-'));
     command = `${command}; touch ${tmpFolder}/$?`;
 
-    debug(command);
-
-    // TODO: args contains envs, but not added yet.
-    this._terminal = await execCommand(cwd, command);
+    this._terminal = await execCommand(cwd, command, args);
 
     try {
       const result = await new Promise((resolve, reject) => {
@@ -86,6 +83,12 @@ export default class TerminalWrapper {
   // static functions
   // ###########################################################################
 
+  /**
+   * Execute `command` in `cwd` in terminal.
+   * @param {string} cwd Set working directory to run `command`.
+   * @param {string} command The command will be executed.
+   * @param {object} args Not working things (currently).
+   */
   static execInTerminal(cwd, command, args) {
     // TODO: register wrapper with context
   
