@@ -9,7 +9,7 @@ import { processEnv } from '../util/processEnv';
 
 // pre-import dependencies that are not going to be in the target script
 import buildBabelOptions from '../util/buildBabelOptions';
-import { buildCommonCommandOptions, resolveCommandTargetPath } from '../util/commandCommons';
+import { buildCommonCommandOptions, resolveCommandTargetPath } from '../commandCommons';
 
 export const command = 'instrument <file>';
 export const aliases = ['i'];

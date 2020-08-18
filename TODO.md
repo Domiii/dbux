@@ -1,5 +1,9 @@
 
 ## TODO
+* dbux-graph-client
+   * copy `assets` to `resources` on build
+   * import correct `boostrap.min.css`, based on dark/light mode
+      * manually add a `style` tag?
 * core instrumentation bugs
    * fix: call traces for getters are off
       * it's actually the next trace in context (if the getter did not error out)
