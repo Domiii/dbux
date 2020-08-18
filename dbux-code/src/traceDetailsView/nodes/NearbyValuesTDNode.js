@@ -31,16 +31,26 @@ export default class NearbyValuesTDNode extends BaseTreeViewNode {
     const nodes = [];
 
     for (const childTrace of traces) {
-      // filter BCE and no value traces
-      const type = dp.util.getTraceType(childTrace.traceId);
+      const { traceId, staticTraceId } = childTrace;
+      const type = dp.util.getTraceType(traceId);
       if (isBeforeCallExpression(type)) {
+        // ignore BCEs
         continue;
       }
-      const value = dp.util.getTraceValue(childTrace.traceId);
-      if (!value) {
+      const value = dp.util.getTraceValue(traceId);
+      if (value === undefined) {
+        // ignore undefined
         continue;
       }
-      const label = dp.collections.staticTraces.getById(childTrace.staticTraceId).displayName;
+
+      const label = dp.collections.staticTraces.getById(staticTraceId).displayName;
+
+      const valueStr = dp.util.getTraceValueString(traceId);
+      if (valueStr === label) {
+        // ignore literals
+        continue;
+      }
+
       const props = { value };
       const newNode = new TraceValueNode(this.treeNodeProvider, label, childTrace, this, props);
       nodes.push(newNode);

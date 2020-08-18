@@ -15,7 +15,10 @@ export function valueRender(valueRef, value) {
   }
   showInformationMessage(confirmString, {
     async 'Open In Editor'() {
-      const doc = await workspace.openTextDocument({ content: documentString });
+      const doc = await workspace.openTextDocument({ 
+        language: 'jsonc',
+        content: documentString
+      });
       await window.showTextDocument(doc.uri);
     }
   }, { modal: true });
