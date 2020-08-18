@@ -23,6 +23,13 @@ export function initTraceDetailsViewCommands(context, traceDetailsViewController
     }
   );
 
+  registerCommand(context,
+    'dbuxTraceDetailsView.valueRender',
+    (node) => {
+      node.valueRender();
+    }
+  );
+
   for (let methodName of NavigationMethods) {
     registerCommand(context,
       `dbuxTraceDetailsView.navigation.${methodName}`,

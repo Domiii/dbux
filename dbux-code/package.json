@@ -204,6 +204,14 @@
         }
       },
       {
+        "command": "dbuxTraceDetailsView.valueRender",
+        "title": "Inspect this value",
+        "icon": {
+          "light": "resources/light/magnifier.svg",
+          "dark": "resources/dark/magnifier.svg"
+        }
+      },
+      {
         "command": "dbuxTraceDetailsView.navigation.PreviousInContext",
         "title": "PreviousInContext",
         "icon": {
@@ -427,6 +435,11 @@
         {
           "command": "dbuxTraceDetailsView.selectObject",
           "when": "viewItem == dbuxTraceDetailsView.traceObjectTDNodeRoot.withObjectValue",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxTraceDetailsView.valueRender",
+          "when": "viewItem == dbuxTraceDetailsView.node.traceValueNode",
           "group": "inline"
         },
         {
