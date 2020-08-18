@@ -2,6 +2,7 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
 
 // add some of our own good stuff
 require('../dbux-cli/lib/dbux-register-self');
@@ -20,7 +21,7 @@ const projectRoot = path.resolve(__dirname);
 const MonoRoot = path.resolve(__dirname, '..');
 
 // TODO: Do not build to remote path. Copy on deploy instead.
-const outputFolder = path.join(MonoRoot, 'dbux-code', 'resources', 'dist');
+const outputFolder = path.join(MonoRoot, 'dbux-code/resources/dist/graph');
 
 const dependencies = [
   "dbux-common",
@@ -43,6 +44,18 @@ module.exports = (env, argv) => {
       DBUX_VERSION,
       DBUX_ROOT
     }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.join(projectRoot, 'assets'),
+          to: outputFolder
+        },
+        {
+          from: path.join(MonoRoot, 'node_modules/bootstrap/dist/css/bootstrap.min.css'),
+          to: path.join(outputFolder, 'light/bootstrap.min.css')
+        }
+      ]
+    })
     // add post-build hook
     // see: https://stackoverflow.com/a/49786887apply: 
     // (compiler) => {

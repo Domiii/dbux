@@ -1,10 +1,11 @@
-import { wrapScriptFileInTag } from '../codeUtil/domTransformUtil';
+import { wrapScriptFileInTag, wrapCssFileInTag } from '../codeUtil/domTransformUtil';
 
-export async function buildWebviewClientHtml(...scriptPaths) {
-  const scripts = (
-    await Promise.all(
-      scriptPaths.map(fpath => wrapScriptFileInTag(fpath))
-    )
+export async function buildWebviewClientHtml(scriptPaths, themePath) {
+  const tags = (
+    await Promise.all([
+      ...scriptPaths.map(fpath => wrapScriptFileInTag(fpath)),
+      wrapCssFileInTag(themePath)
+    ])
   ).join('\n  ');
 
   // <!DOCTYPE html>
@@ -18,7 +19,7 @@ export async function buildWebviewClientHtml(...scriptPaths) {
   return (/*html*/ `
   <div id="root"></div>
 
-  ${scripts}
+  ${tags}
   <script>
     function main() {
       window.x = (window.x || 0) + 1;

@@ -3,7 +3,8 @@ import { startGraphHost, shutdownGraphHost } from '@dbux/graph-host/src/index';
 import {
   window,
   ViewColumn,
-  Uri
+  Uri,
+  ColorThemeKind
 } from 'vscode';
 import { buildWebviewClientHtml } from './clientSource';
 import { goToTrace } from '../codeUtil/codeNav';
@@ -35,8 +36,11 @@ export default class GraphWebView extends WebviewWrapper {
   }
 
   async buildClientHtml() {
-    const scriptPath = this.getResourcePath('dist', 'graph.js');
-    return await buildWebviewClientHtml(scriptPath);
+    const mode = window.activeColorTheme.kind === ColorThemeKind.Light ? 'light' : 'dark';
+    const scriptPath = this.getResourcePath('dist/graph/graph.js');
+    const themePath = this.getResourcePath(`dist/graph/${mode}/bootstrap.min.css`);
+    // TODO: support multiple theme files
+    return await buildWebviewClientHtml([scriptPath], themePath);
   }
   
   async startHost(ipcAdapter) {
