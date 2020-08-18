@@ -1,12 +1,10 @@
-import { TreeItemCollapsibleState, window, workspace } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
 import { isTraceExpression } from '@dbux/common/src/core/constants/TraceType';
 import isEmpty from 'lodash/isEmpty';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import { makeTreeItems, makeTreeChildren } from '../../helpers/treeViewHelpers';
-import { showInformationMessage } from '../../codeUtil/codeModals';
-import { showTextDocument } from '../../codeUtil/codeNav';
+import { makeTreeChildren } from '../../helpers/treeViewHelpers';
+import { valueRender } from '../valueRender';
 
 export default class ValueTDNode extends BaseTreeViewNode {
   static makeTraceDetail(trace/* , parent */) {
@@ -49,10 +47,8 @@ export default class ValueTDNode extends BaseTreeViewNode {
   }
 
   init() {
-    // if (!dp.util.isTracePlainObjectOrArrayValue(traceId)) {
-    //   this.description = dp.util.getTraceValueString(traceId);
-    // }
-    // else 
+    // hackfix: to show valueRender button in simple logic
+    this.contextValue = 'dbuxTraceDetailsView.node.traceValueNode';
     const { valueRef } = this;
     if (valueRef) {
       this.description = ValueTypeCategory.nameFrom(valueRef.category);
@@ -69,15 +65,11 @@ export default class ValueTDNode extends BaseTreeViewNode {
   }
 
   handleClick() {
+    this.valueRender();
+  }
+
+  valueRender() {
     const { valueRef, value } = this;
-    if (valueRef.category === ValueTypeCategory.String) {
-      // const str = JSON.parse(value);
-      showInformationMessage(value, {
-        async 'Open Editor'() {
-          const doc = await workspace.openTextDocument({ content: value });
-          await window.showTextDocument(doc.uri);
-        }
-      }, { modal: true });
-    }
+    valueRender(valueRef, value);
   }
 }
