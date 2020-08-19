@@ -16,6 +16,7 @@ import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
 import { runFile } from './runCommands';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { showInformationMessage } from '../codeUtil/codeModals';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -181,7 +182,12 @@ export function initUserCommands(extensionContext) {
   // open help website
   // ###########################################################################
 
-  registerCommand(extensionContext, 'dbux.openWebsite', () => {
-    env.openExternal(Uri.parse('https://github.com/Domiii/dbux#introduction'));
+  registerCommand(extensionContext, 'dbux.openWebsite', async () => {
+    const dbuxLink = 'https://github.com/Domiii/dbux#introduction';
+    showInformationMessage(`Open in browser?`, {
+      async 'OK'() {
+        env.openExternal(Uri.parse(dbuxLink));
+      }
+    }, { modal: true });
   });
 }
