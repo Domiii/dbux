@@ -33,7 +33,7 @@ const dependencies = [
 
 module.exports = (env, argv) => {
   const mode = argv.mode || 'development';
-  const DBUX_VERSION = getDbuxVersion();
+  const DBUX_VERSION = getDbuxVersion(mode);
   const DBUX_ROOT = mode === 'development' ? MonoRoot : null;
 
   console.debug(`[dbux-graph-client] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
