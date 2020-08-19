@@ -82,7 +82,7 @@ export class ProjectViewController {
     return runTaskWithProgressBar(async (progress/* , cancelToken */) => {
       const { bug } = bugNode;
       progress.report({ message: 'activating...' });
-      await this.manager.activateBug(bug);
+      await this.manager.activateBug(bug, debugMode);
     }, options);
   }
 
