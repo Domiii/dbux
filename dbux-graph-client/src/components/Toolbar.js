@@ -13,14 +13,14 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <button data-el="hideNewRunBtn" class="btn btn-info" href="#"></button>
-          <button data-el="hideOldRunBtn" class="btn btn-info" href="#">x</button>
-          <button data-el="syncModeBtn" class="btn btn-info" href="#">sync</button>
-          <button data-el="locModeBtn" class="btn btn-info" href="#">loc</button>
-          <button data-el="callModeBtn" class="btn btn-info" href="#">call</button>
-          <button data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
-          <button data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
-          <button data-el="searchBtn" class="btn btn-info" href="#">🔍</button>
+          <button title="Stop adding new runs/traces" data-el="hideNewRunBtn" class="btn btn-info" href="#"></button>
+          <button title="Hide all existing runs/traces" data-el="hideOldRunBtn" class="btn btn-info" href="#">x</button>
+          <button title="Sync and always lock onto selected trace" data-el="syncModeBtn" class="btn btn-info" href="#">sync</button>
+          <button title="Show location of context (function declaration or start of file)" data-el="locModeBtn" class="btn btn-info" href="#">loc</button>
+          <button title="Show caller (call trace) of function call" data-el="callModeBtn" class="btn btn-info" href="#">call</button>
+          <button title="Show arguments and return value of function call in the form of: (args) -> returnValue" data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
+          <button title="Thin mode" data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
+          <button title="Search for contexts by name" data-el="searchBtn" class="btn btn-info" href="#">🔍</button>
         </div>
         <div data-el="moreMenu" class="dropdown">
           <button data-el="moreMenuBtn" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -29,9 +29,9 @@ class Toolbar extends ClientComponentEndpoint {
           <div data-el="moreMenuBody" class="dropdown-menu" 
           style="left: inherit; right: 0; min-width: 0;"
           aria-labelledby="dropdownMenuButton">
-            <button data-el="showIdsBtn" class="btn btn-info full-width" href="#">ids</button>
+            <!--button data-el="showIdsBtn" class="btn btn-info full-width" href="#">ids</button-->
             <div class="dropdown-divider"></div>
-            <button data-el="restartBtn" class="btn btn-danger full-width" href="#">⚠️Restart⚠️</button>
+            <button title="Restart the Webview (can eliviate some bugs)" data-el="restartBtn" class="btn btn-danger full-width" href="#">Restart</button>
           </div>
         </div>
       </nav>

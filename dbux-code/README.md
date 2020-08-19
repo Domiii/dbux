@@ -3,6 +3,11 @@
 [![install count](https://vsmarketplacebadge.apphb.com/installs-short/Domi.dbux-code.svg)](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
 [![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
 
+<h2>Table of Contents</h2>
+
+[[TOC]]
+
+
 # Installation
 
 You can one-click install the plugin from the [VSCode marketplace](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code). You can also install it from within VSCode via the "Extensions" panel.
@@ -12,17 +17,23 @@ You can one-click install the plugin from the [VSCode marketplace](https://marke
 
 # Usage
 
-In order to analyze your JavaScript program, 
+In order to get started, you probably want to use the "Run with Dbux" button.
 
-## "Run with Dbux" and "Debug with Dbux"
+Once your program has run, you can analyze it in great detail, as described below.
 
-* The "Run with Dbux" button is located at the top of the "Applications" view
-   * NOTE: You have to move mouse over it to see it. That's a VSCode limitation.
+If you have a build pipeline, and cannot just run it via `node myProgram.js`, refer to "[Adding Dbux to your build pipeline](../#adding-dbux-to-your-build-pipeline)".
+
+
+##  "Run with Dbux" and "Debug with Dbux"
+
+* The "Run with Dbux" button is located at the bottom right
+   * You can also find it in the Dbux container at the top of the "Applications" view
+      * NOTE: You have to move mouse over it to see it. That's a VSCode limitation.
    * The button calls the "*Dbux: Run current file*" command.
 * The "Debug with Dbux" button does the same thing as the Run button but with `--inspect-brk` enabled.
    * Make sure to turn on VSCode's Auto Attach for this.
    * For more information, consult [the official manual on "Node.js debugging in VS Code"](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
-* When you click either button (or run the command), [@dbux/cli](../dbux-cli) will run the currently selected JS file (with the [@dbux/runtime](../dbux-runtime) injected), tracing out and recording all kinds of runtime information as it executes.
+* When you click either button (or run the command), [@dbux/cli](../dbux-cli) will run the currently selected JS file (with the [@dbux/runtime](../dbux-runtime) injected), tracing and recording runtime information as it executes.
    * NOTE: Architectural details are explained [here](../#architectural-notes).
 * You can configure both buttons in your workspace or user settings. See [Configuration](#configuration) for more details.
 
@@ -30,36 +41,86 @@ In order to analyze your JavaScript program,
 
 # Analyzing our program's Runtime
 
-This extension provides the following views to engage in JavaScript runtime analysis:
-
-## "Applications" treeview
-
-Allows you to manage (enable/disable) all Dbux-enabled JavaScript applications that you ran.
-
-* A new application will show up, once the first batch of an executed program's runtime data has been received.
+This extension provides the following visual aids and interactions to engage in JavaScript runtime analysis:
 
 
 ## Code decorations
 
 * Code that you ran with Dbux will be rendered with decorations.
 * These decorations allow us to better understand which parts of the code actually executed.
-* You can toggle these decorations via the `Hide Decorations` and `Show Decorations` commands.
+* You can toggle these decorations via the `Dbux: Hide Decorations` and `Dbux: Show Decorations` commands.
+
+Examples:
+* In this buggy code, we find that line 6 never executed, just by looking at the code decorations:
+   ![code-deco1](../docs/img/code-deco1.png)
 
 
-## "Trace Details" treeview
-Analyze and navigate individual traces.
+## Applications
 
-* When looking
+The "Applications" view is at the top of the Dbux view.
+
+* Allows you to manage (enable/disable) all Dbux-enabled JavaScript applications.
+* A new application will show up, once the first batch of an executed program's runtime data has been received.
+* You can click an application to enable/disable.
+* Disabled applications will not be visible to inspection. Only enabled applications:
+   1. Allow [trace selection](#trace-selection)
+   1. Render [code decorations](#code-decorations)
+   1. Show up in the [Call Graph](#call-graph)
 
 
-## "Call Graph" webview
+## Trace Selection
+
+![select trace](../docs/img/select-trace1.gif)
+
+* Code that has executed can be traced and analyzed (executed code is rendered with [code decorations](#code-decorations) (if enabled)).
+* To do that, place the keyboard cursor on executed code
+   * NOTE: Keywords like `if` and `return` cannot currently be selected, however their conditions/arguments etc can.
+* Press repeatedly to select surrounding traces.
+
+
+## Trace Details
+Analyze and navigate through individual traces.
+
+### Trace Details: Navigation
+
+TODO
+
+### Trace Details: Values + Object Tracking
+
+TODO
+
+### Trace Details: Trace Executed
+
+TODO
+
+### Trace Details: Nearby Values
+
+TODO
+
+### Trace Details: Debug
+
+Shows some of the raw data related to the selected trace. 
+
+This is generally useless, except for people who want to contribute to Dbux or -for other reasons- analyze raw Dbux data.
+
+
+## Call Graph
 Bird's Eye overview over all executed files and functions.
 
 
-## The "Practice" treeview
+## Practice
 
 * currently hidden behind a command
 * uses `dbux-projects` to allow practicing dbux and, more generally, debugging on real-world projects and their bugs.
+
+
+# What is being traced?
+
+When using the "Run button", we trace all executed code, but ignore anything in `node_modules` and `dist` folders.
+
+* You can manage yourself what to instrument if you add `@dbux/babel-plugin` to your build pipeline.
+* For the "Run button" we hope to support a babel config override in the future.
+   * NOTE: This is currently hard-coded in [dbux-cli/src/util/buildBabelOptions.js](dbux-cli/src/util/buildBabelOptions.js).
 
 
 
