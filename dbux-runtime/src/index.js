@@ -7,6 +7,14 @@ const dbux = {
 
   initProgram(staticProgramData) {
     return this._r.addProgram(staticProgramData);
+  },
+
+  incDisabled() {
+    this._r.incDisabled();
+  },
+
+  decDisabled() {
+    this._r.decDisabled();
   }
 };
 
@@ -53,6 +61,11 @@ function handleShutdown() {
   //    `process.exit` can disrupt that (kills without allowing us to perform another async handshake + `send`)
   // register `exit` handler that sends out a warning if there is unsent stuff
   __global__.process && __global__.process.on('exit', handleShutdown);
+
+  // __global__.process && __global__.process.on('uncaughtException', async (err) => {
+  //   console.error('uncaughtException', err);
+  //   return new Promise(r => setTimeout(r, 500)).then(() => console.warn('hbgiiasd'));
+  // });
 
   // if (__global__.process) {
   //   // handle `beforeExit`, `SIGTERM` and `SIGINT` separately

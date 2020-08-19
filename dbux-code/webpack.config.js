@@ -24,7 +24,7 @@ module.exports = (env, argv) => {
   const DBUX_VERSION = getDbuxVersion();
   const DBUX_ROOT = mode === 'development' ? MonoRoot : null;
 
-  console.debug(`[dbux-code] (DBUX_VERSION=${DBUX_VERSION}, DBUX_ROOT=${DBUX_ROOT} mode=${mode}) building...`);
+  console.debug(`[dbux-code] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
 
   const webpackPlugins = [
     new webpack.EnvironmentPlugin({
@@ -97,7 +97,8 @@ module.exports = (env, argv) => {
     },
     externals: {
       uws: "uws",
-      vscode: "commonjs vscode"
+      vscode: "commonjs vscode",
+      firebase: 'umd firebase'
     },
     node: {
       // generate actual output file information

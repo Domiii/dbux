@@ -2,9 +2,8 @@ import fs from 'fs';
 
 export function buildCommonCommandOptions() {
   return {
-    vanilla: {
-      alias: ['v'],
-      describe: 'Do not add default babel presets + options. Just run as-is.',
+    esnext: {
+      describe: 'Add esnext babel presets + options.',
       default: false,
       type: 'boolean'
     },
@@ -19,7 +18,12 @@ export function buildCommonCommandOptions() {
       describe: 'Do NOT add `@babel/preset-env`. Not adding this, might cause incompatabilities, but keeps the code closer to its original form.',
       default: false,
       type: 'boolean'
-    }
+    },
+    env: {
+      describe: "Specify environment variable to program.",
+      default: '',
+      type: 'string',
+    },
   };
 }
 

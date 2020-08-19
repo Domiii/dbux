@@ -86,7 +86,7 @@ export default class NavigationNode extends BaseTreeViewNode {
       window.showInformationMessage(`Can't find "${methodName}" of current trace.`);
     }
 
-    this.treeNodeProvider.treeView.reveal(this);
+    // this.treeNodeProvider.treeView.reveal(this);
     
     // const ids2 = getIds();
     // debug(`${methodName}: ${ids1} -> ${ids2}`);

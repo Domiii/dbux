@@ -24,7 +24,7 @@ export class CallGraphViewController {
 
   refreshOnData = makeDebounce(() => {
     this.refresh();
-  });
+  }, 100);
 
   refreshIcon = () => {
     let hasError = false;
@@ -55,6 +55,8 @@ export class CallGraphViewController {
 
     // data changed
     allApplications.selection.onApplicationsChanged((selectedApps) => {
+      this.refreshOnData();
+      this.refreshIcon();
       for (const app of selectedApps) {
         allApplications.selection.subscribe(
           app.dataProvider.onData('executionContexts', this.refreshOnData),

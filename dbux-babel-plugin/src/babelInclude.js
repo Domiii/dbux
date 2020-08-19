@@ -1,3 +1,7 @@
+/**
+ * TODO: this should not be necessary anymore. Can probably delete?
+ */
+
 const path = require('path');
 const babelRegister = require('@babel/register');
 const babelPresets = require('../../config/babel-presets-node');

@@ -1,21 +1,12 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Process from '@dbux/projects/src/util/Process';
+import which from '@dbux/projects/src/util/which';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalUtil');
 
 const DefaultTerminalName = 'dbux-run';
-
-export async function getPathToBash() {
-  let result = await Process.execCaptureAll(`which cygpath`, { failOnStatusCode: false });
-
-  if (result.code) {
-    return Process.execCaptureOut(`which bash`, { failOnStatusCode: false });
-  } else {
-    return Process.execCaptureOut('cygpath -w `which bash`', { failOnStatusCode: false });
-  }
-}
 
 export function createDefaultTerminal(cwd) {
   return createTerminal(DefaultTerminalName, cwd);
@@ -45,7 +36,7 @@ export async function execCommand(cwd, command) {
   let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
   terminal?.dispose();
 
-  let pathToBash = await getPathToBash();
+  let pathToBash = await which('bash');
 
   const terminalOptions = {
     name: DefaultTerminalName,

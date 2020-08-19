@@ -1,6 +1,6 @@
 /**
- * Useful for embedding runtime without webpack build.
- * Should not be necessary anymore.
+ * TODO: this should not be necessary anymore. Can probably delete?
+ * Used for embedding runtime without webpack build.
  * 
  * @file
  */

@@ -11,5 +11,7 @@
   "jest.pathToJest": "sh scripts/runJest.sh",
   "python.autoComplete.extraPaths": [
     "analysis/src"
-  ]
+  ],
+  "debug.node.autoAttach": "on",
+  "dbux.run.dbuxArgs": "--esnext"
 }

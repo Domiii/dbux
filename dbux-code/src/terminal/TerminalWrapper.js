@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
@@ -100,12 +101,16 @@ export default class TerminalWrapper {
   async _run(cwd, command, port, args) {
     // see: https://socket.io/docs/server-api/
     let socketServer = this.socketServer = new TerminalSocketServer();
-    socketServer.start(port);
+    await socketServer.start(port);
     Verbose && debug('started');
 
     try {
       const runJsArgs = Buffer.from(JSON.stringify({ port, cwd, command, args })).toString('base64');
       const initScript = getDbuxTargetPath('cli', 'lib/link-dependencies.js');
+      // if (!fs.existsSync(initScript)) {
+      //   throw new Error(`Dbux cli not installed (could not resolve "${initScript}")`);
+      // }
+      
       const runJsCommand = `node --require=${initScript} _dbux_run.js ${runJsArgs}`;
       this._terminal = await execCommand(cwd, runJsCommand);
 
@@ -155,14 +160,19 @@ export default class TerminalWrapper {
   cancel() {
     this.dispose();
   }
-}
 
-export function execInTerminal(cwd, command, args) {
-  const port = 6543;
 
-  // TODO: register wrapper with context
+  // ###########################################################################
+  // static functions
+  // ###########################################################################
 
-  const wrapper = new TerminalWrapper();
-  wrapper.start(cwd, command, port, args);
-  return wrapper;
+  static execInTerminal(cwd, command, args) {
+    const port = 6543;
+  
+    // TODO: register wrapper with context
+  
+    const wrapper = new TerminalWrapper();
+    wrapper.start(cwd, command, port, args);
+    return wrapper;
+  }
 }

@@ -13,9 +13,12 @@ export default function buildBabelOptions(options) {
   process.env.BABEL_DISABLE_CACHE = 1;
 
   const {
-    vanilla,
+    esnext,
     dontInjectDbux,
-    dontAddPresets
+    dontAddPresets,
+    dbuxOptions = {
+      _dbuxOptions1: 123
+    }
   } = options;
 
   // if (process.env.NODE_ENV === 'development') {
@@ -23,7 +26,7 @@ export default function buildBabelOptions(options) {
   // }
 
   // setup babel-register
-  const baseOptions = vanilla ? EmptyObject : baseBabelOptions;
+  const baseOptions = esnext ? baseBabelOptions : EmptyObject;
   const babelOptions = {
     ...baseOptions,
 
@@ -37,14 +40,14 @@ export default function buildBabelOptions(options) {
         
         // no node_modules
         if (modulePath.match('(node_modules)|(dist)')) {
-          // console.debug(`dbux-register ignore`, modulePath);
+          // console.debug(`[DBUX] instrument IGNORE`, modulePath);
           return true;
         }
 
         modulePath = modulePath.toLowerCase();
 
         const ignore = false;
-        // console.debug(`dbux-register include`, modulePath);
+        // console.debug(`[DBUX] instrument`, modulePath);
         return ignore;
       }
     ]
@@ -52,7 +55,7 @@ export default function buildBabelOptions(options) {
 
   if (!dontInjectDbux) {
     babelOptions.plugins = babelOptions.plugins || [];
-    babelOptions.plugins.push(dbuxBabelPlugin);
+    babelOptions.plugins.push([dbuxBabelPlugin, dbuxOptions]);
   }
 
   if (dontAddPresets) {

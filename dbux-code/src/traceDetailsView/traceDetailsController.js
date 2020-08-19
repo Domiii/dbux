@@ -26,7 +26,7 @@ class TraceDetailsController {
     // try second node first to show the navigation buttons
     const targetNode = this.treeDataProvider.rootNodes[1] || this.treeDataProvider.rootNodes[0];
     if (targetNode) {
-      this.treeView.reveal(targetNode);
+      this.treeView.reveal(targetNode, { focus: true });
     }
   }
 
@@ -79,6 +79,7 @@ class TraceDetailsController {
 
     // data changed
     allApplications.selection.onApplicationsChanged((selectedApps) => {
+      this.refreshOnData();
       for (const app of selectedApps) {
         allApplications.selection.subscribe(
           app.dataProvider.onData('traces', this.refreshOnData)

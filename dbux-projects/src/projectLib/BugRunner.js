@@ -215,9 +215,7 @@ export default class BugRunner {
           // DBUX_ROOT: devMode ? fs.realpathSync(path.join(__dirname, '..', '..')) : null,
           // NODE_ENV: process.env.NODE_ENV
         };
-        this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command, args);
-        // TODO: as we want to make ProjectManager the only UI, here should return result directly and process data ouside
-        const result = await this._terminalWrapper.waitForResult();
+        const result = await this.manager.execInTerminal(cwd, command, args);
         project.logger.log(`Result: ${result}`);
         return result;
       }

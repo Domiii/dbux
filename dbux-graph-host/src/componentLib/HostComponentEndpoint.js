@@ -236,7 +236,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         },
         (err) => {
           // error :(
-          this.logger.error('error when updating client\n  ', err);
+          this.logger.error('Error when updating client, check client for stack trace.');
         }
       ).
       finally(() => {
@@ -260,28 +260,28 @@ class HostComponentEndpoint extends ComponentEndpoint {
   dispose(silent = false) {
     super.dispose();
 
-    Promise.resolve(this.waitForInit()).then(() => {
-      if (!this.isInitialized) {
-        throw new Error(this.debugTag + ' Trying to dispose before initialized');
-      }
-      for (const component of this.children) {
-        component.dispose(silent);
-      }
-      for (const component of this.controllers) {
-        component.dispose(silent);
-      }
+    // Promise.resolve(this.waitForInit()).then(() => {
+    if (!this.isInitialized) {
+      throw new Error(this.debugTag + ' Trying to dispose before initialized');
+    }
+    for (const component of this.children) {
+      component.dispose(silent);
+    }
+    for (const component of this.controllers) {
+      component.dispose(silent);
+    }
 
-      // remove from parent
-      if (this.owner) {
-        const list = this.owner._getComponentListByRoleName(this._internalRoleName);
-        list._removeComponent(this);
-      }
+    // remove from parent
+    if (this.owner) {
+      const list = this.owner._getComponentListByRoleName(this._internalRoleName);
+      list._removeComponent(this);
+    }
 
-      if (!silent) {
-        // also dispose on client
-        this._remoteInternal.dispose();
-      }
-    });
+    if (!silent) {
+      // also dispose on client
+      this._remoteInternal.dispose();
+    }
+    // });
   }
 
   // ###########################################################################

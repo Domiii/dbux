@@ -3,7 +3,7 @@ import isString from 'lodash/isString';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 import Application from './Application';
-import ApplicationSet from './ApplicationSet';
+import ApplicationSelection from './ApplicationSelection';
 
 // eslint-disable-next-line no-unused-vars
 // eslint-disable-next-line no-unused-vars
@@ -30,7 +30,7 @@ export class AllApplications {
   _emitter = new NanoEvents();
 
   constructor() {
-    this.applicationSelection = new ApplicationSet(this);
+    this.applicationSelection = new ApplicationSelection(this);
   }
 
   getAllCount() {
@@ -124,12 +124,14 @@ export class AllApplications {
     }
 
     if (previousApplication && this.selection.containsApplication(previousApplication)) {
-      // application restarted -> automatically deselect previous instance
-      this.applicationSelection.removeApplication(previousApplication);
+      // application restarted -> automatically deselect previous instance and add new one
+      this.applicationSelection.replaceApplication(previousApplication, application);
+    }
+    else {
+      // add new application to set of selected applications
+      this.applicationSelection.addApplication(application);
     }
     
-    // always add new application to set of selected applications
-    this.applicationSelection.addApplication(application);
 
     return application;
   }

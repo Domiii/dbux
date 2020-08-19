@@ -1,8 +1,6 @@
 import { window } from 'vscode';
-import process from 'process';
 import { newLogger } from '@dbux/common/src/log/logger';
 
-import { initRuntimeServer } from './net/SocketServer';
 import { initCodeDeco } from './codeDeco';
 
 import { initCallGraphView } from './callGraphView/callGraphViewController';
@@ -18,14 +16,12 @@ import { initApplicationsView } from './applicationsView/applicationsViewControl
 import { initProjectView } from './projectView/projectViewController';
 import { initMemento } from './memento';
 import { initLogging } from './logging';
-import { restoreGraphView } from './graphView';
-import { initDbuxPractice } from './practice/dbuxPracticeController';
+import { initGraphView } from './graphView';
+import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
-
-let projectViewController;
 
 function registerErrorHandler() {
   // process.on('unhandledRejection', (reason, promise) => {
@@ -38,22 +34,25 @@ function registerErrorHandler() {
  */
 function activate(context) {
   try {
+    log(`Starting Dbux v${process.env.DBUX_VERSION}...`);
+
     registerErrorHandler();
     initLogging();
     initResources(context);
-    initRuntimeServer(context);
+    // initRuntimeServer(context);
+    initMemento(context);
     initCodeApplications(context);
     initCodeDeco(context);
     initToolBar(context);
-    initDbuxPractice(context);
-    initMemento(context);
-
     initTraceSelection(context);
     initPlayback();
-    
+
+
+    initWebviewWrapper(context);
+
     initApplicationsView(context);
     const traceDetailsController = initTraceDetailsView(context);
-    projectViewController = initProjectView(context);
+    initProjectView(context);
     
     //  To bring these three views back, uncomment relevant lines and add this to `package.json` `contributes.views.dbuxViewContainer`:
     //  {
@@ -76,12 +75,11 @@ function activate(context) {
     initCommands(
       context,
       traceDetailsController,
-      projectViewController,
       callGraphViewController
     );
 
     // for now, let's activate the graph view right away
-    restoreGraphView(context);
+    initGraphView();
   } catch (e) {
     logError('could not activate', e.stack);
     debugger;

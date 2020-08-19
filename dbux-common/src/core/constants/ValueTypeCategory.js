@@ -60,6 +60,7 @@ export default ValueTypeCategory;
 // ValuePruneState
 // ###########################################################################
 
+// eslint-disable-next-line import/no-mutable-exports
 let ValuePruneState = {
   Normal: 0,
   Omitted: 1,

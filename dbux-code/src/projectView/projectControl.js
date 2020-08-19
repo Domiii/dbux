@@ -3,11 +3,13 @@ import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { initDbuxProjects, ProjectsManager } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
-import { showWarningMessage } from '../codeUtil/codeModals';
+import { showWarningMessage, showInformationMessage } from '../codeUtil/codeModals';
 import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
-import { execInTerminal } from '../terminal/TerminalWrapper';
+import TerminalWrapper from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
 import { getResourcePath } from '../resources';
+import { interactiveGithubLogin } from '../net/GithubAuth';
+import WebviewWrapper from '../codeUtil/WebviewWrapper';
 
 const logger = newLogger('projectControl');
 
@@ -33,18 +35,18 @@ function createProjectManager(extensionContext) {
   // ########################################
 
   // the folder that contains `node_modules` for installing cli etc.
-  const nodeModulesParent = process.env.NODE_ENV === 'production' ?
-    ['.'] :         // extension_folder/
-    ['..'];         // monoRoot/dbux-code/..
+  const dependencyRoot = process.env.NODE_ENV === 'production' ?
+    extensionContext.asAbsolutePath(path.join('.')) :                   // extension_folder
+    path.join(process.env.DBUX_ROOT);                                   //
 
   // the folder that contains the sample projects for dbux-projects/dbux-practice
-  const projectsParent = process.env.NODE_ENV === 'production' ?
-    ['.'] :         // extension_folder/
-    ['..', '..'];   // monoRoot/dbux-code/../..
+  const projectsRoot = process.env.NODE_ENV === 'production' ?
+    extensionContext.asAbsolutePath(path.join('.', 'dbux_projects')) :  // extension_folder/dbux_projects
+    path.join(process.env.DBUX_ROOT, '..', 'dbux_projects');
 
   const cfg = {
-    dependencyRoot: extensionContext.asAbsolutePath(path.join(...nodeModulesParent)),
-    projectsRoot: getResourcePath(path.join('..', ...projectsParent, 'dbux_projects'))
+    dependencyRoot,
+    projectsRoot
   };
   const externals = {
     editor: {
@@ -55,7 +57,7 @@ function createProjectManager(extensionContext) {
         // TODO: use vscode API to add to workspace instead?
         await Process.exec(`code --add "${fpath}"`, { silent: false }, logger);
       },
-      showTextInNewFile,
+      showTextInNewFile
     },
     storage: {
       get: storageGet,
@@ -69,13 +71,16 @@ function createProjectManager(extensionContext) {
     alert(msg, modal = false) {
       window.showInformationMessage(msg, { modal });
     },
-    execInTerminal,
+    TerminalWrapper,
     resources: {
       getResourcePath
     },
     showMessage: {
-      showWarningMessage,
+      info: showInformationMessage,
+      warning: showWarningMessage,
     },
+    WebviewWrapper,
+    interactiveGithubLogin
   };
 
   // ########################################

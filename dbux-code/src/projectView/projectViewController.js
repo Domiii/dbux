@@ -1,11 +1,14 @@
 import { window, commands } from 'vscode';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
+import { checkSystem } from '@dbux/projects/src/checkSystem';
 import ProjectNodeProvider from './projectNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import PracticeStopwatch from './PracticeStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
+import { initRuntimeServer } from '../net/SocketServer';
+import { initProjectCommands } from '../commands/projectCommands';
 
 // ########################################
 //  setup logger for project
@@ -31,6 +34,7 @@ export function showOutputChannel() {
 
 export class ProjectViewController {
   constructor(context) {
+    this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
 
     // ########################################
@@ -66,7 +70,10 @@ export class ProjectViewController {
   // ###########################################################################
 
   async activateBugByNode(bugNode, debugMode = false) {
+    await checkSystem(this.manager, false, true);
     showOutputChannel();
+    await initRuntimeServer(this.extensionContext);
+
     const options = {
       cancellable: false,
       title: `[dbux] Activating Project ${bugNode.bug.project.name}@${bugNode.bug.name}`
@@ -124,6 +131,9 @@ export function initProjectView(context) {
 
   // refresh right away
   controller.treeDataProvider.refresh();
+
+  // register commands
+  initProjectCommands(context, controller);
 
   return controller;
 }

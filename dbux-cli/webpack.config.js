@@ -28,7 +28,7 @@ module.exports = (env, argv) => {
   const DBUX_VERSION = getDbuxVersion();
   const DBUX_ROOT = mode === 'development' ? MonoRoot : null;
 
-  console.debug(`[dbux-cli] (DBUX_VERSION=${DBUX_VERSION}, DBUX_ROOT=${DBUX_ROOT} mode=${mode}) building...`);
+  console.debug(`[dbux-cli] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
 
   const webpackPlugins = [
     new webpack.EnvironmentPlugin({
@@ -87,11 +87,12 @@ module.exports = (env, argv) => {
     }
   ];
 
+  const inputFiles = 'src/{,commands/,util/}*.js';
   const entry = {
     // see https://stackoverflow.com/questions/34907999/best-way-to-have-all-files-in-a-directory-be-entry-points-in-webpack
 
     // generate all files in `src` and `src/commands`
-    ...fromEntries(glob.sync(path.join(projectRoot, 'src/{,commands/}*.js')).map(fpath =>
+    ...fromEntries(glob.sync(path.join(projectRoot, inputFiles)).map(fpath =>
       [fpath.substring(projectSrc.length + 1, fpath.length - 3), fpath]
     )),
 
@@ -117,7 +118,7 @@ module.exports = (env, argv) => {
       path: path.join(projectRoot, outputFolderName),
       filename: '[name].js',
       publicPath: outputFolderName,
-      libraryTarget: "umd",
+      libraryTarget: "umd", // probably want commonjs instead
       devtoolModuleFilenameTemplate: "../[resource-path]",
       // sourceMapFilename: outFile + ".map"
     },

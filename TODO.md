@@ -1,10 +1,10 @@
 
-
-
 ## TODO
-* fix installDbuxDependencies to use promise and not call twice
+* dbux-graph-client
+   * copy `assets` to `resources` on build
+   * import correct `boostrap.min.css`, based on dark/light mode
+      * manually add a `style` tag?
 * core instrumentation bugs
-   * trace function parameters
    * fix: call traces for getters are off
       * it's actually the next trace in context (if the getter did not error out)
       * e.g.: `req.protocol` (instead of `req`)
@@ -12,9 +12,6 @@
    * identify + visualize getters and setters with an "f"?
       * just any context's parentTrace that is not stemming from a call?
 * add `eslint` into build pipeline
-* move process-related stuff from `dbux-projects` to `dbux-cli`
-* Deployment
-   * `Process.exec` can use some polishing. Properly pipe stdout + stderr.
 * allow setting application name via babel config
    * also allow setting that application name via `dbux-cli`
    * set application name for `dbux-projects` bugs correspondingly
@@ -294,6 +291,9 @@
 
 
 ## TODO (nice-to-haves)
+* proxy instrumentation
+   * assign name to application via config
+   * when instrumenting files served via web, still need files to allow us looking and tracing the source code?
 * fix source maps
    * when `dbux-code` reports an error, stack trace does not apply source maps
    * but launch trace file does not contain any obvious hints (files are resolved correctly etc)

@@ -9,12 +9,6 @@ export default class ExpressProject extends Project {
 
   packageManager = 'npm';
 
-  // async installDependencies() {
-  //   yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
-  //   yarn add --dev webpack webpack-cli webpack-dev-server nodemon && \
-  //   yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime
-  // }
-
   loadBugs() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all

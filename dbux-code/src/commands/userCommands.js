@@ -1,26 +1,27 @@
-import { window } from 'vscode';
+import { window, Uri, env } from 'vscode';
 import path from 'path';
 import fs from 'fs';
 import isNaN from 'lodash/isNaN';
 // import { stringify as jsonStringify } from 'comment-json';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { newFileLogger } from '@dbux/common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
+import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
-import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
-import { showGraphView } from '../graphView';
-import { initProjectUserCommands } from './projectCommands';
+import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/codeExport';
+import { showGraphView, hideGraphView } from '../graphView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
 import { runFile } from './runCommands';
+import { getOrCreateProjectManager } from '../projectView/projectControl';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newFileLogger(__filename);
+const { log, debug, warn, error: logError } = newLogger('userCommands');
 
 
-export function initUserCommands(extensionContext, projectViewController) {
+export function initUserCommands(extensionContext) {
   // ###########################################################################
   // exportApplicationData
   // ###########################################################################
@@ -59,13 +60,16 @@ export function initUserCommands(extensionContext, projectViewController) {
 
 
   // ###########################################################################
-  // show graph view
+  // show/hide graph view
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.showGraphView', async () => {
     await showGraphView(extensionContext);
   });
 
+  registerCommand(extensionContext, 'dbux.hideGraphView', async () => {
+    hideGraphView();
+  });
 
   // ###########################################################################
   // show/hide code decorations
@@ -146,17 +150,38 @@ export function initUserCommands(extensionContext, projectViewController) {
 
   registerCommand(extensionContext, 'dbux.selectTrace', openSelectTraceUI);
 
-  // ###########################################################################
-  // projects
-  // ###########################################################################
-
-  initProjectUserCommands(extensionContext, projectViewController);
-
 
   // ###########################################################################
   // run + debug
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.runFile', () => runFile(extensionContext));
-  registerCommand(extensionContext, 'dbux.debugFile', () => runFile(extensionContext, '--inspect-brk'));
+  registerCommand(extensionContext, 'dbux.debugFile', () => runFile(extensionContext, true));
+
+
+  // ###########################################################################
+  // practice backend
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.backendLogin', async () => {
+    const backend = await getOrCreateProjectManager().getOrInitBackend();
+    await backend.auth.login();
+  });
+  
+  // ###########################################################################
+  // system check
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.systemCheck', () => {
+    let projectManager = getOrCreateProjectManager(extensionContext);
+    checkSystem(projectManager, true, true);
+  });
+
+  // ###########################################################################
+  // open help website
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.openWebsite', () => {
+    env.openExternal(Uri.parse('https://github.com/Domiii/dbux#introduction'));
+  });
 }

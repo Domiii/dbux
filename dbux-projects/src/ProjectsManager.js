@@ -10,8 +10,10 @@ import PracticeSession from './practiceSession/PracticeSession';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
 import RunStatus from './projectLib/RunStatus';
 import BugStatus from './dataLib/BugStatus';
+import BackendController from './backend/BackendController';
 
-const logger = newLogger('dbux-projects');
+
+const logger = newLogger('PracticeManager');
 const { debug, log } = logger;
 
 const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
@@ -33,6 +35,7 @@ export default class ProjectsManager {
    * @type {BugRunner}
    */
   runner;
+  _backend;
 
   /**
    * @param {Object} externals 
@@ -47,6 +50,15 @@ export default class ProjectsManager {
     this.runner.start();
 
     this.progressLogController = new ProgressLogController(externals.storage);
+  }
+
+  async getOrInitBackend() {
+    // lazy initialize
+    if (!this._backend) {
+      this._backend = new BackendController(this);
+      await this._backend.init();
+    }
+    return this._backend;
   }
 
   /**
@@ -267,7 +279,7 @@ export default class ProjectsManager {
         await bug.project.applyPatchString(patchString);
         return true;
       } catch (err) {
-        let keepRunning = await this.externals.showMessage.showWarningMessage(`Failed when applying previous progress of this bug.`, {
+        let keepRunning = await this.externals.showMessage.warning(`Failed when applying previous progress of this bug.`, {
           'Show diff in new tab and cancel': () => {
             this.externals.editor.showTextInNewFile(`diff.diff`, patchString);
             return false;
@@ -323,10 +335,6 @@ export default class ProjectsManager {
     return this.runner.onStatusChanged(cb);
   }
 
-  async installDependencies() {
-    await this.installDbuxDependencies();
-  }
-
   getDevPackageRoot() {
     // NOTE: __dirname is actually "..../dbux-code/dist", because of webpack
     return fs.realpathSync(path.join(__dirname, '..', '..'));
@@ -365,12 +373,6 @@ export default class ProjectsManager {
   //     entries(deps).
   //     map(([pkgName, version]) => `${this._convertPkgToLocalIfNecessary(pkgName, version)}`);
   // }
-
-
-  isDependencyInstalled(name) {
-    const { dependencyRoot } = this.config;
-    return sh.test('-d', path.join(dependencyRoot, 'node_modules', name));
-  }
 
   getDbuxCliBinPath() {
     const { dependencyRoot } = this.config;
@@ -413,72 +415,89 @@ export default class ProjectsManager {
   // Dependency Management
   // ###########################################################################
 
+  _sharedDependencyNames = [
+    // NOTE: npm flattens dependency tree by default, and other important dependencies are dependencies of @dbux/cli
+    '@dbux/cli'
+  ];
+
+  async installDependencies() {
+    await this.installDbuxDependencies();
+  }
+
   isInstallingSharedDependencies() {
-    return !!this._installSharedDependenciesPromise;
+    return !!this._installPromise;
   }
 
   hasInstalledSharedDependencies() {
-    // TODO: check correct version? should not be necessary for the VSCode extension because it will create a new extension folder for every version update anyway
-    return this.isDependencyInstalled('@dbux/cli');
+    return this.areDependenciesInstalled(this._sharedDependencyNames);
+  }
+
+  areDependenciesInstalled(deps) {
+    return deps.every(this.isDependencyInstalled);
+  }
+
+  isDependencyInstalled = (qualifiedDependencyName) => {
+    // TODO: check correct version?
+    //    should not be necessary for the VSCode extension because it will create a new extension folder for every version update anyway
+
+    // get name without version
+    const name = qualifiedDependencyName.match('(@?[^@]+)(?:@.*)?')[1];
+    if (process.env.NODE_ENV === 'development') {
+      if (name.startsWith('@dbux/')) {
+        // NOTE: in development mode, we have @dbux dependencies (and their dependencies) all linked up to the monoroot folder anyway
+        // NOTE: we need to short-circuit this for when we run the packaged extension in dev mode
+        return true;
+      }
+    }
+    const { dependencyRoot } = this.config;
+    return sh.test('-d', path.join(dependencyRoot, 'node_modules', name));
   }
 
   async installDbuxDependencies() {
-    await this._installSharedDependenciesPromise;
-    await (this._installSharedDependenciesPromise = this._doInstallDbuxDependencies());
-  }
-
-  async _doInstallDbuxDependencies() {
-    // await exec('pwd', this.logger);
+    // set correct version
     if (!process.env.DBUX_VERSION) {
       throw new Error('installDbuxDependencies() failed. DBUX_VERSION was not set.');
     }
 
-    // NOTE: in development mode, we have @dbux/cli (and it's dependencies) all linked up to the dev folder anyway
-    if (process.env.NODE_ENV === 'production') {
-      const { dependencyRoot } = this.config;
-      const execOptions = {
-        processOptions: {
-          cwd: dependencyRoot
-        }
-      };
-      const rootPackageJson = path.join(dependencyRoot, 'package.json');
-      if (!sh.test('-f', rootPackageJson)) {
-        // make sure, we have a local `package.json`
-        await this.runner._exec('npm init -y', logger, execOptions);
+    const deps = this._sharedDependencyNames.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
+    await this.installModules(deps);
+  }
+
+  async installModules(deps) {
+    await this._installPromise;
+    return (this._installPromise = this._doInstallModules(deps));
+  }
+
+  async _doInstallModules(deps) {
+    const { dependencyRoot } = this.config;
+    const execOptions = {
+      processOptions: {
+        cwd: dependencyRoot
       }
-      else if (this.hasInstalledSharedDependencies()) {
-        // already done!
-        return;
-      }
-
-      // delete previously installed node_modules
-      // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
-      // await sh.rm('-rf', path.join(projectsRoot, 'node_modules'));
-
-      // install @dbux/cli
-      const dbuxDeps = [
-        '@dbux/cli'
-
-        // NOTE: these are already dependencies of `@dbux/cli`
-        // NOTE: npm flattens dependency tree by default
-        //        see: https://docs.npmjs.com/cli/install#algorithm
-        //        see: https://visbud.blogspot.com/2019/06/how-to-prevent-nested-nodemodules.html
-
-        // '@dbux/runtime',
-        // '@dbux/babel-plugin'
-      ];
-
-      const allDeps = [
-        ...dbuxDeps.map(dep => `${dep}@${process.env.DBUX_VERSION}`),
-        // 'object.fromentries'
-      ];
-
-      // debug(`Verifying NPM cache. This might (or might not) take a while...`);
-      // await this.runner._exec('npm cache verify', logger, execOptions);
-
-      log('\n\nInstalling Dbux dependencies. This might (or might not) take a while...');
-      await this.runner._exec(`npm i ${allDeps.join(' ')}`, logger, execOptions);
+    };
+    const rootPackageJson = path.join(dependencyRoot, 'package.json');
+    if (!sh.test('-f', rootPackageJson)) {
+      // make sure, we have a local `package.json`
+      await this.runner._exec('npm init -y', logger, execOptions);
     }
+    else if (this.areDependenciesInstalled(deps)) {
+      // already done!
+      return;
+    }
+
+    // delete previously installed node_modules
+    // NOTE: if we don't do it, we (sometimes randomly) bump against https://github.com/npm/npm/issues/13528#issuecomment-380201967
+    // await sh.rm('-rf', path.join(projectsRoot, 'node_modules'));
+
+    // debug(`Verifying NPM cache. This might (or might not) take a while...`);
+    // await this.runner._exec('npm cache verify', logger, execOptions);
+
+    this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
+
+    // await this.runner._exec(`npm install --only=prod`, logger, execOptions);
+    await this.runner._exec(`npm install --only=prod && npm i ${deps.join(' ')}`, logger, execOptions);
+    // await this.execInTerminal(dependencyRoot, `npm i ${deps.join(' ')}`);
+
     // else {
     //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
     //   // const pkgPath = path.join(__dirname, '..', '..', '..', 'dbux-runtime');
@@ -526,6 +545,21 @@ export default class ProjectsManager {
     //   // writePackageJson(projectsRoot, pkg);
     //   await this.runner._exec(`npm i --save ${allDeps.join(' ')}`, logger, execOptions);
     // }
-    this._installSharedDependenciesPromise = null;
+    this._installPromise = null;
+  }
+
+  // ###########################################################################
+  // utilities
+  // ###########################################################################
+
+  async execInTerminal(cwd, command, args) {
+    try {
+      this._terminalWrapper = this.externals.TerminalWrapper.execInTerminal(cwd, command, args);
+      return await this._terminalWrapper.waitForResult();
+    }
+    finally {
+      this._terminalWrapper?.cancel();
+      this._terminalWrapper = null;
+    }
   }
 }

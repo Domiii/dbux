@@ -6,6 +6,15 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "Launch Program",
+			"program": "${file}",
+			"request": "launch",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "pwa-node"
+		},
+		{
 			"name": "dbux-code",
 			"type": "extensionHost",
 			"request": "launch",
@@ -15,7 +24,7 @@
 				"--disable-extensions=1"
 			],
 			"stopOnEntry": false,
-			"sourceMaps": true,
+			// "sourceMaps": true,
 			// "trace": true,
 			// "preLaunchTask": "npm: build-dbux-code"
 			"outFiles": [
@@ -29,6 +38,9 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+
+				// NOTE: it appears that --enable-source maps slows things down, and in debug mode it just grinds to a halt
+				// "--enable-source-maps",
 				"--nolazy",
 			],
 			"sourceMaps": true,
@@ -36,6 +48,7 @@
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
 				"run",
+				"--esnext",
 				"${file}"
 			],
 			"protocol": "inspector",
@@ -65,6 +78,7 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
@@ -91,6 +105,7 @@
 			"program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--preserve-symlinks"
 			],
 			"cwd": "${workspaceFolder}/dbux-cli",
@@ -120,6 +135,7 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
@@ -146,6 +162,7 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
@@ -214,6 +231,7 @@
 			"runtimeExecutable": "npm",
 			"runtimeArgs": [
 				// "--stack-trace-limit=1000",
+				"--enable-source-maps",
 				// "--nolazy",
 				"run",
 				"build-debug"
@@ -236,6 +254,7 @@
 			"runtimeExecutable": "npm",
 			"runtimeArgs": [
 				// "--stack-trace-limit=1000",
+				"--enable-source-maps",
 				// "--nolazy",
 				"run",
 				"start-debug"
@@ -265,6 +284,7 @@
 			"cwd": "${workspaceFolder}",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
 			"sourceMaps": true,
