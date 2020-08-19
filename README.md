@@ -76,10 +76,20 @@ Main considerations include:
 
 ## Syntax Limitations
 
-The following JS syntax constructs are not supported at all or support is limited:
+The following JS syntax constructs are not supported at all or support is limited. We don't recommend 
 
 * `async/await`
+   * Broken so bad that it will lead to errors when trying to run JS code with `await` in it.
+   * NOTE: Yes, this is an absolutely vital feature of modern JavaScript and we hate to not have it working yet.
+   * Tracked in #128.
+* Loops in general
+   * Loops are traced, however the loop is not properly instrumented and many important aspects of a loop are not yet recorded.
+   * Tracked in #222
 * Generator functions
+   * *Probably* broken so bad that it will lead to errors when trying to run JS code with generator function declarations in it.
+* do-while loops
+   * Not breaking other things. Just won't know much about your do-while loop.
+   * Afaik, there was some issue with Babel just not wanting the do-while visitor. Have not further researched.
 
 
 ## Async Call Graph + Callback tracking

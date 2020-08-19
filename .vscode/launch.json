@@ -24,7 +24,7 @@
 				"--disable-extensions=1"
 			],
 			"stopOnEntry": false,
-			// "sourceMaps": true,
+			"sourceMaps": true,
 			// "trace": true,
 			// "preLaunchTask": "npm: build-dbux-code"
 			"outFiles": [

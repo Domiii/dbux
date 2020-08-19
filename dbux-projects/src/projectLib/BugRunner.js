@@ -256,6 +256,7 @@ export default class BugRunner {
           // DBUX_ROOT: devMode ? fs.realpathSync(path.join(__dirname, '..', '..')) : null,
           // NODE_ENV: process.env.NODE_ENV
         };
+        // `args` in execInTerminal not working with anything now
         const result = await this.manager.execInTerminal(cwd, command, args);
         await this.manager.progressLogController.util.processBugProgress(bug, result);
         if (result.code === 0) {
