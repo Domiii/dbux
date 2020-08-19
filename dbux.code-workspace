@@ -9,9 +9,9 @@
 		"editor.tabSize": 2,
 		"javascript.validate.enable": true,
 		"workbench.colorCustomizations": {
-			"editorUnnecessaryCode.border": "#f0f",
-			"editorUnnecessaryCode.opacity": "#000f"
-		},
+      "editorUnnecessaryCode.border": "#f0f",
+      "editorUnnecessaryCode.opacity": "#000f"
+    },
 		"gitlens.codeLens.enabled": false,
 		"gitlens.currentLine.enabled": false,
 		"gitlens.hovers.currentLine.over": "line",
