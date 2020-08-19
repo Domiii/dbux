@@ -5,8 +5,9 @@
  * process information back to caller extension.
  */
 const spawn = require('child_process');
+const fs = require('fs');
+const path = require('path');
 const process = require('process');
-const io = require('socket.io-client');
 
 const Verbose = true;
 
@@ -18,7 +19,7 @@ const [
 ] = process.argv;
 
 const args = JSON.parse(Buffer.from(argsEncoded, 'base64').toString('ascii'));
-const { port, cwd, command, args: moreEnv } = args;
+const { cwd, command, tmpFolder, args: moreEnv } = args;
 
 console.debug('run.js command received:', args);
 
@@ -77,90 +78,12 @@ function main() {
 // handle results + send data
 // ###########################################################################
 
-let socket;
-let queue = [];
-let killTimer;
-let sent = false;
-
-const StayAwake = false;
-const KillDelay = 1000;
-
-function connect() {
-  if (socket) {
-    return;
-  }
-
-  const Remote = `ws://localhost:${port}`;
-  socket = io.connect(Remote, {
-    // jsonp: false,
-    // forceNode: true,
-    port,
-    transports: ['websocket']
-  });
-
-  socket.on('reconnect_attempt', () => {
-    Verbose && console.debug('[run.js] reconnecting...');
-    // socket.io.opts.transports = ['websocket'];
-  });
-  socket.on('connect', () => {
-    flushQueue();
-  });
-  socket.on('connect_error', (err) => Verbose && console.debug('[run.js] failed to connect', err));
-  socket.on('error', (err) => console.error(`[run.js]`, err));
-  socket.on('disconnect', () => {
-    socket = null;
-    console.warn('[run.js] disconnected');
-    process.exit();
-    if (!sent) {
-      // we got disconnected but did not finish our thing yet
-      // TODO: kill-tree the process?
-    }
-  });
-}
-
-
-function flushQueue() {
-  console.debug('run.js flushQueue', 'results', queue);
-  socket.emit('results', queue);
-  queue = [];
-  sent = true;
-
-  _refreshKillTimer();
-}
-
-function _refreshKillTimer() {
-  if (StayAwake) {
-    // stay awake
-    return;
-  }
-
-  // disconnect after a while
-  if (killTimer) {
-    clearTimeout(killTimer);
-  }
-  killTimer = setTimeout(() => socket.disconnect(true), KillDelay);
-}
-
-function sendData(data) {
-  connect();
-
-  queue.push(data);
-
-  if (socket.connected) {
-    flushQueue();
-  }
-}
-
 function reportStatusCode(code) {
-  sendData({
-    code
-  });
+  fs.writeFileSync(path.join(tmpFolder, code.toString()), '');
 }
 
 function reportError(error) {
-  sendData({
-    error
-  });
+  fs.writeFileSync(path.join(tmpFolder, 'error'), error);
 }
 
 

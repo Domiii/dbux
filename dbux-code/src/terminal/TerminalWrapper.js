@@ -3,10 +3,11 @@ import os from 'os';
 import path from 'path';
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
 import { execCommand } from '../codeUtil/terminalUtil';
 
-// const Verbose = true;
-const Verbose = false;
+const Verbose = true;
+// const Verbose = false;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
@@ -32,24 +33,40 @@ export default class TerminalWrapper {
   }
 
   async _run(cwd, command, args) {
-    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-'));
-    command = `${command}; touch ${tmpFolder}/$?`;
+    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');
 
-    this._terminal = await execCommand(cwd, command, args);
+
+    const pathToDbuxRun = getDbuxTargetPath('code', 'resources/_dbux_run.js');
+    const runJsArgs = Buffer.from(JSON.stringify({ cwd, command, args, tmpFolder })).toString('base64');
+    const runJsCommand = `node ${pathToDbuxRun} ${runJsArgs}`;
+
+    this._terminal = await execCommand('', runJsCommand);
 
     try {
       const result = await new Promise((resolve, reject) => {
         const watcher = fs.watch(tmpFolder);
         watcher.on('change', (eventType, filename) => {
-          if (eventType !== 'change') return;
           watcher.close();
 
+          let result;
+          if (filename === 'error') {
+            result = { error: fs.readFileSync(path.join(tmpFolder, filename), { encoding: 'utf8' }) };
+          } else {
+            result = { code: parseInt(filename, 10) };
+          }
+
+          Verbose && debug('Client finished. Result:', result);
           fs.unlinkSync(path.join(tmpFolder, filename));
-          resolve({ code: parseInt(filename, 10) });
+          resolve(result);
+        });
+
+        watcher.on('error', (err) => {
+          reject(new Error(`FSWatcher error: ${err.message}`));
         });
 
         window.onDidCloseTerminal((terminal) => {
           if (terminal === this._terminal) {
+            watcher.close();
             reject(new Error('User closed the terminal'));
           }
         });
@@ -87,7 +104,7 @@ export default class TerminalWrapper {
    * Execute `command` in `cwd` in terminal.
    * @param {string} cwd Set working directory to run `command`.
    * @param {string} command The command will be executed.
-   * @param {object} args Not working things (currently).
+   * @param {object} args 
    */
   static execInTerminal(cwd, command, args) {
     // TODO: register wrapper with context
