@@ -1,7 +1,7 @@
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code](https://vsmarketplacebadge.apphb.com/version/Domi.dbux-code.svg)](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
 [![install count](https://vsmarketplacebadge.apphb.com/installs-short/Domi.dbux-code.svg)](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
 [![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 <h2>Table of Contents</h2>
 
@@ -112,16 +112,6 @@ Bird's Eye overview over all executed files and functions.
 
 * currently hidden behind a command
 * uses `dbux-projects` to allow practicing dbux and, more generally, debugging on real-world projects and their bugs.
-
-
-# What is being traced?
-
-When using the "Run button", we trace all executed code, but ignore anything in `node_modules` and `dist` folders.
-
-* You can manage yourself what to instrument if you add `@dbux/babel-plugin` to your build pipeline.
-* For the "Run button" we hope to support a babel config override in the future.
-   * NOTE: This is currently hard-coded in [dbux-cli/src/util/buildBabelOptions.js](dbux-cli/src/util/buildBabelOptions.js).
-
 
 
 # Commands
@@ -236,3 +226,7 @@ These are all currently supported configuration parameters (mostly surrounding t
    "scope": "resource"
 }
 ```
+
+# How does Dbux work?
+
+Please refer to the [main page](../#readme) for more information on how Dbux works, how to configure it, performance considerations and more.
