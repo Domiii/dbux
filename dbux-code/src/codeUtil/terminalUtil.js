@@ -36,7 +36,7 @@ export async function execCommand(cwd, command) {
   let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
   terminal?.dispose();
 
-  let pathToBash = await which('bash');
+  let pathToBash = (await which('bash'))[0];
 
   const terminalOptions = {
     name: DefaultTerminalName,
