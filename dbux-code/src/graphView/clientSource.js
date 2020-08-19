@@ -7,14 +7,15 @@ export async function buildWebviewClientHtml(...scriptPaths) {
     )
   ).join('\n  ');
 
-  return (/*html*/ `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
-</head>
-<body>
+  // <!DOCTYPE html>
+  // <html lang="en">
+  // <head>
+  //     <meta charset="UTF-8">
+  //     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  //     <title>Test</title>
+  // </head>
+  // <body>
+  return (/*html*/ `
   <div id="root"></div>
 
   ${scripts}
@@ -58,6 +59,7 @@ export async function buildWebviewClientHtml(...scriptPaths) {
 
     main();
   </script>
-</body>
-</html>`);
+  `);
+  // </body>
+  // </html>
 }

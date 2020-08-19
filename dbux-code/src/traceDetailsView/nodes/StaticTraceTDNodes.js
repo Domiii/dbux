@@ -113,7 +113,11 @@ function isTraceCallbackRelated(trace) {
   return isCallbackRelatedTrace(type);
 }
 
-export { GroupingMode, groupingMode };
+function getGroupingMode() {
+  return groupingMode;
+}
+
+export { GroupingMode, getGroupingMode };
 
 export function switchMode(mode) {
   if (mode) {

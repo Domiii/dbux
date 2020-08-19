@@ -30,6 +30,10 @@ export default class WebviewWrapper {
     this.resourceRoot = path.join(_extensionContext.extensionPath, 'resources');
   }
 
+  getIcon() {
+    return null;
+  }
+
   /**
    * Check if we showed it before, and if so, show it again.
    * Usually called upon start-up.
@@ -182,6 +186,8 @@ export default class WebviewWrapper {
     );
     this.wasVisible = true;
 
+    this.panel.iconPath = this.getIcon();
+
     this.panel.onDidChangeViewState(
       this.handleDidChangeViewState,
       null,
@@ -216,8 +222,10 @@ export default class WebviewWrapper {
   _webviewUpdateToken = 0;
 
   async _restartClientDOM() {
-    const html = await this.buildClientHtml();
-    this.panel.webview.html = html + `<!-- ${++this._webviewUpdateToken} -->`;
+    let html = await this.buildClientHtml();
+    html = html + `<!-- ${++this._webviewUpdateToken} -->`;
+    this.panel.webview.html = html;
+    // this.panel.webview.html = 'asd!!';
   }
 
   async _restartHost() {

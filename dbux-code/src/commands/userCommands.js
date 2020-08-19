@@ -9,13 +9,14 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
-import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
+import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/codeExport';
 import { showGraphView, hideGraphView } from '../graphView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
 import { runFile } from './runCommands';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { showInformationMessage } from '../codeUtil/codeModals';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -181,7 +182,12 @@ export function initUserCommands(extensionContext) {
   // open help website
   // ###########################################################################
 
-  registerCommand(extensionContext, 'dbux.openWebsite', () => {
-    env.openExternal(Uri.parse('https://github.com/Domiii/dbux#introduction'));
+  registerCommand(extensionContext, 'dbux.openWebsite', async () => {
+    const dbuxLink = 'https://github.com/Domiii/dbux#introduction';
+    showInformationMessage(`Open in browser?`, {
+      async 'OK'() {
+        env.openExternal(Uri.parse(dbuxLink));
+      }
+    }, { modal: true });
   });
 }

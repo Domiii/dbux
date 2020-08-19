@@ -17,14 +17,14 @@ const { log, debug, warn, error: logError } = logger;
  * @param {Object} env 
  */
 function parseEnv(env) {
-  let result = '--env=';
+  let result = '';
   let first = true;
   for (let key in env) {
     if (!first) result += ',';
     result += `${key}=${env[key]}`;
     first = false;
   }
-  return result;
+  return result ? ` --env=${result}` : '';
 }
 
 /**
@@ -45,7 +45,7 @@ function getArgs(debugMode) {
 
   let dbuxArgs = config.get(`dbux.${runMode}.dbuxArgs`);
   let env = config.get(`dbux.${runMode}.env`);
-  dbuxArgs += ` ${parseEnv(env)}`;
+  dbuxArgs += `${parseEnv(env)}`;
 
   let programArgs = config.get(`dbux.${runMode}.programArgs`);
   if (programArgs) programArgs = ` ${programArgs}`;

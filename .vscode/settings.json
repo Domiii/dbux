@@ -12,5 +12,6 @@
   "python.autoComplete.extraPaths": [
     "analysis/src"
   ],
-  "debug.node.autoAttach": "on"
+  "debug.node.autoAttach": "on",
+  "dbux.run.dbuxArgs": "--esnext"
 }

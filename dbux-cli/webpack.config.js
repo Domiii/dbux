@@ -118,7 +118,7 @@ module.exports = (env, argv) => {
       path: path.join(projectRoot, outputFolderName),
       filename: '[name].js',
       publicPath: outputFolderName,
-      libraryTarget: "umd",
+      libraryTarget: "umd", // probably want commonjs instead
       devtoolModuleFilenameTemplate: "../[resource-path]",
       // sourceMapFilename: outFile + ".map"
     },
