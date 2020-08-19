@@ -13,8 +13,8 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <button title="Stop adding new runs/traces" data-el="hideNewRunBtn" class="btn btn-info" href="#"></button>
-          <button title="Hide all existing runs/traces" data-el="hideOldRunBtn" class="btn btn-info" href="#">x</button>
+          <button title="Stop recording: Do not add new runs/traces" data-el="hideNewRunBtn" class="btn btn-info" href="#"></button>
+          <button title="Clear: Hide all existing runs/traces" data-el="hideOldRunBtn" class="btn btn-info" href="#">x</button>
           <button title="Sync and always lock onto selected trace" data-el="syncModeBtn" class="btn btn-info" href="#">sync</button>
           <button title="Show location of context (function declaration or start of file)" data-el="locModeBtn" class="btn btn-info" href="#">loc</button>
           <button title="Show caller (call trace) of function call" data-el="callModeBtn" class="btn btn-info" href="#">call</button>

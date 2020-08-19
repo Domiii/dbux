@@ -33,7 +33,7 @@ If you are already familiar with the Plugin, feel free to further investigate fu
    * Dbux is not perfect. Learn more about some of the better known imperfections here.
 1. [Dbux Data Analysis](#dbux-data-analysis)
    * Dbux VSCode Plugin is (currently) the only frontend for Dbux. If you want to build your own frontend, want to further analyze your runtime data, or are just plain curious as to what kind of data is collected and what you can do with it, then this section is for you.
-1. [Architectural Notes](#architectural-notes)
+1. [Dbux Architecture](#dbux-architecture)
    * This section paints the bigger picture of all the components involved.
 1. [Development + Contributions](#development--contributions)
    * If you are interested in Dbux development.
@@ -201,7 +201,7 @@ While this is not impossible, we certainly do not currently support this feature
 
 This feature is still at somewhat of an infant stage. We track related feedback in issue #208.
 
-# Architectural Notes
+# Dbux Architecture
 
 ![architecture-v001](docs/img/architecture-v001.png)
 
