@@ -6,7 +6,7 @@ import ProjectNodeProvider from './projectNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import PracticeStopwatch from './PracticeStopwatch';
-import { getOrCreateProjectManager } from './projectControl';
+import { getOrCreateProjectManager, disposeProjectManager } from './projectControl';
 import { initRuntimeServer } from '../net/SocketServer';
 import { initProjectCommands } from '../commands/projectCommands';
 
@@ -31,9 +31,6 @@ setOutputStreams({
 export function showOutputChannel() {
   outputChannel.show();
 }
-
-
-let controller;
 
 class ProjectViewController {
   constructor(context) {
@@ -131,28 +128,41 @@ class ProjectViewController {
       this.practiceStopwatch.start();
     }
   }
+
+  async dispose() {
+    await disposeProjectManager();
+  }
 }
 
 // ###########################################################################
-// init
+// init/dispose
 // ###########################################################################
 
+let controller;
+
 export function initProjectView(context) {
-  controller = new ProjectViewController(context);
-
-  // shut it all down when VSCode shuts down
-  context.subscriptions.push({
-    dispose() {
-      const runner = controller.manager.getOrCreateRunner();
-      runner.cancel();
-    }
-  });
-
-  // refresh right away
-  controller.treeDataProvider.refresh();
-
-  // register commands
-  initProjectCommands(context, controller);
+  if (!controller) {
+    controller = new ProjectViewController(context);
+  
+    // shut it all down when VSCode shuts down
+    context.subscriptions.push({
+      dispose() {
+        const runner = controller.manager.getOrCreateRunner();
+        runner.cancel();
+      }
+    });
+  
+    // refresh right away
+    controller.treeDataProvider.refresh();
+  
+    // register commands
+    initProjectCommands(context, controller);
+  }
 
   return controller;
+}
+
+export async function disposeProjectView() {
+  await controller.dispose();
+  controller = null;
 }

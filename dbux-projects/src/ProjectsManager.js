@@ -351,4 +351,12 @@ export default class ProjectsManager {
       this._terminalWrapper = null;
     }
   }
+
+  // ###########################################################################
+  // dispose
+  // ###########################################################################
+
+  async dispose() {
+    await this.runner.cancel();
+  }
 }
