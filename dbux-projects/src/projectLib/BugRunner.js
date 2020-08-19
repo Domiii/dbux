@@ -187,6 +187,8 @@ export default class BugRunner {
     try {
       await this.activateBug(bug);
 
+      const previousBug = this.manager.getPreviousBug();
+
       // apply stored patch
       if (bug !== previousBug && !await this.manager.applyNewBugPatch(bug)) {
         return null;
@@ -307,7 +309,8 @@ export default class BugRunner {
     }
   }
 
-  on(evtName, cb) {
-    this._emitter.on(evtName, cb);
+  onStatusChanged(cb) {
+    cb(this.status);
+    return this._emitter.on('statusChanged', cb);
   }
 }

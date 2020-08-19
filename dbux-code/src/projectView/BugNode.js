@@ -4,6 +4,8 @@ import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import 'lodash';
 
+/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
+
 export default class BugNode extends BaseTreeViewNode {
   static makeLabel(bug) {
     return bug.name;
@@ -13,6 +15,9 @@ export default class BugNode extends BaseTreeViewNode {
     this.description = this.bug.description;
   }
 
+  /**
+   * @returns {Bug}
+   */
   get bug() {
     return this.entry;
   }
@@ -22,7 +27,7 @@ export default class BugNode extends BaseTreeViewNode {
   }
 
   get contextValue() {
-    const runStatus = RunStatus.getName(this.runStatus);
+    const runStatus = RunStatus.getName(this.bug.runStatus);
     const hasWebsite = this.bug.website ? 'hasWebsite' : '';
     return `dbuxProjectView.bugNode.${runStatus}.${hasWebsite}`;
   }

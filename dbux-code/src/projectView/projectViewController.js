@@ -29,9 +29,6 @@ export function showOutputChannel() {
   outputChannel.show();
 }
 
-
-let controller;
-
 export class ProjectViewController {
   constructor(context) {
     this.manager = getOrCreateProjectManager(context);
@@ -52,7 +49,7 @@ export class ProjectViewController {
   }
 
   handleStatusChanged(status) {
-    commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === RunStatus.Busy);
+    commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', RunStatus.is.Busy(status));
     this.treeDataProvider.refreshIcon();
   }
 
@@ -77,27 +74,8 @@ export class ProjectViewController {
 
     return runTaskWithProgressBar(async (progress/* , cancelToken */) => {
       const { bug } = bugNode;
-      const runner = this.manager.getOrCreateRunner();
-
-      // cancel any currently running tasks
-      progress.report({ message: 'Canceling previous tasks...' });
-      await runner.cancel();
-
       progress.report({ message: 'activating...' });
-      // TODO: remove this
-      const result = await this.manager._activateBug(bug, debugMode);
-
-      if (result?.code === 0) {
-        // test passed
-        // TODO: Not using modal after the second time success(check BugProgress)
-        window.showInformationMessage('Congratulations!! You have passed all test 🎉🎉🎉', { modal: true });
-      }
-      else {
-        progress.report({ message: 'opening in editor...' });
-        await bug.openInEditor();
-      }
-
-      this.treeDataProvider.refreshIcon();
+      await this.manager.activateBug(bug);
     }, options);
   }
 
@@ -129,14 +107,18 @@ export class ProjectViewController {
 // init
 // ###########################################################################
 
+/**
+ * @type {ProjectViewController}
+ */
+let controller;
+
 export function initProjectView(context) {
   controller = new ProjectViewController(context);
 
   // shut it all down when VSCode shuts down
   context.subscriptions.push({
     dispose() {
-      const runner = controller.manager.getOrCreateRunner();
-      runner.cancel();
+      controller.manager.stopRunner();
     }
   });
 

@@ -43,6 +43,8 @@ export default class ProjectsManager {
     this.externals = externals;
     this.editor = externals.editor;
     this.practiceSession = null;
+    this.runner = new BugRunner(this);
+    this.runner.start();
 
     this.progressLogController = new ProgressLogController(externals.storage);
   }
@@ -81,14 +83,6 @@ export default class ProjectsManager {
     return this.projects;
   }
 
-  getOrCreateRunner() {
-    if (!this.runner) {
-      const runner = this.runner = new BugRunner(this);
-      runner.start();
-    }
-    return this.runner;
-  }
-
   // ###########################################################################
   // practice flow management
   // ###########################################################################
@@ -101,10 +95,12 @@ export default class ProjectsManager {
    */
   async activateBug(bug, debugMode = false) {
     if (!this.practiceSession) {
+      debug('No existing session, creating new one');
       await this._startPracticeSession(bug, debugMode);
     }
     else if (this.practiceSession.bug === bug) {
       // re-activate the bug again
+      debug('Re-activate with same bug, try for it');
       const result = await this._activateBug(bug, debugMode);
       await this.progressLogController.util.processBugRunResult(bug, result);
       if (result === 0) {
@@ -121,10 +117,12 @@ export default class ProjectsManager {
       else {
         // some test failed
         this.externals.alert(`[Dbux] ${result} test(s) failed. Try again!`);
+        await bug.openInEditor();
       }
     }
     else {
       // activate another bug
+      debug('Practice session exist, try activating another bug');
       const confirmMsg = `There is a bug activated, you will not be able to submit the score once you give up, are you sure?`;
       const confirmResult = await this.externals.confirm(confirmMsg);
       if (confirmResult) {
@@ -212,6 +210,22 @@ export default class ProjectsManager {
     return result;
   }
 
+  async askForSubmit() {
+    const confirmString = 'Congratulations!! You have passed all test 🎉🎉🎉\nWould you like to submit the result?';
+    const shouldSubmit = await this.externals.confirm(confirmString);
+
+    if (shouldSubmit) {
+      this.submit();
+    }
+  }
+
+  /**
+   * Record the practice session data after user passed all tests.
+   */
+  submit() {
+    // TODO: maybe a new data type? or submit remotely?
+  }
+
   /**
    * Saves any changes in current active project as patch of bug
    * @param {Bug} bug 
@@ -270,6 +284,14 @@ export default class ProjectsManager {
   }
 
   // ###########################################################################
+  // BugRunner interface
+  // ###########################################################################
+
+  async stopRunner() {
+    await this.runner.cancel();
+  }
+
+  // ###########################################################################
   // Project/Bug run status getter
   // ###########################################################################
 
@@ -298,7 +320,7 @@ export default class ProjectsManager {
   }
 
   onRunStatusChanged(cb) {
-    this.runner.on('statusChanged', cb);
+    return this.runner.onStatusChanged(cb);
   }
 
   async installDependencies() {
@@ -505,21 +527,5 @@ export default class ProjectsManager {
     //   await this.runner._exec(`npm i --save ${allDeps.join(' ')}`, logger, execOptions);
     // }
     this._installSharedDependenciesPromise = null;
-  }
-
-  async askForSubmit() {
-    const confirmString = 'You have passed the test for the first time, would you like to submit the result?';
-    const shouldSubmit = await this.externals.confirm(confirmString);
-
-    if (shouldSubmit) {
-      this.submit();
-    }
-  }
-
-  /**
-   * Record the practice session data after user passed all tests.
-   */
-  submit() {
-    // TODO: maybe a new data type? or submit remotely?
   }
 }
