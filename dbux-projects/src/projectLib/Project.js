@@ -106,7 +106,7 @@ export default class Project {
   async gitCheckoutCommit(args) {
     if (!await this.checkCorrectGitRepository()) return;
 
-    await this.execInTerminal('git reset --hard ' + (args || ''));
+    await this.exec('git reset --hard ' + (args || ''));
   }
 
   async gitResetHard(needConfirm = false, confirmMsg = '') {
@@ -123,7 +123,7 @@ export default class Project {
       err.userCanceled = true;
       throw err;
     }
-    await this.execInTerminal('git reset --hard');
+    await this.exec('git reset --hard');
   }
 
   // ###########################################################################
@@ -252,7 +252,7 @@ export default class Project {
 
     // returns status code 1, if there are any changes
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.execInTerminal('git diff-index --quiet HEAD --', { failOnStatusCode: false });
+    const code = await this.exec('git diff-index --quiet HEAD --', { failOnStatusCode: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
@@ -327,7 +327,7 @@ export default class Project {
       return;
     }
 
-    await this.execInTerminal(`git add -A && git commit -am '"dbux auto commit"'`);
+    await this.exec(`git add -A && git commit -am '"dbux auto commit"'`);
   }
 
   async deleteProjectFolder() {
@@ -446,7 +446,7 @@ export default class Project {
       return -1;
     }
 
-    return this.execInTerminal(`git apply --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
+    return this.exec(`git apply --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
   }
 
   /**
@@ -468,7 +468,7 @@ export default class Project {
       return -1;
     }
 
-    return this.execInTerminal(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
+    return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
   }
 
   async getPatchString() {
