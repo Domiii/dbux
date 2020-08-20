@@ -394,6 +394,14 @@
           "light": "resources/light/boolean.svg",
           "dark": "resources/dark/boolean.svg"
         }
+      },
+      {
+        "command": "dbuxProjectView.node.showBugIntroduction",
+        "title": "Show introduction",
+        "icon": {
+          "light": "resources/light/question.svg",
+          "dark": "resources/dark/question.svg"
+        }
       }
     ],
     "menus": {
@@ -538,6 +546,11 @@
         {
           "command": "dbuxProjectView.node.showWebsite",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\.hasWebsite/",
+          "group": "inline"
+        },
+        {
+          "command": "dbuxProjectView.node.showBugIntroduction",
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode/",
           "group": "inline"
         }
       ],
