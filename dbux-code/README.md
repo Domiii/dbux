@@ -155,11 +155,17 @@ NOTE: You might want to read up on [value limitations and problems](
 ../#problems-with-values).
 
 
-### Trace Details: Object Tracking
+### Trace Details: Object traces
 
-TODO
+* Non-primitive values are tracked and correlated via a `Map`, meaning that any value that occurs anywhere in your program can be tracked throughout the program.
+* All non-primitive traces that have the same value ("sameness" defined by the JS built-in `Map`) can be looked up this way.
 
-### Trace Details: Trace Executed
+This allows us find any occurence of an object and its evolution throughout the execution of the program, like in the example screengrab below:
+
+![object traces](../docs/img/object-traces.gif)
+
+
+### Trace Details: Trace Executions
 
 TODO
 
