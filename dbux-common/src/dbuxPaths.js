@@ -1,8 +1,11 @@
 /**
  * NOTE: In dev mode, we want to always link back to our original source files.
  */
-export function getDbuxTargetPath(dbuxPackageName, relativePath) {
+export function getDbuxModulePath(dbuxPackageName, relativePath) {
   let path;
+  if (dbuxPackageName === 'code') {
+    throw new Error('Don\'t use this function to lookup dbux-code paths. It is not a public module.');
+  }
   if (process.env.NODE_ENV === 'production') {
     path = `@dbux/${dbuxPackageName}/${relativePath}`;
   }
