@@ -4,6 +4,7 @@ import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { showOutputChannel } from '../projectView/projectViewController';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
@@ -81,7 +82,8 @@ export async function runFile(extensionContext, debugMode = false) {
 
   // install dependencies
   if (!projectManager.hasInstalledSharedDependencies()) {
-    runTaskWithProgressBar(async (progress) => {
+    await runTaskWithProgressBar(async (progress) => {
+      showOutputChannel();
       progress.report({ message: 'Installing dependencies...' });
       await projectManager.installDependencies();
     }, { cancellable: false });
