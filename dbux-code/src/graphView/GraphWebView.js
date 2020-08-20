@@ -61,10 +61,10 @@ export default class GraphWebView extends WebviewWrapper {
       logError('[CLIENT ERROR]', ...args);
     },
 
-    async confirm(message, modal = true) {
-      const cfg = { modal };
-      const result = await window.showInformationMessage(message, cfg, 'Ok');
-      return result === 'Ok';
+    async confirm(msg, modal = true) {
+      const confirmText = 'Ok';
+      const result = await window.showInformationMessage(msg, { modal }, confirmText, modal ? undefined : 'Cancel');
+      return result === confirmText;
     },
 
     alert(message, modal = true) {

@@ -65,7 +65,7 @@ function createProjectManager(extensionContext) {
     },
     async confirm(msg, modal = false) {
       const confirmText = 'Ok';
-      const result = await window.showInformationMessage(msg, { modal }, confirmText, 'cancel');
+      const result = await window.showInformationMessage(msg, { modal }, confirmText, modal ? undefined : 'Cancel');
       return result === confirmText;
     },
     alert(msg, modal = false) {

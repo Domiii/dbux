@@ -8,7 +8,7 @@ import OutputChannel from './OutputChannel';
 import PracticeStopwatch from './PracticeStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
 import { initRuntimeServer } from '../net/SocketServer';
-import { initProjectCommands } from '../commands/projectCommands';
+import { initProjectCommands, initProjectUserCommands } from '../commands/projectCommands';
 
 // ########################################
 //  setup logger for project
@@ -134,6 +134,7 @@ export function initProjectView(context) {
 
   // register commands
   initProjectCommands(context, controller);
+  initProjectUserCommands(context, controller);
 
   return controller;
 }

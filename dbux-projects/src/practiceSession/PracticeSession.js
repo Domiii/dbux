@@ -10,9 +10,8 @@ export default class PracticeSession {
    * @param {Project} project 
    * @param {Bug} bug 
    */
-  constructor(project, bug, stopwatchEnabled = false) {
+  constructor(project, bug) {
     this._stopwatch = new Stopwatch();
-    this.stopwatchEnabled = stopwatchEnabled;
     this.project = project;
     this.bug = bug;
     this.state = PracticeSessionState.Activating;
@@ -27,7 +26,6 @@ export default class PracticeSession {
   }
 
   startStopwatch() {
-    this.checkStopwatchEnabled();
     this._stopwatch.start();
   }
 
@@ -35,7 +33,6 @@ export default class PracticeSession {
    * @param {number} time 
    */
   setStopwatch(time) {
-    this.checkStopwatchEnabled();
     this._stopwatch.set(time);
   }
 
@@ -43,14 +40,7 @@ export default class PracticeSession {
    * @param {number} time 
    */
   stopStopwatch() {
-    this.checkStopwatchEnabled();
     this._stopwatch.pause();
     return this._stopwatch.time;
-  }
-
-  checkStopwatchEnabled() {
-    if (!this.stopwatchEnabled) {
-      throw new Error('Stopwatch does not enabled in this practice session');
-    }
   }
 }

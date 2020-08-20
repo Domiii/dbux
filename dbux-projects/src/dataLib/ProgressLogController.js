@@ -66,8 +66,8 @@ export default class ProgressLogController {
     }
   }
 
-  reset() {
+  async reset() {
     this.progressLog = new ProgressLog();
-    this.save();
+    await this.save();
   }
 }

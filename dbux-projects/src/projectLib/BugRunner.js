@@ -127,6 +127,7 @@ export default class BugRunner {
   }
 
   /**
+   * Install bug
    * @param {Bug} bug 
    */
   async activateBug(bug) {
@@ -163,6 +164,8 @@ export default class BugRunner {
       // select bug
       async () => project.selectBug(bug)
     );
+
+    this.setStatus(BugRunnerStatus.Done);
   }
 
   /**
@@ -171,30 +174,14 @@ export default class BugRunner {
    */
 
   /**
-   * Install and run bug (if in debug mode, will wait for debugger to attach)
+   * Run test bug command (if in debug mode, will wait for debugger to attach)
    * @param {Bug} bug
    * @returns {ExecuteResult}
    */
   async testBug(bug, debugMode = true) {
     const { project } = bug;
 
-    // sh.mkdir('-p', project.projectPath);
-    // await project.manager.installDependencies();
-    // return;
-
-    // do whatever it takes (usually: `activateProject` -> `git checkout`)
-
     try {
-      await this.activateBug(bug);
-
-      const previousBug = this.manager.getPreviousBug();
-
-      // apply stored patch
-      if (bug !== previousBug && !await this.manager.applyNewBugPatch(bug)) {
-        return null;
-      }
-
-      // hackfix: set status here again in case of `this.activateBug` skips installaion process
       this.setStatus(BugRunnerStatus.Busy);
 
       let command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);

@@ -9,7 +9,7 @@ const { log, debug, warn, error: logError } = newLogger('Stopwatch');
 export default class Stopwatch {
   constructor() {
     this.isTiming = false;
-    this._timeOffset = 0;
+    this._timeOffset = null;
     this._time = 0;
     this._emitter = new NanoEvents();
   }
@@ -35,6 +35,7 @@ export default class Stopwatch {
   pause() {
     if (this.isTiming) {
       this._time += performance.now() - this._timeOffset;
+      this._timeOffset = null;
       this.isTiming = false;
       this._emitter.emit('pause', this.time);
       Verbose && debug(`Stopwatch paused: time = ${this.time}`);
@@ -44,6 +45,7 @@ export default class Stopwatch {
   reset() {
     this._time = 0;
     if (this.isTiming) {
+      this._timeOffset = null;
       this.isTiming = false;
       this._emitter.emit('reset', this.time);
     }
@@ -51,6 +53,7 @@ export default class Stopwatch {
 
   set(time) {
     this._time = time;
+    this._timeOffset = null;
     this.isTiming = false;
   }
 

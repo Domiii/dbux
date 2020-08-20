@@ -9,7 +9,7 @@ import ProgressLogController from './dataLib/ProgressLogController';
 import PracticeSession from './practiceSession/PracticeSession';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
 import RunStatus from './projectLib/RunStatus';
-import BugStatus from './dataLib/BugStatus';
+import BugStatus, { isPracticingTypes } from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
 
 
@@ -106,40 +106,66 @@ export default class ProjectsManager {
    * @param {boolean} debugMode 
    */
   async activateBug(bug, debugMode = false) {
-    if (!this.practiceSession) {
-      debug('No existing session, creating new one');
-      await this._startPracticeSession(bug, debugMode);
-    }
-    else if (this.practiceSession.bug === bug) {
-      // re-activate the bug again
-      debug('Re-activate with same bug, try for it');
-      const result = await this._activateBug(bug, debugMode);
-      await this.progressLogController.util.processBugRunResult(bug, result);
-      if (result === 0) {
-        // user passed all test
-        this.askForSubmit();
-        this.practiceSession.setState(PracticeSessionState.Solved);
-
-        if (this.practiceSession.stopwatchEnabled) {
-          this.progressLogController.util.updateBugProgress(bug, {
-            timePassed: this.practiceSession.time,
-          });
+    if (this.practiceSession) {
+      if (this.practiceSession.bug === bug) {
+        // re-active same bug
+        const result = await this._activateBug(bug, debugMode);
+        await this.progressLogController.util.processBugRunResult(bug, result);
+        if (result === 0) {
+          // user passed all test
+          this.practiceSession.setState(PracticeSessionState.Solved);
+          this._saveAndClearPracticeSession();
+          this.askForSubmit();
+        }
+        else {
+          // some test failed
+          this.externals.alert(`[Dbux] ${result} test(s) failed. Try again!`);
+          await bug.openInEditor();
         }
       }
       else {
-        // some test failed
-        this.externals.alert(`[Dbux] ${result} test(s) failed. Try again!`);
-        await bug.openInEditor();
+        // already a practice session, ask to stop first
+        const projectName = this.practiceSession.project.name;
+        const bugId = this.practiceSession.bug.id;
+        const confirmMsg = `You are currently practicing ${projectName}#${bugId}, save and quit?`;
+        const confirmResult = await this.externals.confirm(confirmMsg, true);
+        if (confirmResult) {
+          await this.stopPracticeSession();
+          this.externals.showMessage.info('Practice session quitted');
+        }
+        else {
+          return;
+        }
+      }
+    }
+
+    const bugProgress = this.progressLogController.util.getBugProgressByBug(bug);
+    if (!bugProgress || BugStatus.is.None(bugProgress.status)) {
+      // first time start it, ask to start timer
+      const confirmMsg = `This is your first time activate this bug, do you want to start a timer?\n`
+                       + `Warning: You will not be able to time this bug once you activate it.`;
+      const confirmResult = await this.externals.confirm(confirmMsg, false);
+      if (confirmResult) {
+        this._createPracticeSession(bug, debugMode);
+      }
+      else if (!bugProgress) {
+        this.progressLogController.util.addNewBugProgress(bug, BugStatus.ActivatedWithoutTimer);
+      }
+      else {
+        this._activateBug(bug, debugMode);
+        const update = { status: BugStatus.ActivatedWithoutTimer };
+        this.progressLogController.util.updateBugProgress(bug, update);
       }
     }
     else {
-      // activate another bug
-      debug('Practice session exist, try activating another bug');
-      const confirmMsg = `There is a bug activated, you will not be able to submit the score once you give up, are you sure?`;
-      const confirmResult = await this.externals.confirm(confirmMsg);
-      if (confirmResult) {
-        await this.stopPracticeSession();
-        await this._startPracticeSession();
+      const { status } = bugProgress;
+      if (isPracticingTypes(status)) {
+        // already practicing, keep going on
+        this.practiceSession = await this._createPracticeSession(bug, debugMode);
+      }
+      else {
+        // no need to start timer
+        this._activateBug(bug, debugMode);
       }
     }
   }
@@ -153,48 +179,45 @@ export default class ProjectsManager {
    * Starts a practice session and activate the bug once, promise resolve after all is done
    * @param {Bug} bug 
    */
-  async _startPracticeSession(bug, debugMode) {
+  async _createPracticeSession(bug, debugMode) {
     // load existing bugProgress
-    let stopwatchEnabled;
     let bugProgress = this.progressLogController.util.getBugProgressByBug(bug);
-    if (bugProgress) {
-      stopwatchEnabled = bugProgress.stopwatchEnabled;
+    if (!bugProgress) {
+      bugProgress = this.progressLogController.util.addNewBugProgress(bug, BugStatus.Solving);
     }
-    else {
-      // ask to start timer for the first time
-      stopwatchEnabled = await this.externals.confirm('This is your first time activating this bug, would you like to start a timer?');
-      bugProgress = this.progressLogController.util.addNewBugProgress(bug, stopwatchEnabled, BugStatus.Solving);
+    else if (BugStatus.is.ActivatedWithoutTimer(bugProgress.status)) {
+      throw new Error('Trying to create practiceSession without timer enabled');
     }
 
     const { project } = bug;
-    const practiceSession = new PracticeSession(project, bug, stopwatchEnabled);
+    const practiceSession = new PracticeSession(project, bug);
     practiceSession.setState(PracticeSessionState.Activating);
-    
+
     // activate once to show user the bug, don't care about the result
     await this._activateBug(bug, debugMode);
-    
+
     practiceSession.setState(PracticeSessionState.Solving);
-    if (stopwatchEnabled) {
-      practiceSession.setStopwatch(bugProgress.timePassed);
-      this.practiceSession.startStopwatch();
-    }
+
+    practiceSession.setStopwatch(bugProgress.timePassed);
+    this.practiceSession.startStopwatch();
 
     return practiceSession;
   }
 
+  /**
+   * Save timer time to BugProgress and clear practice session
+   */
   async _saveAndClearPracticeSession() {
     if (!this.practiceSession) {
       return;
     }
-    const { bug } = this.practiceSession;
-    const bugProgress = this.progressLogController.util.getBugProgressByBug(bug);
 
-    if (this.practiceSession.stopwatchEnabled) {
-      this.practiceSession.stopStopwatch();
-      bugProgress.timePassed = this.practiceSession.time;
-    }
-    
-    this.progressLogController.save();
+    const timePassed = this.practiceSession.stopStopwatch();
+
+    const { bug } = this.practiceSession;
+    const update = { timePassed };
+    this.progressLogController.util.updateBugProgress(bug, update);
+    await this.progressLogController.save();
 
     this.practiceSession = null;
   }
@@ -215,6 +238,30 @@ export default class ProjectsManager {
       }
 
       await this.updateActivatingBug(bug);
+    }
+
+    // install things
+    await this.runner.activateBug(bug);
+
+    // apply stored patch
+    if (bug !== previousBug) {
+      try {
+        await this.applyNewBugPatch(bug);
+      } catch (err) {
+        const keepRunning = await this.externals.showMessage.warning(`Failed when applying previous progress of this bug.`, {
+          'Show diff in new tab and cancel': () => {
+            this.externals.editor.showTextInNewFile(`diff.diff`, err.patchString);
+            return false;
+          },
+          'Ignore and keep running': () => {
+            return true;
+          },
+        }, { modal: true });
+
+        if (!keepRunning) {
+          throw err;
+        }
+      }
     }
 
     const result = await this.runner.testBug(bug, debugMode);
@@ -260,9 +307,8 @@ export default class ProjectsManager {
   }
 
   /**
-   * 
-   * @param {Bug} bug 
-   * @return {boolean} Tells if user wants to keep running
+   * Apply the newest patch in testRuns
+   * @param {Bug} bug
    */
   async applyNewBugPatch(bug) {
     let testRuns = this.progressLogController.util.getTestRunsByBug(bug);
@@ -277,21 +323,11 @@ export default class ProjectsManager {
     if (patchString) {
       try {
         await bug.project.applyPatchString(patchString);
-        return true;
-      } catch (err) {
-        let keepRunning = await this.externals.showMessage.warning(`Failed when applying previous progress of this bug.`, {
-          'Show diff in new tab and cancel': () => {
-            this.externals.editor.showTextInNewFile(`diff.diff`, patchString);
-            return false;
-          },
-          'Ignore and keep running': () => {
-            return true;
-          },
-        }, { modal: true });
-        return keepRunning;
       }
-    } else {
-      return true;
+      catch (err) {
+        err.patchString = patchString;
+        throw err;
+      }
     }
   }
 

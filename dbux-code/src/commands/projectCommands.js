@@ -1,6 +1,7 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
+import { showInformationMessage } from '../codeUtil/codeModals';
 
 /** @typedef {import('../projectView/projectViewController').ProjectViewController} ProjectViewController */
 
@@ -55,7 +56,9 @@ export function initProjectCommands(extensionContext, projectViewController) {
  * @param {ProjectViewController} projectViewController 
  */
 export function initProjectUserCommands(extensionContext, projectViewController) {
-  registerCommand(extensionContext, 'dbux.resetPracticeProgress', () => {
-    return projectViewController.manager.progressLogController.reset();
+  registerCommand(extensionContext, 'dbux.resetPracticeProgress', async () => {
+    await projectViewController.manager.progressLogController.reset();
+    projectViewController.treeDataProvider.refreshIcon();
+    showInformationMessage('Bug progress cleared');
   });
 }

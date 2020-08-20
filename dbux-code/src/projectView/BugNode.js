@@ -41,6 +41,8 @@ export default class BugNode extends BaseTreeViewNode {
     }
     const progress = this.manager.progressLogController.util.getBugProgressByBug(this.bug);
     switch (progress?.status) {
+      case BugStatus.Solving:
+        return 'edit.svg';
       case BugStatus.Attempted:
         return 'wrong.svg';
       case BugStatus.Solved:

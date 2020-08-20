@@ -7,8 +7,17 @@ let BugStatus = {
   Solving: 2,
   Attempted: 3,
   Solved: 4,
+  ActivatedWithoutTimer: 5
 };
 
 BugStatus = new Enum(BugStatus);
 
 export default BugStatus;
+
+const practicingTypes = new Array(BugStatus.getValueMaxIndex()).map(() => false);
+practicingTypes[BugStatus.Solving] = true;
+practicingTypes[BugStatus.Attempted] = true;
+
+export function isPracticingTypes(status) {
+  return practicingTypes[status];
+}
