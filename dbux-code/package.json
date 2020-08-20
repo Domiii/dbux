@@ -572,27 +572,32 @@
         {
           "command": "dbuxCallGraphView.selectError",
           "when": "view == dbuxTraceDetailsView && dbuxCallGraphView.context.hasError == true",
-          "group": "navigation"
+          "group": "navigation@25"
         },
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
           "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
-          "group": "navigation"
+          "group": "navigation@20"
         },
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
           "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
-          "group": "navigation"
+          "group": "navigation@20"
+        },
+        {
+          "command": "dbux.runFile",
+          "when": "view == dbuxTraceDetailsView",
+          "group": "navigation@5"
         },
         {
           "command": "dbux.showGraphView",
           "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive == false",
-          "group": "navigation"
+          "group": "navigation@10"
         },
         {
           "command": "dbux.hideGraphView",
           "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive == true",
-          "group": "navigation"
+          "group": "navigation@10"
         },
         {
           "command": "dbux.runFile",
