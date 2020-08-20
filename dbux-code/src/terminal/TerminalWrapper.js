@@ -33,13 +33,15 @@ export default class TerminalWrapper {
   }
 
   async _run(cwd, command, args) {
-    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');
+    // NOTE: fix paths on Windows
+    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');    
+    const pathToDbuxRun = getResourcePath('_dbux_run.js').replace(/\\/g, '/');
 
-    
-    const pathToDbuxRun = getResourcePath('_dbux_run.js');
+    // serialize everything
     const runJsArgs = Buffer.from(JSON.stringify({ cwd, command, args, tmpFolder })).toString('base64');
     const runJsCommand = `node ${pathToDbuxRun} ${runJsArgs}`;
 
+    // execute command
     this._terminal = await execCommand('', runJsCommand);
 
     try {
