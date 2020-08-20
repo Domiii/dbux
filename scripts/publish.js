@@ -7,13 +7,13 @@ const open = require('open');
 const isArray = require('lodash/isArray');
 const LineReader = require('./LineReader');
 
-// make sure, we can import dbux stuff without any problems
+// make sure, we can import dbux stuff without any problems (and console log is pretty)
 require('../dbux-cli/lib/dbux-register-self');
-
-// Dbux built-in utilities
 require('../dbux-common/src/util/prettyLogs');
+
 const { newLogger } = require('../dbux-common/src/log/logger');
 const Process = require('../dbux-projects/src/util/Process').default;
+
 const { readPackageJsonVersion } = require('../dbux-cli/lib/package-util');
 
 // go!
