@@ -103,6 +103,8 @@ class ProjectViewController {
       else {
         progress.report({ message: 'opening in editor...' });
         await bug.openInEditor();
+
+        await this.manager.externals.showBugIntroduction(bug);
       }
 
       this.treeDataProvider.refreshIcon();
