@@ -38,8 +38,11 @@ export default class TerminalWrapper {
     const pathToDbuxRun = getResourcePath('_dbux_run.js').replace(/\\/g, '/');
 
     // serialize everything
-    const runJsArgs = Buffer.from(JSON.stringify({ cwd, command, args, tmpFolder })).toString('base64');
-    const runJsCommand = `node ${pathToDbuxRun} ${runJsArgs}`;
+    const runJsargs = { cwd, command, args, tmpFolder };
+    const serializedRunJsArgs = Buffer.from(JSON.stringify(runJsargs)).toString('base64');
+    const runJsCommand = `node ${pathToDbuxRun} ${serializedRunJsArgs}`;
+
+    debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
 
     // execute command
     this._terminal = await execCommand('', runJsCommand);
