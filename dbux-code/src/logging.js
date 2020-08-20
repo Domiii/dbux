@@ -1,7 +1,10 @@
-import { window } from 'vscode';
+import {
+  window
+} from 'vscode';
 import { onLogError } from '@dbux/common/src/log/logger';
 import { showOutputChannel } from './projectView/projectViewController';
 import { showErrorMessage } from './codeUtil/codeModals';
+import { showHelp } from './help';
 
 let errorLogFlag = true;
 
@@ -23,7 +26,12 @@ function onError(...args) {
     showErrorMessage(args.join(' '), {
       [`Show Log`]: () => {
         showOutputChannel();
-      }
+      },
+      [`Need Help`]: async () => {
+        // eslint-disable-next-line max-len
+        const msg = `If this error is causing you trouble, you can:\n→ Join Discord to ask for help\n→ If you already have some more information, report an issue on Github\n→ Check out the Dbux website for more information`;
+        return showHelp(msg);
+      },
     });
   }
 }

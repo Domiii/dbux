@@ -94,7 +94,7 @@ Analyze and navigate through individual traces:
 
 ### Trace Details: Navigation
 
-TODO
+Navigation allows you to step through all recorded traces, similar to the traditional debugger (but better).
 
 ### Trace Details: Values + Object Tracking
 
