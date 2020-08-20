@@ -51,7 +51,7 @@ class AppComponent extends ClientComponentEndpoint {
       this._deserializeShared(component, shared);
 
       // preInit
-      await component._preInit();
+      await component._preInit(initialState);
 
       // init
       const result = await component._performClientInit(role);

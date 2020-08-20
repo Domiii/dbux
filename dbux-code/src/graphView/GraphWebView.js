@@ -26,6 +26,10 @@ export default class GraphWebView extends WebviewWrapper {
   getIcon() {
     return getThemeResourcePathUri('tree.svg');
   }
+  
+  getThemeMode() {
+    return window.activeColorTheme.kind === ColorThemeKind.Light ? 'light' : 'dark';
+  }
 
   /**
    * Event handler callback
@@ -36,7 +40,7 @@ export default class GraphWebView extends WebviewWrapper {
   }
 
   async buildClientHtml() {
-    // const mode = window.activeColorTheme.kind === ColorThemeKind.Light ? 'light' : 'dark';
+    // const mode = this.getThemeMode();
     // TODO: fix up dark mode styles
     const mode = 'light';
     const scriptPath = this.getResourcePath('dist/graph/graph.js');
@@ -88,6 +92,8 @@ export default class GraphWebView extends WebviewWrapper {
 
     async goToTrace(trace) {
       await goToTrace(trace);
-    }
+    },
+
+    getThemeMode: this.getThemeMode
   }
 }
