@@ -182,7 +182,7 @@ export function initUserCommands(extensionContext) {
   // open help website
   // ###########################################################################
 
-  registerCommand(extensionContext, 'dbux.openWebsite', async () => {
+  registerCommand(extensionContext, 'dbux.showHelp', async () => {
     return showHelp();
   });
 }

@@ -108,10 +108,6 @@
         }
       },
       {
-        "command": "dbuxCallGraphView.gotoEntry",
-        "title": "Goto"
-      },
-      {
         "command": "dbux.backendLogin",
         "title": "Dbux: Backend Login"
       },
@@ -120,7 +116,7 @@
         "title": "Dbux: Check System Dependencies"
       },
       {
-        "command": "dbux.openWebsite",
+        "command": "dbux.showHelp",
         "title": "Dbux: Help",
         "icon": {
           "light": "resources/light/question.svg",
@@ -603,9 +599,151 @@
           "group": "navigation@10"
         },
         {
-          "command": "dbux.openWebsite",
+          "command": "dbux.showHelp",
           "when": "view == dbuxApplicationsView",
           "group": "navigation@5"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "dbuxCallStackView.itemClick",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.showContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.showError",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.showError.disabled",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.selectError",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.setFilter",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.clearFilter",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallStackView.showParent",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallStackView.showScheduler",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.switchGroupingMode",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectObject",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.valueRender",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousInContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextInContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextChildContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextParentContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousStaticTrace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousTrace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextTrace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectTraceAtCursor",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+          "when": "false"
+        },
+        {
+          "command": "dbuxApplicationsView.showEntryPoint",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.addProjectToWorkspace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.deleteProject",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.stopProject",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.activateBugWithDebugger",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.activateBug",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.busyIcon",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.stopBug",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.resetBug",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.showWebsite",
+          "when": "false"
+        },
+        {
+          "command": "dbux.cancelBugRunner",
+          "when": "false"
         }
       ]
     },
