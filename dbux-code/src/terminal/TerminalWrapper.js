@@ -35,10 +35,16 @@ export default class TerminalWrapper {
   async _run(cwd, command, args) {
     let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');
 
-    
     const pathToDbuxRun = getResourcePath('_dbux_run.js');
     const runJsArgs = Buffer.from(JSON.stringify({ cwd, command, args, tmpFolder })).toString('base64');
     const runJsCommand = `node ${pathToDbuxRun} ${runJsArgs}`;
+
+    debug(`pathToDbuxRun: ${pathToDbuxRun}`);
+    debug(`cwd: ${cwd}`);
+    debug(`command: ${command}`);
+    debug(`args:`, args);
+    debug(`tmpFolder: ${tmpFolder}`);
+    debug(`runJsComamnd: ${runJsCommand}`);
 
     this._terminal = await execCommand('', runJsCommand);
 
