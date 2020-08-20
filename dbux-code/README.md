@@ -276,69 +276,64 @@ Stop activating bug.
 
 These are all currently supported configuration parameters (mostly for the "Run with Dbux" and "Debug with Dbux" buttons/commands):
 
-(You can open configuration via `CTRL/Command + Shift + P` -> "Open ... Settings")
+(You can open configuration via `CTRL/Command + Shift + P` -> "Open {User,Workspace} Settings")
 
 ```json
-"dbux.run.enable-source-maps": {
-   "type": "boolean",
-   "default": true,
-   "description": "Toggle `--enable-source-maps` (since, despite its usefulness, it can be super slow)",
-   "scope": "resource"
-},
-"dbux.run.dbuxArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/ blob/master/dbux-cli/src/commandCommons.js",
-   "scope": "resource"
-},
-"dbux.run.nodeArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom node options passed to node when running the program.",
-   "scope": "resource"
-},
-"dbux.run.programArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom program arguments, available to the program via `process.argv`.",
-   "scope": "resource"
-},
-"dbux.run.env": {
-   "type": "object",
-   "default": {},
-   "description": "Custom program environment variables available via `process.env` (probably not working yet).",
-   "scope": "resource"
-},
-"dbux.debug.enable-source-maps": {
-   "type": "boolean",
-   "default": false,
-   "description": "Toggle `--enable-source-maps` (since, despite its usefulness, it can be super slow)",
-   "scope": "resource"
-},
-"dbux.debug.dbuxArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/ blob/master/dbux-cli/src/commandCommons.js",
-   "scope": "resource"
-},
-"dbux.debug.nodeArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom node options passed to node when running the program.",
-   "scope": "resource"
-},
-"dbux.debug.programArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom program arguments, available to the program via `process.argv`.",
-   "scope": "resource"
-},
-"dbux.debug.env": {
-   "type": "object",
-   "default": {},
-   "description": "Custom program environment variables available via `process.env` (probably not working yet).",
-   "scope": "resource"
-}
+"configuration": [
+   {
+      "title": "Dbux",
+      "properties": {
+         "dbux.run.dbuxArgs": {
+         "type": "string",
+         "default": "--esnext",
+         "description": "Custom `dbux run` command options. You can find a list of all available dbux command options by running `npx dbux run --help` or by looking at the sourcecode in [dbux-cli/src/commandCommons.js](../dbux-cli/src/commandCommons.js)",
+         "scope": "resource"
+         },
+         "dbux.run.nodeArgs": {
+         "type": "string",
+         "default": "--enable-source-maps --stack-trace-limit=100",
+         "description": "Options passed to node when running the program. Complete list at: https://nodejs.org/api/cli.html",
+         "scope": "resource"
+         },
+         "dbux.run.programArgs": {
+         "type": "string",
+         "default": "",
+         "description": "Custom program arguments, available to the program via `process.argv`.",
+         "scope": "resource"
+         },
+         "dbux.run.env": {
+         "type": "object",
+         "default": {},
+         "description": "Custom program environment variables available via `process.env` (probably not working yet).",
+         "scope": "resource"
+         },
+         "dbux.debug.dbuxArgs": {
+         "type": "string",
+         "default": "--esnext",
+         "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js",
+         "scope": "resource"
+         },
+         "dbux.debug.nodeArgs": {
+         "type": "string",
+         "default": "",
+         "description": "Custom node options passed to node when running the program.",
+         "scope": "resource"
+         },
+         "dbux.debug.programArgs": {
+         "type": "string",
+         "default": "",
+         "description": "Custom program arguments, available to the program via `process.argv`.",
+         "scope": "resource"
+         },
+         "dbux.debug.env": {
+         "type": "object",
+         "default": {},
+         "description": "Custom program environment variables available via `process.env` (probably not working yet).",
+         "scope": "resource"
+         }
+      }
+   }
+]
 ```
 
 # How does Dbux work?
