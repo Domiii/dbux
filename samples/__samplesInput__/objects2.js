@@ -13,7 +13,7 @@ obj2.a = 3;
 obj2['b'] = 4;
 
 for (let i = 0; i < 100; i++) {
-  obj3['var' + i] = i;
+  obj3['prop' + i] = i;
 }
 
 obj3[longString] = longString;
