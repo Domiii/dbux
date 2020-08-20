@@ -2,6 +2,8 @@ import { compileHtmlElement, decorateClasses } from '../util/domUtil';
 import { isMouseEventPlatformModifierKey } from '../util/keyUtil';
 import { getPlatformModifierKeyString } from '../util/platformUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
+import { thisExpression } from '../../../../AppData/Local/Microsoft/TypeScript/3.9/node_modules/@babel/types/lib/index';
+import { remove } from 'lodash';
 
 let choicingIndicator;
 class ContextNode extends ClientComponentEndpoint {
@@ -61,18 +63,23 @@ class ContextNode extends ClientComponentEndpoint {
       isSelected,
       traceId,
       isSelectedTraceCallRelated,
-      contextIdOfSelectedCallTrace
+      contextIdOfSelectedCallTrace,
+      themeMode
     } = this.state;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},50%,95%)`;
+    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},35%,${themeMode === 'dark' ? 30 : 95}%)`;
     // this.els.title.id = `name_${contextId}`;
     // this.els.nodeChildren.id = `children_${contextId}`;
+    this.setThemeMode(this.els.nodeToggleBtn, themeMode);
     this.els.contextLabel.textContent = contextNameLabel;
     this.els.locLabel.textContent = contextLocLabel;
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
+    this.setThemeMode(this.els.parentLabel, themeMode);
     this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
+    this.setThemeMode(this.els.valueLabel, themeMode);
+    this.setThemeMode(this.els.nodeChildren, themeMode);
     decorateClasses(this.els.title, {
       'selected-trace': isSelected
     });
@@ -159,7 +166,7 @@ class ContextNode extends ClientComponentEndpoint {
     // check trace is selectedTraceCallRelated -del
     if (toggle !== -1 && isSelectedTraceCallRelated && contextIdOfSelectedCallTrace !== undefined) {
       toggle = selectChild.findIndex(x => x[1] === contextIdOfSelectedCallTrace);
-      
+
       let newIndicator = children[toggle]?.el.querySelector('.indicator-cont');
       this.checkNewIndicator(newIndicator, 'set-calltrace');
 
@@ -185,6 +192,13 @@ class ContextNode extends ClientComponentEndpoint {
     }
   }
 
+  setThemeMode(element, themeMode) {
+    if (themeMode === 'dark') {
+      return element?.classList.add('theme-mode-dark');
+    } else {
+      return element?.classList.remove('theme-mode-dark');
+    }
+  }
 
   on = {
     contextLabel: {

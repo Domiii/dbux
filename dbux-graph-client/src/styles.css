@@ -187,7 +187,7 @@ html,body{
 
 
 .loc-label {
-  color: #333;
+  /* color: #333; */
   margin-right: 0.3rem !important;
 }
 
@@ -210,14 +210,14 @@ html,body{
 }
 
 [data-el="parentLabel"] {
-  color: #222;
-  background: rgba(0,0,0,0.05);
+  /* color: #222; */
+  background: rgba(0,0,0,0.01);
   font-size: 11px;
   margin-right: 0.3rem !important;
 }
 
 .value-label {
-  color: #222;
+  /* color: #222; */
   background: rgba(0,0,0,0.1);
   font-size: 11px;
   margin-right: 0.3rem !important;
@@ -229,8 +229,8 @@ html,body{
 /* ContextNode link style */
 
 .dbux-link {
-  color: rgb(71, 52, 243);
-  color: black;
+  /* color: rgb(71, 52, 243); */
+  /* color: black; */
   cursor: pointer;
 }
 
@@ -442,4 +442,9 @@ background: #333;
 
 #zoombar .button {
   margin:2.5px;
+}
+
+.theme-mode-dark{
+  color:white;
+  background:rgba(0,0,0,0.4);
 }

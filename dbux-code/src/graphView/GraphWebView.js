@@ -40,7 +40,7 @@ export default class GraphWebView extends WebviewWrapper {
   }
 
   async buildClientHtml() {
-    // const mode = this.getThemeMode();
+    const mode = this.getThemeMode();
     // TODO: fix up dark mode styles
     // const mode = 'light';
     const scriptPath = this.getResourcePath('dist/graph/graph.js');
