@@ -168,7 +168,7 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
 export async function checkSystem(projectManager, calledFromUser, fullCheck) {
   const simpleCheckRequirement = {
     node: { version: 12 },
-    nprm: {},
+    npm: {},
   };
   const fullCheckRequirement = {
     bash: {},
