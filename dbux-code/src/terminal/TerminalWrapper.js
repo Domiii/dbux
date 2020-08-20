@@ -3,8 +3,8 @@ import os from 'os';
 import path from 'path';
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
 import { execCommand } from '../codeUtil/terminalUtil';
+import { getResourcePath } from '../resources';
 
 const Verbose = true;
 // const Verbose = false;
@@ -35,8 +35,8 @@ export default class TerminalWrapper {
   async _run(cwd, command, args) {
     let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');
 
-
-    const pathToDbuxRun = getDbuxTargetPath('code', 'resources/_dbux_run.js');
+    
+    const pathToDbuxRun = getResourcePath('_dbux_run.js');
     const runJsArgs = Buffer.from(JSON.stringify({ cwd, command, args, tmpFolder })).toString('base64');
     const runJsCommand = `node ${pathToDbuxRun} ${runJsArgs}`;
 
