@@ -42,7 +42,7 @@ function createProjectManager(extensionContext) {
   // the folder that contains the sample projects for dbux-projects/dbux-practice
   const projectsRoot = process.env.NODE_ENV === 'production' ?
     extensionContext.asAbsolutePath(path.join('.', 'dbux_projects')) :  // extension_folder/dbux_projects
-    path.join(process.env.DBUX_ROOT, '..', 'dbux_projects');
+    path.join(process.env.DBUX_ROOT, 'dbux_projects');
 
   const cfg = {
     dependencyRoot,

@@ -1,5 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import BackendAuth from './BackendAuth';
+import { initDB } from './db';
 
 const { log, debug, warn, error: logError } = newLogger('Backend');
 
@@ -19,6 +20,11 @@ export default class BackendController {
 
   async init() {
     await this.installBackendDependencies();
+
+    let { _db, firebase } = initDB(this.practiceManager);
+    this.fs = _db;
+    this.firebase = firebase;
+
     this.auth = new BackendAuth(this);
   }
 }
