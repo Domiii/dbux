@@ -80,7 +80,7 @@ class ProjectViewController {
 
     const options = {
       cancellable: false,
-      title: `[dbux] Activating Project ${bugNode.bug.project.name}@${bugNode.bug.name}`
+      title: `[dbux] Testing bug ${bugNode.bug.project.name}@${bugNode.bug.name}`
     };
 
     return runTaskWithProgressBar(async (progress/* , cancelToken */) => {
@@ -88,11 +88,11 @@ class ProjectViewController {
       const runner = this.manager.getOrCreateRunner();
 
       // cancel any currently running tasks
-      progress.report({ message: 'Canceling previous tasks...' });
+      progress.report({ message: 'canceling previous tasks...' });
       await runner.cancel();
 
-      // activate it!
-      progress.report({ message: 'activating...' });
+      // run it!
+      progress.report({ message: 'running test...' });
       const result = await runner.testBug(bug, debugMode);
 
       if (result?.code === 0) {

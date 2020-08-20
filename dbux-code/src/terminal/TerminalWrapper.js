@@ -69,7 +69,7 @@ export default class TerminalWrapper {
         window.onDidCloseTerminal((terminal) => {
           if (terminal === this._terminal) {
             watcher.close();
-            reject(new Error('User closed the terminal'));
+            reject(new Error('The terminal was closed.'));
           }
         });
       });

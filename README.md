@@ -117,7 +117,7 @@ The following JS syntax constructs are not supported at all or support is limite
 Because of [performance](#performance) reasons, we cannot record *everything*.
 
 * Big objects, arrays and strings are truncated (see [performance](#performance) for more information).
-* We currently do not properly handle certain built-in types (such as `Map` and `Set`) correctly, will probably not show up correctly at all.
+* We currently do not properly handle certain built-in types (such as `Map` and `Set`) correctly, will probably not show up correctly.
 
 
 ## Calling `process.exit` as well as uncaught exceptions are not handled properly
