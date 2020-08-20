@@ -1,7 +1,12 @@
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code](https://vsmarketplacebadge.apphb.com/version/Domi.dbux-code.svg)](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
 [![install count](https://vsmarketplacebadge.apphb.com/installs-short/Domi.dbux-code.svg)](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
 [![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+<h2>Table of Contents</h2>
+
+[[TOC]]
+
 
 # Installation
 
@@ -12,58 +17,153 @@ You can one-click install the plugin from the [VSCode marketplace](https://marke
 
 # Usage
 
-In order to analyze your JavaScript program, 
+In order to get started, you probably want to use the "Run with Dbux" button.
 
-## "Run with Dbux" and "Debug with Dbux"
+Once your program has run, you can analyze it in great detail, as described below.
 
-* The "Run with Dbux" button is located at the top of the "Applications" view
-   * NOTE: You have to move mouse over it to see it. That's a VSCode limitation.
+If you have a build pipeline, and cannot just run it via `node myProgram.js`, refer to "[Adding Dbux to your build pipeline](../#adding-dbux-to-your-build-pipeline)".
+
+
+##  "Run with Dbux" and "Debug with Dbux"
+
+* The "Run with Dbux" button is the easiest way to get started with Dbux
+   * It is located in multiple places:
+      1. In the top right (to the right of your editor tabs)
+      1. In the Dbux view container at the top of the "Applications" view
+         * NOTE: You have to move mouse over it to see it. That's a VSCode limitation.
+      1. In the Dbux view container at the top of the "Trace Details" view
+         * (same asterisk applies)
    * The button calls the "*Dbux: Run current file*" command.
 * The "Debug with Dbux" button does the same thing as the Run button but with `--inspect-brk` enabled.
    * Make sure to turn on VSCode's Auto Attach for this.
    * For more information, consult [the official manual on "Node.js debugging in VS Code"](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
-* When you click either button (or run the command), [@dbux/cli](../dbux-cli) will run the currently selected JS file (with the [@dbux/runtime](../dbux-runtime) injected), tracing out and recording all kinds of runtime information as it executes.
-   * NOTE: Architectural details are explained [here](../#architectural-notes).
+
+### How the Run + Debug buttons work
+
+* When you click either button (or use the "*Dbux: Run current file*" command), what happens is: [@dbux/cli](../dbux-cli) runs the currently open JS file (with the [@dbux/runtime](../dbux-runtime) injected), tracing and recording runtime information as it executes.
 * You can configure both buttons in your workspace or user settings. See [Configuration](#configuration) for more details.
+* NOTE: Dbux architectural details are explained [here](../#dbux-architecture).
 
 
 
 # Analyzing our program's Runtime
 
-This extension provides the following views to engage in JavaScript runtime analysis:
-
-## "Applications" treeview
-
-Allows you to manage (enable/disable) all Dbux-enabled JavaScript applications that you ran.
-
-* A new application will show up, once the first batch of an executed program's runtime data has been received.
+This extension provides the following visual aids and interactions to engage in JavaScript runtime analysis:
 
 
 ## Code decorations
 
 * Code that you ran with Dbux will be rendered with decorations.
 * These decorations allow us to better understand which parts of the code actually executed.
-* You can toggle these decorations via the `Hide Decorations` and `Show Decorations` commands.
+* You can toggle these decorations via the `Dbux: Hide Decorations` and `Dbux: Show Decorations` commands.
+
+Examples:
+
+* In this buggy code, we find that line 6 never executed, just by looking at the code decorations:
+   ![code-deco1](../docs/img/code-deco1.png)
 
 
-## "Trace Details" treeview
-Analyze and navigate individual traces.
+## Applications
 
-* When looking
+The "Applications" view is at the top of the Dbux view.
+
+* This allows you to manage (enable/disable) all Dbux-enabled JavaScript applications.
+   * A new application will show up, once the first batch of an executed program's runtime data has been received.
+   * Executions of the same entry point file will be grouped together, and replace one another, when a new execution comes along.
+* You can click an application to enable/disable it.
+   * Disabled applications will not be visible to inspection. Only enabled applications:
+      1. Allow [trace selection](#trace-selection)
+      1. Render [code decorations](#code-decorations)
+      1. Show up in the [Call Graph](#call-graph)
+* Activating multiple applications at once can be useful for full-stack debugging purposes.
+   * When multiple applications are running at the same time, their Call Graphs will be (crudely) merged and can be viewed as one.
 
 
-## "Call Graph" webview
+## Trace Selection
+
+![select trace](../docs/img/select-trace1.gif)
+
+* Code that has executed can be traced and analyzed (executed code is rendered with [code decorations](#code-decorations) (if enabled)).
+* To select a trace, place the keyboard cursor on executed code and then press the "Select Trace" button
+   * NOTE: Keywords like `if` and `return` cannot currently be selected, however their conditions/arguments etc can.
+* Press repeatedly to select surrounding traces (as shown in the gif above).
+
+## Trace Details
+
+Analyze and navigate through individual traces:
+
+### Trace Details: Navigation
+
+TODO
+
+### Trace Details: Values + Object Tracking
+
+TODO
+
+### Trace Details: Trace Executed
+
+TODO
+
+### Trace Details: Nearby Values
+
+TODO
+
+### Trace Details: Debug
+
+Shows raw data related to the selected trace.
+
+This is generally only useful for people who want to contribute to Dbux or are otherwise interested in analyzing raw JS runtime data.
+
+## Call Graph
+
 Bird's Eye overview over all executed files and functions.
 
+TODO
 
-## The "Practice" treeview
+### Call Graph: Visualization
+
+TODO: Run + Context nodes
+
+### Call Graph: pause (pause/resume live updates)
+
+TODO
+
+### Call Graph: clear (show/hide already recorded traces)
+
+TODO
+
+### Call Graph: sync (toggle sync mode)
+
+TODO
+
+### Call Graph: loc (show/hide locations)
+
+TODO
+
+### Call Graph: call (show/hide caller trace)
+
+TODO
+
+### Call Graph: Search
+
+TODO
+
+## Finding Errors
+
+If a thrown error has been recorded, the "Error" button will show up at the top right in VSCode (to the right of the editor tabs).
+
+TODO
+
+## Practice
 
 * currently hidden behind a command
-* uses `dbux-projects` to allow practicing dbux and, more generally, debugging on real-world projects and their bugs.
-
+* allow practicing dbux and, more generally, debugging on real-world projects and their bugs.
 
 
 # Commands
+
+TODO: clean this up and update all missing commands
+TODO: explain keyboard shortcuts
 
 How to execute VSCode commands:
 1. Press `CTRL/Command + Shift + P`
@@ -109,7 +209,7 @@ Stop activating bug.
 
 # Configuration
 
-These are all currently supported configuration parameters (mostly surrounding the "Run with Dbux" and "Debug with Dbux" buttons):
+These are all currently supported configuration parameters (mostly for the "Run with Dbux" and "Debug with Dbux" buttons/commands):
 
 (You can open configuration via `CTRL/Command + Shift + P` -> "Open ... Settings")
 
@@ -175,3 +275,7 @@ These are all currently supported configuration parameters (mostly surrounding t
    "scope": "resource"
 }
 ```
+
+# How does Dbux work?
+
+Please refer to the [main page](../#readme) for more information on how Dbux works, how to configure it, performance considerations and more.

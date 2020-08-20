@@ -17,22 +17,26 @@ Here is a (very very early, read: crude) 1min demo video of just a small subset 
    <img src="http://img.youtube.com/vi/VAFcj75-vSs/0.jpg">
 </a>
 
-# Getting Started
+# Overview
 
-We recommend getting started with Dbux by playing around with the [Dbux VSCode Plugin](dbux-code#readme) and [reading its manual here](dbux-code#readme).
+We recommend getting started with Dbux by playing around with the [Dbux VSCode Plugin](dbux-code#readme).
 
-If you are already familiar with the Plugin, feel free to further investigate the following topics down below:
+If you are already familiar with the Plugin, feel free to further investigate further:
 
 1. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
    * You definitely want to get started with the Dbux VSCode plugin to explore a bit. Once you want to use Dbux in a more complicated build setup, the "Run with Dbux" button (and it's "Debug" button friend) can probably not (trivially) run your application anymore.
+1. [Which files will be traced?](#which-files-will-be-traced)
+   * When running Dbux, most relevant parts of the code will be traced. However it will not trace *everything*.
 1. [Performance](#performance)
    * Recording a lot of runtime data from a program can be very slow. This section explains several major performance considerations.
 1. [Known Issues & Limitations](#known-issues--limitations)
    * Dbux is not perfect. Learn more about some of the better known imperfections here.
 1. [Dbux Data Analysis](#dbux-data-analysis)
    * Dbux VSCode Plugin is (currently) the only frontend for Dbux. If you want to build your own frontend, want to further analyze your runtime data, or are just plain curious as to what kind of data is collected and what you can do with it, then this section is for you.
-1. [Architectural Notes](#architectural-notes)
+1. [Dbux Architecture](#dbux-architecture)
    * This section paints the bigger picture of all the components involved.
+1. [Development + Contributions](#development--contributions)
+   * If you are interested in Dbux development.
 
 
 # Adding Dbux to your build pipeline
@@ -50,6 +54,19 @@ There are two approaches:
 2. or: Add the [@dbux/babel-plugin](dbux-babel-plugin#readme) to your build pipeline manually
    * IMPORTANT: it must be the **last** entry in your `plugins` array.
    * [Read more here](dbux-babel-plugin#readme).
+
+
+
+# Which files will be traced?
+
+When running Dbux, most relevant parts of the code will be traced. However it will not trace *everything*.
+
+* When using the "Run button", we trace all executed code, but ignore anything in `node_modules` and `dist` folders.
+   * This logic is hard-coded in [dbux-cli/src/util/buildBabelOptions.js](dbux-cli/src/util/buildBabelOptions.js).
+   * In the future we hope to support a babel config override.
+* You can easily control what to instrument if you add `@dbux/babel-plugin` to your build pipeline.
+   * via Babel [`test`, `include`, `exclude` and `only` config options](https://babeljs.io/docs/en/options#test)
+   * via Webpack [rule conditions](https://webpack.js.org/configuration/module/#rule-conditions)
 
 
 # Performance
@@ -76,10 +93,20 @@ Main considerations include:
 
 ## Syntax Limitations
 
-The following JS syntax constructs are not supported at all or support is limited:
+The following JS syntax constructs are not supported at all or support is limited. We don't recommend 
 
 * `async/await`
+   * Broken so bad that it will lead to errors when trying to run JS code with `await` in it.
+   * NOTE: Yes, this is an absolutely vital feature of modern JavaScript and we hate to not have it working yet.
+   * Tracked in #128.
+* Loops in general
+   * Loops are traced, however the loop is not properly instrumented and many important aspects of a loop are not yet recorded.
+   * Tracked in #222
 * Generator functions
+   * *Probably* broken so bad that it will lead to errors when trying to run JS code with generator function declarations in it.
+* do-while loops
+   * Not breaking other things. Just won't know much about your do-while loop.
+   * Afaik, there was some issue with Babel just not wanting the do-while visitor. Have not further researched.
 
 
 ## Async Call Graph + Callback tracking
@@ -174,7 +201,7 @@ While this is not impossible, we certainly do not currently support this feature
 
 This feature is still at somewhat of an infant stage. We track related feedback in issue #208.
 
-# Architectural Notes
+# Dbux Architecture
 
 ![architecture-v001](docs/img/architecture-v001.png)
 
