@@ -112,18 +112,12 @@ The following JS syntax constructs are not supported at all or support is limite
    * Afaik, there was some issue with Babel just not wanting the do-while visitor. Have not further researched.
 
 
-## Async Call Graph + Callback tracking
+## Problems with Values
 
-Theoretically we should be able to track all callbacks and their data flow to the call site, however we don't do that properly quite yet.
+Because of [performance](#performance) reasons, we cannot record *everything*.
 
-Some examples:
-
-* When calling `setTimeout(f)`, you will see that `f` gets executed, but it's execution is not linked to the `setTimeout(f)` call that scheduled its execution.
-* The same problem exists with `Promise.then(f)`, and any instance where callbacks are used.
-
-NOTE: This link between a caller passing a callback and the execution of that callback is considered an edge in the "asynchronous call graph", an elusive feature that we are planning to support, but don't have finished yet.
-
-The related "asynchronous call graph" feature is tracked in issue #210.
+* Big objects, arrays and strings are truncated (see [performance](#performance) for more information).
+* We currently do not properly handle certain built-in types (such as `Map` and `Set`) correctly, will probably not show up correctly.
 
 
 ## Calling `process.exit` as well as uncaught exceptions are not handled properly
@@ -154,7 +148,6 @@ By trying to observe a program, while definitely not intending to, you will inev
 
 NOTE: There are ways to avoid these issues, for example by allowing in-line comment directives (like Eslint), but we sadly just don't have that yet. Tracked in issue #209.
 
-
 ## `eval` and dynamically loaded code
 
 As a general rule of thumb - Any dynamically loaded code will currently not be traced. That is because we are not proactively scanning the application for code injections or outside code references.
@@ -183,6 +176,20 @@ While this is not impossible, we certainly do not currently support this feature
    3. By default, babel treats js files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have strict mode enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910
    4. NOTE: You can see the same syntax error when slightly modifying above example and running it in `node` (without Dbux) but with strict mode enabled: `"use strict"; var public = 3;`.
 * You should be able to customize the babel config and disable strict mode if you please. However we recommend to just work against strict mode to begin with.
+
+
+## Async Call Graph + Callback tracking
+
+Theoretically we should be able to track all callbacks and their data flow to the call site, however we don't do that properly quite yet.
+
+Some examples:
+
+* When calling `setTimeout(f)`, you will see that `f` gets executed, but it's execution is not linked to the `setTimeout(f)` call that scheduled its execution.
+* The same problem exists with `Promise.then(f)`, and any instance where callbacks are used.
+
+NOTE: This link between a caller passing a callback and the execution of that callback is considered an edge in the "asynchronous call graph", an elusive feature that we are planning to support, but don't have finished yet.
+
+The related "asynchronous call graph" feature is tracked in issue #210.
 
 
 ## Issues under Windows

@@ -42,14 +42,18 @@ export async function execCommand(cwd, command) {
 
   let pathToBash = (await which('bash'))[0];
 
+  // NOTE: `tail -f /dev/null` fails on Mac (but only in the integrated terminal) for some reason
+  // const stall = 'tail -f /dev/null';
+  const stall = 'sleep 100000';
+
   const terminalOptions = {
     name: DefaultTerminalName,
     cwd,
     shellPath: pathToBash,
-    shellArgs: [`-c`, `echo "${bashParse(command)}"; ${command}; tail -f /dev/null;`],
+    shellArgs: [`-c`, `echo "${bashParse(command)}"; ${command}; ${stall}`],
   };
 
-  debug(`command: ${command}`);
+  debug(`execCommandInTerminal: ${command}`);
 
   terminal = window.createTerminal(terminalOptions);
   terminal.show();

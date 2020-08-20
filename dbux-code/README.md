@@ -94,13 +94,78 @@ Analyze and navigate through individual traces:
 
 ### Trace Details: Navigation
 
-Navigation allows you to step through all recorded traces, similar to the traditional debugger (but better).
+Navigation allows you to step through all recorded traces (similar to but a lot more advanced than) the traditional debugger.
 
-### Trace Details: Values + Object Tracking
+![navigation](../docs/img/nav1.png)
 
-TODO
+TODO: short video
 
-### Trace Details: Trace Executed
+Important: The buttons will only show up if you select them, or hover over them with the mouse (this is a VSCode limitation).
+
+Since we are not debugging in real-time, but work on a recoding of the actual execution, we can:
+
+1. step forward and also *backward* in time, meaning that all navigation modes exist twice (one forward, one backward).
+1. (to some extent) smart (not entirely stupid) steps
+
+Here are all the buttons:
+
+<img src="../dbux-code/resources/dark/previousParentContext.svg" title="previousParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextParentContext.svg" title="nextParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222">  `Go to start/end of context`
+
+* Jump to the start/end of the current context (function or file)
+* When pressed again, steps out to caller (or in "call graph" lingo: to the "parent")
+
+<img src="../dbux-code/resources/dark/previousChildContext.svg" title="previousChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextChildContext.svg" title="nextChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next function call in context`
+
+* Jump to previous/next *traced* function call <span style="color:red">↱</span> before/after the currently selected trace.
+   * Note that library or native calls <span style="color:gray">↱</span> are not traced and thus will be ignored by this button.
+* When pressed again, steps into that function.
+* NOTE: Things might be a bit off in case of [getters and setters](https://www.w3schools.com/js/js_object_accessors.asp)
+   * Since getters and setters don't have a clearly identifyable caller, they need a lot of extra work before they will be fully smoothed out.
+
+<img src="../dbux-code/resources/dark/previousInContext.svg" title="previousInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextInContext.svg" title="nextInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace in context`
+
+* Jump to previous "non-trivial" trace
+   * We use some basic heuristics to ignore some "trivial traces".
+   * Ex1: In case of `a.b`, it will step to `a.b`, but it will not step to `a`.
+   * Ex2: In case of `b.f(1, 2);`, it will step straight to `b.f(x, y)`, and will ignore `b`, `b.f`, `x` and `y`, etc.
+
+
+<img src="../dbux-code/resources/dark/previousStaticTrace.svg" title="previousStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextStaticTrace.svg" title="nextStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next execution of the same trace`
+
+* If a piece of code was executed multiple times (because a function was called multiple times, loops etc), this allows you to jump between the traces of those different executions.
+
+
+<img src="../dbux-code/resources/dark/leftArrow.svg" title="previous" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/rightArrow.svg" title="next" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace (unconditionally)`
+
+* Go to previous/next trace, no matter what.
+* These buttons provide the most granular navigation option.
+* Use it if you want to understand what exactly happened, as these buttons will follow the exact control flow of your program, visiting every expression and statement, not ignoring anything.
+
+
+
+### Trace Details: Value
+
+![value](../docs/img/values.gif)
+
+If your currently selected trace is an expression with a value other than `undefined`, that value will be rendered here.
+
+You can inspect a value by clicking on it.
+
+NOTE: You might want to read up on [value limitations and problems](
+../#problems-with-values).
+
+
+### Trace Details: Object traces
+
+* Non-primitive values are tracked and correlated via a `Map`, meaning that any value that occurs anywhere in your program can be tracked throughout the program.
+* All non-primitive traces that have the same value ("sameness" defined by the JS built-in `Map`) can be looked up this way.
+
+This allows us find any occurence of an object and its evolution throughout the execution of the program, like in the example screengrab below:
+
+![object traces](../docs/img/object-traces.gif)
+
+
+### Trace Details: Trace Executions
 
 TODO
 
@@ -211,69 +276,64 @@ Stop activating bug.
 
 These are all currently supported configuration parameters (mostly for the "Run with Dbux" and "Debug with Dbux" buttons/commands):
 
-(You can open configuration via `CTRL/Command + Shift + P` -> "Open ... Settings")
+(You can open configuration via `CTRL/Command + Shift + P` -> "Open {User,Workspace} Settings")
 
 ```json
-"dbux.run.enable-source-maps": {
-   "type": "boolean",
-   "default": true,
-   "description": "Toggle `--enable-source-maps` (since, despite its usefulness, it can be super slow)",
-   "scope": "resource"
-},
-"dbux.run.dbuxArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/ blob/master/dbux-cli/src/commandCommons.js",
-   "scope": "resource"
-},
-"dbux.run.nodeArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom node options passed to node when running the program.",
-   "scope": "resource"
-},
-"dbux.run.programArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom program arguments, available to the program via `process.argv`.",
-   "scope": "resource"
-},
-"dbux.run.env": {
-   "type": "object",
-   "default": {},
-   "description": "Custom program environment variables available via `process.env` (probably not working yet).",
-   "scope": "resource"
-},
-"dbux.debug.enable-source-maps": {
-   "type": "boolean",
-   "default": false,
-   "description": "Toggle `--enable-source-maps` (since, despite its usefulness, it can be super slow)",
-   "scope": "resource"
-},
-"dbux.debug.dbuxArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/ blob/master/dbux-cli/src/commandCommons.js",
-   "scope": "resource"
-},
-"dbux.debug.nodeArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom node options passed to node when running the program.",
-   "scope": "resource"
-},
-"dbux.debug.programArgs": {
-   "type": "string",
-   "default": "",
-   "description": "Custom program arguments, available to the program via `process.argv`.",
-   "scope": "resource"
-},
-"dbux.debug.env": {
-   "type": "object",
-   "default": {},
-   "description": "Custom program environment variables available via `process.env` (probably not working yet).",
-   "scope": "resource"
-}
+"configuration": [
+   {
+      "title": "Dbux",
+      "properties": {
+         "dbux.run.dbuxArgs": {
+         "type": "string",
+         "default": "--esnext",
+         "description": "Custom `dbux run` command options. You can find a list of all available dbux command options by running `npx dbux run --help` or by looking at the sourcecode in [dbux-cli/src/commandCommons.js](../dbux-cli/src/commandCommons.js)",
+         "scope": "resource"
+         },
+         "dbux.run.nodeArgs": {
+         "type": "string",
+         "default": "--enable-source-maps --stack-trace-limit=100",
+         "description": "Options passed to node when running the program. Complete list at: https://nodejs.org/api/cli.html",
+         "scope": "resource"
+         },
+         "dbux.run.programArgs": {
+         "type": "string",
+         "default": "",
+         "description": "Custom program arguments, available to the program via `process.argv`.",
+         "scope": "resource"
+         },
+         "dbux.run.env": {
+         "type": "object",
+         "default": {},
+         "description": "Custom program environment variables available via `process.env` (probably not working yet).",
+         "scope": "resource"
+         },
+         "dbux.debug.dbuxArgs": {
+         "type": "string",
+         "default": "--esnext",
+         "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js",
+         "scope": "resource"
+         },
+         "dbux.debug.nodeArgs": {
+         "type": "string",
+         "default": "",
+         "description": "Custom node options passed to node when running the program.",
+         "scope": "resource"
+         },
+         "dbux.debug.programArgs": {
+         "type": "string",
+         "default": "",
+         "description": "Custom program arguments, available to the program via `process.argv`.",
+         "scope": "resource"
+         },
+         "dbux.debug.env": {
+         "type": "object",
+         "default": {},
+         "description": "Custom program environment variables available via `process.env` (probably not working yet).",
+         "scope": "resource"
+         }
+      }
+   }
+]
 ```
 
 # How does Dbux work?
