@@ -29,7 +29,7 @@ If you are already familiar with the Plugin, feel free to further investigate fu
    * When running Dbux, most relevant parts of the code will be traced. However it will not trace *everything*.
 1. [Performance](#performance)
    * Recording a lot of runtime data from a program can be very slow. This section explains several major performance considerations.
-1. [Known Issues & Limitations](#known-issues--limitations)
+1. [Known Limitations](#known-limitations)
    * Dbux is not perfect. Learn more about some of the better known imperfections here.
 1. [Dbux Data Analysis](#dbux-data-analysis)
    * Dbux VSCode Plugin is (currently) the only frontend for Dbux. If you want to build your own frontend, want to further analyze your runtime data, or are just plain curious as to what kind of data is collected and what you can do with it, then this section is for you.
@@ -89,16 +89,19 @@ Main considerations include:
 * When running a program with Dbux enabled, and also running it in debug mode (i.e. `--inspect` or `--inspect-brk`), things probably slow down even worse. Consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features unless there is a specific Debugger functionality that Dbux cannot compete with (of which arguably there might be a few, that are valuable in some circumstances).
 
 
-# Known Issues & Limitations
+# Known Limitations
 
-## Syntax Limitations
+## async/await is not yet supported
 
-The following JS syntax constructs are not supported at all or support is limited. We don't recommend 
+* This is currently broken so bad that it will lead to errors when trying to run JS code with `await` in it.
+* NOTE: Yes, this is an absolutely vital feature of modern JavaScript and we hate to not have it working yet (despite having already spent quite some time on it).
+* Tracked in #128.
 
-* `async/await`
-   * Broken so bad that it will lead to errors when trying to run JS code with `await` in it.
-   * NOTE: Yes, this is an absolutely vital feature of modern JavaScript and we hate to not have it working yet.
-   * Tracked in #128.
+
+## Other Syntax Limitations
+
+The following JS syntax constructs are not supported at all or support is limited.
+
 * Loops in general
    * Loops are traced, however the loop is not properly instrumented and many important aspects of a loop are not yet recorded.
    * Tracked in #222
