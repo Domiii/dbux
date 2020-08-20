@@ -1,8 +1,10 @@
 import {
-  window,
   commands
 } from 'vscode';
-import { logError } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('Command');
 
 // command regist helper
 export function registerCommand(context, commandName, func) {
@@ -12,8 +14,8 @@ export function registerCommand(context, commandName, func) {
         return await f(...args);
       }
       catch (err) {
-        logError(commandName, 'command failed', err);
-        throw err;
+        logError(`'${commandName}' failed:`, err);
+        // throw err;
       }
     };
   }

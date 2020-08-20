@@ -1,5 +1,5 @@
 import { transform } from '@babel/core';
-import { mergeConcatArray } from 'dbux-common/src/util/arrayUtil';
+import { mergeConcatArray } from '@dbux/common/src/util/arrayUtil';
 
 export default function justRunMyPlugin(code, plugin, babelOptions) {
   const wrappedPlugin = () => {

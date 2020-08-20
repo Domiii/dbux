@@ -3,13 +3,13 @@
  */
 export function makeDebounce(cb, ms = 300) {
   let timer;
-  function _wrapDebounce() {
+  function _wrapDebounce(...args) {
     timer = null;
-    cb();
+    cb(...args);
   }
-  return () => {
+  return (...args) => {
     if (!timer) {
-      timer = setTimeout(_wrapDebounce, ms);
+      timer = setTimeout(() => _wrapDebounce(...args), ms);
     }
   };
 }

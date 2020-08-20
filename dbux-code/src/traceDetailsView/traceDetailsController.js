@@ -1,11 +1,12 @@
 import { ExtensionContext } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import traceSelection from 'dbux-data/src/traceSelection';
-import { makeDebounce } from 'dbux-common/src/util/scheduling';
+import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import traceSelection from '@dbux/data/src/traceSelection';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
 import TracesAtCursor from './TracesAtCursor';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
 
 let controller;
@@ -25,7 +26,7 @@ class TraceDetailsController {
     // try second node first to show the navigation buttons
     const targetNode = this.treeDataProvider.rootNodes[1] || this.treeDataProvider.rootNodes[0];
     if (targetNode) {
-      this.treeView.reveal(targetNode);
+      this.treeView.reveal(targetNode, { focus: true });
     }
   }
 
@@ -78,6 +79,7 @@ class TraceDetailsController {
 
     // data changed
     allApplications.selection.onApplicationsChanged((selectedApps) => {
+      this.refreshOnData();
       for (const app of selectedApps) {
         allApplications.selection.subscribe(
           app.dataProvider.onData('traces', this.refreshOnData)
@@ -86,7 +88,7 @@ class TraceDetailsController {
     });
 
     // add traceSelection event handler
-    traceSelection.onTraceSelectionChanged((selected) => {
+    traceSelection.onTraceSelectionChanged((/* selected */) => {
       this.refresh();
       this.tryReveal();
     });
@@ -97,7 +99,10 @@ class TraceDetailsController {
 // init
 // ###########################################################################
 
-export function initTraceDetailsView(context: ExtensionContext) {
+/**
+ * @param {ExtensionContext} context 
+ */
+export function initTraceDetailsView(context) {
   controller = new TraceDetailsController();
   controller.initOnActivate(context);
 

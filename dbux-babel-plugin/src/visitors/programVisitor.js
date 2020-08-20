@@ -1,15 +1,17 @@
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { buildSource, buildWrapTryFinally } from '../helpers/builders';
 import { extractTopLevelDeclarations } from '../helpers/topLevelHelpers';
 import { replaceProgramBody } from '../helpers/program';
 import injectDbuxState from '../dbuxState';
 import { buildTraceVisitors as traceVisitors } from './traceVisitors';
-import { mergeVisitors } from '../helpers/visitorHelpers';
-import { logInternalError } from '../log/logger';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { buildDbuxInit } from '../data/staticData';
-import { injectContextEndTrace, buildContextEndTrace } from '../helpers/contextHelper';
+import { buildContextEndTrace } from '../helpers/contextHelper';
 import nameVisitors from './nameVisitors';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('programVisitor');
 
 
 // ###########################################################################
@@ -26,9 +28,9 @@ function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
   const contextIdName = genContextIdName(path);
 
   return buildSource(`
-  const ${dbuxRuntime} = require('dbux-runtime');
-  const ${dbux} = ${dbuxInit}(${dbuxRuntime});
-  const ${contextIdName} = ${dbux}.getProgramContextId();
+  var ${dbuxRuntime} = typeof __dbux__ === 'undefined' ? require('@dbux/runtime') : __dbux__;
+  var ${dbux} = ${dbuxInit}(${dbuxRuntime});
+  var ${contextIdName} = ${dbux}.getProgramContextId();
   `);
 }
 
@@ -74,6 +76,7 @@ function wrapProgram(path, state) {
 // ###########################################################################
 
 function enter(path, state) {
+  // const cfg = state.opts;
   if (state.onEnter) return; // make sure to not visit Program node more than once
   // console.warn('P', path.toString());
   // console.warn(state.file.code);
@@ -131,7 +134,7 @@ function traverse(path, state, visitors) {
     // hackfix: if we don't re-throw here, babel swallows the error for some reason
     // console.error(err);
     // throw new Error('traversal failed');
-    logInternalError('traversal failed');
+    logError('traversal failed');
     throw err;
   }
 }

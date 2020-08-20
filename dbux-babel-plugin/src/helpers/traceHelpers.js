@@ -1,6 +1,6 @@
 import template from '@babel/template';
 import * as t from '@babel/types';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { getPathTraceId } from '../data/StaticTraceCollection';
 import { isPathInstrumented, isNodeInstrumented } from './instrumentationHelper';
 
@@ -259,6 +259,7 @@ const instrumentMemberCallExpressionEnter =
 
     // NOTE: we need to get loc before instrumentation
     const { loc } = path.node;
+    const oLoc = oPath.node.loc;
     const calleeLoc = calleePath.node.loc;
 
     // build
@@ -304,7 +305,11 @@ const instrumentMemberCallExpressionEnter =
     const newOPath = path.get(oPathId);
     const newCalleePath = path.get(calleePathId);
 
-    newCalleePath.node.loc = calleeLoc;
+    // set new callee loc, so it will still get instrumented
+    // newOPath.node.loc = oLoc;
+    newOPath.parentPath.node.loc = oLoc;
+    // newCalleePath.node.loc = calleeLoc;
+    newCalleePath.parentPath.node.loc = calleeLoc;
     newPath.node.loc = loc;
 
     // keep path data
@@ -312,9 +317,10 @@ const instrumentMemberCallExpressionEnter =
 
     // prepare for later
     // newPath.setData('_calleePath', calleePathId);
-    newOPath.setData('originalIsParent', false);
-    newOPath.setData('traceResultType', TraceType.ExpressionValue);
-    newCalleePath.setData('originalIsParent', false);
+    // newOPath.setData('originalIsParent', false);
+    newOPath.parentPath.setData('traceResultType', TraceType.ExpressionValue);
+    newCalleePath.parentPath.setData('traceResultType', TraceType.ExpressionValue);
+    // newCalleePath.setData('originalIsParent', false);
     newPath.setData('_bcePathId', bcePathId);
 
     return newPath;
@@ -331,7 +337,8 @@ function getCanTraceArgs(calleePath) {
 }
 
 /**
- * Convert `f(...args)` to: `traceBCE(f), f(...args)` to trace callee (`f`) and place BCE correctly
+ * Convert `f(...args)` to: `traceBCE(f), f(...args)`.
+ * Goal: trace callee `f`, and place BCE correctly
  * 
  */
 const instrumentDefaultCallExpressionEnter =
@@ -401,6 +408,7 @@ const instrumentDefaultCallExpressionEnter =
     }
 
     if (!isSpecialCallee) {
+      // set new callee loc, so it will still get instrumented
       newCalleePath.node.loc = calleeLoc;
     }
     newPath.node.loc = loc;
@@ -412,6 +420,7 @@ const instrumentDefaultCallExpressionEnter =
     // prepare for later
     // newPath.setData('_calleePath', calleePathId);
     newPath.setData('_bcePathId', bcePathId);
+    newCalleePath.setData('traceResultType', TraceType.ExpressionValue);
     newCalleePath.setData('originalIsParent', false); // override config for `AssignmentExpression.right`
 
     // set loc on actual call, so it gets instrumented on exit as well
@@ -454,7 +463,7 @@ function instrumentArgs(callPath, state, beforeCallTraceId) {
     const argPath = callPath.get('arguments.' + i);
     if (!argPath.node.loc && !argPath.getData('traceResultType')) {
       // synthetic node -> ignore
-      // E.g.: we replace `o.f(x)` with `_o = ..., _f = ..., f.call(o, x)`, and we do not want to trace the `o` arg here
+      // E.g.: we replace `o.f(x)` with `_o = ..., _f = ..., f.call(o, x)`, and we do not want to trace `o` in `call`
       continue;
     }
 
@@ -481,7 +490,8 @@ export function traceWrapArg(argPath, state, beforeCallTraceId) {
   if (argPath.isSpreadElement()) {
     argPath = argPath.get('argument');
   }
-  return _traceWrapExpression('traceArg', TraceType.CallArgument, argPath, state, {
+  const traceType = argPath.getData('traceResultType') || TraceType.CallArgument;
+  return _traceWrapExpression('traceArg', traceType, argPath, state, {
     callId: beforeCallTraceId,
     tracePath
   });

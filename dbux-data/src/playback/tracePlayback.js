@@ -1,16 +1,20 @@
 import NanoEvents from 'nanoevents';
-import Trace from 'dbux-common/src/core/data/Trace';
-import ExecutionContext from 'dbux-common/src/core/data/ExecutionContext';
-import { newLogger } from 'dbux-common/src/log/logger';
+import Trace from '@dbux/common/src/core/data/Trace';
+import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '../applications/allApplications';
 import traceSelection from '../traceSelection';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PlaybackController');
 
 export class TracePlayback {
   timer = null;
   timerInterval = 1000;
-  currentTrace: Trace = null;
+  /**
+   * @type {Trace}
+   */
+  currentTrace = null;
   _isPlaying = false;
   _emitter = new NanoEvents();
 

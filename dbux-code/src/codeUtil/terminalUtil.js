@@ -1,23 +1,52 @@
 import { window } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
+import Process from '@dbux/projects/src/util/Process';
+import which from '@dbux/projects/src/util/which';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalUtil');
 
 const DefaultTerminalName = 'dbux-run';
 
-export function getOrCreateDefaultTerminal() {
-  let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
-  if (!terminal) {
-    terminal = window.createTerminal(DefaultTerminalName);
-  }
-  return terminal;
+export function createDefaultTerminal(cwd) {
+  return createTerminal(DefaultTerminalName, cwd);
 }
 
-export function sendCommandToDefaultTerminal(command) {
-  const terminal = getOrCreateDefaultTerminal();
+export function createTerminal(name, cwd) {
+  let terminal = window.terminals.find(t => t.name === name);
+  terminal?.dispose();
+
+  const terminalOptions = {
+    name,
+    cwd
+  };
+  return window.createTerminal(terminalOptions);
+}
+
+export function sendCommandToDefaultTerminal(cwd, command) {
+  const terminal = createDefaultTerminal(cwd);
 
   terminal.sendText(command, true);
   terminal.show(false);
+
+  return terminal;
+}
+
+export async function execCommand(cwd, command) {
+  let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
+  terminal?.dispose();
+
+  let pathToBash = (await which('bash'))[0];
+
+  const terminalOptions = {
+    name: DefaultTerminalName,
+    cwd,
+    shellPath: pathToBash,
+    shellArgs: [`-c`, `${command}; tail -f /dev/null;`],
+  };
+
+  terminal = window.createTerminal(terminalOptions);
+  terminal.show();
 
   return terminal;
 }
@@ -51,4 +80,14 @@ export async function queryTerminalPid() {
   }
 
   return terminal.processId; // NOTE: processId returns a promise!
+}
+
+
+export function runInTerminalInteractive(terminalName, cwd, command) {
+  const terminal = createTerminal(terminalName, cwd);
+
+  terminal.sendText(command, true);
+  terminal.show(false);
+
+  return terminal;
 }

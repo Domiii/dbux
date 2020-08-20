@@ -1,14 +1,19 @@
-import { logInternalError } from 'dbux-common/src/log/logger';
-import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
+import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+import { newLogger } from '@dbux/common/src/log/logger';
 import Stack from './Stack';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
 import traceCollection from './data/traceCollection';
+import setImmediate from './setImmediate';
+
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('Runtime');
 
 // function mergeStacks(dst, src) {
 //   if ((src?.getDepth() || 0) > 0) {
 //     // this should actually never be necessary
-//     logInternalError('Trying to resume interrupted stack, but there was already .');
+//     logError('Trying to resume interrupted stack, but there was already .');
 //   }
 // }
 
@@ -88,7 +93,7 @@ export default class Runtime {
     else {
       const mysteriousStack = this._interruptedStacksOfUnknownCircumstances.find(stack => stack._stack.includes(contextId));
       if (mysteriousStack) {
-        console.warn('found mysterious stack for contextId:', contextId);
+        warn('found mysterious stack for contextId:', contextId);
         this._runStart(mysteriousStack);
       }
       else if (!this._executingStack) {
@@ -291,7 +296,7 @@ export default class Runtime {
       // we probably had an unhandled interrupt that is now resumed
       stack = this.resumeWaitingStack(contextId);
       if (!stack) {
-        logInternalError(`Could not pop contextId off stack because there is stack active, and no waiting stack registered with this contextId`, contextId);
+        logError(`Could not pop contextId off stack because there is stack active, and no waiting stack registered with this contextId`, contextId);
         return -1;
       }
       stackPos = this._popAnywhere(contextId);
@@ -303,7 +308,7 @@ export default class Runtime {
         // it's not on this stack -> probably coming back from an unhandled interrupt (probably should never happen?)
         stack = this.resumeWaitingStack(contextId);
         if (!stack) {
-          logInternalError(`Could not pop contextId off stack`, contextId);
+          logError(`Could not pop contextId off stack`, contextId);
           return -1;
         }
         stackPos = this._popAnywhere(contextId);
@@ -311,7 +316,7 @@ export default class Runtime {
     }
 
     if (stackPos === -1) {
-      logInternalError(`Could not pop contextId off stack`, contextId);
+      logError(`Could not pop contextId off stack`, contextId);
       return -1;
     }
 
@@ -334,7 +339,7 @@ export default class Runtime {
 
   registerAwait(awaitContextId) {
     if (!this.isExecuting()) {
-      logInternalError('Encountered `await`, but there was no active stack ', awaitContextId);
+      logError('Encountered `await`, but there was no active stack ', awaitContextId);
       return;
     }
 
@@ -368,7 +373,7 @@ export default class Runtime {
   resumeWaitingStack(contextId) {
     const waitingStack = this._waitingStacks.get(contextId);
     if (!waitingStack) {
-      logInternalError('Could not resume waiting stack (is not registered):', contextId);
+      logError('Could not resume waiting stack (is not registered):', contextId);
       return null;
     }
 
@@ -377,7 +382,7 @@ export default class Runtime {
 
     if (oldStack !== waitingStack) {
       if (this.isExecuting()) {
-        logInternalError('`resume` received while already executing not handled properly yet. Discarding executing stack.');
+        logError('`resume` received while already executing not handled properly yet. Discarding executing stack.');
         this.interrupt();
       }
 
@@ -398,7 +403,7 @@ export default class Runtime {
    */
   interrupt() {
     if (!this._executingStack) {
-      logInternalError('Tried to interrupt but there is no executing stack');
+      logError('Tried to interrupt but there is no executing stack');
       return;
     }
     this._interruptedStacksOfUnknownCircumstances.push(this._executingStack);

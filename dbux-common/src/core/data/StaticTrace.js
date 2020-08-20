@@ -1,10 +1,25 @@
-import Loc from "./Loc";
+/** @typedef {import('../Loc').default} Loc */
 
 export default class StaticTrace {
-  staticTraceId: number;
-  staticContextId: number;
-  type: number;
-  loc: Loc;
+  /**
+   * @type {number}
+   */
+  staticTraceId;
+  /**
+   * @type {number}
+   */
+  staticContextId;
+  /**
+   * @type {number}
+   */
+  type;
+  /**
+   * @type {Loc}
+   */
+  loc;
   
-  displayName: string;
+  /**
+   * @type {string}
+   */
+  displayName;
 }

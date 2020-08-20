@@ -1,10 +1,10 @@
 import { TreeItemCollapsibleState } from 'vscode';
-import Enum from 'dbux-common/src/util/Enum';
-import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
-import traceSelection from 'dbux-data/src/traceSelection';
-import { makeRootTraceLabel, makeTraceLabel, makeTraceValueLabel, makeCallValueLabel } from 'dbux-data/src/helpers/traceLabels';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import TraceType, { isCallbackRelatedTrace } from 'dbux-common/src/core/constants/TraceType';
+import Enum from '@dbux/common/src/util/Enum';
+import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
+import traceSelection from '@dbux/data/src/traceSelection';
+import { makeRootTraceLabel, makeTraceLabel, makeTraceValueLabel, makeCallValueLabel } from '@dbux/data/src/helpers/traceLabels';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/core/constants/TraceType';
 import TraceNode from './TraceNode';
 import GroupNode from './GroupNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
@@ -13,6 +13,7 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 // grouping modes
 // ###########################################################################
 
+// eslint-disable-next-line import/no-mutable-exports
 let GroupingMode = {
   Ungrouped: 1,
   ByRunId: 2,
@@ -112,7 +113,11 @@ function isTraceCallbackRelated(trace) {
   return isCallbackRelatedTrace(type);
 }
 
-export { GroupingMode, groupingMode };
+function getGroupingMode() {
+  return groupingMode;
+}
+
+export { GroupingMode, getGroupingMode };
 
 export function switchMode(mode) {
   if (mode) {
@@ -128,11 +133,11 @@ export function switchMode(mode) {
 }
 
 export default class StaticTraceTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace, parent) {
+  static makeTraceDetail(trace/* , parent */) {
     return trace;
   }
 
-  static makeProperties(trace, parent, detail) {
+  static makeProperties(trace/* , parent, detail */) {
     // build children here since label depends on children
     const { applicationId, staticTraceId } = trace;
     const app = allApplications.getById(applicationId);

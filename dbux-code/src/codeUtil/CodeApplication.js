@@ -3,10 +3,8 @@ import {
   workspace,
   ExtensionContext
 } from 'vscode';
-import Application from 'dbux-data/src/applications/Application';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import { showTextDocument } from './codeNav';
-import { showWarningMessage } from './codeModals';
+import Application from '@dbux/data/src/applications/Application';
+import allApplications from '@dbux/data/src/applications/allApplications';
 
 /**
  * Add some cool stuff to `dbux-data/src/applications/Application`s for
@@ -18,7 +16,10 @@ export class CodeApplication extends Application {
   }
 }
 
-export function initCodeApplications(context: ExtensionContext) {
+/**
+ * @param {ExtensionContext} 
+ */
+export function initCodeApplications(/* context */) {
   allApplications.DefaultApplicationClass = CodeApplication;
 }
 
@@ -33,36 +34,5 @@ export function getSelectedApplicationInActiveEditor() {
     return !openFilePath ||
       !!app.dataProvider.queries.programIdByFilePath(openFilePath);
   });
-  return application;
-}
-
-
-export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
-  if (!allApplications.getAllCount()) {
-    window.showWarningMessage('Failed. Must run DBUX-instrumented application first');
-    return null;
-  }
-
-  if (allApplications.selection.isEmpty()) {
-    window.showWarningMessage('Failed. No application selected');
-    return null;
-  }
-
-  const application = getSelectedApplicationInActiveEditor();
-  
-
-  if (!application) {
-    // suggest to open and use the first application that is selected and currently running.
-    const msg = 'Failed. No application running in file. Make sure to open a file with an application that ran before!';
-    const firstApp = allApplications.selection.getAll()[0];
-    const btns = {
-      [`Select ${firstApp.getPreferredName()}`]: async () => {
-        await showTextDocument(firstApp.entryPointPath);
-        return firstApp;
-      }
-    };
-    return showWarningMessage(msg, btns);
-  }
-
   return application;
 }

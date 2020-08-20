@@ -7,12 +7,15 @@ export default class Queries {
   _queryNames = [];
   _queries = {};
 
-  _addQuery(dp, query: Query) {
+  /**
+   * @param {*} dp 
+   * @param {Query} query 
+   */
+  _addQuery(dp, query) {
     this._queryNames.push(query.name);
     this._queries[query.name] = query;
 
     query._init(dp);
     this[query.name] = query.executor.bind(query, dp);
   }
-
 }

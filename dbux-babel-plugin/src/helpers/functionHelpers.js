@@ -1,14 +1,13 @@
 import * as t from '@babel/types';
-import { NodePath } from '@babel/core';
-import { isDebug } from 'dbux-common/src/util/nodeUtil';
-import { newLogger } from 'dbux-common/src/log/logger';
-import { logInternalWarning, logInternalError } from '../log/logger';
-import { getAllClassParents, getClassAncestryString } from './traversalHelpers';
+import { isDebug } from '@dbux/common/src/util/nodeUtil';
+import { newLogger } from '@dbux/common/src/log/logger';
+import { getClassAncestryString } from './traversalHelpers';
 import { getMemberExpressionName } from './objectHelpers';
 import { extractSourceStringWithoutComments } from './sourceHelpers';
 import { isNodeInstrumented } from './instrumentationHelper';
 
-const { log, debug, warn, error: logError } = newLogger('dbux-code');
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('functionHelpers');
 
 // ###########################################################################
 // function names
@@ -18,7 +17,7 @@ export function isCallPath(path) {
   return path.isCallExpression() || path.isOptionalCallExpression() || path.isNewExpression();
 }
 
-export function functionNoName(functionPath) {
+export function functionNoName() {
   // return `(${getPresentableString(functionPath.toString(), 30)})`;
   return '(anonymous)';
 }
@@ -79,15 +78,15 @@ export function getFunctionDisplayName(functionPath, state, functionName) {
 }
 
 /**
- * 
+ * @param {NodePath}
  */
-export function guessFunctionName(functionPath: NodePath, state) {
-  if (isDebug()) {
-    // basic sanity checks
-    if (!t.isFunction(functionPath)) {
-      throw new Error('invalid path must be function: ' + functionPath.node.type);
-    }
-  }
+export function guessFunctionName(functionPath, state) {
+  // if (isDebug()) {
+  //   // basic sanity checks
+  //   if (!t.isFunction(functionPath)) {
+  //     throw new Error('invalid path must be function: ' + functionPath.node.type);
+  //   }
+  // }
   const { node } = functionPath;
 
   /**
@@ -115,7 +114,7 @@ export function guessFunctionName(functionPath: NodePath, state) {
       name = parent.key.name;
     }
     else if (parent.left) {
-      const leftPath: NodePath = parentPath.get('left');
+      const leftPath = parentPath.get('left');
       const { left } = parent;
       if (left.name) {
         /**

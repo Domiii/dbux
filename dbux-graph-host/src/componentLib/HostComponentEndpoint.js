@@ -1,6 +1,6 @@
 import noop from 'lodash/noop';
-import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
-import sleep from 'dbux-common/src/util/sleep';
+import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndpoint';
+import sleep from '@dbux/common/src/util/sleep';
 import HostComponentList from './HostComponentList';
 
 // const Verbose = true;
@@ -72,10 +72,12 @@ class HostComponentEndpoint extends ComponentEndpoint {
     throw new Error('NYI');
   }
 
-  waitForInit() {
+  async waitForInit() {
     // NOTE: make sure, `waitFor` calls fulfill in order by appending our own task into the promise chain
     // return this._initPromise = this._initPromise.then(noop);
-    return this._initPromise;
+    while (this._initPromise) {
+      await this._initPromise;
+    }
   }
 
   async waitForUpdate() {
@@ -118,6 +120,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
     // store properties
     super._build(componentManager, parent, componentId, initialState);
 
+    componentManager.incInitCount();
+
     this._initPromise = new Promise(r => {
       // do the long async init dance
       // [hackfix] we are delaying `initClient` via `resolve().then()` because it needs `_internalRoleName` (and maybe other stuff?), 
@@ -133,6 +137,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         finally(() => {
           // _initPromise has fulfilled its purpose
           this._initPromise = null;
+          componentManager.decInitCount();
           r();
         });
     });
@@ -231,7 +236,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         },
         (err) => {
           // error :(
-          this.logger.error('error when updating client\n  ', err);
+          this.logger.error('Error when updating client, check client for stack trace.');
         }
       ).
       finally(() => {

@@ -1,4 +1,4 @@
-import { compileHtmlElement, decorateClasses, decorateAttr } from '@/util/domUtil';
+import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 let documentClickHandler;
@@ -236,7 +236,7 @@ class Toolbar extends ClientComponentEndpoint {
     },
 
     moreMenuBtn: {
-      click(evt) {
+      click(/* evt */) {
         this.toggleMenu();
       },
       focus(evt) { evt.target.blur(); }

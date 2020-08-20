@@ -1,104 +1,35 @@
+NOTE: the important TODO items here need to be transcribed into Github issues over time
 
-## TODO (shared)
-* grouping: add new `GroupNode` controller component
-   * `ContextGroupNode`: more than one `context`s (`realContext`) of `parentTraceId`
-   * `RecursionGroupNode`: if we find `staticContext` repeated in descendant `context`s
-      * (e.g. `next` in `express`)
-* 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## dbux-practice
-
-* user interaction log
-* backend
-* bug difficulty classification
-* hint system + more relevant information
-
-
-
-
-
-
-
-
-
-
-## TODO (other)
+## TODO
 * core instrumentation bugs
-   * assignments are traced twice, once with `ExpressionValue`, once with `ExpressionResult`
-      * e.g. `req.params = layer.params;`
-      * maybe has to do w/ `originalIsParent`?
-   * trace function parameters
-* fix: "running" a bug smoothly
-   * stop running if `git checkout` failed
-      * NOTE: usually a failure is indicated by process `statusCode !== 0`
-      * currently
-   * don't `gitResetHard` every time we run a bug
-      * check if bug was already selected before doing the setup
-         * Problem: need to deal with patch files
-            * generate commits from patch files so we can reliably determine whether patch/commit was applied?
-      * always show changes to user and let them confirm before `gitResetHard`
-      * allow saving/submitting own changes for bugs
-         * remember bug progress
-   * fix: allow for re-runninging "run.js" bug command from terminal
+   * fix: call traces for getters are off
+      * it's actually the next trace in context (if the getter did not error out)
+      * e.g.: `req.protocol` (instead of `req`)
+   * when encountering getter inside of a `CallExpression`, it will be mixed in with call, since it does not have its own BCE
+   * identify + visualize getters and setters with an "f"?
+      * just any context's parentTrace that is not stemming from a call?
+* add `eslint` into build pipeline
+* allow setting application name via babel config
+   * also allow setting that application name via `dbux-cli`
+   * set application name for `dbux-projects` bugs correspondingly
 * [dbux-projects]
-   * display test results
-   * integrate "bug hunt" timer
-      * pause, cancel, submit
-      * "submit" only available if bug runner succeeded
-   * when running new bug
-      * ask user to clear previous applications (and there are previous applications that are not of this bug)
-   * when selecting a bug, show a modal to introduce it, and offer buttons to choose
-      * start (w/ timer)
-      * practice (without timer; cannot use timer in the future)
-      * close
-   * after finishing
-      * store results on backend
-         * integrate github login
-      * show choices
-         * compare to others' results
-         * compare to actual solution
-         * (if available) watch video of how to debug this thing
-   * allow setting application name via babel config
-      * -> set application name for bugs correspondingly
    * allow user to change mocha/jest run timeout (in case of slow computers)
       * -> or just set it very high?
       * NOTE: it's still useful to deal with infinite loops caused by faulty fixes etc
    * if there is no test, let user fill out a checklist
 * fix graph theme + sync mode
    * better coloring schema, so we sync mode becomes a pleasant experience
-   * CONSIDER: always track in graph, but don't necessarily reveal?
+   * consider: ALWAYS track `traceSelection` in graph, but don't necessarily reveal (if graph is visible)
 * [dbux-practice] complete workflow design
    * bug spreadsheet
       * overall bug analysis
          * concepts, domain knowledge, difficulty
       * hints
-* fix: call traces for getters are off
-   * it's actually the next trace in context (if the getter did not error out)
-   * e.g.: `req.protocol` (not `req`)
-* identify + visualize getters and setters with an "f"!
-   * just any context's parentTrace that is not stemming from a call?
-   * Problem: when encountering getter inside of a `CallExpression`
 * Object rendering:
    * visualize when value got ommitted/pruned
    * show actual string length, if pruned
    * make valueCollection prune/omit parameters easily configurable
-* instrument `try` blocks
+* instrument `try` + `catch` blocks
    * test errors in `try/finally` -> find errors in `try` block?
    * also show some sort of error symbol when tracing `catch` block?
 * some assignments (and possibly other expressions) are traced twice
@@ -106,6 +37,7 @@
 * fix: `function` declarations are not tracked
    * store staticContextId by `function` object, so we can quickly jump to them and find all their references
 * [dbux-project] fix: use correct package manager (npm vs. yarn) when working with libraries in `dbux-projects`
+   * -> don't use yarn, unless absolutely necessary (to reduce dependencies for users)
 * fix: strings are currently tracked -> disable tracking of strings
 * fix: `traveValueLabels`
    * get callee name from instrumentation
@@ -356,6 +288,9 @@
 
 
 ## TODO (nice-to-haves)
+* proxy instrumentation
+   * assign name to application via config
+   * when instrumenting files served via web, still need files to allow us looking and tracing the source code?
 * fix source maps
    * when `dbux-code` reports an error, stack trace does not apply source maps
    * but launch trace file does not contain any obvious hints (files are resolved correctly etc)

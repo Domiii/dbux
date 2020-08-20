@@ -6,13 +6,12 @@
  *  have the time yet to properly separate them again. That is why there is also some context instrumentation in this file
  */
 
-import Enum from 'dbux-common/src/util/Enum';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
-import { newLogger } from 'dbux-common/src/log/logger';
+import Enum from '@dbux/common/src/util/Enum';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
+import { newLogger } from '@dbux/common/src/log/logger';
 import truncate from 'lodash/truncate';
-import { traceWrapExpression, traceBeforeExpression, buildTraceNoValue, traceCallExpression, traceBeforeSuper, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
-import { loopVisitor } from './loopVisitors';
-import { getPathTraceId } from '../data/StaticTraceCollection';
+import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
+// import { loopVisitor } from './loopVisitors';
 import { isCallPath } from '../helpers/functionHelpers';
 import { functionVisitEnter } from './functionVisitor';
 import { awaitVisitEnter } from './awaitVisitor';
@@ -22,6 +21,7 @@ import { isPathInstrumented } from '../helpers/instrumentationHelper';
 const Verbose = false;
 // const Verbose = true;
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
 
 
@@ -138,7 +138,7 @@ const traceCfg = (() => {
      * Ternary operator
      */
     ConditionalExpression: [
-      ExpressionResult,
+      NoTrace,
       [['test', ExpressionResult], ['consequent', ExpressionResult], ['alternate', ExpressionResult]]
     ],
     UpdateExpression: ExpressionResult,
@@ -198,6 +198,7 @@ const traceCfg = (() => {
     BreakStatement: Statement,
     ContinueStatement: Statement,
     Decorator: [
+      // NOTE: we need to trace decorators by wrapping them in a trace decorator
       NoTrace,
       // [['expression', ExpressionNoValue]]
     ],
@@ -376,7 +377,7 @@ function enterExpression(traceResultType, path, state) {
     return enterCallExpression(traceResultType, path, state);
   }
 
-  // trace CallResult (on exit)
+  // we want to trace CallResult on exit
   if (!path.getData('traceResultType')) {
     path.setData('traceResultType', traceResultType);
   }
@@ -395,7 +396,7 @@ const enterInstrumentors = {
     return enterCallExpression(TraceType.CallExpressionResult, path, state);
   },
   ExpressionResult(path, state) {
-    return enterExpression(null, path, state);
+    return enterExpression(TraceType.ExpressionResult, path, state);
   },
   // ExpressionValue(pathOrPaths, state) {
   //   if (Array.isArray(pathOrPaths)) {
@@ -422,6 +423,7 @@ const enterInstrumentors = {
     if (objPath.isSuper()) {
       // Do nothing. We already take care of this via `instrumentMemberCallExpressionEnter`.
       // return traceBeforeSuper(objPath, state);
+      return null;
     }
     else {
       // trace object (e.g. `x` in `x.y`) as-is
@@ -450,7 +452,7 @@ const enterInstrumentors = {
     // }
   },
   Loop(path, state) {
-    loopVisitor(path, state);
+    // loopVisitor(path, state);
   },
 
   ReturnNoArgument(path, state) {
@@ -655,7 +657,7 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
     shouldVisit = instrumentor && onTrace(path); // instrumentor && !hasVisited
 
     if (direction === InstrumentationDirection.Enter) {
-      // store config on enter
+      // store config override on enter
       if (extraCfg) {
         if (path.getData('visitorCfg')) {
           // ideally, there should not be such a conflict
@@ -759,7 +761,7 @@ function logInst(tag, cfg, path, direction = null, ...other) {
   const nodeName = getNodeNames(path.node)?.name;
   const cfgName = _getFullName(cfg);
   const dirIndicator = direction && direction === InstrumentationDirection.Enter ? ' ->' : ' <-';
-  console.debug(
+  debug(
     `[${tag}]${dirIndicator || ''}`,
     `${cfgName}:`,
     nodeName && `${path.node.type} ${nodeName}` || truncate(path.toString().replace(/\n/g, ' '), { length: 100 }),

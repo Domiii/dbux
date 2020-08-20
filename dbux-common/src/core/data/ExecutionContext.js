@@ -12,17 +12,60 @@ import ExecutionContextType from '../constants/ExecutionContextType';
 // }
 
 export default class ExecutionContext {
-  contextType : ExecutionContextType;
-  stackDepth: number;
-  runId: number;
-  parentContextId : number;
-  parentTraceId: number;
-  contextId : number;
-  staticContextId : number;
-  orderId : number;
-  schedulerTraceId : number;
-  createdAt: number;
-  lastTraceId: number;
+  /**
+   * @type {ExecutionContextType}
+   */
+  contextType;
+
+  /**
+   * @type {number}
+   */
+  stackDepth;
+  
+  /**
+   * @type {number}
+   */
+  runId;
+  
+  /**
+   * @type {number}
+   */
+  parentContextId ;
+  
+  /**
+   * @type {number}
+   */
+  parentTraceId;
+  
+  /**
+   * @type {number}
+   */
+  contextId ;
+  
+  /**
+   * @type {number}
+   */
+  staticContextId ;
+  
+  /**
+   * @type {number}
+   */
+  orderId ;
+  
+  /**
+   * @type {number}
+   */
+  schedulerTraceId ;
+  
+  /**
+   * @type {number}
+   */
+  createdAt;
+  
+  /**
+   * @type {number}
+   */
+  lastTraceId;
 
   /**
    * This is probably not necessary.

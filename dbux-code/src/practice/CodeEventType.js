@@ -1,4 +1,4 @@
-import Enum from 'dbux-common/src/util/Enum';
+import Enum from '@dbux/common/src/util/Enum';
 
 const CodeEventType = new Enum({
   Login: 1,

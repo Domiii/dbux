@@ -1,8 +1,15 @@
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code](https://vsmarketplacebadge.apphb.com/version/Domi.dbux-code.svg)](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
+[![install count](https://vsmarketplacebadge.apphb.com/installs-short/Domi.dbux-code.svg)](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
+[![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
+[![David](https://flat.badgen.net/david/dev/Domiii/dbux)](https://david-dm.org/Domiii/dbux?type=dev)
+
+
 # Introduction
 
-This is a pre-alpha project, aiming at making the JS runtime and its dynamic call graph visual and interactive through a combination of instrumentation (using Babel) + a VSCode extension, effectively (ultimately) making it an amazing tool for (i) program comprehension + (ii) debugging.
+Dbux aims at visualizing the JS runtime and making it interactive, hopefully helping developers improve their (i) program comprehension and (ii) debugging techniques.
 
-The `master` branch is not quite active yet. Check out the [`dev` branch](https://github.com/Domiii/dbux/tree/dev) instead.
+If you have any questions or are interested in the progress of this project, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
 
 Here is a (very very early, read: crude) 1min demo video of just a small subset of the features:
 
@@ -10,413 +17,240 @@ Here is a (very very early, read: crude) 1min demo video of just a small subset 
    <img src="http://img.youtube.com/vi/VAFcj75-vSs/0.jpg">
 </a>
 
+# Getting Started
 
-# Development + Contributing: Getting Started
+We recommend getting started with Dbux by playing around with the [Dbux VSCode Plugin](dbux-code#readme) and [reading its manual here](dbux-code#readme).
 
-## Prerequisites
+If you are already familiar with the Plugin, feel free to further investigate the following topics down below:
 
-* node
-* vscode
-* yarn
-
-
-## Setup
-
-```sh
-git clone https://github.com/Domiii/dbux.git
-cd dbux
-code .
-npm run dbux-install
-
-# if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-uninstall`
-```
+1. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
+   * You definitely want to get started with the Dbux VSCode plugin to explore a bit. Once you want to use Dbux in a more complicated build setup, the "Run with Dbux" button (and it's "Debug" button friend) can probably not (trivially) run your application anymore.
+1. [Performance](#performance)
+   * Recording a lot of runtime data from a program can be very slow. This section explains several major performance considerations.
+1. [Known Issues & Limitations](#known-issues--limitations)
+   * Dbux is not perfect. Learn more about some of the better known imperfections here.
+1. [Dbux Data Analysis](#dbux-data-analysis)
+   * Dbux VSCode Plugin is (currently) the only frontend for Dbux. If you want to build your own frontend, want to further analyze your runtime data, or are just plain curious as to what kind of data is collected and what you can do with it, then this section is for you.
+1. [Architectural Notes](#architectural-notes)
+   * This section paints the bigger picture of all the components involved.
 
 
-## Start development
+# Adding Dbux to your build pipeline
 
-```sh
-code . # open project in vscode
-npm start # start webpack build of all projects in watch mode
-```
+In order to analyze you runtime, your program must be instrumented with Dbux and injected with the [@dbux/runtime](dbux-runtime#readme). We employ [@dbux/babel-plugin](dbux-babel-plugin#readme) to do these two jobs for us.
 
-## Usage
+That means that you need to "[babel](https://babeljs.io/) your program" with [@dbux/babel-plugin](dbux-babel-plugin#readme) enabled.
 
-1. go to your debug tab, select `dbux-code` and press F5 (runs the vscode extension in debug mode)
-1. Inside of the new window, you can:
-   * `dbux-run # instruments + executes currently opened file`
-   * test on one of the pre-configured projects
-   * use `dbux-cli` to setup + run your own project
+There are two approaches:
 
-## Analyze with Python Notebooks
-
-In the `analyze/` folder, you find several python notebooks that allow you analyze the data that `dbux` generates. Here is how you set that up:
-
-1. Run some program with Dbux enabled (e.g. `samples/[...]/oop1.js`)
-1. In the VSCode extension, open a file of that program that has traces in it
-1. In VSCode `Run Command` (`CTRL/Command + SHIFT + P`) -> `Dbux: Export file`
-1. Make sure you have Python + Jupyter setup
-   * Windows
-      * [Install `Anaconda` with `chocolatey`](https://chocolatey.org/packages/anaconda3)
-      * Set your `%PYTHONPATH%` in system config to your Anaconda `Lib` + `DLLs` folders (e.g. `C:\tools\Anaconda3\Lib;C:\tools\Anaconda3\DLLs;`)
-      * Done!
-1. Run one of the notebooks, load the file, and analyze :)
+1. either: Use the [@dbux/cli](dbux-cli#readme) (command line interface)
+   * It uses [@babel/register](https://babeljs.io/docs/en/babel-register) to instrument code on the fly.
+   * This is also used by `Dbux VSCode Plugin`'s "Run with Dbux" button
+   * [Read more here](dbux-cli#readme).
+2. or: Add the [@dbux/babel-plugin](dbux-babel-plugin#readme) to your build pipeline manually
+   * IMPORTANT: it must be the **last** entry in your `plugins` array.
+   * [Read more here](dbux-babel-plugin#readme).
 
 
-## Test: Project 1
+# Performance
 
-1. After you opened a new VSCode window with `dbux-code` enabled (see steps above), in that window you can run + trace all kinds of code.
-1. Dbux currently has one frontend project pre-configured for testing purposes, that is [todomvc](http://todomvc.com/)'s `es6` version.
-   * install it first: `npm run p1-install`
-1. Run it: `npm run p1-start` (starts webpack + webpack-dev-server)
-1. Open in browser (http://localhost:3030), then check results of the run in the extension test window
+There are many performance considerations in tracing and recording *all* activity of a program.
 
+Main considerations include:
 
-## Architectural Notes
-
-This is a multi-project monorepo.
-
-Why is it not using LERNA? Because I did not know about LERNA when I started; but it's working quite well nevertheless :)
-
-
-# Some dependencies
-
-## Basics
-
-```sh
-`# jest` yarn add --dev jest jest-expect-message jest-extended
-`# babel basics` yarn add --dev @babel/core @babel/cli @babel/node @babel/register 
-`# babel plugins` yarn add --dev @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
-`# babel runtime` yarn add core-js@3 @babel/runtime
-`# eslint` yarn add --dev eslint eslint-config-airbnb-base
-`# webpack` yarn add --dev webpack webpack-cli webpack-dev-server nodemon
-`# flow` yarn add --dev flow-bin @babel/preset-flow eslint-plugin-flowtype && npx flow init #&& npx flow
-`# babel dev` yarn add --dev @babel/parser @babel/traverse @babel/types @babel/generator @babel/template @babel/code-frame babel-plugin-tester
-```
-
-or with npm:
-```sh
-`# jest` npm i -D jest jest-expect-message jest-extended
-`# babel basics` npm i -D @babel/core @babel/cli @babel/node @babel/register 
-`# babel plugins` npm i -D @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-optional-chaining @babel/plugin-proposal-decorators @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from @babel/plugin-syntax-dynamic-import @babel/plugin-transform-runtime && \
-`# babel runtime` npm i -S core-js@3 @babel/runtime
-`# eslint` npm i -D eslint eslint-config-airbnb-base
-```
-
-## Upgrading Packages
-```sh
-`# babel` npm run dbux-install --force --save @babel/cli@latest @babel/core@latest @babel/node@latest @babel/plugin-proposal-class-properties@latest @babel/plugin-proposal-decorators@latest @babel/plugin-proposal-function-bind@latest @babel/plugin-proposal-optional-chaining@latest @babel/plugin-syntax-dynamic-import@latest @babel/plugin-syntax-export-default-from@latest @babel/plugin-syntax-flow@latest @babel/plugin-transform-runtime@latest @babel/preset-env@latest @babel/preset-flow@latest @babel/register@latest
-
-`# babel instrumentation` @babel/code-frame@latest @babel/template@latest
-```
-
-## package.json magic
-* replace: `"([^"]+)": "([^"]+)",\n\s*` w/ `$1@latest`
-
-
-# References
-
-## Analyzing source maps
-
-* [This little tool](http://sokra.github.io/source-map-visualization/) allows us to investigate how our input + output files relate to one another. (NOTE: The author claims its just a hacked together toy, so maybe don't trust it too much.)
-
-## Debugging Intermediate + Advanced
-* Getting the debugger to work when it just won't work!
-   * https://stackoverflow.com/a/53288608
-* Tell debugger to skip files
-   * Chrome: [Blackboxing](https://developer.chrome.com/devtools/docs/blackboxing)
-
-## References: AI-supported coding
-* [VS Intellicode](https://github.com/MicrosoftDocs/intellicode/blob/master/docs/intellicode-visual-studio-code.md)
-* https://livablesoftware.com/smart-intelligent-ide-programming/
-
-## References: babel + babel plugins
-
-* [babel plugin handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md)
-* [babel parser docs](https://babeljs.io/docs/en/next/babel-parser.html)
-* [babel-parser AST explorer](https://astexplorer.net/)
-* [babel-types src (core)](https://github.com/babel/babel/blob/master/packages/babel-types/src/definitions/core.js)
-* [babel parser AST specs](https://github.com/babel/babel/blob/master/packages/babel-parser/ast/spec.md)
-* [babel traverse src](https://github.com/babel/babel/tree/master/packages/babel-traverse/src/path)
-   * [NodePath:modification](https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/modification.js)
-   * At its core: [path.visit()](https://github.com/babel/babel/blob/f544753bb8c9c7a470d98e897b089fd31b83d1f6/packages/babel-traverse/src/path/context.js#L59) and [path._call()](https://github.com/babel/babel/blob/f544753bb8c9c7a470d98e897b089fd31b83d1f6/packages/babel-traverse/src/path/context.js#L31)
-   * [path.get](https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/family.js#L157)
-      * [NodePath.get](https://github.com/babel/babel/blob/master/packages/babel-traverse/src/path/index.js#L71)
-   * [generateUidBasedOnNode](https://github.com/babel/babel/tree/master/packages/babel-traverse/src/scope/index.js#L268)
-   * NOTE: babel/traverse is not properly documented, so we go to the source
-* [Problem: babel plugin ordering](https://jamie.build/babel-plugin-ordering.html)
-   * [SO: explanation + example](https://stackoverflow.com/questions/52870522/whats-the-difference-between-visitor-program-enter-and-pre-in-a-babel-p/59211068#59211068)
-* [babel-preset-env](https://github.com/babel/babel/blob/master/packages/babel-preset-env/src/index.js)
-
-## References: babel transpiler implementation details
-
-* `#__PURE__`
-   * [Pure annotation in downlevel emits](https://github.com/babel/babel/issues/5632)
-   * [babel-helper/annotate-as-pure](https://babeljs.io/docs/en/next/babel-helper-annotate-as-pure.html)
-   * [Exlplanation (UglifyJs)](https://github.com/mishoo/UglifyJS2/commit/1e51586996ae4fdac68a8ea597c20ab170809c43)
-
-## References: npm
-* [NPM links don't work quite right](https://medium.com/@UD_UD/finally-npm-install-and-npm-link-walks-hand-in-hand-79f7fb6fc258)
-
-
-## Reference: Istanbul + NYC
-Istanbul + NYC add require hooks to instrument any loaded file on the fly
-* NOTES: How does it work?
-   * They are using `require.extensions` (which are deprecated)
-   * More info here: [https://gist.github.com/jamestalmage/df922691475cff66c7e6](Breakdown of How Require Extensions Work)
-* References: Instrumentation
-   * https://github.com/istanbuljs/nyc/blob/master/lib/instrumenters/istanbul.js#L20
-   * https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/src/instrumenter.js#L50
-      * https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-instrument
-      * [Istanbul visitor](https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/src/visitor.js#L488) (babel plugin)
-         * [counter statement generator](https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/src/visitor.js#L164) (e.g. `__cov().branches[123]++`)
-         * [visitor bookkeeping](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-lib-instrument/src/source-coverage.js#L37)
-   * [API](https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-instrument/api.md)
-* References: `require` hook
-   * https://github.com/istanbuljs/nyc/blob/master/bin/nyc.js
-   * https://github.com/istanbuljs/istanbuljs/blob/master/packages/istanbul-lib-hook/lib/hook.js
-   * https://github.com/istanbuljs/append-transform
-   * https://github.com/istanbuljs/append-transform/blob/master/index.js#L49
-* Sourcemap problems
-   * sourcemaps don't work right with NYC if `@babel/register` is not used
-      * https://github.com/istanbuljs/nyc/issues/619
-         * "This issue is blocked by [evanw/node-source-map-support#239](https://github.com/evanw/node-source-map-support/issues/239). The issue is that nyc source-maps are inline but [node-source-map-support](https://github.com/evanw/node-source-map-support) does not look at inline source-maps by default."
-   * babel does not support proper sourcemap merging yet
-      * https://github.com/babel/babel/issues/5408
-      * https://github.com/facebook/metro/issues/104
-      * https://github.com/babel/babel/blob/fced5cea430cc00e916876b663a8d2a84a5dad1f/packages/babel-core/src/transformation/file/merge-map.js
-* Configuring Babel for NYC + Istanbul
-   * One way they use it is `@babel/register`: https://babeljs.io/docs/en/babel-register
-   * https://github.com/istanbuljs/istanbuljs/tree/master/packages/nyc-config-babel
-      * https://github.com/istanbuljs/istanbuljs/tree/master/packages/nyc-config-babel
-* More references
-   * https://github.com/tapjs/foreground-child#readme
-   * https://glebbahmutov.com/blog/preloading-node-module/
-      * https://glebbahmutov.com/blog/turning-code-coverage-into-live-stream/
-
-## References: VSCode extensions
-* [Gitlens](https://github.com/eamodio/vscode-gitlens/tree/master/src) provides custom widgets with clickable buttons that pop up on hover
-* adding custom queries/filters to treeview through configuration
-   * https://github.com/microsoft/vscode-pull-request-github
-* how to let WebView control VSCode `window` and vice versa:
-   * [send message from webview](https://github.com/microsoft/vscode-extension-samples/blob/master/webview-sample/media/main.js#22)
-   * [receive message in vscode](https://github.com/microsoft/vscode-extension-samples/blob/master/webview-sample/src/extension.ts#L106)
-* idea to navigate between or control traces in code: [Jumpy](https://marketplace.visualstudio.com/items?itemName=wmaurer.vscode-jumpy)?
-* idea to provide inline context menus: [`registerCompletionItemProvider`](https://code.visualstudio.com/api/references/vscode-api#2612)?
-   * e.g.: https://marketplace.visualstudio.com/items?itemName=AndersEAndersen.html-class-suggestions
-      * https://github.com/andersea/HTMLClassSuggestionsVSCode/blob/master/src/extension.ts
-* cannot currently set `TreeItem` text color
-   * Limited capability for some file names: https://github.com/microsoft/vscode/issues/47502#issuecomment-407394409
-   * Suggested API discussion: https://github.com/microsoft/vscode/issues/54938
-
-# Some Notes on Implementation
-
-(only very few of the features are explained here, a lot more to come in the future...)
-
-## dbux-data
-* Indexes
-   * [shape] an index is a complete partitioning of all data of one particular collection
-   * [storage method] all new data is categorized into all matching indexes
-   * [storage invalidation] previously indexed data will generally never get evicted
-   * [key type] (currently) keys of indices can only be numbers
-      * TODO: add string keys as well, without reducing performance of number-based indices
-   * [storage type] objects in indexes are always entries of `Collection`s
-* Queries
-   * [shape] usually we want Queries to be `CachedQueries` (currently all are) which perform an expensive computation and then store the result thereof
-   * [storage method] only results of individual queries are cached when queried (not cached when data comes in)
-   * [storage invalidation] cache will be invalidated when new data comes in (unless `cfg.versionDependencies` is empty)
-   * [key type] the keys of cached query results are the input arguments ("`args`")
-      * that's why `args` should ideally be a single primitive data type or a flat array of primitive data types
-   * [storage type] queries can return and cache any data type
-
-
+* In order to render the value of variables, we need to actually copy all variables anytime they are used in any way.
+   * That can get very slow very fast if your code operates on large arrays, objects and strings.
+   * That is why we have a few parameters to tune.
+   * Currently, those parameters are hardcoded and cannot be configured from the outside.
+   * Tracked in #217
+* When executing *a lot of stuff* (e.g. long loops or high FPS games etc), things will get slow
+   * Instead of recording *everything*, we might want to be able to choose what to record, and when.
+   * For example: Dbux probably won't really work at all if you run it on a 30+FPS game.
+      * In that case, we might want to be very strategic in telling Dbux to only record: (i) initialization, (ii) a select few other functions and then (iii) several frames of the gameloop for our analysis.
+   * Currently, we do not have such fine-grained control over Dbux.
+   * Tracked in #219
+* When running a program with Dbux enabled, and also running it in debug mode (i.e. `--inspect` or `--inspect-brk`), things probably slow down even worse. Consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features unless there is a specific Debugger functionality that Dbux cannot compete with (of which arguably there might be a few, that are valuable in some circumstances).
 
 
 # Known Issues & Limitations
 
-* Calling `process.exit` too early will leave you blind
-   * You should see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably a crash or you called `process.exit` manually." in the console.
-   * `process.exit` kills the process, even if not all recorded data has been sent out yet
-   * as a result, you won't see all traces/contexts etc.
-   * if you *MUST* call it, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side
-   * TODO: Make `runtime/Client`'s `DontStayAwake` configurable.
-   * NOTE: many frameworks that might kill your process allow disabling that (e.g. `Mocha`'s `--no-exit` argument)
-* Impure property getters will be called by `dbux` and break things
-   * dbux tracks data in real-time, by reading variables, objects, arrays etc.
-   * It also reads all (or at least many) properties of objects, thereby unwittingly causing side-effects that a pure observer should not cause.
-   * e.g. `class A { count = 0; get x() { return ++this.count; } } // dbux will read x, and thus unwittingly change count`
-      * -> In this case, dbux will certainly break your program.
-      * The same applies to `console.log` et al in your getters. While that is generally not too bad, seeing a lot of unwanted `console.log`s is bound to lead to confusion.
-* Proxies and other custom object getters with side effects
-   * As explained in the previous point, the `dbux-runtime` iterates over object properties
-   * Thus possibly causing side effects with proxy and getter functions
-   * At least it will leave unwanted traces (while attempting to "observe") - Damn you, [Observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics))!!! :(
-* `eval`'ed code will not be traced
-   * While `eval` is sometimes necessary, 
-   * Any dynamically executed code will not be traced (not a feature that we are looking at in the foreseeable future)
-* Issues under Windows
-   * **sometimes**, when running things in VSCode built-in terminal, it might change to lower-case drive letter
-      * This causes a mixture of lower-case and upper-case drive letters to start appearing in `require` paths
-         * => this makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
-      * Official bug report: https://github.com/microsoft/vscode/issues/9448
-      * Solution: run command in external `cmd` or find a better behaving terminal
+## Syntax Limitations
+
+The following JS syntax constructs are not supported at all or support is limited:
+
+* `async/await`
+* Generator functions
 
 
-# VSCode: Advanced Usage
+## Async Call Graph + Callback tracking
 
-## General Tips&Tricks
-* https://vscodecandothat.com/
-* https://medium.com/club-devbytes/how-to-use-v-s-code-like-a-pro-fb030dfc9a72
-* 
+Theoretically we should be able to track all callbacks and their data flow to the call site, however we don't do that properly quite yet.
 
-## Use VSCode as git diff tool
+Some examples:
 
-* [see here](https://stackoverflow.com/a/47569315)
+* When calling `setTimeout(f)`, you will see that `f` gets executed, but it's execution is not linked to the `setTimeout(f)` call that scheduled its execution.
+* The same problem exists with `Promise.then(f)`, and any instance where callbacks are used.
 
-## Keyboard shortcuts
+NOTE: This link between a caller passing a callback and the execution of that callback is considered an edge in the "asynchronous call graph", an elusive feature that we are planning to support, but don't have finished yet.
 
-NOTE: VSCode's Terminal/DebugConsole/Output windows often have no "Clear" keybinding (sometimes some of them do?)
-You can add that manually:
-
-1. CTRL+SHIFT+P -> "Open Keyboard Shortcuts (JSON)"
-1. Add:
-   * MAC
-      ```json
-      {
-         "key": "cmd+k",
-         "command": "workbench.debug.panel.action.clearReplAction",
-         "when": "inDebugRepl"
-      },
-      {
-         "key": "cmd+k",
-         "command": "workbench.output.action.clearOutput",
-         "when": "activePanel == 'workbench.panel.output'"
-      },
-      {
-         "key": "cmd+k",
-         "command": "workbench.action.terminal.clear",
-         "when": "terminalFocus"
-      }
-      ```
-   * Windows
-      ```json
-      {
-         "key": "ctrl+k",
-         "command": "workbench.action.terminal.clear",
-         "when": "terminalFocus"
-      },
-      {
-         "key": "ctrl+k",
-         "command": "workbench.debug.panel.action.clearReplAction",
-         "when": "inDebugRepl"
-      },
-      {
-         "key": "ctrl+k",
-         "command": "workbench.output.action.clearOutput",
-         "when": "activePanel == 'workbench.panel.output'"
-      }
-      ```
-
-# Some of the more annoying problems that have already been resolved
-
-* `Socket.IO` depends on `uws` which is deprecated
-   * fix: tell webpack to ignore it, since by default its not being used
-   * see: https://github.com/socketio/engine.io/issues/575
-   * see: https://github.com/socketio/socket.io/issues/3342
-   * see: https://github.com/mmdevries/uws
-* `socket.io-client` bugs out because `ws` is bundled as targeting browser
-   * `code-insiders .\dbux-runtime\node_modules\engine.io-client\lib\transports\websocket.js`
-* Babel Config pain
-   * [how to use Babel 7 babel-register to compile files outside of working directory #8321](https://github.com/babel/babel/issues/8321)
-   * https://github.com/babel/babel/pull/5590
+The related "asynchronous call graph" feature is tracked in issue #210.
 
 
-# Higher Order Questions
+## Calling `process.exit` as well as uncaught exceptions are not handled properly
 
-## Questions that we can already answer
-
-* Which parts of my code executed?
-* How often did this code execute?
-* What did these expressions evaluate to during each execution?
-* What were the arguments passed to this function call?
-* Where did the execution go from here? Where did it come from?
-* Which events were triggered and how did its handlers execute?
-
-## TODO: Questions we want to work on next
-
-* Sub-graph filtering
-   * Search sub graph contexts by keyword (QuickInput)
-   * All traces/contexts/runs that referenced some object (ValueRef)
-
-## Future Work (even more cool questions)
-
-* Sub-graph filtering
-   * Multiple filter UI modes
-      * hide vs. grayed out?
-* What is the critical path in this sub-graph, in terms of call-stack depth?
-   * NOTE: we don't aim to do performance analysis, so we can't find the *actual* critical path
-* Given two traces, find shortest path (or path that is most likely to be the actual path?)
-   * TODO: Somehow visualize and allow interactions with that path
-      * -> Possibly like a car navigation system -> listing all the twists and turns in a list
-* Interactive visualized call graph
-   * zoom- and pan-able
-   * multi-resolution
-   * features and filters can be enabled and disabled
-   * multiple coloring schemes (e.g. one each for color per file/context/feature type and more)11
+* You might see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably a crash or you called `process.exit` manually." in the console.
+* `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet, as a result, you won't see all traces/contexts etc.
+* If you *MUST* call `process.exit`, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side.
+   * NOTE: some frameworks that kill your process by default might require extra configuration (e.g. for `Mocha` you want to add the `--no-exit` flag)
+* This is tracked in #201.
 
 
-# Features
+## Heisenbugs
 
-## Data Recording + Data Processing Mechanisms
+By trying to observe a program, while definitely not intending to, you will inevitably change its behavior leading to the [observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics)) leading to [heisenbugs](https://en.wikipedia.org/wiki/Heisenbug). Here are a few already known sources for Heisenbugs:
 
-* Instrumentation
-* Collection
-* Postprocessing
-   * adding one-to-one fields (pre-index)
-   * Index
-   * adding one-to-one fields (post-index)
-* Query + CachedQuery
+* Property getters with [side effects](https://softwareengineering.stackexchange.com/questions/40297/what-is-a-side-effect) will be called automatically by `Dbux` (to get all that juicy runtime data) and potentially break things
+   * Dbux tracks data in real-time, by reading variables, objects, arrays etc.
+   * It also reads all (or at least many) properties of objects, thereby unwittingly causing side-effects of any property.
+   * e.g. `class A { count = 0; get x() { return ++this.count; } }; const a = new A(); // dbux will read x when tracing the constructor call, and thus unwittingly change count`
+      * -> In this case, dbux will certainly break your program, or at the very least your count will be off
+   * e.g. `const o = { get z() { console.log('z called'); return 42; } } // dbux will read z and you will see an unwanted "z called" in your console, probably rendering the user confused`
+   * -> The good news is that you can prevent this by writing side-effect-free getters (in most cases, getters are supposed to be side-effect-free)!
+* Proxies
+   * As explained in the previous point, [@dbux/runtime](dbux-runtime] iterates over and collects values of object properties automatically in its quest for gathering runtime data.
+   * As discussed [here](https://stackoverflow.com/questions/36372611/how-to-test-if-an-object-is-a-proxy), [Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) are transparent by design. I.e. there is no general way to determine if something is a proxy or not.
+   * At the same time, Proxy property access, also very much by design, often has side effects.
+   * -> This means that in many scenarios where Proxies (with side effects) are in play, you might just not be able to use Dbux properly.
 
-## Concept: Contexts + StaticContexts
-
-## Concept: Traces + StaticTraces
-
-## Data Flow
-
-### Object Tracking
-
-## Error Reporting
+NOTE: There are ways to avoid these issues, for example by allowing in-line comment directives (like Eslint), but we sadly just don't have that yet. Tracked in issue #209.
 
 
-## Control Flow
+## `eval` and dynamically loaded code
 
-### Basic Control Flow
+As a general rule of thumb - Any dynamically loaded code will currently not be traced. That is because we are not proactively scanning the application for code injections or outside code references.
 
-### Callback Tracking
+Affected examples include:
 
-### Interruptable functions: async
+* Calling `eval` on non-instrumented code
+* Any kind of &lt;script> tags containing or referencing non-instrumented code
 
-### Interruptable functions: generator
+In order to trace such code, the runtime would have to:
 
-### Error reporting
+1. (Probably) delay execution of the new piece of code
+2. "Babel the code" with @dbux/babel-plugin enabled.
+3. Replace the code with the instrumented version
+4. Resume.
 
-* Are dynamic vs. static exit traces of functions the same?
-* special attention: `try` statements
+While this is not impossible, we certainly do not currently support this feature.
 
 
-## Call Graph Navigation
+## SyntaxError: Unexpected reserved word 'XX'
 
-* {Previous,Next}InContext
-   * Use `getTracesOfRealContext`
-   * [no_trace]
-      * [Previous && current trace is Push && previous trace is Pop]
-         * -> go
-      * [Next && current trace is Pop && next trace is Push]
-         * -> go
-* PreviousParent
-   * First trace in current context --> context's `parentTraceId`
-* NextParent
-   * Same as `PreviousParent`, but get "next in context" of `parentTrace`
-* PreviousChild
-   * Use `ParentTracesInRealContextIndex`
-* NextChild
-   * Same as `PreviousChild`, but use "next in context" of `parentTrace`
+* Example: When just running `var public = 3;` in `node` or the browser, you don't get an error. However when running the same code with [@dbux/cli](dbux-cli#readme) (which is also invoked when pressing the `Dbux VSCode Plugin`'s "Run with Dbux" button), it throws a synxtax error.
+* That is because:
+   1. `public` (and others) are reserved keywords and using reserved keywords is only an error in **strict mode** ([relevant discussion here](https://stackoverflow.com/questions/6458935/just-how-reserved-are-the-words-private-and-public-in-javascript)).
+   2. [@dbux/cli](dbux-cli#readme) uses [@babel/register](https://babeljs.io/docs/en/babel-register) with a bunch of default settings.
+   3. By default, babel treats js files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have strict mode enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910
+   4. NOTE: You can see the same syntax error when slightly modifying above example and running it in `node` (without Dbux) but with strict mode enabled: `"use strict"; var public = 3;`.
+* You should be able to customize the babel config and disable strict mode if you please. However we recommend to just work against strict mode to begin with.
+
+
+## Issues under Windows
+
+* An entirely unrelated bug occurs **very rarely**, when running things in VSCode's built-in terminal, it might change to lower-case drive letter.
+   * NOTE: Luckily, we have not seen this bug occur in quite some time.
+   * This causes a mixture of lower-case and upper-case drive letters to start appearing in `require` paths
+      * => this makes `babel` unhappy ([github issue](https://github.com/webpack/webpack/issues/2815))
+   * Official bug report: https://github.com/microsoft/vscode/issues/9448
+   * Solution: Restart your computer (can help!), run command in external `cmd` or find a better behaving terminal
+
+
+# Dbux Data Analysis
+
+`@dbux/runtime` produces fine-grained JavaScript runtime data. If you are interested in analyzing this data programmatically, we currently provide two avenues to get started:
+
+1. [@dbux/data](dbux-data#readme) is our main data processing JavaScript module. We use this to preprocess and manage all the data before visualizing it and making it interactive in the [Dbux VSCode Plugin](dbux-code#readme).
+1. [analysis](analysis) contains a few Python functions and notebooks for rudimentary analysis on extracted data for testing and development purposes. We exported the data via the (also rather crude) [dbux.exportApplicationData command](dbux-code/src/codeUtil/codeExport.js). NOTE: This approach is a lot less mature and provides a lot less pre-built functionality than [@dbux/data](dbux-data#readme).
+
+This feature is still at somewhat of an infant stage. We track related feedback in issue #208.
+
+# Architectural Notes
+
+![architecture-v001](docs/img/architecture-v001.png)
+
+This [monorepo](https://en.wikipedia.org/wiki/Monorepo) includes the following modules:
+
+* [`@dbux/common`](dbux-common#readme) Collection of commonly used utilities shared among (more or less) all other modules.
+* [`@dbux/babel-plugin`](dbux-babel-plugin#readme) Instruments and injects `@dbux/runtime` into a given js program when supplied as a `plugin` to Babel.
+* [`@dbux/runtime`](dbux-runtime#readme) When an instrumented program runs, this module is responsible for recording and sending runtime data to the `@dbux/data` module, running on a receiving server (using `socket-io.client`). [The Dbux VSCode plugin](dbux-code#readme) hosts such a server.
+* [`@dbux/cli`](dbux-cli#readme) The cli (command-line interface) allows us to easily run a js program while instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).
+* [`@dbux/data`](dbux-data#readme) Receives, pre-processes and manages all data sent by `@dbux/runtime`. It allows us to query and analyze JS runtime data on a higher level.
+* [`dbux-code`](dbux-code#readme) The Dbux VSCode extension ([VSCode marketplace link](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)).
+* [`@dbux/practice`](dbux-practice#readme) Used by `dbux-code` (but does not depend on `VSCode`) to allow practicing Dbux (and, more generally) debugging concepts and strategies on real-world bugs inside of real-world open source projects.
+* [`@dbux/graph-common`](dbux-graph-common#readme), [`@dbux/graph-client`](dbux-graph-client#readme) and [`@dbux/graph-host`](dbux-graph-host#readme) Are responsible for rendering and letting the user interact with the "Call Graph" through an HTML GUI.
+
+
+## Call Graph GUI Implementation
+
+(For learning how to use the Call Graph, please refer to the [Dbux VSCode Plugin documentation](dbux-code#call-graph).)
+
+A few more notes on the Call Graph GUI implementation:
+
+* The Call Graph view is an HTML gui, currently most prominently seen as the "Call Graph" window inside the [Dbux VSCode Plugin](dbux-code#readme).
+* Inside of `dbux-code`, the graph is hosted in [GraphWebView](dbux-code/src/graphView/GraphWebView.js), but you could also host it independently on a website, in an iframe etc.
+* The Call Graph consists of three modules [`@dbux/graph-common`](dbux-graph-common#readme), [`@dbux/graph-client`](dbux-graph-client#readme) and [`@dbux/graph-host`](dbux-graph-host#readme).
+* Client and host are running in separated runtimes, and they share the graph-common module for any code sharing between the two.
+* We developed an IPC-first component system to easily render things on the client, while allowing us to control it from the host.
+* `client` and `host` communicate via a supplied `IpcAdapter` which must provide two functions (whose implementation depends on the environment that they run in): `onMessage` and `postMessage`.
+
+# Terminology
+
+Terminology regarding the JavaScript runtime is either not well defined in general, or we have just not yet spent enough time finding all the definitions. That is why we try to explain some of the terminology that we came up with here (feel free to help us improve):
+
+## Trace
+
+TODO
+
+## Context
+
+TODO
+
+* aka `executionContext`
+
+(can probably also be called a "frame"?)
+
+## Static trace
+
+TODO: `staticTrace`
+
+## Static context
+
+TODO: `staticContext`
+
+## Run
+
+A "run" is an invocation of code from outside our visible (recorded) runtime. Examples include:
+
+* Execution of a JavaScript file (often called by `node` or by the webpack bundle (which in turn is called by the underlying JS runtime environment)).
+* Browser executing JavaScript of a &lt;script> tag
+* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick` etc. These callbacks are scheduled and then run by the underlying JS runtime environment.
+* DOM event handler callbacks
+
+The set of all runs comprise the "root nodes" of our Call Graph.
+
+## Call Graph
+
+TODO
+
+### Asynchronous Call Graph
+
+Currently, we only support a "synchronous call graph", meaning that **all** execution is organized in a single serial thread. While that makes sense (especially since JavaScript is inherently single-threaded), logically we want to group "threads of asynchronous contexts" together.
+
+That means that, for now, invocation of promise callbacks (callbacks passed to `then()`, `catch()`, `finally()` etc.), and even resuming of an `async` function will result in a new `run`, seen executing serially in the Call Graph, and you cannot easily trace a single promise or the execution of a asingle `async` function. Instead, they will be cut up into multiple pieces scattered across the linear Call Graph representation, and sprinkled with other unrelated calls that happen to occur in between.
+
+The "asynchronous call graph" feature is tracked in issue #210.
+
+
+# Development + Contributions
+
+If you are interested in Dbux development and maybe even want to participate or contribute, please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).

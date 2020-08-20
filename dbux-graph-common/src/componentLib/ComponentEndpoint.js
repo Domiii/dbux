@@ -1,6 +1,6 @@
 import isPlainObject from 'lodash/isPlainObject';
-import { newLogger } from 'dbux-common/src/log/logger';
-import EmptyObject from 'dbux-common/src/util/EmptyObject';
+import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import isFunction from 'lodash/isFunction';
 import RemoteCommandProxy from './RemoteCommandProxy';
 
@@ -132,7 +132,7 @@ class ComponentEndpoint {
     this._disposables.push(disp);
   }
 
-  dispose(silent = false) {
+  dispose(/* silent = false */) {
     this._isDisposed = true;
     
     this._disposables.forEach((disp) => {
@@ -150,7 +150,7 @@ class ComponentEndpoint {
   // ###########################################################################
 
   handlePing() {
-    console.warn(this.debugTag, 'was pinged by the remote.');
+    // console.warn(this.debugTag, 'was pinged by the remote.');
   }
 
   toString() {

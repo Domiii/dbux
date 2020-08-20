@@ -1,19 +1,13 @@
 import sh from 'shelljs';
-import Project from 'dbux-projects/src/projectLib/Project';
-import { buildMochaRunBugCommand as buildMochaCommand } from 'dbux-projects/src/util/mochaUtil';
 import isArray from 'lodash/isArray';
+import Project from '../../projectLib/Project';
+import { buildMochaRunBugCommand as buildMochaCommand } from '../../util/mochaUtil';
 
 
 export default class ExpressProject extends Project {
   gitRemote = 'BugsJS/express.git';
 
   packageManager = 'npm';
-
-  // async installDependencies() {
-  //   yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
-  //   yarn add --dev webpack webpack-cli webpack-dev-server nodemon && \
-  //   yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime
-  // }
 
   loadBugs() {
     // TODO: load automatically from BugsJs bug database
@@ -241,7 +235,7 @@ export default class ExpressProject extends Project {
     await this.npmInstall();
 
     // Copy assets again in this branch
-    await this.copyAssets();
+    await this.installAssets();
   }
 
   async testBugCommand(bug, debugPort) {

@@ -1,15 +1,15 @@
-import { newLogger } from 'dbux-common/src/log/logger';
-import { binarySearchByKey } from 'dbux-common/src/util/arrayUtil';
-import { isTracePush, isTracePop, isDataOnlyTrace } from 'dbux-common/src/core/constants/TraceType';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import { hasCallId } from 'dbux-common/src/core/constants/traceCategorization';
+import { newLogger } from '@dbux/common/src/log/logger';
+import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
+import { isTracePush, isTracePop, isDataOnlyTrace } from '@dbux/common/src/core/constants/TraceType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
 import last from 'lodash/last';
 import DataProvider from '../DataProvider';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('CallGraph');
 
 export default class CallGraph {
-
   /**
    * @param {DataProvider} dp
    */
@@ -95,7 +95,25 @@ export default class CallGraph {
     }
 
     // otherwise find the previous child or return null
-    return this._getPreviousChildTrace(traceId) || null;
+    const prevChild = this._getPreviousChildTrace(traceId);
+    if (!prevChild) {
+      // no nextChild
+      return null;
+    }
+    else if (prevChild === trace) {
+      // nextChild is itself(usually in getter/setter), return the first child inside
+      const children = this.dp.indexes.traces.byCalleeTrace.get(traceId) || EmptyArray;
+      if (children.length) {
+        return children[0];
+      }
+      else {
+        logError(`PreviousChildContext of traceId=${traceId} does not have any children`);
+        return trace;
+      }
+    }
+    else {
+      return prevChild;
+    }
   }
 
   getNextChildContext(traceId) {
@@ -110,7 +128,25 @@ export default class CallGraph {
     }
 
     // otherwise find the next child or return null
-    return this._getNextChildTrace(traceId) || null;
+    const nextChild = this._getNextChildTrace(traceId);
+    if (!nextChild) {
+      // no nextChild
+      return null;
+    }
+    else if (nextChild === trace) {
+      // nextChild is itself(usually in getter/setter), return the first child inside
+      const children = this.dp.indexes.traces.byCalleeTrace.get(traceId) || EmptyArray;
+      if (children.length) {
+        return children[0];
+      }
+      else {
+        logError(`NextChildContext of traceId=${traceId} does not have any children`);
+        return trace;
+      }
+    }
+    else {
+      return nextChild;
+    }
   }
 
   getPreviousByStaticTrace(traceId) {

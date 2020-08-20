@@ -1,6 +1,12 @@
-const path = require('path');
+/**
+ * TODO: this should not be necessary anymore. Can probably delete?
+ */
 
-let dbuxRoot = path.resolve(__dirname + '/../..');
+const path = require('path');
+const babelRegister = require('@babel/register');
+const babelPresets = require('../../config/babel-presets-node');
+
+let dbuxRoot = path.resolve(path.join(__dirname, '..', '..'));
 if (dbuxRoot.endsWith('node_modules')) {
   dbuxRoot = path.resolve(dbuxRoot + '/..');
 }
@@ -16,6 +22,7 @@ let folderPrefix = `^${path.join(
   '(?!.*?node_modules)'
 )}`;
 
+
 // fix: backslashes on windows
 folderPrefix = folderPrefix.replace(/\\/g, '\\\\');
 // console.warn('babelrcRoots', babelrcRoots);
@@ -24,6 +31,7 @@ folderPrefix = folderPrefix.replace(/\\/g, '\\\\');
 folderPrefix = folderPrefix.toLowerCase();
 
 const babelRegisterOptions = {
+  ...babelPresets,
   ignore: [
     // '**/node_modules/**',
     function (fpath) {
@@ -45,20 +53,8 @@ const babelRegisterOptions = {
   // plugins: [
   //   '@babel/plugin-transform-runtime'
   // ],
-  presets: [
-    "@babel/preset-env"
-  ],
-  // presets: [[
-  //   "@babel/preset-env",
-  //   {
-  //     "loose": true,
-  //     "useBuiltIns": "usage",
-  //     "corejs": 3
-  //   }
-  // ]],
   babelrcRoots
 };
-const babelRegister = require('@babel/register');
 babelRegister(babelRegisterOptions);
 
 module.exports = require('./index');

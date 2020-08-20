@@ -1,15 +1,25 @@
 import NanoEvents from 'nanoevents';
-import defaultsDeep from 'lodash/defaultsDeep';
+import path from 'path';
+import fs from 'fs';
 import sh from 'shelljs';
-import SerialTaskQueue from 'dbux-common/src/util/queue/SerialTaskQueue';
-import Process from 'dbux-projects/src/util/Process';
-import { newLogger, logError } from 'dbux-common/src/log/logger';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
+import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import Process from '../util/Process';
 import Project from './Project';
-import Bug from './Bug';
+import Bug from './Bug'; // eslint-disable-line no-unused-vars
 import BugRunnerStatus from './BugRunnerStatus';
 
+/**
+ * @typedef {import('../ProjectsManager').default} ProjectsManager
+ */
+
+const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
+
 export default class BugRunner {
+  /**
+   * @type {ProjectsManager}
+   */
   manager;
   /**
    * @type {SerialTaskQueue}
@@ -130,6 +140,34 @@ export default class BugRunner {
   }
 
   /**
+   * @return {Bug}
+   */
+  async getPreviousBug() {
+    let previousBugInformation = this.manager.externals.storage.get(activatedBugKeyName);
+
+    if (previousBugInformation) {
+      let { projectName, bugId } = previousBugInformation;
+
+      let previousProject = this.manager.getOrCreateDefaultProjectList().getByName(projectName);
+
+      if (await previousProject.isProjectFolderExists()) {
+        return previousProject.getOrLoadBugs().getById(bugId);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @param {Bug} bug 
+   */
+  async updateActivatingBug(bug) {
+    await this.manager.externals.storage.set(activatedBugKeyName, {
+      projectName: bug.project.name,
+      bugId: bug.id,
+    });
+  }
+
+  /**
    * @param {Bug} bug 
    */
   async activateBug(bug) {
@@ -167,14 +205,35 @@ export default class BugRunner {
   /**
    * Run bug (if in debug mode, will wait for debugger to attach)
    * 
-   * @param {}
+   * @param {Bug} bug
    */
   async testBug(bug, debugMode = true) {
     const { project } = bug;
 
+    // sh.mkdir('-p', project.projectPath);
+    // await project.manager.installDependencies();
+    // return;
+
+    // do whatever it takes (usually: `activateProject` -> `git checkout`)
+
     try {
-      // do whatever it takes (usually: `activateProject` -> `git checkout`)
+      let previousBug = await this.getPreviousBug();
+
+      if (bug !== previousBug) {
+        if (previousBug) {
+          await this.manager.saveRunningBug(previousBug);
+          await previousBug.project.gitResetHard();
+        }
+
+        await this.updateActivatingBug(bug);
+      }
+
       await this.activateBug(bug);
+
+      // apply stored patch
+      if (bug !== previousBug && !await bug.project.manager.applyNewBugPatch(bug)) {
+        return null;
+      }
 
       // hackfix: set status here again in case of `this.activateBug` skips installaion process
       this.setStatus(BugRunnerStatus.Busy);
@@ -189,10 +248,21 @@ export default class BugRunner {
         return null;
       }
       else {
-        // await this._exec(project, command);
         const cwd = project.projectPath;
-        this._terminalWrapper = this.manager.externals.execInTerminal(cwd, command);
-        const result = await this._terminalWrapper.waitForResult();
+        // const devMode = process.env.NODE_ENV === 'development';
+        const args = {
+          // NOTE: DBUX_ROOT + NODE_ENV are provided by webpack
+
+          // DBUX_ROOT: devMode ? fs.realpathSync(path.join(__dirname, '..', '..')) : null,
+          // NODE_ENV: process.env.NODE_ENV
+        };
+        // `args` in execInTerminal not working with anything now
+        const result = await this.manager.execInTerminal(cwd, command, args);
+        await this.manager.progressLogController.util.processBugProgress(bug, result);
+        if (result.code === 0) {
+          // user passed all tests
+          this.manager.askForSubmit();
+        }
         project.logger.log(`Result:`, result);
         return result;
       }
@@ -209,31 +279,11 @@ export default class BugRunner {
   }
 
   /**
-   * @param {boolean} options.cdToProjectPath [Default=true] Whether to cd to `project.projectPath`.
+   * 
    */
-  async _exec(project, cmd, options = null) {
-    const {
-      projectPath
-    } = project;
-
+  async _exec(cmd, logger, options = null, input) {
     if (this._process) {
-      project.logger.error(`[possible race condition] executing command "${cmd}" while command "${this._process.command}" was already running`);
-    }
-
-    // set cwd
-    let cwd;
-    if (options?.cdToProjectPath !== false) {
-      cwd = projectPath;
-
-      // set cwd option
-      options = defaultsDeep(options, {
-        processOptions: {
-          cwd
-        }
-      });
-
-      // cd into it
-      sh.cd(cwd);
+      logger.error(`[possible race condition] executing command "${cmd}" while command "${this._process.command}" was already running`);
     }
 
     // // wait until current process finshed it's workload
@@ -241,7 +291,7 @@ export default class BugRunner {
 
     this._process = new Process();
     try {
-      return await this._process.start(cmd, project.logger, options);
+      return await this._process.start(cmd, logger, options, input);
     }
     finally {
       this._process = null;
@@ -317,7 +367,7 @@ export default class BugRunner {
     }
   }
 
-  getBugStatus(bug) {
+  getBugRunStatus(bug) {
     if (this._bug === bug) {
       return this.status;
     }

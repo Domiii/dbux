@@ -1,9 +1,10 @@
-import tracePlayback from 'dbux-data/src/playback/tracePlayback';
-import traceSelection from 'dbux-data/src/traceSelection';
-import { newLogger } from 'dbux-common/src/log/logger';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { window } from 'vscode';
+import tracePlayback from '@dbux/data/src/playback/tracePlayback';
+import traceSelection from '@dbux/data/src/traceSelection';
+import { newLogger } from '@dbux/common/src/log/logger';
+import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('NavigationNode');
 
 const NavigationMethods = [
@@ -15,6 +16,8 @@ const NavigationMethods = [
   'PreviousParentContext',
   'PreviousStaticTrace',
   'NextStaticTrace',
+  'PreviousTrace',
+  'NextTrace',
 ];
 
 // if default method is not provided, it returns null when `findTargetTrace` failed
@@ -30,7 +33,7 @@ const defaultMethods = {
 export { NavigationMethods };
 
 export default class NavigationNode extends BaseTreeViewNode {
-  static makeLabel(trace, parent) {
+  static makeLabel(/* trace, parent */) {
     return '';
   }
 
@@ -83,7 +86,7 @@ export default class NavigationNode extends BaseTreeViewNode {
       window.showInformationMessage(`Can't find "${methodName}" of current trace.`);
     }
 
-    this.treeNodeProvider.treeView.reveal(this);
+    // this.treeNodeProvider.treeView.reveal(this);
     
     // const ids2 = getIds();
     // debug(`${methodName}: ${ids1} -> ${ids2}`);

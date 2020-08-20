@@ -1,11 +1,12 @@
 import io, { Socket } from 'socket.io-client';
-import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
-import universalLibs from 'dbux-common/src/util/universalLibs';
+import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
+import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
 const Verbose = false;
 
-const { log, debug, warn, error: logError } = newLogger('CLIENT');
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('Runtime Client');
 
 // ###########################################################################
 // config
@@ -76,16 +77,23 @@ export default class Client {
   // event handling
   // ###########################################################################
 
+  _connectFailed = false;
+
   _handleConnect = () => {
     Verbose && debug('connected');
     this._connected = true;
+    this._connectFailed = false;
 
     // start initial handshake
     this._sendInit();
   };
 
-  _handleConnectFailed = () => {
-    Verbose && debug('failed to connect');
+  _handleConnectFailed = (err) => {
+    // Verbose && 
+    if (!this._connectFailed) {
+      this._connectFailed = true;
+      debug(`failed to connect (${err.message}). Reconnecting...`);
+    }
   }
 
   _handleDisconnect = () => {

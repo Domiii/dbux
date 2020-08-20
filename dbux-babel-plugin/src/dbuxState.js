@@ -1,4 +1,5 @@
-import { pathGetBasename } from 'dbux-common/src/util/pathUtil';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
 
 import StaticContextCollection from './data/StaticContextCollection';
 import StaticTraceCollection from './data/StaticTraceCollection';
@@ -11,12 +12,19 @@ import { isNodeInstrumented } from './helpers/instrumentationHelper';
 // Build custom dbux state object
 // ###########################################################################
 
+let unknownCount = 0;
+let iProgram = 0;
+
 /**
  * Build the state used by dbux-babel-plugin throughout the entire AST visit.
  */
 export default function injectDbuxState(programPath, programState) {
-  const filePath = programState.filename;
+  const cfg = programState.opts || EmptyObject;
+  const { filenameOverride } = cfg;
+  const filePath = filenameOverride || programState.filename || `__unnamed_script_${++unknownCount}.js`;
   const fileName = filePath && pathGetBasename(filePath);
+
+  // console.debug(filePath);
 
   const { scope } = programPath;
   const { file: programFile } = programState;
@@ -35,7 +43,10 @@ export default function injectDbuxState(programPath, programState) {
     ids: {
       dbuxInit: scope.generateUid('dbux_init'),
       dbuxRuntime: scope.generateUid('dbuxRuntime'),
-      dbux: scope.generateUid('dbux')
+
+      // NOTE: We might have multiple dbux programs in the same context (e.g. multiple <script> tags in same HTML file)
+      //        So we want to add `iProgram` for unique flavor (which works if they are all instrumented by the same process).
+      dbux: scope.generateUid('dbux' + (++iProgram))
     },
     // console.log('[Program]', state.filename);
 

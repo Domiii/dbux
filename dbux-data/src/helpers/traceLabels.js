@@ -1,5 +1,5 @@
-import TraceType, { isCallbackRelatedTrace } from 'dbux-common/src/core/constants/TraceType';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/core/constants/TraceType';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeContextLabel } from './contextLabels';
 import allApplications from '../applications/allApplications';
 
@@ -76,11 +76,11 @@ const byType = {
     // const previousTrace = application.dataProvider.collections.traces.getById(trace.traceId - 1);
     return `↱ƒ ${makeDefaultTraceLabel(trace, application)}`;
   },
-  [TraceType.BlockStart](trace, application) {
+  [TraceType.BlockStart](/* trace, application */) {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
     return `↳`;
   },
-  [TraceType.BlockEnd](trace, application) {
+  [TraceType.BlockEnd](/* trace, application */) {
     // const context = application.dataProvider.collections.executionContexts.getById(trace.contextId);
     return `⤴`;
   }
@@ -146,10 +146,16 @@ export function makeRootTraceLabel(trace) {
 export function makeTraceValueLabel(trace) {
   const { applicationId, traceId } = trace;
   const dp = allApplications.getById(applicationId).dataProvider;
-  const callTrace = dp.util.getCallerTraceOfTrace(traceId);
-  if (callTrace?.traceId) {
-    // trace is call related
-    return makeCallValueLabel(callTrace);
+  // const callTrace = dp.util.getCallerTraceOfTrace(traceId);
+
+  if (dp.util.isBCETrace(traceId)) {
+    // BCE
+    return makeCallValueLabel(trace);
+  }
+  else if (dp.util.isCallResultTrace(traceId)) {
+    //call result
+    const bceTrace = dp.util.getCallerTraceOfTrace(traceId);
+    return makeCallValueLabel(bceTrace);
   }
   else if (dp.util.doesTraceHaveValue(traceId)) {
     // trace has value
@@ -163,10 +169,10 @@ export function makeTraceValueLabel(trace) {
 
 /**
  * Make label that shows the params and return value of call trace
- * @param {Trace} trace 
+ * @param {Trace} bceTrace
  */
-export function makeCallValueLabel(callTrace) {
-  const { applicationId, traceId, resultId } = callTrace;
+export function makeCallValueLabel(bceTrace) {
+  const { applicationId, traceId, resultId } = bceTrace;
   const dp = allApplications.getById(applicationId).dataProvider;
 
   const args = dp.indexes.traces.byCall.get(traceId) || EmptyArray;
@@ -188,7 +194,7 @@ export function makeContextLocLabel(applicationId, context) {
   const { programId, loc } = dp.collections.staticContexts.getById(staticContextId);
   const fileName = programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
 
-  const { line, column } = loc.start;
+  const { line/* , column */ } = loc.start;
   // return `@${fileName}:${line}:${column}`;
   return `${fileName}:${line}`;
 }
@@ -203,7 +209,7 @@ export function makeTraceLocLabel(trace) {
   const fileName = dp.util.getTraceFileName(traceId);
   const loc = dp.util.getTraceLoc(traceId);
 
-  const { line, column } = loc.start;
+  const { line/* , column */ } = loc.start;
   // return `@${fileName}:${line}:${column}`;
   return `${fileName}:${line}`;
 }

@@ -1,16 +1,21 @@
 
-import StaticTrace from 'dbux-common/src/core/data/StaticTrace';
-import StaticContext from 'dbux-common/src/core/data/StaticContext';
+import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
+import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import CollectionIndex from '../../indexes/CollectionIndex';
 import DataProvider from '../../DataProvider';
 
 
-export default class StaticContextsByParentIndex extends CollectionIndex<StaticContext> {
+/** @extends {CollectionIndex<StaticContext>} */
+export default class StaticContextsByParentIndex extends CollectionIndex {
   constructor() {
     super('staticContexts', 'byParent');
   }
 
-  makeKey(dp: DataProvider, staticContext: StaticTrace) {
+  /** 
+   * @param {DataProvider} dp
+   * @param {StaticTrace} staticContext
+   */
+  makeKey(dp, staticContext) {
     return staticContext.parentId || 0;
   }
 }

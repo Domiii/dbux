@@ -5,9 +5,7 @@ import isFunction from 'lodash/isFunction';
 
 import Enum from '../../util/Enum';
 
-/**
- * 
- */
+// eslint-disable-next-line import/no-mutable-exports
 let ValueTypeCategory = {
   /**
    * Primitives have a small, fixed size, primarily: number, bool
@@ -62,6 +60,7 @@ export default ValueTypeCategory;
 // ValuePruneState
 // ###########################################################################
 
+// eslint-disable-next-line import/no-mutable-exports
 let ValuePruneState = {
   Normal: 0,
   Omitted: 1,

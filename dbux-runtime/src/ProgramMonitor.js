@@ -1,4 +1,4 @@
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 
 /**
  * Comes from the order we execute things in programVisitor
@@ -10,9 +10,14 @@ const ProgramStartTraceId = 1;
  */
 const ProgramStopTraceId = 2;
 
+/**
+ * In Babel-lingo, a "Program" is one *.js file.
+ * Thus the ProgramMonitor monitors a single file, 
+ * while all ProgramMonitors share a single `RuntimeMonitor`.
+ */
 export default class ProgramMonitor {
   /**
-   * @type {import('dbux-common/src/core/data/StaticProgramContext').default}
+   * @type {import('@dbux/common/src/core/data/StaticProgramContext').default}
    */
   _staticProgramContext;
 
@@ -57,7 +62,7 @@ export default class ProgramMonitor {
 
   popImmediate(contextId, traceId) {
     if (this.disabled) {
-      return;
+      return undefined;
     }
 
     return this._runtimeMonitor.popImmediate(contextId, traceId);
@@ -65,7 +70,7 @@ export default class ProgramMonitor {
 
   popFunction(contextId, traceId) {
     if (this.disabled) {
-      return;
+      return undefined;
     }
 
     return this._runtimeMonitor.popFunction(contextId, traceId);
@@ -80,7 +85,7 @@ export default class ProgramMonitor {
   preAwait(inProgramStaticId, traceId) {
     if (this.disabled) {
       // TODO: calling asynchronous methods when disabled hints at non-pure getters and will most likely cause trouble :(
-        this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey call asynchronous code)`);
+      this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey  call asynchronous code)`);
       return 0;
     }
     return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticId, traceId);

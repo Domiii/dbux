@@ -1,4 +1,4 @@
-import GraphNodeMode from 'dbux-graph-common/src/shared/GraphNodeMode';
+import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class GraphNode extends HostComponentEndpoint {

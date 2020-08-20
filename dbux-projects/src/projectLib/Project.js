@@ -1,13 +1,14 @@
 import path from 'path';
-import sh from 'shelljs';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
-import { newLogger } from 'dbux-common/src/log/logger';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
+import sh from 'shelljs';
+import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import BugList from './BugList';
 import Process from '../util/Process';
 
-const AssetFolder = '_shared_assets_';
+const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
 
 export default class Project {
@@ -44,11 +45,6 @@ export default class Project {
    * A specific commit hash or tag name to refer to (if wanted)
    */
   gitCommit;
-
-  /**
-   * `npm` or `yarn`
-   */
-  packageManager = 'yarn';
 
   get gitUrl() {
     return 'https://github.com/' + this.gitRemote;
@@ -92,17 +88,42 @@ export default class Project {
       return false;
     }
 
-    const remote = await Process.execCaptureOut('git remote -v');
+    const remote = await this.execCaptureOut(`git remote -v`);
     return remote?.includes(this.gitRemote);
   }
 
-  async gitResetHard(args) {
-    sh.cd(this.projectPath);
+  async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
-      this.logger.warn('Trying to `git reset --hard`, but was not correct git repository: ', await Process.execCaptureOut('git remote -v'));
-      return;
+      this.logger.warn(`Trying to exectute some git command, but was not correct git repository: `,
+        await this.execCaptureOut(`git remote -v`));
+      this.logger.error('This project encount some problem. ' +
+        'This may be solved by pressing `clean project` folder button.');
+      return 0;
     }
+    return 1;
+  }
+
+  async gitCheckoutCommit(args) {
+    if (!await this.checkCorrectGitRepository()) return;
+
     await this.exec('git reset --hard ' + (args || ''));
+  }
+
+  async gitResetHard(needConfirm = false, confirmMsg = '') {
+    if (!await this.checkCorrectGitRepository()) return;
+
+    if (needConfirm && !confirmMsg) {
+      this.logger.error('calling Project.gitResetHard with `needConfirm=true` but no `confirmMsg`');
+    }
+
+    if (!await this.checkFilesChanged()) return;
+
+    if (needConfirm && !await this.manager.externals.confirm(confirmMsg)) {
+      const err = new Error('Action rejected by user');
+      err.userCanceled = true;
+      throw err;
+    }
+    await this.exec('git reset --hard');
   }
 
   // ###########################################################################
@@ -134,7 +155,7 @@ export default class Project {
     throw new Error(this + ' abstract method not implemented');
   }
 
-  async selectBug(bug) {
+  async selectBug(/* bug */) {
     throw new Error(this + ' abstract method not implemented');
   }
 
@@ -146,8 +167,39 @@ export default class Project {
   // utilities
   // ###########################################################################
 
-  exec(command, options) {
-    return this.runner._exec(this, command, options);
+  async execInTerminal(command, options) {
+    let cwd = options?.cdToProjectPath === false ? '' : this.projectPath;
+
+    let { code } = await this.manager.externals.TerminalWrapper.execInTerminal(cwd, command, {}).waitForResult();
+
+    if (options?.failOnStatusCode === false) {
+      return code;
+    }
+    if (code) {
+      throw new Error(`Process exit code ${code}`);
+    }
+    return 0;
+  }
+
+  async exec(command, options, input) {
+    if (options?.cdToProjectPath !== false) {
+      options = defaultsDeep(options, {
+        ...(options || EmptyObject),
+        processOptions: {
+          cwd: this.projectPath
+        }
+      });
+    }
+    
+    return this.runner._exec(command, this.logger, options, input);
+  }
+
+  async execCaptureOut(command, processOptions) {
+    processOptions = {
+      ...(processOptions || EmptyObject),
+      cwd: this.projectPath
+    };
+    return Process.execCaptureOut(command, { processOptions });
   }
 
   execBackground(cmd, options) {
@@ -191,15 +243,16 @@ export default class Project {
    * @see https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
    */
   async checkFilesChanged() {
-    await this.exec('git update-index --refresh', {
-      failOnStatusCode: false
-    });
+    if (!await this.checkCorrectGitRepository()) {
+      return -1;
+    }
+
+    // Not sure what this line does, but seems not really useful here, since these two line does the same thing.
+    // await this.exec('git update-index --refresh');
 
     // returns status code 1, if there are any changes
     // see: https://stackoverflow.com/questions/28296130/what-does-this-git-diff-index-quiet-head-mean
-    const code = await this.exec('git diff-index --quiet HEAD --', {
-      failOnStatusCode: false
-    });
+    const code = await this.exec('git diff-index --quiet HEAD --', { failOnStatusCode: false });
 
     return !!code;  // code !== 0 means that there are pending changes
   }
@@ -224,20 +277,21 @@ export default class Project {
       sh.rm('-rf', absRmFiles);
     }
 
+    await this.manager.installDependencies();
+
     // copy assets
-    await this.copyAssets();
+    await this.installAssets();
 
-    // install dbux dependencies
-    // await this.installDbuxCli();
-
+    // install project's custom dependencies
     await this.installDependencies();
 
-    if (this.packageManager === 'yarn') {
-      await this.yarnInstall();
-    }
-    else {
-      await this.npmInstall();
-    }
+    // NOTE: disable yarn support for now
+    // if (this.packageManager === 'yarn') {
+    //   await this.yarnInstall();
+    // }
+    // else {
+    await this.npmInstall();
+    // }
 
     // call `afterInstall` hook for different projects to do their postinstall things
     await this.afterInstall();
@@ -252,10 +306,7 @@ export default class Project {
    * @virtual
    */
   async installDependencies() {
-    // get rid of outdated dependencies; replace with webpack 4 (5?) toolchain
-    //  then install updated webpack + babel dependencies
-    // TODO: choose correct package manager
-    await this.exec(`yarn add --dev source-map-loader`);
+    // await this.exec(`yarn add --dev source-map-loader`);
     /*
     await this.exec(`\
         yarn remove webpack webpack-dev-server babel-loader babel-core babel babel-plugin-__coverage__ \
@@ -272,12 +323,20 @@ export default class Project {
   async afterInstall() { }
 
   async autoCommit() {
-    await this.exec(`git add -A && git commit -am "[dbux auto commit]"`);
+    if (!await this.checkCorrectGitRepository()) {
+      return;
+    }
+
+    await this.exec(`git add -A && git commit -am '"dbux auto commit"'`);
   }
 
   async deleteProjectFolder() {
     await sh.rm('-rf', this.projectPath);
     this._installed = false;
+  }
+
+  async isProjectFolderExists() {
+    return sh.test('-d', path.join(this.projectPath, '.git'));
   }
 
 
@@ -294,11 +353,11 @@ export default class Project {
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    if (!await sh.test('-d', projectPath)) {
+    if (!await this.isProjectFolderExists()) {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
-      await this.exec(`git clone ${githubUrl} ${projectPath}`, {
+      await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
         cdToProjectPath: false
       });
 
@@ -307,7 +366,7 @@ export default class Project {
       // if given, switch to specific commit hash, branch or tag name
       // see: https://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
       if (this.gitCommit) {
-        await this.gitResetHard(this.gitCommit);
+        await this.gitCheckoutCommit(this.gitCommit);
       }
 
       this.log(`Cloned. Installing...`);
@@ -326,29 +385,20 @@ export default class Project {
   }
 
   async npmInstall() {
-    await this.exec(`npm install`);
+    // await this.exec('npm cache verify');
+
+    await this.execInTerminal(`npm install`);
 
     // hackfix: npm installs are broken somehow.
+    //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
     //      Sometimes running it a second time after checking out a different branch 
     //      deletes all node_modules. This will bring everything back correctly (for now).
-    await this.exec(`npm install`);
+    await this.execInTerminal(`npm install`);
   }
 
-  async yarnInstall() {
-    await this.exec(`yarn install`);
-  }
-
-  async installDbuxCli() {
-    // TODO: make this work in production as well
-
-    // await exec('pwd', this.logger);
-
-    // const dbuxCli = path.resolve(projectPath, '../../dbux-cli');
-    const dbuxCli = '../../dbux-common ../../dbux-cli';
-
-    // TODO: select `npm` or `yarn` based on packageManager setting (but requires change in command)
-    await this.exec(`yarn add --dev ${dbuxCli}`, this.logger);
-  }
+  // async yarnInstall() {
+  //   await this.exec(`yarn install`);
+  // }
 
   // ###########################################################################
   // assets
@@ -357,17 +407,17 @@ export default class Project {
   /**
    * Copy all assets into project folder.
    */
-  async copyAssets() {
+  async installAssets() {
     // copy individual assets first
     await this.copyAssetFolder(this.folderName);
 
     // copy shared assets (NOTE: doesn't override individual assets)
-    await this.copyAssetFolder(AssetFolder);
+    await this.copyAssetFolder(SharedAssetFolder);
   }
 
   async copyAssetFolder(assetFolderName) {
-    // TODO: fix these paths! (`__dirname` is overwritten by webpack and points to the `dist` dir; `__filename` points to `bundle.js`)
-    const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
+    // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
+    const assetDir = this.manager.externals.resources.getResourcePath('dist', 'projects', assetFolderName);
 
     if (await sh.test('-d', assetDir)) {
       // copy assets, if this project has any
@@ -392,6 +442,10 @@ export default class Project {
   }
 
   async applyPatch(patchFName) {
+    if (!await this.checkCorrectGitRepository()) {
+      return -1;
+    }
+
     return this.exec(`git apply --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
   }
 
@@ -401,21 +455,36 @@ export default class Project {
    * @see https://git-scm.com/docs/git-apply#Documentation/git-apply.txt-ltpatchgt82308203
    */
   async applyPatchString(patchString) {
-    // TODO: fix `exec` to take in a string argument that will be automatically piped to stdin
-    // return this.exec(`git apply --ignore-space-change --ignore-whitespace -`);
+    if (!await this.checkCorrectGitRepository()) {
+      return -1;
+    }
+
+    return this.exec(`git apply --ignore-space-change --ignore-whitespace`, null, patchString);
   }
 
   async extractPatch(patchFName) {
     // TODO: also copy to `AssetFolder`?
+    if (!await this.checkCorrectGitRepository()) {
+      return -1;
+    }
+
     return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
   }
 
   async getPatchString() {
-    return Process.execCaptureOut(`git diff --color=never`);
+    if (!await this.checkCorrectGitRepository()) {
+      return null;
+    }
+
+    return this.execCaptureOut(`git diff --color=never`);
   }
 
   async getTagName() {
-    return Process.execCaptureOut(`git describe --tags`);
+    if (!await this.checkCorrectGitRepository()) {
+      return null;
+    }
+
+    return (await this.execCaptureOut(`git describe --tags`)).trim();
   }
 
   // ###########################################################################

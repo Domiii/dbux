@@ -1,5 +1,5 @@
-import createPanzoom from 'panzoom';
-import { compileHtmlElement, repaintEl } from '@/util/domUtil';
+import createPanzoom from '@dbux/panzoom';
+import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class GraphRoot extends ClientComponentEndpoint {
@@ -34,7 +34,6 @@ class GraphRoot extends ClientComponentEndpoint {
 
   setupEl() {
     this.panzoom = this.initPanZoom(this.els.graphCont);
-
   }
 
   update() {
@@ -69,33 +68,32 @@ class GraphRoot extends ClientComponentEndpoint {
     //   1
     // );
 
-    panzoom.on('panstart', (e) => {
-      // console.log('panstart', e);
-    });
+    // panzoom.on('panstart', (e) => {
+    //   // console.log('panstart', e);
+    // });
 
-    panzoom.on('pan', (e) => {
-      // this._repaint();
-    });
+    // panzoom.on('pan', (e) => {
+    //   // this._repaint();
+    // });
 
-    panzoom.on('panend', (e) => {
-      // this._repaint();
-    });
+    // panzoom.on('panend', (e) => {
+    //   // this._repaint();
+    // });
 
-    panzoom.on('zoomend', (e) => {
-      // this._repaint();
-    });
+    // panzoom.on('zoomend', (e) => {
+    //   // this._repaint();
+    // });
 
-    panzoom.on('transform', (e) => {
-      // this._repaint();
-      // repaintEl(this.els.body);
-    });
+    // panzoom.on('transform', (e) => {
+    //   // this._repaint();
+    //   // repaintEl(this.els.body);
+    // });
 
     // hackfix: scrollbar bugs out when scrolling or when touching it the first time around; this fixes it
     //   (probably a webview bug)
     const repaint = () => {
       this._repaint();
       // repaintEl(this.els.body);
-      console.debug('repaint');
       this.els.graphCont.removeEventListener('scroll', repaint);
     };
     this.els.graphCont.addEventListener('scroll', repaint);

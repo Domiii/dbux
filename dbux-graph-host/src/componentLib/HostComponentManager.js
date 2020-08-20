@@ -1,7 +1,9 @@
-import BaseComponentManager from 'dbux-graph-common/src/componentLib/BaseComponentManager';
-import { newLogger } from 'dbux-common/src/log/logger';
+import NanoEvents from 'nanoevents';
+import BaseComponentManager from '@dbux/graph-common/src/componentLib/BaseComponentManager';
+import { newLogger } from '@dbux/common/src/log/logger';
 import HostComponentEndpoint from './HostComponentEndpoint';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
 
 class AppComponent extends HostComponentEndpoint {
@@ -38,6 +40,8 @@ class HostComponentManager extends BaseComponentManager {
     super(ipcAdapter, componentRegistry);
 
     this.externals = externals;
+    this._initCount = 0;
+    this._emitter = new NanoEvents();
   }
 
   start() {
@@ -46,10 +50,7 @@ class HostComponentManager extends BaseComponentManager {
 
   async restart() {
     debug('restarting...');
-    this.ipc.ipcAdapter.postMessage = (msg) => {
-      // when invoked by remote, we try to send response back after shutdown. This prevents that.
-      debug('silenced message after Host shutdown:', JSON.stringify(msg));
-    };
+    // this.silentShutdown();
 
     // externals.restart will result in a call to shutdown, and also re-load client code (something we cannot reliably do internally)
     await this.externals.restart();
@@ -57,6 +58,7 @@ class HostComponentManager extends BaseComponentManager {
 
   silentShutdown() {
     this.app?.dispose(true);
+    this.ipc.ipcAdapter.dispose();
   }
 
   // ###########################################################################
@@ -77,11 +79,16 @@ class HostComponentManager extends BaseComponentManager {
       throw new Error(component.debugTag + '.shared is not a function');
     }
 
-    const src = shared.toString();
+    let src = shared.toString().trim();
 
-    // make sure it is avalid function declaration expression
-    if (!/^function\s+shared\s*\(\s*\)\s*\{/.test(src)) {
-      throw new Error(component.debugTag + '.shared must be a function, declared like so: `function shared() { ... }` (necessary for simplifying serialization)');
+    if (/^shared\s*\(\s*\)\s*\{/.test(src)) {
+      src = `function ${src}`;
+    }
+    
+    // make sure it is a valid function declaration expression
+    if (!/^function\s*(shared)?\s*\(\s*\)\s*\{/.test(src)) {
+      // eslint-disable-next-line max-len
+      throw new Error(component.debugTag + '.shared must be an es5-style function, declared like so: `function shared() { ... }` (necessary for simplifying serialization). Found:\n\n' + src);
     }
 
     return src;
@@ -127,6 +134,54 @@ class HostComponentManager extends BaseComponentManager {
       componentId,
       state
     );
+  }
+
+  // ###########################################################################
+  // manage init count
+  // ###########################################################################
+
+  setInitCount(n) {
+    const oldState = this.isBusyInit();
+
+    this._initCount += n;
+
+    const newState = this.isBusyInit();
+
+    if (oldState !== newState) {
+      if (newState) {
+        // free to busy
+        this._busyInitPromise = new Promise((r) => {
+          this._resolveInitPromise = r;
+        });
+      }
+      else {
+        // busy to free
+        this._resolveInitPromise();
+        this._resolveInitPromise = null;
+        this._busyInitPromise = null;
+      }
+      this._emitter.emit('busyStateChanged', newState);
+    }
+  }
+
+  incInitCount() {
+    this.setInitCount(1);
+  }
+
+  decInitCount() {
+    this.setInitCount(-1);
+  }
+
+  isBusyInit() {
+    return !!this._initCount;
+  }
+
+  onBusyStateChanged(cb) {
+    return this._emitter.on('busyStateChanged', cb);
+  }
+
+  waitForBusyInit() {
+    return this._busyInitPromise;
   }
 }
 

@@ -1,4 +1,4 @@
-import allApplications from 'dbux-data/src/applications/allApplications';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import HighlightManager from './controllers/HighlightManager';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
@@ -18,8 +18,21 @@ class GraphDocument extends HostComponentEndpoint {
     // register event listeners
     this.addDisposable(
       allApplications.selection.onApplicationsChanged(() => {
+        allApplications.selection.incBusy();
+        
         this.graphRoot.refresh();
-        this.controllers.getComponent(HighlightManager).clearDisposedHighlighter();
+
+        if (this.componentManager.isBusyInit()) {
+          const unbind = this.componentManager.onBusyStateChanged((state) => {
+            if (!state) {
+              allApplications.selection.decBusy();
+              unbind();
+            }
+          });
+        }
+        else {
+          allApplications.selection.decBusy();
+        }
       })
     );
   }

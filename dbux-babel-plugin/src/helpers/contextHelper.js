@@ -1,4 +1,4 @@
-import TraceType from 'dbux-common/src/core/constants/TraceType';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { buildTraceNoValue } from './traceHelpers';
 
 export function buildContextEndTrace(path, state) {

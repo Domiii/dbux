@@ -102,5 +102,19 @@
 		"body": [
 			"@return {$1}"
 		]
+	},
+
+	"eslint-disable-next-line no-unused-vars": {
+		"prefix": "eslint-disable-next-line no-unused-vars",
+		"body": [
+			"// eslint-disable-next-line no-unused-vars"
+		]
+	},
+
+	"JSDoc: @typedef" :{
+		"prefix": "@typedef",
+		"body": [
+			"/** @typedef {import('$1').${2:default}} $0 */"
+		]
 	}
 }

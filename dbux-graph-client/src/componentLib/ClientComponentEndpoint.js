@@ -1,5 +1,5 @@
-import ComponentEndpoint from 'dbux-graph-common/src/componentLib/ComponentEndpoint';
-import DOMWrapper from '@/dom/DOMWrapper';
+import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndpoint';
+import DOMWrapper from '../dom/DOMWrapper';
 import ClientComponentList from './ClientComponentList';
 
 /**
@@ -83,7 +83,8 @@ class ClientComponentEndpoint extends ComponentEndpoint {
       await this.update();
     }
     catch (err) {
-      this.logger.error('Component update failed', err);
+      this.logger.warn('Component update failed', err);
+      throw err;
     }
   }
 

@@ -1,11 +1,21 @@
 # application
+/dbux_projects
 /projects
 __samplesOutput__
 project_sandbox/projects
 project_sandbox/bug-dataset
 _testOut
 __data__
+lerna.debug.log
 
+
+# yarn
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
 
 # python
 __pycache__

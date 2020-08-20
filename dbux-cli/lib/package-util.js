@@ -1,0 +1,169 @@
+const path = require('path');
+const fs = require('fs');
+const process = require('process');
+
+// eslint-disable-next-line
+const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
+
+process.env.BABEL_DISABLE_CACHE = 1;
+
+// ###########################################################################
+// makeAbsolutePaths
+// ###########################################################################
+
+function makeAbsolutePaths(root, relativePaths) {
+  return relativePaths.map(f => path.resolve(path.join(root, f)));
+}
+
+// ###########################################################################
+// package.json
+// ###########################################################################
+
+function readJsonFile(fpath) {
+  const content = fs.readFileSync(fpath);
+  return JSON.parse(content);
+}
+
+function readPackageJson(folder) {
+  const packageJsonPath = path.join(folder, 'package.json');
+  return readJsonFile(packageJsonPath);
+}
+
+function readPackageJsonVersion(folder) {
+  const pkg = readPackageJson(folder);
+  return pkg.version;
+}
+
+/**
+ * NOTE: only used for development
+ */
+function readLernaJson() {
+  const lernaJsonPath = path.join(__dirname, '../..', 'lerna.json');
+  return readJsonFile(lernaJsonPath);
+}
+
+function readPackageJsonName(folder) {
+  const packageJson = readPackageJson(folder);
+  return packageJson && packageJson.name;
+}
+
+function readPackageJsonDependencies(folder, pattern) {
+  // const folder = path.join(root, entryName);
+  const packageJson = readPackageJson(folder);
+  let dependencies = packageJson && packageJson.dependencies;
+  if (!dependencies) {
+    return [];
+  }
+
+  dependencies = Object.keys(dependencies);
+  return dependencies.filter(dep => pattern.test(dep));
+}
+
+
+/**
+ * Build webpack `resolve` entry for dependencies from `package.json`.
+ * WARNING: Assumes matching dependencies to be direct children of `root` path.
+ */
+function makeResolvePackageJson(root, entryName, dependencyPattern) {
+  const deps = readPackageJsonDependencies(root, entryName, dependencyPattern);
+  return makeResolve(root, deps);
+}
+
+// ###########################################################################
+// makeResolve
+// ###########################################################################
+
+/**
+ * Resolve dependencies:
+ * 1. node_modules/
+ * 2. relativePaths: A list of paths relative to `root` that are also used in this project
+ */
+function makeResolve(root, relativePaths = []) {
+  const absolutePaths = relativePaths.map(f => path.resolve(path.join(root, f)));
+  absolutePaths.forEach(f => {
+    if (!fs.existsSync(f)) {
+      throw new Error('invalid dependency does not exist: ' + f);
+    }
+  });
+
+  const moduleFolders = [
+    path.join(root, '/node_modules'),
+    ...absolutePaths
+      .map(f => [path.join(f, 'src'), path.join(f, 'node_modules')])
+      .flat()
+      .map(f => path.resolve(f))
+  ];
+
+  // readPackageJsonName
+
+  // adding these aliases allows resolving required libraries without them being in `node_modules`
+  const alias = fromEntries(relativePaths.map(target => {
+    // const folderName = path.basename(target);
+    const folder = path.resolve(path.join(root, target));
+    const packageName = readPackageJsonName(folder);
+    return [
+      packageName,
+      folder
+    ];
+  }));
+
+  return {
+    symlinks: true,
+    alias,
+    modules: [
+      // see: https://github.com/webpack/webpack/issues/8824#issuecomment-475995296
+      ...moduleFolders
+    ]
+  };
+}
+
+// ###########################################################################
+// getDbuxVersion
+// ###########################################################################
+
+function getDbuxVersion(mode) {
+  const lerna = readLernaJson();
+  if (!lerna.version) {
+    throw new Error('lerna.json does not have a version.');
+  }
+
+  let { version } = lerna;
+  const originalVersion = version;
+  if (mode === 'production') {
+    // NOTE: we cannot roll with the current "dev" build version since we depend on the version to be available on the `npm` registry
+    // so we must downgrade!
+    const match = version.match(/(\d+)\.(\d+)\.(\d+)(-dev\.\d+)?/);
+    if (!match) {
+      throw new Error(`Could not parse lerna version: ${version}`);
+    }
+    let [_, maj, min, pat, release] = match;
+
+    [maj, min, pat] = [maj, min, pat].map(n => parseInt(n, 10));
+
+    if (release) {
+      throw new Error(`Cannot make a production build of a dev version.`);
+    }
+    else {
+      // NOTE: if there is no "dev" version, there is no need to downgrade
+    }
+  }
+  return version;
+}
+
+
+// ###########################################################################
+// 
+// ###########################################################################
+
+
+module.exports = {
+  makeAbsolutePaths,
+  makeResolve,
+
+  readPackageJson,
+  readPackageJsonVersion,
+  makeResolvePackageJson,
+  readLernaJson,
+  getDependenciesPackageJson: readPackageJsonDependencies,
+  getDbuxVersion
+};

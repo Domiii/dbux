@@ -1,5 +1,5 @@
 // import { logInternalError } from '../log/logger';
-// import EmptyObject from 'dbux-common/src/util/EmptyObject';
+// import EmptyObject from '@dbux/common/src/util/EmptyObject';
 // import { isInLoc1D } from './locHelpers';
 // import { isNodeInstrumented } from './instrumentationHelper';
 

@@ -1,6 +1,7 @@
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import Bug from './Bug';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
 export default class BugList {
@@ -10,6 +11,11 @@ export default class BugList {
   _list = [];
   _byId = new Map();
 
+  /**
+   * 
+   * @param {*} project 
+   * @param {Object[]} arr 
+   */
   constructor(project, arr) {
     this.project = project;
     let lastBugId = 0;

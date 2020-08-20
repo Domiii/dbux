@@ -2,23 +2,45 @@ import TraceType from '../constants/TraceType';
 import HasValue from './HasValue';
 
 export default class Trace extends HasValue {
-  traceId: number;
-  staticTraceId: number;
-  applicationId: number;
-  runId: number;
-  contextId: number;
-  valueId: number;
-
-  loopId: number;
+  /**
+   * @type {number}
+   */
+  traceId;
+  /**
+   * @type {number}
+   */
+  staticTraceId;
+  /**
+   * @type {number}
+   */
+  applicationId;
+  /**
+   * @type {number}
+   */
+  runId;
+  /**
+   * @type {number}
+   */
+  contextId;
+  /**
+   * @type {number}
+   */
+  valueId;
+  /**
+   * @type {number}
+   */
+  loopId;
 
   /**
    * This is currently only set for `Pop` traces (to enable error tracking).
+   * @type {number}
    */
-  previousTrace: number;
+  previousTrace;
 
   /**
    * NOTE: this is the dynamic type only.
    *       Use DataProvider.util.getTraceType to get actual TraceType.
+   * @type {number}
    */
-  type: TraceType;
+  type;
 }

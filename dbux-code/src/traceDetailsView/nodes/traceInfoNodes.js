@@ -1,10 +1,10 @@
-import allApplications from 'dbux-data/src/applications/allApplications';
-import Application from 'dbux-data/src/applications/Application';
-import { makeContextLabel } from 'dbux-data/src/helpers/contextLabels';
-import TraceType from 'dbux-common/src/core/constants/TraceType';
-import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
+import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
+/** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
 // ###########################################################################
 // Info: Application
@@ -20,7 +20,10 @@ export class ApplicationTDNode extends BaseTreeViewNode {
     return application;
   }
 
-  static makeLabel(application: Application) {
+  /**
+   * @param {Application} application 
+   */
+  static makeLabel(application) {
     return `${application.getRelativeFolder()} [Application]`;
   }
 
@@ -65,11 +68,11 @@ export class ContextTDNode extends BaseTreeViewNode {
 // ###########################################################################
 
 export class TraceTypeTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace, parent) {
+  static makeTraceDetail(trace) {
     return trace;
   }
 
-  static makeLabel(trace, parent) {
+  static makeLabel(trace) {
     const application = allApplications.getApplication(trace.applicationId);
     const traceType = application.dataProvider.util.getTraceType(trace.traceId);
     const typeName = TraceType.nameFrom(traceType);
@@ -87,7 +90,7 @@ export class TraceTypeTDNode extends BaseTreeViewNode {
 // ###########################################################################
 
 export class InfoTDNode extends BaseTreeViewNode {
-  static makeTraceDetail(trace, parent) {
+  static makeTraceDetail(trace) {
     return trace;
   }
 

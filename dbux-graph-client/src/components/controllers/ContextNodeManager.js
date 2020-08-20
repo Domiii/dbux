@@ -1,4 +1,4 @@
-import ClientComponentEndpoint from '@/componentLib/ClientComponentEndpoint';
+import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
 
 export default class ContextNodeManager extends ClientComponentEndpoint {
   // do nothing here, StaticContextHighlighting is trigger by:

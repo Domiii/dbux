@@ -1,10 +1,9 @@
-import { newLogger, onLogError } from 'dbux-common/src/log/logger';
+import { newLogger, onLogError } from '@dbux/common/src/log/logger';
 import ClientComponentManager from './componentLib/ClientComponentManager';
-
-import 'bootstrap/dist/css/bootstrap.css';
 
 import './styles.css';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-client/index');
 
 let componentManager;

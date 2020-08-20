@@ -1,3 +1,4 @@
+import getGlobal from '@dbux/common/src/getGlobal';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
 
@@ -6,6 +7,14 @@ const dbux = {
 
   initProgram(staticProgramData) {
     return this._r.addProgram(staticProgramData);
+  },
+
+  incDisabled() {
+    this._r.incDisabled();
+  },
+
+  decDisabled() {
+    this._r.decDisabled();
   }
 };
 
@@ -16,18 +25,6 @@ function registerDbuxAsGlobal() {
   __global__.__dbux__ = dbux;
 }
 
-function _getGlobal() {
-  if (typeof window !== 'undefined') {
-    return window;
-  }
-  else if (typeof global !== 'undefined') {
-    return global;
-  }
-  else {
-    return globalThis;
-  }
-}
-
 /**
  * @type {import('./client/Client').default}
  */
@@ -35,7 +32,8 @@ let client;
 
 let _didShutdown = false;
 function handleShutdown() {
-  console.debug('shutdown detected');
+  // eslint-disable-next-line no-console
+  console.debug('[dbux-runtime] shutdown detected');
   if (_didShutdown) {
     // this can get triggered more than once (if registered to multiple different events)
     return;
@@ -45,12 +43,14 @@ function handleShutdown() {
   client.tryFlush();
   
   if (!client.hasFlushed()) {
-    console.error('Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably a crash or you called `process.exit` manually.');
+    // eslint-disable-next-line no-console
+    console.error('[dbux-runtime] Process shutdown but not all data has been sent out. Analysis will be incomplete. ' +
+      'This is probably a crash or you called `process.exit` manually.');
   }
 }
 
 (function main() {
-  __global__ = _getGlobal();
+  __global__ = getGlobal();
   registerDbuxAsGlobal();
 
   // NOTE: make sure to `initClient` right at the start, or else:
@@ -61,6 +61,11 @@ function handleShutdown() {
   //    `process.exit` can disrupt that (kills without allowing us to perform another async handshake + `send`)
   // register `exit` handler that sends out a warning if there is unsent stuff
   __global__.process && __global__.process.on('exit', handleShutdown);
+
+  // __global__.process && __global__.process.on('uncaughtException', async (err) => {
+  //   console.error('uncaughtException', err);
+  //   return new Promise(r => setTimeout(r, 500)).then(() => console.warn('hbgiiasd'));
+  // });
 
   // if (__global__.process) {
   //   // handle `beforeExit`, `SIGTERM` and `SIGINT` separately

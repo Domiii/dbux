@@ -1,7 +1,7 @@
 import template from '@babel/template';
 import * as t from "@babel/types";
-import TraceType from 'dbux-common/src/core/constants/TraceType';
-import VarOwnerType from 'dbux-common/src/core/constants/VarOwnerType';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
+import VarOwnerType from '@dbux/common/src/core/constants/VarOwnerType';
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import { injectContextEndTrace } from '../helpers/contextHelper';
 import { getNodeNames } from './nameVisitors';
@@ -10,7 +10,7 @@ import { getNodeNames } from './nameVisitors';
 // helpers
 // ###########################################################################
 
-function addResumeContext(bodyPath, state, staticId) {
+function addResumeContext(bodyPath, state/* , staticId */) {
   const { loc: bodyLoc } = bodyPath.node;
 
   // the "resume context" starts with the function (function is in "Resumed" state initially)

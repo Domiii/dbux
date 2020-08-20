@@ -6,6 +6,15 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "Launch Program",
+			"program": "${file}",
+			"request": "launch",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "pwa-node"
+		},
+		{
 			"name": "dbux-code",
 			"type": "extensionHost",
 			"request": "launch",
@@ -29,12 +38,17 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+
+				// NOTE: it appears that --enable-source maps slows things down, and in debug mode it just grinds to a halt
+				// "--enable-source-maps",
 				"--nolazy",
 			],
 			"sourceMaps": true,
 			"restart": true,
-			"program": "${workspaceFolder}/dbux-cli/bin/dbux-run-file",
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
+				"run",
+				"--esnext",
 				"${file}"
 			],
 			"protocol": "inspector",
@@ -43,14 +57,15 @@
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 			"outFiles": [
+				"${workspaceFolder}/dbux-cli/dist/**/*.js",
 				"${workspaceFolder}/dbux-babel-plugin/dist/**/*.js",
 				"${workspaceFolder}/dbux-runtime/dist/**/*.js"
 			]
 		},
 		{
+			"name": "[dbux-project] attach",
 			"type": "node",
 			"request": "attach",
-			"name": "[dbux-project] attach",
 			"port": 9853,
 			"skipFiles": [
 				"<node_internals>/**"
@@ -63,10 +78,12 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
-			"program": "${workspaceFolder}/dbux-cli/bin/dbux-instrument-file.js",
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
+				"instrument",
 				"${file}",
 			],
 			// see: https://github.com/microsoft/vscode/issues/5422
@@ -77,6 +94,7 @@
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 			"outFiles": [
+				"${workspaceFolder}/dbux-cli/dist/**/*.js",
 				"${workspaceRoot}/dbux-babel-plugin/dist/**/*.js"
 			]
 		},
@@ -87,6 +105,7 @@
 			"program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--preserve-symlinks"
 			],
 			"cwd": "${workspaceFolder}/dbux-cli",
@@ -108,17 +127,21 @@
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 		},
+
 		{
-			"name": "run js (babel)",
+			"name": "run js (no dbux, yes babel)",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
-			"program": "${workspaceFolder}/dbux-cli/bin/run-js.js",
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
+				"run",
+				"-d",
 				"${file}",
 			],
 			// see: https://github.com/microsoft/vscode/issues/5422
@@ -133,16 +156,19 @@
 			]
 		},
 		{
-			"name": "run js (no babel)",
+			"name": "run js (no dbux, no babel)",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
+				"--enable-source-maps",
 				"--nolazy",
 			],
-			"program": "${workspaceFolder}/dbux-cli/bin/run-js-unbabel.js",
+			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
+				"-d",
+				"-p",
 				"${file}",
 			],
 			"restart": true,
@@ -205,6 +231,7 @@
 			"runtimeExecutable": "npm",
 			"runtimeArgs": [
 				// "--stack-trace-limit=1000",
+				"--enable-source-maps",
 				// "--nolazy",
 				"run",
 				"build-debug"
@@ -227,6 +254,7 @@
 			"runtimeExecutable": "npm",
 			"runtimeArgs": [
 				// "--stack-trace-limit=1000",
+				"--enable-source-maps",
 				// "--nolazy",
 				"run",
 				"start-debug"
@@ -248,6 +276,32 @@
 				"--extensionDevelopmentPath=${workspaceFolder}/dbux-code",
 				"--extensionTestsPath=${workspaceFolder}/dbux-code/test/suite/index"
 			]
-		}
+		},
+		{
+			"name": "__dbux-publish",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"runtimeArgs": [
+				"--stack-trace-limit=1000",
+				"--enable-source-maps",
+				"--nolazy",
+			],
+			"sourceMaps": true,
+			"restart": true,
+			"program": "${workspaceFolder}/scripts/publish.js",
+			"args": [
+			],
+			"protocol": "inspector",
+			// "trace": true,
+			"disableOptimisticBPs": true,
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"outFiles": [
+				"${workspaceFolder}/dbux-cli/dist/**/*.js",
+				"${workspaceFolder}/dbux-babel-plugin/dist/**/*.js",
+				"${workspaceFolder}/dbux-runtime/dist/**/*.js"
+			]
+		},
 	]
 }

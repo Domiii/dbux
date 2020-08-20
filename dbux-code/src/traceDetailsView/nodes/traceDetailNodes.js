@@ -1,5 +1,5 @@
 import omit from 'lodash/omit';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import StaticTraceTDNode from './StaticTraceTDNodes';
@@ -7,6 +7,7 @@ import StaticContextTDNode from './StaticContextTDNodes';
 import TrackObjectTDNode from './TrackObjectTDNodes';
 import ValueTDNode from './ValueTDNode';
 import { InfoTDNode } from './traceInfoNodes';
+import NearbyValuesTDNode from './NearbyValuesTDNode';
 
 export class TraceDetailNode extends BaseTreeViewNode {
 }
@@ -16,11 +17,11 @@ export class TraceDetailNode extends BaseTreeViewNode {
 // ###########################################################################
 
 export class DebugTDNode extends TraceDetailNode {
-  static makeTraceDetail(trace, parent) {
+  static makeTraceDetail(trace/* , parent */) {
     return trace;
   }
 
-  static makeLabel(trace, parent) {
+  static makeLabel(/* trace, parent */) {
     return 'Debug';
   }
 
@@ -80,6 +81,7 @@ export const DetailNodeClasses = [
   ValueTDNode,
   TrackObjectTDNode,
   StaticTraceTDNode,
+  NearbyValuesTDNode,
   // StaticContextTDNode,
   InfoTDNode,
   DebugTDNode

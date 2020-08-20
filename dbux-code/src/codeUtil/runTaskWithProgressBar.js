@@ -3,9 +3,10 @@ import {
   ProgressLocation,
 } from 'vscode';
 import defaultsDeep from 'lodash/defaultsDeep';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ProgressBarTask');
 
 function _errWrap(f) {
@@ -15,8 +16,8 @@ function _errWrap(f) {
     }
     catch (err) {
       logError('Error when executing function of task', 
-        f.name || '(anonymous callback)', '-', err);
-      throw err;
+        f.name?.trim() || '(anonymous callback)', '-', err);
+      // throw err;
     }
   };
 }

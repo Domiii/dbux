@@ -1,6 +1,6 @@
-import { logInternalError } from 'dbux-common/src/log/logger';
-import ExecutionContextType from 'dbux-common/src/core/constants/ExecutionContextType';
-import TraceType, { isReturnTrace, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
+import { newLogger } from '@dbux/common/src/log/logger';
+import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+import TraceType, { isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
 import staticProgramContextCollection from './data/staticProgramContextCollection';
 import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
@@ -9,10 +9,15 @@ import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('RuntimeMonitor');
+
 function _inheritsLoose(subClass, superClass) {
   if (superClass.prototype) {
     subClass.prototype = Object.create(superClass.prototype);
     subClass.prototype.constructor = subClass;
+
+    // eslint-disable-next-line no-proto
     subClass.__proto__ = superClass;
   }
 }
@@ -57,7 +62,7 @@ export default class RuntimeMonitor {
       if (!staticContext?.staticId) {
         // set to random default, to avoid more errors down the line?
         staticContext = staticContextCollection.getContext(programId, 1);
-        logInternalError('trace had invalid `_staticContextId`', staticTrace);
+        logError('trace had invalid `_staticContextId`', staticTrace);
       }
       delete staticTrace._staticContextId;
       staticTrace.staticContextId = staticContext.staticId;
@@ -111,7 +116,7 @@ export default class RuntimeMonitor {
     // sanity checks
     const context = executionContextCollection.getById(contextId);
     if (!context) {
-      logInternalError('Tried to popImmediate, but context was not registered:', contextId);
+      logError('Tried to popImmediate, but context was not registered:', contextId);
       return;
     }
 
@@ -147,7 +152,6 @@ export default class RuntimeMonitor {
       try {
         resultValue = cb.apply(this, args);
         if (this && resultValue === undefined) {
-          // not quite sure why - that's what babel preset-env does
           return this;
         }
         return resultValue;
@@ -203,7 +207,7 @@ export default class RuntimeMonitor {
     // sanity checks
     const context = executionContextCollection.getById(callbackContextId);
     if (!context) {
-      logInternalError('Tried to popCallback, but context was not registered:',
+      logError('Tried to popCallback, but context was not registered:',
         callbackContextId);
       return;
     }
@@ -249,7 +253,7 @@ export default class RuntimeMonitor {
     return awaitContextId;
   }
 
-  wrapAwait(programId, awaitValue, awaitContextId) {
+  wrapAwait(programId, awaitValue, /* awaitContextId */) {
     // nothing to do
     return awaitValue;
   }
@@ -261,7 +265,7 @@ export default class RuntimeMonitor {
     // sanity checks
     const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
-      logInternalError('Tried to postAwait, but context was not registered:', awaitContextId);
+      logError('Tried to postAwait, but context was not registered:', awaitContextId);
     }
     else {
       // resume after await
@@ -281,7 +285,7 @@ export default class RuntimeMonitor {
   }
 
   
-  pushResume(programId, resumeStaticContextId, inProgramStaticTraceId, dontTrace = false) {
+  pushResume(programId, resumeStaticContextId, inProgramStaticTraceId/* , dontTrace = false */) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -306,7 +310,7 @@ export default class RuntimeMonitor {
   popResume(resumeContextId = null) {
     // sanity checks
     if (resumeContextId === 0) {
-      logInternalError('Tried to popResume, but id was 0. Is this an async function that started in an object getter?');
+      logError('Tried to popResume, but id was 0. Is this an async function that started in an object getter?');
       return;
     }
 
@@ -315,11 +319,11 @@ export default class RuntimeMonitor {
 
     // more sanity checks
     if (!context) {
-      logInternalError('Tried to popResume, but context was not registered:', resumeContextId);
+      logError('Tried to popResume, but context was not registered:', resumeContextId);
       return;
     }
     if (context.contextType !== ExecutionContextType.Resume) {
-      logInternalError('Tried to popResume, but stack top is not of type `Resume`:', context);
+      logError('Tried to popResume, but stack top is not of type `Resume`:', context);
       return;
     }
 
@@ -332,7 +336,7 @@ export default class RuntimeMonitor {
 
   _ensureExecuting() {
     if (!this._runtime._executingStack) {
-      console.error('Encountered trace when stack is empty');
+      logError('Encountered trace when stack is empty');
       return false;
     }
     return true;
@@ -463,21 +467,22 @@ export default class RuntimeMonitor {
 
   // TODO: loops!
 
-  async* wrapAsyncIterator(it) {
-    for (const promise of it) {
-      // wrap await
-      let awaitContextId;
-      const result = this.postAwait(
-        await this.wrapAwait(promise, awaitContextId = this.preAwait(staticId, preTraceId)),
-        awaitContextId,
-        resumeTraceId
-      );
+  async* wrapAsyncIterator(/* it */) {
+    // TODO
+    // for (const promise of it) {
+    //   // wrap await
+    //   let awaitContextId;
+    //   const result = this.postAwait(
+    //     await this.wrapAwait(promise, awaitContextId = this.preAwait(staticId, preTraceId)),
+    //     awaitContextId,
+    //     resumeTraceId
+    //   );
 
-      // TODO: register loop iteration here
-      const vars = [result];
+    //   // TODO: register loop iteration here
+    //   const vars = [result];
 
-      yield result;
-    }
+    //   yield result;
+    // }
   }
 
   beforeLoopStart() {
@@ -493,9 +498,13 @@ export default class RuntimeMonitor {
   // internally used stuff
   // ###########################################################################
 
-  disabled;
+  disabled = 0;
 
-  setDisabled(disabled) {
-    this.disabled = disabled;
+  incDisabled() {
+    ++this.disabled;
+  }
+
+  decDisabled() {
+    --this.disabled;
   }
 }

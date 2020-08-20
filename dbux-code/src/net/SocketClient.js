@@ -1,8 +1,7 @@
-import { newLogger, logInternalError } from 'dbux-common/src/log/logger';
-import allApplications from 'dbux-data/src/applications/allApplications';
-import Application from 'dbux-data/src/applications/Application';
+import { newLogger } from '@dbux/common/src/log/logger';
 
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RuntimeClient');
 
 
@@ -36,7 +35,7 @@ export default class SocketClient {
         cb(...args);
       }
       catch (err) {
-        logError(`socket event ${eventName} failed`, err);
+        logError(`socket event ${eventName} failed`, err.stack);
       }
     });
   }

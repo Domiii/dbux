@@ -8,21 +8,30 @@ import {
   TextEditor
 } from 'vscode';
 
-
-import { makeDebounce } from 'dbux-common/src/util/scheduling';
-import { newLogger } from 'dbux-common/src/log/logger';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { renderTraceDecorations, clearTraceDecorations } from './traceDecorator';
 import { initTraceDecorators } from './traceDecoConfig';
 import { initEditedWarning } from './editedWarning';
-// import DataProvider from 'dbux-data/src/DataProvider';
-// import StaticContextType from 'dbux-common/src/core/constants/StaticContextType';
+import { set as mementoSet, get as mementoGet } from '../memento';
+// import DataProvider from '@dbux/data/src/DataProvider';
+// import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('code-deco');
 
-let activeEditor: TextEditor;
-let showDeco = true;
+const keyName = 'dbux.showDecorations';
 
+/**
+ * @type {TextEditor}
+ */
+let activeEditor;
+
+/**
+ * @type {boolean}
+ */
+let showDeco;
 
 // ###########################################################################
 // render
@@ -62,6 +71,12 @@ export function initCodeDeco(context) {
   initTraceDecorators();
 
   initEditedWarning();
+
+  // get information in memento
+  showDeco = mementoGet(keyName);
+  if (showDeco === undefined) {
+    showDeco = true;
+  }
 
   // start rendering
   activeEditor = window.activeTextEditor;
@@ -105,8 +120,12 @@ export function initCodeDeco(context) {
   // }, null, context.subscriptions);
 }
 
+/**
+ * @param {boolean} val 
+ */
 export function setShowDeco(val) {
   showDeco = !!val;
+  mementoSet(keyName, val);
   renderDecorations();
 }
 

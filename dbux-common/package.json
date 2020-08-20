@@ -1,25 +1,17 @@
 {
-  "private": true,
-  "name": "dbux-common",
-  "version": "1.0.0",
+  "name": "@dbux/common",
+  "version": "0.1.28-dev.0",
   "description": "",
   "module": "src/index.js",
   "main": "src/index.js",
-  "scripts": {
-    "_before-run": "npx link-module-alias",
-    "postinstall": "npx link-module-alias"
-  },
+  "scripts": {},
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-  },
+  "author": "Domi",
+  "license": "Apache-2.0",
   "dependencies": {
-  },
-  "peerDependencies": {
-    "flow-bin": "^0.116.1",
-    "lodash": "*",
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "lodash": "^4.17.19",
+    "nanoevents": "^2.0.0"
   },
   "_moduleAliases": {}
 }

@@ -1,16 +1,18 @@
-import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop, isBeforeCallExpression } from 'dbux-common/src/core/constants/TraceType';
-import { pushArrayOfArray } from 'dbux-common/src/util/arrayUtil';
-import EmptyArray from 'dbux-common/src/util/EmptyArray';
-import { newLogger } from 'dbux-common/src/log/logger';
-import { isVirtualContextType } from 'dbux-common/src/core/constants/StaticContextType';
-import { isRealContextType } from 'dbux-common/src/core/constants/ExecutionContextType';
-import { isCallResult, hasCallId } from 'dbux-common/src/core/constants/traceCategorization';
-import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory } from 'dbux-common/src/core/constants/ValueTypeCategory';
+import TraceType, { hasDynamicTypes, hasTraceValue, isTracePop, isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
+import { pushArrayOfArray } from '@dbux/common/src/util/arrayUtil';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { newLogger } from '@dbux/common/src/log/logger';
+import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
+import { isVirtualContextType } from '@dbux/common/src/core/constants/StaticContextType';
+import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
+import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
+import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
 
 /**
  * @typedef {import('./DataProvider').default} DataProvider
  */
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dataProviderUtil');
 
 export default {
@@ -246,7 +248,10 @@ export default {
   //   return hasTraceValue(staticTrace.type);
   // },
 
-  /** @param {DataProvider} dp */
+  /**
+   * Find value of given trace, returns undefined if not a value trace
+   * @param {DataProvider} dp
+   */
   getTraceValue(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
     const { value } = trace;
@@ -350,8 +355,35 @@ export default {
   // call related trace
   // ###########################################################################
 
+
+  /** @param {DataProvider} dp */
+  isTraceArgument(dp, traceId) {
+    // a trace is an argument if it has callId not pointing to itself
+    const trace = dp.collections.traces.getById(traceId);
+    if (trace.callId) {
+      if (trace.callId !== trace.traceId) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  isCallBCEOrResultTrace(dp, traceId) {
+    return dp.util.isCallResultTrace(traceId) || dp.util.isBCETrace(traceId);
+  },
+
+  isBCETrace(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    return trace.callId && trace.callId === traceId;
+  },
+
+  isCallResultTrace(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    return trace.resultCallId;
+  },
+
   /**
-   * Get callerTrace(BCE) of a call related trace
+   * Get callerTrace(BCE) of a call related trace, returns itself if it is not a call related trace.
    * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the callId of the former
    * @param {DataProvider} dp
    * @param {number} traceId
@@ -374,7 +406,8 @@ export default {
     }
     else {
       // not a call related trace
-      return null;
+      return trace;
+      // return null;
     }
   },
 
@@ -386,28 +419,17 @@ export default {
   getCallerTraceOfContext(dp, contextId) {
     const parentTrace = dp.util.getParentTraceOfContext(contextId);
     if (parentTrace) {
+      // try to get BCE of call
+      // NOTE: `parentTrace` of a context might not participate in a call, e.g. in case of getters or setters
       const callerTrace = dp.util.getCallerTraceOfTrace(parentTrace.traceId);
       if (!callerTrace) {
-        // BUG: some parentTrace doesn't have `callId` neither `resultCallId`
-        // try: express bug#1, context#285 trace#5205
-        logError('can\'t find callerTraceOfContext by parentTrace');
+        // NOTE: this can never happen, since `getCallerTraceOfTrace` always returns something
+        logError(`can't find callerTraceOfContext by parentTrace #${parentTrace.traceId} of context #${contextId}`);
         return null;
       }
       return callerTrace;
     }
     return null;
-  },
-
-  /** @param {DataProvider} dp */
-  isTraceArgument(dp, traceId) {
-    // a trace is an argument if it has callId not pointing to itself
-    const trace = dp.collections.traces.getById(traceId);
-    if (trace.callId) {
-      if (trace.callId !== trace.traceId) {
-        return true;
-      }
-    }
-    return false;
   },
 
   /** @param {DataProvider} dp */
@@ -620,8 +642,9 @@ export default {
    * 
    * TODO: improve performance, use MultiKeyIndex instead
    * @param {DataProvider} dp 
+   * @param {StaticTrace[]} staticTraces
   */
-  groupTracesByType(dp, staticTraces: StaticTrace[]) {
+  groupTracesByType(dp, staticTraces) {
     const groups = [];
     for (const staticTrace of staticTraces) {
       const {

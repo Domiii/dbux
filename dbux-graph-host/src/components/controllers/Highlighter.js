@@ -1,4 +1,4 @@
-import HostComponentEndpoint from 'dbux-graph-host/src/componentLib/HostComponentEndpoint';
+import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class Highlighter extends HostComponentEndpoint {
   get manager() {
@@ -7,6 +7,11 @@ export default class Highlighter extends HostComponentEndpoint {
 
   init() {
     this.state.enabled = 0;
+    this.addDisposable(() => {
+      if (this.state.enabled > 0) {
+        this.manager.registHighlight(this, -1);
+      }
+    });
   }
 
   inc() {

@@ -1,5 +1,5 @@
-import allApplications from 'dbux-data/src/applications/allApplications';
-import traceSelection from 'dbux-data/src/traceSelection';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import traceSelection from '@dbux/data/src/traceSelection';
 import TraceNode from './TraceNode';
 
 export default class ObjectNode extends TraceNode {

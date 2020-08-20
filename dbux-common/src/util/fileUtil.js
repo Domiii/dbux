@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'path';
 
 /**
  * On Windows, path comparisons are case-insenstive, and also, VSCode likes to change the drive letter case seemingly at random;

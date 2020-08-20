@@ -1,8 +1,9 @@
 import { window } from 'vscode';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { CallGraphViewController } from '../callGraphView/callGraphViewController';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Commands');
 
 /**
@@ -37,10 +38,5 @@ export function initCallGraphViewCommands(context, callGraphViewController) {
   registerCommand(context,
     'dbuxCallGraphView.selectError',
     () => callGraphViewController.selectError()
-  );
-
-  registerCommand(context,
-    'dbuxCallGraphView.selectError.disabled',
-    () => window.showInformationMessage('No error occurred.')
   );
 }

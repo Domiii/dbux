@@ -1,9 +1,8 @@
-import isObject from 'lodash/isObject';
-import isArray from 'lodash/isArray';
-import { newLogger } from 'dbux-common/src/log/logger';
+import { newLogger } from '../log/logger';
 import SerializationMethod from './SerializationMethod';
 import ValueTypeCategory from '../core/constants/ValueTypeCategory';
 
+// eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('serialize');
 
 const category2Method = {
@@ -16,22 +15,8 @@ const category2Method = {
   [ValueTypeCategory.Object]: SerializationMethod.JSON
 };
 
-function getBestMethod(category, value) {
+function getBestMethod(category, /* value */) {
   return category2Method[category];
-}
-
-// function stringify(val, depth, replacer, space) {
-//   depth = isNaN(+depth) ? 1 : depth;
-//   function _build(key, val, depth, o, a) { // (JSON.stringify() has it's own rules, which we respect here by using it for property iteration)
-//     return !val || typeof val != 'object' ? val : (a = Array.isArray(val), JSON.stringify(val, function (k, v) { if (a || depth > 0) { if (replacer) v = replacer(k, v); if (!k) return (a = Array.isArray(v), val = v); !o && (o = a ? [] : {}); o[k] = _build(k, v, a ? depth : depth - 1); } }), o || (a ? [] : {}));
-//   }
-//   return JSON.stringify(_build('', val, depth), null, space);
-// }
-
-function doSerialize(method, x) {
-  // const method = getBestMethod(category, x);
-
-  serializedValue = serializers[method](x);
 }
 
 // ###########################################################################
@@ -39,7 +24,7 @@ function doSerialize(method, x) {
 // ###########################################################################
 
 const serializers = {
-  [SerializationMethod.Function](x) {
+  [SerializationMethod.Function](/* x */) {
     return 'ƒ';
   },
 
@@ -64,6 +49,21 @@ const serializers = {
   //   }
   // }
 };
+
+// function stringify(val, depth, replacer, space) {
+//   depth = isNaN(+depth) ? 1 : depth;
+//   function _build(key, val, depth, o, a) { // (JSON.stringify() has it's own rules, which we respect here by using it for property iteration)
+//     return !val || typeof val != 'object' ? val : (a = Array.isArray(val), JSON.stringify(val, function (k, v) { if (a || depth > 0) { if (replacer) v = replacer(k, v); if (!k) return (a = Array.isArray(v), val = v); !o && (o = a ? [] : {}); o[k] = _build(k, v, a ? depth : depth - 1); } }), o || (a ? [] : {}));
+//   }
+//   return JSON.stringify(_build('', val, depth), null, space);
+// }
+
+function doSerialize(method, x) {
+  // const method = getBestMethod(category, x);
+
+  return serializers[method](x);
+}
+
 
 export default function serialize(category, inputValue) {
   // TODO: largely improve this process!

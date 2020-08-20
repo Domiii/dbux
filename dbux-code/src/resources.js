@@ -1,12 +1,13 @@
 import path from 'path';
-import { ExtensionContext } from 'vscode';
+import {
+  ExtensionContext,
+  Uri
+} from 'vscode';
 
 /**
  * @type {ExtensionContext}
  */
 let context;
-
-// TODO: manage all resources here? (such as `dbux-projects/assets`)
 
 export function getResourcePath(...relativePathSegments) {
   return context.asAbsolutePath(path.join('resources', ...relativePathSegments));
@@ -16,6 +17,13 @@ export function getThemeResourcePath(...relativePathSegments) {
   return {
     light: getResourcePath('light', ...relativePathSegments),
     dark: getResourcePath('dark', ...relativePathSegments)
+  };
+}
+
+export function getThemeResourcePathUri(...relativePathSegments) {
+  return {
+    light: Uri.file(getResourcePath('light', ...relativePathSegments)),
+    dark: Uri.file(getResourcePath('dark', ...relativePathSegments))
   };
 }
 

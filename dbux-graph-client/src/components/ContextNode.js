@@ -1,6 +1,6 @@
-import { compileHtmlElement, decorateClasses } from '@/util/domUtil';
-import { isMouseEventPlatformModifierKey } from '@/util/keyUtil';
-import { getPlatformModifierKeyString } from '@/util/platformUtil';
+import { compileHtmlElement, decorateClasses } from '../util/domUtil';
+import { isMouseEventPlatformModifierKey } from '../util/keyUtil';
+import { getPlatformModifierKeyString } from '../util/platformUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 let choicingIndicator;
@@ -208,17 +208,17 @@ class ContextNode extends ClientComponentEndpoint {
       }
     },
     staticContextHighlightBtn: {
-      click(evt) {
+      click(/* evt */) {
         this.remote.toggleStaticContextHighlight();
       }
     },
     prevContextBtn: {
-      click(evt) {
+      click(/* evt */) {
         this.remote.selectPreviousContextByStaticContext();
       }
     },
     nextContextBtn: {
-      click(evt) {
+      click(/* evt */) {
         this.remote.selectNextContextByStaticContext();
       }
     }

@@ -1,10 +1,8 @@
-import { window } from 'vscode';
-import traceSelection from 'dbux-data/src/traceSelection';
-import allApplications from 'dbux-data/src/applications/allApplications';
+import traceSelection from '@dbux/data/src/traceSelection';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { goToTrace, getCursorLocation, getOrOpenTraceEditor } from './codeNav';
 import codeDecorations, { CodeDecoRegistration } from '../codeDeco/codeDecorations';
 import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
-
 
 // ###########################################################################
 // selected trace deco
@@ -15,7 +13,11 @@ import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 const selectedTraceDecoType = {
   border: '1px solid red'
 };
-let selectedTraceRegistration: CodeDecoRegistration;
+
+/**
+ * @type {CodeDecoRegistration}
+ */
+let selectedTraceRegistration;
 
 async function highlightTraceInEditor(trace) {
   let deco;
@@ -54,8 +56,8 @@ async function highlightTraceInEditor(trace) {
 /**
  * @param {TextEditorSelectionChangeEvent} evt
  */
-function handleCursorChanged(evt) {
-  const where = getCursorLocation();
+function handleCursorChanged() {
+  // const where = getCursorLocation();
   // TODO: if already selected a trace, find closest traces to that at `where`
 }
 
@@ -63,26 +65,7 @@ function handleCursorChanged(evt) {
 // init
 // ###########################################################################
 
-function maybeClearSelectedTrace() {
-  if (traceSelection.selected &&
-    !allApplications.selection.containsApplication(traceSelection.selected.applicationId)) {
-    // deselect
-    traceSelection.selectTrace(null);
-  }
-}
-
-export function initTraceSelection(context) {
-  // unselect trace if its not in a selected application anymore
-  allApplications.selection.onApplicationsChanged((selectedApps) => {
-    // TODO: clearing the selected trace does not belong here...
-    maybeClearSelectedTrace();
-    for (const app of selectedApps) {
-      allApplications.selection.subscribe(
-        app.dataProvider.onData('traces', maybeClearSelectedTrace)
-      );
-    }
-  });
-
+export function initTraceSelection(/* context */) {
   // show + goto trace if selected
   traceSelection.onTraceSelectionChanged((selectedTrace, sender) => {
     highlightTraceInEditor(selectedTrace);

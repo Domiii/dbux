@@ -1,4 +1,4 @@
-import { logInternalError } from 'dbux-common/src/log/logger';
+import { logInternalError } from '@dbux/common/src/log/logger';
 
 
 export default class Stack {
