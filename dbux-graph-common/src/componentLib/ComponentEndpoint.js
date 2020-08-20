@@ -26,14 +26,19 @@ class ComponentEndpoint {
     this.logger = newLogger(this.debugTag);
   }
 
-  _build(componentManager, parent, componentId, initialState) {
+  _build(componentManager, parent, componentId, initialStateArg) {
     this.componentManager = componentManager;
     this.parent = parent;
     this.componentId = componentId;
 
     this.remote = new RemoteCommandProxy(componentManager.ipc, componentId, 'public');
     this._remoteInternal = new RemoteCommandProxy(componentManager.ipc, componentId, '_publicInternal');
-    this.state = initialState;
+
+    this.state = this.makeInitialState(initialStateArg);
+  }
+
+  makeInitialState(initialStateArg) {
+    return initialStateArg;
   }
 
   /**
