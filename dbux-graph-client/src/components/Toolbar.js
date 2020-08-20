@@ -1,17 +1,16 @@
 import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
-
 let documentClickHandler;
 
 class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
   // createEl
   // ###########################################################################
-
   createEl() {
+    const backgroundMode = 'dark';
     // return compileHtmlElement(/*html*/`<div></div>`);
     return compileHtmlElement(/*html*/`
-      <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light no-padding" id="toolbar">
+      <nav class="navbar fixed-top navbar-expand-lg navbar-${backgroundMode} bg-${backgroundMode} no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <button title="Stop recording: Do not add new runs/traces" data-el="hideNewRunBtn" class="btn btn-info" href="#"></button>
           <button title="Clear: Hide all existing runs/traces" data-el="hideOldRunBtn" class="btn btn-info" href="#">x</button>
@@ -76,7 +75,8 @@ class Toolbar extends ClientComponentEndpoint {
       thinMode,
       hideOldMode,
       hideNewMode,
-      searchTerm
+      searchTerm,
+      backgroundMode
     } = this.state;
 
     // render buttons
@@ -104,6 +104,8 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.searchBtn, {
       active: !!searchTerm
     });
+    this.el.classList.remove('navbar-dark navbar-light bg-dark bg-light');
+    this.el.classList.add(`navbar-${backgroundMode} bg-${backgroundMode}`);
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
     this.els.hideNewRunBtn.innerHTML = `${hideNewMode ? '⚪' : '🔴'}`;
 

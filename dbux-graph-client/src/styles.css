@@ -229,8 +229,8 @@ html,body{
 /* ContextNode link style */
 
 .dbux-link {
-  /* color: rgb(71, 52, 243); */
-  /* color: black; */
+  color: rgb(71, 52, 243);
+  color: black;
   cursor: pointer;
 }
 

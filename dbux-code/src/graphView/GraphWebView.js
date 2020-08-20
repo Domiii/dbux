@@ -36,9 +36,9 @@ export default class GraphWebView extends WebviewWrapper {
   }
 
   async buildClientHtml() {
-    // const mode = window.activeColorTheme.kind === ColorThemeKind.Light ? 'light' : 'dark';
+    const mode = window.activeColorTheme.kind === ColorThemeKind.Light ? 'light' : 'dark';
     // TODO: fix up dark mode styles
-    const mode = 'light';
+    // const mode = 'light';
     const scriptPath = this.getResourcePath('dist/graph/graph.js');
     const themePath = this.getResourcePath(`dist/graph/${mode}/bootstrap.min.css`);
     // TODO: support multiple theme files
