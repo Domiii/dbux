@@ -324,6 +324,14 @@
         }
       },
       {
+        "command": "dbuxProjectView.showDiff",
+        "title": "Show difference",
+        "icon": {
+          "light": "resources/light/magnifier.svg",
+          "dark": "resources/dark/magnifier.svg"
+        }
+      },
+      {
         "command": "dbuxProjectView.node.addProjectToWorkspace",
         "title": "Add Project Folder to Workspace",
         "icon": {
@@ -619,6 +627,11 @@
           "command": "dbux.openWebsite",
           "when": "view == dbuxApplicationsView",
           "group": "navigation@5"
+        },
+        {
+          "command": "dbuxProjectView.showDiff",
+          "when": "view == dbuxProjectView",
+          "group": "navigation"
         }
       ]
     },
