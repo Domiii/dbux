@@ -1,6 +1,7 @@
 import findLast from 'lodash/findLast';
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import Trace from '@dbux/common/src/core/data/Trace';
+import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { babelLocToCodeRange } from './codeLocHelpers';
 
 /** @typedef {import('@dbux/data/src/applications/Application').default} Application */
@@ -77,10 +78,10 @@ export function getTracesAt(application, programId, pos) {
     staticId: staticContextId
   } = staticContext;
 
-  const traces = dp.util.getAllTracesOfStaticContext(staticContextId);
-  // .filter(trace =>
-  //   dp.util.getTraceType(trace.traceId) !== TraceType.CallExpressionResult
-  // );
+  const traces = dp.util.getAllTracesOfStaticContext(staticContextId)
+    .filter(trace =>
+      !TraceType.is.CallExpressionResult(dp.util.getTraceType(trace.traceId))
+    );
 
   // only return traces at cursor
   return traces.filter(trace => {

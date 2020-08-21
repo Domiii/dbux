@@ -1,8 +1,6 @@
 import { window } from 'vscode';
-import process from 'process';
 import { newLogger } from '@dbux/common/src/log/logger';
 
-import { initRuntimeServer } from './net/SocketServer';
 import { initCodeDeco } from './codeDeco';
 
 import { initCallGraphView } from './callGraphView/callGraphViewController';
@@ -36,14 +34,16 @@ function registerErrorHandler() {
  */
 function activate(context) {
   try {
+    log(`Starting Dbux v${process.env.DBUX_VERSION} (mode=${process.env.NODE_ENV}, (dev only) DBUX_ROOT=${process.env.DBUX_ROOT})...`);
+
     registerErrorHandler();
     initLogging();
     initResources(context);
-    initRuntimeServer(context);
+    // initRuntimeServer(context);
+    initMemento(context);
     initCodeApplications(context);
     initCodeDeco(context);
     initToolBar(context);
-    initMemento(context);
     initTraceSelection(context);
     initPlayback();
 

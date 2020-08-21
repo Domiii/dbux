@@ -1,26 +1,45 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
+import { getDbuxModulePath } from '@dbux/common/src/dbuxPaths';
 import { buildNodeCommand } from './nodeUtil';
 
-export async function buildMochaRunBugCommand(cwd, mochaArgs, requireArr = EmptyArray, debugPort = 9309) {
-  const program = `${cwd}/node_modules/mocha/bin/_mocha`;
-
-  // NOTE: `Project.installDbuxDependencies` installs @dbux/cli for us
-  const initScript = getDbuxTargetPath('cli', 'lib/dbux-register.js');
-  // const initScript = `./_dbux_inject.js`;
+export async function buildMochaRunCommand(cfg) {
+  let {
+    cwd, 
+    mochaArgs,
+    nodeArgs,
+    dbuxArgs,
+    require = EmptyArray,
+    debugPort
+  } = cfg;
 
   // keep alive: if we don't do this, mocha will call `process.exit` when run has ended, and we won't receive data sent by runtime
   const keepAlive = '--no-exit';
+  
+  // NOTE: `Project.installDbuxDependencies` installs @dbux/cli for us
 
-  // final command
+  // const mochaJs = `${cwd}/node_modules/mocha/bin/_mocha`;
+  // const initScript = getDbuxModulePath('cli', 'lib/dbux-register.js');
+  // require = [
+  //   initScript,
+  //   ...require
+  // ];
+  // return buildNodeCommand({
+  //   cwd,
+  //   nodeArgs,
+  //   debugPort,
+  //   program: mochaJs,
+  //   require,
+  //   programArgs: `${keepAlive} ${mochaArgs}`
+  // });
+
+  const mochaJs = `${cwd}/node_modules/mocha/bin/_mocha`;
+  const dbuxJs = getDbuxModulePath('cli', 'bin/dbux.js');
   return buildNodeCommand({
     cwd,
+    nodeArgs,
     debugPort,
-    program,
-    require: [
-      initScript,
-      ...requireArr
-    ],
-    programArgs: `${keepAlive} ${mochaArgs}`
+    program: dbuxJs,
+    require,
+    programArgs: `run ${dbuxArgs} ${mochaJs} -- ${keepAlive} ${mochaArgs}`
   });
 }

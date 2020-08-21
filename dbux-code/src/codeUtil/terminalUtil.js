@@ -1,21 +1,12 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Process from '@dbux/projects/src/util/Process';
+import which from '@dbux/projects/src/util/which';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalUtil');
 
 const DefaultTerminalName = 'dbux-run';
-
-export async function getPathToBash() {
-  let result = await Process.execCaptureAll(`which cygpath`, { failOnStatusCode: false });
-
-  let bashPath = await Process.execCaptureOut(`which bash`, { failOnStatusCode: false });
-  if (!result.code) {
-    bashPath = await Process.execCaptureOut(`cygpath -w ${bashPath}`, { failOnStatusCode: false });
-  }
-  return bashPath;
-}
 
 export function createDefaultTerminal(cwd) {
   return createTerminal(DefaultTerminalName, cwd);
@@ -41,18 +32,28 @@ export function sendCommandToDefaultTerminal(cwd, command) {
   return terminal;
 }
 
+// function bashParse(string) {
+//   return string.replace(/"/g, `\\"`).replace(/`/g, "\\`");
+// }
+
 export async function execCommand(cwd, command) {
   let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
   terminal?.dispose();
 
-  let pathToBash = await getPathToBash();
+  let pathToBash = (await which('bash'))[0];
+
+  // NOTE: `tail -f /dev/null` fails on Mac (but only in the integrated terminal) for some reason
+  // const stall = 'tail -f /dev/null';
+  const stall = 'sleep 100000';
 
   const terminalOptions = {
     name: DefaultTerminalName,
     cwd,
     shellPath: pathToBash,
-    shellArgs: [`-c`, `${command}; tail -f /dev/null;`],
+    shellArgs: [`-c`, `${command}; ${stall}`],
   };
+
+  // debug(`execCommandInTerminal: ${command}`);
 
   terminal = window.createTerminal(terminalOptions);
   terminal.show();

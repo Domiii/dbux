@@ -1,13 +1,13 @@
 import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
-import SocketClient from '../net/SocketClient';
-import SocketServer from '../net/SocketServer';
 import { execCommand } from '../codeUtil/terminalUtil';
+import { getResourcePath } from '../resources';
 
-// const Verbose = true;
-const Verbose = false;
+const Verbose = true;
+// const Verbose = false;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
@@ -16,144 +16,83 @@ const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
 // execInTerminal w/ process wrapper
 // ###########################################################################
 
-class TerminalClient extends SocketClient {
-  constructor(...args) {
-    super(...args);
-
-    this._resultPromise = new Promise((resolve, reject) => {
-      this._resolve = resolve;
-      this._reject = reject;
-    });
-
-    this.on('error', (err) => {
-      logError(err);
-    });
-    
-    this.on('results', (results) => {
-      Verbose && debug('results received');
-      this.resolve(results);
-    });
-  }
-
-  resolve(results) {
-    const resolve = this._resolve;
-    this._reject = null;
-    this._resolve = null;
-    resolve?.(results);
-  }
-
-  _handleDisconnect() {
-    const reject = this._reject;
-    this._reject = null;
-    this._resolve = null;
-    reject?.(undefined);
-  }
-
-  async waitForResults() {
-    return this._resultPromise;
-  }
-}
-
-class TerminalSocketServer extends SocketServer {
-  constructor() {
-    super(TerminalClient);
-  }
-
-  /**
-   * @return {Promise<TerminalClient>}
-   */
-  async waitForNextClient() {
-    if (!this._promise) {
-      this._promise = new Promise(resolve => {
-        this._resolve = resolve;
-      });
-    }
-    return this._promise;
-  }
-
-  _handleAccept(socket) {
-    const client = super._handleAccept(socket);
-    if (this._resolve) {
-      const resolve = this._resolve;
-      this._resolve = this._promise = null;
-      resolve(client);
-    }
-    return client;
-  }
-}
-
 export default class TerminalWrapper {
   _disposable;
 
-  start(cwd, command, port, args) {
+  start(cwd, command, args) {
     this._disposable = window.onDidCloseTerminal(terminal => {
       if (terminal === this._terminal) {
         this.dispose();
       }
     });
-    this._promise = this._run(cwd, command, port, args);
+    this._promise = this._run(cwd, command, args);
   }
 
   async waitForResult() {
     return this._promise;
   }
 
-  async _run(cwd, command, port, args) {
-    // see: https://socket.io/docs/server-api/
-    let socketServer = this.socketServer = new TerminalSocketServer();
-    socketServer.start(port);
-    Verbose && debug('started');
+  async _run(cwd, command, args) {
+    // NOTE: fix paths on Windows
+    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');    
+    const pathToDbuxRun = getResourcePath('_dbux_run.js').replace(/\\/g, '/');
+
+    // serialize everything
+    const runJsargs = { cwd, command, args, tmpFolder };
+    const serializedRunJsArgs = Buffer.from(JSON.stringify(runJsargs)).toString('base64');
+    const runJsCommand = `node ${pathToDbuxRun} ${serializedRunJsArgs}`;
+
+    debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
+
+    // execute command
+    this._terminal = await execCommand('', runJsCommand);
 
     try {
-      const runJsArgs = Buffer.from(JSON.stringify({ port, cwd, command, args })).toString('base64');
-      const initScript = getDbuxTargetPath('cli', 'lib/link-dependencies.js');
-      // if (!fs.existsSync(initScript)) {
-      //   throw new Error(`Dbux cli not installed (could not resolve "${initScript}")`);
-      // }
-      
-      const runJsCommand = `node --require=${initScript} _dbux_run.js ${runJsArgs}`;
-      this._terminal = await execCommand(cwd, runJsCommand);
-
       const result = await new Promise((resolve, reject) => {
-        socketServer.waitForNextClient().then(async (client) => {
-          this.client = client;
-          Verbose && debug('client connected');
+        const watcher = fs.watch(tmpFolder);
+        watcher.on('change', (eventType, filename) => {
+          watcher.close();
 
-          let results = await client.waitForResults();
-          Verbose && debug('client finished. Results:', results);
+          let result;
+          if (filename === 'error') {
+            result = { error: fs.readFileSync(path.join(tmpFolder, filename), { encoding: 'utf8' }) };
+          } else {
+            result = { code: parseInt(filename, 10) };
+          }
 
-          resolve(results?.[0] || null);
+          Verbose && debug('Client finished. Result:', result);
+          fs.unlinkSync(path.join(tmpFolder, filename));
+          resolve(result);
+        });
+
+        watcher.on('error', (err) => {
+          reject(new Error(`FSWatcher error: ${err.message}`));
         });
 
         window.onDidCloseTerminal((terminal) => {
           if (terminal === this._terminal) {
-            reject(new Error('User closed the terminal'));
+            watcher.close();
+            reject(new Error('The terminal was closed.'));
           }
         });
       });
+
       return result;
-    }
-    finally {
-      // clean up server
+    } finally {
       this.dispose();
+      fs.rmdirSync(tmpFolder);
     }
   }
 
   dispose() {
     const {
-      socketServer,
-      client,
       _disposable
     } = this;
 
-    this.socketServer = null;
-    this.client = null;
     this._disposable = null;
     this._promise = null;
     this.terminal = null;
 
-    socketServer?.dispose();
-    client?.dispose();
     _disposable?.dispose();
   }
 
@@ -166,13 +105,17 @@ export default class TerminalWrapper {
   // static functions
   // ###########################################################################
 
+  /**
+   * Execute `command` in `cwd` in terminal.
+   * @param {string} cwd Set working directory to run `command`.
+   * @param {string} command The command will be executed.
+   * @param {object} args 
+   */
   static execInTerminal(cwd, command, args) {
-    const port = 6543;
-  
     // TODO: register wrapper with context
   
     const wrapper = new TerminalWrapper();
-    wrapper.start(cwd, command, port, args);
+    wrapper.start(cwd, command, args);
     return wrapper;
   }
 }

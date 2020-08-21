@@ -29,6 +29,11 @@ function readPackageJson(folder) {
   return readJsonFile(packageJsonPath);
 }
 
+function readPackageJsonVersion(folder) {
+  const pkg = readPackageJson(folder);
+  return pkg.version;
+}
+
 /**
  * NOTE: only used for development
  */
@@ -116,12 +121,33 @@ function makeResolve(root, relativePaths = []) {
 // getDbuxVersion
 // ###########################################################################
 
-function getDbuxVersion() {
+function getDbuxVersion(mode) {
   const lerna = readLernaJson();
   if (!lerna.version) {
     throw new Error('lerna.json does not have a version.');
   }
-  return lerna.version;
+
+  let { version } = lerna;
+  const originalVersion = version;
+  if (mode === 'production') {
+    // NOTE: we cannot roll with the current "dev" build version since we depend on the version to be available on the `npm` registry
+    // so we must downgrade!
+    const match = version.match(/(\d+)\.(\d+)\.(\d+)(-dev\.\d+)?/);
+    if (!match) {
+      throw new Error(`Could not parse lerna version: ${version}`);
+    }
+    let [_, maj, min, pat, release] = match;
+
+    [maj, min, pat] = [maj, min, pat].map(n => parseInt(n, 10));
+
+    if (release) {
+      throw new Error(`Cannot make a production build of a dev version.`);
+    }
+    else {
+      // NOTE: if there is no "dev" version, there is no need to downgrade
+    }
+  }
+  return version;
 }
 
 
@@ -135,7 +161,9 @@ module.exports = {
   makeResolve,
 
   readPackageJson,
+  readPackageJsonVersion,
   makeResolvePackageJson,
+  readLernaJson,
   getDependenciesPackageJson: readPackageJsonDependencies,
   getDbuxVersion
 };

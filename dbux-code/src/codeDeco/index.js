@@ -14,18 +14,24 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import { renderTraceDecorations, clearTraceDecorations } from './traceDecorator';
 import { initTraceDecorators } from './traceDecoConfig';
 import { initEditedWarning } from './editedWarning';
+import { set as mementoSet, get as mementoGet } from '../memento';
 // import DataProvider from '@dbux/data/src/DataProvider';
 // import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('code-deco');
 
+const keyName = 'dbux.showDecorations';
+
 /**
  * @type {TextEditor}
  */
 let activeEditor;
-let showDeco = true;
 
+/**
+ * @type {boolean}
+ */
+let showDeco;
 
 // ###########################################################################
 // render
@@ -65,6 +71,12 @@ export function initCodeDeco(context) {
   initTraceDecorators();
 
   initEditedWarning();
+
+  // get information in memento
+  showDeco = mementoGet(keyName);
+  if (showDeco === undefined) {
+    showDeco = true;
+  }
 
   // start rendering
   activeEditor = window.activeTextEditor;
@@ -108,8 +120,12 @@ export function initCodeDeco(context) {
   // }, null, context.subscriptions);
 }
 
+/**
+ * @param {boolean} val 
+ */
 export function setShowDeco(val) {
   showDeco = !!val;
+  mementoSet(keyName, val);
   renderDecorations();
 }
 

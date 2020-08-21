@@ -1,7 +1,8 @@
 import {
   window,
   Uri,
-  ViewColumn
+  ViewColumn,
+  commands
 } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -27,6 +28,10 @@ export default class WebviewWrapper {
     this.preferredColumn = preferredColumn;
     this.wasVisible = false;
     this.resourceRoot = path.join(_extensionContext.extensionPath, 'resources');
+  }
+
+  getIcon() {
+    return null;
   }
 
   /**
@@ -72,6 +77,10 @@ export default class WebviewWrapper {
     return this._getPreviousState() || this.preferredColumn;
   }
 
+  // ###########################################################################
+  // show/hide, reveal
+  // ###########################################################################
+
   /**
    * @see https://code.visualstudio.com/api/extension-guides/webview
    */
@@ -83,7 +92,6 @@ export default class WebviewWrapper {
     }
   }
 
-
   reveal() {
     if (this.panel) {
       // reveal
@@ -93,6 +101,13 @@ export default class WebviewWrapper {
     return false;
   }
 
+  hide() {
+    if (this.panel) {
+      this.panel.dispose();
+      return true;
+    }
+    return false;
+  }
 
   // ###########################################################################
   // initialization
@@ -158,6 +173,8 @@ export default class WebviewWrapper {
       Uri.file(this.resourceRoot)
     ];
 
+    commands.executeCommand('setContext', 'dbuxWebView.context.isActive', true);
+
     this.panel = window.createWebviewPanel(
       this.webviewId,
       this.title,
@@ -168,6 +185,8 @@ export default class WebviewWrapper {
       }
     );
     this.wasVisible = true;
+
+    this.panel.iconPath = this.getIcon();
 
     this.panel.onDidChangeViewState(
       this.handleDidChangeViewState,
@@ -180,6 +199,7 @@ export default class WebviewWrapper {
         // do further cleanup operations
         this.panel = null;
         this._setCurrentState(null);
+        commands.executeCommand('setContext', 'dbuxWebView.context.isActive', false);
       },
       null,
       _extensionContext.subscriptions
@@ -202,8 +222,10 @@ export default class WebviewWrapper {
   _webviewUpdateToken = 0;
 
   async _restartClientDOM() {
-    const html = await this.buildClientHtml();
-    this.panel.webview.html = html + `<!-- ${++this._webviewUpdateToken} -->`;
+    let html = await this.buildClientHtml();
+    html = html + `<!-- ${++this._webviewUpdateToken} -->`;
+    this.panel.webview.html = html;
+    // this.panel.webview.html = 'asd!!';
   }
 
   async _restartHost() {

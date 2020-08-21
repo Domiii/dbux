@@ -94,7 +94,8 @@ export async function goToTrace(trace) {
 export function getCursorLocation() {
   const textEditor = window.activeTextEditor;
   if (textEditor) {
-    const { selection } = textEditor;// see https://code.visualstudio.com/api/references/vscode-api#Selection
+    // see: https://code.visualstudio.com/api/references/vscode-api#Selection
+    const { selection } = textEditor;
     if (selection) {
       const fpath = textEditor.document.uri.fsPath;
       const { active } = selection;

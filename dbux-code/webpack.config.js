@@ -21,7 +21,7 @@ module.exports = (env, argv) => {
   const outFile = 'bundle.js';
 
   const mode = argv.mode || 'development';
-  const DBUX_VERSION = getDbuxVersion();
+  const DBUX_VERSION = getDbuxVersion(mode);
   const DBUX_ROOT = mode === 'development' ? MonoRoot : null;
 
   console.debug(`[dbux-code] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
@@ -98,7 +98,7 @@ module.exports = (env, argv) => {
     externals: {
       uws: "uws",
       vscode: "commonjs vscode",
-      firebase: 'umd firebase'
+      firebase: 'commonjs firebase'
     },
     node: {
       // generate actual output file information

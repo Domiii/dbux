@@ -138,7 +138,7 @@ const traceCfg = (() => {
      * Ternary operator
      */
     ConditionalExpression: [
-      ExpressionResult,
+      NoTrace,
       [['test', ExpressionResult], ['consequent', ExpressionResult], ['alternate', ExpressionResult]]
     ],
     UpdateExpression: ExpressionResult,
@@ -198,6 +198,7 @@ const traceCfg = (() => {
     BreakStatement: Statement,
     ContinueStatement: Statement,
     Decorator: [
+      // NOTE: we need to trace decorators by wrapping them in a trace decorator
       NoTrace,
       // [['expression', ExpressionNoValue]]
     ],
@@ -376,7 +377,7 @@ function enterExpression(traceResultType, path, state) {
     return enterCallExpression(traceResultType, path, state);
   }
 
-  // trace CallResult (on exit)
+  // we want to trace CallResult on exit
   if (!path.getData('traceResultType')) {
     path.setData('traceResultType', traceResultType);
   }
@@ -395,7 +396,7 @@ const enterInstrumentors = {
     return enterCallExpression(TraceType.CallExpressionResult, path, state);
   },
   ExpressionResult(path, state) {
-    return enterExpression(null, path, state);
+    return enterExpression(TraceType.ExpressionResult, path, state);
   },
   // ExpressionValue(pathOrPaths, state) {
   //   if (Array.isArray(pathOrPaths)) {
@@ -512,7 +513,10 @@ function wrapCallExpression(path, state) {
 
   // TODO: instrument BCE as well, here
 
-  const traceResultType = path.getData('traceResultType') || TraceType.CallExpressionResult;
+  let traceResultType = path.getData('traceResultType');
+  if (!traceResultType || TraceType.is.ExpressionResult(traceResultType) || TraceType.is.ExpressionValue(traceResultType)) {
+    traceResultType = TraceType.CallExpressionResult;
+  }
   return traceCallExpression(path, state, traceResultType);
 }
 

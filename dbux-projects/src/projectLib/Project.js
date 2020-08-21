@@ -167,6 +167,20 @@ export default class Project {
   // utilities
   // ###########################################################################
 
+  async execInTerminal(command, options) {
+    let cwd = options?.cdToProjectPath === false ? '' : this.projectPath;
+
+    let { code } = await this.manager.externals.TerminalWrapper.execInTerminal(cwd, command, {}).waitForResult();
+
+    if (options?.failOnStatusCode === false) {
+      return code;
+    }
+    if (code) {
+      throw new Error(`Process exit code ${code}`);
+    }
+    return 0;
+  }
+
   async exec(command, options, input) {
     if (options?.cdToProjectPath !== false) {
       options = defaultsDeep(options, {
@@ -343,7 +357,7 @@ export default class Project {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
-      await this.exec(`git clone "${githubUrl}" "${projectPath}"`, {
+      await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
         cdToProjectPath: false
       });
 
@@ -373,13 +387,11 @@ export default class Project {
   async npmInstall() {
     // await this.exec('npm cache verify');
 
-    await this.exec(`npm install`);
-
     // hackfix: npm installs are broken somehow.
     //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
     //      Sometimes running it a second time after checking out a different branch 
     //      deletes all node_modules. This will bring everything back correctly (for now).
-    await this.exec(`npm install`);
+    await this.execInTerminal(`npm install && npm install`);
   }
 
   // async yarnInstall() {
@@ -488,7 +500,7 @@ export default class Project {
     return this._bugs;
   }
 
-  getBugArgs(bug) {
+  getMochaArgs(bug) {
     // bugArgs
     const bugArgArray = [
       ...(bug.runArgs || EmptyArray)

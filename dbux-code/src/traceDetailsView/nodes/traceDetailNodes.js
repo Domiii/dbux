@@ -6,7 +6,8 @@ import StaticTraceTDNode from './StaticTraceTDNodes';
 import StaticContextTDNode from './StaticContextTDNodes';
 import TrackObjectTDNode from './TrackObjectTDNodes';
 import ValueTDNode from './ValueTDNode';
-import { InfoTDNode } from './traceInfoNodes';
+import { InfoTDNode, ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
+import NearbyValuesTDNode from './NearbyValuesTDNode';
 
 export class TraceDetailNode extends BaseTreeViewNode {
 }
@@ -60,13 +61,19 @@ export class DebugTDNode extends TraceDetailNode {
       }
     ];
 
-    const children = makeTreeItems(
-      ['trace', otherTraceProps],
-      [`context`, context],
-      ['staticTrace', omit(staticTrace, 'loc')],
-      ['staticContext', omit(staticContext, 'loc')],
-      valueNode
-    );
+    const children = [
+      ...this.treeNodeProvider.buildDetailNodes(this.trace, this, [
+        TraceTypeTDNode,
+        ContextTDNode,
+      ]),
+      ...makeTreeItems(
+        ['trace', otherTraceProps],
+        [`context`, context],
+        ['staticTrace', omit(staticTrace, 'loc')],
+        ['staticContext', omit(staticContext, 'loc')],
+        valueNode
+      )
+    ];
 
     return children;
   }
@@ -80,7 +87,8 @@ export const DetailNodeClasses = [
   ValueTDNode,
   TrackObjectTDNode,
   StaticTraceTDNode,
+  NearbyValuesTDNode,
   // StaticContextTDNode,
-  InfoTDNode,
+  // InfoTDNode,
   DebugTDNode
 ];

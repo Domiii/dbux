@@ -1,27 +1,29 @@
-import { wrapScriptFileInTag } from '../codeUtil/domTransformUtil';
+import { wrapScriptFileInTag, wrapCssFileInTag } from '../codeUtil/domTransformUtil';
 
-export async function buildWebviewClientHtml(...scriptPaths) {
-  const scripts = (
-    await Promise.all(
-      scriptPaths.map(fpath => wrapScriptFileInTag(fpath))
-    )
+export async function buildWebviewClientHtml(scriptPaths, themePath) {
+  const tags = (
+    await Promise.all([
+      ...scriptPaths.map(fpath => wrapScriptFileInTag(fpath)),
+      wrapCssFileInTag(themePath)
+    ])
   ).join('\n  ');
 
-  return (/*html*/ `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
-</head>
-<body>
+  // <!DOCTYPE html>
+  // <html lang="en">
+  // <head>
+  //     <meta charset="UTF-8">
+  //     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  //     <title>Test</title>
+  // </head>
+  // <body>
+  return (/*html*/ `
   <div id="root"></div>
 
-  ${scripts}
+  ${tags}
   <script>
     function main() {
       window.x = (window.x || 0) + 1;
-      console.debug('Client main', x);
+      // console.debug('Client main', x);
       if (window.__dbuxComponentManager) {
         // started this before -> need to tear down, and go again?
         componentManager.restart();
@@ -58,6 +60,7 @@ export async function buildWebviewClientHtml(...scriptPaths) {
 
     main();
   </script>
-</body>
-</html>`);
+  `);
+  // </body>
+  // </html>
 }

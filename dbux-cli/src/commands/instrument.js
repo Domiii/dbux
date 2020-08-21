@@ -5,10 +5,11 @@ import prettier from 'prettier';
 import { transformSync } from '@babel/core';
 
 import { wrapCommand } from '../util/commandUtil';
+import { processEnv } from '../util/processEnv';
 
 // pre-import dependencies that are not going to be in the target script
 import buildBabelOptions from '../util/buildBabelOptions';
-import { buildCommonCommandOptions, resolveCommandTargetPath } from '../util/commandCommons';
+import { buildCommonCommandOptions, resolveCommandTargetPath } from '../commandCommons';
 
 export const command = 'instrument <file>';
 export const aliases = ['i'];
@@ -29,6 +30,8 @@ export const builder = {
  * Run file with dbux instrumentations (using babel-register).
  */
 export const handler = wrapCommand(async ({ file, ...options }) => {
+  processEnv(options.env);
+
   const babelOptions = buildBabelOptions(options);
 
   // read code

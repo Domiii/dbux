@@ -9,15 +9,18 @@
 		"editor.tabSize": 2,
 		"javascript.validate.enable": true,
 		"workbench.colorCustomizations": {
-			"editorUnnecessaryCode.border": "#f0f",
-			"editorUnnecessaryCode.opacity": "#000f"
-		},
+      "editorUnnecessaryCode.border": "#f0f",
+      "editorUnnecessaryCode.opacity": "#000f"
+    },
 		"gitlens.codeLens.enabled": false,
 		"gitlens.currentLine.enabled": false,
 		"gitlens.hovers.currentLine.over": "line",
 		"python.dataScience.textOutputLimit": 0,
 		"python.dataScience.maxOutputSize": 600,
 		"debug.node.autoAttach": "off",
+    "editor.detectIndentation": false,
+    "markdownAutoTOC.headerContent": "",
+    "dbux.run.nodeArgs": ""
 		// "files.associations": {
 		// 	"*.js": "typescriptreact"
 		// }

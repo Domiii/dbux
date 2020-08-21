@@ -12,9 +12,9 @@ const { log, debug, warn, error: logError } = newLogger('traceDetailsController'
 let controller;
 
 class TraceDetailsController {
-  constructor() {
+  constructor(context) {
     this.treeDataProvider = new TraceDetailsDataProvider();
-    this.tracesAtCursor = null; // assign on init
+    this.tracesAtCursor = new TracesAtCursor(context);
   }
   
   get treeView() {
@@ -68,8 +68,6 @@ class TraceDetailsController {
   }
 
   initOnActivate(context) {
-    this.tracesAtCursor = new TracesAtCursor(context);
-
     // ########################################
     // hook up event handlers
     // ########################################
@@ -79,6 +77,7 @@ class TraceDetailsController {
 
     // data changed
     allApplications.selection.onApplicationsChanged((selectedApps) => {
+      this.refreshOnData();
       for (const app of selectedApps) {
         allApplications.selection.subscribe(
           app.dataProvider.onData('traces', this.refreshOnData)
@@ -102,7 +101,7 @@ class TraceDetailsController {
  * @param {ExtensionContext} context 
  */
 export function initTraceDetailsView(context) {
-  controller = new TraceDetailsController();
+  controller = new TraceDetailsController(context);
   controller.initOnActivate(context);
 
   // refresh right away

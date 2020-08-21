@@ -6,6 +6,15 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "Launch Program",
+			"program": "${file}",
+			"request": "launch",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "pwa-node"
+		},
+		{
 			"name": "dbux-code",
 			"type": "extensionHost",
 			"request": "launch",
@@ -29,7 +38,9 @@
 			"cwd": "${workspaceFolder}/dbux-cli",
 			"runtimeArgs": [
 				"--stack-trace-limit=1000",
-				"--enable-source-maps",
+
+				// NOTE: it appears that --enable-source maps slows things down, and in debug mode it just grinds to a halt
+				// "--enable-source-maps",
 				"--nolazy",
 			],
 			"sourceMaps": true,
@@ -37,7 +48,7 @@
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
 				"run",
-				"--next",
+				"--esnext",
 				"${file}"
 			],
 			"protocol": "inspector",

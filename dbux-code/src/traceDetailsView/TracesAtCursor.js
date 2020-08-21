@@ -2,12 +2,47 @@ import { window, ExtensionContext, commands } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { compareTraces } from '@dbux/data/src/traceSelection/relevantTraces';
 import traceSelection from '@dbux/data/src/traceSelection';
-import { isBeforeCallExpression } from '@dbux/common/src/core/constants/TraceType';
-import Trace from '@dbux/common/src/core/data/Trace';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getCursorLocation } from '../codeUtil/codeNav';
 import { getTracesAt } from '../helpers/codeRangeQueries';
+import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
+/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+
+/**
+ * @param {Trace} t1 
+ * @param {Trace} t2 
+ */
+function isTracesInSameContext(t1, t2) {
+  return t1.applicationId === t2.applicationId && t1.contextId === t2.contextId;
+}
+
+/**
+ * @param {Trace} trace 
+ */
+function getRangeByTrace(trace) {
+  const { applicationId, staticTraceId } = trace;
+  const dp = allApplications.getById(applicationId).dataProvider;
+  const { loc } = dp.collections.staticTraces.getById(staticTraceId);
+  return babelLocToCodeRange(loc);
+}
+
+/**
+ * @param {Trace} t1 
+ * @param {Trace} t2 
+ */
+function compareTraceInner(t1, t2) {
+  const range1 = getRangeByTrace(t1);
+  const range2 = getRangeByTrace(t2);
+
+  if (range1.contains(range2)) {
+    if (range1.isEqual(range2)) {
+      return 0;
+    }
+    return 1;
+  }
+  return -1;
+}
 
 export default class TracesAtCursor {
   /**
@@ -22,7 +57,7 @@ export default class TracesAtCursor {
     this.needRefresh = true;
     this.index = 0;
 
-    // subscript cursorMode event
+    // dispose on de-active
     context.subscriptions.push(
       window.onDidChangeTextEditorSelection(() => {
         this.needRefresh = true;
@@ -31,41 +66,48 @@ export default class TracesAtCursor {
     );
   }
 
+  /**
+   * Find all traceAtCursor and sort when `needRefresh = true`
+   * Steps:
+   *    1. Find `most important` trace
+   *    2. Find all trace in same context
+   *    3. Sort them by range(inner first)
+   */
   refresh = () => {
     if (!this.needRefresh) return;
     this.index = 0;
-    const allTraces = this.getAllTracesAtCursor();
-    this.allTraces = allTraces;
+    let allTraces = this.getAllTracesAtCursor();
     this.needRefresh = false;
 
     // update index to `most important trace`
     let nearestTrace;
-    for (const [id, nextTrace] of allTraces.entries()) {
-      const { applicationId, traceId } = nextTrace;
-      const dp = allApplications.getById(applicationId).dataProvider;
-      if (isBeforeCallExpression(dp.util.getTraceType(traceId))) {
-        // skip BCE here to ensure staticTraceId represents the right executing order
+    for (const trace of allTraces) {
+      if (!nearestTrace) {
+        nearestTrace = trace;
+        continue;
       }
-      else if (!nearestTrace) {
-        // assign if there is not any non-BCE trace yet
-        this.index = id;
-        nearestTrace = nextTrace;
+
+      const compareResult = compareTraceInner(trace, nearestTrace);
+      if (compareResult < 0) {
+        nearestTrace = trace;
       }
-      else if (nextTrace.staticTraceId < nearestTrace.staticTraceId) {
-        // use innerTraces first
-        this.index = id;
-        nearestTrace = nextTrace;
-      }
-      else if (nextTrace.staticTraceId === nearestTrace.staticTraceId) {
-        // compare if both are inner traces
+      else if (compareResult === 0) {
+        // compare by selectedTrace if they are in same range
         if (traceSelection.selected) {
-          if (compareTraces(nearestTrace, nextTrace) > 0) {
-            this.index = id;
-            nearestTrace = nextTrace;
+          if (compareTraces(nearestTrace, trace) > 0) {
+            nearestTrace = trace;
           }
         }
       }
     }
+
+    // filter out traces in other context
+    allTraces = allTraces.filter((t) => {
+      return isTracesInSameContext(t, nearestTrace);
+    });
+
+    // TODO: [performance] only sort them when next or previous is called
+    this.allTraces = allTraces.sort(compareTraceInner);
   }
 
   get() {
@@ -79,7 +121,7 @@ export default class TracesAtCursor {
   previous() {
     this.index--;
     // set to last if reach the begin of sortedTraces
-    if (this.index < 0) this.index = this.allTraces.length;
+    if (this.index < 0) this.index = this.allTraces.length - 1;
   }
 
   next() {

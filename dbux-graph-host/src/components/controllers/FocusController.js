@@ -2,7 +2,14 @@ import NanoEvents from 'nanoevents';
 import traceSelection from '@dbux/data/src/traceSelection';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
+/** @typedef {import('./Highlighter').default} Highlighter */
+
 export default class FocusController extends HostComponentEndpoint {
+  /**
+   * @type {Highlighter}
+   */
+  lastHighlighter;
+
   get highlightManager() {
     return this.context.graphDocument.controllers.getComponent('HighlightManager');
   }
@@ -35,7 +42,7 @@ export default class FocusController extends HostComponentEndpoint {
       const { applicationId, contextId } = trace;
       contextNode = this.owner.getContextNodeById(applicationId, contextId);
       if (this.syncMode) {
-        this.focus(contextNode);
+        await this.focus(contextNode);
       }
     }
     else {
@@ -108,8 +115,6 @@ export default class FocusController extends HostComponentEndpoint {
 
   highlight(node) {
     this.highlightManager.clear();
-    // we clear all highlighter before highlight, so no need to dec lastHighlighter here
-    // this.lastHighlighter.dec();
     this.lastHighlighter = node.controllers.getComponent('Highlighter');
     this.lastHighlighter.inc();
   }
