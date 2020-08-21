@@ -69,9 +69,7 @@ export class ProjectViewController {
 
   // ###########################################################################
   // toggleTreeView
-  // ##########################################################
-  
-  #################
+  // ###########################################################################
 
   async toggleTreeView() {
     this.isShowingTreeView = !this.isShowingTreeView;
@@ -92,8 +90,8 @@ export class ProjectViewController {
   // ###########################################################################
 
   async activateBugByNode(bugNode, debugMode = false) {
-    await checkSystem(this.manager, false, true);
     showOutputChannel();
+    await checkSystem(this.manager, false, true);
     await initRuntimeServer(this.extensionContext);
 
     const options = {
