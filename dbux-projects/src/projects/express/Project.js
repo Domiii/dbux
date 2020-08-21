@@ -239,7 +239,7 @@ export default class ExpressProject extends Project {
   }
 
   async testBugCommand(bug, cfg) {
-    const { projectPath } = this;
+    const { projectPath, manager } = this;
     const bugArgs = this.getMochaArgs(bug);
 
     let {
@@ -250,6 +250,7 @@ export default class ExpressProject extends Project {
 
     const mochaCfg = {
       cwd: projectPath,
+      dbuxJs: manager.getDbuxCliBinPath(),
       mochaArgs: bugArgs,
       nodeArgs,
       dbuxArgs,

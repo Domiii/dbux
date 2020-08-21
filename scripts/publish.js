@@ -280,6 +280,8 @@ async function main() {
 
   await setDevVersion();
 
+  // TODO: update version.txt so our HEAD is not pushed (which we need for `lerna version --no-publish` to work)
+
   await pushToDev();
 
   log('Done!');
