@@ -41,7 +41,6 @@ function getArgs(debugMode) {
 
   let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`);
   nodeArgs += debugMode ? ' --inspect-brk' : '';
-  // nodeArgs += enableSourceMaps ? ' --enable-source-maps' : '';
 
   let dbuxArgs = config.get(`dbux.${runMode}.dbuxArgs`);
   let env = config.get(`dbux.${runMode}.env`);
