@@ -10,6 +10,7 @@ import { set as storageSet, get as storageGet } from '../memento';
 import { getResourcePath } from '../resources';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
+import { showBugIntroduction } from './BugIntroduction';
 
 const logger = newLogger('projectControl');
 
@@ -84,6 +85,7 @@ function createProjectManager(extensionContext) {
       warning: showWarningMessage,
     },
     WebviewWrapper,
+    showBugIntroduction,
     interactiveGithubLogin
   };
 
