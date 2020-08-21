@@ -49,8 +49,9 @@ async function downgradeProdVersion() {
 
   if (release) {
     if (!(pat > 0)) {   // also takes care of NaN etc.
+      // TODO: get previous version from `git tag` (sorted by semver)
       // cannot go negative
-      throw new Error(`Cannot downgrade dev version to prod version, since patch is too small: ${pat} in ${version}`);
+      throw new Error(`Cannot downgrade dev version to prod version, since patch cannot go negative: ${pat} in ${version}`);
     }
     const newVersion = `${maj}.${min}.${pat - 1}`;
 
@@ -72,6 +73,8 @@ async function revertToDevVersion() {
     const tags = (await execCaptureOut('git tag')).split('\n');
     let newVersion = `${maj}.${min}.${pat + 1}`;
 
+    // TODO: just get latest version?
+    
     const matchingTag = tags.find(tag => tag.startsWith('v' + newVersion));
     if (!matchingTag) {
       // eslint-disable-next-line max-len
