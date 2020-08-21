@@ -1,9 +1,9 @@
+import last from 'lodash/last';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
-import { isTracePush, isTracePop, isDataOnlyTrace } from '@dbux/common/src/core/constants/TraceType';
+import TraceType, { isTracePush, isTracePop, isDataOnlyTrace } from '@dbux/common/src/core/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
-import last from 'lodash/last';
 import DataProvider from '../DataProvider';
 
 // eslint-disable-next-line no-unused-vars
@@ -25,7 +25,10 @@ export default class CallGraph {
    * Search algorithm ref.: https://github.com/Domiii/dbux#call-graph-navigation
    */
 
-  getPreviousInContext(traceId) {
+  getPreviousInContext(traceId, originId = null) {
+    if (!originId) {
+      originId = traceId;
+    }
     const previousTrace = this._getPreviousInContext(traceId);
     if (this._isDataTrace(previousTrace)) {
       if (traceId === previousTrace.traceId) {
@@ -33,14 +36,20 @@ export default class CallGraph {
         logError('Found same trace in `getPreviousInContext`');
         return null;
       }
-      return this.getPreviousInContext(previousTrace.traceId);
+      return this.getPreviousInContext(previousTrace.traceId, originId);
     }
-    else {
-      return previousTrace;
+
+    if (this._areTraceBCEAndResult(previousTrace.traceId, originId)) {
+      return this.getPreviousInContext(previousTrace.traceId, originId);
     }
+
+    return previousTrace;
   }
 
-  getNextInContext(traceId) {
+  getNextInContext(traceId, originId = null) {
+    if (!originId) {
+      originId = traceId;
+    }
     const nextTrace = this._getNextInContext(traceId);
     if (this._isDataTrace(nextTrace)) {
       if (traceId === nextTrace.traceId) {
@@ -48,11 +57,14 @@ export default class CallGraph {
         logError('Found same trace in `getNextInContext`');
         return null;
       }
-      return this.getNextInContext(nextTrace.traceId);
+      return this.getNextInContext(nextTrace.traceId, originId);
     }
-    else {
-      return nextTrace;
+
+    if (this._areTraceBCEAndResult(originId, nextTrace.traceId)) {
+      return this.getNextInContext(nextTrace.traceId, originId);
     }
+
+    return nextTrace;
   }
 
   getPreviousParentContext(traceId) {
@@ -346,5 +358,20 @@ export default class CallGraph {
     else {
       return false;
     }
+  }
+
+  _areTraceBCEAndResult(traceId1, traceId2) {
+    const type1 = this.dp.util.getTraceType(traceId1);
+    if (TraceType.is.BeforeCallExpression(type1)) {
+      const type2 = this.dp.util.getTraceType(traceId2);
+      if (TraceType.is.CallExpressionResult(type2)) {
+        const trace1 = this.dp.collections.traces.getById(traceId1);
+        const trace2 = this.dp.collections.traces.getById(traceId2);
+        if (trace1.callId === trace2.resultCallId) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
