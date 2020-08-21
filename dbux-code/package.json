@@ -77,8 +77,8 @@
         "title": "Dbux: select trace"
       },
       {
-        "command": "dbux.toggleProjectView",
-        "title": "Dbux: Toggle Project View",
+        "command": "dbux.togglePracticeView",
+        "title": "Dbux: Toggle Practice View",
         "icon": {
           "light": "resources/light/project.svg",
           "dark": "resources/dark/project.svg"
@@ -616,7 +616,7 @@
           "group": "navigation@10"
         },
         {
-          "command": "dbux.toggleProjectView",
+          "command": "dbux.togglePracticeView",
           "when": "view == dbuxApplicationsView",
           "group": "navigation@3"
         },

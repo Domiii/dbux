@@ -57,7 +57,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return projectViewController.manager.runner.cancel();
   });
 
-  registerCommand(extensionContext, 'dbux.toggleProjectView', async () => {
+  registerCommand(extensionContext, 'dbux.togglePracticeView', async () => {
     await projectViewController.toggleTreeView();
   });
 }
