@@ -19,8 +19,14 @@ export function buildCommonCommandOptions() {
       default: false,
       type: 'boolean'
     },
+    verbose: {
+      // eslint-disable-next-line max-len
+      describe: 'Passes the verbose option to @dbux/babel-plugin, which will then report all instrumented files. --verbose=1 only logs instrumented files when they get require\'d, --verbose=x with x > 1 logs **all** files.',
+      default: 0,
+      type: 'number'
+    },
     env: {
-      describe: "Specify environment variable to program.",
+      describe: "Specify environment variables for program. Format: --env=\"x=1,y=hello world\"",
       default: '',
       type: 'string',
     },

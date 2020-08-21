@@ -10,6 +10,7 @@ import { set as storageSet, get as storageGet } from '../memento';
 import { getResourcePath } from '../resources';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
+import { showBugIntroduction } from './BugIntroduction';
 
 /** @typedef {import('@dbux/projects/src').ProjectsManager} ProjectsManager */
 
@@ -39,14 +40,27 @@ function createProjectManager(extensionContext) {
   // ########################################
 
   // the folder that contains `node_modules` for installing cli etc.
-  const dependencyRoot = process.env.NODE_ENV === 'production' ?
-    extensionContext.asAbsolutePath(path.join('.')) :                   // extension_folder
-    path.join(process.env.DBUX_ROOT);                                   //
+  // const dependencyRoot = process.env.NODE_ENV === 'production' ?
+  //   extensionContext.asAbsolutePath(path.join('.')) :                    // extension_folder
+  //   path.join(process.env.DBUX_ROOT);                                    //
+
+  let dependencyRoot = extensionContext.asAbsolutePath(path.join('.'));     // extension_folder
+  const pathMatch = dependencyRoot.match(/(.+)[/\\]dbux-code/);
+  if (pathMatch) {
+    dependencyRoot = pathMatch[1];
+    if (process.env.NODE_ENV === 'development') {
+      if (dependencyRoot.toLowerCase() !== process.env.DBUX_ROOT?.toLowerCase()) { // weird drive letter inconsistencies in Windows force us to do case-insensitive comparison
+        throw new Error(`Path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})`);
+      }
+    }
+  }
 
   // the folder that contains the sample projects for dbux-projects/dbux-practice
-  const projectsRoot = process.env.NODE_ENV === 'production' ?
-    extensionContext.asAbsolutePath(path.join('.', 'dbux_projects')) :  // extension_folder/dbux_projects
-    path.join(process.env.DBUX_ROOT, '..', 'dbux_projects');
+  // const projectsRoot = process.env.NODE_ENV === 'production' ?
+  //   extensionContext.asAbsolutePath(path.join('.', 'dbux_projects')) :  // extension_folder/dbux_projects
+  //   path.join(process.env.DBUX_ROOT, '..', 'dbux_projects');
+
+  const projectsRoot = path.join(dependencyRoot, 'dbux_projects');
 
   const cfg = {
     dependencyRoot,
@@ -81,6 +95,7 @@ function createProjectManager(extensionContext) {
       warning: showWarningMessage,
     },
     WebviewWrapper,
+    showBugIntroduction,
     interactiveGithubLogin
   };
 

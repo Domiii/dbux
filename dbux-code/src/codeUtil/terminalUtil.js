@@ -32,9 +32,9 @@ export function sendCommandToDefaultTerminal(cwd, command) {
   return terminal;
 }
 
-function bashParse(string) {
-  return string.replace(/"/g, `\\"`).replace(/`/g, "\\`");
-}
+// function bashParse(string) {
+//   return string.replace(/"/g, `\\"`).replace(/`/g, "\\`");
+// }
 
 export async function execCommand(cwd, command) {
   let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
@@ -50,10 +50,10 @@ export async function execCommand(cwd, command) {
     name: DefaultTerminalName,
     cwd,
     shellPath: pathToBash,
-    shellArgs: [`-c`, `echo "${bashParse(command)}"; ${command}; ${stall}`],
+    shellArgs: [`-c`, `${command}; ${stall}`],
   };
 
-  debug(`execCommandInTerminal: ${command}`);
+  // debug(`execCommandInTerminal: ${command}`);
 
   terminal = window.createTerminal(terminalOptions);
   terminal.show();

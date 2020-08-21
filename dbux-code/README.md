@@ -109,12 +109,12 @@ Since we are not debugging in real-time, but work on a recoding of the actual ex
 
 Here are all the buttons:
 
-<img src="../dbux-code/resources/dark/previousParentContext.svg" title="previousParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextParentContext.svg" title="nextParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222">  `Go to start/end of context`
+<img src="../dbux-code/resources/dark/previousParentContext.png" title="previousParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextParentContext.png" title="nextParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222">  `Go to start/end of context`
 
 * Jump to the start/end of the current context (function or file)
 * When pressed again, steps out to caller (or in "call graph" lingo: to the "parent")
 
-<img src="../dbux-code/resources/dark/previousChildContext.svg" title="previousChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextChildContext.svg" title="nextChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next function call in context`
+<img src="../dbux-code/resources/dark/previousChildContext.png" title="previousChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextChildContext.png" title="nextChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next function call in context`
 
 * Jump to previous/next *traced* function call <span style="color:red">↱</span> before/after the currently selected trace.
    * Note that library or native calls <span style="color:gray">↱</span> are not traced and thus will be ignored by this button.
@@ -122,7 +122,7 @@ Here are all the buttons:
 * NOTE: Things might be a bit off in case of [getters and setters](https://www.w3schools.com/js/js_object_accessors.asp)
    * Since getters and setters don't have a clearly identifyable caller, they need a lot of extra work before they will be fully smoothed out.
 
-<img src="../dbux-code/resources/dark/previousInContext.svg" title="previousInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextInContext.svg" title="nextInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace in context`
+<img src="../dbux-code/resources/dark/previousInContext.png" title="previousInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextInContext.png" title="nextInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace in context`
 
 * Jump to previous "non-trivial" trace
    * We use some basic heuristics to ignore some "trivial traces".
@@ -130,7 +130,7 @@ Here are all the buttons:
    * Ex2: In case of `b.f(1, 2);`, it will step straight to `b.f(x, y)`, and will ignore `b`, `b.f`, `x` and `y`, etc.
 
 
-<img src="../dbux-code/resources/dark/previousStaticTrace.svg" title="previousStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextStaticTrace.svg" title="nextStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next execution of the same trace`
+<img src="../dbux-code/resources/dark/previousStaticTrace.png" title="previousStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextStaticTrace.png" title="nextStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next execution of the same trace`
 
 * If a piece of code was executed multiple times (because a function was called multiple times, loops etc), this allows you to jump between the traces of those different executions.
 
@@ -167,7 +167,13 @@ This allows us find any occurence of an object and its evolution throughout the 
 
 ### Trace Details: Trace Executions
 
-TODO
+* This lists the values of all executions of the currently selected trace.
+* Since this can be a lot of traces, we currently provide a few crude grouping methods.
+
+(Dev note: Internally we use the name `staticTrace` to represent a piece of code, and the name `trace` for each execution of said code; meaning that one `staticTrace` has 0 or more `traces`. Here, `Trace Executions` lists all `traces` of the same `staticTrace`.)
+
+
+
 
 ### Trace Details: Nearby Values
 

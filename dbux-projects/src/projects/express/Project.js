@@ -1,7 +1,7 @@
 import sh from 'shelljs';
 import isArray from 'lodash/isArray';
 import Project from '../../projectLib/Project';
-import { buildMochaRunBugCommand as buildMochaCommand } from '../../util/mochaUtil';
+import { buildMochaRunCommand } from '../../util/mochaUtil';
 
 
 export default class ExpressProject extends Project {
@@ -238,10 +238,26 @@ export default class ExpressProject extends Project {
     await this.installAssets();
   }
 
-  async testBugCommand(bug, debugPort) {
+  async testBugCommand(bug, cfg) {
     const { projectPath } = this;
-    const bugArgs = this.getBugArgs(bug);
-    return buildMochaCommand(projectPath, bugArgs, bug.require, debugPort);
+    const bugArgs = this.getMochaArgs(bug);
+
+    let {
+      debugPort,
+      nodeArgs,
+      dbuxArgs
+    } = cfg;
+
+    const mochaCfg = {
+      cwd: projectPath,
+      mochaArgs: bugArgs,
+      nodeArgs,
+      dbuxArgs,
+      require: bug.require,
+      debugPort
+    };
+
+    return buildMochaRunCommand(mochaCfg);
 
     // TODO: enable auto attach (run command? or remind user?)
     //      see: https://code.visualstudio.com/blogs/2018/07/12/introducing-logpoints-and-auto-attach

@@ -29,7 +29,7 @@ setOutputStreams({
   warn: outputChannel.log.bind(outputChannel),
   error: outputChannel.log.bind(outputChannel),
   debug: outputChannel.log.bind(outputChannel)
-});
+}, true);
 
 export function showOutputChannel() {
   outputChannel.show();
@@ -69,7 +69,9 @@ export class ProjectViewController {
 
   // ###########################################################################
   // toggleTreeView
-  // ###########################################################################
+  // ##########################################################
+  
+  #################
 
   async toggleTreeView() {
     this.isShowingTreeView = !this.isShowingTreeView;
@@ -109,7 +111,15 @@ export class ProjectViewController {
 
       // run it!
       progress.report({ message: 'running test...' });
-      const result = await runner.testBug(bug, debugMode);
+      // NOTE: --enable-source-maps gets very slow in nolazy mode
+      // NOTE2: nolazy is required for proper breakpoints in debug mode
+      const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : '--enable-source-maps'}`;
+      const cfg = {
+        debugMode,
+        nodeArgs,
+        dbuxArgs: '--verbose=1'
+      };
+      const result = await runner.testBug(bug, cfg);
 
       if (result?.code === 0) {
         // test passed
