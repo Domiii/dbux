@@ -506,7 +506,7 @@
         },
         {
           "command": "dbuxProjectView.node.deleteProject",
-          "when": "viewItem =~ /dbuxProjectView\\.projectNode/",
+          "when": "viewItem =~ /dbuxProjectView\\.projectNode/ && !dbuxProjectView.context.isBusy",
           "group": "inline@2"
         },
         {
@@ -517,37 +517,37 @@
         {
           "command": "dbuxProjectView.node.activateBugWithDebugger",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
-          "group": "inline@1"
+          "group": "inline@19"
         },
         {
           "command": "dbuxProjectView.node.activateBug",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
-          "group": "inline@2"
+          "group": "inline@20"
         },
         {
           "command": "dbuxProjectView.node.busyIcon",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && dbuxProjectView.context.isBusy",
-          "group": "inline"
+          "group": "inline@25"
         },
         {
           "command": "dbuxProjectView.node.stopBug",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\..*/",
-          "group": "inline"
+          "group": "inline@26"
         },
         {
           "command": "dbuxProjectView.node.resetBug",
-          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\..*\\..*/",
-          "group": "inline"
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\..*\\..*/ && !dbuxProjectView.context.isBusy",
+          "group": "inline@15"
         },
         {
           "command": "dbuxProjectView.node.showWebsite",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\.hasWebsite/",
-          "group": "inline"
+          "group": "inline@10"
         },
         {
           "command": "dbuxProjectView.node.showBugIntroduction",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode/",
-          "group": "inline"
+          "group": "inline@9"
         }
       ],
       "view/title": [
