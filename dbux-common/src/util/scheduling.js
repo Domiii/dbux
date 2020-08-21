@@ -1,32 +1,27 @@
+import { newLogger } from '@dbux/common/src/log/logger';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('makeDebounce');
+
 /**
  * Make sure, function is not called more than once every `ms` milliseconds.
  */
+// eslint-disable-next-line camelcase
 export function makeDebounce(cb, ms = 300) {
   let timer;
-  function _wrapDebounce(...args) {
+  function _wrapDebounce() {
     timer = null;
-    cb(...args);
+    try {
+      cb();
+    }
+    catch (err) {
+      logError('Error when executing callback', 
+        cb.name?.trim() || '(anonymous callback)', '-', err);
+    }
   }
-  return (...args) => {
+  return () => {
     if (!timer) {
-      timer = setTimeout(() => _wrapDebounce(...args), ms);
+      timer = setTimeout(_wrapDebounce, ms);
     }
-  };
-}
-
-/**
- * Similar to `makeDebounce`, but delay the first call if another call comes in `ms` milliseconds.
- */
-export function makeDelayDebounce(cb, ms = 300) {
-  let timer;
-  function _wrapDebounce(...args) {
-    timer = null;
-    cb(...args);
-  }
-  return (...args) => {
-    if (timer) {
-      clearTimeout(timer);
-    }
-    timer = setTimeout(() => _wrapDebounce(...args), ms);
   };
 }
