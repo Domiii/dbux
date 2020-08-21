@@ -32,6 +32,6 @@ export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
 
   // see: https://stackoverflow.com/questions/42797313/webpack-dynamic-module-loader-by-requir
   // eslint-disable-next-line camelcase
-  const requireFunc = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require;
+  const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
   requireFunc(targetPath);
 });
