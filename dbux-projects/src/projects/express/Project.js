@@ -244,10 +244,11 @@ export default class ExpressProject extends Project {
 
     // NOTE: --enable-source-maps gets very slow in nolazy mode
     // NOTE2: nolazy is required for proper breakpoints in debug mode
-    // const nodeArgs = `--stack-trace-limit=100 ${debugPort ? '--nolazy' : '--enable-source-maps'}`;
+    const nodeArgs = `--stack-trace-limit=100 ${debugPort ? '--nolazy' : '--enable-source-maps'}`;
 
-    // --enable-source-maps are extremely slow
-    const nodeArgs = `--stack-trace-limit=100 ${debugPort ? '--nolazy' : ''}`;
+    // WARNING: --enable-source-maps can be extremely slow
+    // const nodeArgs = `--stack-trace-limit=100 ${debugPort ? '--nolazy' : ''}`;
+
     const cfg = {
       cwd: projectPath,
       mochaArgs: bugArgs,
