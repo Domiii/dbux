@@ -39,10 +39,16 @@ function createProjectManager(extensionContext) {
   // const dependencyRoot = process.env.NODE_ENV === 'production' ?
   //   extensionContext.asAbsolutePath(path.join('.')) :                    // extension_folder
   //   path.join(process.env.DBUX_ROOT);                                    //
-  
+
   let dependencyRoot = extensionContext.asAbsolutePath(path.join('.'));     // extension_folder
-  if (dependencyRoot.startsWith(process.env.DBUX_ROOT)) {
-    dependencyRoot = process.env.DBUX_ROOT;                                 // DBUX_ROOT
+  const pathMatch = dependencyRoot.match(/(.+)[/\\]dbux-code/);
+  if (pathMatch) {
+    dependencyRoot = pathMatch[1];
+    if (process.env.NODE_ENV === 'development') {
+      if (dependencyRoot.toLowerCase() !== process.env.DBUX_ROOT?.toLowerCase()) { // weird drive letter inconsistencies in Windows force us to do case-insensitive comparison
+        throw new Error(`Path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})`);
+      }
+    }
   }
 
   // the folder that contains the sample projects for dbux-projects/dbux-practice

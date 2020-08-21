@@ -1,6 +1,6 @@
 import sh from 'shelljs';
 import Project from '../../projectLib/Project';
-import { buildMochaRunBugCommand as buildMochaCommand } from '../../util/mochaUtil';
+import { buildMochaRunCommand } from '../../util/mochaUtil';
 
 
 export default class EslintProject extends Project {
@@ -76,10 +76,12 @@ export default class EslintProject extends Project {
     await this.npmInstall();
   }
 
-  async testBugCommand(bug, debugPort) {
-    const { projectPath } = this;
-    const bugArgs = this.getBugArgs(bug);
-    return buildMochaCommand(projectPath, bugArgs, bug.require, debugPort);
+  async testBugCommand(/* bug, debugPort */) {
+    // TODO: copy correct version of this from express
+
+    // const { projectPath } = this;
+    // const bugArgs = this.getMochaArgs(bug);
+    // return buildMochaRunCommand(projectPath, bugArgs, bug.require, debugPort);
 
     // TODO: enable auto attach (run command? or remind user?)
     //      see: https://code.visualstudio.com/blogs/2018/07/12/introducing-logpoints-and-auto-attach

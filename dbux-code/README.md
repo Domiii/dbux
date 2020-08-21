@@ -168,7 +168,8 @@ Careful: There are some [problems with values](../#problems-with-values)
 
 ### Trace Details: Trace Executions
 
-Here you can see the values of all executions of the currently selected trace. In the example below, 
+* This lists the values of all executions of the currently selected trace.
+* Since this can be a lot of traces, we currently provide a few crude grouping methods.
 
 (Dev note: Internally we use the name `staticTrace` to represent a piece of code, and the name `trace` for each execution of said code; meaning that one `staticTrace` has 0 or more `traces`. Here, `Trace Executions` lists all `traces` of the same `staticTrace`.)
 

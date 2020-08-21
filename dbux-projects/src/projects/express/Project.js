@@ -1,7 +1,7 @@
 import sh from 'shelljs';
 import isArray from 'lodash/isArray';
 import Project from '../../projectLib/Project';
-import { buildMochaRunBugCommand as buildMochaCommand } from '../../util/mochaUtil';
+import { buildMochaRunCommand } from '../../util/mochaUtil';
 
 
 export default class ExpressProject extends Project {
@@ -240,8 +240,23 @@ export default class ExpressProject extends Project {
 
   async testBugCommand(bug, debugPort) {
     const { projectPath } = this;
-    const bugArgs = this.getBugArgs(bug);
-    return buildMochaCommand(projectPath, bugArgs, bug.require, debugPort);
+    const bugArgs = this.getMochaArgs(bug);
+
+    // NOTE: --enable-source-maps gets very slow in nolazy mode
+    // NOTE2: nolazy is required for proper breakpoints in debug mode
+    // const nodeArgs = `--stack-trace-limit=100 ${debugPort ? '--nolazy' : '--enable-source-maps'}`;
+
+    // --enable-source-maps are extremely slow
+    const nodeArgs = `--stack-trace-limit=100 ${debugPort ? '--nolazy' : ''}`;
+    const cfg = {
+      cwd: projectPath,
+      mochaArgs: bugArgs,
+      nodeArgs,
+      require: bug.require,
+      debugPort
+    };
+
+    return buildMochaRunCommand(cfg);
 
     // TODO: enable auto attach (run command? or remind user?)
     //      see: https://code.visualstudio.com/blogs/2018/07/12/introducing-logpoints-and-auto-attach
