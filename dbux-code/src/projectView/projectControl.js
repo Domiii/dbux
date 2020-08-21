@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { initDbuxProjects, ProjectsManager } from '@dbux/projects/src';
+import { initDbuxProjects } from '@dbux/projects/src';
 import Process from '@dbux/projects/src/util/Process';
 import { showWarningMessage, showInformationMessage } from '../codeUtil/codeModals';
 import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
@@ -12,12 +12,17 @@ import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { showBugIntroduction } from './BugIntroduction';
 
-const logger = newLogger('projectControl');
+/** @typedef {import('@dbux/projects/src').ProjectsManager} ProjectsManager */
 
+const logger = newLogger('projectControl');
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
-let projectManager;
+
+/**
+ * @type {ProjectsManager}
+ */
+let projectManager = null;
 
 /**
  * @return {ProjectsManager}
@@ -28,7 +33,6 @@ export function getOrCreateProjectManager(extensionContext) {
   }
   return projectManager;
 }
-
 
 function createProjectManager(extensionContext) {
   // ########################################

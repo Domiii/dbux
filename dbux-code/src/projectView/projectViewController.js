@@ -9,6 +9,9 @@ import PracticeStopwatch from './PracticeStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
 import { initRuntimeServer } from '../net/SocketServer';
 import { initProjectCommands } from '../commands/projectCommands';
+import { get as mementoGet, set as mementoSet } from '../memento';
+
+const showProjectViewKeyName = 'dbux.projectView.showing';
 
 // ########################################
 //  setup logger for project
@@ -32,18 +35,18 @@ export function showOutputChannel() {
   outputChannel.show();
 }
 
-let controller;
-
-class ProjectViewController {
+export class ProjectViewController {
   constructor(context) {
     this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
+    
+    this.isShowingTreeView = mementoGet(showProjectViewKeyName, false);
+    commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
 
     // ########################################
     //  init treeView
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
-    this.treeView = this.treeDataProvider.treeView;
 
     this.practiceStopwatch = new PracticeStopwatch('practice');
     this.practiceStopwatch.registOnClick(context, this.maybeStopWatch.bind(this));
@@ -55,9 +58,25 @@ class ProjectViewController {
     bugRunner.on('statusChanged', this.onStatusChanged.bind(this));
   }
 
+  get treeView() {
+    return this.treeDataProvider.treeView;
+  } 
+
   onStatusChanged(status) {
     commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === BugRunnerStatus.Busy);
     this.treeDataProvider.refreshIcon();
+  }
+
+  // ###########################################################################
+  // toggleTreeView
+  // ##########################################################
+  
+  #################
+
+  async toggleTreeView() {
+    this.isShowingTreeView = !this.isShowingTreeView;
+    await commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
+    await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
   }
 
   // ###########################################################################
@@ -141,25 +160,32 @@ class ProjectViewController {
 }
 
 // ###########################################################################
-// init
+// init/dispose
 // ###########################################################################
 
+/**
+ * @type {ProjectViewController}
+ */
+let controller;
+
 export function initProjectView(context) {
-  controller = new ProjectViewController(context);
-
-  // shut it all down when VSCode shuts down
-  context.subscriptions.push({
-    dispose() {
-      const runner = controller.manager.getOrCreateRunner();
-      runner.cancel();
-    }
-  });
-
-  // refresh right away
-  controller.treeDataProvider.refresh();
-
-  // register commands
-  initProjectCommands(context, controller);
+  if (!controller) {
+    controller = new ProjectViewController(context);
+  
+    // shut it all down when VSCode shuts down
+    context.subscriptions.push({
+      dispose() {
+        const runner = controller.manager.getOrCreateRunner();
+        runner.cancel();
+      }
+    });
+  
+    // refresh right away
+    controller.treeDataProvider.refresh();
+  
+    // register commands
+    initProjectCommands(context, controller);
+  }
 
   return controller;
 }
