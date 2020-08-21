@@ -35,14 +35,21 @@ function createProjectManager(extensionContext) {
   // ########################################
 
   // the folder that contains `node_modules` for installing cli etc.
-  const dependencyRoot = process.env.NODE_ENV === 'production' ?
-    extensionContext.asAbsolutePath(path.join('.')) :                   // extension_folder
-    path.join(process.env.DBUX_ROOT);                                   //
+  // const dependencyRoot = process.env.NODE_ENV === 'production' ?
+  //   extensionContext.asAbsolutePath(path.join('.')) :                    // extension_folder
+  //   path.join(process.env.DBUX_ROOT);                                    //
+  
+  let dependencyRoot = extensionContext.asAbsolutePath(path.join('.'));     // extension_folder
+  if (dependencyRoot.startsWith(process.env.DBUX_ROOT)) {
+    dependencyRoot = process.env.DBUX_ROOT;                                 // DBUX_ROOT
+  }
 
   // the folder that contains the sample projects for dbux-projects/dbux-practice
-  const projectsRoot = process.env.NODE_ENV === 'production' ?
-    extensionContext.asAbsolutePath(path.join('.', 'dbux_projects')) :  // extension_folder/dbux_projects
-    path.join(process.env.DBUX_ROOT, '..', 'dbux_projects');
+  // const projectsRoot = process.env.NODE_ENV === 'production' ?
+  //   extensionContext.asAbsolutePath(path.join('.', 'dbux_projects')) :  // extension_folder/dbux_projects
+  //   path.join(process.env.DBUX_ROOT, '..', 'dbux_projects');
+
+  const projectsRoot = path.join(dependencyRoot, 'dbux_projects');
 
   const cfg = {
     dependencyRoot,

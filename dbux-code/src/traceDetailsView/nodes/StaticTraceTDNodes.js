@@ -26,7 +26,7 @@ GroupingMode = new Enum(GroupingMode);
 const GroupingModeLabel = new Map();
 GroupingModeLabel.set(GroupingMode.ByRunId, 'by Run');
 GroupingModeLabel.set(GroupingMode.ByContextId, 'by Context');
-GroupingModeLabel.set(GroupingMode.ByParentContextTraceId, 'by Parent');
+GroupingModeLabel.set(GroupingMode.ByParentContextTraceId, 'by Parent Trace');
 GroupingModeLabel.set(GroupingMode.ByCallback, 'by Callback');
 
 // Default mode

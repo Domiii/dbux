@@ -33,7 +33,7 @@ let client;
 let _didShutdown = false;
 function handleShutdown() {
   // eslint-disable-next-line no-console
-  console.debug('[dbux-runtime] shutdown detected');
+  // console.debug('[dbux-runtime] process exiting...');
   if (_didShutdown) {
     // this can get triggered more than once (if registered to multiple different events)
     return;
@@ -44,7 +44,7 @@ function handleShutdown() {
   
   if (!client.hasFlushed()) {
     // eslint-disable-next-line no-console
-    console.error('[dbux-runtime] Process shutdown but not all data has been sent out. Analysis will be incomplete. ' +
+    console.error('[dbux-runtime] Process exiting but not all data has been sent out. Analysis will be incomplete. ' +
       'This is probably a crash or you called `process.exit` manually.');
   }
 }

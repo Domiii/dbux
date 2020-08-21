@@ -34,7 +34,7 @@ function registerErrorHandler() {
  */
 function activate(context) {
   try {
-    log(`Starting Dbux v${process.env.DBUX_VERSION}...`);
+    log(`Starting Dbux v${process.env.DBUX_VERSION} (mode=${process.env.NODE_ENV}, DBUX_ROOT=${process.env.DBUX_ROOT})...`);
 
     registerErrorHandler();
     initLogging();
