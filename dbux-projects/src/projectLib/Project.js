@@ -500,7 +500,7 @@ export default class Project {
     return this._bugs;
   }
 
-  getBugArgs(bug) {
+  getMochaArgs(bug) {
     // bugArgs
     const bugArgArray = [
       ...(bug.runArgs || EmptyArray)

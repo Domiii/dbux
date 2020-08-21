@@ -2,7 +2,15 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getDbuxModulePath } from '@dbux/common/src/dbuxPaths';
 import { buildNodeCommand } from './nodeUtil';
 
-export async function buildMochaRunBugCommand(cwd, mochaArgs, requireArr = EmptyArray, debugPort = 9309) {
+export async function buildMochaRunCommand(cfg) {
+  const {
+    cwd, 
+    mochaArgs,
+    nodeArgs,
+    require = EmptyArray,
+    debugPort
+  } = cfg;
+  
   const program = `${cwd}/node_modules/mocha/bin/_mocha`;
 
   // NOTE: `Project.installDbuxDependencies` installs @dbux/cli for us
@@ -15,11 +23,12 @@ export async function buildMochaRunBugCommand(cwd, mochaArgs, requireArr = Empty
   // final command
   return buildNodeCommand({
     cwd,
+    nodeArgs,
     debugPort,
     program,
     require: [
       initScript,
-      ...requireArr
+      ...require
     ],
     programArgs: `${keepAlive} ${mochaArgs}`
   });
