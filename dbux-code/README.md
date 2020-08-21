@@ -1,7 +1,7 @@
-[![https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code](https://vsmarketplacebadge.apphb.com/version/Domi.dbux-code.svg.png)](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
-[![install count](https://vsmarketplacebadge.apphb.com/installs-short/Domi.dbux-code.svg.png)](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
-[![Discord](https://img.shields.io/discord/743765518116454432.svg.png?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg.png)](https://opensource.org/licenses/Apache-2.0)
+[![https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code](https://vsmarketplacebadge.apphb.com/version/Domi.dbux-code.svg)](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
+[![install count](https://vsmarketplacebadge.apphb.com/installs-short/Domi.dbux-code.svg)](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)
+[![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 <h2>Table of Contents</h2>
 
@@ -109,12 +109,12 @@ Since we are not debugging in real-time, but work on a recoding of the actual ex
 
 Here are all the buttons:
 
-<img src="../dbux-code/resources/dark/previousParentContext.svg.png" title="previousParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextParentContext.svg.png" title="nextParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222">  `Go to start/end of context`
+<img src="../dbux-code/resources/dark/previousParentContext.png" title="previousParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextParentContext.png" title="nextParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222">  `Go to start/end of context`
 
 * Jump to the start/end of the current context (function or file)
 * When pressed again, steps out to caller (or in "call graph" lingo: to the "parent")
 
-<img src="../dbux-code/resources/dark/previousChildContext.svg.png" title="previousChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextChildContext.svg.png" title="nextChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next function call in context`
+<img src="../dbux-code/resources/dark/previousChildContext.png" title="previousChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextChildContext.png" title="nextChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next function call in context`
 
 * Jump to previous/next *traced* function call <span style="color:red">↱</span> before/after the currently selected trace.
    * Note that library or native calls <span style="color:gray">↱</span> are not traced and thus will be ignored by this button.
@@ -122,7 +122,7 @@ Here are all the buttons:
 * NOTE: Things might be a bit off in case of [getters and setters](https://www.w3schools.com/js/js_object_accessors.asp)
    * Since getters and setters don't have a clearly identifyable caller, they need a lot of extra work before they will be fully smoothed out.
 
-<img src="../dbux-code/resources/dark/previousInContext.svg.png" title="previousInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextInContext.svg.png" title="nextInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace in context`
+<img src="../dbux-code/resources/dark/previousInContext.png" title="previousInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextInContext.png" title="nextInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace in context`
 
 * Jump to previous "non-trivial" trace
    * We use some basic heuristics to ignore some "trivial traces".
@@ -130,12 +130,12 @@ Here are all the buttons:
    * Ex2: In case of `b.f(1, 2);`, it will step straight to `b.f(x, y)`, and will ignore `b`, `b.f`, `x` and `y`, etc.
 
 
-<img src="../dbux-code/resources/dark/previousStaticTrace.svg.png" title="previousStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextStaticTrace.svg.png" title="nextStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next execution of the same trace`
+<img src="../dbux-code/resources/dark/previousStaticTrace.png" title="previousStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextStaticTrace.png" title="nextStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next execution of the same trace`
 
 * If a piece of code was executed multiple times (because a function was called multiple times, loops etc), this allows you to jump between the traces of those different executions.
 
 
-<img src="../dbux-code/resources/dark/leftArrow.svg.png" title="previous" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/rightArrow.svg.png" title="next" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace (unconditionally)`
+<img src="../dbux-code/resources/dark/leftArrow.svg" title="previous" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/rightArrow.svg" title="next" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace (unconditionally)`
 
 * Go to previous/next trace, no matter what.
 * These buttons provide the most granular navigation option.
@@ -151,7 +151,8 @@ If your currently selected trace is an expression with a value other than `undef
 
 You can inspect a value by clicking on it.
 
-Careful: There are some [problems with values](../#problems-with-values)
+NOTE: You might want to read up on [value limitations and problems](
+../#problems-with-values).
 
 
 ### Trace Details: Object traces
@@ -163,8 +164,6 @@ This allows us find any occurence of an object and its evolution throughout the 
 
 ![object traces](../docs/img/object-traces.gif)
 
-Careful: There are some [problems with values](../#problems-with-values)
-
 
 ### Trace Details: Trace Executions
 
@@ -172,6 +171,8 @@ Careful: There are some [problems with values](../#problems-with-values)
 * Since this can be a lot of traces, we currently provide a few crude grouping methods.
 
 (Dev note: Internally we use the name `staticTrace` to represent a piece of code, and the name `trace` for each execution of said code; meaning that one `staticTrace` has 0 or more `traces`. Here, `Trace Executions` lists all `traces` of the same `staticTrace`.)
+
+
 
 
 ### Trace Details: Nearby Values
