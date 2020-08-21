@@ -33,11 +33,6 @@ export function getOrCreateProjectManager(extensionContext) {
   return projectManager;
 }
 
-export async function disposeProjectManager() {
-  await projectManager.dispose();
-  projectManager = null;
-}
-
 function createProjectManager(extensionContext) {
   // ########################################
   // cfg + externals

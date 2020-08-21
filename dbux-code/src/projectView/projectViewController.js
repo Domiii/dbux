@@ -6,7 +6,7 @@ import ProjectNodeProvider from './projectNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import PracticeStopwatch from './PracticeStopwatch';
-import { getOrCreateProjectManager, disposeProjectManager } from './projectControl';
+import { getOrCreateProjectManager } from './projectControl';
 import { initRuntimeServer } from '../net/SocketServer';
 import { initProjectCommands } from '../commands/projectCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
@@ -147,10 +147,6 @@ export class ProjectViewController {
       this.practiceStopwatch.start();
     }
   }
-
-  async dispose() {
-    await disposeProjectManager();
-  }
 }
 
 // ###########################################################################
@@ -182,9 +178,4 @@ export function initProjectView(context) {
   }
 
   return controller;
-}
-
-export async function disposeProjectView() {
-  await controller.dispose();
-  controller = null;
 }

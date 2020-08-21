@@ -4,8 +4,6 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { getThemeResourcePath } from '../resources';
 import { registerCommand } from '../commands/commandUtil';
 
-/** @typedef {import('vscode').TreeView} TreeView */
-
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('editorTracesController');
 
@@ -18,7 +16,7 @@ function makeNodeClassId(NodeClass) {
     id = nodeClasses.size + 1;
     nodeClasses.set(NodeClass, id);
   }
-
+  
   return (NodeClass.name || '') + id;
 }
 
