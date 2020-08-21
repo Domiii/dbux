@@ -42,7 +42,8 @@
         },
         {
           "id": "dbuxProjectView",
-          "name": "Practice"
+          "name": "Practice",
+          "when": "dbux.context.showProjectView == true"
         }
       ]
     },
@@ -74,6 +75,14 @@
       {
         "command": "dbux.selectTrace",
         "title": "Dbux: select trace"
+      },
+      {
+        "command": "dbux.toggleProjectView",
+        "title": "Dbux: Toggle Project View",
+        "icon": {
+          "light": "resources/light/project.svg",
+          "dark": "resources/dark/project.svg"
+        }
       },
       {
         "command": "dbux.runFile",
@@ -591,6 +600,11 @@
           "command": "dbux.hideGraphView",
           "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive == true",
           "group": "navigation"
+        },
+        {
+          "command": "dbux.toggleProjectView",
+          "when": "view == dbuxApplicationsView",
+          "group": "navigation@3"
         },
         {
           "command": "dbux.runFile",

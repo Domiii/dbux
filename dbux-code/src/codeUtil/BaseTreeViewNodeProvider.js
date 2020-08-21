@@ -18,7 +18,7 @@ function makeNodeClassId(NodeClass) {
     id = nodeClasses.size + 1;
     nodeClasses.set(NodeClass, id);
   }
-  
+
   return (NodeClass.name || '') + id;
 }
 
@@ -29,36 +29,27 @@ export default class BaseTreeViewNodeProvider {
   rootNodes;
   idsCollapsibleState = new Map();
 
-  constructor(viewName, showCollapseAll = false) {
-    this.viewName = viewName;
-    // NOTE: view creation inside the data provider is not ideal, 
-    //      but it makes things a lot easier for now
-    if (viewName) {
-      this.createTreeView(viewName, showCollapseAll);
-    }
-  }
-
   /**
    * @param {string} viewName 
-   * @param {false} showCollapseAll 
-   * @return {TreeView}
+   * @param {Object} [options]
+   * @param {boolean} [options.showCollapseAll]
+   * @param {boolean} [options.createTreeView]
    */
-  createTreeView(viewName, showCollapseAll) {
-    if (!this.treeView) {
+  constructor(viewName, options = {}) {
+    this.viewName = viewName;
+    const { showCollapseAll = false, createTreeView = true } = options;
+    
+    // NOTE: view creation inside the data provider is not ideal, 
+    //      but it makes things a lot easier for now
+    if (createTreeView) {
       this.treeView = window.createTreeView(viewName, {
-        showCollapseAll,
+        showCollapseAll: showCollapseAll,
         treeDataProvider: this
       });
-  
+
       this.treeView.onDidCollapseElement(this.handleCollapsibleStateChanged);
       this.treeView.onDidExpandElement(this.handleCollapsibleStateChanged);
     }
-
-    return this.treeView;
-  }
-
-  disposeTreeView() {
-    this.treeView?.dispose();
   }
 
   initDefaultClickCommand(context) {

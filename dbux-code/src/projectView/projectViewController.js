@@ -9,6 +9,9 @@ import PracticeStopwatch from './PracticeStopwatch';
 import { getOrCreateProjectManager, disposeProjectManager } from './projectControl';
 import { initRuntimeServer } from '../net/SocketServer';
 import { initProjectCommands } from '../commands/projectCommands';
+import { get as mementoGet, set as mementoSet } from '../memento';
+
+const showProjectViewKeyName = 'dbux.projectView.showing';
 
 // ########################################
 //  setup logger for project
@@ -32,10 +35,13 @@ export function showOutputChannel() {
   outputChannel.show();
 }
 
-class ProjectViewController {
+export class ProjectViewController {
   constructor(context) {
     this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
+    
+    this.isShowingTreeView = mementoGet(showProjectViewKeyName, false);
+    commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
 
     // ########################################
     //  init treeView
@@ -59,6 +65,16 @@ class ProjectViewController {
   onStatusChanged(status) {
     commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === BugRunnerStatus.Busy);
     this.treeDataProvider.refreshIcon();
+  }
+
+  // ###########################################################################
+  // toggleTreeView
+  // ###########################################################################
+
+  async toggleTreeView() {
+    this.isShowingTreeView = !this.isShowingTreeView;
+    await commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
+    await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
   }
 
   // ###########################################################################
