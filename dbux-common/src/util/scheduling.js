@@ -13,3 +13,20 @@ export function makeDebounce(cb, ms = 300) {
     }
   };
 }
+
+/**
+ * Similar to `makeDebounce`, but delay the first call if another call comes in `ms` milliseconds.
+ */
+export function makeDelayDebounce(cb, ms = 300) {
+  let timer;
+  function _wrapDebounce(...args) {
+    timer = null;
+    cb(...args);
+  }
+  return (...args) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(() => _wrapDebounce(...args), ms);
+  };
+}
