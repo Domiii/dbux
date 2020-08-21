@@ -4,11 +4,22 @@ import TodomvcEs6 from './projects/todomvc-es6/Project';
 import RealworldWebComponentsProject from './projects/realworld-web-components/Project';
 import JavascriptAlgorithmProject from './projects/javascript-algorithms/Project';
 
-
-export default {
-  'todomvc-es6': TodomvcEs6,
-  'realworld-web-components': RealworldWebComponentsProject,
-  'javascript-algorithms': JavascriptAlgorithmProject,
-  express: Express,
-  eslint: Eslint
+// eslint-disable-next-line import/no-mutable-exports
+let registry = {
+  express: Express
 };
+
+if (process.env.NODE_ENV === 'development') {
+  // for now, only expose our well tested Express project
+  
+  registry = {
+    ...registry,
+
+    'todomvc-es6': TodomvcEs6,
+    'realworld-web-components': RealworldWebComponentsProject,
+    'javascript-algorithms': JavascriptAlgorithmProject,
+    eslint: Eslint
+  };
+}
+
+export default registry;

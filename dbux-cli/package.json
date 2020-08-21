@@ -28,6 +28,7 @@
     "@dbux/babel-plugin": "^0.1.29-dev.0",
     "@dbux/common": "^0.1.29-dev.0",
     "@dbux/runtime": "^0.1.29-dev.0",
+    "colors": "^1.4.0",
     "lodash": "^4.17.19",
     "module-alias": "^2.2.2",
     "object.fromentries": "^2.0.2",

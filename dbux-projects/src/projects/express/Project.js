@@ -18,7 +18,7 @@ export default class ExpressProject extends Project {
         // https://github.com/BugsJS/express/releases/tag/Bug-1-test
         // https://github.com/BugsJS/express/commit/8bd36202bef586889d20bd5fa0732d3495da54eb
         id: 1,
-        testRe: 'should only include each method once',
+        testRe: 'OPTIONS should only include each method once',
         testFilePaths: ['test/app.options.js']
       },
       {
@@ -239,23 +239,14 @@ export default class ExpressProject extends Project {
   }
 
   async testBugCommand(bug, cfg) {
-    const { projectPath, manager } = this;
+    const { projectPath } = this;
     const bugArgs = this.getMochaArgs(bug);
-
-    let {
-      debugPort,
-      nodeArgs,
-      dbuxArgs
-    } = cfg;
 
     const mochaCfg = {
       cwd: projectPath,
-      dbuxJs: manager.getDbuxCliBinPath(),
       mochaArgs: bugArgs,
-      nodeArgs,
-      dbuxArgs,
       require: bug.require,
-      debugPort
+      ...cfg
     };
 
     return buildMochaRunCommand(mochaCfg);

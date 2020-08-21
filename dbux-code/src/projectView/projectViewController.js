@@ -109,9 +109,11 @@ export class ProjectViewController {
 
       // run it!
       progress.report({ message: 'running test...' });
-      // NOTE: --enable-source-maps gets very slow in nolazy mode
+      // NOTE: --enable-source-maps gets super slow in production mode for some reason
       // NOTE2: nolazy is required for proper breakpoints in debug mode
-      const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : '--enable-source-maps'}`;
+      // const enableSourceMaps = '--enable-source-maps';
+      const enableSourceMaps = '';
+      const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${enableSourceMaps}`;
       const cfg = {
         debugMode,
         nodeArgs,
