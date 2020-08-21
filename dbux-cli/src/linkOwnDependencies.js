@@ -68,6 +68,12 @@ function linkOwnDependencies() {
     nodeModulesParent = path.resolve(DbuxCliRoot, '../../..');
   }
 
+  // console.debug(`[DBUX] linkOwnDependencies ${JSON.stringify({
+  //   DbuxCliRoot,
+  //   nodeModulesParent,
+  //   DBUX_ROOT: process.env.DBUX_ROOT
+  // })}`);
+
   // check if linkage works
   // console.warn('###########\n\n', DbuxCliRoot, nodeModulesParent, process.env.NODE_ENV);
   // console.warn('  ', require('@babel/plugin-proposal-class-properties'));

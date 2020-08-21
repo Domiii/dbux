@@ -264,7 +264,7 @@ export default class ProjectsManager {
 
     // await this.runner._exec(`npm install --only=prod`, logger, execOptions);
     // await this.runner._exec(`npm install --only=prod && npm i ${deps.join(' ')}`, logger, execOptions);
-    await this.execInTerminal(dependencyRoot, `npm i ${deps.join(' ')}`);
+    await this.execInTerminal(dependencyRoot, `npm install --only=prod && npm i ${deps.join(' ')}`);
 
     // else {
     //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
