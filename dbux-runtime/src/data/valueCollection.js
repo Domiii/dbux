@@ -6,7 +6,8 @@ import pools from './pools';
 
 // const Verbose = true;
 const Verbose = false;
-const VerboseErrors = Verbose || true;
+// const VerboseErrors = Verbose || true;
+const VerboseErrors = Verbose || false;
 
 const SerializationConfig = {
   maxDepth: 3,
@@ -226,9 +227,9 @@ class ValueCollection extends Collection {
     ++this._readErrorCount;
 
     errorsByType.set(Object.getPrototypeOf(obj), obj);
-    if ((this._readErrorCount % 100) === 1) {
-      this.logger.error(`When copying object data, invoking object getters caused ${this._readErrorCount} ` +
-        `exceptions (if this number is very high, you will likely observe significant slow-down)`);
+    if ((this._readErrorCount % 100) === 0) {
+      // eslint-disable-next-line max-len,no-console
+      console.warn(`[Dbux] When Dbux records object data it blatantly invokes object getters. These object getters caused ${this._readErrorCount} exceptions. If this number is very high, you will likely observe significant slow-down.`);
     }
   }
 
