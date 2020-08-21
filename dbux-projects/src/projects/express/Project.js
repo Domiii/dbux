@@ -238,26 +238,26 @@ export default class ExpressProject extends Project {
     await this.installAssets();
   }
 
-  async testBugCommand(bug, debugPort) {
+  async testBugCommand(bug, cfg) {
     const { projectPath } = this;
     const bugArgs = this.getMochaArgs(bug);
 
-    // NOTE: --enable-source-maps gets very slow in nolazy mode
-    // NOTE2: nolazy is required for proper breakpoints in debug mode
-    const nodeArgs = `--stack-trace-limit=100 ${debugPort ? '--nolazy' : '--enable-source-maps'}`;
+    let {
+      debugPort,
+      nodeArgs,
+      dbuxArgs
+    } = cfg;
 
-    // WARNING: --enable-source-maps can be extremely slow
-    // const nodeArgs = `--stack-trace-limit=100 ${debugPort ? '--nolazy' : ''}`;
-
-    const cfg = {
+    const mochaCfg = {
       cwd: projectPath,
       mochaArgs: bugArgs,
       nodeArgs,
+      dbuxArgs,
       require: bug.require,
       debugPort
     };
 
-    return buildMochaRunCommand(cfg);
+    return buildMochaRunCommand(mochaCfg);
 
     // TODO: enable auto attach (run command? or remind user?)
     //      see: https://code.visualstudio.com/blogs/2018/07/12/introducing-logpoints-and-auto-attach

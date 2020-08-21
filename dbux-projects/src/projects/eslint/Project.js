@@ -76,8 +76,8 @@ export default class EslintProject extends Project {
     await this.npmInstall();
   }
 
-  async testBugCommand(/* bug, debugPort */) {
-    // TODO: copy correct version of this from express
+  async testBugCommand(/* bug, cfg */) {
+    // TODO: copy correct version from express/Project.js
 
     // const { projectPath } = this;
     // const bugArgs = this.getMochaArgs(bug);
