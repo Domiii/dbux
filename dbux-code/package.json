@@ -48,52 +48,12 @@
     },
     "commands": [
       {
-        "command": "dbux.openWebsite",
-        "title": "Dbux: Help",
-        "icon": {
-          "light": "resources/light/question.svg",
-          "dark": "resources/dark/question.svg"
-        }
-      },
-      {
-        "command": "dbux.runFile",
-        "title": "Dbux: Run current file",
-        "icon": {
-          "light": "resources/light/play.svg",
-          "dark": "resources/dark/play.svg"
-        }
-      },
-      {
-        "command": "dbux.debugFile",
-        "title": "Dbux: Debug current file",
-        "icon": {
-          "light": "resources/light/bug.svg",
-          "dark": "resources/dark/bug.svg"
-        }
-      },
-      {
         "command": "dbux.cancelBugRunner",
         "title": "Dbux Practice: Cancel All"
       },
       {
         "command": "dbux.exportApplicationData",
         "title": "Dbux: Export application data"
-      },
-      {
-        "command": "dbux.showGraphView",
-        "title": "Dbux: Show Call Graph",
-        "icon": {
-          "light": "resources/light/tree.svg",
-          "dark": "resources/dark/tree.svg"
-        }
-      },
-      {
-        "command": "dbux.hideGraphView",
-        "title": "Dbux: Hide Call Graph",
-        "icon": {
-          "light": "resources/light/tree_disabled.svg",
-          "dark": "resources/dark/tree_disabled.svg"
-        }
       },
       {
         "command": "dbux.showDecorations",
@@ -116,8 +76,60 @@
         "title": "Dbux: select trace"
       },
       {
+        "command": "dbux.runFile",
+        "title": "Dbux: Run current file",
+        "icon": {
+          "light": "resources/light/play.svg",
+          "dark": "resources/dark/play.svg"
+        }
+      },
+      {
+        "command": "dbux.debugFile",
+        "title": "Dbux: Debug current file",
+        "icon": {
+          "light": "resources/light/bug.svg",
+          "dark": "resources/dark/bug.svg"
+        }
+      },
+      {
+        "command": "dbux.showGraphView",
+        "title": "Dbux: Show Call Graph",
+        "icon": {
+          "light": "resources/light/tree.svg",
+          "dark": "resources/dark/tree.svg"
+        }
+      },
+      {
+        "command": "dbux.hideGraphView",
+        "title": "Dbux: Hide Call Graph",
+        "icon": {
+          "light": "resources/light/tree_disabled.svg",
+          "dark": "resources/dark/tree_disabled.svg"
+        }
+      },
+      {
         "command": "dbuxCallGraphView.gotoEntry",
         "title": "Goto"
+      },
+      {
+        "command": "dbux.backendLogin",
+        "title": "Dbux: Backend Login"
+      },
+      {
+        "command": "dbux.systemCheck",
+        "title": "Dbux: Check System Dependencies"
+      },
+      {
+        "command": "dbux.openWebsite",
+        "title": "Dbux: Help",
+        "icon": {
+          "light": "resources/light/question.svg",
+          "dark": "resources/dark/question.svg"
+        }
+      },
+      {
+        "command": "dbuxCallStackView.itemClick",
+        "title": "Click"
       },
       {
         "command": "dbuxCallGraphView.showContext",
@@ -129,7 +141,7 @@
       },
       {
         "command": "dbuxCallGraphView.showError",
-        "title": "Show all error",
+        "title": "Show all errors",
         "icon": {
           "light": "resources/light/fire.svg",
           "dark": "resources/dark/fire.svg"
@@ -145,7 +157,7 @@
       },
       {
         "command": "dbuxCallGraphView.selectError",
-        "title": "Select to first error",
+        "title": "Select first error trace",
         "icon": {
           "light": "resources/light/fire.svg",
           "dark": "resources/dark/fire.svg"
@@ -182,10 +194,6 @@
           "light": "resources/light/string.svg",
           "dark": "resources/dark/string.svg"
         }
-      },
-      {
-        "command": "dbuxCallStackView.itemClick",
-        "title": "Click"
       },
       {
         "command": "dbuxTraceDetailsView.switchGroupingMode",
@@ -386,16 +394,6 @@
           "light": "resources/light/boolean.svg",
           "dark": "resources/dark/boolean.svg"
         }
-      },
-      {
-        "command": "dbux.backendLogin",
-        "title": "Dbux: Backend Login",
-        "when": "view == dbuxApplicationsView",
-        "group": "navigation"
-      },
-      {
-        "command": "dbux.systemCheck",
-        "title": "Dbux: System Check"
       }
     ],
     "menus": {
@@ -615,21 +613,15 @@
       {
         "title": "Dbux",
         "properties": {
-          "dbux.run.enable-source-maps": {
-            "type": "boolean",
-            "default": true,
-            "description": "Toggle `--enable-source-maps` (since, despite its usefulness, it can be super slow)",
-            "scope": "resource"
-          },
           "dbux.run.dbuxArgs": {
             "type": "string",
-            "default": "",
+            "default": "--esnext",
             "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js",
             "scope": "resource"
           },
           "dbux.run.nodeArgs": {
             "type": "string",
-            "default": "",
+            "default": "--enable-source-maps",
             "description": "Custom node options passed to node when running the program.",
             "scope": "resource"
           },
@@ -645,15 +637,9 @@
             "description": "Custom program environment variables available via `process.env` (probably not working yet).",
             "scope": "resource"
           },
-          "dbux.debug.enable-source-maps": {
-            "type": "boolean",
-            "default": false,
-            "description": "Toggle `--enable-source-maps` (since, despite its usefulness, it can be super slow)",
-            "scope": "resource"
-          },
           "dbux.debug.dbuxArgs": {
             "type": "string",
-            "default": "",
+            "default": "--esnext",
             "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js",
             "scope": "resource"
           },
