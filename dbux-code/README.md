@@ -135,7 +135,7 @@ Here are all the buttons:
 * If a piece of code was executed multiple times (because a function was called multiple times, loops etc), this allows you to jump between the traces of those different executions.
 
 
-<img src="../dbux-code/resources/dark/leftArrow.svg" title="previous" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/rightArrow.svg" title="next" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace (unconditionally)`
+<img src="../dbux-code/resources/dark/leftArrow.png" title="previous" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/rightArrow.png" title="next" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace (unconditionally)`
 
 * Go to previous/next trace, no matter what.
 * These buttons provide the most granular navigation option.
