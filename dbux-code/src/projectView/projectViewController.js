@@ -41,7 +41,6 @@ class ProjectViewController {
     //  init treeView
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
-    this.treeView = this.treeDataProvider.treeView;
 
     this.practiceStopwatch = new PracticeStopwatch('practice');
     this.practiceStopwatch.registOnClick(context, this.maybeStopWatch.bind(this));
@@ -52,6 +51,10 @@ class ProjectViewController {
     const bugRunner = this.manager.getOrCreateRunner();
     bugRunner.on('statusChanged', this.onStatusChanged.bind(this));
   }
+
+  get treeView() {
+    return this.treeDataProvider.treeView;
+  } 
 
   onStatusChanged(status) {
     commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === BugRunnerStatus.Busy);
@@ -138,6 +141,9 @@ class ProjectViewController {
 // init/dispose
 // ###########################################################################
 
+/**
+ * @type {ProjectViewController}
+ */
 let controller;
 
 export function initProjectView(context) {

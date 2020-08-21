@@ -1,8 +1,10 @@
-import { TreeItemCollapsibleState, EventEmitter, window, CommentThreadCollapsibleState } from 'vscode';
+import { TreeItemCollapsibleState, EventEmitter, window } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getThemeResourcePath } from '../resources';
 import { registerCommand } from '../commands/commandUtil';
+
+/** @typedef {import('vscode').TreeView} TreeView */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('editorTracesController');
@@ -32,14 +34,31 @@ export default class BaseTreeViewNodeProvider {
     // NOTE: view creation inside the data provider is not ideal, 
     //      but it makes things a lot easier for now
     if (viewName) {
+      this.createTreeView(viewName, showCollapseAll);
+    }
+  }
+
+  /**
+   * @param {string} viewName 
+   * @param {false} showCollapseAll 
+   * @return {TreeView}
+   */
+  createTreeView(viewName, showCollapseAll) {
+    if (!this.treeView) {
       this.treeView = window.createTreeView(viewName, {
         showCollapseAll,
         treeDataProvider: this
       });
-
+  
       this.treeView.onDidCollapseElement(this.handleCollapsibleStateChanged);
       this.treeView.onDidExpandElement(this.handleCollapsibleStateChanged);
     }
+
+    return this.treeView;
+  }
+
+  disposeTreeView() {
+    this.treeView?.dispose();
   }
 
   initDefaultClickCommand(context) {
