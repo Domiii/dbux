@@ -112,26 +112,20 @@ The following JS syntax constructs are not supported at all or support is limite
    * Afaik, there was some issue with Babel just not wanting the do-while visitor. Have not further researched.
 
 
-## Async Call Graph + Callback tracking
+## Problems with Values
 
-Theoretically we should be able to track all callbacks and their data flow to the call site, however we don't do that properly quite yet.
+Because of [performance](#performance) reasons, we cannot record *everything*.
 
-Some examples:
-
-* When calling `setTimeout(f)`, you will see that `f` gets executed, but it's execution is not linked to the `setTimeout(f)` call that scheduled its execution.
-* The same problem exists with `Promise.then(f)`, and any instance where callbacks are used.
-
-NOTE: This link between a caller passing a callback and the execution of that callback is considered an edge in the "asynchronous call graph", an elusive feature that we are planning to support, but don't have finished yet.
-
-The related "asynchronous call graph" feature is tracked in issue #210.
+* Big objects, arrays and strings are truncated (see [performance](#performance) for more information).
+* We currently do not properly handle certain built-in types (such as `Map` and `Set`) correctly, will probably not show up correctly.
 
 
 ## Calling `process.exit` as well as uncaught exceptions are not handled properly
 
 * You might see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably a crash or you called `process.exit` manually." in the console.
-* `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet, as a result, you won't see all traces/contexts etc.
-* If you *MUST* call `process.exit`, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side.
-   * NOTE: some frameworks that kill your process by default might require extra configuration (e.g. for `Mocha` you want to add the `--no-exit` flag)
+* `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet. As a result, not all of the runtime data could be recorded properly.
+* If you *MUST* call `process.exit` manually, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side.
+   * NOTE: some frameworks that kill your process by can be configured not to do so (e.g. for `Mocha` you want to add the `--no-exit` flag)
 * This is tracked in #201.
 
 
@@ -153,7 +147,6 @@ By trying to observe a program, while definitely not intending to, you will inev
    * -> This means that in many scenarios where Proxies (with side effects) are in play, you might just not be able to use Dbux properly.
 
 NOTE: There are ways to avoid these issues, for example by allowing in-line comment directives (like Eslint), but we sadly just don't have that yet. Tracked in issue #209.
-
 
 ## `eval` and dynamically loaded code
 
@@ -183,6 +176,20 @@ While this is not impossible, we certainly do not currently support this feature
    3. By default, babel treats js files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have strict mode enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910
    4. NOTE: You can see the same syntax error when slightly modifying above example and running it in `node` (without Dbux) but with strict mode enabled: `"use strict"; var public = 3;`.
 * You should be able to customize the babel config and disable strict mode if you please. However we recommend to just work against strict mode to begin with.
+
+
+## Async Call Graph + Callback tracking
+
+Theoretically we should be able to track all callbacks and their data flow to the call site, however we don't do that properly quite yet.
+
+Some examples:
+
+* When calling `setTimeout(f)`, you will see that `f` gets executed, but it's execution is not linked to the `setTimeout(f)` call that scheduled its execution.
+* The same problem exists with `Promise.then(f)`, and any instance where callbacks are used.
+
+NOTE: This link between a caller passing a callback and the execution of that callback is considered an edge in the "asynchronous call graph", an elusive feature that we are planning to support, but don't have finished yet.
+
+The related "asynchronous call graph" feature is tracked in issue #210.
 
 
 ## Issues under Windows

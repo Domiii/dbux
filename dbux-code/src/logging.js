@@ -27,9 +27,9 @@ function onError(...args) {
       [`Show Log`]: () => {
         showOutputChannel();
       },
-      [`Need Help`]: async () => {
+      [`This sucks!`]: async () => {
         // eslint-disable-next-line max-len
-        const msg = `If this error is causing you trouble, you can:\n→ Join Discord to ask for help\n→ If you already have some more information, report an issue on Github\n→ Check out the Dbux website for more information`;
+        const msg = `If this error is causing you trouble, you can:\n→ Join Discord and ask for help\n→ Check out the Dbux website for more information\n→ If this is an unexpected error, grab the log, your system's basic information and report an issue on Github`;
         return showHelp(msg);
       },
     });

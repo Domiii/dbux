@@ -234,8 +234,13 @@ async function main() {
   input = new LineReader();
   log(`Preparing to publish (bumping from version ${await getDbuxVersion()})...`);
 
-  if (await execCaptureOut('npm whoami') !== 'domiii') {
-    throw new Error('Not logged into NPM. Login first with: `npm login <user>`');
+  try {
+    if (await execCaptureOut('npm whoami') !== 'domiii') {
+      throw new Error('Not logged into NPM. Login first with: `npm login <user>`');
+    }
+  }
+  catch (err) {
+    throw new Error(`"npm whoami failed. Make sure (1) to "npm login" before this script and (2) NOT TO run this script via "yarn run" (it *will* bug out)\n\n${err.message}`);
   }
 
   if (!await execCaptureOut('cd dbux-code && npx vsce ls-publishers')) {
@@ -274,6 +279,8 @@ async function main() {
   await fixLerna();
 
   await setDevVersion();
+
+  // TODO: update version.txt so our HEAD is not pushed (which we need for `lerna version --no-publish` to work)
 
   await pushToDev();
 

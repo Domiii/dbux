@@ -125,7 +125,16 @@ function mergeOutputStreams(newStreams) {
   );
 }
 
-export function setOutputStreams(newOutputStreams) {
+export function setOutputStreams(newOutputStreams, fullErrorStack = true) {
+  if (fullErrorStack) {
+    // fix up error logging to log Error.stack
+    // NOTE: by default, Error.toString returns only the message for some reason?
+    const cb = newOutputStreams.error;
+    newOutputStreams.error = (...args) => {
+      args = args.map(arg => arg instanceof Error ? arg.stack : arg);
+      cb(...args);
+    };
+  }
   outputStreams = mergeOutputStreams(newOutputStreams);
 }
 

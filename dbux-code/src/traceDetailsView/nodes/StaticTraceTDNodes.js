@@ -26,7 +26,7 @@ GroupingMode = new Enum(GroupingMode);
 const GroupingModeLabel = new Map();
 GroupingModeLabel.set(GroupingMode.ByRunId, 'by Run');
 GroupingModeLabel.set(GroupingMode.ByContextId, 'by Context');
-GroupingModeLabel.set(GroupingMode.ByParentContextTraceId, 'by Parent');
+GroupingModeLabel.set(GroupingMode.ByParentContextTraceId, 'by Parent Trace');
 GroupingModeLabel.set(GroupingMode.ByCallback, 'by Callback');
 
 // Default mode
@@ -149,12 +149,12 @@ export default class StaticTraceTDNode extends BaseTreeViewNode {
     let groupedTraces, label;
     if (groupingMode === GroupingMode.Ungrouped) {
       groupedTraces = traces;
-      label = `Trace Executed: ${traces.length}x (ungrouped)`;
+      label = `Trace Executions: ${traces.length}x`;
     }
     else {
       groupedTraces = groupByMode[groupingMode](app, traces);
       let modeLabel = GroupingModeLabel.get(groupingMode);
-      label = `Trace Executed: ${traces.length}x (${groupedTraces.length} groups ${modeLabel})`;
+      label = `Trace Executions: ${traces.length}x (${groupedTraces.length} groups ${modeLabel})`;
     }
 
     return {
