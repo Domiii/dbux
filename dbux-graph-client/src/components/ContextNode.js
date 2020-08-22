@@ -80,14 +80,13 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.valueLabel.textContent = valueLabel;
     // this.setThemeMode(this.els.valueLabel, themeMode);
     // this.setThemeMode(this.els.nodeChildren, themeMode);
-    decorateClasses(this.els.title, { 'selected-trace': isSelected });
-    // themeMode === 'dark' ?
-    //   decorateClasses(this.els.title, {
-    //     'selected-trace-dark': isSelected
-    //   }) :
-    //   decorateClasses(this.els.title, {
-    //     'selected-trace': isSelected
-    //   });
+    themeMode === 'dark' ?
+      decorateClasses(this.els.title, {
+        'selected-trace-dark': isSelected
+      }) :
+      decorateClasses(this.els.title, {
+        'selected-trace': isSelected
+      });
 
     // set indicator
     this.setIndicator(traceId, this.children.getComponents('ContextNode'), isSelectedTraceCallRelated, contextIdOfSelectedCallTrace, isSelected);

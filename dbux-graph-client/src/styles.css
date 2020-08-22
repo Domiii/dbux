@@ -38,6 +38,11 @@ html,body{
   line-height: 1rem;
   min-width: 1.4rem; /* NOTE: on some systems, some of those emojis are extra-wide */
 }
+.theme-mode-dark .nodeToggleBtn {
+  background: #292929;
+  border: solid 2px #484848;
+  color: white;
+}
 
 .selected-trace {
   color: darkred;
@@ -189,6 +194,9 @@ html,body{
 .node-toggle-btn {
   margin-right: 0.3rem !important;
 }
+.theme-mode-dark .node-toggle-btn{
+  color:white;
+}
 
 
 .loc-label {
@@ -216,9 +224,12 @@ html,body{
 
 [data-el="parentLabel"] {
   /* color: #222; */
-  background: rgba(0,0,0,0.01);
+  background: rgba(0,0,0,0.03);
   font-size: 11px;
   margin-right: 0.3rem !important;
+}
+.theme-mode-dark [data-el="parentLabel"] {
+  background: rgba(0,0,0,0.25);
 }
 
 .value-label {
@@ -227,6 +238,10 @@ html,body{
   font-size: 11px;
   margin-right: 0.3rem !important;
 }
+.theme-mode-dark .value-label {
+  background: rgba(0,0,0,0.4);
+}
+
 .hide-values .value-label {
   display: none !important;
 }
@@ -383,34 +398,40 @@ html,body{
  * highlighter
  * ############################################################################ */
 
-.highlighter{
 
-}
-.highlight-on:not(.dark-mode) {
+.highlight-on:not(.theme-mode-dark) {
   background: #888 !important;
   color: darkgray !important;
 }
-.highlight-on:not(.dark-mode) .graph-node:not(.highlight) > * {
+.highlight-on:not(.theme-mode-dark) .graph-node:not(.highlight) > * {
   background: #888 !important;
   color: darkgray !important;
 }
-.highlight-on:not(.dark-mode) .graph-node .children {
+.highlight-on:not(.theme-mode-dark) .graph-node .children {
   background: #888 !important;
   color: darkgray !important;
+}
+body:not(.theme-mode-dark) .highlight{
+  color:black;
 }
 
 /* dark mode */
-.highlight-on.dark-mode {
-  background: #3f3838 !important;
-  color: darkgray !important;
+/* change color to change unhighlighing context name's color -del */
+.highlight-on.theme-mode-dark {
+  background: #1e1e1e !important;
+  color: #3b3b3b !important;
 }
-.highlight-on.dark-mode .graph-node:not(.highlight) > * {
-  background: #3f3838 !important;
-  color: darkgray !important;
+.highlight-on.theme-mode-dark .graph-node:not(.highlight) > * {
+  background: #1e1e1e !important;
+  color: #3b3b3b!important;
 }
-.highlight-on.dark-mode .graph-node .children {
-  background: #3f3838 !important;
-  color: darkgray !important;
+.highlight-on.theme-mode-dark .graph-node .children {
+  background: #1e1e1e !important;
+  color: #3b3b3b!important;
+}
+.theme-mode-dark .highlight{
+  color: white;
+  background:rgba(0,0,0,0.4);
 }
 
 /** ###########################################################################
@@ -461,12 +482,12 @@ background: #333;
   bottom:10px;
   right:10px;
 }
-
 #zoombar .button {
   margin:2.5px;
 }
-
-.theme-mode-dark{
-  color:white;
-  background:rgba(0,0,0,0.4);
+.theme-mode-dark #zoombar .button {
+  background: #292929;
+  border: solid 2px #484848;
+  color: white;
 }
+
