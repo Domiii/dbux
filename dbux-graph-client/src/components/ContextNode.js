@@ -71,15 +71,11 @@ class ContextNode extends ClientComponentEndpoint {
     this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},35%,${themeMode === 'dark' ? 30 : 95}%)`;
     // this.els.title.id = `name_${contextId}`;
     // this.els.nodeChildren.id = `children_${contextId}`;
-    // this.setThemeMode(this.els.nodeToggleBtn, themeMode);
     this.els.contextLabel.textContent = contextNameLabel;
     this.els.locLabel.textContent = contextLocLabel;
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
-    // this.setThemeMode(this.els.parentLabel, themeMode);
     this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
-    // this.setThemeMode(this.els.valueLabel, themeMode);
-    // this.setThemeMode(this.els.nodeChildren, themeMode);
     themeMode === 'dark' ?
       decorateClasses(this.els.title, {
         'selected-trace-dark': isSelected
@@ -195,14 +191,6 @@ class ContextNode extends ClientComponentEndpoint {
       choicingIndicator?.classList?.add(newClass);
     }
   }
-
-  // setThemeMode(element, themeMode) {
-  //   if (themeMode === 'dark') {
-  //     return element?.classList.add('theme-mode-dark');
-  //   } else {
-  //     return element?.classList.remove('theme-mode-dark');
-  //   }
-  // }
 
   on = {
     contextLabel: {
