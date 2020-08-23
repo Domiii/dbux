@@ -194,10 +194,6 @@ html,body{
 .node-toggle-btn {
   margin-right: 0.3rem !important;
 }
-.theme-mode-dark .node-toggle-btn{
-  color:white;
-}
-
 
 .loc-label {
   /* color: #333; */
@@ -407,7 +403,11 @@ html,body{
   background: #888 !important;
   color: darkgray !important;
 }
-.highlight-on:not(.theme-mode-dark) .graph-node .children {
+.highlight-on:not(.theme-mode-dark) .graph-node:not(.highlight) > div > .content button {
+  background: #888 !important;
+  color: darkgray !important;
+}
+.highlight-on:not(.theme-mode-dark) .graph-node .node-children {
   background: #888 !important;
   color: darkgray !important;
 }
@@ -425,7 +425,11 @@ body:not(.theme-mode-dark) .highlight{
   background: #1e1e1e !important;
   color: #3b3b3b!important;
 }
-.highlight-on.theme-mode-dark .graph-node .children {
+.highlight-on.theme-mode-dark .graph-node:not(.highlight) > div > .content button {
+  background: #1e1e1e !important;
+  color: #3b3b3b!important;
+}
+.highlight-on.theme-mode-dark .graph-node .node-children {
   background: #1e1e1e !important;
   color: #3b3b3b!important;
 }
