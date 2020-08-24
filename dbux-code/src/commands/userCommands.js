@@ -159,7 +159,6 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.runFile', () => runFile(extensionContext));
   registerCommand(extensionContext, 'dbux.debugFile', () => runFile(extensionContext, true));
 
-
   // ###########################################################################
   // practice backend
   // ###########################################################################
@@ -182,7 +181,7 @@ export function initUserCommands(extensionContext) {
   // open help website
   // ###########################################################################
 
-  registerCommand(extensionContext, 'dbux.openWebsite', async () => {
+  registerCommand(extensionContext, 'dbux.showHelp', async () => {
     return showHelp();
   });
 }

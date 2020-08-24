@@ -387,13 +387,11 @@ export default class Project {
   async npmInstall() {
     // await this.exec('npm cache verify');
 
-    await this.execInTerminal(`npm install`);
-
     // hackfix: npm installs are broken somehow.
     //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
     //      Sometimes running it a second time after checking out a different branch 
     //      deletes all node_modules. This will bring everything back correctly (for now).
-    await this.execInTerminal(`npm install`);
+    await this.execInTerminal(`npm install && npm install`);
   }
 
   // async yarnInstall() {
@@ -502,7 +500,7 @@ export default class Project {
     return this._bugs;
   }
 
-  getBugArgs(bug) {
+  getMochaArgs(bug) {
     // bugArgs
     const bugArgArray = [
       ...(bug.runArgs || EmptyArray)

@@ -3,7 +3,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 export function buildNodeCommand(cfg) {
   let {
     // cwd,
-    nodeArgs = `--stack-trace-limit=1000 --enable-source-maps --nolazy`,
+    nodeArgs = '',
     debugPort,
     require: requireArr = EmptyArray,
     program,

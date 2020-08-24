@@ -47,11 +47,13 @@ export default class JavascriptAlgorithmProject extends Project {
     // nothing to do here
   }
 
-  async testBugCommand(bug, debugPort) {
-    const { projectPath } = this;
-    const bugArgs = this.getBugArgs(bug);
+  async testBugCommand(/* bug, cfg */) {
+    // TODO: copy correct version from express/Project.js
 
-    const jestArgs = `${bugArgs}`;
-    return buildJestRunBugCommand(projectPath, jestArgs, bug.require, debugPort);
+    // const { projectPath } = this;
+    // const bugArgs = this.getBugArgs(bug);
+
+    // const jestArgs = `${bugArgs}`;
+    // return buildJestRunBugCommand(projectPath, jestArgs, bug.require, debugPort);
   }
 }

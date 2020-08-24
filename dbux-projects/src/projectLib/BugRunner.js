@@ -207,7 +207,7 @@ export default class BugRunner {
    * 
    * @param {Bug} bug
    */
-  async testBug(bug, debugMode = true) {
+  async testBug(bug, cfg) {
     const { project } = bug;
 
     // sh.mkdir('-p', project.projectPath);
@@ -238,7 +238,11 @@ export default class BugRunner {
       // hackfix: set status here again in case of `this.activateBug` skips installaion process
       this.setStatus(BugRunnerStatus.Busy);
 
-      let command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
+      cfg = {
+        debugPort: cfg?.debugMode && this.debugPort || null,
+        ...cfg
+      };
+      let command = await bug.project.testBugCommand(bug, cfg);
       command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
       if (!command) {

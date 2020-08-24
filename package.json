@@ -60,10 +60,10 @@
 		"utf-8-validate": "^5.0.2"
 	},
 	"scripts": {
-		"start": "npx npm-run-all -p build:watch graph:build:watch",
-    "start:prod": "npx npm-run-all -p build:watch:prod graph:build:watch:prod",
-    "version:dev": "node -e \"require('./scripts/fix-versions').revertToDevVersion().then(() => process.exit(0))\"",
-    "version:prod": "node -e \"require('./scripts/fix-versions').downgradeProdVersion().then(() => process.exit(0))\"",
+		"start": "yarn run version:dev && npx npm-run-all -p build:watch graph:build:watch",
+    "start:prod": "yarn run version:prod && npx npm-run-all -p build:watch:prod graph:build:watch:prod",
+    "version:dev": "node --unhandled-rejections=strict -e \"require('./scripts/fix-versions').revertToDevVersion().then(() => process.exit(0))\"",
+    "version:prod": "node --unhandled-rejections=strict -e \"require('./scripts/fix-versions').downgradeProdVersion().then(() => process.exit(0))\"",
 		"build:clean": "sh scripts/dbux-run-all.sh \"rm -rf dist\" && cd dbux-code && yarn run build:clean",
 		"build:watch": "yarn run version:dev && npx nodemon --exec \"node --stack-trace-limit=1000 --enable-source-maps -- ./node_modules/webpack/bin/webpack.js --mode development --watch\"",
 		"build:watch:prod": "yarn run version:prod && npx nodemon --exec \"node --stack-trace-limit=1000 --enable-source-maps -- ./node_modules/webpack/bin/webpack.js --mode production --watch\"",
