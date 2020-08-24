@@ -1,6 +1,6 @@
 
-import loginController from '../controllers/login';
+import * as loginController from '../controllers/login';
 
-export default async function login(request, response) {
+export async function login(request, response) {
   await loginController.verify(request, response);
 }
