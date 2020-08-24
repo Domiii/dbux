@@ -18,15 +18,17 @@ let GroupingMode = {
   Ungrouped: 1,
   ByRunId: 2,
   ByContextId: 3,
-  ByParentContextTraceId: 4,
-  ByCallback: 5
+  ByParentTraceId: 4,
+  ByParentContextId: 5,
+  ByCallback: 6
 };
 GroupingMode = new Enum(GroupingMode);
 
 const GroupingModeLabel = new Map();
 GroupingModeLabel.set(GroupingMode.ByRunId, 'by Run');
 GroupingModeLabel.set(GroupingMode.ByContextId, 'by Context');
-GroupingModeLabel.set(GroupingMode.ByParentContextTraceId, 'by Parent Trace');
+GroupingModeLabel.set(GroupingMode.ByParentTraceId, 'by Parent Trace');
+GroupingModeLabel.set(GroupingMode.ByParentContextId, 'by Parent Context');
 GroupingModeLabel.set(GroupingMode.ByCallback, 'by Callback');
 
 // Default mode
@@ -65,7 +67,7 @@ const groupByMode = {
       });
     return groups.filter(group => !!group);
   },
-  [GroupingMode.ByParentContextTraceId](app, traces) {
+  [GroupingMode.ByParentTraceId](app, traces) {
     const tracesByParent = [];
     const dp = app.dataProvider;
     for (const trace of traces) {
@@ -77,8 +79,26 @@ const groupByMode = {
     const groups = tracesByParent
       .map((children, parentTraceId) => {
         const trace = dp.collections.traces.getById(parentTraceId);
-        const label = trace ? makeTraceLabel(trace) : '(No Parent)';
-        const description = `Parent: ${parentTraceId}`;
+        const label = trace ? makeTraceLabel(trace) : '(No Parent Trace)';
+        const description = `TraceId: ${parentTraceId}`;
+        return { label, children, description };
+      });
+    return groups.filter(group => !!group);
+  },
+  [GroupingMode.ByParentContextId](app, traces) {
+    const tracesByParent = [];
+    const dp = app.dataProvider;
+    for (const trace of traces) {
+      const { contextId } = trace;
+      const { parentContextId = 0 } = dp.collections.executionContexts.getById(contextId);
+      if (!tracesByParent[parentContextId]) tracesByParent[parentContextId] = [];
+      tracesByParent[parentContextId].push(trace);
+    }
+    const groups = tracesByParent
+      .map((children, parentContextId) => {
+        const context = dp.collections.executionContexts.getById(parentContextId);
+        const label = context ? makeContextLabel(context, app) : '(No Parent Context)';
+        const description = `ContextId: ${parentContextId}`;
         return { label, children, description };
       });
     return groups.filter(group => !!group);
