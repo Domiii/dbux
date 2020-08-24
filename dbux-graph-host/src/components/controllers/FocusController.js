@@ -31,17 +31,19 @@ export default class FocusController extends HostComponentEndpoint {
     const unbindSubscription = traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
     this.addDisposable(unbindSubscription);
     // if already selected, show things right away
-    this.handleTraceSelected(traceSelection.selected);
+    setTimeout(this.handleTraceSelected);
   }
 
-  handleTraceSelected = async (trace) => {
+  handleTraceSelected = async () => {
+    const trace = traceSelection.selected;
     await this.waitForInit();
     
     let contextNode;
     if (trace) {
       const { applicationId, contextId } = trace;
       contextNode = this.owner.getContextNodeById(applicationId, contextId);
-      if (this.syncMode) {
+      if (this.syncMode && contextNode) {
+        // NOTE: since we do this right after init, need to check if contextNode have been built
         await this.focus(contextNode);
       }
     }
@@ -54,7 +56,7 @@ export default class FocusController extends HostComponentEndpoint {
   }
 
   handleHiddenNodeChanged = () => {
-    this.handleTraceSelected(traceSelection.selected);
+    this.handleTraceSelected();
   }
 
   _selectContextNode(contextNode) {
@@ -83,7 +85,7 @@ export default class FocusController extends HostComponentEndpoint {
     }
     this.syncMode = mode;
     if (this.syncMode) {
-      this.handleTraceSelected(traceSelection.selected);
+      this.handleTraceSelected();
     }
     else {
       this.lastHighlighter?.dec();
