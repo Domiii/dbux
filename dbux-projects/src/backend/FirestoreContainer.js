@@ -9,10 +9,6 @@ import NotLoaded from './NotLoaded';
 
 import loadedValue from './loadedValue';
 
-const MergeTrue = Object.freeze({ merge: true });
-const EmptyArray = Object.freeze([]);
-const EmptyObject = Object.freeze({});
-
 export default class FirestoreContainer {
   SelectorFunctions = {
     // this.constructor.loadFromIds(cohortIds, 'cohortId', this.getCohort, )

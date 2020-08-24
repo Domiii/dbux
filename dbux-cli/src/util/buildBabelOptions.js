@@ -2,6 +2,7 @@ import process from 'process';
 import dbuxBabelPlugin from '@dbux/babel-plugin';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import defaultsDeep from 'lodash/defaultsDeep';
+import colors from 'colors/safe';
 
 // sanity check: make sure, some core stuff is loaded and working before starting instrumentation
 // import '@babel/preset-env';
@@ -9,6 +10,20 @@ import defaultsDeep from 'lodash/defaultsDeep';
 
 // import buildDefaultBabelOptions from './defaultBabelOptions';
 const baseBabelOptions = require('../../.babelrc');
+
+function debugLog(...args) {
+  console.log(colors.gray(args.join(' ')));
+  // if (args.length > 1) {
+  //   const [arg0, ...moreArgs] = args;
+
+  //   const gray = '\x1b[2m';
+  //   const reset = '\x1b[0m';
+  //   console.log(`${gray}${arg0}`, ...moreArgs, reset);
+  // }
+  // else {
+  //   console.log();
+  // }
+}
 
 export default function buildBabelOptions(options) {
   process.env.BABEL_DISABLE_CACHE = 1;
@@ -42,17 +57,17 @@ export default function buildBabelOptions(options) {
         if (!modulePath) {
           return undefined;
         }
-        
+
         // no node_modules
         if (modulePath.match('(node_modules)|(dist)')) {
-          verbose > 1 && console.debug(`[DBUX] no-register`, modulePath);
+          verbose > 1 && debugLog(`[DBUX] no-register`, modulePath);
           return true;
         }
 
         modulePath = modulePath.toLowerCase();
 
         const ignore = false;
-        verbose && console.debug(`[DBUX] REGISTER`, modulePath);
+        verbose && debugLog(`[DBUX] REGISTER`, modulePath);
         return ignore;
       }
     ]

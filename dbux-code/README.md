@@ -17,14 +17,16 @@ You can one-click install the plugin from the [VSCode marketplace](https://marke
 
 # Usage
 
-In order to get started, you probably want to use the "Run with Dbux" button.
+In order to get started, you probably want to use the "Run with Dbux" button on some JavaScript program.
 
 Once your program has run, you can analyze it in great detail, as described below.
 
 If you have a build pipeline, and cannot just run it via `node myProgram.js`, refer to "[Adding Dbux to your build pipeline](../#adding-dbux-to-your-build-pipeline)".
 
+Dbux is not perfect. You might want to read up on [known limitations](../#known-limitations).
 
-##  "Run with Dbux" and "Debug with Dbux"
+
+## "Run with Dbux" and "Debug with Dbux"
 
 * The "Run with Dbux" button is the easiest way to get started with Dbux
    * It is located in multiple places:
@@ -32,15 +34,15 @@ If you have a build pipeline, and cannot just run it via `node myProgram.js`, re
       1. In the Dbux view container at the top of the "Applications" view
          * NOTE: You have to move mouse over it to see it. That's a VSCode limitation.
       1. In the Dbux view container at the top of the "Trace Details" view
-         * (same asterisk applies)
-   * The button calls the "*Dbux: Run current file*" command.
+         * NOTE: You have to move mouse over it to see it. That's a VSCode limitation.
+   * The button calls the "*Dbux: Run current file*" command (which you can keybind if you want)
 * The "Debug with Dbux" button does the same thing as the Run button but with `--inspect-brk` enabled.
    * Make sure to turn on VSCode's Auto Attach for this.
-   * For more information, consult [the official manual on "Node.js debugging in VS Code"](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
+   * For more information on VSCVode debugging, consult [the official manual on "Node.js debugging in VS Code"](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
 
 ### How the Run + Debug buttons work
 
-* When you click either button (or use the "*Dbux: Run current file*" command), what happens is: [@dbux/cli](../dbux-cli) runs the currently open JS file (with the [@dbux/runtime](../dbux-runtime) injected), tracing and recording runtime information as it executes.
+* When you click either button (or use the "*Dbux: Run/Debug current file*" commands), what happens is: [@dbux/cli](../dbux-cli) runs the currently open JS file (with the [@dbux/runtime](../dbux-runtime) injected), tracing and recording runtime information as it executes.
 * You can configure both buttons in your workspace or user settings. See [Configuration](#configuration) for more details.
 * NOTE: Dbux architectural details are explained [here](../#dbux-architecture).
 
@@ -49,19 +51,6 @@ If you have a build pipeline, and cannot just run it via `node myProgram.js`, re
 # Analyzing our program's Runtime
 
 This extension provides the following visual aids and interactions to engage in JavaScript runtime analysis:
-
-
-## Code decorations
-
-* Code that you ran with Dbux will be rendered with decorations.
-* These decorations allow us to better understand which parts of the code actually executed.
-* You can toggle these decorations via the `Dbux: Hide Decorations` and `Dbux: Show Decorations` commands.
-
-Examples:
-
-* In this buggy code, we find that line 6 never executed, just by looking at the code decorations:
-   ![code-deco1](../docs/img/code-deco1.png)
-
 
 ## Applications
 
@@ -72,11 +61,26 @@ The "Applications" view is at the top of the Dbux view.
    * Executions of the same entry point file will be grouped together, and replace one another, when a new execution comes along.
 * You can click an application to enable/disable it.
    * Disabled applications will not be visible to inspection. Only enabled applications:
-      1. Allow [trace selection](#trace-selection)
       1. Render [code decorations](#code-decorations)
+      1. Allow [trace selection](#trace-selection)
       1. Show up in the [Call Graph](#call-graph)
 * Activating multiple applications at once can be useful for full-stack debugging purposes.
    * When multiple applications are running at the same time, their Call Graphs will be (crudely) merged and can be viewed as one.
+
+
+## Code decorations
+
+* Code that you ran with Dbux will be rendered with decorations.
+* These decorations allow us to better understand which parts of the code actually executed.
+* You can toggle these decorations via the `Dbux: Hide Decorations` and `Dbux: Show Decorations` commands.
+* Some explanations:
+   * `f()`<span style="color:red">↱</span> is a *traced* function call: the function `f` is recorded and we can step into it
+   * `g()` <span style="color:gray">↱</span> is a library or native call: the function `g` is not recorded and we cannot step into it
+
+Examples:
+
+* In this buggy code, we find that line 6 never executed, just by looking at the code decorations:
+   ![code-deco1](../docs/img/code-deco1.png)
 
 
 ## Trace Selection
@@ -85,14 +89,14 @@ The "Applications" view is at the top of the Dbux view.
 
 * Code that has executed can be traced and analyzed (executed code is rendered with [code decorations](#code-decorations) (if enabled)).
 * To select a trace, place the keyboard cursor on executed code and then press the "Select Trace" button
-   * NOTE: Keywords like `if` and `return` cannot currently be selected, however their conditions/arguments etc can.
+   * NOTE: Keywords like `if` and `return` cannot currently be selected, however their conditions/arguments can.
 * Press repeatedly to select surrounding traces (as shown in the gif above).
 
 ## Trace Details
 
 Analyze and navigate through individual traces:
 
-### Trace Details: Navigation
+## Trace Details: Navigation
 
 Navigation allows you to step through all recorded traces (similar to but a lot more advanced than) the traditional debugger.
 
@@ -100,12 +104,12 @@ Navigation allows you to step through all recorded traces (similar to but a lot 
 
 TODO: short video
 
-Important: The buttons will only show up if you select them, or hover over them with the mouse (this is a VSCode limitation).
+Important: The buttons will only show up if you select them, or hover over them with the mouse (again, this is a VSCode limitation).
 
 Since we are not debugging in real-time, but work on a recoding of the actual execution, we can:
 
 1. step forward and also *backward* in time, meaning that all navigation modes exist twice (one forward, one backward).
-1. (to some extent) smart (not entirely stupid) steps
+1. (to some extent) take smart (i.e. not entirely stupid) steps
 
 Here are all the buttons:
 
@@ -120,19 +124,21 @@ Here are all the buttons:
    * Note that library or native calls <span style="color:gray">↱</span> are not traced and thus will be ignored by this button.
 * When pressed again, steps into that function.
 * NOTE: Things might be a bit off in case of [getters and setters](https://www.w3schools.com/js/js_object_accessors.asp)
-   * Since getters and setters don't have a clearly identifyable caller, they need a lot of extra work before they will be fully smoothed out.
+   * Since getters and setters don't have a clearly identifyable caller trace, they will need some more development work before they will be fully smoothed out.
 
 <img src="../dbux-code/resources/dark/previousInContext.png" title="previousInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextInContext.png" title="nextInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace in context`
 
-* Jump to previous "non-trivial" trace
+* Jump to previous/next "non-trivial" trace in context (function or file)
    * We use some basic heuristics to ignore some "trivial traces".
    * Ex1: In case of `a.b`, it will step to `a.b`, but it will not step to `a`.
-   * Ex2: In case of `b.f(1, 2);`, it will step straight to `b.f(x, y)`, and will ignore `b`, `b.f`, `x` and `y`, etc.
+   * Ex2: In case of `o.f(1, 2);`, it will step straight to `o.f(x, y)`, and will ignore `o`, `o.f`, `x` and `y` which are also all traced expressions, just a bit more "trivial" than the complete call expression.
+   * -> Stepping would be a lot of work, if would step through every single expression.
+   * (we internally call the type of these traces `ExpressionValue`)
 
 
 <img src="../dbux-code/resources/dark/previousStaticTrace.png" title="previousStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextStaticTrace.png" title="nextStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next execution of the same trace`
 
-* If a piece of code was executed multiple times (because a function was called multiple times, loops etc), this allows you to jump between the traces of those different executions.
+* If a piece of code was executed multiple times (because a function was called multiple times, or there is a loops etc), these buttons allow you to jump between the traces of those different executions.
 
 
 <img src="../dbux-code/resources/dark/leftArrow.png" title="previous" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/rightArrow.png" title="next" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace (unconditionally)`
@@ -143,43 +149,42 @@ Here are all the buttons:
 
 
 
-### Trace Details: Value
-
-![value](../docs/img/values.gif)
+## Trace Details: Value
 
 If your currently selected trace is an expression with a value other than `undefined`, that value will be rendered here.
 
-You can inspect a value by clicking on it.
+You can open a detailed view by clicking on the "Value" node.
 
 NOTE: You might want to read up on [value limitations and problems](
 ../#problems-with-values).
 
+![value](../docs/img/values.gif)
 
-### Trace Details: Object traces
 
-* Non-primitive values are tracked and correlated via a `Map`, meaning that any value that occurs anywhere in your program can be tracked throughout the program.
-* All non-primitive traces that have the same value ("sameness" defined by the JS built-in `Map`) can be looked up this way.
+## Trace Details: Object traces
 
-This allows us find any occurence of an object and its evolution throughout the execution of the program, like in the example below:
+This feature lists all occurences of an object and allows us to track its evolution throughout the execution of the program, like in the example below.
+
+All traces of values that are equal to the any non-primitive value of the currently selected trace ("equal" as defined by [JavaScript's built-in `Map`'s key equality algorithm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Key_equality)) are listed here.
 
 ![object traces](../docs/img/object-traces.gif)
 
 
-### Trace Details: Trace Executions
+## Trace Details: Trace Executions
 
-* This lists the values of all executions of the currently selected trace.
-* Since this can be a lot of traces, we currently provide a few crude grouping methods.
-
-(Dev note: Internally we use the name `staticTrace` to represent a piece of code, and the name `trace` for each execution of said code; meaning that one `staticTrace` has 0 or more `traces`. Here, `Trace Executions` lists all `traces` of the same `staticTrace`.)
-
-
+* This lists the values of all executions of the currently selected trace's "piece of code".
+* Since this can be a lot of traces, we provide a few (currently still rather crude) grouping methods:
+   * 
+* Dev note: Internally we use (i) the name `staticTrace` to represent a piece of code, and (ii) the name `trace` for each execution of said code; meaning that one `staticTrace` has 0 or more `traces`. Here, `Trace Executions` lists all `traces` of the same `staticTrace`.
 
 
-### Trace Details: Nearby Values
+
+
+## Trace Details: Nearby Values
 
 TODO
 
-### Trace Details: Debug
+## Trace Details: Debug
 
 Shows raw data related to the selected trace.
 
@@ -191,31 +196,31 @@ Bird's Eye overview over all executed files and functions.
 
 TODO
 
-### Call Graph: Visualization
+## Call Graph: Visualization
 
 TODO: Run + Context nodes
 
-### Call Graph: pause (pause/resume live updates)
+## Call Graph: pause (pause/resume live updates)
 
 TODO
 
-### Call Graph: clear (show/hide already recorded traces)
+## Call Graph: clear (show/hide already recorded traces)
 
 TODO
 
-### Call Graph: sync (toggle sync mode)
+## Call Graph: sync (toggle sync mode)
 
 TODO
 
-### Call Graph: loc (show/hide locations)
+## Call Graph: loc (show/hide locations)
 
 TODO
 
-### Call Graph: call (show/hide caller trace)
+## Call Graph: call (show/hide caller trace)
 
 TODO
 
-### Call Graph: Search
+## Call Graph: Search
 
 TODO
 
