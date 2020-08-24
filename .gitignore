@@ -1,4 +1,5 @@
 # application
+.secret
 /dbux_projects
 /projects
 __samplesOutput__

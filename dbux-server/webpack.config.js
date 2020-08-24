@@ -11,7 +11,7 @@ const {
   makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
-} = require('./lib/package-util');
+} = require('../dbux-cli/lib/package-util');
 
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
@@ -57,10 +57,7 @@ module.exports = (env, argv) => {
 
 
   const dependencyPaths = [
-    // "dbux-cli",
-    // "dbux-common",
-    // "dbux-runtime",
-    "dbux-babel-plugin"
+    "dbux-common"
   ];
 
 
@@ -87,7 +84,7 @@ module.exports = (env, argv) => {
     }
   ];
 
-  const inputFiles = 'src/{,commands/,util/}*.js';
+  const inputFiles = 'src/index.js';
   const entry = {
     // see https://stackoverflow.com/questions/34907999/best-way-to-have-all-files-in-a-directory-be-entry-points-in-webpack
 
@@ -105,6 +102,10 @@ module.exports = (env, argv) => {
 
 
   return {
+    watchOptions: {
+      poll: true,
+      ignored: /node_modules/
+    },
     // https://github.com/webpack/webpack/issues/2145
     mode,
     // devtool: 'inline-module-source-map',
@@ -118,7 +119,7 @@ module.exports = (env, argv) => {
       path: path.join(projectRoot, outputFolderName),
       filename: '[name].js',
       publicPath: outputFolderName,
-      libraryTarget: "umd", // probably want commonjs instead
+      libraryTarget: "commonjs",
       devtoolModuleFilenameTemplate: "../[resource-path]",
       // sourceMapFilename: outFile + ".map"
     },
