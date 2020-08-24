@@ -84,8 +84,8 @@ Main considerations include:
    * Instead of recording *everything*, we might want to be able to choose what to record, and when.
    * For example: Dbux probably won't really work at all if you run it on a 30+FPS game.
       * In that case, we might want to be very strategic in telling Dbux to only record: (i) initialization, (ii) a select few other functions and then (iii) several frames of the gameloop for our analysis.
-   * Currently, we do not have such fine-grained control over Dbux.
-   * Tracked in #219
+   * However, Dbux does not currently have such fine-grained control over the recording process.
+   * Tracked in issue#219
 * When running a program with Dbux enabled, and also running it in debug mode (i.e. `--inspect` or `--inspect-brk`), things probably slow down even worse. Consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features unless there is a specific Debugger functionality that Dbux cannot compete with (of which arguably there might be a few, that are valuable in some circumstances).
 
 
@@ -244,25 +244,21 @@ A few more notes on the Call Graph GUI implementation:
 
 Terminology regarding the JavaScript runtime is either not well defined in general, or we have just not yet spent enough time finding all the definitions. That is why we try to explain some of the terminology that we came up with here (feel free to help us improve):
 
-## Trace
+<span id="#trace"></span>
 
-TODO
+## Trace and Static Trace
 
-## Context
+We use (i) the name `staticTrace` to represent a piece of code (e.g. a s), and (ii) the name `trace` for each execution of said code; meaning that one `staticTrace` (piece of code) has 0 or more `traces` (executions).
 
-TODO
+<span id="#context"></span>
 
-* aka `executionContext`
+## Context and Static Context
 
-(can probably also be called a "frame"?)
-
-## Static trace
-
-TODO: `staticTrace`
-
-## Static context
-
-TODO: `staticContext`
+* A `static context` can be a `function` declaration or a `Program` (`Program` is Babel's word for "JavaScript file"). A `context` (sometimes also called `executionContext`) is any execution of such function or Program.
+* In many ways, a `context` can also be considered a "stack frame" (or `frame` in short).
+   * (That idea only came to us later, and that is why we are not currently using this terminology.)
+* TODO: explain how this works for `async function`s
+* JavaScript implementation note: While functions can be executed many times, JavaScript files usually only execute once, that is the first time they are `require`'d or `import`'ed. After that first time their `exports` are cached, and returned to any following caller of `require` or `import`. That is why you will only see a single trace in the file scope, even if you require them many times.
 
 ## Run
 
@@ -270,8 +266,9 @@ A "run" is an invocation of code from outside our visible (recorded) runtime. Ex
 
 * Execution of a JavaScript file (often called by `node` or by the webpack bundle (which in turn is called by the underlying JS runtime environment)).
 * Browser executing JavaScript of a &lt;script> tag
-* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick` etc. These callbacks are scheduled and then run by the underlying JS runtime environment.
+* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick` and even `Promise.then`. These callbacks are (usually) scheduled and then, at a later point in time, executed by the underlying JS runtime environment.
 * DOM event handler callbacks
+* and probably more...
 
 The set of all runs comprise the "root nodes" of our Call Graph.
 

@@ -98,7 +98,7 @@ Analyze and navigate through individual traces:
 
 ## Trace Details: Navigation
 
-Navigation allows you to step through all recorded traces (similar to but a lot more advanced than) the traditional debugger.
+Navigation allows you to step through all recorded traces (similar to but a lot more advanced than) the traditional debugger by changing the "currently selected trace".
 
 ![navigation](../docs/img/nav1.png)
 
@@ -106,111 +106,169 @@ TODO: short video
 
 Important: The buttons will only show up if you select them, or hover over them with the mouse (again, this is a VSCode limitation).
 
-Since we are not debugging in real-time, but work on a recoding of the actual execution, we can:
+Note that we are not debugging in real-time, but work on a recoding of the actual execution, we can:
 
 1. step forward and also *backward* in time, meaning that all navigation modes exist twice (one forward, one backward).
-1. (to some extent) take smart (i.e. not entirely stupid) steps
+1. more easily (to some extent) take smarter (i.e. slightly less stupid) steps than the default debugger
 
 Here are all the buttons:
 
-<img src="../dbux-code/resources/dark/previousParentContext.png" title="previousParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextParentContext.png" title="nextParentContext" style="max-width: 24px; vertical-align: middle; background-color: #222">  `Go to start/end of context`
+<img src="../dbux-code/resources/dark/previousParentContext.png" title="previousParentContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="../dbux-code/resources/dark/nextParentContext.png" title="nextParentContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A">  `Go to start/end of context`
 
-* Jump to the start/end of the current context (function or file)
+* Jump to the start/end of the current [context](../#context) (function or file)
 * When pressed again, steps out to caller (or in "call graph" lingo: to the "parent")
 
-<img src="../dbux-code/resources/dark/previousChildContext.png" title="previousChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextChildContext.png" title="nextChildContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next function call in context`
+<img src="../dbux-code/resources/dark/previousChildContext.png" title="previousChildContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="../dbux-code/resources/dark/nextChildContext.png" title="nextChildContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next function call in context`
 
 * Jump to previous/next *traced* function call <span style="color:red">↱</span> before/after the currently selected trace.
    * Note that library or native calls <span style="color:gray">↱</span> are not traced and thus will be ignored by this button.
-* When pressed again, steps into that function.
+* When pressed again, steps into that function ([context](../#context)).
 * NOTE: Things might be a bit off in case of [getters and setters](https://www.w3schools.com/js/js_object_accessors.asp)
    * Since getters and setters don't have a clearly identifyable caller trace, they will need some more development work before they will be fully smoothed out.
+   * Getters and setters work, but navigation is a bit less intuitive.
 
-<img src="../dbux-code/resources/dark/previousInContext.png" title="previousInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextInContext.png" title="nextInContext" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace in context`
+<img src="../dbux-code/resources/dark/previousInContext.png" title="previousInContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="../dbux-code/resources/dark/nextInContext.png" title="nextInContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next trace in context`
 
-* Jump to previous/next "non-trivial" trace in context (function or file)
-   * We use some basic heuristics to ignore some "trivial traces".
+* Jump to previous/next "non-trivial" trace in [context](../#context) (function or file)
+* Stepping would be a lot of work, if would step through every single expression.
+* That is why Dbux uses some basic heuristics to ignore some of the more "trivial traces".
    * Ex1: In case of `a.b`, it will step to `a.b`, but it will not step to `a`.
-   * Ex2: In case of `o.f(1, 2);`, it will step straight to `o.f(x, y)`, and will ignore `o`, `o.f`, `x` and `y` which are also all traced expressions, just a bit more "trivial" than the complete call expression.
-   * -> Stepping would be a lot of work, if would step through every single expression.
-   * (we internally call the type of these traces `ExpressionValue`)
+   * Ex2: In case of `o.f(x, y);`, it will step straight to `o.f(x, y)`, and will ignore `o`, `o.f`, `x` and `y` (all four of which are also all traced expressions, just a bit more "trivial" than the call expression itself).
+* (Dev note: we internally determine "trivial traces" as traces of `TraceType.ExpressionValue`.)
 
 
-<img src="../dbux-code/resources/dark/previousStaticTrace.png" title="previousStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/nextStaticTrace.png" title="nextStaticTrace" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next execution of the same trace`
+<img src="../dbux-code/resources/dark/previousStaticTrace.png" title="previousStaticTrace" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="../dbux-code/resources/dark/nextStaticTrace.png" title="nextStaticTrace" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next execution of the same trace`
 
-* If a piece of code was executed multiple times (because a function was called multiple times, or there is a loops etc), these buttons allow you to jump between the traces of those different executions.
+* If a piece of code was executed multiple times (because a function was called multiple times, or there is a loop etc), these buttons allow you to jump between the traces of those different executions.
 
 
-<img src="../dbux-code/resources/dark/leftArrow.png" title="previous" style="max-width: 24px; vertical-align: middle; background-color: #222"> <img src="../dbux-code/resources/dark/rightArrow.png" title="next" style="max-width: 24px; vertical-align: middle; background-color: #222"> `Go to previous/next trace (unconditionally)`
+<img src="../dbux-code/resources/dark/leftArrow.png" title="previous" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="../dbux-code/resources/dark/rightArrow.png" title="next" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next trace (unconditionally)`
 
-* Go to previous/next trace, no matter what.
+* Go to previous/next trace, no matter what. This navigation method does not filter out "trivial traces", and it also moves in and out of contexts, if that is where the previous/next trace is.
 * These buttons provide the most granular navigation option.
-* Use it if you want to understand what exactly happened, as these buttons will follow the exact control flow of your program, visiting every expression and statement, not ignoring anything.
+* Recommendation:
+   * Use these buttons if you want to understand what exactly happened, as these buttons will follow the exact control flow of your program, visiting every expression and statement, not ignoring anything.
+   * Only use these buttons for short distances, as there is usually a lot of trivial traces to step through.
 
 
 
 ## Trace Details: Value
 
-If your currently selected trace is an expression with a value other than `undefined`, that value will be rendered here.
-
-You can open a detailed view by clicking on the "Value" node.
-
-NOTE: You might want to read up on [value limitations and problems](
-../#problems-with-values).
+* If your currently selected trace is an expression with a value that is *not* `undefined`, that value will be rendered here.
+* You can investigate further by clicking on the "Value" node.
 
 ![value](../docs/img/values.gif)
 
+**Further reading**
 
-## Trace Details: Object traces
+* You might want to read up on Dbux's [value limitations and problems](../#problems-with-values).
+* [Javascript: difference between a statement and an expression?](https://stackoverflow.com/questions/12703214/javascript-difference-between-a-statement-and-an-expression)
 
-This feature lists all occurences of an object and allows us to track its evolution throughout the execution of the program, like in the example below.
 
-All traces of values that are equal to the any non-primitive value of the currently selected trace ("equal" as defined by [JavaScript's built-in `Map`'s key equality algorithm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Key_equality)) are listed here.
+## Trace Details: Object Traces
+
+`Object Traces` lists all occurences of an object and allows us to track its evolution throughout the execution of the application, like in the example below.
+
+Specifically: if the currently selected trace's value is an object (or non-primitive), `Object Traces` will list all traces of values that are equal to that value ("equal" as defined by [JavaScript's built-in `Map`'s key equality algorithm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Key_equality)).
 
 ![object traces](../docs/img/object-traces.gif)
 
 
 ## Trace Details: Trace Executions
 
-* This lists the values of all executions of the currently selected trace's "piece of code".
-* Since this can be a lot of traces, we provide a few (currently still rather crude) grouping methods:
-   * 
-* Dev note: Internally we use (i) the name `staticTrace` to represent a piece of code, and (ii) the name `trace` for each execution of said code; meaning that one `staticTrace` has 0 or more `traces`. Here, `Trace Executions` lists all `traces` of the same `staticTrace`.
+`Trace Eexecutions` lists the values of all executions of the currently selected "piece of code".
 
+E.g. if you currently selected some trace `f(x)`, then you would see all executions (and their values) of `f(x)` here.
 
+You can select (jump to) any trace inside of this list by clicking on it.
+
+Since this can be a lot of traces, we provide a few (currently still rather crude) grouping methods (as seen in the gif below).
+
+Terminology Hint: Dbux internally uses (i) the name `staticTrace` to represent a piece of code, and (ii) the name `trace` for each execution of such code; meaning that one `staticTrace` (piece of code) has 0 or more `traces` (executions).
+* So, in other words, `Trace Executions` lists all `traces` of the currently selected `trace`'s `staticTrace`.
+* [Read more on Dbux terminology here](../#terminology)
+
+TODO: hof1.js
+
+![trace executions](../docs/img/trace-executions.gif)
 
 
 ## Trace Details: Nearby Values
 
-TODO
+Currently, `Nearby Values` lists *all* traces of the current [context](../#context) (function or file) that are expressions and whose value is not `undefined`.
+
+You can select (jump to) any trace inside of this list by clicking on it.
+
+NOTE: Basic grouping for this feature is tracked [here](https://github.com/Domiii/dbux/issues/264).
+
+**Recommendations**
+
+* This is very useful to decipher complex one-liners (see screen grab below)
+
+![nearby values](../docs/img/nearby-values.png)
 
 ## Trace Details: Debug
 
-Shows raw data related to the selected trace.
+This renders raw data related to the selected trace.
 
-This is generally only useful for people who want to contribute to Dbux or are otherwise interested in analyzing raw JS runtime data.
+This is generally only useful for contributors, the very curious or those who work on JS dynamic runtime data analysis.
 
-## Call Graph
+## <img src="../dbux-code/resources/dark/call-graph.png" title="call graph" style="max-height: 2em; vertical-align: middle; background-color: #1A1A1A"> Call Graph
 
-Bird's Eye overview over all executed files and functions.
+<span id="call-graph"></span>
 
-TODO
+The <img src="../dbux-code/resources/dark/call-graph.png" title="call graph" style="max-height: 1.2rem; vertical-align: middle; background-color: #1A1A1A"> call graph renders a bird's eye overview over all executed files and functions.
+
+As an analogy, I would say that the call graph is like (a rather crude) "Google Maps" while the [trace details view](#trace-details) is (a rather crude) "Google Street View" of your application's execution. Together they offer a multi-resolutional interactive tool to see and find everything that is going on in your application.
+
 
 ## Call Graph: Visualization
 
-TODO: Run + Context nodes
+The call graph renders a linear timeline of your JavaScript application in the vertical dimension.
+
+The horizontal dimension grows with execution depth.
+
+At the outer most level, you see individual "Run" nodes.
+* see [Terminology: Run](../#run)
+
+Each run contains all (visible/recorded) context sub trees, that is invocations of traced functions and files
+* see [Terminology: Context](../#context)
+
+Call graph visualizations have many uses. Examples include:
+
+* The call graph can largely improve our understanding of the complex system that is our applications.
+* The call graph can help us quickly identify points of interests in code that is not our own.
+* Sometimes, the call graph visualization leads to mesmerizing revelations.
+* The call graph can really help understand recursion trees, like in the example below:
+
+TODO: fibonacci1.js
+
+![call graph: fibonacci1](../docs/img/call-graph-fib1.gif)
 
 ## Call Graph: pause (pause/resume live updates)
 
-TODO
+* Dbux keeps recording and rendering all code execution in real-time, as long as an application (or website) is running.
+* During analysis, once we have recorded the bug, we might not be interested in further updates.
+* Use the 🔴 button to pause/resume the rendering of new incoming data, so we can focus on what we already have.
+   * NOTE: You might be tempted into thinking that pausing with this button will stop all recording, however that is not what happens. Currently, Dbux keeps on recording for as long as the application is running. This button only hides that new data behind a single "Hidden Node". That inability to completely pause recording, can make things very slow and thus making debugging of games and other kinds of high performance applications very difficult. [You can read more about performance considerations here](../#performance).
+
 
 ## Call Graph: clear (show/hide already recorded traces)
 
-TODO
+* `clear` is useful when investigating a bug that does not appear immediately, or is not part of the initialization routine.
+* For example, when investigating a bug that happens after pressing some button in your application, you can:
+   1. wait for the application to finish initialization and for the "buggy button" to show up
+   1. press `clear`
+   1. press the buggy button
+   1. (if necessary) wait until the bug occurs
+   1. press 🔴 (pause).
+   * -> This lets you completely isolate the code that was executed when clicking that button, render only the relevant sub graph, while removing (hiding) all kinds of unrelated clutter.
+
 
 ## Call Graph: sync (toggle sync mode)
 
-TODO
+* `sync` mode makes sure that while you select traces in and navigate through your code, the selected trace's context is always automatically expanded and in clear sight.
+
 
 ## Call Graph: loc (show/hide locations)
 
