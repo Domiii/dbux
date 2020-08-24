@@ -3,17 +3,20 @@ import PracticeSessionState from './PracticeSessionState';
 
 /** @typedef {import('../projectLib/Project').default} Project */
 /** @typedef {import('../projectLib/Bug').default} Bug */
+/** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
 export default class PracticeSession {
   /**
    * A PracticeSession contains the information that user solving a bug of project.
    * @param {Project} project 
    * @param {Bug} bug 
+   * @param {ProjectsManager} 
    */
-  constructor(project, bug) {
+  constructor(project, bug, manager) {
     this._stopwatch = new Stopwatch();
     this.project = project;
     this.bug = bug;
+    this.manager = manager;
     this.state = PracticeSessionState.Activating;
   }
 
@@ -27,6 +30,15 @@ export default class PracticeSession {
 
   startStopwatch() {
     this._stopwatch.start();
+    this.manager.externals.stopwatch.start();
+  }
+
+  showStopwatch() {
+    this.manager.externals.stopwatch.show();
+  }
+
+  hideStopwatch() {
+    this.manager.externals.stopwatch.hide();
   }
 
   /**
@@ -34,6 +46,7 @@ export default class PracticeSession {
    */
   setStopwatch(time) {
     this._stopwatch.set(time);
+    this.manager.externals.stopwatch.set(time);
   }
 
   /**
@@ -41,6 +54,7 @@ export default class PracticeSession {
    */
   stopStopwatch() {
     this._stopwatch.pause();
+    this.manager.externals.stopwatch.stop();
     return this._stopwatch.time;
   }
 }

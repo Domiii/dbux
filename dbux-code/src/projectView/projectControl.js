@@ -11,6 +11,7 @@ import { getResourcePath } from '../resources';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { showBugIntroduction } from './BugIntroduction';
+import { getStopwatch } from './practiceStopwatch';
 
 /** @typedef {import('@dbux/projects/src').ProjectsManager} ProjectsManager */
 
@@ -61,6 +62,7 @@ function createProjectManager(extensionContext) {
   //   path.join(process.env.DBUX_ROOT, '..', 'dbux_projects');
 
   const projectsRoot = path.join(dependencyRoot, 'dbux_projects');
+  const stopwatch = getStopwatch();
 
   const cfg = {
     dependencyRoot,
@@ -96,6 +98,13 @@ function createProjectManager(extensionContext) {
     showMessage: {
       info: showInformationMessage,
       warning: showWarningMessage,
+    },
+    stopwatch: {
+      start: stopwatch.start.bind(stopwatch),
+      stop: stopwatch.pause.bind(stopwatch),
+      set: stopwatch.set.bind(stopwatch),
+      show: stopwatch.show.bind(stopwatch),
+      hide: stopwatch.hide.bind(stopwatch)
     },
     WebviewWrapper,
     showBugIntroduction,

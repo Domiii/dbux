@@ -13,7 +13,7 @@ export default class PracticeStopwatch {
     // statusBarItem
     this.barItem = window.createStatusBarItem(StatusBarAlignment.Right);
     this.barItem.hide();
-    this.barItem.text = `$(watch) ${this.time}`;
+    this.barItem.text = `$(watch) ${this.timeString}`;
   }
 
   get timeString() {
@@ -35,7 +35,7 @@ export default class PracticeStopwatch {
       this.time = this.timeOffset + (performance.now() - startTime);
       this.barItem.text = `$(watch) ${this.timeString}`;
     }, this.refreshInterval);
-    this.barItem.show();
+    this.show();
   }
 
   pause() {
@@ -44,14 +44,36 @@ export default class PracticeStopwatch {
     this.timeOffset = this.time;
   }
 
+  set(time) {
+    if (this.intervalId) {
+      throw new Error('Trying to set timer when running');
+    }
+    this.time = time;
+    this._timeOffset = time;
+  }
+
+  show() {
+    this.barItem.show();
+  }
+
   hide() {
     this.barItem.hide();
   }
 
-  registOnClick(context, cb) {
+  onClick(context, cb) {
     const commandName = `dbuxProjectView.stopWatch.${this.name}.onClick`;
     this.barItem.command = commandName;
     this.command?.dispose();
     this.command = registerCommand(context, commandName, cb);
   }
+}
+
+let stopwatch;
+
+export function getStopwatch() {
+  if (!stopwatch) {
+    stopwatch = new PracticeStopwatch('practice');
+  }
+
+  return stopwatch;
 }

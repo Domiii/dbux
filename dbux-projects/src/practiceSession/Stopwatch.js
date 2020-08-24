@@ -25,10 +25,10 @@ export default class Stopwatch {
 
   start() {
     if (!this.isTiming) {
+      Verbose && debug(`Stopwatch started: time = ${this.time}`);
       this._timeOffset = performance.now();
       this.isTiming = true;
       this._emitter.emit('start', this.time);
-      Verbose && debug(`Stopwatch started: time = ${this.time}`);
     }
   }
 

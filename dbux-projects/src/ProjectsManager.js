@@ -119,7 +119,7 @@ export default class ProjectsManager {
         }
         else {
           // some test failed
-          this.externals.alert(`[Dbux] ${result} test(s) failed. Try again!`);
+          this.externals.alert(`[Dbux] ${result.code} test(s) failed. Try again!`);
           await bug.openInEditor();
         }
       }
@@ -146,7 +146,7 @@ export default class ProjectsManager {
         + `[WARN] You will not be able to time this bug once you activate it.`;
       const confirmResult = await this.externals.confirm(confirmMsg, true);
       if (confirmResult) {
-        this._createPracticeSession(bug, debugMode);
+        this.practiceSession = await this._createPracticeSession(bug, debugMode);
       }
       else if (!bugProgress) {
         this.progressLogController.util.addNewBugProgress(bug, BugStatus.ActivatedWithoutTimer);
@@ -184,22 +184,24 @@ export default class ProjectsManager {
     let bugProgress = this.progressLogController.util.getBugProgressByBug(bug);
     if (!bugProgress) {
       bugProgress = this.progressLogController.util.addNewBugProgress(bug, BugStatus.Solving);
+      await this.progressLogController.save();
     }
     else if (BugStatus.is.ActivatedWithoutTimer(bugProgress.status)) {
       throw new Error('Trying to create practiceSession without timer enabled');
     }
 
     const { project } = bug;
-    const practiceSession = new PracticeSession(project, bug);
+    const practiceSession = new PracticeSession(project, bug, this);
     practiceSession.setState(PracticeSessionState.Activating);
+    practiceSession.setStopwatch(bugProgress.timePassed);
+    practiceSession.showStopwatch();
 
     // activate once to show user the bug, don't care about the result
     await this._activateBug(bug, debugMode);
 
     practiceSession.setState(PracticeSessionState.Solving);
 
-    practiceSession.setStopwatch(bugProgress.timePassed);
-    this.practiceSession.startStopwatch();
+    practiceSession.startStopwatch();
 
     return practiceSession;
   }
@@ -213,6 +215,7 @@ export default class ProjectsManager {
     }
 
     const timePassed = this.practiceSession.stopStopwatch();
+    this.practiceSession.hideStopwatch();
 
     const { bug } = this.practiceSession;
     const update = { timePassed };
@@ -249,8 +252,8 @@ export default class ProjectsManager {
         await this.applyNewBugPatch(bug);
       } catch (err) {
         const keepRunning = await this.externals.showMessage.warning(`Failed when applying previous progress of this bug.`, {
-          'Show diff in new tab and cancel': () => {
-            this.externals.editor.showTextInNewFile(`diff.diff`, err.patchString);
+          async 'Show diff in new tab and cancel'() {
+            await this.externals.editor.showTextInNewFile(`diff.diff`, err.patchString);
             return false;
           },
           'Ignore and keep running': () => {

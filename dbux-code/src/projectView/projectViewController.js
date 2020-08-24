@@ -1,15 +1,16 @@
-import { window, commands } from 'vscode';
+import { commands } from 'vscode';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import ProjectNodeProvider from './projectNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
-import PracticeStopwatch from './PracticeStopwatch';
+import { getStopwatch } from './practiceStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
 import { initRuntimeServer } from '../net/SocketServer';
 import { initProjectCommands } from '../commands/projectCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
+import { showInformationMessage } from '../codeUtil/codeModals';
 
 const showProjectViewKeyName = 'dbux.projectView.showing';
 
@@ -48,8 +49,8 @@ export class ProjectViewController {
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
 
-    this.practiceStopwatch = new PracticeStopwatch('practice');
-    this.practiceStopwatch.registOnClick(context, this.maybeStopWatch.bind(this));
+    this.practiceStopwatch = getStopwatch();
+    this.practiceStopwatch.onClick(context, this.maybeStopWatch.bind(this));
 
     // ########################################
     //  listen on runStatusChanged
@@ -109,23 +110,12 @@ export class ProjectViewController {
   // practice stopwatch
   // ###########################################################################
 
-  async maybeStartWatch() {
-    const result = await window.showInformationMessage('Do you want to start the timer?', { modal: true }, 'Yes');
-    if (result === 'Yes') {
-      this.practiceStopwatch.start();
-    }
-  }
-
   async maybeStopWatch() {
-    this.practiceStopwatch.pause();
-    const result = await window.showInformationMessage('Do you want to stop the timer?', { modal: true }, 'Stop');
-    if (result === 'Stop') {
-      // already pause, do nothing
-      this.practiceStopwatch.hide();
-    }
-    else {
-      this.practiceStopwatch.start();
-    }
+    await showInformationMessage('Stop practice?', {
+      Stop: async () => {
+        await this.manager.stopPracticeSession();
+      }
+    });
   }
 }
 
