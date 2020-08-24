@@ -1,0 +1,12 @@
+{
+  "name": "dbux-server",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "bin": {
+    "dbux": "./bin/dbux.js"
+  },
+  "main": "./dist/index.js",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
