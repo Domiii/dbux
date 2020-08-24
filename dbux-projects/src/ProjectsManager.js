@@ -143,8 +143,8 @@ export default class ProjectsManager {
     if (!bugProgress || BugStatus.is.None(bugProgress.status)) {
       // first time start it, ask to start timer
       const confirmMsg = `This is your first time activate this bug, do you want to start a timer?\n`
-        + `Warning: You will not be able to time this bug once you activate it.`;
-      const confirmResult = await this.externals.confirm(confirmMsg, false);
+        + `[WARN] You will not be able to time this bug once you activate it.`;
+      const confirmResult = await this.externals.confirm(confirmMsg, true);
       if (confirmResult) {
         this._createPracticeSession(bug, debugMode);
       }
