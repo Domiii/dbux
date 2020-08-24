@@ -63,11 +63,10 @@ class ContextNode extends ClientComponentEndpoint {
       traceId,
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
-      themeMode
     } = this.state;
-
+    
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},35%,${GraphThemeMode.is.Dark(themeMode) ? 30 : 95}%)`;
+    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},35%,${GraphThemeMode.is.Dark(this.context.themeMode) ? 30 : 95}%)`;
     // this.els.title.id = `name_${contextId}`;
     // this.els.nodeChildren.id = `children_${contextId}`;
     this.els.contextLabel.textContent = contextNameLabel;
@@ -76,7 +75,7 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
 
-    if (GraphThemeMode.is.Dark(themeMode)) {
+    if (GraphThemeMode.is.Dark(this.context.themeMode)) {
       decorateClasses(this.els.title, {
         'selected-trace-dark': isSelected
       });

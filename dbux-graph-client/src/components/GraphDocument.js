@@ -11,11 +11,10 @@ class GraphDocument extends ClientComponentEndpoint {
     return el;
   }
   update() {
-    const { themeMode } = this.state;
+    const { themeMode } = this.state; 
+    document.body.classList.remove('theme-mode-dark');
     if (GraphThemeMode.is.Dark(themeMode)) {
       document.body.classList.add('theme-mode-dark');
-    } else {
-      document.body.classList.remove('theme-mode-dark');
     }
   }
 }

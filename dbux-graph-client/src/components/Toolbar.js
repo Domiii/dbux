@@ -9,10 +9,9 @@ class Toolbar extends ClientComponentEndpoint {
   // createEl
   // ###########################################################################
   createEl() {
-    const themeMode = 'dark';
     // return compileHtmlElement(/*html*/`<div></div>`);
     return compileHtmlElement(/*html*/`
-      <nav class="navbar fixed-top navbar-expand-lg navbar-${themeMode} bg-${themeMode} no-padding" id="toolbar">
+      <nav class="navbar fixed-top navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <button title="Stop recording: Do not add new runs/traces" data-el="hideNewRunBtn" class="btn btn-info" href="#"></button>
           <button title="Clear: Hide all existing runs/traces" data-el="hideOldRunBtn" class="btn btn-info" href="#">x</button>
@@ -108,7 +107,6 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.searchBtn, {
       active: !!searchTerm
     });
-    ['navbar-dark', 'navbar-light', 'bg-dark', 'bg-light'].forEach(mode => this.el.classList.remove(mode));
     [`navbar-${themeModeName}`, `bg-${themeModeName}`].forEach(mode => this.el.classList.add(mode));
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
     this.els.hideNewRunBtn.innerHTML = `${hideNewMode ? '⚪' : '🔴'}`;
