@@ -3,7 +3,7 @@ function f(a) {
 }
 
 function F(x) {
-  console.log(f([x + 10, x + 20]) * f([x + 1, x + 2]));
+  console.log(f([x + 1, x + 2]) * f([x + 10, x + 20]));
 }
 
 (function main() {

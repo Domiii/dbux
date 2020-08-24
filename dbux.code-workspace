@@ -1,9 +1,9 @@
 {
 	"folders": [
-		{
-			"path": "."
-		}
-	],
+    {
+      "path": "."
+    }
+  ],
 	"settings": {
 		"codemetrics.basics.CodeLensHiddenUnder": 9,
 		"editor.tabSize": 2,

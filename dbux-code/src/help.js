@@ -6,13 +6,13 @@ export async function showHelp(message) {
     async 'Ask on Discord'() {
       env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
     },
-    async 'Open the Dbux Website'() {
+    async 'Open Manual'() {
       env.openExternal(Uri.parse('https://github.com/Domiii/dbux#readme'));
     },
-    async 'Read up on Dbux\'s known limitations'() {
+    async 'Read Dbux\'s known limitations'() {
       env.openExternal(Uri.parse('https://github.com/Domiii/dbux#known-limitations'));
     },
-    async [`Report Issue on Github`]() {
+    async [`Report Issue`]() {
       env.openExternal(Uri.parse('https://github.com/Domiii/dbux/issues'));
     }
   }, { modal: true });

@@ -190,7 +190,7 @@ export default class Project {
         }
       });
     }
-    
+
     return this.runner._exec(command, this.logger, options, input);
   }
 
@@ -494,7 +494,12 @@ export default class Project {
    */
   getOrLoadBugs() {
     if (!this._bugs) {
-      const arr = this.loadBugs();
+      let arr = this.loadBugs();
+      if (process.env.NODE_ENV === 'production') {
+        // NOTE: this is an immature feature
+        //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
+        arr = arr.slice(0, 1);
+      }
       this._bugs = new BugList(this, arr);
     }
     return this._bugs;
