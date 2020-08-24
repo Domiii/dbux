@@ -18,7 +18,7 @@ let GroupingMode = {
   Ungrouped: 1,
   ByRunId: 2,
   ByContextId: 3,
-  ByParentTraceId: 4,
+  ByCallerTraceId: 4,
   ByParentContextId: 5,
   ByCallback: 6
 };
@@ -27,7 +27,7 @@ GroupingMode = new Enum(GroupingMode);
 const GroupingModeLabel = new Map();
 GroupingModeLabel.set(GroupingMode.ByRunId, 'by Run');
 GroupingModeLabel.set(GroupingMode.ByContextId, 'by Context');
-GroupingModeLabel.set(GroupingMode.ByParentTraceId, 'by Parent Trace');
+GroupingModeLabel.set(GroupingMode.ByCallerTraceId, 'by Caller Trace');
 GroupingModeLabel.set(GroupingMode.ByParentContextId, 'by Parent Context');
 GroupingModeLabel.set(GroupingMode.ByCallback, 'by Callback');
 
@@ -67,20 +67,20 @@ const groupByMode = {
       });
     return groups.filter(group => !!group);
   },
-  [GroupingMode.ByParentTraceId](app, traces) {
-    const tracesByParent = [];
+  [GroupingMode.ByCallerTraceId](app, traces) {
+    const tracesByCaller = [];
     const dp = app.dataProvider;
     for (const trace of traces) {
       const { contextId } = trace;
-      const { parentTraceId = 0 } = dp.collections.executionContexts.getById(contextId);
-      if (!tracesByParent[parentTraceId]) tracesByParent[parentTraceId] = [];
-      tracesByParent[parentTraceId].push(trace);
+      const callerTraceId = dp.util.getCallerTraceOfContext(contextId)?.traceId || 0;
+      if (!tracesByCaller[callerTraceId]) tracesByCaller[callerTraceId] = [];
+      tracesByCaller[callerTraceId].push(trace);
     }
-    const groups = tracesByParent
-      .map((children, parentTraceId) => {
-        const trace = dp.collections.traces.getById(parentTraceId);
-        const label = trace ? makeTraceLabel(trace) : '(No Parent Trace)';
-        const description = `TraceId: ${parentTraceId}`;
+    const groups = tracesByCaller
+      .map((children, callerTraceId) => {
+        const trace = dp.collections.traces.getById(callerTraceId);
+        const label = trace ? makeTraceLabel(trace) : '(No Caller Trace)';
+        const description = `TraceId: ${callerTraceId}`;
         return { label, children, description };
       });
     return groups.filter(group => !!group);
