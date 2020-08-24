@@ -1,8 +1,6 @@
-
-
+NOTE: the important TODO items here need to be transcribed into Github issues over time
 
 ## TODO
-* (for now) hide projectView behind command
 * core instrumentation bugs
    * fix: call traces for getters are off
       * it's actually the next trace in context (if the getter did not error out)

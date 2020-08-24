@@ -1,12 +1,16 @@
-const allObjects = [];
+const rememberedObjects = [];
 
 class Object {
+  get name() {
+    return this.constructor.name;
+  }
+
   remember() {
-    allObjects.push(this);
+    rememberedObjects.push(this);
   }
   
   saySomething() {
-    console.log(this.constructor.name, 'say something');
+    console.log(this.name, 'smth');
   }
 }
 
@@ -25,5 +29,8 @@ o2.saySomething();
 o1.saySomething();
 o2.saySomething();
 o2.saySomething();
+o1.saySomething();
 o2.saySomething();
 o2.saySomething();
+
+console.log(rememberedObjects);

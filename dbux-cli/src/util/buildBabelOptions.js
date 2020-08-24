@@ -1,6 +1,7 @@
 import process from 'process';
 import dbuxBabelPlugin from '@dbux/babel-plugin';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import defaultsDeep from 'lodash/defaultsDeep';
 
 // sanity check: make sure, some core stuff is loaded and working before starting instrumentation
 // import '@babel/preset-env';
@@ -16,10 +17,14 @@ export default function buildBabelOptions(options) {
     esnext,
     dontInjectDbux,
     dontAddPresets,
-    dbuxOptions = {
-      _dbuxOptions1: 123
-    }
+    dbuxOptions: dbuxOptionsString,
+    verbose = 0
   } = options;
+
+  const dbuxOptions = dbuxOptionsString && JSON.parse(dbuxOptionsString) || undefined;
+  defaultsDeep(dbuxOptions || {}, {
+    verbose
+  });
 
   // if (process.env.NODE_ENV === 'development') {
   //   injectDependencies();
@@ -40,14 +45,14 @@ export default function buildBabelOptions(options) {
         
         // no node_modules
         if (modulePath.match('(node_modules)|(dist)')) {
-          // console.debug(`[DBUX] instrument IGNORE`, modulePath);
+          verbose > 1 && console.debug(`[DBUX] no-register`, modulePath);
           return true;
         }
 
         modulePath = modulePath.toLowerCase();
 
         const ignore = false;
-        // console.debug(`[DBUX] instrument`, modulePath);
+        verbose && console.debug(`[DBUX] REGISTER`, modulePath);
         return ignore;
       }
     ]

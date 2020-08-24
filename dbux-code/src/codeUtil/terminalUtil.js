@@ -32,18 +32,28 @@ export function sendCommandToDefaultTerminal(cwd, command) {
   return terminal;
 }
 
+// function bashParse(string) {
+//   return string.replace(/"/g, `\\"`).replace(/`/g, "\\`");
+// }
+
 export async function execCommand(cwd, command) {
   let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
   terminal?.dispose();
 
-  let pathToBash = await which('bash');
+  let pathToBash = (await which('bash'))[0];
+
+  // NOTE: `tail -f /dev/null` fails on Mac (but only in the integrated terminal) for some reason
+  // const stall = 'tail -f /dev/null';
+  const stall = 'sleep 100000';
 
   const terminalOptions = {
     name: DefaultTerminalName,
     cwd,
     shellPath: pathToBash,
-    shellArgs: [`-c`, `${command}; tail -f /dev/null;`],
+    shellArgs: [`-c`, `${command}; ${stall}`],
   };
+
+  // debug(`execCommandInTerminal: ${command}`);
 
   terminal = window.createTerminal(terminalOptions);
   terminal.show();

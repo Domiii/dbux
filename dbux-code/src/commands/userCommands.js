@@ -9,13 +9,14 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
-import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/CodeApplication';
+import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/codeExport';
 import { showGraphView, hideGraphView } from '../graphView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
 import { runFile } from './runCommands';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { showHelp } from '../help';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -115,7 +116,7 @@ export function initUserCommands(extensionContext) {
       applicationIdByLabel.set(label, app.applicationId);
     });
     if (!allSelectedApps.length) {
-      window.showInformationMessage('[Dbux] No application selected');
+      await window.showInformationMessage('[Dbux] No application selected');
       return;
     }
     const applicationName = await window.showQuickPick(labels, { placeHolder: 'Select an application' });
@@ -133,7 +134,7 @@ export function initUserCommands(extensionContext) {
     }
     const traceId = parseInt(userInput, 10);
     if (isNaN(traceId)) {
-      window.showErrorMessage(`Can't convert ${userInput} into integer`);
+      await window.showErrorMessage(`Can't convert ${userInput} into integer`);
       return;
     }
 
@@ -141,7 +142,7 @@ export function initUserCommands(extensionContext) {
     const dp = allApplications.getById(applicationId).dataProvider;
     const trace = dp.collections.traces.getById(traceId);
     if (!trace) {
-      window.showErrorMessage(`Can't find trace of traceId ${traceId} & applicationId ${applicationId}`);
+      await window.showErrorMessage(`Can't find trace of traceId ${traceId} & applicationId ${applicationId}`);
     }
     else {
       traceSelection.selectTrace(trace);
@@ -158,7 +159,6 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.runFile', () => runFile(extensionContext));
   registerCommand(extensionContext, 'dbux.debugFile', () => runFile(extensionContext, true));
 
-
   // ###########################################################################
   // practice backend
   // ###########################################################################
@@ -172,16 +172,16 @@ export function initUserCommands(extensionContext) {
   // system check
   // ###########################################################################
 
-  registerCommand(extensionContext, 'dbux.systemCheck', () => {
+  registerCommand(extensionContext, 'dbux.systemCheck', async () => {
     let projectManager = getOrCreateProjectManager(extensionContext);
-    checkSystem(projectManager, true, true);
+    await checkSystem(projectManager, true, true);
   });
 
   // ###########################################################################
   // open help website
   // ###########################################################################
 
-  registerCommand(extensionContext, 'dbux.openWebsite', () => {
-    env.openExternal(Uri.parse('https://github.com/Domiii/dbux#introduction'));
+  registerCommand(extensionContext, 'dbux.showHelp', async () => {
+    return showHelp();
   });
 }

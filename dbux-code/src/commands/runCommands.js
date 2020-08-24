@@ -17,14 +17,14 @@ const { log, debug, warn, error: logError } = logger;
  * @param {Object} env 
  */
 function parseEnv(env) {
-  let result = '--env=';
+  let result = '';
   let first = true;
   for (let key in env) {
     if (!first) result += ',';
     result += `${key}=${env[key]}`;
     first = false;
   }
-  return result;
+  return result ? ` --env=${result}` : '';
 }
 
 /**
@@ -35,17 +35,16 @@ function getArgs(debugMode) {
   const runMode = debugMode ? 'debug' : 'run';
   const config = workspace.getConfiguration('');
 
-  let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`);
-  // WARNING: for some reason, --enable-source-maps is very slow. Adding it when in debugger becomes unbearable (so we don't mix the two for now).
+  // WARNING: for some reason, --enable-source-maps is very slow with VSCode debugging recently. Adding it when in debugger becomes unbearable (so we don't mix the two for now).
   //          Must be a bug or misconfiguration somewhere.
   //          Angular has similar issues: https://github.com/angular/angular-cli/issues/5423
-  let enableSourceMaps = config.get(`dbux.${runMode}.enable-source-maps`) || !debugMode;
+
+  let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`);
   nodeArgs += debugMode ? ' --inspect-brk' : '';
-  nodeArgs += enableSourceMaps ? ' --enable-source-maps' : '';
 
   let dbuxArgs = config.get(`dbux.${runMode}.dbuxArgs`);
   let env = config.get(`dbux.${runMode}.env`);
-  dbuxArgs += ` ${parseEnv(env)}`;
+  dbuxArgs += `${parseEnv(env)}`;
 
   let programArgs = config.get(`dbux.${runMode}.programArgs`);
   if (programArgs) programArgs = ` ${programArgs}`;

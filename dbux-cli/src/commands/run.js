@@ -3,7 +3,7 @@
 import { wrapCommand } from '../util/commandUtil';
 import dbuxRegister from '../dbuxRegister';
 import { processEnv } from '../util/processEnv';
-import { buildCommonCommandOptions, resolveCommandTargetPath } from '../util/commandCommons';
+import { buildCommonCommandOptions, resolveCommandTargetPath } from '../commandCommons';
 
 export const command = 'run <file>';
 export const aliases = ['r'];
@@ -22,7 +22,7 @@ export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
   // dbuxRegister (injects babel + dbux)
   dbuxRegister(moreOptions);
 
-  // patch up argv: we are cheating, to make sure, argv can get processed as usual
+  // hackfix: patch up argv! We are cheating, to make sure, argv can get processed by the program as usual
   const programArgs = _.slice(1); //.map(arg => `"${arg}"`).join(' ');
   // console.warn('argv', process.argv);
   process.argv = [process.argv[0] /* node */, targetPath /* program */, ...programArgs];
@@ -32,6 +32,6 @@ export const handler = wrapCommand(({ file, _, ...moreOptions }) => {
 
   // see: https://stackoverflow.com/questions/42797313/webpack-dynamic-module-loader-by-requir
   // eslint-disable-next-line camelcase
-  const requireFunc = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require;
+  const requireFunc = typeof __non_webpack_require__ === "function" ? __non_webpack_require__ : require;
   requireFunc(targetPath);
 });

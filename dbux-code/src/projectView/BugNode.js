@@ -77,4 +77,8 @@ export default class BugNode extends BaseTreeViewNode {
       }
     }
   }
+
+  async showBugIntroduction() {
+    await this.bug.manager.externals.showBugIntroduction(this.bug);
+  }
 }

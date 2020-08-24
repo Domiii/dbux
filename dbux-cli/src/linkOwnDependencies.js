@@ -31,11 +31,13 @@ function linkOwnDependencies() {
 
   // NOTE: in webpack build, __dirname is actually dirname of the entry point
   // const DbuxCliRoot = path.resolve(__dirname, '..');
-  const DbuxCliRoot = __dirname.match(/(.*(?:dbux-cli|@dbux[\\/]cli))/)?.[1];
-  if (!DbuxCliRoot) {
+  const dbuxPathMatch = __dirname.match(/(.*?(dbux-cli|@dbux[\\/]cli))/);
+  const dbuxCliRoot = dbuxPathMatch?.[1];
+  const dbuxCliFolderName = dbuxPathMatch?.[2];
+  if (!dbuxCliRoot) {
     throw new Error(`Unable to find "@dbux/cli" directory in: ${__dirname}`);
   }
-  let pkg = readPackageJson(DbuxCliRoot);
+  let pkg = readPackageJson(dbuxCliRoot);
   const { dependencies } = pkg;
   let depNames = Object.keys(dependencies);
 
@@ -64,9 +66,16 @@ function linkOwnDependencies() {
   }
   else {
     // production mode -> `@dbux/cli` stand-alone installation
-    // NOTE: in this case, we find ourselves in `nodeModulesParent/node_modules/@dbux/cli` (so we want to go up 3!)
-    nodeModulesParent = path.resolve(DbuxCliRoot, '../../..');
+    // NOTE: in this case, we find ourselves in 
+    //    `nodeModulesParent/node_modules/@dbux/cli`  (so we want to go up 3) or...
+    //    `ACTUAL_DBUX_ROOT/dbux-cli`                 (so we want to go up 2. NOTE: DBUX_ROOT won't be set in prod though)
+    const relativePath = path.join('..', dbuxCliFolderName !== 'dbux-cli' ? '../..' : '');
+    nodeModulesParent = path.resolve(dbuxCliRoot, relativePath);
   }
+
+  console.debug('[DBUX] linkOwnDependencies', JSON.stringify({
+    __dirname, dbuxCliRoot, nodeModulesParent
+  }));
 
   // check if linkage works
   // console.warn('###########\n\n', DbuxCliRoot, nodeModulesParent, process.env.NODE_ENV);

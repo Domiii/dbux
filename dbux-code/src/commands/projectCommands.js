@@ -1,13 +1,17 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { ProjectsManager } from '@dbux/projects/src';
 import { registerCommand } from './commandUtil';
+
+/** @typedef {import('../projectView/projectViewController').ProjectViewController} ProjectViewController */
 
 const logger = newLogger('projectCommands');
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
+/**
+ * @param {ProjectViewController} projectViewController 
+ */
 export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbuxProjectView.node.addProjectToWorkspace', (node) => {
     return projectViewController.nodeAddToWorkspace(node);
@@ -44,8 +48,16 @@ export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbuxProjectView.node.showWebsite', (node) => {
     return node.showWebsite?.();
   });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.showBugIntroduction', async (node) => {
+    await node.showBugIntroduction();
+  });
   
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
     return projectViewController.manager.runner.cancel();
+  });
+
+  registerCommand(extensionContext, 'dbux.togglePracticeView', async () => {
+    await projectViewController.toggleTreeView();
   });
 }
