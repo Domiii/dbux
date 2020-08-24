@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const colors = require('colors/safe');
 const moduleAlias = require('module-alias');
 const { readPackageJson } = require('../lib/package-util');
 
@@ -73,9 +74,10 @@ function linkOwnDependencies() {
     nodeModulesParent = path.resolve(dbuxCliRoot, relativePath);
   }
 
-  console.debug('[DBUX] linkOwnDependencies', JSON.stringify({
+  const msg = `[DBUX] linkOwnDependencies ${JSON.stringify({
     __dirname, dbuxCliRoot, nodeModulesParent
-  }));
+  })}`;
+  console.debug(colors.gray(msg));
 
   // check if linkage works
   // console.warn('###########\n\n', DbuxCliRoot, nodeModulesParent, process.env.NODE_ENV);

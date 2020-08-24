@@ -1,6 +1,6 @@
 import Trace from '@dbux/common/src/core/data/Trace';
 import traceSelection from '@dbux/data/src/traceSelection';
-import { makeTraceLabel, getTraceCreatedAt } from '@dbux/data/src/helpers/traceLabels';
+import { makeTraceLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/traceLabels';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 export default class TraceNode extends BaseTreeViewNode {
@@ -22,8 +22,9 @@ export default class TraceNode extends BaseTreeViewNode {
   init() {
     // description
     // NOTE: description MUST be a string or it won't be properly displayed
-    const dt = getTraceCreatedAt(this.trace);
-    this.description = dt + '';
+    // const dt = getTraceCreatedAt(this.trace);
+    const loc = makeTraceLocLabel(this.trace);
+    this.description = loc;
   }
 
   handleClick() {

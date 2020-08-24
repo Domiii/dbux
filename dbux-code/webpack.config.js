@@ -74,6 +74,10 @@ module.exports = (env, argv) => {
   ];
 
   return {
+    watchOptions: {
+      poll: true,
+      ignored: /node_modules/
+    },
     // https://github.com/webpack/webpack/issues/2145
     mode,
     // devtool: 'inline-module-source-map',

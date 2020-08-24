@@ -1,9 +1,9 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import GraphThemeMode from '@dbux/graph-common/src/shared/GraphThemeMode';
 import { startGraphHost, shutdownGraphHost } from '@dbux/graph-host/src/index';
 import {
   window,
   ViewColumn,
-  Uri,
   ColorThemeKind
 } from 'vscode';
 import { buildWebviewClientHtml } from './clientSource';
@@ -28,7 +28,7 @@ export default class GraphWebView extends WebviewWrapper {
   }
   
   getThemeMode() {
-    return window.activeColorTheme.kind === ColorThemeKind.Light ? 'light' : 'dark';
+    return window.activeColorTheme.kind === ColorThemeKind.Light ? GraphThemeMode.Light : GraphThemeMode.Dark;
   }
 
   /**
@@ -40,11 +40,10 @@ export default class GraphWebView extends WebviewWrapper {
   }
 
   async buildClientHtml() {
-    // const mode = this.getThemeMode();
-    // TODO: fix up dark mode styles
-    const mode = 'light';
+    const mode = this.getThemeMode();
+    const modeFolderName = GraphThemeMode.getName(mode).toLowerCase();
     const scriptPath = this.getResourcePath('dist/graph/graph.js');
-    const themePath = this.getResourcePath(`dist/graph/${mode}/bootstrap.min.css`);
+    const themePath = this.getResourcePath(`dist/graph/${modeFolderName}/bootstrap.min.css`);
     // TODO: support multiple theme files
     return await buildWebviewClientHtml([scriptPath], themePath);
   }

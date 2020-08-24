@@ -1,6 +1,7 @@
 import { getTraceCreatedAt, makeTraceLabel } from '@dbux/data/src/helpers/traceLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import { babelLocToCodeRange } from '../../helpers/codeLocHelpers';
 
 export default class TraceNode extends BaseTreeViewNode {
   /**
@@ -30,8 +31,9 @@ export default class TraceNode extends BaseTreeViewNode {
 
     // description
     // NOTE: description MUST be a string or it won't be properly displayed
-    const dt = getTraceCreatedAt(trace);
-    this.description = dt + '';
+    // const dt = getTraceCreatedAt(trace);
+    const loc = babelLocToCodeRange(trace.loc);
+    this.description = `L ${loc}`;
   }
 
   /**
