@@ -1,3 +1,4 @@
+import GraphThemeMode from '@dbux/graph-common/src/shared/GraphThemeMode';
 import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -7,11 +8,10 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
   // createEl
   // ###########################################################################
-
   createEl() {
     // return compileHtmlElement(/*html*/`<div></div>`);
     return compileHtmlElement(/*html*/`
-      <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light no-padding" id="toolbar">
+      <nav class="navbar fixed-top navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <button title="Stop recording: Do not add new runs/traces" data-el="hideNewRunBtn" class="btn btn-info" href="#"></button>
           <button title="Clear: Hide all existing runs/traces" data-el="hideOldRunBtn" class="btn btn-info" href="#">x</button>
@@ -79,6 +79,8 @@ class Toolbar extends ClientComponentEndpoint {
       searchTerm
     } = this.state;
 
+    const themeModeName = GraphThemeMode.getName(this.context.themeMode).toLowerCase();
+
     // render buttons
     decorateClasses(this.els.syncModeBtn, {
       active: syncMode
@@ -104,6 +106,7 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.searchBtn, {
       active: !!searchTerm
     });
+    [`navbar-${themeModeName}`, `bg-${themeModeName}`].forEach(mode => this.el.classList.add(mode));
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
     this.els.hideNewRunBtn.innerHTML = `${hideNewMode ? '⚪' : '🔴'}`;
 
