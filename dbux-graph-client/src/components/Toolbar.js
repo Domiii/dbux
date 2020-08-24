@@ -76,11 +76,10 @@ class Toolbar extends ClientComponentEndpoint {
       thinMode,
       hideOldMode,
       hideNewMode,
-      searchTerm,
-      themeMode
+      searchTerm
     } = this.state;
 
-    const themeModeName = GraphThemeMode.getName(themeMode).toLowerCase();
+    const themeModeName = GraphThemeMode.getName(this.context.themeMode).toLowerCase();
 
     // render buttons
     decorateClasses(this.els.syncModeBtn, {
