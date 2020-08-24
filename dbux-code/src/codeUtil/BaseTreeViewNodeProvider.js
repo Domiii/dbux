@@ -1,4 +1,4 @@
-import { TreeItemCollapsibleState, EventEmitter, window, CommentThreadCollapsibleState } from 'vscode';
+import { TreeItemCollapsibleState, EventEmitter, window } from 'vscode';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getThemeResourcePath } from '../resources';
@@ -27,13 +27,21 @@ export default class BaseTreeViewNodeProvider {
   rootNodes;
   idsCollapsibleState = new Map();
 
-  constructor(viewName, showCollapseAll = false) {
+  /**
+   * @param {string} viewName 
+   * @param {Object} [options]
+   * @param {boolean} [options.showCollapseAll]
+   * @param {boolean} [options.createTreeView]
+   */
+  constructor(viewName, options = {}) {
     this.viewName = viewName;
+    const { showCollapseAll = false, createTreeView = true } = options;
+    
     // NOTE: view creation inside the data provider is not ideal, 
     //      but it makes things a lot easier for now
-    if (viewName) {
+    if (createTreeView) {
       this.treeView = window.createTreeView(viewName, {
-        showCollapseAll,
+        showCollapseAll: showCollapseAll,
         treeDataProvider: this
       });
 

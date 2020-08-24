@@ -513,7 +513,10 @@ function wrapCallExpression(path, state) {
 
   // TODO: instrument BCE as well, here
 
-  const traceResultType = path.getData('traceResultType') || TraceType.CallExpressionResult;
+  let traceResultType = path.getData('traceResultType');
+  if (!traceResultType || TraceType.is.ExpressionResult(traceResultType) || TraceType.is.ExpressionValue(traceResultType)) {
+    traceResultType = TraceType.CallExpressionResult;
+  }
   return traceCallExpression(path, state, traceResultType);
 }
 

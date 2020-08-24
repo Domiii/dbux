@@ -1,0 +1,67 @@
+[
+  {
+    "command": "dbux.backendLogin",
+    "title": "Dbux: Backend Login",
+    "description": "Run current file"
+  },
+  {
+    "command": "dbux.debugFile",
+    "title": "Dbux: Debug current file",
+    "description": "Run current file with debugger"
+  },
+  {
+    "command": "dbux.exportApplicationData",
+    "title": "Dbux: Export application data",
+    "description": ""
+  },
+  {
+    "command": "dbux.hideDecorations",
+    "title": "Dbux: Hide all decorations",
+    "description": ""
+  },
+  {
+    "command": "dbux.hideGraphView",
+    "title": "Dbux: Hide Call Graph",
+    "description": ""
+  },
+  {
+    "command": "dbux.runFile",
+    "title": "Dbux: Run current file",
+    "description": ""
+  },
+  {
+    "command": "dbux.selectTrace",
+    "title": "Dbux: select trace",
+    "description": ""
+  },
+  {
+    "command": "dbux.showDecorations",
+    "title": "Dbux: Show decorations",
+    "description": ""
+  },
+  {
+    "command": "dbux.showGraphView",
+    "title": "Dbux: Show Call Graph",
+    "description": ""
+  },
+  {
+    "command": "dbux.showHelp",
+    "title": "Dbux: Help",
+    "description": ""
+  },
+  {
+    "command": "dbux.systemCheck",
+    "title": "Dbux: Check System Dependencies",
+    "description": ""
+  },
+  {
+    "command": "dbux.toggleErrorLog",
+    "title": "Dbux: Toggle all error log",
+    "description": ""
+  },
+  {
+    "command": "dbux.toggleNavButton",
+    "title": "Dbux: Toggle all navigation buttons",
+    "description": ""
+  }
+]

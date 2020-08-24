@@ -8,7 +8,10 @@ import OutputChannel from './OutputChannel';
 import PracticeStopwatch from './PracticeStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
 import { initRuntimeServer } from '../net/SocketServer';
-import { initProjectCommands, initProjectUserCommands } from '../commands/projectCommands';
+import { initProjectCommands } from '../commands/projectCommands';
+import { get as mementoGet, set as mementoSet } from '../memento';
+
+const showProjectViewKeyName = 'dbux.projectView.showing';
 
 // ########################################
 //  setup logger for project
@@ -26,7 +29,7 @@ setOutputStreams({
   warn: outputChannel.log.bind(outputChannel),
   error: outputChannel.log.bind(outputChannel),
   debug: outputChannel.log.bind(outputChannel)
-});
+}, true);
 
 export function showOutputChannel() {
   outputChannel.show();
@@ -37,11 +40,13 @@ export class ProjectViewController {
     this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
 
+    this.isShowingTreeView = mementoGet(showProjectViewKeyName, false);
+    commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
+
     // ########################################
     //  init treeView
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
-    this.treeView = this.treeDataProvider.treeView;
 
     this.practiceStopwatch = new PracticeStopwatch('practice');
     this.practiceStopwatch.registOnClick(context, this.maybeStopWatch.bind(this));
@@ -52,9 +57,23 @@ export class ProjectViewController {
     this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
   }
 
+  get treeView() {
+    return this.treeDataProvider.treeView;
+  }
+
   handleStatusChanged(status) {
     commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', RunStatus.is.Busy(status));
     this.treeDataProvider.refreshIcon();
+  }
+
+  // ###########################################################################
+  // toggleTreeView
+  // ###########################################################################
+
+  async toggleTreeView() {
+    this.isShowingTreeView = !this.isShowingTreeView;
+    await commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
+    await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
   }
 
   // ###########################################################################
@@ -70,13 +89,13 @@ export class ProjectViewController {
   // ###########################################################################
 
   async activateBugByNode(bugNode, debugMode = false) {
-    await checkSystem(this.manager, false, true);
     showOutputChannel();
+    await checkSystem(this.manager, false, true);
     await initRuntimeServer(this.extensionContext);
 
     const options = {
       cancellable: false,
-      title: `[dbux] Activating Project ${bugNode.bug.project.name}@${bugNode.bug.name}`
+      title: `[dbux] Testing bug ${bugNode.bug.project.name}@${bugNode.bug.name}`
     };
 
     return runTaskWithProgressBar(async (progress/* , cancelToken */) => {
@@ -111,7 +130,7 @@ export class ProjectViewController {
 }
 
 // ###########################################################################
-// init
+// init/dispose
 // ###########################################################################
 
 /**
@@ -120,21 +139,22 @@ export class ProjectViewController {
 let controller;
 
 export function initProjectView(context) {
-  controller = new ProjectViewController(context);
+  if (!controller) {
+    controller = new ProjectViewController(context);
 
-  // shut it all down when VSCode shuts down
-  context.subscriptions.push({
-    dispose() {
-      controller.manager.stopRunner();
-    }
-  });
+    // shut it all down when VSCode shuts down
+    context.subscriptions.push({
+      dispose() {
+        controller.manager.stopRunner();
+      }
+    });
 
-  // refresh right away
-  controller.treeDataProvider.refresh();
+    // refresh right away
+    controller.treeDataProvider.refresh();
 
-  // register commands
-  initProjectCommands(context, controller);
-  initProjectUserCommands(context, controller);
+    // register commands
+    initProjectCommands(context, controller);
+  }
 
   return controller;
 }

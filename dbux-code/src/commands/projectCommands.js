@@ -5,11 +5,16 @@ import { showInformationMessage } from '../codeUtil/codeModals';
 
 /** @typedef {import('../projectView/projectViewController').ProjectViewController} ProjectViewController */
 
+/** @typedef {import('../projectView/projectViewController').ProjectViewController} ProjectViewController */
+
 const logger = newLogger('projectCommands');
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
+/**
+ * @param {ProjectViewController} projectViewController 
+ */
 export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbuxProjectView.node.addProjectToWorkspace', (node) => {
     return projectViewController.nodeAddToWorkspace(node);
@@ -46,19 +51,22 @@ export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbuxProjectView.node.showWebsite', (node) => {
     return node.showWebsite?.();
   });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.showBugIntroduction', async (node) => {
+    await node.showBugIntroduction();
+  });
   
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
     return projectViewController.manager.runner.cancel();
   });
-}
 
-/**
- * @param {ProjectViewController} projectViewController 
- */
-export function initProjectUserCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbux.resetPracticeProgress', async () => {
     await projectViewController.manager.progressLogController.reset();
     projectViewController.treeDataProvider.refreshIcon();
-    showInformationMessage('Bug progress cleared');
+    await showInformationMessage('Bug progress cleared');
+  });
+
+  registerCommand(extensionContext, 'dbux.togglePracticeView', async () => {
+    await projectViewController.toggleTreeView();
   });
 }

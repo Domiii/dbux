@@ -45,13 +45,22 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   // ###########################################################################
-  // shared
+  // state + context
   // ###########################################################################
 
+  makeInitialState() {
+    return {
+      themeMode: this.componentManager.externals.getThemeMode()
+    };
+  }
+
   shared() {
+    // eslint-disable-next-line no-console
+    console.debug('themeMode:', this.state.themeMode);
     return {
       context: {
-        graphDocument: this
+        graphDocument: this,
+        themeMode: this.state.themeMode
       }
     };
   }

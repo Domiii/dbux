@@ -1,6 +1,10 @@
 import NanoEvents from 'nanoevents';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { newLogger } from '@dbux/common/src/log/logger';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('HighlightManager');
 
 export default class HighlightManager extends HostComponentEndpoint {
   init() {
@@ -10,10 +14,14 @@ export default class HighlightManager extends HostComponentEndpoint {
   }
 
   registHighlight(highlighter, newState) {
-    if (newState === 1) this.allHighlighter.add(highlighter);
-    else this.allHighlighter.delete(highlighter);
+    if (newState === 1) {
+      this.allHighlighter.add(highlighter);
+    }
+    else {
+      this.allHighlighter.delete(highlighter);
+    }
 
-    this._highlighterUpdated(newState);
+    this._highlighterUpdated();
   }
 
   clear() {
@@ -25,9 +33,10 @@ export default class HighlightManager extends HostComponentEndpoint {
     this._emitter.on(eventName, cb);
   }
 
-  _highlighterUpdated = makeDebounce((newState) => {
+  _highlighterUpdated = makeDebounce(() => {
+    const { size } = this.allHighlighter;
     this.setState({
-      highlightAmount: this.state.highlightAmount + newState
+      highlightAmount: size
     });
   }, 50);
 }

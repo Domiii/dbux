@@ -178,15 +178,18 @@ export default class BugRunner {
    * @param {Bug} bug
    * @returns {ExecuteResult}
    */
-  async testBug(bug, debugMode = true) {
+  async testBug(bug, cfg) {
     const { project } = bug;
 
     try {
       this.setStatus(BugRunnerStatus.Busy);
 
-      let command = await bug.project.testBugCommand(bug, debugMode && this.debugPort || null);
-      command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
-
+      cfg = {
+        debugPort: cfg?.debugMode && this.debugPort || null,
+        ...cfg
+      };
+      let command = await bug.project.testBugCommand(bug, cfg);
+      
       if (!command) {
         // nothing to do
         project.logger.debug('has no test command. Nothing left to do.');
@@ -194,6 +197,7 @@ export default class BugRunner {
         return null;
       }
       else {
+        command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
         const cwd = project.projectPath;
         // const devMode = process.env.NODE_ENV === 'development';
         const args = {

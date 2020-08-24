@@ -25,3 +25,8 @@ export async function wrapScriptFileInTag(scriptPath) {
   // graphJsUri = panel.webview.asWebviewUri(graphJsUri);
   // return `<script src="${graphjsUri.toString()}"></script>`;
 }
+
+export async function wrapCssFileInTag(cssPath) {
+  const src = await fs.readFile(cssPath, "utf8");
+  return `<style>${src}</style>`;
+}
