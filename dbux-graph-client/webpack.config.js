@@ -129,6 +129,10 @@ module.exports = (env, argv) => {
   // console.log(rules[0].options.babelrcRoots);
 
   return {
+    watchOptions: {
+      poll: true,
+      ignored: /node_modules/
+    },
     mode,
     target: 'web',
 

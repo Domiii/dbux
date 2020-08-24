@@ -5,7 +5,7 @@ function main() {
         : fibonacci(n - 1) + fibonacci(n - 2);
   }
 
-  fibonacci(5);
+  fibonacci(7);
 }
 
 main();
