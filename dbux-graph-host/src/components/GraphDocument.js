@@ -55,8 +55,6 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   shared() {
-    // eslint-disable-next-line no-console
-    // console.log('themeMode:', this.state.themeMode);
     return {
       context: {
         graphDocument: this,

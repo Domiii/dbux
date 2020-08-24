@@ -8,7 +8,6 @@ class Toolbar extends HostComponentEndpoint {
     this.state.valueMode = false;
     this.state.thinMode = false;
     this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
-    // 
     this.state.themeMode = this.context.themeMode;
 
     // listen on hiddenModeChanged event to sync hideMode

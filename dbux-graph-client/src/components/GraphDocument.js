@@ -1,3 +1,4 @@
+import GraphThemeMode from '@dbux/graph-common/src/shared/GraphThemeMode';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class GraphDocument extends ClientComponentEndpoint {
@@ -11,7 +12,7 @@ class GraphDocument extends ClientComponentEndpoint {
   }
   update() {
     const { themeMode } = this.state;
-    if (themeMode === 'dark') {
+    if (GraphThemeMode.is.Dark(themeMode)) {
       document.body.classList.add('theme-mode-dark');
     } else {
       document.body.classList.remove('theme-mode-dark');

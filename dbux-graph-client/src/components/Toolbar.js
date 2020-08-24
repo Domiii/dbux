@@ -1,5 +1,7 @@
+import GraphThemeMode from '@dbux/graph-common/src/shared/GraphThemeMode';
 import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
+
 let documentClickHandler;
 
 class Toolbar extends ClientComponentEndpoint {
@@ -79,6 +81,8 @@ class Toolbar extends ClientComponentEndpoint {
       themeMode
     } = this.state;
 
+    const themeModeName = GraphThemeMode.getName(themeMode).toLowerCase();
+
     // render buttons
     decorateClasses(this.els.syncModeBtn, {
       active: syncMode
@@ -105,7 +109,7 @@ class Toolbar extends ClientComponentEndpoint {
       active: !!searchTerm
     });
     ['navbar-dark', 'navbar-light', 'bg-dark', 'bg-light'].forEach(mode => this.el.classList.remove(mode));
-    [`navbar-${themeMode}`, `bg-${themeMode}`].forEach(mode => this.el.classList.add(mode));
+    [`navbar-${themeModeName}`, `bg-${themeModeName}`].forEach(mode => this.el.classList.add(mode));
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
     this.els.hideNewRunBtn.innerHTML = `${hideNewMode ? '⚪' : '🔴'}`;
 
