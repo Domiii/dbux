@@ -63,5 +63,15 @@
     "command": "dbux.toggleNavButton",
     "title": "Dbux: Toggle all navigation buttons",
     "description": ""
+  },
+  {
+    "command": "dbux.togglePracticeView",
+    "title": "Dbux: Toggle Practice View",
+    "description": ""
+  },
+  {
+    "command": "dbuxProjectView.node.showBugIntroduction",
+    "title": "Show introduction",
+    "description": ""
   }
 ]

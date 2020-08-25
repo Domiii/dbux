@@ -248,7 +248,7 @@ Terminology regarding the JavaScript runtime is either not well defined in gener
 
 ## Trace and Static Trace
 
-We use (i) the name `staticTrace` to represent a piece of code (e.g. a s), and (ii) the name `trace` for each execution of said code; meaning that one `staticTrace` (piece of code) has 0 or more `traces` (executions).
+We use (i) the name `staticTrace` to represent a piece of code (e.g. `f(x)`), and (ii) the name `trace` to represent a recorded execution of that code; meaning that one `staticTrace` (piece of code) has 0 or more `traces` (executions).
 
 <span id="#context"></span>
 
