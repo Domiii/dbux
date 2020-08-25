@@ -118,6 +118,7 @@ const markdownReplacers = {
   },
 
   codeConfig() {
+    // TODO: consider `<span style='white-space:nowrap;'>--esnext</span>`
     const pkg = readCodePackageJson();
     let config = pkg.contributes.configuration.
       map(

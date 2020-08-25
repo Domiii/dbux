@@ -7,9 +7,9 @@
 
 1. [Installation](#installation)
 2. [Usage](#usage)
-   1. ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
+3. ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
       1. [How the Run + Debug buttons work](#how-the-run--debug-buttons-work)
-3. [Analyzing our program's Runtime](#analyzing-our-programs-runtime)
+4. [Analysis Features](#analysis-features)
    1. [Applications](#applications)
    2. [Code decorations](#code-decorations)
    3. [Trace Selection](#trace-selection)
@@ -29,10 +29,10 @@
    17. [Call Graph: call](#call-graph-call)
    18. [Call Graph: Search](#call-graph-search)
    19. [Finding Errors](#finding-errors)
-   20. [Practice](#practice)
-4. [Commands](#commands)
-5. [Configuration](#configuration)
-6. [How does Dbux work](#how-does-dbux-work)
+5. [Practice debugging with "Dbux Practice"](#practice-debugging-with-dbux-practice)
+6. [Commands](#commands)
+7. [Configuration](#configuration)
+8. [How does Dbux work](#how-does-dbux-work)
 
 
 # Installation
@@ -53,19 +53,21 @@ If you have a build pipeline, and cannot just run it via `node myProgram.js`, re
 Dbux is not perfect. You might want to read up on [known limitations](../#known-limitations).
 
 
-## "Run with Dbux" and "Debug with Dbux"
+# "Run with Dbux" and "Debug with Dbux"
 
-* The "Run with Dbux" button is the easiest way to get started with Dbux
-   * It is located in multiple places:
-      1. In the top right (to the right of your editor tabs)
-      1. In the Dbux view container at the top of the "Applications" view
-         * NOTE: You have to move mouse over it to see it. That's a VSCode limitation.
-      1. In the Dbux view container at the top of the "Trace Details" view
-         * NOTE: You have to move mouse over it to see it. That's a VSCode limitation.
-   * The button calls the "*Dbux: Run current file*" command (which you can keybind if you want)
-* The "Debug with Dbux" button does the same thing as the Run button but with `--inspect-brk` enabled.
-   * Make sure to turn on VSCode's Auto Attach for this.
-   * For more information on VSCVode debugging, consult [the official manual on "Node.js debugging in VS Code"](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
+The "Run with Dbux" button is the easiest way to get started with Dbux
+* It is located in multiple places:
+   1. In the top right (to the right of your editor tabs)
+   2. In the Dbux view container at the top of the "Applications" view
+      * NOTE: You have to move mouse over it to see it. That's a VSCode limitation.
+   3. In the Dbux view container at the top of the "Trace Details" view
+      * NOTE: You have to move mouse over it to see it. That's a VSCode limitation.
+* The button calls the "*Dbux: Run current file*" command (which you can keybind if you want)
+
+The "Debug with Dbux" button does the same thing as the Run button but with `--inspect-brk` enabled.
+
+* Make sure to turn on VSCode's Auto Attach for this.
+* For more information on VSCVode debugging, consult [the official manual on "Node.js debugging in VS Code"](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
 
 ### How the Run + Debug buttons work
 
@@ -75,7 +77,7 @@ Dbux is not perfect. You might want to read up on [known limitations](../#known-
 
 
 
-# Analyzing our program's Runtime
+# Analysis Features
 
 This extension provides the following visual aids and interactions to engage in JavaScript runtime analysis:
 
@@ -316,12 +318,13 @@ The search implementation is located in [dataProviderUtil.searchContexts](../dbu
 
 If a thrown error has been recorded, the "Error" button will show up at the top right in VSCode (to the right of the editor tabs).
 
-TODO
+When you click it, it takes you right to the error.
 
-## Practice
+If there are multiple errors, it should take you to the first error in your program.
 
-* currently hidden behind a command
-* allow practicing dbux and, more generally, debugging on real-world projects and their bugs.
+# Practice debugging with "Dbux Practice"
+
+
 
 
 # Commands
@@ -366,7 +369,7 @@ These are all currently supported configuration parameters (mostly for the "Run 
 <!-- dbux:codeConfig start -->
 | Entry                  | Type     | Default                | Description                                                                                                                                                                 | Scope      |
 | ---------------------- | -------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| dbux.run.dbuxArgs      | "string" | "--esnext"             | "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js" | "resource" |
+| dbux.run.dbuxArgs      | "string" | "<span style='white-space:nowrap;'>--esnext</span>"             | "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js" | "resource" |
 | dbux.run.nodeArgs      | "string" | "--enable-source-maps" | "Custom node options passed to node when running the program."                                                                                                              | "resource" |
 | dbux.run.programArgs   | "string" | ""                     | "Custom program arguments, available to the program via `process.argv`."                                                                                                    | "resource" |
 | dbux.run.env           | "object" | {}                     | "Custom program environment variables available via `process.env` (probably not working yet)."                                                                              | "resource" |

@@ -19,7 +19,6 @@
 		"python.dataScience.maxOutputSize": 600,
 		"debug.node.autoAttach": "on",
     "editor.detectIndentation": false,
-    "markdownAutoTOC.headerContent": "asd",
     "dbux.run.nodeArgs": ""
 		// "files.associations": {
 		// 	"*.js": "typescriptreact"
