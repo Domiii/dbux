@@ -19,6 +19,8 @@ export default class FocusController extends HostComponentEndpoint {
   }
 
   init() {
+    // NOTE: sync mode is on by default
+    // TODO: move `syncMode` to `state.syncMode`
     this.syncMode = true;
     this._emitter = new NanoEvents();
 
@@ -86,8 +88,8 @@ export default class FocusController extends HostComponentEndpoint {
       this.handleTraceSelected(traceSelection.selected);
     }
     else {
-      this.lastHighlighter?.dec();
-      this.lastHighlighter = null;
+      // this.lastHighlighter?.dec();
+      // this.lastHighlighter = null;
     }
     this._emitter.emit('modeChanged', this.syncMode);
   }
@@ -101,23 +103,23 @@ export default class FocusController extends HostComponentEndpoint {
     }
 
     await targetNode.reveal?.(true);
-    this.highlight(targetNode);
+    // this.highlight(targetNode);
     this.remote.slide(targetNode);
   }
 
   clearFocus() {
-    if (this.lastHighlighter && !this.lastHighlighter._isDisposed) {
-      this.lastHighlighter?.dec();
-    }
-    this.lastHighlighter = null;
+    // if (this.lastHighlighter && !this.lastHighlighter._isDisposed) {
+    //   this.lastHighlighter?.dec();
+    // }
+    // this.lastHighlighter = null;
     this.remote.slide(null);
   }
 
-  highlight(node) {
-    this.highlightManager.clear();
-    this.lastHighlighter = node.controllers.getComponent('Highlighter');
-    this.lastHighlighter.inc();
-  }
+  // highlight(node) {
+  //   this.highlightManager.clear();
+  //   this.lastHighlighter = node.controllers.getComponent('Highlighter');
+  //   this.lastHighlighter.inc();
+  // }
 
   // ###########################################################################
   // own event
