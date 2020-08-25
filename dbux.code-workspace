@@ -17,9 +17,9 @@
 		"gitlens.hovers.currentLine.over": "line",
 		"python.dataScience.textOutputLimit": 0,
 		"python.dataScience.maxOutputSize": 600,
-		"debug.node.autoAttach": "off",
+		"debug.node.autoAttach": "on",
     "editor.detectIndentation": false,
-    "markdownAutoTOC.headerContent": "",
+    "markdownAutoTOC.headerContent": "asd",
     "dbux.run.nodeArgs": ""
 		// "files.associations": {
 		// 	"*.js": "typescriptreact"

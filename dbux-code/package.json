@@ -841,7 +841,7 @@
     "vscode:prepublish": "",
     "uninstallself": "code --uninstall-extension Domi.dbux-code",
     "reinstallself": "yarn run uninstallself --silent ; files=(*.vsix); code --install-extension \"${files[0]}\" && echo 'DBUX installed. >Developer: Reload Window< to see it.'",
-    "package-no-build": "rm -rf *.vsix && echo 'Packaging...' && vsce package --yarn",
+    "package-no-build": "rm -rf *.vsix && echo 'Updating README.md...' && node ../scripts/replaceReadmeAnnotations.js && echo 'Packaging...' && vsce package --yarn",
     "package:analyze": "cd .. && yarn run build:prod && cd dbux-code && yarn run package-no-build && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
     "package:publish-no-build": "yarn run package-no-build && yarn run publish-only",
     "publish-only": "echo 'Publishing...' && vsce publish --yarn",
