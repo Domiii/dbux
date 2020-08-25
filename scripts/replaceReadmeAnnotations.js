@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const merge = require('lodash/merge');
 const isArray = require('lodash/isArray');
+const isString = require('lodash/isString');
 const mapValues = require('lodash/mapValues');
 const tablemark = require('tablemark');
 // const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
@@ -118,14 +119,23 @@ const markdownReplacers = {
   },
 
   codeConfig() {
-    // TODO: consider `<span style='white-space:nowrap;'>--esnext</span>`
     const pkg = readCodePackageJson();
+    
+    function mapVal(val, key) {
+      // console.debug('cfg', key, val, val === '--esnext');
+      if (val === '--esnext') {
+        // hackfix
+        return "<span style='white-space:nowrap;'>--esnext</span>";
+      }
+      return isString(val) ? val : JSON.stringify(val);
+    }
+
     let config = pkg.contributes.configuration.
       map(
         cfg => /* console.warn(cfg.properties) || */ Object.entries(cfg.properties).
-          map(([entry, props]) => ({ 
+          map(([entry, { scope, ...props }]) => ({ 
             entry, 
-            ...mapValues(props, val => JSON.stringify(val))
+            ...mapValues(props, mapVal)
           }))
       ).
       flat();

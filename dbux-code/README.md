@@ -324,18 +324,23 @@ If there are multiple errors, it should take you to the first error in your prog
 
 # Practice debugging with "Dbux Practice"
 
-
+We are still working on this. The idea is that this will allow anyone to practice debugging on real-world bugs in professionally developed open source projects. More on this soon :)
 
 
 # Commands
 
-TODO: clean this up and update all missing commands
-TODO: explain keyboard shortcuts
+This is how you execute VSCode commands:
 
-How to execute VSCode commands:
 1. Press `CTRL/Command + Shift + P`
-1. Search for a command... (just type)
+1. Search for a command... (type the name or some letters of the name)
 1. Select the command (`Enter`)
+1. See it execute.
+
+Note that all the buttons that you see are also commands.
+
+[This official documentation explains how to easily keybind any command in VSCode](https://code.visualstudio.com/docs/getstarted/keybindings).
+
+
 
 A rough outline of (hopefully all) commands:
 
@@ -367,16 +372,16 @@ These are all currently supported configuration parameters (mostly for the "Run 
 (You can open configuration via `CTRL/Command + Shift + P` -> "Open {User,Workspace} Settings")
 
 <!-- dbux:codeConfig start -->
-| Entry                  | Type     | Default                | Description                                                                                                                                                                 | Scope      |
-| ---------------------- | -------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| dbux.run.dbuxArgs      | "string" | "<span style='white-space:nowrap;'>--esnext</span>"             | "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js" | "resource" |
-| dbux.run.nodeArgs      | "string" | "--enable-source-maps" | "Custom node options passed to node when running the program."                                                                                                              | "resource" |
-| dbux.run.programArgs   | "string" | ""                     | "Custom program arguments, available to the program via `process.argv`."                                                                                                    | "resource" |
-| dbux.run.env           | "object" | {}                     | "Custom program environment variables available via `process.env` (probably not working yet)."                                                                              | "resource" |
-| dbux.debug.dbuxArgs    | "string" | "--esnext"             | "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js" | "resource" |
-| dbux.debug.nodeArgs    | "string" | ""                     | "Custom node options passed to node when running the program."                                                                                                              | "resource" |
-| dbux.debug.programArgs | "string" | ""                     | "Custom program arguments, available to the program via `process.argv`."                                                                                                    | "resource" |
-| dbux.debug.env         | "object" | {}                     | "Custom program environment variables available via `process.env` (probably not working yet)."                                                                              | "resource" |
+| Entry                  | Type   | Default                                           | Description                                                                                                                                                               |
+| ---------------------- | ------ | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| dbux.run.dbuxArgs      | string | <span style='white-space:nowrap;'>--esnext</span> | Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js |
+| dbux.run.nodeArgs      | string | --enable-source-maps                              | Custom node options passed to node when running the program.                                                                                                              |
+| dbux.run.programArgs   | string |                                                   | Custom program arguments, available to the program via `process.argv`.                                                                                                    |
+| dbux.run.env           | object | {}                                                | Custom program environment variables available via `process.env` (probably not working yet).                                                                              |
+| dbux.debug.dbuxArgs    | string | <span style='white-space:nowrap;'>--esnext</span> | Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js |
+| dbux.debug.nodeArgs    | string |                                                   | Custom node options passed to node when running the program.                                                                                                              |
+| dbux.debug.programArgs | string |                                                   | Custom program arguments, available to the program via `process.argv`.                                                                                                    |
+| dbux.debug.env         | object | {}                                                | Custom program environment variables available via `process.env` (probably not working yet).                                                                              |
 
 <!-- dbux:codeConfig end -->
 

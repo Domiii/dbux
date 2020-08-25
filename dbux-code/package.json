@@ -58,11 +58,11 @@
       },
       {
         "command": "dbux.showDecorations",
-        "title": "Dbux: Show decorations"
+        "title": "Dbux: Show code decorations"
       },
       {
         "command": "dbux.hideDecorations",
-        "title": "Dbux: Hide all decorations"
+        "title": "Dbux: Hide code decorations"
       },
       {
         "command": "dbux.toggleNavButton",
