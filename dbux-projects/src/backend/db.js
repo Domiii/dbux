@@ -1,6 +1,13 @@
+/* eslint-disable import/no-dynamic-require */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable global-require */
 /* eslint-disable import/first */
+
+import path from 'path';
+
+/**
+ * @typedef {import('../ProjectsManager').default} ProjectsManager
+ */
 
 global.self = global;   // hackfix for firebase which requires `self` to be a global
 
@@ -12,17 +19,6 @@ let _db, firebase;
  * @see https://github.com/firebase/firebase-js-sdk/issues/2222#issuecomment-538072948
  */
 export function getFirebase() {
-  if (!firebase) {
-    try {
-      firebase = require('firebase');
-      require('firebase/auth');
-      require('firebase/firestore');
-    }
-    catch (err) {
-      throw new Error(`Unable to load firebase. Make sure to call installBackendDependencies before trying to access DB capabilities: err.message`);
-    }
-  }
-
   return firebase;
 }
 
@@ -30,7 +26,6 @@ export default function getDb() {
   if (_db) {
     return _db;
   }
-  getFirebase();
 
   const firebaseConfig = {
     apiKey: "AIzaSyC-d0HDLJ8Gd9UZ175z7dg6J98ZrOIK0Mc",
@@ -45,4 +40,26 @@ export default function getDb() {
   firebase.initializeApp(firebaseConfig);
 
   return _db = firebase.firestore();
+}
+
+/**
+ * 
+ * @param {ProjectsManager} manager 
+ */
+export function initDB(manager) {
+  if (!firebase) {
+    let { dependencyRoot } = manager.config;
+    let nodeModules = path.join(dependencyRoot, 'node_modules');
+    try {
+      firebase = __non_webpack_require__(path.join(nodeModules, 'firebase'));
+      __non_webpack_require__(path.join(nodeModules, 'firebase/auth'));
+      __non_webpack_require__(path.join(nodeModules, 'firebase/firestore'));
+    } catch (err) {
+      throw new Error(`Unable to load firebase. Make sure to call installBackendDependencies before trying to access DB capabilities: ${err.message}`);
+    }
+  }
+
+  getDb();
+
+  return { _db, firebase };
 }
