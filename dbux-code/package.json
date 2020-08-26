@@ -855,6 +855,7 @@
     "copy-webpack-plugin": "^6.0.3",
     "glob": "^7.1.5",
     "mocha": "^6.2.2",
+    "terser-webpack-plugin": "^4.1.0",
     "typescript": "^3.6.4",
     "vsce": "^1.77.0",
     "vscode-test": "^1.2.2",
