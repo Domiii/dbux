@@ -102,6 +102,7 @@ export default class BackendAuth {
     }
 
     debug("Login finished.");
+    this.backendController.practiceManager.externals.showMessage.info('Login successed.');
   }
 
   logout() {
