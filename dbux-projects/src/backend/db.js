@@ -69,10 +69,10 @@ export class Db {
    * @param {PracticeManager} practiceManager 
    */
   constructor(practiceManager) {
+    this.practiceManager = practiceManager;
     this.firebase = getFirebase();
     this.fs = getFirestore();
 
-    // TODO: implement Backlog
     this.backlog = new Backlog(practiceManager);
 
     // TODO: monitor firestore connection status and call `tryReplayBacklog` before doing anything other write action

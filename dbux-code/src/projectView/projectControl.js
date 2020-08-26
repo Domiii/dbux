@@ -11,6 +11,7 @@ import { getResourcePath } from '../resources';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { showBugIntroduction } from './BugIntroduction';
+import { onUserEvent } from '../userEvents';
 
 /** @typedef {import('@dbux/projects/src').ProjectsManager} ProjectsManager */
 
@@ -96,6 +97,7 @@ function createProjectManager(extensionContext) {
     },
     WebviewWrapper,
     showBugIntroduction,
+    onUserEvent,
     interactiveGithubLogin
   };
 

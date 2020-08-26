@@ -16,8 +16,8 @@ export function emitEditorAction(data) {
 
 let emitter = new NanoEvents();
 
-export function onUserEvent() {
-  emitter.on('e');
+export function onUserEvent(cb) {
+  return emitter.on('e', cb);
 }
 
 function emitUserEvent(name, data) {

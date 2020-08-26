@@ -12,6 +12,8 @@ import NotLoaded from './NotLoaded';
 import { docToSimpleObject } from './firebaseUtil';
 // import { logInstrumentAllMethodCalls } from '../util/traceLog';
 
+/** @typedef {import('./db').Db} Db */
+
 // const TraceLog = false;
 
 
@@ -120,6 +122,12 @@ class FirestoreContainer {
 
   emitter = new NanoEvents();
 
+  /**
+   * 
+   * @param {Db} db 
+   * @param {String} collectionName 
+   * @param {State} state 
+   */
   constructor(db, collectionName, state) {
     this.db = db;
     this.collectionName = collectionName;
@@ -128,6 +136,8 @@ class FirestoreContainer {
     this.state = state || new State();
 
     this.logger = newLogger(`Db.${collectionName}`);
+
+    this._mementoKeyName = `dbux.projects.backend.container.${collectionName}`;
 
     // if (TraceLog) {
     //   logInstrumentAllMethodCalls(`FSC[${collectionName}]`, this);
