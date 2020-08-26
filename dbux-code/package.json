@@ -133,18 +133,6 @@
         }
       },
       {
-        "command": "dbux.showDecorations",
-        "title": "Dbux: Show decorations"
-      },
-      {
-        "command": "dbux.hideDecorations",
-        "title": "Dbux: Hide all decorations"
-      },
-      {
-        "command": "dbux.toggleNavButton",
-        "title": "Dbux: Toggle all navigation buttons"
-      },
-      {
         "command": "dbux.backendLogin",
         "title": "Dbux: Backend Login"
       },
@@ -427,14 +415,6 @@
           "light": "resources/light/boolean.svg",
           "dark": "resources/dark/boolean.svg"
         }
-      },
-      {
-        "command": "dbux.backendLogin",
-        "title": "Dbux: Backend Login"
-      },
-      {
-        "command": "dbux.systemCheck",
-        "title": "Dbux: System Check"
       },
       {
         "command": "dbuxProjectView.node.showBugIntroduction",
