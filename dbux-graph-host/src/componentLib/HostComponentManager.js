@@ -156,9 +156,11 @@ class HostComponentManager extends BaseComponentManager {
       }
       else {
         // busy to free
-        this._resolveInitPromise();
+
+        const r = this._resolveInitPromise;
         this._resolveInitPromise = null;
         this._busyInitPromise = null;
+        r();
       }
       this._emitter.emit('busyStateChanged', newState);
     }
