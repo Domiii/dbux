@@ -11,6 +11,7 @@ import BackendController from './backend/BackendController';
 
 
 const logger = newLogger('PracticeManager');
+// eslint-disable-next-line no-unused-vars
 const { debug, log } = logger;
 
 /** @typedef {import('./projectLib/Bug').default} Bug */
@@ -261,7 +262,7 @@ export default class ProjectsManager {
       // debug(`Verifying NPM cache. This might (or might not) take a while...`);
       // await this.runner._exec('npm cache verify', logger, execOptions);
 
-      this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
+      // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
 
       const command = `npm install --only=prod && npm i ${deps.join(' ')}`;
       // await this.runner._exec(command, logger, execOptions);
