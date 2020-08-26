@@ -14,7 +14,7 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
 
     const trackedTraces = dp.util.getAllTracesOfObjectOfTrace(trace.traceId);
 
-    const label = `Object traces`;
+    const label = `Object Traces`;
 
     return {
       trackedTraces,

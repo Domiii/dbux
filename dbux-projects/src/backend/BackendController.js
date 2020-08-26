@@ -1,6 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import BackendAuth from './BackendAuth2';
-import { initDB } from './db';
+import { Db } from './db';
+import { initContainers } from './containers/index';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
@@ -26,10 +27,16 @@ export default class BackendController {
   async init() {
     await this.installBackendDependencies();
 
-    let { _db, firebase } = initDB(this.practiceManager);
-    this.fs = _db;
-    this.firebase = firebase;
-
+    this.db = new Db();
     this.auth = new BackendAuth(this);
+  }
+
+  /**
+   * NOTE: In order to use most of the backend functionality, we first need to login.
+   */
+  async startBackend() {
+    await this.auth.login();
+
+    await initContainers(this.db);
   }
 }

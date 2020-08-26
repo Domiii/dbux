@@ -8,6 +8,11 @@ function F(x) {
 
 (function main() {
   // run F in two different "runs"
-  F(1);
-  setTimeout(F.bind(null, 100));
+  setTimeout(() =>
+    F(1)
+  );
+
+  setTimeout(() =>
+    F(100)
+  );
 })();

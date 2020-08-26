@@ -88,12 +88,12 @@ export default class BackendAuth {
   }
 
   async testFirebase() {
-    await this.backendController.fs.collection("testCollection").add({ x: 1 });
+    await this.backendController.db.fs.collection("testCollection").add({ x: 1 });
   }
 
   async login() {
     let customToken = await this.getCustomToken();
-    await this.backendController.firebase.auth().signInWithCustomToken(customToken);
+    await this.backendController.db.firebase.auth().signInWithCustomToken(customToken);
 
     try {
       await this.testFirebase();
