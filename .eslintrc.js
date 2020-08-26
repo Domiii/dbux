@@ -106,6 +106,13 @@ module.exports = {
         "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
         "no-console": 0
       }
+    },
+    {
+      files: ['./scripts/**/*'],
+      rules: {
+        "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
+        "no-console": 0
+      }
     }
   ]
 };

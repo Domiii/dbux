@@ -25,7 +25,7 @@ class ContextNode extends ClientComponentEndpoint {
                   &nbsp;☩
                 </div-->
                 &nbsp;
-                <button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button>
+                <!--button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button-->
                 <button data-el="prevContextBtn" class="hidden">⇦</button>
                 <button data-el="nextContextBtn" class="hidden">⇨</button>
                 <div class="loc-label">
@@ -211,11 +211,11 @@ class ContextNode extends ClientComponentEndpoint {
         this.handleClickOnParentTrace(evt);
       }
     },
-    staticContextHighlightBtn: {
-      click(/* evt */) {
-        this.remote.toggleStaticContextHighlight();
-      }
-    },
+    // staticContextHighlightBtn: {
+    //   click(/* evt */) {
+    //     this.remote.toggleStaticContextHighlight();
+    //   }
+    // },
     prevContextBtn: {
       click(/* evt */) {
         this.remote.selectPreviousContextByStaticContext();

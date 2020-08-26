@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import getDb, { getFirebase } from './db';
+import getDb, { getFirebase } from './Db';
 import { makeLoginController } from './LoginController';
 
 // eslint-disable-next-line no-unused-vars

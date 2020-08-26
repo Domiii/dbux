@@ -102,8 +102,8 @@ html,body{
 .graph-root {
   /* offset fixed toolbar height */
   margin-top: 30px;
-
   padding-left: 2px;
+  font-size: 1.2rem;
 }
 
 .graph-cont {
