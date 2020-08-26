@@ -9,11 +9,11 @@ export function emitEditorAction(data) {
   emitUserEvent('editor', data);
 }
 
-export function emitTreeViewAction(treeViewName, action, nodePath, ...args) {
+export function emitTreeViewAction(treeViewName, action, nodeId, args) {
   emitUserEvent('treeView', {
     treeViewName,
     action,
-    nodePath,
+    nodeId,
     args
   });
 }

@@ -5,6 +5,7 @@ const path = require('path');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const {
   makeResolve,
   makeAbsolutePaths,
@@ -73,6 +74,19 @@ module.exports = (env, argv) => {
     }
   ];
 
+  // see https://v4.webpack.js.org/guides/production/#minification
+  const optimization = mode !== 'production' ? undefined : {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          keep_classnames: true,
+          // keep_fnames: true
+        }
+      })
+    ]
+  };
+
   return {
     watchOptions: {
       poll: true,
@@ -109,7 +123,8 @@ module.exports = (env, argv) => {
       // see: https://webpack.js.org/configuration/node/#node__filename
       __dirname: false,
       __filename: false,
-    }
+    },
+    optimization
   };
 };
 

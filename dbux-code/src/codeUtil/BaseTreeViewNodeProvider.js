@@ -3,21 +3,26 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getThemeResourcePath } from '../resources';
 import { registerCommand } from '../commands/commandUtil';
+import { emitTreeViewAction } from '../userEvents';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('editorTracesController');
+const { log, debug, warn, error: logError } = newLogger('BaseTreeViewNodeProvider');
 
 const nodeClasses = new Map();
 
 function makeNodeClassId(NodeClass) {
-  // in production, names get mangled and/or removed entirely, so we need a different class identifier here
-  let id = nodeClasses.get(NodeClass);
-  if (!id) {
-    id = nodeClasses.size + 1;
-    nodeClasses.set(NodeClass, id);
+  if (!NodeClass.name) {
+    // in production, names might get mangled and/or removed entirely, so we need a different class identifier here
+    logError(`NodeClass.name is empty (Terser setup problem?)`);
+    let id = nodeClasses.get(NodeClass);
+    if (!id) {
+      id = nodeClasses.size + 1;
+      nodeClasses.set(NodeClass, id);
+    }
+
+    return id;
   }
-  
-  return (NodeClass.name || '') + id;
+  return NodeClass.name;
 }
 
 export default class BaseTreeViewNodeProvider {
@@ -36,7 +41,7 @@ export default class BaseTreeViewNodeProvider {
   constructor(viewName, options = {}) {
     this.viewName = viewName;
     const { showCollapseAll = false, createTreeView = true } = options;
-    
+
     // NOTE: view creation inside the data provider is not ideal, 
     //      but it makes things a lot easier for now
     if (createTreeView) {
@@ -85,7 +90,7 @@ export default class BaseTreeViewNodeProvider {
   repaint() {
     this._onDidChangeTreeData.fire();
   }
-  
+
   /**
    * Refresh iconPath of rootNodes and its children, then repaint the view
    */
@@ -131,6 +136,15 @@ export default class BaseTreeViewNodeProvider {
    * @virtual
    */
   handleClick = (node) => {
+    const treeViewName = this.viewName;
+    const action = ''; // not a button click
+    const nodeId = node.id;
+    const args = {
+      label: node.label,
+      description: node.description,
+      clazz: node.constructor.name
+    };
+    emitTreeViewAction(treeViewName, action, nodeId, args);
     node.handleClick?.();
   }
 
