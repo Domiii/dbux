@@ -102,7 +102,7 @@ function syncCodeCommands() {
 }
 
 // ###########################################################################
-// work with markdown
+// replace directives
 // ###########################################################################
 
 const markdownReplacers = {
@@ -143,12 +143,9 @@ const markdownReplacers = {
   }
 };
 
-function replaceInMarkdown(fpath) {
-  // var s = '<!-- dbux:commands start --> hi <!-- dbux:commands end -->';
-  let s = fs.readFileSync(fpath, 'utf-8');
-
+function replaceDirectives(s, fpath) {
   // see https://stackoverflow.com/questions/2575791/javascript-multiline-regexp-replace
-  s = s.replace(/(<!--\s*dbux:(\w+) start\s*-->)([\s\S]*?)(<!--\s*dbux:(\w+) end\s*-->)/g,
+  return s.replace(/(<!--\s*dbux:(\w+) start\s*-->)([\s\S]*?)(<!--\s*dbux:(\w+) end\s*-->)/g,
     (_all, pref, kind, content, suf, kind2) => {
       // console.log(' match', { pref, kind, content, suf, kind2 });
       if (kind !== kind2) {
@@ -163,12 +160,65 @@ function replaceInMarkdown(fpath) {
       return `${pref}\n${replacement}\n${suf}`;
     }
   );
+}
+
+// ###########################################################################
+// urls
+// ###########################################################################
+
+const RootUrl = 'https://github.com/Domiii/dbux/';
+
+/**
+ * Fix url for packaging VSCode extension.
+ * Essentially: just make it absolute to avoid any problems.
+ */
+function makeUrlAbsolute(url, fpath, relativePath) {
+  // if (isAbsolute(url)) {
+  if (url.startsWith('https')) {
+    return url;
+  }
+
+  // try: `node -e "console.log(new URL('../d', 'http://a.b/c/X/').toString()); // http://a.b/c/d"`
+  const newUrl = new URL(url, RootUrl).toString();
+
+  console.debug(`  Replacing url: ${url} -> ${newUrl}`);
+
+  // return url;
+  return newUrl;
+}
+
+function fixUrls(s, cb, fpath, relativePath) {
+  // s = '<img src="abc"> <img src="def">';
+  // s = 'x [a](b) y [c](d)z';
+  const replacer = (_all, pref, url, suf) => `${pref}${cb(url, fpath, relativePath)}${suf}`;
+  
+  s = s.replace(/(<img.*?src=")(.*?)(")/g, replacer);
+  s = s.replace(/(<a.*?href=")(.*?)(")/g, replacer);
+  s = s.replace(/(\[.*?\]\()(.*?)(\))/g, replacer);
+
+  return s;
+}
+
+
+// ###########################################################################
+// markdown core
+// ###########################################################################
+
+function replaceInMarkdown(fpath, relativePath) {
+  // var s = '<!-- dbux:commands start --> hi <!-- dbux:commands end -->';
+  let s = fs.readFileSync(fpath, 'utf-8');
+
+  // replace <!-- dbux:directives -->
+  s = replaceDirectives(s, fpath);
+
+  // fix `src`s, `href`s and [markdown](urls)
+  s = fixUrls(s, makeUrlAbsolute, fpath, relativePath);
 
   fs.writeFileSync(fpath, s);
 }
 
 function replaceInMarkdownFiles() {
-  replaceInMarkdown(getPath('dbux-code/README.md'));
+  replaceInMarkdown(getPath('dbux-code/README.md'), 'dbux-code');
 }
 
 
