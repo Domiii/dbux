@@ -9,11 +9,11 @@ export function emitEditorAction(data) {
   emitUserEvent('editor', data);
 }
 
-export function emitTreeViewAction(treeViewName, action, nodePath, ...args) {
+export function emitTreeViewAction(treeViewName, action, nodeId, args) {
   emitUserEvent('treeView', {
     treeViewName,
     action,
-    nodePath,
+    nodeId,
     args
   });
 }
@@ -33,8 +33,8 @@ export function emitOther(data) {
 
 let emitter = new NanoEvents();
 
-export function onUserEvent() {
-  emitter.on('e');
+export function onUserEvent(cb) {
+  return emitter.on('e', cb);
 }
 
 function emitUserEvent(name, data) {
