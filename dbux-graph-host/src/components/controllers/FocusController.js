@@ -2,6 +2,7 @@ import NanoEvents from 'nanoevents';
 import traceSelection from '@dbux/data/src/traceSelection';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
+
 /** @typedef {import('./Highlighter').default} Highlighter */
 
 export default class FocusController extends HostComponentEndpoint {
