@@ -4,8 +4,10 @@ import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { showOutputChannel } from '../projectView/projectViewController';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
+import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 
 const logger = newLogger('DBUX run file');
 
@@ -76,10 +78,14 @@ export async function runFile(extensionContext, debugMode = false) {
     logError(`Could not find file "${activePath}": ${err.message}`);
     return;
   }
-  
+
   // install dependencies
   if (!projectManager.hasInstalledSharedDependencies()) {
-    await projectManager.installDependencies();
+    await runTaskWithProgressBar(async (progress) => {
+      showOutputChannel();
+      progress.report({ message: 'Installing dependencies...' });
+      await projectManager.installDependencies();
+    }, { cancellable: false });
   }
 
   // start runtime server

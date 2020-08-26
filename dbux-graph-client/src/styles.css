@@ -38,10 +38,20 @@ html,body{
   line-height: 1rem;
   min-width: 1.4rem; /* NOTE: on some systems, some of those emojis are extra-wide */
 }
+.theme-mode-dark .nodeToggleBtn {
+  background: #292929;
+  border: solid 2px #484848;
+  color: white;
+}
 
 .selected-trace {
   color: darkred;
   border: 1px solid darkred;
+  margin: -1px;
+}
+.selected-trace-dark {
+  color: yellow;
+  border: 1px solid yellow;
   margin: -1px;
 }
 
@@ -185,9 +195,8 @@ html,body{
   margin-right: 0.3rem !important;
 }
 
-
 .loc-label {
-  color: #333;
+  /* color: #333; */
   margin-right: 0.3rem !important;
 }
 
@@ -210,18 +219,25 @@ html,body{
 }
 
 [data-el="parentLabel"] {
-  color: #222;
-  background: rgba(0,0,0,0.05);
+  /* color: #222; */
+  background: rgba(0,0,0,0.03);
   font-size: 11px;
   margin-right: 0.3rem !important;
 }
+.theme-mode-dark [data-el="parentLabel"] {
+  background: rgba(0,0,0,0.25);
+}
 
 .value-label {
-  color: #222;
+  /* color: #222; */
   background: rgba(0,0,0,0.1);
   font-size: 11px;
   margin-right: 0.3rem !important;
 }
+.theme-mode-dark .value-label {
+  background: rgba(0,0,0,0.4);
+}
+
 .hide-values .value-label {
   display: none !important;
 }
@@ -378,17 +394,48 @@ html,body{
  * highlighter
  * ############################################################################ */
 
-.highlighter{
 
-}
-.highlight-on {
+.highlight-on:not(.theme-mode-dark) {
   background: #888 !important;
+  color: darkgray !important;
 }
-.highlight-on .graph-node:not(.highlight) > * {
+.highlight-on:not(.theme-mode-dark) .graph-node:not(.highlight) > * {
   background: #888 !important;
+  color: darkgray !important;
 }
-.highlight-on .graph-node .children {
+.highlight-on:not(.theme-mode-dark) .graph-node:not(.highlight) > div > .content button {
   background: #888 !important;
+  color: darkgray !important;
+}
+.highlight-on:not(.theme-mode-dark) .graph-node .node-children {
+  background: #888 !important;
+  color: darkgray !important;
+}
+body:not(.theme-mode-dark) .highlight{
+  color:black;
+}
+
+/* dark mode */
+/* change color to change unhighlighing context name's color -del */
+.highlight-on.theme-mode-dark {
+  background: #1e1e1e !important;
+  color: #3b3b3b !important;
+}
+.highlight-on.theme-mode-dark .graph-node:not(.highlight) > * {
+  background: #1e1e1e !important;
+  color: #3b3b3b!important;
+}
+.highlight-on.theme-mode-dark .graph-node:not(.highlight) > div > .content button {
+  background: #1e1e1e !important;
+  color: #3b3b3b!important;
+}
+.highlight-on.theme-mode-dark .graph-node .node-children {
+  background: #1e1e1e !important;
+  color: #3b3b3b!important;
+}
+.theme-mode-dark .highlight{
+  color: white;
+  background:rgba(0,0,0,0.4);
 }
 
 /** ###########################################################################
@@ -439,7 +486,12 @@ background: #333;
   bottom:10px;
   right:10px;
 }
-
 #zoombar .button {
   margin:2.5px;
 }
+.theme-mode-dark #zoombar .button {
+  background: #292929;
+  border: solid 2px #484848;
+  color: white;
+}
+
