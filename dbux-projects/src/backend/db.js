@@ -67,6 +67,10 @@ export class Db {
     // TODO: monitor firestore connection status and call `tryReplayBacklog` before doing anything other write action
   }
 
+  collection(name) {
+    return this.fs.collection(name);
+  }
+
   // ###########################################################################
   // containers
   // ###########################################################################
