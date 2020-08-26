@@ -54,27 +54,27 @@
       },
       {
         "command": "dbux.exportApplicationData",
-        "title": "Dbux: Export application data"
+        "title": "Dbux: Export Application Data"
       },
       {
         "command": "dbux.showDecorations",
-        "title": "Dbux: Show code decorations"
+        "title": "Dbux: Show Code Decorations"
       },
       {
         "command": "dbux.hideDecorations",
-        "title": "Dbux: Hide code decorations"
+        "title": "Dbux: Hide Code Decorations"
       },
       {
         "command": "dbux.toggleNavButton",
-        "title": "Dbux: Toggle all navigation buttons"
+        "title": "Dbux: Toggle Editor Buttons"
       },
       {
         "command": "dbux.toggleErrorLog",
-        "title": "Dbux: Toggle all error log"
+        "title": "Dbux: Toggle Error Notifications"
       },
       {
         "command": "dbux.selectTrace",
-        "title": "Dbux: select trace"
+        "title": "Dbux: Select Trace by id"
       },
       {
         "command": "dbux.togglePracticeView",
@@ -306,7 +306,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.selectTraceAtCursor",
-        "title": "Select Trace At Cursor",
+        "title": "Dbux: Select Trace At Cursor",
         "icon": {
           "light": "resources/light/crosshair_red.svg",
           "dark": "resources/dark/crosshair_red.svg"
@@ -726,10 +726,6 @@
           "when": "false"
         },
         {
-          "command": "dbuxTraceDetailsView.selectTraceAtCursor",
-          "when": "false"
-        },
-        {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
           "when": "false"
         },
@@ -775,6 +771,10 @@
         },
         {
           "command": "dbux.cancelBugRunner",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.showBugIntroduction",
           "when": "false"
         }
       ]
@@ -841,7 +841,8 @@
     "vscode:prepublish": "",
     "uninstallself": "code --uninstall-extension Domi.dbux-code",
     "reinstallself": "yarn run uninstallself --silent ; files=(*.vsix); code --install-extension \"${files[0]}\" && echo 'DBUX installed. >Developer: Reload Window< to see it.'",
-    "package-no-build": "rm -rf *.vsix && echo 'Updating README.md...' && node ../scripts/replaceReadmeAnnotations.js && echo 'Packaging...' && vsce package --yarn",
+    "readme": "echo 'Updating README.md...' && node ../scripts/replaceReadmeAnnotations.js",
+    "package-no-build": "rm -rf *.vsix && yarn run readme && echo 'Packaging...' && vsce package --yarn",
     "package:analyze": "cd .. && yarn run build:prod && cd dbux-code && yarn run package-no-build && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
     "package:publish-no-build": "yarn run package-no-build && yarn run publish-only",
     "publish-only": "echo 'Publishing...' && vsce publish --yarn",
