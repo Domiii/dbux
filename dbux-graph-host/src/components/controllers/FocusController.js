@@ -1,6 +1,10 @@
 import NanoEvents from 'nanoevents';
+import { newLogger } from '@dbux/common/src/log/logger';
 import traceSelection from '@dbux/data/src/traceSelection';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('FocusController');
 
 /** @typedef {import('./Highlighter').default} Highlighter */
 
@@ -31,28 +35,35 @@ export default class FocusController extends HostComponentEndpoint {
     const unbindSubscription = traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
     this.addDisposable(unbindSubscription);
     // if already selected, show things right away
-    setTimeout(this.handleTraceSelected);
+    this.handleTraceSelected();
   }
 
   handleTraceSelected = async () => {
-    const trace = traceSelection.selected;
-    await this.waitForInit();
-    
-    let contextNode;
-    if (trace) {
-      const { applicationId, contextId } = trace;
-      contextNode = this.owner.getContextNodeById(applicationId, contextId);
-      if (this.syncMode && contextNode) {
-        // NOTE: since we do this right after init, need to check if contextNode have been built
-        await this.focus(contextNode);
+    try {
+      // since we can't use async function in event handler, we should wrap it with try catch to capture error
+      const trace = traceSelection.selected;
+      await this.waitForInit();
+      
+      let contextNode;
+      if (trace) {
+        const { applicationId, contextId } = trace;
+        contextNode = this.owner.getContextNodeById(applicationId, contextId);
+        if (this.syncMode && contextNode) {
+          // NOTE: since we do this right after init, need to check if contextNode have been built
+          await this.focus(contextNode);
+        }
       }
+      else {
+        this.clearFocus();
+      }
+  
+      // always decorate ContextNode
+      this._selectContextNode(contextNode);
     }
-    else {
-      this.clearFocus();
+    catch (err) {
+      logError(err);
+      throw err;
     }
-
-    // always decorate ContextNode
-    this._selectContextNode(contextNode);
   }
 
   handleHiddenNodeChanged = () => {
