@@ -7,14 +7,12 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import Backlog from './Backlog';
 
+/**
+ * @typedef {import('../ProjectsManager').default} PracticeManager
+ */
+
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Db');
-
-import path from 'path';
-
-/**
- * @typedef {import('../ProjectsManager').default} ProjectsManager
- */
 
 global.self = global;   // hackfix for firebase which requires `self` to be a global
 
@@ -67,12 +65,15 @@ const MergeTrue = Object.freeze({ merge: true });
 export class Db {
   containersByName = new Map();
 
-  constructor() {
+  /**
+   * @param {PracticeManager} practiceManager 
+   */
+  constructor(practiceManager) {
     this.firebase = getFirebase();
     this.fs = getFirestore();
 
     // TODO: implement Backlog
-    this.backlog = new Backlog();
+    this.backlog = new Backlog(practiceManager);
 
     // TODO: monitor firestore connection status and call `tryReplayBacklog` before doing anything other write action
   }

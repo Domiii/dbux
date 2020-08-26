@@ -27,7 +27,7 @@ export default class BackendController {
   async init() {
     await this.installBackendDependencies();
 
-    this.db = new Db();
+    this.db = new Db(this.practiceManager);
     this.auth = new BackendAuth(this);
   }
 

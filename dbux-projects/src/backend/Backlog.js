@@ -1,36 +1,64 @@
+/**
+ * @typedef {import('../ProjectsManager').default} PracticeManager
+ */
+
+const keyName = 'dbux.projects.backend.backlog';
+
 export default class Backlog {
+  /**
+   * @param {PracticeManager} practiceManager 
+   */
+  constructor(practiceManager) {
+    this.practiceManager = practiceManager;
+    this.backlog = [];
+
+    this.initBacklog();
+  }
+
+  initBacklog() {
+    this.backlog = this.practiceManager.externals.storage.get(keyName) || [];
+  }
+
+  async saveBacklog() {
+    return this.practiceManager.externals.storage.set(keyName, this.backlog);
+  }
+
   hasBacklog() {
-    // TODO: implement this
-    return false;
+    return !!this.backlog.length;
   }
 
   /**
    * Remember write action and try again later.
+   * @param {object} writeRequest
    */
   async addBacklog(writeRequest) {
-    // TODO: remember backlog
+    this.backlog.push(writeRequest);
+    await this.saveBacklog();
   }
 
   /**
    * If backlog is corrupted, allow user to reset everything.
    */
   async resetBacklog() {
-    // TODO: reset backlog
+    this.backlog = [];
+    await this.saveBacklog();
+  }
+
+  async _doWrite(writeRequest) {
+    
   }
 
   async tryReplayBacklog() {
-    // TODO
+    while (this.hasBacklog()) {
+      let writeRequest = this.backlog[0];
 
-    // for (const writeRequest of ...) {
-    //   try {
-    //     await this._doWrite(writeRequest)
-    //     // success
-    //   }
-    //   catch (err) {
-    //     // fail: stop replaying backlog for now (will try again later)
-    //     throw new Error(`Could not replay backlog: ${err.message}`);
-    //   }
-    // }
+      try {
+        await this._doWrite(writeRequest);
+        this.backlog.shift();
+      }
+      catch (err) {
+        throw new Error(`Replay backlog stopped due to error: ${err.message}`);
+      }
+    }
   }
-
 }
