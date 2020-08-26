@@ -23,7 +23,7 @@ export async function buildWebviewClientHtml(scriptPaths, themePath) {
   <script>
     function main() {
       window.x = (window.x || 0) + 1;
-      console.debug('Client main', x);
+      // console.debug('Client main', x);
       if (window.__dbuxComponentManager) {
         // started this before -> need to tear down, and go again?
         componentManager.restart();

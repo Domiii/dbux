@@ -1,13 +1,17 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { ProjectsManager } from '@dbux/projects/src';
 import { registerCommand } from './commandUtil';
+
+/** @typedef {import('../projectView/projectViewController').ProjectViewController} ProjectViewController */
 
 const logger = newLogger('projectCommands');
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
+/**
+ * @param {ProjectViewController} projectViewController 
+ */
 export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbuxProjectView.showDiff', (/* node */) => {
     return projectViewController.manager.externals.showMessage.info(`You may click 'Source Control' button to review your change.`);
@@ -55,5 +59,9 @@ export function initProjectCommands(extensionContext, projectViewController) {
   
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
     return projectViewController.manager.runner.cancel();
+  });
+
+  registerCommand(extensionContext, 'dbux.togglePracticeView', async () => {
+    await projectViewController.toggleTreeView();
   });
 }

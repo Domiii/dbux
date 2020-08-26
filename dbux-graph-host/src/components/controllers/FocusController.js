@@ -1,8 +1,19 @@
 import NanoEvents from 'nanoevents';
+import { newLogger } from '@dbux/common/src/log/logger';
 import traceSelection from '@dbux/data/src/traceSelection';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('FocusController');
+
+/** @typedef {import('./Highlighter').default} Highlighter */
+
 export default class FocusController extends HostComponentEndpoint {
+  /**
+   * @type {Highlighter}
+   */
+  lastHighlighter;
+
   get highlightManager() {
     return this.context.graphDocument.controllers.getComponent('HighlightManager');
   }
@@ -12,6 +23,8 @@ export default class FocusController extends HostComponentEndpoint {
   }
 
   init() {
+    // NOTE: sync mode is on by default
+    // TODO: move `syncMode` to `state.syncMode`
     this.syncMode = true;
     this._emitter = new NanoEvents();
 
@@ -24,30 +37,38 @@ export default class FocusController extends HostComponentEndpoint {
     const unbindSubscription = traceSelection.onTraceSelectionChanged(this.handleTraceSelected);
     this.addDisposable(unbindSubscription);
     // if already selected, show things right away
-    this.handleTraceSelected(traceSelection.selected);
+    this.handleTraceSelected();
   }
 
-  handleTraceSelected = async (trace) => {
-    await this.waitForInit();
-    
-    let contextNode;
-    if (trace) {
-      const { applicationId, contextId } = trace;
-      contextNode = this.owner.getContextNodeById(applicationId, contextId);
-      if (this.syncMode) {
-        this.focus(contextNode);
+  handleTraceSelected = async () => {
+    try {
+      // since we can't use async function in event handler, we should wrap it with try catch to capture error
+      const trace = traceSelection.selected;
+      await this.waitForInit();
+      
+      let contextNode;
+      if (trace) {
+        const { applicationId, contextId } = trace;
+        contextNode = this.owner.getContextNodeById(applicationId, contextId);
+        if (this.syncMode && contextNode) {
+          // NOTE: since we do this right after init, need to check if contextNode have been built
+          await this.focus(contextNode);
+        }
       }
+      else {
+        this.clearFocus();
+      }
+  
+      // always decorate ContextNode
+      this._selectContextNode(contextNode);
     }
-    else {
-      this.clearFocus();
+    catch (err) {
+      logError('Cannot focus on selected trace', err);
     }
-
-    // always decorate ContextNode
-    this._selectContextNode(contextNode);
   }
 
   handleHiddenNodeChanged = () => {
-    this.handleTraceSelected(traceSelection.selected);
+    this.handleTraceSelected();
   }
 
   _selectContextNode(contextNode) {
@@ -76,11 +97,11 @@ export default class FocusController extends HostComponentEndpoint {
     }
     this.syncMode = mode;
     if (this.syncMode) {
-      this.handleTraceSelected(traceSelection.selected);
+      this.handleTraceSelected();
     }
     else {
-      this.lastHighlighter?.dec();
-      this.lastHighlighter = null;
+      // this.lastHighlighter?.dec();
+      // this.lastHighlighter = null;
     }
     this._emitter.emit('modeChanged', this.syncMode);
   }
@@ -94,23 +115,23 @@ export default class FocusController extends HostComponentEndpoint {
     }
 
     await targetNode.reveal?.(true);
-    this.highlight(targetNode);
+    // this.highlight(targetNode);
     this.remote.slide(targetNode);
   }
 
   clearFocus() {
-    if (this.lastHighlighter && !this.lastHighlighter._isDisposed) {
-      this.lastHighlighter?.dec();
-    }
-    this.lastHighlighter = null;
+    // if (this.lastHighlighter && !this.lastHighlighter._isDisposed) {
+    //   this.lastHighlighter?.dec();
+    // }
+    // this.lastHighlighter = null;
     this.remote.slide(null);
   }
 
-  highlight(node) {
-    this.highlightManager.clear();
-    this.lastHighlighter = node.controllers.getComponent('Highlighter');
-    this.lastHighlighter.inc();
-  }
+  // highlight(node) {
+  //   this.highlightManager.clear();
+  //   this.lastHighlighter = node.controllers.getComponent('Highlighter');
+  //   this.lastHighlighter.inc();
+  // }
 
   // ###########################################################################
   // own event

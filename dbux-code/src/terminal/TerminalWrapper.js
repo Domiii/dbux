@@ -3,8 +3,8 @@ import os from 'os';
 import path from 'path';
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getDbuxTargetPath } from '@dbux/common/src/dbuxPaths';
 import { execCommand } from '../codeUtil/terminalUtil';
+import { getResourcePath } from '../resources';
 
 const Verbose = true;
 // const Verbose = false;
@@ -33,17 +33,23 @@ export default class TerminalWrapper {
   }
 
   async _run(cwd, command, args) {
-    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');
+    // NOTE: fix paths on Windows
+    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');    
+    const pathToDbuxRun = getResourcePath('_dbux_run.js').replace(/\\/g, '/');
 
+    // serialize everything
+    const runJsargs = { cwd, command, args, tmpFolder };
+    const serializedRunJsArgs = Buffer.from(JSON.stringify(runJsargs)).toString('base64');
+    const runJsCommand = `node ${pathToDbuxRun} ${serializedRunJsArgs}`;
 
-    const pathToDbuxRun = getDbuxTargetPath('code', 'resources/_dbux_run.js');
-    const runJsArgs = Buffer.from(JSON.stringify({ cwd, command, args, tmpFolder })).toString('base64');
-    const runJsCommand = `node ${pathToDbuxRun} ${runJsArgs}`;
+    debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
 
+    // execute command
     this._terminal = await execCommand('', runJsCommand);
 
     try {
-      const result = await new Promise((resolve, reject) => {
+      return await new Promise((resolve, reject) => {
+        let resolved = false;
         const watcher = fs.watch(tmpFolder);
         watcher.on('change', (eventType, filename) => {
           watcher.close();
@@ -58,21 +64,33 @@ export default class TerminalWrapper {
           Verbose && debug('Client finished. Result:', result);
           fs.unlinkSync(path.join(tmpFolder, filename));
           resolve(result);
+          resolved = true;
         });
 
         watcher.on('error', (err) => {
-          reject(new Error(`FSWatcher error: ${err.message}`));
+          let newErr = new Error(`FSWatcher error: ${err.message}`);
+          if (resolved) {
+            warn(newErr);
+          } 
+          else {
+            reject(newErr);
+          }
         });
 
         window.onDidCloseTerminal((terminal) => {
           if (terminal === this._terminal) {
             watcher.close();
-            reject(new Error('User closed the terminal'));
+
+            let newErr = new Error('The terminal was closed.');
+            if (resolved) {
+              warn(newErr);
+            } 
+            else {
+              reject(newErr);
+            }
           }
         });
       });
-
-      return result;
     } finally {
       this.dispose();
       fs.rmdirSync(tmpFolder);

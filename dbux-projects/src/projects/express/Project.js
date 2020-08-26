@@ -1,7 +1,7 @@
 import sh from 'shelljs';
 import isArray from 'lodash/isArray';
 import Project from '../../projectLib/Project';
-import { buildMochaRunBugCommand as buildMochaCommand } from '../../util/mochaUtil';
+import { buildMochaRunCommand } from '../../util/mochaUtil';
 
 
 export default class ExpressProject extends Project {
@@ -18,7 +18,7 @@ export default class ExpressProject extends Project {
         // https://github.com/BugsJS/express/releases/tag/Bug-1-test
         // https://github.com/BugsJS/express/commit/8bd36202bef586889d20bd5fa0732d3495da54eb
         id: 1,
-        testRe: 'should only include each method once',
+        testRe: 'OPTIONS should only include each method once',
         testFilePaths: ['test/app.options.js']
       },
       {
@@ -241,10 +241,18 @@ export default class ExpressProject extends Project {
     await this.autoCommit();
   }
 
-  async testBugCommand(bug, debugPort) {
+  async testBugCommand(bug, cfg) {
     const { projectPath } = this;
-    const bugArgs = this.getBugArgs(bug);
-    return buildMochaCommand(projectPath, bugArgs, bug.require, debugPort);
+    const bugArgs = this.getMochaArgs(bug);
+
+    const mochaCfg = {
+      cwd: projectPath,
+      mochaArgs: bugArgs,
+      require: bug.require,
+      ...cfg
+    };
+
+    return buildMochaRunCommand(mochaCfg);
 
     // TODO: enable auto attach (run command? or remind user?)
     //      see: https://code.visualstudio.com/blogs/2018/07/12/introducing-logpoints-and-auto-attach

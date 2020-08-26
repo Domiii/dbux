@@ -1,9 +1,10 @@
+import GraphThemeMode from '@dbux/graph-common/src/shared/GraphThemeMode';
 import { compileHtmlElement, decorateClasses } from '../util/domUtil';
 import { isMouseEventPlatformModifierKey } from '../util/keyUtil';
 import { getPlatformModifierKeyString } from '../util/platformUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
-let choiceElm;
+let choicingIndicator;
 class ContextNode extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
@@ -15,7 +16,7 @@ class ContextNode extends ClientComponentEndpoint {
           <div class="content">
             <div class="flex-row">
               <div class="flex-row">
-                <button data-el="nodeToggleBtn" class="node-toggle-btn"></button>
+                <button data-el="nodeToggleBtn" class="btn node-toggle-btn"></button>
                 <div data-el="title" class="flex-row">
                   <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
                   <div data-el="contextLabel" class="ellipsis-20 dbux-link"></div>
@@ -24,7 +25,7 @@ class ContextNode extends ClientComponentEndpoint {
                   &nbsp;☩
                 </div-->
                 &nbsp;
-                <button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button>
+                <!--button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button-->
                 <button data-el="prevContextBtn" class="hidden">⇦</button>
                 <button data-el="nextContextBtn" class="hidden">⇨</button>
                 <div class="loc-label">
@@ -61,21 +62,29 @@ class ContextNode extends ClientComponentEndpoint {
       isSelected,
       traceId,
       isSelectedTraceCallRelated,
-      contextIdOfSelectedCallTrace
+      contextIdOfSelectedCallTrace,
     } = this.state;
 
+    const { themeMode } = this.context;
+
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},50%,95%)`;
-    // this.els.title.id = `name_${contextId}`;
-    // this.els.nodeChildren.id = `children_${contextId}`;
+    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},35%,${GraphThemeMode.is.Dark(themeMode) ? 30 : 95}%)`;
     this.els.contextLabel.textContent = contextNameLabel;
     this.els.locLabel.textContent = contextLocLabel;
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
     this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
-    decorateClasses(this.els.title, {
-      'selected-trace': isSelected
-    });
+
+    if (GraphThemeMode.is.Dark(themeMode)) {
+      decorateClasses(this.els.title, {
+        'selected-trace-dark': isSelected
+      });
+    }
+    else {
+      decorateClasses(this.els.title, {
+        'selected-trace': isSelected
+      });
+    }
 
     // set indicator
     this.setIndicator(traceId, this.children.getComponents('ContextNode'), isSelectedTraceCallRelated, contextIdOfSelectedCallTrace, isSelected);
@@ -159,37 +168,27 @@ class ContextNode extends ClientComponentEndpoint {
     // check trace is selectedTraceCallRelated -del
     if (toggle !== -1 && isSelectedTraceCallRelated && contextIdOfSelectedCallTrace !== undefined) {
       toggle = selectChild.findIndex(x => x[1] === contextIdOfSelectedCallTrace);
-      let newChoiceElm = children[toggle]?.el.querySelector('.indicator-cont');
-      
-      if (choiceElm !== newChoiceElm) {
-        choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
-        choiceElm = newChoiceElm;
-        choiceElm?.classList?.add('set-calltrace');
-      }
-      // console.log(choiceElm?.classList);
-      // console.log('toggle:', toggle, 'element:', children[toggle]?.el);
-      // console.log('**********************')
+
+      let newIndicator = children[toggle]?.el.querySelector('.indicator-cont');
+      this.checkNewIndicator(newIndicator, 'set-calltrace');
     }
     else if (toggle !== -1) {
-      let newChoiceElm = children[toggle]?.el.querySelector('.indicator-cont');
-      
-      if (choiceElm !== newChoiceElm) {
-        choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
-        choiceElm = newChoiceElm;
-        choiceElm?.classList?.add('set-top');
-      }
+      let newIndicator = children[toggle]?.el.querySelector('.indicator-cont');
+      this.checkNewIndicator(newIndicator, 'set-top');
     }
     else {
-      let newChoiceElm = children[toggle]?.el.querySelector('.indicator-cont');
-      
-      if (choiceElm !== newChoiceElm) {
-        choiceElm?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
-        choiceElm = newChoiceElm;
-        choiceElm?.classList?.add('set-bottom');
-      }
+      let newIndicator = children[toggle]?.el.querySelector('.indicator-cont');
+      this.checkNewIndicator(newIndicator, 'set-bottom');
     }
   }
 
+  checkNewIndicator(newIndicator, newClass) {
+    if (choicingIndicator !== newIndicator) {
+      choicingIndicator?.classList.remove('set-top', 'set-bottom', 'set-calltrace');
+      choicingIndicator = newIndicator;
+      choicingIndicator?.classList?.add(newClass);
+    }
+  }
 
   on = {
     contextLabel: {
@@ -212,11 +211,11 @@ class ContextNode extends ClientComponentEndpoint {
         this.handleClickOnParentTrace(evt);
       }
     },
-    staticContextHighlightBtn: {
-      click(/* evt */) {
-        this.remote.toggleStaticContextHighlight();
-      }
-    },
+    // staticContextHighlightBtn: {
+    //   click(/* evt */) {
+    //     this.remote.toggleStaticContextHighlight();
+    //   }
+    // },
     prevContextBtn: {
       click(/* evt */) {
         this.remote.selectPreviousContextByStaticContext();

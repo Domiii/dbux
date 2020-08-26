@@ -29,7 +29,7 @@ If you are already familiar with the Plugin, feel free to further investigate fu
    * When running Dbux, most relevant parts of the code will be traced. However it will not trace *everything*.
 1. [Performance](#performance)
    * Recording a lot of runtime data from a program can be very slow. This section explains several major performance considerations.
-1. [Known Issues & Limitations](#known-issues--limitations)
+1. [Known Limitations](#known-limitations)
    * Dbux is not perfect. Learn more about some of the better known imperfections here.
 1. [Dbux Data Analysis](#dbux-data-analysis)
    * Dbux VSCode Plugin is (currently) the only frontend for Dbux. If you want to build your own frontend, want to further analyze your runtime data, or are just plain curious as to what kind of data is collected and what you can do with it, then this section is for you.
@@ -84,21 +84,24 @@ Main considerations include:
    * Instead of recording *everything*, we might want to be able to choose what to record, and when.
    * For example: Dbux probably won't really work at all if you run it on a 30+FPS game.
       * In that case, we might want to be very strategic in telling Dbux to only record: (i) initialization, (ii) a select few other functions and then (iii) several frames of the gameloop for our analysis.
-   * Currently, we do not have such fine-grained control over Dbux.
-   * Tracked in #219
+   * However, Dbux does not currently have such fine-grained control over the recording process.
+   * Tracked in issue#219
 * When running a program with Dbux enabled, and also running it in debug mode (i.e. `--inspect` or `--inspect-brk`), things probably slow down even worse. Consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features unless there is a specific Debugger functionality that Dbux cannot compete with (of which arguably there might be a few, that are valuable in some circumstances).
 
 
-# Known Issues & Limitations
+# Known Limitations
 
-## Syntax Limitations
+## async/await is not yet supported
 
-The following JS syntax constructs are not supported at all or support is limited. We don't recommend 
+* This is currently broken so bad that it will lead to errors when trying to run JS code with `await` in it.
+* NOTE: Yes, this is an absolutely vital feature of modern JavaScript and we hate to not have it working yet (despite having already spent quite some time on it).
+* Tracked in #128.
 
-* `async/await`
-   * Broken so bad that it will lead to errors when trying to run JS code with `await` in it.
-   * NOTE: Yes, this is an absolutely vital feature of modern JavaScript and we hate to not have it working yet.
-   * Tracked in #128.
+
+## Other Syntax Limitations
+
+The following JS syntax constructs are not supported at all or support is limited.
+
 * Loops in general
    * Loops are traced, however the loop is not properly instrumented and many important aspects of a loop are not yet recorded.
    * Tracked in #222
@@ -109,26 +112,20 @@ The following JS syntax constructs are not supported at all or support is limite
    * Afaik, there was some issue with Babel just not wanting the do-while visitor. Have not further researched.
 
 
-## Async Call Graph + Callback tracking
+## Problems with Values
 
-Theoretically we should be able to track all callbacks and their data flow to the call site, however we don't do that properly quite yet.
+Because of [performance](#performance) reasons, we cannot record *everything*.
 
-Some examples:
-
-* When calling `setTimeout(f)`, you will see that `f` gets executed, but it's execution is not linked to the `setTimeout(f)` call that scheduled its execution.
-* The same problem exists with `Promise.then(f)`, and any instance where callbacks are used.
-
-NOTE: This link between a caller passing a callback and the execution of that callback is considered an edge in the "asynchronous call graph", an elusive feature that we are planning to support, but don't have finished yet.
-
-The related "asynchronous call graph" feature is tracked in issue #210.
+* Big objects, arrays and strings are truncated (see [performance](#performance) for more information).
+* We currently do not properly handle certain built-in types (such as `Map` and `Set`) correctly, will probably not show up correctly.
 
 
 ## Calling `process.exit` as well as uncaught exceptions are not handled properly
 
 * You might see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably a crash or you called `process.exit` manually." in the console.
-* `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet, as a result, you won't see all traces/contexts etc.
-* If you *MUST* call `process.exit`, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side.
-   * NOTE: some frameworks that kill your process by default might require extra configuration (e.g. for `Mocha` you want to add the `--no-exit` flag)
+* `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet. As a result, not all of the runtime data could be recorded properly.
+* If you *MUST* call `process.exit` manually, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side.
+   * NOTE: some frameworks that kill your process by can be configured not to do so (e.g. for `Mocha` you want to add the `--no-exit` flag)
 * This is tracked in #201.
 
 
@@ -150,7 +147,6 @@ By trying to observe a program, while definitely not intending to, you will inev
    * -> This means that in many scenarios where Proxies (with side effects) are in play, you might just not be able to use Dbux properly.
 
 NOTE: There are ways to avoid these issues, for example by allowing in-line comment directives (like Eslint), but we sadly just don't have that yet. Tracked in issue #209.
-
 
 ## `eval` and dynamically loaded code
 
@@ -180,6 +176,20 @@ While this is not impossible, we certainly do not currently support this feature
    3. By default, babel treats js files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have strict mode enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910
    4. NOTE: You can see the same syntax error when slightly modifying above example and running it in `node` (without Dbux) but with strict mode enabled: `"use strict"; var public = 3;`.
 * You should be able to customize the babel config and disable strict mode if you please. However we recommend to just work against strict mode to begin with.
+
+
+## Async Call Graph + Callback tracking
+
+Theoretically we should be able to track all callbacks and their data flow to the call site, however we don't do that properly quite yet.
+
+Some examples:
+
+* When calling `setTimeout(f)`, you will see that `f` gets executed, but it's execution is not linked to the `setTimeout(f)` call that scheduled its execution.
+* The same problem exists with `Promise.then(f)`, and any instance where callbacks are used.
+
+NOTE: This link between a caller passing a callback and the execution of that callback is considered an edge in the "asynchronous call graph", an elusive feature that we are planning to support, but don't have finished yet.
+
+The related "asynchronous call graph" feature is tracked in issue #210.
 
 
 ## Issues under Windows
@@ -234,25 +244,21 @@ A few more notes on the Call Graph GUI implementation:
 
 Terminology regarding the JavaScript runtime is either not well defined in general, or we have just not yet spent enough time finding all the definitions. That is why we try to explain some of the terminology that we came up with here (feel free to help us improve):
 
-## Trace
+<span id="#trace"></span>
 
-TODO
+## Trace and Static Trace
 
-## Context
+We use (i) the name `staticTrace` to represent a piece of code (e.g. `f(x)`), and (ii) the name `trace` to represent a recorded execution of that code; meaning that one `staticTrace` (piece of code) has 0 or more `traces` (executions).
 
-TODO
+<span id="#context"></span>
 
-* aka `executionContext`
+## Context and Static Context
 
-(can probably also be called a "frame"?)
-
-## Static trace
-
-TODO: `staticTrace`
-
-## Static context
-
-TODO: `staticContext`
+* A `static context` can be a `function` declaration or a `Program` (`Program` is Babel's word for "JavaScript file"). A `context` (sometimes also called `executionContext`) is any execution of such function or Program.
+* In many ways, a `context` can also be considered a "stack frame" (or `frame` in short).
+   * (That idea only came to us later, and that is why we are not currently using this terminology.)
+* TODO: explain how this works for `async function`s
+* JavaScript implementation note: While functions can be executed many times, JavaScript files usually only execute once, that is the first time they are `require`'d or `import`'ed. After that first time their `exports` are cached, and returned to any following caller of `require` or `import`. That is why you will only see a single trace in the file scope, even if you require them many times.
 
 ## Run
 
@@ -260,8 +266,9 @@ A "run" is an invocation of code from outside our visible (recorded) runtime. Ex
 
 * Execution of a JavaScript file (often called by `node` or by the webpack bundle (which in turn is called by the underlying JS runtime environment)).
 * Browser executing JavaScript of a &lt;script> tag
-* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick` etc. These callbacks are scheduled and then run by the underlying JS runtime environment.
+* Execution of a callback supplied to `setTimeout`, `setInterval`, `setIntermediate`, `Process.nextTick` and even `Promise.then`. These callbacks are (usually) scheduled and then, at a later point in time, executed by the underlying JS runtime environment.
 * DOM event handler callbacks
+* and probably more...
 
 The set of all runs comprise the "root nodes" of our Call Graph.
 

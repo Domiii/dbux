@@ -5,6 +5,7 @@ const path = require('path');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const {
   makeResolve,
   makeAbsolutePaths,
@@ -73,7 +74,24 @@ module.exports = (env, argv) => {
     }
   ];
 
+  // see https://v4.webpack.js.org/guides/production/#minification
+  const optimization = mode !== 'production' ? undefined : {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          keep_classnames: true,
+          // keep_fnames: true
+        }
+      })
+    ]
+  };
+
   return {
+    watchOptions: {
+      poll: true,
+      ignored: /node_modules/
+    },
     // https://github.com/webpack/webpack/issues/2145
     mode,
     // devtool: 'inline-module-source-map',
@@ -98,14 +116,15 @@ module.exports = (env, argv) => {
     externals: {
       uws: "uws",
       vscode: "commonjs vscode",
-      firebase: 'umd firebase'
+      firebase: 'commonjs firebase'
     },
     node: {
       // generate actual output file information
       // see: https://webpack.js.org/configuration/node/#node__filename
       __dirname: false,
       __filename: false,
-    }
+    },
+    optimization
   };
 };
 

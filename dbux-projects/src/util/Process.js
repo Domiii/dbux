@@ -64,7 +64,9 @@ export default class Process {
     const {
       failOnStatusCode = true,
       failWhenNotFound = true,
-      sync = false
+      sync = false,
+      logStdout = true,
+      logStderr = true
     } = (options || EmptyObject);
 
     const processOptions = {
@@ -108,8 +110,12 @@ export default class Process {
     this._process = spawn(commandName, commandArgs, processOptions);
     const newProcess = this._process;
 
-    pipeStreamToLogger(newProcess.stdout, logger);
-    pipeStreamToLogger(newProcess.stderr, logger);
+    if (logStdout) {
+      pipeStreamToLogger(newProcess.stdout, logger);
+    }
+    if (logStderr) {
+      pipeStreamToLogger(newProcess.stderr, logger);
+    }
     // newProcess.stdin.on('data', buf => {
     //   console.error('newProcess stdin data', buf.toString());
     // });
@@ -256,7 +262,8 @@ export default class Process {
 
     options = {
       ...options,
-      captureOut: true
+      captureOut: true,
+      logStdout: false
     };
 
     await newProcess.start(cmd, logger || newLogger('exec'), options, input);
@@ -271,6 +278,8 @@ export default class Process {
       ...options,
       captureOut: true,
       captureErr: true,
+      logStdout: false,
+      logStderr: false
     };
 
     let result = await newProcess.start(cmd, logger || newLogger('exec'), options, input);

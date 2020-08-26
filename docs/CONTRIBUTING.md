@@ -6,8 +6,10 @@ TODO: provide basic protocols
 
 ## Prerequisites
 
-* bash (e.g. via cygwin or `git` (which also installs cygwin) on Windows)
-* node (we recommend [v12.12.0](https://nodejs.org/en/blog/release/v12.12.0/) or higher for its source map support)
+* bash
+   * On Windows, you can get this via cygwin or `git` (which also installs cygwin)
+* node
+   * we recommend [v12.12.0](https://nodejs.org/en/blog/release/v12.12.0/) or higher for its source map support
 * vscode
 * yarn
 
@@ -48,6 +50,16 @@ In the `analyze/` folder, you find several python notebooks that allow you analy
       * Done!
    * Other OSes
 1. Run one of the notebooks, load the file, and analyze
+
+# Docs
+
+## Image conversion
+
+* Sometimes, image conversion is needed, especially to convert icon `svg`s to `png`s
+* With imagemick (pre-installed on mac), you can do [this](https://stackoverflow.com/questions/9530524/convert-svg-to-transparent-png-with-antialiasing-using-imagemagick):
+   * `convert -channel rgba -background "rgba(0,0,0,0)" in.svg out.png`
+
+TODO: fix all of the below
 
 # Some dependencies
 

@@ -10,21 +10,24 @@ const logger = newLogger('checkSystem');
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
-const keyName = "dbux.project.systemCheck";
 const option = { failOnStatusCode: false };
+
+let previousSuccess = false;
 
 /**
  * @param {ProjectManager} manager 
  */
-async function updateCheckedStatus(manager, status) {
-  return await manager.externals.storage.set(keyName, status);
+async function updateCheckedStatus(success) {
+  // return await manager.externals.storage.set(keyName, status);
+  previousSuccess = success;
 }
 
 /**
  * @param {ProjectManager} manager 
  */
-function isChecked(manager) {
-  return manager.externals.storage.get(keyName, false);
+function isChecked(/* manager */) {
+  // return manager.externals.storage.get(keyName, false);
+  return previousSuccess;
 }
 
 /**
@@ -72,7 +75,7 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
 
   let success = true;
   let modalMessage = 'Dbux requires the following programs to be installed and available on your system in order to run smoothly.' +
-                     ' Please make sure, you have all of them installed.\n\n';
+    ' Please make sure, you have all of them installed.\n\n';
 
   if (await hasWhich()) {
     for (let program of Object.keys(requirement)) {
@@ -80,15 +83,15 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
     }
 
     results.node.path && (results.node.version = await getNodeVersion());
-    
+
     modalMessage += `✓  which/where.exe\n`;
   } else {
     success = false;
     modalMessage += `x  which/where.exe\n` +
-                    `    Cannot run the system check because you are on a legacy system. ` +
-                    `We need where to be available on Windows (available from Windows 7 and Windows Server 2003 onward), ` +
-                    `and which to be available on any other system. ` +
-                    `If you are on Windows, please refer to: https://superuser.com/questions/49104/how-do-i-find-the-location-of-an-executable-in-window.\n`;
+      `    Cannot run the system check because you are on a legacy system. ` +
+      `We need "where.exe" to be available on Windows (available from Windows 7 and Windows Server 2003 onward), ` +
+      `and "which" on any other system. ` +
+      `If you are on Windows, please refer to: https://superuser.com/questions/49104/how-do-i-find-the-location-of-an-executable-in-window.\n`;
   }
 
   // debug(requirement, results);
@@ -107,7 +110,7 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
       }
     } else if (res?.path) {
       message += `¯\\_(ツ)_/¯ ${program} installed but old. Version is ${res.version} but we recommend ${req.version}. ` +
-                 `Your version might or might not work. We don't know, but we recommend upgrading to latest (or at least a later) version instead.`;
+        `Your version might or might not work. We don't know, but we recommend upgrading to latest (or at least a later) version instead.`;
       // success = false;
     } else if (res) {
       message += `x    ${program} not found.`;
@@ -121,29 +124,39 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
     modalMessage += `${message}\n`;
   }
 
-  modalMessage += success ? 
-    `\nSUCCESS! All system dependencies seem to be in order.` : 
+  modalMessage += success ?
+    `\nSUCCESS! All system dependencies seem to be in order.` :
     `\nPROBLEM: One or more system dependencies are not installed. Fix them then try again.`;
 
   // debug(success, modalMessage);
 
   if ((results?.git?.success === false || results?.bash?.success === false) && isWindows()) {
     modalMessage += '\n\nWindows users can install bash and git into $PATH by installing git by installing "git" ' +
-                    'and checking the "adding UNIX tools to PATH". You can achieve that by:\n' +
-                    '1. Installing choco\n' +
-                    '2. then run: choco install git.install --params "/GitAndUnixToolsOnPath"';
+      'and checking the "adding UNIX tools to PATH". You can achieve that by:\n' +
+      '1. Installing choco\n' +
+      '2. then run: choco install git.install --params "/GitAndUnixToolsOnPath"';
   }
 
+  let ignore = false;
   if (!success || calledFromUser) {
-    if (success) await projectManager.externals.showMessage.info(modalMessage, {}, { modal: true });
-    else await projectManager.externals.showMessage.warning(modalMessage, {}, { modal: true });
+    if (success) {
+      await projectManager.externals.showMessage.info(modalMessage, {}, { modal: true });
+    }
+    else {
+      const options = !calledFromUser ? {
+        [`Ignore and run anyway!`]: () => {
+          ignore = true;
+        }
+      } : {};
+      await projectManager.externals.showMessage.warning(modalMessage, options, { modal: true });
+    }
   }
 
-  if (!success && !calledFromUser) {
+  if (!success && !calledFromUser && !ignore) {
     throw new Error(`[DBUX] System dependency check failed :(`);
   }
 
-  await updateCheckedStatus(projectManager, success);
+  await updateCheckedStatus(success);
 }
 
 /**

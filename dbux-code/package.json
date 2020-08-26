@@ -2,7 +2,7 @@
   "name": "dbux-code",
   "private": true,
   "displayName": "Dbux (ALPHA)",
-  "version": "0.1.28-dev.0",
+  "version": "0.1.29-dev.0",
   "publisher": "Domi",
   "description": "",
   "repository": {
@@ -42,7 +42,8 @@
         },
         {
           "id": "dbuxProjectView",
-          "name": "Practice"
+          "name": "Practice",
+          "when": "dbux.context.showProjectView == true"
         }
       ]
     },
@@ -57,11 +58,11 @@
       },
       {
         "command": "dbux.showDecorations",
-        "title": "Dbux: Show decorations"
+        "title": "Dbux: Show code decorations"
       },
       {
         "command": "dbux.hideDecorations",
-        "title": "Dbux: Hide all decorations"
+        "title": "Dbux: Hide code decorations"
       },
       {
         "command": "dbux.toggleNavButton",
@@ -74,6 +75,14 @@
       {
         "command": "dbux.selectTrace",
         "title": "Dbux: select trace"
+      },
+      {
+        "command": "dbux.togglePracticeView",
+        "title": "Dbux: Toggle Practice View",
+        "icon": {
+          "light": "resources/light/project.svg",
+          "dark": "resources/dark/project.svg"
+        }
       },
       {
         "command": "dbux.runFile",
@@ -108,8 +117,20 @@
         }
       },
       {
-        "command": "dbuxCallGraphView.gotoEntry",
-        "title": "Goto"
+        "command": "dbux.startRuntimeServer",
+        "title": "Dbux: Start Dbux Runtime Server",
+        "icon": {
+          "light": "resources/light/antenna_red.svg",
+          "dark": "resources/dark/antenna_red.svg"
+        }
+      },
+      {
+        "command": "dbux.stopRuntimeServer",
+        "title": "Dbux: Stop Dbux Runtime Server",
+        "icon": {
+          "light": "resources/light/antenna_green.svg",
+          "dark": "resources/dark/antenna_green.svg"
+        }
       },
       {
         "command": "dbux.backendLogin",
@@ -120,7 +141,7 @@
         "title": "Dbux: Check System Dependencies"
       },
       {
-        "command": "dbux.openWebsite",
+        "command": "dbux.showHelp",
         "title": "Dbux: Help",
         "icon": {
           "light": "resources/light/question.svg",
@@ -518,7 +539,7 @@
         },
         {
           "command": "dbuxProjectView.node.deleteProject",
-          "when": "viewItem =~ /dbuxProjectView\\.projectNode/",
+          "when": "viewItem =~ /dbuxProjectView\\.projectNode/ && !dbuxProjectView.context.isBusy",
           "group": "inline@2"
         },
         {
@@ -529,37 +550,37 @@
         {
           "command": "dbuxProjectView.node.activateBugWithDebugger",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
-          "group": "inline@1"
+          "group": "inline@19"
         },
         {
           "command": "dbuxProjectView.node.activateBug",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
-          "group": "inline@2"
+          "group": "inline@20"
         },
         {
           "command": "dbuxProjectView.node.busyIcon",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && dbuxProjectView.context.isBusy",
-          "group": "inline"
+          "group": "inline@25"
         },
         {
           "command": "dbuxProjectView.node.stopBug",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\..*/",
-          "group": "inline"
+          "group": "inline@26"
         },
         {
           "command": "dbuxProjectView.node.resetBug",
-          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\..*\\..*/",
-          "group": "inline"
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\..*\\..*/ && !dbuxProjectView.context.isBusy",
+          "group": "inline@15"
         },
         {
           "command": "dbuxProjectView.node.showWebsite",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.RunningInBackground\\.hasWebsite/",
-          "group": "inline"
+          "group": "inline@10"
         },
         {
           "command": "dbuxProjectView.node.showBugIntroduction",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode/",
-          "group": "inline"
+          "group": "inline@9"
         }
       ],
       "view/title": [
@@ -591,27 +612,47 @@
         {
           "command": "dbuxCallGraphView.selectError",
           "when": "view == dbuxTraceDetailsView && dbuxCallGraphView.context.hasError == true",
-          "group": "navigation"
+          "group": "navigation@25"
         },
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
           "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
-          "group": "navigation"
+          "group": "navigation@20"
         },
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
           "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
-          "group": "navigation"
+          "group": "navigation@20"
+        },
+        {
+          "command": "dbux.runFile",
+          "when": "view == dbuxTraceDetailsView",
+          "group": "navigation@5"
         },
         {
           "command": "dbux.showGraphView",
           "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive == false",
-          "group": "navigation"
+          "group": "navigation@10"
         },
         {
           "command": "dbux.hideGraphView",
           "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive == true",
-          "group": "navigation"
+          "group": "navigation@10"
+        },
+        {
+          "command": "dbux.togglePracticeView",
+          "when": "view == dbuxApplicationsView",
+          "group": "navigation@3"
+        },
+        {
+          "command": "dbux.startRuntimeServer",
+          "when": "view == dbuxApplicationsView && dbux.context.runtimeServerStarted == false",
+          "group": "navigation@7"
+        },
+        {
+          "command": "dbux.stopRuntimeServer",
+          "when": "view == dbuxApplicationsView && dbux.context.runtimeServerStarted == true",
+          "group": "navigation@8"
         },
         {
           "command": "dbux.runFile",
@@ -624,7 +665,7 @@
           "group": "navigation@10"
         },
         {
-          "command": "dbux.openWebsite",
+          "command": "dbux.showHelp",
           "when": "view == dbuxApplicationsView",
           "group": "navigation@5"
         },
@@ -633,27 +674,163 @@
           "when": "view == dbuxProjectView",
           "group": "navigation"
         }
+      ],
+      "commandPalette": [
+        {
+          "command": "dbuxCallStackView.itemClick",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.showContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.showError",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.showError.disabled",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.selectError",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.setFilter",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallGraphView.clearFilter",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallStackView.showParent",
+          "when": "false"
+        },
+        {
+          "command": "dbuxCallStackView.showScheduler",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.switchGroupingMode",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectObject",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.valueRender",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousInContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextInContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextChildContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextParentContext",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousStaticTrace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousTrace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextTrace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectTraceAtCursor",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
+          "when": "false"
+        },
+        {
+          "command": "dbuxApplicationsView.showEntryPoint",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.addProjectToWorkspace",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.deleteProject",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.stopProject",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.activateBugWithDebugger",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.activateBug",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.busyIcon",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.stopBug",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.resetBug",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.showWebsite",
+          "when": "false"
+        },
+        {
+          "command": "dbux.cancelBugRunner",
+          "when": "false"
+        }
       ]
     },
     "configuration": [
       {
         "title": "Dbux",
         "properties": {
-          "dbux.run.enable-source-maps": {
-            "type": "boolean",
-            "default": true,
-            "description": "Toggle `--enable-source-maps` (since, despite its usefulness, it can be super slow)",
-            "scope": "resource"
-          },
           "dbux.run.dbuxArgs": {
             "type": "string",
-            "default": "",
+            "default": "--esnext",
             "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js",
             "scope": "resource"
           },
           "dbux.run.nodeArgs": {
             "type": "string",
-            "default": "",
+            "default": "--enable-source-maps",
             "description": "Custom node options passed to node when running the program.",
             "scope": "resource"
           },
@@ -669,15 +846,9 @@
             "description": "Custom program environment variables available via `process.env` (probably not working yet).",
             "scope": "resource"
           },
-          "dbux.debug.enable-source-maps": {
-            "type": "boolean",
-            "default": false,
-            "description": "Toggle `--enable-source-maps` (since, despite its usefulness, it can be super slow)",
-            "scope": "resource"
-          },
           "dbux.debug.dbuxArgs": {
             "type": "string",
-            "default": "",
+            "default": "--esnext",
             "description": "Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js",
             "scope": "resource"
           },
@@ -709,10 +880,11 @@
     "vscode:prepublish": "",
     "uninstallself": "code --uninstall-extension Domi.dbux-code",
     "reinstallself": "yarn run uninstallself --silent ; files=(*.vsix); code --install-extension \"${files[0]}\" && echo 'DBUX installed. >Developer: Reload Window< to see it.'",
-    "package-no-build": "rm -rf *.vsix && echo 'Packaging...' && vsce package --yarn",
+    "package-no-build": "rm -rf *.vsix && echo 'Updating README.md...' && node ../scripts/replaceReadmeAnnotations.js && echo 'Packaging...' && vsce package --yarn",
     "package:analyze": "cd .. && yarn run build:prod && cd dbux-code && yarn run package-no-build && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
     "package:publish-no-build": "yarn run package-no-build && yarn run publish-only",
-    "publish-only": "echo 'Publishing...' && vsce publish --yarn"
+    "publish-only": "echo 'Publishing...' && vsce publish --yarn",
+    "watch": "node ../node_modules/webpack/bin/webpack.js --watch --info-verbosity verbose --progress"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
@@ -722,6 +894,7 @@
     "copy-webpack-plugin": "^6.0.3",
     "glob": "^7.1.5",
     "mocha": "^6.2.2",
+    "terser-webpack-plugin": "^4.1.0",
     "typescript": "^3.6.4",
     "vsce": "^1.77.0",
     "vscode-test": "^1.2.2",
@@ -731,17 +904,18 @@
     "webpack-node-externals": "^2.5.0"
   },
   "dependencies": {
-    "@dbux/babel-plugin": "^0.1.28-dev.0",
-    "@dbux/cli": "^0.1.28-dev.0",
-    "@dbux/common": "^0.1.28-dev.0",
-    "@dbux/data": "^0.1.28-dev.0",
-    "@dbux/graph-common": "^0.1.28-dev.0",
-    "@dbux/graph-host": "^0.1.28-dev.0",
-    "@dbux/projects": "^0.1.28-dev.0",
-    "@dbux/runtime": "^0.1.28-dev.0",
+    "@dbux/babel-plugin": "^0.1.29-dev.0",
+    "@dbux/cli": "^0.1.29-dev.0",
+    "@dbux/common": "^0.1.29-dev.0",
+    "@dbux/data": "^0.1.29-dev.0",
+    "@dbux/graph-common": "^0.1.29-dev.0",
+    "@dbux/graph-host": "^0.1.29-dev.0",
+    "@dbux/projects": "^0.1.29-dev.0",
+    "@dbux/runtime": "^0.1.29-dev.0",
     "firebase": "^7.17.2",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",
+    "nanoevents": "^5.1.8",
     "socket.io": "^2.3.0",
     "strip-color": "^0.1.0"
   },

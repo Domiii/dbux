@@ -1,5 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import BackendAuth from './BackendAuth';
+import { initContainers } from './containers/index';
+import { Db } from './Db';
 
 const { log, debug, warn, error: logError } = newLogger('Backend');
 
@@ -20,5 +22,16 @@ export default class BackendController {
   async init() {
     await this.installBackendDependencies();
     this.auth = new BackendAuth(this);
+
+    this.db = new Db();
+  }
+
+  /**
+   * NOTE: In order to use most of the backend functionality, we first need to login.
+   */
+  async startBackend() {
+    await this.auth.login();
+
+    await initContainers(this.db);
   }
 }

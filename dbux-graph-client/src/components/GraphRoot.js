@@ -8,7 +8,7 @@ class GraphRoot extends ClientComponentEndpoint {
       <div class="graph-root">
         <div data-el="graphCont" class="graph-cont">
           <div data-el="body" class="body flex-column">
-            <h2 data-el="title"></h2>
+            <h3 data-el="title"></h3>
             <div>
               <button data-el="nodeToggleBtn" class="nodeToggleBtn"></button>
             </div>

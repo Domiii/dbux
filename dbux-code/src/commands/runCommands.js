@@ -4,8 +4,10 @@ import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { showOutputChannel } from '../projectView/projectViewController';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
+import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 
 const logger = newLogger('DBUX run file');
 
@@ -35,13 +37,12 @@ function getArgs(debugMode) {
   const runMode = debugMode ? 'debug' : 'run';
   const config = workspace.getConfiguration('');
 
-  let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`);
-  // WARNING: for some reason, --enable-source-maps is very slow. Adding it when in debugger becomes unbearable (so we don't mix the two for now).
+  // WARNING: for some reason, --enable-source-maps is very slow with VSCode debugging recently. Adding it when in debugger becomes unbearable (so we don't mix the two for now).
   //          Must be a bug or misconfiguration somewhere.
   //          Angular has similar issues: https://github.com/angular/angular-cli/issues/5423
-  let enableSourceMaps = config.get(`dbux.${runMode}.enable-source-maps`) || !debugMode;
+
+  let nodeArgs = config.get(`dbux.${runMode}.nodeArgs`);
   nodeArgs += debugMode ? ' --inspect-brk' : '';
-  nodeArgs += enableSourceMaps ? ' --enable-source-maps' : '';
 
   let dbuxArgs = config.get(`dbux.${runMode}.dbuxArgs`);
   let env = config.get(`dbux.${runMode}.env`);
@@ -77,10 +78,14 @@ export async function runFile(extensionContext, debugMode = false) {
     logError(`Could not find file "${activePath}": ${err.message}`);
     return;
   }
-  
+
   // install dependencies
   if (!projectManager.hasInstalledSharedDependencies()) {
-    await projectManager.installDependencies();
+    await runTaskWithProgressBar(async (progress) => {
+      showOutputChannel();
+      progress.report({ message: 'Installing dependencies...' });
+      await projectManager.installDependencies();
+    }, { cancellable: false });
   }
 
   // start runtime server

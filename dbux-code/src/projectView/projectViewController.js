@@ -9,6 +9,9 @@ import PracticeStopwatch from './PracticeStopwatch';
 import { getOrCreateProjectManager } from './projectControl';
 import { initRuntimeServer } from '../net/SocketServer';
 import { initProjectCommands } from '../commands/projectCommands';
+import { get as mementoGet, set as mementoSet } from '../memento';
+
+const showProjectViewKeyName = 'dbux.projectView.showing';
 
 // ########################################
 //  setup logger for project
@@ -26,25 +29,24 @@ setOutputStreams({
   warn: outputChannel.log.bind(outputChannel),
   error: outputChannel.log.bind(outputChannel),
   debug: outputChannel.log.bind(outputChannel)
-});
+}, true);
 
 export function showOutputChannel() {
   outputChannel.show();
 }
 
-
-let controller;
-
-class ProjectViewController {
+export class ProjectViewController {
   constructor(context) {
     this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
+    
+    this.isShowingTreeView = mementoGet(showProjectViewKeyName, false);
+    commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
 
     // ########################################
     //  init treeView
     // ########################################
     this.treeDataProvider = new ProjectNodeProvider(context, this);
-    this.treeView = this.treeDataProvider.treeView;
 
     this.practiceStopwatch = new PracticeStopwatch('practice');
     this.practiceStopwatch.registOnClick(context, this.maybeStopWatch.bind(this));
@@ -56,9 +58,23 @@ class ProjectViewController {
     bugRunner.on('statusChanged', this.onStatusChanged.bind(this));
   }
 
+  get treeView() {
+    return this.treeDataProvider.treeView;
+  } 
+
   onStatusChanged(status) {
     commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === BugRunnerStatus.Busy);
     this.treeDataProvider.refreshIcon();
+  }
+
+  // ###########################################################################
+  // toggleTreeView
+  // ###########################################################################
+
+  async toggleTreeView() {
+    this.isShowingTreeView = !this.isShowingTreeView;
+    await commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
+    await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
   }
 
   // ###########################################################################
@@ -74,13 +90,13 @@ class ProjectViewController {
   // ###########################################################################
 
   async activateBugByNode(bugNode, debugMode = false) {
-    await checkSystem(this.manager, false, true);
     showOutputChannel();
+    await checkSystem(this.manager, false, true);
     await initRuntimeServer(this.extensionContext);
 
     const options = {
       cancellable: false,
-      title: `[dbux] Activating Project ${bugNode.bug.project.name}@${bugNode.bug.name}`
+      title: `[dbux] Testing bug ${bugNode.bug.project.name}@${bugNode.bug.name}`
     };
 
     return runTaskWithProgressBar(async (progress/* , cancelToken */) => {
@@ -88,12 +104,22 @@ class ProjectViewController {
       const runner = this.manager.getOrCreateRunner();
 
       // cancel any currently running tasks
-      progress.report({ message: 'Canceling previous tasks...' });
+      progress.report({ message: 'canceling previous tasks...' });
       await runner.cancel();
 
-      // activate it!
-      progress.report({ message: 'activating...' });
-      const result = await runner.testBug(bug, debugMode);
+      // run it!
+      progress.report({ message: 'running test...' });
+      // NOTE: --enable-source-maps gets super slow in production mode for some reason
+      // NOTE2: nolazy is required for proper breakpoints in debug mode
+      // const enableSourceMaps = '--enable-source-maps';
+      const enableSourceMaps = '';
+      const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${enableSourceMaps}`;
+      const cfg = {
+        debugMode,
+        nodeArgs,
+        dbuxArgs: '--verbose=1'
+      };
+      const result = await runner.testBug(bug, cfg);
 
       if (result?.code === 0) {
         // test passed
@@ -134,25 +160,32 @@ class ProjectViewController {
 }
 
 // ###########################################################################
-// init
+// init/dispose
 // ###########################################################################
 
+/**
+ * @type {ProjectViewController}
+ */
+let controller;
+
 export function initProjectView(context) {
-  controller = new ProjectViewController(context);
-
-  // shut it all down when VSCode shuts down
-  context.subscriptions.push({
-    dispose() {
-      const runner = controller.manager.getOrCreateRunner();
-      runner.cancel();
-    }
-  });
-
-  // refresh right away
-  controller.treeDataProvider.refresh();
-
-  // register commands
-  initProjectCommands(context, controller);
+  if (!controller) {
+    controller = new ProjectViewController(context);
+  
+    // shut it all down when VSCode shuts down
+    context.subscriptions.push({
+      dispose() {
+        const runner = controller.manager.getOrCreateRunner();
+        runner.cancel();
+      }
+    });
+  
+    // refresh right away
+    controller.treeDataProvider.refresh();
+  
+    // register commands
+    initProjectCommands(context, controller);
+  }
 
   return controller;
 }

@@ -24,7 +24,7 @@ class ContextNode extends HostComponentEndpoint {
     this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
     this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
-
+    
     // add controllers
     this.controllers.createComponent('GraphNode', {});
     this.controllers.createComponent('PopperController');
