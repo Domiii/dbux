@@ -48,7 +48,8 @@ export default class TerminalWrapper {
     this._terminal = await execCommand('', runJsCommand);
 
     try {
-      const result = await new Promise((resolve, reject) => {
+      return await new Promise((resolve, reject) => {
+        let resolved = false;
         const watcher = fs.watch(tmpFolder);
         watcher.on('change', (eventType, filename) => {
           watcher.close();
@@ -63,21 +64,33 @@ export default class TerminalWrapper {
           Verbose && debug('Client finished. Result:', result);
           fs.unlinkSync(path.join(tmpFolder, filename));
           resolve(result);
+          resolved = true;
         });
 
         watcher.on('error', (err) => {
-          reject(new Error(`FSWatcher error: ${err.message}`));
+          let newErr = new Error(`FSWatcher error: ${err.message}`);
+          if (resolved) {
+            warn(newErr);
+          } 
+          else {
+            reject(newErr);
+          }
         });
 
         window.onDidCloseTerminal((terminal) => {
           if (terminal === this._terminal) {
             watcher.close();
-            reject(new Error('The terminal was closed.'));
+
+            let newErr = new Error('The terminal was closed.');
+            if (resolved) {
+              warn(newErr);
+            } 
+            else {
+              reject(newErr);
+            }
           }
         });
       });
-
-      return result;
     } finally {
       this.dispose();
       fs.rmdirSync(tmpFolder);
