@@ -61,8 +61,7 @@ export default class FocusController extends HostComponentEndpoint {
       this._selectContextNode(contextNode);
     }
     catch (err) {
-      logError(err);
-      throw err;
+      logError('Cannot focus on selected trace', err);
     }
   }
 
