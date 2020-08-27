@@ -11,10 +11,10 @@ Dbux aims at visualizing the JS runtime and making it interactive, hopefully hel
 
 If you have any questions or are interested in the progress of this project, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
 
-Here is a (very very early, read: crude) 1min demo video of just a small subset of the features:
+Here is a 20 minute intro video with two hands-on examples:
 
-<a href="https://www.youtube.com/watch?v=VAFcj75-vSs" target="_blank" alt="video">
-   <img src="http://img.youtube.com/vi/VAFcj75-vSs/0.jpg">
+<a href="https://www.youtube.com/watch?v=scxIcn1X3X4" target="_blank" alt="video">
+   <img src="http://img.youtube.com/vi/scxIcn1X3X4/0.jpg">
 </a>
 
 # Overview
@@ -23,20 +23,31 @@ We recommend getting started with Dbux by playing around with the [Dbux VSCode P
 
 If you are already familiar with the Plugin, feel free to further investigate further:
 
-1. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
-   * You definitely want to get started with the Dbux VSCode plugin to explore a bit. Once you want to use Dbux in a more complicated build setup, the "Run with Dbux" button (and it's "Debug" button friend) can probably not (trivially) run your application anymore.
-1. [Which files will be traced?](#which-files-will-be-traced)
-   * When running Dbux, most relevant parts of the code will be traced. However it will not trace *everything*.
-1. [Performance](#performance)
-   * Recording a lot of runtime data from a program can be very slow. This section explains several major performance considerations.
-1. [Known Limitations](#known-limitations)
-   * Dbux is not perfect. Learn more about some of the better known imperfections here.
-1. [Dbux Data Analysis](#dbux-data-analysis)
-   * Dbux VSCode Plugin is (currently) the only frontend for Dbux. If you want to build your own frontend, want to further analyze your runtime data, or are just plain curious as to what kind of data is collected and what you can do with it, then this section is for you.
-1. [Dbux Architecture](#dbux-architecture)
-   * This section paints the bigger picture of all the components involved.
-1. [Development + Contributions](#development--contributions)
-   * If you are interested in Dbux development.
+1. [Introduction](#introduction)
+2. [Overview](#overview)
+3. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
+4. [Which files will be traced?](#which-files-will-be-traced)
+5. [Performance](#performance)
+6. [Known Limitations](#known-limitations)
+   1. [async/await is not yet supported](#asyncawait-is-not-yet-supported)
+   2. [Other Syntax Limitations](#other-syntax-limitations)
+   3. [Problems with Values](#problems-with-values)
+   4. [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
+   5. [Heisenbugs](#heisenbugs)
+   6. [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
+   7. [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
+   8. [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
+   9. [Issues under Windows](#issues-under-windows)
+7. [Dbux Data Analysis](#dbux-data-analysis)
+8. [Dbux Architecture](#dbux-architecture)
+   1. [Call Graph GUI Implementation](#call-graph-gui-implementation)
+9. [Terminology](#terminology)
+   1. [Trace and Static Trace](#trace-and-static-trace)
+   2. [Context and Static Context](#context-and-static-context)
+   3. [Run](#run)
+   4. [Call Graph](#call-graph)
+      1. [Asynchronous Call Graph](#asynchronous-call-graph)
+10. [Development + Contributions](#development--contributions)
 
 
 # Adding Dbux to your build pipeline
