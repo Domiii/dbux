@@ -5,34 +5,33 @@
 
 <h2>Table of Contents</h2>
 
-1. [Installation](#installation)
-2. [Usage](#usage)
-3. ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
-      1. [How the Run + Debug buttons work](#how-the-run--debug-buttons-work)
-4. [Analysis Features](#analysis-features)
-   1. [Applications](#applications)
-   2. [Code decorations](#code-decorations)
-   3. [Trace Selection](#trace-selection)
-   4. [Trace Details](#trace-details)
-   5. [Trace Details: Navigation](#trace-details-navigation)
-   6. [Trace Details: Value](#trace-details-value)
-   7. [Trace Details: Object Traces](#trace-details-object-traces)
-   8. [Trace Details: Trace Executions](#trace-details-trace-executions)
-   9. [Trace Details: Nearby Values](#trace-details-nearby-values)
-   10. [Trace Details: Debug](#trace-details-debug)
-   11. [<img src="../dbux-code/resources/dark/call-graph.png" title="call graph" style="max-height: 2em; vertical-align: middle; background-color: #1A1A1A"> Call Graph](#img-srcdbux-coderesourcesdarkcall-graphpng-titlecall-graph-stylemax-height-2em-vertical-align-middle-background-color-1a1a1a-call-graph)
-   12. [Call Graph: Visualization](#call-graph-visualization)
-   13. [Call Graph: pause (pause/resume live updates)](#call-graph-pause-pauseresume-live-updates)
-   14. [Call Graph: clear (show/hide already recorded traces)](#call-graph-clear-showhide-already-recorded-traces)
-   15. [Call Graph: sync (toggle sync mode)](#call-graph-sync-toggle-sync-mode)
-   16. [Call Graph: loc](#call-graph-loc)
-   17. [Call Graph: call](#call-graph-call)
-   18. [Call Graph: Search](#call-graph-search)
-   19. [Finding Errors](#finding-errors)
-5. [Practice debugging with "Dbux Practice"](#practice-debugging-with-dbux-practice)
-6. [Commands](#commands)
-7. [Configuration](#configuration)
-8. [How does Dbux work](#how-does-dbux-work)
+- [Installation](#installation)
+- [Usage](#usage)
+- ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
+    - [How the Run + Debug buttons work](#how-the-run--debug-buttons-work)
+- [Analysis Features](#analysis-features)
+  - [Applications](#applications)
+  - [Code decorations](#code-decorations)
+  - [Trace Selection](#trace-selection)
+  - [Trace Details](#trace-details)
+  - [Trace Details: Navigation](#trace-details-navigation)
+  - [Trace Details: Value](#trace-details-value)
+  - [Trace Details: Object Traces](#trace-details-object-traces)
+  - [Trace Details: Trace Executions](#trace-details-trace-executions)
+  - [Trace Details: Nearby Values](#trace-details-nearby-values)
+  - [Trace Details: Debug](#trace-details-debug)
+  - [Call Graph](#call-graph)
+  - [Call Graph: pause (pause/resume live updates)](#call-graph-pause-pauseresume-live-updates)
+  - [Call Graph: clear (show/hide already recorded traces)](#call-graph-clear-showhide-already-recorded-traces)
+  - [Call Graph: sync (toggle sync mode)](#call-graph-sync-toggle-sync-mode)
+  - [Call Graph: loc](#call-graph-loc)
+  - [Call Graph: call](#call-graph-call)
+  - [Call Graph: Search](#call-graph-search)
+  - [Finding Errors](#finding-errors)
+- [Practice debugging with "Dbux Practice"](#practice-debugging-with-dbux-practice)
+- [Commands](#commands)
+- [Configuration](#configuration)
+- [How does Dbux work](#how-does-dbux-work)
 
 
 # Installation
@@ -132,14 +131,12 @@ Navigation allows you to step through all recorded traces, similar to (but more 
 
 ![navigation](../docs/img/nav1.png)
 
-TODO: short video
-
 Important: The buttons will only show up if you select them, or hover over them with the mouse (again, this is a VSCode limitation).
 
 Note that we are not debugging in real-time, but work on a recoding of the actual execution, allowing us to...
 
 1. step forward and also *backward* in time, meaning that all navigation modes exist twice (one forward, one backward).
-1. more easily (to some extent) take smarter (i.e. slightly less stupid) steps than the default debugger
+2. more easily (to some extent) take smarter (i.e. slightly less stupid) steps than the default debugger
 
 Here are all the buttons:
 
@@ -212,13 +209,12 @@ E.g. if you currently selected some trace `f(x)`, then you would see all executi
 
 You can select (jump to) any trace inside of this list by clicking on it.
 
-Since this can be a lot of traces, we provide a few (currently still rather crude) grouping methods (as seen in the gif below).
+Since this can be a lot of traces, you can group them by different criteria through a button on the `Trace Executions` node.
+* NOTE: Again, you have to move mouse over it to see it. That's a VSCode limitation.
 
-In Dbux terminology: `Trace Executions` lists all `traces` of the currently selected `trace`'s `staticTrace`. [Read more on Dbux terminology here](../#trace)
+Another way of putting this is: `Trace Executions` lists all `traces` of the currently selected `trace`'s `staticTrace`. [Read more on Dbux terminology here](../#trace)
 
-TODO: hof1.js
-
-![trace executions](../docs/img/trace-executions.gif)
+![trace executions](../docs/img/trace-executions-hof1.png)
 
 
 ## Trace Details: Nearby Values
@@ -242,34 +238,25 @@ This renders raw data related to the selected trace.
 
 This is generally only useful for contributors, the very curious or those who work on dynamic JS runtime data analysis.
 
-## <img src="../dbux-code/resources/dark/call-graph.png" title="call graph" style="max-height: 2em; vertical-align: middle; background-color: #1A1A1A"> Call Graph
+## Call Graph
 
-<span id="call-graph"></span>
-
-The <img src="../dbux-code/resources/dark/call-graph.png" title="call graph" style="max-height: 1.2rem; vertical-align: middle; background-color: #1A1A1A"> call graph renders a bird's eye overview over all executed files and functions.
+The <img src="../dbux-code/resources/dark/call-graph.png" title="call graph" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> Call Graph renders a bird's eye overview over all executed files and functions.
 
 As an analogy, I would say that the call graph is like (a rather crude) "Google Maps" while the [trace details view](#trace-details) is (a rather crude) "Google Street View" of your application's execution. Together they offer a multi-resolutional interactive tool to see and find everything that is going on in your application.
 
-
-## Call Graph: Visualization
-
-The call graph renders a linear timeline of your JavaScript application in the vertical dimension.
-
-The horizontal dimension grows with execution depth.
+The timeline expands vertically, while execution depth goes into the horizontal.
 
 At the outer most level, you see individual "[Run](../#run)" nodes.
 
-Each run contains all (visible/recorded) "[Context](../#context)" sub trees, that is all invocations of traced functions and files.
+Each "Run" contains all (visible/recorded) "[Context](../#context)" sub trees, that is all invocations of traced functions and files.
 
 Call graph visualizations have many uses. E.g.:
 
 * overview the complex system that is our application.
 * quickly identify points of interests in code that is not our own.
-* visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the example below:
+* visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the screengrab below
 
-TODO: fibonacci1.js
-
-![call graph: fibonacci1](../docs/img/call-graph-fib1.gif)
+![call graph: fibonacci1](../docs/img/call-graph-fib-1.png)
 
 ## Call Graph: pause (pause/resume live updates)
 
@@ -281,38 +268,38 @@ TODO: fibonacci1.js
 
 ## Call Graph: clear (show/hide already recorded traces)
 
-* `clear` is useful for removing clutter when investigating a bug that does not appear immediately, or is not part of the initialization routine.
-* For example, when investigating a bug that happens after pressing some button in your application, you can:
+* The `x` button (`clear`) is useful for removing clutter when investigating a bug that does not appear immediately, or is not part of the initialization routine.
+* For example, when investigating a bug that happens after pressing some button (a "buggy button" if you will) in your application, you can:
    1. wait for the application to finish initialization and for the "buggy button" to show up
-   1. press `clear`
-   1. press the buggy button
+   1. press `x`
+   1. press your application's buggy button
    1. (if necessary) wait until the bug occurs
    1. press 🔴 (pause).
-   * -> This lets you completely isolate the code that was executed when clicking that button, render only the relevant sub graph, while removing (hiding) all kinds of unrelated clutter.
+* -> This lets you completely isolate the code that was executed when clicking that button, render only the relevant sub graph, while removing (hiding) all kinds of unrelated clutter.
 
 
 ## Call Graph: sync (toggle sync mode)
 
-* `sync` mode makes sure that while you select traces in and navigate through your code, the selected trace's context is always automatically expanded and in clear sight.
+`sync` mode makes sure that while you select traces in and navigate through your code, the selected trace's context is always automatically expanded and in clear sight inside the Call Graph view.
 
 
 ## Call Graph: loc
 
 Show/hide locations in context nodes.
 
-You can click it to go there.
+Clicking the location takes you there.
 
 ## Call Graph: call
 
 Show/hide caller traces of all contexts that are function invocations.
 
-You can click it to go there. You can `CTRL/Command` + `Click` it to select it.
+You can click the call trace to go there. You can `CTRL/Command` + `Click` it to select it.
 
 ## Call Graph: Search
 
 Simple text search. Currently only matches the context node's title (aka `staticTrace.displayName`).
 
-The search implementation is located in [dataProviderUtil.searchContexts](../dbux-data/src/dataProviderUtil.js).
+Dev note: The search implementation is located in [dataProviderUtil.searchContexts](../dbux-data/src/dataProviderUtil.js).
 
 ## Finding Errors
 
@@ -324,44 +311,46 @@ If there are multiple errors, it should take you to the first error in your prog
 
 # Practice debugging with "Dbux Practice"
 
-We are still working on this. The idea is that this will allow anyone to practice debugging on real-world bugs in professionally developed open source projects. More on this soon :)
+"Dbux Practice" aims to allow anyone to easily get into practicing debugging on real-world bugs in professionally developed open source projects.
+
+We are still working on this. More on this soon :)
 
 
 # Commands
 
-This is how you execute VSCode commands:
+**How to execute [VSCode commands](https://code.visualstudio.com/docs/getstarted/tips-and-tricks#_command-palette)?**
 
 1. Press `CTRL/Command + Shift + P`
 1. Search for a command... (type the name or some letters of the name)
 1. Select the command (`Enter`)
 1. See it execute.
 
-Note that all the buttons that you see are also commands.
+You can bind commands to keys. [This official documentation explains how to easily keybind any command in VSCode](https://code.visualstudio.com/docs/getstarted/keybindings).
 
-[This official documentation explains how to easily keybind any command in VSCode](https://code.visualstudio.com/docs/getstarted/keybindings).
+Note that many of the built-in Dbux buttons can also be controlled via commands.
 
 
 
 A rough outline of (hopefully all) commands:
 
 <!-- dbux:codeCommands start -->
-| Command                                  | Title                               | Description                    |
-| ---------------------------------------- | ----------------------------------- | ------------------------------ |
-| dbux.backendLogin                        | Dbux: Backend Login                 | Run current file               |
-| dbux.debugFile                           | Dbux: Debug current file            | Run current file with debugger |
-| dbux.exportApplicationData               | Dbux: Export application data       |                                |
-| dbux.hideDecorations                     | Dbux: Hide all decorations          |                                |
-| dbux.hideGraphView                       | Dbux: Hide Call Graph               |                                |
-| dbux.runFile                             | Dbux: Run current file              |                                |
-| dbux.selectTrace                         | Dbux: select trace                  |                                |
-| dbux.showDecorations                     | Dbux: Show decorations              |                                |
-| dbux.showGraphView                       | Dbux: Show Call Graph               |                                |
-| dbux.showHelp                            | Dbux: Help                          |                                |
-| dbux.systemCheck                         | Dbux: Check System Dependencies     |                                |
-| dbux.toggleErrorLog                      | Dbux: Toggle all error log          |                                |
-| dbux.toggleNavButton                     | Dbux: Toggle all navigation buttons |                                |
-| dbux.togglePracticeView                  | Dbux: Toggle Practice View          |                                |
-| dbuxProjectView.node.showBugIntroduction | Show introduction                   |                                |
+| Command                                  | Title                            | Description                                                                                                                                |
+| ---------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| dbux.backendLogin                        | Dbux: Backend Login              | (Feature still in development. Won't work.)                                                                                                |
+| dbux.debugFile                           | Dbux: Debug current file         | Run selected file with Dbux, but with Node's `--inspect-brk` enabled. Make sure to enable VSCode's auto attach beforehand.                 |
+| dbux.exportApplicationData               | Dbux: Export Application Data    | Export raw recorded Dbux data of a previously executed application to a `json` file.                                                       |
+| dbux.hideDecorations                     | Dbux: Hide Code Decorations      | Do not annotate executed code with Dbux code decorations (<span style='color:red'>✦↱</span><span style='color:orange'>🔥ƒ</span> etc).     |
+| dbux.hideGraphView                       | Dbux: Hide Call Graph            | Close the Call Graph panel.                                                                                                                |
+| dbux.runFile                             | Dbux: Run current file           | Run selected file with Dbux                                                                                                                |
+| dbux.selectTrace                         | Dbux: Select Trace by id         | Mostly used for debugging Dbux, or when (for some other reason) you would know some trace by its id.                                       |
+| dbux.showDecorations                     | Dbux: Show Code Decorations      | Show code decorations again after hiding them.                                                                                             |
+| dbux.showGraphView                       | Dbux: Show Call Graph            | Open the Call Graph panel.                                                                                                                 |
+| dbux.showHelp                            | Dbux: Help                       | Show the Dbux help dialog.                                                                                                                 |
+| dbux.systemCheck                         | Dbux: Check System Dependencies  | Dbux (especially Dbux practice) needs some system tools in order to work properly. You can check these dependencies with this command.     |
+| dbux.toggleErrorLog                      | Dbux: Toggle Error Notifications | Suppress/unsuppress all Dbux error notifications.                                                                                          |
+| dbux.toggleNavButton                     | Dbux: Toggle Editor Buttons      | Hide/show Dbux buttons in the editor tab bar. Use this if you don't want to see any extra buttons at the top right of your editor tab bar. |
+| dbux.togglePracticeView                  | Dbux: Toggle Practice View       | Feature still in development. You can use this to use Dbux on a pre-configured bug in express.                                             |
+| dbuxTraceDetailsView.selectTraceAtCursor | Dbux: Select Trace At Cursor     | Selects the trace at the keyboard cursor (if there is any executed trace).                                                                 |
 
 <!-- dbux:codeCommands end -->
 

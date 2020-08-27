@@ -8,6 +8,10 @@ async function main() {
   console.log(2);
   await sleep(3000);
   console.log(3);
+  await sleep(3000);
+  console.log(4);
+  await sleep(3000);
+  console.log(5);
 }
 
 setTimeout(main, 3000);

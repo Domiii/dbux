@@ -383,8 +383,9 @@ export default {
   },
 
   /**
-   * Get callerTrace(BCE) of a call related trace, returns itself if it is not a call related trace.
-   * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the BCE of call trace
+   * Get callerTrace (BCE) of a call related trace, returns itself if it is not a call related trace.
+   * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the argument trace.
+   * Note: we use this to find the parent trace of a given context.
    * @param {DataProvider} dp
    * @param {number} traceId
   */
@@ -400,10 +401,6 @@ export default {
       // trace is call/callback argument or BCE
       return dp.collections.traces.getById(trace.callId);
     }
-    else if (isCallResult(trace)) {
-      // trace is call expression result
-      return dp.collections.traces.getById(trace.resultCallId);
-    }
     else {
       // not a call related trace
       return trace;
@@ -412,8 +409,8 @@ export default {
   },
 
   /**
-   * Get callerTrace(BCE) of a call related trace, returns itself if it is not a call related trace.
-   * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the BCE of argument trace
+   * Get callerTrace (BCE) of a call related trace, returns itself if it is not a call related trace.
+   * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the result trace.
    * @param {DataProvider} dp
    * @param {number} traceId
   */
@@ -451,11 +448,6 @@ export default {
       // try to get BCE of call
       // NOTE: `parentTrace` of a context might not participate in a call, e.g. in case of getters or setters
       const callerTrace = dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
-      if (!callerTrace) {
-        // NOTE: this can never happen, since `getCallerTraceOfTrace` always returns something
-        logError(`can't find callerTraceOfContext by parentTrace #${parentTrace.traceId} of context #${contextId}`);
-        return null;
-      }
       return callerTrace;
     }
     return null;

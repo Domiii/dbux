@@ -41,6 +41,8 @@ function addResumeContext(awaitPath, state) {
 }
 
 export function awaitVisitEnter(path, state) {
+  // // eslint-disable-next-line max-len
+  // throw new Error('`await` keyword detected while instrumenting program. The Dbux team is still working on making `await` work, however it is not working yet. Please see https://github.com/Domiii/dbux/issues/128 for more info.');
   if (!state.onEnter(path, 'context')) return;
 
   // console.log('[AWAIT]', path.toString());
