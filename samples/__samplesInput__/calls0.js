@@ -4,6 +4,8 @@ const a = [1, 2];
 
 f(1, g(...a));
 
+f(1, g())
+
 function f(...args) {
   console.log('f', ...args);
 }
