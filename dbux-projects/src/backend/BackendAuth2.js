@@ -69,22 +69,34 @@ export default class BackendAuth {
     }
   }
 
+  async getNewCustomToken() {
+    const githubAuth = await this.backendController.practiceManager.externals.interactiveGithubLogin();
+    const githubAccessToken = githubAuth.accessToken;
+    return this.getCustomTokenByGithubAccessToken(githubAccessToken);
+  }
+
   /**
-   * @return {string}
+   * @param {Boolean} forceRefresh
+   * @return {Object}
    */
-  async getCustomToken() {
+  async getCustomToken(forceRefresh = false) {
     const keyName = 'dbux.projects.backend.customToken';
     const { get, set } = this.backendController.practiceManager.externals.storage;
-    let customToken = get(keyName);
 
-    if (!customToken) {
-      const githubAuth = await this.backendController.practiceManager.externals.interactiveGithubLogin();
-      const githubAccessToken = githubAuth.accessToken;
-      customToken = await this.getCustomTokenByGithubAccessToken(githubAccessToken);
-      await set(keyName, customToken);
+    let refreshed = false;
+    let customToken;
+    if (!forceRefresh) {
+      customToken = get(keyName);
+      debug(`custom token in memento:`, customToken);
     }
 
-    return customToken;
+    if (forceRefresh || !customToken) {
+      customToken = await this.getNewCustomToken();
+      await set(keyName, customToken);
+      refreshed = true;
+    }
+
+    return { refreshed, customToken };
   }
 
   async testFirebase() {
@@ -92,8 +104,27 @@ export default class BackendAuth {
   }
 
   async login() {
-    let customToken = await this.getCustomToken();
-    await this.backendController.db.firebase.auth().signInWithCustomToken(customToken);
+    let { refreshed, customToken } = await this.getCustomToken();
+
+    debug(`real custom token`, customToken);
+
+    try {
+      await this.backendController.db.firebase.auth().signInWithCustomToken(customToken);
+    } 
+    catch (err) {
+      if (refreshed) {
+        throw new Error(`Refreshed custom token login failed: ${err.message}`);
+      }
+      else {
+        ({ customToken } = await this.getCustomToken(true));
+        try {
+          await this.backendController.db.firebase.auth().signInWithCustomToken(customToken);
+        }
+        catch (err2) {
+          throw new Error(`Force refreshed custom token login failed: ${err2.message}`);
+        }
+      }
+    }
 
     try {
       await this.testFirebase();
