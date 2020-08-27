@@ -39,7 +39,7 @@ export default class CallGraph {
       return this.getPreviousInContext(previousTrace.traceId, originId);
     }
 
-    if (this._areTraceBCEAndResult(previousTrace.traceId, originId)) {
+    if (previousTrace && this._areTraceBCEAndResult(previousTrace.traceId, originId)) {
       return this.getPreviousInContext(previousTrace.traceId, originId);
     }
 
@@ -60,7 +60,7 @@ export default class CallGraph {
       return this.getNextInContext(nextTrace.traceId, originId);
     }
 
-    if (this._areTraceBCEAndResult(originId, nextTrace.traceId)) {
+    if (nextTrace && this._areTraceBCEAndResult(originId, nextTrace.traceId)) {
       return this.getNextInContext(nextTrace.traceId, originId);
     }
 
