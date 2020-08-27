@@ -264,10 +264,12 @@ export default class WebviewWrapper {
    * 
    * @see https://code.visualstudio.com/api/extension-guides/webview#persistence
    */
-  handleDidChangeViewState = async ({ webviewPanel }) => {
+  handleDidChangeViewState = ({ webviewPanel }) => {
     // debug('handleDidChangeViewState', webviewPanel.visible, performance.now());
     this.preferredColumn = webviewPanel.viewColumn;
-    await this._setCurrentState(this.preferredColumn);
+    this._setCurrentState(this.preferredColumn).catch((err) => {
+      logError(err);
+    });
 
     // on closed, silent shutdown
     if (this.wasVisible && !webviewPanel.visible) {
