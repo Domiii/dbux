@@ -12,20 +12,28 @@ const { log, debug, warn, error: logError } = newLogger('ProgressBarTask');
 function _errWrap(f) {
   return async (...args) => {
     try {
-      return await f(...args);
+      return f(...args);
     }
     catch (err) {
-      logError('Error when executing function of task', 
+      logError('Error when executing function of task',
         f.name?.trim() || '(anonymous callback)', '-', err);
       // throw err;
+      return undefined;
     }
   };
 }
 
 /**
  *  see `window.withProgress`: https://code.visualstudio.com/api/references/vscode-api
+ * @callback reportCallBack
+ * @param {{message?: string, increment?: number}} reports
+ * @param cancellationToken
+ */
+
+/**
+ *  see `window.withProgress`: https://code.visualstudio.com/api/references/vscode-api
  * @callback taskWithProgressBarCallback
- * @param progress
+ * @param {{report: reportCallBack}} progress
  * @param cancellationToken
  */
 

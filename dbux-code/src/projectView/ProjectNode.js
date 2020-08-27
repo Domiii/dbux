@@ -69,7 +69,7 @@ export default class ProjectNode extends BaseTreeViewNode {
       const confirmMessage = `Do you really want to delete project: ${this.project.name}`;
       const result = await window.showInformationMessage(confirmMessage, { modal: true }, 'Ok');
       if (result === 'Ok') {
-        runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+        await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
           progress.report({ message: 'deleting project folder...' });
           // wait for progress bar to show
           await sleep(100);

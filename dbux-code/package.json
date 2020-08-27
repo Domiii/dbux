@@ -58,11 +58,11 @@
       },
       {
         "command": "dbux.showDecorations",
-        "title": "Dbux: Show decorations"
+        "title": "Dbux: Show code decorations"
       },
       {
         "command": "dbux.hideDecorations",
-        "title": "Dbux: Hide all decorations"
+        "title": "Dbux: Hide code decorations"
       },
       {
         "command": "dbux.toggleNavButton",
@@ -114,6 +114,22 @@
         "icon": {
           "light": "resources/light/tree_disabled.svg",
           "dark": "resources/dark/tree_disabled.svg"
+        }
+      },
+      {
+        "command": "dbux.startRuntimeServer",
+        "title": "Dbux: Start Dbux Runtime Server",
+        "icon": {
+          "light": "resources/light/antenna_red.svg",
+          "dark": "resources/dark/antenna_red.svg"
+        }
+      },
+      {
+        "command": "dbux.stopRuntimeServer",
+        "title": "Dbux: Stop Dbux Runtime Server",
+        "icon": {
+          "light": "resources/light/antenna_green.svg",
+          "dark": "resources/dark/antenna_green.svg"
         }
       },
       {
@@ -621,6 +637,16 @@
           "group": "navigation@3"
         },
         {
+          "command": "dbux.startRuntimeServer",
+          "when": "view == dbuxApplicationsView && dbux.context.runtimeServerStarted == false",
+          "group": "navigation@7"
+        },
+        {
+          "command": "dbux.stopRuntimeServer",
+          "when": "view == dbuxApplicationsView && dbux.context.runtimeServerStarted == true",
+          "group": "navigation@8"
+        },
+        {
           "command": "dbux.runFile",
           "when": "view == dbuxApplicationsView",
           "group": "navigation@15"
@@ -841,7 +867,7 @@
     "vscode:prepublish": "",
     "uninstallself": "code --uninstall-extension Domi.dbux-code",
     "reinstallself": "yarn run uninstallself --silent ; files=(*.vsix); code --install-extension \"${files[0]}\" && echo 'DBUX installed. >Developer: Reload Window< to see it.'",
-    "package-no-build": "rm -rf *.vsix && echo 'Packaging...' && vsce package --yarn",
+    "package-no-build": "rm -rf *.vsix && echo 'Updating README.md...' && node ../scripts/replaceReadmeAnnotations.js && echo 'Packaging...' && vsce package --yarn",
     "package:analyze": "cd .. && yarn run build:prod && cd dbux-code && yarn run package-no-build && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
     "package:publish-no-build": "yarn run package-no-build && yarn run publish-only",
     "publish-only": "echo 'Publishing...' && vsce publish --yarn",
@@ -855,6 +881,7 @@
     "copy-webpack-plugin": "^6.0.3",
     "glob": "^7.1.5",
     "mocha": "^6.2.2",
+    "terser-webpack-plugin": "^4.1.0",
     "typescript": "^3.6.4",
     "vsce": "^1.77.0",
     "vscode-test": "^1.2.2",
@@ -875,6 +902,7 @@
     "firebase": "^7.17.2",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",
+    "nanoevents": "^5.1.8",
     "socket.io": "^2.3.0",
     "strip-color": "^0.1.0"
   },

@@ -10,6 +10,7 @@ const path = require('path');
 const process = require('process');
 
 const Verbose = true;
+const runningTimeout = 10000;
 
 // node run.js port "cwd" "command"
 const [
@@ -38,6 +39,13 @@ function main() {
   // run it!
   const child = spawn.exec(command, processOptions);
 
+  const startTime = new Date();
+  const warningIntervalId = setInterval(() => {
+    let seconds = ((new Date()) - startTime) / 1000;
+    console.log(`Task running for ${seconds.toFixed(2)} seconds.`);
+  }, runningTimeout);
+
+
   // ###########################################################################
   // process monitoring
   // ###########################################################################
@@ -59,12 +67,18 @@ function main() {
     if (checkDone()) { return; }
 
     reportStatusCode(code);
+    clearInterval(warningIntervalId);
+
+    console.log(`Done. You can close the Terminal now.`);
   });
 
   child.on('error', (err) => {
     if (checkDone()) { return; }
 
     reportError(`[${err.code}] ${err.message || JSON.stringify(err)}`);
+    clearInterval(warningIntervalId);
+
+    console.error(`Error:`, err);
   });
 
   // inherit stdio
@@ -89,3 +103,5 @@ function reportError(error) {
 
 // go!
 main();
+
+setInterval(() => {}, 10000);
