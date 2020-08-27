@@ -337,6 +337,14 @@
         }
       },
       {
+        "command": "dbuxTraceDetailsView.expandNode",
+        "title": "Expand",
+        "icon": {
+          "light": "resources/light/expand.svg",
+          "dark": "resources/dark/expand.svg"
+        }
+      },
+      {
         "command": "dbuxApplicationsView.showEntryPoint",
         "title": "Go to Entry",
         "icon": {
@@ -457,7 +465,12 @@
         {
           "command": "dbuxTraceDetailsView.switchGroupingMode",
           "when": "viewItem == dbuxTraceDetailsView.node.staticTraceTDNodeRoot",
-          "group": "inline"
+          "group": "inline@2"
+        },
+        {
+          "command": "dbuxTraceDetailsView.expandNode",
+          "when": "viewItem == dbuxTraceDetailsView.node.staticTraceTDNodeRoot",
+          "group": "inline@3"
         },
         {
           "command": "dbuxTraceDetailsView.selectObject",
@@ -801,6 +814,10 @@
         },
         {
           "command": "dbuxProjectView.node.showBugIntroduction",
+          "when": "false"
+        },
+        {
+          "command": "dbuxTraceDetailsView.expandNode",
           "when": "false"
         }
       ]
