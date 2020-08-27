@@ -384,7 +384,36 @@ export default {
 
   /**
    * Get callerTrace(BCE) of a call related trace, returns itself if it is not a call related trace.
-   * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the callId of the former
+   * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the BCE of call trace
+   * @param {DataProvider} dp
+   * @param {number} traceId
+  */
+  getPreviousCallerTraceOfTrace(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    // TODO: deal with callback traces after context.schedulerTraceId is back
+    // const context = dp.collections.executionContexts.getById(trace.contextId);
+    // if (context.schedulerTraceId) {
+    //   // trace is push/pop callback
+    //   return dp.util.getCallerTraceOfTrace(context.schedulerTraceId);
+    // }
+    if (hasCallId(trace)) {
+      // trace is call/callback argument or BCE
+      return dp.collections.traces.getById(trace.callId);
+    }
+    else if (isCallResult(trace)) {
+      // trace is call expression result
+      return dp.collections.traces.getById(trace.resultCallId);
+    }
+    else {
+      // not a call related trace
+      return trace;
+      // return null;
+    }
+  },
+
+  /**
+   * Get callerTrace(BCE) of a call related trace, returns itself if it is not a call related trace.
+   * Note: if a trace is both `CallArgument` and `CallExpressionResult`, returns the BCE of argument trace
    * @param {DataProvider} dp
    * @param {number} traceId
   */
@@ -421,7 +450,7 @@ export default {
     if (parentTrace) {
       // try to get BCE of call
       // NOTE: `parentTrace` of a context might not participate in a call, e.g. in case of getters or setters
-      const callerTrace = dp.util.getCallerTraceOfTrace(parentTrace.traceId);
+      const callerTrace = dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
       if (!callerTrace) {
         // NOTE: this can never happen, since `getCallerTraceOfTrace` always returns something
         logError(`can't find callerTraceOfContext by parentTrace #${parentTrace.traceId} of context #${contextId}`);

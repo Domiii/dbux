@@ -76,7 +76,9 @@ export default class CallGraph {
       return firstTrace;
     }
     else {
-      return this._getParentTraceByContextId(contextId) || null;
+      const parentTrace = this._getParentTraceByContextId(contextId);
+      const callerTrace = this.dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
+      return callerTrace || null;
     }
   }
 
@@ -90,7 +92,8 @@ export default class CallGraph {
     }
     else {
       const parentTrace = this._getParentTraceByContextId(contextId);
-      if (parentTrace) return this.getNextInContext(parentTrace.traceId);
+      const callerTrace = this.dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
+      if (callerTrace) return this.dp.collections.traces.getById(callerTrace.resultId);
       else return null;
     }
   }
