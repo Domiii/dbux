@@ -23,7 +23,32 @@ export default class UserEventContainer extends FirestoreContainer {
     return !!this.buffer.length;
   }
 
-  addEvent(name, data) {
+  async flush() {
+    if (!this._flushing && (this.buffer.length >= 3 || (new Date()) - this._previousFlush >= 5 * 60 * 1000)) {
+      // Race condition?
+      this._flushing = true;
+      await this._flush();
+      this._flushing = false;
+    }
+  }
+
+  async _flush() {
+    while (this.hasUnflushedEvent()) {
+      try {
+        let firstEvent = this.buffer[0];
+        await this.addDoc(firstEvent);
+        this.buffer.shift();
+        await this.saveBuffer();
+      } 
+      catch (err) {
+        throw new Error(`Unnaturally stop flushing buffer by error: ${err.message}`);
+      }
+    }
+
+    this._previousFlush = new Date();
+  }
+
+  addEvent = (name, data) => {
     const event = {
       name, 
       data,
@@ -44,35 +69,14 @@ export default class UserEventContainer extends FirestoreContainer {
     })();
   }
 
-  async flush() {
-    if (!this._flushing && (this.buffer.length >= 1000 || (new Date()) - this._previousFlush() >= 5 * 60 * 1000)) {
-      // Race condition?
-      this._flushing = true;
-      await this._flush();
-      this._flushing = false;
-    }
-  }
-
-  async _flush() {
-    while (this.hasUnflushedEvent()) {
-      try {
-        let firstEvent = this.buffer[0];
-        await this.addDoc(firstEvent);
-        this.buffer.shift();
-        await this.saveBuffer();
-      } 
-      catch (err) {
-        throw new Error(`Unnaturally stop flushing buffer by error: ${err.message}`);
-      }
-    }
-  }
-
   async init() {
     this.buffer = this.db.practiceManager.externals.storage.get(this._mementoKeyName) || [];
-    this.checkFlush();
+    this.flush();
 
     this.db.practiceManager.externals.onUserEvent(this.addEvent);
     onUserEvent(this.addEvent);
+
+    debug('inited, buffer: ', this.buffer);
 
     // TODO: start listen on dbux-code/src/userEvents
     // TODO: start listen on dbux-projects/src/userEvents
@@ -84,5 +88,6 @@ export default class UserEventContainer extends FirestoreContainer {
   }
 
   async saveBuffer() {
+    return this.db.practiceManager.externals.storage.set(this._mementoKeyName, this.buffer);
   }
 }

@@ -73,7 +73,7 @@ export class Db {
     this.firebase = getFirebase();
     this.fs = getFirestore();
 
-    this.backlog = new Backlog(practiceManager);
+    this.backlog = new Backlog(practiceManager, this._doWrite);
 
     // TODO: monitor firestore connection status and call `tryReplayBacklog` before doing anything other write action
   }
@@ -110,9 +110,9 @@ export class Db {
       data
     };
 
-    if (this.hasBacklog()) {
+    if (this.backlog.size()) {
       // make sure that all write requests are in correct order
-      this.addBackLog(writeRequest);
+      this.backlog.add(writeRequest);
       return null;
     }
     else {
@@ -121,7 +121,7 @@ export class Db {
       }
       catch (err) {
         // failed to write
-        this.backlog.addBackLog(writeRequest);
+        this.backlog.add(writeRequest);
         return null;
       }
     }

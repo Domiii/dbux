@@ -8,22 +8,23 @@ export default class Backlog {
   /**
    * @param {PracticeManager} practiceManager 
    */
-  constructor(practiceManager) {
+  constructor(practiceManager, doWriteFunction) {
     this.practiceManager = practiceManager;
     this.backlog = [];
 
-    this.initBacklog();
+    this.init();
+    this._doWrite = doWriteFunction;
   }
 
-  initBacklog() {
+  init() {
     this.backlog = this.practiceManager.externals.storage.get(keyName) || [];
   }
 
-  async saveBacklog() {
+  async save() {
     return this.practiceManager.externals.storage.set(keyName, this.backlog);
   }
 
-  hasBacklog() {
+  size() {
     return !!this.backlog.length;
   }
 
@@ -31,9 +32,9 @@ export default class Backlog {
    * Remember write action and try again later.
    * @param {object} writeRequest
    */
-  async addBacklog(writeRequest) {
+  async add(writeRequest) {
     this.backlog.push(writeRequest);
-    await this.saveBacklog();
+    await this.save();
   }
 
   /**
@@ -44,12 +45,12 @@ export default class Backlog {
     await this.saveBacklog();
   }
 
-  async _doWrite(writeRequest) {
-    
-  }
+  // async _doWrite(writeRequest) {
+  //   
+  // }
 
-  async tryReplayBacklog() {
-    while (this.hasBacklog()) {
+  async replay() {
+    while (this.size()) {
       let writeRequest = this.backlog[0];
 
       try {
