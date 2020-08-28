@@ -26,14 +26,15 @@ If you are already familiar with the Plugin, feel free to further investigate fu
 4. [Performance](#performance)
 5. [Known Limitations](#known-limitations)
    1. [async/await](#asyncawait)
-   2. [Other Syntax Limitations](#other-syntax-limitations)
-   3. [Problems with Values](#problems-with-values)
-   4. [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
-   5. [Heisenbugs](#heisenbugs)
-   6. [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
-   7. [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
-   8. [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
-   9. [Issues under Windows](#issues-under-windows)
+   2. [Loops](#loops)
+   3. [Other Syntax Limitations](#other-syntax-limitations)
+   4. [Problems with Values](#problems-with-values)
+   5. [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
+   6. [Heisenbugs](#heisenbugs)
+   7. [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
+   8. [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
+   9. [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
+   10. [Issues under Windows](#issues-under-windows)
 6. [Dbux Data Analysis](#dbux-data-analysis)
 7. [Dbux Architecture](#dbux-architecture)
    1. [Call Graph GUI Implementation](#call-graph-gui-implementation)
@@ -103,6 +104,12 @@ Main considerations include:
 * `async/await` might be quite broken, and will probably lead to problems when trying to run JS code with `await` in it.
 * NOTE: Yes, this is an absolutely vital feature of modern JavaScript and we hate to not have it working yet (despite having already spent quite some time on it).
 * Tracked in #128.
+
+## Loops
+
+Loop support is being worked on, and tracing of loop-relevant traces is currently disabled.
+
+Tracked in [#222](https://github.com/Domiii/dbux/issues/222).
 
 
 ## Other Syntax Limitations
