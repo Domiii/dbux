@@ -166,7 +166,7 @@ function replaceDirectives(s, fpath) {
 // urls
 // ###########################################################################
 
-const RootUrl = 'https://github.com/Domiii/dbux/';
+const RootUrl = 'https://github.com/Domiii/dbux/tree/master/';
 
 /**
  * Fix url for packaging VSCode extension.
@@ -179,7 +179,10 @@ function makeUrlAbsolute(url, fpath, relativePath) {
   }
 
   // try: `node -e "console.log(new URL('../d', 'http://a.b/c/X/').toString()); // http://a.b/c/d"`
-  const newUrl = new URL(url, RootUrl).toString();
+  const slash1 = !RootUrl.endsWith('/') && '/' || '';
+  const slash2 = !relativePath.endsWith('/') && '/' || '';
+  const base = `${RootUrl}${slash1}${relativePath}${slash2}`;
+  const newUrl = new URL(url, base).toString();
 
   console.debug(`  Replacing url: ${url} -> ${newUrl}`);
 
