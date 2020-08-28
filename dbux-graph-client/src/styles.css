@@ -221,7 +221,7 @@ html,body{
 [data-el="parentLabel"] {
   /* color: #222; */
   background: rgba(0,0,0,0.03);
-  font-size: 11px;
+  font-size: 1rem;
   margin-right: 0.3rem !important;
 }
 .theme-mode-dark [data-el="parentLabel"] {
@@ -231,7 +231,7 @@ html,body{
 .value-label {
   /* color: #222; */
   background: rgba(0,0,0,0.1);
-  font-size: 11px;
+  font-size: 1rem;
   margin-right: 0.3rem !important;
 }
 .theme-mode-dark .value-label {
@@ -448,7 +448,7 @@ body:not(.theme-mode-dark) .highlight{
   color: white;
   font-weight: bold;
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: 1rem;
   border-radius: 4px;
 }
 #arrow,

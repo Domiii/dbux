@@ -164,6 +164,9 @@ export function initUserCommands(extensionContext) {
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.backendLogin', async () => {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('This command is currently disabled in Production mode.');
+    }
     const backend = await getOrCreateProjectManager().getOrInitBackend();
     await backend.startBackend();
   });
