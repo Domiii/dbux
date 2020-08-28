@@ -240,7 +240,8 @@ async function main() {
     }
   }
   catch (err) {
-    throw new Error(`"npm whoami failed. Make sure (1) to "npm login" before this script and (2) NOT TO run this script via "yarn run" (it *will* bug out)\n\n${err.message}`);
+    // eslint-disable-next-line max-len
+    throw new Error(`"npm whoami failed. Make sure to...\n  (1) to "npm login" before this script and\n  (2) to run this script via "node" or "npm run"; don't run this script via "yarn run" (login status *will* bug out)\n\n${err.message}`);
   }
 
   if (!await execCaptureOut('cd dbux-code && npx vsce ls-publishers')) {
