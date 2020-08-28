@@ -124,12 +124,12 @@ The "Applications" view is at the top of the Dbux view.
 Examples:
 
 * In this buggy code, we find that line 6 never executed, just from the code decorations:
-   ![code-deco1](https://github.com/Domiii/dbux/tree/master/docs/img/code-deco1.png)
+   ![code-deco1](https://domiii.github.io/dbux/docs/img/code-deco1.png)
 
 
 ## Trace Selection
 
-![select trace](https://github.com/Domiii/dbux/tree/master/docs/img/select-trace1.gif)
+![select trace](https://domiii.github.io/dbux/docs/img/select-trace1.gif)
 
 * Code that has executed can be traced and analyzed. Executed code can be distinguished from code that did not execute from [code decorations](#code-decorations) (if enabled).
 * To select a trace, place the keyboard cursor on executed code and press the "Select Trace" button.
@@ -144,7 +144,7 @@ Analyze and navigate through individual traces:
 
 Navigation allows you to step through all recorded traces, similar to (but more advanced than) stepping in a traditional debugger. Navigation works by continuously updating "the currently selected trace".
 
-![navigation](https://github.com/Domiii/dbux/tree/master/docs/img/nav1.png)
+![navigation](https://domiii.github.io/dbux/docs/img/nav1.png)
 
 Important: The buttons will only show up if you select them, or hover over them with the mouse (again, this is a VSCode limitation).
 
@@ -155,12 +155,12 @@ Note that we are not debugging in real-time, but work on a recoding of the actua
 
 Here are all the buttons:
 
-<img src="https://github.com/Domiii/dbux/tree/master/dbux-code/resources/dark/previousParentContext.png" title="previousParentContext" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://github.com/Domiii/dbux/tree/master/dbux-code/resources/dark/nextParentContext.png" title="nextParentContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A">  `Go to start/end of context`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousParentContext.png" title="previousParentContext" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextParentContext.png" title="nextParentContext" height="32px" width="32px" style="background-color: #1A1A1A">  `Go to start/end of context`
 
 * Jump to the start/end of the current [context](https://github.com/Domiii/dbux/tree/master/#context) (function or file)
 * When pressed again, steps out to caller (which we also call "parent")
 
-<img src="https://github.com/Domiii/dbux/tree/master/dbux-code/resources/dark/previousChildContext.png" title="previousChildContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="https://github.com/Domiii/dbux/tree/master/dbux-code/resources/dark/nextChildContext.png" title="nextChildContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next function call in context`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousChildContext.png" title="previousChildContext" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextChildContext.png" title="nextChildContext" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next function call in context`
 
 * Jump to previous/next *traced* function call <span style="color:red">↱</span> before/after the currently selected trace.
    * Note that library or native calls <span style="color:gray">↱</span> are not traced and thus will be skipped by this button.
@@ -169,7 +169,7 @@ Here are all the buttons:
    * Getters and setters work, but navigation is a bit less intuitive.
    * Since getters and setters don't have a clearly identifyable caller trace, they will need some more development work before they will be fully smoothed out.
 
-<img src="https://github.com/Domiii/dbux/tree/master/dbux-code/resources/dark/previousInContext.png" title="previousInContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="https://github.com/Domiii/dbux/tree/master/dbux-code/resources/dark/nextInContext.png" title="nextInContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next "non-trivial" trace in context`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousInContext.png" title="previousInContext" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextInContext.png" title="nextInContext" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next "non-trivial" trace in context`
 
 * Jump to previous/next "non-trivial" trace in [context](https://github.com/Domiii/dbux/tree/master/#context) (function or file)
 * Stepping would be a lot of work, if we tried to step through every single expression.
@@ -179,13 +179,13 @@ Here are all the buttons:
 * (Dev note: we internally determine "trivial traces" as traces of `TraceType.ExpressionValue`.)
 
 
-<img src="https://github.com/Domiii/dbux/tree/master/dbux-code/resources/dark/previousStaticTrace.png" title="previousStaticTrace" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="https://github.com/Domiii/dbux/tree/master/dbux-code/resources/dark/nextStaticTrace.png" title="nextStaticTrace" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next execution of the same trace`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousStaticTrace.png" title="previousStaticTrace" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextStaticTrace.png" title="nextStaticTrace" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next execution of the same trace`
 
 * If a piece of code was executed multiple times (because a function was called multiple times, or there is a loop etc), these buttons allow you to jump between the traces of those different executions.
 * These buttons step through all [`Trace Executions`](#trace-executions) of the currently selected `trace`'s `staticTrace`. [Read more on Dbux terminology here](https://github.com/Domiii/dbux/tree/master/#trace)
 
 
-<img src="https://github.com/Domiii/dbux/tree/master/dbux-code/resources/dark/leftArrow.png" title="previous" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="https://github.com/Domiii/dbux/tree/master/dbux-code/resources/dark/rightArrow.png" title="next" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next trace (unconditionally)`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/leftArrow.png" title="previous" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/rightArrow.png" title="next" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next trace (unconditionally)`
 
 * Go to previous/next trace, no matter what. This navigation method does not filter out "trivial traces", and it also moves in and out of contexts, if that is where the previous/next trace is.
 * These buttons provide the most granular navigation option.
@@ -204,7 +204,7 @@ You can investigate further by clicking on the "Value" node.
 Further reading:
    * You might want to read up on Dbux's [value limitations and problems](https://github.com/Domiii/dbux/tree/master/#problems-with-values).
 
-![value](https://github.com/Domiii/dbux/tree/master/docs/img/values.gif)
+![value](https://domiii.github.io/dbux/docs/img/values.gif)
 
 
 ## Trace Details: Object Traces
@@ -215,7 +215,7 @@ Specifically: if the currently selected trace's value is an object (or non-primi
 
 There is a "Highlight in Call Graph" button that appears when hovering over the "Object Traces" node, at the right-hand side. It expands and highlights all contexts where this object was used in the call graph.
 
-![object traces](https://github.com/Domiii/dbux/tree/master/docs/img/object-traces.gif)
+![object traces](https://domiii.github.io/dbux/docs/img/object-traces.gif)
 
 
 ## Trace Details: Trace Executions
@@ -231,7 +231,7 @@ Since this can be a lot of traces, you can group them by different criteria thro
 
 Another way of putting this is: `Trace Executions` lists all `traces` of the currently selected `trace`'s `staticTrace`. [Read more on Dbux terminology here](https://github.com/Domiii/dbux/tree/master/#trace)
 
-![trace executions](https://github.com/Domiii/dbux/tree/master/docs/img/trace-executions-hof1.png)
+![trace executions](https://domiii.github.io/dbux/docs/img/trace-executions-hof1.png)
 
 
 ## Trace Details: Nearby Values
@@ -247,7 +247,7 @@ We want to add some grouping to this feature. That is being worked on and tracke
 * understand which values were generated in what order.
 * decipher complex one-liners (see screen grab below).
 
-![nearby values](https://github.com/Domiii/dbux/tree/master/docs/img/nearby-values.png)
+![nearby values](https://domiii.github.io/dbux/docs/img/nearby-values.png)
 
 ## Trace Details: Debug
 
@@ -257,7 +257,7 @@ This is generally only useful for contributors, the very curious or those who wo
 
 ## Call Graph
 
-The <img src="https://github.com/Domiii/dbux/tree/master/dbux-code/resources/dark/call-graph.png" title="call graph" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> Call Graph renders a bird's eye overview over all executed files and functions.
+The <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/call-graph.png" title="call graph" height="32px" width="32px" style="background-color: #1A1A1A"> Call Graph renders a bird's eye overview over all executed files and functions.
 
 As an analogy, I would say that the call graph is like (a rather crude) "Google Maps" while the [trace details view](#trace-details) is (a rather crude) "Google Street View" of your application's execution. Together they offer a multi-resolutional interactive tool to see and find everything that is going on in your application.
 
@@ -273,7 +273,7 @@ Call graph visualizations have many uses. E.g.:
 * quickly identify points of interests in code that is not our own.
 * visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the screengrab below
 
-![call graph: fibonacci1](https://github.com/Domiii/dbux/tree/master/docs/img/call-graph-fib-1.png)
+![call graph: fibonacci1](https://domiii.github.io/dbux/docs/img/call-graph-fib-1.png)
 
 ## Call Graph: pause (pause/resume live updates)
 

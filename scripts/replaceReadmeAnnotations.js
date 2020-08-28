@@ -175,7 +175,7 @@ const GithubPagesUrl = 'https://domiii.github.io/dbux/';
  * Fix url for packaging VSCode extension.
  * Essentially: just make it absolute to avoid any problems.
  */
-function makeUrlAbsolute(url, fpath, relativePath) {
+function fixUrl(url, fpath, relativePath, raw = false) {
   // if (isAbsolute(url)) {
   let newUrl;
   if (url.startsWith('https:') || url.startsWith('#')) {
@@ -187,15 +187,16 @@ function makeUrlAbsolute(url, fpath, relativePath) {
     const slash2 = !relativePath.endsWith('/') && '/' || '';
     const base = `${RootUrl}${slash1}${relativePath}${slash2}`;
     newUrl = new URL(url, base).toString();
-
-    console.debug(`  Replacing url: ${url} -> ${newUrl}`);
   }
 
-  // TODO: fix up `img` urls to link to raw files
+  if (raw && newUrl.startsWith(RootUrl)) {
+    // raw URLs need to go through Github Pages
+    newUrl = newUrl.replace(RootUrl, GithubPagesUrl);
+  }
 
-  // if (newUrl.startsWith()) {
-
-  // }
+  if (newUrl !== url) {
+    console.debug(`  Replacing url: ${url} -> ${newUrl}`);
+  }
 
   return newUrl;
 }
@@ -203,11 +204,14 @@ function makeUrlAbsolute(url, fpath, relativePath) {
 function fixUrls(s, cb, fpath, relativePath) {
   // s = '<img src="abc"> <img src="def">';
   // s = 'x [a](b) y [c](d)z';
-  const replacer = (_all, pref, url, suf) => `${pref}${cb(url, fpath, relativePath)}${suf}`;
+  // why doesn't this work -> '![a](b)'.replace(/((?!!)\[.*?\]\()(.*?)(\))/g, (_all, pref, url, suf) => `${pref}X${url}X${suf}`)
+  const replacer = (_all, pref, url, suf) => `${pref}${cb(url, fpath, relativePath, false)}${suf}`;
+  const replacerRaw = (_all, pref, url, suf) => `${pref}${cb(url, fpath, relativePath, true)}${suf}`;
 
-  s = s.replace(/(<img.*?src=")(.*?)(")/g, replacer);
   s = s.replace(/(<a.*?href=")(.*?)(")/g, replacer);
-  s = s.replace(/(\[.*?\]\()(.*?)(\))/g, replacer);
+  s = s.replace(/([^!]\[.*?\]\()(.*?)(\))/g, replacer);
+  s = s.replace(/(!\[.*?\]\()(.*?)(\))/g, replacerRaw);
+  s = s.replace(/(<img.*?src=")(.*?)(")/g, replacerRaw);
 
   return s;
 }
@@ -225,7 +229,7 @@ function replaceInMarkdown(fpath, relativePath) {
   s = replaceDirectives(s, fpath);
 
   // fix `src`s, `href`s and [markdown](urls)
-  s = fixUrls(s, makeUrlAbsolute, fpath, relativePath);
+  s = fixUrls(s, fixUrl, fpath, relativePath);
 
   fs.writeFileSync(fpath, s);
 }
