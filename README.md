@@ -15,7 +15,7 @@ If you have any questions or are interested in the progress of this project, fee
 Here is a 20 minute intro video with two hands-on examples:
 
 <a href="https://www.youtube.com/watch?v=scxIcn1X3X4" target="_blank" alt="video">
-   <img src="http://img.youtube.com/vi/scxIcn1X3X4/0.jpg">
+   <img src="https://img.youtube.com/vi/scxIcn1X3X4/0.jpg">
 </a>
 
 We recommend getting started with Dbux by playing around with the [Dbux VSCode Plugin](dbux-code#readme).

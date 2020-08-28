@@ -42,7 +42,7 @@ This page explains the dbux-code extension and how to use it. For more general i
 This video explains what Dbux is and then shows how to use the dbux-code extension in two examples:
 
 <a href="https://www.youtube.com/watch?v=scxIcn1X3X4" target="_blank" alt="video">
-   <img src="http://img.youtube.com/vi/scxIcn1X3X4/0.jpg">
+   <img src="https://img.youtube.com/vi/scxIcn1X3X4/0.jpg">
 </a>
 
 # Installation
