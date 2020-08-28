@@ -2,6 +2,7 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 
 const path = require('path');
+const fs = require('fs');
 const sh = require('shelljs');
 const open = require('open');
 const isArray = require('lodash/isArray');
@@ -15,6 +16,7 @@ const { newLogger } = require('../dbux-common/src/log/logger');
 const Process = require('../dbux-projects/src/util/Process').default;
 
 const { readPackageJsonVersion } = require('../dbux-cli/lib/package-util');
+const { downgradeProdVersion } = require('./fix-versions');
 
 // go!
 const logger = newLogger();
@@ -107,6 +109,7 @@ function goToMaster() {
   if (getBranchName() !== 'master') {
     log('Switching to master');
     run('git checkout master');
+    run('git pull');
     if (getBranchName() !== 'master') {
       throw new Error(`Could not switch to master - current branch is "${getBranchName()}"`);
     }
@@ -144,11 +147,8 @@ async function bumpVersion() {
   if (choice !== 'None') {
     await exec(`npx lerna version ${choice} --force-publish`);
   }
-  else if (await isDevVersion()) {
-    const msg = `Invalid version ${await getDbuxVersion()} - Cannot publish dev version.`;
-    console.error(msg);
-    throw new Error(msg);
-  }
+
+  return choice !== 'None';
 }
 
 // function build() {
@@ -156,11 +156,21 @@ async function bumpVersion() {
 //   run(`npm run build:prod`);
 // }
 
+async function ensureProdVersion() {
+  if (await isDevVersion()) {
+    // console.warn('Not publishing');
+    const msg = `Invalid version ${await getDbuxVersion()} - Cannot publish dev version.`;
+    console.error(msg);
+    throw new Error(msg);
+  }
+}
+
 async function publishToNPM() {
+  await ensureProdVersion();
   // publish dependencies to NPM
   // NOTE: will trigger build scripts before publishing
   log('Publishing to NPM...');
-  let publishCmd = 'npx lerna publish';
+  let publishCmd = 'npx lerna publish -y';
   // if (await yesno('not from-package?')) {
   //   // usually, we just want to go from package, since `lerna version` already prepared things for us
   // }
@@ -170,7 +180,7 @@ async function publishToNPM() {
   await exec(publishCmd);
 
   // check package status on NPM
-  if (await yesno('Open NPM website?')) {
+  if (await yesno('Published to NPM. Open NPM website?')) {
     open('https://www.npmjs.com/search?q=dbux');
   }
 }
@@ -184,10 +194,17 @@ async function publishToMarketplace() {
   // // make sure dbux-code is ready
   // await exec('cd dbux-code && yarn list --prod --json');
 
+  if (await isDevVersion() && await yesno(`Currently on dev version. Downgrade and continue?`)) {
+    await downgradeProdVersion();
+  }
+
+  // cannot publish dev version
+  await ensureProdVersion();
+
   // publish dbux-code to VSCode marketplace (already built)
   await exec('npm run code:publish-no-build');
 
-  if (await yesno('Open extension website?')) {
+  if (await yesno('Published to Marketplace. Open extension website?')) {
     // open('https://marketplace.visualstudio.com/manage/publishers/Domi');
     open('https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code');
   }
@@ -199,14 +216,25 @@ async function fixLerna() {
   await exec('npm run dbux-lerna-fix');
 }
 
-async function setDevVersion() {
+async function writeAndCommitNewVersion() {
+  const version = await getDbuxVersion();
+  const fpath = path.join(__dirname, '../version.txt');
+  fs.writeFileSync(fpath, version);
+  await exec(`git commit`);
+  await exec(`git push`);
+}
+
+async function bumpToDevVersion() {
   if (!await yesno('Skip setting dev version?')) {
     if (await isDevVersion()) {
       console.error(`Something is wrong. We are already on a dev version (${await getDbuxVersion()}). Did version bump not succeed?`);
     }
     else {
-      // make sure, we are operating on the dev version
+      // bump version
       await exec(`npx lerna version prepatch --preid dev --yes --force-publish`);
+
+      // we do this to make sure that we can later on downgrade again (cannot downgrade without any committed changes)
+      await writeAndCommitNewVersion();
     }
   }
 }
@@ -266,11 +294,11 @@ async function main() {
 
   await pullDev();
 
-  await bumpVersion();
+  if (await bumpVersion()) {
+    await publishToNPM();
+  }
 
-  await publishToNPM();
-
-  if (await yesno('Published to NPM. Also publish to Marketplace?')) {
+  if (await yesno('Publish to Marketplace? (will publish without building)')) {
     await publishToMarketplace();
   }
   else if (await yesno('Install locally?')) {
@@ -279,7 +307,7 @@ async function main() {
 
   await fixLerna();
 
-  await setDevVersion();
+  await bumpToDevVersion();
 
   // TODO: update version.txt so our HEAD is not pushed (which we need for `lerna version --no-publish` to work)
 
