@@ -242,7 +242,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.navigation.PreviousInContext",
-        "title": "PreviousInContext",
+        "title": "Dbux: Go to previous \"non-trivial\" trace in context",
         "icon": {
           "light": "resources/light/previousInContext.svg",
           "dark": "resources/dark/previousInContext.svg"
@@ -250,7 +250,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
-        "title": "PreviousChildContext",
+        "title": "Dbux: Go to previous function call in context",
         "icon": {
           "light": "resources/light/previousChildContext.svg",
           "dark": "resources/dark/previousChildContext.svg"
@@ -258,7 +258,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
-        "title": "PreviousParentContext",
+        "title": "Dbux: Go to start of context",
         "icon": {
           "light": "resources/light/previousParentContext.svg",
           "dark": "resources/dark/previousParentContext.svg"
@@ -266,7 +266,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.navigation.NextInContext",
-        "title": "NextInContext",
+        "title": "Dbux: Go to next \"non-trivial\" trace in context",
         "icon": {
           "light": "resources/light/nextInContext.svg",
           "dark": "resources/dark/nextInContext.svg"
@@ -274,7 +274,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.navigation.NextChildContext",
-        "title": "NextChildContext",
+        "title": "Dbux: Go to next function call in context",
         "icon": {
           "light": "resources/light/nextChildContext.svg",
           "dark": "resources/dark/nextChildContext.svg"
@@ -282,7 +282,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.navigation.NextParentContext",
-        "title": "NextParentContext",
+        "title": "Dbux: Go to end of context",
         "icon": {
           "light": "resources/light/nextParentContext.svg",
           "dark": "resources/dark/nextParentContext.svg"
@@ -290,7 +290,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.navigation.PreviousStaticTrace",
-        "title": "PreviousStaticTrace",
+        "title": "Dbux: Go to previous execution of the same trace",
         "icon": {
           "light": "resources/light/previousStaticTrace.svg",
           "dark": "resources/dark/previousStaticTrace.svg"
@@ -298,7 +298,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
-        "title": "NextStaticTrace",
+        "title": "Dbux: Go to next execution of the same trace",
         "icon": {
           "light": "resources/light/nextStaticTrace.svg",
           "dark": "resources/dark/nextStaticTrace.svg"
@@ -306,7 +306,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.navigation.PreviousTrace",
-        "title": "Previous Trace",
+        "title": "Dbux: Go to previous trace (unconditionally)",
         "icon": {
           "light": "resources/light/leftArrow.svg",
           "dark": "resources/dark/leftArrow.svg"
@@ -314,7 +314,7 @@
       },
       {
         "command": "dbuxTraceDetailsView.navigation.NextTrace",
-        "title": "Next Trace",
+        "title": "Dbux: Go to next trace (unconditionally)",
         "icon": {
           "light": "resources/light/rightArrow.svg",
           "dark": "resources/dark/rightArrow.svg"
@@ -709,46 +709,6 @@
         },
         {
           "command": "dbuxTraceDetailsView.valueRender",
-          "when": "false"
-        },
-        {
-          "command": "dbuxTraceDetailsView.navigation.PreviousInContext",
-          "when": "false"
-        },
-        {
-          "command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
-          "when": "false"
-        },
-        {
-          "command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
-          "when": "false"
-        },
-        {
-          "command": "dbuxTraceDetailsView.navigation.NextInContext",
-          "when": "false"
-        },
-        {
-          "command": "dbuxTraceDetailsView.navigation.NextChildContext",
-          "when": "false"
-        },
-        {
-          "command": "dbuxTraceDetailsView.navigation.NextParentContext",
-          "when": "false"
-        },
-        {
-          "command": "dbuxTraceDetailsView.navigation.PreviousStaticTrace",
-          "when": "false"
-        },
-        {
-          "command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
-          "when": "false"
-        },
-        {
-          "command": "dbuxTraceDetailsView.navigation.PreviousTrace",
-          "when": "false"
-        },
-        {
-          "command": "dbuxTraceDetailsView.navigation.NextTrace",
           "when": "false"
         },
         {
