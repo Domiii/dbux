@@ -4,7 +4,6 @@
 [![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
 [![David](https://flat.badgen.net/david/dev/Domiii/dbux)](https://david-dm.org/Domiii/dbux?type=dev)
 
-
 # Introduction
 
 Dbux aims at visualizing the JS runtime and making it interactive, hopefully helping developers improve their (i) program comprehension and (ii) debugging techniques.
@@ -17,19 +16,16 @@ Here is a 20 minute intro video with two hands-on examples:
    <img src="http://img.youtube.com/vi/scxIcn1X3X4/0.jpg">
 </a>
 
-# Overview
-
 We recommend getting started with Dbux by playing around with the [Dbux VSCode Plugin](dbux-code#readme).
 
 If you are already familiar with the Plugin, feel free to further investigate further:
 
 1. [Introduction](#introduction)
-2. [Overview](#overview)
-3. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
-4. [Which files will be traced?](#which-files-will-be-traced)
-5. [Performance](#performance)
-6. [Known Limitations](#known-limitations)
-   1. [async/await is not yet supported](#asyncawait-is-not-yet-supported)
+2. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
+3. [Which files will be traced?](#which-files-will-be-traced)
+4. [Performance](#performance)
+5. [Known Limitations](#known-limitations)
+   1. [async/await](#asyncawait)
    2. [Other Syntax Limitations](#other-syntax-limitations)
    3. [Problems with Values](#problems-with-values)
    4. [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
@@ -38,16 +34,16 @@ If you are already familiar with the Plugin, feel free to further investigate fu
    7. [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
    8. [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
    9. [Issues under Windows](#issues-under-windows)
-7. [Dbux Data Analysis](#dbux-data-analysis)
-8. [Dbux Architecture](#dbux-architecture)
+6. [Dbux Data Analysis](#dbux-data-analysis)
+7. [Dbux Architecture](#dbux-architecture)
    1. [Call Graph GUI Implementation](#call-graph-gui-implementation)
-9. [Terminology](#terminology)
+8. [Terminology](#terminology)
    1. [Trace and Static Trace](#trace-and-static-trace)
    2. [Context and Static Context](#context-and-static-context)
    3. [Run](#run)
    4. [Call Graph](#call-graph)
       1. [Asynchronous Call Graph](#asynchronous-call-graph)
-10. [Development + Contributions](#development--contributions)
+9. [Development + Contributions](#development--contributions)
 
 
 # Adding Dbux to your build pipeline
@@ -102,9 +98,9 @@ Main considerations include:
 
 # Known Limitations
 
-## async/await is not yet supported
+## async/await
 
-* This is currently broken so bad that it will lead to errors when trying to run JS code with `await` in it.
+* `async/await` might be quite broken, and will probably lead to problems when trying to run JS code with `await` in it.
 * NOTE: Yes, this is an absolutely vital feature of modern JavaScript and we hate to not have it working yet (despite having already spent quite some time on it).
 * Tracked in #128.
 
