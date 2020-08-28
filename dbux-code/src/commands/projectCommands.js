@@ -13,6 +13,10 @@ const { log, debug, warn, error: logError } = logger;
  * @param {ProjectViewController} projectViewController 
  */
 export function initProjectCommands(extensionContext, projectViewController) {
+  registerCommand(extensionContext, 'dbuxProjectView.showDiff', (/* node */) => {
+    return projectViewController.manager.externals.showMessage.info(`You may click 'Source Control' button to review your change.`);
+  });
+
   registerCommand(extensionContext, 'dbuxProjectView.node.addProjectToWorkspace', (node) => {
     return projectViewController.nodeAddToWorkspace(node);
   });

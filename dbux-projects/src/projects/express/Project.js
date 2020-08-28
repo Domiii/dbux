@@ -236,6 +236,9 @@ export default class ExpressProject extends Project {
 
     // Copy assets again in this branch
     await this.installAssets();
+
+    // Auto commit again
+    await this.autoCommit();
   }
 
   async testBugCommand(bug, cfg) {
