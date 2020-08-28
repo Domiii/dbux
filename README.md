@@ -6,6 +6,8 @@
 
 # Introduction
 
+TODO: better explanation here
+
 Dbux aims at visualizing the JS runtime and making it interactive, hopefully helping developers improve their (i) program comprehension and (ii) debugging techniques.
 
 If you have any questions or are interested in the progress of this project, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
@@ -44,7 +46,8 @@ If you are already familiar with the Plugin, feel free to further investigate fu
    3. [Run](#run)
    4. [Call Graph](#call-graph)
       1. [Asynchronous Call Graph](#asynchronous-call-graph)
-9. [Development + Contributions](#development--contributions)
+9. [How is Dbux being used?](#how-is-dbux-being-used)
+10. [Development + Contributions](#development--contributions)
 
 
 # Adding Dbux to your build pipeline
@@ -237,7 +240,7 @@ This [monorepo](https://en.wikipedia.org/wiki/Monorepo) includes the following m
 * [`@dbux/cli`](dbux-cli#readme) The cli (command-line interface) allows us to easily run a js program while instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).
 * [`@dbux/data`](dbux-data#readme) Receives, pre-processes and manages all data sent by `@dbux/runtime`. It allows us to query and analyze JS runtime data on a higher level.
 * [`dbux-code`](dbux-code#readme) The Dbux VSCode extension ([VSCode marketplace link](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code)).
-* [`@dbux/practice`](dbux-practice#readme) Used by `dbux-code` (but does not depend on `VSCode`) to allow practicing Dbux (and, more generally) debugging concepts and strategies on real-world bugs inside of real-world open source projects.
+* [`@dbux/practice`](dbux-projects#readme) Used by `dbux-code` (but does not depend on `VSCode`) to allow practicing Dbux (and, more generally) debugging concepts and strategies on real-world bugs inside of real-world open source projects.
 * [`@dbux/graph-common`](dbux-graph-common#readme), [`@dbux/graph-client`](dbux-graph-client#readme) and [`@dbux/graph-host`](dbux-graph-host#readme) Are responsible for rendering and letting the user interact with the "Call Graph" through an HTML GUI.
 
 
@@ -297,6 +300,14 @@ Currently, we only support a "synchronous call graph", meaning that **all** exec
 That means that, for now, invocation of promise callbacks (callbacks passed to `then()`, `catch()`, `finally()` etc.), and even resuming of an `async` function will result in a new `run`, seen executing serially in the Call Graph, and you cannot easily trace a single promise or the execution of a asingle `async` function. Instead, they will be cut up into multiple pieces scattered across the linear Call Graph representation, and sprinkled with other unrelated calls that happen to occur in between.
 
 The "asynchronous call graph" feature is tracked in issue #210.
+
+
+# How is Dbux being used?
+
+* This [proxy-play](https://github.com/Domiii/proxy-play) experiment acts as a proxy to inject Dbux into all scripts of any website, before they execute in the browser, thereby allowing to analyze any website's scripts with Dbux.
+
+
+(NOTE: Dbux only started going public on 2020/8/31, so not a lot of uses can be accounted for yet)
 
 
 # Development + Contributions

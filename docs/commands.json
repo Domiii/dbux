@@ -80,6 +80,61 @@
     "description": "Feature still in development. You can use this to use Dbux on a pre-configured bug in express."
   },
   {
+    "command": "dbuxProjectView.showDiff",
+    "title": "Show difference",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.NextChildContext",
+    "title": "Dbux: Go to next function call in context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.NextInContext",
+    "title": "Dbux: Go to next \"non-trivial\" trace in context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.NextParentContext",
+    "title": "Dbux: Go to end of context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
+    "title": "Dbux: Go to next execution of the same trace",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.NextTrace",
+    "title": "Dbux: Go to next trace (unconditionally)",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
+    "title": "Dbux: Go to previous function call in context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.PreviousInContext",
+    "title": "Dbux: Go to previous \"non-trivial\" trace in context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
+    "title": "Dbux: Go to start of context",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.PreviousStaticTrace",
+    "title": "Dbux: Go to previous execution of the same trace",
+    "description": ""
+  },
+  {
+    "command": "dbuxTraceDetailsView.navigation.PreviousTrace",
+    "title": "Dbux: Go to previous trace (unconditionally)",
+    "description": ""
+  },
+  {
     "command": "dbuxTraceDetailsView.selectTraceAtCursor",
     "title": "Dbux: Select Trace At Cursor",
     "description": "Selects the trace at the keyboard cursor (if there is any executed trace)."
