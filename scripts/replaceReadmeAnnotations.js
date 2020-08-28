@@ -174,7 +174,7 @@ const RootUrl = 'https://github.com/Domiii/dbux/';
  */
 function makeUrlAbsolute(url, fpath, relativePath) {
   // if (isAbsolute(url)) {
-  if (url.startsWith('https')) {
+  if (url.startsWith('https:') || url.startsWith('#')) {
     return url;
   }
 

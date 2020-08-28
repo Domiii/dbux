@@ -50,6 +50,16 @@
     "description": "Show the Dbux help dialog."
   },
   {
+    "command": "dbux.startRuntimeServer",
+    "title": "Dbux: Start Dbux Runtime Server",
+    "description": ""
+  },
+  {
+    "command": "dbux.stopRuntimeServer",
+    "title": "Dbux: Stop Dbux Runtime Server",
+    "description": ""
+  },
+  {
     "command": "dbux.systemCheck",
     "title": "Dbux: Check System Dependencies",
     "description": "Dbux (especially Dbux practice) needs some system tools in order to work properly. You can check these dependencies with this command."
