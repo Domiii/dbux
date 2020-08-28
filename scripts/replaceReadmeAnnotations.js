@@ -120,7 +120,7 @@ const markdownReplacers = {
 
   codeConfig() {
     const pkg = readCodePackageJson();
-    
+
     function mapVal(val, key) {
       // console.debug('cfg', key, val, val === '--esnext');
       if (val === '--esnext') {
@@ -133,8 +133,8 @@ const markdownReplacers = {
     let config = pkg.contributes.configuration.
       map(
         cfg => /* console.warn(cfg.properties) || */ Object.entries(cfg.properties).
-          map(([entry, { scope, ...props }]) => ({ 
-            entry, 
+          map(([entry, { scope, ...props }]) => ({
+            entry,
             ...mapValues(props, mapVal)
           }))
       ).
@@ -168,25 +168,35 @@ function replaceDirectives(s, fpath) {
 
 const RootUrl = 'https://github.com/Domiii/dbux/tree/master/';
 
+// e.g. https://domiii.github.io/dbux/img/nav1.png
+const GithubPagesUrl = 'https://domiii.github.io/dbux/';
+
 /**
  * Fix url for packaging VSCode extension.
  * Essentially: just make it absolute to avoid any problems.
  */
 function makeUrlAbsolute(url, fpath, relativePath) {
   // if (isAbsolute(url)) {
+  let newUrl;
   if (url.startsWith('https:') || url.startsWith('#')) {
-    return url;
+    newUrl = url;
+  }
+  else {
+    // try: `node -e "console.log(new URL('../d', 'http://a.b/c/X/').toString()); // http://a.b/c/d"`
+    const slash1 = !RootUrl.endsWith('/') && '/' || '';
+    const slash2 = !relativePath.endsWith('/') && '/' || '';
+    const base = `${RootUrl}${slash1}${relativePath}${slash2}`;
+    newUrl = new URL(url, base).toString();
+
+    console.debug(`  Replacing url: ${url} -> ${newUrl}`);
   }
 
-  // try: `node -e "console.log(new URL('../d', 'http://a.b/c/X/').toString()); // http://a.b/c/d"`
-  const slash1 = !RootUrl.endsWith('/') && '/' || '';
-  const slash2 = !relativePath.endsWith('/') && '/' || '';
-  const base = `${RootUrl}${slash1}${relativePath}${slash2}`;
-  const newUrl = new URL(url, base).toString();
+  // TODO: fix up `img` urls to link to raw files
 
-  console.debug(`  Replacing url: ${url} -> ${newUrl}`);
+  // if (newUrl.startsWith()) {
 
-  // return url;
+  // }
+
   return newUrl;
 }
 
@@ -194,7 +204,7 @@ function fixUrls(s, cb, fpath, relativePath) {
   // s = '<img src="abc"> <img src="def">';
   // s = 'x [a](b) y [c](d)z';
   const replacer = (_all, pref, url, suf) => `${pref}${cb(url, fpath, relativePath)}${suf}`;
-  
+
   s = s.replace(/(<img.*?src=")(.*?)(")/g, replacer);
   s = s.replace(/(<a.*?href=")(.*?)(")/g, replacer);
   s = s.replace(/(\[.*?\]\()(.*?)(\))/g, replacer);
