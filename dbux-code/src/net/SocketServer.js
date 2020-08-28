@@ -1,3 +1,4 @@
+import NanoEvents from 'nanoevents';
 import { newLogger } from '@dbux/common/src/log/logger';
 import RuntimeClient from './RuntimeClient';
 import { makeListenSocket } from './serverUtil';
@@ -60,7 +61,8 @@ export default class SocketServer {
 /**
  * @type {SocketServer}
  */
-let server;
+let server = null;
+const _runtimeServerEmitter = new NanoEvents();
 
 export async function initRuntimeServer(context) {
   if (!server) {
@@ -69,6 +71,7 @@ export async function initRuntimeServer(context) {
     try {
       await server.start(DefaultPort);
       context.subscriptions.push(server);
+      _runtimeServerEmitter.emit('statusChanged', true);
     } catch (err) {
       server = null;
       throw new Error(`Could not start runtime server. This may due to multiple instances opened.`);
@@ -78,9 +81,18 @@ export async function initRuntimeServer(context) {
   return server;
 }
 
-// export async function stopRuntimeServer() {
-//   if (server) {
-//     server.dispose();
-//     server = null;
-//   }
-// }
+export function stopRuntimeServer() {
+  if (server) {
+    server.dispose();
+    server = null;
+    _runtimeServerEmitter.emit('statusChanged', false);
+  }
+}
+
+export function isRuntimeServerStarted() {
+  return !!server;
+}
+
+export function onRuntimerServerStatusChanged(cb) {
+  return _runtimeServerEmitter.on('statusChanged', cb);
+}

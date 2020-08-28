@@ -117,6 +117,22 @@
         }
       },
       {
+        "command": "dbux.startRuntimeServer",
+        "title": "Dbux: Start Dbux Runtime Server",
+        "icon": {
+          "light": "resources/light/antenna_red.svg",
+          "dark": "resources/dark/antenna_red.svg"
+        }
+      },
+      {
+        "command": "dbux.stopRuntimeServer",
+        "title": "Dbux: Stop Dbux Runtime Server",
+        "icon": {
+          "light": "resources/light/antenna_green.svg",
+          "dark": "resources/dark/antenna_green.svg"
+        }
+      },
+      {
         "command": "dbux.backendLogin",
         "title": "Dbux: Backend Login"
       },
@@ -619,6 +635,16 @@
           "command": "dbux.togglePracticeView",
           "when": "view == dbuxApplicationsView",
           "group": "navigation@3"
+        },
+        {
+          "command": "dbux.startRuntimeServer",
+          "when": "view == dbuxApplicationsView && dbux.context.runtimeServerStarted == false",
+          "group": "navigation@7"
+        },
+        {
+          "command": "dbux.stopRuntimeServer",
+          "when": "view == dbuxApplicationsView && dbux.context.runtimeServerStarted == true",
+          "group": "navigation@8"
         },
         {
           "command": "dbux.runFile",
