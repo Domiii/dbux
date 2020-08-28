@@ -24,7 +24,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <!--div data-el="selectedTraceIcon" class="darkred">
                   &nbsp;☩
                 </div-->
-                &nbsp;
+                &nbsp;&nbsp;
                 <!--button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button-->
                 <button data-el="prevContextBtn" class="hidden">⇦</button>
                 <button data-el="nextContextBtn" class="hidden">⇨</button>
