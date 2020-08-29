@@ -17,6 +17,13 @@ export function initTraceDetailsViewCommands(context, traceDetailsViewController
   );
 
   registerCommand(context,
+    'dbuxTraceDetailsView.expandNode',
+    async (node) => {
+      await node.treeNodeProvider.treeView.reveal(node, { select: false, expand: 2 });
+    }
+  );
+
+  registerCommand(context,
     'dbuxTraceDetailsView.selectObject',
     (node) => {
       node.selectObject();

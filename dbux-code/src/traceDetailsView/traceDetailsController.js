@@ -14,9 +14,10 @@ let controller;
 class TraceDetailsController {
   constructor(context) {
     this.treeDataProvider = new TraceDetailsDataProvider();
+    this.treeDataProvider.controller = this;
     this.tracesAtCursor = new TracesAtCursor(context);
   }
-  
+
   get treeView() {
     return this.treeDataProvider.treeView;
   }

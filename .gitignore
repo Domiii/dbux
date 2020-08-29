@@ -1,4 +1,5 @@
 # application
+.secret
 /dbux_projects
 /projects
 __samplesOutput__
@@ -97,8 +98,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
-.env.test
+.env.secret
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache

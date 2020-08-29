@@ -29,7 +29,8 @@ export default class ContextNodeManager extends HostComponentEndpoint {
     this.owner.on('newNode', this.refreshOnData);
     this.owner.on('refresh', this.refreshOnData);
 
-    objectTracker.onObjectSelectionChanged(this.highlightByObject);
+    const unsubscribe = objectTracker.onObjectSelectionChanged(this.highlightByObject);
+    this.addDisposable(unsubscribe);
   }
 
   refreshOnData = () => {

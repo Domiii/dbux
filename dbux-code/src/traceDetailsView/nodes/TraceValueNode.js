@@ -11,12 +11,18 @@ export default class TraceValueNode extends BaseTreeViewNode {
    */
   static makeLabel(trace) {
     const dp = allApplications.getById(trace.applicationId).dataProvider;
-    const label = dp.collections.staticTraces.getById(trace.staticTraceId);
+    const label = dp.collections.staticTraces.getById(trace.staticTraceId).displayName;
     return label;
   }
 
   get trace() {
     return this.entry;
+  }
+
+  get value() {
+    const { trace: { applicationId, traceId } } = this;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    return dp.util.getTraceValue(traceId);
   }
 
   get valueRef() {
@@ -32,6 +38,10 @@ export default class TraceValueNode extends BaseTreeViewNode {
 
   makeIconPath() {
     return traceSelection.isSelected(this.trace) ? 'play.svg' : ' ';
+  }
+
+  canHaveChildren() {
+    return !!this.children?.length;
   }
 
   handleClick() {

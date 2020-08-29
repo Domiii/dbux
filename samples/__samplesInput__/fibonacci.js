@@ -5,7 +5,9 @@ function main() {
         : fibonacci(n - 1) + fibonacci(n - 2);
   }
 
-  fibonacci(7);
+  log(fibonacci(6));
 }
+
+function log(...msgs) { console.log(...msgs); }
 
 main();

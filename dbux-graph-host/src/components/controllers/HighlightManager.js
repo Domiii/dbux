@@ -34,9 +34,11 @@ export default class HighlightManager extends HostComponentEndpoint {
   }
 
   _highlighterUpdated = makeDebounce(() => {
-    const { size } = this.allHighlighter;
-    this.setState({
-      highlightAmount: size
-    });
+    if (!this.isDisposed) {
+      const { size } = this.allHighlighter;
+      this.setState({
+        highlightAmount: size
+      });
+    }
   }, 50);
 }
