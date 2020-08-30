@@ -6,27 +6,28 @@
 
 # Introduction
 
-TODO: better explanation here
-
-Dbux aims at visualizing the JS runtime and making it interactive, hopefully helping developers improve their (i) program comprehension and (ii) debugging techniques.
+Dbux aims at visualizing the JS runtime and making it interactive, hopefully helping developers improve (i) program comprehension and (ii) time spent on finding bugs.
 
 If you have any questions or are interested in the progress of this project, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
 
-Here is a 20 minute intro video with two hands-on examples:
+This video explains what Dbux is and features **two examples** of how to use the Dbux VSCode extension:
 
-<a href="https://www.youtube.com/watch?v=scxIcn1X3X4" target="_blank" alt="video">
-   <img src="https://img.youtube.com/vi/scxIcn1X3X4/0.jpg">
+<a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
+   <img src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg">
 </a>
+
+# Getting Started
 
 We recommend getting started with Dbux by playing around with the [Dbux VSCode Plugin](dbux-code#readme).
 
-If you are already familiar with the Plugin, feel free to further investigate further:
+If you are already familiar with the Plugin, feel free to read on:
 
 1. [Introduction](#introduction)
-2. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
-3. [Which files will be traced?](#which-files-will-be-traced)
-4. [Performance](#performance)
-5. [Known Limitations](#known-limitations)
+2. [Getting Started](#getting-started)
+3. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
+4. [Which files will be traced?](#which-files-will-be-traced)
+5. [Performance](#performance)
+6. [Known Limitations](#known-limitations)
    1. [async/await](#asyncawait)
    2. [Loops](#loops)
    3. [Other Syntax Limitations](#other-syntax-limitations)
@@ -36,18 +37,18 @@ If you are already familiar with the Plugin, feel free to further investigate fu
    7. [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
    8. [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
    9. [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
-   10. [Issues under Windows](#issues-under-windows)
-6. [Dbux Data Analysis](#dbux-data-analysis)
-7. [Dbux Architecture](#dbux-architecture)
+   10. [Issues on Windows](#issues-on-windows)
+7. [Dbux Data Analysis](#dbux-data-analysis)
+8. [Dbux Architecture](#dbux-architecture)
    1. [Call Graph GUI Implementation](#call-graph-gui-implementation)
-8. [Terminology](#terminology)
+9. [Terminology](#terminology)
    1. [Trace and Static Trace](#trace-and-static-trace)
    2. [Context and Static Context](#context-and-static-context)
    3. [Run](#run)
    4. [Call Graph](#call-graph)
       1. [Asynchronous Call Graph](#asynchronous-call-graph)
-9. [How is Dbux being used?](#how-is-dbux-being-used)
-10. [Development + Contributions](#development--contributions)
+10. [How is Dbux being used?](#how-is-dbux-being-used)
+11. [Development + Contributions](#development--contributions)
 
 
 # Adding Dbux to your build pipeline
@@ -74,7 +75,7 @@ When running Dbux, most relevant parts of the code will be traced. However it wi
 
 * When using the "Run button", we trace all executed code, but ignore anything in `node_modules` and `dist` folders.
    * This logic is hard-coded in [dbux-cli/src/util/buildBabelOptions.js](dbux-cli/src/util/buildBabelOptions.js).
-   * In the future we hope to support a babel config override.
+   * Soon you will be able to override the `dbux-cli`'s default babel config.
 * You can easily control what to instrument if you add `@dbux/babel-plugin` to your build pipeline.
    * via Babel [`test`, `include`, `exclude` and `only` config options](https://babeljs.io/docs/en/options#test)
    * via Webpack [rule conditions](https://webpack.js.org/configuration/module/#rule-conditions)
@@ -86,27 +87,31 @@ There are many performance considerations in tracing and recording *all* activit
 
 Main considerations include:
 
+* Instrumentation via [`@dbux/cli`](dbux-cli#readme) is slow.
+  * It uses [`@babel/register`](https://babeljs.io/docs/en/babel-register) (currently with babel-cache disabled) which itself can be very slow, since it re-instruments every file on every run.
+  * If you want to speed things up, do not use `@dbux/cli`, but use the `@dbux/babel-plugin` directly, in combination with Webpack (or some other bundler) in *watch mode*, so it will only instrument code that has been changed, rather than *everything* all the time.
 * In order to render the value of variables, we need to actually copy all variables anytime they are used in any way.
    * That can get very slow very fast if your code operates on large arrays, objects and strings.
    * That is why we have a few parameters to tune.
    * Currently, those parameters are hardcoded and cannot be configured from the outside.
    * Tracked in #217
 * When executing *a lot of stuff* (e.g. long loops or high FPS games etc), things will get slow
-   * Instead of recording *everything*, we might want to be able to choose what to record, and when.
-   * For example: Dbux probably won't really work at all if you run it on a 30+FPS game.
-      * In that case, we might want to be very strategic in telling Dbux to only record: (i) initialization, (ii) a select few other functions and then (iii) several frames of the gameloop for our analysis.
-   * However, Dbux does not currently have such fine-grained control over the recording process.
+   * In the future, instead of recording *everything*, we might want to be able to choose what to record, and when.
+      * For example: Dbux probably won't really work at all if you run it on a 30+FPS game.
+         * In that case, we might want to be very strategic in telling Dbux to only record: (i) initialization, (ii) a select few other functions and then (iii) several frames of the gameloop for our analysis.
+   * However, that is future work. Dbux does not currently have such fine-grained control over the recording process.
    * Tracked in issue#219
-* When running a program with Dbux enabled, and also running it in debug mode (i.e. `--inspect` or `--inspect-brk`), things probably slow down even worse. Consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features unless there is a specific Debugger functionality that Dbux cannot compete with (of which arguably there might be a few, that are valuable in some circumstances).
+* When running a program with Dbux enabled, and also running it in debug mode (i.e. `--inspect` or `--inspect-brk`), things probably slow down even worse. When things get too slow, you might want to consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features for debugging; unless there are some features in the traditional debugger that you just cannot live without in some specific circumstances.
 
 
 # Known Limitations
 
 ## async/await
 
-* `async/await` might be quite broken, and will probably lead to problems when trying to run JS code with `await` in it.
-* NOTE: Yes, this is an absolutely vital feature of modern JavaScript and we hate to not have it working yet (despite having already spent quite some time on it).
-* Tracked in #128.
+* Instrumentation of `async/await` is largely untested. We cannot yet guarantee it fully working.
+* NOTE: Yes, we also believe that this is an absolutely vital feature of modern JavaScript and we hate to not have it fully working yet (despite having already spent quite some time on it).
+* This is tracked in #128.
+* If concerned about `async/await`, you might also be interested in the separate [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking) feature.
 
 ## Loops
 
@@ -209,7 +214,7 @@ NOTE: This link between a caller passing a callback and the execution of that ca
 The related "asynchronous call graph" feature is tracked in issue #210.
 
 
-## Issues under Windows
+## Issues on Windows
 
 * An entirely unrelated bug occurs **very rarely**, when running things in VSCode's built-in terminal, it might change to lower-case drive letter.
    * NOTE: Luckily, we have not seen this bug occur in quite some time.
