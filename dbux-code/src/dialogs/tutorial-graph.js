@@ -156,13 +156,13 @@ Do you want to watch the video that guides you through this first bug?`,
         ]);
       },
       async text() {
-        return `Can we ask you three short questions for an anonymous survey?`;
+        return `Can we ask you 5 short questions for an anonymous survey?`;
       },
       edges: [
         {
           text: 'Ok, but hurry!',
           async enter() {
-            startSurvey1();
+            startSurvey1('q1');
           },
           node: 'end'
         }
