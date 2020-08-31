@@ -18,7 +18,7 @@ import { initMemento } from './memento';
 import { initLogging } from './logging';
 import { initGraphView } from './graphView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
-import { startTutorial } from './dialog/tutorial';
+import startTutorial from './dialogs/tutorial-graph';
 
 
 // eslint-disable-next-line no-unused-vars

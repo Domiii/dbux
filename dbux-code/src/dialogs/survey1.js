@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import { env, Uri } from 'vscode';
 import { showHelp } from '../help';
-import TutorialNodeKind from './TutorialNodeKind';
+import DialogNodeKind from '../dialog/DialogNodeKind';
+import { startDialog } from '../dialog/dialog';
 
 
 const survey1 = {
@@ -41,5 +42,5 @@ const survey1 = {
 };
 
 export default function startSurvey1() {
-  // TODO: startDialog(survey1);
+  startDialog(survey1);
 }

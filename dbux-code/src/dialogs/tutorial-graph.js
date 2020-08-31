@@ -2,8 +2,9 @@
 import { env, Uri } from 'vscode';
 import sleep from '@dbux/common/src/util/sleep';
 import { showHelp } from '../help';
-import TutorialNodeKind from './TutorialNodeKind';
+import DialogNodeKind from '../dialog/DialogNodeKind';
 import startSurvey1 from './survey1';
+import { startDialog } from '../dialog/dialog';
 
 
 async function waitAtMost({ stateStartTime }, delaySeconds) {
@@ -38,12 +39,12 @@ const tutorial = {
     // ###########################################################################
 
     start: {
-      kind: TutorialNodeKind.Message,
+      kind: DialogNodeKind.Message,
       text: 'Hi! You have recently installed Dbux. Do you need some help?',
       edges: [
         {
           text: 'Yes',
-          node: 'tutorial1'
+          node: 'bug10'
         },
         {
           text: 'No. Please don\'t bother me...',
@@ -53,7 +54,7 @@ const tutorial = {
     },
 
     bug10: {
-      kind: TutorialNodeKind.Modal,
+      kind: DialogNodeKind.Modal,
       text: `For our simple tutorial, we prepared example code (with a bug in it) for you to try out some of Dbux's features.`,
       edges: [
         {
@@ -64,7 +65,7 @@ const tutorial = {
     },
 
     bug11: {
-      kind: TutorialNodeKind.Message,
+      kind: DialogNodeKind.Message,
       text: `To run the buggy sample code: (1) Inside the Dbux sidebar, under "Practice", (2) open the "Express" node, and (3) then press the ▶️ play button next to the first bug.
 (You need to hover over the bug, for the button to show up. That is a VSCode problem.)`,
       async enter() {
@@ -80,7 +81,7 @@ const tutorial = {
 
     bug12: {
       dontSave: true,
-      kind: TutorialNodeKind.Message,
+      kind: DialogNodeKind.Message,
       text: `During the first run, it might spend a few minutes:
 - downloading (cloning) express and 
 - installing dependencies.
@@ -109,7 +110,7 @@ Do you want to watch the video that guides you through this first bug?`,
 
     bug13: {
       dontSave: true,
-      kind: TutorialNodeKind.Modal,
+      kind: DialogNodeKind.Modal,
       text: `If you want, you can try to solve the bug (with the help of Dbux and the tutorial video).`,
       edges: [
         {
@@ -128,7 +129,7 @@ Do you want to watch the video that guides you through this first bug?`,
     },
 
     bugWait: {
-      kind: TutorialNodeKind.Message,
+      kind: DialogNodeKind.Message,
       text: `For our simple tutorial, we prepared example code (with a bug in it) for you to try out some of Dbux's features.`,
       async enter(graphState) {
         const delay = 24 * 60 * 60;  // wait a day
@@ -147,7 +148,7 @@ Do you want to watch the video that guides you through this first bug?`,
     // ###########################################################################
 
     bugFeedbackQuery: {
-      kind: TutorialNodeKind.Message,
+      kind: DialogNodeKind.Message,
       async enter(graphState) {
         return Promise.race([
           waitUntilBugFinished(),
@@ -173,7 +174,7 @@ Do you want to watch the video that guides you through this first bug?`,
     // ###########################################################################
 
     end: {
-      kind: TutorialNodeKind.Message,
+      kind: DialogNodeKind.Message,
       text: 'Have fun! (Btw: You can press ESC to close this message)'
     }
   }
@@ -181,5 +182,5 @@ Do you want to watch the video that guides you through this first bug?`,
 
 
 export default function startTutorial() {
-  // TODO: startDialog(tutorial);
+  startDialog(tutorial);
 }

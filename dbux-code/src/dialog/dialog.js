@@ -12,32 +12,32 @@ async function _startDialog(graph, startState) {
   // for debugging
   await set(mementoKeyName, undefined);
 
-  let { state, stateStartTime } = get(mementoKeyName, { state: startState, stateStartTime: Date.now() });
+  let graphState = get(mementoKeyName, { state: startState, stateStartTime: Date.now() });
 
-  if (state !== 'end') {
-    while (state !== null) {
-      if (!graph.nodes[state]) {
-        throw new Error(`DialogNode '${state}' not exist`);
+  if (graphState.state !== 'end') {
+    while (graphState.state !== null) {
+      if (!graph.nodes[graphState.state]) {
+        throw new Error(`DialogNode '${graphState.state}' not exist`);
       }
 
-      debug(`set dialogState: ${state}`);
+      debug(`set dialogState: ${graphState.state}`);
 
-      const node = graph.nodes[state];
+      const node = graph.nodes[graphState.state];
       const NodeClass = _nodeRegistry[node.kind];
 
-      await node.enter?.();
+      await node.enter?.(graphState);
 
       if (!NodeClass) {
         throw new Error(`DialogNodeKind '${DialogNodeKind.getName(node.kind)}' not registed`);
       }
 
-      const result = await NodeClass.render(state, node, graph.defaultEdges);
+      const result = await NodeClass.render(graphState, node, graph.defaultEdges);
 
-      state = result;
-      stateStartTime = Date.now();
+      graphState.state = result;
+      graphState.stateStartTime = Date.now();
 
-      if (state !== null) {
-        await set(mementoKeyName, { state, stateStartTime });
+      if (graphState.state !== null) {
+        await set(mementoKeyName, graphState);
       }
     }
   }
