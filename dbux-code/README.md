@@ -7,7 +7,7 @@ This page explains the dbux-code extension and how to use it. For more general i
 
 <h2>Table of Contents</h2>
 
-1. [Video w/ Examples](#video-w-examples)
+1. [Introduction w/ Examples](#introduction-w-examples)
 2. [Installation](#installation)
 3. [Usage](#usage)
 4. ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
@@ -37,12 +37,12 @@ This page explains the dbux-code extension and how to use it. For more general i
 8. [Configuration](#configuration)
 9. [How does Dbux work](#how-does-dbux-work)
 
-# Video w/ Examples
+# Introduction w/ Examples
 
-This video explains what Dbux is and then shows how to use the dbux-code extension in two examples:
+This video explains what Dbux is and features **two examples** of how to use the Dbux VSCode extension:
 
-<a href="https://www.youtube.com/watch?v=scxIcn1X3X4" target="_blank" alt="video">
-   <img src="https://img.youtube.com/vi/scxIcn1X3X4/0.jpg">
+<a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
+   <img src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg">
 </a>
 
 # Installation
