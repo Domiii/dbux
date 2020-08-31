@@ -7,12 +7,14 @@
 import { isPlainObject } from 'lodash';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Backlog from './Backlog';
-import { createContainers } from './containers/index';
+import { initContainers } from './containers/index';
 
 /** @typedef {import('./BackendController').default} BackendController */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Db');
+
+const defaultNetworkTimeout = 2500;
 
 global.self = global;   // hackfix for firebase which requires `self` to be a global
 
@@ -76,16 +78,14 @@ export class Db {
     // TODO: monitor firestore connection status and call `tryReplayBacklog` before doing anything other write action
   }
 
-  init() {
-    let containers = createContainers(this);
+  async init() {
+    this.firebase = getFirebase();
+    this.fs = getFirestore();
+
+    let containers = await initContainers(this);
     for (let container of containers) {
       this.registerContainer(container);
     }
-  }
-
-  initRemote() {
-    this.firebase = getFirebase();
-    this.fs = getFirestore();
   }
 
   collection(name) {
@@ -176,7 +176,10 @@ export class Db {
       const doc = collection.doc(id);
       debug('data', data);
 
-      result = await doc.set(data, MergeTrue);
+      result = await new Promise((resolve, reject) => {
+        doc.set(data, MergeTrue).then(resolve);
+        setTimeout(() => { reject(new Error(`Timeout on writing data to firebase.`)); }, defaultNetworkTimeout);
+      });
     }
     catch (err) {
       throw new Error(`Failed to write to DB (at ${container.name}): ${err.message}`);

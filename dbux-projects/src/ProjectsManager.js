@@ -39,7 +39,7 @@ export default class ProjectsManager {
   }
 
   async getAndInitBackend() {
-    await this._backend.initRemote();
+    await this._backend.init();
     return this._backend;
   }
 

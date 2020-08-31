@@ -21,10 +21,24 @@ export default class UserEventContainer extends FirestoreContainer {
     this.buffer = this.db.backendController.practiceManager.externals.storage.get(this._mementoKeyName) || [];
     this._previousFlushTime = new Date();
 
+    Verbose && debug(`restore buffer @${this.collectionName}`, this.buffer);
+  }
+
+  async init() {
+    super.init();
+
     this.db.backendController.practiceManager.externals.onUserEvent(this.addEvent);
     onUserEvent(this.addEvent);
 
-    Verbose && debug(`restore buffer @${this.collectionName}`, this.buffer);
+    await this.flush();
+
+    // TODO: start listen on dbux-code/src/userEvents
+    // TODO: start listen on dbux-projects/src/userEvents
+    // TODO: write an event handler for when an event occurs:
+    //    - Store the buffer array to DB (1) if it contains at least 100 events or (2) 5 minutes after receiving the first event. Make sure, that buffer never gets lost (use Memento etc.)
+    //      - return this.addDoc(data);
+
+    // NOTE: The maximum document size in Firestore is 1MiB (see: https://firebase.google.com/docs/firestore/quotas)
   }
 
   hasUnflushedEvent() {
@@ -75,20 +89,6 @@ export default class UserEventContainer extends FirestoreContainer {
         logError(err);
       }
     })();
-  }
-
-  async init() {
-    super.init();
-
-    await this.flush();
-
-    // TODO: start listen on dbux-code/src/userEvents
-    // TODO: start listen on dbux-projects/src/userEvents
-    // TODO: write an event handler for when an event occurs:
-    //    - Store the buffer array to DB (1) if it contains at least 100 events or (2) 5 minutes after receiving the first event. Make sure, that buffer never gets lost (use Memento etc.)
-    //      - return this.addDoc(data);
-
-    // NOTE: The maximum document size in Firestore is 1MiB (see: https://firebase.google.com/docs/firestore/quotas)
   }
 
   async saveBuffer() {

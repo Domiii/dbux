@@ -1,7 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import BackendAuth from './BackendAuth2';
 import { Db } from './db';
-import { initContainers, createContainers } from './containers/index';
+import { initContainers } from './containers/index';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
@@ -22,8 +22,6 @@ export default class BackendController {
     this._initialized = false;
 
     this.db = new Db(this);
-    this.db.init();
-
     this.auth = new BackendAuth(this);
 
     // createContainers(this.db);
@@ -33,24 +31,27 @@ export default class BackendController {
     await this.practiceManager.installModules(this.deps);
   }
 
-  async initRemote() {
+  async init() {
     if (this._initialized) {
       return;
     }
     await this.installBackendDependencies();
-    this.db.initRemote();
+    await this.db.init();
 
     this._initialized = true;
+  }
+
+  async getOrInitDb() {
+    await this.init();
+    return this.db;
   }
 
   /**
    * NOTE: In order to use most of the backend functionality, we first need to login.
    */
   async startRemote() {
-    await this.initRemote();
+    await this.init();
 
     await this.auth.login();
-
-    await initContainers(this.db);
   }
 }
