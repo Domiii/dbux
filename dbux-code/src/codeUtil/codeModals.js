@@ -20,7 +20,7 @@ export async function showInformationMessage(message, btnConfig = EmptyObject, m
     await cancelCallback?.();
     return null;
   }
-  return await result && btnConfig[result]?.() || null;
+  return result && await btnConfig[result]?.() || null;
 }
 
 export async function showWarningMessage(message, btnConfig = EmptyObject, messageCfg = EmptyObject, cancelCallback) {
