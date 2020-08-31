@@ -164,8 +164,8 @@ export function initUserCommands(extensionContext) {
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.backendLogin', async () => {
-    const backend = await getOrCreateProjectManager().getOrInitBackend();
-    await backend.startBackend();
+    const backend = await getOrCreateProjectManager().getAndInitBackend();
+    await backend.startRemote();
   });
   
   // ###########################################################################

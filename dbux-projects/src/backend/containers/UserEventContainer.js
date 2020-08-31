@@ -16,7 +16,13 @@ export default class UserEventContainer extends FirestoreContainer {
   constructor(db) {
     super(db, 'userEvents');
 
+    this.buffer = this.db.backendController.practiceManager.externals.storage.get(this._mementoKeyName) || [];
     this._previousFlush = new Date(0);
+
+    this.db.backendController.practiceManager.externals.onUserEvent(this.addEvent);
+    onUserEvent(this.addEvent);
+
+    debug('buffer', this.buffer);
   }
 
   hasUnflushedEvent() {
@@ -33,6 +39,10 @@ export default class UserEventContainer extends FirestoreContainer {
   }
 
   async _flush() {
+    if (!this.db.backendController._initialized) {
+      return;
+    }
+
     while (this.hasUnflushedEvent()) {
       try {
         let firstEvent = this.buffer[0];
@@ -70,13 +80,9 @@ export default class UserEventContainer extends FirestoreContainer {
   }
 
   async init() {
-    this.buffer = this.db.practiceManager.externals.storage.get(this._mementoKeyName) || [];
-    this.flush();
+    super.init();
 
-    this.db.practiceManager.externals.onUserEvent(this.addEvent);
-    onUserEvent(this.addEvent);
-
-    debug('inited, buffer: ', this.buffer);
+    await this.flush();
 
     // TODO: start listen on dbux-code/src/userEvents
     // TODO: start listen on dbux-projects/src/userEvents
@@ -88,6 +94,6 @@ export default class UserEventContainer extends FirestoreContainer {
   }
 
   async saveBuffer() {
-    return this.db.practiceManager.externals.storage.set(this._mementoKeyName, this.buffer);
+    return this.db.backendController.practiceManager.externals.storage.set(this._mementoKeyName, this.buffer);
   }
 }

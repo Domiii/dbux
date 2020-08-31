@@ -1,6 +1,10 @@
+import { newLogger } from '@dbux/common/src/log/logger';
+
 /**
  * @typedef {import('../ProjectsManager').default} PracticeManager
  */
+
+const { log, debug, warn, error: logError } = newLogger('Backlog');
 
 const keyName = 'dbux.projects.backend.backlog';
 
@@ -18,6 +22,7 @@ export default class Backlog {
 
   init() {
     this.backlog = this.practiceManager.externals.storage.get(keyName) || [];
+    debug(`Backlog init: `, this.backlog);
   }
 
   async save() {

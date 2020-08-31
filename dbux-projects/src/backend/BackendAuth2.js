@@ -20,7 +20,7 @@ export default class BackendAuth {
   constructor(backendController) {
     this.backendController = backendController;
 
-    const firebase = getFirebase();
+    // const firebase = getFirebase();
     // this._authInitPromise = new Promise((resolve, reject) => {
     //   firebase.auth().onAuthStateChanged((user) => {
     //     debug(`Auth state changed: ${user && `${user.displayName} (${user.email})` || '(not logged in)'}`);

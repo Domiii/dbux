@@ -4,12 +4,12 @@
 /* eslint-disable import/first */
 /* eslint-disable global-require,import/first,import/no-extraneous-dependencies */
 
+import { isPlainObject } from 'lodash';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Backlog from './Backlog';
+import { createContainers } from './containers/index';
 
-/**
- * @typedef {import('../ProjectsManager').default} PracticeManager
- */
+/** @typedef {import('./BackendController').default} BackendController */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Db');
@@ -66,16 +66,26 @@ export class Db {
   containersByName = new Map();
 
   /**
-   * @param {PracticeManager} practiceManager 
+   * @param {BackendController} backendController 
    */
-  constructor(practiceManager) {
-    this.practiceManager = practiceManager;
-    this.firebase = getFirebase();
-    this.fs = getFirestore();
+  constructor(backendController) {
+    this.backendController = backendController;
 
-    this.backlog = new Backlog(practiceManager, this._doWrite);
+    this.backlog = new Backlog(this.backendController.practiceManager, this._doWrite);
 
     // TODO: monitor firestore connection status and call `tryReplayBacklog` before doing anything other write action
+  }
+
+  init() {
+    let containers = createContainers(this);
+    for (let container of containers) {
+      this.registerContainer(container);
+    }
+  }
+
+  initRemote() {
+    this.firebase = getFirebase();
+    this.fs = getFirestore();
   }
 
   collection(name) {
@@ -91,7 +101,7 @@ export class Db {
   }
 
   getContainer(name) {
-    return this.containersByName[name];
+    return this.containersByName.get(name);
   }
 
   // ###########################################################################
@@ -104,6 +114,8 @@ export class Db {
   }
 
   async write(container, id, data) {
+    this.sanitize(data);
+
     const writeRequest = {
       containerName: container.name,
       id,
@@ -117,7 +129,7 @@ export class Db {
     }
     else {
       try {
-        return this._doWrite(writeRequest);
+        return await this._doWrite(writeRequest);
       }
       catch (err) {
         // failed to write
@@ -165,11 +177,26 @@ export class Db {
       result = await doc.set(data, MergeTrue);
     }
     catch (err) {
-      warn(`Failed to write to DB (at ${container.name}): ${err.stack}`);
+      throw new Error(`Failed to write to DB (at ${container.name}): ${err.message}`);
     }
     finally {
       this._writePromise = null;
     }
     return result;
+  }
+
+  // ###########################################################################
+  // other utils
+  // ###########################################################################
+
+  sanitize(object) {
+    for (const key in object) {
+      if (isPlainObject(object[key])) {
+        this.sanitize(object[key]);
+      }
+      else if (object[key] === undefined) {
+        object[key] = null;
+      }
+    }
   }
 }
