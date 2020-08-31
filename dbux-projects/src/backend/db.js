@@ -132,6 +132,7 @@ export class Db {
         return await this._doWrite(writeRequest);
       }
       catch (err) {
+        warn(`Write failed, ${err.stack}`);
         // failed to write
         this.backlog.add(writeRequest);
         return null;
@@ -173,6 +174,7 @@ export class Db {
 
       const { collection } = container;
       const doc = collection.doc(id);
+      debug('data', data);
 
       result = await doc.set(data, MergeTrue);
     }

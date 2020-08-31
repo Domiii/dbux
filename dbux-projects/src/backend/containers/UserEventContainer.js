@@ -7,6 +7,8 @@ import FirestoreContainer from '../FirestoreContainer';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('UserEventContainer');
 
+const Verbose = true;
+
 export default class UserEventContainer extends FirestoreContainer {
   buffer = [];
 
@@ -17,12 +19,12 @@ export default class UserEventContainer extends FirestoreContainer {
     super(db, 'userEvents');
 
     this.buffer = this.db.backendController.practiceManager.externals.storage.get(this._mementoKeyName) || [];
-    this._previousFlush = new Date(0);
+    this._previousFlushTime = new Date();
 
     this.db.backendController.practiceManager.externals.onUserEvent(this.addEvent);
     onUserEvent(this.addEvent);
 
-    debug('buffer', this.buffer);
+    Verbose && debug(`restore buffer @${this.collectionName}`, this.buffer);
   }
 
   hasUnflushedEvent() {
@@ -30,8 +32,7 @@ export default class UserEventContainer extends FirestoreContainer {
   }
 
   async flush() {
-    if (!this._flushing && (this.buffer.length >= 3 || (new Date()) - this._previousFlush >= 5 * 60 * 1000)) {
-      // Race condition?
+    if (!this._flushing && (this.buffer.length >= 3 || (new Date()) - this._previousFlushTime >= 5 * 60 * 1000)) {
       this._flushing = true;
       await this._flush();
       this._flushing = false;
@@ -43,19 +44,16 @@ export default class UserEventContainer extends FirestoreContainer {
       return;
     }
 
-    while (this.hasUnflushedEvent()) {
-      try {
-        let firstEvent = this.buffer[0];
-        await this.addDoc(firstEvent);
-        this.buffer.shift();
-        await this.saveBuffer();
-      } 
-      catch (err) {
-        throw new Error(`Unnaturally stop flushing buffer by error: ${err.message}`);
-      }
+    try {
+      await this.addDocs(this.buffer);
+      this.buffer = [];
+      await this.saveBuffer();
+    } 
+    catch (err) {
+      throw new Error(`Failed when flushing: ${err.message}`);
     }
 
-    this._previousFlush = new Date();
+    this._previousFlushTime = new Date();
   }
 
   addEvent = (name, data) => {
@@ -66,7 +64,7 @@ export default class UserEventContainer extends FirestoreContainer {
     };
     this.buffer.push(event);
 
-    debug(event);
+    Verbose && debug('receive new event', event);
 
     (async () => {
       try {
