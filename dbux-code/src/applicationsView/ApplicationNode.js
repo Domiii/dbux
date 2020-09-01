@@ -36,21 +36,11 @@ export default class ProjectNode extends BaseTreeViewNode {
   }
 
   handleClick() {
-    try {
-      if (this.isSelected) {
-        allApplications.selection.removeApplication(this.application);
-      }
-      else {
-        allApplications.selection.addApplication(this.application);
-      }
+    if (this.isSelected) {
+      allApplications.selection.removeApplication(this.application);
     }
-    catch (err) {
-      if (err.appBusyFlag) {
-        window.showInformationMessage('[Dbux] Currently busy, try again');
-      }
-      else {
-        throw err;
-      }
+    else {
+      allApplications.selection.addApplication(this.application);
     }
   }
 
