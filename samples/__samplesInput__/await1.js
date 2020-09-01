@@ -17,7 +17,7 @@ async function g() {
 
 async function h() {
   console.log('h1');
-  await sleep(100);
+  await sleep(1000);
   console.log('h2');
 }
 

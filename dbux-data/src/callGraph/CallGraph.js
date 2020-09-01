@@ -39,7 +39,7 @@ export default class CallGraph {
       return this.getPreviousInContext(previousTrace.traceId, originId);
     }
 
-    if (this._areTraceBCEAndResult(previousTrace.traceId, originId)) {
+    if (previousTrace && this._areTraceBCEAndResult(previousTrace.traceId, originId)) {
       return this.getPreviousInContext(previousTrace.traceId, originId);
     }
 
@@ -60,7 +60,7 @@ export default class CallGraph {
       return this.getNextInContext(nextTrace.traceId, originId);
     }
 
-    if (this._areTraceBCEAndResult(originId, nextTrace.traceId)) {
+    if (nextTrace && this._areTraceBCEAndResult(originId, nextTrace.traceId)) {
       return this.getNextInContext(nextTrace.traceId, originId);
     }
 
@@ -76,7 +76,12 @@ export default class CallGraph {
       return firstTrace;
     }
     else {
-      return this._getParentTraceByContextId(contextId) || null;
+      const parentTrace = this._getParentTraceByContextId(contextId);
+      if (parentTrace) {
+        const callerTrace = this.dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
+        return callerTrace || null;
+      }
+      return null;
     }
   }
 
@@ -90,8 +95,14 @@ export default class CallGraph {
     }
     else {
       const parentTrace = this._getParentTraceByContextId(contextId);
-      if (parentTrace) return this.getNextInContext(parentTrace.traceId);
-      else return null;
+      if (parentTrace) {
+        const callerTrace = this.dp.util.getPreviousCallerTraceOfTrace(parentTrace.traceId);
+        if (callerTrace) {
+          return this.dp.collections.traces.getById(callerTrace.resultId);
+        }
+      }
+      
+      return null;
     }
   }
 
@@ -259,14 +270,16 @@ export default class CallGraph {
     const realContextId = this.dp.util.getRealContextId(traceId);
     const trace = this.dp.collections.traces.getById(traceId);
     const parentTraces = this.dp.indexes.traces.parentsByRealContext.get(realContextId) || EmptyArray;
+    const callerTraces = parentTraces.map(t => this.dp.util.getPreviousCallerTraceOfTrace(t.traceId))
+      .sort((t1, t2) => t1.traceId - t2.traceId);
 
-    const upperIndex = this._binarySearchUpperIndexByKey(parentTraces, trace, (t) => t.traceId);
+    const upperIndex = this._binarySearchUpperIndexByKey(callerTraces, trace, (t) => t.traceId);
 
     if (upperIndex === null) {
       return null;
     }
     else {
-      return this.dp.util.getCallerTraceOfTrace(parentTraces[upperIndex].traceId);
+      return this.dp.util.getCallerTraceOfTrace(callerTraces[upperIndex].traceId);
     }
   }
 

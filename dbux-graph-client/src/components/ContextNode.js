@@ -17,14 +17,14 @@ class ContextNode extends ClientComponentEndpoint {
             <div class="flex-row">
               <div class="flex-row">
                 <button data-el="nodeToggleBtn" class="btn node-toggle-btn"></button>
-                <div data-el="title" class="flex-row">
+                <div data-el="title" class="flex-row" style="align-items: center">
                   <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
                   <div data-el="contextLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
                 <!--div data-el="selectedTraceIcon" class="darkred">
                   &nbsp;☩
                 </div-->
-                &nbsp;
+                &nbsp;&nbsp;
                 <!--button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button-->
                 <button data-el="prevContextBtn" class="hidden">⇦</button>
                 <button data-el="nextContextBtn" class="hidden">⇨</button>

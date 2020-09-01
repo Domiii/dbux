@@ -3,13 +3,17 @@
 [![Discord](https://img.shields.io/discord/743765518116454432.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QKgq9ZE)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+This page explains the dbux-code extension and how to use it. For more general information regarding Dbux, check out [our git repository](https://github.com/Domiii/dbux/tree/master/#readme).
+
 <h2>Table of Contents</h2>
 
-1. [Installation](#installation)
-2. [Usage](#usage)
-3. ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
-      1. [How the Run + Debug buttons work](#how-the-run--debug-buttons-work)
-4. [Analysis Features](#analysis-features)
+1. [Video w/ Examples](#video-w-examples)
+2. [Installation](#installation)
+3. [Usage](#usage)
+4. ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
+   1. [How the Run + Debug buttons work](#how-the-run--debug-buttons-work)
+   2. [Dbux Runtime Server](#dbux-runtime-server)
+5. [Analysis Features](#analysis-features)
    1. [Applications](#applications)
    2. [Code decorations](#code-decorations)
    3. [Trace Selection](#trace-selection)
@@ -20,26 +24,32 @@
    8. [Trace Details: Trace Executions](#trace-details-trace-executions)
    9. [Trace Details: Nearby Values](#trace-details-nearby-values)
    10. [Trace Details: Debug](#trace-details-debug)
-   11. [<img src="../dbux-code/resources/dark/call-graph.png" title="call graph" style="max-height: 2em; vertical-align: middle; background-color: #1A1A1A"> Call Graph](#img-srcdbux-coderesourcesdarkcall-graphpng-titlecall-graph-stylemax-height-2em-vertical-align-middle-background-color-1a1a1a-call-graph)
-   12. [Call Graph: Visualization](#call-graph-visualization)
-   13. [Call Graph: pause (pause/resume live updates)](#call-graph-pause-pauseresume-live-updates)
-   14. [Call Graph: clear (show/hide already recorded traces)](#call-graph-clear-showhide-already-recorded-traces)
-   15. [Call Graph: sync (toggle sync mode)](#call-graph-sync-toggle-sync-mode)
-   16. [Call Graph: loc](#call-graph-loc)
-   17. [Call Graph: call](#call-graph-call)
-   18. [Call Graph: Search](#call-graph-search)
-   19. [Finding Errors](#finding-errors)
-5. [Practice debugging with "Dbux Practice"](#practice-debugging-with-dbux-practice)
-6. [Commands](#commands)
-7. [Configuration](#configuration)
-8. [How does Dbux work](#how-does-dbux-work)
+   11. [Call Graph](#call-graph)
+   12. [Call Graph: pause (pause/resume live updates)](#call-graph-pause-pauseresume-live-updates)
+   13. [Call Graph: clear (show/hide already recorded traces)](#call-graph-clear-showhide-already-recorded-traces)
+   14. [Call Graph: sync (toggle sync mode)](#call-graph-sync-toggle-sync-mode)
+   15. [Call Graph: loc](#call-graph-loc)
+   16. [Call Graph: call](#call-graph-call)
+   17. [Call Graph: Search](#call-graph-search)
+   18. [Finding Errors](#finding-errors)
+6. [Practice debugging with "Dbux Practice"](#practice-debugging-with-dbux-practice)
+7. [Commands](#commands)
+8. [Configuration](#configuration)
+9. [How does Dbux work](#how-does-dbux-work)
 
+# Video w/ Examples
+
+This video explains what Dbux is and then shows how to use the dbux-code extension in two examples:
+
+<a href="https://www.youtube.com/watch?v=scxIcn1X3X4" target="_blank" alt="video">
+   <img src="https://img.youtube.com/vi/scxIcn1X3X4/0.jpg">
+</a>
 
 # Installation
 
 You can one-click install the plugin from the [VSCode marketplace](https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code). You can also install it from within VSCode via the "Extensions" panel.
 
-[You can learn more about Dbux here](https://github.com/Domiii/dbux).
+[You can learn more about Dbux here](https://github.com/Domiii/dbux/tree/master/).
 
 
 # Usage
@@ -48,9 +58,9 @@ In order to get started, you probably want to use the "Run with Dbux" button on 
 
 Once your program has run, you can analyze it in great detail, as described below.
 
-If you have a build pipeline, and cannot just run it via `node myProgram.js`, refer to "[Adding Dbux to your build pipeline](../#adding-dbux-to-your-build-pipeline)".
+If you have a build pipeline, and cannot just run it via `node myProgram.js`, refer to "[Adding Dbux to your build pipeline](https://github.com/Domiii/dbux/tree/master/#adding-dbux-to-your-build-pipeline)".
 
-Dbux is not perfect. You might want to read up on [known limitations](../#known-limitations).
+Dbux is not perfect. You might want to read up on [known limitations](https://github.com/Domiii/dbux/tree/master/#known-limitations).
 
 
 # "Run with Dbux" and "Debug with Dbux"
@@ -69,12 +79,16 @@ The "Debug with Dbux" button does the same thing as the Run button but with `--i
 * Make sure to turn on VSCode's Auto Attach for this.
 * For more information on VSCVode debugging, consult [the official manual on "Node.js debugging in VS Code"](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
 
-### How the Run + Debug buttons work
+## How the Run + Debug buttons work
 
-* When you click either button (or use the "*Dbux: Run/Debug current file*" commands), what happens is: [@dbux/cli](../dbux-cli) runs the currently open JS file (with the [@dbux/runtime](../dbux-runtime) injected), tracing and recording runtime information as it executes.
+* When you click either button (or use the "*Dbux: Run/Debug current file*" commands), what happens is: [@dbux/cli](https://github.com/Domiii/dbux/tree/master/dbux-cli) runs the currently open JS file (with the [@dbux/runtime](https://github.com/Domiii/dbux/tree/master/dbux-runtime) injected), tracing and recording runtime information as it executes.
 * You can configure both buttons in your workspace or user settings. See [Configuration](#configuration) for more details.
-* NOTE: Dbux architectural details are explained [here](../#dbux-architecture).
+* NOTE: Dbux architectural details are explained [here](https://github.com/Domiii/dbux/tree/master/#dbux-architecture).
 
+
+## Dbux Runtime Server
+
+TODO: explain
 
 
 # Analysis Features
@@ -105,17 +119,17 @@ The "Applications" view is at the top of the Dbux view.
 * Some explanations:
    * `f()`<span style="color:red">↱</span> is a *traced* function call: the function `f` is recorded and we can step into it
    * `g()` <span style="color:gray">↱</span> is a library or native call: the function `g` is not recorded and we cannot step into it
-   * For all code decorations and their meanings, please refer to [dbux-code/src/codeDeco/traceDecoConfig.js](src/codeDeco/traceDecoConfig.js)
+   * For all code decorations and their meanings, please refer to [dbux-code/src/codeDeco/traceDecoConfig.js](https://github.com/Domiii/dbux/tree/master/dbux/src/codeDeco/traceDecoConfig.js)
 
 Examples:
 
 * In this buggy code, we find that line 6 never executed, just from the code decorations:
-   ![code-deco1](../docs/img/code-deco1.png)
+   ![code-deco1](https://domiii.github.io/dbux/docs/img/code-deco1.png)
 
 
 ## Trace Selection
 
-![select trace](../docs/img/select-trace1.gif)
+![select trace](https://domiii.github.io/dbux/docs/img/select-trace1.gif)
 
 * Code that has executed can be traced and analyzed. Executed code can be distinguished from code that did not execute from [code decorations](#code-decorations) (if enabled).
 * To select a trace, place the keyboard cursor on executed code and press the "Select Trace" button.
@@ -130,36 +144,34 @@ Analyze and navigate through individual traces:
 
 Navigation allows you to step through all recorded traces, similar to (but more advanced than) stepping in a traditional debugger. Navigation works by continuously updating "the currently selected trace".
 
-![navigation](../docs/img/nav1.png)
-
-TODO: short video
+![navigation](https://domiii.github.io/dbux/docs/img/nav1.png)
 
 Important: The buttons will only show up if you select them, or hover over them with the mouse (again, this is a VSCode limitation).
 
 Note that we are not debugging in real-time, but work on a recoding of the actual execution, allowing us to...
 
 1. step forward and also *backward* in time, meaning that all navigation modes exist twice (one forward, one backward).
-1. more easily (to some extent) take smarter (i.e. slightly less stupid) steps than the default debugger
+2. more easily (to some extent) take smarter (i.e. slightly less stupid) steps than the default debugger
 
 Here are all the buttons:
 
-<img src="../dbux-code/resources/dark/previousParentContext.png" title="previousParentContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="../dbux-code/resources/dark/nextParentContext.png" title="nextParentContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A">  `Go to start/end of context`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousParentContext.png" title="previousParentContext" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextParentContext.png" title="nextParentContext" height="32px" width="32px" style="background-color: #1A1A1A">  `Go to start/end of context`
 
-* Jump to the start/end of the current [context](../#context) (function or file)
+* Jump to the start/end of the current [context](https://github.com/Domiii/dbux/tree/master/#context) (function or file)
 * When pressed again, steps out to caller (which we also call "parent")
 
-<img src="../dbux-code/resources/dark/previousChildContext.png" title="previousChildContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="../dbux-code/resources/dark/nextChildContext.png" title="nextChildContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next function call in context`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousChildContext.png" title="previousChildContext" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextChildContext.png" title="nextChildContext" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next function call in context`
 
 * Jump to previous/next *traced* function call <span style="color:red">↱</span> before/after the currently selected trace.
    * Note that library or native calls <span style="color:gray">↱</span> are not traced and thus will be skipped by this button.
-* When pressed again, steps into that function (aka [context](../#context) aka "child context of this context").
+* When pressed again, steps into that function (aka [context](https://github.com/Domiii/dbux/tree/master/#context) aka "child context of this context").
 * NOTE: Things might be a bit off in case of [getters and setters](https://www.w3schools.com/js/js_object_accessors.asp)
    * Getters and setters work, but navigation is a bit less intuitive.
    * Since getters and setters don't have a clearly identifyable caller trace, they will need some more development work before they will be fully smoothed out.
 
-<img src="../dbux-code/resources/dark/previousInContext.png" title="previousInContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="../dbux-code/resources/dark/nextInContext.png" title="nextInContext" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next "non-trivial" trace in context`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousInContext.png" title="previousInContext" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextInContext.png" title="nextInContext" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next "non-trivial" trace in context`
 
-* Jump to previous/next "non-trivial" trace in [context](../#context) (function or file)
+* Jump to previous/next "non-trivial" trace in [context](https://github.com/Domiii/dbux/tree/master/#context) (function or file)
 * Stepping would be a lot of work, if we tried to step through every single expression.
 * That is why Dbux uses some basic heuristics to ignore some of the more "trivial traces".
    * Ex1: In case of `a.b`, it will step to `a.b`, but it will not step to `a`.
@@ -167,13 +179,13 @@ Here are all the buttons:
 * (Dev note: we internally determine "trivial traces" as traces of `TraceType.ExpressionValue`.)
 
 
-<img src="../dbux-code/resources/dark/previousStaticTrace.png" title="previousStaticTrace" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="../dbux-code/resources/dark/nextStaticTrace.png" title="nextStaticTrace" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next execution of the same trace`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousStaticTrace.png" title="previousStaticTrace" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextStaticTrace.png" title="nextStaticTrace" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next execution of the same trace`
 
 * If a piece of code was executed multiple times (because a function was called multiple times, or there is a loop etc), these buttons allow you to jump between the traces of those different executions.
-* These buttons step through all [`Trace Executions`](#trace-executions) of the currently selected `trace`'s `staticTrace`. [Read more on Dbux terminology here](../#trace)
+* These buttons step through all [`Trace Executions`](#trace-executions) of the currently selected `trace`'s `staticTrace`. [Read more on Dbux terminology here](https://github.com/Domiii/dbux/tree/master/#trace)
 
 
-<img src="../dbux-code/resources/dark/leftArrow.png" title="previous" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> <img src="../dbux-code/resources/dark/rightArrow.png" title="next" style="max-height: 2rem; vertical-align: middle; background-color: #1A1A1A"> `Go to previous/next trace (unconditionally)`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/leftArrow.png" title="previous" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/rightArrow.png" title="next" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next trace (unconditionally)`
 
 * Go to previous/next trace, no matter what. This navigation method does not filter out "trivial traces", and it also moves in and out of contexts, if that is where the previous/next trace is.
 * These buttons provide the most granular navigation option.
@@ -185,56 +197,57 @@ Here are all the buttons:
 
 ## Trace Details: Value
 
-* If your currently selected trace is an expression with a value that is `!== undefined`, that value will be rendered here.
-* You can investigate further by clicking on the "Value" node.
-* Further reading:
-   * You might want to read up on Dbux's [value limitations and problems](../#problems-with-values).
+If your currently selected trace is an expression with a value that is `!== undefined`, that value will be rendered here.
 
-![value](../docs/img/values.gif)
+You can investigate further by clicking on the "Value" node.
+
+Further reading:
+   * You might want to read up on Dbux's [value limitations and problems](https://github.com/Domiii/dbux/tree/master/#problems-with-values).
+
+![value](https://domiii.github.io/dbux/docs/img/values.gif)
 
 
 ## Trace Details: Object Traces
 
-`Object Traces` lists all occurences of an object and allows us to track its evolution throughout the execution of the application, like in the example below.
+Lists all occurences of an object and allows us to track its evolution throughout the execution of the application, like in the example below.
 
 Specifically: if the currently selected trace's value is an object (or non-primitive), `Object Traces` will list all traces of values that are equal to that value ("equal" as defined by [JavaScript's built-in `Map`'s key equality algorithm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Key_equality)).
 
 There is a "Highlight in Call Graph" button that appears when hovering over the "Object Traces" node, at the right-hand side. It expands and highlights all contexts where this object was used in the call graph.
 
-![object traces](../docs/img/object-traces.gif)
+![object traces](https://domiii.github.io/dbux/docs/img/object-traces.gif)
 
 
 ## Trace Details: Trace Executions
 
-`Trace Eexecutions` lists the values of all executions of the currently selected "piece of code".
+Lists the values of all executions of the currently selected "piece of code".
 
 E.g. if you currently selected some trace `f(x)`, then you would see all executions (and their values) of `f(x)` here.
 
 You can select (jump to) any trace inside of this list by clicking on it.
 
-Since this can be a lot of traces, we provide a few (currently still rather crude) grouping methods (as seen in the gif below).
+Since this can be a lot of traces, you can group them by different criteria through a button on the `Trace Executions` node.
+* NOTE: Again, you have to move mouse over it to see it. That's a VSCode limitation.
 
-In Dbux terminology: `Trace Executions` lists all `traces` of the currently selected `trace`'s `staticTrace`. [Read more on Dbux terminology here](../#trace)
+Another way of putting this is: `Trace Executions` lists all `traces` of the currently selected `trace`'s `staticTrace`. [Read more on Dbux terminology here](https://github.com/Domiii/dbux/tree/master/#trace)
 
-TODO: hof1.js
-
-![trace executions](../docs/img/trace-executions.gif)
+![trace executions](https://domiii.github.io/dbux/docs/img/trace-executions-hof1.png)
 
 
 ## Trace Details: Nearby Values
 
-`Nearby Values` lists *all* traces of the current [context](../#context) (function or file) that are expressions and whose value is not `undefined`.
+`Nearby Values` lists *all* traces of the current [context](https://github.com/Domiii/dbux/tree/master/#context) (function or file) that are expressions and whose value is not `undefined`.
 
 You can select (jump to) any trace inside of this list by clicking on it.
 
-We want to add some grouping to this feature. That is being worked on and tracked [here](https://github.com/Domiii/dbux/issues/264).
+We want to add some grouping to this feature. That is being worked on and tracked [here](https://github.com/Domiii/dbux/tree/master/dbux/issues/264).
 
 **Recommendations**: `Nearby Values` is very useful to...
 
 * understand which values were generated in what order.
 * decipher complex one-liners (see screen grab below).
 
-![nearby values](../docs/img/nearby-values.png)
+![nearby values](https://domiii.github.io/dbux/docs/img/nearby-values.png)
 
 ## Trace Details: Debug
 
@@ -242,77 +255,68 @@ This renders raw data related to the selected trace.
 
 This is generally only useful for contributors, the very curious or those who work on dynamic JS runtime data analysis.
 
-## <img src="../dbux-code/resources/dark/call-graph.png" title="call graph" style="max-height: 2em; vertical-align: middle; background-color: #1A1A1A"> Call Graph
+## Call Graph
 
-<span id="call-graph"></span>
-
-The <img src="../dbux-code/resources/dark/call-graph.png" title="call graph" style="max-height: 1.2rem; vertical-align: middle; background-color: #1A1A1A"> call graph renders a bird's eye overview over all executed files and functions.
+The <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/call-graph.png" title="call graph" height="32px" width="32px" style="background-color: #1A1A1A"> Call Graph renders a bird's eye overview over all executed files and functions.
 
 As an analogy, I would say that the call graph is like (a rather crude) "Google Maps" while the [trace details view](#trace-details) is (a rather crude) "Google Street View" of your application's execution. Together they offer a multi-resolutional interactive tool to see and find everything that is going on in your application.
 
+The timeline expands vertically, while execution depth goes into the horizontal.
 
-## Call Graph: Visualization
+At the outer most level, you see individual "[Run](https://github.com/Domiii/dbux/tree/master/#run)" nodes.
 
-The call graph renders a linear timeline of your JavaScript application in the vertical dimension.
-
-The horizontal dimension grows with execution depth.
-
-At the outer most level, you see individual "[Run](../#run)" nodes.
-
-Each run contains all (visible/recorded) "[Context](../#context)" sub trees, that is all invocations of traced functions and files.
+Each "Run" contains all (visible/recorded) "[Context](https://github.com/Domiii/dbux/tree/master/#context)" sub trees, that is all invocations of traced functions and files.
 
 Call graph visualizations have many uses. E.g.:
 
 * overview the complex system that is our application.
 * quickly identify points of interests in code that is not our own.
-* visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the example below:
+* visualize [recursion trees](https://www.google.com/search?q=recursion+trees), like in the screengrab below
 
-TODO: fibonacci1.js
-
-![call graph: fibonacci1](../docs/img/call-graph-fib1.gif)
+![call graph: fibonacci1](https://domiii.github.io/dbux/docs/img/call-graph-fib-1.png)
 
 ## Call Graph: pause (pause/resume live updates)
 
 * Dbux keeps recording and rendering all code execution in real-time, as long as an application (or website) is running.
 * During analysis, once we have recorded the bug (or other event of interest), we might not be interested in further updates.
 * Use the 🔴 button to pause/resume the rendering of new incoming data, so we can focus on what we already have.
-   * NOTE: You might be tempted into thinking that pausing with this button will stop all recording, however that is not what happens. Currently, Dbux keeps on recording for as long as the application is running. This button only hides that new data behind a single "Hidden Node". That inability to completely pause recording, can make things very slow and thus make debugging of games and other kinds of high performance applications very difficult. [You can read more about performance considerations here](../#performance).
+   * NOTE: You might be tempted into thinking that pausing with this button will stop all recording, however that is not what happens. Currently, Dbux keeps on recording for as long as the application is running. This button only hides that new data behind a single "Hidden Node". That inability to completely pause recording, can make things very slow and thus make debugging of games and other kinds of high performance applications very difficult. [You can read more about performance considerations here](https://github.com/Domiii/dbux/tree/master/#performance).
 
 
 ## Call Graph: clear (show/hide already recorded traces)
 
-* `clear` is useful for removing clutter when investigating a bug that does not appear immediately, or is not part of the initialization routine.
-* For example, when investigating a bug that happens after pressing some button in your application, you can:
+* The `x` button (`clear`) is useful for removing clutter when investigating a bug that does not appear immediately, or is not part of the initialization routine.
+* For example, when investigating a bug that happens after pressing some button (a "buggy button" if you will) in your application, you can:
    1. wait for the application to finish initialization and for the "buggy button" to show up
-   1. press `clear`
-   1. press the buggy button
+   1. press `x`
+   1. press your application's buggy button
    1. (if necessary) wait until the bug occurs
    1. press 🔴 (pause).
-   * -> This lets you completely isolate the code that was executed when clicking that button, render only the relevant sub graph, while removing (hiding) all kinds of unrelated clutter.
+* -> This lets you completely isolate the code that was executed when clicking that button, render only the relevant sub graph, while removing (hiding) all kinds of unrelated clutter.
 
 
 ## Call Graph: sync (toggle sync mode)
 
-* `sync` mode makes sure that while you select traces in and navigate through your code, the selected trace's context is always automatically expanded and in clear sight.
+`sync` mode makes sure that while you select traces in and navigate through your code, the selected trace's context is always automatically expanded and in clear sight inside the Call Graph view.
 
 
 ## Call Graph: loc
 
 Show/hide locations in context nodes.
 
-You can click it to go there.
+Clicking the location takes you there.
 
 ## Call Graph: call
 
 Show/hide caller traces of all contexts that are function invocations.
 
-You can click it to go there. You can `CTRL/Command` + `Click` it to select it.
+You can click the call trace to go there. You can `CTRL/Command` + `Click` it to select it.
 
 ## Call Graph: Search
 
 Simple text search. Currently only matches the context node's title (aka `staticTrace.displayName`).
 
-The search implementation is located in [dataProviderUtil.searchContexts](../dbux-data/src/dataProviderUtil.js).
+Dev note: The search implementation is located in [dataProviderUtil.searchContexts](https://github.com/Domiii/dbux/tree/master/dbux-data/src/dataProviderUtil.js).
 
 ## Finding Errors
 
@@ -324,44 +328,59 @@ If there are multiple errors, it should take you to the first error in your prog
 
 # Practice debugging with "Dbux Practice"
 
-We are still working on this. The idea is that this will allow anyone to practice debugging on real-world bugs in professionally developed open source projects. More on this soon :)
+"Dbux Practice" aims to allow anyone to easily get into practicing debugging on real-world bugs in professionally developed open source projects.
+
+We are still working on this. More on this soon :)
 
 
 # Commands
 
-This is how you execute VSCode commands:
+**How to execute [VSCode commands](https://code.visualstudio.com/docs/getstarted/tips-and-tricks#_command-palette)?**
 
 1. Press `CTRL/Command + Shift + P`
 1. Search for a command... (type the name or some letters of the name)
 1. Select the command (`Enter`)
 1. See it execute.
 
-Note that all the buttons that you see are also commands.
+You can bind commands to keys. [This official documentation explains how to easily keybind any command in VSCode](https://code.visualstudio.com/docs/getstarted/keybindings).
 
-[This official documentation explains how to easily keybind any command in VSCode](https://code.visualstudio.com/docs/getstarted/keybindings).
+Note that many of the built-in Dbux buttons can also be controlled via commands.
 
 
 
 A rough outline of (hopefully all) commands:
 
 <!-- dbux:codeCommands start -->
-| Command                                  | Title                               | Description                    |
-| ---------------------------------------- | ----------------------------------- | ------------------------------ |
-| dbux.backendLogin                        | Dbux: Backend Login                 | Run current file               |
-| dbux.debugFile                           | Dbux: Debug current file            | Run current file with debugger |
-| dbux.exportApplicationData               | Dbux: Export application data       |                                |
-| dbux.hideDecorations                     | Dbux: Hide all decorations          |                                |
-| dbux.hideGraphView                       | Dbux: Hide Call Graph               |                                |
-| dbux.runFile                             | Dbux: Run current file              |                                |
-| dbux.selectTrace                         | Dbux: select trace                  |                                |
-| dbux.showDecorations                     | Dbux: Show decorations              |                                |
-| dbux.showGraphView                       | Dbux: Show Call Graph               |                                |
-| dbux.showHelp                            | Dbux: Help                          |                                |
-| dbux.systemCheck                         | Dbux: Check System Dependencies     |                                |
-| dbux.toggleErrorLog                      | Dbux: Toggle all error log          |                                |
-| dbux.toggleNavButton                     | Dbux: Toggle all navigation buttons |                                |
-| dbux.togglePracticeView                  | Dbux: Toggle Practice View          |                                |
-| dbuxProjectView.node.showBugIntroduction | Show introduction                   |                                |
+| Command                                               | Title                                               | Description                                                                                                                                |
+| ----------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| dbux.backendLogin                                     | Dbux: Backend Login                                 | (Feature still in development. Won't work.)                                                                                                |
+| dbux.debugFile                                        | Dbux: Debug current file                            | Run selected file with Dbux, but with Node's `--inspect-brk` enabled. Make sure to enable VSCode's auto attach beforehand.                 |
+| dbux.exportApplicationData                            | Dbux: Export Application Data                       | Export raw recorded Dbux data of a previously executed application to a `json` file.                                                       |
+| dbux.hideDecorations                                  | Dbux: Hide Code Decorations                         | Do not annotate executed code with Dbux code decorations (<span style='color:red'>✦↱</span><span style='color:orange'>🔥ƒ</span> etc).     |
+| dbux.hideGraphView                                    | Dbux: Hide Call Graph                               | Close the Call Graph panel.                                                                                                                |
+| dbux.runFile                                          | Dbux: Run current file                              | Run selected file with Dbux                                                                                                                |
+| dbux.selectTrace                                      | Dbux: Select Trace by id                            | Mostly used for debugging Dbux, or when (for some other reason) you would know some trace by its id.                                       |
+| dbux.showDecorations                                  | Dbux: Show Code Decorations                         | Show code decorations again after hiding them.                                                                                             |
+| dbux.showGraphView                                    | Dbux: Show Call Graph                               | Open the Call Graph panel.                                                                                                                 |
+| dbux.showHelp                                         | Dbux: Help                                          | Show the Dbux help dialog.                                                                                                                 |
+| dbux.startRuntimeServer                               | Dbux: Start Dbux Runtime Server                     |                                                                                                                                            |
+| dbux.stopRuntimeServer                                | Dbux: Stop Dbux Runtime Server                      |                                                                                                                                            |
+| dbux.systemCheck                                      | Dbux: Check System Dependencies                     | Dbux (especially Dbux practice) needs some system tools in order to work properly. You can check these dependencies with this command.     |
+| dbux.toggleErrorLog                                   | Dbux: Toggle Error Notifications                    | Suppress/unsuppress all Dbux error notifications.                                                                                          |
+| dbux.toggleNavButton                                  | Dbux: Toggle Editor Buttons                         | Hide/show Dbux buttons in the editor tab bar. Use this if you don't want to see any extra buttons at the top right of your editor tab bar. |
+| dbux.togglePracticeView                               | Dbux: Toggle Practice View                          | Feature still in development. You can use this to use Dbux on a pre-configured bug in express.                                             |
+| dbuxProjectView.showDiff                              | Show difference                                     |                                                                                                                                            |
+| dbuxTraceDetailsView.navigation.NextChildContext      | Dbux: Go to next function call in context           |                                                                                                                                            |
+| dbuxTraceDetailsView.navigation.NextInContext         | Dbux: Go to next "non-trivial" trace in context     |                                                                                                                                            |
+| dbuxTraceDetailsView.navigation.NextParentContext     | Dbux: Go to end of context                          |                                                                                                                                            |
+| dbuxTraceDetailsView.navigation.NextStaticTrace       | Dbux: Go to next execution of the same trace        |                                                                                                                                            |
+| dbuxTraceDetailsView.navigation.NextTrace             | Dbux: Go to next trace (unconditionally)            |                                                                                                                                            |
+| dbuxTraceDetailsView.navigation.PreviousChildContext  | Dbux: Go to previous function call in context       |                                                                                                                                            |
+| dbuxTraceDetailsView.navigation.PreviousInContext     | Dbux: Go to previous "non-trivial" trace in context |                                                                                                                                            |
+| dbuxTraceDetailsView.navigation.PreviousParentContext | Dbux: Go to start of context                        |                                                                                                                                            |
+| dbuxTraceDetailsView.navigation.PreviousStaticTrace   | Dbux: Go to previous execution of the same trace    |                                                                                                                                            |
+| dbuxTraceDetailsView.navigation.PreviousTrace         | Dbux: Go to previous trace (unconditionally)        |                                                                                                                                            |
+| dbuxTraceDetailsView.selectTraceAtCursor              | Dbux: Select Trace At Cursor                        | Selects the trace at the keyboard cursor (if there is any executed trace).                                                                 |
 
 <!-- dbux:codeCommands end -->
 
@@ -387,4 +406,4 @@ These are all currently supported configuration parameters (mostly for the "Run 
 
 # How does Dbux work
 
-Please refer to the [main page](../#readme) for more information on how Dbux works, how to configure it, performance considerations and more.
+Please refer to the [main page](https://github.com/Domiii/dbux/tree/master/#readme) for more information on how Dbux works, how to configure it, performance considerations and more.

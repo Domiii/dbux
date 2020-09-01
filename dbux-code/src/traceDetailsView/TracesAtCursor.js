@@ -5,7 +5,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getCursorLocation } from '../codeUtil/codeNav';
 import { getTracesAt } from '../helpers/codeRangeQueries';
-import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
+import { compareTraceInner } from '../codeUtil/codeRangeUtil';
 
 /** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
 
@@ -15,33 +15,6 @@ import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
  */
 function isTracesInSameContext(t1, t2) {
   return t1.applicationId === t2.applicationId && t1.contextId === t2.contextId;
-}
-
-/**
- * @param {Trace} trace 
- */
-function getRangeByTrace(trace) {
-  const { applicationId, staticTraceId } = trace;
-  const dp = allApplications.getById(applicationId).dataProvider;
-  const { loc } = dp.collections.staticTraces.getById(staticTraceId);
-  return babelLocToCodeRange(loc);
-}
-
-/**
- * @param {Trace} t1 
- * @param {Trace} t2 
- */
-function compareTraceInner(t1, t2) {
-  const range1 = getRangeByTrace(t1);
-  const range2 = getRangeByTrace(t2);
-
-  if (range1.contains(range2)) {
-    if (range1.isEqual(range2)) {
-      return 0;
-    }
-    return 1;
-  }
-  return -1;
 }
 
 export default class TracesAtCursor {
