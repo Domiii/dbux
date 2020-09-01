@@ -164,7 +164,7 @@ Do you want to watch the video that guides you through this first bug?`,
           async enter() {
             startSurvey1('q1');
           },
-          node: 'end'
+          node: 'endSilent'
         }
       ]
     },
@@ -174,8 +174,13 @@ Do you want to watch the video that guides you through this first bug?`,
     // ###########################################################################
 
     end: {
+      end: true,
       kind: DialogNodeKind.Message,
       text: 'Have fun! (Btw: You can press ESC to close this message)'
+    },
+    endSilent: {
+      end: true,
+      kind: DialogNodeKind.None
     }
   }
 };
