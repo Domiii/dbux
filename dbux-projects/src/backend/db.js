@@ -86,6 +86,13 @@ export class Db {
     for (let container of containers) {
       this.registerContainer(container);
     }
+
+    try {
+      await this.backlog.replay();
+    } 
+    catch (err) {
+      warn(`Replay failed. Error: ${err.message}`);
+    }
   }
 
   collection(name) {
@@ -149,7 +156,7 @@ export class Db {
     await this._writePromise?.then(this.waitForWriteFinish);
   }
 
-  async _doWrite(request) {
+  _doWrite = async (request) => {
     await this.waitForWriteFinish();
     const {
       containerName,
