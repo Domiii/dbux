@@ -38,6 +38,10 @@ module.exports = (env, argv) => {
         {
           from: path.join(MonoRoot, 'dbux-projects', 'assets'),
           to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'projects')
+        },
+        {
+          from: path.join(MonoRoot, 'node_modules/firebase'),
+          to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'node_modules')
         }
       ]
     })

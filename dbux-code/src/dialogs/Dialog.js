@@ -122,7 +122,7 @@ export class Dialog {
       }));
     },
 
-    getRecordedData: this.getRecordedData,
+    getRecordedData: this.getRecordedData.bind(this),
 
     startDialog: (dialogName, startState) => {
       this.controller.startDialog(dialogName, startState);

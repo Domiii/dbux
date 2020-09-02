@@ -164,13 +164,17 @@ export function initUserCommands(extensionContext) {
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.backendLogin', async () => {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('This command is currently disabled in Production mode.');
-    }
+    // if (process.env.NODE_ENV === 'production') {
+    //   throw new Error('This command is currently disabled in Production mode.');
+    // }
+    // const backend = await getOrCreateProjectManager().getAndInitBackend();
+    // await backend.login();
     const backend = await getOrCreateProjectManager().getAndInitBackend();
-    await backend.login();
+    const data = { installId: 'testId', updatedAt: new Date() };
+    log('storeSurveyResult', data);
+    return backend.containers.survey1.storeSurveyResult(data);
   });
-  
+
   // ###########################################################################
   // system check
   // ###########################################################################

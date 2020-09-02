@@ -25,10 +25,10 @@ export async function showHelp(message) {
   if (isDefaultHelp) {
     btns = {
       async 'Start Tutorial'() {
-        dialogController.startDialog('tutorial');
+        return dialogController.startDialog('tutorial');
       },
       async 'Take Survey'() {
-        dialogController.startDialog('survey1');
+        return dialogController.startDialog('survey1');
       },
       ...btns
     };

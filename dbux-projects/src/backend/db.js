@@ -1,3 +1,4 @@
+/* global __webpack_require__, __non_webpack_require__ */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable global-require */
@@ -5,6 +6,7 @@
 /* eslint-disable global-require,import/first,import/no-extraneous-dependencies */
 
 import { isPlainObject } from 'lodash';
+import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Backlog from './Backlog';
 
@@ -17,48 +19,7 @@ const defaultNetworkTimeout = 2500;
 
 global.self = global;   // hackfix for firebase which requires `self` to be a global
 
-let _firestoreInstance, firebase;
-
-/**
- * NOTE: in Node.js, bundling firebase will cause problems (as of v7.17), 
- * so we need to install it separately and load only after installation has finished.
- * @see https://github.com/firebase/firebase-js-sdk/issues/2222#issuecomment-538072948
- */
-export function getFirebase() {
-  if (!firebase) {
-    try {
-      firebase = require('firebase');
-      require('firebase/auth');
-      require('firebase/firestore');
-    }
-    catch (err) {
-      throw new Error(`Unable to load firebase. Make sure to call installBackendDependencies before trying to access DB capabilities: err.message`);
-    }
-  }
-
-  return firebase;
-}
-
-export default function getFirestore() {
-  if (_firestoreInstance) {
-    return _firestoreInstance;
-  }
-  getFirebase();
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyC-d0HDLJ8Gd9UZ175z7dg6J98ZrOIK0Mc",
-    authDomain: "learn-learn-b8e5a.firebaseapp.com",
-    databaseURL: "https://learn-learn-b8e5a.firebaseio.com",
-    projectId: "learn-learn-b8e5a",
-    storageBucket: "learn-learn-b8e5a.appspot.com",
-    messagingSenderId: "249308200308",
-    appId: "1:249308200308:web:07556e84184b4546ef8021"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-
-  return _firestoreInstance = firebase.firestore();
-}
+let _firestoreInstance, _firebase;
 
 
 const MergeTrue = Object.freeze({ merge: true });
@@ -75,13 +36,57 @@ export class Db {
     // TODO: monitor firestore connection status and call `tryReplayBacklog` before doing anything other write action
   }
 
+  /**
+   * NOTE: in Node.js, bundling firebase will cause problems (as of v7.17), 
+   * so we need to install it separately and load only after installation has finished.
+   * @see https://github.com/firebase/firebase-js-sdk/issues/2222#issuecomment-538072948
+   */
+  requireFirebase() {
+    if (!_firebase) {
+      try {
+        const fbPath = this.backendController.practiceManager.externals.resources.getResourcePath('dist', 'node_modules', 'firebase');
+        _firebase = __non_webpack_require__(fbPath);
+        __non_webpack_require__(`${fbPath}/auth`);
+        __non_webpack_require__(`${fbPath}/firestore`);
+        // require('firebase/auth');
+        // require('firebase/firestore');
+      }
+      catch (err) {
+        throw new Error(`Unable to load firebase. Make sure to call installBackendDependencies before trying to access DB capabilities: err.message`);
+      }
+    }
+
+    return _firebase;
+  }
+
+  initFirestore() {
+    if (_firestoreInstance) {
+      return _firestoreInstance;
+    }
+    const firebase = this.getFirebase();
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-d0HDLJ8Gd9UZ175z7dg6J98ZrOIK0Mc",
+      authDomain: "learn-learn-b8e5a.firebaseapp.com",
+      databaseURL: "https://learn-learn-b8e5a.firebaseio.com",
+      projectId: "learn-learn-b8e5a",
+      storageBucket: "learn-learn-b8e5a.appspot.com",
+      messagingSenderId: "249308200308",
+      appId: "1:249308200308:web:07556e84184b4546ef8021"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    return _firestoreInstance = firebase.firestore();
+  }
+
   async init() {
-    this.firebase = getFirebase();
-    this.fs = getFirestore();
+    this.firebase = this.requireFirebase();
+    this.fs = this.initFirestore();
 
     try {
       await this.backlog.replay();
-    } 
+    }
     catch (err) {
       warn(`Replay failed. Error: ${err.message}`);
     }
@@ -141,7 +146,7 @@ export class Db {
     const {
       containerName,
     } = request;
-    const container = this.backendController.getContainer(containerName);
+    const container = this.backendController.containers[containerName];
     if (!container) {
       // TODO: handle this better?
       warn(`Ignoring invalid write request. Container does not exist: "${containerName}"`);
@@ -163,10 +168,12 @@ export class Db {
       const doc = collection.doc(id);
       debug('data', data);
 
-      result = await new Promise((resolve, reject) => {
-        doc.set(data, MergeTrue).then(resolve);
-        setTimeout(() => { reject(new Error(`Timeout on writing data to firebase.`)); }, defaultNetworkTimeout);
-      });
+      result = await Promise.race([
+        doc.set(data, MergeTrue),
+        sleep(defaultNetworkTimeout).then(() => {
+          throw new Error(`Timeout on writing data to firebase.`);
+        })
+      ]);
     }
     catch (err) {
       throw new Error(`Failed to write to DB (at ${container.name}): ${err.message}`);

@@ -9,10 +9,10 @@ import FirestoreContainer from './FirestoreContainer';
 const { log, debug, warn, error: logError } = newLogger('Backend');
 
 export default class BackndController {
-  deps = [
-    // NOTE: firebase for node cannot be bundled properly, so we need to install it after the fact
-    'firebase@7.17.1'
-  ];
+  // deps = [
+  //   // NOTE: firebase for node cannot be bundled properly, so we need to install it after the fact
+  //   'firebase@7.17.1'
+  // ];
 
   /**
    * @type {{[string]: FirestoreContainer}}
@@ -34,7 +34,8 @@ export default class BackndController {
   }
 
   async installBackendDependencies() {
-    await this.practiceManager.installModules(this.deps);
+    // NOTE: we are copying and shipping firebase via `resources/dist/node_modules
+    // await this.practiceManager.installModules(this.deps);
   }
 
   async init() {
@@ -45,7 +46,7 @@ export default class BackndController {
     await this.db.init();
 
     // register containers
-    let containers = await initContainers(this);
+    let containers = await initContainers(this.db);
     for (let container of containers) {
       this.registerContainer(container);
     }
