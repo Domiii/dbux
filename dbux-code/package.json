@@ -895,7 +895,8 @@
     "moment": "^2.24.0",
     "nanoevents": "^5.1.8",
     "socket.io": "^2.3.0",
-    "strip-color": "^0.1.0"
+    "strip-color": "^0.1.0",
+    "uuid": "^8.3.0"
   },
   "_moduleAliases": {}
 }

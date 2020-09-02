@@ -7,9 +7,12 @@ import { Dialog } from '../dialog/Dialog';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { getInstallId } from '../installId';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Dialog');
+
+let surveyDialog;
 
 function nextNode(currentState, stack, actions, node) {
   return node.nextNode;
@@ -21,10 +24,10 @@ function nextNode(currentState, stack, actions, node) {
 
 async function serializeSurveyResult() {
   // TODO: get install id (random uuid that we generate and store in memento on first activate)
-  const installId = null;
+  const installId = getInstallId();
 
   // TODO: get survey result
-  const surveyResult = null;
+  const surveyResult = surveyDialog;
 
   // TODO: get tutorial result
   const tutorialResult = null;
@@ -340,7 +343,8 @@ ${data.email || ''}`;
     continueLater: {
       text: `Do you want to continue our survey? (You are almost done)`,
       async enter(currentState, stack, { goTo, waitAtMost }) {
-        const waitTime = 24 * 60 * 60;
+        // const waitTime = 24 * 60 * 60;
+        const waitTime = 30;
         await waitAtMost(waitTime);
 
         const previousState = stack[stack.length - 1];
@@ -393,8 +397,6 @@ ${data.email || ''}`;
     // TODO: store remotely
   }
 };
-
-let surveyDialog;
 
 export default function startSurvey1(startState) {
   if (!surveyDialog) {

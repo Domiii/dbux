@@ -19,6 +19,10 @@ export class Dialog {
     this.load();
   }
 
+  // ###########################################################################
+  // public
+  // ###########################################################################
+
   start(startState) {
     if (!this._isActive) {
       _errWrap(this._start.bind(this))(startState);
@@ -66,6 +70,7 @@ export class Dialog {
         this.graphState.stateStartTime = Date.now();
       }
       else {
+        await this.graph.onEnd?.(getRecordedData(this));
         break;
       }
 
@@ -75,6 +80,10 @@ export class Dialog {
     }
 
     this._isActive = false;
+  }
+
+  getRecordedData() {
+    return getRecordedData(this);
   }
 
   // ###########################################################################
@@ -107,9 +116,7 @@ export class Dialog {
       }));
     },
 
-    getRecordedData: () => {
-      return getRecordedData(this);
-    }
+    getRecordedData: this.getRecordedData
   };
 
   // ########################################
