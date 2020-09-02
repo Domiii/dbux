@@ -1,10 +1,20 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable global-require */
+/* eslint-disable import/first */
 /* eslint-disable global-require,import/first,import/no-extraneous-dependencies */
 
+import { isPlainObject } from 'lodash';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Backlog from './Backlog';
+import { initContainers } from './containers/index';
+
+/** @typedef {import('./BackendController').default} BackendController */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Db');
+
+const defaultNetworkTimeout = 2500;
 
 global.self = global;   // hackfix for firebase which requires `self` to be a global
 
@@ -57,14 +67,32 @@ const MergeTrue = Object.freeze({ merge: true });
 export class Db {
   containersByName = new Map();
 
-  constructor() {
+  /**
+   * @param {BackendController} backendController 
+   */
+  constructor(backendController) {
+    this.backendController = backendController;
+
+    this.backlog = new Backlog(this.backendController.practiceManager, this._doWrite);
+
+    // TODO: monitor firestore connection status and call `tryReplayBacklog` before doing anything other write action
+  }
+
+  async init() {
     this.firebase = getFirebase();
     this.fs = getFirestore();
 
-    // TODO: implement Backlog
-    this.backlog = new Backlog();
+    let containers = await initContainers(this);
+    for (let container of containers) {
+      this.registerContainer(container);
+    }
 
-    // TODO: monitor firestore connection status and call `tryReplayBacklog` before doing anything other write action
+    try {
+      await this.backlog.replay();
+    } 
+    catch (err) {
+      warn(`Replay failed. Error: ${err.message}`);
+    }
   }
 
   collection(name) {
@@ -80,7 +108,7 @@ export class Db {
   }
 
   getContainer(name) {
-    return this.containersByName[name];
+    return this.containersByName.get(name);
   }
 
   // ###########################################################################
@@ -93,24 +121,27 @@ export class Db {
   }
 
   async write(container, id, data) {
+    this.sanitize(data);
+
     const writeRequest = {
       containerName: container.name,
       id,
       data
     };
 
-    if (this.hasBacklog()) {
+    if (this.backlog.size()) {
       // make sure that all write requests are in correct order
-      this.addBackLog(writeRequest);
+      this.backlog.add(writeRequest);
       return null;
     }
     else {
       try {
-        return this._doWrite(writeRequest);
+        return await this._doWrite(writeRequest);
       }
       catch (err) {
+        warn(`Write failed, ${err.stack}`);
         // failed to write
-        this.backlog.addBackLog(writeRequest);
+        this.backlog.add(writeRequest);
         return null;
       }
     }
@@ -125,7 +156,7 @@ export class Db {
     await this._writePromise?.then(this.waitForWriteFinish);
   }
 
-  async _doWrite(request) {
+  _doWrite = async (request) => {
     await this.waitForWriteFinish();
     const {
       containerName,
@@ -150,15 +181,34 @@ export class Db {
 
       const { collection } = container;
       const doc = collection.doc(id);
+      debug('data', data);
 
-      result = await doc.set(data, MergeTrue);
+      result = await new Promise((resolve, reject) => {
+        doc.set(data, MergeTrue).then(resolve);
+        setTimeout(() => { reject(new Error(`Timeout on writing data to firebase.`)); }, defaultNetworkTimeout);
+      });
     }
     catch (err) {
-      warn(`Failed to write to DB (at ${container.name}): ${err.stack}`);
+      throw new Error(`Failed to write to DB (at ${container.name}): ${err.message}`);
     }
     finally {
       this._writePromise = null;
     }
     return result;
+  }
+
+  // ###########################################################################
+  // other utils
+  // ###########################################################################
+
+  sanitize(object) {
+    for (const key in object) {
+      if (isPlainObject(object[key])) {
+        this.sanitize(object[key]);
+      }
+      else if (object[key] === undefined) {
+        object[key] = null;
+      }
+    }
   }
 }

@@ -81,25 +81,27 @@ class GraphRoot extends HostComponentEndpoint {
     while (this._refreshRequests) {
       this._refreshRequests = 0;
 
-      // oldApps
-      const oldAppIds = new Set(this.runNodesById.getAll().map(runNode => runNode.state.applicationId));
-
       // wait for init before dispose something
       await this.componentManager.waitForBusyInit();
+      
+      // oldApps
+      const oldAppIds = new Set(this.runNodesById.getAll().map(runNode => runNode.state.applicationId));
+      const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
 
       // remove old runNode
       for (const runNode of this.runNodesById.getAll()) {
         const { applicationId, runId } = runNode.state;
-        if (!allApplications.selection.containsApplication(applicationId)) {
+        if (!newAppIds.has(applicationId)) {
           this.removeRunNode(applicationId, runId);
         }
       }
 
       // add new runNode
-      for (const app of allApplications.selection.getAll()) {
-        if (!oldAppIds.has(app.applicationId)) {
+      for (const appId of newAppIds) {
+        if (!oldAppIds.has(appId)) {
+          const app = allApplications.getById(appId);
           const allContexts = app.dataProvider.collections.executionContexts.getAll();
-          this.addRunNodeByContexts(app.applicationId, allContexts);
+          this.addRunNodeByContexts(appId, allContexts);
         }
       }
 
@@ -160,8 +162,8 @@ class GraphRoot extends HostComponentEndpoint {
     return newNodes;
   }
 
-  focusContext(applicationId, contextId) {
-    this.focusController.focus(applicationId, contextId);
+  async focusContext(applicationId, contextId) {
+    await this.focusController.focus(applicationId, contextId);
   }
 
   // ###########################################################################

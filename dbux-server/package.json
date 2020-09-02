@@ -1,0 +1,43 @@
+{
+  "name": "@dbux/server",
+  "private": true,
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "start:run": "nodemon --config nodemon.run.json --exec \"node --enable-source-maps --stack-trace-limit=1000 -- ./dist/index.js\""
+  },
+  "dependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-decorators": "^7.8.3",
+    "@babel/plugin-proposal-function-bind": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-syntax-export-default-from": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/register": "^7.8.3",
+    "@dbux/babel-plugin": "^0.1.29-dev.0",
+    "@dbux/common": "^0.1.29-dev.0",
+    "@dbux/runtime": "^0.1.29-dev.0",
+    "colors": "^1.4.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "firebase-admin": "^9.1.1",
+    "lodash": "^4.17.19",
+    "module-alias": "^2.2.2",
+    "node-fetch": "^2.6.0",
+    "object.fromentries": "^2.0.2",
+    "prettier": "^2.0.5",
+    "serve": "^11.3.2",
+    "shelljs": "0.8.4",
+    "yargs": "^15.4.1"
+  },
+  "devDependencies": {
+    "glob": "^7.1.6",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^2.5.0"
+  }
+}
