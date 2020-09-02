@@ -1,9 +1,9 @@
-import UserEventContainer from './UserEventContainer';
-import TestContainer from './testContainer';
+//import UserEventContainer from './UserEventContainer';
+import Survey1Container from './Survey1Container';
 
 const ContainerClasses = [
-  UserEventContainer,
-  TestContainer,
+  // UserEventContainer,
+  Survey1Container,
 ];
 
 let containers = [];

@@ -19,7 +19,7 @@ function nextNode(currentState, stack, actions, node) {
 }
 
 // ###########################################################################
-// serialization
+// serialization + recording
 // ###########################################################################
 
 async function serializeSurveyResult() {
@@ -43,11 +43,22 @@ async function serializeSurveyResult() {
   };
 }
 
+async function storeResults(data) {
+  const backend = await getOrCreateProjectManager().getAndInitBackend();
+  data = { installId: 'testId', ...data };
+  log('storeResults', data);
+  return backend.containers.survey1.storeSurveyResult(data);
+}
+
+async function clearResults() {
+  return storeResults(null);
+}
+
 // ###########################################################################
 // Some commonly used edges
 // ###########################################################################
 
-const whySurveyEdge = 
+const whySurveyEdge =
 {
   text: 'Why these questions? What happens to my data?',
   async click() {
@@ -69,12 +80,12 @@ If you are concerned about your data or want your data to be deleted, just conta
   }
 };
 
-const showRecordedDataEdge = 
+const showRecordedDataEdge =
 {
   text: 'I want to see the recorded data',
   async click(currentState, stack, { getRecordedData }) {
     const recordedData = getRecordedData();
-    await showInformationMessage(`NOTE: This data will only be stored *once* at the end of the survey.`, { Ok() {} }, { modal: true });
+    await showInformationMessage(`NOTE: This data will only be stored *once* at the end of the survey.`, { Ok() { } }, { modal: true });
     return renderValueAsJsonInEditor(recordedData);
   }
 };
@@ -103,7 +114,19 @@ const survey1 = {
     {
       text: '(Stop Survey)',
       node: 'cancel'
-    }
+    },
+    {
+      text: 'save data',
+      click() {
+        return storeResults({ test: 123 });
+      }
+    },
+    {
+      text: 'clear data',
+      click() {
+        return clearResults();
+      }
+    } 
   ],
 
   // ###########################################################################
@@ -375,7 +398,7 @@ ${data.email || ''}`;
       text: 'Thank you for trying out our survey! (Btw: You can press ESC to close this message)',
       async enter() {
         // store to backend
-        const backend = await getOrCreateProjectManager().getAndInitBackend();
+        // const backend = await getOrCreateProjectManager().getAndInitBackend();
         const data = await serializeSurveyResult();
         log('survey result', data);
         // return backend.containers.survey1.storeSurveyResult(data);
@@ -388,7 +411,7 @@ ${data.email || ''}`;
 
     cancel: {
       enter() {
-        
+
       }
     }
   },
