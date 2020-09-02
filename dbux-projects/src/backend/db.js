@@ -1,10 +1,11 @@
-/* global __webpack_require__, __non_webpack_require__ */
+/* global __non_webpack_require__ */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable global-require */
 /* eslint-disable import/first */
 /* eslint-disable global-require,import/first,import/no-extraneous-dependencies */
 
+import fs from 'fs';
 import { isPlainObject } from 'lodash';
 import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -18,8 +19,6 @@ const { log, debug, warn, error: logError } = newLogger('Db');
 const defaultNetworkTimeout = 2500;
 
 global.self = global;   // hackfix for firebase which requires `self` to be a global
-
-let _firestoreInstance, _firebase;
 
 
 const MergeTrue = Object.freeze({ merge: true });
@@ -36,35 +35,63 @@ export class Db {
     // TODO: monitor firestore connection status and call `tryReplayBacklog` before doing anything other write action
   }
 
+  // ###########################################################################
+  // getters
+  // ###########################################################################
+
+  collection(name) {
+    return this.fs.collection(name);
+  }
+
+  // ###########################################################################
+  // init
+  // ###########################################################################
+
+  async init() {
+    this.firebase = this.requireFirebase();
+    this.fs = this.initFirestore(this.firebase);
+
+    try {
+      await this.backlog.replay();
+    }
+    catch (err) {
+      warn(`Replay failed. Error: ${err.message}`);
+    }
+  }
+
   /**
    * NOTE: in Node.js, bundling firebase will cause problems (as of v7.17), 
    * so we need to install it separately and load only after installation has finished.
    * @see https://github.com/firebase/firebase-js-sdk/issues/2222#issuecomment-538072948
    */
   requireFirebase() {
-    if (!_firebase) {
-      try {
-        const fbPath = this.backendController.practiceManager.externals.resources.getResourcePath('dist', 'node_modules', 'firebase');
-        _firebase = __non_webpack_require__(fbPath);
-        __non_webpack_require__(`${fbPath}/auth`);
-        __non_webpack_require__(`${fbPath}/firestore`);
-        // require('firebase/auth');
-        // require('firebase/firestore');
-      }
-      catch (err) {
-        throw new Error(`Unable to load firebase. Make sure to call installBackendDependencies before trying to access DB capabilities: err.message`);
-      }
-    }
+    try {
+      // const moduleAlias = require('module-alias');
+      // const moduleName = ;
+      let dir = this.backendController.practiceManager.externals.resources.getResourcePath('dist', 'node_modules', 'firebase');
+      dir = fs.realpathSync(dir);
+      // moduleAlias.addAlias(moduleName, target);
 
-    return _firebase;
+      // NOTE: Usually we can load firebase by adding `firebase` as a `commonjs` to `externals` in `webpack`.
+      //    But because we are loading from an absolute path, we need to manually specify the target path.
+
+      // eslint-disable-next-line camelcase
+      const _req = __non_webpack_require__;
+      // const _req = require;
+      const _firebase = _req(`${dir}/dist/index.node.cjs`);
+      _req(`${dir}/auth/dist/index.cjs`);
+      _req(`${dir}/firestore/dist/index.cjs`);
+      // require('firebase/auth');
+      // require('firebase/firestore');
+
+      return _firebase;
+    }
+    catch (err) {
+      throw new Error(`Unable to load firebase. Make sure to call installBackendDependencies before trying to access DB capabilities: ${err.message}`);
+    }
   }
 
-  initFirestore() {
-    if (_firestoreInstance) {
-      return _firestoreInstance;
-    }
-    const firebase = this.getFirebase();
-
+  initFirestore(firebase) {
     const firebaseConfig = {
       apiKey: "AIzaSyC-d0HDLJ8Gd9UZ175z7dg6J98ZrOIK0Mc",
       authDomain: "learn-learn-b8e5a.firebaseapp.com",
@@ -77,23 +104,7 @@ export class Db {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-    return _firestoreInstance = firebase.firestore();
-  }
-
-  async init() {
-    this.firebase = this.requireFirebase();
-    this.fs = this.initFirestore();
-
-    try {
-      await this.backlog.replay();
-    }
-    catch (err) {
-      warn(`Replay failed. Error: ${err.message}`);
-    }
-  }
-
-  collection(name) {
-    return this.fs.collection(name);
+    return firebase.firestore();
   }
 
   // ###########################################################################
@@ -158,6 +169,7 @@ export class Db {
 
   async _doWritePromise(container, request) {
     let result;
+    let doc;
     try {
       const {
         id,
@@ -165,18 +177,18 @@ export class Db {
       } = request;
 
       const { collection } = container;
-      const doc = collection.doc(id);
+      doc = collection.doc(id);
       debug('data', data);
 
       result = await Promise.race([
         doc.set(data, MergeTrue),
         sleep(defaultNetworkTimeout).then(() => {
-          throw new Error(`Timeout on writing data to firebase.`);
+          throw new Error(`Timeout when writing data to firebase (${defaultNetworkTimeout / 1000}s)`);
         })
       ]);
     }
     catch (err) {
-      throw new Error(`Failed to write to DB (at ${container.name}): ${err.message}`);
+      throw new Error(`Failed to write to DB (at "${doc?.path}"): ${JSON.stringify(request, null, 2)}\n\n${err.message}`);
     }
     finally {
       this._writePromise = null;

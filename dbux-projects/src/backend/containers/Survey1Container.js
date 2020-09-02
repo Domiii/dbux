@@ -19,7 +19,7 @@ export default class Survey1Container extends FirestoreContainer {
   storeSurveyResult = async ({ installId, ...data }) => {
     data = {
       ...data,
-      createdAt: new Date()
+      updatedAt: new Date()
     };
 
     Verbose && this.logger.debug('storeSurveyResult', installId, data);
