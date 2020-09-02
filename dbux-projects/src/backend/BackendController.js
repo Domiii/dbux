@@ -45,7 +45,7 @@ export default class BackndController {
     await this.db.init();
 
     // register containers
-    let containers = await initContainers(this);
+    let containers = await initContainers(this.db);
     for (let container of containers) {
       this.registerContainer(container);
     }

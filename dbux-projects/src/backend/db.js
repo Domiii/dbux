@@ -141,7 +141,7 @@ export class Db {
     const {
       containerName,
     } = request;
-    const container = this.backendController.getContainer(containerName);
+    const container = this.backendController.containers[containerName];
     if (!container) {
       // TODO: handle this better?
       warn(`Ignoring invalid write request. Container does not exist: "${containerName}"`);

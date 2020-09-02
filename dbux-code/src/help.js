@@ -24,10 +24,10 @@ export async function showHelp(message) {
   if (isDefaultHelp) {
     btns = {
       async 'Start Tutorial'() {
-        startDialog('tutorial');
+        return startDialog('tutorial');
       },
       async 'Take Survey'() {
-        startDialog('survey1');
+        return startDialog('survey1');
       },
       ...btns
     };
