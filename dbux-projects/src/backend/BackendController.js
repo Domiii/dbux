@@ -1,7 +1,9 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import BackendAuth from './BackendAuth';
+import BackendAuth from './BackendAuth2';
+import { Db } from './db';
 import { initContainers } from './containers/index';
-import { Db } from './Db';
+
+/** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
 const { log, debug, warn, error: logError } = newLogger('Backend');
 
@@ -11,8 +13,18 @@ export default class BackendController {
     'firebase@7.17.1'
   ];
 
+  /**
+   * @param {ProjectsManager} practiceManager 
+   */
   constructor(practiceManager) {
     this.practiceManager = practiceManager;
+
+    this._initialized = false;
+
+    this.db = new Db(this);
+    this.auth = new BackendAuth(this);
+
+    // createContainers(this.db);
   }
 
   async installBackendDependencies() {
@@ -20,18 +32,26 @@ export default class BackendController {
   }
 
   async init() {
+    if (this._initialized) {
+      return;
+    }
     await this.installBackendDependencies();
-    this.auth = new BackendAuth(this);
+    await this.db.init();
 
-    this.db = new Db();
+    this._initialized = true;
+  }
+
+  async getOrInitDb() {
+    await this.init();
+    return this.db;
   }
 
   /**
    * NOTE: In order to use most of the backend functionality, we first need to login.
    */
-  async startBackend() {
-    await this.auth.login();
+  async startRemote() {
+    await this.init();
 
-    await initContainers(this.db);
+    await this.auth.login();
   }
 }
