@@ -1,5 +1,4 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import getDb, { getFirebase } from './db';
 import { makeLoginController } from './LoginController';
 import { fetchGET } from '../util/fetch';
 import { result } from 'lodash';
@@ -137,7 +136,7 @@ export default class BackendAuth {
   }
 
   logout() {
-    return getFirebase().auth().signOut();
+    return this.backendController.db.fs.auth().signOut();
   }
 
   // /**
