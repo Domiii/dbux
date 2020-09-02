@@ -56,13 +56,18 @@ export class Dialog {
       }
       else {
         const result = await NodeClass.render(this, node);
-        nextState = result.nodeName;
-        edgeLabel = result.edgeLabel;
+        nextState = result?.nodeName || null;
+        edgeLabel = result?.edgeLabel || null;
       }
 
       this.stack.push({ name: this.graphState.nodeName, edgeLabel });
-      this.graphState.nodeName = nextState;
-      this.graphState.stateStartTime = Date.now();
+      if (!node.end) { 
+        this.graphState.nodeName = nextState;
+        this.graphState.stateStartTime = Date.now();
+      }
+      else {
+        break;
+      }
 
       if (this.graphState.nodeName !== null) {
         await this.save();
