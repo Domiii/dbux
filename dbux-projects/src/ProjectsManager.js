@@ -11,6 +11,8 @@ import Stopwatch from './stopwatch/Stopwatch';
 import BackendController from './backend/BackendController';
 
 
+const depsStorageKey = 'PracticeManager.deps';
+
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
 const { debug, log, warn } = logger;
@@ -221,30 +223,39 @@ export default class ProjectsManager {
     return this._installPromise;
   }
 
+  _getAllDependencies(deps) {
+    return [
+      ...this._sharedDependencyNamesAll,
+      ...deps
+    ];
+  }
+
   hasInstalledSharedDependencies() {
     return this.areDependenciesInstalled([]);
   }
 
   areDependenciesInstalled(deps) {
-    deps = [
-      ...this._sharedDependencyNamesAll,
-      ...deps
-    ];
+    deps = this._getAllDependencies(deps);
     return deps.every(this.isDependencyInstalled);
   }
 
-  isDependencyInstalled = (qualifiedDependencyName) => {
+  isDependencyInstalled = (dep) => {
     // TODO: check correct version?
     //    should not be necessary for the VSCode extension because it will create a new extension folder for every version update anyway
 
     // get name without version
-    const name = qualifiedDependencyName.match('(@?[^@]+)(?:@.*)?')[1];
+    const name = dep.match('(@?[^@]+)(?:@.*)?')[1];
     if (canIgnoreDependency(name)) {
       // NOTE: in development mode, we have @dbux dependencies (and their dependencies) all linked up to the monoroot folder anyway
       // NOTE: we need to short-circuit this for when we run the packaged extension in dev mode
       return true;
     }
     const { dependencyRoot } = this.config;
+
+    if (!this.externals.storage.get(depsStorageKey)?.[dep]) {
+      // we don't have any record of a successful install
+      return false;
+    }
 
     const target = path.join(dependencyRoot, 'node_modules', name);
     // warn('isDependencyInstalled', qualifiedDependencyName, target);
@@ -299,6 +310,15 @@ export default class ProjectsManager {
       const command = `npm install --only=prod${moreDeps}`;
       // await this.runner._exec(command, logger, execOptions);
       await this.execInTerminal(dependencyRoot, command);
+
+      // remember all installed dependencies
+      const newDeps = this._getAllDependencies();
+      let storedDeps = this.externals.storage.get(depsStorageKey) || {};
+      storedDeps = {
+        ...storedDeps, 
+        ...Object.fromEntries(newDeps.map(dep => [dep, true]))
+      };
+      await this.externals.storage.set(depsStorageKey, storedDeps);
 
       // else {
       //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
