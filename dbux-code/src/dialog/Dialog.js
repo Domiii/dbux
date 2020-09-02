@@ -61,7 +61,7 @@ export class Dialog {
       }
 
       this.stack.push({ name: this.graphState.nodeName, edgeLabel });
-      if (!node.end) { 
+      if (!node.end) {
         this.graphState.nodeName = nextState;
         this.graphState.stateStartTime = Date.now();
       }
@@ -116,9 +116,9 @@ export class Dialog {
   // private utils
   // ########################################
 
-  async maybeGetByFunction(valueOrFunction, ...args) {
+  async maybeGetByFunction(valueOrFunction, node) {
     if (isFunction(valueOrFunction)) {
-      return await valueOrFunction(...args);
+      return await valueOrFunction(...this.getUserCbArguments(node));
     }
     else {
       return valueOrFunction;
@@ -126,16 +126,17 @@ export class Dialog {
   }
 
   async makeButtonsByEdges(node, edges, defaultState = null) {
-    const buttonEntries = await Promise.all((await Promise.all(edges.map((e) => this.maybeGetByFunction(e, this.getUserCbArguments(node)))))
-      .filter(x => !!x)
-      .map(async (edge) => {
-        const edgeLabel = await this.maybeGetByFunction(edge.text, ...this.getUserCbArguments(node));
-        const clickCB = async () => {
-          await edge.click?.(...this.getUserCbArguments(node));
-          return { nodeName: edge.node || defaultState, edgeLabel };
-        };
-        return [edgeLabel, clickCB];
-      }));
+    const availableEdges = (await Promise.all(edges.map((e) => {
+      return this.maybeGetByFunction(e, node);
+    }))).filter(x => !!x);
+    const buttonEntries = await Promise.all(availableEdges.map(async (edge) => {
+      const edgeLabel = await this.maybeGetByFunction(edge.text, node);
+      const clickCB = async () => {
+        await edge.click?.(...this.getUserCbArguments(node));
+        return { nodeName: await this.maybeGetByFunction(edge.node, node) || defaultState, edgeLabel };
+      };
+      return [edgeLabel, clickCB];
+    }));
 
     return Object.fromEntries(buttonEntries);
   }
@@ -194,5 +195,5 @@ function _errWrap(f) {
 }
 
 export function getRecordedData(dialog) {
-  return dialog.stack;
+  return { stack: dialog.stack, data: dialog.graphState.data };
 }
