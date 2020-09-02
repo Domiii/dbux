@@ -4,10 +4,16 @@ import sleep from '@dbux/common/src/util/sleep';
 import { get, set } from '../memento';
 import _nodeRegistry from './nodes/_nodeRegistry';
 
+/** @typedef {import('./dialogController').DialogController} DialogController */
+
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Dialog');
 
 export class Dialog {
+  /**
+   * @type {DialogController}
+   */
+  controller;
   constructor(graph) {
     this.graph = graph;
     this.mementoKeyName = `dbux.dialog.${graph.name}`;
@@ -116,7 +122,15 @@ export class Dialog {
       }));
     },
 
-    getRecordedData: this.getRecordedData
+    getRecordedData: this.getRecordedData,
+
+    startDialog: (dialogName, startState) => {
+      this.controller.startDialog(dialogName, startState);
+    },
+
+    serializeSurveyResult: async () => {
+      return await this.controller.serializeSurveyResult();
+    }
   };
 
   // ########################################

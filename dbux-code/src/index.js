@@ -18,8 +18,8 @@ import { initMemento } from './memento';
 import { initLogging } from './logging';
 import { initGraphView } from './graphView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
-import startTutorial from './dialogs/tutorial-graph';
 import { initInstallId } from './installId';
+import dialogController from './dialogs/dialogController';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -83,7 +83,7 @@ async function activate(context) {
     // for now, let's activate the graph view right away
     initGraphView();
 
-    startTutorial();
+    dialogController.startDialog('tutorial');
   } catch (e) {
     logError('could not activate', e.stack);
     debugger;

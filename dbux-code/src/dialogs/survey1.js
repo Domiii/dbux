@@ -2,48 +2,16 @@
 import { env, Uri, window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { showHelp } from '../help';
-import DialogNodeKind from '../dialog/DialogNodeKind';
-import { Dialog } from '../dialog/Dialog';
+import DialogNodeKind from './DialogNodeKind';
+import { getOrCreateProjectManager } from '../projectView/projectControl';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
-import { getOrCreateProjectManager } from '../projectView/projectControl';
-import { getInstallId } from '../installId';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Dialog');
 
-let surveyDialog;
-
 function nextNode(currentState, stack, actions, node) {
   return node.nextNode;
-}
-
-// ###########################################################################
-// serialization + recording
-// ###########################################################################
-
-async function serializeSurveyResult() {
-  // TODO: get install id (random uuid that we generate and store in memento on first activate)
-  const installId = getInstallId();
-
-  // TODO: get survey result
-  const surveyResult = surveyDialog.getRecordedData();
-
-  // TODO: get tutorial result
-  const tutorialResult = null;
-  
-  // TODO: get first bug result
-  // const projectsManager = getOrCreateProjectManager();
-  // const firstBug = projectsManager.projects.getByName('express').getOrLoadBugs().getById(0);
-  // const bug1Status = projectsManager.progressLogController.util.getBugProgressByBug(firstBug);
-  const bug1Status = null;
-
-  return {
-    installId,
-    surveyResult,
-    tutorialResult,
-    bug1Status
-  };
 }
 
 async function storeResults(data) {
@@ -54,7 +22,7 @@ async function storeResults(data) {
 }
 
 async function clearResults() {
-  return storeResults(null);
+  return this.storeResults(null);
 }
 
 // ###########################################################################
@@ -129,7 +97,7 @@ const survey1 = {
       click() {
         return clearResults();
       }
-    } 
+    }
   ],
 
   // ###########################################################################
@@ -399,7 +367,7 @@ ${data.email || ''}`;
       end: true,
       kind: DialogNodeKind.Message,
       text: 'Thank you for trying out our survey! (Btw: You can press ESC to close this message)',
-      async enter() {
+      async enter(currentState, stack, { serializeSurveyResult }) {
         // store to backend
         // const backend = await getOrCreateProjectManager().getAndInitBackend();
         const data = await serializeSurveyResult();
@@ -424,9 +392,4 @@ ${data.email || ''}`;
   }
 };
 
-export default function startSurvey1(startState) {
-  if (!surveyDialog) {
-    surveyDialog = new Dialog(survey1);
-  }
-  surveyDialog.start(startState);
-}
+export default survey1;

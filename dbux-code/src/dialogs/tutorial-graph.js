@@ -2,10 +2,7 @@
 import { env, Uri } from 'vscode';
 import sleep from '@dbux/common/src/util/sleep';
 import { showHelp } from '../help';
-import DialogNodeKind from '../dialog/DialogNodeKind';
-import startSurvey1 from './survey1';
-import { Dialog } from '../dialog/Dialog';
-
+import DialogNodeKind from './DialogNodeKind';
 
 async function waitAtMost({ stateStartTime }, delaySeconds) {
   const delay = delaySeconds * 1000;
@@ -161,8 +158,8 @@ Do you want to watch the video that guides you through this first bug?`,
       edges: [
         {
           text: 'Ok, but hurry!',
-          async click() {
-            startSurvey1('q1');
+          async click(currentState, stack, { startDialog }) {
+            startDialog('survey1', 'q1');
           },
           node: 'endSilent'
         }
@@ -185,11 +182,4 @@ Do you want to watch the video that guides you through this first bug?`,
   }
 };
 
-let tutorialDialog;
-
-export default function startTutorial() {
-  if (!tutorialDialog) {
-    tutorialDialog = new Dialog(tutorial);
-  }
-  tutorialDialog.start();
-}
+export default tutorial;
