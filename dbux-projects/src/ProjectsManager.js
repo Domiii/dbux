@@ -252,7 +252,7 @@ export default class ProjectsManager {
     }
     const { dependencyRoot } = this.config;
 
-    if (!this.externals.storage.get(depsStorageKey)?.[dep]) {
+    if (process.env.NODE_ENV === 'production' && !this.externals.storage.get(depsStorageKey)?.[dep]) {
       // we don't have any record of a successful install
       return false;
     }
