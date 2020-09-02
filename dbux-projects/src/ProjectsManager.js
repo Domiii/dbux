@@ -22,6 +22,9 @@ export default class ProjectsManager {
   externals;
   projects;
   runner;
+  /**
+   * @type {BackendController}
+   */
   _backend;
 
   /**

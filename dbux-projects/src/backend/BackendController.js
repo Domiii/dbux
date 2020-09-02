@@ -2,16 +2,22 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import BackendAuth from './BackendAuth2';
 import { Db } from './db';
 import { initContainers } from './containers/index';
+import FirestoreContainer from './FirestoreContainer';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
 const { log, debug, warn, error: logError } = newLogger('Backend');
 
-export default class BackendController {
+export default class BackndController {
   deps = [
     // NOTE: firebase for node cannot be bundled properly, so we need to install it after the fact
     'firebase@7.17.1'
   ];
+
+  /**
+   * @type {{[string]: FirestoreContainer}}
+   */
+  containers = {};
 
   /**
    * @param {ProjectsManager} practiceManager 
@@ -38,6 +44,12 @@ export default class BackendController {
     await this.installBackendDependencies();
     await this.db.init();
 
+    // register containers
+    let containers = await initContainers(this);
+    for (let container of containers) {
+      this.registerContainer(container);
+    }
+
     this._initialized = true;
   }
 
@@ -46,10 +58,23 @@ export default class BackendController {
     return this.db;
   }
 
+
+  // ###########################################################################
+  // containers
+  // ###########################################################################
+
+  registerContainer(container) {
+    this.containers[container.name] = container;
+  }
+
+  // ###########################################################################
+  // login
+  // ###########################################################################
+
   /**
    * NOTE: In order to use most of the backend functionality, we first need to login.
    */
-  async startRemote() {
+  async login() {
     await this.init();
 
     await this.auth.login();

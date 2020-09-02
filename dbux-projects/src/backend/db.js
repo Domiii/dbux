@@ -7,7 +7,6 @@
 import { isPlainObject } from 'lodash';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Backlog from './Backlog';
-import { initContainers } from './containers/index';
 
 /** @typedef {import('./BackendController').default} BackendController */
 
@@ -65,8 +64,6 @@ export default function getFirestore() {
 const MergeTrue = Object.freeze({ merge: true });
 
 export class Db {
-  containersByName = new Map();
-
   /**
    * @param {BackendController} backendController 
    */
@@ -82,11 +79,6 @@ export class Db {
     this.firebase = getFirebase();
     this.fs = getFirestore();
 
-    let containers = await initContainers(this);
-    for (let container of containers) {
-      this.registerContainer(container);
-    }
-
     try {
       await this.backlog.replay();
     } 
@@ -97,18 +89,6 @@ export class Db {
 
   collection(name) {
     return this.fs.collection(name);
-  }
-
-  // ###########################################################################
-  // containers
-  // ###########################################################################
-
-  registerContainer(container) {
-    this.containersByName.set(container.name, container);
-  }
-
-  getContainer(name) {
-    return this.containersByName.get(name);
   }
 
   // ###########################################################################
@@ -161,7 +141,7 @@ export class Db {
     const {
       containerName,
     } = request;
-    const container = this.getContainer(containerName);
+    const container = this.backendController.getContainer(containerName);
     if (!container) {
       // TODO: handle this better?
       warn(`Ignoring invalid write request. Container does not exist: "${containerName}"`);
