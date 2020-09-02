@@ -11,8 +11,9 @@ import { getResourcePath } from '../resources';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { showBugIntroduction } from './BugIntroduction';
+import { onUserEvent } from '../userEvents';
 
-/** @typedef {import('@dbux/projects/src').ProjectsManager} ProjectsManager */
+/** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
 const logger = newLogger('projectControl');
 // eslint-disable-next-line no-unused-vars
@@ -96,6 +97,7 @@ function createProjectManager(extensionContext) {
     },
     WebviewWrapper,
     showBugIntroduction,
+    onUserEvent,
     interactiveGithubLogin
   };
 

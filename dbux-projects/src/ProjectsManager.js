@@ -22,6 +22,9 @@ export default class ProjectsManager {
   externals;
   projects;
   runner;
+  /**
+   * @type {BackendController}
+   */
   _backend;
 
   /**
@@ -34,15 +37,12 @@ export default class ProjectsManager {
     this.editor = externals.editor;
     this.stopwatch = new Stopwatch();
 
+    this._backend = new BackendController(this);
     this.progressLogController = new ProgressLogController(externals.storage);
   }
 
-  async getOrInitBackend() {
-    // lazy initialize
-    if (!this._backend) {
-      this._backend = new BackendController(this);
-      await this._backend.init();
-    }
+  async getAndInitBackend() {
+    await this._backend.init();
     return this._backend;
   }
 

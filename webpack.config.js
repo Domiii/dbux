@@ -235,14 +235,15 @@ module.exports = (env, argv) => {
     // ###########################################################################
 
     const otherWebpackConfigs = [
-      /* eslint-disable-next-line global-require */
-      require('./dbux-cli/webpack.config'),
-      /* eslint-disable-next-line global-require */
-      require('./dbux-code/webpack.config'),
-
-      // NOTE: Don't build `dbux-graph-web` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
-      // require('./dbux-graph-web/webpack.config')
-    ];
+      'cli',
+      'code',
+      'server'
+      // NOTE: Don't build `dbux-graph-client` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
+      // 'graph-client'
+    ].map(name => {
+      /* eslint-disable-next-line global-require, import/no-dynamic-require */
+      return require(`./dbux-${name}/webpack.config`);
+    });
 
 
     // ###########################################################################

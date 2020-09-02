@@ -1,14 +1,23 @@
 /* eslint-disable max-len */
 import { env, Uri, window } from 'vscode';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { showHelp } from '../help';
 import DialogNodeKind from '../dialog/DialogNodeKind';
 import { Dialog } from '../dialog/Dialog';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
+import { getOrCreateProjectManager } from '../projectView/projectControl';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('Dialog');
 
 function nextNode(currentState, stack, actions, node) {
   return node.nextNode;
 }
+
+// ###########################################################################
+// serialization
+// ###########################################################################
 
 async function serializeSurveyResult() {
   // TODO: get install id (random uuid that we generate and store in memento on first activate)
@@ -30,6 +39,10 @@ async function serializeSurveyResult() {
     bug1Status
   };
 }
+
+// ###########################################################################
+// Some commonly used edges
+// ###########################################################################
 
 const whySurveyEdge = 
 {
@@ -53,8 +66,22 @@ If you are concerned about your data or want your data to be deleted, just conta
   }
 };
 
+const showRecordedDataEdge = 
+{
+  text: 'I want to see the recorded data',
+  async click(currentState, stack, { getRecordedData }) {
+    const recordedData = getRecordedData();
+    await showInformationMessage(`NOTE: This data will only be stored *once* at the end of the survey.`, { Ok() {} }, { modal: true });
+    return renderValueAsJsonInEditor(recordedData);
+  }
+};
+
 const survey1 = {
   name: 'survey1',
+
+  // ###########################################################################
+  // defaultEdges
+  // ###########################################################################
 
   defaultEdges: [
     function (currentState, stack, actions, node) {
@@ -72,9 +99,13 @@ const survey1 = {
     },
     {
       text: '(Stop Survey)',
-      node: 'end'
+      node: 'cancel'
     }
   ],
+
+  // ###########################################################################
+  // survey dialog nodes
+  // ###########################################################################
 
   nodes: {
     start: {
@@ -119,7 +150,7 @@ How much do you agree with the following statement?
     q2: {
       nextNode: 'q3',
       kind: DialogNodeKind.Modal,
-      text: `[2/5] I believe, that if my debugger had some (or all) of these features, debugging could be a lot easier:
+      text: `[2/5] I believe, that if my debugger had some (or all) of these features, debugging could be a lot easier or faster:
 
 - Navigation: Move forward+backward in time; skip non-function calls; jump to beginning/end of function
 
@@ -324,7 +355,8 @@ ${data.email || ''}`;
             text: `Ok`,
             node: previousState.nodeName
           },
-          whySurveyEdge
+          whySurveyEdge,
+          showRecordedDataEdge
         ];
       }
     },
@@ -337,16 +369,23 @@ ${data.email || ''}`;
       end: true,
       kind: DialogNodeKind.Message,
       text: 'Thank you for trying out our survey! (Btw: You can press ESC to close this message)',
+      async enter() {
+        // store to backend
+        const backend = await getOrCreateProjectManager().getAndInitBackend();
+        const data = await serializeSurveyResult();
+        log('survey result', data);
+        // return backend.containers.survey1.storeSurveyResult(data);
+      },
       edges: [
-        {
-          text: 'I want to see the recorded data',
-          async click(currentState, stack, { getRecordedData }) {
-            const recordedData = getRecordedData();
-            return renderValueAsJsonInEditor(recordedData);
-          }
-        },
-        whySurveyEdge
+        whySurveyEdge,
+        showRecordedDataEdge
       ]
+    },
+
+    cancel: {
+      enter() {
+        
+      }
     }
   },
 

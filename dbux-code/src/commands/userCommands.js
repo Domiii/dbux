@@ -167,8 +167,8 @@ export function initUserCommands(extensionContext) {
     if (process.env.NODE_ENV === 'production') {
       throw new Error('This command is currently disabled in Production mode.');
     }
-    const backend = await getOrCreateProjectManager().getOrInitBackend();
-    await backend.startBackend();
+    const backend = await getOrCreateProjectManager().getAndInitBackend();
+    await backend.login();
   });
   
   // ###########################################################################

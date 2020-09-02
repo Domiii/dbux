@@ -1,12 +1,19 @@
 import UserEventContainer from './UserEventContainer';
+import TestContainer from './testContainer';
 
-const Containers = [
-  UserEventContainer
+const ContainerClasses = [
+  UserEventContainer,
+  TestContainer,
 ];
 
+let containers = [];
+
 export async function initContainers(db) {
-  return Promise.all(Containers.map(ContClazz => {
-    const container = new ContClazz(db);
+  await Promise.all(ContainerClasses.map(ContainerClass => {
+    let container = new ContainerClass(db);
+    containers.push(container);
     return container.init();
   }));
+
+  return containers;
 }
