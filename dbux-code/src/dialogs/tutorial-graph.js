@@ -149,19 +149,19 @@ Do you want to watch the video that guides you through this first bug?`,
 
     bugFeedbackQuery: {
       kind: DialogNodeKind.Message,
-      async enter(graphState) {
-        return Promise.race([
-          waitUntilBugFinished(),
-          waitAtMost(graphState, 20 * 60)
-        ]);
-      },
+      // async enter(graphState) {
+      //   return Promise.race([
+      //     waitUntilBugFinished(),
+      //     waitAtMost(graphState, 20 * 60)
+      //   ]);
+      // },
       async text() {
         return `Can we ask you 5 short questions for an anonymous survey?`;
       },
       edges: [
         {
           text: 'Ok, but hurry!',
-          async enter() {
+          async click() {
             startSurvey1('q1');
           },
           node: 'endSilent'

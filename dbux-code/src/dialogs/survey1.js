@@ -2,7 +2,7 @@
 import { env, Uri, window } from 'vscode';
 import { showHelp } from '../help';
 import DialogNodeKind from '../dialog/DialogNodeKind';
-import { startDialog } from '../dialog/dialog';
+import { Dialog } from '../dialog/Dialog';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 
@@ -326,6 +326,11 @@ Also, if you are interested in this project or in practicing debugging skills, f
   }
 };
 
+let surveyDialog;
+
 export default function startSurvey1(startState) {
-  startDialog(survey1, startState);
+  if (!surveyDialog) {
+    surveyDialog = new Dialog(survey1);
+  }
+  surveyDialog.start(startState);
 }

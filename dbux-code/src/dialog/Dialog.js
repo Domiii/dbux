@@ -20,11 +20,6 @@ export class Dialog {
   }
 
   start(startState) {
-    if (this.getNode(this.graphState.nodeName).end) {
-      // skip if already reach end
-      return;
-    }
-
     if (!this._isActive) {
       _errWrap(this._start.bind(this))(startState);
     }
@@ -39,6 +34,11 @@ export class Dialog {
     // for debugging
     await this.clear();
     this.load(startState);
+
+    if (this.getNode(this.graphState.nodeName).end) {
+      // skip if already reach end
+      return;
+    }
 
     this._isActive = true;
     while (this.graphState.nodeName !== null) {

@@ -11,7 +11,7 @@ export default class MessageNode extends DialogNode {
     }
 
     const buttons = await dialog.makeButtonsByEdges(node, edges, nodeName);
-    const result = await showInformationMessage(node.text, buttons, { modal: true });
+    const result = await showInformationMessage(await dialog.maybeGetByFunction(node.text), buttons, { modal: true });
     return result;
   }
 }
