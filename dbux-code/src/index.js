@@ -1,6 +1,5 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-
 import { initCodeDeco } from './codeDeco';
 
 import { initCallGraphView } from './callGraphView/callGraphViewController';
@@ -13,6 +12,7 @@ import { initTraceDetailsView } from './traceDetailsView/traceDetailsController'
 import { initResources } from './resources';
 import { initTraceSelection } from './codeUtil/codeSelection';
 import { initApplicationsView } from './applicationsView/applicationsViewController';
+import { getOrCreateProjectManager } from './projectView/projectControl';
 import { initProjectView } from './projectView/projectViewController';
 import { initMemento } from './memento';
 import { initLogging } from './logging';
@@ -20,6 +20,7 @@ import { initGraphView } from './graphView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { initInstallId } from './installId';
 import dialogController from './dialogs/dialogController';
+import { installDbuxDependencies } from './codeUtil/installUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -42,6 +43,13 @@ async function activate(context) {
     initResources(context);
     initMemento(context);
     await initInstallId();
+
+    // make sure, projectManager is available
+    getOrCreateProjectManager(context);
+
+    // install dependencies (and show progress bar) right away
+    await installDbuxDependencies();
+
     // initRuntimeServer(context);
     initCodeApplications(context);
     initCodeDeco(context);

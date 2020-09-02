@@ -106,7 +106,7 @@ function createProjectManager(extensionContext) {
   // ########################################
   const manager = initDbuxProjects(cfg, externals);
 
-  debug(`Initialized dbux-projects. Projects folder = "${path.resolve(cfg.projectsRoot)}"`);
+  debug(`Initialized dbux-projects. projectsRoot = "${path.resolve(cfg.projectsRoot)}", dependencyRoot = "${path.resolve(cfg.dependencyRoot)}"`);
 
   return manager;
 }

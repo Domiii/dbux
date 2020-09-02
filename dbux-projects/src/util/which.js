@@ -10,7 +10,10 @@ const logger = newLogger('which');
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
-const option = { failOnStatusCode: false };
+const option = { 
+  failOnStatusCode: false,
+  logStdout: true
+};
 
 /**
  * Get real path of `path` by `fs.realpathSync`.
@@ -41,9 +44,10 @@ export default async function which(command) {
     throw new Error(`Couldn't find which or where.exe in current system.`);
   }
 
-  let result = await Process.execCaptureAll(`${whichCommand} ${command}`, option);
+  const cmd = `${whichCommand} ${command}`;
+  let result = await Process.execCaptureAll(cmd, option);
   if (result.code) {
-    throw new Error(`Couldn't find ${command} in $PATH.`);
+    throw new Error(`Couldn't find ${command} in $PATH. Got code ${result.code} when executing "${cmd}"`);
   }
 
   let paths = result.out.split('\n');

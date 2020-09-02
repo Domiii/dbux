@@ -6,6 +6,8 @@
 /* eslint-disable global-require,import/first,import/no-extraneous-dependencies */
 
 import fs from 'fs';
+import path from 'path';
+import sh from 'shelljs';
 import { isPlainObject } from 'lodash';
 import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -16,7 +18,7 @@ import Backlog from './Backlog';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Db');
 
-const defaultNetworkTimeout = 2500;
+const defaultNetworkTimeout = 8 * 1000;
 
 global.self = global;   // hackfix for firebase which requires `self` to be a global
 
@@ -50,13 +52,23 @@ export class Db {
   async init() {
     this.firebase = this.requireFirebase();
     this.fs = this.initFirestore(this.firebase);
+  }
 
+  async _replay() {
     try {
       await this.backlog.replay();
     }
     catch (err) {
       warn(`Replay failed. Error: ${err.message}`);
     }
+  }
+
+  _req(target) {
+    // eslint-disable-next-line camelcase
+    const _req = __non_webpack_require__;
+    // const _req = require;
+    debug(`require ${target}...`);
+    return _req(target);
   }
 
   /**
@@ -66,28 +78,36 @@ export class Db {
    */
   requireFirebase() {
     try {
-      // const moduleAlias = require('module-alias');
       // const moduleName = ;
-      let dir = this.backendController.practiceManager.externals.resources.getResourcePath('dist', 'node_modules', 'firebase');
-      dir = fs.realpathSync(dir);
-      // moduleAlias.addAlias(moduleName, target);
+      const { getResourcePath } = this.backendController.practiceManager.externals.resources;
 
-      // NOTE: Usually we can load firebase by adding `firebase` as a `commonjs` to `externals` in `webpack`.
-      //    But because we are loading from an absolute path, we need to manually specify the target path.
+      // NOTE: a lot of failed experiments, trying to get firebase to work without having to npm install it
+      // let dir = getResourcePath('dist', 'node_modules', 'firebase');
+      // let dir = getResourcePath('firebase');
+      // dir = fs.realpathSync(dir);
+      
+      // sh.cp('-Rn', `${dir}`, getResourcePath('..', 'node_modules'));
 
-      // eslint-disable-next-line camelcase
-      const _req = __non_webpack_require__;
-      // const _req = require;
-      const _firebase = _req(`${dir}/dist/index.node.cjs`);
-      _req(`${dir}/auth/dist/index.cjs`);
-      _req(`${dir}/firestore/dist/index.cjs`);
-      // require('firebase/auth');
-      // require('firebase/firestore');
+      // const moduleAlias = require('module-alias');
+      // moduleAlias.addAlias('@firebase/app', `${dir}/firebase-app.js`);
+
+
+      // const _firebase = this._req(`${dir}/firebase-app.js`);
+      // this._req(`${dir}/firebase-auth.js`);
+      // this._req(`${dir}/firebase-firestore.js`);
+
+      // const _firebase = this._req(`${dir}/dist/index.cjs.js`);
+      // this._req(`${dir}/auth/dist/index.cjs.js`);
+      // this._req(`${dir}/firestore/dist/index.cjs.js`);
+      
+      const _firebase = this._req(`firebase`);
+      require('firebase/auth');
+      require('firebase/firestore');
 
       return _firebase;
     }
     catch (err) {
-      throw new Error(`Unable to load firebase. Make sure to call installBackendDependencies before trying to access DB capabilities: ${err.message}`);
+      throw new Error(`Unable to load firebase - ${err.stack}\n`);
     }
   }
 

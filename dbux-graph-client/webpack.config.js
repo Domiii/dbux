@@ -47,10 +47,12 @@ module.exports = (env, argv) => {
     new CopyPlugin({
       patterns: [
         {
+          force: true,
           from: path.join(projectRoot, 'assets'),
           to: outputFolder
         },
         {
+          force: true,
           from: path.join(MonoRoot, 'node_modules/bootstrap/dist/css/bootstrap.min.css'),
           to: path.join(outputFolder, 'light/bootstrap.min.css')
         }

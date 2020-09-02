@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { readPackageJson } from '@dbux/cli/lib/package-util';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
@@ -12,12 +13,27 @@ import BackendController from './backend/BackendController';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
-const { debug, log } = logger;
+const { debug, log, warn } = logger;
 
 /** @typedef {import('./projectLib/Bug').default} Bug */
 /** @typedef {import('./projectLib/Project').default} Project */
 
+
+function canIgnoreDependency(name) {
+  if (process.env.NODE_ENV === 'development' && name.startsWith('@dbux/')) {
+    // NOTE: in development mode, we have @dbux dependencies (and their dependencies) all linked up to the monoroot folder anyway
+    // NOTE: we need to short-circuit this for when we run the packaged extension in dev mode
+    return true;
+  }
+  return false;
+}
+
 export default class ProjectsManager {
+  // NOTE: npm flattens dependency tree by default, and other important dependencies are dependencies of @dbux/cli
+  _sharedDependencyNames = [
+    '@dbux/cli'
+  ];
+
   config;
   externals;
   projects;
@@ -26,6 +42,8 @@ export default class ProjectsManager {
    * @type {BackendController}
    */
   _backend;
+
+  _pkg;
 
   /**
    * @param {Object} externals 
@@ -39,6 +57,13 @@ export default class ProjectsManager {
 
     this._backend = new BackendController(this);
     this.progressLogController = new ProgressLogController(externals.storage);
+    this._pkg = readPackageJson(this.config.dependencyRoot);
+
+    this._sharedDependencyNamesAll = [
+      ...this._sharedDependencyNames,
+      ...Object.entries(this._pkg.dependencies).
+        map(([name, version]) => `${name}@${version}`)
+    ];
   }
 
   async getAndInitBackend() {
@@ -184,11 +209,6 @@ export default class ProjectsManager {
   // Dependency Management
   // ###########################################################################
 
-  _sharedDependencyNames = [
-    // NOTE: npm flattens dependency tree by default, and other important dependencies are dependencies of @dbux/cli
-    '@dbux/cli'
-  ];
-
   async installDependencies() {
     await this.installDbuxDependencies();
   }
@@ -197,11 +217,19 @@ export default class ProjectsManager {
     return !!this._installPromise;
   }
 
+  async waitForInstall() {
+    return this._installPromise;
+  }
+
   hasInstalledSharedDependencies() {
-    return this.areDependenciesInstalled(this._sharedDependencyNames);
+    return this.areDependenciesInstalled([]);
   }
 
   areDependenciesInstalled(deps) {
+    deps = [
+      ...this._sharedDependencyNamesAll,
+      ...deps
+    ];
     return deps.every(this.isDependencyInstalled);
   }
 
@@ -211,15 +239,17 @@ export default class ProjectsManager {
 
     // get name without version
     const name = qualifiedDependencyName.match('(@?[^@]+)(?:@.*)?')[1];
-    if (process.env.NODE_ENV === 'development') {
-      if (name.startsWith('@dbux/')) {
-        // NOTE: in development mode, we have @dbux dependencies (and their dependencies) all linked up to the monoroot folder anyway
-        // NOTE: we need to short-circuit this for when we run the packaged extension in dev mode
-        return true;
-      }
+    if (canIgnoreDependency(name)) {
+      // NOTE: in development mode, we have @dbux dependencies (and their dependencies) all linked up to the monoroot folder anyway
+      // NOTE: we need to short-circuit this for when we run the packaged extension in dev mode
+      return true;
     }
     const { dependencyRoot } = this.config;
-    return sh.test('-d', path.join(dependencyRoot, 'node_modules', name));
+
+    const target = path.join(dependencyRoot, 'node_modules', name);
+    // warn('isDependencyInstalled', qualifiedDependencyName, target);
+
+    return sh.test('-d', target);
   }
 
   async installDbuxDependencies() {
@@ -228,7 +258,9 @@ export default class ProjectsManager {
       throw new Error('installDbuxDependencies() failed. DBUX_VERSION was not set.');
     }
 
-    const deps = this._sharedDependencyNames.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
+    const deps = this._sharedDependencyNames.
+      filter(dep => !canIgnoreDependency(dep));
+
     await this.installModules(deps);
   }
 
@@ -240,17 +272,16 @@ export default class ProjectsManager {
   async _doInstallModules(deps) {
     try {
       const { dependencyRoot } = this.config;
-      const execOptions = {
-        processOptions: {
-          cwd: dependencyRoot
-        }
-      };
-      const rootPackageJson = path.join(dependencyRoot, 'package.json');
-      if (!await sh.test('-f', rootPackageJson)) {
-        // make sure, we have a local `package.json`
-        await this.runner._exec('npm init -y', logger, execOptions);
-      }
-      else if (this.areDependenciesInstalled(deps)) {
+      // const execOptions = {
+      //   processOptions: {
+      //     cwd: dependencyRoot
+      //   }
+      // };
+      // if (!await sh.test('-f', rootPackageJson)) {
+      //   // make sure, we have a local `package.json`
+      //   await this.runner._exec('npm init -y', logger, execOptions);
+      // }
+      if (this.areDependenciesInstalled(deps)) {
         // already done!
         return;
       }
@@ -264,7 +295,8 @@ export default class ProjectsManager {
 
       // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
 
-      const command = `npm install --only=prod && npm i ${deps.join(' ')}`;
+      const moreDeps = deps.length && ` && npm i ${deps.join(' ')}` || '';
+      const command = `npm install --only=prod${moreDeps}`;
       // await this.runner._exec(command, logger, execOptions);
       await this.execInTerminal(dependencyRoot, command);
 

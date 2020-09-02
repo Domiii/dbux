@@ -36,7 +36,7 @@ const whySurveyEdge =
     const msg = `Dbux is the object of research for the doctoral dissertation of Dominik Seifert.
 If you agree to participating in this survey, we record your responses to these questions (and your progress on the tutorial bug) anonymously in order to evaluate Dbux's feasability and efficacy.
 
-We will not share this data with anyone, and no one has access to it (not even you, since it is anonymous).
+We will not share this data with anyone, and no third party will given access to the database contents. We will however use the data to publish research on Dbux.
 
 If you are concerned about your data or want your data to be deleted, just contact us on Discord.`;
     const btns = {

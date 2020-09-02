@@ -261,9 +261,9 @@ export default class Process {
     const newProcess = new Process();
 
     options = {
-      ...options,
       captureOut: true,
-      logStdout: false
+      logStdout: false,
+      ...options
     };
 
     await newProcess.start(cmd, logger || newLogger('exec'), options, input);
@@ -275,11 +275,11 @@ export default class Process {
     const newProcess = new Process();
 
     options = {
-      ...options,
       captureOut: true,
       captureErr: true,
       logStdout: false,
-      logStderr: false
+      logStderr: false,
+      ...options
     };
 
     let result = await newProcess.start(cmd, logger || newLogger('exec'), options, input);

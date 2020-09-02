@@ -51,6 +51,8 @@ export default class BackndController {
       this.registerContainer(container);
     }
 
+    await this.db._replay();
+
     this._initialized = true;
   }
 

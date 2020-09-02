@@ -149,12 +149,15 @@ class FirestoreContainer {
   }
 
   init() {
-    this.collection = this.db.collection(this.collectionName);
   }
 
   // ########################################
   // Getters
   // ########################################
+
+  get collection() {
+    return this.db.collection(this.collectionName);
+  }
 
   get name() {
     return this.collectionName;
