@@ -19,7 +19,7 @@ import { initLogging } from './logging';
 import { initGraphView } from './graphView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import startTutorial from './dialogs/tutorial-graph';
-
+import { initInstallId } from './installId';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -33,15 +33,16 @@ function registerErrorHandler() {
 /**
  * @param {vscode.ExtensionContext} context
  */
-function activate(context) {
+async function activate(context) {
   try {
     log(`Starting Dbux v${process.env.DBUX_VERSION} (mode=${process.env.NODE_ENV}, (dev only) DBUX_ROOT=${process.env.DBUX_ROOT})...`);
 
     registerErrorHandler();
     initLogging();
     initResources(context);
-    // initRuntimeServer(context);
     initMemento(context);
+    await initInstallId();
+    // initRuntimeServer(context);
     initCodeApplications(context);
     initCodeDeco(context);
     initToolBar(context);
@@ -54,7 +55,7 @@ function activate(context) {
     initApplicationsView(context);
     const traceDetailsController = initTraceDetailsView(context);
     initProjectView(context);
-    
+
     //  To bring these three views back, uncomment relevant lines and add this to `package.json` `contributes.views.dbuxViewContainer`:
     //  {
     //    "id": "dbuxEditorTracesView",

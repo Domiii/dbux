@@ -4,7 +4,7 @@ import sleep from '@dbux/common/src/util/sleep';
 import { showHelp } from '../help';
 import DialogNodeKind from '../dialog/DialogNodeKind';
 import startSurvey1 from './survey1';
-import { startDialog } from '../dialog/dialog';
+import { Dialog } from '../dialog/Dialog';
 
 
 async function waitAtMost({ stateStartTime }, delaySeconds) {
@@ -149,19 +149,19 @@ Do you want to watch the video that guides you through this first bug?`,
 
     bugFeedbackQuery: {
       kind: DialogNodeKind.Message,
-      async enter(graphState) {
-        return Promise.race([
-          waitUntilBugFinished(),
-          waitAtMost(graphState, 20 * 60)
-        ]);
-      },
+      // async enter(graphState) {
+      //   return Promise.race([
+      //     waitUntilBugFinished(),
+      //     waitAtMost(graphState, 20 * 60)
+      //   ]);
+      // },
       async text() {
         return `Can we ask you 5 short questions for an anonymous survey?`;
       },
       edges: [
         {
           text: 'Ok, but hurry!',
-          async enter() {
+          async click() {
             startSurvey1('q1');
           },
           node: 'endSilent'
@@ -185,7 +185,11 @@ Do you want to watch the video that guides you through this first bug?`,
   }
 };
 
+let tutorialDialog;
 
 export default function startTutorial() {
-  startDialog(tutorial);
+  if (!tutorialDialog) {
+    tutorialDialog = new Dialog(tutorial);
+  }
+  tutorialDialog.start();
 }

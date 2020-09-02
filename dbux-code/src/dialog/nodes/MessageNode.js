@@ -1,17 +1,17 @@
 import DialogNode from './DialogNode';
 import { showInformationMessage } from '../../codeUtil/codeModals';
-import { makeButtonsByEdges } from '../dialogUtil';
 
 export default class MessageNode extends DialogNode {
-  static async render(graphState, node, defaultEdges) {
+  static async render(dialog, node) {
+    const { nodeName } = dialog.graphState;
+    
     let { edges = [] } = node;
-
-    if (graphState.state !== 'start' && graphState.state !== 'end') {
-      edges = edges.concat(defaultEdges);
+    if (nodeName !== 'start' && nodeName !== 'end') {
+      edges = edges.concat(dialog.graph.defaultEdges);
     }
 
-    const buttons = await makeButtonsByEdges(edges, graphState.state);
-    const result = await showInformationMessage(node.text, buttons);
+    const buttons = await dialog.makeButtonsByEdges(node, edges, nodeName);
+    const result = await showInformationMessage(await dialog.maybeGetByFunction(node.text, node), buttons);
     return result;
   }
 }

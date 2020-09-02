@@ -3,13 +3,16 @@ import { env, Uri, window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { showHelp } from '../help';
 import DialogNodeKind from '../dialog/DialogNodeKind';
-import { startDialog } from '../dialog/dialog';
+import { Dialog } from '../dialog/Dialog';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { getInstallId } from '../installId';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Dialog');
+
+let surveyDialog;
 
 function nextNode(currentState, stack, actions, node) {
   return node.nextNode;
@@ -21,15 +24,18 @@ function nextNode(currentState, stack, actions, node) {
 
 async function serializeSurveyResult() {
   // TODO: get install id (random uuid that we generate and store in memento on first activate)
-  const installId = null;
+  const installId = getInstallId();
 
   // TODO: get survey result
-  const surveyResult = null;
+  const surveyResult = surveyDialog.getRecordedData();
 
   // TODO: get tutorial result
   const tutorialResult = null;
-
+  
   // TODO: get first bug result
+  // const projectsManager = getOrCreateProjectManager();
+  // const firstBug = projectsManager.projects.getByName('express').getOrLoadBugs().getById(0);
+  // const bug1Status = projectsManager.progressLogController.util.getBugProgressByBug(firstBug);
   const bug1Status = null;
 
   return {
@@ -363,7 +369,8 @@ ${data.email || ''}`;
     continueLater: {
       text: `Do you want to continue our survey? (You are almost done)`,
       async enter(currentState, stack, { goTo, waitAtMost }) {
-        const waitTime = 24 * 60 * 60;
+        // const waitTime = 24 * 60 * 60;
+        const waitTime = 30;
         await waitAtMost(waitTime);
 
         const previousState = stack[stack.length - 1];
@@ -418,5 +425,8 @@ ${data.email || ''}`;
 };
 
 export default function startSurvey1(startState) {
-  startDialog(survey1, startState);
+  if (!surveyDialog) {
+    surveyDialog = new Dialog(survey1);
+  }
+  surveyDialog.start(startState);
 }
