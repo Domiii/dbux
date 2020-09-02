@@ -27,12 +27,15 @@ async function serializeSurveyResult() {
   const installId = getInstallId();
 
   // TODO: get survey result
-  const surveyResult = surveyDialog;
+  const surveyResult = surveyDialog.getRecordedData();
 
   // TODO: get tutorial result
   const tutorialResult = null;
-
+  
   // TODO: get first bug result
+  // const projectsManager = getOrCreateProjectManager();
+  // const firstBug = projectsManager.projects.getByName('express').getOrLoadBugs().getById(0);
+  // const bug1Status = projectsManager.progressLogController.util.getBugProgressByBug(firstBug);
   const bug1Status = null;
 
   return {
