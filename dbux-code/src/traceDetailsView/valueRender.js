@@ -3,23 +3,27 @@ import { isPlainObjectOrArrayCategory } from '@dbux/common/src/core/constants/Va
 import { showInformationMessage } from '../codeUtil/codeModals';
 
 export function valueRender(valueRef, value) {
-  let confirmString = '';
-  let documentString = '';
+  let modalString = '';
 
   if (valueRef && isPlainObjectOrArrayCategory(valueRef.category)) {
-    confirmString = JSON.stringify(value);
-    documentString = JSON.stringify(value, null, 2);
+    modalString = JSON.stringify(value);
   }
   else {
-    documentString = confirmString = `${value}`;
+    modalString = `${value}`;
   }
-  showInformationMessage(confirmString, {
+
+  showInformationMessage(modalString, {
     async 'Open In Editor'() {
-      const doc = await workspace.openTextDocument({ 
-        language: 'jsonc',
-        content: documentString
-      });
-      await window.showTextDocument(doc.uri);
+      return renderValueAsJsonInEditor(value);
     }
   }, { modal: true });
+}
+
+export async function renderValueAsJsonInEditor(value) {
+  const content = JSON.stringify(value, null, 2);
+  const doc = await workspace.openTextDocument({ 
+    language: 'jsonc',
+    content
+  });
+  await window.showTextDocument(doc.uri);
 }
