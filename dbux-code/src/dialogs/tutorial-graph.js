@@ -4,7 +4,7 @@ import sleep from '@dbux/common/src/util/sleep';
 import { showHelp } from '../help';
 import DialogNodeKind from '../dialog/DialogNodeKind';
 import startSurvey1 from './survey1';
-import { startDialog } from '../dialog/dialog';
+import { Dialog } from '../dialog/Dialog';
 
 
 async function waitAtMost({ stateStartTime }, delaySeconds) {
@@ -185,7 +185,11 @@ Do you want to watch the video that guides you through this first bug?`,
   }
 };
 
+let tutorialDialog;
 
 export default function startTutorial() {
-  startDialog(tutorial);
+  if (!tutorialDialog) {
+    tutorialDialog = new Dialog(tutorial);
+  }
+  tutorialDialog.start();
 }
