@@ -1,5 +1,6 @@
 import { Uri, env } from 'vscode';
 import { showInformationMessage } from './codeUtil/codeModals';
+import { startDialog } from './dialog/dialog';
 
 export async function showHelp(message) {
   const isDefaultHelp = !message;
@@ -23,7 +24,10 @@ export async function showHelp(message) {
   if (isDefaultHelp) {
     btns = {
       async 'Start Tutorial'() {
-        // TODO: start tutorial
+        startDialog('tutorial');
+      },
+      async 'Take Survey'() {
+        startDialog('survey1');
       },
       ...btns
     };
