@@ -13,5 +13,5 @@ export async function set(key, value) {
 }
 
 export function initMemento(context) {
-  memento = context.workspaceState;
+  memento = context.globalState;
 }

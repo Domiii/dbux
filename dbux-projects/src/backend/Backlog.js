@@ -61,6 +61,7 @@ export default class Backlog {
       try {
         await this._doWrite(writeRequest);
         this.backlog.shift();
+        await this.save();
       }
       catch (err) {
         throw new Error(`Replay backlog stopped due to error: ${err.message}`);

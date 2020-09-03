@@ -7,35 +7,35 @@ This page explains the dbux-code extension and how to use it. For more general i
 
 <h2>Table of Contents</h2>
 
-1. [Introduction w/ Examples](#introduction-w-examples)
-2. [Installation](#installation)
-3. [Usage](#usage)
-4. ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
-   1. [How the Run + Debug buttons work](#how-the-run--debug-buttons-work)
-   2. [Dbux Runtime Server](#dbux-runtime-server)
-5. [Analysis Features](#analysis-features)
-   1. [Applications](#applications)
-   2. [Code decorations](#code-decorations)
-   3. [Trace Selection](#trace-selection)
-   4. [Trace Details](#trace-details)
-   5. [Trace Details: Navigation](#trace-details-navigation)
-   6. [Trace Details: Value](#trace-details-value)
-   7. [Trace Details: Object Traces](#trace-details-object-traces)
-   8. [Trace Details: Trace Executions](#trace-details-trace-executions)
-   9. [Trace Details: Nearby Values](#trace-details-nearby-values)
-   10. [Trace Details: Debug](#trace-details-debug)
-   11. [Call Graph](#call-graph)
-   12. [Call Graph: pause (pause/resume live updates)](#call-graph-pause-pauseresume-live-updates)
-   13. [Call Graph: clear (show/hide already recorded traces)](#call-graph-clear-showhide-already-recorded-traces)
-   14. [Call Graph: sync (toggle sync mode)](#call-graph-sync-toggle-sync-mode)
-   15. [Call Graph: loc](#call-graph-loc)
-   16. [Call Graph: call](#call-graph-call)
-   17. [Call Graph: Search](#call-graph-search)
-   18. [Finding Errors](#finding-errors)
-6. [Practice debugging with "Dbux Practice"](#practice-debugging-with-dbux-practice)
-7. [Commands](#commands)
-8. [Configuration](#configuration)
-9. [How does Dbux work](#how-does-dbux-work)
+- [Introduction w/ Examples](#introduction-w-examples)
+- [Installation](#installation)
+- [Usage](#usage)
+- ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
+  - [How the Run + Debug buttons work](#how-the-run--debug-buttons-work)
+  - [Dbux Runtime Server](#dbux-runtime-server)
+- [Analysis Features](#analysis-features)
+  - [Applications](#applications)
+  - [Code decorations](#code-decorations)
+  - [Trace Selection](#trace-selection)
+  - [Trace Details](#trace-details)
+  - [Trace Details: Navigation](#trace-details-navigation)
+  - [Trace Details: Value](#trace-details-value)
+  - [Trace Details: Object Traces](#trace-details-object-traces)
+  - [Trace Details: Trace Executions](#trace-details-trace-executions)
+  - [Trace Details: Nearby Values](#trace-details-nearby-values)
+  - [Trace Details: Debug](#trace-details-debug)
+  - [Call Graph](#call-graph)
+  - [Call Graph: pause (pause/resume live updates)](#call-graph-pause-pauseresume-live-updates)
+  - [Call Graph: clear (show/hide already recorded traces)](#call-graph-clear-showhide-already-recorded-traces)
+  - [Call Graph: sync (toggle sync mode)](#call-graph-sync-toggle-sync-mode)
+  - [Call Graph: loc](#call-graph-loc)
+  - [Call Graph: call](#call-graph-call)
+  - [Call Graph: Search](#call-graph-search)
+  - [Finding Errors](#finding-errors)
+- [Practice debugging with "Dbux Practice"](#practice-debugging-with-dbux-practice)
+- [Commands](#commands)
+- [Configuration](#configuration)
+- [How does Dbux work](#how-does-dbux-work)
 
 # Introduction w/ Examples
 
@@ -88,7 +88,7 @@ The "Debug with Dbux" button does the same thing as the Run button but with `--i
 
 ## Dbux Runtime Server
 
-TODO: explain
+TODO: explain more
 
 
 # Analysis Features

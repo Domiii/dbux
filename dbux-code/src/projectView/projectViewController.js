@@ -39,8 +39,8 @@ export class ProjectViewController {
   constructor(context) {
     this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
-    
-    this.isShowingTreeView = mementoGet(showProjectViewKeyName, false);
+
+    this.isShowingTreeView = mementoGet(showProjectViewKeyName, true);
     commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
 
     // ########################################
@@ -60,7 +60,7 @@ export class ProjectViewController {
 
   get treeView() {
     return this.treeDataProvider.treeView;
-  } 
+  }
 
   onStatusChanged(status) {
     commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', status === BugRunnerStatus.Busy);
@@ -96,7 +96,7 @@ export class ProjectViewController {
 
     const options = {
       cancellable: false,
-      title: `[dbux] Testing bug ${bugNode.bug.project.name}@${bugNode.bug.name}`
+      title: `[dbux] Bug ${bugNode.bug.project.name}@${bugNode.bug.name}`
     };
 
     return runTaskWithProgressBar(async (progress/* , cancelToken */) => {
@@ -108,6 +108,11 @@ export class ProjectViewController {
       await runner.cancel();
 
       // run it!
+      const { project } = bug;
+      progress.report({ message: `installing "${project.name}"...` });
+      await runner.activateProject(project);
+
+
       progress.report({ message: 'running test...' });
       // NOTE: --enable-source-maps gets super slow in production mode for some reason
       // NOTE2: nolazy is required for proper breakpoints in debug mode
@@ -171,7 +176,7 @@ let controller;
 export function initProjectView(context) {
   if (!controller) {
     controller = new ProjectViewController(context);
-  
+
     // shut it all down when VSCode shuts down
     context.subscriptions.push({
       dispose() {
@@ -179,10 +184,10 @@ export function initProjectView(context) {
         runner.cancel();
       }
     });
-  
+
     // refresh right away
     controller.treeDataProvider.refresh();
-  
+
     // register commands
     initProjectCommands(context, controller);
   }

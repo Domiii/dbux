@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import sh from 'shelljs';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
 import caseStudyRegistry from './_projectRegistry';
@@ -107,6 +108,9 @@ export default class ProjectsManager {
     return this.projects;
   }
 
+  /**
+   * @return {BugRunner}
+   */
   getOrCreateRunner() {
     if (!this.runner) {
       const runner = this.runner = new BugRunner(this);
@@ -226,7 +230,7 @@ export default class ProjectsManager {
   _getAllDependencies(deps) {
     return [
       ...this._sharedDependencyNamesAll,
-      ...deps
+      ...deps || EmptyArray
     ];
   }
 

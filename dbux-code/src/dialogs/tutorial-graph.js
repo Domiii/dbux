@@ -43,7 +43,7 @@ const tutorial = {
           node: 'bug10'
         },
         {
-          text: 'No. Please don\'t bother me...',
+          text: 'No. Please don\'t bother me.',
           node: 'end'
         }
       ]
