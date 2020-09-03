@@ -15,7 +15,11 @@ showInformationMessage(value, {
 ```
  */
 export async function showInformationMessage(message, btnConfig = EmptyObject, messageCfg = EmptyObject, cancelCallback) {
-  const result = await window.showInformationMessage(message, messageCfg, ...Object.keys(btnConfig));
+  const buttons = Object.keys(btnConfig);
+  if (process.platform === 'darwin') {
+    buttons.reverse();
+  }
+  const result = await window.showInformationMessage(message, messageCfg, ...buttons);
   if (result === undefined) {
     await cancelCallback?.();
     return null;

@@ -111,7 +111,7 @@ const survey1 = {
       edges: [
         {
           text: 'Ok',
-          node: nextNode
+          node: 'q1'
         },
         whySurveyEdge
       ]
