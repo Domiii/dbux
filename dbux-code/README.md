@@ -152,12 +152,12 @@ Note that we are not debugging in real-time, but work on a recoding of the actua
 
 Here are all the buttons:
 
-<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousParentContext.png" title="previousParentContext" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextParentContext.png" title="nextParentContext" height="32px" width="32px" style="background-color: #1A1A1A">  `Go to start/end of context`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousParentContext.png" title="previousParentContext" height="24px" width="24px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextParentContext.png" title="nextParentContext" height="24px" width="24px" style="background-color: #1A1A1A">  `Go to start/end of context`
 
 * Jump to the start/end of the current [context](https://github.com/Domiii/dbux/tree/master/#context) (function or file)
 * When pressed again, steps out to caller (which we also call "parent")
 
-<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousChildContext.png" title="previousChildContext" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextChildContext.png" title="nextChildContext" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next function call in context`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousChildContext.png" title="previousChildContext" height="24px" width="24px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextChildContext.png" title="nextChildContext" height="24px" width="24px" style="background-color: #1A1A1A"> `Go to previous/next function call in context`
 
 * Jump to previous/next *traced* function call <span style="color:red">↱</span> before/after the currently selected trace.
    * Note that library or native calls <span style="color:gray">↱</span> are not traced and thus will be skipped by this button.
@@ -166,7 +166,7 @@ Here are all the buttons:
    * Getters and setters work, but navigation is a bit less intuitive.
    * Since getters and setters don't have a clearly identifyable caller trace, they will need some more development work before they will be fully smoothed out.
 
-<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousInContext.png" title="previousInContext" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextInContext.png" title="nextInContext" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next "non-trivial" trace in context`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousInContext.png" title="previousInContext" height="24px" width="24px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextInContext.png" title="nextInContext" height="24px" width="24px" style="background-color: #1A1A1A"> `Go to previous/next "non-trivial" trace in context`
 
 * Jump to previous/next "non-trivial" trace in [context](https://github.com/Domiii/dbux/tree/master/#context) (function or file)
 * Stepping would be a lot of work, if we tried to step through every single expression.
@@ -176,13 +176,13 @@ Here are all the buttons:
 * (Dev note: we internally determine "trivial traces" as traces of `TraceType.ExpressionValue`.)
 
 
-<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousStaticTrace.png" title="previousStaticTrace" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextStaticTrace.png" title="nextStaticTrace" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next execution of the same trace`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousStaticTrace.png" title="previousStaticTrace" height="24px" width="24px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextStaticTrace.png" title="nextStaticTrace" height="24px" width="24px" style="background-color: #1A1A1A"> `Go to previous/next execution of the same trace`
 
 * If a piece of code was executed multiple times (because a function was called multiple times, or there is a loop etc), these buttons allow you to jump between the traces of those different executions.
 * These buttons step through all [`Trace Executions`](#trace-executions) of the currently selected `trace`'s `staticTrace`. [Read more on Dbux terminology here](https://github.com/Domiii/dbux/tree/master/#trace)
 
 
-<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/leftArrow.png" title="previous" height="32px" width="32px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/rightArrow.png" title="next" height="32px" width="32px" style="background-color: #1A1A1A"> `Go to previous/next trace (unconditionally)`
+<img src="https://domiii.github.io/dbux/dbux-code/resources/dark/leftArrow.png" title="previous" height="24px" width="24px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/rightArrow.png" title="next" height="24px" width="24px" style="background-color: #1A1A1A"> `Go to previous/next trace (unconditionally)`
 
 * Go to previous/next trace, no matter what. This navigation method does not filter out "trivial traces", and it also moves in and out of contexts, if that is where the previous/next trace is.
 * These buttons provide the most granular navigation option.
@@ -254,7 +254,7 @@ This is generally only useful for contributors, the very curious or those who wo
 
 ## Call Graph
 
-The <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/call-graph.png" title="call graph" height="32px" width="32px" style="background-color: #1A1A1A"> Call Graph renders a bird's eye overview over all executed files and functions.
+The <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/call-graph.png" title="call graph" height="24px" width="24px" style="background-color: #1A1A1A"> Call Graph renders a bird's eye overview over all executed files and functions.
 
 As an analogy, I would say that the call graph is like (a rather crude) "Google Maps" while the [trace details view](#trace-details) is (a rather crude) "Google Street View" of your application's execution. Together they offer a multi-resolutional interactive tool to see and find everything that is going on in your application.
 
