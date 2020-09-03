@@ -21,7 +21,16 @@ export async function installDbuxDependencies(extensionContext) {
       progress.report({ message: 'New Dbux installation. Getting dependencies (1-3 mins)...' });
 
       let lockfilePath = extensionContext.asAbsolutePath('install.lock');
-      lockfile.lockSync(lockfilePath);
+      await new Promise((resolve, reject) => {
+        lockfile.lock(lockfilePath, { wait: 10 ** 9 }, (err) => {
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve();
+          }
+        });
+      });
       await projectManager.installDependencies();
       lockfile.unlockSync(lockfilePath);
     }, { cancellable: false });
