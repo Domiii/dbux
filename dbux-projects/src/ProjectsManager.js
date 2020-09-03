@@ -39,6 +39,9 @@ export default class ProjectsManager {
 
   config;
   externals;
+  /**
+   * @type {ProjectList}
+   */
   projects;
   runner;
   /**

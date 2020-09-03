@@ -22,6 +22,9 @@ export default class ProjectList {
     return this._list[i];
   }
 
+  /**
+   * @return {Project}
+   */
   getByName(name) {
     return this._map.get(name);
   }

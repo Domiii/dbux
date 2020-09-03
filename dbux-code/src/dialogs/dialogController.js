@@ -52,26 +52,28 @@ export class DialogController {
   // ###########################################################################
 
   async serializeSurveyResult() {
-    // TODO: get install id (random uuid that we generate and store in memento on first activate)
+    // get install id (random uuid that we generate and store in memento on first activate)
     const installId = getInstallId();
 
-    // TODO: get survey result
+    // get survey result
     const surveyResult = this.getDialog('survey1').getRecordedData();
 
-    // TODO: get tutorial result
+    // get tutorial result
     const tutorialResult = this.getDialog('tutorial').getRecordedData();
 
-    // TODO: get first bug result
+    // get first bug result
     const projectsManager = getOrCreateProjectManager();
     const firstBug = projectsManager.projects.getByName('express').getOrLoadBugs().getById(1);
     const bug1Status = projectsManager.progressLogController.util.getBugProgressByBug(firstBug);
+    const bug1Tries = projectsManager.progressLogController.util.getTestRunsByBug(firstBug);
     // const bug1Status = null;
 
     return {
       installId,
       surveyResult,
       tutorialResult,
-      bug1Status
+      bug1Status,
+      bug1Tries
     };
   }
 }

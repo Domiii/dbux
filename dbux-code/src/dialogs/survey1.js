@@ -14,10 +14,10 @@ function nextNode(currentState, stack, actions, node) {
   return node.nextNode;
 }
 
-async function storeResults(data) {
-  const backend = await getOrCreateProjectManager().getAndInitBackend();
-  data = { installId: 'testId', ...data };
+async function storeResultsTest(data) {
+  data = { test: 1, ...data };
   log('storeResults', data);
+  const backend = await getOrCreateProjectManager().getAndInitBackend();
   return backend.containers.survey1.storeSurveyResult(data);
 }
 
@@ -89,15 +89,9 @@ const survey1 = {
       node: 'cancel'
     },
     {
-      text: 'save data',
-      click() {
-        return storeResults({ test: 123 });
-      }
-    },
-    {
-      text: 'clear data',
-      click() {
-        return clearResults();
+      text: '(save)',
+      async click(currentState, stack, { serializeSurveyResult }) {
+        return storeResultsTest(await serializeSurveyResult());
       }
     }
   ],
@@ -113,7 +107,7 @@ const survey1 = {
       edges: [
         {
           text: 'Ok, but hurry!',
-          node: nextNode
+          node: 'q1'
         },
         whySurveyEdge
       ]
@@ -259,7 +253,7 @@ How much do you agree with the following statement?
     interlude1: {
       kind: DialogNodeKind.Modal,
       text: `Thank you so much for your feedback!
-If you like, you can tell us a little about your opinion on Debugging in general, or on Dbux.
+If you like, you can tell us a little about your opinion on Dbux or Debugging in general.
 Also, if you are interested in this project or in practicing debugging skills, feel free to leave your email.`,
       edges: [
         {
@@ -370,11 +364,12 @@ ${data.email || ''}`;
       kind: DialogNodeKind.Message,
       text: 'Thank you for trying out our survey! (Btw: You can press ESC to close this message)',
       async enter(currentState, stack, { serializeSurveyResult }) {
-        // store to backend
-        // const backend = await getOrCreateProjectManager().getAndInitBackend();
         const data = await serializeSurveyResult();
         log('survey result', data);
-        // return backend.containers.survey1.storeSurveyResult(data);
+
+        // store to backend
+        const backend = await getOrCreateProjectManager().getAndInitBackend();
+        return backend.containers.survey1.storeSurveyResult(data);
       },
       edges: [
         whySurveyEdge,
