@@ -5,13 +5,15 @@ export default class MessageNode extends DialogNode {
   static async render(dialog, node) {
     const { nodeName } = dialog.graphState;
 
-    let { edges = [] } = node;
-    if (nodeName !== 'start' && nodeName !== 'end') {
+    let { end = false, edges = [] } = node;
+    if (nodeName !== 'start' && !end) {
       edges = edges.concat(dialog.graph.defaultEdges);
     }
 
+    const text = await dialog.maybeGetByFunction(node.text, node);
     const buttons = await dialog.makeButtonsByEdges(node, edges, nodeName);
-    const result = await showInformationMessage(await dialog.maybeGetByFunction(node.text, node), buttons, { modal: true });
+    const result = await showInformationMessage(text, buttons, { modal: true });
+
     return result;
   }
 }

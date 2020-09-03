@@ -232,7 +232,7 @@ export class Dialog {
    * Used before dialog starts if survey is unfinished
    */
   async askToContinue() {
-    return await showInformationMessage(`You have unfinished dialog ${this.graph.name}, would you like to continue?`, {
+    return await showInformationMessage(`You have previously started ${this.graph.name}, would you like to continue?`, {
       'Continue'() {
         return true;
       },
@@ -243,7 +243,7 @@ export class Dialog {
   }
 
   async askToResume(startState) {
-    return await showInformationMessage(`You have unfinished dialog ${this.graph.name}, would you like to continue or start over?`, {
+    return await showInformationMessage(`You have previously started ${this.graph.name}, would you like to continue or start over?`, {
       'Continue'() {
         return startState;
       },

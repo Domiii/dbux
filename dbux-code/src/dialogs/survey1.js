@@ -40,6 +40,8 @@ We will not share this data with anyone, and no third party will given access to
 
 If you are concerned about your data or want your data to be deleted, just contact us on Discord.`;
     const btns = {
+      async 'Ok'() {
+      },
       async 'Contact us on Discord'() {
         return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
       },
@@ -57,7 +59,7 @@ const showRecordedDataEdge =
   async click(currentState, stack, { getRecordedData }) {
     const recordedData = getRecordedData();
     await showInformationMessage(`NOTE: This data will only be stored *once* at the end of the survey.`, { Ok() { } }, { modal: true });
-    return renderValueAsJsonInEditor(recordedData);
+    renderValueAsJsonInEditor(recordedData);
   }
 };
 
@@ -110,7 +112,7 @@ const survey1 = {
       text: `Can we ask you 5 short questions (related to Debugging and your first impressions of Dbux)?`,
       edges: [
         {
-          text: 'Ok',
+          text: 'Ok, but hurry!',
           node: 'q1'
         },
         whySurveyEdge
