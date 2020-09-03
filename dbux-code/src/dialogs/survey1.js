@@ -169,12 +169,12 @@ const survey1 = {
         ]);
       },
       async text() {
-        return `Can we ask you 5 short questions for an anonymous survey?`;
+        return `Can we ask you 5 short questions (related to Debugging and your first impressions of Dbux)?`;
       },
       edges: [
         {
           text: 'Ok, but hurry!',
-          node: 'start'
+          node: 'q1'
         }
       ]
     },

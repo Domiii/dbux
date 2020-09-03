@@ -25,22 +25,18 @@ export class DialogController {
    */
   startDialog(dialogName, startState) {
     let dialog = this.getDialog(dialogName);
-    if (!dialog) {
-      dialog = new Dialog(this.graphs.get(dialogName));
-      dialog.controller = this;
-      this.dialogs.set(dialogName, dialog);
-    }
     dialog.start(startState);
   }
 
   /**
    * @param {string} dialogName 
+   * @param {string} [defaultStartState]
    * @return {Dialog}
    */
-  getDialog(dialogName) {
+  getDialog(dialogName, defaultStartState) {
     let dialog = this.dialogs.get(dialogName);
     if (!dialog) {
-      dialog = new Dialog(this.graphs.get(dialogName));
+      dialog = new Dialog(this.graphs.get(dialogName), defaultStartState);
       dialog.controller = this;
       this.dialogs.set(dialogName, dialog);
     }
@@ -79,6 +75,9 @@ export async function maybeStartTutorialOnActivate() {
   const tutorialDialog = dialogController.getDialog('tutorial');
   const firstNode = tutorialDialog.getCurrentNode();
 
+  // [debugging]
+  await tutorialDialog.clear();
+
   if (firstNode?.end) {
     return;
   }
@@ -89,25 +88,25 @@ export async function maybeStartTutorialOnActivate() {
       tutorialDialog.setState('cancel');
     }
     else if (confirmResult) {
-      dialogController.startDialog('tutorial');  
+      tutorialDialog.start();  
     }
   }
   else {
-    dialogController.startDialog('tutorial');
+    tutorialDialog.start();
   }
 }
 
 export async function maybeStartSurvey1OnActivate() {
-  const surveyDialog = dialogController.getDialog('survey1');
+  const surveyDialog = dialogController.getDialog('survey1', 'waitToStart');
   const firstNode = surveyDialog.getCurrentNode();
   
-  // // for debugging
-  // await getOrCreateProjectManager().progressLogController.reset();
-  // await surveyDialog.clear();
+  // [debugging]
+  await getOrCreateProjectManager().progressLogController.reset();
+  await surveyDialog.clear();
 
   if (firstNode?.end) {
     return;
   }
 
-  dialogController.startDialog('survey1', 'waitToStart');
+  surveyDialog.start();
 }

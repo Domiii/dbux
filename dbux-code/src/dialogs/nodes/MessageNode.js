@@ -1,5 +1,4 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import isEmpty from 'lodash/isEmpty';
 import DialogNode from './DialogNode';
 import { showInformationMessage } from '../../codeUtil/codeModals';
 
@@ -17,13 +16,7 @@ export default class MessageNode extends DialogNode {
 
     const text = await dialog.maybeGetByFunction(node.text, node);
     const buttons = await dialog.makeButtonsByEdges(node, edges, nodeName);
-    if (isEmpty(buttons)) {
-      showInformationMessage(text, buttons).catch(logError);
-      return null;
-    }
-    else {
-      const edgeData = await showInformationMessage(text, buttons);      
-      return edgeData;
-    }
+    const edgeData = await showInformationMessage(text, buttons);      
+    return edgeData;
   }
 }

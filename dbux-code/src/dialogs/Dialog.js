@@ -17,7 +17,7 @@ export class Dialog {
    * @type {DialogController}
    */
   controller;
-  constructor(graph) {
+  constructor(graph, defaultStartState) {
     this.graph = graph;
     this.mementoKeyName = `dbux.dialog.${graph.name}`;
     this.graphState = null;
@@ -25,7 +25,8 @@ export class Dialog {
     this._resume = null;
     this._gotoState = null;
     this._isActive = false;
-    this.load();
+    this._version = 0;
+    this.load(defaultStartState);
 
     if (!this.getNode('cancel')) {
       throw new Error(`Dialog ${graph.name} needs to contain a cancel state`);
@@ -37,11 +38,11 @@ export class Dialog {
   // ###########################################################################
 
   start(startState) {
-    if (!this._isActive) {
-      _errWrap(this._start.bind(this))(startState);
-    }
-    else if (this._resume) {
+    if (this._resume) {
       _errWrap(this.resume.bind(this))((startState));
+    }
+    else {
+      _errWrap(this._start.bind(this))(startState);
     }
   }
 
@@ -50,7 +51,7 @@ export class Dialog {
       this.setState(startState);
     }
 
-    const firstNode = this.getNode(this.graphState.nodeName || 'start');
+    const firstNode = this.getNode(this.graphState.nodeName);
 
     if (firstNode.end) {
       const confirmResult = await this.askToRestart();
@@ -64,6 +65,7 @@ export class Dialog {
     }
 
     this._isActive = true;
+    const version = ++this._version;
     while (this.graphState.nodeName !== null) {
       Verbose && debug(`current state: ${this.graphState.nodeName}`);
 
@@ -82,6 +84,9 @@ export class Dialog {
       }
       else {
         const edgeData = await NodeClass.render(this, node);
+        if (version !== this._version) {
+          return;
+        }
         if (edgeData) {
           await edgeData.edge.click?.(...this._getUserCbArguments(node));
           nextState = await this.maybeGetByFunction(edgeData.edge.node, node) || nodeName;
@@ -269,15 +274,11 @@ export class Dialog {
   /**
    * @param {string} [startState] if given, overrides the current state
    */
-  load(startState) {
+  load(defaultStartState = 'start') {
     const { graphState, stack } = get(this.mementoKeyName, {
-      graphState: { nodeName: 'start', stateStartTime: Date.now(), data: {} },
+      graphState: { nodeName: defaultStartState, stateStartTime: Date.now(), data: {} },
       stack: []
     });
-
-    if (startState) {
-      this._setState(startState);
-    }
 
     this.graphState = graphState;
     this.stack = stack;
