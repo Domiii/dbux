@@ -1,14 +1,13 @@
 /* eslint-disable max-len */
 import { env, Uri } from 'vscode';
-import sleep from '@dbux/common/src/util/sleep';
 import { showHelp } from '../help';
 import DialogNodeKind from './DialogNodeKind';
 
-async function waitAtMost({ stateStartTime }, delaySeconds) {
-  const delay = delaySeconds * 1000;
-  const timePassed = Date.now() - stateStartTime;
-  return sleep(delay - timePassed);
-}
+// async function waitAtMost({ stateStartTime }, delaySeconds) {
+//   const delay = delaySeconds * 1000;
+//   const timePassed = Date.now() - stateStartTime;
+//   return sleep(delay - timePassed);
+// }
 
 const tutorial = {
   name: 'tutorial',
@@ -128,9 +127,9 @@ Do you want to watch the video that guides you through this first bug?`,
     bugWait: {
       kind: DialogNodeKind.Message,
       text: `For our simple tutorial, we prepared example code (with a bug in it) for you to try out some of Dbux's features.`,
-      async enter(graphState) {
+      async enter(graphState, stack, { waitAtMost }) {
         const delay = 24 * 60 * 60;  // wait a day
-        return waitAtMost(graphState, delay);
+        return waitAtMost(delay);
       },
       edges: [
         {
@@ -176,6 +175,10 @@ Do you want to watch the video that guides you through this first bug?`,
       text: 'Have fun! (Btw: You can press ESC to close this message)'
     },
     endSilent: {
+      end: true,
+      kind: DialogNodeKind.None
+    },
+    cancel: {
       end: true,
       kind: DialogNodeKind.None
     }

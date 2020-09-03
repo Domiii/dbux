@@ -19,7 +19,7 @@ import { initLogging } from './logging';
 import { initGraphView } from './graphView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { initInstallId } from './installId';
-import dialogController from './dialogs/dialogController';
+import { maybeStartTutorialOnActivate } from './dialogs/dialogController';
 import { installDbuxDependencies } from './codeUtil/installUtil';
 
 // eslint-disable-next-line no-unused-vars
@@ -90,8 +90,8 @@ async function activate(context) {
 
     // for now, let's activate the graph view right away
     initGraphView();
-
-    dialogController.startDialog('tutorial');
+    
+    await maybeStartTutorialOnActivate();
   } catch (e) {
     logError('could not activate', e.stack);
     debugger;

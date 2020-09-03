@@ -3,6 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import sleep from '@dbux/common/src/util/sleep';
 import { get, set } from '../memento';
 import _nodeRegistry from './nodes/_nodeRegistry';
+import { showInformationMessage } from '../codeUtil/codeModals';
 
 /** @typedef {import('./dialogController').DialogController} DialogController */
 
@@ -19,10 +20,14 @@ export class Dialog {
     this.mementoKeyName = `dbux.dialog.${graph.name}`;
     this.graphState = null;
     this.stack = null;
-    this.resume = null;
+    this._resume = null;
     this._gotoState = null;
     this._isActive = false;
     this.load();
+
+    if (!this.getNode('cancel')) {
+      throw new Error(`Dialog ${graph.name} needs to contain a cancel state`);
+    }
   }
 
   // ###########################################################################
@@ -34,20 +39,26 @@ export class Dialog {
       _errWrap(this._start.bind(this))(startState);
     }
     else if (this._resume) {
-      const r = this._resume;
-      this._resume = null;
-      r(startState);
+      _errWrap(this.resume.bind(this))((startState));
     }
   }
 
   async _start(startState) {
     // for debugging
-    await this.clear();
-    this.load(startState);
+    // await this.clear();
+    // this.load(startState);
 
-    if (this.getNode(this.graphState.nodeName).end) {
-      // skip if already reach end
-      return;
+    const firstNode = this.getNode(this.graphState.nodeName);
+
+    if (firstNode.end) {
+      const confirmResult = await this.askToRestart();
+      if (confirmResult) {
+        // this.controller.startDialog(this.graph.name, startState);
+        this._setState(startState || 'start');
+      }
+      else {
+        return;
+      }
     }
 
     this._isActive = true;
@@ -55,9 +66,9 @@ export class Dialog {
       debug(`current state: ${this.graphState.nodeName}`);
 
       const node = this.getNode(this.graphState.nodeName);
-      const NodeClass = _nodeRegistry[node.kind];
+      const NodeClass = this.getNodeClass(node);
 
-      await node.enter?.(...this.getUserCbArguments(node));
+      await node.enter?.(...this._getUserCbArguments(node));
 
       let nextState, edgeLabel;
       if (this._gotoState) {
@@ -72,11 +83,11 @@ export class Dialog {
 
       this.stack.push({ name: this.graphState.nodeName, edgeLabel });
       if (!node.end) {
-        this.graphState.nodeName = nextState;
-        this.graphState.stateStartTime = Date.now();
+        this._setState(nextState);
       }
       else {
         await this.graph.onEnd?.(getRecordedData(this));
+        await this.save();
         break;
       }
 
@@ -90,6 +101,32 @@ export class Dialog {
 
   getRecordedData() {
     return getRecordedData(this);
+  }
+
+  setState(nodeName) {
+    if (this._isActive) {
+      throw new Error('Cannot set graphState when dialog is active');
+    }
+    this._setState(nodeName);
+  }
+
+  getNode(nodeName) {
+    if (!nodeName) {
+      return null;
+    }
+    const node = this.graph.nodes[nodeName];
+    if (!node) {
+      throw new Error(`DialogNode '${nodeName}' not exist`);
+    }
+    return node;
+  }
+
+  getNodeClass(node) {
+    return _nodeRegistry[node.kind];
+  }
+
+  getCurrentNode() {
+    return this.getNode(this.graphState.nodeName);
   }
 
   // ###########################################################################
@@ -117,9 +154,13 @@ export class Dialog {
     waitAtMost: async (delaySeconds) => {
       const delay = delaySeconds * 1000;
       const timePassed = Date.now() - this.graphState.stateStartTime;
-      return Promise.race(sleep(delay - timePassed), new Promise(resolve => {
+      return Promise.race([sleep(delay - timePassed), new Promise(resolve => {
         this._resume = resolve;
-      }));
+      })]).then(() => {
+        this._resume = null;
+        log('Promist.race in waitAtMost resolved!');
+        debugger;
+      });
     },
 
     getRecordedData: this.getRecordedData.bind(this),
@@ -139,7 +180,7 @@ export class Dialog {
 
   async maybeGetByFunction(valueOrFunction, node) {
     if (isFunction(valueOrFunction)) {
-      return await valueOrFunction(...this.getUserCbArguments(node));
+      return await valueOrFunction(...this._getUserCbArguments(node));
     }
     else {
       return valueOrFunction;
@@ -153,7 +194,7 @@ export class Dialog {
     const buttonEntries = await Promise.all(availableEdges.map(async (edge) => {
       const edgeLabel = await this.maybeGetByFunction(edge.text, node);
       const clickCB = async () => {
-        await edge.click?.(...this.getUserCbArguments(node));
+        await edge.click?.(...this._getUserCbArguments(node));
         return { nodeName: await this.maybeGetByFunction(edge.node, node) || defaultState, edgeLabel };
       };
       return [edgeLabel, clickCB];
@@ -162,16 +203,63 @@ export class Dialog {
     return Object.fromEntries(buttonEntries);
   }
 
-  getUserCbArguments(node) {
+  async resume(startState) {
+    if (this._resume) {
+      const confirmResult = await this.askToResume(startState || this.graphState.nodeName);
+      if (confirmResult) {
+        const r = this._resume;
+        this._resume = null;
+        r(confirmResult);
+      }
+    }
+  }
+
+  /**
+   * Used when dialog starts if survey is done
+   */
+  async askToRestart() {
+    return await showInformationMessage(`You have done this already. Do you want to restart?`, {
+      'Yes, restart it'() {
+        return true;
+      },
+      'No'() {
+        return false;
+      }
+    });
+  }
+
+  /**
+   * Used before dialog starts if survey is unfinished
+   */
+  async askToContinue() {
+    return await showInformationMessage(`You have unfinished dialog ${this.graph.name}, would you like to continue?`, {
+      'Continue'() {
+        return true;
+      },
+      'Don\'t ask me again'() {
+        return false;
+      }
+    });
+  }
+
+  async askToResume(startState) {
+    return await showInformationMessage(`You have unfinished dialog ${this.graph.name}, would you like to continue or start over?`, {
+      'Continue'() {
+        return startState;
+      },
+      'Start over'() {
+        return 'start';
+      }
+    });
+  }
+
+  _getUserCbArguments(node) {
     return [this.graphState, this.stack, this.actions, node];
   }
 
-  getNode(nodeName) {
-    const node = this.graph.nodes[nodeName];
-    if (!node) {
-      throw new Error(`DialogNode '${nodeName}' not exist`);
-    }
-    return node;
+  _setState(nodeName) {
+    this.graphState.nodeName = nodeName;
+    this.graphState.stateStartTime = Date.now();
   }
 
   // ###########################################################################

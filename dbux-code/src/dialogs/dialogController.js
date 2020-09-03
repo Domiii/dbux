@@ -4,6 +4,7 @@ import { Dialog } from './Dialog';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
 import { getInstallId } from '../installId';
 import { setDialogControllerForDefaultHelp } from '../help';
+import DialogNodeKind from './DialogNodeKind';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -17,6 +18,11 @@ export class DialogController {
     setDialogControllerForDefaultHelp(this);
   }
 
+  /**
+   * Start a dialog, will create one if not exist
+   * @param {string} dialogName 
+   * @param {number} [startState] 
+   */
   startDialog(dialogName, startState) {
     let dialog = this.getDialog(dialogName);
     if (!dialog) {
@@ -27,8 +33,18 @@ export class DialogController {
     dialog.start(startState);
   }
 
+  /**
+   * @param {string} dialogName 
+   * @return {Dialog}
+   */
   getDialog(dialogName) {
-    return this.dialogs.get(dialogName);
+    let dialog = this.dialogs.get(dialogName);
+    if (!dialog) {
+      dialog = new Dialog(this.graphs.get(dialogName));
+      dialog.controller = this;
+      this.dialogs.set(dialogName, dialog);
+    }
+    return dialog;
   }
 
   // ###########################################################################
@@ -63,3 +79,25 @@ export class DialogController {
 const dialogController = new DialogController();
 
 export default dialogController;
+
+export async function maybeStartTutorialOnActivate() {
+  const tutorialDialog = dialogController.getDialog('tutorial');
+  const firstNode = tutorialDialog.getCurrentNode();
+
+  if (firstNode.end) {
+    return;
+  }
+
+  if (firstNode.kind === DialogNodeKind.Modal) {
+    const confirmResult = await tutorialDialog.askToContinue();
+    if (confirmResult === false) {
+      tutorialDialog.setState('cancel');
+    }
+    else if (confirmResult) {
+      dialogController.startDialog('tutorial');  
+    }
+  }
+  else {
+    dialogController.startDialog('tutorial');
+  }
+}
