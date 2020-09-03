@@ -44,9 +44,9 @@ export class Dialog {
   }
 
   async _start(startState) {
-    // for debugging
-    // await this.clear();
-    // this.load(startState);
+    if (startState) {
+      this.setState(startState);
+    }
 
     const firstNode = this.getNode(this.graphState.nodeName);
 
@@ -158,8 +158,6 @@ export class Dialog {
         this._resume = resolve;
       })]).then(() => {
         this._resume = null;
-        log('Promist.race in waitAtMost resolved!');
-        debugger;
       });
     },
 

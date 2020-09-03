@@ -142,7 +142,7 @@ Do you want to watch the video that guides you through this first bug or do you 
       edges: [
         {
           text: 'I\'ll try',
-          node: 'bugFeedbackQuery'
+          node: 'end'
         },
         {
           text: 'Maybe later',
@@ -170,32 +170,6 @@ Do you want to watch the video that guides you through this first bug or do you 
         {
           text: 'I\'ll try that!',
           node: 'bug11'
-        }
-      ]
-    },
-
-    // ###########################################################################
-    // feedback
-    // ###########################################################################
-
-    bugFeedbackQuery: {
-      kind: DialogNodeKind.Message,
-      // async enter(graphState) {
-      //   return Promise.race([
-      //     waitUntilBugFinished(),
-      //     waitAtMost(graphState, 20 * 60)
-      //   ]);
-      // },
-      async text() {
-        return `Can we ask you 5 short questions for an anonymous survey?`;
-      },
-      edges: [
-        {
-          text: 'Ok, but hurry!',
-          async click(currentState, stack, { startDialog }) {
-            startDialog('survey1', 'q1');
-          },
-          node: 'endSilent'
         }
       ]
     },

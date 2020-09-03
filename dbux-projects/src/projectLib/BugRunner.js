@@ -1,6 +1,4 @@
 import NanoEvents from 'nanoevents';
-import path from 'path';
-import fs from 'fs';
 import sh from 'shelljs';
 import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -142,7 +140,7 @@ export default class BugRunner {
   /**
    * @return {Bug}
    */
-  async getPreviousBug() {
+  getPreviousBug() {
     let previousBugInformation = this.manager.externals.storage.get(activatedBugKeyName);
 
     if (previousBugInformation) {
@@ -150,7 +148,7 @@ export default class BugRunner {
 
       let previousProject = this.manager.getOrCreateDefaultProjectList().getByName(projectName);
 
-      if (await previousProject.isProjectFolderExists()) {
+      if (previousProject.isProjectFolderExists()) {
         return previousProject.getOrLoadBugs().getById(bugId);
       }
     }
@@ -217,7 +215,7 @@ export default class BugRunner {
     // do whatever it takes (usually: `activateProject` -> `git checkout`)
 
     try {
-      let previousBug = await this.getPreviousBug();
+      let previousBug = this.getPreviousBug();
 
       if (bug !== previousBug) {
         if (previousBug) {
@@ -269,6 +267,7 @@ export default class BugRunner {
           this.manager.askForSubmit();
         }
         project.logger.log(`Result:`, result);
+        this._emitter.emit('testFinished', bug, result);
         return result;
       }
     }

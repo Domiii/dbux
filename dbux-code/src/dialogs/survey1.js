@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { env, Uri, window } from 'vscode';
+import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { showHelp } from '../help';
 import DialogNodeKind from './DialogNodeKind';
@@ -22,7 +23,55 @@ async function storeResultsTest(data) {
 }
 
 async function clearResults() {
-  return this.storeResults(null);
+  return storeResults(null);
+}
+
+// ###########################################################################
+// util for waitToStart
+// ###########################################################################
+
+async function waitForBugSolved(bug) {
+  const projectManager = getOrCreateProjectManager();
+  return new Promise((r) => {
+    const bugstatus = projectManager.progressLogController.util.getBugProgressByBug(bug)?.status;
+    if (BugStatus.is.Solved(bugstatus)) {
+      r();
+    }
+    else {
+      const unbind = projectManager.onTestFinished((testBug, result) => {
+        if (testBug === bug && result.code === 0) {
+          r();
+          unbind();
+        }
+      });
+    }
+  });
+}
+
+async function waitForBugFailedNTimes(bug, n) {
+  const projectManager = getOrCreateProjectManager();
+  return new Promise((r) => {
+    // wait for first bug failed three times
+    let failedTestRuns = projectManager.progressLogController.util.getTestRunsByBug(bug).filter((testRun) => {
+      return testRun.nFailedTests > 0;
+    });
+    if (failedTestRuns.length >= n) {
+      r();
+    }
+    else {
+      const unbind = projectManager.onTestFinished((testBug/* , result */) => {
+        if (testBug === bug) {
+          failedTestRuns = projectManager.progressLogController.util.getTestRunsByBug(bug).filter((testRun) => {
+            return testRun.nFailedTests > 0;
+          });
+          if (failedTestRuns.length >= n) {
+            r();
+            unbind();
+          }
+        }
+      });
+    }
+  });
 }
 
 // ###########################################################################
@@ -101,6 +150,28 @@ const survey1 = {
   // ###########################################################################
 
   nodes: {
+    waitToStart: {
+      kind: DialogNodeKind.Message,
+      async enter(graphState, stack, { waitAtMost }) {
+        const waitDelay = 2 * 60 * 60;
+        const projectManager = getOrCreateProjectManager();
+        const firstBug = projectManager.projects.getByName('express').getOrLoadBugs().getById(1);
+        return Promise.race([
+          waitForBugSolved(firstBug),
+          waitAtMost(waitDelay),
+          waitForBugFailedNTimes(firstBug, 3)
+        ]);
+      },
+      async text() {
+        return `Can we ask you 5 short questions for an anonymous survey?`;
+      },
+      edges: [
+        {
+          text: 'Ok, but hurry!',
+          node: 'start'
+        }
+      ]
+    },
     start: {
       kind: DialogNodeKind.Modal,
       text: `Can we ask you 5 short questions (related to Debugging and your first impressions of Dbux)?`,
@@ -333,8 +404,7 @@ ${data.email || ''}`;
     continueLater: {
       text: `Do you want to continue our survey? (You are almost done)`,
       async enter(currentState, stack, { goTo, waitAtMost }) {
-        // const waitTime = 24 * 60 * 60;
-        const waitTime = 30;
+        const waitTime = 24 * 60 * 60;
         await waitAtMost(waitTime);
 
         const previousState = stack[stack.length - 1];

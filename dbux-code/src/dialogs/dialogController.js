@@ -103,3 +103,18 @@ export async function maybeStartTutorialOnActivate() {
     dialogController.startDialog('tutorial');
   }
 }
+
+export async function maybeStartSurvey1OnActivate() {
+  const surveyDialog = dialogController.getDialog('survey1');
+  const firstNode = surveyDialog.getCurrentNode();
+  
+  // // for debugging
+  // await getOrCreateProjectManager().progressLogController.reset();
+  // await surveyDialog.clear();
+
+  if (firstNode.end) {
+    return;
+  }
+
+  dialogController.startDialog('survey1', 'waitToStart');
+}

@@ -43,6 +43,9 @@ export default class ProjectsManager {
    * @type {ProjectList}
    */
   projects;
+  /**
+   * @type {BugRunner}
+   */
   runner;
   /**
    * @type {BackendController}
@@ -414,5 +417,9 @@ export default class ProjectsManager {
       this._terminalWrapper?.cancel();
       this._terminalWrapper = null;
     }
+  }
+
+  onTestFinished(cb) {
+    return this.runner._emitter.on('testFinished', cb);
   }
 }
