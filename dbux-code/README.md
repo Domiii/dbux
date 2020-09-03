@@ -159,8 +159,8 @@ Here are all the buttons:
 
 <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/previousChildContext.png" title="previousChildContext" height="24px" width="24px" style="background-color: #1A1A1A"> <img src="https://domiii.github.io/dbux/dbux-code/resources/dark/nextChildContext.png" title="nextChildContext" height="24px" width="24px" style="background-color: #1A1A1A"> `Go to previous/next function call in context`
 
-* Jump to previous/next *traced* function call <span style="color:red">↱</span> before/after the currently selected trace.
-   * Note that library or native calls <span style="color:gray">↱</span> are not traced and thus will be skipped by this button.
+* Jump to previous/next *traced* function call (red <span style="color:red">↱</span>) before/after the currently selected trace.
+   * Note that library or native calls (gray <span style="color:gray">↱</span>) are not traced and thus will be skipped by this button.
 * When pressed again, steps into that function (aka [context](https://github.com/Domiii/dbux/tree/master/#context) aka "child context of this context").
 * NOTE: Things might be a bit off in case of [getters and setters](https://www.w3schools.com/js/js_object_accessors.asp)
    * Getters and setters work, but navigation is a bit less intuitive.
@@ -199,7 +199,7 @@ If your currently selected trace is an expression with a value that is `!== unde
 You can investigate further by clicking on the "Value" node.
 
 Further reading:
-   * You might want to read up on Dbux's [value limitations and problems](https://github.com/Domiii/dbux/tree/master/#problems-with-values).
+   * Dbux's [value limitations and problems](https://github.com/Domiii/dbux/tree/master/#problems-with-values).
 
 ![value](https://domiii.github.io/dbux/docs/img/values.gif)
 
