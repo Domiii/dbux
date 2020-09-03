@@ -12,7 +12,6 @@ This page explains the dbux-code extension and how to use it. For more general i
 - [Usage](#usage)
 - ["Run with Dbux" and "Debug with Dbux"](#run-with-dbux-and-debug-with-dbux)
   - [How the Run + Debug buttons work](#how-the-run--debug-buttons-work)
-  - [Dbux Runtime Server](#dbux-runtime-server)
 - [Analysis Features](#analysis-features)
   - [Applications](#applications)
   - [Code decorations](#code-decorations)
@@ -35,6 +34,7 @@ This page explains the dbux-code extension and how to use it. For more general i
 - [Practice debugging with "Dbux Practice"](#practice-debugging-with-dbux-practice)
 - [Commands](#commands)
 - [Configuration](#configuration)
+- [Dbux Runtime Server](#dbux-runtime-server)
 - [How does Dbux work](#how-does-dbux-work)
 
 # Introduction w/ Examples
@@ -84,9 +84,6 @@ The "Debug with Dbux" button does the same thing as the Run button but with `--i
 * When you click either button (or use the "*Dbux: Run/Debug current file*" commands), what happens is: [@dbux/cli](https://github.com/Domiii/dbux/tree/master/dbux-cli) runs the currently open JS file (with the [@dbux/runtime](https://github.com/Domiii/dbux/tree/master/dbux-runtime) injected), tracing and recording runtime information as it executes.
 * You can configure both buttons in your workspace or user settings. See [Configuration](#configuration) for more details.
 * NOTE: Dbux architectural details are explained [here](https://github.com/Domiii/dbux/tree/master/#dbux-architecture).
-
-
-## Dbux Runtime Server
 
 TODO: explain more
 
@@ -403,6 +400,14 @@ These are all currently supported configuration parameters (mostly for the "Run 
 | dbux.debug.env         | object | {}                                                | Custom program environment variables available via `process.env` (probably not working yet).                                                                              |
 
 <!-- dbux:codeConfig end -->
+
+
+
+# Dbux Runtime Server
+
+The 📡 runtime server is hosted by the Dbux VSCode extension to receive runtime data reported by @dbux/runtime. It automatically turns on the first time you start using Dbux from the extension GUI.
+
+If you want to invoke Dbux independently, make sure to press the button in the "Applications" view to start the server (if not started already).
 
 # How does Dbux work
 
