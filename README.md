@@ -22,33 +22,33 @@ We recommend getting started with Dbux by playing around with the [Dbux VSCode e
 
 This page covers more broad topics related to the Dbux project:
 
-1. [Introduction](#introduction)
-2. [Getting Started](#getting-started)
-3. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
-4. [Which files will be traced?](#which-files-will-be-traced)
-5. [Performance](#performance)
-6. [Known Limitations](#known-limitations)
-   1. [async/await](#asyncawait)
-   2. [Loops](#loops)
-   3. [Other Syntax Limitations](#other-syntax-limitations)
-   4. [Problems with Values](#problems-with-values)
-   5. [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
-   6. [Heisenbugs](#heisenbugs)
-   7. [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
-   8. [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
-   9. [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
-   10. [Issues on Windows](#issues-on-windows)
-7. [Dbux Data Analysis](#dbux-data-analysis)
-8. [Dbux Architecture](#dbux-architecture)
-   1. [Call Graph GUI Implementation](#call-graph-gui-implementation)
-9. [Terminology](#terminology)
-   1. [Trace and Static Trace](#trace-and-static-trace)
-   2. [Context and Static Context](#context-and-static-context)
-   3. [Run](#run)
-   4. [Call Graph](#call-graph)
-      1. [Asynchronous Call Graph](#asynchronous-call-graph)
-10. [How is Dbux being used?](#how-is-dbux-being-used)
-11. [Development + Contributions](#development--contributions)
+- [Introduction](#introduction)
+- [Getting Started](#getting-started)
+- [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
+- [Which files will be traced?](#which-files-will-be-traced)
+- [Performance](#performance)
+- [Known Limitations](#known-limitations)
+  - [async/await](#asyncawait)
+  - [Loops](#loops)
+  - [Other Syntax Limitations](#other-syntax-limitations)
+  - [Problems with Values](#problems-with-values)
+  - [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
+  - [Heisenbugs](#heisenbugs)
+  - [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
+  - [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
+  - [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
+  - [Issues on Windows](#issues-on-windows)
+- [Dbux Data Analysis](#dbux-data-analysis)
+- [Dbux Architecture](#dbux-architecture)
+  - [Call Graph GUI Implementation](#call-graph-gui-implementation)
+- [Terminology](#terminology)
+  - [Trace and Static Trace](#trace-and-static-trace)
+  - [Context and Static Context](#context-and-static-context)
+  - [Run](#run)
+  - [Call Graph](#call-graph)
+    - [Asynchronous Call Graph](#asynchronous-call-graph)
+- [How is Dbux being used?](#how-is-dbux-being-used)
+- [Development + Contributions](#development--contributions)
 
 
 # Adding Dbux to your build pipeline
@@ -313,11 +313,11 @@ TODO
 
 # How is Dbux being used?
 
-* dbux-practice (still in development) aims to make it very easy for anyone to practice/improve their debugging skills by training on real-world bugs in commonly used open source software.
+* [dbux-practice](dbux-projects#readme) (still in development) aims to make it very easy for anyone to practice/improve their debugging skills by training on real-world bugs in pre-configured environments featuring popular open source software.
 * This [proxy-play](https://github.com/Domiii/proxy-play) experiment acts as a proxy to inject Dbux into all scripts of any website, before they execute in the browser, thereby allowing to analyze any website's scripts with Dbux.
 
 
-(NOTE: Dbux only went public on 2020/8/31. We expect this list to grow over time.)
+(NOTE: Dbux only went public in Sept 2020. We expect this list to grow over time.)
 
 
 # Development + Contributions

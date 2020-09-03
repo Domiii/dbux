@@ -5,9 +5,6 @@
 /* eslint-disable import/first */
 /* eslint-disable global-require,import/first,import/no-extraneous-dependencies */
 
-import fs from 'fs';
-import path from 'path';
-import sh from 'shelljs';
 import { isPlainObject } from 'lodash';
 import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -67,7 +64,7 @@ export class Db {
     // eslint-disable-next-line camelcase
     const _req = __non_webpack_require__;
     // const _req = require;
-    debug(`require ${target}...`);
+    debug(`requiring ${target}...`);
     return _req(target);
   }
 
@@ -78,10 +75,11 @@ export class Db {
    */
   requireFirebase() {
     try {
-      // const moduleName = ;
-      const { getResourcePath } = this.backendController.practiceManager.externals.resources;
+      // NOTE: a lot of failed experiments: unsuccessfully trying to get firebase to work without having to npm install it
 
-      // NOTE: a lot of failed experiments, trying to get firebase to work without having to npm install it
+      // const moduleName = ;
+      // const { getResourcePath } = this.backendController.practiceManager.externals.resources;
+
       // let dir = getResourcePath('dist', 'node_modules', 'firebase');
       // let dir = getResourcePath('firebase');
       // dir = fs.realpathSync(dir);
@@ -101,8 +99,8 @@ export class Db {
       // this._req(`${dir}/firestore/dist/index.cjs.js`);
       
       const _firebase = this._req(`firebase`);
-      require('firebase/auth');
-      require('firebase/firestore');
+      this._req('firebase/auth');
+      this._req('firebase/firestore');
 
       return _firebase;
     }

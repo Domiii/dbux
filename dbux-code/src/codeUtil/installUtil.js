@@ -17,7 +17,7 @@ export async function installDbuxDependencies() {
   if (!projectManager.hasInstalledSharedDependencies()) {
     await runTaskWithProgressBar(async (progress) => {
       showOutputChannel();
-      progress.report({ message: 'Installing Dbux dependencies (1-2 mins)...' });
+      progress.report({ message: 'New Dbux installation. Getting dependencies (1-3 mins)...' });
       await projectManager.installDependencies();
     }, { cancellable: false });
   }

@@ -8,7 +8,8 @@ class GraphRoot extends ClientComponentEndpoint {
       <div class="graph-root">
         <div data-el="graphCont" class="graph-cont">
           <div data-el="body" class="body flex-column">
-            <h3 data-el="title"></h3>
+            <h4>Applications:</h4>
+            <pre data-el="applications"></pre>
             <div>
               <button data-el="nodeToggleBtn" class="nodeToggleBtn"></button>
             </div>
@@ -39,10 +40,10 @@ class GraphRoot extends ClientComponentEndpoint {
   update() {
     const { applications } = this.state;
     if (applications?.length) {
-      this.els.title.textContent = `${applications.map(app => app.name).join(', ')}`;
+      this.els.applications.textContent = ` ${applications.map(app => app.name).join('\n ')}`;
     }
     else {
-      this.els.title.textContent = '(no applications selected)';
+      this.els.applications.textContent = '(no applications selected)';
     }
   }
 
