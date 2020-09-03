@@ -22,8 +22,8 @@ export default class MessageNode extends DialogNode {
       return null;
     }
     else {
-      const result = await showInformationMessage(text, buttons);
-      return result;
+      const edgeData = await showInformationMessage(text, buttons);      
+      return edgeData;
     }
   }
 }

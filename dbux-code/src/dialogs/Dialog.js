@@ -7,6 +7,8 @@ import { showInformationMessage } from '../codeUtil/codeModals';
 
 /** @typedef {import('./dialogController').DialogController} DialogController */
 
+const Verbose = false;
+
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Dialog');
 
@@ -48,7 +50,7 @@ export class Dialog {
       this.setState(startState);
     }
 
-    const firstNode = this.getNode(this.graphState.nodeName);
+    const firstNode = this.getNode(this.graphState.nodeName || 'start');
 
     if (firstNode.end) {
       const confirmResult = await this.askToRestart();
@@ -63,36 +65,49 @@ export class Dialog {
 
     this._isActive = true;
     while (this.graphState.nodeName !== null) {
-      debug(`current state: ${this.graphState.nodeName}`);
+      Verbose && debug(`current state: ${this.graphState.nodeName}`);
 
-      const node = this.getNode(this.graphState.nodeName);
+      const { nodeName } = this.graphState;
+      const node = this.getNode(nodeName);
       const NodeClass = this.getNodeClass(node);
 
       await node.enter?.(...this._getUserCbArguments(node));
 
       let nextState, edgeLabel;
       if (this._gotoState) {
+        // handle goTo passed to enter
         nextState = this._gotoState;
+        edgeLabel = null;
         this.gotoState = null;
       }
       else {
-        const result = await NodeClass.render(this, node);
-        nextState = result?.nodeName || null;
-        edgeLabel = result?.edgeLabel || null;
+        const edgeData = await NodeClass.render(this, node);
+        if (edgeData) {
+          await edgeData.edge.click?.(...this._getUserCbArguments(node));
+          nextState = await this.maybeGetByFunction(edgeData.edge.node, node) || nodeName;
+          edgeLabel = edgeData.edgeLabel;
+        }
+        else {
+          nextState = null;
+          edgeLabel = null;
+        }
       }
 
-      this.stack.push({ name: this.graphState.nodeName, edgeLabel });
+      this.stack.push({ name: nodeName, edgeLabel });
+
       if (!node.end) {
-        this._setState(nextState);
+        if (nextState) {
+          this._setState(nextState);
+        }
+        else {
+          // nextState === null means user dismiss the message box, we got no response
+          break;
+        }
       }
       else {
         await this.graph.onEnd?.(getRecordedData(this));
         await this.save();
         break;
-      }
-
-      if (this.graphState.nodeName !== null) {
-        await this.save();
       }
     }
 
@@ -185,17 +200,14 @@ export class Dialog {
     }
   }
 
-  async makeButtonsByEdges(node, edges, defaultState = null) {
+  async makeButtonsByEdges(node, edges) {
     const availableEdges = (await Promise.all(edges.map((e) => {
       return this.maybeGetByFunction(e, node);
     }))).filter(x => !!x);
+
     const buttonEntries = await Promise.all(availableEdges.map(async (edge) => {
       const edgeLabel = await this.maybeGetByFunction(edge.text, node);
-      const clickCB = async () => {
-        await edge.click?.(...this._getUserCbArguments(node));
-        return { nodeName: await this.maybeGetByFunction(edge.node, node) || defaultState, edgeLabel };
-      };
-      return [edgeLabel, clickCB];
+      return [edgeLabel, () => ({ edge, edgeLabel })];
     }));
 
     return Object.fromEntries(buttonEntries);
@@ -203,12 +215,9 @@ export class Dialog {
 
   async resume(startState) {
     if (this._resume) {
-      const confirmResult = await this.askToResume(startState || this.graphState.nodeName);
-      if (confirmResult) {
-        const r = this._resume;
-        this._resume = null;
-        r(confirmResult);
-      }
+      const r = this._resume;
+      this._resume = null;
+      r(startState || this.graphState.nodeName);
     }
   }
 
@@ -240,17 +249,6 @@ export class Dialog {
     });
   }
 
-  async askToResume(startState) {
-    return await showInformationMessage(`You have previously started ${this.graph.name}, would you like to continue or start over?`, {
-      'Continue'() {
-        return startState;
-      },
-      'Start over'() {
-        return 'start';
-      }
-    });
-  }
-
   _getUserCbArguments(node) {
     return [this.graphState, this.stack, this.actions, node];
   }
@@ -278,7 +276,7 @@ export class Dialog {
     });
 
     if (startState) {
-      graphState.nodeName = startState;
+      this._setState(startState);
     }
 
     this.graphState = graphState;
