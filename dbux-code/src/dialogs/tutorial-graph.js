@@ -3,12 +3,6 @@ import { env, Uri } from 'vscode';
 import { showHelp } from '../help';
 import DialogNodeKind from './DialogNodeKind';
 
-// async function waitAtMost({ stateStartTime }, delaySeconds) {
-//   const delay = delaySeconds * 1000;
-//   const timePassed = Date.now() - stateStartTime;
-//   return sleep(delay - timePassed);
-// }
-
 const tutorial = {
   name: 'tutorial',
 
@@ -111,7 +105,7 @@ Do you want to watch the video that guides you through this first bug?`,
       edges: [
         {
           text: 'I\'ll try',
-          node: 'bugFeedbackQuery'
+          node: 'end'
         },
         {
           text: 'Maybe later',
@@ -135,32 +129,6 @@ Do you want to watch the video that guides you through this first bug?`,
         {
           text: 'I\'ll try that!',
           node: 'bug11'
-        }
-      ]
-    },
-
-    // ###########################################################################
-    // feedback
-    // ###########################################################################
-
-    bugFeedbackQuery: {
-      kind: DialogNodeKind.Message,
-      // async enter(graphState) {
-      //   return Promise.race([
-      //     waitUntilBugFinished(),
-      //     waitAtMost(graphState, 20 * 60)
-      //   ]);
-      // },
-      async text() {
-        return `Can we ask you 5 short questions for an anonymous survey?`;
-      },
-      edges: [
-        {
-          text: 'Ok, but hurry!',
-          async click(currentState, stack, { startDialog }) {
-            startDialog('survey1', 'q1');
-          },
-          node: 'endSilent'
         }
       ]
     },

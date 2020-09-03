@@ -19,7 +19,7 @@ import { initLogging } from './logging';
 import { initGraphView } from './graphView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { initInstallId } from './installId';
-import { maybeStartTutorialOnActivate } from './dialogs/dialogController';
+import { maybeStartTutorialOnActivate, maybeStartSurvey1OnActivate } from './dialogs/dialogController';
 import { installDbuxDependencies } from './codeUtil/installUtil';
 
 // eslint-disable-next-line no-unused-vars
@@ -92,6 +92,7 @@ async function activate(context) {
     initGraphView();
     
     await maybeStartTutorialOnActivate();
+    await maybeStartSurvey1OnActivate();
   } catch (e) {
     logError('could not activate', e.stack);
     debugger;
