@@ -16,7 +16,8 @@ showInformationMessage(value, {
  */
 export async function showInformationMessage(message, btnConfig = EmptyObject, messageCfg = EmptyObject, cancelCallback) {
   const buttons = Object.keys(btnConfig);
-  if (process.platform === 'darwin' && messageCfg.modal) {
+  if (messageCfg?.modal && process.platform === 'darwin') {
+    // for some reason, on MAC, modal buttons are reversed :(
     buttons.reverse();
   }
   const result = await window.showInformationMessage(message, messageCfg, ...buttons);

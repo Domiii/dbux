@@ -3,6 +3,18 @@ import { env, Uri } from 'vscode';
 import { showHelp } from '../help';
 import DialogNodeKind from './DialogNodeKind';
 
+// async function waitAtMost({ stateStartTime }, delaySeconds) {
+//   const delay = delaySeconds * 1000;
+//   const timePassed = Date.now() - stateStartTime;
+//   return sleep(delay - timePassed);
+// }
+
+const introMessage = `We prepared some example code (with a bug in it) for people to play around with Dbux's features. Do you want to try that?
+
+WARNING: Sometimes these tutorial messages might disappear!
+In that case, use the "Show Notifications" command, or the little notification bell (usually in the bottom right of VSCode) to bring it back up.
+You can restart the tutorial from "Dbux" -> "Applications" -> (?) Help button.`;
+
 const tutorial = {
   name: 'tutorial',
 
@@ -45,25 +57,30 @@ const tutorial = {
 
     bug10: {
       kind: DialogNodeKind.Modal,
-      text: `For our simple tutorial, we prepared example code (with a bug in it) for you to try out some of Dbux's features.`,
+      text: introMessage,
       edges: [
         {
-          text: 'I\'ll try that!',
+          text: 'Ok',
           node: 'bug11'
         }
       ]
     },
 
     bug11: {
-      kind: DialogNodeKind.Message,
-      text: `To run the buggy sample code: (1) Inside the Dbux sidebar, under "Practice", (2) open the "Express" node, and (3) then press the ▶️ play button next to the first bug.
-(You need to hover over the bug, for the button to show up. That is a VSCode problem.)`,
+      dontSave: true,
+      kind: DialogNodeKind.Modal,
+      text: `To run the buggy sample code:
+(1) Inside the Dbux sidebar, under "Practice", 
+(2) open the "Express" node, then
+(3) press the ▶️ play button (next to the first bug)
+
+(You need to hover over the bug, for the button to show up. That is a VSCode limitation.)`,
       async enter() {
         // TODO: render projectViewController treeview
       },
       edges: [
         {
-          text: 'Found it!',
+          text: 'Try to "run" the first bug',
           node: 'bug12'
         }
       ]
@@ -72,16 +89,36 @@ const tutorial = {
     bug12: {
       dontSave: true,
       kind: DialogNodeKind.Message,
+      text: `Try to find and run the first bug. ⚠️WARNING⚠️: If this message disappears, remember you can use the notification bell or the "Show Notifications" command to bring it back up.`,
+      async enter() {
+        // TODO: render projectViewController treeview
+      },
+      edges: [
+        {
+          text: 'Found the bug!',
+          node: 'bug13'
+        },
+        {
+          text: 'Can\'t find it',
+          node: 'bug11'
+        }
+      ]
+    },
+
+    bug13: {
+      dontSave: true,
+      kind: DialogNodeKind.Modal,
       text: `During the first run, it might spend a few minutes:
 - downloading (cloning) express and 
 - installing dependencies.
 
 Once installation finished, it will run the bug and you will see:
 (1) the test result and 
-(2) the buggy test file
+(2) the buggy test file and
+(3) probably some (optional) verbose Dbux output
 ... just like in the video!
 
-Do you want to watch the video that guides you through this first bug?`,
+Do you want to watch the video that guides you through this first bug or do you want to try it on your own?`,
       async enter() {
       },
       edges: [
@@ -93,34 +130,38 @@ Do you want to watch the video that guides you through this first bug?`,
         },
         {
           text: 'Next',
-          node: 'bug13'
+          node: 'bug14'
         }
       ]
     },
 
-    bug13: {
+    bug14: {
       dontSave: true,
       kind: DialogNodeKind.Modal,
       text: `If you want, you can try to solve the bug (with the help of Dbux and the tutorial video).`,
       edges: [
         {
-          text: 'I\'ll try',
+          text: 'I\'ll try! (Finish Tutorial)',
           node: 'end'
+        },
+        {
+          text: 'Video? Can you repeat that part?',
+          node: 'bug13'
+        },
+        {
+          text: 'Restart Tutorial',
+          node: 'bug10'
         },
         {
           text: 'Maybe later',
           node: 'bugWait'
-        },
-        {
-          text: 'Bug? Video? Can you repeat that part?',
-          node: 'bug10'
         }
       ]
     },
 
     bugWait: {
       kind: DialogNodeKind.Message,
-      text: `For our simple tutorial, we prepared example code (with a bug in it) for you to try out some of Dbux's features.`,
+      text: introMessage,
       async enter(graphState, stack, { waitAtMost }) {
         const delay = 24 * 60 * 60;  // wait a day
         return waitAtMost(delay);

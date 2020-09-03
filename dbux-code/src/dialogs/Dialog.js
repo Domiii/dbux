@@ -51,6 +51,8 @@ export class Dialog {
       this.setState(startState);
     }
 
+    debug('Dialog._start', JSON.stringify({ startState, nodeName: this.graphState.nodeName }));
+
     const firstNode = this.getNode(this.graphState.nodeName);
 
     if (firstNode.end) {

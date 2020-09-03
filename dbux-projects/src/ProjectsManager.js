@@ -39,6 +39,9 @@ export default class ProjectsManager {
 
   config;
   externals;
+  /**
+   * @type {ProjectList}
+   */
   projects;
   /**
    * @type {BugRunner}
@@ -144,7 +147,7 @@ export default class ProjectsManager {
       if (!a) {
         return b;
       }
-      return a.createAt > b.createAt ? a : b;
+      return a.createdAt > b.createdAt ? a : b;
     }, undefined);
     let patchString = testRun?.patch;
 
