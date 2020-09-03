@@ -5,8 +5,8 @@ export default class BugProgress {
     const timeStamp = Date.now();
     this.projectName = bug.project.name;
     this.bugId = bug.id;
-    this.createAt = timeStamp;
-    this.updateAt = timeStamp;
+    this.createdAt = timeStamp;
+    this.updatedAt = timeStamp;
     this.status = status;
   }
 }

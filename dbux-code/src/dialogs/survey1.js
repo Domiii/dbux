@@ -22,10 +22,6 @@ async function storeResultsTest(data) {
   return backend.containers.survey1.storeSurveyResult(data);
 }
 
-async function clearResults() {
-  return storeResults(null);
-}
-
 // ###########################################################################
 // util for waitToStart
 // ###########################################################################
@@ -129,13 +125,23 @@ const survey1 = {
         node: node.nextNode
       };
     },
-    {
-      text: '(Continue Later)',
-      node: 'continueLater'
+    function (currentState, stack, actions, node) {
+      if (!node.nextNode) {
+        return null;
+      }
+      return {
+        text: '(Continue Later)',
+        node: 'continueLater'
+      };
     },
-    {
-      text: '(Stop Survey)',
-      node: 'cancel'
+    function (currentState, stack, actions, node) {
+      if (!node.nextNode) {
+        return null;
+      }
+      return {
+        text: '(Stop Survey)',
+        node: 'cancel'
+      };
     },
     {
       text: '(save)',
@@ -163,13 +169,14 @@ const survey1 = {
         ]);
       },
       async text() {
-        return `Can we ask you 5 short questions for an anonymous survey?`;
+        return `Can we ask you 5 short questions (related to Debugging and your first impressions of Dbux)?`;
       },
       edges: [
         {
           text: 'Ok, but hurry!',
-          node: 'start'
-        }
+          node: 'q1'
+        },
+        whySurveyEdge
       ]
     },
     start: {

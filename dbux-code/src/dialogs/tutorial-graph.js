@@ -141,12 +141,8 @@ Do you want to watch the video that guides you through this first bug or do you 
       text: `If you want, you can try to solve the bug (with the help of Dbux and the tutorial video).`,
       edges: [
         {
-          text: 'I\'ll try',
+          text: 'I\'ll try! (Finish Tutorial)',
           node: 'end'
-        },
-        {
-          text: 'Maybe later',
-          node: 'bugWait'
         },
         {
           text: 'Video? Can you repeat that part?',
@@ -156,6 +152,10 @@ Do you want to watch the video that guides you through this first bug or do you 
           text: 'Restart Tutorial',
           node: 'bug10'
         },
+        {
+          text: 'Maybe later',
+          node: 'bugWait'
+        }
       ]
     },
 

@@ -19,6 +19,7 @@ export default class Survey1Container extends FirestoreContainer {
   storeSurveyResult = async (data) => {
     data = {
       ...data,
+      DBUX_VERSION: process.env.DBUX_VERSION,
       createdAt: new Date()
     };
 

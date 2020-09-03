@@ -38,7 +38,7 @@ export default {
   updateBugProgress(plc, bug, result) {
     const bugProgress = plc.util.getOrCreateBugProgress(bug);
     
-    bugProgress.updateAt = Date.now();
+    bugProgress.updatedAt = Date.now();
     bugProgress.status = result.code ? BugStatus.Attempted : BugStatus.Solved;
   },
 
