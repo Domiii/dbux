@@ -314,7 +314,7 @@ How much do you agree with the following statement?
     q5: {
       nextNode: 'interlude1',
       kind: DialogNodeKind.Modal,
-      text: `[5/5] Debugging is a crucial programming skill. I want to be more strategic and efficient when debugging. I am willing to invest time to learn and practice in order develop better strategies to find bugs faster.`,
+      text: `[5/5] Debugging is a crucial programming skill. I want to be more strategic and efficient when debugging. I am willing to invest time to learn and practice in order to develop better strategies and find bugs faster.`,
       edges: [
         {
           text: 'Strongly Agree',
