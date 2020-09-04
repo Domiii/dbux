@@ -19,8 +19,9 @@ export function valueRender(valueRef, value) {
   }, { modal: true });
 }
 
-export async function renderValueAsJsonInEditor(value) {
-  const content = JSON.stringify(value, null, 2);
+export async function renderValueAsJsonInEditor(value, comment = null) {
+  comment = comment ? `// ${comment}\n` : '';
+  const content = comment + JSON.stringify(value, null, 2);
   const doc = await workspace.openTextDocument({ 
     language: 'jsonc',
     content

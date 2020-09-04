@@ -74,7 +74,7 @@ export default class UserEventContainer extends FirestoreContainer {
     const event = {
       name, 
       data,
-      createAt: new Date(),
+      createdAt: new Date(),
     };
     this.buffer.push(event);
 

@@ -1,5 +1,4 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import isEmpty from 'lodash/isEmpty';
 import DialogNode from './DialogNode';
 import { showInformationMessage } from '../../codeUtil/codeModals';
 
@@ -10,19 +9,14 @@ export default class MessageNode extends DialogNode {
   static async render(dialog, node) {
     const { nodeName } = dialog.graphState;
     
-    let { edges = [] } = node;
-    if (nodeName !== 'start' && nodeName !== 'end') {
+    let { end = false, edges = [] } = node;
+    if (nodeName !== 'start' && !end) {
       edges = edges.concat(dialog.graph.defaultEdges);
     }
 
+    const text = await dialog.maybeGetByFunction(node.text, node);
     const buttons = await dialog.makeButtonsByEdges(node, edges, nodeName);
-    if (isEmpty(buttons)) {
-      showInformationMessage(await dialog.maybeGetByFunction(node.text, node), buttons).catch(logError);
-      return null;
-    }
-    else {
-      const result = await showInformationMessage(await dialog.maybeGetByFunction(node.text, node), buttons);
-      return result;
-    }
+    const edgeData = await showInformationMessage(text, buttons);      
+    return edgeData;
   }
 }

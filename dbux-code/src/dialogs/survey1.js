@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { env, Uri, window } from 'vscode';
+import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { showHelp } from '../help';
 import DialogNodeKind from './DialogNodeKind';
@@ -14,15 +15,58 @@ function nextNode(currentState, stack, actions, node) {
   return node.nextNode;
 }
 
-async function storeResults(data) {
-  const backend = await getOrCreateProjectManager().getAndInitBackend();
-  data = { installId: 'testId', ...data };
-  log('storeResults', data);
-  return backend.containers.survey1.storeSurveyResult(data);
+// async function storeResultsTest(data) {
+//   data = { test: 1, ...data };
+//   const backend = await getOrCreateProjectManager().getAndInitBackend();
+//   return backend.containers.survey1.storeSurveyResult(data);
+// }
+
+// ###########################################################################
+// util for waitToStart
+// ###########################################################################
+
+async function waitForBugSolved(bug) {
+  const projectManager = getOrCreateProjectManager();
+  return new Promise((r) => {
+    const bugstatus = projectManager.progressLogController.util.getBugProgressByBug(bug)?.status;
+    if (BugStatus.is.Solved(bugstatus)) {
+      r();
+    }
+    else {
+      const unbind = projectManager.onTestFinished((testBug, result) => {
+        if (testBug === bug && result.code === 0) {
+          r();
+          unbind();
+        }
+      });
+    }
+  });
 }
 
-async function clearResults() {
-  return this.storeResults(null);
+async function waitForBugFailedNTimes(bug, n) {
+  const projectManager = getOrCreateProjectManager();
+  return new Promise((r) => {
+    // wait for first bug failed three times
+    let failedTestRuns = projectManager.progressLogController.util.getTestRunsByBug(bug).filter((testRun) => {
+      return testRun.nFailedTests > 0;
+    });
+    if (failedTestRuns.length >= n) {
+      r();
+    }
+    else {
+      const unbind = projectManager.onTestFinished((testBug/* , result */) => {
+        if (testBug === bug) {
+          failedTestRuns = projectManager.progressLogController.util.getTestRunsByBug(bug).filter((testRun) => {
+            return testRun.nFailedTests > 0;
+          });
+          if (failedTestRuns.length >= n) {
+            r();
+            unbind();
+          }
+        }
+      });
+    }
+  });
 }
 
 // ###########################################################################
@@ -40,6 +84,8 @@ We will not share this data with anyone, and no third party will given access to
 
 If you are concerned about your data or want your data to be deleted, just contact us on Discord.`;
     const btns = {
+      async 'Ok'() {
+      },
       async 'Contact us on Discord'() {
         return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
       },
@@ -57,7 +103,7 @@ const showRecordedDataEdge =
   async click(currentState, stack, { getRecordedData }) {
     const recordedData = getRecordedData();
     await showInformationMessage(`NOTE: This data will only be stored *once* at the end of the survey.`, { Ok() { } }, { modal: true });
-    return renderValueAsJsonInEditor(recordedData);
+    renderValueAsJsonInEditor(recordedData);
   }
 };
 
@@ -78,26 +124,30 @@ const survey1 = {
         node: node.nextNode
       };
     },
-    {
-      text: '(Continue Later)',
-      node: 'continueLater'
-    },
-    {
-      text: '(Stop Survey)',
-      node: 'cancel'
-    },
-    {
-      text: 'save data',
-      click() {
-        return storeResults({ test: 123 });
+    function (currentState, stack, actions, node) {
+      if (!node.nextNode) {
+        return null;
       }
+      return {
+        text: '(Continue Later)',
+        node: 'continueLater'
+      };
     },
-    {
-      text: 'clear data',
-      click() {
-        return clearResults();
+    function (currentState, stack, actions, node) {
+      if (!node.nextNode) {
+        return null;
       }
-    }
+      return {
+        text: '(Stop Survey)',
+        node: 'cancel'
+      };
+    },
+    // {
+    //   text: '(save)',
+    //   async click(currentState, stack, { serializeSurveyResult }) {
+    //     return storeResultsTest(await serializeSurveyResult());
+    //   }
+    // }
   ],
 
   // ###########################################################################
@@ -105,13 +155,44 @@ const survey1 = {
   // ###########################################################################
 
   nodes: {
+    waitToStart: {
+      kind: DialogNodeKind.Message,
+      async enter(graphState, stack, { waitAtMost }) {
+        const waitDelay = 1 * 60 * 60;
+        const projectManager = getOrCreateProjectManager();
+        const firstBug = projectManager.projects.getByName('express').getOrLoadBugs().getById(1);
+        return Promise.race([
+          waitForBugSolved(firstBug),
+          waitAtMost(waitDelay),
+          waitForBugFailedNTimes(firstBug, 3)
+        ]);
+      },
+      async text() {
+        return `Can we ask you 5 short questions (related to Debugging and/or your first impressions of Dbux)?`;
+      },
+      edges: [
+        {
+          text: 'Ok, but hurry!',
+          node: 'q1'
+        },
+        {
+          text: 'I have answered already',
+          node: 'alreadyFilledOut'
+        },
+        whySurveyEdge
+      ]
+    },
     start: {
       kind: DialogNodeKind.Modal,
       text: `Can we ask you 5 short questions (related to Debugging and your first impressions of Dbux)?`,
       edges: [
         {
-          text: 'Ok',
-          node: nextNode
+          text: 'Ok, but hurry!',
+          node: 'q1'
+        },
+        {
+          text: 'I have answered already',
+          node: 'alreadyFilledOut'
         },
         whySurveyEdge
       ]
@@ -257,7 +338,7 @@ How much do you agree with the following statement?
     interlude1: {
       kind: DialogNodeKind.Modal,
       text: `Thank you so much for your feedback!
-If you like, you can tell us a little about your opinion on Debugging in general, or on Dbux.
+If you like, you can tell us a little about your opinion on Dbux or Debugging in general.
 Also, if you are interested in this project or in practicing debugging skills, feel free to leave your email.`,
       edges: [
         {
@@ -337,8 +418,7 @@ ${data.email || ''}`;
     continueLater: {
       text: `Do you want to continue our survey? (You are almost done)`,
       async enter(currentState, stack, { goTo, waitAtMost }) {
-        // const waitTime = 24 * 60 * 60;
-        const waitTime = 30;
+        const waitTime = 24 * 60 * 60;
         await waitAtMost(waitTime);
 
         const previousState = stack[stack.length - 1];
@@ -368,22 +448,32 @@ ${data.email || ''}`;
       kind: DialogNodeKind.Message,
       text: 'Thank you for trying out our survey! (Btw: You can press ESC to close this message)',
       async enter(currentState, stack, { serializeSurveyResult }) {
-        // store to backend
-        // const backend = await getOrCreateProjectManager().getAndInitBackend();
         const data = await serializeSurveyResult();
         log('survey result', data);
-        // return backend.containers.survey1.storeSurveyResult(data);
+
+        // store to backend
+        const backend = await getOrCreateProjectManager().getAndInitBackend();
+        return backend.containers.survey1.storeSurveyResult(data);
       },
       edges: [
         whySurveyEdge,
         showRecordedDataEdge
       ]
     },
-
+    alreadyFilledOut: {
+      end: true,
+      kind: DialogNodeKind.Message,
+      text: 'Woops - sorry about asking you again! Also, thanks for participating in the survey in the past! :D'
+    },
+    no: {
+      end: true,
+      kind: DialogNodeKind.Message,
+      text: 'Sorry for the interruption! We won\'t bother you with this survey again.'
+    },
     cancel: {
-      enter() {
-
-      }
+      end: true,
+      kind: DialogNodeKind.Message,
+      text: 'Survey cancelled.'
     }
   },
 
