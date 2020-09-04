@@ -896,7 +896,8 @@
     "webpack-node-externals": "^2.5.0"
   },
   "dependencies": {
-    "firebase": "7.17.2"
+    "firebase": "7.17.2",
+    "lockfile": "^1.0.4"
   },
   "_moduleAliases": {}
 }

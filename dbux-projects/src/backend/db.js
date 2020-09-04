@@ -5,7 +5,7 @@
 /* eslint-disable import/first */
 /* eslint-disable global-require,import/first,import/no-extraneous-dependencies */
 
-import { isPlainObject } from 'lodash';
+import { isPlainObject, isArray, isDate } from 'lodash';
 import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Backlog from './Backlog';
@@ -223,8 +223,14 @@ export class Db {
       if (isPlainObject(object[key])) {
         this.sanitize(object[key]);
       }
+      else if (isArray(object[key])) {
+        this.sanitize(object[key]);
+      }
       else if (object[key] === undefined) {
         object[key] = null;
+      }
+      else if (isDate(object[key])) {
+        object[key] = JSON.parse(JSON.stringify(object[key]));
       }
     }
   }
