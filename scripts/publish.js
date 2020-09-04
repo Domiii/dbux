@@ -220,7 +220,8 @@ async function writeAndCommitNewVersion() {
   const version = await getDbuxVersion();
   const fpath = path.join(__dirname, '../version.txt');
   fs.writeFileSync(fpath, version);
-  await exec(`git commit -am "version bump" && git push`);
+  await exec(`git commit -am "version bump"`);
+  await exec(`git push`);
 }
 
 async function bumpToDevVersion() {
