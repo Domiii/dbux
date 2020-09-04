@@ -262,10 +262,10 @@ export default class ProjectsManager {
     }
     const { dependencyRoot } = this.config;
 
-    if (process.env.NODE_ENV === 'production' && !this.externals.storage.get(depsStorageKey)?.[dep]) {
-      // we don't have any record of a successful install
-      return false;
-    }
+    // if (process.env.NODE_ENV === 'production' && !this.externals.storage.get(depsStorageKey)?.[dep]) {
+    //   // we don't have any record of a successful install
+    //   return false;
+    // }
 
     const target = path.join(dependencyRoot, 'node_modules', name);
     // warn('isDependencyInstalled', qualifiedDependencyName, target);

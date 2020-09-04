@@ -159,7 +159,7 @@ const survey1 = {
     waitToStart: {
       kind: DialogNodeKind.Message,
       async enter(graphState, stack, { waitAtMost }) {
-        const waitDelay = 2 * 60 * 60;
+        const waitDelay = 1 * 60 * 60;
         const projectManager = getOrCreateProjectManager();
         const firstBug = projectManager.projects.getByName('express').getOrLoadBugs().getById(1);
         return Promise.race([
@@ -169,12 +169,16 @@ const survey1 = {
         ]);
       },
       async text() {
-        return `Can we ask you 5 short questions (related to Debugging and your first impressions of Dbux)?`;
+        return `Can we ask you 5 short questions (related to Debugging and/or your first impressions of Dbux)?`;
       },
       edges: [
         {
           text: 'Ok, but hurry!',
           node: 'q1'
+        },
+        {
+          text: 'I have answered already',
+          node: 'alreadyFilledOut'
         },
         whySurveyEdge
       ]
@@ -186,6 +190,10 @@ const survey1 = {
         {
           text: 'Ok, but hurry!',
           node: 'q1'
+        },
+        {
+          text: 'I have answered already',
+          node: 'alreadyFilledOut'
         },
         whySurveyEdge
       ]
@@ -453,11 +461,20 @@ ${data.email || ''}`;
         showRecordedDataEdge
       ]
     },
-
+    alreadyFilledOut: {
+      end: true,
+      kind: DialogNodeKind.Message,
+      text: 'Woops - sorry about asking you again! Also, thanks for participating in the survey in the past! :D'
+    },
+    no: {
+      end: true,
+      kind: DialogNodeKind.Message,
+      text: 'Sorry for the interruption! We won\'t bother you with this survey again.'
+    },
     cancel: {
-      enter() {
-
-      }
+      end: true,
+      kind: DialogNodeKind.Message,
+      text: 'Survey cancelled.'
     }
   },
 

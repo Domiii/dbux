@@ -20,7 +20,7 @@ import { initGraphView } from './graphView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { initInstallId } from './installId';
 import { maybeStartTutorialOnActivate, maybeStartSurvey1OnActivate } from './dialogs/dialogController';
-import { installDbuxDependencies } from './codeUtil/installUtil';
+import { installDbuxDependencies, initInstallUtil } from './codeUtil/installUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -47,8 +47,10 @@ async function activate(context) {
     // make sure, projectManager is available
     getOrCreateProjectManager(context);
 
+    initInstallUtil(context);
+
     // install dependencies (and show progress bar) right away
-    await installDbuxDependencies(context);
+    await installDbuxDependencies();
 
     // initRuntimeServer(context);
     initCodeApplications(context);

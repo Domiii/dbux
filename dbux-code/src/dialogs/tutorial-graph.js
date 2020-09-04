@@ -189,7 +189,8 @@ Do you want to watch the video that guides you through this first bug or do you 
     },
     cancel: {
       end: true,
-      kind: DialogNodeKind.None
+      kind: DialogNodeKind.Message,
+      text: 'Tutorial cancelled.'
     }
   }
 };

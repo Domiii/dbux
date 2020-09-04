@@ -83,7 +83,7 @@ export async function maybeStartTutorialOnActivate() {
   const firstNode = tutorialDialog.getCurrentNode();
 
   // [debugging]
-  await tutorialDialog.clear();
+  // await tutorialDialog.clear();
 
   if (firstNode?.end) {
     return;
@@ -104,16 +104,27 @@ export async function maybeStartTutorialOnActivate() {
 }
 
 export async function maybeStartSurvey1OnActivate() {
-  const surveyDialog = dialogController.getDialog('survey1', 'waitToStart');
-  const firstNode = surveyDialog.getCurrentNode();
+  const dialog = dialogController.getDialog('survey1', 'waitToStart');
+  const firstNode = dialog.getCurrentNode();
   
   // [debugging]
-  await getOrCreateProjectManager().progressLogController.reset();
-  await surveyDialog.clear();
+  // await getOrCreateProjectManager().progressLogController.reset();
+  // await surveyDialog.clear();
 
   if (firstNode?.end) {
     return;
   }
 
-  surveyDialog.start();
+  if (firstNode.kind === DialogNodeKind.Modal) {
+    const confirmResult = await dialog.askToContinue();
+    if (confirmResult === false) {
+      dialog.setState('cancel');
+    }
+    else if (confirmResult) {
+      dialog.start();
+    }
+  }
+  else {
+    dialog.start();
+  }
 }
