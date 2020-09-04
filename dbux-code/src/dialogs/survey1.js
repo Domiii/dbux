@@ -15,12 +15,11 @@ function nextNode(currentState, stack, actions, node) {
   return node.nextNode;
 }
 
-async function storeResultsTest(data) {
-  data = { test: 1, ...data };
-  log('storeResults', data);
-  const backend = await getOrCreateProjectManager().getAndInitBackend();
-  return backend.containers.survey1.storeSurveyResult(data);
-}
+// async function storeResultsTest(data) {
+//   data = { test: 1, ...data };
+//   const backend = await getOrCreateProjectManager().getAndInitBackend();
+//   return backend.containers.survey1.storeSurveyResult(data);
+// }
 
 // ###########################################################################
 // util for waitToStart
@@ -143,12 +142,12 @@ const survey1 = {
         node: 'cancel'
       };
     },
-    {
-      text: '(save)',
-      async click(currentState, stack, { serializeSurveyResult }) {
-        return storeResultsTest(await serializeSurveyResult());
-      }
-    }
+    // {
+    //   text: '(save)',
+    //   async click(currentState, stack, { serializeSurveyResult }) {
+    //     return storeResultsTest(await serializeSurveyResult());
+    //   }
+    // }
   ],
 
   // ###########################################################################

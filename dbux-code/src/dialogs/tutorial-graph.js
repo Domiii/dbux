@@ -113,9 +113,8 @@ const tutorial = {
 - installing dependencies.
 
 Once installation finished, it will run the bug and you will see:
-(1) the test result and 
-(2) the buggy test file and
-(3) probably some (optional) verbose Dbux output
+(1) the test result and probably some (optional) verbose Dbux output (in Terminal)
+(2) the buggy test file (in Editor)
 ... just like in the video!
 
 Do you want to watch the video that guides you through this first bug or do you want to try it on your own?`,
