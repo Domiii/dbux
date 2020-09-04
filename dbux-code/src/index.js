@@ -48,7 +48,7 @@ async function activate(context) {
     getOrCreateProjectManager(context);
 
     // install dependencies (and show progress bar) right away
-    await installDbuxDependencies();
+    await installDbuxDependencies(context);
 
     // initRuntimeServer(context);
     initCodeApplications(context);
