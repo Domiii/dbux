@@ -71,6 +71,8 @@ export class Dialog {
     while (this.graphState.nodeName !== null) {
       Verbose && debug(`current state: ${this.graphState.nodeName}`);
 
+      await this.save();
+
       const { nodeName } = this.graphState;
       const node = this.getNode(nodeName);
       const NodeClass = this.getNodeClass(node);
@@ -107,13 +109,12 @@ export class Dialog {
           this._setState(nextState);
         }
         else {
-          // nextState === null means user dismiss the message box, we got no response
+          // nextState === null means user dismiss the message box, no further state transition
           break;
         }
       }
       else {
         await this.graph.onEnd?.(getRecordedData(this));
-        await this.save();
         break;
       }
     }
