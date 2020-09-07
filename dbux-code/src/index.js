@@ -9,40 +9,24 @@ import { initPlayback } from './playback/index';
 
 import { initCodeApplications } from './codeUtil/CodeApplication';
 import { initTraceDetailsView } from './traceDetailsView/traceDetailsController';
-import { initResources } from './resources';
 import { initTraceSelection } from './codeUtil/codeSelection';
 import { initApplicationsView } from './applicationsView/applicationsViewController';
 import { getOrCreateProjectManager } from './projectView/projectControl';
 import { initProjectView } from './projectView/projectViewController';
-import { initMemento } from './memento';
-import { initLogging } from './logging';
 import { initGraphView } from './graphView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
-import { initInstallId } from './installId';
 import { maybeStartTutorialOnActivate, maybeStartSurvey1OnActivate } from './dialogs/dialogController';
 import { installDbuxDependencies, initInstallUtil } from './codeUtil/installUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
 
-function registerErrorHandler() {
-  // process.on('unhandledRejection', (reason, promise) => {
-  //   logError(`[Unhandled Rejection] reason: ${reason}, promise: ${promise}`);
-  // });
-}
-
 /**
- * @param {vscode.ExtensionContext} context
+ * @param {import('vscode').ExtensionContext} context
  */
 async function activate(context) {
   try {
     log(`Starting Dbux v${process.env.DBUX_VERSION} (mode=${process.env.NODE_ENV}, (dev only) DBUX_ROOT=${process.env.DBUX_ROOT})...`);
-
-    registerErrorHandler();
-    initLogging();
-    initResources(context);
-    initMemento(context);
-    await initInstallId();
 
     // make sure, projectManager is available
     getOrCreateProjectManager(context);
@@ -58,7 +42,6 @@ async function activate(context) {
     initToolBar(context);
     initTraceSelection(context);
     initPlayback();
-
 
     initWebviewWrapper(context);
 
@@ -96,7 +79,7 @@ async function activate(context) {
     await maybeStartTutorialOnActivate();
     await maybeStartSurvey1OnActivate();
   } catch (e) {
-    logError('could not activate', e.stack);
+    logError('error in \'activate\'', e.stack);
     debugger;
     throw e;
   }
@@ -108,7 +91,7 @@ function deactivate() {
 
 export {
   activate,
-  deactivate,
+  deactivate
 };
 
 global.window = window;
