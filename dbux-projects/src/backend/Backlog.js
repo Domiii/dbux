@@ -1,4 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import { isEqual } from 'lodash';
+import SafetyStorage from './SafetyStorage';
 
 /**
  * @typedef {import('../ProjectsManager').default} PracticeManager
@@ -10,27 +12,27 @@ const keyName = 'dbux.projects.backend.backlog';
 
 export default class Backlog {
   /**
+   * @type {SafetyStorage}
+   */
+  backlog;
+
+  /**
    * @param {PracticeManager} practiceManager 
    */
   constructor(practiceManager, doWriteFunction) {
     this.practiceManager = practiceManager;
-    this.backlog = [];
 
     this.init();
     this._doWrite = doWriteFunction;
   }
 
   init() {
-    this.backlog = this.practiceManager.externals.storage.get(keyName) || [];
+    this.backlog = new SafetyStorage(keyName);
     debug(`Backlog init: `, this.backlog);
   }
 
-  async save() {
-    return this.practiceManager.externals.storage.set(keyName, this.backlog);
-  }
-
   size() {
-    return !!this.backlog.length;
+    return !!this.backlog.get().length;
   }
 
   /**
@@ -38,16 +40,22 @@ export default class Backlog {
    * @param {object} writeRequest
    */
   async add(writeRequest) {
-    this.backlog.push(writeRequest);
-    await this.save();
+    await this.backlog.acquireLock();
+
+    let backlog = this.backlog.get();
+    backlog.push(writeRequest);
+    await this.backlog.set(backlog);
+
+    this.backlog.releaseLock();
   }
 
   /**
    * If backlog is corrupted, allow user to reset everything.
    */
   async resetBacklog() {
-    this.backlog = [];
-    await this.save();
+    await this.backlog.acquireLock();
+    await this.backlog.set([]);
+    this.backlog.releaseLock();
   }
 
   // async _doWrite(writeRequest) {
@@ -55,19 +63,31 @@ export default class Backlog {
   // }
 
   async replay() {
-    while (this.size()) {
-      let writeRequest = this.backlog[0];
+    await this.backlog.acquireLock();
+    let backlog = this.backlog.get();
+    while (backlog.length) {
+      let writeRequest = backlog[0];
 
       try {
         await this._doWrite(writeRequest);
-        this.backlog.shift();
-        await this.save();
+        backlog.shift();
       }
       catch (err) {
-        this.backlog.shift();
-        await this.save();
+        backlog.shift();
         warn(`Removed write request after error: ${err.message}\n\n${JSON.stringify(writeRequest)}`);
       }
     }
+
+    await this.backlog.set(backlog);
+    this.backlog.releaseLock();
+  }
+
+  async tryRemoveEntry(request) {
+    await this.backlog.acquireLock();
+    let backlog = this.backlog.get().filter((entry) => {
+      return !isEqual(request, entry);
+    });
+    await this.backlog.set(backlog);
+    this.backlog.releaseLock();
   }
 }

@@ -15,7 +15,7 @@ class BufferedFirestoreContainer extends FirestoreContainer {
   constructor(db, collectionName) {
     super(db, collectionName);
 
-    this.buffer = this.db.backendController.practiceManager.externals.storage.get(this._mementoKeyName) || [];
+    this.buffer = this.db.backendController.practiceManager.externals.storage.get(this._keyName) || [];
     this._previousFlushTime = new Date();
 
     Verbose && debug(`restore buffer @${this.collectionName}`, this.buffer);
@@ -56,7 +56,7 @@ class BufferedFirestoreContainer extends FirestoreContainer {
   }
 
   async saveBuffer() {
-    return this.db.backendController.practiceManager.externals.storage.set(this._mementoKeyName, this.buffer);
+    return this.db.backendController.practiceManager.externals.storage.set(this._keyName, this.buffer);
   }
 }
 

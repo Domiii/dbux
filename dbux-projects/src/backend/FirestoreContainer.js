@@ -141,7 +141,7 @@ class FirestoreContainer {
 
     this.logger = newLogger(`Db.${collectionName}`);
 
-    this._mementoKeyName = `dbux.projects.backend.container.${collectionName}`;
+    this._keyName = `dbux.projects.backend.container.${collectionName}`;
 
     // if (TraceLog) {
     //   logInstrumentAllMethodCalls(`FSC[${collectionName}]`, this);

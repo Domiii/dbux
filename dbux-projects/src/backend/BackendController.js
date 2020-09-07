@@ -3,6 +3,7 @@ import BackendAuth from './BackendAuth2';
 import { Db } from './db';
 import { initContainers } from './containers/index';
 import FirestoreContainer from './FirestoreContainer';
+import { initSafetyStorage } from './SafetyStorage';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
@@ -31,6 +32,7 @@ export default class BackndController {
     this.auth = new BackendAuth(this);
 
     // createContainers(this.db);
+    initSafetyStorage(practiceManager.externals.storage);
   }
 
   async installBackendDependencies() {

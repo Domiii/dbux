@@ -199,7 +199,10 @@ export class Db {
       debug('data', data);
 
       result = await Promise.race([
-        doc.set(data, MergeTrue),
+        async () => {
+          await doc.set(data, MergeTrue);
+          await this.backlog.tryRemoveEntry(request);
+        },
         sleep(defaultNetworkTimeout).then(() => {
           throw new Error(`Timeout when writing data to firebase (${defaultNetworkTimeout / 1000}s)`);
         })
