@@ -149,6 +149,10 @@
         }
       },
       {
+        "command": "dbux.showOutputChannel",
+        "title": "Dbux: Show output channel"
+      },
+      {
         "command": "dbuxCallStackView.itemClick",
         "title": "Click"
       },
