@@ -1,4 +1,4 @@
-import { window, Uri, env } from 'vscode';
+import { window } from 'vscode';
 import path from 'path';
 import fs from 'fs';
 import isNaN from 'lodash/isNaN';
@@ -18,6 +18,7 @@ import { runFile } from './runCommands';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
 import { showHelp } from '../help';
 import { installDbuxDependencies } from '../codeUtil/installUtil';
+import { showOutputChannel } from '../projectView/projectViewController';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -192,5 +193,13 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.showHelp', async () => {
     return showHelp();
+  });
+
+  // ###########################################################################
+  // show outputChannel
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.showOutputChannel', async () => {
+    return showOutputChannel();
   });
 }
