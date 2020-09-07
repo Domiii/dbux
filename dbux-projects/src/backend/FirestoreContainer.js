@@ -697,10 +697,6 @@ class FirestoreContainer {
     return this.setDoc(docRef.id, data);
   }
 
-  async addDocs(data) {
-    return this.addDoc({ entries: data });
-  }
-
   /**
    * NOTE: Currently does not support merging
    */
