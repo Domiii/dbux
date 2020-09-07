@@ -57,7 +57,7 @@
     "commands": [
       {
         "command": "dbux.doActivate",
-        "title": "Dbux Practice: Cancel All"
+        "title": "Dbux: Start Dbux"
       },
       {
         "command": "dbux.cancelBugRunner",
@@ -746,6 +746,10 @@
         },
         {
           "command": "dbux.showHelp",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.showOutputChannel",
           "when": "dbux.context.activated"
         },
         {
