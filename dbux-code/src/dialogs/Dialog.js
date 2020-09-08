@@ -56,8 +56,14 @@ export class Dialog {
     const firstNode = this.getNode(this.graphState.nodeName);
 
     if (firstNode.end) {
-      const confirmResult = await this.askToRestart();
-      if (confirmResult) {
+      let shouldRestart;
+      if (this.graphState.nodeName === 'cancel') {
+        shouldRestart = true;
+      }
+      else {
+        shouldRestart = await this.askToRestart();
+      }
+      if (shouldRestart) {
         // this.controller.startDialog(this.graph.name, startState);
         this._setState(startState || 'start');
       }
@@ -231,6 +237,7 @@ export class Dialog {
 
   /**
    * Used when dialog starts if survey is done
+   * @return {Promise<boolean|null>}
    */
   async askToRestart() {
     return await showInformationMessage(`You have done this already. Do you want to restart?`, {

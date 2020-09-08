@@ -6,7 +6,12 @@ import { newLogger } from '@dbux/common/src/log/logger';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Command');
 
-// command regist helper
+/**
+ * command regist helper
+ * @param {import('vscode').ExtensionContext} context
+ * @param {string} commandName
+ * @param {function} func
+ */
 export function registerCommand(context, commandName, func) {
   function _errWrap(f) {
     return async (...args) => {
