@@ -161,9 +161,12 @@ Do you want to watch the video that guides you through this first bug or do you 
     bugWait: {
       kind: DialogNodeKind.Message,
       text: introMessage,
-      async enter(graphState, stack, { waitAtMost }) {
+      async enter(graphState, stack, { waitAtMost, goTo }) {
         const delay = 24 * 60 * 60;  // wait a day
-        return waitAtMost(delay);
+        const resumeState = await waitAtMost(delay);
+        if (resumeState) {
+          goTo(resumeState);
+        }
       },
       edges: [
         {
