@@ -1,7 +1,7 @@
 
-import { cloneDeep } from 'lodash';
 import { newLogger } from '@dbux/common/src/log/logger';
 import FirestoreContainer from './FirestoreContainer';
+import SafetyStorage from './SafetyStorage';
 
 /** @typedef {import('../db').Db} Db */
 
@@ -16,10 +16,17 @@ class BufferedFirestoreContainer extends FirestoreContainer {
   constructor(db, collectionName) {
     super(db, collectionName);
 
-    this.buffer = this.db.backendController.practiceManager.externals.storage.get(this._keyName) || [];
+    this.buffer = new SafetyStorage(this._keyName);
     this._previousFlushTime = new Date();
 
-    Verbose && debug(`restore buffer @${this.collectionName}`, this.buffer);
+    Verbose && debug(`restore buffer @${this.collectionName}`, this.buffer.get());
+  }
+
+  /**
+   * @return {Array}
+   */
+  saveGetBuffer() {
+    return this.buffer.get() || [];
   }
 
   async addDocs(data) {
@@ -28,11 +35,19 @@ class BufferedFirestoreContainer extends FirestoreContainer {
   }
 
   hasUnflushedEvent() {
-    return !!this.buffer.length;
+    return !!this.saveGetBuffer().length;
+  }
+
+  async add(event) {
+    await this.buffer.acquireLock();
+    let buffer = this.saveGetBuffer();
+    buffer.push(event);
+    await this.buffer.set(buffer);
+    this.buffer.releaseLock();
   }
 
   async flush() {
-    if (!this._flushing && (this.buffer.length >= DefaultBufferSize || (new Date()) - this._previousFlushTime >= DefaultBufferFlushTime)) {
+    if (!this._flushing && (this.saveGetBuffer().length >= DefaultBufferSize || (new Date()) - this._previousFlushTime >= DefaultBufferFlushTime)) {
       this._flushing = true;
       await this._flush();
       this._flushing = false;
@@ -44,11 +59,12 @@ class BufferedFirestoreContainer extends FirestoreContainer {
       return;
     }
 
-    try {
-      let buffer = cloneDeep(this.buffer);
-      this.buffer = [];
-      await this.saveBuffer();
+    await this.buffer.acquireLock();
+    let buffer = this.saveGetBuffer();
+    await this.buffer.set([]);
+    this.buffer.releaseLock();
 
+    try {
       await this.addDocs(buffer);
     } 
     catch (err) {
@@ -56,10 +72,6 @@ class BufferedFirestoreContainer extends FirestoreContainer {
     }
 
     this._previousFlushTime = new Date();
-  }
-
-  async saveBuffer() {
-    return this.db.backendController.practiceManager.externals.storage.set(this._keyName, this.buffer);
   }
 }
 

@@ -26,8 +26,12 @@ export default class Backlog extends SafetyStorage {
     Verbose && debug('Backlog init: ', this.get());
   }
 
+  safeGet() {
+    return this.get() || [];
+  }
+
   size() {
-    return !!this.get().length;
+    return !!this.safeGet().length;
   }
 
   /**
@@ -37,7 +41,7 @@ export default class Backlog extends SafetyStorage {
   async add(writeRequest) {
     await this.acquireLock();
 
-    let backlog = this.get();
+    let backlog = this.safeGet();
     backlog.push(writeRequest);
     await this.set(backlog);
 
@@ -63,7 +67,7 @@ export default class Backlog extends SafetyStorage {
 
   async replay() {
     await this.acquireLock();
-    let backlog = this.get();
+    let backlog = this.safeGet();
     Verbose && debug('replay');
 
     while (backlog.length) {
@@ -90,12 +94,12 @@ export default class Backlog extends SafetyStorage {
    * @param {object} request 
    */
   async tryRemoveEntry(request) {
-    Verbose && debug('before try remove entry', request, this.get());
+    Verbose && debug('before try remove entry', request, this.safeGet());
 
     await this.acquireLock();
 
     let deleted = false;
-    let backlog = this.get().filter((entry) => {
+    let backlog = this.safeGet().filter((entry) => {
       let deleteThis = isEqual(request, entry) && !deleted;
       deleted |= deleteThis;
       return !deleteThis;

@@ -10,8 +10,6 @@ const { log, debug, warn, error: logError } = newLogger('UserEventContainer');
 const Verbose = true;
 
 export default class UserEventContainer extends BufferedFirestoreContainer {
-  buffer = [];
-
   /**
    * @param {Db} db 
    */
@@ -35,13 +33,10 @@ export default class UserEventContainer extends BufferedFirestoreContainer {
       data,
       createdAt: new Date(),
     };
-    this.buffer.push(event);
-
-    Verbose && debug('receive new event', event);
 
     (async () => {
       try {
-        await this.saveBuffer();
+        await this.add(event);
         await this.flush();
       } 
       catch (err) {
