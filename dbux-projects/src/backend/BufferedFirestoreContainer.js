@@ -1,4 +1,5 @@
 
+import { cloneDeep } from 'lodash';
 import { newLogger } from '@dbux/common/src/log/logger';
 import FirestoreContainer from './FirestoreContainer';
 
@@ -44,9 +45,11 @@ class BufferedFirestoreContainer extends FirestoreContainer {
     }
 
     try {
-      await this.addDocs(this.buffer);
+      let buffer = cloneDeep(this.buffer);
       this.buffer = [];
       await this.saveBuffer();
+
+      await this.addDocs(buffer);
     } 
     catch (err) {
       throw new Error(`Failed when flushing: ${err.message}`);

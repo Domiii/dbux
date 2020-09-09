@@ -8,31 +8,26 @@ import SafetyStorage from './SafetyStorage';
 
 const { log, debug, warn, error: logError } = newLogger('Backlog');
 
+const Verbose = true;
+
 const keyName = 'dbux.projects.backend.backlog';
 
-export default class Backlog {
-  /**
-   * @type {SafetyStorage}
-   */
-  backlog;
-
+export default class Backlog extends SafetyStorage {
   /**
    * @param {PracticeManager} practiceManager 
+   * @param {Function} doWriteFunction
    */
   constructor(practiceManager, doWriteFunction) {
+    super(keyName);
+
     this.practiceManager = practiceManager;
-
-    this.init();
     this._doWrite = doWriteFunction;
-  }
 
-  init() {
-    this.backlog = new SafetyStorage(keyName);
-    debug(`Backlog init: `, this.backlog.get());
+    Verbose && debug('Backlog init: ', this.get());
   }
 
   size() {
-    return !!this.backlog.get().length;
+    return !!this.get().length;
   }
 
   /**
@@ -40,22 +35,26 @@ export default class Backlog {
    * @param {object} writeRequest
    */
   async add(writeRequest) {
-    await this.backlog.acquireLock();
+    await this.acquireLock();
 
-    let backlog = this.backlog.get();
+    let backlog = this.get();
     backlog.push(writeRequest);
-    await this.backlog.set(backlog);
+    await this.set(backlog);
 
-    this.backlog.releaseLock();
+    this.releaseLock();
+
+    Verbose && debug('contents after add', writeRequest, this.get());
   }
 
   /**
    * If backlog is corrupted, allow user to reset everything.
    */
   async resetBacklog() {
-    await this.backlog.acquireLock();
-    await this.backlog.set([]);
-    this.backlog.releaseLock();
+    await this.acquireLock();
+    await this.set([]);
+    this.releaseLock();
+
+    Verbose && debug('reset all contents');
   }
 
   // async _doWrite(writeRequest) {
@@ -63,10 +62,13 @@ export default class Backlog {
   // }
 
   async replay() {
-    await this.backlog.acquireLock();
-    let backlog = this.backlog.get();
+    await this.acquireLock();
+    let backlog = this.get();
+    Verbose && debug('replay');
+
     while (backlog.length) {
       let writeRequest = backlog[0];
+      Verbose && debug('replay request', writeRequest);
 
       try {
         await this._doWrite(writeRequest);
@@ -78,16 +80,29 @@ export default class Backlog {
       }
     }
 
-    await this.backlog.set(backlog);
-    this.backlog.releaseLock();
+    await this.set(backlog);
+    this.releaseLock();
   }
 
+  /**
+   * Remove `request` from backlog. Use `lodash.isEqual` to check whether the two item is equal. Only remove once if there is more than one.
+   * Pending request may not resolve in requested order, so we need to find it in backlog and delete it.
+   * @param {object} request 
+   */
   async tryRemoveEntry(request) {
-    await this.backlog.acquireLock();
-    let backlog = this.backlog.get().filter((entry) => {
-      return !isEqual(request, entry);
+    Verbose && debug('before try remove entry', request, this.get());
+
+    await this.acquireLock();
+
+    let deleted = false;
+    let backlog = this.get().filter((entry) => {
+      let deleteThis = isEqual(request, entry) && !deleted;
+      deleted |= deleteThis;
+      return !deleteThis;
     });
-    await this.backlog.set(backlog);
-    this.backlog.releaseLock();
+    await this.set(backlog);
+    this.releaseLock();
+
+    Verbose && debug('after try remove entry', this.get());
   }
 }
