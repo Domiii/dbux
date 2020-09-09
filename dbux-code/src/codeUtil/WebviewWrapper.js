@@ -63,7 +63,12 @@ export default class WebviewWrapper {
   }
 
   async _setCurrentState(state) {
-    return mementoSet(this.mementoKey, state);
+    try {
+      await mementoSet(this.mementoKey, state);
+    }
+    catch (err) {
+      logError(`Error when setting memento '${this.mementoKey}' as ${state}`, err);
+    }
   }
 
   async restorePreviousState() {
@@ -267,9 +272,7 @@ export default class WebviewWrapper {
   handleDidChangeViewState = ({ webviewPanel }) => {
     // debug('handleDidChangeViewState', webviewPanel.visible, performance.now());
     this.preferredColumn = webviewPanel.viewColumn;
-    this._setCurrentState(this.preferredColumn).catch((err) => {
-      logError(err);
-    });
+    this._setCurrentState(this.preferredColumn);
 
     // on closed, silent shutdown
     if (this.wasVisible && !webviewPanel.visible) {
