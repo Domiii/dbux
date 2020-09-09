@@ -15,7 +15,9 @@ import Backlog from './Backlog';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Db');
 
-const Verbose = true;
+// const Verbose = true;
+const Verbose = false;
+
 const defaultNetworkTimeout = 8 * 1000;
 
 global.self = global;   // hackfix for firebase which requires `self` to be a global
@@ -197,7 +199,7 @@ export class Db {
 
       const { collection } = container;
       doc = collection.doc(id);
-      Verbose && debug('writting data', data);
+      Verbose && debug('writing data', data);
 
       result = await Promise.race([
         (async () => {

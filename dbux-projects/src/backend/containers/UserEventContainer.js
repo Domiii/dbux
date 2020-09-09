@@ -7,7 +7,8 @@ import BufferedFirestoreContainer from '../BufferedFirestoreContainer';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('UserEventContainer');
 
-const Verbose = true;
+// const Verbose = true;
+const Verbose = false;
 
 export default class UserEventContainer extends BufferedFirestoreContainer {
   /**
@@ -16,7 +17,6 @@ export default class UserEventContainer extends BufferedFirestoreContainer {
   constructor(db) {
     super(db, 'userEvents');
   }
-
 
   async init() {
     super.init();

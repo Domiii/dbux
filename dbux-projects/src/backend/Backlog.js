@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import SafetyStorage from './SafetyStorage';
 
 /**
@@ -8,7 +8,8 @@ import SafetyStorage from './SafetyStorage';
 
 const { log, debug, warn, error: logError } = newLogger('Backlog');
 
-const Verbose = true;
+// const Verbose = true;
+const Verbose = false;
 
 const keyName = 'dbux.projects.backend.backlog';
 
@@ -70,8 +71,7 @@ export default class Backlog extends SafetyStorage {
     let backlog = this.safeGet();
     Verbose && debug('replay');
 
-    while (backlog.length) {
-      let writeRequest = backlog[0];
+    for (let writeRequest of backlog) {
       Verbose && debug('replay request', writeRequest);
 
       try {
@@ -84,7 +84,7 @@ export default class Backlog extends SafetyStorage {
       }
     }
 
-    await this.set(backlog);
+    await this.set([]);
     this.releaseLock();
   }
 

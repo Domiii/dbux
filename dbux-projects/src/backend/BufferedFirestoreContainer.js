@@ -8,7 +8,9 @@ import SafetyStorage from './SafetyStorage';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('BufferedFirestoreContainer');
 
-const Verbose = true;
+// const Verbose = true;
+const Verbose = false;
+
 const DefaultBufferSize = 3;
 const DefaultBufferFlushTime = 5 * 60 * 1000; // 5 minutes
 
@@ -25,7 +27,7 @@ class BufferedFirestoreContainer extends FirestoreContainer {
   /**
    * @return {Array}
    */
-  saveGetBuffer() {
+  safeGetBuffer() {
     return this.buffer.get() || [];
   }
 
@@ -35,19 +37,19 @@ class BufferedFirestoreContainer extends FirestoreContainer {
   }
 
   hasUnflushedEvent() {
-    return !!this.saveGetBuffer().length;
+    return !!this.safeGetBuffer().length;
   }
 
   async add(event) {
     await this.buffer.acquireLock();
-    let buffer = this.saveGetBuffer();
+    let buffer = this.safeGetBuffer();
     buffer.push(event);
     await this.buffer.set(buffer);
     this.buffer.releaseLock();
   }
 
   async flush() {
-    if (!this._flushing && (this.saveGetBuffer().length >= DefaultBufferSize || (new Date()) - this._previousFlushTime >= DefaultBufferFlushTime)) {
+    if (!this._flushing && (this.safeGetBuffer().length >= DefaultBufferSize || (new Date()) - this._previousFlushTime >= DefaultBufferFlushTime)) {
       this._flushing = true;
       await this._flush();
       this._flushing = false;
@@ -60,7 +62,7 @@ class BufferedFirestoreContainer extends FirestoreContainer {
     }
 
     await this.buffer.acquireLock();
-    let buffer = this.saveGetBuffer();
+    let buffer = this.safeGetBuffer();
     await this.buffer.set([]);
     this.buffer.releaseLock();
 

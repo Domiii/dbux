@@ -17,7 +17,6 @@ const logger = newLogger('FirestoreContainer');
 
 // eslint-disable-next-line no-unused-vars
 const { debug, log } = logger;
-const Verbose = true;
 
 // const TraceLog = false;
 
