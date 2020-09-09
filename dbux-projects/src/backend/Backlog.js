@@ -28,7 +28,7 @@ export default class Backlog {
 
   init() {
     this.backlog = new SafetyStorage(keyName);
-    debug(`Backlog init: `, this.backlog);
+    debug(`Backlog init: `, this.backlog.get());
   }
 
   size() {

@@ -28,11 +28,12 @@ export default class BackndController {
 
     this._initialized = false;
 
+    initSafetyStorage(practiceManager.externals.storage);
+
     this.db = new Db(this);
     this.auth = new BackendAuth(this);
 
     // createContainers(this.db);
-    initSafetyStorage(practiceManager.externals.storage);
   }
 
   async installBackendDependencies() {
