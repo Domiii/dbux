@@ -40,22 +40,22 @@ const tutorial = {
     // tutorial
     // ###########################################################################
 
-    start: {
-      kind: DialogNodeKind.Message,
-      text: 'Hi! You have recently installed Dbux. Do you need some help?',
-      edges: [
-        {
-          text: 'Yes',
-          node: 'bug10'
-        },
-        {
-          text: 'No. Please don\'t bother me.',
-          node: 'end'
-        }
-      ]
-    },
+    // start: {
+    //   kind: DialogNodeKind.Message,
+    //   text: 'Hi! You have recently installed Dbux. Do you need some help?',
+    //   edges: [
+    //     {
+    //       text: 'Yes',
+    //       node: 'bug10'
+    //     },
+    //     {
+    //       text: 'No. Please don\'t bother me.',
+    //       node: 'end'
+    //     }
+    //   ]
+    // },
 
-    bug10: {
+    start: {
       kind: DialogNodeKind.Modal,
       text: introMessage,
       edges: [
@@ -183,7 +183,7 @@ Do you want to watch the video that guides you through this first bug or do you 
     end: {
       end: true,
       kind: DialogNodeKind.Message,
-      text: 'Have fun! (Btw: You can press ESC to close this message)'
+      text: 'Have fun! (Btw: You can press ESC to hide these notifications)'
     },
     endSilent: {
       end: true,
