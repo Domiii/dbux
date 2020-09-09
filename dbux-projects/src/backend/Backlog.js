@@ -47,7 +47,7 @@ export default class Backlog {
    */
   async resetBacklog() {
     this.backlog = [];
-    await this.saveBacklog();
+    await this.save();
   }
 
   // async _doWrite(writeRequest) {
@@ -64,7 +64,9 @@ export default class Backlog {
         await this.save();
       }
       catch (err) {
-        throw new Error(`Replay backlog stopped due to error: ${err.message}`);
+        this.backlog.shift();
+        await this.save();
+        warn(`Removed write request after error: ${err.message}\n\n${JSON.stringify(writeRequest)}`);
       }
     }
   }

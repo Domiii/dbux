@@ -335,7 +335,7 @@ export default class Project {
     this._installed = false;
   }
 
-  async isProjectFolderExists() {
+  isProjectFolderExists() {
     return sh.test('-d', path.join(this.projectPath, '.git'));
   }
 
@@ -353,7 +353,7 @@ export default class Project {
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    if (!await this.isProjectFolderExists()) {
+    if (!this.isProjectFolderExists()) {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet

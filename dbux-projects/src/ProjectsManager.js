@@ -39,7 +39,13 @@ export default class ProjectsManager {
 
   config;
   externals;
+  /**
+   * @type {ProjectList}
+   */
   projects;
+  /**
+   * @type {BugRunner}
+   */
   runner;
   /**
    * @type {BackendController}
@@ -141,7 +147,7 @@ export default class ProjectsManager {
       if (!a) {
         return b;
       }
-      return a.createAt > b.createAt ? a : b;
+      return a.createdAt > b.createdAt ? a : b;
     }, undefined);
     let patchString = testRun?.patch;
 
@@ -256,10 +262,10 @@ export default class ProjectsManager {
     }
     const { dependencyRoot } = this.config;
 
-    if (process.env.NODE_ENV === 'production' && !this.externals.storage.get(depsStorageKey)?.[dep]) {
-      // we don't have any record of a successful install
-      return false;
-    }
+    // if (process.env.NODE_ENV === 'production' && !this.externals.storage.get(depsStorageKey)?.[dep]) {
+    //   // we don't have any record of a successful install
+    //   return false;
+    // }
 
     const target = path.join(dependencyRoot, 'node_modules', name);
     // warn('isDependencyInstalled', qualifiedDependencyName, target);
@@ -411,5 +417,9 @@ export default class ProjectsManager {
       this._terminalWrapper?.cancel();
       this._terminalWrapper = null;
     }
+  }
+
+  onTestFinished(cb) {
+    return this.runner._emitter.on('testFinished', cb);
   }
 }
