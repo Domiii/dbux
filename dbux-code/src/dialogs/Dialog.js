@@ -56,8 +56,14 @@ export class Dialog {
     const firstNode = this.getNode(this.graphState.nodeName);
 
     if (firstNode.end) {
-      const confirmResult = await this.askToRestart();
-      if (confirmResult) {
+      let shouldRestart;
+      if (this.graphState.nodeName === 'cancel') {
+        shouldRestart = true;
+      }
+      else {
+        shouldRestart = await this.askToRestart();
+      }
+      if (shouldRestart) {
         // this.controller.startDialog(this.graph.name, startState);
         this._setState(startState || 'start');
       }
@@ -70,6 +76,8 @@ export class Dialog {
     const version = ++this._version;
     while (this.graphState.nodeName !== null) {
       Verbose && debug(`current state: ${this.graphState.nodeName}`);
+
+      await this.save();
 
       const { nodeName } = this.graphState;
       const node = this.getNode(nodeName);
@@ -107,13 +115,12 @@ export class Dialog {
           this._setState(nextState);
         }
         else {
-          // nextState === null means user dismiss the message box, we got no response
+          // nextState === null means user dismiss the message box, no further state transition
           break;
         }
       }
       else {
         await this.graph.onEnd?.(getRecordedData(this));
-        await this.save();
         break;
       }
     }
@@ -230,6 +237,7 @@ export class Dialog {
 
   /**
    * Used when dialog starts if survey is done
+   * @return {Promise<boolean|null>}
    */
   async askToRestart() {
     return await showInformationMessage(`You have done this already. Do you want to restart?`, {
