@@ -465,8 +465,7 @@
       },
       {
         "command": "dbux.deleteUserEvents",
-        "title": "Delete all user events ********** WARNING ***********"
-      },
+        "title": "Dev: Delete all user events"
       }
     ],
     "menus": {

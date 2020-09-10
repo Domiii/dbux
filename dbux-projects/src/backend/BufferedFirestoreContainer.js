@@ -42,10 +42,15 @@ class BufferedFirestoreContainer extends FirestoreContainer {
 
   async add(event) {
     await this.buffer.acquireLock();
-    let buffer = this.safeGetBuffer();
-    buffer.push(event);
-    await this.buffer.set(buffer);
-    this.buffer.releaseLock();
+
+    try {
+      let buffer = this.safeGetBuffer();
+      buffer.push(event);
+      await this.buffer.set(buffer);
+    }
+    finally {
+      this.buffer.releaseLock();
+    }
   }
 
   async flush() {
@@ -62,9 +67,15 @@ class BufferedFirestoreContainer extends FirestoreContainer {
     }
 
     await this.buffer.acquireLock();
-    let buffer = this.safeGetBuffer();
-    await this.buffer.set([]);
-    this.buffer.releaseLock();
+
+    let buffer;
+    try {
+      buffer = this.safeGetBuffer();
+      await this.buffer.set([]);
+    }
+    finally {
+      this.buffer.releaseLock();
+    }
 
     try {
       await this.addDocs(buffer);
