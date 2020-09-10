@@ -169,10 +169,10 @@ export function initUserCommands(extensionContext) {
     // if (process.env.NODE_ENV === 'production') {
     //   throw new Error('This command is currently disabled in Production mode.');
     // }
-    // const backend = await getOrCreateProjectManager().getAndInitBackend();
-    // await backend.login();
-    await installDbuxDependencies();
     const backend = await getOrCreateProjectManager().getAndInitBackend();
+    await backend.login();
+    await installDbuxDependencies();
+    // const backend = await getOrCreateProjectManager().getAndInitBackend();
     const data = { installId: 'testIdqwe', hi: 123 };
     // log('storeSurveyResult', data);
     return backend.containers.survey1.storeSurveyResult(data);
