@@ -1,10 +1,9 @@
 import GraphWebView from './GraphWebView';
 
-let graphWebView;
-
 /**
- * 
+ * @type {GraphWebView}
  */
+let graphWebView;
 
 function initGraphWebView() {
   if (!graphWebView) {
