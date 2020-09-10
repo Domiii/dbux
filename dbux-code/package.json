@@ -844,7 +844,7 @@
         },
         {
           "command": "dbux.deleteUserEvents",
-          "when": "dbux.context.activated"
+          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
         {
           "command": "dbuxCallStackView.itemClick",

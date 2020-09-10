@@ -48,6 +48,8 @@ export async function preActivate(context) {
     initLogging();
     initResources(context);
 
+    commands.executeCommand('setContext', 'dbux.context.nodeEnv', process.env.NODE_ENV);
+
     const autoStart = workspace.getConfiguration('dbux').get('autoStart');
     if (autoStart) {
       await doActivate(context);

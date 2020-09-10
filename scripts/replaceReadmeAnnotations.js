@@ -47,17 +47,17 @@ function syncCodeCommands() {
   packageJson.contributes.commands
     .forEach(cmd => allCommandsById[cmd.command] = cmd);
 
-  const buttonCommandsById = {};
+  const nonUserCommandsById = {};
   packageJson.contributes.menus.commandPalette
-    .filter(cmd => cmd.when === 'false')
-    .forEach(cmd => buttonCommandsById[cmd.command] = cmd);
+    .filter(cmd => cmd.when === 'false' || cmd.when.includes('dbux.context.nodeEnv == development'))
+    .forEach(cmd => nonUserCommandsById[cmd.command] = cmd);
 
   const oldCommandById = {};
   commandJson
     .forEach(cmd => oldCommandById[cmd.command] = cmd);
 
   // check: if buttonCommands are in allCommands section
-  for (const id in buttonCommandsById) {
+  for (const id in nonUserCommandsById) {
     if (!allCommandsById[id]) {
       throw new Error(`Button command '${id}' should be listed in 'contributes.commands' section`);
     }
@@ -65,7 +65,7 @@ function syncCodeCommands() {
 
   const newUserCommandsById = {};
   Object.keys(allCommandsById)
-    .filter(id => !buttonCommandsById[id])
+    .filter(id => !nonUserCommandsById[id])
     .map(id => allCommandsById[id])
     .forEach(cmd => newUserCommandsById[cmd.command] = cmd);
 
