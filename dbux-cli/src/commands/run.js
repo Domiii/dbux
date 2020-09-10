@@ -1,4 +1,4 @@
-/* global __webpack_require__, __non_webpack_require__ */
+/* global __non_webpack_require__ */
 // import path from 'path';
 import { wrapCommand } from '../util/commandUtil';
 import dbuxRegister from '../dbuxRegister';

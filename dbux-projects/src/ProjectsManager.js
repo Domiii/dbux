@@ -1,7 +1,9 @@
 import path from 'path';
 import fs from 'fs';
 import sh from 'shelljs';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { readPackageJson } from '@dbux/cli/lib/package-util';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
@@ -13,9 +15,11 @@ import BugStatus, { isPracticingTypes } from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
 
 
+const depsStorageKey = 'PracticeManager.deps';
+
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
-const { debug, log } = logger;
+const { debug, log, warn } = logger;
 
 const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
 
@@ -23,11 +27,21 @@ const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
 /** @typedef {import('./projectLib/Bug').default} Bug */
 /** @typedef {import('./externals/Storage').default} ExternalStorage */
 
+
+function canIgnoreDependency(name) {
+  if (process.env.NODE_ENV === 'development' && name.startsWith('@dbux/')) {
+    // NOTE: in development mode, we have @dbux dependencies (and their dependencies) all linked up to the monoroot folder anyway
+    // NOTE: we need to short-circuit this for when we run the packaged extension in dev mode
+    return true;
+  }
+  return false;
+}
+
 export default class ProjectsManager {
   /**
    * @type {PracticeSession}
    */
-  practiceSession
+  practiceSession;
   /**
    * @type {ProjectList}
    */
@@ -36,7 +50,17 @@ export default class ProjectsManager {
    * @type {BugRunner}
    */
   runner;
+  /**
+   * @type {BackendController}
+   */
   _backend;
+
+  _pkg;
+
+  // NOTE: npm flattens dependency tree by default, and other important dependencies are dependencies of @dbux/cli
+  _sharedDependencyNames = [
+    '@dbux/cli'
+  ];
 
   /**
    * @param {Object} externals 
@@ -50,15 +74,19 @@ export default class ProjectsManager {
     this.runner = new BugRunner(this);
     this.runner.start();
 
+    this._backend = new BackendController(this);
     this.progressLogController = new ProgressLogController(externals.storage);
+    this._pkg = readPackageJson(this.config.dependencyRoot);
+
+    this._sharedDependencyNamesAll = [
+      ...this._sharedDependencyNames,
+      ...Object.entries(this._pkg.dependencies).
+        map(([name, version]) => `${name}@${version}`)
+    ];
   }
 
-  async getOrInitBackend() {
-    // lazy initialize
-    if (!this._backend) {
-      this._backend = new BackendController(this);
-      await this._backend.init();
-    }
+  async getAndInitBackend() {
+    await this._backend.init();
     return this._backend;
   }
 
@@ -331,7 +359,7 @@ export default class ProjectsManager {
       if (!a) {
         return b;
       }
-      return a.createAt > b.createAt ? a : b;
+      return a.createdAt > b.createdAt ? a : b;
     }, undefined);
     let patchString = testRun?.patch;
 
@@ -466,11 +494,6 @@ export default class ProjectsManager {
   // Dependency Management
   // ###########################################################################
 
-  _sharedDependencyNames = [
-    // NOTE: npm flattens dependency tree by default, and other important dependencies are dependencies of @dbux/cli
-    '@dbux/cli'
-  ];
-
   async installDependencies() {
     await this.installDbuxDependencies();
   }
@@ -479,29 +502,48 @@ export default class ProjectsManager {
     return !!this._installPromise;
   }
 
+  async waitForInstall() {
+    return this._installPromise;
+  }
+
+  _getAllDependencies(deps) {
+    return [
+      ...this._sharedDependencyNamesAll,
+      ...deps || EmptyArray
+    ];
+  }
+
   hasInstalledSharedDependencies() {
-    return this.areDependenciesInstalled(this._sharedDependencyNames);
+    return this.areDependenciesInstalled([]);
   }
 
   areDependenciesInstalled(deps) {
+    deps = this._getAllDependencies(deps);
     return deps.every(this.isDependencyInstalled);
   }
 
-  isDependencyInstalled = (qualifiedDependencyName) => {
+  isDependencyInstalled = (dep) => {
     // TODO: check correct version?
     //    should not be necessary for the VSCode extension because it will create a new extension folder for every version update anyway
 
     // get name without version
-    const name = qualifiedDependencyName.match('(@?[^@]+)(?:@.*)?')[1];
-    if (process.env.NODE_ENV === 'development') {
-      if (name.startsWith('@dbux/')) {
-        // NOTE: in development mode, we have @dbux dependencies (and their dependencies) all linked up to the monoroot folder anyway
-        // NOTE: we need to short-circuit this for when we run the packaged extension in dev mode
-        return true;
-      }
+    const name = dep.match('(@?[^@]+)(?:@.*)?')[1];
+    if (canIgnoreDependency(name)) {
+      // NOTE: in development mode, we have @dbux dependencies (and their dependencies) all linked up to the monoroot folder anyway
+      // NOTE: we need to short-circuit this for when we run the packaged extension in dev mode
+      return true;
     }
     const { dependencyRoot } = this.config;
-    return sh.test('-d', path.join(dependencyRoot, 'node_modules', name));
+
+    // if (process.env.NODE_ENV === 'production' && !this.externals.storage.get(depsStorageKey)?.[dep]) {
+    //   // we don't have any record of a successful install
+    //   return false;
+    // }
+
+    const target = path.join(dependencyRoot, 'node_modules', name);
+    // warn('isDependencyInstalled', qualifiedDependencyName, target);
+
+    return sh.test('-d', target);
   }
 
   async installDbuxDependencies() {
@@ -510,7 +552,9 @@ export default class ProjectsManager {
       throw new Error('installDbuxDependencies() failed. DBUX_VERSION was not set.');
     }
 
-    const deps = this._sharedDependencyNames.map(dep => `${dep}@${process.env.DBUX_VERSION}`);
+    const deps = this._sharedDependencyNames.
+      filter(dep => !canIgnoreDependency(dep));
+
     await this.installModules(deps);
   }
 
@@ -522,17 +566,16 @@ export default class ProjectsManager {
   async _doInstallModules(deps) {
     try {
       const { dependencyRoot } = this.config;
-      const execOptions = {
-        processOptions: {
-          cwd: dependencyRoot
-        }
-      };
-      const rootPackageJson = path.join(dependencyRoot, 'package.json');
-      if (!sh.test('-f', rootPackageJson)) {
-        // make sure, we have a local `package.json`
-        await this.runner._exec('npm init -y', logger, execOptions);
-      }
-      else if (this.areDependenciesInstalled(deps)) {
+      // const execOptions = {
+      //   processOptions: {
+      //     cwd: dependencyRoot
+      //   }
+      // };
+      // if (!sh.test('-f', rootPackageJson)) {
+      //   // make sure, we have a local `package.json`
+      //   await this.runner._exec('npm init -y', logger, execOptions);
+      // }
+      if (this.areDependenciesInstalled(deps)) {
         // already done!
         return;
       }
@@ -546,9 +589,19 @@ export default class ProjectsManager {
 
       // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
 
-      const command = `npm install --only=prod && npm i ${deps.join(' ')}`;
+      const moreDeps = deps.length && ` && npm i ${deps.join(' ')}` || '';
+      const command = `npm install --only=prod${moreDeps}`;
       // await this.runner._exec(command, logger, execOptions);
       await this.execInTerminal(dependencyRoot, command);
+
+      // remember all installed dependencies
+      const newDeps = this._getAllDependencies();
+      let storedDeps = this.externals.storage.get(depsStorageKey) || {};
+      storedDeps = {
+        ...storedDeps, 
+        ...Object.fromEntries(newDeps.map(dep => [dep, true]))
+      };
+      await this.externals.storage.set(depsStorageKey, storedDeps);
 
       // else {
       //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
@@ -616,5 +669,9 @@ export default class ProjectsManager {
       this._terminalWrapper?.cancel();
       this._terminalWrapper = null;
     }
+  }
+
+  onTestFinished(cb) {
+    return this.runner._emitter.on('testFinished', cb);
   }
 }

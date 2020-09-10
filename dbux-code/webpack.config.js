@@ -24,6 +24,7 @@ module.exports = (env, argv) => {
   const mode = argv.mode || 'development';
   const DBUX_VERSION = getDbuxVersion(mode);
   const DBUX_ROOT = mode === 'development' ? MonoRoot : null;
+  const aggregateTimeout = mode === 'development' ? 200 : 3000;
 
   console.debug(`[dbux-code] (DBUX_VERSION=${DBUX_VERSION}, mode=${mode}, DBUX_ROOT=${DBUX_ROOT}) building...`);
 
@@ -36,8 +37,14 @@ module.exports = (env, argv) => {
     new CopyPlugin({
       patterns: [
         {
+          force: true,
           from: path.join(MonoRoot, 'dbux-projects', 'assets'),
           to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'projects')
+        },
+        {
+          force: true,
+          from: path.join(MonoRoot, 'node_modules/firebase'),
+          to: path.join(MonoRoot, 'dbux-code', 'resources', 'dist', 'node_modules', 'firebase')
         }
       ]
     })
@@ -90,7 +97,8 @@ module.exports = (env, argv) => {
   return {
     watchOptions: {
       poll: true,
-      ignored: /node_modules/
+      ignored: /node_modules/,
+      aggregateTimeout
     },
     // https://github.com/webpack/webpack/issues/2145
     mode,

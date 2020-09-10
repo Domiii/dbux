@@ -12,8 +12,9 @@ import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { showBugIntroduction } from './BugIntroduction';
 import { getStopwatch } from './practiceStopwatch';
+import { onUserEvent } from '../userEvents';
 
-/** @typedef {import('@dbux/projects/src').ProjectsManager} ProjectsManager */
+/** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
 const logger = newLogger('projectControl');
 // eslint-disable-next-line no-unused-vars
@@ -108,6 +109,7 @@ function createProjectManager(extensionContext) {
     },
     WebviewWrapper,
     showBugIntroduction,
+    onUserEvent,
     interactiveGithubLogin
   };
 
@@ -116,7 +118,7 @@ function createProjectManager(extensionContext) {
   // ########################################
   const manager = initDbuxProjects(cfg, externals);
 
-  debug(`Initialized dbux-projects. Projects folder = "${path.resolve(cfg.projectsRoot)}"`);
+  debug(`Initialized dbux-projects. projectsRoot = "${path.resolve(cfg.projectsRoot)}", dependencyRoot = "${path.resolve(cfg.dependencyRoot)}"`);
 
   return manager;
 }

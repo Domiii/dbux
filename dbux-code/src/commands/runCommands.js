@@ -4,15 +4,12 @@ import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
-import { showOutputChannel } from '../projectView/projectViewController';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
-import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
-
-const logger = newLogger('DBUX run file');
+import { installDbuxDependencies } from '../codeUtil/installUtil';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = logger;
+const { log, debug, warn, error: logError } = newLogger('DBUX run file');
 
 /**
  * Encode env to string format
@@ -55,11 +52,7 @@ function getArgs(debugMode) {
 }
 
 export async function runFile(extensionContext, debugMode = false) {
-  const projectManager = getOrCreateProjectManager(extensionContext);
-  if (projectManager.isInstallingSharedDependencies()) {
-    logError('Busy installing. This happens on first run of the command after extension installation (or update). This might (or might not) take a few minutes.');
-    return;
-  }
+  const projectManager = getOrCreateProjectManager();
 
   // resolve path
   const activeEditor = window.activeTextEditor;
@@ -80,13 +73,7 @@ export async function runFile(extensionContext, debugMode = false) {
   }
 
   // install dependencies
-  if (!projectManager.hasInstalledSharedDependencies()) {
-    await runTaskWithProgressBar(async (progress) => {
-      showOutputChannel();
-      progress.report({ message: 'Installing dependencies...' });
-      await projectManager.installDependencies();
-    }, { cancellable: false });
-  }
+  await installDbuxDependencies();
 
   // start runtime server
   await initRuntimeServer(extensionContext);

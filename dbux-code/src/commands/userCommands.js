@@ -1,4 +1,4 @@
-import { window, Uri, env } from 'vscode';
+import { window } from 'vscode';
 import path from 'path';
 import fs from 'fs';
 import isNaN from 'lodash/isNaN';
@@ -17,6 +17,8 @@ import { toggleErrorLog } from '../logging';
 import { runFile } from './runCommands';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
 import { showHelp } from '../help';
+import { installDbuxDependencies } from '../codeUtil/installUtil';
+import { showOutputChannel } from '../projectView/projectViewController';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -164,13 +166,18 @@ export function initUserCommands(extensionContext) {
   // ###########################################################################
 
   registerCommand(extensionContext, 'dbux.backendLogin', async () => {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('This command is currently disabled in Production mode.');
-    }
-    const backend = await getOrCreateProjectManager().getOrInitBackend();
-    await backend.startBackend();
+    // if (process.env.NODE_ENV === 'production') {
+    //   throw new Error('This command is currently disabled in Production mode.');
+    // }
+    // const backend = await getOrCreateProjectManager().getAndInitBackend();
+    // await backend.login();
+    await installDbuxDependencies();
+    const backend = await getOrCreateProjectManager().getAndInitBackend();
+    const data = { installId: 'testIdqwe', hi: 123 };
+    // log('storeSurveyResult', data);
+    return backend.containers.survey1.storeSurveyResult(data);
   });
-  
+
   // ###########################################################################
   // system check
   // ###########################################################################
@@ -186,5 +193,13 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.showHelp', async () => {
     return showHelp();
+  });
+
+  // ###########################################################################
+  // show outputChannel
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.showOutputChannel', async () => {
+    return showOutputChannel();
   });
 }

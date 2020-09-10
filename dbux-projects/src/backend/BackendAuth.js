@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import getDb, { getFirebase } from './Db';
+// import getDb from './db';
 import { makeLoginController } from './LoginController';
 
 // eslint-disable-next-line no-unused-vars
@@ -13,7 +13,7 @@ export default class BackendAuth {
   constructor(backendController) {
     this.backendController = backendController;
 
-    const firebase = getFirebase();
+    // const firebase = this.backendController.db.firebase;
     // this._authInitPromise = new Promise((resolve, reject) => {
     //   firebase.auth().onAuthStateChanged((user) => {
     //     debug(`Auth state changed: ${user && `${user.displayName} (${user.email})` || '(not logged in)'}`);
@@ -64,7 +64,7 @@ export default class BackendAuth {
   }
 
   logout() {
-    return getFirebase().auth().signOut();
+    return this.backendController.db.firebase.auth().signOut();
   }
 
   // /**

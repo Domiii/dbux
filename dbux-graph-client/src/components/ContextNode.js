@@ -217,13 +217,13 @@ class ContextNode extends ClientComponentEndpoint {
     //   }
     // },
     prevContextBtn: {
-      click(/* evt */) {
-        this.remote.selectPreviousContextByStaticContext();
+      async click(/* evt */) {
+        await this.remote.selectPreviousContextByStaticContext();
       }
     },
     nextContextBtn: {
-      click(/* evt */) {
-        this.remote.selectNextContextByStaticContext();
+      async click(/* evt */) {
+        await this.remote.selectNextContextByStaticContext();
       }
     }
   }

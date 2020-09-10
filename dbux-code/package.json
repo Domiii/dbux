@@ -2,7 +2,7 @@
   "name": "dbux-code",
   "private": true,
   "displayName": "Dbux (ALPHA)",
-  "version": "0.2.1-dev.0",
+  "version": "0.2.4-dev.0",
   "publisher": "Domi",
   "description": "",
   "repository": {
@@ -33,21 +33,32 @@
     "views": {
       "dbuxViewContainer": [
         {
+          "id": "dbuxPreActivateView",
+          "name": "Dbux",
+          "when": "!dbux.context.activated"
+        },
+        {
           "id": "dbuxApplicationsView",
-          "name": "Applications"
+          "name": "Applications",
+          "when": "dbux.context.activated"
         },
         {
           "id": "dbuxTraceDetailsView",
-          "name": "Trace Details"
+          "name": "Trace Details",
+          "when": "dbux.context.activated"
         },
         {
           "id": "dbuxProjectView",
           "name": "Practice",
-          "when": "dbux.context.showProjectView == true"
+          "when": "dbux.context.activated && dbux.context.showProjectView"
         }
       ]
     },
     "commands": [
+      {
+        "command": "dbux.doActivate",
+        "title": "Dbux: Start Dbux"
+      },
       {
         "command": "dbux.cancelBugRunner",
         "title": "Dbux Practice: Cancel All"
@@ -151,6 +162,10 @@
       {
         "command": "dbux.resetPracticeProgress",
         "title": "Dbux: Reset Practice Progress"
+      },
+      {
+        "command": "dbux.showOutputChannel",
+        "title": "Dbux: Show output channel"
       },
       {
         "command": "dbuxCallStackView.itemClick",
@@ -449,17 +464,17 @@
       "editor/title": [
         {
           "command": "dbux.runFile",
-          "when": "editorLangId == javascript",
+          "when": "dbux.context.activated && editorLangId == javascript",
           "group": "navigation@5"
         },
         {
           "command": "dbuxCallGraphView.selectError",
-          "when": "dbuxCallGraphView.context.hasError == true && dbux.context.showNavButton == true",
+          "when": "dbux.context.activated && dbuxCallGraphView.context.hasError && dbux.context.showNavButton",
           "group": "navigation@32"
         },
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
-          "when": "dbuxTraceDetailsView.context.hasTracesAtCursor == true && dbux.context.showNavButton == true",
+          "when": "dbux.context.activated && dbuxTraceDetailsView.context.hasTracesAtCursor && dbux.context.showNavButton",
           "group": "navigation@11"
         }
       ],
@@ -603,42 +618,42 @@
       "view/title": [
         {
           "command": "dbuxCallGraphView.setFilter",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering == false",
+          "when": "view == dbuxCallGraphView && !dbuxCallGraphView.context.filtering",
           "group": "navigation"
         },
         {
           "command": "dbuxCallGraphView.clearFilter",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering == true",
+          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.filtering",
           "group": "navigation"
         },
         {
           "command": "dbuxCallGraphView.showContext",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError == true",
+          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != context && dbuxCallGraphView.context.hasError",
           "group": "navigation"
         },
         {
           "command": "dbuxCallGraphView.showError",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError == true",
+          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.mode != error && dbuxCallGraphView.context.hasError",
           "group": "navigation"
         },
         {
           "command": "dbuxCallGraphView.showError.disabled",
-          "when": "view == dbuxCallGraphView && dbuxCallGraphView.context.hasError == false",
+          "when": "view == dbuxCallGraphView && !dbuxCallGraphView.context.hasError",
           "group": "navigation"
         },
         {
           "command": "dbuxCallGraphView.selectError",
-          "when": "view == dbuxTraceDetailsView && dbuxCallGraphView.context.hasError == true",
+          "when": "view == dbuxTraceDetailsView && dbuxCallGraphView.context.hasError",
           "group": "navigation@25"
         },
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
-          "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == true",
+          "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor",
           "group": "navigation@20"
         },
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor.empty",
-          "when": "view == dbuxTraceDetailsView && dbuxTraceDetailsView.context.hasTracesAtCursor == false",
+          "when": "view == dbuxTraceDetailsView && !dbuxTraceDetailsView.context.hasTracesAtCursor",
           "group": "navigation@20"
         },
         {
@@ -648,12 +663,12 @@
         },
         {
           "command": "dbux.showGraphView",
-          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive == false",
+          "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.isActive",
           "group": "navigation@10"
         },
         {
           "command": "dbux.hideGraphView",
-          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive == true",
+          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive",
           "group": "navigation@10"
         },
         {
@@ -663,12 +678,12 @@
         },
         {
           "command": "dbux.startRuntimeServer",
-          "when": "view == dbuxApplicationsView && dbux.context.runtimeServerStarted == false",
+          "when": "view == dbuxApplicationsView && !dbux.context.runtimeServerStarted",
           "group": "navigation@7"
         },
         {
           "command": "dbux.stopRuntimeServer",
-          "when": "view == dbuxApplicationsView && dbux.context.runtimeServerStarted == true",
+          "when": "view == dbuxApplicationsView && dbux.context.runtimeServerStarted",
           "group": "navigation@8"
         },
         {
@@ -693,6 +708,130 @@
         }
       ],
       "commandPalette": [
+        {
+          "command": "dbux.doActivate",
+          "when": "!dbux.context.activated"
+        },
+        {
+          "command": "dbux.backendLogin",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.debugFile",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.exportApplicationData",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.hideDecorations",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.hideGraphView",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.runFile",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.selectTrace",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.showDecorations",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.showGraphView",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.showHelp",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.resetPracticeProgress",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.showOutputChannel",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.startRuntimeServer",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.stopRuntimeServer",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.systemCheck",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.toggleErrorLog",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.toggleNavButton",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.togglePracticeView",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxProjectView.showDiff",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextChildContext",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextInContext",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextParentContext",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextStaticTrace",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.NextTrace",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousChildContext",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousInContext",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousParentContext",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousStaticTrace",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxTraceDetailsView.navigation.PreviousTrace",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxTraceDetailsView.selectTraceAtCursor",
+          "when": "dbux.context.activated"
+        },
         {
           "command": "dbuxCallStackView.itemClick",
           "when": "false"
@@ -803,6 +942,12 @@
       {
         "title": "Dbux",
         "properties": {
+          "dbux.autoStart": {
+            "type": "boolean",
+            "default": false,
+            "description": "Auto start Dbux when opening vscode",
+            "scope": "resource"
+          },
           "dbux.run.dbuxArgs": {
             "type": "string",
             "default": "--esnext",
@@ -869,15 +1014,29 @@
     "watch": "node ../node_modules/webpack/bin/webpack.js --watch --info-verbosity verbose --progress"
   },
   "devDependencies": {
+    "@dbux/babel-plugin": "^0.2.4-dev.0",
+    "@dbux/cli": "^0.2.4-dev.0",
+    "@dbux/common": "^0.2.4-dev.0",
+    "@dbux/data": "^0.2.4-dev.0",
+    "@dbux/graph-common": "^0.2.4-dev.0",
+    "@dbux/graph-host": "^0.2.4-dev.0",
+    "@dbux/projects": "^0.2.4-dev.0",
+    "@dbux/runtime": "^0.2.4-dev.0",
     "@types/glob": "^7.1.1",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.11.7",
     "@types/vscode": "^1.41.0",
     "copy-webpack-plugin": "^6.0.3",
     "glob": "^7.1.5",
+    "lodash": "^4.17.19",
     "mocha": "^6.2.2",
+    "moment": "^2.24.0",
+    "nanoevents": "^5.1.8",
+    "socket.io": "^2.3.0",
+    "strip-color": "^0.1.0",
     "terser-webpack-plugin": "^4.1.0",
     "typescript": "^3.6.4",
+    "uuid": "^8.3.0",
     "vsce": "^1.77.0",
     "vscode-test": "^1.2.2",
     "webpack": "^4.41.5",
@@ -886,20 +1045,8 @@
     "webpack-node-externals": "^2.5.0"
   },
   "dependencies": {
-    "@dbux/babel-plugin": "^0.2.1-dev.0",
-    "@dbux/cli": "^0.2.1-dev.0",
-    "@dbux/common": "^0.2.1-dev.0",
-    "@dbux/data": "^0.2.1-dev.0",
-    "@dbux/graph-common": "^0.2.1-dev.0",
-    "@dbux/graph-host": "^0.2.1-dev.0",
-    "@dbux/projects": "^0.2.1-dev.0",
-    "@dbux/runtime": "^0.2.1-dev.0",
-    "firebase": "^7.17.2",
-    "lodash": "^4.17.19",
-    "moment": "^2.24.0",
-    "nanoevents": "^5.1.8",
-    "socket.io": "^2.3.0",
-    "strip-color": "^0.1.0"
+    "firebase": "7.17.2",
+    "lockfile": "^1.0.4"
   },
   "_moduleAliases": {}
 }

@@ -41,7 +41,7 @@ export class ProjectViewController {
     this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
 
-    this.isShowingTreeView = mementoGet(showProjectViewKeyName, false);
+    this.isShowingTreeView = mementoGet(showProjectViewKeyName, true);
     commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
 
     // ########################################
@@ -96,7 +96,7 @@ export class ProjectViewController {
 
     const options = {
       cancellable: false,
-      title: `[dbux] Testing bug ${bugNode.bug.project.name}@${bugNode.bug.name}`
+      title: `[dbux] Bug ${bugNode.bug.project.name}@${bugNode.bug.name}`
     };
 
     return runTaskWithProgressBar(async (progress/* , cancelToken */) => {

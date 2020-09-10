@@ -2,15 +2,22 @@
 import merge from 'lodash/merge';
 // import { getItem, setItem } from '../util/localStorage';
 import NanoEvents from 'nanoevents';
+import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-
-import { newLogger } from '@dbux/common/src/log/logger';
 
 import State from './State';
 import NotLoaded from './NotLoaded';
 import { docToSimpleObject } from './firebaseUtil';
 // import { logInstrumentAllMethodCalls } from '../util/traceLog';
+
+/** @typedef {import('./db').Db} Db */
+
+const logger = newLogger('FirestoreContainer');
+
+// eslint-disable-next-line no-unused-vars
+const { debug, log } = logger;
+const Verbose = true;
 
 // const TraceLog = false;
 
@@ -120,23 +127,37 @@ class FirestoreContainer {
 
   emitter = new NanoEvents();
 
+  /**
+   * 
+   * @param {Db} db 
+   * @param {String} collectionName 
+   * @param {State} state 
+   */
   constructor(db, collectionName, state) {
     this.db = db;
     this.collectionName = collectionName;
-    this.collection = db.collection(collectionName);
 
     this.state = state || new State();
 
     this.logger = newLogger(`Db.${collectionName}`);
+
+    this._mementoKeyName = `dbux.projects.backend.container.${collectionName}`;
 
     // if (TraceLog) {
     //   logInstrumentAllMethodCalls(`FSC[${collectionName}]`, this);
     // }
   }
 
+  init() {
+  }
+
   // ########################################
   // Getters
   // ########################################
+
+  get collection() {
+    return this.db.collection(this.collectionName);
+  }
 
   get name() {
     return this.collectionName;
@@ -674,6 +695,10 @@ class FirestoreContainer {
   async addDoc(data) {
     const docRef = this.newDocRef();
     return this.setDoc(docRef.id, data);
+  }
+
+  async addDocs(data) {
+    return this.addDoc({ entries: data });
   }
 
   /**

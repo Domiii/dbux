@@ -6,48 +6,49 @@
 
 # Introduction
 
-TODO: better explanation here
+Dbux aims at helping analyze the execution of JavaScript programs by recording (almost) all runtime data, visualizationg it and making it interactive, thereby (hopefully) helping developers (i) improve program comprehension and (ii) reduce time spent on finding bugs.
 
-Dbux aims at visualizing the JS runtime and making it interactive, hopefully helping developers improve their (i) program comprehension and (ii) debugging techniques.
+This video explains what Dbux is and features **two examples** of how to use the Dbux VSCode extension:
+
+<a href="https://www.youtube.com/watch?v=m1ANEuZJFT8" target="_blank" alt="video">
+   <img src="https://img.youtube.com/vi/m1ANEuZJFT8/0.jpg">
+</a>
 
 If you have any questions or are interested in the progress of this project, feel free to [join us on DISCORD](https://discord.gg/QKgq9ZE).
 
-Here is a 20 minute intro video with two hands-on examples:
+# Getting Started
 
-<a href="https://www.youtube.com/watch?v=scxIcn1X3X4" target="_blank" alt="video">
-   <img src="https://img.youtube.com/vi/scxIcn1X3X4/0.jpg">
-</a>
+We recommend getting started with Dbux by playing around with the [Dbux VSCode extension](dbux-code#readme).
 
-We recommend getting started with Dbux by playing around with the [Dbux VSCode Plugin](dbux-code#readme).
+This page covers more broad topics related to the Dbux project:
 
-If you are already familiar with the Plugin, feel free to further investigate further:
-
-1. [Introduction](#introduction)
-2. [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
-3. [Which files will be traced?](#which-files-will-be-traced)
-4. [Performance](#performance)
-5. [Known Limitations](#known-limitations)
-   1. [async/await](#asyncawait)
-   2. [Loops](#loops)
-   3. [Other Syntax Limitations](#other-syntax-limitations)
-   4. [Problems with Values](#problems-with-values)
-   5. [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
-   6. [Heisenbugs](#heisenbugs)
-   7. [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
-   8. [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
-   9. [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
-   10. [Issues under Windows](#issues-under-windows)
-6. [Dbux Data Analysis](#dbux-data-analysis)
-7. [Dbux Architecture](#dbux-architecture)
-   1. [Call Graph GUI Implementation](#call-graph-gui-implementation)
-8. [Terminology](#terminology)
-   1. [Trace and Static Trace](#trace-and-static-trace)
-   2. [Context and Static Context](#context-and-static-context)
-   3. [Run](#run)
-   4. [Call Graph](#call-graph)
-      1. [Asynchronous Call Graph](#asynchronous-call-graph)
-9. [How is Dbux being used?](#how-is-dbux-being-used)
-10. [Development + Contributions](#development--contributions)
+- [Introduction](#introduction)
+- [Getting Started](#getting-started)
+- [Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)
+- [Which files will be traced?](#which-files-will-be-traced)
+- [Performance](#performance)
+- [Known Limitations](#known-limitations)
+  - [async/await](#asyncawait)
+  - [Loops](#loops)
+  - [Other Syntax Limitations](#other-syntax-limitations)
+  - [Problems with Values](#problems-with-values)
+  - [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
+  - [Heisenbugs](#heisenbugs)
+  - [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
+  - [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
+  - [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
+  - [Issues on Windows](#issues-on-windows)
+- [Dbux Data Analysis](#dbux-data-analysis)
+- [Dbux Architecture](#dbux-architecture)
+  - [Call Graph GUI Implementation](#call-graph-gui-implementation)
+- [Terminology](#terminology)
+  - [Trace and Static Trace](#trace-and-static-trace)
+  - [Context and Static Context](#context-and-static-context)
+  - [Run](#run)
+  - [Call Graph](#call-graph)
+    - [Asynchronous Call Graph](#asynchronous-call-graph)
+- [How is Dbux being used?](#how-is-dbux-being-used)
+- [Development + Contributions](#development--contributions)
 
 
 # Adding Dbux to your build pipeline
@@ -74,7 +75,7 @@ When running Dbux, most relevant parts of the code will be traced. However it wi
 
 * When using the "Run button", we trace all executed code, but ignore anything in `node_modules` and `dist` folders.
    * This logic is hard-coded in [dbux-cli/src/util/buildBabelOptions.js](dbux-cli/src/util/buildBabelOptions.js).
-   * In the future we hope to support a babel config override.
+   * Soon you will be able to override the `dbux-cli`'s default babel config.
 * You can easily control what to instrument if you add `@dbux/babel-plugin` to your build pipeline.
    * via Babel [`test`, `include`, `exclude` and `only` config options](https://babeljs.io/docs/en/options#test)
    * via Webpack [rule conditions](https://webpack.js.org/configuration/module/#rule-conditions)
@@ -86,27 +87,31 @@ There are many performance considerations in tracing and recording *all* activit
 
 Main considerations include:
 
+* Instrumentation via [`@dbux/cli`](dbux-cli#readme) is slow.
+  * It uses [`@babel/register`](https://babeljs.io/docs/en/babel-register) (currently with babel-cache disabled) which itself can be very slow, since it re-instruments every file on every run.
+  * If you want to speed things up, do not use `@dbux/cli`, but use the `@dbux/babel-plugin` directly, in combination with Webpack (or some other bundler) in *watch mode*, so it will only instrument code that has been changed, rather than *everything* all the time.
 * In order to render the value of variables, we need to actually copy all variables anytime they are used in any way.
    * That can get very slow very fast if your code operates on large arrays, objects and strings.
    * That is why we have a few parameters to tune.
    * Currently, those parameters are hardcoded and cannot be configured from the outside.
    * Tracked in #217
 * When executing *a lot of stuff* (e.g. long loops or high FPS games etc), things will get slow
-   * Instead of recording *everything*, we might want to be able to choose what to record, and when.
-   * For example: Dbux probably won't really work at all if you run it on a 30+FPS game.
-      * In that case, we might want to be very strategic in telling Dbux to only record: (i) initialization, (ii) a select few other functions and then (iii) several frames of the gameloop for our analysis.
-   * However, Dbux does not currently have such fine-grained control over the recording process.
+   * In the future, instead of recording *everything*, we might want to be able to choose what to record, and when.
+      * For example: Dbux probably won't really work at all if you run it on a 30+FPS game.
+         * In that case, we might want to be very strategic in telling Dbux to only record: (i) initialization, (ii) a select few other functions and then (iii) several frames of the gameloop for our analysis.
+   * However, that is future work. Dbux does not currently have such fine-grained control over the recording process.
    * Tracked in issue#219
-* When running a program with Dbux enabled, and also running it in debug mode (i.e. `--inspect` or `--inspect-brk`), things probably slow down even worse. Consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features unless there is a specific Debugger functionality that Dbux cannot compete with (of which arguably there might be a few, that are valuable in some circumstances).
+* When running a program with Dbux enabled, and also running it in debug mode (i.e. `--inspect` or `--inspect-brk`), things probably slow down even worse. When things get too slow, you might want to consider using the `Run` button instead of the `Debug` button, and use the Dbux built-in features for debugging; unless there are some features in the traditional debugger that you just cannot live without in some specific circumstances.
 
 
 # Known Limitations
 
 ## async/await
 
-* `async/await` might be quite broken, and will probably lead to problems when trying to run JS code with `await` in it.
-* NOTE: Yes, this is an absolutely vital feature of modern JavaScript and we hate to not have it working yet (despite having already spent quite some time on it).
-* Tracked in #128.
+* Instrumentation of `async/await` is largely untested. We cannot yet guarantee it fully working.
+* NOTE: Yes, we also believe that this is an absolutely vital feature of modern JavaScript and we hate to not have it fully working yet (despite having already spent quite some time on it).
+* This is tracked in #128.
+* If concerned about `async/await`, you might also be interested in the separate [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking) feature.
 
 ## Loops
 
@@ -134,7 +139,7 @@ The following JS syntax constructs are not supported at all or support is limite
 Because of [performance](#performance) reasons, we cannot record *everything*.
 
 * Big objects, arrays and strings are truncated (see [performance](#performance) for more information).
-* We currently do not properly handle certain built-in types (such as `Map` and `Set`) correctly, will probably not show up correctly.
+* We currently do not properly handle certain built-in types (such as `Map` and `Set`) correctly; will probably not really reveal much.
 
 
 ## Calling `process.exit` as well as uncaught exceptions are not handled properly
@@ -151,19 +156,21 @@ Because of [performance](#performance) reasons, we cannot record *everything*.
 By trying to observe a program, while definitely not intending to, you will inevitably change its behavior leading to the [observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics)) leading to [heisenbugs](https://en.wikipedia.org/wiki/Heisenbug). Here are a few already known sources for Heisenbugs:
 
 * Property getters with [side effects](https://softwareengineering.stackexchange.com/questions/40297/what-is-a-side-effect) will be called automatically by `Dbux` (to get all that juicy runtime data) and potentially break things
-   * Dbux tracks data in real-time, by reading variables, objects, arrays etc.
-   * It also reads all (or at least many) properties of objects, thereby unwittingly causing side-effects of any property.
-   * e.g. `class A { count = 0; get x() { return ++this.count; } }; const a = new A(); // dbux will read x when tracing the constructor call, and thus unwittingly change count`
-      * -> In this case, dbux will certainly break your program, or at the very least your count will be off
-   * e.g. `const o = { get z() { console.log('z called'); return 42; } } // dbux will read z and you will see an unwanted "z called" in your console, probably rendering the user confused`
-   * -> The good news is that you can prevent this by writing side-effect-free getters (in most cases, getters are supposed to be side-effect-free)!
-* Proxies
+   * Dbux tracks data in real-time, by reading and recording variables, objects, arrays etc.
+   * It also reads all (or at least many) properties of objects, thereby unwittingly causing property side-effects.
+   * Examples:
+      * `class A { count = 0; get x() { return ++this.count; } }; const a = new A();`
+         * When Dbux reads `x` (when tracing the constructor call) it will unwittingly change `this.count`.
+      * `const o = { get z() { console.log('z called'); return 42; } }`
+         * When Dbux reads `z`, and you will see an unwanted "z called" in your console.
+   * The only way to prevent these bugs is (currently) by writing side-effect-free getters (in most cases, getters are supposed to be side-effect-free anyway).
+* [Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
    * As explained in the previous point, [@dbux/runtime](dbux-runtime] iterates over and collects values of object properties automatically in its quest for gathering runtime data.
-   * As discussed [here](https://stackoverflow.com/questions/36372611/how-to-test-if-an-object-is-a-proxy), [Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) are transparent by design. I.e. there is no general way to determine if something is a proxy or not.
+   * As discussed [here](https://stackoverflow.com/questions/36372611/how-to-test-if-an-object-is-a-proxy), [Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) are transparent by design; meaning there is no general way to determine if something is a proxy or not.
    * At the same time, Proxy property access, also very much by design, often has side effects.
    * -> This means that in many scenarios where Proxies (with side effects) are in play, you might just not be able to use Dbux properly.
 
-NOTE: There are ways to avoid these issues, for example by allowing in-line comment directives (like Eslint), but we sadly just don't have that yet. Tracked in issue #209.
+In the future, we will hope to more easily control what gets traced and when, to prevent accessing property getters with side-effects. For example by allowing in-line comment directives (just like Eslint does it), but we sadly just don't have that yet. Tracked in issue #209.
 
 ## `eval` and dynamically loaded code
 
@@ -172,12 +179,12 @@ As a general rule of thumb - Any dynamically loaded code will currently not be t
 Affected examples include:
 
 * Calling `eval` on non-instrumented code
-* Any kind of &lt;script> tags containing or referencing non-instrumented code
+* Any kind of `<script>` tags containing or referencing non-instrumented code
 
 In order to trace such code, the runtime would have to:
 
-1. (Probably) delay execution of the new piece of code
-2. "Babel the code" with @dbux/babel-plugin enabled.
+1. (Probably) stop execution of the application.
+2. "Babel the code" with `@dbux/babel-plugin` enabled.
 3. Replace the code with the instrumented version
 4. Resume.
 
@@ -192,24 +199,28 @@ While this is not impossible, we certainly do not currently support this feature
    2. [@dbux/cli](dbux-cli#readme) uses [@babel/register](https://babeljs.io/docs/en/babel-register) with a bunch of default settings.
    3. By default, babel treats js files as [ESModules](https://nodejs.org/api/esm.html) (or `esm`s), and ESModules have strict mode enabled by default. This is also discussed here: https://github.com/babel/babel/issues/7910
    4. NOTE: You can see the same syntax error when slightly modifying above example and running it in `node` (without Dbux) but with strict mode enabled: `"use strict"; var public = 3;`.
-* You should be able to customize the babel config and disable strict mode if you please. However we recommend to just work against strict mode to begin with.
+* See "[Adding Dbux to your build pipeline](#adding-dbux-to-your-build-pipeline)" on how to customize the babel config
 
 
 ## Async Call Graph + Callback tracking
 
 Theoretically we should be able to track all callbacks and their data flow to the call site, however we don't do that properly quite yet.
 
-Some examples:
+That is because we currently only support a "synchronous call graph", meaning that **all** execution is organized in a single serial "thread". While that makes sense (especially since JavaScript is inherently single-threaded), logically we want to group "threads of asynchronous contexts" together.
+
+That means that, for now, invocation of promise callbacks (callbacks passed to `then()`, `catch()`, `finally()` etc.), and even resuming of an `async` function, will result in a new `run`, seen executing serially in the Call Graph, and you cannot easily trace a single promise or the execution of a asingle `async` function through the graph. Instead, they will be cut up into multiple pieces scattered across the linear Call Graph representation, and sprinkled with other unrelated calls that happen to occur in between.
+
+In other words:
 
 * When calling `setTimeout(f)`, you will see that `f` gets executed, but it's execution is not linked to the `setTimeout(f)` call that scheduled its execution.
-* The same problem exists with `Promise.then(f)`, and any instance where callbacks are used.
+* The same problem exists with `Promise.then(f)`, and, in general, any instance where callbacks are used.
 
-NOTE: This link between a caller passing a callback and the execution of that callback is considered an edge in the "asynchronous call graph", an elusive feature that we are planning to support, but don't have finished yet.
+This link between a caller passing a callback and the execution of that callback is considered an edge on the "asynchronous call graph", an elusive feature that we are planning to support, but don't have finished yet.
 
-The related "asynchronous call graph" feature is tracked in issue #210.
+The "Asynchronous Call Graph" feature is tracked in issue #210.
 
 
-## Issues under Windows
+## Issues on Windows
 
 * An entirely unrelated bug occurs **very rarely**, when running things in VSCode's built-in terminal, it might change to lower-case drive letter.
    * NOTE: Luckily, we have not seen this bug occur in quite some time.
@@ -291,25 +302,24 @@ The set of all runs comprise the "root nodes" of our Call Graph.
 
 ## Call Graph
 
-TODO
+Dbux records and visualizes the **Dynamic Call Graph** of JavaScript applications.
+
+TODO: a lot more to be said here.
 
 ### Asynchronous Call Graph
 
-Currently, we only support a "synchronous call graph", meaning that **all** execution is organized in a single serial thread. While that makes sense (especially since JavaScript is inherently single-threaded), logically we want to group "threads of asynchronous contexts" together.
-
-That means that, for now, invocation of promise callbacks (callbacks passed to `then()`, `catch()`, `finally()` etc.), and even resuming of an `async` function will result in a new `run`, seen executing serially in the Call Graph, and you cannot easily trace a single promise or the execution of a asingle `async` function. Instead, they will be cut up into multiple pieces scattered across the linear Call Graph representation, and sprinkled with other unrelated calls that happen to occur in between.
-
-The "asynchronous call graph" feature is tracked in issue #210.
+TODO
 
 
 # How is Dbux being used?
 
+* [dbux-practice](dbux-projects#readme) (still in development) aims to make it very easy for anyone to practice/improve their debugging skills by training on real-world bugs in pre-configured environments featuring popular open source software.
 * This [proxy-play](https://github.com/Domiii/proxy-play) experiment acts as a proxy to inject Dbux into all scripts of any website, before they execute in the browser, thereby allowing to analyze any website's scripts with Dbux.
 
 
-(NOTE: Dbux only started going public on 2020/8/31, so not a lot of uses can be accounted for yet)
+(NOTE: Dbux only went public in Sept 2020. We expect this list to grow over time.)
 
 
 # Development + Contributions
 
-If you are interested in Dbux development and maybe even want to participate or contribute, please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+If you are interested in Dbux development and maybe even want to participate or contribute, feel free to take a look at [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).

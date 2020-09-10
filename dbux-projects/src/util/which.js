@@ -10,7 +10,11 @@ const logger = newLogger('which');
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
-const option = { failOnStatusCode: false };
+const defaultProcessOptions = { 
+  failOnStatusCode: false,
+  logStdout: true,
+  logStderr: true
+};
 
 /**
  * Get real path of `path` by `fs.realpathSync`.
@@ -41,9 +45,10 @@ export default async function which(command) {
     throw new Error(`Couldn't find which or where.exe in current system.`);
   }
 
-  let result = await Process.execCaptureAll(`${whichCommand} ${command}`, option);
+  const cmd = `${whichCommand} ${command}`;
+  let result = await Process.execCaptureAll(cmd, defaultProcessOptions);
   if (result.code) {
-    throw new Error(`Couldn't find ${command} in $PATH.`);
+    throw new Error(`Couldn't find ${command} in $PATH. Got code ${result.code} when executing "${cmd}"`);
   }
 
   let paths = result.out.split('\n');
@@ -73,23 +78,27 @@ export async function lookupWhich() {
     return whichWhich;
   }
 
-  let whereResult = await Process.execCaptureAll(`where.exe where.exe`, option);
+  whichWhich = '';
+
+  let whereResult = await Process.execCaptureAll(`where.exe where.exe`, defaultProcessOptions);
   if (!whereResult.code) {
     let path = getRealPath(whereResult.out);
     if (path) {
-      return whichWhich = path;
+      whichWhich = path;
     }
   }
 
-  let whichResult = await Process.execCaptureAll(`which which`, option);
+  let whichResult = await Process.execCaptureAll(`which which`, defaultProcessOptions);
   if (!whichResult.code) {
     let path = getRealPath(whichResult.out);
     if (path) {
-      return whichWhich = path;
+      whichWhich = path;
     }
   }
 
-  return '';
+  debug('whichWhich:', whichWhich);
+
+  return whichWhich;
 }
 
 export async function hasWhich() {

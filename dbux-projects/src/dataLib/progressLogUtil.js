@@ -56,7 +56,7 @@ export default {
     for (const key of Object.keys(update)) {
       bugProgress[key] = update[key];
     }
-    bugProgress.updateAt = Date.now();
+    bugProgress.updatedAt = Date.now();
   },
 
   /**

@@ -61,7 +61,7 @@ export default class TerminalWrapper {
             result = { code: parseInt(filename, 10) };
           }
 
-          Verbose && debug('Client finished. Result:', result);
+          Verbose && debug('Terminal command finished. Result:', JSON.stringify(result));
           fs.unlinkSync(path.join(tmpFolder, filename));
           resolve(result);
           resolved = true;

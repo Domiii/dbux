@@ -220,8 +220,8 @@ async function writeAndCommitNewVersion() {
   const version = await getDbuxVersion();
   const fpath = path.join(__dirname, '../version.txt');
   fs.writeFileSync(fpath, version);
-  await exec(`git commit`);
-  await exec(`git push`);
+  await run(`git commit -am "version bump"`);
+  await run(`git push`);
 }
 
 async function bumpToDevVersion() {
@@ -308,8 +308,6 @@ async function main() {
   await fixLerna();
 
   await bumpToDevVersion();
-
-  // TODO: update version.txt so our HEAD is not pushed (which we need for `lerna version --no-publish` to work)
 
   await pushToDev();
 

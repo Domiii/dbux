@@ -13,6 +13,10 @@ module.exports = {
   globals: {
   },
 
+  rules: {
+    "import/no-extraneous-dependencies": ["error", { devDependencies: true }]
+  },
+
   settings: {
     'import/resolver': {
       // hackfix: https://github.com/benmosher/eslint-plugin-import/issues/1396#issuecomment-511007063

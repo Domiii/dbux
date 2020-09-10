@@ -8,7 +8,7 @@ export default class TestRun {
   constructor(bug, result, patch) {
     this.projectName = bug.project.name;
     this.bugId = bug.id;
-    this.createAt = Date.now();
+    this.createdAt = Date.now();
     this.nFailedTests = result.code;
     this.timer = undefined;
     this.patch = patch;
