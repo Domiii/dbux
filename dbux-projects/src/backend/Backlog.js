@@ -1,5 +1,6 @@
+import merge from 'lodash/merge';
 import { newLogger } from '@dbux/common/src/log/logger';
-import isEqual from 'lodash/isEqual';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import SafetyStorage from './SafetyStorage';
 
 /**
@@ -12,6 +13,10 @@ const { log, debug, warn, error: logError } = newLogger('Backlog');
 const Verbose = false;
 
 const keyName = 'dbux.projects.backend.backlog';
+
+function isSameEntry(e1, e2) {
+  return e1.containerName === e2.containerName && e1.id === e2.id;
+}
 
 export default class Backlog extends SafetyStorage {
   /**
@@ -44,7 +49,20 @@ export default class Backlog extends SafetyStorage {
 
     try {
       let backlog = this.safeGet();
-      backlog.push(writeRequest);
+      let editTarget;
+      for (let entry of backlog) {
+        if (isSameEntry(entry, writeRequest)) {
+          editTarget = entry;
+        }
+      }
+
+      if (!editTarget) {
+        backlog.push(writeRequest);
+      }
+      else {
+        merge(editTarget.data, writeRequest.data);
+      }
+
       await this.set(backlog);
     } 
     finally {
@@ -104,7 +122,7 @@ export default class Backlog extends SafetyStorage {
   }
 
   /**
-   * Remove `request` from backlog. Use `lodash.isEqual` to check whether the two item is equal. Only remove once if there is more than one.
+   * Remove requests have same `containerName` and `id` with `request` from backlog. 
    * Pending request may not resolve in requested order, so we need to find it in backlog and delete it.
    * @param {object} request 
    */
@@ -114,11 +132,8 @@ export default class Backlog extends SafetyStorage {
     await this.acquireLock();
 
     try {
-      let deleted = false;
       let backlog = this.safeGet().filter((entry) => {
-        let deleteThis = isEqual(request, entry) && !deleted;
-        deleted |= deleteThis;
-        return !deleteThis;
+        return isSameEntry(entry, request);
       });
       await this.set(backlog);
     }
