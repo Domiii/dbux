@@ -49,7 +49,7 @@ function syncCodeCommands() {
 
   const nonUserCommandsById = {};
   packageJson.contributes.menus.commandPalette
-    .filter(cmd => cmd.when === 'false' || cmd.when.includes('dbux.context.nodeEnv == development'))
+    .filter(cmd => cmd.when === 'false')
     .forEach(cmd => nonUserCommandsById[cmd.command] = cmd);
 
   const oldCommandById = {};
@@ -85,6 +85,9 @@ function syncCodeCommands() {
   for (const id in oldCommandById) {
     const cmd = oldCommandById[id];
     cmd.description = cmd.description || '';
+    if (buttonCommandsById[id].when.includes('dbux.context.nodeEnv == development')) {
+      cmd.dev = true;
+    }
     delete cmd.icon;
   }
 
@@ -109,7 +112,7 @@ const markdownReplacers = {
   codeCommands() {
     syncCodeCommands();
     const commandJsonPath = getCommandJsonPath();
-    const commands = readJsonFile(commandJsonPath);
+    const commands = readJsonFile(commandJsonPath).filter(cmd => !cmd.dev);
     return tablemark(commands);
     // console.table(
     //   Object.fromEntries(
