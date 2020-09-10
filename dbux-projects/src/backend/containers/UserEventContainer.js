@@ -34,6 +34,8 @@ export default class UserEventContainer extends BufferedFirestoreContainer {
       createdAt: new Date(),
     };
 
+    debug('Get event', name, data);
+
     (async () => {
       try {
         await this.add(event);
