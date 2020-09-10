@@ -428,6 +428,9 @@ export default class ProjectsManager {
   // ###########################################################################
   async showBugLog(bug) {
     await this.getAndInitBackend();
+    await this._backend.login();
+    // Rules not edit yet, so needs login to read
+
     let collectionRef = this._backend.db.collection('userEvents');
     let result = await collectionRef.get();
     let allData = [];
@@ -438,5 +441,18 @@ export default class ProjectsManager {
       });
     });
     this.externals.editor.showTextInNewFile('all.json', JSON.stringify(allData, null, 2));
+  }
+
+  async deleteUserEvents() {
+    await this.getAndInitBackend();
+    await this._backend.login();
+    // Rules not edit yet, so needs login to read
+
+    let collectionRef = this._backend.db.collection('userEvents');
+    let result = await collectionRef.get();
+    await result.forEach(async (doc) => {
+      await doc.ref.delete();
+      debug('deleted', doc.id);
+    });
   }
 }

@@ -178,6 +178,13 @@ export function initUserCommands(extensionContext) {
     return backend.containers.survey1.storeSurveyResult(data);
   });
 
+  registerCommand(extensionContext, 'dbux.deleteUserEvents', async () => {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('This command is currently disabled in Production mode.');
+    }
+    await getOrCreateProjectManager().deleteUserEvents();
+  });
+
   // ###########################################################################
   // system check
   // ###########################################################################

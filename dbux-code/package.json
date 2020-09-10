@@ -462,6 +462,11 @@
           "light": "resources/light/document.svg",
           "dark": "resources/dark/document.svg"
         }
+      },
+      {
+        "command": "dbux.deleteUserEvents",
+        "title": "Delete all user events ********** WARNING ***********"
+      },
       }
     ],
     "menus": {
@@ -835,6 +840,10 @@
         },
         {
           "command": "dbuxTraceDetailsView.selectTraceAtCursor",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.deleteUserEvents",
           "when": "dbux.context.activated"
         },
         {
