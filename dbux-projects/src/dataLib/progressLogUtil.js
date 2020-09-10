@@ -12,18 +12,6 @@ export default {
   // ###########################################################################
 
   /**
-   * After a attempt, store TestRun, updateBugProgress and save to ExternalStorage
-   * @param {ProgressLogController} plc 
-   * @param {Bug} bug 
-   * @param {any} result 
-   */
-  async processBugRunResult(plc, bug, result) {
-    await plc.util.addTestRun(bug, result);
-    plc.util.updateBugProgressStatusByResult(bug, result);
-    await plc.save();
-  },
-
-  /**
    * NOTE: A unfinished TestRun is saved with result.code = -1
    * @param {ProgressLogController} plc 
    * @param {Bug} bug 
@@ -44,6 +32,7 @@ export default {
     }
     const testRun = new TestRun(bug, result, patchString);
     plc.progressLog.testRuns.push(testRun);
+    return testRun;
   },
 
   /**
@@ -60,15 +49,18 @@ export default {
   },
 
   /**
+   * Update bug progress if result is better than before
    * @param {ProgressLogController} plc 
    * @param {Bug} bug 
    * @param {Object} result
    */
-  updateBugProgressStatusByResult(plc, bug, result) {
+  updateBugStatusByResult(plc, bug, result) {
     const resultStatus = result.code ? BugStatus.Attempted : BugStatus.Solved;
-    
-    const update = { status: resultStatus };
-    plc.util.updateBugProgress(bug, update);
+    const bugProgress = plc.util.getBugProgressByBug(bug);
+
+    if (bugProgress.status < resultStatus) {
+      plc.util.updateBugProgress(bug, { status: resultStatus });
+    }
   },
 
   /**
@@ -76,8 +68,8 @@ export default {
    * @param {Bug} bug
    * @return {BugProgress}
    */
-  addNewBugProgress(plc, bug, status = BugStatus.None) {
-    const bugProgress = new BugProgress(bug, status);
+  addNewBugProgress(plc, bug, status, stopwatchEnabled) {
+    const bugProgress = new BugProgress(bug, status, stopwatchEnabled);
     plc.progressLog.bugProgresses.push(bugProgress);
     return bugProgress;
   },

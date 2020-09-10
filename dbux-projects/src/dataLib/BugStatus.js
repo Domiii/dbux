@@ -6,8 +6,7 @@ let BugStatus = {
   None: 1,
   Solving: 2,
   Attempted: 3,
-  Solved: 4,
-  ActivatedWithoutTimer: 5
+  Solved: 4
 };
 
 BugStatus = new Enum(BugStatus);

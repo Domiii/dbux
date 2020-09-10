@@ -50,12 +50,13 @@ export class ProjectViewController {
     this.treeDataProvider = new ProjectNodeProvider(context, this);
 
     this.practiceStopwatch = getStopwatch();
-    this.practiceStopwatch.onClick(context, this.maybeStopWatch.bind(this));
+    this.practiceStopwatch.onClick(context, this.maybeStopStopwatch.bind(this));
 
     // ########################################
     //  listen on runStatusChanged
     // ########################################
     this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
+    this.manager.onBugStatusChanged(this.refreshIcon.bind(this));
   }
 
   get treeView() {
@@ -64,6 +65,10 @@ export class ProjectViewController {
 
   handleStatusChanged(status) {
     commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', RunStatus.is.Busy(status));
+    this.refreshIcon();
+  }
+
+  refreshIcon() {
     this.treeDataProvider.refreshIcon();
   }
 
@@ -110,10 +115,10 @@ export class ProjectViewController {
   // practice stopwatch
   // ###########################################################################
 
-  async maybeStopWatch() {
-    await showInformationMessage('Stop practice?', {
-      Stop: async () => {
-        await this.manager.stopPracticeSession();
+  async maybeStopStopwatch() {
+    await showInformationMessage('Are you sure you want to give up the timed challenge?', {
+      Yes: async () => {
+        await this.manager.giveupPractice();
       }
     });
   }

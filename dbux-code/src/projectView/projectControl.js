@@ -85,12 +85,19 @@ function createProjectManager(extensionContext) {
       set: storageSet,
     },
     async confirm(msg, modal = false) {
-      const confirmText = 'Ok';
-      const result = await window.showInformationMessage(msg, { modal }, confirmText, modal ? undefined : 'Cancel');
-      return result === confirmText;
+      const confirmText = 'Yes';
+      const refuseText = 'No';
+      const cancelText = 'Cancel';
+      const result = await window.showInformationMessage(msg, { modal }, confirmText, refuseText, modal ? undefined : cancelText);
+      if (result === undefined || result === 'Cancel') {
+        return null;
+      }
+      else {
+        return result === confirmText;
+      }
     },
-    alert(msg, modal = false) {
-      window.showInformationMessage(msg, { modal });
+    async alert(msg, modal = false) {
+      await window.showInformationMessage(msg, { modal });
     },
     TerminalWrapper,
     resources: {

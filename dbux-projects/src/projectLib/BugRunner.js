@@ -176,7 +176,7 @@ export default class BugRunner {
   /**
    * Run test bug command (if in debug mode, will wait for debugger to attach)
    * @param {Bug} bug
-   * @returns {ExecuteResult}
+   * @returns {Promise<ExecuteResult>}
    */
   async testBug(bug, cfg) {
     const { project } = bug;

@@ -5,6 +5,7 @@ import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
 import 'lodash';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
+/** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
 export default class BugNode extends BaseTreeViewNode {
   static makeLabel(bug) {
@@ -22,6 +23,9 @@ export default class BugNode extends BaseTreeViewNode {
     return this.entry;
   }
 
+  /**
+   * @return {ProjectsManager}
+   */
   get manager() {
     return this.treeNodeProvider.controller.manager;
   }
@@ -44,9 +48,9 @@ export default class BugNode extends BaseTreeViewNode {
       case BugStatus.Solving:
         return 'edit.svg';
       case BugStatus.Attempted:
-        return 'wrong.svg';
+        return progress.stopwatchEnabled ? 'wrong.svg' : 'wrong_bw.svg';
       case BugStatus.Solved:
-        return 'correct.svg';
+        return progress.stopwatchEnabled ? 'correct.svg' : 'correct_bw.svg';
     }
     return ' ';
   }
