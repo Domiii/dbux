@@ -1,8 +1,8 @@
-// import UserEventContainer from './UserEventContainer';
+import UserEventContainer from './UserEventContainer';
 import Survey1Container from './Survey1Container';
 
 const ContainerClasses = [
-  // UserEventContainer,
+  UserEventContainer,
   Survey1Container,
 ];
 

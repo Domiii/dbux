@@ -17,6 +17,7 @@ import { initGraphView } from './graphView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { maybeStartTutorialOnActivate, maybeStartSurvey1OnActivate } from './dialogs/dialogController';
 import { installDbuxDependencies, initInstallUtil } from './codeUtil/installUtil';
+import { initCodeEvents } from './practice/codeEvents';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -75,6 +76,8 @@ async function activate(context) {
 
     // for now, let's activate the graph view right away
     initGraphView();
+
+    initCodeEvents();
     
     await maybeStartTutorialOnActivate();
     await maybeStartSurvey1OnActivate();
