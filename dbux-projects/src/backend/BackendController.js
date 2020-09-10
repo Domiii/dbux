@@ -45,6 +45,8 @@ export default class BackndController {
     if (this._initialized) {
       return;
     }
+    this._initialized = true;
+
     await this.installBackendDependencies();
     await this.db.init();
 
@@ -55,8 +57,6 @@ export default class BackndController {
     }
 
     await this.db._replay();
-
-    this._initialized = true;
   }
 
   async getOrInitDb() {

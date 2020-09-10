@@ -56,6 +56,10 @@ export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbuxProjectView.node.showBugIntroduction', async (node) => {
     await node.showBugIntroduction();
   });
+
+  registerCommand(extensionContext, 'dbuxProjectView.node.showBugLog', async (node) => {
+    await node.showBugLog();
+  });
   
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
     return projectViewController.manager.runner.cancel();

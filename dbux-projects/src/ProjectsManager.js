@@ -422,4 +422,21 @@ export default class ProjectsManager {
   onTestFinished(cb) {
     return this.runner._emitter.on('testFinished', cb);
   }
+
+  // ###########################################################################
+  // Temporary backend stuff
+  // ###########################################################################
+  async showBugLog(bug) {
+    await this.getAndInitBackend();
+    let collectionRef = this._backend.db.collection('userEvents');
+    let result = await collectionRef.get();
+    let allData = [];
+    result.forEach(doc => {
+      allData.push({
+        id: doc.id,
+        data: doc.data(),
+      });
+    });
+    this.externals.editor.showTextInNewFile('all.json', JSON.stringify(allData, null, 2));
+  }
 }
