@@ -56,6 +56,117 @@ In the `analyze/` folder, you find several python notebooks that allow you analy
    * Other OSes
 1. Run one of the notebooks, load the file, and analyze
 
+## VSCode extension development
 
+### Adding a command/button
+
+(VSCode's buttons are representation of commands, you must add a command before adding a button)
+
+1. Register command in `contributes.commands` section of package.json as following(title and icon are optional):
+
+    ``` json
+    {
+      "commands": [
+        {
+          "command": "<COMMAND_ID>",
+          "title": "<TITLE>",
+          "icon": {
+            "light": "<PATH_TO_YOUR_ICON>",
+            "dark": "<PATH_TO_YOUR_ICON>"
+          }
+        }
+      ]
+    }
+    ```
+
+1. Bind the command with a callback function in js file:
+
+    ``` js
+    import { registerCommand } from './commands/commandUtil';
+    registerCommand(context, '<COMMAND_ID>', callback);
+    ```
+
+1. Depends on whether the command should be shown in command palette, add the following to `contributes.menus.commandPalette` section in package.json:
+
+    Show command in command palette
+    (use `"when": "!dbux.context.activated"` instead if you want show it before dbux has been activated)
+
+    ``` json
+    {
+      "commantPalette": [
+        {
+          "command": "<COMMAND_ID>",
+          "when": "dbux.context.activated"
+        }
+      ]
+    }
+    ```
+
+    Hide command from command palette
+
+    ``` json
+    {
+      "commantPalette": [
+        {
+          "command": "<COMMAND_ID>",
+          "when": "false"
+        }
+      ]
+    }
+    ```
+
+1. Finally, configure where the button should be shown(skip this step if you don't want a button):
+
+    To show button in...
+
+    - navigation bar(upper-right corner), add the following to `contributes.menus.editor/title`
+    
+    ``` json
+    {
+      "editor/title": [
+        {
+          "command": "<COMMAND_ID>",
+          "when": "dbux.context.activated",
+          "group": "navigation"
+        } 
+      ] 
+    }
+    ```
+
+    - tree view title, add the following to `contributes.menus.view/title`
+      ( `<VIEW_ID>` is defined in `contributes.views.dbuxViewContainer` section)
+
+    ``` json
+    {
+      "view/title": [
+        {
+          "command": "<COMMAND_ID>",
+          "when": "view == <VIEW_ID>",
+          "group": "navigation"
+        } 
+      ] 
+    }
+    ```
+
+    - tree view item, add the following to `contributes.menus.view/item/context`
+      ( `<VIEW_ID>` is defined in `contributes.views.dbuxViewContainer` section and `<NODE_CONTEXT_ID>` is defined programmatically in `TreeItem.contextValue` )
+
+    ``` json
+    {
+      "view/item/context": [
+        {
+          "command": "<COMMAND_ID>",
+          "when": "view == <VIEW_ID> && viewItem == <NODE_CONTEXT_ID>",
+          "group": "inline"
+        }
+      ]
+    }
+    ```
+
+    NOTES:
+
+    - You can sort buttons by adding suffix `@<number>` to `group` property. e.g. `"group": "inline@5"`
+    - If you remove `"group": "navigation"` , the button will be listed in a dropdown menu, see [Sorting of groups](https://code.visualstudio.com/api/references/contribution-points#Sorting-of-groups) for more information
+    - The `when` property defines when should the button be visible, see ['when' clause contexts](https://code.visualstudio.com/docs/getstarted/keybindings#_when-clause-contexts) for more available condition
 
 TODO: more to be said here in the future (consider https://gist.github.com/PurpleBooth/b24679402957c63ec426)
