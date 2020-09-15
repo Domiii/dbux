@@ -121,13 +121,12 @@ async function pullDev() {
   //   1: ['Yes', () => run(`git pull origin dev`)],
   //   2: 'No'
   // });
-  const result = await yesno('Pull dev?');
-  if (result) {
-    run(`git pull origin dev`);
+  const yes = !await yesno('Skip pull dev?');
+  if (yes) {
+    const pullDevResult = run(`git pull origin dev`);
 
     const ownName = path.basename(__filename);
-
-    if (result.stdout && result.stdout.includes(ownName)) {
+    if (pullDevResult && pullDevResult.includes(ownName)) {
       throw new Error(`Publish script ${ownName} (probably) has changed. Please run again to make sure.`);
     }
   }
