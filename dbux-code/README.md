@@ -85,8 +85,6 @@ The "Debug with Dbux" button does the same thing as the Run button but with `--i
 * You can configure both buttons in your workspace or user settings. See [Configuration](#configuration) for more details.
 * NOTE: Dbux architectural details are explained [here](https://github.com/Domiii/dbux/tree/master/#dbux-architecture).
 
-TODO: explain more
-
 
 # Analysis Features
 
