@@ -215,12 +215,10 @@ async function fixLerna() {
   await exec('npm run dbux-lerna-fix');
 }
 
-async function writeAndCommitNewVersion() {
+async function writeNewVersion() {
   const version = await getDbuxVersion();
   const fpath = path.join(__dirname, '../version.txt');
   fs.writeFileSync(fpath, version);
-  await run(`git commit -am "version bump"`);
-  await run(`git push`);
 }
 
 async function bumpToDevVersion() {
@@ -229,11 +227,15 @@ async function bumpToDevVersion() {
       console.error(`Something is wrong. We are already on a dev version (${await getDbuxVersion()}). Did version bump not succeed?`);
     }
     else {
+      // make sure we have at least one change (cannot downgrade without any committed changes)
+      await writeNewVersion();
+
       // bump version
       await exec(`npx lerna version prepatch --preid dev --yes --force-publish`);
 
-      // we do this to make sure that we can later on downgrade again (cannot downgrade without any committed changes)
-      await writeAndCommitNewVersion();
+      // commit + push
+      await run(`git commit -am "version bump"`);
+      await run(`git push`);
     }
   }
 }
