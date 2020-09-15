@@ -415,7 +415,9 @@ class FirestoreContainer {
     }
 
     this._started = true;
-    this._qualifiedName = `${this.collectionName}.${JSON.stringify(whereArgs || EmptyArray)}`;
+
+    // NOTE: we are not currently using _qualifiedName, and it also might need some partial sorting to actually work correctly
+    // this._qualifiedName = `${this.collectionName}.${JSON.stringify(whereArgs || EmptyArray)}`;
 
     // load from cache for optimistic UI
     this.loadFromCache();

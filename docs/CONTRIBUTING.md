@@ -25,7 +25,7 @@ While you can certainly try to get started on your own, you probably make your l
 git clone https://github.com/Domiii/dbux.git
 cd dbux
 code dbux.code-workspace # open project in vscode
-npm run dbux-install
+npm run i # install dependencies
 ```
 
 if dependencies bug out, run the (very aggressive) clean-up command: `npm run dbux-reinstall`
