@@ -261,7 +261,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     super.dispose();
 
     // Promise.resolve(this.waitForInit()).then(() => {
-    if (!this.isInitialized) {
+    if (!this.isInitialized && !silent) {
       throw new Error(this.debugTag + ' Trying to dispose before initialized');
     }
     for (const component of this.children) {

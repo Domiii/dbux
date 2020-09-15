@@ -48,7 +48,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
 
     // process DOM
     this.dom = new DOMWrapper(this);
-    this.dom.process();
+    this.dom.init();
 
     // call event
     this.setupEl();

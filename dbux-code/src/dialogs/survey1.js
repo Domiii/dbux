@@ -416,27 +416,34 @@ ${data.email || ''}`;
     },
 
     continueLater: {
-      text: `Do you want to continue our survey? (You are almost done)`,
+      kind: DialogNodeKind.Message,
+      text: `Dbux: Do you want to continue our survey? (You are almost done)`,
       async enter(currentState, stack, { goTo, waitAtMost }) {
         const waitTime = 24 * 60 * 60;
-        await waitAtMost(waitTime);
+        const resumeState = await waitAtMost(waitTime);
 
-        const previousState = stack[stack.length - 1];
-        if (!previousState) {
-          goTo('start');
+        if (resumeState) {
+          goTo(resumeState);
+        }
+        else {
+          // ensure edges is available
+          const previousState = stack[stack.length - 1];
+          if (!previousState) {
+            goTo('start');
+          }
         }
       },
-      async edges(currentState, stack) {
-        const previousState = stack[stack.length - 1];
-        return [
-          {
+      edges: [
+        function (currentState, stack) {
+          const previousState = stack[stack.length - 1];
+          return {
             text: `Ok`,
-            node: previousState.nodeName
-          },
-          whySurveyEdge,
-          showRecordedDataEdge
-        ];
-      }
+            node: previousState.name
+          };
+        },
+        whySurveyEdge,
+        showRecordedDataEdge
+      ]
     },
 
     // ###########################################################################
