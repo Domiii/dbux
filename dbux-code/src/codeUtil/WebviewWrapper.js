@@ -86,27 +86,19 @@ export default class WebviewWrapper {
    */
   async show() {
     // reveal or create
-    if (!this.reveal()) {
+    if (!this.panel) {
       this._createWebview();
       await this.restart();
     }
-  }
-
-  reveal() {
-    if (this.panel) {
-      // reveal
+    else {
       this.panel.reveal(this.getPreferredViewColumn());
-      return true;
     }
-    return false;
   }
 
   hide() {
     if (this.panel) {
       this.panel.dispose();
-      return true;
     }
-    return false;
   }
 
   // ###########################################################################
@@ -198,6 +190,7 @@ export default class WebviewWrapper {
       () => {
         // do further cleanup operations
         this.panel = null;
+        this.shutdownHost();
         this._setCurrentState(null);
         commands.executeCommand('setContext', 'dbuxWebView.context.isActive', false);
       },
