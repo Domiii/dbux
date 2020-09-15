@@ -76,9 +76,9 @@
 		"graph:build:watch": "cd dbux-graph-client && npm start",
 		"graph:build:watch:prod": "cd dbux-graph-client && yarn run start:prod",
 		"graph:build:prod": "cd dbux-graph-client && yarn run build:prod",
-		"graph:build:dev": "cd dbux-graph-client && yarn run build:dev",
-		"dbux-install": "echo 'WARNING: Make sure your shell is set to bash. Check https://bit.ly/3i2S8KE for how to set it up on Windows.' && npx lerna bootstrap --force-local && npx lerna link --force-local",
-		"dbux-reinstall": "yarn run dbux-uninstall && yarn run dbux-install",
+    "graph:build:dev": "cd dbux-graph-client && yarn run build:dev",
+		"i": "npx lerna bootstrap --force-local && npx lerna link --force-local",
+		"dbux-reinstall": "yarn run dbux-uninstall && yarn run i",
 		"dbux-all": "sh scripts/dbux-run-all.sh",
 		"dbux-uninstall": "yarn run build:clean && rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock && sh scripts/dbux-run-all.sh \"rm -rf ./node_modules && rm -f ./package-lock.json && rm -f yarn.lock\"",
 		"dbux-lerna-fix": "lerna exec -- node ../scripts/lerna-fix.js",
@@ -106,7 +106,8 @@
 		"zzold_p1-go": "cd ./projects/todomvc/examples/vanilla-es6/ && code ./webpack.config.js",
 		"zzold_p1-start": "cd ./projects/todomvc/examples/vanilla-es6/ && npm start",
 		"zz//": "# see: https://explainshell.com/explain?cmd=git+clean+-fdx",
-		"zzgit-clean-fdx": "git clean -fdx",
+    "zzgit-clean-fdx": "git clean -fdx",
+    "zz-bash-warning": "echo 'WARNING: Make sure your shell is set to bash. Check https://bit.ly/3i2S8KE for how to set it up on Windows.'",
 		"shapez-install": "git clone https://github.com/tobspr/shapez.io.git && cd shapez.io && git lfs pull && yarn && cd gulp && yarn && yarn gulp `# TODO: also install git-lfs + ffmpeg, see: https://github.com/tobspr/shapez.io/tree/master/.travis.yml`"
 	}
 }
