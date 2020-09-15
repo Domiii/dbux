@@ -294,6 +294,8 @@ async function main() {
 
   await pullDev();
 
+  await run('yarn run i');
+
   if (await bumpVersion()) {
     await publishToNPM();
   }
