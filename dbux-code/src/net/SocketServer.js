@@ -74,7 +74,7 @@ export async function initRuntimeServer(context) {
       _runtimeServerEmitter.emit('statusChanged', true);
     } catch (err) {
       server = null;
-      throw new Error(`Could not start runtime server. This may due to multiple instances opened.`);
+      throw new Error(`Could not start runtime server. This may be due to multiple instances opened.\n\n${err.stack}`);
     }
   }
 

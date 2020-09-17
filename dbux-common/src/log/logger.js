@@ -1,10 +1,14 @@
 /* eslint no-console: 0 */
 import NanoEvents from 'nanoevents';
-import EmptyArray from '../util/EmptyArray';
 
 const errors = [];
 
 const emitter = new NanoEvents();
+
+
+// ###########################################################################
+// reporting + flood gating
+// ###########################################################################
 
 const MinSecondsPerReport = 2;
 const MinGateReportThreshold = 1;
@@ -64,6 +68,10 @@ function reportUnchecked(...args) {
 export function onLogError(cb) {
   emitter.on('error', cb);
 }
+
+// ###########################################################################
+// Logger
+// ###########################################################################
 
 export class Logger {
   constructor(ns) {
@@ -125,19 +133,6 @@ function mergeOutputStreams(newStreams) {
   );
 }
 
-export function setOutputStreams(newOutputStreams, fullErrorStack = true) {
-  if (fullErrorStack) {
-    // fix up error logging to log Error.stack
-    // NOTE: by default, Error.toString returns only the message for some reason?
-    const cb = newOutputStreams.error;
-    newOutputStreams.error = (...args) => {
-      args = args.map(arg => arg instanceof Error ? arg.stack : arg);
-      cb(...args);
-    };
-  }
-  outputStreams = mergeOutputStreams(newOutputStreams);
-}
-
 function wrapNs(ns) {
   return ns && `[${ns}]` || '';
 }
@@ -167,6 +162,10 @@ export function logError(ns, ...args) {
   report('error', ns, ...args);
 }
 
+// ###########################################################################
+// more error handling stuff
+// ###########################################################################
+
 export function logInternalError(...args) {
   const msgArgs = ['[DBUX INTERNAL ERROR]', ...args];
   outputStreams.error(...msgArgs);
@@ -188,4 +187,22 @@ export function hasErrors() {
 
 export function getLastError() {
   return errors[errors.length - 1];
+}
+
+
+// ###########################################################################
+// setOutputStreams
+// ###########################################################################
+
+export function setOutputStreams(newOutputStreams, fullErrorStack = true) {
+  if (fullErrorStack) {
+    // fix up error logging to log Error.stack
+    // NOTE: by default, Error.toString returns only the message for some reason?
+    const cb = newOutputStreams.error;
+    newOutputStreams.error = (...args) => {
+      args = args.map(arg => arg instanceof Error ? arg.stack : arg);
+      cb(...args);
+    };
+  }
+  outputStreams = mergeOutputStreams(newOutputStreams);
 }
