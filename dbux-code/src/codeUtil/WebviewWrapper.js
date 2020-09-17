@@ -170,7 +170,7 @@ export default class WebviewWrapper {
       Uri.file(this.resourceRoot)
     ];
 
-    commands.executeCommand('setContext', 'dbuxWebView.context.isActive', true);
+    commands.executeCommand('setContext', `dbuxWebView.context.${this.webviewId}.isActive`, true);
 
     this.panel = window.createWebviewPanel(
       this.webviewId,
@@ -197,7 +197,7 @@ export default class WebviewWrapper {
         this.panel = null;
         this.shutdownHost();
         this._setCurrentState(null);
-        commands.executeCommand('setContext', 'dbuxWebView.context.isActive', false);
+        commands.executeCommand('setContext', `dbuxWebView.context.${this.webviewId}.isActive`, false);
       },
       null,
       _extensionContext.subscriptions
