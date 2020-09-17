@@ -66,13 +66,13 @@ export default class ProjectsManager {
 
     this._backend = new BackendController(this);
     this.progressLogController = new ProgressLogController(externals.storage);
-    this._pkg = readPackageJson(this.config.dependencyRoot);
 
-    this._sharedDependencyNamesAll = [
-      ...this._sharedDependencyNames,
-      ...Object.entries(this._pkg.dependencies).
-        map(([name, version]) => `${name}@${version}`)
-    ];
+    // this._pkg = readPackageJson(this.config.dependencyRoot);
+    // this._sharedDependencyNamesAll = [
+    //   ...this._sharedDependencyNames,
+    //   ...Object.entries(this._pkg.dependencies).
+    //     map(([name, version]) => `${name}@${version}`)
+    // ];
   }
 
   async getAndInitBackend() {
@@ -235,7 +235,7 @@ export default class ProjectsManager {
 
   _getAllDependencies(deps) {
     return [
-      ...this._sharedDependencyNamesAll,
+      ...this._sharedDependencyNames,
       ...deps || EmptyArray
     ];
   }
@@ -280,6 +280,7 @@ export default class ProjectsManager {
     }
 
     const deps = this._sharedDependencyNames.
+      map(dep => `${dep}@${process.env.DBUX_VERSION}`).
       filter(dep => !canIgnoreDependency(dep));
 
     await this.installModules(deps);
@@ -322,13 +323,13 @@ export default class ProjectsManager {
       await this.execInTerminal(dependencyRoot, command);
 
       // remember all installed dependencies
-      const newDeps = this._getAllDependencies();
-      let storedDeps = this.externals.storage.get(depsStorageKey) || {};
-      storedDeps = {
-        ...storedDeps, 
-        ...Object.fromEntries(newDeps.map(dep => [dep, true]))
-      };
-      await this.externals.storage.set(depsStorageKey, storedDeps);
+      // const newDeps = this._getAllDependencies();
+      // let storedDeps = this.externals.storage.get(depsStorageKey) || {};
+      // storedDeps = {
+      //   ...storedDeps, 
+      //   ...Object.fromEntries(newDeps.map(dep => [dep, true]))
+      // };
+      // await this.externals.storage.set(depsStorageKey, storedDeps);
 
       // else {
       //   // we need socket.io for TerminalWrapper. Its version should match dbux-runtime's.
