@@ -252,7 +252,6 @@ export default class ProjectsManager {
     }
 
     const practiceSession = new PracticeSession(bug, this);
-    await this.setKeyToBug(currentlyPracticingBugKeyName, bug);
     practiceSession.setState(PracticeSessionState.Activating);
 
     let { startedAt } = bugProgress;
@@ -275,6 +274,7 @@ export default class ProjectsManager {
 
     practiceSession.setState(PracticeSessionState.Solving);
 
+    await this.setKeyToBug(currentlyPracticingBugKeyName, bug);
     return practiceSession;
   }
 

@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
@@ -324,7 +325,8 @@ export default class Project {
   async autoCommit() {
     await this.checkCorrectGitRepository();
 
-    await this.exec(`git add -A && git commit -am '"dbux auto commit"'`);
+    const files = this.getAllAssestFiles();
+    await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"dbux auto commit"'`);
   }
 
   async deleteProjectFolder() {
@@ -403,22 +405,45 @@ export default class Project {
    * Copy all assets into project folder.
    */
   async installAssets() {
-    // copy individual assets first
-    await this.copyAssetFolder(this.folderName);
+    const folders = this.getAllAssestFolderNames();
+    folders.forEach(folderName => {
+      this.copyAssetFolder(folderName);
+    });
+  }
 
-    // copy shared assets (NOTE: doesn't override individual assets)
-    await this.copyAssetFolder(SharedAssetFolder);
+  getAssestDir(assetFolderName) {
+    return this.manager.externals.resources.getResourcePath('dist', 'projects', assetFolderName);
+  }
+
+  getAllAssestFolderNames() {
+    const individualAssetDir = this.getAssestDir(this.folderName);
+    if (sh.test('-d', individualAssetDir)) {
+      return [this.folderName, SharedAssetFolder];
+    }
+    else {
+      return [SharedAssetFolder];
+    }
+  }
+
+  getAllAssestFiles() {
+    const folders = this.getAllAssestFolderNames();
+    const files = new Set();
+    folders.forEach(folderName => {
+      const assets = fs.readdirSync(this.getAssestDir(folderName));
+      assets.forEach(assetName => {
+        files.add(assetName);
+      });
+    });
+
+    return [...files];
   }
 
   async copyAssetFolder(assetFolderName) {
     // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
-    const assetDir = this.manager.externals.resources.getResourcePath('dist', 'projects', assetFolderName);
-
-    if (await sh.test('-d', assetDir)) {
-      // copy assets, if this project has any
-      this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
-      await sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
-    }
+    const assetDir = this.getAssestDir(assetFolderName);
+    // copy assets, if this project has any
+    this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
+    sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
   }
 
   // ###########################################################################
