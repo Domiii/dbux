@@ -53,6 +53,7 @@ export default class ProjectsManager {
   _backend;
 
   _pkg;
+  _sharedDependencyNamesToCheck;
 
   /**
    * @param {Object} externals 
@@ -67,12 +68,13 @@ export default class ProjectsManager {
     this._backend = new BackendController(this);
     this.progressLogController = new ProgressLogController(externals.storage);
 
-    // this._pkg = readPackageJson(this.config.dependencyRoot);
-    // this._sharedDependencyNamesAll = [
-    //   ...this._sharedDependencyNames,
-    //   ...Object.entries(this._pkg.dependencies).
-    //     map(([name, version]) => `${name}@${version}`)
-    // ];
+    // Note: we need this to check if any dependencies are missing (not to install them)
+    this._pkg = readPackageJson(this.config.dependencyRoot);
+    this._sharedDependencyNamesToCheck = [
+      ...this._sharedDependencyNames,
+      ...Object.entries(this._pkg.dependencies).
+        map(([name, version]) => `${name}@${version}`)
+    ];
   }
 
   async getAndInitBackend() {
@@ -233,9 +235,9 @@ export default class ProjectsManager {
     return this._installPromise;
   }
 
-  _getAllDependencies(deps) {
+  _getAllDependenciesToCheck(deps) {
     return [
-      ...this._sharedDependencyNames,
+      ...this._sharedDependencyNamesToCheck,
       ...deps || EmptyArray
     ];
   }
@@ -245,7 +247,7 @@ export default class ProjectsManager {
   }
 
   areDependenciesInstalled(deps) {
-    deps = this._getAllDependencies(deps);
+    deps = this._getAllDependenciesToCheck(deps);
     return deps.every(this.isDependencyInstalled);
   }
 
