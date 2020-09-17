@@ -19,6 +19,8 @@ import { getOrCreateProjectManager } from '../projectView/projectControl';
 import { showHelp } from '../help';
 import { installDbuxDependencies } from '../codeUtil/installUtil';
 import { showOutputChannel } from '../projectView/projectViewController';
+import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
+import { get, getAllMementoKeys } from '../memento';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -201,5 +203,10 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.showOutputChannel', async () => {
     return showOutputChannel();
+  });
+
+  registerCommand(extensionContext, 'dbux.showMemento', async () => {
+    const keys = getAllMementoKeys();
+    return await renderValueAsJsonInEditor(Object.fromEntries(keys.map(key => [key, get(key)])));
   });
 }

@@ -60,6 +60,10 @@
         "title": "Dbux: Start Dbux"
       },
       {
+        "command": "dbux.showMemento",
+        "title": "Dbux: View Memento Storage"
+      },
+      {
         "command": "dbux.cancelBugRunner",
         "title": "Dbux Practice: Cancel All"
       },
@@ -714,6 +718,10 @@
         },
         {
           "command": "dbux.backendLogin",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.showMemento",
           "when": "dbux.context.activated"
         },
         {

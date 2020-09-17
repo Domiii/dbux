@@ -49,7 +49,7 @@ export default class PracticeStopwatch {
       throw new Error('Trying to set timer when running');
     }
     this.time = time;
-    this._timeOffset = time;
+    this.timeOffset = time;
   }
 
   show() {

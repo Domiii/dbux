@@ -12,12 +12,12 @@ export default class PracticeSession {
    * @param {Bug} bug 
    * @param {ProjectsManager} 
    */
-  constructor(bug, manager) {
+  constructor(bug, manager, state = PracticeSessionState.Activating) {
     this._stopwatch = new Stopwatch();
     this.project = bug.project;
     this.bug = bug;
     this.manager = manager;
-    this.state = PracticeSessionState.Activating;
+    this.state = state;
   }
 
   setState(state) {

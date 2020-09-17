@@ -40,6 +40,7 @@ export class ProjectViewController {
   constructor(context) {
     this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
+    this.maybeNotifyExistingPracticeSession();
 
     this.isShowingTreeView = mementoGet(showProjectViewKeyName, true);
     commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
@@ -57,6 +58,23 @@ export class ProjectViewController {
     // ########################################
     this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
     this.manager.onBugStatusChanged(this.refreshIcon.bind(this));
+  }
+
+  async maybeNotifyExistingPracticeSession() {
+    try {
+      if (this.manager.practiceSession) {
+        const { bug } = this.manager.practiceSession;
+        const projectName = bug.project.name;
+        const bugId = bug.id;
+        await showInformationMessage(`[Dbux] You are currently practicing ${projectName}#${bugId}`, {
+          'OK'() { },
+          'Give up': this.maybeStopStopwatch.bind(this)
+        });
+      }
+    }
+    catch (err) {
+      logError(err);
+    }
   }
 
   get treeView() {
@@ -104,7 +122,7 @@ export class ProjectViewController {
       title: `[dbux] Bug ${bugNode.bug.project.name}@${bugNode.bug.name}`
     };
 
-    return runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+    await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
       const { bug } = bugNode;
       progress.report({ message: 'activating...' });
       await this.manager.activateBug(bug, debugMode);
@@ -120,7 +138,7 @@ export class ProjectViewController {
       Yes: async () => {
         await this.manager.giveupPractice();
       }
-    });
+    }, { modal: true });
   }
 }
 

@@ -6,7 +6,7 @@ export default class Storage {
    * Saves a key-value pair of data
    * @virtual
    * @param {string} key 
-   * @param {string} data 
+   * @param {string} value 
    */
   async set(key, value) { }
 
