@@ -43,7 +43,7 @@ export class Dialog {
 
   start(startState) {
     if (this._resume) {
-      _errWrap(this.resume.bind(this))((startState));
+      this.resume(startState);
     }
     else {
       _errWrap(this._start.bind(this))(startState);
@@ -90,6 +90,7 @@ export class Dialog {
       const NodeClass = this.getNodeClass(node);
 
       await node.enter?.(...this._getUserCbArguments(node));
+      this.resume();
 
       let nextState, edgeLabel;
       if (this._gotoState) {
@@ -205,8 +206,7 @@ export class Dialog {
       return await this.controller.serializeSurveyResult();
     },
 
-    getRecordedData: this.getRecordedData.bind(this),
-    resume: this.resume.bind(this)
+    getRecordedData: this.getRecordedData.bind(this)
   };
 
   // ########################################
@@ -235,7 +235,7 @@ export class Dialog {
     return Object.fromEntries(buttonEntries);
   }
 
-  async resume(startState) {
+  resume(startState) {
     if (this._resume) {
       const r = this._resume;
       this._resume = null;

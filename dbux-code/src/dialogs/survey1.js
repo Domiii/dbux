@@ -157,7 +157,7 @@ const survey1 = {
   nodes: {
     waitToStart: {
       kind: DialogNodeKind.Message,
-      async enter(graphState, stack, { resume, waitAtMost }) {
+      async enter(graphState, stack, { waitAtMost }) {
         const waitDelay = 1 * 60 * 60;
         const projectManager = getOrCreateProjectManager();
         const firstBug = projectManager.projects.getByName('express').getOrLoadBugs().getById(1);
@@ -165,7 +165,7 @@ const survey1 = {
           waitForBugSolved(firstBug),
           waitAtMost(waitDelay),
           waitForBugFailedNTimes(firstBug, 3)
-        ]).then(() => resume());
+        ]);
       },
       async text() {
         return `Can we ask you 5 short questions (related to Debugging and/or your first impressions of Dbux)?`;
