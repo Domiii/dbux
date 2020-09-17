@@ -10,6 +10,11 @@
     "description": "Run selected file with Dbux, but with Node's `--inspect-brk` enabled. Make sure to enable VSCode's auto attach beforehand."
   },
   {
+    "command": "dbux.doActivate",
+    "title": "Dbux: Start Dbux",
+    "description": ""
+  },
+  {
     "command": "dbux.exportApplicationData",
     "title": "Dbux: Export Application Data",
     "description": "Export raw recorded Dbux data of a previously executed application to a `json` file."
@@ -48,6 +53,11 @@
     "command": "dbux.showHelp",
     "title": "Dbux: Help",
     "description": "Show the Dbux help dialog."
+  },
+  {
+    "command": "dbux.showOutputChannel",
+    "title": "Dbux: Show output channel",
+    "description": ""
   },
   {
     "command": "dbux.startRuntimeServer",

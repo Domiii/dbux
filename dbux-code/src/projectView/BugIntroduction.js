@@ -38,7 +38,6 @@ export default class BugIntroduction extends WebviewWrapper {
 export async function showBugIntroduction(bug) {
   let bugIntroduction = new BugIntroduction(bug);
   await bugIntroduction.show();
-  bugIntroduction.reveal();
 
   return bugIntroduction;
 }
