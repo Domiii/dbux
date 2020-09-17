@@ -17,7 +17,7 @@ export class Dialog {
    * @type {DialogController}
    */
   controller;
-  constructor(graph, defaultStartState) {
+  constructor(graph) {
     this.graph = graph;
     this.mementoKeyName = `dbux.dialog.${graph.name}`;
     this.graphState = null;
@@ -26,7 +26,7 @@ export class Dialog {
     this._gotoState = null;
     this._isActive = false;
     this._version = 0;
-    this.load(defaultStartState);
+    this.load();
 
     if (!this.getNode('cancel')) {
       throw new Error(`Dialog ${graph.name} needs to contain a cancel state`);
@@ -37,9 +37,13 @@ export class Dialog {
   // public
   // ###########################################################################
 
+  get started() {
+    return !!this.graphState.nodeName;
+  }
+
   start(startState) {
     if (this._resume) {
-      _errWrap(this.resume.bind(this))((startState));
+      this.resume(startState);
     }
     else {
       _errWrap(this._start.bind(this))(startState);
@@ -48,7 +52,10 @@ export class Dialog {
 
   async _start(startState) {
     if (startState) {
-      this.setState(startState);
+      this._setState(startState);
+    }
+    else if (!this.graphState.nodeName) {
+      await this._setState('start');
     }
 
     debug('Dialog._start', JSON.stringify({ startState, nodeName: this.graphState.nodeName }));
@@ -64,7 +71,6 @@ export class Dialog {
         shouldRestart = await this.askToRestart();
       }
       if (shouldRestart) {
-        // this.controller.startDialog(this.graph.name, startState);
         this._setState(startState || 'start');
       }
       else {
@@ -84,6 +90,7 @@ export class Dialog {
       const NodeClass = this.getNodeClass(node);
 
       await node.enter?.(...this._getUserCbArguments(node));
+      this.resume();
 
       let nextState, edgeLabel;
       if (this._gotoState) {
@@ -108,7 +115,7 @@ export class Dialog {
         }
       }
 
-      this.stack.push({ name: nodeName, edgeLabel });
+      this._pushStack(nodeName, edgeLabel);
 
       if (!node.end) {
         if (nextState) {
@@ -132,11 +139,12 @@ export class Dialog {
     return getRecordedData(this);
   }
 
-  setState(nodeName) {
+  async setState(nodeName) {
     if (this._isActive) {
       throw new Error('Cannot set graphState when dialog is active');
     }
     this._setState(nodeName);
+    await this.save();
   }
 
   getNode(nodeName) {
@@ -190,15 +198,15 @@ export class Dialog {
       });
     },
 
-    getRecordedData: this.getRecordedData.bind(this),
-
     startDialog: (dialogName, startState) => {
       this.controller.startDialog(dialogName, startState);
     },
 
     serializeSurveyResult: async () => {
       return await this.controller.serializeSurveyResult();
-    }
+    },
+
+    getRecordedData: this.getRecordedData.bind(this)
   };
 
   // ########################################
@@ -227,7 +235,7 @@ export class Dialog {
     return Object.fromEntries(buttonEntries);
   }
 
-  async resume(startState) {
+  resume(startState) {
     if (this._resume) {
       const r = this._resume;
       this._resume = null;
@@ -268,9 +276,28 @@ export class Dialog {
     return [this.graphState, this.stack, this.actions, node];
   }
 
+  /**
+   * Set graphState
+   * @param {string|null} nodeName Set graphState to given nodeName, or null to clear
+   */
   _setState(nodeName) {
-    this.graphState.nodeName = nodeName;
-    this.graphState.stateStartTime = Date.now();
+    if (nodeName) {
+      this.graphState.nodeName = nodeName;
+      this.graphState.stateStartTime = Date.now();
+      this._pushStack(nodeName);
+    }
+    else if (nodeName === null) {
+      this.graphState.nodeName = null;
+      this.graphState.stateStartTime = null;
+      this._pushStack(null);
+    }
+    else {
+      throw new Error(`Trying to setState of dialog '${this.graph.name}' with unexpected falsy value ${nodeName}`);
+    }
+  }
+
+  _pushStack(name, edgeLabel = null) {
+    this.stack.push({ name, edgeLabel });
   }
 
   // ###########################################################################
@@ -281,12 +308,9 @@ export class Dialog {
     await set(this.mementoKeyName, { graphState: this.graphState, stack: this.stack });
   }
 
-  /**
-   * @param {string} [startState] if given, overrides the current state
-   */
-  load(defaultStartState = 'start') {
+  load() {
     const { graphState, stack } = get(this.mementoKeyName, {
-      graphState: { nodeName: defaultStartState, stateStartTime: Date.now(), data: {} },
+      graphState: { nodeName: null, stateStartTime: null, data: {} },
       stack: []
     });
 
@@ -296,6 +320,7 @@ export class Dialog {
 
   async clear() {
     await set(this.mementoKeyName, undefined);
+    this.load();
   }
 }
 

@@ -4,8 +4,6 @@ import { Dialog } from './Dialog';
 import { getOrCreateProjectManager } from '../projectView/projectControl';
 import { getInstallId } from '../installId';
 import { setDialogControllerForDefaultHelp } from '../help';
-import DialogNodeKind from './DialogNodeKind';
-
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DialogController');
@@ -21,7 +19,7 @@ export class DialogController {
   /**
    * Start a dialog, will create one if not exist
    * @param {string} dialogName 
-   * @param {number} [startState] 
+   * @param {string} [startState] start dialog with the given state
    */
   startDialog(dialogName, startState) {
     let dialog = this.getDialog(dialogName);
@@ -30,13 +28,12 @@ export class DialogController {
 
   /**
    * @param {string} dialogName 
-   * @param {string} [defaultStartState]
    * @return {Dialog}
    */
-  getDialog(dialogName, defaultStartState) {
+  getDialog(dialogName) {
     let dialog = this.dialogs.get(dialogName);
     if (!dialog) {
-      dialog = new Dialog(this.graphs.get(dialogName), defaultStartState);
+      dialog = new Dialog(this.graphs.get(dialogName));
       dialog.controller = this;
       this.dialogs.set(dialogName, dialog);
     }
@@ -74,57 +71,20 @@ export class DialogController {
   }
 }
 
-const dialogController = new DialogController();
+/**
+ * @type {DialogController}
+ */
+let dialogController;
 
-export default dialogController;
-
-export async function maybeStartTutorialOnActivate() {
-  const tutorialDialog = dialogController.getDialog('tutorial');
-  const firstNode = tutorialDialog.getCurrentNode();
-
-  // [debugging]
-  // await tutorialDialog.clear();
-
-  if (firstNode?.end) {
-    return;
-  }
-
-  if (firstNode.kind === DialogNodeKind.Modal) {
-    const confirmResult = await tutorialDialog.askToContinue();
-    if (confirmResult === false) {
-      tutorialDialog.setState('cancel');
-    }
-    else if (confirmResult) {
-      tutorialDialog.start();  
-    }
-  }
-  else {
-    tutorialDialog.start();
-  }
+export function initDialogController() {
+  dialogController = new DialogController();
+  return dialogController;
 }
 
-export async function maybeStartSurvey1OnActivate() {
-  const dialog = dialogController.getDialog('survey1', 'waitToStart');
-  const firstNode = dialog.getCurrentNode();
-  
-  // [debugging]
-  // await getOrCreateProjectManager().progressLogController.reset();
-  // await surveyDialog.clear();
+export async function maybeStartSurvey1ForTheFirstTime() {
+  const surveyDialog = dialogController.getDialog('survey1');
 
-  if (firstNode?.end) {
-    return;
-  }
-
-  if (firstNode.kind === DialogNodeKind.Modal) {
-    const confirmResult = await dialog.askToContinue();
-    if (confirmResult === false) {
-      dialog.setState('cancel');
-    }
-    else if (confirmResult) {
-      dialog.start();
-    }
-  }
-  else {
-    dialog.start();
+  if (!surveyDialog.started) {
+    surveyDialog.start('waitToStart');
   }
 }

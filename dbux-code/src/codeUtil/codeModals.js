@@ -25,7 +25,8 @@ export async function showInformationMessage(message, btnConfig = EmptyObject, m
     await cancelCallback?.();
     return null;
   }
-  return result && await btnConfig[result]?.() || null;
+  const cbResult = await btnConfig[result]?.();
+  return cbResult === undefined ? null : cbResult;
 }
 
 export async function showWarningMessage(message, btnConfig = EmptyObject, messageCfg = EmptyObject, cancelCallback) {
@@ -34,10 +35,12 @@ export async function showWarningMessage(message, btnConfig = EmptyObject, messa
     await cancelCallback?.();
     return null;
   }
-  return result && await btnConfig[result]?.() || null;
+  const cbResult = await btnConfig[result]?.();
+  return cbResult === undefined ? null : cbResult;
 }
 
 export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObject) {
   const result = await window.showErrorMessage(message, messageCfg, ...Object.keys(btnConfig));
-  return await result && btnConfig[result]?.() || null;
+  const cbResult = await btnConfig[result]?.();
+  return cbResult === undefined ? null : cbResult;
 }
