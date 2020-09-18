@@ -74,11 +74,12 @@ export class CallGraphViewController {
     this.showError();
     this.refresh();
 
-    const callRootNode = this.treeDataProvider.rootNodes[0];
-    // setTimeout(() => this.treeView.reveal(callRootNode, { focus: true, expand: true }));
-    const firstError = callRootNode.children[0];
-    if (firstError) {
-      traceSelection.selectTrace(firstError.trace);
+    for (const rootNode of this.treeDataProvider.rootNodes) {
+      if (rootNode.children[0]) {
+        // only select first error
+        traceSelection.selectTrace(rootNode.children[0].trace);
+        break;
+      }
     }
   }
 
