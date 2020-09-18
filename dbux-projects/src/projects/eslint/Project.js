@@ -51,16 +51,16 @@ export default class EslintProject extends Project {
       filter(bug => !!bug);
   }
 
-  getBugGitTag(bugId, tagCategory) {
-    return `Bug-${bugId}-${tagCategory}`;
+  getBugGitTag(bugNumber, tagCategory) {
+    return `Bug-${bugNumber}-${tagCategory}`;
   }
 
   async selectBug(bug) {
     const {
-      id, name
+      number, name
     } = bug;
     const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = this.getBugGitTag(id, tagCategory);
+    const tag = this.getBugGitTag(number, tagCategory);
 
     // TODO: auto commit any pending changes
     // TODO: checkout bug, if not done so before

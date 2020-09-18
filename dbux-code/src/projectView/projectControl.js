@@ -109,7 +109,7 @@ function createProjectManager(extensionContext) {
     },
     stopwatch: {
       start: stopwatch.start.bind(stopwatch),
-      stop: stopwatch.pause.bind(stopwatch),
+      pause: stopwatch.pause.bind(stopwatch),
       set: stopwatch.set.bind(stopwatch),
       show: stopwatch.show.bind(stopwatch),
       hide: stopwatch.hide.bind(stopwatch)

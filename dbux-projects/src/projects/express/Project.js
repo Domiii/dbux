@@ -193,7 +193,6 @@ export default class ExpressProject extends Project {
         testRe = testRe.replace(/"/g, '\\"');
 
         return {
-          // id: i + 1,
           name: `bug #${bug.id}`,
           description: testRe,
           runArgs: [
@@ -204,22 +203,24 @@ export default class ExpressProject extends Project {
           ],
           require: ['./test/support/env.js'],
           ...bug,
+          number: bug.id,
+          id: `${this.name}#${bug.id}`
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
         };
       }).
       filter(bug => !!bug);
   }
 
-  getBugGitTag(bugId, tagCategory) {
-    return `Bug-${bugId}-${tagCategory}`;
+  getBugGitTag(bugNumber, tagCategory) {
+    return `Bug-${bugNumber}-${tagCategory}`;
   }
 
   async selectBug(bug) {
     const {
-      id, name
+      number, name
     } = bug;
     const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = this.getBugGitTag(id, tagCategory);
+    const tag = this.getBugGitTag(number, tagCategory);
 
     // TODO: auto commit any pending changes
     // TODO: checkout bug, if not done so before

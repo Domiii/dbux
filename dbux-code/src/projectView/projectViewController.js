@@ -65,8 +65,7 @@ export class ProjectViewController {
       if (this.manager.practiceSession) {
         const { bug } = this.manager.practiceSession;
         const projectName = bug.project.name;
-        const bugId = bug.id;
-        await showInformationMessage(`[Dbux] You are currently practicing ${projectName}#${bugId}`, {
+        await showInformationMessage(`[Dbux] You are currently practicing ${bug.id}`, {
           'OK'() { },
           'Give up': this.maybeStopStopwatch.bind(this)
         });

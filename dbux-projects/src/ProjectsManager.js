@@ -8,12 +8,13 @@ import { readPackageJson } from '@dbux/cli/lib/package-util';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
-import ProgressLogController from './dataLib/ProgressLogController';
+import ProgressLogController0 from './dataLib/ProgressLogController0';
 import PracticeSession from './practiceSession/PracticeSession';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
 import RunStatus from './projectLib/RunStatus';
 import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
+import ProgressLogController from './dataLib/ProgressLogController';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -76,7 +77,8 @@ export default class ProjectsManager {
     this._emitter = new NanoEvents();
 
     this._backend = new BackendController(this);
-    this.progressLogController = new ProgressLogController(externals.storage);
+    this.progressLogController0 = new ProgressLogController0(externals.storage);
+    this.progressLogController = new ProgressLogController(this);
 
     this.maybeStartExistingPracticeSession();
 
@@ -147,7 +149,7 @@ export default class ProjectsManager {
         if (result.code === 0) {
           // user passed all test
           this.practiceSession.setState(PracticeSessionState.Solved);
-          this.progressLogController.util.updateBugProgress(bug, { solvedAt: Date.now() });
+          this.progressLogController.updateBugProgress(bug, { solvedAt: Date.now() });
           await this.progressLogController.save();
           await this.clearPracticeSession();
           await this.askForSubmit();
@@ -161,9 +163,8 @@ export default class ProjectsManager {
       }
       else {
         // already a practice session, ask to stop first
-        const projectName = this.practiceSession.project.name;
         const bugId = this.practiceSession.bug.id;
-        const confirmMsg = `You are currently practicing ${projectName}#${bugId}, do you want to give up?`;
+        const confirmMsg = `You are currently practicing ${bugId}, do you want to give up?`;
         const confirmResult = await this.externals.confirm(confirmMsg, true);
         if (confirmResult) {
           await this.giveupPractice();
@@ -186,7 +187,7 @@ export default class ProjectsManager {
         this.practiceSession = await this._createPracticeSession(bug, true, debugMode);
       }
       else if (confirmResult === false) {
-        this.progressLogController.util.addNewBugProgress(bug, BugStatus.None, false);
+        this.progressLogController.addBugProgress(bug, BugStatus.None, false);
         await this.progressLogController.save();
         await this._activateBug(bug, debugMode);
       }
@@ -213,7 +214,7 @@ export default class ProjectsManager {
 
     await this.runner.cancel();
     const { bug } = this.practiceSession;
-    this.progressLogController.util.updateBugProgress(bug, { stopwatchEnabled: false });
+    this.progressLogController.updateBugProgress(bug, { stopwatchEnabled: false });
     this._emitter.emit('bugStatusChanged', bug);
     await this.progressLogController.save();
     await this.clearPracticeSession();
@@ -226,10 +227,10 @@ export default class ProjectsManager {
 
       const bugProgress = this.progressLogController.util.getBugProgressByBug(bug);
       const { startedAt } = bugProgress;
-      practiceSession.showStopwatch();
+      practiceSession.stopwatch.show();
       if (startedAt) {
-        practiceSession.setStopwatch(Date.now() - startedAt);
-        practiceSession.startStopwatch();
+        practiceSession.stopwatch.set(Date.now() - startedAt);
+        practiceSession.stopwatch.start();
       }
 
       this.practiceSession = practiceSession;
@@ -245,7 +246,7 @@ export default class ProjectsManager {
     // load existing bugProgress
     let bugProgress = this.progressLogController.util.getBugProgressByBug(bug);
     if (!bugProgress) {
-      bugProgress = this.progressLogController.util.addNewBugProgress(bug, BugStatus.Solving, true);
+      bugProgress = this.progressLogController.addBugProgress(bug, BugStatus.Solving, true);
     }
     else if (!bugProgress.stopwatchEnabled) {
       throw new Error('Trying to create practiceSession without timer enabled');
@@ -255,10 +256,10 @@ export default class ProjectsManager {
     practiceSession.setState(PracticeSessionState.Activating);
 
     let { startedAt } = bugProgress;
-    practiceSession.showStopwatch();
+    practiceSession.stopwatch.show();
     if (startedAt) {
-      practiceSession.setStopwatch(Date.now() - startedAt);
-      practiceSession.startStopwatch();
+      practiceSession.stopwatch.set(Date.now() - startedAt);
+      practiceSession.stopwatch.start();
     }
 
     // activate once to show user the bug, don't care about the result
@@ -267,9 +268,9 @@ export default class ProjectsManager {
     // set stopwatch
     if (!startedAt) {
       startedAt = Date.now();
-      this.progressLogController.util.updateBugProgress(bug, { startedAt });
-      practiceSession.setStopwatch(Date.now() - startedAt);
-      practiceSession.startStopwatch();
+      this.progressLogController.updateBugProgress(bug, { startedAt });
+      practiceSession.stopwatch.set(Date.now() - startedAt);
+      practiceSession.stopwatch.start();
     }
 
     practiceSession.setState(PracticeSessionState.Solving);
@@ -283,8 +284,8 @@ export default class ProjectsManager {
       return;
     }
 
-    this.practiceSession.stopStopwatch();
-    this.practiceSession.hideStopwatch();
+    this.practiceSession.stopwatch.pause();
+    this.practiceSession.stopwatch.hide();
     await this.setKeyToBug(currentlyPracticingBugKeyName, undefined);
 
     this.practiceSession = null;
@@ -347,7 +348,7 @@ export default class ProjectsManager {
 
     const result = await this.runner.testBug(bug, cfg);
 
-    await this.progressLogController.util.addTestRun(bug, result);
+    await this.progressLogController.addTestRunWithoutPatchString(bug, result);
 
     result.code && await bug.openInEditor();
 
