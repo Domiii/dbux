@@ -61,8 +61,12 @@ module.exports = (env, argv) => {
     "dbux-code"
   ];
 
+  const resourcesSrc = path.join(projectRoot, 'resources/src');
+
 
   const resolve = makeResolve(MonoRoot, dependencyPaths);
+  resolve.modules.push(resourcesSrc);
+
   const absoluteDependencies = makeAbsolutePaths(MonoRoot, dependencyPaths);
   // console.log(resolve.modules);
   const rules = [
@@ -77,6 +81,24 @@ module.exports = (env, argv) => {
       include: absoluteDependencies.map(r => path.join(r, 'src')),
       options: {
         babelrcRoots: absoluteDependencies
+      }
+    },
+    {
+      loader: 'babel-loader',
+      include: resourcesSrc,
+      options: {
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              targets: {
+                node: '4'
+              },
+              useBuiltIns: 'usage',
+              corejs: 3
+            }
+          ]
+        ],
       }
     }
   ];
@@ -108,10 +130,13 @@ module.exports = (env, argv) => {
     target: 'node',
     plugins: webpackPlugins,
     context: path.join(projectRoot, '.'),
-    entry: projectRoot + '/src/_includeIndex.js',
+    entry: {
+      bundle: path.join(projectRoot, 'src/_includeIndex.js'),
+      _dbux_run: path.join(projectRoot, 'resources/src/_dbux_run.js')
+    },
     output: {
       path: path.join(projectRoot, outputFolderName),
-      filename: outFile,
+      filename: '[name].js',
       publicPath: outputFolderName,
       libraryTarget: "commonjs2",
       devtoolModuleFilenameTemplate: "../[resource-path]",

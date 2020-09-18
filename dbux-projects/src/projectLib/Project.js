@@ -3,7 +3,6 @@ import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import BugList from './BugList';
 import Process from '../util/Process';
@@ -46,9 +45,24 @@ export default class Project {
    */
   gitCommit;
 
+  /**
+   * Use github by default.
+   */
   get gitUrl() {
     return 'https://github.com/' + this.gitRemote;
   }
+
+  nodeVersion;
+
+  get systemRequirements() {
+    if (this.nodeVersion) {
+      return {
+        node: { version: this.nodeVersion }
+      };
+    }
+    return null;
+  }
+
 
   // ###########################################################################
   // constructor
@@ -134,6 +148,11 @@ export default class Project {
    * @virtual
    */
   async installProject() {
+    if (this.systemRequirements) {
+      // TODO:
+      // await checkSystem(..., this.systemRequirements);
+    }
+
     // git clone
     await this.gitClone();
   }
@@ -265,6 +284,10 @@ export default class Project {
    * NOTE: This method is called by `gitClone`, only after a new clone has succeeded.
    */
   async install() {
+    if (this.nodeVersion) {
+      await this.exec(`volta pin node@${this.nodeVersion}`);
+    }
+
     // remove files
     let { projectPath, rmFiles } = this;
     if (rmFiles?.length) {
@@ -276,15 +299,11 @@ export default class Project {
       this.logger.warn('Removing files:', absRmFiles);
       sh.rm('-rf', absRmFiles);
     }
-
+    
     await this.manager.installDependencies();
 
     // copy assets
     await this.installAssets();
-
-    // install project's custom dependencies
-    await this.installDependencies();
-
     // NOTE: disable yarn support for now
     // if (this.packageManager === 'yarn') {
     //   await this.yarnInstall();
@@ -292,6 +311,9 @@ export default class Project {
     // else {
     await this.npmInstall();
     // }
+
+    // install project's custom dependencies
+    await this.installDependencies();
 
     // call `afterInstall` hook for different projects to do their postinstall things
     await this.afterInstall();
@@ -306,18 +328,6 @@ export default class Project {
    * @virtual
    */
   async installDependencies() {
-    // await this.exec(`yarn add --dev source-map-loader`);
-    /*
-    await this.exec(`\
-        yarn remove webpack webpack-dev-server babel-loader babel-core babel babel-plugin-__coverage__ \
-          babel-preset-es2015 babel-preset-es2016 babel-preset-react babel-preset-stage-2 html-webpack-plugin && \
-        \
-        yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env \
-          webpack webpack-cli webpack-dev-server nodemon html-webpack-plugin && \
-        \
-        yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime`
-    );
-    */
   }
 
   async afterInstall() { }

@@ -8,6 +8,8 @@ export default class EslintProject extends Project {
 
   packageManager = 'npm';
 
+  nodeVersion = '7';
+
   // async installDependencies() {
   //   yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
   //   yarn add --dev webpack webpack-cli webpack-dev-server nodemon && \
@@ -94,6 +96,6 @@ export default class EslintProject extends Project {
 
     // delete mochaCfg.dbuxJs; // no dbux -> run the test as-is
 
-    return 'bash ~/.nvm/nvm.sh use 7 && ' + await buildMochaRunCommand(mochaCfg);
+    return await buildMochaRunCommand(mochaCfg);
   }
 }

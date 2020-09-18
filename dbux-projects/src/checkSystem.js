@@ -110,7 +110,7 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
       }
     } else if (res?.path) {
       message += `¯\\_(ツ)_/¯ ${program} installed but old. Version is ${res.version} but we recommend ${req.version}. ` +
-        `Your version might or might not work. We don't know, but we recommend upgrading to latest (or at least a later) version instead.`;
+        `Your version might or might not work. We strongly recommend upgrading to latest (or at least a later) version instead.`;
       // success = false;
     } else if (res) {
       message += `x    ${program} not found.`;

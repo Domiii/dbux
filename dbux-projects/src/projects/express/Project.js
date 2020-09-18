@@ -86,7 +86,8 @@ export default class ExpressProject extends Project {
       {
         id: 11,
         testRe: 'should send number as json',
-        testFilePaths: ['test/res.send.js']
+        testFilePaths: ['test/res.send.js'],
+        solutionCommit: 'da7b0cdf2abd82c31b1f561d49eb23da81284ae7'
       },
       {
         id: 12,
