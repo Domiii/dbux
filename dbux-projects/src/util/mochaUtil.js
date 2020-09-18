@@ -8,7 +8,7 @@ export async function buildMochaRunCommand(cfg) {
   let {
     cwd, 
     dbuxJs,
-    mochaArgs,
+    mochaArgs = '-c', // colors
     nodeArgs,
     dbuxArgs,
     require = EmptyArray,
@@ -17,6 +17,8 @@ export async function buildMochaRunCommand(cfg) {
 
   // keep alive: if we don't do this, mocha will call `process.exit` when run has ended, and we won't receive data sent by runtime
   const keepAlive = '--no-exit';
+
+  mochaArgs = `${keepAlive} ${mochaArgs}`;
   
   // NOTE: `Project.installDbuxDependencies` installs @dbux/cli for us
 
@@ -36,12 +38,23 @@ export async function buildMochaRunCommand(cfg) {
   // });
 
   const mochaJs = `${cwd}/node_modules/mocha/bin/_mocha`;
+  let program;
+  let programArgs;
+  if (dbuxJs) {
+    program = dbuxJs;
+    programArgs = `run ${dbuxArgs} ${mochaJs} -- ${mochaArgs}`;
+  }
+  else {
+    program = mochaJs;
+    programArgs = mochaArgs;
+  }
+  
   return buildNodeCommand({
     cwd,
     nodeArgs,
     debugPort,
-    program: dbuxJs,
     require,
-    programArgs: `run ${dbuxArgs} ${mochaJs} -- ${keepAlive} ${mochaArgs}`
+    program,
+    programArgs
   });
 }

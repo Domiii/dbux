@@ -1,10 +1,10 @@
 {
 	"folders": [
 		{
-			"path": "projects"
+			"path": "samples"
 		},
 		{
-			"path": "samples"
+			"path": "dbux_projects"
 		}
 	],
 	"settings": {

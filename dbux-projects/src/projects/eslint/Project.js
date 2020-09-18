@@ -19,10 +19,11 @@ export default class EslintProject extends Project {
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
     const bugs = [
+      // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
       {
         id: 1,
         testRe: '',
-        testFilePaths: ['test/app.options.js']
+        testFilePaths: ['tests/lib/rules/no-obj-calls.js']
       }
     ];
 
@@ -41,9 +42,11 @@ export default class EslintProject extends Project {
             '--grep',
             `"${bug.testRe}"`,
             '--',
-            ...bug.testFilePaths
+            ...bug.testFilePaths,
+            // eslint-disable-next-line max-len
+            // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
           ],
-          require: ['test/support/env'],
+          // require: ['test/support/env'],
           ...bug,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
         };
@@ -76,27 +79,21 @@ export default class EslintProject extends Project {
     await this.npmInstall();
   }
 
-  async testBugCommand(/* bug, cfg */) {
-    // TODO: copy correct version from express/Project.js
+  async testBugCommand(bug, cfg) {
+    const { projectPath } = this;
+    const bugArgs = this.getMochaArgs(bug, [
+      '-t 10000' // timeout
+    ]);
 
-    // const { projectPath } = this;
-    // const bugArgs = this.getMochaArgs(bug);
-    // return buildMochaRunCommand(projectPath, bugArgs, bug.require, debugPort);
+    const mochaCfg = {
+      cwd: projectPath,
+      mochaArgs: bugArgs,
+      require: bug.require,
+      ...cfg
+    };
 
-    // TODO: enable auto attach (run command? or remind user?)
-    //      see: https://code.visualstudio.com/blogs/2018/07/12/introducing-logpoints-and-auto-attach
-    /*
-    "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/node_modules/.bin/_mocha",
-      "runtimeArgs": [
-        "--stack-trace-limit=1000",
-        "--preserve-symlinks"
-      ],
-      "cwd": "${workspaceFolder}",
-      "args": [
-        // "--reporter=json",
-      ],
-      */
+    // delete mochaCfg.dbuxJs; // no dbux -> run the test as-is
+
+    return 'bash ~/.nvm/nvm.sh use 7 && ' + await buildMochaRunCommand(mochaCfg);
   }
 }

@@ -242,7 +242,7 @@ export default class BugRunner {
         ...cfg
       };
       let command = await bug.project.testBugCommand(bug, cfg);
-      command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
+      command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
       if (!command) {
         // nothing to do

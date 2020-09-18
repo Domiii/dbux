@@ -505,15 +505,20 @@ export default class Project {
     return this._bugs;
   }
 
-  getMochaArgs(bug) {
+  /**
+   * @see https://mochajs.org/#command-line-usage
+   */
+  getMochaArgs(bug, moreArgs) {
     // bugArgs
-    const bugArgArray = [
-      ...(bug.runArgs || EmptyArray)
+    const argArray = [
+      '-c', // colors
+      ...moreArgs,
+      ...bug.runArgs
     ];
-    if (bugArgArray.includes(undefined)) {
-      throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(bugArgArray));
+    if (argArray.includes(undefined)) {
+      throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(argArray));
     }
-    return bugArgArray.join(' ');      //.map(s => `"${s}"`).join(' ');
+    return argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
   }
 
   // ###########################################################################

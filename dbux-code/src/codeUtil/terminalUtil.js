@@ -46,7 +46,7 @@ export async function execCommand(cwd, command) {
     name: DefaultTerminalName,
     cwd,
     shellPath: pathToBash,
-    shellArgs: [`-c`, `${command}`],
+    shellArgs: [`-lc`, `${command}`],
   };
 
   // debug(`execCommandInTerminal: ${command}`);
