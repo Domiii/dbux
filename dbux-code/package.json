@@ -659,12 +659,12 @@
         },
         {
           "command": "dbux.showGraphView",
-          "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.isActive",
+          "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@10"
         },
         {
           "command": "dbux.hideGraphView",
-          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.isActive",
+          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.dbux-graph.isActive",
           "group": "navigation@10"
         },
         {
