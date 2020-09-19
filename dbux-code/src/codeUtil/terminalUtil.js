@@ -95,6 +95,9 @@ export async function queryTerminalPid() {
 
 
 export function runInTerminalInteractive(terminalName, cwd, command) {
+  if (!command) {
+    throw new Error('command for runInTerminalInteractive is empty: ' + command);
+  }
   const terminal = createTerminal(terminalName, cwd);
 
   terminal.sendText(command, true);

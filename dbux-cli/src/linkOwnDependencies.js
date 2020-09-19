@@ -36,7 +36,7 @@ function linkOwnDependencies() {
   const dbuxCliRoot = dbuxPathMatch?.[1];
   const dbuxCliFolderName = dbuxPathMatch?.[2];
   if (!dbuxCliRoot) {
-    throw new Error(`Unable to find "@dbux/cli" directory in: ${__dirname}`);
+    throw new Error(`File is not (but must be) in "@dbux/cli" directory: ${__dirname}`);
   }
   let pkg = readPackageJson(dbuxCliRoot);
   const { dependencies } = pkg;
@@ -45,35 +45,11 @@ function linkOwnDependencies() {
   // add self
   depNames.push('@dbux/cli');
 
-  // add socket.io-client, so it will be available to `_dbux_run.js` (TerminalWrapper)
-  depNames.push('socket.io-client');
+  // add socket.io-client
+  // depNames.push('socket.io-client');
 
   // register all dependencies
-  let nodeModulesParent;
-  if (process.env.NODE_ENV === 'development') {
-    // link dbux dependencies to monorepo root development folder
-    // NOTE: in monorepo, dependencies are hoisted to root
-    // NOTE: in monorepo, packages are also linked to root `node_modules` folder
-    nodeModulesParent = process.env.DBUX_ROOT;
-
-    // let dbuxDepNames;
-    // const dbuxPackagePattern = /@dbux\//;
-    // [dbuxDepNames, depNames] = partition(depNames, dep => dbuxPackagePattern.test(dep));
-    // dbuxDepNames = dbuxDepNames.map(name => name.match(/@dbux\/(.*)/)[1]);
-
-    // linkDependencies(dbuxDepNames.map(name =>
-    //   [`@dbux/${name}`, path.join(process.env.DBUX_ROOT, `dbux-${name}`)]
-    // ));
-  }
-  else {
-    // production mode -> `@dbux/cli` stand-alone installation
-    // NOTE: in this case, we find ourselves in 
-    //    `nodeModulesParent/node_modules/@dbux/cli`  (so we want to go up 3) or...
-    //    `ACTUAL_DBUX_ROOT/dbux-cli`                 (so we want to go up 2. NOTE: DBUX_ROOT won't be set in prod though)
-    const relativePath = path.join('..', dbuxCliFolderName !== 'dbux-cli' ? '../..' : '');
-    nodeModulesParent = path.resolve(dbuxCliRoot, relativePath);
-  }
-
+  
   const msg = `[DBUX] linkOwnDependencies ${JSON.stringify({
     __dirname, dbuxCliRoot, nodeModulesParent
   })}`;
@@ -83,14 +59,9 @@ function linkOwnDependencies() {
   // console.warn('###########\n\n', DbuxCliRoot, nodeModulesParent, process.env.NODE_ENV);
   // console.warn('  ', require('@babel/plugin-proposal-class-properties'));
 
-  // register remaining (i.e. all) dependencies against `node_modules` folder
-  const remainingDeps = depNames.map(name =>
+  // link dependencies against their folders in the `node_modules` folder
+  const absoluteDeps = depNames.map(name =>
     [name, path.join(nodeModulesParent, 'node_modules', name)]
   );
-
-  // remainingDeps.push([
-  //   'socket.io-client', '@dbux/runtime/node_modules/socket.io-client'
-  // ]);
-
-  linkDependencies(remainingDeps);
+  linkDependencies(absoluteDeps);
 }
