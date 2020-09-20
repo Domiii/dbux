@@ -57,7 +57,7 @@ module.exports = (env, argv) => {
 
           // fix for https://github.com/websockets/ws/issues/1538
           alias: {
-            ws: path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'))
+            // ws: path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'))
           }
         }
       }],
@@ -198,9 +198,10 @@ module.exports = (env, argv) => {
         //   },
         // },
         externals: [{
-          fs: 'fs',
-          net: 'net',
-          ws: 'ws'
+          fs: 'commonjs fs',
+          net: 'commonjs net',
+          // tls: 'commonjs tls',
+          ws: 'commonjs ws'
         }
           // see: https://www.npmjs.com/package/webpack-node-externals
           // NOTE: `node-externals` does not bundle `node_modules`

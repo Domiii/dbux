@@ -1,3 +1,4 @@
+import 'ws'; // this must work!
 import io, { Socket } from 'socket.io-client';
 import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
 import universalLibs from '@dbux/common/src/util/universalLibs';
@@ -195,6 +196,7 @@ export default class Client {
   // ###########################################################################
 
   _connect() {
+    debugger;
     const socket = this._socket = io.connect(Remote, {
       // jsonp: false,
       // forceNode: true,

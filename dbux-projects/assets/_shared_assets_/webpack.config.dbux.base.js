@@ -28,6 +28,8 @@ function mergeConcatArray(...inputs) {
 // const dbuxFolders = ["dbux-runtime"];
 // const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(MonoRoot, f)));
 
+// TODO check node version
+const presets = 
 
 const babelOptions = {
   // sourceMaps: "both",
@@ -102,18 +104,48 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // });
   }
 
+  // [fix ws]
+  const wsPath = path.resolve(getDependencyRoot(), 'node_modules', 'ws');
+
+  // ###########################################################################
+  // resolve.modules
+  // ###########################################################################
+
   const modules = [
     ...srcFolders.map(folder => path.join(ProjectRoot, folder)),
     path.join(ProjectRoot, 'node_modules')
   ];
-  modules.push(path.join(getDependencyRoot(), 'node_modules'));
+  modules.push(
+    path.join(getDependencyRoot(), 'node_modules'),
+
+    // [fix ws]
+    path.join(wsPath, 'lib'),
+    path.join(wsPath, 'node_modules')
+  );
+
+  // ###########################################################################
+  // resolve.alias
+  // ###########################################################################
+
+  const alias = {
+    // [fix ws]
+    // NOTE: without this, socket connections will fail silently! (error = "timeout"!)
+    ws: wsPath
+  };
+
+  // ###########################################################################
+  // externals
+  // ###########################################################################
 
   const externals = target !== 'node' ? undefined : [
     {
       // 'dbux-runtime': 'umd @dbux/runtime',
       '@dbux/runtime': 'commonjs @dbux/runtime'
     },
-    nodeExternals()
+    nodeExternals({
+      // [fix ws]
+      allowlist: ['ws']
+    })
   ];
 
   const cfg = {
@@ -137,6 +169,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     },
     resolve: {
       symlinks: true,
+      alias,
       // extensions: ['.js', '.jsx'],
       modules
     },
@@ -147,6 +180,15 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
           loader: 'babel-loader',
           include: [
             ...srcFolders.map(folder => path.join(ProjectRoot, folder))
+          ],
+          options: babelOptions,
+          enforce: 'pre'
+        },
+        {
+          test: /\.jsx?$/,
+          loader: 'babel-loader',
+          include: [
+            path.join(wsPath, 'lib')
           ],
           options: babelOptions,
           enforce: 'pre'
