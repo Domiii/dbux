@@ -148,7 +148,8 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
           include: [
             ...srcFolders.map(folder => path.join(ProjectRoot, folder))
           ],
-          options: babelOptions
+          options: babelOptions,
+          enforce: 'pre'
         },
 
         ...dbuxRules

@@ -13,7 +13,7 @@ export default class EslintProject extends Project {
   async installDependencies() {
     const webpackJs = this.getWebpackJs();
     if (!sh.test('-f', webpackJs)) {
-      await this.execInTerminal(`npm i -D webpack@^4.41.5 webpack-cli@^3.3.10 webpack-node-externals@^2.5.0`);
+      await this.execInTerminal(`npm i -D webpack@4.41.5 webpack-cli@3.3.10 webpack-node-externals@2.5.0 string-replace-loader@2.3.0`);
     }
 
     // add "dist" folder to gitignore

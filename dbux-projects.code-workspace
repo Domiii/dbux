@@ -6,6 +6,7 @@
 		}
 	],
 	"settings": {
-		"dbux.autoStart": true
+		"dbux.autoStart": true,
+		"debug.node.autoAttach": "off"
 	}
 }
