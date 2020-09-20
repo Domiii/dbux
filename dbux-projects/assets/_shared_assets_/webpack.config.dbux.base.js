@@ -28,28 +28,28 @@ function mergeConcatArray(...inputs) {
 // const dbuxFolders = ["dbux-runtime"];
 // const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(MonoRoot, f)));
 
-// TODO check node version
-const presets = 
+// TODO: pass actual node version in via parameter (part of `target`)
+// const presets = 
 
 const babelOptions = {
   // sourceMaps: "both",
   sourceMaps: true,
   retainLines: true,
   babelrc: true,
-  // presets: [
-  //   [
-  //     '@babel/preset-env',
-  //     {
-  //       targets: {
-  //         node: '12',
-  //         chrome: '70',
-  //         safari: '13'
-  //       },
-  //       useBuiltIns: 'usage',
-  //       corejs: 3
-  //     }
-  //   ]
-  // ],
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        targets: {
+          node: '7',
+          chrome: '70',
+          safari: '13'
+        },
+        useBuiltIns: 'usage',
+        corejs: 3
+      }
+    ]
+  ],
   plugins: [
     // [
     //   "@babel/plugin-proposal-class-properties",
@@ -108,6 +108,15 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
   const wsPath = path.resolve(getDependencyRoot(), 'node_modules', 'ws');
 
   // ###########################################################################
+  // entry
+  // ###########################################################################
+
+  const entry = {
+    // [fix ws]
+    ws: path.join(wsPath, 'index.js')
+  };
+
+  // ###########################################################################
   // resolve.modules
   // ###########################################################################
 
@@ -130,7 +139,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
   const alias = {
     // [fix ws]
     // NOTE: without this, socket connections will fail silently! (error = "timeout"!)
-    ws: wsPath
+    // ws: wsPath
   };
 
   // ###########################################################################
@@ -143,14 +152,23 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       '@dbux/runtime': 'commonjs @dbux/runtime'
     },
     nodeExternals({
+      additionalModuleDirs: [path.join(getDependencyRoot(), 'node_modules')],
+
       // [fix ws]
       allowlist: ['ws']
     })
   ];
 
+
+  // ###########################################################################
+  // put it all together
+  // ###########################################################################
+
   const cfg = {
     //watch: true,
     mode: buildMode,
+
+    entry,
 
     target,
 
@@ -184,13 +202,32 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
           options: babelOptions,
           enforce: 'pre'
         },
+
+        // [fix ws]
         {
           test: /\.jsx?$/,
           loader: 'babel-loader',
           include: [
             path.join(wsPath, 'lib')
           ],
-          options: babelOptions,
+          options: {
+            sourceMaps: true,
+            retainLines: true,
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: {
+                    node: '7',
+                    chrome: '70',
+                    safari: '13'
+                  },
+                  useBuiltIns: 'usage',
+                  corejs: 3
+                }
+              ]
+            ]
+          },
           enforce: 'pre'
         },
 
@@ -222,6 +259,11 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // // [webpack-2]
     // babel: babelOptions
   };
+
+
+  // ###########################################################################
+  // merge in overrides
+  // ###########################################################################
 
   const resultCfg = mergeConcatArray(cfg, ...cfgOverrides);
   return resultCfg;
