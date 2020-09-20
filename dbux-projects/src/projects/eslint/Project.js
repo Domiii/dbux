@@ -10,11 +10,18 @@ export default class EslintProject extends Project {
 
   nodeVersion = '7';
 
-  // async installDependencies() {
-  //   yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
-  //   yarn add --dev webpack webpack-cli webpack-dev-server nodemon && \
-  //   yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime
-  // }
+  async installDependencies() {
+    // yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
+    // yarn add --dev webpack webpack-cli webpack-dev-server nodemon && \
+    // yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime
+    const webpackJs = this.getWebpackJs();
+    if (!sh.test('-d', webpackJs)) {
+      await this.execInTerminal(`volta run --node lts npm i -D webpack@^4.41.5 webpack-cli@^3.3.10 webpack-node-externals@^2.5.0`);
+    }
+
+    // add "dist" folder to gitignore
+    await this.exec('bash -c "echo ""dist"" >> .gitignore"');
+  }
 
   loadBugs() {
     // TODO: load automatically from BugsJs bug database
@@ -79,6 +86,20 @@ export default class EslintProject extends Project {
 
     // `npm install` again! (NOTE: the buggy version might have different dependencies)
     await this.npmInstall();
+  }
+
+
+  // ###########################################################################
+  // run
+  // ###########################################################################
+
+  getWebpackJs() {
+    return `${this.dependencyRoot}/node_modules/webpack/bin/webpack.js`;
+  }
+
+  async startWatchMode() {
+    // start webpack using latest node (long-time support)
+    return this.execBackground(`volta run --node lts node ${this.getWebpackJs()} --config ./webpack.config.dbux.js`);
   }
 
   async testBugCommand(bug, cfg) {

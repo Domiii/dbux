@@ -1,10 +1,8 @@
 {
 	"folders": [
 		{
-			"path": "samples"
-		},
-		{
-			"path": "dbux_projects"
+			"name": "eslint",
+			"path": "dbux_projects/eslint"
 		}
 	],
 	"settings": {

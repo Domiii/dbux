@@ -10,6 +10,16 @@ import Process from '../util/Process';
 const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
 
+/**
+ * Project class file.
+ * 
+ * @typedef { import('../ProjectsManager').default } ProjectsManager
+ * @file
+ */
+
+/**
+ * 
+ */
 export default class Project {
   /**
    * @type {BugList}
@@ -93,6 +103,10 @@ export default class Project {
     return path.join(this.projectsRoot, this.folderName);
   }
 
+  get dependencyRoot() {
+    return this.manager.config.dependencyRoot;
+  }
+
   // ###########################################################################
   // git stuff
   // ###########################################################################
@@ -159,10 +173,12 @@ export default class Project {
 
   async startWatchModeIfNotRunning() {
     if (!this.backgroundProcesses?.length && this.startWatchMode) {
-      await this.startWatchMode();
+      await this.startWatchMode().catch(err => {
+        this.logger.error('startWatchMode failed -', err?.stack || err);
+      });
 
       if (!this.backgroundProcesses?.length) {
-        this.logger.error('project.startWatchMode did not result in any new background processes');
+        this.logger.error('startWatchMode did not result in any new background processes');
       }
     }
   }
@@ -187,7 +203,7 @@ export default class Project {
   // ###########################################################################
 
   async execInTerminal(command, options) {
-    let cwd = options?.cdToProjectPath === false ? '' : this.projectPath;
+    let cwd = options?.cwd || this.projectPath;
 
     let { code } = await this.manager.externals.TerminalWrapper.execInTerminal(cwd, command, {}).waitForResult();
 
@@ -195,21 +211,20 @@ export default class Project {
       return code;
     }
     if (code) {
-      throw new Error(`Process exit code ${code}`);
+      const processExecMsg = `${cwd}$ ${command}`;
+      throw new Error(`Process "${processExecMsg}" exit code ${code}`);
     }
     return 0;
   }
 
   async exec(command, options, input) {
-    if (options?.cdToProjectPath !== false) {
-      options = defaultsDeep(options, {
-        ...(options || EmptyObject),
-        processOptions: {
-          cwd: this.projectPath
-        }
-      });
-    }
-
+    const cwd = options?.cwd || this.projectPath;
+    options = defaultsDeep(options, {
+      ...(options || EmptyObject),
+      processOptions: {
+        cwd
+      }
+    });
     return this.runner._exec(command, this.logger, options, input);
   }
 
@@ -227,20 +242,17 @@ export default class Project {
     } = this;
 
     // set cwd
-    let cwd;
-    if (options?.cdToProjectPath !== false) {
-      cwd = projectPath;
+    let cwd = options?.cwd || projectPath;
 
-      // set cwd option
-      options = defaultsDeep(options, {
-        processOptions: {
-          cwd
-        }
-      });
+    // set cwd option
+    options = defaultsDeep(options, {
+      processOptions: {
+        cwd
+      }
+    });
 
-      // cd into it
-      sh.cd(cwd);
-    }
+    // cd into it
+    sh.cd(cwd);
 
     // // wait until current process finshed it's workload
     // this._process?.waitToEnd();
@@ -285,6 +297,8 @@ export default class Project {
    */
   async install() {
     if (this.nodeVersion) {
+      // make sure, we have node at given version and node@lts
+      await this.exec(`volta fetch node@${this.nodeVersion} node@lts npm@lts`);
       await this.exec(`volta pin node@${this.nodeVersion}`);
     }
 
@@ -299,7 +313,7 @@ export default class Project {
       this.logger.warn('Removing files:', absRmFiles);
       sh.rm('-rf', absRmFiles);
     }
-    
+
     await this.manager.installDependencies();
 
     // copy assets
@@ -312,10 +326,10 @@ export default class Project {
     await this.npmInstall();
     // }
 
-    // install project's custom dependencies
+    // custom dependencies
     await this.installDependencies();
 
-    // call `afterInstall` hook for different projects to do their postinstall things
+    // custom `afterInstall` hook
     await this.afterInstall();
 
     // after install completed: commit modifications, so we can easily apply patches etc
@@ -357,9 +371,6 @@ export default class Project {
       gitUrl: githubUrl
     } = this;
 
-    // cd into project root
-    sh.cd(projectsRoot);
-
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
@@ -368,7 +379,7 @@ export default class Project {
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
       await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
-        cdToProjectPath: false
+        cwd: this.projectsRoot
       });
 
       sh.cd(projectPath);

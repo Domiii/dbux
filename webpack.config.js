@@ -9,7 +9,7 @@ const fs = require('fs');
 const mergeWith = require('lodash/mergeWith');
 const isArray = require('lodash/isArray');
 const webpack = require('webpack');
-const nodeExternals = require('webpack-node-externals');
+// const nodeExternals = require('webpack-node-externals');
 
 // add some of our own good stuff
 require('./dbux-cli/lib/dbux-register-self');
