@@ -4,6 +4,7 @@ import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import BugList from './BugList';
 import Process from '../util/Process';
 
@@ -296,12 +297,6 @@ export default class Project {
    * NOTE: This method is called by `gitClone`, only after a new clone has succeeded.
    */
   async install() {
-    if (this.nodeVersion) {
-      // make sure, we have node at given version and node@lts
-      await this.exec(`volta fetch node@${this.nodeVersion} node@lts npm@lts`);
-      await this.exec(`volta pin node@${this.nodeVersion}`);
-    }
-
     // remove files
     let { projectPath, rmFiles } = this;
     if (rmFiles?.length) {
@@ -314,10 +309,12 @@ export default class Project {
       sh.rm('-rf', absRmFiles);
     }
 
-    await this.manager.installDependencies();
-
     // copy assets
     await this.installAssets();
+
+    // install dbux dependencies
+    await this.manager.installDependencies();
+
     // NOTE: disable yarn support for now
     // if (this.packageManager === 'yarn') {
     //   await this.yarnInstall();
@@ -432,6 +429,12 @@ export default class Project {
 
     // copy shared assets (NOTE: doesn't override individual assets)
     await this.copyAssetFolder(SharedAssetFolder);
+
+    if (this.nodeVersion) {
+      // make sure, we have node at given version and node@lts
+      await this.exec(`volta fetch node@${this.nodeVersion} node@lts npm@lts`);
+      await this.exec(`volta pin node@${this.nodeVersion}`);
+    }
   }
 
   async copyAssetFolder(assetFolderName) {
@@ -529,12 +532,12 @@ export default class Project {
   /**
    * @see https://mochajs.org/#command-line-usage
    */
-  getMochaArgs(bug, moreArgs) {
+  getMochaArgs(bug, moreArgs = EmptyArray) {
     // bugArgs
     const argArray = [
       '-c', // colors
       ...moreArgs,
-      ...bug.runArgs
+      ...(bug.runArgs || EmptyArray)
     ];
     if (argArray.includes(undefined)) {
       throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(argArray));

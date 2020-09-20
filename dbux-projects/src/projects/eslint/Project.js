@@ -11,12 +11,9 @@ export default class EslintProject extends Project {
   nodeVersion = '7';
 
   async installDependencies() {
-    // yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
-    // yarn add --dev webpack webpack-cli webpack-dev-server nodemon && \
-    // yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime
     const webpackJs = this.getWebpackJs();
-    if (!sh.test('-d', webpackJs)) {
-      await this.execInTerminal(`volta run --node lts npm i -D webpack@^4.41.5 webpack-cli@^3.3.10 webpack-node-externals@^2.5.0`);
+    if (!sh.test('-f', webpackJs)) {
+      await this.execInTerminal(`npm i -D webpack@^4.41.5 webpack-cli@^3.3.10 webpack-node-externals@^2.5.0`);
     }
 
     // add "dist" folder to gitignore
@@ -74,8 +71,10 @@ export default class EslintProject extends Project {
     const tagCategory = "test"; // "test", "fix" or "full"
     const tag = this.getBugGitTag(id, tagCategory);
 
-    // TODO: auto commit any pending changes
-    // TODO: checkout bug, if not done so before
+    if ((await this.getTagName()).startsWith(tag)) {
+      // do not checkout bug, if we already on the right tag
+      return;
+    }
 
     // checkout the bug branch
     sh.cd(this.projectPath);
@@ -84,8 +83,14 @@ export default class EslintProject extends Project {
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);
 
-    // `npm install` again! (NOTE: the buggy version might have different dependencies)
+    // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
     await this.npmInstall();
+
+    // Copy assets again in this branch
+    await this.installAssets();
+
+    // Auto commit again
+    await this.autoCommit();
   }
 
 
@@ -115,8 +120,15 @@ export default class EslintProject extends Project {
       ...cfg
     };
 
+    // TODO: fix watch mode
+    // TODO: actual location - `dist/tests/lib/rules/no-obj-calls.js`
     // delete mochaCfg.dbuxJs; // no dbux -> run the test as-is
 
-    return await buildMochaRunCommand(mochaCfg);
+
+    return `cp ../../dbux-projects/assets/_shared_assets_/webpack.config.dbux.base.js webpack.config.dbux.base.js && \
+    volta run --node lts node ../../node_modules/webpack/bin/webpack.js --config webpack.config.dbux.js && \
+    node --stack-trace-limit=100  node_modules/mocha/bin/_mocha --no-exit -c -t 10000 --grep "" -- dist/tests/lib/rules/no-obj-calls.js`;
+
+    // return await buildMochaRunCommand(mochaCfg);
   }
 }

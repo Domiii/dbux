@@ -30,7 +30,8 @@ function mergeConcatArray(...inputs) {
 
 
 const babelOptions = {
-  sourceMaps: "both",
+  // sourceMaps: "both",
+  sourceMaps: true,
   retainLines: true,
   babelrc: true,
   // presets: [
@@ -90,15 +91,15 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
 
   let dbuxRules = [];
   if (dbuxRoot) {
-    // enable dbux debugging
-    const dbuxRuntimeFolder = path.join(dbuxRoot, 'dbux-runtime', 'dist');
-    dbuxRules.push({
-      test: /\.js$/,
-      // eslint-disable-next-line global-require, import/no-extraneous-dependencies
-      loader: require('source-map-loader'),
-      include: [dbuxRuntimeFolder],
-      enforce: 'pre'
-    });
+    // // enable dbux debugging
+    // const dbuxRuntimeFolder = path.join(dbuxRoot, 'dbux-runtime', 'dist');
+    // dbuxRules.push({
+    //   test: /\.js$/,
+    //   // eslint-disable-next-line global-require, import/no-extraneous-dependencies
+    //   loader: require('source-map-loader'),
+    //   include: [dbuxRuntimeFolder],
+    //   enforce: 'pre'
+    // });
   }
 
   const modules = [
@@ -108,6 +109,10 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
   modules.push(path.join(getDependencyRoot(), 'node_modules'));
 
   const externals = target !== 'node' ? undefined : [
+    {
+      // 'dbux-runtime': 'umd @dbux/runtime',
+      '@dbux/runtime': 'commonjs @dbux/runtime'
+    },
     nodeExternals()
   ];
 
@@ -118,8 +123,8 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     target,
 
     // https://github.com/webpack/webpack/issues/2145
-    devtool: 'inline-module-source-map',
-    // devtool: 'source-map',
+    // devtool: 'inline-module-source-map',
+    devtool: 'source-map',
     //devtool: 'inline-source-map',
     plugins: [],
     context: path.join(ProjectRoot, '.'),

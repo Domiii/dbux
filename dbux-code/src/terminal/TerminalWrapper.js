@@ -3,6 +3,8 @@ import os from 'os';
 import path from 'path';
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import Process from '@dbux/projects/src/util/Process';
+import which from '@dbux/projects/src/util/which';
 import { execCommand } from '../codeUtil/terminalUtil';
 import { getResourcePath } from '../resources';
 
@@ -13,7 +15,23 @@ const Verbose = true;
 const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
 
 // ###########################################################################
-// execInTerminal w/ process wrapper
+// utilities
+// ###########################################################################
+
+/**
+ * TODO: clean this up and move it to a more suitable place
+ */
+async function getPathToNode() {
+  const volta = (await which('volta'));
+  if (volta) {
+    // get the actual Node binary location that is not inside the target directory (i.e. the globally installed version)
+    return Process.execCaptureOut(`volta which node`, { processOptions: { cmd: __dirname } });
+  }
+  return 'node';
+}
+
+// ###########################################################################
+// TerminalWrapper
 // ###########################################################################
 
 export default class TerminalWrapper {
@@ -34,14 +52,15 @@ export default class TerminalWrapper {
 
   async _run(cwd, command, args) {
     // NOTE: fix paths on Windows
-    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');    
+    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');
+    const pathToNode = await getPathToNode();
     const pathToDbuxRun = getResourcePath('../dist/_dbux_run.js').replace(/\\/g, '/');
 
     // serialize everything
     const runJsargs = { cwd, command, args, tmpFolder };
     const serializedRunJsArgs = Buffer.from(JSON.stringify(runJsargs)).toString('base64');
     // const runJsCommand = `pwd && node -v && which node && echo %PATH% && node ${pathToDbuxRun} ${serializedRunJsArgs}`;
-    const runJsCommand = `node ${pathToDbuxRun} ${serializedRunJsArgs}`;
+    const runJsCommand = `${pathToNode} ${pathToDbuxRun} ${serializedRunJsArgs}`;
 
     debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
 
@@ -72,7 +91,7 @@ export default class TerminalWrapper {
           let newErr = new Error(`FSWatcher error: ${err.message}`);
           if (resolved) {
             warn(newErr);
-          } 
+          }
           else {
             reject(newErr);
           }
@@ -85,7 +104,7 @@ export default class TerminalWrapper {
             let newErr = new Error('The terminal was closed.');
             if (resolved) {
               warn(newErr);
-            } 
+            }
             else {
               reject(newErr);
             }
@@ -127,7 +146,7 @@ export default class TerminalWrapper {
    */
   static execInTerminal(cwd, command, args) {
     // TODO: register wrapper with context
-  
+
     const wrapper = new TerminalWrapper();
     wrapper.start(cwd, command, args);
     return wrapper;

@@ -267,7 +267,6 @@ export default class BugRunner {
           // user passed all tests
           this.manager.askForSubmit();
         }
-        project.logger.log(`Result:`, result);
         this._emitter.emit('testFinished', bug, result);
         return result;
       }

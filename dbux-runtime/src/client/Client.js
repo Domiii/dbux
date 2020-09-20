@@ -3,7 +3,8 @@ import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
 import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
-const Verbose = false;
+const Verbose = true;
+// const Verbose = false;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Runtime Client');
@@ -92,7 +93,7 @@ export default class Client {
     // Verbose && 
     if (!this._connectFailed) {
       this._connectFailed = true;
-      debug(`failed to connect (${err.message}). Reconnecting...`);
+      debug(`failed to connect (${err.message || err}). Reconnecting...`);
     }
   }
 

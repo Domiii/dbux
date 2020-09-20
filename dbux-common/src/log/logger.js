@@ -1,6 +1,13 @@
 /* eslint no-console: 0 */
 import NanoEvents from 'nanoevents';
 
+
+(function _compatabilityHackfix() {
+  // NOTE: console.debug is not supported in some environments and babel, for some reason, does not polyfill it
+  // eslint-disable-next-line no-console
+  console.debug = console.debug || console.log;
+})();
+
 const errors = [];
 
 const emitter = new NanoEvents();

@@ -222,8 +222,10 @@ export default class ExpressProject extends Project {
     const tagCategory = "test"; // "test", "fix" or "full"
     const tag = this.getBugGitTag(id, tagCategory);
 
-    // TODO: auto commit any pending changes
-    // TODO: checkout bug, if not done so before
+    if ((await this.getTagName()).startsWith(tag)) {
+      // do not checkout bug, if we already on the right tag
+      return;
+    }
 
     // checkout the bug branch
     sh.cd(this.projectPath);
@@ -232,7 +234,7 @@ export default class ExpressProject extends Project {
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);
 
-    // `npm install` again! (NOTE: the buggy version might have different dependencies)
+    // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
     await this.npmInstall();
 
     // Copy assets again in this branch
