@@ -1,4 +1,6 @@
+import path from 'path';
 import sh from 'shelljs';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
@@ -48,7 +50,7 @@ export default class EslintProject extends Project {
             '--grep',
             `"${bug.testRe}"`,
             '--',
-            ...bug.testFilePaths,
+            ...bug.testFilePaths.map(file => path.join('dist', file)),
             // eslint-disable-next-line max-len
             // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
           ],
@@ -104,7 +106,7 @@ export default class EslintProject extends Project {
 
   async startWatchMode() {
     // start webpack using latest node (long-time support)
-    return this.execBackground(`volta run --node lts node ${this.getWebpackJs()} --config ./webpack.config.dbux.js`);
+    return this.execBackground(`volta run --node lts node ${this.getWebpackJs()} --config ./webpack.config.dbux.js --watch`);
   }
 
   async testBugCommand(bug, cfg) {
@@ -116,19 +118,21 @@ export default class EslintProject extends Project {
     const mochaCfg = {
       cwd: projectPath,
       mochaArgs: bugArgs,
-      require: bug.require,
+      require: [
+        ...(bug.require || EmptyArray),
+        this.manager.getDbuxPath('@dbux/runtime/deps/require.ws.7.js')
+      ],
       ...cfg
     };
 
-    // TODO: fix watch mode
     // TODO: actual location - `dist/tests/lib/rules/no-obj-calls.js`
-    // delete mochaCfg.dbuxJs; // no dbux -> run the test as-is
+    delete mochaCfg.dbuxJs; // dbux has already been infused -> run test without another dbux layer
 
 
-    return `cp ../../dbux-projects/assets/_shared_assets_/webpack.config.dbux.base.js webpack.config.dbux.base.js && \
-    node ../../node_modules/webpack/bin/webpack.js --config webpack.config.dbux.js && \
-    node --stack-trace-limit=100 -r @dbux/runtime/deps/require.ws.7.js  node_modules/mocha/bin/_mocha --no-exit -c -t 10000 --grep "" -- dist/tests/lib/rules/no-obj-calls.js`;
+    // return `cp ../../dbux-projects/assets/_shared_assets_/webpack.config.dbux.base.js webpack.config.dbux.base.js && \
+    // node ../../node_modules/webpack/bin/webpack.js --config webpack.config.dbux.js && \
+    // node --stack-trace-limit=100 -r @dbux/runtime/deps/require.ws.7.js  node_modules/mocha/bin/_mocha --no-exit -c -t 10000 --grep "" -- dist/tests/lib/rules/no-obj-calls.js`;
 
-    // return await buildMochaRunCommand(mochaCfg);
+    return await buildMochaRunCommand(mochaCfg);
   }
 }

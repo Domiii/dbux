@@ -14,8 +14,8 @@ linkOwnDependencies();
 // ###########################################################################
 
 function linkDependencies(deps) {
+  console.debug('[DBUX module-alias]', deps.map(([alias, target]) => `${alias} -> ${target}`));
   for (let [alias, target] of deps) {
-    // console.debug('[DBUX module-alias]', alias, '->', target);
     target = fs.realpathSync(target);
     moduleAlias.addAlias(alias, target);
   }
@@ -34,9 +34,10 @@ function linkOwnDependencies() {
   // NOTE: in webpack build, __dirname is actually dirname of the entry point
   const dependencyRoot = getDependencyRoot();
   if (!dependencyRoot) {
-    throw new Error(`File is not (but must be) in "@dbux/cli" directory: ${__dirname}`);
+    throw new Error(`File is not (but must be) in "@dbux/cli" directory: ${getDependencyRoot()}`);
   }
-  let pkg = readPackageJson(dependencyRoot);
+  // read `@dbux/cli`'s own dependencies
+  let pkg = readPackageJson(path.join(__dirname, '../..'));
   const { dependencies } = pkg;
   let depNames = Object.keys(dependencies);
 

@@ -214,8 +214,20 @@ export default class ProjectsManager {
   // }
 
   getDbuxCliBinPath() {
-    const { dependencyRoot } = this.config;
-    return path.join(dependencyRoot, 'node_modules/@dbux/cli/bin/dbux.js');
+    return this.getDbuxPath('@dbux/cli/bin/dbux.js');
+  }
+
+  getDbuxPath(relativePath) {
+    return path.join(this.getDbuxRoot(), 'node_modules', relativePath);
+  }
+
+  getDbuxRoot() {
+    if (process.env.DBUX_ROOT) {
+      // if we install in dev mode, DBUX_ROOT is set, but we are not in it
+      return process.env.DBUX_ROOT;
+    }
+    // in production mode, we must install dbux separately
+    return this.config.dependencyRoot;
   }
 
 
