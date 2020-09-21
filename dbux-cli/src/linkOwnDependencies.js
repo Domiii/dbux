@@ -3,7 +3,7 @@ const fs = require('fs');
 const colors = require('colors/safe');
 const moduleAlias = require('module-alias');
 const { readPackageJson } = require('../lib/package-util');
-const { getDependencyRoot } = require('./dbuxFolders');
+const { getDependencyRoot } = require('../lib/dbux-folders');
 
 // link up all dependencies
 linkOwnDependencies();

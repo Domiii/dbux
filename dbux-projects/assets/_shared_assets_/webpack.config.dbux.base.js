@@ -1,13 +1,14 @@
+/* eslint-disable no-console */
+/* eslint-disable global-require */
+
 const path = require('path');
 const process = require('process');
 const mergeWith = require('lodash/mergeWith');
-const { getDependencyRoot } = require('@dbux/cli/dist/dbuxFolders');
+const { getDependencyRoot } = require('@dbux/cli/lib/dbux-folders');
 const nodeExternals = require('webpack-node-externals');
 require('@dbux/babel-plugin');
 
 process.env.BABEL_DISABLE_CACHE = 1;
-
-// const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
 
 const buildMode = 'development';
 //const buildMode = 'production';
@@ -23,16 +24,13 @@ function mergeConcatArray(...inputs) {
   );
 }
 
-
-// const dbuxFolders = ["dbux-runtime", "dbux-common", "dbux-data"];
-// const dbuxFolders = ["dbux-runtime"];
-// const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(MonoRoot, f)));
-
 // TODO: pass actual node version in via parameter (part of `target`)
 // const presets = 
 
 const babelOptions = {
   // sourceMaps: "both",
+  // see https://github.com/webpack/webpack/issues/11510#issuecomment-696027212
+  sourceType: "unambiguous",
   sourceMaps: true,
   retainLines: true,
   babelrc: true,
@@ -41,9 +39,7 @@ const babelOptions = {
       '@babel/preset-env',
       {
         targets: {
-          node: '7',
-          chrome: '70',
-          safari: '13'
+          node: '7'
         },
         useBuiltIns: 'usage',
         corejs: 3
@@ -58,8 +54,8 @@ const babelOptions = {
     //   }
     // ],
     // "@babel/plugin-proposal-optional-chaining",
-    // [
     //   "@babel/plugin-proposal-decorators",
+      // [
     //   {
     //     legacy: true
     //   }
@@ -104,16 +100,11 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // });
   }
 
-  // [fix ws]
-  const wsPath = path.resolve(getDependencyRoot(), 'node_modules', 'ws');
-
   // ###########################################################################
   // entry
   // ###########################################################################
 
   const entry = {
-    // [fix ws]
-    ws: path.join(wsPath, 'index.js')
   };
 
   // ###########################################################################
@@ -125,11 +116,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     path.join(ProjectRoot, 'node_modules')
   ];
   modules.push(
-    path.join(getDependencyRoot(), 'node_modules'),
-
-    // [fix ws]
-    path.join(wsPath, 'lib'),
-    path.join(wsPath, 'node_modules')
+    path.join(getDependencyRoot(), 'node_modules')
   );
 
   // ###########################################################################
@@ -137,9 +124,6 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
   // ###########################################################################
 
   const alias = {
-    // [fix ws]
-    // NOTE: without this, socket connections will fail silently! (error = "timeout"!)
-    // ws: wsPath
   };
 
   // ###########################################################################
@@ -152,11 +136,13 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       '@dbux/runtime': 'commonjs @dbux/runtime'
     },
     nodeExternals({
-      additionalModuleDirs: [path.join(getDependencyRoot(), 'node_modules')],
+      additionalModuleDirs: [path.join(getDependencyRoot(), 'node_modules')]
+    }),
 
-      // [fix ws]
-      allowlist: ['ws']
-    })
+    // (context, request, callback) => {
+    //   console.warn('external', context, request);
+    //   callback();
+    // }
   ];
 
 
@@ -167,26 +153,22 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
   const cfg = {
     //watch: true,
     mode: buildMode,
-
     entry,
-
     target,
-
     // https://github.com/webpack/webpack/issues/2145
     // devtool: 'inline-module-source-map',
     devtool: 'source-map',
-    //devtool: 'inline-source-map',
     plugins: [],
     context: path.join(ProjectRoot, '.'),
     output: {
       filename: '[name].js',
       path: path.resolve(ProjectRoot, 'dist'),
       publicPath: 'dist',
-      libraryTarget: "commonjs",
+      libraryTarget: "commonjs2",
       devtoolModuleFilenameTemplate: "../[resource-path]",
     },
     resolve: {
-      symlinks: true,
+      // symlinks: true,
       alias,
       // extensions: ['.js', '.jsx'],
       modules
@@ -200,34 +182,6 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
             ...srcFolders.map(folder => path.join(ProjectRoot, folder))
           ],
           options: babelOptions,
-          enforce: 'pre'
-        },
-
-        // [fix ws]
-        {
-          test: /\.jsx?$/,
-          loader: 'babel-loader',
-          include: [
-            path.join(wsPath, 'lib')
-          ],
-          options: {
-            sourceMaps: true,
-            retainLines: true,
-            presets: [
-              [
-                '@babel/preset-env',
-                {
-                  targets: {
-                    node: '7',
-                    chrome: '70',
-                    safari: '13'
-                  },
-                  useBuiltIns: 'usage',
-                  corejs: 3
-                }
-              ]
-            ]
-          },
           enforce: 'pre'
         },
 
@@ -266,6 +220,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
   // ###########################################################################
 
   const resultCfg = mergeConcatArray(cfg, ...cfgOverrides);
+
   return resultCfg;
 };
 

@@ -7,7 +7,7 @@
   "license": "Apacha-2.0",
   "main": "src/index.js",
   "bin": {
-    "dbux-webpack": "bin/dbux-webpack"
+    "dbux-webpack": "bin/dbux-webpack.js"
   },
   "directories": {
     "src": "src"

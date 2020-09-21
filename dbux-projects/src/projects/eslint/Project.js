@@ -126,8 +126,8 @@ export default class EslintProject extends Project {
 
 
     return `cp ../../dbux-projects/assets/_shared_assets_/webpack.config.dbux.base.js webpack.config.dbux.base.js && \
-    volta run --node lts node ../../node_modules/webpack/bin/webpack.js --config webpack.config.dbux.js && \
-    node --stack-trace-limit=100  node_modules/mocha/bin/_mocha --no-exit -c -t 10000 --grep "" -- dist/tests/lib/rules/no-obj-calls.js`;
+    node ../../node_modules/webpack/bin/webpack.js --config webpack.config.dbux.js && \
+    node --stack-trace-limit=100 -r @dbux/runtime/deps/require.ws.7.js  node_modules/mocha/bin/_mocha --no-exit -c -t 10000 --grep "" -- dist/tests/lib/rules/no-obj-calls.js`;
 
     // return await buildMochaRunCommand(mochaCfg);
   }

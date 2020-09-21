@@ -40,6 +40,8 @@ function getLinesAroundOffset(s, offset, nLines = 1, maxChars = 50) {
 }
 
 /**
+ * TODO: need to fix order. Probably: 1. babel -> 2. this
+ * 
  * @see https://github.com/webpack/webpack/issues/4175#issuecomment-695767880
  */
 const dynamicRequireRule = {

@@ -235,16 +235,22 @@ module.exports = (env, argv) => {
     //  (WARNING: add node configs only! don't mix targets with webpack; it doesn't like it.)
     // ###########################################################################
 
-    const otherWebpackConfigs = [
-      'cli',
-      'code',
-      'server'
-      // NOTE: Don't build `dbux-graph-client` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
-      // 'graph-client'
-    ].map(name => {
+    const otherWebpackConfigPaths = [
+      ...[
+        'cli',
+        'code',
+        'server'
+        // NOTE: Don't build `dbux-graph-client` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
+        // 'graph-client'
+      ].map(name => `./dbux-${name}/webpack.config`),
+      
+      `./dbux-runtime/deps/ws.webpack.config`
+    ];
+
+    const otherWebpackConfigs = otherWebpackConfigPaths.map(p =>
       /* eslint-disable-next-line global-require, import/no-dynamic-require */
-      return require(`./dbux-${name}/webpack.config`);
-    });
+      require(p)
+    );
 
 
     // ###########################################################################
