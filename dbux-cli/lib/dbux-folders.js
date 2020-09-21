@@ -1,6 +1,11 @@
 const path = require('path');
 
 module.exports = {
+  getDbuxCliRoot() {
+    const dbuxPathMatch = __dirname.match(/(.*?(dbux-cli|@dbux[\\/]cli))/);
+    return dbuxPathMatch && dbuxPathMatch[1];
+  },
+
   getDependencyRoot() {
     let dependencyRoot;
     if (process.env.NODE_ENV === 'development') {

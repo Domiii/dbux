@@ -260,12 +260,15 @@ export default class Project {
 
     const process = new Process();
     this.backgroundProcesses.push(process);
-    process.start(cmd, this.logger, options).finally(() => {
-      pull(this.backgroundProcesses, process);
-      if (!this.backgroundProcesses.length) {
-        this.runner.maybeSetStatusNone(this);
-      }
-    });
+    process.
+      start(cmd, this.logger, options).
+      catch(err => this.logger.error(err)).
+      finally(() => {
+        pull(this.backgroundProcesses, process);
+        if (!this.backgroundProcesses.length) {
+          this.runner.maybeSetStatusNone(this);
+        }
+      });
     return process;
   }
 

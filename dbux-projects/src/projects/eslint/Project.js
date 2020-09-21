@@ -101,12 +101,17 @@ export default class EslintProject extends Project {
   // ###########################################################################
 
   getWebpackJs() {
-    return `${this.dependencyRoot}/node_modules/webpack/bin/webpack.js`;
+    return this.manager.getDbuxPath('webpack/bin/webpack.js');
   }
 
   async startWatchMode() {
     // start webpack using latest node (long-time support)
-    return this.execBackground(`volta run --node lts node ${this.getWebpackJs()} --config ./webpack.config.dbux.js --watch`);
+    // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
+    const req = `-r ${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}`;
+    const args = '--config ./webpack.config.dbux.js --watch';
+    return this.execBackground(
+      `volta run --node lts node ${req} ${this.getWebpackJs()} ${args}`
+    );
   }
 
   async testBugCommand(bug, cfg) {

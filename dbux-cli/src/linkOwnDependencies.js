@@ -3,7 +3,7 @@ const fs = require('fs');
 const colors = require('colors/safe');
 const moduleAlias = require('module-alias');
 const { readPackageJson } = require('../lib/package-util');
-const { getDependencyRoot } = require('../lib/dbux-folders');
+const { getDependencyRoot, getDbuxCliRoot } = require('../lib/dbux-folders');
 
 // link up all dependencies
 linkOwnDependencies();
@@ -36,8 +36,10 @@ function linkOwnDependencies() {
   if (!dependencyRoot) {
     throw new Error(`File is not (but must be) in "@dbux/cli" directory: ${getDependencyRoot()}`);
   }
+  
   // read `@dbux/cli`'s own dependencies
-  let pkg = readPackageJson(path.join(__dirname, '../..'));
+  const targetFolder = getDbuxCliRoot();
+  let pkg = readPackageJson(targetFolder);
   const { dependencies } = pkg;
   let depNames = Object.keys(dependencies);
 
@@ -50,7 +52,7 @@ function linkOwnDependencies() {
   // register all dependencies
   
   const msg = `[DBUX] linkOwnDependencies ${JSON.stringify({
-    __dirname, dependencyRoot
+    targetFolder, dependencyRoot
   })}`;
   console.debug(colors.gray(msg));
 

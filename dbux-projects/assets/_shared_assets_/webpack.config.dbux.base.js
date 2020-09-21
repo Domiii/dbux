@@ -5,8 +5,9 @@ const path = require('path');
 const process = require('process');
 const mergeWith = require('lodash/mergeWith');
 const { getDependencyRoot } = require('@dbux/cli/lib/dbux-folders');
-const nodeExternals = require('webpack-node-externals');
 require('@dbux/babel-plugin');
+
+const nodeExternals = require(path.join(getDependencyRoot(), 'node_modules/webpack-node-externals'));
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
@@ -55,7 +56,7 @@ const babelOptions = {
     // ],
     // "@babel/plugin-proposal-optional-chaining",
     //   "@babel/plugin-proposal-decorators",
-      // [
+    // [
     //   {
     //     legacy: true
     //   }
