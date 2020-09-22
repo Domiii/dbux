@@ -213,7 +213,7 @@ export default class Project {
     }
     if (code) {
       const processExecMsg = `${cwd}$ ${command}`;
-      throw new Error(`Process "${processExecMsg}" exit code ${code}`);
+      throw new Error(`Process failed with exit code ${code} (${processExecMsg})`);
     }
     return 0;
   }
@@ -314,6 +314,7 @@ export default class Project {
 
     // copy assets
     await this.installAssets();
+    await this.autoCommit();  // auto-commit -> to be on the safe side
 
     // install dbux dependencies
     await this.manager.installDependencies();
@@ -332,7 +333,7 @@ export default class Project {
     // custom `afterInstall` hook
     await this.afterInstall();
 
-    // after install completed: commit modifications, so we can easily apply patches etc
+    // after install completed: commit modifications, so we can easily apply patches etc (if necessary)
     await this.autoCommit();
   }
 
@@ -351,7 +352,11 @@ export default class Project {
       return;
     }
 
-    await this.exec(`git add -A && git commit -am '"dbux auto commit"'`);
+    if (await this.hasAnyChangedFiles()) {
+      // only auto commit if files changed
+      this.logger.log('auto commit');
+      await this.exec(`git add -A && git commit -am '"[dbux auto commit]"'`);
+    }
   }
 
   async deleteProjectFolder() {
@@ -466,6 +471,10 @@ export default class Project {
     return path.join(this.getPatchFolder(), patchFName);
   }
 
+  // ###########################################################################
+  // git commands
+  // ###########################################################################
+
   async applyPatch(patchFName) {
     if (!await this.checkCorrectGitRepository()) {
       return -1;
@@ -494,6 +503,11 @@ export default class Project {
     }
 
     return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
+  }
+
+  async hasAnyChangedFiles() {
+    const changes = await this.execCaptureOut(`git status -s`);
+    return !!changes;
   }
 
   async getPatchString() {

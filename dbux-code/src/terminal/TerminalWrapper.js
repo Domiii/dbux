@@ -7,6 +7,7 @@ import Process from '@dbux/projects/src/util/Process';
 import which from '@dbux/projects/src/util/which';
 import { execCommand } from '../codeUtil/terminalUtil';
 import { getResourcePath } from '../resources';
+import sleep from '@dbux/common/src/util/sleep';
 
 const Verbose = true;
 // const Verbose = false;
@@ -34,6 +35,10 @@ async function getPathToNode() {
 // TerminalWrapper
 // ###########################################################################
 
+function fixPathForSerialization(p) {
+  return p.replace(/\\/g, '/');
+}
+
 export default class TerminalWrapper {
   _disposable;
 
@@ -52,9 +57,9 @@ export default class TerminalWrapper {
 
   async _run(cwd, command, args) {
     // NOTE: fix paths on Windows
-    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');
-    const pathToNode = await getPathToNode();
-    const pathToDbuxRun = getResourcePath('../dist/_dbux_run.js').replace(/\\/g, '/');
+    let tmpFolder = fixPathForSerialization(fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')));
+    const pathToNode = fixPathForSerialization(await getPathToNode());
+    const pathToDbuxRun = fixPathForSerialization(getResourcePath('../dist/_dbux_run.js'));
 
     // serialize everything
     const runJsargs = { cwd, command, args, tmpFolder };
@@ -114,10 +119,19 @@ export default class TerminalWrapper {
     });
 
     // execute command
-    this._terminal = await execCommand(cwd, runJsCommand);
+    
+    const commandCall = `${cwd}$ ${command}`;
 
     try {
+      this._terminal = await execCommand(cwd, runJsCommand);
+
       return await _promise;
+    }
+    catch (err) {
+      // await sleep(5);
+      // this.dispose();
+      err.message = `Terminal command (${commandCall}) failed - ${err.message}`;
+      throw err;
     } finally {
       this.dispose();
       fs.rmdirSync(tmpFolder);

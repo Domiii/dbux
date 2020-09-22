@@ -12,8 +12,7 @@ export function createDefaultTerminal(cwd) {
 }
 
 export function createTerminal(name, cwd) {
-  let terminal = window.terminals.find(t => t.name === name);
-  terminal?.dispose();
+  closeTerminal(name);
 
   const terminalOptions = {
     name,
@@ -31,18 +30,23 @@ export function sendCommandToDefaultTerminal(cwd, command) {
   return terminal;
 }
 
+export function closeTerminal(name) {
+  let terminal = window.terminals.find(t => t.name === name);
+  terminal?.dispose();
+}
+
 // function bashParse(string) {
 //   return string.replace(/"/g, `\\"`).replace(/`/g, "\\`");
 // }
 
 export async function execCommand(cwd, command) {
-  let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
-  terminal?.dispose();
+  const name = DefaultTerminalName;
+  closeTerminal(name);
 
   let pathToBash = (await which('bash'))[0];
 
-  // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing the shellArgs.
-  const wrappedCommand = `cd "${cwd}" && ${command}`;
+  // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing `command`.
+  const wrappedCommand = `cd "${cwd}" && ${command} ; sleep 10`;
 
   const terminalOptions = {
     name: DefaultTerminalName,
@@ -54,7 +58,7 @@ export async function execCommand(cwd, command) {
 
   // debug(`[execCommandInTerminal] ${cwd}$ ${command}`);
 
-  terminal = window.createTerminal(terminalOptions);
+  const terminal = window.createTerminal(terminalOptions);
   terminal.show();
 
   // terminal.sendText(wrappedCommand);
