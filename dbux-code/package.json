@@ -50,7 +50,12 @@
         {
           "id": "dbuxProjectView",
           "name": "Practice",
-          "when": "dbux.context.activated && dbux.context.showProjectView"
+          "when": "dbux.context.activated && dbux.context.showPracticeView && !dbux.context.hasPracticeSession"
+        },
+        {
+          "id": "dbuxSessionView",
+          "name": "Practice Session",
+          "when": "dbux.context.activated && dbux.context.showPracticeView && dbux.context.hasPracticeSession"
         }
       ]
     },

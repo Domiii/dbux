@@ -1,8 +1,7 @@
 import { env, Uri, window } from 'vscode';
 import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
-import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
-import 'lodash';
+import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */

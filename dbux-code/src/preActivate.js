@@ -105,6 +105,7 @@ function initPreActivateCommand(context) {
 function registerErrorHandler() {
   // process.on('unhandledRejection', (reason, promise) => {
   //   logError(`[Unhandled Rejection] reason: ${reason}, promise: ${promise}`);
+  //   debugger;
   // });
 }
 

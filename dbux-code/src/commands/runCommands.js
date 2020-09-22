@@ -3,7 +3,7 @@ import path from 'path';
 import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
-import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
 import { installDbuxDependencies } from '../codeUtil/installUtil';

@@ -8,9 +8,7 @@ import { readPackageJson } from '@dbux/cli/lib/package-util';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
-import ProgressLogController0 from './dataLib/ProgressLogController0';
 import PracticeSession from './practiceSession/PracticeSession';
-import PracticeSessionState from './practiceSession/PracticeSessionState';
 import RunStatus from './projectLib/RunStatus';
 import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
@@ -77,10 +75,9 @@ export default class ProjectsManager {
     this._emitter = new NanoEvents();
 
     this._backend = new BackendController(this);
-    this.progressLogController0 = new ProgressLogController0(externals.storage);
     this.progressLogController = new ProgressLogController(this);
 
-    this.maybeStartExistingPracticeSession();
+    this.recoverPracticeSession();
 
     // this._pkg = readPackageJson(this.config.dependencyRoot);
     // this._sharedDependencyNamesAll = [
@@ -88,6 +85,14 @@ export default class ProjectsManager {
     //   ...Object.entries(this._pkg.dependencies).
     //     map(([name, version]) => `${name}@${version}`)
     // ];
+  }
+
+  get plc() {
+    return this.progressLogController;
+  }
+
+  get runStatus() {
+    return this.runner.status;
   }
 
   async getAndInitBackend() {
@@ -130,171 +135,208 @@ export default class ProjectsManager {
   }
 
   // ###########################################################################
+  // practice flow management (new)
+  // ###########################################################################
+
+  async startPractice(bug) {
+    if (this.practiceSession) {
+      warn(`Trying to start practiceSession of bug ${bug.id} before one is finished`);
+      return;
+    }
+
+    const bugProgress = this.plc.util.getBugProgressByBug(bug);
+    
+    if (!bugProgress) {
+      const stopwatchEnabled = await this.askForStopwatch();
+      this.plc.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
+      this.practiceSession = new PracticeSession(bug, this);
+      this._emitter.emit('practiceSessionChanged', this.practiceSession);
+      
+      // activate once to show user the bug, don't care about the result
+      await this._activateBug(bug, false);
+      
+      this.plc.updateBugProgress(bug, { startedAt: Date.now() });
+    }
+    else {
+      this.practiceSession = new PracticeSession(bug, this);
+    }
+    
+    this.practiceSession.stopwatch.show();
+    this.practiceSession.stopwatch.start();
+
+    await this.plc.save();
+  }
+
+  async stopPractice() {
+    if (this.practiceSession.stopwatchEnabled) {
+      this.practiceSession.giveup();
+    }
+    await this.stopRunner();
+    this.practiceSession = null;
+    this._emitter.emit('practiceSessionChanged', this.practiceSession);
+  }
+
+  activate(debugMode) {
+    this.practiceSession.activate(debugMode);
+  }
+
+  recoverPracticeSession() {
+    const bug = this.getBugByKey(currentlyPracticingBugKeyName);
+    if (!bug) {
+      return;
+    }
+    const bugProgress = this.plc.util.getBugProgressByBug(bug);
+    if (!bugProgress) {
+      warn(`Can't find bugProgress when starting existing PracticeSession for bug ${bug.id}`);
+      return;
+    }
+
+    this.practiceSession = new PracticeSession(bug, this);
+
+    this._emitter.emit('practiceSessionChanged', this.practiceSession);
+  }
+
+  onPracticeSessionChanged(cb) {
+    return this._emitter.on('practiceSessionChanged', cb);
+  }
+
+  // ###########################################################################
   // practice flow management
   // ###########################################################################
 
-  /**
-   * Currently the only public function to user
-   * NOTE: should handle practice flow carefully
-   * @param {Bug} bug 
-   * @param {boolean} debugMode 
-   */
-  async activateBug(bug, debugMode = false) {
-    if (this.practiceSession) {
-      if (this.practiceSession.bug === bug) {
-        // re-active same bug
-        const result = await this._activateBug(bug, debugMode);
-        this.progressLogController.util.updateBugStatusByResult(bug, result);
-        this._emitter.emit('bugStatusChanged', bug);
-        if (result.code === 0) {
-          // user passed all test
-          this.practiceSession.setState(PracticeSessionState.Solved);
-          this.progressLogController.updateBugProgress(bug, { solvedAt: Date.now() });
-          await this.progressLogController.save();
-          await this.clearPracticeSession();
-          await this.askForSubmit();
-        }
-        else {
-          // some test failed
-          await this.externals.alert(`[Dbux] ${result.code} test(s) failed. Try again!`);
-        }
-        await this.progressLogController.save();
-        return;
-      }
-      else {
-        // already a practice session, ask to stop first
-        const bugId = this.practiceSession.bug.id;
-        const confirmMsg = `You are currently practicing ${bugId}, do you want to give up?`;
-        const confirmResult = await this.externals.confirm(confirmMsg, true);
-        if (confirmResult) {
-          await this.giveupPractice();
-          this.externals.showMessage.info('Practice session quitted');
-        }
-        else {
-          await this.progressLogController.save();
-          return;
-        }
-      }
-    }
+  // /**
+  //  * Currently the only public function to user
+  //  * NOTE: should handle practice flow carefully
+  //  * @param {Bug} bug 
+  //  * @param {boolean} debugMode 
+  //  */
+  // async activateBug(bug, debugMode = false) {
+  //   if (this.practiceSession) {
+  //     if (this.practiceSession.bug === bug) {
+  //       // re-active same bug
+  //       await this.practiceSession.activate(debugMode);
+  //       if (PracticeSessionState.is.Solved(this.practiceSession.state)) {
+  //         await this.clearPracticeSession();
+  //       }
+  //       return;
+  //     }
+  //     else {
+  //       // already a practice session, ask to stop first
+  //       const bugId = this.practiceSession.bug.id;
+  //       const confirmMsg = `You are currently practicing ${bugId}, do you want to give up?`;
+  //       const confirmResult = await this.externals.confirm(confirmMsg, true);
+  //       if (confirmResult) {
+  //         await this.giveupPractice();
+  //         this.externals.showMessage.info('Practice session quitted');
+  //       }
+  //       else {
+  //         await this.plc.save();
+  //         return;
+  //       }
+  //     }
+  //   }
 
-    const bugProgress = this.progressLogController.util.getBugProgressByBug(bug);
-    if (!bugProgress) {
-      // first time start it, ask to start timer
-      const confirmMsg = `This is your first time activate this bug, do you want to start a timer?\n`
-        + `[WARN] You will not be able to time this bug once you activate it.`;
-      const confirmResult = await this.externals.confirm(confirmMsg, true);
-      if (confirmResult) {
-        this.practiceSession = await this._createPracticeSession(bug, true, debugMode);
-      }
-      else if (confirmResult === false) {
-        this.progressLogController.addBugProgress(bug, BugStatus.None, false);
-        await this.progressLogController.save();
-        await this._activateBug(bug, debugMode);
-      }
-    }
-    else if (bugProgress.stopwatchEnabled && !BugStatus.is.Solved(bugProgress.status)) {
-      // already practicing, keep going on
-      this.practiceSession = await this._createPracticeSession(bug, true, debugMode);
-    }
-    else {
-      // no need to start timer
-      const result = await this._activateBug(bug, debugMode);
-      this.progressLogController.util.updateBugStatusByResult(bug, result);
-      this._emitter.emit('bugStatusChanged', bug);
-      await this.progressLogController.save();
-    }
+  //   const bugProgress = this.plc.util.getBugProgressByBug(bug);
+  //   if (!bugProgress) {
+  //     // first time start it, ask to start timer
+  //     const confirmMsg = `This is your first time activate this bug, do you want to start a timer?\n`
+  //       + `[WARN] You will not be able to time this bug once you activate it.`;
+  //     const confirmResult = await this.externals.confirm(confirmMsg, true);
+  //     if (confirmResult) {
+  //       this.practiceSession = await this._createPracticeSession(bug, true, debugMode);
+  //     }
+  //     else if (confirmResult === false) {
+  //       this.plc.addBugProgress(bug, BugStatus.None, false);
+  //       await this.plc.save();
+  //       await this._activateBug(bug, debugMode);
+  //     }
+  //   }
+  //   else if (bugProgress.stopwatchEnabled && !BugStatus.is.Solved(bugProgress.status)) {
+  //     // already practicing, keep going on
+  //     this.practiceSession = await this._createPracticeSession(bug, true, debugMode);
+  //   }
+  //   else {
+  //     // no need to start timer
+  //     const result = await this._activateBug(bug, debugMode);
+  //     this.plc.updateBugStatusByResult(bug, result);
+  //     this._emitter.emit('bugStatusChanged', bug);
+  //     await this.plc.save();
+  //   }
 
-    await this.progressLogController.save();
-  }
+  //   await this.plc.save();
+  // }
 
-  async giveupPractice() {
-    if (!this.practiceSession) {
-      return;
-    }
+  // async giveupPractice() {
+  //   if (!this.practiceSession) {
+  //     return;
+  //   }
 
-    await this.runner.cancel();
-    const { bug } = this.practiceSession;
-    this.progressLogController.updateBugProgress(bug, { stopwatchEnabled: false });
-    this._emitter.emit('bugStatusChanged', bug);
-    await this.progressLogController.save();
-    await this.clearPracticeSession();
-  }
+  //   await this.runner.cancel();
+  //   const { bug } = this.practiceSession;
+  //   this.plc.updateBugProgress(bug, { stopwatchEnabled: false });
+  //   this._emitter.emit('bugStatusChanged', bug);
+  //   await this.plc.save();
+  //   await this.clearPracticeSession();
+  // }
 
-  maybeStartExistingPracticeSession() {
-    const bug = this.getBugByKey(currentlyPracticingBugKeyName);
-    if (bug) {
-      const practiceSession = new PracticeSession(bug, this, PracticeSessionState.Solving);
+  // /**
+  //  * Starts a practice session and activate the bug once, promise resolve after all is done
+  //  * @param {Bug} bug
+  //  * @return {Promise<PracticeSession>}
+  //  */
+  // async _createPracticeSession(bug, runTest, debugMode) {
+  //   // load existing bugProgress
+  //   let bugProgress = this.plc.util.getBugProgressByBug(bug);
+  //   if (!bugProgress) {
+  //     bugProgress = this.plc.addBugProgress(bug, BugStatus.Solving, true);
+  //   }
+  //   else if (!bugProgress.stopwatchEnabled) {
+  //     throw new Error('Trying to create practiceSession without timer enabled');
+  //   }
 
-      const bugProgress = this.progressLogController.util.getBugProgressByBug(bug);
-      const { startedAt } = bugProgress;
-      practiceSession.stopwatch.show();
-      if (startedAt) {
-        practiceSession.stopwatch.set(Date.now() - startedAt);
-        practiceSession.stopwatch.start();
-      }
+  //   const practiceSession = new PracticeSession(bug, this);
+  //   practiceSession.setState(PracticeSessionState.Activating);
 
-      this.practiceSession = practiceSession;
-    }
-  }
+  //   let { startedAt } = bugProgress;
+  //   practiceSession.stopwatch.show();
+  //   if (startedAt) {
+  //     practiceSession.stopwatch.set(Date.now() - startedAt);
+  //     practiceSession.stopwatch.start();
+  //   }
 
-  /**
-   * Starts a practice session and activate the bug once, promise resolve after all is done
-   * @param {Bug} bug
-   * @return {Promise<PracticeSession>}
-   */
-  async _createPracticeSession(bug, runTest, debugMode) {
-    // load existing bugProgress
-    let bugProgress = this.progressLogController.util.getBugProgressByBug(bug);
-    if (!bugProgress) {
-      bugProgress = this.progressLogController.addBugProgress(bug, BugStatus.Solving, true);
-    }
-    else if (!bugProgress.stopwatchEnabled) {
-      throw new Error('Trying to create practiceSession without timer enabled');
-    }
+  //   // activate once to show user the bug, don't care about the result
+  //   runTest && await this._activateBug(bug, debugMode);
 
-    const practiceSession = new PracticeSession(bug, this);
-    practiceSession.setState(PracticeSessionState.Activating);
+  //   // set stopwatch
+  //   if (!startedAt) {
+  //     startedAt = Date.now();
+  //     this.plc.updateBugProgress(bug, { startedAt });
+  //     practiceSession.stopwatch.set(Date.now() - startedAt);
+  //     practiceSession.stopwatch.start();
+  //   }
 
-    let { startedAt } = bugProgress;
-    practiceSession.stopwatch.show();
-    if (startedAt) {
-      practiceSession.stopwatch.set(Date.now() - startedAt);
-      practiceSession.stopwatch.start();
-    }
+  //   practiceSession.setState(PracticeSessionState.Solving);
 
-    // activate once to show user the bug, don't care about the result
-    runTest && await this._activateBug(bug, debugMode);
+  //   await this.setKeyToBug(currentlyPracticingBugKeyName, bug);
+  //   return practiceSession;
+  // }
 
-    // set stopwatch
-    if (!startedAt) {
-      startedAt = Date.now();
-      this.progressLogController.updateBugProgress(bug, { startedAt });
-      practiceSession.stopwatch.set(Date.now() - startedAt);
-      practiceSession.stopwatch.start();
-    }
+  // async clearPracticeSession() {
+  //   if (!this.practiceSession) {
+  //     return;
+  //   }
 
-    practiceSession.setState(PracticeSessionState.Solving);
+  //   this.practiceSession.clear();
+  //   await this.setKeyToBug(currentlyPracticingBugKeyName, undefined);
 
-    await this.setKeyToBug(currentlyPracticingBugKeyName, bug);
-    return practiceSession;
-  }
-
-  async clearPracticeSession() {
-    if (!this.practiceSession) {
-      return;
-    }
-
-    this.practiceSession.stopwatch.pause();
-    this.practiceSession.stopwatch.hide();
-    await this.setKeyToBug(currentlyPracticingBugKeyName, undefined);
-
-    this.practiceSession = null;
-  }
+  //   this.practiceSession = null;
+  // }
 
   /**
    * Install and run a bug, then save testRun after result
    * NOTE: Only used internally to manage practice flow
    * @param {Bug} bug 
+   * @param {boolean} debugMode
    */
   async _activateBug(bug, debugMode) {
     const previousBug = this.getPreviousBug();
@@ -348,7 +390,7 @@ export default class ProjectsManager {
 
     const result = await this.runner.testBug(bug, cfg);
 
-    await this.progressLogController.addTestRunWithoutPatchString(bug, result);
+    await this.plc.addTestRunWithoutPatchString(bug, result);
 
     result.code && await bug.openInEditor();
 
@@ -378,8 +420,8 @@ export default class ProjectsManager {
   async saveFileChanges(bug) {
     const patchString = await bug.project.getPatchString();
     if (patchString) {
-      await this.progressLogController.util.addUnfinishedTestRun(bug, patchString);
-      await this.progressLogController.save();
+      this.plc.addUnfinishedTestRun(bug, patchString);
+      await this.plc.save();
     }
   }
 
@@ -388,8 +430,8 @@ export default class ProjectsManager {
    */
   async resetBug(bug) {
     await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
-    await this.progressLogController.util.addUnfinishedTestRun(bug, '');
-    await this.progressLogController.save();
+    this.plc.addUnfinishedTestRun(bug, '');
+    await this.plc.save();
   }
 
   /**
@@ -397,7 +439,7 @@ export default class ProjectsManager {
    * @param {Bug} bug
    */
   async applyNewBugPatch(bug) {
-    let testRuns = this.progressLogController.util.getTestRunsByBug(bug);
+    let testRuns = this.plc.util.getTestRunsByBug(bug);
     let testRun = testRuns.reduce((a, b) => {
       if (!a) {
         return b;
@@ -460,6 +502,15 @@ export default class ProjectsManager {
 
   onBugStatusChanged(cb) {
     return this._emitter.on('bugStatusChanged', cb);
+  }
+
+  // ###########################################################################
+  // Progress Log
+  // ###########################################################################
+
+  async resetProgress() {
+    await this.plc.reset();
+    await this.setKeyToBug(currentlyPracticingBugKeyName, undefined);
   }
 
   getDevPackageRoot() {
@@ -730,6 +781,15 @@ export default class ProjectsManager {
   // utilities
   // ###########################################################################
 
+  /**
+   * @return {Promise<boolean>}
+   */
+  async askForStopwatch() {
+    const confirmMsg = `This is your first time activate this bug, do you want to start a timer?\n`
+      + `[WARN] You will not be able to time this bug once you activate it.`;
+    return await this.externals.confirm(confirmMsg, true);
+  }
+
   async execInTerminal(cwd, command, args) {
     try {
       this._terminalWrapper = this.externals.TerminalWrapper.execInTerminal(cwd, command, args);
@@ -743,5 +803,13 @@ export default class ProjectsManager {
 
   onTestFinished(cb) {
     return this.runner._emitter.on('testFinished', cb);
+  }
+
+  /**
+   * @param {Object} result 
+   * @param {number} result.code
+   */
+  getResultStatus(result) {
+    return result.code ? BugStatus.Attempted : BugStatus.Solved;
   }
 }

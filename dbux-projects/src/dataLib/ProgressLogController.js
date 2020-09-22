@@ -80,16 +80,6 @@ export default class ProgressLogController {
     this.load();
   }
 
-  init() {
-    this.collections = {
-      testRuns: new TestRunCollection(this),
-      bugProgresses: new BugProgressCollection(this)
-    };
-
-    this.indexes = new Indexes();
-    this.addIndex(new BugProgressByBugIdIndex());
-  }
-
   // ###########################################################################
   // Public add/edit data
   // ###########################################################################
@@ -303,45 +293,26 @@ export default class ProgressLogController {
   // ###########################################################################
 
   /**
-   * Serialize all raw data into a simple JS object.
-   * Usage: `JSON.stringify(dataProvider.serialize())`.
+   * Implementation, add indexes here
+   * Note: Also resets all collections
    */
-  serialize() {
-    const collections = Object.values(this.collections);
-    const obj = {
-      version: this.version,
-      collections: Object.fromEntries(collections.map(collection => {
-        let {
-          name,
-          _all: entries
-        } = collection;
-
-        return [
-          name,
-          entries
-        ];
-      }))
+  init() {
+    this.collections = {
+      testRuns: new TestRunCollection(this),
+      bugProgresses: new BugProgressCollection(this)
     };
-    return JSON.stringify(obj, null, 2);
+
+    this.indexes = new Indexes();
+    this.addIndex(new BugProgressByBugIdIndex());
   }
 
-  /**
-   * Use: `this.deserialize(JSON.parse(stringFromFile))`
-   */
-  deserialize(data) {
-    const { version, collections } = data;
-    if (version !== this.version) {
-      throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
-    }
-    this.addData(collections);
-  }
 
   /**
    * Save serialized data to external storage
    */
   async save() {
     try {
-      const logString = this.serialize();
+      const logString = this._serialize();
       await this.storage.set(storageKey, logString);
     }
     catch (err) {
@@ -357,9 +328,8 @@ export default class ProgressLogController {
     try {
       const logString = this.storage.get(storageKey);
       if (logString !== undefined) {
-        this.deserialize(JSON.parse(logString));
+        this._deserialize(JSON.parse(logString));
       }
-      debugger;
     }
     catch (err) {
       logError('Failed to load progress log:', err);
@@ -369,5 +339,39 @@ export default class ProgressLogController {
   async reset() {
     this.init();
     await this.save();
+  }
+
+  /**
+   * Serialize all raw data into a simple JS object.
+   * Usage: `JSON.stringify(dataProvider.serialize())`.
+   */
+  _serialize() {
+    const collections = Object.values(this.collections);
+    const obj = {
+      version: this.version,
+      collections: Object.fromEntries(collections.map(collection => {
+        let {
+          name,
+          _all: entries
+        } = collection;
+
+        return [
+          name,
+          entries.slice(1)
+        ];
+      }))
+    };
+    return JSON.stringify(obj, null, 2);
+  }
+
+  /**
+   * Use: `this.deserialize(JSON.parse(stringFromFile))`
+   */
+  _deserialize(data) {
+    const { version, collections } = data;
+    if (version !== this.version) {
+      throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
+    }
+    this.addData(collections);
   }
 }

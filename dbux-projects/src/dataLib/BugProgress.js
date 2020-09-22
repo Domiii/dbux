@@ -1,7 +1,7 @@
 import BugStatus from './BugStatus';
 
 export default class BugProgress {
-  constructor(bug, status = BugStatus.None, stopwatchEnabled = false) {
+  constructor(bug, status = BugStatus.Solving, stopwatchEnabled) {
     const timeStamp = Date.now();
     this.projectName = bug.project.name;
     this.bugId = bug.id;

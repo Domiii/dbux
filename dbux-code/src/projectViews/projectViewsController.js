@@ -2,7 +2,8 @@ import { commands } from 'vscode';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
-import ProjectNodeProvider from './projectNodeProvider';
+import ProjectNodeProvider from './practiceView/ProjectNodeProvider';
+import SessionNodeProvider from './sessionView/SessionNodeProvider';
 import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
 import OutputChannel from './OutputChannel';
 import { getStopwatch } from './practiceStopwatch';
@@ -43,12 +44,13 @@ export class ProjectViewController {
     this.maybeNotifyExistingPracticeSession();
 
     this.isShowingTreeView = mementoGet(showProjectViewKeyName, true);
-    commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
+    commands.executeCommand('setContext', 'dbux.context.showPracticeView', this.isShowingTreeView);
 
     // ########################################
     //  init treeView
     // ########################################
-    this.treeDataProvider = new ProjectNodeProvider(context, this);
+    this.projectViewNodeProvider = new ProjectNodeProvider(context, this);
+    this.sessionViewNodeProvider = new SessionNodeProvider(context, this);
 
     this.practiceStopwatch = getStopwatch();
     this.practiceStopwatch.onClick(context, this.maybeStopStopwatch.bind(this));
@@ -58,13 +60,13 @@ export class ProjectViewController {
     // ########################################
     this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
     this.manager.onBugStatusChanged(this.refreshIcon.bind(this));
+    this.manager.onPracticeSessionChanged(this.handlePracticeSessionChanged.bind(this));
   }
 
   async maybeNotifyExistingPracticeSession() {
     try {
       if (this.manager.practiceSession) {
         const { bug } = this.manager.practiceSession;
-        const projectName = bug.project.name;
         await showInformationMessage(`[Dbux] You are currently practicing ${bug.id}`, {
           'OK'() { },
           'Give up': this.maybeStopStopwatch.bind(this)
@@ -77,7 +79,7 @@ export class ProjectViewController {
   }
 
   get treeView() {
-    return this.treeDataProvider.treeView;
+    return this.projectViewNodeProvider.treeView;
   }
 
   handleStatusChanged(status) {
@@ -86,7 +88,12 @@ export class ProjectViewController {
   }
 
   refreshIcon() {
-    this.treeDataProvider.refreshIcon();
+    if (this.manager.practiceSession) {
+      this.sessionViewNodeProvider.refresh();
+    }
+    else {
+      this.projectViewNodeProvider.refreshIcon();
+    }
   }
 
   // ###########################################################################
@@ -95,8 +102,12 @@ export class ProjectViewController {
 
   async toggleTreeView() {
     this.isShowingTreeView = !this.isShowingTreeView;
-    await commands.executeCommand('setContext', 'dbux.context.showProjectView', this.isShowingTreeView);
+    await commands.executeCommand('setContext', 'dbux.context.showPracticeView', this.isShowingTreeView);
     await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
+  }
+
+  async handlePracticeSessionChanged() {
+    await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
   }
 
   // ###########################################################################
@@ -111,20 +122,24 @@ export class ProjectViewController {
   // bug node buttons
   // ###########################################################################
 
-  async activateBugByNode(bugNode, debugMode = false) {
+  async startPractice(bugNode) {
     showOutputChannel();
-    await checkSystem(this.manager, false, true);
-    await initRuntimeServer(this.extensionContext);
 
     const options = {
       cancellable: false,
-      title: `[dbux] Bug ${bugNode.bug.project.name}@${bugNode.bug.name}`
+      title: `[dbux] Bug ${bugNode.bug.id}`
     };
 
     await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+      progress.report({ message: 'checking system requirements...' });
+
+      await checkSystem(this.manager, false, true);
+      await initRuntimeServer(this.extensionContext);
+
       const { bug } = bugNode;
+
       progress.report({ message: 'activating...' });
-      await this.manager.activateBug(bug, debugMode);
+      await this.manager.startPractice(bug);
     }, options);
   }
 
@@ -162,7 +177,7 @@ export function initProjectView(context) {
     });
 
     // refresh right away
-    controller.treeDataProvider.refresh();
+    controller.projectViewNodeProvider.refresh();
 
     // register commands
     initProjectCommands(context, controller);

@@ -1,6 +1,5 @@
 import TestRun from './TestRun';
 import BugProgress from './BugProgress';
-import BugStatus from './BugStatus';
 
 /** @typedef {import('../projectLib/Bug').default} Bug */
 /** @typedef {import('./ProgressLogController').default} ProgressLogController */

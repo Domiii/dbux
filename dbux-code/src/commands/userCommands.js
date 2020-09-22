@@ -15,10 +15,10 @@ import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
 import { runFile } from './runCommands';
-import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { showHelp } from '../help';
 import { installDbuxDependencies } from '../codeUtil/installUtil';
-import { showOutputChannel } from '../projectView/projectViewController';
+import { showOutputChannel } from '../projectViews/projectViewsController';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 import { get, getAllMementoKeys } from '../memento';
 

@@ -3,9 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { showInformationMessage } from '../codeUtil/codeModals';
 
-/** @typedef {import('../projectView/projectViewController').ProjectViewController} ProjectViewController */
-
-/** @typedef {import('../projectView/projectViewController').ProjectViewController} ProjectViewController */
+/** @typedef {import('../projectViews/projectViewsController').ProjectViewController} ProjectViewController */
 
 const logger = newLogger('projectCommands');
 
@@ -33,11 +31,11 @@ export function initProjectCommands(extensionContext, projectViewController) {
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.activateBugWithDebugger', (node) => {
-    return projectViewController.activateBugByNode(node, true);
+    return projectViewController.startPractice(node);
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.activateBug', (node) => {
-    return projectViewController.activateBugByNode(node);
+    return projectViewController.startPractice(node);
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.busyIcon', (/* node */) => {
@@ -65,8 +63,8 @@ export function initProjectCommands(extensionContext, projectViewController) {
   });
 
   registerCommand(extensionContext, 'dbux.resetPracticeProgress', async () => {
-    await projectViewController.manager.progressLogController.reset();
-    projectViewController.treeDataProvider.refreshIcon();
+    await projectViewController.manager.resetProgress();
+    projectViewController.projectViewNodeProvider.refreshIcon();
     await showInformationMessage('Bug progress cleared');
   });
 

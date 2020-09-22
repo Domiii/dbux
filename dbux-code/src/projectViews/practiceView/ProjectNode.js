@@ -3,9 +3,9 @@ import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
 import sleep from '@dbux/common/src/util/sleep';
 import Project from '@dbux/projects/src/projectLib/Project';
 import RunStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/RunStatus';
-import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
+import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
-import { runTaskWithProgressBar } from '../codeUtil/runTaskWithProgressBar';
+import { runTaskWithProgressBar } from '../../codeUtil/runTaskWithProgressBar';
 
 export default class ProjectNode extends BaseTreeViewNode {
   static makeLabel(project) {
