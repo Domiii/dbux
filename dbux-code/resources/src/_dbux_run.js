@@ -79,7 +79,7 @@ function main() {
   child.on('error', (err) => {
     if (checkDone()) { return; }
 
-    reportError(`[${err.code}] ${err.stack || JSON.stringify(err)}`);
+    reportError(new Error(`Child on error with code: ${err.code}, stack trace: ${err.stack}`));
     clearInterval(warningIntervalId);
 
     console.error(`Error:`, err);
@@ -102,7 +102,11 @@ function reportStatusCode(code) {
 
 function reportError(error) {
   try {
-    fs.writeFileSync(path.join(tmpFolder, 'error'), error);
+    let errorString = JSON.stringify({
+      message: error.message,
+      stack: error.stack,
+    });
+    fs.writeFileSync(path.join(tmpFolder, 'error'), errorString);
   }
   catch (err) {
     // if everything fails, make sure, our terminal does not close abruptly
@@ -116,7 +120,7 @@ try {
   main();
 }
 catch (err) {
-  reportError(`_dbux_run failed: ${err.stack}`);
+  reportError(err);
 }
 finally {
   setInterval(() => { }, 100000);

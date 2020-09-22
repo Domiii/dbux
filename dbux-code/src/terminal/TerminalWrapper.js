@@ -64,53 +64,60 @@ export default class TerminalWrapper {
 
     debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
 
+    let _resolve, _reject, _promise = new Promise((resolve, reject) => {
+      _resolve = resolve;
+      _reject = reject;
+    });
+
+    let resolved = false;
+    const watcher = fs.watch(tmpFolder);
+    watcher.on('change', (eventType, filename) => {
+      watcher.close();
+
+      let result;
+      if (filename === 'error') {
+        let errorString = fs.readFileSync(path.join(tmpFolder, filename), { encoding: 'utf8' });
+        let error = JSON.parse(errorString);
+        _reject(new Error(`Terminal wrapper received error: ${error.stack}`));
+      } else {
+        result = { code: parseInt(filename, 10) };
+        Verbose && debug('Terminal command finished. Result:', JSON.stringify(result));
+        _resolve(result);
+        resolved = true;
+      }
+
+      fs.unlinkSync(path.join(tmpFolder, filename));
+    });
+
+    watcher.on('error', (err) => {
+      let newErr = new Error(`FSWatcher error: ${err.message}`);
+      if (resolved) {
+        warn(newErr);
+      }
+      else {
+        _reject(newErr);
+      }
+    });
+
+    window.onDidCloseTerminal((terminal) => {
+      if (terminal === this._terminal) {
+        watcher.close();
+
+        let newErr = new Error('The terminal was closed.');
+        if (resolved) {
+          warn(newErr);
+        }
+        else {
+          _reject(newErr);
+        }
+      }
+    });
+
     // execute command
     this._terminal = await execCommand(cwd, runJsCommand);
 
     try {
-      return await new Promise((resolve, reject) => {
-        let resolved = false;
-        const watcher = fs.watch(tmpFolder);
-        watcher.on('change', (eventType, filename) => {
-          watcher.close();
-
-          let result;
-          if (filename === 'error') {
-            result = { error: fs.readFileSync(path.join(tmpFolder, filename), { encoding: 'utf8' }) };
-          } else {
-            result = { code: parseInt(filename, 10) };
-          }
-
-          Verbose && debug('Terminal command finished. Result:', JSON.stringify(result));
-          fs.unlinkSync(path.join(tmpFolder, filename));
-          resolve(result);
-          resolved = true;
-        });
-
-        watcher.on('error', (err) => {
-          let newErr = new Error(`FSWatcher error: ${err.message}`);
-          if (resolved) {
-            warn(newErr);
-          }
-          else {
-            reject(newErr);
-          }
-        });
-
-        window.onDidCloseTerminal((terminal) => {
-          if (terminal === this._terminal) {
-            watcher.close();
-
-            let newErr = new Error('The terminal was closed.');
-            if (resolved) {
-              warn(newErr);
-            }
-            else {
-              reject(newErr);
-            }
-          }
-        });
-      });
+      return await _promise;
     } finally {
       this.dispose();
       fs.rmdirSync(tmpFolder);
@@ -124,7 +131,7 @@ export default class TerminalWrapper {
 
     this._disposable = null;
     this._promise = null;
-    this.terminal = null;
+    this._terminal = null;
 
     _disposable?.dispose();
   }
