@@ -109,7 +109,7 @@ export class ProjectViewController {
 
       // run it!
       const { project } = bug;
-      progress.report({ message: `installing "${project.name}"...` });
+      progress.report({ message: `downloading "${project.name}"...` });
       await runner.activateProject(project);
 
 

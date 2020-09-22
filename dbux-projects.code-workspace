@@ -1,12 +1,12 @@
 {
 	"folders": [
 		{
-			"path": "projects"
-		},
-		{
-			"path": "samples"
+			"name": "eslint",
+			"path": "dbux_projects/eslint"
 		}
 	],
 	"settings": {
+		"dbux.autoStart": true,
+		"debug.node.autoAttach": "off"
 	}
 }

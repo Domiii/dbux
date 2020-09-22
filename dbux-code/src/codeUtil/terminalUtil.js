@@ -1,6 +1,5 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import Process from '@dbux/projects/src/util/Process';
 import which from '@dbux/projects/src/util/which';
 
 // eslint-disable-next-line no-unused-vars
@@ -42,17 +41,23 @@ export async function execCommand(cwd, command) {
 
   let pathToBash = (await which('bash'))[0];
 
+  // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing the shellArgs.
+  const wrappedCommand = `cd "${cwd}" && ${command}`;
+
   const terminalOptions = {
     name: DefaultTerminalName,
     cwd,
     shellPath: pathToBash,
-    shellArgs: [`-c`, `${command}`],
+    shellArgs: ['-c', wrappedCommand],
+    // shellArgs: ['-c', 'pwd && sleep 1000'],
   };
 
-  // debug(`execCommandInTerminal: ${command}`);
+  // debug(`[execCommandInTerminal] ${cwd}$ ${command}`);
 
   terminal = window.createTerminal(terminalOptions);
   terminal.show();
+
+  // terminal.sendText(wrappedCommand);
 
   return terminal;
 }
@@ -90,6 +95,9 @@ export async function queryTerminalPid() {
 
 
 export function runInTerminalInteractive(terminalName, cwd, command) {
+  if (!command) {
+    throw new Error('command for runInTerminalInteractive is empty: ' + command);
+  }
   const terminal = createTerminal(terminalName, cwd);
 
   terminal.sendText(command, true);

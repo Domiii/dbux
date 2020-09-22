@@ -1,25 +1,18 @@
+/* eslint-disable no-console */
+/* eslint-disable global-require */
+
 const path = require('path');
 const process = require('process');
 const mergeWith = require('lodash/mergeWith');
+const { getDependencyRoot } = require('@dbux/cli/lib/dbux-folders');
+require('@dbux/babel-plugin');
 
-require('source-map-loader');
+const nodeExternals = require(path.join(getDependencyRoot(), 'node_modules/webpack-node-externals'));
 
 process.env.BABEL_DISABLE_CACHE = 1;
 
-// const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
-
 const buildMode = 'development';
 //const buildMode = 'production';
-
-// const outFile = 'bundle.js';
-// const outputFolderName = 'dist';
-const MonoRoot = path.resolve(path.join(__dirname, '/../..'));
-//const dbuxPlugin = require(path.join(root, 'node_modules/dbux-babel-plugin'));
-const dbuxPluginPath = path.join(MonoRoot, '/dbux-babel-plugin');
-
-const dbuxPlugin = path.resolve(dbuxPluginPath);
-
-require(dbuxPlugin);
 
 function mergeConcatArray(...inputs) {
   return mergeWith(...inputs,
@@ -32,14 +25,14 @@ function mergeConcatArray(...inputs) {
   );
 }
 
-
-// const dbuxFolders = ["dbux-runtime", "dbux-common", "dbux-data"];
-// const dbuxFolders = ["dbux-runtime"];
-// const dbuxRoots = dbuxFolders.map(f => path.resolve(path.join(MonoRoot, f)));
-
+// TODO: pass actual node version in via parameter (part of `target`)
+// const presets = 
 
 const babelOptions = {
-  sourceMaps: "both",
+  // sourceMaps: "both",
+  // see https://github.com/webpack/webpack/issues/11510#issuecomment-696027212
+  sourceType: "unambiguous",
+  sourceMaps: true,
   retainLines: true,
   babelrc: true,
   presets: [
@@ -47,9 +40,7 @@ const babelOptions = {
       '@babel/preset-env',
       {
         targets: {
-          node: '12',
-          chrome: '70',
-          safari: '13'
+          node: '7'
         },
         useBuiltIns: 'usage',
         corejs: 3
@@ -57,31 +48,31 @@ const babelOptions = {
     ]
   ],
   plugins: [
-    [
-      "@babel/plugin-proposal-class-properties",
-      {
-        loose: true
-      }
-    ],
-    "@babel/plugin-proposal-optional-chaining",
-    [
-      "@babel/plugin-proposal-decorators",
-      {
-        legacy: true
-      }
-    ],
-    "@babel/plugin-proposal-function-bind",
-    "@babel/plugin-syntax-export-default-from",
-    "@babel/plugin-syntax-dynamic-import",
-    "@babel/plugin-transform-runtime",
+    // [
+    //   "@babel/plugin-proposal-class-properties",
+    //   {
+    //     loose: true
+    //   }
+    // ],
+    // "@babel/plugin-proposal-optional-chaining",
+    //   "@babel/plugin-proposal-decorators",
+    // [
+    //   {
+    //     legacy: true
+    //   }
+    // ],
+    // "@babel/plugin-proposal-function-bind",
+    // "@babel/plugin-syntax-export-default-from",
+    // "@babel/plugin-syntax-dynamic-import",
+    // "@babel/plugin-transform-runtime",
 
-    dbuxPlugin
+    '@dbux/babel-plugin'
   ]
 };
 
 
-module.exports = (projectRoot, customConfig, ...cfgOverrides) => {
-  // const ExtraWatchWebpackPlugin = require(projectRoot + '/node_modules/extra-watch-webpack-plugin');
+module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
+  // const ExtraWatchWebpackPlugin = require('extra-watch-webpack-plugin');
   // webpackPlugins.push(
   //   new ExtraWatchWebpackPlugin({
   //     dirs: [
@@ -90,53 +81,98 @@ module.exports = (projectRoot, customConfig, ...cfgOverrides) => {
   //   })
   // );
 
-  // const allFolders = [projectRoot, ...dbuxRoots]
-  //   .map(f => [path.join(f, srcFolder), path.join(f, 'node_modules')])
-  //   .flat()
-  //   .map(f => path.resolve(f));
-  // console.log('webpack folders:', allFolders.join('\n'));
-  const srcFolder = customConfig && customConfig.src || 'src';
-  const dbuxRuntimeFolder = path.join(MonoRoot, 'dbux-runtime', 'dist');
+  const {
+    src: srcFolders = ['src'],
+    dbuxRoot,
+    target = 'node'
+  } = customConfig;
+
+
+  let dbuxRules = [];
+  if (dbuxRoot) {
+    // // enable dbux debugging
+    // const dbuxRuntimeFolder = path.join(dbuxRoot, 'dbux-runtime', 'dist');
+    // dbuxRules.push({
+    //   test: /\.js$/,
+    //   // eslint-disable-next-line global-require, import/no-extraneous-dependencies
+    //   loader: require('source-map-loader'),
+    //   include: [dbuxRuntimeFolder],
+    //   enforce: 'pre'
+    // });
+  }
+
+  // ###########################################################################
+  // entry
+  // ###########################################################################
+
+  const entry = {
+  };
+
+  // ###########################################################################
+  // resolve.modules
+  // ###########################################################################
+
+  const modules = [
+    ...srcFolders.map(folder => path.join(ProjectRoot, folder)),
+    path.join(ProjectRoot, 'node_modules')
+  ];
+  modules.push(
+    path.join(getDependencyRoot(), 'node_modules')
+  );
+
+  // ###########################################################################
+  // resolve.alias
+  // ###########################################################################
+
+  const alias = {
+  };
+
+  // ###########################################################################
+  // externals
+  // ###########################################################################
+
+  const externals = target !== 'node' ? undefined : [
+    {
+      // 'dbux-runtime': 'umd @dbux/runtime',
+      '@dbux/runtime': 'commonjs @dbux/runtime'
+    },
+    nodeExternals({
+      additionalModuleDirs: [path.join(getDependencyRoot(), 'node_modules')]
+    }),
+
+    // (context, request, callback) => {
+    //   console.warn('external', context, request);
+    //   callback();
+    // }
+  ];
+
+
+  // ###########################################################################
+  // put it all together
+  // ###########################################################################
 
   const cfg = {
     //watch: true,
     mode: buildMode,
-
+    entry,
+    target,
     // https://github.com/webpack/webpack/issues/2145
-    devtool: 'inline-module-source-map',
-    // devtool: 'source-map',
-    //devtool: 'inline-source-map',
-    devServer: {
-      // contentBase: [
-      //   projectRoot
-      // ],
-      quiet: false,
-      //host: '0.0.0.0',
-      // host:
-      hot: true,
-      port: 3030,
-      // publicPath: outputFolder,
-      writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
-      // filename: outFile,
-    },
+    // devtool: 'inline-module-source-map',
+    devtool: 'source-map',
     plugins: [],
-    context: path.join(projectRoot, '.'),
-    // output: {
-    //   path: path.join(projectRoot, outputFolderName),
-    //   filename: outFile,
-    //   publicPath: outputFolderName,
-    //   // sourceMapFilename: outFile + ".map"
-    // },
+    context: path.join(ProjectRoot, '.'),
+    output: {
+      filename: '[name].js',
+      path: path.resolve(ProjectRoot, 'dist'),
+      publicPath: 'dist',
+      libraryTarget: "commonjs2",
+      devtoolModuleFilenameTemplate: "../[resource-path]",
+    },
     resolve: {
-      symlinks: true,
+      // symlinks: true,
+      alias,
       // extensions: ['.js', '.jsx'],
-      modules: [
-        MonoRoot,
-        // dbuxRoots.map(f => path.join(f, 'dist')),
-        path.join(projectRoot, srcFolder),
-        path.join(projectRoot, 'node_modules'),
-        path.join(MonoRoot, 'node_modules')
-      ].flat()
+      modules
     },
     module: {
       rules: [
@@ -144,16 +180,13 @@ module.exports = (projectRoot, customConfig, ...cfgOverrides) => {
           test: /\.jsx?$/,
           loader: 'babel-loader',
           include: [
-            path.join(projectRoot, srcFolder)
+            ...srcFolders.map(folder => path.join(ProjectRoot, folder))
           ],
-          options: babelOptions
-        },
-        {
-          test: /\.js$/,
-          loader: 'source-map-loader',
-          include: [dbuxRuntimeFolder],
+          options: babelOptions,
           enforce: 'pre'
-        }
+        },
+
+        ...dbuxRules
       ],
 
       // // [webpack-2]
@@ -168,12 +201,27 @@ module.exports = (projectRoot, customConfig, ...cfgOverrides) => {
       //   }
       // ],
     },
-    
+
+    node: {
+      // generate actual output file information
+      // see: https://webpack.js.org/configuration/node/#node__filename
+      __dirname: true,
+      __filename: true
+    },
+
+    externals
+
     // // [webpack-2]
     // babel: babelOptions
   };
 
+
+  // ###########################################################################
+  // merge in overrides
+  // ###########################################################################
+
   const resultCfg = mergeConcatArray(cfg, ...cfgOverrides);
+
   return resultCfg;
 };
 

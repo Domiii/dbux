@@ -1,0 +1,35 @@
+{
+  "name": "@dbux/build-tools",
+  "version": "0.2.6-dev.0",
+  "description": "> TODO: description",
+  "author": "Domi",
+  "homepage": "https://github.com/Domiii/dbux#readme",
+  "license": "Apacha-2.0",
+  "main": "src/index.js",
+  "bin": {
+    "dbux-webpack": "bin/dbux-webpack.js"
+  },
+  "directories": {
+    "src": "src"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Domiii/dbux.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "yargs": "^15.4.1"
+  },
+  "bugs": {
+    "url": "https://github.com/Domiii/dbux/issues"
+  }
+}

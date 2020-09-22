@@ -1,6 +1,7 @@
 import NanoEvents from 'nanoevents';
 import sh from 'shelljs';
 import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
+import sleep from '@dbux/common/src/util/sleep';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Process from '../util/Process';
@@ -242,7 +243,7 @@ export default class BugRunner {
         ...cfg
       };
       let command = await bug.project.testBugCommand(bug, cfg);
-      command = command.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
+      command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
       if (!command) {
         // nothing to do
@@ -266,7 +267,6 @@ export default class BugRunner {
           // user passed all tests
           this.manager.askForSubmit();
         }
-        project.logger.log(`Result:`, result);
         this._emitter.emit('testFinished', bug, result);
         return result;
       }

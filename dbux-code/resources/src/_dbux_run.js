@@ -12,19 +12,21 @@ const process = require('process');
 const Verbose = true;
 const runningTimeout = 10000;
 
-// node run.js port "cwd" "command"
-const [
-  _node,
-  _runJs,
-  argsEncoded
-] = process.argv;
-
-const args = JSON.parse(Buffer.from(argsEncoded, 'base64').toString('ascii'));
-const { cwd, command, tmpFolder, args: moreEnv } = args;
-
-console.debug('run.js command received:', args);
+let cwd, command, tmpFolder, moreEnv;
 
 function main() {
+  // node run.js port "cwd" "command"
+  const [
+    _node,
+    _runJs,
+    argsEncoded
+  ] = process.argv;
+
+  const args = JSON.parse(Buffer.from(argsEncoded, 'base64').toString('ascii'));
+  ({ cwd, command, tmpFolder, args: moreEnv } = args);
+
+  console.log('run.js command received:', args);
+
   const processOptions = {
     cwd,
     detached: false,
@@ -34,7 +36,9 @@ function main() {
       ...moreEnv
     }
   };
-  
+
+  console.log('node', _node, 'cwd', process.cwd());
+
 
   // run it!
   const child = spawn.exec(command, processOptions);
@@ -75,7 +79,7 @@ function main() {
   child.on('error', (err) => {
     if (checkDone()) { return; }
 
-    reportError(`[${err.code}] ${err.message || JSON.stringify(err)}`);
+    reportError(`[${err.code}] ${err.stack || JSON.stringify(err)}`);
     clearInterval(warningIntervalId);
 
     console.error(`Error:`, err);
@@ -97,11 +101,23 @@ function reportStatusCode(code) {
 }
 
 function reportError(error) {
-  fs.writeFileSync(path.join(tmpFolder, 'error'), error);
+  try {
+    fs.writeFileSync(path.join(tmpFolder, 'error'), error);
+  }
+  catch (err) {
+    // if everything fails, make sure, our terminal does not close abruptly
+    console.error('failed to write error', err);
+  }
 }
 
 
-// go!
-main();
-
-setInterval(() => {}, 10000);
+try {
+  // go!
+  main();
+}
+catch (err) {
+  reportError(`_dbux_run failed: ${err.stack}`);
+}
+finally {
+  setInterval(() => { }, 100000);
+}

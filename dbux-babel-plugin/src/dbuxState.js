@@ -1,3 +1,4 @@
+import isFunction from 'lodash/isFunction';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
 
@@ -20,7 +21,8 @@ let iProgram = 0;
  */
 export default function injectDbuxState(programPath, programState) {
   const cfg = programState.opts || EmptyObject;
-  const { filenameOverride } = cfg;
+  const { filenameOverride: filenameOverrideOrFn } = cfg;
+  const filenameOverride = filenameOverrideOrFn && (isFunction(filenameOverrideOrFn) ? filenameOverrideOrFn(prgoramState) : null);
   const filePath = filenameOverride || programState.filename || `__unnamed_script_${++unknownCount}.js`;
   const fileName = filePath && pathGetBasename(filePath);
 

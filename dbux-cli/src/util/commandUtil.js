@@ -10,8 +10,8 @@ export function wrapCommand(commandCallback) {
       // }
     }
     catch (err) {
-      console.error('Command failed:', err);
-      exitProcess();
+      console.error('Dbux command failed:', err);
+      exitProcess(-1);
     }
   };
 }
