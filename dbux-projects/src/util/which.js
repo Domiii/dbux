@@ -12,8 +12,8 @@ const { log, debug, warn, error: logError } = logger;
 
 const defaultProcessOptions = { 
   failOnStatusCode: false,
-  logStdout: true,
-  logStderr: true,
+  // logStdout: true,
+  // logStderr: true,
   processOptions: {
     cwd: __dirname // don't need a cwd for these global commands
   }

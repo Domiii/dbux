@@ -149,7 +149,11 @@ export default class BugRunner {
 
       let previousProject = this.manager.getOrCreateDefaultProjectList().getByName(projectName);
 
-      if (previousProject.isProjectFolderExists()) {
+      if (!previousProject) {
+        this.logger.warn(`Found previousBug, but project does not exist: ${JSON.stringify(previousBugInformation)}`);
+      }
+
+      if (previousProject?.isProjectFolderExists()) {
         return previousProject.getOrLoadBugs().getById(bugId);
       }
     }
@@ -194,10 +198,10 @@ export default class BugRunner {
           await project.applyPatch(bug.patch);
         }
       },
-      // start watch mode (if necessary)
-      async () => project.startWatchModeIfNotRunning(),
       // select bug
-      async () => project.selectBug(bug)
+      async () => project.selectBug(bug),
+      // start watch mode (if necessary)
+      async () => project.startWatchModeIfNotRunning()
     );
   }
 
