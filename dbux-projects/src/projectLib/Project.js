@@ -7,6 +7,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import BugList from './BugList';
 import Process from '../util/Process';
+import { checkSystemWithRequirement } from '../checkSystem';
 
 const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
@@ -165,7 +166,7 @@ export default class Project {
   async installProject() {
     if (this.systemRequirements) {
       // TODO:
-      // await checkSystem(..., this.systemRequirements);
+      await checkSystemWithRequirement(this.manager, this.systemRequirements);
     }
 
     // git clone
