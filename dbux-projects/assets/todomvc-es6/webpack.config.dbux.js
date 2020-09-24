@@ -1,7 +1,7 @@
 const path = require('path');
-const buildWebpackConfig = require('./webpack.config.dbux.base');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const buildWebpackConfig = require('./webpack.config.dbux.base');
 
 const ProjectRoot = path.resolve(__dirname);
 
@@ -12,13 +12,20 @@ const resultCfg = buildWebpackConfig(ProjectRoot, {}, {
     app: './bootstrap.js',
     vendor: ['todomvc-app-css/index.css'],
   },
-  output: {
-    filename: 'bundle.[name].js',
-    path: path.resolve('dist')
-  },
 
   devServer: {
-    port: 3032,
+    // contentBase: [
+    //   projectRoot
+    // ],
+    quiet: false,
+    //host: '0.0.0.0',
+    // host:
+    hot: true,
+    port: 3030,
+    // publicPath: outputFolder,
+    writeToDisk: true,  // need this for the VSCode<->Chrome debug extension to work
+    // filename: outFile,
+
     contentBase: [
       path.join(ProjectRoot, 'dist')
     ],

@@ -1,5 +1,8 @@
-var path = require('path');
+const path = require('path');
 
 module.exports = {
-  "extends": [path.join(__dirname, '../.eslintrc.js')]
+  rules: {
+    "import/no-extraneous-dependencies": ["error", { devDependencies: true }]
+  },
+  extends: [path.join(__dirname, '../.eslintrc.js')]
 };

@@ -12,8 +12,11 @@ const { log, debug, warn, error: logError } = logger;
 
 const defaultProcessOptions = { 
   failOnStatusCode: false,
-  logStdout: true,
-  logStderr: true
+  // logStdout: true,
+  // logStderr: true,
+  processOptions: {
+    cwd: __dirname // don't need a cwd for these global commands
+  }
 };
 
 /**
@@ -48,7 +51,9 @@ export default async function which(command) {
   const cmd = `${whichCommand} ${command}`;
   let result = await Process.execCaptureAll(cmd, defaultProcessOptions);
   if (result.code) {
-    throw new Error(`Couldn't find ${command} in $PATH. Got code ${result.code} when executing "${cmd}"`);
+    warn(`Couldn't find ${command} in $PATH. Got code ${result.code} when executing "${cmd}"`);
+    return null;
+    // throw new Error(`Couldn't find ${command} in $PATH. Got code ${result.code} when executing "${cmd}"`);
   }
 
   let paths = result.out.split(/\r?\n/);
@@ -62,7 +67,9 @@ export default async function which(command) {
   }
 
   if (realPaths.length === 0) {
-    throw new Error(`${command} found in ${paths}, but failed when checking by \`fs.realpathSync\`.`);
+    warn(`${command} found in ${paths}, but failed when checking by \`fs.realpathSync\`.`);
+    return null;
+    // throw new Error(`${command} found in ${paths}, but failed when checking by \`fs.realpathSync\`.`);
   }
 
   return realPaths;

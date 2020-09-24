@@ -9,7 +9,7 @@ const fs = require('fs');
 const mergeWith = require('lodash/mergeWith');
 const isArray = require('lodash/isArray');
 const webpack = require('webpack');
-const nodeExternals = require('webpack-node-externals');
+// const nodeExternals = require('webpack-node-externals');
 
 // add some of our own good stuff
 require('./dbux-cli/lib/dbux-register-self');
@@ -57,7 +57,7 @@ module.exports = (env, argv) => {
 
           // fix for https://github.com/websockets/ws/issues/1538
           alias: {
-            ws: path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'))
+            // ws: path.resolve(path.join(MonoRoot, 'dbux-runtime', 'node_modules', 'ws', 'index.js'))
           }
         }
       }],
@@ -198,9 +198,10 @@ module.exports = (env, argv) => {
         //   },
         // },
         externals: [{
-          fs: 'fs',
-          net: 'net',
-          ws: 'ws'
+          fs: 'commonjs fs',
+          net: 'commonjs net',
+          // tls: 'commonjs tls',
+          ws: 'commonjs ws'
         }
           // see: https://www.npmjs.com/package/webpack-node-externals
           // NOTE: `node-externals` does not bundle `node_modules`
@@ -234,16 +235,22 @@ module.exports = (env, argv) => {
     //  (WARNING: add node configs only! don't mix targets with webpack; it doesn't like it.)
     // ###########################################################################
 
-    const otherWebpackConfigs = [
-      'cli',
-      'code',
-      'server'
-      // NOTE: Don't build `dbux-graph-client` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
-      // 'graph-client'
-    ].map(name => {
+    const otherWebpackConfigPaths = [
+      ...[
+        'cli',
+        'code',
+        'server'
+        // NOTE: Don't build `dbux-graph-client` here bc/ Webpack bugs out when merging configs with different targets (i.e. `node` + `browser`)
+        // 'graph-client'
+      ].map(name => `./dbux-${name}/webpack.config`),
+      
+      `./dbux-runtime/deps/ws.webpack.config`
+    ];
+
+    const otherWebpackConfigs = otherWebpackConfigPaths.map(p =>
       /* eslint-disable-next-line global-require, import/no-dynamic-require */
-      return require(`./dbux-${name}/webpack.config`);
-    });
+      require(p)
+    );
 
 
     // ###########################################################################

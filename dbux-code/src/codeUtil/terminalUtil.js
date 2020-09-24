@@ -1,6 +1,5 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import Process from '@dbux/projects/src/util/Process';
 import which from '@dbux/projects/src/util/which';
 
 // eslint-disable-next-line no-unused-vars
@@ -13,8 +12,7 @@ export function createDefaultTerminal(cwd) {
 }
 
 export function createTerminal(name, cwd) {
-  let terminal = window.terminals.find(t => t.name === name);
-  terminal?.dispose();
+  closeTerminal(name);
 
   const terminalOptions = {
     name,
@@ -32,27 +30,38 @@ export function sendCommandToDefaultTerminal(cwd, command) {
   return terminal;
 }
 
+export function closeTerminal(name) {
+  let terminal = window.terminals.find(t => t.name === name);
+  terminal?.dispose();
+}
+
 // function bashParse(string) {
 //   return string.replace(/"/g, `\\"`).replace(/`/g, "\\`");
 // }
 
 export async function execCommand(cwd, command) {
-  let terminal = window.terminals.find(t => t.name === DefaultTerminalName);
-  terminal?.dispose();
+  const name = DefaultTerminalName;
+  closeTerminal(name);
 
   let pathToBash = (await which('bash'))[0];
+
+  // WARNING: terminal is not properly initialized when running the command. cwd is not set when executing `command`.
+  const wrappedCommand = `cd "${cwd}" && ${command} ; sleep 10`;
 
   const terminalOptions = {
     name: DefaultTerminalName,
     cwd,
     shellPath: pathToBash,
-    shellArgs: [`-c`, `${command}`],
+    shellArgs: ['-c', wrappedCommand],
+    // shellArgs: ['-c', 'pwd && sleep 1000'],
   };
 
-  // debug(`execCommandInTerminal: ${command}`);
+  // debug(`[execCommandInTerminal] ${cwd}$ ${command}`);
 
-  terminal = window.createTerminal(terminalOptions);
+  const terminal = window.createTerminal(terminalOptions);
   terminal.show();
+
+  // terminal.sendText(wrappedCommand);
 
   return terminal;
 }
@@ -90,6 +99,9 @@ export async function queryTerminalPid() {
 
 
 export function runInTerminalInteractive(terminalName, cwd, command) {
+  if (!command) {
+    throw new Error('command for runInTerminalInteractive is empty: ' + command);
+  }
   const terminal = createTerminal(terminalName, cwd);
 
   terminal.sendText(command, true);

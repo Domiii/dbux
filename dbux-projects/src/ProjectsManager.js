@@ -56,6 +56,7 @@ export default class ProjectsManager {
   _backend;
 
   _pkg;
+  _sharedDependencyNamesToCheck;
 
   // NOTE: npm flattens dependency tree by default, and other important dependencies are dependencies of @dbux/cli
   _sharedDependencyNames = [
@@ -80,12 +81,13 @@ export default class ProjectsManager {
 
     this.recoverPracticeSession();
 
-    // this._pkg = readPackageJson(this.config.dependencyRoot);
-    // this._sharedDependencyNamesAll = [
-    //   ...this._sharedDependencyNames,
-    //   ...Object.entries(this._pkg.dependencies).
-    //     map(([name, version]) => `${name}@${version}`)
-    // ];
+    // Note: we need this to check if any dependencies are missing (not to install them)
+    this._pkg = readPackageJson(this.config.dependencyRoot);
+    this._sharedDependencyNamesToCheck = [
+      ...this._sharedDependencyNames,
+      ...Object.entries(this._pkg.dependencies).
+        map(([name, version]) => `${name}@${version}`)
+    ];
   }
 
   get plc() {
@@ -581,8 +583,20 @@ export default class ProjectsManager {
   // }
 
   getDbuxCliBinPath() {
-    const { dependencyRoot } = this.config;
-    return path.join(dependencyRoot, 'node_modules/@dbux/cli/bin/dbux.js');
+    return this.getDbuxPath('@dbux/cli/bin/dbux.js');
+  }
+
+  getDbuxPath(relativePath) {
+    return path.join(this.getDbuxRoot(), 'node_modules', relativePath);
+  }
+
+  getDbuxRoot() {
+    if (process.env.DBUX_ROOT) {
+      // if we install in dev mode, DBUX_ROOT is set, but we are not in it
+      return process.env.DBUX_ROOT;
+    }
+    // in production mode, we must install dbux separately
+    return this.config.dependencyRoot;
   }
 
   // ###########################################################################
@@ -624,14 +638,17 @@ export default class ProjectsManager {
    * @return {Bug}
    */
   getBugByKey(key) {
-    const previousBugInformation = this.externals.storage.get(key);
+    const bugInfo = this.manager.externals.storage.get(key);
 
-    if (previousBugInformation) {
-      const { projectName, bugId } = previousBugInformation;
-      const previousProject = this.getOrCreateDefaultProjectList().getByName(projectName);
+    if (bugInfo) {
+      const { projectName, bugId } = bugInfo;
+      const previousProject = this.manager.getOrCreateDefaultProjectList().getByName(projectName);
 
-      if (previousProject.isProjectFolderExists()) {
+      if (previousProject?.isProjectFolderExists()) {
         return previousProject.getOrLoadBugs().getById(bugId);
+      }
+      else {
+        this.logger.warn(`Found bug by key='${key}', but project does not exist: ${JSON.stringify(bugInfo)}`);
       }
     }
     return null;
@@ -654,9 +671,9 @@ export default class ProjectsManager {
     return this._installPromise;
   }
 
-  _getAllDependencies(deps) {
+  _getAllDependenciesToCheck(deps) {
     return [
-      ...this._sharedDependencyNames,
+      ...this._sharedDependencyNamesToCheck,
       ...deps || EmptyArray
     ];
   }
@@ -666,7 +683,7 @@ export default class ProjectsManager {
   }
 
   areDependenciesInstalled(deps) {
-    deps = this._getAllDependencies(deps);
+    deps = this._getAllDependenciesToCheck(deps);
     return deps.every(this.isDependencyInstalled);
   }
 

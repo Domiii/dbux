@@ -4,8 +4,8 @@ import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
 import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import BugList from './BugList';
 import Process from '../util/Process';
 
@@ -13,6 +13,11 @@ const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
+
+/**
+ * Project class file.
+ * @file
+ */
 
 export default class Project {
   /**
@@ -49,9 +54,24 @@ export default class Project {
    */
   gitCommit;
 
+  /**
+   * Use github by default.
+   */
   get gitUrl() {
     return 'https://github.com/' + this.gitRemote;
   }
+
+  nodeVersion;
+
+  get systemRequirements() {
+    if (this.nodeVersion) {
+      return {
+        node: { version: this.nodeVersion }
+      };
+    }
+    return null;
+  }
+
 
   // ###########################################################################
   // constructor
@@ -84,6 +104,10 @@ export default class Project {
 
   get runStatus() {
     return this.manager.getProjectRunStatus(this);
+  }
+
+  get dependencyRoot() {
+    return this.manager.config.dependencyRoot;
   }
 
   // ###########################################################################
@@ -136,16 +160,23 @@ export default class Project {
    * @virtual
    */
   async installProject() {
+    if (this.systemRequirements) {
+      // TODO:
+      // await checkSystem(..., this.systemRequirements);
+    }
+
     // git clone
     await this.gitClone();
   }
 
   async startWatchModeIfNotRunning() {
     if (!this.backgroundProcesses?.length && this.startWatchMode) {
-      await this.startWatchMode();
+      await this.startWatchMode().catch(err => {
+        this.logger.error('startWatchMode failed -', err?.stack || err);
+      });
 
       if (!this.backgroundProcesses?.length) {
-        this.logger.error('project.startWatchMode did not result in any new background processes');
+        this.logger.error('startWatchMode did not result in any new background processes');
       }
     }
   }
@@ -170,7 +201,7 @@ export default class Project {
   // ###########################################################################
 
   async execInTerminal(command, options) {
-    let cwd = options?.cdToProjectPath === false ? '' : this.projectPath;
+    let cwd = options?.cwd || this.projectPath;
 
     let { code } = await this.manager.externals.TerminalWrapper.execInTerminal(cwd, command, {}).waitForResult();
 
@@ -178,21 +209,20 @@ export default class Project {
       return code;
     }
     if (code) {
-      throw new Error(`Process exit code ${code}`);
+      const processExecMsg = `${cwd}$ ${command}`;
+      throw new Error(`Process failed with exit code ${code} (${processExecMsg})`);
     }
     return 0;
   }
 
   async exec(command, options, input) {
-    if (options?.cdToProjectPath !== false) {
-      options = defaultsDeep(options, {
-        ...(options || EmptyObject),
-        processOptions: {
-          cwd: this.projectPath
-        }
-      });
-    }
-
+    const cwd = options?.cwd || this.projectPath;
+    options = defaultsDeep(options, {
+      ...(options || EmptyObject),
+      processOptions: {
+        cwd
+      }
+    });
     return this.runner._exec(command, this.logger, options, input);
   }
 
@@ -210,32 +240,32 @@ export default class Project {
     } = this;
 
     // set cwd
-    let cwd;
-    if (options?.cdToProjectPath !== false) {
-      cwd = projectPath;
+    let cwd = options?.cwd || projectPath;
 
-      // set cwd option
-      options = defaultsDeep(options, {
-        processOptions: {
-          cwd
-        }
-      });
+    // set cwd option
+    options = defaultsDeep(options, {
+      processOptions: {
+        cwd
+      }
+    });
 
-      // cd into it
-      sh.cd(cwd);
-    }
+    // cd into it
+    sh.cd(cwd);
 
     // // wait until current process finshed it's workload
     // this._process?.waitToEnd();
 
     const process = new Process();
     this.backgroundProcesses.push(process);
-    process.start(cmd, this.logger, options).finally(() => {
-      pull(this.backgroundProcesses, process);
-      if (!this.backgroundProcesses.length) {
-        this.runner.maybeSetStatusNone(this);
-      }
-    });
+    process.
+      start(cmd, this.logger, options).
+      catch(err => this.logger.error(err)).
+      finally(() => {
+        pull(this.backgroundProcesses, process);
+        if (!this.backgroundProcesses.length) {
+          this.runner.maybeSetStatusNone(this);
+        }
+      });
     return process;
   }
 
@@ -277,13 +307,12 @@ export default class Project {
       sh.rm('-rf', absRmFiles);
     }
 
-    await this.manager.installDependencies();
-
     // copy assets
     await this.installAssets();
+    await this.autoCommit();  // auto-commit -> to be on the safe side
 
-    // install project's custom dependencies
-    await this.installDependencies();
+    // install dbux dependencies
+    await this.manager.installDependencies();
 
     // NOTE: disable yarn support for now
     // if (this.packageManager === 'yarn') {
@@ -293,10 +322,13 @@ export default class Project {
     await this.npmInstall();
     // }
 
-    // call `afterInstall` hook for different projects to do their postinstall things
+    // custom dependencies
+    await this.installDependencies();
+
+    // custom `afterInstall` hook
     await this.afterInstall();
 
-    // after install completed: commit modifications, so we can easily apply patches etc
+    // after install completed: commit modifications, so we can easily apply patches etc (if necessary)
     await this.autoCommit();
   }
 
@@ -306,18 +338,6 @@ export default class Project {
    * @virtual
    */
   async installDependencies() {
-    // await this.exec(`yarn add --dev source-map-loader`);
-    /*
-    await this.exec(`\
-        yarn remove webpack webpack-dev-server babel-loader babel-core babel babel-plugin-__coverage__ \
-          babel-preset-es2015 babel-preset-es2016 babel-preset-react babel-preset-stage-2 html-webpack-plugin && \
-        \
-        yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env \
-          webpack webpack-cli webpack-dev-server nodemon html-webpack-plugin && \
-        \
-        yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime`
-    );
-    */
   }
 
   async afterInstall() { }
@@ -325,8 +345,12 @@ export default class Project {
   async autoCommit() {
     await this.checkCorrectGitRepository();
 
-    const files = this.getAllAssestFiles();
-    await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"dbux auto commit"'`);
+    if (await this.hasAnyChangedFiles()) {
+      // only auto commit if files changed
+      const files = this.getAllAssestFiles();
+      this.logger.log('auto commit');
+      await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"'`);
+    }
   }
 
   async deleteProjectFolder() {
@@ -346,9 +370,6 @@ export default class Project {
       gitUrl: githubUrl
     } = this;
 
-    // cd into project root
-    sh.cd(projectsRoot);
-
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
@@ -357,7 +378,7 @@ export default class Project {
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
       await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
-        cdToProjectPath: false
+        cwd: this.projectsRoot
       });
 
       sh.cd(projectPath);
@@ -409,6 +430,12 @@ export default class Project {
     folders.forEach(folderName => {
       this.copyAssetFolder(folderName);
     });
+
+    if (this.nodeVersion) {
+      // make sure, we have node at given version and node@lts
+      await this.exec(`volta fetch node@${this.nodeVersion} node@lts npm@lts`);
+      await this.exec(`volta pin node@${this.nodeVersion}`);
+    }
   }
 
   getAssestDir(assetFolderName) {
@@ -461,6 +488,10 @@ export default class Project {
     return path.join(this.getPatchFolder(), patchFName);
   }
 
+  // ###########################################################################
+  // git commands
+  // ###########################################################################
+
   async applyPatch(patchFName) {
     await this.checkCorrectGitRepository();
 
@@ -483,6 +514,11 @@ export default class Project {
     await this.checkCorrectGitRepository();
 
     return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
+  }
+
+  async hasAnyChangedFiles() {
+    const changes = await this.execCaptureOut(`git status -s`);
+    return !!changes;
   }
 
   async getPatchString() {
@@ -517,15 +553,20 @@ export default class Project {
     return this._bugs;
   }
 
-  getMochaArgs(bug) {
+  /**
+   * @see https://mochajs.org/#command-line-usage
+   */
+  getMochaArgs(bug, moreArgs = EmptyArray) {
     // bugArgs
-    const bugArgArray = [
+    const argArray = [
+      '-c', // colors
+      ...moreArgs,
       ...(bug.runArgs || EmptyArray)
     ];
-    if (bugArgArray.includes(undefined)) {
-      throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(bugArgArray));
+    if (argArray.includes(undefined)) {
+      throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(argArray));
     }
-    return bugArgArray.join(' ');      //.map(s => `"${s}"`).join(' ');
+    return argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
   }
 
   // ###########################################################################
