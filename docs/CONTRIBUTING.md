@@ -45,8 +45,10 @@ if dependencies bug out, run the (very aggressive) clean-up command: `npm run db
 
 We use Lerna with Yarn workspaces, so instead of `npm i pkg`, we can do the following:
 
-* Add `pkg` to `dbux-something`:
-   `npx lerna add --scope=@dbux-something pkg`
+* Add `pkg` to `@dbux/something` (where `dbux-something` is the folder containing the package `@dbux/something`):
+   `npx lerna add --scope=@dbux/something pkg`
+   `npx lerna add --scope=@dbux/common pkg`
+   `npx lerna add --scope=dbux-code pkg      # note: dbux-code's package name has a dash (-), not a slash (/)!`
 
 
 * Add `pkg` as devDependency to the root:
