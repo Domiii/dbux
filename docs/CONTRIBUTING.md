@@ -41,22 +41,19 @@ if dependencies bug out, run the (very aggressive) clean-up command: `npm run db
 1. Go to your debug tab, select the `dbux-code` configuration and press F5 (runs dbux-code (VSCode extension) in debug mode)
 1. Inside of the new window, you can then use the development version of `dbux-code`
 
-## Analyze with Python Notebooks
+## Adding dependency
 
-In the `analyze/` folder, you find several python notebooks that allow you analyze the data that `dbux` generates. Here is how you set that up:
+We use Lerna with Yarn workspaces, so instead of `npm i pkg`, we can do the following:
 
-1. Run some program with Dbux enabled (e.g. `samples/[...]/oop1.js`)
-1. In the VSCode extension, open a file of that program that has traces in it
-1. In VSCode `Run Command` (`CTRL/Command + SHIFT + P`) -> `Dbux: Export file`
-1. Make sure you have Python + Jupyter setup
-   * Windows
-      * [Install `Anaconda` with `chocolatey`](https://chocolatey.org/packages/anaconda3)
-      * Set your `%PYTHONPATH%` in system config to your Anaconda `Lib` + `DLLs` folders (e.g. `C:\tools\Anaconda3\Lib;C:\tools\Anaconda3\DLLs;`)
-      * Done!
-   * Other OSes
-1. Run one of the notebooks, load the file, and analyze
+* Add `pkg` to `dbux-something`:
+   `npx lerna add --scope=@dbux-something pkg`
 
-## VSCode extension development
+
+* Add `pkg` as devDependency to the root:
+   `yarn add --dev -W pkg`
+
+
+# VSCode extension development
 
 ### Adding a command/button
 
@@ -170,3 +167,24 @@ In the `analyze/` folder, you find several python notebooks that allow you analy
     - The `when` property defines when should the button be visible, see ['when' clause contexts](https://code.visualstudio.com/docs/getstarted/keybindings#_when-clause-contexts) for more available condition
 
 TODO: more to be said here in the future (consider https://gist.github.com/PurpleBooth/b24679402957c63ec426)
+
+
+
+
+# Advanced/random features
+
+
+## Analyze with Python Notebooks
+
+In the `analyze/` folder, you find several python notebooks that allow you analyze the data that `dbux` generates. Here is how you set that up:
+
+1. Run some program with Dbux enabled (e.g. `samples/[...]/oop1.js`)
+1. In the VSCode extension, open a file of that program that has traces in it
+1. In VSCode `Run Command` (`CTRL/Command + SHIFT + P`) -> `Dbux: Export file`
+1. Make sure you have Python + Jupyter setup
+   * Windows
+      * [Install `Anaconda` with `chocolatey`](https://chocolatey.org/packages/anaconda3)
+      * Set your `%PYTHONPATH%` in system config to your Anaconda `Lib` + `DLLs` folders (e.g. `C:\tools\Anaconda3\Lib;C:\tools\Anaconda3\DLLs;`)
+      * Done!
+   * Other OSes
+1. Run one of the notebooks, load the file, and analyze
