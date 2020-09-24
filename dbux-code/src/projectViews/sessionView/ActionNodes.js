@@ -15,12 +15,16 @@ class RunNode extends BaseTreeViewNode {
     return this.treeNodeProvider.manager;
   }
 
+  get controller() {
+    return this.treeNodeProvider.controller;
+  }
+
   async handleClick() {
     if (isStatusRunningType(this.manager.runStatus)) {
       await showInformationMessage('Currently busy, please wait');
     }
     else {
-      await this.manager.activate(false);
+      await this.controller.activate(false);
     }
   }
 }
@@ -38,12 +42,16 @@ class DebugNode extends BaseTreeViewNode {
     return this.treeNodeProvider.manager;
   }
 
+  get controller() {
+    return this.treeNodeProvider.controller;
+  }
+
   async handleClick() {
     if (isStatusRunningType(this.manager.runStatus)) {
       await showInformationMessage('Currently busy, please wait');
     }
     else {
-      await this.manager.activate(true);
+      await this.controller.activate(true);
     }
   }
 }

@@ -13,6 +13,7 @@ import RunStatus from './projectLib/RunStatus';
 import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
 import ProgressLogController from './dataLib/ProgressLogController';
+import PracticeSessionState from './practiceSession/PracticeSessionState';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -144,40 +145,54 @@ export default class ProjectsManager {
       return;
     }
 
-    const bugProgress = this.plc.util.getBugProgressByBug(bug);
-    
+    let bugProgress = this.plc.util.getBugProgressByBug(bug);
+
     if (!bugProgress) {
       const stopwatchEnabled = await this.askForStopwatch();
-      this.plc.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
+      bugProgress = this.plc.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.practiceSession = new PracticeSession(bug, this);
       this._emitter.emit('practiceSessionChanged', this.practiceSession);
-      
+
       // activate once to show user the bug, don't care about the result
       await this._activateBug(bug, false);
-      
+
       this.plc.updateBugProgress(bug, { startedAt: Date.now() });
     }
     else {
       this.practiceSession = new PracticeSession(bug, this);
+      this._emitter.emit('practiceSessionChanged', this.practiceSession);
     }
-    
-    this.practiceSession.stopwatch.show();
-    this.practiceSession.stopwatch.start();
+
+    if (this.practiceSession.stopwatchEnabled) {
+      // set stopwatch
+      const { startedAt } = bugProgress;
+      this.practiceSession.stopwatch.set(Date.now() - startedAt);
+      this.practiceSession.stopwatch.show();
+      this.practiceSession.stopwatch.start();
+    }
+
+    await this.setKeyToBug(currentlyPracticingBugKeyName, bug);
 
     await this.plc.save();
   }
 
   async stopPractice() {
-    if (this.practiceSession.stopwatchEnabled) {
+    if (!this.practiceSession) {
+      return;
+    }
+
+    await this.stopRunner();
+    
+    const { stopwatchEnabled, state, stopwatch } = this.practiceSession;
+    
+    if (stopwatchEnabled && !PracticeSessionState.is.Solved(state)) {
       this.practiceSession.giveup();
     }
-    await this.stopRunner();
+    stopwatch.pause();
+    stopwatch.hide();
     this.practiceSession = null;
+    await this.setKeyToBug(currentlyPracticingBugKeyName, undefined);
     this._emitter.emit('practiceSessionChanged', this.practiceSession);
-  }
-
-  activate(debugMode) {
-    this.practiceSession.activate(debugMode);
   }
 
   recoverPracticeSession() {
@@ -193,7 +208,19 @@ export default class ProjectsManager {
 
     this.practiceSession = new PracticeSession(bug, this);
 
+    if (this.practiceSession.stopwatchEnabled) {
+      // set stopwatch
+      const { startedAt } = bugProgress;
+      this.practiceSession.stopwatch.set(Date.now() - startedAt);
+      this.practiceSession.stopwatch.show();
+      this.practiceSession.stopwatch.start();
+    }
+
     this._emitter.emit('practiceSessionChanged', this.practiceSession);
+  }
+
+  async activate(debugMode) {
+    await this.practiceSession.activate(debugMode);
   }
 
   onPracticeSessionChanged(cb) {
@@ -258,7 +285,7 @@ export default class ProjectsManager {
   //   else {
   //     // no need to start timer
   //     const result = await this._activateBug(bug, debugMode);
-  //     this.plc.updateBugStatusByResult(bug, result);
+  //     this.updateBugStatusByResult(bug, result);
   //     this._emitter.emit('bugStatusChanged', bug);
   //     await this.plc.save();
   //   }
@@ -511,6 +538,7 @@ export default class ProjectsManager {
   async resetProgress() {
     await this.plc.reset();
     await this.setKeyToBug(currentlyPracticingBugKeyName, undefined);
+    await this.updateActivatingBug(undefined);
   }
 
   getDevPackageRoot() {

@@ -51,7 +51,7 @@ export default async function which(command) {
     throw new Error(`Couldn't find ${command} in $PATH. Got code ${result.code} when executing "${cmd}"`);
   }
 
-  let paths = result.out.split('\n');
+  let paths = result.out.split(/\r?\n/);
   let realPaths = [];
 
   for (let path of paths) {

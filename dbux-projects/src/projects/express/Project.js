@@ -227,7 +227,7 @@ export default class ExpressProject extends Project {
 
     // checkout the bug branch
     sh.cd(this.projectPath);
-    this.log(`Checking out bug ${name || id}...`);
+    this.log(`Checking out bug ${name || number}...`);
 
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);

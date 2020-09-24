@@ -132,20 +132,6 @@ export default class ProgressLogController {
     bugProgress.updatedAt = Date.now();
   }
 
-  /**
-   * Update bug progress if result is better than before
-   * @param {Bug} bug 
-   * @param {Object} result
-   */
-  updateBugStatusByResult(bug, result) {
-    const resultStatus = result.code ? BugStatus.Attempted : BugStatus.Solved;
-    const bugProgress = this.util.getBugProgressByBug(bug);
-
-    if (bugProgress.status < resultStatus) {
-      this.updateBugProgress(bug, { status: resultStatus });
-    }
-  }
-
   // ###########################################################################
   // Data flow 
   // ###########################################################################

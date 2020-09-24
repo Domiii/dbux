@@ -53,7 +53,7 @@ export class ProjectViewController {
     this.sessionViewNodeProvider = new SessionNodeProvider(context, this);
 
     this.practiceStopwatch = getStopwatch();
-    this.practiceStopwatch.onClick(context, this.maybeStopStopwatch.bind(this));
+    this.practiceStopwatch.onClick(context, this.maybeStopPractice.bind(this));
 
     // ########################################
     //  listen on runStatusChanged
@@ -61,6 +61,7 @@ export class ProjectViewController {
     this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
     this.manager.onBugStatusChanged(this.refreshIcon.bind(this));
     this.manager.onPracticeSessionChanged(this.handlePracticeSessionChanged.bind(this));
+    this.handlePracticeSessionChanged();
   }
 
   async maybeNotifyExistingPracticeSession() {
@@ -69,7 +70,7 @@ export class ProjectViewController {
         const { bug } = this.manager.practiceSession;
         await showInformationMessage(`[Dbux] You are currently practicing ${bug.id}`, {
           'OK'() { },
-          'Give up': this.maybeStopStopwatch.bind(this)
+          'Give up': this.maybeStopPractice.bind(this)
         });
       }
     }
@@ -106,8 +107,9 @@ export class ProjectViewController {
     await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
   }
 
-  async handlePracticeSessionChanged() {
-    await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
+  handlePracticeSessionChanged() {
+    commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
+    this.isShowingTreeView && this.refreshIcon();
   }
 
   // ###########################################################################
@@ -119,7 +121,7 @@ export class ProjectViewController {
   }
 
   // ###########################################################################
-  // bug node buttons
+  // practice session
   // ###########################################################################
 
   async startPractice(bugNode) {
@@ -131,26 +133,51 @@ export class ProjectViewController {
     };
 
     await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-      progress.report({ message: 'checking system requirements...' });
-
-      await checkSystem(this.manager, false, true);
-      await initRuntimeServer(this.extensionContext);
-
       const { bug } = bugNode;
+      
+      progress.report({ message: 'checking system requirements...' });
+      await this.checkActivateBugRequirement();
 
       progress.report({ message: 'activating...' });
       await this.manager.startPractice(bug);
     }, options);
   }
 
+  async activate(debugMode) {
+    showOutputChannel();
+
+    const { bug } = this.manager.practiceSession;
+
+    const options = {
+      cancellable: false,
+      title: `[dbux] Bug ${bug.id}`
+    };
+
+    await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+      progress.report({ message: 'checking system requirements...' });
+      await this.checkActivateBugRequirement();
+
+      progress.report({ message: 'activating...' });
+      await this.manager.activate(debugMode);
+    }, options);
+  }
+
+  async checkActivateBugRequirement() {
+    await checkSystem(this.manager, false, true);
+    await initRuntimeServer(this.extensionContext);
+  }
+
   // ###########################################################################
   // practice stopwatch
   // ###########################################################################
 
-  async maybeStopStopwatch() {
-    await showInformationMessage('Are you sure you want to give up the timed challenge?', {
+  async maybeStopPractice() {
+    const confirmString = this.manager.practiceSession.stopwatchEnabled ?
+      'Are you sure you want to give up the timed challenge?' :
+      'Do you want to stop the practice session?';
+    await showInformationMessage(confirmString, {
       Yes: async () => {
-        await this.manager.giveupPractice();
+        await this.manager.stopPractice();
       }
     }, { modal: true });
   }

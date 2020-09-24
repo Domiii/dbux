@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 
 /** @typedef {import('../externals/Stopwatch').default} ExternalStopwatch */
 
-const Verbose = true;
+const Verbose = false;
 
 const { log, debug, warn, error: logError } = newLogger('Stopwatch');
 
