@@ -44,7 +44,7 @@ export class ProjectViewController {
     this.maybeNotifyExistingPracticeSession();
 
     this.isShowingTreeView = mementoGet(showProjectViewKeyName, true);
-    commands.executeCommand('setContext', 'dbux.context.showPracticeView', this.isShowingTreeView);
+    commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
 
     // ########################################
     //  init treeView
@@ -83,17 +83,21 @@ export class ProjectViewController {
     return this.projectViewNodeProvider.treeView;
   }
 
+  isShowingPraciceView() {
+    return !this.manager.practiceSession;
+  }
+
   handleStatusChanged(status) {
     commands.executeCommand('setContext', 'dbuxProjectView.context.isBusy', RunStatus.is.Busy(status));
-    this.refreshIcon();
+    this.isShowingPraciceView() && this.projectViewNodeProvider.refreshIcon();
   }
 
   refreshIcon() {
-    if (this.manager.practiceSession) {
-      this.sessionViewNodeProvider.refresh();
+    if (this.isShowingPraciceView()) {
+      this.projectViewNodeProvider.refreshIcon();
     }
     else {
-      this.projectViewNodeProvider.refreshIcon();
+      this.sessionViewNodeProvider.refresh();
     }
   }
 
@@ -103,13 +107,18 @@ export class ProjectViewController {
 
   async toggleTreeView() {
     this.isShowingTreeView = !this.isShowingTreeView;
-    await commands.executeCommand('setContext', 'dbux.context.showPracticeView', this.isShowingTreeView);
+    await commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
     await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
   }
 
-  handlePracticeSessionChanged() {
-    commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
-    this.isShowingTreeView && this.refreshIcon();
+  async handlePracticeSessionChanged() {
+    try {
+      await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
+      this.isShowingTreeView && this.refreshIcon();
+    }
+    catch (err) {
+      logError(err);
+    }
   }
 
   // ###########################################################################
@@ -134,7 +143,7 @@ export class ProjectViewController {
 
     await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
       const { bug } = bugNode;
-      
+
       progress.report({ message: 'checking system requirements...' });
       await this.checkActivateBugRequirement();
 

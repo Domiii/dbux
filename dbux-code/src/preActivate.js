@@ -74,7 +74,6 @@ export async function preActivate(context) {
   }
   catch (e) {
     logError('error in \'preActivate\'', e.stack);
-    debugger;
     throw e;
   }
 }

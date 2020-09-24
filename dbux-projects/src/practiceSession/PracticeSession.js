@@ -82,7 +82,7 @@ export default class PracticeSession {
     const result = await this.manager.externals.confirm(confirmString, true);
 
     if (result) {
-      this.manager.stopPractice();
+      await this.manager.stopPractice();
     }
   }
 

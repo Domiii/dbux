@@ -638,11 +638,11 @@ export default class ProjectsManager {
    * @return {Bug}
    */
   getBugByKey(key) {
-    const bugInfo = this.manager.externals.storage.get(key);
+    const bugInfo = this.externals.storage.get(key);
 
     if (bugInfo) {
       const { projectName, bugId } = bugInfo;
-      const previousProject = this.manager.getOrCreateDefaultProjectList().getByName(projectName);
+      const previousProject = this.getOrCreateDefaultProjectList().getByName(projectName);
 
       if (previousProject?.isProjectFolderExists()) {
         return previousProject.getOrLoadBugs().getById(bugId);
