@@ -85,8 +85,6 @@ The "Debug with Dbux" button does the same thing as the Run button but with `--i
 * You can configure both buttons in your workspace or user settings. See [Configuration](#configuration) for more details.
 * NOTE: Dbux architectural details are explained [here](https://github.com/Domiii/dbux/tree/master/#dbux-architecture).
 
-TODO: explain more
-
 
 # Analysis Features
 
@@ -352,6 +350,7 @@ A rough outline of (hopefully all) commands:
 | ----------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | dbux.backendLogin                                     | Dbux: Backend Login                                 | (Feature still in development. Won't work.)                                                                                                |
 | dbux.debugFile                                        | Dbux: Debug current file                            | Run selected file with Dbux, but with Node's `--inspect-brk` enabled. Make sure to enable VSCode's auto attach beforehand.                 |
+| dbux.doActivate                                       | Dbux: Start Dbux                                    |                                                                                                                                            |
 | dbux.exportApplicationData                            | Dbux: Export Application Data                       | Export raw recorded Dbux data of a previously executed application to a `json` file.                                                       |
 | dbux.hideDecorations                                  | Dbux: Hide Code Decorations                         | Do not annotate executed code with Dbux code decorations (<span style='color:red'>✦↱</span><span style='color:orange'>🔥ƒ</span> etc).     |
 | dbux.hideGraphView                                    | Dbux: Hide Call Graph                               | Close the Call Graph panel.                                                                                                                |
@@ -360,6 +359,7 @@ A rough outline of (hopefully all) commands:
 | dbux.showDecorations                                  | Dbux: Show Code Decorations                         | Show code decorations again after hiding them.                                                                                             |
 | dbux.showGraphView                                    | Dbux: Show Call Graph                               | Open the Call Graph panel.                                                                                                                 |
 | dbux.showHelp                                         | Dbux: Help                                          | Show the Dbux help dialog.                                                                                                                 |
+| dbux.showOutputChannel                                | Dbux: Show output channel                           |                                                                                                                                            |
 | dbux.startRuntimeServer                               | Dbux: Start Dbux Runtime Server                     |                                                                                                                                            |
 | dbux.stopRuntimeServer                                | Dbux: Stop Dbux Runtime Server                      |                                                                                                                                            |
 | dbux.systemCheck                                      | Dbux: Check System Dependencies                     | Dbux (especially Dbux practice) needs some system tools in order to work properly. You can check these dependencies with this command.     |
@@ -388,16 +388,17 @@ These are all currently supported configuration parameters (mostly for the "Run 
 (You can open configuration via `CTRL/Command + Shift + P` -> "Open {User,Workspace} Settings")
 
 <!-- dbux:codeConfig start -->
-| Entry                  | Type   | Default                                           | Description                                                                                                                                                               |
-| ---------------------- | ------ | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| dbux.run.dbuxArgs      | string | <span style='white-space:nowrap;'>--esnext</span> | Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js |
-| dbux.run.nodeArgs      | string | --enable-source-maps                              | Custom node options passed to node when running the program.                                                                                                              |
-| dbux.run.programArgs   | string |                                                   | Custom program arguments, available to the program via `process.argv`.                                                                                                    |
-| dbux.run.env           | object | {}                                                | Custom program environment variables available via `process.env` (probably not working yet).                                                                              |
-| dbux.debug.dbuxArgs    | string | <span style='white-space:nowrap;'>--esnext</span> | Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js |
-| dbux.debug.nodeArgs    | string |                                                   | Custom node options passed to node when running the program.                                                                                                              |
-| dbux.debug.programArgs | string |                                                   | Custom program arguments, available to the program via `process.argv`.                                                                                                    |
-| dbux.debug.env         | object | {}                                                | Custom program environment variables available via `process.env` (probably not working yet).                                                                              |
+| Entry                  | Type    | Default                                           | Description                                                                                                                                                               |
+| ---------------------- | ------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| dbux.autoStart         | boolean | false                                             | Auto start Dbux when opening vscode                                                                                                                                       |
+| dbux.run.dbuxArgs      | string  | <span style='white-space:nowrap;'>--esnext</span> | Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js |
+| dbux.run.nodeArgs      | string  | --enable-source-maps                              | Custom node options passed to node when running the program.                                                                                                              |
+| dbux.run.programArgs   | string  |                                                   | Custom program arguments, available to the program via `process.argv`.                                                                                                    |
+| dbux.run.env           | object  | {}                                                | Custom program environment variables available via `process.env` (probably not working yet).                                                                              |
+| dbux.debug.dbuxArgs    | string  | <span style='white-space:nowrap;'>--esnext</span> | Custom `dbux run` command options. You can find a list of all available dbux command options in https://github.com/Domiii/dbux/blob/master/dbux-cli/src/commandCommons.js |
+| dbux.debug.nodeArgs    | string  |                                                   | Custom node options passed to node when running the program.                                                                                                              |
+| dbux.debug.programArgs | string  |                                                   | Custom program arguments, available to the program via `process.argv`.                                                                                                    |
+| dbux.debug.env         | object  | {}                                                | Custom program environment variables available via `process.env` (probably not working yet).                                                                              |
 
 <!-- dbux:codeConfig end -->
 

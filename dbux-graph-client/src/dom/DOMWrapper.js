@@ -19,7 +19,7 @@ export default class DOMWrapper {
     return this.owner.el;
   }
 
-  process() {
+  init() {
     const { owner } = this;
     const {
       el,

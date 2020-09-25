@@ -24,7 +24,7 @@ export function buildNodeCommand(cfg) {
   //   ...requireArr.map(r => path.join(cwd, r))
   // ];
   const nodeRequireArr = requireArr;
-  const nodeRequireArgs = nodeRequireArr.map(r => `--require="${r}"`).join(' ');
+  const nodeRequireArgs = nodeRequireArr.map(r => `--require "${r}"`).join(' ');
 
   // final command
   return `node ${nodeArgs} ${nodeDebugArgs} ${nodeRequireArgs} "${program}" ${programArgs}`;

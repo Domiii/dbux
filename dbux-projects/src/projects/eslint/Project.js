@@ -1,4 +1,6 @@
+import path from 'path';
 import sh from 'shelljs';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
@@ -8,21 +10,28 @@ export default class EslintProject extends Project {
 
   packageManager = 'npm';
 
-  // async installDependencies() {
-  //   yarn add --dev babel-loader @babel/node @babel/cli @babel/core @babel/preset-env && \
-  //   yarn add --dev webpack webpack-cli webpack-dev-server nodemon && \
-  //   yarn add core-js@3 @babel/runtime @babel/plugin-transform-runtime
-  // }
+  nodeVersion = '7';
+
+  async installDependencies() {
+    const webpackJs = this.getWebpackJs();
+    if (!sh.test('-f', webpackJs)) {
+      await this.execInTerminal(`npm i -D webpack@4.41.5 webpack-cli@3.3.10 webpack-node-externals@2.5.0 string-replace-loader@2.3.0`);
+    }
+
+    // add "dist" folder to gitignore
+    await this.exec('bash -c "echo ""dist"" >> .gitignore"');
+  }
 
   loadBugs() {
     // TODO: load automatically from BugsJs bug database
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
     const bugs = [
+      // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
       {
         id: 1,
         testRe: '',
-        testFilePaths: ['test/app.options.js']
+        testFilePaths: ['tests/lib/rules/no-obj-calls.js']
       }
     ];
 
@@ -41,9 +50,11 @@ export default class EslintProject extends Project {
             '--grep',
             `"${bug.testRe}"`,
             '--',
-            ...bug.testFilePaths
+            ...bug.testFilePaths.map(file => path.join('dist', file)),
+            // eslint-disable-next-line max-len
+            // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
           ],
-          require: ['test/support/env'],
+          // require: ['test/support/env'],
           ...bug,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
         };
@@ -62,8 +73,10 @@ export default class EslintProject extends Project {
     const tagCategory = "test"; // "test", "fix" or "full"
     const tag = this.getBugGitTag(id, tagCategory);
 
-    // TODO: auto commit any pending changes
-    // TODO: checkout bug, if not done so before
+    if ((await this.getTagName()).startsWith(tag)) {
+      // do not checkout bug, if we already on the right tag
+      return;
+    }
 
     // checkout the bug branch
     sh.cd(this.projectPath);
@@ -72,31 +85,59 @@ export default class EslintProject extends Project {
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);
 
-    // `npm install` again! (NOTE: the buggy version might have different dependencies)
+    // Copy assets again in this branch
+    await this.installAssets();
+
+    // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
     await this.npmInstall();
+
+    // Auto commit again
+    await this.autoCommit();
   }
 
-  async testBugCommand(/* bug, cfg */) {
-    // TODO: copy correct version from express/Project.js
 
-    // const { projectPath } = this;
-    // const bugArgs = this.getMochaArgs(bug);
-    // return buildMochaRunCommand(projectPath, bugArgs, bug.require, debugPort);
+  // ###########################################################################
+  // run
+  // ###########################################################################
 
-    // TODO: enable auto attach (run command? or remind user?)
-    //      see: https://code.visualstudio.com/blogs/2018/07/12/introducing-logpoints-and-auto-attach
-    /*
-    "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/node_modules/.bin/_mocha",
-      "runtimeArgs": [
-        "--stack-trace-limit=1000",
-        "--preserve-symlinks"
+  getWebpackJs() {
+    return this.manager.getDbuxPath('webpack/bin/webpack.js');
+  }
+
+  async startWatchMode() {
+    // start webpack using latest node (long-time support)
+    // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
+    const req = `-r ${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}`;
+    const args = '--config ./webpack.config.dbux.js --watch';
+    return this.execBackground(
+      `volta run --node lts node ${req} ${this.getWebpackJs()} ${args}`
+    );
+  }
+
+  async testBugCommand(bug, cfg) {
+    const { projectPath } = this;
+    const bugArgs = this.getMochaArgs(bug, [
+      '-t 10000' // timeout
+    ]);
+
+    const mochaCfg = {
+      cwd: projectPath,
+      mochaArgs: bugArgs,
+      require: [
+        ...(bug.require || EmptyArray),
+        this.manager.getDbuxPath('@dbux/runtime/deps/require.ws.7.js')
       ],
-      "cwd": "${workspaceFolder}",
-      "args": [
-        // "--reporter=json",
-      ],
-      */
+      ...cfg
+    };
+
+    // TODO: actual location - `dist/tests/lib/rules/no-obj-calls.js`
+    delete mochaCfg.dbuxJs; // dbux has already been infused -> run test without another dbux layer
+
+
+    // return `cp ../../dbux-projects/assets/_shared_assets_/webpack.config.dbux.base.js webpack.config.dbux.base.js && \
+    // node ../../node_modules/webpack/bin/webpack.js --config webpack.config.dbux.js && \
+    // node --stack-trace-limit=100 -r @dbux/runtime/deps/require.ws.7.js  node_modules/mocha/bin/_mocha --no-exit -c -t 10000 --grep "" -- dist/tests/lib/rules/no-obj-calls.js`;
+
+    return await buildMochaRunCommand(mochaCfg);
   }
 }

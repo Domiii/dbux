@@ -96,7 +96,8 @@ export default class Process {
       logger.error(`WARNING: Trying to execute command in non-existing working directory="${cwd}"`);
     }
 
-    logger.debug(`> ${cwd}$`, command); //, `(pwd = ${sh.pwd().toString()})`);
+    const processExecMsg = `${cwd}$ ${command}`;
+    logger.debug('>', processExecMsg); //, `(pwd = ${sh.pwd().toString()})`);
 
     if (sync) {
       // NOTE: this will just block until the process is done
@@ -196,10 +197,10 @@ export default class Process {
         if (checkDone()) { return; }
 
         if (this._killed) {
-          reject(new Error('Process was killed'));
+          reject(new Error(`Process "${processExecMsg}" was killed`));
         }
         else if (failOnStatusCode && code) {
-          reject(new Error(`Process failed with status code: ${code}`));
+          reject(new Error(`Process "${processExecMsg}" failed with status code: ${code}`));
         }
         else {
           resolve(code);
@@ -218,7 +219,7 @@ export default class Process {
         }
         else {
           // throw new Error(`"${command}" failed because executable or command not found. Either configure it's absolute path or make sure that it is installed and in your PATH.`);
-          reject(new Error(`[${err.code}] ${err.message}`));
+          reject(new Error(`Process "${processExecMsg}" failed with error ${err.code}: ${err.message}`));
         }
       });
     }).finally(this._finished);

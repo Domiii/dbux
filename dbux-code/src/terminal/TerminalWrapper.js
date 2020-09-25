@@ -3,8 +3,11 @@ import os from 'os';
 import path from 'path';
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import Process from '@dbux/projects/src/util/Process';
+import which from '@dbux/projects/src/util/which';
 import { execCommand } from '../codeUtil/terminalUtil';
 import { getResourcePath } from '../resources';
+import sleep from '@dbux/common/src/util/sleep';
 
 const Verbose = true;
 // const Verbose = false;
@@ -13,8 +16,28 @@ const Verbose = true;
 const { log, debug, warn, error: logError } = newLogger('terminalWrapper');
 
 // ###########################################################################
-// execInTerminal w/ process wrapper
+// utilities
 // ###########################################################################
+
+/**
+ * TODO: clean this up and move it to a more suitable place
+ */
+async function getPathToNode() {
+  const volta = (await which('volta'));
+  if (volta) {
+    // get the actual Node binary location that is not inside the target directory (i.e. the globally installed version)
+    return Process.execCaptureOut(`volta which node`, { processOptions: { cmd: __dirname } });
+  }
+  return 'node';
+}
+
+// ###########################################################################
+// TerminalWrapper
+// ###########################################################################
+
+function fixPathForSerialization(p) {
+  return p.replace(/\\/g, '/');
+}
 
 export default class TerminalWrapper {
   _disposable;
@@ -34,18 +57,22 @@ export default class TerminalWrapper {
 
   async _run(cwd, command, args) {
     // NOTE: fix paths on Windows
-    let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')).replace(/\\/g, '/');    
-    const pathToDbuxRun = getResourcePath('_dbux_run.js').replace(/\\/g, '/');
+    let tmpFolder = fixPathForSerialization(fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')));
+    const pathToNode = fixPathForSerialization(await getPathToNode());
+    const pathToDbuxRun = fixPathForSerialization(getResourcePath('../dist/_dbux_run.js'));
 
     // serialize everything
     const runJsargs = { cwd, command, args, tmpFolder };
     const serializedRunJsArgs = Buffer.from(JSON.stringify(runJsargs)).toString('base64');
-    const runJsCommand = `node ${pathToDbuxRun} ${serializedRunJsArgs}`;
+    // const runJsCommand = `pwd && node -v && which node && echo %PATH% && node ${pathToDbuxRun} ${serializedRunJsArgs}`;
+    const runJsCommand = `${pathToNode} ${pathToDbuxRun} ${serializedRunJsArgs}`;
 
     debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
 
     // execute command
-    this._terminal = await execCommand('', runJsCommand);
+    this._terminal = await execCommand(cwd, runJsCommand);
+    
+    const commandCall = `${cwd}$ ${command}`;
 
     try {
       return await new Promise((resolve, reject) => {
@@ -71,7 +98,7 @@ export default class TerminalWrapper {
           let newErr = new Error(`FSWatcher error: ${err.message}`);
           if (resolved) {
             warn(newErr);
-          } 
+          }
           else {
             reject(newErr);
           }
@@ -81,18 +108,25 @@ export default class TerminalWrapper {
           if (terminal === this._terminal) {
             watcher.close();
 
-            let newErr = new Error('The terminal was closed.');
+            const msg = `Terminal closed (${commandCall})`;
             if (resolved) {
-              warn(newErr);
-            } 
+              debug(msg);
+            }
             else {
+              let newErr = new Error(msg);
               reject(newErr);
             }
           }
         });
       });
-    } finally {
-      this.dispose();
+    }
+    catch (err) {
+      // await sleep(5);
+      // this.dispose();
+      err.message = `Terminal command (${commandCall}) failed - ${err.message}`;
+      throw err;
+    } 
+    finally {
       fs.rmdirSync(tmpFolder);
     }
   }
@@ -126,7 +160,7 @@ export default class TerminalWrapper {
    */
   static execInTerminal(cwd, command, args) {
     // TODO: register wrapper with context
-  
+
     const wrapper = new TerminalWrapper();
     wrapper.start(cwd, command, args);
     return wrapper;

@@ -63,7 +63,12 @@ export default class WebviewWrapper {
   }
 
   async _setCurrentState(state) {
-    return mementoSet(this.mementoKey, state);
+    try {
+      await mementoSet(this.mementoKey, state);
+    }
+    catch (err) {
+      logError(`Error when setting memento '${this.mementoKey}' as ${state}`, err);
+    }
   }
 
   async restorePreviousState() {
@@ -165,7 +170,7 @@ export default class WebviewWrapper {
       Uri.file(this.resourceRoot)
     ];
 
-    commands.executeCommand('setContext', 'dbuxWebView.context.isActive', true);
+    commands.executeCommand('setContext', `dbuxWebView.context.${this.webviewId}.isActive`, true);
 
     this.panel = window.createWebviewPanel(
       this.webviewId,
@@ -192,7 +197,7 @@ export default class WebviewWrapper {
         this.panel = null;
         this.shutdownHost();
         this._setCurrentState(null);
-        commands.executeCommand('setContext', 'dbuxWebView.context.isActive', false);
+        commands.executeCommand('setContext', `dbuxWebView.context.${this.webviewId}.isActive`, false);
       },
       null,
       _extensionContext.subscriptions
@@ -257,10 +262,10 @@ export default class WebviewWrapper {
    * 
    * @see https://code.visualstudio.com/api/extension-guides/webview#persistence
    */
-  handleDidChangeViewState = async ({ webviewPanel }) => {
+  handleDidChangeViewState = ({ webviewPanel }) => {
     // debug('handleDidChangeViewState', webviewPanel.visible, performance.now());
     this.preferredColumn = webviewPanel.viewColumn;
-    await this._setCurrentState(this.preferredColumn);
+    this._setCurrentState(this.preferredColumn);
 
     // on closed, silent shutdown
     if (this.wasVisible && !webviewPanel.visible) {

@@ -190,13 +190,13 @@ const StylingsByName = {
 
 const decoNamesByType = {
   CallExpressionResult(dataProvider, staticTrace, trace) {
-    const valueRef = dataProvider.util.getTraceValueRef(trace.traceId);
-    if (valueRef?.category === ValueTypeCategory.Function) {
-      return 'CallbackArgument';
-    }
+    // const valueRef = dataProvider.util.getTraceValueRef(trace.traceId);
+    // if (valueRef?.category === ValueTypeCategory.Function) {
+    //   return 'CallbackArgument';
+    // }
 
     const previousTrace = dataProvider.collections.traces.getById(trace.traceId - 1);
-    if (previousTrace.contextId > trace.contextId) {
+    if (previousTrace?.contextId > trace.contextId) {
       // call expression of a function that we also instrumented (stepped into)
       return 'CallExpressionStep';
     }

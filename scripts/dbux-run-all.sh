@@ -25,7 +25,7 @@ cmd="$args"
 # NOTE: NPM gobbles up flags; need to add the double-dash operator.
 # NOTE2: funny thing is that the command still works (at least on MAC), since the flags are still accessible to `npm install`, but they would be invisible to us.
 # see: https://unix.stackexchange.com/questions/11376/what-does-double-dash-mean
-# echo "NOTE: If you want to pass flags to this program, prefix all arguments with the double-dash operator (--) - e.g.: npm run dbux-install -- -f mylib"
+# echo "NOTE: If you want to pass flags to this program, prefix all arguments with the double-dash operator (--) - e.g.: npm run i -- -f mylib"
 # echo ""
 
 echo "Applying command to all dbux folders: '$cmd'..."

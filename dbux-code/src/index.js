@@ -15,9 +15,9 @@ import { getOrCreateProjectManager } from './projectView/projectControl';
 import { initProjectView } from './projectView/projectViewController';
 import { initGraphView } from './graphView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
-import { maybeStartTutorialOnActivate, maybeStartSurvey1OnActivate } from './dialogs/dialogController';
 import { installDbuxDependencies, initInstallUtil } from './codeUtil/installUtil';
 import { initCodeEvents } from './practice/codeEvents';
+import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -79,8 +79,7 @@ async function activate(context) {
 
     initCodeEvents();
     
-    await maybeStartTutorialOnActivate();
-    await maybeStartSurvey1OnActivate();
+    await maybeStartSurvey1ForTheFirstTime();
   } catch (e) {
     logError('error in \'activate\'', e.stack);
     debugger;

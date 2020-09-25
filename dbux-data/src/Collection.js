@@ -45,7 +45,12 @@ export default class Collection {
       // pad with a `null`, if necessary
       this._all.push(null);
     }
-    this._all.push(...entries);
+
+    // WARNING: cannot use push(...entries) for large `entries` array.
+    // see: https://github.com/nodejs/node/issues/27732
+    for (const entry of entries) {
+      this._all.push(entry);
+    }
   }
 
   /**
