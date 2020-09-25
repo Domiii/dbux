@@ -8,7 +8,7 @@ import DataProvider from '../../DataProvider';
 /** @extends {CollectionIndex<Trace>} */
 export default class ParentTracesInRealContextIndex extends CollectionIndex {
   constructor() {
-    super('traces', 'parentsByRealContext', false);
+    super('traces', 'parentsByRealContext', { addOnNewData: false });
     this.addedTraces = new Set();
   }
 

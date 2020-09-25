@@ -23,6 +23,7 @@ export default class ProjectList {
   }
 
   /**
+   * @param {string} name 
    * @return {Project}
    */
   getByName(name) {

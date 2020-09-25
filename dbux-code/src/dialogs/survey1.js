@@ -4,7 +4,7 @@ import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { showHelp } from '../help';
 import DialogNodeKind from './DialogNodeKind';
-import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 

@@ -49,8 +49,13 @@
         },
         {
           "id": "dbuxProjectView",
-          "name": "Practice",
-          "when": "dbux.context.activated && dbux.context.showProjectView"
+          "name": "Practice Projects",
+          "when": "dbux.context.activated && dbux.context.showPracticeViews && !dbux.context.hasPracticeSession"
+        },
+        {
+          "id": "dbuxSessionView",
+          "name": "Practice Session",
+          "when": "dbux.context.activated && dbux.context.showPracticeViews && dbux.context.hasPracticeSession"
         }
       ]
     },
@@ -58,6 +63,10 @@
       {
         "command": "dbux.doActivate",
         "title": "Dbux: Start Dbux"
+      },
+      {
+        "command": "dbux.showMemento",
+        "title": "Dbux: View Memento Storage"
       },
       {
         "command": "dbux.cancelBugRunner",
@@ -158,6 +167,10 @@
           "light": "resources/light/question.svg",
           "dark": "resources/dark/question.svg"
         }
+      },
+      {
+        "command": "dbux.resetPracticeProgress",
+        "title": "Dbux: Reset Practice Progress"
       },
       {
         "command": "dbux.showOutputChannel",
@@ -400,16 +413,8 @@
         }
       },
       {
-        "command": "dbuxProjectView.node.activateBugWithDebugger",
-        "title": "Activate Bug With Debugger",
-        "icon": {
-          "light": "resources/light/debug.svg",
-          "dark": "resources/dark/debug.svg"
-        }
-      },
-      {
         "command": "dbuxProjectView.node.activateBug",
-        "title": "Activate Bug",
+        "title": "Start Practice",
         "icon": {
           "light": "resources/light/play.svg",
           "dark": "resources/dark/play.svg"
@@ -576,11 +581,6 @@
           "group": "inline@0"
         },
         {
-          "command": "dbuxProjectView.node.activateBugWithDebugger",
-          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
-          "group": "inline@19"
-        },
-        {
           "command": "dbuxProjectView.node.activateBug",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
           "group": "inline@20"
@@ -713,6 +713,10 @@
           "when": "dbux.context.activated"
         },
         {
+          "command": "dbux.showMemento",
+          "when": "dbux.context.activated"
+        },
+        {
           "command": "dbux.debugFile",
           "when": "dbux.context.activated"
         },
@@ -746,6 +750,10 @@
         },
         {
           "command": "dbux.showHelp",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.resetPracticeProgress",
           "when": "dbux.context.activated"
         },
         {
@@ -890,10 +898,6 @@
         },
         {
           "command": "dbuxProjectView.node.stopProject",
-          "when": "false"
-        },
-        {
-          "command": "dbuxProjectView.node.activateBugWithDebugger",
           "when": "false"
         },
         {

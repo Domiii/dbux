@@ -1,8 +1,9 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
+import { showInformationMessage } from '../codeUtil/codeModals';
 
-/** @typedef {import('../projectView/projectViewController').ProjectViewController} ProjectViewController */
+/** @typedef {import('../projectViews/projectViewsController').ProjectViewController} ProjectViewController */
 
 const logger = newLogger('projectCommands');
 
@@ -29,12 +30,8 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return projectViewController.manager.runner.cancel();
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.activateBugWithDebugger', (node) => {
-    return projectViewController.activateBugByNode(node, true);
-  });
-
   registerCommand(extensionContext, 'dbuxProjectView.node.activateBug', (node) => {
-    return projectViewController.activateBugByNode(node);
+    return projectViewController.startPractice(node);
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.busyIcon', (/* node */) => {
@@ -59,6 +56,12 @@ export function initProjectCommands(extensionContext, projectViewController) {
   
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
     return projectViewController.manager.runner.cancel();
+  });
+
+  registerCommand(extensionContext, 'dbux.resetPracticeProgress', async () => {
+    await projectViewController.manager.resetProgress();
+    projectViewController.projectViewNodeProvider.refreshIcon();
+    await showInformationMessage('Bug progress cleared');
   });
 
   registerCommand(extensionContext, 'dbux.togglePracticeView', async () => {

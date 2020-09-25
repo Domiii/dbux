@@ -1,7 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import dialogGraphs from './_dialogRegistry';
 import { Dialog } from './Dialog';
-import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { getInstallId } from '../installId';
 import { setDialogControllerForDefaultHelp } from '../help';
 
