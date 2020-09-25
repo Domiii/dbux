@@ -1,7 +1,7 @@
 import lockfile from 'lockfile';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { getOrCreateProjectManager } from '../projectView/projectControl';
-import { showOutputChannel } from '../projectView/projectViewController';
+import { getOrCreateProjectManager } from '../projectViews/projectControl';
+import { showOutputChannel } from '../projectViews/projectViewsController';
 import { runTaskWithProgressBar } from './runTaskWithProgressBar';
 
 // eslint-disable-next-line no-unused-vars

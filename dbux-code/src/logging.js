@@ -2,7 +2,7 @@ import {
   window
 } from 'vscode';
 import { onLogError } from '@dbux/common/src/log/logger';
-import { showOutputChannel } from './projectView/projectViewController';
+import { showOutputChannel } from './projectViews/projectViewsController';
 import { showErrorMessage } from './codeUtil/codeModals';
 import { showHelp } from './help';
 

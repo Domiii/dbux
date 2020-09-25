@@ -12,7 +12,7 @@ export default class VisitedStaticTracesByFileIndex extends CollectionIndex {
   visited = [];
 
   constructor() {
-    super('staticTraces', 'visitedByFile', false);
+    super('staticTraces', 'visitedByFile', { addOnNewData: false });
   }
 
   dependencies = {
