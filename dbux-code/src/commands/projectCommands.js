@@ -30,10 +30,6 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return projectViewController.manager.runner.cancel();
   });
 
-  registerCommand(extensionContext, 'dbuxProjectView.node.activateBugWithDebugger', (node) => {
-    return projectViewController.startPractice(node);
-  });
-
   registerCommand(extensionContext, 'dbuxProjectView.node.activateBug', (node) => {
     return projectViewController.startPractice(node);
   });

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import Stopwatch from './Stopwatch';
 import PracticeSessionState from './PracticeSessionState';
 import BugStatus from '../dataLib/BugStatus';
@@ -13,6 +14,7 @@ export default class PracticeSession {
    * @param {ProjectsManager} manager
    */
   constructor(bug, manager) {
+    this.sessionId = uuidv4();
     this.stopwatch = new Stopwatch(manager.externals.stopwatch);
     this.project = bug.project;
     this.bug = bug;
@@ -32,6 +34,10 @@ export default class PracticeSession {
     return this.manager.plc;
   }
 
+  get isSolved() {
+    return PracticeSessionState.is.Solved(this.state);
+  }
+
   setState(state) {
     this.state = state;
   }
@@ -42,7 +48,7 @@ export default class PracticeSession {
    */
   async activate(debugMode) {
     const { bug } = this;
-    const result = await this.manager._activateBug(bug, debugMode);
+    const result = await this.manager.activateBug(bug, debugMode);
     this.maybeUpdateBugStatusByResult(result);
     this.manager._emitter.emit('bugStatusChanged', bug);
     
@@ -50,7 +56,6 @@ export default class PracticeSession {
       // user passed all tests
       this.setState(PracticeSessionState.Solved);
       this.stopwatch.pause();
-      this.plc.updateBugProgress(bug, { solvedAt: this.stopwatch.time });
       // await this.manager.askForSubmit();
       await this.askToFinish();
     }
@@ -70,6 +75,20 @@ export default class PracticeSession {
       this.stopwatchEnabled = false;
       this.stopwatch.pause();
       this.stopwatch.hide();
+    }
+  }
+
+  setupStopwatch() {
+    if (this.stopwatchEnabled) {
+      const { solvedAt, startedAt } = this.plc.util.getBugProgressByBug(this.bug);
+      if (this.isSolved) {
+        this.stopwatch.set(solvedAt - startedAt);
+      }
+      else {
+        this.stopwatch.set(Date.now() - startedAt);
+        this.stopwatch.start();
+      }
+      this.stopwatch.show();
     }
   }
 
@@ -94,7 +113,11 @@ export default class PracticeSession {
     const newStatus = this.manager.getResultStatus(result);
     const bugProgress = this.plc.util.getBugProgressByBug(this.bug);
     if (bugProgress.status < newStatus) {
-      this.plc.updateBugProgress(this.bug, { status: newStatus });
+      const update = { status: newStatus };
+      if (BugStatus.is.Solved(newStatus)) {
+        update.solvedAt = Date.now();
+      }
+      this.plc.updateBugProgress(this.bug, update);
     }
   }
 }

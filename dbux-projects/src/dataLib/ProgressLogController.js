@@ -4,8 +4,8 @@ import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import ProgressLogUtil from './progressLogUtil';
 import BugProgressByBugIdIndex from './indexes/BugProgressByBugIdIndex';
+import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import TestRun from './TestRun';
-import BugStatus from './BugStatus';
 import BugProgress from './BugProgress';
 
 // eslint-disable-next-line no-unused-vars
@@ -290,6 +290,7 @@ export default class ProgressLogController {
 
     this.indexes = new Indexes();
     this.addIndex(new BugProgressByBugIdIndex());
+    this.addIndex(new TestRunsByBugIdIndex());
   }
 
 

@@ -6,14 +6,24 @@ import { registerCommand } from '../commands/commandUtil';
 export default class PracticeStopwatch {
   constructor(name) {
     this.name = name;
-    this.timeOffset = 0;
-    this.time = 0;
+    this._timeOffset = null;
+    this._time = 0;
+    this.interval = null;
     this.refreshInterval = 100;
 
     // statusBarItem
     this.barItem = window.createStatusBarItem(StatusBarAlignment.Right);
     this.barItem.hide();
-    this.barItem.text = `$(watch) ${this.timeString}`;
+    this.updateLabel();
+  }
+
+  get time() {
+    if (this.isRunning) {
+      return this._time + (performance.now() - this._timeOffset);
+    }
+    else {
+      return this._time;
+    }
   }
 
   get timeString() {
@@ -26,30 +36,39 @@ export default class PracticeStopwatch {
     return `${h}:${m}:${s}.${ms}`;
   }
 
+  get isRunning() {
+    return !!this.interval;
+  }
+
+  updateLabel() {
+    this.barItem.text = `$(watch) ${this.timeString}`;
+  }
+
   start() {
-    if (this.intervalId) {
-      return;
+    if (!this.isRunning) {
+      this._timeOffset = performance.now();
+      this.interval = setInterval(() => {
+        this.updateLabel();
+      }, this.refreshInterval);
     }
-    let startTime = performance.now();
-    this.intervalId = setInterval(() => {
-      this.time = this.timeOffset + (performance.now() - startTime);
-      this.barItem.text = `$(watch) ${this.timeString}`;
-    }, this.refreshInterval);
-    this.show();
   }
 
   pause() {
-    clearInterval(this.intervalId);
-    this.intervalId = null;
-    this.timeOffset = this.time;
+    if (this.isRunning) {
+      clearInterval(this.interval);
+      this.interval = null;
+      this._time += performance.now() - this._timeOffset;
+      this._timeOffset = null;
+    }
   }
 
   set(time) {
-    if (this.intervalId) {
-      throw new Error('Trying to set timer when running');
+    if (this.isRunning) {
+      this.pause();
     }
-    this.time = time;
-    this.timeOffset = time;
+    this._time = time;
+    this._timeOffset = null;
+    this.updateLabel();
   }
 
   show() {

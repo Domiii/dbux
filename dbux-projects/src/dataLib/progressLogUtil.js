@@ -1,3 +1,4 @@
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 
@@ -14,9 +15,7 @@ export default {
    * @param {Bug} bug 
    */
   getTestRunsByBug(plc, bug) {
-    return plc.collections.testRuns.filter((testRun) => {
-      return plc.util.isTestRunOfBug(testRun, bug);
-    });
+    return plc.indexes.testRuns.byBugId.get(bug.id) || EmptyArray;
   },
 
   /**

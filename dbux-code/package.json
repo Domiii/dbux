@@ -49,7 +49,7 @@
         },
         {
           "id": "dbuxProjectView",
-          "name": "Practice",
+          "name": "Practice Projects",
           "when": "dbux.context.activated && dbux.context.showPracticeViews && !dbux.context.hasPracticeSession"
         },
         {
@@ -413,16 +413,8 @@
         }
       },
       {
-        "command": "dbuxProjectView.node.activateBugWithDebugger",
-        "title": "Activate Bug With Debugger",
-        "icon": {
-          "light": "resources/light/debug.svg",
-          "dark": "resources/dark/debug.svg"
-        }
-      },
-      {
         "command": "dbuxProjectView.node.activateBug",
-        "title": "Activate Bug",
+        "title": "Start Practice",
         "icon": {
           "light": "resources/light/play.svg",
           "dark": "resources/dark/play.svg"
@@ -587,11 +579,6 @@
           "command": "dbuxProjectView.node.stopProject",
           "when": "viewItem == dbuxProjectView.projectNode.RunningInBackground",
           "group": "inline@0"
-        },
-        {
-          "command": "dbuxProjectView.node.activateBugWithDebugger",
-          "when": "viewItem =~ /dbuxProjectView\\.bugNode\\.(None|Done)\\..*/ && !dbuxProjectView.context.isBusy",
-          "group": "inline@19"
         },
         {
           "command": "dbuxProjectView.node.activateBug",
@@ -911,10 +898,6 @@
         },
         {
           "command": "dbuxProjectView.node.stopProject",
-          "when": "false"
-        },
-        {
-          "command": "dbuxProjectView.node.activateBugWithDebugger",
           "when": "false"
         },
         {

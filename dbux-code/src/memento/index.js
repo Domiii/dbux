@@ -1,10 +1,9 @@
-let memento;
+/** @typedef {import('vscode').Memento} Memento */
 
-const allKeysKeyName = 'dbux.mementoKeys';
 /**
- * @type {Set<string>}
+ * @type {Memento}
  */
-let allKeys;
+let memento;
 
 export function get(key, defaultValue = undefined) {
   return memento.get(key, defaultValue);
@@ -15,17 +14,22 @@ export function get(key, defaultValue = undefined) {
  */
 export async function set(key, value) {
   await memento.update(key, value);
-  if (!allKeys.has(key)) {
-    allKeys.add(key);
-    await memento.update(allKeysKeyName, Array.from(allKeys));
+}
+
+export async function clearAll() {
+  for (const key of getAllMementoKeys()) {
+    await set(key, undefined);
   }
 }
 
 export function getAllMementoKeys() {
-  return Array.from(allKeys);
+  return Object.keys(memento._values);
+}
+
+export function getAllMemento() {
+  return memento._value;
 }
 
 export function initMemento(context) {
   memento = context.globalState;
-  allKeys = new Set(get(allKeysKeyName, []));
 }
