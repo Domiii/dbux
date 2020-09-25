@@ -61,7 +61,7 @@ export default class PracticeSession {
     }
     else {
       // some test failed
-      await this.manager.externals.alert(`[Dbux] ${result.code} test(s) failed. Try again!`);
+      this.manager.externals.alert(`[Dbux] ${result.code} test(s) failed. Keep going! :)`);
     }
     await this.plc.save();
   }

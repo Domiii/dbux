@@ -14,6 +14,8 @@ const runningTimeout = 10000;
 
 let cwd, command, tmpFolder, moreEnv;
 
+const logDebug = (console.debug || console.log).bind(console);
+
 function main() {
   // node run.js port "cwd" "command"
   const [
@@ -25,7 +27,7 @@ function main() {
   const args = JSON.parse(Buffer.from(argsEncoded, 'base64').toString('ascii'));
   ({ cwd, command, tmpFolder, args: moreEnv } = args);
 
-  console.log('run.js command received:', args);
+  logDebug('run.js command received:', args);
 
   const processOptions = {
     cwd,
@@ -37,7 +39,7 @@ function main() {
     }
   };
 
-  console.log('node', _node, 'cwd', process.cwd());
+  logDebug('node', _node, 'cwd', process.cwd());
 
 
   // run it!
@@ -46,7 +48,7 @@ function main() {
   const startTime = new Date();
   const warningIntervalId = setInterval(() => {
     let seconds = ((new Date()) - startTime) / 1000;
-    console.log(`Task running for ${seconds.toFixed(2)} seconds.`);
+    logDebug(`Task running for ${seconds.toFixed(2)} seconds.`);
   }, runningTimeout);
 
 
@@ -73,7 +75,7 @@ function main() {
     reportStatusCode(code);
     clearInterval(warningIntervalId);
 
-    console.log(`Done. You can close the Terminal now.`);
+    logDebug(`\n(Done. You can close the Terminal now.)`);
   });
 
   child.on('error', (err) => {
