@@ -204,7 +204,7 @@ export class ProjectViewController {
 
   async confirmCancelPracticeSession() {
     if (this.manager.practiceSession) {
-      const result = await showInformationMessage('You must give up current practice session before continue', {
+      const result = await showInformationMessage('Do you want to stop your current practice session to continue?', {
         'Give up': async () => {
           await this.manager.stopPractice();
           return true;
