@@ -20,7 +20,7 @@ const showProjectViewKeyName = 'dbux.projectView.showing';
 //  setup logger for project
 // ########################################
 
-const logger = newLogger('projectViewController');
+const logger = newLogger('dbux-practice');
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
@@ -167,15 +167,20 @@ export class ProjectViewController {
       title: `[dbux] Bug ${bugNode.bug.id}`
     };
 
-    await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-      const { bug } = bugNode;
-
-      progress.report({ message: 'checking system requirements...' });
-      await this.checkActivateBugRequirement();
-
-      progress.report({ message: 'activating...' });
-      await this.manager.startPractice(bug);
-    }, options);
+    try {
+      await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+        const { bug } = bugNode;
+  
+        progress.report({ message: 'checking system requirements...' });
+        await this.checkActivateBugRequirement();
+  
+        progress.report({ message: 'activating...' });
+        await this.manager.startPractice(bug);
+      }, options);
+    }
+    catch (err) {
+      logError(err);
+    }
   }
 
   async activate(debugMode) {
