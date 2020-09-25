@@ -121,6 +121,8 @@ export class ProjectViewController {
     this.isShowingTreeView = !this.isShowingTreeView;
     await commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
     await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
+
+    this.refresh();
   }
 
   async handlePracticeSessionChanged() {
