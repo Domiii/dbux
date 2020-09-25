@@ -125,7 +125,8 @@ export default class Project {
 
   async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
-      throw new Error(`Trying to execute command in wrong git repository ${await this.execCaptureOut(`git remote -v`)}`);
+      throw new Error(`Trying to execute command in wrong git repository ${await this.execCaptureOut(`git remote -v`)}
+This may be solved by pressing \`clean project folder\` button.`);
     }
   }
 

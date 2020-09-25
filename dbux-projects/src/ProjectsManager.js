@@ -321,7 +321,7 @@ export default class ProjectsManager {
 
     const result = await this.runner.testBug(bug, cfg);
 
-    await this.plc.addTestRunWithoutPatchString(bug, result);
+    await this.plc.addTestRunWithoutPatchString(bug, result.code);
 
     result.code && await bug.openInEditor();
 
