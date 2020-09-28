@@ -1,8 +1,8 @@
 {
 	"folders": [
 		{
-			"name": "eslint",
-			"path": "dbux_projects/eslint"
+			"name": "express",
+			"path": "dbux_projects/express"
 		}
 	],
 	"settings": {

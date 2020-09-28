@@ -1,4 +1,4 @@
-import BaseTreeViewNodeProvider from '../codeUtil/BaseTreeViewNodeProvider';
+import BaseTreeViewNodeProvider from '../../codeUtil/BaseTreeViewNodeProvider';
 import ProjectNode from './ProjectNode';
 import EmptyNode from './EmptyNode';
 
