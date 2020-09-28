@@ -548,6 +548,16 @@ export default class Project {
         //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
         arr = arr.slice(0, 1);
       }
+
+      // number = id (if number was not assigned)
+      arr.forEach(bug => {
+        // TODO: the original bug id is only unique per project, so we fix it here
+        if (!bug.number) {
+          bug.number = bug.id;
+          bug.id = `${this.name}#${bug.id}`;
+        }
+      });
+      
       this._bugs = new BugList(this, arr);
     }
     return this._bugs;

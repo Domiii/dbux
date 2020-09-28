@@ -2,7 +2,7 @@
 /**
  * Gets the line at given offset in s, as well as `nLines` lines below and above.
  */
-export function getLinesAroundOffset(s, offset, nLines = 1, maxChars = 50) {
+function getLinesAroundOffset(s, offset, nLines = 1, maxChars = 50) {
   let start = offset - 1;
   for (let i = 0; i < nLines; ++i) {
     const newIdx = s.lastIndexOf('\n', start) - 1;
@@ -37,7 +37,7 @@ export function getLinesAroundOffset(s, offset, nLines = 1, maxChars = 50) {
  * @see https://github.com/webpack/webpack/issues/4175#issuecomment-695767880
  */
 
-export function makeDynamicRequireRule() {
+function makeDynamicRequireRule() {
   return {
     test: /\.js$/,
     loader: 'string-replace-loader',
@@ -64,3 +64,8 @@ export function makeDynamicRequireRule() {
     }
   };
 }
+
+module.exports = {
+  getLinesAroundOffset,
+  makeDynamicRequireRule
+};

@@ -10,7 +10,8 @@ export default class KarmaProject extends Project {
 
   packageManager = 'npm';
 
-  nodeVersion = '7';
+  // TODO: support different node version per bug
+  nodeVersion = '5';
 
 
   async installDependencies() {
@@ -123,12 +124,14 @@ export default class KarmaProject extends Project {
       '-t 10000' // timeout
     ]);
 
+    const { nodeVersion } = this; // TODO
+
     const mochaCfg = {
       cwd: projectPath,
       mochaArgs: bugArgs,
       require: [
         ...(bug.require || EmptyArray),
-        this.manager.getDbuxPath('@dbux/runtime/deps/require.ws.7.js')
+        this.manager.getDbuxPath(`@dbux/runtime/deps/require.ws.${nodeVersion}.js`)
       ],
       ...cfg
     };
