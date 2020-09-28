@@ -20,7 +20,8 @@ const resultCfg = buildWebpackConfig(ProjectRoot,
   {
     entry: {
       // TODO feed entries in via CLI
-      'tests/lib/rules/no-obj-calls': path.join(ProjectRoot, 'tests/lib/rules/no-obj-calls.js')
+      // see https://github.com/BugsJS/karma/commit/8add6a2a1008492cff4d76e6697edab64955666c
+      'test/unit/middleware/proxy.spec': path.join(ProjectRoot, 'test/unit/middleware/proxy.spec.js')
     },
     // externals,
     module: {

@@ -5,14 +5,14 @@ import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
 
-export default class EslintProject extends Project {
-  gitRemote = 'BugsJS/eslint.git';
+export default class KarmaProject extends Project {
+  gitRemote = 'BugsJS/karma.git';
 
   packageManager = 'npm';
 
   nodeVersion = '7';
 
-  
+
   async installDependencies() {
     // TODO: install Babel plugins in dev mode, if not present
     const webpackJs = this.getWebpackJs();
@@ -32,9 +32,9 @@ export default class EslintProject extends Project {
     const bugs = [
       // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
       {
-        id: 1,
-        testRe: '',
-        testFilePaths: ['tests/lib/rules/no-obj-calls.js']
+        id: 2,
+        testRe: 'should parse right port of proxy target',
+        testFilePaths: ['test/unit/middleware/proxy.spec.js']
       }
     ];
 

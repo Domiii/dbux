@@ -1,10 +1,11 @@
 module.exports = {
+  sourceType: 'unambiguous',
   presets: [
     [
       '@babel/preset-env',
       {
         targets: {
-          node: '12'
+          node: '10'
         },
         useBuiltIns: 'usage',
         corejs: 3
@@ -28,6 +29,9 @@ module.exports = {
     "@babel/plugin-proposal-function-bind",
     "@babel/plugin-syntax-export-default-from",
     "@babel/plugin-syntax-dynamic-import",
-    "@babel/plugin-transform-runtime"
+    "@babel/plugin-transform-runtime",
+
+    // cannot convert mjs with @babel/register: https://github.com/babel/babel/issues/6737
+    // '@babel/plugin-transform-modules-commonjs'
   ]
 };
