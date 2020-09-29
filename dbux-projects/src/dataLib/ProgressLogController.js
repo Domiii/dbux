@@ -7,6 +7,7 @@ import BugProgressByBugIdIndex from './indexes/BugProgressByBugIdIndex';
 import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import TestRun from './TestRun';
 import BugProgress from './BugProgress';
+import { emitBugProgressChanged, emitNewBugProgress, emitNewTestRun } from '../userEvents';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ProgressLogController');
@@ -91,6 +92,7 @@ export default class ProgressLogController {
   addTestRun(bug, result, patchString) {
     const testRun = new TestRun(bug, result, patchString);
     this.addData({ testRuns: [testRun] });
+    emitNewTestRun(this.manager.practiceSession, testRun);
   }
 
   /**
@@ -102,6 +104,7 @@ export default class ProgressLogController {
   addBugProgress(bug, status, stopwatchEnabled) {
     const bugProgress = new BugProgress(bug, status, stopwatchEnabled);
     this.addData({ bugProgresses: [bugProgress] });
+    emitNewBugProgress(this.manager.practiceSession, bugProgress);
     return bugProgress;
   }
 
@@ -130,6 +133,7 @@ export default class ProgressLogController {
       bugProgress[key] = update[key];
     }
     bugProgress.updatedAt = Date.now();
+    emitBugProgressChanged(this.manager.practiceSession, bugProgress);
   }
 
   // ###########################################################################
