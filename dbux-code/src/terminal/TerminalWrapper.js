@@ -69,6 +69,10 @@ export default class TerminalWrapper {
 
     debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
 
+    // execute command
+    
+    const commandCall = `${cwd}$ ${command}`;
+
     let _resolve, _reject, _promise = new Promise((resolve, reject) => {
       _resolve = resolve;
       _reject = reject;
@@ -108,19 +112,16 @@ export default class TerminalWrapper {
       if (terminal === this._terminal) {
         watcher.close();
 
-        let newErr = new Error('The terminal was closed.');
+        const msg = `Terminal closed (${commandCall})`;
         if (resolved) {
-          warn(newErr);
+          debug(msg);
         }
         else {
+          let newErr = new Error(msg);
           _reject(newErr);
         }
       }
     });
-
-    // execute command
-    
-    const commandCall = `${cwd}$ ${command}`;
 
     try {
       this._terminal = await execCommand(cwd, runJsCommand);
