@@ -1,7 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import BackendAuth from './BackendAuth2';
 import { Db } from './db';
-import { initContainers } from './containers/index';
+import { initLoginContainers, initNormalContainers } from './containers/index';
 import FirestoreContainer from './FirestoreContainer';
 import { initSafetyStorage } from './SafetyStorage';
 
@@ -20,15 +20,18 @@ export default class BackndController {
    */
   containers = {};
 
+  loginPromise;
+  initPromise;
+
   /**
    * @param {ProjectsManager} practiceManager 
    */
   constructor(practiceManager) {
     this.practiceManager = practiceManager;
 
-    this._initialized = false;
-
     initSafetyStorage(practiceManager.externals.storage);
+
+    this._initialized = false;
 
     this.db = new Db(this);
     this.auth = new BackendAuth(this);
@@ -41,22 +44,27 @@ export default class BackndController {
     // await this.practiceManager.installModules(this.deps);
   }
 
-  async init() {
-    if (this._initialized) {
-      return;
-    }
-    this._initialized = true;
-
+  async _init() {
     await this.installBackendDependencies();
     await this.db.init();
 
     // register containers
-    let containers = await initContainers(this.db);
+    let containers = await initNormalContainers(this.db);
     for (let container of containers) {
       this.registerContainer(container);
     }
 
     await this.db._replay();
+
+    this._initialized = true;
+  }
+
+  async init() {
+    if (this.initPromise) {
+      return this.initPromise;
+    }
+
+    return this.initPromise = this._init();
   }
 
   async getOrInitDb() {
@@ -77,12 +85,25 @@ export default class BackndController {
   // login
   // ###########################################################################
 
+  async _login() {
+    await this.init();
+
+    await this.auth.login();
+
+    let containers = await initLoginContainers(this.db);
+    for (let container of containers) {
+      this.registerContainer(container);
+    }
+  }
+
   /**
    * NOTE: In order to use most of the backend functionality, we first need to login.
    */
   async login() {
-    await this.init();
+    if (this.loginPromise) {
+      return this.loginPromise;
+    }
 
-    await this.auth.login();
+    return this.loginPromise = this._login();
   }
 }
