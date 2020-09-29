@@ -54,9 +54,7 @@ export default class BugRunner {
       throw new Error('already running');
     }
 
-    // make sure, `projectsRoot` exists
-    const { projectsRoot } = this.manager.config;
-    sh.mkdir('-p', projectsRoot);
+    this.createMainFolder();
 
     this._queue = new SerialTaskQueue('BugRunnerQueue');
 
@@ -67,6 +65,12 @@ export default class BugRunner {
     //   'testBug',
     //   // 'exec'
     // );
+  }
+
+  createMainFolder() {
+    // make sure, `projectsRoot` exists
+    const { projectsRoot } = this.manager.config;
+    sh.mkdir('-p', projectsRoot);
   }
 
   // _wrapSynchronized(f) {
