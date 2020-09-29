@@ -59,6 +59,8 @@ export async function preActivate(context) {
     // await dialogController.getDialog('tutorial').clear();
     // await getOrCreateProjectManager(context).progressLogController.reset();
 
+    commands.executeCommand('setContext', 'dbux.context.nodeEnv', process.env.NODE_ENV);
+
     // the following should ensures `doActivate` will be called at least once
     const autoStart = workspace.getConfiguration('dbux').get('autoStart');
     if (autoStart) {

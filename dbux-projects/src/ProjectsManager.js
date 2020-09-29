@@ -725,6 +725,39 @@ export default class ProjectsManager {
     return this.runner._emitter.on('testFinished', cb);
   }
 
+  // ###########################################################################
+  // Temporary backend stuff
+  // ###########################################################################
+  async showBugLog(bug) {
+    await this.getAndInitBackend();
+    await this._backend.login();
+    // Rules not edit yet, so needs login to read
+
+    let collectionRef = this._backend.db.collection('userEvents');
+    let result = await collectionRef.get();
+    let allData = [];
+    result.forEach(doc => {
+      allData.push({
+        id: doc.id,
+        data: doc.data(),
+      });
+    });
+    this.externals.editor.showTextInNewFile('all.json', JSON.stringify(allData, null, 2));
+  }
+
+  async deleteUserEvents() {
+    await this.getAndInitBackend();
+    await this._backend.login();
+    // Rules not edit yet, so needs login to read
+
+    let collectionRef = this._backend.db.collection('userEvents');
+    let result = await collectionRef.get();
+    await result.forEach(async (doc) => {
+      await doc.ref.delete();
+      debug('deleted', doc.id);
+    });
+  }
+
   /**
    * @param {Object} result 
    * @param {number} result.code

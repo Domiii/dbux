@@ -17,7 +17,6 @@ const logger = newLogger('FirestoreContainer');
 
 // eslint-disable-next-line no-unused-vars
 const { debug, log } = logger;
-const Verbose = true;
 
 // const TraceLog = false;
 
@@ -141,7 +140,7 @@ class FirestoreContainer {
 
     this.logger = newLogger(`Db.${collectionName}`);
 
-    this._mementoKeyName = `dbux.projects.backend.container.${collectionName}`;
+    this._keyName = `dbux.projects.backend.container.${collectionName}`;
 
     // if (TraceLog) {
     //   logInstrumentAllMethodCalls(`FSC[${collectionName}]`, this);
@@ -697,10 +696,6 @@ class FirestoreContainer {
   async addDoc(data) {
     const docRef = this.newDocRef();
     return this.setDoc(docRef.id, data);
-  }
-
-  async addDocs(data) {
-    return this.addDoc({ entries: data });
   }
 
   /**

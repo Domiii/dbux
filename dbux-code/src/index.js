@@ -16,6 +16,7 @@ import { initProjectView } from './projectViews/projectViewsController';
 import { initGraphView } from './graphView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies, initInstallUtil } from './codeUtil/installUtil';
+import { initCodeEvents } from './practice/codeEvents';
 import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
 
 // eslint-disable-next-line no-unused-vars
@@ -76,6 +77,8 @@ async function activate(context) {
     // for now, let's activate the graph view right away
     initGraphView();
 
+    initCodeEvents();
+    
     await maybeStartSurvey1ForTheFirstTime();
   } catch (e) {
     logError('error in \'activate\'', e.stack);

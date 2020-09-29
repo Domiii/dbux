@@ -15,6 +15,9 @@ import Backlog from './Backlog';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Db');
 
+// const Verbose = true;
+const Verbose = false;
+
 const defaultNetworkTimeout = 8 * 1000;
 
 global.self = global;   // hackfix for firebase which requires `self` to be a global
@@ -196,10 +199,13 @@ export class Db {
 
       const { collection } = container;
       doc = collection.doc(id);
-      debug('data', data);
+      Verbose && debug('writing data', data);
 
       result = await Promise.race([
-        doc.set(data, MergeTrue),
+        (async () => {
+          await doc.set(data, MergeTrue);
+          await this.backlog.tryRemoveEntry(request);
+        })(),
         sleep(defaultNetworkTimeout).then(() => {
           throw new Error(`Timeout when writing data to firebase (${defaultNetworkTimeout / 1000}s)`);
         })
@@ -235,3 +241,14 @@ export class Db {
     }
   }
 }
+
+// still will not exactly by the order they being requested.
+// for example: (timeout is 8 seconds)
+// time:  1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-8
+// event: a-----------c---b-----e-----d------
+// a: event x pending
+// c: event y pending
+// b: event x timeout (backlog: [x])
+// e: event z incoming, not penging since backlog not empty [xz]
+// d: event y timeout (backlog: [xzy])
+// can we just push every event into backlog and process them one by one?

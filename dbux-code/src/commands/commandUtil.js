@@ -2,6 +2,7 @@ import {
   commands
 } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import { emitOther } from '../userEvents';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Command');
@@ -16,6 +17,7 @@ export function registerCommand(context, commandName, func) {
   function _errWrap(f) {
     return async (...args) => {
       try {
+        emitOther({ commandName });
         return await f(...args);
       }
       catch (err) {
