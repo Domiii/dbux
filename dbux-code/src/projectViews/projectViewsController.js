@@ -99,11 +99,13 @@ export class ProjectViewController {
   }
 
   refresh() {
-    if (this.isShowingPraciceView()) {
-      this.projectViewNodeProvider.refresh();
-    }
-    else {
-      this.sessionViewNodeProvider.refresh();
+    if (this.isShowingTreeView) {
+      if (this.isShowingPraciceView()) {
+        this.projectViewNodeProvider.refreshIcon();
+      }
+      else {
+        this.sessionViewNodeProvider.refresh();
+      }
     }
   }
 
@@ -112,29 +114,26 @@ export class ProjectViewController {
   // ###########################################################################
 
   async toggleTreeView() {
-    if (this.isShowingPraciceView) {
+    if (this.isShowingTreeView) {
       if (!await this.confirmCancelPracticeSession()) {
         return;
       }
     }
 
     this.isShowingTreeView = !this.isShowingTreeView;
+    // hackfix: hiding treeview before it is completely rendered will cause vscode error without logging anything
+    // then the view will be broken in some way e.g. always empty, no node is passed as parameter when trigger tree item button
+    // so we need to wait for it, but currently vscode does not provide any promise to handle this, we can only wait for a contant time
+    await sleep(500);
     await commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
     await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
-
     this.refresh();
   }
 
   async handlePracticeSessionChanged() {
     try {
-      await sleep(0);
       await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
-      if (!this.manager.practiceSession) {
-        this.projectViewNodeProvider.refresh();
-      }
-      else {
-        this.sessionViewNodeProvider.refresh();
-      }
+      this.refresh();
     }
     catch (err) {
       logError(err);
@@ -257,7 +256,6 @@ export function initProjectView(context) {
     });
 
     // refresh right away
-    // controller.refresh();
     controller.projectViewNodeProvider.refresh();
     controller.sessionViewNodeProvider.refresh();
 
