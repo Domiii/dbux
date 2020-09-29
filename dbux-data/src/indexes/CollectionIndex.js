@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 /**
  * @template {T}
@@ -9,21 +10,28 @@ export default class CollectionIndex {
    */
   dp;
   name;
-  
+
   /**
    * @type {T[][]}
    */
-  _byKey = [];
+  _byKey;
 
-  constructor(collectionName, indexName, addOnNewData = true) {
+  constructor(collectionName, indexName, { addOnNewData = true, stringKey = false } = EmptyObject) {
     this.collectionName = collectionName;
     this.name = indexName;
     this.log = newLogger(`${indexName} (Index)`);
     this.addOnNewData = addOnNewData;
+    this.stringKey = stringKey;
   }
 
   _init(dp) {
     this.dp = dp;
+    if (this.stringKey) {
+      this._byKey = {};
+    }
+    else {
+      this._byKey = [];
+    }
   }
 
   /**
@@ -58,19 +66,13 @@ export default class CollectionIndex {
       return;
     }
 
-    // for optimization reasons, we are currently only accepting simple number indexes
-    if (!Number.isInteger(key)) {
-      this.log.error('invalid key for index (currently only numbers are supported):', key);
-    }
-    else {
-      const ofKey = (this._byKey[key] = this._byKey[key] || []);
-      ofKey.push(entry);
+    const ofKey = (this._byKey[key] = this._byKey[key] || []);
+    ofKey.push(entry);
 
-      // sanity check
-      // if (ofKey.includes(undefined)) {
-      //   this.log.error('Index contains undefined values', key, entry, ofKey);
-      // }
-    }
+    // sanity check
+    // if (ofKey.includes(undefined)) {
+    //   this.log.error('Index contains undefined values', key, entry, ofKey);
+    // }
   }
 
   addEntryById(id) {

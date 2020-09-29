@@ -18,12 +18,12 @@ export default class BugList {
    */
   constructor(project, arr) {
     this.project = project;
-    let lastBugId = 0;
+    let lastBugNumber = 0;
     const hasIds = arr.some(bug => !!bug.id);
 
     for (const cfg of arr) {
       const bug = new Bug(project, cfg);
-      const id = hasIds ? bug.id : ++lastBugId;
+      const id = hasIds ? bug.id : ++lastBugNumber;
       this._list.push(bug);
 
       if (this._byId.get(id)) {
