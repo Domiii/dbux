@@ -126,7 +126,8 @@ export default class Project {
 
   async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
-      throw new Error(`Trying to execute command in wrong git repository ${await this.execCaptureOut(`git remote -v`)}`);
+      throw new Error(`Trying to execute command in wrong git repository ${await this.execCaptureOut(`git remote -v`)}
+This may be solved by pressing \`clean project folder\` button.`);
     }
   }
 
@@ -378,9 +379,15 @@ export default class Project {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
-      await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
-        cwd: this.projectsRoot
-      });
+      try {
+        await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
+          cwd: this.projectsRoot
+        });
+      }
+      catch (err) {
+        const errMsg = `Failed to clone git repository. This may be solved by pressing \`clean project folder\` button. ${err.message}`;
+        throw new Error(errMsg);
+      }
 
       sh.cd(projectPath);
 
