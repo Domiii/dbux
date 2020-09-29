@@ -5,14 +5,15 @@ import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
 
-export default class EslintProject extends Project {
-  gitRemote = 'BugsJS/eslint.git';
+export default class KarmaProject extends Project {
+  gitRemote = 'BugsJS/karma.git';
 
   packageManager = 'npm';
 
-  nodeVersion = '7';
+  // TODO: support different node version per bug
+  nodeVersion = '5';
 
-  
+
   async installDependencies() {
     // TODO: install Babel plugins in dev mode, if not present
     const webpackJs = this.getWebpackJs();
@@ -32,9 +33,9 @@ export default class EslintProject extends Project {
     const bugs = [
       // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
       {
-        id: 1,
-        testRe: '',
-        testFilePaths: ['tests/lib/rules/no-obj-calls.js']
+        id: 2,
+        testRe: 'should parse right port of proxy target',
+        testFilePaths: ['test/unit/middleware/proxy.spec.js']
       }
     ];
 
@@ -65,16 +66,16 @@ export default class EslintProject extends Project {
       filter(bug => !!bug);
   }
 
-  getBugGitTag(bugNumber, tagCategory) {
-    return `Bug-${bugNumber}-${tagCategory}`;
+  getBugGitTag(bugId, tagCategory) {
+    return `Bug-${bugId}-${tagCategory}`;
   }
 
   async selectBug(bug) {
     const {
-      number, name
+      id, name
     } = bug;
     const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = this.getBugGitTag(number, tagCategory);
+    const tag = this.getBugGitTag(id, tagCategory);
 
     if ((await this.getTagName()).startsWith(tag)) {
       // do not checkout bug, if we already on the right tag
@@ -123,12 +124,14 @@ export default class EslintProject extends Project {
       '-t 10000' // timeout
     ]);
 
+    const { nodeVersion } = this; // TODO
+
     const mochaCfg = {
       cwd: projectPath,
       mochaArgs: bugArgs,
       require: [
         ...(bug.require || EmptyArray),
-        this.manager.getDbuxPath('@dbux/runtime/deps/require.ws.7.js')
+        this.manager.getDbuxPath(`@dbux/runtime/deps/require.ws.${nodeVersion}.js`)
       ],
       ...cfg
     };

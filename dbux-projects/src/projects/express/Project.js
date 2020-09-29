@@ -204,8 +204,6 @@ export default class ExpressProject extends Project {
           ],
           require: ['./test/support/env.js'],
           ...bug,
-          number: bug.id,
-          id: `${this.name}#${bug.id}`
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
         };
       }).

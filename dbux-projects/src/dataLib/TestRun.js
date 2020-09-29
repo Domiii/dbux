@@ -1,15 +1,14 @@
 export default class TestRun {
   /**
    * @param {Bug} bug 
-   * @param {Object} result 
-   * @param {number} result.code
+   * @param {number} nFailedTests
    * @param {string} patch 
    */
-  constructor(bug, result, patch) {
+  constructor(bug, nFailedTests, patch) {
     this.projectName = bug.project.name;
     this.bugId = bug.id;
     this.createdAt = Date.now();
-    this.nFailedTests = result.code;
+    this.nFailedTests = nFailedTests;
     this.patch = patch;
   }
 }

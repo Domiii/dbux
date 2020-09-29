@@ -99,7 +99,7 @@ export default class BackendAuth {
   }
 
   async testFirebase() {
-    await this.backendController.db.fs.collection("testCollection").add({ x: 1 });
+    await this.backendController.db.fs.collection("test").add({ x: 1 });
   }
 
   async login() {

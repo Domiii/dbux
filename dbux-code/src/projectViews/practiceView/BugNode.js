@@ -6,6 +6,8 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 /** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
+/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
+
 export default class BugNode extends BaseTreeViewNode {
   static makeLabel(bug) {
     return bug.name;
@@ -16,7 +18,7 @@ export default class BugNode extends BaseTreeViewNode {
   }
 
   /**
-   * @returns {Bug}
+   * @return {Bug}
    */
   get bug() {
     return this.entry;
@@ -87,5 +89,9 @@ export default class BugNode extends BaseTreeViewNode {
 
   async showBugIntroduction() {
     await this.bug.manager.externals.showBugIntroduction(this.bug);
+  }
+
+  async showBugLog() {
+    await this.bug.manager.showBugLog(this.bug);
   }
 }

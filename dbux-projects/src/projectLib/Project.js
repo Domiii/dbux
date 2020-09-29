@@ -8,6 +8,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import BugList from './BugList';
 import Process from '../util/Process';
+import { checkSystemWithRequirement } from '../checkSystem';
 
 const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
@@ -125,7 +126,8 @@ export default class Project {
 
   async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
-      throw new Error(`Trying to execute command in wrong git repository ${await this.execCaptureOut(`git remote -v`)}`);
+      throw new Error(`Trying to execute command in wrong git repository ${await this.execCaptureOut(`git remote -v`)}
+This may be solved by pressing \`clean project folder\` button.`);
     }
   }
 
@@ -162,7 +164,7 @@ export default class Project {
   async installProject() {
     if (this.systemRequirements) {
       // TODO:
-      // await checkSystem(..., this.systemRequirements);
+      await checkSystemWithRequirement(this.manager, this.systemRequirements);
     }
 
     // git clone
@@ -377,9 +379,15 @@ export default class Project {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
-      await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
-        cwd: this.projectsRoot
-      });
+      try {
+        await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
+          cwd: this.projectsRoot
+        });
+      }
+      catch (err) {
+        const errMsg = `Failed to clone git repository. This may be solved by pressing \`clean project folder\` button. ${err.message}`;
+        throw new Error(errMsg);
+      }
 
       sh.cd(projectPath);
 
@@ -548,6 +556,16 @@ export default class Project {
         //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
         arr = arr.slice(0, 1);
       }
+
+      // number = id (if number was not assigned)
+      arr.forEach(bug => {
+        // TODO: the original bug id is only unique per project, so we fix it here
+        if (!bug.number) {
+          bug.number = bug.id;
+          bug.id = `${this.name}#${bug.id}`;
+        }
+      });
+      
       this._bugs = new BugList(this, arr);
     }
     return this._bugs;

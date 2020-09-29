@@ -1,4 +1,5 @@
 
+import semver from 'semver';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Process from './util/Process';
 import which, { hasWhich } from './util/which';
@@ -48,11 +49,22 @@ async function check(program) {
  * Parse output of `node -v` and parse major version as integer to return.
  * @return {number} major version of `node`, `0` if parse failed or not installed.
  */
-async function getNodeVersion() {
-  let result = await Process.execCaptureOut(`node -v`, option);
+// async function getNodeVersion() {
+//   let result = await Process.execCaptureOut(`node -v`, option);
 
-  let matchResult = result.match(/v(\d*)/);
-  return matchResult ? parseInt(matchResult[1], 10) : 0;
+//   let matchResult = result.match(/v(\d*)/);
+//   return matchResult ? parseInt(matchResult[1], 10) : 0;
+// }
+
+/**
+ * Get version of `program`.
+ * @param {string} program 
+ * @return {string} semver of `program`
+ */
+async function getVersion(program) {
+  let result = await Process.execCaptureOut(`${program} --version`, option);
+  
+  return semver.valid(semver.coerce(result));
 }
 
 /**
@@ -82,7 +94,7 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
       results[program] = await check(program);
     }
 
-    results.node.path && (results.node.version = await getNodeVersion());
+    results.node.path && (results.node.version = await getVersion(`node`));
 
     modalMessage += `✓  which/where.exe\n`;
   } else {
@@ -102,8 +114,8 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
     let req = requirement[program];
     let res = results[program];
 
-    if (res?.path && (!req.version || res.version >= req.version)) {
-      message += `✓  ${program}\n    Found at "${res.path}"` + (req.version ? ` (v${res.version} >= ${req.version})` : ``);
+    if (res?.path && (!req.version || semver.satisfies(res.version, req.version))) {
+      message += `✓  ${program}\n    Found at "${res.path}"` + (req.version ? ` (v${res.version} satisfies ${req.version})` : ``);
       res.success = true;
       if (res.multiple) {
         message += `\n    Warning: multiple path found while checking.`;
@@ -167,15 +179,24 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
  */
 export async function checkSystem(projectManager, calledFromUser, fullCheck) {
   const simpleCheckRequirement = {
-    node: { version: 12 },
+    node: { version: ">=12" },
     npm: {},
   };
   const fullCheckRequirement = {
     bash: {},
-    node: { version: 12 },
+    node: { version: ">=12" },
     npm: {},
     git: {},
   };
 
   await _checkSystem(projectManager, fullCheck ? fullCheckRequirement : simpleCheckRequirement, calledFromUser);
+}
+
+/**
+ * Check system with custom requirement.
+ * @param {ProjectManager} projectManager 
+ * @param {object} requirement 
+ */
+export async function checkSystemWithRequirement(projectManager, requirement) {
+  await _checkSystem(projectManager, requirement, false);
 }

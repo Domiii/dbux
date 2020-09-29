@@ -1,6 +1,7 @@
 import path from 'path';
 
 /** @typedef {import('./Project').default} Project */
+/** @typedef {import('../ProjectsManager').default} PracticeManager */
 
 export default class Bug {
   /**
@@ -39,6 +40,9 @@ export default class Bug {
     return `${this.project} (bug #${this.id})`;
   }
 
+  /**
+   * @return {PracticeManager}
+   */
   get manager() {
     return this.project.manager;
   }

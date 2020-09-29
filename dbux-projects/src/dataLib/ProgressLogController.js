@@ -42,20 +42,6 @@ export default class ProgressLogController {
   version = 1;
 
   /**
-   * Internal event listeners.
-   * 
-   * @private
-   */
-  _dataEventListenersInternal = {};
-
-  /**
-   * Outside event listeners.
-   * 
-   * @private
-   */
-  _dataEventListeners = {};
-
-  /**
    * @type {number[]}
    */
   versions = [];
@@ -87,10 +73,11 @@ export default class ProgressLogController {
 
   /**
    * @param {Bug} bug 
+   * @param {number} nFailedTests
    * @param {string} patchString 
    */
-  addTestRun(bug, result, patchString) {
-    const testRun = new TestRun(bug, result, patchString);
+  addTestRun(bug, nFailedTests, patchString) {
+    const testRun = new TestRun(bug, nFailedTests, patchString);
     this.addData({ testRuns: [testRun] });
     emitNewTestRun(this.manager.practiceSession, testRun);
   }
@@ -109,17 +96,17 @@ export default class ProgressLogController {
   }
 
   /**
-   * NOTE: A unfinished TestRun is saved with result.code = -1
+   * NOTE: A unfinished TestRun is saved with nFailedTests = null
    * @param {Bug} bug 
    * @param {string} patchString 
    */
   addUnfinishedTestRun(bug, patchString) {
-    this.addTestRun(bug, { code: -1 }, patchString);
+    this.addTestRun(bug, null, patchString);
   }
 
-  async addTestRunWithoutPatchString(bug, result) {
+  async addTestRunWithoutPatchString(bug, nFailedTests) {
     const patchString = await bug.project.getPatchString();
-    this.addTestRun(bug, result, patchString);
+    this.addTestRun(bug, nFailedTests, patchString);
   }
 
   /**
@@ -137,47 +124,8 @@ export default class ProgressLogController {
   }
 
   // ###########################################################################
-  // Data flow 
+  // Private data flow
   // ###########################################################################
-
-  /**
-   * Add a data event listener to given collection.
-   * 
-   * @param {string} collectionName
-   * @param {([]) => void} cb
-   * @returns {function} Unsubscribe function - Execute to cancel this listener.
-   */
-  onData(collectionName, cb) {
-    const listeners = this._dataEventListeners[collectionName] =
-      (this._dataEventListeners[collectionName] || []);
-    listeners.push(cb);
-
-    const unsubscribe = (() => {
-      pull(this._dataEventListeners[collectionName], cb);
-    });
-    return unsubscribe;
-  }
-
-  /**
-   * Bundled data listener.
-   * 
-   * @returns {function} Unsubscribe function - Execute to cancel this listener.
-   */
-  onDataAll(cfg) {
-    for (const collectionName in cfg.collections) {
-      const cb = cfg.collections[collectionName];
-      const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
-      listeners.push(cb);
-    }
-
-    const unsubscribe = (() => {
-      for (const collectionName in cfg.collections) {
-        const cb = cfg.collections[collectionName];
-        pull(this._dataEventListeners[collectionName], cb);
-      }
-    });
-    return unsubscribe;
-  }
 
   /**
    * Add given data (of different collections) to this `DataProvier`
@@ -192,10 +140,6 @@ export default class ProgressLogController {
     this.indexes._addIndex(newIndex);
     newIndex._init(this);
   }
-
-  // ###########################################################################
-  // Private methods
-  // ###########################################################################
 
   _addData(allData) {
     for (const collectionName in allData) {
@@ -214,13 +158,6 @@ export default class ProgressLogController {
   }
 
   _postAdd(allData) {
-    // notify collections that adding has finished
-    for (const collectionName in allData) {
-      const collection = this.collections[collectionName];
-      const entries = allData[collectionName];
-      collection.postAdd(entries);
-    }
-
     // indexes
     for (const collectionName in allData) {
       const indexes = this.indexes[collectionName];
@@ -233,48 +170,6 @@ export default class ProgressLogController {
           }
         }
       }
-    }
-
-    // notify collections that adding + index processing has finished
-    for (const collectionName in allData) {
-      const collection = this.collections[collectionName];
-      const entries = allData[collectionName];
-      collection.postIndex(entries);
-    }
-
-    // fire internal event listeners
-    for (const collectionName in allData) {
-      // const collection = this.collections[collectionName];
-      const data = allData[collectionName];
-      this._notifyData(collectionName, data, this._dataEventListenersInternal);
-    }
-
-
-    // fire public event listeners
-    for (const collectionName in allData) {
-      // const collection = this.collections[collectionName];
-      const data = allData[collectionName];
-      this._notifyData(collectionName, data, this._dataEventListeners);
-    }
-  }
-
-  /**
-   * 
-   * @param {string} collectionName 
-   * @param {[]} data 
-   * @param {*} allListeners 
-   */
-  _notifyData(collectionName, data, allListeners) {
-    const listeners = allListeners[collectionName];
-    if (listeners) {
-      listeners.forEach((cb) => {
-        try {
-          cb(data);
-        }
-        catch (err) {
-          logError('Data event listener failed', err);
-        }
-      });
     }
   }
 
@@ -319,7 +214,7 @@ export default class ProgressLogController {
     try {
       const logString = this.storage.get(storageKey);
       if (logString !== undefined) {
-        this._deserialize(JSON.parse(logString));
+        this._deserialize(logString);
       }
     }
     catch (err) {
@@ -333,8 +228,7 @@ export default class ProgressLogController {
   }
 
   /**
-   * Serialize all raw data into a simple JS object.
-   * Usage: `JSON.stringify(dataProvider.serialize())`.
+   * Serialize all raw data into JSON format.
    */
   _serialize() {
     const collections = Object.values(this.collections);
@@ -356,9 +250,10 @@ export default class ProgressLogController {
   }
 
   /**
-   * Use: `this.deserialize(JSON.parse(stringFromFile))`
+   * Deserialize and recover the data that serialized by `this._serialize()`
    */
-  _deserialize(data) {
+  _deserialize(dataString) {
+    const data = JSON.parse(dataString);
     const { version, collections } = data;
     if (version !== this.version) {
       throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
