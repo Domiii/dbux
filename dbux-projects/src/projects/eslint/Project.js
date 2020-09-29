@@ -12,7 +12,9 @@ export default class EslintProject extends Project {
 
   nodeVersion = '7';
 
+  
   async installDependencies() {
+    // TODO: install Babel plugins in dev mode, if not present
     const webpackJs = this.getWebpackJs();
     if (!sh.test('-f', webpackJs)) {
       await this.execInTerminal(`npm i -D webpack@4.41.5 webpack-cli@3.3.10 webpack-node-externals@2.5.0 string-replace-loader@2.3.0`);
@@ -21,6 +23,7 @@ export default class EslintProject extends Project {
     // add "dist" folder to gitignore
     await this.exec('bash -c "echo ""dist"" >> .gitignore"');
   }
+
 
   loadBugs() {
     // TODO: load automatically from BugsJs bug database
@@ -62,16 +65,16 @@ export default class EslintProject extends Project {
       filter(bug => !!bug);
   }
 
-  getBugGitTag(bugId, tagCategory) {
-    return `Bug-${bugId}-${tagCategory}`;
+  getBugGitTag(bugNumber, tagCategory) {
+    return `Bug-${bugNumber}-${tagCategory}`;
   }
 
   async selectBug(bug) {
     const {
-      id, name
+      number, name
     } = bug;
     const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = this.getBugGitTag(id, tagCategory);
+    const tag = this.getBugGitTag(number, tagCategory);
 
     if ((await this.getTagName()).startsWith(tag)) {
       // do not checkout bug, if we already on the right tag

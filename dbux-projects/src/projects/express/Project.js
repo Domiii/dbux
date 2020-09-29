@@ -194,7 +194,6 @@ export default class ExpressProject extends Project {
         testRe = testRe.replace(/"/g, '\\"');
 
         return {
-          // id: i + 1,
           name: `bug #${bug.id}`,
           description: testRe,
           runArgs: [
@@ -211,16 +210,16 @@ export default class ExpressProject extends Project {
       filter(bug => !!bug);
   }
 
-  getBugGitTag(bugId, tagCategory) {
-    return `Bug-${bugId}-${tagCategory}`;
+  getBugGitTag(bugNumber, tagCategory) {
+    return `Bug-${bugNumber}-${tagCategory}`;
   }
 
   async selectBug(bug) {
     const {
-      id, name
+      number, name
     } = bug;
     const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = this.getBugGitTag(id, tagCategory);
+    const tag = this.getBugGitTag(number, tagCategory);
 
     if ((await this.getTagName()).startsWith(tag)) {
       // do not checkout bug, if we already on the right tag
@@ -229,7 +228,7 @@ export default class ExpressProject extends Project {
 
     // checkout the bug branch
     sh.cd(this.projectPath);
-    this.log(`Checking out bug ${name || id}...`);
+    this.log(`Checking out bug ${name || number}...`);
 
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);

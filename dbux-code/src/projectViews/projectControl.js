@@ -11,6 +11,7 @@ import { getResourcePath } from '../resources';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { showBugIntroduction } from './BugIntroduction';
+import { getStopwatch } from './practiceStopwatch';
 import { onUserEvent } from '../userEvents';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
@@ -54,6 +55,7 @@ function createProjectManager(extensionContext) {
 
   // the folder that contains the sample projects for dbux-practice
   const projectsRoot = path.join(dependencyRoot, 'dbux_projects');
+  const stopwatch = getStopwatch();
 
   const cfg = {
     dependencyRoot,
@@ -75,9 +77,19 @@ function createProjectManager(extensionContext) {
       set: storageSet,
     },
     async confirm(msg, modal = false) {
-      const confirmText = 'Ok';
-      const result = await window.showInformationMessage(msg, { modal }, confirmText, 'cancel');
-      return result === confirmText;
+      const confirmText = 'Yes';
+      const refuseText = 'No';
+      const cancelText = 'Cancel';
+      const result = await window.showInformationMessage(msg, { modal }, confirmText, refuseText, modal ? undefined : cancelText);
+      if (result === undefined || result === 'Cancel') {
+        return null;
+      }
+      else {
+        return result === confirmText;
+      }
+    },
+    async alert(msg, modal = false) {
+      await window.showInformationMessage(msg, { modal });
     },
     TerminalWrapper,
     resources: {
@@ -86,6 +98,13 @@ function createProjectManager(extensionContext) {
     showMessage: {
       info: showInformationMessage,
       warning: showWarningMessage,
+    },
+    stopwatch: {
+      start: stopwatch.start.bind(stopwatch),
+      pause: stopwatch.pause.bind(stopwatch),
+      set: stopwatch.set.bind(stopwatch),
+      show: stopwatch.show.bind(stopwatch),
+      hide: stopwatch.hide.bind(stopwatch)
     },
     WebviewWrapper,
     showBugIntroduction,

@@ -1,8 +1,10 @@
 import { env, Uri, window } from 'vscode';
 import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
-import BugRunnerStatus from '@dbux/projects/src/projectLib/BugRunnerStatus';
-import BaseTreeViewNode from '../codeUtil/BaseTreeViewNode';
-import 'lodash';
+import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
+import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+
+/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
+/** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
 /** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
 
@@ -22,32 +24,34 @@ export default class BugNode extends BaseTreeViewNode {
     return this.entry;
   }
 
+  /**
+   * @return {ProjectsManager}
+   */
+  get manager() {
+    return this.treeNodeProvider.controller.manager;
+  }
+
   get contextValue() {
-    const runStatus = BugRunnerStatus.getName(this.runStatus);
+    const runStatus = RunStatus.getName(this.bug.runStatus);
     const hasWebsite = this.bug.website ? 'hasWebsite' : '';
     return `dbuxProjectView.bugNode.${runStatus}.${hasWebsite}`;
   }
 
-  get runStatus() {
-    return this.bug.project.runner.getBugRunStatus(this.bug);
-  }
-
-  get result() {
-    return this.bug.manager.progressLogController.util.getBugProgressByBug(this.bug)?.status;
-  }
-
   makeIconPath() {
-    switch (this.runStatus) {
-      case BugRunnerStatus.Busy:
+    switch (this.bug.runStatus) {
+      case RunStatus.Busy:
         return 'hourglass.svg';
-      case BugRunnerStatus.RunningInBackground:
+      case RunStatus.RunningInBackground:
         return 'play.svg';
     }
-    switch (this.result) {
+    const progress = this.manager.progressLogController.util.getBugProgressByBug(this.bug);
+    switch (progress?.status) {
+      case BugStatus.Solving:
+        return progress.stopwatchEnabled ? 'edit.svg' : 'edit.svg';
       case BugStatus.Attempted:
-        return 'wrong.svg';
+        return progress.stopwatchEnabled ? 'wrong.svg' : 'wrong_bw.svg';
       case BugStatus.Solved:
-        return 'correct.svg';
+        return progress.stopwatchEnabled ? 'correct.svg' : 'correct_bw.svg';
     }
     return ' ';
   }

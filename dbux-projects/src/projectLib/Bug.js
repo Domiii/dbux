@@ -47,6 +47,10 @@ export default class Bug {
     return this.project.manager;
   }
 
+  get runStatus() {
+    return this.manager.getBugRunStatus(this);
+  }
+
   async openInEditor() {
     // open file (if any)
     if (this.testFilePaths?.[0]) {

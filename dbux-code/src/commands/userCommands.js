@@ -15,10 +15,12 @@ import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';
 import { runFile } from './runCommands';
-import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { showHelp } from '../help';
 import { installDbuxDependencies } from '../codeUtil/installUtil';
-import { showOutputChannel } from '../projectView/projectViewController';
+import { showOutputChannel } from '../projectViews/projectViewsController';
+import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
+import { getAllMemento } from '../memento';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -208,5 +210,9 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.showOutputChannel', async () => {
     return showOutputChannel();
+  });
+
+  registerCommand(extensionContext, 'dbux.showMemento', async () => {
+    return await renderValueAsJsonInEditor(getAllMemento());
   });
 }

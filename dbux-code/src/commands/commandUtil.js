@@ -23,6 +23,7 @@ export function registerCommand(context, commandName, func) {
       catch (err) {
         logError(`'${commandName}' failed:`, err);
         // throw err;
+        return null;
       }
     };
   }

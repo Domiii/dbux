@@ -3,10 +3,11 @@ import path from 'path';
 import { window, workspace } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
-import { getOrCreateProjectManager } from '../projectView/projectControl';
+import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { initRuntimeServer } from '../net/SocketServer';
 import { installDbuxDependencies } from '../codeUtil/installUtil';
+import { initProjectView } from '../projectViews/projectViewsController';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DBUX run file');
@@ -52,6 +53,11 @@ function getArgs(debugMode) {
 }
 
 export async function runFile(extensionContext, debugMode = false) {
+  const projectViewsController = initProjectView();
+  if (!await projectViewsController.confirmCancelPracticeSession()) {
+    return;
+  }
+  
   const projectManager = getOrCreateProjectManager();
 
   // resolve path

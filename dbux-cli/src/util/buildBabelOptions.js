@@ -49,7 +49,7 @@ export default function buildBabelOptions(options) {
   const baseOptions = esnext ? baseBabelOptions : EmptyObject;
   const babelOptions = {
     ...baseOptions,
-
+    sourceType: 'unambiguous',
     sourceMaps: 'inline',
     ignore: [
       // '**/node_modules/**',
@@ -59,7 +59,7 @@ export default function buildBabelOptions(options) {
         }
 
         // no node_modules
-        if (modulePath.match('(node_modules)|(dist)')) {
+        if (modulePath.match(/((node_modules)|(dist)).*(?<!\.mjs)$/)) {
           verbose > 1 && debugLog(`[DBUX] no-register`, modulePath);
           return true;
         }

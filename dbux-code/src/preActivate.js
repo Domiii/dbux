@@ -76,7 +76,6 @@ export async function preActivate(context) {
   }
   catch (e) {
     logError('error in \'preActivate\'', e.stack);
-    debugger;
     throw e;
   }
 }
@@ -107,6 +106,7 @@ function initPreActivateCommand(context) {
 function registerErrorHandler() {
   // process.on('unhandledRejection', (reason, promise) => {
   //   logError(`[Unhandled Rejection] reason: ${reason}, promise: ${promise}`);
+  //   // debugger;
   // });
 }
 

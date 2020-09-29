@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import pull from 'lodash/pull';
 import defaultsDeep from 'lodash/defaultsDeep';
@@ -11,16 +12,13 @@ import Process from '../util/Process';
 const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
 
+/** @typedef {import('../ProjectsManager').default} ProjectsManager */
+
 /**
  * Project class file.
- * 
- * @typedef { import('../ProjectsManager').default } ProjectsManager
  * @file
  */
 
-/**
- * 
- */
 export default class Project {
   /**
    * @type {BugList}
@@ -104,6 +102,10 @@ export default class Project {
     return path.join(this.projectsRoot, this.folderName);
   }
 
+  get runStatus() {
+    return this.manager.getProjectRunStatus(this);
+  }
+
   get dependencyRoot() {
     return this.manager.config.dependencyRoot;
   }
@@ -123,26 +125,21 @@ export default class Project {
 
   async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
-      this.logger.warn(`Trying to exectute some git command, but was not correct git repository: `,
-        await this.execCaptureOut(`git remote -v`));
-      this.logger.error('This project encount some problem. ' +
-        'This may be solved by pressing `clean project` folder button.');
-      return 0;
+      throw new Error(`Trying to execute command in wrong git repository ${await this.execCaptureOut(`git remote -v`)}`);
     }
-    return 1;
   }
 
   async gitCheckoutCommit(args) {
-    if (!await this.checkCorrectGitRepository()) return;
+    await this.checkCorrectGitRepository();
 
     await this.exec('git reset --hard ' + (args || ''));
   }
 
   async gitResetHard(needConfirm = false, confirmMsg = '') {
-    if (!await this.checkCorrectGitRepository()) return;
+    await this.checkCorrectGitRepository();
 
     if (needConfirm && !confirmMsg) {
-      this.logger.error('calling Project.gitResetHard with `needConfirm=true` but no `confirmMsg`');
+      throw new Error('calling Project.gitResetHard with `needConfirm=true` but no `confirmMsg`');
     }
 
     if (!await this.checkFilesChanged()) return;
@@ -278,9 +275,7 @@ export default class Project {
    * @see https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
    */
   async checkFilesChanged() {
-    if (!await this.checkCorrectGitRepository()) {
-      return -1;
-    }
+    await this.checkCorrectGitRepository();
 
     // Not sure what this line does, but seems not really useful here, since these two line does the same thing.
     // await this.exec('git update-index --refresh');
@@ -348,14 +343,13 @@ export default class Project {
   async afterInstall() { }
 
   async autoCommit() {
-    if (!await this.checkCorrectGitRepository()) {
-      return;
-    }
+    await this.checkCorrectGitRepository();
 
     if (await this.hasAnyChangedFiles()) {
       // only auto commit if files changed
+      const files = this.getAllAssestFiles();
       this.logger.log('auto commit');
-      await this.exec(`git add -A && git commit -am '"[dbux auto commit]"'`);
+      await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"'`);
     }
   }
 
@@ -432,11 +426,10 @@ export default class Project {
    * Copy all assets into project folder.
    */
   async installAssets() {
-    // copy individual assets first
-    await this.copyAssetFolder(this.folderName);
-
-    // copy shared assets (NOTE: doesn't override individual assets)
-    await this.copyAssetFolder(SharedAssetFolder);
+    const folders = this.getAllAssestFolderNames();
+    folders.forEach(folderName => {
+      this.copyAssetFolder(folderName);
+    });
 
     if (this.nodeVersion) {
       // make sure, we have node at given version and node@lts
@@ -445,15 +438,39 @@ export default class Project {
     }
   }
 
+  getAssestDir(assetFolderName) {
+    return this.manager.externals.resources.getResourcePath('dist', 'projects', assetFolderName);
+  }
+
+  getAllAssestFolderNames() {
+    const individualAssetDir = this.getAssestDir(this.folderName);
+    if (sh.test('-d', individualAssetDir)) {
+      return [this.folderName, SharedAssetFolder];
+    }
+    else {
+      return [SharedAssetFolder];
+    }
+  }
+
+  getAllAssestFiles() {
+    const folders = this.getAllAssestFolderNames();
+    const files = new Set();
+    folders.forEach(folderName => {
+      const assets = fs.readdirSync(this.getAssestDir(folderName));
+      assets.forEach(assetName => {
+        files.add(assetName);
+      });
+    });
+
+    return [...files];
+  }
+
   async copyAssetFolder(assetFolderName) {
     // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
-    const assetDir = this.manager.externals.resources.getResourcePath('dist', 'projects', assetFolderName);
-
-    if (await sh.test('-d', assetDir)) {
-      // copy assets, if this project has any
-      this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
-      await sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
-    }
+    const assetDir = this.getAssestDir(assetFolderName);
+    // copy assets, if this project has any
+    this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
+    sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
   }
 
   // ###########################################################################
@@ -476,9 +493,7 @@ export default class Project {
   // ###########################################################################
 
   async applyPatch(patchFName) {
-    if (!await this.checkCorrectGitRepository()) {
-      return -1;
-    }
+    await this.checkCorrectGitRepository();
 
     return this.exec(`git apply --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
   }
@@ -489,18 +504,14 @@ export default class Project {
    * @see https://git-scm.com/docs/git-apply#Documentation/git-apply.txt-ltpatchgt82308203
    */
   async applyPatchString(patchString) {
-    if (!await this.checkCorrectGitRepository()) {
-      return -1;
-    }
+    await this.checkCorrectGitRepository();
 
     return this.exec(`git apply --ignore-space-change --ignore-whitespace`, null, patchString);
   }
 
   async extractPatch(patchFName) {
     // TODO: also copy to `AssetFolder`?
-    if (!await this.checkCorrectGitRepository()) {
-      return -1;
-    }
+    await this.checkCorrectGitRepository();
 
     return this.exec(`git diff --color=never > ${this.getPatchFile(patchFName)}`);
   }
@@ -511,17 +522,13 @@ export default class Project {
   }
 
   async getPatchString() {
-    if (!await this.checkCorrectGitRepository()) {
-      return null;
-    }
+    await this.checkCorrectGitRepository();
 
     return this.execCaptureOut(`git diff --color=never`);
   }
 
   async getTagName() {
-    if (!await this.checkCorrectGitRepository()) {
-      return null;
-    }
+    await this.checkCorrectGitRepository();
 
     return (await this.execCaptureOut(`git describe --tags`)).trim();
   }
@@ -541,6 +548,16 @@ export default class Project {
         //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
         arr = arr.slice(0, 1);
       }
+
+      // number = id (if number was not assigned)
+      arr.forEach(bug => {
+        // TODO: the original bug id is only unique per project, so we fix it here
+        if (!bug.number) {
+          bug.number = bug.id;
+          bug.id = `${this.name}#${bug.id}`;
+        }
+      });
+      
       this._bugs = new BugList(this, arr);
     }
     return this._bugs;
