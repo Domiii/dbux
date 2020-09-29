@@ -134,7 +134,7 @@ export default class TerminalWrapper {
       err.message = `Terminal command (${commandCall}) failed - ${err.message}`;
       throw err;
     } finally {
-      this.dispose();
+      // this.dispose();
       fs.rmdirSync(tmpFolder);
     }
   }
