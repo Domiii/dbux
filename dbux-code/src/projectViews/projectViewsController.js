@@ -1,5 +1,4 @@
 import { commands } from 'vscode';
-import sleep from '@dbux/common/src/util/sleep';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
@@ -115,28 +114,29 @@ export class ProjectViewController {
 
   async toggleTreeView() {
     if (this.isShowingTreeView) {
-      if (!await this.confirmCancelPracticeSession()) {
+      if (!await this.confirmCancelPracticeSession(true)) {
         return;
       }
     }
 
     this.isShowingTreeView = !this.isShowingTreeView;
-    // hackfix: hiding treeview before it is completely rendered will cause vscode error without logging anything
-    // then the view will be broken in some way e.g. always empty, no node is passed as parameter when trigger tree item button
-    // so we need to wait for it, but currently vscode does not provide any promise to handle this, we can only wait for a contant time
-    await sleep(500);
+    if (this.isShowingTreeView) {
+      await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
+    }
     await commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
     await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
     this.refresh();
   }
 
-  async handlePracticeSessionChanged() {
-    try {
-      await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
-      this.refresh();
-    }
-    catch (err) {
-      logError(err);
+  async handlePracticeSessionChanged(dontRefreshView) {
+    if (!dontRefreshView) {
+      try {
+        await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
+        this.refresh();
+      }
+      catch (err) {
+        logError(err);
+      }
     }
   }
 
@@ -158,7 +158,7 @@ export class ProjectViewController {
         return;
       }
     }
-    
+
     showOutputChannel();
 
     const options = {
@@ -169,10 +169,10 @@ export class ProjectViewController {
     try {
       await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
         const { bug } = bugNode;
-  
+
         progress.report({ message: 'checking system requirements...' });
         await this.checkActivateBugRequirement();
-  
+
         progress.report({ message: 'activating...' });
         await this.manager.startPractice(bug);
       }, options);
@@ -206,11 +206,11 @@ export class ProjectViewController {
     await initRuntimeServer(this.extensionContext);
   }
 
-  async confirmCancelPracticeSession() {
+  async confirmCancelPracticeSession(dontRefreshView = false) {
     if (this.manager.practiceSession) {
       const result = await showInformationMessage('You must give up current practice session before continue', {
         'Give up': async () => {
-          await this.manager.stopPractice();
+          await this.manager.stopPractice(dontRefreshView);
           return true;
         }
       }, { modal: true });
