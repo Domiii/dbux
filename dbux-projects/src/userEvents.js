@@ -5,10 +5,6 @@ import NanoEvents from 'nanoevents';
 // NOTE: data *must* always be completely serializable, simple data.
 // ###########################################################################
 
-export function emitEditorAction(data) {
-  emitUserEvent('editor', data);
-}
-
 export function emitPracticeSessionSolved(practiceSession) {
   emitUserEvent('practiceSessionSolved', {
     sessionId: practiceSession.sessionId,

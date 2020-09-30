@@ -12,6 +12,7 @@ import { initRuntimeServer } from '../net/SocketServer';
 import { initProjectCommands } from '../commands/projectCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
 import { showInformationMessage } from '../codeUtil/codeModals';
+import { initCodeEvents } from '../practice/codeEvents';
 
 const showProjectViewKeyName = 'dbux.projectView.showing';
 
@@ -56,12 +57,14 @@ export class ProjectViewController {
     this.practiceStopwatch.onClick(context, this.maybeStopPractice.bind(this));
 
     // ########################################
-    //  listen on runStatusChanged
+    //  listen on practice status changed
     // ########################################
     this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
     this.manager.onBugStatusChanged(this.refresh.bind(this));
     this.manager.onPracticeSessionChanged(this.handlePracticeSessionChanged.bind(this));
     this.handlePracticeSessionChanged();
+
+    initCodeEvents(this.manager, context);
   }
 
   async maybeNotifyExistingPracticeSession() {
