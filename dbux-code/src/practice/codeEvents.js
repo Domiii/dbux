@@ -65,9 +65,9 @@ export function initCodeEvents(manager, context) {
       type: 'visible',
     };
 
-    debug('new range data', data);
+    Verbose && debug('new range data', data);
     if (isNewData(_previousRangeData, data)) {
-      debug('is new');
+      Verbose && debug('is new');
       data = { ...data, ...await getExtraEditorEventInfo(e.textEditor) };
       emitEditorAction(data);
       _previousRangeData = data;
