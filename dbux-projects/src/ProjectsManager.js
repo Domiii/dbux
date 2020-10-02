@@ -224,7 +224,7 @@ export default class ProjectsManager {
     const bug = this.practiceSession?.bug;
     await this.setKeyToBug(savedPracticeSessionKeyName, bug);
     await this.externals.storage.set(savedPracticeSessionDataKeyName, {
-      createdAt: this.practiceSession.createdAt
+      createdAt: this.practiceSession?.createdAt
     });
   }
 
