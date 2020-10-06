@@ -1,10 +1,11 @@
 import isObject from 'lodash/isObject';
+import cloneDeep from 'lodash/cloneDeep';
 import { newLogger } from '@dbux/common/src/log/logger';
 import BackendAuth from './BackendAuth2';
 import { Db } from './db';
 import { initLoginContainers, initNormalContainers } from './containers/index';
 import FirestoreContainer from './FirestoreContainer';
-import { initSafetyStorage } from './SafetyStorage';
+import SafetyStorage, { initSafetyStorage } from './SafetyStorage';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
@@ -43,6 +44,7 @@ export default class BackndController {
 
     this.db = new Db(this);
     this.auth = new BackendAuth(this);
+    this.performanceCounter = new SafetyStorage(performanceCounterKeyName);
 
     // createContainers(this.db);
   }
@@ -124,20 +126,30 @@ export default class BackndController {
   // performance counter
   // ###########################################################################
   async initPerformanceCounter() {
-    let { get, set } = this.practiceManager.externals.storage;
+    await this.performanceCounter.acquireLock();
 
-    if (!isObject(get(performanceCounterKeyName))) {
-      await set(performanceCounterKeyName, {});
+    try {
+      if (!isObject(this.performanceCounter.get())) {
+        await this.performanceCounter.set({});
+      }
+    }
+    finally {
+      this.performanceCounter.releaseLock();
     }
   }
 
   async initContainerPerformanceCounter(container) {
-    let { get, set } = this.practiceManager.externals.storage;
+    await this.performanceCounter.acquireLock();
 
-    let performanceCounter = get(performanceCounterKeyName);
-    if (!isObject(performanceCounter[container.name])) {
-      performanceCounter[container.name] = defaultPerformanceCounterObject;
-      await set(performanceCounterKeyName, performanceCounter);
+    try {
+      let performanceCounter = this.performanceCounter.get();
+      if (!isObject(performanceCounter[container.name])) {
+        performanceCounter[container.name] = cloneDeep(defaultPerformanceCounterObject);
+        await this.performanceCounter.set(performanceCounter);
+      }
+    }
+    finally {
+      this.performanceCounter.releaseLock();
     }
   }
 
@@ -145,42 +157,51 @@ export default class BackndController {
     let time = new Date();
     let timeSegment = Math.floor(time.valueOf() / (30 * 60 * 1000));
 
-    let { get, set } = this.practiceManager.externals.storage;
-    let performanceCounter = get(performanceCounterKeyName);
-    let containerPerformanceCounter = performanceCounter[container.name];
+    await this.performanceCounter.acquireLock();
 
-    debug(container.name, performanceCounterKeyName, containerPerformanceCounter, timeSegment);
+    try {
+      let performanceCounter = this.performanceCounter.get();
+      let containerPerformanceCounter = performanceCounter[container.name];
 
-    if (!isObject(containerPerformanceCounter[timeSegment])) {
-      containerPerformanceCounter[timeSegment] = defaultPerformanceCounterObject;
+      debug(container.name, performanceCounterKeyName, containerPerformanceCounter, timeSegment);
+
+      if (!isObject(containerPerformanceCounter[timeSegment])) {
+        containerPerformanceCounter[timeSegment] = cloneDeep(defaultPerformanceCounterObject);
+      }
+
+      let key = type === 'read' ? 'nReads' : 'nWrites';
+      if (containerPerformanceCounter[timeSegment][key] >= performanceCounterPerTimeSegmentLimit) {
+        logError('Warning: excessive database access detected');
+      }
+      containerPerformanceCounter[key] += 1;
+      containerPerformanceCounter[timeSegment][key] += 1;
+
+      await this.performanceCounter.set(performanceCounter);
     }
-
-    let key = type === 'read' ? 'nReads' : 'nWrites';
-    if (containerPerformanceCounter[timeSegment][key] >= performanceCounterPerTimeSegmentLimit) {
-      logError('Warning: excessive database access detected');
+    finally {
+      this.performanceCounter.releaseLock();
     }
-    containerPerformanceCounter[key] += 1;
-    containerPerformanceCounter[timeSegment][key] += 1;
-
-    await set(performanceCounterKeyName, performanceCounter);
   }
 
   showDBStats() {
-    let { get } = this.practiceManager.externals.storage;
-
-    let performanceCounter = get(performanceCounterKeyName);
+    let performanceCounter = this.performanceCounter.get();
     let text = JSON.stringify(performanceCounter, 0, 2);
     this.practiceManager.externals.editor.showTextInNewFile('stats', text);
   }
 
   async clearDBStats() {
-    let { get, set } = this.practiceManager.externals.storage;
+    await this.performanceCounter.acquireLock();
 
-    let performanceCounter = get(performanceCounterKeyName);
-    for (let containerName of Object.keys(performanceCounter)) {
-      performanceCounter[containerName] = defaultPerformanceCounterObject;
+    try {
+      let performanceCounter = this.performanceCounter.get();
+      for (let containerName of Object.keys(performanceCounter)) {
+        performanceCounter[containerName] = defaultPerformanceCounterObject;
+      }
+
+      await this.performanceCounter.set(performanceCounter);
     }
-
-    await set(performanceCounterKeyName, performanceCounter);
+    finally {
+      this.performanceCounter.releaseLock();
+    }
   }
 }
