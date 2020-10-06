@@ -164,4 +164,23 @@ export default class BackndController {
 
     await set(performanceCounterKeyName, performanceCounter);
   }
+
+  showDBStats() {
+    let { get } = this.practiceManager.externals.storage;
+
+    let performanceCounter = get(performanceCounterKeyName);
+    let text = JSON.stringify(performanceCounter, 0, 2);
+    this.practiceManager.externals.editor.showTextInNewFile('stats', text);
+  }
+
+  async clearDBStats() {
+    let { get, set } = this.practiceManager.externals.storage;
+
+    let performanceCounter = get(performanceCounterKeyName);
+    for (let containerName of Object.keys(performanceCounter)) {
+      performanceCounter[containerName] = defaultPerformanceCounterObject;
+    }
+
+    await set(performanceCounterKeyName, performanceCounter);
+  }
 }
