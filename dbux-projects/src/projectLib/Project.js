@@ -185,13 +185,18 @@ This may be solved by pressing \`clean project folder\` button.`);
 
       const watcher = new MultipleFileWatcher(bug.distFilePaths);
       watcher.on('change', (filename, curStat, prevStat) => {
-        if (curStat.birthtime.valueOf() === 0) {
-          return;
+        try {
+          if (curStat.birthtime.valueOf() === 0) {
+            return;
+          }
+
+          watcher.close();
+
+          _resolve();
         }
-
-        watcher.close();
-
-        _resolve();
+        catch (e) {
+          this.logger.warn('file watcher emit event callback error:', e);
+        }
       });
 
       await this.startWatchMode(bug).catch(err => {
