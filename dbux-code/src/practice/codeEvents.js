@@ -12,8 +12,8 @@ import { codeRangeToBabelLoc } from '../helpers/codeLocHelpers';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('codeEvents');
 
-const Verbose = false;
-// const Verbose = true;
+// const Verbose = false;
+const Verbose = true;
 
 const defaultNewEventLineThreshold = 5;
 
