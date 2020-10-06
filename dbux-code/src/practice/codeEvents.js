@@ -145,7 +145,7 @@ async function getSymbolAt(uri, position) {
   return findMostInnerSymbol(allSymbols, position);
 
   function findMostInnerSymbol(symbols, pos) {
-    if (!symbols.length) {
+    if (!symbols?.length) {
       return null;
     }
 
