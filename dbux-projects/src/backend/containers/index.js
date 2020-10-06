@@ -1,14 +1,17 @@
 import UserEventContainer from './UserEventContainer';
 import Survey1Container from './Survey1Container';
 
-const ContainerClasses = [
-  UserEventContainer,
+const NormalContainerClasses = [
   Survey1Container,
 ];
 
-let containers = [];
+const LoginContainerClasses = [
+  UserEventContainer,
+];
 
-export async function initContainers(db) {
+async function initContainers(db, ContainerClasses) {
+  let containers = [];
+
   await Promise.all(ContainerClasses.map(ContainerClass => {
     let container = new ContainerClass(db);
     containers.push(container);
@@ -16,4 +19,12 @@ export async function initContainers(db) {
   }));
 
   return containers;
+}
+
+export async function initNormalContainers(db) {
+  return initContainers(db, NormalContainerClasses);
+}
+
+export async function initLoginContainers(db) {
+  return initContainers(db, LoginContainerClasses);
 }
