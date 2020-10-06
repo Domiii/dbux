@@ -47,12 +47,13 @@ export class ProjectViewController {
     // ########################################
     //  init treeView
     // ########################################
-    this.projectViewNodeProvider = new ProjectNodeProvider(context, this);
-    this.sessionViewNodeProvider = new SessionNodeProvider(context, this);
-
     this.isShowingTreeView = mementoGet(showProjectViewKeyName, true);
     commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
-
+    commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
+    
+    this.projectViewNodeProvider = new ProjectNodeProvider(context, this);
+    this.sessionViewNodeProvider = new SessionNodeProvider(context, this);
+    
     this.practiceStopwatch = getStopwatch();
     this.practiceStopwatch.onClick(context, this.maybeStopPractice.bind(this));
 
@@ -62,7 +63,7 @@ export class ProjectViewController {
     this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
     this.manager.onBugStatusChanged(this.refresh.bind(this));
     this.manager.onPracticeSessionChanged(this.handlePracticeSessionChanged.bind(this));
-    this.handlePracticeSessionChanged();
+    // this.handlePracticeSessionChanged();
 
     initCodeEvents(this.manager, context);
   }
