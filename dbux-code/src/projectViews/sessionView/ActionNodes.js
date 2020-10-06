@@ -56,9 +56,35 @@ class DebugNode extends BaseTreeViewNode {
   }
 }
 
+class StopPracticeNode extends BaseTreeViewNode {
+  static makeLabel() {
+    return 'Stop Practice';
+  }
 
+  init() {
+    this.contextValue = 'dbuxSessionView.stopPracticeNode';
+  }
+
+  get manager() {
+    return this.treeNodeProvider.manager;
+  }
+
+  get controller() {
+    return this.treeNodeProvider.controller;
+  }
+
+  async handleClick() {
+    if (isStatusRunningType(this.manager.runStatus)) {
+      await showInformationMessage('Currently busy, please wait');
+    }
+    else {
+      await this.controller.maybeStopPractice();
+    }
+  }
+}
 
 export const ActionNodeClasses = [
   RunNode,
-  DebugNode
+  DebugNode,
+  StopPracticeNode
 ];

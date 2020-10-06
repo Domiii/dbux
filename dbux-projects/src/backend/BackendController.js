@@ -3,6 +3,7 @@ import BackendAuth from './BackendAuth2';
 import { Db } from './db';
 import { initContainers } from './containers/index';
 import FirestoreContainer from './FirestoreContainer';
+import { initSafetyStorage } from './SafetyStorage';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
@@ -27,6 +28,8 @@ export default class BackndController {
 
     this._initialized = false;
 
+    initSafetyStorage(practiceManager.externals.storage);
+
     this.db = new Db(this);
     this.auth = new BackendAuth(this);
 
@@ -42,6 +45,8 @@ export default class BackndController {
     if (this._initialized) {
       return;
     }
+    this._initialized = true;
+
     await this.installBackendDependencies();
     await this.db.init();
 
@@ -52,8 +57,6 @@ export default class BackndController {
     }
 
     await this.db._replay();
-
-    this._initialized = true;
   }
 
   async getOrInitDb() {

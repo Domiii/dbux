@@ -1,5 +1,4 @@
 import { commands } from 'vscode';
-import sleep from '@dbux/common/src/util/sleep';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
@@ -20,7 +19,7 @@ const showProjectViewKeyName = 'dbux.projectView.showing';
 //  setup logger for project
 // ########################################
 
-const logger = newLogger('projectViewController');
+const logger = newLogger('dbux-practice');
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
@@ -99,11 +98,13 @@ export class ProjectViewController {
   }
 
   refresh() {
-    if (this.isShowingPraciceView()) {
-      this.projectViewNodeProvider.refresh();
-    }
-    else {
-      this.sessionViewNodeProvider.refresh();
+    if (this.isShowingTreeView) {
+      if (this.isShowingPraciceView()) {
+        this.projectViewNodeProvider.refreshIcon();
+      }
+      else {
+        this.sessionViewNodeProvider.refresh();
+      }
     }
   }
 
@@ -112,32 +113,30 @@ export class ProjectViewController {
   // ###########################################################################
 
   async toggleTreeView() {
-    if (this.isShowingPraciceView) {
-      if (!await this.confirmCancelPracticeSession()) {
+    if (this.isShowingTreeView) {
+      if (!await this.confirmCancelPracticeSession(true)) {
         return;
       }
     }
 
     this.isShowingTreeView = !this.isShowingTreeView;
+    if (this.isShowingTreeView) {
+      await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
+    }
     await commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
     await mementoSet(showProjectViewKeyName, this.isShowingTreeView);
-
     this.refresh();
   }
 
-  async handlePracticeSessionChanged() {
-    try {
-      await sleep(0);
-      await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
-      if (!this.manager.practiceSession) {
-        this.projectViewNodeProvider.refresh();
+  async handlePracticeSessionChanged(dontRefreshView) {
+    if (!dontRefreshView) {
+      try {
+        await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
+        this.refresh();
       }
-      else {
-        this.sessionViewNodeProvider.refresh();
+      catch (err) {
+        logError(err);
       }
-    }
-    catch (err) {
-      logError(err);
     }
   }
 
@@ -159,7 +158,7 @@ export class ProjectViewController {
         return;
       }
     }
-    
+
     showOutputChannel();
 
     const options = {
@@ -167,15 +166,20 @@ export class ProjectViewController {
       title: `[dbux] Bug ${bugNode.bug.id}`
     };
 
-    await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-      const { bug } = bugNode;
+    try {
+      await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+        const { bug } = bugNode;
 
-      progress.report({ message: 'checking system requirements...' });
-      await this.checkActivateBugRequirement();
+        progress.report({ message: 'checking system requirements...' });
+        await this.checkActivateBugRequirement();
 
-      progress.report({ message: 'activating...' });
-      await this.manager.startPractice(bug);
-    }, options);
+        progress.report({ message: 'activating...' });
+        await this.manager.startPractice(bug);
+      }, options);
+    }
+    catch (err) {
+      logError(err);
+    }
   }
 
   async activate(debugMode) {
@@ -202,11 +206,11 @@ export class ProjectViewController {
     await initRuntimeServer(this.extensionContext);
   }
 
-  async confirmCancelPracticeSession() {
+  async confirmCancelPracticeSession(dontRefreshView = false) {
     if (this.manager.practiceSession) {
       const result = await showInformationMessage('Do you want to stop your current practice session to continue?', {
         'Give up': async () => {
-          await this.manager.stopPractice();
+          await this.manager.stopPractice(dontRefreshView);
           return true;
         }
       }, { modal: true });
@@ -252,7 +256,6 @@ export function initProjectView(context) {
     });
 
     // refresh right away
-    // controller.refresh();
     controller.projectViewNodeProvider.refresh();
     controller.sessionViewNodeProvider.refresh();
 

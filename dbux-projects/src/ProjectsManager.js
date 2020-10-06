@@ -153,7 +153,7 @@ export default class ProjectsManager {
       const stopwatchEnabled = await this.askForStopwatch();
       bugProgress = this.plc.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.practiceSession = new PracticeSession(bug, this);
-      this._emitter.emit('practiceSessionChanged', this.practiceSession);
+      this._emitter.emit('practiceSessionChanged');
 
       // activate once to show user the bug, don't care about the result
       await this.activateBug(bug, false);
@@ -162,7 +162,7 @@ export default class ProjectsManager {
     }
     else {
       this.practiceSession = new PracticeSession(bug, this);
-      this._emitter.emit('practiceSessionChanged', this.practiceSession);
+      this._emitter.emit('practiceSessionChanged');
     }
 
     await this.switchToBug(bug);
@@ -174,7 +174,7 @@ export default class ProjectsManager {
     await this.plc.save();
   }
 
-  async stopPractice() {
+  async stopPractice(dontRefreshView = false) {
     if (!this.practiceSession) {
       return;
     }
@@ -190,7 +190,7 @@ export default class ProjectsManager {
     stopwatch.hide();
     this.practiceSession = null;
     await this.setKeyToBug(currentlyPracticingBugKeyName, undefined);
-    this._emitter.emit('practiceSessionChanged', this.practiceSession);
+    this._emitter.emit('practiceSessionChanged', dontRefreshView);
 
     await this.plc.save();
   }
@@ -210,7 +210,7 @@ export default class ProjectsManager {
 
     this.practiceSession.setupStopwatch();
 
-    this._emitter.emit('practiceSessionChanged', this.practiceSession);
+    this._emitter.emit('practiceSessionChanged');
   }
 
   async activate(debugMode) {
@@ -321,7 +321,7 @@ export default class ProjectsManager {
 
     const result = await this.runner.testBug(bug, cfg);
 
-    await this.plc.addTestRunWithoutPatchString(bug, result);
+    await this.plc.addTestRunWithoutPatchString(bug, result.code);
 
     result.code && await bug.openInEditor();
 
@@ -723,6 +723,39 @@ export default class ProjectsManager {
 
   onTestFinished(cb) {
     return this.runner._emitter.on('testFinished', cb);
+  }
+
+  // ###########################################################################
+  // Temporary backend stuff
+  // ###########################################################################
+  async showBugLog(bug) {
+    await this.getAndInitBackend();
+    await this._backend.login();
+    // Rules not edit yet, so needs login to read
+
+    let collectionRef = this._backend.db.collection('userEvents');
+    let result = await collectionRef.get();
+    let allData = [];
+    result.forEach(doc => {
+      allData.push({
+        id: doc.id,
+        data: doc.data(),
+      });
+    });
+    this.externals.editor.showTextInNewFile('all.json', JSON.stringify(allData, null, 2));
+  }
+
+  async deleteUserEvents() {
+    await this.getAndInitBackend();
+    await this._backend.login();
+    // Rules not edit yet, so needs login to read
+
+    let collectionRef = this._backend.db.collection('userEvents');
+    let result = await collectionRef.get();
+    await result.forEach(async (doc) => {
+      await doc.ref.delete();
+      debug('deleted', doc.id);
+    });
   }
 
   /**

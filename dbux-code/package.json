@@ -459,6 +459,18 @@
           "light": "resources/light/question.svg",
           "dark": "resources/dark/question.svg"
         }
+      },
+      {
+        "command": "dbuxProjectView.node.showBugLog",
+        "title": "Show bug log",
+        "icon": {
+          "light": "resources/light/document.svg",
+          "dark": "resources/dark/document.svg"
+        }
+      },
+      {
+        "command": "dbux.deleteUserEvents",
+        "title": "Dev: Delete all user events"
       }
     ],
     "menus": {
@@ -609,6 +621,11 @@
           "command": "dbuxProjectView.node.showBugIntroduction",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode/",
           "group": "inline@9"
+        },
+        {
+          "command": "dbuxProjectView.node.showBugLog",
+          "when": "viewItem =~ /dbuxProjectView\\.bugNode/",
+          "group": "inline@8"
         }
       ],
       "view/title": [
@@ -833,6 +850,10 @@
           "when": "dbux.context.activated"
         },
         {
+          "command": "dbux.deleteUserEvents",
+          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+        },
+        {
           "command": "dbuxCallStackView.itemClick",
           "when": "false"
         },
@@ -926,6 +947,10 @@
         },
         {
           "command": "dbuxProjectView.node.showBugIntroduction",
+          "when": "false"
+        },
+        {
+          "command": "dbuxProjectView.node.showBugLog",
           "when": "false"
         },
         {
