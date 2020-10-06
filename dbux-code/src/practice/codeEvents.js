@@ -7,8 +7,8 @@ import { emitEditorAction } from '@dbux/projects/src/userEvents';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('codeEvents');
 
-// const Verbose = false;
-const Verbose = true;
+const Verbose = false;
+// const Verbose = true;
 
 const defaultNewEventLineThreshold = 5;
 
@@ -70,7 +70,7 @@ export function initCodeEvents() {
       type: 'visible',
     };
 
-    Verbose && debug('new range data', data);
+    // Verbose && debug('new range data', data);
     if (isNewData(_previousRangeData, data)) {
       Verbose && debug('is new');
       emitEditorAction(data);

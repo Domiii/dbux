@@ -1,3 +1,4 @@
+import isObject from 'lodash/isObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import BackendAuth from './BackendAuth2';
 import { Db } from './db';
@@ -8,6 +9,13 @@ import { initSafetyStorage } from './SafetyStorage';
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 
 const { log, debug, warn, error: logError } = newLogger('Backend');
+
+const performanceCounterKeyName = 'dbux-projects.backend.performanceCounter';
+const defaultPerformanceCounterObject = {
+  nReads: 0,
+  nWrites: 0,
+};
+const performanceCounterPerTimeSegmentLimit = 300;
 
 export default class BackndController {
   // deps = [
@@ -46,13 +54,12 @@ export default class BackndController {
 
   async _init() {
     await this.installBackendDependencies();
+    await this.initPerformanceCounter();
     await this.db.init();
 
     // register containers
     let containers = await initNormalContainers(this.db);
-    for (let container of containers) {
-      this.registerContainer(container);
-    }
+    await this.registerContainers(containers);
 
     await this.db._replay();
 
@@ -77,8 +84,16 @@ export default class BackndController {
   // containers
   // ###########################################################################
 
-  registerContainer(container) {
+  async registerContainer(container) {
     this.containers[container.name] = container;
+    
+    await this.initContainerPerformanceCounter(container);
+  }
+
+  async registerContainers(containers) {
+    for (let container of containers) {
+      await this.registerContainer(container);
+    }
   }
 
   // ###########################################################################
@@ -91,9 +106,7 @@ export default class BackndController {
     await this.auth.login();
 
     let containers = await initLoginContainers(this.db);
-    for (let container of containers) {
-      this.registerContainer(container);
-    }
+    await this.registerContainers(containers);
   }
 
   /**
@@ -105,5 +118,50 @@ export default class BackndController {
     }
 
     return this.loginPromise = this._login();
+  }
+
+  // ###########################################################################
+  // performance counter
+  // ###########################################################################
+  async initPerformanceCounter() {
+    let { get, set } = this.practiceManager.externals.storage;
+
+    if (!isObject(get(performanceCounterKeyName))) {
+      await set(performanceCounterKeyName, {});
+    }
+  }
+
+  async initContainerPerformanceCounter(container) {
+    let { get, set } = this.practiceManager.externals.storage;
+
+    let performanceCounter = get(performanceCounterKeyName);
+    if (!isObject(performanceCounter[container.name])) {
+      performanceCounter[container.name] = defaultPerformanceCounterObject;
+      await set(performanceCounterKeyName, performanceCounter);
+    }
+  }
+
+  async increaseContainerPerformanceCounter(container, type) {
+    let time = new Date();
+    let timeSegment = Math.floor(time.valueOf() / (30 * 60 * 1000));
+
+    let { get, set } = this.practiceManager.externals.storage;
+    let performanceCounter = get(performanceCounterKeyName);
+    let containerPerformanceCounter = performanceCounter[container.name];
+
+    debug(container.name, performanceCounterKeyName, containerPerformanceCounter, timeSegment);
+
+    if (!isObject(containerPerformanceCounter[timeSegment])) {
+      containerPerformanceCounter[timeSegment] = defaultPerformanceCounterObject;
+    }
+
+    let key = type === 'read' ? 'nReads' : 'nWrites';
+    if (containerPerformanceCounter[timeSegment][key] >= performanceCounterPerTimeSegmentLimit) {
+      logError('Warning: excessive database access detected');
+    }
+    containerPerformanceCounter[key] += 1;
+    containerPerformanceCounter[timeSegment][key] += 1;
+
+    await set(performanceCounterKeyName, performanceCounter);
   }
 }
