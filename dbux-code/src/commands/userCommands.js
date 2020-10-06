@@ -173,7 +173,7 @@ export function initUserCommands(extensionContext) {
     // }
     const backend = await getOrCreateProjectManager().getAndInitBackend();
     await backend.login();
-    await installDbuxDependencies();
+    // await installDbuxDependencies();
     // const backend = await getOrCreateProjectManager().getAndInitBackend();
     const data = { installId: 'testIdqwe', hi: 123 };
     // log('storeSurveyResult', data);
