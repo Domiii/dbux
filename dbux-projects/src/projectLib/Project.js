@@ -380,6 +380,7 @@ This may be solved by pressing \`clean project folder\` button.`);
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
       try {
+        this.runner.createMainFolder();
         await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
           cwd: this.projectsRoot
         });
