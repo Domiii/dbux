@@ -5,6 +5,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
 import { getOrCreateTracesAtCursor } from './TracesAtCursor';
+import { emitPracticeSelectTraceAction } from '../userEvents';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
@@ -49,6 +50,7 @@ class TraceDetailsController {
     }
     if (trace) {
       traceSelection.selectTrace(trace, 'selectTraceAtCursor');
+      emitPracticeSelectTraceAction('selectTraceAtCursor', trace);
     }
   }
 

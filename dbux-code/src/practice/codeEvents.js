@@ -5,6 +5,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { emitEditorAction } from '../userEvents';
 import { getOrCreateTracesAtCursor } from '../traceDetailsView/TracesAtCursor';
+import { codeRangeToBabelLoc } from '../helpers/codeLocHelpers';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
@@ -33,6 +34,10 @@ export function initCodeEvents(manager, context) {
       return;
     }
 
+    if (e.textEditor.document.uri.scheme !== 'file') {
+      return;
+    }
+
     // TODO?: take only first selection only. Do we need all selections? Can there be no selections?
     const firstSelection = e.selections[0] || EmptyObject;
     let data = {
@@ -53,6 +58,10 @@ export function initCodeEvents(manager, context) {
 
   window.onDidChangeTextEditorVisibleRanges(async (e) => {
     if (!manager.practiceSession) {
+      return;
+    }
+
+    if (e.textEditor.document.uri.scheme !== 'file') {
       return;
     }
 
@@ -94,7 +103,7 @@ export function initCodeEvents(manager, context) {
     return {
       staticContext,
       staticTrace,
-      symbol,
+      symbol: convertVSCodeSymbol(symbol),
       sessionId
     };
   }
@@ -103,6 +112,18 @@ export function initCodeEvents(manager, context) {
 // ###########################################################################
 // utils
 // ###########################################################################
+
+function convertVSCodeSymbol(symbol) {
+  if (symbol) {
+    return {
+      name: symbol.name,
+      range: codeRangeToBabelLoc(symbol.range)
+    };
+  }
+  else {
+    return null;
+  }
+}
 
 /**
  * Convert vscode `Position` object to normal object.
