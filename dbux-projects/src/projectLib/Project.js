@@ -9,11 +9,13 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import BugList from './BugList';
 import Process from '../util/Process';
 import { checkSystemWithRequirement } from '../checkSystem';
+import { MultipleFileWatcher } from '../util/multipleFileWatcher';
 
 const SharedAssetFolder = '_shared_assets_';
 const PatchFolderName = '_patches_';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
+/** @typedef {import('./Bug').default} Bug */
 
 /**
  * Project class file.
@@ -171,15 +173,36 @@ This may be solved by pressing \`clean project folder\` button.`);
     await this.gitClone();
   }
 
-  async startWatchModeIfNotRunning() {
+  /**
+   * @param {Bug} bug 
+   */
+  async startWatchModeIfNotRunning(bug) {
     if (!this.backgroundProcesses?.length && this.startWatchMode) {
-      await this.startWatchMode().catch(err => {
+      let _resolve, _reject, _promise = new Promise((resolve, reject) => {
+        _resolve = resolve;
+        _reject = reject;
+      });
+
+      const watcher = new MultipleFileWatcher(bug.distFilePaths);
+      watcher.on('change', (filename, curStat, prevStat) => {
+        if (curStat.birthtime.valueOf() === 0) {
+          return;
+        }
+
+        watcher.close();
+
+        _resolve();
+      });
+
+      await this.startWatchMode(bug).catch(err => {
         this.logger.error('startWatchMode failed -', err?.stack || err);
       });
 
       if (!this.backgroundProcesses?.length) {
         this.logger.error('startWatchMode did not result in any new background processes');
       }
+
+      await _promise;
     }
   }
 
