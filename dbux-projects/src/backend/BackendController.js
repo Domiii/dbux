@@ -203,5 +203,7 @@ export default class BackndController {
     finally {
       this.performanceCounter.releaseLock();
     }
+
+    this.practiceManager.externals.showMessage.info('Cleared.');
   }
 }
