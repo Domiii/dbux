@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "dbux_projects/express"
+		},
+		{
+			"path": "samples"
 		}
 	],
 	"settings": {
