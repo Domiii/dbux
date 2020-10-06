@@ -1,4 +1,10 @@
 import NanoEvents from 'nanoevents';
+import { newLogger } from '@dbux/common/src/log/logger';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('UserEvents');
+
+const Verbose = true;
 
 // ###########################################################################
 // events
@@ -38,5 +44,6 @@ export function onUserEvent(cb) {
 }
 
 function emitUserEvent(name, data) {
+  Verbose && debug(`name: ${name}, data:`, data);
   emitter.emit('e', name, data);
 }
