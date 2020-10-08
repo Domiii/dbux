@@ -67,6 +67,7 @@ export default class CollectionIndex {
     }
 
     const ofKey = (this._byKey[key] = this._byKey[key] || []);
+    this.beforeAdd?.(ofKey, entry);
     ofKey.push(entry);
 
     // sanity check

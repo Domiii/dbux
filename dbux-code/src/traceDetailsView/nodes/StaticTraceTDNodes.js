@@ -5,9 +5,9 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { makeRootTraceLabel, makeTraceLabel, makeTraceValueLabel, makeCallValueLabel } from '@dbux/data/src/helpers/traceLabels';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/core/constants/TraceType';
-import TraceNode from './TraceNode';
 import GroupNode from './GroupNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import TraceByStaticTraceNode from './TraceByStaticTraceNode';
 
 // ###########################################################################
 // grouping modes
@@ -203,7 +203,7 @@ export default class StaticTraceTDNode extends BaseTreeViewNode {
     if (groupingMode === GroupingMode.Ungrouped) {
       nodes = groupedTraces.map((trace) => {
         const childLabel = makeTraceValueLabel(trace);
-        const childNode = new TraceNode(treeNodeProvider, childLabel, trace, this);
+        const childNode = new TraceByStaticTraceNode(treeNodeProvider, childLabel, trace, this);
         childNode.collapsibleState = TreeItemCollapsibleState.None;
         return childNode;
       });
@@ -215,7 +215,7 @@ export default class StaticTraceTDNode extends BaseTreeViewNode {
         if (children.length) {
           node.children = children.map((trace) => {
             const childLabel = makeTraceValueLabel(trace);
-            const childNode = new TraceNode(treeNodeProvider, childLabel, trace, node);
+            const childNode = new TraceByStaticTraceNode(treeNodeProvider, childLabel, trace, node);
             childNode.collapsibleState = TreeItemCollapsibleState.Expanded;
             return childNode;
           });

@@ -4,7 +4,8 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import TraceDetailsDataProvider from './TraceDetailsNodeProvider';
-import TracesAtCursor from './TracesAtCursor';
+import { getOrCreateTracesAtCursor } from './TracesAtCursor';
+import { emitPracticeSelectTraceAction } from '../userEvents';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceDetailsController');
@@ -15,7 +16,7 @@ class TraceDetailsController {
   constructor(context) {
     this.treeDataProvider = new TraceDetailsDataProvider();
     this.treeDataProvider.controller = this;
-    this.tracesAtCursor = new TracesAtCursor(context);
+    this.tracesAtCursor = getOrCreateTracesAtCursor(context);
   }
 
   get treeView() {
@@ -49,6 +50,7 @@ class TraceDetailsController {
     }
     if (trace) {
       traceSelection.selectTrace(trace, 'selectTraceAtCursor');
+      emitPracticeSelectTraceAction('selectTraceAtCursor', trace);
     }
   }
 
