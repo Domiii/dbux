@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import Stopwatch from './Stopwatch';
 import PracticeSessionState from './PracticeSessionState';
 import BugStatus from '../dataLib/BugStatus';
-import { emitPracticeSessionSolved } from '../userEvents';
+import { emitPracticeSessionEvent } from '../userEvents';
 
 /** @typedef {import('../projectLib/Project').default} Project */
 /** @typedef {import('../projectLib/Bug').default} Bug */
@@ -14,9 +15,9 @@ export default class PracticeSession {
    * @param {Bug} bug 
    * @param {ProjectsManager} manager
    */
-  constructor(bug, manager, createdAt = Date.now()) {
-    this.sessionId = uuidv4();
-    this.createdAt = createdAt;
+  constructor(bug, manager, { createdAt, sessionId } = EmptyObject) {
+    this.sessionId = sessionId || uuidv4();
+    this.createdAt = createdAt || Date.now();
     this.stopwatch = new Stopwatch(manager.externals.stopwatch);
     this.project = bug.project;
     this.bug = bug;
@@ -44,7 +45,7 @@ export default class PracticeSession {
     if (this.state !== state) {
       this.state = state;
       if (PracticeSessionState.is.Solved(state)) {
-        emitPracticeSessionSolved(this);
+        emitPracticeSessionEvent('solved', this);
       }
     }
   }
@@ -58,7 +59,7 @@ export default class PracticeSession {
     const result = await this.manager.activateBug(bug, debugMode);
     this.maybeUpdateBugStatusByResult(result);
     this.manager._emitter.emit('bugStatusChanged', bug);
-    
+
     if (BugStatus.is.Solved(this.manager.getResultStatus(result))) {
       // user passed all tests
       this.setState(PracticeSessionState.Solved);

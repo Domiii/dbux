@@ -80,7 +80,6 @@ async function activate(context) {
   } catch (e) {
     logError('error in \'activate\'', e.stack);
     debugger;
-    throw e;
   }
 }
 

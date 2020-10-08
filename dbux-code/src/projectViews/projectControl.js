@@ -7,12 +7,12 @@ import { showWarningMessage, showInformationMessage } from '../codeUtil/codeModa
 import { showTextDocument, showTextInNewFile } from '../codeUtil/codeNav';
 import TerminalWrapper from '../terminal/TerminalWrapper';
 import { set as storageSet, get as storageGet } from '../memento';
-import { getResourcePath } from '../resources';
+import { getResourcePath, getLogsDirectory } from '../resources';
 import { interactiveGithubLogin } from '../net/GithubAuth';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { showBugIntroduction } from './BugIntroduction';
 import { getStopwatch } from './practiceStopwatch';
-import { onUserEvent } from '../userEvents';
+import { initUserEvent } from '../userEvents';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
@@ -93,7 +93,8 @@ function createProjectManager(extensionContext) {
     },
     TerminalWrapper,
     resources: {
-      getResourcePath
+      getResourcePath,
+      getLogsDirectory
     },
     showMessage: {
       info: showInformationMessage,
@@ -108,7 +109,6 @@ function createProjectManager(extensionContext) {
     },
     WebviewWrapper,
     showBugIntroduction,
-    onUserEvent,
     interactiveGithubLogin
   };
 
@@ -116,6 +116,8 @@ function createProjectManager(extensionContext) {
   //  init projectManager
   // ########################################
   const manager = initDbuxProjects(cfg, externals);
+
+  initUserEvent(manager);
 
   debug(`Initialized dbux-projects. projectsRoot = "${path.resolve(cfg.projectsRoot)}", dependencyRoot = "${path.resolve(cfg.dependencyRoot)}"`);
 
