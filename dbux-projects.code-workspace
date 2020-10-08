@@ -9,6 +9,7 @@
 	],
 	"settings": {
 		"dbux.autoStart": true,
+		// "dbux.run.nodeArgs": "--enable-source-maps",
 		"debug.node.autoAttach": "off"
 	}
 }
