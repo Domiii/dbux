@@ -1,5 +1,6 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
+import { emitPracticeSelectTraceAction } from '../../userEvents';
 import TraceNode from './TraceNode';
 
 export default class ObjectNode extends TraceNode {
@@ -12,5 +13,10 @@ export default class ObjectNode extends TraceNode {
       }
     }
     return ' ';
+  }
+
+  handleClick() {
+    emitPracticeSelectTraceAction('objectTrace', this.trace);
+    super.handleClick();
   }
 }

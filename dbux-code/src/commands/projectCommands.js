@@ -71,4 +71,12 @@ export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbux.togglePracticeView', async () => {
     await projectViewController.toggleTreeView();
   });
+
+  registerCommand(extensionContext, 'dbux.showDBStats', () => {
+    projectViewController.manager._backend.showDBStats();
+  });
+
+  registerCommand(extensionContext, 'dbux.clearDBStats', async () => {
+    projectViewController.manager._backend.clearDBStats();
+  });
 }

@@ -52,7 +52,7 @@ export default class TracesAtCursor {
     let allTraces = this.getAllTracesAtCursor();
     this.needRefresh = false;
 
-    // update index to `most important trace`
+    // find `most important` trace
     let nearestTrace;
     for (const trace of allTraces) {
       if (!nearestTrace) {
@@ -89,6 +89,14 @@ export default class TracesAtCursor {
       this.refresh();
     }
     return this.allTraces[this.index] || null;
+  }
+
+  getMostInner() {
+    // need to refresh if this.sortedTraces is expired
+    if (this.needRefresh) {
+      this.refresh();
+    }
+    return this.allTraces[0] || null;
   }
 
   previous() {
@@ -128,4 +136,14 @@ export default class TracesAtCursor {
       commands.executeCommand('setContext', 'dbuxTraceDetailsView.context.hasTracesAtCursor', false);
     }
   }
+}
+
+let tracesAtCursor;
+
+export function getOrCreateTracesAtCursor(context) {
+  if (!tracesAtCursor) {
+    tracesAtCursor = new TracesAtCursor(context);
+  }
+
+  return tracesAtCursor;
 }

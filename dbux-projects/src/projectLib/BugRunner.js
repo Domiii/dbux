@@ -11,6 +11,8 @@ import BugRunnerStatus from './RunStatus';
 /** @typedef {import('./Bug').default} Bug */
 /** @typedef {import('./Project').default} Project */
 
+const Verbose = true;
+
 export default class BugRunner {
   /**
    * @type {ProjectsManager}
@@ -167,10 +169,10 @@ export default class BugRunner {
       // select bug
       async () => project.selectBug(bug),
       // start watch mode (if necessary)
-      async () => project.startWatchModeIfNotRunning()
+      async () => project.startWatchModeIfNotRunning(bug),
     );
 
-    this.setStatus(BugRunnerStatus.Done);
+    this._updateStatus();
   }
 
   /**
@@ -221,12 +223,7 @@ export default class BugRunner {
     }
     finally {
       // need to check this._project exist, it might be kill during activating
-      if (this._project?.backgroundProcesses.length) {
-        this.setStatus(BugRunnerStatus.RunningInBackground);
-      }
-      else {
-        this.setStatus(BugRunnerStatus.Done);
-      }
+      this._updateStatus();
     }
   }
 
@@ -303,6 +300,15 @@ export default class BugRunner {
     }
     else {
       this.setStatus(BugRunnerStatus.None);
+    }
+  }
+
+  _updateStatus() {
+    if (this._project?.backgroundProcesses.length) {
+      this.setStatus(BugRunnerStatus.RunningInBackground);
+    }
+    else {
+      this.setStatus(BugRunnerStatus.Done);
     }
   }
 

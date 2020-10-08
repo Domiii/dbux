@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Stopwatch from './Stopwatch';
 import PracticeSessionState from './PracticeSessionState';
 import BugStatus from '../dataLib/BugStatus';
+import { emitPracticeSessionSolved } from '../userEvents';
 
 /** @typedef {import('../projectLib/Project').default} Project */
 /** @typedef {import('../projectLib/Bug').default} Bug */
@@ -13,8 +14,9 @@ export default class PracticeSession {
    * @param {Bug} bug 
    * @param {ProjectsManager} manager
    */
-  constructor(bug, manager) {
+  constructor(bug, manager, createdAt = Date.now()) {
     this.sessionId = uuidv4();
+    this.createdAt = createdAt;
     this.stopwatch = new Stopwatch(manager.externals.stopwatch);
     this.project = bug.project;
     this.bug = bug;
@@ -39,7 +41,12 @@ export default class PracticeSession {
   }
 
   setState(state) {
-    this.state = state;
+    if (this.state !== state) {
+      this.state = state;
+      if (PracticeSessionState.is.Solved(state)) {
+        emitPracticeSessionSolved(this);
+      }
+    }
   }
 
   /**

@@ -1,4 +1,12 @@
 import NanoEvents from 'nanoevents';
+import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('UserEvents');
+
+const Verbose = false;
+// const Verbose = true;
 
 // ###########################################################################
 // events
@@ -7,6 +15,14 @@ import NanoEvents from 'nanoevents';
 
 export function emitEditorAction(data) {
   emitUserEvent('editor', data);
+}
+
+export function emitPracticeSelectTraceAction(selectMethodName, trace, detail) {
+  emitUserEvent(selectMethodName, {
+    trace,
+    locationInfo: getExtraTraceLocationImformation(trace),
+    detail
+  });
 }
 
 export function emitTreeViewAction(treeViewName, action, nodeId, args) {
@@ -26,6 +42,24 @@ export function emitOther(data) {
   emitUserEvent('other', data);
 }
 
+// ###########################################################################
+// Util
+// ###########################################################################
+
+function getExtraTraceLocationImformation(trace) {
+  const { applicationId, traceId, staticTraceId } = trace;
+  const dp = allApplications.getById(applicationId).dataProvider;
+
+  const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+  const staticContext = dp.collections.staticContexts.getById(staticTrace.staticContextId);
+  const filePath = dp.util.getTraceFilePath(traceId);
+  return {
+    filePath,
+    staticTrace,
+    staticContext,
+    staticTraceIndex: trace.staticTraceIndex
+  };
+}
 
 // ###########################################################################
 // emitter
@@ -38,5 +72,6 @@ export function onUserEvent(cb) {
 }
 
 function emitUserEvent(name, data) {
+  Verbose && debug(`name: ${name}, data:`, data);
   emitter.emit('e', name, data);
 }
