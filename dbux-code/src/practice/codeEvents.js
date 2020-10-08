@@ -16,7 +16,6 @@ const Verbose = false;
 
 const defaultNewEventLineThreshold = 8;
 
-
 /**
  * @param {ProjectsManager} manager 
  */
