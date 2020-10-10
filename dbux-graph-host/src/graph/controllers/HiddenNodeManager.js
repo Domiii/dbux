@@ -1,4 +1,4 @@
-import NanoEvents from 'nanoevents';
+import NanoEvents from 'src/graph/controllers/nanoevents';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 import RunNode from '../RunNode';
 

@@ -1,4 +1,4 @@
-import NanoEvents from 'nanoevents';
+import NanoEvents from 'src/graph/controllers/nanoevents';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import { newLogger } from '@dbux/common/src/log/logger';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';

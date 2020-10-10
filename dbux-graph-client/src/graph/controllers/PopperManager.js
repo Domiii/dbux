@@ -1,6 +1,6 @@
-import isString from 'lodash/isString';
+import isString from 'src/graph/controllers/lodash/isString';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { createPopper } from '@popperjs/core';
+import { createPopper } from 'src/graph/controllers/@popperjs/core';
 import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
 
 // eslint-disable-next-line no-unused-vars

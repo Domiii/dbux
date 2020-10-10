@@ -1,8 +1,8 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import GraphDocument from './components/GraphDocument';
+import GraphDocument from './graph/GraphDocument';
 import HostComponentManager from './componentLib/HostComponentManager';
-import componentRegistry from './_hostRegistry';
+import GraphComponents from './graph/_hostRegistry';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-host/HostComponentManager');
@@ -18,7 +18,7 @@ function reset() {
   if (componentManager) {
     componentManager.silentShutdown();
   }
-  componentManager = new HostComponentManager(...(_args || EmptyArray), componentRegistry);
+  componentManager = new HostComponentManager(...(_args || EmptyArray), GraphComponents);
   componentManager.handlePing = pairingCompleted;
 }
 
@@ -61,7 +61,7 @@ export function startGraphHost(onStart, restart, ...args) {
 export function shutdownGraphHost() {
   if (componentManager) {
     componentManager.silentShutdown();
-    
+
     // clear closed componentManager
     componentManager = null;
   }

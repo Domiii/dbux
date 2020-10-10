@@ -1,4 +1,4 @@
-import NanoEvents from 'nanoevents';
+import NanoEvents from 'src/graph/controllers/nanoevents';
 import { newLogger } from '@dbux/common/src/log/logger';
 import traceSelection from '@dbux/data/src/traceSelection';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
