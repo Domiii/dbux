@@ -76,3 +76,19 @@ export function babelLocToCodeRange(loc) {
   const endPos = babelLocToCodePosition(end);
   return loc._range = new Range(startPos, endPos);
 }
+
+/**
+ * @param {Range} range 
+ * @return {Loc}
+ */
+export function codeRangeToBabelLoc(range) {
+  const {
+    start,
+    end
+  } = range;
+
+  return {
+    start: codePositionToBabelPosition(start),
+    end: codePositionToBabelPosition(end)
+  };
+}

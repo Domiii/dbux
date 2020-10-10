@@ -3,6 +3,7 @@ import fs from 'fs';
 import sh from 'shelljs';
 import NanoEvents from 'nanoevents';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
 import caseStudyRegistry from './_projectRegistry';
@@ -14,6 +15,7 @@ import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
 import ProgressLogController from './dataLib/ProgressLogController';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
+import { emitPracticeSessionStarted, emitPracticeSessionStopped } from './userEvents';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -21,7 +23,8 @@ const { debug, log, warn, error: logError } = logger;
 
 const depsStorageKey = 'PracticeManager.deps';
 const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
-const currentlyPracticingBugKeyName = 'dbux.dbux-projects.currentlyPracticingBug';
+const savedPracticeSessionKeyName = 'dbux.dbux-projects.currentlyPracticingBug';
+const savedPracticeSessionDataKeyName = 'dbux.dbux-projects.practiceSessionCreatedAt';
 
 /** @typedef {import('./projectLib/Project').default} Project */
 /** @typedef {import('./projectLib/Bug').default} Bug */
@@ -153,6 +156,7 @@ export default class ProjectsManager {
       const stopwatchEnabled = await this.askForStopwatch();
       bugProgress = this.plc.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.practiceSession = new PracticeSession(bug, this);
+      emitPracticeSessionStarted(this.practiceSession);
       this._emitter.emit('practiceSessionChanged');
 
       // activate once to show user the bug, don't care about the result
@@ -162,6 +166,7 @@ export default class ProjectsManager {
     }
     else {
       this.practiceSession = new PracticeSession(bug, this);
+      emitPracticeSessionStarted(this.practiceSession);
       this._emitter.emit('practiceSessionChanged');
     }
 
@@ -169,7 +174,7 @@ export default class ProjectsManager {
 
     this.practiceSession.setupStopwatch();
 
-    await this.setKeyToBug(currentlyPracticingBugKeyName, bug);
+    await this.savePracticeSession();
 
     await this.plc.save();
   }
@@ -188,15 +193,16 @@ export default class ProjectsManager {
     }
     stopwatch.pause();
     stopwatch.hide();
+    emitPracticeSessionStopped(this.practiceSession);
     this.practiceSession = null;
-    await this.setKeyToBug(currentlyPracticingBugKeyName, undefined);
+    await this.savePracticeSession();
     this._emitter.emit('practiceSessionChanged', dontRefreshView);
 
     await this.plc.save();
   }
 
   recoverPracticeSession() {
-    const bug = this.getBugByKey(currentlyPracticingBugKeyName);
+    const bug = this.getBugByKey(savedPracticeSessionKeyName);
     if (!bug) {
       return;
     }
@@ -206,11 +212,20 @@ export default class ProjectsManager {
       return;
     }
 
-    this.practiceSession = new PracticeSession(bug, this);
+    const { createdAt = Date.now() } = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
+    this.practiceSession = new PracticeSession(bug, this, createdAt);
 
     this.practiceSession.setupStopwatch();
 
     this._emitter.emit('practiceSessionChanged');
+  }
+
+  async savePracticeSession() {
+    const bug = this.practiceSession?.bug;
+    await this.setKeyToBug(savedPracticeSessionKeyName, bug);
+    await this.externals.storage.set(savedPracticeSessionDataKeyName, {
+      createdAt: this.practiceSession?.createdAt
+    });
   }
 
   async activate(debugMode) {
@@ -317,6 +332,8 @@ export default class ProjectsManager {
       debugMode,
       nodeArgs,
       dbuxArgs: '--verbose=1'
+      // dbuxArgs: '--dontInjectDbux',
+      // nodeArgs: '--enable-source-maps' // TODO: make this configurable
     };
 
     const result = await this.runner.testBug(bug, cfg);
@@ -372,9 +389,12 @@ export default class ProjectsManager {
   // Progress Log
   // ###########################################################################
 
+  /**
+   * NOTE: dev only
+   */
   async resetProgress() {
+    await this.stopPractice();
     await this.plc.reset();
-    await this.setKeyToBug(currentlyPracticingBugKeyName, undefined);
     await this.updateActivatingBug(undefined);
   }
 

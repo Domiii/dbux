@@ -36,6 +36,11 @@ export default function buildBabelOptions(options) {
     verbose = 0
   } = options;
 
+  if (dontInjectDbux && !esnext) {
+    // nothing to babel
+    return null;
+  }
+
   const dbuxOptions = dbuxOptionsString && JSON.parse(dbuxOptionsString) || undefined;
   defaultsDeep(dbuxOptions || {}, {
     verbose

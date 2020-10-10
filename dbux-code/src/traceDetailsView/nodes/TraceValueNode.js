@@ -4,6 +4,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeTraceValueLabel } from '@dbux/data/src/helpers/traceLabels';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { valueRender } from '../valueRender';
+import { emitPracticeSelectTraceAction } from '../../userEvents';
 
 export default class TraceValueNode extends BaseTreeViewNode {
   /**
@@ -45,6 +46,7 @@ export default class TraceValueNode extends BaseTreeViewNode {
   }
 
   handleClick() {
+    emitPracticeSelectTraceAction('selectNearbyTrace', this.trace);
     traceSelection.selectTrace(this.trace);
   }
 

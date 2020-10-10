@@ -204,12 +204,14 @@ export class Db {
       result = await Promise.race([
         (async () => {
           await doc.set(data, MergeTrue);
-          await this.backlog.tryRemoveEntry(request);
         })(),
         sleep(defaultNetworkTimeout).then(() => {
           throw new Error(`Timeout when writing data to firebase (${defaultNetworkTimeout / 1000}s)`);
         })
       ]);
+
+      await this.backlog.tryRemoveEntry(request);
+      await this.backendController.increaseContainerPerformanceCounter(container, 'write');
     }
     catch (err) {
       throw new Error(`Failed to write to DB (at "${doc?.path}"): ${JSON.stringify(request, null, 2)}\n\n${err.message}`);

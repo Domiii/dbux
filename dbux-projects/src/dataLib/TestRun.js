@@ -9,7 +9,6 @@ export default class TestRun {
     this.bugId = bug.id;
     this.createdAt = Date.now();
     this.nFailedTests = nFailedTests;
-    this.timer = undefined;
     this.patch = patch;
   }
 }
