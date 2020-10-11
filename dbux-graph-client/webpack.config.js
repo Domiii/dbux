@@ -21,7 +21,7 @@ const projectRoot = path.resolve(__dirname);
 const MonoRoot = path.resolve(__dirname, '..');
 
 // TODO: Do not build to remote path. Copy on deploy instead.
-const outputFolder = path.join(MonoRoot, 'dbux-code/resources/dist/graph');
+const outputFolder = path.join(MonoRoot, 'dbux-code/resources/dist');
 
 const dependencies = [
   "dbux-common",
@@ -173,7 +173,8 @@ module.exports = (env, argv) => {
     plugins: webpackPlugins,
     context: path.join(projectRoot, '.'),
     entry: {
-      graph: path.join(src, 'index.js')
+      'graph.client': path.join(src, 'graph.client.js'),
+      'pathways.client': path.join(src, 'pathways.client.js')
     },
     output: {
       path: outputFolder,

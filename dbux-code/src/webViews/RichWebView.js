@@ -1,34 +1,32 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import GraphThemeMode from '@dbux/graph-common/src/shared/GraphThemeMode';
-import { startGraphHost, shutdownGraphHost } from '@dbux/graph-host/src/index';
 import {
-  window,
-  ViewColumn,
-  ColorThemeKind
+  window
 } from 'vscode';
 import { buildWebviewClientHtml } from './clientSource';
-import { goToTrace } from '../codeUtil/codeNav';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
-import { getThemeResourcePathUri } from '../resources';
 
-// eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('GraphViewHost');
+/** @typedef {import('@dbux/graph-host/src/WebHost').HostWrapper} HostWrapper */
 
-const defaultColumn = ViewColumn.Two;
-
-export default class GraphWebView extends WebviewWrapper {
+export default class RichWebView extends WebviewWrapper {
+  /**
+   * @type {HostWrapper}
+   */
+  hostWrapper;
   hostComponentManager;
+  logger;
 
-  constructor() {
-    super('dbux-graph', 'Call Graph', defaultColumn);
+  constructor(HostWrapperClazz, id, col) {
+    const hostWrapper = new HostWrapperClazz();
+    const { name } = hostWrapper;
+    super(id, name, col);
+
+    this.hostWrapper = hostWrapper;
+    this.logger = newLogger(name);
   }
 
-  getIcon() {
-    return getThemeResourcePathUri('tree.svg');
-  }
-  
-  getThemeMode() {
-    return window.activeColorTheme.kind === ColorThemeKind.Light ? GraphThemeMode.Light : GraphThemeMode.Dark;
+  getMainScriptPath() {
+    throw new Error('abstract method not implemented');
   }
 
   /**
@@ -41,33 +39,39 @@ export default class GraphWebView extends WebviewWrapper {
 
   async buildClientHtml() {
     const mode = this.getThemeMode();
+    const scriptPath = this.getResourcePath(this.getMainScriptPath());
     const modeFolderName = GraphThemeMode.getName(mode).toLowerCase();
-    const scriptPath = this.getResourcePath('dist/graph/graph.js');
     const themePath = this.getResourcePath(`dist/graph/${modeFolderName}/bootstrap.min.css`);
-    // TODO: support multiple theme files
     return await buildWebviewClientHtml([scriptPath], themePath);
   }
-  
+
   async startHost(ipcAdapter) {
-    startGraphHost(this.handleGraphHostStarted, this.restart, ipcAdapter, this.externals);
+    this.hostWrapper.startGraphHost(this.handleGraphHostStarted, this.restart, ipcAdapter, this.getExternals());
   }
 
   shutdownHost() {
-    shutdownGraphHost();
+    this.hostWrapper.shutdownGraphHost();
   }
 
   // ###########################################################################
   // provide externals to HostComponentManager
   // ###########################################################################
 
-  externals = {
+  getExternals() {
+    return {
+      ...this.sharedExternals,
+      ...this.externals
+    };
+  }
+
+  sharedExternals = {
     /**
      * Used for the "Restart" button
      */
     restart: this.restart,
 
     logClientError(args) {
-      logError('[CLIENT ERROR]', ...args);
+      this.logge.err('[CLIENT ERROR]', ...args);
     },
 
     async confirm(msg, modal = true) {
@@ -87,10 +91,6 @@ export default class GraphWebView extends WebviewWrapper {
         placeHolder: message
       });
       return result;
-    },
-
-    async goToTrace(trace) {
-      await goToTrace(trace);
     },
 
     getThemeMode: this.getThemeMode

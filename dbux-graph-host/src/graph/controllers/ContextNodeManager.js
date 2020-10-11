@@ -1,4 +1,4 @@
-import isEqual from 'src/graph/controllers/lodash/isEqual';
+import isEqual from 'lodash/isEqual';
 import Enum from '@dbux/common/src/util/Enum';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import objectTracker from '@dbux/data/src/objectTracker';
