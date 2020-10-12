@@ -1,4 +1,3 @@
-import pull from 'lodash/pull';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
@@ -79,7 +78,7 @@ export default class ProgressLogController {
   addTestRun(bug, nFailedTests, patchString) {
     const testRun = new TestRun(bug, nFailedTests, patchString);
     this.addData({ testRuns: [testRun] });
-    emitNewTestRun(this.manager.practiceSession, testRun);
+    emitNewTestRun(testRun);
   }
 
   /**
@@ -91,7 +90,7 @@ export default class ProgressLogController {
   addBugProgress(bug, status, stopwatchEnabled) {
     const bugProgress = new BugProgress(bug, status, stopwatchEnabled);
     this.addData({ bugProgresses: [bugProgress] });
-    emitNewBugProgress(this.manager.practiceSession, bugProgress);
+    emitNewBugProgress(bugProgress);
     return bugProgress;
   }
 
@@ -120,7 +119,7 @@ export default class ProgressLogController {
       bugProgress[key] = update[key];
     }
     bugProgress.updatedAt = Date.now();
-    emitBugProgressChanged(this.manager.practiceSession, bugProgress);
+    emitBugProgressChanged(bugProgress);
   }
 
   // ###########################################################################
