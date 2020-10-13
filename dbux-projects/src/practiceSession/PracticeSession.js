@@ -52,11 +52,11 @@ export default class PracticeSession {
 
   /**
    * Activate bug of and process the result
-   * @param {boolean} debugMode 
+   * @param {Object} inputCfg 
    */
-  async activate(debugMode) {
+  async activate(inputCfg = EmptyObject) {
     const { bug } = this;
-    const result = await this.manager.activateBug(bug, debugMode);
+    const result = await this.manager.activateBug(bug, inputCfg);
     this.maybeUpdateBugStatusByResult(result);
     this.manager._emitter.emit('bugStatusChanged', bug);
 
