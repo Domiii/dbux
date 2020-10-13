@@ -22,6 +22,10 @@ export default class PracticeSession {
     this.project = bug.project;
     this.bug = bug;
     this.manager = manager;
+    /**
+     * @type {string} applicationUUID of the latest testRun, used to trace current application in user's view
+     */
+    this.applicationUUID = null;
 
     let bugProgress = this.plc.util.getBugProgressByBug(bug);
     if (!bugProgress) {

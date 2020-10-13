@@ -415,7 +415,10 @@ export default class ProjectsManager {
     const result = await this.runner.testBug(bug, cfg);
 
     const patch = await bug.project.getPatchString();
-    this.plc.addTestRun(bug, result.code, patch);
+    const testRun = this.plc.addTestRun(bug, result.code, patch);
+    if (this.practiceSession) {
+      this.practiceSession.applicationUUID = testRun.applicationUUID;
+    }
     this.plc.updateBugProgress(bug, { patch });
 
     result.code && await bug.openInEditor();

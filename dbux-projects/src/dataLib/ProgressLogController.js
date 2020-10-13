@@ -1,4 +1,6 @@
+import last from 'lodash/last';
 import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import ProgressLogUtil from './progressLogUtil';
@@ -74,11 +76,15 @@ export default class ProgressLogController {
    * @param {Bug} bug 
    * @param {number} nFailedTests
    * @param {string} patchString 
+   * @return {TestRun}
    */
   addTestRun(bug, nFailedTests, patchString) {
-    const testRun = new TestRun(bug, nFailedTests, patchString);
+    const application = last(allApplications.selection.getAll());
+    const testRun = new TestRun(bug, nFailedTests, patchString, application.uuid);
     this.addData({ testRuns: [testRun] });
-    emitNewTestRun(testRun);
+    emitNewTestRun(testRun, application);
+
+    return testRun;
   }
 
   /**
