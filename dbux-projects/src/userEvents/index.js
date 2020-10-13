@@ -15,6 +15,9 @@ let manager;
 
 export function initUserEvent(_manager) {
   manager = _manager;
+  onUserEvent((data) => {
+    manager.plc.addUserAction(data);
+  });
 }
 
 // ###########################################################################
@@ -79,13 +82,13 @@ export function onUserEvent(cb) {
 }
 
 /**
- * @param {string} eventName 
+ * @param {number} eventType 
  * @param {Object} data NOTE: data *must* always be completely serializable, simple data.
  */
-export function emitUserEvent(eventName, data) {
+export function emitUserEvent(eventType, data) {
   if (manager.practiceSession) {
     emitter.emit('e', {
-      name: eventName,
+      type: eventType,
       sessionId: manager.practiceSession.sessionId,
       bugId: manager.practiceSession.bug.id,
       createdAt: Date.now(),

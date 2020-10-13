@@ -36,6 +36,15 @@ class BugProgressCollection extends Collection {
   }
 }
 
+/**
+ * @extends {Collection<BugProgress>}
+ */
+class UserActionCollection extends Collection {
+  constructor(plc) {
+    super('userActions', plc);
+  }
+}
+
 export default class ProgressLogController {
   /**
    * Used for serialization
@@ -114,6 +123,10 @@ export default class ProgressLogController {
     emitBugProgressChanged(bugProgress);
   }
 
+  addUserAction(actionData) {
+    this.addData({ userActions: [actionData] });
+  }
+
   // ###########################################################################
   // Private data flow
   // ###########################################################################
@@ -175,7 +188,8 @@ export default class ProgressLogController {
   init() {
     this.collections = {
       testRuns: new TestRunCollection(this),
-      bugProgresses: new BugProgressCollection(this)
+      bugProgresses: new BugProgressCollection(this),
+      userActions: new UserActionCollection(this)
     };
 
     this.indexes = new Indexes();
