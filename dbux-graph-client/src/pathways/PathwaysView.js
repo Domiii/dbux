@@ -4,13 +4,12 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class PathwaysView extends ClientComponentEndpoint {
   createEl() {
-    return compileHtmlElement(/*html*/`
-      <div data-mount="Toolbar"></div>
-      <div data-mount="PathwaysView"></div>
+    return compileHtmlElement(/*html*/`<div data-el="list">
     </div>`);
   }
 
   update() {
+    this.els.
   }
 }
 
