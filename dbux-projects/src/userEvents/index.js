@@ -16,7 +16,7 @@ let manager;
 export function initUserEvent(_manager) {
   manager = _manager;
   onUserEvent((data) => {
-    manager.plc.addUserAction(data);
+    manager.pdp.addUserAction(data);
   });
 }
 

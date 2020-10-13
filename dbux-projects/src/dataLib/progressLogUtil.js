@@ -3,7 +3,7 @@ import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 
 /** @typedef {import('../projectLib/Bug').default} Bug */
-/** @typedef {import('./PathwayDataProvider').default} PathwayDataProvider */
+/** @typedef {import('./PathwaysDataProvider').default} PathwaysDataProvider */
 
 export default {
   // ###########################################################################
@@ -11,7 +11,7 @@ export default {
   // ###########################################################################
 
   /**
-   * @param {PathwayDataProvider} pdp
+   * @param {PathwaysDataProvider} pdp
    * @param {Bug} bug 
    */
   getTestRunsByBug(pdp, bug) {
@@ -19,7 +19,7 @@ export default {
   },
 
   /**
-   * @param {PathwayDataProvider} pdp
+   * @param {PathwaysDataProvider} pdp
    * @param {Bug} bug
    * @return {BugProgress}
    */
@@ -28,7 +28,7 @@ export default {
   },
 
   /**
-   * @param {PathwayDataProvider} pdp 
+   * @param {PathwaysDataProvider} pdp 
    * @param {TestRun} testRun 
    * @param {Bug} bug 
    */
@@ -37,7 +37,7 @@ export default {
   },
 
   /**
-   * @param {PathwayDataProvider} pdp 
+   * @param {PathwaysDataProvider} pdp 
    * @param {BugProgress} bugProgress
    * @param {Bug} bug 
    */

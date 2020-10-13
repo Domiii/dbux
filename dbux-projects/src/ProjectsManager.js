@@ -13,7 +13,7 @@ import PracticeSession from './practiceSession/PracticeSession';
 import RunStatus from './projectLib/RunStatus';
 import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
-import PathwayDataProvider from './dataLib/PathwayDataProvider';
+import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
 import { initUserEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import initUserEventLogging from './userEvents/eventLogging';
@@ -81,7 +81,7 @@ export default class ProjectsManager {
     this._emitter = new NanoEvents();
 
     this._backend = new BackendController(this);
-    this.pathwayDataProvider = new PathwayDataProvider(this);
+    this.pathwayDataProvider = new PathwaysDataProvider(this);
 
     this.recoverPracticeSession();
 

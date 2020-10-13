@@ -11,7 +11,7 @@ import BugProgress from './BugProgress';
 import { emitBugProgressChanged, emitNewBugProgress, emitNewTestRun } from '../userEvents';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('PathwayDataProvider');
+const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
 
 const storageKey = 'dbux-projects.progressLog';
 
@@ -45,7 +45,7 @@ class UserActionCollection extends Collection {
   }
 }
 
-export default class PathwayDataProvider {
+export default class PathwaysDataProvider {
   /**
    * Used for serialization
    */

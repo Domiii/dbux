@@ -1,6 +1,6 @@
 import CollectionIndex from '@dbux/data/src/indexes/CollectionIndex';
 
-/** @typedef {import('../PathwayDataProvider').default} PathwayDataProvider */
+/** @typedef {import('../PathwaysDataProvider').default} PathwaysDataProvider */
 
 /** @extends {CollectionIndex<TestRun>} */
 export default class TestRunByBugIdIndex extends CollectionIndex {
@@ -9,7 +9,7 @@ export default class TestRunByBugIdIndex extends CollectionIndex {
   }
 
   /** 
-   * @param {PathwayDataProvider} pdp
+   * @param {PathwaysDataProvider} pdp
    * @param {TestRun} testRun
    */
   makeKey(pdp, testRun) {
