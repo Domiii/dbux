@@ -1,4 +1,4 @@
-import GraphThemeMode from '@dbux/graph-common/src/shared/GraphThemeMode';
+import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -79,7 +79,7 @@ class Toolbar extends ClientComponentEndpoint {
       searchTerm
     } = this.state;
 
-    const themeModeName = GraphThemeMode.getName(this.context.themeMode).toLowerCase();
+    const themeModeName = ThemeMode.getName(this.context.themeMode).toLowerCase();
 
     // render buttons
     decorateClasses(this.els.syncModeBtn, {

@@ -2,7 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 
 /**
- * @file Here we export `ProjectsManager.emitEserEvent` such that you can emit events everywhere in dbux-code
+ * @file Here we export `ProjectsManager.emitUserEvent` such that you can emit events everywhere in dbux-code
  */
 
 // eslint-disable-next-line no-unused-vars

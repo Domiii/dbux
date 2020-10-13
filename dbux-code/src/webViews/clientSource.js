@@ -55,7 +55,7 @@ export async function buildWebviewClientHtml(scriptPaths, themePath) {
           });
         }
       };
-      window.__dbuxComponentManager = startDbuxGraphClient(ipcAdapter);
+      window.__dbuxComponentManager = startDbuxComponents(ipcAdapter);
     }
 
     main();

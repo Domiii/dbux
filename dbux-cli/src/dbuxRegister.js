@@ -7,5 +7,8 @@ import './linkOwnDependencies';
 // babelRegister
 export default function dbuxRegister(options) {
   const babelOptions = buildBabelOptions(options);
-  babelRegister(babelOptions);
+  if (babelOptions) {
+    console.error('babelRegister', JSON.stringify(options));
+    babelRegister(babelOptions);
+  }
 }

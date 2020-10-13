@@ -1,4 +1,5 @@
 import Express from './projects/express/Project';
+import Hexo from './projects/hexo/Project';
 import Eslint from './projects/eslint/Project';
 import TodomvcEs6 from './projects/todomvc-es6/Project';
 import RealworldWebComponentsProject from './projects/realworld-web-components/Project';
@@ -6,7 +7,9 @@ import JavascriptAlgorithmProject from './projects/javascript-algorithms/Project
 
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
-  express: Express
+  express: Express,
+  hexo: Hexo,
+  eslint: Eslint,
 };
 
 if (process.env.NODE_ENV === 'development') {
@@ -17,8 +20,7 @@ if (process.env.NODE_ENV === 'development') {
 
     'todomvc-es6': TodomvcEs6,
     'realworld-web-components': RealworldWebComponentsProject,
-    'javascript-algorithms': JavascriptAlgorithmProject,
-    eslint: Eslint
+    'javascript-algorithms': JavascriptAlgorithmProject
   };
 }
 
