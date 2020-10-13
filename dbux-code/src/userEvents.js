@@ -33,6 +33,13 @@ export function emitPracticeSelectTraceAction(selectMethod, trace) {
   });
 }
 
+export function emitTagTraceAction(trace) {
+  emitUserEvent('tagTrace', {
+    trace,
+    locationInfo: getExtraTraceLocationImformation(trace)
+  });
+}
+
 export function emitTreeViewAction(treeViewName, action, nodeId, args) {
   emitUserEvent('treeView', {
     treeViewName,

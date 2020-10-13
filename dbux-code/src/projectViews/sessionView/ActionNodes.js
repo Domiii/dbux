@@ -1,6 +1,27 @@
+import traceSelection from '@dbux/data/src/traceSelection';
 import RunStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import { showInformationMessage } from '../../codeUtil/codeModals';
+import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeModals';
+import { emitTagTraceAction } from '../../userEvents';
+
+class TagNode extends BaseTreeViewNode {
+  static makeLabel() {
+    return 'Found it';
+  }
+
+  init() {
+    this.tooltip = 'Tag current trace as bug location';
+  }
+
+  async handleClick() {
+    if (traceSelection.selected) {
+      emitTagTraceAction(traceSelection.selected);
+    }
+    else {
+      await showWarningMessage('You have not selected any trace yet.');
+    }
+  }
+}
 
 class RunNode extends BaseTreeViewNode {
   static makeLabel() {
@@ -84,6 +105,7 @@ class StopPracticeNode extends BaseTreeViewNode {
 }
 
 export const ActionNodeClasses = [
+  TagNode,
   RunNode,
   DebugNode,
   StopPracticeNode
