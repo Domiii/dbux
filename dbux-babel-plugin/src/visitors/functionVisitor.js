@@ -4,6 +4,7 @@ import TraceType from '@dbux/common/src/core/constants/TraceType';
 import VarOwnerType from '@dbux/common/src/core/constants/VarOwnerType';
 import { buildWrapTryFinally, buildSource, buildBlock } from '../helpers/builders';
 import { injectContextEndTrace } from '../helpers/contextHelper';
+import { traceWrapExpressionStatement } from '../helpers/traceHelpers';
 import { getNodeNames } from './nameVisitors';
 
 // ###########################################################################
@@ -48,7 +49,7 @@ const popResumeTemplate = template(
 /**
  * Instrument all Functions to keep track of all (possibly async) execution stacks.
  */
-function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, staticResumeId = null) {
+function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, recordParams, staticResumeId = null) {
   const { ids: { dbux }, contexts: { genContextIdName } } = state;
   const contextIdVar = genContextIdName(bodyPath);
 
@@ -96,6 +97,7 @@ function wrapFunctionBody(bodyPath, state, staticId, pushTraceId, popTraceId, st
   // wrap the function in a try/finally statement
   const newBody = buildBlock([
     ...pushes,
+    ...recordParams,
     buildWrapTryFinally(bodyNode, pops)
   ]);
 
@@ -150,16 +152,17 @@ export function functionVisitEnter(bodyPath, state) {
   const paramIds = params.map(param =>
     Object.values(param.getBindingIdentifierPaths())
   ).flat();
-  paramIds.forEach(paramPath =>
+  let recordParams = paramIds.map(paramPath => {
     state.varAccess.addVarAccess(
-      paramPath.name, paramPath, ownerId, VarOwnerType.Trace
-    )
-  );
+      paramPath.node.name, paramPath, ownerId, VarOwnerType.Trace
+    );
+    return traceWrapExpressionStatement(TraceType.ExpressionResult, paramPath, state);
+  });
 
   let staticResumeContextId;
   if (isInterruptable) {
     staticResumeContextId = addResumeContext(bodyPath, state, staticContextId);
   }
 
-  wrapFunctionBody(bodyPath, state, staticContextId, pushTraceId, popTraceId, staticResumeContextId);
+  wrapFunctionBody(bodyPath, state, staticContextId, pushTraceId, popTraceId, recordParams, staticResumeContextId);
 }
