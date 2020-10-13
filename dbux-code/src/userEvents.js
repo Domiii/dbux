@@ -1,27 +1,35 @@
-import NanoEvents from 'nanoevents';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
+
+/**
+ * @file Here we export `ProjectsManager.emitEserEvent` such that you can emit events everywhere in dbux-code
+ */
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('UserEvents');
 
-const Verbose = false;
-// const Verbose = true;
-
 // ###########################################################################
-// events
-// NOTE: data *must* always be completely serializable, simple data.
+// register ProjectsManager
 // ###########################################################################
 
-export function emitEditorAction(data) {
-  emitUserEvent('editor', data);
+let manager;
+
+export function initUserEvent(_manager) {
+  manager = _manager;
 }
 
-export function emitPracticeSelectTraceAction(selectMethodName, trace, detail) {
-  emitUserEvent(selectMethodName, {
+// ###########################################################################
+// events registry
+// ###########################################################################
+
+export function emitEditorAction(evtName, data) {
+  emitUserEvent(`editor.${evtName}`, data);
+}
+
+export function emitPracticeSelectTraceAction(selectMethod, trace) {
+  emitUserEvent(selectMethod, {
     trace,
-    locationInfo: getExtraTraceLocationImformation(trace),
-    detail
+    locationInfo: getExtraTraceLocationImformation(trace)
   });
 }
 
@@ -65,13 +73,18 @@ function getExtraTraceLocationImformation(trace) {
 // emitter
 // ###########################################################################
 
-let emitter = new NanoEvents();
-
 export function onUserEvent(cb) {
-  return emitter.on('e', cb);
+  if (!manager) {
+    throw new Error('trying to listen on userEvent before ProjectsManager is registered');
+  }
+  return manager.onUserEvent(cb);
 }
 
+/**
+ * 
+ * @param {string} name 
+ * @param {Object} data NOTE: data *must* always be completely serializable, simple data.
+ */
 function emitUserEvent(name, data) {
-  Verbose && debug(`name: ${name}, data:`, data);
-  emitter.emit('e', name, data);
+  manager?.emitUserEvent(name, data);
 }

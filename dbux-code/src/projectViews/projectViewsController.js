@@ -228,6 +228,9 @@ export class ProjectViewController {
 
   async maybeStopPractice() {
     const { practiceSession } = this.manager;
+    if (!practiceSession) {
+      return;
+    }
     const confirmString = (practiceSession.stopwatchEnabled && !practiceSession.isSolved) ?
       'Are you sure you want to give up the timed challenge?' :
       'Do you want to stop the practice session?';
