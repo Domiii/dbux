@@ -79,9 +79,9 @@ export default class ProgressLogController {
    * @return {TestRun}
    */
   addTestRun(bug, nFailedTests, patchString) {
-    const application = last(allApplications.selection.getAll());
-    const testRun = new TestRun(bug, nFailedTests, patchString, application.uuid);
+    const testRun = new TestRun(bug, nFailedTests, patchString);
     this.addData({ testRuns: [testRun] });
+    const application = last(allApplications.selection.getAll());
     emitNewTestRun(testRun, application);
 
     return testRun;

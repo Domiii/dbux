@@ -4,8 +4,7 @@ export default class TestRun {
    * @param {number} nFailedTests
    * @param {string} patch 
    */
-  constructor(bug, nFailedTests, patch, applicationUUID) {
-    this.applicationUUID = applicationUUID;
+  constructor(bug, nFailedTests, patch) {
     this.projectName = bug.project.name;
     this.bugId = bug.id;
     this.createdAt = Date.now();
