@@ -4,6 +4,7 @@ import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Project from '../../projectLib/Project';
 import { buildMochaRunCommand } from '../../util/mochaUtil';
 
+/** @typedef {import('../../projectLib/Bug').default} Bug */
 
 export default class EslintProject extends Project {
   gitRemote = 'BugsJS/eslint.git';
@@ -45,6 +46,8 @@ export default class EslintProject extends Project {
           return null;
         }
 
+        let distFilePaths = bug.testFilePaths.map(file => path.join('dist', file));
+
         return {
           // id: i + 1,
           name: `bug #${bug.id}`,
@@ -53,10 +56,11 @@ export default class EslintProject extends Project {
             '--grep',
             `"${bug.testRe}"`,
             '--',
-            ...bug.testFilePaths.map(file => path.join('dist', file)),
+            ...distFilePaths,
             // eslint-disable-next-line max-len
             // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
           ],
+          distFilePaths,
           // require: ['test/support/env'],
           ...bug,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
@@ -107,7 +111,10 @@ export default class EslintProject extends Project {
     return this.manager.getDbuxPath('webpack/bin/webpack.js');
   }
 
-  async startWatchMode() {
+  /**
+   * @param {Bug} bug 
+   */
+  async startWatchMode(bug) {
     // start webpack using latest node (long-time support)
     // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
     const req = `-r ${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}`;

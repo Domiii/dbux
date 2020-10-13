@@ -3,6 +3,7 @@ import tracePlayback from '@dbux/data/src/playback/tracePlayback';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { newLogger } from '@dbux/common/src/log/logger';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import { emitPracticeSelectTraceAction } from '../../userEvents';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('NavigationNode');
@@ -86,8 +87,10 @@ export default class NavigationNode extends BaseTreeViewNode {
       window.showInformationMessage(`Can't find "${methodName}" of current trace.`);
     }
 
+    emitPracticeSelectTraceAction(`navigation.${methodName}`, trace);
+
     // this.treeNodeProvider.treeView.reveal(this);
-    
+
     // const ids2 = getIds();
     // debug(`${methodName}: ${ids1} -> ${ids2}`);
   }

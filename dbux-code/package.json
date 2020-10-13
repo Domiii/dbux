@@ -173,6 +173,14 @@
         "title": "Dbux: Reset Practice Progress"
       },
       {
+        "command": "dbux.showDBStats",
+        "title": "Dbux: Show DB Stats"
+      },
+      {
+        "command": "dbux.clearDBStats",
+        "title": "Dbux: Clear DB Stats"
+      },
+      {
         "command": "dbux.showOutputChannel",
         "title": "Dbux: Show output channel"
       },
@@ -771,6 +779,14 @@
         },
         {
           "command": "dbux.resetPracticeProgress",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.showDBStats",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.clearDBStats",
           "when": "dbux.context.activated"
         },
         {
