@@ -332,9 +332,9 @@ export default class ProjectsManager {
    * @param {Bug} bug 
    */
   async saveFileChanges(bug) {
-    const patchString = await bug.project.getPatchString();
-    if (patchString) {
-      this.plc.updateBugProgress(bug, { patchString });
+    const patch = await bug.project.getPatchString();
+    if (patch) {
+      this.plc.updateBugProgress(bug, { patch });
       await this.plc.save();
     }
   }
