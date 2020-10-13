@@ -29,6 +29,7 @@ export function emitEditorAction(evtName, data) {
 export function emitPracticeSelectTraceAction(selectMethod, trace) {
   emitUserEvent(selectMethod, {
     trace,
+    applicationUUID: getApplicationUUID(trace),
     locationInfo: getExtraTraceLocationImformation(trace)
   });
 }
@@ -67,6 +68,10 @@ function getExtraTraceLocationImformation(trace) {
     staticContext,
     staticTraceIndex: trace.staticTraceIndex
   };
+}
+
+function getApplicationUUID(trace) {
+  return allApplications.getById(trace.applicationId).uuid;
 }
 
 // ###########################################################################

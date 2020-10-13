@@ -292,9 +292,51 @@ export default class ProjectsManager {
    * @param {Bug} bug 
    */
   async resetBug(bug) {
-    await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
-    this.plc.addUnfinishedTestRun(bug, '');
+    try {
+      await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
+    }
+    catch (err) {
+      if (err.userCanceled) {
+        return;
+      }
+      else {
+        throw err;
+      }
+    }
+    this.plc.updateBugProgress(bug, { patch: '' });
     await this.plc.save();
+  }
+
+  /**
+   * Apply the newest patch in testRuns
+   * @param {Bug} bug
+   */
+  async applyNewBugPatch(bug) {
+    const patchString = this.plc.util.getBugProgressByBug(bug)?.patch;
+
+    if (patchString) {
+      const { project } = bug;
+      try {
+        await project.applyPatchString(patchString);
+      }
+      catch (err) {
+        err.applyFailedFlag = true;
+        err.patchString = patchString;
+        throw err;
+      }
+    }
+  }
+
+  /**
+   * Saves any changes in current active project as patch of bug
+   * @param {Bug} bug 
+   */
+  async saveFileChanges(bug) {
+    const patch = await bug.project.getPatchString();
+    if (patch) {
+      this.plc.updateBugProgress(bug, { patch });
+      await this.plc.save();
+    }
   }
 
   // ###########################################################################
@@ -374,7 +416,9 @@ export default class ProjectsManager {
 
     const result = await this.runner.testBug(bug, cfg);
 
-    await this.plc.addTestRunWithoutPatchString(bug, result.code);
+    const patch = await bug.project.getPatchString();
+    this.plc.addTestRun(bug, result.code, patch);
+    this.plc.updateBugProgress(bug, { patch });
 
     result.code && await bug.openInEditor();
 
@@ -383,34 +427,6 @@ export default class ProjectsManager {
 
   async stopRunner() {
     await this.runner.cancel();
-  }
-
-
-  /**
-   * Apply the newest patch in testRuns
-   * @param {Bug} bug
-   */
-  async applyNewBugPatch(bug) {
-    let testRuns = this.plc.util.getTestRunsByBug(bug);
-    let testRun = testRuns.reduce((a, b) => {
-      if (!a) {
-        return b;
-      }
-      return a.createdAt > b.createdAt ? a : b;
-    }, undefined);
-    let patchString = testRun?.patch;
-
-    if (patchString) {
-      const { project } = bug;
-      try {
-        await project.applyPatchString(patchString);
-      }
-      catch (err) {
-        err.applyFailedFlag = true;
-        err.patchString = patchString;
-        throw err;
-      }
-    }
   }
 
   // ########################################
@@ -468,18 +484,6 @@ export default class ProjectsManager {
     await this.stopPractice();
     await this.plc.reset();
     await this.updateActivatingBug(undefined);
-  }
-
-  /**
-   * Saves any changes in current active project as patch of bug
-   * @param {Bug} bug 
-   */
-  async saveFileChanges(bug) {
-    const patchString = await bug.project.getPatchString();
-    if (patchString) {
-      this.plc.addUnfinishedTestRun(bug, patchString);
-      await this.plc.save();
-    }
   }
 
   // ###########################################################################
