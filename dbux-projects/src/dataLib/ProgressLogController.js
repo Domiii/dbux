@@ -95,20 +95,6 @@ export default class ProgressLogController {
   }
 
   /**
-   * NOTE: A unfinished TestRun is saved with nFailedTests = null
-   * @param {Bug} bug 
-   * @param {string} patchString 
-   */
-  addUnfinishedTestRun(bug, patchString) {
-    this.addTestRun(bug, null, patchString);
-  }
-
-  async addTestRunWithoutPatchString(bug, nFailedTests) {
-    const patchString = await bug.project.getPatchString();
-    this.addTestRun(bug, nFailedTests, patchString);
-  }
-
-  /**
    * NOTE: This may break indexes' keys
    * @param {Bug} bug 
    * @param {Object} update
