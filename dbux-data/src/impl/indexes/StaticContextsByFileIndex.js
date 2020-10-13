@@ -1,7 +1,7 @@
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import CollectionIndex from '../../indexes/CollectionIndex';
-import DataProvider from '../../DataProvider';
+import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 /**
@@ -13,7 +13,7 @@ export default class StaticContextsByFileIndex extends CollectionIndex {
   }
 
   /**
-   * @param {DataProvider} dp 
+   * @param {RuntimeDataProvider} dp 
    * @param {StaticContext} staticContext
    */
   makeKey(dp, staticContext) {

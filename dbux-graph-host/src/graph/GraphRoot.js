@@ -69,51 +69,31 @@ class GraphRoot extends HostComponentEndpoint {
     this.refresh();
   }
 
-  refresh = () => {
-    ++this._refreshRequests;
-    if (this._refreshPromise) {
-      return;
-    }
-    this._refreshPromise = this.doRefresh();
-  }
+  handleRefresh() {
+    // oldApps
+    const oldAppIds = new Set(this.runNodesById.getAll().map(runNode => runNode.state.applicationId));
+    const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
 
-  async doRefresh() {
-    while (this._refreshRequests) {
-      this._refreshRequests = 0;
-
-      // wait for init before dispose something
-      await this.componentManager.waitForBusyInit();
-      
-      // oldApps
-      const oldAppIds = new Set(this.runNodesById.getAll().map(runNode => runNode.state.applicationId));
-      const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
-
-      // remove old runNode
-      for (const runNode of this.runNodesById.getAll()) {
-        const { applicationId, runId } = runNode.state;
-        if (!newAppIds.has(applicationId)) {
-          this.removeRunNode(applicationId, runId);
-        }
+    // remove old runNode
+    for (const runNode of this.runNodesById.getAll()) {
+      const { applicationId, runId } = runNode.state;
+      if (!newAppIds.has(applicationId)) {
+        this.removeRunNode(applicationId, runId);
       }
-
-      // add new runNode
-      for (const appId of newAppIds) {
-        if (!oldAppIds.has(appId)) {
-          const app = allApplications.getById(appId);
-          const allContexts = app.dataProvider.collections.executionContexts.getAll();
-          this.addRunNodeByContexts(appId, allContexts);
-        }
-      }
-
-      // always re-subscribe since applicationSet clears subscribtion everytime it changes
-      this._resubscribeOnData();
-      this._setApplicationState();
-
-      // wait for init to ensure client side finished
-      await this.componentManager.waitForBusyInit();
     }
-    this._refreshPromise = null;
-    this._emitter.emit('refresh');
+
+    // add new runNode
+    for (const appId of newAppIds) {
+      if (!oldAppIds.has(appId)) {
+        const app = allApplications.getById(appId);
+        const allContexts = app.dataProvider.collections.executionContexts.getAll();
+        this.addRunNodeByContexts(appId, allContexts);
+      }
+    }
+
+    // always re-subscribe since applicationSet clears subscribtion everytime it changes
+    this._resubscribeOnData();
+    this._setApplicationState();
   }
 
   _resubscribeOnData() {

@@ -4,14 +4,14 @@ import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
 import TraceType, { isTracePush, isTracePop, isDataOnlyTrace } from '@dbux/common/src/core/constants/TraceType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
-import DataProvider from '../DataProvider';
+import RuntimeDataProvider from '../RuntimeDataProvider';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('CallGraph');
 
 export default class CallGraph {
   /**
-   * @param {DataProvider} dp
+   * @param {RuntimeDataProvider} dp
    */
   constructor(dp) {
     this.dp = dp;

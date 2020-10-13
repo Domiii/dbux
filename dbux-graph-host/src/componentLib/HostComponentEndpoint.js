@@ -250,6 +250,41 @@ class HostComponentEndpoint extends ComponentEndpoint {
   }
 
   // ###########################################################################
+  // refresh
+  // ###########################################################################
+  
+  /**
+   * @abstract
+   */
+  handleRefresh() {
+    throw new Error(`${this.componentName}.handleRefresh not implemented`);
+  }
+
+  refresh = () => {
+    ++this._refreshRequests;
+    if (this._refreshPromise) {
+      return;
+    }
+    this._refreshPromise = this.doRefresh();
+  }
+
+  async doRefresh() {
+    while (this._refreshRequests) {
+      this._refreshRequests = 0;
+
+      // wait for init before dispose something
+      await this.componentManager.waitForBusyInit();
+
+      this.handleRefresh();
+
+      // wait for init to ensure client side finished
+      await this.componentManager.waitForBusyInit();
+    }
+    this._refreshPromise = null;
+    this._emitter.emit('refresh');
+  }
+
+  // ###########################################################################
   // removing + disposing
   // ###########################################################################
 

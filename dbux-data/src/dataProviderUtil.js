@@ -9,7 +9,7 @@ import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCa
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
 
 /**
- * @typedef {import('./DataProvider').default} DataProvider
+ * @typedef {import('./RuntimeDataProvider').RuntimeDataProvider} DataProvider
  */
 
 // eslint-disable-next-line no-unused-vars

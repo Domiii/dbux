@@ -1,4 +1,4 @@
-import DataProvider from './DataProvider';
+import RuntimeDataProvider from './RuntimeDataProvider';
 import dataProviderUtil from './dataProviderUtil';
 
 import CallGraph from './callGraph/CallGraph';
@@ -36,7 +36,7 @@ import StaticTracesByContextIndex from './impl/indexes/StaticTracesByContextInde
 
 
 export function newDataProvider(application) {
-  const dataProvider = new DataProvider(application);
+  const dataProvider = new RuntimeDataProvider(application);
   
   // util
   const utilNames = Object.keys(dataProviderUtil);

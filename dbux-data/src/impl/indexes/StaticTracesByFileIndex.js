@@ -1,6 +1,6 @@
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
 import CollectionIndex from '../../indexes/CollectionIndex';
-import DataProvider from '../../DataProvider';
+import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 /** @extends {CollectionIndex<StaticTrace>} */
@@ -10,7 +10,7 @@ export default class StaticTracesByFileIndex extends CollectionIndex {
   }
   
   /** 
-   * @param {DataProvider} dp
+   * @param {RuntimeDataProvider} dp
    * @param {StaticTrace} staticTrace
    */
   makeKey(dp, staticTrace) {
