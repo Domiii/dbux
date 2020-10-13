@@ -1,7 +1,28 @@
-import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
+import traceSelection from '@dbux/data/src/traceSelection';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
+import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import { showInformationMessage } from '../../codeUtil/codeModals';
+import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeModals';
+import { emitTagTraceAction } from '../../userEvents';
+
+class TagNode extends BaseTreeViewNode {
+  static makeLabel() {
+    return 'Found it';
+  }
+
+  init() {
+    this.tooltip = 'Tag current trace as bug location';
+  }
+
+  async handleClick() {
+    if (traceSelection.selected) {
+      emitTagTraceAction(traceSelection.selected);
+    }
+    else {
+      await showWarningMessage('You have not selected any trace yet.');
+    }
+  }
+}
 
 /** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
 
@@ -124,6 +145,7 @@ class StopPracticeNode extends BaseTreeViewNode {
 }
 
 export const ActionNodeClasses = [
+  TagNode,
   DetailNode,
   RunNode,
   DebugNode,
