@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { pathGetParent } from '@dbux/common/src/util/pathUtil';
-import DataProvider from '../DataProvider';
+import RuntimeDataProvider from '../RuntimeDataProvider';
 import { newDataProvider } from '../dataProviderImpl';
 import { getFileName } from '../util/nodeUtil';
 
@@ -25,7 +25,7 @@ export default class Application {
    */
   allApplications;
   /**
-   * @type {DataProvider}
+   * @type {RuntimeDataProvider}
    * @readonly
    */
   dataProvider;
