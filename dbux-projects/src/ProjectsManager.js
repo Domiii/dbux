@@ -368,6 +368,8 @@ export default class ProjectsManager {
       debugMode,
       nodeArgs,
       dbuxArgs: '--verbose=1'
+      // dbuxArgs: '--dontInjectDbux',
+      // nodeArgs: '--enable-source-maps' // TODO: make this configurable
     };
 
     const result = await this.runner.testBug(bug, cfg);

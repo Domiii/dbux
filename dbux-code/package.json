@@ -1048,7 +1048,7 @@
     "package:analyze": "cd .. && yarn run build:prod && cd dbux-code && yarn run package-no-build && mkdir public && mv *.vsix public && cd public && 7z x -o\"contents\" *.vsix",
     "package:publish-no-build": "yarn run package-no-build && yarn run publish-only",
     "publish-only": "echo 'Publishing...' && vsce publish --yarn",
-    "watch": "node ../node_modules/webpack/bin/webpack.js --watch --info-verbosity verbose --progress"
+    "watch": "node ../node_modules/webpack/bin/webpack.js --watch"
   },
   "devDependencies": {
     "@dbux/babel-plugin": "^0.2.6-dev.0",

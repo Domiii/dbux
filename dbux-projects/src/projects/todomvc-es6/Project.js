@@ -66,7 +66,7 @@ export default class TodomvcEs6Project extends Project {
 
   async startWatchMode() {
     // start webpack and webpack-dev-server
-    return this.execBackground('node node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./webpack.config.dbux.js');
+    return this.execBackground('node node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./dbux.webpack.config.js');
   }
 
   async selectBug(bug) {

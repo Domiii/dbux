@@ -1,7 +1,7 @@
 const path = require('path');
-const buildWebpackConfig = require('./webpack.config.dbux.base');
+const buildWebpackConfig = require('./dbux.webpack.config.base');
 
-const { makeDynamicRequireRule } = require('./build-util');
+const { makeDynamicRequireRule } = require('./dbux.build-util');
 require('@dbux/cli/lib/dbux-register-self');
 require('@dbux/common/src/util/prettyLogs');
 
@@ -20,8 +20,7 @@ const resultCfg = buildWebpackConfig(ProjectRoot,
   {
     entry: {
       // TODO feed entries in via CLI
-      // see https://github.com/BugsJS/karma/commit/8add6a2a1008492cff4d76e6697edab64955666c
-      'test/unit/middleware/proxy.spec': path.join(ProjectRoot, 'test/unit/middleware/proxy.spec.js')
+      'tests/lib/rules/no-obj-calls': path.join(ProjectRoot, 'tests/lib/rules/no-obj-calls.js')
     },
     // externals,
     module: {

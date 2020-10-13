@@ -1,18 +1,18 @@
-import GraphThemeMode from '@dbux/graph-common/src/shared/GraphThemeMode';
+import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
-class GraphDocument extends ClientComponentEndpoint {
+class PathwaysDocument extends ClientComponentEndpoint {
   createEl() {
     const el = document.getElementById('root');
     el.innerHTML = /*html*/`<div>
       <div data-mount="Toolbar"></div>
-      <div data-mount="GraphRoot"></div>
+      <div data-mount="PathwaysView"></div>
     </div>`;
     return el;
   }
   update() {
     const { themeMode } = this.state; 
-    if (GraphThemeMode.is.Dark(themeMode)) {
+    if (ThemeMode.is.Dark(themeMode)) {
       document.body.classList.add('theme-mode-dark');
     }
     else {
@@ -21,4 +21,4 @@ class GraphDocument extends ClientComponentEndpoint {
   }
 }
 
-export default GraphDocument;
+export default PathwaysDocument;

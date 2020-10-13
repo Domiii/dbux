@@ -1,11 +1,15 @@
 {
 	"folders": [
 		{
-			"path": "dbux_projects/eslint"
+			"path": "dbux_projects/express"
+		},
+		{
+			"path": "samples"
 		}
 	],
 	"settings": {
 		"dbux.autoStart": true,
+		// "dbux.run.nodeArgs": "--enable-source-maps",
 		"debug.node.autoAttach": "off"
 	}
 }

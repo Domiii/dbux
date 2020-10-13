@@ -27,7 +27,7 @@ export default class ExpressProject extends Project {
         id: 2,
         testRe: [
           'req .protocol when "trust proxy" is enabled when trusting hop count should respect X-Forwarded-Proto',
-          'when "trust proxy" trusting hop count should respect X-Forwarded-Proto'
+          // 'when "trust proxy" trusting hop count should respect X-Forwarded-Proto'
         ],
         testFilePaths: ['test/req.protocol.js', 'test/req.secure.js']
       },

@@ -162,6 +162,14 @@ const traceCfg = (() => {
       [['left', ExpressionValue], ['right', ExpressionValue]]
     ],
 
+    // object initializer, e.g. rhs of `var o = { x: 1 }` (kind = 'init')
+    ObjectExpression: [
+      NoTrace,
+      [['properties',
+        [['value', ExpressionValue]]
+      ]]
+    ],
+
     MemberExpression: [
       NoTrace,
       [['object', MemberObject], ['property', MemberProperty]]

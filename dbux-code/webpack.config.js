@@ -19,7 +19,6 @@ const MonoRoot = path.resolve(__dirname, '..');
 
 module.exports = (env, argv) => {
   const outputFolderName = 'dist';
-  const outFile = 'bundle.js';
 
   const mode = argv.mode || 'development';
   const DBUX_VERSION = getDbuxVersion(mode);

@@ -194,7 +194,7 @@ export default class BugRunner {
       cfg = {
         debugPort: cfg?.debugMode && this.debugPort || null,
         dbuxJs: this.manager.getDbuxCliBinPath(),
-        ...cfg
+        ...cfg,
       };
       let command = await bug.project.testBugCommand(bug, cfg);
       command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces

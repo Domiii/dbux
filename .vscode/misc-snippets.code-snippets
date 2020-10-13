@@ -53,68 +53,82 @@
 		],
 		"scope": "css,scss"
 	},
-	"JSDoc: @type": {
-		"prefix": "@type",
-		"body": [
-			"/**",
-			" * @type {$1}",
-			" */"
-		]
-	},
-	"JSDoc: @type {number}": {
-		"prefix": "@type_number",
-		"body": [
-			"/**",
-			" * @type {number}",
-			" */"
-		]
-	},
-	// "JSDoc: single-line @type {number}": {
-	// 	"prefix": "@type_single_line_number",
-	// 	"body": [
-	// 		"/** @type {number} */"
-	// 	]
-	// },
-	"JSDoc: @param": {
-		"prefix": "@param",
-		"body": [
-			"/**",
-			" * @param {$1} $2",
-			" */"
-		]
-	},
-	"JSDoc: additional @param": {
-		"prefix": "@param_add",
-		"body": [
-			"@param {$1} $2"
-		]
-	},
-	"JSDoc: @return": {
-		"prefix": "@return",
-		"body": [
-			"/**",
-			" * @return {$1}",
-			" */"
-		]
-	},
-	"JSDoc: add @return": {
-		"prefix": "@return_add",
-		"body": [
-			"@return {$1}"
-		]
-	},
 
-	"eslint-disable-next-line no-unused-vars": {
-		"prefix": "eslint-disable-next-line no-unused-vars",
-		"body": [
-			"// eslint-disable-next-line no-unused-vars"
-		]
-	},
-
-	"JSDoc: @typedef" :{
-		"prefix": "@typedef",
-		"body": [
-			"/** @typedef {import('$1').${2:default}} $0 */"
-		]
-	}
+  "JSDoc: @type": {
+    "prefix": "@type",
+    "body": [
+      "/**",
+      " * @type {$1}",
+      " */"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: @type {number}": {
+    "prefix": "@type_number",
+    "body": [
+      "/**",
+      " * @type {number}",
+      " */"
+    ],
+    "scope": "javascript,typescript"
+  },
+  // "JSDoc: single-line @type {number}": {
+  // 	"prefix": "@type_single_line_number",
+  // 	"body": [
+  // 		"/** @type {number} */"
+  // 	]
+  // },
+  "JSDoc: @param": {
+    "prefix": "@param",
+    "body": [
+      "/**",
+      " * @param {$1} $2",
+      " */"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: additional @param": {
+    "prefix": "@param_add",
+    "body": [
+      "@param {$1} $2"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: @return": {
+    "prefix": "@return",
+    "body": [
+      "/**",
+      " * @return {$1}",
+      " */"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: add @return": {
+    "prefix": "@return_add",
+    "body": [
+      "@return {$1}"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "eslint-disable-next-line no-unused-vars": {
+    "prefix": "eslint-disable-next-line no-unused-vars",
+    "body": [
+      "// eslint-disable-next-line no-unused-vars"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: @typedef-default": {
+    "prefix": "@typedef-default",
+    "body": [
+      "/** @typedef {import('$1/$0').default} $0 */"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: @typedef-named": {
+    "prefix": "@typedef-named",
+    "body": [
+      "/** @typedef {import('$1').$0} $0 */"
+    ],
+    "scope": "javascript,typescript"
+  }
 }
