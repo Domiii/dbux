@@ -1,4 +1,6 @@
+import last from 'lodash/last';
 import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import ProgressLogUtil from './progressLogUtil';
@@ -74,11 +76,15 @@ export default class ProgressLogController {
    * @param {Bug} bug 
    * @param {number} nFailedTests
    * @param {string} patchString 
+   * @return {TestRun}
    */
   addTestRun(bug, nFailedTests, patchString) {
     const testRun = new TestRun(bug, nFailedTests, patchString);
     this.addData({ testRuns: [testRun] });
-    emitNewTestRun(testRun);
+    const application = last(allApplications.selection.getAll());
+    emitNewTestRun(testRun, application);
+
+    return testRun;
   }
 
   /**
@@ -92,20 +98,6 @@ export default class ProgressLogController {
     this.addData({ bugProgresses: [bugProgress] });
     emitNewBugProgress(bugProgress);
     return bugProgress;
-  }
-
-  /**
-   * NOTE: A unfinished TestRun is saved with nFailedTests = null
-   * @param {Bug} bug 
-   * @param {string} patchString 
-   */
-  addUnfinishedTestRun(bug, patchString) {
-    this.addTestRun(bug, null, patchString);
-  }
-
-  async addTestRunWithoutPatchString(bug, nFailedTests) {
-    const patchString = await bug.project.getPatchString();
-    this.addTestRun(bug, nFailedTests, patchString);
   }
 
   /**

@@ -31,8 +31,12 @@ export function emitPracticeSessionEvent(eventName, practiceSession) {
   });
 }
 
-export function emitNewTestRun(testRun) {
-  emitUserEvent('testRunFinished', { testRun });
+export function emitNewTestRun(testRun, application) {
+  emitUserEvent('testRunFinished', { 
+    testRun,
+    application: application.dataProvider.serialize(),
+    applicationUUID: application.uuid
+  });
 }
 
 export function emitNewBugProgress(bugProgress) {

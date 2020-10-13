@@ -15,6 +15,12 @@ const SerializationConfig = {
   maxStringLength: 1000
 };
 
+const builtInTypeSerializers = new Map([
+  [Map, obj => [['entries', obj.entries()]]],
+  [Set, obj => [['entries', obj.entries()]]],
+  [RegExp, obj => [['regex', obj.toString()]]]
+]);
+
 
 class TrackedValue {
   static _lastId = 0;
@@ -275,8 +281,7 @@ class ValueCollection extends Collection {
     // process by category
     switch (category) {
       case ValueTypeCategory.String:
-        if (value.length > SerializationConfig.maxStringLength) 
-        {
+        if (value.length > SerializationConfig.maxStringLength) {
           serialized = value.substring(0, SerializationConfig.maxStringLength);
           pruneState = ValuePruneState.Shortened;
         }
@@ -315,7 +320,7 @@ class ValueCollection extends Collection {
         }
         else {
           // iterate over all object properties
-          const props = this._getProperties(value);
+          let props = this._getProperties(value);
 
           if (!props) {
             // error
@@ -334,22 +339,40 @@ class ValueCollection extends Collection {
               pruneState = ValuePruneState.Shortened;
               n = SerializationConfig.maxObjectSize;
             }
-
-            // build object
+            
+            // start serializing
             serialized = [];
-            for (let i = 0; i < n; ++i) {
-              const prop = props[i];
-              let childRef;
-              if (!this._canAccess(value)) {
-                childRef = this._addOmitted();
-              }
-              else {
-                const childValue = this._readProperty(value, prop);
-                childRef = this._serialize(childValue, depth + 1, visited);
+
+            // TODO: won't work for polyfills :(
+            // TODO: consider thenables
+
+            const builtInSerializer = value.constructor ? builtInTypeSerializers.get(value.constructor) : null;
+            if (builtInSerializer) {
+              // serialize built-in types - especially: RegExp, Map, Set
+              const entries = builtInSerializer(value);
+              for (const [prop, childValue] of entries) {
+                const childRef = this._serialize(childValue, depth + 1, visited);
                 Verbose && this._log(`${' '.repeat(depth)}#${childRef.valueId} O[${prop}] ` +
                   `${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
+                serialized.push([prop, childRef.valueId]);
               }
-              serialized.push([prop, childRef.valueId]);
+            }
+            else {
+              // serialize object (default)
+              for (let i = 0; i < n; ++i) {
+                const prop = props[i];
+                let childRef;
+                if (!this._canAccess(value)) {
+                  childRef = this._addOmitted();
+                }
+                else {
+                  const childValue = this._readProperty(value, prop);
+                  childRef = this._serialize(childValue, depth + 1, visited);
+                  Verbose && this._log(`${' '.repeat(depth)}#${childRef.valueId} O[${prop}] ` +
+                    `${ValueTypeCategory.nameFrom(determineValueTypeCategory(childValue))} (${childRef.serialized})`);
+                }
+                serialized.push([prop, childRef.valueId]);
+              }
             }
           }
         }

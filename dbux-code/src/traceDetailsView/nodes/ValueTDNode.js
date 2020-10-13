@@ -51,7 +51,7 @@ export default class ValueTDNode extends BaseTreeViewNode {
     this.contextValue = 'dbuxTraceDetailsView.node.traceValueNode';
     const { valueRef } = this;
     if (valueRef) {
-      this.description = ValueTypeCategory.nameFrom(valueRef.category);
+      this.description = `${ValueTypeCategory.nameFrom(valueRef.category)}${valueRef.typeName && ` (${valueRef.typeName})`}`;
     }
   }
 

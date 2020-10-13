@@ -2,15 +2,14 @@ import {
   window,
   Uri,
   ViewColumn,
-  commands
+  commands,
+  ColorThemeKind
 } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
+import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { wrapScriptTag, wrapScriptFileInTag } from './domTransformUtil';
 import { set as mementoSet, get as mementoGet } from '../memento';
-
-// eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('WebviewWrapper');
 
 
 let _extensionContext;
@@ -28,6 +27,8 @@ export default class WebviewWrapper {
     this.preferredColumn = preferredColumn;
     this.wasVisible = false;
     this.resourceRoot = path.join(_extensionContext.extensionPath, 'resources');
+
+    this.logger = newLogger(`${title} WebviewWrapper`);
   }
 
   getIcon() {
@@ -50,6 +51,10 @@ export default class WebviewWrapper {
     return path.join(this.resourceRoot, ...pathSegments);
   }
 
+  getThemeMode() {
+    return window.activeColorTheme.kind === ColorThemeKind.Light ? ThemeMode.Light : ThemeMode.Dark;
+  }
+
   // ###########################################################################
   // Manage view column
   // ###########################################################################
@@ -67,7 +72,7 @@ export default class WebviewWrapper {
       await mementoSet(this.mementoKey, state);
     }
     catch (err) {
-      logError(`Error when setting memento '${this.mementoKey}' as ${state}`, err);
+      this.logger.error(`Error when setting memento '${this.mementoKey}' as ${state}`, err);
     }
   }
 
@@ -135,7 +140,7 @@ export default class WebviewWrapper {
               await cb(...args);
             }
             catch (err) {
-              logError('Error processing message from Client', err);
+              this.logger.error('Error processing message from Client', err);
             }
           },
           null,
@@ -147,11 +152,11 @@ export default class WebviewWrapper {
       dispose: (() => {
         ipcAdapter.postMessage = (msg) => {
           // when invoked by remote, we try to send response back after shutdown. This prevents that.
-          debug('silenced postMessage after Host shutdown:', JSON.stringify(msg));
+          this.logger.debug('silenced postMessage after Host shutdown:', JSON.stringify(msg));
         };
         ipcAdapter.onMessage = (msg) => {
           // when invoked by remote, we try to send response back after shutdown. This prevents that.
-          debug('silenced onMessage after Host shutdown:', JSON.stringify(msg));
+          this.logger.debug('silenced onMessage after Host shutdown:', JSON.stringify(msg));
         };
         this._messageHandler?.dispose();
         // eslint-disable-next-line no-extra-bind

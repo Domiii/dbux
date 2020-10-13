@@ -2,7 +2,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 
 /**
- * @file Here we export `ProjectsManager.emitEserEvent` such that you can emit events everywhere in dbux-code
+ * @file Here we export `ProjectsManager.emitUserEvent` such that you can emit events everywhere in dbux-code
  */
 
 // eslint-disable-next-line no-unused-vars
@@ -29,6 +29,7 @@ export function emitEditorAction(evtName, data) {
 export function emitPracticeSelectTraceAction(selectMethod, trace) {
   emitUserEvent(selectMethod, {
     trace,
+    applicationUUID: getApplicationUUID(trace),
     locationInfo: getExtraTraceLocationImformation(trace)
   });
 }
@@ -74,6 +75,10 @@ function getExtraTraceLocationImformation(trace) {
     staticContext,
     staticTraceIndex: trace.staticTraceIndex
   };
+}
+
+function getApplicationUUID(trace) {
+  return allApplications.getById(trace.applicationId).uuid;
 }
 
 // ###########################################################################

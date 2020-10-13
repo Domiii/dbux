@@ -1,7 +1,5 @@
-import BugStatus from './BugStatus';
-
 export default class BugProgress {
-  constructor(bug, status = BugStatus.Solving, stopwatchEnabled) {
+  constructor(bug, status, stopwatchEnabled) {
     const timeStamp = Date.now();
     this.projectName = bug.project.name;
     this.bugId = bug.id;
@@ -17,5 +15,6 @@ export default class BugProgress {
     this.solvedAt = null;
     this.stopwatchEnabled = stopwatchEnabled;
     this.status = status;
+    this.patch = '';
   }
 }

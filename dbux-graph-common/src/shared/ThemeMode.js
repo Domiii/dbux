@@ -1,11 +1,11 @@
 import Enum from '@dbux/common/src/util/Enum';
 
 // eslint-disable-next-line import/no-mutable-exports
-let GraphThemeMode = {
+let ThemeMode = {
   Light: 1,
   Dark: 2
 };
 
-GraphThemeMode = new Enum(GraphThemeMode);
+ThemeMode = new Enum(ThemeMode);
 
-export default GraphThemeMode;
+export default ThemeMode;

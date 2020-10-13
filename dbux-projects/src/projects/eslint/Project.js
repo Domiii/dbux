@@ -87,7 +87,7 @@ export default class EslintProject extends Project {
 
     // checkout the bug branch
     sh.cd(this.projectPath);
-    this.log(`Checking out bug ${name || id}...`);
+    this.log(`Checking out bug ${name || number}...`);
 
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);
@@ -118,7 +118,7 @@ export default class EslintProject extends Project {
     // start webpack using latest node (long-time support)
     // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
     const req = `-r ${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}`;
-    const args = '--config ./webpack.config.dbux.js --watch';
+    const args = '--config ./dbux.webpack.config.js --watch';
     return this.execBackground(
       `volta run --node lts node ${req} ${this.getWebpackJs()} ${args}`
     );
@@ -144,8 +144,8 @@ export default class EslintProject extends Project {
     delete mochaCfg.dbuxJs; // dbux has already been infused -> run test without another dbux layer
 
 
-    // return `cp ../../dbux-projects/assets/_shared_assets_/webpack.config.dbux.base.js webpack.config.dbux.base.js && \
-    // node ../../node_modules/webpack/bin/webpack.js --config webpack.config.dbux.js && \
+    // return `cp ../../dbux-projects/assets/_shared_assets_/dbux.webpack.config.base.js dbux.webpack.config.base.js && \
+    // node ../../node_modules/webpack/bin/webpack.js --config dbux.webpack.config.js && \
     // node --stack-trace-limit=100 -r @dbux/runtime/deps/require.ws.7.js  node_modules/mocha/bin/_mocha --no-exit -c -t 10000 --grep "" -- dist/tests/lib/rules/no-obj-calls.js`;
 
     return await buildMochaRunCommand(mochaCfg);
