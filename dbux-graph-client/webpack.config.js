@@ -132,8 +132,8 @@ module.exports = (env, argv) => {
 
   return {
     watchOptions: {
-      poll: true,
-      ignored: /node_modules/
+      poll: true
+      // ignored: /node_modules/
     },
     mode,
     target: 'web',

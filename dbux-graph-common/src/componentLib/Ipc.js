@@ -93,7 +93,7 @@ export default class Ipc {
     });
   }
 
-  _sendReject(message, err) {
+  _handleProcessingError(message, err) {
     const {
       callId,
       componentId,
@@ -102,8 +102,10 @@ export default class Ipc {
     } = message;
 
     const info = 'Error when processing request - ';
-    // logError(info + commandName, args);
-    // logError(err.stack);
+
+    
+    // eslint-disable-next-line no-console
+    console.error(info + commandName, args, err.stack);
     this._sendReply('reject', callId, componentId, info + err.message);
   }
 
@@ -165,7 +167,7 @@ export default class Ipc {
       }
     }
     catch (err) {
-      this._sendReject(message, err);
+      this._handleProcessingError(message, err);
     }
   }
 

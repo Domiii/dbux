@@ -1,4 +1,4 @@
-import GraphThemeMode from '@dbux/graph-common/src/shared/GraphThemeMode';
+import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { compileHtmlElement, decorateClasses } from '../util/domUtil';
 import { isMouseEventPlatformModifierKey } from '../util/keyUtil';
 import { getPlatformModifierKeyString } from '../util/platformUtil';
@@ -68,14 +68,14 @@ class ContextNode extends ClientComponentEndpoint {
     const { themeMode } = this.context;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},35%,${GraphThemeMode.is.Dark(themeMode) ? 30 : 95}%)`;
+    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},35%,${ThemeMode.is.Dark(themeMode) ? 30 : 95}%)`;
     this.els.contextLabel.textContent = contextNameLabel;
     this.els.locLabel.textContent = contextLocLabel;
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
     this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
 
-    if (GraphThemeMode.is.Dark(themeMode)) {
+    if (ThemeMode.is.Dark(themeMode)) {
       decorateClasses(this.els.title, {
         'selected-trace-dark': isSelected
       });

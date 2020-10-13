@@ -13,7 +13,8 @@ import { initTraceSelection } from './codeUtil/codeSelection';
 import { initApplicationsView } from './applicationsView/applicationsViewController';
 import { getOrCreateProjectManager } from './projectViews/projectControl';
 import { initProjectView } from './projectViews/projectViewsController';
-import { initGraphView } from './webViews';
+import { initGraphView } from './webViews/graphWebView';
+import { initPathwaysView } from './webViews/pathwaysWebView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies, initInstallUtil } from './codeUtil/installUtil';
 import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
@@ -73,8 +74,9 @@ async function activate(context) {
       callGraphViewController
     );
 
-    // for now, let's activate the graph view right away
+    // init the webviews
     initGraphView();
+    initPathwaysView();
 
     await maybeStartSurvey1ForTheFirstTime();
   } catch (e) {

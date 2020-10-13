@@ -10,7 +10,7 @@ import { checkSystem } from '@dbux/projects/src/checkSystem';
 import { registerCommand } from './commandUtil';
 import { showTextDocument } from '../codeUtil/codeNav';
 import { getSelectedApplicationInActiveEditorWithUserFeedback } from '../codeUtil/codeExport';
-import { showGraphView, hideGraphView } from '../webViews';
+import { showGraphView, hideGraphView } from '../webViews/graphWebView';
 import { setShowDeco } from '../codeDeco';
 import { toggleNavButton } from '../toolbar';
 import { toggleErrorLog } from '../logging';

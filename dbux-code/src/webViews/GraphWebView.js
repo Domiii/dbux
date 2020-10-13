@@ -32,3 +32,24 @@ export default class GraphWebView extends RichWebView {
     }
   }
 }
+
+/**
+ * @type {GraphWebView}
+ */
+let graphWebView;
+
+export async function showGraphView() {
+  initGraphView();
+  return graphWebView.show();
+}
+
+export function hideGraphView() {
+  graphWebView?.hide();
+}
+
+export async function initGraphView() {
+  if (!graphWebView) {
+    graphWebView = new GraphWebView();
+    graphWebView.init();
+  }
+}
