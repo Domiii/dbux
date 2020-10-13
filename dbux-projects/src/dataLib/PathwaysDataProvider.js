@@ -9,6 +9,8 @@ import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 import { emitBugProgressChanged, emitNewBugProgress, emitNewTestRun } from '../userEvents';
+import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
+import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -193,8 +195,10 @@ export default class PathwaysDataProvider {
     };
 
     this.indexes = new Indexes();
-    this.addIndex(new BugProgressByBugIdIndex());
     this.addIndex(new TestRunsByBugIdIndex());
+    this.addIndex(new BugProgressByBugIdIndex());
+    this.addIndex(new UserActionByBugIdIndex());
+    this.addIndex(new UserActionByTypeIndex());
   }
 
 

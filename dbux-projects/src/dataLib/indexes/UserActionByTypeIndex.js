@@ -1,6 +1,6 @@
 import CollectionIndex from '@dbux/data/src/indexes/CollectionIndex';
 
-/** @typedef {import('../PathwaysDataProvider').default} PathwaysDataProvider */
+/** @typedef {import('../PathwayDataProvider').default} PathwayDataProvider */
 
 /** @extends {CollectionIndex<UserAction>} */
 export default class UserActionByTypeIndex extends CollectionIndex {
@@ -9,7 +9,7 @@ export default class UserActionByTypeIndex extends CollectionIndex {
   }
 
   /** 
-   * @param {PathwaysDataProvider} pdp
+   * @param {PathwayDataProvider} pdp
    * @param {UserAction} userAction
    */
   makeKey(pdp, userAction) {
