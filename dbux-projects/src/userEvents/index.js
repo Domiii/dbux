@@ -1,4 +1,5 @@
 import NanoEvents from 'nanoevents';
+import UserActionType from './UserActionType';
 
 /** @typedef {import('../practiceSession/PracticeSession').default} PracticeSession */
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
@@ -25,14 +26,15 @@ export function initUserEvent(_manager) {
  * @param {PracticeSession} practiceSession 
  */
 export function emitPracticeSessionEvent(eventName, practiceSession) {
-  emitUserEvent(`practiceSession.${eventName}`, {
+  emitUserEvent(UserActionType.PracticeSessionChanged, {
+    eventType: eventName,
     sessionId: practiceSession.sessionId,
     bugId: practiceSession.bug.id
   });
 }
 
 export function emitNewTestRun(testRun, application) {
-  emitUserEvent('testRunFinished', { 
+  emitUserEvent(UserActionType.TestRunFinished, { 
     testRun,
     application: application.dataProvider.serialize(),
     applicationUUID: application.uuid
@@ -40,11 +42,11 @@ export function emitNewTestRun(testRun, application) {
 }
 
 export function emitNewBugProgress(bugProgress) {
-  emitUserEvent('newBugProgress', { bugProgress });
+  emitUserEvent(UserActionType.NewBugProgress, { bugProgress });
 }
 
 export function emitBugProgressChanged(bugProgress) {
-  emitUserEvent('bugProgressChanged', { bugProgress });
+  emitUserEvent(UserActionType.BugProgressChanged, { bugProgress });
 }
 
 // ###########################################################################
