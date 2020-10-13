@@ -31,7 +31,7 @@ class DetailNode extends BaseTreeViewNode {
    * @param {Bug} bug 
    */
   static makeLabel(bug) {
-    const { status } = bug.manager.progressLogController.util.getBugProgressByBug(bug);
+    const { status } = bug.manager.pathwayDataProvider.util.getBugProgressByBug(bug);
     return `${bug.id} (${BugStatus.getName(status)})`;
   }
 

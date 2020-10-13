@@ -1,6 +1,6 @@
 import CollectionIndex from '@dbux/data/src/indexes/CollectionIndex';
 
-/** @typedef {import('../ProgressLogController').default} ProgressLogController */
+/** @typedef {import('../PathwayDataProvider').default} PathwayDataProvider */
 
 /** @extends {CollectionIndex<UserAction>} */
 export default class UserActionByTypeIndex extends CollectionIndex {
@@ -9,10 +9,10 @@ export default class UserActionByTypeIndex extends CollectionIndex {
   }
 
   /** 
-   * @param {ProgressLogController} plc
+   * @param {PathwayDataProvider} pdp
    * @param {UserAction} userAction
    */
-  makeKey(plc, userAction) {
+  makeKey(pdp, userAction) {
     return userAction.type;
   }
 }

@@ -1,7 +1,7 @@
 import CollectionIndex from '@dbux/data/src/indexes/CollectionIndex';
 import BugProgress from '../BugProgress';
 
-/** @typedef {import('../ProgressLogController').default} ProgressLogController */
+/** @typedef {import('../PathwayDataProvider').default} PathwayDataProvider */
 
 /** @extends {CollectionIndex<BugProgress>} */
 export default class BugProgressByBugIdIndex extends CollectionIndex {
@@ -10,10 +10,10 @@ export default class BugProgressByBugIdIndex extends CollectionIndex {
   }
 
   /** 
-   * @param {ProgressLogController} plc
+   * @param {PathwayDataProvider} pdp
    * @param {BugProgress} bugProgress
    */
-  makeKey(plc, bugProgress) {
+  makeKey(pdp, bugProgress) {
     return bugProgress.bugId;
   }
 }
