@@ -13,7 +13,7 @@ import { initTraceSelection } from './codeUtil/codeSelection';
 import { initApplicationsView } from './applicationsView/applicationsViewController';
 import { getOrCreateProjectManager } from './projectViews/projectControl';
 import { initProjectView } from './projectViews/projectViewsController';
-import { initGraphView } from './webViews/graphWebView';
+import { initGraphView } from './webViews/agraphWebView';
 import { initPathwaysView } from './webViews/pathwaysWebView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies, initInstallUtil } from './codeUtil/installUtil';

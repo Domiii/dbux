@@ -135,6 +135,7 @@ class TraceCollection extends Collection {
   postAdd(traces) {
     // build dynamic call expression tree
     errorWrapMethod(this, 'resolveCallIds', traces);
+    errorWrapMethod(this, 'resolveCodeChunks', traces);
     errorWrapMethod(this, 'resolveErrorTraces', traces);
   }
 
@@ -198,6 +199,22 @@ class TraceCollection extends Collection {
           }
         }
       }
+    }
+  }
+
+  resolveCodeChunks(traces) {
+    for (const trace of traces) {
+      const {
+        contextId
+      } = trace;
+      
+      if (contextId !== this.dp.lastContextId) {
+        // new code chunk
+        ++this.dp.lastCodeChunkId;
+        this.dp.lastContextId = contextId;
+      }
+      const codeChunkId = this.dp.lastCodeChunkId;
+      trace.codeChunkId = codeChunkId;
     }
   }
 
@@ -344,6 +361,9 @@ class ValueCollection extends Collection {
 }
 
 export default class RuntimeDataProvider extends DataProviderBase {
+  lastContextId = -1;
+  lastCodeChunkId = 0;
+
   constructor(application) {
     super('RuntimeDataProvider');
 
