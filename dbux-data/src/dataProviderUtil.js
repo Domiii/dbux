@@ -504,7 +504,7 @@ export default {
   },
 
   // ###########################################################################
-  // unsorted
+  // contexts
   // ###########################################################################
 
   /** @param {DataProvider} dp */
@@ -555,14 +555,31 @@ export default {
   },
 
   /** @param {DataProvider} dp */
+  getTraceStaticContextId(dp, traceId) {
+    const context = dp.util.getTraceContext(traceId);
+    const { staticContextId } = context;
+    return staticContextId;
+  },
+
+  /** @param {DataProvider} dp */
+  getTraceStaticContext(dp, traceId) {
+    const staticContextId = dp.util.getTraceStaticContextId(traceId);
+    return dp.collections.staticContexts.getById(staticContextId);
+  },
+
+  // ###########################################################################
+  // misc
+  // ###########################################################################
+
+  /** @param {DataProvider} dp */
   getTraceContextType(dp, traceId) {
     const staticContext = dp.util.getTraceStaticContext(traceId);
     return staticContext.type;
   },
 
   getStaticTrace(dp, traceId) {
-    const traqce = dp.collections.traces.getById(traceId);
-    const { staticTraceId } = traqce;
+    const trace = dp.collections.traces.getById(traceId);
+    const { staticTraceId } = trace;
     return dp.collections.staticTraces.getById(staticTraceId);
   },
 
@@ -599,19 +616,6 @@ export default {
   getTraceFileName(dp, traceId) {
     const programId = dp.util.getTraceProgramId(traceId);
     return programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
-  },
-
-  /** @param {DataProvider} dp */
-  getTraceStaticContextId(dp, traceId) {
-    const context = dp.util.getTraceContext(traceId);
-    const { staticContextId } = context;
-    return staticContextId;
-  },
-
-  /** @param {DataProvider} dp */
-  getTraceStaticContext(dp, traceId) {
-    const staticContextId = dp.util.getTraceStaticContextId(traceId);
-    return dp.collections.staticContexts.getById(staticContextId);
   },
 
   // ###########################################################################
@@ -826,5 +830,15 @@ export default {
   getTraceLoc(dp, traceId) {
     const { loc } = dp.util.getStaticTrace(traceId);
     return loc;
+  },
+
+  // ###########################################################################
+  // code chunks
+  // ###########################################################################
+
+  getStaticCodeChunkId(dp, traceId) {
+    const { staticCodeChunkId } = dp.util.getStaticTrace(traceId);
+    return staticCodeChunkId;
   }
+
 };

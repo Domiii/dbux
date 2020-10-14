@@ -63,7 +63,13 @@ export default class Collection {
    * 
    * @param {T[]} entries
    */
-  postAdd(/* entries */) { }
+  postAdd(entries) { 
+    if (this.handleEntryAdded) {
+      for (const entry of entries) {
+        this.handleEntryAdded(entry);
+      }
+    }
+  }
 
   /**
    * Collections can use this to massage data after all data has been added, and after indexes have been processed.

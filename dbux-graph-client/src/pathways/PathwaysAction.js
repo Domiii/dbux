@@ -16,7 +16,7 @@ class PathwaysAction extends ClientComponentEndpoint {
       typeName,
       trace
     } = entry;
-    this.els.rawInfo.textContent = `${id}. ${typeName}${trace && `, trace=${trace?.id}` || ''}`;
+    this.els.rawInfo.textContent = `${id}. ${typeName}${trace && `, trace=${trace?.id}` || ''}, raw=${JSON.stringify(entry)}`;
   }
 }
 

@@ -1,19 +1,25 @@
+import isFunction from 'lodash/isFunction';
+
 export default class KeyedComponentSet {
   owner;
   ComponentClass;
   componentsById = new Map();
 
   constructor(owner, ComponentClass) {
-    this.owner = owner;
+    this.owner = isFunction(owner) ? owner : () => owner;
     this.ComponentClass = ComponentClass;
   }
 
   getId(entry) {
     return entry?.id || 0;
   }
-  
+
   getEntryById(entries, id) {
     return entries[id];
+  }
+
+  getComponentById(id) {
+    return this.componentsById.get(id);
   }
 
   update(entries) {
@@ -42,7 +48,11 @@ export default class KeyedComponentSet {
   // ###########################################################################
 
   addComponent(id, entry) {
-    const newComponent = this.owner.children.createComponent(this.ComponentClass, { id, entry });
+    const owner = this.owner(id, entry);
+    if (!owner) {
+      throw new Error(`owner not found for id=${id}, entry=${JSON.stringify(entry)} via: ${this.owner}`);
+    }
+    const newComponent = owner.children.createComponent(this.ComponentClass, { id, entry });
     this.componentsById.set(id, newComponent);
     return newComponent;
   }

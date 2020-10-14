@@ -1,28 +1,57 @@
 import KeyedComponentSet from '@dbux/graph-common/src/componentLib/KeyedComponentSet';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+import PathwaysStep from './PathwaysStep';
 import PathwaysAction from './PathwaysAction';
 
 class PathwaysView extends HostComponentEndpoint {
+  steps;
+
   /**
    * @type {KeyedComponentSet}
    */
   actions;
 
   init() {
-    this.actions = new KeyedComponentSet(this, PathwaysAction);
+    this.steps = new KeyedComponentSet(this, PathwaysStep);
+    this.actions = new KeyedComponentSet(this.getActionOwner, PathwaysAction);
+  }
+
+  getActionOwner = (actionId, { stepId }) => {
+    return this.steps.getComponentById(stepId);
   }
 
   handleRefresh() {
     const pdp = this.componentManager.externals.getPathwaysDataProvider();
-    const entries = pdp.collections.userActions.getAll().map(action => {
-      if (!action) {
+
+    const steps = pdp.collections.steps.getAll().map(step => {
+      if (!step) {
+        // the first entry is empty
         return null;
       }
+
+      const {
+        id,
+        staticCodeChunkId
+      } = step;
+
+      return {
+        id,
+        staticCodeChunkId
+      };
+    });
+
+    const actions = pdp.collections.userActions.getAll().map(action => {
+      if (!action) {
+        // the first entry is empty
+        return null;
+      }
+
       const {
         id,
         type,
-        trace
+        trace,
+        stepId
       } = action;
 
       const typeName = UserActionType.getName(type);
@@ -31,15 +60,15 @@ class PathwaysView extends HostComponentEndpoint {
         id,
         type,
         typeName,
-        trace
+        trace,
+        stepId
       };
     });
 
-    // TODO: entry.id is not enough.
-    //      Override `getId` and `getEntryById` to also account for `practiceSessionId`
-    this.actions.update(entries);
+    this.steps.update(steps);
+    this.actions.update(actions);
   }
-  
+
   shared() {
     return {
       context: {

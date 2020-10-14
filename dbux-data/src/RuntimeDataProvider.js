@@ -66,8 +66,26 @@ class StaticContextCollection extends Collection {
  * @extends {Collection<StaticTrace>}
  */
 class StaticTraceCollection extends Collection {
+  lastStaticContextId = 0;
+  lastStaticCodeChunkId = 0;
+
   constructor(dp) {
     super('staticTraces', dp);
+  }
+
+  handleEntryAdded(staticTrace) {
+    const {
+      staticContextId
+    } = staticTrace;
+
+    // TODO: add new StaticCodeChunkCollection to also manage code-chunk related information, especially: `loc`
+
+    if (staticContextId !== this.lastStaticContextId) {
+      // new code chunk
+      ++this.lastStaticCodeChunkId;
+      this.lastStaticContextId = staticContextId;
+    }
+    staticTrace.staticCodeChunkId = this.lastCodeChunkId;
   }
 }
 
@@ -134,9 +152,25 @@ class TraceCollection extends Collection {
    */
   postAdd(traces) {
     // build dynamic call expression tree
-    errorWrapMethod(this, 'resolveCallIds', traces);
     errorWrapMethod(this, 'resolveCodeChunks', traces);
+    errorWrapMethod(this, 'resolveCallIds', traces);
     errorWrapMethod(this, 'resolveErrorTraces', traces);
+  }
+
+  resolveCodeChunks(traces) {
+    for (const trace of traces) {
+      const {
+        contextId
+      } = trace;
+
+      // codeChunkId
+      if (contextId !== this.dp.lastContextId) {
+        // new code chunk
+        ++this.dp.lastCodeChunkId;
+        this.dp.lastContextId = contextId;
+      }
+      trace.codeChunkId = this.dp.lastCodeChunkId;
+    }
   }
 
   /**
@@ -199,22 +233,6 @@ class TraceCollection extends Collection {
           }
         }
       }
-    }
-  }
-
-  resolveCodeChunks(traces) {
-    for (const trace of traces) {
-      const {
-        contextId
-      } = trace;
-      
-      if (contextId !== this.dp.lastContextId) {
-        // new code chunk
-        ++this.dp.lastCodeChunkId;
-        this.dp.lastContextId = contextId;
-      }
-      const codeChunkId = this.dp.lastCodeChunkId;
-      trace.codeChunkId = codeChunkId;
     }
   }
 

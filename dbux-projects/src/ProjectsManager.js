@@ -81,7 +81,6 @@ export default class ProjectsManager {
     this._emitter = new NanoEvents();
 
     this._backend = new BackendController(this);
-    this.pathwayDataProvider = new PathwaysDataProvider(this);
 
     this.recoverPracticeSession();
 
@@ -164,6 +163,7 @@ export default class ProjectsManager {
       const stopwatchEnabled = await this.askForStopwatch();
       bugProgress = this.pdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.practiceSession = new PracticeSession(bug, this);
+      this.pathwayDataProvider = new PathwaysDataProvider(this);
       emitPracticeSessionEvent('started', this.practiceSession);
       this._emitter.emit('practiceSessionChanged');
 
@@ -174,6 +174,7 @@ export default class ProjectsManager {
     }
     else {
       this.practiceSession = new PracticeSession(bug, this);
+      this.pathwayDataProvider = new PathwaysDataProvider(this);
       emitPracticeSessionEvent('started', this.practiceSession);
       this._emitter.emit('practiceSessionChanged');
     }
@@ -218,6 +219,8 @@ export default class ProjectsManager {
     if (!bug) {
       return;
     }
+
+    this.pathwayDataProvider = new PathwaysDataProvider(this);
     const bugProgress = this.pdp.util.getBugProgressByBug(bug);
     if (!bugProgress) {
       warn(`Can't find bugProgress when starting existing PracticeSession for bug ${bug.id}`);
@@ -226,9 +229,7 @@ export default class ProjectsManager {
 
     const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
     this.practiceSession = new PracticeSession(bug, this, sessionData);
-
     this.practiceSession.setupStopwatch();
-
     this._emitter.emit('practiceSessionChanged');
   }
 
