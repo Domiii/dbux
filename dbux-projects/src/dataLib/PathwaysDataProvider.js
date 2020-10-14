@@ -12,6 +12,7 @@ import BugProgress from './BugProgress';
 import { emitBugProgressChanged, emitNewBugProgress, emitNewTestRun } from '../userEvents';
 import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
+import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -48,6 +49,15 @@ class UserActionCollection extends Collection {
   }
 }
 
+/**
+ * @extends {Collection<Step>}
+ */
+class StepCollection extends Collection {
+  constructor(pdp) {
+    super('steps', pdp);
+  }
+}
+
 export default class PathwaysDataProvider extends DataProviderBase {
   /**
    * @type {ProjectsManager}
@@ -59,6 +69,11 @@ export default class PathwaysDataProvider extends DataProviderBase {
    */
   util;
 
+  lastStaticCodeChunkId = 0;
+  lastStepId = 0;
+
+  stepsByStaticCodeChunkId = new Map();
+
   constructor(manager) {
     super('PathwaysDataProvider');
     this.manager = manager;
@@ -67,8 +82,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.util = Object.fromEntries(
       Object.keys(PathwaysDataUtil).map(name => [name, PathwaysDataUtil[name].bind(null, this)])
     );
-
-    this.load();
   }
 
   // ###########################################################################
@@ -117,8 +130,54 @@ export default class PathwaysDataProvider extends DataProviderBase {
     emitBugProgressChanged(bugProgress);
   }
 
-  addUserAction(actionData) {
-    this.addData({ userActions: [actionData] });
+  // ###########################################################################
+  // actions + steps
+  // ###########################################################################
+  
+  addStep(staticCodeChunkId, firstAction) {
+    const {
+      sessionId,
+      bugId,
+      createdAt
+    } = firstAction;
+    
+    const step = {
+      sessionId,
+      bugId,
+      createdAt,
+      
+      staticCodeChunkId,
+      firstActionId: firstAction.id
+    };
+    this.addData({ steps: [step] });
+
+    this.stepsByStaticCodeChunkId.set(staticCodeChunkId, step);
+
+    return step;
+  }
+
+  getActionStepId() {
+
+  }
+
+  addNewUserAction(action) {
+    // keep track of steps
+    // NOTE: action.id is not set yet (will be set during `addData` below)
+    const staticCodeChunkId = this.util.getActionStaticCodeChunkId(action);
+
+    if (!this.lastStepId || (staticCodeChunkId && staticCodeChunkId !== this.lastStaticCodeChunkId)) {
+      let step = this.stepsByStaticCodeChunkId.get(staticCodeChunkId);
+      if (!step) {
+        step = this.addStep(staticCodeChunkId, action);
+      }
+
+      this.lastStaticCodeChunkId = staticCodeChunkId;
+      this.lastStepId = step.id;
+    }
+    action.stepId = this.lastStepId;
+
+    // add action
+    this.addData({ userActions: [action] });
   }
 
   // ###########################################################################
@@ -133,7 +192,8 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.collections = {
       testRuns: new TestRunCollection(this),
       bugProgresses: new BugProgressCollection(this),
-      userActions: new UserActionCollection(this)
+      userActions: new UserActionCollection(this),
+      steps: new StepCollection(this)
     };
 
     this.indexes = new Indexes();
@@ -141,6 +201,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addIndex(new BugProgressByBugIdIndex());
     this.addIndex(new UserActionByBugIdIndex());
     this.addIndex(new UserActionByTypeIndex());
+    this.addIndex(new UserActionsByStepIndex());
   }
 
 
@@ -161,7 +222,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * Load serialized data from external storage
    */
   load() {
-    this.init();
     try {
       const logString = this.storage.get(storageKey);
       if (logString !== undefined) {

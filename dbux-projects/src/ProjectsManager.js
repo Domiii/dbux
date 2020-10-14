@@ -81,7 +81,6 @@ export default class ProjectsManager {
     this._emitter = new NanoEvents();
 
     this._backend = new BackendController(this);
-    this.pathwayDataProvider = new PathwaysDataProvider(this);
 
     this.recoverPracticeSession();
 
@@ -164,6 +163,7 @@ export default class ProjectsManager {
       const stopwatchEnabled = await this.askForStopwatch();
       bugProgress = this.pdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.practiceSession = new PracticeSession(bug, this);
+
       emitPracticeSessionEvent('started', this.practiceSession);
       this._emitter.emit('practiceSessionChanged');
 
@@ -173,7 +173,10 @@ export default class ProjectsManager {
       this.pdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
     else {
+      // this._resetPathways();
+      // bugProgress = this.pdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.practiceSession = new PracticeSession(bug, this);
+
       emitPracticeSessionEvent('started', this.practiceSession);
       this._emitter.emit('practiceSessionChanged');
     }
@@ -201,23 +204,40 @@ export default class ProjectsManager {
     }
     stopwatch.pause();
     stopwatch.hide();
-    emitPracticeSessionEvent('stopped', this.practiceSession);
+
+    // const { practiceSession } = this;
     this.practiceSession = null;
+
     await this.savePracticeSession();
-    this._emitter.emit('practiceSessionChanged', dontRefreshView);
 
     await this.pdp.save();
+
+    // TODO: don't reset here. reset when creating the new PS instead.
+    this._resetPathways();
+
+    // emitPracticeSessionEvent('stopped', practiceSession);
+    this._emitter.emit('practiceSessionChanged', dontRefreshView);
   }
 
   // ########################################
   // PracticeSession: save/load
   // ########################################
 
+  _resetPathways() {
+    this.pathwayDataProvider = new PathwaysDataProvider(this);
+    this.pathwayDataProvider.init();
+  }
+
   recoverPracticeSession() {
+    // TODO: fix the messy relationship between PS and PDP
+    this._resetPathways();
+    this.pathwayDataProvider.load();
+
     const bug = this.getBugByKey(savedPracticeSessionKeyName);
     if (!bug) {
       return;
     }
+
     const bugProgress = this.pdp.util.getBugProgressByBug(bug);
     if (!bugProgress) {
       warn(`Can't find bugProgress when starting existing PracticeSession for bug ${bug.id}`);
@@ -226,9 +246,7 @@ export default class ProjectsManager {
 
     const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
     this.practiceSession = new PracticeSession(bug, this, sessionData);
-
     this.practiceSession.setupStopwatch();
-
     this._emitter.emit('practiceSessionChanged');
   }
 

@@ -32,6 +32,9 @@ export default class PathwaysWebView extends RichWebView {
     async goToTrace(trace) {
       await goToTrace(trace);
     },
+    onPracticeSessionChanged(cb) {
+      return getOrCreateProjectManager().onPracticeSessionChanged(cb);
+    },
     getPathwaysDataProvider: () => getOrCreateProjectManager().pdp
   }
 }

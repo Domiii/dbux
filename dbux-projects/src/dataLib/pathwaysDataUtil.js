@@ -1,4 +1,5 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 
@@ -43,5 +44,47 @@ export default {
    */
   isBugProgressOfBug(pdp, bugProgress, bug) {
     return bugProgress.projectName === bug.project.name && bugProgress.bugId === bug.id;
+  },
+
+  // ###########################################################################
+  // applications
+  // ###########################################################################
+
+  getApplication(pdp, actionId) {
+    const action = pdp.collections.userActions.getById(actionId);
+    return pdp.util.getActionApplication(action);
+  },
+
+  getActionApplication(pdp, action) {
+    const { trace } = action;
+    if (!trace) {
+      return null;
+    }
+
+    const { applicationId } = trace;
+
+    // TODO: need to also manage different application sets
+    const applicationSet = allApplications;
+
+    return applicationSet.getById(applicationId);
+  },
+
+  // ###########################################################################
+  // steps + traces in pathways
+  // ###########################################################################
+
+  getStaticCodeChunkId(pdp, actionId) {
+    const action = pdp.collections.userActions.getById(actionId);
+    return pdp.util.getActionStaticCodeChunkId(action);
+  },
+
+  getActionStaticCodeChunkId(pdp, action) {
+    const dp = pdp.util.getActionApplication(action)?.dataProvider;
+    if (!dp) {
+      return null;
+    }
+
+    const { trace: { traceId } } = action;
+    return dp.util.getStaticCodeChunkId(traceId);
   }
 };
