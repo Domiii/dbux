@@ -4,7 +4,7 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 class PathwaysDocument extends ClientComponentEndpoint {
   createEl() {
     const el = document.getElementById('root');
-    el.innerHTML = /*html*/`<div>
+    el.innerHTML = /*html*/`<div class="flex-column">
       <div data-mount="Toolbar"></div>
       <div data-mount="PathwaysView"></div>
     </div>`;

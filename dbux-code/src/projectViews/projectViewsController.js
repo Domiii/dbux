@@ -42,7 +42,6 @@ export class ProjectViewController {
   constructor(context) {
     this.extensionContext = context;
     this.manager = getOrCreateProjectManager(context);
-    this.maybeNotifyExistingPracticeSession();
 
     // ########################################
     //  init treeView
@@ -66,6 +65,8 @@ export class ProjectViewController {
     // this.handlePracticeSessionChanged();
 
     initCodeEvents(this.manager, context);
+
+    this.maybeNotifyExistingPracticeSession();
   }
 
   async maybeNotifyExistingPracticeSession() {

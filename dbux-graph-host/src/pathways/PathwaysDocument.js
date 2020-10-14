@@ -1,4 +1,5 @@
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
+import PathwaysView from './PathwaysView';
 // import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
 
@@ -13,16 +14,27 @@ class PathwaysDocument extends HostComponentEndpoint {
   init() {
     this.createOwnComponents();
 
+    // listen to pathways data changes
+    const pdp = this.componentManager.externals.getPathwaysDataProvider();
+
+    this.addDisposable(
+      // pathwaysDataProvider.onAnyData(this.view.refresh)
+      pdp.onData('userActions', this.view.refresh)
+    );
+
     // register event listeners
     // this.addDisposable(
     //   allApplications.selection.onApplicationsChanged(() => {
     //     this.graphRoot.refresh();
     //   })
     // );
+    
+    this.view.refresh();
   }
 
   createOwnComponents() {
     this.toolbar = this.children.createComponent(Toolbar);
+    this.view = this.children.createComponent(PathwaysView);
     // this.minimap = this.children.createComponent(MiniMap);
   }
 

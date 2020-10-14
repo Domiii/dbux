@@ -49,6 +49,10 @@ export default class Collection {
     // WARNING: cannot use push(...entries) for large `entries` array.
     // see: https://github.com/nodejs/node/issues/27732
     for (const entry of entries) {
+      if (!entry.id) {
+        // add a general purpose id
+        entry.id = this._all.length;
+      }
       this._all.push(entry);
     }
   }

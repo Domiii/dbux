@@ -83,16 +83,16 @@ export function onUserEvent(cb) {
 
 /**
  * @param {number} eventType 
- * @param {Object} data NOTE: data *must* always be completely serializable, simple data.
+ * @param {Object} evtData NOTE: data *must* always be completely serializable, simple data.
  */
-export function emitUserEvent(eventType, data) {
+export function emitUserEvent(eventType, evtData) {
   if (manager.practiceSession) {
     emitter.emit('e', {
       type: eventType,
       sessionId: manager.practiceSession.sessionId,
       bugId: manager.practiceSession.bug.id,
       createdAt: Date.now(),
-      data
+      ...evtData
     });
   }
 }

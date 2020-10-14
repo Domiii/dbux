@@ -55,8 +55,6 @@ class GraphRoot extends HostComponentEndpoint {
     this.contextNodesByContext = new Map();
     this.state.applications = [];
     this._emitter = new NanoEvents();
-    this._refreshPromise = null;
-    this._refreshRequests = 0;
     this._unsubscribeOnNewData = [];
 
     this.controllers.createComponent('GraphNode', {
