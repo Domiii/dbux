@@ -1,5 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType from '@dbux/projects/src/userEvents/UserActionType';
 
 /**
  * @file Here we export `ProjectsManager.emitUserEvent` such that you can emit events everywhere in dbux-code
@@ -23,11 +24,15 @@ export function initUserEvent(_manager) {
 // ###########################################################################
 
 export function emitEditorAction(evtName, data) {
-  emitUserEvent(`editor.${evtName}`, data);
+  emitUserEvent(UserActionType.EditorEvent, {
+    eventType: evtName,
+    ...data
+  });
 }
 
 export function emitPracticeSelectTraceAction(selectMethod, trace) {
-  emitUserEvent(selectMethod, {
+  emitUserEvent(UserActionType.SelectTrace, {
+    selectMethod,
     trace,
     applicationUUID: getApplicationUUID(trace),
     locationInfo: getExtraTraceLocationImformation(trace)
@@ -35,14 +40,14 @@ export function emitPracticeSelectTraceAction(selectMethod, trace) {
 }
 
 export function emitTagTraceAction(trace) {
-  emitUserEvent('tagTrace', {
+  emitUserEvent(UserActionType.TagTrace, {
     trace,
     locationInfo: getExtraTraceLocationImformation(trace)
   });
 }
 
 export function emitTreeViewAction(treeViewName, action, nodeId, args) {
-  emitUserEvent('treeView', {
+  emitUserEvent(UserActionType.TreeViewEvent, {
     treeViewName,
     action,
     nodeId,
@@ -51,11 +56,7 @@ export function emitTreeViewAction(treeViewName, action, nodeId, args) {
 }
 
 export function emitCallGraphAction(data) {
-  emitUserEvent('callGraph', data);
-}
-
-export function emitOther(data) {
-  emitUserEvent('other', data);
+  emitUserEvent(UserActionType.CallGraphEvent, data);
 }
 
 // ###########################################################################

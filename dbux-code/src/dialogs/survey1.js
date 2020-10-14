@@ -28,7 +28,7 @@ function nextNode(currentState, stack, actions, node) {
 async function waitForBugSolved(bug) {
   const projectManager = getOrCreateProjectManager();
   return new Promise((r) => {
-    const bugstatus = projectManager.progressLogController.util.getBugProgressByBug(bug)?.status;
+    const bugstatus = projectManager.pathwayDataProvider.util.getBugProgressByBug(bug)?.status;
     if (BugStatus.is.Solved(bugstatus)) {
       r();
     }
@@ -47,7 +47,7 @@ async function waitForBugFailedNTimes(bug, n) {
   const projectManager = getOrCreateProjectManager();
   return new Promise((r) => {
     // wait for first bug failed three times
-    let failedTestRuns = projectManager.progressLogController.util.getTestRunsByBug(bug).filter((testRun) => {
+    let failedTestRuns = projectManager.pathwayDataProvider.util.getTestRunsByBug(bug).filter((testRun) => {
       return testRun.nFailedTests > 0;
     });
     if (failedTestRuns.length >= n) {
@@ -56,7 +56,7 @@ async function waitForBugFailedNTimes(bug, n) {
     else {
       const unbind = projectManager.onTestFinished((testBug/* , result */) => {
         if (testBug === bug) {
-          failedTestRuns = projectManager.progressLogController.util.getTestRunsByBug(bug).filter((testRun) => {
+          failedTestRuns = projectManager.pathwayDataProvider.util.getTestRunsByBug(bug).filter((testRun) => {
             return testRun.nFailedTests > 0;
           });
           if (failedTestRuns.length >= n) {

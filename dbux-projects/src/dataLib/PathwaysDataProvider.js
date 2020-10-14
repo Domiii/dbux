@@ -9,9 +9,11 @@ import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 import { emitBugProgressChanged, emitNewBugProgress, emitNewTestRun } from '../userEvents';
+import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
+import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('ProgressLogController');
+const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
 
 const storageKey = 'dbux-projects.progressLog';
 
@@ -22,8 +24,8 @@ const storageKey = 'dbux-projects.progressLog';
  * @extends {Collection<TestRun>}
  */
 class TestRunCollection extends Collection {
-  constructor(plc) {
-    super('testRuns', plc);
+  constructor(pdp) {
+    super('testRuns', pdp);
   }
 }
 
@@ -31,12 +33,21 @@ class TestRunCollection extends Collection {
  * @extends {Collection<BugProgress>}
  */
 class BugProgressCollection extends Collection {
-  constructor(plc) {
-    super('bugProgresses', plc);
+  constructor(pdp) {
+    super('bugProgresses', pdp);
   }
 }
 
-export default class ProgressLogController {
+/**
+ * @extends {Collection<BugProgress>}
+ */
+class UserActionCollection extends Collection {
+  constructor(pdp) {
+    super('userActions', pdp);
+  }
+}
+
+export default class PathwaysDataProvider {
   /**
    * Used for serialization
    */
@@ -114,6 +125,10 @@ export default class ProgressLogController {
     emitBugProgressChanged(bugProgress);
   }
 
+  addUserAction(actionData) {
+    this.addData({ userActions: [actionData] });
+  }
+
   // ###########################################################################
   // Private data flow
   // ###########################################################################
@@ -175,12 +190,15 @@ export default class ProgressLogController {
   init() {
     this.collections = {
       testRuns: new TestRunCollection(this),
-      bugProgresses: new BugProgressCollection(this)
+      bugProgresses: new BugProgressCollection(this),
+      userActions: new UserActionCollection(this)
     };
 
     this.indexes = new Indexes();
-    this.addIndex(new BugProgressByBugIdIndex());
     this.addIndex(new TestRunsByBugIdIndex());
+    this.addIndex(new BugProgressByBugIdIndex());
+    this.addIndex(new UserActionByBugIdIndex());
+    this.addIndex(new UserActionByTypeIndex());
   }
 
 
