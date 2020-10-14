@@ -168,7 +168,7 @@ export default class ProjectsManager {
       this._emitter.emit('practiceSessionChanged');
 
       // activate once to show user the bug, don't care about the result
-      await this.activateBug(bug, false);
+      await this.activateBug(bug);
 
       this.pdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
@@ -347,11 +347,11 @@ export default class ProjectsManager {
    * Install and run a bug, then save testRun after result
    * NOTE: Only used internally to manage practice flow
    * @param {Bug} bug 
-   * @param {boolean} debugMode
+   * @param {Object} inputCfg
    */
-  async activateBug(bug, debugMode) {
+  async activateBug(bug, inputCfg = EmptyObject) {
     await this.switchToBug(bug);
-    const result = await this.runTest(bug, debugMode);
+    const result = await this.runTest(bug, inputCfg);
     return result;
   }
 
@@ -400,17 +400,17 @@ export default class ProjectsManager {
     }
   }
 
-  async runTest(bug, debugMode) {
+  async runTest(bug, inputCfg) {
     // NOTE: --enable-source-maps gets super slow in production mode for some reason
     // NOTE2: nolazy is required for proper breakpoints in debug mode
     // const enableSourceMaps = '--enable-source-maps';
+    const { debugMode = false, dbuxEnabled = true } = inputCfg;
     const enableSourceMaps = '';
     const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${enableSourceMaps}`;
     const cfg = {
       debugMode,
       nodeArgs,
-      dbuxArgs: '--verbose=1'
-      // dbuxArgs: '--dontInjectDbux',
+      dbuxArgs: dbuxEnabled ? '--verbose=1' : '--dontInjectDbux',
       // nodeArgs: '--enable-source-maps' // TODO: make this configurable
     };
 

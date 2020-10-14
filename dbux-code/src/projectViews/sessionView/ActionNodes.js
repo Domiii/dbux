@@ -62,7 +62,7 @@ class RunNode extends BaseTreeViewNode {
       await showInformationMessage('Currently busy, please wait');
     }
     else {
-      await this.controller.activate(false);
+      await this.controller.activate();
     }
   }
 }
@@ -89,7 +89,34 @@ class DebugNode extends BaseTreeViewNode {
       await showInformationMessage('Currently busy, please wait');
     }
     else {
-      await this.controller.activate(true);
+      await this.controller.activate({ debugMode: true });
+    }
+  }
+}
+
+class RunWithoutDbuxNode extends BaseTreeViewNode {
+  static makeLabel() {
+    return 'Run without Dbux';
+  }
+
+  init() {
+    this.contextValue = 'dbuxSessionView.runWithoutDbuxNode';
+  }
+
+  get manager() {
+    return this.treeNodeProvider.manager;
+  }
+
+  get controller() {
+    return this.treeNodeProvider.controller;
+  }
+
+  async handleClick() {
+    if (RunStatus.is.Busy(this.manager.runStatus)) {
+      await showInformationMessage('Currently busy, please wait');
+    }
+    else {
+      await this.controller.activate({ dbuxEnabled: false });
     }
   }
 }
@@ -149,6 +176,7 @@ export const ActionNodeClasses = [
   DetailNode,
   RunNode,
   DebugNode,
+  RunWithoutDbuxNode,
   ShowEntryNode,
   StopPracticeNode
 ];
