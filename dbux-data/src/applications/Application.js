@@ -1,5 +1,6 @@
+import { v4 as uuidv4 } from 'uuid';
 import { pathGetParent } from '@dbux/common/src/util/pathUtil';
-import DataProvider from '../DataProvider';
+import RuntimeDataProvider from '../RuntimeDataProvider';
 import { newDataProvider } from '../dataProviderImpl';
 import { getFileName } from '../util/nodeUtil';
 
@@ -24,7 +25,7 @@ export default class Application {
    */
   allApplications;
   /**
-   * @type {DataProvider}
+   * @type {RuntimeDataProvider}
    * @readonly
    */
   dataProvider;
@@ -40,6 +41,7 @@ export default class Application {
   updatedAt;
 
   constructor(applicationId, entryPointPath, createdAt, allApplications) {
+    this.uuid = uuidv4();
     this.applicationId = applicationId;
     this.entryPointPath = entryPointPath;
     // this.relativeEntryPointPath = path.relative(entryPointPath, process.cwd()); // path relative to cwd
@@ -73,7 +75,7 @@ export default class Application {
       // return '(unknown)';
       return this.getRelativeFolder();
     }
-    
+
     const file = staticProgramContexts.getById(1)?.filePath;
     // if (fileCount > 1) {
     //  NOTE: Cannot really do this, since the files might not be available at all.

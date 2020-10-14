@@ -13,7 +13,7 @@ import PracticeSession from './practiceSession/PracticeSession';
 import RunStatus from './projectLib/RunStatus';
 import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
-import ProgressLogController from './dataLib/ProgressLogController';
+import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
 import { initUserEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import initUserEventLogging from './userEvents/eventLogging';
@@ -81,7 +81,7 @@ export default class ProjectsManager {
     this._emitter = new NanoEvents();
 
     this._backend = new BackendController(this);
-    this.progressLogController = new ProgressLogController(this);
+    this.pathwayDataProvider = new PathwaysDataProvider(this);
 
     this.recoverPracticeSession();
 
@@ -101,8 +101,8 @@ export default class ProjectsManager {
     this.emitUserEvent = emitUserEvent;
   }
 
-  get plc() {
-    return this.progressLogController;
+  get pdp() {
+    return this.pathwayDataProvider;
   }
 
   get runStatus() {
@@ -158,11 +158,11 @@ export default class ProjectsManager {
       return;
     }
 
-    let bugProgress = this.plc.util.getBugProgressByBug(bug);
+    let bugProgress = this.pdp.util.getBugProgressByBug(bug);
 
     if (!bugProgress) {
       const stopwatchEnabled = await this.askForStopwatch();
-      bugProgress = this.plc.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
+      bugProgress = this.pdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.practiceSession = new PracticeSession(bug, this);
       emitPracticeSessionEvent('started', this.practiceSession);
       this._emitter.emit('practiceSessionChanged');
@@ -170,7 +170,7 @@ export default class ProjectsManager {
       // activate once to show user the bug, don't care about the result
       await this.activateBug(bug);
 
-      this.plc.updateBugProgress(bug, { startedAt: Date.now() });
+      this.pdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
     else {
       this.practiceSession = new PracticeSession(bug, this);
@@ -184,7 +184,7 @@ export default class ProjectsManager {
 
     await this.savePracticeSession();
 
-    await this.plc.save();
+    await this.pdp.save();
   }
 
   async stopPractice(dontRefreshView = false) {
@@ -206,7 +206,7 @@ export default class ProjectsManager {
     await this.savePracticeSession();
     this._emitter.emit('practiceSessionChanged', dontRefreshView);
 
-    await this.plc.save();
+    await this.pdp.save();
   }
 
   // ########################################
@@ -218,7 +218,7 @@ export default class ProjectsManager {
     if (!bug) {
       return;
     }
-    const bugProgress = this.plc.util.getBugProgressByBug(bug);
+    const bugProgress = this.pdp.util.getBugProgressByBug(bug);
     if (!bugProgress) {
       warn(`Can't find bugProgress when starting existing PracticeSession for bug ${bug.id}`);
       return;
@@ -292,9 +292,51 @@ export default class ProjectsManager {
    * @param {Bug} bug 
    */
   async resetBug(bug) {
-    await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
-    this.plc.addUnfinishedTestRun(bug, '');
-    await this.plc.save();
+    try {
+      await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
+    }
+    catch (err) {
+      if (err.userCanceled) {
+        return;
+      }
+      else {
+        throw err;
+      }
+    }
+    this.pdp.updateBugProgress(bug, { patch: '' });
+    await this.pdp.save();
+  }
+
+  /**
+   * Apply the newest patch in testRuns
+   * @param {Bug} bug
+   */
+  async applyNewBugPatch(bug) {
+    const patchString = this.pdp.util.getBugProgressByBug(bug)?.patch;
+
+    if (patchString) {
+      const { project } = bug;
+      try {
+        await project.applyPatchString(patchString);
+      }
+      catch (err) {
+        err.applyFailedFlag = true;
+        err.patchString = patchString;
+        throw err;
+      }
+    }
+  }
+
+  /**
+   * Saves any changes in current active project as patch of bug
+   * @param {Bug} bug 
+   */
+  async saveFileChanges(bug) {
+    const patch = await bug.project.getPatchString();
+    if (patch) {
+      this.pdp.updateBugProgress(bug, { patch });
+      await this.pdp.save();
+    }
   }
 
   // ###########################################################################
@@ -374,7 +416,9 @@ export default class ProjectsManager {
 
     const result = await this.runner.testBug(bug, cfg);
 
-    await this.plc.addTestRunWithoutPatchString(bug, result.code);
+    const patch = await bug.project.getPatchString();
+    this.pdp.addTestRun(bug, result.code, patch);
+    this.pdp.updateBugProgress(bug, { patch });
 
     result.code && await bug.openInEditor();
 
@@ -383,34 +427,6 @@ export default class ProjectsManager {
 
   async stopRunner() {
     await this.runner.cancel();
-  }
-
-
-  /**
-   * Apply the newest patch in testRuns
-   * @param {Bug} bug
-   */
-  async applyNewBugPatch(bug) {
-    let testRuns = this.plc.util.getTestRunsByBug(bug);
-    let testRun = testRuns.reduce((a, b) => {
-      if (!a) {
-        return b;
-      }
-      return a.createdAt > b.createdAt ? a : b;
-    }, undefined);
-    let patchString = testRun?.patch;
-
-    if (patchString) {
-      const { project } = bug;
-      try {
-        await project.applyPatchString(patchString);
-      }
-      catch (err) {
-        err.applyFailedFlag = true;
-        err.patchString = patchString;
-        throw err;
-      }
-    }
   }
 
   // ########################################
@@ -466,20 +482,8 @@ export default class ProjectsManager {
    */
   async resetProgress() {
     await this.stopPractice();
-    await this.plc.reset();
+    await this.pdp.reset();
     await this.updateActivatingBug(undefined);
-  }
-
-  /**
-   * Saves any changes in current active project as patch of bug
-   * @param {Bug} bug 
-   */
-  async saveFileChanges(bug) {
-    const patchString = await bug.project.getPatchString();
-    if (patchString) {
-      this.plc.addUnfinishedTestRun(bug, patchString);
-      await this.plc.save();
-    }
   }
 
   // ###########################################################################

@@ -3,7 +3,7 @@ import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 
 /** @typedef {import('../projectLib/Bug').default} Bug */
-/** @typedef {import('./ProgressLogController').default} ProgressLogController */
+/** @typedef {import('./PathwaysDataProvider').default} PathwaysDataProvider */
 
 export default {
   // ###########################################################################
@@ -11,37 +11,37 @@ export default {
   // ###########################################################################
 
   /**
-   * @param {ProgressLogController} plc
+   * @param {PathwaysDataProvider} pdp
    * @param {Bug} bug 
    */
-  getTestRunsByBug(plc, bug) {
-    return plc.indexes.testRuns.byBugId.get(bug.id) || EmptyArray;
+  getTestRunsByBug(pdp, bug) {
+    return pdp.indexes.testRuns.byBugId.get(bug.id) || EmptyArray;
   },
 
   /**
-   * @param {ProgressLogController} plc
+   * @param {PathwaysDataProvider} pdp
    * @param {Bug} bug
    * @return {BugProgress}
    */
-  getBugProgressByBug(plc, bug) {
-    return plc.indexes.bugProgresses.byBugId.get(bug.id)?.[0] || null;
+  getBugProgressByBug(pdp, bug) {
+    return pdp.indexes.bugProgresses.byBugId.get(bug.id)?.[0] || null;
   },
 
   /**
-   * @param {ProgressLogController} plc 
+   * @param {PathwaysDataProvider} pdp 
    * @param {TestRun} testRun 
    * @param {Bug} bug 
    */
-  isTestRunOfBug(plc, testRun, bug) {
+  isTestRunOfBug(pdp, testRun, bug) {
     return testRun.projectName === bug.project.name && testRun.bugId === bug.id;
   },
 
   /**
-   * @param {ProgressLogController} plc 
+   * @param {PathwaysDataProvider} pdp 
    * @param {BugProgress} bugProgress
    * @param {Bug} bug 
    */
-  isBugProgressOfBug(plc, bugProgress, bug) {
+  isBugProgressOfBug(pdp, bugProgress, bug) {
     return bugProgress.projectName === bug.project.name && bugProgress.bugId === bug.id;
   }
 };

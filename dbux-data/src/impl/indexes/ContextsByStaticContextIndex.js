@@ -1,7 +1,7 @@
 
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import CollectionIndex from '../../indexes/CollectionIndex';
-import DataProvider from '../../DataProvider';
+import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 /**
@@ -14,7 +14,7 @@ export default class ContextsByStaticContextIndex extends CollectionIndex {
 
   /**
    * 
-   * @param {DataProvider} dp 
+   * @param {RuntimeDataProvider} dp 
    * @param {ExecutionContext} context 
    */
   makeKey(dp, context) {

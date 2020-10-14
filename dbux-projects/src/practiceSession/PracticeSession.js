@@ -23,7 +23,7 @@ export default class PracticeSession {
     this.bug = bug;
     this.manager = manager;
 
-    let bugProgress = this.plc.util.getBugProgressByBug(bug);
+    let bugProgress = this.pdp.util.getBugProgressByBug(bug);
     if (!bugProgress) {
       throw new Error(`Can't find bugProgress when creating practiceSession of bug ${bug.id}`);
     }
@@ -33,8 +33,8 @@ export default class PracticeSession {
     this.state = BugStatus.is.Solved(bugProgress.status) ? PracticeSessionState.Solved : PracticeSessionState.Solving;
   }
 
-  get plc() {
-    return this.manager.plc;
+  get pdp() {
+    return this.manager.pdp;
   }
 
   get isSolved() {
@@ -71,7 +71,7 @@ export default class PracticeSession {
       // some test failed
       this.manager.externals.alert(`[Dbux] ${result.code} test(s) failed. Keep going! :)`);
     }
-    await this.plc.save();
+    await this.pdp.save();
   }
 
   /**
@@ -79,7 +79,7 @@ export default class PracticeSession {
    */
   giveup() {
     if (this.stopwatchEnabled) {
-      this.plc.updateBugProgress(this.bug, { stopwatchEnabled: false });
+      this.pdp.updateBugProgress(this.bug, { stopwatchEnabled: false });
       this.stopwatchEnabled = false;
       this.stopwatch.pause();
       this.stopwatch.hide();
@@ -88,7 +88,7 @@ export default class PracticeSession {
 
   setupStopwatch() {
     if (this.stopwatchEnabled) {
-      const { solvedAt, startedAt } = this.plc.util.getBugProgressByBug(this.bug);
+      const { solvedAt, startedAt } = this.pdp.util.getBugProgressByBug(this.bug);
       if (this.isSolved) {
         this.stopwatch.set(solvedAt - startedAt);
       }
@@ -119,13 +119,13 @@ export default class PracticeSession {
    */
   maybeUpdateBugStatusByResult(result) {
     const newStatus = this.manager.getResultStatus(result);
-    const bugProgress = this.plc.util.getBugProgressByBug(this.bug);
+    const bugProgress = this.pdp.util.getBugProgressByBug(this.bug);
     if (bugProgress.status < newStatus) {
       const update = { status: newStatus };
       if (BugStatus.is.Solved(newStatus)) {
         update.solvedAt = Date.now();
       }
-      this.plc.updateBugProgress(this.bug, update);
+      this.pdp.updateBugProgress(this.bug, update);
     }
   }
 }
