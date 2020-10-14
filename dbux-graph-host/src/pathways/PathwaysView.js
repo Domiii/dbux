@@ -1,4 +1,5 @@
 import KeyedComponentSet from '@dbux/graph-common/src/componentLib/KeyedComponentSet';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import PathwaysAction from './PathwaysAction';
 
@@ -23,9 +24,13 @@ class PathwaysView extends HostComponentEndpoint {
         type,
         trace
       } = action;
+
+      const typeName = UserActionType.getName(type);
+
       return {
         id,
         type,
+        typeName,
         trace
       };
     });

@@ -1,3 +1,4 @@
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import PathwaysView from './PathwaysView';
 // import GraphRoot from './GraphRoot';
@@ -19,7 +20,9 @@ class PathwaysDocument extends HostComponentEndpoint {
 
     this.addDisposable(
       // pathwaysDataProvider.onAnyData(this.view.refresh)
-      pdp.onData('userActions', this.view.refresh)
+      pdp.onData('userActions', 
+        makeDebounce(this.view.refresh, 50)
+      )
     );
 
     // register event listeners

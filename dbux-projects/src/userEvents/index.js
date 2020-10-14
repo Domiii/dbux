@@ -1,5 +1,5 @@
 import NanoEvents from 'nanoevents';
-import UserActionType from './UserActionType';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 
 /** @typedef {import('../practiceSession/PracticeSession').default} PracticeSession */
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
@@ -39,7 +39,8 @@ export function emitPracticeSessionEvent(eventName, practiceSession) {
 export function emitNewTestRun(testRun, application) {
   emitUserEvent(UserActionType.TestRunFinished, { 
     testRun,
-    application: application.dataProvider.serialize(),
+    // TODO: make sure, application data gets saved with PDP, but don't serialize it too early?
+    // application: application.dataProvider.serialize(),
     applicationUUID: application.uuid
   });
 }
