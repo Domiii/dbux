@@ -13,6 +13,10 @@ export function getResourcePath(...relativePathSegments) {
   return context.asAbsolutePath(path.join('resources', ...relativePathSegments));
 }
 
+export function getLogsDirectory() {
+  return context.asAbsolutePath('logs');
+}
+
 export function getThemeResourcePath(...relativePathSegments) {
   return {
     light: getResourcePath('light', ...relativePathSegments),

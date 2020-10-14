@@ -1,5 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import GraphThemeMode from '@dbux/graph-common/src/shared/GraphThemeMode';
+import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import {
   window
 } from 'vscode';
@@ -40,8 +40,8 @@ export default class RichWebView extends WebviewWrapper {
   async buildClientHtml() {
     const mode = this.getThemeMode();
     const scriptPath = this.getResourcePath(this.getMainScriptPath());
-    const modeFolderName = GraphThemeMode.getName(mode).toLowerCase();
-    const themePath = this.getResourcePath(`dist/graph/${modeFolderName}/bootstrap.min.css`);
+    const modeFolderName = ThemeMode.getName(mode).toLowerCase();
+    const themePath = this.getResourcePath(`dist/${modeFolderName}/bootstrap.min.css`);
     return await buildWebviewClientHtml([scriptPath], themePath);
   }
 

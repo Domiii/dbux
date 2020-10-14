@@ -87,7 +87,7 @@ export default class NavigationNode extends BaseTreeViewNode {
       window.showInformationMessage(`Can't find "${methodName}" of current trace.`);
     }
 
-    emitPracticeSelectTraceAction('navigation', trace, { navigationMethod: methodName });
+    emitPracticeSelectTraceAction(`navigation.${methodName}`, trace);
 
     // this.treeNodeProvider.treeView.reveal(this);
 

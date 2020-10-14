@@ -7,7 +7,7 @@ import {
 } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
-import GraphThemeMode from '@dbux/graph-common/src/shared/GraphThemeMode';
+import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { wrapScriptTag, wrapScriptFileInTag } from './domTransformUtil';
 import { set as mementoSet, get as mementoGet } from '../memento';
 
@@ -52,7 +52,7 @@ export default class WebviewWrapper {
   }
 
   getThemeMode() {
-    return window.activeColorTheme.kind === ColorThemeKind.Light ? GraphThemeMode.Light : GraphThemeMode.Dark;
+    return window.activeColorTheme.kind === ColorThemeKind.Light ? ThemeMode.Light : ThemeMode.Dark;
   }
 
   // ###########################################################################

@@ -37,7 +37,7 @@ const usedExternals = [
 
 class HostComponentManager extends BaseComponentManager {
   constructor(ipcAdapter, externals, componentRegistry) {
-    super(ipcAdapter, componentRegistry);
+    super(componentRegistry, ipcAdapter);
 
     this.externals = externals;
     this._initCount = 0;

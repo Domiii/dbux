@@ -1,4 +1,3 @@
-import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 // import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
@@ -15,16 +14,14 @@ class PathwaysDocument extends HostComponentEndpoint {
     this.createOwnComponents();
 
     // register event listeners
-    this.addDisposable(
-      allApplications.selection.onApplicationsChanged(() => {
-        this.graphRoot.refresh();
-      })
-    );
+    // this.addDisposable(
+    //   allApplications.selection.onApplicationsChanged(() => {
+    //     this.graphRoot.refresh();
+    //   })
+    // );
   }
 
   createOwnComponents() {
-    this.controllers.createComponent(HighlightManager);
-    this.graphRoot = this.children.createComponent(GraphRoot);
     this.toolbar = this.children.createComponent(Toolbar);
     // this.minimap = this.children.createComponent(MiniMap);
   }
@@ -42,11 +39,11 @@ class PathwaysDocument extends HostComponentEndpoint {
   shared() {
     return {
       context: {
-        graphDocument: this,
+        pathwaysDocument: this,
         themeMode: this.state.themeMode
       }
     };
   }
 }
 
-export default GraphDocument;
+export default PathwaysDocument;

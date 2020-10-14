@@ -2,7 +2,6 @@
 import { commands, SymbolKind, window } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { newLogger } from '@dbux/common/src/log/logger';
-import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { emitEditorAction } from '../userEvents';
 import { getOrCreateTracesAtCursor } from '../traceDetailsView/TracesAtCursor';
 import { codeRangeToBabelLoc } from '../helpers/codeLocHelpers';
@@ -15,15 +14,14 @@ const { log, debug, warn, error: logError } = newLogger('codeEvents');
 const Verbose = false;
 // const Verbose = true;
 
-const defaultNewEventLineThreshold = 5;
-
-let _previousSelectionData, _previousRangeData;
+const defaultNewEventLineThreshold = 8;
 
 /**
  * @param {ProjectsManager} manager 
  */
 export function initCodeEvents(manager, context) {
   const traceAtCursor = getOrCreateTracesAtCursor(context);
+  let _previousSelectionData, _previousVisibleRangeData;
 
   window.onDidChangeTextEditorSelection(async (e) => {
     if (!manager.practiceSession) {
@@ -39,20 +37,18 @@ export function initCodeEvents(manager, context) {
     }
 
     // TODO?: take only first selection only. Do we need all selections? Can there be no selections?
-    const firstSelection = e.selections[0] || EmptyObject;
+    const firstSelection = e.selections[0];
     let data = {
       file: e.textEditor.document.uri.path,
-      rangeStart: convertPosition(firstSelection.start),
-      rangeEnd: convertPosition(firstSelection.end),
-      type: 'selection',
+      range: firstSelection ? codeRangeToBabelLoc(firstSelection) : null
     };
 
     Verbose && debug('new selection data', data);
     if (isNewData(_previousSelectionData, data)) {
       Verbose && debug('is new');
-      data = { ...data, ...await getExtraEditorEventInfo(e.textEditor) };
-      emitEditorAction(data);
       _previousSelectionData = data;
+      data = { ...data, ...await getExtraEditorEventInfo(e.textEditor) };
+      emitEditorAction('selectionChanged', data);
     }
   });
 
@@ -66,20 +62,18 @@ export function initCodeEvents(manager, context) {
     }
 
     // TODO?: take only first range only. Do we need all range? Can there be no range?
-    const firstRange = e.visibleRanges[0] || EmptyObject;
+    const firstRange = e.visibleRanges[0];
     let data = {
       file: e.textEditor.document.uri.path,
-      rangeStart: convertPosition(firstRange.start),
-      rangeEnd: convertPosition(firstRange.end),
-      type: 'visible',
+      range: firstRange ? codeRangeToBabelLoc(firstRange) : null
     };
 
-    // Verbose && debug('new range data', data);
-    if (isNewData(_previousRangeData, data)) {
+    Verbose && debug('new range data', data);
+    if (isNewData(_previousVisibleRangeData, data)) {
       Verbose && debug('is new');
+      _previousVisibleRangeData = data;
       data = { ...data, ...await getExtraEditorEventInfo(e.textEditor) };
-      emitEditorAction(data);
-      _previousRangeData = data;
+      emitEditorAction('visibleRangeChanged', data);
     }
   });
 
@@ -125,25 +119,14 @@ function convertVSCodeSymbol(symbol) {
   }
 }
 
-/**
- * Convert vscode `Position` object to normal object.
- * @param {Position} position 
- */
-function convertPosition(position = EmptyObject) {
-  return {
-    line: position.line,
-    character: position.character,
-  };
-}
-
 function isNewData(previousData, newData) {
   if (previousData?.file !== newData.file) {
     return true;
   }
-  if (Math.abs(previousData.rangeStart.line - newData.rangeStart.line) >= defaultNewEventLineThreshold) {
+  if (Math.abs(previousData.range.start.line - newData.range.start.line) >= defaultNewEventLineThreshold) {
     return true;
   }
-  if (Math.abs(previousData.rangeEnd.line - newData.rangeEnd.line) >= defaultNewEventLineThreshold) {
+  if (Math.abs(previousData.range.start.line - newData.range.start.line) >= defaultNewEventLineThreshold) {
     return true;
   }
 

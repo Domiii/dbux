@@ -14,7 +14,7 @@ class BaseComponentManager {
    */
   app;
 
-  constructor(ipcAdapter, componentRegistry) {
+  constructor(componentRegistry, ipcAdapter) {
     this.ipc = new Ipc(ipcAdapter, this);
 
     // component registry

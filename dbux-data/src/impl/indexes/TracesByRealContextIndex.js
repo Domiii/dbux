@@ -2,7 +2,7 @@ import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import Trace from '@dbux/common/src/core/data/Trace';
 import CollectionIndex from '../../indexes/CollectionIndex';
-import DataProvider from '../../DataProvider';
+import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 /** @extends {CollectionIndex<Trace>} */
@@ -12,7 +12,7 @@ export default class TracesByRealContextIndex extends CollectionIndex {
   }
 
   /** 
-   * @param {DataProvider} dp
+   * @param {RuntimeDataProvider} dp
    * @param {Trace} { traceId }
    */
   makeKey(dp, { traceId }) {

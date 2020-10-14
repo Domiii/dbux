@@ -21,26 +21,25 @@ export default class UserEventContainer extends BufferedFirestoreContainer {
   async init() {
     super.init();
 
-    this.db.backendController.practiceManager.externals.onUserEvent(this.addEvent);
     onUserEvent(this.addEvent);
 
     await this.flush();
   }
 
-  addEvent = (name, data) => {
+  addEvent = ({ name, data, createdAt }) => {
     const event = {
-      name, 
+      name,
       data,
-      createdAt: new Date(),
+      createdAt
     };
 
-    debug('Get event', name, data);
+    debug('Get event', name, data, createdAt);
 
     (async () => {
       try {
         await this.add(event);
         await this.flush();
-      } 
+      }
       catch (err) {
         logError(err);
       }
