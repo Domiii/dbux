@@ -1,4 +1,3 @@
-import path from 'path';
 import pull from 'lodash/pull';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Queries from './queries/Queries';
@@ -18,28 +17,33 @@ export default class DataProviderBase {
   // collections;
 
   /**
-   * Internal event listeners.
+   * Internal per-collection event listeners.
+   * TODO: replace with nanoevents
    * 
    * @private
    */
   _dataEventListenersInternal = {};
 
   /**
-   * Outside event listeners.
+   * Outside per-collection event listeners.
+   * TODO: replace with nanoevents
    * 
    * @private
    */
   _dataEventListeners = {};
 
   /**
+   * Outside general event listeners.
+   * TODO: replace with nanoevents
+   *
+   * @private
+   */
+  _dataListenersAny = [];
+
+  /**
    * @type {number[]}
    */
   versions = [];
-
-  /**
-   * @type {StaticProgramContext}
-   */
-  application;
 
   /**
    * @type {DataProviderUtil}
@@ -91,12 +95,21 @@ export default class DataProviderBase {
     return unsubscribe;
   }
 
+  onAnyData(cb) {
+    this._dataListenersAny.push(cb);
+
+    const unsubscribe = (() => {
+      pull(this._dataListenersAny, cb);
+    });
+    return unsubscribe;
+  }
+
   /**
    * Bundled data listener.
    * 
    * @returns {function} Unsubscribe function - Execute to cancel this listener.
    */
-  onDataAll(cfg) {
+  onDataCfg(cfg) {
     for (const collectionName in cfg.collections) {
       const cb = cfg.collections[collectionName];
       const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
@@ -126,7 +139,7 @@ export default class DataProviderBase {
   addData(allData) {
     // sanity checks
     if (!allData || allData.constructor.name !== 'Object') {
-      logError('invalid data must be (but is not) object -', JSON.stringify(allData).substring(0, 500));
+      this.logger.error('invalid data must be (but is not) object -', JSON.stringify(allData).substring(0, 500));
     }
 
     // debug('received', JSON.stringify(allData).substring(0, 500));
@@ -172,7 +185,7 @@ export default class DataProviderBase {
       const collection = this.collections[collectionName];
       if (!collection) {
         // should never happen
-        logError('received data referencing invalid collection -', collectionName);
+        this.logger.error('received data referencing invalid collection -', collectionName);
         delete this.collections[collectionName];
         continue;
       }
@@ -212,11 +225,16 @@ export default class DataProviderBase {
       collection.postIndex(entries);
     }
 
+    // notify internal and external listeners
+    this._notifyData(allData);
+  }
+
+  _notifyData(allData) {
     // fire internal event listeners
     for (const collectionName in allData) {
       // const collection = this.collections[collectionName];
       const data = allData[collectionName];
-      this._notifyData(collectionName, data, this._dataEventListenersInternal);
+      this._notifyDataSet(collectionName, data, this._dataEventListenersInternal);
     }
 
 
@@ -224,28 +242,34 @@ export default class DataProviderBase {
     for (const collectionName in allData) {
       // const collection = this.collections[collectionName];
       const data = allData[collectionName];
-      this._notifyData(collectionName, data, this._dataEventListeners);
+      this._notifyDataSet(collectionName, data, this._dataEventListeners);
     }
+
+    this._notifyListeners(allData, this._dataListenersAny);
   }
 
   /**
    * 
    * @param {string} collectionName 
    * @param {[]} data 
-   * @param {*} allListeners 
+   * @param {*} listenerMap 
    */
-  _notifyData(collectionName, data, allListeners) {
-    const listeners = allListeners[collectionName];
+  _notifyDataSet(collectionName, data, listenerMap) {
+    const listeners = listenerMap[collectionName];
     if (listeners) {
-      listeners.forEach((cb) => {
-        try {
-          cb(data);
-        }
-        catch (err) {
-          logError('Data event listener failed', err);
-        }
-      });
+      this._notifyListeners(data, listeners);
     }
+  }
+
+  _notifyListeners(data, listeners) {
+    listeners.forEach((cb) => {
+      try {
+        cb(data);
+      }
+      catch (err) {
+        this.logger.error('Data event listener failed', err);
+      }
+    });
   }
 
   /**

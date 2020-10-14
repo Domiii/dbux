@@ -1,9 +1,10 @@
 import last from 'lodash/last';
 import { newLogger } from '@dbux/common/src/log/logger';
-import allApplications from '@dbux/data/src/applications/allApplications';
+import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
-import ProgressLogUtil from './progressLogUtil';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import PathwaysDataUtil from './pathwaysDataUtil';
 import BugProgressByBugIdIndex from './indexes/BugProgressByBugIdIndex';
 import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import TestRun from './TestRun';
@@ -15,7 +16,7 @@ import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
 
-const storageKey = 'dbux-projects.progressLog';
+const storageKey = 'dbux.pathways.data';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./TestRun').default} TestRun */
@@ -47,17 +48,7 @@ class UserActionCollection extends Collection {
   }
 }
 
-export default class PathwaysDataProvider {
-  /**
-   * Used for serialization
-   */
-  version = 1;
-
-  /**
-   * @type {number[]}
-   */
-  versions = [];
-
+export default class PathwaysDataProvider extends DataProviderBase {
   /**
    * @type {ProjectsManager}
    */
@@ -69,11 +60,12 @@ export default class PathwaysDataProvider {
   util;
 
   constructor(manager) {
+    super('PathwaysDataProvider');
     this.manager = manager;
     this.storage = manager.externals.storage;
 
     this.util = Object.fromEntries(
-      Object.keys(ProgressLogUtil).map(name => [name, ProgressLogUtil[name].bind(null, this)])
+      Object.keys(PathwaysDataUtil).map(name => [name, PathwaysDataUtil[name].bind(null, this)])
     );
 
     this.load();
@@ -127,56 +119,6 @@ export default class PathwaysDataProvider {
 
   addUserAction(actionData) {
     this.addData({ userActions: [actionData] });
-  }
-
-  // ###########################################################################
-  // Private data flow
-  // ###########################################################################
-
-  /**
-   * Add given data (of different collections) to this `DataProvier`
-   * @param {{ [string]: any[] }} allData
-   */
-  addData(allData) {
-    this._addData(allData);
-    this._postAdd(allData);
-  }
-
-  addIndex(newIndex) {
-    this.indexes._addIndex(newIndex);
-    newIndex._init(this);
-  }
-
-  _addData(allData) {
-    for (const collectionName in allData) {
-      const collection = this.collections[collectionName];
-      if (!collection) {
-        // should never happen
-        logError('received data referencing invalid collection -', collectionName);
-        delete this.collections[collectionName];
-        continue;
-      }
-
-      const entries = allData[collectionName];
-      ++this.versions[collection._id]; // update version
-      collection.add(entries);
-    }
-  }
-
-  _postAdd(allData) {
-    // indexes
-    for (const collectionName in allData) {
-      const indexes = this.indexes[collectionName];
-      if (indexes) {
-        const data = allData[collectionName];
-        for (const name in indexes) {
-          const index = indexes[name];
-          if (index.addOnNewData) {
-            indexes[name].addEntries(data);
-          }
-        }
-      }
-    }
   }
 
   // ###########################################################################

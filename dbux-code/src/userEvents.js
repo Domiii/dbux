@@ -1,6 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import UserActionType from '@dbux/projects/src/userEvents/UserActionType';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 
 /**
  * @file Here we export `ProjectsManager.emitUserEvent` such that you can emit events everywhere in dbux-code

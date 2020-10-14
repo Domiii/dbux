@@ -11,7 +11,7 @@ class Toolbar extends ClientComponentEndpoint {
   createEl() {
     // return compileHtmlElement(/*html*/`<div></div>`);
     return compileHtmlElement(/*html*/`
-      <nav class="navbar fixed-top navbar-expand-lg no-padding" id="toolbar">
+      <nav class="navbar navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <button title="" data-el="hideNewRunBtn" class="btn btn-info" href="#">
             hi

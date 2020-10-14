@@ -1,17 +1,18 @@
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
-class PathwaysView extends ClientComponentEndpoint {
+class PathwaysStep extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`<div>
-      <div data-mount="PathwaysAction" class="flex-column">
+      step
+      <div data-mount="PathwaysAction">
       </div>
     </div>`);
   }
 
   update() {
-    
+
   }
 }
 
-export default PathwaysView;
+export default PathwaysStep;

@@ -76,6 +76,9 @@ export default class ComponentList {
     }
   }
 
+  /**
+   * Iterate over entire component sub tree in DFS order.
+   */
   * dfs(filter) {
     for (const child of this.components) {
       if (!filter || filter(child)) {

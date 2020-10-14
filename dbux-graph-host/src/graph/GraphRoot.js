@@ -29,11 +29,17 @@ export class RunNodeMap {
     return !!this.get(applicationId, runId);
   }
 
+  *getApplicationIds() {
+    for (const runNode of this.getAll()) {
+      yield runNode.state.applicationId;
+    }
+  }
+
   /**
    * @return {RunNode[]}
    */
   getAll() {
-    return [...this._all.values()];
+    return this._all.values();
   }
 
   makeKey(appId, runId) {
@@ -49,8 +55,6 @@ class GraphRoot extends HostComponentEndpoint {
     this.contextNodesByContext = new Map();
     this.state.applications = [];
     this._emitter = new NanoEvents();
-    this._refreshPromise = null;
-    this._refreshRequests = 0;
     this._unsubscribeOnNewData = [];
 
     this.controllers.createComponent('GraphNode', {
@@ -71,7 +75,7 @@ class GraphRoot extends HostComponentEndpoint {
 
   handleRefresh() {
     // oldApps
-    const oldAppIds = new Set(this.runNodesById.getAll().map(runNode => runNode.state.applicationId));
+    const oldAppIds = new Set(this.runNodesById.getApplicationIds());
     const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
 
     // remove old runNode
