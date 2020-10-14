@@ -38,5 +38,5 @@ export function getAllMemento() {
 export function initMemento(context) {
   memento = context.globalState;
 
-  clearAll();
+  // clearAll();
 }

@@ -85,7 +85,7 @@ class StaticTraceCollection extends Collection {
       ++this.lastStaticCodeChunkId;
       this.lastStaticContextId = staticContextId;
     }
-    staticTrace.staticCodeChunkId = this.lastCodeChunkId;
+    staticTrace.staticCodeChunkId = this.lastStaticCodeChunkId;
   }
 }
 
@@ -133,6 +133,9 @@ class ExecutionContextCollection extends Collection {
  * @extends {Collection<Trace>}
  */
 class TraceCollection extends Collection {
+  lastContextId = -1;
+  lastCodeChunkId = 0;
+
   constructor(dp) {
     super('traces', dp);
   }
@@ -166,10 +169,10 @@ class TraceCollection extends Collection {
       // codeChunkId
       if (contextId !== this.dp.lastContextId) {
         // new code chunk
-        ++this.dp.lastCodeChunkId;
-        this.dp.lastContextId = contextId;
+        ++this.lastCodeChunkId;
+        this.lastContextId = contextId;
       }
-      trace.codeChunkId = this.dp.lastCodeChunkId;
+      trace.codeChunkId = this.lastCodeChunkId;
     }
   }
 
@@ -379,9 +382,6 @@ class ValueCollection extends Collection {
 }
 
 export default class RuntimeDataProvider extends DataProviderBase {
-  lastContextId = -1;
-  lastCodeChunkId = 0;
-
   constructor(application) {
     super('RuntimeDataProvider');
 

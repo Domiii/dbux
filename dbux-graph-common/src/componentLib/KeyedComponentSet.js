@@ -5,61 +5,71 @@ export default class KeyedComponentSet {
   ComponentClass;
   componentsById = new Map();
 
-  constructor(owner, ComponentClass) {
+  /**
+   * @type {Map}
+   */
+  entriesByKey;
+
+  constructor(owner, ComponentClass, cfg) {
     this.owner = isFunction(owner) ? owner : () => owner;
     this.ComponentClass = ComponentClass;
+
+    Object.assign(this, cfg);
   }
 
-  getId(entry) {
+  makeKey(entry) {
     return entry?.id || 0;
   }
 
-  getEntryById(entries, id) {
-    return entries[id];
+
+  getComponentByEntry(entry) {
+    const key = this.makeKey(entry);
+    return this.getComponentByKey(key);
   }
 
-  getComponentById(id) {
-    return this.componentsById.get(id);
+  getComponentByKey(key) {
+    return this.componentsById.get(key);
   }
 
   update(entries) {
-    const oldIds = new Set(this.componentsById.keys());
-    const newIds = new Set(entries.map(entry => this.getId(entry)));
+    const oldKeys = new Set(this.componentsById.keys());
+    const newEntries = new Map(entries.map(entry => [this.makeKey(entry), entry]));
 
     // remove old components
     for (const comp of this.componentsById.values()) {
-      const { id } = comp.state;
-      if (!newIds.has(id)) {
-        this.removeComponent(id);
+      const { key } = comp.state;
+      if (!newEntries.has(key)) {
+        this.removeComponent(key);
       }
     }
 
     // add new components
-    for (const id of newIds) {
-      if (id && !oldIds.has(id)) {
-        const entry = this.getEntryById(entries, id);
-        this.addComponent(id, entry);
+    for (const [key, entry] of newEntries.entries()) {
+      if (key && !oldKeys.has(key)) {
+        this.addComponent(key, entry);
       }
     }
+
+    this.entriesByKey = newEntries;
   }
 
   // ###########################################################################
   // run node management
   // ###########################################################################
 
-  addComponent(id, entry) {
-    const owner = this.owner(id, entry);
+  addComponent(key, entry) {
+    const owner = this.owner(key, entry);
     if (!owner) {
-      throw new Error(`owner not found for id=${id}, entry=${JSON.stringify(entry)} via: ${this.owner}`);
+      throw new Error(`owner not found for id=${key}, entry=${JSON.stringify(entry)} via: ${this.owner}`);
     }
-    const newComponent = owner.children.createComponent(this.ComponentClass, { id, entry });
-    this.componentsById.set(id, newComponent);
+    const newComponent = owner.children.createComponent(this.ComponentClass, { key, ...entry });
+    this.componentsById.set(key, newComponent);
     return newComponent;
   }
 
-  removeComponent(id) {
-    const comp = this.componentsById.get(id);
-    this.componentsById.delete(id);
+  removeComponent(key) {
+    const comp = this.componentsById.get(key);
+    this.componentsById.delete(key);
     comp.dispose();
   }
 }

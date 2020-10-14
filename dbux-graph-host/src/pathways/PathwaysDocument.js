@@ -1,4 +1,3 @@
-import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import PathwaysView from './PathwaysView';
 // import GraphRoot from './GraphRoot';
@@ -15,15 +14,26 @@ class PathwaysDocument extends HostComponentEndpoint {
   init() {
     this.createOwnComponents();
 
-    // listen to pathways data changes
-    const pdp = this.componentManager.externals.getPathwaysDataProvider();
+    const {
+      onPracticeSessionChanged,
+      getPathwaysDataProvider
+    } = this.componentManager.externals;
 
-    this.addDisposable(
-      // pathwaysDataProvider.onAnyData(this.view.refresh)
-      pdp.onData('userActions', 
-        makeDebounce(this.view.refresh, 50)
-      )
-    );
+    // listen to pathways data changes
+    this.addDisposable(onPracticeSessionChanged(() => {
+      // stop listening on previous events
+      this.userActionsListener?.();
+
+      // register new event handler
+      const pdp = getPathwaysDataProvider();
+      this.addDisposable(
+        this.userActionsListener = 
+          // pathwaysDataProvider.onAnyData(this.view.refresh)
+          pdp.onData('userActions', this.view.refresh)
+      );
+
+      this.view.refresh();
+    }));
 
     // register event listeners
     // this.addDisposable(

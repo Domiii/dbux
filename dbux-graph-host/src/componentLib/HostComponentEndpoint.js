@@ -1,6 +1,7 @@
 import noop from 'lodash/noop';
-import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndpoint';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import sleep from '@dbux/common/src/util/sleep';
+import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndpoint';
 import NanoEvents from 'nanoevents';
 import HostComponentList from './HostComponentList';
 
@@ -264,13 +265,13 @@ class HostComponentEndpoint extends ComponentEndpoint {
     throw new Error(`${this.componentName}.handleRefresh not implemented`);
   }
 
-  refresh = () => {
+  refresh = makeDebounce(() => {
     ++this._refreshRequests;
     if (this._refreshPromise) {
       return;
     }
     this._refreshPromise = this.doRefresh();
-  }
+  }, 50);
 
   async doRefresh() {
     try {

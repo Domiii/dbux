@@ -72,6 +72,8 @@ export default class PathwaysDataProvider extends DataProviderBase {
   lastStaticCodeChunkId = 0;
   lastStepId = 0;
 
+  stepsByStaticCodeChunkId = new Map();
+
   constructor(manager) {
     super('PathwaysDataProvider');
     this.manager = manager;
@@ -80,8 +82,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.util = Object.fromEntries(
       Object.keys(PathwaysDataUtil).map(name => [name, PathwaysDataUtil[name].bind(null, this)])
     );
-
-    this.load();
   }
 
   // ###########################################################################
@@ -135,8 +135,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
   // ###########################################################################
   
   addStep(staticCodeChunkId, firstAction) {
-    this.lastStaticCodeChunkId = staticCodeChunkId;
-
     const {
       sessionId,
       bugId,
@@ -153,8 +151,13 @@ export default class PathwaysDataProvider extends DataProviderBase {
     };
     this.addData({ steps: [step] });
 
-    // update lastStepId
-    this.lastStepId = step.id;
+    this.stepsByStaticCodeChunkId.set(staticCodeChunkId, step);
+
+    return step;
+  }
+
+  getActionStepId() {
+
   }
 
   addNewUserAction(action) {
@@ -162,8 +165,14 @@ export default class PathwaysDataProvider extends DataProviderBase {
     // NOTE: action.id is not set yet (will be set during `addData` below)
     const staticCodeChunkId = this.util.getActionStaticCodeChunkId(action);
 
-    if (!this.lastCodeChunkId || staticCodeChunkId !== this.lastCodeChunkId) {
-      this.addStep(staticCodeChunkId, action);
+    if (!this.lastStepId || (staticCodeChunkId && staticCodeChunkId !== this.lastStaticCodeChunkId)) {
+      let step = this.stepsByStaticCodeChunkId.get(staticCodeChunkId);
+      if (!step) {
+        step = this.addStep(staticCodeChunkId, action);
+      }
+
+      this.lastStaticCodeChunkId = staticCodeChunkId;
+      this.lastStepId = step.id;
     }
     action.stepId = this.lastStepId;
 
@@ -213,7 +222,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * Load serialized data from external storage
    */
   load() {
-    this.init();
     try {
       const logString = this.storage.get(storageKey);
       if (logString !== undefined) {

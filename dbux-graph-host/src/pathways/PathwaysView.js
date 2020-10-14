@@ -13,16 +13,34 @@ class PathwaysView extends HostComponentEndpoint {
   actions;
 
   init() {
-    this.steps = new KeyedComponentSet(this, PathwaysStep);
-    this.actions = new KeyedComponentSet(this.getActionOwner, PathwaysAction);
+    // const cfg = {
+    //   makeKey: this.makeEntryKey
+    // };
+    const cfg = null;
+    this.steps = new KeyedComponentSet(this, PathwaysStep, cfg);
+    this.actions = new KeyedComponentSet(this.getActionOwner, PathwaysAction, cfg);
   }
 
-  getActionOwner = (actionId, { stepId }) => {
-    return this.steps.getComponentById(stepId);
+  // makeEntryKey = (entry) => {
+  //   if (!entry) {
+  //     return 'null';
+  //   }
+  //   return `${entry.sessionId}_${entry.id}`;
+  // }
+
+  getActionOwner = (actionKey, { stepId }) => {
+    const step = this.pdp.collections.steps.getById(stepId);
+    return this.steps.getComponentByEntry(step);
   }
 
   handleRefresh() {
     const pdp = this.componentManager.externals.getPathwaysDataProvider();
+    if (this.pdp !== pdp) {
+      // reset
+      this.children.clear();
+      this.init();
+    }
+    this.pdp = pdp;
 
     const steps = pdp.collections.steps.getAll().map(step => {
       if (!step) {
@@ -32,11 +50,13 @@ class PathwaysView extends HostComponentEndpoint {
 
       const {
         id,
+        sessionId,
         staticCodeChunkId
       } = step;
 
       return {
         id,
+        sessionId,
         staticCodeChunkId
       };
     });
@@ -49,6 +69,7 @@ class PathwaysView extends HostComponentEndpoint {
 
       const {
         id,
+        sessionId,
         type,
         trace,
         stepId
@@ -58,6 +79,7 @@ class PathwaysView extends HostComponentEndpoint {
 
       return {
         id,
+        sessionId,
         type,
         typeName,
         trace,
