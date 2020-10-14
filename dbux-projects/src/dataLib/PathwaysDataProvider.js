@@ -1,4 +1,6 @@
+import last from 'lodash/last';
 import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import ProgressLogUtil from './progressLogUtil';
@@ -7,9 +9,11 @@ import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 import { emitBugProgressChanged, emitNewBugProgress, emitNewTestRun } from '../userEvents';
+import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
+import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('ProgressLogController');
+const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
 
 const storageKey = 'dbux-projects.progressLog';
 
@@ -20,8 +24,8 @@ const storageKey = 'dbux-projects.progressLog';
  * @extends {Collection<TestRun>}
  */
 class TestRunCollection extends Collection {
-  constructor(plc) {
-    super('testRuns', plc);
+  constructor(pdp) {
+    super('testRuns', pdp);
   }
 }
 
@@ -29,12 +33,21 @@ class TestRunCollection extends Collection {
  * @extends {Collection<BugProgress>}
  */
 class BugProgressCollection extends Collection {
-  constructor(plc) {
-    super('bugProgresses', plc);
+  constructor(pdp) {
+    super('bugProgresses', pdp);
   }
 }
 
-export default class ProgressLogController {
+/**
+ * @extends {Collection<BugProgress>}
+ */
+class UserActionCollection extends Collection {
+  constructor(pdp) {
+    super('userActions', pdp);
+  }
+}
+
+export default class PathwaysDataProvider {
   /**
    * Used for serialization
    */
@@ -74,11 +87,15 @@ export default class ProgressLogController {
    * @param {Bug} bug 
    * @param {number} nFailedTests
    * @param {string} patchString 
+   * @return {TestRun}
    */
   addTestRun(bug, nFailedTests, patchString) {
     const testRun = new TestRun(bug, nFailedTests, patchString);
     this.addData({ testRuns: [testRun] });
-    emitNewTestRun(testRun);
+    const application = last(allApplications.selection.getAll());
+    emitNewTestRun(testRun, application);
+
+    return testRun;
   }
 
   /**
@@ -95,20 +112,6 @@ export default class ProgressLogController {
   }
 
   /**
-   * NOTE: A unfinished TestRun is saved with nFailedTests = null
-   * @param {Bug} bug 
-   * @param {string} patchString 
-   */
-  addUnfinishedTestRun(bug, patchString) {
-    this.addTestRun(bug, null, patchString);
-  }
-
-  async addTestRunWithoutPatchString(bug, nFailedTests) {
-    const patchString = await bug.project.getPatchString();
-    this.addTestRun(bug, nFailedTests, patchString);
-  }
-
-  /**
    * NOTE: This may break indexes' keys
    * @param {Bug} bug 
    * @param {Object} update
@@ -120,6 +123,10 @@ export default class ProgressLogController {
     }
     bugProgress.updatedAt = Date.now();
     emitBugProgressChanged(bugProgress);
+  }
+
+  addUserAction(actionData) {
+    this.addData({ userActions: [actionData] });
   }
 
   // ###########################################################################
@@ -183,12 +190,15 @@ export default class ProgressLogController {
   init() {
     this.collections = {
       testRuns: new TestRunCollection(this),
-      bugProgresses: new BugProgressCollection(this)
+      bugProgresses: new BugProgressCollection(this),
+      userActions: new UserActionCollection(this)
     };
 
     this.indexes = new Indexes();
-    this.addIndex(new BugProgressByBugIdIndex());
     this.addIndex(new TestRunsByBugIdIndex());
+    this.addIndex(new BugProgressByBugIdIndex());
+    this.addIndex(new UserActionByBugIdIndex());
+    this.addIndex(new UserActionByTypeIndex());
   }
 
 

@@ -1,7 +1,6 @@
 import CollectionIndex from '@dbux/data/src/indexes/CollectionIndex';
-import TestRun from '../TestRun';
 
-/** @typedef {import('../ProgressLogController').default} ProgressLogController */
+/** @typedef {import('../PathwaysDataProvider').default} PathwaysDataProvider */
 
 /** @extends {CollectionIndex<TestRun>} */
 export default class TestRunByBugIdIndex extends CollectionIndex {
@@ -10,10 +9,10 @@ export default class TestRunByBugIdIndex extends CollectionIndex {
   }
 
   /** 
-   * @param {ProgressLogController} plc
-   * @param {BugProgress} bugProgress
+   * @param {PathwaysDataProvider} pdp
+   * @param {TestRun} testRun
    */
-  makeKey(plc, testRun) {
+  makeKey(pdp, testRun) {
     return testRun.bugId;
   }
 }

@@ -57,7 +57,7 @@ export async function preActivate(context) {
     // [debugging]
     // await dialogController.getDialog('survey1').clear();
     // await dialogController.getDialog('tutorial').clear();
-    // await getOrCreateProjectManager(context).progressLogController.reset();
+    // await getOrCreateProjectManager(context).pathwayDataProvider.reset();
 
     commands.executeCommand('setContext', 'dbux.context.nodeEnv', process.env.NODE_ENV);
 

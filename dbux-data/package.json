@@ -13,7 +13,8 @@
   "dependencies": {
     "@dbux/common": "^0.2.6-dev.0",
     "lodash": "^4.17.19",
-    "nanoevents": "^2.0.0"
+    "nanoevents": "^2.0.0",
+    "uuid": "^8.3.1"
   },
   "_moduleAliases": {}
 }
