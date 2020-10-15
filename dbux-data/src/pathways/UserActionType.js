@@ -23,10 +23,16 @@ let UserActionType = {
   TDExecutionsUse: 27,
   TDTraceUse: 30,
 
-  TDDebugUse: 30,
-  // Navigation: 20,
+  TDDebugUse: 31,
 
-  CallGraphEvent: 100,
+  OtherCallGraphEvent: 100,
+  CallGraphSetting: 101,
+  CallGraphSearch: 102,
+  CallGraphNodeCollapseChange: 103,
+  CallGraphNodeClick: 104,
+  CallGraphNodeValClick: 105,
+  CallGraphNodeCallClick: 106,
+  CallGraphNodeLocClick: 107
 };
 
 UserActionType = new Enum(UserActionType);
