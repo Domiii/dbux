@@ -123,6 +123,10 @@ export default class PathwaysDataProvider extends DataProviderBase {
    */
   updateBugProgress(bug, update) {
     const bugProgress = this.util.getBugProgressByBug(bug);
+    if (!bugProgress) {
+      this.logger.error(`Tried to update bug (${Object.keys(update || {})}) progress but no previous record found: ${bug.id}`);
+      return;
+    }
     for (const key of Object.keys(update)) {
       bugProgress[key] = update[key];
     }

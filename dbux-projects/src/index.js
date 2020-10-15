@@ -1,11 +1,13 @@
 import ProjectsManager from './ProjectsManager';
 import { installHackfixes } from './shelljs_hackfixes';
 
-export function initDbuxProjects(cfg, externals) {
+export async function initDbuxProjects(cfg, externals) {
   installHackfixes();
 
   if (cfg || externals) {
-    return new ProjectsManager(cfg, externals);
+    const manager = new ProjectsManager(cfg, externals);
+    await manager.init();
+    return manager;
   }
   return null;
 }
