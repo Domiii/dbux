@@ -577,6 +577,11 @@ export default {
     return staticContext.type;
   },
 
+  getTrace(dp, traceId) {
+    const trace = dp.collections.traces.getById(traceId);
+    return trace;
+  },
+
   getStaticTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
@@ -836,9 +841,9 @@ export default {
   // code chunks
   // ###########################################################################
 
-  getStaticCodeChunkId(dp, traceId) {
-    const { staticCodeChunkId } = dp.util.getStaticTrace(traceId);
-    return staticCodeChunkId;
+  getCodeChunkId(dp, traceId) {
+    const { codeChunkId } = dp.util.getTrace(traceId);
+    return codeChunkId;
   }
 
 };

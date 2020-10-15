@@ -3,7 +3,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { getThemeResourcePath } from '../resources';
 import { registerCommand } from '../commands/commandUtil';
-import { emitTreeViewAction } from '../userEvents';
+import { emitTreeViewAction, emitTreeViewCollapseChangeAction } from '../userEvents';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('BaseTreeViewNodeProvider');
@@ -123,6 +123,8 @@ export default class BaseTreeViewNodeProvider {
         break;
     }
     this.idsCollapsibleState.set(node.id, node.collapsibleState);
+
+    this.handleNodeCollapsibleStateChanged(node);
   }
 
   /**
@@ -140,12 +142,31 @@ export default class BaseTreeViewNodeProvider {
     const action = ''; // not a button click
     const nodeId = node.id;
     const args = {
-      label: node.label,
       description: node.description,
       clazz: node.constructor.name
     };
-    emitTreeViewAction(treeViewName, action, nodeId, args);
+
+    const { clickUserActionType } = node;
+    if (clickUserActionType !== false) {
+      emitTreeViewAction(treeViewName, action, nodeId, node.label, clickUserActionType, args);
+    }
+
     node.handleClick?.();
+  }
+
+  handleNodeCollapsibleStateChanged = (node) => {
+    const treeViewName = this.viewName;
+    const action = ''; // not a button click
+    const nodeId = node.id;
+    const args = {
+      description: node.description,
+      clazz: node.constructor.name,
+      collapsibleState: node.collapsibleState
+    };
+
+    emitTreeViewCollapseChangeAction(treeViewName, action, nodeId, node.label, node.collapseChangeUserActionType, args);
+
+    node.handleCollapsibleStateChanged?.();
   }
 
   // ###########################################################################

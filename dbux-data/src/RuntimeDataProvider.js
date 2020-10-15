@@ -66,27 +66,27 @@ class StaticContextCollection extends Collection {
  * @extends {Collection<StaticTrace>}
  */
 class StaticTraceCollection extends Collection {
-  lastStaticContextId = 0;
-  lastStaticCodeChunkId = 0;
+  // lastStaticContextId = 0;
+  // lastStaticCodeChunkId = 0;
 
   constructor(dp) {
     super('staticTraces', dp);
   }
 
-  handleEntryAdded(staticTrace) {
-    const {
-      staticContextId
-    } = staticTrace;
+  // handleEntryAdded(staticTrace) {
+  //   const {
+  //     staticContextId
+  //   } = staticTrace;
 
-    // TODO: add new StaticCodeChunkCollection to also manage code-chunk related information, especially: `loc`
+  //   // TODO: add new StaticCodeChunkCollection to also manage code-chunk related information, especially: `loc`
 
-    if (staticContextId !== this.lastStaticContextId) {
-      // new code chunk
-      ++this.lastStaticCodeChunkId;
-      this.lastStaticContextId = staticContextId;
-    }
-    staticTrace.staticCodeChunkId = this.lastStaticCodeChunkId;
-  }
+  //   if (staticContextId !== this.lastStaticContextId) {
+  //     // new code chunk
+  //     ++this.lastStaticCodeChunkId;
+  //     this.lastStaticContextId = staticContextId;
+  //   }
+  //   staticTrace.staticCodeChunkId = this.lastStaticCodeChunkId;
+  // }
 }
 
 /**
@@ -166,13 +166,20 @@ class TraceCollection extends Collection {
         contextId
       } = trace;
 
+      const context = this.dp.collections.executionContexts.getById(contextId);
+      const { staticContextId } = context;
+
       // codeChunkId
-      if (contextId !== this.dp.lastContextId) {
-        // new code chunk
-        ++this.lastCodeChunkId;
-        this.lastContextId = contextId;
-      }
-      trace.codeChunkId = this.lastCodeChunkId;
+      // if (contextId !== this.dp.lastContextId) {
+      //   // new code chunk
+      //   ++this.lastCodeChunkId;
+      //   this.lastContextId = contextId;
+      // }
+      // trace.codeChunkId = this.lastCodeChunkId;
+
+      // TODO: split + organize code chunks along "deep splits"?
+      // TODO: how to re-split an already established chunk?
+      trace.codeChunkId = staticContextId;
     }
   }
 

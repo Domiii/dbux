@@ -1,6 +1,7 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import ValueTypeCategory from '@dbux/common/src/core/constants/ValueTypeCategory';
 import { isTraceExpression } from '@dbux/common/src/core/constants/TraceType';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import isEmpty from 'lodash/isEmpty';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { makeTreeChildren } from '../../helpers/treeViewHelpers';
@@ -34,6 +35,14 @@ export default class ValueTDNode extends BaseTreeViewNode {
       return `Value: ${JSON.stringify(value)}`;
     }
     return 'Value';
+  }
+  
+  get clickUserActionType() {
+    return UserActionType.TDValueClick;
+  }
+
+  get collapseChangeUserActionType() {
+    return UserActionType.TDValueCollapseChange;
   }
 
   get valueRef() {
