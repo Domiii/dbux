@@ -70,6 +70,7 @@ export default {
     return applicationSet.getById(applicationId);
   },
 
+  
 
   // ###########################################################################
   // actions
@@ -127,6 +128,7 @@ export default {
   getActionGroupTimeSpent(pdp, actionGroupId) {
     const actionGroup = pdp.collections.actionGroups.getById(actionGroupId);
     const nextActionGroup = pdp.util.getActionGroup(actionGroupId);
+
     if (nextActionGroup) {
       return nextActionGroup.createdAt - actionGroup.createdAt;
     }
