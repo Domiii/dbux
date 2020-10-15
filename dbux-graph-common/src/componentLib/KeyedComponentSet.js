@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('functionHelpers');
+const { log, debug, warn, error: logError } = newLogger('KeyedComponentSet');
 
 export default class KeyedComponentSet {
   owner;

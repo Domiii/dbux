@@ -13,14 +13,22 @@ let UserActionType = {
   SelectTrace: 11,
   TagTrace: 12,
 
-  OtherTreeViewEvent: 20,
-  OtherTreeViewCollapseChangeEvent: 21,
+  TreeViewOther: 20,
+  TreeViewCollapseChangeOther: 21,
+  // TODO: one type per Navigation direction
   TDNavigation: 22,
   TDValueClick: 23,
   TDValueCollapseChange: 24,
   TDTrackObjectUse: 25,
-  TDObjectUse: 26,
+  TDTrackObjectTraceUse: 26,
+  /**
+   * Collapse/expand "Executions xN"
+   */
   TDExecutionsUse: 27,
+  /**
+   * Select a trace under "Executions xN"
+   */
+  TDExecutionsTraceUse: 28,
   TDTraceUse: 30,
 
   TDDebugUse: 31,

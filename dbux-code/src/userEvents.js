@@ -47,7 +47,7 @@ export function emitTagTraceAction(trace) {
 }
 
 export function emitTreeViewAction(treeViewName, action, nodeId, nodeLabel, userActionType, args) {
-  emitUserEvent(userActionType || UserActionType.OtherTreeViewEvent, {
+  emitUserEvent(userActionType || UserActionType.TreeViewOther, {
     treeViewName,
     action,
     nodeId,
@@ -57,7 +57,7 @@ export function emitTreeViewAction(treeViewName, action, nodeId, nodeLabel, user
 }
 
 export function emitTreeViewCollapseChangeAction(treeViewName, action, nodeId, nodeLabel, userActionType, args) {
-  emitUserEvent(userActionType || UserActionType.OtherTreeViewCollapseChangeEvent, {
+  emitUserEvent(userActionType || UserActionType.TreeViewCollapseChangeOther, {
     treeViewName,
     action,
     nodeId,

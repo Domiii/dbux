@@ -166,6 +166,11 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
   addNewUserAction(action) {
     // keep track of steps
+    // TODO: add new step, if codeChunkId changed
+    // TODO: get staticContext info for step (label, loc)
+    // TODO: for each step, keep track of executed staticTraces visited vs. not visited
+    // TODO: for each action, either add new group (and add group to step) or add to last group
+
     // NOTE: action.id is not set yet (will be set during `addData` below)
     const codeChunkId = this.util.getActionCodeChunkId(action);
 

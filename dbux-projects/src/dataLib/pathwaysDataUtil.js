@@ -46,6 +46,7 @@ export default {
     return bugProgress.projectName === bug.project.name && bugProgress.bugId === bug.id;
   },
 
+
   // ###########################################################################
   // applications
   // ###########################################################################
@@ -69,8 +70,9 @@ export default {
     return applicationSet.getById(applicationId);
   },
 
+
   // ###########################################################################
-  // steps + traces in pathways
+  // actions
   // ###########################################################################
 
   getCodeChunkId(pdp, actionId) {
@@ -86,5 +88,71 @@ export default {
 
     const { trace: { traceId } } = action;
     return dp.util.getCodeChunkId(traceId);
+  },
+
+  getPreviousAction(pdp, actionId) {
+    const previousAction = pdp.collections.actions.getById(actionId - 1);
+    return previousAction;
+  },
+
+  getNextAction(pdp, actionId) {
+    const nextAction = pdp.collections.actions.getById(actionId + 1);
+    return nextAction;
+  },
+
+  getActionTimeSpent(pdp, actionId) {
+    const action = pdp.collections.actions.getById(actionId);
+    const nextAction = pdp.util.getAction(actionId);
+    if (nextAction) {
+      return nextAction.createdAt - action.createdAt;
+    }
+    return Date.now() - action.createdAt;
+  },
+
+  
+  // ###########################################################################
+  // actionGroup
+  // ###########################################################################
+
+  getPreviousActionGroup(pdp, actionGroupId) {
+    const previousActionGroup = pdp.collections.actionGroups.getById(actionGroupId - 1);
+    return previousActionGroup;
+  },
+
+  getNextActionGroup(pdp, actionGroupId) {
+    const nextActionGroup = pdp.collections.actionGroups.getById(actionGroupId + 1);
+    return nextActionGroup;
+  },
+
+  getActionGroupTimeSpent(pdp, actionGroupId) {
+    const actionGroup = pdp.collections.actionGroups.getById(actionGroupId);
+    const nextActionGroup = pdp.util.getActionGroup(actionGroupId);
+    if (nextActionGroup) {
+      return nextActionGroup.createdAt - actionGroup.createdAt;
+    }
+    return Date.now() - actionGroup.createdAt;
+  },
+  
+  // ###########################################################################
+  // steps
+  // ###########################################################################
+
+  getPreviousStep(pdp, stepId) {
+    const previousStep = pdp.collections.steps.getById(stepId - 1);
+    return previousStep;
+  },
+
+  getNextStep(pdp, stepId) {
+    const nextStep = pdp.collections.steps.getById(stepId + 1);
+    return nextStep;
+  },
+
+  getStepTimeSpent(pdp, stepId) {
+    const step = pdp.collections.steps.getById(stepId);
+    const nextStep = pdp.util.getStep(stepId);
+    if (nextStep) {
+      return nextStep.createdAt - step.createdAt;
+    }
+    return Date.now() - step.createdAt;
   }
 };
