@@ -1,9 +1,8 @@
-import last from 'lodash/last';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
-import allApplications from '@dbux/data/src/applications/allApplications';
+import Application from '@dbux/data/src/applications/Application';
 import PathwaysDataUtil from './pathwaysDataUtil';
 import BugProgressByBugIdIndex from './indexes/BugProgressByBugIdIndex';
 import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
@@ -13,6 +12,8 @@ import { emitBugProgressChanged, emitNewBugProgress, emitNewTestRun } from '../u
 import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
+
+
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -37,6 +38,41 @@ class TestRunCollection extends Collection {
 class BugProgressCollection extends Collection {
   constructor(pdp) {
     super('bugProgresses', pdp);
+  }
+}
+
+/**
+ * @extends {Collection<Application>}
+ */
+class ApplicationCollection extends Collection {
+  constructor(pdp) {
+    super('applications', pdp);
+    this.deserializedCount = 0;
+  }
+
+  /**
+   * @param {Application} application 
+   * @return {Object} plain JS Object
+   */
+  serialize(application) {
+    const { entryPointPath, createdAt } = application;
+    return {
+      entryPointPath,
+      createdAt,
+      uuid: application.uuid,
+      serializedDpData: application.dataProvider.serialize()
+    };
+  }
+
+  /**
+   * 
+   * @param {PathwaysDataProvider} pdp 
+   */
+  deserialize({ entryPointPath, createdAt, uuid, serializedDpData }) {
+    // NOTE: currently we are not linking `oldApplications` with `allApplications`
+    const app = new Application(++this.deserializedCount, entryPointPath, createdAt, null, uuid);
+    app.dataProvider.deserialize(JSON.parse(serializedDpData));
+    return app;
   }
 }
 
@@ -92,15 +128,24 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * @param {Bug} bug 
    * @param {number} nFailedTests
    * @param {string} patchString 
+   * @param {Application[]} apps applications of this TestRun
    * @return {TestRun}
    */
-  addTestRun(bug, nFailedTests, patchString) {
-    const testRun = new TestRun(bug, nFailedTests, patchString);
+  addTestRun(bug, nFailedTests, patchString, apps) {
+    const appUUIDs = apps.map(app => app.uuid);
+    const testRun = new TestRun(bug, nFailedTests, patchString, appUUIDs);
     this.addData({ testRuns: [testRun] });
-    const application = last(allApplications.selection.getAll());
-    emitNewTestRun(testRun, application);
+
+    emitNewTestRun(testRun);
 
     return testRun;
+  }
+
+  /**
+   * @param {Application[]} apps 
+   */
+  addApplications(apps) {
+    this.addData({ applications: apps });
   }
 
   /**
@@ -133,19 +178,19 @@ export default class PathwaysDataProvider extends DataProviderBase {
   // ###########################################################################
   // actions + steps
   // ###########################################################################
-  
+
   addStep(staticCodeChunkId, firstAction) {
     const {
       sessionId,
       bugId,
       createdAt
     } = firstAction;
-    
+
     const step = {
       sessionId,
       bugId,
       createdAt,
-      
+
       staticCodeChunkId,
       firstActionId: firstAction.id
     };
@@ -192,6 +237,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.collections = {
       testRuns: new TestRunCollection(this),
       bugProgresses: new BugProgressCollection(this),
+      applications: new ApplicationCollection(this),
       userActions: new UserActionCollection(this),
       steps: new StepCollection(this)
     };
@@ -210,7 +256,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
    */
   async save() {
     try {
-      const logString = this._serialize();
+      const logString = this.serialize();
       await this.storage.set(storageKey, logString);
     }
     catch (err) {
@@ -225,7 +271,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     try {
       const logString = this.storage.get(storageKey);
       if (logString !== undefined) {
-        this._deserialize(logString);
+        this.deserialize(JSON.parse(logString));
       }
     }
     catch (err) {
@@ -236,39 +282,5 @@ export default class PathwaysDataProvider extends DataProviderBase {
   async reset() {
     this.init();
     await this.save();
-  }
-
-  /**
-   * Serialize all raw data into JSON format.
-   */
-  _serialize() {
-    const collections = Object.values(this.collections);
-    const obj = {
-      version: this.version,
-      collections: Object.fromEntries(collections.map(collection => {
-        let {
-          name,
-          _all: entries
-        } = collection;
-
-        return [
-          name,
-          entries.slice(1)
-        ];
-      }))
-    };
-    return JSON.stringify(obj, null, 2);
-  }
-
-  /**
-   * Deserialize and recover the data that serialized by `this._serialize()`
-   */
-  _deserialize(dataString) {
-    const data = JSON.parse(dataString);
-    const { version, collections } = data;
-    if (version !== this.version) {
-      throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
-    }
-    this.addData(collections);
   }
 }

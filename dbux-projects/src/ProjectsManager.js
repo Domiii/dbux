@@ -5,6 +5,7 @@ import NanoEvents from 'nanoevents';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
 import caseStudyRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
@@ -435,7 +436,9 @@ export default class ProjectsManager {
     const result = await this.runner.testBug(bug, cfg);
 
     const patch = await bug.project.getPatchString();
-    this.pdp.addTestRun(bug, result.code, patch);
+    const apps = allApplications.selection.getAll();
+    this.pdp.addTestRun(bug, result.code, patch, apps);
+    this.pdp.addApplications(apps);
     this.pdp.updateBugProgress(bug, { patch });
 
     result.code && await bug.openInEditor();

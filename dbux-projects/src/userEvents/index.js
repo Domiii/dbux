@@ -36,12 +36,9 @@ export function emitPracticeSessionEvent(eventName, practiceSession) {
   });
 }
 
-export function emitNewTestRun(testRun, application) {
+export function emitNewTestRun(testRun) {
   emitUserEvent(UserActionType.TestRunFinished, { 
-    testRun,
-    // TODO: make sure, application data gets saved with PDP, but don't serialize it too early?
-    // application: application.dataProvider.serialize(),
-    applicationUUID: application.uuid
+    testRun
   });
 }
 

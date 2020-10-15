@@ -281,10 +281,17 @@ export default class DataProviderBase {
     const obj = {
       version: this.version,
       collections: Object.fromEntries(collections.map(collection => {
-        let {
+        const {
           name,
-          _all: entries
+          _all
         } = collection;
+
+        let entries = _all.slice(1);
+
+        // convert complex entry into simple JS Object
+        if (collection.serialize) {
+          entries = entries.map(entry => collection.serialize(entry));
+        }
 
         entries = entries.map(e => {
           const newEntry = { ...e };
@@ -311,6 +318,13 @@ export default class DataProviderBase {
     const { version, collections } = data;
     if (version !== this.version) {
       throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
+    }
+
+    for (const collectionName in collections) {
+      const collection = this.collections[collectionName];
+      if (collection.deserialize) {
+        collections[collectionName] = collections[collectionName].map(obj => collection.deserialize(obj));
+      }
     }
     this.addData(collections);
   }
