@@ -51,13 +51,13 @@ class PathwaysView extends HostComponentEndpoint {
       const {
         id,
         sessionId,
-        staticCodeChunkId
+        codeChunkId
       } = step;
 
       return {
         id,
         sessionId,
-        staticCodeChunkId
+        codeChunkId
       };
     });
 

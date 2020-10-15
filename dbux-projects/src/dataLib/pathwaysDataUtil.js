@@ -73,18 +73,18 @@ export default {
   // steps + traces in pathways
   // ###########################################################################
 
-  getStaticCodeChunkId(pdp, actionId) {
+  getCodeChunkId(pdp, actionId) {
     const action = pdp.collections.userActions.getById(actionId);
-    return pdp.util.getActionStaticCodeChunkId(action);
+    return pdp.util.getActionCodeChunkId(action);
   },
 
-  getActionStaticCodeChunkId(pdp, action) {
+  getActionCodeChunkId(pdp, action) {
     const dp = pdp.util.getActionApplication(action)?.dataProvider;
     if (!dp) {
       return null;
     }
 
     const { trace: { traceId } } = action;
-    return dp.util.getStaticCodeChunkId(traceId);
+    return dp.util.getCodeChunkId(traceId);
   }
 };

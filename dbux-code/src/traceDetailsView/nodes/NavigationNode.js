@@ -38,6 +38,10 @@ export default class NavigationNode extends BaseTreeViewNode {
     return '';
   }
 
+  get clickUserActionType() {
+    return false;
+  }
+
   get trace() {
     return this.entry;
   }
@@ -87,6 +91,7 @@ export default class NavigationNode extends BaseTreeViewNode {
       window.showInformationMessage(`Can't find "${methodName}" of current trace.`);
     }
 
+    // TODO
     emitPracticeSelectTraceAction(`navigation.${methodName}`, trace);
 
     // this.treeNodeProvider.treeView.reveal(this);

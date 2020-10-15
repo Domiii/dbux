@@ -2,24 +2,11 @@ import Trace from '@dbux/common/src/core/data/Trace';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeTraceValueLabel } from '@dbux/data/src/helpers/traceLabels';
-import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { valueRender } from '../valueRender';
 import { emitPracticeSelectTraceAction } from '../../userEvents';
+import TraceNode from './TraceNode';
 
-export default class TraceValueNode extends BaseTreeViewNode {
-  /**
-   * @param {Trace} 
-   */
-  static makeLabel(trace) {
-    const dp = allApplications.getById(trace.applicationId).dataProvider;
-    const label = dp.collections.staticTraces.getById(trace.staticTraceId).displayName;
-    return label;
-  }
-
-  get trace() {
-    return this.entry;
-  }
-
+export default class TraceValueNode extends TraceNode {
   get value() {
     const { trace: { applicationId, traceId } } = this;
     const dp = allApplications.getById(applicationId).dataProvider;
@@ -35,10 +22,6 @@ export default class TraceValueNode extends BaseTreeViewNode {
   init() {
     this.contextValue = 'dbuxTraceDetailsView.node.traceValueNode';
     this.description = makeTraceValueLabel(this.trace);
-  }
-
-  makeIconPath() {
-    return traceSelection.isSelected(this.trace) ? 'play.svg' : ' ';
   }
 
   canHaveChildren() {

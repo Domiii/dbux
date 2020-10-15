@@ -46,11 +46,22 @@ export function emitTagTraceAction(trace) {
   });
 }
 
-export function emitTreeViewAction(treeViewName, action, nodeId, args) {
-  emitUserEvent(UserActionType.TreeViewEvent, {
+export function emitTreeViewAction(treeViewName, action, nodeId, nodeLabel, userActionType, args) {
+  emitUserEvent(userActionType || UserActionType.OtherTreeViewEvent, {
     treeViewName,
     action,
     nodeId,
+    nodeLabel,
+    args
+  });
+}
+
+export function emitTreeViewCollapseChangeAction(treeViewName, action, nodeId, nodeLabel, userActionType, args) {
+  emitUserEvent(userActionType || UserActionType.OtherTreeViewCollapseChangeEvent, {
+    treeViewName,
+    action,
+    nodeId,
+    nodeLabel,
     args
   });
 }

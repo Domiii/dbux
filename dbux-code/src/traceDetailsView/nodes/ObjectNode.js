@@ -1,9 +1,14 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { emitPracticeSelectTraceAction } from '../../userEvents';
 import TraceNode from './TraceNode';
 
 export default class ObjectNode extends TraceNode {
+  get clickUserActionType() {
+    return UserActionType.TDObjectUse;
+  }
+
   makeIconPath() {
     const { selected } = traceSelection;
     if (selected) {

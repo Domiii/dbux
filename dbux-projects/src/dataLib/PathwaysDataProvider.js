@@ -69,10 +69,10 @@ export default class PathwaysDataProvider extends DataProviderBase {
    */
   util;
 
-  lastStaticCodeChunkId = 0;
+  lastCodeChunkId = 0;
   lastStepId = 0;
 
-  stepsByStaticCodeChunkId = new Map();
+  stepsByCodeChunkId = new Map();
 
   constructor(manager) {
     super('PathwaysDataProvider');
@@ -138,7 +138,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
   // actions + steps
   // ###########################################################################
   
-  addStep(staticCodeChunkId, firstAction) {
+  addStep(codeChunkId, firstAction) {
     const {
       sessionId,
       bugId,
@@ -150,12 +150,12 @@ export default class PathwaysDataProvider extends DataProviderBase {
       bugId,
       createdAt,
       
-      staticCodeChunkId,
+      codeChunkId,
       firstActionId: firstAction.id
     };
     this.addData({ steps: [step] });
 
-    this.stepsByStaticCodeChunkId.set(staticCodeChunkId, step);
+    this.stepsByCodeChunkId.set(codeChunkId, step);
 
     return step;
   }
@@ -167,15 +167,15 @@ export default class PathwaysDataProvider extends DataProviderBase {
   addNewUserAction(action) {
     // keep track of steps
     // NOTE: action.id is not set yet (will be set during `addData` below)
-    const staticCodeChunkId = this.util.getActionStaticCodeChunkId(action);
+    const codeChunkId = this.util.getActionCodeChunkId(action);
 
-    if (!this.lastStepId || (staticCodeChunkId && staticCodeChunkId !== this.lastStaticCodeChunkId)) {
-      let step = this.stepsByStaticCodeChunkId.get(staticCodeChunkId);
+    if (!this.lastStepId || (codeChunkId && codeChunkId !== this.lastCodeChunkId)) {
+      let step = this.stepsByCodeChunkId.get(codeChunkId);
       if (!step) {
-        step = this.addStep(staticCodeChunkId, action);
+        step = this.addStep(codeChunkId, action);
       }
 
-      this.lastStaticCodeChunkId = staticCodeChunkId;
+      this.lastCodeChunkId = codeChunkId;
       this.lastStepId = step.id;
     }
     action.stepId = this.lastStepId;

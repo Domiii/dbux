@@ -14,9 +14,9 @@ class PathwaysStep extends ClientComponentEndpoint {
   update() {
     const {
       id,
-      staticCodeChunkId
+      codeChunkId
     } = this.state;
-    this.els.label.textContent = `step #${id} (${staticCodeChunkId})`;
+    this.els.label.textContent = `step #${id} (${codeChunkId})`;
   }
 }
 
