@@ -66,8 +66,26 @@ class StaticContextCollection extends Collection {
  * @extends {Collection<StaticTrace>}
  */
 class StaticTraceCollection extends Collection {
+  lastStaticContextId = 0;
+  lastStaticCodeChunkId = 0;
+
   constructor(dp) {
     super('staticTraces', dp);
+  }
+
+  handleEntryAdded(staticTrace) {
+    const {
+      staticContextId
+    } = staticTrace;
+
+    // TODO: add new StaticCodeChunkCollection to also manage code-chunk related information, especially: `loc`
+
+    if (staticContextId !== this.lastStaticContextId) {
+      // new code chunk
+      ++this.lastStaticCodeChunkId;
+      this.lastStaticContextId = staticContextId;
+    }
+    staticTrace.staticCodeChunkId = this.lastStaticCodeChunkId;
   }
 }
 
@@ -115,6 +133,9 @@ class ExecutionContextCollection extends Collection {
  * @extends {Collection<Trace>}
  */
 class TraceCollection extends Collection {
+  lastContextId = -1;
+  lastCodeChunkId = 0;
+
   constructor(dp) {
     super('traces', dp);
   }
@@ -134,8 +155,25 @@ class TraceCollection extends Collection {
    */
   postAdd(traces) {
     // build dynamic call expression tree
+    errorWrapMethod(this, 'resolveCodeChunks', traces);
     errorWrapMethod(this, 'resolveCallIds', traces);
     errorWrapMethod(this, 'resolveErrorTraces', traces);
+  }
+
+  resolveCodeChunks(traces) {
+    for (const trace of traces) {
+      const {
+        contextId
+      } = trace;
+
+      // codeChunkId
+      if (contextId !== this.dp.lastContextId) {
+        // new code chunk
+        ++this.lastCodeChunkId;
+        this.lastContextId = contextId;
+      }
+      trace.codeChunkId = this.lastCodeChunkId;
+    }
   }
 
   /**

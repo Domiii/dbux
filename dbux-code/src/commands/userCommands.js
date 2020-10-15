@@ -20,13 +20,14 @@ import { showHelp } from '../help';
 // import { installDbuxDependencies } from '../codeUtil/installUtil';
 import { showOutputChannel } from '../projectViews/projectViewsController';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
-import { getAllMemento } from '../memento';
+import { getAllMemento, clearAll } from '../memento';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
 
 
 export function initUserCommands(extensionContext) {
+  
   // ###########################################################################
   // exportApplicationData
   // ###########################################################################

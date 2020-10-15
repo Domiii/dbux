@@ -3,6 +3,7 @@ import {
 } from 'vscode';
 import PathwaysHost from '@dbux/graph-host/src/PathwaysHost';
 import { goToTrace } from '../codeUtil/codeNav';
+import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { getThemeResourcePathUri } from '../resources';
 import RichWebView from './RichWebView';
 
@@ -30,7 +31,11 @@ export default class PathwaysWebView extends RichWebView {
   externals = {
     async goToTrace(trace) {
       await goToTrace(trace);
-    }
+    },
+    onPracticeSessionChanged(cb) {
+      return getOrCreateProjectManager().onPracticeSessionChanged(cb);
+    },
+    getPathwaysDataProvider: () => getOrCreateProjectManager().pdp
   }
 }
 

@@ -13,7 +13,7 @@ import PracticeSession from './practiceSession/PracticeSession';
 import RunStatus from './projectLib/RunStatus';
 import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
-import ProgressLogController from './dataLib/ProgressLogController';
+import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
 import { initUserEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import initUserEventLogging from './userEvents/eventLogging';
@@ -81,7 +81,6 @@ export default class ProjectsManager {
     this._emitter = new NanoEvents();
 
     this._backend = new BackendController(this);
-    this.progressLogController = new ProgressLogController(this);
 
     this.recoverPracticeSession();
 
@@ -101,8 +100,8 @@ export default class ProjectsManager {
     this.emitUserEvent = emitUserEvent;
   }
 
-  get plc() {
-    return this.progressLogController;
+  get pdp() {
+    return this.pathwayDataProvider;
   }
 
   get runStatus() {
@@ -158,22 +157,26 @@ export default class ProjectsManager {
       return;
     }
 
-    let bugProgress = this.plc.util.getBugProgressByBug(bug);
+    let bugProgress = this.pdp.util.getBugProgressByBug(bug);
 
     if (!bugProgress) {
       const stopwatchEnabled = await this.askForStopwatch();
-      bugProgress = this.plc.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
+      bugProgress = this.pdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.practiceSession = new PracticeSession(bug, this);
+
       emitPracticeSessionEvent('started', this.practiceSession);
       this._emitter.emit('practiceSessionChanged');
 
       // activate once to show user the bug, don't care about the result
-      await this.activateBug(bug, false);
+      await this.activateBug(bug);
 
-      this.plc.updateBugProgress(bug, { startedAt: Date.now() });
+      this.pdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
     else {
+      // this._resetPathways();
+      // bugProgress = this.pdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.practiceSession = new PracticeSession(bug, this);
+
       emitPracticeSessionEvent('started', this.practiceSession);
       this._emitter.emit('practiceSessionChanged');
     }
@@ -184,7 +187,7 @@ export default class ProjectsManager {
 
     await this.savePracticeSession();
 
-    await this.plc.save();
+    await this.pdp.save();
   }
 
   async stopPractice(dontRefreshView = false) {
@@ -201,24 +204,41 @@ export default class ProjectsManager {
     }
     stopwatch.pause();
     stopwatch.hide();
-    emitPracticeSessionEvent('stopped', this.practiceSession);
-    this.practiceSession = null;
-    await this.savePracticeSession();
-    this._emitter.emit('practiceSessionChanged', dontRefreshView);
 
-    await this.plc.save();
+    // const { practiceSession } = this;
+    this.practiceSession = null;
+
+    await this.savePracticeSession();
+
+    await this.pdp.save();
+
+    // TODO: don't reset here. reset when creating the new PS instead.
+    this._resetPathways();
+
+    // emitPracticeSessionEvent('stopped', practiceSession);
+    this._emitter.emit('practiceSessionChanged', dontRefreshView);
   }
 
   // ########################################
   // PracticeSession: save/load
   // ########################################
 
+  _resetPathways() {
+    this.pathwayDataProvider = new PathwaysDataProvider(this);
+    this.pathwayDataProvider.init();
+  }
+
   recoverPracticeSession() {
+    // TODO: fix the messy relationship between PS and PDP
+    this._resetPathways();
+    this.pathwayDataProvider.load();
+
     const bug = this.getBugByKey(savedPracticeSessionKeyName);
     if (!bug) {
       return;
     }
-    const bugProgress = this.plc.util.getBugProgressByBug(bug);
+
+    const bugProgress = this.pdp.util.getBugProgressByBug(bug);
     if (!bugProgress) {
       warn(`Can't find bugProgress when starting existing PracticeSession for bug ${bug.id}`);
       return;
@@ -226,9 +246,7 @@ export default class ProjectsManager {
 
     const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
     this.practiceSession = new PracticeSession(bug, this, sessionData);
-
     this.practiceSession.setupStopwatch();
-
     this._emitter.emit('practiceSessionChanged');
   }
 
@@ -303,8 +321,8 @@ export default class ProjectsManager {
         throw err;
       }
     }
-    this.plc.updateBugProgress(bug, { patch: '' });
-    await this.plc.save();
+    this.pdp.updateBugProgress(bug, { patch: '' });
+    await this.pdp.save();
   }
 
   /**
@@ -312,7 +330,7 @@ export default class ProjectsManager {
    * @param {Bug} bug
    */
   async applyNewBugPatch(bug) {
-    const patchString = this.plc.util.getBugProgressByBug(bug)?.patch;
+    const patchString = this.pdp.util.getBugProgressByBug(bug)?.patch;
 
     if (patchString) {
       const { project } = bug;
@@ -334,8 +352,8 @@ export default class ProjectsManager {
   async saveFileChanges(bug) {
     const patch = await bug.project.getPatchString();
     if (patch) {
-      this.plc.updateBugProgress(bug, { patch });
-      await this.plc.save();
+      this.pdp.updateBugProgress(bug, { patch });
+      await this.pdp.save();
     }
   }
 
@@ -347,11 +365,11 @@ export default class ProjectsManager {
    * Install and run a bug, then save testRun after result
    * NOTE: Only used internally to manage practice flow
    * @param {Bug} bug 
-   * @param {boolean} debugMode
+   * @param {Object} inputCfg
    */
-  async activateBug(bug, debugMode) {
+  async activateBug(bug, inputCfg = EmptyObject) {
     await this.switchToBug(bug);
-    const result = await this.runTest(bug, debugMode);
+    const result = await this.runTest(bug, inputCfg);
     return result;
   }
 
@@ -400,25 +418,25 @@ export default class ProjectsManager {
     }
   }
 
-  async runTest(bug, debugMode) {
+  async runTest(bug, inputCfg) {
     // NOTE: --enable-source-maps gets super slow in production mode for some reason
     // NOTE2: nolazy is required for proper breakpoints in debug mode
     // const enableSourceMaps = '--enable-source-maps';
+    const { debugMode = false, dbuxEnabled = true } = inputCfg;
     const enableSourceMaps = '';
     const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${enableSourceMaps}`;
     const cfg = {
       debugMode,
       nodeArgs,
-      dbuxArgs: '--verbose=1'
-      // dbuxArgs: '--dontInjectDbux',
+      dbuxArgs: dbuxEnabled ? '--verbose=1' : '--dontInjectDbux',
       // nodeArgs: '--enable-source-maps' // TODO: make this configurable
     };
 
     const result = await this.runner.testBug(bug, cfg);
 
     const patch = await bug.project.getPatchString();
-    this.plc.addTestRun(bug, result.code, patch);
-    this.plc.updateBugProgress(bug, { patch });
+    this.pdp.addTestRun(bug, result.code, patch);
+    this.pdp.updateBugProgress(bug, { patch });
 
     result.code && await bug.openInEditor();
 
@@ -482,7 +500,7 @@ export default class ProjectsManager {
    */
   async resetProgress() {
     await this.stopPractice();
-    await this.plc.reset();
+    await this.pdp.reset();
     await this.updateActivatingBug(undefined);
   }
 

@@ -26,14 +26,14 @@ export default class UserEventContainer extends BufferedFirestoreContainer {
     await this.flush();
   }
 
-  addEvent = ({ name, data, createdAt }) => {
+  addEvent = ({ type, data, createdAt }) => {
     const event = {
-      name,
+      type,
       data,
       createdAt
     };
 
-    debug('Get event', name, data, createdAt);
+    debug('Get event', type, data, createdAt);
 
     (async () => {
       try {

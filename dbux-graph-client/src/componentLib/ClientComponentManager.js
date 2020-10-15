@@ -2,8 +2,8 @@ import BaseComponentManager from '@dbux/graph-common/src/componentLib/BaseCompon
 import { onLogError } from '@dbux/common/src/log/logger';
 import ClientComponentEndpoint from './ClientComponentEndpoint';
 
+// import shared styles
 import '../styles.css';
-
 
 // ###########################################################################
 // ClientApp

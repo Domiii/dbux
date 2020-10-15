@@ -82,6 +82,24 @@ function buildTraceExpr(expressionPath, state, methodName, traceType, cfg) {
 // traces
 // ###########################################################################
 
+export function traceWrapExpressionStatement(traceType, expressionPath, state, cfg) {
+  const traceId = state.traces.addTrace(expressionPath, traceType, null, cfg);
+  const { ids: { dbux } } = state;
+
+  const newPath = t.expressionStatement(t.callExpression(
+    t.memberExpression(
+      t.identifier(dbux),
+      t.identifier('traceExpr')
+    ),
+    [
+      t.numericLiteral(traceId),
+      expressionPath.node
+    ]
+  ));
+
+  return newPath;
+}
+
 export function traceWrapExpression(traceType, path, state, tracePath, markVisited = true) {
   return _traceWrapExpression(
     'traceExpr',

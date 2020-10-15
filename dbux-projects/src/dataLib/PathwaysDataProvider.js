@@ -1,19 +1,23 @@
 import last from 'lodash/last';
 import { newLogger } from '@dbux/common/src/log/logger';
-import allApplications from '@dbux/data/src/applications/allApplications';
+import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
-import ProgressLogUtil from './progressLogUtil';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import PathwaysDataUtil from './pathwaysDataUtil';
 import BugProgressByBugIdIndex from './indexes/BugProgressByBugIdIndex';
 import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 import { emitBugProgressChanged, emitNewBugProgress, emitNewTestRun } from '../userEvents';
+import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
+import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
+import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('ProgressLogController');
+const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
 
-const storageKey = 'dbux-projects.progressLog';
+const storageKey = 'dbux.pathways.data';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./TestRun').default} TestRun */
@@ -22,8 +26,8 @@ const storageKey = 'dbux-projects.progressLog';
  * @extends {Collection<TestRun>}
  */
 class TestRunCollection extends Collection {
-  constructor(plc) {
-    super('testRuns', plc);
+  constructor(pdp) {
+    super('testRuns', pdp);
   }
 }
 
@@ -31,22 +35,30 @@ class TestRunCollection extends Collection {
  * @extends {Collection<BugProgress>}
  */
 class BugProgressCollection extends Collection {
-  constructor(plc) {
-    super('bugProgresses', plc);
+  constructor(pdp) {
+    super('bugProgresses', pdp);
   }
 }
 
-export default class ProgressLogController {
-  /**
-   * Used for serialization
-   */
-  version = 1;
+/**
+ * @extends {Collection<BugProgress>}
+ */
+class UserActionCollection extends Collection {
+  constructor(pdp) {
+    super('userActions', pdp);
+  }
+}
 
-  /**
-   * @type {number[]}
-   */
-  versions = [];
+/**
+ * @extends {Collection<Step>}
+ */
+class StepCollection extends Collection {
+  constructor(pdp) {
+    super('steps', pdp);
+  }
+}
 
+export default class PathwaysDataProvider extends DataProviderBase {
   /**
    * @type {ProjectsManager}
    */
@@ -57,15 +69,19 @@ export default class ProgressLogController {
    */
   util;
 
+  lastStaticCodeChunkId = 0;
+  lastStepId = 0;
+
+  stepsByStaticCodeChunkId = new Map();
+
   constructor(manager) {
+    super('PathwaysDataProvider');
     this.manager = manager;
     this.storage = manager.externals.storage;
 
     this.util = Object.fromEntries(
-      Object.keys(ProgressLogUtil).map(name => [name, ProgressLogUtil[name].bind(null, this)])
+      Object.keys(PathwaysDataUtil).map(name => [name, PathwaysDataUtil[name].bind(null, this)])
     );
-
-    this.load();
   }
 
   // ###########################################################################
@@ -115,53 +131,53 @@ export default class ProgressLogController {
   }
 
   // ###########################################################################
-  // Private data flow
+  // actions + steps
   // ###########################################################################
+  
+  addStep(staticCodeChunkId, firstAction) {
+    const {
+      sessionId,
+      bugId,
+      createdAt
+    } = firstAction;
+    
+    const step = {
+      sessionId,
+      bugId,
+      createdAt,
+      
+      staticCodeChunkId,
+      firstActionId: firstAction.id
+    };
+    this.addData({ steps: [step] });
 
-  /**
-   * Add given data (of different collections) to this `DataProvier`
-   * @param {{ [string]: any[] }} allData
-   */
-  addData(allData) {
-    this._addData(allData);
-    this._postAdd(allData);
+    this.stepsByStaticCodeChunkId.set(staticCodeChunkId, step);
+
+    return step;
   }
 
-  addIndex(newIndex) {
-    this.indexes._addIndex(newIndex);
-    newIndex._init(this);
+  getActionStepId() {
+
   }
 
-  _addData(allData) {
-    for (const collectionName in allData) {
-      const collection = this.collections[collectionName];
-      if (!collection) {
-        // should never happen
-        logError('received data referencing invalid collection -', collectionName);
-        delete this.collections[collectionName];
-        continue;
+  addNewUserAction(action) {
+    // keep track of steps
+    // NOTE: action.id is not set yet (will be set during `addData` below)
+    const staticCodeChunkId = this.util.getActionStaticCodeChunkId(action);
+
+    if (!this.lastStepId || (staticCodeChunkId && staticCodeChunkId !== this.lastStaticCodeChunkId)) {
+      let step = this.stepsByStaticCodeChunkId.get(staticCodeChunkId);
+      if (!step) {
+        step = this.addStep(staticCodeChunkId, action);
       }
 
-      const entries = allData[collectionName];
-      ++this.versions[collection._id]; // update version
-      collection.add(entries);
+      this.lastStaticCodeChunkId = staticCodeChunkId;
+      this.lastStepId = step.id;
     }
-  }
+    action.stepId = this.lastStepId;
 
-  _postAdd(allData) {
-    // indexes
-    for (const collectionName in allData) {
-      const indexes = this.indexes[collectionName];
-      if (indexes) {
-        const data = allData[collectionName];
-        for (const name in indexes) {
-          const index = indexes[name];
-          if (index.addOnNewData) {
-            indexes[name].addEntries(data);
-          }
-        }
-      }
-    }
+    // add action
+    this.addData({ userActions: [action] });
   }
 
   // ###########################################################################
@@ -175,12 +191,17 @@ export default class ProgressLogController {
   init() {
     this.collections = {
       testRuns: new TestRunCollection(this),
-      bugProgresses: new BugProgressCollection(this)
+      bugProgresses: new BugProgressCollection(this),
+      userActions: new UserActionCollection(this),
+      steps: new StepCollection(this)
     };
 
     this.indexes = new Indexes();
-    this.addIndex(new BugProgressByBugIdIndex());
     this.addIndex(new TestRunsByBugIdIndex());
+    this.addIndex(new BugProgressByBugIdIndex());
+    this.addIndex(new UserActionByBugIdIndex());
+    this.addIndex(new UserActionByTypeIndex());
+    this.addIndex(new UserActionsByStepIndex());
   }
 
 
@@ -201,7 +222,6 @@ export default class ProgressLogController {
    * Load serialized data from external storage
    */
   load() {
-    this.init();
     try {
       const logString = this.storage.get(storageKey);
       if (logString !== undefined) {
