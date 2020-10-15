@@ -39,7 +39,7 @@ export default class GraphWebView extends RichWebView {
 let graphWebView;
 
 export async function showGraphView() {
-  initGraphView();
+  await initGraphView();
   return graphWebView.show();
 }
 
@@ -50,6 +50,6 @@ export function hideGraphView() {
 export async function initGraphView() {
   if (!graphWebView) {
     graphWebView = new GraphWebView();
-    graphWebView.init();
+    await graphWebView.init();
   }
 }

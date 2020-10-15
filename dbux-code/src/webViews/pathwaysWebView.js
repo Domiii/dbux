@@ -40,12 +40,12 @@ export default class PathwaysWebView extends RichWebView {
 }
 
 /**
- * @type {pathwaysWebView}
+ * @type {PathwaysWebView}
  */
 let pathwaysWebView;
 
 export async function showPathwaysView() {
-  initPathwaysView();
+  await initPathwaysView();
   return pathwaysWebView.show();
 }
 
@@ -56,9 +56,6 @@ export function hidePathwaysView() {
 export async function initPathwaysView() {
   if (!pathwaysWebView) {
     pathwaysWebView = new PathwaysWebView();
-    pathwaysWebView.init();
-
-    // show initially
-    pathwaysWebView.show();
+    await pathwaysWebView.init();
   }
 }
