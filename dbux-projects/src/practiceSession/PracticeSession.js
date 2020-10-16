@@ -109,7 +109,7 @@ export default class PracticeSession {
       line: dp.util.getTraceLoc(traceId).start.line,
     };
 
-    if (this.bug.isCorrectBugTraceTag(location)) {
+    if (this.bug.isCorrectBugLocation(location)) {
       // TODO
       this.project.logger.debug('yes');
     }

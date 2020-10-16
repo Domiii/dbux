@@ -9,7 +9,7 @@ export default class Bug {
    * @type {Project}
    */
   project;
-  
+
   testFilePaths;
   /**
    * Either all bugs have an assigned an id, or none do (and id will be auto-assigned by project)
@@ -17,7 +17,7 @@ export default class Bug {
   id;
   title;
   description;
-  
+
   /**
    * [Optional] file name of patch inside of `_patches_` folder to be applied to activate bug
    */
@@ -65,14 +65,14 @@ export default class Bug {
     }
   }
 
-  isCorrectBugTraceTag(trace) {
+  isCorrectBugLocation(loc) {
     const { projectPath } = this.project;
 
     return this.bugLocations.some(t => {
       return isEqual({
         fileName: path.join(projectPath, t.fileName),
         line: t.line,
-      }, trace);
+      }, loc);
     });
   }
 }
