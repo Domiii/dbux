@@ -19,7 +19,7 @@ export default class GraphWebView extends RichWebView {
   }
 
   getMainScriptPath() {
-    return 'dist/graph.client.js';
+    return 'dist/web/graph.client.js';
   }
 
   // ###########################################################################

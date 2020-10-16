@@ -5,6 +5,7 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
+import { getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import PathwaysDataUtil from './pathwaysDataUtil';
 import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
@@ -178,12 +179,16 @@ export default class PathwaysDataProvider extends DataProviderBase {
     const { id: stepId } = step;
     // const { id: actionId } = firstAction;
     const {
-      createdAt
+      createdAt,
+      type: actionType
     } = firstAction;
+    
+    const groupType = getGroupTypeByActionType(actionType);
 
     const group = {
       stepId,
-      createdAt
+      createdAt,
+      type: groupType
     };
 
     // end of previous group
@@ -205,7 +210,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
     // step
     let step = lastStep;
-    if (!step || (staticContextId && staticContextId !== lastStaticContextId)) {
+    if (!step || action.newStep || (staticContextId && staticContextId !== lastStaticContextId)) {
       // create new step
       // let step = this.stepsByStaticContextId.get(staticContextId);
       // if (!step) {

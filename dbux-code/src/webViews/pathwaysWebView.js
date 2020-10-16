@@ -21,7 +21,7 @@ export default class PathwaysWebView extends RichWebView {
   }
 
   getMainScriptPath() {
-    return 'dist/pathways.client.js';
+    return 'dist/web/pathways.client.js';
   }
 
   // ###########################################################################
