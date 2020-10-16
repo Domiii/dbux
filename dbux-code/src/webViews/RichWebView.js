@@ -71,7 +71,7 @@ export default class RichWebView extends WebviewWrapper {
     restart: this.restart,
 
     logClientError(args) {
-      this.logge.err('[CLIENT ERROR]', ...args);
+      this.logger.err('[CLIENT ERROR]', ...args);
     },
 
     async confirm(msg, modal = true) {

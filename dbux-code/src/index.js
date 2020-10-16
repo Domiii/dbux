@@ -11,7 +11,7 @@ import { initCodeApplications } from './codeUtil/CodeApplication';
 import { initTraceDetailsView } from './traceDetailsView/traceDetailsController';
 import { initTraceSelection } from './codeUtil/codeSelection';
 import { initApplicationsView } from './applicationsView/applicationsViewController';
-import { getOrCreateProjectManager } from './projectViews/projectControl';
+import { initProjectManager } from './projectViews/projectControl';
 import { initProjectView } from './projectViews/projectViewsController';
 import { initGraphView } from './webViews/graphWebView';
 import { initPathwaysView } from './webViews/pathwaysWebView';
@@ -30,7 +30,7 @@ async function activate(context) {
     log(`Starting Dbux v${process.env.DBUX_VERSION} (mode=${process.env.NODE_ENV}, (dev only) DBUX_ROOT=${process.env.DBUX_ROOT})...`);
 
     // make sure, projectManager is available
-    getOrCreateProjectManager(context);
+    await initProjectManager(context);
 
     initInstallUtil(context);
 

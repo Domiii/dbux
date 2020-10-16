@@ -1,15 +1,16 @@
-import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class PathwaysView extends ClientComponentEndpoint {
   createEl() {
-    return compileHtmlElement(/*html*/`<div data-el="list">
+    return compileHtmlElement(/*html*/`<div>
+      <div data-mount="PathwaysStep" class="flex-column">
+      </div>
     </div>`);
   }
 
   update() {
-    this.els.
+    
   }
 }
 

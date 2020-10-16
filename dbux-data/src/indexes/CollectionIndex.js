@@ -57,7 +57,7 @@ export default class CollectionIndex {
   addEntry(entry) {
     const key = this.makeKey(this.dp, entry);
     if (key === undefined) {
-      debugger;
+      // debugger;
       this.log.error('makeKey returned undefined');
       return;
     }

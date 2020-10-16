@@ -49,6 +49,10 @@ export default class Collection {
     // WARNING: cannot use push(...entries) for large `entries` array.
     // see: https://github.com/nodejs/node/issues/27732
     for (const entry of entries) {
+      if (!entry.id) {
+        // add a general purpose id
+        entry.id = this._all.length;
+      }
       this._all.push(entry);
     }
   }
@@ -59,7 +63,13 @@ export default class Collection {
    * 
    * @param {T[]} entries
    */
-  postAdd(/* entries */) { }
+  postAdd(entries) { 
+    if (this.handleEntryAdded) {
+      for (const entry of entries) {
+        this.handleEntryAdded(entry);
+      }
+    }
+  }
 
   /**
    * Collections can use this to massage data after all data has been added, and after indexes have been processed.

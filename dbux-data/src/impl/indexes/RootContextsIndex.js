@@ -1,9 +1,9 @@
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import CollectionIndex from '../../indexes/CollectionIndex';
-import DataProvider from '../../DataProvider';
+import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 /** 
- * @param {DataProvider} dp
+ * @param {RuntimeDataProvider} dp
  * @param {ExecutionContext} context
  */
 function makeKey(dp, context) {

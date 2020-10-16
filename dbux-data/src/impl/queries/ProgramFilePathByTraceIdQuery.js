@@ -1,5 +1,5 @@
 import CachedQuery from '../../queries/CachedQuery';
-import DataProvider from '../../DataProvider';
+import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 export default class ProgramFilePathByTraceIdQuery extends CachedQuery {
@@ -10,7 +10,7 @@ export default class ProgramFilePathByTraceIdQuery extends CachedQuery {
   }
 
   /**
-   * @param {DataProvider} dp 
+   * @param {RuntimeDataProvider} dp 
    * @param {*} traceId 
    */
   execute(dp, traceId) {

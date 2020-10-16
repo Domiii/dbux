@@ -344,6 +344,11 @@ function normalizeConfigNode(parentCfg, visitorName, cfgNode) {
     // convert to set
     extraCfg.include = new Set(extraCfg.include);
   }
+  
+  if (Array.isArray(instrumentationType)) {
+    children = instrumentationType;
+    instrumentationType = undefined;
+  }
 
   cfgNode = {
     visitorName,
@@ -624,9 +629,14 @@ function visitChildren(visitFn, childCfgs, path, state) {
   for (const childCfg of childCfgs) {
     const { visitorName } = childCfg;
     if (path.node?.[visitorName]) {
-      const childPath = path.get(visitorName);
+      let childPathes = path.get(visitorName);
+      if (!Array.isArray(childPathes)) {
+        childPathes = [childPathes];
+      }
       // console.debug(visitorName, childPath?.toString() || 'undefined', childPath?.getData);
-      visitFn(childPath, state, childCfg);
+      for (const childPath of childPathes) {
+        visitFn(childPath, state, childCfg);
+      }
     }
   }
 }

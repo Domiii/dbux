@@ -4,6 +4,7 @@ import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeRootTraceLabel, makeTraceLabel, makeTraceValueLabel, makeCallValueLabel } from '@dbux/data/src/helpers/traceLabels';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/core/constants/TraceType';
 import GroupNode from './GroupNode';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
@@ -152,7 +153,7 @@ export function switchMode(mode) {
   return groupingMode;
 }
 
-export default class StaticTraceTDNode extends BaseTreeViewNode {
+export default class ExecutionsTDNode extends BaseTreeViewNode {
   static makeTraceDetail(trace/* , parent */) {
     return trace;
   }
@@ -169,12 +170,12 @@ export default class StaticTraceTDNode extends BaseTreeViewNode {
     let groupedTraces, label;
     if (groupingMode === GroupingMode.Ungrouped) {
       groupedTraces = traces;
-      label = `Trace Executions: ${traces.length}x`;
+      label = `Executions: ${traces.length}x`;
     }
     else {
       groupedTraces = groupByMode[groupingMode](app, traces);
       let modeLabel = GroupingModeLabel.get(groupingMode);
-      label = `Trace Executions: ${traces.length}x (${groupedTraces.length} groups ${modeLabel})`;
+      label = `Executions: ${traces.length}x (${groupedTraces.length} groups ${modeLabel})`;
     }
 
     return {
@@ -185,6 +186,10 @@ export default class StaticTraceTDNode extends BaseTreeViewNode {
 
   static makeLabel(trace, parent, props) {
     return props.label;
+  }
+
+  get collapseChangeUserActionType() {
+    return UserActionType.TDExecutionsUse;
   }
 
   get defaultCollapsibleState() {

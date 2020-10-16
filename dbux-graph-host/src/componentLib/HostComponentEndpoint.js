@@ -1,6 +1,8 @@
 import noop from 'lodash/noop';
-import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndpoint';
+import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import sleep from '@dbux/common/src/util/sleep';
+import ComponentEndpoint from '@dbux/graph-common/src/componentLib/ComponentEndpoint';
+import NanoEvents from 'nanoevents';
 import HostComponentList from './HostComponentList';
 
 // const Verbose = true;
@@ -26,6 +28,9 @@ class HostComponentEndpoint extends ComponentEndpoint {
   _waitingForUpdate;
   _updatePromise;
   _stateLockOwner;
+
+  _refreshPromise = null;
+  _refreshRequests = 0;
 
 
   constructor() {
@@ -247,6 +252,49 @@ class HostComponentEndpoint extends ComponentEndpoint {
       });
 
     return promise;
+  }
+
+  // ###########################################################################
+  // refresh
+  // ###########################################################################
+
+  /**
+   * @abstract
+   */
+  handleRefresh() {
+    throw new Error(`${this.componentName}.handleRefresh not implemented`);
+  }
+
+  refresh = makeDebounce(() => {
+    ++this._refreshRequests;
+    if (this._refreshPromise) {
+      return;
+    }
+    this._refreshPromise = this.doRefresh();
+  }, 50);
+
+  async doRefresh() {
+    try {
+      while (this._refreshRequests) {
+        this._refreshRequests = 0;
+
+        // wait for init before dispose something
+        await this.componentManager.waitForBusyInit();
+
+        this.handleRefresh();
+
+        // wait for init to ensure client side finished
+        await this.componentManager.waitForBusyInit();
+      }
+      this._refreshPromise = null;
+      if (!this._emitter) {
+        this._emitter = new NanoEvents();
+      }
+      this._emitter.emit('refresh');
+    }
+    catch (err) {
+      this.logger.error(`Refresh failed: ${err.stack}`);
+    }
   }
 
   // ###########################################################################

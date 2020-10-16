@@ -1,4 +1,5 @@
 import NanoEvents from 'nanoevents';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 
 /** @typedef {import('../practiceSession/PracticeSession').default} PracticeSession */
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
@@ -14,6 +15,9 @@ let manager;
 
 export function initUserEvent(_manager) {
   manager = _manager;
+  onUserEvent((data) => {
+    manager.pdp.addNewUserAction(data);
+  });
 }
 
 // ###########################################################################
@@ -25,26 +29,28 @@ export function initUserEvent(_manager) {
  * @param {PracticeSession} practiceSession 
  */
 export function emitPracticeSessionEvent(eventName, practiceSession) {
-  emitUserEvent(`practiceSession.${eventName}`, {
+  emitUserEvent(UserActionType.PracticeSessionChanged, {
+    eventType: eventName,
     sessionId: practiceSession.sessionId,
     bugId: practiceSession.bug.id
   });
 }
 
 export function emitNewTestRun(testRun, application) {
-  emitUserEvent('testRunFinished', { 
+  emitUserEvent(UserActionType.TestRunFinished, { 
     testRun,
-    application: application.dataProvider.serialize(),
+    // TODO: make sure, application data gets saved with PDP, but don't serialize it too early?
+    // application: application.dataProvider.serialize(),
     applicationUUID: application.uuid
   });
 }
 
 export function emitNewBugProgress(bugProgress) {
-  emitUserEvent('newBugProgress', { bugProgress });
+  emitUserEvent(UserActionType.NewBugProgress, { bugProgress });
 }
 
 export function emitBugProgressChanged(bugProgress) {
-  emitUserEvent('bugProgressChanged', { bugProgress });
+  emitUserEvent(UserActionType.BugProgressChanged, { bugProgress });
 }
 
 // ###########################################################################
@@ -77,17 +83,17 @@ export function onUserEvent(cb) {
 }
 
 /**
- * @param {string} eventName 
- * @param {Object} data NOTE: data *must* always be completely serializable, simple data.
+ * @param {number} eventType 
+ * @param {Object} evtData NOTE: data *must* always be completely serializable, simple data.
  */
-export function emitUserEvent(eventName, data) {
+export function emitUserEvent(eventType, evtData) {
   if (manager.practiceSession) {
     emitter.emit('e', {
-      name: eventName,
+      type: eventType,
       sessionId: manager.practiceSession.sessionId,
       bugId: manager.practiceSession.bug.id,
       createdAt: Date.now(),
-      data
+      ...evtData
     });
   }
 }

@@ -57,8 +57,8 @@ export class DialogController {
     // get first bug result
     const projectsManager = getOrCreateProjectManager();
     const firstBug = projectsManager.projects.getByName('express').getOrLoadBugs().getById(1);
-    const bug1Status = projectsManager.progressLogController.util.getBugProgressByBug(firstBug);
-    const bug1Tries = projectsManager.progressLogController.util.getTestRunsByBug(firstBug);
+    const bug1Status = projectsManager.pathwayDataProvider.util.getBugProgressByBug(firstBug);
+    const bug1Tries = projectsManager.pathwayDataProvider.util.getTestRunsByBug(firstBug);
     // const bug1Status = null;
 
     return {
