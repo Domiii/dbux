@@ -1,3 +1,4 @@
+import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -5,8 +6,9 @@ class PathwaysStep extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`<div>
       <span data-el="label"></span>
-      <div style="border: 1px solid lightblue; border-radius: 8px; padding: 0.4rem;"
-        data-mount="PathwaysAction">
+      <div class="flex-row"
+        style="border: 1px solid lightblue; border-radius: 8px; padding: 0.4rem;"
+        data-mount="PathwaysActionGroup">
       </div>
     </div>`);
   }
@@ -14,9 +16,13 @@ class PathwaysStep extends ClientComponentEndpoint {
   update() {
     const {
       id,
-      codeChunkId
+      staticContextId
     } = this.state;
-    this.els.label.textContent = `step #${id} (${codeChunkId})`;
+    
+    const { themeMode } = this.context;
+
+    this.els.label.textContent = `step #${id} (${staticContextId})`;
+    this.el.style.background = getStaticContextColor(themeMode, staticContextId);
   }
 }
 

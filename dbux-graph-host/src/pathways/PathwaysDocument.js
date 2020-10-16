@@ -15,33 +15,30 @@ class PathwaysDocument extends HostComponentEndpoint {
     this.createOwnComponents();
 
     const {
-      onPracticeSessionChanged,
-      getPathwaysDataProvider
+      onPracticeSessionChanged
     } = this.componentManager.externals;
 
     // listen to pathways data changes
-    this.addDisposable(onPracticeSessionChanged(() => {
-      // stop listening on previous events
-      this.userActionsListener?.();
+    this._addHooks();
+    this.addDisposable(onPracticeSessionChanged(this._addHooks));
+  }
 
-      // register new event handler
-      const pdp = getPathwaysDataProvider();
-      this.addDisposable(
-        this.userActionsListener = 
-          // pathwaysDataProvider.onAnyData(this.view.refresh)
-          pdp.onData('userActions', this.view.refresh)
-      );
+  _addHooks = () => {
+    const {
+      getPathwaysDataProvider
+    } = this.componentManager.externals;
 
-      this.view.refresh();
-    }));
+    // stop listening on previous events
+    this.userActionsListener?.();
 
-    // register event listeners
-    // this.addDisposable(
-    //   allApplications.selection.onApplicationsChanged(() => {
-    //     this.graphRoot.refresh();
-    //   })
-    // );
-    
+    // register new event handler
+    const pdp = getPathwaysDataProvider();
+    this.addDisposable(
+      this.userActionsListener = 
+        // pathwaysDataProvider.onAnyData(this.view.refresh)
+        pdp.onData('userActions', this.view.refresh)
+    );
+
     this.view.refresh();
   }
 

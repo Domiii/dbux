@@ -1,37 +1,82 @@
 import Enum from '@dbux/common/src/util/Enum';
+import UserActionType from './UserActionType';
 
 
 // eslint-disable-next-line import/no-mutable-exports
 let ActionGroupType = {
   SelectTrace: 1,
   TagTrace: 2,
-
-  TDNavigation: 22,
-  TDValueClick: 23,
-  TDValueCollapseChange: 24,
-  TDTrackObjectUse: 25,
-  TDObjectUse: 26,
-  TDExecutionsUse: 27,
-  TDTraceUse: 30,
+  TDValue: 23,
+  TDTrackObject: 25,
+  TDExecutions: 26,
+  TDTrackObjectTrace: 27,
+  TDExecutionsTrace: 28,
+  TDTrace: 30,
+  
+  NavigationPreviousInContext: 40,
+  NavigationPreviousChildContext: 41,
+  NavigationPreviousParentContext: 42,
+  NavigationNextInContext: 43,
+  NavigationNextChildContext: 44,
+  NavigationNextParentContext: 45,
+  NavigationPreviousStaticTrace: 46,
+  NavigationNextStaticTrace: 47,
+  NavigationPreviousTrace: 48,
+  NavigationNextTrace: 49,
 
   CallGraphSelectTrace: 20,
   CallGraphSearch: 21,
-  CallGraphOther: 22,
+  CallGraphTrace: 22,
+  CallGraphOther: 23,
 
   // gear icon
-  Other: 100,
+  Other: 50,
 
-  Hidden: 1000
+  Hidden: 60
 };
 
 ActionGroupType = new Enum(ActionGroupType);
 
-/**
- * Actions the user usually does purposefully as part of their investigation.
- * Excludes status updates and editor events.
- */
-export function isMajorAction(actionType) {
-  return majorAction[actionType];
+
+const groupByType = {
+  [UserActionType.SelectTrace]: ActionGroupType.SelectTrace,
+  [UserActionType.TagTrace]: ActionGroupType.TagTrace,
+  [UserActionType.TDValueClick]: ActionGroupType.TDValue,
+  [UserActionType.TDValueCollapseChange]: ActionGroupType.TDValue,
+  [UserActionType.TDTrackObjectUse]: ActionGroupType.TDTrackObject,
+  [UserActionType.TDTrackObjectTraceUse]: ActionGroupType.TDTrackObjectTrace,
+  [UserActionType.TDExecutionsUse]: ActionGroupType.TDExecutions,
+  [UserActionType.TDExecutionsTraceUse]: ActionGroupType.TDExecutionsTrace,
+  [UserActionType.TDTrace]: ActionGroupType.TDTrace,
+  [UserActionType.NavigationPreviousInContext]: ActionGroupType.NavigationPreviousInContext,
+  [UserActionType.NavigationPreviousChildContext]: ActionGroupType.NavigationPreviousChildContext,
+  [UserActionType.NavigationPreviousParentContext]: ActionGroupType.NavigationPreviousParentContext,
+  [UserActionType.NavigationNextInContext]: ActionGroupType.NavigationNextInContext,
+  [UserActionType.NavigationNextChildContext]: ActionGroupType.NavigationNextChildContext,
+  [UserActionType.NavigationNextParentContext]: ActionGroupType.NavigationNextParentContext,
+  [UserActionType.NavigationPreviousStaticTrace]: ActionGroupType.NavigationPreviousStaticTrace,
+  [UserActionType.NavigationNextStaticTrace]: ActionGroupType.NavigationNextStaticTrace,
+  [UserActionType.NavigationPreviousTrace]: ActionGroupType.NavigationPreviousTrace,
+  [UserActionType.NavigationNextTrace]: ActionGroupType.NavigationNextTrace,
+  [UserActionType.CallGraphOther]: ActionGroupType.CallGraphOther,
+  [UserActionType.CallGraphSetting]: ActionGroupType.CallGraphOther,
+  [UserActionType.CallGraphSearch]: ActionGroupType.CallGraphSearch,
+  [UserActionType.CallGraphNodeCollapseChange]: ActionGroupType.CallGraphOther,
+  [UserActionType.CallGraphTrace]: ActionGroupType.CallGraphTrace,
+  [UserActionType.CallGraphCallTrace]: ActionGroupType.CallGraphTrace
+};
+
+export function getGroupTypeByActionType(actionType) {
+  return groupByType[actionType] || ActionGroupType.Other;
 }
+
+const clumpedGroups = new Array(ActionGroupType.getValueMaxIndex()).map(() => false);
+clumpedGroups[ActionGroupType.Other] = true;
+clumpedGroups[ActionGroupType.Hidden] = true;
+
+export function isGroupTypeClumped(actionGroupType) {
+  return clumpedGroups[actionGroupType];
+}
+
 
 export default ActionGroupType;

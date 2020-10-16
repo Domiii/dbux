@@ -15,8 +15,6 @@ let UserActionType = {
 
   TreeViewOther: 20,
   TreeViewCollapseChangeOther: 21,
-  // TODO: one type per Navigation direction
-  TDNavigation: 22,
   TDValueClick: 23,
   TDValueCollapseChange: 24,
   TDTrackObjectUse: 25,
@@ -32,31 +30,27 @@ let UserActionType = {
   TDTraceUse: 30,
 
   TDDebugUse: 31,
+  
+  NavigationPreviousInContext: 40,
+  NavigationPreviousChildContext: 41,
+  NavigationPreviousParentContext: 42,
+  NavigationNextInContext: 43,
+  NavigationNextChildContext: 44,
+  NavigationNextParentContext: 45,
+  NavigationPreviousStaticTrace: 46,
+  NavigationNextStaticTrace: 47,
+  NavigationPreviousTrace: 48,
+  NavigationNextTrace: 49,
 
-  OtherCallGraphEvent: 100,
+  CallGraphOther: 100,
   CallGraphSetting: 101,
   CallGraphSearch: 102,
   CallGraphNodeCollapseChange: 103,
-  CallGraphNodeClick: 104,
-  CallGraphNodeValClick: 105,
-  CallGraphNodeCallClick: 106,
-  CallGraphNodeLocClick: 107
+  CallGraphTrace: 104,
+  CallGraphCallTrace: 106
 };
 
 UserActionType = new Enum(UserActionType);
 
-const majorAction = new Array(UserActionType.getValueMaxIndex()).map(() => false);
-majorAction[UserActionType.SelectTrace] = true;
-majorAction[UserActionType.TagTrace] = true;
-majorAction[UserActionType.Navigation] = true;
-majorAction[UserActionType.CallGraphEvent] = true;
-
-/**
- * Actions the user usually does purposefully as part of their investigation.
- * Excludes status updates and editor events.
- */
-export function isMajorAction(actionType) {
-  return majorAction[actionType];
-}
 
 export default UserActionType;

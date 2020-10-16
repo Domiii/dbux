@@ -5,6 +5,11 @@ import ClientComponentEndpoint from './ClientComponentEndpoint';
 // import shared styles
 import '../styles.css';
 
+// hackfix: register global
+window.getResourceRoot = function getResourceRoot(...segments) {
+  return `${_WebResourceRoot}/${segments.join('/')}`;
+};
+
 // ###########################################################################
 // ClientApp
 // ###########################################################################

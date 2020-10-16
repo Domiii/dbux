@@ -4,7 +4,8 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 class PathwaysAction extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`<div>
-      <div data-mount="PathwayAction"></div>
+      group
+      <div class="flex-row" data-mount="PathwaysAction"></div>
     </div>`);
   }
 

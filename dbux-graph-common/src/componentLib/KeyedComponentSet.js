@@ -65,7 +65,7 @@ export default class KeyedComponentSet {
   addComponent(key, entry) {
     const owner = this.owner(key, entry);
     if (!owner) {
-      logError(`owner not found for id=${key}, entry=${JSON.stringify(entry)} via: ${this.owner}`);
+      logError(`owner not found for key=${key}, entry=${JSON.stringify(entry)} via: ${this.owner}`);
       return null;
     }
     const newComponent = owner.children.createComponent(this.ComponentClass, { key, ...entry });

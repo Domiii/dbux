@@ -1,5 +1,6 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { isGroupTypeClumped, getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 
@@ -64,32 +65,14 @@ export default {
 
     const { applicationId } = trace;
 
-    // TODO: need to also manage different application sets
     const applicationSet = allApplications;
-
     return applicationSet.getById(applicationId);
   },
 
-  
 
   // ###########################################################################
   // actions
   // ###########################################################################
-
-  getCodeChunkId(pdp, actionId) {
-    const action = pdp.collections.userActions.getById(actionId);
-    return pdp.util.getActionCodeChunkId(action);
-  },
-
-  getActionCodeChunkId(pdp, action) {
-    const dp = pdp.util.getActionApplication(action)?.dataProvider;
-    if (!dp) {
-      return null;
-    }
-
-    const { trace: { traceId } } = action;
-    return dp.util.getCodeChunkId(traceId);
-  },
 
   getPreviousAction(pdp, actionId) {
     const previousAction = pdp.collections.actions.getById(actionId - 1);
@@ -101,16 +84,19 @@ export default {
     return nextAction;
   },
 
+  getLastAction(pdp) {
+    return pdp.collections.actionGroups.getLast();
+  },
+
   getActionTimeSpent(pdp, actionId) {
     const action = pdp.collections.actions.getById(actionId);
-    const nextAction = pdp.util.getAction(actionId);
-    if (nextAction) {
-      return nextAction.createdAt - action.createdAt;
+    if (action.endTime) {
+      return action.endTime - action.createdAt;
     }
     return Date.now() - action.createdAt;
   },
 
-  
+
   // ###########################################################################
   // actionGroup
   // ###########################################################################
@@ -125,16 +111,23 @@ export default {
     return nextActionGroup;
   },
 
+  getLastActionGroup(pdp) {
+    return pdp.collections.actionGroups.getLast();
+  },
+
   getActionGroupTimeSpent(pdp, actionGroupId) {
     const actionGroup = pdp.collections.actionGroups.getById(actionGroupId);
-    const nextActionGroup = pdp.util.getActionGroup(actionGroupId);
-
-    if (nextActionGroup) {
-      return nextActionGroup.createdAt - actionGroup.createdAt;
+    if (actionGroup.endTime) {
+      return actionGroup.endTime - actionGroup.createdAt;
     }
     return Date.now() - actionGroup.createdAt;
   },
-  
+
+  shouldClumpNextActionIntoGroup(pdp, action, group) {
+    const groupType = getGroupTypeByActionType(action.type);
+    return groupType === group.type && isGroupTypeClumped(groupType);
+  },
+
   // ###########################################################################
   // steps
   // ###########################################################################
@@ -149,12 +142,58 @@ export default {
     return nextStep;
   },
 
+  getLastStep(pdp) {
+    return pdp.collections.steps.getLast();
+  },
+
   getStepTimeSpent(pdp, stepId) {
     const step = pdp.collections.steps.getById(stepId);
-    const nextStep = pdp.util.getStep(stepId);
-    if (nextStep) {
-      return nextStep.createdAt - step.createdAt;
+    // const nextStep = pdp.util.getNextStep(stepId);
+    // if (nextStep) {
+    //   return nextStep.createdAt - step.createdAt;
+    // }
+    if (step.endTime) {
+      return step.endTime - step.createdAt;
     }
     return Date.now() - step.createdAt;
-  }
+  },
+
+
+
+  // ###########################################################################
+  // code chunks + functions
+  // ###########################################################################
+
+  // getCodeChunkId(pdp, actionId) {
+  //   const action = pdp.collections.userActions.getById(actionId);
+  //   return pdp.util.getActionCodeChunkId(action);
+  // },
+
+  // getActionCodeChunkId(pdp, action) {
+  //   const dp = pdp.util.getActionApplication(action)?.dataProvider;
+  //   if (!dp) {
+  //     return null;
+  //   }
+
+  //   const { trace: { traceId } } = action;
+  //   return dp.util.getCodeChunkId(traceId);
+  // },
+
+
+  getStaticContextId(pdp, actionId) {
+    const action = pdp.collections.userActions.getById(actionId);
+    return pdp.util.getActionCodeChunkId(action);
+  },
+
+  getActionStaticContextId(pdp, action) {
+    const dp = pdp.util.getActionApplication(action)?.dataProvider;
+    if (!dp) {
+      return null;
+    }
+
+    const { trace: { contextId } } = action;
+    const { staticContextId } = dp.collections.executionContexts.getById(contextId);
+    // const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    return staticContextId;
+  },
 };
