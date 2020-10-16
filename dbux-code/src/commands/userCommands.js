@@ -22,6 +22,7 @@ import { showHelp } from '../help';
 import { showOutputChannel } from '../projectViews/projectViewsController';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 import { getAllMemento, clearAll } from '../memento';
+import { showInformationMessage } from '../codeUtil/codeModals';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -227,5 +228,10 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.showMemento', async () => {
     return await renderValueAsJsonInEditor(getAllMemento());
+  });
+
+  registerCommand(extensionContext, 'dbux.clearMemento', async () => {
+    await clearAll();
+    await showInformationMessage('Memento cleared, please reload the window');
   });
 }

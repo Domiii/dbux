@@ -1,5 +1,6 @@
 import allApplications from '@dbux/data/src/applications/allApplications';
 import objectTracker from '@dbux/data/src/objectTracker';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import ObjectNode from './ObjectNode';
@@ -24,6 +25,10 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
 
   static makeLabel(trace, parent, props) {
     return props.label;
+  }
+
+  get collapseChangeUserActionType() {
+    return UserActionType.TDTrackObjectUse;
   }
 
   

@@ -82,8 +82,8 @@ export default class ProjectsManager {
     this._emitter = new NanoEvents();
 
     this._backend = new BackendController(this);
-
-    this.recoverPracticeSession();
+    
+    this.pathwayDataProvider = new PathwaysDataProvider(this);
 
     // Note: we need this to check if any dependencies are missing (not to install them)
     this._pkg = readPackageJson(this.config.dependencyRoot);
@@ -99,6 +99,12 @@ export default class ProjectsManager {
     // NOTE: This is for public API. To emit event in dbux-projects, register event in dbux-projects/src/userEvents.js and import it directly 
     this.onUserEvent = onUserEvent;
     this.emitUserEvent = emitUserEvent;
+  }
+
+  async init() {
+    this.pathwayDataProvider.init();
+
+    this.recoverPracticeSession();
   }
 
   get pdp() {
@@ -214,7 +220,7 @@ export default class ProjectsManager {
     await this.pdp.save();
 
     // TODO: don't reset here. reset when creating the new PS instead.
-    this._resetPathways();
+    // this._resetPathways();
 
     // emitPracticeSessionEvent('stopped', practiceSession);
     this._emitter.emit('practiceSessionChanged', dontRefreshView);
@@ -225,13 +231,9 @@ export default class ProjectsManager {
   // ########################################
 
   _resetPathways() {
-    this.pathwayDataProvider = new PathwaysDataProvider(this);
-    this.pathwayDataProvider.init();
   }
 
   recoverPracticeSession() {
-    // TODO: fix the messy relationship between PS and PDP
-    this._resetPathways();
     this.pathwayDataProvider.load();
 
     const bug = this.getBugByKey(savedPracticeSessionKeyName);

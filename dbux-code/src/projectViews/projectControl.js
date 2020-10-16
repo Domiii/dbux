@@ -20,7 +20,6 @@ const logger = newLogger('projectControl');
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = logger;
 
-
 /**
  * @type {ProjectsManager}
  */
@@ -29,14 +28,11 @@ let projectManager = null;
 /**
  * @return {ProjectsManager}
  */
-export function getOrCreateProjectManager(extensionContext) {
-  if (!projectManager) {
-    projectManager = createProjectManager(extensionContext);
-  }
+export function getOrCreateProjectManager() {
   return projectManager;
 }
 
-function createProjectManager(extensionContext) {
+export async function initProjectManager(extensionContext) {
   // ########################################
   // cfg + externals
   // ########################################
@@ -115,11 +111,11 @@ function createProjectManager(extensionContext) {
   // ########################################
   //  init projectManager
   // ########################################
-  const manager = initDbuxProjects(cfg, externals);
+  projectManager = await initDbuxProjects(cfg, externals);
 
-  initUserEvent(manager);
+  initUserEvent(projectManager);
 
   debug(`Initialized dbux-projects. projectsRoot = "${path.resolve(cfg.projectsRoot)}", dependencyRoot = "${path.resolve(cfg.dependencyRoot)}"`);
 
-  return manager;
+  return projectManager;
 }

@@ -1,8 +1,9 @@
 import omit from 'lodash/omit';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import StaticTraceTDNode from './StaticTraceTDNodes';
+import ExecutionsTDNode from './StaticTraceTDNodes';
 import StaticContextTDNode from './StaticContextTDNodes';
 import TrackObjectTDNode from './TrackObjectTDNodes';
 import ValueTDNode from './ValueTDNode';
@@ -23,6 +24,10 @@ export class DebugTDNode extends TraceDetailNode {
 
   static makeLabel(/* trace, parent */) {
     return 'Debug';
+  }
+  
+  get collapseChangeUserActionType() {
+    return UserActionType.TDDebugUse;
   }
 
   init() {
@@ -86,8 +91,8 @@ export class DebugTDNode extends TraceDetailNode {
 export const DetailNodeClasses = [
   ValueTDNode,
   TrackObjectTDNode,
-  StaticTraceTDNode,
-  NearbyValuesTDNode,
+  ExecutionsTDNode,
+  // NearbyValuesTDNode,
   // StaticContextTDNode,
   // InfoTDNode,
   DebugTDNode
