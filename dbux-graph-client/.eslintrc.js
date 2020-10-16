@@ -1,11 +1,15 @@
 var path = require('path');
 
 module.exports = {
-  "extends": [path.join(__dirname, '../.eslintrc.js')],
+  extends: [path.join(__dirname, '../.eslintrc.js')],
 
-  "env": {
+  env: {
     "commonjs": true,
     "browser": true
+  },
+
+  globals: {
+    _WebResourceRoot: true
   },
 
   settings: {

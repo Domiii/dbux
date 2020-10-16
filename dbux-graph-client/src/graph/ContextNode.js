@@ -1,6 +1,7 @@
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import { compileHtmlElement, decorateClasses } from '../util/domUtil';
-import { isMouseEventPlatformModifierKey } from '../util/keyUtil';
+// import { isMouseEventPlatformModifierKey } from '../util/keyUtil';
 import { getPlatformModifierKeyString } from '../util/platformUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -68,7 +69,7 @@ class ContextNode extends ClientComponentEndpoint {
     const { themeMode } = this.context;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
-    this.el.style.background = `hsl(${this.getBinaryHsl(staticContextId)},35%,${ThemeMode.is.Dark(themeMode) ? 30 : 95}%)`;
+    this.el.style.background = getStaticContextColor(themeMode, staticContextId);
     this.els.contextLabel.textContent = contextNameLabel;
     this.els.locLabel.textContent = contextLocLabel;
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
@@ -97,17 +98,6 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.nextContextBtn.setAttribute('data-tooltip', 'Go to next function execution');
   }
 
-  getBinaryHsl(i) {
-    let color = 0;
-    let base = 180;
-    while (i !== 0) {
-      color += (i % 2) * base;
-      i = Math.floor(i / 2);
-      base /= 2;
-    }
-    return color;
-  }
-
   get hiddenNodeManager() {
     return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
   }
@@ -125,16 +115,14 @@ class ContextNode extends ClientComponentEndpoint {
       // panning
       return;
     }
-    if (isMouseEventPlatformModifierKey(evt)) {
-      // if (evt.shiftKey) {
-      // ctrl(meta) + click: select trace
-      this.remote.selectFirstTrace();
-      document.getSelection().removeAllRanges();
-    }
-    else {
-      // click: show trace
-      this.remote.goToFirstTrace();
-    }
+    // if (isMouseEventPlatformModifierKey(evt)) 
+    // ctrl(meta) + click: select trace
+    this.remote.selectFirstTrace();
+    document.getSelection().removeAllRanges();
+    // else {
+    //   // click: show trace
+    //   this.remote.goToFirstTrace();
+    // }
   }
 
   handleClickOnParentTrace(evt) {
@@ -142,16 +130,16 @@ class ContextNode extends ClientComponentEndpoint {
       // panning
       return;
     }
-    if (isMouseEventPlatformModifierKey(evt)) {
-      // if (evt.shiftKey) {
-      // ctrl(meta) + click: select trace
-      this.remote.selectParentTrace();
-      document.getSelection().removeAllRanges();
-    }
-    else {
-      // click: show trace
-      this.remote.goToParentTrace();
-    }
+    // if (isMouseEventPlatformModifierKey(evt)) {
+    // if (evt.shiftKey) {
+    // ctrl(meta) + click: select trace
+    this.remote.selectParentTrace();
+    document.getSelection().removeAllRanges();
+    // }
+    // else {
+    //   // click: show trace
+    //   this.remote.goToParentTrace();
+    // }
     // }
   }
 

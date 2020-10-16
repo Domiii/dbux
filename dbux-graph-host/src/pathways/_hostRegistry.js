@@ -3,6 +3,7 @@ import Toolbar from './Toolbar';
 
 import PathwaysView from './PathwaysView';
 import PathwaysStep from './PathwaysStep';
+import PathwaysActionGroup from './PathwaysActionGroup';
 import PathwaysAction from './PathwaysAction';
 
 export default {
@@ -10,5 +11,6 @@ export default {
   Toolbar,
   PathwaysView,
   PathwaysStep,
-  PathwaysAction,
+  PathwaysActionGroup,
+  PathwaysAction
 };

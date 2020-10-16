@@ -1,11 +1,18 @@
 import { TreeItem } from 'vscode';
 
+/** @typedef {import('./BaseTreeViewNodeProvider').default} BaseTreeViewNodeProvider */
+
 export default class BaseTreeViewNode extends TreeItem {
   parent;
   /**
-   * @type {BaseNode[]}
+   * @type {TreeItem[]}
    */
   children = null;
+
+  /**
+   * @type {BaseTreeViewNodeProvider}
+   */
+  treeNodeProvider;
 
   static makeLabel(/* entry */) {
     return '(unnamed node)';

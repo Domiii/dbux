@@ -3,9 +3,12 @@ import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import PathwaysStep from './PathwaysStep';
 import PathwaysAction from './PathwaysAction';
+import PathwaysActionGroup from './PathwaysActionGroup';
 
 class PathwaysView extends HostComponentEndpoint {
   steps;
+
+  actionGroups;
 
   /**
    * @type {KeyedComponentSet}
@@ -18,6 +21,7 @@ class PathwaysView extends HostComponentEndpoint {
     // };
     const cfg = null;
     this.steps = new KeyedComponentSet(this, PathwaysStep, cfg);
+    this.actionGroups = new KeyedComponentSet(this.getActionGroupOwner, PathwaysActionGroup, cfg);
     this.actions = new KeyedComponentSet(this.getActionOwner, PathwaysAction, cfg);
   }
 
@@ -28,9 +32,14 @@ class PathwaysView extends HostComponentEndpoint {
   //   return `${entry.sessionId}_${entry.id}`;
   // }
 
-  getActionOwner = (actionKey, { stepId }) => {
+  getActionGroupOwner = (actionKey, { stepId }) => {
     const step = this.pdp.collections.steps.getById(stepId);
     return this.steps.getComponentByEntry(step);
+  }
+
+  getActionOwner = (actionKey, { groupId }) => {
+    const actionGroup = this.pdp.collections.actionGroups.getById(groupId);
+    return this.actionGroups.getComponentByEntry(actionGroup);
   }
 
   handleRefresh() {
@@ -48,17 +57,16 @@ class PathwaysView extends HostComponentEndpoint {
         return null;
       }
 
-      const {
-        id,
-        sessionId,
-        codeChunkId
-      } = step;
+      return step;
+    });
 
-      return {
-        id,
-        sessionId,
-        codeChunkId
-      };
+    const actionGroups = pdp.collections.actionGroups.getAll().map(actionGroup => {
+      if (!actionGroup) {
+        // the first entry is empty
+        return null;
+      }
+
+      return actionGroup;
     });
 
     const actions = pdp.collections.userActions.getAll().map(action => {
@@ -68,26 +76,19 @@ class PathwaysView extends HostComponentEndpoint {
       }
 
       const {
-        id,
-        sessionId,
-        type,
-        trace,
-        stepId
+        type
       } = action;
 
       const typeName = UserActionType.getName(type);
 
       return {
-        id,
-        sessionId,
-        type,
-        typeName,
-        trace,
-        stepId
+        ...action,
+        typeName
       };
     });
 
     this.steps.update(steps);
+    this.actionGroups.update(actionGroups);
     this.actions.update(actions);
   }
 

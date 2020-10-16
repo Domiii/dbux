@@ -38,10 +38,10 @@ export class AllApplications {
   }
 
   /**
-   * @param {number} applicationId
+   * @param {number} applicationIdOrUuid
    */
-  getById(applicationId) {
-    return this._all[applicationId];
+  getById(applicationIdOrUuid) {
+    return this._all[applicationIdOrUuid] || this.getByUuid(applicationIdOrUuid);
   }
 
   /**

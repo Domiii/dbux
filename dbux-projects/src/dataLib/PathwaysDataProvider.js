@@ -7,11 +7,12 @@ import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import PathwaysDataUtil from './pathwaysDataUtil';
 import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
-import TestRun from './TestRun';
-import { emitNewTestRun } from '../userEvents';
 import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
+import TestRun from './TestRun';
+
+import { emitNewTestRun } from '../userEvents';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -81,6 +82,15 @@ class StepCollection extends Collection {
   }
 }
 
+/**
+ * @extends {Collection<ActionGroup>}
+ */
+class ActionGroupCollection extends Collection {
+  constructor(pdp) {
+    super('actionGroups', pdp);
+  }
+}
+
 export default class PathwaysDataProvider extends DataProviderBase {
   /**
    * @type {ProjectsManager}
@@ -92,10 +102,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
    */
   util;
 
-  lastCodeChunkId = 0;
-  lastStepId = 0;
-
-  stepsByCodeChunkId = new Map();
+  // stepsByStaticContextId = new Map();
 
   constructor(manager) {
     super('PathwaysDataProvider');
@@ -143,7 +150,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
   // actions + steps
   // ###########################################################################
 
-  addStep(codeChunkId, firstAction) {
+  addNewStep(staticContextId, firstAction) {
     const {
       sessionId,
       bugId,
@@ -155,35 +162,70 @@ export default class PathwaysDataProvider extends DataProviderBase {
       bugId,
       createdAt,
 
-      codeChunkId,
-      firstActionId: firstAction.id
+      staticContextId
     };
+
+    // end of previous step
+    const previousStep = this.collections.steps.getLast();
+    previousStep && (previousStep.endTime = step.createdAt);
+
     this.addData({ steps: [step] });
-
-    this.stepsByCodeChunkId.set(codeChunkId, step);
-
     return step;
   }
 
-  getActionStepId() {
 
+  addNewGroup(step, firstAction) {
+    const { id: stepId } = step;
+    // const { id: actionId } = firstAction;
+    const {
+      createdAt
+    } = firstAction;
+
+    const group = {
+      stepId,
+      createdAt
+    };
+
+    // end of previous group
+    const previousGroup = this.collections.actionGroups.getLast();
+    previousGroup && (previousGroup.endTime = step.createdAt);
+
+    this.addData({ actionGroups: [group] });
+    return group;
   }
 
   addNewUserAction(action) {
     // keep track of steps
+
     // NOTE: action.id is not set yet (will be set during `addData` below)
-    const codeChunkId = this.util.getActionCodeChunkId(action);
+    const staticContextId = this.util.getActionStaticContextId(action);
+    const lastStep = this.collections.steps.getLast();
+    const lastActionGroup = this.collections.actionGroups.getLast();
+    const lastStaticContextId = lastStep?.staticContextId || 0;
 
-    if (!this.lastStepId || (codeChunkId && codeChunkId !== this.lastCodeChunkId)) {
-      let step = this.stepsByCodeChunkId.get(codeChunkId);
-      if (!step) {
-        step = this.addStep(codeChunkId, action);
-      }
-
-      this.lastCodeChunkId = codeChunkId;
-      this.lastStepId = step.id;
+    // step
+    let step = lastStep;
+    if (!step || (staticContextId && staticContextId !== lastStaticContextId)) {
+      // create new step
+      // let step = this.stepsByStaticContextId.get(staticContextId);
+      // if (!step) {
+      step = this.addNewStep(staticContextId, action);
+      // }
+      // this.stepsByStaticContextId.set(staticContextId, step);
     }
-    action.stepId = this.lastStepId;
+    action.stepId = step.id;
+
+    // actionGroup
+    let actionGroup = lastActionGroup;
+    if (!lastActionGroup || lastStep !== step || !this.util.shouldClumpNextActionIntoGroup(action, lastActionGroup)) {
+      // create new group
+      actionGroup = this.addNewGroup(step, action);
+    }
+    action.groupId = actionGroup.id;
+
+    // end of previous action
+    const previousAction = this.collections.userActions.getLast();
+    previousAction && (previousAction.endTime = action.createdAt);
 
     // add action
     this.addData({ userActions: [action] });
@@ -204,8 +246,9 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.collections = {
       testRuns: new TestRunCollection(this),
       applications: new ApplicationCollection(this),
+      steps: new StepCollection(this),
+      actionGroups: new ActionGroupCollection(this),
       userActions: new UserActionCollection(this),
-      steps: new StepCollection(this)
     };
 
     this.indexes = new Indexes();
