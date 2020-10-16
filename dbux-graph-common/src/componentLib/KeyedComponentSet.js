@@ -3,7 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('functionHelpers');
+const { log, debug, warn, error: logError } = newLogger('KeyedComponentSet');
 
 export default class KeyedComponentSet {
   owner;
@@ -65,7 +65,7 @@ export default class KeyedComponentSet {
   addComponent(key, entry) {
     const owner = this.owner(key, entry);
     if (!owner) {
-      logError(`owner not found for id=${key}, entry=${JSON.stringify(entry)} via: ${this.owner}`);
+      logError(`owner not found for key=${key}, entry=${JSON.stringify(entry)} via: ${this.owner}`);
       return null;
     }
     const newComponent = owner.children.createComponent(this.ComponentClass, { key, ...entry });

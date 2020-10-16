@@ -190,6 +190,10 @@ export function makeCallValueLabel(bceTrace) {
 
 export function makeContextLocLabel(applicationId, context) {
   const { staticContextId } = context;
+  return makeStaticContextLocLabel(applicationId, staticContextId);
+}
+
+export function makeStaticContextLocLabel(applicationId, staticContextId) {
   const dp = allApplications.getById(applicationId).dataProvider;
   const { programId, loc } = dp.collections.staticContexts.getById(staticContextId);
   const fileName = programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;

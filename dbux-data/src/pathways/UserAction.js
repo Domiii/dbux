@@ -19,8 +19,7 @@ export default class UserAction {
    */
   createdAt;
 
-  /**
-   * @type {Object} event data, contents depends on type
-   */
-  data;
+  stepId;
+  
+  endTime;
 }

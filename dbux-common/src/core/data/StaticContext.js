@@ -20,7 +20,10 @@ export default class StaticContext {
   /**
    * @type {number}
    */
-  staticId;
+  staticContextId;
+
+  // staticId; ???
+  
   /**
    * @type {number}
    */

@@ -63,7 +63,7 @@ export default class Collection {
    * 
    * @param {T[]} entries
    */
-  postAdd(entries) { 
+  postAdd(entries) {
     if (this.handleEntryAdded) {
       for (const entry of entries) {
         this.handleEntryAdded(entry);
@@ -81,7 +81,7 @@ export default class Collection {
   // Reads
   // ###########################################################################
 
-  * [Symbol.iterator]() {
+  *[Symbol.iterator]() {
     for (let i = 1; i < this._all.length; ++i) {
       yield this._all[i];
     }
@@ -112,6 +112,13 @@ export default class Collection {
    */
   getById(id) {
     return this._all[id];
+  }
+
+  getLast() {
+    if (!this._all.length) {
+      return null;
+    }
+    return this._all[this._all.length - 1];
   }
 
   find(cb) {
