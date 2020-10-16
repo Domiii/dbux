@@ -17,7 +17,7 @@ import BackendController from './backend/BackendController';
 import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
 import { initUserEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
-import initUserEventLogging from './userEvents/eventLogging';
+import BugDataProvider from './dataLib/BugDataProvider';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -82,8 +82,9 @@ export default class ProjectsManager {
     this._emitter = new NanoEvents();
 
     this._backend = new BackendController(this);
-    
+
     this.pathwayDataProvider = new PathwaysDataProvider(this);
+    this.bugDataProvider = new BugDataProvider(this);
 
     // Note: we need this to check if any dependencies are missing (not to install them)
     this._pkg = readPackageJson(this.config.dependencyRoot);
@@ -94,7 +95,6 @@ export default class ProjectsManager {
     ];
 
     initUserEvent(this);
-    initUserEventLogging(this);
 
     // NOTE: This is for public API. To emit event in dbux-projects, register event in dbux-projects/src/userEvents.js and import it directly 
     this.onUserEvent = onUserEvent;
@@ -102,13 +102,15 @@ export default class ProjectsManager {
   }
 
   async init() {
-    this.pathwayDataProvider.init();
-
     this.recoverPracticeSession();
   }
 
   get pdp() {
     return this.pathwayDataProvider;
+  }
+
+  get bdp() {
+    return this.bugDataProvider;
   }
 
   get runStatus() {
@@ -164,28 +166,21 @@ export default class ProjectsManager {
       return;
     }
 
-    let bugProgress = this.pdp.util.getBugProgressByBug(bug);
+    let bugProgress = this.bdp.getBugProgressByBug(bug);
 
     if (!bugProgress) {
       const stopwatchEnabled = await this.askForStopwatch();
-      bugProgress = this.pdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
-      this.practiceSession = new PracticeSession(bug, this);
-
-      emitPracticeSessionEvent('started', this.practiceSession);
-      this._emitter.emit('practiceSessionChanged');
+      bugProgress = this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
+      
+      this._createPracticeSession(bug);
 
       // activate once to show user the bug, don't care about the result
       await this.activateBug(bug);
 
-      this.pdp.updateBugProgress(bug, { startedAt: Date.now() });
+      this.bdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
     else {
-      // this._resetPathways();
-      // bugProgress = this.pdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
-      this.practiceSession = new PracticeSession(bug, this);
-
-      emitPracticeSessionEvent('started', this.practiceSession);
-      this._emitter.emit('practiceSessionChanged');
+      this._createPracticeSession(bug);
     }
 
     await this.switchToBug(bug);
@@ -194,7 +189,7 @@ export default class ProjectsManager {
 
     await this.savePracticeSession();
 
-    await this.pdp.save();
+    await this.bdp.save();
   }
 
   async stopPractice(dontRefreshView = false) {
@@ -217,40 +212,39 @@ export default class ProjectsManager {
 
     await this.savePracticeSession();
 
-    await this.pdp.save();
-
-    // TODO: don't reset here. reset when creating the new PS instead.
-    // this._resetPathways();
+    await this.bdp.save();
 
     // emitPracticeSessionEvent('stopped', practiceSession);
     this._emitter.emit('practiceSessionChanged', dontRefreshView);
+  }
+
+  _createPracticeSession(bug, sessionData = EmptyObject) {
+    this.practiceSession = new PracticeSession(bug, this, sessionData);
+    this.pdp.init(this.practiceSession.sessionId);
+
+    emitPracticeSessionEvent('started', this.practiceSession);
+    this._emitter.emit('practiceSessionChanged');
   }
 
   // ########################################
   // PracticeSession: save/load
   // ########################################
 
-  _resetPathways() {
-  }
-
   recoverPracticeSession() {
-    this.pathwayDataProvider.load();
-
     const bug = this.getBugByKey(savedPracticeSessionKeyName);
     if (!bug) {
       return;
     }
 
-    const bugProgress = this.pdp.util.getBugProgressByBug(bug);
+    const bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {
       warn(`Can't find bugProgress when starting existing PracticeSession for bug ${bug.id}`);
       return;
     }
 
     const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
-    this.practiceSession = new PracticeSession(bug, this, sessionData);
+    this._createPracticeSession(bug, sessionData);
     this.practiceSession.setupStopwatch();
-    this._emitter.emit('practiceSessionChanged');
   }
 
   async savePracticeSession() {
@@ -324,8 +318,8 @@ export default class ProjectsManager {
         throw err;
       }
     }
-    this.pdp.updateBugProgress(bug, { patch: '' });
-    await this.pdp.save();
+    this.bdp.updateBugProgress(bug, { patch: '' });
+    await this.bdp.save();
   }
 
   /**
@@ -333,7 +327,7 @@ export default class ProjectsManager {
    * @param {Bug} bug
    */
   async applyNewBugPatch(bug) {
-    const patchString = this.pdp.util.getBugProgressByBug(bug)?.patch;
+    const patchString = this.bdp.getBugProgressByBug(bug)?.patch;
 
     if (patchString) {
       const { project } = bug;
@@ -355,8 +349,8 @@ export default class ProjectsManager {
   async saveFileChanges(bug) {
     const patch = await bug.project.getPatchString();
     if (patch) {
-      this.pdp.updateBugProgress(bug, { patch });
-      await this.pdp.save();
+      this.bdp.updateBugProgress(bug, { patch });
+      await this.bdp.save();
     }
   }
 
@@ -441,7 +435,7 @@ export default class ProjectsManager {
     const apps = allApplications.selection.getAll();
     this.pdp.addTestRun(bug, result.code, patch, apps);
     this.pdp.addApplications(apps);
-    this.pdp.updateBugProgress(bug, { patch });
+    this.bdp.updateBugProgress(bug, { patch });
 
     result.code && await bug.openInEditor();
 
@@ -505,7 +499,8 @@ export default class ProjectsManager {
    */
   async resetProgress() {
     await this.stopPractice();
-    await this.pdp.reset();
+    await this.savePracticeSession();
+    await this.bdp.reset();
     await this.updateActivatingBug(undefined);
   }
 

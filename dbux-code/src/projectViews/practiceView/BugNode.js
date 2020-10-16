@@ -44,7 +44,7 @@ export default class BugNode extends BaseTreeViewNode {
       case RunStatus.RunningInBackground:
         return 'play.svg';
     }
-    const progress = this.manager.pathwayDataProvider.util.getBugProgressByBug(this.bug);
+    const progress = this.manager.bdp.getBugProgressByBug(this.bug);
     switch (progress?.status) {
       case BugStatus.Solving:
         return progress.stopwatchEnabled ? 'edit.svg' : 'edit.svg';

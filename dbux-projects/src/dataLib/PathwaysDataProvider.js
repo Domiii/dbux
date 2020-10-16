@@ -1,24 +1,20 @@
+import fs from 'fs';
+import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import Application from '@dbux/data/src/applications/Application';
 import PathwaysDataUtil from './pathwaysDataUtil';
-import BugProgressByBugIdIndex from './indexes/BugProgressByBugIdIndex';
 import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import TestRun from './TestRun';
-import BugProgress from './BugProgress';
-import { emitBugProgressChanged, emitNewBugProgress, emitNewTestRun } from '../userEvents';
+import { emitNewTestRun } from '../userEvents';
 import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
 
-
-
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
-
-const storageKey = 'dbux.pathways.data';
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./TestRun').default} TestRun */
@@ -29,15 +25,6 @@ const storageKey = 'dbux.pathways.data';
 class TestRunCollection extends Collection {
   constructor(pdp) {
     super('testRuns', pdp);
-  }
-}
-
-/**
- * @extends {Collection<BugProgress>}
- */
-class BugProgressCollection extends Collection {
-  constructor(pdp) {
-    super('bugProgresses', pdp);
   }
 }
 
@@ -77,7 +64,7 @@ class ApplicationCollection extends Collection {
 }
 
 /**
- * @extends {Collection<BugProgress>}
+ * @extends {Collection<UserAction>}
  */
 class UserActionCollection extends Collection {
   constructor(pdp) {
@@ -113,11 +100,15 @@ export default class PathwaysDataProvider extends DataProviderBase {
   constructor(manager) {
     super('PathwaysDataProvider');
     this.manager = manager;
-    this.storage = manager.externals.storage;
 
     this.util = Object.fromEntries(
       Object.keys(PathwaysDataUtil).map(name => [name, PathwaysDataUtil[name].bind(null, this)])
     );
+
+    this.logFolderPath = manager.externals.resources.getLogsDirectory();
+    if (!fs.existsSync(this.logFolderPath)) {
+      fs.mkdirSync(this.logFolderPath);
+    }
   }
 
   // ###########################################################################
@@ -148,41 +139,10 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addData({ applications: apps });
   }
 
-  /**
-   * @param {Bug} bug
-   * @param {number} status
-   * @param {boolean} stopwatchEnabled
-   * @return {BugProgress}
-   */
-  addBugProgress(bug, status, stopwatchEnabled) {
-    const bugProgress = new BugProgress(bug, status, stopwatchEnabled);
-    this.addData({ bugProgresses: [bugProgress] });
-    emitNewBugProgress(bugProgress);
-    return bugProgress;
-  }
-
-  /**
-   * NOTE: This may break indexes' keys
-   * @param {Bug} bug 
-   * @param {Object} update
-   */
-  updateBugProgress(bug, update) {
-    const bugProgress = this.util.getBugProgressByBug(bug);
-    if (!bugProgress) {
-      this.logger.error(`Tried to update bug (${Object.keys(update || {})}) progress but no previous record found: ${bug.id}`);
-      return;
-    }
-    for (const key of Object.keys(update)) {
-      bugProgress[key] = update[key];
-    }
-    bugProgress.updatedAt = Date.now();
-    emitBugProgressChanged(bugProgress);
-  }
-
   // ###########################################################################
   // actions + steps
   // ###########################################################################
-  
+
   addStep(codeChunkId, firstAction) {
     const {
       sessionId,
@@ -194,7 +154,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
       sessionId,
       bugId,
       createdAt,
-      
+
       codeChunkId,
       firstActionId: firstAction.id
     };
@@ -237,10 +197,12 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * Implementation, add indexes here
    * Note: Also resets all collections
    */
-  init() {
+  init(sessionId) {
+    this.sessionId = sessionId;
+    this.logFilePath = path.join(this.logFolderPath, `${sessionId}.dbuxlog`);
+
     this.collections = {
       testRuns: new TestRunCollection(this),
-      bugProgresses: new BugProgressCollection(this),
       applications: new ApplicationCollection(this),
       userActions: new UserActionCollection(this),
       steps: new StepCollection(this)
@@ -248,43 +210,65 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
     this.indexes = new Indexes();
     this.addIndex(new TestRunsByBugIdIndex());
-    this.addIndex(new BugProgressByBugIdIndex());
     this.addIndex(new UserActionByBugIdIndex());
     this.addIndex(new UserActionByTypeIndex());
     this.addIndex(new UserActionsByStepIndex());
-  }
 
-
-  /**
-   * Save serialized data to external storage
-   */
-  async save() {
-    try {
-      const logString = this.serialize();
-      await this.storage.set(storageKey, logString);
-    }
-    catch (err) {
-      logError('Failed to save progress log:', err);
-    }
+    this.load();
   }
 
   /**
-   * Load serialized data from external storage
+   * Load data from log file
    */
   load() {
     try {
-      const logString = this.storage.get(storageKey);
-      if (logString !== undefined) {
-        this.deserialize(JSON.parse(logString));
+      const allDataString = fs.readFileSync(this.logFilePath, 'utf8');
+      if (allDataString) {
+        const dataToAdd = Object.fromEntries(Object.keys(this.collections).map(name => [name, []]));
+
+        for (const dataString of allDataString.split(/\r?\n/)) {
+          if (dataString) {
+            let { collectionName, data } = JSON.parse(dataString);
+            if (this.collections[collectionName].deserialize) {
+              data = this.collections[collectionName].deserialize(data);
+            }
+            dataToAdd[collectionName].push(data);
+          }
+        }
+
+        this.addData(dataToAdd, false);
       }
     }
     catch (err) {
-      logError('Failed to load progress log:', err);
+      if (err.code === 'ENOENT') {
+        // no log file found, skip loading
+      }
+      else {
+        logError('Failed to load from log file:', err);
+        throw err;
+      }
     }
   }
 
-  async reset() {
-    this.init();
-    await this.save();
+  addData(allData, writeToLog = true) {
+    super.addData(allData);
+
+    if (writeToLog) {
+      for (const collectionName in allData) {
+        for (let data of allData[collectionName]) {
+          if (this.collections[collectionName].serialize) {
+            data = this.collections[collectionName].serialize(data);
+          }
+          this.writeOnData(collectionName, data);
+        }
+      }
+    }
+  }
+
+  /**
+   * @param {string} collectionName
+   */
+  writeOnData(collectionName, data) {
+    fs.appendFileSync(this.logFilePath, `${JSON.stringify({ collectionName, data })}\n`, { flag: 'a+' });
   }
 }

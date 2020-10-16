@@ -31,7 +31,7 @@ class DetailNode extends BaseTreeViewNode {
    * @param {Bug} bug 
    */
   static makeLabel(bug) {
-    const { status } = bug.manager.pathwayDataProvider.util.getBugProgressByBug(bug);
+    const { status } = bug.manager.bdp.getBugProgressByBug(bug);
     return `${bug.id} (${BugStatus.getName(status)})`;
   }
 
@@ -172,8 +172,8 @@ class StopPracticeNode extends BaseTreeViewNode {
 }
 
 export const ActionNodeClasses = [
-  TagNode,
   DetailNode,
+  TagNode,
   RunNode,
   DebugNode,
   RunWithoutDbuxNode,

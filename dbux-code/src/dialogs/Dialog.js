@@ -38,6 +38,10 @@ export class Dialog {
   // ###########################################################################
 
   get started() {
+    if (this.getCurrentNode()?.start) {
+      // currently on `start node` e.g. waitToStart
+      return false;
+    }
     return !!this.graphState.nodeName;
   }
 
@@ -55,7 +59,7 @@ export class Dialog {
       this._setState(startState);
     }
     else if (!this.graphState.nodeName) {
-      await this._setState('start');
+      this._setState('start');
     }
 
     debug('Dialog._start', JSON.stringify({ startState, nodeName: this.graphState.nodeName }));

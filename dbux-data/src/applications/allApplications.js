@@ -98,9 +98,6 @@ export class AllApplications {
   // add + remove applications
   // ###########################################################################
 
-  /**
-   * @private
-   */
   addApplication(initialData) {
     const {
       entryPointPath,
