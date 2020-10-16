@@ -117,6 +117,20 @@ export default class PathwaysDataProvider extends DataProviderBase {
     if (!fs.existsSync(this.logFolderPath)) {
       fs.mkdirSync(this.logFolderPath);
     }
+
+    this.collections = {
+      testRuns: new TestRunCollection(this),
+      applications: new ApplicationCollection(this),
+      steps: new StepCollection(this),
+      actionGroups: new ActionGroupCollection(this),
+      userActions: new UserActionCollection(this),
+    };
+
+    this.indexes = new Indexes();
+    this.addIndex(new TestRunsByBugIdIndex());
+    this.addIndex(new UserActionByBugIdIndex());
+    this.addIndex(new UserActionByTypeIndex());
+    this.addIndex(new UserActionsByStepIndex());
   }
 
   // ###########################################################################
@@ -247,22 +261,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
   init(sessionId) {
     this.sessionId = sessionId;
     this.logFilePath = path.join(this.logFolderPath, `${sessionId}.dbuxlog`);
-
-    this.collections = {
-      testRuns: new TestRunCollection(this),
-      applications: new ApplicationCollection(this),
-      steps: new StepCollection(this),
-      actionGroups: new ActionGroupCollection(this),
-      userActions: new UserActionCollection(this),
-    };
-
-    this.indexes = new Indexes();
-    this.addIndex(new TestRunsByBugIdIndex());
-    this.addIndex(new UserActionByBugIdIndex());
-    this.addIndex(new UserActionByTypeIndex());
-    this.addIndex(new UserActionsByStepIndex());
-
-    this.load();
   }
 
   /**

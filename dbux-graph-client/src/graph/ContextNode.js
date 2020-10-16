@@ -18,8 +18,8 @@ class ContextNode extends ClientComponentEndpoint {
             <div class="flex-row">
               <div class="flex-row">
                 <button data-el="nodeToggleBtn" class="btn node-toggle-btn"></button>
+                <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
                 <div data-el="title" class="flex-row" style="align-items: center">
-                  <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
                   <div data-el="contextLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
                 <!--div data-el="selectedTraceIcon" class="darkred">
@@ -31,7 +31,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <button data-el="nextContextBtn" class="hidden">⇨</button>
                 <div class="loc-label">
                   <span data-el="locLabel" class="dbux-link"></span>
-                  <span data-el="parentLocLabel" class="dbux-link"></span>
+                  <!--span data-el="parentLocLabel" class="dbux-link"></span-->
                 </div>
                 <div>
                   <span class="value-label" data-el="valueLabel"></span>
@@ -58,7 +58,7 @@ class ContextNode extends ClientComponentEndpoint {
       contextNameLabel,
       contextLocLabel,
       parentTraceNameLabel,
-      parentTraceLocLabel,
+      // parentTraceLocLabel,
       valueLabel,
       isSelected,
       traceId,
@@ -73,7 +73,7 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.contextLabel.textContent = contextNameLabel;
     this.els.locLabel.textContent = contextLocLabel;
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
-    this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
+    // this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
 
     if (ThemeMode.is.Dark(themeMode)) {
@@ -194,11 +194,11 @@ class ContextNode extends ClientComponentEndpoint {
         this.handleClickOnParentTrace(evt);
       }
     },
-    parentLocLabel: {
-      click(evt) {
-        this.handleClickOnParentTrace(evt);
-      }
-    },
+    // parentLocLabel: {
+    //   click(evt) {
+    //     this.handleClickOnParentTrace(evt);
+    //   }
+    // },
     // staticContextHighlightBtn: {
     //   click(/* evt */) {
     //     this.remote.toggleStaticContextHighlight();

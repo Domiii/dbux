@@ -15,6 +15,14 @@ function nextNode(currentState, stack, actions, node) {
   return node.nextNode;
 }
 
+function previousNode(currentState, stack) {
+  return getPreviousNodeName(stack);
+}
+
+function getPreviousNodeName(stack) {
+  return stack[stack.length - 2]?.name;
+}
+
 // async function storeResultsTest(data) {
 //   data = { test: 1, ...data };
 //   const backend = await getOrCreateProjectManager().getAndInitBackend();
@@ -62,7 +70,7 @@ async function waitForPracticeSessionStop() {
 const whySurveyEdge =
 {
   text: 'Why these questions? What happens to my data?',
-  async click() {
+  async click(currentState, stack, { goTo }) {
     const msg = `Dbux is the object of research for the doctoral dissertation of Dominik Seifert.
 If you agree to participating in this survey, we record your responses to these questions (and your progress on the tutorial bug) anonymously in order to evaluate Dbux's feasability and efficacy.
 
@@ -70,16 +78,17 @@ We will not share this data with anyone, and no third party will given access to
 
 If you are concerned about your data or want your data to be deleted, just contact us on Discord.`;
     const btns = {
-      async 'Ok'() {
+      Ok() {
       },
       async 'Contact us on Discord'() {
-        return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
+        env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
       },
       async 'Help!'() {
-        return showHelp();
+        showHelp();
       }
     };
-    return showInformationMessage(msg, btns, { modal: true });
+    await showInformationMessage(msg, btns, { modal: true });
+    goTo(getPreviousNodeName(stack));
   }
 };
 
