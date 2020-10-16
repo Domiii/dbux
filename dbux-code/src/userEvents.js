@@ -30,8 +30,20 @@ export function emitEditorAction(evtName, data) {
   });
 }
 
-export function emitPracticeSelectTraceAction(selectMethod, trace) {
-  emitUserEvent(UserActionType.SelectTrace, {
+export function emitNavigationAction(actionName, selectMethod, trace) {
+  const actionTypeName = `Navigation${actionName}`;
+  const actionType = UserActionType.valueFromForce(actionTypeName);
+
+  emitUserEvent(actionType, {
+    selectMethod,
+    trace,
+    applicationUUID: getApplicationUUID(trace),
+    locationInfo: getExtraTraceLocationImformation(trace)
+  });
+}
+
+export function emitPracticeSelectTraceAction(selectMethod, trace, actionType = UserActionType.SelectTrace) {
+  emitUserEvent(actionType, {
     selectMethod,
     trace,
     applicationUUID: getApplicationUUID(trace),
