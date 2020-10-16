@@ -1,3 +1,4 @@
+import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import KeyedComponentSet from '@dbux/graph-common/src/componentLib/KeyedComponentSet';
 // import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import ActionGroupType, { isHiddenGroup, isHiddenAction } from '@dbux/data/src/pathways/ActionGroupType';
@@ -5,6 +6,7 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import PathwaysStep from './PathwaysStep';
 import PathwaysAction from './PathwaysAction';
 import PathwaysActionGroup from './PathwaysActionGroup';
+import { getIconByActionGroup } from './renderSettings';
 
 class PathwaysView extends HostComponentEndpoint {
   steps;
@@ -69,9 +71,11 @@ class PathwaysView extends HostComponentEndpoint {
           type
         } = actionGroup;
 
+        const { themeMode } = this.context;
+        const modeName = ThemeMode.getName(themeMode).toLowerCase();
         const typeName = ActionGroupType.getName(type);
-        // TODO: add renderSettings here
-        const iconUri = this.componentManager.externals.getClientResourceUri('dark/nextInContext.svg');
+        const file = getIconByActionGroup(type);
+        const iconUri = this.componentManager.externals.getClientResourceUri(`${modeName}/${file}`);
         return {
           ...actionGroup,
           typeName,

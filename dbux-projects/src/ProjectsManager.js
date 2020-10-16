@@ -102,7 +102,7 @@ export default class ProjectsManager {
   }
 
   async init() {
-    this.recoverPracticeSession();
+    await this.recoverPracticeSession();
   }
 
   get pdp() {
@@ -230,7 +230,7 @@ export default class ProjectsManager {
   // PracticeSession: save/load
   // ########################################
 
-  recoverPracticeSession() {
+  async recoverPracticeSession() {
     const bug = this.getBugByKey(savedPracticeSessionKeyName);
     if (!bug) {
       return;
@@ -244,6 +244,7 @@ export default class ProjectsManager {
 
     const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
     this._createPracticeSession(bug, sessionData);
+    await this.pdp.load();
     this.practiceSession.setupStopwatch();
   }
 
