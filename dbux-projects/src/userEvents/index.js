@@ -37,6 +37,10 @@ export function emitPracticeSessionEvent(eventName, practiceSession) {
   });
 }
 
+export function emitSessionFinishedEvent() {
+  emitUserEvent(UserActionType.SessionFinished);
+}
+
 export function emitNewTestRun(testRun) {
   emitUserEvent(UserActionType.TestRunFinished, { 
     testRun

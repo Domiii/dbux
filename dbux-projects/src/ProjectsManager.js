@@ -253,7 +253,8 @@ export default class ProjectsManager {
       await this.setKeyToBug(savedPracticeSessionKeyName, bug);
       await this.externals.storage.set(savedPracticeSessionDataKeyName, {
         createdAt: this.practiceSession.createdAt,
-        sessionId: this.practiceSession.sessionId
+        sessionId: this.practiceSession.sessionId,
+        state: this.practiceSession.state
       });
     }
     else {

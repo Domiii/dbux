@@ -1,10 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
+import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import Stopwatch from './Stopwatch';
 import PracticeSessionState, { isStateFoundedType } from './PracticeSessionState';
 import BugStatus from '../dataLib/BugStatus';
-import { emitPracticeSessionEvent } from '../userEvents';
+import { emitPracticeSessionEvent, emitSessionFinishedEvent } from '../userEvents';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('PracticeSession');
 
 /** @typedef {import('../projectLib/Project').default} Project */
 /** @typedef {import('../projectLib/Bug').default} Bug */
@@ -16,7 +20,7 @@ export default class PracticeSession {
    * @param {Bug} bug 
    * @param {ProjectsManager} manager
    */
-  constructor(bug, manager, { createdAt, sessionId }) {
+  constructor(bug, manager, { createdAt, sessionId, state }) {
     this.sessionId = sessionId || uuidv4();
     this.createdAt = createdAt || Date.now();
     this.stopwatch = new Stopwatch(manager.externals.stopwatch);
@@ -31,7 +35,7 @@ export default class PracticeSession {
 
     // state management
     this.stopwatchEnabled = bugProgress.stopwatchEnabled;
-    this.state = BugStatus.is.Solved(bugProgress.status) ? PracticeSessionState.Solved : PracticeSessionState.Solving;
+    this.state = state || (BugStatus.is.Solved(bugProgress.status) ? PracticeSessionState.Solved : PracticeSessionState.Solving);
   }
 
   get bdp() {
@@ -45,9 +49,7 @@ export default class PracticeSession {
   setState(state) {
     if (this.state !== state) {
       this.state = state;
-      if (PracticeSessionState.is.Solved(state)) {
-        emitPracticeSessionEvent('solved', this);
-      }
+      this.manager._emitter.emit('practiceSessionChanged');
     }
   }
 
@@ -64,6 +66,7 @@ export default class PracticeSession {
     if (BugStatus.is.Solved(this.manager.getResultStatus(result))) {
       // user passed all tests
       this.setState(PracticeSessionState.Solved);
+      emitPracticeSessionEvent('solved', this);
       this.stopwatch.pause();
       // await this.manager.askForSubmit();
       await this.askToFinish();
@@ -72,6 +75,7 @@ export default class PracticeSession {
       // some test failed
       this.manager.externals.alert(`[Dbux] ${result.code} test(s) failed. Keep going! :)`);
     }
+    await this.save();
     await this.bdp.save();
   }
 
@@ -111,12 +115,16 @@ export default class PracticeSession {
       };
 
       if (this.bug.isCorrectBugLocation(location)) {
+        this.manager.bdp.updateBugProgress(this.bug, { status: BugStatus.Found });
+        emitSessionFinishedEvent();
         this.setState(PracticeSessionState.Found);
-        this.project.logger.debug('yes');
+        this.save();
+        this.bdp.save();
+        debug('yes');
       }
       else {
         // TODO
-        this.project.logger.debug('no');
+        debug('no');
       }
     }
   }
@@ -147,6 +155,15 @@ export default class PracticeSession {
         update.solvedAt = Date.now();
       }
       this.bdp.updateBugProgress(this.bug, update);
+    }
+  }
+
+  async save() {
+    try {
+      await this.manager.savePracticeSession();
+    }
+    catch (err) {
+      logError('Error when saving practiceSession:', err);
     }
   }
 }
