@@ -1,29 +1,26 @@
-import last from 'lodash/last';
+import fs from 'fs';
+import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
-import allApplications from '@dbux/data/src/applications/allApplications';
 import { getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import PathwaysDataUtil from './pathwaysDataUtil';
-import BugProgressByBugIdIndex from './indexes/BugProgressByBugIdIndex';
 import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
-import TestRun from './TestRun';
-import BugProgress from './BugProgress';
-
 import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
+import TestRun from './TestRun';
 
-import { emitBugProgressChanged, emitNewBugProgress, emitNewTestRun } from '../userEvents';
+import { emitNewTestRun } from '../userEvents';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
 
-const storageKey = 'dbux.pathways.data';
-
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./TestRun').default} TestRun */
+/** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
 /**
  * @extends {Collection<TestRun>}
@@ -35,16 +32,41 @@ class TestRunCollection extends Collection {
 }
 
 /**
- * @extends {Collection<BugProgress>}
+ * @extends {Collection<Application>}
  */
-class BugProgressCollection extends Collection {
+class ApplicationCollection extends Collection {
   constructor(pdp) {
-    super('bugProgresses', pdp);
+    super('applications', pdp);
+    this.deserializedCount = 0;
+  }
+
+  /**
+   * @param {Application} application 
+   * @return {Object} plain JS Object
+   */
+  serialize(application) {
+    const { entryPointPath, createdAt } = application;
+    return {
+      entryPointPath,
+      createdAt,
+      uuid: application.uuid,
+      serializedDpData: application.dataProvider.serialize()
+    };
+  }
+
+  /**
+   * 
+   * @param {PathwaysDataProvider} pdp 
+   */
+  deserialize({ entryPointPath, createdAt, uuid, serializedDpData }) {
+    const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
+    app.dataProvider.deserialize(JSON.parse(serializedDpData));
+    return app;
   }
 }
 
 /**
- * @extends {Collection<BugProgress>}
+ * @extends {Collection<UserAction>}
  */
 class UserActionCollection extends Collection {
   constructor(pdp) {
@@ -86,11 +108,15 @@ export default class PathwaysDataProvider extends DataProviderBase {
   constructor(manager) {
     super('PathwaysDataProvider');
     this.manager = manager;
-    this.storage = manager.externals.storage;
 
     this.util = Object.fromEntries(
       Object.keys(PathwaysDataUtil).map(name => [name, PathwaysDataUtil[name].bind(null, this)])
     );
+
+    this.logFolderPath = manager.externals.resources.getLogsDirectory();
+    if (!fs.existsSync(this.logFolderPath)) {
+      fs.mkdirSync(this.logFolderPath);
+    }
   }
 
   // ###########################################################################
@@ -101,46 +127,24 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * @param {Bug} bug 
    * @param {number} nFailedTests
    * @param {string} patchString 
+   * @param {Application[]} apps applications of this TestRun
    * @return {TestRun}
    */
-  addTestRun(bug, nFailedTests, patchString) {
-    const testRun = new TestRun(bug, nFailedTests, patchString);
+  addTestRun(bug, nFailedTests, patchString, apps) {
+    const appUUIDs = apps.map(app => app.uuid);
+    const testRun = new TestRun(bug, nFailedTests, patchString, appUUIDs);
     this.addData({ testRuns: [testRun] });
-    const application = last(allApplications.selection.getAll());
-    emitNewTestRun(testRun, application);
+
+    emitNewTestRun(testRun);
 
     return testRun;
   }
 
   /**
-   * @param {Bug} bug
-   * @param {number} status
-   * @param {boolean} stopwatchEnabled
-   * @return {BugProgress}
+   * @param {Application[]} apps 
    */
-  addBugProgress(bug, status, stopwatchEnabled) {
-    const bugProgress = new BugProgress(bug, status, stopwatchEnabled);
-    this.addData({ bugProgresses: [bugProgress] });
-    emitNewBugProgress(bugProgress);
-    return bugProgress;
-  }
-
-  /**
-   * NOTE: This may break indexes' keys
-   * @param {Bug} bug 
-   * @param {Object} update
-   */
-  updateBugProgress(bug, update) {
-    const bugProgress = this.util.getBugProgressByBug(bug);
-    if (!bugProgress) {
-      this.logger.error(`Tried to update bug (${Object.keys(update || {})}) progress but no previous record found: ${bug.id}`);
-      return;
-    }
-    for (const key of Object.keys(update)) {
-      bugProgress[key] = update[key];
-    }
-    bugProgress.updatedAt = Date.now();
-    emitBugProgressChanged(bugProgress);
+  addApplications(apps) {
+    this.addData({ applications: apps });
   }
 
   // ###########################################################################
@@ -186,7 +190,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
       createdAt,
       type: groupType
     };
-    
+
     // end of previous group
     const previousGroup = this.collections.actionGroups.getLast();
     previousGroup && (previousGroup.endTime = step.createdAt);
@@ -240,10 +244,13 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * Implementation, add indexes here
    * Note: Also resets all collections
    */
-  init() {
+  init(sessionId) {
+    this.sessionId = sessionId;
+    this.logFilePath = path.join(this.logFolderPath, `${sessionId}.dbuxlog`);
+
     this.collections = {
       testRuns: new TestRunCollection(this),
-      bugProgresses: new BugProgressCollection(this),
+      applications: new ApplicationCollection(this),
       steps: new StepCollection(this),
       actionGroups: new ActionGroupCollection(this),
       userActions: new UserActionCollection(this),
@@ -251,77 +258,65 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
     this.indexes = new Indexes();
     this.addIndex(new TestRunsByBugIdIndex());
-    this.addIndex(new BugProgressByBugIdIndex());
     this.addIndex(new UserActionByBugIdIndex());
     this.addIndex(new UserActionByTypeIndex());
     this.addIndex(new UserActionsByStepIndex());
-  }
 
-
-  /**
-   * Save serialized data to external storage
-   */
-  async save() {
-    try {
-      const logString = this._serialize();
-      await this.storage.set(storageKey, logString);
-    }
-    catch (err) {
-      logError('Failed to save progress log:', err);
-    }
+    this.load();
   }
 
   /**
-   * Load serialized data from external storage
+   * Load data from log file
    */
   load() {
     try {
-      const logString = this.storage.get(storageKey);
-      if (logString !== undefined) {
-        this._deserialize(logString);
+      const allDataString = fs.readFileSync(this.logFilePath, 'utf8');
+      if (allDataString) {
+        const dataToAdd = Object.fromEntries(Object.keys(this.collections).map(name => [name, []]));
+
+        for (const dataString of allDataString.split(/\r?\n/)) {
+          if (dataString) {
+            let { collectionName, data } = JSON.parse(dataString);
+            if (this.collections[collectionName].deserialize) {
+              data = this.collections[collectionName].deserialize(data);
+            }
+            dataToAdd[collectionName].push(data);
+          }
+        }
+
+        this.addData(dataToAdd, false);
       }
     }
     catch (err) {
-      logError('Failed to load progress log:', err);
+      if (err.code === 'ENOENT') {
+        // no log file found, skip loading
+      }
+      else {
+        logError('Failed to load from log file:', err);
+        throw err;
+      }
     }
   }
 
-  async reset() {
-    this.init();
-    await this.save();
-  }
+  addData(allData, writeToLog = true) {
+    super.addData(allData);
 
-  /**
-   * Serialize all raw data into JSON format.
-   */
-  _serialize() {
-    const collections = Object.values(this.collections);
-    const obj = {
-      version: this.version,
-      collections: Object.fromEntries(collections.map(collection => {
-        let {
-          name,
-          _all: entries
-        } = collection;
-
-        return [
-          name,
-          entries.slice(1)
-        ];
-      }))
-    };
-    return JSON.stringify(obj, null, 2);
-  }
-
-  /**
-   * Deserialize and recover the data that serialized by `this._serialize()`
-   */
-  _deserialize(dataString) {
-    const data = JSON.parse(dataString);
-    const { version, collections } = data;
-    if (version !== this.version) {
-      throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
+    if (writeToLog) {
+      for (const collectionName in allData) {
+        for (let data of allData[collectionName]) {
+          if (this.collections[collectionName].serialize) {
+            data = this.collections[collectionName].serialize(data);
+          }
+          this.writeOnData(collectionName, data);
+        }
+      }
     }
-    this.addData(collections);
+  }
+
+  /**
+   * @param {string} collectionName
+   */
+  writeOnData(collectionName, data) {
+    fs.appendFileSync(this.logFilePath, `${JSON.stringify({ collectionName, data })}\n`, { flag: 'a+' });
   }
 }

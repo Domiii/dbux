@@ -17,17 +17,16 @@ export async function set(key, value) {
 }
 
 export async function clearAll() {
-  for (const key of getAllDbuxMementoKeys()) {
+  for (const key of getAllMementoKeys()) {
     await set(key, undefined);
   }
 }
 
-export function getAllDbuxMementoKeys() {
-  // NOTE: memento._values might contain non-dbux data? (not sure)
-  if (!memento._values) {
+export function getAllMementoKeys() {
+  if (!memento._value) {
     return [];
   }
-  const keys = Object.keys(memento._values).filter(key => key.toLowerCase().contains('dbux'));
+  const keys = Object.keys(memento._value);
   return keys;
 }
 
@@ -37,6 +36,4 @@ export function getAllMemento() {
 
 export function initMemento(context) {
   memento = context.globalState;
-
-  // clearAll();
 }

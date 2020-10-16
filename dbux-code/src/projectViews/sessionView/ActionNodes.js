@@ -1,9 +1,26 @@
 import traceSelection from '@dbux/data/src/traceSelection';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
-import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
+import PracticeSessionState from '@dbux/projects/src/practiceSession/PracticeSessionState';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeModals';
 import { emitTagTraceAction } from '../../userEvents';
+
+/** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
+/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
+
+class DetailNode extends BaseTreeViewNode {
+  /**
+   * @param {Bug} bug 
+   */
+  static makeLabel(bug) {
+    const state = bug.manager.practiceSession?.state;
+    return `${bug.id} (${PracticeSessionState.getName(state)})`;
+  }
+
+  init() {
+    this.contextValue = 'dbuxSessionView.detailNode';
+  }
+}
 
 class TagNode extends BaseTreeViewNode {
   static makeLabel() {
@@ -14,29 +31,22 @@ class TagNode extends BaseTreeViewNode {
     this.tooltip = 'Tag current trace as bug location';
   }
 
+  /**
+   * @return {ProjectsManager}
+   */
+  get manager() {
+    return this.treeNodeProvider.manager;
+  }
+
   async handleClick() {
-    if (traceSelection.selected) {
-      emitTagTraceAction(traceSelection.selected);
+    const trace = traceSelection.selected;
+    if (trace) {
+      emitTagTraceAction(trace);
+      this.manager.practiceSession.tagBugTrace(trace);
     }
     else {
       await showWarningMessage('You have not selected any trace yet.');
     }
-  }
-}
-
-/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
-
-class DetailNode extends BaseTreeViewNode {
-  /**
-   * @param {Bug} bug 
-   */
-  static makeLabel(bug) {
-    const { status } = bug.manager.pathwayDataProvider.util.getBugProgressByBug(bug);
-    return `${bug.id} (${BugStatus.getName(status)})`;
-  }
-
-  init() {
-    this.contextValue = 'dbuxSessionView.detailNode';
   }
 }
 
@@ -172,8 +182,8 @@ class StopPracticeNode extends BaseTreeViewNode {
 }
 
 export const ActionNodeClasses = [
-  TagNode,
   DetailNode,
+  TagNode,
   RunNode,
   DebugNode,
   RunWithoutDbuxNode,

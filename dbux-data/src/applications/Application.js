@@ -40,8 +40,8 @@ export default class Application {
    */
   updatedAt;
 
-  constructor(applicationId, entryPointPath, createdAt, allApplications) {
-    this.uuid = uuidv4();
+  constructor(applicationId, entryPointPath, createdAt, allApplications, uuid = uuidv4()) {
+    this.uuid = uuid;
     this.applicationId = applicationId;
     this.entryPointPath = entryPointPath;
     // this.relativeEntryPointPath = path.relative(entryPointPath, process.cwd()); // path relative to cwd

@@ -47,7 +47,9 @@ let UserActionType = {
   CallGraphSearch: 102,
   CallGraphNodeCollapseChange: 103,
   CallGraphTrace: 104,
-  CallGraphCallTrace: 106
+  CallGraphCallTrace: 106,
+
+  SessionFinished: 110
 };
 
 UserActionType = new Enum(UserActionType);
