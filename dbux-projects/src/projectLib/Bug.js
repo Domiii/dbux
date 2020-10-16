@@ -1,3 +1,4 @@
+import isEqual from 'lodash/isEqual';
 import path from 'path';
 
 /** @typedef {import('./Project').default} Project */
@@ -31,6 +32,11 @@ export default class Bug {
   hints; // TODO
   difficulty; // TODO!
 
+  /**
+   * @type {[Object]}
+   */
+  bugLocations;
+
   constructor(project, cfg) {
     Object.assign(this, cfg);
     this.project = project;
@@ -57,5 +63,16 @@ export default class Bug {
       const fpath = path.join(this.project.projectPath, this.testFilePaths[0]);
       await this.manager.externals.editor.openFile(fpath);
     }
+  }
+
+  isCorrectBugTraceTag(trace) {
+    const { projectPath } = this.project;
+
+    return this.bugLocations.some(t => {
+      return isEqual({
+        fileName: path.join(projectPath, t.fileName),
+        line: t.line,
+      }, trace);
+    });
   }
 }
