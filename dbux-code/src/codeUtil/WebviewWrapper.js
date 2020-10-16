@@ -227,7 +227,9 @@ export default class WebviewWrapper {
   async _restartClientDOM() {
     let html = await this.buildClientHtml();
     html = `
-const _WebResourceRoot = ${JSON.stringify(this.resourceRoot)};
+<script>
+  window._WebResourceRoot = ${JSON.stringify(this.resourceRoot.replace(/\\/g, '/'))};
+</script>
 ${html}
 <!-- ${++this._webviewUpdateToken} -->`;
     this.panel.webview.html = html;

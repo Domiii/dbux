@@ -1,6 +1,6 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import { isGroupTypeClumped, getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
+import { shouldClumpTogether, getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import TestRun from './TestRun';
 import BugProgress from './BugProgress';
 
@@ -124,8 +124,8 @@ export default {
   },
 
   shouldClumpNextActionIntoGroup(pdp, action, group) {
-    const groupType = getGroupTypeByActionType(action.type);
-    return groupType === group.type && isGroupTypeClumped(groupType);
+    const newGroupType = getGroupTypeByActionType(action.type);
+    return shouldClumpTogether(group.type, newGroupType);
   },
 
   // ###########################################################################

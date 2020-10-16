@@ -15,5 +15,5 @@ function getUniqueAngle(i) {
 }
 
 export function getStaticContextColor(themeMode, staticContextId) {
-  return `hsl(${getUniqueAngle(staticContextId)},35%,${ThemeMode.is.Dark(themeMode) ? 30 : 95}%)`;
+  return `hsl(${getUniqueAngle(staticContextId)},35%,${ThemeMode.is.Dark(themeMode) ? 20 : 95}%)`;
 }

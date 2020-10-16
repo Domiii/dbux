@@ -21,7 +21,7 @@ const projectRoot = path.resolve(__dirname);
 const MonoRoot = path.resolve(__dirname, '..');
 
 // TODO: Do not build to remote path. Copy on deploy instead.
-const outputFolder = path.join(MonoRoot, 'dbux-code/resources/dist');
+const outputFolder = path.join(MonoRoot, 'dbux-code/resources/dist/web');
 
 const dependencies = [
   "dbux-common",

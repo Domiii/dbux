@@ -1,7 +1,8 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import {
-  window
+  window,
+  Uri
 } from 'vscode';
 import { buildWebviewClientHtml } from './clientSource';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
@@ -41,7 +42,7 @@ export default class RichWebView extends WebviewWrapper {
     const mode = this.getThemeMode();
     const scriptPath = this.getResourcePath(this.getMainScriptPath());
     const modeFolderName = ThemeMode.getName(mode).toLowerCase();
-    const themePath = this.getResourcePath(`dist/${modeFolderName}/bootstrap.min.css`);
+    const themePath = this.getResourcePath(`dist/web/${modeFolderName}/bootstrap.min.css`);
     return await buildWebviewClientHtml([scriptPath], themePath);
   }
 
@@ -93,6 +94,12 @@ export default class RichWebView extends WebviewWrapper {
       return result;
     },
 
-    getThemeMode: this.getThemeMode
+    getThemeMode: this.getThemeMode,
+
+    getClientResourceUri: (...segments) => {
+      const p = this.getResourcePath(...segments);
+      const uri = this.panel.webview.asWebviewUri(Uri.file(p));
+      return uri.toString();
+    }
   }
 }
