@@ -59,10 +59,8 @@ export function getLabelByActionGroupType(actionGroupType) {
   return labelsByActionGroupType[actionGroupType] || '(unknown)';
 }
 
-export function getIconUrlByActionGroup(themeMode, actionGroupType) {
-  // const file = iconsByActionGroupType[actionGroupType] || '';
-  const file = 'nextInContext.svg';
-  const modeName = ThemeMode.getName(themeMode).toLowerCase();
-  // return `dist/web/pathways/img/${themeMode}/groups/${file}`;
-  return getClientResourceUri(`${modeName}/${file}`);
+export function getIconByActionGroup(actionGroupType) {
+  const file = iconsByActionGroupType[actionGroupType] || 'string.svg';
+  // const file = 'nextInContext.svg';
+  return `${file}`;
 }
