@@ -4,9 +4,18 @@ import Enum from '@dbux/common/src/util/Enum';
 let PracticeSessionState = {
   Activating: 1,
   Solving: 2,
-  Solved: 3
+  Found: 3,
+  Solved: 4
 };
 
 PracticeSessionState = new Enum(PracticeSessionState);
 
 export default PracticeSessionState;
+
+const FoundedTypes = new Array(PracticeSessionState.getValueMaxIndex()).map(() => false);
+FoundedTypes[PracticeSessionState.Found] = true;
+FoundedTypes[PracticeSessionState.Solved] = true;
+
+export function isStateFoundedType(traceType) {
+  return FoundedTypes[traceType];
+}

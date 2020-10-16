@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import Stopwatch from './Stopwatch';
-import PracticeSessionState from './PracticeSessionState';
+import PracticeSessionState, { isStateFoundedType } from './PracticeSessionState';
 import BugStatus from '../dataLib/BugStatus';
 import { emitPracticeSessionEvent } from '../userEvents';
 
@@ -102,20 +102,22 @@ export default class PracticeSession {
   }
 
   tagBugTrace(trace) {
-    const { applicationId, traceId } = trace;
-    const dp = allApplications.getById(applicationId).dataProvider;
-    const location = {
-      fileName: dp.util.getTraceFilePath(traceId),
-      line: dp.util.getTraceLoc(traceId).start.line,
-    };
+    if (!isStateFoundedType(this.state)) {
+      const { applicationId, traceId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+      const location = {
+        fileName: dp.util.getTraceFilePath(traceId),
+        line: dp.util.getTraceLoc(traceId).start.line,
+      };
 
-    if (this.bug.isCorrectBugLocation(location)) {
-      // TODO
-      this.project.logger.debug('yes');
-    }
-    else {
-      // TODO
-      this.project.logger.debug('no');
+      if (this.bug.isCorrectBugLocation(location)) {
+        this.setState(PracticeSessionState.Found);
+        this.project.logger.debug('yes');
+      }
+      else {
+        // TODO
+        this.project.logger.debug('no');
+      }
     }
   }
 

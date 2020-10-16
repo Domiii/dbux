@@ -1,5 +1,6 @@
 import NanoEvents from 'nanoevents';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import { isStateFoundedType } from '../practiceSession/PracticeSessionState';
 
 /** @typedef {import('../practiceSession/PracticeSession').default} PracticeSession */
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
@@ -84,7 +85,7 @@ export function onUserEvent(cb) {
  * @param {Object} evtData NOTE: data *must* always be completely serializable, simple data.
  */
 export function emitUserEvent(eventType, evtData) {
-  if (manager.practiceSession) {
+  if (manager.practiceSession && !isStateFoundedType(manager.practiceSession.state)) {
     emitter.emit('e', {
       type: eventType,
       sessionId: manager.practiceSession.sessionId,
