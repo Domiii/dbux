@@ -101,11 +101,12 @@ export class AllApplications {
   addApplication(initialData) {
     const {
       entryPointPath,
-      createdAt
+      createdAt,
+      uuid
     } = initialData;
 
     const applicationId = this._all.length;
-    const application = new this.DefaultApplicationClass(applicationId, entryPointPath, createdAt, this);
+    const application = new this.DefaultApplicationClass(applicationId, entryPointPath, createdAt, this, uuid);
     const previousApplication = this.getActiveApplicationByEntryPoint(entryPointPath);
 
     this._activeApplicationsByPath.set(entryPointPath, application);

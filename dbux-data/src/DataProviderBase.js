@@ -293,15 +293,6 @@ export default class DataProviderBase {
           entries = entries.map(entry => collection.serialize(entry));
         }
 
-        entries = entries.map(e => {
-          const newEntry = { ...e };
-
-          // delete some temps
-          delete newEntry.valueString;
-          delete newEntry.valueStringShort;
-          return newEntry;
-        });
-
         return [
           name,
           entries

@@ -271,9 +271,9 @@ export default {
   getTraceValueString(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
 
-    if (trace.valueString) {
+    if (trace._valueString) {
       // already cached
-      return trace.valueString;
+      return trace._valueString;
     }
 
     // get value
@@ -288,7 +288,7 @@ export default {
       }
 
       // hackfix: we cache this thing
-      return trace.valueString = valueString;
+      return trace._valueString = valueString;
     }
 
     return null;
@@ -298,9 +298,9 @@ export default {
   getTraceValueStringShort(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
 
-    if (trace.valueStringShort) {
+    if (trace._valueStringShort) {
       // already cached
-      return trace.valueStringShort;
+      return trace._valueStringShort;
     }
 
     // get value
@@ -319,7 +319,7 @@ export default {
     }
 
     // hackfix: we cache this thing
-    return trace.valueStringShort = valueString;
+    return trace._valueStringShort = valueString;
   },
 
   /** @param {DataProvider} dp */

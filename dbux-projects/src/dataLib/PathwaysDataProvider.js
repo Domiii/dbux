@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
+import allApplications from '@dbux/data/src/applications/allApplications';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
-import Application from '@dbux/data/src/applications/Application';
 import PathwaysDataUtil from './pathwaysDataUtil';
 import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import TestRun from './TestRun';
@@ -18,6 +18,7 @@ const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
 
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
 /** @typedef {import('./TestRun').default} TestRun */
+/** @typedef {import('@dbux/data/src/applications/Application').default} Application */
 
 /**
  * @extends {Collection<TestRun>}
@@ -56,8 +57,7 @@ class ApplicationCollection extends Collection {
    * @param {PathwaysDataProvider} pdp 
    */
   deserialize({ entryPointPath, createdAt, uuid, serializedDpData }) {
-    // NOTE: currently we are not linking `oldApplications` with `allApplications`
-    const app = new Application(++this.deserializedCount, entryPointPath, createdAt, null, uuid);
+    const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
     app.dataProvider.deserialize(JSON.parse(serializedDpData));
     return app;
   }
