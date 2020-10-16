@@ -30,17 +30,19 @@ const labelsByActionGroupType = {
 
 const iconsByActionGroupType = {
   [ActionGroupType.SelectTrace]: 'crosshair.svg',
+
   [ActionGroupType.TagTrace]: 'TagTrace',
   [ActionGroupType.TDValue]: 'TDValue',
   [ActionGroupType.TDTrackObject]: 'TDTrackObject',
   [ActionGroupType.TDExecutions]: 'TDExecutions',
   [ActionGroupType.TDTrackObjectTrace]: 'TDTrackObjectTrace',
   [ActionGroupType.TDExecutionsTrace]: 'TDExecutionsTrace',
-  [ActionGroupType.TDTrace]: 'TDTrace',
-  [ActionGroupType.NavigationPreviousInContext]: 'NavigationPreviousInContext',
-  [ActionGroupType.NavigationPreviousChildContext]: 'NavigationPreviousChildContext',
-  [ActionGroupType.NavigationPreviousParentContext]: 'NavigationPreviousParentContext',
-  [ActionGroupType.NavigationNextInContext]: 'NavigationNextInContext',
+  [ActionGroupType.TDTrace]: 'crosshair.svg',
+
+  [ActionGroupType.NavigationPreviousInContext]: 'previousInContext.svg',
+  [ActionGroupType.NavigationPreviousChildContext]: 'previousChildContext.svg',
+  [ActionGroupType.NavigationPreviousParentContext]: 'previousParentContext.svg',
+  [ActionGroupType.NavigationNextInContext]: 'nextInContext.svg',
   [ActionGroupType.NavigationNextChildContext]: 'NavigationNextChildContext',
   [ActionGroupType.NavigationNextParentContext]: 'NavigationNextParentContext',
   [ActionGroupType.NavigationPreviousStaticTrace]: 'NavigationPreviousStaticTrace',
@@ -62,5 +64,5 @@ export function getLabelByActionGroupType(actionGroupType) {
 export function getIconByActionGroup(actionGroupType) {
   const file = iconsByActionGroupType[actionGroupType] || 'string.svg';
   // const file = 'nextInContext.svg';
-  return `${file}`;
+  return file;
 }
