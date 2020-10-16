@@ -6,8 +6,9 @@ import ClientComponentEndpoint from './ClientComponentEndpoint';
 import '../styles.css';
 
 // hackfix: register global
-window.getResourceRoot = function getResourceRoot(...segments) {
-  return `${_WebResourceRoot}/${segments.join('/')}`;
+// NOTE: url must look like this: 'vscode-resource://D:/code/dbux/dbux-code/resources/dark/nextInContext.svg'
+window.getClientResourceUri = function getClientResourceUri(...segments) {
+  return `vscode-resource://${_WebResourceRoot}/${segments.join('/')}`;
 };
 
 // ###########################################################################

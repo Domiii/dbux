@@ -39,6 +39,7 @@ ActionGroupType = new Enum(ActionGroupType);
 
 
 const groupByType = {
+  [UserActionType.EditorEvent]: ActionGroupType.Hidden,
   [UserActionType.SelectTrace]: ActionGroupType.SelectTrace,
   [UserActionType.TagTrace]: ActionGroupType.TagTrace,
   [UserActionType.TDValueClick]: ActionGroupType.TDValue,
@@ -76,6 +77,20 @@ clumpedGroups[ActionGroupType.Hidden] = true;
 
 export function isGroupTypeClumped(actionGroupType) {
   return clumpedGroups[actionGroupType];
+}
+
+
+export function shouldClumpTogether(oldGroupType, newGroupType) {
+  return isGroupTypeClumped(newGroupType) && (newGroupType === oldGroupType || isGroupTypeClumped(oldGroupType));
+}
+
+export function isHiddenGroup(groupType) {
+  return ActionGroupType.is.Hidden(groupType);
+}
+
+export function isHiddenAction(actionType) {
+  const groupType = getGroupTypeByActionType(actionType);
+  return ActionGroupType.is.Hidden(groupType);
 }
 
 

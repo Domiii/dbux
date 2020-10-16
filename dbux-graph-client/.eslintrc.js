@@ -9,7 +9,8 @@ module.exports = {
   },
 
   globals: {
-    _WebResourceRoot: true
+    _WebResourceRoot: true,
+    getClientResourceUri: true
   },
 
   settings: {
