@@ -32,6 +32,13 @@ function errorWrapMethod(obj, methodName, ...args) {
   }
 }
 
+function deleteCachedRange(locObj) {
+  delete locObj._range;
+  delete locObj.start._pos;
+  delete locObj.end._pos;
+  return locObj;
+}
+
 /**
  * @extends {Collection<StaticProgramContext>}
  */
@@ -60,6 +67,12 @@ class StaticContextCollection extends Collection {
   constructor(dp) {
     super('staticContexts', dp);
   }
+
+  serialize(staticContext) {
+    const staticContextData = { ...staticContext };
+    deleteCachedRange(staticContextData.loc);
+    return staticContextData;
+  }
 }
 
 /**
@@ -71,6 +84,12 @@ class StaticTraceCollection extends Collection {
 
   constructor(dp) {
     super('staticTraces', dp);
+  }
+
+  serialize(staticTrace) {
+    const staticTraceData = { ...staticTrace };
+    deleteCachedRange(staticTraceData.loc);
+    return staticTraceData;
   }
 
   // handleEntryAdded(staticTrace) {
@@ -149,6 +168,13 @@ class TraceCollection extends Collection {
     super.add(traces);
   }
 
+  serialize(trace) {
+    const traceData = { ...trace };
+    delete traceData._valueString;
+    delete traceData._valueStringShort;
+    return traceData;
+  }
+
   /**
    * Post processing of trace data
    * @param {Trace[]} traces
@@ -224,7 +250,7 @@ class TraceCollection extends Collection {
               beforeCall = null;
             }
           }
-          
+
           if (beforeCall) {
             // all good!
             beforeCall.resultId = traceId;

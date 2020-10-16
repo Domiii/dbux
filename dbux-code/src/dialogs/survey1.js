@@ -28,7 +28,7 @@ function nextNode(currentState, stack, actions, node) {
 async function waitForBugSolved(bug) {
   const projectManager = getOrCreateProjectManager();
   return new Promise((r) => {
-    const bugstatus = projectManager.pathwayDataProvider.util.getBugProgressByBug(bug)?.status;
+    const bugstatus = projectManager.bdp.getBugProgressByBug(bug)?.status;
     if (BugStatus.is.Solved(bugstatus)) {
       r();
     }
@@ -43,29 +43,15 @@ async function waitForBugSolved(bug) {
   });
 }
 
-async function waitForBugFailedNTimes(bug, n) {
-  const projectManager = getOrCreateProjectManager();
+async function waitForPracticeSessionStop() {
   return new Promise((r) => {
-    // wait for first bug failed three times
-    let failedTestRuns = projectManager.pathwayDataProvider.util.getTestRunsByBug(bug).filter((testRun) => {
-      return testRun.nFailedTests > 0;
+    const manager = getOrCreateProjectManager();
+    const unbind = manager.onPracticeSessionChanged(() => {
+      if (!manager.practiceSession) {
+        r();
+        unbind();
+      }
     });
-    if (failedTestRuns.length >= n) {
-      r();
-    }
-    else {
-      const unbind = projectManager.onTestFinished((testBug/* , result */) => {
-        if (testBug === bug) {
-          failedTestRuns = projectManager.pathwayDataProvider.util.getTestRunsByBug(bug).filter((testRun) => {
-            return testRun.nFailedTests > 0;
-          });
-          if (failedTestRuns.length >= n) {
-            r();
-            unbind();
-          }
-        }
-      });
-    }
   });
 }
 
@@ -156,15 +142,16 @@ const survey1 = {
 
   nodes: {
     waitToStart: {
+      start: true,
       kind: DialogNodeKind.Message,
       async enter(graphState, stack, { waitAtMost }) {
         const waitDelay = 1 * 60 * 60;
         const projectManager = getOrCreateProjectManager();
-        const firstBug = projectManager.projects.getByName('express').getOrLoadBugs().getById(1);
+        const firstBug = projectManager.projects.getByName('express').getOrLoadBugs().getAt(0);
         return Promise.race([
           waitForBugSolved(firstBug),
           waitAtMost(waitDelay),
-          waitForBugFailedNTimes(firstBug, 3)
+          waitForPracticeSessionStop()
         ]);
       },
       async text() {

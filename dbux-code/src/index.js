@@ -75,8 +75,8 @@ async function activate(context) {
     );
 
     // init the webviews
-    initGraphView();
-    initPathwaysView();
+    await initGraphView();
+    await initPathwaysView();
 
     await maybeStartSurvey1ForTheFirstTime();
   } catch (e) {

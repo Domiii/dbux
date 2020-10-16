@@ -19,7 +19,13 @@ export default class ExpressProject extends Project {
         // https://github.com/BugsJS/express/commit/8bd36202bef586889d20bd5fa0732d3495da54eb
         id: 1,
         testRe: 'OPTIONS should only include each method once',
-        testFilePaths: ['test/app.options.js']
+        testFilePaths: ['test/app.options.js'],
+        bugLocations: [
+          {
+            fileName: './lib/router/index.js',
+            line: 156
+          }
+        ]
       },
       {
         // https://github.com/BugsJS/express/releases/tag/Bug-2-test

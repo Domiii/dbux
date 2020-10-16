@@ -141,6 +141,22 @@
         }
       },
       {
+        "command": "dbux.showPathwaysView",
+        "title": "Dbux: Show Pathways View",
+        "icon": {
+          "light": "resources/light/tree.svg",
+          "dark": "resources/dark/tree.svg"
+        }
+      },
+      {
+        "command": "dbux.hidePathwaysView",
+        "title": "Dbux: Hide Pathways View",
+        "icon": {
+          "light": "resources/light/tree_disabled.svg",
+          "dark": "resources/dark/tree_disabled.svg"
+        }
+      },
+      {
         "command": "dbux.startRuntimeServer",
         "title": "Dbux: Start Dbux Runtime Server",
         "icon": {
@@ -697,6 +713,16 @@
           "group": "navigation@10"
         },
         {
+          "command": "dbux.showPathwaysView",
+          "when": "view == dbuxTraceDetailsView && !dbuxWebView.context.dbux-pathways.isActive",
+          "group": "navigation@11"
+        },
+        {
+          "command": "dbux.hidePathwaysView",
+          "when": "view == dbuxTraceDetailsView && dbuxWebView.context.dbux-pathways.isActive",
+          "group": "navigation@11"
+        },
+        {
           "command": "dbux.togglePracticeView",
           "when": "view == dbuxApplicationsView",
           "group": "navigation@3"
@@ -762,7 +788,19 @@
           "when": "dbux.context.activated"
         },
         {
+          "command": "dbux.showGraphView",
+          "when": "dbux.context.activated"
+        },
+        {
           "command": "dbux.hideGraphView",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.showPathwaysView",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.hidePathwaysView",
           "when": "dbux.context.activated"
         },
         {
@@ -775,10 +813,6 @@
         },
         {
           "command": "dbux.showDecorations",
-          "when": "dbux.context.activated"
-        },
-        {
-          "command": "dbux.showGraphView",
           "when": "dbux.context.activated"
         },
         {
