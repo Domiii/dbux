@@ -5,6 +5,9 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeModals';
 import { emitTagTraceAction } from '../../userEvents';
 
+/** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
+/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
+
 class TagNode extends BaseTreeViewNode {
   static makeLabel() {
     return 'Found it';
@@ -14,17 +17,24 @@ class TagNode extends BaseTreeViewNode {
     this.tooltip = 'Tag current trace as bug location';
   }
 
+  /**
+   * @return {ProjectsManager}
+   */
+  get manager() {
+    return this.treeNodeProvider.manager;
+  }
+
   async handleClick() {
-    if (traceSelection.selected) {
-      emitTagTraceAction(traceSelection.selected);
+    const trace = traceSelection.selected;
+    if (trace) {
+      emitTagTraceAction(trace);
+      this.manager.practiceSession.tagBugTrace(trace);
     }
     else {
       await showWarningMessage('You have not selected any trace yet.');
     }
   }
 }
-
-/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
 
 class DetailNode extends BaseTreeViewNode {
   /**
