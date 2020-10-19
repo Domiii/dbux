@@ -1,4 +1,8 @@
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import allApplications from '@dbux/data/src/applications/allApplications';
+// import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
+import { makeStaticContextLocLabel } from '@dbux/data/src/helpers/traceLabels';
+
 import KeyedComponentSet from '@dbux/graph-common/src/componentLib/KeyedComponentSet';
 // import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import ActionGroupType, { isHiddenGroup, isHiddenAction } from '@dbux/data/src/pathways/ActionGroupType';
@@ -46,6 +50,9 @@ class PathwaysView extends HostComponentEndpoint {
   }
 
   handleRefresh() {
+    const { themeMode } = this.context;
+    const modeName = ThemeMode.getName(themeMode).toLowerCase();
+
     const pdp = this.componentManager.externals.getPathwaysDataProvider();
     if (this.pdp !== pdp) {
       // reset
@@ -55,13 +62,33 @@ class PathwaysView extends HostComponentEndpoint {
     this.pdp = pdp;
 
     const steps = pdp.collections.steps.getAll().
+      filter(step => !!step).
       map(step => {
-        if (!step) {
-          // the first entry is empty
-          return null;
+        const {
+          applicationId,
+          staticContextId,
+          // contextId
+        } = step;
+
+        let label;
+        let locLabel;
+        if (staticContextId) {
+          const dp = allApplications.getById(applicationId)?.dataProvider;
+          const staticContext = dp?.collections.staticContexts.getById(staticContextId);
+          label = staticContext?.displayName || `(could not look up application or staticContext for ${applicationId}, ${staticContextId})`;
+          const locString = makeStaticContextLocLabel(applicationId, staticContextId);
+          locLabel = ` @ ${locString}`;
+        }
+        else {
+          label = '(new test run)';
+          locLabel = '';
         }
 
-        return step;
+        return {
+          label,
+          locLabel,
+          ...step
+        };
       });
 
     const actionGroups = pdp.collections.actionGroups.getAll().
@@ -71,8 +98,6 @@ class PathwaysView extends HostComponentEndpoint {
           type
         } = actionGroup;
 
-        const { themeMode } = this.context;
-        const modeName = ThemeMode.getName(themeMode).toLowerCase();
         const typeName = ActionGroupType.getName(type);
         const file = getIconByActionGroup(type);
         const iconUri = this.componentManager.externals.getClientResourceUri(`${modeName}/${file}`);

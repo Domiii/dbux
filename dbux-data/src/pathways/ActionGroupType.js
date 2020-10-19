@@ -25,9 +25,10 @@ let ActionGroupType = {
   NavigationNextTrace: 49,
 
   CallGraphSelectTrace: 20,
-  CallGraphSearch: 21,
-  CallGraphTrace: 22,
-  CallGraphOther: 23,
+  CallGraphToggleNode: 21,
+  CallGraphSearch: 22,
+  CallGraphTrace: 23,
+  CallGraphOther: 24,
 
   // gear icon
   Other: 50,

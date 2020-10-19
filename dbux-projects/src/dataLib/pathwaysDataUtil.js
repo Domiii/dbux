@@ -163,7 +163,7 @@ export default {
 
   getStaticContextId(pdp, actionId) {
     const action = pdp.collections.userActions.getById(actionId);
-    return pdp.util.getActionCodeChunkId(action);
+    return pdp.util.getActionStaticContextId(action);
   },
 
   getActionStaticContextId(pdp, action) {
@@ -172,9 +172,9 @@ export default {
       return null;
     }
 
-    const { trace: { contextId } } = action;
+    const { trace: { applicationId, contextId } } = action;
     const { staticContextId } = dp.collections.executionContexts.getById(contextId);
     // const staticContext = dp.collections.staticContexts.getById(staticContextId);
-    return staticContextId;
+    return { applicationId, staticContextId };
   },
 };
