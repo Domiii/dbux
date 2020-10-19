@@ -11,6 +11,9 @@ let ActionGroupType = {
   TDExecutions: 26,
   TDTrackObjectTrace: 27,
   TDExecutionsTrace: 28,
+  /**
+   * any other trace node
+   */
   TDTrace: 30,
   
   NavigationPreviousInContext: 40,
@@ -26,11 +29,12 @@ let ActionGroupType = {
 
   CallGraphSelectTrace: 20,
   CallGraphToggleNode: 21,
-  CallGraphSearch: 22,
-  CallGraphTrace: 23,
-  CallGraphOther: 24,
+  CallGraphSearchContexts: 22,
+  CallGraphSearchTraces: 23,
+  CallGraphTrace: 24,
+  CallGraphOther: 25,
 
-  // gear icon
+  // gear icon?
   Other: 50,
 
   Hidden: 60
