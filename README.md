@@ -42,8 +42,8 @@ This page covers more broad topics related to the Dbux project:
 - [Dbux Architecture](#dbux-architecture)
   - [Call Graph GUI Implementation](#call-graph-gui-implementation)
 - [Terminology](#terminology)
-  - [Trace and Static Trace](#trace-and-static-trace)
-  - [Context and Static Context](#context-and-static-context)
+  - [Trace](#trace)
+  - [Context](#context)
   - [Run](#run)
   - [Call Graph](#call-graph)
     - [Asynchronous Call Graph](#asynchronous-call-graph)
@@ -272,21 +272,17 @@ A few more notes on the Call Graph GUI implementation:
 
 Terminology regarding the JavaScript runtime is either not well defined in general, or we have just not yet spent enough time finding all the definitions. That is why we try to explain some of the terminology that we came up with here (feel free to help us improve):
 
-<span id="#trace"></span>
-
-## Trace and Static Trace
+## Trace
 
 We use (i) the name `staticTrace` to represent a piece of code (e.g. `f(x)`), and (ii) the name `trace` to represent a recorded execution of that code; meaning that one `staticTrace` (piece of code) has 0 or more `traces` (executions).
 
-<span id="#context"></span>
-
-## Context and Static Context
+## Context
 
 * A `static context` can be a `function` declaration or a `Program` (`Program` is Babel's word for "JavaScript file"). A `context` (sometimes also called `executionContext`) is any execution of such function or Program.
 * In many ways, a `context` can also be considered a "stack frame" (or `frame` in short).
    * (That idea only came to us later, and that is why we are not currently using this terminology.)
+* JavaScript implementation note: While functions can be executed many times, JavaScript files usually only execute once, that is the first time they are `require`'d or `import`'ed. After that first time, their `exports` are cached, and returned to any following caller of `require` or `import`. That is why you will only see a single trace in the file scope, even if you require them many times.
 * TODO: explain how this works for `async function`s
-* JavaScript implementation note: While functions can be executed many times, JavaScript files usually only execute once, that is the first time they are `require`'d or `import`'ed. After that first time their `exports` are cached, and returned to any following caller of `require` or `import`. That is why you will only see a single trace in the file scope, even if you require them many times.
 
 ## Run
 

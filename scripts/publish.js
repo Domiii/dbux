@@ -3,14 +3,16 @@
 
 const path = require('path');
 const fs = require('fs');
-const sh = require('shelljs');
 const open = require('open');
 const isArray = require('lodash/isArray');
+
+const run = require('./run');
 const LineReader = require('./LineReader');
 
-// make sure, we can import dbux stuff without any problems (and console log is pretty)
+// add babel-register, so we can import dbux src files
 require('../dbux-cli/lib/dbux-register-self');
-require('../dbux-common/src/util/prettyLogs');
+
+require('../dbux-common/src/util/prettyLogs'); // make console log pretty
 
 const { newLogger } = require('../dbux-common/src/log/logger');
 const Process = require('../dbux-projects/src/util/Process').default;
@@ -74,24 +76,6 @@ async function yesno(q) {
 // ###########################################################################
 // utilities
 // ###########################################################################
-
-function run(command) {
-  const cwd = path.resolve(path.join(__dirname, '..'));
-  debug(` ${cwd}$ ${command}`);
-  const result = sh.exec(command, { cwd, silent: true });
-  if (result.stdout) {
-    debug(result.stdout);
-  }
-  if (result.stderr) {
-    logError(result.stderr);
-  }
-
-  if (result.code) {
-    throw new Error(`Command "${command}" failed, exit status: ${result.code}`);
-  }
-
-  return result.stdout.trim();
-}
 
 function getDbuxVersion() {
   return readPackageJsonVersion(path.join(__dirname, '../dbux-code'));

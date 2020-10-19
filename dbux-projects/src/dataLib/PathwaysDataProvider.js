@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
@@ -118,6 +119,10 @@ export default class PathwaysDataProvider extends DataProviderBase {
       fs.mkdirSync(this.logFolderPath);
     }
 
+    this.reset();
+  }
+
+  reset() {
     this.collections = {
       testRuns: new TestRunCollection(this),
       applications: new ApplicationCollection(this),
@@ -165,19 +170,27 @@ export default class PathwaysDataProvider extends DataProviderBase {
   // actions + steps
   // ###########################################################################
 
-  addNewStep(staticContextId, firstAction) {
+  addNewStep(applicationId, staticContextId, firstAction) {
     const {
       sessionId,
       bugId,
-      createdAt
+      createdAt,
+      trace
     } = firstAction;
+
+    const contextId = trace?.contextId;
+    const firstTraceId = trace?.traceId;
 
     const step = {
       sessionId,
       bugId,
       createdAt,
 
-      staticContextId
+      applicationId,
+      staticContextId,
+      contextId,
+
+      firstTraceId
     };
 
     // end of previous step
@@ -217,18 +230,26 @@ export default class PathwaysDataProvider extends DataProviderBase {
     // keep track of steps
 
     // NOTE: action.id is not set yet (will be set during `addData` below)
-    const staticContextId = this.util.getActionStaticContextId(action);
+    const staticContextIds = this.util.getActionStaticContextId(action);
     const lastStep = this.collections.steps.getLast();
     const lastActionGroup = this.collections.actionGroups.getLast();
+
+    const {
+      applicationId = 0,
+      staticContextId = 0,
+    } = staticContextIds || EmptyObject;
     const lastStaticContextId = lastStep?.staticContextId || 0;
+    const lastApplicationId = lastStep?.applicationId || 0;
 
     // step
     let step = lastStep;
-    if (!step || action.newStep || (staticContextId && staticContextId !== lastStaticContextId)) {
+    if (!step || action.newStep || 
+      (applicationId && applicationId !== lastApplicationId) ||
+        (staticContextId && staticContextId !== lastStaticContextId)) {
       // create new step
       // let step = this.stepsByStaticContextId.get(staticContextId);
       // if (!step) {
-      step = this.addNewStep(staticContextId, action);
+      step = this.addNewStep(applicationId, staticContextId, action);
       // }
       // this.stepsByStaticContextId.set(staticContextId, step);
     }
@@ -261,6 +282,8 @@ export default class PathwaysDataProvider extends DataProviderBase {
   init(sessionId) {
     this.sessionId = sessionId;
     this.logFilePath = path.join(this.logFolderPath, `${sessionId}.dbuxlog`);
+    
+    this.reset();
   }
 
   /**

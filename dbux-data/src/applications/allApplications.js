@@ -41,7 +41,7 @@ export class AllApplications {
    * @param {number} applicationIdOrUuid
    */
   getById(applicationIdOrUuid) {
-    return this._all[applicationIdOrUuid] || this.getByUuid(applicationIdOrUuid);
+    return this._all[applicationIdOrUuid];
   }
 
   /**

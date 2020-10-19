@@ -5,26 +5,33 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeModals';
 import { emitTagTraceAction } from '../../userEvents';
 
+class SessionNode extends BaseTreeViewNode {
+  get bug() {
+    return this.entry;
+  }
+}
+
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 /** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
 
-class DetailNode extends BaseTreeViewNode {
+class DetailNode extends SessionNode {
   /**
    * @param {Bug} bug 
    */
   static makeLabel(bug) {
     const state = bug.manager.practiceSession?.state;
-    return `${bug.id} (${PracticeSessionState.getName(state)})`;
+    return `Current bug: ${bug.label} (${PracticeSessionState.getName(state)})`;
   }
 
   init() {
     this.contextValue = 'dbuxSessionView.detailNode';
+    this.description = this.bug.id;
   }
 }
 
-class TagNode extends BaseTreeViewNode {
+class TagNode extends SessionNode {
   static makeLabel() {
-    return 'Found it';
+    return 'I found it! (tag this trace)';
   }
 
   init() {
@@ -50,7 +57,7 @@ class TagNode extends BaseTreeViewNode {
   }
 }
 
-class RunNode extends BaseTreeViewNode {
+class RunNode extends SessionNode {
   static makeLabel() {
     return 'Run';
   }
@@ -77,7 +84,7 @@ class RunNode extends BaseTreeViewNode {
   }
 }
 
-class DebugNode extends BaseTreeViewNode {
+class DebugNode extends SessionNode {
   static makeLabel() {
     return 'Debug';
   }
@@ -104,7 +111,7 @@ class DebugNode extends BaseTreeViewNode {
   }
 }
 
-class RunWithoutDbuxNode extends BaseTreeViewNode {
+class RunWithoutDbuxNode extends SessionNode {
   static makeLabel() {
     return 'Run without Dbux';
   }
@@ -131,9 +138,9 @@ class RunWithoutDbuxNode extends BaseTreeViewNode {
   }
 }
 
-class ShowEntryNode extends BaseTreeViewNode {
+class ShowEntryNode extends SessionNode {
   static makeLabel() {
-    return 'Show entry file';
+    return 'Go to program entry point';
   }
 
   init() {
@@ -154,7 +161,7 @@ class ShowEntryNode extends BaseTreeViewNode {
   }
 }
 
-class StopPracticeNode extends BaseTreeViewNode {
+class StopPracticeNode extends SessionNode {
   static makeLabel() {
     return 'Stop Practice';
   }
@@ -183,10 +190,10 @@ class StopPracticeNode extends BaseTreeViewNode {
 
 export const ActionNodeClasses = [
   DetailNode,
-  TagNode,
-  RunNode,
-  DebugNode,
-  RunWithoutDbuxNode,
   ShowEntryNode,
+  RunNode,
+  RunWithoutDbuxNode,
+  DebugNode,
+  TagNode,
   StopPracticeNode
 ];

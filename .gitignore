@@ -8,6 +8,7 @@ project_sandbox/bug-dataset
 _testOut
 __data__
 lerna.debug.log
+/downloads
 
 
 # yarn

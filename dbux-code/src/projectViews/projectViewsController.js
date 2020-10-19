@@ -194,14 +194,14 @@ export class ProjectViewController {
 
     const options = {
       cancellable: false,
-      title: `[dbux] Bug ${bug.id}`
+      title: `[dbux] Bug ${`"${bug.label}"` || ''} (#${bug.id})`
     };
 
     await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
       progress.report({ message: 'checking system requirements...' });
       await this.checkActivateBugRequirement();
 
-      progress.report({ message: 'activating...' });
+      progress.report({ message: 'running test...' });
       await this.manager.activate(debugMode);
     }, options);
   }

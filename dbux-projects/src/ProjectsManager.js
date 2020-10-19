@@ -215,12 +215,16 @@ export default class ProjectsManager {
     await this.bdp.save();
 
     // emitPracticeSessionEvent('stopped', practiceSession);
+    this.pdp.reset();
     this._emitter.emit('practiceSessionChanged', dontRefreshView);
   }
 
-  _createPracticeSession(bug, sessionData = EmptyObject) {
+  _createPracticeSession(bug, sessionData = EmptyObject, load = false) {
     this.practiceSession = new PracticeSession(bug, this, sessionData);
     this.pdp.init(this.practiceSession.sessionId);
+    if (load) {
+      this.pdp.load();
+    }
 
     emitPracticeSessionEvent('started', this.practiceSession);
     this._emitter.emit('practiceSessionChanged');
@@ -243,8 +247,7 @@ export default class ProjectsManager {
     }
 
     const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
-    this._createPracticeSession(bug, sessionData);
-    await this.pdp.load();
+    this._createPracticeSession(bug, sessionData, true);
     this.practiceSession.setupStopwatch();
   }
 
