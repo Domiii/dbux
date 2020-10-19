@@ -61,7 +61,7 @@ class DataProvider:
 
       context = contexts.query(f'contextId == {contextId}')
       staticContextId = context.iloc[0]['staticContextId']
-      staticContext = staticContexts.query(f'staticId == {staticContextId}')
+      staticContext = staticContexts.query(f'staticContextId == {staticContextId}')
       contextName = staticContext.iloc[0]['displayName']
       return contextName
 

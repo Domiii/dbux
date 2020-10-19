@@ -51,7 +51,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
         }
         case SelectorType.Search: {
           const { searchTerm } = this.selector;
-          this.highlightBySearchTerm(searchTerm);
+          this.highlightBySearchTermContexts(searchTerm);
           break;
         }
       }
@@ -66,7 +66,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
   clear() {
     this.contextNodes?.forEach((contextNode) => {
-      if (!contextNode.isDisposed) {
+      if (contextNode && !contextNode.isDisposed) {
         contextNode.controllers.getComponent('Highlighter').dec();
       }
     });
@@ -138,7 +138,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
   // ###########################################################################
 
 
-  highlightBySearchTerm(searchTerm) {
+  highlightBySearchTermContexts(searchTerm) {
     if (this.selector) this.clear();
     if (!searchTerm) {
       return;
@@ -149,6 +149,24 @@ export default class ContextNodeManager extends HostComponentEndpoint {
 
     const contexts = allApplications.selection.getAll().
       map(({ dataProvider: dp }) => dp.util.searchContexts(searchTerm)).
+      flat();
+
+    this.selector = { searchTerm };
+    this.selectorType = SelectorType.Search;
+    this.highlightContexts(contexts);
+  }
+
+  highlightBySearchTermTraces(searchTerm) {
+    if (this.selector) this.clear();
+    if (!searchTerm) {
+      return;
+    }
+
+    this.context.graphRoot.controllers.getComponent('GraphNode').setMode(GraphNodeMode.Collapsed);
+    this.context.graphRoot.controllers.getComponent('FocusController').setSyncMode(false);
+
+    const contexts = allApplications.selection.getAll().
+      map(({ dataProvider: dp }) => dp.util.findContextsByTraceSearchTerm(searchTerm)).
       flat();
 
     this.selector = { searchTerm };

@@ -5,7 +5,7 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
 
 
 /** @extends {CollectionIndex<StaticTrace>} */
-export default class VisitedStaticTracesByFileIndex extends CollectionIndex {
+export default class ExecutedStaticTracesByFileIndex extends CollectionIndex {
   /**
    * @type {boolean[]}
    */

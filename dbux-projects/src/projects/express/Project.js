@@ -117,7 +117,7 @@ export default class ExpressProject extends Project {
         // NOTE: process does not exit
         id: 15,
         testRe: [
-          // 'should set the correct charset for the Content\\-Type',
+          'should set the correct  charset for the Content[-]Type',
           'should default the Content-Type'
         ],
         testFilePaths: ['test/res.format.js'],

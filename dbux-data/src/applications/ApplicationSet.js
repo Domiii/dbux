@@ -15,15 +15,15 @@ export default class ApplicationSet {
     this.allApplications = allApplications;
     this.applicationSetData = new ApplicationSetData(this);
   }
-  
+
   get data() {
     return this.applicationSetData;
   }
-  
+
   // ###########################################################################
   // Bookkeeping
   // ###########################################################################
-  
+
   /**
    * @return {Application[]}
    */
@@ -41,10 +41,19 @@ export default class ApplicationSet {
   isEmpty() {
     return !this._applications.length;
   }
-  
+
   containsApplication(applicationOrIdOrEntryPointPath) {
-    const application = this.allApplications.getApplication(applicationOrIdOrEntryPointPath);
+    const application = this.allApplications.tryGetApplication(applicationOrIdOrEntryPointPath);
     return this._applicationIds.has(application.applicationId);
+  }
+
+  tryGetApplication(applicationOrIdOrEntryPointPath) {
+    const application = this.allApplications.tryGetApplication(applicationOrIdOrEntryPointPath);
+
+    if (this._applicationIds.has(application.applicationId)) {
+      return application;
+    }
+    return null;
   }
 
   getApplication(applicationOrIdOrEntryPointPath) {
@@ -74,7 +83,7 @@ export default class ApplicationSet {
 
     this._applicationIds.delete(application.applicationId);
     pull(this._applications, application);
-    
+
     this._notifyChanged();
   }
 
@@ -92,7 +101,7 @@ export default class ApplicationSet {
     this._applicationIds.add(newApplication.applicationId);
     this._applications.push(newApplication);
 
-    
+
     this._notifyChanged();
   }
 
@@ -131,7 +140,7 @@ export default class ApplicationSet {
     }
     return unsubscribe;
   }
-  
+
   subscribe(...unsubscribeCallbacks) {
     this._unsubscribeCallbacks.push(...unsubscribeCallbacks);
   }

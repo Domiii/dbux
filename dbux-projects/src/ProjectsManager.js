@@ -172,7 +172,7 @@ export default class ProjectsManager {
       const stopwatchEnabled = await this.askForStopwatch();
       bugProgress = this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       
-      this._createPracticeSession(bug);
+      this._resetPracticeSession(bug);
 
       // activate once to show user the bug, don't care about the result
       await this.activateBug(bug);
@@ -180,7 +180,7 @@ export default class ProjectsManager {
       this.bdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
     else {
-      this._createPracticeSession(bug);
+      this._resetPracticeSession(bug);
     }
 
     await this.switchToBug(bug);
@@ -219,13 +219,20 @@ export default class ProjectsManager {
     this._emitter.emit('practiceSessionChanged', dontRefreshView);
   }
 
-  _createPracticeSession(bug, sessionData = EmptyObject, load = false) {
+  _resetPracticeSession(bug, sessionData = EmptyObject, load = false) {
+    // clear applications
+    allApplications.clear();
+
+    // create new PracticeSession
     this.practiceSession = new PracticeSession(bug, this, sessionData);
+
+    // init (+ maybe load) pdp
     this.pdp.init(this.practiceSession.sessionId);
     if (load) {
       this.pdp.load();
     }
 
+    // notify event listeners
     emitPracticeSessionEvent('started', this.practiceSession);
     this._emitter.emit('practiceSessionChanged');
   }
@@ -247,7 +254,7 @@ export default class ProjectsManager {
     }
 
     const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
-    this._createPracticeSession(bug, sessionData, true);
+    this._resetPracticeSession(bug, sessionData, true);
     this.practiceSession.setupStopwatch();
   }
 

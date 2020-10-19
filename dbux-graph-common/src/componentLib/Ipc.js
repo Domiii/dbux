@@ -105,7 +105,7 @@ export default class Ipc {
 
     
     // eslint-disable-next-line no-console
-    console.error(info + commandName, args, err.stack);
+    this.ipcAdapter.onError(info + commandName, args, err.stack);
     this._sendReply('reject', callId, componentId, info + err.message);
   }
 

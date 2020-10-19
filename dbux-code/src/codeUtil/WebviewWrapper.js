@@ -122,9 +122,13 @@ export default class WebviewWrapper {
    * Also plugs into dbux-graph-common's `Ipc` class.
    */
   _buildHostIpcAdapterVsCode(webview) {
-    const ipcAdapter = {
+    return {
       postMessage(msg) {
         webview.postMessage(msg);
+      },
+
+      onError: (...args) => {
+        this.logger.error(...args);
       },
 
       onMessage: ((cb) => {
@@ -162,8 +166,6 @@ export default class WebviewWrapper {
         // eslint-disable-next-line no-extra-bind
       }).bind(this)
     };
-
-    return ipcAdapter;
   }
 
 
