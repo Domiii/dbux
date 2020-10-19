@@ -29,7 +29,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <!--button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button-->
                 <button data-el="prevContextBtn" class="hidden">⇦</button>
                 <button data-el="nextContextBtn" class="hidden">⇨</button>
-                <div class="loc-label">
+                <div class="loc-label" class="gray">
                   <span data-el="locLabel" class="dbux-link"></span>
                   <!--span data-el="parentLocLabel" class="dbux-link"></span-->
                 </div>

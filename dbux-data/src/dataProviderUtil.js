@@ -73,19 +73,34 @@ export default {
   searchContexts(dp, searchTerm) {
     searchTerm = searchTerm.toLowerCase();
 
-    return dp.collections.executionContexts.getAll().filter(context => {
-      if (!context) {
-        return false;
-      }
+    return dp.util.getAllExecutedStaticContexts().
+      filter(staticContext => {
+        return staticContext.displayName.toLowerCase().includes(searchTerm);
+      }).
+      map(staticContext =>
+        dp.indexes.executionContexts.byStaticContext.get(staticContext.staticContextId)
+      ).
+      flat();
+  },
 
-      const { staticContextId } = context;
-      const staticContext = dp.collections.staticContexts.getById(staticContextId);
-      return staticContext.displayName.toLowerCase().includes(searchTerm);
-    });
+  findContextsByTraceSearchTerm(dp, searchTerm) {
+    searchTerm = searchTerm.toLowerCase();
+
+    return dp.util.getAllExecutedStaticContexts().
+      filter(staticContext => {
+        const staticTraces = dp.util.getExecutedStaticTracesInStaticContext(staticContext.staticContextId);
+        return staticTraces.some(staticTrace =>
+          staticTrace.displayName?.toLowerCase().includes(searchTerm)
+        );
+      }).
+      map(staticContext =>
+        dp.indexes.executionContexts.byStaticContext.get(staticContext.staticContextId)
+      ).
+      flat();
   },
 
   // ###########################################################################
-  // static contexts
+  // static contexts + static traces
   // ###########################################################################
 
   /** @param {DataProvider} dp */
@@ -93,6 +108,36 @@ export default {
     const staticContext = dp.collections.staticContexts.getById(staticContextId);
     const { parentId } = staticContext;
     return dp.collections.staticContexts.getById(parentId);
+  },
+
+  getAllExecutedStaticContextIds(dp) {
+    // NOTE: needs improved performance, if used a lot
+    const staticContextIds = new Set(
+      dp.collections.executionContexts.getAll().map(context => {
+        if (!context) {
+          return 0;
+        }
+
+        const { staticContextId } = context;
+        return staticContextId;
+      })
+    );
+    staticContextIds.delete(0);
+    return Array.from(staticContextIds);
+  },
+
+  getAllExecutedStaticContexts(dp) {
+    const staticContextIds = dp.util.getAllExecutedStaticContextIds();
+    return staticContextIds.map(staticContextId =>
+      dp.collections.staticContexts.getById(staticContextId));
+  },
+
+  // getAllExecutedStaticTraces(dp) {
+  //  // TODO: NIY
+  // },
+
+  getExecutedStaticTracesInStaticContext(dp, staticContextId) {
+    return dp.indexes.staticTraces.byContext.get(staticContextId);
   },
 
   // ###########################################################################
@@ -107,6 +152,7 @@ export default {
   // ###########################################################################
   // traces
   // ###########################################################################
+
   /** @param {DataProvider} dp */
   getTraceType(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);

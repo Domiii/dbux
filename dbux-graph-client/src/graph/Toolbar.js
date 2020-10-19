@@ -20,7 +20,8 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Show caller (call trace) of function call" data-el="callModeBtn" class="btn btn-info" href="#">call</button>
           <button title="Show arguments and return value of function call in the form of: (args) -> returnValue" data-el="valueModeBtn" class="btn btn-info" href="#">val</button>
           <button title="Thin mode" data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
-          <button title="Search for contexts by name" data-el="searchBtn" class="btn btn-info" href="#">🔍</button>
+          <button title="Search for contexts by name" data-el="searchContextsBtn" class="btn btn-info" href="#">🔍</button>
+          <button title="Search for traces by name" data-el="searchTracesBtn" class="btn btn-info" href="#">🔍+</button>
         </div>
         <div data-el="moreMenu" class="dropdown">
           <button data-el="moreMenuBtn" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -76,7 +77,8 @@ class Toolbar extends ClientComponentEndpoint {
       thinMode,
       hideOldMode,
       hideNewMode,
-      searchTerm
+      searchTermContexts,
+      searchTermTraces
     } = this.state;
 
     const themeModeName = ThemeMode.getName(this.context.themeMode).toLowerCase();
@@ -103,8 +105,11 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.hideNewRunBtn, {
       active: !hideNewMode
     });
-    decorateClasses(this.els.searchBtn, {
-      active: !!searchTerm
+    decorateClasses(this.els.searchContextsBtn, {
+      active: !!searchTermContexts
+    });
+    decorateClasses(this.els.searchTracesBtn, {
+      active: !!searchTermTraces
     });
     [`navbar-${themeModeName}`, `bg-${themeModeName}`].forEach(mode => this.el.classList.add(mode));
     this.els.thinModeBtn.innerHTML = `${!!thinMode && '||&nbsp;' || '|&nbsp;|'}`;
@@ -220,18 +225,36 @@ class Toolbar extends ClientComponentEndpoint {
       focus(evt) { evt.target.blur(); }
     },
 
-    searchBtn: {
+    searchContextsBtn: {
       async click(evt) {
         evt.preventDefault();
-        if (this.state.searchTerm) {
+        if (this.state.searchTermContexts) {
           // stop searching
           await this.remote.search(null);
         }
         else {
           // start searching
-          const searchTerm = await this.app.prompt('Enter search term');
-          if (searchTerm) {
-            await this.remote.search(searchTerm);
+          const searchTermContexts = await this.app.prompt('Enter CONTEXT search term');
+          if (searchTermContexts) {
+            await this.remote.searchContexts(searchTermContexts);
+          }
+        }
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    searchTracesBtn: {
+      async click(evt) {
+        evt.preventDefault();
+        if (this.state.searchTermTraces) {
+          // stop searching
+          await this.remote.search(null);
+        }
+        else {
+          // start searching
+          const searchTermTraces = await this.app.prompt('Enter TRACE search term');
+          if (searchTermTraces) {
+            await this.remote.searchTraces(searchTermTraces);
           }
         }
       },

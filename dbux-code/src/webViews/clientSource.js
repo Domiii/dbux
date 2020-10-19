@@ -43,6 +43,11 @@ export async function buildWebviewClientHtml(scriptPaths, themePath) {
         postMessage(msg) {
           vscode.postMessage(msg);
         },
+
+        onError(...args) {
+          console.error(...args);
+        },
+
         onMessage(cb) {
           if (messageHandler) {
             // remove previous handler -> only allow one at a time

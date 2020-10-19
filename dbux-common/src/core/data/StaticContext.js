@@ -22,7 +22,11 @@ export default class StaticContext {
    */
   staticContextId;
 
-  // staticId; ???
+  /**
+   * @type {number}
+   * @deprecated Use `staticContextId` instead.
+   */
+  staticId;
   
   /**
    * @type {number}

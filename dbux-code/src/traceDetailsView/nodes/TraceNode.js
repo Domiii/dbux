@@ -11,10 +11,6 @@ export default class TraceNode extends BaseTreeViewNode {
   static makeLabel(trace) {
     return makeTraceLabel(trace);
   }
-  
-  get clickUserActionType() {
-    return UserActionType.TDTraceUse;
-  }
 
   get trace() {
     return this.entry;
@@ -30,6 +26,7 @@ export default class TraceNode extends BaseTreeViewNode {
     // const dt = getTraceCreatedAt(this.trace);
     const loc = makeTraceLocLabel(this.trace);
     this.description = loc;
+    this.clickUserActionType = UserActionType.TDTraceUse;
   }
 
   handleClick() {

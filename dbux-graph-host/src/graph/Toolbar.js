@@ -45,12 +45,21 @@ class Toolbar extends HostComponentEndpoint {
       this.hiddenNodeManager.hideAfter(time);
     },
 
-    search(searchTerm) {
-      this.setState({ searchTerm });
-      
+    searchContexts(searchTermContexts) {
+      this.setState({ searchTermContexts });
+
       const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
-      contextNodeManager.highlightBySearchTerm(searchTerm);
-    }
+      contextNodeManager.highlightBySearchTermContexts(searchTermContexts);
+    },
+
+    searchTraces(searchTermTraces) {
+      this.setState({ searchTermTraces });
+
+      const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
+      contextNodeManager.highlightBySearchTermTraces(searchTermTraces);
+    },
+
+
   }
 }
 

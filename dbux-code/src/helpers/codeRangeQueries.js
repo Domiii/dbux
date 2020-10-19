@@ -75,7 +75,7 @@ export function getTracesAt(application, programId, pos) {
   }
 
   const {
-    staticId: staticContextId
+    staticContextId
   } = staticContext;
 
   const traces = dp.util.getAllTracesOfStaticContext(staticContextId)

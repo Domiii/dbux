@@ -25,7 +25,7 @@ import ContextsByStaticContextIndex from './impl/indexes/ContextsByStaticContext
 import ContextsByRunIndex from './impl/indexes/ContextsByRunIndex';
 import ContextsByCalleeTraceIndex from './impl/indexes/ContextsByCalleeTraceIndex';
 import RootContextsIndex from './impl/indexes/RootContextsIndex';
-import VisitedStaticTracesByFileIndex from './impl/indexes/VisitedStaticTracesByFileIndex';
+import ExecutedStaticTracesByFileIndex from './impl/indexes/ExecutedStaticTracesByFileIndex';
 import ParentTracesInRealContextIndex from './impl/indexes/ParentTracesInRealContextIndex';
 
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
@@ -78,7 +78,7 @@ export function newDataProvider(application) {
 
   // complex indexes (that have dependencies)
   // NOTE: we are currently solving index dependencies by simply adding depdendents after dependees
-  dataProvider.addIndex(new VisitedStaticTracesByFileIndex());
+  dataProvider.addIndex(new ExecutedStaticTracesByFileIndex());
   dataProvider.addIndex(new ParentTracesInRealContextIndex());
 
 
