@@ -1,6 +1,7 @@
 import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/traceLabels';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
@@ -24,7 +25,7 @@ class ContextNode extends HostComponentEndpoint {
     this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
     this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
-    
+
     // add controllers
     this.controllers.createComponent('GraphNode', {});
     this.controllers.createComponent('PopperController');
@@ -95,7 +96,7 @@ class ContextNode extends HostComponentEndpoint {
       const child = dp.indexes.executionContexts.byCalleeTrace.get(callId);
       isSelectedTraceCallRelated = !!callId;
       contextIdOfSelectedCallTrace = child && child[0].contextId;
-    } 
+    }
     if (isSelected) {
       this.expand();
     }
@@ -116,10 +117,12 @@ class ContextNode extends HostComponentEndpoint {
       }
     },
     selectFirstTrace() {
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphTrace, { trace: this.firstTrace });
       traceSelection.selectTrace(this.firstTrace);
     },
     selectParentTrace() {
       if (this.parentTrace) {
+        this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphCallTrace, { trace: this.parentTrace });
         traceSelection.selectTrace(this.parentTrace);
       }
     },

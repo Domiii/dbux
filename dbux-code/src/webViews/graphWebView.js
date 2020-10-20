@@ -5,6 +5,7 @@ import GraphHost from '@dbux/graph-host/src/GraphHost';
 import { goToTrace } from '../codeUtil/codeNav';
 import { getThemeResourcePathUri } from '../resources';
 import RichWebView from './RichWebView';
+import { emitCallGraphAction } from '../userEvents';
 
 const defaultColumn = ViewColumn.Two;
 
@@ -29,7 +30,8 @@ export default class GraphWebView extends RichWebView {
   externals = {
     async goToTrace(trace) {
       await goToTrace(trace);
-    }
+    },
+    emitCallGraphAction
   }
 }
 

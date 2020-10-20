@@ -55,12 +55,18 @@ const iconsByActionGroupType = {
   [ActionGroupType.NavigationPreviousTrace]: 'leftArrow.svg',
   [ActionGroupType.NavigationNextTrace]: 'rightArrow.svg',
   [ActionGroupType.CallGraphSelectTrace]: 'callGraphSelectTrace.svg',
+  [ActionGroupType.CallGraphToggleContextNode]: 'callGraphToggleContextNode.svg',
   [ActionGroupType.CallGraphSearchContexts]: 'callGraphSearchContexts.svg',
   [ActionGroupType.CallGraphSearchTraces]: 'callGraphSearchTraces.svg',
   [ActionGroupType.CallGraphOther]: 'string.svg',
-  [ActionGroupType.Other]: 'string.svg'
+  [ActionGroupType.Other]: 'string.svg',
+  [ActionGroupType.Hidden]: ' ',
+  [ActionGroupType.SessionFinished]: 'end.svg'
 };
 
+/**
+ * Check all type has icon
+ */
 for (const typeName of ActionGroupType.names) {
   if (!iconsByActionGroupType[ActionGroupType[typeName]]) {
     warn(`icon setting of ActionGroupType.${typeName} not found`);

@@ -76,9 +76,6 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
   }
 
   buildObjectNode = (trace) => {
-    const props = {
-      clickUserActionType: UserActionType.TDTrackObjectTraceUse
-    };
-    return this.treeNodeProvider.buildNode(ObjectNode, trace, this, props);
+    return this.treeNodeProvider.buildNode(ObjectNode, trace, this);
   }
 }

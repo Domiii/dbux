@@ -1,3 +1,4 @@
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
@@ -63,6 +64,7 @@ export default class GraphNode extends HostComponentEndpoint {
         // skip "ExpandSubgraph" if there is only one level
         mode = GraphNodeMode.nextValue(mode);
       }
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, this.parentTrace);
       this.setMode(mode);
     },
     reveal: this.reveal
