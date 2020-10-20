@@ -6,7 +6,7 @@ import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
 import { isVirtualContextType } from '@dbux/common/src/core/constants/StaticContextType';
 import { isRealContextType } from '@dbux/common/src/core/constants/ExecutionContextType';
 import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCategorization';
-import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
 
 /**
  * @typedef {import('./RuntimeDataProvider').RuntimeDataProvider} DataProvider
@@ -272,7 +272,7 @@ export default {
     const { value } = trace;
     if (value === undefined) {
       const valueRef = dp.util.getTraceValueRef(traceId);
-      if (!valueRef) {
+      if (!valueRef) { // || valueRef.value === undefined) {
         // TODO: better distinguish between existing and non-existing values
         return false;
       }
@@ -313,6 +313,17 @@ export default {
     return valueRef.value;
   },
 
+  /**
+   * Handle special circumstances.
+   */
+  getTraceValueMessage(dp, traceId) {
+    const valueRef = dp.util.getTraceValueRef(traceId);
+    if (valueRef?.pruneState === ValuePruneState.Omitted) {
+      return `(omitted value)`;
+    }
+    return null;
+  },
+
   /** @param {DataProvider} dp */
   getTraceValueString(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
@@ -320,6 +331,11 @@ export default {
     if (trace._valueString) {
       // already cached
       return trace._valueString;
+    }
+
+    const valueMessage = dp.util.getTraceValueMessage(trace.traceId);
+    if (valueMessage) {
+      return valueMessage;
     }
 
     // get value
