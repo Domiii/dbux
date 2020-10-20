@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "amator": "^1.1.0",
+    "i18next": "^19.8.2",
     "ngraph.events": "^1.2.1",
     "wheel": "^1.0.0"
   },

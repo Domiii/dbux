@@ -10,6 +10,7 @@
     "@dbux/cli": "^0.2.6-dev.0",
     "@dbux/common": "^0.2.6-dev.0",
     "@dbux/data": "^0.2.6-dev.0",
+    "i18next": "^19.8.2",
     "lodash": "^4.17.19",
     "nanoevents": "^2.0.0",
     "node-fetch": "^2.6.0",

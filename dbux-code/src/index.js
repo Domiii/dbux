@@ -18,6 +18,7 @@ import { initPathwaysView } from './webViews/pathwaysWebView';
 import { initWebviewWrapper } from './codeUtil/WebviewWrapper';
 import { installDbuxDependencies, initInstallUtil } from './codeUtil/installUtil';
 import { maybeStartSurvey1ForTheFirstTime } from './dialogs/dialogController';
+import initLang from './lang';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-code');
@@ -78,6 +79,7 @@ async function activate(context) {
     await initGraphView();
     await initPathwaysView();
 
+    await initLang('zh');
     await maybeStartSurvey1ForTheFirstTime();
   } catch (e) {
     logError('error in \'activate\'', e.stack);

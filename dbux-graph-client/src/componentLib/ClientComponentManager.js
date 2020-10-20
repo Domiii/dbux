@@ -1,6 +1,7 @@
 import BaseComponentManager from '@dbux/graph-common/src/componentLib/BaseComponentManager';
 import { onLogError } from '@dbux/common/src/log/logger';
 import ClientComponentEndpoint from './ClientComponentEndpoint';
+import initLang from '../lang';
 
 // import shared styles
 import '../styles.css';
@@ -163,7 +164,8 @@ let componentManager;
 
 // window._graphInstance = 0;
 
-export function startDbuxComponents(componentRegistry, ipcAdapter) {
+export async function startDbuxComponents(componentRegistry, ipcAdapter) {
+  await initLang('zh');
   // console.log('Client started', ++window._graphInstance);
 
   // const r = Math.random();

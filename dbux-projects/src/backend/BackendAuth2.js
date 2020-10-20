@@ -1,7 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import { makeLoginController } from './LoginController';
 import { fetchGET } from '../util/fetch';
-import { result } from 'lodash';
+import { translate } from '../lang';
 
 /** @typedef {import('./BackendController').default} BackendController */
 
@@ -132,7 +132,7 @@ export default class BackendAuth {
     }
 
     debug("Login finished.");
-    this.backendController.practiceManager.externals.showMessage.info('Login successed.');
+    this.backendController.practiceManager.externals.showMessage.info(translate('backend.loginSuccess'));
   }
 
   logout() {
