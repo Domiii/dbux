@@ -193,10 +193,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
       firstTraceId
     };
 
-    // end of previous step
-    const previousStep = this.collections.steps.getLast();
-    previousStep && (previousStep.endTime = step.createdAt);
-
     this.addData({ steps: [step] });
     return step;
   }
@@ -217,10 +213,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
       createdAt,
       type: groupType
     };
-
-    // end of previous group
-    const previousGroup = this.collections.actionGroups.getLast();
-    previousGroup && (previousGroup.endTime = step.createdAt);
 
     this.addData({ actionGroups: [group] });
     return group;
@@ -262,10 +254,6 @@ export default class PathwaysDataProvider extends DataProviderBase {
       actionGroup = this.addNewGroup(step, action);
     }
     action.groupId = actionGroup.id;
-
-    // end of previous action
-    const previousAction = this.collections.userActions.getLast();
-    previousAction && (previousAction.endTime = action.createdAt);
 
     // add action
     this.addData({ userActions: [action] });
