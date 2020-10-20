@@ -106,7 +106,7 @@ class DebugWithoutDbuxNode extends SessionNode {
       await showInformationMessage('Currently busy, please wait');
     }
     else {
-      await this.controller.activate({ debugMode: true });
+      await this.controller.activate({ debugMode: true, dbuxEnabled: false });
     }
   }
 }
