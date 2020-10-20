@@ -4,10 +4,11 @@ import enTranslation from './en';
 import zhTranslation from './zh';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('programVisitor');
+const { log, debug, warn, error: logError } = newLogger('Lang@Project');
 
 async function _init(lng) {
   try {
+    debug(zhTranslation);
     await i18next.init({
       debug: true,
       fallbackLng: 'en',
@@ -17,7 +18,7 @@ async function _init(lng) {
           translation: enTranslation,
         },
         zh: {
-          translation: zhTranslation,
+          translation: { backend: { loginSuccess: '登入成功。' } },
         },
       },
     });
