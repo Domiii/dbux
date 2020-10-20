@@ -44,7 +44,7 @@ export default class ApplicationSet {
 
   containsApplication(applicationOrIdOrEntryPointPath) {
     const application = this.allApplications.tryGetApplication(applicationOrIdOrEntryPointPath);
-    return this._applicationIds.has(application.applicationId);
+    return application && this._applicationIds.has(application.applicationId) || false;
   }
 
   tryGetApplication(applicationOrIdOrEntryPointPath) {
