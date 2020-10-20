@@ -10,7 +10,7 @@ class PathwaysAction extends ClientComponentEndpoint {
     } = this.state;
 
     return compileHtmlElement(/*html*/`<div style="border: 1px solid blue;">
-      <image width="16px" data-el="icon" src="${iconUri}">
+      <img width="16px" data-el="icon" src="${iconUri}">
       <div class="flex-row" data-mount="PathwaysAction"></div>
     </div>`);
   }
