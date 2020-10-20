@@ -84,9 +84,9 @@ class RunNode extends SessionNode {
   }
 }
 
-class DebugNode extends SessionNode {
+class DebugWithoutDbuxNode extends SessionNode {
   static makeLabel() {
-    return 'Debug';
+    return 'Debug without Dbux';
   }
 
   init() {
@@ -106,7 +106,7 @@ class DebugNode extends SessionNode {
       await showInformationMessage('Currently busy, please wait');
     }
     else {
-      await this.controller.activate({ debugMode: true });
+      await this.controller.activate({ debugMode: true, dbuxEnabled: false });
     }
   }
 }
@@ -193,7 +193,7 @@ export const ActionNodeClasses = [
   ShowEntryNode,
   RunNode,
   RunWithoutDbuxNode,
-  DebugNode,
+  DebugWithoutDbuxNode,
   TagNode,
   StopPracticeNode
 ];

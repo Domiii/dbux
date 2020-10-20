@@ -196,7 +196,7 @@ export default class Client {
   // ###########################################################################
 
   _connect() {
-    debugger;
+    // debugger;
     const socket = this._socket = io.connect(Remote, {
       // jsonp: false,
       // forceNode: true,

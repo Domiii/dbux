@@ -187,7 +187,7 @@ export class ProjectViewController {
     }
   }
 
-  async activate(debugMode) {
+  async activate(inputCfg) {
     showOutputChannel();
 
     const { bug } = this.manager.practiceSession;
@@ -202,7 +202,7 @@ export class ProjectViewController {
       await this.checkActivateBugRequirement();
 
       progress.report({ message: 'running test...' });
-      await this.manager.activate(debugMode);
+      await this.manager.activate(inputCfg);
     }, options);
   }
 
