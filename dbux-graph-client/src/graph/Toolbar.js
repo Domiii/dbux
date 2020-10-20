@@ -230,7 +230,7 @@ class Toolbar extends ClientComponentEndpoint {
         evt.preventDefault();
         if (this.state.searchTermContexts) {
           // stop searching
-          await this.remote.search(null);
+          await this.remote.searchContexts(null);
         }
         else {
           // start searching
@@ -248,7 +248,7 @@ class Toolbar extends ClientComponentEndpoint {
         evt.preventDefault();
         if (this.state.searchTermTraces) {
           // stop searching
-          await this.remote.search(null);
+          await this.remote.searchTraces(null);
         }
         else {
           // start searching

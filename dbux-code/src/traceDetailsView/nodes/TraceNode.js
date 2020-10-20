@@ -5,6 +5,10 @@ import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 
 export default class TraceNode extends BaseTreeViewNode {
+  get clickUserActionType() {
+    return UserActionType.TDTraceUse;
+  }
+
   /**
    * @param {Trace} 
    */
@@ -26,7 +30,6 @@ export default class TraceNode extends BaseTreeViewNode {
     // const dt = getTraceCreatedAt(this.trace);
     const loc = makeTraceLocLabel(this.trace);
     this.description = loc;
-    this.clickUserActionType = UserActionType.TDTraceUse;
   }
 
   handleClick() {

@@ -43,10 +43,10 @@ let UserActionType = {
   NavigationNextTrace: 49,
 
   CallGraphOther: 100,
-  CallGraphSetting: 101,
-  CallGraphSearch: 102,
-  CallGraphNodeCollapseChange: 103,
-  CallGraphTrace: 104,
+  CallGraphSearchContexts: 102,
+  CallGraphSearchTraces: 103,
+  CallGraphNodeCollapseChange: 104,
+  CallGraphTrace: 105,
   CallGraphCallTrace: 106,
 
   SessionFinished: 110

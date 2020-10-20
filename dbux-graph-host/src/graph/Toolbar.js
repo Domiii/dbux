@@ -1,3 +1,4 @@
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class Toolbar extends HostComponentEndpoint {
@@ -48,12 +49,16 @@ class Toolbar extends HostComponentEndpoint {
     searchContexts(searchTermContexts) {
       this.setState({ searchTermContexts });
 
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchContexts, { searchTerm: searchTermContexts });
+
       const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
       contextNodeManager.highlightBySearchTermContexts(searchTermContexts);
     },
 
     searchTraces(searchTermTraces) {
       this.setState({ searchTermTraces });
+
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphSearchTraces, { searchTerm: searchTermTraces });
 
       const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
       contextNodeManager.highlightBySearchTermTraces(searchTermTraces);

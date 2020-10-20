@@ -15,7 +15,7 @@ let ActionGroupType = {
    * any other trace node
    */
   TDTrace: 30,
-  
+
   NavigationPreviousInContext: 40,
   NavigationPreviousChildContext: 41,
   NavigationPreviousParentContext: 42,
@@ -28,17 +28,16 @@ let ActionGroupType = {
   NavigationNextTrace: 49,
 
   CallGraphSelectTrace: 20,
-  CallGraphToggleNode: 21,
+  CallGraphToggleContextNode: 21,
   CallGraphSearchContexts: 22,
   CallGraphSearchTraces: 23,
-  CallGraphTrace: 24,
   CallGraphOther: 25,
 
-  
+
   // gear icon?
   Other: 50,
-  
-  Hidden: 60, 
+
+  Hidden: 60,
 
   SessionFinished: 70
 };
@@ -67,11 +66,11 @@ const groupByType = {
   [UserActionType.NavigationPreviousTrace]: ActionGroupType.NavigationPreviousTrace,
   [UserActionType.NavigationNextTrace]: ActionGroupType.NavigationNextTrace,
   [UserActionType.CallGraphOther]: ActionGroupType.CallGraphOther,
-  [UserActionType.CallGraphSetting]: ActionGroupType.CallGraphOther,
-  [UserActionType.CallGraphSearch]: ActionGroupType.CallGraphSearch,
-  [UserActionType.CallGraphNodeCollapseChange]: ActionGroupType.CallGraphOther,
-  [UserActionType.CallGraphTrace]: ActionGroupType.CallGraphTrace,
-  [UserActionType.CallGraphCallTrace]: ActionGroupType.CallGraphTrace,
+  [UserActionType.CallGraphSearchContexts]: ActionGroupType.CallGraphSearchContexts,
+  [UserActionType.CallGraphSearchTraces]: ActionGroupType.CallGraphSearchTraces,
+  [UserActionType.CallGraphNodeCollapseChange]: ActionGroupType.CallGraphToggleContextNode,
+  [UserActionType.CallGraphTrace]: ActionGroupType.CallGraphSelectTrace,
+  [UserActionType.CallGraphCallTrace]: ActionGroupType.CallGraphSelectTrace,
   [UserActionType.SessionFinished]: ActionGroupType.SessionFinished
 };
 

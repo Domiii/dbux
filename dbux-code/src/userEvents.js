@@ -78,8 +78,8 @@ export function emitTreeViewCollapseChangeAction(treeViewName, action, nodeId, n
   });
 }
 
-export function emitCallGraphAction(data) {
-  emitUserEvent(UserActionType.CallGraphEvent, data);
+export function emitCallGraphAction(evtType, data) {
+  emitUserEvent(evtType, data);
 }
 
 // ###########################################################################
