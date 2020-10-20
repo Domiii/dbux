@@ -278,8 +278,8 @@ export default class ProjectsManager {
   // PracticeSession: util
   // ########################################
 
-  async activate(debugMode) {
-    await this.practiceSession.activate(debugMode);
+  async activate(inputCfg) {
+    await this.practiceSession.activate(inputCfg);
   }
 
   onPracticeSessionChanged(cb) {
