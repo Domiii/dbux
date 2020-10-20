@@ -83,6 +83,9 @@ class ValueCollection extends Collection {
   _trackValue(value, valueRef) {
     let tracked = this.trackedValues.get(value);
     if (!tracked) {
+      // if (value === undefined) {
+      //   this.logger.warn(new Error(`Tried to track value but is undefined`).stack);
+      // }
       this.trackedValues.set(value, tracked = new TrackedValue(value));
     }
     tracked.addRef(valueRef);

@@ -1,10 +1,10 @@
-function ouch() {
-  throw new Error('ouch!');
+function ouch(x) {
+  throw new Error('ouch! ' + x);
 }
 
-function main1() {
-  console.log('[main1]', 'start');
-  ouch();
+function main1(x) {
+  console.log('[main1]', 'start', x);
+  ouch(x);
   console.log('[main1]', 'end');
 }
 
@@ -14,7 +14,7 @@ function main2() {
 }
 
 try {
-  main1();
+  main1(1);
 }
 catch (err) { }
 

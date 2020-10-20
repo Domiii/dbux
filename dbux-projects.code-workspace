@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "samples"
+		},
+		{
+			"path": "dbux_projects/eslint"
 		}
 	],
 	"settings": {

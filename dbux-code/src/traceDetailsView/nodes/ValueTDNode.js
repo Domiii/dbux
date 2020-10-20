@@ -15,20 +15,26 @@ export default class ValueTDNode extends BaseTreeViewNode {
   static makeProperties(trace/* , parent, detail */) {
     const dp = allApplications.getById(trace.applicationId).dataProvider;
     const value = dp.util.getTraceValue(trace.traceId);
+    const valueMessage = dp.util.getTraceValueMessage(trace.traceId);
     const hasValue = dp.util.doesTraceHaveValue(trace.traceId);
     const hasChildren = dp.util.isTracePlainObjectOrArrayValue(trace.traceId) && !isEmpty(value);
 
     return {
       value,
+      valueMessage,
       hasValue,
       hasChildren
     };
   }
 
-  static makeLabel(trace, parent, { value, hasValue, hasChildren }) {
+  static makeLabel(trace, parent, { value, valueMessage, hasValue, hasChildren }) {
     const dp = allApplications.getById(trace.applicationId).dataProvider;
     const traceType = dp.util.getTraceType(trace.traceId);
+    if (valueMessage) {
+      return valueMessage;
+    }
     if (!hasValue) {
+      // TODO: move to valueMessage
       return '(no value or undefined)';
     }
     if (isTraceExpression(traceType) && !hasChildren) {

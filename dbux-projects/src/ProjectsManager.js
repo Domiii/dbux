@@ -428,17 +428,18 @@ export default class ProjectsManager {
   }
 
   async runTest(bug, inputCfg) {
-    // NOTE: --enable-source-maps gets super slow in production mode for some reason
+    // TODO: make this configurable
     // NOTE2: nolazy is required for proper breakpoints in debug mode
-    // const enableSourceMaps = '--enable-source-maps';
     const { debugMode = false, dbuxEnabled = true } = inputCfg;
-    const enableSourceMaps = '';
+    
+    // NOTE: --enable-source-maps gets super slow in production mode for some reason
+    const enableSourceMaps = '--enable-source-maps';
+    // const enableSourceMaps = '';
     const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${enableSourceMaps}`;
     const cfg = {
       debugMode,
       nodeArgs,
       dbuxArgs: dbuxEnabled ? '--verbose=1' : '--dontInjectDbux',
-      // nodeArgs: '--enable-source-maps' // TODO: make this configurable
     };
 
     const result = await this.runner.testBug(bug, cfg);
