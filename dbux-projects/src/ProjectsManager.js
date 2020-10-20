@@ -171,7 +171,7 @@ export default class ProjectsManager {
     if (!bugProgress) {
       const stopwatchEnabled = await this.askForStopwatch();
       bugProgress = this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
-      
+
       this._resetPracticeSession(bug);
 
       // activate once to show user the bug, don't care about the result
@@ -430,12 +430,16 @@ export default class ProjectsManager {
   async runTest(bug, inputCfg) {
     // TODO: make this configurable
     // NOTE2: nolazy is required for proper breakpoints in debug mode
-    const { debugMode = false, dbuxEnabled = true } = inputCfg;
-    
-    // NOTE: --enable-source-maps gets super slow in production mode for some reason
-    const enableSourceMaps = '--enable-source-maps';
+    const { debugMode = false, dbuxEnabled = true, enableSourceMaps = true } = inputCfg;
+
+    // WARN: --enable-source-maps sometimes gets super slow in production mode for some reason
+    // NOTE: only supported in Node 12.12+
+    const nodeEnableSourceMaps = (enableSourceMaps &&
+      (!bug.project.nodeVersion || parseFloat(bug.project.nodeVersion) > 12.12)
+    ) ? '--enable-source-maps' : '';
+
     // const enableSourceMaps = '';
-    const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${enableSourceMaps}`;
+    const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${nodeEnableSourceMaps}`;
     const cfg = {
       debugMode,
       nodeArgs,

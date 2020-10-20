@@ -730,10 +730,16 @@ function instrumentPath(direction, instrumentor, path, state, cfg) {
   // actual instrumentation
   const { extraCfg } = cfg;
   if (extraCfg?.array) {
-    // path is an array?
-    for (const p of path) {
-      // const originalPath =
-      instrumentor(p, state);
+    if (!Array.isArray(path)) {
+      warn(`Instrumenting path that should be (but is not) array: ${path.toString()} (${path.node.type})`);
+      instrumentor(path, state);
+    }
+    else {
+      // path is an array
+      for (const p of path) {
+        // const originalPath =
+        instrumentor(p, state);
+      }
     }
   }
   else {
