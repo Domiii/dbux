@@ -153,15 +153,17 @@ const survey1 = {
     waitToStart: {
       start: true,
       kind: DialogNodeKind.Message,
-      async enter(graphState, stack, { waitAtMost }) {
+      async enter(graphState, stack, { waitAtMost, goTo }) {
         const waitDelay = 1 * 60 * 60;
         const projectManager = getOrCreateProjectManager();
         const firstBug = projectManager.projects.getByName('express').getOrLoadBugs().getAt(0);
-        return Promise.race([
+        await Promise.race([
           waitForBugSolved(firstBug),
           waitAtMost(waitDelay),
           waitForPracticeSessionStop()
         ]);
+
+        goTo('start');
       },
       async text() {
         return `Can we ask you 5 short questions (related to Debugging and/or your first impressions of Dbux)?`;

@@ -101,7 +101,7 @@ export class Dialog {
         // handle goTo passed to enter
         nextState = this._gotoState;
         edgeLabel = null;
-        this.gotoState = null;
+        this._gotoState = null;
       }
       else {
         const edgeData = await NodeClass.render(this, node);
@@ -110,8 +110,16 @@ export class Dialog {
         }
         if (edgeData) {
           await edgeData.edge.click?.(...this._getUserCbArguments(node));
-          nextState = await this.maybeGetByFunction(edgeData.edge.node, node) || nodeName;
-          edgeLabel = edgeData.edgeLabel;
+          if (this._gotoState) {
+            // handle goTo passed to enter
+            nextState = this._gotoState;
+            edgeLabel = null;
+            this._gotoState = null;
+          }
+          else {
+            nextState = await this.maybeGetByFunction(edgeData.edge.node, node) || nodeName;
+            edgeLabel = edgeData.edgeLabel;
+          }
         }
         else {
           nextState = null;

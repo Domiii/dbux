@@ -1,5 +1,6 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { shouldClumpTogether, getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import TestRun from './TestRun';
 
@@ -7,6 +8,26 @@ import TestRun from './TestRun';
 /** @typedef {import('./PathwaysDataProvider').default} PathwaysDataProvider */
 
 export default {
+  // ###########################################################################
+  // status
+  // ###########################################################################
+
+  /**
+   * @param {PathwaysDataProvider} pdp
+   */
+  hasSessionFinished(pdp) {
+    const lastAction = pdp.collections.actions.getLast();
+    return lastAction && UserActionType.is.SessionFinished(lastAction.type);
+  },
+
+  getSessionEndTime(pdp) {
+    if (pdp.util.hasSessionFinished()) {
+      const lastAction = pdp.util.getLastAction();
+      return lastAction.createdAt;
+    }
+    return null;
+  },
+
   // ###########################################################################
   // get helper
   // ###########################################################################
@@ -66,17 +87,28 @@ export default {
   },
 
   getLastAction(pdp) {
-    return pdp.collections.actionGroups.getLast();
+    return pdp.collections.actions.getLast();
   },
 
   getActionTimeSpent(pdp, actionId) {
     const action = pdp.collections.actions.getById(actionId);
-    if (action.endTime) {
-      return action.endTime - action.createdAt;
+    const endTime = pdp.util.getActionEndTime(actionId);
+    if (endTime) {
+      return endTime - action.createdAt;
     }
     return Date.now() - action.createdAt;
   },
 
+  getActionEndTime(pdp, actionId) {
+    const nextAction = pdp.util.getNextAction(actionId);
+    if (nextAction) {
+      return nextAction.createdAt;
+    }
+    else if (pdp.util.hasSessionFinished()) {
+      return pdp.util.getSessionEndTime();
+    }
+    return null;
+  },
 
   // ###########################################################################
   // actionGroup
@@ -98,10 +130,22 @@ export default {
 
   getActionGroupTimeSpent(pdp, actionGroupId) {
     const actionGroup = pdp.collections.actionGroups.getById(actionGroupId);
-    if (actionGroup.endTime) {
-      return actionGroup.endTime - actionGroup.createdAt;
+    const endTime = pdp.util.getActionGroupEndTime(actionGroupId);
+    if (endTime) {
+      return endTime - actionGroup.createdAt;
     }
     return Date.now() - actionGroup.createdAt;
+  },
+
+  getActionGroupEndTime(pdp, actionGroupId) {
+    const nextActionGroup = pdp.util.getNextActionGroup(actionGroupId);
+    if (nextActionGroup) {
+      return nextActionGroup.createdAt;
+    }
+    else if (pdp.util.hasSessionFinished()) {
+      return pdp.util.getSessionEndTime();
+    }
+    return null;
   },
 
   shouldClumpNextActionIntoGroup(pdp, action, group) {
@@ -129,17 +173,23 @@ export default {
 
   getStepTimeSpent(pdp, stepId) {
     const step = pdp.collections.steps.getById(stepId);
-    // const nextStep = pdp.util.getNextStep(stepId);
-    // if (nextStep) {
-    //   return nextStep.createdAt - step.createdAt;
-    // }
-    if (step.endTime) {
-      return step.endTime - step.createdAt;
+    const endTime = pdp.util.getStepEndTime(stepId);
+    if (endTime) {
+      return endTime - step.createdAt;
     }
     return Date.now() - step.createdAt;
   },
 
-
+  getStepEndTime(pdp, stepId) {
+    const nextStep = pdp.util.getNextStep(stepId);
+    if (nextStep) {
+      return nextStep.createdAt;
+    }
+    else if (pdp.util.hasSessionFinished()) {
+      return pdp.util.getSessionEndTime();
+    }
+    return null;
+  },
 
   // ###########################################################################
   // code chunks + functions

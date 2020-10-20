@@ -6,9 +6,12 @@
  *  have the time yet to properly separate them again. That is why there is also some context instrumentation in this file
  */
 
+import cloneDeep from 'lodash/cloneDeep';
+import merge from 'lodash/merge';
 import Enum from '@dbux/common/src/util/Enum';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import truncate from 'lodash/truncate';
 import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
 // import { loopVisitor } from './loopVisitors';
@@ -165,7 +168,7 @@ const traceCfg = (() => {
     // object initializer, e.g. rhs of `var o = { x: 1 }` (kind = 'init')
     ObjectExpression: [
       NoTrace,
-      [['properties',
+      [['properties', NoTrace, 
         [['value', ExpressionValue]]
       ]]
     ],
@@ -345,11 +348,6 @@ function normalizeConfigNode(parentCfg, visitorName, cfgNode) {
     extraCfg.include = new Set(extraCfg.include);
   }
   
-  if (Array.isArray(instrumentationType)) {
-    children = instrumentationType;
-    instrumentationType = undefined;
-  }
-
   cfgNode = {
     visitorName,
     instrumentationType,
@@ -680,11 +678,9 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
     if (direction === InstrumentationDirection.Enter) {
       // store config override on enter
       if (extraCfg) {
-        if (path.getData('visitorCfg')) {
-          // ideally, there should not be such a conflict
-          logError('config override at path - old:', path.getData('visitorCfg'), ', new:', extraCfg);
-        }
-        path.setData('visitorCfg', extraCfg);
+        let existedCfg = cloneDeep(path.getData('visitorCfg')) || EmptyObject;
+        merge(existedCfg, extraCfg);
+        path.setData('visitorCfg', existedCfg);
       }
     }
   }

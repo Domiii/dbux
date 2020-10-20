@@ -34,14 +34,16 @@ let ActionGroupType = {
   CallGraphTrace: 24,
   CallGraphOther: 25,
 
+  
   // gear icon?
   Other: 50,
+  
+  Hidden: 60, 
 
-  Hidden: 60
+  SessionFinished: 70
 };
 
 ActionGroupType = new Enum(ActionGroupType);
-
 
 const groupByType = {
   [UserActionType.EditorEvent]: ActionGroupType.Hidden,
@@ -69,7 +71,8 @@ const groupByType = {
   [UserActionType.CallGraphSearch]: ActionGroupType.CallGraphSearch,
   [UserActionType.CallGraphNodeCollapseChange]: ActionGroupType.CallGraphOther,
   [UserActionType.CallGraphTrace]: ActionGroupType.CallGraphTrace,
-  [UserActionType.CallGraphCallTrace]: ActionGroupType.CallGraphTrace
+  [UserActionType.CallGraphCallTrace]: ActionGroupType.CallGraphTrace,
+  [UserActionType.SessionFinished]: ActionGroupType.SessionFinished
 };
 
 export function getGroupTypeByActionType(actionType) {
