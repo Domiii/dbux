@@ -84,9 +84,9 @@ class RunNode extends SessionNode {
   }
 }
 
-class DebugNode extends SessionNode {
+class DebugWithoutDbuxNode extends SessionNode {
   static makeLabel() {
-    return 'Debug';
+    return 'Debug without Dbux';
   }
 
   init() {
@@ -193,7 +193,7 @@ export const ActionNodeClasses = [
   ShowEntryNode,
   RunNode,
   RunWithoutDbuxNode,
-  DebugNode,
+  DebugWithoutDbuxNode,
   TagNode,
   StopPracticeNode
 ];
