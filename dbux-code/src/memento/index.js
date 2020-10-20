@@ -17,9 +17,7 @@ export async function set(key, value) {
 }
 
 export async function clearAll() {
-  for (const key of getAllMementoKeys()) {
-    await set(key, undefined);
-  }
+  return Promise.all(getAllMementoKeys().map(key => set(key, undefined)));
 }
 
 export function getAllMementoKeys() {
