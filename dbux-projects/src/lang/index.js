@@ -6,10 +6,12 @@ import zhTranslation from './zh';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Lang@Project');
 
+let i18nextInstance;
 async function _init(lng) {
   try {
-    debug(zhTranslation);
-    await i18next.init({
+    i18nextInstance = i18next.createInstance();
+
+    await i18nextInstance.init({
       debug: true,
       fallbackLng: 'en',
       lng,
@@ -18,7 +20,7 @@ async function _init(lng) {
           translation: enTranslation,
         },
         zh: {
-          translation: { backend: { loginSuccess: '登入成功。' } },
+          translation: zhTranslation,
         },
       },
     });
@@ -38,5 +40,5 @@ export default async function (lang) {
 }
 
 export function translate(key) {
-  return i18next.t(key);
+  return i18nextInstance.t(key);
 }

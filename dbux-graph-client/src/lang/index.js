@@ -6,9 +6,12 @@ import zhTranslation from './zh';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Lang@Graph-client');
 
+let i18nextInstance;
 async function _init(lng) {
   try {
-    await i18next.init({
+    i18nextInstance = i18next.createInstance();
+
+    await i18nextInstance.init({
       debug: true,
       fallbackLng: 'en',
       lng,
@@ -37,5 +40,5 @@ export default async function (lang) {
 }
 
 export function translate(key) {
-  return i18next.t(key);
+  return i18nextInstance.t(key);
 }
