@@ -16,7 +16,7 @@ export default {
    * @param {PathwaysDataProvider} pdp
    */
   hasSessionFinished(pdp) {
-    const lastAction = pdp.collections.actions.getLast();
+    const lastAction = pdp.collections.userActions.getLast();
     return lastAction && UserActionType.is.SessionFinished(lastAction.type);
   },
 
@@ -77,21 +77,21 @@ export default {
   // ###########################################################################
 
   getPreviousAction(pdp, actionId) {
-    const previousAction = pdp.collections.actions.getById(actionId - 1);
+    const previousAction = pdp.collections.userActions.getById(actionId - 1);
     return previousAction;
   },
 
   getNextAction(pdp, actionId) {
-    const nextAction = pdp.collections.actions.getById(actionId + 1);
+    const nextAction = pdp.collections.userActions.getById(actionId + 1);
     return nextAction;
   },
 
   getLastAction(pdp) {
-    return pdp.collections.actions.getLast();
+    return pdp.collections.userActions.getLast();
   },
 
   getActionTimeSpent(pdp, actionId) {
-    const action = pdp.collections.actions.getById(actionId);
+    const action = pdp.collections.userActions.getById(actionId);
     const endTime = pdp.util.getActionEndTime(actionId);
     if (endTime) {
       return endTime - action.createdAt;
@@ -126,6 +126,10 @@ export default {
 
   getLastActionGroup(pdp) {
     return pdp.collections.actionGroups.getLast();
+  },
+
+  getActionGroupAction(pdp, actionGroupId) {
+    return pdp.indexes.userActions.byGroup.getFirst(actionGroupId);
   },
 
   getActionGroupTimeSpent(pdp, actionGroupId) {
@@ -169,6 +173,10 @@ export default {
 
   getLastStep(pdp) {
     return pdp.collections.steps.getLast();
+  },
+
+  getStepAction(pdp, stepId) {
+    return pdp.indexes.userActions.byStep.getFirst(stepId);
   },
 
   getStepTimeSpent(pdp, stepId) {

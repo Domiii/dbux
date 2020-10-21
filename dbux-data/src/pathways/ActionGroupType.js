@@ -1,6 +1,9 @@
+import { newLogger } from '@dbux/common/src/log/logger';
 import Enum from '@dbux/common/src/util/Enum';
 import UserActionType from './UserActionType';
 
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('StepType');
 
 // eslint-disable-next-line import/no-mutable-exports
 let ActionGroupType = {
@@ -44,7 +47,7 @@ let ActionGroupType = {
 
 ActionGroupType = new Enum(ActionGroupType);
 
-const groupByType = {
+const groupByActionType = {
   [UserActionType.EditorEvent]: ActionGroupType.Hidden,
   [UserActionType.SelectTrace]: ActionGroupType.SelectTrace,
   [UserActionType.TagTrace]: ActionGroupType.TagTrace,
@@ -65,17 +68,27 @@ const groupByType = {
   [UserActionType.NavigationNextStaticTrace]: ActionGroupType.NavigationNextStaticTrace,
   [UserActionType.NavigationPreviousTrace]: ActionGroupType.NavigationPreviousTrace,
   [UserActionType.NavigationNextTrace]: ActionGroupType.NavigationNextTrace,
+
   [UserActionType.CallGraphOther]: ActionGroupType.CallGraphOther,
   [UserActionType.CallGraphSearchContexts]: ActionGroupType.CallGraphSearchContexts,
   [UserActionType.CallGraphSearchTraces]: ActionGroupType.CallGraphSearchTraces,
   [UserActionType.CallGraphNodeCollapseChange]: ActionGroupType.CallGraphToggleContextNode,
   [UserActionType.CallGraphTrace]: ActionGroupType.CallGraphSelectTrace,
   [UserActionType.CallGraphCallTrace]: ActionGroupType.CallGraphSelectTrace,
+
   [UserActionType.SessionFinished]: ActionGroupType.SessionFinished
 };
 
+// make sure, every ActionType is accounted for
+const missingActions = UserActionType.values.filter(action => !(action in groupByActionType));
+if (missingActions.length) {
+  const missingStr = missingActions.map(action => UserActionType.nameFrom(action)).join(', ');
+  warn(`Missing UserActionTypes in groupByActionType: ${missingStr}`);
+}
+
+
 export function getGroupTypeByActionType(actionType) {
-  return groupByType[actionType] || ActionGroupType.Other;
+  return groupByActionType[actionType] || ActionGroupType.Other;
 }
 
 const clumpedGroups = new Array(ActionGroupType.getValueMaxIndex()).map(() => false);

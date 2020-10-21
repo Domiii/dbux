@@ -7,11 +7,13 @@ import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import { getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
+import StepType, { getStepTypeByActionType } from '@dbux/data/src/pathways/StepType';
 import PathwaysDataUtil from './pathwaysDataUtil';
 import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
+import UserActionsByGroupIndex from './indexes/UserActionsByGroupIndex';
 import TestRun from './TestRun';
 
 import { emitNewTestRun } from '../userEvents';
@@ -136,6 +138,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addIndex(new UserActionByBugIdIndex());
     this.addIndex(new UserActionByTypeIndex());
     this.addIndex(new UserActionsByStepIndex());
+    this.addIndex(new UserActionsByGroupIndex());
   }
 
   // ###########################################################################
@@ -174,10 +177,12 @@ export default class PathwaysDataProvider extends DataProviderBase {
     const {
       sessionId,
       bugId,
+      type: actionType,
       createdAt,
       trace
     } = firstAction;
 
+    const type = getStepTypeByActionType(actionType);
     const contextId = trace?.contextId;
     const firstTraceId = trace?.traceId;
 
@@ -186,6 +191,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
       bugId,
       createdAt,
 
+      type,
       applicationId,
       staticContextId,
       contextId,
@@ -203,13 +209,15 @@ export default class PathwaysDataProvider extends DataProviderBase {
     // const { id: actionId } = firstAction;
     const {
       createdAt,
-      type: actionType
+      type: actionType,
+      searchTerm
     } = firstAction;
-    
+
     const groupType = getGroupTypeByActionType(actionType);
 
     const group = {
       stepId,
+      searchTerm,
       createdAt,
       type: groupType
     };
@@ -225,19 +233,29 @@ export default class PathwaysDataProvider extends DataProviderBase {
     const staticContextIds = this.util.getActionStaticContextId(action);
     const lastStep = this.collections.steps.getLast();
     const lastActionGroup = this.collections.actionGroups.getLast();
+    const lastStepType = lastStep?.type || StepType.None;
+    const lastStaticContextId = lastStep?.staticContextId || 0;
+    const lastApplicationId = lastStep?.applicationId || 0;
 
+    const {
+      type: actionType
+    } = action;
     const {
       applicationId = 0,
       staticContextId = 0,
     } = staticContextIds || EmptyObject;
-    const lastStaticContextId = lastStep?.staticContextId || 0;
-    const lastApplicationId = lastStep?.applicationId || 0;
 
     // step
     let step = lastStep;
-    if (!step || action.newStep || 
-      (applicationId && applicationId !== lastApplicationId) ||
-        (staticContextId && staticContextId !== lastStaticContextId)) {
+    const stepType = getStepTypeByActionType(actionType);
+    if (!lastStep ||
+      action.newStep ||
+      (stepType && lastStepType && stepType !== lastStepType) ||
+      ((stepType === StepType.Trace) && (
+        (applicationId && applicationId !== lastApplicationId) ||
+        (staticContextId && staticContextId !== lastStaticContextId)
+      ))
+    ) {
       // create new step
       // let step = this.stepsByStaticContextId.get(staticContextId);
       // if (!step) {
@@ -270,7 +288,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
   init(sessionId) {
     this.sessionId = sessionId;
     this.logFilePath = path.join(this.logFolderPath, `${sessionId}.dbuxlog`);
-    
+
     this.reset();
   }
 

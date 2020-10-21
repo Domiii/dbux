@@ -29,8 +29,8 @@ class ContextNode extends ClientComponentEndpoint {
                 <!--button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button-->
                 <button data-el="prevContextBtn" class="hidden">⇦</button>
                 <button data-el="nextContextBtn" class="hidden">⇨</button>
-                <div class="loc-label" class="gray">
-                  <span data-el="locLabel" class="dbux-link"></span>
+                <div class="loc-label gray">
+                  <span data-el="locLabel"></span>
                   <!--span data-el="parentLocLabel" class="dbux-link"></span-->
                 </div>
                 <div>
@@ -71,7 +71,7 @@ class ContextNode extends ClientComponentEndpoint {
     this.el.id = `application_${applicationId}-context_${contextId}`;
     this.el.style.background = getStaticContextColor(themeMode, staticContextId);
     this.els.contextLabel.textContent = contextNameLabel;
-    this.els.locLabel.textContent = contextLocLabel;
+    this.els.locLabel.textContent = contextLocLabel && ` @ ${contextLocLabel}` || '';
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
     // this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
@@ -184,11 +184,11 @@ class ContextNode extends ClientComponentEndpoint {
         this.handleClickOnContext(evt);
       }
     },
-    locLabel: {
-      click(evt) {
-        this.handleClickOnContext(evt);
-      }
-    },
+    // locLabel: {
+    //   click(evt) {
+    //     this.handleClickOnContext(evt);
+    //   }
+    // },
     parentLabel: {
       click(evt) {
         this.handleClickOnParentTrace(evt);

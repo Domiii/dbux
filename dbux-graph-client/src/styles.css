@@ -25,14 +25,20 @@
   align-items: center;
 }
 
+/* TODO: fix name */
 .vertical-align-center {
   display: flex;
   align-items: center;
 }
 
+/* TODO: fix name */
 .horizontal-align-center {
   display: flex;
   justify-content: center;
+}
+
+.space-between {
+  justify-content: space-between;
 }
 
 .full-width {
