@@ -9,20 +9,41 @@ class PathwaysAction extends ClientComponentEndpoint {
       iconUri
     } = this.state;
 
-    return compileHtmlElement(/*html*/`<div style="border: 1px solid blue;">
-      <img width="24px" data-el="icon" src="${iconUri}">
-      <div class="flex-row" data-mount="PathwaysAction"></div>
+    return compileHtmlElement(/*html*/`<div>
+      <div class="flex-row">
+        <div>
+          <button data-el="btn" class="btn btn-primary flex-row no-padding" style="background: transparent;">
+            <img width="20px" data-el="icon" src="${iconUri}">
+            <span data-el="searchTerm"></span>
+          </button>
+        </div>
+        <div class="flex-row" data-mount="PathwaysAction"></div>
+      </div>
     </div>`);
   }
 
   update() {
-    const { themeMode } = this.context;
+    // const { themeMode } = this.context;
     const {
       type,
-      typeName
+      typeName,
+      searchTerm
     } = this.state;
+
     this.els.icon.title = typeName;
+    searchTerm && (this.els.searchTerm.textContent = searchTerm);
   }
+
+  on = {
+    btn: {
+      click(evt) {
+        if (this.state.hasTrace) {
+          this.context.view.remote.selectGroupTrace(this.state.id);
+        }
+        document.getSelection().removeAllRanges();
+      }
+    }
+  };
 }
 
 export default PathwaysAction;

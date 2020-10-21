@@ -42,6 +42,11 @@ export default class CollectionIndex {
     return this._byKey[key];
   }
 
+  getFirst(key) {
+    const ofKey = this.get(key);
+    return ofKey?.[0] || null;
+  }
+
   /**
    * @param {T[]} entries 
    */

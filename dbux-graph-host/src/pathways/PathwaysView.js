@@ -1,16 +1,26 @@
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import traceSelection from '@dbux/data/src/traceSelection';
 // import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import { makeStaticContextLocLabel } from '@dbux/data/src/helpers/traceLabels';
 
 import KeyedComponentSet from '@dbux/graph-common/src/componentLib/KeyedComponentSet';
 // import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import StepType from '@dbux/data/src/pathways/StepType';
 import ActionGroupType, { isHiddenGroup, isHiddenAction } from '@dbux/data/src/pathways/ActionGroupType';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import PathwaysStep from './PathwaysStep';
 import PathwaysAction from './PathwaysAction';
 import PathwaysActionGroup from './PathwaysActionGroup';
-import { getIconByActionGroup } from './renderSettings';
+import { getIconByActionGroup, getIconByStep } from './renderSettings';
+
+function formatTimeSpent(millis) {
+  let seconds = Math.floor(millis / 1000);
+  const minutes = Math.floor(seconds / 60);
+  seconds = seconds - minutes * 60;
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
 
 class PathwaysView extends HostComponentEndpoint {
   steps;
@@ -49,10 +59,14 @@ class PathwaysView extends HostComponentEndpoint {
     return this.actionGroups.getComponentByEntry(actionGroup);
   }
 
-  handleRefresh() {
-    const { themeMode } = this.context;
-    const modeName = ThemeMode.getName(themeMode).toLowerCase();
+  getIconUri(modeName, fileName) {
+    if (!fileName) {
+      return null;
+    }
+    return this.componentManager.externals.getClientResourceUri(`${modeName}/${fileName}`);
+  }
 
+  handleRefresh() {
     const pdp = this.componentManager.externals.getPathwaysDataProvider();
     if (this.pdp !== pdp) {
       // reset
@@ -61,32 +75,54 @@ class PathwaysView extends HostComponentEndpoint {
     }
     this.pdp = pdp;
 
+    const { themeMode } = this.context;
+    const modeName = ThemeMode.getName(themeMode).toLowerCase();
+
     const steps = pdp.collections.steps.getAll().
       filter(step => !!step).
       map(step => {
         const {
+          id: stepId,
           applicationId,
           staticContextId,
+          type: stepType
           // contextId
         } = step;
 
         let label;
         let locLabel;
-        if (staticContextId) {
-          const dp = allApplications.getById(applicationId)?.dataProvider;
-          const staticContext = dp?.collections.staticContexts.getById(staticContextId);
-          label = staticContext?.displayName || `(could not look up application or staticContext for ${applicationId}, ${staticContextId})`;
-          const locString = makeStaticContextLocLabel(applicationId, staticContextId);
-          locLabel = ` @ ${locString}`;
-        }
-        else {
-          label = '(new test run)';
-          locLabel = '';
+        switch (stepType) {
+          case StepType.Trace:
+            if (staticContextId) {
+              const dp = allApplications.getById(applicationId)?.dataProvider;
+              const staticContext = dp?.collections.staticContexts.getById(staticContextId);
+              label = staticContext?.displayName || `(could not look up application or staticContext for ${applicationId}, ${staticContextId})`;
+              const locString = makeStaticContextLocLabel(applicationId, staticContextId);
+              locLabel = ` @ ${locString}`;
+            }
+            break;
+          case StepType.CallGraph: 
+            label = '(Call Graph Investigation)';
+            break;
+          case StepType.None:
+          default:
+            label = '(Start)';
+            break;
         }
 
+        const iconUri = this.getIconUri(modeName, getIconByStep(stepType));
+        const timeSpent = formatTimeSpent(pdp.util.getStepTimeSpent(stepId));
+        const background = staticContextId && getStaticContextColor(themeMode, staticContextId) || 'default';
+        const hasTrace = StepType.is.Trace(stepType);
+        
         return {
           label,
+          iconUri,
           locLabel,
+          timeSpent,
+          background,
+          hasTrace,
+
           ...step
         };
       });
@@ -95,16 +131,21 @@ class PathwaysView extends HostComponentEndpoint {
       filter(actionGroup => actionGroup && !isHiddenGroup(actionGroup.type)).
       map(actionGroup => {
         const {
+          id: groupId,
           type
         } = actionGroup;
 
         const typeName = ActionGroupType.getName(type);
-        const file = getIconByActionGroup(type);
-        const iconUri = this.componentManager.externals.getClientResourceUri(`${modeName}/${file}`);
+        const iconUri = this.getIconUri(modeName, getIconByActionGroup(type));
+        const timeSpent = formatTimeSpent(pdp.util.getActionGroupTimeSpent(groupId));
+        const hasTrace = !!pdp.util.getActionGroupAction(groupId)?.trace;
+
         return {
           ...actionGroup,
           typeName,
-          iconUri
+          iconUri,
+          timeSpent,
+          hasTrace
         };
       });
 
@@ -134,6 +175,22 @@ class PathwaysView extends HostComponentEndpoint {
         view: this
       }
     };
+  }
+
+  public = {
+    selectStepTrace(stepId) {
+      const trace = this.pdp.util.getStepAction(stepId)?.trace;
+      if (trace) {
+        traceSelection.selectTrace(trace);
+      }
+    },
+
+    selectGroupTrace(groupId) {
+      const trace = this.pdp.util.getActionGroupAction(groupId)?.trace;
+      if (trace) {
+        traceSelection.selectTrace(trace);
+      }
+    }
   }
 }
 

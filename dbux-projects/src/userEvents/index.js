@@ -45,7 +45,7 @@ export function emitNewTestRun(testRun) {
   emitUserEvent(UserActionType.TestRunFinished, { 
     testRun,
     // new test run always introduces a new step
-    newStep: true
+    // newStep: true
   });
 }
 

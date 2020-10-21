@@ -1,6 +1,7 @@
 // import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import ActionGroupType from '@dbux/data/src/pathways/ActionGroupType';
-import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import StepType from '@dbux/data/src/pathways/StepType';
+// import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { newLogger } from '@dbux/common/src/log/logger';
 
 // eslint-disable-next-line no-unused-vars
@@ -33,10 +34,12 @@ const labelsByActionGroupType = {
   [ActionGroupType.Other]: 'Other'
 };
 
-const iconsByActionGroupType = {
-  [ActionGroupType.SelectTrace]: 'crosshair.svg',
+const defaultActionGroupIcon = 'gear.svg';
 
+const iconsByActionGroupType = {
   [ActionGroupType.TagTrace]: 'flag.svg',
+
+  [ActionGroupType.SelectTrace]: 'crosshair.svg',
   [ActionGroupType.TDValue]: 'content.svg',
   [ActionGroupType.TDTrackObject]: 'object.svg',
   [ActionGroupType.TDExecutions]: 'traceExecutions.svg',
@@ -58,18 +61,24 @@ const iconsByActionGroupType = {
   [ActionGroupType.CallGraphToggleContextNode]: 'callGraphToggleContextNode.svg',
   [ActionGroupType.CallGraphSearchContexts]: 'callGraphSearchContexts.svg',
   [ActionGroupType.CallGraphSearchTraces]: 'callGraphSearchTraces.svg',
-  [ActionGroupType.CallGraphOther]: 'string.svg',
-  [ActionGroupType.Other]: 'string.svg',
-  [ActionGroupType.Hidden]: ' ',
+  [ActionGroupType.CallGraphOther]: defaultActionGroupIcon,
+  [ActionGroupType.Other]: defaultActionGroupIcon,
+  [ActionGroupType.Hidden]: '',
   [ActionGroupType.SessionFinished]: 'end.svg'
 };
 
+const iconsByStepType = {
+  [StepType.None]: defaultActionGroupIcon,
+  [StepType.Trace]: 'crosshair.svg',
+  [StepType.CallGraph]: 'dependency.svg',
+};
+
 /**
- * Check all type has icon
+ * Check that all types have icons
  */
 for (const typeName of ActionGroupType.names) {
   if (!iconsByActionGroupType[ActionGroupType[typeName]]) {
-    warn(`icon setting of ActionGroupType.${typeName} not found`);
+    warn(`icon setting for ActionGroupType.${typeName} not found`);
   }
 }
 
@@ -78,7 +87,11 @@ export function getLabelByActionGroupType(actionGroupType) {
 }
 
 export function getIconByActionGroup(actionGroupType) {
-  const file = iconsByActionGroupType[actionGroupType] || 'string.svg';
+  const file = iconsByActionGroupType[actionGroupType] || defaultActionGroupIcon;
   // const file = 'nextInContext.svg';
   return file;
+}
+
+export function getIconByStep(stepType) {
+  return iconsByStepType[stepType];
 }
