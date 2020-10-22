@@ -144,6 +144,10 @@ class DebugWithoutDbuxNode extends SessionNode {
 }
 
 class TagNode extends SessionNode {
+  get clickUserActionType() {
+    return false;
+  }
+
   static makeLabel() {
     return 'I found it! (tag this trace)';
   }
