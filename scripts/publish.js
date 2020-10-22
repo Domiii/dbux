@@ -127,11 +127,11 @@ async function bumpVersion() {
     4: ['major']
   });
 
-  if (choice !== 'None') {
-    await exec(`npx lerna version ${choice} --force-publish`);
+  if (choice !== '(skip)') {
+    await exec(`npx lerna version ${choice} --force-publish -y`);
   }
 
-  return choice !== 'None';
+  return choice !== '(skip)';
 }
 
 // function build() {
