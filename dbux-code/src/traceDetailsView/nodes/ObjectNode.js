@@ -5,6 +5,10 @@ import { emitSelectTraceAction } from '../../userEvents';
 import TraceNode from './TraceNode';
 
 export default class ObjectNode extends TraceNode {
+  get clickUserActionType() {
+    return false;
+  }
+
   makeIconPath() {
     const { selected } = traceSelection;
     if (selected) {
