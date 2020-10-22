@@ -3,6 +3,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { switchMode } from '../traceDetailsView/nodes/StaticTraceTDNodes';
 import { NavigationMethods } from '../traceDetailsView/nodes/NavigationNode';
+import { translate } from '../lang';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('Commands');
@@ -53,6 +54,6 @@ export function initTraceDetailsViewCommands(context, traceDetailsViewController
 
   registerCommand(context,
     'dbuxTraceDetailsView.selectTraceAtCursor.empty',
-    () => window.showInformationMessage('No traces at cursor.')
+    () => window.showInformationMessage(translate('noTrace'))
   );
 }

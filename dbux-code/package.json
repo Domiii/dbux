@@ -1125,6 +1125,7 @@
   },
   "dependencies": {
     "firebase": "7.17.2",
+    "i18next": "^19.8.2",
     "lockfile": "^1.0.4"
   },
   "_moduleAliases": {}

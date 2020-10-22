@@ -23,6 +23,7 @@ import { showOutputChannel } from '../projectViews/projectViewsController';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 import { getAllMemento, clearAll } from '../memento';
 import { showInformationMessage } from '../codeUtil/codeModals';
+import { translate } from '../lang';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -51,7 +52,7 @@ export function initUserCommands(extensionContext) {
         await showTextDocument(exportFpath);
       }
     };
-    const msg = `File saved successfully: ${exportFpath}`;
+    const msg = translate('savedSuccessfully', { fileName: exportFpath });
     debug(msg);
     const clicked = await window.showInformationMessage(msg,
       ...Object.keys(btns));
@@ -134,9 +135,10 @@ export function initUserCommands(extensionContext) {
       applicationIdByLabel.set(label, app.applicationId);
     });
     if (!allSelectedApps.length) {
-      await window.showInformationMessage('[Dbux] No application selected');
+      await window.showInformationMessage(translate('noApplication'));
       return;
     }
+    // TOTRANSLATE
     const applicationName = await window.showQuickPick(labels, { placeHolder: 'Select an application' });
     if (!applicationName) {
       // user canceled selection
@@ -145,6 +147,7 @@ export function initUserCommands(extensionContext) {
     const applicationId = applicationIdByLabel.get(applicationName);
 
     // input traceId
+    // TOTRANSLATE
     const userInput = await window.showInputBox({ placeHolder: 'input a traceId' });
     if (!userInput) {
       // user canceled selection
@@ -152,6 +155,7 @@ export function initUserCommands(extensionContext) {
     }
     const traceId = parseInt(userInput, 10);
     if (isNaN(traceId)) {
+      // TOTRANSLATE
       await window.showErrorMessage(`Can't convert ${userInput} into integer`);
       return;
     }
@@ -160,6 +164,7 @@ export function initUserCommands(extensionContext) {
     const dp = allApplications.getById(applicationId).dataProvider;
     const trace = dp.collections.traces.getById(traceId);
     if (!trace) {
+      // TOTRANSLATE
       await window.showErrorMessage(`Can't find trace of traceId ${traceId} & applicationId ${applicationId}`);
     }
     else {
@@ -232,6 +237,7 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.clearMemento', async () => {
     await clearAll();
+    // TOTRANSLATE
     await showInformationMessage('Memento cleared, please reload the window');
   });
 }

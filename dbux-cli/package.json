@@ -29,6 +29,7 @@
     "@dbux/common": "^0.2.6-dev.0",
     "@dbux/runtime": "^0.2.6-dev.0",
     "colors": "^1.4.0",
+    "i18next": "^19.8.2",
     "lodash": "^4.17.19",
     "module-alias": "^2.2.2",
     "object.fromentries": "^2.0.2",

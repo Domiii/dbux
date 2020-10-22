@@ -1,6 +1,6 @@
 import { workspace, commands } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
-import { initMemento } from './memento';
+import { initMemento, get as mementoGet, set as mementoSet } from './memento';
 import { initInstallId } from './installId';
 import { initLogging } from './logging';
 import { initResources } from './resources';
@@ -10,6 +10,7 @@ import { registerCommand } from './commands/commandUtil';
 import { initDialogController } from './dialogs/dialogController';
 import DialogNodeKind from './dialogs/DialogNodeKind';
 import { showInformationMessage } from './codeUtil/codeModals';
+import initLang, { translate } from './lang';
 
 /** @typedef {import('./dialogs/dialogController').DialogController} DialogController */
 
@@ -53,6 +54,9 @@ export async function preActivate(context) {
     initLogging();
     initResources(context);
     const dialogController = initDialogController();
+
+    await maybeSelectLanguage();
+    await initLang(mementoGet('dbux.language'));
 
     // [debugging]
     // await dialogController.getDialog('survey1').clear();
@@ -110,6 +114,18 @@ function registerErrorHandler() {
   // });
 }
 
+async function maybeSelectLanguage() {
+  const keyName = `dbux.language`;
+
+  if (!mementoGet(keyName)) {
+    let lang = await showInformationMessage('Select a language for dbux', {
+      en: () => 'en',
+      zh: () => 'zh',
+    }, { modal: true });
+    await mementoSet(keyName, lang);
+  }
+}
+
 // ###########################################################################
 // Maybe start dialog on pre-activate
 // ###########################################################################
@@ -122,12 +138,12 @@ async function maybeStartTutorial(dialogController, context) {
   const firstNode = tutorialDialog.getCurrentNode();
 
   if (!tutorialDialog.started) {
-    await showInformationMessage('Hi! You have recently installed Dbux. Do you need some help?', {
-      async 'Yes'() {
+    await showInformationMessage(translate('newOnDbux.message'), {
+      async [translate('newOnDbux.yes')]() {
         await ensureActivate(context);
         tutorialDialog.start('start');
       },
-      async 'No. Please don\'t bother me.'() {
+      async [translate('newOnDbux.no')]() {
         await tutorialDialog.setState('end');
       }
     });

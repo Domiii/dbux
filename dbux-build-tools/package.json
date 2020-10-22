@@ -27,6 +27,7 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
+    "i18next": "^19.8.2",
     "yargs": "^15.4.1"
   },
   "bugs": {
