@@ -1,6 +1,7 @@
 import { window } from 'vscode';
 import path from 'path';
 import fs from 'fs';
+import open from 'open';
 import isNaN from 'lodash/isNaN';
 // import { stringify as jsonStringify } from 'comment-json';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -24,6 +25,7 @@ import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 import { getAllMemento, clearAll } from '../memento';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
+import { getLogsDirectory } from '../resources';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -118,6 +120,14 @@ export function initUserCommands(extensionContext) {
   registerCommand(extensionContext, 'dbux.toggleErrorLog',
     toggleErrorLog
   );
+
+  // ###########################################################################
+  // show/hide error log
+  // ###########################################################################
+
+  registerCommand(extensionContext, 'dbux.openPracticeLogFolder', () => {
+    open(getLogsDirectory());
+  });
 
   // ###########################################################################
   // select trace

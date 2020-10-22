@@ -199,6 +199,15 @@ export default class ProjectsManager {
       return;
     }
 
+    if (!this.practiceSession.isFinished()) {
+      const confirmMsg = `You will lose all progress if you give up now, are you sure?`
+      const result = await this.externals.confirm(confirmMsg, true);
+  
+      if (!result) {
+        return;
+      }
+    }
+
     await this.stopRunner();
 
     const { stopwatchEnabled, state, stopwatch } = this.practiceSession;

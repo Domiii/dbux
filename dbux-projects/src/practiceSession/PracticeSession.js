@@ -46,6 +46,10 @@ export default class PracticeSession {
     return PracticeSessionState.is.Solved(this.state);
   }
 
+  isFinished() {
+    return this.manager.pdp.util.hasSessionFinished();
+  }
+
   setState(state) {
     if (this.state !== state) {
       this.state = state;
@@ -106,7 +110,11 @@ export default class PracticeSession {
   }
 
   tagBugTrace(trace) {
-    if (!isStateFoundedType(this.state)) {
+    if (isStateFoundedType(this.state)) {
+      const alertMsg = `You have already found the bug`;
+      this.manager.externals.alert(alertMsg);
+    }
+    else {
       const { applicationId, traceId } = trace;
       const dp = allApplications.getById(applicationId).dataProvider;
       const location = {
@@ -120,11 +128,14 @@ export default class PracticeSession {
         this.setState(PracticeSessionState.Found);
         this.save();
         this.bdp.save();
-        debug('yes');
+        // TOTRANSLATE
+        const congratsMsg = `Congratulations!! You have found the bug!`;
+        this.manager.externals.alert(congratsMsg, true);
       }
       else {
-        // TODO
-        debug('no');
+        // TOTRANSLATE
+        const failedMsg = `This is not the right line, keep going!`;
+        this.manager.externals.alert(failedMsg, false);
       }
     }
   }

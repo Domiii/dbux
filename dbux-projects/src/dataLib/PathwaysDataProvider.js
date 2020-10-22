@@ -125,7 +125,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
   manager;
 
   /**
-   * @type {ProgressLogUtil}
+   * @type {PathwaysDataUtil}
    */
   util;
 
