@@ -13,3 +13,7 @@ html,body{
   margin-bottom: 0.5rem;
   border-top: 1px solid #777;
 }
+
+.time-spent {
+  background-color: rgba(0, 0, 0, 0.5);
+}
