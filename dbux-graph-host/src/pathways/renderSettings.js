@@ -39,12 +39,12 @@ const defaultActionGroupIcon = 'gear.svg';
 const iconsByActionGroupType = {
   [ActionGroupType.TagTrace]: 'flag.svg',
 
-  [ActionGroupType.SelectTrace]: 'crosshair.svg',
+  [ActionGroupType.SelectTrace]: 'crosshair_red.svg',
   [ActionGroupType.TDValue]: 'content.svg',
   [ActionGroupType.TDTrackObject]: 'object.svg',
   [ActionGroupType.TDExecutions]: 'traceExecutions.svg',
   [ActionGroupType.TDTrackObjectTrace]: 'objectTrace.svg',
-  [ActionGroupType.TDExecutionsTrace]: 'traceExecutionsTrace.svg',
+  [ActionGroupType.TDExecutionsTrace]: 'traceExecutionTrace.svg',
   [ActionGroupType.TDTrace]: 'crosshair.svg',
 
   [ActionGroupType.NavigationPreviousInContext]: 'previousInContext.svg',
@@ -69,7 +69,7 @@ const iconsByActionGroupType = {
 
 const iconsByStepType = {
   [StepType.None]: defaultActionGroupIcon,
-  [StepType.Trace]: 'crosshair.svg',
+  [StepType.Trace]: 'crosshair_red.svg',
   [StepType.CallGraph]: 'dependency.svg',
 };
 

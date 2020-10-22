@@ -144,16 +144,16 @@
         "command": "dbux.showPathwaysView",
         "title": "Dbux: Show Pathways View",
         "icon": {
-          "light": "resources/light/tree.svg",
-          "dark": "resources/dark/tree.svg"
+          "light": "resources/light/p.svg",
+          "dark": "resources/dark/p.svg"
         }
       },
       {
         "command": "dbux.hidePathwaysView",
         "title": "Dbux: Hide Pathways View",
         "icon": {
-          "light": "resources/light/tree_disabled.svg",
-          "dark": "resources/dark/tree_disabled.svg"
+          "light": "resources/light/p_disabled.svg",
+          "dark": "resources/dark/p_disabled.svg"
         }
       },
       {

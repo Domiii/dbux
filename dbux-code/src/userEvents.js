@@ -42,9 +42,8 @@ export function emitNavigationAction(actionName, selectMethod, trace) {
   });
 }
 
-export function emitPracticeSelectTraceAction(selectMethod, trace, actionType = UserActionType.SelectTrace) {
+export function emitSelectTraceAction(trace, actionType = UserActionType.SelectTrace) {
   emitUserEvent(actionType, {
-    selectMethod,
     trace,
     applicationUUID: getApplicationUUID(trace),
     locationInfo: getExtraTraceLocationImformation(trace)

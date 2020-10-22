@@ -1,9 +1,7 @@
-import Trace from '@dbux/common/src/core/data/Trace';
 import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeTraceValueLabel } from '@dbux/data/src/helpers/traceLabels';
 import { valueRender } from '../valueRender';
-import { emitPracticeSelectTraceAction } from '../../userEvents';
 import TraceNode from './TraceNode';
 
 export default class TraceValueNode extends TraceNode {
@@ -29,7 +27,6 @@ export default class TraceValueNode extends TraceNode {
   }
 
   handleClick() {
-    emitPracticeSelectTraceAction('selectNearbyTrace', this.trace);
     traceSelection.selectTrace(this.trace);
   }
 
