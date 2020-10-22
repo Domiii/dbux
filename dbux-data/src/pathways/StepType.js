@@ -50,7 +50,7 @@ const stepByActionType = {
 const missingActions = UserActionType.values.filter(action => !(action in stepByActionType));
 if (missingActions.length) {
   const missingStr = missingActions.map(action => UserActionType.nameFrom(action)).join(', ');
-  warn(`Missing UserActionTypes in groupByActionType: ${missingStr}`);
+  warn(`Missing UserActionTypes in stepByActionType: ${missingStr}`);
 }
 
 

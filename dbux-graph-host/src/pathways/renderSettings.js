@@ -63,7 +63,7 @@ const iconsByActionGroupType = {
   [ActionGroupType.CallGraphSearchTraces]: 'callGraphSearchTraces.svg',
   [ActionGroupType.CallGraphOther]: defaultActionGroupIcon,
   [ActionGroupType.Other]: defaultActionGroupIcon,
-  [ActionGroupType.Hidden]: '',
+  [ActionGroupType.Hidden]: ' ',
   [ActionGroupType.SessionFinished]: 'end.svg'
 };
 

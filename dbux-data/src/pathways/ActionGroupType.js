@@ -3,7 +3,7 @@ import Enum from '@dbux/common/src/util/Enum';
 import UserActionType from './UserActionType';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('StepType');
+const { log, debug, warn, error: logError } = newLogger('ActionGroupType');
 
 // eslint-disable-next-line import/no-mutable-exports
 let ActionGroupType = {
