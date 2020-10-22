@@ -235,4 +235,23 @@ export default {
     // const staticContext = dp.collections.staticContexts.getById(staticContextId);
     return { applicationId, staticContextId };
   },
+
+
+  // ###########################################################################
+  // Pathways analysis
+  // ###########################################################################
+
+  /**
+   * All staticTraces that the user visited in this session.
+   */
+  getVisitedStaticTraces(pdp) {
+    return pdp.collections.userActions.visitedStaticTracesByFile;
+  },
+
+  /**
+   * All staticTraces in given file that the user visited in this session.
+   */
+  getVisitedStaticTracesOfFile(pdp, fileName) {
+    return pdp.collections.userActions.visitedStaticTracesByFile.get(fileName);
+  }
 };

@@ -10,6 +10,9 @@ import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
 
 // TODO: clean up `selectedTrace*` stuff and integrate with playback feature
 
+/**
+ * @see https://code.visualstudio.com/api/references/vscode-api#DecorationRenderOptions
+ */
 const selectedTraceDecoType = {
   border: '1px solid red'
 };

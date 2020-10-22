@@ -1,4 +1,4 @@
-import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import PathwaysMode from '@dbux/data/src/pathways/PathwaysMode';
 import { compileHtmlElement, decorateClasses, decorateAttr } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -13,8 +13,8 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <button title="" data-el="hideNewRunBtn" class="btn btn-info" href="#">
-            hi
+          <button title="" data-el="modeBtn" class="btn btn-info" href="#">
+            analyze
           </button>
         </div>
         <div data-el="moreMenu" class="dropdown">
@@ -52,7 +52,15 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   update = () => {
-    
+    const {
+      pathwaysMode
+    } = this.state;
+
+    // this.els.modeBtn.textContent = PathwaysMode.nameFrom(pathwaysMode);
+
+    decorateClasses(this.els.modeBtn, {
+      active: PathwaysMode.is.Analyze(pathwaysMode)
+    });
   }
 
   // ###########################################################################
@@ -60,6 +68,16 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   on = {
+    modeBtn: {
+      async click(evt) {
+        const newMode = PathwaysMode.nextValue(this.state.pathwaysMode);
+        this.remote.setPathwaysMode(newMode);
+      },
+
+      focus(evt) { evt.target.blur(); }
+    },
+
+
     restartBtn: {
       async click(evt) {
         evt.preventDefault();
@@ -71,6 +89,7 @@ class Toolbar extends ClientComponentEndpoint {
 
       focus(evt) { evt.target.blur(); }
     },
+    
 
     moreMenuBtn: {
       click(/* evt */) {
