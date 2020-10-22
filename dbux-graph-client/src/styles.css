@@ -126,3 +126,7 @@
   /* color: rgb(104, 91, 218); */
   text-decoration: underline;
 } 
+
+.active {
+  border: 1px solid gold !important;
+}

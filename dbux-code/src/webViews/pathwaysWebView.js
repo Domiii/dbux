@@ -6,6 +6,7 @@ import { goToTrace } from '../codeUtil/codeNav';
 import { getOrCreateProjectManager } from '../projectViews/projectControl';
 import { getThemeResourcePathUri } from '../resources';
 import RichWebView from './RichWebView';
+import { decorateVisitedTraces, stopDecorating } from './pathwaysDecorations';
 
 const defaultColumn = ViewColumn.Two;
 
@@ -13,6 +14,10 @@ export default class PathwaysWebView extends RichWebView {
   constructor() {
     // 'Call Graph'
     super(PathwaysHost, 'dbux-pathways', defaultColumn);
+  }
+
+  get pdp() {
+    return getOrCreateProjectManager().pdp;
   }
 
   getIcon() {
@@ -35,7 +40,14 @@ export default class PathwaysWebView extends RichWebView {
     onPracticeSessionChanged(cb) {
       return getOrCreateProjectManager().onPracticeSessionChanged(cb);
     },
-    getPathwaysDataProvider: () => getOrCreateProjectManager().pdp
+    getPathwaysDataProvider: () => this.pdp,
+
+    decorateVisitedTraces: async () => {
+      await decorateVisitedTraces(this.pdp);
+    },
+    stopDecorating: async () => {
+      await stopDecorating();
+    },
   }
 }
 

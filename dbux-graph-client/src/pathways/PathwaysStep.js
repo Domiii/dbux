@@ -14,7 +14,7 @@ class PathwaysStep extends ClientComponentEndpoint {
             </span>
           </div>
           <div>
-            <span data-el="timeSpent"></span>
+            <span data-el="timeSpent" class="time-spent"></span>
           </div>
         </div>
         <hr class="step-separator" style="">

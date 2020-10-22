@@ -198,6 +198,7 @@ export function makeStaticContextLocLabel(applicationId, staticContextId) {
   const { programId, loc } = dp.collections.staticContexts.getById(staticContextId);
   const fileName = programId && dp.collections.staticProgramContexts.getById(programId).fileName || null;
 
+  // TODO: incorrect loc, when used in VSCode?
   const { line/* , column */ } = loc.start;
   // return `@${fileName}:${line}:${column}`;
   return `${fileName}:${line}`;

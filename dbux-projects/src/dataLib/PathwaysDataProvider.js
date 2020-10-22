@@ -72,8 +72,31 @@ class ApplicationCollection extends Collection {
  * @extends {Collection<UserAction>}
  */
 class UserActionCollection extends Collection {
+  visitedStaticTracesByFile = new Map();
+
   constructor(pdp) {
     super('userActions', pdp);
+  }
+
+  handleEntryAdded(entry) {
+    const { trace } = entry;
+    if (!trace) {
+      return;
+    }
+    
+    const { applicationId, staticTraceId } = trace;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    
+    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+    const { staticContextId } = staticTrace;
+    const { programId } = dp.collections.staticContexts.getById(staticContextId);
+    const fileName = programId && dp.collections.staticProgramContexts.getById(programId).filePath || '(unknown file)';
+    
+    let staticTraces = this.visitedStaticTracesByFile.get(fileName);
+    if (!staticTraces) {
+      this.visitedStaticTracesByFile.set(fileName, staticTraces = []);
+    }
+    staticTraces.push(staticTrace);
   }
 }
 

@@ -147,6 +147,18 @@ const StylingsByName = {
       },
     }
   },
+  
+  /**
+   * We use this for setters/getters/any recorded call without callId.
+   */
+  OtherCall: {
+    styling: {
+      after: {
+        contentText: '↓',
+        color: 'red',
+      }
+    }
+  },
 
   // ########################################
   // Errors + Error handling
@@ -231,11 +243,19 @@ export function initTraceDecorators() {
 }
 
 export function getTraceDecoName(dataProvider, staticTrace, trace) {
-  const { traceId, error } = trace;
+  const { traceId, error, callId } = trace;
 
   // special decorations
   if (error) {
     return 'Error';
+  }
+
+  // handle getters + setters (not by type)
+  if (!callId) {
+    const calledContext = dataProvider.indexes.executionContexts.byCalleeTrace.get(traceId);
+    if (calledContext) {
+      return 'OtherCall';
+    }
   }
 
   // default: check by type name

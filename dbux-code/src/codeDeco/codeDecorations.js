@@ -22,13 +22,22 @@ export class CodeDecoRegistration {
     }
   }
 
-  setDeco(editor, deco) {
+  setDeco(editor, cfg) {
     if (this.unsubscribe) {
       this.unsubscribe();
     }
 
     // eslint-disable-next-line no-use-before-define
-    this.unsubscribe = codeDecorations.addDeco(editor, this.editorDecorationType, deco);
+    this.unsubscribe = codeDecorations.addDeco(editor, this.editorDecorationType, cfg);
+  }
+
+  setDecos(editor, cfgs) {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+
+    // eslint-disable-next-line no-use-before-define
+    this.unsubscribe = codeDecorations.setDecos(editor, this.editorDecorationType, cfgs);
   }
 }
 
@@ -38,11 +47,16 @@ export class CodeDecoRegistration {
 
 export class EditorDecorations {
   /**
+   * The type defines the style (CSS-like).
+   * @see traceDecoConfig.js
+   * @see https://code.visualstudio.com/api/references/vscode-api#DecorationRenderOptions
    * @type {TextEditorDecorationType}
    */
   editorDecorationType;
   editor;
   /**
+   * Each decoration contains a `loc` property.
+   * @see createTraceGroupDecoration
    * @type {EditorDecorations[]}
    */
   decorations = [];
@@ -55,12 +69,22 @@ export class EditorDecorations {
     this.editorDecorationType = editorDecorationType;
   }
 
-  addDeco(deco) {
-    this.decorations.push(deco);
+  addDeco(cfg) {
+    this.decorations.push(cfg);
     this.render();
 
     return () => {
-      this.removeDeco(deco);
+      this.removeDeco(cfg);
+    };
+  }
+
+  setDecos(decos) {
+    this.decorations = decos;
+    this.render();
+
+    return () => {
+      this.decorations = [];
+      this.render();
     };
   }
 
@@ -102,6 +126,16 @@ class CodeDecorations {
   addDeco(editor, editorDecorationType, deco) {
     const decos = this.getOrCreateDecos(editor, editorDecorationType);
     return decos.addDeco(deco);
+  }
+  
+  /**
+   * @param {[]} decos
+   * 
+   * @returns {Function} Callback that will remove the deco again when executed.
+   */
+  setDecos(editor, editorDecorationType, newDecos) {
+    const decos = this.getOrCreateDecos(editor, editorDecorationType);
+    return decos.setDecos(newDecos);
   }
 
   removeDeco(editor, editorDecorationType, deco) {

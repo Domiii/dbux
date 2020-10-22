@@ -48,7 +48,7 @@ export async function showTextDocument(fpath, column) {
   lastRequestedDocumentFpath = fpath;
 
   if (!column) {
-    // use a naive heuristic: if active file is js file choose active column
+    // use naive heuristic: if active file is js file choose active column
     if (window.activeTextEditor?.document?.fileName?.endsWith('.js')) {
       // column = ViewColumn.Active;
       column = window.activeTextEditor.viewColumn || ViewColumn.One;
@@ -74,6 +74,20 @@ export async function showTextDocument(fpath, column) {
   }
   return null;
 }
+
+
+export async function getEditorByFilePath(fpath) {
+  
+}
+
+// /**
+//  * Returns null if file is not open.
+//  */
+// export async function getTraceEditor(trace) {
+//   const dp = allApplications.getApplication(trace.applicationId).dataProvider;
+//   const filePath = dp.queries.programFilePathByTraceId(trace.traceId);
+  
+// }
 
 export async function getOrOpenTraceEditor(trace) {
   const dp = allApplications.getApplication(trace.applicationId).dataProvider;
