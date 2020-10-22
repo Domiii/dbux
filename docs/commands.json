@@ -5,9 +5,24 @@
     "description": "(Feature still in development. Won't work.)"
   },
   {
+    "command": "dbux.clearDBStats",
+    "title": "Dbux: Clear DB Stats",
+    "description": ""
+  },
+  {
+    "command": "dbux.clearMemento",
+    "title": "Dbux: Clear Memento Storage",
+    "description": ""
+  },
+  {
     "command": "dbux.debugFile",
     "title": "Dbux: Debug current file",
     "description": "Run selected file with Dbux, but with Node's `--inspect-brk` enabled. Make sure to enable VSCode's auto attach beforehand."
+  },
+  {
+    "command": "dbux.deleteUserEvents",
+    "title": "Dev: Delete all user events",
+    "description": ""
   },
   {
     "command": "dbux.doActivate",
@@ -30,6 +45,16 @@
     "description": "Close the Call Graph panel."
   },
   {
+    "command": "dbux.hidePathwaysView",
+    "title": "Dbux: Hide Pathways View",
+    "description": ""
+  },
+  {
+    "command": "dbux.resetPracticeProgress",
+    "title": "Dbux: Reset Practice Progress",
+    "description": ""
+  },
+  {
     "command": "dbux.runFile",
     "title": "Dbux: Run current file",
     "description": "Run selected file with Dbux"
@@ -38,6 +63,11 @@
     "command": "dbux.selectTrace",
     "title": "Dbux: Select Trace by id",
     "description": "Mostly used for debugging Dbux, or when (for some other reason) you would know some trace by its id."
+  },
+  {
+    "command": "dbux.showDBStats",
+    "title": "Dbux: Show DB Stats",
+    "description": ""
   },
   {
     "command": "dbux.showDecorations",
@@ -55,8 +85,18 @@
     "description": "Show the Dbux help dialog."
   },
   {
+    "command": "dbux.showMemento",
+    "title": "Dbux: View Memento Storage",
+    "description": ""
+  },
+  {
     "command": "dbux.showOutputChannel",
     "title": "Dbux: Show output channel",
+    "description": ""
+  },
+  {
+    "command": "dbux.showPathwaysView",
+    "title": "Dbux: Show Pathways View",
     "description": ""
   },
   {

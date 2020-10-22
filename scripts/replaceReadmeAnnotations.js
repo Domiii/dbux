@@ -50,7 +50,12 @@ function syncCodeCommands() {
   const nonUserCommandsById = {};
   packageJson.contributes.menus.commandPalette
     .filter(cmd => cmd.when === 'false')
-    .forEach(cmd => nonUserCommandsById[cmd.command] = cmd);
+    .forEach(cmd => {
+      if (cmd.when.includes('dbux.context.nodeEnv == development')) {
+        cmd.dev = true;
+      }
+      nonUserCommandsById[cmd.command] = cmd;
+    });
 
   const oldCommandById = {};
   commandJson
@@ -85,9 +90,6 @@ function syncCodeCommands() {
   for (const id in oldCommandById) {
     const cmd = oldCommandById[id];
     cmd.description = cmd.description || '';
-    if (buttonCommandsById[id].when.includes('dbux.context.nodeEnv == development')) {
-      cmd.dev = true;
-    }
     delete cmd.icon;
   }
 
