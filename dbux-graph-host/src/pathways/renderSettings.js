@@ -40,7 +40,7 @@ const iconsByActionGroupType = {
   [ActionGroupType.TagTrace]: 'flag.svg',
 
   [ActionGroupType.SelectTrace]: 'crosshair_red.svg',
-  [ActionGroupType.TDValue]: 'content.svg',
+  [ActionGroupType.TDValue]: 'project.svg',
   [ActionGroupType.TDTrackObject]: 'object.svg',
   [ActionGroupType.TDExecutions]: 'traceExecutions.svg',
   [ActionGroupType.TDTrackObjectTrace]: 'objectTrace.svg',
