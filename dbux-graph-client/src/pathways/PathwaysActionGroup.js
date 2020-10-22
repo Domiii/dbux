@@ -1,7 +1,7 @@
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
-class PathwaysAction extends ClientComponentEndpoint {
+class PathwaysActionGroup extends ClientComponentEndpoint {
   createEl() {
     const { themeMode } = this.context;
     const {
@@ -46,4 +46,4 @@ class PathwaysAction extends ClientComponentEndpoint {
   };
 }
 
-export default PathwaysAction;
+export default PathwaysActionGroup;

@@ -19,6 +19,11 @@ class ComponentEndpoint {
   _isDisposed = false;
   _disposables = [];
 
+  /**
+   * Either `child` or `contoller`, referring to the corresponding list that contains this.
+   */
+  _internalRoleName;
+
   constructor() {
     // TODO: `this.constructor.name` won't work on Host when enabling minifcation/obfuscation in webpack/bundler
     //    NOTE: Client already has a better way for this

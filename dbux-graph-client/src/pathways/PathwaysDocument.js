@@ -1,7 +1,12 @@
+import PathwaysMode from '@dbux/data/src/pathways/PathwaysMode';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class PathwaysDocument extends ClientComponentEndpoint {
+  isAnalyzing = () => {
+    return PathwaysMode.is.Analyze(this.state.pathwaysMode);
+  }
+
   createEl() {
     const el = document.getElementById('root');
     el.innerHTML = /*html*/`<div class="flex-column">
@@ -10,6 +15,7 @@ class PathwaysDocument extends ClientComponentEndpoint {
     </div>`;
     return el;
   }
+
   update() {
     const { themeMode } = this.state; 
     if (ThemeMode.is.Dark(themeMode)) {

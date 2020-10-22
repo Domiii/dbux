@@ -1,4 +1,4 @@
-import { compileHtmlElement } from '../util/domUtil';
+import { compileHtmlElement, decorateClasses } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 
@@ -6,20 +6,19 @@ class PathwaysStep extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
       <div style="border: 1px solid lightblue; border-radius: 8px; padding: 0.4rem;">
-        <div class="flex-row space-between" >
-          <div>
-            <span data-el="title">
+        <div data-el="header" class="">
+          <div class="flex-row space-between" >
+            <div class="flex-row" data-el="title">
               <img width="24px" data-el="icon">
               <span data-el="label"></span><span style="color: #BBB" class="loc-label" data-el="locLabel"></span>
-            </span>
+            </div>
+            <div>
+              <span data-el="timeSpent" class="time-spent"></span>
+            </div>
           </div>
-          <div>
-            <span data-el="timeSpent" class="time-spent"></span>
-          </div>
+          <hr class="step-separator" style="">
         </div>
-        <hr class="step-separator" style="">
-        <div class="flex-row"
-          data-mount="PathwaysActionGroup">
+        <div class="flex-row" data-mount="PathwaysActionGroup">
         </div>
       </div>
     `);
@@ -46,10 +45,14 @@ class PathwaysStep extends ClientComponentEndpoint {
     this.els.locLabel.textContent = locLabel;
     this.els.timeSpent.textContent = timeSpent;
 
-    if (this.state.staticContextId) {
+    if (staticContextId) {
       this.els.title.classList.add('dbux-link');
     }
     this.el.style.background = background;
+
+    decorateClasses(this.els.header, {
+      hidden: this.context.doc.isAnalyzing()
+    });
   }
 
   on = {

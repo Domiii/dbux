@@ -99,10 +99,17 @@ export default class ComponentList {
     return d;
   }
 
+  // moveComponent(comp) {
+  //   if (comp.parent === this._owner) {
+  //     // don't use this for adding stuff (that's more complicated)
+  //     throw new Error(`Invalid use of moveComponent. Must have a different previous owner.`);
+  //   }
+  //   // NYI
+  // }
+
   // ###########################################################################
   // protected methods
   // ###########################################################################
-
 
   _addComponent(comp) {
     const Clazz = comp.constructor;

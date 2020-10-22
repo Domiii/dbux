@@ -47,6 +47,16 @@ export default class CollectionIndex {
     return ofKey?.[0] || null;
   }
 
+  getAllKeys() {
+    const keys = [];
+    for (let i = 0; i < this._byKey.length; ++i) {
+      if (this._byKey[i]) {
+        keys.push(i);
+      }
+    }
+    return keys;
+  }
+
   /**
    * @param {T[]} entries 
    */
