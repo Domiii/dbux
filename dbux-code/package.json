@@ -109,6 +109,10 @@
         }
       },
       {
+        "command": "dbux.openPracticeLogFolder",
+        "title": "Dbux: Open Practice Log Folder"
+      },
+      {
         "command": "dbux.runFile",
         "title": "Dbux: Run current file",
         "icon": {
@@ -190,7 +194,7 @@
       },
       {
         "command": "dbux.resetPracticeProgress",
-        "title": "Dbux: Reset Practice Progress"
+        "title": "Dev: Reset Practice Progress"
       },
       {
         "command": "dbux.showDBStats",
@@ -821,7 +825,7 @@
         },
         {
           "command": "dbux.resetPracticeProgress",
-          "when": "dbux.context.activated"
+          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
         {
           "command": "dbux.showDBStats",
@@ -857,6 +861,10 @@
         },
         {
           "command": "dbux.togglePracticeView",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.openPracticeLogFolder",
           "when": "dbux.context.activated"
         },
         {
@@ -1111,6 +1119,7 @@
     "mocha": "^6.2.2",
     "moment": "^2.24.0",
     "nanoevents": "^2.0.0",
+    "open": "^7.1.0",
     "socket.io": "^2.3.0",
     "strip-color": "^0.1.0",
     "terser-webpack-plugin": "^4.1.0",
