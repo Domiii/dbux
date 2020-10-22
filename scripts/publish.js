@@ -121,7 +121,7 @@ async function pullDev() {
  */
 async function bumpVersion() {
   const [choice] = await menu('Version bump?', {
-    1: ['None'],
+    1: ['(skip)'],
     2: ['patch'],
     3: ['minor'],
     4: ['major']
