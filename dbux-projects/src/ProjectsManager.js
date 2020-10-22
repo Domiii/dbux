@@ -7,7 +7,7 @@ import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { readPackageJson } from '@dbux/cli/lib/package-util';
-import caseStudyRegistry from './_projectRegistry';
+import projectRegistry from './_projectRegistry';
 import ProjectList from './projectLib/ProjectList';
 import BugRunner from './projectLib/BugRunner';
 import PracticeSession from './practiceSession/PracticeSession';
@@ -131,15 +131,15 @@ export default class ProjectsManager {
   getOrCreateDefaultProjectList() {
     if (!this.projects) {
       // fix up names
-      for (const name in caseStudyRegistry) {
-        const Clazz = caseStudyRegistry[name];
+      for (const name in projectRegistry) {
+        const Clazz = projectRegistry[name];
 
         // NOTE: function/class names might get mangled by Webpack (or other bundlers/tools)
         Clazz.constructorName = name;
       }
 
       // sort all classes by name
-      const classes = Object.values(caseStudyRegistry);
+      const classes = Object.values(projectRegistry);
       classes.sort((a, b) => {
         const nameA = a.constructorName.toLowerCase();
         const nameB = b.constructorName.toLowerCase();
@@ -432,13 +432,13 @@ export default class ProjectsManager {
   async runTest(bug, inputCfg) {
     // TODO: make this configurable
     // NOTE2: nolazy is required for proper breakpoints in debug mode
-    const { debugMode = false, dbuxEnabled = true, enableSourceMaps = true } = inputCfg;
+    let { debugMode = false, dbuxEnabled = true, nodeEnableSourceMaps = false } = inputCfg;
 
     // WARN: --enable-source-maps sometimes gets super slow in production mode for some reason
     // NOTE: only supported in Node 12.12+
-    const nodeEnableSourceMaps = (enableSourceMaps &&
-      (!bug.project.nodeVersion || parseFloat(bug.project.nodeVersion) > 12.12)
-    ) ? '--enable-source-maps' : '';
+    // const nodeEnableSourceMaps = (enableSourceMaps &&
+    //   (!bug.project.nodeVersion || parseFloat(bug.project.nodeVersion) > 12.12)
+    // ) ? '--enable-source-maps' : '';
 
     // const enableSourceMaps = '';
     const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${nodeEnableSourceMaps}`;

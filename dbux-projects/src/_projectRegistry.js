@@ -8,8 +8,8 @@ import JavascriptAlgorithmProject from './projects/javascript-algorithms/Project
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
   express: Express,
-  hexo: Hexo,
   eslint: Eslint,
+  hexo: Hexo,
 };
 
 if (process.env.NODE_ENV === 'development') {
