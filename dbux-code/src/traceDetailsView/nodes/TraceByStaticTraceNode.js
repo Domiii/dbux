@@ -1,14 +1,14 @@
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import { emitPracticeSelectTraceAction } from '../../userEvents';
+import { emitSelectTraceAction } from '../../userEvents';
 import TraceNode from './TraceNode';
 
 export default class TraceByStaticTraceNode extends TraceNode {
   get clickUserActionType() {
-    return UserActionType.TDTrackObjectTraceUse;
+    return false;
   }
 
   handleClick() {
-    emitPracticeSelectTraceAction('selectInStaticTrace', this.trace);
+    emitSelectTraceAction(this.trace, UserActionType.TDExecutionsTraceUse);
     super.handleClick();
   }
 }

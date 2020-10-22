@@ -30,7 +30,6 @@ export default class TrackObjectTDNode extends BaseTreeViewNode {
   get collapseChangeUserActionType() {
     return UserActionType.TDTrackObjectUse;
   }
-
   
   canHaveChildren() {
     return !!this.trackedTraces?.length;

@@ -1,18 +1,16 @@
 <svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">
-
  <g>
   <title>background</title>
   <rect fill="none" id="canvas_background" height="502" width="502" y="-1" x="-1"/>
  </g>
+
  <g>
   <title>Layer 1</title>
-  <g stroke="null" id="svg_12">
-   <circle stroke="null" id="svg_3" r="45.02228" cy="128.82215" cx="92.02228"/>
-   <path stroke="null" id="svg_2" d="m167.0594,84.91833l285.94061,0l0,90.04455l-285.94061,0l0,-90.04455z"/>
-   <circle stroke="null" id="svg_5" r="45.02228" cy="248.88155" cx="141.2344"/>
-   <circle stroke="null" id="svg_7" r="45.02228" cy="368.94095" cx="141.2344"/>
-   <path stroke="null" id="svg_4" d="m223.18719,204.97773l229.81282,0l0,90.04455l-229.81282,0l0,-90.04455z"/>
-   <path stroke="null" id="svg_6" d="m221.86381,326.15559l229.81282,0l0,90.04455l-229.81282,0l0,-90.04455z"/>
-  </g>
+  <path id="svg_2" d="m156.39658,74.25774l303.37825,0l0,95.53578l-303.37825,0l0,-95.53578z" stroke="null"/>
+  <path id="svg_4" d="m215.94724,201.63877l243.8276,0l0,95.53578l-243.8276,0l0,-95.53578z" stroke="null"/>
+  <path id="svg_6" d="m215.94723,330.20648l243.8276,0l0,95.53578l-243.8276,0l0,-95.53578z" stroke="null"/>
+  <path stroke="null" fill="null" stroke-width="null" stroke-opacity="null" fill-opacity="null" d="m41.22519,79.19078l74.96097,42.83485l-74.96097,42.83485l0,-85.6697z" id="svg_10"/>
+  <path stroke="null" fill="null" stroke-width="null" stroke-opacity="null" fill-opacity="null" d="m86.72519,212.19078l74.96097,42.83485l-74.96097,42.83485l0,-85.6697z" id="svg_1"/>
+  <path stroke="null" fill="null" stroke-width="null" stroke-opacity="null" fill-opacity="null" d="m86.72519,338.19078l74.96097,42.83485l-74.96097,42.83485l0,-85.6697z" id="svg_3"/>
  </g>
 </svg>

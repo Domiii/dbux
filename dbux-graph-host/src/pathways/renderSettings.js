@@ -39,12 +39,12 @@ const defaultActionGroupIcon = 'gear.svg';
 const iconsByActionGroupType = {
   [ActionGroupType.TagTrace]: 'flag.svg',
 
-  [ActionGroupType.SelectTrace]: 'crosshair.svg',
-  [ActionGroupType.TDValue]: 'content.svg',
+  [ActionGroupType.SelectTrace]: 'crosshair_red.svg',
+  [ActionGroupType.TDValue]: 'project.svg',
   [ActionGroupType.TDTrackObject]: 'object.svg',
   [ActionGroupType.TDExecutions]: 'traceExecutions.svg',
   [ActionGroupType.TDTrackObjectTrace]: 'objectTrace.svg',
-  [ActionGroupType.TDExecutionsTrace]: 'traceExecutionsTrace.svg',
+  [ActionGroupType.TDExecutionsTrace]: 'traceExecutionTrace.svg',
   [ActionGroupType.TDTrace]: 'crosshair.svg',
 
   [ActionGroupType.NavigationPreviousInContext]: 'previousInContext.svg',
@@ -63,13 +63,13 @@ const iconsByActionGroupType = {
   [ActionGroupType.CallGraphSearchTraces]: 'callGraphSearchTraces.svg',
   [ActionGroupType.CallGraphOther]: defaultActionGroupIcon,
   [ActionGroupType.Other]: defaultActionGroupIcon,
-  [ActionGroupType.Hidden]: '',
+  [ActionGroupType.Hidden]: ' ',
   [ActionGroupType.SessionFinished]: 'end.svg'
 };
 
 const iconsByStepType = {
   [StepType.None]: defaultActionGroupIcon,
-  [StepType.Trace]: 'crosshair.svg',
+  [StepType.Trace]: 'crosshair_red.svg',
   [StepType.CallGraph]: 'dependency.svg',
 };
 

@@ -5,14 +5,32 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeModals';
 import { emitTagTraceAction } from '../../userEvents';
 
+/** @typedef {import('../projectViewsController').default} ProjectViewsController */
+/** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
+/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
+
 class SessionNode extends BaseTreeViewNode {
+  /**
+   * @return {ProjectViewsController}
+   */
+  get controller() {
+    return this.treeNodeProvider.controller;
+  }
+
+  /**
+   * @return {ProjectsManager}
+   */
+  get manager() {
+    return this.treeNodeProvider.manager;
+  }
+
+  /**
+   * @return {Bug}
+   */
   get bug() {
     return this.entry;
   }
 }
-
-/** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
-/** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
 
 class DetailNode extends SessionNode {
   /**
@@ -27,6 +45,102 @@ class DetailNode extends SessionNode {
     this.contextValue = 'dbuxSessionView.detailNode';
     this.description = this.bug.id;
   }
+
+  makeIconPath() {
+    return 'project.svg';
+  }
+}
+
+class ShowEntryNode extends SessionNode {
+  static makeLabel() {
+    return 'Go to program entry point';
+  }
+
+  init() {
+    this.contextValue = 'dbuxSessionView.showEntryNode';
+  }
+
+  makeIconPath() {
+    return 'document.svg';
+  }
+
+  async handleClick() {
+    if (RunStatus.is.Busy(this.manager.runStatus)) {
+      await showInformationMessage('Currently busy, please wait');
+    }
+    else {
+      await this.entry.openInEditor();
+    }
+  }
+}
+
+class RunNode extends SessionNode {
+  static makeLabel() {
+    return 'Run';
+  }
+
+  init() {
+    this.contextValue = 'dbuxSessionView.runNode';
+  }
+
+  makeIconPath() {
+    return 'play.svg';
+  }
+
+  async handleClick() {
+    if (RunStatus.is.Busy(this.manager.runStatus)) {
+      await showInformationMessage('Currently busy, please wait');
+    }
+    else {
+      await this.controller.activate();
+    }
+  }
+}
+
+class RunWithoutDbuxNode extends SessionNode {
+  static makeLabel() {
+    return 'Run without Dbux';
+  }
+
+  init() {
+    this.contextValue = 'dbuxSessionView.runWithoutDbuxNode';
+  }
+
+  makeIconPath() {
+    return 'play_gray.svg';
+  }
+
+  async handleClick() {
+    if (RunStatus.is.Busy(this.manager.runStatus)) {
+      await showInformationMessage('Currently busy, please wait');
+    }
+    else {
+      await this.controller.activate({ dbuxEnabled: false });
+    }
+  }
+}
+
+class DebugWithoutDbuxNode extends SessionNode {
+  static makeLabel() {
+    return 'Debug without Dbux';
+  }
+
+  init() {
+    this.contextValue = 'dbuxSessionView.debugNode';
+  }
+
+  makeIconPath() {
+    return 'bug_gray.svg';
+  }
+
+  async handleClick() {
+    if (RunStatus.is.Busy(this.manager.runStatus)) {
+      await showInformationMessage('Currently busy, please wait');
+    }
+    else {
+      await this.controller.activate({ debugMode: true, dbuxEnabled: false });
+    }
+  }
 }
 
 class TagNode extends SessionNode {
@@ -38,11 +152,8 @@ class TagNode extends SessionNode {
     this.tooltip = 'Tag current trace as bug location';
   }
 
-  /**
-   * @return {ProjectsManager}
-   */
-  get manager() {
-    return this.treeNodeProvider.manager;
+  makeIconPath() {
+    return 'flag.svg';
   }
 
   async handleClick() {
@@ -57,110 +168,6 @@ class TagNode extends SessionNode {
   }
 }
 
-class RunNode extends SessionNode {
-  static makeLabel() {
-    return 'Run';
-  }
-
-  init() {
-    this.contextValue = 'dbuxSessionView.runNode';
-  }
-
-  get manager() {
-    return this.treeNodeProvider.manager;
-  }
-
-  get controller() {
-    return this.treeNodeProvider.controller;
-  }
-
-  async handleClick() {
-    if (RunStatus.is.Busy(this.manager.runStatus)) {
-      await showInformationMessage('Currently busy, please wait');
-    }
-    else {
-      await this.controller.activate();
-    }
-  }
-}
-
-class DebugWithoutDbuxNode extends SessionNode {
-  static makeLabel() {
-    return 'Debug without Dbux';
-  }
-
-  init() {
-    this.contextValue = 'dbuxSessionView.debugNode';
-  }
-
-  get manager() {
-    return this.treeNodeProvider.manager;
-  }
-
-  get controller() {
-    return this.treeNodeProvider.controller;
-  }
-
-  async handleClick() {
-    if (RunStatus.is.Busy(this.manager.runStatus)) {
-      await showInformationMessage('Currently busy, please wait');
-    }
-    else {
-      await this.controller.activate({ debugMode: true, dbuxEnabled: false });
-    }
-  }
-}
-
-class RunWithoutDbuxNode extends SessionNode {
-  static makeLabel() {
-    return 'Run without Dbux';
-  }
-
-  init() {
-    this.contextValue = 'dbuxSessionView.runWithoutDbuxNode';
-  }
-
-  get manager() {
-    return this.treeNodeProvider.manager;
-  }
-
-  get controller() {
-    return this.treeNodeProvider.controller;
-  }
-
-  async handleClick() {
-    if (RunStatus.is.Busy(this.manager.runStatus)) {
-      await showInformationMessage('Currently busy, please wait');
-    }
-    else {
-      await this.controller.activate({ dbuxEnabled: false });
-    }
-  }
-}
-
-class ShowEntryNode extends SessionNode {
-  static makeLabel() {
-    return 'Go to program entry point';
-  }
-
-  init() {
-    this.contextValue = 'dbuxSessionView.showEntryNode';
-  }
-
-  get manager() {
-    return this.treeNodeProvider.manager;
-  }
-
-  async handleClick() {
-    if (RunStatus.is.Busy(this.manager.runStatus)) {
-      await showInformationMessage('Currently busy, please wait');
-    }
-    else {
-      await this.entry.openInEditor();
-    }
-  }
-}
-
 class StopPracticeNode extends SessionNode {
   static makeLabel() {
     return 'Stop Practice';
@@ -170,12 +177,8 @@ class StopPracticeNode extends SessionNode {
     this.contextValue = 'dbuxSessionView.stopPracticeNode';
   }
 
-  get manager() {
-    return this.treeNodeProvider.manager;
-  }
-
-  get controller() {
-    return this.treeNodeProvider.controller;
+  makeIconPath() {
+    return 'quit.svg';
   }
 
   async handleClick() {

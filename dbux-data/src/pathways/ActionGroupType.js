@@ -3,21 +3,28 @@ import Enum from '@dbux/common/src/util/Enum';
 import UserActionType from './UserActionType';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('StepType');
+const { log, debug, warn, error: logError } = newLogger('ActionGroupType');
 
 // eslint-disable-next-line import/no-mutable-exports
 let ActionGroupType = {
   SelectTrace: 1,
   TagTrace: 2,
-  TDValue: 23,
-  TDTrackObject: 25,
-  TDExecutions: 26,
-  TDTrackObjectTrace: 27,
-  TDExecutionsTrace: 28,
+  TDValue: 11,
+  TDTrackObject: 13,
+  TDExecutions: 14,
+  TDTrackObjectTrace: 15,
+  TDExecutionsTrace: 16,
   /**
    * any other trace node
    */
-  TDTrace: 30,
+  TDTrace: 17,
+
+  
+  CallGraphSelectTrace: 20,
+  CallGraphToggleContextNode: 21,
+  CallGraphSearchContexts: 22,
+  CallGraphSearchTraces: 23,
+  CallGraphOther: 25,
 
   NavigationPreviousInContext: 40,
   NavigationPreviousChildContext: 41,
@@ -29,13 +36,6 @@ let ActionGroupType = {
   NavigationNextStaticTrace: 47,
   NavigationPreviousTrace: 48,
   NavigationNextTrace: 49,
-
-  CallGraphSelectTrace: 20,
-  CallGraphToggleContextNode: 21,
-  CallGraphSearchContexts: 22,
-  CallGraphSearchTraces: 23,
-  CallGraphOther: 25,
-
 
   // gear icon?
   Other: 50,
