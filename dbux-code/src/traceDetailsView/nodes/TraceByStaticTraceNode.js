@@ -4,7 +4,7 @@ import TraceNode from './TraceNode';
 
 export default class TraceByStaticTraceNode extends TraceNode {
   get clickUserActionType() {
-    return UserActionType.TDTrackObjectTraceUse;
+    return UserActionType.TDExecutionsTraceUse;
   }
 
   handleClick() {
