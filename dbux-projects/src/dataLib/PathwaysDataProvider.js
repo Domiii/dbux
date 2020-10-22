@@ -17,6 +17,7 @@ import UserActionsByGroupIndex from './indexes/UserActionsByGroupIndex';
 import TestRun from './TestRun';
 
 import { emitNewTestRun } from '../userEvents';
+import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -104,8 +105,27 @@ class UserActionCollection extends Collection {
  * @extends {Collection<Step>}
  */
 class StepCollection extends Collection {
+  groupIdsByKey = new Map();
+
   constructor(pdp) {
     super('steps', pdp);
+  }
+
+  handleEntryAdded(step) {
+    if (!step.stepGroupId) {
+      // convert group's string key to numerical id (since our indexes only accept numerical ids)
+      const {
+        type, 
+        staticContextId
+      } = step;
+
+      const stepGroupKey = `${type}_${staticContextId}`;
+      let stepGroupId = this.groupIdsByKey.get(stepGroupKey);
+      if (!stepGroupId) {
+        this.groupIdsByKey.set(stepGroupKey, stepGroupId = this.groupIdsByKey.size + 1);
+      }
+      step.stepGroupId = stepGroupId;
+    }
   }
 }
 
@@ -162,6 +182,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addIndex(new UserActionByTypeIndex());
     this.addIndex(new UserActionsByStepIndex());
     this.addIndex(new UserActionsByGroupIndex());
+    this.addIndex(new StepsByGroupIndex());
   }
 
   // ###########################################################################
@@ -233,16 +254,19 @@ export default class PathwaysDataProvider extends DataProviderBase {
     const {
       createdAt,
       type: actionType,
-      searchTerm
+      searchTerm,
+      annotation
     } = firstAction;
 
     const groupType = getGroupTypeByActionType(actionType);
 
     const group = {
       stepId,
-      searchTerm,
       createdAt,
-      type: groupType
+      type: groupType,
+
+      searchTerm,
+      annotation
     };
 
     this.addData({ actionGroups: [group] });

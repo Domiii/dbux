@@ -30,9 +30,9 @@ class HostComponentList extends ComponentList {
     return comp;
   }
 
-  clear() {
+  clear(silent = false) {
     for (let i = this.components.length - 1; i >= 0; --i) {
-      this.components[i].dispose();
+      this.components[i].dispose(silent);
     }
   }
 }

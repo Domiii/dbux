@@ -264,6 +264,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
   handleRefresh() {
     throw new Error(`${this.componentName}.handleRefresh not implemented`);
   }
+  
+  async waitForRefresh() {
+    return this._refreshPromise;
+  }
 
   refresh = makeDebounce(() => {
     ++this._refreshRequests;
@@ -301,6 +305,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
   // removing + disposing
   // ###########################################################################
 
+  clearChildren(silent = false) {
+    this.children.clear(silent);
+    this.controllers.clear(silent);
+  }
 
   /**
    * First disposes all descendants (removes recursively) and then removes itself.
@@ -312,12 +320,8 @@ class HostComponentEndpoint extends ComponentEndpoint {
     if (!this.isInitialized && !silent) {
       throw new Error(this.debugTag + ' Trying to dispose before initialized');
     }
-    for (const component of this.children) {
-      component.dispose(silent);
-    }
-    for (const component of this.controllers) {
-      component.dispose(silent);
-    }
+
+    this.clearChildren(silent);
 
     // remove from parent
     if (this.owner) {

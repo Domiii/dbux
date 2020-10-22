@@ -63,6 +63,9 @@ export default class KeyedComponentSet {
   // ###########################################################################
 
   addComponent(key, entry) {
+    // move owners:
+    // 1. remove from list
+    // 2. add to new list (and set parent property)
     const owner = this.owner(key, entry);
     if (!owner) {
       logError(`owner not found for key=${key}, entry=${JSON.stringify(entry)} via: ${this.owner}`);

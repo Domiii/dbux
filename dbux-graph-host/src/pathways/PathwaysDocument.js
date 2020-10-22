@@ -1,3 +1,4 @@
+import PathwaysMode from '@dbux/data/src/pathways/PathwaysMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import PathwaysView from './PathwaysView';
 // import GraphRoot from './GraphRoot';
@@ -7,11 +8,21 @@ class PathwaysDocument extends HostComponentEndpoint {
   toolbar;
   // minimap;
 
+  isAnalyzing = () => {
+    return PathwaysMode.is.Analyze(this.state.pathwaysMode);
+  }
+
+  update() {
+    this.toolbar.forceUpdate();
+  }
+
   // ###########################################################################
   // init
   // ###########################################################################
 
   init() {
+    this.state.pathwaysMode = PathwaysMode.Normal;
+
     this.createOwnComponents();
 
     const {
@@ -61,11 +72,37 @@ class PathwaysDocument extends HostComponentEndpoint {
   shared() {
     return {
       context: {
-        pathwaysDocument: this,
-        themeMode: this.state.themeMode
+        doc: this,
+        themeMode: this.state.themeMode,
+        analyzing: this.isAnalyzing
       }
     };
   }
+
+  public = {
+    async cyclePathwaysMode() {
+      // remove all existing children
+      this.view.reset();
+
+      // set new mode + initialize new stuff
+      const mode = PathwaysMode.nextValue(this.state.pathwaysMode);
+      this.setState({
+        pathwaysMode: mode
+      });
+
+      this.view.refresh();
+      await this.view.waitForRefresh();
+
+      // switch (mode) {
+      //   case PathwaysMode.Analyze:
+      //     await this.componentManager.externals.decorateVisitedTraces();
+      //     break;
+      //   default:
+      //     await this.componentManager.externals.stopDecorating();
+      //     break;
+      // }
+    }
+  };
 }
 
 export default PathwaysDocument;

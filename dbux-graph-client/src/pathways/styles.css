@@ -17,3 +17,10 @@ html,body{
 .time-spent {
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+.action-text {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

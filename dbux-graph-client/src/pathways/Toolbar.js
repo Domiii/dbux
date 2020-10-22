@@ -52,14 +52,10 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   update = () => {
-    const {
-      pathwaysMode
-    } = this.state;
-
     // this.els.modeBtn.textContent = PathwaysMode.nameFrom(pathwaysMode);
 
     decorateClasses(this.els.modeBtn, {
-      active: PathwaysMode.is.Analyze(pathwaysMode)
+      active: this.context.doc.isAnalyzing()
     });
   }
 
@@ -68,10 +64,10 @@ class Toolbar extends ClientComponentEndpoint {
   // ###########################################################################
 
   on = {
+    
     modeBtn: {
       async click(evt) {
-        const newMode = PathwaysMode.nextValue(this.state.pathwaysMode);
-        this.remote.setPathwaysMode(newMode);
+        this.context.doc.remote.cyclePathwaysMode();
       },
 
       focus(evt) { evt.target.blur(); }
