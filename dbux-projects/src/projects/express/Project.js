@@ -80,7 +80,13 @@ export default class ExpressProject extends Project {
         id: 8,
         label: 'Router.use: empty path',
         testRe: 'should support empty string path',
-        testFilePaths: ['test/app.use.js']
+        testFilePaths: ['test/app.use.js'],
+        bugLocations: [
+          {
+            fileName: 'lib/application.js',
+            line: 168
+          }
+        ]
       },
       {
         // https://github.com/BugsJS/express/commit/af824af13e1594e33ca76b9df5983cc4c8ad1b70
@@ -100,7 +106,13 @@ export default class ExpressProject extends Project {
         label: 'send numbers as json',
         testRe: 'should send number as json',
         testFilePaths: ['test/res.send.js'],
-        solutionCommit: 'da7b0cdf2abd82c31b1f561d49eb23da81284ae7'
+        solutionCommit: 'da7b0cdf2abd82c31b1f561d49eb23da81284ae7',
+        bugLocations: [
+          ...[98, 101, 102, 108, 109, 110, 111].map(line => ({
+            fileName: 'lib/response.js',
+            line
+          }))
+        ]
       },
       {
         id: 12,
@@ -128,11 +140,22 @@ export default class ExpressProject extends Project {
         id: 15,
         label: 'default Content-Type',
         testRe: [
-          'should set the correct  charset for the Content[-]Type',
-          'should default the Content-Type'
+          'with canonicalized mime types should default the Content-Type'
+          // 'should set the correct  charset for the Content[-]Type',
+          // 'should default the Content-Type'
         ],
         testFilePaths: ['test/res.format.js'],
-        require: []
+        require: [],
+        bugLocations: [
+          {
+            fileName: 'lib/response.js',
+            line: 471
+          },
+          ...[90, 91, 92].map(line => ({
+            fileName: 'lib/utils.js',
+            line
+          }))
+        ]
       },
       {
         id: 16,

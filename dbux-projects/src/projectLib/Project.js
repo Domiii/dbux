@@ -580,12 +580,11 @@ This may be solved by pressing \`clean project folder\` button.`);
   getOrLoadBugs() {
     if (!this._bugs) {
       let arr = this.loadBugs();
-      // experimental-feature
-      // if (process.env.NODE_ENV === 'production') {
-      //   // NOTE: this is an immature feature
-      //   //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
-      //   arr = arr.slice(0, 1);
-      // }
+      if (process.env.NODE_ENV === 'production') {
+        // NOTE: this is an immature feature
+        //      for now, only provide one bug for demonstration purposes and to allow us gather feedback
+        arr = arr.filter(bug => bug.label && bug.bugLocations?.length);
+      }
 
       // number = id (if number was not assigned)
       arr.forEach(bug => {
