@@ -264,6 +264,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
   handleRefresh() {
     throw new Error(`${this.componentName}.handleRefresh not implemented`);
   }
+  
+  async waitForRefresh() {
+    return this._refreshPromise;
+  }
 
   refresh = makeDebounce(() => {
     ++this._refreshRequests;

@@ -15,9 +15,7 @@ class PathwaysStepGroup extends ClientComponentEndpoint {
           </div>
         </div>
         <hr class="step-separator" style="">
-        <div class="flex-row">
-          <div class="flex-row" data-mount="PathwaysStep"></div>
-        </div>
+        <div style="flex-wrap: wrap;" class="flex-row" data-mount="PathwaysStep"></div>
       </div>
     `);
   }
@@ -56,7 +54,7 @@ class PathwaysStepGroup extends ClientComponentEndpoint {
   on = {
     title: {
       click(evt) {
-        if (this.state.hasTrace) {
+        if (this.state.firstStep.hasTrace) {
           const {
             firstStep: { id }
           } = this.state;

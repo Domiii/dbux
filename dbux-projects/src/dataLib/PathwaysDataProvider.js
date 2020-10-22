@@ -254,16 +254,19 @@ export default class PathwaysDataProvider extends DataProviderBase {
     const {
       createdAt,
       type: actionType,
-      searchTerm
+      searchTerm,
+      annotation
     } = firstAction;
 
     const groupType = getGroupTypeByActionType(actionType);
 
     const group = {
       stepId,
-      searchTerm,
       createdAt,
-      type: groupType
+      type: groupType,
+
+      searchTerm,
+      annotation
     };
 
     this.addData({ actionGroups: [group] });

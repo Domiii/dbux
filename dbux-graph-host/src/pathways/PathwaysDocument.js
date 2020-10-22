@@ -90,6 +90,9 @@ class PathwaysDocument extends HostComponentEndpoint {
         pathwaysMode: mode
       });
 
+      this.view.refresh();
+      await this.view.waitForRefresh();
+
       // switch (mode) {
       //   case PathwaysMode.Analyze:
       //     await this.componentManager.externals.decorateVisitedTraces();
@@ -98,8 +101,6 @@ class PathwaysDocument extends HostComponentEndpoint {
       //     await this.componentManager.externals.stopDecorating();
       //     break;
       // }
-
-      this.view.refresh();
     }
   };
 }

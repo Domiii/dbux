@@ -12,9 +12,10 @@ class PathwaysActionGroup extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`<div>
       <div class="flex-row">
         <div>
-          <button data-el="btn" class="btn btn-primary flex-row no-padding" style="background: transparent;">
+          <button data-el="btn" class="btn btn-primary flex-row no-padding" style="display:flex; background: transparent;">
             <img width="20px" data-el="icon" src="${iconUri}">
-            <span data-el="searchTerm"></span>
+            <div class="action-text" data-el="searchTerm"></div>
+            <div class="action-text" data-el="annotation"></div>
           </button>
         </div>
         <div class="flex-row" data-mount="PathwaysAction"></div>
@@ -27,11 +28,19 @@ class PathwaysActionGroup extends ClientComponentEndpoint {
     const {
       type,
       typeName,
-      searchTerm
+      searchTerm,
+      annotation
     } = this.state;
 
     this.els.icon.title = typeName;
-    searchTerm && (this.els.searchTerm.textContent = searchTerm);
+    if (searchTerm) {
+      this.els.searchTerm.textContent = searchTerm;
+      this.els.searchTerm.title = searchTerm;
+    }
+    if (annotation) {
+      this.els.annotation.textContent = annotation;
+      this.els.annotation.title = annotation;
+    }
   }
 
   on = {
