@@ -50,8 +50,13 @@
     "description": ""
   },
   {
+    "command": "dbux.openPracticeLogFolder",
+    "title": "Dbux: Open Practice Log Folder",
+    "description": ""
+  },
+  {
     "command": "dbux.resetPracticeProgress",
-    "title": "Dbux: Reset Practice Progress",
+    "title": "Dev: Reset Practice Progress",
     "description": ""
   },
   {
