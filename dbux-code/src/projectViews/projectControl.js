@@ -51,11 +51,13 @@ export async function initProjectManager(extensionContext) {
 
   // the folder that contains the sample projects for dbux-practice
   const projectsRoot = path.join(dependencyRoot, 'dbux_projects');
+  const dbuxLanguage = storageGet(`dbux.language`);
   const stopwatch = getStopwatch();
 
   const cfg = {
     dependencyRoot,
-    projectsRoot
+    projectsRoot,
+    dbuxLanguage,
   };
   const externals = {
     editor: {
@@ -73,6 +75,7 @@ export async function initProjectManager(extensionContext) {
       set: storageSet,
     },
     async confirm(msg, modal = false) {
+      // TOTRANSLATE
       const confirmText = 'Yes';
       const refuseText = 'No';
       const cancelText = 'Cancel';

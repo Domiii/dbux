@@ -39,6 +39,6 @@ export default async function (lang) {
   return initPromise = _init(lang);
 }
 
-export function translate(key) {
-  return i18nextInstance.t(key);
+export function translate(key, data) {
+  return i18nextInstance.t(key, data);
 }

@@ -13,6 +13,7 @@ import { initProjectCommands } from '../commands/projectCommands';
 import { get as mementoGet, set as mementoSet } from '../memento';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { initCodeEvents } from '../practice/codeEvents';
+import { translate } from '../lang';
 
 const showProjectViewKeyName = 'dbux.projectView.showing';
 
@@ -73,9 +74,9 @@ export class ProjectViewController {
     try {
       if (this.manager.practiceSession) {
         const { bug } = this.manager.practiceSession;
-        await showInformationMessage(`[Dbux] You are currently practicing ${bug.id}`, {
-          'OK'() { },
-          'Give up': this.maybeStopPractice.bind(this)
+        await showInformationMessage(translate('projectView.existBug.message', { bug: bug.id }), {
+          [translate('projectView.existBug.ok')]() { },
+          [translate('projectView.existBug.giveUp')]: this.maybeStopPractice.bind(this)
         });
       }
     }
@@ -213,8 +214,8 @@ export class ProjectViewController {
 
   async confirmCancelPracticeSession(dontRefreshView = false) {
     if (this.manager.practiceSession) {
-      const result = await showInformationMessage('Do you want to stop your current practice session to continue?', {
-        'Give up': async () => {
+      const result = await showInformationMessage(translate('projectView.cancelPractice.message'), {
+        [translate('projectView.cancelPractice.giveUp')]: async () => {
           await this.manager.stopPractice(dontRefreshView);
           return true;
         }
@@ -233,8 +234,8 @@ export class ProjectViewController {
       return;
     }
     const confirmString = (practiceSession.stopwatchEnabled && !practiceSession.isSolved) ?
-      'Are you sure you want to give up the timed challenge?' :
-      'Do you want to stop the practice session?';
+      translate('projectView.stopPractice.giveUp') : 
+      translate('projectView.stopPractice.stop');
     await showInformationMessage(confirmString, {
       Yes: async () => {
         await this.manager.stopPractice();

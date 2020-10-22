@@ -5,6 +5,7 @@ import { onLogError } from '@dbux/common/src/log/logger';
 import { showOutputChannel } from './projectViews/projectViewsController';
 import { showErrorMessage } from './codeUtil/codeModals';
 import { showHelp } from './help';
+import { translate } from './lang';
 
 let errorLogFlag = true;
 
@@ -24,13 +25,11 @@ export function initLogging() {
 function onError(...args) {
   if (errorLogFlag) {
     showErrorMessage(args.join(' '), {
-      [`Show Log`]: () => {
+      [translate('onError.show')]: () => {
         showOutputChannel();
       },
-      [`This sucks!`]: async () => {
-        // eslint-disable-next-line max-len
-        const msg = `If this error is causing you trouble, you can:\n→ Join Discord and ask for help\n→ Check out the Dbux website for more information\n→ If this is an unexpected error, grab the log, your system's basic information and report an issue on Github`;
-        return showHelp(msg);
+      [translate('onError.suck')]: async () => {
+        return showHelp(translate('onError.suckMessage'));
       },
     });
   }

@@ -1,33 +1,34 @@
 import { Uri, env } from 'vscode';
 import { showInformationMessage } from './codeUtil/codeModals';
+import { translate } from './lang';
 
 let dialogController;
 
 export async function showHelp(message) {
   const isDefaultHelp = !message;
-  message = message || 'If you need help with Dbux, here are a few places to go:';
+  message = message || translate('showHelp.defaultMessage');
 
   let btns = {
-    async 'Ask on Discord'() {
+    async [translate('showHelp.discord')]() {
       return env.openExternal(Uri.parse('https://discord.gg/jWN356W'));
     },
-    async 'Open Manual'() {
+    async [translate('showHelp.manual')]() {
       return env.openExternal(Uri.parse('https://github.com/Domiii/dbux#readme'));
     },
-    async 'Read Dbux\'s known limitations'() {
+    async [translate('showHelp.readDbux')]() {
       return env.openExternal(Uri.parse('https://github.com/Domiii/dbux#known-limitations'));
     },
-    async [`Report Issue`]() {
+    async [translate('showHelp.report')]() {
       return env.openExternal(Uri.parse('https://github.com/Domiii/dbux/issues'));
     }
   };
 
   if (isDefaultHelp) {
     btns = {
-      async 'Start Tutorial'() {
+      async [translate('showHelp.tutorial')]() {
         return dialogController.startDialog('tutorial');
       },
-      async 'Take Survey'() {
+      async [translate('showHelp.survey')]() {
         return dialogController.startDialog('survey1');
       },
       ...btns

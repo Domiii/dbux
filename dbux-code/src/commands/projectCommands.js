@@ -2,6 +2,7 @@ import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
 import { showInformationMessage } from '../codeUtil/codeModals';
+import { translate } from '../lang';
 
 /** @typedef {import('../projectViews/projectViewsController').ProjectViewController} ProjectViewController */
 
@@ -35,7 +36,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.busyIcon', (/* node */) => {
-    return window.showInformationMessage('[dbux] busy now...');
+    return window.showInformationMessage(translate('busyNow')); // how to triggger this
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.stopBug', (/* node */) => {

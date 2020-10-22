@@ -19,7 +19,6 @@ import PracticeSessionState from './practiceSession/PracticeSessionState';
 import { initUserEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import BugDataProvider from './dataLib/BugDataProvider';
 import initLang, { translate } from './lang';
-import translation from './lang/en';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -105,7 +104,7 @@ export default class ProjectsManager {
 
   async init() {
     await this.recoverPracticeSession();
-    await initLang('zh');
+    await initLang(this.config.dbuxLanguage);
   }
 
   get pdp() {
