@@ -1,8 +1,11 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import traceSelection from '@dbux/data/src/traceSelection';
 import { registerCommand } from './commandUtil';
-import { showInformationMessage } from '../codeUtil/codeModals';
+import { showInformationMessage, showWarningMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
+import { emitAnnotateTraceAction } from '../userEvents';
 
 /** @typedef {import('../projectViews/projectViewsController').ProjectViewController} ProjectViewController */
 
@@ -58,7 +61,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbuxProjectView.node.showBugLog', async (node) => {
     await node.showBugLog();
   });
-  
+
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
     return projectViewController.manager.runner.cancel();
   });
@@ -79,5 +82,33 @@ export function initProjectCommands(extensionContext, projectViewController) {
 
   registerCommand(extensionContext, 'dbux.clearDBStats', async () => {
     projectViewController.manager._backend.clearDBStats();
+  });
+
+  registerCommand(extensionContext, 'dbuxSessionView.node.annotateTraceQ', async (node) => {
+    if (!traceSelection.selected) {
+      await showWarningMessage('You have not selected any trace yet.');
+      return;
+    }
+
+    const session = node.bug.manager.practiceSession;
+    const annotation = await window.showInputBox({ value: session.lastAnnotation });
+    if (annotation) {
+      session.lastAnnotation = annotation;
+      emitAnnotateTraceAction(UserActionType.AnnotateTraceQ, traceSelection.selected, annotation);
+    }
+  });
+
+  registerCommand(extensionContext, 'dbuxSessionView.node.annotateTraceI', async (node) => {
+    if (!traceSelection.selected) {
+      await showWarningMessage('You have not selected any trace yet.');
+      return;
+    }
+
+    const session = node.bug.manager.practiceSession;
+    const annotation = await window.showInputBox({ value: session.lastAnnotation });
+    if (annotation) {
+      session.lastAnnotation = annotation;
+      emitAnnotateTraceAction(UserActionType.AnnotateTraceI, traceSelection.selected, annotation);
+    }
   });
 }

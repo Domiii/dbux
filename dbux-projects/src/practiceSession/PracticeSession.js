@@ -27,6 +27,7 @@ export default class PracticeSession {
     this.project = bug.project;
     this.bug = bug;
     this.manager = manager;
+    this.lastAnnotation = '';
 
     let bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {

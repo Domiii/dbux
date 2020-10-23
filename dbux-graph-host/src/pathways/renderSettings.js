@@ -38,6 +38,8 @@ const defaultActionGroupIcon = 'gear.svg';
 
 const iconsByActionGroupType = {
   [ActionGroupType.TagTrace]: 'flag.svg',
+  [ActionGroupType.AnnotateTraceQ]: 'q.svg',
+  [ActionGroupType.AnnotateTraceI]: 'i.svg',
 
   [ActionGroupType.SelectTrace]: 'crosshair_red.svg',
   [ActionGroupType.TDValue]: 'project.svg',
