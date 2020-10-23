@@ -76,10 +76,10 @@ export default class PracticeSession {
       // await this.manager.askForSubmit();
       await this.askToFinish();
     }
-    else {
-      // some test failed
-      this.manager.externals.alert(`[Dbux] ${result.code} test(s) failed. Keep going! :)`);
+    else if (result?.code) {
+      this.manager.externals.alert(`[Dbux] ${result?.code} test(s) failed. Keep going! :)`);
     }
+    // else: errored out + already reported
     await this.save();
     await this.bdp.save();
   }

@@ -11,14 +11,15 @@ export async function buildMochaRunCommand(cfg) {
     mochaArgs = '-c', // colors
     nodeArgs,
     dbuxArgs,
+    keepAlive = true,
     require = EmptyArray,
     debugPort
   } = cfg;
 
   // keep alive: if we don't do this, mocha will call `process.exit` when run has ended, and we won't receive data sent by runtime
-  const keepAlive = '--no-exit';
+  const noExit = keepAlive ? '--no-exit ' : '';
 
-  mochaArgs = `${keepAlive} ${mochaArgs}`;
+  mochaArgs = `${noExit}${mochaArgs}`;
   
   // NOTE: `Project.installDbuxDependencies` installs @dbux/cli for us
 

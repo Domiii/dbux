@@ -193,15 +193,15 @@ export default class BugRunner {
 
       cfg = {
         debugPort: cfg?.debugMode && this.debugPort || null,
-        dbuxJs: this.manager.getDbuxCliBinPath(),
-        ...cfg,
+        dbuxJs: cfg?.dbuxEnabled ? this.manager.getDbuxCliBinPath() : null,
+        ...cfg
       };
       let command = await bug.project.testBugCommand(bug, cfg);
       command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
       if (!command) {
         // nothing to do
-        project.logger.debug('has no test command. Nothing left to do.');
+        project.logger.debug('testBugCommand did not return anything. Nothing left to do.');
         // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
         return null;
       }
@@ -220,6 +220,10 @@ export default class BugRunner {
         this._emitter.emit('testFinished', bug, result);
         return result;
       }
+    }
+    catch (err) {
+      project.logger.error(`Test run failed: ${err.message}`);
+      project.logger.warn(`  ${err.stack}`);
     }
     finally {
       // need to check this._project exist, it might be kill during activating

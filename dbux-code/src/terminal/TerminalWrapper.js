@@ -43,11 +43,11 @@ export default class TerminalWrapper {
   _disposable;
 
   start(cwd, command, args) {
-    this._disposable = window.onDidCloseTerminal(terminal => {
-      if (terminal === this._terminal) {
-        this.dispose();
-      }
-    });
+    // this._disposable = window.onDidCloseTerminal(terminal => {
+    //   if (terminal === this._terminal) {
+    //     this.dispose();
+    //   }
+    // });
     this._promise = this._run(cwd, command, args);
   }
 
@@ -82,6 +82,7 @@ export default class TerminalWrapper {
     const watcher = fs.watch(tmpFolder);
     watcher.on('change', (eventType, filename) => {
       watcher.close();
+      this.dispose();
 
       let result;
       if (filename === 'error') {
@@ -111,6 +112,7 @@ export default class TerminalWrapper {
     window.onDidCloseTerminal((terminal) => {
       if (terminal === this._terminal) {
         watcher.close();
+        this.dispose();
 
         const msg = `Terminal closed (${commandCall})`;
         if (resolved) {
