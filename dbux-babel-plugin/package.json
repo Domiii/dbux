@@ -1,6 +1,6 @@
 {
   "name": "@dbux/babel-plugin",
-  "version": "0.3.7",
+  "version": "0.3.8-dev.0",
   "description": "",
   "author": "Domi",
   "module": "dist/index.js",
@@ -23,7 +23,7 @@
     "@babel/template": "7.10.1",
     "@babel/traverse": "7.10.1",
     "@babel/types": "7.10.1",
-    "@dbux/common": "^0.3.7",
+    "@dbux/common": "^0.3.8-dev.0",
     "i18next": "^19.8.2",
     "lodash": "^4.17.19"
   },
