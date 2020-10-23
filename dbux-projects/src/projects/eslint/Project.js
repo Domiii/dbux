@@ -33,9 +33,16 @@ export default class EslintProject extends Project {
     const bugs = [
       // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
       {
+        label: 'no object calls',
         id: 1,
         testRe: '',
-        testFilePaths: ['tests/lib/rules/no-obj-calls.js']
+        testFilePaths: ['tests/lib/rules/no-obj-calls.js'],
+        bugLocations: [
+          {
+            fileName: 'lib/rules/no-obj-calls.js',
+            line: 31
+          }
+        ]
       }
     ];
 

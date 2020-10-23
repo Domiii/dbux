@@ -42,7 +42,6 @@ function main() {
   const animals = Array(n).fill(0).map(i => {
     const AnimalClass = pickRandom(AnimalClasses);
     return new AnimalClass();
-    // return new AnimalClasses[Math.floor(Math.random() * AnimalClasses.length)]();
   });
 
   // let all animals speak once

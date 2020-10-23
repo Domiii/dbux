@@ -70,11 +70,6 @@ export default class ExpressProject extends Project {
         ]
       },
 
-
-      // ###########################################################################
-      // more bugs
-      // ###########################################################################
-
       {
         // https://github.com/BugsJS/express/releases/tag/Bug-2-test
         // https://github.com/BugsJS/express/commit/3260309b422cd964ce834e3925823c80b3399f3c
@@ -84,8 +79,23 @@ export default class ExpressProject extends Project {
           'req .protocol when "trust proxy" is enabled when trusting hop count should respect X-Forwarded-Proto',
           // 'when "trust proxy" trusting hop count should respect X-Forwarded-Proto'
         ],
-        testFilePaths: ['test/req.protocol.js', 'test/req.secure.js']
+        testFilePaths: ['test/req.protocol.js', 'test/req.secure.js'],
+        bugLocations: [
+          {
+            fileName: 'lib/request.js',
+            line: 361
+          },
+          {
+            fileName: 'lib/utils.js',
+            line: 383
+          }
+        ]
       },
+
+
+      // ###########################################################################
+      // more bugs
+      // ###########################################################################
       // {
       //   // NOTE: this test passes by default
       //   // https://github.com/BugsJS/express/commit/4a59ea5dd0a7cb5b8cce80be39a5579876993cf1
