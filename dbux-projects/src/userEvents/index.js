@@ -1,6 +1,5 @@
 import NanoEvents from 'nanoevents';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import { isStateFoundedType } from '../practiceSession/PracticeSessionState';
 
 /** @typedef {import('../practiceSession/PracticeSession').default} PracticeSession */
 /** @typedef {import('../ProjectsManager').default} ProjectsManager */
@@ -37,12 +36,12 @@ export function emitPracticeSessionEvent(eventName, practiceSession) {
   });
 }
 
-export function emitSessionFinishedEvent() {
-  emitUserEvent(UserActionType.SessionFinished);
+export function emitSessionFinishedEvent(state) {
+  emitUserEvent(UserActionType.SessionFinished, { state });
 }
 
 export function emitNewTestRun(testRun) {
-  emitUserEvent(UserActionType.TestRunFinished, { 
+  emitUserEvent(UserActionType.TestRunFinished, {
     testRun,
     // new test run always introduces a new step
     // newStep: true
@@ -91,7 +90,7 @@ export function onUserEvent(cb) {
  * @param {Object} evtData NOTE: data *must* always be completely serializable, simple data.
  */
 export function emitUserEvent(eventType, evtData) {
-  if (manager.practiceSession && !isStateFoundedType(manager.practiceSession.state)) {
+  if (manager.practiceSession && !manager.practiceSession.isFinished()) {
     emitter.emit('e', {
       type: eventType,
       sessionId: manager.practiceSession.sessionId,

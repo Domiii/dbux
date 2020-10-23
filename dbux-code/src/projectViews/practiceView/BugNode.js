@@ -50,6 +50,8 @@ export default class BugNode extends BaseTreeViewNode {
         return progress.stopwatchEnabled ? 'edit.svg' : 'edit.svg';
       case BugStatus.Attempted:
         return progress.stopwatchEnabled ? 'wrong.svg' : 'wrong_bw.svg';
+      case BugStatus.Found:
+        return progress.stopwatchEnabled ? 'correct.svg' : 'correct_bw.svg';
       case BugStatus.Solved:
         return progress.stopwatchEnabled ? 'correct.svg' : 'correct_bw.svg';
     }
