@@ -23,8 +23,12 @@ export default class ExpressProject extends Project {
         testFilePaths: ['test/app.options.js'],
         bugLocations: [
           {
-            fileName: './lib/router/index.js',
+            fileName: 'lib/router/index.js',
             line: 156
+          },
+          {
+            fileName: 'lib/router/index.js',
+            line: 210
           }
         ]
       },
