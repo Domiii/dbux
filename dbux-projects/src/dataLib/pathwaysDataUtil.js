@@ -14,6 +14,7 @@ export default {
 
   /**
    * @param {PathwaysDataProvider} pdp
+   * @return {boolean}
    */
   hasSessionFinished(pdp) {
     const lastAction = pdp.collections.userActions.getLast();

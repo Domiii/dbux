@@ -78,7 +78,8 @@ async function activate(context) {
     await initGraphView();
     await initPathwaysView();
 
-    await maybeStartSurvey1ForTheFirstTime();
+    // Disabled for the first experiment
+    // await maybeStartSurvey1ForTheFirstTime();
   } catch (e) {
     logError('error in \'activate\'', e.stack);
     debugger;
