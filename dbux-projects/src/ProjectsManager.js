@@ -264,9 +264,14 @@ export default class ProjectsManager {
       return;
     }
 
-    const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
-    this._resetPracticeSession(bug, sessionData, true);
-    this.practiceSession.setupStopwatch();
+    try {
+      const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
+      this._resetPracticeSession(bug, sessionData, true);
+      this.practiceSession.setupStopwatch();
+    }
+    catch (err) {
+      logError(`Unable to load PracticeSession: ${err.stack}`);
+    }
   }
 
   async savePracticeSession() {
@@ -453,6 +458,9 @@ export default class ProjectsManager {
     const cfg = {
       debugMode,
       nodeArgs,
+      dbuxEnabled,
+
+      // TODO: just get rid of dbux entirely when not injecting dbux
       dbuxArgs: dbuxEnabled ? '--verbose=1' : '--dontInjectDbux',
     };
 

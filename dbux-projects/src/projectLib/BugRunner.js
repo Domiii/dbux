@@ -193,7 +193,7 @@ export default class BugRunner {
 
       cfg = {
         debugPort: cfg?.debugMode && this.debugPort || null,
-        dbuxJs: this.manager.getDbuxCliBinPath(),
+        dbuxJs: cfg?.dbuxEnabled ? this.manager.getDbuxCliBinPath() : null,
         ...cfg,
       };
       let command = await bug.project.testBugCommand(bug, cfg);

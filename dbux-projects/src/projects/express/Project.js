@@ -146,6 +146,7 @@ export default class ExpressProject extends Project {
         ],
         testFilePaths: ['test/res.format.js'],
         require: [],
+        keepAlive: false,
         bugLocations: [
           {
             fileName: 'lib/response.js',
@@ -212,17 +213,26 @@ export default class ExpressProject extends Project {
       {
         id: 24,
         testRe: 'when error occurs in respone handler should pass error to callback',
-        testFilePaths: ['test/app.options.js']
+        testFilePaths: ['test/app.options.js'],
+        require: []
       },
       {
         id: 25,
         testRe: 'should ignore object callback parameter with jsonp',
-        testFilePaths: ['test/res.jsonp.js']
+        testFilePaths: ['test/res.jsonp.js'],
+        mochaArgs: '--globals setImmediate,clearImmediate',
+        require: []
       },
       {
         id: 26,
         testRe: 'should ignore FQDN in path',
-        testFilePaths: ['test/Router.js']
+        testFilePaths: ['test/Router.js'],
+        bugLocations: [
+          {
+            fileName: 'lib/router/index.js',
+            line: 129
+          }
+        ]
       },
       {
         id: 27,
