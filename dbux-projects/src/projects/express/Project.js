@@ -59,7 +59,7 @@ export default class ExpressProject extends Project {
         testRe: ['should work in array of paths'],
         testFilePaths: ['test/app.router.js'],
         bugLocations: [
-          ...[99, 119, ].map(line => ({
+          ...[99, 119, 121, 122].map(line => ({
             fileName: 'lib/router/layer.js',
             line
           }))
