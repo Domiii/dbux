@@ -109,7 +109,7 @@ export default class HexoProject extends Project {
 
   async testBugCommand(bug, cfg) {
     const { projectPath } = this;
-    const bugArgs = this.getMochaArgs(bug);
+    const bugArgs = this.getMochaRunArgs(bug);
 
     const mochaCfg = {
       cwd: projectPath,

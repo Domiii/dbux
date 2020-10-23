@@ -153,6 +153,7 @@ export default class PracticeSession {
       return false;
     }
 
+    this.stopwatch.pause();
     this.setState(PracticeSessionState.Stopped);
     emitSessionFinishedEvent(this.state);
     this.save();

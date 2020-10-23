@@ -176,8 +176,9 @@ export default class ProjectsManager {
 
       this._resetPracticeSession(bug);
 
-      // activate once to show user the bug, don't care about the result
-      await this.activateBug(bug);
+      // install and activate bug (don't run it)
+      // await this.activateBug(bug);
+      await this.switchToBug(bug);
       this.bdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
     else {
@@ -435,6 +436,7 @@ export default class ProjectsManager {
     const cfg = {
       debugMode,
       nodeArgs,
+      dbuxEnabled,
 
       // NOTE: if !dbuxEnabled -> we don't actually run dbux at all anymore.
       dbuxArgs: dbuxEnabled ? '--verbose=1' : '--dontInjectDbux',
