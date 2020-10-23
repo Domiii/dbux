@@ -12,6 +12,8 @@ let UserActionType = {
   
   SelectTrace: 11,
   TagTrace: 12,
+  AnnotateTraceQ: 13,
+  AnnotateTraceI: 14,
 
   TreeViewOther: 20,
   TreeViewCollapseChangeOther: 21,

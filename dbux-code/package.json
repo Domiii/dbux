@@ -2,7 +2,7 @@
   "name": "dbux-code",
   "private": true,
   "displayName": "Dbux (ALPHA)",
-  "version": "0.3.2-dev.0",
+  "version": "0.3.5-dev.0",
   "publisher": "Domi",
   "description": "",
   "repository": {
@@ -503,6 +503,22 @@
       {
         "command": "dbux.deleteUserEvents",
         "title": "Dev: Delete all user events"
+      },
+      {
+        "command": "dbuxSessionView.node.annotateTraceQ",
+        "title": "Ask question of this trace",
+        "icon": {
+          "light": "resources/light/q.svg",
+          "dark": "resources/dark/q.svg"
+        }
+      },
+      {
+        "command": "dbuxSessionView.node.annotateTraceI",
+        "title": "Add comment on this trace",
+        "icon": {
+          "light": "resources/light/i.svg",
+          "dark": "resources/dark/i.svg"
+        }
       }
     ],
     "menus": {
@@ -658,6 +674,16 @@
           "command": "dbuxProjectView.node.showBugLog",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode/",
           "group": "inline@8"
+        },
+        {
+          "command": "dbuxSessionView.node.annotateTraceQ",
+          "when": "viewItem == dbuxSessionView.tagNode",
+          "group": "inline@1"
+        },
+        {
+          "command": "dbuxSessionView.node.annotateTraceI",
+          "when": "viewItem == dbuxSessionView.tagNode",
+          "group": "inline@2"
         }
       ],
       "view/title": [
@@ -777,7 +803,7 @@
         },
         {
           "command": "dbux.clearMemento",
-          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+          "when": "dbux.context.activated"
         },
         {
           "command": "dbux.debugFile",
@@ -1022,6 +1048,14 @@
         {
           "command": "dbuxTraceDetailsView.expandNode",
           "when": "false"
+        },
+        {
+          "command": "dbuxSessionView.node.annotateTraceQ",
+          "when": "false"
+        },
+        {
+          "command": "dbuxSessionView.node.annotateTraceI",
+          "when": "false"
         }
       ]
     },
@@ -1101,14 +1135,14 @@
     "watch": "node ../node_modules/webpack/bin/webpack.js --watch"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.3.2-dev.0",
-    "@dbux/cli": "^0.3.2-dev.0",
-    "@dbux/common": "^0.3.2-dev.0",
-    "@dbux/data": "^0.3.2-dev.0",
-    "@dbux/graph-common": "^0.3.2-dev.0",
-    "@dbux/graph-host": "^0.3.2-dev.0",
-    "@dbux/projects": "^0.3.2-dev.0",
-    "@dbux/runtime": "^0.3.2-dev.0",
+    "@dbux/babel-plugin": "^0.3.5-dev.0",
+    "@dbux/cli": "^0.3.5-dev.0",
+    "@dbux/common": "^0.3.5-dev.0",
+    "@dbux/data": "^0.3.5-dev.0",
+    "@dbux/graph-common": "^0.3.5-dev.0",
+    "@dbux/graph-host": "^0.3.5-dev.0",
+    "@dbux/projects": "^0.3.5-dev.0",
+    "@dbux/runtime": "^0.3.5-dev.0",
     "@types/glob": "^7.1.1",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.11.7",

@@ -57,6 +57,14 @@ export function emitTagTraceAction(trace) {
   });
 }
 
+export function emitAnnotateTraceAction(type, trace, s) {
+  emitUserEvent(type, {
+    annotation: s,
+    trace,
+    locationInfo: getExtraTraceLocationImformation(trace)
+  });
+}
+
 export function emitTreeViewAction(treeViewName, action, nodeId, nodeLabel, userActionType, args) {
   emitUserEvent(userActionType || UserActionType.TreeViewOther, {
     treeViewName,

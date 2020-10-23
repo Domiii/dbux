@@ -127,11 +127,11 @@ async function bumpVersion() {
     4: ['major']
   });
 
-  if (choice !== 'None') {
-    await exec(`npx lerna version ${choice} --force-publish`);
+  if (choice !== '(skip)') {
+    await exec(`npx lerna version ${choice} --force-publish -y`);
   }
 
-  return choice !== 'None';
+  return choice !== '(skip)';
 }
 
 // function build() {
@@ -162,10 +162,10 @@ async function publishToNPM() {
   // }
   await exec(publishCmd);
 
-  // check package status on NPM
-  if (await yesno('Published to NPM. Open NPM website?')) {
-    open('https://www.npmjs.com/search?q=dbux');
-  }
+  // // check package status on NPM
+  // if (await yesno('Published to NPM. Open NPM website?')) {
+  //   open('https://www.npmjs.com/search?q=dbux');
+  // }
 }
 
 async function publishToMarketplace() {
@@ -187,10 +187,10 @@ async function publishToMarketplace() {
   // publish dbux-code to VSCode marketplace (already built)
   await exec('npm run code:publish-no-build');
 
-  if (await yesno('Published to Marketplace. Open extension website?')) {
-    // open('https://marketplace.visualstudio.com/manage/publishers/Domi');
-    open('https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code');
-  }
+  // if (await yesno('Published to Marketplace. Open extension website?')) {
+  //   // open('https://marketplace.visualstudio.com/manage/publishers/Domi');
+  //   open('https://marketplace.visualstudio.com/items?itemName=Domi.dbux-code');
+  // }
 }
 
 async function fixLerna() {

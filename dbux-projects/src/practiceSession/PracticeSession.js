@@ -27,6 +27,7 @@ export default class PracticeSession {
     this.project = bug.project;
     this.bug = bug;
     this.manager = manager;
+    this.lastAnnotation = '';
 
     let bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {
@@ -110,34 +111,79 @@ export default class PracticeSession {
   }
 
   tagBugTrace(trace) {
-    if (isStateFoundedType(this.state)) {
-      const alertMsg = `You have already found the bug`;
-      this.manager.externals.alert(alertMsg);
+    if (this.isFinished()) {
+      const alertsMsg = `Practice session aleady finished.`;
+      this.manager.externals.alert(alertsMsg);
+      return;
+    }
+
+    const { applicationId, traceId } = trace;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const location = {
+      fileName: dp.util.getTraceFilePath(traceId),
+      line: dp.util.getTraceLoc(traceId).start.line,
+    };
+
+    if (this.bug.isCorrectBugLocation(location)) {
+      this.manager.bdp.updateBugProgress(this.bug, { status: BugStatus.Found });
+      this.setState(PracticeSessionState.Found);
+      emitSessionFinishedEvent(this.state);
+      this.save();
+      this.manager.bdp.save();
+      // TOTRANSLATE
+      const congratsMsg = `Congratulations!! You have found the bug!`;
+      this.manager.externals.alert(congratsMsg, true);
     }
     else {
-      const { applicationId, traceId } = trace;
-      const dp = allApplications.getById(applicationId).dataProvider;
-      const location = {
-        fileName: dp.util.getTraceFilePath(traceId),
-        line: dp.util.getTraceLoc(traceId).start.line,
-      };
-
-      if (this.bug.isCorrectBugLocation(location)) {
-        this.manager.bdp.updateBugProgress(this.bug, { status: BugStatus.Found });
-        emitSessionFinishedEvent();
-        this.setState(PracticeSessionState.Found);
-        this.save();
-        this.bdp.save();
-        // TOTRANSLATE
-        const congratsMsg = `Congratulations!! You have found the bug!`;
-        this.manager.externals.alert(congratsMsg, true);
-      }
-      else {
-        // TOTRANSLATE
-        const failedMsg = `This is not the right line, keep going!`;
-        this.manager.externals.alert(failedMsg, false);
-      }
+      // TOTRANSLATE
+      const failedMsg = `This is not the right line, keep going!`;
+      this.manager.externals.alert(failedMsg, false);
     }
+  }
+
+  /**
+   * Stop practicing, but not quit session
+   */
+  async confirmStop() {
+    if (this.isFinished()) {
+      return true;
+    }
+
+    if (!await this.manager.externals.confirm(`You have not found the bug, are you sure?`, true)) {
+      return false;
+    }
+
+    this.setState(PracticeSessionState.Stopped);
+    emitSessionFinishedEvent(this.state);
+    this.save();
+
+    return true;
+  }
+
+  async maybeExit(dontRefreshView) {
+    if (!await this.manager.externals.confirm(`Do you want to exit the practice session?`, true)) {
+      return false;
+    }
+
+    await this.manager.stopRunner();
+
+    if (this.stopwatchEnabled) {
+      if (!PracticeSessionState.is.Solved(this.state)) {
+        this.giveup();
+        await this.manager.bdp.save();
+      }
+      this.stopwatch.pause();
+      this.stopwatch.hide();
+    }
+
+    this.manager.practiceSession = null;
+
+    await this.save();
+
+    // emitPracticeSessionEvent('stopped', practiceSession);
+    this.manager.pdp.reset();
+    this.manager._emitter.emit('practiceSessionChanged'/*, dontRefreshView */);
+    return true;
   }
 
   // ###########################################################################

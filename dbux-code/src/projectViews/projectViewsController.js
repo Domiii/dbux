@@ -50,12 +50,14 @@ export class ProjectViewController {
     this.isShowingTreeView = mementoGet(showProjectViewKeyName, true);
     commands.executeCommand('setContext', 'dbux.context.showPracticeViews', this.isShowingTreeView);
     commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);
-    
+
     this.projectViewNodeProvider = new ProjectNodeProvider(context, this);
     this.sessionViewNodeProvider = new SessionNodeProvider(context, this);
-    
+
     this.practiceStopwatch = getStopwatch();
-    this.practiceStopwatch.onClick(context, this.maybeStopPractice.bind(this));
+    this.practiceStopwatch.onClick(context, async () => {
+      await this.manager.stopPractice();
+    });
 
     // ########################################
     //  listen on practice status changed
@@ -76,7 +78,9 @@ export class ProjectViewController {
         const { bug } = this.manager.practiceSession;
         await showInformationMessage(translate('projectView.existBug.message', { bug: bug.id }), {
           [translate('projectView.existBug.ok')]() { },
-          [translate('projectView.existBug.giveUp')]: this.maybeStopPractice.bind(this)
+          async [translate('projectView.existBug.giveUp')]() {
+            await this.manager.stopPractice();
+          }
         });
       }
     }
@@ -216,8 +220,7 @@ export class ProjectViewController {
     if (this.manager.practiceSession) {
       const result = await showInformationMessage(translate('projectView.cancelPractice.message'), {
         [translate('projectView.cancelPractice.giveUp')]: async () => {
-          await this.manager.stopPractice(dontRefreshView);
-          return true;
+          return await this.manager.stopPractice(dontRefreshView);
         }
       }, { modal: true });
 
@@ -226,21 +229,6 @@ export class ProjectViewController {
     else {
       return true;
     }
-  }
-
-  async maybeStopPractice() {
-    const { practiceSession } = this.manager;
-    if (!practiceSession) {
-      return;
-    }
-    const confirmString = (practiceSession.stopwatchEnabled && !practiceSession.isSolved) ?
-      translate('projectView.stopPractice.giveUp') : 
-      translate('projectView.stopPractice.stop');
-    await showInformationMessage(confirmString, {
-      Yes: async () => {
-        await this.manager.stopPractice();
-      }
-    }, { modal: true });
   }
 }
 

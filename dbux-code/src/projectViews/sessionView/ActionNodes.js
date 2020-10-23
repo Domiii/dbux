@@ -154,6 +154,7 @@ class TagNode extends SessionNode {
 
   init() {
     this.tooltip = 'Tag current trace as bug location';
+    this.contextValue = 'dbuxSessionView.tagNode';
   }
 
   makeIconPath() {
@@ -173,8 +174,13 @@ class TagNode extends SessionNode {
 }
 
 class StopPracticeNode extends SessionNode {
-  static makeLabel() {
-    return 'Stop Practice';
+  static makeLabel(bug) {
+    if (bug.manager.practiceSession.isFinished()) {
+      return 'Exit Session';
+    }
+    else {
+      return 'Stop Practice';
+    }
   }
 
   init() {
@@ -189,8 +195,11 @@ class StopPracticeNode extends SessionNode {
     if (RunStatus.is.Busy(this.manager.runStatus)) {
       await showInformationMessage('Currently busy, please wait');
     }
+    else if (this.manager.practiceSession.isFinished()) {
+      await this.manager.practiceSession.maybeExit();
+    }
     else {
-      await this.controller.maybeStopPractice();
+      await this.manager.practiceSession.confirmStop();
     }
   }
 }

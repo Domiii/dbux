@@ -164,7 +164,7 @@ export default class ProjectsManager {
 
   async startPractice(bug) {
     if (this.practiceSession) {
-      warn(`Trying to start practiceSession of bug ${bug.id} before one is finished`);
+      await this.externals.alert(`You are currently practicing ${bug.id}`, true);
       return;
     }
 
@@ -178,7 +178,6 @@ export default class ProjectsManager {
 
       // activate once to show user the bug, don't care about the result
       await this.activateBug(bug);
-
       this.bdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
     else {
@@ -186,48 +185,27 @@ export default class ProjectsManager {
     }
 
     await this.switchToBug(bug);
-
     this.practiceSession.setupStopwatch();
-
     await this.savePracticeSession();
-
     await this.bdp.save();
   }
 
+  /**
+   * @param {boolean} dontRefreshView 
+   * @return {Promise<boolean>} indicates if practice session is stopped
+   */
   async stopPractice(dontRefreshView = false) {
     if (!this.practiceSession) {
-      return;
+      return true;
     }
 
-    if (!this.practiceSession.isFinished()) {
-      const confirmMsg = `You will lose all progress if you give up now, are you sure?`
-      const result = await this.externals.confirm(confirmMsg, true);
-  
-      if (!result) {
-        return;
-      }
+    const stopped = await this.practiceSession.confirmStop();
+    if (!stopped) {
+      return false;
     }
 
-    await this.stopRunner();
-
-    const { stopwatchEnabled, state, stopwatch } = this.practiceSession;
-
-    if (stopwatchEnabled && !PracticeSessionState.is.Solved(state)) {
-      this.practiceSession.giveup();
-    }
-    stopwatch.pause();
-    stopwatch.hide();
-
-    // const { practiceSession } = this;
-    this.practiceSession = null;
-
-    await this.savePracticeSession();
-
-    await this.bdp.save();
-
-    // emitPracticeSessionEvent('stopped', practiceSession);
-    this.pdp.reset();
-    this._emitter.emit('practiceSessionChanged', dontRefreshView);
+    const exited = await this.practiceSession.maybeExit(dontRefreshView);
+    return exited;
   }
 
   _resetPracticeSession(bug, sessionData = EmptyObject, load = false) {
@@ -452,7 +430,7 @@ export default class ProjectsManager {
     // NOTE: only supported in Node 12.12+
     const sourceMapsFlag = (enableSourceMaps &&
       (!bug.project.nodeVersion || parseFloat(bug.project.nodeVersion) > 12.12)
-    ) ? '--enable-source-maps' : ''; 
+    ) ? '--enable-source-maps' : '';
 
     const nodeArgs = `--stack-trace-limit=100 ${debugMode ? '--nolazy' : ''} ${sourceMapsFlag}`;
     const cfg = {

@@ -4,8 +4,9 @@ import Enum from '@dbux/common/src/util/Enum';
 let PracticeSessionState = {
   Activating: 1,
   Solving: 2,
-  Found: 3,
-  Solved: 4
+  Stopped: 3,
+  Found: 4,
+  Solved: 5
 };
 
 PracticeSessionState = new Enum(PracticeSessionState);
