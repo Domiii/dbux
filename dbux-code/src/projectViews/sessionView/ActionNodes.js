@@ -154,6 +154,7 @@ class TagNode extends SessionNode {
 
   init() {
     this.tooltip = 'Tag current trace as bug location';
+    this.contextValue = 'dbuxSessionView.tagNode';
   }
 
   makeIconPath() {

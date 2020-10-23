@@ -9,6 +9,9 @@ const { log, debug, warn, error: logError } = newLogger('ActionGroupType');
 let ActionGroupType = {
   SelectTrace: 1,
   TagTrace: 2,
+  AnnotateTraceQ: 3,
+  AnnotateTraceI: 4,
+
   TDValue: 11,
   TDTrackObject: 13,
   TDExecutions: 14,
@@ -51,6 +54,8 @@ const groupByActionType = {
   [UserActionType.EditorEvent]: ActionGroupType.Hidden,
   [UserActionType.SelectTrace]: ActionGroupType.SelectTrace,
   [UserActionType.TagTrace]: ActionGroupType.TagTrace,
+  [UserActionType.AnnotateTraceQ]: ActionGroupType.AnnotateTraceQ,
+  [UserActionType.AnnotateTraceI]: ActionGroupType.AnnotateTraceI,
   [UserActionType.TDValueClick]: ActionGroupType.TDValue,
   [UserActionType.TDValueCollapseChange]: ActionGroupType.TDValue,
   [UserActionType.TDTrackObjectUse]: ActionGroupType.TDTrackObject,

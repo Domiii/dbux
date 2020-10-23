@@ -503,6 +503,22 @@
       {
         "command": "dbux.deleteUserEvents",
         "title": "Dev: Delete all user events"
+      },
+      {
+        "command": "dbuxSessionView.node.annotateTraceQ",
+        "title": "Ask question of this trace",
+        "icon": {
+          "light": "resources/light/q.svg",
+          "dark": "resources/dark/q.svg"
+        }
+      },
+      {
+        "command": "dbuxSessionView.node.annotateTraceI",
+        "title": "Add comment on this trace",
+        "icon": {
+          "light": "resources/light/i.svg",
+          "dark": "resources/dark/i.svg"
+        }
       }
     ],
     "menus": {
@@ -658,6 +674,16 @@
           "command": "dbuxProjectView.node.showBugLog",
           "when": "viewItem =~ /dbuxProjectView\\.bugNode/",
           "group": "inline@8"
+        },
+        {
+          "command": "dbuxSessionView.node.annotateTraceQ",
+          "when": "viewItem == dbuxSessionView.tagNode",
+          "group": "inline@1"
+        },
+        {
+          "command": "dbuxSessionView.node.annotateTraceI",
+          "when": "viewItem == dbuxSessionView.tagNode",
+          "group": "inline@2"
         }
       ],
       "view/title": [
@@ -1021,6 +1047,14 @@
         },
         {
           "command": "dbuxTraceDetailsView.expandNode",
+          "when": "false"
+        },
+        {
+          "command": "dbuxSessionView.node.annotateTraceQ",
+          "when": "false"
+        },
+        {
+          "command": "dbuxSessionView.node.annotateTraceI",
           "when": "false"
         }
       ]
