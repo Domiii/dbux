@@ -600,10 +600,18 @@ This may be solved by pressing \`clean project folder\` button.`);
     return this._bugs;
   }
 
+  getMochaCfg(bug, moreMochaArgs) {
+    return {
+      require: bug.require,
+      keepAlive: bug.keepAlive,
+      mochaArgs: this.getMochaRunArgs(bug, moreMochaArgs)
+    };
+  }
+
   /**
    * @see https://mochajs.org/#command-line-usage
    */
-  getMochaArgs(bug, moreArgs = EmptyArray) {
+  getMochaRunArgs(bug, moreArgs = EmptyArray) {
     // bugArgs
     const argArray = [
       '-c', // colors

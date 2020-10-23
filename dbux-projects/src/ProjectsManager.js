@@ -176,8 +176,9 @@ export default class ProjectsManager {
 
       this._resetPracticeSession(bug);
 
-      // activate once to show user the bug, don't care about the result
-      await this.activateBug(bug);
+      // install and activate bug (don't run it)
+      // await this.activateBug(bug);
+      await this.switchToBug(bug);
       this.bdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
     else {
@@ -419,7 +420,11 @@ export default class ProjectsManager {
   async runTest(bug, inputCfg) {
     // TODO: make this configurable
     // NOTE2: nolazy is required for proper breakpoints in debug mode
-    let { debugMode = false, dbuxEnabled = true, enableSourceMaps = false } = inputCfg;
+    let { 
+      debugMode = false, 
+      dbuxEnabled = true, 
+      enableSourceMaps = false
+    } = inputCfg;
 
     // WARN: --enable-source-maps makes execution super slow in production mode for some reason
     // NOTE: only supported in Node 12.12+
@@ -431,6 +436,9 @@ export default class ProjectsManager {
     const cfg = {
       debugMode,
       nodeArgs,
+      dbuxEnabled,
+
+      // NOTE: if !dbuxEnabled -> we don't actually run dbux at all anymore.
       dbuxArgs: dbuxEnabled ? '--verbose=1' : '--dontInjectDbux',
     };
 
@@ -438,11 +446,11 @@ export default class ProjectsManager {
 
     const patch = await bug.project.getPatchString();
     const apps = allApplications.selection.getAll();
-    this.pdp.addTestRun(bug, result.code, patch, apps);
+    this.pdp.addTestRun(bug, result?.code, patch, apps);
     this.pdp.addApplications(apps);
     this.bdp.updateBugProgress(bug, { patch });
 
-    result.code && await bug.openInEditor();
+    result?.code && await bug.openInEditor();
 
     return result;
   }
@@ -813,7 +821,7 @@ export default class ProjectsManager {
    * @param {number} result.code
    */
   getResultStatus(result) {
-    return result.code ? BugStatus.Attempted : BugStatus.Solved;
+    return (!result || result.code) ? BugStatus.Attempted : BugStatus.Solved;
   }
 
   // ###########################################################################

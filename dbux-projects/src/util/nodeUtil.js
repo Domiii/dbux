@@ -17,7 +17,8 @@ export function buildNodeCommand(cfg) {
   //  2. wrapped
   //    - spawn-wrap - https://github.com/istanbuljs/spawn-wrap ("brutal hack [...] in cases where tests or the system under test are loaded via child processes rather than via require(). [...] any child processes launched by that child process will also be wrapped.")
 
-  const nodeDebugArgs = debugPort && `--inspect-brk=${debugPort}` || '';
+  // const nodeDebugArgs = debugPort && `--inspect-brk=${debugPort}` || '';
+  const nodeDebugArgs = debugPort && `--inspect-brk` || '';
 
   // pre-load some modules
   // const nodeRequireArr = [
