@@ -777,7 +777,7 @@
         },
         {
           "command": "dbux.clearMemento",
-          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+          "when": "dbux.context.activated"
         },
         {
           "command": "dbux.debugFile",
