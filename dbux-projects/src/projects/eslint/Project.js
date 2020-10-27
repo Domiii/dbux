@@ -63,10 +63,10 @@ export default class EslintProject extends Project {
             '--grep',
             `"${bug.testRe}"`,
             '--',
-            ...distFilePaths,
             // eslint-disable-next-line max-len
             // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
           ],
+          srcFilePaths: bug.testFilePaths,
           distFilePaths,
           // require: ['test/support/env'],
           ...bug,
@@ -137,9 +137,11 @@ export default class EslintProject extends Project {
       '-t 10000' // timeout
     ]);
 
+    const files = cfg?.dbuxEnabled && bug.distFilePaths || bug.srcFilePaths;
+
     const mochaCfg = {
       cwd: projectPath,
-      mochaArgs: bugArgs,
+      mochaArgs: bugArgs + ` ${files.join(' ')}`,
       require: [
         ...(bug.require || EmptyArray),
         this.manager.getDbuxPath('@dbux/runtime/deps/require.ws.7.js')
