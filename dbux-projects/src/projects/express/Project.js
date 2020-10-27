@@ -183,29 +183,6 @@ export default class ExpressProject extends Project {
         testFilePaths: ['test/Router.js']
       },
       {
-        // NOTE: shutdown delayed for 2 mins
-        id: 15,
-        label: 'default Content-Type',
-        testRe: [
-          'with canonicalized mime types should default the Content-Type'
-          // 'should set the correct  charset for the Content[-]Type',
-          // 'should default the Content-Type'
-        ],
-        testFilePaths: ['test/res.format.js'],
-        require: [],
-        keepAlive: false,
-        bugLocations: [
-          {
-            fileName: 'lib/response.js',
-            line: 471
-          },
-          ...[90, 91, 92].map(line => ({
-            fileName: 'lib/utils.js',
-            line
-          }))
-        ]
-      },
-      {
         id: 16,
         label: 'redirect with custom status code',
         testRe: [

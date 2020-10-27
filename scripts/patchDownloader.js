@@ -60,7 +60,7 @@ async function downloadBugsJsPatch(projectName, i, type) {
 }
 
 async function main() {
-  await downloadBugsJsProjectPatches('express');
+  await downloadBugsJsProjectPatches('eslint');
 }
 
 main();

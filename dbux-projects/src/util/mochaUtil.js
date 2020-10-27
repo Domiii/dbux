@@ -12,7 +12,6 @@ export async function buildMochaRunCommand(cfg) {
     keepAlive = true,
     nodeArgs,
     dbuxArgs,
-    keepAlive = true,
     require = EmptyArray,
     debugPort
   } = cfg;

@@ -11,7 +11,7 @@ const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntrie
 
 const ProjectRoot = path.join(__dirname, '..');
 const DependencyRoot = getDependencyRoot(); // ProjectRoot;
-const nodeVersions = [5, 6, 7];
+const nodeVersions = [5, 6, 7, 8];
 
 function makeBabelOptions(nodeVersion) {
   return {
