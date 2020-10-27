@@ -285,11 +285,13 @@ async function main() {
     await publishToNPM();
   }
 
-  if (await yesno('Publish to Marketplace? (will publish without building)')) {
-    await publishToMarketplace();
+  if (await yesno('Skip publish to Marketplace? (or publish without building)')) {
+    if (await yesno('Install locally?')) {
+      await exec('npm run code:install');
+    }
   }
-  else if (await yesno('Install locally?')) {
-    await exec('npm run code:install');
+  else {
+    await publishToMarketplace();
   }
 
   await fixLerna();

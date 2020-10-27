@@ -126,7 +126,7 @@ export default class EslintProject extends Project {
 
   async testBugCommand(bug, cfg) {
     const { projectPath } = this;
-    const bugArgs = this.getMochaArgs(bug, [
+    const bugArgs = this.getMochaRunArgs(bug, [
       '-t 10000' // timeout
     ]);
 

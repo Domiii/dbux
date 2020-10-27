@@ -148,31 +148,34 @@ export default class BugRunner {
 
     this.setStatus(BugRunnerStatus.Busy);
 
-    await this._queue.enqueue(
-      // install project
-      async () => this.activateProject(project),
-      // apply patch if needed
-      async () => {
-        // git reset hard
-        // TODO: make sure, user gets to save own changes first
-        sh.cd(project.projectPath);
-        if (bug.patch) {
-          await project.gitResetHard();
-        }
-      },
-      async () => {
-        // activate patch
-        if (bug.patch) {
-          await project.applyPatch(bug.patch);
-        }
-      },
-      // select bug
-      async () => project.selectBug(bug),
-      // start watch mode (if necessary)
-      async () => project.startWatchModeIfNotRunning(bug),
-    );
-
-    this._updateStatus();
+    try {
+      await this._queue.enqueue(
+        // install project
+        async () => this.activateProject(project),
+        // apply patch if needed
+        async () => {
+          // git reset hard
+          // TODO: make sure, user gets to save own changes first
+          sh.cd(project.projectPath);
+          if (bug.patch) {
+            await project.gitResetHard();
+          }
+        },
+        async () => {
+          // activate patch
+          if (bug.patch) {
+            await project.applyPatch(bug.patch);
+          }
+        },
+        // select bug
+        async () => project.selectBug(bug),
+        // start watch mode (if necessary)
+        async () => project.startWatchModeIfNotRunning(bug),
+      );
+    }
+    finally {
+      this._updateStatus();
+    }
   }
 
   /**
@@ -201,7 +204,7 @@ export default class BugRunner {
 
       if (!command) {
         // nothing to do
-        project.logger.debug('has no test command. Nothing left to do.');
+        project.logger.debug('testBugCommand did not return anything. Nothing left to do.');
         // throw new Error(`Invalid testBugCommand implementation in ${project} - did not return anything.`);
         return null;
       }
@@ -220,6 +223,11 @@ export default class BugRunner {
         this._emitter.emit('testFinished', bug, result);
         return result;
       }
+    }
+    catch (err) {
+      project.logger.error(`Test run failed: ${err.message}`);
+      project.logger.warn(`  ${err.stack}`);
+      return null;
     }
     finally {
       // need to check this._project exist, it might be kill during activating

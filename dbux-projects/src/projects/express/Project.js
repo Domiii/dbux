@@ -23,11 +23,58 @@ export default class ExpressProject extends Project {
         testFilePaths: ['test/app.options.js'],
         bugLocations: [
           {
-            fileName: './lib/router/index.js',
+            fileName: 'lib/router/index.js',
             line: 156
+          },
+          {
+            fileName: 'lib/router/index.js',
+            line: 210
           }
         ]
       },
+      {
+        // NOTE: shutdown delayed for 2 mins
+        id: 15,
+        label: 'default Content-Type',
+        testRe: [
+          'with canonicalized mime types should default the Content-Type'
+          // 'should set the correct  charset for the Content[-]Type',
+          // 'should default the Content-Type'
+        ],
+        testFilePaths: ['test/res.format.js'],
+        // TODO: need to also add some pseudo test file, to keep the process running a little longer, so data gets sent out.
+        // keepAlive: false,
+        require: [],
+        bugLocations: [
+          {
+            fileName: 'lib/response.js',
+            line: 471
+          },
+          ...[90, 91, 92].map(line => ({
+            fileName: 'lib/utils.js',
+            line
+          }))
+        ]
+      },
+
+      {
+        id: 19,
+        label: 'req.params should support array of paths',
+        testRe: ['should work in array of paths'],
+        testFilePaths: ['test/app.router.js'],
+        bugLocations: [
+          ...[99, 119, 121, 122].map(line => ({
+            fileName: 'lib/router/layer.js',
+            line
+          }))
+        ]
+      },
+
+
+      // ###########################################################################
+      // more bugs
+      // ###########################################################################
+
       {
         // https://github.com/BugsJS/express/releases/tag/Bug-2-test
         // https://github.com/BugsJS/express/commit/3260309b422cd964ce834e3925823c80b3399f3c
@@ -119,7 +166,7 @@ export default class ExpressProject extends Project {
         label: 'param indexes',
         testRe: [
           'should keep correct parameter indexes',
-          'should work following a partial capture group'
+          // 'should work following a partial capture group'
         ],
         testFilePaths: ['test/app.router.js']
       },
@@ -174,12 +221,6 @@ export default class ExpressProject extends Project {
           'should call when values differ when using "next"'
         ],
         testFilePaths: ['test/app.param.js']
-      },
-      {
-        id: 19,
-        label: 'req.params should support array of paths',
-        testRe: ['should work in array of paths'],
-        testFilePaths: ['test/app.router.js']
       },
       {
         id: 20,
@@ -308,12 +349,14 @@ export default class ExpressProject extends Project {
 
   async testBugCommand(bug, cfg) {
     const { projectPath } = this;
-    const bugArgs = this.getMochaArgs(bug);
+    // const bugArgs = this.getMochaRunArgs(bug);
+    const bugConfig = this.getMochaCfg(bug, [
+      '-t 10000' // timeout
+    ]);
 
     const mochaCfg = {
       cwd: projectPath,
-      mochaArgs: bugArgs,
-      require: bug.require,
+      ...bugConfig,
       ...cfg
     };
 
