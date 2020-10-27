@@ -332,19 +332,20 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * Implementation, add indexes here
    * Note: Also resets all collections
    */
-  init(sessionId) {
+  init(sessionId, logFilePath) {
     this.sessionId = sessionId;
-    this.logFilePath = path.join(this.logFolderPath, `${sessionId}.dbuxlog`);
+    this.logFilePath = logFilePath || path.join(this.logFolderPath, `${sessionId}.dbuxlog`);
 
     this.reset();
   }
 
   /**
    * Load data from log file
+   * @param {string} [logFilePath] 
    */
-  load() {
+  load(logFilePath) {
     try {
-      const allDataString = fs.readFileSync(this.logFilePath, 'utf8');
+      const allDataString = fs.readFileSync(logFilePath || this.logFilePath, 'utf8');
       if (allDataString) {
         const dataToAdd = Object.fromEntries(Object.keys(this.collections).map(name => [name, []]));
 

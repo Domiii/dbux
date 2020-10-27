@@ -9,10 +9,13 @@ export default class ProjectList {
 
   constructor(manager) {
     this.manager = manager;
+    this._bugByIdMap = new Map();
   }
 
   add(...projects) {
     projects.forEach((project) => {
+      Array.from(project.getOrLoadBugs()).forEach(bug => this._bugByIdMap.set(bug.id, bug));
+
       this._map.set(project.name, project);
       this._list.push(project);
     });
@@ -28,6 +31,10 @@ export default class ProjectList {
    */
   getByName(name) {
     return this._map.get(name);
+  }
+
+  getBugById(bugId) {
+    return this._bugByIdMap.get(bugId);
   }
 
   * [Symbol.iterator]() {

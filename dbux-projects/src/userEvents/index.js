@@ -36,8 +36,12 @@ export function emitPracticeSessionEvent(eventName, practiceSession) {
   });
 }
 
-export function emitSessionFinishedEvent(state) {
-  emitUserEvent(UserActionType.SessionFinished, { state });
+/**
+ * 
+ * @param {number} [createdAt] hackfix to override the time
+ */
+export function emitSessionFinishedEvent(state, createdAt) {
+  emitUserEvent(UserActionType.SessionFinished, { state, createdAt });
 }
 
 export function emitNewTestRun(testRun) {

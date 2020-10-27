@@ -161,7 +161,7 @@ export default class PracticeSession {
     return true;
   }
 
-  async maybeExit(dontRefreshView) {
+  async confirmExit(dontRefreshView) {
     if (!await this.manager.externals.confirm(`Do you want to exit the practice session?`, true)) {
       return false;
     }
