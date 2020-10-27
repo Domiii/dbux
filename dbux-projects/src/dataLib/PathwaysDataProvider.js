@@ -50,8 +50,9 @@ class ApplicationCollection extends Collection {
    */
   serialize(application) {
     const { entryPointPath, createdAt } = application;
+    const relativeEntryPointPath = path.relative(this.dp.manager.config.projectsRoot, entryPointPath);
     return {
-      entryPointPath,
+      relativeEntryPointPath,
       createdAt,
       uuid: application.uuid,
       serializedDpData: application.dataProvider.serialize()
@@ -62,7 +63,8 @@ class ApplicationCollection extends Collection {
    * 
    * @param {PathwaysDataProvider} pdp 
    */
-  deserialize({ entryPointPath, createdAt, uuid, serializedDpData }) {
+  deserialize({ relativeEntryPointPath, createdAt, uuid, serializedDpData }) {
+    const entryPointPath = path.join(this.dp.manager.config.projectsRoot, relativeEntryPointPath);
     const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
     app.dataProvider.deserialize(JSON.parse(serializedDpData));
     return app;
