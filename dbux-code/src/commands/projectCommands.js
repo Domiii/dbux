@@ -7,6 +7,7 @@ import { showInformationMessage, showWarningMessage } from '../codeUtil/codeModa
 import { translate } from '../lang';
 import { emitAnnotateTraceAction } from '../userEvents';
 import { getLogsDirectory } from '../resources';
+import { showPathwaysView } from '../webViews/pathwaysWebView';
 
 /** @typedef {import('../projectViews/projectViewsController').ProjectViewController} ProjectViewController */
 
@@ -87,6 +88,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
     if (file) {
       await projectViewController.manager.loadPracticeSessionFromFile(file.fsPath);
       await showInformationMessage(`Log file ${file.fsPath} loaded`);
+      await showPathwaysView();
     }
   });
 
