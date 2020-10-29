@@ -86,15 +86,15 @@ class UserActionCollection extends Collection {
     if (!trace) {
       return;
     }
-    
+
     const { applicationId, staticTraceId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
-    
+
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { staticContextId } = staticTrace;
     const { programId } = dp.collections.staticContexts.getById(staticContextId);
     const fileName = programId && dp.collections.staticProgramContexts.getById(programId).filePath || '(unknown file)';
-    
+
     let staticTraces = this.visitedStaticTracesByFile.get(fileName);
     if (!staticTraces) {
       this.visitedStaticTracesByFile.set(fileName, staticTraces = []);
@@ -117,7 +117,7 @@ class StepCollection extends Collection {
     if (!step.stepGroupId) {
       // convert group's string key to numerical id (since our indexes only accept numerical ids)
       const {
-        type, 
+        type,
         staticContextId
       } = step;
 
@@ -345,7 +345,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * Load data from log file
    * @param {string} [logFilePath] 
    */
-  load(logFilePath) {
+  load(logFilePath = '') {
     try {
       const allDataString = fs.readFileSync(logFilePath || this.logFilePath, 'utf8');
       if (allDataString) {

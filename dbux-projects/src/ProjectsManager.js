@@ -221,6 +221,7 @@ export default class ProjectsManager {
 
     try {
       const firstLine = await getFirstLine(filePath);
+      // NOTE: here we suppose we have these data at the first line, maybe we need a `parseSessionDataFromFile` function?
       const { data: { sessionId, createdAt, bugId } } = JSON.parse(firstLine);
       const bug = this.getOrCreateDefaultProjectList().getBugById(bugId);
       if (!bug) {
@@ -297,10 +298,6 @@ export default class ProjectsManager {
   // ########################################
   // PracticeSession: util
   // ########################################
-
-  async activate(inputCfg) {
-    await this.practiceSession.activate(inputCfg);
-  }
 
   onPracticeSessionChanged(cb) {
     return this._emitter.on('practiceSessionChanged', cb);

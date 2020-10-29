@@ -12,7 +12,7 @@ const { log, debug, warn, error: logError } = newLogger('ProgressBarTask');
 function _errWrap(f) {
   return async (...args) => {
     try {
-      return f(...args);
+      return await f(...args);
     }
     catch (err) {
       logError('Error when executing function of task',
