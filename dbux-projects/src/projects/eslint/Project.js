@@ -11,8 +11,13 @@ export default class EslintProject extends Project {
 
   packageManager = 'npm';
 
-  nodeVersion = '7';
+  // TODO: get nodeVersion by bug instead
+  nodeVersion = '8';
 
+
+  getNodeVersion(bug) {
+    return bug.nodeVersion || this.nodeVersion;
+  }
   
   async installDependencies() {
     // TODO: install Babel plugins in dev mode, if not present
@@ -31,19 +36,34 @@ export default class EslintProject extends Project {
     // NOTE: some bugs have multiple test files, or no test file at all
     // see: https://github.com/BugsJS/express/releases?after=Bug-4-test
     const bugs = [
-      // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
       {
-        label: 'no object calls',
+        // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
         id: 1,
         testRe: '',
-        testFilePaths: ['tests/lib/rules/no-obj-calls.js'],
-        bugLocations: [
-          {
-            fileName: 'lib/rules/no-obj-calls.js',
-            line: 31
-          }
-        ]
-      }
+        nodeVersion: 7,
+        testFilePaths: ['tests/lib/rules/no-obj-calls.js']
+      },
+      // {
+      //   // test file too large
+      //   // see https://github.com/BugsJS/eslint/commit/125f20e630f01d67d9433ef752924a5bb75005fe
+      //   id: 2,
+      //   testRe: '',
+      //   testFilePaths: ['']
+      // },
+      // {
+      //   // problem: load-rules
+      //   id: 3,
+      //   testRe: '',
+      //   nodeVersion: 8,
+      //   testFilePaths: ['tests/lib/rules/prefer-template.js']
+      // },
+      {
+        // see https://github.com/BugsJS/eslint/commit/e7839668c859752e5237c829ee2a1745625b7347
+        id: 4,
+        testRe: '',
+        nodeVersion: 7,
+        testFilePaths: ['tests/lib/rules/no-dupe-keys.js']
+      },
     ];
 
     return bugs.
@@ -53,7 +73,8 @@ export default class EslintProject extends Project {
           return null;
         }
 
-        let distFilePaths = bug.testFilePaths.map(file => path.join('dist', file));
+        const srcFilePaths = bug.testFilePaths;
+        let distFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
 
         return {
           // id: i + 1,
@@ -63,10 +84,11 @@ export default class EslintProject extends Project {
             '--grep',
             `"${bug.testRe}"`,
             '--',
-            ...distFilePaths,
+            // ...distFilePaths,
             // eslint-disable-next-line max-len
             // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
           ],
+          srcFilePaths,
           distFilePaths,
           // require: ['test/support/env'],
           ...bug,
@@ -136,13 +158,16 @@ export default class EslintProject extends Project {
     const bugArgs = this.getMochaRunArgs(bug, [
       '-t 10000' // timeout
     ]);
+    const files = cfg.dbuxEnabled ? bug.distFilePaths : bug.srcFilePaths;
+    const nodeVersion = this.getNodeVersion(bug);
+
 
     const mochaCfg = {
       cwd: projectPath,
-      mochaArgs: bugArgs,
+      mochaArgs: `${bugArgs} ${files.join(' ')}`,
       require: [
         ...(bug.require || EmptyArray),
-        this.manager.getDbuxPath('@dbux/runtime/deps/require.ws.7.js')
+        this.manager.getDbuxPath(`@dbux/runtime/deps/require.ws.${nodeVersion}.js`)
       ],
       ...cfg
     };

@@ -1,12 +1,6 @@
 {
 	"folders": [
 		{
-			"path": "dbux_projects/express"
-		},
-		{
-			"path": "samples"
-		},
-		{
 			"path": "dbux_projects/eslint"
 		}
 	],

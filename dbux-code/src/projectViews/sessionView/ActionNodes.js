@@ -195,11 +195,11 @@ class StopPracticeNode extends SessionNode {
     if (RunStatus.is.Busy(this.manager.runStatus)) {
       await showInformationMessage('Currently busy, please wait');
     }
-    else if (this.manager.practiceSession.isFinished()) {
-      await this.manager.practiceSession.confirmExit();
+    else if (!this.manager.practiceSession.isFinished()) {
+      await this.manager.practiceSession.confirmStop();
     }
     else {
-      await this.manager.practiceSession.confirmStop();
+      await this.manager.practiceSession.confirmExit();
     }
   }
 }

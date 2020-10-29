@@ -9,9 +9,9 @@ export async function buildMochaRunCommand(cfg) {
     cwd, 
     dbuxJs,
     mochaArgs = '-c', // colors
+    keepAlive = true,
     nodeArgs,
     dbuxArgs,
-    keepAlive = true,
     require = EmptyArray,
     debugPort
   } = cfg;

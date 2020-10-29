@@ -279,9 +279,14 @@ export default class ProjectsManager {
       return;
     }
 
-    const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
-    this._resetPracticeSession(bug, sessionData, true);
-    this.practiceSession.setupStopwatch();
+    try {
+      const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
+      this._resetPracticeSession(bug, sessionData, true);
+      this.practiceSession.setupStopwatch();
+    }
+    catch (err) {
+      logError(`Unable to load PracticeSession: ${err.stack}`);
+    }
   }
 
   async savePracticeSession() {
