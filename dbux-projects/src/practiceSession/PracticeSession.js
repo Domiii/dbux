@@ -177,6 +177,8 @@ export default class PracticeSession {
       this.stopwatch.hide();
     }
 
+    allApplications.clear();
+
     this.manager.practiceSession = null;
 
     await this.save();
