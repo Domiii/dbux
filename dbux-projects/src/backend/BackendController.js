@@ -109,6 +109,8 @@ export default class BackndController {
 
     let containers = await initLoginContainers(this.db);
     await this.registerContainers(containers);
+
+    return this.db.firebase.auth().currentUser;
   }
 
   /**
@@ -205,5 +207,13 @@ export default class BackndController {
     }
 
     this.practiceManager.externals.showMessage.info('Cleared.');
+  }
+
+  // ###########################################################################
+  // operate DBs
+  // ###########################################################################
+
+  buildUserFileRef(filename) {
+    return this.db.buildUserFileRef(filename);
   }
 }

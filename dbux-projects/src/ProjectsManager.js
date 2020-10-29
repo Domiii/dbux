@@ -827,6 +827,61 @@ export default class ProjectsManager {
   // ###########################################################################
   // Temporary backend stuff
   // ###########################################################################
+
+  async uploadLog() {
+    // TODO: add translate
+    let logDirectory = this.externals.resources.getLogsDirectory();
+    let allLogFiles = fs.readdirSync(logDirectory);
+    let logFiles = allLogFiles.filter(fileName => !fileName.startsWith('uploaded__'));
+    if (logFiles.length === 0) {
+      this.externals.showMessage.info('no!');
+      return;
+    }
+
+    let answerButtons = { 
+      one() { 
+        return [ 
+          logFiles.map(filename => ({ 
+            filename, 
+            time: fs.statSync(path.join(logDirectory, filename)).mtimeMs, 
+          })).reduce((result, file) => result.time > file.time ? result : file).filename,
+        ]; 
+      } 
+    };
+
+    if (logFiles.length > 1) {
+      answerButtons.all = function () { return logFiles; };
+    }
+
+    logFiles = await this.externals.showMessage.info('upload?', answerButtons, { modal: true });
+    if (!logFiles) { // user canceled
+      this.externals.showMessage.info('cancel!');
+      return;
+    }
+
+    await this._backend.login();
+
+    let promises = logFiles.map(async (logFile) => {
+      let ref = this._backend.buildUserFileRef(logFile);
+      let data = fs.readFileSync(path.join(logDirectory, logFile), { encoding: 'utf8' });
+      debug(ref, typeof data);
+      let task = ref.putString(data);
+      task.on('state_changed', snapshot => {
+        let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        debug('Upload is ' + progress + '% done');
+        debug(snapshot.state);
+      }, logError, () => debug('done'));
+      debug('yay');
+      // let newFilename = `uploaded__${logFile}`;
+      // fs.renameSync(path.join(logDirectory, logFile), path.join(logDirectory, newFilename));
+      // debug('renamed');
+    });
+
+    await Promise.all(promises);
+
+    debug('all done');
+  }
+
   async showBugLog(bug) {
     await this.getAndInitBackend();
     await this._backend.login();
