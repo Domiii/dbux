@@ -227,13 +227,18 @@ export default class ProjectsManager {
       if (!bug) {
         throw new Error(`Cannot find bug of bugId: ${bugId} in log file`);
       }
+
+      log(`switching to bug ${bug.id}`);
+      await this.switchToBug(bug);
       
+      log(`loading pdp data`);
       if (!this.bdp.getBugProgressByBug(bug)) {
         this.bdp.addBugProgress(bug, BugStatus.Solving, false);
       }
       this._resetPracticeSession(bug, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
       const lastAction = this.pdp.collections.userActions.getLast();
       emitSessionFinishedEvent(this.practiceSession.state, lastAction.createdAt);
+      log('done loading');
     }
     catch (err) {
       logError(`Failed to load from log file ${filePath}:`, err);
