@@ -161,6 +161,7 @@ export default class EslintProject extends Project {
     const files = cfg.dbuxEnabled ? bug.distFilePaths : bug.srcFilePaths;
     const nodeVersion = this.getNodeVersion(bug);
 
+
     const mochaCfg = {
       cwd: projectPath,
       mochaArgs: `${bugArgs} ${files.join(' ')}`,

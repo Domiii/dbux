@@ -2,7 +2,6 @@
 
 .vscode/**
 .vscode-test/**
-test/**
 .gitignore
 vsc-extension-quickstart.md
 **/jsconfig.json
@@ -10,6 +9,9 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 node_modules/**
 src/**
+test/**
 public/**
 *.vsix
 webpack.config.js
+logs/**
+dbux_projects/**

@@ -727,7 +727,7 @@ function instrumentPath(direction, instrumentor, path, state, cfg) {
   const { extraCfg } = cfg;
   if (extraCfg?.array) {
     if (!Array.isArray(path)) {
-      warn(`Instrumenting path that should be (but is not) array: ${path.toString()} (${path.node.type})`);
+      warn(`in "${state.filePath}": instrumenting path that should be (but is not) array: ${path.toString()} (${path.node.type})`);
       instrumentor(path, state);
     }
     else {
