@@ -78,7 +78,7 @@ export class ProjectViewController {
         const { bug } = this.manager.practiceSession;
         await showInformationMessage(translate('projectView.existBug.message', { bug: bug.id }), {
           [translate('projectView.existBug.ok')]() { },
-          async [translate('projectView.existBug.giveUp')]() {
+          [translate('projectView.existBug.giveUp')]: async () => {
             await this.manager.stopPractice();
           }
         });
