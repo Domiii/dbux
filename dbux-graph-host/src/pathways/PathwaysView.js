@@ -77,7 +77,6 @@ class PathwaysView extends HostComponentEndpoint {
     return this;
   }
 
-
   getActionGroupOwner = (actionKey, { stepId }) => {
     const step = this.pdp.collections.steps.getById(stepId);
     return this.steps.getComponentByEntry(step);
@@ -109,6 +108,11 @@ class PathwaysView extends HostComponentEndpoint {
   // ###########################################################################
   // handleRefresh
   // ###########################################################################
+
+  makeStepBackground(step, themeMode) {
+    const { staticContextId } = step;
+    return staticContextId ? getStaticContextColor(themeMode, staticContextId) : 'default';
+  }
 
   makeStep = (themeMode, modeName, step) => {
     const {
@@ -142,7 +146,7 @@ class PathwaysView extends HostComponentEndpoint {
 
     const iconUri = this.getIconUri(modeName, getIconByStep(stepType));
     const timeSpent = formatTimeSpent(this.pdp.util.getStepTimeSpent(stepId));
-    const background = staticContextId && getStaticContextColor(themeMode, staticContextId) || 'default';
+    const background = this.makeStepBackground(step, themeMode);
     const hasTrace = StepType.is.Trace(stepType);
 
     return {
@@ -155,6 +159,31 @@ class PathwaysView extends HostComponentEndpoint {
 
       ...step
     };
+  }
+
+  makeTimelineSteps(themeMode) {
+    const timelineSteps = this.pdp.collections.steps.getAll().filter(step => !!step);
+
+    const makeTagByType = {
+      [StepType.None]: () => 's',
+      [StepType.Trace]: (step) => {
+        if (step === this.pdp.indexes.steps.byType.get(step.type)?.[0]) {
+          return 'sn';
+        }
+        else {
+          return 'sr';
+        }
+      },
+      [StepType.CallGraph]: () => 'cg'
+    };
+
+    return timelineSteps.map(step => {
+      return {
+        step,
+        background: this.makeStepBackground(step, themeMode),
+        tag: makeTagByType[step.type](step)
+      };
+    });
   }
 
   handleRefresh() {
@@ -185,8 +214,9 @@ class PathwaysView extends HostComponentEndpoint {
         };
       });
       stepGroups.sort((a, b) => b.timeSpentMillis - a.timeSpentMillis);
-    }
 
+      this.children.createComponent('PathwaysTimeline', { steps: this.makeTimelineSteps(themeMode) });
+    }
     const steps = pdp.collections.steps.getAll().
       filter(step => !!step).
       map(step => this.makeStep(themeMode, modeName, step));

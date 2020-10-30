@@ -24,3 +24,8 @@ html,body{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+#pathways-timeline div {
+  height: 20px;
+  width: 10%;
+}
