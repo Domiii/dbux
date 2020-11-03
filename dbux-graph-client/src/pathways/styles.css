@@ -26,11 +26,8 @@ html, body {
 }
 
 #pathways-timeline {
-  display: flex;
   height: 20px;
-  box-sizing: border-box;
   border: 1px solid gray;
-  margin: 5px 0;
 }
 
 #pathways-timeline div {
@@ -38,4 +35,21 @@ html, body {
   height: 100%;
   border-right: 1px solid gray;
   border-left: 1px solid gray;
+}
+
+#pathways-timeline-stale-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+}
+
+#pathways-timeline-stale-cover div {
+  height: 100%;
+  z-index: 5;
+}
+
+#pathways-timeline-stale-cover .stale {
+  background-color: gray;
+  opacity: 0.7;
 }

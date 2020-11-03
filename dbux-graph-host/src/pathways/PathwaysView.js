@@ -1,3 +1,4 @@
+import last from 'lodash/last';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
@@ -161,9 +162,42 @@ class PathwaysView extends HostComponentEndpoint {
     };
   }
 
-  makeTimelineSteps(themeMode) {
-    const timelineSteps = this.pdp.collections.steps.getAll().filter(step => !!step);
+  filterNewGroup = (groups) => {
+    const newGroups = [];
+    const addedTraceIds = new Set();
+    for (const group of groups) {
+      if (group) {
+        const trace = this.pdp.util.getActionGroupAction(group.id)?.trace;
+        if (trace && !addedTraceIds.has(trace.traceId)) {
+          addedTraceIds.add(trace.traceId);
+          newGroups.push(group);
+        }
+      }
+    }
+    return newGroups;
+  }
 
+  makeTimelineData(themeMode) {
+    // make stale data
+    const actionGroups = this.pdp.collections.actionGroups.getAll();
+    const newGroups = this.filterNewGroup(actionGroups);
+    const MIN_STALE_TIME = 60 * 1000;
+    let activeTimestamp = newGroups[0]?.createdAt;
+    const staleIntervals = [];
+    for (const group of newGroups) {
+      if (group.createdAt > activeTimestamp) {
+        staleIntervals.push({ start: activeTimestamp, end: group.createdAt });
+      }
+      activeTimestamp = group.createdAt + MIN_STALE_TIME;
+    }
+    const lastActive = activeTimestamp + MIN_STALE_TIME;
+    const endTime = this.pdp.util.getActionGroupEndTime(last(actionGroups).id) || Date.now();
+    if (lastActive < endTime) {
+      staleIntervals.push({ start: lastActive, end: endTime });
+    }
+
+    // make steps
+    const steps = this.pdp.collections.steps.getAll().filter(step => !!step);
     const makeTagByType = {
       [StepType.None]: () => 's',
       [StepType.Trace]: (step) => {
@@ -177,14 +211,17 @@ class PathwaysView extends HostComponentEndpoint {
       [StepType.CallGraph]: () => 'cg'
     };
 
-    return timelineSteps.map(step => {
-      return {
-        step,
-        timeSpent: this.pdp.util.getStepTimeSpent(step.id),
-        background: this.makeStepBackground(step, themeMode),
-        tag: makeTagByType[step.type](step)
-      };
-    });
+    return {
+      steps: steps.map(step => {
+        return {
+          createdAt: step.createdAt,
+          timeSpent: this.pdp.util.getStepTimeSpent(step.id),
+          background: this.makeStepBackground(step, themeMode),
+          tag: makeTagByType[step.type](step)
+        };
+      }),
+      staleIntervals
+    };
   }
 
   handleRefresh() {
@@ -216,7 +253,7 @@ class PathwaysView extends HostComponentEndpoint {
       });
       stepGroups.sort((a, b) => b.timeSpentMillis - a.timeSpentMillis);
 
-      const timelineUpdate = { steps: this.makeTimelineSteps(themeMode) };
+      const timelineUpdate = this.makeTimelineData(themeMode);
       let timeLineComponent = this.children.getComponent('PathwaysTimeline');
       if (timeLineComponent) {
         timeLineComponent.setState(timelineUpdate);
