@@ -624,37 +624,22 @@ const exitInstrumentors = {
 //   visitEnterAll(children);
 // }
 
-function visitChildren(visitFn, childCfgs, pathes, state) {
-  if (!Array.isArray(pathes)) {
-    pathes = [pathes];
-  }
-
+function visitChildren(visitFn, childCfgs, path, state) {
   for (const childCfg of childCfgs) {
     const { visitorName } = childCfg;
-    // TODO for path of path do:
-    for (let path of pathes) {
-      if (path.node?.[visitorName]) {
-        let childPathes = path.get(visitorName);
-        if (Array.isArray(childPathes)) {
-          for (let childPath of childPathes) {
-            visitFn(childPath, state, childCfg);
-          }
+    if (path.node?.[visitorName]) {
+      let childPathes = path.get(visitorName);
+      if (Array.isArray(childPathes)) {
+        for (let childPath of childPathes) {
+          visitFn(childPath, state, childCfg);
         }
-        else {
-          if (childCfg.extraCfg?.isArray) {
-            warn(`in "${state.filePath}": instrumenting path that should be (but is not) array: ${childPathes.toString()} (${childPathes.node.type})`);
-          }
+      }
+      else {
+        if (childCfg.extraCfg?.isArray) {
+          warn(`in "${state.filePath}": instrumenting path that should be (but is not) array: ${childPathes.toString()} (${childPathes.node.type})`);
+        }
 
-          visitFn(childPathes, state, childCfg);
-        }
-        // if (!Array.isArray(childPathes)) {
-        //   childPathes = [childPathes];
-        // }
-        // console.debug(visitorName, childPath?.toString() || 'undefined', childPath?.getData);
-        // debugger;
-        // for (const childPath of childPathes) {
-          // visitFn(childPath, state, childCfg);
-        // }
+        visitFn(childPathes, state, childCfg);
       }
     }
   }
@@ -705,8 +690,6 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
       }
     }
   }
-
-  if (path.node === undefined || path.node.end) debugger;
 
   if (direction === InstrumentationDirection.Enter) {
     // -> Enter
