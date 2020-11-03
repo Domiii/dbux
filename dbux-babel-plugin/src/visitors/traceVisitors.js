@@ -169,7 +169,8 @@ const traceCfg = (() => {
     ObjectExpression: [
       NoTrace,
       [['properties', NoTrace, 
-        [['value', ExpressionValue]]
+        [['value', ExpressionValue]],
+        { array: true }
       ]]
     ],
 
@@ -623,17 +624,37 @@ const exitInstrumentors = {
 //   visitEnterAll(children);
 // }
 
-function visitChildren(visitFn, childCfgs, path, state) {
+function visitChildren(visitFn, childCfgs, pathes, state) {
+  if (!Array.isArray(pathes)) {
+    pathes = [pathes];
+  }
+
   for (const childCfg of childCfgs) {
     const { visitorName } = childCfg;
-    if (path.node?.[visitorName]) {
-      let childPathes = path.get(visitorName);
-      if (!Array.isArray(childPathes)) {
-        childPathes = [childPathes];
-      }
-      // console.debug(visitorName, childPath?.toString() || 'undefined', childPath?.getData);
-      for (const childPath of childPathes) {
-        visitFn(childPath, state, childCfg);
+    // TODO for path of path do:
+    for (let path of pathes) {
+      if (path.node?.[visitorName]) {
+        let childPathes = path.get(visitorName);
+        if (Array.isArray(childPathes)) {
+          for (let childPath of childPathes) {
+            visitFn(childPath, state, childCfg);
+          }
+        }
+        else {
+          if (childCfg.extraCfg?.isArray) {
+            warn(`in "${state.filePath}": instrumenting path that should be (but is not) array: ${childPathes.toString()} (${childPathes.node.type})`);
+          }
+
+          visitFn(childPathes, state, childCfg);
+        }
+        // if (!Array.isArray(childPathes)) {
+        //   childPathes = [childPathes];
+        // }
+        // console.debug(visitorName, childPath?.toString() || 'undefined', childPath?.getData);
+        // debugger;
+        // for (const childPath of childPathes) {
+          // visitFn(childPath, state, childCfg);
+        // }
       }
     }
   }
@@ -685,6 +706,8 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
     }
   }
 
+  if (path.node === undefined || path.node.end) debugger;
+
   if (direction === InstrumentationDirection.Enter) {
     // -> Enter
 
@@ -727,7 +750,6 @@ function instrumentPath(direction, instrumentor, path, state, cfg) {
   const { extraCfg } = cfg;
   if (extraCfg?.array) {
     if (!Array.isArray(path)) {
-      warn(`in "${state.filePath}": instrumenting path that should be (but is not) array: ${path.toString()} (${path.node.type})`);
       instrumentor(path, state);
     }
     else {
