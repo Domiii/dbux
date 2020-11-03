@@ -300,7 +300,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     const stepType = getStepTypeByActionType(actionType);
     if (!lastStep ||
       action.newStep ||
-      (stepType && lastStepType && stepType !== lastStepType) ||
+      (!StepType.is.None(stepType) && lastStepType && stepType !== lastStepType) ||
       ((stepType === StepType.Trace) && (
         (applicationId && applicationId !== lastApplicationId) ||
         (staticContextId && staticContextId !== lastStaticContextId)

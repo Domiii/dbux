@@ -180,6 +180,7 @@ class PathwaysView extends HostComponentEndpoint {
     return timelineSteps.map(step => {
       return {
         step,
+        timeSpent: this.pdp.util.getStepTimeSpent(step.id),
         background: this.makeStepBackground(step, themeMode),
         tag: makeTagByType[step.type](step)
       };
@@ -215,7 +216,14 @@ class PathwaysView extends HostComponentEndpoint {
       });
       stepGroups.sort((a, b) => b.timeSpentMillis - a.timeSpentMillis);
 
-      this.children.createComponent('PathwaysTimeline', { steps: this.makeTimelineSteps(themeMode) });
+      const timelineUpdate = { steps: this.makeTimelineSteps(themeMode) };
+      let timeLineComponent = this.children.getComponent('PathwaysTimeline');
+      if (timeLineComponent) {
+        timeLineComponent.setState(timelineUpdate);
+      }
+      else {
+        this.children.createComponent('PathwaysTimeline', timelineUpdate);
+      }
     }
     const steps = pdp.collections.steps.getAll().
       filter(step => !!step).

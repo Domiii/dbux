@@ -18,7 +18,7 @@ class PathwaysActionGroup extends ClientComponentEndpoint {
             <div class="action-text" data-el="annotation"></div>
           </button>
         </div>
-        <div class="flex-row" data-mount="PathwaysAction"></div>
+        <div class="flex-row flex-warp" data-mount="PathwaysAction"></div>
       </div>
     </div>`);
   }

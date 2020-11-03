@@ -1,7 +1,7 @@
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
-class PathwaysAction extends ClientComponentEndpoint {
+class PathwaysTimeline extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`<div id="pathways-timeline" class="flex-row"></div>`);
   }
@@ -9,12 +9,19 @@ class PathwaysAction extends ClientComponentEndpoint {
   update() {
     const { steps } = this.state;
 
-    this.el.innerHTML = steps.map(this.toDOMString).join('');
+    this.el.innerHTML = this.makeStepsDOM(steps);
   }
 
-  toDOMString({ step, tag, background }) {
-    return `<div style="background: ${background}">${tag}</div>`;
+  /**
+   * 
+   * @param {Array<{tag, background, timeSpent}>} steps 
+   */
+  makeStepsDOM(steps) {
+    const totalTimeSpent = steps.reduce((sum, step) => sum + step.timeSpent, 0);
+    return steps.map(({ tag, background, timeSpent }) => {
+      return `<div style="background: ${background}; width: ${timeSpent / totalTimeSpent * 100}%;">${tag}</div>`;
+    }).join('');
   }
 }
 
-export default PathwaysAction;
+export default PathwaysTimeline;
