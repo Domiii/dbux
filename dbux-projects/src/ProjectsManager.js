@@ -19,6 +19,7 @@ import PracticeSessionState from './practiceSession/PracticeSessionState';
 import { initUserEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import BugDataProvider from './dataLib/BugDataProvider';
 import initLang, { translate } from './lang';
+import upload from './fileUpload';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -859,27 +860,23 @@ export default class ProjectsManager {
       return;
     }
 
-    await this._backend.login();
+    let user = await this._backend.login();
 
     let promises = logFiles.map(async (logFile) => {
-      let ref = this._backend.buildUserFileRef(logFile);
-      let data = fs.readFileSync(path.join(logDirectory, logFile), { encoding: 'utf8' });
-      debug(ref, typeof data);
-      let task = ref.putString(data);
-      task.on('state_changed', snapshot => {
-        let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        debug('Upload is ' + progress + '% done');
-        debug(snapshot.state);
-      }, logError, () => debug('done'));
-      debug('yay');
-      // let newFilename = `uploaded__${logFile}`;
-      // fs.renameSync(path.join(logDirectory, logFile), path.join(logDirectory, newFilename));
-      // debug('renamed');
+      await upload(user.uid, path.join(logDirectory, logFile));
+
+      let newFilename = `uploaded__${logFile}`;
+      fs.renameSync(path.join(logDirectory, logFile), path.join(logDirectory, newFilename));
     });
 
-    await Promise.all(promises);
-
-    debug('all done');
+    try {
+      await Promise.all(promises);
+      this.externals.showMessage.info('done');
+    }
+    catch (e) {
+      this.externals.showMessage.info('some tmp error');
+      debug(e);
+    }
   }
 
   async showBugLog(bug) {
