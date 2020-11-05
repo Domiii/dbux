@@ -64,7 +64,9 @@ export default class GraphNode extends HostComponentEndpoint {
         // skip "ExpandSubgraph" if there is only one level
         mode = GraphNodeMode.nextValue(mode);
       }
-      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, this.parentTrace);
+      const { firstTrace: trace } = this.owner;
+      const { context } = this.owner.state;
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { context, trace });
       this.setMode(mode);
     },
     reveal: this.reveal
