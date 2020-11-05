@@ -153,6 +153,7 @@ export default class PracticeSession {
       return false;
     }
 
+    await this.manager.stopRunner();
     this.stopwatch.pause();
     this.setState(PracticeSessionState.Stopped);
     emitSessionFinishedEvent(this.state);
@@ -161,12 +162,10 @@ export default class PracticeSession {
     return true;
   }
 
-  async maybeExit(dontRefreshView) {
+  async confirmExit(dontRefreshView) {
     if (!await this.manager.externals.confirm(`Do you want to exit the practice session?`, true)) {
       return false;
     }
-
-    await this.manager.stopRunner();
 
     if (this.stopwatchEnabled) {
       if (!PracticeSessionState.is.Solved(this.state)) {
@@ -176,6 +175,8 @@ export default class PracticeSession {
       this.stopwatch.pause();
       this.stopwatch.hide();
     }
+
+    allApplications.clear();
 
     this.manager.practiceSession = null;
 

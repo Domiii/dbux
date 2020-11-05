@@ -1,5 +1,4 @@
 import path from 'path';
-import pull from 'lodash/pull';
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
@@ -12,10 +11,7 @@ import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBefore
 import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
 
 import Collection from './Collection';
-import Queries from './queries/Queries';
-import Indexes from './indexes/Indexes';
 
-import DataProviderUtil from './dataProviderUtil';
 import DataProviderBase from './DataProviderBase';
 
 // eslint-disable-next-line no-unused-vars
@@ -57,6 +53,20 @@ class StaticProgramContextCollection extends Collection {
       entry.applicationId = this.dp.application.applicationId;
     }
     super.add(entries);
+  }
+
+  serialize(staticProgramContext) {
+    const staticProgramContextData = { ...staticProgramContext };
+    staticProgramContextData.relativeFilePath = path.relative(this.dp.application.entryPointPath, staticProgramContext.filePath);
+    delete staticProgramContextData.filePath;
+    return staticProgramContextData;
+  }
+
+  deserialize(staticProgramContextData) {
+    const staticProgramContext = { ...staticProgramContextData };
+    staticProgramContext.filePath = path.join(this.dp.application.entryPointPath, staticProgramContext.relativeFilePath);
+    delete staticProgramContext.relativeFilePath;
+    return staticProgramContext;
   }
 }
 

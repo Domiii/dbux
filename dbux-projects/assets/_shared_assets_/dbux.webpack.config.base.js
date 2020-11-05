@@ -205,8 +205,8 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     node: {
       // generate actual output file information
       // see: https://webpack.js.org/configuration/node/#node__filename
-      __dirname: true,
-      __filename: true
+      __dirname: false,
+      __filename: false
     },
 
     externals

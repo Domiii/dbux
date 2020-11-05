@@ -197,6 +197,10 @@
         "title": "Dev: Reset Practice Progress"
       },
       {
+        "command": "dbux.loadPracticeLogFile",
+        "title": "Dev: Load Practice Log"
+      },
+      {
         "command": "dbux.showDBStats",
         "title": "Dbux: Show DB Stats"
       },
@@ -864,6 +868,10 @@
         },
         {
           "command": "dbux.resetPracticeProgress",
+          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+        },
+        {
+          "command": "dbux.loadPracticeLogFile",
           "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
         {

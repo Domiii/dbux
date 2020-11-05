@@ -44,7 +44,7 @@ function makeDynamicRequireRule() {
     enforce: 'pre',
     options: {
       // match a require function call where the argument isn't a string literal
-      search: /require\(\s*(?!\\?[\'"])/,
+      search: /require\(\s*(?!\\?['"])/,
       // replace the 'require(' with a '__non_webpack_require__(', meaning it will require the files at runtime
       // $1 grabs the first capture group from the regex, the one character we matched and don't want to lose
       // replace: '__non_webpack_require__($1',
@@ -56,7 +56,7 @@ function makeDynamicRequireRule() {
         const requireLines = getLinesAroundOffset(s, offset, 1);
 
         // eslint-disable-next-line no-console
-        console.warn(`Fixing dynamic require:\n`, /* match */requireLines, '\n\n');
+        console.warn(`Fixing dynamic require:`, `"${match}"`, '\n' + requireLines, '\n\n');
         return `__non_webpack_require__(`;
       },
 

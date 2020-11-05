@@ -1,5 +1,8 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 
+// const TracesDisabled = true;
+const TracesDisabled = false;
+
 /**
  * Comes from the order we execute things in programVisitor
  */
@@ -76,6 +79,15 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.popFunction(contextId, traceId);
   }
 
+  popProgram() {
+    // finished initializing the program
+    return this.popImmediate(this._programContextId, ProgramStopTraceId);
+  }
+
+  // ###########################################################################
+  // await/async
+  // TODO: allow disabling tracing these?
+  // ###########################################################################
 
   // CallbackArgument(inProgramStaticId, schedulerId, traceId, cb) {
   //   return this._runtimeMonitor.CallbackArgument(this.getProgramId(), 
@@ -108,11 +120,6 @@ export default class ProgramMonitor {
     return this._runtimeMonitor.popResume(resumeContextId);
   }
 
-  popProgram() {
-    // finished initializing the program
-    return this.popImmediate(this._programContextId, ProgramStopTraceId);
-  }
-
   // ###########################################################################
   // traces
   // ###########################################################################
@@ -121,7 +128,7 @@ export default class ProgramMonitor {
    * `t` is short for `trace` (we have a lot of these, so we want to keep the name short)
    */
   t(inProgramStaticTraceId) {
-    if (this.disabled) {
+    if (TracesDisabled || this.disabled) {
       return 0;
     }
     return this._runtimeMonitor.trace(this.getProgramId(), inProgramStaticTraceId);
@@ -131,14 +138,14 @@ export default class ProgramMonitor {
    * 
    */
   traceExpr(inProgramStaticTraceId, value) {
-    if (this.disabled) {
+    if (TracesDisabled || this.disabled) {
       return value;
     }
     return this._runtimeMonitor.traceExpression(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
   traceArg(inProgramStaticTraceId, value) {
-    if (this.disabled) {
+    if (TracesDisabled || this.disabled) {
       return value;
     }
     return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
@@ -149,10 +156,12 @@ export default class ProgramMonitor {
   // ###########################################################################
 
   addVarAccess(inProgramStaticVarAccessId, value) {
-    if (this.disabled) {
-      return value;
-    }
-    return this._runtimeMonitor.addVarAccess(this.getProgramId(), inProgramStaticVarAccessId, value);
+    // NIY
+    return value;
+    // if (this.disabled) {
+    //   return value;
+    // }
+    // return this._runtimeMonitor.addVarAccess(this.getProgramId(), inProgramStaticVarAccessId, value);
   }
 
   // ###########################################################################
@@ -168,7 +177,7 @@ export default class ProgramMonitor {
   // ###########################################################################
 
   get disabled() {
-    return this._runtimeMonitor.disabled;
+    return !!this._runtimeMonitor.disabled;
   }
 
   warnDisabled(...args) {
