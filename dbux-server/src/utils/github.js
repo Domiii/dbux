@@ -8,7 +8,8 @@ const { log, debug, warn, error: logError } = newLogger('dbux-server.github');
 
 export default async function checkGithubToken(token) {
   try {
-    await fetchGET('https://api.github.com/user', null, { headers: { Authorization: `token ${token}` } });
+    let result = await fetchGET('https://api.github.com/user', null, { headers: { Authorization: `token ${token}` } });
+    return result;
   }
   catch (err) {
     throw new Error(`Github access token failed: ${err.message}`);

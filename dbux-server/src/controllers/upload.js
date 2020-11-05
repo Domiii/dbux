@@ -26,13 +26,13 @@ function checkFolderExist(uid) {
 }
 
 export async function upload(request, response) {
-  let { uid, filename, data } = request.body;
+  let { githubToken, filename, data } = request.body;
 
   // check github access token works
-  await checkGithubToken(uid);
+  let user = await checkGithubToken(githubToken);
 
   try {
-    let folder = checkFolderExist(uid);
+    let folder = checkFolderExist(user.login);
     zipToFile(data, filename, path.join(folder, `${filename}.zip`));
 
     response.send('Done.');

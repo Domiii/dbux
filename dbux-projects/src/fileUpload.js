@@ -12,8 +12,8 @@ const baseUrl = 'http://linux8.csie.org';
 const port = 2719;
 const url = `${baseUrl}:${port}/upload`;
 
-export default async function upload(uid, filepath) {
+export default async function upload(githubToken, filepath) {
   let data = fs.readFileSync(filepath);
   let filename = path.basename(filepath);
-  return fetchPOST(url, { uid, filename, data }, undefined, undefined, { raw: true });
+  return fetchPOST(url, { githubToken, filename, data }, undefined, undefined, { raw: true });
 }
