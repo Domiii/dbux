@@ -8,7 +8,9 @@ import { fetchPOST } from './util/fetch';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('file upload');
 
-const url = 'http://localhost:2719/upload';
+const baseUrl = 'http://linux8.csie.org';
+const port = 2719;
+const url = `${baseUrl}:${port}/upload`;
 
 export default async function upload(uid, filepath) {
   let data = fs.readFileSync(filepath);

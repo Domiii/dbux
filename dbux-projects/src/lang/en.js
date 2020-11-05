@@ -7,6 +7,7 @@ const translation = {
     loginSuccess: 'Login successed.',
   },
   uploadLog: {
+    alreadyUploading: 'There are files is uploading.',
     nothing: 'There is no log files to be uploaded.',
     uploadOne: 'Upload',
     uploadOne_plural: 'Upload one recent file',
@@ -14,6 +15,7 @@ const translation = {
     askForUpload: 'There are {{count}} log file to be upload.',
     askForUpload_plural: 'There are {{count}} log files to be upload.',
     showCanceled: 'Canceled.',
+    uploading: 'Uploading...',
     done: 'Upload done.',
   },
 };

@@ -829,7 +829,7 @@ export default class ProjectsManager {
   // Temporary backend stuff
   // ###########################################################################
 
-  async uploadLog() {
+  async _uploadLog() {
     const translator = getTranslationScope('uploadLog');
 
     let logDirectory = this.externals.resources.getLogsDirectory();
@@ -870,15 +870,25 @@ export default class ProjectsManager {
       let newFilename = `uploaded__${logFile}`;
       fs.renameSync(path.join(logDirectory, logFile), path.join(logDirectory, newFilename));
     });
-    // TODO: With progress bar
+
+    this.externals.showMessage.info(translator('uploading'));
+    await Promise.all(promises);
+    this.externals.showMessage.info(translator('done'));
+  }
+
+  async uploadLog() {
+    const translator = getTranslationScope('uploadLog');
+
+    if (this._uploadPromise) {
+      this.externals.showMessage.info(translator('alreadyUploading'));
+      return;
+    }
 
     try {
-      await Promise.all(promises);
-      this.externals.showMessage.info(translator('done'));
+      await (this._uploadPromise = this._uploadLog());
     }
-    catch (e) {
-      // this.externals.showMessage.info(translator('showTmpError'));
-      logError(e);
+    finally {
+      this._uploadPromise = null;
     }
   }
 
