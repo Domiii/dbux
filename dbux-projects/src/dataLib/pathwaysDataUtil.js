@@ -1,3 +1,4 @@
+import last from 'lodash/last';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
@@ -50,6 +51,17 @@ export default {
     return testRun.bugId === bug.id;
   },
 
+  isLastVisibleGroup(pdp, actionGroupId) {
+    const actionGroup = pdp.collections.actionGroups.getById(actionGroupId);
+    const visibleGroupsInStep = pdp.indexes.actionGroups.visiblesbyStepId.get(actionGroup.stepId);
+    return last(visibleGroupsInStep) === actionGroup;
+  },
+
+  isLastStepOfStepGroup(pdp, stepId) {
+    const step = pdp.collections.steps.getById(stepId);
+    const stepsByGroup = pdp.indexes.steps.byGroup.get(step.stepGroupId);
+    return last(stepsByGroup) === step;
+  },
 
   // ###########################################################################
   // applications

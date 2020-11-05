@@ -54,7 +54,7 @@ async function waitForBugSolved(bug) {
 async function waitForPracticeSessionStop() {
   return new Promise((r) => {
     const manager = getOrCreateProjectManager();
-    const unbind = manager.onPracticeSessionChanged(() => {
+    const unbind = manager.onPracticeSessionStateChanged(() => {
       if (!manager.practiceSession) {
         r();
         unbind();

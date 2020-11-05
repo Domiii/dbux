@@ -260,7 +260,7 @@ export default class ProjectsManager {
 
     // notify event listeners
     !load && emitPracticeSessionEvent('started', this.practiceSession);
-    this._emitter.emit('practiceSessionChanged');
+    this._emitter.emit('practiceSessionStateChanged');
   }
 
   // ########################################
@@ -309,8 +309,8 @@ export default class ProjectsManager {
   // PracticeSession: util
   // ########################################
 
-  onPracticeSessionChanged(cb) {
-    return this._emitter.on('practiceSessionChanged', cb);
+  onPracticeSessionStateChanged(cb) {
+    return this._emitter.on('practiceSessionStateChanged', cb);
   }
 
   /**

@@ -53,3 +53,13 @@ html, body {
   background-color: gray;
   opacity: 0.7;
 }
+
+.step-divider {
+  margin-right: 1rem;
+  padding-right: 1rem;
+  border-right: 2px solid black;
+}
+
+.theme-mode-dark .step-divider {
+  border-right: 2px solid white;
+}

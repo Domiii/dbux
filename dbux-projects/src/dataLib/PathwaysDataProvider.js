@@ -14,6 +14,7 @@ import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
 import UserActionsByGroupIndex from './indexes/UserActionsByGroupIndex';
+import VisibleActionGroupByStepIdIndex from './indexes/VisibleActionGroupByStepIdIndex';
 import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 import StepsByTypeIndex from './indexes/StepsByTypeIndex';
 
@@ -186,6 +187,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addIndex(new UserActionByTypeIndex());
     this.addIndex(new UserActionsByStepIndex());
     this.addIndex(new UserActionsByGroupIndex());
+    this.addIndex(new VisibleActionGroupByStepIdIndex());
     this.addIndex(new StepsByGroupIndex());
     this.addIndex(new StepsByTypeIndex());
   }

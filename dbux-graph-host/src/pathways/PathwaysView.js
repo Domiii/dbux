@@ -1,4 +1,5 @@
 import last from 'lodash/last';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
@@ -80,7 +81,12 @@ class PathwaysView extends HostComponentEndpoint {
 
   getActionGroupOwner = (actionKey, { stepId }) => {
     const step = this.pdp.collections.steps.getById(stepId);
-    return this.steps.getComponentByEntry(step);
+    if (this.context.doc.isAnalyzing()) {
+      return this.stepGroups.getComponentByKey(step.stepGroupId);
+    }
+    else {
+      return this.steps.getComponentByEntry(step);
+    }
   }
 
   getActionOwner = (actionKey, { groupId }) => {
@@ -191,7 +197,8 @@ class PathwaysView extends HostComponentEndpoint {
       activeTimestamp = group.createdAt + MIN_STALE_TIME;
     }
     const lastActive = activeTimestamp + MIN_STALE_TIME;
-    const endTime = this.pdp.util.getActionGroupEndTime(last(actionGroups).id) || Date.now();
+
+    const endTime = last(actionGroups) ? this.pdp.util.getActionGroupEndTime(last(actionGroups)) : Date.now();
     if (lastActive < endTime) {
       staleIntervals.push({ start: lastActive, end: endTime });
     }
@@ -238,7 +245,10 @@ class PathwaysView extends HostComponentEndpoint {
 
     // TODO: get step's prepared data, not raw data
     let stepGroups;
+    let steps;
     if (this.context.doc.isAnalyzing()) {
+      // analyze mode
+      // stepGroups
       stepGroups = pdp.indexes.steps.byGroup.getAllKeys().map(stepGroupId => {
         const timeSpentMillis = pdp.indexes.steps.byGroup.
           get(stepGroupId).
@@ -253,6 +263,9 @@ class PathwaysView extends HostComponentEndpoint {
       });
       stepGroups.sort((a, b) => b.timeSpentMillis - a.timeSpentMillis);
 
+      // steps
+      steps = EmptyArray;
+
       const timelineUpdate = this.makeTimelineData(themeMode);
       let timeLineComponent = this.children.getComponent('PathwaysTimeline');
       if (timeLineComponent) {
@@ -262,9 +275,12 @@ class PathwaysView extends HostComponentEndpoint {
         this.children.createComponent('PathwaysTimeline', timelineUpdate);
       }
     }
-    const steps = pdp.collections.steps.getAll().
-      filter(step => !!step).
-      map(step => this.makeStep(themeMode, modeName, step));
+    else {
+      // non-analyze mode
+      steps = pdp.collections.steps.getAll().
+        filter(step => !!step).
+        map(step => this.makeStep(themeMode, modeName, step));
+    }
 
 
     const actionGroups = pdp.collections.actionGroups.getAll().
@@ -272,6 +288,7 @@ class PathwaysView extends HostComponentEndpoint {
       map(actionGroup => {
         const {
           id: groupId,
+          stepId,
           type
         } = actionGroup;
 
@@ -279,13 +296,20 @@ class PathwaysView extends HostComponentEndpoint {
         const iconUri = this.getIconUri(modeName, getIconByActionGroup(type));
         const timeSpent = formatTimeSpent(pdp.util.getActionGroupTimeSpent(groupId));
         const hasTrace = !!pdp.util.getActionGroupAction(groupId)?.trace;
+        const step = pdp.collections.steps.getById(stepId);
+        const background = this.makeStepBackground(step, themeMode);
+        const needsDivider = this.context.doc.isAnalyzing() &&
+          this.pdp.util.isLastVisibleGroup(groupId) &&
+          !this.pdp.util.isLastStepOfStepGroup(stepId);
 
         return {
           ...actionGroup,
           typeName,
           iconUri,
           timeSpent,
-          hasTrace
+          hasTrace,
+          background,
+          needsDivider
         };
       });
 
