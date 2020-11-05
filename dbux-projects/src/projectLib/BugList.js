@@ -22,8 +22,13 @@ export default class BugList {
     const hasIds = arr.some(bug => !!bug.id);
 
     for (const cfg of arr) {
+      if (!cfg.number) {
+        // ensure cfg.number exists(type number)
+        cfg.number = hasIds ? cfg.id : ++lastBugNumber;
+      }
+      // convert number typed id to string type(thus it's globally unique)
+      const id = cfg.id = `${project.name}#${cfg.number}`;
       const bug = new Bug(project, cfg);
-      const id = hasIds ? bug.id : ++lastBugNumber;
       this._list.push(bug);
 
       if (this._byId.get(id)) {

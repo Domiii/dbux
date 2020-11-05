@@ -16,9 +16,10 @@ import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
 import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
-import { initUserEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
+import { initUserEvent, emitSessionFinishedEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import BugDataProvider from './dataLib/BugDataProvider';
 import initLang, { translate } from './lang';
+import getFirstLine from './util/readFirstLine';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -205,11 +206,46 @@ export default class ProjectsManager {
       return false;
     }
 
-    const exited = await this.practiceSession.maybeExit(dontRefreshView);
+    const exited = await this.practiceSession.confirmExit(dontRefreshView);
     return exited;
   }
 
-  _resetPracticeSession(bug, sessionData = EmptyObject, load = false) {
+  /**
+   * NOTE: Dev only
+   * @param {string} filePath 
+   */
+  async loadPracticeSessionFromFile(filePath) {
+    if (!await this.stopPractice()) {
+      return;
+    }
+
+    try {
+      const firstLine = await getFirstLine(filePath);
+      // NOTE: here we suppose we have these data at the first line, maybe we need a `parseSessionDataFromFile` function?
+      const { data: { sessionId, createdAt, bugId } } = JSON.parse(firstLine);
+      const bug = this.getOrCreateDefaultProjectList().getBugById(bugId);
+      if (!bug) {
+        throw new Error(`Cannot find bug of bugId: ${bugId} in log file`);
+      }
+
+      log(`switching to bug ${bug.id}`);
+      await this.switchToBug(bug);
+      
+      log(`loading pdp data`);
+      if (!this.bdp.getBugProgressByBug(bug)) {
+        this.bdp.addBugProgress(bug, BugStatus.Solving, false);
+      }
+      this._resetPracticeSession(bug, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
+      const lastAction = this.pdp.collections.userActions.getLast();
+      emitSessionFinishedEvent(this.practiceSession.state, lastAction.createdAt);
+      log('done loading');
+    }
+    catch (err) {
+      logError(`Failed to load from log file ${filePath}:`, err);
+    }
+  }
+
+  _resetPracticeSession(bug, sessionData = EmptyObject, load = false, filePath) {
     // clear applications
     allApplications.clear();
 
@@ -219,11 +255,11 @@ export default class ProjectsManager {
     // init (+ maybe load) pdp
     this.pdp.init(this.practiceSession.sessionId);
     if (load) {
-      this.pdp.load();
+      this.pdp.load(filePath);
     }
 
     // notify event listeners
-    emitPracticeSessionEvent('started', this.practiceSession);
+    !load && emitPracticeSessionEvent('started', this.practiceSession);
     this._emitter.emit('practiceSessionChanged');
   }
 
@@ -272,10 +308,6 @@ export default class ProjectsManager {
   // ########################################
   // PracticeSession: util
   // ########################################
-
-  async activate(inputCfg) {
-    await this.practiceSession.activate(inputCfg);
-  }
 
   onPracticeSessionChanged(cb) {
     return this._emitter.on('practiceSessionChanged', cb);
@@ -382,7 +414,7 @@ export default class ProjectsManager {
 
     // if some bug are already activated, save the changes
     if (bug !== previousBug) {
-      if (previousBug) {
+      if (previousBug?.project.isProjectFolderExists()) {
         await this.saveFileChanges(previousBug);
         await previousBug.project.gitResetHard();
       }
@@ -425,9 +457,9 @@ export default class ProjectsManager {
   async runTest(bug, inputCfg) {
     // TODO: make this configurable
     // NOTE2: nolazy is required for proper breakpoints in debug mode
-    let { 
-      debugMode = false, 
-      dbuxEnabled = true, 
+    let {
+      debugMode = false,
+      dbuxEnabled = true,
       enableSourceMaps = false
     } = inputCfg;
 
@@ -605,15 +637,7 @@ export default class ProjectsManager {
    * @param {Bug} bug NOTE: set to `undefined` to clear the storage
    */
   async setKeyToBug(key, bug) {
-    if (bug === undefined) {
-      await this.externals.storage.set(key, undefined);
-    }
-    else {
-      await this.externals.storage.set(key, {
-        projectName: bug.project.name,
-        bugId: bug.id
-      });
-    }
+    await this.externals.storage.set(key, bug?.id);
   }
 
   /**
@@ -621,21 +645,9 @@ export default class ProjectsManager {
    * @return {Bug}
    */
   getBugByKey(key) {
-    const bugInfo = this.externals.storage.get(key);
+    const bugId = this.externals.storage.get(key);
 
-    if (bugInfo) {
-      const { projectName, bugId } = bugInfo;
-      const project = this.getOrCreateDefaultProjectList().getByName(projectName);
-
-      if (!project) {
-        warn(`Found bug by key='${key}', but project does not exist: ${JSON.stringify(bugInfo)}`);
-      }
-
-      if (project?.isProjectFolderExists()) {
-        return project.getOrLoadBugs().getById(bugId);
-      }
-    }
-    return null;
+    return this.getOrCreateDefaultProjectList().getBugById(bugId) || null;
   }
 
 

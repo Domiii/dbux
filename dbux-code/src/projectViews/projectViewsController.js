@@ -207,7 +207,7 @@ export class ProjectViewController {
       await this.checkActivateBugRequirement();
 
       progress.report({ message: 'running test...' });
-      await this.manager.activate(inputCfg);
+      await this.manager.practiceSession.activate(inputCfg);
     }, options);
   }
 

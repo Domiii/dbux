@@ -12,7 +12,7 @@ export default class EslintProject extends Project {
   packageManager = 'npm';
 
   // TODO: get nodeVersion by bug instead
-  nodeVersion = '8';
+  nodeVersion = '7';
 
 
   getNodeVersion(bug) {
