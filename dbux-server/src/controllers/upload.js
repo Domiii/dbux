@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
 import checkGithubToken from '../utils/github';
+import { zipToFile } from '../utils/zip';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-server');
@@ -32,8 +33,7 @@ export async function upload(request, response) {
 
   try {
     let folder = checkFolderExist(uid);
-    // TODO: compress
-    fs.writeFileSync(path.join(folder, filename), Buffer.from(data));
+    zipToFile(data, filename, path.join(folder, `${filename}.zip`));
 
     response.send('Done.');
   }
