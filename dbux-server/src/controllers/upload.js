@@ -5,6 +5,7 @@ import env from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
+import checkGithubToken from '../utils/github';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-server');
@@ -23,8 +24,11 @@ function checkFolderExist(uid) {
   return folder;
 }
 
-export function upload(request, response) {
+export async function upload(request, response) {
   let { uid, filename, data } = request.body;
+
+  // check github access token works
+  await checkGithubToken(uid);
 
   try {
     let folder = checkFolderExist(uid);

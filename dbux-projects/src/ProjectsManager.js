@@ -861,11 +861,11 @@ export default class ProjectsManager {
       return;
     }
 
-    let user = await this._backend.login();
-    // TODO: github ID
+    let githubSession = await this.externals.interactiveGithubLogin();
+    let githubToken = githubSession.accessToken;
 
     let promises = logFiles.map(async (logFile) => {
-      await upload(user.uid, path.join(logDirectory, logFile));
+      await upload(githubToken, path.join(logDirectory, logFile));
 
       let newFilename = `uploaded__${logFile}`;
       fs.renameSync(path.join(logDirectory, logFile), path.join(logDirectory, newFilename));
