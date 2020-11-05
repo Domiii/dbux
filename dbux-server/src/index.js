@@ -1,6 +1,6 @@
 
-import express from "express";
 import bodyParser from "body-parser";
+import express from "express";
 import '@dbux/common/src/util/prettyLogs';
 import { newLogger } from '@dbux/common/src/log/logger';
 import db, { firebase } from './db';
@@ -20,7 +20,7 @@ const { log, debug, warn, error: logError } = newLogger('dbux-server');
 const app = express();
 const port = 2719;
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '1gb' }));
 
 app.get('/custom-token', loginRoute);
 

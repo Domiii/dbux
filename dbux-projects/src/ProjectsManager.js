@@ -18,7 +18,7 @@ import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
 import { initUserEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import BugDataProvider from './dataLib/BugDataProvider';
-import initLang, { translate } from './lang';
+import initLang, { translate, getTranslationScope } from './lang';
 import upload from './fileUpload';
 
 const logger = newLogger('PracticeManager');
@@ -830,17 +830,18 @@ export default class ProjectsManager {
   // ###########################################################################
 
   async uploadLog() {
-    // TODO: add translate
+    const translator = getTranslationScope('uploadLog');
+
     let logDirectory = this.externals.resources.getLogsDirectory();
     let allLogFiles = fs.readdirSync(logDirectory);
     let logFiles = allLogFiles.filter(fileName => !fileName.startsWith('uploaded__'));
     if (logFiles.length === 0) {
-      this.externals.showMessage.info('no!');
+      this.externals.showMessage.info(translator('nothing'));
       return;
     }
 
     let answerButtons = { 
-      one() { 
+      [translator('uploadOne', { count: logFiles.length })]() { 
         return [ 
           logFiles.map(filename => ({ 
             filename, 
@@ -851,16 +852,17 @@ export default class ProjectsManager {
     };
 
     if (logFiles.length > 1) {
-      answerButtons.all = function () { return logFiles; };
+      answerButtons[translator('uploadAll')] = function () { return logFiles; };
     }
 
-    logFiles = await this.externals.showMessage.info('upload?', answerButtons, { modal: true });
-    if (!logFiles) { // user canceled
-      this.externals.showMessage.info('cancel!');
+    logFiles = await this.externals.showMessage.info(translator('askForUpload', { count: logFiles.length }), answerButtons, { modal: true });
+    if (!logFiles) {
+      this.externals.showMessage.info(translator('showCanceled'));
       return;
     }
 
     let user = await this._backend.login();
+    // TODO: github ID
 
     let promises = logFiles.map(async (logFile) => {
       await upload(user.uid, path.join(logDirectory, logFile));
@@ -868,14 +870,15 @@ export default class ProjectsManager {
       let newFilename = `uploaded__${logFile}`;
       fs.renameSync(path.join(logDirectory, logFile), path.join(logDirectory, newFilename));
     });
+    // TODO: With progress bar
 
     try {
       await Promise.all(promises);
-      this.externals.showMessage.info('done');
+      this.externals.showMessage.info(translator('done'));
     }
     catch (e) {
-      this.externals.showMessage.info('some tmp error');
-      debug(e);
+      // this.externals.showMessage.info(translator('showTmpError'));
+      logError(e);
     }
   }
 

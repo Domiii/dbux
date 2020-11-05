@@ -28,6 +28,7 @@ export function upload(request, response) {
 
   try {
     let folder = checkFolderExist(uid);
+    // TODO: compress
     fs.writeFileSync(path.join(folder, filename), Buffer.from(data));
 
     response.send('Done.');
