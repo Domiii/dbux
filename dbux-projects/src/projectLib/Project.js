@@ -586,15 +586,6 @@ This may be solved by pressing \`clean project folder\` button.`);
         arr = arr.filter(bug => bug.label && bug.bugLocations?.length);
       }
 
-      // number = id (if number was not assigned)
-      arr.forEach(bug => {
-        // TODO: the original bug id is only unique per project, so we fix it here
-        if (!bug.number) {
-          bug.number = bug.id;
-          bug.id = `${this.name}#${bug.id}`;
-        }
-      });
-      
       this._bugs = new BugList(this, arr);
     }
     return this._bugs;
