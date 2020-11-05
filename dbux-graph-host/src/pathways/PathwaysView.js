@@ -164,12 +164,12 @@ class PathwaysView extends HostComponentEndpoint {
 
   filterNewGroup = (groups) => {
     const newGroups = [];
-    const addedTraceIds = new Set();
+    const addedStaticTraceIds = new Set();
     for (const group of groups) {
       if (group) {
         const trace = this.pdp.util.getActionGroupAction(group.id)?.trace;
-        if (trace && !addedTraceIds.has(trace.traceId)) {
-          addedTraceIds.add(trace.traceId);
+        if (trace && !addedStaticTraceIds.has(trace.staticTraceId)) {
+          addedStaticTraceIds.add(trace.staticTraceId);
           newGroups.push(group);
         }
       }
