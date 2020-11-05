@@ -169,7 +169,8 @@ const traceCfg = (() => {
     ObjectExpression: [
       NoTrace,
       [['properties', NoTrace, 
-        [['value', ExpressionValue]]
+        [['value', ExpressionValue]],
+        { array: true }
       ]]
     ],
 
@@ -628,12 +629,17 @@ function visitChildren(visitFn, childCfgs, path, state) {
     const { visitorName } = childCfg;
     if (path.node?.[visitorName]) {
       let childPathes = path.get(visitorName);
-      if (!Array.isArray(childPathes)) {
-        childPathes = [childPathes];
+      if (Array.isArray(childPathes)) {
+        for (let childPath of childPathes) {
+          visitFn(childPath, state, childCfg);
+        }
       }
-      // console.debug(visitorName, childPath?.toString() || 'undefined', childPath?.getData);
-      for (const childPath of childPathes) {
-        visitFn(childPath, state, childCfg);
+      else {
+        if (childCfg.extraCfg?.isArray) {
+          warn(`in "${state.filePath}": instrumenting path that should be (but is not) array: ${childPathes.toString()} (${childPathes.node.type})`);
+        }
+
+        visitFn(childPathes, state, childCfg);
       }
     }
   }
@@ -727,7 +733,6 @@ function instrumentPath(direction, instrumentor, path, state, cfg) {
   const { extraCfg } = cfg;
   if (extraCfg?.array) {
     if (!Array.isArray(path)) {
-      warn(`in "${state.filePath}": instrumenting path that should be (but is not) array: ${path.toString()} (${path.node.type})`);
       instrumentor(path, state);
     }
     else {
