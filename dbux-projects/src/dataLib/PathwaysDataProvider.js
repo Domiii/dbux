@@ -14,10 +14,13 @@ import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
 import UserActionsByGroupIndex from './indexes/UserActionsByGroupIndex';
+import VisibleActionGroupByStepIdIndex from './indexes/VisibleActionGroupByStepIdIndex';
+import StepsByGroupIndex from './indexes/StepsByGroupIndex';
+import StepsByTypeIndex from './indexes/StepsByTypeIndex';
+
 import TestRun from './TestRun';
 
 import { emitNewTestRun } from '../userEvents';
-import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -184,7 +187,9 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addIndex(new UserActionByTypeIndex());
     this.addIndex(new UserActionsByStepIndex());
     this.addIndex(new UserActionsByGroupIndex());
+    this.addIndex(new VisibleActionGroupByStepIdIndex());
     this.addIndex(new StepsByGroupIndex());
+    this.addIndex(new StepsByTypeIndex());
   }
 
   // ###########################################################################
@@ -299,7 +304,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     const stepType = getStepTypeByActionType(actionType);
     if (!lastStep ||
       action.newStep ||
-      (stepType && lastStepType && stepType !== lastStepType) ||
+      (!StepType.is.None(stepType) && lastStepType && stepType !== lastStepType) ||
       ((stepType === StepType.Trace) && (
         (applicationId && applicationId !== lastApplicationId) ||
         (staticContextId && staticContextId !== lastStaticContextId)

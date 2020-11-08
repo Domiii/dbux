@@ -18,7 +18,7 @@ class PathwaysActionGroup extends ClientComponentEndpoint {
             <div class="action-text" data-el="annotation"></div>
           </button>
         </div>
-        <div class="flex-row" data-mount="PathwaysAction"></div>
+        <div class="flex-row flex-warp" data-mount="PathwaysAction"></div>
       </div>
     </div>`);
   }
@@ -29,9 +29,12 @@ class PathwaysActionGroup extends ClientComponentEndpoint {
       type,
       typeName,
       searchTerm,
-      annotation
+      annotation,
+      background,
+      needsDivider
     } = this.state;
 
+    this.el.style.background = background;
     this.els.icon.title = typeName;
     if (searchTerm) {
       this.els.searchTerm.textContent = searchTerm;
@@ -40,6 +43,12 @@ class PathwaysActionGroup extends ClientComponentEndpoint {
     if (annotation) {
       this.els.annotation.textContent = annotation;
       this.els.annotation.title = annotation;
+    }
+    if (needsDivider) {
+      this.el.classList.add('step-divider');
+    }
+    else {
+      this.el.classList.remove('step-divider');
     }
   }
 

@@ -3,16 +3,16 @@ import CollectionIndex from '@dbux/data/src/indexes/CollectionIndex';
 /** @typedef {import('../PathwayDataProvider').default} PathwayDataProvider */
 
 /** @extends {CollectionIndex<Step>} */
-export default class StepsByGroupIndex extends CollectionIndex {
+export default class StepsByTypeIndex extends CollectionIndex {
   constructor() {
-    super('steps', 'byGroup');
+    super('steps', 'byType');
   }
 
   /** 
    * @param {PathwayDataProvider} pdp
-   * @param {UserAction} step
+   * @param {Step} step
    */
   makeKey(pdp, step) {
-    return step.stepGroupId;
+    return step.type;
   }
 }

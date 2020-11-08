@@ -54,7 +54,7 @@ export default class PracticeSession {
   setState(state) {
     if (this.state !== state) {
       this.state = state;
-      this.manager._emitter.emit('practiceSessionChanged');
+      this.manager._emitter.emit('practiceSessionStateChanged');
     }
   }
 
@@ -184,7 +184,7 @@ export default class PracticeSession {
 
     // emitPracticeSessionEvent('stopped', practiceSession);
     this.manager.pdp.reset();
-    this.manager._emitter.emit('practiceSessionChanged'/*, dontRefreshView */);
+    this.manager._emitter.emit('practiceSessionStateChanged'/*, dontRefreshView */);
     return true;
   }
 

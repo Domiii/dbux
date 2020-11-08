@@ -64,8 +64,7 @@ export class ProjectViewController {
     // ########################################
     this.manager.onRunStatusChanged(this.handleStatusChanged.bind(this));
     this.manager.onBugStatusChanged(this.refresh.bind(this));
-    this.manager.onPracticeSessionChanged(this.handlePracticeSessionChanged.bind(this));
-    // this.handlePracticeSessionChanged();
+    this.manager.onPracticeSessionStateChanged(this.handlePracticeSessionStateChanged.bind(this));
 
     initCodeEvents(this.manager, context);
 
@@ -78,7 +77,7 @@ export class ProjectViewController {
         const { bug } = this.manager.practiceSession;
         await showInformationMessage(translate('projectView.existBug.message', { bug: bug.id }), {
           [translate('projectView.existBug.ok')]() { },
-          async [translate('projectView.existBug.giveUp')]() {
+          [translate('projectView.existBug.giveUp')]: async () => {
             await this.manager.stopPractice();
           }
         });
@@ -138,7 +137,7 @@ export class ProjectViewController {
     this.refresh();
   }
 
-  async handlePracticeSessionChanged(dontRefreshView) {
+  async handlePracticeSessionStateChanged(dontRefreshView) {
     if (!dontRefreshView) {
       try {
         await commands.executeCommand('setContext', 'dbux.context.hasPracticeSession', !!this.manager.practiceSession);

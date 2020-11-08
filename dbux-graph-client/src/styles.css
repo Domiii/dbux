@@ -19,6 +19,10 @@
   flex-direction: column;
 }
 
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 .align-center {
   display: flex;
   justify-content: center;
