@@ -26,12 +26,12 @@ class PathwaysDocument extends HostComponentEndpoint {
     this.createOwnComponents();
 
     const {
-      onPracticeSessionChanged
+      onPracticeSessionStateChanged
     } = this.componentManager.externals;
 
     // listen to pathways data changes
     this._addHooks();
-    this.addDisposable(onPracticeSessionChanged(this._addHooks));
+    this.addDisposable(onPracticeSessionStateChanged(this._addHooks));
   }
 
   _addHooks = () => {
@@ -39,18 +39,23 @@ class PathwaysDocument extends HostComponentEndpoint {
       getPathwaysDataProvider
     } = this.componentManager.externals;
 
-    // stop listening on previous events
-    this.userActionsListener?.();
-
-    // register new event handler
     const pdp = getPathwaysDataProvider();
-    this.addDisposable(
-      this.userActionsListener = 
+    const { sessionId } = pdp;
+    if (sessionId !== this.sessionId) {
+      // stop listening on previous events
+      this.userActionsListener?.();
+
+      // register new event handler
+      this.addDisposable(
+        this.userActionsListener =
         // pathwaysDataProvider.onAnyData(this.view.refresh)
         pdp.onData('userActions', this.view.refresh)
-    );
+      );
 
-    this.view.refresh();
+      this.view.reset();
+      this.view.refresh();
+      this.sessionId = sessionId;
+    }
   }
 
   createOwnComponents() {

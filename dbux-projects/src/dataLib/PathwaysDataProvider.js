@@ -16,9 +16,10 @@ import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
 import UserActionsByGroupIndex from './indexes/UserActionsByGroupIndex';
+import VisibleActionGroupByStepIdIndex from './indexes/VisibleActionGroupByStepIdIndex';
+import StepsByTypeIndex from './indexes/StepsByTypeIndex';
 import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 import TestRun from './TestRun';
-
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -307,7 +308,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     if (!lastStep || action.newStep) {
       return true;
     }
-    if (stepType && lastStepType && stepType !== lastStepType) {
+    if (!StepType.is.None(stepType) && lastStepType && stepType !== lastStepType) {
       return true;
     }
     if ((stepType === StepType.Trace) && (
@@ -347,7 +348,9 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addIndex(new UserActionByTypeIndex());
     this.addIndex(new UserActionsByStepIndex());
     this.addIndex(new UserActionsByGroupIndex());
+    this.addIndex(new VisibleActionGroupByStepIdIndex());
     this.addIndex(new StepsByGroupIndex());
+    this.addIndex(new StepsByTypeIndex());
   }
 
   /**

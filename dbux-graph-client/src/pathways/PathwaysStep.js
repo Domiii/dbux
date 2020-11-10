@@ -18,7 +18,7 @@ class PathwaysStep extends ClientComponentEndpoint {
           </div>
           <hr class="step-separator" style="">
         </div>
-        <div class="flex-row" data-mount="PathwaysActionGroup">
+        <div class="flex-row flex-wrap" data-mount="PathwaysActionGroup">
         </div>
       </div>
     `);

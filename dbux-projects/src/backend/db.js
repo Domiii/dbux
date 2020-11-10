@@ -104,6 +104,7 @@ export class Db {
       const _firebase = this._req(`firebase`);
       this._req('firebase/auth');
       this._req('firebase/firestore');
+      this._req('firebase/storage');
 
       return _firebase;
     }
@@ -225,6 +226,13 @@ export class Db {
   // ###########################################################################
   // other utils
   // ###########################################################################
+
+  buildUserFileRef(filename) {
+    let { uid } = this.firebase.auth().currentUser;
+    let ref = this.firebase.storage().ref().child(`${uid}/${filename}`);
+
+    return ref;
+  }
 
   sanitize(object) {
     for (const key in object) {

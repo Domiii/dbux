@@ -18,7 +18,8 @@ import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
 import { initUserEvent, emitSessionFinishedEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import BugDataProvider from './dataLib/BugDataProvider';
-import initLang, { translate } from './lang';
+import initLang, { getTranslationScope } from './lang';
+import upload from './fileUpload';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -253,7 +254,7 @@ export default class ProjectsManager {
 
     // notify event listeners
     !load && emitPracticeSessionEvent('started', this.practiceSession);
-    this._emitter.emit('practiceSessionChanged');
+    this._emitter.emit('practiceSessionStateChanged');
   }
 
   // ########################################
@@ -302,8 +303,8 @@ export default class ProjectsManager {
   // PracticeSession: util
   // ########################################
 
-  onPracticeSessionChanged(cb) {
-    return this._emitter.on('practiceSessionChanged', cb);
+  onPracticeSessionStateChanged(cb) {
+    return this._emitter.on('practiceSessionStateChanged', cb);
   }
 
   /**
@@ -837,6 +838,70 @@ export default class ProjectsManager {
   // ###########################################################################
   // Temporary backend stuff
   // ###########################################################################
+
+  async _uploadLog() {
+    const translator = getTranslationScope('uploadLog');
+
+    let logDirectory = this.externals.resources.getLogsDirectory();
+    let allLogFiles = fs.readdirSync(logDirectory);
+    let logFiles = allLogFiles.filter(fileName => !fileName.startsWith('uploaded__'));
+    if (logFiles.length === 0) {
+      this.externals.showMessage.info(translator('nothing'));
+      return;
+    }
+
+    let answerButtons = { 
+      [translator('uploadOne', { count: logFiles.length })]() { 
+        return [ 
+          logFiles.map(filename => ({ 
+            filename, 
+            time: fs.statSync(path.join(logDirectory, filename)).mtimeMs, 
+          })).reduce((result, file) => result.time > file.time ? result : file).filename,
+        ]; 
+      } 
+    };
+
+    if (logFiles.length > 1) {
+      answerButtons[translator('uploadAll')] = function () { return logFiles; };
+    }
+
+    logFiles = await this.externals.showMessage.info(translator('askForUpload', { count: logFiles.length }), answerButtons, { modal: true });
+    if (!logFiles) {
+      this.externals.showMessage.info(translator('showCanceled'));
+      return;
+    }
+
+    let githubSession = await this.externals.interactiveGithubLogin();
+    let githubToken = githubSession.accessToken;
+
+    let promises = logFiles.map(async (logFile) => {
+      await upload(githubToken, path.join(logDirectory, logFile));
+
+      let newFilename = `uploaded__${logFile}`;
+      fs.renameSync(path.join(logDirectory, logFile), path.join(logDirectory, newFilename));
+    });
+
+    this.externals.showMessage.info(translator('uploading'));
+    await Promise.all(promises);
+    this.externals.showMessage.info(translator('done'));
+  }
+
+  async uploadLog() {
+    const translator = getTranslationScope('uploadLog');
+
+    if (this._uploadPromise) {
+      this.externals.showMessage.info(translator('alreadyUploading'));
+      return;
+    }
+
+    try {
+      await (this._uploadPromise = this._uploadLog());
+    }
+    finally {
+      this._uploadPromise = null;
+    }
+  }
+
   async showBugLog(bug) {
     await this.getAndInitBackend();
     await this._backend.login();

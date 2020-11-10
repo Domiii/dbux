@@ -6,6 +6,7 @@ import PathwaysStepGroup from './PathwaysStepGroup';
 import PathwaysStep from './PathwaysStep';
 import PathwaysActionGroup from './PathwaysActionGroup';
 import PathwaysAction from './PathwaysAction';
+import PathwaysTimeline from './PathwaysTimeline';
 
 export default {
   PathwaysDocument,
@@ -15,4 +16,5 @@ export default {
   PathwaysStep,
   PathwaysActionGroup,
   PathwaysAction,
+  PathwaysTimeline
 };

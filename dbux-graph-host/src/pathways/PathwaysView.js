@@ -1,3 +1,5 @@
+import last from 'lodash/last';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
 import { getStaticContextColor } from '@dbux/graph-common/src/shared/contextUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
@@ -77,10 +79,14 @@ class PathwaysView extends HostComponentEndpoint {
     return this;
   }
 
-
   getActionGroupOwner = (actionKey, { stepId }) => {
     const step = this.pdp.collections.steps.getById(stepId);
-    return this.steps.getComponentByEntry(step);
+    if (this.context.doc.isAnalyzing()) {
+      return this.stepGroups.getComponentByKey(step.stepGroupId);
+    }
+    else {
+      return this.steps.getComponentByEntry(step);
+    }
   }
 
   getActionOwner = (actionKey, { groupId }) => {
@@ -109,6 +115,11 @@ class PathwaysView extends HostComponentEndpoint {
   // ###########################################################################
   // handleRefresh
   // ###########################################################################
+
+  makeStepBackground(step, themeMode) {
+    const { staticContextId } = step;
+    return staticContextId ? getStaticContextColor(themeMode, staticContextId) : 'default';
+  }
 
   makeStep = (themeMode, modeName, step) => {
     const {
@@ -142,7 +153,7 @@ class PathwaysView extends HostComponentEndpoint {
 
     const iconUri = this.getIconUri(modeName, getIconByStep(stepType));
     const timeSpent = formatTimeSpent(this.pdp.util.getStepTimeSpent(stepId));
-    const background = staticContextId && getStaticContextColor(themeMode, staticContextId) || 'default';
+    const background = this.makeStepBackground(step, themeMode);
     const hasTrace = StepType.is.Trace(stepType);
 
     return {
@@ -154,6 +165,69 @@ class PathwaysView extends HostComponentEndpoint {
       hasTrace,
 
       ...step
+    };
+  }
+
+  filterNewGroup = (groups) => {
+    const newGroups = [];
+    const addedStaticTraceIds = new Set();
+    for (const group of groups) {
+      if (group) {
+        const trace = this.pdp.util.getActionGroupAction(group.id)?.trace;
+        if (trace && !addedStaticTraceIds.has(trace.staticTraceId)) {
+          addedStaticTraceIds.add(trace.staticTraceId);
+          newGroups.push(group);
+        }
+      }
+    }
+    return newGroups;
+  }
+
+  makeTimelineData(themeMode) {
+    // make stale data
+    const actionGroups = this.pdp.collections.actionGroups.getAll();
+    const newGroups = this.filterNewGroup(actionGroups);
+    const MIN_STALE_TIME = 60 * 1000;
+    let activeTimestamp = newGroups[0]?.createdAt;
+    const staleIntervals = [];
+    for (const group of newGroups) {
+      if (group.createdAt > activeTimestamp) {
+        staleIntervals.push({ start: activeTimestamp, end: group.createdAt });
+      }
+      activeTimestamp = group.createdAt + MIN_STALE_TIME;
+    }
+    const lastActive = activeTimestamp + MIN_STALE_TIME;
+
+    const endTime = last(actionGroups) ? this.pdp.util.getActionGroupEndTime(last(actionGroups)) : Date.now();
+    if (lastActive < endTime) {
+      staleIntervals.push({ start: lastActive, end: endTime });
+    }
+
+    // make steps
+    const steps = this.pdp.collections.steps.getAll().filter(step => !!step);
+    const makeTagByType = {
+      [StepType.None]: () => 's',
+      [StepType.Trace]: (step) => {
+        if (step === this.pdp.indexes.steps.byType.get(step.type)?.[0]) {
+          return 'sn';
+        }
+        else {
+          return 'sr';
+        }
+      },
+      [StepType.CallGraph]: () => 'cg'
+    };
+
+    return {
+      steps: steps.map(step => {
+        return {
+          createdAt: step.createdAt,
+          timeSpent: this.pdp.util.getStepTimeSpent(step.id),
+          background: this.makeStepBackground(step, themeMode),
+          tag: makeTagByType[step.type](step)
+        };
+      }),
+      staleIntervals
     };
   }
 
@@ -171,7 +245,10 @@ class PathwaysView extends HostComponentEndpoint {
 
     // TODO: get step's prepared data, not raw data
     let stepGroups;
+    let steps;
     if (this.context.doc.isAnalyzing()) {
+      // analyze mode
+      // stepGroups
       stepGroups = pdp.indexes.steps.byGroup.getAllKeys().map(stepGroupId => {
         const timeSpentMillis = pdp.indexes.steps.byGroup.
           get(stepGroupId).
@@ -185,11 +262,25 @@ class PathwaysView extends HostComponentEndpoint {
         };
       });
       stepGroups.sort((a, b) => b.timeSpentMillis - a.timeSpentMillis);
-    }
 
-    const steps = pdp.collections.steps.getAll().
-      filter(step => !!step).
-      map(step => this.makeStep(themeMode, modeName, step));
+      // steps
+      steps = EmptyArray;
+
+      const timelineUpdate = this.makeTimelineData(themeMode);
+      let timeLineComponent = this.children.getComponent('PathwaysTimeline');
+      if (timeLineComponent) {
+        timeLineComponent.setState(timelineUpdate);
+      }
+      else {
+        this.children.createComponent('PathwaysTimeline', timelineUpdate);
+      }
+    }
+    else {
+      // non-analyze mode
+      steps = pdp.collections.steps.getAll().
+        filter(step => !!step).
+        map(step => this.makeStep(themeMode, modeName, step));
+    }
 
 
     const actionGroups = pdp.collections.actionGroups.getAll().
@@ -197,6 +288,7 @@ class PathwaysView extends HostComponentEndpoint {
       map(actionGroup => {
         const {
           id: groupId,
+          stepId,
           type
         } = actionGroup;
 
@@ -204,13 +296,20 @@ class PathwaysView extends HostComponentEndpoint {
         const iconUri = this.getIconUri(modeName, getIconByActionGroup(type));
         const timeSpent = formatTimeSpent(pdp.util.getActionGroupTimeSpent(groupId));
         const hasTrace = !!pdp.util.getActionGroupAction(groupId)?.trace;
+        const step = pdp.collections.steps.getById(stepId);
+        const background = this.makeStepBackground(step, themeMode);
+        const needsDivider = this.context.doc.isAnalyzing() &&
+          this.pdp.util.isLastVisibleGroup(groupId) &&
+          !this.pdp.util.isLastStepOfStepGroup(stepId);
 
         return {
           ...actionGroup,
           typeName,
           iconUri,
           timeSpent,
-          hasTrace
+          hasTrace,
+          background,
+          needsDivider
         };
       });
 
