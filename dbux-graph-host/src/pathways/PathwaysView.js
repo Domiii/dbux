@@ -145,6 +145,9 @@ class PathwaysView extends HostComponentEndpoint {
       case StepType.CallGraph:
         label = '(Call Graph Investigation)';
         break;
+      case StepType.Other:
+        label = '(Other)';
+        break;
       case StepType.None:
       default:
         label = '(Start)';
@@ -215,7 +218,8 @@ class PathwaysView extends HostComponentEndpoint {
           return 'sr';
         }
       },
-      [StepType.CallGraph]: () => 'cg'
+      [StepType.CallGraph]: () => 'cg',
+      [StepType.Other]: () => 'o'
     };
 
     return {
@@ -359,6 +363,18 @@ class PathwaysView extends HostComponentEndpoint {
       const trace = this.pdp.util.getActionGroupAction(groupId)?.trace;
       if (trace) {
         traceSelection.selectTrace(trace);
+      }
+    },
+
+    selectStepStaticTrace(stepId) {
+      const step = this.pdp.collections.steps.getById(stepId);
+      const { applicationId, staticContextId } = step;
+      if (applicationId && staticContextId) {
+        const dp = allApplications.getById(applicationId).dataProvider;
+        const firstTrace = dp.indexes.traces.byStaticContext.getFirst(staticContextId);
+        if (firstTrace) {
+          traceSelection.selectTrace(firstTrace);
+        }
       }
     }
   }

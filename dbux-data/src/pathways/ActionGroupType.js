@@ -12,6 +12,8 @@ let ActionGroupType = {
   AnnotateTraceQ: 3,
   AnnotateTraceI: 4,
 
+  EditorSelectionChanged: 10,
+
   TDValue: 11,
   TDTrackObject: 13,
   TDExecutions: 14,

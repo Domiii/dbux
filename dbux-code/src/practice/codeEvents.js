@@ -86,8 +86,10 @@ export function initCodeEvents(manager, context) {
     const trace = traceAtCursor.getMostInner();
     let staticTrace = null;
     let staticContext = null;
+    let applicationId;
     if (trace) {
-      const { applicationId, staticTraceId } = trace;
+      const { staticTraceId } = trace;
+      ({ applicationId } = trace);
       const dp = allApplications.getById(applicationId).dataProvider;
       staticTrace = dp.collections.staticTraces.getById(staticTraceId);
       staticContext = dp.collections.staticContexts.getById(staticTrace.staticContextId);
@@ -96,6 +98,7 @@ export function initCodeEvents(manager, context) {
     const { sessionId } = manager.practiceSession;
 
     return {
+      applicationId,
       staticContext,
       staticTrace,
       symbol: convertVSCodeSymbol(symbol),

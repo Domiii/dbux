@@ -74,7 +74,7 @@ const iconsByStepType = {
   [StepType.None]: defaultActionGroupIcon,
   [StepType.Trace]: 'crosshair_red.svg',
   [StepType.CallGraph]: 'dependency.svg',
-  [StepType.CallGraph]: 'dependency.svg',
+  [StepType.Other]: 'cursor_click.svg',
 };
 
 /**

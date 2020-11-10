@@ -176,6 +176,10 @@ export default class PathwaysDataProvider extends DataProviderBase {
     return this.manager.practiceSession;
   }
 
+  get sessionId() {
+    return this.session?.id;
+  }
+
   // ###########################################################################
   // Public add/edit data
   // ###########################################################################
@@ -269,7 +273,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     return group;
   }
 
-  addNewUserAction(action) {
+  addNewUserAction(action, writeToLog = true) {
     // step
     const lastStep = this.collections.steps.getLast();
     let step = lastStep;
@@ -289,7 +293,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     action.groupId = actionGroup.id;
 
     // add action
-    this.addData({ userActions: [action] });
+    this.addData({ userActions: [action] }, writeToLog);
   }
 
   shouldAddNewStep(action) {
@@ -307,6 +311,16 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
     if (!lastStep || action.newStep) {
       return true;
+    }
+    if (StepType.is.Other(stepType)) {
+      if ((applicationId && applicationId !== lastApplicationId) ||
+        (staticContextId && staticContextId !== lastStaticContextId)
+      ) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
     if (!StepType.is.None(stepType) && lastStepType && stepType !== lastStepType) {
       return true;
@@ -406,7 +420,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
           }
           delete action.eventType;
         }
-        this.addNewUserAction(action);
+        this.addNewUserAction(action, false);
       });
     },
     2: (header, dataToAdd) => {
