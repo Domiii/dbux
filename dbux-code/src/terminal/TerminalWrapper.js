@@ -26,7 +26,7 @@ async function getPathToNode() {
   const volta = (await which('volta'));
   if (volta) {
     // get the actual Node binary location that is not inside the target directory (i.e. the globally installed version)
-    return Process.execCaptureOut(`volta which node`, { processOptions: { cmd: __dirname } });
+    return Process.execCaptureOut(`volta which node`, { processOptions: { cwd: __dirname } });
   }
   return 'node';
 }
