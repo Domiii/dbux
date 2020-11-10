@@ -882,10 +882,15 @@ export default class ProjectsManager {
     let githubToken = githubSession.accessToken;
 
     let promises = logFiles.map(async (logFile) => {
-      await upload(githubToken, path.join(logDirectory, logFile));
+      try {
+        await upload(githubToken, path.join(logDirectory, logFile));
 
-      let newFilename = `uploaded__${logFile}`;
-      fs.renameSync(path.join(logDirectory, logFile), path.join(logDirectory, newFilename));
+        let newFilename = `uploaded__${logFile}`;
+        fs.renameSync(path.join(logDirectory, logFile), path.join(logDirectory, newFilename));
+      }
+      catch (err) {
+        throw new Error(`Error when file uploading: ${err.message}`);
+      }
     });
 
     this.externals.showMessage.info(translator('uploading'));
@@ -903,6 +908,9 @@ export default class ProjectsManager {
 
     try {
       await (this._uploadPromise = this._uploadLog());
+    }
+    catch (err) {
+      logError(err.message);
     }
     finally {
       this._uploadPromise = null;
