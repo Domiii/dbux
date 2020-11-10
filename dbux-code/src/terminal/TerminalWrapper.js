@@ -133,7 +133,7 @@ export default class TerminalWrapper {
     catch (err) {
       // await sleep(5);
       // this.dispose();
-      err.message = `Terminal command (${commandCall}) failed - ${err.message}`;
+      err.message = `Terminal command failed: ${err.message}\n\n  command $ ${commandCall}`;
       throw err;
     } finally {
       // this.dispose();
