@@ -1,9 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import Stopwatch from './Stopwatch';
-import PracticeSessionState, { isStateFoundedType } from './PracticeSessionState';
+import PracticeSessionState from './PracticeSessionState';
 import BugStatus from '../dataLib/BugStatus';
 import { emitPracticeSessionEvent, emitSessionFinishedEvent } from '../userEvents';
 
@@ -20,7 +21,7 @@ export default class PracticeSession {
    * @param {Bug} bug 
    * @param {ProjectsManager} manager
    */
-  constructor(bug, manager, { createdAt, sessionId, state }) {
+  constructor(bug, manager, { createdAt, sessionId, state }, logFilePath) {
     this.sessionId = sessionId || uuidv4();
     this.createdAt = createdAt || Date.now();
     this.stopwatch = new Stopwatch(manager.externals.stopwatch);
@@ -28,6 +29,7 @@ export default class PracticeSession {
     this.bug = bug;
     this.manager = manager;
     this.lastAnnotation = '';
+    this.logFilePath = logFilePath || this.getDefaultLogFilePath();
 
     let bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {
@@ -191,6 +193,10 @@ export default class PracticeSession {
   // ###########################################################################
   // utils
   // ###########################################################################
+
+  getDefaultLogFilePath() {
+    return path.join(this.manager.externals.resources.getLogsDirectory(), `${this.sessionId}.dbuxlog`);
+  }
 
   async askToFinish() {
     const confirmString = 'You have solved the bug, do you want to stop the practice session?';

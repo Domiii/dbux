@@ -40,6 +40,7 @@ const iconsByActionGroupType = {
   [ActionGroupType.TagTrace]: 'flag.svg',
   [ActionGroupType.AnnotateTraceQ]: 'q.svg',
   [ActionGroupType.AnnotateTraceI]: 'i.svg',
+  [ActionGroupType.EditorSelectionChanged]: 'cursor_click.svg',
 
   [ActionGroupType.SelectTrace]: 'crosshair_red.svg',
   [ActionGroupType.TDValue]: 'project.svg',
@@ -72,6 +73,7 @@ const iconsByActionGroupType = {
 const iconsByStepType = {
   [StepType.None]: defaultActionGroupIcon,
   [StepType.Trace]: 'crosshair_red.svg',
+  [StepType.CallGraph]: 'dependency.svg',
   [StepType.CallGraph]: 'dependency.svg',
 };
 

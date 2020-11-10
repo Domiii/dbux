@@ -23,11 +23,8 @@ export function initUserEvent(_manager) {
 // events registry
 // ###########################################################################
 
-export function emitEditorAction(evtName, data) {
-  emitUserEvent(UserActionType.EditorEvent, {
-    eventType: evtName,
-    ...data
-  });
+export function emitEditorAction(type, data) {
+  emitUserEvent(type, data);
 }
 
 export function emitNavigationAction(actionName, selectMethod, trace) {
