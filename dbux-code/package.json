@@ -425,6 +425,14 @@
         }
       },
       {
+        "command": "dbuxProject.uploadLog",
+        "title": "Upload log files",
+        "icon": {
+          "light": "resources/light/upload.svg",
+          "dark": "resources/dark/upload.svg"
+        }
+      },
+      {
         "command": "dbuxProjectView.node.addProjectToWorkspace",
         "title": "Add Project Folder to Workspace",
         "icon": {
@@ -790,6 +798,11 @@
           "command": "dbuxProjectView.showDiff",
           "when": "view == dbuxProjectView",
           "group": "navigation"
+        },
+        {
+          "command": "dbuxProject.uploadLog",
+          "when": "view == dbuxProjectView || view == dbuxSessionView",
+          "group": "navigation"
         }
       ],
       "commandPalette": [
@@ -903,6 +916,10 @@
         },
         {
           "command": "dbuxProjectView.showDiff",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxProject.uploadLog",
           "when": "dbux.context.activated"
         },
         {

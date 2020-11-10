@@ -1,5 +1,6 @@
-import path from 'path';
+
 import env from 'dotenv';
+import path from 'path';
 import firebase from 'firebase-admin';
 
 // read env file
