@@ -86,7 +86,7 @@ export function initCodeEvents(manager, context) {
     const trace = traceAtCursor.getMostInner();
     let staticTrace = null;
     let staticContext = null;
-    let applicationId;
+    let applicationId = null;
     if (trace) {
       const { staticTraceId } = trace;
       ({ applicationId } = trace);
