@@ -54,9 +54,9 @@ export default class GraphNode extends ClientComponentEndpoint {
     const { btnEl, listEl } = this;
 
     // show/hide button
-    btnEl && decorateClasses(btnEl, {
-      hidden: this.isListEmpty()
-    });
+    // btnEl && decorateClasses(btnEl, {
+    //   hidden: this.isListEmpty()
+    // });
 
     decorateClasses(listEl, {
       hidden: this.isListEmpty()
