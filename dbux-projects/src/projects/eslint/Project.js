@@ -147,7 +147,7 @@ export default class EslintProject extends Project {
     // start webpack using latest node (long-time support)
     // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
     const req = `-r ${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}`;
-    const args = `--config ./dbux.webpack.config.js --watch --env entry=${bug.testFilePaths.join(',')} --env test`;
+    const args = `--config ./dbux.webpack.config.js --watch --env entry=${bug.testFilePaths.join(',')}`;
     return this.execBackground(
       `volta run --node lts node ${req} ${this.getWebpackJs()} ${args}`
     );

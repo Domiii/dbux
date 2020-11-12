@@ -341,6 +341,8 @@ This may be solved by pressing \`clean project folder\` button.`);
     await this.installAssets();
     await this.autoCommit();  // auto-commit -> to be on the safe side
 
+    await this.applyBugPatchToTags();
+
     // install dbux dependencies
     await this.manager.installDependencies();
 
@@ -379,7 +381,8 @@ This may be solved by pressing \`clean project folder\` button.`);
       // only auto commit if files changed
       const files = this.getAllAssestFiles();
       this.logger.log('auto commit');
-      await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"'`);
+      await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
+      // --allow-empty is temp fix for todo-mvc that will cause commit failed due to nothing change.
     }
   }
 
@@ -438,6 +441,28 @@ This may be solved by pressing \`clean project folder\` button.`);
     else {
       sh.cd(projectPath);
       this.log('(skipped cloning)');
+    }
+  }
+
+  async applyBugPatchToTags() {
+    await this.gitAddTag(`"__dbux_bug_nopatch"`);
+    let bugs = this.getOrLoadBugs();
+    for (let bug of bugs) {
+      if (bug.patch) {
+        await this.applyPatch(bug.patch);
+        await this.exec(`git commit -am '"[dbux auto commit] Patch ${bug.patch}"' --allow-empty`);
+        await this.gitAddTag(`"__dbux_bug_${bug.patch}"`);
+        await this.applyPatch(bug.patch, true);
+      }
+    }
+  }
+
+  async switchToBugPatchTag(patch) {
+    if (patch) {
+      return this.gitCheckout(`"__dbux_bug_${patch}"`);
+    }
+    else {
+      return this.gitCheckout(`"__dbux_bug_nopatch"`);
     }
   }
 
@@ -529,10 +554,15 @@ This may be solved by pressing \`clean project folder\` button.`);
   // git commands
   // ###########################################################################
 
-  async applyPatch(patchFName) {
+  /**
+   * Apply (or revert) a patch file
+   * @param {String} patchFName 
+   * @param {Boolean} revert 
+   */
+  async applyPatch(patchFName, revert = false) {
     await this.checkCorrectGitRepository();
 
-    return this.exec(`git apply --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
+    return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
   }
 
   /**
@@ -570,11 +600,29 @@ This may be solved by pressing \`clean project folder\` button.`);
     return (await this.execCaptureOut(`git describe --tags`)).trim();
   }
 
+  /**
+   * Checkout to some distination
+   * @param {String} checkoutTo 
+   */
+  async gitCheckout(checkoutTo) {
+    return this.exec(`git checkout ${checkoutTo}`);
+  }
+
+  /**
+   * Add light tag
+   * @param {String} tagName 
+   */
+  async gitAddTag(tagName) {
+    return this.exec(`git tag -f ${tagName}`);
+  }
+
+
   // ###########################################################################
   // bugs
   // ###########################################################################
 
   /**
+   * Get all bugs for this project
    * @return {BugList}
    */
   getOrLoadBugs() {
