@@ -16,9 +16,11 @@ import BugStatus from './dataLib/BugStatus';
 import BackendController from './backend/BackendController';
 import PathwaysDataProvider from './dataLib/PathwaysDataProvider';
 import PracticeSessionState from './practiceSession/PracticeSessionState';
-import { initUserEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
+import { initUserEvent, emitSessionFinishedEvent, emitPracticeSessionEvent, onUserEvent, emitUserEvent } from './userEvents';
 import BugDataProvider from './dataLib/BugDataProvider';
-import initLang, { translate } from './lang';
+import initLang, { getTranslationScope } from './lang';
+import upload from './fileUpload';
+import getFirstLine from './util/readFirstLine';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -205,11 +207,46 @@ export default class ProjectsManager {
       return false;
     }
 
-    const exited = await this.practiceSession.maybeExit(dontRefreshView);
+    const exited = await this.practiceSession.confirmExit(dontRefreshView);
     return exited;
   }
 
-  _resetPracticeSession(bug, sessionData = EmptyObject, load = false) {
+  /**
+   * NOTE: Dev only
+   * @param {string} filePath 
+   */
+  async loadPracticeSessionFromFile(filePath) {
+    if (!await this.stopPractice()) {
+      return;
+    }
+
+    try {
+      const firstLine = await getFirstLine(filePath);
+      // NOTE: here we suppose we have these data at the first line, maybe we need a `parseSessionDataFromFile` function?
+      const { data: { sessionId, createdAt, bugId } } = JSON.parse(firstLine);
+      const bug = this.getOrCreateDefaultProjectList().getBugById(bugId);
+      if (!bug) {
+        throw new Error(`Cannot find bug of bugId: ${bugId} in log file`);
+      }
+
+      log(`switching to bug ${bug.id}`);
+      await this.switchToBug(bug);
+      
+      log(`loading pdp data`);
+      if (!this.bdp.getBugProgressByBug(bug)) {
+        this.bdp.addBugProgress(bug, BugStatus.Solving, false);
+      }
+      this._resetPracticeSession(bug, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
+      const lastAction = this.pdp.collections.userActions.getLast();
+      emitSessionFinishedEvent(this.practiceSession.state, lastAction.createdAt);
+      log('done loading');
+    }
+    catch (err) {
+      logError(`Failed to load from log file ${filePath}:`, err);
+    }
+  }
+
+  _resetPracticeSession(bug, sessionData = EmptyObject, load = false, filePath) {
     // clear applications
     allApplications.clear();
 
@@ -219,12 +256,12 @@ export default class ProjectsManager {
     // init (+ maybe load) pdp
     this.pdp.init(this.practiceSession.sessionId);
     if (load) {
-      this.pdp.load();
+      this.pdp.load(filePath);
     }
 
     // notify event listeners
-    emitPracticeSessionEvent('started', this.practiceSession);
-    this._emitter.emit('practiceSessionChanged');
+    !load && emitPracticeSessionEvent('started', this.practiceSession);
+    this._emitter.emit('practiceSessionStateChanged');
   }
 
   // ########################################
@@ -273,12 +310,8 @@ export default class ProjectsManager {
   // PracticeSession: util
   // ########################################
 
-  async activate(inputCfg) {
-    await this.practiceSession.activate(inputCfg);
-  }
-
-  onPracticeSessionChanged(cb) {
-    return this._emitter.on('practiceSessionChanged', cb);
+  onPracticeSessionStateChanged(cb) {
+    return this._emitter.on('practiceSessionStateChanged', cb);
   }
 
   /**
@@ -382,7 +415,7 @@ export default class ProjectsManager {
 
     // if some bug are already activated, save the changes
     if (bug !== previousBug) {
-      if (previousBug) {
+      if (previousBug?.project.isProjectFolderExists()) {
         await this.saveFileChanges(previousBug);
         await previousBug.project.gitResetHard();
       }
@@ -425,9 +458,9 @@ export default class ProjectsManager {
   async runTest(bug, inputCfg) {
     // TODO: make this configurable
     // NOTE2: nolazy is required for proper breakpoints in debug mode
-    let { 
-      debugMode = false, 
-      dbuxEnabled = true, 
+    let {
+      debugMode = false,
+      dbuxEnabled = true,
       enableSourceMaps = false
     } = inputCfg;
 
@@ -605,15 +638,7 @@ export default class ProjectsManager {
    * @param {Bug} bug NOTE: set to `undefined` to clear the storage
    */
   async setKeyToBug(key, bug) {
-    if (bug === undefined) {
-      await this.externals.storage.set(key, undefined);
-    }
-    else {
-      await this.externals.storage.set(key, {
-        projectName: bug.project.name,
-        bugId: bug.id
-      });
-    }
+    await this.externals.storage.set(key, bug?.id);
   }
 
   /**
@@ -621,21 +646,9 @@ export default class ProjectsManager {
    * @return {Bug}
    */
   getBugByKey(key) {
-    const bugInfo = this.externals.storage.get(key);
+    const bugId = this.externals.storage.get(key);
 
-    if (bugInfo) {
-      const { projectName, bugId } = bugInfo;
-      const project = this.getOrCreateDefaultProjectList().getByName(projectName);
-
-      if (!project) {
-        warn(`Found bug by key='${key}', but project does not exist: ${JSON.stringify(bugInfo)}`);
-      }
-
-      if (project?.isProjectFolderExists()) {
-        return project.getOrLoadBugs().getById(bugId);
-      }
-    }
-    return null;
+    return this.getOrCreateDefaultProjectList().getBugById(bugId) || null;
   }
 
 
@@ -832,6 +845,70 @@ export default class ProjectsManager {
   // ###########################################################################
   // Temporary backend stuff
   // ###########################################################################
+
+  async _uploadLog() {
+    const translator = getTranslationScope('uploadLog');
+
+    let logDirectory = this.externals.resources.getLogsDirectory();
+    let allLogFiles = fs.readdirSync(logDirectory);
+    let logFiles = allLogFiles.filter(fileName => !fileName.startsWith('uploaded__'));
+    if (logFiles.length === 0) {
+      this.externals.showMessage.info(translator('nothing'));
+      return;
+    }
+
+    let answerButtons = { 
+      [translator('uploadOne', { count: logFiles.length })]() { 
+        return [ 
+          logFiles.map(filename => ({ 
+            filename, 
+            time: fs.statSync(path.join(logDirectory, filename)).mtimeMs, 
+          })).reduce((result, file) => result.time > file.time ? result : file).filename,
+        ]; 
+      } 
+    };
+
+    if (logFiles.length > 1) {
+      answerButtons[translator('uploadAll')] = function () { return logFiles; };
+    }
+
+    logFiles = await this.externals.showMessage.info(translator('askForUpload', { count: logFiles.length }), answerButtons, { modal: true });
+    if (!logFiles) {
+      this.externals.showMessage.info(translator('showCanceled'));
+      return;
+    }
+
+    let githubSession = await this.externals.interactiveGithubLogin();
+    let githubToken = githubSession.accessToken;
+
+    let promises = logFiles.map(async (logFile) => {
+      await upload(githubToken, path.join(logDirectory, logFile));
+
+      let newFilename = `uploaded__${logFile}`;
+      fs.renameSync(path.join(logDirectory, logFile), path.join(logDirectory, newFilename));
+    });
+
+    this.externals.showMessage.info(translator('uploading'));
+    await Promise.all(promises);
+    this.externals.showMessage.info(translator('done'));
+  }
+
+  async uploadLog() {
+    const translator = getTranslationScope('uploadLog');
+
+    if (this._uploadPromise) {
+      this.externals.showMessage.info(translator('alreadyUploading'));
+      return;
+    }
+
+    try {
+      await (this._uploadPromise = this._uploadLog());
+    }
+    finally {
+      this._uploadPromise = null;
+    }
+  }
+
   async showBugLog(bug) {
     await this.getAndInitBackend();
     await this._backend.login();

@@ -1,8 +1,8 @@
 
 import '@dbux/common/src/util/prettyLogs';
-import { fetchGET } from '@dbux/projects/src/util/fetch';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { firebase } from '../db';
+import checkGithubToken from '../utils/github';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-server');
@@ -21,7 +21,7 @@ export async function verify(request, response) {
   let token = request.query.githubAccessToken;
 
   try {
-    const result = await fetchGET('https://api.github.com/user', null, { headers: { Authorization: `token ${token}` } });
+    await checkGithubToken(token);
     const newToken = await createToken(token);
     response.send(newToken);
   } 

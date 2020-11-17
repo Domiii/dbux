@@ -42,3 +42,9 @@ export default async function (lang) {
 export function translate(key, data) {
   return i18nextInstance.t(key, data);
 }
+
+export function getTranslationScope(scope) {
+  return function (key, data) {
+    return translate(`${scope}.${key}`, data);
+  };
+}

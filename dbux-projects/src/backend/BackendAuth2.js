@@ -61,7 +61,7 @@ export default class BackendAuth {
    */
   async getCustomTokenByGithubAccessToken(githubAccessToken) {
     try {
-      return await fetchGET(`http://localhost:2719`, `githubAccessToken=${githubAccessToken}`, undefined, undefined, { raw: true });
+      return await fetchGET(`http://localhost:2719/custom-token`, `githubAccessToken=${githubAccessToken}`, undefined, undefined, { raw: true });
     } 
     catch (err) {
       throw new Error(`getCustomTokenByGithubAccessToken failed: ${err.message}`);

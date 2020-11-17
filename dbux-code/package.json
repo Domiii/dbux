@@ -197,6 +197,10 @@
         "title": "Dev: Reset Practice Progress"
       },
       {
+        "command": "dbux.loadPracticeLogFile",
+        "title": "Dev: Load Practice Log"
+      },
+      {
         "command": "dbux.showDBStats",
         "title": "Dbux: Show DB Stats"
       },
@@ -418,6 +422,14 @@
         "icon": {
           "light": "resources/light/magnifier.svg",
           "dark": "resources/dark/magnifier.svg"
+        }
+      },
+      {
+        "command": "dbuxProject.uploadLog",
+        "title": "Upload log files",
+        "icon": {
+          "light": "resources/light/upload.svg",
+          "dark": "resources/dark/upload.svg"
         }
       },
       {
@@ -786,6 +798,11 @@
           "command": "dbuxProjectView.showDiff",
           "when": "view == dbuxProjectView",
           "group": "navigation"
+        },
+        {
+          "command": "dbuxProject.uploadLog",
+          "when": "view == dbuxProjectView || view == dbuxSessionView",
+          "group": "navigation"
         }
       ],
       "commandPalette": [
@@ -854,6 +871,10 @@
           "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
         {
+          "command": "dbux.loadPracticeLogFile",
+          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
+        },
+        {
           "command": "dbux.showDBStats",
           "when": "dbux.context.activated"
         },
@@ -895,6 +916,10 @@
         },
         {
           "command": "dbuxProjectView.showDiff",
+          "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbuxProject.uploadLog",
           "when": "dbux.context.activated"
         },
         {

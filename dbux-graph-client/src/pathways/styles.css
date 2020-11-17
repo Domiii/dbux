@@ -1,8 +1,8 @@
-
-html,body{
+html, body {
   width: 100%;
   height: 100%;
-  font-size: 12px; /* NOTE: courier is a rather "big" font, making smaller font size seem bigger */
+  /* NOTE: courier is a rather "big" font, making smaller font size seem bigger */
+  font-size: 12px;
   font-family: "Lucida Console", Courier, monospace;
   padding: 0 !important;
   margin: 0 !important;
@@ -23,4 +23,43 @@ html,body{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#pathways-timeline {
+  height: 20px;
+  border: 1px solid gray;
+}
+
+#pathways-timeline div {
+  text-align: center;
+  height: 100%;
+  border-right: 1px solid gray;
+  border-left: 1px solid gray;
+}
+
+#pathways-timeline-stale-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+}
+
+#pathways-timeline-stale-cover div {
+  height: 100%;
+  z-index: 5;
+}
+
+#pathways-timeline-stale-cover .stale {
+  background-color: gray;
+  opacity: 0.7;
+}
+
+.step-divider {
+  margin-right: 1rem;
+  padding-right: 1rem;
+  border-right: 2px solid black;
+}
+
+.theme-mode-dark .step-divider {
+  border-right: 2px solid white;
 }

@@ -199,7 +199,7 @@ class StopPracticeNode extends SessionNode {
       await this.manager.practiceSession.confirmStop();
     }
     else {
-      await this.manager.practiceSession.maybeExit();
+      await this.manager.practiceSession.confirmExit();
     }
   }
 }

@@ -73,8 +73,6 @@ export default class Collection {
 
   // handleEntryAdded(entry) {}
 
-  
-
   /**
    * Collections can use this to massage data after all data has been added, and after indexes have been processed.
    * @virtual

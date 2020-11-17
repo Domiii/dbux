@@ -7,9 +7,9 @@ const { log, debug, warn, error: logError } = newLogger('StepType');
 
 // eslint-disable-next-line import/no-mutable-exports
 let StepType = {
-  None: 0,
-  Trace: 1,
-  CallGraph: 2
+  None: 1,
+  Trace: 2,
+  CallGraph: 3
 };
 
 const stepByActionType = {

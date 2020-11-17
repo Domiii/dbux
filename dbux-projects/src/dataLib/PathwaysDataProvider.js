@@ -14,10 +14,13 @@ import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
 import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
 import UserActionsByGroupIndex from './indexes/UserActionsByGroupIndex';
+import VisibleActionGroupByStepIdIndex from './indexes/VisibleActionGroupByStepIdIndex';
+import StepsByGroupIndex from './indexes/StepsByGroupIndex';
+import StepsByTypeIndex from './indexes/StepsByTypeIndex';
+
 import TestRun from './TestRun';
 
 import { emitNewTestRun } from '../userEvents';
-import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -50,8 +53,9 @@ class ApplicationCollection extends Collection {
    */
   serialize(application) {
     const { entryPointPath, createdAt } = application;
+    const relativeEntryPointPath = path.relative(this.dp.manager.config.projectsRoot, entryPointPath);
     return {
-      entryPointPath,
+      relativeEntryPointPath,
       createdAt,
       uuid: application.uuid,
       serializedDpData: application.dataProvider.serialize()
@@ -62,7 +66,8 @@ class ApplicationCollection extends Collection {
    * 
    * @param {PathwaysDataProvider} pdp 
    */
-  deserialize({ entryPointPath, createdAt, uuid, serializedDpData }) {
+  deserialize({ relativeEntryPointPath, createdAt, uuid, serializedDpData }) {
+    const entryPointPath = path.join(this.dp.manager.config.projectsRoot, relativeEntryPointPath);
     const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
     app.dataProvider.deserialize(JSON.parse(serializedDpData));
     return app;
@@ -84,15 +89,15 @@ class UserActionCollection extends Collection {
     if (!trace) {
       return;
     }
-    
+
     const { applicationId, staticTraceId } = trace;
     const dp = allApplications.getById(applicationId).dataProvider;
-    
+
     const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
     const { staticContextId } = staticTrace;
     const { programId } = dp.collections.staticContexts.getById(staticContextId);
     const fileName = programId && dp.collections.staticProgramContexts.getById(programId).filePath || '(unknown file)';
-    
+
     let staticTraces = this.visitedStaticTracesByFile.get(fileName);
     if (!staticTraces) {
       this.visitedStaticTracesByFile.set(fileName, staticTraces = []);
@@ -115,7 +120,7 @@ class StepCollection extends Collection {
     if (!step.stepGroupId) {
       // convert group's string key to numerical id (since our indexes only accept numerical ids)
       const {
-        type, 
+        type,
         staticContextId
       } = step;
 
@@ -182,7 +187,9 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addIndex(new UserActionByTypeIndex());
     this.addIndex(new UserActionsByStepIndex());
     this.addIndex(new UserActionsByGroupIndex());
+    this.addIndex(new VisibleActionGroupByStepIdIndex());
     this.addIndex(new StepsByGroupIndex());
+    this.addIndex(new StepsByTypeIndex());
   }
 
   // ###########################################################################
@@ -297,7 +304,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     const stepType = getStepTypeByActionType(actionType);
     if (!lastStep ||
       action.newStep ||
-      (stepType && lastStepType && stepType !== lastStepType) ||
+      (!StepType.is.None(stepType) && lastStepType && stepType !== lastStepType) ||
       ((stepType === StepType.Trace) && (
         (applicationId && applicationId !== lastApplicationId) ||
         (staticContextId && staticContextId !== lastStaticContextId)
@@ -332,19 +339,20 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * Implementation, add indexes here
    * Note: Also resets all collections
    */
-  init(sessionId) {
+  init(sessionId, logFilePath) {
     this.sessionId = sessionId;
-    this.logFilePath = path.join(this.logFolderPath, `${sessionId}.dbuxlog`);
+    this.logFilePath = logFilePath || path.join(this.logFolderPath, `${sessionId}.dbuxlog`);
 
     this.reset();
   }
 
   /**
    * Load data from log file
+   * @param {string} [logFilePath] 
    */
-  load() {
+  load(logFilePath = '') {
     try {
-      const allDataString = fs.readFileSync(this.logFilePath, 'utf8');
+      const allDataString = fs.readFileSync(logFilePath || this.logFilePath, 'utf8');
       if (allDataString) {
         const dataToAdd = Object.fromEntries(Object.keys(this.collections).map(name => [name, []]));
 

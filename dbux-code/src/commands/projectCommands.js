@@ -1,4 +1,4 @@
-import { window } from 'vscode';
+import { window, Uri } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -6,6 +6,8 @@ import { registerCommand } from './commandUtil';
 import { showInformationMessage, showWarningMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import { emitAnnotateTraceAction } from '../userEvents';
+import { getLogsDirectory } from '../resources';
+import { showPathwaysView } from '../webViews/pathwaysWebView';
 
 /** @typedef {import('../projectViews/projectViewsController').ProjectViewController} ProjectViewController */
 
@@ -20,6 +22,10 @@ const { log, debug, warn, error: logError } = logger;
 export function initProjectCommands(extensionContext, projectViewController) {
   registerCommand(extensionContext, 'dbuxProjectView.showDiff', (/* node */) => {
     return projectViewController.manager.externals.showMessage.info(`You may click 'Source Control' button to review your change.`);
+  });
+
+  registerCommand(extensionContext, 'dbuxProject.uploadLog', async (/* node */) => {
+    return projectViewController.manager.uploadLog();
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.addProjectToWorkspace', (node) => {
@@ -70,6 +76,24 @@ export function initProjectCommands(extensionContext, projectViewController) {
     await projectViewController.manager.resetProgress();
     projectViewController.projectViewNodeProvider.refreshIcon();
     await showInformationMessage('Bug progress cleared');
+  });
+
+  registerCommand(extensionContext, 'dbux.loadPracticeLogFile', async () => {
+    const options = {
+      title: 'Select a log file to read',
+      canSelectFolders: false,
+      canSelectMany: false,
+      filters: {
+        'Dbux Log File': ['dbuxlog']
+      },
+      defaultUri: Uri.file(getLogsDirectory())
+    };
+    const file = (await window.showOpenDialog(options))?.[0];
+    if (file) {
+      await projectViewController.manager.loadPracticeSessionFromFile(file.fsPath);
+      await showInformationMessage(`Log file ${file.fsPath} loaded`);
+      await showPathwaysView();
+    }
   });
 
   registerCommand(extensionContext, 'dbux.togglePracticeView', async () => {
