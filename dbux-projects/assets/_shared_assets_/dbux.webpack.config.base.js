@@ -155,6 +155,11 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // externals
     // ###########################################################################
 
+    if (target !== 'node') {
+      // remove custom options of preset-env
+      babelOptions.presets[0].splice(1, 1);
+    }
+
     const externals = target !== 'node' ? undefined : [
       {
         // 'dbux-runtime': 'umd @dbux/runtime',
@@ -189,7 +194,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
         filename: '[name].js',
         path: path.resolve(ProjectRoot, 'dist'),
         publicPath: 'dist',
-        libraryTarget: "commonjs2",
+        libraryTarget: target === 'node' ? 'commonjs2' : 'var',
         devtoolModuleFilenameTemplate: "../[resource-path]",
       },
       resolve: {
@@ -247,6 +252,8 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     cfgOverrides = cfgOverrides.map(cb => isFunction(cb) ? cb(env, argv) : cb);
 
     const resultCfg = mergeConcatArray(cfg, ...cfgOverrides);
+
+    console.debug(JSON.stringify(resultCfg, null, 2));
 
     return resultCfg;
   };

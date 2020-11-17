@@ -60,7 +60,7 @@ export default class TodomvcEs6Project extends Project {
       // template.show -> incorrect variable scope causes only one item to be rendered
       
     ].map((bug) => {
-      bug.website = 'http://localhost:3030';
+      bug.website = 'http://localhost:3033';
 
       bug.testFilePaths = ['app.js'];
       bug.srcFilePaths = bug.testFilePaths;
