@@ -1,3 +1,4 @@
+import path from 'path';
 import sh from 'shelljs';
 import Project from '@dbux/projects/src/projectLib/Project';
 
@@ -59,18 +60,24 @@ export default class TodomvcEs6Project extends Project {
       // template.show -> incorrect variable scope causes only one item to be rendered
       
     ].map((bug) => {
-      bug.website = 'http://localhost:3032';
+      bug.website = 'http://localhost:3030';
+
+      bug.testFilePaths = ['app.js'];
+      bug.srcFilePaths = bug.testFilePaths;
+      bug.distFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
+
       return bug;
     });
   }
 
-  async startWatchMode() {
+  async startWatchMode(bug) {
     // start webpack and webpack-dev-server
-    return this.execBackground('node node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./dbux.webpack.config.js');
+    let cmd = `node node_modules/webpack-dev-server/bin/webpack-dev-server.js --watch --config ./dbux.webpack.config.js --env entry=${bug.testFilePaths.join(',')}`;
+    return this.execBackground(cmd);
   }
 
   async selectBug(bug) {
-    // nothing to do
+    return this.switchToBugPatchTag(bug.patch);
   }
 
   async testBugCommand(bug, debugPort) {

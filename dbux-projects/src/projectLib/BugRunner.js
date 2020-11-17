@@ -163,14 +163,15 @@ export default class BugRunner {
         },
         async () => {
           // activate patch
-          if (bug.patch) {
-            await project.applyPatch(bug.patch);
-          }
+          // if (bug.patch) {
+          //   await project.applyPatch(bug.patch);
+          // }
         },
         // select bug
         async () => project.selectBug(bug),
         // start watch mode (if necessary)
         async () => project.startWatchModeIfNotRunning(bug),
+        () => bug.website ? this.manager.externals.openWebsite(bug.website) : null,
       );
     }
     finally {
