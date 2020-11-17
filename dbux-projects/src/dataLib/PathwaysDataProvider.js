@@ -212,7 +212,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
   // actions + steps
   // ###########################################################################
 
-  addNewStep(firstAction) {
+  addNewStep(firstAction, writeToLog = true) {
     const {
       applicationId = 0,
       staticContextId = 0
@@ -243,12 +243,12 @@ export default class PathwaysDataProvider extends DataProviderBase {
       firstTraceId
     };
 
-    this.addData({ steps: [step] });
+    this.addData({ steps: [step] }, writeToLog);
     return step;
   }
 
 
-  addNewGroup(step, firstAction) {
+  addNewGroup(step, firstAction, writeToLog = true) {
     const { id: stepId } = step;
     // const { id: actionId } = firstAction;
     const {
@@ -269,7 +269,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
       annotation
     };
 
-    this.addData({ actionGroups: [group] });
+    this.addData({ actionGroups: [group] }, writeToLog);
     return group;
   }
 
@@ -279,7 +279,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     let step = lastStep;
     if (this.shouldAddNewStep(action)) {
       // create new step
-      step = this.addNewStep(action);
+      step = this.addNewStep(action, writeToLog);
     }
     action.stepId = step.id;
 
@@ -288,7 +288,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     let actionGroup = lastActionGroup;
     if (!lastActionGroup || lastStep !== step || !this.util.shouldClumpNextActionIntoGroup(action, lastActionGroup)) {
       // create new group
-      actionGroup = this.addNewGroup(step, action);
+      actionGroup = this.addNewGroup(step, action, writeToLog);
     }
     action.groupId = actionGroup.id;
 
