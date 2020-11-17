@@ -904,6 +904,9 @@ export default class ProjectsManager {
     try {
       await (this._uploadPromise = this._uploadLog());
     }
+    catch (err) {
+      logError(`Error when file uploading: ${err.stack}`);
+    }
     finally {
       this._uploadPromise = null;
     }
