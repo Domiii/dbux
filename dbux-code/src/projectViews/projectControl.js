@@ -1,4 +1,4 @@
-import { window } from 'vscode';
+import { env, window, Uri } from 'vscode';
 import path from 'path';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { initDbuxProjects } from '@dbux/projects/src';
@@ -108,7 +108,10 @@ export async function initProjectManager(extensionContext) {
     },
     WebviewWrapper,
     showBugIntroduction,
-    interactiveGithubLogin
+    interactiveGithubLogin,
+    openWebsite(url) {
+      return env.openExternal(Uri.parse(url));
+    },
   };
 
   // ########################################
