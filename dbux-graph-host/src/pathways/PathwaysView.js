@@ -146,7 +146,13 @@ class PathwaysView extends HostComponentEndpoint {
         label = '(Call Graph Investigation)';
         break;
       case StepType.Other:
-        label = '(Other)';
+        if (staticContextId) {
+          const dp = allApplications.getById(applicationId)?.dataProvider;
+          const staticContext = dp?.collections.staticContexts.getById(staticContextId);
+          label = staticContext?.displayName || `(could not look up application or staticContext for ${applicationId}, ${staticContextId})`;
+          const locString = makeStaticContextLocLabel(applicationId, staticContextId);
+          locLabel = ` @ ${locString}`;
+        }
         break;
       case StepType.None:
       default:
@@ -171,25 +177,33 @@ class PathwaysView extends HostComponentEndpoint {
     };
   }
 
-  filterNewGroup = (groups) => {
-    const newGroups = [];
+  filterNewGroups = (groups) => {
     const addedStaticTraceIds = new Set();
-    for (const group of groups) {
-      if (group) {
-        const trace = this.pdp.util.getActionGroupAction(group.id)?.trace;
-        if (trace && !addedStaticTraceIds.has(trace.staticTraceId)) {
-          addedStaticTraceIds.add(trace.staticTraceId);
-          newGroups.push(group);
-        }
+    const addedStaticContextIds = new Set();
+    const newGroups = groups.filter((group) => {
+      if (!group) {
+        return false;
       }
-    }
+      const action = this.pdp.util.getActionGroupAction(group.id);
+      const trace = action?.trace;
+      if (trace && !addedStaticTraceIds.has(trace.staticTraceId)) {
+        addedStaticTraceIds.add(trace.staticTraceId);
+        return true;
+      }
+      const staticContextId = this.pdp.util.getActionStaticContextId(action)?.staticContextId;
+      if (staticContextId && !addedStaticContextIds.has(staticContextId)) {
+        addedStaticContextIds.add(staticContextId);
+        return true;
+      }
+      return false;
+    });
     return newGroups;
   }
 
   makeTimelineData(themeMode) {
     // make stale data
     const actionGroups = this.pdp.collections.actionGroups.getAll();
-    const newGroups = this.filterNewGroup(actionGroups);
+    const newGroups = this.filterNewGroups(actionGroups);
     const MIN_STALE_TIME = 60 * 1000;
     let activeTimestamp = newGroups[0]?.createdAt;
     const staleIntervals = [];

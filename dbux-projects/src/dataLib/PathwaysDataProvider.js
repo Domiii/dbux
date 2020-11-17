@@ -177,7 +177,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
   }
 
   get sessionId() {
-    return this.session?.id;
+    return this.session?.sessionId;
   }
 
   // ###########################################################################
