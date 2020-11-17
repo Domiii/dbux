@@ -57,7 +57,7 @@ class StaticProgramContextCollection extends Collection {
 
   serialize(staticProgramContext) {
     const staticProgramContextData = { ...staticProgramContext };
-    staticProgramContextData.relativeFilePath = path.relative(this.dp.application.entryPointPath, staticProgramContext.filePath);
+    staticProgramContextData.relativeFilePath = path.relative(this.dp.application.entryPointPath, staticProgramContext.filePath).replace(/\\/g, '/');
     delete staticProgramContextData.filePath;
     return staticProgramContextData;
   }
@@ -80,6 +80,7 @@ class StaticContextCollection extends Collection {
 
   serialize(staticContext) {
     const staticContextData = { ...staticContext };
+    delete staticContextData.filePath;
     deleteCachedRange(staticContextData.loc);
     return staticContextData;
   }
