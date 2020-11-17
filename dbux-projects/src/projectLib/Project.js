@@ -414,7 +414,7 @@ This may be solved by pressing \`clean project folder\` button.`);
         });
       }
       catch (err) {
-        const errMsg = `Failed to clone git repository. This may be solved by pressing \`clean project folder\` button. ${err.message}`;
+        const errMsg = `Failed to clone git repository. This may be solved by pressing \`clean project folder\` button. ${err.stack}`;
         throw new Error(errMsg);
       }
 
