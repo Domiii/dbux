@@ -20,7 +20,6 @@ import { initUserEvent, emitSessionFinishedEvent, emitPracticeSessionEvent, onUs
 import BugDataProvider from './dataLib/BugDataProvider';
 import initLang, { getTranslationScope } from './lang';
 import upload from './fileUpload';
-import getFirstLine from './util/readFirstLine';
 
 const logger = newLogger('PracticeManager');
 // eslint-disable-next-line no-unused-vars
@@ -217,32 +216,29 @@ export default class ProjectsManager {
    */
   async loadPracticeSessionFromFile(filePath) {
     if (!await this.stopPractice()) {
-      return;
+      return false;
     }
 
     try {
-      const firstLine = await getFirstLine(filePath);
-      // NOTE: here we suppose we have these data at the first line, maybe we need a `parseSessionDataFromFile` function?
-      const { data: { sessionId, createdAt, bugId } } = JSON.parse(firstLine);
+      const { sessionId, createdAt, bugId } = await PathwaysDataProvider.parseHeader(filePath);
       const bug = this.getOrCreateDefaultProjectList().getBugById(bugId);
       if (!bug) {
         throw new Error(`Cannot find bug of bugId: ${bugId} in log file`);
       }
 
-      log(`switching to bug ${bug.id}`);
       await this.switchToBug(bug);
       
-      log(`loading pdp data`);
       if (!this.bdp.getBugProgressByBug(bug)) {
         this.bdp.addBugProgress(bug, BugStatus.Solving, false);
       }
       this._resetPracticeSession(bug, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
       const lastAction = this.pdp.collections.userActions.getLast();
       emitSessionFinishedEvent(this.practiceSession.state, lastAction.createdAt);
-      log('done loading');
+      return true;
     }
     catch (err) {
       logError(`Failed to load from log file ${filePath}:`, err);
+      return false;
     }
   }
 
@@ -251,13 +247,10 @@ export default class ProjectsManager {
     allApplications.clear();
 
     // create new PracticeSession
-    this.practiceSession = new PracticeSession(bug, this, sessionData);
+    this.practiceSession = new PracticeSession(bug, this, sessionData, filePath);
 
     // init (+ maybe load) pdp
-    this.pdp.init(this.practiceSession.sessionId);
-    if (load) {
-      this.pdp.load(filePath);
-    }
+    this.pdp.init();
 
     // notify event listeners
     !load && emitPracticeSessionEvent('started', this.practiceSession);

@@ -8,6 +8,8 @@ import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
 import { getGroupTypeByActionType } from '@dbux/data/src/pathways/ActionGroupType';
 import StepType, { getStepTypeByActionType } from '@dbux/data/src/pathways/StepType';
+import { emitNewTestRun } from '../userEvents';
+import getFirstLine from '../util/readFirstLine';
 import PathwaysDataUtil from './pathwaysDataUtil';
 import TestRunsByBugIdIndex from './indexes/TestRunsByBugIdIndex';
 import UserActionByBugIdIndex from './indexes/UserActionByBugIdIndex';
@@ -15,12 +17,9 @@ import UserActionByTypeIndex from './indexes/UserActionByTypeIndex';
 import UserActionsByStepIndex from './indexes/UserActionsByStepIndex';
 import UserActionsByGroupIndex from './indexes/UserActionsByGroupIndex';
 import VisibleActionGroupByStepIdIndex from './indexes/VisibleActionGroupByStepIdIndex';
-import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 import StepsByTypeIndex from './indexes/StepsByTypeIndex';
-
+import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 import TestRun from './TestRun';
-
-import { emitNewTestRun } from '../userEvents';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -159,37 +158,26 @@ export default class PathwaysDataProvider extends DataProviderBase {
   constructor(manager) {
     super('PathwaysDataProvider');
     this.manager = manager;
+    this.version = 2;
 
     this.util = Object.fromEntries(
       Object.keys(PathwaysDataUtil).map(name => [name, PathwaysDataUtil[name].bind(null, this)])
     );
 
-    this.logFolderPath = manager.externals.resources.getLogsDirectory();
-    if (!fs.existsSync(this.logFolderPath)) {
-      fs.mkdirSync(this.logFolderPath);
+    const logFolderPath = manager.externals.resources.getLogsDirectory();
+    if (!fs.existsSync(logFolderPath)) {
+      fs.mkdirSync(logFolderPath);
     }
 
     this.reset();
   }
 
-  reset() {
-    this.collections = {
-      testRuns: new TestRunCollection(this),
-      applications: new ApplicationCollection(this),
-      steps: new StepCollection(this),
-      actionGroups: new ActionGroupCollection(this),
-      userActions: new UserActionCollection(this),
-    };
+  get session() {
+    return this.manager.practiceSession;
+  }
 
-    this.indexes = new Indexes();
-    this.addIndex(new TestRunsByBugIdIndex());
-    this.addIndex(new UserActionByBugIdIndex());
-    this.addIndex(new UserActionByTypeIndex());
-    this.addIndex(new UserActionsByStepIndex());
-    this.addIndex(new UserActionsByGroupIndex());
-    this.addIndex(new VisibleActionGroupByStepIdIndex());
-    this.addIndex(new StepsByGroupIndex());
-    this.addIndex(new StepsByTypeIndex());
+  get sessionId() {
+    return this.session?.sessionId;
   }
 
   // ###########################################################################
@@ -224,7 +212,12 @@ export default class PathwaysDataProvider extends DataProviderBase {
   // actions + steps
   // ###########################################################################
 
-  addNewStep(applicationId, staticContextId, firstAction) {
+  addNewStep(firstAction, writeToLog = true) {
+    const {
+      applicationId = 0,
+      staticContextId = 0
+    } = this.util.getActionStaticContextId(firstAction) || EmptyObject;
+
     const {
       sessionId,
       bugId,
@@ -250,12 +243,12 @@ export default class PathwaysDataProvider extends DataProviderBase {
       firstTraceId
     };
 
-    this.addData({ steps: [step] });
+    this.addData({ steps: [step] }, writeToLog);
     return step;
   }
 
 
-  addNewGroup(step, firstAction) {
+  addNewGroup(step, firstAction, writeToLog = true) {
     const { id: stepId } = step;
     // const { id: actionId } = firstAction;
     const {
@@ -276,59 +269,70 @@ export default class PathwaysDataProvider extends DataProviderBase {
       annotation
     };
 
-    this.addData({ actionGroups: [group] });
+    this.addData({ actionGroups: [group] }, writeToLog);
     return group;
   }
 
-  addNewUserAction(action) {
-    // keep track of steps
-
-    // NOTE: action.id is not set yet (will be set during `addData` below)
-    const staticContextIds = this.util.getActionStaticContextId(action);
-    const lastStep = this.collections.steps.getLast();
-    const lastActionGroup = this.collections.actionGroups.getLast();
-    const lastStepType = lastStep?.type || StepType.None;
-    const lastStaticContextId = lastStep?.staticContextId || 0;
-    const lastApplicationId = lastStep?.applicationId || 0;
-
-    const {
-      type: actionType
-    } = action;
-    const {
-      applicationId = 0,
-      staticContextId = 0,
-    } = staticContextIds || EmptyObject;
-
+  addNewUserAction(action, writeToLog = true) {
     // step
+    const lastStep = this.collections.steps.getLast();
     let step = lastStep;
-    const stepType = getStepTypeByActionType(actionType);
-    if (!lastStep ||
-      action.newStep ||
-      (!StepType.is.None(stepType) && lastStepType && stepType !== lastStepType) ||
-      ((stepType === StepType.Trace) && (
-        (applicationId && applicationId !== lastApplicationId) ||
-        (staticContextId && staticContextId !== lastStaticContextId)
-      ))
-    ) {
+    if (this.shouldAddNewStep(action)) {
       // create new step
-      // let step = this.stepsByStaticContextId.get(staticContextId);
-      // if (!step) {
-      step = this.addNewStep(applicationId, staticContextId, action);
-      // }
-      // this.stepsByStaticContextId.set(staticContextId, step);
+      step = this.addNewStep(action, writeToLog);
     }
     action.stepId = step.id;
 
     // actionGroup
+    const lastActionGroup = this.collections.actionGroups.getLast();
     let actionGroup = lastActionGroup;
     if (!lastActionGroup || lastStep !== step || !this.util.shouldClumpNextActionIntoGroup(action, lastActionGroup)) {
       // create new group
-      actionGroup = this.addNewGroup(step, action);
+      actionGroup = this.addNewGroup(step, action, writeToLog);
     }
     action.groupId = actionGroup.id;
 
     // add action
-    this.addData({ userActions: [action] });
+    this.addData({ userActions: [action] }, writeToLog);
+  }
+
+  shouldAddNewStep(action) {
+    // NOTE: action.id is not set yet (will be set during `addData`)
+    const {
+      applicationId,
+      staticContextId,
+    } = this.util.getActionStaticContextId(action) || EmptyObject;
+    const lastStep = this.collections.steps.getLast();
+    const lastStepType = lastStep?.type || StepType.None;
+    const lastStaticContextId = lastStep?.staticContextId || 0;
+    const lastApplicationId = lastStep?.applicationId || 0;
+
+    const stepType = getStepTypeByActionType(action.type);
+
+    if (!lastStep || action.newStep) {
+      return true;
+    }
+    if (StepType.is.Other(stepType)) {
+      if ((applicationId && applicationId !== lastApplicationId) ||
+        (staticContextId && staticContextId !== lastStaticContextId)
+      ) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    if (!StepType.is.None(stepType) && lastStepType && stepType !== lastStepType) {
+      return true;
+    }
+    if ((stepType === StepType.Trace) && (
+      (applicationId && applicationId !== lastApplicationId) ||
+      (staticContextId && staticContextId !== lastStaticContextId)
+    )) {
+      return true;
+    }
+
+    return false;
   }
 
   // ###########################################################################
@@ -336,47 +340,91 @@ export default class PathwaysDataProvider extends DataProviderBase {
   // ###########################################################################
 
   /**
-   * Implementation, add indexes here
-   * Note: Also resets all collections
+   * Reset pdp and load from log file
    */
-  init(sessionId, logFilePath) {
-    this.sessionId = sessionId;
-    this.logFilePath = logFilePath || path.join(this.logFolderPath, `${sessionId}.dbuxlog`);
-
+  init() {
     this.reset();
+    this.load();
+  }
+
+  reset() {
+    this.collections = {
+      testRuns: new TestRunCollection(this),
+      applications: new ApplicationCollection(this),
+      steps: new StepCollection(this),
+      actionGroups: new ActionGroupCollection(this),
+      userActions: new UserActionCollection(this),
+    };
+
+    this.indexes = new Indexes();
+    this.addIndex(new TestRunsByBugIdIndex());
+    this.addIndex(new UserActionByBugIdIndex());
+    this.addIndex(new UserActionByTypeIndex());
+    this.addIndex(new UserActionsByStepIndex());
+    this.addIndex(new UserActionsByGroupIndex());
+    this.addIndex(new VisibleActionGroupByStepIdIndex());
+    this.addIndex(new StepsByGroupIndex());
+    this.addIndex(new StepsByTypeIndex());
   }
 
   /**
    * Load data from log file
    * @param {string} [logFilePath] 
    */
-  load(logFilePath = '') {
+  load() {
     try {
-      const allDataString = fs.readFileSync(logFilePath || this.logFilePath, 'utf8');
-      if (allDataString) {
-        const dataToAdd = Object.fromEntries(Object.keys(this.collections).map(name => [name, []]));
-
-        for (const dataString of allDataString.split(/\r?\n/)) {
-          if (dataString) {
-            let { collectionName, data } = JSON.parse(dataString);
-            if (this.collections[collectionName].deserialize) {
-              data = this.collections[collectionName].deserialize(data);
-            }
-            dataToAdd[collectionName].push(data);
-          }
-        }
-
-        this.addData(dataToAdd, false);
+      let [headerString, ...allData] = fs.readFileSync(this.session.logFilePath, 'utf8').split(/\r?\n/);
+      const header = JSON.parse(headerString);
+      if (!header.headerTag) {
+        // handle log files from version=1 which do not contain headers, this should be removed in the next version
+        warn(`No header is found in log file, assume it is of version 1`);
+        allData.unshift(headerString);
+        header.version = 1;
       }
+      allData = allData.filter(s => s).map((s) => JSON.parse(s));
+
+      const dataToAdd = Object.fromEntries(Object.keys(this.collections).map(name => [name, []]));
+      for (let { collectionName, data } of allData) {
+        if (this.collections[collectionName].deserialize) {
+          data = this.collections[collectionName].deserialize(data);
+        }
+        dataToAdd[collectionName].push(data);
+      }
+      this.loadByVersion[header.version](header, dataToAdd);
     }
     catch (err) {
       if (err.code === 'ENOENT') {
-        // no log file found, skip loading
+        log(`No log file found at "${this.session.logFilePath}", header written`);
+        this.writeHeader();
       }
       else {
         logError('Failed to load from log file:', err);
         throw err;
       }
+    }
+  }
+
+  loadByVersion = {
+    1: (header, allData) => {
+      const actions = allData.userActions;
+      delete allData.userActions;
+      delete allData.actionGroups;
+      delete allData.steps;
+
+      this.addData(allData, false);
+      actions.forEach(action => {
+        // set codeEvents
+        if (action.type === 10) {
+          if (action.eventType === 'selectionChanged') {
+            action.type = 9;
+          }
+          delete action.eventType;
+        }
+        this.addNewUserAction(action, false);
+      });
+    },
+    2: (header, dataToAdd) => {
+      this.addData(dataToAdd, false);
     }
   }
 
@@ -399,6 +447,21 @@ export default class PathwaysDataProvider extends DataProviderBase {
    * @param {string} collectionName
    */
   writeOnData(collectionName, data) {
-    fs.appendFileSync(this.logFilePath, `${JSON.stringify({ collectionName, data })}\n`, { flag: 'a+' });
+    fs.appendFileSync(this.session.logFilePath, `${JSON.stringify({ collectionName, data })}\n`, { flag: 'a' });
+  }
+
+  writeHeader() {
+    const { version } = this;
+    const { logFilePath, sessionId, createdAt, bug: { id: bugId } } = this.session;
+    fs.appendFileSync(logFilePath, `${JSON.stringify({ headerTag: true, version, sessionId, bugId, createdAt })}\n`, { flag: 'ax' });
+  }
+
+  static async parseHeader(filePath) {
+    const firstLine = await getFirstLine(filePath);
+    const header = JSON.parse(firstLine);
+    if (!header.headerTag) {
+      throw new Error('No header imformation in log file');
+    }
+    return header;
   }
 }

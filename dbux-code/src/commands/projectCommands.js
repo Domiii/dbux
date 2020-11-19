@@ -90,9 +90,11 @@ export function initProjectCommands(extensionContext, projectViewController) {
     };
     const file = (await window.showOpenDialog(options))?.[0];
     if (file) {
-      await projectViewController.manager.loadPracticeSessionFromFile(file.fsPath);
-      await showInformationMessage(`Log file ${file.fsPath} loaded`);
-      await showPathwaysView();
+      const loaded = await projectViewController.manager.loadPracticeSessionFromFile(file.fsPath);
+      if (loaded) {
+        await showInformationMessage(`Log file ${file.fsPath} loaded`);
+        await showPathwaysView();
+      }
     }
   });
 

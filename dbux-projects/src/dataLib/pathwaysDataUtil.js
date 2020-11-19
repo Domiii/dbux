@@ -238,6 +238,12 @@ export default {
   },
 
   getActionStaticContextId(pdp, action) {
+    if (action.staticContext) {
+      // hackfix: in pdp version=1, EditorEvents does not contains applicationId, we can only assume it's 1 now
+      const { applicationId = 1, staticContext: { staticContextId } } = action;
+      return { applicationId, staticContextId };
+    }
+
     const dp = pdp.util.getActionApplication(action)?.dataProvider;
     if (!dp) {
       return null;
