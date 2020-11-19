@@ -53,7 +53,7 @@ class ApplicationCollection extends Collection {
    */
   serialize(application) {
     const { entryPointPath, createdAt } = application;
-    const relativeEntryPointPath = path.relative(this.dp.manager.config.projectsRoot, entryPointPath);
+    const relativeEntryPointPath = path.relative(this.dp.manager.config.projectsRoot, entryPointPath).replace(/\\/g, '/');
     return {
       relativeEntryPointPath,
       createdAt,
