@@ -53,8 +53,6 @@ export function awaitVisitEnter(path, state) {
     ids: { dbux }
   } = state;
 
-  debugger;
-
   const resumeId = addResumeContext(path, state);
   const staticId = state.contexts.addStaticContext(path, {
     type: StaticContextType.Await,
@@ -77,9 +75,7 @@ export function awaitVisitEnter(path, state) {
     preTraceId: t.numericLiteral(preTraceId),
     argument
   });
-  debugger;
   argumentPath.replaceWith(expressionReplacement);
-  debugger;
 
   const awaitReplacement = postAwaitTemplate({
     dbux,
@@ -88,8 +84,6 @@ export function awaitVisitEnter(path, state) {
     resumeTraceId: t.numericLiteral(resumeTraceId)
   });
   path.replaceWith(awaitReplacement);
-
-  debugger;
 
   // prevent infinite loop
   const newAwaitPath = path.get('arguments.0');

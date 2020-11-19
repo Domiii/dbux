@@ -300,8 +300,7 @@ const traceCfg = (() => {
     // await
     // ########################################
     AwaitExpression: [
-      Await,
-      // [['argument', ExpressionValue]]
+      Await
     ],
 
     // TODO: ParenthesizedExpression - https://github.com/babel/babel/blob/master/packages/babel-generator/src/generators/expressions.js#L27
@@ -673,11 +672,6 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
 
   if (!instrumentationType && !children) {
     return;
-  }
-
-  // debugger;
-  if (path.node.type === 'AwaitExpression' || path.node.type === 'ExpressionStatement') {
-    // debugger;
   }
 
   // mark as visited;
