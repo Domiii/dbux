@@ -17,7 +17,7 @@ import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrument
 // import { loopVisitor } from './loopVisitors';
 import { isCallPath } from '../helpers/functionHelpers';
 import { functionVisitEnter } from './functionVisitor';
-import { awaitVisitEnter } from './awaitVisitor';
+import { awaitVisitEnter, awaitVisitExit } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
@@ -300,7 +300,8 @@ const traceCfg = (() => {
     // await
     // ########################################
     AwaitExpression: [
-      Await
+      Await,
+      // [['argument', ExpressionValue]]
     ],
 
     // TODO: ParenthesizedExpression - https://github.com/babel/babel/blob/master/packages/babel-generator/src/generators/expressions.js#L27
@@ -588,6 +589,7 @@ const exitInstrumentors = {
   ThrowArgument(path, state) {
     return wrapExpression(TraceType.ThrowArgument, path, state);
   },
+  Await: awaitVisitExit,
 };
 
 // ###########################################################################
@@ -671,6 +673,11 @@ function visit(direction, onTrace, instrumentors, path, state, cfg) {
 
   if (!instrumentationType && !children) {
     return;
+  }
+
+  // debugger;
+  if (path.node.type === 'AwaitExpression' || path.node.type === 'ExpressionStatement') {
+    // debugger;
   }
 
   // mark as visited;
