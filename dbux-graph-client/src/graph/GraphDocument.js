@@ -7,6 +7,7 @@ class GraphDocument extends ClientComponentEndpoint {
     el.innerHTML = /*html*/`<div>
       <div data-mount="Toolbar"></div>
       <div data-mount="GraphRoot"></div>
+      <div data-mount="AsyncGraph"></div>
     </div>`;
     return el;
   }

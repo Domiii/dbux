@@ -22,6 +22,7 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Thin mode" data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
           <button title="Search for contexts by name" data-el="searchContextsBtn" class="btn btn-info" href="#">🔍</button>
           <button title="Search for traces by name" data-el="searchTracesBtn" class="btn btn-info" href="#">🔍+</button>
+          <button title="Async Call Graph Mode" data-el="asyncGraphModeBtn" class="btn btn-info" href="#">async</button>
         </div>
         <div data-el="moreMenu" class="dropdown">
           <button data-el="moreMenuBtn" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -78,7 +79,8 @@ class Toolbar extends ClientComponentEndpoint {
       hideOldMode,
       hideNewMode,
       searchTermContexts,
-      searchTermTraces
+      searchTermTraces,
+      asyncGraphMode
     } = this.state;
 
     const themeModeName = ThemeMode.getName(this.context.themeMode).toLowerCase();
@@ -104,6 +106,9 @@ class Toolbar extends ClientComponentEndpoint {
     });
     decorateClasses(this.els.hideNewRunBtn, {
       active: !hideNewMode
+    });
+    decorateClasses(this.els.asyncGraphModeBtn, {
+      active: !!asyncGraphMode
     });
     decorateClasses(this.els.searchContextsBtn, {
       active: !!searchTermContexts
@@ -221,6 +226,15 @@ class Toolbar extends ClientComponentEndpoint {
         evt.preventDefault();
         const mode = !this.state.hideNewMode;
         this.remote.hideNewRun(mode && Date.now());
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+
+    asyncGraphModeBtn: {
+      click(evt) {
+        evt.preventDefault();
+        const mode = !this.state.asyncGraphMode;
+        this.remote.setAsyncGraphMode(mode);
       },
       focus(evt) { evt.target.blur(); }
     },

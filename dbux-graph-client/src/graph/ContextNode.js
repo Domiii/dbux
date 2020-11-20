@@ -9,17 +9,17 @@ let choicingIndicator;
 class ContextNode extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
-    <div class="context-node flex-row">
-      <div class = "indicator-cont">
-        <div data-el="indicator" class='indicator'></div>
-      </div>
+      <div class="context-node flex-row">
+        <div class = "indicator-cont">
+          <div data-el="indicator" class='indicator'></div>
+        </div>
         <div class="full-width flex-column">
           <div class="content">
             <div class="flex-row">
               <div class="flex-row">
                 <button data-el="nodeToggleBtn" class="btn node-toggle-btn"></button>
                 <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
-                <div data-el="title" class="flex-row" style="align-items: center">
+                <div data-el="title" class="flex-row vertical-align-center">
                   <div data-el="contextLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
                 <!--div data-el="selectedTraceIcon" class="darkred">
@@ -48,7 +48,7 @@ class ContextNode extends ClientComponentEndpoint {
           </div>
         </div>
       </div>
-      `);
+    `);
   }
 
   update() {
