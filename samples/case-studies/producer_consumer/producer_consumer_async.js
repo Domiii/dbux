@@ -13,6 +13,8 @@ let nItems = 0;
 let consuming = 0;
 let producing = 0;
 
+
+
 function itemsLeft() {
   return nItems - consuming;
 }
