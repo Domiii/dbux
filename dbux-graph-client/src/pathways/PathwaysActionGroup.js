@@ -1,3 +1,4 @@
+import ActionGroupType from '@dbux/data/src/pathways/ActionGroupType';
 import { compileHtmlElement } from '../util/domUtil';
 import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
@@ -57,6 +58,10 @@ class PathwaysActionGroup extends ClientComponentEndpoint {
       click(evt) {
         if (this.state.hasTrace) {
           this.context.view.remote.selectGroupTrace(this.state.id);
+        }
+        else if (ActionGroupType.is.EditorSelectionChanged(this.state.type)) {
+          // select staticContext(for EditorSelectionChanged)
+          this.context.view.remote.selectStepStaticTrace(this.state.stepId);
         }
         document.getSelection().removeAllRanges();
       }

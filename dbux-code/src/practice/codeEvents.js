@@ -1,6 +1,7 @@
 
 import { commands, SymbolKind, window } from 'vscode';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { emitEditorAction } from '../userEvents';
 import { getOrCreateTracesAtCursor } from '../traceDetailsView/TracesAtCursor';
@@ -48,7 +49,7 @@ export function initCodeEvents(manager, context) {
       Verbose && debug('is new');
       _previousSelectionData = data;
       data = { ...data, ...await getExtraEditorEventInfo(e.textEditor) };
-      emitEditorAction('selectionChanged', data);
+      emitEditorAction(UserActionType.EditorSelectionChanged, data);
     }
   });
 
@@ -73,7 +74,7 @@ export function initCodeEvents(manager, context) {
       Verbose && debug('is new');
       _previousVisibleRangeData = data;
       data = { ...data, ...await getExtraEditorEventInfo(e.textEditor) };
-      emitEditorAction('visibleRangeChanged', data);
+      emitEditorAction(UserActionType.EditorVisibleRangeChanged, data);
     }
   });
 
@@ -85,8 +86,10 @@ export function initCodeEvents(manager, context) {
     const trace = traceAtCursor.getMostInner();
     let staticTrace = null;
     let staticContext = null;
+    let applicationId = null;
     if (trace) {
-      const { applicationId, staticTraceId } = trace;
+      const { staticTraceId } = trace;
+      ({ applicationId } = trace);
       const dp = allApplications.getById(applicationId).dataProvider;
       staticTrace = dp.collections.staticTraces.getById(staticTraceId);
       staticContext = dp.collections.staticContexts.getById(staticTrace.staticContextId);
@@ -95,6 +98,7 @@ export function initCodeEvents(manager, context) {
     const { sessionId } = manager.practiceSession;
 
     return {
+      applicationId,
       staticContext,
       staticTrace,
       symbol: convertVSCodeSymbol(symbol),

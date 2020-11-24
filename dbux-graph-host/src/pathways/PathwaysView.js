@@ -145,6 +145,15 @@ class PathwaysView extends HostComponentEndpoint {
       case StepType.CallGraph:
         label = '(Call Graph Investigation)';
         break;
+      case StepType.Other:
+        if (staticContextId) {
+          const dp = allApplications.getById(applicationId)?.dataProvider;
+          const staticContext = dp?.collections.staticContexts.getById(staticContextId);
+          label = staticContext?.displayName || `(could not look up application or staticContext for ${applicationId}, ${staticContextId})`;
+          const locString = makeStaticContextLocLabel(applicationId, staticContextId);
+          locLabel = ` @ ${locString}`;
+        }
+        break;
       case StepType.None:
       default:
         label = '(Start)';
@@ -168,25 +177,33 @@ class PathwaysView extends HostComponentEndpoint {
     };
   }
 
-  filterNewGroup = (groups) => {
-    const newGroups = [];
+  filterNewGroups = (groups) => {
     const addedStaticTraceIds = new Set();
-    for (const group of groups) {
-      if (group) {
-        const trace = this.pdp.util.getActionGroupAction(group.id)?.trace;
-        if (trace && !addedStaticTraceIds.has(trace.staticTraceId)) {
-          addedStaticTraceIds.add(trace.staticTraceId);
-          newGroups.push(group);
-        }
+    const addedStaticContextIds = new Set();
+    const newGroups = groups.filter((group) => {
+      if (!group) {
+        return false;
       }
-    }
+      const action = this.pdp.util.getActionGroupAction(group.id);
+      const trace = action?.trace;
+      if (trace && !addedStaticTraceIds.has(trace.staticTraceId)) {
+        addedStaticTraceIds.add(trace.staticTraceId);
+        return true;
+      }
+      const staticContextId = this.pdp.util.getActionStaticContextId(action)?.staticContextId;
+      if (staticContextId && !addedStaticContextIds.has(staticContextId)) {
+        addedStaticContextIds.add(staticContextId);
+        return true;
+      }
+      return false;
+    });
     return newGroups;
   }
 
   makeTimelineData(themeMode) {
     // make stale data
     const actionGroups = this.pdp.collections.actionGroups.getAll();
-    const newGroups = this.filterNewGroup(actionGroups);
+    const newGroups = this.filterNewGroups(actionGroups);
     const MIN_STALE_TIME = 60 * 1000;
     let activeTimestamp = newGroups[0]?.createdAt;
     const staleIntervals = [];
@@ -215,7 +232,8 @@ class PathwaysView extends HostComponentEndpoint {
           return 'sr';
         }
       },
-      [StepType.CallGraph]: () => 'cg'
+      [StepType.CallGraph]: () => 'cg',
+      [StepType.Other]: () => 'o'
     };
 
     return {
@@ -359,6 +377,18 @@ class PathwaysView extends HostComponentEndpoint {
       const trace = this.pdp.util.getActionGroupAction(groupId)?.trace;
       if (trace) {
         traceSelection.selectTrace(trace);
+      }
+    },
+
+    selectStepStaticTrace(stepId) {
+      const step = this.pdp.collections.steps.getById(stepId);
+      const { applicationId, staticContextId } = step;
+      if (applicationId && staticContextId) {
+        const dp = allApplications.getById(applicationId).dataProvider;
+        const firstTrace = dp.indexes.traces.byStaticContext.getFirst(staticContextId);
+        if (firstTrace) {
+          traceSelection.selectTrace(firstTrace);
+        }
       }
     }
   }

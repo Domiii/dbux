@@ -9,11 +9,13 @@ const { log, debug, warn, error: logError } = newLogger('StepType');
 let StepType = {
   None: 1,
   Trace: 2,
-  CallGraph: 3
+  CallGraph: 3,
+  Other: 4
 };
 
 const stepByActionType = {
-  [UserActionType.EditorEvent]: StepType.None,
+  [UserActionType.EditorSelectionChanged]: StepType.Other,
+  [UserActionType.EditorVisibleRangeChanged]: StepType.None,
   [UserActionType.TagTrace]: StepType.None,
 
   [UserActionType.SelectTrace]: StepType.Trace,

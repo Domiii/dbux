@@ -12,6 +12,8 @@ let ActionGroupType = {
   AnnotateTraceQ: 3,
   AnnotateTraceI: 4,
 
+  EditorSelectionChanged: 10,
+
   TDValue: 11,
   TDTrackObject: 13,
   TDExecutions: 14,
@@ -51,7 +53,8 @@ let ActionGroupType = {
 ActionGroupType = new Enum(ActionGroupType);
 
 const groupByActionType = {
-  [UserActionType.EditorEvent]: ActionGroupType.Hidden,
+  [UserActionType.EditorSelectionChanged]: ActionGroupType.EditorSelectionChanged,
+  [UserActionType.EditorVisibleRangeChanged]: ActionGroupType.Hidden,
   [UserActionType.SelectTrace]: ActionGroupType.SelectTrace,
   [UserActionType.TagTrace]: ActionGroupType.TagTrace,
   [UserActionType.AnnotateTraceQ]: ActionGroupType.AnnotateTraceQ,
