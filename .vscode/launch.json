@@ -167,6 +167,7 @@
 			],
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
+        "run",
 				"-d",
 				"-p",
 				"${file}",
