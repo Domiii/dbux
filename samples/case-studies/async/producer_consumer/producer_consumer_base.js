@@ -1,5 +1,3 @@
-import { sleep } from '../asyncUtil';
-
 const MaxItems = 5;
 const ProducerTime = 300;
 const ProducerTimeVar = 100;
@@ -37,7 +35,7 @@ export class ConsumerBase {
     return nItems - consuming > 0;
   }
 
-  startConsume() {
+  startConsume = () => {
     ++consuming;
 
     const idx = reserved.findIndex((r, i) => !r && !!buffer[i]);
@@ -47,7 +45,7 @@ export class ConsumerBase {
     return idx;
   }
 
-  finishConsume(idx) {
+  finishConsume = (idx) => {
     const item = buffer[idx];
     buffer[idx] = 0;
     reserved[idx] = false;
@@ -58,8 +56,8 @@ export class ConsumerBase {
     console.log(this.name, `consumed item[${idx}] ${item}, ${nItems} (-${consuming}) left`);
   }
 
-  doWork() {
-    return sleep((ConsumerTime - ConsumerTimeVar) + 2 * ConsumerTimeVar * Math.random());
+  doWork(...args) {
+    return this.sleep(...args, (ConsumerTime - ConsumerTimeVar) + 2 * ConsumerTimeVar * Math.random());
   }
 }
 
@@ -83,7 +81,7 @@ export class ProducerBase {
     console.log(this.name, 'producing new item...');
   }
 
-  finishProduce() {
+  finishProduce = () => {
     const item = ++lastItem;
     const idx = buffer.findIndex(x => !x);
     buffer[idx] = item;
@@ -93,7 +91,7 @@ export class ProducerBase {
     console.log(this.name, `produced item[${idx}] ${item}, ${nItems} (-${consuming}) left`);
   }
 
-  doWork() {
-    return sleep((ProducerTime - ProducerTimeVar) + 2 * ProducerTimeVar * Math.random());
+  doWork(...args) {
+    return this.sleep(...args, (ProducerTime - ProducerTimeVar) + 2 * ProducerTimeVar * Math.random());
   }
 }

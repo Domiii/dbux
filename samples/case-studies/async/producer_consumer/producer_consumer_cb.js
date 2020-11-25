@@ -1,10 +1,15 @@
 import { ConsumerBase, ProducerBase } from './producer_consumer_base';
-import { sleep } from '../asyncUtil';
 
-async function forever(cb) {
-  while (true) {
-    await cb();
+const sleep = setTimeout;
+
+/**
+ * 
+ */
+function foreverCb(task) {
+  function next() {
+    return task(next);
   }
+  return next();
 }
 
 // ###########################################################################
@@ -12,19 +17,20 @@ async function forever(cb) {
 // ###########################################################################
 
 class Consumer extends ConsumerBase {
-  forever = forever;
+  forever = foreverCb;
   sleep = sleep;
 
-  consumeOrIdle = async () => {
+  consumeOrIdle = (next) => {
     if (this.canConsume()) {
       const idx = this.startConsume();
 
-      await this.doWork();
-
-      this.finishConsume(idx);
+      this.doWork(() => {
+        this.finishConsume(idx);
+        next();
+      });
     }
     else {
-      await sleep();
+      sleep(next);
     }
   }
 }
@@ -35,19 +41,20 @@ class Consumer extends ConsumerBase {
 // ###########################################################################
 
 class Producer extends ProducerBase {
-  forever = forever;
+  forever = foreverCb;
   sleep = sleep;
 
-  produceOrIdle = async () => {
+  produceOrIdle = (next) => {
     if (this.canProduce()) {
       this.startProduce();
 
-      await this.doWork();
-
-      this.finishProduce();
+      this.doWork(() => {
+        this.finishProduce();
+        next();
+      });
     }
     else {
-      await sleep();
+      sleep(next);
     }
   }
 }

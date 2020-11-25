@@ -1,68 +1,35 @@
-const MaxItems = 5;
-const ProducerTime = 300;
-const ProducerTimeVar = 100;
+import { ConsumerBase, ProducerBase } from './producer_consumer_base';
+import { sleep } from '../asyncUtil';
 
-const ConsumerTime = 600;
-const ConsumerTimeVar = 400;
-
-const buffer = new Array(MaxItems);
-const reserved = new Array(MaxItems);
-
-let nItems = 0;
-
-let consuming = 0;
-let producing = 0;
-
-
-
-function itemsLeft() {
-  return nItems - consuming;
+/**
+ * @see https://github.com/caolan/async/blob/master/lib/forever.js#L37
+ */
+function foreverPromise(task) {
+  function next() {
+    return Promise.resolve(task()).
+      then(next);
+  }
+  return next();
 }
-
-let lastItem = 0;
 
 
 // ###########################################################################
 // Consumer
 // ###########################################################################
 
-class Consumer {
-  static nConsumers = 0;
+class Consumer extends ConsumerBase {
+  forever = foreverPromise;
+  sleep = sleep;
 
-  constructor() {
-    this.name = `[C${++Consumer.nConsumers}]`;
-  }
+  consumeOrIdle = () => {
+    if (this.canConsume()) {
+      const idx = this.startConsume();
 
-  canConsume() {
-    return itemsLeft() > 0;
-  }
-
-  consume() {
-    ++consuming;
-    
-    const idx = reserved.findIndex((r, i) => !r && !!buffer[i]);
-    reserved[idx] = true;
-    console.log(this.name, `consuming item[${idx}] ${buffer[idx]}...`);
-    // console.log(this.name, `consuming item...`);
-    sleep((ConsumerTime - ConsumerTimeVar) + 2 * ConsumerTimeVar * Math.random());
-    
-    const item = buffer[idx];
-    buffer[idx] = 0;
-    --nItems;
-    reserved[idx] = false;
-
-    --consuming;
-
-    console.log(this.name, `consumed item[${idx}] ${item} (${itemsLeft()} left)`);
-  }
-  
-  start() {
-    console.log(this.name, 'consumer start');
-    while (true) {
-      if (this.canConsume()) {
-        this.consume();
-      }
-      sleep();
+      return this.doWork().
+        then(() => this.finishConsume(idx));
+    }
+    else {
+      return sleep();
     }
   }
 }
@@ -72,52 +39,28 @@ class Consumer {
 // Producer
 // ###########################################################################
 
-class Producer {
-  static nProducers = 0;
+class Producer extends ProducerBase {
+  forever = foreverPromise;
+  sleep = sleep;
 
-  constructor() {
-    this.name = `[P${++Producer.nProducers}]`;
-  }
+  produceOrIdle = () => {
+    if (this.canProduce()) {
+      this.startProduce();
 
-  canProduce() {
-    return !producing && nItems < MaxItems;
-  }
-
-  produce() {
-    ++producing;
-    console.log(this.name, 'producing new item...');
-    sleep((ProducerTime - ProducerTimeVar) + 2 * ProducerTimeVar * Math.random());
-
-    const item = ++lastItem;
-    const idx = buffer.findIndex(x => !x);
-    buffer[idx] = item;
-    ++nItems;
-
-    --producing;
-    console.log(this.name, `produced item[${idx}] ${item} (${itemsLeft()} left)`);
-  }
-
-  start() {
-    console.log(this.name, 'producer start');
-    while (true) {
-      if (this.canProduce()) {
-        this.produce();
-      }
-      sleep();
+      return this.doWork().
+        then(this.finishProduce);
+    }
+    else {
+      return sleep();
     }
   }
 }
 
 // main
 
-// fork producer + consumer start functions
-new Producer().start();
-new Consumer().start();
-new Consumer().start();
+// start all producers + consumers
+new Producer().run();
+new Producer().run();
 
-
-// utilities
-
-function sleep(delay) {
-  return new Promise(r => setTimeout(r, delay));
-}
+new Consumer().run();
+new Consumer().run();
