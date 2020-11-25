@@ -142,6 +142,7 @@
 			"args": [
 				"run",
 				"-d",
+				"--esnext",
 				"${file}",
 			],
 			// see: https://github.com/microsoft/vscode/issues/5422
