@@ -142,6 +142,7 @@
 			"args": [
 				"run",
 				"-d",
+				"--esnext",
 				"${file}",
 			],
 			// see: https://github.com/microsoft/vscode/issues/5422
@@ -167,9 +168,9 @@
 			],
 			"program": "${workspaceFolder}/dbux-cli/bin/dbux.js",
 			"args": [
-                                "run", 
-				"-d",
-                                "-p",
+        "run",
+        "-d",
+        "-p",
 				"${file}",
 			],
 			"restart": true,

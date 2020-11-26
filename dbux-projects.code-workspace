@@ -1,13 +1,13 @@
 {
 	"folders": [
 		{
-			"path": "dbux_projects/eslint"
-		},
-		{
 			"path": "samples/__samplesInput__"
 		},
 		{
 			"path": "dbux_projects/todomvc-es6"
+		},
+		{
+			"path": "samples/case-studies"
 		}
 	],
 	"settings": {
