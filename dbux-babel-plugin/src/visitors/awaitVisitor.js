@@ -3,6 +3,8 @@ import * as t from "@babel/types";
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 import { getPresentableString } from '../helpers/misc';
+import { isPathInstrumented } from '../helpers/instrumentationHelper';
+import { traceWrapExpressionStatement } from '../helpers/traceHelpers';
 
 // ###########################################################################
 // builders
@@ -86,6 +88,14 @@ export function awaitVisitEnter(path, state) {
   // prevent infinite loop
   const newAwaitPath = path.get('arguments.0');
   state.onCopy(path, newAwaitPath, 'context');
+}
+
+export function awaitVisitExit(path, state) {
+  let targetPath = path.get('argument').get('arguments')[0];
+  if (!isPathInstrumented(targetPath)) {
+    const replacement = traceWrapExpressionStatement(TraceType.ExpressionValue, targetPath, state, null);
+    targetPath.replaceWith(replacement);
+  }
 }
 
 export default function awaitVisitor() {

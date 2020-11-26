@@ -17,7 +17,7 @@ import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrument
 // import { loopVisitor } from './loopVisitors';
 import { isCallPath } from '../helpers/functionHelpers';
 import { functionVisitEnter } from './functionVisitor';
-import { awaitVisitEnter } from './awaitVisitor';
+import { awaitVisitEnter, awaitVisitExit } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
@@ -588,6 +588,7 @@ const exitInstrumentors = {
   ThrowArgument(path, state) {
     return wrapExpression(TraceType.ThrowArgument, path, state);
   },
+  Await: awaitVisitExit,
 };
 
 // ###########################################################################
