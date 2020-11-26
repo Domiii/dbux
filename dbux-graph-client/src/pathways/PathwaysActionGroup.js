@@ -55,13 +55,16 @@ class PathwaysActionGroup extends ClientComponentEndpoint {
 
   on = {
     btn: {
-      click(evt) {
+      async click(evt) {
         if (this.state.hasTrace) {
           this.context.view.remote.selectGroupTrace(this.state.id);
         }
         else if (ActionGroupType.is.EditorSelectionChanged(this.state.type)) {
           // select staticContext(for EditorSelectionChanged)
-          this.context.view.remote.selectStepStaticTrace(this.state.stepId);
+          // this.context.view.remote.selectStepStaticTrace(this.state.stepId);
+          
+          // go to actual select position
+          await this.context.view.remote.gotoActionGroupEditorPosition(this.state.id);
         }
         document.getSelection().removeAllRanges();
       }
