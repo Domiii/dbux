@@ -390,6 +390,13 @@ class PathwaysView extends HostComponentEndpoint {
           traceSelection.selectTrace(firstTrace);
         }
       }
+    },
+    async gotoActionGroupEditorPosition(actionGroupId) {
+      // const actionGroup = this.pdp.collections.steps.getById(actionGroupId);
+      const action = this.pdp.indexes.userActions.byGroup.getFirst(actionGroupId);
+      if (action?.file && action.range) {
+        await this.componentManager.externals.goToCodeLoc(action.file, action.range);
+      }
     }
   }
 }
