@@ -5,11 +5,11 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 class PathwaysStep extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
-      <div style="border: 1px solid lightblue; border-radius: 8px; padding: 0.4rem;">
+      <div style="border: 1px solid lightblue; border-radius: 8px; padding: 0.1rem;">
         <div data-el="header" class="">
           <div class="flex-row space-between" >
             <div class="flex-row" data-el="title">
-              <img width="24px" data-el="icon">
+              <img width="22px" data-el="icon">
               <span data-el="label"></span><span style="color: #BBB" class="loc-label" data-el="locLabel"></span>
             </div>
             <div>
