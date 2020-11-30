@@ -55,6 +55,8 @@ export default class RuntimeMonitor {
     const { contexts: staticContexts, traces: staticTraces } = programData;
     staticContextCollection.addEntries(programId, staticContexts);
 
+    // warn(`RuntimeMonitor.addProgram ${programId}: ${programData.fileName}`);
+
     // change program-local _staticContextId to globally unique staticContextId
     for (let i = 0; i < staticTraces.length; ++i) {
       const staticTrace = staticTraces[i];
@@ -97,7 +99,7 @@ export default class RuntimeMonitor {
     this._runtime.push(contextId, isInterruptable);
 
     // trace
-    this._trace(contextId, runId, inProgramStaticTraceId);
+    this._trace(programId, contextId, runId, inProgramStaticTraceId);
 
     return contextId;
   }
@@ -125,7 +127,8 @@ export default class RuntimeMonitor {
 
     // trace
     const runId = this._runtime.getCurrentRunId();
-    this._trace(contextId, runId, inProgramStaticTraceId, null, true);
+    const programId = executionContextCollection.getProgramId(contextId);
+    this._trace(programId, contextId, runId, inProgramStaticTraceId, null, true);
   }
 
   _pop(contextId) {
@@ -138,7 +141,7 @@ export default class RuntimeMonitor {
   // Callbacks
   // ###########################################################################
 
-  makeCallbackWrapper(schedulerContextId, schedulerTraceId, inProgramStaticTraceId, cb) {
+  makeCallbackWrapper(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId, cb) {
     // return WrappedClazz;
     const _this = this;
     const wrappedCb = function wrappedCb(...args) {
@@ -146,7 +149,7 @@ export default class RuntimeMonitor {
        * We need this so we can always make sure we can link things back to the scheduler,
        * even if the callback declaration is not inline.
        */
-      const callbackContextId = _this.pushCallback(schedulerContextId, schedulerTraceId, inProgramStaticTraceId);
+      const callbackContextId = _this.pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId);
 
       let resultValue;
       try {
@@ -157,7 +160,7 @@ export default class RuntimeMonitor {
         return resultValue;
       }
       finally {
-        _this.popCallback(callbackContextId, inProgramStaticTraceId, resultValue);
+        _this.popCallback(programId, callbackContextId, inProgramStaticTraceId, resultValue);
       }
     };
 
@@ -181,7 +184,7 @@ export default class RuntimeMonitor {
    * Very similar to `pushImmediate`.
    * We need it to establish the link with it's scheduling context.
    */
-  pushCallback(schedulerContextId, schedulerTraceId, inProgramStaticTraceId) {
+  pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -198,12 +201,12 @@ export default class RuntimeMonitor {
     this._runtime.push(contextId);
 
     // trace
-    this._trace(contextId, runId, inProgramStaticTraceId, TraceType.PushCallback);
+    this._trace(programId, contextId, runId, inProgramStaticTraceId, TraceType.PushCallback);
 
     return contextId;
   }
 
-  popCallback(callbackContextId, inProgramTraceId, resultValue) {
+  popCallback(programId, callbackContextId, inProgramTraceId, resultValue) {
     // sanity checks
     const context = executionContextCollection.getById(callbackContextId);
     if (!context) {
@@ -218,7 +221,7 @@ export default class RuntimeMonitor {
     this._pop(callbackContextId);
 
     // trace
-    const trace = traceCollection.traceWithResultValue(callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue);
+    const trace = traceCollection.traceWithResultValue(programId, callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue);
     this._onTrace(callbackContextId, trace, true);
   }
 
@@ -234,7 +237,7 @@ export default class RuntimeMonitor {
     const parentTraceId = this._runtime.getParentTraceId();
 
     // trace Await
-    this._trace(resumeContextId, runId, inProgramStaticTraceId);
+    this._trace(programId, resumeContextId, runId, inProgramStaticTraceId);
 
     // pop Resume context
     this.popResume(resumeContextId);
@@ -302,7 +305,7 @@ export default class RuntimeMonitor {
     const { contextId: resumeContextId } = resumeContext;
     this._runtime.push(resumeContextId);
 
-    this._trace(resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
+    this._trace(programId, resumeContextId, runId, inProgramStaticTraceId, TraceType.Resume);
 
     return resumeContextId;
   }
@@ -348,7 +351,7 @@ export default class RuntimeMonitor {
     }
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
-    this._trace(contextId, runId, inProgramStaticTraceId);
+    this._trace(programId, contextId, runId, inProgramStaticTraceId);
   }
 
   traceExpression(programId, inProgramStaticTraceId, value) {
@@ -369,7 +372,7 @@ export default class RuntimeMonitor {
       const runId = this._runtime.getCurrentRunId();
       const overrideType = null;
 
-      const trace = traceCollection.traceWithResultValue(contextId, runId, inProgramStaticTraceId, overrideType, value);
+      const trace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, overrideType, value);
       this._onTrace(contextId, trace);
 
       return value;
@@ -390,17 +393,17 @@ export default class RuntimeMonitor {
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
 
-    const schedulerTrace = traceCollection.traceWithResultValue(contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument, cb);
+    const schedulerTrace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument, cb);
     this._onTrace(contextId, schedulerTrace);
 
-    // const wrapper = this.makeCallbackWrapper(contextId, schedulerTraceId, inProgramStaticTraceId, cb);
+    // const wrapper = this.makeCallbackWrapper(programId, contextId, schedulerTraceId, inProgramStaticTraceId, cb);
     // return wrapper;
 
     return cb;
   }
 
-  _trace(contextId, runId, inProgramStaticTraceId, traceType = null, isPop = false) {
-    const trace = traceCollection.trace(contextId, runId, inProgramStaticTraceId, traceType);
+  _trace(programId, contextId, runId, inProgramStaticTraceId, traceType = null, isPop = false) {
+    const trace = traceCollection.trace(programId, contextId, runId, inProgramStaticTraceId, traceType);
     this._onTrace(contextId, trace, isPop);
     if (isPop) {
       trace.previousTrace = this._runtime.getLastTraceInContext(contextId);

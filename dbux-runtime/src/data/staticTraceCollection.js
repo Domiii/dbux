@@ -18,6 +18,8 @@ class StaticTraceCollection extends Collection {
     // store static traces
     this._staticTracesByProgram[programId] = list;
 
+    // console.warn(`staticTraceCollection.addEntries for #${programId} (${list.length})`);
+
     for (let i = 0; i < list.length; ++i) {
       const entry = list[i];
 
@@ -26,7 +28,7 @@ class StaticTraceCollection extends Collection {
 
       // global id over all programs
       entry.staticTraceId = this._all.length;
-      delete entry._traceId;
+      // delete entry._traceId;
       
       this._all.push(entry);
     }
@@ -65,6 +67,10 @@ class StaticTraceCollection extends Collection {
 
   getStaticTraceId(programId, inProgramStaticId) {
     const staticTrace = this.getTrace(programId, inProgramStaticId);
+    if (!staticTrace) {
+      debugger;
+      throw new Error(`Could not lookup staticTrace - programId=${programId}, inProgramStaticId=${inProgramStaticId} - allTraces:\n ${JSON.stringify(this._getTraces(programId))}`);
+    }
     return staticTrace.staticTraceId;
   }
 }
