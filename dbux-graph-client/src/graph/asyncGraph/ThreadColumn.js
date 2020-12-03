@@ -4,9 +4,9 @@ import { compileHtmlElement } from '../../util/domUtil';
 class ThreadColumn extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-      <div class="flex-column vertical-align-center">
+      <div class="flex-column">
         <div data-el="title"></div>
-        <div data-el="children" class="node-children flex-row"></div>
+        <div data-el="children" class="node-children flex-column"></div>
       </div>
     `);
 
@@ -14,18 +14,18 @@ class ThreadColumn extends ClientComponentEndpoint {
   }
 
   update() {
-    const { threadId, nodes, nodeCount } = this.state;
-    this.els.title.innerHTML = threadId;
+    const { threadId, nodeIds, nodeCount } = this.state;
+    this.els.title.innerHTML = `thread#${threadId}`;
     this.el.style.order = threadId;
-    this.els.children.innerHTML = nodeCount;
+    this.els.children.innerHTML = this.buildChildrenHTML(nodeIds, nodeCount);
   }
 
-  buildChildrenHTML(nodes, nodeCount) {
+  buildChildrenHTML(nodeIds, nodeCount) {
     let html = '';
-    const allContextOrder = new Set(nodes.map(node => node.order));
+    const nodeIdSet = new Set(nodeIds);
     for (let i = 0; i < nodeCount; ++i) {
-      if (allContextOrder.has(i)) {
-        html += `<div class="asyncNode">async node #${i}</div>`;
+      if (nodeIdSet.has(i)) {
+        html += `<div class="asyncNode">#${i}</div>`;
       }
       else {
         html += `<div class="asyncNode"></div>`;

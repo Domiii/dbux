@@ -15,10 +15,11 @@ canvas{
  * global setup
  * ############################################################################ */
 
-html,body{
+html, body {
   width: 100%;
   height: 100%;
-  font-size: 12px; /* NOTE: courier is a rather "big" font, making smaller font size seem bigger */
+  font-size: 12px;
+  /* NOTE: courier is a rather "big" font, making smaller font size seem bigger */
   font-family: "Lucida Console", Courier, monospace;
   padding: 0 !important;
   margin: 0 !important;
@@ -30,14 +31,16 @@ html,body{
  * ############################################################################ */
 
 .graph-node .content button {
-  background-color: rgba(0,0,0,0.1);
-  display:inline-block;
-  margin:0;
+  background-color: rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  margin: 0;
   padding: 0;
   border: 0;
   line-height: 1rem;
-  min-width: 1.4rem; /* NOTE: on some systems, some of those emojis are extra-wide */
+  min-width: 1.4rem;
+  /* NOTE: on some systems, some of those emojis are extra-wide */
 }
+
 .theme-mode-dark .nodeToggleBtn {
   background: #292929;
   border: solid 2px #484848;
@@ -49,44 +52,49 @@ html,body{
   border: 1px solid darkred;
   margin: -1px;
 }
+
 .selected-trace-dark {
   color: yellow;
   border: 1px solid yellow;
   margin: -1px;
 }
 
-.context-node .node-children{
+.context-node .node-children {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.indicator-cont{
-  position:relative;
-  width:0;
-  height:auto;
+.indicator-cont {
+  position: relative;
+  width: 0;
+  height: auto;
 }
-.set-top .indicator{
+
+.set-top .indicator {
   position: absolute;
   border-top: 1px solid rgb(139, 0, 0);
   width: 1em;
-  left:-1.1em;
-  top:0;
+  left: -1.1em;
+  top: 0;
 }
-.set-calltrace .indicator::before{
-  content:"●";
+
+.set-calltrace .indicator::before {
+  content: "●";
   position: absolute;
   color: rgb(139, 0, 0);
   /* border-top: 1px solid black;
   width: 1em; */
-  left:-0.85em;
-  margin-top: -0.85rem;  /* this about centers it on Mac :/ */
-  top:0;
+  left: -0.85em;
+  margin-top: -0.85rem;
+  /* this about centers it on Mac :/ */
+  top: 0;
 }
-.set-bottom .indicator{
+
+.set-bottom .indicator {
   position: absolute;
   border-top: 1px solid rgb(139, 0, 0);
   width: 1em;
-  left:-1.1em;
-  bottom:0;
+  left: -1.1em;
+  bottom: 0;
 }
 
 /* 
@@ -116,7 +124,7 @@ html,body{
   overflow: auto;
 }
 
-.graph-cont > .body {
+.graph-cont>.body {
   width: fit-content;
   height: fit-content;
   transform-origin: 0 0;
@@ -130,7 +138,7 @@ html,body{
   border-right: 0;
 }
 
-.title{
+.title {
   width: 100%;
 }
 
@@ -151,10 +159,12 @@ html,body{
 .run-node {
   padding: 10px;
 }
-.run-node > div {
+
+.run-node>div {
   border: 1px solid black;
 }
-.hidden-run-node > div {
+
+.hidden-run-node>div {
   background-color: rgba(206, 206, 206, 0.815);
 }
 
@@ -166,6 +176,7 @@ html,body{
     padding: 10px;
   }
 }
+
 @keyframes new-run-node-content {
   from {
     border: 10px solid yellow;
@@ -174,15 +185,26 @@ html,body{
     border: 1px solid orange;
   }
 }
+
 .run-node.new {
   animation: new-run-node 10s linear;
   animation-fill-mode: forwards;
 }
-.run-node.new > div {
+
+.run-node.new>div {
   animation: new-run-node-content 10s linear;
   animation-fill-mode: forwards;
 }
 
+/** ###########################################################################
+ * Async Graph
+ * ############################################################################ */
+
+.asyncNode {
+  border: 1px solid white;
+  height: 20px;
+  width: 20px;
+}
 
 /** ###########################################################################
  * graph decorations
@@ -208,6 +230,7 @@ html,body{
 [data-call-mode="1"] [data-el="contextLabel"] {
   /* display: none !important; */
 }
+
 [data-call-mode="0"] [data-el="parentLabel"] {
   display: none !important;
 }
@@ -221,22 +244,24 @@ html,body{
 
 [data-el="parentLabel"] {
   /* color: #222; */
-  background: rgba(0,0,0,0.03);
+  background: rgba(0, 0, 0, 0.03);
   font-size: 1rem;
   margin-right: 0.3rem !important;
 }
+
 .theme-mode-dark [data-el="parentLabel"] {
-  background: rgba(0,0,0,0.25);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .value-label {
   /* color: #222; */
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
   font-size: 1rem;
   margin-right: 0.3rem !important;
 }
+
 .theme-mode-dark .value-label {
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .hide-values .value-label {
@@ -249,93 +274,120 @@ html,body{
  * general purpose highlight animation
  * ############################################################################ */
 
-
 /*focus flash*/
+
 .flash-me {
   -webkit-animation: flash linear 1.7s infinite;
   animation: flash linear 1.7s infinite;
 }
 
 @-webkit-keyframes flash {
-  0%   { background:#fff; } 
-  20%  { opacity: 1; background:none; } 
-  40%  { background:#fff; } 
-  60%  { opacity: 1; background:none; }	
-  80%  { background:#fff;} 
-  100% { opacity: 1; background:none; }
-}
-@keyframes flash {
-  0%   { background:#fff; } 
-  100% { opacity: 1; background:none; }
+  0% {
+    background: #fff;
+  }
+  20% {
+    opacity: 1;
+    background: none;
+  }
+  40% {
+    background: #fff;
+  }
+  60% {
+    opacity: 1;
+    background: none;
+  }
+  80% {
+    background: #fff;
+  }
+  100% {
+    opacity: 1;
+    background: none;
+  }
 }
 
+@keyframes flash {
+  0% {
+    background: #fff;
+  }
+  100% {
+    opacity: 1;
+    background: none;
+  }
+}
 
 /** ###########################################################################
  * minimap
  * ############################################################################ */
 
-#minimap{
+#minimap {
   position: fixed;
-  display:block;
+  display: block;
   right: 10px;
   top: 60px;
   border: 2px solid black;
-  background:black;
+  background: black;
 }
-
 
 /** ###########################################################################
  * highlighter
  * ############################################################################ */
 
-
 .highlight-on:not(.theme-mode-dark) {
   background: #888 !important;
   color: darkgray !important;
 }
-.highlight-on:not(.theme-mode-dark) .graph-node:not(.highlight) > * {
+
+.highlight-on:not(.theme-mode-dark) .graph-node:not(.highlight)>* {
   background: #888 !important;
   color: darkgray !important;
 }
-.highlight-on:not(.theme-mode-dark) .graph-node:not(.highlight) > div > .content button {
+
+.highlight-on:not(.theme-mode-dark) .graph-node:not(.highlight)>div>.content button {
   background: #888 !important;
   color: darkgray !important;
 }
+
 .highlight-on:not(.theme-mode-dark) .graph-node .node-children {
   background: #888 !important;
   color: darkgray !important;
 }
-body:not(.theme-mode-dark) .highlight{
-  color:black;
+
+body:not(.theme-mode-dark) .highlight {
+  color: black;
 }
 
 /* dark mode */
+
 /* change color to change unhighlighing context name's color -del */
+
 .highlight-on.theme-mode-dark {
   background: #1e1e1e !important;
   color: #3b3b3b !important;
 }
-.highlight-on.theme-mode-dark .graph-node:not(.highlight) > * {
+
+.highlight-on.theme-mode-dark .graph-node:not(.highlight)>* {
   background: #1e1e1e !important;
   color: #3b3b3b!important;
 }
-.highlight-on.theme-mode-dark .graph-node:not(.highlight) > div > .content button {
+
+.highlight-on.theme-mode-dark .graph-node:not(.highlight)>div>.content button {
   background: #1e1e1e !important;
   color: #3b3b3b!important;
 }
+
 .highlight-on.theme-mode-dark .graph-node .node-children {
   background: #1e1e1e !important;
   color: #3b3b3b!important;
 }
-.theme-mode-dark .highlight{
+
+.theme-mode-dark .highlight {
   color: white;
-  background:rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 /** ###########################################################################
  * tooltips
  * ############################################################################ */
- 
 
 #tooltip {
   background: #333;
@@ -345,24 +397,26 @@ body:not(.theme-mode-dark) .highlight{
   font-size: 1rem;
   border-radius: 4px;
 }
-#arrow,
-#arrow::before {
-position: absolute;
-width: 8px;
-height: 8px;
-z-index: -1;
+
+#arrow, #arrow::before {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  z-index: -1;
 }
 
 #arrow::before {
-content: '';
-transform: rotate(45deg);
-background: #333;
+  content: '';
+  transform: rotate(45deg);
+  background: #333;
 }
-#tooltip[data-popper-placement^='bottom'] > #arrow {
+
+#tooltip[data-popper-placement^='bottom']>#arrow {
   top: -4px;
 }
+
 #tooltip {
-/* ... */
+  /* ... */
   display: none;
 }
 
@@ -370,22 +424,22 @@ background: #333;
   display: block;
 }
 
-
 /** ###########################################################################
  * zoombar
  * ############################################################################ */
 
 #zoombar {
-  position:fixed;
-  bottom:10px;
-  right:10px;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
 }
+
 #zoombar .button {
-  margin:2.5px;
+  margin: 2.5px;
 }
+
 .theme-mode-dark #zoombar .button {
   background: #292929;
   border: solid 2px #484848;
   color: white;
 }
-

@@ -30,39 +30,39 @@ class AsyncGraph extends HostComponentEndpoint {
   }
 
   handleRefresh() {
-    // this.children.getComponents(ThreadColumn).forEach(comp => comp.dispose());
+    if (this.context.graphDocument.asyncGraphMode) {
+      const app = allApplications.selection.getAll()?.[0];
 
-    // const app = allApplications.selection.getAll()?.[0];
+      if (app) {
+        const contexts = app.dataProvider.collections.executionContexts.getAll().slice(1);
 
-    // if (app) {
-    //   const dp = app.dataProvider;
-    //   const resumeContexts = dp.indexes.executionContexts.byType.get(ExecutionContextType.Resume);
-    //   const nodeCount = resumeContexts.length;
-    //   const nodesByThreadId = new Map();
+        let lastThreadId, nodeCount = 0;
+        const nodesByThreadId = new Map();
+        for (let i = 0; i < contexts.length; ++i) {
+          const { threadId } = contexts[i];
+          if (threadId !== lastThreadId) {
+            if (!nodesByThreadId.get(threadId)) {
+              nodesByThreadId.set(threadId, []);
+            }
+            nodesByThreadId.get(threadId).push(nodeCount++);
+          }
+        }
 
-    //   for (let order = 0; order < resumeContexts.length; ++order) {
-    //     const context = resumeContexts[order];
-    //     const { runId } = context;
-    //     const { threadId } = dp.collections.runs.getById(runId);
+        for (const threadId of nodesByThreadId.keys()) {
+          this.children.createComponent(ThreadColumn, {
+            applicationId: app.applicationId,
+            threadId,
+            nodeIds: nodesByThreadId.get(threadId),
+            nodeCount,
+          });
+        }
+      }
 
-    //     if (!nodesByThreadId.get(threadId)) {
-    //       nodesByThreadId.set(threadId, []);
-    //     }
-
-    //     nodesByThreadId.get(threadId).push({ order, context });
-    //   }
-
-    //   for (const threadId of nodesByThreadId.keys()) {
-    //     this.children.createComponent(ThreadColumn, {
-    //       applicationId: app.applicationId,
-    //       threadId,
-    //       nodes: nodesByThreadId.get(threadId),
-    //       nodeCount,
-    //     });
-    //   }
-    // }
-
-    // this._setApplicationState();
+      this._setApplicationState();
+    }
+    else {
+      this.children.getComponents(ThreadColumn).forEach(comp => comp.dispose());
+    }
   }
 
   _resubscribeOnData() {
@@ -94,20 +94,6 @@ class AsyncGraph extends HostComponentEndpoint {
       }))
     };
     this.setState(update);
-  }
-
-  addThreadNodeByContexts(applicationId, contexts) {
-    const runIds = new Set(contexts.map(context => context?.runId || 0));
-    const newNodes = [];
-
-    runIds.forEach(runId => {
-      if (runId) {
-        const newNode = this.addRunNode(applicationId, runId);
-        newNodes.push(newNode);
-      }
-    });
-
-    return newNodes;
   }
 
   // ###########################################################################
