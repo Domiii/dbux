@@ -1,7 +1,8 @@
 const cfg = require('../config/babel-presets-node');
 
-let { plugins } = cfg;
+// console.warn('ENV', process.env.NODE_ENV);
 
+let { plugins } = cfg;
 if (process.env.NODE_ENV === 'development') {
   // big play experiments: use dbux to debug itself
   try {
@@ -11,6 +12,7 @@ if (process.env.NODE_ENV === 'development') {
   }
   catch (err) {
     // don't do anything
+    // console.error(err);
   }
 }
 

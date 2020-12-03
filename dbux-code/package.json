@@ -4,7 +4,7 @@
   "displayName": "Dbux (ALPHA)",
   "version": "0.3.12-dev.0",
   "publisher": "Domi",
-  "description": "",
+  "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
   "repository": {
     "type": "git",
     "url": "https://github.com/Domiii/dbux"
