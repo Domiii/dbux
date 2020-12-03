@@ -6,16 +6,6 @@ import AsyncNode from './AsyncNode';
 const { log, debug, warn, error: logError } = newLogger('ThreadColumn');
 
 class ThreadColumn extends HostComponentEndpoint {
-  init() {
-    const {
-      threadId
-    } = this.state;
-
-    this.children.createComponent(AsyncNode, {
-      threadId,
-      contextId: 1
-    });
-  }
 }
 
 export default ThreadColumn;

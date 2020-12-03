@@ -170,6 +170,7 @@ class ExecutionContextCollection extends Collection {
     for (const context of contexts) {
       const { contextId, parentContextId, runId, contextType } = context;
       if (!this.dp.collections.runs.getById(runId)) {
+        // NOTE: in the algorithm below, we assume resume context will be the first context of a run
         let threadId, parentTraceId;
         const parentContext = this.dp.collections.executionContexts.getById(parentContextId);
         if (!parentContext) {
@@ -187,7 +188,6 @@ class ExecutionContextCollection extends Collection {
         }
         const run = { id: runId, threadId, parentTraceId };
         this.dp.addData({ runs: [run] });
-        console.log(`Run ${JSON.stringify(run)} added`);
       }
     }
   }

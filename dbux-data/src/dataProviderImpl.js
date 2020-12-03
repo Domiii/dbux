@@ -33,11 +33,12 @@ import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTrace
 import StaticContextsByFileIndex from './impl/indexes/StaticContextsByFileIndex';
 import StaticContextsByParentIndex from './impl/indexes/StaticContextsByParentIndex';
 import StaticTracesByContextIndex from './impl/indexes/StaticTracesByContextIndex';
+import ContextsByTypeIndex from './impl/indexes/ContextsByTypeIndex';
 
 
 export function newDataProvider(application) {
   const dataProvider = new RuntimeDataProvider(application);
-  
+
   // util
   const utilNames = Object.keys(dataProviderUtil);
   dataProvider.util = Object.fromEntries(
@@ -46,7 +47,7 @@ export function newDataProvider(application) {
 
   // call graph
   dataProvider.callGraph = new CallGraph(dataProvider);
-  
+
   // indexes
   dataProvider.addIndex(new StaticContextsByFileIndex());
   dataProvider.addIndex(new StaticContextsByParentIndex());
@@ -54,11 +55,12 @@ export function newDataProvider(application) {
 
   dataProvider.addIndex(new ContextsByStaticContextIndex());
   dataProvider.addIndex(new ContextsByRunIndex());
+  dataProvider.addIndex(new ContextsByTypeIndex());
   dataProvider.addIndex(new ContextsByCalleeTraceIndex());
   dataProvider.addIndex(new ContextChildrenIndex());
   dataProvider.addIndex(new RootContextsIndex());
   dataProvider.addIndex(new FirstContextsInRunsIndex());
-  
+
   dataProvider.addIndex(new FirstTracesIndex());
   dataProvider.addIndex(new TracesByFileIndex());
   dataProvider.addIndex(new TracesByContextIndex());
