@@ -30,39 +30,39 @@ class AsyncGraph extends HostComponentEndpoint {
   }
 
   handleRefresh() {
-    this.children.getComponents(ThreadColumn).forEach(comp => comp.dispose());
+    // this.children.getComponents(ThreadColumn).forEach(comp => comp.dispose());
 
-    const app = allApplications.selection.getAll()?.[0];
+    // const app = allApplications.selection.getAll()?.[0];
 
-    if (app) {
-      const dp = app.dataProvider;
-      const resumeContexts = dp.indexes.executionContexts.byType.get(ExecutionContextType.Resume);
-      const nodeCount = resumeContexts.length;
-      const nodesByThreadId = new Map();
+    // if (app) {
+    //   const dp = app.dataProvider;
+    //   const resumeContexts = dp.indexes.executionContexts.byType.get(ExecutionContextType.Resume);
+    //   const nodeCount = resumeContexts.length;
+    //   const nodesByThreadId = new Map();
 
-      for (let order = 0; order < resumeContexts.length; ++order) {
-        const context = resumeContexts[order];
-        const { runId } = context;
-        const { threadId } = dp.collections.runs.getById(runId);
+    //   for (let order = 0; order < resumeContexts.length; ++order) {
+    //     const context = resumeContexts[order];
+    //     const { runId } = context;
+    //     const { threadId } = dp.collections.runs.getById(runId);
 
-        if (!nodesByThreadId.get(threadId)) {
-          nodesByThreadId.set(threadId, []);
-        }
+    //     if (!nodesByThreadId.get(threadId)) {
+    //       nodesByThreadId.set(threadId, []);
+    //     }
 
-        nodesByThreadId.get(threadId).push({ order, context });
-      }
+    //     nodesByThreadId.get(threadId).push({ order, context });
+    //   }
 
-      for (const threadId of nodesByThreadId.keys()) {
-        this.children.createComponent(ThreadColumn, {
-          applicationId: app.applicationId,
-          threadId,
-          nodes: nodesByThreadId.get(threadId),
-          nodeCount,
-        });
-      }
-    }
+    //   for (const threadId of nodesByThreadId.keys()) {
+    //     this.children.createComponent(ThreadColumn, {
+    //       applicationId: app.applicationId,
+    //       threadId,
+    //       nodes: nodesByThreadId.get(threadId),
+    //       nodeCount,
+    //     });
+    //   }
+    // }
 
-    this._setApplicationState();
+    // this._setApplicationState();
   }
 
   _resubscribeOnData() {
