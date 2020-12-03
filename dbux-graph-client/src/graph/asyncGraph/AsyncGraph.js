@@ -1,8 +1,8 @@
 import createPanzoom from '@dbux/panzoom';
-import { compileHtmlElement } from '../util/domUtil';
-import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
+import { compileHtmlElement } from '../../util/domUtil';
+import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
 
-class GraphRoot extends ClientComponentEndpoint {
+class AsyncGraph extends ClientComponentEndpoint {
   createEl() {
     return compileHtmlElement(/*html*/`
       <div class="graph-root">
@@ -10,14 +10,8 @@ class GraphRoot extends ClientComponentEndpoint {
           <div data-el="body" class="body flex-column">
             <h4>Applications:</h4>
             <pre data-el="applications"></pre>
-            <div>
-              <button data-el="nodeToggleBtn" class="nodeToggleBtn"></button>
+            <div data-el="nodeChildren" data-mount="ThreadColumn" class="node-children flex-column">
             </div>
-            <div data-mount="HiddenBeforeNode"></div>
-            <div data-el="nodeChildren" data-mount="RunNode" class="node-children flex-column">
-              <div class="before-run-node"></div>
-            </div>
-            <div data-mount="HiddenAfterNode"></div>
           </div>
         </div>
         <div data-el="toolTip" id="tooltip" role="tooltip">
@@ -39,7 +33,7 @@ class GraphRoot extends ClientComponentEndpoint {
 
   update() {
     const { asyncGraphMode } = this.context.graphDocument.state;
-    if (asyncGraphMode) {
+    if (!asyncGraphMode) {
       this.el.classList.add('hidden');
     }
     else {
@@ -70,33 +64,6 @@ class GraphRoot extends ClientComponentEndpoint {
       minZoom: 0.1,
     });
 
-    // panzoom.zoomAbs(
-    //   0,
-    //   0,
-    //   1
-    // );
-
-    // panzoom.on('panstart', (e) => {
-    //   // console.log('panstart', e);
-    // });
-
-    // panzoom.on('pan', (e) => {
-    //   // this._repaint();
-    // });
-
-    // panzoom.on('panend', (e) => {
-    //   // this._repaint();
-    // });
-
-    // panzoom.on('zoomend', (e) => {
-    //   // this._repaint();
-    // });
-
-    // panzoom.on('transform', (e) => {
-    //   // this._repaint();
-    //   // repaintEl(this.els.body);
-    // });
-
     // hackfix: scrollbar bugs out when scrolling or when touching it the first time around; this fixes it
     //   (probably a webview bug)
     const repaint = () => {
@@ -109,4 +76,4 @@ class GraphRoot extends ClientComponentEndpoint {
     return panzoom;
   }
 }
-export default GraphRoot;
+export default AsyncGraph;

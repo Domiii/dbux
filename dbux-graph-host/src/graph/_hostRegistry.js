@@ -1,5 +1,7 @@
 import GraphDocument from './GraphDocument';
 import ContextNode from './ContextNode';
+import AsyncGraph from './asyncGraph/AsyncGraph';
+import ThreadColumn from './asyncGraph/ThreadColumn';
 import GraphRoot from './GraphRoot';
 import HiddenAfterNode from './HiddenAfterNode';
 import HiddenBeforeNode from './HiddenBeforeNode';
@@ -22,6 +24,8 @@ export default {
   GraphNode,
   HiddenNodeManager,
   GraphRoot,
+  AsyncGraph,
+  ThreadColumn,
   HiddenAfterNode,
   HiddenBeforeNode,
   RunNode,

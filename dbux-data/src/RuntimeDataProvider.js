@@ -9,6 +9,7 @@ import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
 import ValueTypeCategory, { ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
 import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
 import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
+import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 
 import Collection from './Collection';
 

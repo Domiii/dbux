@@ -9,13 +9,18 @@ class Toolbar extends HostComponentEndpoint {
     this.state.valueMode = false;
     this.state.thinMode = false;
     this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
+    this.state.asyncGraphMode = this.context.graphDocument.asyncGraphMode;
 
-    // listen on hiddenModeChanged event to sync hideMode
+    // listen on mode changed event
     this.hiddenNodeManager.onStateChanged(({ hideBefore, hideAfter }) => {
       this.setState({
         hideOldMode: !!hideBefore,
         hideNewMode: !!hideAfter
       });
+    });
+
+    this.context.graphDocument.onAsyncGraphModeChanged(mode => {
+      this.setState({ asyncGraphMode: mode });
     });
 
     this.focusController.on('modeChanged', (mode) => {
@@ -35,7 +40,7 @@ class Toolbar extends HostComponentEndpoint {
 
   public = {
     toggleSyncMode() {
-      const mode = this.focusController.toggleSyncMode();
+      this.focusController.toggleSyncMode();
     },
 
     hideOldRun(time) {
@@ -44,6 +49,10 @@ class Toolbar extends HostComponentEndpoint {
 
     hideNewRun(time) {
       this.hiddenNodeManager.hideAfter(time);
+    },
+
+    setAsyncGraphMode(mode) {
+      this.context.graphDocument.setAsyncGraphMode(mode);
     },
 
     searchContexts(searchTermContexts) {
