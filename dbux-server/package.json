@@ -1,7 +1,7 @@
 {
   "name": "@dbux/server",
   "private": true,
-  "version": "0.3.12",
+  "version": "0.3.13-dev.0",
   "license": "Apache-2.0",
   "scripts": {
     "clean": "rm -rf ./dist",
@@ -18,9 +18,9 @@
     "@babel/plugin-transform-runtime": "7.10.1",
     "@babel/preset-env": "7.10.1",
     "@babel/register": "7.10.1",
-    "@dbux/babel-plugin": "^0.3.12",
-    "@dbux/common": "^0.3.12",
-    "@dbux/runtime": "^0.3.12",
+    "@dbux/babel-plugin": "^0.3.13-dev.0",
+    "@dbux/common": "^0.3.13-dev.0",
+    "@dbux/runtime": "^0.3.13-dev.0",
     "adm-zip": "^0.4.16",
     "body-parser": "^1.19.0",
     "colors": "^1.4.0",
