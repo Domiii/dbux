@@ -32,7 +32,7 @@ export function getCallId(callPath) {
   if (t.isIdentifier(callee)) {
     id = callee;
   }
-  else if (t.isMemberExpression(callee)) {
+  else if (isAnyMemberExpression(callee)) {
     id = getRightMostIdOfMember(callee);
   }
   return id;

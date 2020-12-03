@@ -21,8 +21,8 @@ import { awaitVisitEnter, awaitVisitExit } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
-const Verbose = false;
-// const Verbose = true;
+// const Verbose = false;
+const Verbose = true;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
@@ -244,10 +244,10 @@ const traceCfg = (() => {
     ForOfStatement: [
       Loop
     ],
-    DoWhileLoop: [
-      // TODO: currently disabled because babel doesn't like it; probably a babel bug?
-      Loop
-    ],
+    // TODO: babel is unhappy with any DoWhileLoop visitor
+    // DoWhileLoop: [
+    //   Loop
+    // ],
     WhileStatement: [
       Loop
     ],

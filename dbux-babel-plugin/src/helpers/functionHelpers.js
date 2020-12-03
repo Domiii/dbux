@@ -13,8 +13,12 @@ const { log, debug, warn, error: logError } = newLogger('functionHelpers');
 // function names
 // ###########################################################################
 
-export function isCallPath(path) {
-  return path.isCallExpression() || path.isOptionalCallExpression() || path.isNewExpression();
+export function isCallPath(pathOrNode) {
+  return t.isCallExpression(pathOrNode) || t.isOptionalCallExpression(pathOrNode) || t.isNewExpression(pathOrNode);
+}
+
+export function isAnyMemberExpression(pathOrNode) {
+  return t.isMemberExpression(pathOrNode) || t.isOptionalMemberExpression(pathOrNode);
 }
 
 export function functionNoName() {
@@ -122,9 +126,9 @@ export function guessFunctionName(functionPath, state) {
          */
         name = left.name;
       }
-      else if (leftPath.isMemberExpression()) {
+      else if (isAnyMemberExpression(leftPath)) {
         /**
-         * 8. object assignment: `o.f = () => {}`
+         * 8. object assignment: `o.f = () => {}`, `o?.f = () => {}`
          */
         name = getMemberExpressionName(leftPath, state, false);
       }
