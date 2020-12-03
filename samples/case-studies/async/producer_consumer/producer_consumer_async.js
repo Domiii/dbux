@@ -24,7 +24,7 @@ class Consumer extends ConsumerBase {
       this.finishConsume(idx);
     }
     else {
-      await sleep();
+      await sleep(300);
     }
   }
 }
@@ -47,7 +47,7 @@ class Producer extends ProducerBase {
       this.finishProduce();
     }
     else {
-      await sleep();
+      await sleep(300);
     }
   }
 }
@@ -56,7 +56,5 @@ class Producer extends ProducerBase {
 
 // start all producers + consumers
 new Producer().run();
-new Producer().run();
 
-new Consumer().run();
 new Consumer().run();

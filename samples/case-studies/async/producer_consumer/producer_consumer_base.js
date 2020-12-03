@@ -1,8 +1,8 @@
 const MaxItems = 5;
-const ProducerTime = 300;
+const ProducerTime = 500;
 const ProducerTimeVar = 100;
 
-const ConsumerTime = 300;
+const ConsumerTime = 500;
 const ConsumerTimeVar = 400;
 
 const buffer = new Array(MaxItems);
