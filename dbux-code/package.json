@@ -81,6 +81,10 @@
         "title": "Dbux: Export Application Data"
       },
       {
+        "command": "dbux.importApplicationData",
+        "title": "Dev: Import Application Data"
+      },
+      {
         "command": "dbux.showDecorations",
         "title": "Dbux: Show Code Decorations"
       },
@@ -829,6 +833,10 @@
         {
           "command": "dbux.exportApplicationData",
           "when": "dbux.context.activated"
+        },
+        {
+          "command": "dbux.importApplicationData",
+          "when": "dbux.context.activated && dbux.context.nodeEnv == development"
         },
         {
           "command": "dbux.hideDecorations",

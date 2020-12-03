@@ -17,6 +17,10 @@ export function getLogsDirectory() {
   return context.asAbsolutePath('logs');
 }
 
+export function getCodeDirectory() {
+  return context.asAbsolutePath('.');
+}
+
 export function getThemeResourcePath(...relativePathSegments) {
   return {
     light: getResourcePath('light', ...relativePathSegments),
