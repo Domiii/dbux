@@ -23,6 +23,19 @@ export class ExecutionContextCollection extends Collection {
     return staticContextCollection.getById(staticContextId);
   }
 
+  getProgramId(contextId) {
+    const context = this.getById(contextId);
+    const {
+      staticContextId
+    } = context;
+    const staticContext = staticContextCollection.getById(staticContextId);
+    const {
+      programId
+    } = staticContext;
+    
+    return programId;
+  }
+
   // ###########################################################################
   // Create
   // ###########################################################################

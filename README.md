@@ -144,7 +144,7 @@ Because of [performance](#performance) reasons, we cannot record *everything*.
 
 ## Calling `process.exit` as well as uncaught exceptions are not handled properly
 
-* You might see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably a crash or you called `process.exit` manually." in the console.
+* You might see a message along the lines of "Process shutdown but not all data has been sent out. Analysis will be incomplete. This is probably because of a crash or `process.exit` was called manually
 * `process.exit` and uncaught exceptions kill the process, even if not all recorded data has been sent out yet. As a result, not all of the runtime data could be recorded properly.
 * If you *MUST* call `process.exit` manually, consider doing it after a `setTimeout` with 0.5-1s delay to be on the safe side.
    * NOTE: some frameworks that kill your process by can be configured not to do so (e.g. for `Mocha` you want to add the `--no-exit` flag)

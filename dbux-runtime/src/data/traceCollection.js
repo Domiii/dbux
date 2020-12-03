@@ -11,20 +11,20 @@ class TraceCollection extends Collection {
     super('traces');
   }
 
-  trace(contextId, runId, inProgramStaticTraceId, type = null) {
-    const trace = this._trace(contextId, runId, inProgramStaticTraceId, type, false, undefined);
+  trace(programId, contextId, runId, inProgramStaticTraceId, type = null) {
+    const trace = this._trace(programId, contextId, runId, inProgramStaticTraceId, type, false, undefined);
     return trace;
   }
 
   /**
    * Expression + pop traces have results
    */
-  traceWithResultValue(contextId, runId, inProgramStaticTraceId, type, value) {
-    const trace = this._trace(contextId, runId, inProgramStaticTraceId, type, true, value);
+  traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, type, value) {
+    const trace = this._trace(programId, contextId, runId, inProgramStaticTraceId, type, true, value);
     return trace;
   }
 
-  _trace(contextId, runId, inProgramStaticTraceId, type, hasValue, value) {
+  _trace(programId, contextId, runId, inProgramStaticTraceId, type, hasValue, value) {
     if (!inProgramStaticTraceId) {
       throw new Error('missing inProgramStaticTraceId');
     }
@@ -43,15 +43,8 @@ class TraceCollection extends Collection {
     valueCollection.registerValueMaybe(hasValue, value, trace);
 
     // look-up globally unique staticTraceId
-    // trace._staticTraceId = inProgramStaticTraceId;
-    const context = executionContextCollection.getById(contextId);
-    const {
-      staticContextId
-    } = context;
-    const staticContext = staticContextCollection.getById(staticContextId);
-    const {
-      programId
-    } = staticContext;
+    
+    // const programId = executionContextCollection.getProgramId(contextId);
     trace.staticTraceId = staticTraceCollection.getStaticTraceId(programId, inProgramStaticTraceId);
 
     this._send(trace);
