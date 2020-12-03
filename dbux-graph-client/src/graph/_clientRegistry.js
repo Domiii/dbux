@@ -3,7 +3,6 @@ const ContextNode = require('./ContextNode').default;
 const GraphDocument = require('./GraphDocument').default;
 const GraphRoot = require('./GraphRoot').default;
 const AsyncGraph = require('./asyncGraph/AsyncGraph').default;
-const AsyncNode = require('./asyncGraph/AsyncNode').default;
 const ThreadColumn = require('./asyncGraph/ThreadColumn').default;
 const HiddenAfterNode = require('./HiddenAfterNode').default;
 const HiddenBeforeNode = require('./HiddenBeforeNode').default;
@@ -25,7 +24,6 @@ export default {
   GraphDocument,
   GraphRoot,
   AsyncGraph,
-  AsyncNode,
   ThreadColumn,
   HiddenAfterNode,
   HiddenBeforeNode,
