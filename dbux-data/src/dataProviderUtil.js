@@ -99,18 +99,6 @@ export default {
       flat();
   },
 
-  /**
-   * Check if the next trace of parentTrace is of TraceType.Await
-   * @param {DataProvider} dp 
-   * @param {number} contextId 
-   */
-  isResumeContextAwaited(dp, contextId) {
-    const context = dp.collections.executionContexts.getById(contextId);
-    const realContext = dp.collections.executionContexts.getById(context.parentContextId);
-    const resultTrace = dp.util.getCallResultTrace(realContext.parentTraceId);
-    return TraceType.is.Await(dp.util.getTraceType(resultTrace.traceId + 1));
-  },
-
   // ###########################################################################
   // static contexts + static traces
   // ###########################################################################

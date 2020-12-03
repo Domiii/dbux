@@ -121,22 +121,11 @@ class StaticTraceCollection extends Collection {
 }
 
 /**
- * @extends {Collection<Run>}
- */
-class RunCollection extends Collection {
-  constructor(dp) {
-    super('runs', dp);
-  }
-}
-
-/**
  * @extends {Collection<ExecutionContext>}
  */
 class ExecutionContextCollection extends Collection {
   constructor(dp) {
     super('executionContexts', dp);
-
-    this.threadId = 0;
   }
 
   add(entries) {
@@ -149,10 +138,6 @@ class ExecutionContextCollection extends Collection {
     super.add(entries);
   }
 
-  postAdd(contexts) {
-    errorWrapMethod(this, 'addRun', contexts);
-  }
-
   /**
    * @param {ExecutionContext[]} contexts 
    */
@@ -163,32 +148,6 @@ class ExecutionContextCollection extends Collection {
     }
     catch (err) {
       logError('resolveLastTraceOfContext failed', err); //contexts);
-    }
-  }
-
-  addRun(contexts) {
-    for (const context of contexts) {
-      const { contextId, parentContextId, runId, contextType } = context;
-      if (!this.dp.collections.runs.getById(runId)) {
-        // NOTE: in the algorithm below, we assume resume context will be the first context of a run
-        let threadId, parentTraceId;
-        const parentContext = this.dp.collections.executionContexts.getById(parentContextId);
-        if (!parentContext) {
-          // first context
-          threadId = ++this.threadId;
-          parentTraceId = null;
-        }
-        else if (ExecutionContextType.is.Resume(contextType) && !this.dp.util.isResumeContextAwaited(contextId)) {
-          threadId = ++this.threadId;
-          ({ parentTraceId } = parentContext);
-        }
-        else {
-          ({ threadId } = this.dp.collections.runs.getById(parentContext.runId));
-          ({ parentTraceId } = parentContext);
-        }
-        const run = { id: runId, threadId, parentTraceId };
-        this.dp.addData({ runs: [run] });
-      }
     }
   }
 
@@ -479,7 +438,6 @@ export default class RuntimeDataProvider extends DataProviderBase {
       staticContexts: new StaticContextCollection(this),
       staticTraces: new StaticTraceCollection(this),
 
-      runs: new RunCollection(this),
       executionContexts: new ExecutionContextCollection(this),
       traces: new TraceCollection(this),
       values: new ValueCollection(this)
