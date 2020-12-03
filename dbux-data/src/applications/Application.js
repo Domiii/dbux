@@ -88,6 +88,6 @@ export default class Application {
   }
 
   getSafeFileName() {
-    return (this.getPreferredName())?.replace(/[:\\/]/, '-');
+    return (this.getPreferredName())?.replace(/[:\\/]/g, '-');
   }
 }

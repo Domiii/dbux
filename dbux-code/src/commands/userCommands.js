@@ -1,4 +1,4 @@
-import { window } from 'vscode';
+import { Uri, window } from 'vscode';
 import path from 'path';
 import fs from 'fs';
 import open from 'open';
@@ -25,7 +25,7 @@ import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 import { getAllMemento, clearAll } from '../memento';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
-import { getLogsDirectory } from '../resources';
+import { getCodeDirectory, getLogsDirectory } from '../resources';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('userCommands');
@@ -36,38 +36,65 @@ export function initUserCommands(extensionContext) {
   // exportApplicationData
   // ###########################################################################
 
+  const exportFolder = path.join(__dirname, '../../analysis/__data__/');
+  const applicationRelativeRoot = getCodeDirectory();
+
   async function doExport(application) {
-    const exportFolder = path.join(__dirname, '../../analysis/__data__/');
     const applicationName = application.getSafeFileName();
-    // const folder = path.dirname(application.entryPointPath);
-    // const fpath = path.join(folder, '_data.json');
     if (!fs.existsSync(exportFolder)) {
       fs.mkdirSync(exportFolder);
     }
-
     const exportFpath = path.join(exportFolder, `${applicationName || '(unknown)'}_data.json`);
-    const data = application.dataProvider.serialize();
-    fs.writeFileSync(exportFpath, data);
 
-    const btns = {
+    // make data
+    const { uuid, entryPointPath, createdAt } = application;
+    const relativeEntryPointPath = path.relative(applicationRelativeRoot, entryPointPath).replace(/\\/g, '/');
+    const data = {
+      relativeEntryPointPath,
+      createdAt,
+      uuid,
+      serializedDpData: application.dataProvider.serialize()
+    };
+    fs.writeFileSync(exportFpath, JSON.stringify(data));
+
+    const msg = translate('savedSuccessfully', { fileName: exportFpath });
+    await showInformationMessage(msg, {
       Open: async () => {
         await showTextDocument(exportFpath);
       }
-    };
-    const msg = translate('savedSuccessfully', { fileName: exportFpath });
-    debug(msg);
-    const clicked = await window.showInformationMessage(msg,
-      ...Object.keys(btns));
-    if (clicked) {
-      btns[clicked]();
-    }
+    });
+  }
+
+  function doImport(fpath) {
+    const appData = JSON.parse(fs.readFileSync(fpath, 'utf8'));
+    const { relativeEntryPointPath, createdAt, uuid, serializedDpData } = appData;
+    const entryPointPath = path.join(applicationRelativeRoot, relativeEntryPointPath);
+    const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
+    app.dataProvider.deserialize(JSON.parse(serializedDpData));
   }
 
   registerCommand(extensionContext, 'dbux.exportApplicationData', async () => {
     const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
-    await doExport(application);
+    if (application) {
+      await doExport(application);
+    }
   });
 
+  registerCommand(extensionContext, 'dbux.importApplicationData', async () => {
+    const options = {
+      title: 'Select a file to read',
+      canSelectFolders: false,
+      canSelectMany: false,
+      filters: {
+        JSON: ['json']
+      },
+      defaultUri: Uri.file(exportFolder)
+    };
+    const file = (await window.showOpenDialog(options))?.[0];
+    if (file) {
+      doImport(file.fsPath);
+    }
+  });
 
   // ###########################################################################
   // show/hide graph view
