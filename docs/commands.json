@@ -50,6 +50,11 @@
     "description": ""
   },
   {
+    "command": "dbux.loadPracticeLogFile",
+    "title": "Dev: Load Practice Log",
+    "description": ""
+  },
+  {
     "command": "dbux.openPracticeLogFolder",
     "title": "Dbux: Open Practice Log Folder",
     "description": ""
@@ -133,6 +138,11 @@
     "command": "dbux.togglePracticeView",
     "title": "Dbux: Toggle Practice View",
     "description": "Feature still in development. You can use this to use Dbux on a pre-configured bug in express."
+  },
+  {
+    "command": "dbuxProject.uploadLog",
+    "title": "Upload log files",
+    "description": ""
   },
   {
     "command": "dbuxProjectView.showDiff",
