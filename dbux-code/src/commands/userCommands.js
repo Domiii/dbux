@@ -37,6 +37,7 @@ export function initUserCommands(extensionContext) {
   // ###########################################################################
 
   const exportFolder = path.join(__dirname, '../../analysis/__data__/');
+  const defaultImportFolder = path.join(__dirname, '../../samples/data');
   const applicationRelativeRoot = getCodeDirectory();
 
   async function doExport(application) {
@@ -88,7 +89,7 @@ export function initUserCommands(extensionContext) {
       filters: {
         JSON: ['json']
       },
-      defaultUri: Uri.file(exportFolder)
+      defaultUri: Uri.file(defaultImportFolder)
     };
     const file = (await window.showOpenDialog(options))?.[0];
     if (file) {
