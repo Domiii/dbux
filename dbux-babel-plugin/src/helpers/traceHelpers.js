@@ -2,6 +2,7 @@ import template from '@babel/template';
 import * as t from '@babel/types';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { getPathTraceId } from '../data/StaticTraceCollection';
+import { isAnyMemberExpression } from './functionHelpers';
 import { isPathInstrumented, isNodeInstrumented } from './instrumentationHelper';
 
 
@@ -263,7 +264,7 @@ function getCalleeDisplayName(calleePath) {
  * 
  * NOTEs:
  * * We do *NOT* instrument here, because it would mess up `staticTraceId` order (e.g. in `f(u).g(v)`).
- * * `oNode` (including `super`) and `fNode` will be traced as `ExpressionResult` (via `AssignmentExpression.right`)
+ * * `oNode` (including `super`) and `fNode` will be traced as `ExpressionResult` (via `AssignmentExpression`)
  */
 const instrumentMemberCallExpressionEnter =
   (function instrumentBeforeMemberCallExpression(path, state) {
@@ -449,7 +450,7 @@ const instrumentDefaultCallExpressionEnter =
 
 export function instrumentCallExpressionEnter(path, state) {
   const calleePath = path.get('callee');
-  if (calleePath.isMemberExpression()) {
+  if (isAnyMemberExpression(calleePath)) {
     return instrumentMemberCallExpressionEnter(path, state);
   }
   else {

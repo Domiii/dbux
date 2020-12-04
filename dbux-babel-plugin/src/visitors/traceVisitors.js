@@ -244,10 +244,10 @@ const traceCfg = (() => {
     ForOfStatement: [
       Loop
     ],
-    DoWhileLoop: [
-      // TODO: currently disabled because babel doesn't like it; probably a babel bug?
-      Loop
-    ],
+    // TODO: babel is unhappy with any DoWhileLoop visitor
+    // DoWhileLoop: [
+    //   Loop
+    // ],
     WhileStatement: [
       Loop
     ],
