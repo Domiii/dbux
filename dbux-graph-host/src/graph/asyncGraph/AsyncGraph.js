@@ -1,5 +1,4 @@
 import NanoEvents from 'nanoevents';
-import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 import ThreadColumn from './ThreadColumn';
@@ -35,25 +34,21 @@ class AsyncGraph extends HostComponentEndpoint {
 
       if (app) {
         const contexts = app.dataProvider.collections.executionContexts.getAll().slice(1);
-
-        let lastThreadId, nodeCount = 0;
-        const nodesByThreadId = new Map();
+        const contextsIdByThreadId = new Map();
         for (let i = 0; i < contexts.length; ++i) {
-          const { threadId } = contexts[i];
-          if (threadId !== lastThreadId) {
-            if (!nodesByThreadId.get(threadId)) {
-              nodesByThreadId.set(threadId, []);
-            }
-            nodesByThreadId.get(threadId).push(nodeCount++);
+          const { contextId, threadId } = contexts[i];
+          if (!contextsIdByThreadId.get(threadId)) {
+            contextsIdByThreadId.set(threadId, []);
           }
+          contextsIdByThreadId.get(threadId).push(contextId);
         }
 
-        for (const threadId of nodesByThreadId.keys()) {
+        for (const threadId of contextsIdByThreadId.keys()) {
           this.children.createComponent(ThreadColumn, {
             applicationId: app.applicationId,
             threadId,
-            nodeIds: nodesByThreadId.get(threadId),
-            nodeCount,
+            nodeIds: contextsIdByThreadId.get(threadId),
+            nodeCount: contexts.length,
           });
         }
       }

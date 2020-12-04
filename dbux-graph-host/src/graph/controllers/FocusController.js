@@ -42,25 +42,26 @@ export default class FocusController extends HostComponentEndpoint {
 
   handleTraceSelected = async () => {
     try {
-      // since we can't use async function in event handler, we should wrap it with try catch to capture error
-      const trace = traceSelection.selected;
-      await this.waitForInit();
-      
-      let contextNode;
-      if (trace) {
-        const { applicationId, contextId } = trace;
-        contextNode = this.owner.getContextNodeById(applicationId, contextId);
-        if (this.syncMode && contextNode) {
-          // NOTE: since we do this right after init, need to check if contextNode have been built
-          await this.focus(contextNode);
+      if (!this.context.graphDocument.asyncGraphMode) {
+        const trace = traceSelection.selected;
+        await this.waitForInit();
+
+        let contextNode;
+        if (trace) {
+          const { applicationId, contextId } = trace;
+          contextNode = this.owner.getContextNodeById(applicationId, contextId);
+          if (this.syncMode && contextNode) {
+            // NOTE: since we do this right after init, need to check if contextNode have been built
+            await this.focus(contextNode);
+          }
         }
+        else {
+          this.clearFocus();
+        }
+
+        // always decorate ContextNode
+        this._selectContextNode(contextNode);
       }
-      else {
-        this.clearFocus();
-      }
-  
-      // always decorate ContextNode
-      this._selectContextNode(contextNode);
     }
     catch (err) {
       logError('Cannot focus on selected trace', err);
@@ -136,7 +137,7 @@ export default class FocusController extends HostComponentEndpoint {
   // ###########################################################################
   // own event
   // ###########################################################################
-  
+
   on(evtName, cb) {
     this._emitter.on(evtName, cb);
   }

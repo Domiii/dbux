@@ -15,7 +15,7 @@ class GraphDocument extends HostComponentEndpoint {
 
   init() {
     this._emitter = new NanoEvents();
-    this.state.asyncGraphMode = false;
+    this.state.asyncGraphMode = true;
 
     this.createOwnComponents();
   }
