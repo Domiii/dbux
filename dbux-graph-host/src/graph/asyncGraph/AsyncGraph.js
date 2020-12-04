@@ -30,6 +30,7 @@ class AsyncGraph extends HostComponentEndpoint {
 
   handleRefresh() {
     if (this.context.graphDocument.asyncGraphMode) {
+      this.children.getComponents(ThreadColumn).forEach(comp => comp.dispose());
       const app = allApplications.selection.getAll()?.[0];
 
       if (app) {

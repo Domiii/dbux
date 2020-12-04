@@ -30,7 +30,7 @@ class Consumer extends ConsumerBase {
       });
     }
     else {
-      sleep(next);
+      sleep(next, 300);
     }
   }
 }
@@ -54,7 +54,7 @@ class Producer extends ProducerBase {
       });
     }
     else {
-      sleep(next);
+      sleep(next, 300);
     }
   }
 }
@@ -63,7 +63,5 @@ class Producer extends ProducerBase {
 
 // start all producers + consumers
 new Producer().run();
-new Producer().run();
 
-new Consumer().run();
 new Consumer().run();

@@ -29,7 +29,7 @@ class Consumer extends ConsumerBase {
         then(() => this.finishConsume(idx));
     }
     else {
-      return sleep();
+      return sleep(300);
     }
   }
 }
@@ -51,7 +51,7 @@ class Producer extends ProducerBase {
         then(this.finishProduce);
     }
     else {
-      return sleep();
+      return sleep(300);
     }
   }
 }
@@ -60,7 +60,5 @@ class Producer extends ProducerBase {
 
 // start all producers + consumers
 new Producer().run();
-new Producer().run();
 
-new Consumer().run();
 new Consumer().run();

@@ -44,7 +44,6 @@ class ThreadColumn extends ClientComponentEndpoint {
   }
 
   handleClickAsyncNode(node) {
-    console.log(`clicked on asyndNode`, node);
     const { applicationId, contextId } = node.dataset;
     if (applicationId && contextId) {
       this.remote.gotoContext(applicationId, contextId);
