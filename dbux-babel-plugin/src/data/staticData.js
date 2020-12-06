@@ -8,7 +8,8 @@ export function buildDbuxInit(state) {
     contexts,
     traces,
     varAccess,
-    loops
+    loops,
+    runtimeCfg
   } = state;
   const {
     dbuxInit,
@@ -25,10 +26,12 @@ export function buildDbuxInit(state) {
     loops: loops._all
   };
 
-  const staticDataString = JSON.stringify(staticData, null, 4);
+  // const staticDataString = JSON.stringify(staticData, null, 4);
+  const staticDataString = JSON.stringify(staticData);
+  const runtimeCfgString = JSON.stringify(runtimeCfg);
 
   return buildSource(`
 function ${dbuxInit}(dbuxRuntime) {
-  return dbuxRuntime.initProgram(${staticDataString});
+  return dbuxRuntime.initProgram(${staticDataString}, ${runtimeCfgString});
 }`);
 }

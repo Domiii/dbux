@@ -75,14 +75,14 @@ function wrapProgram(path, state) {
 // visitor
 // ###########################################################################
 
-function enter(path, state) {
+function enter(buildCfg, path, state) {
   // const cfg = state.opts;
   if (state.onEnter) return; // make sure to not visit Program node more than once
   // console.warn('P', path.toString());
   // console.warn(state.file.code);
 
   // inject data + methods that we are going to use for instrumentation
-  injectDbuxState(path, state);
+  injectDbuxState(buildCfg, path, state);
 
   // before starting instrumentation, first get raw data from unmodified AST
   const traceVisitorObj = traceVisitors();
@@ -154,10 +154,11 @@ function exit(path, state) {
 // programVisitor
 // ########################################
 
-export default function programVisitor() {
+export default function programVisitor(buildCfg) {
   return {
     // (1) Run this plugin before all other plugins
-    enter, exit
+    enter: enter.bind(null, buildCfg),
+    exit
 
     // (2) Run this plugin after all other plugins (possibly on es5)
     // exit(...args) {
