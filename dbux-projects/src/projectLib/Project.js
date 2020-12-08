@@ -271,11 +271,16 @@ This may be solved by pressing \`clean project folder\` button.`);
 
     // set cwd
     let cwd = options?.cwd || projectPath;
+    const env = {
+      NODE_SKIP_PLATFORM_CHECK: 1,
+      ...options?.env
+    };
 
     // set cwd option
     options = defaultsDeep(options, {
       processOptions: {
-        cwd
+        cwd,
+        env
       }
     });
 

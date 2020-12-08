@@ -1,22 +1,23 @@
 /* eslint-disable no-console */
 
-const shouldInjectSelf = true;
+const shouldInjectSelf = false;
 
 /**
  * big play experiments: use dbux to debug itself
  */
 function tryInjectSelf(babelCfg) {
+  if (!shouldInjectSelf || process.env.NODE_ENV !== 'development') {
+    return;
+  }
+  
   let babelPluginCopy;
   try {
     // eslint-disable-next-line global-require
     babelPluginCopy = require('../../dbux-experiments/node_modules/@dbux/babel-plugin');
   }
   catch (err) {
-    console.error(`Could not load copy of babel plugin but shouldInject = true -`, err);
-  }
-
-  if (!shouldInjectSelf || !babelPluginCopy || process.env.NODE_ENV !== 'development') {
-    return;
+    err.message = `Could not load copy of babel plugin but shouldInjectSelf = true - ${err.message}`;
+    throw err;
   }
 
   let { plugins } = babelCfg;

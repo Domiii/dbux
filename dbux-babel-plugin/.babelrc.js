@@ -10,8 +10,7 @@ cfg = {
   ignore: ['node_modules'],
   "sourceMaps": "inline",
   "retainLines": true,
-  ...cfg,
-  plugins
+  ...cfg
 };
 
 module.exports = cfg;
