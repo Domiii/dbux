@@ -8,9 +8,14 @@ import traceCollection from './data/traceCollection';
 import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
+import promiseCollection from './data/promiseCollection';
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('RuntimeMonitor');
+const { log, debug: _debug, warn, error: logError } = newLogger('RuntimeMonitor');
+
+// const Verbose = true;
+const Verbose = false;
+const debug = (...args) => Verbose && _debug(...args);
 
 function _inheritsLoose(subClass, superClass) {
   if (superClass.prototype) {
@@ -333,6 +338,13 @@ export default class RuntimeMonitor {
     this._pop(resumeContextId);
   }
 
+  tryUpdateLastContextPromiseId(promiseId) {
+    const lastExecutionContext = executionContextCollection.getLast();
+    if (lastExecutionContext && !lastExecutionContext.promiseId) {
+      lastExecutionContext.promiseId = promiseId;
+    }
+  }
+
   // ###########################################################################
   // traces
   // ###########################################################################
@@ -495,6 +507,21 @@ export default class RuntimeMonitor {
   }
 
   popLoop() {
+  }
+
+  // ###########################################################################
+  // promises
+  // ###########################################################################
+
+  promise(promiseId, parentPromiseId = null) {
+    const currentContextId = this._runtime.peekCurrentContextId();
+    debug('promise', promiseId, parentPromiseId, currentContextId);
+    promiseCollection.promise(promiseId, parentPromiseId, currentContextId);
+  }
+
+  updatePromiseParent(promiseId, parentPromiseId) {
+    debug('update promise with parent', promiseId, parentPromiseId);
+    promiseCollection.updatePromiseParent(promiseId, parentPromiseId);
   }
 
   // ###########################################################################

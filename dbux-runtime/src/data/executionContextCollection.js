@@ -36,6 +36,10 @@ export class ExecutionContextCollection extends Collection {
     return programId;
   }
 
+  getLast() {
+    return this._all[this._all.length - 1];
+  }
+
   // ###########################################################################
   // Create
   // ###########################################################################
