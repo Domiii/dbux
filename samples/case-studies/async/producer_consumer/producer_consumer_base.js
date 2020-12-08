@@ -26,9 +26,9 @@ export class ConsumerBase {
     this.name = `[C${++nConsumers}]`;
   }
 
-  run() {
+  async run() {
     console.log(this.name, 'consumer start');
-    this.forever(this.consumeOrIdle);
+    await this.forever(this.consumeOrIdle);
   }
 
   canConsume() {
@@ -67,9 +67,9 @@ export class ProducerBase {
     this.name = `[P${++nProducers}]`;
   }
 
-  run() {
+  async run() {
     console.log(this.name, 'producer start');
-    this.forever(this.produceOrIdle);
+    await this.forever(this.produceOrIdle);
   }
 
   canProduce() {

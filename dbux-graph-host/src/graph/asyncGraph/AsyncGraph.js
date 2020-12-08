@@ -34,22 +34,24 @@ class AsyncGraph extends HostComponentEndpoint {
       const app = allApplications.selection.getAll()?.[0];
 
       if (app) {
-        const contexts = app.dataProvider.collections.executionContexts.getAll().slice(1);
-        const contextsIdByThreadId = new Map();
-        for (let i = 0; i < contexts.length; ++i) {
-          const { contextId, threadId } = contexts[i];
-          if (!contextsIdByThreadId.get(threadId)) {
-            contextsIdByThreadId.set(threadId, []);
+        const allContexts = app.dataProvider.collections.executionContexts.getAll().slice(1);
+        const nodesByThreadId = new Map();
+        for (let i = 0; i < allContexts.length; ++i) {
+          const context = allContexts[i];
+          const { staticContextId, threadId } = context;
+          const { displayName } = app.dataProvider.collections.staticContexts.getById(staticContextId);
+          if (!nodesByThreadId.get(threadId)) {
+            nodesByThreadId.set(threadId, []);
           }
-          contextsIdByThreadId.get(threadId).push(contextId);
+          nodesByThreadId.get(threadId).push({ context, displayName });
         }
 
-        for (const threadId of contextsIdByThreadId.keys()) {
+        for (const threadId of nodesByThreadId.keys()) {
           this.children.createComponent(ThreadColumn, {
             applicationId: app.applicationId,
             threadId,
-            nodeIds: contextsIdByThreadId.get(threadId),
-            nodeCount: contexts.length,
+            nodes: nodesByThreadId.get(threadId),
+            nodeCount: allContexts.length,
           });
         }
       }

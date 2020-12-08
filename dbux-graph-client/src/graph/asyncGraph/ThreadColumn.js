@@ -14,6 +14,7 @@ class ThreadColumn extends ClientComponentEndpoint {
   }
 
   setupEl() {
+    // delegate click event on async nodes
     this.el.addEventListener('click', event => {
       if (event.target.matches('div.async-node')) {
         this.handleClickAsyncNode(event.target, event);
@@ -22,21 +23,22 @@ class ThreadColumn extends ClientComponentEndpoint {
   }
 
   update() {
-    const { applicationId, threadId, nodeIds, nodeCount } = this.state;
+    const { applicationId, threadId, nodes, nodeCount } = this.state;
     this.els.title.innerHTML = `thread#${threadId}`;
     this.el.style.order = threadId;
-    this.els.children.innerHTML = this.buildChildrenHTML(nodeIds, nodeCount, applicationId);
+    this.els.children.innerHTML = this.buildChildrenHTML(nodes, nodeCount, applicationId);
   }
 
-  buildChildrenHTML(nodeIds, nodeCount, applicationId) {
+  buildChildrenHTML(nodes, nodeCount, applicationId) {
     let html = '';
-    const nodeIdSet = new Set(nodeIds);
+    const nodesById = new Map(nodes.map(node => [node.context.contextId, node]));
     for (let i = 1; i < nodeCount; ++i) {
-      if (nodeIdSet.has(i)) {
-        html += `<div class="async-node vertical-align-center horizontal-align-center" data-application-id="${applicationId}" data-context-id="${i}">#${i}</div>`;
+      if (nodesById.has(i)) {
+        const { displayName } = nodesById.get(i);
+        html += `<div class="async-node vertical-align-center" data-application-id="${applicationId}" data-context-id="${i}">${displayName}</div>`;
       }
       else {
-        html += `<div class="async-node vertical-align-center horizontal-align-center" data-application-id="" data-context-id=""></div>`;
+        html += `<div class="async-node vertical-align-center" data-application-id="" data-context-id=""></div>`;
       }
     }
 

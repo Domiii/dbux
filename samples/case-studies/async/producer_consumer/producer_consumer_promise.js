@@ -4,7 +4,15 @@ import { sleep } from '../asyncUtil';
 /**
  * @see https://github.com/caolan/async/blob/master/lib/forever.js#L37
  */
-function foreverPromise(task) {
+function foreverPromiseProducer(task) {
+  function next() {
+    return Promise.resolve(task()).
+      then(next);
+  }
+  return next();
+}
+
+function foreverPromiseConsumer(task) {
   function next() {
     return Promise.resolve(task()).
       then(next);
@@ -18,7 +26,7 @@ function foreverPromise(task) {
 // ###########################################################################
 
 class Consumer extends ConsumerBase {
-  forever = foreverPromise;
+  forever = foreverPromiseConsumer;
   sleep = sleep;
 
   consumeOrIdle = () => {
@@ -40,7 +48,7 @@ class Consumer extends ConsumerBase {
 // ###########################################################################
 
 class Producer extends ProducerBase {
-  forever = foreverPromise;
+  forever = foreverPromiseProducer;
   sleep = sleep;
 
   produceOrIdle = () => {
