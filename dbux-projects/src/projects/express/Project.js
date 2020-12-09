@@ -214,11 +214,11 @@ export default class ExpressProject extends Project {
         testRe: 'should throw when Content-Type is an array',
         testFilePaths: ['test/res.set.js']
       },
-      {
-        id: 21,
-        testRe: '',
-        // testFilePaths: ['']
-      },
+      // {
+      //   id: 21,
+      //   testRe: '',
+      //   // testFilePaths: ['']
+      // },
       {
         id: 22,
         testRe: [
