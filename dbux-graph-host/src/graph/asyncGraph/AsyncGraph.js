@@ -34,32 +34,77 @@ class AsyncGraph extends HostComponentEndpoint {
       const app = allApplications.selection.getAll()?.[0];
 
       if (app) {
-        const allContexts = app.dataProvider.collections.executionContexts.getAll().slice(1);
-        const nodesByThreadId = new Map();
-        for (let i = 0; i < allContexts.length; ++i) {
-          const context = allContexts[i];
-          const { staticContextId, threadId } = context;
-          const { displayName } = app.dataProvider.collections.staticContexts.getById(staticContextId);
-          if (!nodesByThreadId.get(threadId)) {
-            nodesByThreadId.set(threadId, []);
-          }
-          nodesByThreadId.get(threadId).push({ context, displayName });
-        }
-
-        for (const threadId of nodesByThreadId.keys()) {
-          this.children.createComponent(ThreadColumn, {
-            applicationId: app.applicationId,
-            threadId,
-            nodes: nodesByThreadId.get(threadId),
-            nodeCount: allContexts.length,
-          });
-        }
+        // this.buildDetailColumns(app);
+        this.buildChildrenColumns(app);
       }
 
       this._setApplicationState();
     }
     else {
       this.children.getComponents(ThreadColumn).forEach(comp => comp.dispose());
+    }
+  }
+
+  buildChildrenColumns(app) {
+    const allContexts = app.dataProvider.collections.executionContexts.getAll().slice(1);
+    const contextsByThreadId = new Map();
+    let maxRunId = 0;
+    for (let i = 0; i < allContexts.length; ++i) {
+      const context = allContexts[i];
+      const { runId, threadId } = context;
+      maxRunId = Math.max(runId, maxRunId);
+      if (!contextsByThreadId.get(threadId)) {
+        contextsByThreadId.set(threadId, []);
+      }
+      contextsByThreadId.get(threadId).push(context);
+    }
+
+    for (const threadId of contextsByThreadId.keys()) {
+      const contexts = contextsByThreadId.get(threadId);
+      const addedRunId = new Set();
+      const firstContexts = contexts.filter(context => {
+        if (!addedRunId.has(context.runId)) {
+          addedRunId.add(context.runId);
+          return true;
+        }
+        else {
+          return false;
+        }
+      });
+      this.children.createComponent(ThreadColumn, {
+        applicationId: app.applicationId,
+        threadId,
+        nodes: firstContexts.map(context => {
+          const { displayName } = app.dataProvider.collections.staticContexts.getById(context.staticContextId);
+          return { context, displayName };
+        }),
+        maxRunId
+      });
+    }
+  }
+
+  buildDetailColumns(app) {
+    const allContexts = app.dataProvider.collections.executionContexts.getAll().slice(1);
+    const contextsByThreadId = new Map();
+    for (let i = 0; i < allContexts.length; ++i) {
+      const context = allContexts[i];
+      const { threadId } = context;
+      if (!contextsByThreadId.get(threadId)) {
+        contextsByThreadId.set(threadId, []);
+      }
+      contextsByThreadId.get(threadId).push(context);
+    }
+
+    for (const threadId of contextsByThreadId.keys()) {
+      this.children.createComponent(ThreadColumn, {
+        applicationId: app.applicationId,
+        threadId,
+        nodes: contextsByThreadId.get(threadId).map(context => {
+          const { displayName } = app.dataProvider.collections.staticContexts.getById(context.staticContextId);
+          return { context, displayName };
+        }),
+        nodeCount: allContexts.length,
+      });
     }
   }
 

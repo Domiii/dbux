@@ -203,11 +203,22 @@ html, body {
 .async-node {
   border: 1px solid gray;
   height: 2em;
+  width: 2em;
+}
+
+.async-node:hover:not([data-application-id=""]) {
+  border: 1px solid white;
+  cursor: pointer;
+}
+
+.async-node-detail {
+  border: 1px solid gray;
+  height: 2em;
   width: 100%;
   padding: 0 5px;
 }
 
-.async-node:hover:not([data-application-id=""]) {
+.async-node-detail:hover:not([data-application-id=""]) {
   border: 1px solid white;
   cursor: pointer;
 }

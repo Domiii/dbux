@@ -16,29 +16,49 @@ class ThreadColumn extends ClientComponentEndpoint {
   setupEl() {
     // delegate click event on async nodes
     this.el.addEventListener('click', event => {
-      if (event.target.matches('div.async-node')) {
+      if (event.target.matches('div.async-node') || event.target.matches('div.async-node-detail')) {
         this.handleClickAsyncNode(event.target, event);
       }
     });
   }
 
   update() {
-    const { applicationId, threadId, nodes, nodeCount } = this.state;
+    const { threadId } = this.state;
     this.els.title.innerHTML = `thread#${threadId}`;
     this.el.style.order = threadId;
-    this.els.children.innerHTML = this.buildChildrenHTML(nodes, nodeCount, applicationId);
+    this.els.children.innerHTML = this.buildChildrenHTML();
+    // this.els.children.innerHTML = this.buildDetailChildrenHTML(nodes, nodeCount, applicationId);
   }
 
-  buildChildrenHTML(nodes, nodeCount, applicationId) {
+  buildChildrenHTML() {
+    const { nodes, maxRunId, applicationId } = this.state;
+    const firstRunId = nodes[0]?.context.runId;
+    let html = '';
+    const nodesById = new Map(nodes.map(node => [node.context.runId, node]));
+    for (let i = 1; i < maxRunId; ++i) {
+      if (nodesById.has(i)) {
+        const { context: { contextId } } = nodesById.get(i);
+        html += `<div class="async-node-detail vertical-align-center horizontal-align-center" data-application-id="${applicationId}" data-context-id="${contextId}">⬤</div>`;
+      }
+      else {
+        html += `<div class="async-node-detail vertical-align-center horizontal-align-center" data-application-id="" data-context-id="">${firstRunId < i ? '|' : ''}</div>`;
+      }
+    }
+
+    return html;
+  }
+
+  buildDetailChildrenHTML() {
+    const { nodes, nodeCount, applicationId } = this.state;
     let html = '';
     const nodesById = new Map(nodes.map(node => [node.context.contextId, node]));
     for (let i = 1; i < nodeCount; ++i) {
       if (nodesById.has(i)) {
         const { displayName } = nodesById.get(i);
-        html += `<div class="async-node vertical-align-center" data-application-id="${applicationId}" data-context-id="${i}">${displayName}</div>`;
+        html += `<div class="async-node-detail vertical-align-center" data-application-id="${applicationId}" data-context-id="${i}">${displayName}</div>`;
       }
       else {
-        html += `<div class="async-node vertical-align-center" data-application-id="" data-context-id=""></div>`;
+        html += `<div class="async-node-detail vertical-align-center" data-application-id="" data-context-id=""></div>`;
       }
     }
 
