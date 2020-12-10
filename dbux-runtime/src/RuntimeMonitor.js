@@ -9,6 +9,7 @@ import staticTraceCollection from './data/staticTraceCollection';
 import Runtime from './Runtime';
 import ProgramMonitor from './ProgramMonitor';
 import promiseCollection from './data/promiseCollection';
+import { ensurePromiseWrapped } from './wrapPromise';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('RuntimeMonitor');
@@ -269,7 +270,7 @@ export default class RuntimeMonitor {
   /**
    * Resume given stack
    */
-  postAwait(programId, awaitResult, awaitContextId, resumeInProgramStaticTraceId) {
+  postAwait(programId, awaitResult, awaitContextId, resumeInProgramStaticTraceId, awaitArg) {
     // sanity checks
     const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
@@ -287,6 +288,8 @@ export default class RuntimeMonitor {
       const staticContext = staticContextCollection.getById(staticContextId);
       const { resumeId: resumeStaticContextId } = staticContext;
       this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
+
+      debug(awaitArg, 'is awaited at context', awaitContextId);
     }
 
     return awaitResult;
@@ -370,6 +373,8 @@ export default class RuntimeMonitor {
     if (!this._ensureExecuting()) {
       return value;
     }
+
+    ensurePromiseWrapped(value);
 
     // if (value instanceof Function && !isClass(value)) {
     // if (value instanceof Function) {
@@ -515,12 +520,12 @@ export default class RuntimeMonitor {
 
   promise(promiseId, parentPromiseId = null) {
     const currentContextId = this._runtime.peekCurrentContextId();
-    debug('promise', promiseId, parentPromiseId, currentContextId);
+    // debug('promise', promiseId, parentPromiseId, currentContextId);
     promiseCollection.promise(promiseId, parentPromiseId, currentContextId);
   }
 
   updatePromiseParent(promiseId, parentPromiseId) {
-    debug('update promise with parent', promiseId, parentPromiseId);
+    // debug('update promise with parent', promiseId, parentPromiseId);
     promiseCollection.updatePromiseParent(promiseId, parentPromiseId);
   }
 

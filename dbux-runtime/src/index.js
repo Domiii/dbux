@@ -79,7 +79,7 @@ function handleShutdown() {
   //   });
   // }
 
-  wrapPromise();
+  wrapPromise(RuntimeMonitor.instance);
 })();
 
 export default dbux;

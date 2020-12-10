@@ -1,7 +1,5 @@
-/* eslint-disable prefer-promise-reject-errors */
 
 import { newLogger } from '@dbux/common/src/log/logger';
-import RuntimeMonitor from './RuntimeMonitor';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('wrapPromise');
@@ -11,15 +9,42 @@ const Verbose = false;
 
 const debug = (...args) => Verbose && _debug(...args);
 
-export default function wrapPromise() {
-  let promiseId = 1;
-  const promiseSet = new Set();
+let runtimeMonitor;
 
-  const originalPromise = globalThis.Promise;
+export const originalPromise = globalThis.Promise;
 
+let promiseId = 1;
+const promiseSet = new Set();
+
+export function getNewPromiseId() {
+  return promiseId++;
+}
+
+export function ensurePromiseWrapped(promise) {
+  if (promise instanceof originalPromise) {
+    if (promiseSet.has(promise)) {
+      if (promise.promiseId === undefined) {
+        logError('Exist a promise in promise set but without promise id.');
+        promise.promiseId = getNewPromiseId();
+      }
+    } 
+    else {
+      promiseSet.add(promise);
+      if (promise.promiseId) {
+        logError('Exist a promise with promise id but not in promise set.');
+      }
+      else {
+        promise.promiseId = getNewPromiseId();
+      }
+    }
+  }
+}
+
+export default function wrapPromise(_runtimeMonitor) {
+  runtimeMonitor = _runtimeMonitor;
   globalThis.Promise = class Promise extends originalPromise {
     constructor(executor) {
-      let thisPromiseId = promiseId++;
+      let thisPromiseId = getNewPromiseId();
 
       const wrapExecutor = (resolve, reject) => {
         const wrapResolve = (result) => {
@@ -31,11 +56,11 @@ export default function wrapPromise() {
 
         if (typeof executor === 'function') {
           executor?.(wrapResolve, wrapReject);
-          RuntimeMonitor.instance.tryUpdateLastContextPromiseId(thisPromiseId);
+          runtimeMonitor.tryUpdateLastContextPromiseId(thisPromiseId);
         }
       };
 
-      RuntimeMonitor.instance.promise(thisPromiseId);
+      runtimeMonitor.promise(thisPromiseId);
 
       super(wrapExecutor);
       this.promiseId = thisPromiseId;
@@ -47,20 +72,20 @@ export default function wrapPromise() {
         if (typeof successCb === 'function') {
           const returnValue = successCb(result);
 
-          RuntimeMonitor.instance.tryUpdateLastContextPromiseId(childPromise.promiseId);
+          runtimeMonitor.tryUpdateLastContextPromiseId(childPromise.promiseId);
           return returnValue;
         }
       }, (err) => {
         if (typeof failCb === 'function') {
           const returnValue = failCb(err);
 
-          RuntimeMonitor.instance.tryUpdateLastContextPromiseId(childPromise.promiseId);
+          runtimeMonitor.tryUpdateLastContextPromiseId(childPromise.promiseId);
           return returnValue;
         }
       });
 
       debug(`Promise ${this.promiseId} has child promise ${childPromise.promiseId} (then)`);
-      RuntimeMonitor.instance.updatePromiseParent(childPromise.promiseId, this.promiseId);
+      runtimeMonitor.updatePromiseParent(childPromise.promiseId, this.promiseId);
       return childPromise;
     }
 
@@ -71,7 +96,7 @@ export default function wrapPromise() {
     finally(cb) {
       let childPromise = super.finally(() => {
         cb();
-        RuntimeMonitor.instance.tryUpdateLastContextPromiseId(childPromise.promiseId);
+        runtimeMonitor.tryUpdateLastContextPromiseId(childPromise.promiseId);
       });
 
       debug(`Promise ${this.promiseId} has child promise ${childPromise.promiseId} (finally)`);
@@ -83,21 +108,21 @@ export default function wrapPromise() {
   originalPromise.prototype.then = function (successCb, failCb) {
     if (!promiseSet.has(this)) {
       promiseSet.add(this);
-      this.promiseId = promiseId++;
-      RuntimeMonitor.instance.promise(this.promiseId);
+      this.promiseId = getNewPromiseId();
+      runtimeMonitor.promise(this.promiseId);
     }
 
     let childPromise = originalPromiseThen.call(this, successCb, failCb);
     // TODO: maybe need to update promise's context id here
     promiseSet.add(childPromise);
     if (childPromise.promiseId === undefined) {
-      childPromise.promiseId = promiseId++;
-      RuntimeMonitor.instance.promise(childPromise.promiseId);
+      childPromise.promiseId = getNewPromiseId();
+      runtimeMonitor.promise(childPromise.promiseId);
     }
 
     debug(`Original promise ${this.promiseId} has child ${childPromise.promiseId} (then)`);
 
-    RuntimeMonitor.instance.updatePromiseParent(childPromise.promiseId, this.promiseId);
+    runtimeMonitor.updatePromiseParent(childPromise.promiseId, this.promiseId);
     return childPromise;
   };
 
@@ -110,21 +135,21 @@ export default function wrapPromise() {
   originalPromise.prototype.finally = function (cb) {
     if (!promiseSet.has(this)) {
       promiseSet.add(this);
-      this.promiseId = promiseId++;
-      RuntimeMonitor.instance.promise(this.promiseId);
+      this.promiseId = getNewPromiseId();
+      runtimeMonitor.promise(this.promiseId);
     }
 
     let childPromise = originalPromiseFinally.call(this, cb);
     // TODO: maybe need to update promise's context id here
     promiseSet.add(childPromise);
     if (childPromise.promiseId === undefined) {
-      childPromise.promiseId = promiseId++;
-      RuntimeMonitor.instance.promise(childPromise.promiseId);
+      childPromise.promiseId = getNewPromiseId();
+      runtimeMonitor.promise(childPromise.promiseId);
     }
 
     debug(`Original promise ${this.promiseId} has child ${childPromise.promiseId} (finally)`);
 
-    RuntimeMonitor.instance.updatePromiseParent(childPromise.promiseId, this.promiseId);
+    runtimeMonitor.updatePromiseParent(childPromise.promiseId, this.promiseId);
     return childPromise;
   };
 }
