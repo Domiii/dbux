@@ -1,13 +1,27 @@
+/**
+ * forever(by time)
+ */
+// const ProducerTime = 500;
+// const ProducerTimeVar = 100;
+
+// const ConsumerTime = 500;
+// const ConsumerTimeVar = 400;
+
+/**
+ * repeatN(by times of setImmediate), to make this deterministic
+ */
+const ProducerTimes = 2;
+const ProducerTimesVar = 1;
+
+const ConsumerTimes = 2;
+const ConsumerTimesVar = 1;
+
 const MaxItems = 5;
-const ProducerTime = 500;
-const ProducerTimeVar = 100;
-
-const ConsumerTime = 500;
-const ConsumerTimeVar = 400;
-
 const buffer = new Array(MaxItems);
 const reserved = new Array(MaxItems);
 
+const seedrandom = require('seedrandom');
+seedrandom('dbux', { global: true });
 
 let nProducers = 0;
 let nConsumers = 0;
@@ -20,15 +34,20 @@ let producing = 0;
 
 let lastItem = 0;
 
-
 export class ConsumerBase {
   constructor() {
     this.name = `[C${++nConsumers}]`;
+    this.tickCount = 0;
+  }
+
+  get tag() {
+    return `${this.name} [${this.tickCount}]`;
   }
 
   async run() {
-    console.log(this.name, 'consumer start');
-    await this.forever(this.consumeOrIdle);
+    console.log(this.tag, 'consumer start');
+    // await this.forever(this.consumeOrIdle);
+    await this.repeatN(this.consumeOrIdle);
   }
 
   canConsume() {
@@ -40,7 +59,7 @@ export class ConsumerBase {
 
     const idx = reserved.findIndex((r, i) => !r && !!buffer[i]);
     reserved[idx] = true;
-    console.log(this.name, `consuming item[${idx}] ${buffer[idx]}...`);
+    console.log(this.tag, `consuming item[${idx}] ${buffer[idx]}...`);
 
     return idx;
   }
@@ -53,11 +72,12 @@ export class ConsumerBase {
     --nItems;
     --consuming;
 
-    console.log(this.name, `consumed item[${idx}] ${item}, ${nItems} (-${consuming}) left`);
+    console.log(this.tag, `consumed item[${idx}] ${item}, ${nItems} (-${consuming}) left`);
   }
 
-  doWork(...args) {
-    return this.sleep(...args, (ConsumerTime - ConsumerTimeVar) + 2 * ConsumerTimeVar * Math.random());
+  doWork() {
+    // return this.sleep((ConsumerTime - ConsumerTimeVar) + 2 * ConsumerTimeVar * Math.random());
+    return this.sleep((ConsumerTimes - ConsumerTimesVar) + randomInt(2 * ConsumerTimesVar + 1));
   }
 }
 
@@ -65,11 +85,17 @@ export class ConsumerBase {
 export class ProducerBase {
   constructor() {
     this.name = `[P${++nProducers}]`;
+    this.tickCount = 0;
+  }
+
+  get tag() {
+    return `${this.name} [${this.tickCount}]`;
   }
 
   async run() {
-    console.log(this.name, 'producer start');
-    await this.forever(this.produceOrIdle);
+    console.log(this.tag, 'producer start');
+    // await this.forever(this.produceOrIdle);
+    await this.repeatN(this.produceOrIdle);
   }
 
   canProduce() {
@@ -78,7 +104,7 @@ export class ProducerBase {
 
   startProduce() {
     ++producing;
-    console.log(this.name, 'producing new item...');
+    console.log(this.tag, 'producing new item...');
   }
 
   finishProduce = () => {
@@ -88,10 +114,20 @@ export class ProducerBase {
     ++nItems;
     --producing;
 
-    console.log(this.name, `produced item[${idx}] ${item}, ${nItems} (-${consuming}) left`);
+    console.log(this.tag, `produced item[${idx}] ${item}, ${nItems} (-${consuming}) left`);
   }
 
-  doWork(...args) {
-    return this.sleep(...args, (ProducerTime - ProducerTimeVar) + 2 * ProducerTimeVar * Math.random());
+  doWork() {
+    // return this.sleep((ProducerTime - ProducerTimeVar) + 2 * ProducerTimeVar * Math.random());
+    return this.sleep((ProducerTimes - ProducerTimesVar) + randomInt(ProducerTimesVar * 2 + 1));
   }
+}
+
+/**
+ * Randomly generate integer in {0, 1, ..., n - 1}
+ */
+function randomInt(n) {
+  const x = Math.floor(Math.random() * n);
+  // console.debug(`[rand] ${n} ${x}`);
+  return x;
 }

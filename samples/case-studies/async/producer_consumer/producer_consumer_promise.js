@@ -1,33 +1,34 @@
 import { ConsumerBase, ProducerBase } from './producer_consumer_base';
-import { sleep } from '../asyncUtil';
+import { sleepImmediate, repeatNPromise } from 'asyncUtil';
 
 /**
  * @see https://github.com/caolan/async/blob/master/lib/forever.js#L37
  */
-function foreverPromiseProducer(task) {
-  function next() {
-    return Promise.resolve(task()).
-      then(next);
-  }
-  return next();
-}
+// function foreverPromiseProducer(task) {
+//   function next() {
+//     return Promise.resolve(task()).
+//       then(next);
+//   }
+//   return next();
+// }
 
-function foreverPromiseConsumer(task) {
-  function next() {
-    return Promise.resolve(task()).
-      then(next);
-  }
-  return next();
-}
-
+// function foreverPromiseConsumer(task) {
+//   function next() {
+//     return Promise.resolve(task()).
+//       then(next);
+//   }
+//   return next();
+// }
 
 // ###########################################################################
 // Consumer
 // ###########################################################################
 
 class Consumer extends ConsumerBase {
-  forever = foreverPromiseConsumer;
-  sleep = sleep;
+  // forever = foreverPromiseConsumer;
+  // sleep = sleep;
+  repeatN = repeatNPromise;
+  _sleep = sleepImmediate;
 
   consumeOrIdle = () => {
     if (this.canConsume()) {
@@ -37,8 +38,13 @@ class Consumer extends ConsumerBase {
         then(() => this.finishConsume(idx));
     }
     else {
-      return sleep(300);
+      return this.sleep(2);
     }
+  }
+
+  sleep = (tick) => {
+    // console.log(this.tag, `Consumer slept for ${tick} ticks`);
+    return this._sleep(tick).then(() => this.tickCount += tick);
   }
 }
 
@@ -48,8 +54,10 @@ class Consumer extends ConsumerBase {
 // ###########################################################################
 
 class Producer extends ProducerBase {
-  forever = foreverPromiseProducer;
-  sleep = sleep;
+  // forever = foreverPromiseProducer;
+  // sleep = sleep;
+  repeatN = repeatNPromise;
+  _sleep = sleepImmediate;
 
   produceOrIdle = () => {
     if (this.canProduce()) {
@@ -59,8 +67,13 @@ class Producer extends ProducerBase {
         then(this.finishProduce);
     }
     else {
-      return sleep(300);
+      return this.sleep(2);
     }
+  }
+
+  sleep = (tick) => {
+    // console.log(this.tag, `Producer slept for ${tick} ticks`);
+    return this._sleep(tick).then(() => this.tickCount += tick);
   }
 }
 

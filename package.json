@@ -39,6 +39,7 @@
 		"open": "^7.1.0",
 		"open-cli": "^6.0.0",
 		"sass-loader": "^8.0.2",
+		"seedrandom": "^3.0.5",
 		"source-map-loader": "^1.0.0",
 		"string-replace-loader": "2.3.0",
 		"style-loader": "^1.1.3",
@@ -108,7 +109,6 @@
 		"zz//": "# see: https://explainshell.com/explain?cmd=git+clean+-fdx",
 		"zzgit-clean-fdx": "git clean -fdx",
 		"zz-bash-warning": "echo 'WARNING: Make sure your shell is set to bash. Check https://bit.ly/3i2S8KE for how to set it up on Windows.'",
-		
 		"shapez-run": "yarn && cd gulp && yarn && yarn gulp",
 		"shapez-install": "git clone https://github.com/tobspr/shapez.io.git && cd shapez.io && git lfs pull && yarn && cd gulp && yarn && yarn gulp `# TODO: also install git-lfs + ffmpeg, see: https://github.com/tobspr/shapez.io/tree/master/.travis.yml`"
 	}

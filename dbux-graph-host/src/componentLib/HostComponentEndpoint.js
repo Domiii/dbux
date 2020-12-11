@@ -241,7 +241,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
         },
         (err) => {
           // error :(
-          this.logger.error('Error when updating client, check client for stack trace.');
+          this.logger.error('Error when updating client, check client for stack trace.', err);
         }
       ).
       finally(() => {

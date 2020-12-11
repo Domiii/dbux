@@ -1,19 +1,21 @@
 import { ConsumerBase, ProducerBase } from './producer_consumer_base';
-import { sleep } from '../asyncUtil';
+import { sleepImmediate, repeatNAsync } from 'asyncUtil';
 
-async function forever(cb) {
-  while (true) {
-    await cb();
-  }
-}
+// async function forever(cb) {
+//   while (true) {
+//     await cb();
+//   }
+// }
 
 // ###########################################################################
 // Consumer
 // ###########################################################################
 
 class Consumer extends ConsumerBase {
-  forever = forever;
-  sleep = sleep;
+  // forever = forever;
+  // sleep = sleep;
+  repeatN = repeatNAsync;
+  _sleep = sleepImmediate;
 
   consumeOrIdle = async () => {
     if (this.canConsume()) {
@@ -24,8 +26,14 @@ class Consumer extends ConsumerBase {
       this.finishConsume(idx);
     }
     else {
-      await sleep(300);
+      await this.sleep(2);
     }
+  }
+
+  sleep = async (tick) => {
+    // console.log(this.tag, `Consumer slept for ${tick} ticks`);
+    await this._sleep(tick);
+    this.tickCount += tick;
   }
 }
 
@@ -35,8 +43,10 @@ class Consumer extends ConsumerBase {
 // ###########################################################################
 
 class Producer extends ProducerBase {
-  forever = forever;
-  sleep = sleep;
+  // forever = forever;
+  // sleep = sleep;
+  repeatN = repeatNAsync;
+  _sleep = sleepImmediate;
 
   produceOrIdle = async () => {
     if (this.canProduce()) {
@@ -47,8 +57,14 @@ class Producer extends ProducerBase {
       this.finishProduce();
     }
     else {
-      await sleep(300);
+      await this.sleep(2);
     }
+  }
+
+  sleep = async (tick) => {
+    // console.log(this.tag, `Producer slept for ${tick} ticks`);
+    await this._sleep(tick);
+    this.tickCount += tick;
   }
 }
 
