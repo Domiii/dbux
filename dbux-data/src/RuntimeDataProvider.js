@@ -184,6 +184,11 @@ class TraceCollection extends Collection {
     const traceData = { ...trace };
     delete traceData._valueString;
     delete traceData._valueStringShort;
+
+    // these properties will be resolved on addData, don't need to store them
+    delete traceData.applicationId;
+    delete traceData.codeChunkId;
+    delete traceData.staticTraceIndex;
     return traceData;
   }
 
