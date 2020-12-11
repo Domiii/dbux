@@ -9,7 +9,6 @@ class AsyncGraph extends HostComponentEndpoint {
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
 
-    this.controllers.createComponent('PopperManager');
     this.controllers.createComponent('ZoomBar');
     this.controllers.createComponent('PopperController');
 

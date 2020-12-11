@@ -2,6 +2,7 @@ import isString from 'lodash/isString';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { createPopper } from '@popperjs/core';
 import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
+import { compileHtmlElement } from '../../util/domUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PopperController');
@@ -15,7 +16,13 @@ export default class PopperManager extends ClientComponentEndpoint {
    */
   init() {
     this.popper = null;
-    this.tooltip = this.owner.els.toolTip;
+    this.tooltip = compileHtmlElement(`
+      <div data-el="toolTip" id="tooltip" role="tooltip">
+        <span></span>
+        <div id="arrow" data-popper-arrow></div>
+      </div>`
+    );
+    this.owner.el.appendChild(this.tooltip);
 
     // regist update function if owner controls panzoom
     if (this.owner.panzoom) {

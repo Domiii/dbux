@@ -60,7 +60,6 @@ class GraphRoot extends HostComponentEndpoint {
     this.controllers.createComponent('GraphNode', {
       mode: GraphNodeMode.ExpandChildren
     });
-    this.controllers.createComponent('PopperManager');
     this.controllers.createComponent('ContextNodeManager');
     this.controllers.createComponent('ZoomBar');
     this.controllers.createComponent('HiddenNodeManager');

@@ -20,6 +20,10 @@ class GraphDocument extends ClientComponentEndpoint {
       document.body.classList.remove('theme-mode-dark');
     }
   }
+
+  get popperManager() {
+    return this.controllers.getComponent('PopperManager');
+  }
 }
 
 export default GraphDocument;

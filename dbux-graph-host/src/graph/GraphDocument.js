@@ -4,6 +4,7 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
 import Toolbar from './Toolbar';
 import AsyncGraph from './asyncGraph/AsyncGraph';
+import PopperManager from './controllers/PopperManager';
 
 class GraphDocument extends HostComponentEndpoint {
   toolbar;
@@ -21,6 +22,7 @@ class GraphDocument extends HostComponentEndpoint {
   }
 
   createOwnComponents() {
+    this.controllers.createComponent(PopperManager);
     this.controllers.createComponent(HighlightManager);
     this.asyncGraph = this.children.createComponent(AsyncGraph);
     this.graphRoot = this.children.createComponent(GraphRoot);
