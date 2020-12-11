@@ -37,8 +37,11 @@ class ThreadColumn extends ClientComponentEndpoint {
     const nodesById = new Map(nodes.map(node => [node.context.runId, node]));
     for (let i = 1; i <= maxRunId; ++i) {
       if (nodesById.has(i)) {
-        const { context: { contextId } } = nodesById.get(i);
-        html += `<div class="async-node-detail vertical-align-center horizontal-align-center" data-application-id="${applicationId}" data-context-id="${contextId}">⬤</div>`;
+        const { displayName, context: { contextId } } = nodesById.get(i);
+        const detailLabel = `<div class="async-dot-label">⬤</div><div class="async-detail-label">${displayName}</div>`;
+        html += `<div class="async-node-detail vertical-align-center horizontal-align-center" data-application-id="${applicationId}" data-context-id="${contextId}">
+            ${detailLabel}
+          </div>`;
       }
       else {
         html += `<div class="async-node-detail vertical-align-center horizontal-align-center" data-application-id="" data-context-id="">${firstRunId < i ? '|' : ''}</div>`;

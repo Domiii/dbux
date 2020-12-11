@@ -22,7 +22,8 @@ class Toolbar extends ClientComponentEndpoint {
           <button title="Thin mode" data-el="thinModeBtn" class="no-horizontal-padding btn btn-info" href="#"></button>
           <button title="Search for contexts by name" data-el="searchContextsBtn" class="btn btn-info" href="#">🔍</button>
           <button title="Search for traces by name" data-el="searchTracesBtn" class="btn btn-info" href="#">🔍+</button>
-          <button title="Async Call Graph Mode" data-el="asyncGraphModeBtn" class="btn btn-info" href="#">async</button>
+          <button title="Toggle Async Graph Mode" data-el="asyncGraphModeBtn" class="btn btn-info" href="#">async</button>
+          <button title="Toggle Async Detail" data-el="asyncDetailModeBtn" class="btn btn-info" href="#">detail</button>
         </div>
         <div data-el="moreMenu" class="dropdown">
           <button data-el="moreMenuBtn" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -80,7 +81,8 @@ class Toolbar extends ClientComponentEndpoint {
       hideNewMode,
       searchTermContexts,
       searchTermTraces,
-      asyncGraphMode
+      asyncGraphMode,
+      asyncDetailMode
     } = this.state;
 
     const themeModeName = ThemeMode.getName(this.context.themeMode).toLowerCase();
@@ -110,6 +112,9 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.asyncGraphModeBtn, {
       active: !!asyncGraphMode
     });
+    decorateClasses(this.els.asyncDetailModeBtn, {
+      active: !!asyncDetailMode
+    });
     decorateClasses(this.els.searchContextsBtn, {
       active: !!searchTermContexts
     });
@@ -129,7 +134,8 @@ class Toolbar extends ClientComponentEndpoint {
       locMode,
       callMode,
       valueMode,
-      thinMode
+      thinMode,
+      asyncDetailMode
     } = this.state;
 
     const docEl = this.context.graphDocument.el;
@@ -140,7 +146,8 @@ class Toolbar extends ClientComponentEndpoint {
     });
 
     decorateAttr(docEl, {
-      'data-call-mode': callMode && 1 || 0
+      'data-call-mode': callMode && 1 || 0,
+      'data-async-detail-mode': asyncDetailMode && 1 || 0
     });
   }
 
@@ -235,6 +242,15 @@ class Toolbar extends ClientComponentEndpoint {
         evt.preventDefault();
         const mode = !this.state.asyncGraphMode;
         this.remote.setAsyncGraphMode(mode);
+      },
+      focus(evt) { evt.target.blur(); }
+    },
+    asyncDetailModeBtn: {
+      click(evt) {
+        evt.preventDefault();
+        this.setState({
+          asyncDetailMode: !this.state.asyncDetailMode
+        });
       },
       focus(evt) { evt.target.blur(); }
     },

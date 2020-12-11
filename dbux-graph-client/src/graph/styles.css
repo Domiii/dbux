@@ -223,6 +223,14 @@ html, body {
   cursor: pointer;
 }
 
+[data-async-detail-mode="0"] div.async-detail-label {
+  display: none !important;
+}
+
+[data-async-detail-mode="1"] div.async-dot-label {
+  display: none !important;
+}
+
 /** ###########################################################################
  * graph decorations
  * ############################################################################ */

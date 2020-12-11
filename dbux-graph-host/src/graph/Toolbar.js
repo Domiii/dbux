@@ -10,6 +10,7 @@ class Toolbar extends HostComponentEndpoint {
     this.state.thinMode = false;
     this.state.hideNewMode = this.hiddenNodeManager.hideNewMode;
     this.state.asyncGraphMode = this.context.graphDocument.asyncGraphMode;
+    this.state.asyncDetailMode = false;
 
     // listen on mode changed event
     this.hiddenNodeManager.onStateChanged(({ hideBefore, hideAfter }) => {
@@ -76,8 +77,6 @@ class Toolbar extends HostComponentEndpoint {
       const contextNodeManager = this.context.graphDocument.graphRoot.controllers.getComponent('ContextNodeManager');
       contextNodeManager.highlightBySearchTermTraces(searchTermTraces);
     },
-
-
   }
 }
 
