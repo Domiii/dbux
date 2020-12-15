@@ -341,11 +341,13 @@ export default class RuntimeMonitor {
     this._pop(resumeContextId);
   }
 
-  tryUpdateLastContextPromiseId(promiseId) {
+  getLastExecutionContextId() {
     const lastExecutionContext = executionContextCollection.getLast();
-    if (lastExecutionContext && !lastExecutionContext.promiseId) {
-      lastExecutionContext.promiseId = promiseId;
-    }
+    return lastExecutionContext;
+  }
+
+  updateLastContextPromiseId(contextId, promiseId) {
+    executionContextCollection.getById(contextId).promiseId = promiseId;
   }
 
   // ###########################################################################
@@ -520,12 +522,12 @@ export default class RuntimeMonitor {
 
   promise(promiseId, parentPromiseId = null) {
     const currentContextId = this._runtime.peekCurrentContextId();
-    // debug('promise', promiseId, parentPromiseId, currentContextId);
+    debug('create new promise', promiseId, parentPromiseId, currentContextId);
     promiseCollection.promise(promiseId, parentPromiseId, currentContextId);
   }
 
   updatePromiseParent(promiseId, parentPromiseId) {
-    // debug('update promise with parent', promiseId, parentPromiseId);
+    debug('update promise with parent promise id', promiseId, parentPromiseId);
     promiseCollection.updatePromiseParent(promiseId, parentPromiseId);
   }
 

@@ -55,8 +55,14 @@ export default function wrapPromise(_runtimeMonitor) {
         };
 
         if (typeof executor === 'function') {
+          const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+          
           executor?.(wrapResolve, wrapReject);
-          runtimeMonitor.tryUpdateLastContextPromiseId(thisPromiseId);
+
+          const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+          if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
+            runtimeMonitor.updateExecutorPromiseId(beforeExecutorLastContextId + 1, thisPromiseId);
+          }
         }
       };
 
@@ -70,16 +76,28 @@ export default function wrapPromise(_runtimeMonitor) {
     then(successCb, failCb) {
       let childPromise = super.then((result) => {
         if (typeof successCb === 'function') {
+          const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+
           const returnValue = successCb(result);
 
-          runtimeMonitor.tryUpdateLastContextPromiseId(childPromise.promiseId);
+          const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+          if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
+            runtimeMonitor.updateExecutorPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
+          }
+
           return returnValue;
         }
       }, (err) => {
         if (typeof failCb === 'function') {
+          const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+          
           const returnValue = failCb(err);
 
-          runtimeMonitor.tryUpdateLastContextPromiseId(childPromise.promiseId);
+          const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+          if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
+            runtimeMonitor.updateExecutorPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
+          }
+
           return returnValue;
         }
       });
@@ -95,8 +113,14 @@ export default function wrapPromise(_runtimeMonitor) {
 
     finally(cb) {
       let childPromise = super.finally(() => {
+        const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+          
         cb();
-        runtimeMonitor.tryUpdateLastContextPromiseId(childPromise.promiseId);
+
+        const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+        if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
+          runtimeMonitor.updateExecutorPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
+        }
       });
 
       debug(`Promise ${this.promiseId} has child promise ${childPromise.promiseId} (finally)`);
