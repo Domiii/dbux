@@ -126,6 +126,7 @@ class StaticTraceCollection extends Collection {
 class ExecutionContextCollection extends Collection {
   constructor(dp) {
     super('executionContexts', dp);
+    this.currentThreadCount = 0;
   }
 
   add(entries) {
@@ -149,6 +150,37 @@ class ExecutionContextCollection extends Collection {
     catch (err) {
       logError('resolveLastTraceOfContext failed', err); //contexts);
     }
+  }
+
+  /**
+   * @param {ExecutionContext[]} contexts 
+   */
+  postAdd(contexts) {
+    for (let context of contexts) {
+      const { promiseId, parentContextId } = context;
+      if (promiseId) {
+        const promiseCollection = this.dp.collections.promises;
+        const belongPromise = promiseCollection.getById(promiseId);
+        if (belongPromise.parentPromiseId) {
+          const promiseParentCallbackContextId = promiseCollection.getById(belongPromise.parentPromiseId).callbackContextId;
+          context.threadId = this.getById(promiseParentCallbackContextId).threadId;
+        }
+        else {
+          context.threadId = this.getNewThreadId();
+        }
+        this.dp.collections.promises.registerPromiseCallbackContextId(promiseId, context.contextId);
+      }
+      else if (parentContextId) {
+        context.threadId = this.getById(parentContextId).threadId;
+      }
+      else {
+        context.threadId = this.getNewThreadId();
+      }
+    }
+  }
+
+  getNewThreadId() {
+    return ++this.currentThreadCount;
   }
 
   resolveLastTraceOfContext() {
@@ -353,6 +385,10 @@ class TraceCollection extends Collection {
 class PromiseCollection extends Collection {
   constructor(dp) {
     super('promises', dp);
+  }
+
+  registerPromiseCallbackContextId(promiseId, contextId) {
+    this.getAll()[promiseId].callbackContextId = contextId;
   }
 }
 

@@ -80,4 +80,9 @@ export default class ExecutionContext {
    * @type {Number}
    */
   promiseId;
+
+  /**
+   * @type {Number}
+   */
+  threadId;
 }

@@ -1,5 +1,7 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 
+/** @typedef {import('./DataProviderBase').default} DataProvider */
+
 /**
  * @template {T}
  */

@@ -11,7 +11,7 @@ class PromiseCollection extends Collection {
     const promise = pools.promiseData.allocate();
     promise.promiseId = promiseId;
     promise.parentPromiseId = parentPromiseId;
-    promise.contextId = contextId;
+    promise.parentContextId = contextId;
 
     // console.log(promiseId, parentPromiseId, contextId);
 
@@ -28,7 +28,7 @@ class PromiseCollection extends Collection {
 
   updatePromiseContext(promiseId, contextId) {
     this.ensurePromiseExist(promiseId);
-    this._all[promiseId].contextId = contextId;
+    this._all[promiseId].parentContextId = contextId;
   }
 
   ensurePromiseExist(promiseId) {

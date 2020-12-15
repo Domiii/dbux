@@ -3,7 +3,8 @@ export default class PromiseData {
   /**
    * @type {Number}
    */
-  contextId;
+  // TODO: maybe change to save parentTraceId
+  parentContextId;
   /**
    * @type {Number}
    */
@@ -12,4 +13,8 @@ export default class PromiseData {
    * @type {Number}
    */
   parentPromiseId;
+  /**
+   * @type {Number}
+   */
+  callbackContextId;
 }
