@@ -1,5 +1,6 @@
 import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 import ThreadColumn from './ThreadColumn';
 
@@ -74,7 +75,7 @@ class AsyncGraph extends HostComponentEndpoint {
         applicationId: app.applicationId,
         threadId,
         nodes: firstContexts.map(context => {
-          const { displayName } = app.dataProvider.collections.staticContexts.getById(context.staticContextId);
+          const displayName = makeContextLabel(context, app);
           return { context, displayName };
         }),
         maxRunId
@@ -99,7 +100,7 @@ class AsyncGraph extends HostComponentEndpoint {
         applicationId: app.applicationId,
         threadId,
         nodes: contextsByThreadId.get(threadId).map(context => {
-          const { displayName } = app.dataProvider.collections.staticContexts.getById(context.staticContextId);
+          const displayName = makeContextLabel(context, app);
           return { context, displayName };
         }),
         nodeCount: allContexts.length,

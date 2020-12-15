@@ -1,5 +1,5 @@
 import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
-import { compileHtmlElement } from '../../util/domUtil';
+import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
 
 class ThreadColumn extends ClientComponentEndpoint {
   createEl() {
@@ -16,8 +16,9 @@ class ThreadColumn extends ClientComponentEndpoint {
   setupEl() {
     // delegate click event on async nodes
     this.el.addEventListener('click', event => {
-      if (event.target.matches('div.async-node') || event.target.matches('div.async-node-detail')) {
-        this.handleClickAsyncNode(event.target, event);
+      const asyncNode = getMatchParent('div.async-node, div.async-node-detail', event.target, this.el);
+      if (asyncNode) {
+        this.handleClickAsyncNode(asyncNode, event);
       }
     });
   }

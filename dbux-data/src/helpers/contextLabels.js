@@ -1,15 +1,27 @@
-export function makeContextLabel(context, application) {
-  const {
-    // contextType: type,
-    staticContextId
-  } = context;
 
-  const staticContext = application.dataProvider.collections.staticContexts.getById(staticContextId);
-  
-  // const {
-  //   type
-  // } = staticContext;
-  // const prefix = type === StaticContextType.Function ? 'ƒ ' : '';
+import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 
-  return `${staticContext.displayName}`;
+/** @typedef {import('@dbux/common/src/core/data/ExecutionContext').default} ExecutionContext */
+/** @typedef {import('../applications/Application').default} Application */
+
+/**
+ * @param {ExecutionContext} context 
+ * @param {Application} app 
+ * @return {string}
+ */
+export function makeContextLabel(context, app) {
+  const { contextType: type } = context;
+
+  const dp = app.dataProvider;
+
+  if (ExecutionContextType.is.Resume(type)) {
+    const { parentContextId } = context;
+    const parentContext = dp.collections.executionContexts.getById(parentContextId);
+    return `[res] ${makeContextLabel(parentContext, app)}`;
+  }
+  else {
+    const { staticContextId } = context;
+    const staticContext = dp.collections.staticContexts.getById(staticContextId);
+    return `${staticContext.displayName}`;
+  }
 }
