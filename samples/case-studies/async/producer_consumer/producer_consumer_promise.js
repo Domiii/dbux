@@ -28,7 +28,8 @@ class Consumer extends ConsumerBase {
   // forever = foreverPromiseConsumer;
   // sleep = sleep;
   repeatN = repeatNPromise;
-  _sleep = sleepImmediate;
+  // _sleep = sleepImmediate;
+  sleep = sleepImmediate;
 
   consumeOrIdle = () => {
     if (this.canConsume()) {
@@ -42,10 +43,10 @@ class Consumer extends ConsumerBase {
     }
   }
 
-  sleep = (tick) => {
-    // console.log(this.tag, `Consumer slept for ${tick} ticks`);
-    return this._sleep(tick).then(() => this.tickCount += tick);
-  }
+  // sleep = (tick) => {
+  //   // console.log(this.tag, `Consumer slept for ${tick} ticks`);
+  //   return this._sleep(tick).then(() => this.tickCount += tick);
+  // }
 }
 
 
@@ -57,7 +58,8 @@ class Producer extends ProducerBase {
   // forever = foreverPromiseProducer;
   // sleep = sleep;
   repeatN = repeatNPromise;
-  _sleep = sleepImmediate;
+  // _sleep = sleepImmediate;
+  sleep = sleepImmediate;
 
   produceOrIdle = () => {
     if (this.canProduce()) {
@@ -71,10 +73,10 @@ class Producer extends ProducerBase {
     }
   }
 
-  sleep = (tick) => {
-    // console.log(this.tag, `Producer slept for ${tick} ticks`);
-    return this._sleep(tick).then(() => this.tickCount += tick);
-  }
+  // sleep = (tick) => {
+  //   // console.log(this.tag, `Producer slept for ${tick} ticks`);
+  //   return this._sleep(tick).then(() => this.tickCount += tick);
+  // }
 }
 
 // main
