@@ -1,6 +1,7 @@
 import getGlobal from '@dbux/common/src/getGlobal';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
+import wrapPromise from './wrapPromise';
 
 const dbux = {
   _r: RuntimeMonitor.instance,
@@ -77,6 +78,8 @@ function handleShutdown() {
   //     process.on(eventType, _onBeforeShutdown);
   //   });
   // }
+
+  wrapPromise(RuntimeMonitor.instance);
 })();
 
 export default dbux;

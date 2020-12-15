@@ -2,6 +2,7 @@ import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
 import ValueRef from '@dbux/common/src/core/data/ValueRef';
 import Loop from '@dbux/common/src/core/data/loops/Loop';
+import PromiseData from '@dbux/common/src/core/data/PromiseData';
 
 /**
  * TODO: proper object pooling
@@ -32,7 +33,13 @@ const pools = {
     allocate() {
       return new Loop();
     }
-  }
+  },
+
+  promiseData: {
+    allocate() {
+      return new PromiseData();
+    },
+  },
 };
 
 export default pools;

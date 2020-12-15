@@ -17,12 +17,13 @@ const postAwaitTemplate = template(
   `%%dbux%%.postAwait(
   %%awaitNode%%,
   %%awaitContextId%%,
-  %%resumeTraceId%%
+  %%resumeTraceId%%,
+  %%awaitArg%%,
 )
 `);
 
 const wrapAwaitExpressionTemplate = template(`
-(%%dbux%%.wrapAwait(%%argument%%, %%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%, %%preTraceId%%)))
+(%%dbux%%.wrapAwait(%%awaitArg%% = %%argument%%, %%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%, %%preTraceId%%)))
 `);
 
 
@@ -68,12 +69,15 @@ export function awaitVisitEnter(path, state) {
   const preTraceId = state.traces.addTrace(argumentPath, TraceType.Await, true);
   const resumeTraceId = state.traces.addTrace(path, TraceType.Resume, true);
 
+  const awaitArg = path.scope.generateDeclaredUidIdentifier('awaitArg');
+
   const expressionReplacement = wrapAwaitExpressionTemplate({
     dbux,
     staticId: t.numericLiteral(staticId),
     awaitContextId,
     preTraceId: t.numericLiteral(preTraceId),
-    argument
+    argument,
+    awaitArg,
   });
   argumentPath.replaceWith(expressionReplacement);
 
@@ -81,7 +85,8 @@ export function awaitVisitEnter(path, state) {
     dbux,
     awaitNode: path.node,
     awaitContextId,
-    resumeTraceId: t.numericLiteral(resumeTraceId)
+    resumeTraceId: t.numericLiteral(resumeTraceId),
+    awaitArg,
   });
   path.replaceWith(awaitReplacement);
 
