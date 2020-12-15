@@ -75,4 +75,9 @@ export default class ExecutionContext {
   //   // this.scheduledChildren = this.scheduledChildren || [];
   //   // this.scheduledChildren.push(scheduledContextId);
   // }
+
+  /**
+   * @type {Number}
+   */
+  promiseId;
 }
