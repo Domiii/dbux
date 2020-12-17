@@ -1,4 +1,8 @@
-const p = new Promise(r => {r()});
+/**
+ * @file The Promise p is both `awaited` and `thened`, 
+ */
+
+const p = new Promise(r => { r() });
 
 async function f() {
   await p;
@@ -6,4 +10,4 @@ async function f() {
 
 f();
 
-p.then(() => {})
+p.then(() => { })
