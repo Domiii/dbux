@@ -65,6 +65,14 @@ export class DebugTDNode extends TraceDetailNode {
         description: (valueRef?.valueId + '') || 0
       }
     ];
+    const promiseData = dataProvider.collections.promises.getById(context.promiseId);
+    const promiseNode = [
+      'promise', 
+      promiseData,
+      { 
+        description: (promiseData?.valueId + '') || 0
+      }
+    ];
 
     const children = [
       ...this.treeNodeProvider.buildDetailNodes(this.trace, this, [
@@ -76,7 +84,8 @@ export class DebugTDNode extends TraceDetailNode {
         [`context`, context],
         ['staticTrace', omit(staticTrace, 'loc')],
         ['staticContext', omit(staticContext, 'loc')],
-        valueNode
+        valueNode,
+        promiseNode
       )
     ];
 
