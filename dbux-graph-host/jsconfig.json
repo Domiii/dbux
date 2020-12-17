@@ -5,7 +5,9 @@
 		"checkJs": false,  /* Typecheck .js files. */
 		"baseUrl": "./",
 		"paths": {
-			// "@/*": [ "src/*" ]
+      "@dbux/common/*": ["../dbux-common/*"],
+      "@dbux/data/*": ["../dbux-data/*"],
+      "@dbux/graph-common/*": ["../dbux-graph-common/*"]
 		}
 	},
 	"include": [
