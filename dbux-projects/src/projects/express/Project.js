@@ -113,7 +113,10 @@ export default class ExpressProject extends Project {
         ],
         testFilePaths: ['test/req.subdomains.js'],
         bugLocations: [
-          
+          {
+            fileName: 'lib/request.js',
+            line: 457
+          }
         ]
       },
       {
