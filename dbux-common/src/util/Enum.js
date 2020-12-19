@@ -31,8 +31,14 @@ export default class Enum {
 
   _makeIs() {
     return new Proxy({}, {
+      has: (target, name) => {
+        let cb = target[name];
+        return cb !== undefined;
+      },
+
       get: (target, name) => {
         let cb = target[name];
+        if (name === Symbol.toStringTag) { return this.names.toString(); }
         if (cb === undefined) {
           // first time access of `is[name]`
           const value = this.valueFromForce(name);
@@ -42,6 +48,10 @@ export default class Enum {
       },
 
       ownKeys: () => {
+        return this.names;
+      },
+
+      enumerate: function () {
         return this.names;
       }
     });

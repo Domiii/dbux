@@ -2,7 +2,7 @@ const { tryInjectSelf } = require('../config/build.config');
 
 let cfg = require('../config/babel-presets-node');
 
-console.warn('ENV', process.env.NODE_ENV);
+// console.warn('ENV', process.env.NODE_ENV);
 
 tryInjectSelf(cfg);
 

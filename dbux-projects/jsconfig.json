@@ -5,7 +5,9 @@
 		"checkJs": false,  /* Typecheck .js files. */
 		"baseUrl": "./",
 		"paths": {
-			// "@/*": [ "src/*" ]
+			"@dbux/cli/*": ["../dbux-cli/*"],
+      "@dbux/common/*": ["../dbux-common/*"],
+      "@dbux/data/*": ["../dbux-data/*"]
 		},
 		"lib": [
 			"es6"

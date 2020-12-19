@@ -6,7 +6,11 @@
 		"checkJs": false, /* Typecheck .js files. */
 		"lib": [
 			"es6"
-		]
+    ],
+    "paths": {
+      "@dbux/common/*": ["../dbux-common/*"],
+      "@dbux/runtime/*": ["../dbux-runtime/*"]
+    }
 	},
 	"exclude": [
 		"node_modules"
