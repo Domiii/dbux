@@ -111,7 +111,10 @@ export default class ExpressProject extends Project {
           'should work with IPv[46] address',
           'should return an array with the whole IPv[46]',
         ],
-        testFilePaths: ['test/req.subdomains.js']
+        testFilePaths: ['test/req.subdomains.js'],
+        bugLocations: [
+          
+        ]
       },
       {
         // https://github.com/BugsJS/express/commit/796657f6f67bd8f8dfae8d25a2d353c8d657da50

@@ -213,6 +213,14 @@ export default class PracticeSession {
    */
   maybeUpdateBugStatusByResult(result) {
     const newStatus = this.manager.getResultStatus(result);
+    
+    this.updateBugStatus(newStatus);
+  }
+
+  /**
+   * @param {BugStatus} newStatus 
+   */
+  updateBugStatus(newStatus) {
     const bugProgress = this.bdp.getBugProgressByBug(this.bug);
     if (bugProgress.status < newStatus) {
       const update = { status: newStatus };

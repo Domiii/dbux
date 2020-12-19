@@ -197,6 +197,10 @@
         "title": "Dbux Dev: Reset Practice Progress"
       },
       {
+        "command": "dbux.resetPracticeLog",
+        "title": "Dbux Dev: Reset Practice Log"
+      },
+      {
         "command": "dbux.loadPracticeLogFile",
         "title": "Dbux Dev:Load Practice Log"
       },

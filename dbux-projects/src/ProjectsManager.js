@@ -173,7 +173,7 @@ export default class ProjectsManager {
 
     if (!bugProgress) {
       const stopwatchEnabled = await this.askForStopwatch();
-      bugProgress = this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
+      /* bugProgress = */ this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
 
       this._resetPracticeSession(bug);
 
@@ -404,7 +404,7 @@ export default class ProjectsManager {
   }
 
   async switchToBug(bug) {
-    const previousBug = this.getPreviousBug();
+    const previousBug = this.getCurrentBug();
 
     // if some bug are already activated, save the changes
     if (bug !== previousBug) {
@@ -473,17 +473,22 @@ export default class ProjectsManager {
       dbuxArgs: dbuxEnabled ? '--verbose=1' : '--dontInjectDbux',
     };
 
-    const result = await this.runner.testBug(bug, cfg);
+    const result = this._lastTestRunResult = await this.runner.testBug(bug, cfg);
 
-    const patch = await bug.project.getPatchString();
-    const apps = allApplications.selection.getAll();
-    this.pdp.addTestRun(bug, result?.code, patch, apps);
-    this.pdp.addApplications(apps);
-    this.bdp.updateBugProgress(bug, { patch });
+    await this.saveTestRunResult(bug, result);
 
     result?.code && await bug.openInEditor();
 
     return result;
+  }
+
+  async saveTestRunResult(bug, result) {
+    const patch = await bug.project.getPatchString();
+    const apps = allApplications.selection.getAll();
+
+    this.pdp.addTestRun(bug, result?.code, patch, apps);
+    this.pdp.addApplications(apps);
+    this.bdp.updateBugProgress(bug, { patch });
   }
 
   async stopRunner() {
@@ -545,8 +550,22 @@ export default class ProjectsManager {
     await this.stopPractice();
     await this.savePracticeSession();
     await this.bdp.reset();
-    // await this.pdp.clear();
     await this.updateActivatingBug(undefined);
+  }
+
+  async resetLog() {
+    await this.pdp.clear();
+    
+    if (this._lastTestRunResult) {
+      debug(`resetPracticeLog: resetting log only`);
+      this.pdp.writeHeader();
+      const bug = this.getCurrentBug();
+      await this.saveTestRunResult(bug, this._lastTestRunResult);
+    }
+    else {
+      debug(`resetPracticeLog: no previous results found. Resetting entire progress.`);
+      await this.resetProgress();
+    }
   }
 
   // ###########################################################################
@@ -623,7 +642,7 @@ export default class ProjectsManager {
   /**
    * @return {Bug}
    */
-  getPreviousBug() {
+  getCurrentBug() {
     return this.getBugByKey(activatedBugKeyName);
   }
 
@@ -831,6 +850,8 @@ export default class ProjectsManager {
   /**
    * @param {Object} result 
    * @param {number} result.code
+   * 
+   * @return {BugStatus}
    */
   getResultStatus(result) {
     return (!result || result.code) ? BugStatus.Attempted : BugStatus.Solved;
