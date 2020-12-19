@@ -545,6 +545,7 @@ export default class ProjectsManager {
     await this.stopPractice();
     await this.savePracticeSession();
     await this.bdp.reset();
+    // await this.pdp.clear();
     await this.updateActivatingBug(undefined);
   }
 

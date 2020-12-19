@@ -336,7 +336,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
   }
 
   // ###########################################################################
-  // Data saving
+  // Data load + save
   // ###########################################################################
 
   /**
@@ -365,6 +365,12 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addIndex(new VisibleActionGroupByStepIdIndex());
     this.addIndex(new StepsByGroupIndex());
     this.addIndex(new StepsByTypeIndex());
+  }
+
+  async clear() {
+    this.reset();
+    fs.unlinkSync(this.session.logFilePath);
+    this._notifyData({});
   }
 
   /**

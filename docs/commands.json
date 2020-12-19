@@ -22,7 +22,7 @@
   {
     "command": "dbux.deleteUserEvents",
     "title": "Dev: Delete all user events",
-    "description": ""
+    "description": "(Feature still in development. Won't work.)"
   },
   {
     "command": "dbux.doActivate",
