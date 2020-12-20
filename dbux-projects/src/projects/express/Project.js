@@ -124,7 +124,13 @@ export default class ExpressProject extends Project {
         id: 5,
         label: 'Windows file paths and slashes',
         testRe: 'utils\\.isAbsolute\\(\\) should support windows',
-        testFilePaths: ['test/utils.js']
+        testFilePaths: ['test/utils.js'],
+        bugLocations: [
+          {
+            fileName: 'lib/utils.js',
+            line: 70
+          }
+        ]
       },
       // {
       //   // NOTE: passing by default
@@ -134,11 +140,18 @@ export default class ExpressProject extends Project {
       //   testFilePaths: ['test/app.head.js'],
       //   require: []
       // },
-      {
-        id: 7,
-        testRe: '.sendFile.* (should invoke the callback without error when HEAD|should invoke the callback without error when 304)',
-        // testFilePaths: ['test/res.sendFile.js']
-      },
+      // {
+      //   // NOTE: more programming than debugging problem
+      //   id: 7,
+      //   testRe: '.sendFile.* (should invoke the callback without error when HEAD|should invoke the callback without error when 304)',
+      //   // testFilePaths: ['test/res.sendFile.js'],
+      //   bugLocations: [
+      //     {
+      //       fileName: 'lib/.js',
+      //       line: 
+      //     }
+      //   ]
+      // },
       {
         id: 8,
         label: 'Router.use: empty path',
@@ -156,7 +169,13 @@ export default class ExpressProject extends Project {
         id: 9,
         label: 'empty mountpath',
         testRe: 'should return the mounted path',
-        testFilePaths: ['test/app.js']
+        testFilePaths: ['test/app.js'],
+        bugLocations: [
+          {
+            fileName: 'lib/application.js',
+            line: 171
+          }
+        ]
       },
       // {
       //   // https://github.com/BugsJS/express/commit/690be5b929559ab4590f45cc031c5c2609dd0a0f
@@ -177,26 +196,51 @@ export default class ExpressProject extends Project {
           }))
         ]
       },
-      {
-        id: 12,
-        label: 'param indexes',
-        testRe: [
-          'should keep correct parameter indexes',
-          // 'should work following a partial capture group'
-        ],
-        testFilePaths: ['test/app.router.js']
-      },
-      {
-        id: 13,
-        label: 'param override (loki)',
-        testRe: 'should support altering req.params across routes',
-        testFilePaths: ['test/app.param.js']
-      },
+      // {
+      //   // NOTE: param indexes
+      //   id: 12,
+      //   label: 'param indexes',
+      //   testRe: [
+      //     'should keep correct parameter indexes',
+      //     // 'should work following a partial capture group'
+      //   ],
+      //   testFilePaths: ['test/app.router.js'],
+      //   bugLocations: [
+      //     {
+      //       fileName: 'lib/.js',
+      //       line: 
+      //     }
+      //   ]
+      // },
+      // {
+      //   // NOTE: requires too many changes
+      //   id: 13,
+      //   label: 'param override (loki)',
+      //   testRe: 'should support altering req.params across routes',
+      //   testFilePaths: ['test/app.param.js'],
+      //   bugLocations: [
+      //     {
+      //       fileName: 'lib/.js',
+      //       line: 
+      //     }
+      //   ]
+      // },
       {
         id: 14,
         label: 'empty url in request',
         testRe: 'should handle blank URL',
-        testFilePaths: ['test/Router.js']
+        testFilePaths: ['test/Router.js'],
+        bugLocations: [
+          ...[190, 286, 288].map(line => ({
+            fileName: 'lib/router/index.js',
+            line
+          })
+          ),
+          ...[98, 102].map(line => ({
+            fileName: 'lib/router/layer.js',
+            line
+          }))
+        ]
       },
       {
         id: 16,
@@ -204,8 +248,13 @@ export default class ExpressProject extends Project {
         testRe: [
           'should include the redirect type'
         ],
-        testFilePaths: ['test/res.redirect.js']
+        testFilePaths: ['test/res.redirect.js'],
+        bugLocations: [798, 799, 801].map(line => ({
+          fileName: 'lib/response.js',
+          line
+        }))
       },
+      // TODO: 17
       {
         id: 18,
         label: 'param treats next("route") as error',
@@ -213,14 +262,25 @@ export default class ExpressProject extends Project {
           'should not call when values differ on error',
           'should call when values differ when using "next"'
         ],
-        testFilePaths: ['test/app.param.js']
+        testFilePaths: ['test/app.param.js'],
+        bugLocations: [
+          {
+            fileName: 'lib/router/index.js',
+            line: 360
+          }
+        ]
       },
       {
         id: 20,
         testRe: 'should throw when Content-Type is an array',
-        testFilePaths: ['test/res.set.js']
+        testFilePaths: ['test/res.set.js'],
+        bugLocations: [720].map(line => ({
+          fileName: 'lib/reponse.js',
+          line
+        }))
       },
       // {
+      //   // NOTE: more programming than debugging problem
       //   id: 21,
       //   testRe: '',
       //   // testFilePaths: ['']
@@ -233,7 +293,13 @@ export default class ExpressProject extends Project {
         ],
         testFilePaths: ['test/req.host.js'],
         mochaArgs: '--globals setImmediate,clearImmediate',
-        require: [] // has no test.env
+        require: [], // has no test.env
+        bugLocations: [
+          {
+            fileName: 'lib/request.js',
+            line: 479
+          }
+        ]
       },
       {
         // https://github.com/BugsJS/express/commit/6a0221553b49938da5d18d4afcbd5e29ebb363ee
@@ -242,20 +308,32 @@ export default class ExpressProject extends Project {
           'should support array of paths with middleware array',
           'should accept.* array.* of middleware.*'
         ],
-        testFilePaths: ['test/app.use.js']
+        testFilePaths: ['test/app.use.js'],
+        bugLocations: [161, 162].map(line => ({
+          fileName: 'lib/application.js',
+          line
+        }))
       },
       {
         id: 24,
         testRe: 'when error occurs in respone handler should pass error to callback',
         testFilePaths: ['test/app.options.js'],
-        require: []
+        require: [],
+        bugLocations: [156, 157].map(line => ({
+          fileName: 'lib/router/index.js',
+          line
+        }))
       },
       {
         id: 25,
         testRe: 'should ignore object callback parameter with jsonp',
         testFilePaths: ['test/res.jsonp.js'],
         mochaArgs: '--globals setImmediate,clearImmediate',
-        require: []
+        require: [],
+        bugLocations: [241, 242].map(line => ({
+          fileName: 'lib/response.js',
+          line
+        }))
       },
       {
         id: 26,
@@ -268,11 +346,18 @@ export default class ExpressProject extends Project {
           }
         ]
       },
-      {
-        id: 27,
-        testRe: 'should defer all the param routes',
-        testFilePaths: ['test/app.param.js']
-      }
+      // {
+      //   // NOTE: more programming than debugging
+      //   id: 27,
+      //   testRe: 'should defer all the param routes',
+      //   testFilePaths: ['test/app.param.js'],
+      //   bugLocations: [
+      //     {
+      //       fileName: 'lib/.js',
+      //       line: 
+      //     }
+      //   ]
+      // }
     ];
 
     return bugs.
