@@ -32,43 +32,6 @@ export default class ExpressProject extends Project {
           }
         ]
       },
-      {
-        // NOTE: shutdown delayed for 2 mins
-        id: 15,
-        label: 'default Content-Type',
-        testRe: [
-          'with canonicalized mime types should default the Content-Type'
-          // 'should set the correct  charset for the Content[-]Type',
-          // 'should default the Content-Type'
-        ],
-        testFilePaths: ['test/res.format.js'],
-        // TODO: need to also add some pseudo test file, to keep the process running a little longer, so data gets sent out.
-        // keepAlive: false,
-        require: [],
-        bugLocations: [
-          {
-            fileName: 'lib/response.js',
-            line: 471
-          },
-          ...[90, 91, 92].map(line => ({
-            fileName: 'lib/utils.js',
-            line
-          }))
-        ]
-      },
-
-      {
-        id: 19,
-        label: 'req.params should support array of paths',
-        testRe: ['should work in array of paths'],
-        testFilePaths: ['test/app.router.js'],
-        bugLocations: [
-          ...[99, 119, 121, 122].map(line => ({
-            fileName: 'lib/router/layer.js',
-            line
-          }))
-        ]
-      },
 
       {
         // https://github.com/BugsJS/express/releases/tag/Bug-2-test
@@ -243,6 +206,30 @@ export default class ExpressProject extends Project {
         ]
       },
       {
+        // NOTE: shutdown delayed for 2 mins
+        id: 15,
+        label: 'default Content-Type',
+        testRe: [
+          'with canonicalized mime types should default the Content-Type'
+          // 'should set the correct  charset for the Content[-]Type',
+          // 'should default the Content-Type'
+        ],
+        testFilePaths: ['test/res.format.js'],
+        // TODO: need to also add some pseudo test file, to keep the process running a little longer, so data gets sent out.
+        // keepAlive: false,
+        require: [],
+        bugLocations: [
+          {
+            fileName: 'lib/response.js',
+            line: 471
+          },
+          ...[90, 91, 92].map(line => ({
+            fileName: 'lib/utils.js',
+            line
+          }))
+        ]
+      },
+      {
         id: 16,
         label: 'redirect with custom status code',
         testRe: [
@@ -268,6 +255,19 @@ export default class ExpressProject extends Project {
             fileName: 'lib/router/index.js',
             line: 360
           }
+        ]
+      },
+
+      {
+        id: 19,
+        label: 'req.params should support array of paths',
+        testRe: ['should work in array of paths'],
+        testFilePaths: ['test/app.router.js'],
+        bugLocations: [
+          ...[99, 119, 121, 122].map(line => ({
+            fileName: 'lib/router/layer.js',
+            line
+          }))
         ]
       },
       {

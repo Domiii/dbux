@@ -563,8 +563,8 @@ export default class ProjectsManager {
       await this.saveTestRunResult(bug, this._lastTestRunResult);
     }
     else {
-      debug(`resetPracticeLog: no previous results found. Resetting entire progress.`);
-      await this.resetProgress();
+      logError(`resetPracticeLog: no previous results found.`);
+      // await this.resetProgress();
     }
   }
 
