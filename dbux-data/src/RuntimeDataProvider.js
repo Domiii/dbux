@@ -10,6 +10,7 @@ import ValueTypeCategory, { ValuePruneState } from '@dbux/common/src/core/consta
 import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
 import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
 import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 
 import Collection from './Collection';
 
@@ -128,7 +129,7 @@ class StaticTraceCollection extends Collection {
 class ExecutionContextCollection extends Collection {
   constructor(dp) {
     super('executionContexts', dp);
-    this.currentThreadCount = 0;
+    this.currentThreadCount = 1;
   }
 
   add(entries) {
@@ -201,6 +202,11 @@ class ExecutionContextCollection extends Collection {
     }
     if (parentContextId) {
       context.threadId = this.getById(parentContextId).threadId;
+      return;
+    }
+    if (StaticContextType.is.Program(staticContext.type)) {
+      // hackfix: currently we want all program context be in thread#1
+      context.threadId = 1;
       return;
     }
     context.threadId = this.getNewThreadId();
