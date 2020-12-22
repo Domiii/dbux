@@ -1,78 +1,33 @@
-import { ConsumerBase, ProducerBase } from './producer_consumer_base';
-import { sleepImmediate, repeatNAsync } from 'asyncUtil';
+import { hasSpace, reserveSpace, produce, append, hasItems, reserveItem, consume, remove, idle, N } from './producer_consumer_base';
 
-// async function forever(cb) {
-//   while (true) {
-//     await cb();
-//   }
-// }
-
-// ###########################################################################
-// Consumer
-// ###########################################################################
-
-class Consumer extends ConsumerBase {
-  // forever = forever;
-  // sleep = sleep;
-  repeatN = repeatNAsync;
-  // _sleep = sleepImmediate;
-  sleep = sleepImmediate;
-
-  consumeOrIdle = async () => {
-    if (this.canConsume()) {
-      const idx = this.startConsume();
-
-      await this.doWork();
-
-      this.finishConsume(idx);
+async function producer() {
+  let n = N;
+  while (--n) {
+    if (hasSpace()) {
+      reserveSpace();
+      await produce();
+      append();
     }
     else {
-      await this.sleep(2);
+      await idle();
     }
   }
-
-  // sleep = async (tick) => {
-  //   // console.log(this.tag, `Consumer slept for ${tick} ticks`);
-  //   await this._sleep(tick);
-  //   this.tickCount += tick;
-  // }
 }
 
-
-// ###########################################################################
-// Producer
-// ###########################################################################
-
-class Producer extends ProducerBase {
-  // forever = forever;
-  // sleep = sleep;
-  repeatN = repeatNAsync;
-  // _sleep = sleepImmediate;
-  sleep = sleepImmediate;
-
-  produceOrIdle = async () => {
-    if (this.canProduce()) {
-      this.startProduce();
-
-      await this.doWork();
-
-      this.finishProduce();
+async function consumer() {
+  let n = N;
+  while (--n) {
+    if (hasItems()) {
+      reserveItem();
+      await consume();
+      remove();
     }
     else {
-      await this.sleep(2);
+      await idle();
     }
   }
-
-  // sleep = async (tick) => {
-  //   // console.log(this.tag, `Producer slept for ${tick} ticks`);
-  //   await this._sleep(tick);
-  //   this.tickCount += tick;
-  // }
 }
 
-// main
-
-// start all producers + consumers
-new Producer().run();
-
-new Consumer().run();
+// main: start all producers + consumers
+producer();
+consumer();
