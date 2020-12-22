@@ -5,7 +5,10 @@
 		"checkJs": false,  /* Typecheck .js files. */
 		"lib": [
 			"es6"
-		]
+    ],
+    "paths": {
+      "@dbux/common/*": ["../dbux-common/*"],
+    }
 	},
 	"exclude": [
 		"node_modules"
