@@ -1,6 +1,17 @@
 
+import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 import pools from './pools';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug: _debug, warn, error: logError } = newLogger('dbux-runtime promiseCollection');
+
+/** @typedef {import('./RuntimeMonitor').default} RuntimeMonitor */
+
+// const Verbose = true;
+const Verbose = false;
+
+const debug = (...args) => Verbose && _debug(...args);
 
 class PromiseCollection extends Collection {
   constructor() {
@@ -33,6 +44,7 @@ class PromiseCollection extends Collection {
 
   ensurePromiseExist(promiseId) {
     while (this._all.length <= promiseId) {
+      logError(`shouldn't be here`);
       this.promise(this._all.length);
     }
   }

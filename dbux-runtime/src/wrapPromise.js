@@ -4,20 +4,25 @@ import { newLogger } from '@dbux/common/src/log/logger';
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('wrapPromise');
 
+/** @typedef {import('./RuntimeMonitor').default} RuntimeMonitor */
+
 // const Verbose = true;
 const Verbose = false;
 
 const debug = (...args) => Verbose && _debug(...args);
 
+/**
+ * @type {RuntimeMonitor}
+ */
 let runtimeMonitor;
 
 export const originalPromise = globalThis.Promise;
 
-let promiseId = 1;
+let promiseId = 0;
 const promiseSet = new Set();
 
 export function getNewPromiseId() {
-  return promiseId++;
+  return ++promiseId;
 }
 
 export function ensurePromiseWrapped(promise) {
@@ -26,6 +31,7 @@ export function ensurePromiseWrapped(promise) {
       if (promise.promiseId === undefined) {
         logError('Exist a promise in promise set but without promise id.');
         promise.promiseId = getNewPromiseId();
+        runtimeMonitor.promise(promise.promiseId);
       }
     } 
     else {
@@ -35,6 +41,7 @@ export function ensurePromiseWrapped(promise) {
       }
       else {
         promise.promiseId = getNewPromiseId();
+        runtimeMonitor.promise(promise.promiseId);
       }
     }
   }
@@ -61,7 +68,7 @@ export default function wrapPromise(_runtimeMonitor) {
 
           const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
           if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
-            runtimeMonitor.updateExecutorPromiseId(beforeExecutorLastContextId + 1, thisPromiseId);
+            runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, thisPromiseId);
           }
         }
       };
@@ -81,8 +88,9 @@ export default function wrapPromise(_runtimeMonitor) {
           const returnValue = successCb(result);
 
           const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+          debug('before after @ then', beforeExecutorLastContextId, afterExecutorLastContextId);
           if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
-            runtimeMonitor.updateExecutorPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
+            runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
           }
 
           return returnValue;
@@ -95,7 +103,7 @@ export default function wrapPromise(_runtimeMonitor) {
 
           const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
           if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
-            runtimeMonitor.updateExecutorPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
+            runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
           }
 
           return returnValue;
@@ -119,7 +127,7 @@ export default function wrapPromise(_runtimeMonitor) {
 
         const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
         if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
-          runtimeMonitor.updateExecutorPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
+          runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
         }
       });
 
@@ -136,8 +144,37 @@ export default function wrapPromise(_runtimeMonitor) {
       runtimeMonitor.promise(this.promiseId);
     }
 
-    let childPromise = originalPromiseThen.call(this, successCb, failCb);
-    // TODO: maybe need to update promise's context id here
+    let childPromise = originalPromiseThen.call(this, (...args) => {
+      if (typeof successCb !== 'function') {
+        return successCb;
+      }
+      const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+
+      const r = successCb(...args);
+
+      const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+      if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
+        runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
+      }
+
+      return r;
+    }, (...args) => {
+      if (typeof failCb !== 'function') {
+        return failCb;
+      }
+
+      const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+
+      const r = failCb(...args);
+
+      const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+      if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
+        runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
+      }
+
+      return r;
+    });
+
     promiseSet.add(childPromise);
     if (childPromise.promiseId === undefined) {
       childPromise.promiseId = getNewPromiseId();
@@ -152,7 +189,7 @@ export default function wrapPromise(_runtimeMonitor) {
 
   const originalPromiseCatch = originalPromise.prototype.catch;
   originalPromise.prototype.catch = function (failCb) {
-    return this.then(null, failCb);
+    return originalPromiseCatch.call(this, failCb);
   };
 
   const originalPromiseFinally = originalPromise.prototype.finally;
@@ -163,8 +200,22 @@ export default function wrapPromise(_runtimeMonitor) {
       runtimeMonitor.promise(this.promiseId);
     }
 
-    let childPromise = originalPromiseFinally.call(this, cb);
-    // TODO: maybe need to update promise's context id here
+    let childPromise = originalPromiseFinally.call(this, (...args) => {
+      if (typeof cb !== 'function') {
+        return cb;
+      }
+      const beforeExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+
+      const r = cb(...args);
+
+      const afterExecutorLastContextId = runtimeMonitor.getLastExecutionContextId();
+      if (beforeExecutorLastContextId !== afterExecutorLastContextId) {
+        runtimeMonitor.updateExecutionContextPromiseId(beforeExecutorLastContextId + 1, childPromise.promiseId);
+      }
+
+      return r;
+    });
+
     promiseSet.add(childPromise);
     if (childPromise.promiseId === undefined) {
       childPromise.promiseId = getNewPromiseId();

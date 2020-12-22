@@ -142,4 +142,8 @@ export default class Stack {
   markResumed() {
     --this._waitCount;
   }
+
+  length() {
+    return this._stack.length;
+  }
 }

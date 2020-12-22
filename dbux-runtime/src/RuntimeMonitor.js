@@ -104,6 +104,8 @@ export default class RuntimeMonitor {
     const { contextId } = context;
     this._runtime.push(contextId, isInterruptable);
 
+    debug('push immediate, stack size', this._runtime._executingStack.length());
+
     // trace
     this._trace(programId, contextId, runId, inProgramStaticTraceId);
 
@@ -130,6 +132,8 @@ export default class RuntimeMonitor {
 
     // pop from stack
     this._pop(contextId);
+
+    debug('pop immediate, stack size', this._runtime?._executingStack?.length?.() || 0);
 
     // trace
     const runId = this._runtime.getCurrentRunId();
@@ -343,11 +347,16 @@ export default class RuntimeMonitor {
 
   getLastExecutionContextId() {
     const lastExecutionContext = executionContextCollection.getLast();
-    return lastExecutionContext;
+    return lastExecutionContext.contextId;
   }
 
-  updateLastContextPromiseId(contextId, promiseId) {
+  updateExecutionContextPromiseId(contextId, promiseId) {
+    debug('update execution context promise id', contextId, promiseId);
     executionContextCollection.getById(contextId).promiseId = promiseId;
+  }
+
+  isValidContext() {
+    return this._runtime._executingStack?.length?.();
   }
 
   // ###########################################################################

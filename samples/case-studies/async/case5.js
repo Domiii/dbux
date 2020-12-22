@@ -24,14 +24,14 @@ function delayG() {
   return delay(g, 200);
 }
 
-// main();
+main();
 
 /**
  * case 2: We expect `g` to be the parent of `h`
  */
 
 function main2() {
-  return (new Promise((r) => setTimeout(r, 200))).then(g).then(h)
+  return (new Promise((r) => setTimeout(r, 200))).then(g).then(h);
 }
 
 main2();

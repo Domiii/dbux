@@ -18,6 +18,8 @@ import DataProviderBase from './DataProviderBase';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
 
+/** @typedef {import('../../dbux-common/src/core/data/PromiseData').default} PromiseData */
+
 function errorWrapMethod(obj, methodName, ...args) {
   try {
     // build dynamic call expression tree
@@ -157,26 +159,51 @@ class ExecutionContextCollection extends Collection {
    */
   postAdd(contexts) {
     for (let context of contexts) {
-      const { promiseId, parentContextId } = context;
-      if (promiseId) {
-        const promiseCollection = this.dp.collections.promises;
-        const belongPromise = promiseCollection.getById(promiseId);
-        if (belongPromise.parentPromiseId) {
-          const promiseParentCallbackContextId = promiseCollection.getById(belongPromise.parentPromiseId).callbackContextId;
+      this.resolveContextThreadId(context);
+    }
+  }
+
+  /**
+   * @param {ExecutionContext} contexts 
+   */
+  resolveContextThreadId(context) {
+    const { staticContextId, promiseId, parentContextId } = context;
+    const staticContext = this.dp.collections.staticContexts.getById(staticContextId);
+    if (staticContext.isInterruptable) {
+      context.threadId = this.getNewThreadId();
+      return;
+    }
+
+    if (promiseId) {
+      this.dp.collections.promises.registerPromiseCallbackContextId(promiseId, context.contextId);
+
+      const promiseCollection = this.dp.collections.promises;
+      const belongPromise = promiseCollection.getById(promiseId);
+      if (belongPromise.parentPromiseId) {
+        const parentPromise = promiseCollection.getById(belongPromise.parentPromiseId);
+        const { 
+          callbackContextId: promiseParentCallbackContextId,
+          parentContextId: promiseParentParentContextId,
+        } = parentPromise;
+        if (promiseParentCallbackContextId) {
           context.threadId = this.getById(promiseParentCallbackContextId).threadId;
+          return;
         }
-        else {
-          context.threadId = this.getNewThreadId();
+        if (promiseParentParentContextId) {
+          context.threadId = this.getById(promiseParentParentContextId).threadId;
+          return;
         }
-        this.dp.collections.promises.registerPromiseCallbackContextId(promiseId, context.contextId);
-      }
-      else if (parentContextId) {
-        context.threadId = this.getById(parentContextId).threadId;
       }
       else {
         context.threadId = this.getNewThreadId();
+        return;
       }
     }
+    if (parentContextId) {
+      context.threadId = this.getById(parentContextId).threadId;
+      return;
+    }
+    context.threadId = this.getNewThreadId();
   }
 
   getNewThreadId() {
