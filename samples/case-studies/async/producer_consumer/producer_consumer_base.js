@@ -77,15 +77,10 @@ export function consume() {
   return sleepImmediate((ConsumerTime - ConsumerTimeVar) + randomInt(2 * ConsumerTimeVar + 1));
 }
 
-export function remove(idx) {
-  const item = buffer.splice(0, 1);
+export function remove() {
+  const item = buffer.shift();
   --nItems;
   --consuming;
 
   console.log(`consumed item ${item}, ${nItems} (-${consuming}) left`);
-}
-
-const oriLog = console.log;
-console.log = (...args) => {
-  oriLog(...args, buffer);
 }
