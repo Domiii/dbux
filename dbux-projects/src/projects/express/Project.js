@@ -275,7 +275,7 @@ export default class ExpressProject extends Project {
         testRe: 'should throw when Content-Type is an array',
         testFilePaths: ['test/res.set.js'],
         bugLocations: [720].map(line => ({
-          fileName: 'lib/reponse.js',
+          fileName: 'lib/response.js',
           line
         }))
       },
