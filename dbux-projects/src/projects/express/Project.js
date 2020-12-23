@@ -309,7 +309,7 @@ export default class ExpressProject extends Project {
           'should accept.* array.* of middleware.*'
         ],
         testFilePaths: ['test/app.use.js'],
-        bugLocations: [161, 162].map(line => ({
+        bugLocations: [160, 161, 162].map(line => ({
           fileName: 'lib/application.js',
           line
         }))
