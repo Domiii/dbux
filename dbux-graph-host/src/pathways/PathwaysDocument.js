@@ -49,7 +49,7 @@ class PathwaysDocument extends HostComponentEndpoint {
       this.addDisposable(
         this.userActionsListener =
         // pathwaysDataProvider.onAnyData(this.view.refresh)
-        pdp.onData('userActions', this.view.refresh)
+        pdp.onAnyData(this.view.refresh)
       );
 
       this.view.reset();

@@ -112,7 +112,7 @@ export default class PracticeSession {
     }
   }
 
-  tagBugTrace(trace) {
+  tagBugTrace(trace, cursorFile, cursorLine) {
     if (this.isFinished()) {
       const alertsMsg = `Practice session aleady finished.`;
       this.manager.externals.alert(alertsMsg);
@@ -125,6 +125,12 @@ export default class PracticeSession {
       fileName: dp.util.getTraceFilePath(traceId),
       line: dp.util.getTraceLoc(traceId).start.line,
     };
+
+    if (cursorFile !== location.fileName || cursorLine !== location.line) {
+      const alertsMsg = `Place cursor on selected trace and try again. (This is to prevent accidentally flagging the wrong line.)`;
+      this.manager.externals.alert(alertsMsg);
+      return;
+    }
 
     if (this.bug.isCorrectBugLocation(location)) {
       this.manager.bdp.updateBugProgress(this.bug, { status: BugStatus.Found });

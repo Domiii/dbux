@@ -473,7 +473,7 @@ export default class ProjectsManager {
       dbuxArgs: dbuxEnabled ? '--verbose=1' : '--dontInjectDbux',
     };
 
-    const result = this._lastTestRunResult = await this.runner.testBug(bug, cfg);
+    const result = await this.runner.testBug(bug, cfg);
 
     await this.saveTestRunResult(bug, result);
 
@@ -554,13 +554,10 @@ export default class ProjectsManager {
   }
 
   async resetLog() {
-    await this.pdp.clear();
-    
-    if (this._lastTestRunResult) {
+    if (this.pdp.collections.testRuns.size) {
       debug(`resetPracticeLog: resetting log only`);
-      this.pdp.writeHeader();
-      const bug = this.getCurrentBug();
-      await this.saveTestRunResult(bug, this._lastTestRunResult);
+      await this.pdp.clearSteps();
+      // const bug = this.getCurrentBug();
     }
     else {
       logError(`resetPracticeLog: no previous results found.`);

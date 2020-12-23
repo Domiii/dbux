@@ -4,6 +4,8 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import CallGraphNodeProvider from './CallGraphNodeProvider';
+import { emitTagTraceAction } from '../userEvents';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('callGraphViewController');
@@ -77,7 +79,9 @@ export class CallGraphViewController {
     for (const rootNode of this.treeDataProvider.rootNodes) {
       if (rootNode.children[0]) {
         // only select first error
-        traceSelection.selectTrace(rootNode.children[0].trace);
+        const { trace } = rootNode.children[0];
+        emitTagTraceAction(trace, UserActionType.GoToError);
+        traceSelection.selectTrace(trace);
         break;
       }
     }
@@ -139,7 +143,7 @@ export class CallGraphViewController {
       this.refresh();
     }
   }
-  
+
   _setFilter = (str) => {
     this._filterString = str;
     commands.executeCommand('setContext', 'dbuxCallGraphView.context.filtering', this.isFiltering());

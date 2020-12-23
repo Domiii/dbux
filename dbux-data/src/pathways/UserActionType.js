@@ -8,6 +8,7 @@ let UserActionType = {
   NewBugProgress: 3,
   BugProgressChanged: 4,
 
+  GoToError: 8,
   EditorSelectionChanged: 9,
   EditorVisibleRangeChanged: 10,
   

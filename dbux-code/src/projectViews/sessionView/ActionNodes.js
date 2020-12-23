@@ -4,6 +4,8 @@ import PracticeSessionState from '@dbux/projects/src/practiceSession/PracticeSes
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { showInformationMessage, showWarningMessage } from '../../codeUtil/codeModals';
 import { emitTagTraceAction } from '../../userEvents';
+import { getCursorLocation } from '../../codeUtil/codeNav';
+import { codeLineToBabelLine } from '../../helpers/codeLocHelpers';
 
 /** @typedef {import('../projectViewsController').default} ProjectViewsController */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
@@ -165,7 +167,10 @@ class TagNode extends SessionNode {
     const trace = traceSelection.selected;
     if (trace) {
       emitTagTraceAction(trace);
-      this.manager.practiceSession.tagBugTrace(trace);
+      const cursorLoc = getCursorLocation();
+      const cursorLine = codeLineToBabelLine(cursorLoc?.pos.line);
+      const cursorFile = cursorLoc?.fpath;
+      this.manager.practiceSession.tagBugTrace(trace, cursorFile, cursorLine);
     }
     else {
       await showWarningMessage('You have not selected any trace yet.');
