@@ -18,7 +18,7 @@ class AsyncGraph extends HostComponentEndpoint {
     this.state.applications = [];
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
-    this.threadColumns = new ThreadColumnSet(this, ThreadColumn, null);
+    this.threadColumns = new ThreadColumnSet(this, ThreadColumn, { forceUpdate: true });
 
     this.controllers.createComponent('ZoomBar');
     this.controllers.createComponent('PopperController');
