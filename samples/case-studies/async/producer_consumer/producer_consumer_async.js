@@ -30,4 +30,6 @@ async function consumer() {
 
 // main: start all producers + consumers
 producer();
+producer();
+consumer();
 consumer();

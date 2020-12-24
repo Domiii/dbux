@@ -10,7 +10,7 @@ class AsyncGraph extends ClientComponentEndpoint {
           <div data-el="body" class="body flex-column">
             <h4>Applications:</h4>
             <pre data-el="applications"></pre>
-            <div data-el="nodeChildren" data-mount="ThreadColumn" class="node-children flex-row">
+            <div data-el="nodeChildren" data-mount="ThreadColumn" class="node-children flex-row align-start">
             </div>
           </div>
         </div>

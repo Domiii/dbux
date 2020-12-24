@@ -50,8 +50,13 @@ export default class KeyedComponentSet {
 
     // add new components
     for (const [key, entry] of newEntries.entries()) {
-      if (key && !oldKeys.has(key)) {
-        this.addComponent(key, entry);
+      if (key) {
+        if (!oldKeys.has(key)) {
+          this.addComponent(key, entry);
+        }
+        else {
+          this.updateComponent(key, entry);
+        }
       }
     }
 
@@ -80,5 +85,10 @@ export default class KeyedComponentSet {
     const comp = this.componentsById.get(key);
     this.componentsById.delete(key);
     comp.dispose();
+  }
+
+  updateComponent(key, entry) {
+    const comp = this.componentsById.get(key);
+    comp.setState(entry);
   }
 }

@@ -6,6 +6,7 @@ import CallGraph from './callGraph/CallGraph';
 import TracesByFileIndex from './impl/indexes/TracesByFileIndex';
 import FirstTracesIndex from './impl/indexes/FirstTracesIndex';
 import FirstContextsInRunsIndex from './impl/indexes/FirstContextsInRunsIndex';
+import FirstContextsInRunsByThreadIndex from './impl/indexes/FirstContextsInRunsByThreadIndex';
 import TracesByContextIndex from './impl/indexes/TracesByContextIndex';
 import TracesByParentContextIndex from './impl/indexes/TracesByParentContextIndex';
 import TracesByStaticTraceIndex from './impl/indexes/TracesByStaticTraceIndex';
@@ -60,6 +61,7 @@ export function newDataProvider(application) {
   dataProvider.addIndex(new ContextChildrenIndex());
   dataProvider.addIndex(new RootContextsIndex());
   dataProvider.addIndex(new FirstContextsInRunsIndex());
+  dataProvider.addIndex(new FirstContextsInRunsByThreadIndex());
 
   dataProvider.addIndex(new FirstTracesIndex());
   dataProvider.addIndex(new TracesByFileIndex());

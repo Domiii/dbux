@@ -1,14 +1,24 @@
 import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
+import KeyedComponentSet from '@dbux/graph-common/src/componentLib/KeyedComponentSet';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 import ThreadColumn from './ThreadColumn';
+
+/** @typedef {import('@dbux/data/src/applications/Application').default} Application */
+
+class ThreadColumnSet extends KeyedComponentSet {
+  makeKey(entry) {
+    return `${entry.applicationId}_${entry.threadId}`;
+  }
+}
 
 class AsyncGraph extends HostComponentEndpoint {
   init() {
     this.state.applications = [];
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
+    this.threadColumns = new ThreadColumnSet(this, ThreadColumn, null);
 
     this.controllers.createComponent('ZoomBar');
     this.controllers.createComponent('PopperController');
@@ -30,7 +40,7 @@ class AsyncGraph extends HostComponentEndpoint {
 
   handleRefresh() {
     if (this.context.graphDocument.asyncGraphMode) {
-      this.children.getComponents(ThreadColumn).forEach(comp => comp.dispose());
+      // this.children.getComponents(ThreadColumn).forEach(comp => comp.dispose());
       const app = allApplications.selection.getAll()?.[0];
 
       if (app) {
@@ -38,6 +48,7 @@ class AsyncGraph extends HostComponentEndpoint {
         this.buildChildrenColumns(app);
       }
 
+      this._resubscribeOnData();
       this._setApplicationState();
     }
     else {
@@ -45,68 +56,90 @@ class AsyncGraph extends HostComponentEndpoint {
     }
   }
 
+  /**
+   * @param {Application} app 
+   */
   buildChildrenColumns(app) {
-    const allContexts = app.dataProvider.collections.executionContexts.getAll().slice(1);
-    const contextsByThreadId = new Map();
-    let maxRunId = 0;
-    for (let i = 0; i < allContexts.length; ++i) {
-      const context = allContexts[i];
-      const { runId, threadId } = context;
-      maxRunId = Math.max(runId, maxRunId);
-      if (!contextsByThreadId.get(threadId)) {
-        contextsByThreadId.set(threadId, []);
-      }
-      contextsByThreadId.get(threadId).push(context);
-    }
+    const { dataProvider: dp, applicationId } = app;
+    const threadIds = dp.indexes.executionContexts.firstsInRunsByThread.getAllKeys();
 
-    for (const threadId of contextsByThreadId.keys()) {
-      const contexts = contextsByThreadId.get(threadId);
-      const addedRunId = new Set();
-      const firstContexts = contexts.filter(context => {
-        if (!addedRunId.has(context.runId)) {
-          addedRunId.add(context.runId);
-          return true;
-        }
-        else {
-          return false;
-        }
-      });
-      this.children.createComponent(ThreadColumn, {
-        applicationId: app.applicationId,
+    const lastRunId = dp.collections.executionContexts.getLast()?.runId;
+
+    this.threadColumns.update(threadIds.map((threadId) => {
+      return {
+        applicationId,
         threadId,
-        nodes: firstContexts.map(context => {
-          const displayName = makeContextLabel(context, app);
-          return { context, displayName };
+        nodes: dp.indexes.executionContexts.firstsInRunsByThread.get(threadId).map(context => {
+          return {
+            displayName: makeContextLabel(context, app),
+            context
+          };
         }),
-        maxRunId
-      });
-    }
+        lastRunId
+      };
+    }));
+
+    // const allContexts = app.dataProvider.collections.executionContexts.getAll().slice(1);
+    // const contextsByThreadId = new Map();
+    // let maxRunId = 0;
+    // for (let i = 0; i < allContexts.length; ++i) {
+    //   const context = allContexts[i];
+    //   const { runId, threadId } = context;
+    //   maxRunId = Math.max(runId, maxRunId);
+    //   if (!contextsByThreadId.get(threadId)) {
+    //     contextsByThreadId.set(threadId, []);
+    //   }
+    //   contextsByThreadId.get(threadId).push(context);
+    // }
+
+    // for (const threadId of contextsByThreadId.keys()) {
+    //   const contexts = contextsByThreadId.get(threadId);
+    //   const addedRunId = new Set();
+    //   const firstContexts = contexts.filter(context => {
+    //     if (!addedRunId.has(context.runId)) {
+    //       addedRunId.add(context.runId);
+    //       return true;
+    //     }
+    //     else {
+    //       return false;
+    //     }
+    //   });
+    //   this.children.createComponent(ThreadColumn, {
+    //     applicationId: app.applicationId,
+    //     threadId,
+    //     nodes: firstContexts.map(context => {
+    //       const displayName = makeContextLabel(context, app);
+    //       return { context, displayName };
+    //     }),
+    //     maxRunId
+    //   });
+    // }
   }
 
-  buildDetailColumns(app) {
-    const allContexts = app.dataProvider.collections.executionContexts.getAll().slice(1);
-    const contextsByThreadId = new Map();
-    for (let i = 0; i < allContexts.length; ++i) {
-      const context = allContexts[i];
-      const { threadId } = context;
-      if (!contextsByThreadId.get(threadId)) {
-        contextsByThreadId.set(threadId, []);
-      }
-      contextsByThreadId.get(threadId).push(context);
-    }
+  // buildDetailColumns(app) {
+  //   const allContexts = app.dataProvider.collections.executionContexts.getAll().slice(1);
+  //   const contextsByThreadId = new Map();
+  //   for (let i = 0; i < allContexts.length; ++i) {
+  //     const context = allContexts[i];
+  //     const { threadId } = context;
+  //     if (!contextsByThreadId.get(threadId)) {
+  //       contextsByThreadId.set(threadId, []);
+  //     }
+  //     contextsByThreadId.get(threadId).push(context);
+  //   }
 
-    for (const threadId of contextsByThreadId.keys()) {
-      this.children.createComponent(ThreadColumn, {
-        applicationId: app.applicationId,
-        threadId,
-        nodes: contextsByThreadId.get(threadId).map(context => {
-          const displayName = makeContextLabel(context, app);
-          return { context, displayName };
-        }),
-        nodeCount: allContexts.length,
-      });
-    }
-  }
+  //   for (const threadId of contextsByThreadId.keys()) {
+  //     this.children.createComponent(ThreadColumn, {
+  //       applicationId: app.applicationId,
+  //       threadId,
+  //       nodes: contextsByThreadId.get(threadId).map(context => {
+  //         const displayName = makeContextLabel(context, app);
+  //         return { context, displayName };
+  //       }),
+  //       nodeCount: allContexts.length,
+  //     });
+  //   }
+  // }
 
   _resubscribeOnData() {
     // unsubscribe old
@@ -137,6 +170,18 @@ class AsyncGraph extends HostComponentEndpoint {
       }))
     };
     this.setState(update);
+  }
+
+  // ###########################################################################
+  //  thread column management
+  // ###########################################################################
+
+  setThreadColumn(threadId,) {
+
+  }
+
+  removeThreadColumn() {
+
   }
 
   // ###########################################################################

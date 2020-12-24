@@ -32,11 +32,11 @@ class ThreadColumn extends ClientComponentEndpoint {
   }
 
   buildChildrenHTML() {
-    const { nodes, maxRunId, applicationId } = this.state;
+    const { nodes, lastRunId, applicationId } = this.state;
     const firstRunId = nodes[0]?.context.runId;
     let html = '';
     const nodesById = new Map(nodes.map(node => [node.context.runId, node]));
-    for (let i = 1; i <= maxRunId; ++i) {
+    for (let i = 1; i <= lastRunId; ++i) {
       if (nodesById.has(i)) {
         const { displayName, context: { contextId } } = nodesById.get(i);
         const detailLabel = `<div class="async-dot-label">⬤</div><div class="async-detail-label">${displayName}</div>`;

@@ -1,5 +1,3 @@
-
-
 /** ###########################################################################
  * misc + general-purpose
  * ############################################################################ */
@@ -23,6 +21,11 @@
   flex-wrap: wrap;
 }
 
+.align-start {
+  display: flex;
+  align-items: flex-start;
+}
+
 .align-center {
   display: flex;
   justify-content: center;
@@ -30,12 +33,14 @@
 }
 
 /* TODO: fix name */
+
 .vertical-align-center {
   display: flex;
   align-items: center;
 }
 
 /* TODO: fix name */
+
 .horizontal-align-center {
   display: flex;
   justify-content: center;
@@ -81,19 +86,19 @@
  * hackfix for emojis
  * ############################################################################ */
 
- /**
+/**
   * Emojis don't display centered on Retina screens...
   *
   * @see https://stackoverflow.com/questions/44142464/how-do-i-horizontally-center-an-emoji
   * @see https://codepen.io/faessler/pen/aRNOEY
   */
+
 .emoji span {
   display: inline-block;
   font-size: 4em;
   transform: scale(.25) translateY(1.1em);
   margin: -1em -.333em;
 }
-
 
 /** ###########################################################################
  * colors
@@ -115,7 +120,6 @@
   color: darkred;
 }
 
-
 /** ###########################################################################
  * other
  * ############################################################################ */
@@ -129,7 +133,7 @@
 .dbux-link:hover {
   /* color: rgb(104, 91, 218); */
   text-decoration: underline;
-} 
+}
 
 .active {
   border: 1px solid gold !important;
