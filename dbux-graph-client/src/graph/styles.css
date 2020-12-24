@@ -213,7 +213,7 @@ html, body {
 
 .async-node-detail {
   border: 1px solid gray;
-  height: 2em;
+  /* height: 2em; */
   width: 100%;
   padding: 0 5px;
 }

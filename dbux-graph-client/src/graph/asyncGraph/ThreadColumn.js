@@ -6,7 +6,7 @@ class ThreadColumn extends ClientComponentEndpoint {
     const el = compileHtmlElement(/*html*/`
       <div class="flex-column">
         <div data-el="title"></div>
-        <div data-el="children" class="node-children flex-column vertical-align-center"></div>
+        <div data-el="children" class="node-children flex-column vertical-align-center ellipsis-20"></div>
       </div>
     `);
 
@@ -37,37 +37,48 @@ class ThreadColumn extends ClientComponentEndpoint {
     let html = '';
     const nodesById = new Map(nodes.map(node => [node.context.runId, node]));
     for (let i = 1; i <= lastRunId; ++i) {
-      if (nodesById.has(i)) {
-        const { displayName, context: { contextId } } = nodesById.get(i);
-        const detailLabel = `<div class="async-dot-label">⬤</div><div class="async-detail-label">${displayName}</div>`;
-        html += `<div class="async-node-detail vertical-align-center horizontal-align-center" data-application-id="${applicationId}" data-context-id="${contextId}">
-            ${detailLabel}
-          </div>`;
+      const node = nodesById.get(i);
+      let nodeLabel, displayName, locLabel, contextId;
+      if (node) {
+        nodeLabel = '⬤';
+        ({ displayName, locLabel, context: { contextId } } = node);
       }
       else {
-        html += `<div class="async-node-detail vertical-align-center horizontal-align-center" data-application-id="" data-context-id="">${firstRunId < i ? '|' : ''}</div>`;
+        nodeLabel = firstRunId < i ? '|' : '&nbsp;';
+        displayName = firstRunId < i ? '|' : '&nbsp;';
+        locLabel = firstRunId < i ? '|' : '&nbsp;';
       }
+      
+      html += `<div class="async-node-detail vertical-align-center horizontal-align-center" data-application-id="${applicationId || ''}" data-context-id="${contextId || ''}">
+          <div class="async-dot-label">${nodeLabel}</div>
+          <div class="flex-column vertical-align-center">
+            <div class="async-detail-label">${displayName}</div>
+            <div class="async-detail-label loc-label gray">
+              <span>${locLabel}</span>
+            </div>
+          </div>
+        </div>`;
     }
 
     return html;
   }
 
-  buildDetailChildrenHTML() {
-    const { nodes, nodeCount, applicationId } = this.state;
-    let html = '';
-    const nodesById = new Map(nodes.map(node => [node.context.contextId, node]));
-    for (let i = 1; i < nodeCount; ++i) {
-      if (nodesById.has(i)) {
-        const { displayName } = nodesById.get(i);
-        html += `<div class="async-node-detail vertical-align-center" data-application-id="${applicationId}" data-context-id="${i}">${displayName}</div>`;
-      }
-      else {
-        html += `<div class="async-node-detail vertical-align-center" data-application-id="" data-context-id=""></div>`;
-      }
-    }
+  // buildDetailChildrenHTML() {
+  //   const { nodes, nodeCount, applicationId } = this.state;
+  //   let html = '';
+  //   const nodesById = new Map(nodes.map(node => [node.context.contextId, node]));
+  //   for (let i = 1; i < nodeCount; ++i) {
+  //     if (nodesById.has(i)) {
+  //       const { displayName } = nodesById.get(i);
+  //       html += `<div class="async-node-detail vertical-align-center" data-application-id="${applicationId}" data-context-id="${i}">${displayName}</div>`;
+  //     }
+  //     else {
+  //       html += `<div class="async-node-detail vertical-align-center" data-application-id="" data-context-id=""></div>`;
+  //     }
+  //   }
 
-    return html;
-  }
+  //   return html;
+  // }
 
   handleClickAsyncNode(node) {
     const { applicationId, contextId } = node.dataset;

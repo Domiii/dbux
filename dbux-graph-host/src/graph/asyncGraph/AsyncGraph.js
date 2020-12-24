@@ -1,6 +1,7 @@
 import NanoEvents from 'nanoevents';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
+import { makeContextLocLabel } from '@dbux/data/src/helpers/traceLabels';
 import KeyedComponentSet from '@dbux/graph-common/src/componentLib/KeyedComponentSet';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 import ThreadColumn from './ThreadColumn';
@@ -72,6 +73,7 @@ class AsyncGraph extends HostComponentEndpoint {
         nodes: dp.indexes.executionContexts.firstsInRunsByThread.get(threadId).map(context => {
           return {
             displayName: makeContextLabel(context, app),
+            locLabel: makeContextLocLabel(applicationId, context),
             context
           };
         }),
