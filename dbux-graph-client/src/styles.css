@@ -32,18 +32,14 @@
   align-items: center;
 }
 
-/* TODO: fix name */
-
-.vertical-align-center {
-  display: flex;
-  align-items: center;
-}
-
-/* TODO: fix name */
-
-.horizontal-align-center {
+.main-axis-align-center {
   display: flex;
   justify-content: center;
+}
+
+.cross-axis-align-center {
+  display: flex;
+  align-items: center;
 }
 
 .space-between {

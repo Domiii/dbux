@@ -4,7 +4,7 @@ import { compileHtmlElement } from '../util/domUtil';
 class RunNode extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-      <div class="flex-row vertical-align-center">
+      <div class="flex-row cross-axis-align-center">
         <div class="run-node width-fit">
           <div>
             <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>

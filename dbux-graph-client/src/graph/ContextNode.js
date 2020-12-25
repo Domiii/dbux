@@ -19,7 +19,7 @@ class ContextNode extends ClientComponentEndpoint {
               <div class="flex-row">
                 <button data-el="nodeToggleBtn" class="btn node-toggle-btn"></button>
                 <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
-                <div data-el="title" class="flex-row vertical-align-center">
+                <div data-el="title" class="flex-row cross-axis-align-center">
                   <div data-el="contextLabel" class="ellipsis-20 dbux-link"></div>
                 </div>
                 <!--div data-el="selectedTraceIcon" class="darkred">

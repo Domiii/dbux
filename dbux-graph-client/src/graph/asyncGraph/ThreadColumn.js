@@ -4,9 +4,9 @@ import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
 class ThreadColumn extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-      <div class="flex-column">
+      <div class="flex-column cross-axis-align-center">
         <div data-el="title"></div>
-        <div data-el="children" class="node-children flex-column vertical-align-center ellipsis-20"></div>
+        <div data-el="children" class="node-children flex-column cross-axis-align-center ellipsis-20"></div>
       </div>
     `);
 
@@ -28,7 +28,6 @@ class ThreadColumn extends ClientComponentEndpoint {
     this.els.title.innerHTML = `thread#${threadId}`;
     this.el.style.order = threadId;
     this.els.children.innerHTML = this.buildChildrenHTML();
-    // this.els.children.innerHTML = this.buildDetailChildrenHTML(nodes, nodeCount, applicationId);
   }
 
   buildChildrenHTML() {
@@ -49,9 +48,9 @@ class ThreadColumn extends ClientComponentEndpoint {
         locLabel = firstRunId < i ? '|' : '&nbsp;';
       }
       
-      html += `<div class="async-node-detail vertical-align-center horizontal-align-center" data-application-id="${applicationId || ''}" data-context-id="${contextId || ''}">
+      html += `<div class="async-node-detail cross-axis-align-center main-axis-align-center" data-application-id="${applicationId || ''}" data-context-id="${contextId || ''}">
           <div class="async-dot-label">${nodeLabel}</div>
-          <div class="flex-column vertical-align-center">
+          <div class="flex-column cross-axis-align-center">
             <div class="async-detail-label">${displayName}</div>
             <div class="async-detail-label loc-label gray">
               <span>${locLabel}</span>
@@ -62,23 +61,6 @@ class ThreadColumn extends ClientComponentEndpoint {
 
     return html;
   }
-
-  // buildDetailChildrenHTML() {
-  //   const { nodes, nodeCount, applicationId } = this.state;
-  //   let html = '';
-  //   const nodesById = new Map(nodes.map(node => [node.context.contextId, node]));
-  //   for (let i = 1; i < nodeCount; ++i) {
-  //     if (nodesById.has(i)) {
-  //       const { displayName } = nodesById.get(i);
-  //       html += `<div class="async-node-detail vertical-align-center" data-application-id="${applicationId}" data-context-id="${i}">${displayName}</div>`;
-  //     }
-  //     else {
-  //       html += `<div class="async-node-detail vertical-align-center" data-application-id="" data-context-id=""></div>`;
-  //     }
-  //   }
-
-  //   return html;
-  // }
 
   handleClickAsyncNode(node) {
     const { applicationId, contextId } = node.dataset;
