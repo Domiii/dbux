@@ -9,8 +9,10 @@
 			"path": "dbux_projects\\eslint"
 		},
 		{
-			"name": "case-studies",
-			"path": "samples\\case-studies"
+			"path": "samples/case-studies"
+		},
+		{
+			"path": "dbux_projects/express"
 		}
 	],
 	"settings": {
