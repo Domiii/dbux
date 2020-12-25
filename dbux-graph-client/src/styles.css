@@ -42,6 +42,11 @@
   align-items: center;
 }
 
+.main-axis-align-start {
+  display: flex;
+  align-items: flex-start;
+}
+
 .space-between {
   justify-content: space-between;
 }

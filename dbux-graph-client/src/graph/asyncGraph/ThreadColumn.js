@@ -6,7 +6,7 @@ class ThreadColumn extends ClientComponentEndpoint {
     const el = compileHtmlElement(/*html*/`
       <div class="flex-column cross-axis-align-center">
         <div data-el="title"></div>
-        <div data-el="children" class="node-children flex-column cross-axis-align-center ellipsis-20"></div>
+        <div data-el="children" class="node-children flex-column full-width main-axis-align-start ellipsis-20"></div>
       </div>
     `);
 
@@ -14,11 +14,16 @@ class ThreadColumn extends ClientComponentEndpoint {
   }
 
   setupEl() {
-    // delegate click event on async nodes
+    // delegate click events
     this.el.addEventListener('click', event => {
-      const asyncNode = getMatchParent('div.async-node, div.async-node-detail', event.target, this.el);
+      const asyncNode = getMatchParent('div.async-node', event.target, this.el);
       if (asyncNode) {
-        this.handleClickAsyncNode(asyncNode, event);
+        if (event.target.matches('div.async-fork-button')) {
+          this.handleClickForkButton(asyncNode);
+        }
+        else {
+          this.handleClickAsyncNode(asyncNode);
+        }
       }
     });
   }
@@ -31,41 +36,63 @@ class ThreadColumn extends ClientComponentEndpoint {
   }
 
   buildChildrenHTML() {
-    const { nodes, lastRunId, applicationId } = this.state;
+    const { nodes, lastRunId, applicationId, threadId } = this.state;
     const firstRunId = nodes[0]?.context.runId;
     let html = '';
     const nodesById = new Map(nodes.map(node => [node.context.runId, node]));
-    for (let i = 1; i <= lastRunId; ++i) {
-      const node = nodesById.get(i);
-      let nodeLabel, displayName, locLabel, contextId;
+    for (let runId = 1; runId <= lastRunId; ++runId) {
+      const node = nodesById.get(runId);
+      let nodeLabel, displayName, locLabel, parentThreadId, contextId, parentContextId;
       if (node) {
         nodeLabel = '⬤';
-        ({ displayName, locLabel, context: { contextId } } = node);
+        ({ displayName, locLabel, parentThreadId, context: { contextId, parentContextId } } = node);
       }
       else {
-        nodeLabel = firstRunId < i ? '|' : '&nbsp;';
-        displayName = firstRunId < i ? '|' : '&nbsp;';
-        locLabel = firstRunId < i ? '|' : '&nbsp;';
+        nodeLabel = firstRunId < runId ? '|' : '&nbsp;';
+        displayName = firstRunId < runId ? '|' : '&nbsp;';
+        locLabel = firstRunId < runId ? '|' : '&nbsp;';
       }
-      
-      html += `<div class="async-node-detail cross-axis-align-center main-axis-align-center" data-application-id="${applicationId || ''}" data-context-id="${contextId || ''}">
-          <div class="async-dot-label">${nodeLabel}</div>
-          <div class="flex-column cross-axis-align-center">
-            <div class="async-detail-label">${displayName}</div>
-            <div class="async-detail-label loc-label gray">
-              <span>${locLabel}</span>
+
+      const forkButton = (runId === firstRunId && parentContextId) ? /*html*/`<div class="async-fork-button">${parentThreadId}</div>` : '';
+      const data = {
+        'application-id': applicationId,
+        'run-id': runId,
+        'context-id': contextId,
+        'thread-id': threadId,
+        'parent-context-id': parentContextId
+      };
+      const dataTag = Object.entries(data).map(([key, val]) => `data-${key}="${val || ''}"`).join(' ');
+
+      html += /*html*/`
+        <div class="async-node full-width" ${dataTag}>
+          <div class="flex-row align-center">
+            <div class="async-dot-label">${nodeLabel}</div>
+            <div class="flex-column cross-axis-align-center">
+              <div class="async-detail-label">${displayName}</div>
+              <div class="async-detail-label loc-label gray">
+                <span>${locLabel}</span>
+              </div>
             </div>
+            ${forkButton}
           </div>
-        </div>`;
+        </div>
+      `;
     }
 
     return html;
   }
 
-  handleClickAsyncNode(node) {
-    const { applicationId, contextId } = node.dataset;
+  handleClickAsyncNode(asyncNode) {
+    const { applicationId, contextId } = asyncNode.dataset;
     if (applicationId && contextId) {
       this.remote.gotoContext(applicationId, contextId);
+    }
+  }
+
+  handleClickForkButton(asyncNode) {
+    const { applicationId, parentContextId } = asyncNode.dataset;
+    if (applicationId && parentContextId) {
+      this.remote.gotoContext(applicationId, parentContextId);
     }
   }
 }

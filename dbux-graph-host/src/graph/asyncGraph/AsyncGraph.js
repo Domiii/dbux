@@ -21,7 +21,6 @@ class AsyncGraph extends HostComponentEndpoint {
     this._unsubscribeOnNewData = [];
     this.threadColumns = new ThreadColumnSet(this, ThreadColumn, { forceUpdate: true });
 
-    this.controllers.createComponent('ZoomBar');
     this.controllers.createComponent('PopperController');
 
     // register event listeners
@@ -48,11 +47,11 @@ class AsyncGraph extends HostComponentEndpoint {
       }
 
       this._resubscribeOnData();
-      this._setApplicationState();
     }
     else {
-      this.children.getComponents(ThreadColumn).forEach(comp => comp.dispose());
+      this.threadColumns.update([]);
     }
+    this._setApplicationState();
   }
 
   /**
@@ -69,9 +68,11 @@ class AsyncGraph extends HostComponentEndpoint {
         applicationId,
         threadId,
         nodes: dp.indexes.executionContexts.firstsInRunsByThread.get(threadId).map(context => {
+          const parentThreadId = dp.collections.executionContexts.getById(context.parentContextId)?.threadId;
           return {
             displayName: makeContextLabel(context, app),
             locLabel: makeContextLocLabel(applicationId, context),
+            parentThreadId,
             context
           };
         }),

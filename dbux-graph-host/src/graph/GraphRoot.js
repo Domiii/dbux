@@ -61,7 +61,6 @@ class GraphRoot extends HostComponentEndpoint {
       mode: GraphNodeMode.ExpandChildren
     });
     this.controllers.createComponent('ContextNodeManager');
-    this.controllers.createComponent('ZoomBar');
     this.controllers.createComponent('HiddenNodeManager');
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('FocusController');
@@ -87,7 +86,6 @@ class GraphRoot extends HostComponentEndpoint {
   handleRefresh() {
     if (this.context.graphDocument.asyncGraphMode) {
       this.removeAllRunNode();
-      this._setApplicationState();
     }
     else {
       // oldApps
@@ -113,8 +111,8 @@ class GraphRoot extends HostComponentEndpoint {
 
       // always re-subscribe since applicationSet clears subscribtion everytime it changes
       this._resubscribeOnData();
-      this._setApplicationState();
     }
+    this._setApplicationState();
   }
 
   _resubscribeOnData() {

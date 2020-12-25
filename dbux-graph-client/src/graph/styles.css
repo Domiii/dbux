@@ -53,7 +53,7 @@ html, body {
   margin: -1px;
 }
 
-.selected-trace-dark {
+.theme-mode-dark .selected-trace {
   color: yellow;
   border: 1px solid yellow;
   margin: -1px;
@@ -110,7 +110,7 @@ html, body {
 
 .graph-root {
   /* offset fixed toolbar height */
-  margin-top: 30px;
+  margin-top: 8px;
   padding-left: 2px;
   font-size: 1.2rem;
 }
@@ -202,25 +202,38 @@ html, body {
 
 .async-node {
   border: 1px solid gray;
-  height: 2em;
-  width: 2em;
-}
-
-.async-node:hover:not([data-application-id=""]) {
-  border: 1px solid white;
-  cursor: pointer;
-}
-
-.async-node-detail {
-  border: 1px solid gray;
-  /* height: 2em; */
-  width: 100%;
   padding: 0 5px;
 }
 
-.async-node-detail:hover:not([data-application-id=""]) {
+.async-node:hover:not([data-context-id=""]) {
   border: 1px solid white;
   cursor: pointer;
+}
+
+.async-node-selected {
+  color: darkred;
+  border: 1px solid darkred;
+}
+
+.theme-mode-dark .async-node-selected {
+  color: yellow;
+  border: 1px solid yellow;
+}
+
+.async-fork-button {
+  border: 1px solid white;
+  border-radius: 2px;
+  margin: 0 3px;
+  padding: 0 3px;
+  /* height: 1rem;
+  width: 1rem; */
+  font-size: 0.8rem;
+}
+
+.async-fork-button:hover {
+  /* height: 1.3rem;
+  width: 1.3rem; */
+  font-size: 1rem;
 }
 
 [data-async-detail-mode="0"] div.async-detail-label {

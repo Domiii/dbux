@@ -24,6 +24,7 @@ class GraphDocument extends HostComponentEndpoint {
   createOwnComponents() {
     this.controllers.createComponent(PopperManager);
     this.controllers.createComponent(HighlightManager);
+    this.controllers.createComponent('ZoomBar');
     this.asyncGraph = this.children.createComponent(AsyncGraph);
     this.graphRoot = this.children.createComponent(GraphRoot);
     this.toolbar = this.children.createComponent(Toolbar);

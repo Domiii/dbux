@@ -25,14 +25,13 @@ export default class PopperManager extends ClientComponentEndpoint {
     this.owner.el.appendChild(this.tooltip);
 
     // regist update function if owner controls panzoom
-    if (this.owner.panzoom) {
-      this.panzoom = this.owner.panzoom;
-  
-      this.panzoom.on('zoom', (/* e */) => {
+    const { panzoom } = this.context.graphDocument;
+    if (panzoom) {
+      panzoom.on('zoom', (/* e */) => {
         this.update();
       });
-  
-      this.panzoom.on('transform', (/* e */) => {
+
+      panzoom.on('transform', (/* e */) => {
         this.update();
       });
     }
