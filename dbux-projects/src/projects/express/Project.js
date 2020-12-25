@@ -103,18 +103,18 @@ export default class ExpressProject extends Project {
       //   testFilePaths: ['test/app.head.js'],
       //   require: []
       // },
-      // {
-      //   // NOTE: more programming than debugging problem
-      //   id: 7,
-      //   testRe: '.sendFile.* (should invoke the callback without error when HEAD|should invoke the callback without error when 304)',
-      //   // testFilePaths: ['test/res.sendFile.js'],
-      //   bugLocations: [
-      //     {
-      //       fileName: 'lib/.js',
-      //       line: 
-      //     }
-      //   ]
-      // },
+      {
+        // NOTE: more programming than debugging problem
+        id: 7,
+        testRe: '.sendFile.* (should invoke the callback without error when HEAD|should invoke the callback without error when 304)',
+        testFilePaths: ['test/res.sendFile.js'],
+        // bugLocations: [
+        //   {
+        //     fileName: 'lib/.js',
+        //     line: 
+        //   }
+        // ]
+      },
       {
         id: 8,
         label: 'Router.use: empty path',
@@ -159,22 +159,21 @@ export default class ExpressProject extends Project {
           }))
         ]
       },
-      // {
-      //   // NOTE: param indexes
-      //   id: 12,
-      //   label: 'param indexes',
-      //   testRe: [
-      //     'should keep correct parameter indexes',
-      //     // 'should work following a partial capture group'
-      //   ],
-      //   testFilePaths: ['test/app.router.js'],
-      //   bugLocations: [
-      //     {
-      //       fileName: 'lib/.js',
-      //       line: 
-      //     }
-      //   ]
-      // },
+      {
+        id: 12,
+        label: 'param indexes',
+        testRe: [
+          'should keep correct parameter indexes',
+          // 'should work following a partial capture group'
+        ],
+        testFilePaths: ['test/app.router.js'],
+        bugLocations: [
+          {
+            fileName: 'lib/router/layer.js',
+            line: 112
+          }
+        ]
+      },
       // {
       //   // NOTE: requires too many changes
       //   id: 13,
