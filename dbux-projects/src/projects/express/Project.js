@@ -170,7 +170,7 @@ export default class ExpressProject extends Project {
         bugLocations: [
           {
             fileName: 'lib/router/layer.js',
-            line: 112
+            line: 122
           }
         ]
       },
@@ -180,12 +180,12 @@ export default class ExpressProject extends Project {
       //   label: 'param override (loki)',
       //   testRe: 'should support altering req.params across routes',
       //   testFilePaths: ['test/app.param.js'],
-      //   bugLocations: [
-      //     {
-      //       fileName: 'lib/.js',
-      //       line: 
-      //     }
-      //   ]
+      //   // bugLocations: [
+      //   //   {
+      //   //     fileName: 'lib/.js',
+      //   //     line: 
+      //   //   }
+      //   // ]
       // },
       {
         id: 14,
