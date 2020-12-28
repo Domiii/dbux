@@ -240,7 +240,21 @@ export default class ExpressProject extends Project {
           line
         }))
       },
-      // TODO: 17
+      {
+        id: 17,
+        label: 'missing "view engine"',
+        testRe: [
+          'should error without "view engine" set and file extension to a non\\-engine module'
+        ],
+        testFilePaths: ['test/res.render.js'],
+        bugLocations: [
+          {
+            fileName: 'lib/view.js',
+            line: 79
+          }
+        ]
+      },
+
       {
         id: 18,
         label: 'param treats next("route") as error',
@@ -271,19 +285,22 @@ export default class ExpressProject extends Project {
       },
       {
         id: 20,
-        testRe: 'should throw when Content-Type is an array',
+        testRe: 'should throw when Content\\-Type is an array',
         testFilePaths: ['test/res.set.js'],
         bugLocations: [720].map(line => ({
           fileName: 'lib/response.js',
           line
         }))
       },
-      // {
-      //   // NOTE: more programming than debugging problem
-      //   id: 21,
-      //   testRe: '',
-      //   // testFilePaths: ['']
-      // },
+      {
+        id: 21,
+        testRe: 'should provide req\\.params to all handlers',
+        testFilePaths: ['test/app.router.js'],
+        // bugLocations: [720].map(line => ({
+        //   fileName: 'lib/response.js',
+        //   line
+        // }))
+      },
       {
         id: 22,
         testRe: [
@@ -345,18 +362,17 @@ export default class ExpressProject extends Project {
           }
         ]
       },
-      // {
-      //   // NOTE: more programming than debugging
-      //   id: 27,
-      //   testRe: 'should defer all the param routes',
-      //   testFilePaths: ['test/app.param.js'],
-      //   bugLocations: [
-      //     {
-      //       fileName: 'lib/.js',
-      //       line: 
-      //     }
-      //   ]
-      // }
+      {
+        id: 27,
+        testRe: 'should defer all the param routes',
+        testFilePaths: ['test/app.param.js'],
+        // bugLocations: [
+        //   {
+        //     fileName: 'lib/.js',
+        //     line: 
+        //   }
+        // ]
+      }
     ];
 
     return bugs.
