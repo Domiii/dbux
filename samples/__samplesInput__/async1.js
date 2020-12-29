@@ -2,23 +2,25 @@ async function sleep(ms) {
   return new Promise(r => setTimeout(r, ms)); 
 }
 
-async function g(input) {
-  await sleep(100);
+function g(input) {
+  // await sleep(100);
+  console.log('g', input);
   return input * 3;
 }
 
-async function f(x) {
+async function a(x) {
   const y = await g(x);
   const z = await g(y);
   console.log(z);
 }
-f(1);
-f(2);
+a(1);
+console.log('a2');
+a(2);
 
-function p(x) {
-  return g(x).
-  then(y => g(y)).
-  then(z => console.log(z));
-}
-p(1);
-p(2);
+// function p(x) {
+//   return g(x).
+//   then(y => g(y)).
+//   then(z => console.log(z));
+// }
+// p(1);
+// p(2);
