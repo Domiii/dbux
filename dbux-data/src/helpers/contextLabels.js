@@ -15,9 +15,12 @@ export function makeContextLabel(context, app) {
   const dp = app.dataProvider;
 
   if (ExecutionContextType.is.Resume(type)) {
-    const { parentContextId } = context;
+    const { contextId, parentContextId } = context;
     const parentContext = dp.collections.executionContexts.getById(parentContextId);
-    return `[res] ${makeContextLabel(parentContext, app)}`;
+    const firstTrace = dp.indexes.traces.byContext.getFirst(contextId);
+    const staticTrace = dp.collections.staticTraces.getById(firstTrace.staticTraceId);
+    const displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+    return `${makeContextLabel(parentContext, app)} | ${displayName}`;
   }
   else {
     const { staticContextId } = context;

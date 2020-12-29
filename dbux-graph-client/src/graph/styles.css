@@ -200,13 +200,15 @@ html, body {
  * Async Graph
  * ############################################################################ */
 
-.thread-column {
-  min-width: 4em;
+.async-node {
+  border: 1px solid transparent;
+  min-height: 2em;
+  min-width: 5em;
+  padding: 3px;
 }
 
-.async-node {
-  border: 1px solid gray;
-  padding: 0 5px;
+[data-async-detail-mode="1"] .async-node {
+  min-height: 3.5em;
 }
 
 .async-node:hover:not([data-context-id=""]) {
@@ -227,17 +229,20 @@ html, body {
 .async-fork-button {
   border: 1px solid white;
   border-radius: 2px;
-  margin: 0 3px;
-  padding: 0 3px;
-  /* height: 1rem;
-  width: 1rem; */
-  font-size: 0.8rem;
+  text-align: center;
+  height: 15px;
+  width: 15px;
+  font-size: 8px;
+  margin-left: 3px;
+}
+
+.async-node-selected .async-fork-button {
+  border: 1px solid yellow;
 }
 
 .async-fork-button:hover {
-  /* height: 1.3rem;
-  width: 1.3rem; */
-  font-size: 1rem;
+  border: 1px solid yellow;
+  color: yellow;
 }
 
 .async-loc-label {

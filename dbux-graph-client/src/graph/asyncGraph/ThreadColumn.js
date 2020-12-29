@@ -4,7 +4,7 @@ import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
 class ThreadColumn extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-      <div class="flex-column cross-axis-align-center thread-column">
+      <div class="flex-column cross-axis-align-center">
         <div data-el="title"></div>
         <div data-el="children" class="flex-column full-width main-axis-align-start ellipsis-20"></div>
       </div>
@@ -37,23 +37,27 @@ class ThreadColumn extends ClientComponentEndpoint {
 
   buildChildrenHTML() {
     const { nodes, lastRunId, applicationId, threadId } = this.state;
-    const firstRunId = nodes[0]?.context.runId;
+    const firstRunInThread = nodes[0]?.context.runId;
+    const lastRunInThread = nodes[nodes.length - 1]?.context.runId;
     let html = '';
     const nodesById = new Map(nodes.map(node => [node.context.runId, node]));
     for (let runId = 1; runId <= lastRunId; ++runId) {
       const node = nodesById.get(runId);
-      let nodeLabel, displayName, locLabel, parentThreadId, contextId, parentContextId;
+      let dotLabel, displayName, locLabel, parentThreadId, contextId, parentContextId;
       if (node) {
-        nodeLabel = '⬤';
+        dotLabel = '⬤';
         ({ displayName, locLabel, parentThreadId, context: { contextId, parentContextId } } = node);
       }
       else {
-        nodeLabel = firstRunId < runId ? '|' : '&nbsp;';
-        displayName = firstRunId < runId ? '|' : '&nbsp;';
-        locLabel = firstRunId < runId ? '|' : '&nbsp;';
+        const shouldAddLine = (firstRunInThread < runId) && (runId < lastRunInThread);
+        dotLabel = shouldAddLine ? '|' : '&nbsp;';
+        displayName = shouldAddLine ? '|' : '&nbsp;';
+        locLabel = '';
       }
 
-      const forkButton = (runId === firstRunId && parentContextId) ? /*html*/`<div class="async-fork-button">${parentThreadId}</div>` : '';
+      const forkButton = (runId === firstRunInThread && parentContextId) ? /*html*/`
+        <div style="width:0px"><div class="async-fork-button">${parentThreadId}</div></div>
+      ` : '';
       const data = {
         'application-id': applicationId,
         'run-id': runId,
@@ -64,12 +68,12 @@ class ThreadColumn extends ClientComponentEndpoint {
       const dataTag = Object.entries(data).map(([key, val]) => `data-${key}="${val || ''}"`).join(' ');
 
       html += /*html*/`
-        <div class="async-node full-width" ${dataTag}>
-          <div class="async-brief flex-row align-center">
-            <div>${nodeLabel}</div>
+        <div class="async-node full-width flex-row align-center" ${dataTag}>
+          <div class="async-brief flex-row main-axie-align-center">
+            ${dotLabel}
             ${forkButton}
           </div>
-          <div class="async-detail flex-column align-center">
+          <div class="async-detail flex-column cross-axis-align-center">
             <div class="flex-row">
               <div>${displayName}</div>
               ${forkButton}
