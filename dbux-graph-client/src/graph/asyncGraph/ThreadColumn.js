@@ -4,9 +4,9 @@ import { compileHtmlElement, getMatchParent } from '../../util/domUtil';
 class ThreadColumn extends ClientComponentEndpoint {
   createEl() {
     const el = compileHtmlElement(/*html*/`
-      <div class="flex-column cross-axis-align-center">
+      <div class="flex-column cross-axis-align-center thread-column">
         <div data-el="title"></div>
-        <div data-el="children" class="node-children flex-column full-width main-axis-align-start ellipsis-20"></div>
+        <div data-el="children" class="flex-column full-width main-axis-align-start ellipsis-20"></div>
       </div>
     `);
 
@@ -30,7 +30,7 @@ class ThreadColumn extends ClientComponentEndpoint {
 
   update() {
     const { threadId } = this.state;
-    this.els.title.innerHTML = `thread#${threadId}`;
+    this.els.title.innerHTML = `t${threadId}`;
     this.el.style.order = threadId;
     this.els.children.innerHTML = this.buildChildrenHTML();
   }
@@ -65,15 +65,18 @@ class ThreadColumn extends ClientComponentEndpoint {
 
       html += /*html*/`
         <div class="async-node full-width" ${dataTag}>
-          <div class="flex-row align-center">
-            <div class="async-dot-label">${nodeLabel}</div>
-            <div class="flex-column cross-axis-align-center">
-              <div class="async-detail-label">${displayName}</div>
-              <div class="async-detail-label loc-label gray">
-                <span>${locLabel}</span>
-              </div>
-            </div>
+          <div class="async-brief flex-row align-center">
+            <div>${nodeLabel}</div>
             ${forkButton}
+          </div>
+          <div class="async-detail flex-column align-center">
+            <div class="flex-row">
+              <div>${displayName}</div>
+              ${forkButton}
+            </div>
+            <div class="async-loc-label gray">
+              <span>${locLabel}</span>
+            </div>
           </div>
         </div>
       `;

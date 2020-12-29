@@ -112,7 +112,7 @@ html, body {
   /* offset fixed toolbar height */
   margin-top: 8px;
   padding-left: 2px;
-  font-size: 1.2rem;
+  /* font-size: 1.2rem; */
 }
 
 .graph-cont {
@@ -200,6 +200,10 @@ html, body {
  * Async Graph
  * ############################################################################ */
 
+.thread-column {
+  min-width: 4em;
+}
+
 .async-node {
   border: 1px solid gray;
   padding: 0 5px;
@@ -236,11 +240,15 @@ html, body {
   font-size: 1rem;
 }
 
-[data-async-detail-mode="0"] div.async-detail-label {
+.async-loc-label {
+  font-size: 0.7em;
+}
+
+[data-async-detail-mode="0"] div.async-detail {
   display: none !important;
 }
 
-[data-async-detail-mode="1"] div.async-dot-label {
+[data-async-detail-mode="1"] div.async-brief {
   display: none !important;
 }
 

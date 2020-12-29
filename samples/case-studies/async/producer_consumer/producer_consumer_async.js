@@ -1,7 +1,6 @@
 import { hasSpace, reserveSpace, produce, append, hasItems, reserveItem, consume, remove, idle, N } from './producer_consumer_base';
 
-async function producer() {
-  let n = N;
+async function producer(n) {
   while (--n) {
     if (hasSpace()) {
       reserveSpace();
@@ -14,8 +13,7 @@ async function producer() {
   }
 }
 
-async function consumer() {
-  let n = N;
+async function consumer(n) {
   while (--n) {
     if (hasItems()) {
       reserveItem();
@@ -29,7 +27,7 @@ async function consumer() {
 }
 
 // main: start all producers + consumers
-producer();
-producer();
-consumer();
-consumer();
+producer(N);
+producer(N);
+consumer(N);
+consumer(N);
