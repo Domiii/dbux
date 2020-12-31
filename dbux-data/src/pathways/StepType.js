@@ -16,7 +16,7 @@ let StepType = {
 const stepByActionType = {
   [UserActionType.EditorSelectionChanged]: StepType.Other,
   [UserActionType.EditorVisibleRangeChanged]: StepType.None,
-  [UserActionType.TagTrace]: StepType.None,
+  [UserActionType.TagTrace]: StepType.Trace,
 
   [UserActionType.SelectTrace]: StepType.Trace,
   [UserActionType.TDValueClick]: StepType.Trace,
