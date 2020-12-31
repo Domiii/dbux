@@ -5,7 +5,8 @@ import { initClient } from './client/index';
 const dbux = {
   _r: RuntimeMonitor.instance,
 
-  initProgram(staticProgramData) {
+  initProgram(staticProgramData, runtimeCfg) {
+    this.runtimeCfg = runtimeCfg;
     return this._r.addProgram(staticProgramData);
   },
 

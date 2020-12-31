@@ -336,7 +336,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
   }
 
   // ###########################################################################
-  // Data saving
+  // Data load + save
   // ###########################################################################
 
   /**
@@ -350,14 +350,24 @@ export default class PathwaysDataProvider extends DataProviderBase {
   reset() {
     this.collections = {
       testRuns: new TestRunCollection(this),
-      applications: new ApplicationCollection(this),
+      applications: new ApplicationCollection(this)
+    };
+
+    this.indexes = new Indexes();
+    this.addIndex(new TestRunsByBugIdIndex());
+
+    this._resetUserActions();
+  }
+
+  _resetUserActions() {
+    this.collections = {
+      ...this.collections,
+
       steps: new StepCollection(this),
       actionGroups: new ActionGroupCollection(this),
       userActions: new UserActionCollection(this),
     };
 
-    this.indexes = new Indexes();
-    this.addIndex(new TestRunsByBugIdIndex());
     this.addIndex(new UserActionByBugIdIndex());
     this.addIndex(new UserActionByTypeIndex());
     this.addIndex(new UserActionsByStepIndex());
@@ -365,6 +375,23 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addIndex(new VisibleActionGroupByStepIdIndex());
     this.addIndex(new StepsByGroupIndex());
     this.addIndex(new StepsByTypeIndex());
+  }
+
+  async clearSteps() {
+    this._resetUserActions();
+    fs.unlinkSync(this.session.logFilePath);
+
+    this.writeHeader();
+    this.writeAll(
+      Object.fromEntries(['testRuns', 'applications'].
+        map(name => this.collections[name]).
+        map(collection => [collection.name, Array.from(collection)])
+      )
+    );
+
+    this._notifyData({
+      
+    });
   }
 
   /**
@@ -432,13 +459,17 @@ export default class PathwaysDataProvider extends DataProviderBase {
     super.addData(allData);
 
     if (writeToLog) {
-      for (const collectionName in allData) {
-        for (let data of allData[collectionName]) {
-          if (this.collections[collectionName].serialize) {
-            data = this.collections[collectionName].serialize(data);
-          }
-          this.writeOnData(collectionName, data);
+      this.writeAll(allData);
+    }
+  }
+
+  writeAll(allData) {
+    for (const collectionName in allData) {
+      for (let data of allData[collectionName]) {
+        if (this.collections[collectionName].serialize) {
+          data = this.collections[collectionName].serialize(data);
         }
+        this.writeOnData(collectionName, data);
       }
     }
   }

@@ -19,10 +19,10 @@ let iProgram = 0;
 /**
  * Build the state used by dbux-babel-plugin throughout the entire AST visit.
  */
-export default function injectDbuxState(programPath, programState) {
+export default function injectDbuxState(buildCfg, programPath, programState) {
   const cfg = programState.opts || EmptyObject;
   const { filenameOverride: filenameOverrideOrFn } = cfg;
-  const filenameOverride = filenameOverrideOrFn && (isFunction(filenameOverrideOrFn) ? filenameOverrideOrFn(prgoramState) : null);
+  const filenameOverride = filenameOverrideOrFn && (isFunction(filenameOverrideOrFn) ? filenameOverrideOrFn(programState) : null);
   const filePath = filenameOverride || programState.filename || `__unnamed_script_${++unknownCount}.js`;
   const fileName = filePath && pathGetBasename(filePath);
 
@@ -32,6 +32,8 @@ export default function injectDbuxState(programPath, programState) {
   const { file: programFile } = programState;
 
   const dbuxState = {
+    runtimeCfg: buildCfg?.runtime,
+
     // static program data
     programFile,
     filePath,

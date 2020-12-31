@@ -50,6 +50,9 @@ class PathwaysStep extends ClientComponentEndpoint {
     }
     this.el.style.background = background;
 
+    decorateClasses(this.els.timeSpent, {
+      hidden: !this.context.doc.state.showTime
+    });
     decorateClasses(this.els.header, {
       hidden: this.context.doc.isAnalyzing()
     });

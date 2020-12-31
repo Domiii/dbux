@@ -72,6 +72,12 @@ export function initProjectCommands(extensionContext, projectViewController) {
     return projectViewController.manager.runner.cancel();
   });
 
+  registerCommand(extensionContext, 'dbux.resetPracticeLog', async () => {
+    await projectViewController.manager.resetLog();
+    projectViewController.projectViewNodeProvider.refreshIcon();
+    await showInformationMessage('Practice log cleared');
+  });
+
   registerCommand(extensionContext, 'dbux.resetPracticeProgress', async () => {
     await projectViewController.manager.resetProgress();
     projectViewController.projectViewNodeProvider.refreshIcon();

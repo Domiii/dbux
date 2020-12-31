@@ -1,7 +1,7 @@
 import 'ws'; // this must work!
 import io, { Socket } from 'socket.io-client';
 import { newLogger, logInternalError } from '@dbux/common/src/log/logger';
-import universalLibs from '@dbux/common/src/util/universalLibs';
+// import universalLibs from '@dbux/common/src/util/universalLibs';
 import SendQueue from './SendQueue';
 
 const Verbose = true;
@@ -17,7 +17,6 @@ const { log, debug, warn, error: logError } = newLogger('Runtime Client');
 const StayAwake = false;
 const SleepDelay = 1000;
 const DefaultPort = 3374;
-const Remote = `ws://localhost:${DefaultPort}`;
 
 // ###########################################################################
 // time management
@@ -197,10 +196,13 @@ export default class Client {
 
   _connect() {
     // debugger;
+    // TODO: add config port
+    const port = DefaultPort;
+    const Remote = `ws://localhost:${port}`;
     const socket = this._socket = io.connect(Remote, {
       // jsonp: false,
       // forceNode: true,
-      port: DefaultPort,
+      // port: DefaultPort,
       transports: ['websocket']
     });
 

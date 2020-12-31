@@ -21,8 +21,8 @@
   },
   {
     "command": "dbux.deleteUserEvents",
-    "title": "Dev: Delete all user events",
-    "description": ""
+    "title": "Dbux Dev: Delete all user events",
+    "description": "(Feature still in development. Won't work.)"
   },
   {
     "command": "dbux.doActivate",
@@ -51,7 +51,7 @@
   },
   {
     "command": "dbux.loadPracticeLogFile",
-    "title": "Dev: Load Practice Log",
+    "title": "Dbux Dev: Load Practice Log",
     "description": ""
   },
   {
@@ -61,7 +61,7 @@
   },
   {
     "command": "dbux.resetPracticeProgress",
-    "title": "Dev: Reset Practice Progress",
+    "title": "Dbux Dev: Reset Practice Progress",
     "description": ""
   },
   {

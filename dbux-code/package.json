@@ -194,11 +194,15 @@
       },
       {
         "command": "dbux.resetPracticeProgress",
-        "title": "Dev: Reset Practice Progress"
+        "title": "Dbux Dev: Reset Practice Progress"
+      },
+      {
+        "command": "dbux.resetPracticeLog",
+        "title": "Dbux Dev: Reset Practice Log"
       },
       {
         "command": "dbux.loadPracticeLogFile",
-        "title": "Dev: Load Practice Log"
+        "title": "Dbux Dev:Load Practice Log"
       },
       {
         "command": "dbux.showDBStats",
@@ -514,7 +518,7 @@
       },
       {
         "command": "dbux.deleteUserEvents",
-        "title": "Dev: Delete all user events"
+        "title": "Dbux Dev: Delete all user events"
       },
       {
         "command": "dbuxSessionView.node.annotateTraceQ",
