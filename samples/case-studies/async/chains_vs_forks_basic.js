@@ -40,6 +40,7 @@ function chain5() {
     });
 }
 
+
 async function fork1() {
   f(1);                       // F(1, 2)
   f(2);                       // F(1, 3)
@@ -48,4 +49,9 @@ async function fork1() {
 async function forkAndChain1() {
   f(1).                       // F(1, 2)
     then(f2);                 // C(2, 3)
+}
+
+function forkAndChain2() {
+  new Promise(g1).    // F(1, 2)
+    then(f2);         // C(2, 3)
 }

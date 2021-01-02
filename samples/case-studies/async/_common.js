@@ -8,6 +8,10 @@
  * J(...xs) indicates a join between all runs of id x in xs
  */
 
+export async function sleep(ms) { 
+  return new Promise(r => setTimeout(r, ms));
+}
+
 export async function f(x) {
   console.log('f1', x);
   await 0;
