@@ -23,7 +23,11 @@ async function g(x) {
   f(1);
   f(2);
   f(3);
-  Promise.resolve().then(() => console.log(4)).then(() => console.log(44));
-  Promise.resolve().then(() => console.log(5)).then(() => console.log(55));
+  Promise.resolve().
+    then(() => console.log(4)).
+    then(() => console.log(44));
+  Promise.resolve().
+    then(() => console.log(5)).
+    then(() => console.log(55));
   console.log('main2');
 })();
