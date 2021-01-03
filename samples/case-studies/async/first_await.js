@@ -45,13 +45,33 @@ import { f, g, f1, f2, f3, g1, g2 } from './_common';
 })();
 
 /**
- * Ex. 7: Three threads.
+ * Ex. 7:
+ * 
+ * A missing `await` in front of fff() leads to a forked thread for any
+ * meaning f(1) and f(2) execute in parallel.
+ */
+(async function () {
+  async function ff() {
+    await f(1);
+  }
+
+  async function fff() {
+    ff();
+    await f(2);
+  }
+
+  fff();
+  await f(3);
+})();
+
+/**
+ * Ex. 8:
  * 
  * First, f(1), f(2) and f(4) run in parallel.
  * f(2) is followed by f(3).
  * f(4) is followed by f(5).
  * 
- * Horizontal visualization of asynchronous graph:
+ * Simple visualization of asynchronous graph:
  * 
  * 1
  * 2 -> 3
