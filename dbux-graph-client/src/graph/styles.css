@@ -202,13 +202,14 @@ html, body {
 
 .async-node {
   border: 1px solid transparent;
-  min-height: 2em;
+  min-height: 1.6em;
   min-width: 5em;
-  padding: 3px;
+  line-height: 1.1;
+  padding: 1.5px;
 }
 
 [data-async-detail-mode="1"] .async-node {
-  min-height: 3.5em;
+  min-height: 2.8em;
 }
 
 .async-node:hover:not([data-context-id=""]) {
@@ -230,6 +231,7 @@ html, body {
   border: 1px solid white;
   border-radius: 2px;
   text-align: center;
+  line-height: normal;
   height: 15px;
   width: 15px;
   font-size: 8px;

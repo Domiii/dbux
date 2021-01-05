@@ -1,7 +1,10 @@
-import getGlobal from '@dbux/common/src/getGlobal';
+// import getGlobal from '@dbux/common/src/getGlobal';
+
+const NativePromise = Promise;
 
 export default function _setImmediate(cb) {
-  const _global_ = getGlobal();
-  const f = _global_._setImmediate || setTimeout;
-  f(cb);
+  // const _global_ = getGlobal();
+  // const f = _global_._setImmediate || setTimeout;
+  // f(cb);
+  NativePromise.resolve().then(cb);
 }
