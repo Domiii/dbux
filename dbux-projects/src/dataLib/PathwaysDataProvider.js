@@ -314,27 +314,25 @@ export default class PathwaysDataProvider extends DataProviderBase {
     if (!lastStep || action.newStep) {
       return true;
     }
-    if (StepType.is.Other(stepType)) {
-      if ((applicationId && applicationId !== lastApplicationId) ||
-        (staticContextId && staticContextId !== lastStaticContextId)
-      ) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-    if (!StepType.is.None(stepType) && lastStepType && stepType !== lastStepType) {
-      return true;
-    }
-    if ((stepType === StepType.Trace) && (
-      (applicationId && applicationId !== lastApplicationId) ||
-      (staticContextId && staticContextId !== lastStaticContextId)
-    )) {
-      return true;
+
+    if (StepType.is.None(stepType)) {
+      return false;
     }
 
-    return false;
+    if (applicationId && staticContextId) {
+      if ((applicationId === lastApplicationId) && (staticContextId === lastStaticContextId)) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+
+    if (lastStepType && stepType === lastStepType) {
+      return false;
+    }
+
+    return true;
   }
 
   // ###########################################################################
