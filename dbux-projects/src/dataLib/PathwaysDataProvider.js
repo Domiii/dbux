@@ -21,6 +21,7 @@ import VisibleActionGroupByStepIdIndex from './indexes/VisibleActionGroupByStepI
 import StepsByTypeIndex from './indexes/StepsByTypeIndex';
 import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 import TestRun from './TestRun';
+import LogFileLoader from './LogFileLoader';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -432,36 +433,9 @@ export default class PathwaysDataProvider extends DataProviderBase {
     }
   }
 
-  loadByVersion = {
-    1: (header, allData) => {
-      const actions = allData.userActions;
-      delete allData.userActions;
-      delete allData.actionGroups;
-      delete allData.steps;
-
-      this.addData(allData, false);
-      actions.forEach(action => {
-        // set codeEvents
-        if (action.type === 10) {
-          if (action.eventType === 'selectionChanged') {
-            action.type = 9;
-          }
-          delete action.eventType;
-        }
-        this.addNewUserAction(action, false);
-      });
-    },
-    2: (header, dataToAdd) => {
-      // hotfix: some logs contains SessionFinished event with no createdAt property
-      const { userActions } = dataToAdd;
-      const lastAction = userActions[userActions.length - 1];
-      const isFinished = UserActionType.is.SessionFinished(lastAction.type);
-      if (isFinished && !lastAction.createdAt) {
-        lastAction.createdAt = userActions[userActions.length - 2].createdAt;
-      }
-      this.addData(dataToAdd, false);
-    }
-  }
+  loadByVersion = Object.fromEntries(
+    Object.entries(LogFileLoader).map(([name, func]) => [name, func.bind(this)])
+  );
 
   addData(allData, writeToLog = true) {
     super.addData(allData);
