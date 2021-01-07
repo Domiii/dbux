@@ -118,7 +118,7 @@ class PathwaysView extends HostComponentEndpoint {
 
   makeStepBackground(step, themeMode) {
     const { staticContextId } = step;
-    return staticContextId ? getStaticContextColor(themeMode, staticContextId) : 'default';
+    return staticContextId ? getStaticContextColor(themeMode, staticContextId) : '';
   }
 
   makeStep = (themeMode, modeName, step) => {

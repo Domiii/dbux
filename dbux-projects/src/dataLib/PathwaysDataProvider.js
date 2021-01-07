@@ -125,7 +125,8 @@ class StepCollection extends Collection {
         staticContextId
       } = step;
 
-      const stepGroupKey = `${type}_${staticContextId}`;
+      // const stepGroupKey = `${type}_${staticContextId}`;
+      const stepGroupKey = staticContextId ? `staticContextId_${staticContextId}` : `type_${type}`;
       let stepGroupId = this.groupIdsByKey.get(stepGroupKey);
       if (!stepGroupId) {
         this.groupIdsByKey.set(stepGroupKey, stepGroupId = this.groupIdsByKey.size + 1);
