@@ -3,6 +3,7 @@ import path from 'path';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
@@ -390,7 +391,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     );
 
     this._notifyData({
-      
+
     });
   }
 
@@ -451,6 +452,13 @@ export default class PathwaysDataProvider extends DataProviderBase {
       });
     },
     2: (header, dataToAdd) => {
+      // hotfix: some logs contains SessionFinished event with no createdAt property
+      const { userActions } = dataToAdd;
+      const lastAction = userActions[userActions.length - 1];
+      const isFinished = UserActionType.is.SessionFinished(lastAction.type);
+      if (isFinished && !lastAction.createdAt) {
+        lastAction.createdAt = userActions[userActions.length - 2].createdAt;
+      }
       this.addData(dataToAdd, false);
     }
   }
