@@ -1,15 +1,15 @@
 {
   "name": "@dbux/projects",
-  "version": "0.3.14-dev.0",
+  "version": "0.3.14",
   "description": "",
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@dbux/cli": "^0.3.14-dev.0",
-    "@dbux/common": "^0.3.14-dev.0",
-    "@dbux/data": "^0.3.14-dev.0",
+    "@dbux/cli": "^0.3.14",
+    "@dbux/common": "^0.3.14",
+    "@dbux/data": "^0.3.14",
     "i18next": "^19.8.2",
     "lodash": "^4.17.19",
     "nanoevents": "^2.0.0",
