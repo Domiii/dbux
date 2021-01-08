@@ -51,12 +51,17 @@
   },
   {
     "command": "dbux.loadPracticeLogFile",
-    "title": "Dbux Dev: Load Practice Log",
+    "title": "Dbux Dev:Load Practice Log",
     "description": ""
   },
   {
     "command": "dbux.openPracticeLogFolder",
     "title": "Dbux: Open Practice Log Folder",
+    "description": ""
+  },
+  {
+    "command": "dbux.resetPracticeLog",
+    "title": "Dbux Dev: Reset Practice Log",
     "description": ""
   },
   {
