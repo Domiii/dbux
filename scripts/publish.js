@@ -1,6 +1,8 @@
 /* eslint no-console: 0 */
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 
+let alwaysNo = false;
+
 const path = require('path');
 const fs = require('fs');
 const open = require('open');
@@ -69,7 +71,7 @@ async function yesno(q) {
   // process.stderr.write(q); // NOTE: write() won't flush and there is no way to force it...?
   log(q);
 
-  const val = await input.readLine();
+  const val = alwaysNo ? 'n' : await input.readLine();
   return val === 'y';
 }
 
@@ -245,6 +247,10 @@ function getBranchName() {
 
 async function main() {
   input = new LineReader();
+  if (process.argv[1] === 'n') {
+    alwaysNo = true;
+  }
+
   log(`Preparing to publish (bumping from version ${await getDbuxVersion()})...`);
 
   try {

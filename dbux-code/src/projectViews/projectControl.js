@@ -39,7 +39,7 @@ export async function initProjectManager(extensionContext) {
 
   // the folder that is parent to `node_modules` for installing all extraneous dependencies (such as @dbux/cli, firebase etc.)
   let dependencyRoot = extensionContext.asAbsolutePath(path.join('.'));     // extension_folder
-  const pathMatch = dependencyRoot.match(/(.+)[/\\]dbux-code/);
+  const pathMatch = dependencyRoot.match(/(.+)[/\\](?:.+\.)?dbux-code/);    // NOTE: in prod, folder name changes to "author.dbux-code"
   if (pathMatch) {
     dependencyRoot = pathMatch[1];                                          // DBUX_ROOT (but DBUX_ROOT is not available in production)
     if (process.env.NODE_ENV === 'development') {
