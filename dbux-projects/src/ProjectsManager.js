@@ -76,6 +76,10 @@ export default class ProjectsManager {
    */
   constructor(cfg, externals) {
     this.config = cfg;
+    this.getDbuxCliBinPath();
+    if (!this.config.dependencyRoot) {
+      throw new Error(`ProjectsManager missing dependencyRoot: ${JSON.stringify(this.config)}`);
+    }
     this.externals = externals;
     this.editor = externals.editor;
     this.practiceSession = null;
@@ -613,6 +617,7 @@ export default class ProjectsManager {
   }
 
   getDbuxPath(relativePath) {
+    debug(`getDbuxPath(), relativePath='${relativePath}', getDbuxRoot()='${this.getDbuxRoot()}', config=${JSON.stringify(this.config)}`);
     return path.join(this.getDbuxRoot(), 'node_modules', relativePath);
   }
 
@@ -621,7 +626,11 @@ export default class ProjectsManager {
       // if we install in dev mode, DBUX_ROOT is set, but we are not in it
       return process.env.DBUX_ROOT;
     }
+
     // in production mode, we must install dbux separately
+    if (!this.config.dependencyRoot) {
+      throw new Error(`ProjectsManager missing dependencyRoot: ${JSON.stringify(this.config)}`);
+    }
     return this.config.dependencyRoot;
   }
 

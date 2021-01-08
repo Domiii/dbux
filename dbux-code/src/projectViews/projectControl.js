@@ -38,14 +38,21 @@ export async function initProjectManager(extensionContext) {
   // ########################################
 
   // the folder that is parent to `node_modules` for installing all extraneous dependencies (such as @dbux/cli, firebase etc.)
-  let dependencyRoot = extensionContext.asAbsolutePath(path.join('.'));     // extension_folder
-  const pathMatch = dependencyRoot.match(/(.+)[/\\](?:.+\.)?dbux-code/);    // NOTE: in prod, folder name changes to "author.dbux-code"
+  let dependencyRoot = extensionContext.asAbsolutePath('.');     // extension_folder
+  // let dependencyRoot = extensionContext.extensionPath;              // extension_folder
+  const pathMatch = dependencyRoot.match(/(.+)[/\\](?:.+\.)?dbux-code(?:.*[/\\]?)?/);    // NOTE: in prod, folder name changes to "author.dbux-code-version"
   if (pathMatch) {
-    dependencyRoot = pathMatch[1];                                          // DBUX_ROOT (but DBUX_ROOT is not available in production)
     if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line prefer-destructuring
+      dependencyRoot = pathMatch[1];                                          // same as DBUX_ROOT
       if (dependencyRoot.toLowerCase() !== process.env.DBUX_ROOT?.toLowerCase()) { // weird drive letter inconsistencies in Windows force us to do case-insensitive comparison
         throw new Error(`Path problems: ${dependencyRoot} !== DBUX_ROOT (${process.env.DBUX_ROOT})`);
       }
+    }
+    else {
+      // production: dependencyRoot is the dbux-code folder itself
+      // eslint-disable-next-line prefer-destructuring
+      // dependencyRoot = pathMatch[0];
     }
   }
 
@@ -53,6 +60,8 @@ export async function initProjectManager(extensionContext) {
   const projectsRoot = path.join(dependencyRoot, 'dbux_projects');
   const dbuxLanguage = storageGet(`dbux.language`);
   const stopwatch = getStopwatch();
+
+  debug(`Initializing dbux-projects: projectsRoot = "${path.resolve(projectsRoot)}", dependencyRoot = "${path.resolve(dependencyRoot)}"`);
 
   const cfg = {
     dependencyRoot,
@@ -120,8 +129,6 @@ export async function initProjectManager(extensionContext) {
   projectManager = await initDbuxProjects(cfg, externals);
 
   initUserEvent(projectManager);
-
-  debug(`Initialized dbux-projects. projectsRoot = "${path.resolve(cfg.projectsRoot)}", dependencyRoot = "${path.resolve(cfg.dependencyRoot)}"`);
 
   return projectManager;
 }
