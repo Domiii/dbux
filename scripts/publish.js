@@ -247,7 +247,8 @@ function getBranchName() {
 
 async function main() {
   input = new LineReader();
-  if (process.argv[1] === 'n') {
+  // console.log(process.argv);
+  if (process.argv[2] === 'n') {
     alwaysNo = true;
     console.warn('Non-interactive mode enabled: always NO');
   }
