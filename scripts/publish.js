@@ -1,7 +1,8 @@
 /* eslint no-console: 0 */
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 
-let alwaysNo = false;
+let chooseAlwaysNo = false;
+let chooseVersionBump;
 
 const path = require('path');
 const fs = require('fs');
@@ -71,7 +72,7 @@ async function yesno(q) {
   // process.stderr.write(q); // NOTE: write() won't flush and there is no way to force it...?
   log(q);
 
-  const val = alwaysNo ? 'n' : await input.readLine();
+  const val = chooseAlwaysNo ? 'n' : await input.readLine();
   return val === 'y';
 }
 
@@ -122,7 +123,7 @@ async function pullDev() {
  * Bump version and produce new git tag
  */
 async function bumpVersion() {
-  const [choice] = await menu('Version bump?', {
+  const [choice] = chooseVersionBump || await menu('Version bump?', {
     1: ['(skip)'],
     2: ['patch'],
     3: ['minor'],
@@ -249,8 +250,9 @@ async function main() {
   input = new LineReader();
   // console.log(process.argv);
   if (process.argv[2] === 'n') {
-    alwaysNo = true;
-    console.warn('Non-interactive mode enabled: always NO');
+    chooseAlwaysNo = true;
+    chooseVersionBump = process.argv[3] || 'patch';
+    console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
   }
 
   log(`Preparing to publish (bumping from version ${await getDbuxVersion()})...`);
