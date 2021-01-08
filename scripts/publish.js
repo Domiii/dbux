@@ -249,6 +249,7 @@ async function main() {
   input = new LineReader();
   if (process.argv[1] === 'n') {
     alwaysNo = true;
+    console.warn('Non-interactive mode enabled: always NO');
   }
 
   log(`Preparing to publish (bumping from version ${await getDbuxVersion()})...`);
