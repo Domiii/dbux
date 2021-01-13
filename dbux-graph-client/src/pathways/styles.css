@@ -28,13 +28,12 @@ html, body {
 #pathways-timeline {
   height: 20px;
   border: 1px solid gray;
-  padding: 0.5px;
 }
 
 #pathways-timeline div {
   text-align: center;
   height: 100%;
-  border-right: .1px solid gray;
+  /* border-right: .1px solid gray; */
 }
 
 #pathways-timeline-stale-cover {

@@ -30,6 +30,7 @@ class PathwaysTimeline extends ClientComponentEndpoint {
       staleCovers.push(this.makeStaleCoverDOM(false, currentStart, endTime, totalTimeSpent));
 
       this.els.timeline.innerHTML = stepDOM;
+      this.els.timeline.style.width = `${totalTimeSpent / (25 * 60 * 1000) * 100}%`;
       this.els.staleCover.innerHTML = staleCovers.join('');
     }
     else {

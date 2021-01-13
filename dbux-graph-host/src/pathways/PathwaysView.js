@@ -141,6 +141,9 @@ class PathwaysView extends HostComponentEndpoint {
           const locString = makeStaticContextLocLabel(applicationId, staticContextId);
           locLabel = ` @ ${locString}`;
         }
+        else {
+          label = '(other)';
+        }
         break;
       case StepType.CallGraph:
         label = '(Call Graph Investigation)';
@@ -153,6 +156,9 @@ class PathwaysView extends HostComponentEndpoint {
           const locString = makeStaticContextLocLabel(applicationId, staticContextId);
           locLabel = ` @ ${locString}`;
         }
+        else {
+          label = '(other)';
+        }
         break;
       case StepType.None:
       default:
@@ -160,7 +166,18 @@ class PathwaysView extends HostComponentEndpoint {
         break;
     }
 
-    const iconUri = this.getIconUri(modeName, getIconByStep(stepType));
+    /**
+     * hackfix: currently we have not recorded the trace data, so we temporarily set it to `StepType.Other`
+     */
+    let icon;
+    if (StepType.is.Trace(stepType) && !staticContextId) {
+      icon = getIconByStep(StepType.Other);
+    }
+    else {
+      icon = getIconByStep(stepType);
+    }
+
+    const iconUri = this.getIconUri(modeName, icon);
     const timeSpent = formatTimeSpent(this.pdp.util.getStepTimeSpent(stepId));
     const background = this.makeStepBackground(step, themeMode);
     const hasTrace = StepType.is.Trace(stepType);
