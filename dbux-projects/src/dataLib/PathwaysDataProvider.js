@@ -105,6 +105,20 @@ class UserActionCollection extends Collection {
     }
     staticTraces.push(staticTrace);
   }
+
+  serialize(action) {
+    if (UserActionType.is.EditorSelectionChanged(action.type)) {
+      action.file = path.relative(this.dp.manager.config.projectsRoot, action.file).replace(/\\/g, '/');
+    }
+    return action;
+  }
+
+  deserialize(action) {
+    if (UserActionType.is.EditorSelectionChanged(action.type)) {
+      action.file = path.join(this.dp.manager.config.projectsRoot, action.file);
+    }
+    return action;
+  }
 }
 
 /**
