@@ -21,7 +21,7 @@ class PathwaysDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   init() {
-    this.state.pathwaysMode = PathwaysMode.Normal;
+    this.state.pathwaysMode = PathwaysMode.Analyze;
 
     this.createOwnComponents();
 

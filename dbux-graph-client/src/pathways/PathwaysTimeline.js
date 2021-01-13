@@ -3,9 +3,9 @@ import ClientComponentEndpoint from '../componentLib/ClientComponentEndpoint';
 
 class PathwaysTimeline extends ClientComponentEndpoint {
   createEl() {
-    return compileHtmlElement(/*html*/`<div style="position: relative; margin: 5px 0;">
+    return compileHtmlElement(/*html*/`<div style="position: relative; margin: 5px 1px;">
       <div id="pathways-timeline" class="flex-row" data-el="timeline"></div>
-      <div id="pathways-timeline-stale-cover" class="flex-row full-width" data-el="staleCover"></div>
+      <div id="pathways-timeline-stale-cover" class="flex-row full-width hidden" data-el="staleCover"></div>
     </div>`);
   }
 
@@ -15,7 +15,8 @@ class PathwaysTimeline extends ClientComponentEndpoint {
     if (steps?.length) {
       const totalTimeSpent = steps.reduce((sum, step) => sum + step.timeSpent, 0);
       const stepDOM = steps.map(({ tag, background, timeSpent }) => {
-        return `<div style="background: ${background}; width: ${timeSpent / totalTimeSpent * 100}%;">${tag}</div>`;
+        const backgroundStyle = background ? `background: ${background};` : '';
+        return `<div style="${backgroundStyle} width: ${timeSpent / totalTimeSpent * 100}%;">${/*tag*/''}</div>`;
       }).join('');
       const startTime = steps[0].createdAt;
       const endTime = startTime + totalTimeSpent;
@@ -27,8 +28,9 @@ class PathwaysTimeline extends ClientComponentEndpoint {
         currentStart = interval.end;
       }
       staleCovers.push(this.makeStaleCoverDOM(false, currentStart, endTime, totalTimeSpent));
-  
+
       this.els.timeline.innerHTML = stepDOM;
+      this.els.timeline.style.width = `${totalTimeSpent / (25 * 60 * 1000) * 100}%`;
       this.els.staleCover.innerHTML = staleCovers.join('');
     }
     else {
