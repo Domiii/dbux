@@ -150,7 +150,7 @@ export default class EslintProject extends Project {
     const args = `--config ./dbux.webpack.config.js --watch --env entry=${bug.testFilePaths.join(',')}`;
     
     // weird bug - sometimes it just will keep saying "volta not found"... gotta hate system configuration problems...
-    const volta = '/Users/domi/.volta/bin/volta'; // 'volta';
+    const volta = 'volta'; //'/Users/domi/.volta/bin/volta'; // 'volta';
 
     await this.execBackground(`which volta`);
     await this.execBackground(`echo $PATH`);

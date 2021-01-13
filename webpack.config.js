@@ -130,7 +130,10 @@ module.exports = (env, argv) => {
         map(depName => path.join(MonoRoot, 'node_modules', depName));
 
       // look up folders of each dependency
-      const dependencyFolderNames = dependencyLinks.map(link => fs.realpathSync(link).replace(MonoRoot, ''));
+      const dependencyFolderNames = dependencyLinks.map(
+        // link => fs.realpathSync(link).replace(MonoRoot, '')
+        link => path.relative(MonoRoot, fs.realpathSync(link))
+      );
       dependencyFolderNames.push(target);
 
       // resolve
