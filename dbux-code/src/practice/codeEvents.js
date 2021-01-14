@@ -40,7 +40,7 @@ export function initCodeEvents(manager, context) {
     // TODO?: take only first selection only. Do we need all selections? Can there be no selections?
     const firstSelection = e.selections[0];
     let data = {
-      file: e.textEditor.document.uri.path,
+      file: e.textEditor.document.uri.fsPath,
       range: firstSelection ? codeRangeToBabelLoc(firstSelection) : null
     };
 
@@ -65,7 +65,7 @@ export function initCodeEvents(manager, context) {
     // TODO?: take only first range only. Do we need all range? Can there be no range?
     const firstRange = e.visibleRanges[0];
     let data = {
-      file: e.textEditor.document.uri.path,
+      file: e.textEditor.document.uri.fsPath,
       range: firstRange ? codeRangeToBabelLoc(firstRange) : null
     };
 

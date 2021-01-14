@@ -132,7 +132,8 @@ export default class PracticeSession {
       return;
     }
 
-    if (this.bug.isCorrectBugLocation(location)) {
+    const isCorrect = this.bug.isCorrectBugLocation(location);
+    if (isCorrect) {
       this.manager.bdp.updateBugProgress(this.bug, { status: BugStatus.Found });
       this.setState(PracticeSessionState.Found);
       emitSessionFinishedEvent(this.state);
@@ -142,9 +143,15 @@ export default class PracticeSession {
       const congratsMsg = `Congratulations!! You have found the bug!`;
       this.manager.externals.alert(congratsMsg, true);
     }
-    else {
+    else if (isCorrect === false) {
       // TOTRANSLATE
       const failedMsg = `This is not the right line, keep going!`;
+      this.manager.externals.alert(failedMsg, false);
+    }
+    else if (isCorrect === null) {
+      // skip if the result is null or something else, since bug location may not been defined yet
+      // TOTRANSLATE
+      const failedMsg = `Sorry, we have not defined the bug location yet.`;
       this.manager.externals.alert(failedMsg, false);
     }
   }
