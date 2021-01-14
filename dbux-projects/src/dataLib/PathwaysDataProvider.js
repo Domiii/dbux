@@ -3,7 +3,7 @@ import path from 'path';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
-import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import UserActionType, { isCodeActionTypes } from '@dbux/data/src/pathways/UserActionType';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
@@ -107,14 +107,15 @@ class UserActionCollection extends Collection {
   }
 
   serialize(action) {
-    if (UserActionType.is.EditorSelectionChanged(action.type)) {
+    action = { ...action };
+    if (isCodeActionTypes(action.type)) {
       action.file = path.relative(this.dp.manager.config.projectsRoot, action.file).replace(/\\/g, '/');
     }
     return action;
   }
 
   deserialize(action) {
-    if (UserActionType.is.EditorSelectionChanged(action.type)) {
+    if (isCodeActionTypes(action.type)) {
       action.file = path.join(this.dp.manager.config.projectsRoot, action.file);
     }
     return action;
