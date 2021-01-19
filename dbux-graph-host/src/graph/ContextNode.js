@@ -1,3 +1,4 @@
+import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
@@ -66,13 +67,19 @@ class ContextNode extends HostComponentEndpoint {
     const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
     childContexts.forEach(childContext => {
-      if (!dp.util.isFirstContextOfRun(childContext.contextId)) {
-        // create child context
-        this.children.createComponent('ContextNode', {
-          applicationId,
-          context: childContext
-        });
+      if (dp.util.isFirstContextOfRun(childContext.contextId)) {
+        return;
       }
+
+      if (ExecutionContextType.is.Await(childContext.contextType)) {
+        return;
+      }
+
+      // create child context
+      this.children.createComponent('ContextNode', {
+        applicationId,
+        context: childContext
+      });
     });
   }
 
