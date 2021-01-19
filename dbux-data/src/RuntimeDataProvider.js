@@ -13,6 +13,7 @@ import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src
 import Collection from './Collection';
 
 import DataProviderBase from './DataProviderBase';
+import DataProviderUtil from './dataProviderUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
@@ -426,6 +427,11 @@ class ValueCollection extends Collection {
 }
 
 export default class RuntimeDataProvider extends DataProviderBase {
+  /**
+   * @type {DataProviderUtil}
+   */
+  util;
+
   constructor(application) {
     super('RuntimeDataProvider');
 
