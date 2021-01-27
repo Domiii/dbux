@@ -4,9 +4,7 @@
 
 var p;
 
-async function sleep(ms) {
-  return new Promise(r => setTimeout(r, ms));
-}
+const sleep = async (ms) => new Promise(r => setTimeout(r, ms));
 
 async function f() {
   return p = g();
