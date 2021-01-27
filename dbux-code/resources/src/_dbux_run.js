@@ -72,7 +72,7 @@ function main() {
     // logger.debug(`process exit, code=${code}, signal=${signal}`);
     if (checkDone()) { return; }
 
-    reportStatusCode(code);
+    reportStatusCode(code, signal);
     clearInterval(warningIntervalId);
 
     logDebug(`\n(Done. You can close the Terminal now.)`);
@@ -98,8 +98,14 @@ function main() {
 // handle results + send data
 // ###########################################################################
 
-function reportStatusCode(code) {
-  fs.writeFileSync(path.join(tmpFolder, code.toString()), '');
+function reportStatusCode(code, signal) {
+  if (!signal) {
+    // odd: sometimes code is undefined?
+    fs.writeFileSync(path.join(tmpFolder, code?.toString() || '0'), '');
+  }
+  else {
+    reportError(`Exited with SIGNAL = ${signal} (code = ${code})`);
+  }
 }
 
 function reportError(error) {

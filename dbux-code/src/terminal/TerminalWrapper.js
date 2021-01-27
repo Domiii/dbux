@@ -65,7 +65,7 @@ export default class TerminalWrapper {
     const runJsargs = { cwd, command, args, tmpFolder };
     const serializedRunJsArgs = Buffer.from(JSON.stringify(runJsargs)).toString('base64');
     // const runJsCommand = `pwd && node -v && which node && echo %PATH% && node ${pathToDbuxRun} ${serializedRunJsArgs}`;
-    const runJsCommand = `${pathToNode} ${pathToDbuxRun} ${serializedRunJsArgs}`;
+    const runJsCommand = `"${pathToNode}" "${pathToDbuxRun}" ${serializedRunJsArgs}`;
 
     debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
 
@@ -88,7 +88,7 @@ export default class TerminalWrapper {
       if (filename === 'error') {
         let errorString = fs.readFileSync(path.join(tmpFolder, filename), { encoding: 'utf8' });
         let error = JSON.parse(errorString);
-        _reject(new Error(`Terminal wrapper received error: ${error.stack}`));
+        _reject(new Error(`Terminal wrapper received error: ${error?.stack || JSON.stringify(error)}`));
       } else {
         result = { code: parseInt(filename, 10) };
         Verbose && debug('Terminal command finished. Result:', JSON.stringify(result));

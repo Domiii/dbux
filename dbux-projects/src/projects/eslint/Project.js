@@ -146,16 +146,16 @@ export default class EslintProject extends Project {
   async startWatchMode(bug) {
     // start webpack using latest node (long-time support)
     // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
-    const req = `-r ${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}`;
+    const req = `-r "${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}"`;
     const args = `--config ./dbux.webpack.config.js --watch --env entry=${bug.testFilePaths.join(',')}`;
     
     // weird bug - sometimes it just will keep saying "volta not found"... gotta hate system configuration problems...
-    const volta = '/Users/domi/.volta/bin/volta'; // 'volta';
+    const volta = 'volta'; //'/Users/domi/.volta/bin/volta'; // 'volta';
 
     await this.execBackground(`which volta`);
-    await this.execBackground(`echo $PATH`);
+    // await this.execBackground(`echo $PATH`);
     return this.execBackground(
-      `${volta} run --node 12 node ${req} ${this.getWebpackJs()} ${args}`
+      `"${volta}" run --node 12 node ${req} "${this.getWebpackJs()}" ${args}`
     );
   }
 

@@ -17,7 +17,7 @@ class Toolbar extends ClientComponentEndpoint {
             🕒
           </button>
           <button title="" data-el="modeBtn" class="btn btn-info" href="#">
-            analyze
+            summarize
           </button>
         </div>
         <div data-el="moreMenu" class="dropdown">

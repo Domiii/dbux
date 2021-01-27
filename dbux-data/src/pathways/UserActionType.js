@@ -60,3 +60,11 @@ UserActionType = new Enum(UserActionType);
 
 
 export default UserActionType;
+
+const codeActionTypes = new Array(UserActionType.getValueMaxIndex()).map(() => false);
+codeActionTypes[UserActionType.EditorSelectionChanged] = true;
+codeActionTypes[UserActionType.EditorVisibleRangeChanged] = true;
+
+export function isCodeActionTypes(actionType) {
+  return codeActionTypes[actionType];
+}
