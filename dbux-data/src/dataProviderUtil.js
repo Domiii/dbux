@@ -629,6 +629,22 @@ export default {
     return dp.collections.staticContexts.getById(staticContextId);
   },
 
+  /** @param {DataProvider} dp */
+  getFirstContextOfRun(dp, runId) {
+    const contexts = dp.indexes.executionContexts.byRun.get(runId);
+    if (!contexts?.length) {
+      return null;
+    }
+    return contexts[0];
+  },
+
+  /** @param {DataProvider} dp */
+  isFirstContextOfRun(dp, contextId) {
+    const { runId } = dp.collections.executionContexts.getById(contextId);
+    const firstContextId = dp.util.getFirstContextOfRun(runId)?.contextId;
+    return firstContextId === contextId;
+  },
+
   // ###########################################################################
   // misc
   // ###########################################################################

@@ -1,9 +1,11 @@
+import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/traceLabels';
+import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
@@ -15,12 +17,12 @@ class ContextNode extends HostComponentEndpoint {
     } = this.state;
 
     // get name (and other needed data)
-    const dp = allApplications.getById(applicationId).dataProvider;
-    const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
+    const app = allApplications.getById(applicationId);
+    const dp = app.dataProvider;
     const errorTag = (dp.indexes.traces.errorByContext.get(context.contextId)?.length) ? '🔥' : '';
     this.parentTrace = dp.util.getCallerTraceOfContext(context.contextId);
 
-    this.state.contextNameLabel = staticContext.displayName + errorTag;
+    this.state.contextNameLabel = makeContextLabel(context, app) + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
     this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
@@ -61,13 +63,20 @@ class ContextNode extends HostComponentEndpoint {
       }
     } = this.state;
 
-
     // get all child contexts
     const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
     childContexts.forEach(childContext => {
+      if (dp.util.isFirstContextOfRun(childContext.contextId)) {
+        return;
+      }
+
+      if (ExecutionContextType.is.Await(childContext.contextType)) {
+        return;
+      }
+
       // create child context
-      return this.children.createComponent('ContextNode', {
+      this.children.createComponent('ContextNode', {
         applicationId,
         context: childContext
       });
