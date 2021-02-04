@@ -19,6 +19,18 @@ const resultCfg = buildWebpackConfig(ProjectRoot,
     let entry = Object.fromEntries(env.entry.split(',').map(fpath => [fpath.replace(/\.[^/.]+$/, ""), path.join(ProjectRoot, fpath)]));
     return {
       entry,
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            targets: {
+              node: '7'
+            },
+            useBuiltIns: 'usage',
+            corejs: 3
+          }
+        ]
+      ],
       // externals,
       module: {
         rules: [

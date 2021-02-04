@@ -429,15 +429,6 @@ export default class ExpressProject extends Project {
 
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);
-
-    // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
-    await this.npmInstall();
-
-    // Copy assets again in this branch
-    await this.installAssets();
-
-    // Auto commit again
-    await this.autoCommit();
   }
 
   async testBugCommand(bug, cfg) {

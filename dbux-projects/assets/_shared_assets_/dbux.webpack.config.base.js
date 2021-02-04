@@ -41,9 +41,6 @@ const babelOptions = {
     [
       '@babel/preset-env',
       {
-        targets: {
-          node: '7'
-        },
         useBuiltIns: 'usage',
         corejs: 3
       }
@@ -253,7 +250,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
 
     const resultCfg = mergeConcatArray(cfg, ...cfgOverrides);
 
-    console.debug(JSON.stringify(resultCfg, null, 2));
+    // console.debug(JSON.stringify(resultCfg, null, 2));
 
     return resultCfg;
   };

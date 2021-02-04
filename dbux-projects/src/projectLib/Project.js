@@ -113,6 +113,10 @@ export default class Project {
     return this.manager.config.dependencyRoot;
   }
 
+  getNodeVersion(bug) {
+    return bug.nodeVersion || this.nodeVersion || '14';
+  }
+
   // ###########################################################################
   // git stuff
   // ###########################################################################

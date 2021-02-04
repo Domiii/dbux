@@ -8,7 +8,6 @@ const ProjectRoot = path.resolve(__dirname);
 const resultCfg = buildWebpackConfig(ProjectRoot, {
   target: 'web'
 }, {
-  mode: 'development',
   context: path.join(ProjectRoot, 'src'),
   entry: {
     app: './dbux_bootstrap.js',
@@ -64,8 +63,8 @@ const resultCfg = buildWebpackConfig(ProjectRoot, {
   },
   externals: [
     {
-      fs: 'fs',
-      tls: 'tls'
+      fs: '"fs"',
+      tls: '"tls"'
     }
   ]
 });
