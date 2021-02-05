@@ -383,15 +383,17 @@ This may be solved by pressing \`clean project folder\` button.`);
 
   async afterInstall() { }
 
-  async autoCommit() {
+  async autoCommit(bug) {
     await this.checkCorrectGitRepository();
 
     if (await this.hasAnyChangedFiles()) {
       // only auto commit if files changed
       const files = this.getAllAssestFiles();
       this.logger.log('auto commit');
+
+      // TODO: should not need '--allow-empty', if `hasAnyChangedFiles` is correct (TODO: test with todomvc)
       await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
-      // --allow-empty is temp fix for todo-mvc that will cause commit failed due to nothing change.
+      await this.gitAddOrUpdateTag(bug);
     }
   }
 
@@ -454,25 +456,21 @@ This may be solved by pressing \`clean project folder\` button.`);
   }
 
   async applyBugPatchToTags() {
-    await this.gitAddTag(`"__dbux_bug_nopatch"`);
+    await this.gitAddOrUpdateTag(null);
     let bugs = this.getOrLoadBugs();
     for (let bug of bugs) {
       if (bug.patch) {
         await this.applyPatch(bug.patch);
         await this.exec(`git commit -am '"[dbux auto commit] Patch ${bug.patch}"' --allow-empty`);
-        await this.gitAddTag(`"__dbux_bug_${bug.patch}"`);
+        await this.gitAddOrUpdateTag(bug);
         await this.applyPatch(bug.patch, true);
       }
     }
   }
 
-  async switchToBugPatchTag(patch) {
-    if (patch) {
-      return this.gitCheckout(`"__dbux_bug_${patch}"`);
-    }
-    else {
-      return this.gitCheckout(`"__dbux_bug_nopatch"`);
-    }
+  async switchToBugPatchTag(bug) {
+    const tagName = this.getBugTagName(bug);
+    return this.gitCheckout(tagName);
   }
 
   async npmInstall() {
@@ -516,7 +514,7 @@ This may be solved by pressing \`clean project folder\` button.`);
   getAllAssestFolderNames() {
     const individualAssetDir = this.getAssestDir(this.folderName);
     if (sh.test('-d', individualAssetDir)) {
-      return [this.folderName, SharedAssetFolder];
+      return [SharedAssetFolder, this.folderName];
     }
     else {
       return [SharedAssetFolder];
@@ -541,7 +539,7 @@ This may be solved by pressing \`clean project folder\` button.`);
     const assetDir = this.getAssestDir(assetFolderName);
     // copy assets, if this project has any
     this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
-    sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
+    sh.cp('-R', `${assetDir}/*`, this.projectPath);
   }
 
   // ###########################################################################
@@ -614,15 +612,23 @@ This may be solved by pressing \`clean project folder\` button.`);
    * @param {String} checkoutTo 
    */
   async gitCheckout(checkoutTo) {
-    return this.exec(`git checkout ${checkoutTo}`);
+    return this.exec(`git checkout "${checkoutTo}"`);
+  }
+
+  getBugTagName(bug) {
+    if (bug) {
+      return `__dbux_bug_${bug.patch}`;
+    }
+    return '__dbux_bug_nopatch';
   }
 
   /**
-   * Add light tag
+   * Tag current commit
    * @param {String} tagName 
    */
-  async gitAddTag(tagName) {
-    return this.exec(`git tag -f ${tagName}`);
+  async gitAddOrUpdateTag(bug) {
+    const tagName = this.getBugTagName(bug);
+    return this.exec(`git tag -f "${tagName}"`);
   }
 
 

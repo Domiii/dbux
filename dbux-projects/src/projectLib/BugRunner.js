@@ -175,7 +175,7 @@ export default class BugRunner {
         // Copy assets again in this branch
         async () => project.installAssets(),
         // Auto commit again
-        async () => project.autoCommit(),
+        async () => project.autoCommit(bug),
 
         // start watch mode (if necessary)
         async () => project.startWatchModeIfNotRunning(bug),

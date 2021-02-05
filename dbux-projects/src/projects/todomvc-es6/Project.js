@@ -20,36 +20,36 @@ export default class TodomvcEs6Project extends Project {
   loadBugs() {
     return [
       {
-        name: 'baseline',
+        label: 'baseline',
         description: 'Bug-free life',
         runArgs: []
       },
       {
-        name: 'error1',
+        label: 'error1',
         patch: 'error1',
         description: 'Todo list is always empty. Luckily there is a clear error message.',
         runArgs: []
       },
       {
-        name: 'error2',
+        label: 'error2',
         patch: 'error2',
-        description: 'Todo list is always empty. We see an error message, but it is not the actual bug cause, only a sypmtom.',
+        description: 'Todo list is always empty. We see an error message, but it is not the actual bug cause, only a symptom.',
         runArgs: []
       },
       {
-        name: 'error3',
+        label: 'error3',
         patch: 'error3',
         description: 'Todo list is always empty. Sadly no error message is given. Luckily dbux displays an error indicator.',
         runArgs: []
       },
       {
-        name: 'error4',
+        label: 'error4',
         patch: 'error4',
         description: '"Clear completed" button does not do anything. No error message.',
         runArgs: []
       },
       {
-        name: 'error5',
+        label: 'error5',
         patch: 'error5',
         description: 'The todo list is always incomplete',
         runArgs: []
@@ -77,7 +77,7 @@ export default class TodomvcEs6Project extends Project {
   }
 
   async selectBug(bug) {
-    return this.switchToBugPatchTag(bug.patch);
+    return this.switchToBugPatchTag(bug);
   }
 
   async testBugCommand(bug, debugPort) {
