@@ -194,9 +194,9 @@ class ValueCollection extends Collection {
       // NOTE: `for in` gets a lot of enumerable properties that `Object.keys` does not get
       const keys = [];
       for (const key in obj) {
-        if (!isFunction(obj[key])) {
+        // if (!isFunction(obj[key])) {
           keys.push(key);
-        }
+        // }
       }
       return keys;
 
