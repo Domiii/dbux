@@ -377,7 +377,7 @@ class ValueCollection extends Collection {
   _deserializeValue(entry) {
     if (!entry.value) {
       if (this._visited.has(entry)) {
-        return '(circular reference)';
+        return '(Dbux: circular reference)';
       }
       this._visited.add(entry);
 
@@ -410,7 +410,13 @@ class ValueCollection extends Collection {
             value = {};
             for (const [key, childId] of entry.serialized) {
               const child = this.getById(childId);
-              value[key] = this._deserializeValue(child);
+              if (!child) {
+                value[key] = '(Dbux: lookup failed)';
+                warn(`Could not lookup object property "${key}" by id "${childId}": ${JSON.stringify(entry.serialized)}`);
+              }
+              else {
+                value[key] = this._deserializeValue(child);
+              }
             }
             break;
           }
