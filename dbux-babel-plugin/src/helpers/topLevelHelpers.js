@@ -21,7 +21,12 @@ function extractExportNamedVariableDeclaration(path, node, exportIds, newIds, bo
 }
 
 function extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes) {
-  if (node.declaration) {
+  if (node.source) {
+    // e.g. `export ... from ...`
+    exportNodes.push(node);
+  }
+  else if (node.declaration) {
+    // e.g. `export const x = 1;`
     const { id } = node.declaration;
     if (t.isVariableDeclaration(node.declaration)) {
       // variable declaration
@@ -44,6 +49,7 @@ function extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes,
     }
   }
   else if (node.specifiers) {
+    // e.g.: `export { ... }`
     // assign local specifier to new var, then
     // export new var as exported specifier
     const nodeExportIds = node.specifiers.map(spec => spec.local);
@@ -87,6 +93,7 @@ function extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNode
 }
 
 function extractExportDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes) {
+  // console.warn(`[export] ${path} ${t.isExportNamedDeclaration(node)} ${t.isExportDefaultDeclaration(node)}`);
   if (t.isExportNamedDeclaration(node)) {
     extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes);
   }
