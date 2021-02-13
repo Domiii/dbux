@@ -23,7 +23,7 @@ export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
 
   if (!application) {
     // suggest to open and use the first application that is selected and currently running.
-    const msg = 'Failed. No application running in file. Make sure to open a file with an application that ran before!';
+    const msg = 'Failed. No application running in open file. Exporting first application instead...';
     const firstApp = allApplications.selection.getAll()[0];
     const btns = {
       [`Select ${firstApp.getPreferredName()}`]: async () => {
@@ -31,7 +31,8 @@ export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
         return firstApp;
       }
     };
-    return showWarningMessage(msg, btns);
+    await showWarningMessage(msg, btns);
+    return firstApp;
   }
 
   return application;

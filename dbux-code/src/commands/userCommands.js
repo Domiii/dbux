@@ -65,7 +65,7 @@ export function initUserCommands(extensionContext) {
 
   registerCommand(extensionContext, 'dbux.exportApplicationData', async () => {
     const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
-    await doExport(application);
+    application && await doExport(application);
   });
 
 
