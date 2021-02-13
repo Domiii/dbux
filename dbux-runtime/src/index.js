@@ -2,6 +2,7 @@ import getGlobal from '@dbux/common/src/getGlobal';
 import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
 
+
 const dbux = {
   _r: RuntimeMonitor.instance,
 

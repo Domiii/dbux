@@ -153,8 +153,8 @@ module.exports = (env, argv) => {
 
         // https://github.com/webpack/webpack/issues/2145
         // devtool: 'inline-module-source-map',
-        // devtool: 'source-map',
-        devtool: 'inline-source-map',
+        devtool: 'source-map',
+        // devtool: 'inline-source-map',
         plugins: webpackPlugins,
         context,
         entry,
@@ -206,7 +206,8 @@ module.exports = (env, argv) => {
           fs: 'commonjs fs',
           net: 'commonjs net',
           // tls: 'commonjs tls',
-          ws: 'commonjs ws'
+          ws: 'commonjs ws',
+          util: 'commonjs util'
         }
           // see: https://www.npmjs.com/package/webpack-node-externals
           // NOTE: `node-externals` does not bundle `node_modules`

@@ -21,8 +21,9 @@ import { awaitVisitEnter, awaitVisitExit } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
-const Verbose = false;
-// const Verbose = true;
+const Verbose = 0;
+// const Verbose = 1;
+// const Verbose = 2;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
@@ -728,7 +729,7 @@ function getInstrumentor(instrumentors, instrumentationType) {
 
 function instrumentPath(direction, instrumentor, path, state, cfg) {
   // log
-  Verbose && logInst('II', cfg, path, direction);
+  Verbose > 1 && logInst('II', cfg, path, direction);
 
   // actual instrumentation
   const { extraCfg } = cfg;

@@ -51,7 +51,7 @@ const babelRegisterOptions = {
       return shouldIgnore;
     }
   ],
-  sourceMaps: "both",
+  // sourceMaps: "both",
   retainLines: true,
   babelrcRoots
 };
