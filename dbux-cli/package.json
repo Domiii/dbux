@@ -1,6 +1,6 @@
 {
   "name": "@dbux/cli",
-  "version": "0.3.16",
+  "version": "0.3.17-dev.0",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,9 +25,9 @@
     "@babel/plugin-transform-runtime": "7.10.1",
     "@babel/preset-env": "7.10.1",
     "@babel/register": "7.10.1",
-    "@dbux/babel-plugin": "^0.3.16",
-    "@dbux/common": "^0.3.16",
-    "@dbux/runtime": "^0.3.16",
+    "@dbux/babel-plugin": "^0.3.17-dev.0",
+    "@dbux/common": "^0.3.17-dev.0",
+    "@dbux/runtime": "^0.3.17-dev.0",
     "colors": "^1.4.0",
     "i18next": "^19.8.2",
     "lodash": "^4.17.19",
