@@ -73,6 +73,7 @@ function extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNode
     exportNodes.push(node);
   }
   else if (node.declaration.id) {
+    // e.g. `export default function f() {}`
     const { id } = node.declaration;
     const newId = path.scope.generateUidIdentifier(id.name);
     exportIds.push(id);
@@ -81,6 +82,7 @@ function extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNode
     bodyNodes.push(node.declaration);   // keep declaration in body
   }
   else if (t.isIdentifier(node.declaration)) {
+    // e.g. `export default x`
     const id = node.declaration;
     const newId = path.scope.generateUidIdentifier(id.name);
     exportIds.push(id);
@@ -88,7 +90,19 @@ function extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNode
     exportNodes.push(t.exportDefaultDeclaration(newId));
   }
   else {
-    exportNodes.push(node);
+    // e.g. `export default f()`
+    const newId = path.scope.generateUidIdentifier('exp');
+    exportNodes.push(t.exportDefaultDeclaration(newId));
+    bodyNodes.push(               // assign temp variable in body
+      t.variableDeclaration('var', [
+        t.variableDeclarator(newId, node.declaration)
+      ])
+    );
+    // bodyNodes.push(               // assign temp variable in body
+    //   t.expressionStatement(
+    //     t.assignmentExpression('=', newId, node.declaration)
+    //   )
+    // );
   }
 }
 

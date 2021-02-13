@@ -170,7 +170,8 @@ module.exports = (env, argv) => {
           devtoolModuleFilenameTemplate: 'file:///[absolute-resource-path]',  // map to source with absolute file path not webpack:// protocol
 
           // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
-          globalObject: 'typeof self !== "undefined" ? self : this',
+          // globalObject: '(typeof self !== "undefined" ? self : this)',
+          globalObject: 'globalThis'
         },
         resolve,
         module: {
