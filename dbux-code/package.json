@@ -1188,7 +1188,7 @@
     "terser-webpack-plugin": "^4.1.0",
     "typescript": "^3.6.4",
     "uuid": "^8.3.0",
-    "vsce": "^1.77.0",
+    "vsce": "*",
     "vscode-test": "^1.2.2",
     "webpack": "^4.41.5",
     "webpack-bundle-analyzer": "^3.8.0",
@@ -1198,7 +1198,8 @@
   "dependencies": {
     "firebase": "7.17.2",
     "i18next": "^19.8.2",
-    "lockfile": "^1.0.4"
+    "lockfile": "^1.0.4",
+    "vsce": "^1.85.0"
   },
   "_moduleAliases": {}
 }

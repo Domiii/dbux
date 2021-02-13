@@ -268,7 +268,7 @@ async function main() {
   }
 
   if (!await execCaptureOut('cd dbux-code && npx vsce ls-publishers')) {
-    throw new Error('Not logged in with VS Marketplace. Login first with: `cd dbux-code && npx vsce login dbux`');
+    throw new Error('Not logged in with VS Marketplace. Login first with: `cd dbux-code && npx vsce login Domi`');
   }
 
   // TODO: this does not work the way we would like it to
