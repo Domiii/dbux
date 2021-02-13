@@ -87,7 +87,7 @@ export class Db {
       // let dir = getResourcePath('firebase');
       // dir = fs.realpathSync(dir);
       
-      // sh.cp('-Rn', `${dir}`, getResourcePath('..', 'node_modules'));
+      // sh.cp('-R', `${dir}`, getResourcePath('..', 'node_modules'));
 
       // const moduleAlias = require('module-alias');
       // moduleAlias.addAlias('@firebase/app', `${dir}/firebase-app.js`);

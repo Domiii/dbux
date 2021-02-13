@@ -1,4 +1,5 @@
 dist
+test/__data
 
 # Logs
 logs

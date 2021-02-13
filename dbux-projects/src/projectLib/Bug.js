@@ -68,6 +68,10 @@ export default class Bug {
   isCorrectBugLocation(loc) {
     const { projectPath } = this.project;
 
+    if (!this.bugLocations) {
+      return null;
+    }
+
     return this.bugLocations.some(t => {
       return isEqual({
         fileName: path.join(projectPath, t.fileName),

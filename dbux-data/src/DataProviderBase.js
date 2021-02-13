@@ -45,11 +45,6 @@ export default class DataProviderBase {
    */
   versions = [];
 
-  /**
-   * @type {DataProviderUtil}
-   */
-  util;
-
   constructor(name) {
     this.name = name;
     this.logger = newLogger(name);

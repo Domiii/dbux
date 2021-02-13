@@ -13,11 +13,6 @@ export default class EslintProject extends Project {
 
   // TODO: get nodeVersion by bug instead
   nodeVersion = '7';
-
-
-  getNodeVersion(bug) {
-    return bug.nodeVersion || this.nodeVersion;
-  }
   
   async installDependencies() {
     // TODO: install Babel plugins in dev mode, if not present
@@ -120,15 +115,6 @@ export default class EslintProject extends Project {
 
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);
-
-    // Copy assets again in this branch
-    await this.installAssets();
-
-    // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
-    await this.npmInstall();
-
-    // Auto commit again
-    await this.autoCommit();
   }
 
 
@@ -146,16 +132,16 @@ export default class EslintProject extends Project {
   async startWatchMode(bug) {
     // start webpack using latest node (long-time support)
     // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
-    const req = `-r ${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}`;
+    const req = `-r "${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}"`;
     const args = `--config ./dbux.webpack.config.js --watch --env entry=${bug.testFilePaths.join(',')}`;
     
     // weird bug - sometimes it just will keep saying "volta not found"... gotta hate system configuration problems...
     const volta = 'volta'; //'/Users/domi/.volta/bin/volta'; // 'volta';
 
-    await this.execBackground(`which volta`);
-    await this.execBackground(`echo $PATH`);
+    await this.execBackground(`which ${volta}`);
+    // await this.execBackground(`echo $PATH`);
     return this.execBackground(
-      `${volta} run --node 12 node ${req} ${this.getWebpackJs()} ${args}`
+      `"${volta}" run --node 12 node ${req} "${this.getWebpackJs()}" ${args}`
     );
   }
 

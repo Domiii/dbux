@@ -43,7 +43,7 @@ export async function buildMochaRunCommand(cfg) {
   let programArgs;
   if (dbuxJs) {
     program = dbuxJs;
-    programArgs = `run ${dbuxArgs} ${mochaJs} -- ${mochaArgs}`;
+    programArgs = `run ${dbuxArgs} "${mochaJs}" -- ${mochaArgs}`;
   }
   else {
     program = mochaJs;

@@ -169,6 +169,14 @@ export default class BugRunner {
         },
         // select bug
         async () => project.selectBug(bug),
+
+        // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
+        async () => project.npmInstall(),
+        // Copy assets again in this branch
+        async () => project.installAssets(),
+        // Auto commit again
+        async () => project.autoCommit(bug),
+
         // start watch mode (if necessary)
         async () => project.startWatchModeIfNotRunning(bug),
         () => bug.website ? this.manager.externals.openWebsite(bug.website) : null,

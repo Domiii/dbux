@@ -3,6 +3,7 @@ import path from 'path';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType, { isCodeActionTypes } from '@dbux/data/src/pathways/UserActionType';
 import DataProviderBase from '@dbux/data/src/DataProviderBase';
 import Collection from '@dbux/data/src/Collection';
 import Indexes from '@dbux/data/src/indexes/Indexes';
@@ -20,6 +21,7 @@ import VisibleActionGroupByStepIdIndex from './indexes/VisibleActionGroupByStepI
 import StepsByTypeIndex from './indexes/StepsByTypeIndex';
 import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 import TestRun from './TestRun';
+import LogFileLoader from './LogFileLoader';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -103,6 +105,21 @@ class UserActionCollection extends Collection {
     }
     staticTraces.push(staticTrace);
   }
+
+  serialize(action) {
+    action = { ...action };
+    if (isCodeActionTypes(action.type)) {
+      action.file = path.relative(this.dp.manager.config.projectsRoot, action.file).replace(/\\/g, '/');
+    }
+    return action;
+  }
+
+  deserialize(action) {
+    if (isCodeActionTypes(action.type)) {
+      action.file = path.join(this.dp.manager.config.projectsRoot, action.file);
+    }
+    return action;
+  }
 }
 
 /**
@@ -123,7 +140,8 @@ class StepCollection extends Collection {
         staticContextId
       } = step;
 
-      const stepGroupKey = `${type}_${staticContextId}`;
+      // const stepGroupKey = `${type}_${staticContextId}`;
+      const stepGroupKey = staticContextId ? `staticContextId_${staticContextId}` : `type_${type}`;
       let stepGroupId = this.groupIdsByKey.get(stepGroupKey);
       if (!stepGroupId) {
         this.groupIdsByKey.set(stepGroupKey, stepGroupId = this.groupIdsByKey.size + 1);
@@ -312,27 +330,25 @@ export default class PathwaysDataProvider extends DataProviderBase {
     if (!lastStep || action.newStep) {
       return true;
     }
-    if (StepType.is.Other(stepType)) {
-      if ((applicationId && applicationId !== lastApplicationId) ||
-        (staticContextId && staticContextId !== lastStaticContextId)
-      ) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-    if (!StepType.is.None(stepType) && lastStepType && stepType !== lastStepType) {
-      return true;
-    }
-    if ((stepType === StepType.Trace) && (
-      (applicationId && applicationId !== lastApplicationId) ||
-      (staticContextId && staticContextId !== lastStaticContextId)
-    )) {
-      return true;
+
+    if (StepType.is.None(stepType)) {
+      return false;
     }
 
-    return false;
+    if (applicationId && staticContextId) {
+      if ((applicationId === lastApplicationId) && (staticContextId === lastStaticContextId)) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+
+    if (lastStepType && stepType === lastStepType) {
+      return false;
+    }
+
+    return true;
   }
 
   // ###########################################################################
@@ -390,7 +406,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     );
 
     this._notifyData({
-      
+
     });
   }
 
@@ -431,29 +447,9 @@ export default class PathwaysDataProvider extends DataProviderBase {
     }
   }
 
-  loadByVersion = {
-    1: (header, allData) => {
-      const actions = allData.userActions;
-      delete allData.userActions;
-      delete allData.actionGroups;
-      delete allData.steps;
-
-      this.addData(allData, false);
-      actions.forEach(action => {
-        // set codeEvents
-        if (action.type === 10) {
-          if (action.eventType === 'selectionChanged') {
-            action.type = 9;
-          }
-          delete action.eventType;
-        }
-        this.addNewUserAction(action, false);
-      });
-    },
-    2: (header, dataToAdd) => {
-      this.addData(dataToAdd, false);
-    }
-  }
+  loadByVersion = Object.fromEntries(
+    Object.entries(LogFileLoader).map(([name, func]) => [name, func.bind(this)])
+  );
 
   addData(allData, writeToLog = true) {
     super.addData(allData);

@@ -19,11 +19,11 @@ class RunNode extends HostComponentEndpoint {
     this.controllers.createComponent('GraphNode');
 
     // add root context
-    const contexts = dp.indexes.executionContexts.byRun.get(runId);
-    if (contexts) {
+    const firstContext = dp.util.getFirstContextOfRun(runId);
+    if (firstContext) {
       this.children.createComponent(ContextNode, {
         applicationId,
-        context: contexts[0]
+        context: firstContext
       });
       this.state.createdAt = dp.util.getRunCreatedAt(runId);
     }

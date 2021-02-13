@@ -14,6 +14,8 @@ async function main() {
   console.log(5);
 }
 
-setTimeout(main, 100);
-setTimeout(main, 200);
-setTimeout(main, 300);
+main();
+
+// setTimeout(main, 100);
+// setTimeout(main, 200);
+// setTimeout(main, 300);

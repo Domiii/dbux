@@ -8,7 +8,6 @@ const ProjectRoot = path.resolve(__dirname);
 const resultCfg = buildWebpackConfig(ProjectRoot, {
   target: 'web'
 }, {
-  mode: 'development',
   context: path.join(ProjectRoot, 'src'),
   entry: {
     app: './dbux_bootstrap.js',
@@ -39,7 +38,6 @@ const resultCfg = buildWebpackConfig(ProjectRoot, {
       inject: 'head',
     }),
     new webpack.DefinePlugin({
-      fs: 'fs',
       'process.env': {
         NODE_ENV: JSON.stringify("development")
       }
@@ -64,8 +62,8 @@ const resultCfg = buildWebpackConfig(ProjectRoot, {
   },
   externals: [
     {
-      fs: 'fs',
-      tls: 'tls'
+      // fs: 'console.error("required fs")',
+      // tls: 'console.error("required tls")'
     }
   ]
 });

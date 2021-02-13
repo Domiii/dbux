@@ -24,7 +24,7 @@ function countNextTick(n = 3) {
 
 async function countAwaitTicks(n = 3) {
   do {
-    await 0;
+    await new Promise(r => r());
     console.debug('await      tick', n);
   } while (--n);
 }

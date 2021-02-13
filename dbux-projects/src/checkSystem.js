@@ -39,6 +39,9 @@ function isChecked(/* manager */) {
 async function check(program) {
   try {
     let paths = await which(program);
+    if (!paths?.length) {
+      return {};
+    }
     return { path: paths[0], multiple: paths.length > 1 };
   } catch (err) {
     return {};

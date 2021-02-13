@@ -13,7 +13,7 @@ const ProjectRoot = path.join(__dirname, '..');
 const DependencyRoot = getDependencyRoot(); // ProjectRoot;
 const nodeVersions = [5, 6, 7, 8];
 
-function makeBabelOptions(nodeVersion) {
+function makeBabelOptions(targets) {
   return {
     // see https://github.com/webpack/webpack/issues/11510#issuecomment-696027212
     sourceType: "unambiguous",
@@ -23,9 +23,7 @@ function makeBabelOptions(nodeVersion) {
       [
         '@babel/preset-env',
         {
-          targets: {
-            node: nodeVersion
-          },
+          targets,
           useBuiltIns: 'usage',
           corejs: 3
         }
@@ -82,13 +80,22 @@ module.exports = (env, argv = {}) => {
       [`ws.${nodeVersion}`]: path.join(wsPath, 'index.js')
     };
 
+    const babelPresetTargets = {
+      node: nodeVersion
+    };
+
+    const target = 'node';
+
+    // const externals = target === 'node' ? nodeExternals : undefined;
+    // const externals = nodeExternals;
+
     // ###########################################################################
     // final result
     // ###########################################################################
     return {
-      mode: mode,
+      mode,
       entry,
-      target: 'node',
+      target,
       devtool: 'source-map',
       context: ProjectRoot,
       output: {
@@ -109,7 +116,7 @@ module.exports = (env, argv = {}) => {
             include: [
               path.join(wsPath, 'lib')
             ],
-            options: makeBabelOptions(nodeVersion)
+            options: makeBabelOptions(babelPresetTargets)
           }
         ]
       },
