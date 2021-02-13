@@ -616,7 +616,7 @@ This may be solved by pressing \`clean project folder\` button.`);
   }
 
   getBugTagName(bug) {
-    if (bug) {
+    if (bug?.patch) {
       return `__dbux_bug_${bug.patch}`;
     }
     return '__dbux_bug_nopatch';

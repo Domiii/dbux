@@ -49,7 +49,7 @@ const modules = [
 // externals
 // ###########################################################################
 
-const nodeExternals = [
+const externals = [
   nodeExternals({
     additionalModuleDirs: [
       path.join(DependencyRoot, 'node_modules'),
@@ -87,7 +87,7 @@ module.exports = (env, argv = {}) => {
     const target = 'node';
 
     // const externals = target === 'node' ? nodeExternals : undefined;
-    const externals = nodeExternals;
+    // const externals = nodeExternals;
 
     // ###########################################################################
     // final result

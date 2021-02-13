@@ -5,6 +5,7 @@ import Project from '@dbux/projects/src/projectLib/Project';
 
 export default class TodomvcEs6Project extends Project {
   gitRemote = 'kentcdodds/es6-todomvc.git';
+  gitCommit = 'bf2db41';
 
   rmFiles = [
     'webpack.config.js',
@@ -19,11 +20,6 @@ export default class TodomvcEs6Project extends Project {
 
   loadBugs() {
     return [
-      {
-        label: 'baseline',
-        description: 'Bug-free life',
-        runArgs: []
-      },
       {
         label: 'error1',
         patch: 'error1',
@@ -58,6 +54,20 @@ export default class TodomvcEs6Project extends Project {
 
       // template.show -> template has a minor render defect
       // template.show -> incorrect variable scope causes only one item to be rendered
+
+      {
+        // see: https://github.com/kentcdodds/es6-todomvc/issues/39
+        // TODO: description + steps to reproduce
+        label: 'original bug: wrong filter render state',
+        description: 'Has an unintentional bug not fixed in original code.',
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/todo.js',
+            line: 27
+          }
+        ]
+      },
       
     ].map((bug) => {
       bug.website = 'http://localhost:3033';
