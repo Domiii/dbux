@@ -21,19 +21,6 @@ export default class TodomvcEs6Project extends Project {
   loadBugs() {
     return [
       {
-        // see: https://github.com/kentcdodds/es6-todomvc/issues/39
-        // TODO: description + steps to reproduce
-        label: 'original bug: wrong filter render state',
-        description: 'Has an unintentional bug not fixed in original code.',
-        runArgs: [],
-        bugLocations: [
-          {
-            file: 'src/todo.js',
-            line: 27
-          }
-        ]
-      },
-      {
         label: 'error1',
         patch: 'error1',
         description: 'Todo list is always empty. Luckily there is a clear error message.',
@@ -67,6 +54,20 @@ export default class TodomvcEs6Project extends Project {
 
       // template.show -> template has a minor render defect
       // template.show -> incorrect variable scope causes only one item to be rendered
+
+      {
+        // see: https://github.com/kentcdodds/es6-todomvc/issues/39
+        // TODO: description + steps to reproduce
+        label: 'original bug: wrong filter render state',
+        description: 'Has an unintentional bug not fixed in original code.',
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/todo.js',
+            line: 27
+          }
+        ]
+      },
       
     ].map((bug) => {
       bug.website = 'http://localhost:3033';

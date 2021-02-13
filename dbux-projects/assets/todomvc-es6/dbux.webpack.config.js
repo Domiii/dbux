@@ -38,7 +38,6 @@ const resultCfg = buildWebpackConfig(ProjectRoot, {
       inject: 'head',
     }),
     new webpack.DefinePlugin({
-      fs: 'fs',
       'process.env': {
         NODE_ENV: JSON.stringify("development")
       }
@@ -63,8 +62,8 @@ const resultCfg = buildWebpackConfig(ProjectRoot, {
   },
   externals: [
     {
-      fs: '"fs"',
-      tls: '"tls"'
+      // fs: 'console.error("required fs")',
+      // tls: 'console.error("required tls")'
     }
   ]
 });
