@@ -37,7 +37,7 @@ export function initUserCommands(extensionContext) {
   // ###########################################################################
 
   async function doExport(application) {
-    const exportFolder = path.join(__dirname, '../../analysis/__data__/');
+    const exportFolder = path.resolve(__dirname, '../../analysis/__data__/');
     const applicationName = application.getSafeFileName();
     // const folder = path.dirname(application.entryPointPath);
     // const fpath = path.join(folder, '_data.json');
@@ -55,7 +55,6 @@ export function initUserCommands(extensionContext) {
       }
     };
     const msg = translate('savedSuccessfully', { fileName: exportFpath });
-    debug(msg);
     const clicked = await window.showInformationMessage(msg,
       ...Object.keys(btns));
     if (clicked) {

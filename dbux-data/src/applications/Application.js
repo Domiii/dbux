@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
 import { pathGetParent } from '@dbux/common/src/util/pathUtil';
 import RuntimeDataProvider from '../RuntimeDataProvider';
 import { newDataProvider } from '../dataProviderImpl';
@@ -88,6 +89,7 @@ export default class Application {
   }
 
   getSafeFileName() {
-    return (this.getPreferredName())?.replace(/[:\\/]/, '-');
+    return path.basename(this.entryPointPath).replace(/[:\\/]/, '_');
+    // return (this.getPreferredName())?.replace(/[:\\/]/, '_');
   }
 }

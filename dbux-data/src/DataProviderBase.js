@@ -294,7 +294,7 @@ export default class DataProviderBase {
         ];
       }))
     };
-    return JSON.stringify(obj);
+    return JSON.stringify(obj, null, 2);
   }
 
   /**

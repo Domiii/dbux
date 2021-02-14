@@ -22,8 +22,7 @@ export async function showInformationMessage(message, btnConfig = EmptyObject, m
   }
   const result = await window.showInformationMessage(message, messageCfg, ...buttons);
   if (result === undefined) {
-    await cancelCallback?.();
-    return null;
+    return await cancelCallback?.();
   }
   const cbResult = await btnConfig[result]?.();
   return cbResult === undefined ? null : cbResult;
