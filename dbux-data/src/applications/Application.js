@@ -89,7 +89,8 @@ export default class Application {
   }
 
   getSafeFileName() {
-    return path.basename(this.entryPointPath).replace(/[:\\/]/, '_');
+    return (this.getPreferredName())?.replace(/[:\\/]/g, '-');
+    // return path.basename(this.entryPointPath).replace(/[:\\/]/, '_');
     // return (this.getPreferredName())?.replace(/[:\\/]/, '_');
   }
 }

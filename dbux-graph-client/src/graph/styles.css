@@ -149,7 +149,7 @@ html,body{
  * ############################################################################ */
 
 .run-node {
-  padding: 10px;
+  padding: 1px;
 }
 .run-node > div {
   border: 1px solid black;

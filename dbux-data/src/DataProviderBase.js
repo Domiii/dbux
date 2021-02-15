@@ -2,6 +2,8 @@ import pull from 'lodash/pull';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
+import isString from 'lodash/isString';
+import { isPlainObject } from 'lodash';
 
 export default class DataProviderBase {
   /**
@@ -49,6 +51,7 @@ export default class DataProviderBase {
     this.name = name;
     this.logger = newLogger(name);
     this.collections = {};
+    this.filters = {};
 
     // const collectionClasses = [
     //   StaticProgramContextCollection,
@@ -68,18 +71,61 @@ export default class DataProviderBase {
     this.indexes = new Indexes();
   }
 
+  _normalizeQueryCfg(cfg) {
+    // TODO
+  }
+
   // ###########################################################################
   // Public methods
   // ###########################################################################
 
+  validateCollectionName(collectionName) {
+    const collection = this.collections[collectionName];
+    if (!collection) {
+      throw new Error(`invalid collection name "${collectionName}"`);
+    }
+  }
+
+  getData(cfg) {
+    const {
+      collectionName,
+      filter: filterName
+    } = cfg;
+    return this.collections.executionContexts.getAll();
+  }
+
+
   /**
    * Add a data event listener to given collection.
    * 
-   * @param {string} collectionName
+   * @param {string|object} cfgOrCollectionName
    * @param {([]) => void} cb
    * @returns {function} Unsubscribe function - Execute to cancel this listener.
    */
-  onData(collectionName, cb) {
+  onData(cfgOrCollectionName, cb) {
+    let collectionName;
+    const cfg = cfgOrCollectionName;
+    if (isPlainObject(cfg) && cfg.query) {
+      // TODO: fix this
+      let queryName = cfg.query;
+      const query = this.queries[queryName];
+      if (!query) {
+        throw new Error(`invalid filter "${queryName}" in ${this.constructor.name}.onData: ${JSON.stringify(cfg)}`);
+      }
+
+      const origCb = cb;
+      cb = data => {
+        data = query.execute(this, data);
+        if (!data?.length) {
+          origCb(data);
+        }
+      };
+    }
+    // if (isString(cfgOrCollectionName)) {
+    else {
+      collectionName = cfgOrCollectionName;
+    }
+    this.validateCollectionName(collectionName);
     const listeners = this._dataEventListeners[collectionName] =
       (this._dataEventListeners[collectionName] || []);
     listeners.push(cb);
@@ -180,7 +226,7 @@ export default class DataProviderBase {
       const collection = this.collections[collectionName];
       if (!collection) {
         // should never happen
-        this.logger.error('received data referencing invalid collection -', collectionName);
+        this.logger.error('received data with invalid collection name -', collectionName);
         delete this.collections[collectionName];
         continue;
       }

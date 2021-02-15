@@ -1,9 +1,5 @@
 import Query from './Query';
 
-// ###########################################################################
-// QueryCache
-// ###########################################################################
-
 const DoesNotExist = undefined;
 
 function makeKey(args) {
@@ -11,30 +7,74 @@ function makeKey(args) {
   return JSON.stringify(args);
 }
 
-class QueryCache {
+// ###########################################################################
+// CachedQuery
+// ###########################################################################
+
+/**
+ * This type of query caches it's results.
+ * Still requires implementing the `Query.execute` function.
+ */
+export default class CachedQuery extends Query {
   _cache = new Map();
   _lastVersions;
 
-  constructor(cfg, versions) {
-    this.cfg = cfg;
+  _init(dp) {
+    // ########################################
+    // fix config
+    // ########################################
+    const {
+      collectionNames,
+      onlyCacheExisting = false
+    } = this.cfg;
 
-    // copy `versions` array
+    let collectionIds;
+    if (collectionNames) {
+      // depends only on limited set of collections
+      collectionIds = collectionNames.map(name => {
+        dp.validateCollectionName(name);
+        return dp.collections[name]._id;
+      });
+    }
+    else {
+      // depends on all collections
+      collectionIds = Object.values(dp.collections).map(c => c._id);
+    }
+
+    // NOTE: sorted versions makes it more cache-efficient when looping over the version arrays
+    collectionIds.sort((a, b) => a - b);
+
+    this.cfg = Object.assign(this.cfg, {
+      collectionNames,
+      collectionIds,
+      onlyCacheExisting
+    });
+
+    // ########################################
+    // // copy `versions` array
+    // ########################################
+
+    const { versions } = dp;
     this._lastVersions = new Array(versions.length);
     this._copyVersions(versions);
   }
 
   _copyVersions(newVersions) {
-    for (let i = 0; i < this.cfg.versionDependencies.length; ++i) {
-      const id = this.cfg.versionDependencies[i];
+    for (let i = 0; i < this.cfg.collectionIds.length; ++i) {
+      const id = this.cfg.collectionIds[i];
       this._lastVersions[id] = newVersions[id];
     }
   }
 
+  /**
+   * Clear cache if collection versions don't match.
+   * NOTE: collection versions are updated any time data is added.
+   */
   _checkVersions(newVersions) {
-    for (let i = 0; i < this.cfg.versionDependencies.length; ++i) {
-      const id = this.cfg.versionDependencies[i];
+    for (let i = 0; i < this.cfg.collectionIds.length; ++i) {
+      const id = this.cfg.collectionIds[i];
       if (this._lastVersions[id] !== newVersions[id]) {
-        // new version -> clear cache; (probably) need to do everything again
+        // new version -> clear cache
         this._copyVersions(newVersions);
         this._cache.clear();
         break;
@@ -47,7 +87,7 @@ class QueryCache {
     return this._cache[key];
   }
 
-  performQuery(dp, args, query) {
+  performQuery(dp, args) {
     // check versions
     this._checkVersions(dp.versions);
 
@@ -57,7 +97,7 @@ class QueryCache {
 
     if (result === DoesNotExist) {
       // cache miss -> actually perform the query
-      result = query.execute(dp, args);
+      result = this.execute(dp, args);
       if (result === DoesNotExist) {
         // value does not exist
         if (this.cfg.onlyCacheExisting) {
@@ -74,50 +114,8 @@ class QueryCache {
     }
     return result;
   }
-}
 
-
-// ###########################################################################
-// CachedQuery
-// ###########################################################################
-
-export default class CachedQuery extends Query {
-  _init(dp) {
-    const {
-      versionDependencies: versionDependencyNames,
-      onlyCacheExisting = false
-    } = this.cfg;
-
-    let versionDependencies;
-    if (versionDependencyNames) {
-      // depends only on limited set of collections
-      versionDependencies = versionDependencyNames.map(name => {
-        const collection = dp.collections[name];
-        if (!collection) {
-          throw new Error(`invalid collection name in ${this.constructor.name}.cfg.versionDependencies`);
-        }
-        return collection._id;
-      });
-    }
-    else {
-      // depends on all collections
-      versionDependencies = Object.values(dp.collections).map(c => c._id);
-    }
-
-    // JS: this is how we sort numbers in ascending order
-    // NOTE: sorting makes it more cache-efficient when looping over the version arrays
-    versionDependencies.sort((b, a) => b - a);
-
-    const cacheCfg = {
-      versionDependencies,
-      onlyCacheExisting
-    };
-    this._cache = new QueryCache(cacheCfg, dp.versions);
-  }
-
-  executor = (dp, args) => this._cache.performQuery(dp, args, this);
-
-  execute() {
-    throw new Error(`abstract method not implemented: ${this.constructor.name}.execute`);
+  executor(dp, args) {
+    return this._cache.performQuery(dp, args, this);
   }
 }
