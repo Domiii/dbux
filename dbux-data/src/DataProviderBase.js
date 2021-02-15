@@ -120,11 +120,20 @@ export default class DataProviderBase {
           origCb(data);
         }
       };
+
+      // TODO: not all queries know their dependencies yet. fix that
+      // for (const collectionName of query?.cfg?.collectionNames) {
+
+      // }
     }
     // if (isString(cfgOrCollectionName)) {
     else {
       collectionName = cfgOrCollectionName;
+      return this._onCollectionData(collectionName, cb);
     }
+  }
+
+  _onCollectionData(collectionName, cb) {
     this.validateCollectionName(collectionName);
     const listeners = this._dataEventListeners[collectionName] =
       (this._dataEventListeners[collectionName] || []);
