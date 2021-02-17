@@ -6,7 +6,7 @@ export async function sleep(delay) {
 /**
  * 
  */
-export async function onlyOnce(asyncCb) {
+export function onlyOnce(asyncCb) {
   // const promises = new Map();
   let promise;
 
