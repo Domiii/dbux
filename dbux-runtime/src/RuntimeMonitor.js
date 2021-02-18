@@ -287,7 +287,7 @@ export default class RuntimeMonitor {
     return awaitResult;
   }
 
-  
+
   pushResume(programId, resumeStaticContextId, inProgramStaticTraceId/* , dontTrace = false */) {
     this._runtime.beforePush(null);
 
@@ -467,26 +467,25 @@ export default class RuntimeMonitor {
   // loops
   // ###########################################################################
 
-
   // TODO: loops!
 
-  async* wrapAsyncIterator(/* it */) {
-    // TODO
-    // for (const promise of it) {
-    //   // wrap await
-    //   let awaitContextId;
-    //   const result = this.postAwait(
-    //     await this.wrapAwait(promise, awaitContextId = this.preAwait(staticId, preTraceId)),
-    //     awaitContextId,
-    //     resumeTraceId
-    //   );
+  // async* wrapAsyncIterator(/* it */) {
+  // TODO
+  // for (const promise of it) {
+  //   // wrap await
+  //   let awaitContextId;
+  //   const result = this.postAwait(
+  //     await this.wrapAwait(promise, awaitContextId = this.preAwait(staticId, preTraceId)),
+  //     awaitContextId,
+  //     resumeTraceId
+  //   );
 
-    //   // TODO: register loop iteration here
-    //   const vars = [result];
+  //   // TODO: register loop iteration here
+  //   const vars = [result];
 
-    //   yield result;
-    // }
-  }
+  //   yield result;
+  // }
+  // }
 
   beforeLoopStart() {
   }

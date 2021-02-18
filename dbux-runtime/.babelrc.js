@@ -7,5 +7,19 @@ module.exports = {
   ignore: [],
   sourceMaps: false,
   retainLines: true,
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        targets: {
+          node: '7',
+          chrome: '70',
+          safari: '13'
+        },
+        useBuiltIns: 'usage',
+        corejs: 3
+      }
+    ]
+  ],
   ...require('../config/babel-presets-umd'),
 };
