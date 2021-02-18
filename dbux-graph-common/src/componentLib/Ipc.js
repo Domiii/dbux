@@ -4,8 +4,11 @@ import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import MessageType from './MessageType';
 import ComponentEndpoint from './ComponentEndpoint';
 
-const Verbose = false;
-// const Verbose = true;
+// const Verbose = 0;
+const Verbose = 1;
+// const Verbose = 2;
+
+const BatchSendDelay = 0;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/ipc');
@@ -31,7 +34,7 @@ export default class Ipc {
   constructor(ipcAdapter, componentManager) {
     this.ipcAdapter = ipcAdapter;
     this.componentManager = componentManager;
-    ipcAdapter.onMessage(this._handleMessage);
+    ipcAdapter.onMessage(this._handleMessageBatched);
   }
 
   // ###########################################################################
@@ -71,7 +74,7 @@ export default class Ipc {
   async _sendMessageRaw(msg) {
     const callId = msg.callId = ++this.lastCallId;
 
-    this._postMessage(msg);
+    this._postMessageBatched(msg);
 
     const call = new IpcCall(callId);
     this.calls.set(callId, call);
@@ -84,7 +87,7 @@ export default class Ipc {
    * Send back reply (after having received request).
    */
   _sendReply(status, callId, componentId, result) {
-    this._postMessage({
+    this._postMessageBatched({
       messageType: MessageType.Reply,
       callId,
       componentId,
@@ -103,7 +106,7 @@ export default class Ipc {
 
     const info = 'Error when processing request - ';
 
-    
+
     // eslint-disable-next-line no-console
     this.ipcAdapter.onError(info + commandName, args, err.stack);
     this._sendReply('reject', callId, componentId, info + err.message);
@@ -206,13 +209,46 @@ export default class Ipc {
   //   this.ipcAdapter.postMessage(msg);
   // }, 0);
 
-  _postMessage = (msg) => {
-    Verbose && debug('postMessage', JSON.stringify(msg));
-    this.ipcAdapter.postMessage(msg);
+  _msgBatch = null;
+  _postMessageTimer = null;
+
+  _postMessageBatched = (msg) => {
+    Verbose >= 2 && debug('_postMessageBatched', JSON.stringify(msg));
+    if (!this._msgBatch) {
+      this._msgBatch = [];
+
+      // eslint-disable-next-line no-new
+      // new Promise((r) => {
+      this._postMessageTimer = setTimeout(() => {
+        Verbose >= 1 && debug('_postMessageBatched [send]', this._msgBatch?.length);
+        this.ipcAdapter.postMessage(this._msgBatch);
+        this._msgBatch = null;
+        // r();
+      }, BatchSendDelay);
+      // });
+    }
+    this._msgBatch.push(msg);
+
+    // this.ipcAdapter.postMessage(msg);
   }
 
-  _handleMessage = async msg => {
+
+  _handleMessageBatched = (messageOrMessages) => {
+    if (Array.isArray(messageOrMessages)) {
+      Verbose >= 1 && debug('_handleMessageBatched [rcv]', messageOrMessages.length);
+      for (const msg of messageOrMessages) {
+        this._handleMessage(msg);
+      }
+    }
+    else {
+      Verbose >= 1 && debug('_handleMessageBatched [rcv]', 1, `(type: ${messageOrMessages.messageType})`);
+      this._handleMessage(messageOrMessages);
+    }
+  }
+
+  async _handleMessage(msg) {
     if (!msg) {
+      // TODO: why does this exist?
       return;
     }
 
@@ -226,7 +262,7 @@ export default class Ipc {
       return;
     }
 
-    Verbose && debug('_handleMessage', JSON.stringify(msg));
+    Verbose >= 2 && debug('_handleMessage', JSON.stringify(msg));
 
     const handler = this._messageHandlers[messageType];
     if (!handler) {
