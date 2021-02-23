@@ -9,7 +9,16 @@ module.exports = {
   },
   globals: {
     console: true,
-    globalThis: false // stage-3, not finalized yet - https://github.com/eslint/eslint/issues/11553
+    /**
+     * stage-3
+     * not finalized yet - https://github.com/eslint/eslint/issues/11553
+     */
+    globalThis: false,
+
+    /**
+     * @see https://webpack.js.org/api/module-variables/#__non_webpack_require__-webpack-specific
+     */
+    __non_webpack_require__: true
   },
   parser: "babel-eslint",
   // parserOptions: {

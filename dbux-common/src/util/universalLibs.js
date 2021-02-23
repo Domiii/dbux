@@ -1,5 +1,3 @@
-import { logInternalError } from '../log/logger';
-
 /**
  * This file contains some utilities and definitions to run code, independent of environment.
  * 
@@ -28,20 +26,17 @@ export function isEnvNode() {
 
 /**
  * Exports some globals usually aware in browser environments.
- * If not available, will try to load it otherwise.
+ * If not available, will try to load it using a (usually node-specific) callback.
  */
-export default {
-  /**
-   * usage: `universalLibs.performance.now()`
-   */
-  get performance() {
-    return universalLib('performance', () => {
-      // hope for node or node-like environment
-      // eslint-disable-next-line no-eval
-      const { performance: performanceNodeJs } = eval("import('perf_hooks')");
-      return performanceNodeJs;
-    });
-  }
+
+
+/**
+ * @example `universalLibs.performance.now()`
+ */
+export const performance = universalLib('performance', () => {
+  const { performance: performanceNodeJs } = __non_webpack_require__('perf_hooks');
+  return performanceNodeJs;
+});
 
 
 // const inspectOptions = { depth: 0, colors: true };
@@ -49,4 +44,3 @@ export default {
 //   const f = typeof window !== 'undefined' && window.inspect ? window.inspect : require('util').inspect;
 //   return f(arg, inspectOptions);
 // }
-};

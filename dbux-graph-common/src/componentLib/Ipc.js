@@ -1,23 +1,18 @@
 import get from 'lodash/get';
-import { newLogger, logDebug } from '@dbux/common/src/log/logger';
-import { makeDebounce } from '@dbux/common/src/util/scheduling';
+import { newPerfLogger, logDebug } from '@dbux/common/src/log/logger';
+// import { makeDebounce } from '@dbux/common/src/util/scheduling';
 import MessageType from './MessageType';
 import ComponentEndpoint from './ComponentEndpoint';
 
-// eslint-disable-next-line no-use-before-define
-if (typeof performance === 'undefined') {
-  // eslint-disable-next-line global-require,vars-on-top,no-var,prefer-destructuring
-  var performance = require('perf_hooks').performance;
-}
 
-// const Verbose = 0;
-const Verbose = 1;
+const Verbose = 0;
+// const Verbose = 1;
 // const Verbose = 2;
 
 const BatchSendDelay = 0;
 
 // eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('dbux-graph-common/ipc');
+const { log, debug, debugPerf, error: logError } = newPerfLogger('dbux-graph-common/ipc');
 
 class IpcCall {
   promise;
@@ -226,7 +221,7 @@ export default class Ipc {
       // eslint-disable-next-line no-new
       // new Promise((r) => {
       this._postMessageTimer = setTimeout(() => {
-        Verbose >= 1 && debug(`[${(Math.round(performance.now()) + '').padStart(10, 0)}]`, '_postMessageBatched [send]', this._msgBatch?.length);
+        Verbose >= 1 && debugPerf('_postMessageBatched [send]', this._msgBatch?.length);
         this.ipcAdapter.postMessage(this._msgBatch);
         this._msgBatch = null;
         // r();
@@ -241,7 +236,7 @@ export default class Ipc {
 
   _handleMessageBatched = (messageOrMessages) => {
     if (Array.isArray(messageOrMessages)) {
-      Verbose >= 1 && debug(`[${(Math.round(performance.now()) + '').padStart(10, 0)}]`, '_handleMessageBatched [rcv]', messageOrMessages.length);
+      Verbose >= 1 && debugPerf('_handleMessageBatched [rcv]', messageOrMessages.length);
       for (const msg of messageOrMessages) {
         this._handleMessage(msg);
       }
