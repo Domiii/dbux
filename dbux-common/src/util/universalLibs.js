@@ -32,16 +32,20 @@ export function isEnvNode() {
 /**
  * Custom require function to make webpack "happy".
  */
-// eslint-disable-next-line no-eval
-const _r = eval(`
- (typeof __non_webpack_require__ !== 'undefined' && __non_webpack_require__ || require)
-`);
+let _r;
+function _require(name) {
+  // eslint-disable-next-line no-eval
+  const r = _r || (_r = eval(`
+    (typeof __non_webpack_require__ !== 'undefined' && __non_webpack_require__ || require)
+  `));
+  return r(name);
+}
 
 /**
  * @example `universalLibs.performance.now()`
  */
 export const performance = universalLib('performance', () => {
-  const { performance: performanceNodeJs } = _r('perf_hooks');
+  const { performance: performanceNodeJs } = _require('perf_hooks');
   return performanceNodeJs;
 });
 
