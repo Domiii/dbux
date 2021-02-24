@@ -295,6 +295,8 @@ export default {
   // },
 
   /**
+   * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
+   * 
    * @param {DataProvider} dp
    */
   getTraceValue(dp, traceId) {
@@ -318,7 +320,11 @@ export default {
     return null;
   },
 
-  /** @param {DataProvider} dp */
+  /** 
+   * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
+   * 
+   * @param {DataProvider} dp
+   */
   getTraceValueString(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
 
@@ -327,6 +333,8 @@ export default {
       return trace._valueString;
     }
 
+    // TODO: separate "message" from valueString
+    // A message is generated if there is an issue with the value or it was omitted.
     const valueMessage = dp.util.getTraceValueMessage(trace.traceId);
     if (valueMessage) {
       return valueMessage;
