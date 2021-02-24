@@ -25,16 +25,23 @@ export function isEnvNode() {
 }
 
 /**
- * Exports some globals usually aware in browser environments.
+ * Export some globals usually available in browser environments.
  * If not available, will try to load it using a (usually node-specific) callback.
  */
 
+/**
+ * Custom require function to make webpack "happy".
+ */
+// eslint-disable-next-line no-eval
+const _r = eval(`
+ (typeof __non_webpack_require__ !== 'undefined' && __non_webpack_require__ || require)
+`);
 
 /**
  * @example `universalLibs.performance.now()`
  */
 export const performance = universalLib('performance', () => {
-  const { performance: performanceNodeJs } = __non_webpack_require__('perf_hooks');
+  const { performance: performanceNodeJs } = _r('perf_hooks');
   return performanceNodeJs;
 });
 
