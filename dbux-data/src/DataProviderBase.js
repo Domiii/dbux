@@ -186,7 +186,7 @@ export default class DataProviderBase {
    * Add given data (of different collections) to this `DataProvier`
    * @param {{ [string]: any[] }} allData
    */
-  addData(allData) {
+  addData(allData, applyPostAdd = true) {
     // sanity checks
     if (!allData || allData.constructor.name !== 'Object') {
       this.logger.error('invalid data must be (but is not) object -', JSON.stringify(allData).substring(0, 500));
@@ -195,7 +195,7 @@ export default class DataProviderBase {
     // debug('received', JSON.stringify(allData).substring(0, 500));
 
     this._addData(allData);
-    this._postAdd(allData);
+    this._postAdd(allData, applyPostAdd);
   }
 
   addQuery(newQuery) {
@@ -246,12 +246,14 @@ export default class DataProviderBase {
     }
   }
 
-  _postAdd(allData) {
-    // notify collections that adding has finished
-    for (const collectionName in allData) {
-      const collection = this.collections[collectionName];
-      const entries = allData[collectionName];
-      collection.postAdd(entries);
+  _postAdd(allData, applyPostAdd = true) {
+    if (applyPostAdd) {
+      // notify collections that adding has finished
+      for (const collectionName in allData) {
+        const collection = this.collections[collectionName];
+        const entries = allData[collectionName];
+        collection.postAdd(entries);
+      }
     }
 
     // indexes
@@ -355,7 +357,7 @@ export default class DataProviderBase {
   /**
    * Use: `dataProvider.deserialize(JSON.parse(stringFromFile))`
    */
-  deserialize(data) {
+  deserialize(data, applyPostAdd = false) {
     const { version, collections } = data;
     if (version !== this.version) {
       throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
@@ -367,6 +369,6 @@ export default class DataProviderBase {
         collections[collectionName] = collections[collectionName].map(obj => collection.deserialize(obj));
       }
     }
-    this.addData(collections);
+    this.addData(collections, applyPostAdd);
   }
 }
