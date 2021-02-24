@@ -159,7 +159,7 @@ export function makeTraceValueLabel(trace) {
   }
   else if (dp.util.doesTraceHaveValue(traceId)) {
     // trace has value
-    return `${dp.util.getTraceValueString(traceId)}`;
+    return dp.util.getTraceValueString(traceId);
   }
   else {
     // default trace

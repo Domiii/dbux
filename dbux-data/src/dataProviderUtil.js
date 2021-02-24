@@ -229,7 +229,7 @@ export default {
 
   /**
    * NOTE: We want to link multiple traces against the same trace sometimes.
-   * E.g.: we want to treat the value of a `BCE` the same as its `CRE`.
+   *  e.g. we want to treat the value of a `BCE` the same as its `CRE`.
    * @param {DataProvider} dp 
   */
   getValueTrace(dp, traceId) {
@@ -295,22 +295,17 @@ export default {
   // },
 
   /**
-   * Find value of given trace, returns undefined if not a value trace
+   * Get value of given trace, returns undefined if not a value trace
    * @param {DataProvider} dp
    */
   getTraceValue(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
-    const { value } = trace;
-    if (value !== undefined) {
-      return value;
+    if ('value' in trace) {
+      return trace.value;
     }
 
     const valueRef = dp.util.getTraceValueRef(traceId);
-    if (!valueRef) {
-      // TODO: better distinguish between existing and non-existing values
-      return undefined;
-    }
-    return valueRef.value;
+    return valueRef?.value;
   },
 
   /**
@@ -340,20 +335,20 @@ export default {
 
     // get value
     const value = dp.util.getTraceValue(traceId);
-    if (value !== undefined) {
-      let valueString;
-      if (dp.util.isTraceFunctionValue(traceId)) {
-        valueString = value;
-      }
-      else {
-        valueString = JSON.stringify(value);
-      }
 
-      // hackfix: we cache this thing
-      return trace._valueString = valueString;
+    let valueString;
+    if (dp.util.isTraceFunctionValue(traceId)) {
+      valueString = value;
+    }
+    else if (value === undefined) {
+      valueString = 'undefined';
+    }
+    else {
+      valueString = JSON.stringify(value);
     }
 
-    return null;
+    // hackfix: we cache this thing
+    return trace._valueString = valueString;
   },
 
   /** @param {DataProvider} dp */
