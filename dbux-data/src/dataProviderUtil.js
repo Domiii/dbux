@@ -295,7 +295,6 @@ export default {
   // },
 
   /**
-   * Get value of given trace, returns undefined if not a value trace
    * @param {DataProvider} dp
    */
   getTraceValue(dp, traceId) {
