@@ -179,9 +179,11 @@ export class ProjectViewController {
       await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
         const { bug } = bugNode;
 
+        // TOTRANSLATE
         progress.report({ message: 'checking system requirements...' });
         await this.checkActivateBugRequirement();
 
+        // TOTRANSLATE
         progress.report({ message: 'activating...' });
         await this.manager.startPractice(bug);
       }, options);
