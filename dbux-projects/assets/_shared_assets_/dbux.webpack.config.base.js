@@ -158,7 +158,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       // babel overrides
       Object.assign(babelOptions, babelOptionsOverrides);
     }
-    if (!(babelOptionsOverrides || babelOptionsOverrides.presets) && target !== 'node') {
+    if (!(babelOptionsOverrides && babelOptionsOverrides.presets) && target !== 'node') {
       // remove custom options of preset-env
       babelOptions.presets[0].splice(1, 1);
     }
