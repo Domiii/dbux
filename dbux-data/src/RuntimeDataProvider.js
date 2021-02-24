@@ -1,4 +1,5 @@
 import path from 'path';
+import findLastIndex from 'lodash/findLastIndex';
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
@@ -245,9 +246,10 @@ class TraceCollection extends Collection {
           // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
             // maybe something did not get popped. Let's look for it directly!
-            const idx = beforeCalls.findIndex(bce => bce.staticTraceId === staticTrace.resultCallId);
+            const idx = findLastIndex(beforeCalls, bce => bce.staticTraceId === staticTrace.resultCallId);
             if (idx >= 0) {
-              // it's on the stack - just take it
+              // it's on the stack - just take it (and also push the wrong one back)
+              beforeCalls.push(beforeCall);
               beforeCall = beforeCalls[idx];
               beforeCalls.splice(idx, 1);
             }
