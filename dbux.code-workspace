@@ -10,7 +10,21 @@
 		"javascript.validate.enable": true,
 		"workbench.colorCustomizations": {
       "editorUnnecessaryCode.border": "#f0f",
-      "editorUnnecessaryCode.opacity": "#000f"
+      "editorUnnecessaryCode.opacity": "#000f",
+      "activityBar.activeBackground": "#746a03",
+      "activityBar.activeBorder": "#023e39",
+      "activityBar.background": "#746a03",
+      "activityBar.foreground": "#e7e7e7",
+      "activityBar.inactiveForeground": "#e7e7e799",
+      "activityBarBadge.background": "#023e39",
+      "activityBarBadge.foreground": "#e7e7e7",
+      "statusBar.background": "#433d02",
+      "statusBar.foreground": "#e7e7e7",
+      "statusBarItem.hoverBackground": "#746a03",
+      "titleBar.activeBackground": "#433d02",
+      "titleBar.activeForeground": "#e7e7e7",
+      "titleBar.inactiveBackground": "#433d0299",
+      "titleBar.inactiveForeground": "#e7e7e799"
     },
 		"gitlens.codeLens.enabled": false,
 		"gitlens.currentLine.enabled": false,
@@ -19,7 +33,8 @@
 		"python.dataScience.maxOutputSize": 600,
 		"debug.node.autoAttach": "off",
     "editor.detectIndentation": false,
-    "dbux.run.nodeArgs": ""
+    "dbux.run.nodeArgs": "",
+    "peacock.color": "#433d02"
 		// "files.associations": {
 		// 	"*.js": "typescriptreact"
 		// }
