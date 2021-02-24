@@ -377,7 +377,7 @@ class ValueCollection extends Collection {
    * NOTE: This still only returns a string representation?
    */
   _deserializeValue(entry) {
-    if (!entry.value) {
+    if (!('value' in entry)) {
       if (this._visited.has(entry)) {
         return '(Dbux: circular reference)';
       }
