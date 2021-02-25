@@ -62,6 +62,11 @@ module.exports = [
 
             modulePath = modulePath.toLowerCase();
 
+            // TODO: something is going wrong here. More things to test for memory leaks:
+            //   1. Babel
+            //   1b. gensync (used by Babel internally)
+            //   2. Rollup
+
             const shouldInstrument = true;
             // const shouldInstrument = modulePath.startsWith('d:\\code\\projects\\chart.js\\src\\core');
             // const shouldInstrument = modulePath.startsWith('d:\\code\\projects\\chart.js\\src\\core\\core.config.js');
