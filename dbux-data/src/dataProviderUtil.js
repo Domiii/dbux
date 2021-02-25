@@ -229,7 +229,7 @@ export default {
 
   /**
    * NOTE: We want to link multiple traces against the same trace sometimes.
-   *  e.g. we want to treat the value of a `BCE` the same as its `CRE`.
+   *  E.g.: we want to treat the value of a `BCE` the same as its `CRE`.
    * @param {DataProvider} dp 
   */
   getValueTrace(dp, traceId) {
@@ -304,7 +304,11 @@ export default {
     }
 
     const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef?.value;
+    if (!valueRef) {
+      // TODO: better distinguish between existing and non-existing values
+      return undefined;
+    }
+    return valueRef.value;
   },
 
   /**
