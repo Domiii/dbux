@@ -6,6 +6,7 @@ import RunStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/Ru
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
 import { runTaskWithProgressBar } from '../../codeUtil/runTaskWithProgressBar';
+import { showInformationMessage } from '../../codeUtil/codeModals.js';
 
 export default class ProjectNode extends BaseTreeViewNode {
   static makeLabel(project) {
@@ -58,25 +59,27 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   async deleteProject() {
     if (isStatusRunningType(this.status)) {
-      window.showInformationMessage('[dbux] project is running now...');
+      showInformationMessage('[dbux] project is running now...');
     }
     else {
       const confirmMessage = `Do you really want to delete project: ${this.project.name}`;
-      const result = await window.showInformationMessage(confirmMessage, { modal: true }, 'Ok');
-      if (result === 'Ok') {
-        await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-          progress.report({ message: 'deleting project folder...' });
-          // wait for progress bar to show
-          await sleep(100);
-          await this.project.deleteProjectFolder();
-          this.treeNodeProvider.refresh();
-          progress.report({ message: 'Done.' });
-        }, {
-          cancellable: false,
-          location: ProgressLocation.Notification,
-          title: `[dbux] ${this.project.name}`
-        });
-      }
+      const btnConfig = {
+        Ok: async () => {
+          await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
+            progress.report({ message: 'deleting project folder...' });
+            // wait for progress bar to show
+            await sleep(100);
+            await this.project.deleteProjectFolder();
+            this.treeNodeProvider.refresh();
+            progress.report({ message: 'Done.' });
+          }, {
+            cancellable: false,
+            location: ProgressLocation.Notification,
+            title: `[dbux] ${this.project.name}`
+          });
+        }
+      };
+      await showInformationMessage(confirmMessage, btnConfig, { modal: true });
     }
   }
 

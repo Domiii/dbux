@@ -88,8 +88,13 @@ export async function initProjectManager(extensionContext) {
       const confirmText = 'Yes';
       const refuseText = 'No';
       const cancelText = 'Cancel';
-      const result = await window.showInformationMessage(msg, { modal }, confirmText, refuseText, modal ? undefined : cancelText);
-      if (result === undefined || result === 'Cancel') {
+
+      const btnConfig = Object.fromEntries([confirmText, refuseText].map(t => [t, () => t]));
+      if (!modal) {
+        btnConfig[cancelText] = () => cancelText;
+      }
+      const result = await showInformationMessage(msg, btnConfig, { modal });
+      if (result === undefined || result === cancelText) {
         return null;
       }
       else {
@@ -97,7 +102,7 @@ export async function initProjectManager(extensionContext) {
       }
     },
     async alert(msg, modal = false) {
-      await window.showInformationMessage(msg, { modal });
+      await showInformationMessage(msg, undefined, { modal });
     },
     TerminalWrapper,
     resources: {

@@ -45,7 +45,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.busyIcon', (/* node */) => {
-    return window.showInformationMessage(translate('busyNow')); // how to triggger this
+    return showInformationMessage(translate('busyNow')); // how to triggger this
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.stopBug', (/* node */) => {
