@@ -22,6 +22,7 @@ import StepsByTypeIndex from './indexes/StepsByTypeIndex';
 import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 import TestRun from './TestRun';
 import LogFileLoader from './LogFileLoader';
+import VisitedStaticTracesByFile from './indexes/VisitedStaticTracesByFileIndex';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -80,15 +81,17 @@ class ApplicationCollection extends Collection {
  * @extends {Collection<UserAction>}
  */
 class UserActionCollection extends Collection {
-  visitedStaticTracesByFile = new Map();
-
   constructor(pdp) {
     super('userActions', pdp);
   }
 
-  postAddProcessed(entries) {
-    for (const entry of entries) {
-      const { trace } = entry;
+  postAddProcessed(userActions) {
+    this.resolveVisitedStaticTracesIndex(userActions);
+  }
+
+  resolveVisitedStaticTracesIndex(userActions) {
+    for (const action of userActions) {
+      const { trace } = action;
       if (!trace) {
         return;
       }
@@ -99,13 +102,10 @@ class UserActionCollection extends Collection {
       const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
       const { staticContextId } = staticTrace;
       const { programId } = dp.collections.staticContexts.getById(staticContextId);
-      const fileName = programId && dp.collections.staticProgramContexts.getById(programId).filePath || '(unknown file)';
+      const fpath = programId && dp.collections.staticProgramContexts.getById(programId).filePath || '(unknown file)';
 
-      let staticTraces = this.visitedStaticTracesByFile.get(fileName);
-      if (!staticTraces) {
-        this.visitedStaticTracesByFile.set(fileName, staticTraces = []);
-      }
-      staticTraces.push(staticTrace);
+      // this.dp === pdp
+      this.dp.indexes.userActions.visitedStaticTracesByFile.addEntryToKey(fpath, staticTrace);
     }
   }
 
@@ -136,6 +136,10 @@ class StepCollection extends Collection {
   }
 
   postAddProcessed(steps) {
+    this.resolveStepGroupId(steps);
+  }
+
+  resolveStepGroupId(steps) {
     for (const step of steps) {
       if (!step.stepGroupId) {
         // convert group's string key to numerical id (since our indexes only accept numerical ids)
@@ -394,6 +398,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addIndex(new UserActionsByStepIndex());
     this.addIndex(new UserActionsByGroupIndex());
     this.addIndex(new VisibleActionGroupByStepIdIndex());
+    this.addIndex(new VisitedStaticTracesByFile());
     this.addIndex(new StepsByGroupIndex());
     this.addIndex(new StepsByTypeIndex());
   }

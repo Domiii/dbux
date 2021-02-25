@@ -12,6 +12,14 @@ const ArrayIndexManager = {
   set(key, container) {
     this._byKey[key] = container;
   },
+  getOrCreateContainer(key) {
+    let container = this.get(key);
+    if (!container) {
+      container = this._containerMethods.createNewContainer();
+      this._manager.set(key, container);
+    }
+    return container;
+  },
   getAllKeys() {
     const keys = [];
     for (let i = 0; i < this._byKey.length; ++i) {
@@ -33,6 +41,14 @@ const MapIndexManager = {
   set(key, container) {
     this._byKey.set(key, container);
   },
+  getOrCreateContainer(key) {
+    let container = this.get(key);
+    if (!container) {
+      container = this._containerMethods.createNewContainer();
+      this._manager.set(key, container);
+    }
+    return container;
+  },
   getAllKeys() {
     return Array.from(this._byKey.keys());
   }
@@ -45,7 +61,8 @@ const ArrayContainerMethods = {
   getFirstInContainter(container) {
     return container[0] || null;
   },
-  addEntryToKey(container, entry) {
+  addEntryToKey(key, entry) {
+    const container = this._manager.getOrCreateContainer(key);
     container.push(entry);
   }
 };
@@ -57,7 +74,8 @@ const SetContainerMethods = {
   getFirstInContainter(container) {
     return container.values().next().value || null;
   },
-  addEntryToKey(container, entry) {
+  addEntryToKey(key, entry) {
+    const container = this._manager.getOrCreateContainer(key);
     container.add(entry);
   }
 };
@@ -86,10 +104,10 @@ export default class CollectionIndex {
     this.isContainerSet = isContainerSet;
 
     if (this.isMap) {
-      this._manager = ArrayIndexManager;
+      this._manager = MapIndexManager;
     }
     else {
-      this._manager = MapIndexManager;
+      this._manager = ArrayIndexManager;
     }
     this._manager = Object.fromEntries(
       Object.entries(this._manager).map(([name, func]) => [name, func.bind(this)])
@@ -128,8 +146,16 @@ export default class CollectionIndex {
     return this._containerMethods.getFirstInContainter(container) || null;
   }
 
+  getAll() {
+    return this._byKey;
+  }
+
   getAllKeys() {
     return this._manager.getAllKeys();
+  }
+
+  addEntryToKey(key, entry) {
+    this._containerMethods.addEntryToKey(key, entry);
   }
 
   /**
@@ -147,13 +173,9 @@ export default class CollectionIndex {
       return;
     }
 
-    let container = this.get(key);
-    if (!container) {
-      container = this._containerMethods.createNewContainer();
-      this._manager.set(key, container);
-    }
+    const container = this._manager.getOrCreateContainer(key);
     this.beforeAdd?.(container, entry);
-    this._containerMethods.addEntryToKey(container, entry);
+    this.addEntryToKey(key, entry);
 
     // sanity check
     // if (container.includes(undefined)) {

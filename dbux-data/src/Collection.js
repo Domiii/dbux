@@ -73,11 +73,11 @@ export default class Collection {
    */
   postAddProcessed(entries) {}
 
-  /**
-   * Collections can use this to massage data after all data has been added, and after indexes have been processed.
-   * @virtual
-   */
-  postIndex(/* entries */) { }
+  // /**
+  //  * Collections can use this to massage data after all data has been added, and after indexes have been processed.
+  //  * @virtual
+  //  */
+  // postIndex(/* entries */) { }
 
   // ###########################################################################
   // Reads

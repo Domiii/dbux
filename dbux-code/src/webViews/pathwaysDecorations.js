@@ -35,7 +35,7 @@ export async function decorateVisitedTraces(pdp) {
 
   const staticTracesByFile = pdp.util.getVisitedStaticTraces();
   for (const [fpath, staticTraces] of staticTracesByFile.entries()) {
-    const decos = staticTraces?.map(staticTrace => {
+    const decos = Array.from(staticTraces)?.map(staticTrace => {
       const { loc } = staticTrace;
       return {
         range: babelLocToCodeRange(loc)

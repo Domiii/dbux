@@ -222,12 +222,13 @@ export default class DataProviderBase {
       }
     }
 
-    // notify collections that adding + index processing has finished
-    for (const collectionName in allData) {
-      const collection = this.collections[collectionName];
-      const entries = allData[collectionName];
-      collection.postIndex(entries);
-    }
+    // NOTE: Temporarily disabled, needs to ensure this wont mutate data
+    // // notify collections that adding + index processing has finished
+    // for (const collectionName in allData) {
+    //   const collection = this.collections[collectionName];
+    //   const entries = allData[collectionName];
+    //   collection.postIndex(entries);
+    // }
 
     // notify internal and external listeners
     this._notifyData(allData);
