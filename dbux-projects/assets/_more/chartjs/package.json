@@ -42,7 +42,9 @@
     "lint-types": "eslint types/**/*.d.ts",
     "lint": "concurrently \"npm:lint-*\"",
     "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep",
-    "typedoc": "npx typedoc"
+    "typedoc": "npx typedoc",
+    "start": "npx rollup -c",
+    "start-prof-h": "node --heap-prof node_modules/rollup/dist/bin/rollup -c"
   },
   "devDependencies": {
     "@kurkle/color": "^0.1.9",
