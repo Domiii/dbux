@@ -192,7 +192,7 @@ class TraceCollection extends Collection {
    * Post processing of trace data
    * @param {Trace[]} traces
    */
-  postAdd(traces) {
+  postAddRaw(traces) {
     // build dynamic call expression tree
     errorWrapMethod(this, 'resolveCodeChunks', traces);
     errorWrapMethod(this, 'resolveCallIds', traces);

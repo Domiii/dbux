@@ -58,20 +58,20 @@ export default class Collection {
   }
 
   /**
-   * Collections can use this to massage data after all data has been added, but before indexes have been processed.
+   * Collections can use this to resolve some additional information from raw data. This will be execute only once.
    * @virtual
    * 
    * @param {T[]} entries
    */
-  postAdd(entries) {
-    if (this.handleEntryAdded) {
-      for (const entry of entries) {
-        this.handleEntryAdded(entry);
-      }
-    }
-  }
+  postAddRaw(entries) {}
 
-  // handleEntryAdded(entry) {}
+  /**
+   * Collections can use this to resolve some additional information from processed data. This will be execute everytime(even when deserialize) data is added.
+   * @virtual
+   * 
+   * @param {T[]} entries
+   */
+  postAddProcessed(entries) {}
 
   /**
    * Collections can use this to massage data after all data has been added, and after indexes have been processed.
