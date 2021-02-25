@@ -5,7 +5,7 @@ import CollectionIndex from '@dbux/data/src/indexes/CollectionIndex';
 /** @extends {CollectionIndex<UserAction>} */
 export default class UserActionByBugIdIndex extends CollectionIndex {
   constructor() {
-    super('userActions', 'byBugId', { stringKey: true });
+    super('userActions', 'byBugId', { isMap: true });
   }
 
   /** 

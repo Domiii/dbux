@@ -1,6 +1,67 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
+
+const ArrayIndexManager = {
+  createNew() {
+    return [];
+  },
+  get(key) {
+    return this._byKey[key];
+  },
+  set(key, container) {
+    this._byKey[key] = container;
+  },
+  getAllKeys() {
+    const keys = [];
+    for (let i = 0; i < this._byKey.length; ++i) {
+      if (this.get(i)) {
+        keys.push(i);
+      }
+    }
+    return keys;
+  }
+};
+
+const MapIndexManager = {
+  createNew() {
+    return new Map();
+  },
+  get(key) {
+    return this._byKey.get(key);
+  },
+  set(key, container) {
+    this._byKey.set(key, container);
+  },
+  getAllKeys() {
+    return Array.from(this._byKey.keys());
+  }
+};
+
+const ArrayContainerMethods = {
+  createNewContainer() {
+    return [];
+  },
+  getFirstInContainter(container) {
+    return container[0] || null;
+  },
+  addEntryToKey(container, entry) {
+    container.push(entry);
+  }
+};
+
+const SetContainerMethods = {
+  createNewContainer() {
+    return new Set();
+  },
+  getFirstInContainter(container) {
+    return container.values().next().value || null;
+  },
+  addEntryToKey(container, entry) {
+    container.add(entry);
+  }
+};
+
 /**
  * @template {T}
  */
@@ -16,54 +77,59 @@ export default class CollectionIndex {
    */
   _byKey;
 
-  constructor(collectionName, indexName, { addOnNewData = true, stringKey = false } = EmptyObject) {
+  constructor(collectionName, indexName, { addOnNewData = true, isMap = false, isContainerSet = false } = EmptyObject) {
     this.collectionName = collectionName;
     this.name = indexName;
     this.log = newLogger(`${indexName} (Index)`);
     this.addOnNewData = addOnNewData;
-    this.stringKey = stringKey;
+    this.isMap = isMap;
+    this.isContainerSet = isContainerSet;
+
+    if (this.isMap) {
+      this._manager = ArrayIndexManager;
+    }
+    else {
+      this._manager = MapIndexManager;
+    }
+    this._manager = Object.fromEntries(
+      Object.entries(this._manager).map(([name, func]) => [name, func.bind(this)])
+    );
+
+    if (this.isContainerSet) {
+      this._containerMethods = SetContainerMethods;
+    }
+    else {
+      this._containerMethods = ArrayContainerMethods;
+    }
+    this._containerMethods = Object.fromEntries(
+      Object.entries(this._containerMethods).map(([name, func]) => [name, func.bind(this)])
+    );
   }
 
   _init(dp) {
     this.dp = dp;
-    if (this.stringKey) {
-      this._byKey = {};
-    }
-    else {
-      this._byKey = [];
-    }
+    this._byKey = this._manager.createNew();
   }
+
+  // ###########################################################################
+  //  public(usage)
+  // ###########################################################################
 
   /**
    * @param {number} key 
    * @return {T[]}
    */
   get(key) {
-    return this._byKey[key];
+    return this._manager.get(key);
   }
 
   getFirst(key) {
-    const ofKey = this.get(key);
-    return ofKey?.[0] || null;
+    const container = this.get(key);
+    return this._containerMethods.getFirstInContainter(container) || null;
   }
 
   getAllKeys() {
-    const keys = [];
-    for (let i = 0; i < this._byKey.length; ++i) {
-      if (this._byKey[i]) {
-        keys.push(i);
-      }
-    }
-    return keys;
-  }
-
-  /**
-   * @param {T[]} entries 
-   */
-  addEntries(entries) {
-    for (const entry of entries) {
-      this.addEntry(entry);
-    }
+    return this._manager.getAllKeys();
   }
 
   /**
@@ -81,14 +147,27 @@ export default class CollectionIndex {
       return;
     }
 
-    const ofKey = (this._byKey[key] = this._byKey[key] || []);
-    this.beforeAdd?.(ofKey, entry);
-    ofKey.push(entry);
+    let container = this.get(key);
+    if (!container) {
+      container = this._containerMethods.createNewContainer();
+      this._manager.set(key, container);
+    }
+    this.beforeAdd?.(container, entry);
+    this._containerMethods.addEntryToKey(container, entry);
 
     // sanity check
-    // if (ofKey.includes(undefined)) {
-    //   this.log.error('Index contains undefined values', key, entry, ofKey);
+    // if (container.includes(undefined)) {
+    //   this.log.error('Index contains undefined values', key, entry, container);
     // }
+  }
+
+  /**
+   * @param {T[]} entries 
+   */
+  addEntries(entries) {
+    for (const entry of entries) {
+      this.addEntry(entry);
+    }
   }
 
   addEntryById(id) {
