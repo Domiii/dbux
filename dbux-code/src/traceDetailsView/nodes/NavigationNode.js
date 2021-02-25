@@ -4,6 +4,7 @@ import traceSelection from '@dbux/data/src/traceSelection';
 import { newLogger } from '@dbux/common/src/log/logger';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { emitNavigationAction } from '../../userEvents';
+import { showInformationMessage } from '../../codeUtil/codeModals.js';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('NavigationNode');
