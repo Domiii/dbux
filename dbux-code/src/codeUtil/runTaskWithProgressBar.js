@@ -44,7 +44,8 @@ export async function runTaskWithProgressBar(cb, options) {
   options = defaultsDeep(options, {
     cancellable: true,
     location: ProgressLocation.Notification,
-    title: '[dbux]'
   });
+  options.title = `[Dbux] ${options.title || ''}`;
+
   return window.withProgress(options, _errWrap(cb));
 }

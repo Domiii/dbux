@@ -59,7 +59,7 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   async deleteProject() {
     if (isStatusRunningType(this.status)) {
-      showInformationMessage('[dbux] project is running now...');
+      showInformationMessage('project is running now...');
     }
     else {
       const confirmMessage = `Do you really want to delete project: ${this.project.name}`;
@@ -75,7 +75,7 @@ export default class ProjectNode extends BaseTreeViewNode {
           }, {
             cancellable: false,
             location: ProgressLocation.Notification,
-            title: `[dbux] ${this.project.name}`
+            title: this.project.name,
           });
         }
       };
