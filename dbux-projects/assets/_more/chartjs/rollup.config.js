@@ -45,6 +45,7 @@ module.exports = [
         babelHelpers: 'inline',
         plugins: [
           '@dbux/babel-plugin'
+					// 'D:/code/dbux/dbux-babel-plugin'
         ],
         // exclude: 'node_modules/**',
         ignore: [
@@ -61,9 +62,12 @@ module.exports = [
 
             modulePath = modulePath.toLowerCase();
 
-            const ignore = false;
-            console.debug(`[DBUX] babel`, modulePath);
-            return ignore;
+            const shouldInstrument = true;
+            // const shouldInstrument = modulePath.startsWith('d:\\code\\projects\\chart.js\\src\\core');
+            // const shouldInstrument = modulePath.startsWith('d:\\code\\projects\\chart.js\\src\\core\\core.config.js');
+            // return modulePath.startsWith('d:\\code\\projects\\chart.js\\src\\scales\\scale.linearbase.js');
+            console.debug(`[DBUX] babel`, modulePath, shouldInstrument);
+            return !shouldInstrument;
           }
         ]
       }),
