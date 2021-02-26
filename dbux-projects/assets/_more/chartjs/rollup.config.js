@@ -45,7 +45,7 @@ module.exports = [
         babelHelpers: 'inline',
         plugins: [
           '@dbux/babel-plugin'
-					// 'D:/code/dbux/dbux-babel-plugin'
+          // 'D:/code/dbux/dbux-babel-plugin'
         ],
         // exclude: 'node_modules/**',
         ignore: [
