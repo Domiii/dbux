@@ -4,9 +4,11 @@
  * @file
  */
 
+const Global = this || globalThis;
+
 function universalLib(globalName, fallbackCb) {
-  if (globalName in globalThis) {
-    return globalThis[globalName];
+  if (globalName in Global) {
+    return Global[globalName];
   }
   try {
     return fallbackCb();
