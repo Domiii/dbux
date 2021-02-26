@@ -1,12 +1,12 @@
 /**
  * @file This experiment proves that babel does not leak memory.
  * 
- * Run: node --expose-gc babelMem.mjs
+ * Run: node --expose-gc babelMem1.mjs
  */
 
 import { transformSync } from '@babel/core';
 
-const N = 300e6;
+const N = 1000e6;
 
 
 // ###########################################################################
@@ -20,17 +20,18 @@ async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 // ###########################################################################
 
 function addPressure(a) {
-  const I = 3;
-  console.log('adding pressure', N * I)
+  console.log('adding pressure', N)
 
   // NOTE: padStart does not allow that big a number, so we have to run it multiple times.
+  const S = 100e6;
+  const I = Math.ceil(N/S);
   for (let i = 0; i < I; ++i) {
-    const s = ''.padStart(N, 'l') + 'x';
+    const s = ''.padStart(S, 'l') + 'x';
     a.push(s);
 
     // NOTE: random access into the string actually allocates it
     // console.log(
-    a.map(s => s[N / 2] + s.length).join(', ')
+    a.map(s => s[S / 2] + s.length).join(', ')
     // );
   }
 }
@@ -41,17 +42,8 @@ function gc() {
 }
 
 // ###########################################################################
-// babeling
+// babel plugin
 // ###########################################################################
-
-const code = "f();";
-
-function runWithPlugin(plugin) {
-  const babelOptions = {
-    plugins: [plugin]
-  };
-  return transformSync(code, babelOptions);
-}
 
 function bigStatePlugin() {
   return {
@@ -69,6 +61,16 @@ function bigStatePlugin() {
 // ###########################################################################
 // main
 // ###########################################################################
+
+
+const code = "f();";
+
+function runWithPlugin(plugin) {
+  const babelOptions = {
+    plugins: [plugin]
+  };
+  return transformSync(code, babelOptions);
+}
 
 (async function main() {
   runWithPlugin(bigStatePlugin);
