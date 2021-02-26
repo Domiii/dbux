@@ -43,6 +43,7 @@ module.exports = [
       // })
       babel({
         babelHelpers: 'inline',
+        skipPreflightCheck: true, // WARNING: if not skipped, causes serious memory leak
         plugins: [
           '@dbux/babel-plugin'
           // 'D:/code/dbux/dbux-babel-plugin'
