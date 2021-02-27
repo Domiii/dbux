@@ -65,14 +65,14 @@ export default function buildBabelOptions(options) {
 
         // no node_modules
         if (modulePath.match(/((node_modules)|(dist)).*(?<!\.mjs)$/)) {
-          verbose > 1 && debugLog(`[DBUX] no-register`, modulePath);
+          verbose > 1 && debugLog(`[Dbux] no-register`, modulePath);
           return true;
         }
 
         modulePath = modulePath.toLowerCase();
 
         const ignore = false;
-        verbose && debugLog(`[DBUX] REGISTER`, modulePath);
+        verbose && debugLog(`[Dbux] REGISTER`, modulePath);
         return ignore;
       }
     ]

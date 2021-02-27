@@ -172,7 +172,7 @@ export class ProjectViewController {
 
     const options = {
       cancellable: false,
-      title: `[dbux] Bug ${bugNode.bug.id}`
+      title: `Bug ${bugNode.bug.id}`
     };
 
     try {
@@ -198,7 +198,7 @@ export class ProjectViewController {
 
     const options = {
       cancellable: false,
-      title: `[dbux] Bug ${`"${bug.label}"` || ''} (#${bug.id})`
+      title: `Bug ${`"${bug.label}"` || ''} (#${bug.id})`
     };
 
     await runTaskWithProgressBar(async (progress/* , cancelToken */) => {

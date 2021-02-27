@@ -2,6 +2,7 @@ import { env, Uri, window } from 'vscode';
 import BugStatus from '@dbux/projects/src/dataLib/BugStatus';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import { showInformationMessage } from '../../codeUtil/codeModals';
 
 /** @typedef {import('@dbux/projects/src/projectLib/Bug').default} Bug */
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
@@ -84,7 +85,7 @@ export default class BugNode extends BaseTreeViewNode {
         throw err;
       }
       else {
-        window.showInformationMessage('Action canceled.');
+        showInformationMessage('Action canceled.');
       }
     }
   }

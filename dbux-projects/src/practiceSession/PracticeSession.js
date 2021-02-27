@@ -79,7 +79,7 @@ export default class PracticeSession {
       await this.askToFinish();
     }
     else if (result?.code) {
-      this.manager.externals.alert(`[Dbux] ${result?.code} test(s) failed. Keep going! :)`);
+      this.manager.externals.alert(`${result?.code} test(s) failed. Keep going! :)`);
     }
     // else: errored out + already reported
     await this.save();

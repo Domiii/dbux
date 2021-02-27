@@ -49,14 +49,14 @@ module.exports = [
 
 						// no node_modules
 						if (modulePath.match(/((node_modules)|(dist)).*(?<!\.mjs)$/)) {
-							// verbose > 1 && debugLog(`[DBUX] no-register`, modulePath);
+							// verbose > 1 && debugLog(`[Dbux] no-register`, modulePath);
 							return true;
 						}
 
 						modulePath = modulePath.toLowerCase();
 
 						const ignore = false;
-						console.debug(`[DBUX] babel`, modulePath);
+						console.debug(`[Dbux] babel`, modulePath);
 						return ignore;
 					}
 				]

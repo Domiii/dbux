@@ -281,6 +281,6 @@ module.exports = (env, argv) => {
 
 // console.warn(Object.keys(resol.alias).map(name => new RegExp(`^${name}/.*`)));
 
-// console.debug('[dbux] webpack.config loaded',
+// console.debug('[Dbux] webpack.config loaded',
 //   // targetsAbsolute
 // );
