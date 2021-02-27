@@ -39,7 +39,7 @@ function main() {
     }
   };
 
-  logDebug('node', _node, 'cwd', process.cwd());
+  logDebug('node:', _node, ', cwd:', process.cwd());
 
 
   // run it!
