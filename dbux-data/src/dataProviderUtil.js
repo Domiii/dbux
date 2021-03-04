@@ -9,7 +9,7 @@ import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCa
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
 
 /**
- * @typedef {import('./RuntimeDataProvider').RuntimeDataProvider} DataProvider
+ * @typedef {import('./RuntimeDataProvider').default} DataProvider
  */
 
 // eslint-disable-next-line no-unused-vars
@@ -306,8 +306,8 @@ export default {
   // },
 
   /**
-   * Get the value of trace, return `undefined` if trace has no value
    * @param {DataProvider} dp
+   * @return Value of given trace. If value is `undefined`, it could mean that the `value` is actually `undefined`, or, in case of traces that are not expressions, that there is no value.
    */
   getTraceValue(dp, traceId) {
     const valueTrace = dp.util.getValueTrace(traceId);
