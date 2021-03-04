@@ -10,7 +10,7 @@ import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class ContextNode extends HostComponentEndpoint {
-  init() {
+  init(shouldLazyBuild = false) {
     const {
       applicationId,
       context
@@ -28,18 +28,23 @@ class ContextNode extends HostComponentEndpoint {
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
     this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
 
-    // add controllers
-    this.controllers.createComponent('GraphNode', {});
-    this.controllers.createComponent('PopperController');
-    this.controllers.createComponent('Highlighter');
-
     // register with root
     this.context.graphRoot._contextNodeCreated(this);
 
     // build sub graph
-    this.buildChildNodes();
+    let hasChildren;
+    if (shouldLazyBuild) {
+      hasChildren = !!this.getValidChildContexts().length;
+    }
+    else {
+      this.buildChildNodes();
+      hasChildren = !!this.children.getComponents('ContextNode').length;
+    }
 
-    this.state.hasChildren = !!this.children.length;
+    // add controllers
+    this.controllers.createComponent('GraphNode', { hasChildren, shouldLazyBuild });
+    this.controllers.createComponent('PopperController');
+    this.controllers.createComponent('Highlighter');
   }
 
   get firstTrace() {
@@ -49,30 +54,29 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   buildChildNodes() {
-    const {
-      applicationId,
-      context: {
-        contextId
-      }
-    } = this.state;
+    const { applicationId } = this.state;
+    this.getValidChildContexts().forEach(context => {
+      this.children.createComponent('ContextNode', {
+        applicationId,
+        context
+      });
+    });
+  }
 
-    // get all child contexts
+  getValidChildContexts() {
+    const { applicationId, context: { contextId } } = this.state;
     const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
-    childContexts.forEach(childContext => {
+    return childContexts.filter(childContext => {
       if (dp.util.isFirstContextOfRun(childContext.contextId)) {
-        return;
+        return false;
       }
 
       if (ExecutionContextType.is.Await(childContext.contextType)) {
-        return;
+        return false;
       }
 
-      // create child context
-      this.children.createComponent('ContextNode', {
-        applicationId,
-        context: childContext
-      });
+      return true;
     });
   }
 

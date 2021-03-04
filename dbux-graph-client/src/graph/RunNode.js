@@ -7,7 +7,7 @@ class RunNode extends ClientComponentEndpoint {
       <div class="flex-row vertical-align-center">
         <div class="run-node width-fit">
           <div>
-            <div data-el="nodeChildren" data-mount="ContextNode" class="node-children flex-column"></div>
+            <div data-el="nodeChildren" data-mount="RootContextNode" class="node-children flex-column"></div>
           </div>
         </div>
         <div data-el="childrenAmountTag"></div>

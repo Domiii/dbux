@@ -66,7 +66,11 @@ export default class GraphNode extends HostComponentEndpoint {
       }
       const { firstTrace: trace } = this.owner;
       const { context } = this.owner.state;
-      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { context, trace });
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { context, trace, mode });
+      if (this.state.shouldLazyBuild && !this.childrenBuilt) {
+        this.childrenBuilt = true;
+        this.owner.buildChildNodes();
+      }
       this.setMode(mode);
     },
     reveal: this.reveal

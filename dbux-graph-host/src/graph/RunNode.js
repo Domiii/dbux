@@ -16,13 +16,15 @@ class RunNode extends HostComponentEndpoint {
 
     const dp = allApplications.getById(applicationId).dataProvider;
 
-    // add GraphNode
-    this.controllers.createComponent('GraphNode');
+    // Add GraphNode to pass the `setChildMode` from graphRoot to ContextNode
+    this.controllers.createComponent('GraphNode', {
+      hasChildren: true
+    });
 
     // add root context
     const firstContext = dp.util.getFirstContextOfRun(runId);
     if (firstContext) {
-      this.children.createComponent(ContextNode, {
+      this.children.createComponent('RootContextNode', {
         applicationId,
         context: firstContext
       });
@@ -49,7 +51,7 @@ class RunNode extends HostComponentEndpoint {
   getContextChildrenAmount() {
     const { firstContextId, applicationId } = this.state;
     const dp = allApplications.getById(applicationId).dataProvider;
-    return this.getContextChildrenAmountDFS(dp, firstContextId);
+    return this.getContextChildrenAmountDFS(dp, firstContextId) + 1;
   }
 
   getContextChildrenAmountDFS(dp, contextId) {

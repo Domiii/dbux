@@ -58,7 +58,8 @@ class GraphRoot extends HostComponentEndpoint {
     this._unsubscribeOnNewData = [];
 
     this.controllers.createComponent('GraphNode', {
-      mode: GraphNodeMode.ExpandChildren
+      mode: GraphNodeMode.ExpandChildren,
+      hasChildren: true
     });
     this.controllers.createComponent('PopperManager');
     this.controllers.createComponent('ContextNodeManager');
