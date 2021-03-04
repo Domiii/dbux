@@ -58,7 +58,7 @@ export default class Collection {
   }
 
   /**
-   * Collections can use this to resolve some additional information from raw data. This will be execute only once.
+   * Collections can use this to massage data after all data has been added, but before indexes have been processed. This will be executed only on the first time that data has been added.
    * @virtual
    * 
    * @param {T[]} entries
@@ -66,9 +66,8 @@ export default class Collection {
   postAddRaw(entries) {}
 
   /**
-   * Collections can use this to resolve some additional information from processed data. This will be execute everytime(even when deserialize) data is added.
+   * Collections can use this to massage data after all data has been added, but before indexes have been processed. This will be executed everytime data has been added(even when deserialize).
    * @virtual
-   * 
    * @param {T[]} entries
    */
   postAddProcessed(entries) {}

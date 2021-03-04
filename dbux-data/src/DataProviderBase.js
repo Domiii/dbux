@@ -201,7 +201,7 @@ export default class DataProviderBase {
       }
     }
 
-    // notify collections that adding(processed) has finished
+    // notify collections that adding(processed data) has finished
     for (const collectionName in allData) {
       const collection = this.collections[collectionName];
       const entries = allData[collectionName];

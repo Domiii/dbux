@@ -422,7 +422,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
   /**
    * Load data from log file
-   * NOTE: PDP uses a different way to save/load since we want to keep the data everytime it's added, we can't do this with only serialize/deserialize
+   * NOTE: PDP uses a different way to save/load since we want to store data incrementally, which we cannot do with serialize/deserializeJSON
    * @param {string} [logFilePath] 
    */
   load() {

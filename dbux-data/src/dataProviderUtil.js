@@ -269,15 +269,24 @@ export default {
   /** @param {DataProvider} dp */
   doesTraceHaveValue(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
-    const { value } = trace;
-    if (value === undefined) {
-      const valueRef = dp.util.getTraceValueRef(traceId);
-      if (!valueRef) { // || valueRef.value === undefined) {
-        // TODO: better distinguish between existing and non-existing values
-        return false;
-      }
+    // valueId might be `0`, cannot simply check `'valueId' in trace`
+    if ('value' in trace || trace.valueId) {
+      return true;
     }
-    return true;
+    else {
+      return false;
+    }
+
+    // const trace = dp.util.getValueTrace(traceId);
+    // const { value } = trace;
+    // if (value === undefined) {
+    //   const valueRef = dp.util.getTraceValueRef(traceId);
+    //   if (!valueRef) { // || valueRef.value === undefined) {
+    //     // TODO: better distinguish between existing and non-existing values
+    //     return false;
+    //   }
+    // }
+    // return true;
 
     // const value = dp.util.getTraceValue(traceId);
     // return value !== undefined;
@@ -295,20 +304,22 @@ export default {
   // },
 
   /**
+   * NOTE: Trace's value could be `undefined` or `null`, make sure to use `dp.util.doesTraceHaveValue` before this.
    * @param {DataProvider} dp
    */
   getTraceValue(dp, traceId) {
-    const trace = dp.util.getValueTrace(traceId);
-    if ('value' in trace) {
-      return trace.value;
+    const valueTrace = dp.util.getValueTrace(traceId);
+
+    if ('value' in valueTrace) {
+      return valueTrace.value;
     }
 
-    const valueRef = dp.util.getTraceValueRef(traceId);
-    if (!valueRef) {
-      // TODO: better distinguish between existing and non-existing values
-      return undefined;
+    if ('valueId' in valueTrace) {
+      const valueRef = dp.util.getTraceValueRef(traceId);
+      return valueRef.value;
     }
-    return valueRef.value;
+
+    throw new Error(`Trace does not have value(traceId ${traceId}). Make sure to use "dp.util.doesTraceHaveValue" before "dp.util.getTraceValue".`);
   },
 
   /**
