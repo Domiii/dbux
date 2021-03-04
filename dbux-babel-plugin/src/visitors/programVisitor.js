@@ -8,7 +8,7 @@ import { buildTraceVisitors as traceVisitors } from './traceVisitors';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { buildDbuxInit } from '../data/staticData';
 import { buildContextEndTrace } from '../helpers/contextHelper';
-import nameVisitors from './nameVisitors';
+import nameVisitors, { clearNames } from './nameVisitors';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('programVisitor');
@@ -171,6 +171,9 @@ function exit(path, state) {
   //   console.error("Could not run gc. Do: `node --expose-gc index.js`");
   //   process.exit();
   // }
+
+  // clean up on aisle 4 (prevent memory leaks)
+  clearNames();
 }
 
 // ########################################

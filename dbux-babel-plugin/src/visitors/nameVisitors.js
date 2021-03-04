@@ -1,7 +1,6 @@
 import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
 
-// TODO: memory leak
-const nameMap = new Map();
+let nameMap = new Map();
 
 export function getNodeNames(node) {
   return nameMap.get(node);
@@ -32,4 +31,9 @@ export default function nameVisitors() {
       enter
     }
   };
+}
+
+// prevent memory leaks
+export function clearNames() {
+  nameMap.clear();
 }
