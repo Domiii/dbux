@@ -266,10 +266,13 @@ export default {
     return valueRef && isFunctionCategory(valueRef.category) || false;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * True if trace has value that is not `undefined`.
+   * @param {DataProvider} dp
+   */
   doesTraceHaveValue(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
-    if ('value' in trace || trace.valueId) {
+    if (trace.value !== undefined || trace.valueId) {
       return true;
     }
     else {
@@ -303,22 +306,22 @@ export default {
   // },
 
   /**
-   * NOTE: Trace's value could be `undefined` or `null`, make sure to use `dp.util.doesTraceHaveValue` before this.
+   * Get the value of trace, return `undefined` if trace has no value
    * @param {DataProvider} dp
    */
   getTraceValue(dp, traceId) {
     const valueTrace = dp.util.getValueTrace(traceId);
 
-    if ('value' in valueTrace) {
+    if (valueTrace.value !== undefined) {
       return valueTrace.value;
     }
 
-    if ('valueId' in valueTrace) {
+    if (valueTrace.valueId) {
       const valueRef = dp.util.getTraceValueRef(traceId);
       return valueRef.value;
     }
 
-    throw new Error(`Trace does not have value(traceId ${traceId}). Make sure to use "dp.util.doesTraceHaveValue" before "dp.util.getTraceValue".`);
+    return undefined;
   },
 
   /**
@@ -341,7 +344,7 @@ export default {
       return trace._valueString;
     }
 
-    const valueMessage = dp.util.getTraceValueMessage(trace.traceId);
+    const valueMessage = dp.util.getTraceValueMessage(traceId);
     if (valueMessage) {
       return valueMessage;
     }
