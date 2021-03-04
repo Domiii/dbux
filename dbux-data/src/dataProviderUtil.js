@@ -269,7 +269,6 @@ export default {
   /** @param {DataProvider} dp */
   doesTraceHaveValue(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
-    // valueId might be `0`, cannot simply check `'valueId' in trace`
     if ('value' in trace || trace.valueId) {
       return true;
     }
