@@ -25,6 +25,10 @@ function debugLog(...args) {
   // }
 }
 
+function batchTestRegExp(regexps, target) {
+  return regexps.some(regexp => regexp.test(target));
+}
+
 export default function buildBabelOptions(options) {
   process.env.BABEL_DISABLE_CACHE = 1;
 
@@ -33,6 +37,7 @@ export default function buildBabelOptions(options) {
     dontInjectDbux,
     dontAddPresets,
     dbuxOptions: dbuxOptionsString,
+    packageWhitelist,
     verbose = 0
   } = options;
 
@@ -50,6 +55,8 @@ export default function buildBabelOptions(options) {
   //   injectDependencies();
   // }
 
+  const packageWhitelistRegExps = packageWhitelist.map(packageName => new RegExp(`^${packageName}$`));
+
   // setup babel-register
   const baseOptions = esnext ? baseBabelOptions : EmptyObject;
   const babelOptions = {
@@ -63,8 +70,11 @@ export default function buildBabelOptions(options) {
           return undefined;
         }
 
-        // no node_modules
-        if (modulePath.match(/((node_modules)|(dist)).*(?<!\.mjs)$/)) {
+        const matchSkipFileResult = modulePath.match(/dist|\.mjs/);
+        const matchResult = modulePath.match(/(?<=node_modules\/)(?!node_modules)(?<packageName>[^/]+)(?=\/(?!node_modules).*)/);
+        const packageName = matchResult ? matchResult.groups.packageName : null;
+
+        if (matchSkipFileResult || (packageName && !batchTestRegExp(packageWhitelistRegExps, packageName))) {
           verbose > 1 && debugLog(`[Dbux] no-register`, modulePath);
           return true;
         }
