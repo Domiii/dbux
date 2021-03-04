@@ -501,12 +501,23 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   disabled = 0;
+  tracesDisabled = 1;
 
   incDisabled() {
     ++this.disabled;
+    ++this.tracesDisabled;
   }
 
   decDisabled() {
     --this.disabled;
+    --this.tracesDisabled;
+  }
+
+  incTracesDisabled() {
+    ++this.tracesDisabled;
+  }
+
+  decTracesDisabled() {
+    --this.tracesDisabled;
   }
 }
