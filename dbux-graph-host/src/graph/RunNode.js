@@ -1,4 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
+import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import ContextNode from './ContextNode';
@@ -26,6 +27,7 @@ class RunNode extends HostComponentEndpoint {
         context: firstContext
       });
       this.state.createdAt = dp.util.getRunCreatedAt(runId);
+      this.state.firstContextId = firstContext.contextId;
     }
     else {
       logError('Creating RunNode with no context');
@@ -33,7 +35,7 @@ class RunNode extends HostComponentEndpoint {
 
     const hiddenNodeManager = this.parent.controllers.getComponent('HiddenNodeManager');
     this.state.visible = hiddenNodeManager.shouldBeVisible(this);
-    this.state.childrenAmount = this.contextChildrenAmount;
+    this.state.childrenAmount = this.getContextChildrenAmount();
   }
 
   isHiddenBy() {
@@ -44,10 +46,16 @@ class RunNode extends HostComponentEndpoint {
     return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
   }
 
-  get contextChildrenAmount() {
-    const contextChildren = this.children.getComponents('ContextNode');
-    let amount = contextChildren.length;
-    contextChildren.forEach(childNode => amount += childNode.contextChildrenAmount);
+  getContextChildrenAmount() {
+    const { firstContextId, applicationId } = this.state;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    return this.getContextChildrenAmountDFS(dp, firstContextId);
+  }
+
+  getContextChildrenAmountDFS(dp, contextId) {
+    const childrens = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
+    let amount = childrens.length;
+    childrens.forEach(childContext => amount += this.getContextChildrenAmountDFS(dp, childContext.contextId));
     return amount;
   }
 
