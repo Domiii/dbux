@@ -1,5 +1,6 @@
 import { guessFunctionName, getFunctionDisplayName } from '../helpers/functionHelpers';
 
+// TODO: memory leak
 const nameMap = new Map();
 
 export function getNodeNames(node) {

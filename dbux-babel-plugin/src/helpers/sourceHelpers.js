@@ -8,7 +8,7 @@ import generate from '@babel/generator';
 function generateSourceWithoutComments(node) {
   const options = {
     comments: false,
-    
+
   };
   return generate(node, options).code;
 }
@@ -20,13 +20,12 @@ const NEWLINE = /\r\n|[\n\r\u2028\u2029]/;
 const linesByProgram = new Map();
 
 function getSourceCodeLines(state) {
-  const { file } = state;
-  let lines = linesByProgram.get(file);
+  const { filePath/* , file: { code } */ } = state;
+  let lines = linesByProgram.get(filePath);
   if (!lines) {
-    let { code } = file;
-    
+    const { file: { code } } = state;
     lines = code.split(NEWLINE);
-    linesByProgram.set(file, lines);
+    linesByProgram.set(filePath, lines);
   }
   return lines;
 }
