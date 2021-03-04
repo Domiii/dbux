@@ -37,9 +37,10 @@ export default function buildBabelOptions(options) {
     dontInjectDbux,
     dontAddPresets,
     dbuxOptions: dbuxOptionsString,
-    packageWhitelist,
     verbose = 0
   } = options;
+
+  let { packageWhitelist } = options;
 
   if (dontInjectDbux && !esnext) {
     // nothing to babel
@@ -55,6 +56,7 @@ export default function buildBabelOptions(options) {
   //   injectDependencies();
   // }
 
+  if (!Array.isArray(packageWhitelist)) packageWhitelist = [packageWhitelist];
   const packageWhitelistRegExps = packageWhitelist.map(packageName => new RegExp(`^${packageName}$`));
 
   // setup babel-register
