@@ -7,7 +7,7 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { makeTreeChildren } from '../../helpers/treeViewHelpers';
 import { valueRender } from '../valueRender';
 
-const noValueMessage = '(no value)';
+const noValueMessage = '(no value or undefined)';
 
 export default class ValueTDNode extends BaseTreeViewNode {
   static makeTraceDetail(trace/* , parent */) {

@@ -9,7 +9,7 @@ import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCa
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
 
 /**
- * @typedef {import('./RuntimeDataProvider').RuntimeDataProvider} DataProvider
+ * @typedef {import('./RuntimeDataProvider').default} DataProvider
  */
 
 // eslint-disable-next-line no-unused-vars
@@ -266,10 +266,13 @@ export default {
     return valueRef && isFunctionCategory(valueRef.category) || false;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * True if trace has value that is not `undefined`.
+   * @param {DataProvider} dp
+   */
   doesTraceHaveValue(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
-    if ('value' in trace || trace.valueId) {
+    if (trace.value !== undefined || trace.valueId) {
       return true;
     }
     else {
@@ -303,22 +306,22 @@ export default {
   // },
 
   /**
-   * NOTE: Trace's value could be `undefined` or `null`, make sure to use `dp.util.doesTraceHaveValue` before this.
    * @param {DataProvider} dp
+   * @return Value of given trace. If value is `undefined`, it could mean that the `value` is actually `undefined`, or, in case of traces that are not expressions, that there is no value.
    */
   getTraceValue(dp, traceId) {
     const valueTrace = dp.util.getValueTrace(traceId);
 
-    if ('value' in valueTrace) {
+    if (valueTrace.value !== undefined) {
       return valueTrace.value;
     }
 
-    if ('valueId' in valueTrace) {
+    if (valueTrace.valueId) {
       const valueRef = dp.util.getTraceValueRef(traceId);
       return valueRef.value;
     }
 
-    throw new Error(`Trace does not have value(traceId ${traceId}). Make sure to use "dp.util.doesTraceHaveValue" before "dp.util.getTraceValue".`);
+    return undefined;
   },
 
   /**
@@ -341,7 +344,7 @@ export default {
       return trace._valueString;
     }
 
-    const valueMessage = dp.util.getTraceValueMessage(trace.traceId);
+    const valueMessage = dp.util.getTraceValueMessage(traceId);
     if (valueMessage) {
       return valueMessage;
     }
