@@ -1,8 +1,12 @@
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 // import allApplications from '@dbux/data/src/applications/allApplications';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { showTextDocument } from '../codeUtil/codeNav';
 import codeDecorations, { CodeDecoRegistration } from '../codeDeco/codeDecorations';
 import { babelLocToCodeRange } from '../helpers/codeLocHelpers';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('PathwaysDecorations');
 
 let visitedStaticTracesRegistration;
 
@@ -35,13 +39,18 @@ export async function decorateVisitedTraces(pdp) {
 
   const staticTracesByFile = pdp.util.getVisitedStaticTraces();
   for (const [fpath, staticTraces] of staticTracesByFile.entries()) {
-    const decos = staticTraces?.map(staticTrace => {
+    // sanity check, staticTraces should always be a Set(not `undefined`)
+    if (!staticTraces) {
+      logError(`Got falsy value from set-valued index`);
+      return;
+    }
+    
+    const decos = Array.from(staticTraces).map(staticTrace => {
       const { loc } = staticTrace;
       return {
         range: babelLocToCodeRange(loc)
       };
-    }) || EmptyArray;
-    
+    });
     
     const editor = await showTextDocument(fpath);
     visitedStaticTracesRegistration.setDecos(editor, decos);

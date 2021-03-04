@@ -6,7 +6,7 @@ import BugProgress from '../BugProgress';
 /** @extends {CollectionIndex<BugProgress>} */
 export default class BugProgressByBugIdIndex extends CollectionIndex {
   constructor() {
-    super('bugProgresses', 'byBugId', { stringKey: true });
+    super('bugProgresses', 'byBugId', { isMap: true });
   }
 
   /** 

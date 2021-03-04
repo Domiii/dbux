@@ -22,6 +22,7 @@ import StepsByTypeIndex from './indexes/StepsByTypeIndex';
 import StepsByGroupIndex from './indexes/StepsByGroupIndex';
 import TestRun from './TestRun';
 import LogFileLoader from './LogFileLoader';
+import VisitedStaticTracesByFile from './indexes/VisitedStaticTracesByFileIndex';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('PathwaysDataProvider');
@@ -55,11 +56,12 @@ class ApplicationCollection extends Collection {
   serialize(application) {
     const { entryPointPath, createdAt } = application;
     const relativeEntryPointPath = path.relative(this.dp.manager.config.projectsRoot, entryPointPath).replace(/\\/g, '/');
+    const serializedDpData = JSON.stringify(application.dataProvider.serializeJson());
     return {
       relativeEntryPointPath,
       createdAt,
       uuid: application.uuid,
-      serializedDpData: application.dataProvider.serialize()
+      serializedDpData
     };
   }
 
@@ -70,7 +72,7 @@ class ApplicationCollection extends Collection {
   deserialize({ relativeEntryPointPath, createdAt, uuid, serializedDpData }) {
     const entryPointPath = path.join(this.dp.manager.config.projectsRoot, relativeEntryPointPath);
     const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
-    app.dataProvider.deserialize(JSON.parse(serializedDpData));
+    app.dataProvider.deserializeJson(JSON.parse(serializedDpData));
     return app;
   }
 }
@@ -79,31 +81,32 @@ class ApplicationCollection extends Collection {
  * @extends {Collection<UserAction>}
  */
 class UserActionCollection extends Collection {
-  visitedStaticTracesByFile = new Map();
-
   constructor(pdp) {
     super('userActions', pdp);
   }
 
-  handleEntryAdded(entry) {
-    const { trace } = entry;
-    if (!trace) {
-      return;
+  postAddProcessed(userActions) {
+    this.resolveVisitedStaticTracesIndex(userActions);
+  }
+
+  resolveVisitedStaticTracesIndex(userActions) {
+    for (const action of userActions) {
+      const { trace } = action;
+      if (!trace) {
+        return;
+      }
+
+      const { applicationId, staticTraceId } = trace;
+      const dp = allApplications.getById(applicationId).dataProvider;
+
+      const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
+      const { staticContextId } = staticTrace;
+      const { programId } = dp.collections.staticContexts.getById(staticContextId);
+      const fpath = programId && dp.collections.staticProgramContexts.getById(programId).filePath || '(unknown file)';
+
+      // this.dp === pdp
+      this.dp.indexes.userActions.visitedStaticTracesByFile.addEntryToKey(fpath, staticTrace);
     }
-
-    const { applicationId, staticTraceId } = trace;
-    const dp = allApplications.getById(applicationId).dataProvider;
-
-    const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
-    const { staticContextId } = staticTrace;
-    const { programId } = dp.collections.staticContexts.getById(staticContextId);
-    const fileName = programId && dp.collections.staticProgramContexts.getById(programId).filePath || '(unknown file)';
-
-    let staticTraces = this.visitedStaticTracesByFile.get(fileName);
-    if (!staticTraces) {
-      this.visitedStaticTracesByFile.set(fileName, staticTraces = []);
-    }
-    staticTraces.push(staticTrace);
   }
 
   serialize(action) {
@@ -132,21 +135,27 @@ class StepCollection extends Collection {
     super('steps', pdp);
   }
 
-  handleEntryAdded(step) {
-    if (!step.stepGroupId) {
-      // convert group's string key to numerical id (since our indexes only accept numerical ids)
-      const {
-        type,
-        staticContextId
-      } = step;
+  postAddProcessed(steps) {
+    this.resolveStepGroupId(steps);
+  }
 
-      // const stepGroupKey = `${type}_${staticContextId}`;
-      const stepGroupKey = staticContextId ? `staticContextId_${staticContextId}` : `type_${type}`;
-      let stepGroupId = this.groupIdsByKey.get(stepGroupKey);
-      if (!stepGroupId) {
-        this.groupIdsByKey.set(stepGroupKey, stepGroupId = this.groupIdsByKey.size + 1);
+  resolveStepGroupId(steps) {
+    for (const step of steps) {
+      if (!step.stepGroupId) {
+        // convert group's string key to numerical id (since our indexes only accept numerical ids)
+        const {
+          type,
+          staticContextId
+        } = step;
+
+        // const stepGroupKey = `${type}_${staticContextId}`;
+        const stepGroupKey = staticContextId ? `staticContextId_${staticContextId}` : `type_${type}`;
+        let stepGroupId = this.groupIdsByKey.get(stepGroupKey);
+        if (!stepGroupId) {
+          this.groupIdsByKey.set(stepGroupKey, stepGroupId = this.groupIdsByKey.size + 1);
+        }
+        step.stepGroupId = stepGroupId;
       }
-      step.stepGroupId = stepGroupId;
     }
   }
 }
@@ -389,6 +398,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
     this.addIndex(new UserActionsByStepIndex());
     this.addIndex(new UserActionsByGroupIndex());
     this.addIndex(new VisibleActionGroupByStepIdIndex());
+    this.addIndex(new VisitedStaticTracesByFile());
     this.addIndex(new StepsByGroupIndex());
     this.addIndex(new StepsByTypeIndex());
   }
@@ -412,6 +422,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
   /**
    * Load data from log file
+   * NOTE: PDP uses a different way to save/load since we want to store data incrementally, which we cannot do with serialize/deserializeJSON
    * @param {string} [logFilePath] 
    */
   load() {
@@ -452,6 +463,7 @@ export default class PathwaysDataProvider extends DataProviderBase {
   );
 
   addData(allData, writeToLog = true) {
+    // TODO: remove this override, and do log writting by listener maybe?
     super.addData(allData);
 
     if (writeToLog) {
@@ -461,11 +473,11 @@ export default class PathwaysDataProvider extends DataProviderBase {
 
   writeAll(allData) {
     for (const collectionName in allData) {
-      for (let data of allData[collectionName]) {
+      for (let entry of allData[collectionName]) {
         if (this.collections[collectionName].serialize) {
-          data = this.collections[collectionName].serialize(data);
+          entry = this.collections[collectionName].serialize(entry);
         }
-        this.writeOnData(collectionName, data);
+        this.writeOnData(collectionName, entry);
       }
     }
   }

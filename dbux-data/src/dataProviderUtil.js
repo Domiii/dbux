@@ -229,7 +229,7 @@ export default {
 
   /**
    * NOTE: We want to link multiple traces against the same trace sometimes.
-   *  e.g. we want to treat the value of a `BCE` the same as its `CRE`.
+   *  E.g.: we want to treat the value of a `BCE` the same as its `CRE`.
    * @param {DataProvider} dp 
   */
   getValueTrace(dp, traceId) {
@@ -269,15 +269,23 @@ export default {
   /** @param {DataProvider} dp */
   doesTraceHaveValue(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
-    const { value } = trace;
-    if (value === undefined) {
-      const valueRef = dp.util.getTraceValueRef(traceId);
-      if (!valueRef) { // || valueRef.value === undefined) {
-        // TODO: better distinguish between existing and non-existing values
-        return false;
-      }
+    if ('value' in trace || trace.valueId) {
+      return true;
     }
-    return true;
+    else {
+      return false;
+    }
+
+    // const trace = dp.util.getValueTrace(traceId);
+    // const { value } = trace;
+    // if (value === undefined) {
+    //   const valueRef = dp.util.getTraceValueRef(traceId);
+    //   if (!valueRef) { // || valueRef.value === undefined) {
+    //     // TODO: better distinguish between existing and non-existing values
+    //     return false;
+    //   }
+    // }
+    // return true;
 
     // const value = dp.util.getTraceValue(traceId);
     // return value !== undefined;
@@ -295,16 +303,22 @@ export default {
   // },
 
   /**
+   * NOTE: Trace's value could be `undefined` or `null`, make sure to use `dp.util.doesTraceHaveValue` before this.
    * @param {DataProvider} dp
    */
   getTraceValue(dp, traceId) {
-    const trace = dp.util.getValueTrace(traceId);
-    if ('value' in trace) {
-      return trace.value;
+    const valueTrace = dp.util.getValueTrace(traceId);
+
+    if ('value' in valueTrace) {
+      return valueTrace.value;
     }
 
-    const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef?.value;
+    if ('valueId' in valueTrace) {
+      const valueRef = dp.util.getTraceValueRef(traceId);
+      return valueRef.value;
+    }
+
+    throw new Error(`Trace does not have value(traceId ${traceId}). Make sure to use "dp.util.doesTraceHaveValue" before "dp.util.getTraceValue".`);
   },
 
   /**

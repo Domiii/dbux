@@ -46,8 +46,8 @@ export function initUserCommands(extensionContext) {
     }
 
     const exportFpath = path.join(exportFolder, `${applicationName || '(unknown)'}_data.json`);
-    const data = application.dataProvider.serialize();
-    fs.writeFileSync(exportFpath, data);
+    const data = application.dataProvider.serializeJson();
+    fs.writeFileSync(exportFpath, JSON.stringify(data));
 
     const btns = {
       Open: async () => {
