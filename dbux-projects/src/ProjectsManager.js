@@ -70,6 +70,10 @@ export default class ProjectsManager {
     '@dbux/cli'
   ];
 
+  // ###########################################################################
+  // ctor, init, load
+  // ###########################################################################
+
   /**
    * @param {Object} externals 
    * @param {ExternalStorage} externals.storage
@@ -112,23 +116,6 @@ export default class ProjectsManager {
     await initLang(this.config.dbuxLanguage);
   }
 
-  get pdp() {
-    return this.pathwayDataProvider;
-  }
-
-  get bdp() {
-    return this.bugDataProvider;
-  }
-
-  get runStatus() {
-    return this.runner.status;
-  }
-
-  async getAndInitBackend() {
-    await this._backend.init();
-    return this._backend;
-  }
-
   /**
    * Retrieves all case study objects, 
    * sorted by name (in descending order).
@@ -161,6 +148,31 @@ export default class ProjectsManager {
     }
 
     return this.projects;
+  }
+
+  addProject() {
+    
+  }
+
+  // ###########################################################################
+  // getters
+  // ###########################################################################
+
+  get pdp() {
+    return this.pathwayDataProvider;
+  }
+
+  get bdp() {
+    return this.bugDataProvider;
+  }
+
+  get runStatus() {
+    return this.runner.status;
+  }
+
+  async getAndInitBackend() {
+    await this._backend.init();
+    return this._backend;
   }
 
   // ###########################################################################

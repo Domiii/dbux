@@ -306,6 +306,8 @@ export default {
   // },
 
   /**
+   * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
+   * 
    * @param {DataProvider} dp
    * @return Value of given trace. If value is `undefined`, it could mean that the `value` is actually `undefined`, or, in case of traces that are not expressions, that there is no value.
    */
@@ -335,7 +337,11 @@ export default {
     return null;
   },
 
-  /** @param {DataProvider} dp */
+  /** 
+   * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
+   * 
+   * @param {DataProvider} dp
+   */
   getTraceValueString(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
 
@@ -344,6 +350,8 @@ export default {
       return trace._valueString;
     }
 
+    // TODO: separate "message" from valueString
+    // A message is generated if there is an issue with the value or it was omitted.
     const valueMessage = dp.util.getTraceValueMessage(traceId);
     if (valueMessage) {
       return valueMessage;

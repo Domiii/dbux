@@ -17,5 +17,10 @@ export default class Queries {
 
     query._init(dp);
     this[query.name] = query.executor.bind(query, dp);
+    // {
+    //   run: query.executor.bind(query, dp), // query all
+    //   // TODO: incremental queries
+    //   // TODO: query listeners
+    // };
   }
 }

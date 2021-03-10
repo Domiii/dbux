@@ -76,7 +76,7 @@ class ContextNode extends HostComponentEndpoint {
       }
 
       // create child context
-      this.children.createComponent('ContextNode', {
+      this.children.createComponent(ContextNode, {
         applicationId,
         context: childContext
       });

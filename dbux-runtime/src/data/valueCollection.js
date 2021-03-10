@@ -215,13 +215,14 @@ class ValueCollection extends Collection {
   }
 
   _startAccess(/* obj */) {
-    // TODO: disable tracing while reading the property
     // eslint-disable-next-line no-undef
     if (__dbux__._r.disabled) {
       this.logger.error('Tried to start accessing object while already accessing another object.');
       return;
     }
 
+    // NOTE: disable tracing while reading the property
+    
     // eslint-disable-next-line no-undef
     __dbux__._r.incDisabled();
   }

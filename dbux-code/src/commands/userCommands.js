@@ -37,7 +37,7 @@ export function initUserCommands(extensionContext) {
   // ###########################################################################
 
   async function doExport(application) {
-    const exportFolder = path.join(__dirname, '../../analysis/__data__/');
+    const exportFolder = path.resolve(__dirname, '../../analysis/__data__/');
     const applicationName = application.getSafeFileName();
     // const folder = path.dirname(application.entryPointPath);
     // const fpath = path.join(folder, '_data.json');
@@ -55,15 +55,13 @@ export function initUserCommands(extensionContext) {
       }
     };
     const msg = translate('savedSuccessfully', { fileName: exportFpath });
-    debug(msg);
+    // debug(msg);
     await showInformationMessage(msg, btns);
   }
 
   registerCommand(extensionContext, 'dbux.exportApplicationData', async () => {
     const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
-    if (application) {
-      await doExport(application);
-    }
+    application && await doExport(application);
   });
 
 
