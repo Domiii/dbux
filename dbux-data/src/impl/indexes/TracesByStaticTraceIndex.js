@@ -9,8 +9,8 @@ export default class TracesByStaticTraceIndex extends CollectionIndex {
     super('traces', 'byStaticTrace');
   }
 
-  beforeAdd(ofKey, trace) {
-    trace.staticTraceIndex = ofKey.length;
+  beforeAdd(container, trace) {
+    trace.staticTraceIndex = container.length;
   }
 
   /** 

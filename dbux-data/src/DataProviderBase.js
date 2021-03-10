@@ -186,7 +186,7 @@ export default class DataProviderBase {
    * Add given data (of different collections) to this `DataProvier`
    * @param {{ [string]: any[] }} allData
    */
-  addData(allData, applyPostAdd = true) {
+  addData(allData, isRaw = true) {
     // sanity checks
     if (!allData || allData.constructor.name !== 'Object') {
       this.logger.error('invalid data must be (but is not) object -', JSON.stringify(allData).substring(0, 500));
@@ -195,7 +195,7 @@ export default class DataProviderBase {
     // debug('received', JSON.stringify(allData).substring(0, 500));
 
     this._addData(allData);
-    this._postAdd(allData, applyPostAdd);
+    this._postAdd(allData, isRaw);
   }
 
   addQuery(newQuery) {
@@ -246,14 +246,21 @@ export default class DataProviderBase {
     }
   }
 
-  _postAdd(allData, applyPostAdd = true) {
-    if (applyPostAdd) {
-      // notify collections that adding has finished
+  _postAdd(allData, isRaw) {
+    if (isRaw) {
+      // notify collections that adding(raw data) has finished
       for (const collectionName in allData) {
         const collection = this.collections[collectionName];
         const entries = allData[collectionName];
-        collection.postAdd(entries);
+        collection.postAddRaw(entries);
       }
+    }
+
+    // notify collections that adding(processed data) has finished
+    for (const collectionName in allData) {
+      const collection = this.collections[collectionName];
+      const entries = allData[collectionName];
+      collection.postAddProcessed(entries);
     }
 
     // indexes
@@ -270,12 +277,13 @@ export default class DataProviderBase {
       }
     }
 
-    // notify collections that adding + index processing has finished
-    for (const collectionName in allData) {
-      const collection = this.collections[collectionName];
-      const entries = allData[collectionName];
-      collection.postIndex(entries);
-    }
+    // NOTE: Temporarily disabled, needs to ensure this wont mutate data
+    // // notify collections that adding + index processing has finished
+    // for (const collectionName in allData) {
+    //   const collection = this.collections[collectionName];
+    //   const entries = allData[collectionName];
+    //   collection.postIndex(entries);
+    // }
 
     // notify internal and external listeners
     this._notifyData(allData);
@@ -326,9 +334,9 @@ export default class DataProviderBase {
 
   /**
    * Serialize all raw data into a simple JS object.
-   * Usage: `JSON.stringify(dataProvider.serialize())`.
+   * Usage: `JSON.stringify(dataProvider.serializeJson())`.
    */
-  serialize() {
+  serializeJson() {
     const collections = Object.values(this.collections);
     const obj = {
       version: this.version,
@@ -351,13 +359,13 @@ export default class DataProviderBase {
         ];
       }))
     };
-    return JSON.stringify(obj, null, 2);
+    return obj;
   }
 
   /**
-   * Use: `dataProvider.deserialize(JSON.parse(stringFromFile))`
+   * Use: `dataProvider.deserializeJson(JSON.parse(serializedString))`
    */
-  deserialize(data, applyPostAdd = false) {
+  deserializeJson(data) {
     const { version, collections } = data;
     if (version !== this.version) {
       throw new Error(`could not serialize DataProvider - incompatible version: ${version} !== ${this.version}`);
@@ -369,6 +377,6 @@ export default class DataProviderBase {
         collections[collectionName] = collections[collectionName].map(obj => collection.deserialize(obj));
       }
     }
-    this.addData(collections, applyPostAdd);
+    this.addData(collections, false);
   }
 }

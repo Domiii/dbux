@@ -327,6 +327,7 @@ export default class ProjectsManager {
    * @return {Promise<boolean>}
    */
   async askForStopwatch() {
+    // TOTRANSLATE
     const confirmMsg = `This is your first time activate this bug, do you want to start a timer?\n`
       + `[WARN] You will not be able to time this bug once you activate it.`;
     return await this.externals.confirm(confirmMsg, true);

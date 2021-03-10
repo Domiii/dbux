@@ -23,17 +23,17 @@ const translation = {
     tutorial: '開始教學模式',
     survey: '參與調查',
   },
-  busyNow: '[dbux] 忙碌中...',
+  busyNow: '忙碌中...',
   noTrace: '鍵盤游標位置沒有 trace。',
   savedSuccessfully: '檔案儲存成功: {{fileName}}。',
-  noApplication: '[Dbux] 未選擇 application。',
+  noApplication: '未選擇 application。',
   projectView: {
     stopPractice: {
       giveUp: '確定要放棄計時挑戰嗎？',
       stop: '確定要停止練習嗎？',
     },
     existBug: {
-      message: '[Dbux] 你正在練習 {{bug}}',
+      message: '你正在練習 {{bug}}',
       ok: '好',
       giveUp: '放棄',
     },

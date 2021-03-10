@@ -14,7 +14,7 @@ const runningTimeout = 10000;
 
 let cwd, command, tmpFolder, moreEnv;
 
-const logDebug = (console.debug || console.log).bind(console, '[DBUX]');
+const logDebug = (console.debug || console.log).bind(console, '[Dbux]');
 
 function main() {
   // node run.js port "cwd" "command"

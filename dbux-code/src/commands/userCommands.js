@@ -23,7 +23,7 @@ import { showHelp } from '../help';
 import { showOutputChannel } from '../projectViews/projectViewsController';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 import { getAllMemento, clearAll } from '../memento';
-import { showInformationMessage } from '../codeUtil/codeModals';
+import { showErrorMessage, showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import { getLogsDirectory } from '../resources';
 
@@ -46,8 +46,8 @@ export function initUserCommands(extensionContext) {
     }
 
     const exportFpath = path.join(exportFolder, `${applicationName || '(unknown)'}_data.json`);
-    const data = application.dataProvider.serialize();
-    fs.writeFileSync(exportFpath, data);
+    const data = application.dataProvider.serializeJson();
+    fs.writeFileSync(exportFpath, JSON.stringify(data));
 
     const btns = {
       Open: async () => {
@@ -55,11 +55,8 @@ export function initUserCommands(extensionContext) {
       }
     };
     const msg = translate('savedSuccessfully', { fileName: exportFpath });
-    const clicked = await window.showInformationMessage(msg,
-      ...Object.keys(btns));
-    if (clicked) {
-      btns[clicked]();
-    }
+    // debug(msg);
+    await showInformationMessage(msg, btns);
   }
 
   registerCommand(extensionContext, 'dbux.exportApplicationData', async () => {
@@ -144,7 +141,7 @@ export function initUserCommands(extensionContext) {
       applicationIdByLabel.set(label, app.applicationId);
     });
     if (!allSelectedApps.length) {
-      await window.showInformationMessage(translate('noApplication'));
+      await showInformationMessage(translate('noApplication'));
       return;
     }
     // TOTRANSLATE
@@ -165,7 +162,7 @@ export function initUserCommands(extensionContext) {
     const traceId = parseInt(userInput, 10);
     if (isNaN(traceId)) {
       // TOTRANSLATE
-      await window.showErrorMessage(`Can't convert ${userInput} into integer`);
+      await showErrorMessage(`Can't convert ${userInput} into integer`);
       return;
     }
 
@@ -174,7 +171,7 @@ export function initUserCommands(extensionContext) {
     const trace = dp.collections.traces.getById(traceId);
     if (!trace) {
       // TOTRANSLATE
-      await window.showErrorMessage(`Can't find trace of traceId ${traceId} & applicationId ${applicationId}`);
+      await showErrorMessage(`Can't find trace of traceId ${traceId} & applicationId ${applicationId}`);
     }
     else {
       traceSelection.selectTrace(trace);

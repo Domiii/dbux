@@ -10,12 +10,12 @@ import { getSelectedApplicationInActiveEditor } from './CodeApplication';
 
 export async function getSelectedApplicationInActiveEditorWithUserFeedback() {
   if (!allApplications.getAllCount()) {
-    window.showWarningMessage('Failed. You have not run any Dbux-enabled application.');
+    showWarningMessage('Failed. You have not run any Dbux-enabled application.');
     return null;
   }
 
   if (allApplications.selection.isEmpty()) {
-    window.showWarningMessage('Failed. You have not selected any Dbux-enabled application in the "Applications" view.');
+    showWarningMessage('Failed. You have not selected any Dbux-enabled application in the "Applications" view.');
     return null;
   }
 

@@ -172,16 +172,18 @@ export class ProjectViewController {
 
     const options = {
       cancellable: false,
-      title: `[dbux] Bug ${bugNode.bug.id}`
+      title: `Bug ${bugNode.bug.id}`
     };
 
     try {
       await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
         const { bug } = bugNode;
 
+        // TOTRANSLATE
         progress.report({ message: 'checking system requirements...' });
         await this.checkActivateBugRequirement();
 
+        // TOTRANSLATE
         progress.report({ message: 'activating...' });
         await this.manager.startPractice(bug);
       }, options);
@@ -198,7 +200,7 @@ export class ProjectViewController {
 
     const options = {
       cancellable: false,
-      title: `[dbux] Bug ${`"${bug.label}"` || ''} (#${bug.id})`
+      title: `Bug ${`"${bug.label}"` || ''} (#${bug.id})`
     };
 
     await runTaskWithProgressBar(async (progress/* , cancelToken */) => {

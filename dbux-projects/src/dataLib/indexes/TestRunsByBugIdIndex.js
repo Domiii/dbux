@@ -5,7 +5,7 @@ import CollectionIndex from '@dbux/data/src/indexes/CollectionIndex';
 /** @extends {CollectionIndex<TestRun>} */
 export default class TestRunByBugIdIndex extends CollectionIndex {
   constructor() {
-    super('testRuns', 'byBugId', { stringKey: true });
+    super('testRuns', 'byBugId', { isMap: true });
   }
 
   /** 

@@ -111,7 +111,7 @@ export default class BugDataProvider extends DataProviderBase {
    */
   async save() {
     try {
-      const logString = this.serialize();
+      const logString = JSON.stringify(this.serializeJson());
       await this.storage.set(storageKey, logString);
     }
     catch (err) {
@@ -126,7 +126,7 @@ export default class BugDataProvider extends DataProviderBase {
     try {
       const logString = this.storage.get(storageKey);
       if (logString !== undefined) {
-        this.deserialize(JSON.parse(logString));
+        this.deserializeJson(JSON.parse(logString));
       }
     }
     catch (err) {

@@ -51,7 +51,7 @@ function linkOwnDependencies() {
 
   // register all dependencies
   
-  const msg = `[DBUX] linkOwnDependencies ${JSON.stringify({
+  const msg = `[Dbux] linkOwnDependencies ${JSON.stringify({
     targetFolder, dependencyRoot
   })}`;
   console.debug(colors.gray(msg));

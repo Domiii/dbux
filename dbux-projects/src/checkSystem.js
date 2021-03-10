@@ -168,7 +168,7 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
   }
 
   if (!success && !calledFromUser && !ignore) {
-    throw new Error(`[DBUX] System dependency check failed :(`);
+    throw new Error(`[Dbux] System dependency check failed :(`);
   }
 
   await updateCheckedStatus(success);

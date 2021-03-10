@@ -9,7 +9,7 @@ import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCa
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
 
 /**
- * @typedef {import('./RuntimeDataProvider').RuntimeDataProvider} DataProvider
+ * @typedef {import('./RuntimeDataProvider').default} DataProvider
  */
 
 // eslint-disable-next-line no-unused-vars
@@ -229,7 +229,7 @@ export default {
 
   /**
    * NOTE: We want to link multiple traces against the same trace sometimes.
-   *  e.g. we want to treat the value of a `BCE` the same as its `CRE`.
+   *  E.g.: we want to treat the value of a `BCE` the same as its `CRE`.
    * @param {DataProvider} dp 
   */
   getValueTrace(dp, traceId) {
@@ -266,18 +266,29 @@ export default {
     return valueRef && isFunctionCategory(valueRef.category) || false;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * True if trace has value that is not `undefined`.
+   * @param {DataProvider} dp
+   */
   doesTraceHaveValue(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
-    const { value } = trace;
-    if (value === undefined) {
-      const valueRef = dp.util.getTraceValueRef(traceId);
-      if (!valueRef) { // || valueRef.value === undefined) {
-        // TODO: better distinguish between existing and non-existing values
-        return false;
-      }
+    if (trace.value !== undefined || trace.valueId) {
+      return true;
     }
-    return true;
+    else {
+      return false;
+    }
+
+    // const trace = dp.util.getValueTrace(traceId);
+    // const { value } = trace;
+    // if (value === undefined) {
+    //   const valueRef = dp.util.getTraceValueRef(traceId);
+    //   if (!valueRef) { // || valueRef.value === undefined) {
+    //     // TODO: better distinguish between existing and non-existing values
+    //     return false;
+    //   }
+    // }
+    // return true;
 
     // const value = dp.util.getTraceValue(traceId);
     // return value !== undefined;
@@ -298,15 +309,21 @@ export default {
    * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
    * 
    * @param {DataProvider} dp
+   * @return Value of given trace. If value is `undefined`, it could mean that the `value` is actually `undefined`, or, in case of traces that are not expressions, that there is no value.
    */
   getTraceValue(dp, traceId) {
-    const trace = dp.util.getValueTrace(traceId);
-    if ('value' in trace) {
-      return trace.value;
+    const valueTrace = dp.util.getValueTrace(traceId);
+
+    if (valueTrace.value !== undefined) {
+      return valueTrace.value;
     }
 
-    const valueRef = dp.util.getTraceValueRef(traceId);
-    return valueRef?.value;
+    if (valueTrace.valueId) {
+      const valueRef = dp.util.getTraceValueRef(traceId);
+      return valueRef.value;
+    }
+
+    return undefined;
   },
 
   /**
@@ -335,7 +352,7 @@ export default {
 
     // TODO: separate "message" from valueString
     // A message is generated if there is an issue with the value or it was omitted.
-    const valueMessage = dp.util.getTraceValueMessage(trace.traceId);
+    const valueMessage = dp.util.getTraceValueMessage(traceId);
     if (valueMessage) {
       return valueMessage;
     }

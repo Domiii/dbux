@@ -1,4 +1,5 @@
 import path from 'path';
+import findLastIndex from 'lodash/findLastIndex';
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
@@ -138,25 +139,25 @@ class ExecutionContextCollection extends Collection {
     super.add(entries);
   }
 
-  /**
-   * @param {ExecutionContext[]} contexts 
-   */
-  postIndex(contexts) {
-    try {
-      // determine last trace of every context
-      this.resolveLastTraceOfContext(contexts);
-    }
-    catch (err) {
-      logError('resolveLastTraceOfContext failed', err); //contexts);
-    }
-  }
+  // /**
+  //  * @param {ExecutionContext[]} contexts 
+  //  */
+  // postIndex(contexts) {
+  //   try {
+  //     // determine last trace of every context
+  //     this.resolveLastTraceOfContext(contexts);
+  //   }
+  //   catch (err) {
+  //     logError('resolveLastTraceOfContext failed', err); //contexts);
+  //   }
+  // }
 
-  resolveLastTraceOfContext() {
-    // TODO
-    // return !isReturnTrace(traceType) && !isTracePop(traceType) &&   // return and pop traces indicate that there was no error in that context
-    //   dp.util.isLastTraceInContext(traceId) &&        // is last trace we have recorded
-    //   !dp.util.isLastTraceInStaticContext(traceId);   // but is not last trace in the code
-  }
+  // resolveLastTraceOfContext() {
+  //   // TODO
+  //   // return !isReturnTrace(traceType) && !isTracePop(traceType) &&   // return and pop traces indicate that there was no error in that context
+  //   //   dp.util.isLastTraceInContext(traceId) &&        // is last trace we have recorded
+  //   //   !dp.util.isLastTraceInStaticContext(traceId);   // but is not last trace in the code
+  // }
 }
 
 
@@ -191,7 +192,7 @@ class TraceCollection extends Collection {
    * Post processing of trace data
    * @param {Trace[]} traces
    */
-  postAdd(traces) {
+  postAddRaw(traces) {
     // build dynamic call expression tree
     errorWrapMethod(this, 'resolveCodeChunks', traces);
     errorWrapMethod(this, 'resolveCallIds', traces);
@@ -245,9 +246,10 @@ class TraceCollection extends Collection {
           // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
             // maybe something did not get popped. Let's look for it directly!
-            const idx = beforeCalls.findIndex(bce => bce.staticTraceId === staticTrace.resultCallId);
+            const idx = findLastIndex(beforeCalls, bce => bce.staticTraceId === staticTrace.resultCallId);
             if (idx >= 0) {
-              // it's on the stack - just take it
+              // it's on the stack - just take it (and also push the wrong one back)
+              beforeCalls.push(beforeCall);
               beforeCall = beforeCalls[idx];
               beforeCalls.splice(idx, 1);
             }
