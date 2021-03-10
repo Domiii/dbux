@@ -1,9 +1,9 @@
 import pull from 'lodash/pull';
+import isPlainObject from 'lodash/isPlainObject';
+// import isString from 'lodash/isString';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Queries from './queries/Queries';
 import Indexes from './indexes/Indexes';
-import isString from 'lodash/isString';
-import { isPlainObject } from 'lodash';
 
 export default class DataProviderBase {
   /**
