@@ -4,6 +4,9 @@ import { makeTraceValueLabel } from '@dbux/data/src/helpers/traceLabels';
 import { valueRender } from '../valueRender';
 import TraceNode from './TraceNode';
 
+/**
+ * Children of `NearbyValuesTDNode`
+ */
 export default class TraceValueNode extends TraceNode {
   get value() {
     const { trace: { applicationId, traceId } } = this;

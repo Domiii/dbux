@@ -1,7 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 
-// const TracesDisabled = true;
-const TracesDisabled = false;
 
 /**
  * Comes from the order we execute things in programVisitor
@@ -128,7 +126,7 @@ export default class ProgramMonitor {
    * `t` is short for `trace` (we have a lot of these, so we want to keep the name short)
    */
   t(inProgramStaticTraceId) {
-    if (TracesDisabled || this.disabled) {
+    if (this.areTracesDisabled) {
       return 0;
     }
     return this._runtimeMonitor.trace(this.getProgramId(), inProgramStaticTraceId);
@@ -138,14 +136,14 @@ export default class ProgramMonitor {
    * 
    */
   traceExpr(inProgramStaticTraceId, value) {
-    if (TracesDisabled || this.disabled) {
+    if (this.areTracesDisabled) {
       return value;
     }
     return this._runtimeMonitor.traceExpression(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
   traceArg(inProgramStaticTraceId, value) {
-    if (TracesDisabled || this.disabled) {
+    if (this.areTracesDisabled) {
       return value;
     }
     return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
@@ -178,6 +176,10 @@ export default class ProgramMonitor {
 
   get disabled() {
     return !!this._runtimeMonitor.disabled;
+  }
+
+  get areTracesDisabled() {
+    return !!this._runtimeMonitor.tracesDisabled;
   }
 
   warnDisabled(...args) {

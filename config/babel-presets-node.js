@@ -1,3 +1,6 @@
+// NOTE: we cannot use preset + plugin names, but *must* `require` them directly
+//      See: https://github.com/Domiii/dbux/issues/456
+
 module.exports = {
   sourceType: 'unambiguous',
   presets: [

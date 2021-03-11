@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
 import { pathGetParent } from '@dbux/common/src/util/pathUtil';
 import RuntimeDataProvider from '../RuntimeDataProvider';
 import { newDataProvider } from '../dataProviderImpl';
@@ -50,8 +51,8 @@ export default class Application {
     this.createdAt = this.updatedAt = createdAt || Date.now();
   }
 
-  addData(allData) {
-    this.dataProvider.addData(allData);
+  addData(allData, isRaw) {
+    this.dataProvider.addData(allData, isRaw);
     this.updatedAt = Date.now();
 
     // if (this.allApplications.getSelectedApplication() === this) {
@@ -88,6 +89,8 @@ export default class Application {
   }
 
   getSafeFileName() {
-    return (this.getPreferredName())?.replace(/[:\\/]/, '-');
+    return (this.getPreferredName())?.replace(/[:\\/]/g, '-');
+    // return path.basename(this.entryPointPath).replace(/[:\\/]/, '_');
+    // return (this.getPreferredName())?.replace(/[:\\/]/, '_');
   }
 }

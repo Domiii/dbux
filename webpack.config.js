@@ -171,7 +171,7 @@ module.exports = (env, argv) => {
 
           // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
           // globalObject: '(typeof self !== "undefined" ? self : this)',
-          globalObject: 'globalThis'
+          globalObject: '(typeof globalThis !== "undefined" ? globalThis : (typeof self !== "undefined" ? self : this))'
         },
         resolve,
         module: {

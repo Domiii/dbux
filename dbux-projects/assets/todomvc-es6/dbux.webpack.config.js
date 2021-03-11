@@ -10,7 +10,7 @@ const resultCfg = buildWebpackConfig(ProjectRoot, {
 }, {
   context: path.join(ProjectRoot, 'src'),
   entry: {
-    app: './dbux_bootstrap.js',
+    app: './bootstrap.js',
     vendor: ['todomvc-app-css/index.css'],
   },
 

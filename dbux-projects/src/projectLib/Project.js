@@ -388,7 +388,7 @@ This may be solved by pressing \`clean project folder\` button.`);
 
     if (await this.hasAnyChangedFiles()) {
       // only auto commit if files changed
-      const files = this.getAllAssestFiles();
+      const files = this.getAllAssetFiles();
       this.logger.log('auto commit');
 
       // TODO: should not need '--allow-empty', if `hasAnyChangedFiles` is correct (TODO: test with todomvc)
@@ -495,7 +495,7 @@ This may be solved by pressing \`clean project folder\` button.`);
    * Copy all assets into project folder.
    */
   async installAssets() {
-    const folders = this.getAllAssestFolderNames();
+    const folders = this.getAllAssetFolderNames();
     folders.forEach(folderName => {
       this.copyAssetFolder(folderName);
     });
@@ -507,12 +507,19 @@ This may be solved by pressing \`clean project folder\` button.`);
     }
   }
 
-  getAssestDir(assetFolderName) {
-    return this.manager.externals.resources.getResourcePath('dist', 'projects', assetFolderName);
+  getAssetDir(assetPath) {
+    if (path.isAbsolute(assetPath)) {
+      // absolute path
+      return fs.realpathSync(assetPath);
+    }
+    else {
+      // relative to dbux-internal asset path
+      return this.manager.externals.resources.getResourcePath('dist', 'projects', assetPath);
+    }
   }
 
-  getAllAssestFolderNames() {
-    const individualAssetDir = this.getAssestDir(this.folderName);
+  getAllAssetFolderNames() {
+    const individualAssetDir = this.getAssetDir(this.folderName);
     if (sh.test('-d', individualAssetDir)) {
       return [SharedAssetFolder, this.folderName];
     }
@@ -521,11 +528,11 @@ This may be solved by pressing \`clean project folder\` button.`);
     }
   }
 
-  getAllAssestFiles() {
-    const folders = this.getAllAssestFolderNames();
+  getAllAssetFiles() {
+    const folders = this.getAllAssetFolderNames();
     const files = new Set();
     folders.forEach(folderName => {
-      const assets = fs.readdirSync(this.getAssestDir(folderName));
+      const assets = fs.readdirSync(this.getAssetDir(folderName));
       assets.forEach(assetName => {
         files.add(assetName);
       });
@@ -536,7 +543,7 @@ This may be solved by pressing \`clean project folder\` button.`);
 
   async copyAssetFolder(assetFolderName) {
     // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
-    const assetDir = this.getAssestDir(assetFolderName);
+    const assetDir = this.getAssetDir(assetFolderName);
     // copy assets, if this project has any
     this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
     sh.cp('-R', `${assetDir}/*`, this.projectPath);

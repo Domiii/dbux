@@ -29,6 +29,20 @@ function batchTestRegExp(regexps, target) {
   return regexps.some(regexp => regexp.test(target));
 }
 
+/**
+ * TODO: allow custom babel options to also trace configured libraries.
+ * For that we need to make the `if` check in the `ignore` function customizable.
+ * 
+ * @example 
+    const re = /node_modules(?![\\/]pug)[\\/]/;
+    console.log([
+      'node_modules/a',
+      'node_modules/a/b',
+      'node_modules/pug',
+      'node_modules/pug/x'
+    ].map((s, i) => ${ i }.${ s } ${ re.test(s) }).join('\n'));
+ */
+
 export default function buildBabelOptions(options) {
   process.env.BABEL_DISABLE_CACHE = 1;
 
