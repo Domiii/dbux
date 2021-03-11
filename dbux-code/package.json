@@ -1149,7 +1149,7 @@
           "dbux.packageWhitelist": {
             "type": "string",
             "default": "",
-            "description": "Specify which package will be traced by Dbux, seperated by comma, regex supported.",
+            "description": "Specify which package will be traced by Dbux, seperated by space, regex supported.",
             "scope": "resource"
           }
         }
