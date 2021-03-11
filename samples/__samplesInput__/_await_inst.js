@@ -12,9 +12,12 @@ var p = (_dbux.traceExpr(30, (_sleep = sleep)),
  */
 
 
+var arg;
+var awaitContextId;
 _dbux.postAwait(
+  arg = f(),
   await _dbux.wrapAwait(
-    p, // argument
+    arg, // argument
     (awaitContextId = _dbux.preAwait(staticId, preTraceId))
   ),
   _contextId5,
