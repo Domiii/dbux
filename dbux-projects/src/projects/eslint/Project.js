@@ -122,10 +122,6 @@ export default class EslintProject extends Project {
   // run
   // ###########################################################################
 
-  getWebpackJs() {
-    return this.manager.getDbuxPath('webpack/bin/webpack.js');
-  }
-
   /**
    * @param {Bug} bug 
    */
@@ -140,6 +136,7 @@ export default class EslintProject extends Project {
 
     await this.execBackground(`which ${volta}`);
     // await this.execBackground(`echo $PATH`);
+    
     return this.execBackground(
       `"${volta}" run --node 12 node ${req} "${this.getWebpackJs()}" ${args}`
     );

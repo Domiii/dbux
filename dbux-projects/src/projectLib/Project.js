@@ -178,6 +178,25 @@ This may be solved by pressing \`clean project folder\` button.`);
   }
 
   /**
+   * @abstract
+   */
+  loadBugs() {
+    throw new Error(this + ' abstract method not implemented');
+  }
+
+  async selectBug(/* bug */) {
+    throw new Error(this + ' abstract method not implemented');
+  }
+
+  async openInEditor() {
+    await this.manager.externals.editor.openFolder(this.project.projectPath);
+  }
+
+  // ###########################################################################
+  // build tools + watch mode
+  // ###########################################################################
+
+  /**
    * @param {Bug} bug 
    */
   async startWatchModeIfNotRunning(bug) {
@@ -215,19 +234,8 @@ This may be solved by pressing \`clean project folder\` button.`);
     }
   }
 
-  /**
-   * @abstract
-   */
-  loadBugs() {
-    throw new Error(this + ' abstract method not implemented');
-  }
-
-  async selectBug(/* bug */) {
-    throw new Error(this + ' abstract method not implemented');
-  }
-
-  async openInEditor() {
-    await this.manager.externals.editor.openFolder(this.project.projectPath);
+  getWebpackJs() {
+    return this.manager.getDbuxPath('webpack/bin/webpack.js');
   }
 
   // ###########################################################################
