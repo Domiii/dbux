@@ -131,10 +131,12 @@ class ExecutionContextCollection extends Collection {
 
   add(entries) {
     for (const entry of entries) {
-      if (!entry.parentContextId) {
-        // set applicationId, so we can trace any data point back to it's application
-        entry.applicationId = this.dp.application.applicationId;
-      }
+      // if (!entry.parentContextId) {
+      //   // set applicationId, so we can trace any data point back to it's application
+      //   entry.applicationId = this.dp.application.applicationId;
+      // }
+
+      entry.applicationId = this.dp.application.applicationId;
     }
     super.add(entries);
   }

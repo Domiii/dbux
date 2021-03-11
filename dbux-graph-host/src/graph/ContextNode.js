@@ -11,29 +11,29 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class ContextNode extends HostComponentEndpoint {
   init(shouldLazyBuild = false) {
+    this.shouldLazyBuild = shouldLazyBuild;
+    this.childrenBuilt = false;
+
     const {
       applicationId,
       context
     } = this.state;
-
+    
     // get name (and other needed data)
     const app = allApplications.getById(applicationId);
     const dp = app.dataProvider;
     const errorTag = (dp.indexes.traces.errorByContext.get(context.contextId)?.length) ? '🔥' : '';
     this.parentTrace = dp.util.getCallerTraceOfContext(context.contextId);
-
+    
     this.state.contextNameLabel = makeContextLabel(context, app) + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
     this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
     this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
 
-    // register with root
-    this.context.graphRoot._contextNodeCreated(this);
-
     // build sub graph
     let hasChildren;
-    if (shouldLazyBuild) {
+    if (this.shouldLazyBuild) {
       hasChildren = !!this.getValidChildContexts().length;
     }
     else {
@@ -42,9 +42,12 @@ class ContextNode extends HostComponentEndpoint {
     }
 
     // add controllers
-    this.controllers.createComponent('GraphNode', { hasChildren, shouldLazyBuild });
+    this.controllers.createComponent('GraphNode', { hasChildren });
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
+
+    // register with root
+    this.context.graphRoot._contextNodeCreated(this);
   }
 
   get firstTrace() {
@@ -54,9 +57,14 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   buildChildNodes() {
+    if (this.childrenBuilt) {
+      return this.children.getComponents('ContextNode');
+    }
+
+    this.childrenBuilt = true;
     const { applicationId } = this.state;
-    this.getValidChildContexts().forEach(context => {
-      this.children.createComponent('ContextNode', {
+    return this.getValidChildContexts().map(context => {
+      return this.children.createComponent('ContextNode', {
         applicationId,
         context
       });

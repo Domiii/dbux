@@ -24,7 +24,7 @@ class RunNode extends HostComponentEndpoint {
     // add root context
     const firstContext = dp.util.getFirstContextOfRun(runId);
     if (firstContext) {
-      this.children.createComponent('RootContextNode', {
+      this.rootContextNode = this.children.createComponent('RootContextNode', {
         applicationId,
         context: firstContext
       });
