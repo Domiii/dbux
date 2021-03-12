@@ -24,9 +24,15 @@ export default class ChartJsProject extends Project {
     const bugs = [
       {
         label: 'baseline',
-        description: 'Should work just fine.',
+        description: 'Baseline: select sample page.',
         runArgs: [],
         website: 'http://localhost:10001/samples/index.html'
+      },
+      {
+        label: 'baseline_vertical_bar',
+        description: 'Baseline: vertical bar graph.',
+        runArgs: [],
+        website: 'http://localhost:10001/samples/charts/bar/vertical.html'
       }
     ];
 

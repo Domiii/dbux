@@ -284,8 +284,10 @@ const instrumentMemberCallExpressionEnter =
     // build
     // const { ids: { dbux } } = state;
 
-    const o = path.scope.generateDeclaredUidIdentifier('o');
-    const f = path.scope.generateDeclaredUidIdentifier(getCalleeDisplayName(calleePath));
+    const { scope } = path; // path.scope.parent || path.scope;
+
+    const o = scope.generateDeclaredUidIdentifier('o');
+    const f = scope.generateDeclaredUidIdentifier(getCalleeDisplayName(calleePath));
 
     const isSuper = oPath.isSuper();
 
@@ -393,14 +395,14 @@ const instrumentDefaultCallExpressionEnter =
       // (i) callee assignment (%%f%% = %%fNode%%)
       isSpecialCallee &&
 
-        // callee cannot be assigned, so we set it to `null` (`f` will not be used in that case)
-        t.nullLiteral() ||
+      // callee cannot be assigned, so we set it to `null` (`f` will not be used in that case)
+      t.nullLiteral() ||
 
-        // trace callee
-        t.assignmentExpression('=',
-          f,
-          calleePath.node
-        ),
+      // trace callee
+      t.assignmentExpression('=',
+        f,
+        calleePath.node
+      ),
 
       // (ii) BCE placeholder
       t.nullLiteral(),
@@ -450,6 +452,7 @@ const instrumentDefaultCallExpressionEnter =
 
 export function instrumentCallExpressionEnter(path, state) {
   const calleePath = path.get('callee');
+
   if (isAnyMemberExpression(calleePath)) {
     return instrumentMemberCallExpressionEnter(path, state);
   }
@@ -528,14 +531,22 @@ export function traceCallExpression(callPath, state, resultType) {
   // }
 
   // trace BCE
-  const bceNode = buildTraceNoValue(callPath, state, TraceType.BeforeCallExpression);
-  const bceTraceId = getPathTraceId(callPath);
-  bcePath.replaceWith(bceNode);
+  if (bcePath) {
+    const bceNode = buildTraceNoValue(callPath, state, TraceType.BeforeCallExpression);
+    bcePath.replaceWith(bceNode);
+  }
 
-  instrumentArgs(callPath, state, bceTraceId);
-  //const originalCallPath = 
-  _traceWrapExpression('traceExpr', resultType, callPath, state, {
-    resultCallId: bceTraceId,
-    // tracePath
-  });
+  // trace args + return value
+  const bceTraceId = getPathTraceId(callPath);
+  if (bceTraceId) {
+    // call args
+    instrumentArgs(callPath, state, bceTraceId);
+    //const originalCallPath =
+
+    // return value 
+    _traceWrapExpression('traceExpr', resultType, callPath, state, {
+      resultCallId: bceTraceId,
+      // tracePath
+    });
+  }
 }
