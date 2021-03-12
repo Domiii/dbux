@@ -143,6 +143,14 @@ This may be solved by pressing \`clean project folder\` button.`);
     await this.exec('git reset --hard ' + (args || ''));
   }
 
+  async gitResetHardForBug(bug) {
+    // TODO: make sure, user gets to save own changes first
+    sh.cd(this.projectPath);
+    if (bug.patch) {
+      await this.gitResetHard();
+    }
+  }
+
   async gitResetHard(needConfirm = false, confirmMsg = '') {
     await this.checkCorrectGitRepository();
 
@@ -201,12 +209,13 @@ This may be solved by pressing \`clean project folder\` button.`);
    */
   async startWatchModeIfNotRunning(bug) {
     if (!this.backgroundProcesses?.length && this.startWatchMode) {
-      let _resolve, _reject, _promise = new Promise((resolve, reject) => {
+      let _resolve, _reject, _firstOutputPromise = new Promise((resolve, reject) => {
         _resolve = resolve;
         _reject = reject;
       });
 
-      const watcher = new MultipleFileWatcher(bug.distFilePaths);
+      const watchFiles = bug.watchFilePaths.map(f => path.resolve(this.projectPath, f));
+      const watcher = new MultipleFileWatcher(watchFiles);
       watcher.on('change', (filename, curStat, prevStat) => {
         try {
           if (curStat.birthtime.valueOf() === 0) {
@@ -222,15 +231,32 @@ This may be solved by pressing \`clean project folder\` button.`);
         }
       });
 
-      await this.startWatchMode(bug).catch(err => {
-        this.logger.error('startWatchMode failed -', err?.stack || err);
+      const backgroundProcess = await this.startWatchMode(bug).catch(err => {
+        // this.logger.error('startWatchMode failed -', err?.stack || err);
+        throw new Error('startWatchMode failed -', err?.stack || err);
       });
 
-      if (!this.backgroundProcesses?.length) {
-        this.logger.error('startWatchMode did not result in any new background processes');
-      }
+      // if (!this.backgroundProcesses?.length) {
+      //   this.logger.error('startWatchMode did not result in any new background processes');
+      // }
 
-      await _promise;
+      const outputFileString = bug.watchFilePaths
+        .map(f => `"${f}"`)
+        .join(', ');
+      this.logger.debug(`startWatchMode waiting for output files: ${outputFileString} ...`);
+      await Promise.race([
+        // wait for files to be ready
+        _firstOutputPromise,
+
+        backgroundProcess.waitToEnd().then(() => {
+          if (_firstOutputPromise) {
+            // BackgroundProcess ended prematurely
+            throw new Error('watch mode BackgroundProcess exited before files were generated');
+          }
+        })
+      ]);
+      _firstOutputPromise = null;
+      this.logger.debug(`startWatchMode finished.`);
     }
   }
 

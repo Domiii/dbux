@@ -1,8 +1,8 @@
 import path from 'path';
 import sh from 'shelljs';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
+// import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import Project from '../../projectLib/Project';
-import { buildMochaRunCommand } from '../../util/mochaUtil';
+// import { buildMochaRunCommand } from '../../util/mochaUtil';
 
 /** @typedef {import('../../projectLib/Bug').default} Bug */
 
@@ -26,16 +26,17 @@ export default class ChartJsProject extends Project {
         label: 'baseline',
         description: 'Should work just fine.',
         runArgs: [],
+        website: 'http://localhost:10001/samples/index.html'
       }
     ];
 
     return bugs.
       map((bug) => {
-        bug.website = 'http://localhost:3000';
+        bug.website = bug.website || 'http://localhost:10001/samples/index.html';
+        bug.testFilePaths = ['src/index.js'];
 
-        bug.testFilePaths = ['app.js'];
-        bug.srcFilePaths = bug.testFilePaths;
-        bug.distFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
+        const outputFiles = ['chart.min.js'];
+        bug.watchFilePaths = outputFiles.map(file => path.join('dist', file));
 
         return bug;
       }).
@@ -43,23 +44,7 @@ export default class ChartJsProject extends Project {
   }
 
   async selectBug(bug) {
-    const {
-      number, name
-    } = bug;
-    const tagCategory = "test"; // "test", "fix" or "full"
-    const tag = this.getBugGitTag(number, tagCategory);
-
-    if ((await this.getTagName()).startsWith(tag)) {
-      // do not checkout bug, if we already on the right tag
-      return;
-    }
-
-    // checkout the bug branch
-    sh.cd(this.projectPath);
-    this.log(`Checking out bug ${name || number}...`);
-
-    // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
-    await this.exec(`git checkout -B ${tag} tags/${tag}`);
+    return this.switchToBugPatchTag(bug);
   }
 
 
