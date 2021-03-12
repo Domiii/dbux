@@ -84,7 +84,7 @@ export default class RuntimeMonitor {
   /**
    * Very similar to `pushCallback`
    */
-  pushImmediate(programId, inProgramStaticId, inProgramStaticTraceId, isInterruptable) {
+  pushImmediate(programId, inProgramStaticId, inProgramStaticTraceId, isInterruptable, tracesDisabled) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -93,7 +93,7 @@ export default class RuntimeMonitor {
     const parentTraceId = this._runtime.getParentTraceId();
 
     const context = executionContextCollection.executeImmediate(
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId
+      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId, tracesDisabled
     );
     const { contextId } = context;
     this._runtime.push(contextId, isInterruptable);
@@ -141,50 +141,51 @@ export default class RuntimeMonitor {
   // Callbacks
   // ###########################################################################
 
-  makeCallbackWrapper(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId, cb) {
-    // return WrappedClazz;
-    const _this = this;
-    const wrappedCb = function wrappedCb(...args) {
-      /**
-       * We need this so we can always make sure we can link things back to the scheduler,
-       * even if the callback declaration is not inline.
-       */
-      const callbackContextId = _this.pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId);
+  // makeCallbackWrapper(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId, cb) {
+  //   // return WrappedClazz;
+  //   const _this = this;
+  //   const wrappedCb = function wrappedCb(...args) {
+  //     /**
+  //      * We need this so we can always make sure we can link things back to the scheduler,
+  //      * even if the callback declaration is not inline.
+  //      */
+  //     // const tracesDisabled = ???;
+  //     // const callbackContextId = _this.pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId);
 
-      let resultValue;
-      try {
-        resultValue = cb.apply(this, args);
-        if (this && resultValue === undefined) {
-          return this;
-        }
-        return resultValue;
-      }
-      finally {
-        _this.popCallback(programId, callbackContextId, inProgramStaticTraceId, resultValue);
-      }
-    };
+  //     // let resultValue;
+  //     // try {
+  //     //   resultValue = cb.apply(this, args);
+  //     //   if (this && resultValue === undefined) {
+  //     //     return this;
+  //     //   }
+  //     //   return resultValue;
+  //     // }
+  //     // finally {
+  //     //   _this.popCallback(programId, callbackContextId, inProgramStaticTraceId, resultValue);
+  //     // }
+  //   };
 
-    // override name
-    Object.defineProperty(wrappedCb, 'name', { value: cb.name });
+  //   // override name
+  //   Object.defineProperty(wrappedCb, 'name', { value: cb.name });
 
-    // basic inheritance es5 chain
-    // TODO: support es6 classes as well
-    _inheritsLoose(wrappedCb, cb);
+  //   // basic inheritance es5 chain
+  //   // TODO: support es6 classes as well
+  //   _inheritsLoose(wrappedCb, cb);
 
-    // copy all non-native properties of the function
-    const props = Object.keys(cb);
-    for (const prop of props) {
-      wrappedCb[prop] = cb[prop];
-    }
+  //   // copy all non-native properties of the function
+  //   const props = Object.keys(cb);
+  //   for (const prop of props) {
+  //     wrappedCb[prop] = cb[prop];
+  //   }
 
-    return wrappedCb;
-  }
+  //   return wrappedCb;
+  // }
 
   /**
    * Very similar to `pushImmediate`.
    * We need it to establish the link with it's scheduling context.
    */
-  pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId) {
+  pushCallback(programId, schedulerContextId, schedulerTraceId, inProgramStaticTraceId, tracesDisabled) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -195,7 +196,7 @@ export default class RuntimeMonitor {
     // register context
     // console.debug('pushCallback', { parentContextId, schedulerContextId, schedulerTraceId });
     const context = executionContextCollection.executeCallback(
-      stackDepth, runId, parentContextId, parentTraceId, schedulerContextId, schedulerTraceId
+      stackDepth, runId, parentContextId, parentTraceId, schedulerContextId, schedulerTraceId, tracesDisabled
     );
     const { contextId } = context;
     this._runtime.push(contextId);
@@ -501,7 +502,7 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   disabled = 0;
-  tracesDisabled = 1;
+  tracesDisabled = 0;
 
   incDisabled() {
     ++this.disabled;

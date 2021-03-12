@@ -193,7 +193,17 @@ export default {
    */
   getParentTraceOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
+    
     const parentTrace = dp.collections.traces.getById(context.parentTraceId);
+    if (!parentTrace) {
+      return null;
+    }
+
+    const parentContext = dp.util.getExecutionContext(parentTrace.contextId);
+
+    if (parentContext?.tracesDisabled) {
+      return null;
+    }
 
     return parentTrace || null;
   },
@@ -679,6 +689,11 @@ export default {
     return trace;
   },
 
+  getExecutionContext(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    return context;
+  },
+
   getStaticTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     const { staticTraceId } = trace;
@@ -941,6 +956,18 @@ export default {
   getCodeChunkId(dp, traceId) {
     const { codeChunkId } = dp.util.getTrace(traceId);
     return codeChunkId;
+  },
+
+  // ###########################################################################
+  // partial tracing + disabled traces
+  // ###########################################################################
+
+  /**
+   * Whether or not traces for this context were enabled.
+   */
+  isContextTraced(dp, contextId) {
+    const { tracesDisabled } = dp.util.getExecutionContext(contextId);
+    return !tracesDisabled;
   }
 
 };

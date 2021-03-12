@@ -290,8 +290,14 @@ class TraceCollection extends Collection {
     for (const trace of traces) {
       const {
         traceId,
+        contextId,
         previousTrace: previousTraceId
       } = trace;
+
+      // if traces were disabled, there is nothing to do here
+      if (!this.dp.util.isContextTraced(contextId)) {
+        continue;
+      }
 
       const traceType = this.dp.util.getTraceType(traceId);
       if (!isTracePop(traceType) || !previousTraceId) {

@@ -58,7 +58,8 @@ export default class ProgramMonitor {
       return 0;
     }
 
-    return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticId, traceId, isInterruptable);
+    const tracesDisabled = this.areTracesDisabled;
+    return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticId, traceId, isInterruptable, tracesDisabled);
   }
 
   popImmediate(contextId, traceId) {
