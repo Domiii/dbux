@@ -84,7 +84,7 @@ export default class RuntimeMonitor {
   /**
    * Very similar to `pushCallback`
    */
-  pushImmediate(programId, inProgramStaticId, inProgramStaticTraceId, isInterruptable, tracesDisabled) {
+  pushImmediate(programId, inProgramStaticContextId, inProgramStaticTraceId, isInterruptable, tracesDisabled) {
     this._runtime.beforePush(null);
 
     const stackDepth = this._runtime.getStackDepth();
@@ -93,7 +93,7 @@ export default class RuntimeMonitor {
     const parentTraceId = this._runtime.getParentTraceId();
 
     const context = executionContextCollection.executeImmediate(
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId, tracesDisabled
+      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, tracesDisabled
     );
     const { contextId } = context;
     this._runtime.push(contextId, isInterruptable);
@@ -231,7 +231,7 @@ export default class RuntimeMonitor {
   // Interrupts, await et al
   // ###########################################################################
 
-  preAwait(programId, inProgramStaticId, inProgramStaticTraceId) {
+  preAwait(programId, inProgramStaticContextId, inProgramStaticTraceId) {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const resumeContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
@@ -246,7 +246,7 @@ export default class RuntimeMonitor {
     // register Await context
     const parentContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
     const context = executionContextCollection.await(
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId
+      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId
     );
     const { contextId: awaitContextId } = context;
     this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
@@ -502,7 +502,7 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   disabled = 0;
-  tracesDisabled = 0;
+  tracesDisabled = 1;
 
   incDisabled() {
     ++this.disabled;
