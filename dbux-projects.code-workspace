@@ -16,6 +16,9 @@
 		},
 		{
 			"path": "samples/__samplesInput__"
+		},
+		{
+			"path": "dbux_projects/Chart.js"
 		}
 	],
 	"settings": {

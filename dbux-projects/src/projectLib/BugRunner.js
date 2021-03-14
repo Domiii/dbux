@@ -134,6 +134,13 @@ export default class BugRunner {
   }
 
   /**
+   * Enqueue a bunch of callbacks into the queue.
+   */
+  async _enqueue(project, ...cbs) {
+    return await this._queue.enqueue(...cbs);
+  }
+
+  /**
    * Install bug
    * @param {Bug} bug 
    */
@@ -149,36 +156,30 @@ export default class BugRunner {
     this.setStatus(BugRunnerStatus.Busy);
 
     try {
-      await this._queue.enqueue(
+      await this._enqueue(
         // install project
-        async () => this.activateProject(project),
-        // apply patch if needed
-        async () => {
-          // git reset hard
-          // TODO: make sure, user gets to save own changes first
-          sh.cd(project.projectPath);
-          if (bug.patch) {
-            await project.gitResetHard();
-          }
-        },
-        async () => {
-          // activate patch
-          // if (bug.patch) {
-          //   await project.applyPatch(bug.patch);
-          // }
-        },
+        this.activateProject.bind(this, project),
+        // git reset hard
+        project.gitResetHardForBug.bind(project, bug),
+        // async () => {
+        //   // activate patch
+        //   // if (bug.patch) {
+        //   //   await project.applyPatch(bug.patch);
+        //   // }
+        // },
         // select bug
-        async () => project.selectBug(bug),
+        project.selectBug.bind(project, bug),
 
         // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
-        async () => project.npmInstall(),
+        project.npmInstall.bind(project),
         // Copy assets again in this branch
-        async () => project.installAssets(),
+        project.installAssets.bind(project),
         // Auto commit again
-        async () => project.autoCommit(bug),
+        project.autoCommit.bind(project, bug),
 
         // start watch mode (if necessary)
-        async () => project.startWatchModeIfNotRunning(bug),
+        project.startWatchModeIfNotRunning.bind(project, bug),
+
         () => bug.website ? this.manager.externals.openWebsite(bug.website) : null,
       );
     }

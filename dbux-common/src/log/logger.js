@@ -143,11 +143,11 @@ export class PerfLogger extends Logger {
 // ###########################################################################
 
 export function newLogger(ns) {
-  return new Logger(ns && `DBUX ${ns}`);
+  return new Logger(ns && `Dbux ${ns}`);
 }
 
 export function newPerfLogger(ns) {
-  return new PerfLogger(ns && `DBUX ${ns}`);
+  return new PerfLogger(ns && `Dbux ${ns}`);
 }
 
 export function newFileLogger(fpath) {
@@ -203,7 +203,7 @@ export function logDebug(ns, ...args) {
 export function logWarn(ns, ...args) {
   ns = wrapNs(ns);
   outputStreams.warn(ns, ...args);
-  report('warn', ns, ...args);
+  // report('warn', ns, ...args);
 }
 
 export function logError(ns, ...args) {
@@ -217,7 +217,7 @@ export function logError(ns, ...args) {
 // ###########################################################################
 
 export function logInternalError(...args) {
-  const msgArgs = ['[DBUX INTERNAL ERROR]', ...args];
+  const msgArgs = ['[Dbux INTERNAL ERROR]', ...args];
   outputStreams.error(...msgArgs);
   errors.push(msgArgs);
   report('error', ...msgArgs);

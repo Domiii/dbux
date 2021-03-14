@@ -47,17 +47,17 @@ export class StaticContextCollection extends Collection {
     return this._staticContextsByProgram[programId];
   }
 
-  getContext(programId, inProgramStaticId) {
+  getContext(programId, inProgramStaticContextId) {
     const contexts = this.getContexts(programId);
     if (!contexts) {
       logInternalError("Invalid programId has no registered static contexts:", programId);
       return null;
     }
-    return contexts[inProgramStaticId - 1];  // ids start at 1, array starts at 0
+    return contexts[inProgramStaticContextId - 1];  // ids start at 1, array starts at 0
   }
 
-  getStaticContextId(programId, inProgramStaticId) {
-    const staticContext = this.getContext(programId, inProgramStaticId);
+  getStaticContextId(programId, inProgramStaticContextId) {
+    const staticContext = this.getContext(programId, inProgramStaticContextId);
     return staticContext.staticId;
   }
 }
