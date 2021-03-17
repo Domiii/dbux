@@ -107,19 +107,18 @@ class GraphRoot extends HostComponentEndpoint {
 
     // subscribe new
     for (const app of allApplications.selection.getAll()) {
-      const { dataProvider } = app;
+      const { dataProvider: dp } = app;
       const unsubscribes = [
-        dataProvider.onData('executionContexts', 
+        dp.onData('executionContexts', 
           this._handleAddExecutionContexts.bind(this, app)
         ),
-        // TODO: make statsByContext work
-        // dataProvider.queries.statsByContext
+        dp.queryImpl.statsByContext.subscribe()
       ];
 
       // unsubscribe on refresh
       this._unsubscribeOnNewData.push(...unsubscribes);
       
-      // also on deselection
+      // also when application is deselected
       allApplications.selection.subscribe(...unsubscribes);
 
       // also when node is disposed

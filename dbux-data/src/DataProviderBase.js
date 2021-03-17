@@ -47,6 +47,8 @@ export default class DataProviderBase {
    */
   versions = [];
 
+  queryImpl = {};
+
   constructor(name) {
     this.name = name;
     this.logger = newLogger(name);

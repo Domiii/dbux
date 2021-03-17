@@ -660,6 +660,17 @@ export default {
     return staticContextId;
   },
 
+  getContextStaticContextId(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    const { staticContextId } = context;
+    return staticContextId;
+  },
+
+  getContextStaticContext(dp, contextId) {
+    const staticContextId = dp.util.getContextStaticContextId(contextId);
+    return dp.collections.staticContexts.getById(staticContextId);
+  },
+
   /** @param {DataProvider} dp */
   getTraceStaticContext(dp, traceId) {
     const staticContextId = dp.util.getTraceStaticContextId(traceId);
