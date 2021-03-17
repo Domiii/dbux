@@ -43,12 +43,30 @@ export default class StatsByContextQuery extends IncrementalQuery {
     this._updateStats(contexts);
   }
 
+  /**
+   * TODO: properly handle async contexts, whose stats can change over time.
+   */
   _updateStats(contexts) {
     // DFS + post-order sums
     const { dp } = this;
-    dp.util.traverseDfs(dp, contexts, null, (context, children, prev) => {
-      const stats = this._cache.get(context.contextId) || new ContextStats();
-      stats.nTreeContexts = children.reduce((a, child) => a + , 1);
-    });
+    dp.util.traverseDfs(contexts,
+      (dfs, context, children) => {
+        const stats = this._cache.get(context.contextId) || new ContextStats();
+        stats.nTreeContexts = 0;
+        const ownSet = new Set();
+
+        for (const child of children) {
+          const childSet = dfs(child);
+
+          // add childSet to ownSet
+          childSet.forEach(ownSet.add, ownSet);
+          
+          stats.nTreeContexts += this.getContextNTreeContexts(child.contextId);
+        }
+        stats.nTreeStaticContexts = ownSet.size;
+
+        return ownSet;
+      }
+    );
   }
 }

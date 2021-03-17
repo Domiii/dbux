@@ -44,9 +44,17 @@ export default class IncrementalQuery extends CachedQuery {
       // cold start
       this.hydrateCache(this.dp);
     }
+
+    let subscribed = true;
+    return () => {
+      if (subscribed) {
+        this._unsubscribe();
+        subscribed = false;
+      }
+    };
   }
 
-  unsubscribe() {
+  _unsubscribe = () => {
     --this.isEnabled;
 
     if (this.isEnabled <= 0) {

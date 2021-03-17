@@ -982,26 +982,30 @@ export default {
   // graph traversal
   // ###########################################################################
 
-  traverseDfs(dp, contexts, preOrderCb, postOrderCb) {
+  traverseDfs(dp, contexts, dfsRecurse, preOrderCb, postOrderCb) {
     const runIds = new Set(contexts.map(c => c.runId));
 
-    const dfs = (context, subtreeResult = null) => {
+    dfsRecurse = dfsRecurse || ((dfs, context, children, prev) => {
+      for (const child of children) {
+        dfs(child, prev);
+      }
+    });
+
+    const dfs = ((context) => {
       const children = dp.util.getChildrenOfContext(context.contextId);
 
+      let subtreeResult;
       if (preOrderCb) {
         subtreeResult = preOrderCb(context, children, subtreeResult);
       }
 
-      for (const child of children) {
-        dfs(child, subtreeResult);
-      }
+      subtreeResult = dfsRecurse(dfs, context, children, subtreeResult);
 
       if (postOrderCb) {
         subtreeResult = postOrderCb(context, children, subtreeResult);
       }
-
       return subtreeResult;
-    };
+    });
 
     // find all roots
     // let lastResult = null;
