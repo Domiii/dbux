@@ -93,4 +93,8 @@ export default class Application {
     // return path.basename(this.entryPointPath).replace(/[:\\/]/, '_');
     // return (this.getPreferredName())?.replace(/[:\\/]/, '_');
   }
+
+  toString() {
+    return `App #${this.applicationId} @${this.entryPointPath}`;
+  }
 }

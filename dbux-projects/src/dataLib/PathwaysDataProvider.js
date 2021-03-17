@@ -97,7 +97,11 @@ class UserActionCollection extends Collection {
       }
 
       const { applicationId, staticTraceId } = trace;
-      const dp = allApplications.getById(applicationId).dataProvider;
+      const app = allApplications.getById(applicationId);
+      if (!app) {
+        throw new Error(`Unable to process PDP.collections.userActions: could not find application of trace (applicationId=${applicationId}). allApplications=${allApplications}`);
+      }
+      const dp = app.dataProvider;
 
       const staticTrace = dp.collections.staticTraces.getById(staticTraceId);
       const { staticContextId } = staticTrace;
