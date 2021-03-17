@@ -184,6 +184,7 @@ class GraphRoot extends HostComponentEndpoint {
   addRunNode(applicationId, runId) {
     const newNode = this.children.createComponent(RunNode, { applicationId, runId });
     this.runNodesById.set(applicationId, runId, newNode);
+    // log(`Added RunNode of applicationId ${applicationId}, runId ${runId}`);
     return newNode;
   }
 
@@ -227,13 +228,19 @@ class GraphRoot extends HostComponentEndpoint {
       // node not created
       let p = this._buildContextNodePromises.get(context);
       if (!p) {
+        await this.waitForRefresh();
         p = new Promise((resolve) => {
           this._onContextNodeCreated.set(context, resolve);
         });
         this._buildContextNodePromises.set(context, p);
         const { applicationId, runId } = context;
         const runNode = this.getRunNodeById(applicationId, runId);
-        runNode.rootContextNode.buildChildNodes();
+        if (!runNode) {
+          logError(`Cannot find RunNode of applicationId ${applicationId}, runId ${runId}`);
+        }
+        else {
+          runNode.rootContextNode.buildChildNodes();
+        }
       }
       return p;
     }
