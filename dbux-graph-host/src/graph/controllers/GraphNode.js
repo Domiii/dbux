@@ -56,17 +56,38 @@ export default class GraphNode extends HostComponentEndpoint {
     }
   }
 
+  getPreviousMode() {
+    let mode = GraphNodeMode.previousValue(this.state.mode);
+    if (mode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
+      // skip "ExpandSubgraph" if there is only one level
+      mode = GraphNodeMode.previousValue(mode);
+    }
+    return mode;
+  }
+
+  getNextMode() {
+    let mode = GraphNodeMode.nextValue(this.state.mode);
+    if (mode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
+      // skip "ExpandSubgraph" if there is only one level
+      mode = GraphNodeMode.nextValue(mode);
+    }
+    return mode;
+  }
+
   public = {
     setMode: this.setMode,
-    nextMode: () => {
-      let mode = GraphNodeMode.nextValue(this.state.mode);
-      if (mode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
-        // skip "ExpandSubgraph" if there is only one level
-        mode = GraphNodeMode.nextValue(mode);
-      }
+    previousMode: () => {
+      let mode = this.getPreviousMode();
       const { firstTrace: trace } = this.owner;
       const { context } = this.owner.state;
-      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { context, trace });
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { mode, context, trace });
+      this.setMode(mode);
+    },
+    nextMode: () => {
+      let mode = this.getNextMode();
+      const { firstTrace: trace } = this.owner;
+      const { context } = this.owner.state;
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { mode, context, trace });
       this.setMode(mode);
     },
     reveal: this.reveal

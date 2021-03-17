@@ -29,7 +29,7 @@ html,body{
  * graph nodes
  * ############################################################################ */
 
-.graph-node .content button {
+ .mode-btn-wrapper .graph-mode-button {
   background-color: rgba(0,0,0,0.1);
   display:inline-block;
   margin:0;
@@ -38,7 +38,7 @@ html,body{
   line-height: 1rem;
   min-width: 1.4rem; /* NOTE: on some systems, some of those emojis are extra-wide */
 }
-.theme-mode-dark .nodeToggleBtn {
+.theme-mode-dark .root-graph-mode-button {
   background: #292929;
   border: solid 2px #484848;
   color: white;
@@ -192,8 +192,8 @@ html,body{
   margin-right: 0.3rem !important;
 }
 
-.node-toggle-btn {
-  margin-right: 0.3rem !important;
+.mode-btn-wrapper {
+  margin-right: 0.3rem;
 }
 
 .loc-label {
