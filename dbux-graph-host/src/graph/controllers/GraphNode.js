@@ -36,6 +36,9 @@ export default class GraphNode extends HostComponentEndpoint {
 
   setOwnMode(mode) {
     this.setState({ mode });
+    if (this.owner.shouldLazyBuild && !this.owner.childrenBuilt) {
+      this.owner.buildChildNodes();
+    }
   }
 
   setMode(mode) {
@@ -73,9 +76,6 @@ export default class GraphNode extends HostComponentEndpoint {
       const { firstTrace: trace } = this.owner;
       const { context } = this.owner.state;
       this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { context, trace, mode });
-      if (this.owner.shouldLazyBuild && !this.owner.childrenBuilt) {
-        this.owner.buildChildNodes();
-      }
       this.setMode(mode);
     },
     reveal: this.reveal
