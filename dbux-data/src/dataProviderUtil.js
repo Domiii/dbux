@@ -28,15 +28,6 @@ export default {
   // ###########################################################################
   // contexts
   // ###########################################################################
-  /** @param {DataProvider} dp */
-  getContextsByTrackId(dp, trackId) {
-    const traces = dp.indexes.traces.byTrackId.get(trackId);
-    const contextsSet = new Set();
-    traces.forEach((trace) => {
-      contextsSet.add(dp.collections.executionContexts.getById(trace.contextId));
-    });
-    return Array.from(contextsSet);
-  },
 
   /** @param {DataProvider} dp */
   getAllRootContexts(dp) {
@@ -45,6 +36,7 @@ export default {
 
   /** @param {DataProvider} dp */
   getRootContextIdByContextId(dp, contextId) {
+    // TODO: use `this.getFirstContextOfRun(runId)` instead
     const { executionContexts } = dp.collections;
     let lastContextId = contextId;
     let parentContextId;
@@ -63,10 +55,21 @@ export default {
   getFirstTracesInRuns(dp) {
     return dp.indexes.traces.firsts.get(1);
   },
+  /**
+   * Get all contexts in which an object of given `trackId` has been recorded.
+   * 
+   * @param {DataProvider} dp
+   */
+  getContextsByTrackId(dp, trackId) {
+    // get all participating traces
+    const traces = dp.indexes.traces.byTrackId.get(trackId);
 
-  /** @param {DataProvider} dp */
-  getAllErrorTraces(dp) {
-    return dp.indexes.traces.error.get(1) || EmptyArray;
+    // generate set of contexts of those traces
+    const contextsSet = new Set();
+    traces.forEach((trace) => {
+      contextsSet.add(dp.collections.executionContexts.getById(trace.contextId));
+    });
+    return Array.from(contextsSet);
   },
 
   /** @param {DataProvider} dp */
@@ -193,7 +196,7 @@ export default {
    */
   getParentTraceOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
-    
+
     const parentTrace = dp.collections.traces.getById(context.parentTraceId);
     if (!parentTrace) {
       return null;
@@ -231,6 +234,11 @@ export default {
     const { runId } = dp.collections.traces.getById(traceId);
     const firstTraceId = dp.util.getFirstTraceOfRun(runId).traceId;
     return firstTraceId === traceId;
+  },
+
+  /** @param {DataProvider} dp */
+  getAllErrorTraces(dp) {
+    return dp.indexes.traces.error.get(1) || EmptyArray;
   },
 
   // ###########################################################################
@@ -959,7 +967,7 @@ export default {
   },
 
   // ###########################################################################
-  // partial tracing + disabled traces
+  // dynamic tracing
   // ###########################################################################
 
   /**
@@ -968,6 +976,43 @@ export default {
   isContextTraced(dp, contextId) {
     const { tracesDisabled } = dp.util.getExecutionContext(contextId);
     return !tracesDisabled;
+  },
+
+  // ###########################################################################
+  // graph traversal
+  // ###########################################################################
+
+  traverseDfs(dp, contexts, preOrderCb, postOrderCb) {
+    const runIds = new Set(contexts.map(c => c.runId));
+
+    const dfs = (context, subtreeResult = null) => {
+      const children = dp.util.getChildrenOfContext(context.contextId);
+
+      if (preOrderCb) {
+        subtreeResult = preOrderCb(context, children, subtreeResult);
+      }
+
+      for (const child of children) {
+        dfs(child, subtreeResult);
+      }
+
+      if (postOrderCb) {
+        subtreeResult = postOrderCb(context, children, subtreeResult);
+      }
+
+      return subtreeResult;
+    };
+
+    // find all roots
+    // let lastResult = null;
+    for (const runId of runIds) {
+      const root = dp.util.getFirstContextOfRun(runId);
+      dfs(root);
+    }
+  },
+
+  getChildrenOfContext(dp, contextId) {
+    return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
   }
 
 };

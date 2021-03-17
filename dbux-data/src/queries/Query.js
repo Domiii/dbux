@@ -1,14 +1,30 @@
 export default class Query {
+  /** @type {DataProviderBase} */
+  dp;
+  
   constructor(name, cfg) {
     this.name = name;
     this.cfg = cfg || {};
   }
 
-  _init(/* dp */) {}
+  get debugName() {
+    return this.constructor.name;
+  }
 
-  executor = (dp, args) => this.execute(dp, args);
+  _init(dp) {
+    this.dp = dp;
+  }
 
-  execute() {
-    throw new Error(`abstract method not implemented: ${this.constructor.name}.execute`);
+  executor = (dp, args) => this.executeQuery(dp, args);
+
+  /**
+   * Execute query on all data.
+   */
+  executeQuery(dp, args) {
+    throw new Error(`abstract method not implemented: ${this}.executeCold`);
+  }
+
+  toString() {
+    return `${this.debugName}`;
   }
 }
