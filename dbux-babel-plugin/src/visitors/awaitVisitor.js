@@ -15,15 +15,15 @@ const postAwaitTemplate = template(
   //    because else it will be undefined.
   //    The value will be bound before `await` and thus before `preAwait` was called.
   `%%dbux%%.postAwait(
-  %%awaitNode%%,
-  %%awaitContextId%%,
-  %%resumeTraceId%%,
-  %%awaitArg%%,
-)
+    %%awaitNode%%,
+    %%awaitArgument%%,
+    %%awaitContextId%%,
+    %%resumeTraceId%%,
+  )
 `);
 
 const wrapAwaitExpressionTemplate = template(`
-(%%dbux%%.wrapAwait(%%awaitArg%% = %%argument%%, %%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%, %%preTraceId%%)))
+  (%%dbux%%.wrapAwait(%%awaitArgument%% = %%argument%%, %%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%, %%preTraceId%%)))
 `);
 
 
@@ -61,6 +61,7 @@ export function awaitVisitEnter(path, state) {
     resumeId
   });
 
+  const awaitArgument = path.scope.generateDeclaredUidIdentifier('awaitArgument');
   const awaitContextId = path.scope.generateDeclaredUidIdentifier('contextId');
   const argumentPath = path.get('argument');
   const argument = argumentPath.node;
@@ -69,15 +70,13 @@ export function awaitVisitEnter(path, state) {
   const preTraceId = state.traces.addTrace(argumentPath, TraceType.Await, true);
   const resumeTraceId = state.traces.addTrace(path, TraceType.Resume, true);
 
-  const awaitArg = path.scope.generateDeclaredUidIdentifier('awaitArg');
-
   const expressionReplacement = wrapAwaitExpressionTemplate({
     dbux,
     staticId: t.numericLiteral(staticId),
     awaitContextId,
     preTraceId: t.numericLiteral(preTraceId),
     argument,
-    awaitArg,
+    awaitArgument,
   });
   argumentPath.replaceWith(expressionReplacement);
 
@@ -86,7 +85,7 @@ export function awaitVisitEnter(path, state) {
     awaitNode: path.node,
     awaitContextId,
     resumeTraceId: t.numericLiteral(resumeTraceId),
-    awaitArg,
+    awaitArgument,
   });
   path.replaceWith(awaitReplacement);
 
