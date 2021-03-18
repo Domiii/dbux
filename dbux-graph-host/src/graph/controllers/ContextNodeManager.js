@@ -1,14 +1,19 @@
 import isEqual from 'lodash/isEqual';
+import { newLogger } from '@dbux/common/src/log/logger';
 import Enum from '@dbux/common/src/util/Enum';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import objectTracker from '@dbux/data/src/objectTracker';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('ContextNodeManager');
+
 let SelectorType = {
   ObjectTrace: 1,
   StaticContext: 2,
-  Search: 3
+  SearchContext: 3,
+  SearchTrace: 4
 };
 
 SelectorType = new Enum(SelectorType);
@@ -49,19 +54,31 @@ export default class ContextNodeManager extends HostComponentEndpoint {
           this.highlightByStaticContext(applicationId, staticContextId);
           break;
         }
-        case SelectorType.Search: {
+        case SelectorType.SearchContext: {
           const { searchTerm } = this.selector;
           this.highlightBySearchTermContexts(searchTerm);
+          break;
+        }
+        case SelectorType.SearchTrace: {
+          const { searchTerm } = this.selector;
+          this.highlightBySearchTermTraces(searchTerm);
           break;
         }
       }
     }
   }
 
-  highlightContexts(contexts) {
-    this.contextNodes = contexts.map(this.owner.getContextNodeByContext);
-    this.contextNodes.forEach((contextNode) => contextNode?.controllers.getComponent('Highlighter').inc());
-    this.contextNodes.forEach((contextNode) => contextNode?.reveal());
+  async highlightContexts(contexts) {
+    try {
+      this.contextNodes = await Promise.all(contexts.map(this.owner.getContextNodeByContext));
+      this.contextNodes.forEach((contextNode) => {
+        contextNode?.controllers.getComponent('Highlighter').inc();
+      });
+      this.contextNodes.forEach((contextNode) => contextNode?.reveal());
+    }
+    catch (err) {
+      logError(err);
+    }
   }
 
   clear() {
@@ -152,7 +169,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
       flat();
 
     this.selector = { searchTerm };
-    this.selectorType = SelectorType.Search;
+    this.selectorType = SelectorType.SearchContext;
     this.highlightContexts(contexts);
   }
 
@@ -170,7 +187,7 @@ export default class ContextNodeManager extends HostComponentEndpoint {
       flat();
 
     this.selector = { searchTerm };
-    this.selectorType = SelectorType.Search;
+    this.selectorType = SelectorType.SearchTrace;
     this.highlightContexts(contexts);
   }
 }

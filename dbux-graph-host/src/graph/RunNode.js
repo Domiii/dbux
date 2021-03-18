@@ -1,7 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
-import ContextNode from './ContextNode';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RunNode');
@@ -15,19 +14,21 @@ class RunNode extends HostComponentEndpoint {
 
     const dp = allApplications.getById(applicationId).dataProvider;
 
-    // add GraphNode
+    // Add GraphNode to pass the `setChildMode` from graphRoot to ContextNode
     this.controllers.createComponent('GraphNode', {
+      hasChildren: true,
       buttonDisabled: true
     });
 
     // add root context
     const firstContext = dp.util.getFirstContextOfRun(runId);
     if (firstContext) {
-      this.children.createComponent(ContextNode, {
+      this.rootContextNode = this.children.createComponent('RootContextNode', {
         applicationId,
         context: firstContext
       });
       this.state.createdAt = dp.util.getRunCreatedAt(runId);
+      this.state.firstContextId = firstContext.contextId;
     }
     else {
       logError('Creating RunNode with no context');
