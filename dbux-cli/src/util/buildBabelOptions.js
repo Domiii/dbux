@@ -25,6 +25,14 @@ function debugLog(...args) {
   // }
 }
 
+/**
+ * Add `^` and `$` (if not exist) to `s` and convert to `RegExp`.
+ * @param {string} s 
+ */
+function generateFullMatchRegExp(s) {
+  return new RegExp(`${s[0] === '^' ? '' : '^'}${s}${s[s.length - 1] === '$' ? '' : '$'}`);
+}
+
 function batchTestRegExp(regexps, target) {
   return regexps.some(regexp => regexp.test(target));
 }
@@ -51,10 +59,9 @@ export default function buildBabelOptions(options) {
     dontInjectDbux,
     dontAddPresets,
     dbuxOptions: dbuxOptionsString,
+    packageWhitelist,
     verbose = 0
   } = options;
-
-  let { packageWhitelist } = options;
 
   if (dontInjectDbux && !esnext) {
     // nothing to babel
@@ -70,8 +77,7 @@ export default function buildBabelOptions(options) {
   //   injectDependencies();
   // }
 
-  if (!Array.isArray(packageWhitelist)) packageWhitelist = [packageWhitelist];
-  const packageWhitelistRegExps = packageWhitelist.map(packageName => new RegExp(`^${packageName}$`));
+  const packageWhitelistRegExps = packageWhitelist.split(',').map(s => s.trim()).map(generateFullMatchRegExp);
 
   // setup babel-register
   const baseOptions = esnext ? baseBabelOptions : EmptyObject;
