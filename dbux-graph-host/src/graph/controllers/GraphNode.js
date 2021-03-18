@@ -3,6 +3,12 @@ import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 
 export default class GraphNode extends HostComponentEndpoint {
+  /**
+   * Owner requirement:
+   *  property `shouldLazyBuild`
+   *  property `childrenBuilt`
+   *  method `buildChildNodes`
+   */
   init() {
     const parent = this.owner.parent?.controllers.getComponent(GraphNode);
 
@@ -30,6 +36,9 @@ export default class GraphNode extends HostComponentEndpoint {
 
   setOwnMode(mode) {
     this.setState({ mode });
+    if (this.owner.shouldLazyBuild && !this.owner.childrenBuilt) {
+      this.owner.buildChildNodes();
+    }
   }
 
   setMode(mode) {
@@ -87,7 +96,7 @@ export default class GraphNode extends HostComponentEndpoint {
       let mode = this.getNextMode();
       const { firstTrace: trace } = this.owner;
       const { context } = this.owner.state;
-      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { mode, context, trace });
+      this.componentManager.externals.emitCallGraphAction(UserActionType.CallGraphNodeCollapseChange, { context, trace, mode });
       this.setMode(mode);
     },
     reveal: this.reveal

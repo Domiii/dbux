@@ -1,5 +1,6 @@
 
 const ContextNode = require('./ContextNode').default;
+const RootContextNode = require('./RootContextNode').default;
 const GraphDocument = require('./GraphDocument').default;
 const GraphRoot = require('./GraphRoot').default;
 const HiddenAfterNode = require('./HiddenAfterNode').default;
@@ -19,6 +20,7 @@ const ZoomBar = require('./ZoomBar').default;
 
 export default {
   ContextNode,
+  RootContextNode,
   GraphDocument,
   GraphRoot,
   HiddenAfterNode,

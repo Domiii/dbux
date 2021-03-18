@@ -1,9 +1,14 @@
 import NanoEvents from 'nanoevents';
+import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
+import { newLogger } from '@dbux/common/src/log/logger';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import RunNode from './RunNode';
 import ContextNode from './ContextNode';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('GraphRoot');
 
 export class RunNodeMap {
   constructor() {
@@ -48,17 +53,23 @@ export class RunNodeMap {
 }
 
 class GraphRoot extends HostComponentEndpoint {
+  /**
+   * @type {Map<ExecutionContext, ContextNode>}
+   */
   contextNodesByContext;
 
   init() {
     this.runNodesById = new RunNodeMap();
     this.contextNodesByContext = new Map();
     this.state.applications = [];
+    this._onContextNodeCreated = new Map();
+    this._buildContextNodePromises = new Map();
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
 
     this.controllers.createComponent('GraphNode', {
-      mode: GraphNodeMode.ExpandChildren
+      mode: GraphNodeMode.ExpandChildren,
+      hasChildren: true
     });
     this.controllers.createComponent('PopperManager');
     this.controllers.createComponent('ContextNodeManager');
@@ -185,6 +196,7 @@ class GraphRoot extends HostComponentEndpoint {
   addRunNode(applicationId, runId) {
     const newNode = this.children.createComponent(RunNode, { applicationId, runId });
     this.runNodesById.set(applicationId, runId, newNode);
+    // log(`Added RunNode of applicationId ${applicationId}, runId ${runId}`);
     return newNode;
   }
 
@@ -209,22 +221,59 @@ class GraphRoot extends HostComponentEndpoint {
   // context node management
   // ###########################################################################
 
-  getContextNodeById(applicationId, contextId) {
+  async getContextNodeById(applicationId, contextId) {
     const dp = allApplications.getById(applicationId).dataProvider;
     const context = dp.collections.executionContexts.getById(contextId);
-    return this.getContextNodeByContext(context);
+    return await this.getContextNodeByContext(context);
   }
 
   /**
-   *  @return {ContextNode}
+   *  @return {Promise<ContextNode>}
    */
-  getContextNodeByContext = (context) => {
-    return this.contextNodesByContext.get(context);
+  getContextNodeByContext = async (context) => {
+    let node = this.contextNodesByContext.get(context);
+    if (!context) {
+      logError(`Cannot find ContextNode of context ${context}`);
+      return null;
+    }
+    else if (!node) {
+      // node not created
+      let p = this._buildContextNodePromises.get(context);
+      if (!p) {
+        await this.waitForRefresh();
+        p = new Promise((resolve) => {
+          this._onContextNodeCreated.set(context, resolve);
+        });
+        this._buildContextNodePromises.set(context, p);
+        const { applicationId, runId } = context;
+        const runNode = this.getRunNodeById(applicationId, runId);
+        if (!runNode) {
+          logError(`Cannot find RunNode of applicationId ${applicationId}, runId ${runId}`);
+        }
+        else {
+          runNode.rootContextNode.buildChildNodes();
+        }
+      }
+      return p;
+    }
+
+    return node;
   }
 
+  /**
+   * @param {ContextNode} contextNode 
+   */
   _contextNodeCreated(contextNode) {
     const { state: { context } } = contextNode;
     this.contextNodesByContext.set(context, contextNode);
+    this._onContextNodeCreated.get(context)?.(contextNode);
+    this._onContextNodeCreated.delete(context);
+    contextNode.addDisposable(() => {
+      if (this.contextNodesByContext.get(context) === contextNode) {
+        this.contextNodesByContext.delete(context);
+        this._buildContextNodePromises.delete(context);
+      }
+    });
   }
 
   // ###########################################################################

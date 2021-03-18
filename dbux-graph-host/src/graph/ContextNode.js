@@ -10,36 +10,44 @@ import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class ContextNode extends HostComponentEndpoint {
-  init() {
+  init(shouldLazyBuild = false) {
+    this.shouldLazyBuild = shouldLazyBuild;
+    this.childrenBuilt = false;
+
     const {
       applicationId,
       context
     } = this.state;
-
+    
     // get name (and other needed data)
     const app = allApplications.getById(applicationId);
     const dp = app.dataProvider;
     const errorTag = (dp.indexes.traces.errorByContext.get(context.contextId)?.length) ? '🔥' : '';
     this.parentTrace = dp.util.getCallerTraceOfContext(context.contextId);
-
+    
     this.state.contextNameLabel = makeContextLabel(context, app) + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
     this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
     this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
 
+    // build sub graph
+    let hasChildren;
+    if (this.shouldLazyBuild) {
+      hasChildren = !!this.getValidChildContexts().length;
+    }
+    else {
+      this.buildChildNodes();
+      hasChildren = !!this.children.getComponents('ContextNode').length;
+    }
+
     // add controllers
-    this.controllers.createComponent('GraphNode', {});
+    this.controllers.createComponent('GraphNode', { hasChildren });
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
 
     // register with root
     this.context.graphRoot._contextNodeCreated(this);
-
-    // build sub graph
-    this.buildChildNodes();
-
-    this.state.hasChildren = !!this.children.length;
   }
 
   get dp() {
@@ -73,30 +81,34 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   buildChildNodes() {
-    const {
-      applicationId,
-      context: {
-        contextId
-      }
-    } = this.state;
+    if (this.childrenBuilt) {
+      return this.children.getComponents('ContextNode');
+    }
 
-    // get all child contexts
+    this.childrenBuilt = true;
+    const { applicationId } = this.state;
+    return this.getValidChildContexts().map(context => {
+      return this.children.createComponent('ContextNode', {
+        applicationId,
+        context
+      });
+    });
+  }
+
+  getValidChildContexts() {
+    const { applicationId, context: { contextId } } = this.state;
     const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
-    childContexts.forEach(childContext => {
+    return childContexts.filter(childContext => {
       if (dp.util.isFirstContextOfRun(childContext.contextId)) {
-        return;
+        return false;
       }
 
       if (ExecutionContextType.is.Await(childContext.contextType)) {
-        return;
+        return false;
       }
 
-      // create child context
-      this.children.createComponent(ContextNode, {
-        applicationId,
-        context: childContext
-      });
+      return true;
     });
   }
 
