@@ -72,6 +72,7 @@ class ContextNode extends ClientComponentEndpoint {
       traceId,
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
+      statsEnabled
     } = this.state;
 
     const { themeMode } = this.context;
@@ -84,13 +85,16 @@ class ContextNode extends ClientComponentEndpoint {
     // this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
 
-    // if (enabled) {
-    const {
-      nTreeContexts,
-      nTreeStaticContexts
-    } = this.state;
-    this.els.stats.textContent = `${nTreeContexts} / ${nTreeStaticContexts}`;
-    // }
+    if (statsEnabled) {
+      const {
+        nTreeContexts,
+        nTreeStaticContexts
+      } = this.state;
+      this.els.stats.textContent = `${nTreeContexts} / ${nTreeStaticContexts}`;
+    }
+    else {
+      this.els.stats.textContent = '';
+    }
 
     if (ThemeMode.is.Dark(themeMode)) {
       decorateClasses(this.els.title, {

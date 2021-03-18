@@ -230,7 +230,7 @@ export default class BugRunner {
         };
         // `args` in execInTerminal not working with anything now
         const result = await this.manager.execInTerminal(cwd, command, args);
-        project.logger.log(`Result: ${result}`);
+        // project.logger.log(`Result: ${result}`);
         this._emitter.emit('testFinished', bug, result);
         return result;
       }

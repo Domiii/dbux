@@ -11,9 +11,11 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class ContextNode extends HostComponentEndpoint {
   init() {
+    this.state.statsEnabled = true; // TODO: use Toolbar to control, and save to cache instead
     const {
       applicationId,
-      context
+      context,
+      statsEnabled
     } = this.state;
 
     // get name (and other needed data)
@@ -28,12 +30,14 @@ class ContextNode extends HostComponentEndpoint {
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
     this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
 
+    if (statsEnabled) {
+      this._addStats(this.state);
+    }
+
     // add controllers
     this.controllers.createComponent('GraphNode', {});
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
-
-    this._addStatsIfEnabled(this.state);
 
     // register with root
     this.context.graphRoot._contextNodeCreated(this);
@@ -74,16 +78,19 @@ class ContextNode extends HostComponentEndpoint {
     return stats?.nTreeStaticContexts || 0;
   }
 
-  updateStatsIfEnabled() {
+  setStatsEnabled(enabled) {
     // if (enabled) {
-    const upd = {};
-    this._addStatsIfEnabled(upd);
+    const upd = {
+      statsEnabled: enabled
+    };
+    if (enabled) {
+      this._addStats(upd);
+    }
     this.setState(upd);
     // }
   }
 
-  _addStatsIfEnabled(_update) {
-    // TODO: add stat enable button
+  _addStats(_update) {
     _update.nTreeContexts = this.nTreeContexts;
     _update.nTreeStaticContexts = this.nTreeStaticContexts;
   }
