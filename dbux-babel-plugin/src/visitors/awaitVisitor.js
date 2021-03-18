@@ -23,7 +23,7 @@ const postAwaitTemplate = template(
 `);
 
 const wrapAwaitExpressionTemplate = template(`
-  (%%dbux%%.wrapAwait(%%awaitArgument%% = %%argument%%, %%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%, %%preTraceId%%)))
+  (%%dbux%%.wrapAwait(%%awaitArgument%% = %%argument%%, %%awaitContextId%% = %%dbux%%.preAwait(%%staticId%%, %%preTraceId%%, %%awaitArgument%%)))
 `);
 
 

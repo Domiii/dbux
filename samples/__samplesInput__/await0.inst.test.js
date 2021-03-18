@@ -38,21 +38,36 @@ try {
       var _Promise;
       return (
         _dbux.traceExpr(8, (_Promise = Promise)),
-        _dbux.t(17),
+        _dbux.t(23),
         _dbux.traceExpr(
-          19,
+          25,
           new _Promise(
-            _dbux.traceArg(18, (r) => {
+            _dbux.traceArg(24, (r) => {
               var _contextId3 = _dbux.pushImmediate(4, 9, false);
               _dbux.traceExpr(11, r);
               try {
                 var _setTimeout;
                 return (
                   _dbux.traceExpr(12, (_setTimeout = setTimeout)),
-                  _dbux.t(13),
+                  _dbux.t(19),
                   _dbux.traceExpr(
-                    16,
-                    _setTimeout(_dbux.traceArg(14, r), _dbux.traceArg(15, ms))
+                    22,
+                    _setTimeout(
+                      _dbux.traceArg(20, () => {
+                        var _contextId4 = _dbux.pushImmediate(5, 13, false);
+                        try {
+                          var _r;
+                          return (
+                            _dbux.traceExpr(15, (_r = r)),
+                            _dbux.t(16),
+                            _dbux.traceExpr(18, _r(_dbux.traceArg(17, 13)))
+                          );
+                        } finally {
+                          _dbux.popFunction(_contextId4, 14);
+                        }
+                      }),
+                      _dbux.traceArg(21, ms)
+                    )
                   )
                 );
               } finally {
@@ -70,46 +85,46 @@ try {
   }
 
   async function main() {
-    var _contextId4 = _dbux.pushImmediate(5, 20, true);
-    _dbux.pushResume(6, 20);
+    var _contextId5 = _dbux.pushImmediate(6, 26, true);
+    _dbux.pushResume(7, 26);
     try {
-      var _o, _func, _awaitArgument, _contextId5, _sleep, _o2, _func2;
-      _dbux.traceExpr(23, (_o = console)),
-        _dbux.traceExpr(24, (_func = _o.log)),
-        _dbux.t(25),
-        _dbux.traceExpr(27, _func.call(_o, _dbux.traceArg(26, 1)));
+      var _o, _func, _awaitArgument, _contextId6, _sleep, _o2, _func2;
+      _dbux.traceExpr(29, (_o = console)),
+        _dbux.traceExpr(30, (_func = _o.log)),
+        _dbux.t(31),
+        _dbux.traceExpr(33, _func.call(_o, _dbux.traceArg(32, 1)));
       _dbux.postAwait(
         await _dbux.wrapAwait(
           (_awaitArgument =
-            (_dbux.traceExpr(30, (_sleep = sleep)),
-            _dbux.t(31),
-            _dbux.traceExpr(33, _sleep(_dbux.traceArg(32, 800))))),
-          (_contextId5 = _dbux.preAwait(8, 28))
+            (_dbux.traceExpr(36, (_sleep = sleep)),
+            _dbux.t(37),
+            _dbux.traceExpr(39, _sleep(_dbux.traceArg(38, 800))))),
+          (_contextId6 = _dbux.preAwait(_awaitArgument, 9, 34))
         ),
         _awaitArgument,
-        _contextId5,
-        29
+        _contextId6,
+        35
       );
-      _dbux.traceExpr(34, (_o2 = console)),
-        _dbux.traceExpr(35, (_func2 = _o2.log)),
-        _dbux.t(36),
-        _dbux.traceExpr(38, _func2.call(_o2, _dbux.traceArg(37, 2)));
+      _dbux.traceExpr(40, (_o2 = console)),
+        _dbux.traceExpr(41, (_func2 = _o2.log)),
+        _dbux.t(42),
+        _dbux.traceExpr(44, _func2.call(_o2, _dbux.traceArg(43, 2)));
       // await sleep(800);
       // console.log(3);
       // await sleep(800);
       // console.log(4);
       // await sleep(800);
       // console.log(5);
-      _dbux.t(22);
+      _dbux.t(28);
     } finally {
       _dbux.popResume();
-      _dbux.popFunction(_contextId4, 21);
+      _dbux.popFunction(_contextId5, 27);
     }
   }
 
-  _dbux.traceExpr(39, (_main = main)),
-    _dbux.t(40),
-    _dbux.traceExpr(41, _main());
+  _dbux.traceExpr(45, (_main = main)),
+    _dbux.t(46),
+    _dbux.traceExpr(47, _main());
 
   // setTimeout(main, 100);
   // setTimeout(main, 200);
@@ -151,13 +166,21 @@ function _dbux_init(dbuxRuntime) {
         {
           _staticId: 4,
           _parentId: 2,
-          loc: { start: { line: 2, column: 22 }, end: { line: 2, column: 44 } },
+          loc: { start: { line: 2, column: 22 }, end: { line: 2, column: 54 } },
           type: 2,
           displayName: "[cb] Promise",
           isInterruptable: false,
         },
         {
           _staticId: 5,
+          _parentId: 4,
+          loc: { start: { line: 2, column: 38 }, end: { line: 2, column: 49 } },
+          type: 2,
+          displayName: "[cb] setTimeout",
+          isInterruptable: false,
+        },
+        {
+          _staticId: 6,
           _parentId: 1,
           loc: { start: { line: 5, column: 0 }, end: { line: 15, column: 1 } },
           type: 2,
@@ -167,23 +190,23 @@ function _dbux_init(dbuxRuntime) {
         },
         {
           type: 4,
-          _staticId: 6,
-          _parentId: 5,
+          _staticId: 7,
+          _parentId: 6,
           loc: { start: { line: 5, column: 22 }, end: { line: 15, column: 1 } },
         },
         {
           type: 4,
-          _staticId: 7,
-          _parentId: 5,
+          _staticId: 8,
+          _parentId: 6,
           loc: { start: { line: 7, column: 18 }, end: { line: 15, column: 1 } },
         },
         {
-          _staticId: 8,
-          _parentId: 5,
+          _staticId: 9,
+          _parentId: 6,
           loc: { start: { line: 7, column: 2 }, end: { line: 7, column: 18 } },
           type: 3,
           displayName: "(await sleep(800))",
-          resumeId: 7,
+          resumeId: 8,
         },
       ],
       traces: [
@@ -261,7 +284,7 @@ function _dbux_init(dbuxRuntime) {
           type: 1,
         },
         {
-          loc: { start: { line: 2, column: 44 }, end: { line: 2, column: 44 } },
+          loc: { start: { line: 2, column: 54 }, end: { line: 2, column: 54 } },
           _callId: false,
           _traceId: 10,
           _staticContextId: 4,
@@ -292,90 +315,137 @@ function _dbux_init(dbuxRuntime) {
           type: 8,
         },
         {
-          displayName: "setTimeout(r, ms)",
-          loc: { start: { line: 2, column: 27 }, end: { line: 2, column: 44 } },
-          _callId: 13,
+          loc: { start: { line: 2, column: 44 }, end: { line: 2, column: 44 } },
+          _callId: false,
           _traceId: 13,
-          _staticContextId: 4,
-          type: 4,
+          _staticContextId: 5,
+          type: 1,
+        },
+        {
+          loc: { start: { line: 2, column: 49 }, end: { line: 2, column: 49 } },
+          _callId: false,
+          _traceId: 14,
+          _staticContextId: 5,
+          type: 2,
         },
         {
           displayName: "r",
           loc: {
-            start: { line: 2, column: 38 },
-            end: { line: 2, column: 39 },
+            start: { line: 2, column: 44 },
+            end: { line: 2, column: 45 },
             identifierName: "r",
           },
-          _callId: 13,
-          _traceId: 14,
+          _callId: false,
+          _traceId: 15,
+          _staticContextId: 5,
+          type: 8,
+        },
+        {
+          displayName: "r(13)",
+          loc: { start: { line: 2, column: 44 }, end: { line: 2, column: 49 } },
+          _callId: 16,
+          _traceId: 16,
+          _staticContextId: 5,
+          type: 4,
+        },
+        {
+          displayName: "13",
+          loc: { start: { line: 2, column: 46 }, end: { line: 2, column: 48 } },
+          _callId: 16,
+          _traceId: 17,
+          _staticContextId: 5,
+          type: 9,
+        },
+        {
+          displayName: "r(13)",
+          loc: { start: { line: 2, column: 44 }, end: { line: 2, column: 49 } },
+          _callId: false,
+          _resultCallId: 16,
+          _traceId: 18,
+          _staticContextId: 5,
+          type: 16,
+        },
+        {
+          displayName: "setTimeout(() => r(13), ms)",
+          loc: { start: { line: 2, column: 27 }, end: { line: 2, column: 54 } },
+          _callId: 19,
+          _traceId: 19,
           _staticContextId: 4,
+          type: 4,
+        },
+        {
+          displayName: "[cb] setTimeout",
+          loc: { start: { line: 2, column: 38 }, end: { line: 2, column: 49 } },
+          _callId: 19,
+          _traceId: 20,
+          _staticContextId: 5,
           type: 9,
         },
         {
           displayName: "ms",
           loc: {
-            start: { line: 2, column: 41 },
-            end: { line: 2, column: 43 },
+            start: { line: 2, column: 51 },
+            end: { line: 2, column: 53 },
             identifierName: "ms",
           },
-          _callId: 13,
-          _traceId: 15,
+          _callId: 19,
+          _traceId: 21,
           _staticContextId: 4,
           type: 9,
         },
         {
-          displayName: "setTimeout(r, ms)",
-          loc: { start: { line: 2, column: 27 }, end: { line: 2, column: 44 } },
+          displayName: "setTimeout(() => r(13), ms)",
+          loc: { start: { line: 2, column: 27 }, end: { line: 2, column: 54 } },
           _callId: false,
-          _resultCallId: 13,
-          _traceId: 16,
+          _resultCallId: 19,
+          _traceId: 22,
           _staticContextId: 4,
           type: 16,
         },
         {
-          displayName: "new Promise(r => setTimeout(r, ms))",
-          loc: { start: { line: 2, column: 10 }, end: { line: 2, column: 45 } },
-          _callId: 17,
-          _traceId: 17,
+          displayName: "new Promise(r => setTimeout(() => r(13), ms))",
+          loc: { start: { line: 2, column: 10 }, end: { line: 2, column: 55 } },
+          _callId: 23,
+          _traceId: 23,
           _staticContextId: 2,
           type: 4,
         },
         {
           displayName: "[cb] Promise",
-          loc: { start: { line: 2, column: 22 }, end: { line: 2, column: 44 } },
-          _callId: 17,
-          _traceId: 18,
+          loc: { start: { line: 2, column: 22 }, end: { line: 2, column: 54 } },
+          _callId: 23,
+          _traceId: 24,
           _staticContextId: 4,
           type: 9,
         },
         {
-          displayName: "new Promise(r => setTimeout(r, ms))",
-          loc: { start: { line: 2, column: 10 }, end: { line: 2, column: 45 } },
+          displayName: "new Promise(r => setTimeout(() => r(13), ms))",
+          loc: { start: { line: 2, column: 10 }, end: { line: 2, column: 55 } },
           _callId: false,
-          _resultCallId: 17,
-          _traceId: 19,
+          _resultCallId: 23,
+          _traceId: 25,
           _staticContextId: 2,
           type: 16,
         },
         {
           loc: { start: { line: 5, column: 22 }, end: { line: 5, column: 23 } },
           _callId: false,
-          _traceId: 20,
-          _staticContextId: 5,
+          _traceId: 26,
+          _staticContextId: 6,
           type: 1,
         },
         {
           loc: { start: { line: 15, column: 0 }, end: { line: 15, column: 1 } },
           _callId: false,
-          _traceId: 21,
-          _staticContextId: 5,
+          _traceId: 27,
+          _staticContextId: 6,
           type: 2,
         },
         {
           loc: { start: { line: 15, column: 0 }, end: { line: 15, column: 1 } },
           _callId: false,
-          _traceId: 22,
-          _staticContextId: 5,
+          _traceId: 28,
+          _staticContextId: 6,
           type: 22,
         },
         {
@@ -386,56 +456,56 @@ function _dbux_init(dbuxRuntime) {
             identifierName: "console",
           },
           _callId: false,
-          _traceId: 23,
-          _staticContextId: 5,
+          _traceId: 29,
+          _staticContextId: 6,
           type: 8,
         },
         {
           displayName: "console.log",
           loc: { start: { line: 6, column: 2 }, end: { line: 6, column: 13 } },
           _callId: false,
-          _traceId: 24,
-          _staticContextId: 5,
+          _traceId: 30,
+          _staticContextId: 6,
           type: 8,
         },
         {
           displayName: "console.log(1)",
           loc: { start: { line: 6, column: 2 }, end: { line: 6, column: 16 } },
-          _callId: 25,
-          _traceId: 25,
-          _staticContextId: 5,
+          _callId: 31,
+          _traceId: 31,
+          _staticContextId: 6,
           type: 4,
         },
         {
           displayName: "1",
           loc: { start: { line: 6, column: 14 }, end: { line: 6, column: 15 } },
-          _callId: 25,
-          _traceId: 26,
-          _staticContextId: 5,
+          _callId: 31,
+          _traceId: 32,
+          _staticContextId: 6,
           type: 9,
         },
         {
           displayName: "console.log(1)",
           loc: { start: { line: 6, column: 2 }, end: { line: 6, column: 16 } },
           _callId: false,
-          _resultCallId: 25,
-          _traceId: 27,
-          _staticContextId: 5,
+          _resultCallId: 31,
+          _traceId: 33,
+          _staticContextId: 6,
           type: 6,
         },
         {
           loc: { start: { line: 7, column: 18 }, end: { line: 7, column: 18 } },
           _callId: false,
-          _traceId: 28,
-          _staticContextId: 8,
+          _traceId: 34,
+          _staticContextId: 9,
           type: 20,
         },
         {
           displayName: "await sleep(800)",
           loc: { start: { line: 7, column: 2 }, end: { line: 7, column: 18 } },
           _callId: false,
-          _traceId: 29,
-          _staticContextId: 8,
+          _traceId: 35,
+          _staticContextId: 9,
           type: 21,
         },
         {
@@ -446,33 +516,33 @@ function _dbux_init(dbuxRuntime) {
             identifierName: "sleep",
           },
           _callId: false,
-          _traceId: 30,
-          _staticContextId: 8,
+          _traceId: 36,
+          _staticContextId: 9,
           type: 8,
         },
         {
           displayName: "sleep(800)",
           loc: { start: { line: 7, column: 8 }, end: { line: 7, column: 18 } },
-          _callId: 31,
-          _traceId: 31,
-          _staticContextId: 8,
+          _callId: 37,
+          _traceId: 37,
+          _staticContextId: 9,
           type: 4,
         },
         {
           displayName: "800",
           loc: { start: { line: 7, column: 14 }, end: { line: 7, column: 17 } },
-          _callId: 31,
-          _traceId: 32,
-          _staticContextId: 8,
+          _callId: 37,
+          _traceId: 38,
+          _staticContextId: 9,
           type: 9,
         },
         {
           displayName: "sleep(800)",
           loc: { start: { line: 7, column: 8 }, end: { line: 7, column: 18 } },
           _callId: false,
-          _resultCallId: 31,
-          _traceId: 33,
-          _staticContextId: 8,
+          _resultCallId: 37,
+          _traceId: 39,
+          _staticContextId: 9,
           type: 6,
         },
         {
@@ -483,41 +553,41 @@ function _dbux_init(dbuxRuntime) {
             identifierName: "console",
           },
           _callId: false,
-          _traceId: 34,
-          _staticContextId: 5,
+          _traceId: 40,
+          _staticContextId: 6,
           type: 8,
         },
         {
           displayName: "console.log",
           loc: { start: { line: 8, column: 2 }, end: { line: 8, column: 13 } },
           _callId: false,
-          _traceId: 35,
-          _staticContextId: 5,
+          _traceId: 41,
+          _staticContextId: 6,
           type: 8,
         },
         {
           displayName: "console.log(2)",
           loc: { start: { line: 8, column: 2 }, end: { line: 8, column: 16 } },
-          _callId: 36,
-          _traceId: 36,
-          _staticContextId: 5,
+          _callId: 42,
+          _traceId: 42,
+          _staticContextId: 6,
           type: 4,
         },
         {
           displayName: "2",
           loc: { start: { line: 8, column: 14 }, end: { line: 8, column: 15 } },
-          _callId: 36,
-          _traceId: 37,
-          _staticContextId: 5,
+          _callId: 42,
+          _traceId: 43,
+          _staticContextId: 6,
           type: 9,
         },
         {
           displayName: "console.log(2)",
           loc: { start: { line: 8, column: 2 }, end: { line: 8, column: 16 } },
           _callId: false,
-          _resultCallId: 36,
-          _traceId: 38,
-          _staticContextId: 5,
+          _resultCallId: 42,
+          _traceId: 44,
+          _staticContextId: 6,
           type: 6,
         },
         {
@@ -528,15 +598,15 @@ function _dbux_init(dbuxRuntime) {
             identifierName: "main",
           },
           _callId: false,
-          _traceId: 39,
+          _traceId: 45,
           _staticContextId: 1,
           type: 8,
         },
         {
           displayName: "main()",
           loc: { start: { line: 17, column: 0 }, end: { line: 17, column: 6 } },
-          _callId: 40,
-          _traceId: 40,
+          _callId: 46,
+          _traceId: 46,
           _staticContextId: 1,
           type: 4,
         },
@@ -544,8 +614,8 @@ function _dbux_init(dbuxRuntime) {
           displayName: "main()",
           loc: { start: { line: 17, column: 0 }, end: { line: 17, column: 6 } },
           _callId: false,
-          _resultCallId: 40,
-          _traceId: 41,
+          _resultCallId: 46,
+          _traceId: 47,
           _staticContextId: 1,
           type: 6,
         },
@@ -579,5 +649,5 @@ function _dbux_init(dbuxRuntime) {
     undefined
   );
 }
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInVua25vd24iXSwibmFtZXMiOlsic2xlZXAiLCJtcyIsIlByb21pc2UiLCJyIiwic2V0VGltZW91dCIsIm1haW4iLCJjb25zb2xlIiwibG9nIl0sIm1hcHBpbmdzIjoiMExBQUEsZUFBZUEsS0FBZixDQUFxQkMsRUFBckIsRUFBeUIsNkZBQUpBLEVBQUk7QUFDdEIsZ0NBQVdDLFdBQUFBLE9BQVgsb0NBQU8sZ0NBQVlDLENBQUMsSUFBSSx3RUFBTEEsQ0FBSyxnRUFBQUMsVUFBVSxvQ0FBViwrQkFBV0QsQ0FBWCxzQkFBY0YsRUFBZCxFQUFVLENBQVYsZ0RBQWlCLENBQWxDLEVBQVAsRUFEc0I7QUFFdEIsS0FGc0IsK0RBRXRCOztBQUVILGlCQUFlSSxJQUFmLEdBQXNCO0FBQ3BCLCtCQUFBQyxPQUFPLHVCQUFQLFdBQVFDLEdBQUQsb0NBQVAsa0NBQVksQ0FBWixFQUFPLENBQVA7QUFDQSxrRkFBTVAsU0FBQUEsS0FBTixvQ0FBTSwwQkFBTSxHQUFOLEVBQU47QUFDQSxnQ0FBQU0sT0FBTyx1QkFBUCxhQUFRQyxHQUFELG9DQUFQLG9DQUFZLENBQVosRUFBTyxDQUFQO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBVG9CLGtCQVVyQixDQVZxQixnRUFVckI7O0FBRUQsOEJBQUFGLElBQUksb0NBQUosT0FBSSxDQUFKOztBQUVBO0FBQ0E7QUFDQSIsInNvdXJjZXNDb250ZW50IjpbImFzeW5jIGZ1bmN0aW9uIHNsZWVwKG1zKSB7XG4gICByZXR1cm4gbmV3IFByb21pc2UociA9PiBzZXRUaW1lb3V0KHIsIG1zKSk7IFxuICB9XG5cbmFzeW5jIGZ1bmN0aW9uIG1haW4oKSB7XG4gIGNvbnNvbGUubG9nKDEpO1xuICBhd2FpdCBzbGVlcCg4MDApO1xuICBjb25zb2xlLmxvZygyKTtcbiAgLy8gYXdhaXQgc2xlZXAoODAwKTtcbiAgLy8gY29uc29sZS5sb2coMyk7XG4gIC8vIGF3YWl0IHNsZWVwKDgwMCk7XG4gIC8vIGNvbnNvbGUubG9nKDQpO1xuICAvLyBhd2FpdCBzbGVlcCg4MDApO1xuICAvLyBjb25zb2xlLmxvZyg1KTtcbn1cblxubWFpbigpO1xuXG4vLyBzZXRUaW1lb3V0KG1haW4sIDEwMCk7XG4vLyBzZXRUaW1lb3V0KG1haW4sIDIwMCk7XG4vLyBzZXRUaW1lb3V0KG1haW4sIDMwMCk7XG4iXX0=
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInVua25vd24iXSwibmFtZXMiOlsic2xlZXAiLCJtcyIsIlByb21pc2UiLCJyIiwic2V0VGltZW91dCIsIm1haW4iLCJjb25zb2xlIiwibG9nIl0sIm1hcHBpbmdzIjoiMExBQUEsZUFBZUEsS0FBZixDQUFxQkMsRUFBckIsRUFBeUIsNkZBQUpBLEVBQUk7QUFDdEIsZ0NBQVdDLFdBQUFBLE9BQVgsb0NBQU8sZ0NBQVlDLENBQUMsSUFBSSx3RUFBTEEsQ0FBSyxnRUFBQUMsVUFBVSxvQ0FBViwrQkFBVyxNQUFNLGlHQUFBRCxDQUFDLG9DQUFELHNCQUFFLEVBQUYsRUFBQyxDQUFELGdEQUFLLENBQXRCLHNCQUF3QkYsRUFBeEIsRUFBVSxDQUFWLGdEQUEyQixDQUE1QyxFQUFQLEVBRHNCO0FBRXRCLEtBRnNCLCtEQUV0Qjs7QUFFSCxpQkFBZUksSUFBZixHQUFzQjtBQUNwQiwrQkFBQUMsT0FBTyx1QkFBUCxXQUFRQyxHQUFELG9DQUFQLGtDQUFZLENBQVosRUFBTyxDQUFQO0FBQ0Esa0ZBQU1QLFNBQUFBLEtBQU4sb0NBQU0sMEJBQU0sR0FBTixFQUFOO0FBQ0EsZ0NBQUFNLE9BQU8sdUJBQVAsYUFBUUMsR0FBRCxvQ0FBUCxvQ0FBWSxDQUFaLEVBQU8sQ0FBUDtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQVRvQixrQkFVckIsQ0FWcUIsZ0VBVXJCOztBQUVELDhCQUFBRixJQUFJLG9DQUFKLE9BQUksQ0FBSjs7QUFFQTtBQUNBO0FBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyJhc3luYyBmdW5jdGlvbiBzbGVlcChtcykge1xuICAgcmV0dXJuIG5ldyBQcm9taXNlKHIgPT4gc2V0VGltZW91dCgoKSA9PiByKDEzKSwgbXMpKTsgXG4gIH1cblxuYXN5bmMgZnVuY3Rpb24gbWFpbigpIHtcbiAgY29uc29sZS5sb2coMSk7XG4gIGF3YWl0IHNsZWVwKDgwMCk7XG4gIGNvbnNvbGUubG9nKDIpO1xuICAvLyBhd2FpdCBzbGVlcCg4MDApO1xuICAvLyBjb25zb2xlLmxvZygzKTtcbiAgLy8gYXdhaXQgc2xlZXAoODAwKTtcbiAgLy8gY29uc29sZS5sb2coNCk7XG4gIC8vIGF3YWl0IHNsZWVwKDgwMCk7XG4gIC8vIGNvbnNvbGUubG9nKDUpO1xufVxuXG5tYWluKCk7XG5cbi8vIHNldFRpbWVvdXQobWFpbiwgMTAwKTtcbi8vIHNldFRpbWVvdXQobWFpbiwgMjAwKTtcbi8vIHNldFRpbWVvdXQobWFpbiwgMzAwKTtcbiJdfQ==
 

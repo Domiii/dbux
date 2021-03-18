@@ -93,7 +93,8 @@ export default class ProgramMonitor {
   //     inProgramStaticContextId, schedulerId, traceId, cb);
   // }
 
-  preAwait(inProgramStaticContextId, traceId) {
+  preAwait(inProgramStaticContextId, traceId, awaitArgument) {
+    this._logger.debug('preawait await', awaitArgument);
     if (this.disabled) {
       // TODO: calling asynchronous methods when disabled hints at non-pure getters and will most likely cause trouble :(
       this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey  call asynchronous code)`);
