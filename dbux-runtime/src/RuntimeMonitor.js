@@ -241,7 +241,7 @@ export default class RuntimeMonitor {
   // Interrupts, await et al
   // ###########################################################################
 
-  preAwait(programId, inProgramStaticContextId, inProgramStaticTraceId) {
+  preAwait(programId, inProgramStaticContextId, inProgramStaticTraceId, awaitArgument) {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
     const resumeContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
@@ -254,7 +254,7 @@ export default class RuntimeMonitor {
     this.popResume(resumeContextId);
 
     // register Await context
-    const parentContextId = this._runtime.peekCurrentContextId(); // NOTE: parent == Resume
+    const parentContextId = this._runtime.peekCurrentContextId(); // Real context
     const context = executionContextCollection.await(
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId
     );
@@ -263,6 +263,20 @@ export default class RuntimeMonitor {
 
     // manually climb up the stack
     this._runtime.skipPopPostAwait();
+
+    // await part
+    const currentRunId = this._runtime.getCurrentRunId();
+    if (awaitArgument instanceof Promise && isPromiseCreatedInRun(awaitArgument, currentRunId)) {
+      const promise = awaitArgument;
+
+      const isFirstAwait = isFirstContextInParent(resumeContextId, parentContextId);
+      if (isFirstAwait) {
+        storeFirstAwaitPromise(currentRunId, parentContextId, awaitArgument);
+      } 
+      if (!isFirstAwait || isRootContext(parentContextId)) {
+        setOwnPromiseThreadId(promise, getRunThreadId(currentRunId));
+      }
+    }
 
     return awaitContextId;
   }
@@ -275,7 +289,7 @@ export default class RuntimeMonitor {
   /**
    * Resume given stack
    */
-  postAwait(programId, awaitResult, awaitContextId, resumeInProgramStaticTraceId, awaitArg) {
+  postAwait(programId, awaitResult, awaitArgument, awaitContextId, resumeInProgramStaticTraceId) {
     // sanity checks
     const context = executionContextCollection.getById(awaitContextId);
     if (!context) {
@@ -296,6 +310,38 @@ export default class RuntimeMonitor {
 
       debug(awaitArg, 'is awaited at context', awaitContextId);
     }
+
+    const preEventContext, postEventContext, preEventRun, postEventRun;
+
+    if (!hasChainIn(getRunThreadId(postEventRun))) {
+      const startThreadId = getRunThreadId(preEventRun);
+
+      const edgeType = ''; // TODO change to enum
+
+      if (isFirstContextInParent(preEventContext)) {
+        const caller = getCallExpr(getParentContext(preEventContext));
+        const callerPromise = getValue(caller); // get return value
+        const promiseThreadId = getPromiseThreadId(callerPromise);
+
+        if (startThreadId === promiseThreadId) {
+          edgeType = 'CHAIN';
+        }
+        else {
+          edgeType = 'FORK';
+        }
+      }
+      else {
+        edgeType = 'CHAIN';
+      }
+
+      addEdge(getLastRunOfThread(startThreadId), postEventRun, edgeType);
+
+      // if (awaitArgument instanceof Promise) {
+      //   get all last run bruh;
+      // }
+    }
+
+
 
     return awaitResult;
   }
