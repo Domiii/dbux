@@ -35,8 +35,8 @@ class RunNode extends HostComponentEndpoint {
 
     const hiddenNodeManager = this.parent.controllers.getComponent('HiddenNodeManager');
     this.state.visible = hiddenNodeManager.shouldBeVisible(this);
-    this.state.childrenAmount = this.nTreeContexts;
-    this.state.uniqueChildrenAmount = this.nTreeStaticContexts;
+    // this.state.childrenAmount = this.nTreeContexts;
+    // this.state.uniqueChildrenAmount = this.nTreeStaticContexts;
   }
 
   get dp() {

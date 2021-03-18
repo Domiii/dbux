@@ -39,6 +39,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <div>
                   <span class="value-label" data-el="valueLabel"></span>
                 </div>
+                <div data-el="stats" class="context-stats"></div>
               </div>
               <div class="flex-row">
               </div>
@@ -78,6 +79,14 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
     // this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
+
+    // if (enabled) {
+    const {
+      nTreeContexts,
+      nTreeStaticContexts
+    } = this.state;
+    this.els.stats.textContent = `${nTreeContexts} / ${nTreeStaticContexts}`;
+    // }
 
     if (ThemeMode.is.Dark(themeMode)) {
       decorateClasses(this.els.title, {

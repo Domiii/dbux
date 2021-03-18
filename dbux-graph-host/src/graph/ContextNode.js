@@ -33,6 +33,8 @@ class ContextNode extends HostComponentEndpoint {
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
 
+    this._addStatsIfEnabled(this.state);
+
     // register with root
     this.context.graphRoot._contextNodeCreated(this);
 
@@ -70,6 +72,20 @@ class ContextNode extends HostComponentEndpoint {
   get nTreeStaticContexts() {
     const stats = this.dp.queries.statsByContext(this.contextId);
     return stats?.nTreeStaticContexts || 0;
+  }
+
+  updateStatsIfEnabled() {
+    // if (enabled) {
+    const upd = {};
+    this._addStatsIfEnabled(upd);
+    this.setState(upd);
+    // }
+  }
+
+  _addStatsIfEnabled(_update) {
+    // TODO: add stat enable button
+    _update.nTreeContexts = this.nTreeContexts;
+    _update.nTreeStaticContexts = this.nTreeStaticContexts;
   }
 
   buildChildNodes() {
