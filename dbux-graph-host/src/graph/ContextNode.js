@@ -11,12 +11,14 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class ContextNode extends HostComponentEndpoint {
   init() {
-    this.state.statsEnabled = true; // TODO: use Toolbar to control, and save to cache instead
     const {
       applicationId,
-      context,
-      statsEnabled
+      context
     } = this.state;
+
+    const {
+      statsEnabled
+    } = this.context;
 
     // get name (and other needed data)
     const app = allApplications.getById(applicationId);

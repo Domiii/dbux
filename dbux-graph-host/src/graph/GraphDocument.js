@@ -59,7 +59,8 @@ class GraphDocument extends HostComponentEndpoint {
       context: {
         graphDocument: this,
         themeMode: this.state.themeMode,
-        contextNodeIconUris: this.state.contextNodeIconUris
+        contextNodeIconUris: this.state.contextNodeIconUris,
+        statsEnabled: true // TODO: use Toolbar to control, and save to cache instead
       }
     };
   }

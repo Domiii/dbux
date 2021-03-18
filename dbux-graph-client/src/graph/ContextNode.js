@@ -72,10 +72,12 @@ class ContextNode extends ClientComponentEndpoint {
       traceId,
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
-      statsEnabled
     } = this.state;
 
-    const { themeMode } = this.context;
+    const {
+      themeMode,
+      statsEnabled
+    } = this.context;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
     this.el.style.background = getStaticContextColor(themeMode, staticContextId);
