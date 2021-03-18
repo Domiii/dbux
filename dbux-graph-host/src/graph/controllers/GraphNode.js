@@ -58,19 +58,19 @@ export default class GraphNode extends HostComponentEndpoint {
 
   getPreviousMode() {
     let mode = GraphNodeMode.previousValue(this.state.mode);
-    if (mode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
-      // skip "ExpandSubgraph" if there is only one level
-      mode = GraphNodeMode.previousValue(mode);
-    }
+    // if (mode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
+    //   // skip "ExpandSubgraph" if there is only one level
+    //   mode = GraphNodeMode.previousValue(mode);
+    // }
     return mode;
   }
 
   getNextMode() {
     let mode = GraphNodeMode.nextValue(this.state.mode);
-    if (mode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
-      // skip "ExpandSubgraph" if there is only one level
-      mode = GraphNodeMode.nextValue(mode);
-    }
+    // if (mode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
+    //   // skip "ExpandSubgraph" if there is only one level
+    //   mode = GraphNodeMode.nextValue(mode);
+    // }
     return mode;
   }
 

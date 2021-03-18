@@ -29,15 +29,28 @@ html,body{
  * graph nodes
  * ############################################################################ */
 
- .mode-btn-wrapper .graph-mode-button {
+.graph-mode-button img {
+  width: 1rem;
+}
+
+.root-graph-mode-button {
+  padding: 2px;
+}
+
+.root-graph-mode-button img {
+  width: 1.5rem;
+}
+
+.mode-btn-wrapper .graph-mode-button {
   background-color: rgba(0,0,0,0.1);
   display:inline-block;
   margin:0;
   padding: 0;
   border: 0;
   line-height: 1rem;
-  min-width: 1.4rem; /* NOTE: on some systems, some of those emojis are extra-wide */
+  min-width: 1.2rem; /* NOTE: on some systems, some of those emojis are extra-wide */
 }
+
 .theme-mode-dark .root-graph-mode-button {
   background: #292929;
   border: solid 2px #484848;

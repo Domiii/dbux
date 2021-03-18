@@ -63,7 +63,7 @@ const iconsByActionGroupType = {
   [ActionGroupType.NavigationPreviousTrace]: 'leftArrow.svg',
   [ActionGroupType.NavigationNextTrace]: 'rightArrow.svg',
   [ActionGroupType.CallGraphSelectTrace]: 'callGraphSelectTrace.svg',
-  [ActionGroupType.CallGraphToggleContextNode]: 'callGraphToggleContextNode.svg',
+  [ActionGroupType.CallGraphToggleContextNode]: 'listItem.svg',
   [ActionGroupType.CallGraphSearchContexts]: 'callGraphSearchContexts.svg',
   [ActionGroupType.CallGraphSearchTraces]: 'callGraphSearchTraces.svg',
   [ActionGroupType.CallGraphOther]: defaultActionGroupIcon,
