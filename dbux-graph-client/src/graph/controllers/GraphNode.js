@@ -1,12 +1,13 @@
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import ClientComponentEndpoint from '../../componentLib/ClientComponentEndpoint';
-// import { decorateClasses } from '../../util/domUtil';
 
 export default class GraphNode extends ClientComponentEndpoint {
   /**
    * Owner requirement:
-   *  children `nodeToggleBtn`
-   *  children `NodeChildren`
+   *  els `previousModeButton`
+   *  els `previousModeButtonImg`
+   *  els `nextModeButton`
+   *  els `nextModeButtonImg`
    */
   init() {
     const {
@@ -15,15 +16,6 @@ export default class GraphNode extends ClientComponentEndpoint {
     } = this.owner.els;
 
     this.owner.el.classList.add('graph-node');
-
-    // // hide button if owner has no children
-    // const observerOptions = {
-    //   childList: true
-    // };
-
-    // const observer = this.observer = new MutationObserver(this.renderListEmptyState);
-    // observer.observe(nodeChildren, observerOptions);
-    this.renderListEmptyState();   // call initially
 
     // on click -> nextMode
     this.owner.dom.addEventListeners(this, true);
@@ -37,31 +29,8 @@ export default class GraphNode extends ClientComponentEndpoint {
     });
   }
 
-  get btnEl() {
-    return this.owner.els.nodeToggleBtn;
-  }
-
   get childrenEl() {
     return this.owner.els.nodeChildren;
-  }
-
-  // /**
-  //  * NOTE: state.isExpanded might not always be mirrored by DOM (but we are trying to achieve just that here).
-  //  */
-  // isDOMExpanded() {
-  //   return !this.childrenEl.classList.contains('hidden');
-  // }
-
-  // isListEmpty() {
-  //   const { childrenEl: listEl } = this;
-  //   return !listEl.children.length;
-  // }
-
-  /**
-   * Hide button if list is empty
-   */
-  renderListEmptyState = () => {
-    this.render();
   }
 
   update() {
@@ -71,6 +40,8 @@ export default class GraphNode extends ClientComponentEndpoint {
   render() {
     const { childrenEl, state: { mode, hasChildren, buttonDisabled } } = this;
     const {
+      previousModeButton,
+      nextModeButton,
       previousModeButtonImg,
       nextModeButtonImg
     } = this.owner.els;
@@ -87,7 +58,6 @@ export default class GraphNode extends ClientComponentEndpoint {
             childrenEl.classList.remove('hidden');
             break;
           case GraphNodeMode.Collapsed:
-            // NOTE: cannot hide children if it has no button (for now)
             childrenEl.classList.add('hidden');
             break;
         }
@@ -96,8 +66,6 @@ export default class GraphNode extends ClientComponentEndpoint {
         const nextMode = GraphNodeMode.nextValue(mode);
         previousModeButtonImg.src = contextNodeIconUris[previousMode];
         nextModeButtonImg.src = contextNodeIconUris[nextMode];
-        // previousModeButton.textContent = this.getModeIcon(previousMode);
-        // nextModeButton.textContent = this.getModeIcon(nextMode);
         // previousModeButton.disabled = false;
         // nextModeButton.disabled = false;
         // if (previousMode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
@@ -108,21 +76,9 @@ export default class GraphNode extends ClientComponentEndpoint {
         // }
       }
       else {
-        childrenEl.classList.add('hidden');
+        previousModeButton.classList.add('invisible');
+        nextModeButton.classList.add('invisible');
       }
-    }
-  }
-
-  getModeIcon(mode) {
-    switch (mode) {
-      case GraphNodeMode.ExpandChildren:
-        return '-';
-      case GraphNodeMode.ExpandSubgraph:
-        return '☰';
-      case GraphNodeMode.Collapsed:
-        return '▷';
-      default:
-        return '';
     }
   }
 
