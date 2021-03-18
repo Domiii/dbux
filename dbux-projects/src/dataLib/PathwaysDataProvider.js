@@ -475,9 +475,13 @@ export default class PathwaysDataProvider extends DataProviderBase {
     }
   }
 
-  writeAll(allData) {
-    for (const collectionName in allData) {
-      for (let entry of allData[collectionName]) {
+  writeAll(data) {
+    const str = Object.entries(data)
+      .map(([name, entries]) => `${name}: ${entries.length}`)
+      .join(', ');
+    this.logger.debug(`writeAll - ${str}`);
+    for (const collectionName in data) {
+      for (let entry of data[collectionName]) {  
         if (this.collections[collectionName].serialize) {
           entry = this.collections[collectionName].serialize(entry);
         }
