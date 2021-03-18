@@ -5,7 +5,7 @@ import RuntimeDataProvider from '../../RuntimeDataProvider';
 export default class ProgramFilePathByTraceIdQuery extends CachedQuery {
   constructor() {
     super('programFilePathByTraceId', {
-      versionDependencies: ['traces']
+      collectionNames: ['traces']
     });
   }
 
@@ -13,7 +13,7 @@ export default class ProgramFilePathByTraceIdQuery extends CachedQuery {
    * @param {RuntimeDataProvider} dp 
    * @param {*} traceId 
    */
-  execute(dp, traceId) {
+  executeQuery(dp, traceId) {
     const { contextId } = dp.collections.traces.getById(traceId);
     const { staticContextId } = dp.collections.executionContexts.getById(contextId);
     const { programId } = dp.collections.staticContexts.getById(staticContextId);

@@ -121,6 +121,7 @@ export default class BugRunner {
    * NOTE: synchronized.
    */
   async activateProject(project) {
+    console.warn('########', this.isProjectActive(project) && project._installed, this.isProjectActive(project), project._installed);
     if (this.isProjectActive(project) && project._installed) {
       return;
     }
@@ -136,7 +137,7 @@ export default class BugRunner {
   /**
    * Enqueue a bunch of callbacks into the queue.
    */
-  async _enqueue(project, ...cbs) {
+  async _enqueue(...cbs) {
     return await this._queue.enqueue(...cbs);
   }
 

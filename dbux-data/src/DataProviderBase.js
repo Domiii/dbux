@@ -47,6 +47,8 @@ export default class DataProviderBase {
    */
   versions = [];
 
+  queryImpl = {};
+
   constructor(name) {
     this.name = name;
     this.logger = newLogger(name);
@@ -105,26 +107,37 @@ export default class DataProviderBase {
   onData(cfgOrCollectionName, cb) {
     let collectionName;
     const cfg = cfgOrCollectionName;
-    if (isPlainObject(cfg) && cfg.query) {
-      // TODO: fix this
-      let queryName = cfg.query;
-      const query = this.queries[queryName];
-      if (!query) {
-        throw new Error(`invalid filter "${queryName}" in ${this.constructor.name}.onData: ${JSON.stringify(cfg)}`);
+    if (isPlainObject(cfg)) {
+      if (cfg.query) {
+        // TODO: fix this.
+        //   Purpose: allow listening not just on collections, but also on incremental queries etc.
+        throw new Error('NYI');
+        // let queryName = cfg.query;
+        // const query = this.queries[queryName];
+        // if (!query) {
+        //   throw new Error(`invalid filter "${queryName}" in ${this.constructor.name}.onData: ${JSON.stringify(cfg)}`);
+        // }
+
+        // const origCb = cb;
+        // cb = data => {
+        //   data = query.execute(this, data);
+        //   if (!data?.length) {
+        //     origCb(data);
+        //   }
+        // };
+
+        // TODO: not all queries know their dependencies yet. fix that
+        // for (const collectionName of query?.cfg?.collectionNames) {
+
+        // }
+      }
+      if (cfg.collections) {
+        // TODO: make sure, it works in conjection with `query` configuration
+        return this._onMultiCollectionData(cfg.collections, this._dataEventListeners);
       }
 
-      const origCb = cb;
-      cb = data => {
-        data = query.execute(this, data);
-        if (!data?.length) {
-          origCb(data);
-        }
-      };
-
-      // TODO: not all queries know their dependencies yet. fix that
-      // for (const collectionName of query?.cfg?.collectionNames) {
-
-      // }
+      // we currently only consider querys + collections
+      throw new Error('NYI');
     }
     // if (isString(cfgOrCollectionName)) {
     else {
@@ -145,32 +158,30 @@ export default class DataProviderBase {
     return unsubscribe;
   }
 
+  /**
+   * @returns {function} Unsubscribe function - Execute to cancel this listener.
+   */
+  _onMultiCollectionData(collectionCallbacks, allListeners = this._dataEventListeners) {
+    for (const collectionName in collectionCallbacks) {
+      const cb = collectionCallbacks[collectionName];
+      const listeners = allListeners[collectionName] = (allListeners[collectionName] || []);
+      listeners.push(cb);
+    }
+
+    const unsubscribe = (() => {
+      for (const collectionName in collectionCallbacks) {
+        const cb = collectionCallbacks[collectionName];
+        pull(allListeners[collectionName], cb);
+      }
+    });
+    return unsubscribe;
+  }
+
   onAnyData(cb) {
     this._dataListenersAny.push(cb);
 
     const unsubscribe = (() => {
       pull(this._dataListenersAny, cb);
-    });
-    return unsubscribe;
-  }
-
-  /**
-   * Bundled data listener.
-   * 
-   * @returns {function} Unsubscribe function - Execute to cancel this listener.
-   */
-  onDataCfg(cfg) {
-    for (const collectionName in cfg.collections) {
-      const cb = cfg.collections[collectionName];
-      const listeners = this._dataEventListeners[collectionName] = (this._dataEventListeners[collectionName] || []);
-      listeners.push(cb);
-    }
-
-    const unsubscribe = (() => {
-      for (const collectionName in cfg.collections) {
-        const cb = cfg.collections[collectionName];
-        pull(this._dataEventListeners[collectionName], cb);
-      }
     });
     return unsubscribe;
   }
@@ -200,6 +211,7 @@ export default class DataProviderBase {
 
   addQuery(newQuery) {
     this.queries._addQuery(this, newQuery);
+    newQuery._init(this);
   }
 
   addIndex(newIndex) {

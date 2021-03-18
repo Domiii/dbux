@@ -195,6 +195,11 @@ export class AllApplications {
   onRestarted(cb) {
     return this._emitter.on('restarted', cb);
   }
+
+  toString() {
+    const apps = this.getAll().map(a => a.toString());
+    return JSON.stringify(apps, null, 2);
+  }
 }
 
 /**

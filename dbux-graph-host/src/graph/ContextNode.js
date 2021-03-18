@@ -42,17 +42,34 @@ class ContextNode extends HostComponentEndpoint {
     this.state.hasChildren = !!this.children.length;
   }
 
-  get firstTrace() {
-    const { applicationId, context: { contextId } } = this.state;
+  get dp() {
+    const { applicationId } = this.state;
     const { dataProvider } = allApplications.getById(applicationId);
-    return dataProvider.util.getFirstTraceOfContext(contextId);
+    return dataProvider;
   }
 
-  get contextChildrenAmount() {
-    const contextChildren = this.children.getComponents('ContextNode');
-    let amount = contextChildren.length;
-    contextChildren.forEach(childNode => amount += childNode.contextChildrenAmount);
-    return amount;
+  get contextId() {
+    const { context: { contextId } } = this.state;
+    return contextId;
+  }
+
+  get firstTrace() {
+    return this.dp.util.getFirstTraceOfContext(this.contextId);
+  }
+
+  // get contextChildrenAmount() {
+  // const contextChildren = this.children.getComponents('ContextNode');
+  // let amount = contextChildren.length;
+  // contextChildren.forEach(childNode => amount += childNode.contextChildrenAmount);
+  // return amount;
+  get nTreeContexts() {
+    const stats = this.dp.queries.statsByContext(this.contextId);
+    return stats?.nTreeContexts || 0;
+  }
+
+  get nTreeStaticContexts() {
+    const stats = this.dp.queries.statsByContext(this.contextId);
+    return stats?.nTreeStaticContexts || 0;
   }
 
   buildChildNodes() {

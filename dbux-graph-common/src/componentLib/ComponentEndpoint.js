@@ -138,8 +138,8 @@ class ComponentEndpoint {
   // dispose
   // ###########################################################################
 
-  addDisposable(disp) {
-    this._disposables.push(disp);
+  addDisposable(...disps) {
+    this._disposables.push(...disps);
   }
 
   dispose(/* silent = false */) {
