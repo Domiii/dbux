@@ -43,15 +43,15 @@ export class ExecutionContextCollection extends Collection {
   /**
    * @return {ExecutionContext}
    */
-  executeImmediate(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId) {
+  executeImmediate(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, tracesDisabled) {
     return this._create(ExecutionContextType.Immediate,
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId);
+      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, null, tracesDisabled);
   }
 
   /**
    * @return {ExecutionContext}
    */
-  executeCallback(stackDepth, runId, parentContextId, parentTraceId, schedulerContextId, schedulerTraceId) {
+  executeCallback(stackDepth, runId, parentContextId, parentTraceId, schedulerContextId, schedulerTraceId, tracesDisabled) {
     const schedulerContext = this.getById(schedulerContextId);
     const { staticContextId } = schedulerContext;
     const orderId = this._genOrderId(staticContextId);
@@ -59,14 +59,15 @@ export class ExecutionContextCollection extends Collection {
 
     const context = this._allocate(
       ExecutionContextType.ExecuteCallback, stackDepth, runId, parentContextId, parentTraceId, contextId,
-      staticContextId, orderId, schedulerTraceId);
+      staticContextId, orderId, schedulerTraceId, tracesDisabled);
     this._push(context);
     return context;
   }
   
-  await(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId) {
+  await(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId) {
+    const tracesDisabled = false; // tracing must be enabled if we traced an `await`
     return this._create(ExecutionContextType.Await,
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId);
+      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, null, tracesDisabled);
   }
   
   /**
@@ -76,12 +77,12 @@ export class ExecutionContextCollection extends Collection {
    * (1) either when the function pops,
    * (2) or when another interrupt occurs.
    */
-  resume(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId, schedulerTraceId) {
+  resume(stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId) {
     // const parentContext = this.getById(parentContextId);
     // const { staticContextId: parenStaticContextId } = parentContext;
-    // const { programId } = staticContextCollection.getById(inProgramStaticId);
+    // const { programId } = staticContextCollection.getById(inProgramStaticContextId);
     const context = this._create(ExecutionContextType.Resume,
-      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId, schedulerTraceId);
+      stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId);
 
     return context;
   }
@@ -95,21 +96,20 @@ export class ExecutionContextCollection extends Collection {
     return this._lastOrderIds[staticId] = (this._lastOrderIds[staticId] || 0) + 1;
   }
 
-  _create(type, stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticId, schedulerTraceId = null) {
-    const staticContext = staticContextCollection.getContext(programId, inProgramStaticId);
+  _create(type, stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId, schedulerTraceId, tracesDisabled) {
+    const staticContext = staticContextCollection.getContext(programId, inProgramStaticContextId);
     const { staticId: staticContextId } = staticContext;
     const orderId = this._genOrderId(staticContextId);
     const contextId = this._all.length;
 
     const context = this._allocate(
-      type, stackDepth, runId, parentContextId, parentTraceId, contextId, staticContextId, orderId, schedulerTraceId
+      type, stackDepth, runId, parentContextId, parentTraceId, contextId, staticContextId, orderId, schedulerTraceId, tracesDisabled
     );
     this._push(context);
     return context;
   }
 
-  _allocate(contextType, stackDepth, runId, parentContextId, parentTraceId, contextId, staticContextId, orderId, schedulerTraceId) {
-    // TODO: use object pooling
+  _allocate(contextType, stackDepth, runId, parentContextId, parentTraceId, contextId, staticContextId, orderId, schedulerTraceId, tracesDisabled) {
     const context = pools.executionContexts.allocate();
     context.contextType = contextType;
     // context.stackDepth = stackDepth;  // not quite necessary, so we don't store it, for now
@@ -120,6 +120,7 @@ export class ExecutionContextCollection extends Collection {
     context.staticContextId = staticContextId;
     context.orderId = orderId;
     context.schedulerTraceId = schedulerTraceId;
+    context.tracesDisabled = tracesDisabled;
     context.createdAt = Date.now();  // { createdAt }
     
     return context;

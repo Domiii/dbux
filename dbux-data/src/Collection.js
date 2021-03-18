@@ -1,11 +1,15 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 
 /**
+ * @typedef {import('./DataProviderBase').default} DataProviderBase
+ */
+
+/**
  * @template {T}
  */
 export default class Collection {
   /**
-   * NOTE: collection ids can be 0
+   * NOTE: collection id can be 0
    * @type {number}
    */
   _id;
@@ -20,7 +24,7 @@ export default class Collection {
   name;
 
   /**
-   * @type {DataProvider}
+   * @type {DataProviderBase}
    */
   dp;
 

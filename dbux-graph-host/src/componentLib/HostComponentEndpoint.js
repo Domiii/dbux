@@ -192,7 +192,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
     }
 
     if (!this.isInitialized) {
-      throw new Error(`${this.debugTag} - first update detected before init has started. Make sure to not call setState or before initialization has started.`);
+      throw new Error(`${this.debugTag} - first update detected before init has started. Make sure to not call setState before initialization has started.`);
     }
 
     // NOTE: this is called by `setState`

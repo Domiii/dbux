@@ -17,10 +17,10 @@ function cleanOutput(chunk) {
   return chunk.trim();
 }
 
-function pipeStreamToLogger(stream, logger) {
+function pipeStreamToFn(stream, logFn) {
   // TODO: concat chunks, and wait for, then split by newline instead (or use `process.stdout/stderr.write`)
   stream.on('data', (chunk) => {
-    logger.debug('', cleanOutput(chunk));
+    logFn('', cleanOutput(chunk));
   });
 }
 
@@ -107,15 +107,16 @@ export default class Process {
 
     // spawn regular process
     const [commandName, ...commandArgs] = stringArgv(command);
+    this.commandName = commandName;
     // console.warn(commandName, commandArgs, JSON.stringify(processOptions));
     this._process = spawn(commandName, commandArgs, processOptions);
     const newProcess = this._process;
 
     if (logStdout) {
-      pipeStreamToLogger(newProcess.stdout, logger);
+      pipeStreamToFn(newProcess.stdout, logger.debug);
     }
     if (logStderr) {
-      pipeStreamToLogger(newProcess.stderr, logger);
+      pipeStreamToFn(newProcess.stderr, logger.warn);
     }
     // newProcess.stdin.on('data', buf => {
     //   console.error('newProcess stdin data', buf.toString());
@@ -143,7 +144,7 @@ export default class Process {
       // WARNING: On MAC, for some reason, piping seems to swallow up line feeds?
       // TODO: only register stdin listener on `resume`?
       newProcess.stdin.on('resume', (...args) => {
-        console.error('STDIN RESUME', ...args);
+        logError('STDIN RESUME', ...args);
       });
       onStdin = buf => {
         const s = buf.toString();
@@ -192,9 +193,10 @@ export default class Process {
     }
 
     return this._promise = new Promise((resolve, reject) => {
-      newProcess.on('exit', (code/* , signal */) => {
-        // logger.debug(`process exit, code=${code}, signal=${signal}`);
-        if (checkDone()) { return; }
+      newProcess.on('exit', (code, signal) => {
+        const isDone = checkDone(); // WARNING: only call `checkDone` once!!
+        logger.debug(`  ("${commandName}" EXIT${isDone && ' (ignored)' || ''}: code=${code}, signal=${signal})`);
+        if (isDone) { return; }
 
         if (this._killed) {
           reject(new Error(`Process "${processExecMsg}" was killed`));
@@ -208,7 +210,9 @@ export default class Process {
       });
 
       newProcess.on('error', (err) => {
-        if (checkDone()) { return; }
+        const isDone = checkDone(); // WARNING: only call `checkDone` once!!
+        logger.debug(`  "${commandName}" ERROR${isDone && ' (ignored)' || ''}: code=${err.code}, msg=${err.message}`);
+        if (isDone) { return; }
 
         const code = err.code = err.code || -1;
 

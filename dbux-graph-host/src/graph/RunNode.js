@@ -1,8 +1,6 @@
 import { newLogger } from '@dbux/common/src/log/logger';
-import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
-import ContextNode from './ContextNode';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('RunNode');
@@ -18,7 +16,8 @@ class RunNode extends HostComponentEndpoint {
 
     // Add GraphNode to pass the `setChildMode` from graphRoot to ContextNode
     this.controllers.createComponent('GraphNode', {
-      hasChildren: true
+      hasChildren: true,
+      buttonDisabled: true
     });
 
     // add root context
@@ -37,7 +36,23 @@ class RunNode extends HostComponentEndpoint {
 
     const hiddenNodeManager = this.parent.controllers.getComponent('HiddenNodeManager');
     this.state.visible = hiddenNodeManager.shouldBeVisible(this);
-    this.state.childrenAmount = this.getContextChildrenAmount();
+    this.state.childrenAmount = this.nTreeContexts;
+    this.state.uniqueChildrenAmount = this.nTreeStaticContexts;
+  }
+
+  get dp() {
+    const { applicationId } = this.state;
+    const { dataProvider } = allApplications.getById(applicationId);
+    return dataProvider;
+  }
+
+  get rootContext() {
+    const { runId } = this.state;
+    return this.dp.util.getFirstContextOfRun(runId);
+  }
+
+  get rootContextId() {
+    return this.rootContext.contextId;
   }
 
   isHiddenBy() {
@@ -47,19 +62,40 @@ class RunNode extends HostComponentEndpoint {
   get hiddenNodeManager() {
     return this.context.graphRoot.controllers.getComponent('HiddenNodeManager');
   }
-
-  getContextChildrenAmount() {
-    const { firstContextId, applicationId } = this.state;
-    const dp = allApplications.getById(applicationId).dataProvider;
-    return this.getContextChildrenAmountDFS(dp, firstContextId) + 1;
+  get nTreeContexts() {
+    const stats = this.dp.queries.statsByContext(this.rootContextId);
+    return stats?.nTreeContexts || 0;
   }
 
-  getContextChildrenAmountDFS(dp, contextId) {
-    const childrens = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
-    let amount = childrens.length;
-    childrens.forEach(childContext => amount += this.getContextChildrenAmountDFS(dp, childContext.contextId));
-    return amount;
+  get nTreeStaticContexts() {
+    const stats = this.dp.queries.statsByContext(this.rootContextId);
+    return stats?.nTreeStaticContexts || 0;
   }
+
+  // /**
+  //  * TODO: move this to `dbux-data`
+  //  */
+  // get contextChildrenAmount() {
+  //   const contextChildren = this.children.getComponents('ContextNode');
+  //   let amount = contextChildren.length;
+  //   contextChildren.forEach(childNode => amount += childNode.contextChildrenAmount);
+  //   return amount;
+  // }
+
+  // /**
+  //  * TODO: move this to `dbux-data`
+  //  * 
+  //  * "Repeated nodes", that is nodes of a context of the same `staticContextId`, will only be counted once.
+  //  */
+  // getNotRepeatedContextChildrenCount(n = this, prev = new Set()) {
+  //   const contextChildren = n.children.getComponents('ContextNode');
+  //   contextChildren.forEach((c) => {
+  //     const { context: { staticContextId } } = c.state;
+  //     prev.add(staticContextId);
+  //     this.getNotRepeatedContextChildrenCount(c, prev);
+  //   });
+  //   return prev.size;
+  // }
 
   // ###########################################################################
   // shared

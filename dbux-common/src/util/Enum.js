@@ -146,7 +146,7 @@ export default class Enum {
   previousValue(value) {
     const { values } = this;
     let idx = values.indexOf(value);
-    idx = (idx - 1) % values.length;
+    idx = (idx - 1 + values.length) % values.length;
     return values[idx];
   }
 

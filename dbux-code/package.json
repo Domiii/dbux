@@ -1145,6 +1145,12 @@
             "default": {},
             "description": "Custom program environment variables available via `process.env` (probably not working yet).",
             "scope": "resource"
+          },
+          "dbux.packageWhitelist": {
+            "type": "string",
+            "default": "",
+            "description": "Specify which package will be traced by Dbux, seperated by space, regex supported.",
+            "scope": "resource"
           }
         }
       }

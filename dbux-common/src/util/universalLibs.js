@@ -1,14 +1,14 @@
-import { logInternalError } from '../log/logger';
-
 /**
  * This file contains some utilities and definitions to run code, independent of environment.
  * 
  * @file
  */
 
+const Global = this || globalThis;
+
 function universalLib(globalName, fallbackCb) {
-  if (globalName in globalThis) {
-    return globalThis[globalName];
+  if (globalName in Global) {
+    return Global[globalName];
   }
   try {
     return fallbackCb();
@@ -27,21 +27,29 @@ export function isEnvNode() {
 }
 
 /**
- * Exports some globals usually aware in browser environments.
- * If not available, will try to load it otherwise.
+ * Export some globals usually available in browser environments.
+ * If not available, will try to load it using a (usually node-specific) callback.
  */
-export default {
-  /**
-   * usage: `universalLibs.performance.now()`
-   */
-  get performance() {
-    return universalLib('performance', () => {
-      // hope for node or node-like environment
-      // eslint-disable-next-line no-eval
-      const { performance: performanceNodeJs } = eval("import('perf_hooks')");
-      return performanceNodeJs;
-    });
-  }
+
+/**
+ * Custom require function to make webpack "happy".
+ */
+let _r;
+function _require(name) {
+  // eslint-disable-next-line no-eval
+  const r = _r || (_r = eval(`
+    (typeof __non_webpack_require__ !== 'undefined' && __non_webpack_require__ || require)
+  `));
+  return r(name);
+}
+
+/**
+ * @example `universalLibs.performance.now()`
+ */
+export const performance = universalLib('performance', () => {
+  const { performance: performanceNodeJs } = _require('perf_hooks');
+  return performanceNodeJs;
+});
 
 
 // const inspectOptions = { depth: 0, colors: true };
@@ -49,4 +57,3 @@ export default {
 //   const f = typeof window !== 'undefined' && window.inspect ? window.inspect : require('util').inspect;
 //   return f(arg, inspectOptions);
 // }
-};

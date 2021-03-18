@@ -14,11 +14,7 @@ const resultCfg = buildWebpackConfig(ProjectRoot,
       'lib',
       'tests'
     ],
-  },
-  (env, argv) => {
-    let entry = Object.fromEntries(env.entry.split(',').map(fpath => [fpath.replace(/\.[^/.]+$/, ""), path.join(ProjectRoot, fpath)]));
-    return {
-      entry,
+    babelOptions: {
       presets: [
         [
           '@babel/preset-env',
@@ -30,7 +26,13 @@ const resultCfg = buildWebpackConfig(ProjectRoot,
             corejs: 3
           }
         ]
-      ],
+      ]
+    }
+  },
+  (env, argv) => {
+    let entry = Object.fromEntries(env.entry.split(',').map(fpath => [fpath.replace(/\.[^/.]+$/, ""), path.join(ProjectRoot, fpath)]));
+    return {
+      entry,
       // externals,
       module: {
         rules: [

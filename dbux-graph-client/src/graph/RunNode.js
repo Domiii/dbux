@@ -10,7 +10,7 @@ class RunNode extends ClientComponentEndpoint {
             <div data-el="nodeChildren" data-mount="RootContextNode" class="node-children flex-column"></div>
           </div>
         </div>
-        <div data-el="childrenAmountTag"></div>
+        <div data-el="childrenAmount"></div>
       </div>
     `);
 
@@ -32,7 +32,7 @@ class RunNode extends ClientComponentEndpoint {
   }
 
   update() {
-    const { visible, createdAt, childrenAmount } = this.state;
+    const { visible, createdAt, childrenAmount, uniqueChildrenAmount } = this.state;
     // deduct by a constant to avoid overflow
     this.el.style.order = createdAt - 1592380000000 || 0;
     if (visible) {
@@ -41,7 +41,7 @@ class RunNode extends ClientComponentEndpoint {
     else {
       this.el.classList.add('hidden');
     }
-    this.els.childrenAmountTag.textContent = `${childrenAmount || 0}`;
+    this.els.childrenAmount.textContent = `${childrenAmount} / ${uniqueChildrenAmount}`;
     // this.els.title.textContent = `Run #${runId} (Application #${applicationId})`;
   }
 }

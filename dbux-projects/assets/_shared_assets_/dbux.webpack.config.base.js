@@ -30,7 +30,7 @@ function mergeConcatArray(...inputs) {
 // TODO: pass actual node version in via parameter (part of `target`)
 // const presets = 
 
-const babelOptions = {
+const defaultBabelOptions = {
   // sourceMaps: "both",
   // see https://github.com/webpack/webpack/issues/11510#issuecomment-696027212
   sourceType: "unambiguous",
@@ -105,7 +105,8 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     const {
       src: srcFolders = ['src'],
       dbuxRoot,
-      target = 'node'
+      target = 'node',
+      babelOptions: babelOptionsOverrides
     } = customConfig;
 
 
@@ -152,10 +153,16 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // externals
     // ###########################################################################
 
-    if (target !== 'node') {
+    const babelOptions = { ...defaultBabelOptions };
+    if (babelOptionsOverrides) {
+      // babel overrides
+      Object.assign(babelOptions, babelOptionsOverrides);
+    }
+    if (!(babelOptionsOverrides && babelOptionsOverrides.presets) && target !== 'node') {
       // remove custom options of preset-env
       babelOptions.presets[0].splice(1, 1);
     }
+    console.warn('babelOptions', JSON.stringify(babelOptions, null, 2));
 
     const externals = target !== 'node' ? undefined : [
       {

@@ -1,6 +1,4 @@
-import {
-  window
-} from 'vscode';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { onLogError } from '@dbux/common/src/log/logger';
 import { showOutputChannel } from './projectViews/projectViewsController';
 import { showInformationMessage, showErrorMessage } from './codeUtil/codeModals';
@@ -31,6 +29,8 @@ function onError(...args) {
       [translate('onError.suck')]: async () => {
         return showHelp(translate('onError.suckMessage'));
       },
+    }, EmptyObject, {
+      noPrefix: true
     });
   }
 }

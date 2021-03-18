@@ -89,7 +89,11 @@ class GraphRoot extends HostComponentEndpoint {
     const oldAppIds = new Set(this.runNodesById.getApplicationIds());
     const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
 
-    // remove old runNode
+    // always re-subscribe since applicationSet clears subscribtion everytime it changes
+    this._resubscribeOnData();
+    this._setApplicationState();
+
+    // remove old runNodes
     for (const runNode of this.runNodesById.getAll()) {
       const { applicationId, runId } = runNode.state;
       if (!newAppIds.has(applicationId)) {
@@ -97,7 +101,7 @@ class GraphRoot extends HostComponentEndpoint {
       }
     }
 
-    // add new runNode
+    // add new runNodes
     for (const appId of newAppIds) {
       if (!oldAppIds.has(appId)) {
         const app = allApplications.getById(appId);
@@ -105,10 +109,6 @@ class GraphRoot extends HostComponentEndpoint {
         this.addRunNodeByContexts(appId, allContexts);
       }
     }
-
-    // always re-subscribe since applicationSet clears subscribtion everytime it changes
-    this._resubscribeOnData();
-    this._setApplicationState();
   }
 
   _resubscribeOnData() {
@@ -118,18 +118,30 @@ class GraphRoot extends HostComponentEndpoint {
 
     // subscribe new
     for (const app of allApplications.selection.getAll()) {
-      const { applicationId, dataProvider } = app;
-      const unsubscribe = dataProvider.onData('executionContexts',
-        (newContexts) => {
-          const newNodes = this.addRunNodeByContexts(applicationId, newContexts);
-          this._setApplicationState();
-          this._emitter.emit('newNode', newNodes);
-        }
-      );
-      this._unsubscribeOnNewData.push(unsubscribe);
-      allApplications.selection.subscribe(unsubscribe);
-      this.addDisposable(unsubscribe);
+      const { dataProvider: dp } = app;
+      const unsubscribes = [
+        dp.onData('executionContexts', 
+          this._handleAddExecutionContexts.bind(this, app)
+        ),
+        dp.queryImpl.statsByContext.subscribe()
+      ];
+
+      // unsubscribe on refresh
+      this._unsubscribeOnNewData.push(...unsubscribes);
+      
+      // also when application is deselected
+      allApplications.selection.subscribe(...unsubscribes);
+
+      // also when node is disposed
+      this.addDisposable(...unsubscribes);
     }
+  }
+
+  _handleAddExecutionContexts = (app, newContexts) => {
+    const { applicationId } = app;
+    const newNodes = this.addRunNodeByContexts(applicationId, newContexts);
+    this._setApplicationState();
+    this._emitter.emit('newNode', newNodes);
   }
 
   _setApplicationState() {

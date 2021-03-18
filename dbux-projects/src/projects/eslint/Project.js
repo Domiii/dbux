@@ -68,8 +68,8 @@ export default class EslintProject extends Project {
           return null;
         }
 
-        const srcFilePaths = bug.testFilePaths;
-        let distFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
+        const runFilePaths = bug.testFilePaths;
+        let watchFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
 
         return {
           // id: i + 1,
@@ -79,12 +79,12 @@ export default class EslintProject extends Project {
             '--grep',
             `"${bug.testRe}"`,
             '--',
-            // ...distFilePaths,
+            // ...watchFilePaths,
             // eslint-disable-next-line max-len
             // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
           ],
-          srcFilePaths,
-          distFilePaths,
+          runFilePaths,
+          watchFilePaths,
           // require: ['test/support/env'],
           ...bug,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
@@ -122,10 +122,6 @@ export default class EslintProject extends Project {
   // run
   // ###########################################################################
 
-  getWebpackJs() {
-    return this.manager.getDbuxPath('webpack/bin/webpack.js');
-  }
-
   /**
    * @param {Bug} bug 
    */
@@ -140,6 +136,7 @@ export default class EslintProject extends Project {
 
     await this.execBackground(`which ${volta}`);
     // await this.execBackground(`echo $PATH`);
+    
     return this.execBackground(
       `"${volta}" run --node 12 node ${req} "${this.getWebpackJs()}" ${args}`
     );
@@ -150,7 +147,7 @@ export default class EslintProject extends Project {
     const bugArgs = this.getMochaRunArgs(bug, [
       '-t 10000' // timeout
     ]);
-    const files = cfg.dbuxEnabled ? bug.distFilePaths : bug.srcFilePaths;
+    const files = cfg.dbuxEnabled ? bug.watchFilePaths : bug.runFilePaths;
     const nodeVersion = this.getNodeVersion(bug);
 
 

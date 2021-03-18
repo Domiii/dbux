@@ -22,8 +22,7 @@ export async function showInformationMessage(message, btnConfig = EmptyObject, m
   }
   const result = await window.showInformationMessage(`[Dbux] ${message}`, messageCfg, ...buttons);
   if (result === undefined) {
-    await cancelCallback?.();
-    return null;
+    return await cancelCallback?.();
   }
   const cbResult = await btnConfig[result]?.();
   return cbResult === undefined ? null : cbResult;
@@ -39,8 +38,9 @@ export async function showWarningMessage(message, btnConfig = EmptyObject, messa
   return cbResult === undefined ? null : cbResult;
 }
 
-export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObject) {
-  const result = await window.showErrorMessage(`[Dbux] ${message}`, messageCfg, ...Object.keys(btnConfig));
+export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObject, moreConfig = EmptyObject) {
+  const prefix = moreConfig.noPrefix ? '' : '[Dbux] ';
+  const result = await window.showErrorMessage(`${prefix}${message}`, messageCfg, ...Object.keys(btnConfig));
   const cbResult = await btnConfig[result]?.();
   return cbResult === undefined ? null : cbResult;
 }
