@@ -35,6 +35,7 @@ class AppComponent extends ClientComponentEndpoint {
     }
 
     try {
+      // TODO: make sure, `comp` variable name never gets mangled, even in production
       src = JSON.stringify(`comp.shared = ${src}.bind(comp)`);
       // eslint-disable-next-line no-eval
       eval(eval(src));

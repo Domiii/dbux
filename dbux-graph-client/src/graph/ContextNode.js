@@ -72,11 +72,11 @@ class ContextNode extends ClientComponentEndpoint {
       traceId,
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
+      statsEnabled
     } = this.state;
 
     const {
       themeMode,
-      statsEnabled
     } = this.context;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;

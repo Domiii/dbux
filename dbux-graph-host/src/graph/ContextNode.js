@@ -11,14 +11,12 @@ import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class ContextNode extends HostComponentEndpoint {
   init() {
+    this.state.statsEnabled = true;
     const {
       applicationId,
-      context
-    } = this.state;
-
-    const {
+      context,
       statsEnabled
-    } = this.context;
+    } = this.state;
 
     // get name (and other needed data)
     const app = allApplications.getById(applicationId);
@@ -81,11 +79,13 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   setStatsEnabled(enabled) {
+    const upd = {
+      statsEnabled: enabled
+    };
     if (enabled) {
-      const upd = {};
       this._addStats(upd);
-      this.setState(upd);
     }
+    this.setState(upd);
   }
 
   _addStats(_update) {

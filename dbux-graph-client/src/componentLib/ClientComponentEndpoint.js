@@ -88,6 +88,17 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     }
   }
 
+  // _updateContext = (context) => {
+  //   this.context = {
+  //     ...this.context,
+  //     ...context
+  //   };
+  //   this._performUpdate();
+  //   for (const child of this.children) {
+  //     child._updateContext(context);
+  //   }
+  // }
+
   // ###########################################################################
   // render utilities
   // ###########################################################################
@@ -121,6 +132,7 @@ class ClientComponentEndpoint extends ComponentEndpoint {
       this.state = state;
       await this._performUpdate();
     },
+    updateContext: this._updateContext,
 
     dispose: this.dispose.bind(this)
   };
