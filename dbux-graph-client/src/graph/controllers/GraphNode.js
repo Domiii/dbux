@@ -76,7 +76,12 @@ export default class GraphNode extends ClientComponentEndpoint {
 
   render() {
     const { childrenEl, state: { mode, buttonDisabled } } = this;
-    const { previousModeButton, nextModeButton } = this.owner.els;
+    const {
+      previousModeButtonImg,
+      nextModeButtonImg
+    } = this.owner.els;
+
+    const { contextNodeIconUris } = this.context;
 
     // if (this.isListEmpty()) {
     //   // button should already be hidden -> now also hide list
@@ -98,16 +103,18 @@ export default class GraphNode extends ClientComponentEndpoint {
 
       const previousMode = GraphNodeMode.previousValue(mode);
       const nextMode = GraphNodeMode.nextValue(mode);
-      previousModeButton.textContent = this.getModeIcon(previousMode);
-      nextModeButton.textContent = this.getModeIcon(nextMode);
-      previousModeButton.disabled = false;
-      nextModeButton.disabled = false;
-      if (previousMode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
-        previousModeButton.disabled = true;
-      }
-      else if (nextMode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
-        nextModeButton.disabled = true;
-      }
+      previousModeButtonImg.src = contextNodeIconUris[previousMode];
+      nextModeButtonImg.src = contextNodeIconUris[nextMode];
+      // previousModeButton.textContent = this.getModeIcon(previousMode);
+      // nextModeButton.textContent = this.getModeIcon(nextMode);
+      // previousModeButton.disabled = false;
+      // nextModeButton.disabled = false;
+      // if (previousMode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
+      //   previousModeButton.disabled = true;
+      // }
+      // else if (nextMode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
+      //   nextModeButton.disabled = true;
+      // }
     }
   }
 
