@@ -16,7 +16,9 @@ class RunNode extends HostComponentEndpoint {
     const dp = allApplications.getById(applicationId).dataProvider;
 
     // add GraphNode
-    this.controllers.createComponent('GraphNode');
+    this.controllers.createComponent('GraphNode', {
+      buttonDisabled: true
+    });
 
     // add root context
     const firstContext = dp.util.getFirstContextOfRun(runId);
