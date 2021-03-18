@@ -68,25 +68,36 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   // private methods
   // ###########################################################################
 
-  async _performClientInit(role) {
+  _performClientInit(role) {
     this._internalRoleName = role;
     if (this.owner) {
       const list = this.owner._getComponentListByRoleName(role);
       list._addComponent(this);
     }
-    await this.init();
+    this.init();
     this.isInitialized = true;
   }
 
-  async _performUpdate() {
+  _performUpdate() {
     try {
-      await this.update();
+      this.update();
     }
     catch (err) {
       this.logger.warn('Component update failed', err);
       throw err;
     }
   }
+
+  // _updateContext = (context) => {
+  //   this.context = {
+  //     ...this.context,
+  //     ...context
+  //   };
+  //   this._performUpdate();
+  //   for (const child of this.children) {
+  //     child._updateContext(context);
+  //   }
+  // }
 
   // ###########################################################################
   // render utilities
@@ -117,10 +128,11 @@ class ClientComponentEndpoint extends ComponentEndpoint {
    * Functions that are called by Host internally.
    */
   _publicInternal = {
-    async updateClient(state) {
+    updateClient(state) {
       this.state = state;
-      await this._performUpdate();
+      this._performUpdate();
     },
+    updateContext: this._updateContext,
 
     dispose: this.dispose.bind(this)
   };

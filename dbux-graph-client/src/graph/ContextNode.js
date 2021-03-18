@@ -43,6 +43,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <div>
                   <span class="value-label" data-el="valueLabel"></span>
                 </div>
+                <div data-el="stats" class="context-stats"></div>
               </div>
               <div class="flex-row">
               </div>
@@ -71,9 +72,12 @@ class ContextNode extends ClientComponentEndpoint {
       traceId,
       isSelectedTraceCallRelated,
       contextIdOfSelectedCallTrace,
+      statsEnabled
     } = this.state;
 
-    const { themeMode } = this.context;
+    const {
+      themeMode,
+    } = this.context;
 
     this.el.id = `application_${applicationId}-context_${contextId}`;
     this.el.style.background = getStaticContextColor(themeMode, staticContextId);
@@ -82,6 +86,17 @@ class ContextNode extends ClientComponentEndpoint {
     this.els.parentLabel.textContent = parentTraceNameLabel || '';
     // this.els.parentLocLabel.textContent = parentTraceLocLabel || '';
     this.els.valueLabel.textContent = valueLabel;
+
+    if (statsEnabled) {
+      const {
+        nTreeContexts,
+        nTreeStaticContexts
+      } = this.state;
+      this.els.stats.textContent = `${nTreeContexts} / ${nTreeStaticContexts}`;
+    }
+    else {
+      this.els.stats.textContent = '';
+    }
 
     if (ThemeMode.is.Dark(themeMode)) {
       decorateClasses(this.els.title, {

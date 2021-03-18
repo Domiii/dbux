@@ -306,6 +306,7 @@ export default class ProjectsManager {
       await this.externals.storage.set(savedPracticeSessionDataKeyName, {
         createdAt: this.practiceSession.createdAt,
         sessionId: this.practiceSession.sessionId,
+        logFilePath: this.practiceSession.logFilePath,
         state: this.practiceSession.state
       });
     }

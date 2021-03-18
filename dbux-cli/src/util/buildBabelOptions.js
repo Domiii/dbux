@@ -93,7 +93,7 @@ export default function buildBabelOptions(options) {
         }
 
         const matchSkipFileResult = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)/);
-        const matchResult = modulePath.match(/(?<=node_modules\/)(?!node_modules)(?<packageName>[^/]+)(?=\/(?!node_modules).*)/);
+        const matchResult = modulePath.match(/(?<=node_modules[/\\])(?!node_modules)(?<packageName>[^/\\]+)(?=[/\\](?!node_modules).*)/);
         const packageName = matchResult ? matchResult.groups.packageName : null;
 
         if (matchSkipFileResult || (packageName && !batchTestRegExp(packageWhitelistRegExps, packageName))) {

@@ -123,6 +123,7 @@ class GraphRoot extends HostComponentEndpoint {
         dp.onData('executionContexts', 
           this._handleAddExecutionContexts.bind(this, app)
         ),
+        // [future-work]: only subscribe when stats are enabled
         dp.queryImpl.statsByContext.subscribe()
       ];
 

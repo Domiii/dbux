@@ -121,7 +121,6 @@ export default class BugRunner {
    * NOTE: synchronized.
    */
   async activateProject(project) {
-    console.warn('########', this.isProjectActive(project) && project._installed, this.isProjectActive(project), project._installed);
     if (this.isProjectActive(project) && project._installed) {
       return;
     }
@@ -230,7 +229,7 @@ export default class BugRunner {
         };
         // `args` in execInTerminal not working with anything now
         const result = await this.manager.execInTerminal(cwd, command, args);
-        project.logger.log(`Result: ${result}`);
+        // project.logger.log(`Result: ${result}`);
         this._emitter.emit('testFinished', bug, result);
         return result;
       }

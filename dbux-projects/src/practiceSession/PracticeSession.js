@@ -21,7 +21,8 @@ export default class PracticeSession {
    * @param {Bug} bug 
    * @param {ProjectsManager} manager
    */
-  constructor(bug, manager, { createdAt, sessionId, state }, logFilePath) {
+  constructor(bug, manager, savedState, logFilePath) {
+    const { createdAt, sessionId, state } = savedState;
     this.sessionId = sessionId || uuidv4();
     this.createdAt = createdAt || Date.now();
     this.stopwatch = new Stopwatch(manager.externals.stopwatch);
@@ -29,7 +30,8 @@ export default class PracticeSession {
     this.bug = bug;
     this.manager = manager;
     this.lastAnnotation = '';
-    this.logFilePath = logFilePath || this.getDefaultLogFilePath();
+
+    this.logFilePath = logFilePath || savedState.logFilePath || this.getDefaultLogFilePath();
 
     let bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {

@@ -14,23 +14,30 @@ class ContextNode extends HostComponentEndpoint {
     this.shouldLazyBuild = shouldLazyBuild;
     this.childrenBuilt = false;
 
+    this.state.statsEnabled = true;
+
     const {
       applicationId,
-      context
+      context,
+      statsEnabled
     } = this.state;
-    
+
     // get name (and other needed data)
     const app = allApplications.getById(applicationId);
     const dp = app.dataProvider;
     const errorTag = (dp.indexes.traces.errorByContext.get(context.contextId)?.length) ? '🔥' : '';
     this.parentTrace = dp.util.getCallerTraceOfContext(context.contextId);
-    
+
     this.state.contextNameLabel = makeContextLabel(context, app) + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
     this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
     this.state.parentTraceLocLabel = this.parentTrace && makeTraceLocLabel(this.parentTrace);
 
+    if (statsEnabled) {
+      this._addStats(this.state);
+    }
+    
     // build sub graph
     let hasChildren;
     if (this.shouldLazyBuild) {
@@ -78,6 +85,21 @@ class ContextNode extends HostComponentEndpoint {
   get nTreeStaticContexts() {
     const stats = this.dp.queries.statsByContext(this.contextId);
     return stats?.nTreeStaticContexts || 0;
+  }
+
+  setStatsEnabled(enabled) {
+    const upd = {
+      statsEnabled: enabled
+    };
+    if (enabled) {
+      this._addStats(upd);
+    }
+    this.setState(upd);
+  }
+
+  _addStats(_update) {
+    _update.nTreeContexts = this.nTreeContexts;
+    _update.nTreeStaticContexts = this.nTreeStaticContexts;
   }
 
   buildChildNodes() {

@@ -68,7 +68,10 @@ export default class RuntimeClient extends SocketClient {
   }
 
   _handleData = (data) => {
-    debug('data received; trying to addData...');
+    const str = Object.entries(data)
+      .map(([name, entries]) => `${name}: ${entries.length}`)
+      .join(', ');
+    debug(`data received - ${str}`);
     this.application.addData(data);
   }
 }
