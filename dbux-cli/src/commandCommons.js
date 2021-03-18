@@ -30,6 +30,12 @@ export function buildCommonCommandOptions() {
       default: '',
       type: 'string',
     },
+    packageWhitelist: {
+      alias: ['w'],
+      describe: "Specify which packages will be instrumented.",
+      default: '',
+      // type: 'array',
+    }
   };
 }
 
