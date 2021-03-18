@@ -195,7 +195,7 @@ export default class Process {
     return this._promise = new Promise((resolve, reject) => {
       newProcess.on('exit', (code, signal) => {
         const isDone = checkDone(); // WARNING: only call `checkDone` once!!
-        logger.debug(`  "${commandName}" EXIT${isDone && ' (ignored)' || ''}: code=${code}, signal=${signal}`);
+        logger.debug(`  ("${commandName}" EXIT${isDone && ' (ignored)' || ''}: code=${code}, signal=${signal})`);
         if (isDone) { return; }
 
         if (this._killed) {

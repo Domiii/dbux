@@ -1,8 +1,14 @@
+import isObject from 'lodash/isObject';
+import DoesNotExist from './DoesNotExist';
 import Query from './Query';
 
-const DoesNotExist = undefined;
-
 function makeKey(args) {
+  // if (args.length === 1 && !isObject(args[0])) {
+  //   return args[0];
+  // }
+  if (!isObject(args)) {
+    return args;
+  }
   // TODO: improve efficiency of this!
   return JSON.stringify(args);
 }
@@ -20,10 +26,12 @@ export default class CachedQuery extends Query {
   _lastVersions;
 
   _init(dp) {
+    super._init(dp);
+
     // ########################################
     // fix config
     // ########################################
-    const {
+    let {
       collectionNames,
       onlyCacheExisting = false
     } = this.cfg;
@@ -38,7 +46,9 @@ export default class CachedQuery extends Query {
     }
     else {
       // depends on all collections
-      collectionIds = Object.values(dp.collections).map(c => c._id);
+      const allCollections = Object.values(dp.collections);
+      collectionIds = allCollections.map(c => c._id);
+      collectionNames = allCollections.map(c => c.name);
     }
 
     // NOTE: sorted versions makes it more cache-efficient when looping over the version arrays
@@ -66,56 +76,68 @@ export default class CachedQuery extends Query {
     }
   }
 
-  /**
-   * Clear cache if collection versions don't match.
-   * NOTE: collection versions are updated any time data is added.
-   */
-  _checkVersions(newVersions) {
+  _updateVersions(newVersions) {
     for (let i = 0; i < this.cfg.collectionIds.length; ++i) {
       const id = this.cfg.collectionIds[i];
       if (this._lastVersions[id] !== newVersions[id]) {
-        // new version -> clear cache
+        // new version
         this._copyVersions(newVersions);
-        this._cache.clear();
-        break;
+        return true;
       }
     }
+    return false;
   }
 
-  lookup(args) {
-    const key = makeKey(args);
-    return this._cache[key];
-  }
-
-  performQuery(dp, args) {
-    // check versions
-    this._checkVersions(dp.versions);
-
-    // lookup
-    const key = makeKey(args);
-    let result = this._cache.get(key);
-
+  /**
+   * Called upon a cache miss: run query for args and cache result.
+   */
+  _getOrUpdateCachedEntry(args) {
+    const { dp } = this;
+    let result = this.executeQuery(dp, args);
     if (result === DoesNotExist) {
-      // cache miss -> actually perform the query
-      result = this.execute(dp, args);
-      if (result === DoesNotExist) {
-        // value does not exist
-        if (this.cfg.onlyCacheExisting) {
-          // don't cache
-          return result;
-        }
-
-        // set to `null`; because `DoesNotExist === undefined`
-        result = null;
+      // value does not exist
+      if (this.cfg.onlyCacheExisting) {
+        // don't cache
+        return result;
       }
 
-      // put result back into cache
-      this._cache.set(key, result);
+      // set to `null`; because `DoesNotExist === undefined`
+      result = null;
     }
+
+    // put result back into cache
+    this.storeByKey(args, result);
     return result;
   }
 
-  executor(dp, args) {
-    return this._cache.performQuery(dp, args, this);
+
+  lookup(args) {
+    const key = makeKey(args);
+    return this._cache.get(key);
+  }
+
+  storeByKey(args, result) {
+    const key = makeKey(args);
+    this._cache.set(key, result);
+  }
+
+  clearCache() {
+    this._cache.clear();
+  }
+
+
+  executeQuery(dp, args) {
+    // check version
+    if (this._updateVersions(dp.versions)) {
+      // clear cache if outdated
+      this.clearCache();
+    }
+
+    let result = this.lookup(args);
+
+    if (result === DoesNotExist) {
+      result = this._getOrUpdateCachedEntry(dp, args);
+    }
+    return result;
   }
 }
