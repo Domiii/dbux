@@ -46,6 +46,9 @@ function getArgs(debugMode) {
   let env = config.get(`dbux.${runMode}.env`);
   dbuxArgs += `${parseEnv(env)}`;
 
+  let packageWhitelists = config.get(`dbux.packageWhitelist`);
+  if (packageWhitelists) dbuxArgs += ` -w '${packageWhitelists}'`;
+
   let programArgs = config.get(`dbux.${runMode}.programArgs`);
   if (programArgs) programArgs = ` ${programArgs}`;
 
