@@ -42,6 +42,11 @@ export default class GraphNode extends HostComponentEndpoint {
   }
 
   setMode(mode) {
+    if (this.state.mode === mode) {
+      // nothing left to do
+      return;
+    }
+    
     this.setOwnMode(mode);
     // GraphNodeMode.switchCall(mode, this.modeHandlers);
 

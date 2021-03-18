@@ -121,7 +121,6 @@ export default class BugRunner {
    * NOTE: synchronized.
    */
   async activateProject(project) {
-    console.warn('########', this.isProjectActive(project) && project._installed, this.isProjectActive(project), project._installed);
     if (this.isProjectActive(project) && project._installed) {
       return;
     }
