@@ -53,7 +53,7 @@ class DetailNode extends SessionNode {
   }
 
   async handleClick() {
-    await showInformationMessage(this.bug.label, {}, { modal: true });
+    await showInformationMessage(this.bug.description, {}, { modal: true });
   }
 }
 
