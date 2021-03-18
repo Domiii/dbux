@@ -1,4 +1,5 @@
 import path from 'path';
+import findLastIndex from 'lodash/findLastIndex';
 import { newLogger } from '@dbux/common/src/log/logger';
 import ExecutionContext from '@dbux/common/src/core/data/ExecutionContext';
 import Trace from '@dbux/common/src/core/data/Trace';
@@ -7,14 +8,13 @@ import StaticProgramContext from '@dbux/common/src/core/data/StaticProgramContex
 import StaticContext from '@dbux/common/src/core/data/StaticContext';
 import StaticTrace from '@dbux/common/src/core/data/StaticTrace';
 import ValueTypeCategory, { ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
-import TraceType, { isTraceExpression, isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
+import { isTracePop, isTraceFunctionExit, isBeforeCallExpression, isTraceThrow } from '@dbux/common/src/core/constants/TraceType';
 import { hasCallId, isCallResult, isCallExpressionTrace } from '@dbux/common/src/core/constants/traceCategorization';
-import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
-import StaticContextType from '@dbux/common/src/core/constants/StaticContextType';
 
 import Collection from './Collection';
 
 import DataProviderBase from './DataProviderBase';
+import DataProviderUtil from './dataProviderUtil';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('DataProvider');
@@ -142,86 +142,25 @@ class ExecutionContextCollection extends Collection {
     super.add(entries);
   }
 
-  /**
-   * @param {ExecutionContext[]} contexts 
-   */
-  postIndex(contexts) {
-    try {
-      // determine last trace of every context
-      this.resolveLastTraceOfContext(contexts);
-    }
-    catch (err) {
-      logError('resolveLastTraceOfContext failed', err); //contexts);
-    }
-  }
+  // /**
+  //  * @param {ExecutionContext[]} contexts 
+  //  */
+  // postIndex(contexts) {
+  //   try {
+  //     // determine last trace of every context
+  //     this.resolveLastTraceOfContext(contexts);
+  //   }
+  //   catch (err) {
+  //     logError('resolveLastTraceOfContext failed', err); //contexts);
+  //   }
+  // }
 
-  /**
-   * @param {ExecutionContext[]} contexts 
-   */
-  postAdd(contexts) {
-    for (let context of contexts) {
-      this.resolveContextThreadId(context);
-    }
-  }
-
-  /**
-   * @param {ExecutionContext} contexts 
-   */
-  resolveContextThreadId(context) {
-    const { staticContextId, promiseId, parentContextId } = context;
-    const staticContext = this.dp.collections.staticContexts.getById(staticContextId);
-    if (staticContext.isInterruptable) {
-      context.threadId = this.getNewThreadId();
-      return;
-    }
-
-    if (promiseId) {
-      this.dp.collections.promises.registerPromiseCallbackContextId(promiseId, context.contextId);
-
-      const promiseCollection = this.dp.collections.promises;
-      const belongPromise = promiseCollection.getById(promiseId);
-      if (belongPromise.parentPromiseId) {
-        const parentPromise = promiseCollection.getById(belongPromise.parentPromiseId);
-        const { 
-          callbackContextId: promiseParentCallbackContextId,
-          parentContextId: promiseParentParentContextId,
-        } = parentPromise;
-        if (promiseParentCallbackContextId) {
-          context.threadId = this.getById(promiseParentCallbackContextId).threadId;
-          return;
-        }
-        if (promiseParentParentContextId) {
-          context.threadId = this.getById(promiseParentParentContextId).threadId;
-          return;
-        }
-      }
-      else {
-        context.threadId = this.getNewThreadId();
-        return;
-      }
-    }
-    if (parentContextId) {
-      context.threadId = this.getById(parentContextId).threadId;
-      return;
-    }
-    if (StaticContextType.is.Program(staticContext.type)) {
-      // hackfix: currently we want all program context be in thread#1
-      context.threadId = 1;
-      return;
-    }
-    context.threadId = this.getNewThreadId();
-  }
-
-  getNewThreadId() {
-    return ++this.currentThreadCount;
-  }
-
-  resolveLastTraceOfContext() {
-    // TODO
-    // return !isReturnTrace(traceType) && !isTracePop(traceType) &&   // return and pop traces indicate that there was no error in that context
-    //   dp.util.isLastTraceInContext(traceId) &&        // is last trace we have recorded
-    //   !dp.util.isLastTraceInStaticContext(traceId);   // but is not last trace in the code
-  }
+  // resolveLastTraceOfContext() {
+  //   // TODO
+  //   // return !isReturnTrace(traceType) && !isTracePop(traceType) &&   // return and pop traces indicate that there was no error in that context
+  //   //   dp.util.isLastTraceInContext(traceId) &&        // is last trace we have recorded
+  //   //   !dp.util.isLastTraceInStaticContext(traceId);   // but is not last trace in the code
+  // }
 }
 
 
@@ -261,7 +200,7 @@ class TraceCollection extends Collection {
    * Post processing of trace data
    * @param {Trace[]} traces
    */
-  postAdd(traces) {
+  postAddRaw(traces) {
     // build dynamic call expression tree
     errorWrapMethod(this, 'resolveCodeChunks', traces);
     errorWrapMethod(this, 'resolveCallIds', traces);
@@ -315,9 +254,10 @@ class TraceCollection extends Collection {
           // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
           if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
             // maybe something did not get popped. Let's look for it directly!
-            const idx = beforeCalls.findIndex(bce => bce.staticTraceId === staticTrace.resultCallId);
+            const idx = findLastIndex(beforeCalls, bce => bce.staticTraceId === staticTrace.resultCallId);
             if (idx >= 0) {
-              // it's on the stack - just take it
+              // it's on the stack - just take it (and also push the wrong one back)
+              beforeCalls.push(beforeCall);
               beforeCall = beforeCalls[idx];
               beforeCalls.splice(idx, 1);
             }
@@ -358,8 +298,14 @@ class TraceCollection extends Collection {
     for (const trace of traces) {
       const {
         traceId,
+        contextId,
         previousTrace: previousTraceId
       } = trace;
+
+      // if traces were disabled, there is nothing to do here
+      if (!this.dp.util.isContextTraced(contextId)) {
+        continue;
+      }
 
       const traceType = this.dp.util.getTraceType(traceId);
       if (!isTracePop(traceType) || !previousTraceId) {
@@ -459,9 +405,9 @@ class ValueCollection extends Collection {
    * NOTE: This still only returns a string representation?
    */
   _deserializeValue(entry) {
-    if (!entry.value) {
+    if (!('value' in entry)) {
       if (this._visited.has(entry)) {
-        return '(circular reference)';
+        return '(Dbux: circular reference)';
       }
       this._visited.add(entry);
 
@@ -494,7 +440,13 @@ class ValueCollection extends Collection {
             value = {};
             for (const [key, childId] of entry.serialized) {
               const child = this.getById(childId);
-              value[key] = this._deserializeValue(child);
+              if (!child) {
+                value[key] = '(Dbux: lookup failed)';
+                warn(`Could not lookup object property "${key}" by id "${childId}": ${JSON.stringify(entry.serialized)}`);
+              }
+              else {
+                value[key] = this._deserializeValue(child);
+              }
             }
             break;
           }
@@ -511,6 +463,11 @@ class ValueCollection extends Collection {
 }
 
 export default class RuntimeDataProvider extends DataProviderBase {
+  /**
+   * @type {DataProviderUtil}
+   */
+  util;
+
   constructor(application) {
     super('RuntimeDataProvider');
 

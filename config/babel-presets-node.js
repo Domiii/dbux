@@ -1,8 +1,11 @@
+// NOTE: we cannot use preset + plugin names, but *must* `require` them directly
+//      See: https://github.com/Domiii/dbux/issues/456
+
 module.exports = {
   sourceType: 'unambiguous',
   presets: [
     [
-      '@babel/preset-env',
+      require('@babel/preset-env').default,
       {
         targets: {
           node: '12'
@@ -14,24 +17,24 @@ module.exports = {
   ],
   plugins: [
     [
-      "@babel/plugin-proposal-class-properties",
+      require("@babel/plugin-proposal-class-properties").default,
       {
         loose: true
       }
     ],
-    "@babel/plugin-proposal-optional-chaining",
+    require("@babel/plugin-proposal-optional-chaining").default,
     [
-      "@babel/plugin-proposal-decorators",
+      require("@babel/plugin-proposal-decorators").default,
       {
         legacy: true
       }
     ],
-    "@babel/plugin-proposal-function-bind",
-    "@babel/plugin-syntax-export-default-from",
-    "@babel/plugin-syntax-dynamic-import",
-    "@babel/plugin-transform-runtime",
+    require("@babel/plugin-proposal-function-bind").default,
+    require("@babel/plugin-syntax-export-default-from").default,
+    require("@babel/plugin-syntax-dynamic-import").default,
+    require("@babel/plugin-transform-runtime").default,
 
-    // cannot convert mjs with @babel/register: https://github.com/babel/babel/issues/6737
+    // NOTE: cannot convert mjs with @babel/register: https://github.com/babel/babel/issues/6737
     // '@babel/plugin-transform-modules-commonjs'
   ]
 };

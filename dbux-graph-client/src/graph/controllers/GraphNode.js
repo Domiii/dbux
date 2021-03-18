@@ -5,7 +5,8 @@ import { decorateClasses } from '../../util/domUtil';
 export default class GraphNode extends ClientComponentEndpoint {
   init() {
     const {
-      nodeToggleBtn,
+      previousModeButton,
+      nextModeButton,
       nodeChildren
     } = this.owner.els;
 
@@ -22,7 +23,11 @@ export default class GraphNode extends ClientComponentEndpoint {
     // on click -> nextMode
     this.owner.dom.addEventListeners(this, true);
 
-    nodeToggleBtn?.addEventListener('click', (/* evt */) => {
+    previousModeButton?.addEventListener('click', (/* evt */) => {
+      this.remote.previousMode();
+    });
+
+    nextModeButton?.addEventListener('click', (/* evt */) => {
       this.remote.nextMode();
     });
   }
@@ -31,19 +36,19 @@ export default class GraphNode extends ClientComponentEndpoint {
     return this.owner.els.nodeToggleBtn;
   }
 
-  get listEl() {
+  get childrenEl() {
     return this.owner.els.nodeChildren;
   }
-  
+
   /**
    * NOTE: state.isExpanded might not always be mirrored by DOM (but we are trying to achieve just that here).
    */
   isDOMExpanded() {
-    return !this.listEl.classList.contains('hidden');
+    return !this.childrenEl.classList.contains('hidden');
   }
 
   isListEmpty() {
-    const { listEl } = this;
+    const { childrenEl: listEl } = this;
     return !listEl.children.length;
   }
 
@@ -51,14 +56,14 @@ export default class GraphNode extends ClientComponentEndpoint {
    * Hide button if list is empty
    */
   renderListEmptyState = () => {
-    const { btnEl, listEl } = this;
+    const { childrenEl } = this;
 
     // show/hide button
     // btnEl && decorateClasses(btnEl, {
     //   hidden: this.isListEmpty()
     // });
 
-    decorateClasses(listEl, {
+    decorateClasses(childrenEl, {
       hidden: this.isListEmpty()
     });
 
@@ -70,34 +75,67 @@ export default class GraphNode extends ClientComponentEndpoint {
   }
 
   render() {
-    const { listEl, btnEl, state: { mode } } = this;
+    const { childrenEl, state: { mode, buttonDisabled } } = this;
+    const {
+      previousModeButtonImg,
+      nextModeButtonImg
+    } = this.owner.els;
+
+    const { contextNodeIconUris } = this.context;
 
     // if (this.isListEmpty()) {
     //   // button should already be hidden -> now also hide list
     //   listEl.classList.add('hidden');
     // }
-    if (!this.isListEmpty()) {
+    if (!buttonDisabled && !this.isListEmpty()) {
       switch (mode) {
         case GraphNodeMode.ExpandChildren:
-          listEl.classList.remove('hidden');
-          btnEl && (btnEl.innerHTML = '-');
+          childrenEl.classList.remove('hidden');
           break;
         case GraphNodeMode.ExpandSubgraph:
-          listEl.classList.remove('hidden');
-          btnEl && (btnEl.innerHTML = '☰');
+          childrenEl.classList.remove('hidden');
           break;
         case GraphNodeMode.Collapsed:
           // NOTE: cannot hide children if it has no button (for now)
-          btnEl && listEl.classList.add('hidden');
-          btnEl && (btnEl.innerHTML = '▷');
+          childrenEl.classList.add('hidden');
           break;
       }
+
+      const previousMode = GraphNodeMode.previousValue(mode);
+      const nextMode = GraphNodeMode.nextValue(mode);
+      previousModeButtonImg.src = contextNodeIconUris[previousMode];
+      nextModeButtonImg.src = contextNodeIconUris[nextMode];
+      // previousModeButton.textContent = this.getModeIcon(previousMode);
+      // nextModeButton.textContent = this.getModeIcon(nextMode);
+      // previousModeButton.disabled = false;
+      // nextModeButton.disabled = false;
+      // if (previousMode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
+      //   previousModeButton.disabled = true;
+      // }
+      // else if (nextMode === GraphNodeMode.ExpandSubgraph && this.owner.children.computeMaxDepth() <= 1) {
+      //   nextModeButton.disabled = true;
+      // }
+    }
+  }
+
+  getModeIcon(mode) {
+    switch (mode) {
+      case GraphNodeMode.ExpandChildren:
+        return '-';
+      case GraphNodeMode.ExpandSubgraph:
+        return '☰';
+      case GraphNodeMode.Collapsed:
+        return '▷';
+      default:
+        return '';
     }
   }
 
   on = {
-
-    nodeToggleBtn: {
+    previousModeButton: {
+      focus(evt) { evt.target.blur(); }
+    },
+    nextModeButton: {
       focus(evt) { evt.target.blur(); }
     }
   }

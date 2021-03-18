@@ -33,7 +33,7 @@ This page covers more broad topics related to the Dbux project:
   - [Other Syntax Limitations](#other-syntax-limitations)
   - [Problems with Values](#problems-with-values)
   - [Calling `process.exit` as well as uncaught exceptions are not handled properly](#calling-processexit-as-well-as-uncaught-exceptions-are-not-handled-properly)
-  - [Heisenbugs](#heisenbugs)
+  - [Observer Effect](#observer-effect)
   - [`eval` and dynamically loaded code](#eval-and-dynamically-loaded-code)
   - [SyntaxError: Unexpected reserved word 'XX'](#syntaxerror-unexpected-reserved-word-xx)
   - [Async Call Graph + Callback tracking](#async-call-graph--callback-tracking)
@@ -151,9 +151,9 @@ Because of [performance](#performance) reasons, we cannot record *everything*.
 * This is tracked in #201.
 
 
-## Heisenbugs
+## Observer Effect
 
-By trying to observe a program, while definitely not intending to, you will inevitably change its behavior leading to the [observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics)) leading to [heisenbugs](https://en.wikipedia.org/wiki/Heisenbug). Here are a few already known sources for Heisenbugs:
+By trying to observe a program, while definitely not intending to, you will inevitably change its behavior due to the [observer effect](https://en.wikipedia.org/wiki/Observer_effect_(physics)). Here are a few examples:
 
 * Property getters with [side effects](https://softwareengineering.stackexchange.com/questions/40297/what-is-a-side-effect) will be called automatically by `Dbux` (to get all that juicy runtime data) and potentially break things
    * Dbux tracks data in real-time, by reading and recording variables, objects, arrays etc.

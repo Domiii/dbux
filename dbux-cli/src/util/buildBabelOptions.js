@@ -25,6 +25,32 @@ function debugLog(...args) {
   // }
 }
 
+/**
+ * Add `^` and `$` (if not exist) to `s` and convert to `RegExp`.
+ * @param {string} s 
+ */
+function generateFullMatchRegExp(s) {
+  return new RegExp(`${s[0] === '^' ? '' : '^'}${s}${s[s.length - 1] === '$' ? '' : '$'}`);
+}
+
+function batchTestRegExp(regexps, target) {
+  return regexps.some(regexp => regexp.test(target));
+}
+
+/**
+ * TODO: allow custom babel options to also trace configured libraries.
+ * For that we need to make the `if` check in the `ignore` function customizable.
+ * 
+ * @example 
+    const re = /node_modules(?![\\/]pug)[\\/]/;
+    console.log([
+      'node_modules/a',
+      'node_modules/a/b',
+      'node_modules/pug',
+      'node_modules/pug/x'
+    ].map((s, i) => ${ i }.${ s } ${ re.test(s) }).join('\n'));
+ */
+
 export default function buildBabelOptions(options) {
   process.env.BABEL_DISABLE_CACHE = 1;
 
@@ -33,6 +59,7 @@ export default function buildBabelOptions(options) {
     dontInjectDbux,
     dontAddPresets,
     dbuxOptions: dbuxOptionsString,
+    packageWhitelist,
     verbose = 0
   } = options;
 
@@ -50,6 +77,8 @@ export default function buildBabelOptions(options) {
   //   injectDependencies();
   // }
 
+  const packageWhitelistRegExps = packageWhitelist.split(',').map(s => s.trim()).map(generateFullMatchRegExp);
+
   // setup babel-register
   const baseOptions = esnext ? baseBabelOptions : EmptyObject;
   const babelOptions = {
@@ -63,16 +92,19 @@ export default function buildBabelOptions(options) {
           return undefined;
         }
 
-        // no node_modules
-        if (modulePath.match(/((node_modules)|(dist)).*(?<!\.mjs)$/)) {
-          verbose > 1 && debugLog(`[DBUX] no-register`, modulePath);
+        const matchSkipFileResult = modulePath.match(/([/\\]dist[/\\])|(\.mjs$)/);
+        const matchResult = modulePath.match(/(?<=node_modules\/)(?!node_modules)(?<packageName>[^/]+)(?=\/(?!node_modules).*)/);
+        const packageName = matchResult ? matchResult.groups.packageName : null;
+
+        if (matchSkipFileResult || (packageName && !batchTestRegExp(packageWhitelistRegExps, packageName))) {
+          verbose > 1 && debugLog(`[Dbux] no-register`, modulePath);
           return true;
         }
 
         modulePath = modulePath.toLowerCase();
 
         const ignore = false;
-        verbose && debugLog(`[DBUX] REGISTER`, modulePath);
+        verbose && debugLog(`[Dbux] REGISTER`, modulePath);
         return ignore;
       }
     ]

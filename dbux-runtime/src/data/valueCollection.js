@@ -194,9 +194,9 @@ class ValueCollection extends Collection {
       // NOTE: `for in` gets a lot of enumerable properties that `Object.keys` does not get
       const keys = [];
       for (const key in obj) {
-        if (!isFunction(obj[key])) {
+        // if (!isFunction(obj[key])) {
           keys.push(key);
-        }
+        // }
       }
       return keys;
 
@@ -215,13 +215,14 @@ class ValueCollection extends Collection {
   }
 
   _startAccess(/* obj */) {
-    // TODO: disable tracing while reading the property
     // eslint-disable-next-line no-undef
     if (__dbux__._r.disabled) {
       this.logger.error('Tried to start accessing object while already accessing another object.');
       return;
     }
 
+    // NOTE: disable tracing while reading the property
+    
     // eslint-disable-next-line no-undef
     __dbux__._r.incDisabled();
   }

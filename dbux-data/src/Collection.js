@@ -3,11 +3,15 @@ import { newLogger } from '@dbux/common/src/log/logger';
 /** @typedef {import('./DataProviderBase').default} DataProvider */
 
 /**
+ * @typedef {import('./DataProviderBase').default} DataProviderBase
+ */
+
+/**
  * @template {T}
  */
 export default class Collection {
   /**
-   * NOTE: collection ids can be 0
+   * NOTE: collection id can be 0
    * @type {number}
    */
   _id;
@@ -22,7 +26,7 @@ export default class Collection {
   name;
 
   /**
-   * @type {DataProvider}
+   * @type {DataProviderBase}
    */
   dp;
 
@@ -60,26 +64,25 @@ export default class Collection {
   }
 
   /**
-   * Collections can use this to massage data after all data has been added, but before indexes have been processed.
+   * Collections can use this to massage data after all data has been added, but before indexes have been processed. This will be executed only on the first time that data has been added.
    * @virtual
    * 
    * @param {T[]} entries
    */
-  postAdd(entries) {
-    if (this.handleEntryAdded) {
-      for (const entry of entries) {
-        this.handleEntryAdded(entry);
-      }
-    }
-  }
-
-  // handleEntryAdded(entry) {}
+  postAddRaw(entries) {}
 
   /**
-   * Collections can use this to massage data after all data has been added, and after indexes have been processed.
+   * Collections can use this to massage data after all data has been added, but before indexes have been processed. This will be executed everytime data has been added(even when deserialize).
    * @virtual
+   * @param {T[]} entries
    */
-  postIndex(/* entries */) { }
+  postAddProcessed(entries) {}
+
+  // /**
+  //  * Collections can use this to massage data after all data has been added, and after indexes have been processed.
+  //  * @virtual
+  //  */
+  // postIndex(/* entries */) { }
 
   // ###########################################################################
   // Reads

@@ -45,7 +45,7 @@ export function initProjectCommands(extensionContext, projectViewController) {
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.busyIcon', (/* node */) => {
-    return window.showInformationMessage(translate('busyNow')); // how to triggger this
+    return showInformationMessage(translate('busyNow')); // how to triggger this
   });
 
   registerCommand(extensionContext, 'dbuxProjectView.node.stopBug', (/* node */) => {
@@ -70,6 +70,12 @@ export function initProjectCommands(extensionContext, projectViewController) {
 
   registerCommand(extensionContext, 'dbux.cancelBugRunner', (/* node */) => {
     return projectViewController.manager.runner.cancel();
+  });
+
+  registerCommand(extensionContext, 'dbux.resetPracticeLog', async () => {
+    await projectViewController.manager.resetLog();
+    projectViewController.projectViewNodeProvider.refreshIcon();
+    await showInformationMessage('Practice log cleared');
   });
 
   registerCommand(extensionContext, 'dbux.resetPracticeProgress', async () => {

@@ -10,6 +10,7 @@ const { log, debug, warn, error: logError } = newLogger('renderSettings');
 const labelsByActionGroupType = {
   [ActionGroupType.SelectTrace]: 'SelectTrace',
   [ActionGroupType.TagTrace]: 'TagTrace',
+  [ActionGroupType.GoToError]: 'GoToError',
   [ActionGroupType.TDValue]: 'TDValue',
   [ActionGroupType.TDTrackObject]: 'TDTrackObject',
   [ActionGroupType.TDExecutions]: 'TDExecutions',
@@ -38,6 +39,7 @@ const defaultActionGroupIcon = 'gear.svg';
 
 const iconsByActionGroupType = {
   [ActionGroupType.TagTrace]: 'flag.svg',
+  [ActionGroupType.GoToError]: 'fire.svg',
   [ActionGroupType.AnnotateTraceQ]: 'q.svg',
   [ActionGroupType.AnnotateTraceI]: 'i.svg',
   [ActionGroupType.EditorSelectionChanged]: 'cursor_click.svg',
@@ -61,7 +63,7 @@ const iconsByActionGroupType = {
   [ActionGroupType.NavigationPreviousTrace]: 'leftArrow.svg',
   [ActionGroupType.NavigationNextTrace]: 'rightArrow.svg',
   [ActionGroupType.CallGraphSelectTrace]: 'callGraphSelectTrace.svg',
-  [ActionGroupType.CallGraphToggleContextNode]: 'callGraphToggleContextNode.svg',
+  [ActionGroupType.CallGraphToggleContextNode]: 'listItem.svg',
   [ActionGroupType.CallGraphSearchContexts]: 'callGraphSearchContexts.svg',
   [ActionGroupType.CallGraphSearchTraces]: 'callGraphSearchTraces.svg',
   [ActionGroupType.CallGraphOther]: defaultActionGroupIcon,

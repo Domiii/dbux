@@ -2,7 +2,7 @@
   "name": "dbux-code",
   "private": true,
   "displayName": "Dbux (ALPHA)",
-  "version": "0.3.13-dev.0",
+  "version": "0.3.17-dev.0",
   "publisher": "Domi",
   "description": "Integrated Debugging Environment with an Omniscient Debugger for JS.",
   "repository": {
@@ -198,11 +198,15 @@
       },
       {
         "command": "dbux.resetPracticeProgress",
-        "title": "Dev: Reset Practice Progress"
+        "title": "Dbux Dev: Reset Practice Progress"
+      },
+      {
+        "command": "dbux.resetPracticeLog",
+        "title": "Dbux Dev: Reset Practice Log"
       },
       {
         "command": "dbux.loadPracticeLogFile",
-        "title": "Dev: Load Practice Log"
+        "title": "Dbux Dev:Load Practice Log"
       },
       {
         "command": "dbux.showDBStats",
@@ -518,7 +522,7 @@
       },
       {
         "command": "dbux.deleteUserEvents",
-        "title": "Dev: Delete all user events"
+        "title": "Dbux Dev: Delete all user events"
       },
       {
         "command": "dbuxSessionView.node.annotateTraceQ",
@@ -1149,6 +1153,12 @@
             "default": {},
             "description": "Custom program environment variables available via `process.env` (probably not working yet).",
             "scope": "resource"
+          },
+          "dbux.packageWhitelist": {
+            "type": "string",
+            "default": "",
+            "description": "Specify which package will be traced by Dbux, seperated by space, regex supported.",
+            "scope": "resource"
           }
         }
       }
@@ -1168,14 +1178,14 @@
     "watch": "node ../node_modules/webpack/bin/webpack.js --watch"
   },
   "devDependencies": {
-    "@dbux/babel-plugin": "^0.3.13-dev.0",
-    "@dbux/cli": "^0.3.13-dev.0",
-    "@dbux/common": "^0.3.13-dev.0",
-    "@dbux/data": "^0.3.13-dev.0",
-    "@dbux/graph-common": "^0.3.13-dev.0",
-    "@dbux/graph-host": "^0.3.13-dev.0",
-    "@dbux/projects": "^0.3.13-dev.0",
-    "@dbux/runtime": "^0.3.13-dev.0",
+    "@dbux/babel-plugin": "^0.3.17-dev.0",
+    "@dbux/cli": "^0.3.17-dev.0",
+    "@dbux/common": "^0.3.17-dev.0",
+    "@dbux/data": "^0.3.17-dev.0",
+    "@dbux/graph-common": "^0.3.17-dev.0",
+    "@dbux/graph-host": "^0.3.17-dev.0",
+    "@dbux/projects": "^0.3.17-dev.0",
+    "@dbux/runtime": "^0.3.17-dev.0",
     "@types/glob": "^7.1.1",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.11.7",
@@ -1192,7 +1202,7 @@
     "terser-webpack-plugin": "^4.1.0",
     "typescript": "^3.6.4",
     "uuid": "^8.3.0",
-    "vsce": "^1.77.0",
+    "vsce": "*",
     "vscode-test": "^1.2.2",
     "webpack": "^4.41.5",
     "webpack-bundle-analyzer": "^3.8.0",
@@ -1202,7 +1212,8 @@
   "dependencies": {
     "firebase": "7.17.2",
     "i18next": "^19.8.2",
-    "lockfile": "^1.0.4"
+    "lockfile": "^1.0.4",
+    "vsce": "^1.85.0"
   },
   "_moduleAliases": {}
 }

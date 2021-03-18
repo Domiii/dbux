@@ -23,7 +23,7 @@ import { showHelp } from '../help';
 import { showOutputChannel } from '../projectViews/projectViewsController';
 import { renderValueAsJsonInEditor } from '../traceDetailsView/valueRender';
 import { getAllMemento, clearAll } from '../memento';
-import { showInformationMessage } from '../codeUtil/codeModals';
+import { showErrorMessage, showInformationMessage } from '../codeUtil/codeModals';
 import { translate } from '../lang';
 import { getCodeDirectory, getLogsDirectory } from '../resources';
 
@@ -36,11 +36,11 @@ export function initUserCommands(extensionContext) {
   // exportApplicationData
   // ###########################################################################
 
-  const exportFolder = path.join(__dirname, '../../analysis/__data__/');
   const defaultImportFolder = path.join(__dirname, '../../samples/data');
   const applicationRelativeRoot = getCodeDirectory();
-
+  
   async function doExport(application) {
+    const exportFolder = path.join(__dirname, '../../analysis/__data__/');
     const applicationName = application.getSafeFileName();
     if (!fs.existsSync(exportFolder)) {
       fs.mkdirSync(exportFolder);
@@ -54,7 +54,7 @@ export function initUserCommands(extensionContext) {
       relativeEntryPointPath,
       createdAt,
       uuid,
-      serializedDpData: application.dataProvider.serialize()
+      serializedDpData: application.dataProvider.serializeJson()
     };
     fs.writeFileSync(exportFpath, JSON.stringify(data));
 
@@ -71,14 +71,12 @@ export function initUserCommands(extensionContext) {
     const { relativeEntryPointPath, createdAt, uuid, serializedDpData } = appData;
     const entryPointPath = path.join(applicationRelativeRoot, relativeEntryPointPath);
     const app = allApplications.addApplication({ entryPointPath, createdAt, uuid });
-    app.dataProvider.deserialize(JSON.parse(serializedDpData));
+    app.dataProvider.deserializeJson(JSON.parse(serializedDpData));
   }
 
   registerCommand(extensionContext, 'dbux.exportApplicationData', async () => {
     const application = await getSelectedApplicationInActiveEditorWithUserFeedback();
-    if (application) {
-      await doExport(application);
-    }
+    application && await doExport(application);
   });
 
   registerCommand(extensionContext, 'dbux.importApplicationData', async () => {
@@ -173,7 +171,7 @@ export function initUserCommands(extensionContext) {
       applicationIdByLabel.set(label, app.applicationId);
     });
     if (!allSelectedApps.length) {
-      await window.showInformationMessage(translate('noApplication'));
+      await showInformationMessage(translate('noApplication'));
       return;
     }
     // TOTRANSLATE
@@ -194,7 +192,7 @@ export function initUserCommands(extensionContext) {
     const traceId = parseInt(userInput, 10);
     if (isNaN(traceId)) {
       // TOTRANSLATE
-      await window.showErrorMessage(`Can't convert ${userInput} into integer`);
+      await showErrorMessage(`Can't convert ${userInput} into integer`);
       return;
     }
 
@@ -203,7 +201,7 @@ export function initUserCommands(extensionContext) {
     const trace = dp.collections.traces.getById(traceId);
     if (!trace) {
       // TOTRANSLATE
-      await window.showErrorMessage(`Can't find trace of traceId ${traceId} & applicationId ${applicationId}`);
+      await showErrorMessage(`Can't find trace of traceId ${traceId} & applicationId ${applicationId}`);
     }
     else {
       traceSelection.selectTrace(trace);

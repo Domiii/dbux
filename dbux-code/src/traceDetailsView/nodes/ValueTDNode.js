@@ -7,17 +7,20 @@ import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import { makeTreeChildren } from '../../helpers/treeViewHelpers';
 import { valueRender } from '../valueRender';
 
+const noValueMessage = '(no value or undefined)';
+
 export default class ValueTDNode extends BaseTreeViewNode {
   static makeTraceDetail(trace/* , parent */) {
     return trace;
   }
 
   static makeProperties(trace/* , parent, detail */) {
-    const dp = allApplications.getById(trace.applicationId).dataProvider;
-    const value = dp.util.getTraceValue(trace.traceId);
-    const valueMessage = dp.util.getTraceValueMessage(trace.traceId);
-    const hasValue = dp.util.doesTraceHaveValue(trace.traceId);
-    const hasChildren = dp.util.isTracePlainObjectOrArrayValue(trace.traceId) && !isEmpty(value);
+    const { applicationId, traceId } = trace;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    const hasValue = dp.util.doesTraceHaveValue(traceId);
+    const value = hasValue ? dp.util.getTraceValue(traceId) : undefined;
+    const valueMessage = hasValue ? dp.util.getTraceValueMessage(traceId) : undefined;
+    const hasChildren = dp.util.isTracePlainObjectOrArrayValue(traceId) && !isEmpty(value);
 
     return {
       value,
@@ -30,19 +33,18 @@ export default class ValueTDNode extends BaseTreeViewNode {
   static makeLabel(trace, parent, { value, valueMessage, hasValue, hasChildren }) {
     const dp = allApplications.getById(trace.applicationId).dataProvider;
     const traceType = dp.util.getTraceType(trace.traceId);
+    if (!hasValue) {
+      return noValueMessage;
+    }
     if (valueMessage) {
       return valueMessage;
-    }
-    if (!hasValue) {
-      // TODO: move to valueMessage
-      return '(no value or undefined)';
     }
     if (isTraceExpression(traceType) && !hasChildren) {
       return `Value: ${JSON.stringify(value)}`;
     }
     return 'Value';
   }
-  
+
   get clickUserActionType() {
     return UserActionType.TDValueClick;
   }
@@ -84,7 +86,12 @@ export default class ValueTDNode extends BaseTreeViewNode {
   }
 
   valueRender() {
-    const { valueRef, value } = this;
-    valueRender(valueRef, value);
+    const { valueRef, value, hasValue } = this;
+    if (hasValue) {
+      valueRender(valueRef, value);
+    }
+    else {
+      valueRender(null, noValueMessage);
+    }
   }
 }

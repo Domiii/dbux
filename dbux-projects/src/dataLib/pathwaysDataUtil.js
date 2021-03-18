@@ -264,13 +264,13 @@ export default {
    * All staticTraces that the user visited in this session.
    */
   getVisitedStaticTraces(pdp) {
-    return pdp.collections.userActions.visitedStaticTracesByFile;
+    return pdp.indexes.userActions.visitedStaticTracesByFile.getAll();
   },
 
   /**
    * All staticTraces in given file that the user visited in this session.
    */
   getVisitedStaticTracesOfFile(pdp, fileName) {
-    return pdp.collections.userActions.visitedStaticTracesByFile.get(fileName);
+    return pdp.indexes.userActions.visitedStaticTracesByFile.get(fileName);
   }
 };

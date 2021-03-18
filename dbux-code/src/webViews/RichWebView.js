@@ -6,6 +6,7 @@ import {
 } from 'vscode';
 import { buildWebviewClientHtml } from './clientSource';
 import WebviewWrapper from '../codeUtil/WebviewWrapper';
+import { showInformationMessage } from '../codeUtil/codeModals.js';
 
 /** @typedef {import('@dbux/graph-host/src/WebHost').HostWrapper} HostWrapper */
 
@@ -77,13 +78,17 @@ export default class RichWebView extends WebviewWrapper {
 
     confirm: async (msg, modal = true) => {
       const confirmText = 'Ok';
-      const result = await window.showInformationMessage(msg, { modal }, confirmText, modal ? undefined : 'Cancel');
+      const btnConfig = { Ok: () => 'Ok' };
+      if (!modal) {
+        btnConfig.Cancel = () => 'Cancel';
+      }
+      const result = await showInformationMessage(msg, btnConfig, { modal });
       return result === confirmText;
     },
 
     alert(message, modal = true) {
       const cfg = { modal };
-      window.showInformationMessage(message, cfg, 'Ok');
+      showInformationMessage(message, { Ok: null }, cfg);
     },
 
     async prompt(message) {

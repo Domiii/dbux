@@ -119,7 +119,7 @@ class TraceCollection extends Collection {
 //   console.debug('', traceId, contextId,
 //     `${depthIndicator}[${typeName}] ${displayName}`,
 //     ...result,
-//     ` ${codeLocation} [DBUX]`
+//     ` ${codeLocation} [Dbux]`
 //   );
 //   // }
 //   // if (capturesValue && v) {

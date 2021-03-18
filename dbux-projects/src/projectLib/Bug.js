@@ -10,7 +10,22 @@ export default class Bug {
    */
   project;
 
+  /**
+   * Not used too much.
+   * If given, opens the first of these files in editor.
+   */
   testFilePaths;
+
+  /**
+   * If given, are passed as input files to bug runner.
+   */
+  runFilePaths;
+
+  /**
+   * If given, `startWatchMode` will wait for these files to exist before continuing.
+   */
+  watchFilePaths;
+
   /**
    * Either all bugs have an assigned an id, or none do (and id will be auto-assigned by project)
    */
@@ -67,6 +82,10 @@ export default class Bug {
 
   isCorrectBugLocation(loc) {
     const { projectPath } = this.project;
+
+    if (!this.bugLocations) {
+      return null;
+    }
 
     return this.bugLocations.some(t => {
       return isEqual({

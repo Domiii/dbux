@@ -3,10 +3,12 @@ import RuntimeMonitor from './RuntimeMonitor';
 import { initClient } from './client/index';
 import wrapPromise from './wrapPromise';
 
+
 const dbux = {
   _r: RuntimeMonitor.instance,
 
-  initProgram(staticProgramData) {
+  initProgram(staticProgramData, runtimeCfg) {
+    this.runtimeCfg = runtimeCfg;
     return this._r.addProgram(staticProgramData);
   },
 

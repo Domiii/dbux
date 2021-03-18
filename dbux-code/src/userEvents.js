@@ -47,8 +47,8 @@ export function emitSelectTraceAction(trace, actionType = UserActionType.SelectT
   });
 }
 
-export function emitTagTraceAction(trace) {
-  emitUserEvent(UserActionType.TagTrace, {
+export function emitTagTraceAction(trace, actionType) {
+  emitUserEvent(actionType || UserActionType.TagTrace, {
     trace,
     locationInfo: getExtraTraceLocationImformation(trace)
   });

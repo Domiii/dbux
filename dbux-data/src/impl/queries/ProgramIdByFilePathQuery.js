@@ -5,11 +5,11 @@ import CachedQuery from '../../queries/CachedQuery';
 export default class ProgramIdByFilePathQuery extends CachedQuery {
   constructor() {
     super('programIdByFilePath', {
-      versionDependencies: ['staticProgramContexts']
+      collectionNames: ['staticProgramContexts']
     });
   }
 
-  execute(dp, fpath) {
+  executeQuery(dp, fpath) {
     return dp.collections.staticProgramContexts.find(programContext => 
       arePathsIdenticalDontResolve(programContext.filePath, fpath)
     )?.programId;

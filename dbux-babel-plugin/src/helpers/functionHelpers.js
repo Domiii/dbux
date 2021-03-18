@@ -96,7 +96,7 @@ export function guessFunctionName(functionPath, state) {
   /**
    * 1. Named function: `function f() {}`
    * 2. Named class method: `class A { f() {} }`
-   * 3.  Named object method: `const o = { f() {} }`
+   * 3. Named object method: `const o = { f() {} }`
    */
   let name = node.id?.name || node.key?.name;
 

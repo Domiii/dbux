@@ -1,9 +1,11 @@
+import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 import { binarySearchByKey } from '@dbux/common/src/util/arrayUtil';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import traceSelection from '@dbux/data/src/traceSelection';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { makeTraceValueLabel, makeTraceLabel, makeContextLocLabel, makeTraceLocLabel } from '@dbux/data/src/helpers/traceLabels';
+import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
@@ -15,12 +17,12 @@ class ContextNode extends HostComponentEndpoint {
     } = this.state;
 
     // get name (and other needed data)
-    const dp = allApplications.getById(applicationId).dataProvider;
-    const staticContext = dp.collections.staticContexts.getById(context.staticContextId);
+    const app = allApplications.getById(applicationId);
+    const dp = app.dataProvider;
     const errorTag = (dp.indexes.traces.errorByContext.get(context.contextId)?.length) ? '🔥' : '';
     this.parentTrace = dp.util.getCallerTraceOfContext(context.contextId);
 
-    this.state.contextNameLabel = staticContext.displayName + errorTag;
+    this.state.contextNameLabel = makeContextLabel(context, app) + errorTag;
     this.state.contextLocLabel = makeContextLocLabel(applicationId, context);
     this.state.valueLabel = this.parentTrace && makeTraceValueLabel(this.parentTrace) || '';
     this.state.parentTraceNameLabel = this.parentTrace && makeTraceLabel(this.parentTrace) || '';
@@ -40,17 +42,34 @@ class ContextNode extends HostComponentEndpoint {
     this.state.hasChildren = !!this.children.length;
   }
 
-  get firstTrace() {
-    const { applicationId, context: { contextId } } = this.state;
+  get dp() {
+    const { applicationId } = this.state;
     const { dataProvider } = allApplications.getById(applicationId);
-    return dataProvider.util.getFirstTraceOfContext(contextId);
+    return dataProvider;
   }
 
-  get contextChildrenAmount() {
-    const contextChildren = this.children.getComponents('ContextNode');
-    let amount = contextChildren.length;
-    contextChildren.forEach(childNode => amount += childNode.contextChildrenAmount);
-    return amount;
+  get contextId() {
+    const { context: { contextId } } = this.state;
+    return contextId;
+  }
+
+  get firstTrace() {
+    return this.dp.util.getFirstTraceOfContext(this.contextId);
+  }
+
+  // get contextChildrenAmount() {
+  // const contextChildren = this.children.getComponents('ContextNode');
+  // let amount = contextChildren.length;
+  // contextChildren.forEach(childNode => amount += childNode.contextChildrenAmount);
+  // return amount;
+  get nTreeContexts() {
+    const stats = this.dp.queries.statsByContext(this.contextId);
+    return stats?.nTreeContexts || 0;
+  }
+
+  get nTreeStaticContexts() {
+    const stats = this.dp.queries.statsByContext(this.contextId);
+    return stats?.nTreeStaticContexts || 0;
   }
 
   buildChildNodes() {
@@ -61,13 +80,20 @@ class ContextNode extends HostComponentEndpoint {
       }
     } = this.state;
 
-
     // get all child contexts
     const dp = allApplications.getById(applicationId).dataProvider;
     const childContexts = dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
     childContexts.forEach(childContext => {
+      if (dp.util.isFirstContextOfRun(childContext.contextId)) {
+        return;
+      }
+
+      if (ExecutionContextType.is.Await(childContext.contextType)) {
+        return;
+      }
+
       // create child context
-      return this.children.createComponent('ContextNode', {
+      this.children.createComponent(ContextNode, {
         applicationId,
         context: childContext
       });
@@ -93,7 +119,7 @@ class ContextNode extends HostComponentEndpoint {
       const { applicationId } = this.state;
       const dp = allApplications.getById(applicationId).dataProvider;
       const callId = dp.util.getCallerTraceOfTrace(traceId)?.traceId;
-      const child = dp.indexes.executionContexts.byCalleeTrace.get(callId);
+      const child = callId && dp.indexes.executionContexts.byCalleeTrace.get(callId) || null;
       isSelectedTraceCallRelated = !!callId;
       contextIdOfSelectedCallTrace = child && child[0].contextId;
     }

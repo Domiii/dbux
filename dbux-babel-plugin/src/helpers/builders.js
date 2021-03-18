@@ -76,7 +76,7 @@ export function buildProgram(origPathOrNode, bodyNodes) {
 export function buildSource(source) {
   let ast;
   try {
-    source = `${source}`;
+    // source = `${source}`;
     ast = parse(source);
   } catch (err) {
     const { loc } = err;

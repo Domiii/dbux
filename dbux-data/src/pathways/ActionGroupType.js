@@ -12,6 +12,8 @@ let ActionGroupType = {
   AnnotateTraceQ: 3,
   AnnotateTraceI: 4,
 
+  GoToError: 5,
+
   EditorSelectionChanged: 10,
 
   TDValue: 11,
@@ -59,6 +61,7 @@ const groupByActionType = {
   [UserActionType.TagTrace]: ActionGroupType.TagTrace,
   [UserActionType.AnnotateTraceQ]: ActionGroupType.AnnotateTraceQ,
   [UserActionType.AnnotateTraceI]: ActionGroupType.AnnotateTraceI,
+  [UserActionType.GoToError]: ActionGroupType.GoToError,
   [UserActionType.TDValueClick]: ActionGroupType.TDValue,
   [UserActionType.TDValueCollapseChange]: ActionGroupType.TDValue,
   [UserActionType.TDTrackObjectUse]: ActionGroupType.TDTrackObject,

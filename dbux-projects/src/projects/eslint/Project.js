@@ -13,11 +13,6 @@ export default class EslintProject extends Project {
 
   // TODO: get nodeVersion by bug instead
   nodeVersion = '7';
-
-
-  getNodeVersion(bug) {
-    return bug.nodeVersion || this.nodeVersion;
-  }
   
   async installDependencies() {
     // TODO: install Babel plugins in dev mode, if not present
@@ -73,8 +68,8 @@ export default class EslintProject extends Project {
           return null;
         }
 
-        const srcFilePaths = bug.testFilePaths;
-        let distFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
+        const runFilePaths = bug.testFilePaths;
+        let watchFilePaths = bug.testFilePaths.map(file => path.join(this.projectPath, 'dist', file));
 
         return {
           // id: i + 1,
@@ -84,12 +79,12 @@ export default class EslintProject extends Project {
             '--grep',
             `"${bug.testRe}"`,
             '--',
-            // ...distFilePaths,
+            // ...watchFilePaths,
             // eslint-disable-next-line max-len
             // 'tests/lib/rules/**/*.js tests/lib/*.js tests/templates/*.js tests/bin/**/*.js tests/lib/code-path-analysis/**/*.js tests/lib/config/**/*.js tests/lib/formatters/**/*.js tests/lib/internal-rules/**/*.js tests/lib/testers/**/*.js tests/lib/util/**/*.js'
           ],
-          srcFilePaths,
-          distFilePaths,
+          runFilePaths,
+          watchFilePaths,
           // require: ['test/support/env'],
           ...bug,
           // testFilePaths: bug.testFilePaths.map(p => `./${p}`)
@@ -120,15 +115,6 @@ export default class EslintProject extends Project {
 
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);
-
-    // Copy assets again in this branch
-    await this.installAssets();
-
-    // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
-    await this.npmInstall();
-
-    // Auto commit again
-    await this.autoCommit();
   }
 
 
@@ -136,20 +122,23 @@ export default class EslintProject extends Project {
   // run
   // ###########################################################################
 
-  getWebpackJs() {
-    return this.manager.getDbuxPath('webpack/bin/webpack.js');
-  }
-
   /**
    * @param {Bug} bug 
    */
   async startWatchMode(bug) {
     // start webpack using latest node (long-time support)
     // make sure we have Dbux dependencies ready (since linkage might be screwed up in dev+install mode)
-    const req = `-r ${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}`;
+    const req = `-r "${this.manager.getDbuxPath('@dbux/cli/dist/linkOwnDependencies.js')}"`;
     const args = `--config ./dbux.webpack.config.js --watch --env entry=${bug.testFilePaths.join(',')}`;
+    
+    // weird bug - sometimes it just will keep saying "volta not found"... gotta hate system configuration problems...
+    const volta = 'volta'; //'/Users/domi/.volta/bin/volta'; // 'volta';
+
+    await this.execBackground(`which ${volta}`);
+    // await this.execBackground(`echo $PATH`);
+    
     return this.execBackground(
-      `volta run --node lts node ${req} ${this.getWebpackJs()} ${args}`
+      `"${volta}" run --node 12 node ${req} "${this.getWebpackJs()}" ${args}`
     );
   }
 
@@ -158,7 +147,7 @@ export default class EslintProject extends Project {
     const bugArgs = this.getMochaRunArgs(bug, [
       '-t 10000' // timeout
     ]);
-    const files = cfg.dbuxEnabled ? bug.distFilePaths : bug.srcFilePaths;
+    const files = cfg.dbuxEnabled ? bug.watchFilePaths : bug.runFilePaths;
     const nodeVersion = this.getNodeVersion(bug);
 
 

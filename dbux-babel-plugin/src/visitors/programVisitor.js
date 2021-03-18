@@ -8,7 +8,7 @@ import { buildTraceVisitors as traceVisitors } from './traceVisitors';
 import errorWrapVisitor from '../helpers/errorWrapVisitor';
 import { buildDbuxInit } from '../data/staticData';
 import { buildContextEndTrace } from '../helpers/contextHelper';
-import nameVisitors from './nameVisitors';
+import nameVisitors, { clearNames } from './nameVisitors';
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('programVisitor');
@@ -27,8 +27,21 @@ function buildProgramInit(path, { ids, contexts: { genContextIdName } }) {
 
   const contextIdName = genContextIdName(path);
 
+  // see https://babeljs.io/docs/en/babel-types#program
+  // const { sourceType } = path.node;
+  // console.log(path.fileName, sourceType);
+
+  let importLine;
+  // if (sourceType === 'module') {
+  //   importLine = `import ${dbuxRuntime} from '@dbux/runtime';`;
+  // }
+  // else 
+  {
+    importLine = `var ${dbuxRuntime} = typeof __dbux__ === 'undefined' ? require('@dbux/runtime') : __dbux__;`;
+  }
+
   return buildSource(`
-  var ${dbuxRuntime} = typeof __dbux__ === 'undefined' ? require('@dbux/runtime') : __dbux__;
+  ${importLine}
   var ${dbux} = ${dbuxInit}(${dbuxRuntime});
   var ${contextIdName} = ${dbux}.getProgramContextId();
   `);
@@ -75,18 +88,22 @@ function wrapProgram(path, state) {
 // visitor
 // ###########################################################################
 
-function enter(path, state) {
+/**
+ * NOTE: Rollup will run every file twice. The first time, only containing "__ROLLUP__PREFLIGHT_CHECK_DO_NOT_TOUCH__"
+ */
+function enter(buildCfg, path, state) {
   // const cfg = state.opts;
   if (state.onEnter) return; // make sure to not visit Program node more than once
   // console.warn('P', path.toString());
-  // console.warn(state.file.code);
+  // console.warn(state.filename);
+  // console.warn(state.file.code.substring(0, 100));
 
   // inject data + methods that we are going to use for instrumentation
-  injectDbuxState(path, state);
+  injectDbuxState(buildCfg, path, state);
 
   // before starting instrumentation, first get raw data from unmodified AST
-  const traceVisitorObj = traceVisitors();
   const nameVisitorObj = nameVisitors();
+  const traceVisitorObj = traceVisitors();
   traverse(path, state, nameVisitorObj);
 
   const {
@@ -148,16 +165,26 @@ function exit(path, state) {
   if (!state.onExit(path, 'program')) return;
 
   addDbuxInitDeclaration(path, state);
+  // try {
+  //   global.gc();
+  // } catch (e) {
+  //   console.error("Could not run gc. Do: `node --expose-gc index.js`");
+  //   process.exit();
+  // }
+
+  // clean up on aisle 4 (prevent memory leaks)
+  clearNames();
 }
 
 // ########################################
 // programVisitor
 // ########################################
 
-export default function programVisitor() {
+export default function programVisitor(buildCfg) {
   return {
     // (1) Run this plugin before all other plugins
-    enter, exit
+    enter: enter.bind(null, buildCfg),
+    exit
 
     // (2) Run this plugin after all other plugins (possibly on es5)
     // exit(...args) {

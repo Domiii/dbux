@@ -78,7 +78,7 @@ module.exports = (env, argv) => {
 
     const mode = argv.mode || 'development';
     const DBUX_VERSION = getDbuxVersion(mode);
-    const DBUX_ROOT = mode === 'development' ? MonoRoot : null;
+    const DBUX_ROOT = mode === 'development' ? MonoRoot : '';
     process.env.NODE_ENV = mode; // set these, so babel configs also have it
     process.env.DBUX_ROOT = DBUX_ROOT;
 
@@ -130,7 +130,10 @@ module.exports = (env, argv) => {
         map(depName => path.join(MonoRoot, 'node_modules', depName));
 
       // look up folders of each dependency
-      const dependencyFolderNames = dependencyLinks.map(link => fs.realpathSync(link).replace(MonoRoot, ''));
+      const dependencyFolderNames = dependencyLinks.map(
+        // link => fs.realpathSync(link).replace(MonoRoot, '')
+        link => path.relative(MonoRoot, fs.realpathSync(link))
+      );
       dependencyFolderNames.push(target);
 
       // resolve
@@ -150,8 +153,8 @@ module.exports = (env, argv) => {
 
         // https://github.com/webpack/webpack/issues/2145
         // devtool: 'inline-module-source-map',
-        // devtool: 'source-map',
-        devtool: 'inline-source-map',
+        devtool: 'source-map',
+        // devtool: 'inline-source-map',
         plugins: webpackPlugins,
         context,
         entry,
@@ -167,7 +170,8 @@ module.exports = (env, argv) => {
           devtoolModuleFilenameTemplate: 'file:///[absolute-resource-path]',  // map to source with absolute file path not webpack:// protocol
 
           // hackfix for bug: https://medium.com/@JakeXiao/window-is-undefined-in-umd-library-output-for-webpack4-858af1b881df
-          globalObject: 'typeof self !== "undefined" ? self : this',
+          // globalObject: '(typeof self !== "undefined" ? self : this)',
+          globalObject: '(typeof globalThis !== "undefined" ? globalThis : (typeof self !== "undefined" ? self : this))'
         },
         resolve,
         module: {
@@ -203,7 +207,8 @@ module.exports = (env, argv) => {
           fs: 'commonjs fs',
           net: 'commonjs net',
           // tls: 'commonjs tls',
-          ws: 'commonjs ws'
+          ws: 'commonjs ws',
+          util: 'commonjs util'
         }
           // see: https://www.npmjs.com/package/webpack-node-externals
           // NOTE: `node-externals` does not bundle `node_modules`
@@ -276,6 +281,6 @@ module.exports = (env, argv) => {
 
 // console.warn(Object.keys(resol.alias).map(name => new RegExp(`^${name}/.*`)));
 
-// console.debug('[dbux] webpack.config loaded',
+// console.debug('[Dbux] webpack.config loaded',
 //   // targetsAbsolute
 // );

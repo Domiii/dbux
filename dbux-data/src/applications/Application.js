@@ -50,8 +50,8 @@ export default class Application {
     this.createdAt = this.updatedAt = createdAt || Date.now();
   }
 
-  addData(allData) {
-    this.dataProvider.addData(allData);
+  addData(allData, isRaw) {
+    this.dataProvider.addData(allData, isRaw);
     this.updatedAt = Date.now();
 
     // if (this.allApplications.getSelectedApplication() === this) {
@@ -89,5 +89,9 @@ export default class Application {
 
   getSafeFileName() {
     return (this.getPreferredName())?.replace(/[:\\/]/g, '-');
+  }
+
+  toString() {
+    return `App #${this.applicationId} @${this.entryPointPath}`;
   }
 }

@@ -21,7 +21,7 @@ class PathwaysDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   init() {
-    this.state.pathwaysMode = PathwaysMode.Normal;
+    this.state.pathwaysMode = PathwaysMode.Analyze;
 
     this.createOwnComponents();
 
@@ -49,7 +49,7 @@ class PathwaysDocument extends HostComponentEndpoint {
       this.addDisposable(
         this.userActionsListener =
         // pathwaysDataProvider.onAnyData(this.view.refresh)
-        pdp.onData('userActions', this.view.refresh)
+        pdp.onAnyData(this.view.refresh)
       );
 
       this.view.reset();
@@ -70,6 +70,7 @@ class PathwaysDocument extends HostComponentEndpoint {
 
   makeInitialState() {
     return {
+      showTime: true,
       themeMode: this.componentManager.externals.getThemeMode()
     };
   }
@@ -106,6 +107,14 @@ class PathwaysDocument extends HostComponentEndpoint {
       //     await this.componentManager.externals.stopDecorating();
       //     break;
       // }
+    },
+
+    async refresh() {
+      // TODO: allow a less intrusive re-render
+      // remove all existing children
+      this.view.reset();
+      this.view.refresh();
+      await this.view.waitForRefresh();
     }
   };
 }

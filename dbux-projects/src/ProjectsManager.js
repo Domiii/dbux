@@ -70,12 +70,20 @@ export default class ProjectsManager {
     '@dbux/cli'
   ];
 
+  // ###########################################################################
+  // ctor, init, load
+  // ###########################################################################
+
   /**
    * @param {Object} externals 
    * @param {ExternalStorage} externals.storage
    */
   constructor(cfg, externals) {
     this.config = cfg;
+    this.getDbuxCliBinPath();
+    if (!this.config.dependencyRoot) {
+      throw new Error(`ProjectsManager missing dependencyRoot: ${JSON.stringify(this.config)}`);
+    }
     this.externals = externals;
     this.editor = externals.editor;
     this.practiceSession = null;
@@ -106,23 +114,6 @@ export default class ProjectsManager {
   async init() {
     await this.recoverPracticeSession();
     await initLang(this.config.dbuxLanguage);
-  }
-
-  get pdp() {
-    return this.pathwayDataProvider;
-  }
-
-  get bdp() {
-    return this.bugDataProvider;
-  }
-
-  get runStatus() {
-    return this.runner.status;
-  }
-
-  async getAndInitBackend() {
-    await this._backend.init();
-    return this._backend;
   }
 
   /**
@@ -159,6 +150,31 @@ export default class ProjectsManager {
     return this.projects;
   }
 
+  addProject() {
+    
+  }
+
+  // ###########################################################################
+  // getters
+  // ###########################################################################
+
+  get pdp() {
+    return this.pathwayDataProvider;
+  }
+
+  get bdp() {
+    return this.bugDataProvider;
+  }
+
+  get runStatus() {
+    return this.runner.status;
+  }
+
+  async getAndInitBackend() {
+    await this._backend.init();
+    return this._backend;
+  }
+
   // ###########################################################################
   // PracticeSession
   // ###########################################################################
@@ -173,7 +189,7 @@ export default class ProjectsManager {
 
     if (!bugProgress) {
       const stopwatchEnabled = await this.askForStopwatch();
-      bugProgress = this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
+      /* bugProgress = */ this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
 
       this._resetPracticeSession(bug);
 
@@ -311,6 +327,7 @@ export default class ProjectsManager {
    * @return {Promise<boolean>}
    */
   async askForStopwatch() {
+    // TOTRANSLATE
     const confirmMsg = `This is your first time activate this bug, do you want to start a timer?\n`
       + `[WARN] You will not be able to time this bug once you activate it.`;
     return await this.externals.confirm(confirmMsg, true);
@@ -404,7 +421,7 @@ export default class ProjectsManager {
   }
 
   async switchToBug(bug) {
-    const previousBug = this.getPreviousBug();
+    const previousBug = this.getCurrentBug();
 
     // if some bug are already activated, save the changes
     if (bug !== previousBug) {
@@ -475,15 +492,20 @@ export default class ProjectsManager {
 
     const result = await this.runner.testBug(bug, cfg);
 
-    const patch = await bug.project.getPatchString();
-    const apps = allApplications.selection.getAll();
-    this.pdp.addTestRun(bug, result?.code, patch, apps);
-    this.pdp.addApplications(apps);
-    this.bdp.updateBugProgress(bug, { patch });
+    await this.saveTestRunResult(bug, result);
 
     result?.code && await bug.openInEditor();
 
     return result;
+  }
+
+  async saveTestRunResult(bug, result) {
+    const patch = await bug.project.getPatchString();
+    const apps = allApplications.selection.getAll();
+
+    this.pdp.addTestRun(bug, result?.code, patch, apps);
+    this.pdp.addApplications(apps);
+    this.bdp.updateBugProgress(bug, { patch });
   }
 
   async stopRunner() {
@@ -548,6 +570,18 @@ export default class ProjectsManager {
     await this.updateActivatingBug(undefined);
   }
 
+  async resetLog() {
+    if (this.pdp.collections.testRuns.size) {
+      debug(`resetPracticeLog: resetting log only`);
+      await this.pdp.clearSteps();
+      // const bug = this.getCurrentBug();
+    }
+    else {
+      logError(`resetPracticeLog: no previous results found.`);
+      // await this.resetProgress();
+    }
+  }
+
   // ###########################################################################
   // Path util
   // ###########################################################################
@@ -596,6 +630,7 @@ export default class ProjectsManager {
   }
 
   getDbuxPath(relativePath) {
+    debug(`getDbuxPath(), relativePath='${relativePath}', getDbuxRoot()='${this.getDbuxRoot()}', config=${JSON.stringify(this.config)}`);
     return path.join(this.getDbuxRoot(), 'node_modules', relativePath);
   }
 
@@ -604,7 +639,11 @@ export default class ProjectsManager {
       // if we install in dev mode, DBUX_ROOT is set, but we are not in it
       return process.env.DBUX_ROOT;
     }
+
     // in production mode, we must install dbux separately
+    if (!this.config.dependencyRoot) {
+      throw new Error(`ProjectsManager missing dependencyRoot: ${JSON.stringify(this.config)}`);
+    }
     return this.config.dependencyRoot;
   }
 
@@ -622,7 +661,7 @@ export default class ProjectsManager {
   /**
    * @return {Bug}
    */
-  getPreviousBug() {
+  getCurrentBug() {
     return this.getBugByKey(activatedBugKeyName);
   }
 
@@ -830,6 +869,8 @@ export default class ProjectsManager {
   /**
    * @param {Object} result 
    * @param {number} result.code
+   * 
+   * @return {BugStatus}
    */
   getResultStatus(result) {
     return (!result || result.code) ? BugStatus.Attempted : BugStatus.Solved;

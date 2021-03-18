@@ -1,7 +1,5 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 
-// const TracesDisabled = true;
-const TracesDisabled = false;
 
 /**
  * Comes from the order we execute things in programVisitor
@@ -30,17 +28,17 @@ export default class ProgramMonitor {
   _runtimeMonitor;
 
   constructor(runtimeMonitor, staticProgramContext) {
-    const inProgramStaticId = 1;
+    const inProgramStaticContextId = 1;
     this._runtimeMonitor = runtimeMonitor;
     this._staticProgramContext = staticProgramContext;
-    this._programContextId = this.pushImmediate(inProgramStaticId, ProgramStartTraceId, false);
+    this._programContextId = this.pushImmediate(inProgramStaticContextId, ProgramStartTraceId, false);
     this._logger = newLogger(staticProgramContext.filePath);
   }
 
   /**
    * NOTE - A program has 3 kinds of ids:
    * 1. programId (assigned by `staticProgramContextCollection`; you usually want to use this one)
-   * 2. inProgramStaticId (assigned by instrumentation; currently always equal to 1)
+   * 2. inProgramStaticContextId (assigned by instrumentation; currently always equal to 1)
    * 3. programContextId (assigned by `executionContextCollection`; globally unique across contexts)
    */
   getProgramId() {
@@ -55,12 +53,13 @@ export default class ProgramMonitor {
   // context management
   // ###########################################################################
 
-  pushImmediate(inProgramStaticId, traceId, isInterruptable) {
+  pushImmediate(inProgramStaticContextId, traceId, isInterruptable) {
     if (this.disabled) {
       return 0;
     }
 
-    return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticId, traceId, isInterruptable);
+    const tracesDisabled = this.areTracesDisabled;
+    return this._runtimeMonitor.pushImmediate(this.getProgramId(), inProgramStaticContextId, traceId, isInterruptable, tracesDisabled);
   }
 
   popImmediate(contextId, traceId) {
@@ -89,18 +88,18 @@ export default class ProgramMonitor {
   // TODO: allow disabling tracing these?
   // ###########################################################################
 
-  // CallbackArgument(inProgramStaticId, schedulerId, traceId, cb) {
+  // CallbackArgument(inProgramStaticContextId, schedulerId, traceId, cb) {
   //   return this._runtimeMonitor.CallbackArgument(this.getProgramId(), 
-  //     inProgramStaticId, schedulerId, traceId, cb);
+  //     inProgramStaticContextId, schedulerId, traceId, cb);
   // }
 
-  preAwait(inProgramStaticId, traceId) {
+  preAwait(inProgramStaticContextId, traceId) {
     if (this.disabled) {
       // TODO: calling asynchronous methods when disabled hints at non-pure getters and will most likely cause trouble :(
       this._logger.error(`Encountered await in disabled call #${traceId} (NOTE: dbux does not play well with impure getters, especially if tey  call asynchronous code)`);
       return 0;
     }
-    return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticId, traceId);
+    return this._runtimeMonitor.preAwait(this.getProgramId(), inProgramStaticContextId, traceId);
   }
 
   wrapAwait(awaitContextId, awaitValue) {
@@ -128,7 +127,7 @@ export default class ProgramMonitor {
    * `t` is short for `trace` (we have a lot of these, so we want to keep the name short)
    */
   t(inProgramStaticTraceId) {
-    if (TracesDisabled || this.disabled) {
+    if (this.areTracesDisabled) {
       return 0;
     }
     return this._runtimeMonitor.trace(this.getProgramId(), inProgramStaticTraceId);
@@ -138,14 +137,14 @@ export default class ProgramMonitor {
    * 
    */
   traceExpr(inProgramStaticTraceId, value) {
-    if (TracesDisabled || this.disabled) {
+    if (this.areTracesDisabled) {
       return value;
     }
     return this._runtimeMonitor.traceExpression(this.getProgramId(), inProgramStaticTraceId, value);
   }
 
   traceArg(inProgramStaticTraceId, value) {
-    if (TracesDisabled || this.disabled) {
+    if (this.areTracesDisabled) {
       return value;
     }
     return this._runtimeMonitor.traceArg(this.getProgramId(), inProgramStaticTraceId, value);
@@ -178,6 +177,10 @@ export default class ProgramMonitor {
 
   get disabled() {
     return !!this._runtimeMonitor.disabled;
+  }
+
+  get areTracesDisabled() {
+    return !!this._runtimeMonitor.tracesDisabled;
   }
 
   warnDisabled(...args) {

@@ -1,6 +1,7 @@
 import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import { registerCommand } from './commandUtil';
+import { showInformationMessage } from '../codeUtil/codeModals';
 import { switchMode } from '../traceDetailsView/nodes/StaticTraceTDNodes';
 import { NavigationMethods } from '../traceDetailsView/nodes/NavigationNode';
 import { translate } from '../lang';
@@ -54,6 +55,6 @@ export function initTraceDetailsViewCommands(context, traceDetailsViewController
 
   registerCommand(context,
     'dbuxTraceDetailsView.selectTraceAtCursor.empty',
-    () => window.showInformationMessage(translate('noTrace'))
+    () => showInformationMessage(translate('noTrace'))
   );
 }

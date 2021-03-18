@@ -179,6 +179,7 @@ export default class SerialTaskQueue {
         }
       };
 
+      wrappedCb.__cb = cb;
       wrappedCb.__priority = priority; // hackfix
       wrappedCb.__name = cb.__name || cb.name;
 

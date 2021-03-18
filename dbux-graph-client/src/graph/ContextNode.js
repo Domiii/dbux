@@ -17,7 +17,14 @@ class ContextNode extends ClientComponentEndpoint {
           <div class="content">
             <div class="flex-row">
               <div class="flex-row">
-                <button data-el="nodeToggleBtn" class="btn node-toggle-btn"></button>
+                <div class="mode-btn-wrapper flex-row">
+                  <button data-el="previousModeButton" class="btn graph-mode-button">
+                    <img data-el="previousModeButtonImg">
+                  </button>
+                  <button data-el="nextModeButton" class="btn graph-mode-button">
+                    <img data-el="nextModeButtonImg">
+                  </button>
+                </div>
                 <div data-el="parentLabel" class="ellipsis-20 dbux-link"></div>
                 <div data-el="title" class="flex-row cross-axis-align-center">
                   <div data-el="contextLabel" class="ellipsis-20 dbux-link"></div>
@@ -29,7 +36,7 @@ class ContextNode extends ClientComponentEndpoint {
                 <!--button class="highlight-btn emoji" data-el="staticContextHighlightBtn"><span>💡</span></button-->
                 <button data-el="prevContextBtn" class="hidden">⇦</button>
                 <button data-el="nextContextBtn" class="hidden">⇨</button>
-                <div class="loc-label gray">
+                <div class="loc-label">
                   <span data-el="locLabel"></span>
                   <!--span data-el="parentLocLabel" class="dbux-link"></span-->
                 </div>

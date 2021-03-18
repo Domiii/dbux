@@ -5,10 +5,8 @@ module.exports = {
   // see https://github.com/webpack/webpack/issues/11510#issuecomment-696027212
   sourceType: "unambiguous",
   ignore: [],
-  sourceMaps: "inline",
+  sourceMaps: false,
   retainLines: true,
-  ...require('../config/babel-presets-umd'),
-
   presets: [
     [
       '@babel/preset-env',
@@ -23,4 +21,5 @@ module.exports = {
       }
     ]
   ],
+  ...require('../config/babel-presets-umd'),
 };

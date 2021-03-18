@@ -1,6 +1,138 @@
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
+// ###########################################################################
+//  Mangers
+// ###########################################################################
+
+class IndexManager {
+  constructor(index) {
+    this.index = index;
+  }
+
+  createNew() {
+    throw new Error('abstract method not implemented');
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  get(key) {
+    throw new Error('abstract method not implemented');
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  getOrCreateContainer(key) {
+    throw new Error('abstract method not implemented');
+  }
+
+  getAllKeys() {
+    throw new Error('abstract method not implemented');
+  }
+}
+
+class ArrayIndexManager extends IndexManager {
+  createNew() {
+    return [];
+  }
+
+  get(key) {
+    return this.index._byKey[key];
+  }
+
+  getOrCreateContainer(key) {
+    let container = this.get(key);
+    if (!container) {
+      container = this.index._containerMethods.createNewContainer();
+      this.index._byKey[key] = container;
+    }
+    return container;
+  }
+
+  getAllKeys() {
+    const keys = [];
+    for (let i = 0; i < this.index._byKey.length; ++i) {
+      if (this.get(i)) {
+        keys.push(i);
+      }
+    }
+    return keys;
+  }
+}
+
+class MapIndexManager extends IndexManager {
+  createNew() {
+    return new Map();
+  }
+
+  get(key) {
+    return this.index._byKey.get(key);
+  }
+
+  getOrCreateContainer(key) {
+    let container = this.get(key);
+    if (!container) {
+      container = this.index._containerMethods.createNewContainer();
+      this.index._byKey.set(key, container);
+    }
+    return container;
+  }
+
+  getAllKeys() {
+    return Array.from(this.index._byKey.keys());
+  }
+}
+
+// ###########################################################################
+//  Container methods
+// ###########################################################################
+
+class ContainerMethods {
+  constructor(index) {
+    this.index = index;
+  }
+
+  createNewContainer() {
+    throw new Error('abstract method not implemented');
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  getFirstInContainter(container) {
+    throw new Error('abstract method not implemented');
+  }
+  
+  // eslint-disable-next-line no-unused-vars
+  addEntry(container, entry) {
+    throw new Error('abstract method not implemented');
+  }
+}
+
+class ArrayContainerMethods extends ContainerMethods {
+  createNewContainer() {
+    return [];
+  }
+
+  getFirstInContainter(container) {
+    return container[0] || null;
+  }
+
+  addEntry(container, entry) {
+    container.push(entry);
+  }
+}
+
+class SetContainerMethods extends ContainerMethods {
+  createNewContainer() {
+    return new Set();
+  }
+
+  getFirstInContainter(container) {
+    return container.values().next().value || null;
+  }
+
+  addEntry(container, entry) {
+    container.add(entry);
+  }
+}
+
 /**
  * @template {T}
  */
@@ -16,35 +148,53 @@ export default class CollectionIndex {
    */
   _byKey;
 
-  constructor(collectionName, indexName, { addOnNewData = true, stringKey = false } = EmptyObject) {
+  constructor(collectionName, indexName, { addOnNewData = true, isMap = false, isContainerSet = false } = EmptyObject) {
     this.collectionName = collectionName;
     this.name = indexName;
     this.log = newLogger(`${indexName} (Index)`);
     this.addOnNewData = addOnNewData;
-    this.stringKey = stringKey;
+    this.isMap = isMap;
+    this.isContainerSet = isContainerSet;
+
+    if (this.isMap) {
+      this._manager = new MapIndexManager(this);
+    }
+    else {
+      this._manager = new ArrayIndexManager(this);
+    }
+
+    if (this.isContainerSet) {
+      this._containerMethods = new SetContainerMethods(this);
+    }
+    else {
+      this._containerMethods = new ArrayContainerMethods(this);
+    }
   }
 
   _init(dp) {
     this.dp = dp;
-    if (this.stringKey) {
-      this._byKey = {};
-    }
-    else {
-      this._byKey = [];
-    }
+    this._byKey = this._manager.createNew();
   }
+
+  // ###########################################################################
+  //  public(usage)
+  // ###########################################################################
 
   /**
    * @param {number} key 
    * @return {T[]}
    */
   get(key) {
-    return this._byKey[key];
+    return this._manager.get(key);
   }
 
   getFirst(key) {
-    const ofKey = this.get(key);
-    return ofKey?.[0] || null;
+    const container = this.get(key);
+    return this._containerMethods.getFirstInContainter(container) || null;
+  }
+
+  getAll() {
+    return this._byKey;
   }
 
   getLast(key) {
@@ -56,27 +206,13 @@ export default class CollectionIndex {
   }
 
   getAllKeys() {
-    if (this.stringKey) {
-      return Object.keys(this._byKey);
-    }
-    else {
-      const keys = [];
-      for (let i = 0; i < this._byKey.length; ++i) {
-        if (this._byKey[i]) {
-          keys.push(i);
-        }
-      }
-      return keys;
-    }
+    return this._manager.getAllKeys();
   }
 
-  /**
-   * @param {T[]} entries 
-   */
-  addEntries(entries) {
-    for (const entry of entries) {
-      this.addEntry(entry);
-    }
+  addEntryToKey(key, entry) {
+    const container = this._manager.getOrCreateContainer(key);
+    this.beforeAdd?.(container, entry);
+    this._containerMethods.addEntry(container, entry);
   }
 
   /**
@@ -94,14 +230,21 @@ export default class CollectionIndex {
       return;
     }
 
-    const ofKey = (this._byKey[key] = this._byKey[key] || []);
-    this.beforeAdd?.(ofKey, entry);
-    ofKey.push(entry);
+    this.addEntryToKey(key, entry);
 
     // sanity check
-    // if (ofKey.includes(undefined)) {
-    //   this.log.error('Index contains undefined values', key, entry, ofKey);
+    // if (container.includes(undefined)) {
+    //   this.log.error('Index contains undefined values', key, entry, container);
     // }
+  }
+
+  /**
+   * @param {T[]} entries 
+   */
+  addEntries(entries) {
+    for (const entry of entries) {
+      this.addEntry(entry);
+    }
   }
 
   addEntryById(id) {

@@ -147,7 +147,7 @@ const StylingsByName = {
       },
     }
   },
-  
+
   /**
    * We use this for setters/getters/any recorded call without callId.
    */
@@ -214,6 +214,14 @@ const decoNamesByType = {
     }
     // unknown function call
     return 'CallExpressionNoStep';
+  },
+  CallArgument(dp, staticTrace, trace) {
+    const { traceId } = trace;
+    if (dp.util.isTraceFunctionValue(traceId)) {
+      return 'CallbackArgument';
+    }
+
+    return false;
   }
 };
 

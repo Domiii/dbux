@@ -23,17 +23,17 @@ const translation = {
     tutorial: 'Start Tutorial',
     survey: 'Take Survey',
   },
-  busyNow: '[dbux] busy now...',
+  busyNow: 'busy now...',
   noTrace: 'No traces at cursor.',
   savedSuccessfully: 'File saved successfully: {{fileName}}',
-  noApplication: '[Dbux] No application selected',
+  noApplication: 'No application selected',
   projectView: {
     stopPractice: {
       giveUp: 'Are you sure you want to give up the timed challenge?',
       stop: 'Do you want to stop the practice session?',
     },
     existBug: {
-      message: '[Dbux] You are currently practicing {{bug}}',
+      message: 'You are currently practicing {{bug}}',
       ok: 'OK',
       giveUp: 'Give Up',
     },

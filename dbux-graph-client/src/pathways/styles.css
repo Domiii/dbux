@@ -33,8 +33,7 @@ html, body {
 #pathways-timeline div {
   text-align: center;
   height: 100%;
-  border-right: 1px solid gray;
-  border-left: 1px solid gray;
+  /* border-right: .1px solid gray; */
 }
 
 #pathways-timeline-stale-cover {

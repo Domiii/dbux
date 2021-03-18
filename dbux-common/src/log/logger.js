@@ -1,5 +1,6 @@
 /* eslint no-console: 0 */
 import NanoEvents from 'nanoevents';
+import { performance } from '../util/universalLibs';
 
 
 (function _compatabilityHackfix() {
@@ -80,8 +81,15 @@ export function onLogError(cb) {
 // Logger
 // ###########################################################################
 
+function nsWrapper(logCb, ns) {
+  return (...args) => {
+    logCb(ns, ...args);
+    // this._emitter.emit(name, ...args);
+  };
+}
+
 export class Logger {
-  constructor(ns) {
+  constructor(ns, logWrapper = nsWrapper) {
     this.ns = ns;
     // this._emitter = 
 
@@ -91,20 +99,55 @@ export class Logger {
       warn: logWarn,
       error: logError
     };
-
+    this._addLoggers(logFunctions, logWrapper);
+  }
+  
+  _addLoggers(logFunctions, logWrapper) {
     for (const name in logFunctions) {
       const f = logFunctions[name];
       // const nsArgs = (ns && [ns] || EmptyArray);
-      this[name] = (...args) => {
-        f(ns, ...args);
-        // this._emitter.emit(name, ...args);
-      };
+      this[name] = logWrapper(f, this.ns);
     }
   }
 }
 
+// ###########################################################################
+// PerfLogger
+// ###########################################################################
+
+function makeTimestampDefault() {
+  return `[${((performance.now() / 1000).toFixed(3) + '').padStart(7, 0)}]`;
+}
+
+export function nsPerfWrapper(logCb, ns, timestampCb = makeTimestampDefault) {
+  return (...args) => logCb(ns, timestampCb(), ...args);
+}
+
+export class PerfLogger extends Logger {
+  constructor(ns) {
+    super(ns);
+
+    const logFunctions = {
+      logPerf: loglog,
+      debugPerf: logDebug,
+      warnPerf: logWarn,
+      errorPerf: logError
+    };
+    this._addLoggers(logFunctions, nsPerfWrapper);
+  }
+}
+
+
+// ###########################################################################
+// log functions
+// ###########################################################################
+
 export function newLogger(ns) {
-  return new Logger(ns && `DBUX ${ns}`);
+  return new Logger(ns && `Dbux ${ns}`);
+}
+
+export function newPerfLogger(ns) {
+  return new PerfLogger(ns && `Dbux ${ns}`);
 }
 
 export function newFileLogger(fpath) {
@@ -160,7 +203,7 @@ export function logDebug(ns, ...args) {
 export function logWarn(ns, ...args) {
   ns = wrapNs(ns);
   outputStreams.warn(ns, ...args);
-  report('warn', ns, ...args);
+  // report('warn', ns, ...args);
 }
 
 export function logError(ns, ...args) {
@@ -174,7 +217,7 @@ export function logError(ns, ...args) {
 // ###########################################################################
 
 export function logInternalError(...args) {
-  const msgArgs = ['[DBUX INTERNAL ERROR]', ...args];
+  const msgArgs = ['[Dbux INTERNAL ERROR]', ...args];
   outputStreams.error(...msgArgs);
   errors.push(msgArgs);
   report('error', ...msgArgs);

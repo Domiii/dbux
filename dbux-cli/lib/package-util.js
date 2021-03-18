@@ -82,7 +82,7 @@ function makeResolve(root, relativePaths = []) {
   const absolutePaths = relativePaths.map(f => path.resolve(path.join(root, f)));
   absolutePaths.forEach(f => {
     if (!fs.existsSync(f)) {
-      throw new Error('invalid dependency does not exist: ' + f);
+      throw new Error(`invalid dependency does not exist: ${f} (root=${root})`);
     }
   });
 

@@ -9,7 +9,7 @@ import { isCallResult, hasCallId } from '@dbux/common/src/core/constants/traceCa
 import ValueTypeCategory, { isObjectCategory, isPlainObjectOrArrayCategory, isFunctionCategory, ValuePruneState } from '@dbux/common/src/core/constants/ValueTypeCategory';
 
 /**
- * @typedef {import('./RuntimeDataProvider').RuntimeDataProvider} DataProvider
+ * @typedef {import('./RuntimeDataProvider').default} DataProvider
  */
 
 // eslint-disable-next-line no-unused-vars
@@ -28,15 +28,6 @@ export default {
   // ###########################################################################
   // contexts
   // ###########################################################################
-  /** @param {DataProvider} dp */
-  getContextsByTrackId(dp, trackId) {
-    const traces = dp.indexes.traces.byTrackId.get(trackId);
-    const contextsSet = new Set();
-    traces.forEach((trace) => {
-      contextsSet.add(dp.collections.executionContexts.getById(trace.contextId));
-    });
-    return Array.from(contextsSet);
-  },
 
   /** @param {DataProvider} dp */
   getAllRootContexts(dp) {
@@ -45,6 +36,7 @@ export default {
 
   /** @param {DataProvider} dp */
   getRootContextIdByContextId(dp, contextId) {
+    // TODO: use `this.getFirstContextOfRun(runId)` instead
     const { executionContexts } = dp.collections;
     let lastContextId = contextId;
     let parentContextId;
@@ -63,10 +55,21 @@ export default {
   getFirstTracesInRuns(dp) {
     return dp.indexes.traces.firsts.get(1);
   },
+  /**
+   * Get all contexts in which an object of given `trackId` has been recorded.
+   * 
+   * @param {DataProvider} dp
+   */
+  getContextsByTrackId(dp, trackId) {
+    // get all participating traces
+    const traces = dp.indexes.traces.byTrackId.get(trackId);
 
-  /** @param {DataProvider} dp */
-  getAllErrorTraces(dp) {
-    return dp.indexes.traces.error.get(1) || EmptyArray;
+    // generate set of contexts of those traces
+    const contextsSet = new Set();
+    traces.forEach((trace) => {
+      contextsSet.add(dp.collections.executionContexts.getById(trace.contextId));
+    });
+    return Array.from(contextsSet);
   },
 
   /** @param {DataProvider} dp */
@@ -193,7 +196,17 @@ export default {
    */
   getParentTraceOfContext(dp, contextId) {
     const context = dp.collections.executionContexts.getById(contextId);
+
     const parentTrace = dp.collections.traces.getById(context.parentTraceId);
+    if (!parentTrace) {
+      return null;
+    }
+
+    const parentContext = dp.util.getExecutionContext(parentTrace.contextId);
+
+    if (parentContext?.tracesDisabled) {
+      return null;
+    }
 
     return parentTrace || null;
   },
@@ -223,13 +236,18 @@ export default {
     return firstTraceId === traceId;
   },
 
+  /** @param {DataProvider} dp */
+  getAllErrorTraces(dp) {
+    return dp.indexes.traces.error.get(1) || EmptyArray;
+  },
+
   // ###########################################################################
   // trace values
   // ###########################################################################
 
   /**
    * NOTE: We want to link multiple traces against the same trace sometimes.
-   * E.g.: we want to treat the value of a `BCE` the same as its `CRE`.
+   *  E.g.: we want to treat the value of a `BCE` the same as its `CRE`.
    * @param {DataProvider} dp 
   */
   getValueTrace(dp, traceId) {
@@ -266,18 +284,29 @@ export default {
     return valueRef && isFunctionCategory(valueRef.category) || false;
   },
 
-  /** @param {DataProvider} dp */
+  /**
+   * True if trace has value that is not `undefined`.
+   * @param {DataProvider} dp
+   */
   doesTraceHaveValue(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
-    const { value } = trace;
-    if (value === undefined) {
-      const valueRef = dp.util.getTraceValueRef(traceId);
-      if (!valueRef) { // || valueRef.value === undefined) {
-        // TODO: better distinguish between existing and non-existing values
-        return false;
-      }
+    if (trace.value !== undefined || trace.valueId) {
+      return true;
     }
-    return true;
+    else {
+      return false;
+    }
+
+    // const trace = dp.util.getValueTrace(traceId);
+    // const { value } = trace;
+    // if (value === undefined) {
+    //   const valueRef = dp.util.getTraceValueRef(traceId);
+    //   if (!valueRef) { // || valueRef.value === undefined) {
+    //     // TODO: better distinguish between existing and non-existing values
+    //     return false;
+    //   }
+    // }
+    // return true;
 
     // const value = dp.util.getTraceValue(traceId);
     // return value !== undefined;
@@ -295,22 +324,24 @@ export default {
   // },
 
   /**
-   * Find value of given trace, returns undefined if not a value trace
+   * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
+   * 
    * @param {DataProvider} dp
+   * @return Value of given trace. If value is `undefined`, it could mean that the `value` is actually `undefined`, or, in case of traces that are not expressions, that there is no value.
    */
   getTraceValue(dp, traceId) {
-    const trace = dp.util.getValueTrace(traceId);
-    const { value } = trace;
-    if (value !== undefined) {
-      return value;
+    const valueTrace = dp.util.getValueTrace(traceId);
+
+    if (valueTrace.value !== undefined) {
+      return valueTrace.value;
     }
 
-    const valueRef = dp.util.getTraceValueRef(traceId);
-    if (!valueRef) {
-      // TODO: better distinguish between existing and non-existing values
-      return undefined;
+    if (valueTrace.valueId) {
+      const valueRef = dp.util.getTraceValueRef(traceId);
+      return valueRef.value;
     }
-    return valueRef.value;
+
+    return undefined;
   },
 
   /**
@@ -324,7 +355,11 @@ export default {
     return null;
   },
 
-  /** @param {DataProvider} dp */
+  /** 
+   * WARNING: Call `doesTraceHaveValue` to make sure, the trace has a value.
+   * 
+   * @param {DataProvider} dp
+   */
   getTraceValueString(dp, traceId) {
     const trace = dp.util.getValueTrace(traceId);
 
@@ -333,27 +368,29 @@ export default {
       return trace._valueString;
     }
 
-    const valueMessage = dp.util.getTraceValueMessage(trace.traceId);
+    // TODO: separate "message" from valueString
+    // A message is generated if there is an issue with the value or it was omitted.
+    const valueMessage = dp.util.getTraceValueMessage(traceId);
     if (valueMessage) {
       return valueMessage;
     }
 
     // get value
     const value = dp.util.getTraceValue(traceId);
-    if (value !== undefined) {
-      let valueString;
-      if (dp.util.isTraceFunctionValue(traceId)) {
-        valueString = value;
-      }
-      else {
-        valueString = JSON.stringify(value);
-      }
 
-      // hackfix: we cache this thing
-      return trace._valueString = valueString;
+    let valueString;
+    if (dp.util.isTraceFunctionValue(traceId)) {
+      valueString = value;
+    }
+    else if (value === undefined) {
+      valueString = 'undefined';
+    }
+    else {
+      valueString = JSON.stringify(value);
     }
 
-    return null;
+    // hackfix: we cache this thing
+    return trace._valueString = valueString;
   },
 
   /** @param {DataProvider} dp */
@@ -623,10 +660,37 @@ export default {
     return staticContextId;
   },
 
+  getContextStaticContextId(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    const { staticContextId } = context;
+    return staticContextId;
+  },
+
+  getContextStaticContext(dp, contextId) {
+    const staticContextId = dp.util.getContextStaticContextId(contextId);
+    return dp.collections.staticContexts.getById(staticContextId);
+  },
+
   /** @param {DataProvider} dp */
   getTraceStaticContext(dp, traceId) {
     const staticContextId = dp.util.getTraceStaticContextId(traceId);
     return dp.collections.staticContexts.getById(staticContextId);
+  },
+
+  /** @param {DataProvider} dp */
+  getFirstContextOfRun(dp, runId) {
+    const contexts = dp.indexes.executionContexts.byRun.get(runId);
+    if (!contexts?.length) {
+      return null;
+    }
+    return contexts[0];
+  },
+
+  /** @param {DataProvider} dp */
+  isFirstContextOfRun(dp, contextId) {
+    const { runId } = dp.collections.executionContexts.getById(contextId);
+    const firstContextId = dp.util.getFirstContextOfRun(runId)?.contextId;
+    return firstContextId === contextId;
   },
 
   // ###########################################################################
@@ -642,6 +706,11 @@ export default {
   getTrace(dp, traceId) {
     const trace = dp.collections.traces.getById(traceId);
     return trace;
+  },
+
+  getExecutionContext(dp, contextId) {
+    const context = dp.collections.executionContexts.getById(contextId);
+    return context;
   },
 
   getStaticTrace(dp, traceId) {
@@ -906,6 +975,59 @@ export default {
   getCodeChunkId(dp, traceId) {
     const { codeChunkId } = dp.util.getTrace(traceId);
     return codeChunkId;
+  },
+
+  // ###########################################################################
+  // dynamic tracing
+  // ###########################################################################
+
+  /**
+   * Whether or not traces for this context were enabled.
+   */
+  isContextTraced(dp, contextId) {
+    const { tracesDisabled } = dp.util.getExecutionContext(contextId);
+    return !tracesDisabled;
+  },
+
+  // ###########################################################################
+  // graph traversal
+  // ###########################################################################
+
+  traverseDfs(dp, contexts, dfsRecurse, preOrderCb, postOrderCb) {
+    const runIds = new Set(contexts.map(c => c.runId));
+
+    dfsRecurse = dfsRecurse || ((dfs, context, children, prev) => {
+      for (const child of children) {
+        dfs(child, prev);
+      }
+    });
+
+    const dfs = ((context) => {
+      const children = dp.util.getChildrenOfContext(context.contextId);
+
+      let subtreeResult;
+      if (preOrderCb) {
+        subtreeResult = preOrderCb(context, children, subtreeResult);
+      }
+
+      subtreeResult = dfsRecurse(dfs, context, children, subtreeResult);
+
+      if (postOrderCb) {
+        subtreeResult = postOrderCb(context, children, subtreeResult);
+      }
+      return subtreeResult;
+    });
+
+    // find all roots
+    // let lastResult = null;
+    for (const runId of runIds) {
+      const root = dp.util.getFirstContextOfRun(runId);
+      dfs(root);
+    }
+  },
+
+  getChildrenOfContext(dp, contextId) {
+    return dp.indexes.executionContexts.children.get(contextId) || EmptyArray;
   }
 
 };

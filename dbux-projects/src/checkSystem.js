@@ -39,6 +39,9 @@ function isChecked(/* manager */) {
 async function check(program) {
   try {
     let paths = await which(program);
+    if (!paths?.length) {
+      return {};
+    }
     return { path: paths[0], multiple: paths.length > 1 };
   } catch (err) {
     return {};
@@ -121,7 +124,7 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
         message += `\n    Warning: multiple path found while checking.`;
       }
     } else if (res?.path) {
-      message += `¯\\_(ツ)_/¯ ${program} installed but old. Version is ${res.version} but we recommend ${req.version}. ` +
+      message += `¯\\_(ツ)_/¯ "${program}" installed but old. Version is ${res.version} but we recommend ${req.version}. ` +
         `Your version might or might not work. We strongly recommend upgrading to latest (or at least a later) version instead.`;
       // success = false;
     } else if (res) {
@@ -138,12 +141,12 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
 
   modalMessage += success ?
     `\nSUCCESS! All system dependencies seem to be in order.` :
-    `\nPROBLEM: One or more system dependencies are not installed. Fix them then try again.`;
+    `\nPROBLEM: One or more system dependencies are not installed. Fix them, then try again.`;
 
   // debug(success, modalMessage);
 
   if ((results?.git?.success === false || results?.bash?.success === false) && isWindows()) {
-    modalMessage += '\n\nWindows users can install bash and git into $PATH by installing git by installing "git" ' +
+    modalMessage += '\n\nWindows users can install bash and git into $PATH by installing "git" ' +
       'and checking the "adding UNIX tools to PATH". You can achieve that by:\n' +
       '1. Installing choco\n' +
       '2. then run: choco install git.install --params "/GitAndUnixToolsOnPath"';
@@ -165,7 +168,7 @@ async function _checkSystem(projectManager, requirement, calledFromUser) {
   }
 
   if (!success && !calledFromUser && !ignore) {
-    throw new Error(`[DBUX] System dependency check failed :(`);
+    throw new Error(`[Dbux] System dependency check failed :(`);
   }
 
   await updateCheckedStatus(success);

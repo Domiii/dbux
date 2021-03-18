@@ -88,15 +88,6 @@ export default class KarmaProject extends Project {
 
     // see: https://git-scm.com/docs/git-checkout#Documentation/git-checkout.txt-emgitcheckoutem-b-Bltnewbranchgtltstartpointgt
     await this.exec(`git checkout -B ${tag} tags/${tag}`);
-
-    // Copy assets again in this branch
-    await this.installAssets();
-
-    // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
-    await this.npmInstall();
-
-    // Auto commit again
-    await this.autoCommit();
   }
 
 

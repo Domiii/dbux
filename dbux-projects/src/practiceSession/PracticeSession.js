@@ -79,7 +79,7 @@ export default class PracticeSession {
       await this.askToFinish();
     }
     else if (result?.code) {
-      this.manager.externals.alert(`[Dbux] ${result?.code} test(s) failed. Keep going! :)`);
+      this.manager.externals.alert(`${result?.code} test(s) failed. Keep going! :)`);
     }
     // else: errored out + already reported
     await this.save();
@@ -112,7 +112,7 @@ export default class PracticeSession {
     }
   }
 
-  tagBugTrace(trace) {
+  tagBugTrace(trace, cursorFile, cursorLine) {
     if (this.isFinished()) {
       const alertsMsg = `Practice session aleady finished.`;
       this.manager.externals.alert(alertsMsg);
@@ -126,7 +126,14 @@ export default class PracticeSession {
       line: dp.util.getTraceLoc(traceId).start.line,
     };
 
-    if (this.bug.isCorrectBugLocation(location)) {
+    if (cursorFile !== location.fileName || cursorLine !== location.line) {
+      const alertsMsg = `Place cursor on selected trace and try again. (This is to prevent accidentally flagging the wrong line.)`;
+      this.manager.externals.alert(alertsMsg);
+      return;
+    }
+
+    const isCorrect = this.bug.isCorrectBugLocation(location);
+    if (isCorrect) {
       this.manager.bdp.updateBugProgress(this.bug, { status: BugStatus.Found });
       this.setState(PracticeSessionState.Found);
       emitSessionFinishedEvent(this.state);
@@ -136,9 +143,15 @@ export default class PracticeSession {
       const congratsMsg = `Congratulations!! You have found the bug!`;
       this.manager.externals.alert(congratsMsg, true);
     }
-    else {
+    else if (isCorrect === false) {
       // TOTRANSLATE
       const failedMsg = `This is not the right line, keep going!`;
+      this.manager.externals.alert(failedMsg, false);
+    }
+    else if (isCorrect === null) {
+      // skip if the result is null or something else, since bug location may not been defined yet
+      // TOTRANSLATE
+      const failedMsg = `Sorry, we have not defined the bug location yet.`;
       this.manager.externals.alert(failedMsg, false);
     }
   }
@@ -213,6 +226,14 @@ export default class PracticeSession {
    */
   maybeUpdateBugStatusByResult(result) {
     const newStatus = this.manager.getResultStatus(result);
+    
+    this.updateBugStatus(newStatus);
+  }
+
+  /**
+   * @param {BugStatus} newStatus 
+   */
+  updateBugStatus(newStatus) {
     const bugProgress = this.bdp.getBugProgressByBug(this.bug);
     if (bugProgress.status < newStatus) {
       const update = { status: newStatus };

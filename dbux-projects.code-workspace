@@ -1,18 +1,30 @@
 {
 	"folders": [
 		{
-			"path": "samples/__samplesInput__"
+			"name": "todomvc-es6",
+			"path": "dbux_projects\\todomvc-es6"
 		},
 		{
-			"path": "dbux_projects/todomvc-es6"
+			"name": "eslint",
+			"path": "dbux_projects\\eslint"
 		},
 		{
 			"path": "samples/case-studies"
+		},
+		{
+			"path": "dbux_projects/express"
+		},
+		{
+			"path": "samples/__samplesInput__"
+		},
+		{
+			"path": "dbux_projects/Chart.js"
 		}
 	],
 	"settings": {
 		"dbux.autoStart": true,
 		// "dbux.run.nodeArgs": "--enable-source-maps",
-		"debug.node.autoAttach": "off"
+		"debug.node.autoAttach": "off",
+		// "dbux.run.dbuxArgs": "--esnext=false"
 	}
 }

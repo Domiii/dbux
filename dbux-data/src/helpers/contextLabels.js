@@ -1,4 +1,3 @@
-
 import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
 
 /** @typedef {import('@dbux/common/src/core/data/ExecutionContext').default} ExecutionContext */
@@ -19,7 +18,13 @@ export function makeContextLabel(context, app) {
     const parentContext = dp.collections.executionContexts.getById(parentContextId);
     const firstTrace = dp.indexes.traces.byContext.getFirst(contextId);
     const staticTrace = dp.collections.staticTraces.getById(firstTrace.staticTraceId);
-    const displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+    let displayName;
+    if (staticTrace.displayName?.match(/^await /)) {
+      displayName = staticTrace.displayName.replace('await ', '').replace(/\([^(]*\)$/, '');
+    }
+    else {
+      displayName = '(async start)';
+    }
     return `${makeContextLabel(parentContext, app)} | ${displayName}`;
   }
   else {

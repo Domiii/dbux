@@ -11,8 +11,6 @@
   * `imagemick` is on `choco`: https://chocolatey.org/packages/imagemagick.app
 * [Converting multiple files at once](https://stackoverflow.com/a/21722355) (use `bash` for [`glob`](https://linuxhint.com/bash_globbing_tutorial/))
 
-Maybe I should just do it here instead, if its too much of a hassle on Windows?
-
 
 Random collection of stuff:
 

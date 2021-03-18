@@ -1,6 +1,9 @@
 /* eslint no-console: 0 */
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 
+let chooseAlwaysNo = false;
+let chooseVersionBump;
+
 const path = require('path');
 const fs = require('fs');
 const open = require('open');
@@ -69,7 +72,7 @@ async function yesno(q) {
   // process.stderr.write(q); // NOTE: write() won't flush and there is no way to force it...?
   log(q);
 
-  const val = await input.readLine();
+  const val = chooseAlwaysNo ? 'n' : await input.readLine();
   return val === 'y';
 }
 
@@ -120,12 +123,12 @@ async function pullDev() {
  * Bump version and produce new git tag
  */
 async function bumpVersion() {
-  const [choice] = await menu('Version bump?', {
+  const choice = chooseVersionBump || await menu('Version bump?', {
     1: ['(skip)'],
     2: ['patch'],
     3: ['minor'],
     4: ['major']
-  });
+  })[0];
 
   if (choice !== '(skip)') {
     await exec(`npx lerna version ${choice} --force-publish -y`);
@@ -245,6 +248,14 @@ function getBranchName() {
 
 async function main() {
   input = new LineReader();
+  // console.log(process.argv);
+  // npm run publish -- n
+  if (process.argv[2] === 'n') {
+    chooseAlwaysNo = true;
+    chooseVersionBump = process.argv[3] || 'patch';
+    console.warn(`Non-interactive mode enabled: always NO, chooseVersionBump='${chooseVersionBump}'`);
+  }
+
   log(`Preparing to publish (bumping from version ${await getDbuxVersion()})...`);
 
   try {
@@ -258,7 +269,7 @@ async function main() {
   }
 
   if (!await execCaptureOut('cd dbux-code && npx vsce ls-publishers')) {
-    throw new Error('Not logged in with VS Marketplace. Login first with: `cd dbux-code && npx vsce login dbux`');
+    throw new Error('Not logged in with VS Marketplace. Login first with: `cd dbux-code && npx vsce login Domi`');
   }
 
   // TODO: this does not work the way we would like it to

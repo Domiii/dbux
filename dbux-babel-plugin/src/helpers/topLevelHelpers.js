@@ -21,7 +21,12 @@ function extractExportNamedVariableDeclaration(path, node, exportIds, newIds, bo
 }
 
 function extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes) {
-  if (node.declaration) {
+  if (node.source) {
+    // e.g. `export ... from ...`
+    exportNodes.push(node);
+  }
+  else if (node.declaration) {
+    // e.g. `export const x = 1;`
     const { id } = node.declaration;
     if (t.isVariableDeclaration(node.declaration)) {
       // variable declaration
@@ -44,6 +49,7 @@ function extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes,
     }
   }
   else if (node.specifiers) {
+    // e.g.: `export { ... }`
     // assign local specifier to new var, then
     // export new var as exported specifier
     const nodeExportIds = node.specifiers.map(spec => spec.local);
@@ -67,6 +73,7 @@ function extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNode
     exportNodes.push(node);
   }
   else if (node.declaration.id) {
+    // e.g. `export default function f() {}`
     const { id } = node.declaration;
     const newId = path.scope.generateUidIdentifier(id.name);
     exportIds.push(id);
@@ -75,6 +82,7 @@ function extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNode
     bodyNodes.push(node.declaration);   // keep declaration in body
   }
   else if (t.isIdentifier(node.declaration)) {
+    // e.g. `export default x`
     const id = node.declaration;
     const newId = path.scope.generateUidIdentifier(id.name);
     exportIds.push(id);
@@ -82,11 +90,24 @@ function extractExportDefaultDeclaration(path, node, exportIds, newIds, bodyNode
     exportNodes.push(t.exportDefaultDeclaration(newId));
   }
   else {
-    exportNodes.push(node);
+    // e.g. `export default f()`
+    const newId = path.scope.generateUidIdentifier('exp');
+    exportNodes.push(t.exportDefaultDeclaration(newId));
+    bodyNodes.push(               // assign temp variable in body
+      t.variableDeclaration('var', [
+        t.variableDeclarator(newId, node.declaration)
+      ])
+    );
+    // bodyNodes.push(               // assign temp variable in body
+    //   t.expressionStatement(
+    //     t.assignmentExpression('=', newId, node.declaration)
+    //   )
+    // );
   }
 }
 
 function extractExportDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes) {
+  // console.warn(`[export] ${path} ${t.isExportNamedDeclaration(node)} ${t.isExportDefaultDeclaration(node)}`);
   if (t.isExportNamedDeclaration(node)) {
     extractExportNamedDeclaration(path, node, exportIds, newIds, bodyNodes, exportNodes);
   }

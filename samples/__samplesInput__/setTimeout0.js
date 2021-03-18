@@ -1,18 +1,18 @@
+function main() {
+  f();
+}
+
 function f() {
-  setTimeout(g, 
-    300);
   console.log('f');
+  g();
 }
 
 function g() {
   console.log('g');
 }
 
-function main() {
-  setTimeout(f, 300);
-}
-
-main();
+setTimeout(main, 1000);
+setTimeout(main, 2000);
 
 // function f1() {
 //   console.log('done');

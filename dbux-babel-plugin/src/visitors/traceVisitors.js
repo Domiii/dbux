@@ -8,11 +8,12 @@
 
 import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
+import truncate from 'lodash/truncate';
+import * as t from '@babel/types';
 import Enum from '@dbux/common/src/util/Enum';
 import TraceType from '@dbux/common/src/core/constants/TraceType';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
-import truncate from 'lodash/truncate';
 import { traceWrapExpression, buildTraceNoValue, traceCallExpression, instrumentCallExpressionEnter, getTracePath } from '../helpers/traceHelpers';
 // import { loopVisitor } from './loopVisitors';
 import { isCallPath } from '../helpers/functionHelpers';
@@ -21,8 +22,9 @@ import { awaitVisitEnter, awaitVisitExit } from './awaitVisitor';
 import { getNodeNames } from './nameVisitors';
 import { isPathInstrumented } from '../helpers/instrumentationHelper';
 
-const Verbose = false;
-// const Verbose = true;
+const Verbose = 0;
+// const Verbose = 1;
+// const Verbose = 2;
 
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('traceVisitors');
@@ -168,7 +170,7 @@ const traceCfg = (() => {
     // object initializer, e.g. rhs of `var o = { x: 1 }` (kind = 'init')
     ObjectExpression: [
       NoTrace,
-      [['properties', NoTrace, 
+      [['properties', NoTrace,
         [['value', ExpressionValue]],
         { array: true }
       ]]
@@ -348,7 +350,7 @@ function normalizeConfigNode(parentCfg, visitorName, cfgNode) {
     // convert to set
     extraCfg.include = new Set(extraCfg.include);
   }
-  
+
   cfgNode = {
     visitorName,
     instrumentationType,
@@ -399,8 +401,20 @@ function enterExpression(traceResultType, path, state) {
 function enterCallExpression(traceResultType, path, state) {
   // CallExpression
 
-  path = instrumentCallExpressionEnter(path, state);
-  path.setData('traceResultType', traceResultType);
+  // TODO: fix for parameter assignments in function declarations: `function f(x = o.g()) { }`
+  //      NOTE: in this case, utility variables are allocated inside function; but that will not fly.
+  const parent = path.parentPath;
+  const grandParent = path.parentPath?.parentPath;
+  if (grandParent &&
+    t.isFunction(grandParent) &&
+    grandParent.node.params.includes(parent.node)
+  ) {
+    // ignore
+  }
+  else {
+    path = instrumentCallExpressionEnter(path, state);
+    path.setData('traceResultType', traceResultType);
+  }
 }
 
 const enterInstrumentors = {
@@ -728,7 +742,7 @@ function getInstrumentor(instrumentors, instrumentationType) {
 
 function instrumentPath(direction, instrumentor, path, state, cfg) {
   // log
-  Verbose && logInst('II', cfg, path, direction);
+  Verbose > 1 && logInst('II', cfg, path, direction);
 
   // actual instrumentation
   const { extraCfg } = cfg;

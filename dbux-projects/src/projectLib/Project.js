@@ -113,6 +113,10 @@ export default class Project {
     return this.manager.config.dependencyRoot;
   }
 
+  getNodeVersion(bug) {
+    return bug.nodeVersion || this.nodeVersion || '14';
+  }
+
   // ###########################################################################
   // git stuff
   // ###########################################################################
@@ -137,6 +141,14 @@ This may be solved by pressing \`clean project folder\` button.`);
     await this.checkCorrectGitRepository();
 
     await this.exec('git reset --hard ' + (args || ''));
+  }
+
+  async gitResetHardForBug(bug) {
+    // TODO: make sure, user gets to save own changes first
+    sh.cd(this.projectPath);
+    if (bug.patch) {
+      await this.gitResetHard();
+    }
   }
 
   async gitResetHard(needConfirm = false, confirmMsg = '') {
@@ -174,16 +186,36 @@ This may be solved by pressing \`clean project folder\` button.`);
   }
 
   /**
+   * @abstract
+   */
+  loadBugs() {
+    throw new Error(this + ' abstract method not implemented');
+  }
+
+  async selectBug(/* bug */) {
+    throw new Error(this + ' abstract method not implemented');
+  }
+
+  async openInEditor() {
+    await this.manager.externals.editor.openFolder(this.project.projectPath);
+  }
+
+  // ###########################################################################
+  // build tools + watch mode
+  // ###########################################################################
+
+  /**
    * @param {Bug} bug 
    */
   async startWatchModeIfNotRunning(bug) {
     if (!this.backgroundProcesses?.length && this.startWatchMode) {
-      let _resolve, _reject, _promise = new Promise((resolve, reject) => {
+      let _resolve, _reject, _firstOutputPromise = new Promise((resolve, reject) => {
         _resolve = resolve;
         _reject = reject;
       });
 
-      const watcher = new MultipleFileWatcher(bug.distFilePaths);
+      const watchFiles = bug.watchFilePaths.map(f => path.resolve(this.projectPath, f));
+      const watcher = new MultipleFileWatcher(watchFiles);
       watcher.on('change', (filename, curStat, prevStat) => {
         try {
           if (curStat.birthtime.valueOf() === 0) {
@@ -199,31 +231,37 @@ This may be solved by pressing \`clean project folder\` button.`);
         }
       });
 
-      await this.startWatchMode(bug).catch(err => {
-        this.logger.error('startWatchMode failed -', err?.stack || err);
+      const backgroundProcess = await this.startWatchMode(bug).catch(err => {
+        // this.logger.error('startWatchMode failed -', err?.stack || err);
+        throw new Error('startWatchMode failed -', err?.stack || err);
       });
 
-      if (!this.backgroundProcesses?.length) {
-        this.logger.error('startWatchMode did not result in any new background processes');
-      }
+      // if (!this.backgroundProcesses?.length) {
+      //   this.logger.error('startWatchMode did not result in any new background processes');
+      // }
 
-      await _promise;
+      const outputFileString = bug.watchFilePaths
+        .map(f => `"${f}"`)
+        .join(', ');
+      this.logger.debug(`startWatchMode waiting for output files: ${outputFileString} ...`);
+      await Promise.race([
+        // wait for files to be ready
+        _firstOutputPromise,
+
+        backgroundProcess.waitToEnd().then(() => {
+          if (_firstOutputPromise) {
+            // BackgroundProcess ended prematurely
+            throw new Error('watch mode BackgroundProcess exited before files were generated');
+          }
+        })
+      ]);
+      _firstOutputPromise = null;
+      this.logger.debug(`startWatchMode finished.`);
     }
   }
 
-  /**
-   * @abstract
-   */
-  loadBugs() {
-    throw new Error(this + ' abstract method not implemented');
-  }
-
-  async selectBug(/* bug */) {
-    throw new Error(this + ' abstract method not implemented');
-  }
-
-  async openInEditor() {
-    await this.manager.externals.editor.openFolder(this.project.projectPath);
+  getWebpackJs() {
+    return this.manager.getDbuxPath('webpack/bin/webpack.js');
   }
 
   // ###########################################################################
@@ -271,11 +309,16 @@ This may be solved by pressing \`clean project folder\` button.`);
 
     // set cwd
     let cwd = options?.cwd || projectPath;
+    const env = {
+      NODE_SKIP_PLATFORM_CHECK: 1,
+      ...options?.env
+    };
 
     // set cwd option
     options = defaultsDeep(options, {
       processOptions: {
-        cwd
+        cwd,
+        env
       }
     });
 
@@ -374,15 +417,17 @@ This may be solved by pressing \`clean project folder\` button.`);
 
   async afterInstall() { }
 
-  async autoCommit() {
+  async autoCommit(bug) {
     await this.checkCorrectGitRepository();
 
     if (await this.hasAnyChangedFiles()) {
       // only auto commit if files changed
-      const files = this.getAllAssestFiles();
+      const files = this.getAllAssetFiles();
       this.logger.log('auto commit');
+
+      // TODO: should not need '--allow-empty', if `hasAnyChangedFiles` is correct (TODO: test with todomvc)
       await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
-      // --allow-empty is temp fix for todo-mvc that will cause commit failed due to nothing change.
+      await this.gitAddOrUpdateTag(bug);
     }
   }
 
@@ -445,25 +490,21 @@ This may be solved by pressing \`clean project folder\` button.`);
   }
 
   async applyBugPatchToTags() {
-    await this.gitAddTag(`"__dbux_bug_nopatch"`);
+    await this.gitAddOrUpdateTag(null);
     let bugs = this.getOrLoadBugs();
     for (let bug of bugs) {
       if (bug.patch) {
         await this.applyPatch(bug.patch);
         await this.exec(`git commit -am '"[dbux auto commit] Patch ${bug.patch}"' --allow-empty`);
-        await this.gitAddTag(`"__dbux_bug_${bug.patch}"`);
+        await this.gitAddOrUpdateTag(bug);
         await this.applyPatch(bug.patch, true);
       }
     }
   }
 
-  async switchToBugPatchTag(patch) {
-    if (patch) {
-      return this.gitCheckout(`"__dbux_bug_${patch}"`);
-    }
-    else {
-      return this.gitCheckout(`"__dbux_bug_nopatch"`);
-    }
+  async switchToBugPatchTag(bug) {
+    const tagName = this.getBugTagName(bug);
+    return this.gitCheckout(tagName);
   }
 
   async npmInstall() {
@@ -488,7 +529,7 @@ This may be solved by pressing \`clean project folder\` button.`);
    * Copy all assets into project folder.
    */
   async installAssets() {
-    const folders = this.getAllAssestFolderNames();
+    const folders = this.getAllAssetFolderNames();
     folders.forEach(folderName => {
       this.copyAssetFolder(folderName);
     });
@@ -500,25 +541,32 @@ This may be solved by pressing \`clean project folder\` button.`);
     }
   }
 
-  getAssestDir(assetFolderName) {
-    return this.manager.externals.resources.getResourcePath('dist', 'projects', assetFolderName);
+  getAssetDir(assetPath) {
+    if (path.isAbsolute(assetPath)) {
+      // absolute path
+      return fs.realpathSync(assetPath);
+    }
+    else {
+      // relative to dbux-internal asset path
+      return this.manager.externals.resources.getResourcePath('dist', 'projects', assetPath);
+    }
   }
 
-  getAllAssestFolderNames() {
-    const individualAssetDir = this.getAssestDir(this.folderName);
+  getAllAssetFolderNames() {
+    const individualAssetDir = this.getAssetDir(this.folderName);
     if (sh.test('-d', individualAssetDir)) {
-      return [this.folderName, SharedAssetFolder];
+      return [SharedAssetFolder, this.folderName];
     }
     else {
       return [SharedAssetFolder];
     }
   }
 
-  getAllAssestFiles() {
-    const folders = this.getAllAssestFolderNames();
+  getAllAssetFiles() {
+    const folders = this.getAllAssetFolderNames();
     const files = new Set();
     folders.forEach(folderName => {
-      const assets = fs.readdirSync(this.getAssestDir(folderName));
+      const assets = fs.readdirSync(this.getAssetDir(folderName));
       assets.forEach(assetName => {
         files.add(assetName);
       });
@@ -529,10 +577,10 @@ This may be solved by pressing \`clean project folder\` button.`);
 
   async copyAssetFolder(assetFolderName) {
     // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
-    const assetDir = this.getAssestDir(assetFolderName);
+    const assetDir = this.getAssetDir(assetFolderName);
     // copy assets, if this project has any
     this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
-    sh.cp('-Rn', `${assetDir}/*`, this.projectPath);
+    sh.cp('-R', `${assetDir}/*`, this.projectPath);
   }
 
   // ###########################################################################
@@ -605,15 +653,23 @@ This may be solved by pressing \`clean project folder\` button.`);
    * @param {String} checkoutTo 
    */
   async gitCheckout(checkoutTo) {
-    return this.exec(`git checkout ${checkoutTo}`);
+    return this.exec(`git checkout "${checkoutTo}"`);
+  }
+
+  getBugTagName(bug) {
+    if (bug?.patch) {
+      return `__dbux_bug_${bug.patch}`;
+    }
+    return '__dbux_bug_nopatch';
   }
 
   /**
-   * Add light tag
+   * Tag current commit
    * @param {String} tagName 
    */
-  async gitAddTag(tagName) {
-    return this.exec(`git tag -f ${tagName}`);
+  async gitAddOrUpdateTag(bug) {
+    const tagName = this.getBugTagName(bug);
+    return this.exec(`git tag -f "${tagName}"`);
   }
 
 

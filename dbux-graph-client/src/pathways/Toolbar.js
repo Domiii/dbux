@@ -13,8 +13,11 @@ class Toolbar extends ClientComponentEndpoint {
     return compileHtmlElement(/*html*/`
       <nav class="navbar navbar-expand-lg no-padding" id="toolbar">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <button info="Show timers on steps" title="" data-el="timeBtn" class="btn btn-info" href="#">
+            🕒
+          </button>
           <button title="" data-el="modeBtn" class="btn btn-info" href="#">
-            analyze
+            summarize
           </button>
         </div>
         <div data-el="moreMenu" class="dropdown">
@@ -57,6 +60,10 @@ class Toolbar extends ClientComponentEndpoint {
     decorateClasses(this.els.modeBtn, {
       active: this.context.doc.isAnalyzing()
     });
+
+    decorateClasses(this.els.timeBtn, {
+      active: !!this.context.doc.state.showTime
+    });
   }
 
   // ###########################################################################
@@ -67,7 +74,20 @@ class Toolbar extends ClientComponentEndpoint {
     
     modeBtn: {
       async click(evt) {
-        this.context.doc.remote.cyclePathwaysMode();
+        await this.context.doc.remote.cyclePathwaysMode();
+      },
+
+      focus(evt) { evt.target.blur(); }
+    },
+
+    timeBtn: {
+      async click(evt) {
+        this.context.doc.setState({
+          showTime: !this.context.doc.state.showTime
+        });
+
+        // need to refresh (TODO: only re-render all nodes)
+        await this.context.doc.remote.refresh();
       },
 
       focus(evt) { evt.target.blur(); }

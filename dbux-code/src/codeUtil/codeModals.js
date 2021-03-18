@@ -20,17 +20,16 @@ export async function showInformationMessage(message, btnConfig = EmptyObject, m
     // for some reason, on MAC, modal buttons are reversed :(
     buttons.reverse();
   }
-  const result = await window.showInformationMessage(message, messageCfg, ...buttons);
+  const result = await window.showInformationMessage(`[Dbux] ${message}`, messageCfg, ...buttons);
   if (result === undefined) {
-    await cancelCallback?.();
-    return null;
+    return await cancelCallback?.();
   }
   const cbResult = await btnConfig[result]?.();
   return cbResult === undefined ? null : cbResult;
 }
 
 export async function showWarningMessage(message, btnConfig = EmptyObject, messageCfg = EmptyObject, cancelCallback) {
-  const result = await window.showWarningMessage(message, messageCfg, ...Object.keys(btnConfig));
+  const result = await window.showWarningMessage(`[Dbux] ${message}`, messageCfg, ...Object.keys(btnConfig));
   if (result === undefined) {
     await cancelCallback?.();
     return null;
@@ -39,8 +38,9 @@ export async function showWarningMessage(message, btnConfig = EmptyObject, messa
   return cbResult === undefined ? null : cbResult;
 }
 
-export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObject) {
-  const result = await window.showErrorMessage(message, messageCfg, ...Object.keys(btnConfig));
+export async function showErrorMessage(message, btnConfig, messageCfg = EmptyObject, moreConfig = EmptyObject) {
+  const prefix = moreConfig.noPrefix ? '' : '[Dbux] ';
+  const result = await window.showErrorMessage(`${prefix}${message}`, messageCfg, ...Object.keys(btnConfig));
   const cbResult = await btnConfig[result]?.();
   return cbResult === undefined ? null : cbResult;
 }

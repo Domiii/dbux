@@ -1,4 +1,6 @@
 import NanoEvents from 'nanoevents';
+import ThemeMode from '@dbux/graph-common/src/shared/ThemeMode';
+import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HighlightManager from './controllers/HighlightManager';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 import GraphRoot from './GraphRoot';
@@ -31,6 +33,10 @@ class GraphDocument extends HostComponentEndpoint {
     // this.minimap = this.children.createComponent(MiniMap);
   }
 
+  getIconUri(modeName, fileName) {
+    return this.componentManager.externals.getClientResourceUri(`${modeName}/${fileName}`);
+  }
+
   // ###########################################################################
   // async graph mode
   // ###########################################################################
@@ -55,8 +61,16 @@ class GraphDocument extends HostComponentEndpoint {
   // ###########################################################################
 
   makeInitialState() {
+    const themeMode = this.componentManager.externals.getThemeMode();
+    const themeModeName = ThemeMode.getName(themeMode).toLowerCase();
+    const contextNodeIconUris = {
+      [GraphNodeMode.Collapsed]: this.getIconUri(themeModeName, 'minus.svg'),
+      [GraphNodeMode.ExpandChildren]: this.getIconUri(themeModeName, 'stack.svg'),
+      [GraphNodeMode.ExpandSubgraph]: this.getIconUri(themeModeName, 'listItem.svg'),
+    };
     return {
-      themeMode: this.componentManager.externals.getThemeMode()
+      themeMode,
+      contextNodeIconUris
     };
   }
 
@@ -64,7 +78,8 @@ class GraphDocument extends HostComponentEndpoint {
     return {
       context: {
         graphDocument: this,
-        themeMode: this.state.themeMode
+        themeMode: this.state.themeMode,
+        contextNodeIconUris: this.state.contextNodeIconUris
       }
     };
   }
