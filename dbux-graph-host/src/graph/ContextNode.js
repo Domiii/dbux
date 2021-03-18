@@ -81,15 +81,11 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   setStatsEnabled(enabled) {
-    // if (enabled) {
-    const upd = {
-      statsEnabled: enabled
-    };
     if (enabled) {
+      const upd = {};
       this._addStats(upd);
+      this.setState(upd);
     }
-    this.setState(upd);
-    // }
   }
 
   _addStats(_update) {
