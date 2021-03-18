@@ -21,7 +21,7 @@ export default class Query {
    * Execute query on all data.
    */
   executeQuery(dp, args) {
-    throw new Error(`abstract method not implemented: ${this}.executeCold`);
+    throw new Error(`abstract method not implemented: ${this}.executeQuery`);
   }
 
   toString() {

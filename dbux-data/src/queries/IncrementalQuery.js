@@ -64,17 +64,6 @@ export default class IncrementalQuery extends CachedQuery {
     }
   }
 
-  performQuery(dp, args) {
-    if (!this.isEnabled) {
-      // cold start
-      // this.turnOn();
-      throw new Error(`Must subscribe before using: ${this}`);
-    }
-
-    // things are always up to date while enabled
-    return this.lookup(args);
-  }
-
   _handleCollectionUpdate(collectionName, newData) {
     ++this._nUncommited;
     if (!this._uncommitedData) {
@@ -91,6 +80,21 @@ export default class IncrementalQuery extends CachedQuery {
       this._uncommitedData = null;
       this._nUncommited = 0;
     }
+  }
+
+  // ###########################################################################
+  // query interface implementation
+  // ###########################################################################
+
+  executeQuery(dp, args) {
+    if (!this.isEnabled) {
+      // cold start
+      // this.turnOn();
+      throw new Error(`Must subscribe before using: ${this}`);
+    }
+
+    // things are always up to date while enabled
+    return this.lookup(args);
   }
   
   /**

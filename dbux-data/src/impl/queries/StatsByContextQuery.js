@@ -34,12 +34,18 @@ export default class StatsByContextQuery extends IncrementalQuery {
    * @param {RuntimeDataProvider} dp
    */
   hydrateCache(dp) {
-    const contexts = dp.collections.executionContexts.getAll();
+    const contexts = dp.collections.executionContexts.getAll().slice(1);
     this._updateStats(contexts);
   }
 
   handleNewData(dataByCollection) {
-    const contexts = dataByCollection.executionContexts;
+    if (!dataByCollection.executionContexts) {
+      return;
+    }
+    let contexts = dataByCollection.executionContexts;
+    if (!contexts[0]) {
+      contexts = contexts.slice(1);
+    }
     this._updateStats(contexts);
   }
 
@@ -51,11 +57,12 @@ export default class StatsByContextQuery extends IncrementalQuery {
     const { dp } = this;
     dp.util.traverseDfs(contexts,
       (dfs, context, children) => {
-        const stats = this._cache.get(context.contextId) || new ContextStats();
+        const { contextId } = context;
+        const stats = this._cache.get(contextId) || new ContextStats();
         const ownSet = new Set();
 
         // add own staticContextId to set
-        const staticContextId = dp.util.getContextStaticContextId(context.contextId);
+        const staticContextId = dp.util.getContextStaticContextId(contextId);
         ownSet.add(staticContextId);
         stats.nTreeContexts = 1;
 
@@ -67,6 +74,8 @@ export default class StatsByContextQuery extends IncrementalQuery {
           stats.nTreeContexts += this.getContextNTreeContexts(child.contextId);
         }
         stats.nTreeStaticContexts = ownSet.size;
+
+        this.storeByKey(contextId, stats);
 
         return ownSet;
       }

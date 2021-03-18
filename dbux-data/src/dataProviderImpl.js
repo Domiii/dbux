@@ -33,6 +33,7 @@ import StaticTracesByContextIndex from './impl/indexes/StaticTracesByContextInde
 
 import ProgramIdByFilePathQuery from './impl/queries/ProgramIdByFilePathQuery';
 import ProgramFilePathByTraceIdQuery from './impl/queries/ProgramFilePathByTraceIdQuery';
+import StatsByContextQuery from './impl/queries/StatsByContextQuery';
 
 
 export function newDataProvider(application) {
@@ -85,6 +86,7 @@ export function newDataProvider(application) {
   // queries
   dataProvider.addQuery(new ProgramIdByFilePathQuery());
   dataProvider.addQuery(new ProgramFilePathByTraceIdQuery());
+  dataProvider.addQuery(new StatsByContextQuery());
 
   return dataProvider;
 }

@@ -78,6 +78,10 @@ class GraphRoot extends HostComponentEndpoint {
     const oldAppIds = new Set(this.runNodesById.getApplicationIds());
     const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
 
+    // always re-subscribe since applicationSet clears subscribtion everytime it changes
+    this._resubscribeOnData();
+    this._setApplicationState();
+
     // remove old runNodes
     for (const runNode of this.runNodesById.getAll()) {
       const { applicationId, runId } = runNode.state;
@@ -94,10 +98,6 @@ class GraphRoot extends HostComponentEndpoint {
         this.addRunNodeByContexts(appId, allContexts);
       }
     }
-
-    // always re-subscribe since applicationSet clears subscribtion everytime it changes
-    this._resubscribeOnData();
-    this._setApplicationState();
   }
 
   _resubscribeOnData() {

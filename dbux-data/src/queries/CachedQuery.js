@@ -3,8 +3,11 @@ import DoesNotExist from './DoesNotExist';
 import Query from './Query';
 
 function makeKey(args) {
-  if (args.length === 1 && !isObject(args[0])) {
-    return args[0];
+  // if (args.length === 1 && !isObject(args[0])) {
+  //   return args[0];
+  // }
+  if (!isObject(args)) {
+    return args;
   }
   // TODO: improve efficiency of this!
   return JSON.stringify(args);
@@ -23,6 +26,8 @@ export default class CachedQuery extends Query {
   _lastVersions;
 
   _init(dp) {
+    super._init(dp);
+
     // ########################################
     // fix config
     // ########################################
@@ -108,7 +113,7 @@ export default class CachedQuery extends Query {
 
   lookup(args) {
     const key = makeKey(args);
-    return this._cache[key];
+    return this._cache.get(key);
   }
 
   storeByKey(args, result) {
@@ -121,7 +126,7 @@ export default class CachedQuery extends Query {
   }
 
 
-  performQuery(dp, args) {
+  executeQuery(dp, args) {
     // check version
     if (this._updateVersions(dp.versions)) {
       // clear cache if outdated
@@ -134,10 +139,5 @@ export default class CachedQuery extends Query {
       result = this._getOrUpdateCachedEntry(dp, args);
     }
     return result;
-  }
-
-
-  executor(dp, args) {
-    return this.performQuery(dp, args);
   }
 }
