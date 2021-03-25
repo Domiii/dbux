@@ -11,6 +11,8 @@ export class ExecutionContextCollection extends Collection {
 
   _lastTraceIds = [];
 
+  _firstContextChild = new Map();
+
   constructor() {
     super('executionContexts');
   }
@@ -110,6 +112,11 @@ export class ExecutionContextCollection extends Collection {
       type, stackDepth, runId, parentContextId, parentTraceId, contextId, staticContextId, orderId, schedulerTraceId, tracesDisabled
     );
     this._push(context);
+
+    if (this._firstContextChild.get(parentContextId) === undefined) {
+      this._firstContextChild.set(parentContextId, context.contextId);
+    }
+
     return context;
   }
 
@@ -146,6 +153,14 @@ export class ExecutionContextCollection extends Collection {
   _push(context) {
     this._all.push(context);
     this._send(context);
+  }
+
+  isFirstContextInParent(contextId) {
+    const { parentContextId } = this.getById(contextId);
+    if (parentContextId) {
+      return this._firstContextChild.get(parentContextId) === contextId;
+    }
+    return false;
   }
 }
 

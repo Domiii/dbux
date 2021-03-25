@@ -1,11 +1,9 @@
-import ExecutionContextType from '@dbux/common/src/core/constants/ExecutionContextType';
+
 import { newLogger } from '@dbux/common/src/log/logger';
 import Stack from './Stack';
 import executionContextCollection from './data/executionContextCollection';
-import staticContextCollection from './data/staticContextCollection';
 import traceCollection from './data/traceCollection';
 import setImmediate from './setImmediate';
-import { from } from 'core-js/fn/array';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -341,7 +339,9 @@ export default class Runtime {
   // Complex scheduling
   // ###########################################################################
 
-  registerAwait(awaitContextId) {
+  _firstAwaitPromise = new Map();
+
+  registerAwait(awaitContextId, parentContext, awaitArgument) {
     if (!this.isExecuting()) {
       logError('Encountered `await`, but there was no active stack ', awaitContextId);
       return;
@@ -351,6 +351,10 @@ export default class Runtime {
     // this._markWaiting(awaitContextId);
 
     // NOTE: stack might keep popping before it actually pauses, so we don't unset executingStack quite yet.
+
+    if (this._firstAwaitPromise.get(parentContext) === undefined) {
+      this._firstAwaitPromise.set(parentContext, awaitArgument);
+    } 
   }
 
   /**
@@ -444,28 +448,34 @@ export default class Runtime {
   threadFirstRun = new Map();
   threadLastRun = new Map();
 
-
-  checkRunGraphSize(runId) {
-    while (this.runGraph.length <= runId) {
-      this.runGraph.push(new Map());
-      this.invRunGraph.push(new Map());
-    }
-  }
-
+  /**
+   * Maintain `runToThreadMap` map and `threadId`'s last run in `threadLastRun` map
+   * @param {number} runId 
+   * @param {number} threadId 
+   */
   setRunThreadId(runId, threadId) {
     this.runToThreadMap.set(runId, threadId);
     this.threadLastRun.set(threadId, Math.max(runId, this.threadLastRun.get(threadId)));
   }
 
   /**
-   * Get thread id of a run id
+   * Get thread id of the given run id
    * @param {number} runId 
    */
   getRunThreadId(runId) {
     return this.runToThreadMap.get(runId);
   }
 
+  /**
+   * @type {number} Maintain thread count
+   */
   _currentThreadId = 0;
+
+  /**
+   * Assign a new thread id to the run. Calls `setRunThreadId`
+   * @param {number} runId 
+   * @return The new thread id
+   */
   assignRunNewThreadId(runId) {
     this._currentThreadId += 1;
     this.setRunThreadId(runId, this._currentThreadId);
@@ -474,10 +484,13 @@ export default class Runtime {
     return this._currentThreadId;
   }
 
+  /**
+   * Make an edge between `fromRun` and `toRun`, with type `edgeType`
+   * @param {number} fromRun 
+   * @param {number} toRun 
+   * @param {string} edgeType should be either 'CHAIN' or 'FORK'
+   */
   addEdge(fromRun, toRun, edgeType) {
-    this.ensureRunGraphSize(fromRun);
-    this.ensureRunGraphSize(toRun);
-
     if (edgeType === 'CHAIN' && this.getRunOutgoingChain(fromRun) !== null) {
       edgeType = 'FORK';
 
@@ -494,6 +507,11 @@ export default class Runtime {
     this.invRunGraph[toRun].set(fromRun, edgeType);
   }
 
+  /**
+   * Get last run of the thread, by `threadLastRun` map
+   * @param {number} threadId 
+   * @return {number} The last run id of the thread
+   */
   getLastRunOfThread(threadId) {
     return this.threadLastRun.get(threadId);
   }
@@ -522,8 +540,8 @@ export default class Runtime {
     return promise._dbux_promiseId;
   }
 
-  wasPromiseCreatedInRun(promise) {
-    return this.getPromiseRunId(promise) === this._currentRunId;
+  isPromiseCreatedInRun(promise, runId = this.getCurrentRunId()) {
+    return this.getPromiseRunId(promise) === runId;
   }
 
   isPromiseRecorded(promise) {
@@ -540,8 +558,20 @@ export default class Runtime {
     return this._lastPoppedContextId;
   }
 
-  isFirstContextInParent(context) {
-    
+  isFirstContextInParent(contextId) {
+    return executionContextCollection.isFirstContextInParent(contextId);
+  }
 
+  getContextFirstAwaitPromise(contextId) {
+    return this._firstAwaitPromise.get(contextId);
+  }
+
+  contextReturnValue = new Map();
+  recordContestReturnValue(contextId, value) {
+    this.contextReturnValue.set(contextId, value);
+  }
+
+  getContestReturnValue(contextId) {
+    return this.contextReturnValue.get(contextId);
   }
 }

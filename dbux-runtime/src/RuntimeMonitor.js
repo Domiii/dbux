@@ -241,6 +241,9 @@ export default class RuntimeMonitor {
   // Interrupts, await et al
   // ###########################################################################
 
+  beforeAwaitContext = new Map();
+  beforeAwaitRun = new Map();
+
   preAwait(programId, inProgramStaticContextId, inProgramStaticTraceId, awaitArgument) {
     const stackDepth = this._runtime.getStackDepth();
     const runId = this._runtime.getCurrentRunId();
@@ -259,14 +262,17 @@ export default class RuntimeMonitor {
       stackDepth, runId, parentContextId, parentTraceId, programId, inProgramStaticContextId
     );
     const { contextId: awaitContextId } = context;
-    this._runtime.registerAwait(awaitContextId);  // mark as "waiting"
+    this._runtime.registerAwait(awaitContextId, parentContextId, awaitArgument);  // mark as "waiting"
 
     // manually climb up the stack
     this._runtime.skipPopPostAwait();
 
+    this.beforeAwaitContext.set(parentContextId, resumeContextId);
+    this.beforeAwaitRun.set(parentContextId, this._runtime.getCurrentRunId());
+
     // await part
     const currentRunId = this._runtime.getCurrentRunId();
-    if (awaitArgument instanceof Promise && isPromiseCreatedInRun(awaitArgument, currentRunId)) {
+    if (awaitArgument instanceof Promise && this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId)) {
       const promise = awaitArgument;
 
       const isFirstAwait = this._runtime.isFirstContextInParent(resumeContextId, parentContextId);
@@ -274,7 +280,7 @@ export default class RuntimeMonitor {
         storeFirstAwaitPromise(currentRunId, parentContextId, awaitArgument);
       } 
       if (!isFirstAwait || isRootContext(parentContextId)) {
-        setOwnPromiseThreadId(promise, getRunThreadId(currentRunId));
+        this._runtime.setOwnPromiseThreadId(promise, this._runtime.getRunThreadId(currentRunId));
       }
     }
 
@@ -306,41 +312,44 @@ export default class RuntimeMonitor {
       const { staticContextId } = context;
       const staticContext = staticContextCollection.getById(staticContextId);
       const { resumeId: resumeStaticContextId } = staticContext;
-      this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
+      const resumeContextId = this.pushResume(programId, resumeStaticContextId, resumeInProgramStaticTraceId);
 
-      debug(awaitArg, 'is awaited at context', awaitContextId);
-    }
+      debug(awaitArgument, 'is awaited at context', awaitContextId);
 
-    const preEventContext, postEventContext, preEventRun, postEventRun;
+      const { parentContextId } = executionContextCollection.getById(resumeContextId);
+      const preEventContext = this.beforeAwaitContext.get(parentContextId);
+      const postEventContext = resumeContextId;
+      const preEventRun = this.beforeAwaitRun.get(parentContextId);
+      const postEventRun = this._runtime.getCurrentRunId();
 
-    if (!hasChainIn(this._runtime.getRunThreadId(postEventRun))) {
-      const startThreadId = this._runtime.getRunThreadId(preEventRun);
+      if (this._runtime.getRunThreadId(postEventRun) === undefined) {
+        const startThreadId = this._runtime.getRunThreadId(preEventRun);
 
-      const edgeType = ''; // TODO change to enum
+        let edgeType = ''; // TODO change to enum
 
-      if (this._runtime.isFirstContextInParent(preEventContext)) {
-        const caller = getCallExpr(getParentContext(preEventContext));
-        const callerPromise = getValue(caller); // get return value
-        const promiseThreadId = getPromiseThreadId(callerPromise);
+        if (this._runtime.isFirstContextInParent(preEventContext)) {
+          const callerContextId = executionContextCollection.getById(preEventContext).parentContextId;
+          const callerPromise = this._runtime.getContextReturnValue(callerContextId); // get return value
+          const promiseThreadId = this._runtime.getOwnPromiseThreadId(callerPromise);
 
-        if (startThreadId === promiseThreadId) {
-          edgeType = 'CHAIN';
+          if (startThreadId === promiseThreadId) {
+            edgeType = 'CHAIN';
+          }
+          else {
+            edgeType = 'FORK';
+          }
         }
         else {
-          edgeType = 'FORK';
+          edgeType = 'CHAIN';
         }
-      }
-      else {
-        edgeType = 'CHAIN';
-      }
 
-      this._runtime.addEdge(this._runtime.getLastRunOfThread(startThreadId), postEventRun, edgeType);
+        this._runtime.addEdge(this._runtime.getLastRunOfThread(startThreadId), postEventRun, edgeType);
 
-      // if (awaitArgument instanceof Promise) {
-      //   get all last run bruh;
-      // }
+        // if (awaitArgument instanceof Promise) {
+        //   get all last run bruh;
+        // }
+      }
     }
-
 
 
     return awaitResult;
@@ -455,19 +464,37 @@ export default class RuntimeMonitor {
   }
 
   traceCall(programId, inProgramStaticTraceId, value) {
-    if (!(value instanceof Promise)) {
-      return;
+    if (!this._ensureExecuting()) {
+      return value;
     }
+
+    ensurePromiseWrapped(value);
+
+    const contextId = this._runtime.peekCurrentContextId();
+    const runId = this._runtime.getCurrentRunId();
+    const overrideType = null;
+
+    const trace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, overrideType, value);
+    this._onTrace(contextId, trace);
+
+    // about await part
+    if (!(value instanceof Promise)) {
+      return value;
+    }
+
     if (this._runtime.getPromiseRunId(value) !== this._runtime.getCurrentRunId()) {
-      return;
+      return value;
     }
     const calledContextId = this._runtime.getLastPoppedContextId();
     const calledContextFirstPromise = this._runtime.getContextFirstAwaitPromise(calledContextId);
 
+    this._runtime.recordContextReturnValue(calledContextId, value);
+
     if (calledContextFirstPromise) {
       this._runtime.storeCallPromise(this._runtime.getCurrentRunId(), calledContextId, calledContextFirstPromise);
     }
-    // return this.traceExpression(programId, inProgramStaticTraceId, value); // call in program monitor
+
+    return value;
   }
 
   traceArg(programId, inProgramStaticTraceId, value) {
