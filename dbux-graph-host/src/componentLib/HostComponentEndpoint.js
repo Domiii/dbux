@@ -125,6 +125,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
     // store properties
     super._build(componentManager, parent, componentId, initialState);
 
+    if ('_enabled' in initialState) {
+      this._enabled = initialState._enabled;
+    }
+
     componentManager.incInitCount();
 
     this._initPromise = new Promise(r => {
@@ -168,11 +172,10 @@ class HostComponentEndpoint extends ComponentEndpoint {
   }
 
   async _doInitClient() {
-    const resultFromClientInit = this.parent && await this.componentManager._initClient(this); // 3. client: init -> update (ignore `internal root component`)
+    this.parent && await this.componentManager._initClient(this); // 3. client: init -> update (ignore `internal root component`)
     // success                                        // 4. waitForInit resolved
     Verbose && this.logger.debug('initialized');
     this._isInitialized = true;
-    return resultFromClientInit;
   }
 
   // ###########################################################################
@@ -264,7 +267,7 @@ class HostComponentEndpoint extends ComponentEndpoint {
   handleRefresh() {
     throw new Error(`${this.componentName}.handleRefresh not implemented`);
   }
-  
+
   async waitForRefresh() {
     return this._refreshPromise;
   }

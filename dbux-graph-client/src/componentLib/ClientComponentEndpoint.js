@@ -22,6 +22,10 @@ class ClientComponentEndpoint extends ComponentEndpoint {
     return this.dom?.els;
   }
 
+  get isEnabled() {
+    return this._enabled;
+  }
+
   /**
    * Use this to create the HTML node to represent this component.
    * 
@@ -68,19 +72,23 @@ class ClientComponentEndpoint extends ComponentEndpoint {
   // private methods
   // ###########################################################################
 
-  async _performClientInit(role) {
-    this._internalRoleName = role;
-    if (this.owner) {
-      const list = this.owner._getComponentListByRoleName(role);
-      list._addComponent(this);
-    }
-    await this.init();
+  /**
+   * init + update
+   */
+  _performEnable() {
+    this._enabled = true;
+    this._performClientInit();
+    this._performUpdate();
+  }
+
+  _performClientInit(role) {
+    this.init();
     this.isInitialized = true;
   }
 
-  async _performUpdate() {
+  _performUpdate() {
     try {
-      await this.update();
+      this.update();
     }
     catch (err) {
       this.logger.warn('Component update failed', err);
@@ -117,9 +125,17 @@ class ClientComponentEndpoint extends ComponentEndpoint {
    * Functions that are called by Host internally.
    */
   _publicInternal = {
-    async updateClient(state) {
+    updateClient(state) {
       this.state = state;
-      await this._performUpdate();
+      this._performUpdate();
+    },
+    setEnbaled() {
+      if (!this.isEnabled) {
+        this._performEnable();
+      }
+      else {
+        this.logger.warn(`Component already enbaled`);
+      }
     },
 
     dispose: this.dispose.bind(this)

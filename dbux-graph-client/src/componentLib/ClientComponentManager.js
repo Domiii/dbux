@@ -29,6 +29,16 @@ class AppComponent extends ClientComponentEndpoint {
     return this._remoteInternal.prompt(...args);
   }
 
+  _preInit(role) {
+    super._preInit();
+
+    this._internalRoleName = role;
+    if (this.owner) {
+      const list = this.owner._getComponentListByRoleName(role);
+      list._addComponent(this);
+    }
+  }
+
   _deserializeShared(comp, src) {
     if (!src) {
       return;
@@ -47,7 +57,7 @@ class AppComponent extends ClientComponentEndpoint {
   }
 
   _publicInternal = {
-    async createClientComponent(parentId, role, componentId, componentName, shared, initialState) {
+    createClientComponent(parentId, role, componentId, componentName, shared, initialState) {
       const parent = this.componentManager.getComponent(parentId);
 
       // NOTE: parent should never be null (except for AppComponent, which does not get initialized this way)
@@ -65,15 +75,11 @@ class AppComponent extends ClientComponentEndpoint {
       this._deserializeShared(component, shared);
 
       // preInit
-      await component._preInit(initialState);
+      component._preInit(role);
 
-      // init
-      const result = await component._performClientInit(role);
-
-      // update
-      await component._performUpdate();
-
-      return result;
+      if (initialState._enabled) {
+        component._performEnable();
+      }
     }
   };
 }

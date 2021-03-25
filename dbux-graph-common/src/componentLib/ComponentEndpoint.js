@@ -19,6 +19,8 @@ class ComponentEndpoint {
   _isDisposed = false;
   _disposables = [];
 
+  _enabled = false;
+
   /**
    * Either `child` or `contoller`, referring to the corresponding list that contains this.
    */

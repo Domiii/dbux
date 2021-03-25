@@ -114,7 +114,7 @@ class HostComponentManager extends BaseComponentManager {
     // send new component to client *AFTER* its parent has finished init'ing
     await parent?.waitForInit();
 
-    return this.app._remoteInternal.createClientComponent(
+    this.app._remoteInternal.createClientComponent(
       parentId,
       role,
       componentId,
