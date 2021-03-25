@@ -63,6 +63,8 @@ export default function buildBabelOptions(options) {
     verbose = 0
   } = options;
 
+  // console.log(`buildBabelOptions verbose=${verbose}`);
+
   if (dontInjectDbux && !esnext) {
     // nothing to babel
     return null;
@@ -87,8 +89,9 @@ export default function buildBabelOptions(options) {
     sourceMaps: 'inline',
     ignore: [
       // '**/node_modules/**',
-      function shouldIgnore(modulePath) {
+      function shouldIgnore(modulePath, ...otherArgs) {
         if (!modulePath) {
+          verbose && debugLog(`[Dbux] no modulePath`, ...otherArgs);
           return undefined;
         }
 

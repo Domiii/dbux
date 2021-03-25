@@ -699,7 +699,15 @@ This may be solved by pressing \`clean project folder\` button.`);
     return {
       require: bug.require,
       keepAlive: bug.keepAlive,
-      mochaArgs: this.getMochaRunArgs(bug, moreMochaArgs)
+      testArgs: this.getMochaRunArgs(bug, moreMochaArgs)
+    };
+  }
+
+  getJestCfg(bug, moreJestArgs) {
+    return {
+      require: bug.require,
+      // keepAlive: bug.keepAlive,
+      testArgs: this.getJestRunArgs(bug, moreJestArgs)
     };
   }
 
@@ -710,6 +718,21 @@ This may be solved by pressing \`clean project folder\` button.`);
     // bugArgs
     const argArray = [
       '-c', // colors
+      ...moreArgs,
+      ...(bug.runArgs || EmptyArray)
+    ];
+    if (argArray.includes(undefined)) {
+      throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(argArray));
+    }
+    return argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
+  }
+
+  /**
+   * @see https://mochajs.org/#command-line-usage
+   */
+  getJestRunArgs(bug, moreArgs = EmptyArray) {
+    // bugArgs
+    const argArray = [
       ...moreArgs,
       ...(bug.runArgs || EmptyArray)
     ];

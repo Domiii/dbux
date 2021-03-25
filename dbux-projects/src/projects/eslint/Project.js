@@ -153,7 +153,7 @@ export default class EslintProject extends Project {
 
     const mochaCfg = {
       cwd: projectPath,
-      mochaArgs: `${bugArgs} ${files.join(' ')}`,
+      testArgs: `${bugArgs} ${files.join(' ')}`,
       require: [
         ...(bug.require || EmptyArray),
         this.manager.getDbuxPath(`@dbux/runtime/deps/require.ws.${nodeVersion}.js`)

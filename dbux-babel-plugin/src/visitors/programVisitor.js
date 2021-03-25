@@ -111,6 +111,8 @@ function enter(buildCfg, path, state) {
     filePath,
   } = state;
 
+  // debug(`babel-plugin: ${filePath}`);
+
   // staticProgramContext
   const staticProgramContext = {
     type: 1, // {StaticContextType}

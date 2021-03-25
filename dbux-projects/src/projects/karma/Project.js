@@ -111,7 +111,7 @@ export default class KarmaProject extends Project {
 
   async testBugCommand(bug, cfg) {
     const { projectPath } = this;
-    const bugArgs = this.getMochaRunArgs(bug, [
+    const testArgs = this.getMochaRunArgs(bug, [
       '-t 10000' // timeout
     ]);
 
@@ -119,7 +119,7 @@ export default class KarmaProject extends Project {
 
     const mochaCfg = {
       cwd: projectPath,
-      mochaArgs: bugArgs,
+      testArgs,
       require: [
         ...(bug.require || EmptyArray),
         this.manager.getDbuxPath(`@dbux/runtime/deps/require.ws.${nodeVersion}.js`)
