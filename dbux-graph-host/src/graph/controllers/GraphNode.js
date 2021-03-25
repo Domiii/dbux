@@ -38,7 +38,7 @@ export default class GraphNode extends HostComponentEndpoint {
   }
 
   setMode(mode) {
-    if (mode !== GraphNodeMode.Collapsed && !this.owner.childrenBuilt) {
+    if (mode !== GraphNodeMode.Collapsed && this.owner.childrenBuilt === false) {
       this.owner.context.graphRoot.buildContextNodeChildren(this.owner);
     }
 
