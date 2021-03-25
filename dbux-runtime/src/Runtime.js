@@ -5,6 +5,7 @@ import executionContextCollection from './data/executionContextCollection';
 import staticContextCollection from './data/staticContextCollection';
 import traceCollection from './data/traceCollection';
 import setImmediate from './setImmediate';
+import { from } from 'core-js/fn/array';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -83,6 +84,7 @@ export default class Runtime {
    * We currently have no good heuristics for checking whether we want to resume
    * an interrupted stack when pushing to an empty stack.
    * Instead, we need to rely on `_maybeResumeInterruptedStackOnPop` to try healing things
+
    * retroactively.
    */
   _maybeResumeInterruptedStackOnPushEmpty(contextId) {
@@ -289,6 +291,8 @@ export default class Runtime {
     // const typeName = ExecutionContextType.nameFromForce(context.contextType);
     // console.debug('<-', context.runId, contextId, `[${typeName}] ${name}`);
 
+    this._lastPoppedContextId = contextId;
+
     let stack = this._executingStack;
     let stackPos;
 
@@ -427,5 +431,117 @@ export default class Runtime {
     this._executingStack = null;
     // console.warn('[RootEnd]', this._currentRootId, this.getLingeringStackCount());
     // console.timeEnd('[RunEnd] ' + this._currentRunId);
+  }
+
+  // ###########################################################################
+  // async await promise
+  // ###########################################################################
+
+  runGraph = [];
+  invRunGraph = [];
+
+  runToThreadMap = new Map();
+  threadFirstRun = new Map();
+  threadLastRun = new Map();
+
+
+  checkRunGraphSize(runId) {
+    while (this.runGraph.length <= runId) {
+      this.runGraph.push(new Map());
+      this.invRunGraph.push(new Map());
+    }
+  }
+
+  setRunThreadId(runId, threadId) {
+    this.runToThreadMap.set(runId, threadId);
+    this.threadLastRun.set(threadId, Math.max(runId, this.threadLastRun.get(threadId)));
+  }
+
+  /**
+   * Get thread id of a run id
+   * @param {number} runId 
+   */
+  getRunThreadId(runId) {
+    return this.runToThreadMap.get(runId);
+  }
+
+  _currentThreadId = 0;
+  assignRunNewThreadId(runId) {
+    this._currentThreadId += 1;
+    this.setRunThreadId(runId, this._currentThreadId);
+    this.threadFirstRun.set(this._currentThreadId, runId);
+    this.threadLastRun.set(this._currentThreadId, runId);
+    return this._currentThreadId;
+  }
+
+  addEdge(fromRun, toRun, edgeType) {
+    this.ensureRunGraphSize(fromRun);
+    this.ensureRunGraphSize(toRun);
+
+    if (edgeType === 'CHAIN' && this.getRunOutgoingChain(fromRun) !== null) {
+      edgeType = 'FORK';
+
+      warn("Trying to add CHAIN to an run already had outgoing CHAIN edge");
+    }
+
+    if (edgeType === 'CHAIN') {
+      this.setRunThreadId(toRun, this.getRunThreadId(fromRun));
+    } else {
+      this.assignRunNewThreadId(toRun);
+    }
+
+    this.runGraph[fromRun].set(toRun, edgeType);
+    this.invRunGraph[toRun].set(fromRun, edgeType);
+  }
+
+  getLastRunOfThread(threadId) {
+    return this.threadLastRun.get(threadId);
+  }
+
+  getRunOutgoingChain(runId) {
+    for (let [toRun, edgeType] of this.runGraph[runId]) {
+      if (edgeType === 'CHAIN') {
+        return toRun;
+      }
+    }
+    return null;
+  }
+
+  setOwnPromiseThreadId(promise, threadId) {
+    Object.assign(promise, { _dbux_threadId: threadId });
+  }
+
+  getOwnPromiseThreadId(promise) {
+    if (promise._dbux_threadId) {
+      return promise._dbux_threadId;
+    }
+    throw new Error();
+  }
+
+  getPromiseRunId(promise) {
+    return promise._dbux_promiseId;
+  }
+
+  wasPromiseCreatedInRun(promise) {
+    return this.getPromiseRunId(promise) === this._currentRunId;
+  }
+
+  isPromiseRecorded(promise) {
+    return !!this.getPromiseRunId(promise);
+  }
+
+  runContextPromiseMap = new Map();
+  storeCallPromise(runId, contextId, promise) {
+    this.runContextPromiseMap.set([runId, contextId], promise);
+  }
+
+  _lastPoppedContextId = null;
+  getLastPoppedContextId() {
+    return this._lastPoppedContextId;
+  }
+
+  isFirstContextInParent(context) {
+    
+
   }
 }

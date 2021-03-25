@@ -544,7 +544,7 @@ export function traceCallExpression(callPath, state, resultType) {
     //const originalCallPath =
 
     // return value 
-    _traceWrapExpression('traceExpr', resultType, callPath, state, {
+    _traceWrapExpression('traceCall', resultType, callPath, state, {
       resultCallId: bceTraceId,
       // tracePath
     });

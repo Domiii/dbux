@@ -269,7 +269,7 @@ export default class RuntimeMonitor {
     if (awaitArgument instanceof Promise && isPromiseCreatedInRun(awaitArgument, currentRunId)) {
       const promise = awaitArgument;
 
-      const isFirstAwait = isFirstContextInParent(resumeContextId, parentContextId);
+      const isFirstAwait = this._runtime.isFirstContextInParent(resumeContextId, parentContextId);
       if (isFirstAwait) {
         storeFirstAwaitPromise(currentRunId, parentContextId, awaitArgument);
       } 
@@ -313,12 +313,12 @@ export default class RuntimeMonitor {
 
     const preEventContext, postEventContext, preEventRun, postEventRun;
 
-    if (!hasChainIn(getRunThreadId(postEventRun))) {
-      const startThreadId = getRunThreadId(preEventRun);
+    if (!hasChainIn(this._runtime.getRunThreadId(postEventRun))) {
+      const startThreadId = this._runtime.getRunThreadId(preEventRun);
 
       const edgeType = ''; // TODO change to enum
 
-      if (isFirstContextInParent(preEventContext)) {
+      if (this._runtime.isFirstContextInParent(preEventContext)) {
         const caller = getCallExpr(getParentContext(preEventContext));
         const callerPromise = getValue(caller); // get return value
         const promiseThreadId = getPromiseThreadId(callerPromise);
@@ -334,7 +334,7 @@ export default class RuntimeMonitor {
         edgeType = 'CHAIN';
       }
 
-      addEdge(getLastRunOfThread(startThreadId), postEventRun, edgeType);
+      this._runtime.addEdge(this._runtime.getLastRunOfThread(startThreadId), postEventRun, edgeType);
 
       // if (awaitArgument instanceof Promise) {
       //   get all last run bruh;
@@ -452,6 +452,22 @@ export default class RuntimeMonitor {
 
       return value;
     }
+  }
+
+  traceCall(programId, inProgramStaticTraceId, value) {
+    if (!(value instanceof Promise)) {
+      return;
+    }
+    if (this._runtime.getPromiseRunId(value) !== this._runtime.getCurrentRunId()) {
+      return;
+    }
+    const calledContextId = this._runtime.getLastPoppedContextId();
+    const calledContextFirstPromise = this._runtime.getContextFirstAwaitPromise(calledContextId);
+
+    if (calledContextFirstPromise) {
+      this._runtime.storeCallPromise(this._runtime.getCurrentRunId(), calledContextId, calledContextFirstPromise);
+    }
+    // return this.traceExpression(programId, inProgramStaticTraceId, value); // call in program monitor
   }
 
   traceArg(programId, inProgramStaticTraceId, value) {
