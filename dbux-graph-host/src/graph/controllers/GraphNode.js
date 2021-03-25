@@ -5,7 +5,6 @@ import HostComponentEndpoint from '../../componentLib/HostComponentEndpoint';
 export default class GraphNode extends HostComponentEndpoint {
   /**
    * Owner requirement:
-   *  property `shouldLazyBuild`
    *  property `childrenBuilt`
    *  method `buildChildNodes`
    */
@@ -21,7 +20,7 @@ export default class GraphNode extends HostComponentEndpoint {
       }
     }
   }
-
+  
   getChildMode() {
     const { mode } = this.state;
     switch (mode) {
@@ -36,12 +35,13 @@ export default class GraphNode extends HostComponentEndpoint {
 
   setOwnMode(mode) {
     this.setState({ mode });
-    if (this.owner.shouldLazyBuild && !this.owner.childrenBuilt) {
-      this.owner.buildChildNodes();
-    }
   }
 
   setMode(mode) {
+    if (mode !== GraphNodeMode.Collapsed && !this.owner.childrenBuilt) {
+      this.owner.context.graphRoot.buildContextNodeChildren(this.owner);
+    }
+
     if (this.state.mode === mode) {
       // nothing left to do
       return;
@@ -52,6 +52,11 @@ export default class GraphNode extends HostComponentEndpoint {
 
     // propagate mode to sub graph
     const childMode = this.getChildMode();
+    for (const child of this.owner.children) {
+      if (!hasGraphNode(child)) {
+        this.logger.warn(`GraphNode owner's children contains no graphNode`);
+      }
+    }
     for (const child of this.owner.children.filter(hasGraphNode)) {
       child.controllers.getComponent(GraphNode).setMode(childMode);
     }

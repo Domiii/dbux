@@ -10,10 +10,8 @@ import GraphNodeMode from '@dbux/graph-common/src/shared/GraphNodeMode';
 import HostComponentEndpoint from '../componentLib/HostComponentEndpoint';
 
 class ContextNode extends HostComponentEndpoint {
-  init(shouldLazyBuild = false) {
-    this.shouldLazyBuild = shouldLazyBuild;
+  init() {
     this.childrenBuilt = false;
-
     this.state.statsEnabled = true;
 
     const {
@@ -38,23 +36,11 @@ class ContextNode extends HostComponentEndpoint {
       this._addStats(this.state);
     }
     
-    // build sub graph
-    let hasChildren;
-    if (this.shouldLazyBuild) {
-      hasChildren = !!this.getValidChildContexts().length;
-    }
-    else {
-      this.buildChildNodes();
-      hasChildren = !!this.children.getComponents('ContextNode').length;
-    }
-
     // add controllers
+    let hasChildren = !!this.getValidChildContexts().length;
     this.controllers.createComponent('GraphNode', { hasChildren });
     this.controllers.createComponent('PopperController');
     this.controllers.createComponent('Highlighter');
-
-    // register with root
-    this.context.graphRoot._contextNodeCreated(this);
   }
 
   get dp() {
@@ -72,11 +58,6 @@ class ContextNode extends HostComponentEndpoint {
     return this.dp.util.getFirstTraceOfContext(this.contextId);
   }
 
-  // get contextChildrenAmount() {
-  // const contextChildren = this.children.getComponents('ContextNode');
-  // let amount = contextChildren.length;
-  // contextChildren.forEach(childNode => amount += childNode.contextChildrenAmount);
-  // return amount;
   get nTreeContexts() {
     const stats = this.dp.queries.statsByContext(this.contextId);
     return stats?.nTreeContexts || 0;
@@ -102,21 +83,6 @@ class ContextNode extends HostComponentEndpoint {
     _update.nTreeStaticContexts = this.nTreeStaticContexts;
   }
 
-  buildChildNodes() {
-    if (this.childrenBuilt) {
-      return this.children.getComponents('ContextNode');
-    }
-
-    this.childrenBuilt = true;
-    const { applicationId } = this.state;
-    return this.getValidChildContexts().map(context => {
-      return this.children.createComponent('ContextNode', {
-        applicationId,
-        context
-      });
-    });
-  }
-
   getValidChildContexts() {
     const { applicationId, context: { contextId } } = this.state;
     const dp = allApplications.getById(applicationId).dataProvider;
@@ -139,7 +105,7 @@ class ContextNode extends HostComponentEndpoint {
   }
 
   expand() {
-    this.controllers.getComponent('GraphNode').setOwnMode(GraphNodeMode.ExpandChildren);
+    this.controllers.getComponent('GraphNode').setMode(GraphNodeMode.ExpandChildren);
   }
 
   setSelected(isSelected) {
