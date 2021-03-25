@@ -42,7 +42,11 @@ class TrackedValue {
  * Keeps track of `StaticTrace` objects that contain static code information
  */
 class ValueCollection extends Collection {
-  trackedValues = new Map();
+  // trackedValues = new Map();
+  /**
+   * WeakMap to store recorded object references and their `TrackedValue`.
+   */
+  trackedValues = new WeakMap();
 
   constructor() {
     super('values');
