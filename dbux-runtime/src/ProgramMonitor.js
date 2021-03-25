@@ -33,6 +33,8 @@ export default class ProgramMonitor {
     this._staticProgramContext = staticProgramContext;
     this._programContextId = this.pushImmediate(inProgramStaticContextId, ProgramStartTraceId, false);
     this._logger = newLogger(staticProgramContext.filePath);
+
+    // this._logger.debug(`Started tracing program...`);
   }
 
   /**

@@ -57,7 +57,7 @@ function handleShutdown() {
 
   // NOTE: make sure to `initClient` right at the start, or else:
   // make sure that the client's `createdAt` will be smaller than any other `createdAt` in data set!
-  client = initClient();
+  client = dbux.client = initClient();
 
   // NOTE: we want to improve our chances that all data gets sent out before the process closes down.
   //    `process.exit` can disrupt that (kills without allowing us to perform another async handshake + `send`)

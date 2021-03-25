@@ -308,7 +308,7 @@ export default class ExpressProject extends Project {
           'should work with IPv6 Host'
         ],
         testFilePaths: ['test/req.host.js'],
-        mochaArgs: '--globals setImmediate,clearImmediate',
+        testArgs: '--globals setImmediate,clearImmediate',
         require: [], // has no test.env
         bugLocations: [
           {
@@ -344,7 +344,7 @@ export default class ExpressProject extends Project {
         id: 25,
         testRe: 'should ignore object callback parameter with jsonp',
         testFilePaths: ['test/res.jsonp.js'],
-        mochaArgs: '--globals setImmediate,clearImmediate',
+        testArgs: '--globals setImmediate,clearImmediate',
         require: [],
         bugLocations: [241, 242].map(line => ({
           fileName: 'lib/response.js',
@@ -395,7 +395,7 @@ export default class ExpressProject extends Project {
           runArgs: [
             '--grep',
             `"${testRe}"`,
-            ...(bug.mochaArgs ? [bug.mochaArgs] : []),
+            ...(bug.testArgs ? [bug.testArgs] : []),
             '--',
             ...bug.testFilePaths
           ],

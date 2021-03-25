@@ -1,9 +1,13 @@
-import path from 'path';
-import Project from '@dbux/projects/src/projectLib/Project';
-import { buildJestRunBugCommand } from '@dbux/projects/src/util/jestUtil';
+import Project from '../../projectLib/Project';
+import { buildJestRunBugCommand } from '../../util/jestUtil';
 
 export default class JavascriptAlgorithmProject extends Project {
   gitRemote = 'trekhleb/javascript-algorithms.git';
+
+  rmFiles = [
+    '.babelrc',       // we need .babelrc.js instead
+    '.huskyrc.json'   // unwanted commit hooks
+  ];
 
   loadBugs() {
     // TODO: load automatically from BugsJs bug database
@@ -47,13 +51,22 @@ export default class JavascriptAlgorithmProject extends Project {
     // nothing to do here
   }
 
-  async testBugCommand(/* bug, cfg */) {
-    // TODO: copy correct version from express/Project.js
+  async testBugCommand(bug, cfg) {
+    const { projectPath } = this;
+    // const bugArgs = this.getMochaRunArgs(bug);
+    const bugConfig = this.getJestCfg(bug, [
+      '--setupFilesAfterEnv ./dbuxJestSetup.js',
+      '--testTimeout 30000' // timeout
+    ]);
 
-    // const { projectPath } = this;
-    // const bugArgs = this.getBugArgs(bug);
+    const mochaCfg = {
+      ...cfg,
+      ...bugConfig,
+      dbuxJs: null,
+      cwd: projectPath,
+    };
 
-    // const jestArgs = `${bugArgs}`;
-    // return buildJestRunBugCommand(projectPath, jestArgs, bug.require, debugPort);
+    // node --stack-trace-limit=100 "./node_modules/jest/bin/jest.js" --runInBand -t "BubbleSort should sort array" --runTestsByPath src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js --cache=false
+    return buildJestRunBugCommand(mochaCfg);
   }
 }

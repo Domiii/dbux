@@ -368,19 +368,7 @@ This may be solved by pressing \`clean project folder\` button.`);
    * NOTE: This method is called by `gitClone`, only after a new clone has succeeded.
    */
   async install() {
-    // remove files
-    let { projectPath, rmFiles } = this;
-    if (rmFiles?.length) {
-      const absRmFiles = rmFiles.map(fName => path.join(projectPath, fName));
-      const iErr = absRmFiles.findIndex(f => !f.startsWith(projectPath));
-      if (iErr >= 0) {
-        throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
-      }
-      this.logger.warn('Removing files:', absRmFiles);
-      sh.rm('-rf', absRmFiles);
-    }
-
-    // copy assets
+    // remove and copy assets
     await this.installAssets();
     await this.autoCommit();  // auto-commit -> to be on the safe side
 
@@ -529,13 +517,26 @@ This may be solved by pressing \`clean project folder\` button.`);
    * Copy all assets into project folder.
    */
   async installAssets() {
+    // remove unwanted files
+    let { projectPath, rmFiles } = this;
+    if (rmFiles?.length) {
+      const absRmFiles = rmFiles.map(fName => path.join(projectPath, fName));
+      const iErr = absRmFiles.findIndex(f => !f.startsWith(projectPath));
+      if (iErr >= 0) {
+        throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
+      }
+      this.logger.warn('Removing files:', absRmFiles);
+      sh.rm('-rf', absRmFiles);
+    }
+
+    // copy assets
     const folders = this.getAllAssetFolderNames();
     folders.forEach(folderName => {
       this.copyAssetFolder(folderName);
     });
 
+    // make sure, we have node at given version and node@lts
     if (this.nodeVersion) {
-      // make sure, we have node at given version and node@lts
       await this.exec(`volta fetch node@${this.nodeVersion} node@lts npm@lts`);
       await this.exec(`volta pin node@${this.nodeVersion}`);
     }
@@ -569,6 +570,7 @@ This may be solved by pressing \`clean project folder\` button.`);
       const assets = fs.readdirSync(this.getAssetDir(folderName));
       assets.forEach(assetName => {
         files.add(assetName);
+        this.logger.debug('asset', folderName, assetName);
       });
     });
 
@@ -699,7 +701,15 @@ This may be solved by pressing \`clean project folder\` button.`);
     return {
       require: bug.require,
       keepAlive: bug.keepAlive,
-      mochaArgs: this.getMochaRunArgs(bug, moreMochaArgs)
+      testArgs: this.getMochaRunArgs(bug, moreMochaArgs)
+    };
+  }
+
+  getJestCfg(bug, moreJestArgs) {
+    return {
+      require: bug.require,
+      // keepAlive: bug.keepAlive,
+      testArgs: this.getJestRunArgs(bug, moreJestArgs)
     };
   }
 
@@ -710,6 +720,21 @@ This may be solved by pressing \`clean project folder\` button.`);
     // bugArgs
     const argArray = [
       '-c', // colors
+      ...moreArgs,
+      ...(bug.runArgs || EmptyArray)
+    ];
+    if (argArray.includes(undefined)) {
+      throw new Error(bug.debugTag + ' - invalid `Project bug`. Arguments must not include `undefined`: ' + JSON.stringify(argArray));
+    }
+    return argArray.join(' ');      //.map(s => `"${s}"`).join(' ');
+  }
+
+  /**
+   * @see https://mochajs.org/#command-line-usage
+   */
+  getJestRunArgs(bug, moreArgs = EmptyArray) {
+    // bugArgs
+    const argArray = [
       ...moreArgs,
       ...(bug.runArgs || EmptyArray)
     ];
