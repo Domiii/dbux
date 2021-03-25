@@ -4,7 +4,10 @@ import { buildJestRunBugCommand } from '../../util/jestUtil';
 export default class JavascriptAlgorithmProject extends Project {
   gitRemote = 'trekhleb/javascript-algorithms.git';
 
-  rmFiles = '.babelrc';
+  rmFiles = [
+    '.babelrc',       // we need .babelrc.js instead
+    '.huskyrc.json'   // unwanted commit hooks
+  ];
 
   loadBugs() {
     // TODO: load automatically from BugsJs bug database
@@ -57,9 +60,10 @@ export default class JavascriptAlgorithmProject extends Project {
     ]);
 
     const mochaCfg = {
-      cwd: projectPath,
+      ...cfg,
       ...bugConfig,
-      ...cfg
+      dbuxJs: null,
+      cwd: projectPath,
     };
 
     // node --stack-trace-limit=100 "./node_modules/jest/bin/jest.js" --runInBand -t "BubbleSort should sort array" --runTestsByPath src/algorithms/sorting/bubble-sort/__test__/BubbleSort.test.js --cache=false
