@@ -1,8 +1,11 @@
-import isFunction from 'lodash/isFunction';
-import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjectCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
+import ValueTypeCategory, { determineValueTypeCategory, ValuePruneState, isObjectCategory, isTrackableCategory } from '@dbux/common/src/core/constants/ValueTypeCategory';
 // import serialize from '@dbux/common/src/serialization/serialize';
+import { newLogger } from '@dbux/common/src/log/logger';
 import Collection from './Collection';
 import pools from './pools';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('RuntimeMonitor');
 
 // const Verbose = true;
 const Verbose = false;
@@ -90,7 +93,16 @@ class ValueCollection extends Collection {
       // if (value === undefined) {
       //   this.logger.warn(new Error(`Tried to track value but is undefined`).stack);
       // }
-      this.trackedValues.set(value, tracked = new TrackedValue(value));
+      try {
+        this.trackedValues.set(value, tracked = new TrackedValue(value));
+      }
+      catch (err) {
+        let typeInfo = typeof value;
+        if (isObject(value)) {
+          typeInfo += `(${Object.getPrototypeOf(value)})`;
+        }
+        logError(`could not store value ("${err.message}"): ${typeInfo} ${JSON.stringify(value)}`);
+      }
     }
     tracked.addRef(valueRef);
 
@@ -106,17 +118,19 @@ class ValueCollection extends Collection {
   }
 
   _registerValue(value, category) {
-    // TODO: figure out a better way to store primitive values? (don't need refs for those...)
-
     // create new ref + track object value
+
+    // TODO: figure out a better way to store primitive values? (don't need ValueRef for those...)
     const valueRef = pools.values.allocate();
     const valueId = this._all.length;
-    const tracked = this._trackValue(value, valueRef);
-
-    // store values
     valueRef.valueId = valueId;
-    valueRef.trackId = tracked.trackId;
     valueRef.category = category;
+
+    if (isTrackableCategory(category)) {
+      const tracked = this._trackValue(value, valueRef, category);
+      valueRef.trackId = tracked.trackId;
+    }
+
 
     // register by id
     this._all.push(valueRef);
@@ -199,7 +213,7 @@ class ValueCollection extends Collection {
       const keys = [];
       for (const key in obj) {
         // if (!isFunction(obj[key])) {
-          keys.push(key);
+        keys.push(key);
         // }
       }
       return keys;
@@ -226,7 +240,7 @@ class ValueCollection extends Collection {
     }
 
     // NOTE: disable tracing while reading the property
-    
+
     // eslint-disable-next-line no-undef
     __dbux__._r.incDisabled();
   }
@@ -347,7 +361,7 @@ class ValueCollection extends Collection {
               pruneState = ValuePruneState.Shortened;
               n = SerializationConfig.maxObjectSize;
             }
-            
+
             // start serializing
             serialized = [];
 

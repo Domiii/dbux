@@ -1,6 +1,6 @@
 import path from 'path';
 import sh from 'shelljs';
-import Project from '@dbux/projects/src/projectLib/Project';
+import Project from '../../projectLib/Project';
 
 
 export default class TodomvcEs6Project extends Project {
@@ -14,40 +14,73 @@ export default class TodomvcEs6Project extends Project {
   ];
 
   async afterInstall() {
-    // get rid of outdated .babelrc
-    await sh.rm('-f', './.babelrc');
+    // update CSS to correct version
+    await this.execInTerminal(`npm install todomvc-app-css@2.3.0 --force`);
   }
 
   loadBugs() {
     return [
       {
+        // TODO: error stack information is polluted... can we fix that?
         label: 'error1',
         patch: 'error1',
-        description: 'Todo list is always empty. Luckily there is a clear error message.',
-        runArgs: []
+        description: 'TODO list is always empty. Luckily there is a clear error message.',
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/controller.js',
+            line: 65
+          }
+        ]
       },
       {
         label: 'error2',
         patch: 'error2',
-        description: 'Todo list is always empty. We see an error message, but it is not the actual bug cause, only a symptom.',
+        description: 'TODO list is always empty. We see an error message, but it is not the actual bug cause, only a symptom.',
         runArgs: []
       },
       {
         label: 'error3',
         patch: 'error3',
-        description: 'Todo list is always empty. Sadly no error message is given. Luckily dbux displays an error indicator.',
+        description: 'TODO list is always empty. Sadly no error message is given. Luckily dbux displays an error indicator.',
+        runArgs: []
+      },
+      {
+        // for-loop, off-by-one
+        label: 'error6',
+        patch: 'error6',
+        description: 'TODO list never renders the last element.',
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/template.js',
+            line: 65
+          }
+        ]
+      },
+      {
+        // ternary, css, branch logic reversed
+        label: 'Reversed strikethrough',
+        patch: 'error7',
+        description: 'Strikethrough logic for TODO items is incorrect.',
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/view.js',
+            line: 188
+          }
+        ]
+      },
+      {
+        label: 'error5',
+        patch: 'error5',
+        description: 'TODO list is not rendered completely if it contains more than one element.',
         runArgs: []
       },
       {
         label: 'error4',
         patch: 'error4',
         description: '"Clear completed" button does not do anything. No error message.',
-        runArgs: []
-      },
-      {
-        label: 'error5',
-        patch: 'error5',
-        description: 'The todo list is always incomplete',
         runArgs: []
       },
       // more bugs:
@@ -62,6 +95,7 @@ export default class TodomvcEs6Project extends Project {
         description: 'Has an unintentional bug not fixed in original code.',
         runArgs: [],
         bugLocations: [
+          // NOTE: don't re-create `TODO`, but re-use if exists already
           {
             file: 'src/todo.js',
             line: 27
