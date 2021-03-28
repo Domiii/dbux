@@ -58,7 +58,7 @@ export default class TodomvcEs6Project extends Project {
       {
         // see: https://github.com/kentcdodds/es6-todomvc/issues/39
         // TODO: description + steps to reproduce
-        label: 'original bug: wrong filter render state',
+        label: 'original: wrong filter render state',
         description: 'Has an unintentional bug not fixed in original code.',
         runArgs: [],
         bugLocations: [

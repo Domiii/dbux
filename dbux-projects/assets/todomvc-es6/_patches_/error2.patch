@@ -2,11 +2,12 @@ diff --git a/src/controller.js b/src/controller.js
 index 8a48c90..d120fcd 100644
 --- a/src/controller.js
 +++ b/src/controller.js
-@@ -9,7 +9,7 @@ export default Controller
+@@ -9,7 +9,8 @@ export default Controller
  */
  function Controller(model, view) {
    var that = this
 -  that.model = model
++  // IMPORTANT: don't forget to uncomment this!
 +  // that.model = model
    that.view = view
  
