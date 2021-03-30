@@ -53,7 +53,7 @@ export const performance = universalLib('performance', () => {
 
 
 /**
- * @example `performance.now()`
+ * @example `inspect(something, inspectOptions)`
  */
 export const inspect = universalLib('inspect', () => {
   const lib = _require('util');
