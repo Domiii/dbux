@@ -44,11 +44,20 @@ function _require(name) {
 }
 
 /**
- * @example `universalLibs.performance.now()`
+ * @example `performance.now()`
  */
 export const performance = universalLib('performance', () => {
-  const { performance: performanceNodeJs } = _require('perf_hooks');
-  return performanceNodeJs;
+  const lib = _require('perf_hooks');
+  return lib.performance;
+});
+
+
+/**
+ * @example `performance.now()`
+ */
+export const inspect = universalLib('inspect', () => {
+  const lib = _require('util');
+  return lib.inspect;
 });
 
 
