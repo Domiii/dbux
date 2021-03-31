@@ -1,0 +1,300 @@
+import { TreeItemCollapsibleState } from 'vscode';
+import Enum from '@dbux/common/src/util/Enum';
+import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
+import traceSelection from '@dbux/data/src/traceSelection';
+import { makeRootTraceLabel, makeTraceLabel, makeTraceValueLabel, makeCallValueLabel } from '@dbux/data/src/helpers/traceLabels';
+import allApplications from '@dbux/data/src/applications/allApplications';
+import UserActionType from '@dbux/data/src/pathways/UserActionType';
+import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/core/constants/TraceType';
+import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
+import TraceByStaticTraceNode from './TraceByStaticTraceNode';
+
+/** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
+
+// ###########################################################################
+//  Group Nodes
+// ###########################################################################
+
+class BaseGroupNode extends BaseTreeViewNode {
+  static labelSuffix = '';
+
+  /**
+   * @abstract
+   * @param {Application} applicattion
+   * @param {Array<Trace>} trace
+   */
+  // eslint-disable-next-line no-unused-vars
+  static makeKey(application, trace) {
+    throw new Error('abstract method not implemented');
+  }
+
+  /**
+   * @abstract
+   * @param {string} key
+   */
+  // eslint-disable-next-line no-unused-vars
+  static makeLabel(key) {
+    throw new Error('abstract method not implemented');
+  }
+
+  /**
+   * @param {Array<Trace>} executedTraces
+   * @param {Array<Trace>} groupedTraces
+   */
+  // eslint-disable-next-line no-unused-vars
+  static makeRootlabel(executedTraces, groupedTraces) {
+    if (this.labelSuffix) {
+      return `Executions: ${executedTraces.length}x (${groupedTraces.length} groups ${this.labelSuffix})`;
+    }
+    else {
+      return `Executions: ${executedTraces.length}x`;
+    }
+  }
+
+  static group(application, traces) {
+    const byKey = new Map();
+    for (const trace of traces) {
+      const key = this.makeKey(application, trace);
+      if (!byKey.get(key)) byKey.set(key, []);
+      byKey.get(key).push(trace);
+    }
+
+    const groupedTraces = Array.from(byKey.entries())
+      .map(([key, childTraces]) => {
+        const label = this.makeLabel(application, key);
+        const children = childTraces;
+        const description = this.makeDescription(key);
+        return { label, children, description };
+      });
+
+    return groupedTraces;
+  }
+
+  static buildNodes(rootNode, groupedTraces) {
+    const { treeNodeProvider } = rootNode;
+    return groupedTraces.map(({ label, children, description }) => {
+      const groupNode = new this(treeNodeProvider, label, null, rootNode);
+      groupNode.description = description;
+      groupNode.children = children.map((trace) => {
+        return buildExecutionTraceNode(trace, groupNode);
+      });
+      return groupNode;
+    });
+  }
+}
+
+class UngroupedNode extends BaseGroupNode {
+  static group(application, traces) {
+    return traces;
+  }
+
+  static buildNodes(rootNode, traces) {
+    return traces.map((trace) => {
+      return buildExecutionTraceNode(trace, rootNode);
+    });
+  }
+}
+
+class GroupByRunNode extends BaseGroupNode {
+  static labelSuffix = 'by Run';
+
+  static makeKey(application, trace) {
+    return trace.runId;
+  }
+
+  static makeLabel(application, runId) {
+    const firstTraceOfRun = application.dataProvider.util.getFirstTraceOfRun(runId);
+    return makeRootTraceLabel(firstTraceOfRun);
+  }
+
+  static makeDescription(runId) {
+    return `Run: ${runId}`;
+  }
+}
+
+class GroupByContextNode extends BaseGroupNode {
+  static labelSuffix = 'by Context';
+
+  static makeKey(application, trace) {
+    return trace.contextId;
+  }
+
+  static makeLabel(application, contextId) {
+    const context = application.dataProvider.collections.executionContexts.getById(contextId);
+    return makeContextLabel(context, application);
+  }
+
+  static makeDescription(contextId) {
+    return `ContextId: ${contextId}`;
+  }
+}
+
+class GroupByCallerNode extends BaseGroupNode {
+  static labelSuffix = 'by Caller Trace';
+
+  static makeKey(application, trace) {
+    const { contextId } = trace;
+    const callerId = application.dataProvider.util.getCallerTraceOfContext(contextId)?.traceId || 0;
+    return callerId;
+  }
+
+  static makeLabel(application, callerId) {
+    const trace = application.dataProvider.collections.traces.getById(callerId);
+    return trace ? makeTraceLabel(trace) : '(No Caller Trace)';
+  }
+
+  static makeDescription(callerId) {
+    return `CallerTraceId: ${callerId}`;
+  }
+}
+
+class GroupByParentContextNode extends BaseGroupNode {
+  static labelSuffix = 'by Parent Context';
+
+  static makeKey(application, trace) {
+    const { contextId } = trace;
+    return application.dataProvider.collections.executionContexts.getById(contextId)?.parentContextId || 0;
+  }
+
+  static makeLabel(application, parentContextId) {
+    const context = application.dataProvider.collections.executionContexts.getById(parentContextId);
+    return context ? makeContextLabel(context, application) : '(No Parent Context)';
+  }
+
+  static makeDescription(parentContextId) {
+    return `ParentContextId: ${parentContextId}`;
+  }
+}
+
+class GroupByCallbackNode extends BaseGroupNode {
+  static labelSuffix = 'by Callback';
+
+  static makeKey(application, trace) {
+    const { contextId } = trace;
+    const dp = application.dataProvider;
+    const { schedulerTraceId } = dp.collections.executionContexts.getById(contextId);
+    const { callId = 0 } = dp.collections.traces.getById(schedulerTraceId) || trace;
+    return callId;
+  }
+
+  static makeLabel(application, callId) {
+    const trace = application.dp.collections.traces.getById(callId);
+    return trace ? makeCallValueLabel(trace) : '(No Caller)';
+  }
+
+  static makeDescription(callId) {
+    return `Call: ${callId}`;
+  }
+}
+
+// ###########################################################################
+//  GroupingMode managment
+// ###########################################################################
+
+// eslint-disable-next-line import/no-mutable-exports
+let GroupingMode = {
+  Ungrouped: 1,
+  ByRunId: 2,
+  ByContextId: 3,
+  ByCallerTraceId: 4,
+  ByParentContextId: 5,
+  ByCallback: 6
+};
+GroupingMode = new Enum(GroupingMode);
+
+// Default mode
+let groupingMode = GroupingMode.Ungrouped;
+
+const GroupNodeRegistry = {
+  [GroupingMode.Ungrouped]: UngroupedNode,
+  [GroupingMode.ByRunId]: GroupByRunNode,
+  [GroupingMode.ByContextId]: GroupByContextNode,
+  [GroupingMode.ByCallerTraceId]: GroupByCallerNode,
+  [GroupingMode.ByParentContextId]: GroupByParentContextNode,
+  [GroupingMode.ByCallback]: GroupByCallbackNode,
+};
+
+export { GroupingMode };
+
+export function nextMode(mode) {
+  if (mode) {
+    groupingMode = mode;
+  }
+  else {
+    groupingMode = GroupingMode.nextValue(groupingMode);
+    if (groupingMode === GroupingMode.ByCallback && !isTraceCallbackRelated(traceSelection.selected)) {
+      groupingMode = GroupingMode.nextValue(groupingMode);
+    }
+  }
+  return groupingMode;
+}
+
+// ###########################################################################
+//  ExecutionTDNode
+// ###########################################################################
+
+export default class ExecutionsTDNode extends BaseTreeViewNode {
+  static makeLabel(trace, parent, props) {
+    return props.label;
+  }
+
+  static makeTraceDetail(trace/* , parent */) {
+    return trace;
+  }
+
+  get collapseChangeUserActionType() {
+    return UserActionType.TDExecutionsUse;
+  }
+
+  get defaultCollapsibleState() {
+    return TreeItemCollapsibleState.Collapsed;
+  }
+
+  static makeProperties(trace/* , parent, detail */) {
+    // build children here since label depends on children
+    const { applicationId, staticTraceId } = trace;
+    const application = allApplications.getById(applicationId);
+    const dp = application.dataProvider;
+    const traces = dp.indexes.traces.byStaticTrace.get(staticTraceId);
+    if (groupingMode === GroupingMode.ByCallback && !isTraceCallbackRelated(trace)) nextMode();
+
+    const GroupNodeClazz = GroupNodeRegistry[groupingMode];
+    const groupedTraces = GroupNodeClazz.group(application, traces);
+    const label = GroupNodeClazz.makeRootlabel(traces, groupedTraces);
+
+    return {
+      groupedTraces,
+      label
+    };
+  }
+
+  init() {
+    this.contextValue = 'dbuxTraceDetailsView.node.executionsTDNodeRoot';
+  }
+
+  buildChildren() {
+    // use children built in `makeProperties`
+    const { groupedTraces } = this;
+    const GroupNodeClazz = GroupNodeRegistry[groupingMode];
+    const groupNodes = GroupNodeClazz.buildNodes(this, groupedTraces);
+    return groupNodes;
+  }
+}
+
+// ###########################################################################
+//  Util
+// ###########################################################################
+
+function isTraceCallbackRelated(trace) {
+  const { applicationId, traceId } = trace;
+  const dp = allApplications.getById(applicationId).dataProvider;
+  const type = dp.util.getTraceType(traceId);
+  return isCallbackRelatedTrace(type);
+}
+
+function buildExecutionTraceNode(trace, parent) {
+  const childLabel = makeTraceValueLabel(trace);
+  const childNode = new TraceByStaticTraceNode(parent.treeNodeProvider, childLabel, trace, parent);
+  childNode.collapsibleState = TreeItemCollapsibleState.Collapsed;
+  return childNode;
+}

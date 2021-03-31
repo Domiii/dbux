@@ -3,12 +3,12 @@ import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import { makeTreeItems } from '../../helpers/treeViewHelpers';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import ExecutionsTDNode from './StaticTraceTDNodes';
-import StaticContextTDNode from './StaticContextTDNodes';
+import ExecutionsTDNode from './ExecutionsTDNodes';
+// import StaticContextTDNode from './StaticContextTDNodes';
 import TrackObjectTDNode from './TrackObjectTDNodes';
 import ValueTDNode from './ValueTDNode';
 import { InfoTDNode, ContextTDNode, TraceTypeTDNode } from './traceInfoNodes';
-import NearbyValuesTDNode from './NearbyValuesTDNode';
+// import NearbyValuesTDNode from './NearbyValuesTDNode';
 
 export class TraceDetailNode extends BaseTreeViewNode {
 }

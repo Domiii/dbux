@@ -285,8 +285,8 @@
         }
       },
       {
-        "command": "dbuxTraceDetailsView.switchGroupingMode",
-        "title": "SwitchMode",
+        "command": "dbuxTraceDetailsView.nextGroupingMode",
+        "title": "Next mode",
         "icon": {
           "light": "resources/light/string.svg",
           "dark": "resources/dark/string.svg"
@@ -567,13 +567,13 @@
           "group": "inline"
         },
         {
-          "command": "dbuxTraceDetailsView.switchGroupingMode",
-          "when": "viewItem == dbuxTraceDetailsView.node.staticTraceTDNodeRoot",
+          "command": "dbuxTraceDetailsView.nextGroupingMode",
+          "when": "viewItem == dbuxTraceDetailsView.node.executionsTDNodeRoot",
           "group": "inline@2"
         },
         {
           "command": "dbuxTraceDetailsView.expandNode",
-          "when": "viewItem == dbuxTraceDetailsView.node.staticTraceTDNodeRoot",
+          "when": "viewItem == dbuxTraceDetailsView.node.executionsTDNodeRoot",
           "group": "inline@3"
         },
         {
@@ -1011,7 +1011,7 @@
           "when": "false"
         },
         {
-          "command": "dbuxTraceDetailsView.switchGroupingMode",
+          "command": "dbuxTraceDetailsView.nextGroupingMode",
           "when": "false"
         },
         {
