@@ -19,6 +19,7 @@ export default class TodomvcEs6Project extends Project {
   }
 
   loadBugs() {
+    // git diff --color=never > fname
     return [
       {
         // TODO: error stack information is polluted... can we fix that?
@@ -71,6 +72,24 @@ export default class TodomvcEs6Project extends Project {
           }
         ]
       },
+      {
+        // ternary, css, branch logic reversed
+        label: 'TODO',
+        patch: 'error8',
+        description: 'TODO',
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/view.js',
+            line: 188
+          }
+        ]
+      },
+
+
+
+
+
       {
         label: 'error5',
         patch: 'error5',
