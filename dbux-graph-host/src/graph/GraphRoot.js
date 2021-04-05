@@ -62,8 +62,6 @@ class GraphRoot extends HostComponentEndpoint {
     this.runNodesById = new RunNodeMap();
     this.contextNodesByContext = new Map();
     this.state.applications = [];
-    this._onContextNodeCreated = new Map();
-    this._buildContextNodePromises = new Map();
     this._emitter = new NanoEvents();
     this._unsubscribeOnNewData = [];
 
@@ -120,7 +118,7 @@ class GraphRoot extends HostComponentEndpoint {
     for (const app of allApplications.selection.getAll()) {
       const { dataProvider: dp } = app;
       const unsubscribes = [
-        dp.onData('executionContexts', 
+        dp.onData('executionContexts',
           this._handleAddExecutionContexts.bind(this, app)
         ),
         // [future-work]: only subscribe when stats are enabled
@@ -129,7 +127,7 @@ class GraphRoot extends HostComponentEndpoint {
 
       // unsubscribe on refresh
       this._unsubscribeOnNewData.push(...unsubscribes);
-      
+
       // also when application is deselected
       allApplications.selection.subscribe(...unsubscribes);
 
@@ -222,6 +220,64 @@ class GraphRoot extends HostComponentEndpoint {
   // context node management
   // ###########################################################################
 
+  _buildContextNode(parentNode, applicationId, context, isRoot = false) {
+    if (this.contextNodesByContext.get(context)) {
+      this.logger.warn(`ContextNode with id=${context.id} already exist`);
+      return null;
+    }
+
+    const nodeClass = isRoot ? 'RootContextNode' : 'ContextNode';
+
+    const contextNode = parentNode.children.createComponent(nodeClass, {
+      applicationId,
+      context
+    });
+
+    this.contextNodesByContext.set(context, contextNode);
+    contextNode.addDisposable(() => {
+      this.contextNodesByContext.delete(context);
+    });
+
+    // this.logger.log(`ContextNode created id=${context.id}`);
+    return contextNode;
+  }
+
+  buildContextNodeChildren(contextNode) {
+    if (contextNode.childrenBuilt) {
+      return contextNode.children.getComponents('ContextNode');
+    }
+
+    contextNode.childrenBuilt = true;
+    const { applicationId } = contextNode.state;
+    return contextNode.getValidChildContexts().map(context => {
+      return this._buildContextNode(contextNode, applicationId, context);
+    });
+  }
+
+  buildContextNode(context) {
+    const { applicationId } = context;
+    const dp = allApplications.getById(applicationId).dataProvider;
+    let currentContext = context;
+    let currentNode;
+    const contextQueue = [];
+
+    while (!(currentNode = this.contextNodesByContext.get(currentContext))) {
+      if (!currentContext) {
+        this.logger.warn(`RootContextNode does not exist, contextQueue=${contextQueue}`);
+        return null;
+      }
+      contextQueue.push(currentContext);
+      currentContext = dp.collections.executionContexts.getById(currentContext.parentContextId);
+    }
+
+    for (const childContext of contextQueue.reverse()) {
+      this.buildContextNodeChildren(currentNode);
+      currentNode = this.contextNodesByContext.get(childContext);
+    }
+
+    return currentNode;
+  }
+
   async getContextNodeById(applicationId, contextId) {
     const dp = allApplications.getById(applicationId).dataProvider;
     const context = dp.collections.executionContexts.getById(contextId);
@@ -239,42 +295,12 @@ class GraphRoot extends HostComponentEndpoint {
     }
     else if (!node) {
       // node not created
-      let p = this._buildContextNodePromises.get(context);
-      if (!p) {
-        await this.waitForRefresh();
-        p = new Promise((resolve) => {
-          this._onContextNodeCreated.set(context, resolve);
-        });
-        this._buildContextNodePromises.set(context, p);
-        const { applicationId, runId } = context;
-        const runNode = this.getRunNodeById(applicationId, runId);
-        if (!runNode) {
-          logError(`Cannot find RunNode of applicationId ${applicationId}, runId ${runId}`);
-        }
-        else {
-          runNode.rootContextNode.buildChildNodes();
-        }
-      }
-      return p;
+      node = this.buildContextNode(context);
     }
 
-    return node;
-  }
+    await node.waitForInit();
 
-  /**
-   * @param {ContextNode} contextNode 
-   */
-  _contextNodeCreated(contextNode) {
-    const { state: { context } } = contextNode;
-    this.contextNodesByContext.set(context, contextNode);
-    this._onContextNodeCreated.get(context)?.(contextNode);
-    this._onContextNodeCreated.delete(context);
-    contextNode.addDisposable(() => {
-      if (this.contextNodesByContext.get(context) === contextNode) {
-        this.contextNodesByContext.delete(context);
-        this._buildContextNodePromises.delete(context);
-      }
-    });
+    return node;
   }
 
   // ###########################################################################
