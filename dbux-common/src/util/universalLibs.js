@@ -52,13 +52,14 @@ export const performance = universalLib('performance', () => {
 });
 
 
-/**
- * @example `inspect(something, inspectOptions)`
- */
-export const inspect = universalLib('inspect', () => {
-  const lib = _require('util');
-  return lib.inspect;
-});
+// NOTE: inspect does not exist in the browser
+// /**
+//  * @example `inspect(something, inspectOptions)`
+//  */
+// export const inspect = universalLib('inspect', () => {
+//   const lib = _require('util');
+//   return lib.inspect;
+// });
 
 
 // const inspectOptions = { depth: 0, colors: true };
