@@ -14,9 +14,8 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
 
   update() {
     for (const runNode of this.getAllRunNode()) {
-      const { applicationId, runId } = runNode.state;
       const visible = this.shouldBeVisible(runNode);
-      this._setVisible(applicationId, runId, visible);
+      this._setVisible(runNode, visible);
     }
     this._notifyStateChanged();
     this._notifyHiddenCountChanged();
@@ -62,8 +61,8 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   }
 
   /**
- * @param {RunNode} runNode 
- */
+   * @param {RunNode} runNode 
+   */
   getHiddenNodeHidingThis(runNode) {
     const { hideBefore, hideAfter } = this.state;
     if (hideBefore && runNode.state.createdAt < hideBefore) {
@@ -79,8 +78,7 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   // private
   // ###########################################################################
 
-  _setVisible(applicationId, runId, visible) {
-    const runNode = this.owner.getRunNodeById(applicationId, runId);
+  _setVisible(runNode, visible) {
     runNode.setState({ visible });
   }
 
