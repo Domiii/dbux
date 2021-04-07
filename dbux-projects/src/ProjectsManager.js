@@ -248,6 +248,8 @@ export default class ProjectsManager {
         this.bdp.addBugProgress(bug, BugStatus.Solving, false);
       }
       this._resetPracticeSession(bug, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
+      await this.savePracticeSession();
+      await this.bdp.save();
       const lastAction = this.pdp.collections.userActions.getLast();
       emitSessionFinishedEvent(this.practiceSession.state, lastAction.createdAt);
       return true;
