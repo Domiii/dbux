@@ -1,17 +1,14 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import Enum from '@dbux/common/src/util/Enum';
-import { newLogger } from '@dbux/common/src/log/logger';
-import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
+import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import { makeRootTraceLabel, makeTraceLabel, makeTraceValueLabel, makeCallValueLabel } from '@dbux/data/src/helpers/traceLabels';
 import allApplications from '@dbux/data/src/applications/allApplications';
 import UserActionType from '@dbux/data/src/pathways/UserActionType';
-import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/core/constants/TraceType';
+import { isCallbackRelatedTrace } from '@dbux/common/src/core/constants/TraceType';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
-import TraceByStaticTraceNode from './TraceByStaticTraceNode';
-
-// eslint-disable-next-line no-unused-vars
-const { log, debug, warn, error: logError } = newLogger('ExecutionsTDNodes');
+import { emitSelectTraceAction } from '../../userEvents';
+import TraceNode from './TraceNode';
 
 /** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
 
@@ -78,9 +75,7 @@ class BaseGroupNode extends BaseTreeViewNode {
     const { treeNodeProvider } = rootNode;
     return groupedTraces.map(({ label, childTraces, description, relevantTrace }) => {
       const groupNode = new this(treeNodeProvider, label, null, rootNode, { description, relevantTrace });
-      groupNode.children = childTraces.map((trace) => {
-        return buildExecutionTraceNode(trace, groupNode);
-      });
+      groupNode.children = buildExecutionNodes(childTraces, groupNode);
       return groupNode;
     });
   }
@@ -98,9 +93,7 @@ class UngroupedNode extends BaseGroupNode {
   }
 
   static buildNodes(rootNode, traces) {
-    return traces.map((trace) => {
-      return buildExecutionTraceNode(trace, rootNode);
-    });
+    return buildExecutionNodes(traces, rootNode);
   }
 }
 
@@ -239,17 +232,10 @@ const GroupNodeRegistry = {
   [GroupingMode.ByCallback]: GroupByCallbackNode,
 };
 
-export { GroupingMode };
-
-export function nextMode(mode) {
-  if (mode) {
-    groupingMode = mode;
-  }
-  else {
+export function nextMode() {
+  groupingMode = GroupingMode.nextValue(groupingMode);
+  if (groupingMode === GroupingMode.ByCallback && !isTraceCallbackRelated(traceSelection.selected)) {
     groupingMode = GroupingMode.nextValue(groupingMode);
-    if (groupingMode === GroupingMode.ByCallback && !isTraceCallbackRelated(traceSelection.selected)) {
-      groupingMode = GroupingMode.nextValue(groupingMode);
-    }
   }
   return groupingMode;
 }
@@ -306,6 +292,21 @@ export default class ExecutionsTDNode extends BaseTreeViewNode {
   }
 }
 
+class ExecutionNode extends TraceNode {
+  get clickUserActionType() {
+    return false;
+  }
+
+  get defaultCollapsibleState() {
+    return TreeItemCollapsibleState.None;
+  }
+
+  handleClick() {
+    emitSelectTraceAction(this.trace, UserActionType.TDExecutionsTraceUse);
+    super.handleClick();
+  }
+}
+
 // ###########################################################################
 //  Util
 // ###########################################################################
@@ -317,9 +318,10 @@ function isTraceCallbackRelated(trace) {
   return isCallbackRelatedTrace(type);
 }
 
-function buildExecutionTraceNode(trace, parent) {
-  const childLabel = makeTraceValueLabel(trace);
-  const childNode = new TraceByStaticTraceNode(parent.treeNodeProvider, childLabel, trace, parent);
-  childNode.collapsibleState = TreeItemCollapsibleState.Collapsed;
-  return childNode;
+function buildExecutionNodes(traces, parent) {
+  return traces.map(trace => {
+    const label = makeTraceValueLabel(trace);
+    const node = new ExecutionNode(parent.treeNodeProvider, label, trace, parent);
+    return node;
+  });
 }
