@@ -1,5 +1,6 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import Enum from '@dbux/common/src/util/Enum';
+import { newLogger } from '@dbux/common/src/log/logger';
 import { makeContextLabel } from '@dbux/data/src/helpers/contextLabels';
 import traceSelection from '@dbux/data/src/traceSelection';
 import { makeRootTraceLabel, makeTraceLabel, makeTraceValueLabel, makeCallValueLabel } from '@dbux/data/src/helpers/traceLabels';
@@ -8,6 +9,9 @@ import UserActionType from '@dbux/data/src/pathways/UserActionType';
 import TraceType, { isCallbackRelatedTrace } from '@dbux/common/src/core/constants/TraceType';
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import TraceByStaticTraceNode from './TraceByStaticTraceNode';
+
+// eslint-disable-next-line no-unused-vars
+const { log, debug, warn, error: logError } = newLogger('ExecutionsTDNodes');
 
 /** @typedef {import('@dbux/common/src/core/data/Trace').default} Trace */
 
@@ -20,7 +24,7 @@ class BaseGroupNode extends BaseTreeViewNode {
 
   /**
    * @abstract
-   * @param {Application} applicattion
+   * @param {Application} application
    * @param {Array<Trace>} trace
    */
   // eslint-disable-next-line no-unused-vars
@@ -62,9 +66,9 @@ class BaseGroupNode extends BaseTreeViewNode {
     const groupedTraces = Array.from(byKey.entries())
       .map(([key, childTraces]) => {
         const label = this.makeLabel(application, key);
-        const children = childTraces;
         const description = this.makeDescription(key);
-        return { label, children, description };
+        const relevantTrace = this.makeRelevantTrace?.(application, key);
+        return { label, childTraces, description, relevantTrace };
       });
 
     return groupedTraces;
@@ -72,14 +76,19 @@ class BaseGroupNode extends BaseTreeViewNode {
 
   static buildNodes(rootNode, groupedTraces) {
     const { treeNodeProvider } = rootNode;
-    return groupedTraces.map(({ label, children, description }) => {
-      const groupNode = new this(treeNodeProvider, label, null, rootNode);
-      groupNode.description = description;
-      groupNode.children = children.map((trace) => {
+    return groupedTraces.map(({ label, childTraces, description, relevantTrace }) => {
+      const groupNode = new this(treeNodeProvider, label, null, rootNode, { description, relevantTrace });
+      groupNode.children = childTraces.map((trace) => {
         return buildExecutionTraceNode(trace, groupNode);
       });
       return groupNode;
     });
+  }
+
+  handleClick() {
+    if (this.relevantTrace) {
+      traceSelection.selectTrace(this.relevantTrace);
+    }
   }
 }
 
@@ -127,6 +136,10 @@ class GroupByContextNode extends BaseGroupNode {
   static makeDescription(contextId) {
     return `ContextId: ${contextId}`;
   }
+
+  static makeRelevantTrace(application, contextId) {
+    return application.dataProvider.util.getFirstTraceOfContext(contextId);
+  }
 }
 
 class GroupByCallerNode extends BaseGroupNode {
@@ -146,6 +159,10 @@ class GroupByCallerNode extends BaseGroupNode {
   static makeDescription(callerId) {
     return `CallerTraceId: ${callerId}`;
   }
+
+  static makeRelevantTrace(application, callerId) {
+    return application.dataProvider.collections.traces.getById(callerId);
+  }
 }
 
 class GroupByParentContextNode extends BaseGroupNode {
@@ -163,6 +180,10 @@ class GroupByParentContextNode extends BaseGroupNode {
 
   static makeDescription(parentContextId) {
     return `ParentContextId: ${parentContextId}`;
+  }
+
+  static makeRelevantTrace(application, parentContextId) {
+    return application.dataProvider.util.getFirstTraceOfContext(parentContextId);
   }
 }
 
@@ -184,6 +205,10 @@ class GroupByCallbackNode extends BaseGroupNode {
 
   static makeDescription(callId) {
     return `Call: ${callId}`;
+  }
+
+  static makeRelevantTrace(application, callId) {
+    return application.dataProvider.collections.traces.getById(callId);
   }
 }
 
