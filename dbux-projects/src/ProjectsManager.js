@@ -203,6 +203,7 @@ export default class ProjectsManager {
     }
 
     await this.switchToBug(bug);
+    await this.maybeActivateBugForTheFirstTime(bug);
     this.practiceSession.setupStopwatch();
     await this.savePracticeSession();
     await this.bdp.save();
@@ -294,6 +295,7 @@ export default class ProjectsManager {
     try {
       const sessionData = this.externals.storage.get(savedPracticeSessionDataKeyName) || EmptyObject;
       this._resetPracticeSession(bug, sessionData, true);
+      await this.maybeActivateBugForTheFirstTime(bug);
       this.practiceSession.setupStopwatch();
     }
     catch (err) {
@@ -421,6 +423,12 @@ export default class ProjectsManager {
     await this.switchToBug(bug);
     const result = await this.runTest(bug, inputCfg);
     return result;
+  }
+
+  async maybeActivateBugForTheFirstTime(bug) {
+    if (!allApplications.getAll().length) {
+      await this.activateBug(bug);
+    }
   }
 
   async switchToBug(bug) {
