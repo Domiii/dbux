@@ -15,15 +15,16 @@ export default class FirstContextsInRunsByThreadIndex extends CollectionIndex {
    * @param {ExecutionContext} context
    */
   makeKey(dp, context) {
-    const { runId, threadId } = context;
-    const lastContextInThread = this.getLast(threadId);
-    if (!lastContextInThread) {
-      return threadId;
-    }
-    if (lastContextInThread.runId !== runId) {
-      return threadId;
-    }
+    // const { runId, threadId } = context;
+    // const lastContextInThread = this.getLast(threadId);
+    // if (!lastContextInThread) {
+    //   return threadId;
+    // }
+    // if (lastContextInThread.runId !== runId) {
+    //   return threadId;
+    // }
 
+    // TODO
     return false;
   }
 }

@@ -4,6 +4,8 @@ import Stack from './Stack';
 import executionContextCollection from './data/executionContextCollection';
 import traceCollection from './data/traceCollection';
 import setImmediate from './setImmediate';
+import valueCollection from './data/valueCollection.js';
+import promiseCollection from './data/promiseCollection.js';
 
 
 // eslint-disable-next-line no-unused-vars
@@ -530,10 +532,63 @@ export default class Runtime {
   }
 
   getOwnPromiseThreadId(promise) {
-    if (promise._dbux_threadId) {
-      return promise._dbux_threadId;
+    return promise?._dbux_threadId;
+  }
+
+  getPromiseThreadId(promise) {
+    const threadId = this.getOwnPromiseThreadId(promise);
+    if (threadId) {
+      return threadId;
     }
-    throw new Error();
+
+    const callerPromise = this.getCallerPromise(promise);
+    if (callerPromise) {
+      return this.getPromiseThreadId(callerPromise);
+    }
+
+    return undefined;
+  }
+
+  promiseContextMap = new Map();
+  contextPromiseMap = new Map();
+
+  getCallerPromise(promise) {
+    const { contextId } = this.promiseContextMap.get(promise);
+    return this.contextReturnValue.get(contextId);
+  }
+
+  storeFirstAwaitPromise(runId, contextId, awaitArgument) {
+    const pair = { runId, contextId };
+    this.promiseContextMap.set(awaitArgument, pair);
+    this.contextPromiseMap.set(pair, awaitArgument);
+  }
+
+  getTraceValue(trace) {
+    if (trace.value) {
+      return trace.value;
+    }
+
+    if (trace.valueId) {
+      return valueCollection.getById(trace.valueId).value;
+    }
+
+    return undefined;
+  }
+
+  getAsyncCallerPromise(promise) {
+    const callerTrace = this.getAsyncPromiseCallerTrace(promise);
+    const callerPromise = this.getTraceValue(callerTrace);
+
+    if (this.getPromiseRunId(callerPromise) === this.getPromiseRunId(promise)) {
+      return callerPromise;
+    }
+
+    throw new Error('Something shouldn\'t happen: we are only looking this up in case of a first await');
+    return null;
+  } 
+
+  getAsyncPromiseCallerTrace(promise) {
+    return traceCollection.getById(this.runContextTraceCallPromiseMap.get(promise).traceId);
   }
 
   getPromiseRunId(promise) {
@@ -548,9 +603,9 @@ export default class Runtime {
     return !!this.getPromiseRunId(promise);
   }
 
-  runContextPromiseMap = new Map();
-  storeCallPromise(runId, contextId, promise) {
-    this.runContextPromiseMap.set([runId, contextId], promise);
+  runContextTraceCallPromiseMap = new Map();
+  storeAsyncCallPromise(runId, contextId, traceId, promise) {
+    this.runContextCallTracePromiseMap.set({ runId, contextId, traceId }, promise);
   }
 
   _lastPoppedContextId = null;
@@ -571,7 +626,7 @@ export default class Runtime {
     this.contextReturnValue.set(contextId, value);
   }
 
-  getContestReturnValue(contextId) {
+  getContextReturnValue(contextId) {
     return this.contextReturnValue.get(contextId);
   }
 }

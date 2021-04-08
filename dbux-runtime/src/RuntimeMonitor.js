@@ -491,7 +491,7 @@ export default class RuntimeMonitor {
     this._runtime.recordContextReturnValue(calledContextId, value);
 
     if (calledContextFirstPromise) {
-      this._runtime.storeCallPromise(this._runtime.getCurrentRunId(), calledContextId, calledContextFirstPromise);
+      this._runtime.storeAsyncCallPromise(this._runtime.getCurrentRunId(), calledContextId, trace.traceId, calledContextFirstPromise);
     }
 
     return value;
