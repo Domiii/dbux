@@ -185,24 +185,15 @@ export default class ProjectsManager {
       return;
     }
 
-    let bugProgress = this.bdp.getBugProgressByBug(bug);
-
+    const bugProgress = this.bdp.getBugProgressByBug(bug);
     if (!bugProgress) {
       const stopwatchEnabled = await this.askForStopwatch();
-      /* bugProgress = */ this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
-
-      this._resetPracticeSession(bug);
-
-      // install and activate bug (don't run it)
-      // await this.activateBug(bug);
-      await this.switchToBug(bug);
+      this.bdp.addBugProgress(bug, BugStatus.Solving, stopwatchEnabled);
       this.bdp.updateBugProgress(bug, { startedAt: Date.now() });
     }
-    else {
-      this._resetPracticeSession(bug);
-    }
-
+    
     await this.switchToBug(bug);
+    this._resetPracticeSession(bug);
     await this.maybeActivateBugForTheFirstTime(bug);
     this.practiceSession.setupStopwatch();
     await this.savePracticeSession();
@@ -243,11 +234,11 @@ export default class ProjectsManager {
         throw new Error(`Cannot find bug of bugId: ${bugId} in log file`);
       }
 
-      await this.switchToBug(bug);
-      
       if (!this.bdp.getBugProgressByBug(bug)) {
         this.bdp.addBugProgress(bug, BugStatus.Solving, false);
       }
+      
+      await this.switchToBug(bug);
       this._resetPracticeSession(bug, { createdAt, sessionId, state: PracticeSessionState.Stopped }, true, filePath);
       await this.savePracticeSession();
       await this.bdp.save();
