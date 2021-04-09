@@ -1,4 +1,4 @@
-import { commands } from 'vscode';
+import { commands, window, Uri } from 'vscode';
 import { newLogger, setOutputStreams } from '@dbux/common/src/log/logger';
 import RunStatus from '@dbux/projects/src/projectLib/RunStatus';
 import { checkSystem } from '@dbux/projects/src/checkSystem';
@@ -14,6 +14,7 @@ import { get as mementoGet, set as mementoSet } from '../memento';
 import { showInformationMessage } from '../codeUtil/codeModals';
 import { initCodeEvents } from '../practice/codeEvents';
 import { translate } from '../lang';
+import { getLogsDirectory } from '../resources';
 
 const showProjectViewKeyName = 'dbux.projectView.showing';
 
@@ -168,48 +169,73 @@ export class ProjectViewController {
       }
     }
 
-    showOutputChannel();
-
-    const options = {
-      cancellable: false,
-      title: `Bug ${bugNode.bug.id}`
-    };
-
-    try {
-      await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-        const { bug } = bugNode;
-
-        // TOTRANSLATE
-        progress.report({ message: 'checking system requirements...' });
-        await this.checkActivateBugRequirement();
-
-        // TOTRANSLATE
-        progress.report({ message: 'activating...' });
+    const { bug } = bugNode;
+    const title = `Bug ${`"${bug.label}"` || ''} (${bug.id})`;
+    await this.runProjectTask(title, {
+      // TOTRANSLATE
+      message: 'Activating...',
+      callback: async () => {
         await this.manager.startPractice(bug);
-      }, options);
-    }
-    catch (err) {
-      logError(err);
+      }
+    });
+  }
+
+  async loadPracticeSession() {
+    const openFileDialogOptions = {
+      // TOTRANSLATE
+      title: 'Select a log file to read',
+      canSelectFolders: false,
+      canSelectMany: false,
+      filters: {
+        'Dbux Log File': ['dbuxlog']
+      },
+      defaultUri: Uri.file(getLogsDirectory())
+    };
+    const file = (await window.showOpenDialog(openFileDialogOptions))?.[0];
+    if (file) {
+      // TOTRANSLATE
+      const title = 'Load practice log';
+      const loaded = await this.runProjectTask(title, {
+        // TOTRANSLATE
+        message: 'Loading file....',
+        callback: async () => {
+          return await this.manager.loadPracticeSessionFromFile(file.fsPath);
+        }
+      });
+      if (loaded) {
+        await showInformationMessage(`Log file ${file.fsPath} loaded`);
+      }
     }
   }
 
   async activate(inputCfg) {
-    showOutputChannel();
-
     const { bug } = this.manager.practiceSession;
+    const title = `Bug ${`"${bug.label}"` || ''} (${bug.id})`;
+    await this.runProjectTask(title, {
+      // TOTRANSLATE
+      message: 'Running test...',
+      callback: async () => {
+        await this.manager.practiceSession.activate(inputCfg);
+      }
+    });
+  }
 
-    const options = {
-      cancellable: false,
-      title: `Bug ${`"${bug.label}"` || ''} (#${bug.id})`
-    };
-
-    await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
-      progress.report({ message: 'checking system requirements...' });
+  /**
+   * 
+   * @param {string} title 
+   * @param {{message: string, callback: function}} task 
+   * @param {boolean} cancellable 
+   */
+  async runProjectTask(title, task, cancellable = false) {
+    showOutputChannel();
+    return await runTaskWithProgressBar(async (progress) => {
+      // TOTRANSLATE
+      progress.report({ message: 'Checking system requirements...' });
       await this.checkActivateBugRequirement();
 
-      progress.report({ message: 'running test...' });
-      await this.manager.practiceSession.activate(inputCfg);
-    }, options);
+      progress.report({ message: task.message });
+      return await task.callback();
+    }, { title, cancellable });
   }
 
   async checkActivateBugRequirement() {

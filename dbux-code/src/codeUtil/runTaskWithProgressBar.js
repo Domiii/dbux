@@ -9,25 +9,10 @@ import { newLogger } from '@dbux/common/src/log/logger';
 // eslint-disable-next-line no-unused-vars
 const { log, debug, warn, error: logError } = newLogger('ProgressBarTask');
 
-function _errWrap(f) {
-  return async (...args) => {
-    try {
-      return await f(...args);
-    }
-    catch (err) {
-      logError('Error when executing function of task',
-        f.name?.trim() || '(anonymous callback)', '-', err);
-      // throw err;
-      return undefined;
-    }
-  };
-}
-
 /**
  *  see `window.withProgress`: https://code.visualstudio.com/api/references/vscode-api
  * @callback reportCallBack
- * @param {{message?: string, increment?: number}} reports
- * @param cancellationToken
+ * @param {{message?: string, increment?: number}} report
  */
 
 /**
@@ -44,8 +29,9 @@ export async function runTaskWithProgressBar(cb, options) {
   options = defaultsDeep(options, {
     cancellable: true,
     location: ProgressLocation.Notification,
+    title: ''
   });
-  options.title = `[Dbux] ${options.title || ''}`;
+  options.title = `[Dbux] ${options.title}`;
 
-  return window.withProgress(options, _errWrap(cb));
+  return await window.withProgress(options, cb);
 }
