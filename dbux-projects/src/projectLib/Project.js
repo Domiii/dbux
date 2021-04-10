@@ -485,7 +485,7 @@ This may be solved by pressing \`clean project folder\` button.`);
         await this.applyPatch(bug.patch);
         await this.exec(`git commit -am '"[dbux auto commit] Patch ${bug.patch}"' --allow-empty`);
         await this.gitAddOrUpdateTag(bug);
-        await this.applyPatch(bug.patch, true);
+        await this.revertPatch(bug.patch);
       }
     }
   }
@@ -613,6 +613,10 @@ This may be solved by pressing \`clean project folder\` button.`);
     await this.checkCorrectGitRepository();
 
     return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
+  }
+
+  async revertPatch(patchFName) {
+    return this.applyPatch(patchFName, true);
   }
 
   /**

@@ -19,7 +19,7 @@ export default class TodomvcEs6Project extends Project {
   }
 
   loadBugs() {
-    // git diff --color=never > fname
+    // git diff --color=never > ../../dbux-projects/assets/todomvc-es6/_patches_/error10.patch
     return [
       {
         // TODO: error stack information is polluted... can we fix that?
@@ -73,23 +73,18 @@ export default class TodomvcEs6Project extends Project {
         ]
       },
       {
-        // ternary, css, branch logic reversed
-        label: 'TODO',
+        // typo, variable
+        label: 'Incorrect "items left" amount',
         patch: 'error8',
         description: 'TODO',
         runArgs: [],
         bugLocations: [
           {
-            file: 'src/view.js',
-            line: 188
+            file: 'src/model.js',
+            line: 106
           }
         ]
       },
-
-
-
-
-
       {
         label: 'error5',
         patch: 'error5',
