@@ -156,7 +156,7 @@ export function functionVisitEnter(bodyPath, state) {
     state.varAccess.addVarAccess(
       paramPath.node.name, paramPath, ownerId, VarOwnerType.Trace
     );
-    return traceWrapExpressionStatement(TraceType.ExpressionResult, paramPath, state);
+    return traceWrapExpressionStatement(TraceType.Parameter, paramPath, state);
   });
 
   let staticResumeContextId;

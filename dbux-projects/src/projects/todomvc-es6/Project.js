@@ -73,15 +73,58 @@ export default class TodomvcEs6Project extends Project {
         ]
       },
       {
-        // typo, variable
+        // incorrect-variable,DOM
+        label: 'After editing, TODO text is incorrect',
+        patch: 'error9',
+        description: 'Edit any existing TODO, then save it (press ENTER).',
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/view.js',
+            line: 55
+          }
+        ]
+      },
+      {
+        // typo,variable,DOM
         label: 'Incorrect "items left" amount',
         patch: 'error8',
-        description: 'TODO',
+        description: '1) Mark some items as done. 2) The "items left" amount is incorrect.',
         runArgs: [],
         bugLocations: [
           {
             file: 'src/model.js',
             line: 106
+          }
+        ]
+      },
+      {
+        // for-loop,indexing
+        label: 'Changing existing TODOs does not persist anymore.',
+        patch: 'error10',
+        description: '1) change name of TODO or check/uncheck a TODO. 2) Refresh page. 3) After refresh, TODO item renders incorrectly.',
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/store.js',
+            line: 100
+          }
+        ]
+      },
+      {
+        // omission,callbacks,wrong-arguments
+        label: 'TODOs are not rendered anymore.',
+        patch: 'error11',
+        description: 'TODOs just won\'t show up.',
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/model.js',
+            line: 51
+          },
+          {
+            file: 'src/model.js',
+            line: 52
           }
         ]
       },

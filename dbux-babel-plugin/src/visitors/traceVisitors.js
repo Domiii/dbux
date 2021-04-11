@@ -401,8 +401,8 @@ function enterExpression(traceResultType, path, state) {
 function enterCallExpression(traceResultType, path, state) {
   // CallExpression
 
-  // TODO: fix for parameter assignments in function declarations: `function f(x = o.g()) { }`
-  //      NOTE: in this case, utility variables are allocated inside function; but that will not fly.
+  // TODO: need to fix for parameter assignments in function declarations: `function f(x = o.g()) { }`
+  //      NOTE: in this case, utility variables are allocated inside function; but that would change semantics.
   const parent = path.parentPath;
   const grandParent = path.parentPath?.parentPath;
   if (grandParent &&
