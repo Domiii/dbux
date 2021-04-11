@@ -11,7 +11,7 @@ import { showInformationMessage } from '../../codeUtil/codeModals';
 
 export default class BugNode extends BaseTreeViewNode {
   static makeLabel(bug) {
-    return bug.name;
+    return bug.label;
   }
 
   init = () => {

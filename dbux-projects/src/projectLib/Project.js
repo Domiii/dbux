@@ -612,7 +612,7 @@ This may be solved by pressing \`clean project folder\` button.`);
   async applyPatch(patchFName, revert = false) {
     await this.checkCorrectGitRepository();
 
-    return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
+    return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${this.getPatchFile(patchFName)}"`);
   }
 
   async revertPatch(patchFName) {

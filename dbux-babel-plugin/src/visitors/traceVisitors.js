@@ -461,22 +461,6 @@ const enterInstrumentors = {
     const traceStart = buildTraceNoValue(path, state, TraceType.Statement);
     path.insertBefore(traceStart);
   },
-  Block(path, state) {
-    // NOTE: don't change order of statements here. We first MUST build all new nodes
-    //    before instrumenting the path (because instrumentation causes the path to lose information)
-    const trace = buildTraceNoValue(path, state, TraceType.BlockStart);
-    const traceEnd = buildTraceNoValue(path, state, TraceType.BlockEnd);
-
-    path.insertBefore(trace);
-    path.insertAfter(traceEnd);
-    // if (!t.isBlockStatement(path)) {
-    //   // make a new block
-
-    // }
-    // else {
-    //   // insert at the top of existing block
-    // }
-  },
   Loop(path, state) {
     // loopVisitor(path, state);
   },
@@ -551,6 +535,22 @@ function wrapCallExpression(path, state) {
  * potentially can be `CallExpression`.
  */
 const exitInstrumentors = {
+  Block(path, state) {
+    // NOTE: don't change order of statements here. We first MUST build all new nodes
+    //    before instrumenting the path (because instrumentation causes the path to lose information)
+    const trace = buildTraceNoValue(path, state, TraceType.BlockStart);
+    const traceEnd = buildTraceNoValue(path, state, TraceType.BlockEnd);
+
+    path.insertBefore(trace);
+    path.insertAfter(traceEnd);
+    // if (!t.isBlockStatement(path)) {
+    //   // make a new block
+
+    // }
+    // else {
+    //   // insert at the top of existing block
+    // }
+  },
   CallExpression(path, state) {
     return wrapExpression(null, path, state);
   },

@@ -22,10 +22,10 @@ export default class TodomvcEs6Project extends Project {
     // git diff --color=never > ../../dbux-projects/assets/todomvc-es6/_patches_/error10.patch
     return [
       {
-        // TODO: error stack information is polluted... can we fix that?
-        label: 'error1',
+        // TODO: error stack trace is polluted... can we fix that?
+        label: 'Empty list with clear error message',
         patch: 'error1',
-        description: 'TODO list is always empty. Luckily there is a clear error message.',
+        description: 'TODO items never show up. Luckily there is a clear error message.',
         runArgs: [],
         bugLocations: [
           {
@@ -35,22 +35,27 @@ export default class TodomvcEs6Project extends Project {
         ]
       },
       {
-        label: 'error2',
-        patch: 'error2',
-        description: 'TODO list is always empty. We see an error message, but it is not the actual bug cause, only a symptom.',
-        runArgs: []
-      },
-      {
-        label: 'error3',
+        label: 'Empty list with silenced exception',
         patch: 'error3',
-        description: 'TODO list is always empty. Sadly no error message is given. Luckily dbux displays an error indicator.',
-        runArgs: []
+        description: 'TODO items never show up. Sadly no error message is given. Luckily dbux displays an error indicator.',
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/controller.js',
+            line: 65
+          },
+          {
+            // empty catch statement
+            file: 'src/controller.js',
+            line: 244
+          }
+        ]
       },
       {
         // for-loop, off-by-one
-        label: 'error6',
+        label: 'Last TODO item always missing',
         patch: 'error6',
-        description: 'TODO list never renders the last element.',
+        description: 'TODO list never renders the last item.',
         runArgs: [],
         bugLocations: [
           {
@@ -60,10 +65,26 @@ export default class TodomvcEs6Project extends Project {
         ]
       },
       {
+        label: 'Empty list with symptomatic error message',
+        patch: 'error2',
+        description: 'TODO items never show up. We see an error message, but it is not the actual bug cause, only a symptom.',
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/controller.js',
+            line: 12
+          },
+          {
+            file: 'src/controller.js',
+            line: 13
+          }
+        ]
+      },
+      {
         // ternary, css, branch logic reversed
         label: 'Reversed strikethrough',
         patch: 'error7',
-        description: 'Strikethrough logic for TODO items is incorrect.',
+        description: 'Check and uncheck items to see that strikethrough logic for TODO items is incorrect.',
         runArgs: [],
         bugLocations: [
           {
@@ -100,7 +121,7 @@ export default class TodomvcEs6Project extends Project {
       },
       {
         // for-loop,indexing
-        label: 'Changing existing TODOs does not persist anymore.',
+        label: 'Changing existing TODOs does not persist anymore',
         patch: 'error10',
         description: '1) change name of TODO or check/uncheck a TODO. 2) Refresh page. 3) After refresh, TODO item renders incorrectly.',
         runArgs: [],
@@ -113,9 +134,9 @@ export default class TodomvcEs6Project extends Project {
       },
       {
         // omission,callbacks,wrong-arguments
-        label: 'TODOs are not rendered anymore.',
+        label: 'Empty list #3',
         patch: 'error11',
-        description: 'TODOs just won\'t show up.',
+        description: 'Again, TODO items just won\'t show up, but for yet another very different reason.',
         runArgs: [],
         bugLocations: [
           {
@@ -129,16 +150,37 @@ export default class TodomvcEs6Project extends Project {
         ]
       },
       {
-        label: 'error5',
+        // for-loop,variable declaration,scope
+        label: 'Only last TODO item shows up',
         patch: 'error5',
         description: 'TODO list is not rendered completely if it contains more than one element.',
-        runArgs: []
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/template.js',
+            line: 62
+          },
+          {
+            file: 'src/template.js',
+            line: 63
+          },
+          {
+            file: 'src/template.js',
+            line: 65
+          }
+        ]
       },
       {
-        label: 'error4',
+        label: 'Broken "Clear completed" button',
         patch: 'error4',
         description: '"Clear completed" button does not do anything. No error message.',
-        runArgs: []
+        runArgs: [],
+        bugLocations: [
+          {
+            file: 'src/controller.js',
+            line: 164
+          }
+        ]
       },
       // more bugs:
 
@@ -147,9 +189,9 @@ export default class TodomvcEs6Project extends Project {
 
       {
         // see: https://github.com/kentcdodds/es6-todomvc/issues/39
-        // TODO: description + steps to reproduce
-        label: 'original: wrong filter render state',
-        description: 'Has an unintentional bug not fixed in original code.',
+        label: 'After switching between filters, the old filter still applies.',
+        // eslint-disable-next-line max-len
+        description: 'Add a todo item -> Go to "Completed" filter -> Reload the page -> Select "All" -> Mark item as completed. -> Observe bug: It won\'t show up anymore, even though we are in "All".',
         runArgs: [],
         bugLocations: [
           // NOTE: don't re-create `TODO`, but re-use if exists already
