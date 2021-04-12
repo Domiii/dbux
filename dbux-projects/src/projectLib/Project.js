@@ -525,7 +525,7 @@ This may be solved by pressing \`clean project folder\` button.`);
       if (iErr >= 0) {
         throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
       }
-      this.logger.warn('Removing files:', absRmFiles);
+      this.logger.warn('Removing files:', absRmFiles.join(','));
       sh.rm('-rf', absRmFiles);
     }
 
@@ -576,8 +576,14 @@ This may be solved by pressing \`clean project folder\` button.`);
     const assetDir = this.getAssetDir(assetFolderName);
     // copy assets, if this project has any
     this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
-    sh.cp('-R', `${assetDir}/*`, this.projectPath);
-    this.log(`Copied assets. All root files: ${getAllFilesInFolders(this.projectPath)}`);
+
+    // see https://stackoverflow.com/a/31438355/2228771
+    const copyRes = sh.cp('-rf', `${assetDir}/{.[!.],..?,}*`, this.projectPath);
+    
+    // this.log(`Copied assets. All root files: ${getAllFilesInFolders(this.projectPath).join(', ')}`);
+    this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${getAllFilesInFolders(assetDir).join(',')}`,
+      // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
+    );
   }
 
   // ###########################################################################
