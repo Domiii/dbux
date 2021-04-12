@@ -7,6 +7,8 @@ export default class TodomvcEs6Project extends Project {
   gitRemote = 'kentcdodds/es6-todomvc.git';
   gitCommit = 'bf2db41';
 
+  port = 3033;
+
   rmFiles = [
     'webpack.config.js',
     'package.json',
@@ -203,7 +205,8 @@ export default class TodomvcEs6Project extends Project {
       },
       
     ].map((bug) => {
-      bug.website = 'http://localhost:3033';
+      bug.website = 'http://localhost:' + this.port;
+      bug.port = this.port;
 
       bug.testFilePaths = ['app.js'];
       // bug.runFilePaths = bug.testFilePaths;
@@ -215,7 +218,7 @@ export default class TodomvcEs6Project extends Project {
 
   async startWatchMode(bug) {
     // start webpack and webpack-dev-server
-    let cmd = `node node_modules/webpack-dev-server/bin/webpack-dev-server.js --watch --config ./dbux.webpack.config.js --env entry=${bug.testFilePaths.join(',')}`;
+    let cmd = `node node_modules/webpack-dev-server/bin/webpack-dev-server.js --watch --config ./dbux.webpack.config.js --env PORT=${bug.port}`;
     return this.execBackground(cmd);
   }
 
