@@ -6,6 +6,7 @@ import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { getAllFilesInFolders } from '../util/fileUtil';
 import BugList from './BugList';
 import Process from '../util/Process';
 import { checkSystemWithRequirement } from '../checkSystem';
@@ -563,17 +564,11 @@ This may be solved by pressing \`clean project folder\` button.`);
   }
 
   getAllAssetFiles() {
-    const folders = this.getAllAssetFolderNames();
-    const files = new Set();
-    folders.forEach(folderName => {
-      const assets = fs.readdirSync(this.getAssetDir(folderName));
-      assets.forEach(assetName => {
-        files.add(assetName);
-        this.logger.debug('asset', folderName, assetName);
-      });
-    });
-
-    return [...files];
+    return getAllFilesInFolders(
+      this.
+        getAllAssetFolderNames().
+        map(folderName => this.getAssetDir(folderName))
+    );
   }
 
   async copyAssetFolder(assetFolderName) {
@@ -582,6 +577,7 @@ This may be solved by pressing \`clean project folder\` button.`);
     // copy assets, if this project has any
     this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
     sh.cp('-R', `${assetDir}/*`, this.projectPath);
+    this.log(`Copied assets. All root files: ${getAllFilesInFolders(this.projectPath)}`);
   }
 
   // ###########################################################################

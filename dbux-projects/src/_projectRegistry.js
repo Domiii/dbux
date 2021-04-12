@@ -5,6 +5,7 @@ import TodomvcEs6 from './projects/todomvc-es6/Project';
 import ChartJs from './projects/Chart.js/Project';
 import RealworldWebComponentsProject from './projects/realworld-web-components/Project';
 import JavascriptAlgorithmProject from './projects/javascript-algorithms/Project';
+import Project2048 from './projects/2048/Project';
 
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
@@ -19,10 +20,11 @@ if (process.env.NODE_ENV === 'development') {
   registry = {
     ...registry,
 
+    'javascript-algorithms': JavascriptAlgorithmProject,
     'Chart.Js': ChartJs,
     hexo: Hexo,
-    'realworld-web-components': RealworldWebComponentsProject,
-    'javascript-algorithms': JavascriptAlgorithmProject
+    2048: Project2048,
+    'realworld-web-components': RealworldWebComponentsProject
   };
 }
 
