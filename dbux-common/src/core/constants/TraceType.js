@@ -22,6 +22,8 @@ let TraceType = {
   CallArgument: 9,
   CallbackArgument: 10,
 
+  Parameter: 31,
+
   PushCallback: 11,
   PopCallback: 12,
 
@@ -108,6 +110,7 @@ expressionTypes[TraceType.ExpressionValue] = true;
 expressionTypes[TraceType.CallArgument] = true;
 expressionTypes[TraceType.CallbackArgument] = true;
 expressionTypes[TraceType.CallExpressionResult] = true;
+expressionTypes[TraceType.Parameter] = true;
 expressionTypes[TraceType.ReturnArgument] = true;
 expressionTypes[TraceType.ThrowArgument] = true;
 
@@ -151,8 +154,8 @@ export function isTraceThrow(traceType) {
   return TraceType.is.ThrowArgument(traceType);
 }
 
-export function isPlainExpressionValue(traceType) {
-  return TraceType.is.ExpressionValue(traceType);
-}
+// export function isPlainExpressionValue(traceType) {
+//   return TraceType.is.ExpressionValue(traceType);
+// }
 
 export default TraceType;

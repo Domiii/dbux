@@ -1,0 +1,13 @@
+diff --git a/src/template.js b/src/template.js
+index 60c4f6f..426569d 100644
+--- a/src/template.js
++++ b/src/template.js
+@@ -62,7 +62,7 @@ Template.prototype.show = function(data) {
+   var i, l
+   var view = ''
+ 
+-  for (i = 0, l = data.length; i < l; i++) {
++  for (i = 0, l = data.length; i < l-1; i++) {
+     var template = this.defaultTemplate
+     var completed = ''
+     var checked = ''

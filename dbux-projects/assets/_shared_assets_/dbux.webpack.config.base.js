@@ -7,6 +7,7 @@ const mergeWith = require('lodash/mergeWith');
 const { getDependencyRoot } = require('@dbux/cli/lib/dbux-folders');
 const isFunction = require('lodash/isFunction');
 const isArray = require('lodash/isArray');
+const isObject = require('lodash/isObject');
 require('@dbux/babel-plugin');
 
 const nodeExternals = require(path.join(getDependencyRoot(), 'node_modules/webpack-node-externals'));
@@ -81,14 +82,20 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     //   })
     // );
 
+    // ###########################################################################
+    // parse env
+    // ###########################################################################
+
     if (isArray(env)) {
-      env = Object.fromEntries(env.map(optionString => {
-        let option = optionString.split('=');
-        if (option.length === 1) {
-          option.push(true);
-        }
-        return option;
-      }));
+      env = Object.fromEntries(
+        env.map(optionString => {
+          let option = optionString.split('=');
+          if (option.length === 1) {
+            option.push(true);
+          }
+          return option;
+        })
+      );
     }
     else {
       let option = env.split('=');
@@ -98,6 +105,10 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       env = Object.fromEntries([option]);
     }
 
+    // ###########################################################################
+    // customConfig
+    // ###########################################################################
+
     if (isFunction(customConfig)) {
       customConfig = customConfig(env, argv);
     }
@@ -106,8 +117,30 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       src: srcFolders = ['src'],
       dbuxRoot,
       target = 'node',
-      babelOptions: babelOptionsOverrides
+      babelOptions: babelOptionsOverrides,
+      devServer: devServerCfg
     } = customConfig;
+
+    // ###########################################################################
+    // devServer
+    // ###########################################################################
+
+    let devServer;
+    if (devServerCfg) {
+      const devServerFn = require('./dbux.webpack-dev-server.config.base.js');
+      devServer = devServerFn(ProjectRoot, env, argv);
+      let devServerOverrides;
+      if (isObject(devServerCfg)) {
+        devServerOverrides = devServerCfg;
+      }
+      else if (isFunction(devServerCfg)) {
+        devServerOverrides = devServerCfg(env, argv);
+      }
+      else if (devServerCfg !== true) {
+        throw new Error(`Invalid devServer config (must be true, object or function) - ${JSON.stringify(devServerCfg)}`);
+      }
+      Object.assign(devServer, devServerOverrides);
+    }
 
 
     let dbuxRules = [];
@@ -185,10 +218,11 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // ###########################################################################
 
     const cfg = {
-      //watch: true,
+      watch: true,
       mode: buildMode,
       entry,
       target,
+      devServer,
       // https://github.com/webpack/webpack/issues/2145
       // devtool: 'inline-module-source-map',
       devtool: 'source-map',

@@ -28,7 +28,7 @@ export default class BugIntroduction extends WebviewWrapper {
       // + `name: ${this.bug.name}<br>`
       + `label: ${this.bug.label}<br>`
       + `description: ${this.bug.description}<br>`
-      + `testRe: ${JSON.stringify(this.bug.testRe)}`
+      + (this.bug.testRe && `testRe: ${JSON.stringify(this.bug.testRe)}<br>` || '')
       + `debugTag: ${this.bug.debugTag}<br>`;
   }
 

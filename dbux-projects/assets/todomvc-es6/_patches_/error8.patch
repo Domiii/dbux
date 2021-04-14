@@ -1,0 +1,13 @@
+diff --git a/src/model.js b/src/model.js
+index 06fa58a..50de2a7 100644
+--- a/src/model.js
++++ b/src/model.js
+@@ -103,7 +103,7 @@ Model.prototype.getCount = function(callback) {
+ 
+   this.storage.findAll(function(data) {
+     data.forEach(function(todo) {
+-      if (todo.completed) {
++      if (todo.complete) {
+         todos.completed++
+       } else {
+         todos.active++

@@ -6,6 +6,7 @@ import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
+import { getAllFilesInFolders } from '../util/fileUtil';
 import BugList from './BugList';
 import Process from '../util/Process';
 import { checkSystemWithRequirement } from '../checkSystem';
@@ -209,45 +210,44 @@ This may be solved by pressing \`clean project folder\` button.`);
    */
   async startWatchModeIfNotRunning(bug) {
     if (!this.backgroundProcesses?.length && this.startWatchMode) {
-      let _resolve, _reject, _firstOutputPromise = new Promise((resolve, reject) => {
-        _resolve = resolve;
-        _reject = reject;
-      });
-
-      const watchFiles = bug.watchFilePaths.map(f => path.resolve(this.projectPath, f));
-      const watcher = new MultipleFileWatcher(watchFiles);
-      watcher.on('change', (filename, curStat, prevStat) => {
-        try {
-          if (curStat.birthtime.valueOf() === 0) {
-            return;
+      const outputFileString = bug.watchFilePaths
+        .map(f => `"${f}"`)
+        .join(', ');
+      let _firstOutputPromise = new Promise((resolve, reject) => {
+        // watch out for entry (output) files to be created
+        const watchFiles = bug.watchFilePaths.map(f => path.resolve(this.projectPath, f));
+        const watcher = new MultipleFileWatcher(watchFiles);
+        watcher.on('change', (filename, curStat, prevStat) => {
+          try {
+            if (curStat.birthtime.valueOf() === 0) {
+              return;
+            }
+            watcher.close();
+            resolve();
           }
-
-          watcher.close();
-
-          _resolve();
-        }
-        catch (e) {
-          this.logger.warn('file watcher emit event callback error:', e);
-        }
+          catch (err) {
+            this.logger.warn(`file watcher failed while waiting for "${outputFileString}" - ${err?.stack || err}`);
+          }
+        });
       });
 
+      // start
       const backgroundProcess = await this.startWatchMode(bug).catch(err => {
         // this.logger.error('startWatchMode failed -', err?.stack || err);
-        throw new Error('startWatchMode failed -', err?.stack || err);
+        throw new Error(`startWatchMode failed while waiting for "${outputFileString}" - ${err?.stack || err}`);
       });
 
       // if (!this.backgroundProcesses?.length) {
       //   this.logger.error('startWatchMode did not result in any new background processes');
       // }
 
-      const outputFileString = bug.watchFilePaths
-        .map(f => `"${f}"`)
-        .join(', ');
+      // wait for output files, before moving on
       this.logger.debug(`startWatchMode waiting for output files: ${outputFileString} ...`);
       await Promise.race([
-        // wait for files to be ready
+        // wait for files to be ready, or...
         _firstOutputPromise,
 
+        // ... watch process to exit prematurely
         backgroundProcess.waitToEnd().then(() => {
           if (_firstOutputPromise) {
             // BackgroundProcess ended prematurely
@@ -485,7 +485,7 @@ This may be solved by pressing \`clean project folder\` button.`);
         await this.applyPatch(bug.patch);
         await this.exec(`git commit -am '"[dbux auto commit] Patch ${bug.patch}"' --allow-empty`);
         await this.gitAddOrUpdateTag(bug);
-        await this.applyPatch(bug.patch, true);
+        await this.revertPatch(bug.patch);
       }
     }
   }
@@ -525,7 +525,7 @@ This may be solved by pressing \`clean project folder\` button.`);
       if (iErr >= 0) {
         throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);
       }
-      this.logger.warn('Removing files:', absRmFiles);
+      this.logger.warn('Removing files:', absRmFiles.join(','));
       sh.rm('-rf', absRmFiles);
     }
 
@@ -564,17 +564,11 @@ This may be solved by pressing \`clean project folder\` button.`);
   }
 
   getAllAssetFiles() {
-    const folders = this.getAllAssetFolderNames();
-    const files = new Set();
-    folders.forEach(folderName => {
-      const assets = fs.readdirSync(this.getAssetDir(folderName));
-      assets.forEach(assetName => {
-        files.add(assetName);
-        this.logger.debug('asset', folderName, assetName);
-      });
-    });
-
-    return [...files];
+    return getAllFilesInFolders(
+      this.
+        getAllAssetFolderNames().
+        map(folderName => this.getAssetDir(folderName))
+    );
   }
 
   async copyAssetFolder(assetFolderName) {
@@ -582,7 +576,14 @@ This may be solved by pressing \`clean project folder\` button.`);
     const assetDir = this.getAssetDir(assetFolderName);
     // copy assets, if this project has any
     this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
-    sh.cp('-R', `${assetDir}/*`, this.projectPath);
+
+    // see https://stackoverflow.com/a/31438355/2228771
+    const copyRes = sh.cp('-rf', `${assetDir}/{.[!.],..?,}*`, this.projectPath);
+    
+    // this.log(`Copied assets. All root files: ${getAllFilesInFolders(this.projectPath).join(', ')}`);
+    this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${getAllFilesInFolders(assetDir).join(',')}`,
+      // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
+    );
   }
 
   // ###########################################################################
@@ -612,7 +613,11 @@ This may be solved by pressing \`clean project folder\` button.`);
   async applyPatch(patchFName, revert = false) {
     await this.checkCorrectGitRepository();
 
-    return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace ${this.getPatchFile(patchFName)}`);
+    return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${this.getPatchFile(patchFName)}"`);
+  }
+
+  async revertPatch(patchFName) {
+    return this.applyPatch(patchFName, true);
   }
 
   /**

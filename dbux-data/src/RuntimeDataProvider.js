@@ -343,8 +343,10 @@ class TraceCollection extends Collection {
           trace.staticTraceId = resultTrace.staticTraceId + 1;
         }
         else {
-          // the error trace is (probably) the trace following the last executed trace
-          trace.staticTraceId = staticTraceId + 1;
+          // // WARNING: the "+1" heuristic easily fails. E.g. in case of `IfStatement`, where `test` is visited after the blocks.
+          // trace.staticTraceId = staticTraceId + 1;
+
+          trace.staticTraceId = staticTraceId;
         }
       }
     }

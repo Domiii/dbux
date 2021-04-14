@@ -44,12 +44,22 @@ function _require(name) {
 }
 
 /**
- * @example `universalLibs.performance.now()`
+ * @example `performance.now()`
  */
 export const performance = universalLib('performance', () => {
-  const { performance: performanceNodeJs } = _require('perf_hooks');
-  return performanceNodeJs;
+  const lib = _require('perf_hooks');
+  return lib.performance;
 });
+
+
+// NOTE: inspect does not exist in the browser
+// /**
+//  * @example `inspect(something, inspectOptions)`
+//  */
+// export const inspect = universalLib('inspect', () => {
+//   const lib = _require('util');
+//   return lib.inspect;
+// });
 
 
 // const inspectOptions = { depth: 0, colors: true };
