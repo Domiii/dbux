@@ -79,7 +79,9 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
   // ###########################################################################
 
   _setVisible(runNode, visible) {
-    runNode.setState({ visible });
+    if (runNode.state.visible !== visible) {
+      runNode.setState({ visible });
+    }
   }
 
   // ###########################################################################
@@ -112,9 +114,10 @@ export default class HiddenNodeManager extends HostComponentEndpoint {
     }
 
     // remove hideBefore state if nothing is hidden e.g. while deselect hiddenNode
-    if (!hideBeforeCount) {
-      this.hideBefore(false);
-    }
+    // NOTE: temporarily removed since this may calls setState in during update
+    // if (hideBefore && !hideBeforeCount) {
+    //   this.hideBefore(false);
+    // }
 
     this._emitter.emit('countChanged', {
       hideBeforeCount,
