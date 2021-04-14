@@ -79,10 +79,10 @@ class GraphRoot extends HostComponentEndpoint {
     this.children.createComponent('HiddenBeforeNode');
     this.children.createComponent('HiddenAfterNode');
 
-    this.refresh();
+    this.updateRunNodes();
   }
 
-  handleRefresh() {
+  updateRunNodes() {
     // oldApps
     const oldAppIds = new Set(this.runNodesById.getApplicationIds());
     const newAppIds = new Set(allApplications.selection.getAll().map(app => app.applicationId));
@@ -263,7 +263,7 @@ class GraphRoot extends HostComponentEndpoint {
 
     while (!(currentNode = this.contextNodesByContext.get(currentContext))) {
       if (!currentContext) {
-        this.logger.warn(`RootContextNode does not exist, contextQueue=${contextQueue}`);
+        this.logger.warn(`RootContextNode does not exist, contextQueue=${contextQueue.map(x => x?.contextId)}`);
         return null;
       }
       contextQueue.push(currentContext);
@@ -298,7 +298,7 @@ class GraphRoot extends HostComponentEndpoint {
       node = this.buildContextNode(context);
     }
 
-    await node.waitForInit();
+    await node?.waitForInit();
 
     return node;
   }
