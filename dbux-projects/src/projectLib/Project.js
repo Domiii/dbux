@@ -419,12 +419,12 @@ This may be solved by pressing \`clean project folder\` button.`);
     }
   }
 
-  async deleteProjectFolder() {
-    await sh.rm('-rf', this.projectPath);
+  deleteProjectFolder() {
+    sh.rm('-rf', this.projectPath);
     this._installed = false;
   }
 
-  isProjectFolderExists() {
+  doesProjectFolderExist() {
     return sh.test('-d', path.join(this.projectPath, '.git'));
   }
 
@@ -439,7 +439,7 @@ This may be solved by pressing \`clean project folder\` button.`);
     // TODO: read git + editor commands from config
 
     // clone (will do nothing if already cloned)
-    if (!this.isProjectFolderExists()) {
+    if (!this.doesProjectFolderExist()) {
       // const curDir = sh.pwd().toString();
       // this.log(`Cloning from "${githubUrl}"\n  in "${curDir}"...`);
       // project does not exist yet
