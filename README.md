@@ -246,6 +246,7 @@ This feature is still at somewhat of an infant stage. We track related feedback 
 This [monorepo](https://en.wikipedia.org/wiki/Monorepo) includes the following modules:
 
 * [`@dbux/common`](dbux-common#readme) Collection of commonly used utilities shared among (more or less) all other modules.
+* [`@dbux/common-node`](dbux-common-node#readme) Collection of commonly used utilities shared among (more or less) all node-only modules.
 * [`@dbux/babel-plugin`](dbux-babel-plugin#readme) Instruments and injects `@dbux/runtime` into a given js program when supplied as a `plugin` to Babel.
 * [`@dbux/runtime`](dbux-runtime#readme) When an instrumented program runs, this module is responsible for recording and sending runtime data to the `@dbux/data` module, running on a receiving server (using `socket-io.client`). [The Dbux VSCode plugin](dbux-code#readme) hosts such a server.
 * [`@dbux/cli`](dbux-cli#readme) The cli (command-line interface) allows us to easily run a js program while instrumenting it on the fly using [@babel/register](https://babeljs.io/docs/en/babel-register).

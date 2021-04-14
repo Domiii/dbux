@@ -22,6 +22,9 @@
 		},
 		{
 			"path": "dbux_projects/javascript-algorithms"
+		},
+		{
+			"path": "dbux_projects/2048"
 		}
 	],
 	"settings": {

@@ -31,16 +31,7 @@ const customConfig = {
 
 const resultCfg = buildWebpackConfig(ProjectRoot, customConfig,
   (env, argv) => {
-    let entry = Object
-      .fromEntries(
-        env.entry
-          .split(',')
-          .map(fpath => [
-            fpath.replace(/\.[^/.]+$/, ""), path.join(ProjectRoot, fpath)
-          ])
-      );
     return {
-      entry,
       // externals,
       module: {
         rules: [

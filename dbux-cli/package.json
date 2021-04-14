@@ -35,10 +35,10 @@
     "object.fromentries": "^2.0.2",
     "prettier": "^2.0.5",
     "shelljs": "0.8.4",
-    "yargs": "^15.4.1"
+    "yargs": "^15.4.1",
+    "glob": "^7.1.6"
   },
   "devDependencies": {
-    "glob": "^7.1.6",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^2.5.0"

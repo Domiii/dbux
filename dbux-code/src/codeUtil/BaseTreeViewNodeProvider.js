@@ -285,7 +285,7 @@ export default class BaseTreeViewNodeProvider {
     return node;
   }
 
-  getChildren = (node) => {
+  getChildren = async (node) => {
     try {
       if (node) {
         if (node.children) {

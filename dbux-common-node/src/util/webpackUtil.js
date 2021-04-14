@@ -1,0 +1,46 @@
+// import path from 'path';
+import { globRelative } from './fileUtil';
+
+export function serializeEnv(o) {
+  return Object.entries(o)
+    // .map(([key, value]) => `--env ${key}='${JSON.stringify(JSON.stringify(value))}'`)
+    .map(([key, value]) => `--env ${key}=${JSON.stringify(JSON.stringify(value))}`)
+    .join(' ');
+}
+
+export function serializeWebpackInput(o) {
+  return JSON.stringify(JSON.stringify(o));
+}
+
+export function serializeFilesToEntry(files) {
+  return serializeWebpackInput(
+    filesToEntry(files)
+  );
+}
+
+/**
+ * @see https://stackoverflow.com/a/4250408
+ */
+export function fileWithoutExt(fpath) {
+  return fpath.replace(/\.[^/.]+$/, "");
+}
+
+export function filesToEntry(files) {
+  return Object.fromEntries(
+    files
+      .map(fpath => [
+        fileWithoutExt(fpath),
+        fpath
+      ])
+  );
+}
+
+export function globToEntry(folder, pattern) {
+  return filesToEntry(
+    globRelative(folder, pattern)
+  );
+}
+
+export function serializeGlobToEntry(folder, inputFilesGlob) {
+  return serializeWebpackInput(globToEntry(folder, inputFilesGlob));
+}

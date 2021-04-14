@@ -6,12 +6,17 @@ const glob = require('glob');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
-const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
+// const fromEntries = require('object.fromentries');    // NOTE: Object.fromEntries was only added in Node v12
 const {
   makeResolve,
   makeAbsolutePaths,
   getDbuxVersion
 } = require('./lib/package-util');
+
+// register self, so we can load dbux src files
+require('./lib/dbux-register-self');
+const { globToEntry } = require('../dbux-common-node/src/util/webpackUtil');
+// require('../dbux-common/src/util/prettyLogs');
 
 
 // const _oldLog = console.log; console.log = (...args) => _oldLog(new Error(' ').stack.split('\n')[2], ...args);
@@ -60,7 +65,8 @@ module.exports = (env, argv) => {
 
   const dependencyPaths = [
     "dbux-cli",
-    "dbux-common",
+    "dbux-common", 
+    'dbux-common-node',
     "dbux-runtime",
     "dbux-babel-plugin"
   ];
@@ -89,14 +95,10 @@ module.exports = (env, argv) => {
     }
   ];
 
-  const inputFiles = 'src/{,commands/,util/}*.js';
   const entry = {
     // see https://stackoverflow.com/questions/34907999/best-way-to-have-all-files-in-a-directory-be-entry-points-in-webpack
-
-    // generate all files in `src` and `src/commands`
-    ...fromEntries(glob.sync(path.join(projectRoot, inputFiles)).map(fpath =>
-      [fpath.substring(projectSrc.length + 1, fpath.length - 3), fpath]
-    )),
+    // generate all files in `src` and `src/commands`, and `src/util`
+    ...globToEntry(projectSrc, '{,commands/,util/}*.js'),
 
     // TODO: dependOn
 
@@ -104,6 +106,8 @@ module.exports = (env, argv) => {
     //   [fpath.substring(projectConfig.length + 1, fpath.length - 3), fpath]
     // )),
   };
+
+  console.warn('[dbux-cli] entry:', JSON.stringify(entry, null, 2));
 
 
   return {

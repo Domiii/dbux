@@ -21,7 +21,7 @@ export default class TodomvcEs6Project extends Project {
   }
 
   loadBugs() {
-    // git diff --color=never > ../../dbux-projects/assets/todomvc-es6/_patches_/error10.patch
+    // git diff --ignore-cr-at-eol --color=never > ../../dbux-projects/assets/todomvc-es6/_patches_/error10.patch
     return [
       {
         // TODO: error stack trace is polluted... can we fix that?
@@ -218,7 +218,7 @@ export default class TodomvcEs6Project extends Project {
 
   async startWatchMode(bug) {
     // start webpack and webpack-dev-server
-    let cmd = `node node_modules/webpack-dev-server/bin/webpack-dev-server.js --watch --config ./dbux.webpack.config.js --env PORT=${bug.port}`;
+    let cmd = `node ${this.getWebpackDevServerJs()} --watch --config ./dbux.webpack.config.js --env PORT=${bug.port}`;
     return this.execBackground(cmd);
   }
 

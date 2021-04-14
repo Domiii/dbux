@@ -12,9 +12,15 @@ export default class Bug {
 
   /**
    * Not used too much.
-   * If given, opens the first of these files in editor.
+   * If given, we used this to opens the first of these files in editor.
+   * But that is now replaced by `mainEntryPoint`
    */
   testFilePaths;
+
+  /**
+   * File to open in editor, if exists
+   */
+  mainEntryPoint;
 
   /**
    * If given, are passed as input files to bug runner.
@@ -74,8 +80,9 @@ export default class Bug {
 
   async openInEditor() {
     // open file (if any)
-    if (this.testFilePaths?.[0]) {
-      const fpath = path.join(this.project.projectPath, this.testFilePaths[0]);
+    const targetFile = this.mainEntryPoint || this.testFilePaths?.[0];
+    if (targetFile) {
+      const fpath = path.join(this.project.projectPath, targetFile);
       await this.manager.externals.editor.openFile(fpath);
     }
   }

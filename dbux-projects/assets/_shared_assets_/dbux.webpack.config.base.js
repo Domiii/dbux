@@ -5,6 +5,7 @@ const path = require('path');
 const process = require('process');
 const mergeWith = require('lodash/mergeWith');
 const { getDependencyRoot } = require('@dbux/cli/lib/dbux-folders');
+const { deserializeWebpackInput, parseEnv } = require('@dbux/cli/lib/webpack-basics');
 const isFunction = require('lodash/isFunction');
 const isArray = require('lodash/isArray');
 const isObject = require('lodash/isObject');
@@ -73,6 +74,7 @@ const defaultBabelOptions = {
 
 module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
   return (env, argv) => {
+    env = parseEnv(env);
     // const ExtraWatchWebpackPlugin = require('extra-watch-webpack-plugin');
     // webpackPlugins.push(
     //   new ExtraWatchWebpackPlugin({
@@ -86,24 +88,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // parse env
     // ###########################################################################
 
-    if (isArray(env)) {
-      env = Object.fromEntries(
-        env.map(optionString => {
-          let option = optionString.split('=');
-          if (option.length === 1) {
-            option.push(true);
-          }
-          return option;
-        })
-      );
-    }
-    else {
-      let option = env.split('=');
-      if (option.length === 1) {
-        option.push(true);
-      }
-      env = Object.fromEntries([option]);
-    }
+    // console.warn('  env:', JSON.stringify(env, null, 2));
 
     // ###########################################################################
     // customConfig
@@ -113,9 +98,10 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       customConfig = customConfig(env, argv);
     }
 
-    const {
+    let {
       src: srcFolders = ['src'],
       dbuxRoot,
+      entry,
       target = 'node',
       babelOptions: babelOptionsOverrides,
       devServer: devServerCfg
@@ -160,8 +146,14 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // entry
     // ###########################################################################
 
-    const entry = {
-    };
+    entry = entry || env?.entry;
+
+    entry = Object.fromEntries(
+      Object.entries(entry)
+        .map(([key, value]) => [key, path.resolve(ProjectRoot, value)])
+    );
+
+    // console.warn('  env.entry:', JSON.stringify(entry, null, 2));
 
     // ###########################################################################
     // resolve.modules
@@ -195,7 +187,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       // remove custom options of preset-env
       babelOptions.presets[0].splice(1, 1);
     }
-    console.warn('babelOptions', JSON.stringify(babelOptions, null, 2));
+    // console.warn('babelOptions', JSON.stringify(babelOptions, null, 2));
 
     const externals = target !== 'node' ? undefined : [
       {
@@ -212,6 +204,18 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       // }
     ];
 
+    // ###########################################################################
+    // optimization
+    // ###########################################################################
+
+    // see https://v4.webpack.js.org/guides/code-splitting/
+    // Problem: you somehow have to manually embed all chunks, before webpack starts bootstrapping...
+    // const optimization = {
+    //   splitChunks: {
+    //     chunks: 'all',
+    //   },
+    // };
+    const optimization = undefined;
 
     // ###########################################################################
     // put it all together
@@ -276,10 +280,9 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
         __filename: true
       },
 
-      externals
+      externals,
 
-      // // [webpack-2]
-      // babel: babelOptions
+      optimization
     };
 
 
