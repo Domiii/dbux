@@ -272,14 +272,18 @@ export default class RuntimeMonitor {
 
     // await part
     const currentRunId = this._runtime.getCurrentRunId();
-    if (awaitArgument instanceof Promise && this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId)) {
+    debug('here1', { awaitArgument }, awaitArgument instanceof Promise, this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId));
+    if (awaitArgument instanceof Promise && (!this._runtime.isPromiseRecorded(awaitArgument) || this._runtime.isPromiseCreatedInRun(awaitArgument, currentRunId))) {
       const promise = awaitArgument;
 
+      debug('here2');
       const isFirstAwait = this._runtime.isFirstContextInParent(resumeContextId, parentContextId);
       if (isFirstAwait) {
         this._runtime.storeFirstAwaitPromise(currentRunId, parentContextId, awaitArgument);
       } 
-      if (!isFirstAwait || isRootContext(parentContextId)) {
+
+      debug('here3');
+      if (!isFirstAwait || this._runtime.isRootContext(parentContextId)) {
         this._runtime.setOwnPromiseThreadId(promise, this._runtime.getRunThreadId(currentRunId));
       }
     }
@@ -332,6 +336,7 @@ export default class RuntimeMonitor {
           const callerPromise = this._runtime.getContextReturnValue(callerContextId); // get return value
           const promiseThreadId = this._runtime.getPromiseThreadId(callerPromise);
 
+          debug('caller promise', callerPromise);
           debug('promise thread id', promiseThreadId);
 
           if (startThreadId === promiseThreadId) {

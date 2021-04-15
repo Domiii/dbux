@@ -562,10 +562,7 @@ export default class Runtime {
     }
 
     const callerPromise = this.getCallerPromise(promise);
-    if (promise === callerPromise) {
-      debug('same promise!');
-      return undefined;
-    }
+    debug('caller promise', callerPromise);
     if (callerPromise) {
       return this.getPromiseThreadId(callerPromise);
     }
@@ -633,6 +630,10 @@ export default class Runtime {
 
   isPromiseRecorded(promise) {
     return !!this.getPromiseRunId(promise);
+  }
+
+  isRootContext(contextId) {
+    return !executionContextCollection.getById(contextId).parentContextId;
   }
 
   runContextTraceCallPromiseMap = new Map();

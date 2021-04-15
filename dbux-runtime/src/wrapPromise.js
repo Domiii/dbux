@@ -28,9 +28,9 @@ export function getNewPromiseId() {
 }
 
 export function ensurePromiseWrapped(promise) {
-  if (disable) {
-    return;
-  }
+  // if (disable) {
+  //   return;
+  // }
 
   if (promise instanceof originalPromise) {
     if (promiseSet.has(promise)) {
@@ -54,11 +54,12 @@ export function ensurePromiseWrapped(promise) {
 }
 
 export default function wrapPromise(_runtimeMonitor) {
+  runtimeMonitor = _runtimeMonitor;
+
   if (disable) {
     return;
   }
 
-  runtimeMonitor = _runtimeMonitor;
   globalThis.Promise = class Promise extends originalPromise {
     constructor(executor) {
       let thisPromiseId = getNewPromiseId();
