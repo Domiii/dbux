@@ -177,11 +177,8 @@ This may be solved by pressing \`clean project folder\` button.`);
    * @virtual
    */
   async installProject() {
-    if (this.systemRequirements) {
-      // TODO:
-      await checkSystemWithRequirement(this.manager, this.systemRequirements);
-    }
-
+    await checkSystemWithRequirement(this.manager, this.systemRequirements);
+    
     // git clone
     await this.gitClone();
   }

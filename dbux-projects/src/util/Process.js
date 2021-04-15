@@ -198,7 +198,10 @@ export default class Process {
         logger.debug(`  ("${commandName}" EXIT${isDone && ' (ignored)' || ''}: code=${code}, signal=${signal})`);
         if (isDone) { return; }
 
-        if (this._killed) {
+        if (this._dieSilent) {
+          resolve();
+        }
+        else if (this._killed) {
           reject(new Error(`Process "${processExecMsg}" was killed`));
         }
         else if (failOnStatusCode && code) {
@@ -237,11 +240,12 @@ export default class Process {
    * NOTE: SIGTERM is the default choice for the internally used `ChildProcess.kill` method as well.
    * @see https://nodejs.org/api/child_process.html#child_process_subprocess_kill_signal
    */
-  async kill(signal = 'SIGINT') {
+  async kill(signal = 'SIGINT', silent = false) {
     // TODO: does not work correctly on windows
     // see: https://stackoverflow.com/questions/32705857/cant-kill-child-process-on-windows?noredirect=1&lq=1
     this._killed = true;
     this._process.stdin?.pause(); // see https://stackoverflow.com/questions/18694684/spawn-and-kill-a-process-in-node-js
+    this._dieSilent = silent;
     // this._process?.kill(signal);
     kill(this._process.pid, signal);
     await this.waitToEnd().
@@ -251,6 +255,10 @@ export default class Process {
       catch(err => {
         debug('ignored process error after kill:', err.message);
       });
+  }
+
+  async killSilent(signal = 'SIGINT') {
+    return await this.kill(signal, true);
   }
 
   async waitToEnd() {

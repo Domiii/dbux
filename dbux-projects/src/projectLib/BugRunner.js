@@ -51,7 +51,7 @@ export default class BugRunner {
   }
 
   get project() {
-    return this.bug.project;
+    return this.bug?.project || null;
   }
 
   /**
@@ -209,6 +209,9 @@ export default class BugRunner {
       let command = await project.testBugCommand(bug, cfg);
       command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 
+      // ensure RuntimeServer is ready to receive the result
+      await this.manager.externals.initRuntimeServer();
+
       // start watch mode (if necessary)
       await project.startWatchModeIfNotRunning(bug);
 
@@ -223,16 +226,15 @@ export default class BugRunner {
         };
         // `args` in execInTerminal not working with anything now
         const result = await this.manager.execInTerminal(cwd, command, args);
-        // project.logger.log(`Result: ${result}`);
         this._emitter.emit('testFinished', bug, result);
         return result;
       }
       else if (website) {
         const waitForNewAppPromise = new Promise((resolve) => {
-          const unsubscirbe = allApplications.onAdded((app) => {
-            unsubscirbe();
-            resolve(app);
-          });
+          const unsubscribe = allApplications.selection.onApplicationsChanged((apps) => {
+            unsubscribe();
+            resolve(apps);
+          }, false);
         });
         const successful = await this.manager.externals.openWebsite(website);
         if (successful) {
@@ -295,13 +297,13 @@ export default class BugRunner {
     this._terminalWrapper = null;
 
     // kill active process
-    await this._process?.kill();
+    await this._process?.killSilent();
 
     await queuePromise;
 
     // kill background processes
     const backgroundProcesses = this.project?.backgroundProcesses || EmptyArray;
-    await Promise.all(backgroundProcesses.map(p => p.kill()));
+    await Promise.all(backgroundProcesses.map(p => p.killSilent()));
 
     this._bug = null;
 

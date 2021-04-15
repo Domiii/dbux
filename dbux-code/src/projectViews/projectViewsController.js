@@ -230,17 +230,12 @@ export class ProjectViewController {
     showOutputChannel();
     return await runTaskWithProgressBar(async (progress) => {
       // TOTRANSLATE
-      progress.report({ message: 'Checking system requirements...' });
-      await this.checkActivateBugRequirement();
+      progress.report({ message: 'Initializing runtime server...' });
+      await initRuntimeServer(this.extensionContext);
 
       progress.report({ message: task.message });
       return await task.callback();
     }, { title, cancellable });
-  }
-
-  async checkActivateBugRequirement() {
-    await checkSystem(this.manager, false, true);
-    await initRuntimeServer(this.extensionContext);
   }
 
   async confirmCancelPracticeSession(dontRefreshView = false) {
