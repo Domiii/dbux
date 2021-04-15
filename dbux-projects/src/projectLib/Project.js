@@ -6,7 +6,7 @@ import sh from 'shelljs';
 import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
-import { getAllFilesInFolders } from '../util/fileUtil';
+import { getAllFilesInFolders, globRelative } from '@dbux/common-node/src/util/fileUtil';
 import BugList from './BugList';
 import Process from '../util/Process';
 import { checkSystemWithRequirement } from '../checkSystem';
@@ -264,6 +264,11 @@ This may be solved by pressing \`clean project folder\` button.`);
     return this.manager.getDbuxPath('webpack/bin/webpack.js');
   }
 
+  getWebpackDevServerJs() {
+    // return this.manager.getDbuxPath('webpack-dev-server/bin/webpack-dev-server.js');
+    return 'node_modules/webpack-dev-server/bin/webpack-dev-server.js';
+  }
+
   // ###########################################################################
   // utilities
   // ###########################################################################
@@ -281,6 +286,17 @@ This may be solved by pressing \`clean project folder\` button.`);
       throw new Error(`Process failed with exit code ${code} (${processExecMsg})`);
     }
     return 0;
+  }
+
+  async installPackages(s) {
+    // TODO: yarn workspaces causes trouble for `yarn add`.
+    //        Might need to use a hack, where we manually insert it into `package.json` and then run yarn install.
+    // TODO: let user choose, or just prefer yarn by default?
+
+    const cmd = /* process.env.NODE_ENV === 'development' ? 
+      'yarn add --dev' :  */
+      'npm install -D';
+    return this.execInTerminal(`${cmd} ${s}`);
   }
 
   async exec(command, options, input) {
@@ -411,7 +427,7 @@ This may be solved by pressing \`clean project folder\` button.`);
     if (await this.hasAnyChangedFiles()) {
       // only auto commit if files changed
       const files = this.getAllAssetFiles();
-      this.logger.log('auto commit');
+      this.logger.log(`auto commit: ${files.join(', ')}`);
 
       // TODO: should not need '--allow-empty', if `hasAnyChangedFiles` is correct (TODO: test with todomvc)
       await this.exec(`git add ${files.map(name => `"${name}"`).join(' ')} && git commit -am '"[dbux auto commit]"' --allow-empty`);
@@ -502,7 +518,12 @@ This may be solved by pressing \`clean project folder\` button.`);
     //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
     //      Sometimes running it a second time after checking out a different branch 
     //      deletes all node_modules. This will bring everything back correctly (for now).
-    await this.execInTerminal(`npm install && npm install`);
+    if (process.env.NODE_ENV === 'development') {
+      await this.execInTerminal('yarn install');
+    }
+    else {
+      await this.execInTerminal(`npm install && npm install`);
+    }
   }
 
   // async yarnInstall() {
@@ -564,24 +585,24 @@ This may be solved by pressing \`clean project folder\` button.`);
   }
 
   getAllAssetFiles() {
-    return getAllFilesInFolders(
-      this.
-        getAllAssetFolderNames().
-        map(folderName => this.getAssetDir(folderName))
-    );
+    return this
+      .getAllAssetFolderNames()
+      .map(folderName => this.getAssetDir(folderName))
+      .flatMap(f => globRelative(f, '**/*'));
   }
 
-  async copyAssetFolder(assetFolderName) {
+  copyAssetFolder(assetFolderName) {
     // const assetDir = path.resolve(path.join(__dirname, `../../dbux-projects/assets/${assetFolderName}`));
     const assetDir = this.getAssetDir(assetFolderName);
     // copy assets, if this project has any
     this.logger.log(`Copying assets from ${assetDir} to ${this.projectPath}`);
 
-    // see https://stackoverflow.com/a/31438355/2228771
+    // Globs are tricky. See: https://stackoverflow.com/a/31438355/2228771
     const copyRes = sh.cp('-rf', `${assetDir}/{.[!.],..?,}*`, this.projectPath);
-    
-    // this.log(`Copied assets. All root files: ${getAllFilesInFolders(this.projectPath).join(', ')}`);
-    this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${getAllFilesInFolders(assetDir).join(',')}`,
+
+    const assetFiles = getAllFilesInFolders(assetDir).join(',');
+    // this.log(`Copied assets. All root files: ${await getAllFilesInFolders(this.projectPath, false).join(', ')}`);
+    this.log(`Copied assets (${assetDir}): result=${copyRes.toString()}, files=${assetFiles}`,
       // this.execCaptureOut(`cat ${this.projectPath}/.babelrc.js`)
     );
   }
@@ -613,7 +634,8 @@ This may be solved by pressing \`clean project folder\` button.`);
   async applyPatch(patchFName, revert = false) {
     await this.checkCorrectGitRepository();
 
-    return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${this.getPatchFile(patchFName)}"`);
+    const patchPath = this.getPatchFile(patchFName);
+    return this.exec(`git apply ${revert ? '-R' : ''} --ignore-space-change --ignore-whitespace "${patchPath}"`);
   }
 
   async revertPatch(patchFName) {

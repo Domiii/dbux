@@ -1,31 +1,42 @@
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const buildWebpackConfig = require('./dbux.webpack.config.base');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const ProjectRoot = path.resolve(__dirname);
 
 const customCfg = {
   target: 'web',
-  devServer: true
+  src: ['js'],
+  devServer: {
+    hot: false,
+    inline: false
+  }
 };
 
 const resultCfg = buildWebpackConfig(ProjectRoot, customCfg, (env, arg) => {
-  if (!env.PORT) {
-    throw new Error(`env has not provided PORT`);
-  }
-
   return {
-    context: path.join(ProjectRoot, 'src'),
-    entry: {
-      app: './bootstrap.js',
-      vendor: ['todomvc-app-css/index.css'],
-    },
+    context: ProjectRoot,
 
     plugins: [
-      new HtmlWebpackPlugin({
-        template: './index.html',
-        inject: 'head',
+      // new HtmlWebpackPlugin({
+      //   template: './index.html',
+      //   inject: 'head',
+      // }),
+
+      new CopyPlugin({
+        patterns: [
+          {
+            force: true,
+            from: path.join(ProjectRoot, 'index.html'),
+            to: path.join(ProjectRoot, 'dist/index.html')
+          },
+          {
+            force: true,
+            from: path.join(ProjectRoot, 'style'),
+            to: path.join(ProjectRoot, 'dist/style')
+          }
+        ]
       }),
       new webpack.DefinePlugin({
         'process.env': {
@@ -33,23 +44,6 @@ const resultCfg = buildWebpackConfig(ProjectRoot, customCfg, (env, arg) => {
         }
       })
     ],
-    module: {
-      rules: [
-        {
-          test: /\.css$/i,
-          include: [
-            path.join(ProjectRoot, 'src'),
-            path.join(ProjectRoot, 'node_modules')
-          ],
-          use: [
-            // Creates `style` nodes from JS strings
-            'style-loader',
-            // Translates CSS into CommonJS
-            'css-loader'
-          ]
-        },
-      ]
-    },
     externals: [
       {
         // fs: 'console.error("required fs")',

@@ -54,7 +54,8 @@ module.exports = (env, argv) => {
 
 
   const dependencyPaths = [
-    "dbux-common",
+    "dbux-common", 
+    'dbux-common-node',
     "dbux-data",
     "dbux-graph-common",
     "dbux-graph-host",

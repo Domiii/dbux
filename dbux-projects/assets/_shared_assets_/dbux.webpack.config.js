@@ -1,8 +1,8 @@
 const path = require('path');
 const buildWebpackConfig = require('./dbux.webpack.config.base');
-const originalWebpackConfig = require('./webpack.config');
+// const originalWebpackConfig = require('./webpack.config');
 
 const ProjectRoot = path.resolve(__dirname);
-const resultCfg = buildWebpackConfig(ProjectRoot, {}, originalWebpackConfig);
+const resultCfg = buildWebpackConfig(ProjectRoot, {});
 
 module.exports = resultCfg;

@@ -1,4 +1,5 @@
 import generate from '@babel/generator';
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 
 
 /**
@@ -21,11 +22,14 @@ const linesByProgram = new Map();
 
 function getSourceCodeLines(state) {
   const { filePath/* , file: { code } */ } = state;
-  let lines = linesByProgram.get(filePath);
-  if (!lines) {
-    const { file: { code } } = state;
+  let { lines, file: oldFile } = linesByProgram.get(filePath) || EmptyObject;
+  // console.warn('[DBUX getSourceCodeLines]', JSON.stringify(state));
+  const { file } = state;
+  if (/* !lines ||  */oldFile !== file) {
+    // NOTE: when using a bundler (e.g. Webpack), incremental builds can cause trouble. That's why we check `oldFile !== file`.
+    const { code } = file;
     lines = code.split(NEWLINE);
-    linesByProgram.set(filePath, lines);
+    linesByProgram.set(filePath, { lines, file });
   }
   return lines;
 }
@@ -35,7 +39,7 @@ function getSourceCodeLines(state) {
  * Based on `@babel/code-frame`, but more optimized
  * @see https://github.com/hulkish/babel/blob/master/packages/babel-code-frame/src/index.js
  */
-function extractSourceAtLoc(srcLines, loc) {
+function extractSourceAtLoc(srcLines, loc, state) {
   let line0 = loc.start.line - 1;
   const col0 = loc.start.column;
   let line1 = loc.end.line - 1;
@@ -44,7 +48,10 @@ function extractSourceAtLoc(srcLines, loc) {
   let result;
   if (line0 === line1) {
     // single line
-    result = srcLines[line0].substring(col0, col1);
+    result = srcLines[line0]?.substring(col0, col1) ||
+      `<failed to extract source at ${state.filePath}:${line0}: ${JSON.stringify(loc)}>`;
+    // eslint-disable-next-line no-console
+    console.warn('[DBUX babel-plugin]', result);
   }
   else {
     // multiple lines
@@ -65,7 +72,7 @@ export function extractSourceStringWithoutComments(node, state) {
 
 export function extractSourceStringWithoutCommentsAtLoc(loc, state) {
   const srcLines = getSourceCodeLines(state);
-  return extractSourceAtLoc(srcLines, loc);
+  return extractSourceAtLoc(srcLines, loc, state);
 }
 
 // export function extractSourceString(node, state) {

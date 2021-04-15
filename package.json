@@ -67,7 +67,7 @@
 		"version:dev": "node --unhandled-rejections=strict -e \"require('./scripts/fix-versions').revertToDevVersion().then(() => process.exit(0))\"",
 		"version:prod": "node --unhandled-rejections=strict -e \"require('./scripts/fix-versions').downgradeProdVersion().then(() => process.exit(0))\"",
 		"build:clean": "sh scripts/dbux-run-all.sh \"rm -rf dist\" && cd dbux-code && yarn run build:clean",
-		"build:watch": "yarn run version:dev && npx nodemon --exec \"node --stack-trace-limit=1000 --enable-source-maps -- ./node_modules/webpack/bin/webpack.js --mode development --watch\"",
+		"build:watch": "yarn run version:dev && npx nodemon --exec \"node --stack-trace-limit=1000 --enable-source-maps -- ./node_modules/webpack/bin/webpack.js --mode development --watch --hide-modules\"",
 		"build:watch:prod": "yarn run version:prod && npx nodemon --exec \"node --stack-trace-limit=1000 --enable-source-maps -- ./node_modules/webpack/bin/webpack.js --mode production --watch\"",
 		"build:dev": "yarn run version:dev && yarn run build:clean && yarn run graph:build:dev && node --stack-trace-limit=1000 --enable-source-maps -- ./node_modules/webpack/bin/webpack.js --mode development",
 		"build:prod": "yarn run version:prod && yarn run build:clean && yarn run graph:build:prod && node --stack-trace-limit=1000 --enable-source-maps -- ./node_modules/webpack/bin/webpack.js --mode production",
