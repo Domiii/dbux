@@ -24,11 +24,6 @@ class GraphRoot extends ClientComponentEndpoint {
             <div data-mount="HiddenAfterNode"></div>
           </div>
         </div>
-        <div data-mount="HiddenBeforeNode"></div>
-        <div data-el="nodeChildren" data-mount="RunNode" class="node-children flex-column">
-          <div class="before-run-node"></div>
-        </div>
-        <div data-mount="HiddenAfterNode"></div>
       </div>
     `);
   }
