@@ -48,10 +48,12 @@ function extractSourceAtLoc(srcLines, loc, state) {
   let result;
   if (line0 === line1) {
     // single line
-    result = srcLines[line0]?.substring(col0, col1) ||
-      `<failed to extract source at ${state.filePath}:${line0}: ${JSON.stringify(loc)}>`;
-    // eslint-disable-next-line no-console
-    console.warn('[DBUX babel-plugin]', result);
+    result = srcLines[line0]?.substring(col0, col1);
+    if (!result) {
+      result = `<failed to extract source at ${state.filePath}:${line0}: ${JSON.stringify(loc)}>`;
+      // eslint-disable-next-line no-console
+      console.warn('[DBUX babel-plugin]', result);
+    }
   }
   else {
     // multiple lines

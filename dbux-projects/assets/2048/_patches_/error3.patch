@@ -1,0 +1,13 @@
+diff --git a/js/keyboard_input_manager.js b/js/keyboard_input_manager.js
+index 88d7b3c..4fe9b41 100644
+--- a/js/keyboard_input_manager.js
++++ b/js/keyboard_input_manager.js
+@@ -63,7 +63,7 @@ KeyboardInputManager.prototype.listen = function () {
+     }
+ 
+     // R key restarts the game
+-    if (!modifiers && event.which === 82) {
++    if (!modifiers && event.which === 81) {
+       self.restart.call(self, event);
+     }
+   });

@@ -94,9 +94,20 @@ export default class Bug {
       return null;
     }
 
-    return this.bugLocations.some(t => {
+    const expandedBugLocations = this.bugLocations.flatMap(bl => {
+      if (Array.isArray(bl.line)) {
+        // line can be an array
+        return bl.line.map(l => ({
+          file: bl.file,
+          line: l
+        }));
+      }
+      return bl;
+    });
+
+    return expandedBugLocations.some(t => {
       return isEqual({
-        fileName: path.join(projectPath, t.fileName),
+        fileName: path.join(projectPath, t.fileName || t.file),
         line: t.line,
       }, loc);
     });
