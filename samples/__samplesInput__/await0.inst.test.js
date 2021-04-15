@@ -39,7 +39,7 @@ try {
       return (
         _dbux.traceExpr(8, (_Promise = Promise)),
         _dbux.t(23),
-        _dbux.traceExpr(
+        _dbux.traceCall(
           25,
           new _Promise(
             _dbux.traceArg(24, (r) => {
@@ -50,7 +50,7 @@ try {
                 return (
                   _dbux.traceExpr(12, (_setTimeout = setTimeout)),
                   _dbux.t(19),
-                  _dbux.traceExpr(
+                  _dbux.traceCall(
                     22,
                     _setTimeout(
                       _dbux.traceArg(20, () => {
@@ -60,7 +60,7 @@ try {
                           return (
                             _dbux.traceExpr(15, (_r = r)),
                             _dbux.t(16),
-                            _dbux.traceExpr(18, _r(_dbux.traceArg(17, 13)))
+                            _dbux.traceCall(18, _r(_dbux.traceArg(17, 13)))
                           );
                         } finally {
                           _dbux.popFunction(_contextId4, 14);
@@ -92,14 +92,14 @@ try {
       _dbux.traceExpr(29, (_o = console)),
         _dbux.traceExpr(30, (_func = _o.log)),
         _dbux.t(31),
-        _dbux.traceExpr(33, _func.call(_o, _dbux.traceArg(32, 1)));
+        _dbux.traceCall(33, _func.call(_o, _dbux.traceArg(32, 1)));
       _dbux.postAwait(
         await _dbux.wrapAwait(
           (_awaitArgument =
             (_dbux.traceExpr(36, (_sleep = sleep)),
             _dbux.t(37),
-            _dbux.traceExpr(39, _sleep(_dbux.traceArg(38, 800))))),
-          (_contextId6 = _dbux.preAwait(_awaitArgument, 9, 34))
+            _dbux.traceCall(39, _sleep(_dbux.traceArg(38, 800))))),
+          (_contextId6 = _dbux.preAwait(9, 34, _awaitArgument))
         ),
         _awaitArgument,
         _contextId6,
@@ -108,7 +108,7 @@ try {
       _dbux.traceExpr(40, (_o2 = console)),
         _dbux.traceExpr(41, (_func2 = _o2.log)),
         _dbux.t(42),
-        _dbux.traceExpr(44, _func2.call(_o2, _dbux.traceArg(43, 2)));
+        _dbux.traceCall(44, _func2.call(_o2, _dbux.traceArg(43, 2)));
       // await sleep(800);
       // console.log(3);
       // await sleep(800);
@@ -124,7 +124,7 @@ try {
 
   _dbux.traceExpr(45, (_main = main)),
     _dbux.t(46),
-    _dbux.traceExpr(47, _main());
+    _dbux.traceCall(47, _main());
 
   // setTimeout(main, 100);
   // setTimeout(main, 200);

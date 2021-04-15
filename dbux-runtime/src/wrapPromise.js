@@ -11,6 +11,8 @@ const Verbose = false;
 
 const debug = (...args) => Verbose && _debug(...args);
 
+const disable = true;
+
 /**
  * @type {RuntimeMonitor}
  */
@@ -26,6 +28,10 @@ export function getNewPromiseId() {
 }
 
 export function ensurePromiseWrapped(promise) {
+  if (disable) {
+    return;
+  }
+
   if (promise instanceof originalPromise) {
     if (promiseSet.has(promise)) {
       if (promise.promiseId === undefined) {
@@ -48,6 +54,10 @@ export function ensurePromiseWrapped(promise) {
 }
 
 export default function wrapPromise(_runtimeMonitor) {
+  if (disable) {
+    return;
+  }
+
   runtimeMonitor = _runtimeMonitor;
   globalThis.Promise = class Promise extends originalPromise {
     constructor(executor) {

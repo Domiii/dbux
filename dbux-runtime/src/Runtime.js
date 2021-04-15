@@ -448,7 +448,7 @@ export default class Runtime {
 
   runToThreadMap = new Map();
   threadFirstRun = new Map();
-  threadLastRun = new Map();
+  threadLastRun = new Map([[1, 1]]);
 
   /**
    * Maintain `runToThreadMap` map and `threadId`'s last run in `threadLastRun` map
@@ -465,6 +465,11 @@ export default class Runtime {
    * @param {number} runId 
    */
   getRunThreadId(runId) {
+    if (runId === 1) {
+      debug("get run thread id", runId, "returns", 1);
+      return 1;
+    }
+    debug("get run thread id", runId, "returns", this.runToThreadMap.get(runId));
     return this.runToThreadMap.get(runId);
   }
 
@@ -493,16 +498,29 @@ export default class Runtime {
    * @param {string} edgeType should be either 'CHAIN' or 'FORK'
    */
   addEdge(fromRun, toRun, edgeType) {
-    if (edgeType === 'CHAIN' && this.getRunOutgoingChain(fromRun) !== null) {
+    debug(`Add edge from run ${fromRun} to ${toRun} type ${edgeType}`);
+
+    if (edgeType === 'CHAIN' && this.getNextRunInChain(fromRun) !== null) {
       edgeType = 'FORK';
 
       warn("Trying to add CHAIN to an run already had outgoing CHAIN edge");
+    }
+
+    if (this.getRunThreadId(fromRun)) {
+      this.assignRunNewThreadId(fromRun);
     }
 
     if (edgeType === 'CHAIN') {
       this.setRunThreadId(toRun, this.getRunThreadId(fromRun));
     } else {
       this.assignRunNewThreadId(toRun);
+    }
+
+    if (!this.runGraph[fromRun]) {
+      this.runGraph[fromRun] = new Map();
+    }
+    if (!this.invRunGraph[toRun]) {
+      this.invRunGraph[toRun] = new Map();
     }
 
     this.runGraph[fromRun].set(toRun, edgeType);
@@ -515,11 +533,12 @@ export default class Runtime {
    * @return {number} The last run id of the thread
    */
   getLastRunOfThread(threadId) {
+    debug("get last run of thread", threadId, "returns", this.threadLastRun.get(threadId));
     return this.threadLastRun.get(threadId);
   }
 
-  getRunOutgoingChain(runId) {
-    for (let [toRun, edgeType] of this.runGraph[runId]) {
+  getNextRunInChain(runId) {
+    for (let [toRun, edgeType] of this.runGraph[runId] || []) {
       if (edgeType === 'CHAIN') {
         return toRun;
       }
@@ -536,12 +555,17 @@ export default class Runtime {
   }
 
   getPromiseThreadId(promise) {
+    debug('get promise thread id', { promise });
     const threadId = this.getOwnPromiseThreadId(promise);
     if (threadId) {
       return threadId;
     }
 
     const callerPromise = this.getCallerPromise(promise);
+    if (promise === callerPromise) {
+      debug('same promise!');
+      return undefined;
+    }
     if (callerPromise) {
       return this.getPromiseThreadId(callerPromise);
     }
@@ -552,15 +576,23 @@ export default class Runtime {
   promiseContextMap = new Map();
   contextPromiseMap = new Map();
 
+  /**
+   * Given a promise, return the return value of the context that await this promise
+   * @param {Promise} promise 
+   * @returns 
+   */
   getCallerPromise(promise) {
-    const { contextId } = this.promiseContextMap.get(promise);
-    return this.contextReturnValue.get(contextId);
+    debug('get caller promise', promise);
+    const contextId = this.returnValueCallerContextMap.get(promise);
+    return this.contextReturnValueMap.get(contextId);
   }
 
   storeFirstAwaitPromise(runId, contextId, awaitArgument) {
+    debug('store first await promise', runId, contextId, awaitArgument);
     const pair = { runId, contextId };
     this.promiseContextMap.set(awaitArgument, pair);
     this.contextPromiseMap.set(pair, awaitArgument);
+    // TOD: seems like useless
   }
 
   getTraceValue(trace) {
@@ -592,7 +624,7 @@ export default class Runtime {
   }
 
   getPromiseRunId(promise) {
-    return promise._dbux_promiseId;
+    return promise._dbux_runId;
   }
 
   isPromiseCreatedInRun(promise, runId = this.getCurrentRunId()) {
@@ -604,8 +636,12 @@ export default class Runtime {
   }
 
   runContextTraceCallPromiseMap = new Map();
+  promiseRunContextTraceMap = new Map();
   storeAsyncCallPromise(runId, contextId, traceId, promise) {
-    this.runContextCallTracePromiseMap.set({ runId, contextId, traceId }, promise);
+    Object.assign(promise, { _dbux_runId: runId });
+    const key = { runId, contextId, traceId };
+    this.runContextCallTracePromiseMap.set(key, promise);
+    this.promiseRunContextTraceMap.set(promise, key);
   }
 
   _lastPoppedContextId = null;
@@ -621,12 +657,16 @@ export default class Runtime {
     return this._firstAwaitPromise.get(contextId);
   }
 
-  contextReturnValue = new Map();
-  recordContestReturnValue(contextId, value) {
-    this.contextReturnValue.set(contextId, value);
+  contextReturnValueMap = new Map();
+  returnValueCallerContextMap = new Map();
+  recordContextReturnValue(callerContextId, contextId, value) {
+    debug('set context return value', contextId, 'to', value);
+    this.contextReturnValueMap.set(contextId, value);
+    this.returnValueCallerContextMap.set(value, callerContextId);
   }
 
   getContextReturnValue(contextId) {
-    return this.contextReturnValue.get(contextId);
+    debug('get context return value of context', contextId);
+    return this.contextReturnValueMap.get(contextId);
   }
 }

@@ -138,6 +138,7 @@ export default class ProgramMonitor {
    * 
    */
   traceExpr(inProgramStaticTraceId, value) {
+    // this._logger.debug('trace expr', { inProgramStaticTraceId, value });
     if (this.areTracesDisabled) {
       return value;
     }
@@ -145,6 +146,7 @@ export default class ProgramMonitor {
   }
 
   traceCall(inProgramStaticTraceId, value) {
+    // this._logger.debug('trace call', { inProgramStaticTraceId, value });
     if (this.areTracesDisabled) {
       return value;
     }

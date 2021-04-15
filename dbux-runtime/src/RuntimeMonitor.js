@@ -14,8 +14,8 @@ import { ensurePromiseWrapped } from './wrapPromise';
 // eslint-disable-next-line no-unused-vars
 const { log, debug: _debug, warn, error: logError } = newLogger('RuntimeMonitor');
 
-// const Verbose = true;
-const Verbose = false;
+const Verbose = true;
+// const Verbose = false;
 const debug = (...args) => Verbose && _debug(...args);
 
 function _inheritsLoose(subClass, superClass) {
@@ -104,7 +104,7 @@ export default class RuntimeMonitor {
     const { contextId } = context;
     this._runtime.push(contextId, isInterruptable);
 
-    debug('push immediate, stack size', this._runtime._executingStack.length());
+    // debug('push immediate, stack size', this._runtime._executingStack.length());
 
     // trace
     this._trace(programId, contextId, runId, inProgramStaticTraceId);
@@ -133,7 +133,7 @@ export default class RuntimeMonitor {
     // pop from stack
     this._pop(contextId);
 
-    debug('pop immediate, stack size', this._runtime?._executingStack?.length?.() || 0);
+    // debug('pop immediate, stack size', this._runtime?._executingStack?.length?.() || 0);
 
     // trace
     const runId = this._runtime.getCurrentRunId();
@@ -277,7 +277,7 @@ export default class RuntimeMonitor {
 
       const isFirstAwait = this._runtime.isFirstContextInParent(resumeContextId, parentContextId);
       if (isFirstAwait) {
-        storeFirstAwaitPromise(currentRunId, parentContextId, awaitArgument);
+        this._runtime.storeFirstAwaitPromise(currentRunId, parentContextId, awaitArgument);
       } 
       if (!isFirstAwait || isRootContext(parentContextId)) {
         this._runtime.setOwnPromiseThreadId(promise, this._runtime.getRunThreadId(currentRunId));
@@ -328,9 +328,11 @@ export default class RuntimeMonitor {
         let edgeType = ''; // TODO change to enum
 
         if (this._runtime.isFirstContextInParent(preEventContext)) {
-          const callerContextId = executionContextCollection.getById(preEventContext).parentContextId;
+          const callerContextId = executionContextCollection.getById(preEventContext).contextId;
           const callerPromise = this._runtime.getContextReturnValue(callerContextId); // get return value
-          const promiseThreadId = this._runtime.getOwnPromiseThreadId(callerPromise);
+          const promiseThreadId = this._runtime.getPromiseThreadId(callerPromise);
+
+          debug('promise thread id', promiseThreadId);
 
           if (startThreadId === promiseThreadId) {
             edgeType = 'CHAIN';
@@ -464,6 +466,7 @@ export default class RuntimeMonitor {
   }
 
   traceCall(programId, inProgramStaticTraceId, value) {
+    // debug('trace call', value);
     if (!this._ensureExecuting()) {
       return value;
     }
@@ -479,16 +482,19 @@ export default class RuntimeMonitor {
 
     // about await part
     if (!(value instanceof Promise)) {
+      debug('instance is not promise');
       return value;
     }
 
-    if (this._runtime.getPromiseRunId(value) !== this._runtime.getCurrentRunId()) {
+    const promiseRunId = this._runtime.getPromiseRunId(value);
+    if (promiseRunId && promiseRunId !== this._runtime.getCurrentRunId()) {
+      debug('promise not create in this run');
       return value;
     }
     const calledContextId = this._runtime.getLastPoppedContextId();
     const calledContextFirstPromise = this._runtime.getContextFirstAwaitPromise(calledContextId);
 
-    this._runtime.recordContextReturnValue(calledContextId, value);
+    this._runtime.recordContextReturnValue(contextId, calledContextId, value);
 
     if (calledContextFirstPromise) {
       this._runtime.storeAsyncCallPromise(this._runtime.getCurrentRunId(), calledContextId, trace.traceId, calledContextFirstPromise);
@@ -634,7 +640,7 @@ export default class RuntimeMonitor {
   // ###########################################################################
 
   disabled = 0;
-  tracesDisabled = 1;
+  tracesDisabled = 0;
 
   incDisabled() {
     ++this.disabled;
