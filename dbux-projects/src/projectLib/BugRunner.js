@@ -39,7 +39,7 @@ export default class BugRunner {
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
 
-    this._bug = this.manager.getActivatedBug();
+    this._bug = this.manager.getSavedActivatedBug();
   }
 
   get logger() {

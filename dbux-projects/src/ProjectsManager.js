@@ -437,7 +437,6 @@ export default class ProjectsManager {
 
     // install things
     await this.runner.activateBug(bug);
-    await this.saveActivatedBug(bug);
 
     // apply stored patch
     try {
@@ -660,7 +659,7 @@ export default class ProjectsManager {
   /**
    * @return {Bug}
    */
-  getActivatedBug() {
+  getSavedActivatedBug() {
     return this.getBugByKey(activatedBugKeyName);
   }
 
