@@ -369,10 +369,10 @@ export default class ProjectsManager {
   }
 
   /**
-   * Apply the newest patch in testRuns
+   * Apply the newest patch from `BugProgress`
    * @param {Bug} bug
    */
-  async applyTestRunBugPatch(bug) {
+  async applyBugPatch(bug) {
     const patchString = this.bdp.getBugProgressByBug(bug)?.patch;
 
     if (patchString) {
@@ -440,7 +440,7 @@ export default class ProjectsManager {
 
     // apply stored patch
     try {
-      await this.applyTestRunBugPatch(bug);
+      await this.applyBugPatch(bug);
     } catch (err) {
       if (!err.applyFailedFlag) {
         // logError(err);
