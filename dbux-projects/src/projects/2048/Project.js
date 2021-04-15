@@ -14,7 +14,7 @@ export default class _2048Project extends Project {
   async afterInstall() {
     // NOTE: we need to expose all globals manually, since there is no easy way to workaround that problem with Webpack
     await this.applyPatch('baseline');
-    await this.autoCommit();
+    // await this.autoCommit(); // NOTE: autoCommit is called right after this method
     // await this.installPackages(`webpack-dev-server@3.11.0`);
   }
 
@@ -26,7 +26,6 @@ export default class _2048Project extends Project {
 
   loadBugs() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/2048/_patches_/patch1.patch
-    this.inputFiles = this.getAllJsFiles();
 
     return [
       {
@@ -46,12 +45,28 @@ export default class _2048Project extends Project {
       bug.website = `http://localhost:${this.port}`;
 
       bug.mainEntryPoint = ['js/application.js'];
-      // bug.runFilePaths = bug.testFilePaths;
-      bug.inputFiles = this.inputFiles;
-      bug.watchFilePaths = this.inputFiles.map(file => path.resolve(this.projectPath, 'dist', file));
 
       return bug;
     });
+  }
+
+  async selectBug(bug) {
+    this.updateBugFiles(bug);
+    return this.switchToBugPatchTag(bug);
+  }
+
+  /**
+   * NOTE: this is separate from `loadBugs` because `loadBugs` might be called before the project has been downloaded.
+   * This function however is called after download, so we can make sure that `getAllJsFiles` actually gets the files.
+   */
+  updateBugFiles(bug) {
+    if (!this.inputFiles) {
+      this.inputFiles = this.getAllJsFiles();
+    }
+
+    // bug.runFilePaths = bug.testFilePaths;
+    bug.inputFiles = this.inputFiles;
+    bug.watchFilePaths = this.inputFiles.map(file => path.resolve(this.projectPath, 'dist', file));
   }
 
   async startWatchMode(bug) {
@@ -63,10 +78,6 @@ export default class _2048Project extends Project {
     });
     let cmd = `node ${this.getWebpackDevServerJs()} --display-error-details --watch --config ./dbux.webpack.config.js ${env}`;
     return this.execBackground(cmd);
-  }
-
-  async selectBug(bug) {
-    return this.switchToBugPatchTag(bug);
   }
 
   async testBugCommand(bug, debugPort) {

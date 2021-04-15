@@ -495,7 +495,7 @@ This may be solved by pressing \`clean project folder\` button.`);
 
   async applyBugPatchToTags() {
     await this.gitAddOrUpdateTag(null);
-    let bugs = await this.getOrLoadBugs();
+    let bugs = this.getOrLoadBugs();
     for (let bug of bugs) {
       if (bug.patch) {
         await this.applyPatch(bug.patch);
