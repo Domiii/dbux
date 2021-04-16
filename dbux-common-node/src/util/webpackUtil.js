@@ -44,3 +44,8 @@ export function globToEntry(folder, pattern) {
 export function serializeGlobToEntry(folder, inputFilesGlob) {
   return serializeWebpackInput(globToEntry(folder, inputFilesGlob));
 }
+
+export function getWebpackDevServerJs() {
+  // return getDbuxPath('webpack-dev-server/bin/webpack-dev-server.js');
+  return 'node_modules/webpack-dev-server/bin/webpack-dev-server.js';
+}

@@ -127,6 +127,10 @@ export default class BugRunner {
       return;
     }
 
+    // init
+    await project.initProject();
+
+    // install
     await project.installProject();
     project._installed = true;
   }
@@ -169,6 +173,7 @@ export default class BugRunner {
         //   // }
         // },
         // select bug
+
         project.selectBug.bind(project, bug),
 
         // `npm install` again (NOTE: the newly checked out tag might have different dependencies)
@@ -201,11 +206,16 @@ export default class BugRunner {
     try {
       this.setStatus(BugRunnerStatus.Busy);
 
+      // init bug
+      project.initBug(bug);
+
       cfg = {
         debugPort: cfg?.debugMode && this.debugPort || null,
         dbuxJs: cfg?.dbuxEnabled ? this.manager.getDbuxCliBinPath() : null,
         ...cfg,
       };
+      
+      // build the run command
       let command = await project.testBugCommand(bug, cfg);
       command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
 

@@ -70,7 +70,11 @@ export async function getAllFilesInFoldersAsync(filesOrFolders, recurse = true, 
   ));
 }
 
-export function globRelative(folder, pattern) {
-  return glob.sync(path.join(folder, pattern))
-    .map(fpath => fpath.substring(folder.length + 1));
+export function globRelative(folder, patternOrPatterns) {
+  const patterns = Array.isArray(patternOrPatterns) ? patternOrPatterns : [patternOrPatterns];
+  return patterns.flatMap(pattern =>
+    glob
+      .sync(path.join(folder, pattern))
+      .map(fpath => fpath.substring(folder.length + 1))
+  );
 }
