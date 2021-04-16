@@ -20,11 +20,11 @@ class RunNode extends ClientComponentEndpoint {
     const totalAnimTime = 10 * 1000;
     const remainingAnimTime = totalAnimTime + this.state.createdAt - Date.now();
     if (remainingAnimTime > 0) {
-      this.el.classList.add('new');
+      this.el.classList.add('blink-me');
       setTimeout(() => {
         // "new" animation has finished -> remove class
         if (!this.isDisposed) {
-          this.el.classList.remove('new');
+          this.el.classList.remove('blink-me');
         }
       }, remainingAnimTime);
     }

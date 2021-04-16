@@ -20,7 +20,7 @@ class GraphDocument extends HostComponentEndpoint {
     // register event listeners
     this.addDisposable(
       allApplications.selection.onApplicationsChanged(() => {
-        this.graphRoot.refresh();
+        this.graphRoot.updateRunNodes();
       })
     );
   }

@@ -91,7 +91,7 @@ export default class FocusController extends ClientComponentEndpoint {
 
     let nodeBounds = targetDOM.getBoundingClientRect();
     if (!nodeBounds.height && !nodeBounds.width) {
-      this.logger.error('Trying to slide to unrevealed DOM:', targetDOM, JSON.stringify(nodeBounds));
+      this.logger.error(`Trying to slide to unrevealed DOM: ${targetDOM.outerHTML}, ${JSON.stringify(nodeBounds)}`);
       return;
     }
 
