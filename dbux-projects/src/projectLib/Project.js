@@ -7,6 +7,7 @@ import { newLogger } from '@dbux/common/src/log/logger';
 import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import EmptyArray from '@dbux/common/src/util/EmptyArray';
 import { getAllFilesInFolders, globRelative } from '@dbux/common-node/src/util/fileUtil';
+import isObject from 'lodash/isObject';
 import BugList from './BugList';
 import Process from '../util/Process';
 import { checkSystemWithRequirement } from '../checkSystem';
@@ -308,8 +309,12 @@ This may be solved by pressing \`clean project folder\` button.`);
     //        Might need to use a hack, where we manually insert it into `package.json` and then run yarn install.
     // TODO: let user choose, or just prefer yarn by default?
 
-    const cmd = /* process.env.NODE_ENV === 'development' ? 
-      'yarn add --dev' :  */
+    if (isObject(s)) {
+      s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
+    }
+
+    const cmd = process.env.NODE_ENV === 'development' ? 
+      'yarn add --dev' : 
       'npm install -D';
     return this.execInTerminal(`${cmd} ${s}`);
   }
