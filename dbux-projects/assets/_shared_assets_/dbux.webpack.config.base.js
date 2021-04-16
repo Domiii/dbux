@@ -3,12 +3,14 @@
 
 const path = require('path');
 const process = require('process');
+const webpack = require('webpack');
 const mergeWith = require('lodash/mergeWith');
 const { getDependencyRoot } = require('@dbux/cli/lib/dbux-folders');
 const { deserializeWebpackInput, parseEnv } = require('@dbux/cli/lib/webpack-basics');
 const isFunction = require('lodash/isFunction');
 const isArray = require('lodash/isArray');
 const isObject = require('lodash/isObject');
+const CopyPlugin = require('copy-webpack-plugin');
 require('@dbux/babel-plugin');
 
 const nodeExternals = require(path.join(getDependencyRoot(), 'node_modules/webpack-node-externals'));
@@ -102,6 +104,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       src: srcFolders = ['src'],
       dbuxRoot,
       entry,
+      plugins,
       target = 'node',
       babelOptions: babelOptionsOverrides,
       devServer: devServerCfg
@@ -146,11 +149,24 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // entry
     // ###########################################################################
 
-    entry = entry || env?.entry;
+    entry = entry || env?.entry || { main: 'src/index.js' };
 
     entry = Object.fromEntries(
       Object.entries(entry)
         .map(([key, value]) => [key, path.resolve(ProjectRoot, value)])
+    );
+
+    // ###########################################################################
+    // plugins
+    // ###########################################################################
+
+    plugins = plugins || [];
+    plugins.push(
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: JSON.stringify("development")
+        }
+      })
     );
 
     // console.warn('  env.entry:', JSON.stringify(entry, null, 2));
@@ -230,7 +246,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       // https://github.com/webpack/webpack/issues/2145
       // devtool: 'inline-module-source-map',
       devtool: 'source-map',
-      plugins: [],
+      plugins,
       context: path.join(ProjectRoot, '.'),
       output: {
         filename: '[name].js',
@@ -301,3 +317,18 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
 };
 
 // console.warn('webpack config loaded');
+
+
+// ###########################################################################
+// copyPlugin
+// ###########################################################################
+
+module.exports.copyPlugin = function copyPlugin(ProjectRoot, files) {
+  return new CopyPlugin({
+    patterns: files.map(f => ({
+      force: true,
+      from: path.join(ProjectRoot, f),
+      to: path.join(ProjectRoot, 'dist', f)
+    }))
+  });
+};
