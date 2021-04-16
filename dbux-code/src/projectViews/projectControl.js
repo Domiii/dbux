@@ -13,6 +13,7 @@ import WebviewWrapper from '../codeUtil/WebviewWrapper';
 import { showBugIntroduction } from './BugIntroduction';
 import { getStopwatch } from './practiceStopwatch';
 import { initUserEvent } from '../userEvents';
+import { initRuntimeServer } from '../net/SocketServer';
 
 /** @typedef {import('@dbux/projects/src/ProjectsManager').default} ProjectsManager */
 
@@ -126,6 +127,9 @@ export async function initProjectManager(extensionContext) {
     openWebsite(url) {
       return env.openExternal(Uri.parse(url));
     },
+    async initRuntimeServer() {
+      return await initRuntimeServer(extensionContext);
+    }
   };
 
   // ########################################

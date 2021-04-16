@@ -133,9 +133,9 @@ export default class ApplicationSet {
   /**
    * @param {applicationsChangedCallback} cb
    */
-  onApplicationsChanged(cb) {
+  onApplicationsChanged(cb, callImmediately = true) {
     const unsubscribe = this._emitter.on('applicationsChanged', cb);
-    if (this._applications) {
+    if (callImmediately && this._applications) {
       cb(this._applications);
     }
     return unsubscribe;

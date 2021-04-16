@@ -69,7 +69,7 @@ export default class ProjectNode extends BaseTreeViewNode {
             progress.report({ message: 'deleting project folder...' });
             // wait for progress bar to show
             await sleep(100);
-            await this.project.deleteProjectFolder();
+            this.project.deleteProjectFolder();
             this.treeNodeProvider.refresh();
             progress.report({ message: 'Done.' });
           }, {

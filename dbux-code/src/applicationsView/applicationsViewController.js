@@ -45,10 +45,10 @@ class ApplicationsViewController {
         );
       }
     });
-    allApplications.onAdded(this.refreshOnData);
+    // allApplications.onAdded(this.refreshOnData);
     allApplications.onRemoved(this.refreshOnData);
     allApplications.onClear(this.refreshOnData);
-    allApplications.onRestarted(this.refreshOnData);
+    // allApplications.onRestarted(this.refreshOnData);
 
     // selection changed
     allApplications.selection.onApplicationsChanged(this.refreshOnData);
