@@ -14,7 +14,7 @@ function parseEnv(env) {
         option.push(true);
       }
       else {
-        console.warn(option.join('='));
+        // console.warn(option.join('='));
         option[1] = JSON.parse(option[1]);
       }
       return option;

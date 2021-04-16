@@ -1,5 +1,5 @@
+import { getWebpackDevServerJs } from '@dbux/common-node/src/util/webpackUtil';
 import path from 'path';
-import sh from 'shelljs';
 import Project from '../../projectLib/Project';
 
 
@@ -218,7 +218,7 @@ export default class TodomvcEs6Project extends Project {
 
   async startWatchMode(bug) {
     // start webpack and webpack-dev-server
-    let cmd = `node ${this.getWebpackDevServerJs()} --watch --config ./dbux.webpack.config.js --env PORT=${bug.port}`;
+    let cmd = `node ${getWebpackDevServerJs()} --watch --config ./dbux.webpack.config.js --env PORT=${bug.port}`;
     return this.execBackground(cmd);
   }
 

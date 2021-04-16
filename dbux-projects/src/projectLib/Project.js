@@ -44,6 +44,8 @@ export default class Project {
    */
   folderName;
 
+  builder;
+
   // ###########################################################################
   // config
   // ###########################################################################
@@ -78,7 +80,7 @@ export default class Project {
 
 
   // ###########################################################################
-  // constructor
+  // constructor + init
   // ###########################################################################
 
   constructor(manager) {
@@ -88,6 +90,27 @@ export default class Project {
     this.name = this.folderName = this.constructor.constructorName;
 
     this.logger = newLogger(this.debugTag);
+  }
+  
+  initProject() {
+    if (this._initialized) {
+      return;
+    }
+    this._initialized = true;
+
+    // initialize builder
+    if (this.makeBuilder) {
+      this.builder = this.makeBuilder();
+      this.builder.initProject(this);
+
+      if (this.builder.startWatchMode) {
+        this.startWatchMode = this.builder.startWatchMode.bind(this.builder);
+      }
+    }
+  }
+
+  initBug(bug) {
+    this.builder?.decorateBug(bug);
   }
 
   // ###########################################################################
@@ -259,11 +282,6 @@ This may be solved by pressing \`clean project folder\` button.`);
 
   getWebpackJs() {
     return this.manager.getDbuxPath('webpack/bin/webpack.js');
-  }
-
-  getWebpackDevServerJs() {
-    // return this.manager.getDbuxPath('webpack-dev-server/bin/webpack-dev-server.js');
-    return 'node_modules/webpack-dev-server/bin/webpack-dev-server.js';
   }
 
   // ###########################################################################
