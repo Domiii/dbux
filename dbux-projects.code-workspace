@@ -25,6 +25,9 @@
 		},
 		{
 			"path": "dbux_projects/2048"
+		},
+		{
+			"path": "dbux_projects/Editor.md"
 		}
 	],
 	"settings": {

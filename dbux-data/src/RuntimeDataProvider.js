@@ -278,7 +278,7 @@ class TraceCollection extends Collection {
           const beforeCall = beforeCalls[beforeCalls.length - 1];
           if (staticTrace.callId !== beforeCall?.staticTraceId) {
             // eslint-disable-next-line max-len
-            logError('[callId]', beforeCall?.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, '][', trace, '][', beforeCall, `]. Stack staticTraceIds: ${beforeCalls.map(t => t.staticTraceId)}`);
+            logError('[callId]', beforeCall?.staticTraceId, staticTrace.staticTraceId, 'staticTrace.callId !== beforeCall.staticTraceId - is trace participating in a CallExpression-tree? [', staticTrace.displayName, `][${JSON.stringify(staticTrace.loc)}]. Stack staticTraceIds: ${beforeCalls.map(t => t.staticTraceId)}`);
           }
           else {
             trace.callId = beforeCall.traceId;

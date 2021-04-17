@@ -4,6 +4,9 @@ function deserializeWebpackInput(s) {
 
 
 function parseEnv(env) {
+  if (!env) {
+    return {};
+  }
   if (!Array.isArray(env)) {
     env = [env];
   }

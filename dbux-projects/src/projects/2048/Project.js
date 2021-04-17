@@ -20,15 +20,8 @@ export default class _2048Project extends Project {
 
     await this.execInTerminal('npm init -y');
 
+    await this.installWebpack4();
     // await this.autoCommit(); // NOTE: autoCommit is called right after this method
-    await this.installPackages({
-      // eslint-disable-next-line quote-props
-      'webpack': '^4.43.0',
-      'webpack-cli': '^3.3.11',
-      'webpack-config-utils': '2.0.0',
-      'webpack-dev-server': '^3.11.0',
-      'copy-webpack-plugin': '^6.0.3'
-    });
   }
 
   loadBugs() {
@@ -91,11 +84,11 @@ export default class _2048Project extends Project {
       //     }
       //   ]
       // }
-    ].map((bug) => {
-      bug.mainEntryPoint = ['js/application.js'];
+    ];
+  }
 
-      return bug;
-    });
+  decorateBug(bug) {
+    bug.mainEntryPoint = ['js/application.js'];
   }
 
   async selectBug(bug) {

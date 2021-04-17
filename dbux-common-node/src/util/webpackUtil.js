@@ -1,4 +1,4 @@
-// import path from 'path';
+import path from 'path';
 import { globRelative } from './fileUtil';
 
 export function serializeEnv(o) {
@@ -25,12 +25,12 @@ export function fileWithoutExt(fpath) {
   return fpath.replace(/\.[^/.]+$/, "");
 }
 
-export function filesToEntry(files) {
+export function filesToEntry(files, inputPrefix = '') {
   return Object.fromEntries(
     files
       .map(fpath => [
         fileWithoutExt(fpath),
-        fpath
+        path.join(inputPrefix, fpath)
       ])
   );
 }
