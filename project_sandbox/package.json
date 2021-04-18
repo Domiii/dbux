@@ -12,7 +12,8 @@
     "cloc-bower": "cd projects && git clone https://github.com/BugsJS/bower.git || true && cd bower && npx cloc --match-f='.*\\.(js|ts)$' --by-file lib",
     "cloc-eslint": "cd projects && git clone https://github.com/BugsJS/eslint.git || true && cd eslint && npx cloc --match-f='.*\\.(e?js|ts)$' --by-file lib bin tools tests/lib templates",
     "cloc-shields": "cd projects && git clone https://github.com/BugsJS/shields.git || true && cd shields && npx cloc --match-f='.*\\.(e?js|ts)$' --by-file lib services frontend",
-    "cloc-hexo": "cd projects && git clone https://github.com/BugsJS/hexo.git || true && cd hexo && npx cloc --match-f='\\.e?js$' --by-file lib test"
+    "cloc-hexo": "cd projects && git clone https://github.com/BugsJS/hexo.git || true && cd hexo && npx cloc --match-f='\\.e?js$' --by-file lib test",
+    "cloc-webpack": "cd projects; git clone https://github.com/webpack/webpack.git; cd webpack; npx cloc --match-f='\\.js$' --by-file lib"
   },
   "devDependencies": {
     "cloc": "^2.7.0"

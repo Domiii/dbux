@@ -153,7 +153,7 @@ function traverse(path, state, visitors) {
     // hackfix: if we don't re-throw here, babel swallows the error for some reason
     // console.error(err);
     // throw new Error('traversal failed');
-    logError('traversal failed');
+    logError('traversal failed:', err.message);
     throw err;
   }
 }

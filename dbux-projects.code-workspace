@@ -28,6 +28,9 @@
 		},
 		{
 			"path": "dbux_projects/Editor.md"
+		},
+		{
+			"path": "project_sandbox/projects/webpack"
 		}
 	],
 	"settings": {
