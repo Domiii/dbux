@@ -387,8 +387,14 @@ function normalizeConfig(cfg) {
 
 function enterExpression(traceResultType, path, state) {
   if (isCallPath(path)) {
+    // call expressions get special treatment
     // some of the ExpressionResult + ExpressionValue nodes we are interested in, might also be CallExpressions
     return enterCallExpression(traceResultType, path, state);
+  }
+
+  if (t.isAwaitExpression(path)) {
+    // await expressions get special treatment
+    return awaitVisitEnter(path, state);
   }
 
   // we want to trace CallResult on exit
@@ -504,7 +510,13 @@ function wrapExpression(traceType, path, state) {
   let tracePath = getTracePath(path);
 
   if (isCallPath(path)) {
+    // call expressions get special treatment
     return wrapCallExpression(path, state);
+  }
+
+  if (t.isAwaitExpression(path)) {
+    // await expressions get special treatment
+    return awaitVisitExit(path, state);
   }
 
   if (traceType === TraceType.ExpressionResult) {

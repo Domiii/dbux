@@ -224,6 +224,15 @@ class TraceCollection extends Collection {
     }
   }
 
+  logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls) {
+    const stackInfo = beforeCalls.map(t => t && 
+        `#${t?.staticTraceId} ${this.dp.collections.staticTraces.getById(t.staticTraceId)?.displayName || '(no staticTrace found)'}` ||
+        '(null)');
+
+    // eslint-disable-next-line max-len
+    logError(`Could not resolve resultCallId for trace #${staticTrace.staticTraceId} "${staticTrace.displayName}" (traceId ${traceId}). resultCallId ${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall?.staticTraceId || 'NA'}. BCE Stack:\n  ${stackInfo.join('\n  ')}`);
+  }
+
   /**
    * TODO: This will not work with asynchronous call expressions (which have `await` arguments).
    * @param {Trace[]} traces
@@ -246,7 +255,7 @@ class TraceCollection extends Collection {
           // NOTE: upon seeing a result, we need to pop *before* handling its potential role as argument
           let beforeCall = beforeCalls.pop();
           // debug('[callIds]', ' '.repeat(beforeCalls.length), '<', beforeCall.traceId, `(${staticTrace.displayName} [${TraceType.nameFrom(this.dp.util.getTraceType(traceId))}])`);
-          if (staticTrace.resultCallId !== beforeCall.staticTraceId) {
+          if (staticTrace.resultCallId !== beforeCall?.staticTraceId) {
             // maybe something did not get popped. Let's look for it directly!
             const idx = findLastIndex(beforeCalls, bce => bce.staticTraceId === staticTrace.resultCallId);
             if (idx >= 0) {
@@ -258,13 +267,17 @@ class TraceCollection extends Collection {
             else {
               // it's just not there...
               beforeCalls.push(beforeCall);   // something is wrong -> push it back
-              const stackInfo = beforeCalls.map(t => `#${t.staticTraceId} ${this.dp.collections.staticTraces.getById(t.staticTraceId)?.displayName || '(no staticTrace found)'}`);
 
-              // eslint-disable-next-line max-len
-              logError(`Could not resolve resultCallId for trace "#${staticTrace.staticTraceId} ${staticTrace.displayName}" (traceId ${traceId}). resultCallId ${staticTrace.resultCallId} not matching beforeCall.staticTraceId #${beforeCall.staticTraceId}. BCE Stack:\n  ${stackInfo.join('\n  ')}`);
+              // log error
+              this.logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls);
 
+              // unset beforeCall
               beforeCall = null;
             }
+          }
+          else if (!beforeCall) {
+            // log error
+            this.logCallResolveError(traceId, staticTrace, beforeCall, beforeCalls);
           }
 
           if (beforeCall) {
