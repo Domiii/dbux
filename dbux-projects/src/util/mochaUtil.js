@@ -6,7 +6,7 @@ import { buildNodeCommand } from './nodeUtil';
 
 export async function buildMochaRunCommand(cfg) {
   let {
-    cwd, 
+    cwd,
     dbuxJs,
     testArgs = '-c', // colors
     keepAlive = true,
@@ -20,7 +20,7 @@ export async function buildMochaRunCommand(cfg) {
   const noExit = keepAlive ? '--no-exit ' : '';
 
   testArgs = `${noExit}${testArgs}`;
-  
+
   // NOTE: `Project.installDbuxDependencies` installs @dbux/cli for us
 
   // const mochaJs = `${cwd}/node_modules/mocha/bin/_mocha`;
@@ -38,23 +38,16 @@ export async function buildMochaRunCommand(cfg) {
   //   programArgs: `${keepAlive} ${testArgs}`
   // });
 
-  const mochaJs = `${cwd}/node_modules/mocha/bin/_mocha`;
-  let program;
-  let programArgs;
-  if (dbuxJs) {
-    program = dbuxJs;
-    programArgs = `run ${dbuxArgs} "${mochaJs}" -- ${testArgs}`;
-  }
-  else {
-    program = mochaJs;
-    programArgs = testArgs;
-  }
-  
+  const program = `${cwd}/node_modules/mocha/bin/_mocha`;
+  const programArgs = testArgs;
+
   return buildNodeCommand({
     cwd,
     nodeArgs,
     debugPort,
     require,
+    dbuxJs,
+    dbuxArgs,
     program,
     programArgs
   });

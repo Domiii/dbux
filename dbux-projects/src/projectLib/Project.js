@@ -494,7 +494,7 @@ This may be solved by pressing \`clean project folder\` button.`);
       try {
         this.runner.createMainFolder();
         await this.execInTerminal(`git clone "${githubUrl}" "${projectPath}"`, {
-          cwd: this.projectsRoot
+          cwd: projectsRoot
         });
       }
       catch (err) {

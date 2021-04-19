@@ -226,7 +226,7 @@ export default class TodomvcEs6Project extends Project {
     return this.switchToBugPatchTag(bug);
   }
 
-  async testBugCommand(bug, debugPort) {
+  async testBugCommand(bug, cfg) {
     // nothing to do yet
     // TODO: run tests?
   }

@@ -1,4 +1,5 @@
 import NanoEvents from 'nanoevents';
+import path from 'path';
 import sh from 'shelljs';
 import SerialTaskQueue from '@dbux/common/src/util/queue/SerialTaskQueue';
 import { newLogger } from '@dbux/common/src/log/logger';
@@ -209,7 +210,10 @@ export default class BugRunner {
       // init bug
       project.initBug(bug);
 
+      const cwd = path.resolve(project.projectPath, bug.cwd || '');
+
       cfg = {
+        cwd,
         debugPort: cfg?.debugMode && this.debugPort || null,
         dbuxJs: cfg?.dbuxEnabled ? this.manager.getDbuxCliBinPath() : null,
         ...cfg,
@@ -226,7 +230,6 @@ export default class BugRunner {
       await project.startWatchModeIfNotRunning(bug);
 
       if (command) {
-        const cwd = project.projectPath;
         // const devMode = process.env.NODE_ENV === 'development';
         const args = {
           // NOTE: DBUX_ROOT + NODE_ENV are provided by webpack
