@@ -49,13 +49,19 @@ export default class RuntimeMonitor {
   /**
    * @returns {ProgramMonitor}
    */
-  addProgram(programData) {
+  addProgram(programData, runtimeCfg) {
+    // read cfg
+    if (runtimeCfg.tracesDisabled) {
+      this.tracesDisabled = 1;
+    }
+
+    // go!
     const staticProgramContext = staticProgramContextCollection.addProgram(programData);
     const { programId } = staticProgramContext;
     const { contexts: staticContexts, traces: staticTraces } = programData;
     staticContextCollection.addEntries(programId, staticContexts);
 
-    // warn(`RuntimeMonitor.addProgram ${programId}: ${programData.fileName}`);
+    // warn(`RuntimeMonitor.addProgram ${programId}: ${programData.fileName} (td=${!!runtimeCfg.tracesDisabled})`);
 
     // change program-local _staticContextId to globally unique staticContextId
     for (let i = 0; i < staticTraces.length; ++i) {

@@ -14,7 +14,7 @@ export default class EditorMdProject extends Project {
     return new WebpackBuilder({
       websitePort: 3844,
       rootPath: 'src',
-      jsFilePatterns: '*'
+      inputPattern: '*'
     });
   }
 

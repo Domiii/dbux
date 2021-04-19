@@ -7,6 +7,7 @@ import RealworldWebComponentsProject from './projects/realworld-web-components/P
 import JavascriptAlgorithmProject from './projects/javascript-algorithms/Project';
 import Project2048 from './projects/2048/Project';
 import EditorMdProject from './projects/Editor.md/Project';
+import WebpackProject from './projects/webpack/Project';
 
 // eslint-disable-next-line import/no-mutable-exports
 let registry = {
@@ -23,6 +24,7 @@ if (process.env.NODE_ENV === 'development') {
 
     2048: Project2048,
     'Editor.md': EditorMdProject,
+    Webpack: WebpackProject,
     'javascript-algorithms': JavascriptAlgorithmProject,
     'Chart.Js': ChartJs,
     hexo: Hexo,

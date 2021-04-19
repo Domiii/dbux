@@ -89,7 +89,7 @@ function wrapProgram(path, state) {
 // ###########################################################################
 
 /**
- * NOTE: Rollup will run every file twice. The first time, only containing "__ROLLUP__PREFLIGHT_CHECK_DO_NOT_TOUCH__"
+ * 
  */
 function enter(buildCfg, path, state) {
   // const cfg = state.opts;

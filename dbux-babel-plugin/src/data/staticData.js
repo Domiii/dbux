@@ -1,3 +1,4 @@
+import EmptyObject from '@dbux/common/src/util/EmptyObject';
 import { buildSource } from '../helpers/builders';
 
 // const Verbose = false;
@@ -32,7 +33,7 @@ export function buildDbuxInit(state) {
   // // const staticDataString = JSON.stringify(staticData, null, 4);
   // Verbose && console.time(`[Dbux] babel write 1 (stringify) "${filePath}"`);
   const staticDataString = JSON.stringify(staticData);
-  const runtimeCfgString = JSON.stringify(runtimeCfg);
+  const runtimeCfgString = runtimeCfg || '{}';// JSON.stringify(runtimeCfg || EmptyObject);
   // Verbose && console.timeEnd(`[Dbux] babel write 1 (stringify) "${filePath}"`);
 
   // Verbose && console.debug(`[Dbux] babel write size:`, (staticDataString.length / 1000).toFixed(2), 'k');

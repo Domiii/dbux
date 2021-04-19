@@ -31,10 +31,16 @@ export function buildCommonCommandOptions() {
       type: 'string',
     },
     packageWhitelist: {
-      alias: ['w'],
+      alias: ['pw'],
       describe: "Specify which packages will be instrumented.",
       default: '',
       // type: 'array',
+    },
+    runtime: {
+      alias: ['rt'],
+      describe: 'Runtime config (JSON.stringify)',
+      // example: "{\"tracesDisabled\":1}"
+      default: null
     }
   };
 }

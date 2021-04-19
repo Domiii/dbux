@@ -1,0 +1,20 @@
+diff --git a/package.json b/package.json
+index 7b7a27f0c..72d74b4b6 100644
+--- a/package.json
++++ b/package.json
+@@ -119,13 +119,13 @@
+     "url": "https://opencollective.com/webpack"
+   },
+   "homepage": "https://github.com/webpack/webpack",
+-  "main": "lib/index.js",
++  "main": "dist/lib/index.js",
+   "bin": {
+     "webpack": "bin/webpack.js"
+   },
+   "types": "types.d.ts",
+   "files": [
+-    "lib/",
++    "dist/lib/",
+     "bin/",
+     "hot/",
+     "schemas/",

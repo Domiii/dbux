@@ -60,19 +60,21 @@ export default function buildBabelOptions(options) {
     dontAddPresets,
     dbuxOptions: dbuxOptionsString,
     packageWhitelist,
-    verbose = 0
+    verbose = 0,
+    runtime = null
   } = options;
 
-  // console.log(`buildBabelOptions verbose=${verbose}`);
+  // console.log(`buildBabelOptions: verbose=${verbose}, runtime=${runtime}`);
 
   if (dontInjectDbux && !esnext) {
     // nothing to babel
     return null;
   }
 
-  const dbuxOptions = dbuxOptionsString && JSON.parse(dbuxOptionsString) || undefined;
-  defaultsDeep(dbuxOptions || {}, {
-    verbose
+  const dbuxOptions = dbuxOptionsString && JSON.parse(dbuxOptionsString) || {};
+  defaultsDeep(dbuxOptions, {
+    verbose,
+    runtime: runtime
   });
 
   // if (process.env.NODE_ENV === 'development') {

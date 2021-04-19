@@ -49,3 +49,7 @@ export function getWebpackDevServerJs() {
   // return getDbuxPath('webpack-dev-server/bin/webpack-dev-server.js');
   return 'node_modules/webpack-dev-server/bin/webpack-dev-server.js';
 }
+
+export function getWebpackJs() {
+  return 'node_modules/webpack/bin/webpack.js';
+}

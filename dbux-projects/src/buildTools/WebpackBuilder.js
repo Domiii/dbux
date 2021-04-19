@@ -1,6 +1,6 @@
 import path from 'path';
 // import glob from 'glob';
-import { filesToEntry, getWebpackDevServerJs, serializeEnv } from '@dbux/common-node/src/util/webpackUtil';
+import { filesToEntry, getWebpackJs, getWebpackDevServerJs, serializeEnv } from '@dbux/common-node/src/util/webpackUtil';
 import { globRelative } from '@dbux/common-node/src/util/fileUtil';
 
 export default class WebpackBuilder {
@@ -17,20 +17,28 @@ export default class WebpackBuilder {
     return path.join(project.projectPath, cfg.rootPath || '');
   }
 
-  getAllJsFiles() {
+  getInputFiles() {
     // return getAllFilesInFolders(path.join(this.projectPath, folder));
     // return globToEntry(this.projectPath, 'js/*');
     const { cfg } = this;
-    return globRelative(this.getJsRoot(), cfg.jsFilePatterns);
+    const root = this.getJsRoot();
+    let inputFiles;
+    if (cfg.inputPattern) {
+      inputFiles = globRelative(root, cfg.inputPattern);
+    }
+    if (!inputFiles?.length) {
+      throw new Error(`inputPattern missing or invalid (no input files found): ${cfg.inputPattern}`);
+    }
+    return inputFiles;
   }
 
   /**
    * NOTE: this is separate from `loadBugs` because `loadBugs` might be called before the project has been downloaded.
-   * This function however is called after download, so we can make sure that `getAllJsFiles` actually gets the files.
+   * This function however is called after download, so we can make sure that `getInputFiles` actually gets the files.
    */
   decorateBug(bug) {
     if (!this.inputFiles) {
-      this.inputFiles = this.getAllJsFiles();
+      this.inputFiles = this.getInputFiles();
     }
     const {
       project: { projectPath },
@@ -42,9 +50,11 @@ export default class WebpackBuilder {
     bug.inputFiles = inputFiles;
     bug.watchFilePaths = inputFiles.map(file => path.resolve(projectPath, 'dist', file));
 
-    // website settings
-    bug.websitePort = websitePort;
-    bug.website = `http://localhost:${websitePort}${bug.websitePath || '/'}`;
+    if (websitePort) {
+      // website settings
+      bug.websitePort = websitePort;
+      bug.website = `http://localhost:${websitePort}${bug.websitePath || '/'}`;
+    }
   }
 
   async startWatchMode(bug) {
@@ -54,9 +64,11 @@ export default class WebpackBuilder {
     const entry = filesToEntry(bug.inputFiles, cfg.rootPath);
     const env = serializeEnv({
       entry,
-      port: bug.websitePort
+      port: bug.websitePort || 0
     });
-    let cmd = `node ${getWebpackDevServerJs()} --display-error-details --watch --config ./dbux.webpack.config.js ${env}`;
+
+    const webpackBin = bug.websitePort ? getWebpackDevServerJs() : getWebpackJs();
+    let cmd = `node ${webpackBin} --display-error-details --watch --config ./dbux.webpack.config.js ${env}`;
     return project.execBackground(cmd);
   }
 }

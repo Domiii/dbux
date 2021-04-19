@@ -314,7 +314,7 @@ This may be solved by pressing \`clean project folder\` button.`);
       s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
     }
 
-    const cmd = process.env.NODE_ENV === 'development' ? 
+    const cmd = this.preferredPackageManager === 'yarn' ? 
       'yarn add --dev' : 
       'npm install -D';
     return this.execInTerminal(`${cmd} ${s}`);
@@ -543,17 +543,29 @@ This may be solved by pressing \`clean project folder\` button.`);
     return this.gitCheckout(tagName);
   }
 
-  async npmInstall() {
-    // await this.exec('npm cache verify');
+  get preferredPackageManager() {
+    if (this.packageManager) {
+      return this.packageManager;
+    }
 
-    // hackfix: npm installs are broken somehow.
-    //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
-    //      Sometimes running it a second time after checking out a different branch 
-    //      deletes all node_modules. This will bring everything back correctly (for now).
+    // TODO: prefer yarn if yarn is installed
     if (process.env.NODE_ENV === 'development') {
+      // yarn is just faster (as of April/2021)
+      return 'yarn';
+    }
+    return 'npm';
+  }
+
+  async npmInstall() {
+    if (this.preferredPackageManager === 'yarn') {
       await this.execInTerminal('yarn install');
     }
     else {
+    // await this.exec('npm cache verify');
+    // hackfix: npm installs are broken somehow.
+    //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
+    //      Sometimes running it a second time after checking out a different branch 
+    //      deletes all node_modules. The second run brings everything back correctly (for now).
       await this.execInTerminal(`npm install && npm install`);
     }
   }

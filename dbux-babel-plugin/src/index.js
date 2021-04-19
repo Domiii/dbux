@@ -5,8 +5,7 @@ import '@dbux/common/src/util/prettyLogs';
 /**
  * The Dbux Babel plugin.
  * 
- * NOTE: The config is also available via state.opts,
- * which we use in several places, e.g. `dbuxState.js`.
+ * NOTE: The config is also available via state.opts (see `dbuxState.js`).
  */
 export default function dbuxBabelPlugin(_, cfg) {
   return {
