@@ -72,7 +72,8 @@ export default ValueTypeCategory;
 let ValuePruneState = {
   Normal: 0,
   Omitted: 1,
-  Shortened: 2
+  Shortened: 2,
+  ValueDisabled: 3
 };
 
 ValuePruneState = new Enum(ValuePruneState);

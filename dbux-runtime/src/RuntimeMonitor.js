@@ -228,7 +228,7 @@ export default class RuntimeMonitor {
     this._pop(callbackContextId);
 
     // trace
-    const trace = traceCollection.traceWithResultValue(programId, callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue);
+    const trace = traceCollection.traceWithResultValue(programId, callbackContextId, runId, inProgramTraceId, TraceType.PopCallback, resultValue, this.valuesDisabled);
     this._onTrace(callbackContextId, trace, true);
   }
 
@@ -379,7 +379,7 @@ export default class RuntimeMonitor {
       const runId = this._runtime.getCurrentRunId();
       const overrideType = null;
 
-      const trace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, overrideType, value);
+      const trace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, overrideType, value, this.valuesDisabled);
       this._onTrace(contextId, trace);
 
       return value;
@@ -400,7 +400,7 @@ export default class RuntimeMonitor {
     const contextId = this._runtime.peekCurrentContextId();
     const runId = this._runtime.getCurrentRunId();
 
-    const schedulerTrace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument, cb);
+    const schedulerTrace = traceCollection.traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, TraceType.CallbackArgument, cb, this.valuesDisabled);
     this._onTrace(contextId, schedulerTrace);
 
     // const wrapper = this.makeCallbackWrapper(programId, contextId, schedulerTraceId, inProgramStaticTraceId, cb);
@@ -509,6 +509,7 @@ export default class RuntimeMonitor {
 
   disabled = 0;
   tracesDisabled = 0;
+  valuesDisabled = 0;
 
   incDisabled() {
     ++this.disabled;

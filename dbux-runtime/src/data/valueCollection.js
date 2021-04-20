@@ -59,10 +59,14 @@ class ValueCollection extends Collection {
     this.logger.log(...args);
   }
 
-  registerValueMaybe(hasValue, value, valueHolder) {
-    if (!hasValue) {
+  registerValueMaybe(hasValue, value, valueHolder, valuesDisabled) {
+    if (valuesDisabled) {
+      valueHolder.valueId = this._addValueDisabled().valueId;
+      // valueHolder.value = undefined;
+    }
+    else if (!hasValue) {
       valueHolder.valueId = 0;
-      valueHolder.value = undefined;
+      // valueHolder.value = undefined;
     }
     else {
       this.registerValue(value, valueHolder);
@@ -117,10 +121,16 @@ class ValueCollection extends Collection {
     return this._omitted;
   }
 
+  _addValueDisabled() {
+    if (!this._valueDisabled) {
+      this._valueDisabled = this._registerValue(null, null);
+      this._finishValue(this._valueDisabled, null, '(...)', ValuePruneState.ValueDisabled);
+    }
+    return this._valueDisabled;
+  }
+
   _registerValue(value, category) {
     // create new ref + track object value
-
-    // TODO: figure out a better way to store primitive values? (don't need ValueRef for those...)
     const valueRef = pools.values.allocate();
     const valueId = this._all.length;
     valueRef.valueId = valueId;

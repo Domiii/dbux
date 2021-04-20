@@ -19,12 +19,12 @@ class TraceCollection extends Collection {
   /**
    * Expression + pop traces have results
    */
-  traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, type, value) {
-    const trace = this._trace(programId, contextId, runId, inProgramStaticTraceId, type, true, value);
+  traceWithResultValue(programId, contextId, runId, inProgramStaticTraceId, type, value, valuesDisabled) {
+    const trace = this._trace(programId, contextId, runId, inProgramStaticTraceId, type, true, value, valuesDisabled);
     return trace;
   }
 
-  _trace(programId, contextId, runId, inProgramStaticTraceId, type, hasValue, value) {
+  _trace(programId, contextId, runId, inProgramStaticTraceId, type, hasValue, value, valuesDisabled) {
     if (!inProgramStaticTraceId) {
       throw new Error('missing inProgramStaticTraceId');
     }
@@ -40,7 +40,7 @@ class TraceCollection extends Collection {
     trace.createdAt = Date.now();  // { createdAt }
 
     // value
-    valueCollection.registerValueMaybe(hasValue, value, trace);
+    valueCollection.registerValueMaybe(hasValue, value, trace, valuesDisabled);
 
     // look-up globally unique staticTraceId
     
