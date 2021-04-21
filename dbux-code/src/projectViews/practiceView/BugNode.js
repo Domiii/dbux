@@ -79,13 +79,14 @@ export default class BugNode extends BaseTreeViewNode {
   async tryResetBug() {
     try {
       await this.bug.manager.resetBug(this.bug);
+      await showInformationMessage(`Bug ${this.bug.label} has been reset successfully.`);
     }
     catch (err) {
-      if (!err.userCanceled) {
-        throw err;
+      if (err.userCanceled) {
+        await showInformationMessage('Action canceled.');
       }
       else {
-        showInformationMessage('Action canceled.');
+        throw err;
       }
     }
   }
