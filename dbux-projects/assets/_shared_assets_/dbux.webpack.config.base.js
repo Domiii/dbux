@@ -153,7 +153,11 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
 
     entry = Object.fromEntries(
       Object.entries(entry)
-        .map(([key, value]) => [key, path.resolve(ProjectRoot, value)])
+        .map(([key, value]) => [
+          key, 
+          value
+          // Array.isArray(value) ? value : path.resolve(ProjectRoot, value)
+        ])
     );
 
     // ###########################################################################
@@ -310,7 +314,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
 
     const resultCfg = mergeConcatArray(cfg, ...cfgOverrides);
 
-    // console.debug(JSON.stringify(resultCfg, null, 2));
+    // console.debug('WEBPACK.CONFIG', JSON.stringify(resultCfg, null, 2));
 
     return resultCfg;
   };

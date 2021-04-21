@@ -1,5 +1,6 @@
 import path from 'path';
 // import glob from 'glob';
+import isFunction from 'lodash/isFunction';
 import { filesToEntry, getWebpackJs, getWebpackDevServerJs, serializeEnv } from '@dbux/common-node/src/util/webpackUtil';
 import { globRelative } from '@dbux/common-node/src/util/fileUtil';
 
@@ -25,18 +26,28 @@ export default class WebpackBuilder {
     let inputFiles;
     if (cfg.inputPattern) {
       inputFiles = globRelative(root, cfg.inputPattern);
-    }
-    if (!inputFiles?.length) {
-      throw new Error(`inputPattern missing or invalid (no input files found): ${cfg.inputPattern}`);
+      if (!inputFiles?.length) {
+        throw new Error(`inputPattern missing or invalid (no input files found): ${cfg.inputPattern}`);
+      }
     }
     return inputFiles;
+  }
+
+  async getValue(bug, name) {
+    const { project } = this;
+
+    let value = project[name];
+    if (isFunction(value)) {
+      value = await value.call(project, bug);
+    }
+    return value;
   }
 
   /**
    * NOTE: this is separate from `loadBugs` because `loadBugs` might be called before the project has been downloaded.
    * This function however is called after download, so we can make sure that `getInputFiles` actually gets the files.
    */
-  decorateBug(bug) {
+  async decorateBug(bug) {
     if (!this.inputFiles) {
       this.inputFiles = this.getInputFiles();
     }
@@ -46,9 +57,10 @@ export default class WebpackBuilder {
       inputFiles
     } = this;
 
+    bug.inputFiles = bug.inputFiles || inputFiles;
+
     // bug.runFilePaths = bug.testFilePaths;
-    bug.inputFiles = inputFiles;
-    bug.watchFilePaths = inputFiles.map(file => path.resolve(projectPath, 'dist', file));
+    bug.watchFilePaths = bug.watchFilePaths || await this.getValue(bug, 'watch') || inputFiles.map(file => path.resolve(projectPath, 'dist', file));
 
     if (websitePort) {
       // website settings
@@ -61,7 +73,10 @@ export default class WebpackBuilder {
     const { project, cfg } = this;
 
     // start webpack
-    const entry = filesToEntry(bug.inputFiles, cfg.rootPath);
+    let entry = await this.getValue(bug, 'entry');
+    if (!entry) {
+      entry = filesToEntry(bug.inputFiles, cfg.rootPath);
+    }
     const env = serializeEnv({
       entry,
       port: bug.websitePort || 0
