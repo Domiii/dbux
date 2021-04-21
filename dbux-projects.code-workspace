@@ -31,6 +31,9 @@
 		},
 		{
 			"path": "dbux_projects/Webpack"
+		},
+		{
+			"path": "dbux_projects/Webpack/webpack-cli"
 		}
 	],
 	"settings": {

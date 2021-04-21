@@ -89,6 +89,8 @@ export default function buildBabelOptions(options) {
     ...baseOptions,
     sourceType: 'unambiguous',
     sourceMaps: 'inline',
+    // see https://babeljs.io/docs/en/options#parseropts
+    parserOpts: { allowReturnOutsideFunction: true },
     ignore: [
       // '**/node_modules/**',
       function shouldIgnore(modulePath, ...otherArgs) {

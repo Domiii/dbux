@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
 
     2048: Project2048,
     'Editor.md': EditorMdProject,
-    Webpack: WebpackProject,
+    webpack: WebpackProject,
     'javascript-algorithms': JavascriptAlgorithmProject,
     'Chart.Js': ChartJs,
     hexo: Hexo,

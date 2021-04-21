@@ -110,9 +110,9 @@ export default class Project {
     }
   }
 
-  initBug(bug) {
-    this.decorateBug?.(bug);
-    this.builder?.decorateBug(bug);
+  async initBug(bug) {
+    await this.decorateBug?.(bug);
+    await this.builder?.decorateBug(bug);
   }
 
   // ###########################################################################
@@ -296,7 +296,7 @@ This may be solved by using \`Delete project folder\` button.`);
     return 0;
   }
 
-  async installPackages(s) {
+  async installPackages(s, force = true) {
     // TODO: yarn workspaces causes trouble for `yarn add`.
     //        Might need to use a hack, where we manually insert it into `package.json` and then run yarn install.
     // TODO: let user choose, or just prefer yarn by default?
@@ -307,7 +307,7 @@ This may be solved by using \`Delete project folder\` button.`);
 
     const cmd = this.preferredPackageManager === 'yarn' ? 
       'yarn add --dev' : 
-      'npm install -D';
+      `npm install -D ${force && '--force'}`;
     return this.execInTerminal(`${cmd} ${s}`);
   }
 

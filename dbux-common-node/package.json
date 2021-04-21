@@ -14,8 +14,8 @@
     "lodash": "^4.17.19",
     "nanoevents": "^2.0.0",
     "@dbux/common": "^0.3.17-dev.0",
-    "@dbux/runtime": "^0.3.17-dev.0",
-    "glob": "^7.1.6"
+    "glob": "^7.1.6",
+    "shelljs": "0.8.4"
   },
   "_moduleAliases": {}
 }

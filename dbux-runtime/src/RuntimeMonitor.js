@@ -51,9 +51,12 @@ export default class RuntimeMonitor {
    */
   addProgram(programData, runtimeCfg) {
     // read cfg
-    if (runtimeCfg.tracesDisabled) {
-      this.tracesDisabled = 1;
-    }
+    const {
+      tracesDisabled,
+      valuesDisabled
+    } = runtimeCfg;
+    this.tracesDisabled = !!tracesDisabled + 0;
+    this.valuesDisabled = !!valuesDisabled + 0;
 
     // go!
     const staticProgramContext = staticProgramContextCollection.addProgram(programData);

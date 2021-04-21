@@ -220,7 +220,7 @@ export default class BugRunner {
       this.setStatus(BugRunnerStatus.Busy);
 
       // init bug
-      project.initBug(bug);
+      await project.initBug(bug);
 
       const cwd = path.resolve(project.projectPath, bug.cwd || '');
 

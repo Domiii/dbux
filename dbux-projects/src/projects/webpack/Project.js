@@ -1,24 +1,13 @@
-
-/**
- * Steps to decipher example:
- *    cd examples/...
- *    Run w/ Dbux: `build.js`
- *    Find webpack-cli `node` command -> copy + paste -> modify -> run w/ Dbux
- */
-
-/**
- * TODO:
- * 1. add config file logic to `babel-plugin` (and make available through CLI)
- * 2. config: ignore large (/minified/certain) files
- */
+import path from 'path';
+import sh from 'shelljs';
+import { gitCloneCmd } from '@dbux/common-node/src/util/gitUtil';
+import { assertFileLinkTarget } from '@dbux/common-node/src/util/fileUtil';
 
 import Project from '../../projectLib/Project';
 // import WebpackBuilder from '../../buildTools/WebpackBuilder';
 import { buildNodeCommand } from '../../util/nodeUtil';
 
-/**
- * @see https://github.com/pandao/editor.md/blob/master/examples/full.html
- */
+
 export default class WebpackProject extends Project {
   gitRemote = 'webpack/webpack.git';
   gitCommit = 'cde1b73';//'v5.31.2';
@@ -32,12 +21,45 @@ export default class WebpackProject extends Project {
   //   });
   // }
 
+  get cliFolder() {
+    return path.resolve(this.projectPath, 'webpack-cli');
+  }
+
+  checkCliInstallation(shouldError = true) {
+    const { cliFolder, projectPath } = this;
+    return assertFileLinkTarget(path.join(this.projectPath, 'node_modules/webpack'), projectPath, shouldError) &&
+      assertFileLinkTarget(path.join(this.projectPath, 'node_modules/webpack-cli'), cliFolder, shouldError);
+  }
+
   async afterInstall() {
     // https://github.com/webpack/webpack/blob/master/_SETUP.md
     await this.execInTerminal('yarn link && yarn link webpack');
 
+    if (this.checkCliInstallation()) {
+      return;
+    }
+
+    const { cliFolder, projectPath } = this;
+
+    // clone and link webpack-cli
+    await this.execInTerminal(
+      gitCloneCmd('https://github.com/webpack/webpack-cli.git', 'refs/tags/webpack-cli@4.6.0', cliFolder)
+    );
+
+    const linkFolder = path.resolve(projectPath, '_dbux/link');
+    sh.mkdir('-p', linkFolder);
+    await this.execInTerminal([
+      'cd webpack-cli/packages/webpack-cli',
+      `yarn link --link-folder ${linkFolder}`,
+      `cd ${projectPath}`,
+      `yarn link --link-folder ${linkFolder} webpack-cli`
+    ].join('&& '));
+
+    // make sure, things are linked correctly
+    this.checkCliInstallation();
+
     // see https://github.com/webpack/webpack-cli/releases/tag/webpack-cli%404.6.0
-    await this.execInTerminal('yarn add webpack-cli@4.6.0');
+    // await this.execInTerminal('yarn add webpack-cli@4.6.0');
     // NOTE: path.resolve(await this.execCaptureOut('readlink -f node_modules/webpack')) === path.resolve(this.projectPath)
     // await this.applyPatch('baseline');
     // await this.installWebpack4();
