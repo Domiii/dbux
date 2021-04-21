@@ -25,10 +25,14 @@ export default class WebpackProject extends Project {
     return path.resolve(this.projectPath, 'webpack-cli');
   }
 
+  get cliLinkedTarget() {
+    return path.join(this.projectPath, 'node_modules/webpack-cli');
+  }
+
   checkCliInstallation(shouldError = true) {
-    const { cliFolder, projectPath } = this;
+    const { cliFolder, cliLinkedTarget, projectPath } = this;
     return assertFileLinkTarget(path.join(this.projectPath, 'node_modules/webpack'), projectPath, shouldError) &&
-      assertFileLinkTarget(path.join(this.projectPath, 'node_modules/webpack-cli'), cliFolder, shouldError);
+      assertFileLinkTarget(cliLinkedTarget, cliFolder, shouldError);
   }
 
   async afterInstall() {
@@ -38,6 +42,9 @@ export default class WebpackProject extends Project {
     if (this.checkCliInstallation()) {
       return;
     }
+
+    // make sure, webpack-cli did not get accidentally installed
+    sh.rm('-rf', this.cliLinkedTarget);
 
     const { cliFolder, projectPath } = this;
 
