@@ -91,7 +91,7 @@ export default class Project {
 
     this.logger = newLogger(this.debugTag);
   }
-  
+
   initProject() {
     if (this._initialized) {
       return;
@@ -156,8 +156,8 @@ export default class Project {
 
   async checkCorrectGitRepository() {
     if (!await this.isCorrectGitRepository()) {
-      throw new Error(`Trying to execute command in wrong git repository ${await this.execCaptureOut(`git remote -v`)}
-This may be solved by pressing \`clean project folder\` button.`);
+      throw new Error(`Trying to execute command in wrong git repository:\n${await this.execCaptureOut(`git remote -v`)}
+This may be solved by using \`Delete project folder\` button.`);
     }
   }
 
@@ -175,21 +175,12 @@ This may be solved by pressing \`clean project folder\` button.`);
     }
   }
 
-  async gitResetHard(needConfirm = false, confirmMsg = '') {
+  async gitResetHard() {
     await this.checkCorrectGitRepository();
 
-    if (needConfirm && !confirmMsg) {
-      throw new Error('calling Project.gitResetHard with `needConfirm=true` but no `confirmMsg`');
+    if (await this.checkFilesChanged()) {
+      await this.exec('git reset --hard');
     }
-
-    if (!await this.checkFilesChanged()) return;
-
-    if (needConfirm && !await this.manager.externals.confirm(confirmMsg)) {
-      const err = new Error('Action rejected by user');
-      err.userCanceled = true;
-      throw err;
-    }
-    await this.exec('git reset --hard');
   }
 
   // ###########################################################################
@@ -201,7 +192,7 @@ This may be solved by pressing \`clean project folder\` button.`);
    */
   async installProject() {
     await checkSystemWithRequirement(this.manager, this.systemRequirements);
-    
+
     // git clone
     await this.gitClone();
   }
@@ -450,9 +441,11 @@ This may be solved by pressing \`clean project folder\` button.`);
     }
   }
 
-  deleteProjectFolder() {
+  async deleteProjectFolder() {
+    const deactivatePromise = this.runner.deactivateBug();
     sh.rm('-rf', this.projectPath);
     this._installed = false;
+    await deactivatePromise;
   }
 
   doesProjectFolderExist() {
@@ -481,7 +474,7 @@ This may be solved by pressing \`clean project folder\` button.`);
         });
       }
       catch (err) {
-        const errMsg = `Failed to clone git repository. This may be solved by pressing \`clean project folder\` button. ${err.stack}`;
+        const errMsg = `Failed to clone git repository. This may be solved by using \`Delete project folder\` button. ${err.stack}`;
         throw new Error(errMsg);
       }
 

@@ -26,7 +26,6 @@ const logger = newLogger('PracticeManager');
 const { debug, log, warn, error: logError } = logger;
 
 const depsStorageKey = 'PracticeManager.deps';
-const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
 const savedPracticeSessionKeyName = 'dbux.dbux-projects.currentlyPracticingBug';
 const savedPracticeSessionDataKeyName = 'dbux.dbux-projects.practiceSessionCreatedAt';
 
@@ -356,19 +355,20 @@ export default class ProjectsManager {
    * @param {Bug} bug 
    */
   async resetBug(bug) {
-    try {
-      await bug.project.gitResetHard(true, 'This will discard all your changes on this bug.');
+    const confirmMessage = 'This will discard all your changes on this bug. Are you sure?';
+    if (!await this.externals.confirm(confirmMessage, true)) {
+      const err = new Error('Action rejected by user');
+      err.userCanceled = true;
+      throw err;
     }
-    catch (err) {
-      if (err.userCanceled) {
-        return;
-      }
-      else {
-        throw err;
-      }
+
+    // TODO: this reset the project, but the bug might not be the activated bug
+    await bug.project.gitResetHard();
+
+    if (this.bdp.getBugProgressByBug(bug)) {
+      this.bdp.updateBugProgress(bug, { patch: '' });
+      await this.bdp.save();
     }
-    this.bdp.updateBugProgress(bug, { patch: '' });
-    await this.bdp.save();
   }
 
   /**
@@ -430,7 +430,7 @@ export default class ProjectsManager {
       // skip if bug is already activated
       return;
     }
-    
+
     // if some bug are already activated, save the changes
     const previousBug = this.runner.bug;
     if (previousBug?.project.doesProjectFolderExist()) {
@@ -651,20 +651,6 @@ export default class ProjectsManager {
   // ###########################################################################
   // Bug save util
   // ###########################################################################
-
-  /**
-   * @param {Bug} bug 
-   */
-  async saveActivatedBug(bug) {
-    await this.setKeyToBug(activatedBugKeyName, bug);
-  }
-
-  /**
-   * @return {Bug}
-   */
-  getSavedActivatedBug() {
-    return this.getBugByKey(activatedBugKeyName);
-  }
 
   /**
    * @param {string} key 
