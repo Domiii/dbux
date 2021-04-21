@@ -569,7 +569,7 @@ export default class ProjectsManager {
     await this.stopPractice();
     await this.savePracticeSession();
     await this.bdp.reset();
-    await this.saveActivatedBug(undefined);
+    await this.runner.deactivateBug();
   }
 
   async resetLog() {
