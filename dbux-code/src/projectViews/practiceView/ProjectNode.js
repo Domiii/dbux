@@ -1,4 +1,4 @@
-import { ProgressLocation, Uri, workspace, window } from 'vscode';
+import { Uri, workspace } from 'vscode';
 import { pathGetBasename } from '@dbux/common/src/util/pathUtil';
 import sleep from '@dbux/common/src/util/sleep';
 import Project from '@dbux/projects/src/projectLib/Project';
@@ -6,7 +6,7 @@ import RunStatus, { isStatusRunningType } from '@dbux/projects/src/projectLib/Ru
 import BaseTreeViewNode from '../../codeUtil/BaseTreeViewNode';
 import BugNode from './BugNode';
 import { runTaskWithProgressBar } from '../../codeUtil/runTaskWithProgressBar';
-import { showInformationMessage } from '../../codeUtil/codeModals.js';
+import { showInformationMessage } from '../../codeUtil/codeModals';
 
 export default class ProjectNode extends BaseTreeViewNode {
   static makeLabel(project) {
@@ -59,27 +59,24 @@ export default class ProjectNode extends BaseTreeViewNode {
 
   async deleteProject() {
     if (isStatusRunningType(this.status)) {
-      showInformationMessage('project is running now...');
+      await showInformationMessage('project is running now...');
     }
     else {
-      const confirmMessage = `Do you really want to delete project: ${this.project.name}`;
+      const confirmMessage = `Do you really want to delete the project: ${this.project.name}`;
       const btnConfig = {
         Ok: async () => {
           await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
             progress.report({ message: 'deleting project folder...' });
-            // wait for progress bar to show
-            await sleep(100);
-            this.project.deleteProjectFolder();
+            await this.project.deleteProjectFolder();
             this.treeNodeProvider.refresh();
-            progress.report({ message: 'Done.' });
           }, {
             cancellable: false,
-            location: ProgressLocation.Notification,
             title: this.project.name,
           });
         }
       };
       await showInformationMessage(confirmMessage, btnConfig, { modal: true });
+      await showInformationMessage('Project has been deleted successfully.');
     }
   }
 

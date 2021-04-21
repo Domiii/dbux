@@ -12,7 +12,7 @@ import BugRunnerStatus from './RunStatus';
 /** @typedef {import('./Bug').default} Bug */
 /** @typedef {import('./Project').default} Project */
 
-const Verbose = true;
+const activatedBugKeyName = 'dbux.dbux-projects.activatedBug';
 
 export default class BugRunner {
   /**
@@ -40,7 +40,7 @@ export default class BugRunner {
     this._ownLogger = newLogger('BugRunner');
     this._emitter = new NanoEvents();
 
-    this._bug = this.manager.getSavedActivatedBug();
+    this._bug = this.getSavedActivatedBug();
   }
 
   get logger() {
@@ -183,12 +183,24 @@ export default class BugRunner {
         project.installAssets.bind(project),
         // Auto commit again
         project.autoCommit.bind(project, bug),
+
+        async () => await this.saveActivatedBug()
       );
+    }
+    catch (err) {
+      this._bug = null;
+      throw err;
     }
     finally {
       this._updateStatus();
-      await this.manager.saveActivatedBug(bug);
     }
+  }
+
+  async deactivateBug() {
+    const { bug } = this;
+    this._bug = null;
+    await this.saveActivatedBug();
+    return bug;
   }
 
   /**
@@ -218,7 +230,7 @@ export default class BugRunner {
         dbuxJs: cfg?.dbuxEnabled ? this.manager.getDbuxCliBinPath() : null,
         ...cfg,
       };
-      
+
       // build the run command
       let command = await project.testBugCommand(bug, cfg);
       command = command?.trim().replace(/\s+/, ' ');  // get rid of unnecessary line-breaks and multiple spaces
@@ -318,7 +330,7 @@ export default class BugRunner {
     const backgroundProcesses = this.project?.backgroundProcesses || EmptyArray;
     await Promise.all(backgroundProcesses.map(p => p.killSilent()));
 
-    this._bug = null;
+    await this.deactivateBug();
 
     this.setStatus(BugRunnerStatus.None);
   }
@@ -363,5 +375,20 @@ export default class BugRunner {
   onStatusChanged(cb) {
     cb(this.status);
     return this._emitter.on('statusChanged', cb);
+  }
+
+  // ###########################################################################
+  //  Bug save util
+  // ###########################################################################
+
+  async saveActivatedBug() {
+    await this.manager.setKeyToBug(activatedBugKeyName, this.bug);
+  }
+
+  /**
+   * @return {Bug}
+   */
+  getSavedActivatedBug() {
+    return this.manager.getBugByKey(activatedBugKeyName);
   }
 }
