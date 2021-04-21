@@ -620,7 +620,7 @@ This may be solved by using \`Delete project folder\` button.`);
   // ###########################################################################
 
   getPatchFolder() {
-    return path.join(this.projectPath, PatchFolderName);
+    return path.join(this.getAssetDir(PatchFolderName), this.folderName);
   }
 
   getPatchFile(patchFName) {
