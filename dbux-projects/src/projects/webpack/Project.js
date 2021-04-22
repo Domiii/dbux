@@ -58,7 +58,7 @@ export default class WebpackProject extends Project {
 
     const { cliFolder, cliPackageFolder, projectPath } = this;
 
-    // clone and link webpack-cli
+    // clone, install and link webpack-cli
     await this.execInTerminal(
       gitCloneCmd(
         'https://github.com/webpack/webpack-cli.git',
@@ -70,6 +70,10 @@ export default class WebpackProject extends Project {
 
     const linkFolder = path.resolve(projectPath, '_dbux/link');
     sh.mkdir('-p', linkFolder);
+    await this.execCaptureOut(
+      `yarn install`,
+      { cwd: cliPackageFolder }
+    );
     await this.execCaptureOut(
       `yarn link --link-folder ${linkFolder}`,
       { cwd: cliPackageFolder }
