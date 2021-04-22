@@ -67,6 +67,11 @@ export default class ProjectNode extends BaseTreeViewNode {
         Ok: async () => {
           await runTaskWithProgressBar(async (progress/* , cancelToken */) => {
             progress.report({ message: 'deleting project folder...' });
+            
+            // NOTE: we need this sleep because:
+            //     (1) file deletion is actually synchronous, (2) progress bar does not start rendering until after first await has returned
+            await sleep();
+
             await this.project.deleteProjectFolder();
             this.treeNodeProvider.refresh();
           }, {

@@ -14,6 +14,9 @@ export default class WebpackProject extends Project {
 
   packageManager = 'yarn';
 
+  // we don't want any commit hooks to get in the way
+  rmFiles = ['.husky'];
+
 
   // makeBuilder() {
   //   return new WebpackBuilder({
@@ -25,45 +28,64 @@ export default class WebpackProject extends Project {
     return path.resolve(this.projectPath, 'webpack-cli');
   }
 
+  get cliPackageFolder() {
+    return path.resolve(this.projectPath, 'webpack-cli/packages/webpack-cli');
+  }
+
   get cliLinkedTarget() {
     return path.join(this.projectPath, 'node_modules/webpack-cli');
   }
 
-  checkCliInstallation(shouldError = true) {
-    const { cliFolder, cliLinkedTarget, projectPath } = this;
-    return assertFileLinkTarget(path.join(this.projectPath, 'node_modules/webpack'), projectPath, shouldError) &&
-      assertFileLinkTarget(cliLinkedTarget, cliFolder, shouldError);
+  async checkCliInstallation(shouldError = true) {
+    const { cliLinkedTarget, cliPackageFolder, projectPath } = this;
+    return (
+      await assertFileLinkTarget(
+        path.join(this.projectPath, 'node_modules/webpack'),
+        projectPath,
+        shouldError
+      ) &&
+      await assertFileLinkTarget(cliLinkedTarget, cliPackageFolder, shouldError)
+    );
   }
 
-  async afterInstall() {
-    // https://github.com/webpack/webpack/blob/master/_SETUP.md
-    await this.execInTerminal('yarn link && yarn link webpack');
-
-    if (this.checkCliInstallation()) {
+  async verifyInstallation() {
+    if (await this.checkCliInstallation(false)) {
       return;
     }
 
     // make sure, webpack-cli did not get accidentally installed
     sh.rm('-rf', this.cliLinkedTarget);
 
-    const { cliFolder, projectPath } = this;
+    const { cliFolder, cliPackageFolder, projectPath } = this;
 
     // clone and link webpack-cli
     await this.execInTerminal(
-      gitCloneCmd('https://github.com/webpack/webpack-cli.git', 'refs/tags/webpack-cli@4.6.0', cliFolder)
+      gitCloneCmd(
+        'https://github.com/webpack/webpack-cli.git',
+        'refs/tags/webpack-cli@4.6.0',
+        cliFolder
+      ),
+      { cwd: cliFolder }
     );
 
     const linkFolder = path.resolve(projectPath, '_dbux/link');
     sh.mkdir('-p', linkFolder);
-    await this.execInTerminal([
-      'cd webpack-cli/packages/webpack-cli',
+    await this.execCaptureOut(
       `yarn link --link-folder ${linkFolder}`,
-      `cd ${projectPath}`,
-      `yarn link --link-folder ${linkFolder} webpack-cli`
-    ].join('&& '));
+      { cwd: cliPackageFolder }
+    );
+    await this.execCaptureOut(
+      `yarn link --link-folder ${linkFolder} webpack-cli`,
+      { cwd: projectPath }
+    );
 
     // make sure, things are linked correctly
-    this.checkCliInstallation();
+    await this.checkCliInstallation();
+  }
+
+  async afterInstall() {
+    // https://github.com/webpack/webpack/blob/master/_SETUP.md
+    await this.execInTerminal('yarn link && yarn link webpack');
 
     // see https://github.com/webpack/webpack-cli/releases/tag/webpack-cli%404.6.0
     // await this.execInTerminal('yarn add webpack-cli@4.6.0');

@@ -5,9 +5,9 @@ import { window } from 'vscode';
 import { newLogger } from '@dbux/common/src/log/logger';
 import Process from '@dbux/projects/src/util/Process';
 import which from '@dbux/projects/src/util/which';
-import { execCommand } from '../codeUtil/terminalUtil';
+// import sleep from '@dbux/common/src/util/sleep';
+import { closeDefaultTerminal, runInTerminal, runInTerminalInteractive } from '../codeUtil/terminalUtil';
 import { getResourcePath } from '../resources';
-import sleep from '@dbux/common/src/util/sleep';
 
 const Verbose = true;
 // const Verbose = false;
@@ -48,24 +48,40 @@ export default class TerminalWrapper {
     //     this.dispose();
     //   }
     // });
-    this._promise = this._run(cwd, command, args);
+    if (Array.isArray(command)) {
+      this._promise = this._runAll(cwd, command, args);
+    }
+    else {
+      this._promise = this._run(cwd, command, args);
+    }
   }
 
   async waitForResult() {
     return this._promise;
   }
+  
+  async _runAll(cwd, cmds, args) {
+    const res = [];
+    closeDefaultTerminal();
+    for (const command of cmds) {
+      res.push(await this._run(cwd, command, args, true));
+    }
+    return res;
+  }
 
-  async _run(cwd, command, args) {
+  async _run(cwd, command, args, isInteractive = false) {
     // NOTE: fix paths on Windows
     let tmpFolder = fixPathForSerialization(fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-')));
     const pathToNode = fixPathForSerialization(await getPathToNode());
     const pathToDbuxRun = fixPathForSerialization(getResourcePath('../dist/_dbux_run.js'));
+    
+    // command = fixPathForSerialization(command); // WARNING: this might mess things up
 
     // serialize everything
     const runJsargs = { cwd, command, args, tmpFolder };
     const serializedRunJsArgs = Buffer.from(JSON.stringify(runJsargs)).toString('base64');
     // const runJsCommand = `pwd && node -v && which node && echo %PATH% && node ${pathToDbuxRun} ${serializedRunJsArgs}`;
-    const runJsCommand = `"${pathToNode}" "${pathToDbuxRun}" ${serializedRunJsArgs}`;
+    const runJsCommand = `"${pathToNode}" "${pathToDbuxRun}" ${isInteractive} ${serializedRunJsArgs}`;
 
     debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
 
@@ -126,7 +142,9 @@ export default class TerminalWrapper {
     });
 
     try {
-      this._terminal = await execCommand(cwd, runJsCommand);
+      // Go!
+      const execFn = isInteractive ? runInTerminalInteractive : runInTerminal;
+      this._terminal = await execFn(cwd, runJsCommand);
 
       return await _promise;
     }

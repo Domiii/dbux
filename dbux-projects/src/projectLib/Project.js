@@ -197,6 +197,8 @@ This may be solved by using \`Delete project folder\` button.`);
 
     // git clone
     await this.gitClone();
+
+    await this.verifyInstallation?.();
   }
 
   /**
@@ -281,10 +283,19 @@ This may be solved by using \`Delete project folder\` button.`);
   // utilities
   // ###########################################################################
 
-  async execInTerminal(command, options) {
+  execInTerminal = async (command, options) => {
     let cwd = options?.cwd || this.projectPath;
 
-    let { code } = await this.manager.externals.TerminalWrapper.execInTerminal(cwd, command, {}).waitForResult();
+    const result = await this.manager.externals.TerminalWrapper.execInTerminal(cwd, command, {}).
+      waitForResult();
+
+    let code;
+    if (Array.isArray(result)) {
+      code = result[result.length - 1].code;
+    }
+    else {
+      code = result?.code;
+    }
 
     if (options?.failOnStatusCode === false) {
       return code;
@@ -305,8 +316,8 @@ This may be solved by using \`Delete project folder\` button.`);
       s = Object.entries(s).map(([name, version]) => `${name}@${version}`).join(' ');
     }
 
-    const cmd = this.preferredPackageManager === 'yarn' ? 
-      'yarn add --dev' : 
+    const cmd = this.preferredPackageManager === 'yarn' ?
+      'yarn add --dev' :
       `npm install -D ${force && '--force'}`;
     return this.execInTerminal(`${cmd} ${s}`);
   }
@@ -322,7 +333,7 @@ This may be solved by using \`Delete project folder\` button.`);
     });
   }
 
-  async exec(command, options, input) {
+  exec = async (command, options, input) => {
     const cwd = options?.cwd || this.projectPath;
     options = defaultsDeep(options, {
       ...(options || EmptyObject),
@@ -333,7 +344,7 @@ This may be solved by using \`Delete project folder\` button.`);
     return this.runner._exec(command, this.logger, options, input);
   }
 
-  async execCaptureOut(command, processOptions) {
+  execCaptureOut = async (command, processOptions) => {
     processOptions = {
       ...(processOptions || EmptyObject),
       cwd: this.projectPath
@@ -554,11 +565,11 @@ This may be solved by using \`Delete project folder\` button.`);
       await this.execInTerminal('yarn install');
     }
     else {
-    // await this.exec('npm cache verify');
-    // hackfix: npm installs are broken somehow.
-    //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
-    //      Sometimes running it a second time after checking out a different branch 
-    //      deletes all node_modules. The second run brings everything back correctly (for now).
+      // await this.exec('npm cache verify');
+      // hackfix: npm installs are broken somehow.
+      //      see: https://npm.community/t/need-to-run-npm-install-twice/3920
+      //      Sometimes running it a second time after checking out a different branch 
+      //      deletes all node_modules. The second run brings everything back correctly (for now).
       await this.execInTerminal(`npm install && npm install`);
     }
   }
@@ -578,7 +589,7 @@ This may be solved by using \`Delete project folder\` button.`);
     // remove unwanted files
     let { projectPath, rmFiles } = this;
     if (rmFiles?.length) {
-      const absRmFiles = rmFiles.map(fName => path.join(projectPath, fName));
+      const absRmFiles = rmFiles.map(fName => path.resolve(projectPath, fName));
       const iErr = absRmFiles.findIndex(f => !f.startsWith(projectPath));
       if (iErr >= 0) {
         throw new Error('invalid entry in `rmFiles` is not in `projectPath`: ' + rmFiles[iErr]);

@@ -80,12 +80,32 @@ export function globRelative(folder, patternOrPatterns) {
   );
 }
 
-export function assertFileLinkTarget(linkPath, expectedTarget, error = true) {
-  const actualTarget = path.resolve(sh.exec(`readlink -f ${linkPath}`).toString().trim());
-  expectedTarget = path.resolve(expectedTarget);
+export async function assertFileLinkTarget(linkPath, expectedTarget, error = true) {
+  // const actualTarget = path.resolve(
+  //   (await exec(`readlink -f ${linkPath}`)).toString().trim()
+  // );
+  let actualTarget;
+  try {
+    actualTarget = fs.realpathSync.native(linkPath);
+  }
+  catch (err) {
+    // file does not exist
+    return false;
+  }
+
+
+  try {
+    expectedTarget = fs.realpathSync.native(expectedTarget);
+    // expectedTarget = path.resolve(expectedTarget);
+  }
+  catch (err) {
+    // file does not exist
+    return false;
+  }
+
   if (actualTarget !== expectedTarget) {
     if (error) {
-      throw new Error(`File is not linked correctly: (\`readlink -f ${linkPath}\` => ${actualTarget}) !== ${expectedTarget}`);
+      throw new Error(`File is not linked correctly: "${expectedTarget}" !== "${actualTarget}" (\`realpath("${linkPath}")\`)`);
     }
     return false;
   }

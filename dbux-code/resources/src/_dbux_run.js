@@ -16,14 +16,15 @@ let cwd, command, tmpFolder, moreEnv;
 
 const logDebug = (console.debug || console.log).bind(console, '[Dbux]');
 
+const [
+  _node,
+  _runJs,
+  interactive,
+  argsEncoded
+] = process.argv;
+
 function main() {
   // node run.js port "cwd" "command"
-  const [
-    _node,
-    _runJs,
-    argsEncoded
-  ] = process.argv;
-
   const args = JSON.parse(Buffer.from(argsEncoded, 'base64').toString('ascii'));
   ({ cwd, command, tmpFolder, args: moreEnv } = args);
 
@@ -131,5 +132,5 @@ catch (err) {
   reportError(err);
 }
 finally {
-  setInterval(() => { }, 100000);
+  (interactive ? setInterval : setTimeout)(() => { }, interactive ? 500 : 100000);
 }

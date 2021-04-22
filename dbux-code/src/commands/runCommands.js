@@ -94,7 +94,7 @@ export async function runFile(extensionContext, debugMode = false) {
   // go!
   const dbuxBin = projectManager.getDbuxCliBinPath();
   const command = `node ${nodeArgs} "${dbuxBin}" run ${dbuxArgs} "${file}" -- ${programArgs}`;
-  runInTerminalInteractive('dbux-run', cwd, command);
-  // execCommand(cwd, `node /Users/domi/code/dbux/scripts/time-test.js spawn-child && sleep 30`);
+  await runInTerminalInteractive(cwd, command);
+  // runInTerminal(cwd, `node /Users/domi/code/dbux/scripts/time-test.js spawn-child && sleep 30`);
   // runInTerminalInteractive('dbux-run', cwd, `node /Users/domi/code/dbux/scripts/time-test.js spawn-child`);
 }
