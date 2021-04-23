@@ -18,10 +18,12 @@ export default class WebpackProject extends Project {
   rmFiles = ['.husky'];
 
   makeBuilder() {
-    // node ../../node_modules/@dbux/cli/bin/dbux.js run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" c:\\Users\\domin\\code\\dbux\\node_modules\\webpack\\bin\\webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"} --env port=3845
+    // node --stack-trace-limit=100 ../../node_modules/@dbux/cli/bin/dbux.js run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" -d -r=./_dbux_/alias.js ../../node_modules/webpack/bin/webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
+    // node --stack-trace-limit=100 -r ./_dbux_/alias.js ../../node_modules/webpack/bin/webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"}
     return new WebpackBuilder({
       webpackBin: this.getDependencyPath('webpack/bin/webpack.js'),
       websitePort: 3845,
+      nodeArgs: '-r "./_dbux_/alias.js"',
       inputPattern: 'bin/webpack.js'
     });
   }
@@ -80,7 +82,7 @@ export default class WebpackProject extends Project {
       { cwd: cliFolder }
     );
 
-    const linkFolder = path.resolve(projectPath, '_dbux/link');
+    const linkFolder = path.resolve(projectPath, '_dbux_/link');
     sh.mkdir('-p', linkFolder);
     await this.execCaptureOut(
       `yarn install`,

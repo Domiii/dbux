@@ -9,7 +9,7 @@ import colors from 'colors/safe';
 // import injectDependencies from './injectDependencies';
 
 // import buildDefaultBabelOptions from './defaultBabelOptions';
-const baseBabelOptions = require('../../.babelrc');
+const baseBabelOptions = require('../.babelrc');
 
 function debugLog(...args) {
   console.log(colors.gray(args.join(' ')));
@@ -66,7 +66,7 @@ export default function buildBabelOptions(options) {
 
   // console.log(`buildBabelOptions: verbose=${verbose}, runtime=${runtime}`);
 
-  if (dontInjectDbux && !esnext) {
+  if (dontInjectDbux && !esnext && !verbose) {
     // nothing to babel
     return null;
   }
@@ -111,7 +111,7 @@ export default function buildBabelOptions(options) {
 
         modulePath = modulePath.toLowerCase();
 
-        const ignore = false;
+        const ignore = dontInjectDbux;
         verbose && debugLog(`[Dbux] REGISTER`, modulePath);
         return ignore;
       }

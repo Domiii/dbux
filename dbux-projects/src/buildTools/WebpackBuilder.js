@@ -90,6 +90,10 @@ export default class WebpackBuilder {
   async startWatchMode(bug) {
     const { project, cfg } = this;
 
+    const {
+      nodeArgs = ''
+    } = cfg;
+
     // start webpack
     let entry = await this.getValue(bug, 'entry');
     if (!entry) {
@@ -100,9 +104,11 @@ export default class WebpackBuilder {
       port: bug.websitePort || 0
     });
 
+    const webpackArgs = `--display-error-details --watch --config ./dbux.webpack.config.js ${env}`;
+
     const webpackBin = this.webpackBin(!!bug.websitePort);
     // NOTE: --display-error-details is part of `--stats` in webpack@5
-    let cmd = `node ${webpackBin} --display-error-details --watch --config ./dbux.webpack.config.js ${env}`;
+    let cmd = `node ${nodeArgs} --stack-trace-limit=100 ${webpackBin} ${webpackArgs}`;
     return project.execBackground(cmd);
   }
 }

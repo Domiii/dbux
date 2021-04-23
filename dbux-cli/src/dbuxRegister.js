@@ -1,5 +1,5 @@
 import babelRegister from '@babel/register';
-import buildBabelOptions from './util/buildBabelOptions';
+import buildBabelOptions from './buildBabelOptions';
 
 // link dependencies
 import './linkOwnDependencies';
