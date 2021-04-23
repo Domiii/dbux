@@ -77,6 +77,10 @@ function main() {
     clearInterval(warningIntervalId);
 
     logDebug(`\n(Done. You can close the Terminal now.)`);
+
+    if (interactive) {
+      setTimeout(() => process.exit(0), 300);
+    }
   });
 
   child.on('error', (err) => {

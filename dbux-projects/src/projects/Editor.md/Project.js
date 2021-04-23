@@ -18,10 +18,6 @@ export default class EditorMdProject extends Project {
     });
   }
 
-  async afterInstall() {
-    await this.installWebpack4();
-  }
-
   loadBugs() {
     // git diff --color=never --ignore-cr-at-eol > ../../dbux-projects/assets/2048/_patches_/error.patch
 

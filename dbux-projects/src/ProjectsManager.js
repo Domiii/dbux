@@ -66,7 +66,14 @@ export default class ProjectsManager {
 
   // NOTE: npm flattens dependency tree by default, and other important dependencies are dependencies of @dbux/cli
   _sharedDependencyNames = [
-    '@dbux/cli'
+    '@dbux/cli',
+    
+    // webpack is used by most projects
+    'webpack@^4.43.0',
+    'webpack-cli@^3.3.11',
+    
+    // these are used in dbux.webpack.config.base.js
+    'copy-webpack-plugin@6'
   ];
 
   // ###########################################################################
@@ -773,8 +780,11 @@ export default class ProjectsManager {
 
       // this.externals.showMessage.info(`Installing dependencies: "${deps.join(', ')}" This might (or might not) take a while...`);
 
-      const moreDeps = deps.length && ` && npm i ${deps.join(' ')}` || '';
-      const command = `npm install --only=prod${moreDeps}`;
+      const command = [
+        `npm install --only=prod`,
+        ...deps.length && [`npm i ${deps.join(' ')}`] || EmptyArray
+      ];
+
       // await this.runner._exec(command, logger, execOptions);
       await this.execInTerminal(dependencyRoot, command);
 

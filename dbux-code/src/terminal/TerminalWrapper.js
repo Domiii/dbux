@@ -60,7 +60,7 @@ export default class TerminalWrapper {
   async waitForResult() {
     return this._promise;
   }
-  
+
   async _runAll(cwd, cmds, args) {
     const res = [];
     closeDefaultTerminal();
@@ -75,19 +75,19 @@ export default class TerminalWrapper {
     let tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'dbux-'));
     const pathToNode = fixPathForSerialization(await getPathToNode());
     const pathToDbuxRun = fixPathForSerialization(getResourcePath('../dist/_dbux_run.js'));
-    
+
     // command = fixPathForSerialization(command); // not necessary (due to base64 serialization)
 
     // serialize everything
     const runJsargs = { cwd, command, args, tmpFolder };
     const serializedRunJsArgs = Buffer.from(JSON.stringify(runJsargs)).toString('base64');
     // const runJsCommand = `pwd && node -v && which node && echo %PATH% && node ${pathToDbuxRun} ${serializedRunJsArgs}`;
-    const runJsCommand = `"${pathToNode}" "${pathToDbuxRun}" ${isInteractive} ${serializedRunJsArgs}`;
+    const runJsCommand = `"${pathToNode}" "${pathToDbuxRun}" ${!!isInteractive + 0} ${serializedRunJsArgs}`;
 
     debug('wrapping terminal command: ', JSON.stringify(runJsargs), `pathToDbuxRun: ${pathToDbuxRun}`);
 
     // execute command
-    
+
     const commandCall = `${cwd}$ ${command}`;
 
     let _resolve, _reject, _promise = new Promise((resolve, reject) => {

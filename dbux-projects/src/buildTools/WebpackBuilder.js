@@ -9,8 +9,24 @@ export default class WebpackBuilder {
     this.cfg = cfg;
   }
 
+  get needsDevServer() {
+    const {
+      cfg: { websitePort },
+    } = this;
+    return !!websitePort;
+  }
+
   async afterInstall() {
-    await this.project.installWebpack4();
+    if (this.needsDevServer) {
+      await this.project.installPackages({
+        // eslint-disable-next-line quote-props
+        // 'webpack': '^4.43.0',
+        // 'webpack-cli': '^3.3.11',
+        // 'webpack-config-utils': '2.0.0',
+        // 'copy-webpack-plugin': '^6.0.3'
+        'webpack-dev-server': '^3.11.0',
+      });
+    }
   }
 
   initProject(project) {
@@ -83,15 +99,17 @@ export default class WebpackBuilder {
     return path.join('node_modules', getWebpackJs());
   }
 
-  webpackBin(serve = false) {
-    return this.cfg.webpackBin || (serve ? this.getWebpackDevServerJs() : this.getWebpackJs());
+  webpackBin() {
+    return this.cfg.webpackBin || (this.needsDevServer() ? this.getWebpackDevServerJs() : this.getWebpackJs());
   }
 
   async startWatchMode(bug) {
     const { project, cfg } = this;
+    const { projectPath } = project;
 
     const {
-      nodeArgs = ''
+      nodeArgs = '',
+      processOptions
     } = cfg;
 
     // start webpack
@@ -104,11 +122,12 @@ export default class WebpackBuilder {
       port: bug.websitePort || 0
     });
 
-    const webpackArgs = `--display-error-details --watch --config ./dbux.webpack.config.js ${env}`;
+    const webpackConfig = path.join(projectPath, 'dbux.webpack.config.js');
+    const webpackArgs = `--display-error-details --watch --config ${webpackConfig} ${env}`;
 
-    const webpackBin = this.webpackBin(!!bug.websitePort);
+    const webpackBin = this.webpackBin();
     // NOTE: --display-error-details is part of `--stats` in webpack@5
     let cmd = `node ${nodeArgs} --stack-trace-limit=100 ${webpackBin} ${webpackArgs}`;
-    return project.execBackground(cmd);
+    return project.execBackground(cmd, processOptions);
   }
 }
