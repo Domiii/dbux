@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable global-require */
 
+
 const path = require('path');
 const process = require('process');
 const webpack = require('webpack');
@@ -12,6 +13,7 @@ const isArray = require('lodash/isArray');
 const isObject = require('lodash/isObject');
 const CopyPlugin = require('copy-webpack-plugin');
 require('@dbux/babel-plugin');
+
 
 // eslint-disable-next-line import/no-dynamic-require
 const nodeExternals = require(path.join(getDependencyRoot(), 'node_modules/webpack-node-externals'));
@@ -77,7 +79,6 @@ const defaultBabelOptions = {
 
 module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
   return (env, argv) => {
-    env = parseEnv(env);
     // const ExtraWatchWebpackPlugin = require('extra-watch-webpack-plugin');
     // webpackPlugins.push(
     //   new ExtraWatchWebpackPlugin({
@@ -86,11 +87,13 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     //     ]
     //   })
     // );
+    cfgOverrides = mergeConcatArray(...cfgOverrides.map(cb => isFunction(cb) ? cb(env, argv) : cb));
 
     // ###########################################################################
     // parse env
     // ###########################################################################
 
+    env = parseEnv(env);
     // console.warn('  env:', JSON.stringify(env, null, 2));
 
     // ###########################################################################
@@ -132,6 +135,9 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       Object.assign(devServer, devServerOverrides);
     }
 
+    // ###########################################################################
+    // rules
+    // ###########################################################################
 
     let dbuxRules = [];
     if (dbuxRoot) {
@@ -147,6 +153,12 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     }
 
     // ###########################################################################
+    // context
+    // ###########################################################################
+
+    const context = cfgOverrides.context || path.join(ProjectRoot, '.');
+
+    // ###########################################################################
     // entry
     // ###########################################################################
 
@@ -155,9 +167,9 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     entry = Object.fromEntries(
       Object.entries(entry)
         .map(([key, value]) => [
-          key, 
-          value
-          // Array.isArray(value) ? value : path.resolve(ProjectRoot, value)
+          key,
+          // value
+          Array.isArray(value) ? value : path.resolve(context, value)
         ])
     );
 
@@ -252,7 +264,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
       // devtool: 'inline-module-source-map',
       devtool: 'source-map',
       plugins,
-      context: path.join(ProjectRoot, '.'),
+      context,
       output: {
         filename: '[name].js',
         path: path.resolve(ProjectRoot, 'dist'),
@@ -311,9 +323,7 @@ module.exports = (ProjectRoot, customConfig = {}, ...cfgOverrides) => {
     // merge in overrides
     // ###########################################################################
 
-    cfgOverrides = cfgOverrides.map(cb => isFunction(cb) ? cb(env, argv) : cb);
-
-    const resultCfg = mergeConcatArray(cfg, ...cfgOverrides);
+    const resultCfg = mergeConcatArray(cfg, cfgOverrides);
 
     // console.debug('WEBPACK.CONFIG', JSON.stringify(resultCfg, null, 2));
 

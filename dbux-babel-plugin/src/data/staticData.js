@@ -33,11 +33,13 @@ export function buildDbuxInit(state) {
   // // const staticDataString = JSON.stringify(staticData, null, 4);
   // Verbose && console.time(`[Dbux] babel write 1 (stringify) "${filePath}"`);
   const staticDataString = JSON.stringify(staticData);
-  try {
-    JSON.parse(runtimeCfg);
-  }
-  catch (err) {
-    throw new Error(`Invalid runtimeCfg must be JSON (but: ${err.message}): "${runtimeCfg}"`);
+  if (runtimeCfg) {
+    try {
+      JSON.parse(runtimeCfg);
+    }
+    catch (err) {
+      throw new Error(`Invalid runtimeCfg must be JSON (but: ${err.message}): "${runtimeCfg}"`);
+    }
   }
   const runtimeCfgString = runtimeCfg || '{}';// JSON.stringify(runtimeCfg || EmptyObject);
   // Verbose && console.timeEnd(`[Dbux] babel write 1 (stringify) "${filePath}"`);

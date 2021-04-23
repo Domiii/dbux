@@ -41,13 +41,7 @@ const resultCfg = buildWebpackConfig(ProjectRoot, customCfg, (env, arg) => {
           ]
         },
       ]
-    },
-    externals: [
-      {
-        // fs: 'console.error("required fs")',
-        // tls: 'console.error("required tls")'
-      }
-    ]
+    }
   };
 });
 

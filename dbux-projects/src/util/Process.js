@@ -252,7 +252,7 @@ export default class Process {
     kill(this._process.pid, signal);
     await this.waitToEnd().
       then((code) => {
-        debug(`process killed: command='${this.command}', code='${code}'`);
+        debug(`process killed (code=${code}): command='${this.command}'`);
       }).
       catch(err => {
         debug('ignored process error after kill:', err.message);
