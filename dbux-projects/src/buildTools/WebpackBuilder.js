@@ -101,6 +101,7 @@ export default class WebpackBuilder {
     });
 
     const webpackBin = this.webpackBin(!!bug.websitePort);
+    // NOTE: --display-error-details is part of `--stats` in webpack@5
     let cmd = `node ${webpackBin} --display-error-details --watch --config ./dbux.webpack.config.js ${env}`;
     return project.execBackground(cmd);
   }

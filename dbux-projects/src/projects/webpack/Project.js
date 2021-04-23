@@ -18,9 +18,10 @@ export default class WebpackProject extends Project {
   rmFiles = ['.husky'];
 
   makeBuilder() {
+    // node ../../node_modules/@dbux/cli/bin/dbux.js run --pw=webpack,webpack-cli --verbose=1 --runtime="{\"tracesDisabled\":1}" c:\\Users\\domin\\code\\dbux\\node_modules\\webpack\\bin\\webpack.js -- --display-error-details --watch --config ./dbux.webpack.config.js --env entry={"bin/webpack":"bin\\\\webpack.js"} --env port=3845
     return new WebpackBuilder({
-      // webpackBin: this.getDependencyPath('webpack/bin/webpack.js'),
-      websitePort: 3844,
+      webpackBin: this.getDependencyPath('webpack/bin/webpack.js'),
+      websitePort: 3845,
       inputPattern: 'bin/webpack.js'
     });
   }
