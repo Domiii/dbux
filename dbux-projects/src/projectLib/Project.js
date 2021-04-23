@@ -448,8 +448,8 @@ This may be solved by using \`Delete project folder\` button.`);
     await this.installDependencies();
 
     // custom `afterInstall` hook
-    await this.builder?.afterInstall?.();
     await this.afterInstall();
+    await this.builder?.afterInstall?.();
 
     // after install completed: commit modifications, so we can easily apply patches etc (if necessary)
     await this.autoCommit();
